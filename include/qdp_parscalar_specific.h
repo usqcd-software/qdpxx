@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.3 2003-06-04 18:22:29 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.4 2003-06-05 02:22:50 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1138,13 +1138,9 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
 template<class T>
 void read(BinaryReader& bin, OScalar<T>& d)
 {
-  if (Layout::primaryNode()) 
-    readArray((char*)&(d.elem()), 
-	      sizeof(typename WordType<T>::Type_t), 
-	      sizeof(T) / sizeof(typename WordType<T>::Type_t)); 
-  
-  // Now broadcast back out to all nodes
-  Internal::broadcast(d);
+  readArray((char*)&(d.elem()), 
+	    sizeof(typename WordType<T>::Type_t), 
+	    sizeof(T) / sizeof(typename WordType<T>::Type_t)); 
 }
 
 //! Binary input
@@ -1159,10 +1155,9 @@ void read(BinaryReader& bin, OLattice<T>& d)
   // Assume lexicographic for the moment...
   for(int site=0, xsite2=0; site < Layout::vol(); site += xinc)
   {
-    if (Layout::primaryNode())
-      readArray((char*)(data.slice() + xsite2),
-		sizeof(typename WordType<T>::Type_t), 
-		xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t));
+    readArrayPrimaryNode((char*)(data.slice() + xsite2),
+			 sizeof(typename WordType<T>::Type_t), 
+			 xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t));
 
     xsite2 = QMP_shift((site + xinc) % Layout::vol(),
 		       (unsigned char*)(data.slice()), sizeof(T), xinc);

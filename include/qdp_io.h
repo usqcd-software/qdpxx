@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.4 2003-06-04 18:22:29 edwards Exp $
+// $Id: qdp_io.h,v 1.5 2003-06-05 02:22:50 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -103,10 +103,10 @@ public:
   bool is_open();
 
   //! Push a namelist group 
-  NmlReader& push(const std::string& s);
+  void push(const std::string& s);
 
   //! Pop a namelist group
-  NmlReader& pop();
+  void pop();
 
 private:
   int stack_cnt;
@@ -115,46 +115,46 @@ private:
 };
 
 //! Push a namelist group 
-NmlReader& push(NmlReader& nml, const std::string& s);
+void push(NmlReader& nml, const std::string& s);
 
 //! Pop a namelist group
-NmlReader& pop(NmlReader& nml);
+void pop(NmlReader& nml);
 
 //! Function overload read of  int
-NmlReader& read(NmlReader& nml, const std::string& s, int& d);
+void read(NmlReader& nml, const std::string& s, int& d);
 
 //! Function overload read of  float
-NmlReader& read(NmlReader& nml, const std::string& s, float& d);
+void read(NmlReader& nml, const std::string& s, float& d);
 
 //! Function overload read of  double
-NmlReader& read(NmlReader& nml, const std::string& s, double& d);
+void read(NmlReader& nml, const std::string& s, double& d);
 
 //! Function overload read of  bool
-NmlReader& read(NmlReader& nml, const std::string& s, bool& d);
+void read(NmlReader& nml, const std::string& s, bool& d);
 
 //! Function overload read of  std::string
-NmlReader& read(NmlReader& nml, const std::string& s, std::string& d);
+void read(NmlReader& nml, const std::string& s, std::string& d);
 
 //! Function overload read of  int  into element position n
-NmlReader& read(NmlReader& nml, const std::string& s, int& d, int n);
+void read(NmlReader& nml, const std::string& s, int& d, int n);
 
 //! Function overload read of  float  into element position n
-NmlReader& read(NmlReader& nml, const std::string& s, float& d, int n);
+void read(NmlReader& nml, const std::string& s, float& d, int n);
 
 //! Function overload read of  double  into element position n
-NmlReader& read(NmlReader& nml, const std::string& s, double& d, int n);
+void read(NmlReader& nml, const std::string& s, double& d, int n);
 
 //! Function overload read of  bool  into element position n
-NmlReader& read(NmlReader& nml, const std::string& s, bool& d, int n);
+void read(NmlReader& nml, const std::string& s, bool& d, int n);
 
 //! Function overload read of  multi1d<int>
-NmlReader& read(NmlReader& nml, const std::string& s, multi1d<int>& d);
+void read(NmlReader& nml, const std::string& s, multi1d<int>& d);
 
 //! Function overload read of  multi1d<float>
-NmlReader& read(NmlReader& nml, const std::string& s, multi1d<float>& d);
+void read(NmlReader& nml, const std::string& s, multi1d<float>& d);
 
 //! Function overload read of  multi1d<double>
-NmlReader& read(NmlReader& nml, const std::string& s, multi1d<double>& d);
+void read(NmlReader& nml, const std::string& s, multi1d<double>& d);
 
 #define READ_NAMELIST(nml,a) read(nml,#a,a)
 #define Read(nml,a) read(nml,#a,a)
@@ -180,10 +180,10 @@ public:
   bool is_open();
 
   //! Push a namelist group 
-  NmlWriter& push(const std::string& s);
+  void push(const std::string& s);
 
   //! Pop a namelist group
-  NmlWriter& pop();
+  void pop();
 
   std::ofstream& get() {return f;}
 
@@ -195,65 +195,51 @@ private:
 
 
 //! Push a namelist group 
-NmlWriter& push(NmlWriter& nml, const std::string& s);
+void push(NmlWriter& nml, const std::string& s);
 
 //! Pop a namelist group
-NmlWriter& pop(NmlWriter& nml);
+void pop(NmlWriter& nml);
 
 //! Write a comment
 NmlWriter& operator<<(NmlWriter& nml, const std::string& s);
 NmlWriter& operator<<(NmlWriter& nml, const char* s);
 
-//! Write a namelist element
-template<class T>
-inline
-NmlWriter& write(NmlWriter& nml, const std::string& s, const T& d)
-{
-  if (Layout::primaryNode()) 
-    nml.get() << " " << s << " = " << d << " ,\n";
-  return nml;
-}
-
-//! Write a string
-template<>
-inline
-NmlWriter& write<std::string>(NmlWriter& nml, const std::string& s, const std::string& d)
-{
-  if (Layout::primaryNode()) 
-    nml.get() << " " << s << " = \"" << d << "\" ,\n";
-  return nml;
-}
+// Primitive writers
+void write(NmlWriter& nml, const std::string& s, const std::string& d);
+void write(NmlWriter& nml, const std::string& s, const int& d);
+void write(NmlWriter& nml, const std::string& s, const unsigned int& d);
+void write(NmlWriter& nml, const std::string& s, const float& d);
+void write(NmlWriter& nml, const std::string& s, const double& d);
+void write(NmlWriter& nml, const std::string& s, const bool& d);
 
 //! Write an outer scalar namelist element
 /*! The second arg is the string for the variable name */
 template<class T>
 inline
-NmlWriter& write(NmlWriter& nml, const std::string& s, const OScalar<T>& d)
+void write(NmlWriter& nml, const std::string& s, const OScalar<T>& d)
 {
   if (Layout::primaryNode()) 
     nml.get() << " " << s << " = ";
 
   nml << d; 
-  return nml;
 }
 
 //! Write an outer lattice namelist element
 /*! The second arg is the string for the variable name */
 template<class T>
 inline
-NmlWriter& write(NmlWriter& nml, const std::string& s, const OLattice<T>& d)
+void write(NmlWriter& nml, const std::string& s, const OLattice<T>& d)
 {
   if (Layout::primaryNode()) 
     nml.get() << " " << s << " = ";
 
   nml << d; 
-  return nml;
 }
 
 //! Write a namelist multi1d element
 template<class T>
 inline
-NmlWriter& write(NmlWriter& nml, const std::string& s, const multi1d<T>& s1)
+void write(NmlWriter& nml, const std::string& s, const multi1d<T>& s1)
 {
   for(int i=0; i < s1.size(); ++i)
   {
@@ -262,13 +248,12 @@ NmlWriter& write(NmlWriter& nml, const std::string& s, const multi1d<T>& s1)
       ost << s << "[ " << i << " ]";
     write(nml, ost.str(), s1[i]);
   }
-  return nml;
 }
 
 //! Write a namelist multi2d element
 template<class T> 
 inline
-NmlWriter& write(NmlWriter& nml, const std::string& s, const multi2d<T>& s1)
+void write(NmlWriter& nml, const std::string& s, const multi2d<T>& s1)
 {
   for(int j=0; j < s1.size1(); ++j)
     for(int i=0; i < s1.size2(); ++i)
@@ -278,8 +263,15 @@ NmlWriter& write(NmlWriter& nml, const std::string& s, const multi2d<T>& s1)
 	ost << s << "[ " << i << " ][ " << j << " ]";
       write(nml, ost.str(), s1[i][j]);
     }
-  return nml;
 }
+
+// Different bindings for same operators
+NmlWriter& operator<<(NmlWriter& nml, const float& d);
+NmlWriter& operator<<(NmlWriter& nml, const int& d);
+NmlWriter& operator<<(NmlWriter& nml, const unsigned int& d);
+NmlWriter& operator<<(NmlWriter& nml, const double& d);
+NmlWriter& operator<<(NmlWriter& nml, const bool& d);
+
 
 #define WRITE_NAMELIST(nml,a) write(nml,#a,a)
 #define Write(nml,a) write(nml,#a,a)
@@ -298,7 +290,13 @@ public:
   void open(const std::string& p);
   void close();
 
-  // Basic read function
+  //! Return true if some failure occurred in previous IO operation
+  bool fail();
+
+  //! Basic read function on the primary node
+  void readArrayPrimaryNode(char* output, size_t nbytes, size_t nmemb);
+
+  //! Read array of bytes and broadcast to all nodes
   void readArray(char* output, size_t nbytes, size_t nmemb);
 
   // Overloaded reader functions

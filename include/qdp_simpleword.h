@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_simpleword.h,v 1.2 2003-05-23 04:45:53 edwards Exp $
+// $Id: qdp_simpleword.h,v 1.3 2003-06-05 02:22:50 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -351,6 +351,24 @@ int localInnerProduct(const int& s1, const int& s2)
 }
 
 inline
+unsigned int sum(const unsigned int& s1)
+{
+  return s1;
+}
+
+inline
+unsigned int localNorm2(const unsigned int& s1)
+{
+  return s1*s1;
+}
+
+inline
+unsigned int localInnerProduct(const unsigned int& s1, const unsigned int& s2)
+{
+  return s1*s2;
+}
+
+inline
 double sum(const float& s1)
 {
   return double(s1);
@@ -387,19 +405,6 @@ double localInnerProduct(const double& s1, const double& s2)
 }
 
 
-
-//-----------------------------------------------------------
-//! Ascii output
-inline NmlWriter& operator<<(NmlWriter& nml, const float& d) {nml.get() << d; return nml;}
-
-//! Ascii output
-inline NmlWriter& operator<<(NmlWriter& nml, const int& d) {nml.get() << d; return nml;}
-
-//! Ascii output
-inline NmlWriter& operator<<(NmlWriter& nml, const double& d) {nml.get() << d; return nml;}
-
-//! Ascii output
-inline NmlWriter& operator<<(NmlWriter& nml, const bool& d) {nml.get() << d; return nml;}
 
 /*! @} */  // end of group simpleword
 
