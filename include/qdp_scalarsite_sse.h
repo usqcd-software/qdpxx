@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.5 2003-08-08 21:22:09 edwards Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.6 2003-08-11 16:57:23 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -42,6 +42,7 @@ static sse_mask _sse_sgn4  __attribute__ ((unused)) ={0x00000000, 0x00000000, 0x
 #include "scalarsite_sse/sse_mult_an.h"
 #include "scalarsite_sse/sse_mat_vec.h"
 #include "scalarsite_sse/sse_adj_mat_vec.h"
+#include "scalarsite_sse/sse_addvec.h"
 
 // Optimized version of  
 //    PColorMatrix<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorMatrix<RComplexFloat,3>
@@ -126,7 +127,7 @@ operator*<>(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
     PVector<RComplexFloat,3,PColorVector>, OpMultiply>::Type_t  d;
 
-   _inline_sse_mult_su3_mat_vec(l,r,d);
+  _inline_sse_mult_su3_mat_vec(l,r,d);
 
   return d;
 }
@@ -143,7 +144,24 @@ adjMultiply(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
     PVector<RComplexFloat,3,PColorVector>, OpAdjMultiply>::Type_t  d;
 
-   _inline_sse_mult_adj_su3_mat_vec(l,r,d);
+  _inline_sse_mult_adj_su3_mat_vec(l,r,d);
+
+  return d;
+}
+
+
+// Optimized version of  
+//    PColorVector<RComplexFloat,3> <- PColorVector<RComplexFloat,3> + PColorVector<RComplexFloat,3>
+template<>
+inline BinaryReturn<PVector<RComplexFloat,3,PColorVector>, 
+  PVector<RComplexFloat,3,PColorVector>, OpAdd>::Type_t
+operator+<>(const PVector<RComplexFloat,3,PColorVector>& l, 
+	    const PVector<RComplexFloat,3,PColorVector>& r)
+{
+  BinaryReturn<PVector<RComplexFloat,3,PColorVector>, 
+    PVector<RComplexFloat,3,PColorVector>, OpAdd>::Type_t  d;
+
+  _inline_sse_add_su3_vector(l,r,d);
 
   return d;
 }
