@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.7 2003-06-20 02:47:31 edwards Exp $
+// $Id: t_xml.cc,v 1.8 2003-06-20 18:17:40 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -74,6 +74,11 @@ int main(int argc, char **argv)
     // Test writing some more complex snippets
     XMLFileWriter toxml("dog3.xml");
     push(toxml,"complex_xml");
+
+    write(toxml,"charStarThingy","whether tis nobler to suffer the slings and arrows");
+
+    string stringThingy = "To be or not to be";
+    Write(toxml, stringThingy);
 
     Real a = 0.2;
     write(toxml,"realThingy",a);
