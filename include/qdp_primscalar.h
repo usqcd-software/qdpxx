@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.15 2003-12-08 21:41:52 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.16 2004-07-06 01:54:57 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -684,7 +684,7 @@ traceColor(const PScalar<T1>& s1)
 }
 
 
-// trace = traceSpin(source1)
+//! PScalar = traceSpin(PScalar)
 template<class T1>
 inline typename UnaryReturn<PScalar<T1>, FnTraceSpin>::Type_t
 traceSpin(const PScalar<T1>& s1)
@@ -692,8 +692,32 @@ traceSpin(const PScalar<T1>& s1)
   return traceSpin(s1.elem());
 }
 
+//! PScalar = trace(PScalar * PScalar)
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnTraceMultiply>::Type_t
+traceMultiply(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  return traceMultiply(l.elem(), r.elem());
+}
 
-// PScalar = Re(PScalar)
+//! PScalar = traceColor(PScalar * PScalar)
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnTraceColorMultiply>::Type_t
+traceColorMultiply(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  return traceMultiply(l.elem(), r.elem());
+}
+
+//! PScalar = traceSpin(PScalar * PScalar)
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnTraceSpinMultiply>::Type_t
+traceSpinMultiply(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  return traceMultiply(l.elem(), r.elem());
+}
+
+
+//! PScalar = Re(PScalar)
 template<class T>
 inline typename UnaryReturn<PScalar<T>, FnReal>::Type_t
 real(const PScalar<T>& s1)
