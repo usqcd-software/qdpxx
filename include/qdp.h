@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.24 2003-08-08 15:51:55 edwards Exp $
+// $Id: qdp.h,v 1.25 2003-08-14 03:53:34 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -113,7 +113,18 @@ QDP_END_NAMESPACE();
 #include "qdp_primitive.h"
 #include "qdp_outer.h"
 #include "qdp_outersubtype.h"
+
+#if defined(ARCH_SCALAR)
 #include "qdp_defs.h"
+
+#elif defined(ARCH_PARSCALAR)
+#include "qdp_defs.h"
+
+#else
+#error "Unknown architecture ARCH"
+#endif
+
+
 #include "qdp_globalfuncs.h"
 #include "qdp_specializations.h"
 
