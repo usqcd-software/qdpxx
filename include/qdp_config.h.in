@@ -81,6 +81,3 @@
 /* Version number of package */
 #undef VERSION
 #endif
-
-/* Define if using the dmalloc debugging malloc package */
-#undef WITH_DMALLOC
