@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.5 2003-06-04 19:43:30 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.6 2003-06-05 16:15:43 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -126,8 +126,8 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
           {
             /* Read an fe variable and write it to the BE */
             cfg_in.readArray((char *)&(su3[0][0][0]),sizeof(float),mat_size);
-//            if (cfg_in.fail())
-//              QDP_error_exit("Error reading configuration");
+            if (cfg_in.fail())
+              QDP_error_exit("Error reading configuration");
 
             /* Reconstruct the third column  if necessary */
             if( mat_size == 12) 
@@ -163,15 +163,15 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
 		  /* If compressed ignore 3rd row for checksum */
 		  if (ii < 2) 
 		  {
-		    chksum += (unsigned int)(su3[ii][kk][0]);
-		    chksum += (unsigned int)(su3[ii][kk][1]);
+		    chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+0));
+		    chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+1));
 		  }
 		}
 		else 
 		{
 		  /* If uncompressed take everything for checksum */
-		  chksum += (unsigned int)(su3[ii][kk][0]);
-		  chksum += (unsigned int)(su3[ii][kk][1]);
+		  chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+0));
+		  chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+1));
 		}
 	      }
 	    }
@@ -180,7 +180,8 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
           }
         }
 
-  printf("Computed checksum = %x\n", chksum);
+  if (Layout::primaryNode())
+    printf("Computed (in this endian-ness, maybe not Big) checksum = %x\n", chksum);
 
   cfg_in.close();
 }
