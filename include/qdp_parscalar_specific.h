@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.19 2003-10-15 17:15:32 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.20 2003-11-05 17:47:03 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -17,6 +17,14 @@ namespace Layout
 {
   //! coord[mu]  <- mu  : fill with lattice coord in mu direction
   LatticeInteger latticeCoordinate(int mu);
+
+  //! Returns the node number given some logical node coordinate
+  /*! This is not meant to be speedy */
+  int getNodeNumberFrom(const multi1d<int>& node_coord);
+
+  //! Returns the logical node coordinates given some node number
+  /*! This is not meant to be speedy */
+  multi1d<int> getLogicalCoordFrom(int node);
 }
 
 
@@ -830,6 +838,16 @@ public:
 
 #if QDP_DEBUG >= 3
 	QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
+	QDP_info("Map: establish send=%d recv=%d",destnodes[0],srcenodes[0]);
+	{
+	  const multi1d<int>& me = Layout::nodeCoord();
+	  multi1d<int> scrd = Layout::getLogicalCoordFrom(destnodes[0]);
+	  multi1d<int> rcrd = Layout::getLogicalCoordFrom(srcenodes[0]);
+
+	  QDP_info("Map: establish-info   my_crds=[%d,%d,%d,%d]",me[0],me[1],me[2],me[3]);
+	  QDP_info("Map: establish-info send_crds=[%d,%d,%d,%d]",scrd[0],scrd[1],scrd[2],scrd[3]);
+	  QDP_info("Map: establish-info recv_crds=[%d,%d,%d,%d]",rcrd[0],rcrd[1],rcrd[2],rcrd[3]);
+	}
 #endif
 
 	msg[0]  = QMP_declare_msgmem(recv_buf, srcnum);
