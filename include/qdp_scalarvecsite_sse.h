@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.17 2004-08-10 03:55:50 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.18 2004-08-11 18:51:43 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -208,7 +208,7 @@ QDP_END_NAMESPACE();
 #include "scalarvecsite_sse/qdp_scalarvecsite_sse_linalg.h"
 
 // Use SSE specific blas stuff (inline assembler etc)
-//#include "scalarvecsite_sse/qdp_scalarvecsite_sse_blas.h"
+#include "scalarvecsite_sse/qdp_scalarvecsite_sse_blas.h"
 
 #else
 #error "This is not a GNUC 3.3 or greater compiler, and therefore does not support the GNU specific asm directives."
