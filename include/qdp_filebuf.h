@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_filebuf.h,v 1.2 2003-06-07 04:17:29 edwards Exp $
+// $Id: qdp_filebuf.h,v 1.3 2003-07-21 21:15:06 edwards Exp $
 
 /*! @file
  * @brief Remote file support
@@ -105,8 +105,8 @@ private:
    * - at most, four characters in putback area plus
    * - at most, six characters in ordinary read buffer
    */
-  static const int bufferSize = 50;   // size of the data buffer
-  char buffer[bufferSize];            // data buffer
+  int bufferSize;           // size of the data buffer
+  char *buffer;             // data buffer
 
 private:
   //! Use C-stdio
