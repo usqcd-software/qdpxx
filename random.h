@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: random.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: random.h,v 1.2 2002-09-23 18:19:25 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -11,18 +11,20 @@ QDP_BEGIN_NAMESPACE(QDP);
 /*! A collection of routines and data for supporting random numbers */
 namespace RNG
 {
+  //! Default initialization of the RNG
+  /*! Uses arbitrary internal seed to initialize the RNG */
+  void InitDefaultRNG(void);
+
   //! Initialize the RNG
   /*!
-     * There are 2 ways to set the seed, either by a 4 long int array of ints
-     * or by a Seed object
-     */
+   * Seeds are big-ints
+   */
   void setrn(const Seed& lseed);
 
-    //! Recover the current seed
-    /*!
-     * There are 2 ways to recover the seed, either by a 4 long int array of ints
-     * or by a Seed object
-     */
+  //! Recover the current seed
+  /*!
+   * Seeds are big-ints
+   */
   void savern(Seed& lseed);
 
 

@@ -1,4 +1,4 @@
-// $Id: random.cc,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: random.cc,v 1.2 2002-09-23 18:19:25 edwards Exp $
 //
 //! Random number generator support
 
@@ -31,6 +31,17 @@ namespace RNG
     }
 
     return num;
+  }
+
+
+  //! Initialize the random number generator
+  void InitDefaultRNG()
+  {
+    fprintf(stderr,"Entering setrn\n");
+    Seed seed = 11;
+    fprintf(stderr,"Really entering setrn\n");
+    RNG::setrn(seed);
+    fprintf(stderr,"Finished setrn\n");
   }
 
 
@@ -134,12 +145,14 @@ namespace RNG
 
     *lattice_ran_mult = lattice_ran_mult_tmp;
 
+#if 0
     Push(cerr,"setrn");
     WRITE_NAMELIST(cerr,ran_seed);
     WRITE_NAMELIST(cerr,ran_mult);
     WRITE_NAMELIST(cerr,ran_mult_n);
     WRITE_NAMELIST(cerr,lattice_ran_mult_tmp);
     Pop(cerr);
+#endif
 
     cerr << "exiting setrn: destructors will be called\n";
   }

@@ -1,16 +1,19 @@
-// $Id: layout.cc,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: layout.cc,v 1.2 2002-09-23 18:19:26 edwards Exp $
 //
 // QDP data parallel interface
 //
 // Layout
 //
-// This routine provides a 2-checkerboarded layout. Other layouts provide
-// different site orderings.
+// This routine provides various layouts, including
+//    lexicographic
+//    2-checkerboard
+//    32-style checkerboard (hypercube even/odd-checkerboarding)
 
 #include "qdp.h"
 #include "proto.h"
 
-#define USE_CB2_LAYOUT
+#define USE_LEXICO_LAYOUT
+#undef  USE_CB2_LAYOUT
 #undef  USE_CB32_LAYOUT
 
 QDP_BEGIN_NAMESPACE(QDP);
@@ -81,6 +84,53 @@ LatticeInteger latticeCoordinate(int mu)
 
 
 
+#if defined(USE_LEXICO_LAYOUT)
+
+#warning "Using a lexicographic layout"
+
+//! The linearized site index for the corresponding coordinate
+/*! This layout is a simple lexicographic lattice ordering */
+int Layout::LinearSiteIndex(const multi1d<int>& coord)
+{
+  return local_site(coord, nrow);
+}
+
+
+//! The lexicographic site index from the corresponding linearized site
+/*! This layout is a simple lexicographic lattice ordering */
+int Layout::LexicoSiteIndex(int linearsite)
+{
+  return linearsite;
+}
+
+//! Initializer for layout
+/*! This layout is a simple lexicographic lattice ordering */
+void Layout::Init(const multi1d<int>& nrows)
+{
+  if (nrows.size() != Nd)
+    SZ_ERROR("dimension of lattice size not the same as the default");
+
+  vol=1;
+  nrow = nrows;
+  cb_nrow = nrow;
+  for(int i=0; i < Nd; ++i) 
+    vol *= nrow[i];
+  
+  /* Volume of checkerboard. Make sure global variable is set */
+  nsubl = 1;
+  vol_cb = vol / nsubl;
+
+#if defined(DEBUG)
+  fprintf(stderr,"vol=%d, nsubl=%d\n",vol,nsubl);
+#endif
+
+  InitDefaultSets();
+
+  // Initialize RNG
+  RNG::InitDefaultRNG();
+}
+
+#else
 #if defined(USE_CB2_LAYOUT)
 
 #warning "Using a 2 checkerboard (red/black) layout"
@@ -146,13 +196,7 @@ void Layout::Init(const multi1d<int>& nrows)
   InitDefaultSets();
 
   // Initialize RNG
-  fprintf(stderr,"Entering setrn\n");
-  Seed seed = 11;
-//  Seed seed;
-//  seed = 11;
-  fprintf(stderr,"Really entering setrn\n");
-  RNG::setrn(seed);
-  fprintf(stderr,"Finished setrn\n");
+  RNG::InitDefaultRNG();
 }
 
 #else
@@ -240,14 +284,14 @@ void Layout::Init(const multi1d<int>& nrows)
   InitDefaultSets();
 
   // Initialize RNG
-  Seed seed = 11;
-  RNG::setrn(seed);
+  RNG::InitDefaultRNG();
 }
 
 #else
 
 #error "no appropriate layout defined"
 
+#endif
 #endif
 #endif
 
