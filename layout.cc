@@ -1,4 +1,4 @@
-// $Id: layout.cc,v 1.2 2002-09-23 18:19:26 edwards Exp $
+// $Id: layout.cc,v 1.3 2002-09-23 19:26:51 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -12,8 +12,8 @@
 #include "qdp.h"
 #include "proto.h"
 
-#define USE_LEXICO_LAYOUT
-#undef  USE_CB2_LAYOUT
+#undef  USE_LEXICO_LAYOUT
+#define USE_CB2_LAYOUT
 #undef  USE_CB32_LAYOUT
 
 QDP_BEGIN_NAMESPACE(QDP);
