@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_layout.cc,v 1.8 2003-08-20 02:34:54 edwards Exp $
+// $Id: qdp_scalar_layout.cc,v 1.9 2003-08-29 04:25:05 edwards Exp $
 
 /*! @file
  * @brief Scalar layout routines
@@ -241,7 +241,7 @@ namespace Layout
 
 //-----------------------------------------------------------------------------
 
-#elif QDP_LAYOUT == 1
+#elif QDP_USE_CB32_LAYOUT == 1
 
 #warning "Using a 32 checkerboard layout"
 
