@@ -1,3 +1,7 @@
+10/21/2003 -- Robert Edwards
+
+	Version 1.6.5. Small tweaks. Can compile for Nc > 3.
+
 10/17/2003 -- Robert Edwards
 
 	Version 1.6.4. Fixed up optimizations (again). Added, but not turned
