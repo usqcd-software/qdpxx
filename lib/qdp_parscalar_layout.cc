@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.2 2003-07-17 01:48:36 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.3 2003-07-18 20:03:44 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -162,6 +162,16 @@ namespace Layout
 #if defined(DEBUG)
     QDP_info("Initialize layout");
 #endif
+
+    // Simple check - we insist here that the total volume is divisible
+    // by the number of processors. Will also insist that the problem
+    // size is regular on each node
+    if (_layout.vol % numNodes() != 0)
+    {
+      if (Layout::primaryNode())
+	QDP_error_exit("Layout::create - problem size not divisible by number of processors");
+    }
+    
     // Crap to make the compiler happy with the C prototype
     unsigned int unsigned_nrow[Nd];
     for(int i=0; i < Nd; ++i)
@@ -214,6 +224,14 @@ namespace Layout
 
       cerr << "  total volume = " << _layout.vol << endl;
       cerr << "  subgrid volume = " << _layout.subgrid_vol << endl;
+    }
+
+    // Sanity check - check the layout functions make sense
+    for(int i=0; i < _layout.vol; ++i) 
+    {
+      int j = Layout::linearSiteIndex(Layout::siteCoords(Layout::nodeNumber(),i));
+      if (i != j)
+	QDP_error_exit("Layout::create - Layout problems, the layout functions do not work correctly with this lattice size");
     }
 
     // Initialize various defaults
@@ -275,9 +293,87 @@ namespace Layout
   }
 };
 
+//-----------------------------------------------------------------------------
+
 #elif defined(USE_CB2_LAYOUT)
 
-#error "Using a 2 checkerboard (red/black) layout"
+#warning "Using a 2 checkerboard (red/black) layout"
+
+namespace Layout
+{
+  //! The linearized site index for the corresponding coordinate
+  /*! This layout is appropriate for a 2 checkerboard (red/black) lattice */
+  int linearSiteIndex(const multi1d<int>& coord)
+  {
+    int subgrid_vol_cb = Layout::sitesOnNode() >> 1;
+    multi1d<int> subgrid_cb_nrow = Layout::subgridLattSize();
+    subgrid_cb_nrow[0] >>= 1;
+
+    int cb = 0;
+    for(int m=0; m < Nd; ++m)
+      cb += coord[m];
+    cb &= 1;
+
+    multi1d<int> subgrid_cb_coord(Nd);
+    for(int i=0; i < Nd; ++i)
+      subgrid_cb_coord[i] = coord[i] % subgrid_cb_nrow[i];
+    
+    return local_site(subgrid_cb_coord, subgrid_cb_nrow) + cb*subgrid_vol_cb;
+  }
+
+
+  //! The node number for the corresponding lattice coordinate
+  /*! This layout is a simple lexicographic lattice ordering */
+  int nodeNumber(const multi1d<int>& coord)
+  {
+    int subgrid_vol_cb = Layout::sitesOnNode() >> 1;
+    multi1d<int> subgrid_cb_nrow = Layout::subgridLattSize();
+    subgrid_cb_nrow[0] >>= 1;
+
+    int cb = 0;
+    for(int m=0; m < Nd; ++m)
+      cb += coord[m];
+    cb &= 1;
+
+    multi1d<int> logical_cb_coord(Nd);
+    for(int i=0; i < Nd; ++i)
+      logical_cb_coord[i] = coord[i] / subgrid_cb_nrow[i];
+    
+    return local_site(logical_cb_coord, Layout::logicalSize());
+  }
+
+
+  //! Reconstruct the lattice coordinate from the node and site number
+  /*! 
+   * This is the inverse of the nodeNumber and linearSiteIndex functions.
+   * The API requires this function to be here.
+   */
+  multi1d<int> siteCoords(int node, int linearsite) // ignore node
+  {
+    int subgrid_vol_cb = Layout::sitesOnNode() >> 1;
+    multi1d<int> subgrid_cb_nrow = Layout::subgridLattSize();
+    subgrid_cb_nrow[0] >>= 1;
+
+    multi1d<int> coord = crtesn(node, Layout::logicalSize());
+
+    // Get the base (origins) of the absolute lattice coord
+    coord *= Layout::subgridLattSize();
+    
+    int cb = linearsite / subgrid_vol_cb;
+    coord += crtesn(linearsite % subgrid_vol_cb, subgrid_cb_nrow);
+
+    int cbb = cb;
+    for(int m=1; m < Nd; ++m)
+      cbb += coord[m];
+    cbb &= 1;
+
+    coord[0] = 2*coord[0] + cbb;
+
+    return coord;
+  }
+};
+
+//-----------------------------------------------------------------------------
 
 #elif defined(USE_CB32_LAYOUT)
 
