@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.19 2003-07-05 17:40:41 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.20 2003-07-06 19:04:26 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -82,16 +82,16 @@ XMLReader::~XMLReader() {close();}
 
 
 // Overloaded Reader Functions
-void XMLReader::get(const std::string& xpath, string& input)
+void XMLReader::get(const std::string& xpath, string& result)
 {
   char *dd_tmp;
   int lleng;
 
   // Only primary node can grab string
-  if (Layout::primaryNode())
+  if (Layout::primaryNode()) 
   {
-    BasicXPathReader::get(xpath, input);
-    lleng = input.length() + 1;
+    BasicXPathReader::get(xpath, result);
+    lleng = result.length() + 1;
   }
 
   // First must broadcast size of string
@@ -100,13 +100,13 @@ void XMLReader::get(const std::string& xpath, string& input)
   // Now every node can alloc space for string
   dd_tmp = new char[lleng];
   if (Layout::primaryNode())
-    memcpy(dd_tmp, input.c_str(), lleng);
+    memcpy(dd_tmp, result.c_str(), lleng);
   
   // Now broadcast char array out to all nodes
   Internal::broadcast((void *)dd_tmp, lleng);
 
   // All nodes can now grab char array and make a string
-  input = dd_tmp;
+  result = dd_tmp;
 
   // Clean-up and boogie
   delete[] dd_tmp;
@@ -114,69 +114,43 @@ void XMLReader::get(const std::string& xpath, string& input)
 
 void XMLReader::get(const std::string& xpath, int& result)
 {
-  if (Layout::primaryNode())
-    BasicXPathReader::get(xpath, result);
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(result);
+  readPrimitive<int>(xpath, result);
 }
 void XMLReader::get(const std::string& xpath, unsigned int& result)
 {
-  if (Layout::primaryNode())
-    BasicXPathReader::get(xpath, result);
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(result);
+  readPrimitive<unsigned int>(xpath, result);
 }
 void XMLReader::get(const std::string& xpath, short int& result)
 {
-  if (Layout::primaryNode())
-    BasicXPathReader::get(xpath, result);
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(result);
+  readPrimitive<short int>(xpath, result);
 }
 void XMLReader::get(const std::string& xpath, unsigned short int& result)
 {
-  if (Layout::primaryNode())
-    BasicXPathReader::get(xpath, result);
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(result);
+  readPrimitive<unsigned short int>(xpath, result);
 }
 void XMLReader::get(const std::string& xpath, long int& result)
 {
-  if (Layout::primaryNode())
-    BasicXPathReader::get(xpath, result);
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(result);
+  readPrimitive<long int>(xpath, result);
 }
 void XMLReader::get(const std::string& xpath, unsigned long int& result)
 {
-  if (Layout::primaryNode())
-    BasicXPathReader::get(xpath, result);
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(result);
+  readPrimitive<unsigned long int>(xpath, result);
 }
 void XMLReader::get(const std::string& xpath, float& result)
 {
-  if (Layout::primaryNode())
-    BasicXPathReader::get(xpath, result);
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(result);
+  readPrimitive<float>(xpath, result);
 }
 void XMLReader::get(const std::string& xpath, double& result)
 {
-  if (Layout::primaryNode())
-    BasicXPathReader::get(xpath, result);
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(result);
+  readPrimitive<double>(xpath, result);
 }
 void XMLReader::get(const std::string& xpath, bool& result)
+{
+  readPrimitive<bool>(xpath, result);
+}
+   
+template<typename T>
+void XMLReader::readPrimitive(const std::string& xpath, T& result)
 {
   if (Layout::primaryNode())
     BasicXPathReader::get(xpath, result);
@@ -184,7 +158,7 @@ void XMLReader::get(const std::string& xpath, bool& result)
   // Now broadcast back out to all nodes
   Internal::broadcast(result);
 }
-   
+
 void XMLReader::print(ostream& os)
 {
   if (Layout::primaryNode())
@@ -254,7 +228,7 @@ void read(XMLReader& xml, const std::string& xpath, bool& result)
 
 //! Read a XML multi1d element
 template<typename T>
-void readArrayPrimitive(XMLReader& xml, const std::string& s, multi1d<T>& input)
+void readArrayPrimitive(XMLReader& xml, const std::string& s, multi1d<T>& result)
 {
   std::ostringstream error_message;
   
@@ -283,17 +257,17 @@ void readArrayPrimitive(XMLReader& xml, const std::string& s, multi1d<T>& input)
   }
       
   // Now resize the array to hold the no of elements.
-  input.resize(array_size);
+  result.resize(array_size);
 
   // Get the elements one by one
   // I do not understand why, but use a new stringstream
 //  list_stream.str(list_string);
   std::istringstream list_stream2(list_string);
 
-  for(int i=0; i < input.size(); i++) 
+  for(int i=0; i < result.size(); i++) 
   {
     // read the element.
-    list_stream2 >> input[i];
+    list_stream2 >> result[i];
   }
 }
 

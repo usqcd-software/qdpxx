@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.15 2003-06-24 03:20:13 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.16 2003-07-06 19:04:26 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -75,6 +75,12 @@ public:
         
   //! Count the number of occurances from the xpath query
   int count(const std::string& xpath);
+
+protected:
+  // The universal data-reader. All the read functions call this
+  template<typename T>
+  void
+  readPrimitive(const std::string& xpath, T& output);
 
 private:
   bool  iop;  //file open or closed?
