@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.12 2004-02-11 10:33:10 bjoo Exp $
+// $Id: t_qio.cc,v 1.13 2004-02-25 18:10:54 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     pop(record_xml);
     pop(record_xml);
 
-    QDPFileWriter to(file_xml,"t_qio.dime",volfmt,serpar,QDPIO_OPEN);
+    QDPFileWriter to(file_xml,"t_qio.lime",volfmt,serpar,QDPIO_OPEN);
 
     LatticeComplex a;
     random(a);
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 
   {
     XMLReader file_xml;
-    QDPFileReader from(file_xml,"t_qio.dime",serpar);
+    QDPFileReader from(file_xml,"t_qio.lime",serpar);
 
     QDPIO::cout << "Here is the contents of  file_xml" << endl;
     file_xml.print(cout);
