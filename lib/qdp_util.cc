@@ -1,4 +1,4 @@
-// $Id: qdp_util.cc,v 1.3 2004-02-03 15:11:33 bjoo Exp $
+// $Id: qdp_util.cc,v 1.4 2004-02-05 02:43:40 edwards Exp $
 //
 /*! 
  * @file
@@ -16,7 +16,7 @@
 #ifndef HAVE_GETHOSTNAME
 #include <string.h>
 
-void gethostname(char *hostname, size_t size)
+int gethostname(char *hostname, size_t size)
 {
    char *my_host_name="node";
 
@@ -30,7 +30,7 @@ void gethostname(char *hostname, size_t size)
    // Null terminate. This should be ok, because my_host_size is at most
    // size-1;
    hostname[my_host_size]='\0'; 
-   return;
+   return 0;
 } 
 #endif
 
