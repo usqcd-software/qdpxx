@@ -144,7 +144,7 @@ HDRS = defs.h forward.h globalfuncs.h inner.h io.h layout.h multi.h \
 
 
 GENERIC_SRCS = map.cc subset.cc random.cc qdp.cc layout.cc io.cc iogauge.cc \
-               byteorder.cc util.cc readszin.cc  qdpio.cc
+               byteorder.cc util.cc qdpio.cc
 
 
 SCALAR_SRCS = scalar_init.cc scalar_layout.cc scalar_specific.cc \
@@ -171,14 +171,13 @@ LIBRARIES = $(lib_LIBRARIES)
 libqdp_a_AR = $(AR) cru
 libqdp_a_LIBADD =
 am__libqdp_a_SOURCES_DIST = map.cc subset.cc random.cc qdp.cc layout.cc \
-	io.cc iogauge.cc byteorder.cc util.cc readszin.cc qdpio.cc \
+	io.cc iogauge.cc byteorder.cc util.cc qdpio.cc \
 	parscalar_init.cc parscalar_layout.cc parscalar_specific.cc \
 	../include/parscalar_specific.h scalar_init.cc scalar_layout.cc \
 	scalar_specific.cc ../include/scalar_specific.h
 am__objects_1 = map.$(OBJEXT) subset.$(OBJEXT) random.$(OBJEXT) \
 	qdp.$(OBJEXT) layout.$(OBJEXT) io.$(OBJEXT) iogauge.$(OBJEXT) \
-	byteorder.$(OBJEXT) util.$(OBJEXT) readszin.$(OBJEXT) \
-	qdpio.$(OBJEXT)
+	byteorder.$(OBJEXT) util.$(OBJEXT) qdpio.$(OBJEXT)
 am__objects_2 = parscalar_init.$(OBJEXT) parscalar_layout.$(OBJEXT) \
 	parscalar_specific.$(OBJEXT)
 am__objects_3 = scalar_init.$(OBJEXT) scalar_layout.$(OBJEXT) \
@@ -204,8 +203,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/parscalar_layout.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/parscalar_specific.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qdp.Po ./$(DEPDIR)/qdpio.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/random.Po ./$(DEPDIR)/readszin.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/scalar_init.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/random.Po ./$(DEPDIR)/scalar_init.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/scalar_layout.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/scalar_specific.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/subset.Po ./$(DEPDIR)/util.Po
@@ -286,7 +284,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdpio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_layout.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_specific.Po@am__quote@
