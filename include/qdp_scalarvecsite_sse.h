@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.10 2003-08-29 02:42:07 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.11 2003-09-01 04:45:39 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -23,10 +23,54 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 
 // Use this def just to safe some typing later on in the file
+#define ILatticeFloat  ILattice<float,4>
 #define RComplexFloat  RComplex<ILattice<float,4> >
 
 
+typedef float v4sf __attribute__ ((aligned (16),mode(V4SF)));
+
+
 #if 0
+// NOTE: the   operator+(v4sf,v4sf) first exists in gcc 3.3.X, not 3.2.X
+
+// v4sf + v4sf
+inline v4sf
+operator+(v4sf l, v4sf r)
+{
+  v4sf tmp = __builtin_ia32_addps(l, r);
+  return tmp;
+}
+
+
+// v4sf - v4sf
+inline v4sf
+operator-(v4sf l, v4sf r)
+{
+  return __builtin_ia32_subps(l, r);
+}
+
+
+// v4sf * v4sf
+inline v4sf
+operator*(v4sf l, v4sf r)
+{
+  return __builtin_ia32_mulps(l, r);
+}
+
+
+// v4sf / v4sf
+inline v4sf
+operator/(v4sf l, v4sf r)
+{
+  return __builtin_ia32_divps(l, r);
+}
+#endif
+
+
+
+
+
+#if 1
 //! Specialized Inner lattice class
 /*! Uses sse  */
 template<> class ILattice<float, 4>
@@ -205,7 +249,15 @@ public:
   inline
   ILattice& operator=(const ILattice& rhs) 
     {
-      F = rhs.F;
+//      for(int i=0; i < N; ++i)
+//	elem(i) = rhs.elem(i);
+
+#if 1
+      F.v = rhs.F.v;
+#else
+//      v4sf tmp = __builtin_ia32_loadaps(const_cast<float*>(rhs.F.a));
+      __builtin_ia32_storeaps(F.a, rhs.F.v);
+#endif
 
       return *this;
     }
@@ -214,108 +266,59 @@ public:
   inline
   ILattice& operator+=(const ILattice& rhs) 
     {
-      F += rhs.F;
+//      for(int i=0; i < N; ++i)
+//	elem(i) += rhs.elem(i);
+
+#if 1
+      v4sf tmp = __builtin_ia32_addps(F.v, rhs.F.v);
+      __builtin_ia32_storeaps(F.a, tmp);
+#else
+      v4sf tmp = F.v + rhs.F.v;    // This does not compile!!
+      F.v = tmp;
+#endif
 
       return *this;
     }
 
   //! ILattice -= ILattice
-  template<class T1>
   inline
   ILattice& operator-=(const ILattice& rhs) 
     {
-      F -= rhs.F;
+//      for(int i=0; i < N; ++i)
+//	elem(i) -= rhs.elem(i);
+
+      v4sf tmp = __builtin_ia32_subps(F.v, rhs.F.v);
+      __builtin_ia32_storeaps(F.a, tmp);
 
       return *this;
     }
 
   //! ILattice *= ILattice
-  template<class T1>
   inline
-  ILattice& operator*=(const ILattice<T1,N>& rhs) 
+  ILattice& operator*=(const ILattice& rhs) 
     {
-      for(int i=0; i < N; ++i)
-	elem(i) *= rhs.elem(i);
+//      for(int i=0; i < N; ++i)
+//	elem(i) *= rhs.elem(i);
+
+      v4sf tmp = __builtin_ia32_mulps(F.v, rhs.F.v);
+      __builtin_ia32_storeaps(F.a, tmp);
 
       return *this;
     }
 
   //! ILattice /= ILattice
-  template<class T1>
   inline
-  ILattice& operator/=(const ILattice<T1,N>& rhs) 
+  ILattice& operator/=(const ILattice& rhs) 
     {
-      for(int i=0; i < N; ++i)
-	elem(i) /= rhs.elem(i);
+//      for(int i=0; i < N; ++i)
+//	elem(i) /= rhs.elem(i);
+
+      v4sf tmp = __builtin_ia32_divps(F.v, rhs.F.v);
+      __builtin_ia32_storeaps(F.a, tmp);
 
       return *this;
     }
 
-  //! ILattice %= ILattice
-  template<class T1>
-  inline
-  ILattice& operator%=(const ILattice<T1,N>& rhs) 
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) %= rhs.elem(i);
-
-      return *this;
-    }
-
-  //! ILattice |= ILattice
-  template<class T1>
-  inline
-  ILattice& operator|=(const ILattice<T1,N>& rhs) 
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) |= rhs.elem(i);
-
-      return *this;
-    }
-
-  //! ILattice &= ILattice
-  template<class T1>
-  inline
-  ILattice& operator&=(const ILattice<T1,N>& rhs) 
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) &= rhs.elem(i);
-
-      return *this;
-    }
-
-  //! ILattice ^= ILattice
-  template<class T1>
-  inline
-  ILattice& operator^=(const ILattice<T1,N>& rhs) 
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) ^= rhs.elem(i);
-
-      return *this;
-    }
-
-  //! ILattice <<= ILattice
-  template<class T1>
-  inline
-  ILattice& operator<<=(const ILattice<T1,N>& rhs) 
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) <<= rhs.elem(i);
-
-      return *this;
-    }
-
-  //! ILattice >>= ILattice
-  template<class T1>
-  inline
-  ILattice& operator>>=(const ILattice<T1,N>& rhs) 
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) >>= rhs.elem(i);
-
-      return *this;
-    }
 
 #if 0
   // NOTE: intentially avoid defining a copy constructor - let the compiler
@@ -342,23 +345,154 @@ public:
    * Used by optimization routines (e.g., SSE) that need the memory address of data.
    * BTW: to make this a friend would be a real pain since functions are templatized.
    */
-//  inline T* data() const {return &F;}
+  inline T* data() {return F.a;}
 
 
 public:
-  T& elem(int i) {return *(&F + i);}
-  const T& elem(int i) const {return *(&F + i);}
+  T& elem(int i) {return F.a[i];}
+  const T& elem(int i) const {return F.a[i];}
+
+  v4sf& elem_v() {return F.v;}
+  const v4sf elem_v() const {return F.v;}
 
 private:
   // SSE attributes
-  typedef float v4sf __attribute__ ((mode(V4SF)));
-  v4sf F;
+  union {
+    v4sf v;
+    T    a[4];
+  } F  QDP_ALIGN16;
 
 } QDP_ALIGN16;   // possibly force alignment
 #endif
 
 
 
+
+//--------------------------------------------------------------------------------------
+// Optimized version of  
+//    ILatticeFloat <- ILatticeFloat + ILatticeFloat
+inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpAdd>::Type_t
+operator+(const ILatticeFloat& l, const ILatticeFloat& r)
+{
+  BinaryReturn<ILatticeFloat, ILatticeFloat, OpAdd>::Type_t  d;
+
+//  cout << "I+I" << endl;
+
+  d.elem_v() = __builtin_ia32_addps(l.elem_v(), r.elem_v());
+
+  return d;
+}
+
+
+// Optimized version of  
+//    ILatticeFloat <- ILatticeFloat - ILatticeFloat
+inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpSubtract>::Type_t
+operator-(const ILatticeFloat& l, const ILatticeFloat& r)
+{
+  BinaryReturn<ILatticeFloat, ILatticeFloat, OpSubtract>::Type_t  d;
+
+//  cout << "I-I" << endl;
+
+  d.elem_v() = __builtin_ia32_subps(l.elem_v(), r.elem_v());
+
+  return d;
+}
+
+
+// Optimized version of  
+//    ILatticeFloat <- ILatticeFloat * ILatticeFloat
+inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpMultiply>::Type_t
+operator*(const ILatticeFloat& l, const ILatticeFloat& r)
+{
+  BinaryReturn<ILatticeFloat, ILatticeFloat, OpMultiply>::Type_t  d;
+
+//  cout << "I*I" << endl;
+
+  d.elem_v() = __builtin_ia32_mulps(l.elem_v(), r.elem_v());
+
+  return d;
+}
+
+
+// Optimized version of  
+//    ILatticeFloat <- ILatticeFloat / ILatticeFloat
+inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpDivide>::Type_t
+operator/(const ILatticeFloat& l, const ILatticeFloat& r)
+{
+  BinaryReturn<ILatticeFloat, ILatticeFloat, OpDivide>::Type_t  d;
+
+//  cout << "I/I" << endl;
+
+  d.elem_v() = __builtin_ia32_mulps(l.elem_v(), r.elem_v());
+
+  return d;
+}
+
+
+
+
+//--------------------------------------------------------------------------------------
+// Optimized version of  
+//    RComplexFloat <- RComplexFloat + RComplexFloat
+inline BinaryReturn<RComplexFloat, RComplexFloat, OpAdd>::Type_t
+operator+(const RComplexFloat& l, const RComplexFloat& r)
+{
+  BinaryReturn<RComplexFloat, RComplexFloat, OpAdd>::Type_t  d;
+
+//  cout << "C+C" << endl;
+
+  d.real().elem_v() = __builtin_ia32_addps(l.real().elem_v(), r.real().elem_v());
+  d.imag().elem_v() = __builtin_ia32_addps(l.imag().elem_v(), r.imag().elem_v());
+
+  return d;
+}
+
+
+// Optimized version of  
+//    RComplexFloat <- RComplexFloat - RComplexFloat
+inline BinaryReturn<RComplexFloat, RComplexFloat, OpSubtract>::Type_t
+operator-(const RComplexFloat& l, const RComplexFloat& r)
+{
+  BinaryReturn<RComplexFloat, RComplexFloat, OpSubtract>::Type_t  d;
+
+//  cout << "C-C" << endl;
+
+  d.real().elem_v() = __builtin_ia32_subps(l.real().elem_v(), r.real().elem_v());
+  d.imag().elem_v() = __builtin_ia32_subps(l.imag().elem_v(), r.imag().elem_v());
+
+  return d;
+}
+
+
+// Optimized version of  
+//    RComplexFloat <- RComplexFloat * RComplexFloat
+inline BinaryReturn<RComplexFloat, RComplexFloat, OpMultiply>::Type_t
+operator*(const RComplexFloat& l, const RComplexFloat& r)
+{
+  BinaryReturn<RComplexFloat, RComplexFloat, OpMultiply>::Type_t  d;
+
+//  cout << "C*C" << endl;
+
+  v4sf tmp1 = __builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v());
+  v4sf tmp2 = __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v());
+  d.real().elem_v() = __builtin_ia32_subps(tmp1, tmp2);
+
+  v4sf tmp3 = __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v());
+  v4sf tmp4 = __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v());
+  d.imag().elem_v() = __builtin_ia32_addps(tmp3, tmp4);
+
+  return d;
+}
+
+
+
+
+
+
+
+
+
+#if 1
 
 //--------------------------------------------------------------------------------------
 #if 0
@@ -565,7 +699,7 @@ operator*(const PColorMatrix<RComplexFloat,3>& l,
 }
 
 
-#if 1
+#if 0
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
@@ -602,6 +736,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #endif
 
 
+#endif
 
 
 
