@@ -27,7 +27,6 @@
 /* Define to 1 if you have the `QMP_verbose' function. */
 #undef HAVE_QMP_VERBOSE
 
-#if 0
 /* Name of package */
 #undef PACKAGE
 
@@ -45,7 +44,6 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
-#endif
 
 /* Number of color components */
 #undef QDP_NC
@@ -66,7 +64,7 @@
 #undef QDP_USE_LEXICO_LAYOUT
 
 /* Enable PAB Asm */
-#undef QDP_USE_PABASM
+#undef QDP_USE_QCDOC
 
 /* Enable SSE instructions */
 #undef QDP_USE_SSE
@@ -74,7 +72,5 @@
 /* Enable SSE2 instructions */
 #undef QDP_USE_SSE2
 
-#if 0
 /* Version number of package */
 #undef VERSION
-#endif

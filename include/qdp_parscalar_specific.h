@@ -1,12 +1,11 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.23 2004-02-09 16:37:03 bjoo Exp $
+// $Id: qdp_parscalar_specific.h,v 1.24 2004-03-21 21:19:44 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
  */
 
 #include "qmp.h"
-#include "qdp_qmp_extensions.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 

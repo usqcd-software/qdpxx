@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.1 2004-03-21 13:20:26 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.1 2004-03-21 21:19:44 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
