@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.8 2004-01-30 22:14:48 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.9 2004-02-02 04:59:54 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -19,24 +19,47 @@ QDP_BEGIN_NAMESPACE(QDP);
  * @{
  */
 
-// Forward declarations
-class QDPSerialFileReader;
-class QDPSerialFileWriter;
+//! File access mode
+enum QDP_serialparallel_t
+{
+  QDPIO_SERIAL,
+  QDPIO_PARALLEL
+};
+
+//! File format
+enum QDP_volfmt_t
+{
+  QDPIO_SINGLEFILE,
+  QDPIO_MULTIFILE
+};
+
+//! File open mode
+enum QDP_filemode_t
+{
+  QDPIO_CREATE,
+  QDPIO_OPEN,
+  QDPIO_APPEND,
+};
 
 
 //--------------------------------------------------------------------------------
 //! QIO class
-class QDPSerialFileReader
+class QDPFileReader
 {
 public:
-  QDPSerialFileReader();
-  ~QDPSerialFileReader();
+  //! Partial constructor
+  QDPFileReader();
+
+  //! Destructor
+  ~QDPFileReader();
 
   //! Open file
-  explicit QDPSerialFileReader(XMLReader& xml, const std::string& p);
+  QDPFileReader(XMLReader& xml, const std::string& path,
+		QDP_serialparallel_t qdp_serpar);
 
   //! Open file
-  void open(XMLReader& xml, const std::string& p);
+  void open(XMLReader& xml, const std::string& path,
+	    QDP_serialparallel_t qdp_serpar);
 
   //! Close file
   void close();
@@ -47,7 +70,7 @@ public:
   //! Read a QDP object
   template<class T, class C>
   void read(XMLReader& xml, QDPType<T,C>& s1)
-    {read(*this,xml,static_cast<C&>(s1));}
+    {this->read(xml,static_cast<C&>(s1));}
 
   //! Read an OScalar object
   template<class T>
@@ -57,19 +80,9 @@ public:
   template<class T>
   void read(XMLReader& xml, OLattice<T>& s1);
 
-  //! Read an array of objects each in a seperate record
-  /*! OOPS, what about xml? Is it repeatedly read but tossed out?? */
-  template<class T>
-  void read(XMLReader& xml, multi1d<T>& s1)
-    {
-      for(int i=0; i < s1.size(); ++i)
-	read(xml,s1[i]);
-    }
-
-
   //! Read an array of objects all in a single record
   template<class T>
-  void vread(XMLReader& xml, multi1d<T>& s1) {}
+  void read(XMLReader& xml, multi1d<T>& s1);
 
   //! Check if end-of-file has been reached
   bool eof() const;
@@ -87,27 +100,50 @@ private:
 };
 
 
-//! Read an OLattice object
+// Convenience functions
+//! Read an OScalar object
 template<class T>
-void read(QDPSerialFileReader& qsw, XMLReader& rec_xml, OLattice<T>& s1)
+void read(QDPFileReader& qsw, XMLReader& rec_xml, OScalar<T>& s1)
 {
   qsw.read(rec_xml,s1);
 }
 
+//! Read an OLattice object
+template<class T>
+void read(QDPFileReader& qsw, XMLReader& rec_xml, OLattice<T>& s1)
+{
+  qsw.read(rec_xml,s1);
+}
+
+//! Close a QDPFileReader
+void close(QDPFileReader& qsw);
+
+//! Is a QDPFileReader open
+bool is_open(QDPFileReader& qsw);
+
 
 //-------------------------------------------------
 //! QIO Writer class
-class QDPSerialFileWriter
+class QDPFileWriter
 {
 public:
-  QDPSerialFileWriter();
-  ~QDPSerialFileWriter();
+  //! Partial constructor
+  QDPFileWriter();
+
+  //! Destructor
+  ~QDPFileWriter();
 
   //! Open file
-  explicit QDPSerialFileWriter(XMLBufferWriter& xml, const std::string& p);
-
+  QDPFileWriter(XMLBufferWriter& xml, const std::string& path,
+		QDP_volfmt_t qdp_volfmt,
+		QDP_serialparallel_t qdp_serpar,
+		QDP_filemode_t qdp_mode);
+  
   //! Open file
-  void open(XMLBufferWriter& xml, const std::string& p);
+  void open(XMLBufferWriter& xml, const std::string& path,
+	    QDP_volfmt_t qdp_volfmt,
+	    QDP_serialparallel_t qdp_serpar,
+	    QDP_filemode_t qdp_mode);
 
   //! Close file
   void close();
@@ -118,7 +154,7 @@ public:
   //! Write a QDP object
   template<class T, class C>
   void write(XMLBufferWriter& xml, const QDPType<T,C>& s1)
-    {write(*this,xml,static_cast<const C&>(s1));}
+    {this->write(xml,static_cast<const C&>(s1));}
 
   //! Write an OScalar object
   template<class T>
@@ -128,17 +164,9 @@ public:
   template<class T>
   void write(XMLBufferWriter& xml, const OLattice<T>& s1);
 
-  //! Write an array of objects each in a separate record
-  template<class T>
-  void write(XMLBufferWriter& xml, const multi1d<T>& s1)
-    {
-      for(int i=0; i < s1.size(); ++i)
-	write(xml,s1[i]);
-    }
-
   //! Write an array of objects all in a single record
   template<class T>
-  void vwrite(XMLBufferWriter& xml, const multi1d<T>& s1) {}
+  void write(XMLBufferWriter& xml, const multi1d<T>& s1);
 
   //!  Check if an unrecoverable error has occurred
   bool bad() const;
@@ -153,12 +181,27 @@ private:
 };
 
 
-//! Write an OLattice object
+// Convenience functions
+//! Write an OScalar object
 template<class T>
-void write(QDPSerialFileWriter& qsw, XMLBufferWriter& rec_xml, const OLattice<T>& s1)
+void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const OScalar<T>& s1)
 {
   qsw.write(rec_xml,s1);
 }
+
+//! Write an OLattice object
+template<class T>
+void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const OLattice<T>& s1)
+{
+  qsw.write(rec_xml,s1);
+}
+
+//! Close a QDPFileWriter
+void close(QDPFileWriter& qsw);
+
+//! Is a QDPFileWriter open
+bool is_open(QDPFileWriter& qsw);
+
 
 
 //-------------------------------------------------
@@ -180,7 +223,7 @@ template<class T> void QDPFactoryPut(char *buf, size_t linear, size_t count, voi
 //! Read an OLattice object
 /*! This implementation is only correct for scalar ILattice */
 template<class T>
-void QDPSerialFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
+void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 {
   QIO_RecordInfo* info = QIO_create_record_info("Lattice", "F", Nc, Ns, 
 						sizeof(T), 1);
@@ -190,7 +233,9 @@ void QDPSerialFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 
   int status = QIO_read(get(), info, xml_c,
 			&(QDPFactoryPut<T>),
-                        sizeof(T), sizeof(typename WordType<T>::Type_t), (void *)s1.getF());
+                        sizeof(T), 
+			sizeof(typename WordType<T>::Type_t), 
+			(void *)s1.getF());
 
   // Use string to initialize XMLReader
   istringstream ss((const string)(XML_string_ptr(xml_c)));
@@ -215,7 +260,7 @@ template<class T> void QDPFactoryGet(char *buf, size_t linear, size_t count, voi
 //! Write an OLattice object
 /*! This implementation is only correct for scalar ILattice */
 template<class T>
-void QDPSerialFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
+void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 {
   QIO_RecordInfo* info = QIO_create_record_info("Lattice", "F", Nc, Ns, 
 						sizeof(T), 1);
@@ -227,7 +272,9 @@ void QDPSerialFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
   // Big call to qio
   int status = QIO_write(get(), info, xml_c,
 			 &(QDPFactoryGet<T>),
-                         sizeof(T), sizeof(typename WordType<T>::Type_t), (void *)s1.getF());
+                         sizeof(T), 
+			 sizeof(typename WordType<T>::Type_t), 
+			 (void *)s1.getF());
 
   // Cleanup
   XML_string_destroy(xml_c);

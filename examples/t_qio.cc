@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.8 2004-01-30 22:15:13 edwards Exp $
+// $Id: t_qio.cc,v 1.9 2004-02-02 04:59:54 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -31,16 +31,16 @@ int main(int argc, char **argv)
     write(file_xml, "foobar", 1);
     pop(file_xml);
 
-    QDPSerialFileWriter to(file_xml,source_filename);
-    QDPIO::cout << "QDPSerialFile Writer opened" << endl << flush;
+    QDPFileWriter to(file_xml,source_filename,QDPIO_SINGLEFILE,QDPIO_SERIAL,QDPIO_OPEN);
+    QDPIO::cout << "QDPFile Writer opened" << endl << flush;
 
     XMLBufferWriter record_xml;
     push(record_xml, "MyRecordXML");
     write(record_xml, "muchies", 17);
     pop(record_xml);
 
-    to.write(record_xml,quark_propagator);  // can keep repeating writes for more records
-    to.close();
+    write(to,record_xml,quark_propagator);  // can keep repeating writes for more records
+    close(to);
   }
 #endif
 
@@ -65,22 +65,22 @@ int main(int argc, char **argv)
     pop(record_xml);
     pop(record_xml);
 
-    QDPSerialFileWriter to(file_xml,"t_qio.dime");
+    QDPFileWriter to(file_xml,"t_qio.dime",QDPIO_SINGLEFILE,QDPIO_SERIAL,QDPIO_OPEN);
 
     LatticeComplex a;
     random(a);
-    to.write(record_xml,a);
+    write(to,record_xml,a);
 
     LatticeColorMatrix b;
     random(b);
-    to.write(record_xml,b);
+    write(to,record_xml,b);
 
-    to.close();
+    close(to);
   }
 
   {
     XMLReader file_xml;
-    QDPSerialFileReader from(file_xml,"t_qio.dime");
+    QDPFileReader from(file_xml,"t_qio.dime",QDPIO_SERIAL);
 
     QDPIO::cout << "Here is the contents of  file_xml" << endl;
     file_xml.print(cout);
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
     record_xml.print(cout);
 
     LatticeColorMatrix b;
-    from.read(record_xml,b);
+    read(from,record_xml,b);
 
     QDPIO::cout << "Here is the contents of second  record_xml" << endl;
     record_xml.print(cout);

@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.5 2003-12-06 23:05:26 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.6 2004-02-02 04:59:54 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -33,13 +33,18 @@ static void get_coords(int coord[], int node, int linear)
 }
 
 
-//-----------------------------------------
+//-----------------------------------------------------------------------------
 // QDP QIO support
-QDPSerialFileReader::QDPSerialFileReader() {iop=false;}
+QDPFileReader::QDPFileReader() {iop=false;}
 
-QDPSerialFileReader::QDPSerialFileReader(XMLReader& xml, const std::string& p) {open(xml,p);}
+QDPFileReader::QDPFileReader(XMLReader& xml, 
+			     const std::string& path,
+			     QDP_serialparallel_t qdp_serpar)
+  {open(xml,path,qdp_serpar);}
 
-void QDPSerialFileReader::open(XMLReader& file_xml, const std::string& path) 
+void QDPFileReader::open(XMLReader& file_xml, 
+			 const std::string& path, 
+			 QDP_serialparallel_t qdp_serpar)
 {
   QIO_Layout layout;
   int latsize[Nd];
@@ -60,9 +65,26 @@ void QDPSerialFileReader::open(XMLReader& file_xml, const std::string& path)
   // Initialize string objects 
   XML_String *xml_c  = XML_string_create(0);
 
-  if ((qio_in = QIO_open_read(xml_c, path.c_str(), QIO_SERIAL, &layout)) == NULL)
+  // Wrappers over simple ints
+  int serpar;
+  switch(qdp_serpar)
   {
-    QDPIO::cerr << "QDPSerialFile::Reader: failed to open file " << path << endl;
+  case QDPIO_SERIAL:
+    serpar = QIO_SERIAL;
+    break;
+    
+  case QDPIO_PARALLEL:
+    serpar = QIO_PARALLEL;
+    break;
+
+  default:
+    QDPIO::cerr << "QDPFileReader: invalid serial mode" << endl;
+  }
+
+  // Call QIO read
+  if ((qio_in = QIO_open_read(xml_c, path.c_str(), serpar, &layout)) == NULL)
+  {
+    QDPIO::cerr << "QDPFileReader: failed to open file " << path << endl;
     QDP_abort(1);
   }
 
@@ -77,7 +99,7 @@ void QDPSerialFileReader::open(XMLReader& file_xml, const std::string& path)
   iop=true;
 }
 
-void QDPSerialFileReader::close()
+void QDPFileReader::close()
 {
   if (is_open()) 
   {
@@ -87,25 +109,45 @@ void QDPSerialFileReader::close()
   iop = false;
 }
 
-bool QDPSerialFileReader::is_open() {return iop;}
+bool QDPFileReader::is_open() {return iop;}
 
-bool QDPSerialFileReader::eof() const {return false;}
+bool QDPFileReader::eof() const {return false;}
 
-bool QDPSerialFileReader::bad() const {return false;}
+bool QDPFileReader::bad() const {return false;}
 
-QDPSerialFileReader::~QDPSerialFileReader() {close();}
+QDPFileReader::~QDPFileReader() {close();}
 
-
-//-----------------------------------------
-//! text writer support
-QDPSerialFileWriter::QDPSerialFileWriter() {iop=false;}
-
-QDPSerialFileWriter::QDPSerialFileWriter(XMLBufferWriter& xml, const std::string& p) 
+//! Close a QDPFileReader
+void close(QDPFileReader& qsw)
 {
-  open(xml,p);
+  qsw.close();
 }
 
-void QDPSerialFileWriter::open(XMLBufferWriter& file_xml, const std::string& path) 
+//! Is a QDPFileReader open
+bool is_open(QDPFileReader& qsw)
+{
+  return qsw.is_open();
+}
+
+
+//-----------------------------------------------------------------------------
+// QDP QIO support (writers)
+QDPFileWriter::QDPFileWriter() {iop=false;}
+
+QDPFileWriter::QDPFileWriter(XMLBufferWriter& xml, 
+			     const std::string& path,
+			     QDP_volfmt_t qdp_volfmt,
+			     QDP_serialparallel_t qdp_serpar,
+			     QDP_filemode_t qdp_mode) 
+{
+  open(xml,path,qdp_volfmt,qdp_serpar,qdp_mode);
+}
+
+void QDPFileWriter::open(XMLBufferWriter& file_xml, 
+			 const std::string& path,
+			 QDP_volfmt_t qdp_volfmt,
+			 QDP_serialparallel_t qdp_serpar,
+			 QDP_filemode_t qdp_mode) 
 {
   QIO_Layout layout;
   int latsize[Nd];
@@ -124,16 +166,58 @@ void QDPSerialFileWriter::open(XMLBufferWriter& file_xml, const std::string& pat
   layout.number_of_nodes = Layout::numNodes(); 
 
   // Copy metadata string into simple qio string container
-//  XMLBufferWriter& foo_xml = const_cast<XMLBufferWriter&>(file_xml);
   XML_String* xml_c = XML_string_create(file_xml.str().length()+1);  // check if +1 is needed
   XML_string_set(xml_c, file_xml.str().c_str());
 
-  // Big call to qio
+  // Wrappers over simple ints
+  int serpar;
+  switch(qdp_serpar)
+  {
+  case QDPIO_SERIAL:
+    serpar = QIO_SERIAL;
+    break;
+    
+  case QDPIO_PARALLEL:
+    serpar = QIO_PARALLEL;
+    break;
+  }
+
+  // Wrappers over simple ints
+  int volfmt;
+  switch(qdp_volfmt)
+  {
+  case QDPIO_SINGLEFILE:
+    volfmt = QIO_SINGLEFILE;
+    break;
+    
+  case QDPIO_MULTIFILE:
+    volfmt = QIO_MULTIFILE;
+    break;
+  }
+
+  // Wrappers over simple ints
+  int mode;
+  switch(qdp_mode)
+  {
+  case QDPIO_CREATE:
+    mode = QIO_CREATE;
+    break;
+    
+  case QDPIO_OPEN:
+    mode = QIO_TRUNCATE;
+    break;
+    
+  case QDPIO_APPEND:
+    mode = QIO_APPEND;
+    break;
+  }
+
+  // QIO write
   if ((qio_out = QIO_open_write(xml_c, path.c_str(), 
-				QIO_SERIAL, QIO_LEX_ORDER, QIO_CREATE, 
+				serpar, volfmt, mode,
 				&layout)) == NULL)
   {
-    QDPIO::cerr << "QDPSerialFile::Writer: failed to open file " << path << endl;
+    QDPIO::cerr << "QDPFileWriter: failed to open file " << path << endl;
     QDP_abort(1);
   }
 
@@ -143,7 +227,7 @@ void QDPSerialFileWriter::open(XMLBufferWriter& file_xml, const std::string& pat
   iop=true;
 }
 
-void QDPSerialFileWriter::close()
+void QDPFileWriter::close()
 {
   if (is_open()) 
   {
@@ -153,11 +237,22 @@ void QDPSerialFileWriter::close()
   iop = false;
 }
 
-bool QDPSerialFileWriter::is_open() {return iop;}
+bool QDPFileWriter::is_open() {return iop;}
 
-bool QDPSerialFileWriter::bad() const {return false;}
+bool QDPFileWriter::bad() const {return false;}
 
-QDPSerialFileWriter::~QDPSerialFileWriter() {close();}
+QDPFileWriter::~QDPFileWriter() {close();}
 
+//! Close a QDPFileWriter
+void close(QDPFileWriter& qsw)
+{
+  qsw.close();
+}
+
+//! Is a QDPFileWriter open
+bool is_open(QDPFileWriter& qsw)
+{
+  return qsw.is_open();
+}
 
 QDP_END_NAMESPACE();
