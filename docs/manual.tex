@@ -19,8 +19,9 @@
 
 \date{Sept. 25, 2002}
 
-\noindent
-{\bf\large Description:}
+\section{Description}
+%\noindent
+%{\bf\large Description:}
 
 QDP++ is a C++ data-parallel interface for Lattice field theory
 applications. Many of the issues have been discussed in the
@@ -42,8 +43,7 @@ provided.
 
 \medskip
 
-\noindent
-{\em Supported operations:}
+\section{Supported operations}
 
 All QDP types are of type QDPType. Operations that are supported are below.
 Convention: protoyypes are basically of the form:
@@ -55,9 +55,8 @@ QDPType<T1>  binary_function(const QDPType<T>&, const QDPType<T>&)
 
 \medskip
 
-
-\noindent
-{\bf\large Infix operators:}
+\subsection{Infix operators}
+\label{sec:infix}
 
 \noindent
 {\em Unary infix (e.g., "operator-"):}
@@ -112,8 +111,8 @@ where : the C trinary "?" operator
 \medskip
 
 
-\noindent
-{\bf\large Functions (standard C math lib):}
+\subsection{Functions (standard C math lib)}
+\label{sec:cfuncs}
 
 \noindent
 {\em Unary:}
@@ -134,8 +133,8 @@ ldexp, pow, fmod, atan2
 \medskip
 
 
-\noindent
-{\bf\large Additional functions (specific to QDP):}
+\subsection{Additional functions (specific to QDP)}
+\label{sec:funcs}
 
 \noindent
 {\em Unary:}
@@ -147,27 +146,37 @@ real             : real part
 imag             : imaginary part
 colorTrace       : trace over color indices
 spinTrace        : trace over spin indices
-noColorTrace     : trace over all but color indices
-noSpinTrace      : trace over all but spin indices
 multiplyI        : multiplies argument by imag "i"
 multiplyMinusI   : multiplies argument by imag "-i"
 localNorm2       : on fibers computes trace(conj(source)*source)
 \end{verbatim}
 
+%noColorTrace     : trace over all but color indices
+%noSpinTrace      : trace over all but spin indices
 
 \noindent
-{\em Binary:}
+{\em Binary}:
 
 \begin{verbatim}
 cmplx              : returns complex object   arg1 + i*arg2
 localInnerproduct  : at each site computes trace(conj(arg1)*arg2)
 \end{verbatim}
 
+\subsection{In place functions}
+\label{sec:inplace}
+
+\begin{verbatim}
+random(dest)            : uniform random numbers - all components
+gaussian(dest)          : uniform random numbers - all components
+zero(dest)              : zero out all elements
+copymask(dest,mask,src) : copy src to dest under boolean mask
+\end{verbatim}
+
 \medskip
 
 
-\noindent
-{\bf\large Global reductions:}
+\subsection{Global reductions}
+\label{sec:reductions}
 
 \begin{verbatim}
 sum(arg1)               : sum over lattice indices returning 
@@ -179,8 +188,10 @@ innerproduct(arg1,arg2) : sum(localInnerproduct(arg1,arg2))
 
 \medskip
 
-\noindent
-{\bf\large Other functions:}
+\subsection{More exotic functions:}
+\label{sec:otherfuncs}
+
+Gauge and spin related functions
 
 \begin{verbatim}
 spinProject(QDPType psi, int dir, int isign)
@@ -190,7 +201,6 @@ spinProject(QDPType psi, int dir, int isign)
 spinReconstruct(QDPType psi, int dir, int isign)
 		    : applies spin reconstruction from  (1 + isign*gamma_\mu)*psi
 		      returning a full spin vector or matrix
-
 su2_extract(QDPType r_0, r_1, r_2, r_3, int index, QDPType source)
 		    : Extract components r_k proportional to SU(2) submatrix su2_index
 		      from the "SU(Nc)" matrix V. The SU(2) matrix is parametrized in the
@@ -206,11 +216,11 @@ sun_fill(QDPType dest, int index, QDPType r_0, r_1, r_2, r_3)
 \bigskip
 
 
-\noindent
-{\bf\large Types:}
+\newpage
+\section{Types}
 
 Mathematically, QDP types follow a fiber-bundle terminology.  There is
-a base space (a Nd dimensional lattice) with fibers at each site.  The
+a base space (a {\em Nd} dimensional lattice) with fibers at each site.  The
 fiber type describes data primitives on each site.  Lattice fields are
 defined and always allocated over the entire lattice; however, the
 operations can be narrowed to only a subset of sites.  The primitive
@@ -222,24 +232,24 @@ Generically objects transform under different spaces with a tensor
 product structure like
 
 \begin{verbatim}
-                         Color      Spin
-Gauge fields:   Product(Matrix(Nc),Scalar)
-Fermions:       Product(Vector(Nc),Vector(Ns))
-Scalars:        Product(Scalar,    Scalar)
-Propagators:    Product(Matrix(Nc),Matrix(Ns))
-Gamma:          Product(Scalar,    Matrix(Ns))
+                         Color      Spin      Complexity
+Gauge fields:   Product(Matrix(Nc),Scalar,    Complex)
+Fermions:       Product(Vector(Nc),Vector(Ns),Complex)
+Scalars:        Product(Scalar,    Scalar,    Scalar)
+Propagators:    Product(Matrix(Nc),Matrix(Ns),Complex)
+Gamma:          Product(Scalar,    Matrix(Ns),Complex)
 \end{verbatim}
 
 \noindent
-Nd is the number of space-time dimensions
+$Nd$ is the number of space-time dimensions\\
 \noindent
-Nc is the dimension of the color vector space
+$Nc$ is the dimension of the color vector space\\
 \noindent
-Ns is the dimension of the spin vector space
+$Ns$ is the dimension of the spin vector space\\
 \noindent
-NOTE: these parameters are compile time defined in  qdp++/params.h
+NOTE: these parameters are compile time defined in  {\tt qdp++/params.h}
 
-E.g., gauge fields can left-multiply fermions via color matrix by color
+Gauge fields can left-multiply fermions via color matrix times color
 vector but is diagonal in spin space (spin scalar times spin vector).
 A gamma matrix can right-multiply a propagator (spin matrix times
 spin matrix) but is diagonal in color space (color matrix times color
@@ -248,17 +258,17 @@ scalar).
 Types in the QDP interface are parameterized by a variety of types including:
 \begin{itemize}
 \item {\em Word type}: 
-  int, float, double, Boolean . Basic machine types.
+  int, float, double, bool. Basic machine types.
 \item {\em Reality type}: 
   complex or scalar. This is where the idea of a complex number
   lives.
 \item {\em Primitive type}: 
-  scalar, vector, matrix, etc. This where the concept of a gauge or
+  scalar, vector, matrix, etc. This is where the concept of a gauge or
   spin field lives. There can be many more types here.
 \item {\em Inner grid type}: 
   scalar or lattice. Supports vector style architectures.
 \item {\em Outer grid type}:
-  OScalar or OLattice. Supports super-scalar style architectures. In
+  scalar or lattice. Supports super-scalar style architectures. In
   combination with Inner grid can support a mixed mode like a
   super-scalar architecture with short length vector instructions.
 \end{itemize}
@@ -269,11 +279,125 @@ composition. There is very little inheritance. The basic objects are
 constructed (at the users choice) by compositions like the following:
 
 \begin{verbatim}
-typedef OLattice<Pscalar<ColorMatrix<Complex<Real>, Nc> > > LatticeGauge
-typedef OLattice<SpinVector<ColorVector<Complex<Real>, Nc> > > LatticeFermion
+typedef OLattice<PScalar<ColorMatrix<Complex<float>, Nc> > > LatticeGauge
+typedef OLattice<SpinVector<ColorVector<Complex<float>, Nc>, Ns> > LatticeFermion
+\end{verbatim}
+%
+The ordering of types here is suitable for a microprocessor
+architecture.  The classes PScalar, SpinVector, ColorMatrix,
+ColorVector are all subtypes of a primitive type. The relative
+ordering of the classes is important. It is simply a user convention
+that spin is used as the second index (second level of type
+composition) and color is the third. The ordering of types can be
+changes. From looking at the types one can immediately decide what
+operations among objects makes sense.
+
+Operations on each level are listed below. The meaning (and validity)
+of an operation on the complete type (a LatticeFermion) is deduced
+from the intersection of these operations among each type.
+
+\subsection{Operations on subtypes}
+
+Supported operations for each type level
+\begin{itemize}
+\item
+{\bf\em Grid type}: {\em OScalar, OLattice, IScalar, ILattice}\\
+All operations listed in Sections~\ref{sec:infix}--\ref{sec:otherfuncs}
+
+\item
+{\bf\em Primitive type}:
+\begin{itemize}
+\item
+{\bf\em PScalar}\\
+All operations listed in Sections~\ref{sec:infix}--\ref{sec:otherfuncs}
+
+\item
+{\bf\em PMatrix$<$N$>$}\\
+  {\em Unary}: operator-(PMatrix), +(PMatrix)\\
+  {\em Binary}: operator-(PMatrix,PMatrix), +(PMatrix,PMatrix), *(PMatrix,PScalar), 
+       *(PScalar,PMatrix), *(PMatrix,PMatrix)\\
+  {\em Comparisons}: none\\
+  {\em Assignments}: =(PMatrix), =(PScalar), -=(PMatrix), +=(PMatrix), *=(PScalar)\\
+  {\em Trinary}: where\\
+  {\em C-lib funcs}: none\\
+  {\em QDP funcs}: all\\
+  {\em In place funcs}: all\\
+  {\em Reductions}: all\\
+
+\item
+{\bf\em PVector$<$N$>$}\\
+  {\em Unary}: operator-(PVector), +(PVector)\\
+  {\em Binary}: operator-(PVector,PVector), +(PVector,PVector), *(PVector,PScalar), 
+       *(PScalar,PVector), *(PMatrix,PVector)\\
+  {\em Comparisons}: none\\
+  {\em Assignments}: =(PVector), -=(PVector), +=(PVector), *=(PScalar)\\
+  {\em Trinary}: where\\
+  {\em C-lib funcs}: none\\
+  {\em QDP funcs}: real, imag, multiplyI, multiplyMinusI, localNorm2, cmplx, 
+	localInnerproduct\\
+  {\em In place funcs}: all\\
+  {\em Reductions}: all\\
+
+\item
+{\bf\em PSpinMatrix$<$N$>$}\\
+  Inherits same operations as PMatrix\\
+  {\em Binary}: operator*(PSpinMatrix,Gamma), *(Gamma,PSpinMatrix)\\
+  {\em Exotic}: spinProjection, spinReconstruction
+
+\item
+{\bf\em PSpinVector$<$N$>$}\\
+  Inherits same operations as PVector\\
+  {\em Binary}: operator*(Gamma,PSpinVector)\\
+  {\em Exotic}: spinProjection, spinReconstruction
+
+\item
+{\bf\em PColorMatrix$<$N$>$}\\
+  Inherits same operations as PMatrix\\
+  {\em Binary}: operator*(PColorMatrix,Gamma), *(Gamma,PColorMatrix)\\
+  {\em Exotic}: su2\_extract, sun\_fill
+
+\item
+{\bf\em PColorVector$<$N$>$}\\
+  Inherits same operations as PVector\\
+  {\em Binary}: operator*(Gamma,PColorVector)
+
+\end{itemize}  % end primitive
+
+\item
+{\bf\em Reality}: {\em RScalar, RComplex}\\
+All operations listed in Sections~\ref{sec:infix}--\ref{sec:otherfuncs}
+
+\item
+{\bf\em Word}: {\em int, float, double, bool}\\
+All operations listed in Sections~\ref{sec:infix}--\ref{sec:otherfuncs}.
+Only boolean ops allowed on bool.
+
+
+\end{itemize}  % end subtypes
+
+
+Note, some operations are conspicuously absent:
+\begin{verbatim}
+LatticeFermion foo = 1.0;     // illegal, operator=(PVector,PScalar) missing
+trace(foo);                   // trace on a vector is not allowed
 \end{verbatim}
 
-The ordering of types here is suitable for a microprocessor architecture.
+\subsection{Some known types}
+Some defined known types are listed below. More can easily be added or the
+names changed in the file {\tt qdp++/defs.h} .
+These names should reflect those in the C interface.
+
+\begin{verbatim}
+Real, Integer, Double, Boolean
+Complex, DComplex,
+LatticeReal, LatticeInteger, LatticeComplex
+LatticeFermion, LatticeColorMatrix, LatticeGauge,
+LatticePropagator
+
+ColorMatrix, ColorVector, SpinMatrix, SpinVector
+LatticeColorMatrix, LatticeColorVector, LatticeSpinMatrix, LatticeSpinVector
+\end{verbatim}
+
 
 \end{document}
 
