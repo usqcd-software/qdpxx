@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_defs.h,v 1.2 2003-08-11 16:57:57 edwards Exp $
+// $Id: qdp_defs.h,v 1.3 2003-08-21 03:01:45 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -108,6 +108,9 @@ typedef PScalar< PScalar< RScalar<REAL> > > IntReal;
 typedef PScalar< PScalar< RScalar<INTEGER32> > > IntInteger;
 typedef PScalar< PScalar< RScalar<DOUBLE> > > IntDouble;
 typedef PScalar< PScalar< RScalar<LOGICAL> > > IntBoolean;
+
+// Odd-ball to support random numbers
+typedef Seed ILatticeSeed;
 
 // Fixed precision
 typedef OLattice< PScalar< PColorMatrix< RComplex<REAL32>, Nc> > > LatticeColorMatrixF;
