@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.7 2003-06-05 15:56:57 edwards Exp $
+// $Id: qdp_io.h,v 1.8 2003-06-07 19:10:37 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -40,10 +40,10 @@ public:
   //! Return true if some failure occurred in previous IO operation
   bool fail();
 
-  std::ifstream& get() {return f;}
+  std::istream& get() {return f;}
 
 private:
-  std::ifstream f;
+  QDPUtil::RemoteInputFileStream f;
 };
 
 
@@ -76,10 +76,11 @@ public:
   //! Return true if some failure occurred in previous IO operation
   bool fail();
 
-  std::ofstream& get() {return f;}
+  std::ostream& get() {return f;}
 
 private:
-  std::ofstream f;
+  QDPUtil::RemoteOutputFileStream f;
+
 };
 
 
@@ -99,25 +100,6 @@ TextWriter& operator<<(TextWriter& bin, const bool& output);
 
 
 //--------------------------------------------------------------------------------
-//! Namelist constructor object
-#if 0
-// This does not work the way I like...
-/*! 
- * This ties together a name and a ref which can be read or written
- * via namelist
- */
-template<class T>
-class Nml
-{
-public:
-  Nml(const std::string& s, const T& d): name(s), obj(d) {}
-
-  const std::string& name;
-  const T&  obj;
-};
-#endif
-
-
 //! Namelist reader class
 class NmlReader
 {
@@ -143,6 +125,8 @@ private:
   int stack_cnt;
   bool iop;
   section *abs;    // Abstract - holds parse tree
+
+  QDPUtil::RemoteInputFileStream f;
 };
 
 //! Push a namelist group 
@@ -219,11 +203,11 @@ public:
   //! Pop a namelist group
   void pop();
 
-  std::ofstream& get() {return f;}
+  std::ostream& get() {return f;}
 
 private:
   int stack_cnt;
-  std::ofstream f;
+  QDPUtil::RemoteOutputFileStream f;
 };
 
 
@@ -358,7 +342,7 @@ protected:
   std::istream& getIstream() {return f;}
 
 private:
-  std::ifstream f;
+  QDPUtil::RemoteInputFileStream f;
 };
 
 // Telephone book of basic primitives
@@ -448,7 +432,7 @@ protected:
   std::ostream& getOstream() {return f;}
 
 private:
-  std::ofstream f;
+  QDPUtil::RemoteOutputFileStream f;
 };
 
 
