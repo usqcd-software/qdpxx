@@ -9,7 +9,7 @@ INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
            -I@top_srcdir@/other_libs/qio/other_libs/c-dime/include \
            -I@top_srcdir@/other_libs/xpath_reader/include
 
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
+AM_CXXFLAGS = $(INCFLAGS)  @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
 AM_LDFLAGS = -L@top_builddir@/lib \
              -L@top_builddir@/other_libs/nml \
              -L@top_builddir@/other_libs/qio/lib \
