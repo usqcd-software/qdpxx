@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.13 2002-11-13 22:25:00 edwards Exp $
+// $Id: outer.h,v 1.14 2002-11-23 02:23:24 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -122,7 +122,9 @@ private:
 
 
 //! Ascii output
-template<class T>  ostream& operator<<(ostream& s, const OScalar<T>& d)
+template<class T>
+inline
+ostream& operator<<(ostream& s, const OScalar<T>& d)
 {
   if (Layout::primaryNode())
   {
@@ -132,7 +134,9 @@ template<class T>  ostream& operator<<(ostream& s, const OScalar<T>& d)
 }
 
 //! namelist output
-template<class T>  NmlWriter& operator<<(NmlWriter& nml, const OScalar<T>& d)
+template<class T>
+inline
+NmlWriter& operator<<(NmlWriter& nml, const OScalar<T>& d)
 {
   if (Layout::primaryNode())
   {
@@ -163,6 +167,7 @@ BinaryWriter& write(BinaryWriter& bin, const OScalar<T>& d)
  * involving the destination 
  */
 template<class T, class T1, class Op, class RHS>
+inline
 void evaluate(OScalar<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs)
 {
   // Subset is not used at this level. It may be needed, though, within an inner operation

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primseed.h,v 1.7 2002-11-12 00:29:12 edwards Exp $
+// $Id: primseed.h,v 1.8 2002-11-23 02:23:24 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -101,7 +101,9 @@ private:
 };
 
 //! Ascii output
-template<class T>  NmlWriter& operator<<(NmlWriter& s, const PSeed<T>& d)
+template<class T>
+inline
+NmlWriter& operator<<(NmlWriter& s, const PSeed<T>& d)
 {
   return s << "  [SEED]\n\t( " << d.elem(0).elem() << " , " << d.elem(1).elem() << " , "
 	   << d.elem(2).elem() << " , " << d.elem(3).elem() << " )";
@@ -357,7 +359,8 @@ seedToFloat(const PSeed<T>& s1)
 // Functions
 //! dest = 0
 template<class T> 
-void zero_rep(PSeed<T>& dest) 
+inline void 
+zero_rep(PSeed<T>& dest) 
 {
   for(int i=0; i < 4; ++i)
     zero_rep(dest.elem(i));
@@ -366,7 +369,8 @@ void zero_rep(PSeed<T>& dest)
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 
-void copymask(PSeed<T>& d, const PScalar<T1>& mask, const PSeed<T>& s1) 
+inline void 
+copymask(PSeed<T>& d, const PScalar<T1>& mask, const PSeed<T>& s1) 
 {
   for(int i=0; i < 4; ++i)
     copymask(d.elem(i),mask.elem(),s1.elem(i));

@@ -1,15 +1,11 @@
 // -*- C++ -*-
-// $Id: globalfuncs.h,v 1.8 2002-10-25 03:33:26 edwards Exp $
+// $Id: globalfuncs.h,v 1.9 2002-11-23 02:23:24 edwards Exp $
 
 /*! \file
  * \brief Global functions on QDPType
  */
 
 QDP_BEGIN_NAMESPACE(QDP);
-
-// NOTE: there is no inlining anywhere in this file - some
-// small effort at controlling code bloat.
-
 
 /** \defgroup group3 QDP global reductions
  *  
@@ -24,7 +20,7 @@ QDP_BEGIN_NAMESPACE(QDP);
  * of the same primitive type. E.g., contract only over lattice indices
  */
 template<class T, class C>
-typename UnaryReturn<C, FnSum>::Type_t
+inline typename UnaryReturn<C, FnSum>::Type_t
 sum(const QDPType<T,C>& s1)
 {
   return sum(PETE_identity(s1));
@@ -37,7 +33,7 @@ sum(const QDPType<T,C>& s1)
  * of the same primitive type. E.g., contract only over lattice indices
  */
 template<class T, class C>
-typename UnaryReturn<C, FnSum>::Type_t
+inline typename UnaryReturn<C, FnSum>::Type_t
 sum(const QDPType<T,C>& s1, const Subset& s)
 {
   return sum(PETE_identity(s1),s);
@@ -52,14 +48,14 @@ sum(const QDPType<T,C>& s1, const Subset& s)
  * Allow a global sum that sums over all indices
  */
 template<class T, class C>
-typename UnaryReturn<C, FnNorm2>::Type_t
+inline typename UnaryReturn<C, FnNorm2>::Type_t
 norm2(const QDPType<T,C>& s1)
 {
   return sum(localNorm2(s1));
 }
 
 template<class T, class C>
-typename UnaryReturn<C, FnNorm2>::Type_t
+inline typename UnaryReturn<C, FnNorm2>::Type_t
 norm2(const QDPExpr<T,C>& s1)
 {
   return sum(localNorm2(s1));
@@ -74,14 +70,14 @@ norm2(const QDPExpr<T,C>& s1)
  * Allow a global sum that sums over all indices
  */
 template<class T, class C>
-typename UnaryReturn<C, FnNorm2>::Type_t
+inline typename UnaryReturn<C, FnNorm2>::Type_t
 norm2(const QDPType<T,C>& s1, const Subset& s)
 {
   return sum(localNorm2(s1),s);
 }
 
 template<class T, class C>
-typename UnaryReturn<C, FnNorm2>::Type_t
+inline typename UnaryReturn<C, FnNorm2>::Type_t
 norm2(const QDPExpr<T,C>& s1, const Subset& s)
 {
   return sum(localNorm2(s1),s);
@@ -95,28 +91,28 @@ norm2(const QDPExpr<T,C>& s1, const Subset& s)
  * Sum over the lattice
  */
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
 innerproduct(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2)
 {
   return sum(localInnerproduct(s1,s2));
 }
 
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
 innerproduct(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
 {
   return sum(localInnerproduct(s1,s2));
 }
 
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
 innerproduct(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2)
 {
   return sum(localInnerproduct(s1,s2));
 }
 
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
 innerproduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
 {
   return sum(localInnerproduct(s1,s2));
@@ -130,7 +126,7 @@ innerproduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
  * Sum over the lattice
  */
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
 innerproduct(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2,
 	     const Subset& s)
 {
@@ -138,7 +134,7 @@ innerproduct(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2,
 }
 
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
 innerproduct(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
   	     const Subset& s)
 {
@@ -146,7 +142,7 @@ innerproduct(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
 }
 
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
 innerproduct(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2,
   	     const Subset& s)
 {
@@ -154,7 +150,7 @@ innerproduct(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2,
 }
 
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
 innerproduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
   	     const Subset& s)
 {
@@ -169,28 +165,28 @@ innerproduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
  * Sum over the lattice
  */
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
 innerproductReal(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2)
 {
   return sum(localInnerproductReal(s1,s2));
 }
 
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
 innerproductReal(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
 {
   return sum(localInnerproductReal(s1,s2));
 }
 
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
 innerproductReal(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2)
 {
   return sum(localInnerproductReal(s1,s2));
 }
 
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
 innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
 {
   return sum(localInnerproductReal(s1,s2));
@@ -204,7 +200,7 @@ innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
  * Sum over the lattice
  */
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
 innerproductReal(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2,
 		 const Subset& s)
 {
@@ -212,7 +208,7 @@ innerproductReal(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2,
 }
 
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
 innerproductReal(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
 		 const Subset& s)
 {
@@ -220,7 +216,7 @@ innerproductReal(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
 }
 
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
 innerproductReal(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2,
 		 const Subset& s)
 {
@@ -228,7 +224,7 @@ innerproductReal(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2,
 }
 
 template<class T1, class C1, class T2, class C2>
-typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+inline typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
 innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
 		 const Subset& s)
 {
@@ -248,7 +244,7 @@ innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
  * version is fine.
  */
 template<class T, class C>
-typename UnaryReturn<C, FnSumMulti>::Type_t
+inline typename UnaryReturn<C, FnSumMulti>::Type_t
 sumMulti(const QDPType<T,C>& s1, const Set& ss)
 {
   return sumMulti(PETE_identity(s1), ss);
@@ -269,7 +265,7 @@ sumMulti(const QDPType<T,C>& s1, const Set& ss)
 //! dest  = spinProject(source1) 
 /*! Boneheaded simple implementation till I get a better one... */
 template<class T, class C>
-typename UnaryReturn<C, FnSpinProject>::Type_t
+inline typename UnaryReturn<C, FnSpinProject>::Type_t
 spinProject(const QDPType<T,C>& s1, int mu, int isign)
 {
   typedef typename UnaryReturn<C, FnSpinProject>::Type_t  Ret_t;
@@ -333,7 +329,7 @@ spinProject(const QDPType<T,C>& s1, int mu, int isign)
 //! dest  = spinReconstruct(source1) 
 /*! Boneheaded simple implementation till I get a better one... */
 template<class T, class C>
-typename UnaryReturn<C, FnSpinReconstruct>::Type_t
+inline typename UnaryReturn<C, FnSpinReconstruct>::Type_t
 spinReconstruct(const QDPType<T,C>& s1, int mu, int isign)
 {
 //  typedef typename UnaryReturn<C, FnSpinReconstruct>::Type_t  Ret_t;

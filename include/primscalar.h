@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primscalar.h,v 1.14 2002-11-13 22:25:00 edwards Exp $
+// $Id: primscalar.h,v 1.15 2002-11-23 02:23:24 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -159,13 +159,17 @@ private:
 
 // Output
 //! Ascii output
-template<class T>  ostream& operator<<(ostream& s, const PScalar<T>& d)
+template<class T>
+inline
+ostream& operator<<(ostream& s, const PScalar<T>& d)
 {
   return s << d.elem();
 }
 
 //! Namelist output
-template<class T>  NmlWriter& operator<<(NmlWriter& nml, const PScalar<T>& d)
+template<class T>
+inline
+NmlWriter& operator<<(NmlWriter& nml, const PScalar<T>& d)
 {
   return nml << d.elem();
 }
@@ -1072,24 +1076,24 @@ toInt(const PScalar<T>& s)
 // Other operations
 //! dest = 0
 template<class T> 
-inline
-void zero_rep(PScalar<T>& dest) 
+inline void 
+zero_rep(PScalar<T>& dest) 
 {
   zero_rep(dest.elem());
 }
 
 //! dest [some type] = source [some type]
 template<class T, class T1>
-inline
-void cast_rep(T& d, const PScalar<T1>& s1)
+inline void 
+cast_rep(T& d, const PScalar<T1>& s1)
 {
   cast_rep(d, s1.elem());
 }
 
 //! dest [some type] = source [some type]
 template<class T, class T1>
-inline
-void cast_rep(PScalar<T>& d, const PScalar<T1>& s1)
+inline void 
+cast_rep(PScalar<T>& d, const PScalar<T1>& s1)
 {
   cast_rep(d.elem(), s1.elem());
 }

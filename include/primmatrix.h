@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primmatrix.h,v 1.13 2002-11-12 00:28:14 edwards Exp $
+// $Id: primmatrix.h,v 1.14 2002-11-23 02:23:24 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -120,6 +120,7 @@ private:
 
 //! Ascii output
 template<class T, int N, template<class,int> class C>  
+inline
 NmlWriter& operator<<(NmlWriter& nml, const PMatrix<T,N,C>& d)
 {
   nml.get() << "  [MATRIX]\n";
@@ -667,8 +668,8 @@ pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row, int col)
 
 //! dest = 0
 template<class T, int N, template<class,int> class C> 
-inline
-void zero_rep(PMatrix<T,N,C>& dest) 
+inline void 
+zero_rep(PMatrix<T,N,C>& dest) 
 {
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)

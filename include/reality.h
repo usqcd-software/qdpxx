@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.13 2002-11-20 03:40:33 edwards Exp $
+// $Id: reality.h,v 1.14 2002-11-23 02:23:24 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -161,14 +161,18 @@ private:
 
  
 //! Ascii output
-template<class T>  ostream& operator<<(ostream& s, const RScalar<T>& d)
+template<class T> 
+inline  
+ostream& operator<<(ostream& s, const RScalar<T>& d)
 {
   return s << d.elem();
 }
 
 
 //! Namelist output
-template<class T>  NmlWriter& operator<<(NmlWriter& s, const RScalar<T>& d)
+template<class T>
+inline
+NmlWriter& operator<<(NmlWriter& s, const RScalar<T>& d)
 {
   return s << d.elem();
 }
@@ -322,14 +326,18 @@ private:
 
 
 //! Stream output
-template<class T>  ostream& operator<<(ostream& s, const RComplex<T>& d)
+template<class T>
+inline
+ostream& operator<<(ostream& s, const RComplex<T>& d)
 {
   s << "( " << d.real() << " , " << d.imag() << " )";
   return s;
 }
 
 //! Namelist output
-template<class T>  NmlWriter& operator<<(NmlWriter& nml, const RComplex<T>& d)
+template<class T>
+inline
+NmlWriter& operator<<(NmlWriter& nml, const RComplex<T>& d)
 {
   nml.get() << "( ";
   nml << d.real();

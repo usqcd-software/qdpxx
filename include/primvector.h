@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primvector.h,v 1.10 2002-11-23 01:57:40 edwards Exp $
+// $Id: primvector.h,v 1.11 2002-11-23 02:23:24 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -113,6 +113,7 @@ private:
 
 //! Ascii output
 template<class T, int N, template<class,int> class C> 
+inline
 NmlWriter& operator<<(NmlWriter& nml, const PVector<T,N,C>& d)
 {
   nml.get() << "  [VECTOR]\n";
@@ -484,7 +485,8 @@ pokeSpin(PVector<T1,N,C>& l, const PVector<T2,N,C>& r, int row, int col)
 
 //! dest = 0
 template<class T, int N, template<class,int> class C> 
-void zero_rep(PVector<T,N,C>& dest) 
+inline void 
+zero_rep(PVector<T,N,C>& dest) 
 {
   for(int i=0; i < N; ++i)
     zero_rep(dest.elem(i));
@@ -492,7 +494,8 @@ void zero_rep(PVector<T,N,C>& dest)
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1, int N, template<class,int> class C> 
-void copymask(PVector<T,N,C>& d, const PScalar<T1>& mask, const PVector<T,N,C>& s1) 
+inline void 
+copymask(PVector<T,N,C>& d, const PScalar<T1>& mask, const PVector<T,N,C>& s1) 
 {
   for(int i=0; i < N; ++i)
     copymask(d.elem(i),mask.elem(),s1.elem(i));
@@ -512,7 +515,7 @@ fill_random(PVector<T,N,C>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 
 //! dest  = gaussian
 template<class T, int N, template<class,int> class C>
-void
+inline void
 fill_gaussian(PVector<T,N,C>& d, PVector<T,N,C>& r1, PVector<T,N,C>& r2)
 {
   for(int i=0; i < N; ++i)
