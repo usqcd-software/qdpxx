@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdptype.h,v 1.3 2004-07-02 21:54:25 edwards Exp $
+// $Id: qdp_qdptype.h,v 1.4 2004-07-27 05:30:45 edwards Exp $
 
 /*! @file
  * @brief Main type class for QDP
@@ -50,7 +50,7 @@ public:
     {
       C* me = static_cast<C*>(this);
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(*me,OpAssign(),PETE_identity(Scalar_t(rhs)));
+      evaluate(*me,OpAssign(),PETE_identity(Scalar_t(rhs)),all);
       return *me;
     }
 
@@ -67,7 +67,7 @@ public:
   C& assign(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpAssign(),PETE_identity(rhs));
+      evaluate(*me,OpAssign(),PETE_identity(rhs),all);
       return *me;
     }
 
@@ -76,7 +76,7 @@ public:
   C& assign(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpAssign(),rhs);
+      evaluate(*me,OpAssign(),rhs,all);
       return *me;
     }
 
@@ -94,7 +94,7 @@ public:
     {
       C* me = static_cast<C*>(this);
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(*me,OpAddAssign(),PETE_identity(Scalar_t(rhs)));
+      evaluate(*me,OpAddAssign(),PETE_identity(Scalar_t(rhs)),all);
       return *me;
     }
 
@@ -103,7 +103,7 @@ public:
   C& operator+=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpAddAssign(),PETE_identity(rhs));
+      evaluate(*me,OpAddAssign(),PETE_identity(rhs),all);
       return *me;
     }
 
@@ -112,7 +112,7 @@ public:
   C& operator+=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpAddAssign(),rhs);
+      evaluate(*me,OpAddAssign(),rhs,all);
       return *me;
     }
 
@@ -122,7 +122,7 @@ public:
     {
       C* me = static_cast<C*>(this);
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(*me,OpSubtractAssign(),PETE_identity(Scalar_t(rhs)));
+      evaluate(*me,OpSubtractAssign(),PETE_identity(Scalar_t(rhs)),all);
       return *me;
     }
 
@@ -131,7 +131,7 @@ public:
   C& operator-=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpSubtractAssign(),PETE_identity(rhs));
+      evaluate(*me,OpSubtractAssign(),PETE_identity(rhs),all);
       return *me;
     }
 
@@ -140,7 +140,7 @@ public:
   C& operator-=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpSubtractAssign(),rhs);
+      evaluate(*me,OpSubtractAssign(),rhs,all);
       return *me;
     }
 
@@ -150,7 +150,7 @@ public:
     {
       C* me = static_cast<C*>(this);
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(*me,OpMultiplyAssign(),PETE_identity(Scalar_t(rhs)));
+      evaluate(*me,OpMultiplyAssign(),PETE_identity(Scalar_t(rhs)),all);
       return *me;
     }
 
@@ -159,7 +159,7 @@ public:
   C& operator*=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpMultiplyAssign(),PETE_identity(rhs));
+      evaluate(*me,OpMultiplyAssign(),PETE_identity(rhs),all);
       return *me;
     }
 
@@ -168,7 +168,7 @@ public:
   C& operator*=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpMultiplyAssign(),rhs);
+      evaluate(*me,OpMultiplyAssign(),rhs,all);
       return *me;
     }
 
@@ -178,7 +178,7 @@ public:
     {
       C* me = static_cast<C*>(this);
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(*me,OpDivideAssign(),PETE_identity(Scalar_t(rhs)));
+      evaluate(*me,OpDivideAssign(),PETE_identity(Scalar_t(rhs)),all);
       return *me;
     }
 
@@ -187,7 +187,7 @@ public:
   C& operator/=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpDivideAssign(),PETE_identity(rhs));
+      evaluate(*me,OpDivideAssign(),PETE_identity(rhs),all);
       return *me;
     }
 
@@ -196,7 +196,7 @@ public:
   C& operator/=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpDivideAssign(),rhs);
+      evaluate(*me,OpDivideAssign(),rhs,all);
       return *me;
     }
 
@@ -206,7 +206,7 @@ public:
     {
       C* me = static_cast<C*>(this);
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(*me,OpModAssign(),PETE_identity(Scalar_t(rhs)));
+      evaluate(*me,OpModAssign(),PETE_identity(Scalar_t(rhs)),all);
       return *me;
     }
 
@@ -215,7 +215,7 @@ public:
   C& operator%=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpModAssign(),PETE_identity(rhs));
+      evaluate(*me,OpModAssign(),PETE_identity(rhs),all);
       return *me;
     }
 
@@ -224,7 +224,7 @@ public:
   C& operator%=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpModAssign(),rhs);
+      evaluate(*me,OpModAssign(),rhs,all);
       return *me;
     }
 
@@ -234,7 +234,7 @@ public:
     {
       C* me = static_cast<C*>(this);
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(*me,OpBitwiseOrAssign(),PETE_identity(Scalar_t(rhs)));
+      evaluate(*me,OpBitwiseOrAssign(),PETE_identity(Scalar_t(rhs)),all);
       return *me;
     }
 
@@ -243,7 +243,7 @@ public:
   C& operator|=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpBitwiseOrAssign(),PETE_identity(rhs));
+      evaluate(*me,OpBitwiseOrAssign(),PETE_identity(rhs),all);
       return *me;
     }
 
@@ -252,7 +252,7 @@ public:
   C& operator|=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpBitwiseOrAssign(),PETE_identity(rhs));
+      evaluate(*me,OpBitwiseOrAssign(),PETE_identity(rhs),all);
       return *me;
     }
 
@@ -262,7 +262,7 @@ public:
     {
       C* me = static_cast<C*>(this);
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(*me,OpBitwiseAndAssign(),PETE_identity(Scalar_t(rhs)));
+      evaluate(*me,OpBitwiseAndAssign(),PETE_identity(Scalar_t(rhs)),all);
       return *me;
     }
 
@@ -271,7 +271,7 @@ public:
   C& operator&=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpBitwiseAndAssign(),PETE_identity(rhs));
+      evaluate(*me,OpBitwiseAndAssign(),PETE_identity(rhs),all);
       return *me;
     }
 
@@ -280,7 +280,7 @@ public:
   C& operator&=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpBitwiseAndAssign(),rhs);
+      evaluate(*me,OpBitwiseAndAssign(),rhs,all);
       return *me;
     }
 
@@ -290,7 +290,7 @@ public:
     {
       C* me = static_cast<C*>(this);
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(*me,OpBitwiseXorAssign(),PETE_identity(Scalar_t(rhs)));
+      evaluate(*me,OpBitwiseXorAssign(),PETE_identity(Scalar_t(rhs)),all);
       return *me;
     }
 
@@ -299,7 +299,7 @@ public:
   C& operator^=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpBitwiseXorAssign(),PETE_identity(rhs));
+      evaluate(*me,OpBitwiseXorAssign(),PETE_identity(rhs),all);
       return *me;
     }
 
@@ -308,7 +308,7 @@ public:
   C& operator^=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpBitwiseXorAssign(),rhs);
+      evaluate(*me,OpBitwiseXorAssign(),rhs,all);
       return *me;
     }
 
@@ -318,7 +318,7 @@ public:
     {
       C* me = static_cast<C*>(this);
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(*me,OpLeftShiftAssign(),PETE_identity(Scalar_t(rhs)));
+      evaluate(*me,OpLeftShiftAssign(),PETE_identity(Scalar_t(rhs)),all);
       return *me;
     }
 
@@ -327,7 +327,7 @@ public:
   C& operator<<=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpLeftShiftAssign(),PETE_identity(rhs));
+      evaluate(*me,OpLeftShiftAssign(),PETE_identity(rhs),all);
       return *me;
     }
 
@@ -336,7 +336,7 @@ public:
   C& operator<<=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpLeftShiftAssign(),rhs);
+      evaluate(*me,OpLeftShiftAssign(),rhs,all);
       return *me;
     }
 
@@ -346,7 +346,7 @@ public:
     {
       C* me = static_cast<C*>(this);
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(*me,OpRightShiftAssign(),PETE_identity(Scalar_t(rhs)));
+      evaluate(*me,OpRightShiftAssign(),PETE_identity(Scalar_t(rhs)),all);
       return *me;
     }
 
@@ -355,7 +355,7 @@ public:
   C& operator>>=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpRightShiftAssign(),PETE_identity(rhs));
+      evaluate(*me,OpRightShiftAssign(),PETE_identity(rhs),all);
       return *me;
     }
 
@@ -364,7 +364,7 @@ public:
   C& operator>>=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
-      evaluate(*me,OpRightShiftAssign(),rhs);
+      evaluate(*me,OpRightShiftAssign(),rhs,all);
       return *me;
     }
 
