@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.14 2002-11-23 02:23:24 edwards Exp $
+// $Id: reality.h,v 1.15 2002-12-06 04:36:26 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1168,13 +1168,37 @@ peekSpin(const RScalar<T>& l, int row, int col)
 }
 
 
-//------------------------------------------
-//! conversion routines
+//-----------------------------------------------------------------------------
+//! QDP Int to int primitive in conversion routine
 template<class T> 
 inline int 
 toInt(const RScalar<T>& s) 
 {
   return toInt(s.elem());
+}
+
+//! QDP Real to float primitive in conversion routine
+template<class T> 
+inline float
+toFloat(const RScalar<T>& s) 
+{
+  return toFloat(s.elem());
+}
+
+//! QDP Double to double primitive in conversion routine
+template<class T> 
+inline double
+toDouble(const RScalar<T>& s) 
+{
+  return toDouble(s.elem());
+}
+
+//! QDP Boolean to bool primitive in conversion routine
+template<class T> 
+inline bool
+toBool(const RScalar<T>& s) 
+{
+  return toBool(s.elem());
 }
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: specializations.h,v 1.5 2002-12-05 18:58:31 edwards Exp $
+// $Id: specializations.h,v 1.6 2002-12-06 04:36:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -17,6 +17,27 @@ inline int
 toInt(const Integer& s) 
 {
   return toInt(s.elem());
+}
+
+//! Make a float from a Real
+inline float
+toFloat(const Real& s) 
+{
+  return toFloat(s.elem());
+}
+
+//! Make a double from a Double
+inline double
+toDouble(const Double& s) 
+{
+  return toDouble(s.elem());
+}
+
+//! Make a bool from a Boolean
+inline bool
+toBool(const Boolean& s) 
+{
+  return toBool(s.elem());
 }
 
 

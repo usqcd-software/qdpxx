@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primscalar.h,v 1.16 2002-11-23 02:29:40 edwards Exp $
+// $Id: primscalar.h,v 1.17 2002-12-06 04:36:26 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -1063,7 +1063,7 @@ where(const PScalar<T1>& a, const PScalar<T2>& b, const PScalar<T3>& c)
 
 
 //-----------------------------------------------------------------------------
-//! conversion routines
+//! QDP Int to int primitive in conversion routine
 template<class T> 
 inline int 
 toInt(const PScalar<T>& s) 
@@ -1071,6 +1071,29 @@ toInt(const PScalar<T>& s)
   return toInt(s.elem());
 }
 
+//! QDP Real to float primitive in conversion routine
+template<class T> 
+inline float
+toFloat(const PScalar<T>& s) 
+{
+  return toFloat(s.elem());
+}
+
+//! QDP Double to double primitive in conversion routine
+template<class T> 
+inline double
+toDouble(const PScalar<T>& s) 
+{
+  return toDouble(s.elem());
+}
+
+//! QDP Boolean to bool primitive in conversion routine
+template<class T> 
+inline bool
+toBool(const PScalar<T>& s) 
+{
+  return toBool(s.elem());
+}
 
 
 //-----------------------------------------------------------------------------
