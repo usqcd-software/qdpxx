@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.8 2003-08-21 06:20:25 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.9 2003-08-21 06:46:54 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -565,7 +565,7 @@ operator*(const PColorMatrix<RComplexFloat,3>& l,
 }
 
 
-#if 0
+#if 1
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
@@ -580,7 +580,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
 	      const OrderedSubset& s)
 {
-// cout << "call single site QDP_M_eq_M_times_M" << endl;
+//  cout << "call single site QDP_M_eq_M_times_M" << endl;
 
   const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
   const LatticeColorMatrix& r = static_cast<const LatticeColorMatrix&>(rhs.expression().right());
@@ -590,9 +590,13 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
   for(int i=istart; i <= iend; ++i) 
   {
-    _inline_ssevec_mult_su3_nn(d.elem(i).elem(),l.elem(i).elem(),r.elem(i).elem(),0);
-    _inline_ssevec_mult_su3_nn(d.elem(i).elem(),l.elem(i).elem(),r.elem(i).elem(),1);
-    _inline_ssevec_mult_su3_nn(d.elem(i).elem(),l.elem(i).elem(),r.elem(i).elem(),2);
+    float *dd = (float*)&(d.elem(i).elem());
+    float *ll = (float*)&(l.elem(i).elem());
+    float *rr = (float*)&(r.elem(i).elem());
+
+    _inline_ssevec_mult_su3_nn(dd,ll,rr,0);
+    _inline_ssevec_mult_su3_nn(dd,ll,rr,1);
+    _inline_ssevec_mult_su3_nn(dd,ll,rr,2);
   }
 }
 #endif
