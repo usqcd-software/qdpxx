@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.11 2004-04-01 12:56:39 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.12 2004-04-01 14:49:50 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1247,15 +1247,13 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     const REAL *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real().elem());
     
     // Has Type OScalar< PScalar < PScalar < RScalar < PScalar < REAL > > > > >
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
-    lsum = Double(0);
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  ret_val;
+    DOUBLE lsum = 0;
     
-    local_sumsq((DOUBLE *)&(lsum.elem().elem().elem().elem().elem()),
-		(REAL *)s1ptr, 
-	       n_3vec); 
-
+    local_sumsq(&lsum,(REAL *)s1ptr, n_3vec); 
     Internal::globalSum(lsum);
-    return lsum;
+    ret_val.elem().elem().elem().elem().elem() = lsum;
+    return ret_val;
   }
   else {
    return sum(localNorm2(s1),s);
@@ -1279,15 +1277,14 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
     int n_3vec = (all.end() - all.start() + 1)*Ns;
     const REAL *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real().elem());
     
-    // I am relying on this being a Double here 
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
-    lsum = Double(0);
+
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  ret_val;
+    DOUBLE lsum = 0;
  
-    local_sumsq((DOUBLE *)&(lsum.elem().elem().elem().elem().elem()),
-		(REAL *)s1ptr, 
-	       n_3vec); 
+    local_sumsq(&lsum, (REAL *)s1ptr, n_3vec); 
     Internal::globalSum(lsum);
-    return lsum;
+    ret_val.elem().elem().elem().elem().elem() = lsum;
+    return ret_val;
   }
   else {
    return sum(localNorm2(s1),all);
