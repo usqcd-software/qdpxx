@@ -189,8 +189,8 @@ AC_CHECK_PROG(DOXYGEN, doxygen, doxygen, true)
 #
 # Configure subdir packages
 #
-AC_CONFIG_SUBDIRS(other_libs/nml)  # need to make one of these...
-#AC_CONFIG_SUBDIRS(other_libs/qio)
+AC_CONFIG_SUBDIRS(other_libs/nml)
+AC_CONFIG_SUBDIRS(other_libs/qio)
 
 #
 # Set up the doxygen file
