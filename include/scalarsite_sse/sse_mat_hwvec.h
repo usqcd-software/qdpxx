@@ -8,12 +8,12 @@ __asm__ __volatile__ ("movlps %0, %%xmm0 \n\t" \
                       "movhps %5, %%xmm2" \
                       : \
                       : \
-                      "m" ((bb)->h[0].c[0]), \
-                      "m" ((bb)->h[0].c[1]), \
-                      "m" ((bb)->h[0].c[2]), \
-                      "m" ((bb)->h[1].c[0]), \
-                      "m" ((bb)->h[1].c[1]), \
-                      "m" ((bb)->h[1].c[2])); \
+                      "m" ((bb).elem(0).elem(0)), \
+                      "m" ((bb).elem(0).elem(1)), \
+                      "m" ((bb).elem(0).elem(2)), \
+                      "m" ((bb).elem(1).elem(0)), \
+                      "m" ((bb).elem(1).elem(1)), \
+                      "m" ((bb).elem(1).elem(2))); \
 __asm__ __volatile__ ("movss %0, %%xmm3 \n\t" \
                       "movss %1, %%xmm6 \n\t" \
                       "movss %2, %%xmm4 \n\t" \
@@ -34,12 +34,12 @@ __asm__ __volatile__ ("movss %0, %%xmm3 \n\t" \
                       "movss %5, %%xmm6" \
                       : \
                       : \
-                      "m" ((aa).elem(0,0).real()), \
-                      "m" ((aa).elem(0,1).real()), \
-                      "m" ((aa).elem(1,0).real()), \
-                      "m" ((aa).elem(1,2).real()), \
-                      "m" ((aa).elem(2,0).real()), \
-                      "m" ((aa).elem(2,1).real())); \
+                      "m" ((aa).elem().elem(0,0).real()), \
+                      "m" ((aa).elem().elem(0,1).real()), \
+                      "m" ((aa).elem().elem(1,0).real()), \
+                      "m" ((aa).elem().elem(1,2).real()), \
+                      "m" ((aa).elem().elem(2,0).real()), \
+                      "m" ((aa).elem().elem(2,1).real())); \
 __asm__ __volatile__ ("movss %0, %%xmm7 \n\t" \
                       "shufps $0x00, %%xmm6, %%xmm6 \n\t" \
                       "shufps $0x00, %%xmm7, %%xmm7 \n\t" \
@@ -65,11 +65,11 @@ __asm__ __volatile__ ("movss %0, %%xmm7 \n\t" \
                       "xorps %5, %%xmm0" \
                       : \
                       : \
-                      "m" ((aa).elem(0,2).real()), \
-                      "m" ((aa).elem(1,1).real()), \
-                      "m" ((aa).elem(2,2).real()), \
-                      "m" ((aa).elem(0,0).imag()), \
-                      "m" ((aa).elem(1,1).imag()), \
+                      "m" ((aa).elem().elem(0,2).real()), \
+                      "m" ((aa).elem().elem(1,1).real()), \
+                      "m" ((aa).elem().elem(2,2).real()), \
+                      "m" ((aa).elem().elem(0,0).imag()), \
+                      "m" ((aa).elem().elem(1,1).imag()), \
                       "m" (_sse_sgn13)); \
 __asm__ __volatile__ ("xorps %0, %%xmm1 \n\t" \
                       "xorps %1, %%xmm2 \n\t" \
@@ -91,10 +91,10 @@ __asm__ __volatile__ ("xorps %0, %%xmm1 \n\t" \
                       : \
                       "m" (_sse_sgn13), \
                       "m" (_sse_sgn13), \
-                      "m" ((aa).elem(2,2).imag()), \
-                      "m" ((aa).elem(1,0).imag()), \
-                      "m" ((aa).elem(0,1).imag()), \
-                      "m" ((aa).elem(2,0).imag())); \
+                      "m" ((aa).elem().elem(2,2).imag()), \
+                      "m" ((aa).elem().elem(1,0).imag()), \
+                      "m" ((aa).elem().elem(0,1).imag()), \
+                      "m" ((aa).elem().elem(2,0).imag())); \
 __asm__ __volatile__ ("shufps $0x00, %%xmm6, %%xmm6 \n\t" \
                       "shufps $0x00, %%xmm7, %%xmm7 \n\t" \
                       "mulps %%xmm1, %%xmm6 \n\t" \
@@ -115,9 +115,9 @@ __asm__ __volatile__ ("shufps $0x00, %%xmm6, %%xmm6 \n\t" \
                       "addps %%xmm7, %%xmm4 \n\t" \
                       : \
                       : \
-                      "m" ((aa).elem(0,2).imag()), \
-                      "m" ((aa).elem(2,1).imag()), \
-                      "m" ((aa).elem(1,2).imag())); \
+                      "m" ((aa).elem().elem(0,2).imag()), \
+                      "m" ((aa).elem().elem(2,1).imag()), \
+                      "m" ((aa).elem().elem(1,2).imag())); \
 __asm__ __volatile__ ("movlps %%xmm3, %0 \n\t" \
                       "movlps %%xmm4, %1 \n\t" \
                       "movlps %%xmm5, %2 \n\t" \
@@ -125,10 +125,10 @@ __asm__ __volatile__ ("movlps %%xmm3, %0 \n\t" \
                       "movhps %%xmm4, %4 \n\t" \
                       "movhps %%xmm5, %5" \
                       : \
-                      "=m" ((cc)->h[0].c[0]), \
-                      "=m" ((cc)->h[0].c[1]), \
-                      "=m" ((cc)->h[0].c[2]), \
-                      "=m" ((cc)->h[1].c[0]), \
-                      "=m" ((cc)->h[1].c[1]), \
-                      "=m" ((cc)->h[1].c[2])); \
+                      "=m" ((cc).elem(0).elem(0)), \
+                      "=m" ((cc).elem(0).elem(1)), \
+                      "=m" ((cc).elem(0).elem(2)), \
+                      "=m" ((cc).elem(1).elem(0)), \
+                      "=m" ((cc).elem(1).elem(1)), \
+                      "=m" ((cc).elem(1).elem(2))); \
 }
