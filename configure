@@ -838,8 +838,6 @@ Optional Packages:
                           DIR.
   --with-libxml2=DIR      Build on top of libxml2 where libxml2 is installed
                           in DIR
-  --with-dmalloc          use dmalloc, as in
-                          http://www.dmalloc.com/dmalloc.tar.gz
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -3301,34 +3299,6 @@ echo "$as_me: error: Cannot compile/link a program with libxml2.
     Use --with-libxml2=<dir> to select a working version." >&2;}
    { (exit 1); exit 1; }; }
 fi
-
-
-
-echo "$as_me:$LINENO: checking if malloc debugging is wanted" >&5
-echo $ECHO_N "checking if malloc debugging is wanted... $ECHO_C" >&6
-
-# Check whether --with-dmalloc or --without-dmalloc was given.
-if test "${with_dmalloc+set}" = set; then
-  withval="$with_dmalloc"
-  if test "$withval" = yes; then
-  echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-
-cat >>confdefs.h <<\_ACEOF
-#define WITH_DMALLOC 1
-_ACEOF
-
-  LIBS="$LIBS -ldmalloc"
-  LDFLAGS="$LDFLAGS -g"
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi;
-
 
 
 
