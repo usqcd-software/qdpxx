@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.13 2003-06-21 18:28:49 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.14 2003-06-23 20:52:06 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -332,6 +332,26 @@ XMLWriter::~XMLWriter()
 {
 }
 
+void XMLWriter::openSimple(const string& tagname)
+{
+  openTag(tagname);
+}
+
+void XMLWriter::closeSimple()
+{
+  closeTag();
+}
+
+void XMLWriter::openStruct(const string& tagname)
+{
+  openTag(tagname);
+}
+
+void XMLWriter::closeStruct()
+{
+  closeTag();
+}
+
 void XMLWriter::openTag(const string& tagname)
 {
   if (Layout::primaryNode())
@@ -445,10 +465,10 @@ void XMLWriter::writeXML(const string& output)
 
 
 // Push a group name
-void push(XMLWriter& xml, const string& s) {xml.openTag(s);}
+void push(XMLWriter& xml, const string& s) {xml.openStruct(s);}
 
 // Pop a group name
-void pop(XMLWriter& xml) {xml.closeTag();}
+void pop(XMLWriter& xml) {xml.closeStruct();}
 
 // Write something from a reader
 void write(XMLWriter& xml, const std::string& s, const XMLReader& d)
@@ -638,7 +658,7 @@ void write(XMLWriter& xml, const std::string& xpath, const multi1d<Boolean>& out
 
 
 //--------------------------------------------------------------------------------
-// Metadata writer class
+// XML writer to a buffer
 XMLBufferWriter::XMLBufferWriter() {indent_level=0;}
 
 string XMLBufferWriter::str()
@@ -660,7 +680,7 @@ XMLBufferWriter::~XMLBufferWriter() {}
 
 
 //--------------------------------------------------------------------------------
-// Metadata writer class
+// XML Writer to a file
 XMLFileWriter::XMLFileWriter() {indent_level=0;}
 
 void XMLFileWriter::close()
@@ -708,6 +728,130 @@ bool XMLFileWriter::fail()
 }
 
 XMLFileWriter::~XMLFileWriter() {close();}
+
+
+//--------------------------------------------------------------------------------
+// XML handle class for arrays
+XMLArrayWriter::~XMLArrayWriter()
+{
+  if (initP)
+    closeArray();
+}
+
+void XMLArrayWriter::openArray(const string& tagname)
+{
+  QDP_info("openArray: stack_empty = %d  tagname=%s",
+	   (contextStack.empty()) ? 1 : 0,
+	   tagname.c_str());
+
+  if (initP)
+    QDP_error_exit("XMLArrayWriter: calling openArray twice");
+
+  if (arrayTag)
+    QDP_error_exit("XMLArrayWriter: internal error - array tag already written");
+
+  if (! contextStack.empty())
+    QDP_error_exit("XMLArrayWriter: context stack not empty");
+
+  qname = tagname;
+  elem_qname = "elem";    // for now fix the name - maintains internal consistency
+
+  openTag(qname);   // array tagname
+
+  initP = false;          // not fully initialized yet
+  arrayTag = true;
+}
+
+void XMLArrayWriter::closeArray()
+{
+  QDP_info("closeArray");
+
+  if (! initP)
+    QDP_error_exit("XMLArrayWriter: calling closeArray but not initialized");
+
+  if (! contextStack.empty())
+    QDP_error_exit("XMLArrayWriter: context stack not empty");
+
+  closeTag();   // array tagname
+
+  if (array_size > 0 && elements_written != array_size)
+    QDP_error_exit("XMLArrayWriter: failed to write all the %d required elements: instead = %d",
+		   array_size,elements_written);
+
+  initP = arrayTag = false;
+  elements_written = 0;
+  indent_level = 0;
+  simpleElements = false; // do not know this yet
+}
+
+void XMLArrayWriter::openStruct(const string& tagname)
+{
+  QDP_info("openStruct: stack_empty = %d  tagname=%s",
+	   (contextStack.empty()) ? 1 : 0,
+	   tagname.c_str());
+
+  if (! arrayTag)
+  {
+    openArray(tagname);
+    return;
+  }
+
+  if (! initP)
+  {
+    if (elements_written == 0)
+    {
+      // This is the first time this is called
+      // From now on, all elements must be STRUCT
+      simpleElements = false;
+    }
+    else
+      QDP_error_exit("XMLArrayWriter: internal error - data written but state not initialized");
+
+    initP = true;
+  }
+
+  if (simpleElements)
+    QDP_error_exit("XMLArrayWriter: suppose to write simple types but asked to write a struct");
+
+
+  if (contextStack.empty())
+    openTag(elem_qname);   // ignore user provided name and use default name
+  else
+    openTag(tagname);  // use user provided name
+
+  ElementType el = STRUCT;
+  contextStack.push(el);
+}
+
+void XMLArrayWriter::closeStruct()
+{
+  QDP_info("closeStruct: stack_empty = %d",
+	   (contextStack.empty()) ? 1 : 0);
+
+  if (! initP)
+    QDP_error_exit("XMLArrayWriter: calling closeStruct but not initialized");
+
+  if (contextStack.empty())
+  {
+//    QDP_error_exit("XMLArrayWriter: context stack empty - probably no openStruct");
+    closeArray();
+    return;
+  }
+
+  ElementType topval = contextStack.top();
+  if (topval != STRUCT)
+    QDP_error_exit("XMLArrayWriter: found closeStruct without corresponding openStruct");
+
+  contextStack.pop();
+
+  closeTag();   // struct (or elem_qname)  tagname
+
+  if (contextStack.empty())
+  {
+    elements_written++;
+    QDP_info("finished writing element %d",elements_written);
+  }
+}
 
 
 QDP_END_NAMESPACE();

@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.9 2003-06-21 18:28:11 edwards Exp $
+// $Id: t_xml.cc,v 1.10 2003-06-23 20:52:05 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   random(a);
 
   {
-    XMLFileWriter toxml("cat.xml");
+    XMLFileWriter toxml("t_xml.input1");
 
     push(toxml,"fred");
     Write(toxml,d);
@@ -40,9 +40,9 @@ int main(int argc, char **argv)
 
   {
     XMLReader fromxml;
-    fromxml.open("cat.xml");
+    fromxml.open("t_xml.input1");
 
-    cout << "Here is the contents of  cat.xml" << endl;
+    cout << "Here is the contents of  t_xml.input1" << endl;
     fromxml.print(cout);
 
     int rob;
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
   {
     // Test reading some xml snippet and dumping it back out
     XMLReader fromxml;
-    fromxml.open("cat.xml");
+    fromxml.open("t_xml.input1");
 
     XMLBufferWriter toxml_1;
     toxml_1 << fromxml;
@@ -63,16 +63,16 @@ int main(int argc, char **argv)
     write(toxml_2,"this_is_my_xml",fromxml);
     pop(toxml_2);
 
-    XMLFileWriter toxml_3("dog1.xml");
+    XMLFileWriter toxml_3("t_xml.output1");
     toxml_3 << toxml_1;
 
-    XMLFileWriter toxml_4("dog2.xml");
+    XMLFileWriter toxml_4("t_xml.output2");
     write(toxml_4,"imbed_some_more",toxml_2);
   }
 
   {
     // Test writing some more complex snippets
-    XMLFileWriter toxml("dog3.xml");
+    XMLFileWriter toxml("t_xml.input2");
     push(toxml,"complex_xml");
 
     write(toxml,"charStarThingy","whether tis nobler to suffer the slings and arrows");
@@ -118,9 +118,9 @@ int main(int argc, char **argv)
   }
 
   {
-    // Test writing some more complex snippets
+    // Test reading some more complex snippets
     XMLReader fromxml;
-    fromxml.open("dog3.xml");
+    fromxml.open("t_xml.input2");
 
     multi1d<int> arrayInt;
     read(fromxml,"/complex_xml/arrayInt",arrayInt);
@@ -137,6 +137,35 @@ int main(int argc, char **argv)
       cout << "arrayComplex[" << i << "] = (" 
 	   << Real(real(arrayComplex[i])) << ","            // The Real() shouldn't be necesary - 
 	   << Real(imag(arrayComplex[i])) << ")" << endl;   // it converts a QDPExpr to a QDPType
+  }
+
+  {
+    // Try out an array context
+    try
+    { 
+      XMLFileWriter  xml_file_out("t_xml.output3");
+      push(xml_file_out,"root_for_output3");
+      XMLArrayWriter  xml_out(xml_file_out, 3);
+      push(xml_out,"this_is_an_array");
+
+      for(int i=0; i < xml_out.size(); ++i)
+      {
+	int x = -42;
+#if 1
+	push(xml_out,"some_ignored_name");
+	write(xml_out,"x",x);
+	pop(xml_out);
+#else
+	write(xml_out,"some_ignored_name",x);  // will instead use "elem"
+#endif
+      }
+    
+      pop(xml_out);
+      pop(xml_file_out);
+    }
+    catch( const string& error) { 
+      cout << "Error: " << error << endl;
+    }
   }
 
   // Time to bolt

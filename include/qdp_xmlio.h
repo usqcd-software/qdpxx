@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.12 2003-06-21 18:28:49 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.13 2003-06-23 20:52:05 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -7,6 +7,7 @@
 
 #include <string>
 #include <sstream>
+#include <stack>
 
 #include "xml_simplewriter.h"
 #include "basic_xpath_reader.h"
@@ -18,6 +19,7 @@ class XMLReader;
 class XMLWriter;
 class XMLBufferWriter;
 class XMLFileWriter;
+class XMLArrayWriter;
 
 
 /*! @addtogroup io
@@ -72,7 +74,7 @@ public:
   void printRoot(ostream& is);
         
   //! Count the number of occurances from the xpath query
-  int count(const string& xpath);
+  int count(const std::string& xpath);
 
 private:
   bool  iop;  //file open or closed?
@@ -98,16 +100,16 @@ inline
 void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
 {
   std::ostringstream error_message;
-  string elemName = "elem";
+  std::string elemName = "elem";
   
   // Count the number of elements
-  string elem_base_query = s + "/" + elemName;
+  std::string elem_base_query = s + "/" + elemName;
 	
   int array_size;
   try {
     array_size = xml.count(elem_base_query);
   }
-  catch( const string& e) { 
+  catch( const std::string& e) { 
     error_message << "Exception occurred while counting " << elem_base_query 
 		  << " during array read " << endl;
   }
@@ -128,7 +130,7 @@ void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
     {
       read(xml, element_xpath.str(), input[i]);
     } 
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
       error_message << "Failed to match element " << i
 		    << " of array with query " << element_xpath.str()
@@ -163,6 +165,12 @@ public:
   XMLWriter();
   ~XMLWriter();
 
+  virtual void openSimple(const std::string& tagname);
+  virtual void closeSimple();
+
+  virtual void openStruct(const std::string& tagname);
+  virtual void closeStruct();
+
   void openTag(const std::string& tagname);
   void openTag(const std::string& nsprefix, const std::string& tagname);
   void openTag(const std::string& tagname, XMLWriterAPI::AttributeList& al);
@@ -194,8 +202,10 @@ public:
   void write(const double& output);
   void write(const bool& output);
 
-  // Write XML string
+  // Write XML std::string
   void writeXML(const std::string& output);
+
+  friend XMLArrayWriter;
 };
 
 
@@ -397,6 +407,68 @@ private:
   QDPUtil::RemoteOutputFileStream output_stream;
 //  ofstream output_stream;
   ostream& getOstream(void) {return output_stream;}
+};
+
+
+
+//--------------------------------------------------------------------------------
+//! Write metadata to an array which serves as a handle for another XML object
+class XMLArrayWriter : public XMLWriter
+{
+public:
+  //! Constructor
+  /*! No prologue written
+   * @param xml_out  previous XMLWriter object - used for handle source
+   * @param size     size of array - default unbounded
+   */
+  explicit XMLArrayWriter(XMLWriter& xml_out, int size = -1) : 
+    output_xml(xml_out), array_size(size)
+    {
+      initP = arrayTag = false;
+      elements_written = 0;
+      indent_level = xml_out.indent_level;
+      simpleElements = false; // do not know this yet
+    }
+  
+  //! Destructor
+  ~XMLArrayWriter();
+
+  //! Flush the buffer
+//  void flush();
+
+  //! Close the array writer
+  /*! It is an error to close before all data is written, unless unbounded */
+  void close();
+       
+  //! Size of array
+  int size() const {return array_size;}
+
+  void openArray(const std::string& tagname);
+  void closeArray();
+
+//  virtual void openSimple(const std::string& tagname);
+//  virtual void closeSimple();
+
+  void openStruct(const std::string& tagname);
+  void closeStruct();
+
+private:
+  std::string qname;
+  std::string elem_qname;
+
+  bool arrayTag;         // set once array tag is written
+  bool initP;            // set once we know how the array is composed
+  bool simpleElements;   // true if elements will all be simple types
+  int array_size;        // total array element size
+  int elements_written;  // elements written so far
+
+  // A stack to hold context.
+  enum ElementType {SIMPLE, STRUCT};
+  std::stack<ElementType> contextStack;
+
+  // output stream is actually the original stream
+  XMLWriter& output_xml;
+  ostream& getOstream(void) {return output_xml.getOstream();}
 };
 
 
