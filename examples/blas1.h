@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: blas1.h,v 1.3 2004-03-26 14:53:49 bjoo Exp $
+// $Id: blas1.h,v 1.4 2004-04-01 13:17:44 bjoo Exp $
 //
 // Include file for test suite
 
@@ -53,5 +53,9 @@ double QDP_VSUB(LatticeFermion& dest,
 		int cnt);
 
 double QDP_NORM2(const LatticeFermion& s1, int cnt);
+double QDP_INNER_PROD(const LatticeFermion& s1, const LatticeFermion& s2, 
+		      int cnt);
+double QDP_INNER_PROD_REAL(const LatticeFermion& s1, const LatticeFermion& s2,
+			   int cnt);
 
 #endif

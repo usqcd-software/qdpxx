@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.6 2004-04-01 12:56:39 bjoo Exp $
+// $Id: t_blas.cc,v 1.7 2004-04-01 13:17:44 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -606,8 +606,6 @@ int main(int argc, char *argv[])
   drdiff = daccum - djim;
   QDPIO::cout << "Diff innerProductReal Subset = " << drdiff << endl;
 
-  QDP_finalize();
-  exit(0);
   // Timings
    // Test VSCAL
   int icnt;
@@ -775,6 +773,49 @@ int main(int argc, char *argv[])
     tt *= rescale;
     int Nflops = 4*Ns*Nc; // Mult an Add for each complex component
     QDPIO::cout << "time(norm2(V)) = " << tt
+		<< " micro-secs/site/iteration" 
+		<< " , " << Nflops / tt << " Mflops" << endl;
+    
+  }
+
+   // Test INNER_PRODUCT
+  gaussian(qx);
+  gaussian(qy);
+
+  for(icnt=1; ; icnt <<= 1)
+  {
+    QDPIO::cout << "calling innerProduct(v,v)) " << icnt << " times" << endl;
+    tt = QDP_INNER_PROD(qx, qy, icnt);
+    if (tt > 1)
+      break;
+  }
+  {
+    
+    double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+    tt *= rescale;
+    int Nflops = 8*Ns*Nc; // 2Mults and 2Adds for each complex component
+    QDPIO::cout << "time(innerProduct(V,V)) = " << tt
+		<< " micro-secs/site/iteration" 
+		<< " , " << Nflops / tt << " Mflops" << endl;
+    
+  }
+
+   // Test INNER_PRODUCT_REAL
+  gaussian(qx);
+  gaussian(qy);
+  for(icnt=1; ; icnt <<= 1)
+  {
+    QDPIO::cout << "calling innerProductReal(V,V) " << icnt << " times" << endl;
+    tt = QDP_INNER_PROD_REAL(qx,qy, icnt);
+    if (tt > 1)
+      break;
+  }
+  {
+    
+    double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+    tt *= rescale;
+    int Nflops = 4*Ns*Nc; // Mult an Add for each complex component
+    QDPIO::cout << "time(innerProductReal(V,V)) = " << tt
 		<< " micro-secs/site/iteration" 
 		<< " , " << Nflops / tt << " Mflops" << endl;
     
