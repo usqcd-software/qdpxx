@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.7 2003-09-02 04:10:46 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.8 2003-09-02 20:18:44 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -57,7 +57,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
     op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
   }
 #else
-  QDP_error("evaluateUnorderedSubset not implemented");
+  QDP_error_exit("evaluateUnorderedSubset not implemented");
 #endif
 }
 
@@ -120,7 +120,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
   }
 #else
-  QDP_error("evaluateUnorderedSubset not implemented");
+  QDP_error_exit("evaluateUnorderedSubset not implemented");
 #endif
 }
 
@@ -177,7 +177,7 @@ copymask(OSubLattice<T2,UnorderedSubset> d, const OLattice<T1>& mask, const OLat
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
   }
 #else
-  QDP_error("copymask_UnorderedSubset not implemented");
+  QDP_error_exit("copymask_UnorderedSubset not implemented");
 #endif
 }
 
@@ -255,7 +255,7 @@ random(OLattice<T>& d, const UnorderedSubset& s)
 
   RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
 #else
-  QDP_error("random_UnorderedSubset not implemented");
+  QDP_error_exit("random_UnorderedSubset not implemented");
 #endif
 }
 
@@ -319,7 +319,7 @@ void gaussian(OLattice<T>& d, const UnorderedSubset& s)
     fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
   }
 #else
-  QDP_error("gaussianUnorderedSubset not implemented");
+  QDP_error_exit("gaussianUnorderedSubset not implemented");
 #endif
 }
 
@@ -374,7 +374,7 @@ void zero_rep(OLattice<T>& dest, const UnorderedSubset& s)
     zero_rep(dest.elem(i));
   }
 #else
-  QDP_error("zero_rep_UnorderedSubset not implemented");
+  QDP_error_exit("zero_rep_UnorderedSubset not implemented");
 #endif
 }
 
@@ -451,26 +451,75 @@ sum(const QDPExpr<RHS,OScalar<T> >& s1)
 /*!
  * Allow a global sum that sums over the lattice, but returns an object
  * of the same primitive type. E.g., contract only over lattice indices
+ *
+ * This will include a parent Subset and an UnorderedSubset.
+ *
+ * NOTE: if this implementation does not have  hasOrderedRep() == true,
+ * then the implementation can be quite slow
  */
 template<class RHS, class T>
 typename UnaryReturn<OLattice<T>, FnSum>::Type_t
 sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 {
   typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
+  OScalar<T> tmp;   // Note, expect to have ILattice inner grid
 
   // Must initialize to zero since we do not know if the loop will be entered
   zero_rep(d.elem());
 
-#if ! defined(QDP_NOT_IMPLEMENTED)
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
+  if (s.hasOrderedRep())
   {
-    int i = tab[j];
-    d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
+    const int istart = s.start() >> INNER_LOG;
+    const int iend   = s.end()   >> INNER_LOG;
+
+    for(int i=istart; i <= iend; ++i) 
+    {
+      tmp.elem() = forEach(s1, EvalLeaf1(i), OpCombine()); // Evaluate to ILattice part
+      d.elem() += sum(tmp.elem());    // sum as well the ILattice part
+    }
   }
-#else
-  QDP_error("sum_UnorderedSubset not implemented");
-#endif
+  else
+  {
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      int outersite = i >> INNER_LOG;
+      int innersite = i & ((1 << INNER_LOG)-1);
+
+      tmp.elem() = forEach(s1, EvalLeaf1(outersite), OpCombine()); // Evaluate to ILattice part
+      d.elem() += getSite(tmp.elem(),innersite);    // wasteful - only extract a single site worth
+    }
+  }
+
+  return d;
+}
+
+
+
+//! OScalar = sum(OLattice) under an explicit OrderedSubset
+/*!
+ * Allow a global sum that sums over the lattice, but returns an object
+ * of the same primitive type. E.g., contract only over lattice indices
+ */
+template<class RHS, class T>
+typename UnaryReturn<OLattice<T>, FnSum>::Type_t
+sum(const QDPExpr<RHS,OLattice<T> >& s1, const OrderedSubset& s)
+{
+  typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
+  OScalar<T> tmp;   // Note, expect to have ILattice inner grid
+
+  // Loop always entered - could unroll
+  zero_rep(d.elem());
+
+  const int istart = s.start() >> INNER_LOG;
+  const int iend   = s.end()   >> INNER_LOG;
+
+  for(int i=istart; i <= iend; ++i) 
+  {
+    tmp.elem() = forEach(s1, EvalLeaf1(i), OpCombine()); // Evaluate to ILattice part
+    d.elem() += sum(tmp.elem());    // sum as well the ILattice part
+  }
 
   return d;
 }
@@ -485,20 +534,7 @@ template<class RHS, class T>
 typename UnaryReturn<OLattice<T>, FnSum>::Type_t
 sum(const QDPExpr<RHS,OLattice<T> >& s1)
 {
-  typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
-  OScalar<T> tmp;   // Note, expect to have ILattice inner grid
-
-  // Loop always entered - could unroll
-  zero_rep(d.elem());
-
-  const int iend = Layout::outerSitesOnNode();
-  for(int i=0; i < iend; ++i) 
-  {
-    tmp.elem() = forEach(s1, EvalLeaf1(i), OpCombine()); // Evaluate to ILattice part
-    d.elem() += sum(tmp.elem());    // sum as well the ILattice part
-  }
-
-  return d;
+  return sum(s1,all);
 }
 
 
@@ -520,9 +556,7 @@ sumMulti(const QDPExpr<RHS,OScalar<T> >& s1, const Set& ss)
 
   // lazy - evaluate repeatedly
   for(int i=0; i < ss.numSubsets(); ++i)
-  {
-    evaluate(dest[i],OpAssign(),s1);
-  }
+    dest[i] = sum(s1,ss[i]);
 
   return dest;
 }
@@ -543,22 +577,36 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 {
   typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
 
-  // Initialize result with zero
-  for(int k=0; k < ss.numSubsets(); ++k)
-    zero_rep(dest[k]);
-
-  // Loop over all sites and accumulate based on the coloring 
-  const multi1d<int>& lat_color =  ss.latticeColoring();
-
-  const int iend = Layout::outerSitesOnNode();
-  for(int i=0; i < iend; ++i) 
-  {
-    int j = lat_color[i];
-    dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
-  }
+  // lazy - evaluate repeatedly
+  for(int i=0; i < ss.numSubsets(); ++i)
+    dest[i] = sum(s1,ss[i]);
 
   return dest;
 }
+
+
+//! multi1d<OScalar> dest  = sumMulti(OLattice,UnorderedSet) 
+/*!
+ * Compute the global sum on multiple subsets specified by Set 
+ *
+ * This is a very simple implementation. There is no need for
+ * anything fancier unless global sums are just so extraordinarily
+ * slow. Otherwise, generalized sums happen so infrequently the slow
+ * version is fine.
+ */
+template<class RHS, class T>
+typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t
+sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const OrderedSet& ss)
+{
+  typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
+
+  // lazy - evaluate repeatedly
+  for(int i=0; i < ss.numSubsets(); ++i)
+    dest[i] = sum(s1,ss[i]);
+
+  return dest;
+}
+
 
 //-----------------------------------------------------------------------------
 // Peek and poke at individual sites. This is very architecture specific
@@ -595,7 +643,8 @@ peekSite(const OLattice<T1>& l, const multi1d<int>& coord)
   int i      = Layout::linearSiteIndex(coord);
   int iouter = i >> INNER_LOG;
   int iinner = i & ((1 << INNER_LOG)-1);
-  copy_site(dest.elem(), iinner, l.elem(iouter));
+
+  dest.elem() = getSite(l.elem(iouter), iinner);
   return dest;
 }
 
@@ -639,7 +688,7 @@ QDP_extract(multi1d<OScalar<T> >& dest, const OLattice<T>& src, const Subset& s)
     dest[i].elem() = src.elem(i);
   }
 #else
-  QDP_error("QDP_extract_UnorderedSubset not implemented");
+  QDP_error_exit("QDP_extract_UnorderedSubset not implemented");
 #endif
 }
 
@@ -662,7 +711,7 @@ QDP_insert(OLattice<T>& dest, const multi1d<OScalar<T> >& src, const Subset& s)
     dest.elem(i) = src[i].elem();
   }
 #else
-  QDP_error("QDP_insert_UnorderedSubset not implemented");
+  QDP_error_exit("QDP_insert_UnorderedSubset not implemented");
 #endif
 }
 
@@ -1144,7 +1193,7 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
     int outersite = i >> INNER_LOG;
     int innersite = i & ((1 << INNER_LOG)-1);
 
-    typedef typename UnaryReturn<OLattice<T>, FnGetSite>::Type_t  Site_t;
+    typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
     Site_t  this_site = getSite(d.elem(outersite),innersite);
 
     bin.writeArray((const char*)&this_site,
@@ -1175,14 +1224,14 @@ void read(BinaryReader& bin, OLattice<T>& d)
     int outersite = i >> INNER_LOG;
     int innersite = i & ((1 << INNER_LOG)-1);
 
-    typedef typename UnaryReturn<OLattice<T>, FnGetSite>::Type_t  Site_t;
+    typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
     Site_t  this_site;
 
     bin.readArray((char*)&this_site,
 		  sizeof(typename WordType<Site_t>::Type_t), 
 		  sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
 
-    copy_site(d.elem(outersite), innersite, this_site.elem());
+    copy_site(d.elem(outersite), innersite, this_site);
   }
 }
 
