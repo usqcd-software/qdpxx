@@ -1,4 +1,4 @@
-// $Id: parscalar_layout.cc,v 1.8 2003-04-02 21:27:43 edwards Exp $
+// $Id: parscalar_layout.cc,v 1.9 2003-04-09 19:32:27 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -97,7 +97,7 @@ namespace Layout
   int vol() {return _layout.vol;}
 
   //! Subgrid lattice volume
-  int subgridVol() {return _layout.subgrid_vol;}
+  int sitesOnNode() {return _layout.subgrid_vol;}
 
   //! Returns whether this is the primary node
   bool primaryNode() {return (_layout.node_rank == 0) ? true : false;}
@@ -147,7 +147,7 @@ namespace Layout
     const multi1d<int>& subgrid = Layout::subgridLattSize();
     const multi1d<int>& node_coord = Layout::nodeCoord();
 
-    for(int i=0; i < Layout::subgridVol(); ++i) 
+    for(int i=0; i < Layout::sitesOnNode(); ++i) 
     {
       int site = Layout::lexicoSiteIndex(i);
       for(int k=0; k <= mu; ++k)

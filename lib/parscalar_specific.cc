@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.15 2003-04-02 21:27:43 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.16 2003-04-09 19:32:27 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -39,17 +39,17 @@ void Set::make(const SetFunc& func)
   sub.resize(nsubset_indices);
 
   // Create the space of the colorings of the lattice
-  lat_color.resize(Layout::subgridVol());
+  lat_color.resize(Layout::sitesOnNode());
 
   // Create the array holding the array of sitetable info
   sitetables.resize(nsubset_indices);
 
   // For a sanity check, set to some invalid value
-  for(int site=0; site < Layout::subgridVol(); ++site)
+  for(int site=0; site < Layout::sitesOnNode(); ++site)
     lat_color[site] = -1;
 
   // Loop over all sites determining their color
-  for(int site=0; site < Layout::subgridVol(); ++site)
+  for(int site=0; site < Layout::sitesOnNode(); ++site)
   {
     multi1d<int> coord = crtesn(site, Layout::subgridLattSize());
 
@@ -70,7 +70,7 @@ void Set::make(const SetFunc& func)
   }
 
   // Loop over all sites and see if coloring properly set
-  for(int site=0; site < Layout::subgridVol(); ++site)
+  for(int site=0; site < Layout::sitesOnNode(); ++site)
   {
     if (lat_color[site] == -1)
       QDP_error_exit("Set: found site with coloring not set");
@@ -95,7 +95,7 @@ void Set::make(const SetFunc& func)
 
     // First loop and see how many sites are needed
     int num_sitetable = 0;
-    for(int linear=0; linear < Layout::subgridVol(); ++linear)
+    for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
       if (lat_color[linear] == cb)
 	++num_sitetable;
 
@@ -104,7 +104,7 @@ void Set::make(const SetFunc& func)
     multi1d<int>& sitetable = sitetables[cb];
     sitetable.resize(num_sitetable);
 
-    for(int linear=0, j=0; linear < Layout::subgridVol(); ++linear)
+    for(int linear=0, j=0; linear < Layout::sitesOnNode(); ++linear)
       if (lat_color[linear] == cb)
 	sitetable[j++] = linear;
 
@@ -126,14 +126,14 @@ void Map::make(const MapFunc& func)
 
   //--------------------------------------
   // Setup the communication index arrays
-  soffsets.resize(Layout::subgridVol());
-  srcnode.resize(Layout::subgridVol());
-  dstnode.resize(Layout::subgridVol());
+  soffsets.resize(Layout::sitesOnNode());
+  srcnode.resize(Layout::sitesOnNode());
+  dstnode.resize(Layout::sitesOnNode());
 
   const int my_node = Layout::nodeNumber();
 
   // Loop over the sites on this node
-  for(int linear=0; linear < Layout::subgridVol(); ++linear)
+  for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
   {
     // Get the true lattice coord of this linear site index
     multi1d<int> coord = Layout::siteCoords(my_node, linear);
@@ -162,7 +162,7 @@ void Map::make(const MapFunc& func)
 //  Write(nml,srcnode);
 //  Write(nml,dstnode);
 
-  for(int linear=0; linear < Layout::subgridVol(); ++linear)
+  for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
   {
     QDP_info("soffsets(%d) = %d",linear,soffsets(linear));
     QDP_info("srcnode(%d) = %d",linear,srcnode(linear));
@@ -253,7 +253,7 @@ void Map::make(const MapFunc& func)
   srcenodes_num = 0;
   destnodes_num = 0;
 
-  for(int linear=0; linear < Layout::subgridVol(); ++linear)
+  for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
   {
     int this_node = srcnode[linear];
     if (this_node != my_node)

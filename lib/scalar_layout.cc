@@ -1,4 +1,4 @@
-// $Id: scalar_layout.cc,v 1.6 2003-04-02 21:27:43 edwards Exp $
+// $Id: scalar_layout.cc,v 1.7 2003-04-09 19:32:27 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -82,7 +82,7 @@ namespace Layout
   int vol() {return _layout.vol;}
 
   //! Subgrid lattice volume
-  int subgridVol() {return _layout.subgrid_vol;}
+  int sitesOnNode() {return _layout.subgrid_vol;}
 
   //! Returns whether this is the primary node
   /*! Always true on a scalar platform */

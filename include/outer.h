@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.21 2003-03-17 20:35:57 edwards Exp $
+// $Id: outer.h,v 1.22 2003-04-09 19:32:27 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -201,11 +201,11 @@ class OLattice: public QDPType<T, OLattice<T> >
 public:
   OLattice() 
     {
-      F = new T[Layout::subgridVol()];
+      F = new T[Layout::sitesOnNode()];
 
 #if defined(DEBUG)
       fprintf(stderr,"create OLattice[%d]=0x%x, this=0x%x\n",
-              Layout::subgridVol(),(void *)F,this);
+              Layout::sitesOnNode(),(void *)F,this);
 #endif
     }
   ~OLattice()
@@ -222,10 +222,10 @@ public:
   template<class T1>
   OLattice(const OLattice<T1>& rhs)
     {
-      F = new T[Layout::subgridVol()];
+      F = new T[Layout::sitesOnNode()];
 
 #if defined(DEBUG)
-      fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
+      fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
 #endif
 
       assign(rhs);
@@ -236,10 +236,10 @@ public:
   template<class RHS, class T1>
   OLattice(const QDPExpr<RHS, OLattice<T1> >& rhs)
     {
-      F = new T[Layout::subgridVol()];
+      F = new T[Layout::sitesOnNode()];
 
 #if defined(DEBUG)
-      fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
+      fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
 #endif
 
       assign(rhs);
@@ -249,10 +249,10 @@ public:
   //! construct OLattice = const
   OLattice(const typename WordType<T>::Type_t& rhs)
     {
-      F = new T[Layout::subgridVol()];
+      F = new T[Layout::sitesOnNode()];
 
 #if defined(DEBUG)
-      fprintf(stderr,"construct from const OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
+      fprintf(stderr,"construct from const OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
 #endif
 
       typedef OScalar<typename InternalScalar<T>::Type_t>  Scalar_t;
@@ -263,10 +263,10 @@ public:
   //! construct OLattice = 0
   OLattice(const Zero& rhs)
     {
-      F = new T[Layout::subgridVol()];
+      F = new T[Layout::sitesOnNode()];
 
 #if defined(DEBUG)
-      fprintf(stderr,"construct from zero OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
+      fprintf(stderr,"construct from zero OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
 #endif
 
       assign(rhs);
@@ -320,10 +320,10 @@ public:
   /*! For now, a deep copy */
   OLattice(const OLattice& rhs)
     {
-      F = new T[Layout::subgridVol()];
+      F = new T[Layout::sitesOnNode()];
 
 #if defined(DEBUG)
-      fprintf(stderr,"copy OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
+      fprintf(stderr,"copy OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
 #endif
       
       assign(rhs);
@@ -335,7 +335,7 @@ public:
   void print_info(char *name)
     {
       fprintf(stderr,"Info: %s = OLattice[%d]=0x%x, this=0x%x\n",
-              name,Layout::subgridVol(),(void *)F,this);
+              name,Layout::sitesOnNode(),(void *)F,this);
     }
 
 

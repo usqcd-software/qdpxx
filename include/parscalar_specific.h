@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.20 2003-03-17 20:35:57 edwards Exp $
+// $Id: parscalar_specific.h,v 1.21 2003-04-09 19:32:27 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -216,7 +216,7 @@ void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s
 template<class T1, class T2> 
 void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
-  for(int i=0; i < Layout::subgridVol(); ++i) 
+  for(int i=0; i < Layout::sitesOnNode(); ++i) 
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
 
@@ -356,7 +356,7 @@ void zero_rep(OSubLattice<T> dd)
 template<class T> 
 void zero_rep(OLattice<T>& dest) 
 {
-  for(int i=0; i < Layout::subgridVol(); ++i) 
+  for(int i=0; i < Layout::sitesOnNode(); ++i) 
     zero_rep(dest.elem(i));
 }
 
@@ -439,7 +439,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
   // Loop always entered - could unroll
   zero_rep(d.elem());
 
-  for(int i=0; i < Layout::subgridVol(); ++i) 
+  for(int i=0; i < Layout::sitesOnNode(); ++i) 
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
 
   // Do a global sum on the result
@@ -497,7 +497,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
   // Loop over all sites and accumulate based on the coloring 
   const multi1d<int>& lat_color =  ss.LatticeColoring();
 
-  for(int i=0; i < Layout::subgridVol(); ++i) 
+  for(int i=0; i < Layout::sitesOnNode(); ++i) 
   {
     int j = lat_color[i];
     dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
@@ -627,7 +627,7 @@ public:
 
 	// Eventually these declarations should move into d - the return object
 	typedef T1 * T1ptr;
-	T1 **dest = new T1ptr[Layout::subgridVol()];
+	T1 **dest = new T1ptr[Layout::sitesOnNode()];
 	QMP_msgmem_t msg[2];
 	QMP_msghandle_t mh_a[2], mh;
 
@@ -647,7 +647,7 @@ public:
 	// Gather the face of data to send
 	// For now, use the all subset
 	const int my_node = Layout::nodeNumber();
-	for(int i=0, si=0, ri=0; i < Layout::subgridVol(); ++i) 
+	for(int i=0, si=0, ri=0; i < Layout::sitesOnNode(); ++i) 
 	{
 	  if (dstnode[i] != my_node)
 	    send_buf[si++] = l.elem(i);
@@ -699,7 +699,7 @@ public:
 	// Scatter the data into the destination
 	// Some of the data maybe in receive buffers
 	// For now, use the all subset
-	for(int i=0; i < Layout::subgridVol(); ++i) 
+	for(int i=0; i < Layout::sitesOnNode(); ++i) 
 	{
 //	  QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
 	  d.elem(i) = *(dest[i]);
@@ -718,7 +718,7 @@ public:
 //	QDP_info("Map: copy on node - no communications");
 
 	// For now, use the all subset
-	for(int i=0; i < Layout::subgridVol(); ++i) 
+	for(int i=0; i < Layout::sitesOnNode(); ++i) 
 	{
 //	  QDP_info("Map(olattice[%d],olattice[%d])",i,soffsets[i]);
 	  d.elem(i) = l.elem(soffsets[i]);
@@ -1063,9 +1063,9 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
     nml.get() << "   [OUTER]" << endl;
 
   // Twice the subgrid vol - intermediate array we flip-flop writing data
-  multi1d<T> data(2*Layout::subgridVol());
+  multi1d<T> data(2*Layout::sitesOnNode());
 
-  for(int site=0; site < Layout::subgridVol(); ++site)
+  for(int site=0; site < Layout::sitesOnNode(); ++site)
     data[site] = d.elem(site);
 
   const int xinc = Layout::subgridLattSize()[0];
@@ -1094,9 +1094,9 @@ template<class T>
 BinaryWriter& write(BinaryWriter& bin, const OLattice<T>& d)
 {
   // Twice the subgrid vol - intermediate array we flip-flop writing data
-  multi1d<T> data(2*Layout::subgridVol());
+  multi1d<T> data(2*Layout::sitesOnNode());
 
-  for(int site=0; site < Layout::subgridVol(); ++site)
+  for(int site=0; site < Layout::sitesOnNode(); ++site)
     data[site] = d.elem(site);
 
   const int xinc = Layout::subgridLattSize()[0];
@@ -1151,7 +1151,7 @@ template<class T>
 BinaryReader& read(BinaryReader& bin, OLattice<T>& d)
 {
   // Twice the subgrid vol - intermediate array we flip-flop reading data
-  multi1d<T> data(2*Layout::subgridVol());
+  multi1d<T> data(2*Layout::sitesOnNode());
   const int xinc = Layout::subgridLattSize()[0];
 
   // Assume lexicographic for the moment...
@@ -1166,7 +1166,7 @@ BinaryReader& read(BinaryReader& bin, OLattice<T>& d)
 		       (unsigned char*)(data.slice()), sizeof(T), xinc);
   }
 
-  for(int site=0; site < Layout::subgridVol(); ++site)
+  for(int site=0; site < Layout::sitesOnNode(); ++site)
   {
 //    int i = Layout::linearSiteIndex(site);
     d.elem(site) = data[site];
