@@ -1,11 +1,16 @@
 // -*- C++ -*-
-// $Id: globalfuncs.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
+// $Id: globalfuncs.h,v 1.3 2002-09-25 00:31:51 edwards Exp $
 //
 // QDP data parallel interface
 //
 QDP_BEGIN_NAMESPACE(QDP);
 
 
+/** @defgroup group2 QDP global reductions
+ *  
+ *  Global reductions, like sum, norm2, etc.
+ *  @{
+ */
 //-----------------------------------------------
 // Global sums
 //! OScalar = sum(OLattice)
@@ -114,8 +119,14 @@ innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
   return sum(localInnerproductReal(s1,s2));
 }
 
+/** @} */ // end of group2
 
 
+/** @defgroup group5 QDP auxilliary functions
+ *  
+ *  SU(N) operations, spin projections, etc.
+ *  @{
+ */
 //-----------------------------------------------------------------------------
 //! Su2_extract: r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]
 /*! 
@@ -335,6 +346,7 @@ spinReconstruct(const QDPType<T,C>& s1, int mu, int isign)
 }
 
 
+/** @} */ // end of group5
 
 QDP_END_NAMESPACE();
 
