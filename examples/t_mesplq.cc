@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.1 2002-09-12 18:22:17 edwards Exp $
+// $Id: t_mesplq.cc,v 1.2 2002-09-14 02:47:00 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -11,33 +11,22 @@ using namespace QDP;
 int main(int argc, char **argv)
 {
   // Setup the geometry
-  const int foo[Nd] = {4,4};
+  const int foo[Nd] = {LX0,LX1};
   multi1d<int> nrow(Nd);
-  for(int i=0; i < nrow.size(); ++i)
-    nrow[i] = foo[i];
+  nrow = foo;
   geom.Init(nrow);
 
-  // Initialize the random number generator
-  multi1d<int> seed(4);
-  seed = 0;
-  seed[0] = 11;
-  RNG::setrn(seed);
+  //! Example of calling a plaquette routine
+  /*! NOTE: the STL is *not* used to hold gauge fields */
+  cerr << "After initialize vector of latticegauge\n";
+  Double w_plaq, s_plaq, t_plaq, link;
 
-  //! Test out propagators
-  multi1d<LatticeGauge> u(Nd);
+  cerr << "Start gaussian\n";
   for(int m=0; m < u.size(); ++m)
-    Gaussian(u[m]);
+    gaussian(u[m]);
 
-  LatticePropagator quark_prop_1, quark_prop_2;
-  Gaussian(quark_prop_1);
-  Gaussian(quark_prop_2);
+  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+  cerr << "w_plaq = " << w_plaq << endl;
+  cerr << "link = " << link << endl;
 
-  int j_decay = Nd-1;
-  int length = geom.LattSize()[j_decay];
-  multi1d<int> t_source(Nd);
-  t_source = 0;
-
-  int t_sink = 3;
-
-  FormFac(u, quark_prop_1, quark_prop_2, t_source, t_sink, j_decay);
 }
