@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.10 2003-08-29 02:40:50 edwards Exp $
+// $Id: qdp_inner.h,v 1.11 2003-08-30 02:11:47 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -1666,6 +1666,9 @@ copy_site(IScalar<T>& d, int isite, const IScalar<T1>& s1)
 }
 
 
+#if 0
+// This should never be used and is probably an error if needed
+
 //! gather several inner sites together
 template<class T, class T1>
 inline void 
@@ -1681,6 +1684,7 @@ gather_sites(IScalar<T>& d,
 	       s2.elem(), i2, 
 	       s3.elem(), i3);
 }
+#endif
 
 
 //------------------------------------------
@@ -2852,9 +2856,9 @@ gather_sites(ILattice<T,4>& d,
 	     const ILattice<T1,4>& s3, int i3)
 {
   d.elem(0) = s0.elem(i0);
-  d.elem(1) = s0.elem(i1);
-  d.elem(2) = s0.elem(i2);
-  d.elem(3) = s0.elem(i3);
+  d.elem(1) = s1.elem(i1);
+  d.elem(2) = s2.elem(i2);
+  d.elem(3) = s3.elem(i3);
 }
 
 
