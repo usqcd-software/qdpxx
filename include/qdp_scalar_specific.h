@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.3 2003-06-04 18:22:29 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.4 2003-06-05 03:38:22 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -892,9 +892,9 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
 template<class T>
 void read(BinaryReader& bin, OScalar<T>& d)
 {
-  readArray((char*)&(d.elem()), 
-	    sizeof(typename WordType<T>::Type_t), 
-	    sizeof(T) / sizeof(typename WordType<T>::Type_t)); 
+  bin.readArray((char*)&(d.elem()), 
+		sizeof(typename WordType<T>::Type_t), 
+		sizeof(T) / sizeof(typename WordType<T>::Type_t)); 
 }
 
 //! Binary input
@@ -905,9 +905,9 @@ void read(BinaryReader& bin, OLattice<T>& d)
   for(int site=0; site < Layout::vol(); ++site) 
   {
     int i = Layout::linearSiteIndex(site);
-    readArray((char*)&(d.elem(i)), 
-	      sizeof(typename WordType<T>::Type_t), 
-	      sizeof(T) / sizeof(typename WordType<T>::Type_t));
+    bin.readArray((char*)&(d.elem(i)), 
+		  sizeof(typename WordType<T>::Type_t), 
+		  sizeof(T) / sizeof(typename WordType<T>::Type_t));
   }
 }
 
