@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.11 2003-08-04 19:06:17 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.12 2003-08-08 18:58:05 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -88,12 +88,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 {
 //  cerr << "In evaluateAll(olattice,oscalar)\n";
 
-  const int vvol = Layout::vol();
-  for(int i=0; i < vvol; ++i) 
-  {
-//    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
-    op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
-  }
+  evaluate(dest, op, rhs, all);
 }
 
 
@@ -147,12 +142,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 {
 //  cerr << "In evaluateAll(olattice,olattice)\n";
 
-  const int vvol = Layout::vol();
-  for(int i=0; i < vvol; ++i) 
-  {
-//    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
-    op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
-  }
+  evaluate(dest, op, rhs, all);
 }
 
 

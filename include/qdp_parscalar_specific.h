@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.13 2003-07-31 01:07:11 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.14 2003-08-08 18:58:05 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -154,11 +154,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 {
 //  cerr << "In evaluateAll(olattice,oscalar)\n";
 
-  for(int i=0; i < Layout::sitesOnNode(); ++i) 
-  {
-//    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
-    op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
-  }
+  evaluate(dest, op, rhs, all);
 }
 
 
@@ -210,11 +206,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 {
 //  cerr << "In evaluateAll(olattice,olattice)" << endl;
 
-  for(int i=0; i < Layout::sitesOnNode(); ++i) 
-  {
-//    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
-    op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
-  }
+  evaluate(dest, op, rhs, all);
 }
 
 
