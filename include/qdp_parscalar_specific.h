@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.35 2005-01-22 20:20:19 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.36 2005-02-22 16:36:55 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -1062,12 +1062,36 @@ public:
 	int srcnum = srcenodes_num[0]*sizeof(T1);
 
 	// Try getting fast and communicable memory
-	QMP_mem_t *send_buf_mem = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE, QMP_MEM_DEFAULT ); // packed data to send
-	QMP_mem_t *recv_buf_mem = QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE, QMP_MEM_DEFAULT); // packed receive data
+	QMP_mem_t *send_buf_mem = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE, 
+								(QMP_MEM_COMMS|QMP_MEM_FAST) ); // packed data to send
+	if( send_buf_mem == 0x0 ) { 
+	   send_buf_mem = QMP_allocate_aligned_memory(dstnum, QDP_ALIGNMENT_SIZE, 
+						      QMP_MEM_COMMS);
+	   if( send_buf_mem == 0x0 ) { 
+	      QDP_error_exit("Unable to allocate send_buf_mem\n");
+           }
+        }
 
-
+	QMP_mem_t *recv_buf_mem = QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE, 
+							      (QMP_MEM_COMMS|QMP_MEM_FAST)); // packed receive data
+	if( recv_buf_mem == 0x0 ) { 
+	    recv_buf_mem = QMP_allocate_aligned_memory(srcnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS); 
+	    if( recv_buf_mem == 0x0 ) { 
+	       QDP_error_exit("Unable to allocate recv_buf_mem\n");
+            }
+        }
+				
 	T1 *send_buf = (T1 *)QMP_get_memory_pointer(send_buf_mem);
 	T1 *recv_buf = (T1 *)QMP_get_memory_pointer(recv_buf_mem);
+
+	// Total and utter paranoia
+	if ( send_buf == 0x0 ) { 
+	   QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (send_buf)\n");
+	}
+
+	if ( recv_buf == 0x0 ) { 
+	   QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n"); 
+	}
 
 	const int my_node = Layout::nodeNumber();
 

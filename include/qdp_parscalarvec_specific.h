@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.19 2005-01-22 20:20:19 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.20 2005-02-22 16:36:55 bjoo Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -1199,8 +1199,33 @@ public:
 
 	int dstnum = destnodes_num[0]*sizeof(Site_t);
 	int srcnum = srcenodes_num[0]*sizeof(Site_t);
-	Site_t *send_buf = (Site_t *)(QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE,QMP_COMMS_DEFAULT)); // packed data to send
-	Site_t *recv_buf = (Site_t *)(QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE,QMP_COMMS_DEFAULT)); // packed receive data
+	QMP_mem_t* send_buf_mem_t;
+	QMP_mem_t* recv_buf_mem_t;
+
+	send_buf_mem_t = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE,(QMP_MEM_COMMS|QMP_MEM_FAST)); // packed data to send
+	if( send_buf_mem_t == 0x0 ) { 
+	   send_buf_mem_t = QMP_allocate_aligned_memory(dstnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
+	   if( send_buf_mem_t == 0x0) { 
+	     QDP_error_exit("QMP_allocate_aligned_memory failed (send_buf_mem_t)\n");
+           }
+        }
+
+	Site* send_buf=(Site *)QMP_get_memory_pointer(send_buf_mem_t);
+	if( send_buf == 0x0 ) { 
+	   QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (send_buf)\n");
+        }	
+
+	recv_buf_mem_t = QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE,(QMP_MEM_COMMS|QMP_MEM_FAST)); // packed receive data
+	if( recv_buf_mem_t == 0x0 ) { 
+	   recv_buf_mem_t = QMP_allocate_aligned_memory(srcnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
+	   if( recv_buf_mem_t == 0x0 ) {
+	     QDP_error_exit("QMP_allocate_aligned_memory failed (recv_buf_mem_t)\n"Â);
+	   }
+        }
+	Site* recv_buf=(Site *)QMP_get_memory_pointer(recv_buf_mem_t);
+	if (recv_buf == 0x0) { 
+	  QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n");
+        }
 
 	const int my_node = Layout::nodeNumber();
 
