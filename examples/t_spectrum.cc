@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.16 2004-11-22 19:31:31 edwards Exp $
+ *  $Id: t_spectrum.cc,v 1.17 2005-03-20 18:49:16 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -160,6 +160,7 @@ int main(int argc, char **argv)
   }
 
   pop(xml);
+  xml.close();
   QDPIO::cout << "...done" << endl;
 
   // Time to bolt
