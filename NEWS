@@ -1,3 +1,8 @@
+04/06/2004 -- Robert Edwards
+
+	Version 1.8.2. Fixed XMLReader to print the derived portion of a
+        tree when it is derived.
+
 04/05/2004 -- Robert Edwards
 
 	Version 1.8.1. Fixed multi1d in QIO.
