@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: layout.h,v 1.4 2002-10-28 03:08:44 edwards Exp $
+// $Id: layout.h,v 1.5 2002-11-04 04:42:43 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -27,7 +27,7 @@ namespace Layout
 {
   //! Probably standard initializer for a layout
   /*! This should read from some internal state and start initializing */
-  inline void initialize() {SZ_ERROR("generic initialize not implemented");}
+  inline void initialize() {QDP_error_exit("generic initialize not implemented");}
 
   //! Rudimentary initializer for a layout
   void initialize(const multi1d<int>& nrows);
@@ -37,6 +37,27 @@ namespace Layout
 
   //! Panic button
   void abort(int status);
+
+  //! Returns the logical node number for the corresponding lattice coordinate
+  /*! The API requires this function to be here */
+  int nodeNumber(const multi1d<int>& coord);
+
+  //! The linearized site index within a node for the corresponding lattice coordinate
+  /*! The API requires this function to be here */
+  int linearSiteIndex(const multi1d<int>& coord);
+
+  //! Reconstruct the lattice coordinate from the node and site number
+  /*! 
+   * This is the inverse of the nodeNumber and linearSiteIndex functions.
+   * The API requires this function to be here.
+   */
+  multi1d<int> siteCoords(int node, int index);
+
+  //! Returns the node number of this node
+  int nodeNumber();
+
+  //! Returns the number of nodes
+  int numNodes();
 
   //! Virtual grid (problem grid) lattice size
   const multi1d<int>& lattSize();
@@ -50,14 +71,8 @@ namespace Layout
   //! Returns whether this is the primary node
   bool primaryNode();
 
-
-  //! The linearized site index within a node for the corresponding lattice coordinate
-  int linearSiteIndex(const multi1d<int>& coord);
-
   //! The lexicographic site index within a node for the corresponding lattice coordinate
   int lexicoSiteIndex(const multi1d<int>& coord);
-
-
 
   //! The linearized site index for the corresponding lexicographic site
   int linearSiteIndex(int lexicosite);
@@ -66,6 +81,10 @@ namespace Layout
   int lexicoSiteIndex(int linearsite);
 
 };
+
+//! Declaration of shift function object
+extern NearestNeighborMap  shift;
+
 
 /*! @} */   // end of group layout
 
