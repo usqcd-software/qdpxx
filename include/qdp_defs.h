@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_defs.h,v 1.8 2003-10-22 00:59:08 edwards Exp $
+// $Id: qdp_defs.h,v 1.9 2003-12-21 19:21:03 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -89,8 +89,15 @@ typedef OScalar< PScalar< PScalar< RScalar<REAL> > > > Real;
 typedef OScalar< PScalar< PScalar< RScalar<DOUBLE> > > > Double;
 typedef OScalar< PScalar< PScalar< RScalar<LOGICAL> > > > Boolean;
 
+typedef OScalar< PScalar< PColorVector< RComplex<DOUBLE>, Nc> > > DColorVector;
+typedef OScalar< PScalar< PColorMatrix< RComplex<DOUBLE>, Nc> > > DColorMatrix;
+typedef OScalar< PSpinVector< PScalar< RComplex<DOUBLE> >, Ns> > DSpinVector;
+typedef OScalar< PSpinMatrix< PScalar< RComplex<DOUBLE> >, Ns> > DSpinMatrix;
+typedef OScalar< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, 1> > DStaggeredFermion;
+typedef OScalar< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, Ns> > DFermion;
+typedef OScalar< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, Ns>>1 > > DHalfFermion;
+typedef OScalar< PSpinMatrix< PColorMatrix< RComplex<DOUBLE>, Nc>, Ns> > DPropagator;
 typedef OScalar< PScalar< PScalar< RComplex<DOUBLE> > > > DComplex;
-
 
 // Other useful names
 typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns> > ColorVectorSpinVector;
