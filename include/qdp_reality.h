@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.17 2003-11-01 20:34:47 edwards Exp $
+// $Id: qdp_reality.h,v 1.18 2003-12-12 01:53:25 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -849,7 +849,10 @@ template<class T1, class T2>
 inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAdjMultiply>::Type_t
 adjMultiply(const RScalar<T1>& l, const RScalar<T2>& r)
 {
-  return transpose(l.elem()) * r.elem();
+  /*! NOTE: removed transpose here !!!!!  */
+
+//  return transpose(l.elem()) * r.elem();
+  return l.elem() * r.elem();
 }
 
 // Optimized  RScalar*adj(RScalar)
@@ -857,7 +860,10 @@ template<class T1, class T2>
 inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpMultiplyAdj>::Type_t
 multiplyAdj(const RScalar<T1>& l, const RScalar<T2>& r)
 {
-  return l.elem() * transpose(r.elem());
+  /*! NOTE: removed transpose here !!!!!  */
+
+//  return l.elem() * transpose(r.elem());
+  return l.elem() * r.elem();
 }
 
 // Optimized  adj(RScalar)*adj(RScalar)
@@ -865,7 +871,10 @@ template<class T1, class T2>
 inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAdjMultiplyAdj>::Type_t
 adjMultiplyAdj(const RScalar<T1>& l, const RScalar<T2>& r)
 {
-  return transpose(l.elem()) * transpose(r.elem());
+  /*! NOTE: removed transpose here !!!!!  */
+
+//  return transpose(l.elem()) * transpose(r.elem());
+  return l.elem() * r.elem();
 }
 
 
@@ -1050,7 +1059,10 @@ template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnAdjoint>::Type_t
 adj(const RScalar<T1>& s1)
 {
-  return transpose(s1.elem()); // The complex nature has been eaten here
+  /*! NOTE: removed transpose here !!!!!  */
+
+//  return transpose(s1.elem()); // The complex nature has been eaten here
+  return s1.elem(); // The complex nature has been eaten here
 }
 
 
@@ -1068,7 +1080,10 @@ template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnTranspose>::Type_t
 transpose(const RScalar<T1>& s1)
 {
-  return transpose(s1.elem());
+  /*! NOTE: removed transpose here !!!!!  */
+
+//  return transpose(s1.elem());
+  return s1.elem();
 }
 
 
@@ -1084,7 +1099,10 @@ template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnTrace>::Type_t
 trace(const RScalar<T1>& s1)
 {
-  return trace(s1.elem());
+//  return trace(s1.elem());
+
+  /*! NOTE: removed trace here !!!!!  */
+  return s1.elem();
 }
 
 
@@ -1098,7 +1116,10 @@ template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnRealTrace>::Type_t
 trace_real(const RScalar<T1>& s1)
 {
-  return trace_real(s1.elem());
+//  return trace_real(s1.elem());
+
+  /*! NOTE: removed trace here !!!!!  */
+  return s1.elem();
 }
 
 
@@ -1112,7 +1133,10 @@ template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnImagTrace>::Type_t
 trace_imag(const RScalar<T1>& s1)
 {
-  return trace_imag(s1.elem());
+//  return trace_imag(s1.elem());
+
+  /*! NOTE: removed trace here !!!!!  */
+  return s1.elem();
 }
 
 
@@ -1586,11 +1610,10 @@ template<class T1>
 inline typename UnaryReturn<RComplex<T1>, OpUnaryPlus>::Type_t
 operator+(const RComplex<T1>& l)
 {
-  typename UnaryReturn<RComplex<T1>, OpUnaryPlus>::Type_t  d;
+  typedef typename UnaryReturn<RComplex<T1>, OpUnaryPlus>::Type_t  Ret_t;
 
-  d.real() = +l.real();
-  d.imag() = +l.imag();
-  return d;
+  return Ret_t(+l.real(),
+	       +l.imag());
 }
 
 
@@ -1598,11 +1621,10 @@ template<class T1>
 inline typename UnaryReturn<RComplex<T1>, OpUnaryMinus>::Type_t
 operator-(const RComplex<T1>& l)
 {
-  typename UnaryReturn<RComplex<T1>, OpUnaryMinus>::Type_t  d;
+  typedef typename UnaryReturn<RComplex<T1>, OpUnaryMinus>::Type_t  Ret_t;
 
-  d.real() = -l.real();
-  d.imag() = -l.imag();
-  return d;
+  return Ret_t(-l.real(),
+	       -l.imag());
 }
 
 
@@ -1610,11 +1632,10 @@ template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdd>::Type_t
 operator+(const RComplex<T1>& l, const RComplex<T2>& r)
 {
-  typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdd>::Type_t  d;
+  typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdd>::Type_t  Ret_t;
 
-  d.real() = l.real()+r.real();
-  d.imag() = l.imag()+r.imag();
-  return d;
+  return Ret_t(l.real()+r.real(),
+	       l.imag()+r.imag());
 }
 
 
@@ -1622,37 +1643,21 @@ template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpSubtract>::Type_t
 operator-(const RComplex<T1>& l, const RComplex<T2>& r)
 {
-  typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpSubtract>::Type_t  d;
+  typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpSubtract>::Type_t  Ret_t;
 
-  d.real() = l.real() - r.real();
-  d.imag() = l.imag() - r.imag();
-  return d;
+  return Ret_t(l.real() - r.real(),
+	       l.imag() - r.imag());
 }
 
-
-#if 0
-template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t
-operator*(const RComplex<T1>& l, const RComplex<T2>& r) __attribute__ ((const,always_inline));
-#endif
 
 template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t
 operator*(const RComplex<T1>& __restrict__ l, const RComplex<T2>& __restrict__ r) 
 {
-#if 1
-  typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t  d;
+  typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t  Ret_t;
 
-  d.real() = l.real()*r.real() - l.imag()*r.imag();
-  d.imag() = l.real()*r.imag() + l.imag()*r.real();
-  return d;
-#else
-  // NOTE: this version is slower than above !!!
-  typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t  d;
-
-  return d(l.real()*r.real() - l.imag()*r.imag(),
-	   l.real()*r.imag() + l.imag()*r.real());
-#endif
+  return Ret_t(l.real()*r.real() - l.imag()*r.imag(),
+	       l.real()*r.imag() + l.imag()*r.real());
 }
 
 
@@ -1660,22 +1665,20 @@ template<class T1, class T2>
 inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpMultiply>::Type_t
 operator*(const RScalar<T1>& l, const RComplex<T2>& r)
 {
-  typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpMultiply>::Type_t  d;
+  typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpMultiply>::Type_t  Ret_t;
 
-  d.real() = l.elem()*r.real();
-  d.imag() = l.elem()*r.imag();
-  return d;
+  return Ret_t(l.elem()*r.real(), 
+	       l.elem()*r.imag());
 }
 
 template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpMultiply>::Type_t
 operator*(const RComplex<T1>& l, const RScalar<T2>& r)
 {
-  typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpMultiply>::Type_t  d;
+  typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpMultiply>::Type_t  Ret_t;
 
-  d.real() = l.real()*r.elem();
-  d.imag() = l.imag()*r.elem();
-  return d;
+  return Ret_t(l.real()*r.elem(), 
+	       l.imag()*r.elem());
 }
 
 
@@ -1684,13 +1687,18 @@ template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiply>::Type_t
 adjMultiply(const RComplex<T1>& l, const RComplex<T2>& r)
 {
-  typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiply>::Type_t  d;
+  typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiply>::Type_t  Ret_t;
 
   // The complex conjugate nature has been eaten here leaving simple multiples
   // involving transposes - which are probably null
-  d.real() = transpose(l.real())*r.real() + transpose(l.imag())*r.imag();
-  d.imag() = transpose(l.real())*r.imag() - transpose(l.imag())*r.real();
-  return d;
+  
+//  d.real() = transpose(l.real())*r.real() + transpose(l.imag())*r.imag();
+//  d.imag() = transpose(l.real())*r.imag() - transpose(l.imag())*r.real();
+//  return d;
+
+  /*! NOTE: removed transpose here !!!!!  */
+  return Ret_t(l.real()*r.real() + l.imag()*r.imag(),
+	       l.real()*r.imag() - l.imag()*r.real());
 }
 
 // Optimized  RComplex*adj(RComplex)
@@ -1698,13 +1706,17 @@ template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiplyAdj>::Type_t
 multiplyAdj(const RComplex<T1>& l, const RComplex<T2>& r)
 {
-  typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiplyAdj>::Type_t  d;
+  typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiplyAdj>::Type_t  Ret_t;
 
   // The complex conjugate nature has been eaten here leaving simple multiples
   // involving transposes - which are probably null
-  d.real() = l.real()*transpose(r.real()) + l.imag()*transpose(r.imag());
-  d.imag() = l.imag()*transpose(r.real()) - l.real()*transpose(r.imag());
-  return d;
+//  d.real() = l.real()*transpose(r.real()) + l.imag()*transpose(r.imag());
+//  d.imag() = l.imag()*transpose(r.real()) - l.real()*transpose(r.imag());
+//  return d;
+
+  /*! NOTE: removed transpose here !!!!!  */
+  return Ret_t(l.real()*r.real() + l.imag()*r.imag(),
+	       l.imag()*r.real() - l.real()*r.imag());
 }
 
 // Optimized  adj(RComplex)*adj(RComplex)
@@ -1712,13 +1724,17 @@ template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiplyAdj>::Type_t
 adjMultiplyAdj(const RComplex<T1>& l, const RComplex<T2>& r)
 {
-  typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiplyAdj>::Type_t  d;
+  typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiplyAdj>::Type_t  Ret_t;
 
   // The complex conjugate nature has been eaten here leaving simple multiples
   // involving transposes - which are probably null
-  d.real() = transpose(l.real())*transpose(r.real()) - transpose(l.imag())*transpose(r.imag());
-  d.imag() = -(transpose(l.real())*transpose(r.imag()) + transpose(l.imag())*transpose(r.real()));
-  return d;
+//  d.real() = transpose(l.real())*transpose(r.real()) - transpose(l.imag())*transpose(r.imag());
+//  d.imag() = -(transpose(l.real())*transpose(r.imag()) + transpose(l.imag())*transpose(r.real()));
+//  return d;
+
+  /*! NOTE: removed transpose here !!!!!  */
+  return Ret_t(l.real()*r.real() - l.imag()*r.imag(),
+	       -(l.real()*r.imag() + l.imag()*r.real()));
 }
 
 
@@ -1726,14 +1742,13 @@ template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpDivide>::Type_t
 operator/(const RComplex<T1>& l, const RComplex<T2>& r)
 {
-  typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpDivide>::Type_t  d;
+  typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpDivide>::Type_t  Ret_t;
 
   typedef typename InternalScalar<T2>::Type_t  S;
   S tmp = S(1.0) / (r.real()*r.real() + r.imag()*r.imag());
 
-  d.real() = (l.real()*r.real() + l.imag()*r.imag()) * tmp;
-  d.imag() = (l.imag()*r.real() - l.real()*r.imag()) * tmp;
-  return d;
+  return Ret_t((l.real()*r.real() + l.imag()*r.imag()) * tmp,
+	       (l.imag()*r.real() - l.real()*r.imag()) * tmp);
 }
 
 
@@ -1741,11 +1756,13 @@ template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpDivide>::Type_t
 operator/(const RComplex<T1>& l, const RScalar<T2>& r)
 {
-  typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpDivide>::Type_t  d;
+  typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpDivide>::Type_t  Ret_t;
 
-  d.real() = l.real() / r.elem();
-  d.imag() = l.imag() / r.elem();
-  return d;
+  typedef typename InternalScalar<T2>::Type_t  S;
+  S tmp = S(1.0) / r.elem();
+
+  return Ret_t(l.real() * tmp, 
+	       l.imag() * tmp);
 }
 
 
@@ -1753,14 +1770,13 @@ template<class T1, class T2>
 inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpDivide>::Type_t
 operator/(const RScalar<T1>& l, const RComplex<T2>& r)
 {
-  typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpDivide>::Type_t  d;
+  typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpDivide>::Type_t  Ret_t;
 
   typedef typename InternalScalar<T2>::Type_t  S;
   S tmp = S(1.0) / (r.real()*r.real() + r.imag()*r.imag());
 
-  d.real() = l.elem() * r.real() * tmp;
-  d.imag() = -l.elem() * r.imag() * tmp;
-  return d;
+  return Ret_t(l.elem() * r.real() * tmp,
+	       -l.elem() * r.imag() * tmp);
 }
 
 
@@ -1773,12 +1789,16 @@ template<class T1>
 inline typename UnaryReturn<RComplex<T1>, FnAdjoint>::Type_t
 adj(const RComplex<T1>& l)
 {
-  typename UnaryReturn<RComplex<T1>, FnAdjoint>::Type_t  d;
+  typedef typename UnaryReturn<RComplex<T1>, FnAdjoint>::Type_t  Ret_t;
 
   // The complex conjugate nature has been eaten here leaving transpose
-  d.real() = transpose(l.real());
-  d.imag() = -transpose(l.imag());
-  return d;
+//  d.real() = transpose(l.real());
+//  d.imag() = -transpose(l.imag());
+//  return d;
+
+  /*! NOTE: removed transpose here !!!!!  */
+  return Ret_t(l.real(),
+	       -l.imag());
 }
 
 // Conjugate
@@ -1786,11 +1806,10 @@ template<class T1>
 inline typename UnaryReturn<RComplex<T1>, FnConjugate>::Type_t
 conj(const RComplex<T1>& l)
 {
-  typename UnaryReturn<RComplex<T1>, FnConjugate>::Type_t  d;
+  typedef typename UnaryReturn<RComplex<T1>, FnConjugate>::Type_t  Ret_t;
 
-  d.real() = l.real();
-  d.imag() = -l.imag();
-  return d;
+  return Ret_t(l.real(),
+	       -l.imag());
 }
 
 // Transpose
@@ -1798,11 +1817,15 @@ template<class T1>
 inline typename UnaryReturn<RComplex<T1>, FnTranspose>::Type_t
 transpose(const RComplex<T1>& l)
 {
-  typename UnaryReturn<RComplex<T1>, FnTranspose>::Type_t  d;
+  typedef typename UnaryReturn<RComplex<T1>, FnTranspose>::Type_t  Ret_t;
 
-  d.real() = transpose(l.real());
-  d.imag() = transpose(l.imag());
-  return d;
+//  d.real() = transpose(l.real());
+//  d.imag() = transpose(l.imag());
+//  return d;
+
+  /*! NOTE: removed transpose here !!!!!  */
+  return Ret_t(l.real(), 
+	       l.imag());
 }
 
 // TRACE
@@ -1816,11 +1839,11 @@ template<class T1>
 inline typename UnaryReturn<RComplex<T1>, FnTrace>::Type_t
 trace(const RComplex<T1>& s1)
 {
-  typename UnaryReturn<RComplex<T1>, FnTrace>::Type_t  d;
+  typedef typename UnaryReturn<RComplex<T1>, FnTrace>::Type_t  Ret_t;
 
-  d.real() = trace(s1.real());
-  d.imag() = trace(s1.imag());
-  return d;
+  /*! NOTE: removed trace here !!!!!  */
+  return Ret_t(s1.real(),
+	       s1.imag());
 }
 
 
@@ -1834,7 +1857,8 @@ template<class T1>
 inline typename UnaryReturn<RComplex<T1>, FnRealTrace>::Type_t
 trace_real(const RComplex<T1>& s1)
 {
-  return trace(s1.real());
+  /*! NOTE: removed trace here !!!!!  */
+  return s1.real();
 }
 
 
@@ -1848,7 +1872,8 @@ template<class T1>
 inline typename UnaryReturn<RComplex<T1>, FnImagTrace>::Type_t
 trace_imag(const RComplex<T1>& s1)
 {
-  return trace(s1.imag());
+  /*! NOTE: removed trace here !!!!!  */
+  return s1.imag();
 }
 
 
@@ -1889,11 +1914,10 @@ template<class T1, class T2>
 inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnCmplx>::Type_t
 cmplx(const RScalar<T1>& s1, const RScalar<T2>& s2)
 {
-  typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnCmplx>::Type_t  d;
+  typedef typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnCmplx>::Type_t  Ret_t;
 
-  d.real() = s1.elem();
-  d.imag() = s2.elem();
-  return d;
+  return Ret_t(s1.elem(),
+	       s2.elem());
 }
 
 
@@ -1920,11 +1944,10 @@ template<class T>
 inline typename UnaryReturn<RComplex<T>, FnTimesI>::Type_t
 timesI(const RComplex<T>& s1)
 {
-  typename UnaryReturn<RComplex<T>, FnTimesI>::Type_t  d;
+  typedef typename UnaryReturn<RComplex<T>, FnTimesI>::Type_t  Ret_t;
 
-  d.real() = -s1.imag();
-  d.imag() =  s1.real();
-  return d;
+  return Ret_t(-s1.imag(),
+	       s1.real());
 }
 
 
@@ -1951,11 +1974,10 @@ template<class T>
 inline typename UnaryReturn<RComplex<T>, FnTimesMinusI>::Type_t
 timesMinusI(const RComplex<T>& s1)
 {
-  typename UnaryReturn<RComplex<T>, FnTimesMinusI>::Type_t  d;
+  typedef typename UnaryReturn<RComplex<T>, FnTimesMinusI>::Type_t  Ret_t;
 
-  d.real() =  s1.imag();
-  d.imag() = -s1.real();
-  return d;
+  return Ret_t(s1.imag(),
+	       -s1.real());
 }
 
 
@@ -1965,10 +1987,10 @@ template<class T>
 inline typename UnaryReturn<RComplex<T>, FnGetSite>::Type_t
 getSite(const RComplex<T>& s1, int innersite)
 {
-  typedef typename UnaryReturn<RComplex<T>, FnGetSite>::Type_t  Return_t;
+  typedef typename UnaryReturn<RComplex<T>, FnGetSite>::Type_t  Ret_t;
 
-  return Return_t(getSite(s1.real(), innersite), 
-		  getSite(s1.imag(), innersite));
+  return Ret_t(getSite(s1.real(), innersite), 
+	       getSite(s1.imag(), innersite));
 }
 
 
@@ -1978,9 +2000,10 @@ template<class T>
 inline typename UnaryReturn<RComplex<T>, FnPeekDWVector>::Type_t
 peekDW(const RComplex<T>& l, int row)
 {
-  typedef typename UnaryReturn<RComplex<T>, FnPeekDWVector>::Type_t  Return_t;
+  typedef typename UnaryReturn<RComplex<T>, FnPeekDWVector>::Type_t  Ret_t;
 
-  return Return_t(peekDW(l.real(),row), peekDW(l.imag(),row));
+  return Ret_t(peekDW(l.real(),row), 
+	       peekDW(l.imag(),row));
 }
 
 
@@ -2017,11 +2040,10 @@ template<class T>
 inline typename UnaryReturn<RComplex<T>, FnSum>::Type_t
 sum(const RComplex<T>& s1)
 {
-  typename UnaryReturn<RComplex<T>, FnSum>::Type_t  d;
+  typedef typename UnaryReturn<RComplex<T>, FnSum>::Type_t  Ret_t;
 
-  d.real() = sum(s1.real());
-  d.imag() = sum(s1.imag());
-  return d;
+  return Ret_t(sum(s1.real()),
+	       sum(s1.imag()));
 }
 #endif
 
@@ -2061,11 +2083,10 @@ template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProduct>::Type_t
 localInnerProduct(const RComplex<T1>& l, const RComplex<T2>& r)
 {
-  typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProduct>::Type_t  d;
+  typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProduct>::Type_t  Ret_t;
 
-  d.real() = localInnerProduct(l.real(),r.real()) + localInnerProduct(l.imag(),r.imag());
-  d.imag() = localInnerProduct(l.real(),r.imag()) - localInnerProduct(l.imag(),r.real());
-  return d;
+  return Ret_t(localInnerProduct(l.real(),r.real()) + localInnerProduct(l.imag(),r.imag()),
+	       localInnerProduct(l.real(),r.imag()) - localInnerProduct(l.imag(),r.real()));
 }
 
 
@@ -2097,12 +2118,11 @@ template<class T1, class T2, class T3>
 inline typename BinaryReturn<RComplex<T2>, RComplex<T3>, FnWhere>::Type_t
 where(const RScalar<T1>& a, const RComplex<T2>& b, const RComplex<T3>& c)
 {
-  typename BinaryReturn<RComplex<T2>, RComplex<T3>, FnWhere>::Type_t  d;
+  typedef typename BinaryReturn<RComplex<T2>, RComplex<T3>, FnWhere>::Type_t  Ret_t;
 
   // Not optimal - want to have where outside assignment
-  d.real() = where(a.elem(), b.real(), c.real());
-  d.imag() = where(a.elem(), b.imag(), c.imag());
-  return d;
+  return Ret_t(where(a.elem(), b.real(), c.real()),
+	       where(a.elem(), b.imag(), c.imag()));
 }
 
 
