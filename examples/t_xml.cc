@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.4 2003-05-22 19:02:02 edwards Exp $
+// $Id: t_xml.cc,v 1.5 2003-06-07 19:09:32 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -73,5 +73,5 @@ int main(int argc, char **argv)
   // Time to bolt
   QDP_finalize();
 
-  return 0;
+  exit(0);
 }

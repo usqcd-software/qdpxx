@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.10 2003-04-30 21:08:14 edwards Exp $
+ *  $Id: t_spectrum.cc,v 1.11 2003-06-07 19:09:32 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -172,5 +172,5 @@ int main(int argc, char **argv)
   // Time to bolt
   QDP_finalize();
 
-  return 0;
+  exit(0);
 }

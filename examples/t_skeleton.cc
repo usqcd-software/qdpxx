@@ -1,4 +1,4 @@
-// $Id: t_skeleton.cc,v 1.4 2003-01-31 20:48:45 edwards Exp $
+// $Id: t_skeleton.cc,v 1.5 2003-06-07 19:09:32 edwards Exp $
 /*! \file
  *  \brief Skeleton of a QDP main program
  */
@@ -34,5 +34,5 @@ int main(int argc, char *argv[])
   // Possibly shutdown the machine
   QDP_finalize();
 
-  return 0;
+  exit(0);
 }

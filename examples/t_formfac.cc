@@ -1,4 +1,4 @@
-// $Id: t_formfac.cc,v 1.13 2003-01-15 21:46:51 edwards Exp $
+// $Id: t_formfac.cc,v 1.14 2003-06-07 19:09:32 edwards Exp $
 /*! \file
  *  \brief Test the form-factor routine
  */
@@ -56,5 +56,5 @@ int main(int argc, char **argv)
   // Time to bolt
   QDP_finalize();
 
-  return 0;
+  exit(0);
 }

@@ -1,4 +1,4 @@
-// $Id: t_remote.cc,v 1.2 2003-06-06 15:10:46 edwards Exp $
+// $Id: t_remote.cc,v 1.3 2003-06-07 19:09:32 edwards Exp $
 
 #include <iostream>
 #include <fstream>
@@ -9,12 +9,6 @@ using namespace QDPUtil;
 using namespace std;
 
 
-extern "C"
-{
-  int qio_init(const char *node, int rtiP0);
-  void qio_shutdown();
-}
-
 static const char* rtinode = "qcdi01.jlab.org";
 
 
@@ -22,18 +16,18 @@ static const char* rtinode = "qcdi01.jlab.org";
 int main(int argc, char *argv[])
 {
   // initialize remote file service (QIO)
-  qio_init(rtinode, 1);
+  RemoteFileInit(rtinode, true);
 
   {
 #if 0
     // Remote output buffer and conventional stream
     RemoteOutputFileBuf ob;
-    ob.open("/home/edwards/test.out",std::ofstream::out | std::ofstream::trunc);
+    ob.open("test.out",std::ofstream::out | std::ofstream::trunc);
     std::ostream outfile(&ob);
 #else
     // Remote output stream
     RemoteOutputFileStream outfile;
-    outfile.open("/home/edwards/test.out",std::ofstream::out | std::ofstream::trunc);
+    outfile.open("test.out",std::ofstream::out | std::ofstream::trunc);
 #endif
 
     int n=42;
@@ -49,12 +43,12 @@ int main(int argc, char *argv[])
 #if 0
     // Remote input buffer and conventional stream
     RemoteInputFileBuf ib;
-    ib.open("/home/edwards/test.out",std::ifstream::in);
+    ib.open("test.out",std::ifstream::in);
     std::istream infile(&ib);
 #else
     // Remote input stream
     RemoteInputFileStream infile;
-    infile.open("/home/edwards/test.out",std::ifstream::in);
+    infile.open("test.out",std::ifstream::in);
 #endif
 
     int nn;
@@ -70,7 +64,7 @@ int main(int argc, char *argv[])
   }
 
   // shutdown remote file service (QIO)
-  qio_shutdown();
+  RemoteFileShutdown();
 
-  return 0;
+  exit(0);
 }

@@ -1,4 +1,4 @@
-// $Id: t_dslashm.cc,v 1.11 2003-01-15 21:46:51 edwards Exp $
+// $Id: t_dslashm.cc,v 1.12 2003-06-07 19:09:31 edwards Exp $
 /*! \file
  *  \brief Test the Wilson-Dirac operator (dslash)
  */
@@ -47,5 +47,5 @@ int main(int argc, char **argv)
   // Time to bolt
   QDP_finalize();
 
-  return 0;
+  exit(0);
 }

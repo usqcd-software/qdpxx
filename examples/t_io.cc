@@ -1,7 +1,9 @@
-// $Id: t_io.cc,v 1.9 2003-06-05 04:15:22 edwards Exp $
+// $Id: t_io.cc,v 1.10 2003-06-07 19:09:32 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
+
+#include <unistd.h>
 
 #include "qdp.h"
 #include "examples.h"
@@ -55,10 +57,10 @@ int main(int argc, char **argv)
   fromtext >> x;
   fromtext.close();
 
-  cerr << "you entered :" << x << ":\n";
+  cerr << "you entered :" << x << ":" << endl;
   
   // Time to bolt
   QDP_finalize();
 
-  return 0;
+  exit(0);
 }

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.28 2003-05-23 04:44:22 edwards Exp $
+// $Id: t_foo.cc,v 1.29 2003-06-07 19:09:31 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -55,6 +55,7 @@ private:
 }; 
 
 
+
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
@@ -75,7 +76,7 @@ int main(int argc, char *argv[])
   write(nml,"logicalSize",Layout::logicalSize());
 #endif
 
-#if 1
+#if 0
   cerr << "Open t_foo.input" << endl;
 
   NmlReader nml_in("t_foo.input");
@@ -260,7 +261,7 @@ int main(int argc, char *argv[])
 //  float ccc = 2.0;
 //  float x;
   
-#if 0
+#if 1
   LatticeComplex  foob(zero);
   nml << "Here is foob";
   Write(nml,foob);
@@ -521,7 +522,7 @@ int main(int argc, char *argv[])
  }
 #endif
 
-#if 0
+#if 1
   if (Nd == 4)
   {
     // Read a nersc file
@@ -590,5 +591,5 @@ int main(int argc, char *argv[])
   // Time to bolt
   QDP_finalize();
 
-  return 0;
+  exit(0);
 }

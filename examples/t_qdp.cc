@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.18 2003-04-08 21:34:42 edwards Exp $
+// $Id: t_qdp.cc,v 1.19 2003-06-07 19:09:32 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -199,5 +199,5 @@ int main(int argc, char **argv)
   // Time to bolt
   QDP_finalize();
 
-  return 0;
+  exit(0);
 }

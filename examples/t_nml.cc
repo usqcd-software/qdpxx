@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_nml.cc,v 1.5 2003-05-23 04:44:22 edwards Exp $
+// $Id: t_nml.cc,v 1.6 2003-06-07 19:09:32 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -82,5 +82,5 @@ main(int argc, char *argv[])
   nml_out.close();
 
   QDP_finalize();
-  return 0;
+  exit(0);
 }
