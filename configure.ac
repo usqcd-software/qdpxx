@@ -62,12 +62,12 @@ dnl Tell the user about Ns
 AC_MSG_NOTICE([Configuring QDP++ for Ns = ${ac_Ns}])
 
 
-dnl --enable-print-expression-tree
-AC_ARG_ENABLE(print-expression-tree,
-  AC_HELP_STRING([--enable-print-expression-tree],
-    [Prints QDP expression tree. Diagnostic use only.]),
-  [ac_print_tree=1],
-  [ac_print_tree=0]
+dnl --enable-profiling
+AC_ARG_ENABLE(profiling,
+  AC_HELP_STRING([--enable-profiling],
+    [Enable profiling. Diagnostic use only.]),
+  [ac_profile=1],
+  [ac_profile=0]
 )
 
 dnl --enable-parallel-arch argument
@@ -149,9 +149,9 @@ if test ${ac_qcdoc_enabled} -eq 1; then
 fi
 
 dnl Check if print-tree is enabled
-if test ${ac_print_tree} -eq 1; then 
-   AC_DEFINE_UNQUOTED(QDP_PRINT_EXPR_TREE, ${ac_print_tree}, [Print QDP expressions])
-   AC_MSG_NOTICE([Enabling printing of QDP expressions])
+if test ${ac_profile} -eq 1; then 
+   AC_DEFINE_UNQUOTED(QDP_PRINT_EXPR_TREE, ${ac_profile}, [Enable profiling])
+   AC_MSG_NOTICE([Enable profiling])
 fi
 
 dnl Precision munging
