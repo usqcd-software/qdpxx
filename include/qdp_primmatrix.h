@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.9 2003-08-10 02:27:11 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.10 2003-08-14 03:50:04 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -144,19 +144,18 @@ public:
   /*! This is a copy form - legal but not necessarily efficient */
   PMatrix(const PMatrix& a)
     {
-      for(int i=0; i < N; ++i)
-	for(int j=0; j < N; ++j)
-	  F[i][j] = a.F[i][j];
+      for(int i=0; i < N*N; ++i)
+	F[i] = a.F[i];
     }
 #endif
 #endif
 
 public:
-  T& elem(int i, int j) {return F[i][j];}
-  const T& elem(int i, int j) const {return F[i][j];}
+  T& elem(int i, int j) {return F[j+N*i];}
+  const T& elem(int i, int j) const {return F[j+N*i];}
 
 private:
-  T F[N][N];
+  T F[N*N];
 };
 
 
