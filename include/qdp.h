@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.43 2004-02-09 15:21:04 bjoo Exp $
+// $Id: qdp.h,v 1.44 2004-02-16 12:21:02 bjoo Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -173,6 +173,8 @@ QDP_END_NAMESPACE();
 // Include SSE code here if applicable
 #if QDP_USE_SSE == 1
 #include "qdp_scalarsite_sse.h"
+#elif QDP_USE_PABASM == 1
+#include "qdp_scalarsite_pabasm.h"
 #else
 #include "qdp_scalarsite_generic.h"
 #endif
@@ -185,6 +187,8 @@ QDP_END_NAMESPACE();
 // Include optimized code here if applicable
 #if QDP_USE_SSE == 1
 #include "qdp_scalarsite_sse.h"
+#elif QDP_USE_PABASM == 1
+#include "qdp_scalarsite_pabasm.h"
 #else
 #include "qdp_scalarsite_generic.h"
 #endif
