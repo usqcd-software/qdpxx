@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.6 2003-06-05 15:56:57 edwards Exp $
+// $Id: qdp_io.cc,v 1.7 2003-06-05 16:16:00 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -43,25 +43,25 @@ void TextReader::close()
 // Propagate status to all nodes
 bool TextReader::is_open()
 {
-  int  c;
+  bool s;
 
   if (Layout::primaryNode()) 
-    c = (f.is_open()) ? 1 : 0;   // convert true/false to 1/0
+    s = f.is_open();
 
-  Internal::broadcast(c);
-  return (c == 1) ? true : false;
+  Internal::broadcast(s);
+  return s;
 }
 
 // Propagate status to all nodes
 bool TextReader::fail()
 {
-  int  c;
+  bool s;
 
   if (Layout::primaryNode()) 
-    c = (f.fail()) ? 1 : 0;   // convert true/false to 1/0
+    s = f.fail();
 
-  Internal::broadcast(c);
-  return (c == 1) ? true : false;
+  Internal::broadcast(s);
+  return s;
 }
 
 TextReader::~TextReader() {close();}
@@ -200,25 +200,25 @@ void TextWriter::close()
 // Propagate status to all nodes
 bool TextWriter::is_open()
 {
-  int  c;
+  bool s;
 
   if (Layout::primaryNode()) 
-    c = (f.is_open()) ? 1 : 0;   // convert true/false to 1/0
+    s = f.is_open();
 
-  Internal::broadcast(c);
-  return (c == 1) ? true : false;
+  Internal::broadcast(s);
+  return s;
 }
 
 // Propagate status to all nodes
 bool TextWriter::fail()
 {
-  int  c;
+  bool s;
 
   if (Layout::primaryNode()) 
-    c = (f.fail()) ? 1 : 0;   // convert true/false to 1/0
+    s = f.fail();
 
-  Internal::broadcast(c);
-  return (c == 1) ? true : false;
+  Internal::broadcast(s);
+  return s;
 }
 
 TextWriter::~TextWriter() {close();}
@@ -511,25 +511,25 @@ void NmlWriter::close()
 // Propagate status to all nodes
 bool NmlWriter::is_open()
 {
-  int  c;
+  bool s;
 
   if (Layout::primaryNode()) 
-    c = (f.is_open()) ? 1 : 0;   // convert true/false to 1/0
+    s = f.is_open();
 
-  Internal::broadcast(c);
-  return (c == 1) ? true : false;
+  Internal::broadcast(s);
+  return s;
 }
 
 // Propagate status to all nodes
 bool NmlWriter::fail()
 {
-  int  c;
+  bool s;
 
   if (Layout::primaryNode()) 
-    c = (f.fail()) ? 1 : 0;   // convert true/false to 1/0
+    s = f.fail();
 
-  Internal::broadcast(c);
-  return (c == 1) ? true : false;
+  Internal::broadcast(s);
+  return s;
 }
 
 NmlWriter::~NmlWriter()
@@ -692,25 +692,25 @@ void BinaryReader::close()
 // Propagate status to all nodes
 bool BinaryReader::is_open()
 {
-  int  c;
+  bool s;
 
   if (Layout::primaryNode()) 
-    c = (f.is_open()) ? 1 : 0;   // convert true/false to 1/0
+    s = f.is_open();
 
-  Internal::broadcast(c);
-  return (c == 1) ? true : false;
+  Internal::broadcast(s);
+  return s;
 }
 
 // Propagate status to all nodes
 bool BinaryReader::fail()
 {
-  int  c;
+  bool s;
 
   if (Layout::primaryNode()) 
-    c = (f.fail()) ? 1 : 0;   // convert true/false to 1/0
+    s = f.fail();
 
-  Internal::broadcast(c);
-  return (c == 1) ? true : false;
+  Internal::broadcast(s);
+  return s;
 }
 
 BinaryReader::~BinaryReader() {close();}
@@ -966,25 +966,25 @@ void BinaryWriter::close()
 // Propagate status to all nodes
 bool BinaryWriter::is_open()
 {
-  int  c;
+  bool s;
 
   if (Layout::primaryNode()) 
-    c = (f.is_open()) ? 1 : 0;   // convert true/false to 1/0
+    s = f.is_open();
 
-  Internal::broadcast(c);
-  return (c == 1) ? true : false;
+  Internal::broadcast(s);
+  return s;
 }
 
 // Propagate status to all nodes
 bool BinaryWriter::fail()
 {
-  int  c;
+  bool s;
 
   if (Layout::primaryNode()) 
-    c = (f.fail()) ? 1 : 0;   // convert true/false to 1/0
+    s = f.fail();
 
-  Internal::broadcast(c);
-  return (c == 1) ? true : false;
+  Internal::broadcast(s);
+  return s;
 }
 
 BinaryWriter::~BinaryWriter() {close();}
