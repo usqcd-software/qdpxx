@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.18 2003-04-17 18:48:33 edwards Exp $
+// $Id: t_foo.cc,v 1.19 2003-04-18 01:41:00 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {2,2,2,2};
+  const int foo[] = {4,4,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
   nml.open("foo.nml");
 
   Write(nml,nrow);
+  write(nml,"logicalSize",Layout::logicalSize());
 
 #if 0
   {
