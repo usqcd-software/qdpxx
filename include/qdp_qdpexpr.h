@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpexpr.h,v 1.2 2004-07-02 19:20:25 edwards Exp $
+// $Id: qdp_qdpexpr.h,v 1.3 2004-07-02 21:54:42 edwards Exp $
 
 /*! @file
  * @brief Expression class for QDP
@@ -49,6 +49,12 @@ private:
 };
 
 
+//-----------------------------------------------------------------------------
+// For Expressions, we strip the QDPExpr<> wrapper since it is intended
+// to wrap the whole expression. (QDPExpr<Scalar<>>+QDPExpr<BinaryNode<>>
+// becomes QDPExpr<BinaryNode<OpAdd,Scalar<>,BinaryNode<>>>)
+//-----------------------------------------------------------------------------
+
 template<class T, class C>
 struct MakeReturn
 {
@@ -56,12 +62,6 @@ struct MakeReturn
   inline static
   Expression_t make(const T &a) { return Expression_t(a); }
 };
-
-//-----------------------------------------------------------------------------
-// For Expressions, we strip the QDPExpr<> wrapper since it is intended
-// to wrap the whole expression. (QDPExpr<Scalar<>>+QDPExpr<BinaryNode<>>
-// becomes QDPExpr<BinaryNode<OpAdd,Scalar<>,BinaryNode<>>>)
-//-----------------------------------------------------------------------------
 
 template<class T, class C>
 struct CreateLeaf<QDPExpr<T,C> >
