@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.8 2002-11-04 04:45:39 edwards Exp $
+// $Id: io.h,v 1.9 2002-11-23 02:12:01 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -176,6 +176,7 @@ NmlWriter& operator<<(NmlWriter& nml, const char* s);
 
 //! Write a namelist element
 template<class T>
+inline
 NmlWriter& write(NmlWriter& nml, const string& s, const T& d)
 {
   if (Layout::primaryNode()) 
@@ -186,6 +187,7 @@ NmlWriter& write(NmlWriter& nml, const string& s, const T& d)
 //! Write an outer scalar namelist element
 /*! The second arg is the string for the variable name */
 template<class T>
+inline
 NmlWriter& write(NmlWriter& nml, const string& s, const OScalar<T>& d)
 {
   if (Layout::primaryNode()) 
@@ -198,6 +200,7 @@ NmlWriter& write(NmlWriter& nml, const string& s, const OScalar<T>& d)
 //! Write an outer lattice namelist element
 /*! The second arg is the string for the variable name */
 template<class T>
+inline
 NmlWriter& write(NmlWriter& nml, const string& s, const OLattice<T>& d)
 {
   if (Layout::primaryNode()) 
@@ -209,6 +212,7 @@ NmlWriter& write(NmlWriter& nml, const string& s, const OLattice<T>& d)
 
 //! Write a namelist multi1d element
 template<class T>
+inline
 NmlWriter& write(NmlWriter& nml, const string& s, const multi1d<T>& s1)
 {
   for(int i=0; i < s1.size(); ++i)
@@ -223,6 +227,7 @@ NmlWriter& write(NmlWriter& nml, const string& s, const multi1d<T>& s1)
 
 //! Write a namelist multi2d element
 template<class T> 
+inline
 NmlWriter& write(NmlWriter& nml, const string& s, const multi2d<T>& s1)
 {
   for(int j=0; j < s1.size1(); ++j)
@@ -292,6 +297,7 @@ private:
 
 //! Read a binary multi1d element
 template<class T>
+inline
 BinaryReader& read(BinaryReader& bin, multi1d<T>& d)
 {
   for(int i=0; i < d.size(); ++i)
@@ -302,6 +308,7 @@ BinaryReader& read(BinaryReader& bin, multi1d<T>& d)
 
 //! Read a binary multi2d element
 template<class T>
+inline
 BinaryReader& read(BinaryReader& bin, multi2d<T>& d)
 {
   for(int j=0; j < d.size2(); ++j)
@@ -352,6 +359,7 @@ BinaryWriter& write(BinaryWriter& bin, const T& d)
 
 //! Read a binary multi1d element
 template<class T>
+inline
 BinaryWriter& write(BinaryWriter& bin, const multi1d<T>& d)
 {
   for(int i=0; i < d.size(); ++i)
@@ -362,6 +370,7 @@ BinaryWriter& write(BinaryWriter& bin, const multi1d<T>& d)
 
 //! Read a binary multi2d element
 template<class T>
+inline
 BinaryWriter& write(BinaryWriter& bin, const multi2d<T>& d)
 {
   for(int j=0; j < d.size2(); ++j)
