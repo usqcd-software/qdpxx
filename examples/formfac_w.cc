@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.1 2002-09-12 18:22:17 edwards Exp $
+// $Id: formfac_w.cc,v 1.2 2002-09-14 20:13:24 edwards Exp $
 
 /*! Compute contractions for current insertion 3-point functions.
  *
@@ -23,10 +23,8 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 	     const multi1d<int>& t_source, 
 	     int t_sink, int j_decay)
 {
-  LatticePropagator anti_quark_prop;
-  
+  // Length of lattice in j_decay direction and 3pt correlations fcns
   int length = layout.LattSize()[j_decay];
-
   multi1d<Complex> local_cur3ptfn(length);
   multi1d<Complex> nonlocal_cur3ptfn(length);
   
@@ -46,7 +44,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
   /*
    * Construct the anti-quark propagator from the seq. quark prop.
    */ 
-  anti_quark_prop = Gamma(G5) * seq_quark_prop * Gamma(G5);
+  LatticePropagator anti_quark_prop = Gamma(G5) * seq_quark_prop * Gamma(G5);
 
 
   /*
@@ -58,15 +56,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
      * The local non-conserved vector-current matrix element 
      */
     int n = 1 << mu;
-#if 1
     LatticeComplex corr_local_fn = trace(conj(anti_quark_prop) * Gamma(n) * quark_propagator);
-//    corr_local_fn = trace(conj(anti_quark_prop) * Gamma(n) * quark_propagator);
-#else
-//    LatticeComplex corr_local_fn = trace(Gamma(n) * quark_propagator);
-    LatticeComplex corr_local_fn = trace(quark_propagator);
-//    LatticeComplex corr_local_fn;
-//    corr_local_fn = trace(quark_propagator);
-#endif
 
     /* 
      * Construct the conserved non-local vector-current matrix element 
@@ -114,7 +104,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 	q_sq += inser_mom[nu]*inser_mom[nu];
       }
 
-      /* Arbitrarily set the cutoff on max allowed momentum to be [2,1,0] */
+      // Arbitrarily set the cutoff on max allowed momentum to be [2,1,0]
       if (q_sq > 4) continue;
 
       LatticeReal p_dot_x(float(0.0));
@@ -132,10 +122,13 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 	j++;
       }
 
-      /* Local current */
+      // The complex phases  exp(i p.x )
+      LatticeComplex  phasefac = cmplx(cos(p_dot_x), sin(p_dot_x));
+
+      // Local current
       multi1d<DComplex> hsum(length);
 
-      LatticeComplex corr_local_tmp = cmplx(cos(p_dot_x), sin(p_dot_x)) * corr_local_fn;
+      LatticeComplex corr_local_tmp = phasefac * corr_local_fn;
       hsum = slice_sum(corr_local_tmp, j_decay);
 
       for(int t = 0; t < length; ++t)
@@ -146,8 +139,8 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
       }
 
 
-      /* Non-local current */
-      LatticeComplex corr_nonlocal_tmp = cmplx(cos(p_dot_x), sin(p_dot_x)) * corr_nonlocal_fn;
+      // Non-local current
+      LatticeComplex corr_nonlocal_tmp = phasefac * corr_nonlocal_fn;
       hsum = slice_sum(corr_nonlocal_tmp, j_decay);
 
       for(int t = 0; t < length; ++t)
@@ -157,8 +150,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 	nonlocal_cur3ptfn[t_eff] = 0.5 * Complex(hsum[t]);
       }
 
-//      WRITE_NAMELIST(Wilson_Current_3Pt_fn,mu,j_decay,inser_mom,
-//		     local_cur3ptfn,nonlocal_cur3ptfn);
+      // Print out the results
       Push(cerr,"Wilson_Current_3Pt_fn");
       WRITE_NAMELIST(cerr,mu);
       WRITE_NAMELIST(cerr,j_decay);
