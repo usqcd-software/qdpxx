@@ -1,3 +1,8 @@
+08/27/2003 -- Robert Edwards
+
+	Version 1.5.4. Updated manual. Added better xml support. Added some
+        new traits classes.
+
 08/26/2003 -- Robert Edwards
 
 	Version 1.5.3. More changes in inner grid stuff. Still need map support.
