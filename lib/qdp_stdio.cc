@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.cc,v 1.7 2005-01-22 20:20:19 edwards Exp $
+// $Id: qdp_stdio.cc,v 1.8 2005-02-01 02:15:24 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -60,6 +60,8 @@ StandardInputStream& StandardInputStream::operator>>(std::string& input)
 
   // broadcast string
   Internal::broadcast_str(input);
+
+  return *this;
 }
 
 // Readers
