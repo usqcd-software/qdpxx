@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.19 2003-12-23 18:04:43 edwards Exp $
+// $Id: qdp_reality.h,v 1.20 2004-07-06 01:51:37 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1114,7 +1114,7 @@ struct UnaryReturn<RScalar<T>, FnRealTrace > {
 
 template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnRealTrace>::Type_t
-trace_real(const RScalar<T1>& s1)
+realTrace(const RScalar<T1>& s1)
 {
 //  return trace_real(s1.elem());
 
@@ -1131,12 +1131,23 @@ struct UnaryReturn<RScalar<T>, FnImagTrace > {
 
 template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnImagTrace>::Type_t
-trace_imag(const RScalar<T1>& s1)
+imagTrace(const RScalar<T1>& s1)
 {
 //  return trace_imag(s1.elem());
 
   /*! NOTE: removed trace here !!!!!  */
   return s1.elem();
+}
+
+//! RScalar = trace(RScalar * RScalar)
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnTraceMultiply>::Type_t
+traceMultiply(const RScalar<T1>& l, const RScalar<T2>& r)
+{
+//  return traceMultiply(l.elem(), r.elem());
+
+  /*! NOTE: removed trace here !!!!!  */
+  return l.elem() * r.elem();
 }
 
 
@@ -1852,7 +1863,7 @@ struct UnaryReturn<RComplex<T>, FnRealTrace > {
 
 template<class T1>
 inline typename UnaryReturn<RComplex<T1>, FnRealTrace>::Type_t
-trace_real(const RComplex<T1>& s1)
+realTrace(const RComplex<T1>& s1)
 {
   /*! NOTE: removed trace here !!!!!  */
   return s1.real();
@@ -1867,10 +1878,24 @@ struct UnaryReturn<RComplex<T>, FnImagTrace > {
 
 template<class T1>
 inline typename UnaryReturn<RComplex<T1>, FnImagTrace>::Type_t
-trace_imag(const RComplex<T1>& s1)
+imagTrace(const RComplex<T1>& s1)
 {
   /*! NOTE: removed trace here !!!!!  */
   return s1.imag();
+}
+
+//! RComplex = trace(RComplex * RComplex)
+template<class T1, class T2>
+inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t
+traceMultiply(const RComplex<T1>& l, const RComplex<T2>& r)
+{
+//  return traceMultiply(l.elem(), r.elem());
+
+  /*! NOTE: removed trace here !!!!!  */
+  typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t  Ret_t;
+
+  return Ret_t(l.real()*r.real() - l.imag()*r.imag(),
+	       l.real()*r.imag() + l.imag()*r.real());
 }
 
 
