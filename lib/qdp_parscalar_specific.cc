@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.6 2003-07-21 20:36:00 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.7 2003-07-26 04:01:54 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -29,11 +29,13 @@ ostream& operator<<(ostream& s, const multi1d<T>& s1)
 //! Initializer for generic map constructor
 void Map::make(const MapFunc& func)
 {
-//  QDP_info("Map::make");
+#if QDP_DEBUG >= 3
+  QDP_info("Map::make");
+#endif
 
   //--------------------------------------
   // Setup the communication index arrays
-  soffsets.resize(Layout::sitesOnNode());
+  goffsets.resize(Layout::sitesOnNode());
   srcnode.resize(Layout::sitesOnNode());
   dstnode.resize(Layout::sitesOnNode());
 
@@ -56,25 +58,37 @@ void Map::make(const MapFunc& func)
     int bnode = Layout::nodeNumber(bcoord);
 
     // Source linear site and node
-    soffsets[linear] = Layout::linearSiteIndex(fcoord);
+    goffsets[linear] = Layout::linearSiteIndex(fcoord);
     srcnode[linear]  = fnode;
 
     // Destination node
     dstnode[linear]  = bnode;
+
+#if QDP_DEBUG >= 3
+    QDP_info("linear=%d  coord=%d %d %d %d   fcoord=%d %d %d %d    goffsets=%d", 
+	     linear, 
+	     coord[0], coord[1], coord[2], coord[3],
+	     fcoord[0], fcoord[1], fcoord[2], fcoord[3],
+	     goffsets[linear]);
+#endif
   }
 
-#if 0
-//  extern NmlWriter nml;
+#if QDP_DEBUG >= 3
+ {
+   ostringstream foon;
+   foon << "map." << Layout::nodeNumber();
+   NmlWriter nml(foon.str());
 
-//  Write(nml,srcnode);
-//  Write(nml,dstnode);
+   Write(nml,srcnode);
+   Write(nml,dstnode);
 
-  for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
-  {
-    QDP_info("soffsets(%d) = %d",linear,soffsets(linear));
-    QDP_info("srcnode(%d) = %d",linear,srcnode(linear));
-    QDP_info("dstnode(%d) = %d",linear,dstnode(linear));
-  }
+   for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
+   {
+     QDP_info("goffsets(%d) = %d",linear,goffsets(linear));
+     QDP_info("srcnode(%d) = %d",linear,srcnode(linear));
+     QDP_info("dstnode(%d) = %d",linear,dstnode(linear));
+   }
+ }
 #endif
 
   // Return a list of the unique nodes in the list
@@ -95,7 +109,7 @@ void Map::make(const MapFunc& func)
     if (destnodes_tmp[i] != my_node)
       ++cnt_destnodes;
 
-#if 0
+#if QDP_DEBUG >= 3
   // Debugging
   for(int i=0; i < srcenodes_tmp.size(); ++i)
     QDP_info("srcenodes_tmp(%d) = %d",i,srcenodes_tmp[i]);
@@ -124,7 +138,9 @@ void Map::make(const MapFunc& func)
   //
   if (! offnodeP)
   {
-//  QDP_info("exiting Map::make");
+#if QDP_DEBUG >= 3
+    QDP_info("exiting Map::make");
+#endif
     return;
   }
 
@@ -140,7 +156,7 @@ void Map::make(const MapFunc& func)
     if (destnodes_tmp[i] != my_node)
       destnodes[j++] = destnodes_tmp[i];
 
-#if 0
+#if QDP_DEBUG >= 3
   // Debugging
   for(int i=0; i < srcenodes.size(); ++i)
     QDP_info("srcenodes(%d) = %d",i,srcenodes(i));
@@ -149,9 +165,6 @@ void Map::make(const MapFunc& func)
     QDP_info("destnodes(%d) = %d",i,destnodes(i));
 #endif
 
-
-//  Write(nml,srcenodes);
-//  Write(nml,destnodes);
 
   // Run through the lists and find the number of each unique node
   srcenodes_num.resize(srcenodes.size());
@@ -185,11 +198,8 @@ void Map::make(const MapFunc& func)
       }
   }
   
-//  Write(nml,srcenodes_num);
-//  Write(nml,destnodes_num);
 
-
-#if 0
+#if QDP_DEBUG >= 3
   for(int i=0; i < destnodes.size(); ++i)
   {
     QDP_info("srcenodes(%d) = %d",i,srcenodes(i));
@@ -203,7 +213,46 @@ void Map::make(const MapFunc& func)
   }
 #endif
 
-//  QDP_info("exiting Map::make");
+  // Implementation limitation in the Map::operator(). Only support
+  // a node sending data all to one node or no sending at all (offNodeP == false).
+  if (srcenodes.size() != 1)
+    QMP_error_exit("Map: for now only allow 1 destination node");
+      
+  if (destnodes.size() != 1)
+    QMP_error_exit("Map: for now only allow receives from 1 node");
+
+
+  // Now make a small scatter array for the dest_buf so that when data
+  // is sent, it is put in an order the gather can pick it up
+  // If we allow multiple dest nodes, then soffsets here needs to be
+  // an array of arrays
+  soffsets.resize(destnodes_num[0]);
+  
+  // Loop through sites on my *destination* node - here I assume all nodes have
+  // the same number of sites. Mimic the gather pattern needed on that node and
+  // set my scatter array to scatter into the correct site order
+  for(int i=0, si=0; i < Layout::sitesOnNode(); ++i) 
+  {
+    // Get the true lattice coord of this linear site index
+    multi1d<int> coord = Layout::siteCoords(destnodes[0], i);
+    multi1d<int> fcoord = func(coord,+1);
+    int fnode = Layout::nodeNumber(fcoord);
+    int fline = Layout::linearSiteIndex(fcoord);
+
+    if (fnode == my_node)
+      soffsets[si++] = fline;
+  }
+
+#if QDP_DEBUG >= 3
+  // Debugging
+  for(int i=0; i < soffsets.size(); ++i)
+    QDP_info("soffsets(%d) = %d",i,soffsets(i));
+#endif
+
+
+#if QDP_DEBUG >= 3
+  QDP_info("exiting Map::make");
+#endif
 }
 
 
@@ -217,7 +266,7 @@ namespace Internal
   void 
   sendToWait(void *send_buf, int dest_node, int count)
   {
-#if defined(DEBUG)
+#if QDP_DEBUG >= 2
     QDP_info("starting a sendToWait, count=%d, destnode=%d", count,dest_node);
 #endif
 
@@ -232,7 +281,7 @@ namespace Internal
     QMP_free_msghandle(request_mh);
     QMP_free_msgmem(request_msg);
 
-#if defined(DEBUG)
+#if QDP_DEBUG >= 2
     QDP_info("finished a sendToWait");
 #endif
   }
@@ -241,7 +290,7 @@ namespace Internal
   void 
   recvFromWait(void *recv_buf, int srce_node, int count)
   {
-#if defined(DEBUG)
+#if QDP_DEBUG >= 2
     QDP_info("starting a recvFromWait, count=%d, srcenode=%d", count, srce_node);
 #endif
 
@@ -256,7 +305,7 @@ namespace Internal
     QMP_free_msghandle(request_mh);
     QMP_free_msgmem(request_msg);
 
-#if defined(DEBUG)
+#if QDP_DEBUG >= 2
     QDP_info("finished a recvFromWait");
 #endif
   }
