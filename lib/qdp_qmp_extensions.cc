@@ -49,7 +49,7 @@ void QMP_error_exit (const char* format, ...)
 
 /* My own implementation of QMP_route */
 QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
-			QMP_u32_t src, QMP_u32_t dest)
+		       QMP_u32_t src, QMP_u32_t dest)
 {
 
 
@@ -88,18 +88,21 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
   /* Allocate space for the coordinates */
   l_src_coords =(QMP_u32_t *)QMP_get_logical_coordinates_from(src);
   if( l_src_coords == (QMP_u32_t *)NULL ) { 
-    QMP_error_exit("QMP_route: QMP_get_logical_coordinates_from failed\n");
+    QMP_fprintf(stderr, "QMP_route: QMP_get_logical_coordinates_from failed\n");
+    return QMP_NOMEM_ERR;
   }
 
   l_dst_coords = (QMP_u32_t *)QMP_get_logical_coordinates_from(dest);
   if( l_dst_coords == (QMP_u32_t *)NULL ) { 
-    QMP_error_exit("QMP_route: QMP_get_logical_coordinates_from failed\n");
+    QMP_fprintf(stderr, "QMP_route: QMP_get_logical_coordinates_from failed\n");
+    return QMP_NOMEM_ERR;
   }
 
   /* Will definitely have to free this */
   l_disp_vec = (int *)malloc(sizeof(int)*ndim);
   if( l_disp_vec == (int *)NULL ) {
-    QMP_error_exit("QMP_route: Unable to allocate displacement array\n");
+    QMP_fprintf(stderr, "QMP_route: Unable to allocate displacement array\n");
+    return QMP_NOMEM_ERR;
   }
 
   /* Compute the displacement */
@@ -110,15 +113,15 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
 #if QDP_DEBUG >= 2 || defined(QDP_QCDOC_DEBUG)
   /* Debugging information */
   fprintf(stdout, "QMP_route: src=%d dst=%, src coords=(", src, dest);
-  for(i=0; j < ndim; j++) { 
+  for(j=0; j < ndim; j++) { 
     fprintf(stdout, " %d", l_src_coords[j]);
   }
   fprintf(stdout, ") dst_coords=(");
-  for(i=0; j < ndim; j++) { 
+  for(j=0; j < ndim; j++) { 
     fprintf(stdout, " %d", l_dst_coords[j]);
   }
   fprintf(stdout, ") displ= (");
-  for(i=0; j < ndim; j++) { 
+  for(j=0; j < ndim; j++) { 
     fprintf(stdout, " %d", l_disp_vec[j]);
   }
   fprintf(stdout, ")\n");
@@ -131,12 +134,14 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
   /* Will have to free these with QMP_free_aligned_memory */
   sendbuf = QMP_allocate_aligned_memory(count);
   if( sendbuf == NULL ) { 
-    QMP_error_exit("Unable to allocate sendbuf in QMP_route\n");
+    QMP_fprintf(stderr, "Unable to allocate sendbuf in QMP_route\n");
+    return QMP_NOMEM_ERR;
   }
 
   recvbuf = QMP_allocate_aligned_memory(count);
   if( recvbuf == NULL ) { 
-    QMP_error_exit("Unable to allocate recvbuf in QMP_route\n");
+    QMP_fprintf(stderr ,"Unable to allocate recvbuf in QMP_route\n");
+    return QMP_NOMEM_ERR;
   }
 
   /* To start with -- the first thing I have to do, is to copy
@@ -183,13 +188,23 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
 						 i,
 						 -direction_sign,
 						 0);
-      
+
+      if( recv_handle == NULL) { 
+	QMP_fprintf(stderr, "QMP_declare_receive_relative returned NULL\n");
+	return QMP_BAD_MESSAGE;
+      }
+
       /* Create a send handle in direction sign */
       send_handle = QMP_declare_send_relative(sendbufmm, 
 					      i, 
 					      direction_sign, 
 					      0);
 
+      if( send_handle == NULL ) { 
+	QMP_fprintf(stderr, "QMP_declare_send_relative returned NULL\n");
+	return QMP_BAD_MESSAGE;
+      }
+	
       /* Do the hops */
       for(j=0; j < n_hops; j++) { 
 	/* Start receiving */
@@ -201,19 +216,22 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
 	/* Start sending */
 	err = QMP_start(send_handle);
 	if(err != QMP_SUCCESS ) { 
-	  QMP_error_exit("QMP_start() failed on receive in QMP_route\n");
+	  QMP_fprintf(stderr, "QMP_start() failed on receive in QMP_route\n");
+	  return QMP_ERROR;
 	}
 	
 	/* Wait for send to complete */
 	err = QMP_wait(send_handle);
 	if( err != QMP_SUCCESS ) { 
-	  QMP_error_exit("QMP_wait() failed on send in QMP_route\n");
+	  QMP_fprintf(stderr, "QMP_wait() failed on send in QMP_route\n");
+	  return QMP_ERROR;
 	}
 
 	/* Wait for receive to complete */
 	err = QMP_wait(recv_handle);
 	if( err != QMP_SUCCESS ) { 
-	  QMP_error_exit("QMP_wait() recv on send in QMP_route\n");
+	  QMP_fprintf(stderr, "QMP_wait() recv on send in QMP_route\n");
+	  return QMP_ERROR;
 	}
 
 	/* Copy the contents of my recvbuf into my sendbuf, 
@@ -258,7 +276,10 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
 
 
   free(l_disp_vec);
+
+  return(QMP_SUCCESS);
 }
+
 #endif
 
 #ifndef HAVE_QMP_VERBOSE
