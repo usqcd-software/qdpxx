@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.18 2004-03-29 21:28:15 edwards Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.19 2004-04-07 17:36:01 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -16,8 +16,13 @@
 // Use SSE specific Linalg stuff (inline assembler etc)
 #include "scalarsite_sse/qdp_scalarsite_sse_linalg.h"
 
+#if __GNUC_MINOR__ >= 2
 // Use SSE specific blas stuff (inline assembler etc)
+// Only supported on gcc >= 3.2
 #include "scalarsite_sse/qdp_scalarsite_sse_blas.h"
+#else
+#warning "This version of gcc does not support vector types - not using SSE blas code"
+#endif
 
 #else
 
