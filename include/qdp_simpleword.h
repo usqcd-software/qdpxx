@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_simpleword.h,v 1.9 2004-08-12 02:24:11 edwards Exp $
+// $Id: qdp_simpleword.h,v 1.10 2005-01-22 21:58:02 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -93,43 +93,6 @@ void copymask(double& d, bool mask, double s1)
 {
   if (mask)
     d = s1;
-}
-
-//! dest  = random  
-template<class T1, class T2>
-inline void
-fill_random(float& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
-{
-  d = float(RNG::sranf(seed, skewed_seed, seed_mult));
-}
-
-//! dest  = random  
-template<class T1, class T2>
-inline void
-fill_random(double& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
-{
-  d = double(RNG::sranf(seed, skewed_seed, seed_mult));
-}
-
-
-//! dest  = random  
-template<class T1, class T2, int N>
-inline void
-fill_random(float* d, T1& seed, T2& skewed_seed, const T1& seed_mult)
-{
-  RNG::sranf(d, N, seed, skewed_seed, seed_mult);
-}
-
-
-//! dest  = random  
-template<class T1, class T2, int N>
-inline void
-fill_random(double* d, T1& seed, T2& skewed_seed, const T1& seed_mult)
-{
-  float dd[N];
-  RNG::sranf(dd, N, seed, skewed_seed, seed_mult);
-  for(int i=0; i < N; ++i)
-    d[i] = float(dd[i]);
 }
 
 
