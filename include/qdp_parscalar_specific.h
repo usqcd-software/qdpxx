@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.15 2003-08-10 02:27:11 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.16 2003-08-26 15:25:09 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1500,21 +1500,6 @@ void read(BinaryReader& bin, OLattice<T>& d)
 }
 
 #endif
-
-
-//! Text input
-/*! Assumes no inner grid */
-template<class T>
-TextReader& operator>>(TextReader& txt, OScalar<T>& d)
-{
-  if (Layout::primaryNode())
-    txt >> d.elem();
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(d);
-
-  return txt;
-}
 
 
 QDP_END_NAMESPACE();
