@@ -1,279 +1,253 @@
-AC_INIT(qdp++, 0.18, edwards@jlab.org)
+AC_INIT(qdp,0.19,edwards@jlab.org)
 
-#
-# Options that may or may not be required. There is probably a 
-# Nice autoconf-y way of doing this but this is just me being 
-# Dumb
-#
-# At the outset none of them are required
-#
-ac_required_mpich_home=0;
-ac_required_gm_home=0;
-ac_required_qmp=0;
+AC_CONFIG_AUX_DIR(config)
+
+dnl Initialise automake
+AM_INIT_AUTOMAKE
+dnl
+dnl
+dnl --with-xxxx and --enable-xxxx switches 
+dnl
+
+dnl --enable-Nc
+AC_ARG_ENABLE(Nc,
+              AC_HELP_STRING([--enable-Nc=N ],
+		[ Set Number of Colours, ie N for SU(N) default is SU(3) ]),
+              ac_Nc=$enableval,
+              ac_Nc=3)
+
+dnl --enable-Nd
+AC_ARG_ENABLE(Nd,
+              AC_HELP_STRING([--enable-Nd=N ],
+                [ Set No of Spacetime Dimensions, default is Nd=4 ]),
+              ac_Nd=$enableval,
+              ac_Nd=4)
 
 
-############################################################
-#
-# --with-xxxx and --enable-xxxx switches 
-#
-############################################################
+dnl --enable-Ns
+AC_ARG_ENABLE(Ns,
+              AC_HELP_STRING([--enable-Ns=<No of Spin Components],
+                [ Set No of Spin Components, Default is Ns=4 ]),
+              ac_Ns=$enableval,
+              ac_Ns=4)
 
-#
-# --enable-parallel-arch argument
-#
+
+dnl --enable-max-volume
+AC_ARG_ENABLE(max-volume,
+	      AC_HELP_STRING([--enable-max-volume=<max no of sites>, default is 2048 ]),
+	      ac_max_volume=$enableval,
+	      ac_max_volume=2048)
+
+
+dnl--enable-parallel-arch argument
 AC_ARG_ENABLE(parallel-arch,
 	      AC_HELP_STRING([--enable-parallel-arch=<arch>],
  	        [ Build QDP++ for parallel architecture <arch> ]),
 	      ac_parallel_arch=$enableval, 
 	      ac_parallel_arch=scalar)
 
-#
-# --with-qmp-home argument
-AC_ARG_WITH(qmp-home,
-	    AC_HELP_STRING([--with-qmp-home=<dir> ], 
-	       [ Specify the QMP installation directory is <dir> ] ),
-	    ac_qmp_home=$withval)
-	    
-#
-# --with-qmp-comms-type argument 
-#
-AC_ARG_WITH(qmp-comms-type, 
-            AC_HELP_STRING([--with-qmp-comms-type=<type> ],
-	      [ Build QMP over MPICH for CH4 target ]),
-	    ac_qmp_comms_type=$withval)
+
+dnl Tell the user about Nd
+AC_MSG_NOTICE([ Configuring QDP++ for Nd = ${ac_Nd} ])
+
+dnl Tell the user about Nc
+AC_MSG_NOTICE([ Configuring QDP++ for Nc = ${ac_Nc} ])
+
+dnl Tell the user about Ns
+AC_MSG_NOTICE([ Configuring QDP for Ns = ${ac_Ns} ])
+
+dnl Tell the user about the Maximum volume -- this should go later
+AC_MSG_NOTICE([ Configuring Maximum volume = ${ac_max_volume} sites])
+
+dnl Balint Joo 13/12/2002 
+dnl Options for finding out where MPI/GM/QMP is
+dnl folowing George Flemings QMP mods
+
+AC_ARG_WITH(qmp-comms-type,
+  AC_HELP_STRING([--with-qmp-comms-type=TYPE],
+    [Build QMP on top of MPI or GM.  If MPI over GM is desired, choose MPI.
+      Default is MPI.]),
+  [case "${with_qmp_comms_type}" in
+    MPI) ;;
+    mpi) with_qmp_comms_type=MPI ;;
+    GM)  ;;
+    gm) with_qmp_comms_type=GM ;;
+    *) AC_MSG_ERROR([bad value "${with_qmp_comms_type}"
+      for --with-qmp-comms-type]) ;;
+    esac],
+  [with_qmp_comms_type=MPI])
+
+AC_ARG_WITH( qmp-comms-cxxflags,
+  AC_HELP_STRING([--with-qmp-comms-cxxflags=QMP_COMMS_CFLAGS],
+    [To pass optional include path to comms header files via compiler flag
+      -I]),
+  [QMP_COMMS_CXXFLAGS="$with_qmp_comms_cxxflags"] )
+
+AC_SUBST(QMP_COMMS_CXXFLAGS)
+
+AC_ARG_WITH( qmp-comms-ldflags,
+  AC_HELP_STRING([--with-qmp-comms-ldflags=QMP_COMMS_LDFLAGS],
+    [To pass optional library search path to comms libraries via compiler
+      flag -L]),
+  [QMP_COMMS_LDFLAGS="$with_qmp_comms_ldflags"])
+
+AC_SUBST(QMP_COMMS_LDFLAGS)
+
+AC_ARG_WITH( qmp-comms-libs,
+  AC_HELP_STRING([--with-qmp-comms-libs=QMP_COMMS_LIBS],
+    [To pass optional list of comms libraries to linker via compiler flag -l]),
+  [QMP_COMMS_LIBS="$with_qmp_comms_libs"])
+
+AC_SUBST(QMP_COMMS_LIBS)
 
 
-#
-# --with-mpich-home Argument
-#
-AC_ARG_WITH(mpich-home,
-	    AC_HELP_STRING([--with-mpich-home],
-	      [ Location of the MPICH installation ]),
-	    ac_mpich_home=$withval)
+dnl Support for memory debugging with DMALLOC
+AM_WITH_DMALLOC
 
-#
-# --with-gm-home argument
-#
-AC_ARG_WITH(gm-home,
-	    AC_HELP_STRING([--with-gm-home], 
-	      [ Location of the GMP installation ]),
-	    ac_gm_home=$withval)
+dnl now the qmp-flags
+AC_ARG_WITH( qmp-cxxflags,
+  AC_HELP_STRING([--with-qmp-cxxflags=QMP_CXXFLAGS],
+    [To pass optional include path to QMP header files via compiler flag
+      -I]),
+  [QMP_CXXFLAGS="$with_qmp_cxxflags"] )
+AC_SUBST(QMP_CXXFLAGS)
 
-#
-# --enable-qmp-cfg
-#
-# this sets the value in the Makefile.
-#
-#
-AC_ARG_ENABLE(qmp-cfg,
-	     AC_HELP_STRING([--enable-qmp-cfg=cfgvalue],
-               [ Sets Makefile option CFG, for internal debugging. (default is RELEASE)]),
-            ac_qmp_cfg=$enableval, ac_qmp_cfg=RELEASE)
+AC_ARG_WITH( qmp-ldflags, 
+  AC_HELP_STRING([--with-qmp-ldflags=QMP_LDFLAGS],
+    [To pass optional link path to QMP libraries via compiler flag -L]),
+    [QMP_LDFLAGS="$with_qmp_ldflags"])
 
+AC_SUBST(QMP_LDFLAGS)
 
-#############################################################
-# Check the parallel architecture
-#############################################################
-case $ac_parallel_arch in 
-  scalar) 
-    AC_MSG_NOTICE([ Building QDP++ for scalar architecture])
-    ac_required_qmp=0
-    ;;
-  parscalar)
-    AC_MSG_NOTICE([ Building QDP++ for parscalar architecture ])
-    ac_required_qmp=1
-    ;;
-  *)
-    AC_MSG_ERROR([ Unsupported Parallel Architecture ])
-    ;;
-esac
+AC_ARG_WITH( qmp-libs,
+  AC_HELP_STRING([-with-qmp-libs=QMP_LIBS],
+    [To pass optional libraries to QMP libraries via compiler flag -l]),
+    [QMP_LIBS="$with_qmp_libs"])
 
-############################################################
-# If QMP is required make sure all the relevant required
-# stuff is also given
-############################################################
+AC_SUBST(QMP_LIBS)
 
-if test ${ac_required_qmp} -eq 1 ;
-then
-  if test "X${ac_qmp_comms_type}X" = "XX";
-  then 
-    AC_MSG_ERROR([ You need to specify --with-qmp-comms-type to build over QMP ] )
-  else 
-    case ${ac_qmp_comms_type} in
-      mpich)
-	# Generic MPICH target -- need mpich-home 
-	ac_required_mpich_home=1
-	ac_required_gm_home=0
-	;;
-      mpich-gm)
-        # MPICH-GM target -- need mpich-home and gm-home
-	ac_required_mpich_home=1
-	ac_required_gm_home=1
-	;;
-      gm)
-	# Pure GM target -- need gm-home
-	ac_required_mpich_home=0
-	ac_required_gm_home=1
-	;;
-      *)
-	# Unsupported target.
-	AC_MSG_NOTICE([Unknown value for --with-comms-type])
-	AC_MSG_NOTICE([ Allowed values are: ])
-	AC_MSG_NOTICE([    mpich      -- Compile over MPICH-CH4 ])
-	AC_MSG_NOTICE([    mpich-gm   -- Compile over MPICH-GM  ])
-	AC_MSG_NOTICE([    gm         -- Compile over GM ])
-	AC_MSG_ERROR([ Please rerun configure specifying --with-comms-type])
-	;;
-    esac
-
-    ############################################################
-    #
-    # Check that the required directories have been specified
-    #
-    ############################################################
- 
-    if test "X${ac_qmp_home}X" = "XX";
-    then
-      AC_MSG_ERROR([ You need to specify --with-qmp-home for this build ])
-    fi
-
-    if test "X${ac_qmp_home}X" = "XyesX";
-    then 
-      AC_MSG_ERROR([ You need to specify a value for --with-qmp-home for this build] )
-    fi
-
-    #
-    # Check that MPICH-Home is specified 	
-    if test ${ac_required_mpich_home} -eq 1 ;
-    then
-      if test "X${ac_mpich_home}X" = "XX" ; 
-      then
-        AC_MSG_ERROR([ You need to specify --with-mpich-home for this build ]) 
-      fi
-
-      if test "X${ac_mpich_home}X" = "XyesX" ; 
-      then 
-        AC_MSG_ERROR([ you need to specify a  value for --with-mpich-home ])
-      fi
-    fi
-
-    #
-    # Check that GM-Home is specified 
-    if test ${ac_required_gm_home} -eq 1 ;
-    then
-      if test "X${ac_gm_home}X" = "XX" ;
-      then
-        AC_MSG_ERROR([ You need to specify --with-gm-home for this build ] )
-      fi
-	   
-      if test "X${ac_gh_home}X" = "XyesX" ; 
-      then 
-        AC_MSG_ERROR([ You need to specify a value fo --with-gm-home ])
-      fi 
-    fi
-  fi 
-fi
-	
-############################################################
-# Check that qmp_cfg is reasonable
-############################################################
-case ${ac_qmp_cfg} in
-  RELEASE)
-    ;;
-  DEBUG)
-    ;;
-  DEV)
-    ;;
-  MEMORY-CHECK)
-    ;;
-  *)
-    AC_MSG_ERROR([ Shouldnt have got here]) 
-    ;;
-esac
-
-##############################################################
-##############################################################
-#
-# Now have all the options... Do some configuration 
-#
-##############################################################
-##############################################################
-
-## Hunt for a C compiler -- favouring gcc
-AC_PROG_CC(gcc cc)
-
-## Hunt for a C++ compiler -- favouring g++
+AC_LANG_CPLUSPLUS
 AC_PROG_CXX(g++ cxx CC)
-
-LIBNAME=qdp
-
-SRCS="subset.cc random.cc qdp.cc layout.cc io.cc iogauge.cc byteorder.cc\
-  util.cc readszin.cc"
-HDRS="qdp.h word.h inner.h reality.h outer.h qdptype.h qdpexpr.h \
-  defs.h specializations.h subset.h params.h multi.h random.h layout.h \
-  proto.h io.h QDPOperators.h globalfuncs.h primitive.h primscalar.h \
-  primmatrix.h primvector.h primseed.h primcolormat.h \
-  primcolorvec.h primgamma.h primspinmat.h primspinvec.h"
-
-CXXFLAGS=${CXXFLAGS}" -Wall -g"
-CXXFLAGS=${CXXFLAGS}" -I\$(TOPDIR) -I\$(TOPDIR)/include"
+AC_PROG_RANLIB
 
 case ${ac_parallel_arch} in
-  scalar) 
-    AC_DEFINE(ARCH_SCALAR)
-    SRCS=${SRCS}" scalar_specific.cc"
-    HDRS=${HDRS}" scalar_specific.h"
+  scalar)
+    AC_MSG_NOTICE([ Scalar Build! Not checking for MPI and QMP ])
     ;;
   parscalar)
-    AC_DEFINE(ARCH_PARSCALAR)
-    SRCS=${SRCS}" parscalar_specific.cc"
-    HDRS=${HDRS}" parscalar_specific.h"
-    CXXFLAGS=${CXXFLAGS}" -I${ac_qmp_home}/include"
-    LDFLAGS=${LDFLAGS}" -L${ac_qmp_home}/lib"
-    LIBS=${LIBS}" -lqmp"
+    AC_MSG_NOTICE([ Parscalar build! Checking for QMP ])
 
-    case ${ac_qmp_comms_type} in
-      mpich)
-        LDFLAGS=${LDFLAGS}" -L${ac_mpich_home}/lib"
-        LIBS=${LIBS}" -lpmpich -lmpich -lpmpich"
-        ;;
-      mpich-gm)
-        LDFLAGS=${LDFLAGS}" -L${ac_mpich_home}/lib"
-        LDFLAGS=${LDFLAGS}" -L${ac_gm_home}/binary/lib"
-        LIBS=${LIBS}" -lmpich -lgm"
-        ;;
-      gm) 
-        LDFALGS=${LDFLAGS}" -L${ac_gm_home}/binary/lib"
-        LIBS=${LIBS}" -lgm"
+    dnl check comms harness and qmp builds depending on with_qmp_comms_type
+    case ${with_qmp_comms_type} in 
+      MPI) 
+        dnl check MPI
+	AC_MSG_NOTICE([ QMP Comms harness is MPI ])
+        PAC_MPI_LINK_CXX_FUNC( ${QMP_COMMS_CXXFLAGS}, ${QMP_COMMS_LDFLAGS}, dnl
+          ${QMP_COMMS_LIBS}, , , [mpi_link_ok=yes], [mpi_link_ok=no])
+        AC_MSG_CHECKING([if we can compile/link of a simple MPI program])
+        if test "X${mpi_link_ok}X" = "XyesX" ; then
+          AC_MSG_RESULT(yes)
+        else
+          AC_MSG_RESULT(no)
+          AC_MSG_ERROR([Cannot compile/link a basic MPI C++ program!
+          Check QMP_COMMS_CXXFLAGS, QMP_COMMS_LDFLAGS, QMP_COMMS_LIBS.])
+        fi
+     	;;
+      GM)
+	AC_MSG_NOTICE([ QMP Comms harness is GM ])
         ;;
       *)
-        AC_MSG_ERROR([ Shouldnt be here ])
-	;;
-     esac
-     ;;
+        AC_MSG_ERROR([ Unsupported QMP Comms harness ])
+        ;;
+    esac
+    dnl now check QMP works
+    PAC_QMP_LINK_CXX_FUNC( ${QMP_CXXFLAGS}, ${QMP_LDFLAGS}, ${QMP_LIBS}, dnl
+                       ${QMP_COMMS_CXXFLAGS}, ${QMP_COMMS_LDFLAGS}, dnl
+                       ${QMP_COMMS_LIBS}, , , [qmp_link_ok=yes], dnl
+	               [qmp_link_ok=no])
+    AC_MSG_CHECKING([if we can compile/link of a simple QMP program])
+    if test "X${qmp_link_ok}X" = "XyesX" ; then
+      AC_MSG_RESULT(yes)
+    else
+      AC_MSG_RESULT(no)
+      AC_MSG_ERROR([Cannot compile/link a basic QMP C++ program!
+      Check QMP_CXXFLAGS, QMP_LDFLAGS, QMP_LIBS, QMP_COMMS_CXXFLAGS, QMP_COMMS_LDFLAGS, QMP_COMMS_LIBS.])
+    fi
+    ;;
   *)
-    AC_MSG_ERROR([ Shouldnt be here 2 ] );
+    AC_MSG_ERROR([ Unknown value for --enable-parallel-arch ])
     ;;
 esac
 
-LDFLAGS="-L\$(TOPDIR)/lib "${LDFLAGS}
-LIBS="-l${LIBNAME} "${LIBS}
+dnl
+dnl
+dnl Now have all the options... Do some configuration 
+dnl
+dnl
 
-MY_VPATH="\$(TOPDIR)/include \
-          \$(TOPDIR)/src \
-	  \$(TOPDIR)/lib \
-	  \$(TOPDIR)"
 
-AC_SUBST(LIBNAME)
-AC_SUBST(SRCS)
-AC_SUBST(HDRS)
-AC_SUBST(MY_VPATH)
+## Depending on what Parallel Architecture is, do some configuring
+case ${ac_parallel_arch} in
+  scalar) 
+    ARCHDEF_SUBSTITUTION="ARCH_SCALAR" 
+    ARCH_SRCS="scalar_specific.cc qdp_init_scalar.cc"
+    ARCH_HDRS="scalar_specific.h"
+    AC_SUBST(ARCH_SRCS)
+    AC_SUBST(ARCH_HDRS)
+    ;;
+  parscalar)
+    ARCHDEF_SUBSTITUTION="ARCH_PARSCALAR"
+    ARCH_SRCS="parscalar_specific.cc qdp_init_parscalar.cc"
+    ARCH_HDRDS=" parscalar_specific.h"
+    AC_SUBST(ARCH_SRCS)
+    AC_SUBST(ARCH_HDRS)
+    ;;
+esac
 
+AC_SUBST(ARCHDEF_SUBSTITUTION)
+
+
+#######################
+# Define Nc, Nd and Ns
+#######################
+
+AC_SUBST(ac_Nc)
+AC_SUBST(ac_Nd)
+AC_SUBST(ac_Ns)
+AC_SUBST(ac_max_volume)
+
+
+##################################
+# Check for programs to build docs
+##################################
+AC_CHECK_PROG(LATEX, latex, latex, true)
+AC_CHECK_PROG(DVIPS, dvips, dvips, true)
+AC_CHECK_PROG(DVIPDF, dvipdf, dvipdf, true)
+AC_CHECK_PROG(DOXYGEN, doxygen, doxygen, true)
+
+#######################
+# Produce output
+#######################
+
+#
+# Set up the doxygen file
+# Substitute the right directories
+#
+AC_CONFIG_FILES(docs/qdpdoc)
+
+#
+# Generate makefiles
+#
 AC_CONFIG_FILES(Makefile)
-AC_CONFIG_FILES(docs/Makefile)
-AC_CONFIG_FILES(include/Makefile)
 AC_CONFIG_FILES(lib/Makefile)
-AC_CONFIG_FILES(tests/Makefile)
-AC_CONFIG_FILES(tests/BuildingBlocks/Makefile)
-
+AC_CONFIG_FILES(docs/Makefile)
+AC_CONFIG_FILES(examples/Makefile)
+AC_CONFIG_FILES(include/Makefile)
+AC_CONFIG_FILES(include/PETE/Makefile)
+AC_CONFIG_FILES(include/qdp_config.h)
+#
+# Finish
+#
 AC_OUTPUT
+
+
