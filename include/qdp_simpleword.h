@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_simpleword.h,v 1.3 2003-06-05 02:22:50 edwards Exp $
+// $Id: qdp_simpleword.h,v 1.4 2003-08-20 21:07:34 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -73,7 +73,7 @@ void zero_rep(double& dest)
 
 //! d = (mask) ? s1 : d;
 inline
-void copymask(int& d, const bool& mask, const int& s1) 
+void copymask(int& d, bool mask, int s1) 
 {
   if (mask)
     d = s1;
@@ -81,7 +81,7 @@ void copymask(int& d, const bool& mask, const int& s1)
 
 //! d = (mask) ? s1 : d;
 inline
-void copymask(float& d, const bool& mask, const float& s1) 
+void copymask(float& d, bool mask, float s1) 
 {
   if (mask)
     d = s1;
@@ -89,7 +89,7 @@ void copymask(float& d, const bool& mask, const float& s1)
 
 //! d = (mask) ? s1 : d;
 inline
-void copymask(double& d, const bool& mask, const double& s1) 
+void copymask(double& d, bool mask, double s1) 
 {
   if (mask)
     d = s1;
@@ -115,21 +115,21 @@ fill_random(double& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 //---------------------------
 //! dest [float type] = source [int type]
 inline
-void cast_rep(float& d, const int& s1)
+void cast_rep(float& d, int s1)
 {
   d = float(s1);
 }
 
 //! dest [float type] = source [float type]
 inline
-void cast_rep(float& d, const float& s1)
+void cast_rep(float& d, float s1)
 {
   d = float(s1);
 }
 
 //! dest [float type] = source [double type]
 inline
-void cast_rep(float& d, const double& s1)
+void cast_rep(float& d, double s1)
 {
   d = float(s1);
 }
@@ -137,21 +137,21 @@ void cast_rep(float& d, const double& s1)
 
 //! dest [float type] = source [int type]
 inline
-void cast_rep(double& d, const int& s1)
+void cast_rep(double& d, int s1)
 {
   d = double(s1);
 }
 
 //! dest [double type] = source [float type]
 inline
-void cast_rep(double& d, const float& s1)
+void cast_rep(double& d, float s1)
 {
   d = double(s1);
 }
 
 //! dest [double type] = source [double type]
 inline
-void cast_rep(double& d, const double& s1)
+void cast_rep(double& d, double s1)
 {
   d = double(s1);
 }
@@ -160,21 +160,21 @@ void cast_rep(double& d, const double& s1)
 //---------------------------
 //! dest [float type] = source [int type]
 inline
-void recast_rep(float& d, const int& s1)
+void recast_rep(float& d, int s1)
 {
   cast_rep(d,s1);
 }
 
 //! dest [float type] = source [float type]
 inline
-void recast_rep(float& d, const float& s1)
+void recast_rep(float& d, float s1)
 {
   cast_rep(d,s1);
 }
 
 //! dest [float type] = source [double type]
 inline
-void recast_rep(float& d, const double& s1)
+void recast_rep(float& d, double s1)
 {
   cast_rep(d,s1);
 }
@@ -182,21 +182,21 @@ void recast_rep(float& d, const double& s1)
 
 //! dest [float type] = source [int type]
 inline
-void recast_rep(double& d, const int& s1)
+void recast_rep(double& d, int s1)
 {
   cast_rep(d,s1);
 }
 
 //! dest [double type] = source [float type]
 inline
-void recast_rep(double& d, const float& s1)
+void recast_rep(double& d, float s1)
 {
   cast_rep(d,s1);
 }
 
 //! dest [double type] = source [double type]
 inline
-void recast_rep(double& d, const double& s1)
+void recast_rep(double& d, double s1)
 {
   cast_rep(d,s1);
 }
@@ -210,21 +210,21 @@ void recast_rep(double& d, const double& s1)
 
 // Conjugate
 inline 
-float conj(const float& l)
+float conj(float l)
 {
   return l;
 }
 
 // Conjugate
 inline 
-double conj(const double& l)
+double conj(double l)
 {
   return l;
 }
 
 // Conjugate
 inline 
-int conj(const int& l)
+int conj(int l)
 {
   return l;
 }
@@ -232,21 +232,21 @@ int conj(const int& l)
 
 // Transpose
 inline 
-float transpose(const float& l)
+float transpose(float l)
 {
   return l;
 }
 
 // Transpose
 inline 
-double transpose(const double& l)
+double transpose(double l)
 {
   return l;
 }
 
 // Transpose
 inline 
-int transpose(const int& l)
+int transpose(int l)
 {
   return l;
 }
@@ -256,7 +256,7 @@ int transpose(const int& l)
 // TRACE
 // trace = Trace(source1)
 inline 
-float trace(const float& s1)
+float trace(float s1)
 {
   return s1;
 }
@@ -264,7 +264,7 @@ float trace(const float& s1)
 
 // trace = Trace(source1)
 inline 
-double trace(const double& s1)
+double trace(double s1)
 {
   return s1;
 }
@@ -272,7 +272,7 @@ double trace(const double& s1)
 
 // trace = Trace(source1)
 inline 
-int trace(const int& s1)
+int trace(int s1)
 {
   return s1;
 }
@@ -281,28 +281,28 @@ int trace(const int& s1)
 
 // int = toInt(source1)
 inline 
-int toInt(const int& s1)
+int toInt(int s1)
 {
   return s1;
 }
 
 // float = toFloat(source1)
 inline 
-float toFloat(const float& s1)
+float toFloat(float s1)
 {
   return s1;
 }
 
 // double = toDouble(source1)
 inline 
-double toDouble(const double& s1)
+double toDouble(double s1)
 {
   return s1;
 }
 
 // bool = toBool(source1)
 inline 
-bool toBool(const bool& s1)
+bool toBool(bool s1)
 {
   return s1;
 }
@@ -312,19 +312,19 @@ bool toBool(const bool& s1)
 
 // Where is the ? operator
 inline 
-int where(const bool& a, const int& b, const int& c)
+int where(bool a, int b, int c)
 {
   if (a) return b; else return c;
 }
 
 inline 
-float where(const bool& a, const float& b, const float& c)
+float where(bool a, float b, float c)
 {
   if (a) return b; else return c;
 }
 
 inline 
-double where(const bool& a, const double& b, const double& c)
+double where(bool a, double b, double c)
 {
   if (a) return b; else return c;
 }
@@ -333,73 +333,73 @@ double where(const bool& a, const double& b, const double& c)
 
 // Global sum over site indices only
 inline
-int sum(const int& s1)
+int sum(int s1)
 {
   return s1;
 }
 
 inline
-int localNorm2(const int& s1)
+int localNorm2(int s1)
 {
   return s1*s1;
 }
 
 inline
-int localInnerProduct(const int& s1, const int& s2)
+int localInnerProduct(int s1, int s2)
 {
   return s1*s2;
 }
 
 inline
-unsigned int sum(const unsigned int& s1)
+unsigned int sum(unsigned int s1)
 {
   return s1;
 }
 
 inline
-unsigned int localNorm2(const unsigned int& s1)
+unsigned int localNorm2(unsigned int s1)
 {
   return s1*s1;
 }
 
 inline
-unsigned int localInnerProduct(const unsigned int& s1, const unsigned int& s2)
+unsigned int localInnerProduct(unsigned int s1, unsigned int s2)
 {
   return s1*s2;
 }
 
 inline
-double sum(const float& s1)
+double sum(float s1)
 {
   return double(s1);
 }
 
 inline
-double localNorm2(const float& s1)
+double localNorm2(float s1)
 {
   return double(s1*s1);
 }
 
 inline
-double localInnerProduct(const float& s1, const float& s2)
+double localInnerProduct(float s1, float s2)
 {
   return double(s1*s2);
 }
 
 inline
-double sum(const double& s1)
+double sum(double s1)
 {
   return s1;
 }
 
 inline
-double localNorm2(const double& s1)
+double localNorm2(double s1)
 {
   return s1*s1;
 }
 
 inline
-double localInnerProduct(const double& s1, const double& s2)
+double localInnerProduct(double s1, double s2)
 {
   return s1*s2;
 }
