@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.4 2003-01-15 21:46:51 edwards Exp $
+// $Id: t_foo.cc,v 1.5 2003-01-17 05:46:03 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -24,10 +24,31 @@ struct Nearest : public MapFunc
 
       const multi1d<int>& nrow = Layout::lattSize();
       int m = 1;
-      lc[m] = (coord[m] + 2*sgnum(sign) + 4*nrow[m]) % nrow[m];
+      lc[m] = (coord[m] + 1*sgnum(sign) + 4*nrow[m]) % nrow[m];
 
       return lc;
     }
+
+private:
+  int sgnum(int x) const {return (x > 0) ? 1 : -1;}
+}; 
+
+
+struct NearestNeighborMapFunc : public ArrayMapFunc
+{
+  NearestNeighborMapFunc() {}
+
+  virtual multi1d<int> operator() (const multi1d<int>& coord, int sign, int dir) const
+    {
+      multi1d<int> lc = coord;
+
+      const multi1d<int>& nrow = Layout::lattSize();
+      lc[dir] = (coord[dir] + sgnum(sign) + 4*nrow[dir]) % nrow[dir];
+
+      return lc;
+    }
+
+  virtual int numArray() const {return Nd;}
 
 private:
   int sgnum(int x) const {return (x > 0) ? 1 : -1;}
@@ -43,7 +64,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {2,4,2,2};
+  const int foo[] = {4,4,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -54,7 +75,7 @@ int main(int argc, char *argv[])
 
   Write(nml,nrow);
 
-#if 1
+#if 0
   Map near;
   Nearest bbb;
   near.make(bbb);
@@ -66,6 +87,24 @@ int main(int argc, char *argv[])
 
     Write(nml,fred);
     Write(nml,sue);
+  }
+#endif
+
+#if 1
+  ArrayMap nearneigh;
+  NearestNeighborMapFunc bbb;
+  nearneigh.make(bbb);
+  {
+    LatticeReal fred,sue;
+    random(fred);
+
+    Write(nml,fred);
+    for(int m=0; m < Nd; ++m)
+    {
+      sue = nearneigh(fred,m);
+      Write(nml,m);
+      Write(nml,sue);
+    }
   }
 #endif
 
