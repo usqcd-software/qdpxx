@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.4 2003-07-30 22:09:05 edwards Exp $
+// $Id: qdp_primvector.h,v 1.5 2003-07-31 19:27:59 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -421,8 +421,21 @@ cmplx(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
 }
 
 
-
+//-----------------------------------------------------------------------------
 // Functions
+// Conjugate
+template<class T1, int N, template<class,int> class C>
+inline typename UnaryReturn<PVector<T1,N,C>, FnConjugate>::Type_t
+conj(const PVector<T1,N,C>& l)
+{
+  typename UnaryReturn<PVector<T1,N,C>, FnConjugate>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = conj(l.elem(i));
+
+  return d;
+}
+
 //! PVector = i * PVector
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PVector<T,N,C>, FnTimesI>::Type_t
