@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.1 2004-03-23 22:43:10 edwards Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.2 2004-03-24 03:42:41 edwards Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -9,8 +9,6 @@
 
 #ifndef QDP_SCALARSITE_SSE_LINALG_H
 #define QDP_SCALARSITE_SSE_LINALG_H
-
-#warning "Inside qdp_scalarsite_sse_linalg.h"
 
 // These SSE asm instructions are only supported under GCC/G++
 #if defined(__GNUC__)

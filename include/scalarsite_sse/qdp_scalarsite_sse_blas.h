@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.2 2004-03-24 03:40:14 edwards Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.3 2004-03-24 03:42:41 edwards Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -8,8 +8,6 @@
 
 #ifndef QDP_SCALARSITE_SSE_BLAS_H
 #define QDP_SCALARSITE_SSE_BLAS_H
-
-#warning "Inside qdp_scalarsite_sse_blas.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
