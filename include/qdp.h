@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.49 2004-06-30 21:49:20 edwards Exp $
+// $Id: qdp.h,v 1.50 2004-07-27 05:27:09 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -30,7 +30,6 @@
 
 #ifndef QDP_INCLUDE
 #define QDP_INCLUDE
-
 
 /* Get local configuration options (ARCH_SCALAR/PARSCALAR, Nd, Nc, Ns) */
 #include <qdp_config.h>
@@ -142,6 +141,7 @@ QDP_END_NAMESPACE();
 
 #include "qdp_newops.h"
 #include "qdp_optops.h"
+#include "qdp_profile.h"
 //#include "qdp_word.h"
 #include "qdp_simpleword.h"
 #include "qdp_reality.h"
@@ -151,7 +151,7 @@ QDP_END_NAMESPACE();
 #include "qdp_outersubtype.h"
 
 #if defined(ARCH_SCALAR) || defined(ARCH_PARSCALAR)
-#include "qdp_dwdefs.h"
+#include "qdp_scalarsite_defs.h"
 
 #elif defined(ARCH_SCALARVEC) || defined(ARCH_PARSCALARVEC)
 #include "qdp_scalarvecsite_defs.h"
