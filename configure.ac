@@ -64,7 +64,7 @@ AC_ARG_WITH(qmp,
       then
 	AC_MSG_RESULT([yes])
 	AC_MSG_NOTICE([ Sourcing qmp_build_env.sh in $QMP_HOME/config ])
-	source $QMP_HOME/config/qmp_build_env.sh
+	. $QMP_HOME/config/qmp_build_env.sh
       else 
 	AC_MSG_RESULT([no])
 	AC_MSG_NOTICE([ configuration may still work if you set the relevant ])
