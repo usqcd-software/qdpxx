@@ -1,6 +1,7 @@
-// $Id: t_remote.cc,v 1.1 2003-06-06 02:39:30 edwards Exp $
+// $Id: t_remote.cc,v 1.2 2003-06-06 15:10:46 edwards Exp $
 
 #include <iostream>
+#include <fstream>
 
 #include "qdp_filebuf.h"
 
@@ -27,44 +28,43 @@ int main(int argc, char *argv[])
 #if 0
     // Remote output buffer and conventional stream
     RemoteOutputFileBuf ob;
-    ob.open("test.out");
+    ob.open("/home/edwards/test.out",std::ofstream::out | std::ofstream::trunc);
     std::ostream outfile(&ob);
 #else
     // Remote output stream
     RemoteOutputFileStream outfile;
-    outfile.open("test.out");
+    outfile.open("/home/edwards/test.out",std::ofstream::out | std::ofstream::trunc);
 #endif
 
     int n=42;
     float x = -5.3;
 
-    outfile << "n = " << n << endl;
-    outfile << "x = " << x << endl;
+    outfile << n << endl;
+    outfile << x << endl;
 
     outfile.close();
   }
  
-
   {
 #if 0
     // Remote input buffer and conventional stream
     RemoteInputFileBuf ib;
-    ib.open("test.out");
+    ib.open("/home/edwards/test.out",std::ifstream::in);
     std::istream infile(&ib);
 #else
     // Remote input stream
     RemoteInputFileStream infile;
-    infile.open("test.out");
+    infile.open("/home/edwards/test.out",std::ifstream::in);
 #endif
 
-    int n;
-    float x;
+    int nn;
+    float xx;
 
-    infile >> n;
-    infile >> x;
+    infile >> nn;
+    infile >> xx;
 
-    cerr << "n = " << n << endl;
-    cerr << "x = " << x << endl;
+    cerr << "nn = " << nn << endl;
+    cerr << "xx = " << xx << endl;
 
     infile.close();
   }
