@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.21 2003-09-02 01:14:04 edwards Exp $
+// $Id: qdp_outer.h,v 1.22 2003-09-02 01:38:59 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -351,19 +351,13 @@ public:
 
 
 private:
-#if ! defined(QDP_FIX_ALIGNMENT)
-  // Memory allocator
-  inline void alloc_mem(const char* const p) 
-    {
-      F = new T[Layout::sitesOnNode()];
-
-#if QDP_DEBUG >= 1
-      QDP_info("%s OLattice[%d]=0x%x, this=0x%x, bytes/site=%d",
-	       p, Layout::sitesOnNode(),(void *)F,this,sizeof(T));
-#endif
-    }
-#else
-  //! ANNOYANCE of GNUC++, need extra space for proper alignment
+  //! Internal memory allocator
+  /*! 
+   * NOTE: compilers/run-time-libs like GNU do not seem to align on big boundaries 
+   * under an operator-new even if there are alignment attributes on types.
+   * However, GNU will align when vars are allocated on the stack (automatic vars).
+   * So, force alignment in general by allocating slop space.
+   */
   inline void alloc_mem(const char* const p) 
     {
       F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
@@ -374,19 +368,8 @@ private:
 	       p,F_orig,Layout::sitesOnNode(),F,this,sizeof(T));
 #endif
     }
-#endif
 
-
-#if ! defined(QDP_FIX_ALIGNMENT)
-  inline void free_mem()
-    {
-#if QDP_DEBUG >= 1
-      QDP_info("destroy OLattice=0x%x, this=0x%x, bytes/site=%d",
-	       F,this,sizeof(T));
-#endif
-      delete[] F;
-    }
-#else 
+  //! Internal memory free
   inline void free_mem()
     {
 #if QDP_DEBUG >= 1
@@ -395,7 +378,6 @@ private:
 #endif
       delete[] F_orig;
     }
-#endif
 
 
 public:
@@ -409,9 +391,7 @@ public:
 
 private:
   T *F;
-#if defined(QDP_FIX_ALIGNMENT)
   char *F_orig;   // also have original F from  operator-new
-#endif
 };
 
 
