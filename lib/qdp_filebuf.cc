@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_filebuf.cc,v 1.2 2003-06-07 04:16:38 edwards Exp $
+// $Id: qdp_filebuf.cc,v 1.3 2003-06-07 19:11:14 edwards Exp $
 
 /*! @file
  * @brief Remote file support
@@ -11,6 +11,7 @@
  */
 
 #include <iostream>
+#include <string>
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -79,7 +80,17 @@ void RemoteOutputFileBuf::open(const char *p, std::ios_base::openmode mode)
     return;
   }
 
-  if ((f = RemoteFileOpen(p, "wb")) != NULL)
+  // Map C++ modes to C modes
+  std::string cmode("w");
+
+  if ((mode & std::ios_base::binary) != 0)
+    cmode.append("b");
+
+  if (((mode & std::ios_base::ate) != 0) || ((mode & std::ios_base::app) != 0))
+    cmode.append("a");
+
+  // Open the file
+  if ((f = RemoteFileOpen(p, cmode.c_str())) != NULL)
     iop = true;
 
   if (! iop)
@@ -146,7 +157,17 @@ void RemoteInputFileBuf::open(const char *p, std::ios_base::openmode mode)
   if (is_open()) 
     std::cerr << "Buf already open: error opening" << p << std::endl;
 
-  if ((f = RemoteFileOpen(p,"r")) != NULL)
+  // Map C++ modes to C modes
+  std::string cmode("r");
+
+  if ((mode & std::ios_base::binary) != 0)
+    cmode.append("b");
+
+  if (((mode & std::ios_base::ate) != 0) || ((mode & std::ios_base::app) != 0))
+    cmode.append("a");
+
+  // Open the file
+  if ((f = RemoteFileOpen(p, cmode.c_str())) != NULL)
     iop = true;
 
   if (! iop)

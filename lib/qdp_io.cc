@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.7 2003-06-05 16:16:00 edwards Exp $
+// $Id: qdp_io.cc,v 1.8 2003-06-07 19:11:14 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -182,7 +182,7 @@ void TextWriter::open(const std::string& p)
 {
   if (Layout::primaryNode())
   {
-    f.open(p.c_str(),std::ofstream::out);
+    f.open(p.c_str(),std::ofstream::out | std::ofstream::trunc);
     if (! f.is_open())
       QDP_error_exit("failed to open file %s",p.c_str());
   }
@@ -315,8 +315,6 @@ void NmlReader::open(const std::string& p)
 
   if (Layout::primaryNode()) 
   {
-    ifstream f;
-
     f.open(p.c_str(),std::ifstream::in);
     if (! f.is_open())
       QDP_error_exit("NmlReader: error opening file %s",p.c_str());
@@ -487,7 +485,7 @@ void NmlWriter::open(const std::string& p)
 {
   if (Layout::primaryNode())
   {
-    f.open(p.c_str(),std::ofstream::out);
+    f.open(p.c_str(),std::ofstream::out | std::ofstream::trunc);
     if (! f.is_open())
       QDP_error_exit("failed to open file %s",p.c_str());
   }
@@ -947,7 +945,7 @@ void BinaryWriter::open(const std::string& p)
 {
   if (Layout::primaryNode()) 
   {
-    f.open(p.c_str(),std::ofstream::out | std::ofstream::binary);
+    f.open(p.c_str(),std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
     if (! f.is_open())
       QDP_error_exit("BinaryWriter: error opening file %s",p.c_str());
   }
