@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.7 2003-07-27 03:04:13 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.8 2003-07-31 01:01:33 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -137,19 +137,19 @@ namespace Layout
 
 
   //! Initializer for all the layout defaults
-  void InitDefaults()
+  void initDefaults()
   {
 #if QDP_DEBUG >= 2
     QDP_info("Create default subsets");
 #endif
     // Default set and subsets
-    InitDefaultSets();
+    initDefaultSets();
 
     // Default maps
-    InitDefaultMaps();
+    initDefaultMaps();
 
     // Initialize RNG
-    RNG::InitDefaultRNG();
+    RNG::initDefaultRNG();
   }
 
 
@@ -250,10 +250,6 @@ namespace Layout
       cerr << "  subgrid volume = " << _layout.subgrid_vol << endl;
     }
 
-    ostringstream fooname;
-    fooname << "layout." << Layout::nodeNumber();
-    ofstream foo(fooname.str().c_str());
-
     // Sanity check - check the layout functions make sense
     for(int site=0; site < vol(); ++site) 
     {
@@ -275,10 +271,9 @@ namespace Layout
       if (site != j)
 	QDP_error_exit("Layout::create - Layout problems, the layout functions do not work correctly with this lattice size");
     }
-    foo.close();
 
     // Initialize various defaults
-    InitDefaults();
+    initDefaults();
 
     if (Layout::primaryNode())
       cerr << "Finished lattice layout\n";
