@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primscalar.h,v 1.13 2002-11-13 19:39:35 edwards Exp $
+// $Id: primscalar.h,v 1.14 2002-11-13 22:25:00 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -23,24 +23,6 @@ template<class T> class PScalar
 public:
   PScalar() {}
   ~PScalar() {}
-
-  //---------------------------------------------------------
-  // Conversion routines for turning things like Integer into an int
-  //! convert to int
-  /*! Convert wrapper of a primitive type to a primitive type */
-  operator int() {return int(elem());}
-
-  //! convert to float
-  /*! Convert wrapper of a primitive type to a primitive type */
-  operator float() {return float(elem());}
-
-  //! convert to double
-  /*! Convert wrapper of a primitive type to a primitive type */
-  operator double() {return double(elem());}
-
-  //! convert to bool
-  /*! Convert wrapper of a primitive type to a primitive type */
-  operator bool() {return bool(elem());}
 
   //---------------------------------------------------------
   //! construct dest = const
@@ -948,8 +930,6 @@ pokeSpin(PScalar<T1>& l, const PScalar<T2>& r, int row, int col)
 
 
 
-
-
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 
 void copymask(PScalar<T>& d, const PScalar<T1>& mask, const PScalar<T>& s1) 
@@ -1078,25 +1058,37 @@ where(const PScalar<T1>& a, const PScalar<T2>& b, const PScalar<T3>& c)
 
 
 //-----------------------------------------------------------------------------
-// Broadcast operations
+//! conversion routines
+template<class T> 
+inline int 
+toInt(const PScalar<T>& s) 
+{
+  return toInt(s.elem());
+}
+
+
+
+//-----------------------------------------------------------------------------
+// Other operations
 //! dest = 0
 template<class T> 
+inline
 void zero_rep(PScalar<T>& dest) 
 {
   zero_rep(dest.elem());
 }
 
-
 //! dest [some type] = source [some type]
 template<class T, class T1>
+inline
 void cast_rep(T& d, const PScalar<T1>& s1)
 {
   cast_rep(d, s1.elem());
 }
 
-
 //! dest [some type] = source [some type]
 template<class T, class T1>
+inline
 void cast_rep(PScalar<T>& d, const PScalar<T1>& s1)
 {
   cast_rep(d.elem(), s1.elem());

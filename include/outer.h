@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.12 2002-11-13 19:38:42 edwards Exp $
+// $Id: outer.h,v 1.13 2002-11-13 22:25:00 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -35,24 +35,6 @@ class OScalar: public QDPType<T, OScalar<T> >
 public:
   OScalar() {}
   ~OScalar() {}
-
-  //---------------------------------------------------------
-  // Conversion routines for turning things like Integer into an int
-  //! convert to int
-  /*! Convert wrapper of a primitive type to a primitive type */
-  operator int() {return int(elem());}
-
-  //! convert to float
-  /*! Convert wrapper of a primitive type to a primitive type */
-  operator float() {return float(elem());}
-
-  //! convert to double
-  /*! Convert wrapper of a primitive type to a primitive type */
-  operator double() {return double(elem());}
-
-  //! convert to bool
-  /*! Convert wrapper of a primitive type to a primitive type */
-  operator bool() {return bool(elem());}
 
   //---------------------------------------------------------
   //! construct dest = const

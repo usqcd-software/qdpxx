@@ -1,10 +1,24 @@
 // -*- C++ -*-
-// $Id: specializations.h,v 1.3 2002-10-02 20:29:37 edwards Exp $
+// $Id: specializations.h,v 1.4 2002-11-13 22:25:00 edwards Exp $
 //
 // QDP data parallel interface
 //
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+//
+// Conversion routines. These cannot be implicit conversion functions
+// since they foul up the PETE defs in QDPOperators.h using primitive
+// types
+//
+
+//! Make an int from an Integer
+inline int 
+toInt(const Integer& s) 
+{
+  return toInt(s.elem());
+}
+
 
 //
 // Return an equivalent QDP type given some simple machine type

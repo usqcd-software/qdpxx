@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.11 2002-11-13 19:40:05 edwards Exp $
+// $Id: reality.h,v 1.12 2002-11-13 22:25:00 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -23,24 +23,6 @@ template<class T> class RScalar
 public:
   RScalar() {}
   ~RScalar() {}
-
-  //---------------------------------------------------------
-  // Conversion routines for turning things like Integer into an int
-  //! convert to int
-  /*! Convert wrapper of a primitive type to a primitive type */
-  operator int() {return int(elem());}
-
-  //! convert to float
-  /*! Convert wrapper of a primitive type to a primitive type */
-  operator float() {return float(elem());}
-
-  //! convert to double
-  /*! Convert wrapper of a primitive type to a primitive type */
-  operator double() {return double(elem());}
-
-  //! convert to bool
-  /*! Convert wrapper of a primitive type to a primitive type */
-  operator bool() {return bool(elem());}
 
   //---------------------------------------------------------
   //! construct dest = const
@@ -1178,7 +1160,17 @@ peekSpin(const RScalar<T>& l, int row, int col)
 }
 
 
+//------------------------------------------
+//! conversion routines
+template<class T> 
+inline int 
+toInt(const RScalar<T>& s) 
+{
+  return toInt(s.elem());
+}
 
+
+//------------------------------------------
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 
 inline
@@ -1205,25 +1197,7 @@ void recast_rep(RScalar<T>& d, const RScalar<T1>& s1)
 }
 
 
-#if 0
-// Global sum over site indices only
-template<class T>
-struct UnaryReturn<RScalar<T>, FnSum > {
-  typedef RScalar<typename UnaryReturn<T, FnSum>::Type_t>  Type_t;
-};
-
-template<class T>
-inline typename UnaryReturn<RScalar<T>, FnSum>::Type_t
-sum(const RScalar<T>& s1)
-{
-  typename UnaryReturn<RScalar<T>, FnSum>::Type_t  d;
-
-  d.elem() = sum(s1.elem());
-  return d;
-}
-#endif
-
-
+//------------------------------------------
 // Innerproduct (norm-seq) global sum = sum(tr(conj(s1)*s1))
 template<class T>
 struct UnaryReturn<RScalar<T>, FnNorm2 > {
