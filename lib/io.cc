@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.16 2003-05-06 01:45:07 edwards Exp $
+// $Id: io.cc,v 1.17 2003-05-12 06:08:20 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -328,6 +328,15 @@ NmlWriter& push(NmlWriter& nml, const string& s) {return nml.push(s);}
 
 //! Pop a namelist group
 NmlWriter& pop(NmlWriter& nml) {return nml.pop();}
+
+//! Write a comment
+NmlWriter& operator<<(NmlWriter& nml, const char* s)
+{
+  if (Layout::primaryNode()) 
+    nml.get() << "! " << s << endl; 
+
+  return nml;
+}
 
 //! Write a comment
 NmlWriter& operator<<(NmlWriter& nml, const std::string& s)
