@@ -207,8 +207,6 @@ AC_CONFIG_FILES(include/PETE/Makefile)
 AC_CONFIG_FILES(include/qdp_config.h)
 AC_CONFIG_FILES(docs/Makefile)
 AC_CONFIG_FILES(examples/Makefile)
-AC_CONFIG_FILES(examples/BuildingBlocks/Makefile)
-AC_CONFIG_FILES(examples/propagator/Makefile)
 #
 # Finish
 #

@@ -8,8 +8,6 @@ AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QMP_CFLAGS@
 AM_LDFLAGS = -L@top_builddir@/lib @LDFLAGS@ @QMP_LDFLAGS@
 LDADD = -lqdp @QMP_LIBS@ @LIBS@
 
-SUBDIRS = propagator
-
 #
 # Local Headers
 #
