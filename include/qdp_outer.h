@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.6 2003-07-31 01:07:11 edwards Exp $
+// $Id: qdp_outer.h,v 1.7 2003-08-05 19:35:15 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -372,6 +372,15 @@ public:
       fprintf(stderr,"Info: %s = OLattice[%d]=0x%x, this=0x%x\n",
               name,Layout::sitesOnNode(),(void *)F,this);
     }
+
+
+public:
+  //! The backdoor
+  /*! 
+   * Used by optimization routines (e.g., SSE) that need the memory address of data.
+   * BTW: to make this a friend would be a real pain since functions are templatized.
+   */
+  T* getF() const {return F;}
 
 
 public:
