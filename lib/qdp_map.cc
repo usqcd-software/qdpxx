@@ -1,4 +1,4 @@
-// $Id: qdp_map.cc,v 1.1 2003-05-22 20:06:29 edwards Exp $
+// $Id: qdp_map.cc,v 1.2 2003-07-31 00:59:48 edwards Exp $
 
 /*! @file
  * @brief Support routines for Maps
@@ -37,7 +37,7 @@ private:
 
 
 //! Initializer for maps
-void InitDefaultMaps()
+void initDefaultMaps()
 {
   // Initialize the nearest neighbor map
   NearestNeighborMapFunc bbb;
