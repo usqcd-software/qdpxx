@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.6 2002-10-26 02:25:27 edwards Exp $
+// $Id: io.h,v 1.7 2002-10-28 03:08:44 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -38,7 +38,12 @@ public:
 
   //! Read from stream
   template<class T>
-  TextReader& operator>>(T& d) {f >> d; return *this;}
+  TextReader& operator>>(T& d)
+    {
+      if (Layout::primaryNode()) 
+	f >> d; 
+      return *this;
+    }
 
 
 private:
@@ -62,7 +67,12 @@ public:
 
   //! Write to stream
   template<class T>
-  TextWriter& operator<<(const T& d) {f << d; return *this;}
+  TextWriter& operator<<(const T& d)
+    {
+      if (Layout::primaryNode()) 
+	f << d; 
+      return *this;
+    }
 
 private:
   bool iop;
@@ -108,7 +118,12 @@ public:
 
   //! Read from stream
   template<class T>
-  NmlReader& operator>>(T& d) {f >> d; return *this;}
+  NmlReader& operator>>(T& d)
+    {
+      if (Layout::primaryNode()) 
+	f >> d; 
+      return *this;
+    }
 
 
 private:
@@ -158,7 +173,8 @@ NmlWriter& operator<<(NmlWriter& nml, const char* s);
 template<class T>
 NmlWriter& write(NmlWriter& nml, const string& s, const T& d)
 {
-  nml.get() << " " << s << " = " << d << ",\n";
+  if (Layout::primaryNode()) 
+    nml.get() << " " << s << " = " << d << ",\n";
   return nml;
 }
 
@@ -167,7 +183,9 @@ NmlWriter& write(NmlWriter& nml, const string& s, const T& d)
 template<class T>
 NmlWriter& write(NmlWriter& nml, const string& s, const OScalar<T>& d)
 {
-  nml.get() << " " << s << " = ";
+  if (Layout::primaryNode()) 
+    nml.get() << " " << s << " = ";
+
   nml << d; 
   return nml;
 }
@@ -177,7 +195,9 @@ NmlWriter& write(NmlWriter& nml, const string& s, const OScalar<T>& d)
 template<class T>
 NmlWriter& write(NmlWriter& nml, const string& s, const OLattice<T>& d)
 {
-  nml.get() << " " << s << " = ";
+  if (Layout::primaryNode()) 
+    nml.get() << " " << s << " = ";
+
   nml << d; 
   return nml;
 }
@@ -189,7 +209,8 @@ NmlWriter& write(NmlWriter& nml, const string& s, const multi1d<T>& s1)
   for(int i=0; i < s1.size(); ++i)
   {
     std::ostringstream ost;
-    ost << s << "[" << i << "]";
+    if (Layout::primaryNode()) 
+      ost << s << "[" << i << "]";
     write(nml, ost.str(), s1[i]);
   }
   return nml;
@@ -203,7 +224,8 @@ NmlWriter& write(NmlWriter& nml, const string& s, const multi2d<T>& s1)
     for(int i=0; i < s1.size2(); ++i)
     {
       std::ostringstream ost;
-      ost << s << "[" << i << "][" << j << "]";
+      if (Layout::primaryNode()) 
+	ost << s << "[" << i << "][" << j << "]";
       write(nml, ost.str(), s1[i][j]);
     }
   return nml;
@@ -243,10 +265,6 @@ public:
   void open(const char* p);
   void close();
 
-//  //! Binary writer
-//  template<class T>
-//  BinaryReader& read(const T& d) {fread((void *)&d,sizeof(T),1,f); return *this;}
-
   //! Read End-Of-Record mark
   BinaryReader& eor();
 
@@ -266,7 +284,9 @@ private:
 template<class T>
 BinaryReader& read(BinaryReader& bin, const T& d)
 {
-  fread((void *)&d, sizeof(T), 1, bin.get()); 
+  if (Layout::primaryNode()) 
+    bfread((void *)&d, sizeof(T), 1, bin.get()); 
+
   return bin;
 }
 
@@ -284,10 +304,6 @@ public:
   void open(const char* p);
   void close();
 
-  //! Binary writer
-//  template<class T>
-//  BinaryWriter& write(const T& d) {fwrite((void *)&d,sizeof(T),1,f); return *this;}
-
   //! Write End-Of-Record mark
   BinaryWriter& eor();
 
@@ -302,13 +318,17 @@ private:
   bool iop;
 };
 
+#if 0
 //! Write a binary element
 template<class T>
 BinaryWriter& write(BinaryWriter& bin, const T& d)
 {
-  fwrite((void *)&d, sizeof(T), 1, bin.get()); 
+  if (Layout::primaryNode()) 
+    bfwrite((void *)&d, sizeof(T), 1, bin.get()); 
+
   return bin;
 }
+#endif
 
 /*! @} */   // end of group io
 QDP_END_NAMESPACE();

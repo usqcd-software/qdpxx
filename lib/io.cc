@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.4 2002-10-26 02:25:27 edwards Exp $
+// $Id: io.cc,v 1.5 2002-10-28 03:08:44 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -13,30 +13,23 @@ TextReader::TextReader() {iop=false;}
 
 TextReader::TextReader(const char* p) {open(p);}
 
-void TextReader::open(const char* p)
+void TextReader::open(const char* p) 
 {
-  f.open(p,std::ios_base::in);
+  if (Layout::primaryNode()) 
+    f.open(p,std::ios_base::in);
+
   iop=true;
 }
 
 void TextReader::close()
 {
-  if (iop)
+  if (is_open()) 
   {
-    f.close();
+    if (Layout::primaryNode()) 
+      f.close();
     iop = false;
   }
 }
-
-#if 0
-template<class T>
-TextReader& TextReader::operator>>(T& d)
-{
-  f >> d; 
-  return *this;
-}
-#endif
-
 
 bool TextReader::is_open() {return iop;}
 
@@ -51,29 +44,21 @@ TextWriter::TextWriter(const char* p) {open(p);}
 
 void TextWriter::open(const char* p)
 {
-  f.open(p,std::ios_base::out);
+  if (Layout::primaryNode()) 
+    f.open(p,std::ios_base::out);
+
   iop=true;
 }
 
 void TextWriter::close()
 {
-  if (iop) 
+  if (is_open()) 
   {
-    f.close();
+    if (Layout::primaryNode()) 
+      f.close();
     iop = false;
   }
 }
-
-#if 0
-template<class T>
-TextWriter& TextWriter::operator<<(const T& d)
-{
-  f << d; 
-  return *this;
-}
-#endif
-
-
 
 bool TextWriter::is_open() {return iop;}
 
@@ -88,16 +73,20 @@ NmlReader::NmlReader(const char* p) {open(p);}
 
 void NmlReader::open(const char* p)
 {
-  f.open(p,std::ios_base::in);
-  iop = true;
+  if (Layout::primaryNode()) 
+    f.open(p,std::ios_base::in);
+
+  iop=true;
 }
 
 void NmlReader::close()
 {
-  if (iop)
+  if (is_open()) 
   {
-    f.close();
-    iop = false;
+    if (Layout::primaryNode()) 
+      f.close();
+
+    iop=true;
   }
 }
 
@@ -114,7 +103,8 @@ NmlWriter::NmlWriter(const char* p) {open(p);}
 
 void NmlWriter::open(const char* p)
 {
-  f.open(p,std::ios_base::out);
+  if (Layout::primaryNode()) 
+    f.open(p,std::ios_base::out);
   iop=true;
 
   push(*this,"FILE");  // Always start a file with this group
@@ -126,7 +116,8 @@ void NmlWriter::close()
   {
     pop(*this);  // Write final end of file group
 
-    f.close();
+    if (Layout::primaryNode()) 
+      f.close();
     iop = false;
   }
 }
@@ -138,16 +129,27 @@ NmlWriter::~NmlWriter() {close();}
 //! Push a namelist group 
 NmlWriter& push(NmlWriter& nml, const string& s)
 {
-  nml.get() << "&" << s << endl; return nml;
+  if (Layout::primaryNode()) 
+    nml.get() << "&" << s << endl; 
+
+  return nml;
 }
 
 //! Pop a namelist group
-NmlWriter& pop(NmlWriter& nml) {nml.get() << "&END\n"; return nml;}
+NmlWriter& pop(NmlWriter& nml)
+{
+  if (Layout::primaryNode()) 
+    nml.get() << "&END\n"; 
+
+  return nml;
+}
 
 //! Write a comment
 NmlWriter& operator<<(NmlWriter& nml, const char* s)
 {
-  nml.get() << "! " << s << endl; 
+  if (Layout::primaryNode()) 
+    nml.get() << "! " << s << endl; 
+
   return nml;
 }
 
@@ -155,16 +157,19 @@ NmlWriter& operator<<(NmlWriter& nml, const char* s)
 
 //-----------------------------------------
 //! Binary reader support
-BinaryReader::BinaryReader() {f = NULL;}
+BinaryReader::BinaryReader() {iop=false; f = NULL;}
 
 BinaryReader::BinaryReader(const char* p) {open(p);}
 
 void BinaryReader::open(const char* p) 
 {
-  if ((f = fopen(p,"rb")) == NULL)
+  if (Layout::primaryNode()) 
   {
-    cerr << "BinaryReader: error opening file: " << p << endl;
-    SZ_ERROR("BinaryReader: error opening file");
+    if ((f = fopen(p,"rb")) == NULL)
+    {
+      cerr << "BinaryReader: error opening file: " << p << endl;
+      SZ_ERROR("BinaryReader: error opening file");
+    }
   }
 
   iop = true;
@@ -174,7 +179,9 @@ void BinaryReader::close()
 {
   if (iop)
   {
-    fclose(f);
+    if (Layout::primaryNode()) 
+      fclose(f);
+
     iop = false;
   }
 }
@@ -183,7 +190,8 @@ void BinaryReader::close()
 // Read End-Of-Record mark
 BinaryReader& BinaryReader::eor()
 {
-  fgetc(f); 
+  if (Layout::primaryNode()) 
+    fgetc(f); 
   return *this;
 }
 
@@ -196,16 +204,19 @@ BinaryReader::~BinaryReader() {close();}
 
 //-----------------------------------------
 //! Binary writer support
-BinaryWriter::BinaryWriter() {f = NULL;}
+BinaryWriter::BinaryWriter() {iop=false; f = NULL;}
 
 BinaryWriter::BinaryWriter(const char* p) {open(p);}
 
 void BinaryWriter::open(const char* p) 
 {
-  if ((f = fopen(p,"wb")) == NULL)
+  if (Layout::primaryNode()) 
   {
-    cerr << "BinaryWriter: error opening file: " << p << endl;
-    SZ_ERROR("BinaryWriter: error opening file");
+    if ((f = fopen(p,"wb")) == NULL)
+    {
+      cerr << "BinaryWriter: error opening file: " << p << endl;
+      SZ_ERROR("BinaryWriter: error opening file");
+    }
   }
 
   iop = true;
@@ -215,7 +226,9 @@ void BinaryWriter::close()
 {
   if (iop)
   {
-    fclose(f);
+    if (Layout::primaryNode()) 
+      fclose(f);
+
     iop = false;
   }
 }
@@ -224,7 +237,9 @@ void BinaryWriter::close()
 // Write End-Of-Record mark
 BinaryWriter& BinaryWriter::eor()
 {
-  fprintf(f,"\005"); 
+  if (Layout::primaryNode()) 
+    fprintf(f,"\005"); 
+
   return *this;
 }
 

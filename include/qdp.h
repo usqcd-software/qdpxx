@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.7 2002-10-14 02:08:56 edwards Exp $
+// $Id: qdp.h,v 1.8 2002-10-28 03:08:44 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -65,8 +65,8 @@ using std::ostream;
 
 
 QDP_BEGIN_NAMESPACE(QDP);
+//! General death routine
 void SZ_ERROR(const char *s, ...);
-void diefunc();
 QDP_END_NAMESPACE();
 
 
@@ -79,10 +79,10 @@ QDP_END_NAMESPACE();
 #include "forward.h"
 
 #include "multi.h"
-#include "io.h"
 
 #include "params.h"
 #include "layout.h"
+#include "io.h"
 #include "subset.h"
 
 #include "traits.h"
@@ -105,8 +105,19 @@ QDP_END_NAMESPACE();
 //#include "special.h"
 #include "random.h"
 
-// Architectural specific code
+#if defined(ARCH_SCALAR)
+// Architectural specific code to a single node/single proc box
+#warning "Using scalar architecture"
 #include "scalar_specific.h"
+
+#elif defined(ARCH_PARSCALAR)
+// Architectural specific code to a parallel/single proc box
+#warning "Using parallel scalar architecture"
+#include "parscalar_specific.h"
+
+#else
+#error "Unknown architecture ARCH"
+#endif
 
 
 #endif

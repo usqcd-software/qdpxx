@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.9 2002-10-26 01:54:30 edwards Exp $
+// $Id: foo.cc,v 1.10 2002-10-28 03:08:44 edwards Exp $
 //
 // Silly little internal test code
 
@@ -14,12 +14,34 @@
 int main()
 {
   // Setup the geometry
-  const int foo[Nd] = {LX0,LX1,LX2,LX3};
+  const int foo[Nd] = {LX0,LX1};
   multi1d<int> nrow(Nd);
   nrow = foo;
-  layout.Init(nrow);
+  Layout::initialize(nrow);
 
   NmlWriter nml("foo.nml");
+
+  Write(nml,nrow);
+
+  cerr << "try a string\n";
+  nml << "write a string";
+
+  Real one = 1.0;
+  cerr << "try a scalar\n";
+  nml << "write a scalar";
+  write(nml,"test this",one);
+//  exit(0);
+
+  cerr << "latticereal\n";
+  LatticeReal bar = 17.0;
+  random(bar);
+
+  for(int i=0; i < Layout::subgridVol(); ++i)
+    cerr << "bar[" << i << "]=" << bar.elem(i) << endl;
+
+  cerr << "write\n";
+  Write(nml,bar);
+  cerr << "done write\n";
 
 #if 0
   // Initialize the random number generator
@@ -155,12 +177,12 @@ int main()
   }
 
   {
-    cout << "enter some data";
+    cerr << "enter some data";
     TextReader from("input");
     from >> x;
   }
 
-  cout << "you entered :" << x << ":";
+  cerr << "you entered :" << x << ":";
   
   // Zero out a and read it again
   a = zero;
@@ -176,11 +198,14 @@ int main()
 #endif
 
 #if 1
-  // Read a nersc file
-  multi1d<LatticeGauge> u(Nd);
-  readArchiv(u, "archiv.cfg");
-  nml << "Here is the nersc archive u field";
-  Write(nml,u);
+  if (Nd == 4)
+  {
+    // Read a nersc file
+    multi1d<LatticeGauge> u(Nd);
+    readArchiv(u, "archiv.cfg");
+    nml << "Here is the nersc archive u field";
+    Write(nml,u);
+  }
 #endif
 
 

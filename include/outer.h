@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.9 2002-10-12 04:10:15 edwards Exp $
+// $Id: outer.h,v 1.10 2002-10-28 03:08:44 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -123,16 +123,33 @@ private:
 //! Ascii output
 template<class T>  ostream& operator<<(ostream& s, const OScalar<T>& d)
 {
-  s << d.elem();
+  if (Layout::primaryNode())
+  {
+    s << d.elem();
+  }
   return s;
 }
 
 //! namelist output
 template<class T>  NmlWriter& operator<<(NmlWriter& nml, const OScalar<T>& d)
 {
-  nml << d.elem();
-  nml.get() << ",\n";
+  if (Layout::primaryNode())
+  {
+    nml << d.elem();
+    nml.get() << "," << endl;
+  }
   return nml;
+}
+
+//! Binary output
+/*! Assumes no inner grid */
+template<class T>
+BinaryWriter& write(BinaryWriter& bin, const OScalar<T>& d)
+{
+  if (Layout::primaryNode()) 
+    fwrite((void *)d.elem(), sizeof(T), 1, bin.get()); 
+
+  return bin;
 }
 
 /*! @} */  // end of group oscalar
@@ -170,11 +187,11 @@ public:
   OLattice() 
     {
 #if ! defined(NO_MEM)
-      F = new T[layout.Vol()];
+      F = new T[Layout::subgridVol()];
 #endif
 
 #if defined(DEBUG)
-      fprintf(stderr,"create OLattice[%d]=0x%x\n",layout.Vol(),F);
+      fprintf(stderr,"create OLattice[%d]=0x%x\n",Layout::subgridVol(),(void *)F);
 #endif
     }
   ~OLattice()
@@ -194,11 +211,11 @@ public:
   OLattice(const OLattice<T1>& rhs)
     {
 #if ! defined(NO_MEM)
-      F = new T[layout.Vol()];
+      F = new T[Layout::subgridVol()];
 #endif
 
 #if defined(DEBUG)
-      fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",layout.Vol(),F);
+      fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
 #endif
 
       assign(rhs);
@@ -210,11 +227,11 @@ public:
   OLattice(const QDPExpr<RHS, OLattice<T1> >& rhs)
     {
 #if ! defined(NO_MEM)
-      F = new T[layout.Vol()];
+      F = new T[Layout::subgridVol()];
 #endif
 
 #if defined(DEBUG)
-      fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",layout.Vol(),F);
+      fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
 #endif
 
       assign(rhs);
@@ -225,11 +242,11 @@ public:
   OLattice(const typename WordType<T>::Type_t& rhs)
     {
 #if ! defined(NO_MEM)
-      F = new T[layout.Vol()];
+      F = new T[Layout::subgridVol()];
 #endif
 
 #if defined(DEBUG)
-      fprintf(stderr,"construct from const OLattice[%d]=0x%x\n",layout.Vol(),F);
+      fprintf(stderr,"construct from const OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
 #endif
 
       typedef OScalar<typename InternalScalar<T>::Type_t>  Scalar_t;
@@ -241,11 +258,11 @@ public:
   OLattice(const Zero& rhs)
     {
 #if ! defined(NO_MEM)
-      F = new T[layout.Vol()];
+      F = new T[Layout::subgridVol()];
 #endif
 
 #if defined(DEBUG)
-      fprintf(stderr,"construct from zero OLattice[%d]=0x%x\n",layout.Vol(),F);
+      fprintf(stderr,"construct from zero OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
 #endif
 
       assign(rhs);
@@ -294,11 +311,11 @@ public:
   OLattice(const OLattice& rhs)
     {
 #if ! defined(NO_MEM)
-      F = new T[layout.Vol()];
+      F = new T[Layout::subgridVol()];
 #endif
 
 #if defined(DEBUG)
-      fprintf(stderr,"copy OLattice[%d]=0x%x\n",layout.Vol(),F);
+      fprintf(stderr,"copy OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
 #endif
       
       assign(rhs);
@@ -1120,13 +1137,6 @@ template<class T1, class T2>
 void copymask(OScalar<T2>& dest, const OScalar<T1>& mask, const OScalar<T2>& s1) 
 {
   copymask(dest.elem(), mask.elem(), s1.elem());
-}
-
-//! Indexing(dest,source,coordinate) : put lattice scalar source into dest at coordinate
-template<class T, class T1>
-void indexing(OScalar<T>& d, const OScalar<T1>& s1, const multi1d<int>& coord)
-{
-  Indexing(d.elem(), s1.elem(), coord);
 }
 
 //! dest [some type] = source [some type]

@@ -1,4 +1,4 @@
-// $Id: iogauge.cc,v 1.2 2002-10-26 02:25:46 edwards Exp $
+// $Id: iogauge.cc,v 1.3 2002-10-28 03:08:44 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -101,7 +101,7 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
 //  cout << "gauge lat size = " << lat_size << endl;
 
   for(int dd=0; dd < Nd; ++dd)
-    if (lat_size[dd] != layout.LattSize()[dd])
+    if (lat_size[dd] != Layout::lattSize()[dd])
       SZ_ERROR("readArchiv: archive lattice size does not agree with current size");
 
   //
@@ -111,10 +111,10 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
   Gauge  sitefield;
   float su3[3][3][2];
 
-  for(int t=0; t < layout.LattSize()[3]; t++)  /* t */
-    for(int z=0; z < layout.LattSize()[2]; z++)  /* t */
-      for(int y=0; y < layout.LattSize()[1]; y++)  /* y */
-        for(int x=0; x < layout.LattSize()[0]; x++)  /* x */
+  for(int t=0; t < Layout::lattSize()[3]; t++)  /* t */
+    for(int z=0; z < Layout::lattSize()[2]; z++)  /* t */
+      for(int y=0; y < Layout::lattSize()[1]; y++)  /* y */
+        for(int x=0; x < Layout::lattSize()[0]; x++)  /* x */
         {
 	  coord[0] = x; coord[1] = y; coord[2] = z; coord[3] = t;
 

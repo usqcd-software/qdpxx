@@ -1,4 +1,4 @@
-// $Id: t_dslashm.cc,v 1.3 2002-10-06 02:48:43 edwards Exp $
+// $Id: t_dslashm.cc,v 1.4 2002-10-28 03:08:44 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -14,7 +14,7 @@ int main(int argc, char **argv)
   const int foo[Nd] = {LX0,LX1};
   multi1d<int> nrow(Nd);
   nrow = foo;
-  geom.Init(nrow);
+  geom.init(nrow);
 
   //! Test out propagators
   multi1d<LatticeGauge> u(Nd);
@@ -28,7 +28,8 @@ int main(int argc, char **argv)
 
 //  dslash(chi, u, psi, +1, 0);
 
-  WRITE_NAMELIST(cerr,psi);
-  WRITE_NAMELIST(cerr,chi);
+  NmlWriter nml("t_dslashm.nml");
+  Write(nml,psi);
+  Write(nml,chi);
 
 }

@@ -1,13 +1,96 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.13 2002-10-28 03:08:44 edwards Exp $
+// $Id: parscalar_specific.h,v 1.1 2002-10-28 03:08:44 edwards Exp $
 //
 // QDP data parallel interface
 //
-// Outer lattice routines specific to a scalar platform 
+// Outer lattice routines specific to a parallel platform with scalar layout
+
+#include "QMP.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 // Use separate defs here. This will cause subroutine calls under g++
+
+//-----------------------------------------------------------------------------
+// Layout stuff specific to a parallel architecture
+namespace Layout
+{
+  //! Subgrid (grid on each node) lattice size
+  const multi1d<int>& subgridLattSize();
+
+  //! Returns the node number of this node
+  int nodeNumber();
+
+  //! Returns the logical node coordinates for this node
+  const multi1d<int>& logicalCoord();
+
+  //! Returns the logical size of this machine
+  const multi1d<int>& logicalSize();
+
+  //! Returns the logical node number for the corresponding lattice coordinate
+  /*! The API requires this function to be here */
+  int nodeNumber(const multi1d<int>& coord);
+
+  //! Returns the logical node coordinates for the corresponding lattice coordinate
+  /*! The API requires this function to be here */
+  multi1d<int> nodeCoord(const multi1d<int>& coord);
+
+};
+
+
+//-----------------------------------------------------------------------------
+// Internal ops with ties to QMP
+namespace Internal
+{
+  //! Slow send-receive (blocking)
+  void sendRecvWait(void *send_buf, void *recv_buf, 
+		    int count, int isign0, int dir);
+
+  //! Send-receive routine
+  void sendRecv(void *send_buf, void *recv_buf, 
+		int count, int isign0, int dir);
+
+  //! Wait on send-receive
+  void wait(int dir);
+
+  //! Send to another node (wait)
+  void sendToWait(void *send_buf, int dest_node, int count);
+
+  //! Receive from another node (wait)
+  void recvFromWait(void *recv_buf, int srce_node, int count);
+
+  //! Via some mechanism, get the dest to node 0
+  /*! Ultimately, I do not want to use point-to-point */
+  template<class T>
+  void sendToPrimaryNode(T& dest, int srcnode)
+  {
+    if (srcnode != 0)
+    {
+      if (Layout::primaryNode())
+	recvFromWait((void *)&dest, srcnode, sizeof(T));
+
+      if (Layout::nodeNumber() == srcnode)
+	sendToWait((void *)&dest, 0, sizeof(T));
+    }
+  }
+
+  //! Sum across all nodes
+  template<class T>
+  void global_sum(T& dest)
+  {
+//    QMP_global_sum((void *)&dest, sizeof(T));
+  }
+
+  //! Broadcast from primary node to all other nodes
+  template<class T>
+  void broadcast(T& dest)
+  {
+    QMP_broadcast((void *)&dest, sizeof(T));
+  }
+
+};
+
+
 
 //-----------------------------------------------------------------------------
 //! OLattice Op Scalar(Expression(source)) under a subset
@@ -59,7 +142,7 @@ template<class T, class T1, class Op, class RHS>
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
 	      const Subset s)
 {
-//  cerr << "In evaluate(olattice,olattice)" << endl;
+//  cerr << "In evaluate(olattice,olattice)\n";
 
 // NOTE: this code below is the first way I did the loop. The
 // case when IndexRep is false is the optimal loop structure
@@ -124,7 +207,7 @@ void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s
 template<class T1, class T2> 
 void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
-  for(int i=0; i < Layout::vol(); ++i) 
+  for(int i=0; i < Layout::subgridVol(); ++i) 
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
 
@@ -253,7 +336,7 @@ void zero_rep(OSubLattice<T> dd)
 template<class T> 
 void zero_rep(OLattice<T>& dest) 
 {
-  for(int i=0; i < Layout::vol(); ++i) 
+  for(int i=0; i < Layout::subgridVol(); ++i) 
     zero_rep(dest.elem(i));
 }
 
@@ -273,6 +356,10 @@ sum(const QDPExpr<RHS,OScalar<T> >& s1, const Subset& s)
   typename UnaryReturn<OScalar<T>, FnSum>::Type_t  d;
 
   evaluate(d,OpAssign(),s1);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+  
   return d;
 }
 
@@ -333,7 +420,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
   // Loop always entered - could unroll
   zero_rep(d.elem());
 
-  for(int i=0; i <= Layout::vol(); ++i) 
+  for(int i=0; i <= Layout::subgridVol(); ++i) 
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
 
   return d;
@@ -388,7 +475,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
   // Loop over all sites and accumulate based on the coloring 
   const multi1d<int>& lat_color =  ss.LatticeColoring();
 
-  for(int i=0; i < Layout::vol(); ++i) 
+  for(int i=0; i < Layout::subgridVol(); ++i) 
   {
     int j = lat_color[i];
     dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
@@ -396,6 +483,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 
   return dest;
 }
+
 
 //-----------------------------------------------------------------------------
 // Peek and poke at individual sites. This is very architecture specific
@@ -428,8 +516,22 @@ inline OScalar<T1>
 peekSite(const OLattice<T1>& l, const multi1d<int>& coord)
 {
   OScalar<T1> dest;
+  int nodenum = Layout::nodeNumber(coord);
 
-  dest.elem() = l.elem(Layout::linearSiteIndex(coord));
+  // Find the result somewhere within the machine.
+  // Then we must get it to node zero so we can broadcast it
+  // out to all nodes
+  if (Layout::nodeNumber() == nodenum)
+    dest.elem() = l.elem(Layout::linearSiteIndex(coord));
+  else
+    zero_rep(dest.elem());
+
+  // Send result to primary node via some mechanism
+  Internal::sendToPrimaryNode(dest, nodenum);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(dest);
+
   return dest;
 }
 
@@ -446,9 +548,12 @@ template<class T1>
 inline OLattice<T1>&
 pokeSite(OLattice<T1>& l, const OScalar<T1>& r, const multi1d<int>& coord)
 {
-  l.elem(Layout::linearSiteIndex(coord)) = r.elem();
+  if (Layout::nodeNumber() == Layout::nodeNumber(coord))
+    l.elem(Layout::linearSiteIndex(coord)) = r.elem();
+
   return l;
 }
+
 
 
 //-----------------------------------------------------------------------------
@@ -546,29 +651,71 @@ shift(const QDPExpr<T1,C1> & l, int isign, int dir)
 
 
 
-
 //-----------------------------------------------------------------------------
-// Input and output of various flavors that are architecture specific
+extern "C"
+{
+  extern int QMP_shift(int site, unsigned char *data, int prim_size, int sn);
+}
 
-//! Namelist output
+//! Ascii output
+/*! Assumes no inner grid */
 template<class T>  
 NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
 {
-  nml.get() << "   [OUTER]" << endl;
-  for(int site=0; site < Layout::vol(); ++site) 
-  {
-    int i = Layout::linearSiteIndex(site);
-    nml.get() << "   Site =  " << site << "   = ";
-    nml << d.elem(i);
-    nml.get() << "," << endl;
-  }
+  if (Layout::primaryNode())
+    nml.get() << "   [OUTER]" << endl;
 
-//  int site = Layout::vol()-1;
-//  int i = Layout::linearSiteIndex(site);
-//  nml << "   Site =  " << site << "   = " << d.elem(i) << ",\n";
+  // Twice the subgrid vol - intermediate array we flip-flop writing data
+  multi1d<T> data(2*Layout::subgridVol());
+
+  const int temp_size = sizeof(T);
+  for(int site=0; site < Layout::subgridVol(); ++site)
+    data[site] = d.elem(site);
+
+  const int xinc = Layout::subgridLattSize()[0];
+
+  // Assume lexicographic for the moment...
+  for(int site=0, xsite1=0; site < Layout::vol(); site += xinc)
+  {
+//    int i = Layout::linearSiteIndex(site);
+    int xsite2 = QMP_shift(site,(unsigned char*)(data.slice()),temp_size,0);
+
+    if (Layout::primaryNode())
+      for(int xsite3=0; xsite3 < xinc; xsite3++,xsite2++,xsite1++)
+      {
+	nml.get() << "   Site =  " << xsite1 << "   = ";
+	nml << data[xsite2];
+	nml.get() << "," << endl;
+      }
+  }
 
   return nml;
 }
 
+//! Binary output
+/*! Assumes no inner grid */
+template<class T>
+BinaryWriter& write(BinaryWriter& bin, const OLattice<T>& d)
+{
+  // Twice the subgrid vol - intermediate array we flip-flop writing data
+  multi1d<T> data(2*Layout::subgridVol());
+
+  const int temp_size = sizeof(T);
+  for(int site=0; site < Layout::subgridVol(); ++site)
+    data[site] = d.elem(site);
+
+  const int xinc = Layout::subgridLattSize()[0];
+
+  // Assume lexicographic for the moment...
+  for(int site=0; site < Layout::vol(); site += xinc)
+  {
+//    int i = Layout::linearSiteIndex(site);
+    int xsite2 = QMP_shift(site,(unsigned char*)(data.slice()),temp_size,0);
+
+    if (Layout::primaryNode())
+      bfwrite((void *)(data.slice() + xsite2), sizeof(T), xinc, bin.get()); 
+  }
+  return bin;
+}
 
 QDP_END_NAMESPACE();

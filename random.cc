@@ -1,4 +1,4 @@
-// $Id: random.cc,v 1.4 2002-10-09 16:54:08 edwards Exp $
+// $Id: random.cc,v 1.5 2002-10-28 03:08:44 edwards Exp $
 //
 // Random number generator support
 
@@ -76,7 +76,7 @@ namespace RNG
     /*   at site  LATTICEVOLUME-1 (assumes ordering starts at zero). */
     /* Since the lattice size is a power of 2, adding one will not overflow */
     /*   onto requiring more bits. */
-    int nbits = numbits(layout.Vol());
+    int nbits = numbits(Layout::vol());
 
     /* Get the NEWS coordinate of each vp (note the origin is 0) and
      *   build up a lexicographic ordering for the lattice. The definition
@@ -90,7 +90,7 @@ namespace RNG
 
     for(int m=Nd-2; m>=0; --m)
     {
-      lexoc *= layout.LattSize()[m];
+      lexoc *= Layout::lattSize()[m];
       lexoc += latticeCoordinate(m);
     }
 
@@ -131,7 +131,7 @@ namespace RNG
     Seed aa;
     Seed aamult;
 
-    int ibit = layout.Vol();
+    int ibit = Layout::vol();
     aa = ran_mult;
     ran_mult_n = 1;
 

@@ -1,4 +1,4 @@
-//  $Id: mesons_w.cc,v 1.3 2002-10-09 16:54:08 edwards Exp $
+//  $Id: mesons_w.cc,v 1.4 2002-10-28 03:08:44 edwards Exp $
 
 #include "tests.h"
 
@@ -32,7 +32,7 @@ void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quar
 	    multi2d<Real>& meson_propagator, 
 	    const multi1d<int>& t_source)
 {
-  int length = layout.LattSize()[j_decay];
+  int length = Layout::lattSize()[j_decay];
   int t0 = t_source[j_decay];
   int G5 = Ns*Ns-1;
   multi1d<Double> hsum(length);

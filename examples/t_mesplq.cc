@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.4 2002-10-09 15:33:26 edwards Exp $
+// $Id: t_mesplq.cc,v 1.5 2002-10-28 03:08:44 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -14,7 +14,7 @@ int main(int argc, char **argv)
   const int foo[Nd] = {LX0,LX1};
   multi1d<int> nrow(Nd);
   nrow = foo;
-  geom.Init(nrow);
+  geom.init(nrow);
 
   NmlWriter nml("t_mesplq.nml");
 

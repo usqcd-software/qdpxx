@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.7 2002-10-25 03:33:26 edwards Exp $
+// $Id: t_qdp.cc,v 1.8 2002-10-28 03:08:44 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -15,7 +15,7 @@ int main(int argc, char **argv)
   const int foo[Nd] = {2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;
-  geom.Init(nrow);
+  geom.init(nrow);
 
   // Open a file for some sample output
   NmlWriter nml("t_qdp.nml");

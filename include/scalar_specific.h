@@ -1,18 +1,13 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.12 2002-10-25 03:33:26 edwards Exp $
+// $Id: scalar_specific.h,v 1.13 2002-10-28 03:08:44 edwards Exp $
 //
 // QDP data parallel interface
 //
-//! Outer lattice routines specific to a scalar platform 
-/*! Scalar platform - single processor single box */
+// Outer lattice routines specific to a scalar platform 
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 // Use separate defs here. This will cause subroutine calls under g++
-
-//! Hack a-rooney - for now barf on boolean subset representation - need better method 
-void diefunc();
-
 
 //-----------------------------------------------------------------------------
 //! OLattice Op Scalar(Expression(source)) under a subset
@@ -64,7 +59,7 @@ template<class T, class T1, class Op, class RHS>
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
 	      const Subset s)
 {
-//  cerr << "In evaluate(olattice,olattice)\n";
+//  cerr << "In evaluate(olattice,olattice)" << endl;
 
 // NOTE: this code below is the first way I did the loop. The
 // case when IndexRep is false is the optimal loop structure
@@ -129,7 +124,7 @@ void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s
 template<class T1, class T2> 
 void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
-  for(int i=0; i < layout.Vol(); ++i) 
+  for(int i=0; i < Layout::vol(); ++i) 
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
 
@@ -139,15 +134,6 @@ void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& 
 //! coord[mu]  <- mu  : fill with lattice coord in mu direction
 LatticeInteger latticeCoordinate(int mu);
 
-
-
-//! Indexing(dest,source,coordinate) : put lattice scalar source into dest at coordinate
-template<class T, class T1>
-void indexing(OLattice<T>& d, const OScalar<T1>& s1, const multi1d<int>& coord)
-{
-  int linearsite = layout.LinearSiteIndex(coord);
-  d.elem(linearsite) = s1.elem();
-}
 
 
 //-----------------------------------------------------------------------------
@@ -267,7 +253,7 @@ void zero_rep(OSubLattice<T> dd)
 template<class T> 
 void zero_rep(OLattice<T>& dest) 
 {
-  for(int i=0; i < layout.Vol(); ++i) 
+  for(int i=0; i < Layout::vol(); ++i) 
     zero_rep(dest.elem(i));
 }
 
@@ -347,7 +333,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
   // Loop always entered - could unroll
   zero_rep(d.elem());
 
-  for(int i=0; i <= layout.Vol(); ++i) 
+  for(int i=0; i <= Layout::vol(); ++i) 
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
 
   return d;
@@ -402,7 +388,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
   // Loop over all sites and accumulate based on the coloring 
   const multi1d<int>& lat_color =  ss.LatticeColoring();
 
-  for(int i=0; i < layout.Vol(); ++i) 
+  for(int i=0; i < Layout::vol(); ++i) 
   {
     int j = lat_color[i];
     dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
@@ -443,7 +429,7 @@ peekSite(const OLattice<T1>& l, const multi1d<int>& coord)
 {
   OScalar<T1> dest;
 
-  dest.elem() = l.elem(layout.LinearSiteIndex(coord));
+  dest.elem() = l.elem(Layout::linearSiteIndex(coord));
   return dest;
 }
 
@@ -460,7 +446,7 @@ template<class T1>
 inline OLattice<T1>&
 pokeSite(OLattice<T1>& l, const OScalar<T1>& r, const multi1d<int>& coord)
 {
-  l.elem(layout.LinearSiteIndex(coord)) = r.elem();
+  l.elem(Layout::linearSiteIndex(coord)) = r.elem();
   return l;
 }
 
@@ -562,21 +548,23 @@ shift(const QDPExpr<T1,C1> & l, int isign, int dir)
 
 
 //-----------------------------------------------------------------------------
-//! Ascii output
+// Input and output of various flavors that are architecture specific
+
+//! Namelist output
 template<class T>  
 NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
 {
-  nml.get() << "   [OUTER]\n";
-  for(int site=0; site < layout.Vol(); ++site) 
+  nml.get() << "   [OUTER]" << endl;
+  for(int site=0; site < Layout::vol(); ++site) 
   {
-    int i = layout.LinearSiteIndex(site);
+    int i = Layout::linearSiteIndex(site);
     nml.get() << "   Site =  " << site << "   = ";
     nml << d.elem(i);
-    nml.get() << ",\n";
+    nml.get() << "," << endl;
   }
 
-//  int site = layout.Vol()-1;
-//  int i = layout.LinearSiteIndex(site);
+//  int site = Layout::vol()-1;
+//  int i = Layout::linearSiteIndex(site);
 //  nml << "   Site =  " << site << "   = " << d.elem(i) << ",\n";
 
   return nml;

@@ -1,4 +1,7 @@
-// $Id: baryon_w.cc,v 1.4 2002-10-09 16:54:08 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.5 2002-10-28 03:08:44 edwards Exp $ 
+/*! \file
+ *  \brief Baryon 2-pt functions
+ */
 
 #include "tests.h"
 
@@ -68,7 +71,7 @@ void baryon(LatticePropagator& quark_propagator,
 	    multi2d<Complex>& barprop, 
 	    const multi1d<int>& t_source, int bc_spec)
 {
-  int length = layout.LattSize()[j_decay];
+  int length = Layout::lattSize()[j_decay];
 
   if ( Ns != 4 || Nc != 3 )		/* Code is specific to Ns=4 and Nc=3. */
     return;

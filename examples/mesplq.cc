@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.8 2002-10-09 17:05:37 edwards Exp $
+// $Id: mesplq.cc,v 1.9 2002-10-28 03:08:44 edwards Exp $
 //
 #include "tests.h"
 
@@ -42,7 +42,7 @@ void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq,
 #endif
       w_plaq += tmp;
 
-      if (mu == geom.Tdir() || nu == geom.Tdir())
+      if (mu == geom.tDir() || nu == geom.tDir())
 	t_plaq += tmp;
       else 
 	s_plaq += tmp;
@@ -50,17 +50,17 @@ void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq,
   }
   
   // Normalize
-  w_plaq *= 2.0 / double(geom.Vol()*Nd*(Nd-1)*Nc);
+  w_plaq *= 2.0 / double(geom.vol()*Nd*(Nd-1)*Nc);
   
   if (Nd > 2) 
-    s_plaq *= 2.0 / double(geom.Vol()*(Nd-1)*(Nd-2)*Nc);
+    s_plaq *= 2.0 / double(geom.vol()*(Nd-1)*(Nd-2)*Nc);
   
-  t_plaq /= double(geom.Vol()*(Nd-1)*Nc);
+  t_plaq /= double(geom.vol()*(Nd-1)*Nc);
   
 
   // Compute the average link
   for(int mu=0; mu < Nd; ++mu)
     link += sum(real(trace(u[mu])));
 
-  link /= double(geom.Vol()*Nd*Nc);
+  link /= double(geom.vol()*Nd*Nc);
 }

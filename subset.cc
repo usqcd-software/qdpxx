@@ -1,4 +1,4 @@
-// $Id: subset.cc,v 1.4 2002-10-02 20:29:37 edwards Exp $
+// $Id: subset.cc,v 1.5 2002-10-28 03:08:44 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -80,162 +80,12 @@ void Subset::Make(int start, int end, bool rep, multi3d<int>* soff,
 }
 
 
+//-----------------------------------------------------------------------------
+// Find these in the respective  architecture  *_specific.cc  files
 //! Constructor from an int function
-void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
-{
-#if 1
-  fprintf(stderr,"Set a subset: nsubset = %d\n",nsubset_indices);
-#endif
-
-  // First initialize the offsets
-  InitOffsets();
-
-  // This actually allocates the subsets
-  sub.resize(nsubset_indices);
-
-  // Create the space of the colorings of the lattice
-  /*! Loop over all sites determining their color */
-  lat_color.resize(layout.Vol());
-
-  // Create the array holding the array of sitetable info
-  // This may actually hold anything 
-  sitetables.resize(nsubset_indices);
-
-  for(int site=0; site < layout.Vol(); ++site)
-  {
-    const multi1d<int> coord = crtesn(site, layout.LattSize());
-    int linear = layout.LinearSiteIndex(coord);
-    int icolor = func(coord);
-
-    lat_color[linear] = icolor;
-  }
-
-  /*
-   * Loop over the lexicographic sites.
-   * Check if the linear sites are in a contiguous set.
-   * This implementation only supports a single contiguous
-   * block of sites.
-   */
-  for(int cb=0; cb < nsubset_indices; ++cb)
-  {
-    bool indexrep = false;
-    int start = 0;
-    int end = -1;
-    int ntotal = 0;
-    int prev;
-    bool found_gap = false;
-
-    for(int linear=0; linear < layout.Vol(); ++linear)
-    {
-      int lexico = layout.LexicoSiteIndex(linear);
-      multi1d<int> coord = crtesn(lexico, layout.LattSize());
-
-      int icolor = lat_color[linear];
-
-      if (icolor != cb) continue;
-
-      if (ntotal > 0)
-      {
-	if (prev == linear-1)
-	  end = linear;
-	else
-	{
-	  found_gap = true;
-	  break;
-	}
-      }
-      else
-      {
-	start = end = prev = linear;
-      }
-
-      prev = linear;
-      ++ntotal;
-    }
-
-    // Always construct the sitetables. This could be moved into
-    // the found_gap and only initialized if the interval method 
-    // was not possible
-
-    // First loop and see how many sites are needed
-    int num_sitetable = 0;
-    for(int linear=0; linear < layout.Vol(); ++linear)
-      if (lat_color[linear] == cb)
-	++num_sitetable;
-
-    // Now take the inverse of the lattice coloring to produce
-    // the site list
-    multi1d<int>& sitetable = sitetables[cb];
-    sitetable.resize(num_sitetable);
-
-    for(int linear=0, j=0; linear < layout.Vol(); ++linear)
-      if (lat_color[linear] == cb)
-	sitetable[j++] = linear;
-
-
-    // If a gap is found, then resort to a site table lookup
-    if (found_gap)
-    {
-      start = 0;
-      end = -1;
-      indexrep = true;
-    }
-
-    sub[cb].Make(start, end, indexrep, &soffsets, &(sitetables[cb]), cb);
-
-#if 1
-    fprintf(stderr,"Subset(%d): indexrep=%d start=%d end=%d\n",cb,indexrep,start,end);
-#endif
-  }
-}
-	  
+//void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices);
 
 //! Initializer for sets
-void Set::InitOffsets()
-{
-  //--------------------------------------
-  // Setup the communication index arrays
-  soffsets.resize(Nd, 2, layout.Vol());
-
-  /* Get the offsets needed for neighbour comm.
-     * soffsets(direction,isign,position)
-     *  where  isign    = +1 : plus direction
-     *                  =  0 : negative direction
-     *         cb       =  0 : even lattice (includes origin)
-     *                  = +1 : odd lattice (does not include origin)
-     * the offsets cotain the current site, i.e the neighbour for site i
-     * is  soffsets(i,dir,mu) and NOT  i + soffset(..) 
-     * NOTE: the sites are order the cb=0 (even lattice - includes origin)
-     * are the first vol_cb chunk and the cb=1 (odd lattice) are the second
-     * chunk of position running from 0 to vol-1
-     */
-  const multi1d<int>& nrow = layout.LattSize();
-
-  for(int site=0; site < layout.Vol(); ++site)
-  {
-    multi1d<int> coord = crtesn(site, nrow);
-    int ipos = layout.LinearSiteIndex(coord);
-
-    for(int m=0; m<Nd; ++m)
-    {
-      multi1d<int> tmpcoord = coord;
-
-      /* Neighbor in backward direction */
-      tmpcoord[m] = (coord[m] - 1 + nrow[m]) % nrow[m];
-      soffsets(m,0,ipos) = layout.LinearSiteIndex(tmpcoord);
-
-      /* Neighbor in forward direction */
-      tmpcoord[m] = (coord[m] + 1) % nrow[m];
-      soffsets(m,1,ipos) = layout.LinearSiteIndex(tmpcoord);
-    }
-  }
-
-#if 0
-  for(int m=0; m < Nd; ++m)
-    for(int s=0; s < 2; ++s)
-      for(int ipos=0; ipos < layout.Vol(); ++ipos)
-	fprintf(stderr,"soffsets(%d,%d,%d) = %d\n",ipos,s,m,soffsets(m,s,ipos));
-#endif
-}
+//void Set::InitOffsets();
 
 QDP_END_NAMESPACE();

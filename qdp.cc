@@ -1,4 +1,4 @@
-// $Id: qdp.cc,v 1.2 2002-10-25 03:33:26 edwards Exp $
+// $Id: qdp.cc,v 1.3 2002-10-28 03:08:44 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -7,13 +7,9 @@
 
 QDP_BEGIN_NAMESPACE(QDP);
 
-//! Hack a-rooney - for now barf on boolean subset representation - need better method 
-void diefunc() {fprintf(stderr,"Boolean rep not implemented\n");exit(1);}
-
-//! Another Hack a-rooney - for now barf on boolean subset representation - need better method 
+//! General death routine
 void SZ_ERROR(const char *s, ...) {fprintf(stderr,"%s\n",s);exit(1);}
   
-
 //! Decompose a lexicographic site into coordinates
 multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size)
 {
@@ -37,6 +33,25 @@ multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size)
 
   return coord;
 }
+
+
+//! Calculates the lexicographic site index from the coordinate of a site
+/*! 
+ * Nothing specific about the actual lattice size, can be used for 
+ * any kind of latt size 
+ */
+int local_site(const multi1d<int>& coord, const multi1d<int>& latt_size)
+{
+  int order = 0;
+
+  for(int mmu=latt_size.size()-1; mmu >= 1; --mmu)
+    order = latt_size[mmu-1]*(coord[mmu] + order);
+
+  order += coord[0];
+
+  return order;
+}
+
 
 
 //-----------------------------------------------------------------------------

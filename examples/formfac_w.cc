@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.6 2002-10-09 17:03:30 edwards Exp $
+// $Id: formfac_w.cc,v 1.7 2002-10-28 03:08:44 edwards Exp $
 
 #include "tests.h"
 #include "proto.h"
@@ -31,7 +31,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 	     NmlWriter& nml)
 {
   // Length of lattice in j_decay direction and 3pt correlations fcns
-  int length = layout.LattSize()[j_decay];
+  int length = Layout::lattSize()[j_decay];
   multi1d<Complex> local_cur3ptfn(length);
   multi1d<Complex> nonlocal_cur3ptfn(length);
   
@@ -128,7 +128,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 	  continue;
 
 	p_dot_x += LatticeReal(my_coord[nu]) * twopi
-	  * Real(inser_mom[j]) / layout.LattSize()[nu];
+	  * Real(inser_mom[j]) / Layout::lattSize()[nu];
 	j++;
       }
 

@@ -1,67 +1,71 @@
 // -*- C++ -*-
-// $Id: layout.h,v 1.3 2002-10-12 04:10:15 edwards Exp $
+// $Id: layout.h,v 1.4 2002-10-28 03:08:44 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
  *
- * Lattice layout class and operations
+ * Lattice layout namespace and operations
  */
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 /*! @defgroup layout  Layout 
  *
- * Class holding info on problem size and machine info
+ * Namespace holding info on problem size and machine info
  *
  * @{
  */
 
-//! Layout class holding info on problem size and machine info
-class Layout
+//! Layout namespace holding info on problem size and machine info
+/*! 
+ * This is a namespace instead of a class since it is completely static -
+ * no such object should be created 
+ *
+ * The functions here should be common to all architectures
+ */
+namespace Layout
 {
-public:
-  //! Initializer for a geometry
-  void Init(const multi1d<int>& nrows);
+  //! Probably standard initializer for a layout
+  /*! This should read from some internal state and start initializing */
+  inline void initialize() {SZ_ERROR("generic initialize not implemented");}
+
+  //! Rudimentary initializer for a layout
+  void initialize(const multi1d<int>& nrows);
+
+  //! Finalizer for a layout
+  void finalize();
+
+  //! Panic button
+  void abort(int status);
 
   //! Virtual grid (problem grid) lattice size
-  const multi1d<int>& LattSize() const {return nrow;}
+  const multi1d<int>& lattSize();
 
   //! Total lattice volume
-  int Vol() {return vol;}
+  int vol();
 
-  //! The linearized site index for the corresponding coordinate
-  int LinearSiteIndex(const multi1d<int>& coord);
+  //! Subgrid lattice volume
+  int subgridVol();
+
+  //! Returns whether this is the primary node
+  bool primaryNode();
+
+
+  //! The linearized site index within a node for the corresponding lattice coordinate
+  int linearSiteIndex(const multi1d<int>& coord);
+
+  //! The lexicographic site index within a node for the corresponding lattice coordinate
+  int lexicoSiteIndex(const multi1d<int>& coord);
+
+
 
   //! The linearized site index for the corresponding lexicographic site
-  int LinearSiteIndex(int lexicosite);
+  int linearSiteIndex(int lexicosite);
 
   //! The lexicographic site index from the corresponding linearized site
-  int LexicoSiteIndex(int linearsite);
+  int lexicoSiteIndex(int linearsite);
 
-  //! The lexicographic site index for the corresponding coordinate
-  int LexicoSiteIndex(const multi1d<int>& coord);
-
-protected:
-
-private:
-  //! Total lattice volume
-  int vol;
-
-  //! Lattice size
-  multi1d<int> nrow;
-
-  //! Number of checkboards
-  int nsubl;
-
-  //! Total lattice checkerboarded volume
-  int vol_cb;
-
-  //! Checkboard lattice size
-  multi1d<int> cb_nrow;
 };
-
-/*! Main layout object */
-extern Layout layout;
 
 /*! @} */   // end of group layout
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: geom.h,v 1.1 2002-09-12 18:22:17 edwards Exp $
+// $Id: geom.h,v 1.2 2002-10-28 03:08:44 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -13,25 +13,25 @@ public:
   Geometry() {}
 
   //! Initializer for a geometry
-  void Init(const multi1d<int>& nrows);
+  void init(const multi1d<int>& nrows);
 
   //! Initializer for a anisotropic geometry
-  void InitAniso(const multi1d<int>& nrows, int aniso_dir, float xi_0);
+  void initAniso(const multi1d<int>& nrows, int aniso_dir, float xi_0);
 
   //! Virtual grid (problem grid) lattice size
-  const multi1d<int>& LattSize() const {return layout.LattSize();}
+  const multi1d<int>& LattSize() const {return Layout::lattSize();}
 
   //! Total lattice volume
-  int Vol() {return layout.Vol();}
+  int vol() {return Layout::vol();}
 
   //! Is anisotropy enabled?
-  bool AnisoP() {return aniso;}
+  bool anisoP() {return aniso;}
 
   //! Time direction
-  int Tdir() {return t_dir;}
+  int tDir() {return t_dir;}
 
   //! Anisotropy factor
-  float Xi_0() {return xi_0;}
+  float xi_0() {return _xi_0;}
 
 protected:
   //! No public copy constructor
@@ -42,7 +42,7 @@ private:
   bool aniso;
 
   //! Anisotropy factor (in time)
-  float xi_0;
+  float _xi_0;
 
   //! The time direction (used only in conjunction with aniso)
   int t_dir;

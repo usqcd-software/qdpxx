@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: params.h,v 1.5 2002-10-26 01:54:30 edwards Exp $
+// $Id: params.h,v 1.6 2002-10-28 03:08:44 edwards Exp $
 
 /*! @file
  * @brief Fundamental parameters
@@ -16,7 +16,7 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 
 //! Number of dimensions
-#define ND  4
+#define ND  2
 
 //! Number of colors
 #define NC  3
@@ -25,10 +25,10 @@ QDP_BEGIN_NAMESPACE(QDP);
 #define NS  4
 
 //! Lattice size
-#define  LX0   2
+#define  LX0   4
 #define  LX1   2
 #define  LX2   2
-#define  LX3   4
+#define  LX3   2
 
 
 const int Nd = ND;
