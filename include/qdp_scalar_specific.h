@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.22 2004-04-01 16:45:20 bjoo Exp $
+// $Id: qdp_scalar_specific.h,v 1.23 2004-04-05 21:39:19 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1102,7 +1102,7 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
     int i = Layout::linearSiteIndex(site);
 
     alist.clear();
-    alist.push_back(XMLWriterAPI::Attribute("site", i));
+    alist.push_back(XMLWriterAPI::Attribute("site", site));
 
     xml.openTag("elem", alist);
     xml << d.elem(i);
