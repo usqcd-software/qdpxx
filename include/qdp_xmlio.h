@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.25 2003-09-10 16:58:45 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.26 2004-04-27 19:32:06 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -55,6 +55,7 @@ public:
   void open(std::istream& is);
   void open(const XMLBufferWriter& mw);
   bool is_open();
+  bool is_derived() const;
   void close();
     
   /* So should these, there is just a lot of overloading */
@@ -72,8 +73,8 @@ public:
   //! Return the entire contents of the Reader as a stream
   void print(ostream& is);
         
-  //! Return the root element of the Reader as a stream
-  void printRoot(ostream& is);
+  //! Print the current context
+  void printCurrentContext(ostream& is);
         
   //! Count the number of occurances from the xpath query
   int count(const std::string& xpath);
@@ -95,6 +96,7 @@ protected:
 
 private:
   bool  iop;  //file open or closed?
+  bool  derived; // is this reader derived from another reader?
 };
 
 
@@ -386,13 +388,13 @@ public:
   std::string str();
         
   // Return root element as a string
-  std::string printRoot();
+  std::string printCurrentContext();
         
   //! Flush the buffer
   void flush() {}
 
   //! Return true if some failure occurred in previous IO operation
-  bool fail() {return false;}
+  bool fail() const {return false;}
 
 private:
   // The output stream...
@@ -437,7 +439,7 @@ public:
   void flush();
 
   //! Return true if some failure occurred in previous IO operation
-  bool fail();
+  bool fail() const;
 
   //! Close the file
   void close();

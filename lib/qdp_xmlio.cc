@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.27 2004-04-07 09:34:33 bjoo Exp $
+// $Id: qdp_xmlio.cc,v 1.28 2004-04-27 19:32:06 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -13,29 +13,30 @@ using std::string;
 //--------------------------------------------------------------------------------
 // XML classes
 // XML reader class
-XMLReader::XMLReader() {iop=false;}
+XMLReader::XMLReader() {iop=derived=false;}
 
 XMLReader::XMLReader(const std::string& filename)
 {
-  iop=false;
+  iop = derived = false;
   open(filename);
 }
 
 XMLReader::XMLReader(std::istream& is)
 {
-  iop=false;
+  iop = derived = false;
   open(is);
 }
 
 XMLReader::XMLReader(const XMLBufferWriter& mw)
 {
-  iop=false;
+  iop = derived = false;
   open(mw);
 }
 
 XMLReader::XMLReader(XMLReader& old, const string& xpath) : BasicXPathReader() 
 {
-  iop=false;
+  iop = false;
+  derived = true;
   open(old, xpath);
 }
 
@@ -62,6 +63,7 @@ void XMLReader::open(const string& filename)
   }
 
   iop = true;
+  derived = false;
 }
 
 void XMLReader::open(std::istream& is)
@@ -70,6 +72,7 @@ void XMLReader::open(std::istream& is)
     BasicXPathReader::open(is);
 
   iop = true;
+  derived = false;
 }
 
 void XMLReader::open(const XMLBufferWriter& mw)
@@ -81,16 +84,18 @@ void XMLReader::open(const XMLBufferWriter& mw)
   }
 
   iop = true;
+  derived = false;
 }
 
 void XMLReader::open(XMLReader& old, const string& xpath)
 {
    if( Layout::primaryNode()) 
    {
-	BasicXPathReader::open((BasicXPathReader&)old, xpath);
+     BasicXPathReader::open((BasicXPathReader&)old, xpath);
    }
 
-   iop=true;
+   iop = true;
+   derived = true;
 }
 
 void XMLReader::close()
@@ -101,12 +106,15 @@ void XMLReader::close()
       BasicXPathReader::close();
 
     iop = false;
+    derived = false;
   }
 }
 
 
 
 bool XMLReader::is_open() {return iop;}
+
+bool XMLReader::is_derived() const {return derived;}
 
 XMLReader::~XMLReader() {close();}
 
@@ -200,10 +208,15 @@ void XMLReader::print(ostream& os)
     BasicXPathReader::print(os);
 }
    
-void XMLReader::printRoot(ostream& os)
+void XMLReader::printCurrentContext(ostream& os)
 {
   if (Layout::primaryNode())
-    BasicXPathReader::printRoot(os);
+  {
+    if (is_derived())
+      BasicXPathReader::printChildren(os);
+    else
+      BasicXPathReader::printRoot(os);
+  }
 }
    
 int XMLReader::count(const string& xpath)
@@ -539,7 +552,7 @@ void write(XMLWriter& xml, const std::string& s, const XMLReader& d)
 XMLWriter& operator<<(XMLWriter& xml, const XMLReader& d)
 {
   ostringstream os;
-  const_cast<XMLReader&>(d).printRoot(os);
+  const_cast<XMLReader&>(d).printCurrentContext(os);
   xml.writeXML(os.str());
   return xml;
 }
@@ -554,7 +567,7 @@ void write(XMLWriter& xml, const std::string& s, const XMLBufferWriter& d)
 
 XMLWriter& operator<<(XMLWriter& xml, const XMLBufferWriter& d)
 {
-  xml.writeXML(const_cast<XMLBufferWriter&>(d).printRoot());
+  xml.writeXML(const_cast<XMLBufferWriter&>(d).printCurrentContext());
   return xml;
 }
 
@@ -745,7 +758,7 @@ string XMLBufferWriter::str()
   return s.str();
 }
 
-string XMLBufferWriter::printRoot() {return output_stream.str();}
+string XMLBufferWriter::printCurrentContext() {return output_stream.str();}
 
 XMLBufferWriter::~XMLBufferWriter() {}
 
@@ -787,7 +800,7 @@ void XMLFileWriter::flush()
 }
 
 // Propagate status to all nodes
-bool XMLFileWriter::fail()
+bool XMLFileWriter::fail() const
 {
   bool s;
 
