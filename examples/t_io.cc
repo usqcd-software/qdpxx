@@ -1,12 +1,9 @@
-// $Id: t_io.cc,v 1.11 2003-06-08 04:50:57 edwards Exp $
+// $Id: t_io.cc,v 1.12 2003-06-20 02:19:52 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
-#include <unistd.h>
-
 #include "qdp.h"
-#include "examples.h"
 
 using namespace QDP;
 
