@@ -1,12 +1,11 @@
-// $Id: linalg1.cc,v 1.1 2003-07-30 18:40:19 edwards Exp $
+// $Id: linalg1.cc,v 1.2 2003-07-31 02:08:37 edwards Exp $
 
 #include <time.h>
 
 #include "qdp.h"
 #include "linalg.h"
 
-using namespace QDP;
-
+namespace QDP {
 #if 0
 template<class T1, class T2, template<class,int> class C>
 inline typename BinaryReturn<PScalar<T1>, PVector<T2,2,C>, OpMultiply>::Type_t
@@ -61,7 +60,10 @@ operator*<>(const PMatrix<RComplex<float>,3,PColorMatrix>& l,
   return d;
 }
 #endif
+}
 
+
+using namespace QDP;
 
 
 double QDP_M_eq_M_times_M(LatticeColorMatrix& dest, 
