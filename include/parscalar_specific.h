@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.22 2003-04-10 18:36:09 edwards Exp $
+// $Id: parscalar_specific.h,v 1.23 2003-04-10 21:08:04 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1181,12 +1181,8 @@ BinaryReader& read(BinaryReader& bin, OLattice<T>& d)
 template<class T>
 istream& operator>>(istream& s, OScalar<T>& d)
 {
-  cerr << "inside oscalar" << endl;
-
   if (Layout::primaryNode())
     s >> d.elem();
-
-  cerr << "received: " << d << endl;
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
@@ -1198,15 +1194,8 @@ istream& operator>>(istream& s, OScalar<T>& d)
 template<class T>
 TextReader& operator>>(TextReader& txt, T& d)
 {
-  cerr << "inside >> T" << endl;
-
   if (Layout::primaryNode())
-  {
     txt.get() >> d;
-    cerr << "primnode recv: " << d << endl;
-  }
-
-  cerr << "received: " << d << endl;
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
@@ -1219,16 +1208,8 @@ TextReader& operator>>(TextReader& txt, T& d)
 template<class T>
 TextReader& operator>>(TextReader& txt, OScalar<T>& d)
 {
-  cerr << "inside >> OscalarT" << endl;
-
   if (Layout::primaryNode())
-  {
-    cerr << "here a" << endl;
     txt.get() >> d.elem();
-    cerr << "here b" << endl;
-  }
-
-  cerr << "received: " << d << endl;
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);

@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.8 2003-04-10 18:55:37 edwards Exp $
+// $Id: io.cc,v 1.9 2003-04-10 21:08:04 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -19,7 +19,6 @@ void TextReader::open(const char* p)
   {
     f.open(p);
 
-    cerr << "test open thrice" << endl;
     if (! f.is_open())
       QDP_error_exit("failed to open file %s",p);
   }
@@ -172,10 +171,7 @@ void BinaryReader::open(const char* p)
   if (Layout::primaryNode()) 
   {
     if ((f = fopen(p,"rb")) == NULL)
-    {
-      cerr << "BinaryReader: error opening file: " << p << endl;
       QDP_error_exit("BinaryReader: error opening file %s",p);
-    }
   }
 
   iop = true;

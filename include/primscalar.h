@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primscalar.h,v 1.20 2003-04-10 18:36:09 edwards Exp $
+// $Id: primscalar.h,v 1.21 2003-04-10 21:08:04 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -163,7 +163,6 @@ template<class T>
 inline
 istream& operator>>(istream& s, PScalar<T>& d)
 {
-  cerr << "inside pscalar" << endl;
   if (Layout::primaryNode())
     s >> d.elem();
 
