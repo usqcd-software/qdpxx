@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_params.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_params.h,v 1.2 2003-10-17 16:06:39 edwards Exp $
 
 /*! @file
  * @brief Fundamental parameters
@@ -18,9 +18,9 @@ QDP_BEGIN_NAMESPACE(QDP);
 
 #include <qdp_config.h>
 
-const int Nd = ND;
-const int Nc = NC;
-const int Ns = NS;
+const int Nd = QDP_ND;
+const int Nc = QDP_NC;
+const int Ns = QDP_NS;
 
 /*! @} */  // end of group params
 

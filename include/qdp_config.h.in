@@ -16,13 +16,13 @@
 #undef BASE_PRECISION
 
 /* Number of color components */
-#undef NC
+#undef QDP_NC
 
 /* Number of dimensions */
-#undef ND
+#undef QDP_ND
 
 /* Number of spin components */
-#undef NS
+#undef QDP_NS
 
 /* Use checkerboarded layout */
 #undef QDP_USE_CB2_LAYOUT
