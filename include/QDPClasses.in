@@ -1,5 +1,0 @@
-classes
------
-  ARG   = "class T[n],class C[n]"
-  CLASS = "QDPType<T[n],C[n]>"
-
