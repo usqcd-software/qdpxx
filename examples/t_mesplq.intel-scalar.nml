@@ -7,6 +7,6 @@
  nrow[ 3 ] = 4 ,
 &END
 &observables
- w_plaq = -0.00497119 ,
- link = 0.00661708 ,
+ w_plaq = -0.00375667 ,
+ link = 0.00165427 ,
 &END
