@@ -1,4 +1,4 @@
-// $Id: qdpio.cc,v 1.3 2003-04-16 04:51:22 edwards Exp $
+// $Id: qdpio.cc,v 1.4 2003-04-16 15:29:09 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -87,6 +87,10 @@ void QDPSerialReader::close()
 
 bool QDPSerialReader::is_open() {return iop;}
 
+bool QDPSerialReader::eof() const {return false;}
+
+bool QDPSerialReader::bad() const {return false;}
+
 QDPSerialReader::~QDPSerialReader() {close();}
 
 
@@ -132,8 +136,9 @@ void QDPSerialWriter::close()
 
 bool QDPSerialWriter::is_open() {return iop;}
 
-QDPSerialWriter::~QDPSerialWriter() {close();}
+bool QDPSerialWriter::bad() const {return false;}
 
+QDPSerialWriter::~QDPSerialWriter() {close();}
 
 
 QDP_END_NAMESPACE();

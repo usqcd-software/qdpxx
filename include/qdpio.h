@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdpio.h,v 1.1 2003-04-15 21:08:40 edwards Exp $
+// $Id: qdpio.h,v 1.2 2003-04-16 15:29:09 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -74,16 +74,21 @@ public:
 
   //! Read a QDP object
   template<class T, class C>
-  int read(XMLMetaReader& xml, QDPType<T,C>& f) {return 0;}
+  void read(XMLMetaReader& xml, QDPType<T,C>& f) {}
 
   //! Read an array of objects each in a seperate record
   template<class T>
-  int read(XMLMetaReader& xml, multi1d<T>& f) {return 0;}
+  void read(XMLMetaReader& xml, multi1d<T>& f) {}
 
   //! Read an array of objects all in a single record
   template<class T>
-  int vread(XMLMetaReader& xml, multi1d<T>& f) {return 0;}
+  void vread(XMLMetaReader& xml, multi1d<T>& f) {}
 
+  //! Check if end-of-file has been reached
+  bool eof() const;
+
+  //!  Check if an unrecoverable error has occurred
+  bool bad() const;
 
 private:
   bool iop;
@@ -113,16 +118,18 @@ public:
 
   //! Write a QDP object
   template<class T, class C>
-  int write(const XMLMetaWriter& xml, const QDPType<T,C>& f) {return 0;}
+  void write(const XMLMetaWriter& xml, const QDPType<T,C>& f) {}
 
   //! Write an array of objects each in a seperate record
   template<class T>
-  int write(const XMLMetaWriter& xml, const multi1d<T>& f) {return 0;}
+  void write(const XMLMetaWriter& xml, const multi1d<T>& f) {}
 
   //! Write an array of objects all in a single record
   template<class T>
-  int vwrite(const XMLMetaWriter& xml, const multi1d<T>& f) {return 0;}
+  void vwrite(const XMLMetaWriter& xml, const multi1d<T>& f) {}
 
+  //!  Check if an unrecoverable error has occurred
+  bool bad() const;
 
 private:
   bool iop;
