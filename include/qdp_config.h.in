@@ -6,8 +6,6 @@
 #define NC @ac_Nc@
 #define NS @ac_Ns@
 
-#define VOLUME @ac_max_volume@
-
 #undef DEBUG
 
 #endif 
