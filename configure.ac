@@ -1,4 +1,4 @@
-AC_INIT(qdp,0.26,edwards@jlab.org)
+AC_INIT(qdp,0.31,edwards@jlab.org)
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -32,7 +32,7 @@ AC_ARG_ENABLE(Ns,
               ac_Ns=4)
 
 
-dnl--enable-parallel-arch argument
+dnl --enable-parallel-arch argument
 AC_ARG_ENABLE(parallel-arch,
 	      AC_HELP_STRING([--enable-parallel-arch=<arch>],
  	        [ Build QDP++ for parallel architecture <arch> ]),
