@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.10 2003-07-31 01:07:41 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.11 2003-09-03 19:50:42 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -90,6 +90,9 @@ void baryon(LatticePropagator& quark_propagator,
 
   // Length of lattice in j_decay direction
   int length = timeslice.numSubsets();
+
+  // Setup the return stuff
+  barprop.resize(9,length);
 
   if ( Ns != 4 || Nc != 3 )		/* Code is specific to Ns=4 and Nc=3. */
     return;

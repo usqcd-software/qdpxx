@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.11 2003-06-07 19:09:32 edwards Exp $
+ *  $Id: t_spectrum.cc,v 1.12 2003-09-03 19:50:42 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
       }
   */
 
-  const int foo[] = {4, 4, 4, 8};
+  const int foo[] = {2, 2, 2, 2};
   nsize = foo;
   // Initialise the layout
   Layout::setLattSize(nsize);
@@ -127,7 +127,7 @@ int main(int argc, char **argv)
 
   {
 
-    multi2d<Real> meson_prop(Ns*Ns, length);
+    multi2d<Real> meson_prop;
   
     mesons(quark_prop_1, quark_prop_1, meson_prop, t_source, j_decay);
 
@@ -137,11 +137,8 @@ int main(int argc, char **argv)
 
     push(nml,"Point_Point_Wilson_Mesons");
     Write(nml, j_decay);
-
-    for(int corr_ctr = 0; corr_ctr < Ns*Ns; corr_ctr++){
-      Write(nml, corr_ctr);
-      Write(nml, meson_prop[corr_ctr]);
-    }
+    Write(nml, meson_prop);
+    pop(nml);
   }
 
   cerr << "...done" << endl;
@@ -150,7 +147,7 @@ int main(int argc, char **argv)
 
   {
 
-    multi2d<Complex> baryon_prop(9, length);
+    multi2d<Complex> baryon_prop;
   
     baryon(quark_prop_1, baryon_prop, t_source, j_decay, 1);
 
@@ -160,11 +157,8 @@ int main(int argc, char **argv)
 
     push(nml,"Point_Point_Wilson_Baryons");
     Write(nml, j_decay);
-
-    for(int corr_ctr = 0; corr_ctr < 9; corr_ctr++){
-      Write(nml, corr_ctr);
-      Write(nml, baryon_prop[corr_ctr]);
-    }
+    Write(nml, baryon_prop);
+    pop(nml);
   }
 
   cerr << "...done" << endl;

@@ -1,4 +1,4 @@
-//  $Id: mesons_w.cc,v 1.8 2003-07-31 01:07:41 edwards Exp $
+//  $Id: mesons_w.cc,v 1.9 2003-09-03 19:50:42 edwards Exp $
 /*! \file
  *  \brief Meson 2-pt functions
  */
@@ -53,6 +53,9 @@ void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quar
 
   // Length of lattice in j_decay direction
   int length = timeslice.numSubsets();
+
+  // Setup the return stuff
+  meson_propagator.resize(Ns*Ns, length);
 
   int t0 = t_source[j_decay];
   int G5 = Ns*Ns-1;
