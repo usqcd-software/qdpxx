@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_layout.cc,v 1.10 2003-08-31 20:59:16 edwards Exp $
+// $Id: qdp_scalar_layout.cc,v 1.11 2003-10-10 17:49:16 edwards Exp $
 
 /*! @file
  * @brief Scalar layout routines
@@ -155,7 +155,7 @@ namespace Layout
     // Initialize various defaults
     initDefaults();
 
-    QDP_info("Finished lattice layout");
+    QDPIO::cout << "Finished lattice layout" << endl;
   }
 };
 
