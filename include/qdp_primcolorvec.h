@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolorvec.h,v 1.2 2003-08-27 01:25:35 edwards Exp $
+// $Id: qdp_primcolorvec.h,v 1.3 2003-10-17 15:31:59 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Vector
@@ -32,7 +32,7 @@ public:
 
 };
 
-/*! @} */  // end of group primcolorvec
+/*! @} */  // end of group primcolorvector
 
 //-----------------------------------------------------------------------------
 // Traits classes 
