@@ -1670,7 +1670,7 @@ fi;
 
 
 cat >>confdefs.h <<_ACEOF
-#define ND ${ac_Nd}
+#define QDP_ND ${ac_Nd}
 _ACEOF
         CONFIG_ND=${ac_Nd}
 
@@ -1689,7 +1689,7 @@ fi;
 
 
 cat >>confdefs.h <<_ACEOF
-#define NC ${ac_Nc}
+#define QDP_NC ${ac_Nc}
 _ACEOF
 
 CONFIG_NC=${ac_Nc}
@@ -1710,7 +1710,7 @@ fi;
 
 
 cat >>confdefs.h <<_ACEOF
-#define NS ${ac_Ns}
+#define QDP_NS ${ac_Ns}
 _ACEOF
 
 CONFIG_NS=${ac_Ns}
