@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.14 2003-08-08 18:58:05 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.15 2003-08-10 02:27:11 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1502,26 +1502,13 @@ void read(BinaryReader& bin, OLattice<T>& d)
 #endif
 
 
-//! Generic read a text element
-template<class T>
-TextReader& operator>>(TextReader& txt, T& d)
-{
-  if (Layout::primaryNode())
-    txt.get() >> d;
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(d);
-
-  return txt;
-}
-
 //! Text input
 /*! Assumes no inner grid */
 template<class T>
 TextReader& operator>>(TextReader& txt, OScalar<T>& d)
 {
   if (Layout::primaryNode())
-    txt.get() >> d.elem();
+    txt >> d.elem();
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);

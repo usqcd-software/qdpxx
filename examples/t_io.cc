@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.15 2003-07-16 21:33:26 edwards Exp $
+// $Id: t_io.cc,v 1.16 2003-08-10 02:27:10 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
   tonml.flush();
   tonml.close();
 
-  float x = 42.1;
+  Real x = 42.1;
   cerr << "Write some data to file t_io.txt\n";
   TextWriter totext("t_io.txt");
   totext << x;

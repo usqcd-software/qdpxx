@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.8 2003-08-09 04:11:29 edwards Exp $
+// $Id: qdp_primvector.h,v 1.9 2003-08-10 02:27:11 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -121,6 +121,29 @@ public:
 private:
   T F[N];
 };
+
+
+//! Text input
+template<class T, int N, template<class,int> class C>  
+inline
+TextReader& operator>>(TextReader& txt, PVector<T,N,C>& d)
+{
+  for(int i=0; i < N; ++i)
+    txt >> d.elem(i);
+
+  return txt;
+}
+
+//! Text output
+template<class T, int N, template<class,int> class C>  
+inline
+TextWriter& operator<<(TextWriter& txt, const PVector<T,N,C>& d)
+{
+  for(int i=0; i < N; ++i)
+    txt << d.elem(i);
+
+  return txt;
+}
 
 
 //! Nml output

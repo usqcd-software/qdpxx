@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.11 2003-07-06 19:10:27 edwards Exp $
+// $Id: qdp_io.h,v 1.12 2003-08-10 02:27:10 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -100,7 +100,28 @@ public:
   //! Return true if some failure occurred in previous IO operation
   bool fail();
 
-  std::ostream& get() {return f;}
+  // Overloaded Writer Functions
+  void write(const std::string& output);
+  void write(const char* output);
+  void write(const char& output);
+  void write(const int& output);
+  void write(const unsigned int& output);
+  void write(const short int& output);
+  void write(const unsigned short int& output);
+  void write(const long int& output);
+  void write(const unsigned long int& output);
+  void write(const float& output);
+  void write(const double& output);
+  void write(const bool& output);
+
+protected:
+  // The universal data-write. All the write functions call this
+  template< typename T>
+  void
+  writePrimitive(const T& output);
+
+  // Get the internal ostream
+  std::ostream& getOstream() {return f;}
 
 private:
   QDPUtil::RemoteOutputFileStream f;

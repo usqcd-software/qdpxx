@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.8 2003-08-05 20:11:28 edwards Exp $
+// $Id: qdp_outer.h,v 1.9 2003-08-10 02:27:10 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -160,7 +160,7 @@ inline
 TextWriter& operator<<(TextWriter& txt, const OScalar<T>& d)
 {
   if (Layout::primaryNode())
-    txt << d.elem() << endl;
+    txt << d.elem();
 
   return txt;
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.7 2003-08-05 20:06:33 edwards Exp $
+// $Id: qdp_reality.h,v 1.8 2003-08-10 02:27:11 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -177,6 +177,23 @@ istream& operator>>(istream& s, RScalar<T>& d)
 template<class T> 
 inline  
 ostream& operator<<(ostream& s, const RScalar<T>& d)
+{
+  return s << d.elem();
+}
+
+
+//! Text input
+template<class T>
+inline
+TextReader& operator>>(TextReader& s, RScalar<T>& d)
+{
+  return s >> d.elem();
+}
+
+//! Text output
+template<class T> 
+inline  
+TextWriter& operator<<(TextWriter& s, const RScalar<T>& d)
 {
   return s << d.elem();
 }
@@ -369,6 +386,23 @@ ostream& operator<<(ostream& s, const RComplex<T>& d)
   s << "( " << d.real() << " , " << d.imag() << " )";
   return s;
 }
+
+//! Text input
+template<class T>
+inline
+TextReader& operator>>(TextReader& s, RComplex<T>& d)
+{
+  return s >> d.real() >> d.imag();
+}
+
+//! Text output
+template<class T> 
+inline  
+TextWriter& operator<<(TextWriter& s, const RComplex<T>& d)
+{
+  return s << d.real() << d.imag();
+}
+
 
 //! Namelist output
 template<class T>

@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.14 2003-07-06 19:10:28 edwards Exp $
+// $Id: qdp_io.cc,v 1.15 2003-08-10 02:27:11 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -267,85 +267,141 @@ bool TextWriter::fail()
 TextWriter::~TextWriter() {close();}
 
 
-// Primitive writers
-template<typename T>
-void writePrimitive(TextWriter& txt, const T& input)
-{
-  if (Layout::primaryNode())
-    txt.get() << input;
-}
-
-
+// Different bindings for write functions
 TextWriter& operator<<(TextWriter& txt, const std::string& output)
 {
-  writePrimitive<std::string>(txt, output);
+  txt.write(output);
   return txt;
 }
 
 TextWriter& operator<<(TextWriter& txt, const char* output)
 {
-  writePrimitive<std::string>(txt, std::string(output));
-  return txt;
-}
-
-TextWriter& operator<<(TextWriter& txt, char output)
-{
-  writePrimitive<char>(txt, output);
+  txt.write(output);
   return txt;
 }
 
 TextWriter& operator<<(TextWriter& txt, int output)
 {
-  writePrimitive<int>(txt, output);
+  txt.write(output);
   return txt;
 }
 
 TextWriter& operator<<(TextWriter& txt, unsigned int output)
 {
-  writePrimitive<unsigned int>(txt, output);
+  txt.write(output);
   return txt;
 }
 
 TextWriter& operator<<(TextWriter& txt, short int output)
 {
-  writePrimitive<short int>(txt, output);
+  txt.write(output);
   return txt;
 }
 
 TextWriter& operator<<(TextWriter& txt, unsigned short int output)
 {
-  writePrimitive<unsigned short int>(txt, output);
+  txt.write(output);
   return txt;
 }
 
 TextWriter& operator<<(TextWriter& txt, long int output)
 {
-  writePrimitive<long int>(txt, output);
+  txt.write(output);
   return txt;
 }
 
 TextWriter& operator<<(TextWriter& txt, unsigned long int output)
 {
-  writePrimitive<unsigned long int>(txt, output);
+  txt.write(output);
   return txt;
 }
 
 TextWriter& operator<<(TextWriter& txt, float output)
 {
-  writePrimitive<float>(txt, output);
+  txt.write(output);
   return txt;
 }
 
 TextWriter& operator<<(TextWriter& txt, double output)
 {
-  writePrimitive<double>(txt, output);
+  txt.write(output);
   return txt;
 }
 
 TextWriter& operator<<(TextWriter& txt, bool output)
 {
-  writePrimitive<bool>(txt, output);
+  txt.write(output);
   return txt;
+}
+
+
+
+
+void TextWriter::write(const string& output)
+{
+  writePrimitive<string>(output);
+}
+
+void TextWriter::write(const char* output)
+{
+  write(string(output));
+}
+
+void TextWriter::write(const char& output) 
+{
+  writePrimitive<char>(output);
+}
+
+void TextWriter::write(const int& output) 
+{
+  writePrimitive<int>(output);
+}
+
+void TextWriter::write(const unsigned int& output)
+{
+  writePrimitive<unsigned int>(output);
+}
+
+void TextWriter::write(const short int& output)
+{
+  writePrimitive<short int>(output);
+}
+
+void TextWriter::write(const unsigned short int& output)
+{
+  writePrimitive<unsigned short int>(output);
+}
+
+void TextWriter::write(const long int& output)
+{
+  writePrimitive<long int>(output);
+}
+
+void TextWriter::write(const unsigned long int& output)
+{
+  writePrimitive<unsigned long int>(output);
+}
+
+void TextWriter::write(const float& output)
+{
+  writePrimitive<float>(output);
+}
+
+void TextWriter::write(const double& output)
+{
+  writePrimitive<double>(output);
+}
+
+void TextWriter::write(const bool& output)
+{
+  writePrimitive<bool>(output);
+}
+
+template< typename T>
+void TextWriter::writePrimitive(const T& output)
+{
+  if (Layout::primaryNode())
+    getOstream() << output;
 }
 
 

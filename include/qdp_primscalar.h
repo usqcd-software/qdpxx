@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.5 2003-08-04 19:03:10 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.6 2003-08-10 02:27:11 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -177,6 +177,22 @@ inline
 ostream& operator<<(ostream& s, const PScalar<T>& d)
 {
   return s << d.elem();
+}
+
+//! Text input
+template<class T>
+inline
+TextReader& operator>>(TextReader& txt, PScalar<T>& d)
+{
+  return txt >> d.elem();
+}
+
+//! Text output
+template<class T>
+inline
+TextWriter& operator<<(TextWriter& txt, const PScalar<T>& d)
+{
+  return txt << d.elem();
 }
 
 //! Namelist output
