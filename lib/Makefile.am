@@ -3,11 +3,12 @@
 INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
            -I@top_srcdir@/other_libs/nml \
            -I@top_srcdir@/other_libs/qio/include \
-           -I@top_srcdir@/other_libs/qio/other_libs/c-dime/include
+           -I@top_srcdir@/other_libs/qio/other_libs/c-dime/include \
+           -I@top_srcdir@/other_libs/xpath_reader/include
 
 ## GTF: Using @QMP_CFLAGS@ instead of @QMP_CXXFLAGS@ here since QMP
 ## is written in C, not C++
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QMP_CFLAGS@
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
 
 VPATH = @top_srcdir@
 VPATH += @top_srcdir@/lib
@@ -22,7 +23,10 @@ HDRS = defs.h forward.h globalfuncs.h inner.h io.h layout.h multi.h \
        primscalar.h primseed.h primspinmat.h primspinvec.h primvector.h \
        qdp_util.h qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdpsubtype.h \
        qdptype.h random.h reality.h simpleword.h map.h \
-       specializations.h subset.h traits.h word.h qdpio.h   qio.h
+       specializations.h subset.h traits.h word.h qdpio.h \
+       qio.h
+
+# qdp_xmlio.h xml_simplewriter.h 
 
 ## GTF: Major bug fix here.  Had sources which were conditionally included
 ## in the library based on variable substitution from autoconf.  Basically,
@@ -34,7 +38,7 @@ HDRS = defs.h forward.h globalfuncs.h inner.h io.h layout.h multi.h \
 ## for arch's then a conditional for each one has to be added.
 
 GENERIC_SRCS = map.cc subset.cc random.cc qdp.cc layout.cc io.cc iogauge.cc \
-               byteorder.cc util.cc qdpio.cc
+               byteorder.cc util.cc qdpio.cc qdp_xmlio.cc
 
 SCALAR_SRCS = scalar_init.cc scalar_layout.cc scalar_specific.cc \
               ../include/scalar_specific.h
