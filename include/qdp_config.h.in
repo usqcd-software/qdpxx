@@ -45,4 +45,6 @@
 /* Define if using the dmalloc debugging malloc package */
 # undef WITH_DMALLOC
 
+/* Define if autoconf finds gethostname. QCDOC Doesn't support it */
+# undef HAVE_GETHOSTNAME
 #endif

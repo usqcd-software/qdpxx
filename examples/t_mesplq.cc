@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.17 2003-10-09 19:59:39 edwards Exp $
+// $Id: t_mesplq.cc,v 1.18 2004-02-03 15:11:33 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -20,14 +20,21 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_mesplq.nml");
+
+  XMLBufferWriter nml;
+  push(nml, "mesplqTest");
 
   push(nml,"lattis");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,nrow);
+  try { 
+  write(nml, "Nd" , Nd);
+  write(nml, "Nc", Nc);
+  write(nml, "nrow", nrow);
   pop(nml);
-
+  }
+  catch ( const std::string& e ) { 
+	QDPIO::cout << "exception raised : " << e << endl;
+  }
+    
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
   multi1d<LatticeColorMatrix> u(Nd);
@@ -48,14 +55,28 @@ int main(int argc, char *argv[])
   QDPIO::cout << "w_plaq = " << w_plaq << endl;
   QDPIO::cout << "link = " << link << endl;
 
+
   // Write out the results
+  try { 
   push(nml,"observables");
-  Write(nml,w_plaq);
-  Write(nml,link);
+  write(nml, "w_plaq", w_plaq);
+  write(nml, "link", link);
   pop(nml);
-
-  nml.flush();
-
+ 
+  pop(nml); // Pop root tag
+  } 
+  catch (const std::string& e) { 
+    QDPIO::cout << "Exception Raised : " << e << endl;
+  }
+ 
+  QDPIO::cout << "XML Output" << endl ;
+  std::string str;
+  try { 
+    QDPIO::cout <<  nml.printRoot() << endl;
+  }
+  catch (const std::string& e) {
+     QDPIO::cerr << "Exception raised : " << e << endl;
+  }
   // Time to bolt
   QDP_finalize();
 

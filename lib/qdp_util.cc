@@ -1,4 +1,4 @@
-// $Id: qdp_util.cc,v 1.2 2003-08-30 02:22:02 edwards Exp $
+// $Id: qdp_util.cc,v 1.3 2004-02-03 15:11:33 bjoo Exp $
 //
 /*! 
  * @file
@@ -9,6 +9,30 @@
 #include <unistd.h>
 
 #include "qdp.h"
+
+
+// QCDOC Hack. QCDOC doesn't have gethostname(char *hostname, size_t size)
+// Must provide a suitable stub
+#ifndef HAVE_GETHOSTNAME
+#include <string.h>
+
+void gethostname(char *hostname, size_t size)
+{
+   char *my_host_name="node";
+
+   // My Host Size returns either the length of my_host_name
+   // or the size of the supplied array - 1 char
+   // (this means that if size -1 is passed it wastes 1 char
+   size_t my_host_size=strnlen(my_host_name, size-1);
+  
+   strncpy(hostname, my_host_name, my_host_size);
+
+   // Null terminate. This should be ok, because my_host_size is at most
+   // size-1;
+   hostname[my_host_size]='\0'; 
+   return;
+} 
+#endif
 
 QDP_BEGIN_NAMESPACE(QDP);
 

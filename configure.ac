@@ -391,6 +391,11 @@ AC_CHECK_PROG(DVIPS, dvips, dvips, true)
 AC_CHECK_PROG(DVIPDF, dvipdf, dvipdf, true)
 AC_CHECK_PROG(DOXYGEN, doxygen, doxygen, true)
 
+##################################
+# Check for various functions
+##################################
+AC_CHECK_FUNCS(gethostname)
+
 #######################
 # Produce output
 #######################
