@@ -5,6 +5,9 @@ INCFLAGS=-I@top_srcdir@/include -I@top_builddir@/include
 AM_CXXFLAGS = $(INCFLAGS) @QMP_CXXFLAGS@ @CXXFLAGS@
 AM_LDFLAGS = -L@top_builddir@/lib @QMP_LDFLAGS@ @QMP_COMMS_LDFLAGS@ @LDFLAGS@
 LDADD = @LIBS@ -lqdp @QMP_LIBS@ @QMP_COMMS_LIBS@ @LIBS@
+
+SUBDIRS = propagator
+
 #
 # Local Headers
 #
