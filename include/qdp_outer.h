@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.26 2003-10-09 19:58:33 edwards Exp $
+// $Id: qdp_outer.h,v 1.27 2003-12-16 02:32:10 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -268,6 +268,16 @@ public:
   ~OLattice()
     {
       free_mem();
+    }
+
+
+  //---------------------------------------------------------
+  //! conversion by constructor  OLattice<T> = OScalar<T1>
+  template<class T1>
+  OLattice(const OScalar<T1>& rhs)
+    {
+      alloc_mem("construct from OScalar");
+      assign(rhs);
     }
 
 
