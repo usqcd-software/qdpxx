@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.12 2003-06-20 18:18:24 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.13 2003-06-21 18:28:49 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -221,6 +221,105 @@ void read(XMLReader& xml, const std::string& xpath, bool& result)
   xml.get(xpath, result);
 }
    
+
+//! Read a XML multi1d element
+template<typename T>
+void readArrayPrimitive(XMLReader& xml, const std::string& s, multi1d<T>& input)
+{
+  std::ostringstream error_message;
+  
+  // Try reading the list as a string
+  string list_string;
+  read(xml, s, list_string);
+
+  // Count the number of elements
+  std::istringstream list_stream(list_string);
+	
+  int array_size = 0;
+  T dummy;
+  while(list_stream >> dummy)
+    ++array_size;
+
+  if ((! list_stream.eof()) && list_stream.fail())
+  {
+    error_message << "Error in reading array " << s << endl;
+    throw error_message.str();
+  }
+
+  if (array_size == 0)
+  {
+    error_message << "Something wrong with reading array " << list_string << endl;
+    throw error_message.str();
+  }
+      
+  // Now resize the array to hold the no of elements.
+  input.resize(array_size);
+
+  // Get the elements one by one
+  // I do not understand why, but use a new stringstream
+//  list_stream.str(list_string);
+  std::istringstream list_stream2(list_string);
+
+  for(int i=0; i < input.size(); i++) 
+  {
+    // read the element.
+    list_stream2 >> input[i];
+  }
+}
+
+
+void read(XMLReader& xml, const std::string& xpath, multi1d<int>& result)
+{
+  readArrayPrimitive<int>(xml, xpath, result);
+}
+void read(XMLReader& xml, const std::string& xpath, multi1d<unsigned int>& result)
+{
+  readArrayPrimitive<unsigned int>(xml, xpath, result);
+}
+void read(XMLReader& xml, const std::string& xpath, multi1d<short int>& result)
+{
+  readArrayPrimitive<short int>(xml, xpath, result);
+}
+void read(XMLReader& xml, const std::string& xpath, multi1d<unsigned short int>& result)
+{
+  readArrayPrimitive<unsigned short int>(xml, xpath, result);
+}
+void read(XMLReader& xml, const std::string& xpath, multi1d<long int>& result)
+{
+  readArrayPrimitive<long int>(xml, xpath, result);
+}
+void read(XMLReader& xml, const std::string& xpath, multi1d<unsigned long int>& result)
+{
+  readArrayPrimitive<unsigned long int>(xml, xpath, result);
+}
+void read(XMLReader& xml, const std::string& xpath, multi1d<float>& result)
+{
+  readArrayPrimitive<float>(xml, xpath, result);
+}
+void read(XMLReader& xml, const std::string& xpath, multi1d<double>& result)
+{
+  readArrayPrimitive<double>(xml, xpath, result);
+}
+void read(XMLReader& xml, const std::string& xpath, multi1d<bool>& result)
+{
+  readArrayPrimitive<bool>(xml, xpath, result);
+}
+void read(XMLReader& xml, const std::string& xpath, multi1d<Integer>& result)
+{
+  readArrayPrimitive<Integer>(xml, xpath, result);
+}
+void read(XMLReader& xml, const std::string& xpath, multi1d<Real>& result)
+{
+  readArrayPrimitive<Real>(xml, xpath, result);
+}
+void read(XMLReader& xml, const std::string& xpath, multi1d<Double>& result)
+{
+  readArrayPrimitive<Double>(xml, xpath, result);
+}
+void read(XMLReader& xml, const std::string& xpath, multi1d<Boolean>& result)
+{
+  readArrayPrimitive<Boolean>(xml, xpath, result);
+}
 
 
 //--------------------------------------------------------------------------------
@@ -463,6 +562,79 @@ XMLWriter& operator<<(XMLWriter& xml, const unsigned long int& d) {xml.write(d);
 XMLWriter& operator<<(XMLWriter& xml, const float& d) {xml.write(d);return xml;}
 XMLWriter& operator<<(XMLWriter& xml, const double& d) {xml.write(d);return xml;}
 XMLWriter& operator<<(XMLWriter& xml, const bool& d) {xml.write(d);return xml;}
+
+
+// Write an array of basic types
+template<typename T>
+void writeArrayPrimitive(XMLWriter& xml, const std::string& s, const multi1d<T>& s1)
+{
+  std::ostringstream output;
+
+  output << s1[0];
+  for(unsigned index=1; index < s1.size(); index++) 
+    output << " " << s1[index];
+    
+  // Write the array - do not use a normal string write
+  xml.openTag(s);
+  xml << output.str();
+  xml.closeTag();
+}
+
+
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<int>& output)
+{
+  writeArrayPrimitive<int>(xml, xpath, output);
+}
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<unsigned int>& output)
+{
+  writeArrayPrimitive<unsigned int>(xml, xpath, output);
+}
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<short int>& output)
+{
+  writeArrayPrimitive<short int>(xml, xpath, output);
+}
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<unsigned short int>& output)
+{
+  writeArrayPrimitive<unsigned short int>(xml, xpath, output);
+}
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<long int>& output)
+{
+  writeArrayPrimitive<long int>(xml, xpath, output);
+}
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<unsigned long int>& output)
+{
+  writeArrayPrimitive<unsigned long int>(xml, xpath, output);
+}
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<float>& output)
+{
+  writeArrayPrimitive<float>(xml, xpath, output);
+}
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<double>& output)
+{
+  writeArrayPrimitive<double>(xml, xpath, output);
+}
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<bool>& output)
+{
+  writeArrayPrimitive<bool>(xml, xpath, output);
+}
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<Integer>& output)
+{
+  writeArrayPrimitive<Integer>(xml, xpath, output);
+}
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<Real>& output)
+{
+  writeArrayPrimitive<Real>(xml, xpath, output);
+}
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<Double>& output)
+{
+  writeArrayPrimitive<Double>(xml, xpath, output);
+}
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<Boolean>& output)
+{
+  writeArrayPrimitive<Boolean>(xml, xpath, output);
+}
+
+
 
 
 //--------------------------------------------------------------------------------

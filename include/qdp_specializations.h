@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_specializations.h,v 1.2 2003-06-05 02:22:50 edwards Exp $
+// $Id: qdp_specializations.h,v 1.3 2003-06-21 18:28:49 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -41,32 +41,29 @@ toBool(const Boolean& s)
 }
 
 
-//! Function overload read of  Integer
+// Nml readers
 void read(NmlReader& nml, const string& s, Integer& d);
-
-//! Function overload read of  Real
 void read(NmlReader& nml, const string& s, Real& d);
-
-//! Function overload read of  Double
 void read(NmlReader& nml, const string& s, Double& d);
-
-//! Function overload read of  Boolean
 void read(NmlReader& nml, const string& s, Boolean& d);
-
-//! Function overload read of  Complex
 void read(NmlReader& nml, const string& s, Complex& d);
-
-//! Function overload read of  Seed
 void read(NmlReader& nml, const string& s, Seed& d);
-
-//! Function overload read of  multi1d<Integer>
 void read(NmlReader& nml, const string& s, multi1d<Integer>& d);
-
-//! Function overload read of  multi1d<Real>
 void read(NmlReader& nml, const string& s, multi1d<Real>& d);
-
-//! Function overload read of  multi1d<Double>
 void read(NmlReader& nml, const string& s, multi1d<Double>& d);
+
+
+// XML readers
+void read(XMLReader& xml, const string& s, multi1d<Integer>& d);
+void read(XMLReader& xml, const string& s, multi1d<Real>& d);
+void read(XMLReader& xml, const string& s, multi1d<Double>& d);
+void read(XMLReader& xml, const string& s, multi1d<Boolean>& d);
+
+// XML writers
+void write(XMLWriter& xml, const string& s, const multi1d<Integer>& d);
+void write(XMLWriter& xml, const string& s, const multi1d<Real>& d);
+void write(XMLWriter& xml, const string& s, const multi1d<Double>& d);
+void write(XMLWriter& xml, const string& s, const multi1d<Boolean>& d);
 
 
 //

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.11 2003-06-20 18:18:24 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.12 2003-06-21 18:28:49 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -140,6 +140,18 @@ void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
 }
 
 
+// Specialized versions for basic types
+void read(XMLReader& xml, const std::string& s, multi1d<int>& input);
+void read(XMLReader& xml, const std::string& s, multi1d<unsigned int>& input);
+void read(XMLReader& xml, const std::string& s, multi1d<short int>& input);
+void read(XMLReader& xml, const std::string& s, multi1d<unsigned short int>& input);
+void read(XMLReader& xml, const std::string& s, multi1d<long int>& input);
+void read(XMLReader& xml, const std::string& s, multi1d<unsigned long int>& input);
+void read(XMLReader& xml, const std::string& s, multi1d<float>& input);
+void read(XMLReader& xml, const std::string& s, multi1d<double>& input);
+void read(XMLReader& xml, const std::string& s, multi1d<bool>& input);
+
+
 #define ReadPath(xml,path,a) read(xml,path+"/"+#a,a)
 
 
@@ -259,6 +271,18 @@ void write(XMLWriter& xml, const std::string& s, const multi1d<T>& s1)
 #endif
   xml.closeTag(); // Array name
 }
+
+
+// Writers for arrays of basic types
+void write(XMLWriter& xml, const std::string& s, const multi1d<int>& output);
+void write(XMLWriter& xml, const std::string& s, const multi1d<unsigned int>& output);
+void write(XMLWriter& xml, const std::string& s, const multi1d<short int>& output);
+void write(XMLWriter& xml, const std::string& s, const multi1d<unsigned short int>& output);
+void write(XMLWriter& xml, const std::string& s, const multi1d<long int>& output);
+void write(XMLWriter& xml, const std::string& s, const multi1d<unsigned long int>& output);
+void write(XMLWriter& xml, const std::string& s, const multi1d<float>& output);
+void write(XMLWriter& xml, const std::string& s, const multi1d<double>& output);
+void write(XMLWriter& xml, const std::string& s, const multi1d<bool>& output);
 
 
 //! XML OScalar output
