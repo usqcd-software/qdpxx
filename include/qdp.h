@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.31 2003-09-02 03:01:27 edwards Exp $
+// $Id: qdp.h,v 1.32 2003-09-09 16:49:43 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -46,11 +46,19 @@
 
 // Under gcc, set some attributes
 #if defined(__GNUC__)
+// gcc
 #define QDP_ALIGN8   __attribute__ ((aligned (8)))
 #define QDP_ALIGN16  __attribute__ ((aligned (16)))
 #define QDP_INLINE   __attribute__ ((always_inline))
 #define QDP_CONST    __attribute__ ((const,pure))
 #define QDP_CINLINE  __attribute__ ((always_inline,const,pure))
+#else
+// default
+#define QDP_ALIGN8
+#define QDP_ALIGN16
+#define QDP_INLINE
+#define QDP_CONST
+#define QDP_CINLINE
 #endif
 
 #if (QDP_USE_SSE == 1 || QDP_USE_SSE2 == 1) && ! defined(__GNUC__)
