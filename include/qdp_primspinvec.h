@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinvec.h,v 1.4 2003-12-21 19:22:51 edwards Exp $
+// $Id: qdp_primspinvec.h,v 1.5 2005-01-20 03:01:49 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Vector
@@ -211,96 +211,96 @@ struct BinaryReturn<GammaType<N>, PSpinVector<T2,N>, OpGammaTypeMultiply> {
 // Generic Spin projection
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinProject > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinProject>::Type_t, N>>1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinProject>::Type_t, (N>>1) >  Type_t;
 };
 
 // spin projection for each direction
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinProjectDir0Plus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir0Plus>::Type_t, N>>1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir0Plus>::Type_t, (N>>1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinProjectDir1Plus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir1Plus>::Type_t, N>>1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir1Plus>::Type_t, (N>>1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinProjectDir2Plus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir2Plus>::Type_t, N>>1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir2Plus>::Type_t, (N>>1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinProjectDir3Plus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir3Plus>::Type_t, N>>1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir3Plus>::Type_t, (N>>1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinProjectDir0Minus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir0Minus>::Type_t, N>>1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir0Minus>::Type_t, (N>>1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinProjectDir1Minus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir1Minus>::Type_t, N>>1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir1Minus>::Type_t, (N>>1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinProjectDir2Minus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir2Minus>::Type_t, N>>1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir2Minus>::Type_t, (N>>1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinProjectDir3Minus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir3Minus>::Type_t, N>>1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir3Minus>::Type_t, (N>>1) >  Type_t;
 };
 
 
 // Generic Spin reconstruction
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstruct > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstruct>::Type_t, N<<1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstruct>::Type_t, (N<<1) >  Type_t;
 };
 
 // spin reconstruction for each direction
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstructDir0Plus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir0Plus>::Type_t, N<<1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir0Plus>::Type_t, (N<<1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstructDir1Plus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir1Plus>::Type_t, N<<1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir1Plus>::Type_t, (N<<1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstructDir2Plus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir2Plus>::Type_t, N<<1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir2Plus>::Type_t, (N<<1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstructDir3Plus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir3Plus>::Type_t, N<<1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir3Plus>::Type_t, (N<<1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstructDir0Minus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir0Minus>::Type_t, N<<1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir0Minus>::Type_t, (N<<1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstructDir1Minus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir1Minus>::Type_t, N<<1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir1Minus>::Type_t, (N<<1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstructDir2Minus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir2Minus>::Type_t, N<<1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir2Minus>::Type_t, (N<<1) >  Type_t;
 };
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstructDir3Minus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir3Minus>::Type_t, N<<1 >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinReconstructDir3Minus>::Type_t, (N<<1) >  Type_t;
 };
 
 
