@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.12 2003-08-26 21:38:21 edwards Exp $
+// $Id: t_xml.cc,v 1.13 2003-08-27 01:27:26 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -105,6 +105,9 @@ int main(int argc, char **argv)
     Complex b = cmplx(a,-1.2);
     write(toxml,"complexThingy",b);
 
+    Seed seed = 1;
+    write(toxml,"seedThingy",seed);
+
     multi1d<int> arrayInt(3);
     for(int i=0; i < arrayInt.size(); ++i)
       arrayInt[i] = i+37;
@@ -140,6 +143,10 @@ int main(int argc, char **argv)
     // Test reading some more complex snippets
     XMLReader fromxml;
     fromxml.open("t_xml.input2");
+
+    Seed seed;
+    read(fromxml,"/complex_xml/seedThingy",seed);
+    cout << "seed = " << seed << endl;
 
     multi1d<int> arrayInt;
     read(fromxml,"/complex_xml/arrayInt",arrayInt);
