@@ -133,6 +133,7 @@ nobase_include_HEADERS = \
 		qdp_scalarsite_defs.h \
 		qdp_scalarvecsite_defs.h \
                 qdp_filebuf.h \
+		qdp_strnlen.h \
                 $(PETE_HDRS) \
                 $(GENERIC_HDRS) \
 		$(QCDOC_HDRS) \

@@ -1,4 +1,4 @@
-// $Id: qdp_util.cc,v 1.4 2004-02-05 02:43:40 edwards Exp $
+// $Id: qdp_util.cc,v 1.5 2005-01-22 12:35:13 bjoo Exp $
 //
 /*! 
  * @file
@@ -14,7 +14,8 @@
 // QCDOC Hack. QCDOC doesn't have gethostname(char *hostname, size_t size)
 // Must provide a suitable stub
 #ifndef HAVE_GETHOSTNAME
-#include <string.h>
+
+#include "qdp_strnlen.h"
 
 int gethostname(char *hostname, size_t size)
 {

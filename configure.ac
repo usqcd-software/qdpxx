@@ -430,6 +430,7 @@ AC_CHECK_PROG(DOXYGEN, doxygen, doxygen, true)
 # Check for various functions
 ##################################
 AC_CHECK_FUNCS(gethostname)
+AC_CHECK_FUNCS(strnlen)
 
 case ${PARALLEL_ARCH} in 
 parscalar|parscalarvec)

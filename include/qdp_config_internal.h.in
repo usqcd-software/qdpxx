@@ -27,6 +27,9 @@
 /* Define to 1 if you have the `QMP_verbose' function. */
 #undef HAVE_QMP_VERBOSE
 
+/* Define to 1 if you have the `strnlen' function. */
+#undef HAVE_STRNLEN
+
 /* Name of package */
 #undef PACKAGE
 
