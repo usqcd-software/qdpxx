@@ -1,5 +1,9 @@
 04/09/2003 -- Robert Edwards
 
+	Version 1.1.8 replaced Layout::subgridVol with Layout::sitesOnNode.
+
+04/09/2003 -- Robert Edwards
+
 	Version 1.1.7 added preprocessor control over precision.
 
 04/08/2003 -- Robert Edwards
