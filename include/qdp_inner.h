@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.6 2003-08-23 02:30:58 edwards Exp $
+// $Id: qdp_inner.h,v 1.7 2003-08-23 03:04:12 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -2796,16 +2796,6 @@ inline void
 fill_random(ILattice<T,N>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 {
   fill_random<T1,T2,N>(d.data(), seed, skewed_seed, seed_mult);
-}
-
-
-//! dest  = gaussian
-template<class T, int N>
-inline void
-fill_gaussian(ILattice<T,N>& d, ILattice<T,N>& r1, ILattice<T,N>& r2)
-{
-  for(int i=0; i < N; ++i)
-    fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
 }
 
 
