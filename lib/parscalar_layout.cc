@@ -1,4 +1,4 @@
-// $Id: parscalar_layout.cc,v 1.3 2003-01-20 16:19:42 edwards Exp $
+// $Id: parscalar_layout.cc,v 1.4 2003-01-23 05:06:04 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -265,11 +265,11 @@ namespace Layout
     _layout.vol_cb = _layout.vol / _layout.nsubl;
 
 #if defined(DEBUG)
-    fprintf(stderr,"vol=%d, nsubl=%d\n",_layout.vol,_layout.nsubl);
+    QDP_info("vol=%d, nsubl=%d",_layout.vol,_layout.nsubl);
 #endif
 
 #if defined(DEBUG)
-    cerr << "Initialize layout\n";
+    QDP_info("Initialize layout");
 #endif
     // Crap to make the compiler happy with the C prototype
     unsigned int unsigned_nrow[Nd];
@@ -300,9 +300,9 @@ namespace Layout
     }
 
     // Diagnostics
-//  if (layout.primaryNode())
+    if (Layout::primaryNode())
     {
-      cerr << "Lattice initialized:\n";
+      QDP_info("Lattice initialized:");
       cerr << "  problem size =";
       for(int i=0; i < Nd; ++i)
 	cerr << " " << _layout.nrow[i];
