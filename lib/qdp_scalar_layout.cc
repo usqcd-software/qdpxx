@@ -1,9 +1,9 @@
-// $Id: qdp_scalar_layout.cc,v 1.7 2003-08-06 21:33:55 edwards Exp $
+// $Id: qdp_scalar_layout.cc,v 1.8 2003-08-20 02:34:54 edwards Exp $
 
 /*! @file
- * @brief Parscalar layout routines
+ * @brief Scalar layout routines
  * 
- * Layout routines for parscalar implementation
+ * Layout routines for scalar implementation
  * QDP data parallel interface
  *
  * Layout
