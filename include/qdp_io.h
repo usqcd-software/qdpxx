@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.12 2003-08-10 02:27:10 edwards Exp $
+// $Id: qdp_io.h,v 1.13 2003-10-14 15:29:12 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -431,20 +431,22 @@ template<class T>
 inline
 void read(BinaryReader& bin, multi1d<T>& d)
 {
+  int n;
+  read(bin, n);    // the size is always written, even if 0
+  d.resize(n);
+
   for(int i=0; i < d.size(); ++i)
     read(bin, d[i]);
 }
 
-//! Read a binary multi2d element
+//! Read a fixed number of binary multi1d element - no element count expected
 template<class T>
 inline
-void read(BinaryReader& bin, multi2d<T>& d)
+void read(BinaryReader& bin, multi1d<T>& d, int num)
 {
-  for(int j=0; j < d.size2(); ++j)
-    for(int i=0; i < d.size1(); ++i)
-      read(bin, d[j][i]);
+  for(int i=0; i < num; ++i)
+    read(bin, d[i]);
 }
-
 
 
 //! Simple output binary class
@@ -524,23 +526,23 @@ BinaryWriter& operator<<(BinaryWriter& bin, float output);
 BinaryWriter& operator<<(BinaryWriter& bin, double output);
 BinaryWriter& operator<<(BinaryWriter& bin, bool output);
 
-//! Read a binary multi1d element
+//! Write a binary multi1d element
 template<class T>
 inline
 void write(BinaryWriter& bin, const multi1d<T>& d)
 {
+  write(bin, d.size());    // always write the size
   for(int i=0; i < d.size(); ++i)
     write(bin, d[i]);
 }
 
-//! Read a binary multi2d element
+//! Write a fixed number of binary multi1d element - no element count written
 template<class T>
 inline
-void write(BinaryWriter& bin, const multi2d<T>& d)
+void write(BinaryWriter& bin, const multi1d<T>& d, int num)
 {
-  for(int j=0; j < d.size2(); ++j)
-    for(int i=0; i < d.size1(); ++i)
-      write(bin, d[j][i]);
+  for(int i=0; i < num; ++i)
+    write(bin, d[i]);
 }
 
 /*! @} */   // end of group io
