@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.1 2003-07-30 18:40:19 edwards Exp $
+// $Id: t_linalg.cc,v 1.2 2003-08-04 18:57:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -37,11 +37,19 @@ int main(int argc, char *argv[])
   gaussian(b);
   gaussian(c);
 
-  double rescale = 1000*1000 / double(Layout::sitesOnNode());
-
-  // Time the c=a*b
   int icnt;
   double tt;
+
+#if defined(TEST_OPS)
+  // Test c=a*b
+  tt = QDP_M_eq_M_times_M(c, a, b, 1);
+  push(nml,"QDP_M_eq_M_times_M");
+  Write(nml,c);
+  pop(nml);
+#endif
+
+#if ! defined(TEST_OPS)
+  // Time the c=a*b
   for(icnt=1; ; icnt <<= 1)
   {
     cout << "calling " << icnt << " times" << endl;
@@ -49,28 +57,82 @@ int main(int argc, char *argv[])
     if (tt > 1)
       break;
   }
-  double t_mltmm = rescale*tt/icnt;
-  cout << "time(c=a*b) = " << t_mltmm
-       << " micro-secs/site/iteration" 
-       << " , " << 198 / t_mltmm << " Mflops" << endl;
+#else
+  icnt = 1;   // turn off timings for some testing
+#endif
 
+  double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+
+  tt *= rescale;
+  cout << "time(c=a*b) = " << tt
+       << " micro-secs/site/iteration" 
+       << " , " << 198 / tt << " Mflops" << endl;
   
+#if defined(TEST_OPS)
+  // Test c=adj(a)*b
+  tt = QDP_M_eq_Ma_times_M(c, a, b, 1);
+  push(nml,"QDP_M_eq_Ma_times_M");
+  Write(nml,a);
+  Write(nml,b);
+  Write(nml,c);
+  pop(nml);
+#endif
+
   // Time the c=adj(a)*b
   cout << "calling " << icnt << " times" << endl;
-  tt = QDP_M_eq_Ma_times_M(c, a, b, icnt);
-  double t_mltcm = rescale*tt/icnt;
-  cout << "time(c=adj(a)*b) = " << t_mltcm
+  tt = rescale * QDP_M_eq_Ma_times_M(c, a, b, icnt);
+  cout << "time(c=adj(a)*b) = " << tt
        << " micro-secs/site/iteration" 
-       << " , " << 198 / t_mltcm << " Mflops" << endl;
+       << " , " << 198 / tt << " Mflops" << endl;
   
+#if defined(TEST_OPS)
+  // Test c=a*adj(b)
+  tt = QDP_M_eq_M_times_Ma(c, a, b, 1);
+  push(nml,"QDP_M_eq_M_times_Ma");
+  Write(nml,a);
+  Write(nml,b);
+  Write(nml,c);
+  pop(nml);
+#endif
+
+  // Time the c=a*adj(b)
+  cout << "calling " << icnt << " times" << endl;
+  tt = rescale * QDP_M_eq_M_times_Ma(c, a, b, icnt);
+  cout << "time(c=a*adj(b)) = " << tt
+       << " micro-secs/site/iteration" 
+       << " , " << 198 / tt << " Mflops" << endl;
+  
+#if defined(TEST_OPS)
+  // Test c=adj(a)*adj(b)
+  tt = QDP_M_eq_Ma_times_Ma(c, a, b, 1);
+  push(nml,"QDP_M_eq_Ma_times_Ma");
+  Write(nml,a);
+  Write(nml,b);
+  Write(nml,c);
+  pop(nml);
+#endif
+
+  // Time the c=adj(a)*adj(b)
+  cout << "calling " << icnt << " times" << endl;
+  tt = rescale * QDP_M_eq_Ma_times_Ma(c, a, b, icnt);
+  cout << "time(c=adj(a)*adj(b)) = " << tt
+       << " micro-secs/site/iteration" 
+       << " , " << 198 / tt << " Mflops" << endl;
+  
+#if defined(TEST_OPS)
+  // Test c+=a*b
+  tt = QDP_M_peq_M_times_M(c, a, b, 1);
+  push(nml,"QDP_M_peq_M_times_M");
+  Write(nml,c);
+  pop(nml);
+#endif
+
   // Time the c+=a*b
   cout << "calling " << icnt << " times" << endl;
-  tt = QDP_M_peq_M_times_M(c, a, b, icnt);
-  double t_peq_mltmm = rescale*tt/icnt;
-  cout << "time(c+=a*b) = " << t_peq_mltmm
+  tt = rescale * QDP_M_peq_M_times_M(c, a, b, icnt);
+  cout << "time(c+=a*b) = " << tt
        << " micro-secs/site/iteration" 
-       << " , " << 216 / t_peq_mltmm << " Mflops" << endl;
-
+       << " , " << 216 / tt << " Mflops" << endl;
   nml.flush();
 
   // Time to bolt
