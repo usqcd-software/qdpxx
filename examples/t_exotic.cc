@@ -1,4 +1,4 @@
-// $Id: t_exotic.cc,v 1.4 2003-12-08 21:41:03 edwards Exp $
+// $Id: t_exotic.cc,v 1.5 2003-12-09 21:26:50 edwards Exp $
 /*! \file
  *  \brief Test various exotic qdp routines
  */
@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
   }
 #endif
 
+#if 0
   // Try out chiralProject{Plus,Minus}
   {
     LatticeFermion psi, chi1, chi2;
@@ -84,6 +85,24 @@ int main(int argc, char *argv[])
     QDPIO::cout << "|chi1|^2 = " << norm2(chi1) << endl
 		<< "|chi2|^2 = " << norm2(chi2) << endl
 		<< "|chi2 - chi1|^2 = " << norm2(chi2-chi1) << endl;
+  }
+#endif
+
+  // Try out norm2 on arrays
+  {
+    int N = 5;
+    multi1d<LatticeFermion> psi(N);
+    for(int n=0; n < N; ++n)
+      gaussian(psi[n]);
+
+    Double dnorm1 = 0;
+    for(int n=0; n < N; ++n)
+      dnorm1 += norm2(psi[n],odd);
+
+    Double dnorm2 = norm2(psi,odd);
+
+    QDPIO::cout << "|dnorm1|^2 = " << dnorm1 << endl
+		<< "|dnorm2|^2 = " << dnorm2 << endl;
   }
 
   nml.flush();
