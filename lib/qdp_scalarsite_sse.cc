@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.8 2004-03-24 03:40:27 edwards Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.9 2004-03-29 17:55:33 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -46,7 +46,7 @@ typedef float v4sf __attribute__((mode(V4SF),aligned(16)));
 
 
 // AXPY and AXMY routines
-void vaxpy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec)
+void vaxpy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_3vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: vaxpy3" << endl;
@@ -73,7 +73,7 @@ void vaxpy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec)
 }
 
 
-void vaxmy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Sub,int n_3vec)
+void vaxmy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Sub,int n_3vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: vaxmy3" << endl;
@@ -100,7 +100,7 @@ void vaxmy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Sub,int n_3vec)
 }
 
 
-void vadd(REAL *Out, REAL *In1, REAL *In2, int n_3vec)
+void vadd(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: vadd" << endl;
@@ -123,7 +123,7 @@ void vadd(REAL *Out, REAL *In1, REAL *In2, int n_3vec)
 }
 
 
-void vsub(REAL *Out, REAL *In1, REAL *In2, int n_3vec)
+void vsub(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: vsub" << endl;
@@ -145,7 +145,7 @@ void vsub(REAL *Out, REAL *In1, REAL *In2, int n_3vec)
   }
 }
 
-void vscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec)
+void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: vadd" << endl;
@@ -171,7 +171,7 @@ void vscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec)
   }
 }  
 
-void local_sumsq(REAL *Out, REAL *In, int n_3vec)
+void local_sumsq(REAL32 *Out, REAL32 *In, int n_3vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: local_sumsq" << endl;
@@ -204,7 +204,7 @@ void local_sumsq(REAL *Out, REAL *In, int n_3vec)
     In += 24;
   }
 
-  REAL fsum[4];
+  REAL32 fsum[4];
   __builtin_ia32_storeaps(fsum, vsum);
   *Out = fsum[0] + fsum[1] + fsum[2] + fsum[3];
 }
