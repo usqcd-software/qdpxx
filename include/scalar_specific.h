@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.6 2002-09-23 19:29:03 edwards Exp $
+// $Id: scalar_specific.h,v 1.7 2002-09-26 20:06:14 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -24,7 +24,7 @@ template<class T, class T1, class Op, class RHS>
 //inline
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs)
 {
-  Subset s = global_context->Sub();
+  const Subset s = global_context->Sub();
 
 //  cerr << "In evaluate(olattice,oscalar)\n";
 
@@ -36,7 +36,16 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
       op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
     }
   else
-    diefunc();
+  {
+    const int *tab = s.SiteTable()->slice();
+    for(int j=0; j < s.NumSiteTable(); ++j) 
+    {
+      int i = tab[j];
+//      fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
+//      op(dest.elem(i), forEach(rhs, ElemLeaf(), OpCombine()));
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+    }
+  }
 }
 
 
@@ -56,7 +65,15 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
       op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
     }
   else
-    diefunc();
+  {
+    const int *tab = s.SiteTable()->slice();
+    for(int j=0; j < s.NumSiteTable(); ++j) 
+    {
+      int i = tab[j];
+//      fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+    }
+  }
 }
 
 
@@ -75,7 +92,15 @@ void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& 
       copymask(dest.elem(i), mask.elem(i), s1.elem(i));
   }
   else
-    diefunc();
+  {
+    const int *tab = s.SiteTable()->slice();
+    for(int j=0; j < s.NumSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      copymask(dest.elem(i), mask.elem(i), s1.elem(i));
+    }
+  }
+
 }
 
 
@@ -109,7 +134,14 @@ void seed_to_float(OLattice<T>& d, const OLattice<T1>& s1)
       seed_to_float(d.elem(i), s1.elem(i));
   }
   else
-    diefunc();
+  {
+    const int *tab = s.SiteTable()->slice();
+    for(int j=0; j < s.NumSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      seed_to_float(d.elem(i), s1.elem(i));
+    }
+  }
 }
 
 
@@ -166,7 +198,21 @@ void random(OLattice<T>& d)
     RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
   }
   else
-    diefunc();
+  {
+    Seed seed;
+    Seed skewed_seed;
+
+    const int *tab = s.SiteTable()->slice();
+    for(int j=0; j < s.NumSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      seed = RNG::ran_seed;
+      skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
+      fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
+    }
+
+    RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
+  }
 }
 
 //! dest  = random  
@@ -186,7 +232,14 @@ void gaussian(OLattice<T>& d)
       fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
   }
   else
-    diefunc();
+  {
+    const int *tab = s.SiteTable()->slice();
+    for(int j=0; j < s.NumSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
+    }
+  }
 }
 
 
@@ -204,7 +257,14 @@ void zero(OLattice<T>& dest)
       zero(dest.elem(i));
   }
   else
-    diefunc();
+  {
+    const int *tab = s.SiteTable()->slice();
+    for(int j=0; j < s.NumSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      zero(dest.elem(i));
+    }
+  }
 }
 
 
@@ -229,12 +289,17 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
     zero(d.elem());
 
     for(int i=s.Start(); i <= s.End(); ++i) 
+      d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
+  }
+  else
+  {
+    const int *tab = s.SiteTable()->slice();
+    for(int j=0; j < s.NumSiteTable(); ++j) 
     {
+      int i = tab[j];
       d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
     }
   }
-  else
-    diefunc();
 
   return d;
 }
@@ -289,7 +354,18 @@ slice_sum(const OLattice<T>& s1, int mu)
     }
   }
   else
-    diefunc();
+  {
+    const int *tab = s.SiteTable()->slice();
+    for(int j=0; j < s.NumSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      int site   = layout.LexicoSiteIndex(i);
+      int hypsec = site % len1;
+      int plane  = hypsec / len2;
+
+      dest[plane].elem() += s1.elem(site);
+    }
+  }
 
   return dest;
 }
@@ -331,7 +407,14 @@ sumMulti(const OLattice<T>& s1, const Set& ss)
 	dest[i].elem() += s1.elem(layout.LexicoSiteIndex(i));
     }
     else
-      diefunc();
+    {
+      const int *tab = s.SiteTable()->slice();
+      for(int j=0; j < s.NumSiteTable(); ++j) 
+      {
+	int i = tab[j];
+	dest[i].elem() += s1.elem(layout.LexicoSiteIndex(i));
+      }
+    }
   }
 
   return dest;
@@ -455,7 +538,15 @@ su2_extract(OLattice<T1>& r_0, OLattice<T1>& r_1,
 		  i1, i2, s1.elem(i));
   }
   else
-    diefunc();
+  {
+    const int *tab = s.SiteTable()->slice();
+    for(int j=0; j < s.NumSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      su2_extract(r_0.elem(i), r_1.elem(i), r_2.elem(i), r_3.elem(i), 
+		  i1, i2, s1.elem(i));
+    }
+  }
 }
 
 
@@ -479,7 +570,16 @@ sun_fill(OLattice<T>& d,
 	       r_0.elem(i), r_1.elem(i), r_2.elem(i), r_3.elem(i));
   }
   else
-    diefunc();
+  {
+    const int *tab = s.SiteTable()->slice();
+    for(int j=0; j < s.NumSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      sun_fill(d.elem(i), 
+	       i1, i2,
+	       r_0.elem(i), r_1.elem(i), r_2.elem(i), r_3.elem(i));
+    }
+  }
 }
 
 
@@ -505,7 +605,14 @@ spin_project(const OLattice<T>& s1, int mu, int isign)
       d.elem(i) = spin_project(d.elem(i), s1.elem(i));
   }
   else
-    diefunc();
+  {
+    const int *tab = s.SiteTable()->slice();
+    for(int j=0; j < s.NumSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      d.elem(i) = spin_project(d.elem(i), s1.elem(i));
+    }
+  }
 }
 #endif
 
