@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tests.h,v 1.1 2002-09-12 18:22:17 edwards Exp $
+// $Id: tests.h,v 1.2 2002-09-26 20:02:12 edwards Exp $
 //
 // Include file for test suite
 
@@ -18,6 +18,8 @@ void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quar
 void baryon(LatticePropagator& quark_propagator, 
 	    multi2d<Complex>& barprop, 
 	    const multi1d<int>& t_source, int j_decay, int bc_spec);
+void dslash_2d_plus(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFermion& psi,
+	    int cb);
 void dslash(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFermion& psi,
 	    int isign, int cb);
 
