@@ -1,6 +1,7 @@
 # Have to add top_builddir/include to pick up made qdp_config.h
 
 INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
+           -I@top_srcdir@/other_libs/nml \
            -I@top_srcdir@/other_libs/qio/include \
            -I@top_srcdir@/other_libs/qio/other_libs/c-dime/include
 
