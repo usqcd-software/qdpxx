@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: subset.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: subset.h,v 1.2 2002-09-26 20:04:25 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -15,15 +15,9 @@ public:
   //! There can be an empty constructor
   Subset() {}
 
-#if 0
-  //! Constructor from an int function. 
-  /*! The function must return 0 within the subset and 1 outside the subset */
-  void Make(int (&func)(const multi1d<int>& coordinate));
-#endif
-
   //! Copy constructor
   Subset(const Subset& s): startSite(s.startSite), endSite(s.endSite), 
-			  indexrep(s.indexrep), soffsets(s.soffsets), lat_color(s.lat_color) {}
+    indexrep(s.indexrep), soffsets(s.soffsets), sitetable(s.sitetable) {}
 
   // Simple constructor
   void Make(const Subset& s)
@@ -32,7 +26,7 @@ public:
       endSite = s.endSite;
       indexrep = s.indexrep;
       soffsets = s.soffsets;
-      lat_color = s.lat_color;
+      sitetable = s.sitetable;
     }
 
   //! Destructor for a subset
@@ -43,21 +37,17 @@ public:
 
 protected:
   // Simple constructor
-  void Make(int start, int end, bool rep, multi3d<int>* soff, multi1d<int>* ind, int cb)
-    {
-      startSite = start;
-      endSite = end;
-      indexrep = rep;
-      soffsets = soff;
-      lat_color = ind;
-      sub_index = cb;
-    }
+  void Make(int start, int end, bool rep, multi3d<int>* soff, multi1d<int>* ind, int cb);
+
 
 private:
   int startSite;
   int endSite;
   int sub_index;
   bool indexrep;
+
+  //! Site lookup table
+  multi1d<int>* sitetable;
 
   //! Offset table used for communications. 
   /*! 
@@ -66,20 +56,16 @@ private:
    */ 
   multi3d<int>* soffsets;
 
-  //! Index or color array of lattice
-  multi1d<int>* lat_color;
-
 
 public:
   // These should be a no-no. Must fix the friend syntax
   /*! Is the representation a boolean mask? */
   const bool IndexRep() const {return indexrep;}
 
-  /*! This should be a no-no */
   const int Start() const {return startSite;}
-  /*! This should be a no-no */
   const int End() const {return endSite;}
-  /*! This should be a no-no */
+  const multi1d<int>* SiteTable() const {return sitetable;}
+  const int NumSiteTable() const {return sitetable->size();}
   const multi3d<int>* Offsets() const {return soffsets;}
 
   friend class Set;
@@ -118,15 +104,20 @@ protected:
   //! A set is composed of an array of subsets
   multi1d<Subset> sub;
 
+  //! Index or color array of lattice
+  multi1d<int> lat_color;
+
+  //! Array of sitetable arrays
+  multi1d<multi1d<int> > sitetables;
+
   //! Offset table used for communications. 
   /*! 
    * The direction is in the sense of the Map or Shift functions from QDP.
    * soffsets(direction,isign,position) 
+   *
+   * NOTE: this should be moved off to a shift class
    */ 
   multi3d<int> soffsets;
-
-  //! Index or color array of lattice
-  multi1d<int> lat_color;
 };
 
 

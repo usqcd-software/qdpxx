@@ -1,4 +1,4 @@
-// $Id: subset.cc,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: subset.cc,v 1.2 2002-09-26 20:04:25 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -73,6 +73,19 @@ void InitDefaultSets()
 }
 
 
+//! Simple constructor called to produce a Subset from inside a Set
+void Subset::Make(int start, int end, bool rep, multi3d<int>* soff, 
+		  multi1d<int>* ind, int cb)
+{
+  startSite = start;
+  endSite = end;
+  indexrep = rep;
+  soffsets = soff;
+  sitetable = ind;
+  sub_index = cb;
+}
+
+
 //! Constructor from an int function
 void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
 {
@@ -86,9 +99,13 @@ void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
   // This actually allocates the subsets
   sub.resize(nsubset_indices);
 
-  // Create for now the space of the colorings of the lattice
+  // Create the space of the colorings of the lattice
   /*! Loop over all sites determining their color */
   lat_color.resize(layout.Vol());
+
+  // Create the array holding the array of sitetable info
+  // This may actually hold anything 
+  sitetables.resize(nsubset_indices);
 
   for(int site=0; site < layout.Vol(); ++site)
   {
@@ -142,14 +159,30 @@ void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
       ++ntotal;
     }
 
+    // If a gap is found, then resort to a site table lookup
     if (found_gap)
     {
       start = 0;
       end = -1;
       indexrep = true;
+
+      // First loop and see how many sites are needed
+      int num_sitetable = 0;
+      for(int linear=0; linear < layout.Vol(); ++linear)
+	if (lat_color[linear] == cb)
+	  ++num_sitetable;
+
+      // Now take the inverse of the lattice coloring to produce
+      // the site list
+      multi1d<int>& sitetable = sitetables[cb];
+      sitetable.resize(num_sitetable);
+
+      for(int linear=0, j=0; linear < layout.Vol(); ++linear)
+	if (lat_color[linear] == cb)
+	  sitetable[j++] = linear;
     }
 
-    sub[cb].Make(start, end, indexrep, &soffsets, &lat_color, cb);
+    sub[cb].Make(start, end, indexrep, &soffsets, &(sitetables[cb]), cb);
 
 #if 1
     fprintf(stderr,"Subset(%d): indexrep=%d start=%d end=%d\n",cb,indexrep,start,end);
