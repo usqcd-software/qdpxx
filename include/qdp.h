@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.12 2002-12-16 06:13:49 edwards Exp $
+// $Id: qdp.h,v 1.13 2003-01-14 04:45:08 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -82,19 +82,13 @@ extern void QDP_finalize ();
 //! Panic button
 extern void QDP_abort (int status);
 
-/**
- * Simple information display routine
- */
+//! Simple information display routine
 extern int  QDP_info (const char* format, ...);
 
-/**
- * Simple error display routine
- */
+//! Simple error display routine
 extern int  QDP_error (const char* format, ...);
 
-/**
- * Simple error display and abort routine
- */
+//! Simple error display and abort routine
 extern void  QDP_error_exit (const char *format, ...);
 
 QDP_END_NAMESPACE();
