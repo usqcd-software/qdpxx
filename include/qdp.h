@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.21 2003-06-20 02:18:39 edwards Exp $
+// $Id: qdp.h,v 1.22 2003-08-05 20:05:50 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -28,11 +28,22 @@
  * \brief Primary namespace holding all QDP types, operations and objects
  */
 
+#ifndef QDP_INCLUDE
+#define QDP_INCLUDE
+
 #if defined(__GNUC__)
 // Under g++, enforce using V3 or greater
 #if __GNUC__ < 3
-#error "QDP++ requires g++ 3.0 or higher. This compiler is not supported"
+#error "QDP++ requires g++ 3.0 or higher. This version of the g++ compiler is not supported"
 #endif
+#endif
+
+// Under gcc, set some attributes
+#if defined(__GNUC__)
+#define QDP_ALIGN8   __attribute__ ((aligned (8)))
+#define QDP_ALIGN16  __attribute__ ((aligned (16)))
+#define QDP_INLINE   __attribute__ ((always_inline,const))
+#define QDP_CONST    __attribute__ ((const))
 #endif
 
 
@@ -48,9 +59,6 @@ using namespace std;   // I do not like this
 
 using std::iostream;
 using std::ostream;
-
-#ifndef QDP_INCLUDE
-#define QDP_INCLUDE
 
 // Move to another file eventually
 #define FORWARD 1
@@ -126,4 +134,4 @@ QDP_END_NAMESPACE();
 #endif
 
 
-#endif
+#endif  // QDP_INCLUDE
