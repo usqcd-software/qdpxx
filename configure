@@ -821,7 +821,6 @@ Optional Features:
   --enable-sse2           Optimize code with Intel SSE2 instructions
   --enable-qcdoc          Enable QCDOC Optimisations
   --enable-qcdoc-edram    Make QDP Outer allocate in EDRAM
-  --disable-qio           Disable full QIO as it is not yet portable
    --enable-precision=single|double
                           Sets the base precision to be single or double
                           precision (default is single)
@@ -2530,13 +2529,6 @@ if test "${enable_qcdoc_edram+set}" = set; then
   ac_qcdoc_edram_enabled=1
 else
   ac_qcdoc_edram_enabled=0
-
-fi;
-
-# Check whether --enable---enable-qio or --disable---enable-qio was given.
-if test "${enable___enable_qio+set}" = set; then
-  enableval="$enable___enable_qio"
-
 
 fi;
 
