@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.7 2003-08-05 19:35:15 edwards Exp $
+// $Id: qdp_outer.h,v 1.8 2003-08-05 20:11:28 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -121,11 +121,11 @@ public:
 
 
 public:
-  T& elem() {return F;}
-  const T& elem() const {return F;}
+  inline T& elem() {return F;}
+  inline const T& elem() const {return F;}
 
-  T& elem(int i) {return F;}  // The indexing is a nop
-  const T& elem(int i) const {return F;}  // The indexing is a nop
+  inline T& elem(int i) {return F;}  // The indexing is a nop
+  inline const T& elem(int i) const {return F;}  // The indexing is a nop
 
 private:
   T F;
@@ -380,12 +380,12 @@ public:
    * Used by optimization routines (e.g., SSE) that need the memory address of data.
    * BTW: to make this a friend would be a real pain since functions are templatized.
    */
-  T* getF() const {return F;}
+  inline T* getF() const {return F;}
 
 
 public:
-  T& elem(int i) {return F[i];}
-  const T& elem(int i) const {return F[i];}
+  inline T& elem(int i) {return F[i];}
+  inline const T& elem(int i) const {return F[i];}
 
 private:
   T *F;
