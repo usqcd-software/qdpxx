@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_sse.cc,v 1.2 2003-10-22 00:58:20 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.cc,v 1.3 2004-08-09 22:06:32 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -10,7 +10,7 @@
 #include "qdp.h"
 
 // These SSE asm instructions are only supported under GCC/G++
-#if defined(__GNUC__)
+#if defined(__GNUC__) && __GNUC_MINOR__ >= 2  &&  QDP_USE_SSE == 1
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -29,7 +29,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 {
 //  cout << "call single site QDP_M_eq_M_times_M" << endl;
 
-  typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
+  typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >  C;
 
   const C& l = static_cast<const C&>(rhs.expression().left());
   const C& r = static_cast<const C&>(rhs.expression().right());
