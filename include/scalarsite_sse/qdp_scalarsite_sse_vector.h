@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_vector.h,v 1.1 2004-03-23 22:43:11 edwards Exp $
+// $Id: qdp_scalarsite_sse_vector.h,v 1.2 2004-03-29 21:28:15 edwards Exp $
 
 /*! @file
  * @brief Vector optimizations

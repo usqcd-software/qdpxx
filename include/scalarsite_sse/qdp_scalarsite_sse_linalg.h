@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.2 2004-03-24 03:42:41 edwards Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.3 2004-03-29 21:28:15 edwards Exp $
 
 /*! @file
  * @brief Blas optimizations

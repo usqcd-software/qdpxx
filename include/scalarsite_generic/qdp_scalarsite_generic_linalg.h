@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_generic_linalg.h,v 1.2 2004-03-21 23:02:03 bjoo Exp $
+// $Id: qdp_scalarsite_generic_linalg.h,v 1.3 2004-03-29 21:28:15 edwards Exp $
 
 /*! @file
  * @brief Generic optimizations
