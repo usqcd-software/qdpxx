@@ -1,3 +1,9 @@
+08/12/2003 -- Robert Edwards
+
+	Version 1.5.0. Major change of subset support. Now have an Ordered{Set,Subset}
+        and Unordered{Set,Subset}. Added initial SSE support for Intel. Added an
+        enable sse/sse flag to autoconf.
+
 07/26/2003 -- Robert Edwards
 
 	Version 1.4.13. Cb=2 layout now works in parscalar. Changed to this as the
