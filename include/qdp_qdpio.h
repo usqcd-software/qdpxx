@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.3 2003-08-28 18:02:26 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.4 2003-09-26 13:24:24 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -179,7 +179,9 @@ template<class T> void QDPFactoryPut(char *buf, const int crd[], void *arg)
   }
 
   void *dest = (void *)&(field->elem(Layout::linearSiteIndex(coord)));
-  memcpy(dest,buf,sizeof(T));
+  int size = sizeof(field->elem(Layout::linearSiteIndex(coord)));
+
+  memcpy(dest,buf,size);
 }
 
 
@@ -208,7 +210,7 @@ void QDPSerialFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 
 
 //! Function for extracting datum at specified site 
-template<class T> void QDPFactoryGet(char *buf, const int crd[], void *arg)
+template< class T> void QDPFactoryGet(char *buf, const int crd[], void *arg)
 {
   /* Translate arg */
   T *field = (T *)arg;
@@ -222,10 +224,23 @@ template<class T> void QDPFactoryGet(char *buf, const int crd[], void *arg)
     return;
   }
 
-  void *src = (void *)&(field->elem(Layout::linearSiteIndex(coord)));
-  memcpy(buf,src,sizeof(T));
+  void *src = (void  *)&(field->elem(Layout::linearSiteIndex(coord)));
+  size_t size = sizeof(field->elem(Layout::linearSiteIndex(coord))); 
+  // cout << "Size = " << size << endl;
+
+  memcpy(buf,(const void *)src,size);
 }
 
+/* template < class T > void QDPFactoryGet(char *buf, const int crd[], void *arg)
+{
+  QDP_abort(1);
+}
+*/
+/*
+template < class T > void QDPFactoryGet(char *buf, const int crd[], void *arg) {
+  QDPFactoryGet< OLattice<T>, T >(buf, crd, arg);
+}
+*/
 
 //! Write an OLattice object
 /*! This implementation is only correct for scalar ILattice */
