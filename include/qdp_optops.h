@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_optops.h,v 1.3 2004-06-30 21:51:20 edwards Exp $
+// $Id: qdp_optops.h,v 1.4 2004-07-02 19:25:16 edwards Exp $
 
 /*! @file
  * @brief PETE optimized operations on QDPTypes
@@ -164,31 +164,31 @@ struct FnTraceMultiply
   inline typename BinaryReturn<T1, T2, FnTraceMultiply >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
-    cerr << "traceMultiply" << endl;
+    cerr << "FnTraceMultiply()" << endl;
     return trace(a*b);
 //    return traceMultiply(a,b);
   }
 };
 
-// traceMultiply(l,r)  <-  trace(l*r)
-template<class T1,class C1,class T2,class C2,class CC>
-inline typename MakeReturn<BinaryNode<FnTraceMultiply,
-  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
-  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t>,
-  typename BinaryReturn<C1,C2,FnTraceMultiply>::Type_t >::Expression_t
-trace(const QDPExpr<BinaryNode<OpMultiply,
-      typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
-      typename CreateLeaf<QDPType<T2,C2> >::Leaf_t>, CC> & ll)
-{
-  cerr << "my indirect trace" << endl;
 
-  typedef BinaryNode<FnTraceMultiply,
-    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
-    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t> Tree_t;
+// traceMultiply(l,r)  <-  trace(l*r)
+template<class T1,class T2,class CC>
+inline typename MakeReturn<BinaryNode<FnTraceMultiply,T1,T2>,
+  typename BinaryReturn<
+    typename QDPContainer<T1>::Type_t,
+    typename QDPContainer<T2>::Type_t,
+    FnTraceMultiply>::Type_t >::Expression_t
+trace(const QDPExpr<BinaryNode<OpMultiply,T1,T2>,CC> & ll)
+{
+  cerr << "trace(ll) -> traceMultiply(l,r)" << endl;
+
+  typedef typename QDPContainer<T1>::Type_t  C1;
+  typedef typename QDPContainer<T2>::Type_t  C2;
+  typedef BinaryNode<FnTraceMultiply,T1,T2> Tree_t;
   typedef typename BinaryReturn<C1,C2,FnTraceMultiply>::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
-    CreateLeaf<QDPType<T1,C1> >::make(l.expression().child()),
-    CreateLeaf<QDPType<T2,C2> >::make(r.expression().child())));
+    ll.expression().left(), 
+    ll.expression().right()));
 }
 
 #endif
