@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.9 2003-08-27 01:25:34 edwards Exp $
+// $Id: qdp_inner.h,v 1.10 2003-08-29 02:40:50 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -1666,6 +1666,23 @@ copy_site(IScalar<T>& d, int isite, const IScalar<T1>& s1)
 }
 
 
+//! gather several inner sites together
+template<class T, class T1>
+inline void 
+gather_sites(IScalar<T>& d, 
+	     const IScalar<T1>& s0, int i0, 
+	     const IScalar<T1>& s1, int i1,
+	     const IScalar<T1>& s2, int i2,
+	     const IScalar<T1>& s3, int i3)
+{
+  gather_sites(d.elem(), 
+	       s0.elem(), i0, 
+	       s1.elem(), i1, 
+	       s2.elem(), i2, 
+	       s3.elem(), i3);
+}
+
+
 //------------------------------------------
 // InnerProduct (norm-seq) global sum = sum(tr(adj(s1)*s1))
 template<class T>
@@ -2689,6 +2706,18 @@ tan(const ILattice<T1,N>& s1)
 }
 
 
+//! ILattice = pow(ILattice, ILattice)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnPow>::Type_t
+pow(const ILattice<T1,N>& s1, const ILattice<T2,N>& s2)
+{
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnPow>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = pow(s1.elem(i), s2.elem(i));
+  return d;
+}
+
 //! ILattice = pow(ILattice, IScalar)
 template<class T1, class T2, int N>
 inline typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnPow>::Type_t
@@ -2701,6 +2730,30 @@ pow(const ILattice<T1,N>& s1, const IScalar<T2>& s2)
   return d;
 }
 
+//! ILattice = pow(IScalar, ILattice)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnPow>::Type_t
+pow(const IScalar<T1>& s1, const ILattice<T2,N>& s2)
+{
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnPow>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = pow(s1.elem(i), s2.elem(i));
+  return d;
+}
+
+
+//! ILattice = atan2(ILattice, ILattice)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnArcTan2>::Type_t
+atan2(const ILattice<T1,N>& s1, const ILattice<T2,N>& s2)
+{
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnArcTan2>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = atan2(s1.elem(i), s2.elem(i));
+  return d;
+}
 
 //! ILattice = atan2(ILattice, IScalar)
 template<class T1, class T2, int N>
@@ -2711,6 +2764,18 @@ atan2(const ILattice<T1,N>& s1, const IScalar<T2>& s2)
 
   for(int i=0; i < N; ++i)
     d.elem(i) = atan2(s1.elem(i), s2.elem());
+  return d;
+}
+
+//! ILattice = atan2(IScalar, ILattice)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnArcTan2>::Type_t
+atan2(const IScalar<T1>& s1, const ILattice<T2,N>& s2)
+{
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnArcTan2>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = atan2(s1.elem(), s2.elem(i));
   return d;
 }
 
@@ -2763,6 +2828,36 @@ copy_site(ILattice<T,N>& d, int isite, const IScalar<T1>& s1)
 }
 
 
+//! gather several inner sites together
+/*! This version is built for inner length of 2 */
+template<class T, class T1>
+inline void 
+gather_sites(ILattice<T,2>& d, 
+	     const ILattice<T1,2>& s0, int i0, 
+	     const ILattice<T1,2>& s1, int i1)
+{
+  d.elem(0) = s0.elem(i0);
+  d.elem(1) = s0.elem(i1);
+}
+
+
+//! gather several inner sites together
+/*! This version is built for inner length of 4 */
+template<class T, class T1>
+inline void 
+gather_sites(ILattice<T,4>& d, 
+	     const ILattice<T1,4>& s0, int i0, 
+	     const ILattice<T1,4>& s1, int i1,
+	     const ILattice<T1,4>& s2, int i2,
+	     const ILattice<T1,4>& s3, int i3)
+{
+  d.elem(0) = s0.elem(i0);
+  d.elem(1) = s0.elem(i1);
+  d.elem(2) = s0.elem(i2);
+  d.elem(3) = s0.elem(i3);
+}
+
+
 //! dest = (mask) ? s1 : dest
 template<class T, class T1, int N> 
 inline void 
@@ -2812,7 +2907,7 @@ struct UnaryReturn<ILattice<T,N>, FnNorm2> {
 
 template<class T, int N>
 struct UnaryReturn<ILattice<T,N>, FnLocalNorm2> {
-  typedef IScalar<typename UnaryReturn<T, FnLocalNorm2>::Type_t>  Type_t;
+  typedef ILattice<typename UnaryReturn<T, FnLocalNorm2>::Type_t, N>  Type_t;
 };
 
 template<class T, int N>
@@ -2821,9 +2916,8 @@ localNorm2(const ILattice<T,N>& s1)
 {
   typename UnaryReturn<ILattice<T,N>, FnLocalNorm2>::Type_t  d;
 
-  d.elem() = localNorm2(s1.elem(0));
-  for(int i=1; i < N; ++i)
-    d.elem() += localNorm2(s1.elem(i));
+  for(int i=0; i < N; ++i)
+    d.elem(i) = localNorm2(s1.elem(i));
 
   return d;
 }
@@ -2837,7 +2931,7 @@ struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnInnerProduct> {
 
 template<class T1, class T2, int N>
 struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnLocalInnerProduct> {
-  typedef IScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
+  typedef ILattice<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t, N>  Type_t;
 };
 
 template<class T1, class T2, int N>
@@ -2846,9 +2940,8 @@ localInnerProduct(const ILattice<T1,N>& s1, const ILattice<T2,N>& s2)
 {
   IScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  d;
 
-  d.elem() = localInnerProduct(s1.elem(0), s2.elem(0));
-  for(int i=1; i < N; ++i)
-    d.elem() += localInnerProduct(s1.elem(i), s2.elem(i));
+  for(int i=0; i < N; ++i)
+    d.elem(i) = localInnerProduct(s1.elem(i), s2.elem(i));
 
   return d;
 }
@@ -2865,7 +2958,7 @@ struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnInnerProductReal> {
 
 template<class T1, class T2, int N>
 struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnLocalInnerProductReal> {
-  typedef IScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
+  typedef ILattice<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t, N>  Type_t;
 };
 
 template<class T1, class T2, int N>
@@ -2874,9 +2967,8 @@ localInnerProductReal(const ILattice<T1,N>& s1, const ILattice<T2,N>& s2)
 {
   IScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  d;
 
-  d.elem() = localInnerProductReal(s1.elem(0), s2.elem(0));
-  for(int i=1; i < N; ++i)
-    d.elem() += localInnerProductReal(s1.elem(i), s2.elem(i));
+  for(int i=0; i < N; ++i)
+    d.elem(i) = localInnerProductReal(s1.elem(i), s2.elem(i));
 
   return d;
 }
