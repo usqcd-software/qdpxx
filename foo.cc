@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.3 2002-10-01 01:52:51 edwards Exp $
+// $Id: foo.cc,v 1.4 2002-10-01 16:24:41 edwards Exp $
 //
 // Silly little internal test code
 
@@ -83,7 +83,14 @@ int main()
   cerr << a << endl;
 #endif
 
-#if 0
+#if 1
+  std::ofstream f;
+  f.open("foobar",std::ios_base::out|std::ios_base::binary);
+  float aa[3] = {0.0,0.0,0.0};
+  std::fwrite(&aa,sizeof(LatticeComplex),1,f.rdbuf());
+  f.close();
+
+
   BinaryWriter to("fred");
   to << a;
   to.close();

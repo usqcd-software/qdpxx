@@ -1,12 +1,86 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: io.h,v 1.2 2002-10-01 16:24:41 edwards Exp $
 //
 // QDP data parallel interface
 //
 // IO support
 
+#include <fstream>
+
 QDP_BEGIN_NAMESPACE(QDP);
 
+//! Simple input text class
+class TextReader
+{
+public:
+  TextReader();
+  ~TextReader();
+  explicit TextReader(const char* p);
+
+  void open(const char* p);
+  void close();
+
+  bool is_open();
+
+  template<class T>
+  TextReader& operator>>(T& d) {f >> d; return *this;}
+
+private:
+  std::ifstream f;
+};
+
+
+
+//! Simple output text class
+class TextWriter
+{
+public:
+  TextWriter();
+  ~TextWriter();
+  explicit TextWriter(const char* p);
+
+  bool is_open();
+  void open(const char* p);
+  void close();
+
+  template<class T>
+  TextWriter& operator<<(const T& d) {f << d; return *this;}
+
+private:
+  std::ofstream f;
+};
+
+
+
+//! Simple output binary class
+class BinaryWriter
+{
+public:
+  BinaryWriter();
+  ~BinaryWriter();
+  explicit BinaryWriter(const char* p);
+
+  bool is_open();
+  void open(const char* p);
+  void close();
+
+#if 0
+  // Binary writer
+  template<class T>
+  BinaryWriter& write(const T& d) {fwrite(f,d);; return *this;}
+#endif
+
+  // Ascii writer
+  template<class T>
+  BinaryWriter& operator<<(const T& d) {f << d; return *this;}
+
+private:
+  std::ofstream f;
+};
+
+
+
+//----------------------------------------------------------------
 //! Namelist style reading/writing
 
   /*! Push a namelist group */
@@ -54,5 +128,6 @@ private:
 template<class T> inline
 ostream& read(ostream& nml, const char *s, const QDPType<T>& s1);
 #endif
+
 
 QDP_END_NAMESPACE();
