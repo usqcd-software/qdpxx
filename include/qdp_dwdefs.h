@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_dwdefs.h,v 1.1 2003-10-17 20:22:53 edwards Exp $
+// $Id: qdp_dwdefs.h,v 1.2 2003-10-20 20:14:29 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -17,9 +17,6 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 
 #include <qdp_config.h>
-
-const int Ls = 8;   // HACK - FOR now fixed DW index here
-
 
 // Fix default precision
 #if ! defined(BASE_PRECISION)
@@ -54,10 +51,6 @@ typedef GammaType<Ns> Gamma;
 
 
 // Aliases for a scalar architecture
-
-// New guy beyond qdp_defs.h
-typedef OLattice< PDWVector< PSpinVector< PColorVector< RComplex<REAL>, 3>, 4>, Ls> > LatticeDWFermion;
-typedef OScalar< PDWVector< PSpinVector< PColorVector< RComplex<REAL>, 3>, 4>, Ls> > DWFermion;
 
 // Fixed fermion type
 typedef OLattice< PScalar< PSpinVector< PColorVector< RComplex<REAL>, 3>, 4> > > LatticeDiracFermion;
