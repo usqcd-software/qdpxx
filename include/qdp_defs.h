@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_defs.h,v 1.9 2003-12-21 19:21:03 edwards Exp $
+// $Id: qdp_defs.h,v 1.10 2004-01-28 03:17:37 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -113,10 +113,20 @@ typedef PScalar< PScalar< RScalar<LOGICAL> > > IntBoolean;
 typedef Real ILatticeReal;
 typedef Seed ILatticeSeed;
 
+// Floating precision, but specific to a fixed color or spin
+typedef OLattice< PScalar< PColorMatrix< RComplex<REAL>, 3> > > LatticeColorMatrix3;
+typedef OScalar< PScalar< PColorMatrix< RComplex<REAL>, 3> > > ColorMatrix3;
+
 // Fixed precision
 typedef OLattice< PScalar< PColorMatrix< RComplex<REAL32>, Nc> > > LatticeColorMatrixF;
+typedef OLattice< PScalar< PColorMatrix< RComplex<REAL32>, 3> > > LatticeColorMatrixF3;
 typedef OScalar< PScalar< PColorMatrix< RComplex<REAL32>, Nc> > > ColorMatrixF;
+typedef OScalar< PScalar< PColorMatrix< RComplex<REAL32>, 3> > > ColorMatrixF3;
 
+typedef OLattice< PScalar< PColorMatrix< RComplex<REAL64>, Nc> > > LatticeColorMatrixD;
+typedef OLattice< PScalar< PColorMatrix< RComplex<REAL64>, 3> > > LatticeColorMatrixD3;
+typedef OScalar< PScalar< PColorMatrix< RComplex<REAL64>, Nc> > > ColorMatrixD;
+typedef OScalar< PScalar< PColorMatrix< RComplex<REAL64>, 3> > > ColorMatrixD3;
 
 typedef OScalar< PScalar< PScalar< RScalar<REAL32> > > > Real32;
 typedef OScalar< PScalar< PScalar< RScalar<REAL64> > > > Real64;
