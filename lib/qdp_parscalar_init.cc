@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.7 2003-11-05 17:47:37 edwards Exp $
+// $Id: qdp_parscalar_init.cc,v 1.8 2004-02-05 02:36:50 edwards Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -35,6 +35,10 @@ void QDP_initialize(int *argc, char ***argv)
       help_flag = true;
   }
 
+  bool setGeomP = false;
+  multi1d<QMP_u32_t> logical_geom(Nd);   // apriori logical geometry of the machine
+  logical_geom = 0;
+
   int rtiP = 0;
   int QMP_verboseP = 0;
   const int maxlen = 256;
@@ -50,6 +54,17 @@ void QDP_initialize(int *argc, char ***argv)
       fprintf(stderr,"    -h                 help\n");
       fprintf(stderr,"    -V        %%d [%d] verbose mode for QMP\n", 
 	      QMP_verboseP);
+
+      // logical geometry info
+      fprintf(stderr,"    -geom     %%d");
+      for(int i=1; i < Nd; i++) 
+	fprintf(stderr," %%d");
+
+      fprintf(stderr," [-1");
+      for(int i=1; i < Nd; i++) 
+	fprintf(stderr,",-1");
+      fprintf(stderr,"] logical machine geometry\n");
+
 #ifdef USE_REMOTE_QIO
       fprintf(stderr,"    -cd       %%s [.] set working dir for QIO interface\n");
       fprintf(stderr,"    -rti      %%d [%d] use run-time interface\n", 
@@ -66,6 +81,16 @@ void QDP_initialize(int *argc, char ***argv)
     if (strcmp((*argv)[i], "-V")==0) 
     {
       QMP_verboseP = 1;
+    }
+    else if (strcmp((*argv)[i], "-geom")==0) 
+    {
+      setGeomP = true;
+      for(int j=0; j < Nd; j++) 
+      {
+	int uu;
+	sscanf((*argv)[++i], "%d", &uu);
+	logical_geom[j] = uu;
+      }
     }
 #ifdef USE_REMOTE_QIO
     else if (strcmp((*argv)[i], "-cd")==0) 
@@ -113,6 +138,14 @@ void QDP_initialize(int *argc, char ***argv)
 
   if (QMP_init_msg_passing(argc, argv, QMP_SMP_ONE_ADDRESS) != QMP_SUCCESS)
     QDP_error_exit("QDP_initialize failed");
+
+#if QDP_DEBUG >= 1
+  QDP_info("QMP inititalized");
+#endif
+
+  if (setGeomP)
+    if (QMP_declare_logical_topology(logical_geom.slice(), (QMP_u32_t)Nd) != QMP_TRUE)
+      QDP_error_exit("QMP_declare_logical_topology failed");
 
 #if QDP_DEBUG >= 1
   QDP_info("Some layout init");
