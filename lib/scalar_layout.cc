@@ -1,4 +1,4 @@
-// $Id: scalar_layout.cc,v 1.4 2003-01-20 16:19:42 edwards Exp $
+// $Id: scalar_layout.cc,v 1.5 2003-01-24 21:07:16 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -196,12 +196,6 @@ namespace Layout
       _layout.vol *= _layout.nrow[i];
     _layout.subgrid_vol = _layout.vol;
   
-#if defined(NO_MEM)
-    if (_layout.vol > VOLUME)
-      QDP_error_exit("Allocating a lattice size greater than compile time size: vol=%d",
-		     _layout.vol);
-#endif
-
     /* volume of checkerboard. Make sure global variable is set */
     _layout.nsubl = 1;
     _layout.vol_cb = _layout.vol / _layout.nsubl;
@@ -212,6 +206,8 @@ namespace Layout
 
     // Initialize various defaults
     InitDefaults();
+
+    cerr << "Finished lattice layout\n";
   }
 };
 
@@ -282,12 +278,6 @@ namespace Layout
       vol *= _layout::nrow[i];
     _layout.subgrid_vol = _layout.vol;
   
-#if defined(NO_MEM)
-    if (_layout.vol > VOLUME)
-      QDP_error_exit("Allocating a lattice size greater than compile time size: vol=%d",
-		     _layout.vol);
-#endif
-
     /* volume of checkerboard. Make sure global variable is set */
     _layout.nsubl = 2;
     _layout.vol_cb = _layout.vol / _layout.nsubl;
@@ -301,6 +291,8 @@ namespace Layout
 
     // Initialize various defaults
     InitDefaults();
+
+    cerr << "Finished lattice layout\n";
   }
 };
 
@@ -387,12 +379,6 @@ namespace Layout
       vol *= _layout::nrow[i];
     _layout.subgrid_vol = _layout.vol;
   
-#if defined(NO_MEM)
-    if (_layout.vol > VOLUME)
-      QDP_error_exit("Allocating a lattice size greater than compile time size: vol=%d",
-		     _layout.vol);
-#endif
-
     /* volume of checkerboard. Make sure global variable is set */
     _layout.nsubl = 1 << (Nd+1);
     _layout.vol_cb = _layout.vol / _layout.nsubl;
@@ -408,6 +394,8 @@ namespace Layout
 
     // Initialize various defaults
     InitDefaults();
+
+    cerr << "Finished lattice layout\n";
   }
 };
 

@@ -1,4 +1,4 @@
-// $Id: parscalar_layout.cc,v 1.5 2003-01-23 05:22:52 edwards Exp $
+// $Id: parscalar_layout.cc,v 1.6 2003-01-24 21:07:16 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -254,12 +254,6 @@ namespace Layout
     for(int i=0; i < Nd; ++i) 
       _layout.vol *= _layout.nrow[i];
   
-#if defined(NO_MEM)
-    if (_layout.vol > VOLUME)
-      QDP_error_exit("Allocating a lattice size greater than compile time size: vol=%d",
-		     _layout.vol);
-#endif
-
     /* volume of checkerboard. Make sure global variable is set */
     _layout.nsubl = 1;
     _layout.vol_cb = _layout.vol / _layout.nsubl;
@@ -329,6 +323,9 @@ namespace Layout
 
     // Initialize various defaults
     InitDefaults();
+
+    if (Layout::primaryNode())
+      cerr << "Finished lattice layout\n";
   }
 };
 
