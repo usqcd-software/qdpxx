@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.3 2003-08-20 21:02:40 edwards Exp $
+// $Id: qdp_inner.h,v 1.4 2003-08-21 02:39:28 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -1589,6 +1589,21 @@ seedToFloat(const IScalar<T1>& s1)
 }
 
 
+//! dest [some type] = source [some type]
+/*! Portable (internal) way of returning a single site */
+template<class T>
+struct UnaryReturn<IScalar<T>, FnGetSite> {
+  typedef IScalar<typename UnaryReturn<T, FnGetSite>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<IScalar<T>, FnGetSite>::Type_t
+getSite(const IScalar<T>& s1, int innersite)
+{
+  return s1.elem();
+}
+
+
 //-----------------------------------------------------------------------------
 //! QDP Int to int primitive in conversion routine
 template<class T> 
@@ -2705,6 +2720,35 @@ atan2(const ILattice<T1,N>& s1, const IScalar<T2>& s2)
   for(int i=0; i < N; ++i)
     d.elem(i) = atan2(s1.elem(i), s2.elem());
   return d;
+}
+
+
+//! dest [float type] = source [seed type]
+template<class T1, int N>
+inline typename UnaryReturn<ILattice<T1,N>, FnSeedToFloat>::Type_t
+seedToFloat(const ILattice<T1,N>& s1)
+{
+  typename UnaryReturn<ILattice<T1,N>, FnSeedToFloat>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = seedToFloat(s1.elem(i));
+  return d;
+}
+
+
+//! dest [some type] = source [some type]
+/*! Portable (internal) way of returning a single site */
+// Global operations
+template<class T, int N>
+struct UnaryReturn<ILattice<T,N>, FnGetSite> {
+  typedef IScalar<typename UnaryReturn<T, FnGetSite>::Type_t>  Type_t;
+};
+
+template<class T, int N>
+inline typename UnaryReturn<ILattice<T,N>, FnGetSite>::Type_t
+getSite(const ILattice<T,N>& s1, int innersite)
+{
+  return s1.elem(innersite);
 }
 
 
