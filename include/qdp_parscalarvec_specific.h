@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.10 2003-12-11 16:20:58 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.11 2003-12-23 18:06:13 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -25,6 +25,9 @@ namespace Layout
 // Internal ops with ties to QMP
 namespace Internal
 {
+  //! Route to another node (blocking)
+  void route(void *send_buf, int srce_node, int dest_node, int count);
+
   //! Wait on send-receive
   void wait(int dir);
 
@@ -1589,11 +1592,16 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
     // Send result to primary node. Avoid sending prim-node sending to itself
     if (node != 0)
     {
+#if 1
+      // All nodes participate
+      Internal::route((void *)&recv_buf, node, 0, sizeof(Site_t));
+#else
       if (Layout::primaryNode())
 	Internal::recvFromWait((void *)&recv_buf, node, sizeof(Site_t));
 
       if (Layout::nodeNumber() == node)
 	Internal::sendToWait((void *)&recv_buf, 0, sizeof(Site_t));
+#endif
     }
 
     if (Layout::primaryNode())
@@ -1635,11 +1643,16 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
     // Send result to primary node. Avoid sending prim-node sending to itself
     if (node != 0)
     {
+#if 1
+      // All nodes participate
+      Internal::route((void *)&recv_buf, node, 0, sizeof(Site_t));
+#else
       if (Layout::primaryNode())
 	Internal::recvFromWait((void *)&recv_buf, node, sizeof(Site_t));
 
       if (Layout::nodeNumber() == node)
 	Internal::sendToWait((void *)&recv_buf, 0, sizeof(Site_t));
+#endif
     }
 
     if (Layout::primaryNode())
@@ -1683,11 +1696,16 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
     // Send result to primary node. Avoid sending prim-node sending to itself
     if (node != 0)
     {
+#if 1
+      // All nodes participate
+      Internal::route((void *)&recv_buf, node, 0, sizeof(Site_t));
+#else
       if (Layout::primaryNode())
 	Internal::recvFromWait((void *)&recv_buf, node, sizeof(Site_t));
 
       if (Layout::nodeNumber() == node)
 	Internal::sendToWait((void *)&recv_buf, 0, sizeof(Site_t));
+#endif
     }
 
     if (Layout::primaryNode())
@@ -1718,11 +1736,16 @@ void write(BinaryWriter& bin, const OLattice<T>& d, const multi1d<int>& coord)
   // Send result to primary node. Avoid sending prim-node sending to itself
   if (node != 0)
   {
+#if 1
+      // All nodes participate
+      Internal::route((void *)&recv_buf, node, 0, sizeof(Site_t));
+#else
     if (Layout::primaryNode())
       Internal::recvFromWait((void *)&recv_buf, node, sizeof(Site_t));
 
     if (Layout::nodeNumber() == node)
       Internal::sendToWait((void *)&recv_buf, 0, sizeof(Site_t));
+#endif
   }
 
   if (Layout::primaryNode())
@@ -1758,11 +1781,16 @@ void read(BinaryReader& bin, OLattice<T>& d)
     // Send result to destination node. Avoid sending prim-node sending to itself
     if (node != 0)
     {
+#if 1
+      // All nodes participate
+      Internal::route((void *)&recv_buf, 0, node, sizeof(Site_t));
+#else
       if (Layout::primaryNode())
 	Internal::sendToWait((void *)&recv_buf, node, sizeof(Site_t));
 
       if (Layout::nodeNumber() == node)
 	Internal::recvFromWait((void *)&recv_buf, 0, sizeof(Site_t));
+#endif
     }
 
     if (Layout::nodeNumber() == node)
@@ -1792,11 +1820,16 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
   // Send result to destination node. Avoid sending prim-node sending to itself
   if (node != 0)
   {
+#if 1
+      // All nodes participate
+      Internal::route((void *)&recv_buf, 0, node, sizeof(Site_t));
+#else
     if (Layout::primaryNode())
       Internal::sendToWait((void *)&recv_buf, node, sizeof(Site_t));
 
     if (Layout::nodeNumber() == node)
       Internal::recvFromWait((void *)&recv_buf, 0, sizeof(Site_t));
+#endif
   }
   
   if (Layout::nodeNumber() == node)

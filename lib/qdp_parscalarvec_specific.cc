@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_specific.cc,v 1.3 2003-10-15 21:41:09 edwards Exp $
+// $Id: qdp_parscalarvec_specific.cc,v 1.4 2003-12-23 18:06:13 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec specific routines
@@ -262,6 +262,21 @@ void Map::make(const MapFunc& func)
 
 namespace Internal
 {
+  //! Route to another node (blocking)
+  void route(void *buffer, int srce_node, int dest_node, int count)
+  { 
+#if QDP_DEBUG >= 2
+    QDP_info("starting a route, count=%d, srcenode=%d destnode=%d", 
+	     count,srce_node,dest_node);
+#endif
+
+    QMP_route(buffer, count, srce_node, dest_node);
+
+#if QDP_DEBUG >= 2
+    QDP_info("finished a route");
+#endif
+  }
+
   //! Send to another node (wait)
   void 
   sendToWait(void *send_buf, int dest_node, int count)
