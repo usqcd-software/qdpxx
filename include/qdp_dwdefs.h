@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_dwdefs.h,v 1.12 2004-05-23 20:43:05 edwards Exp $
+// $Id: qdp_dwdefs.h,v 1.13 2004-05-23 21:35:21 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -208,8 +208,8 @@ typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL32> >, 3>, Ns>
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL32> >, 2>, Ns> > PropagatorF2;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL32> >, 1>, Ns> > PropagatorF1;
 
-typedef OScalar< PSpinVector< PScalar< RComplex< PScalar<REAL32> > >, Ns> > SpinVectorF;
 typedef OScalar< PSpinMatrix< PScalar< RComplex< PScalar<REAL32> > >, Ns> > SpinMatrixF;
+typedef OScalar< PSpinVector< PScalar< RComplex< PScalar<REAL32> > >, Ns> > SpinVectorF;
 
 typedef OScalar< PScalar< PColorMatrix< RComplex< PScalar<REAL32> >, Nc> > > ColorMatrixF;
 typedef OScalar< PScalar< PColorMatrix< RComplex< PScalar<REAL32> >, 3> > > ColorMatrixF3;
@@ -300,6 +300,9 @@ typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL64> >, Nc>, Ns
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL64> >, 3>, Ns> > PropagatorD3;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL64> >, 2>, Ns> > PropagatorD2;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL64> >, 1>, Ns> > PropagatorD1;
+
+typedef OScalar< PSpinMatrix< PScalar< RComplex< PScalar<REAL64> > >, Ns> > SpinMatrixD;
+typedef OScalar< PSpinVector< PScalar< RComplex< PScalar<REAL64> > >, Ns> > SpinVectorD;
 
 typedef OScalar< PScalar< PColorMatrix< RComplex< PScalar<REAL64> >, Nc> > > ColorMatrixD;
 typedef OScalar< PScalar< PColorMatrix< RComplex< PScalar<REAL64> >, 3> > > ColorMatrixD3;
