@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.6 2003-08-27 01:25:35 edwards Exp $
+// $Id: qdp_primseed.h,v 1.7 2003-10-09 19:58:48 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -113,10 +113,30 @@ istream& operator>>(istream& s, PSeed<T>& d)
   return s;
 }
 
+//! Text input
+template<class T>
+inline
+StandardInputStream& operator>>(StandardInputStream& s, PSeed<T>& d)
+{
+  for(int i=0; i < 4; ++i)
+    s >> d.elem(i);
+
+  return s;
+}
+
 //! Text output
 template<class T>
 inline
 ostream& operator<<(ostream& s, const PSeed<T>& d)
+{
+  s << d.elem(0) << " " << d.elem(1) << " " << d.elem(2) << " " << d.elem(3) << "\n";
+  return s;
+}
+
+//! Text output
+template<class T>
+inline
+StandardOutputStream& operator<<(StandardOutputStream& s, const PSeed<T>& d)
 {
   s << d.elem(0) << " " << d.elem(1) << " " << d.elem(2) << " " << d.elem(3) << "\n";
   return s;
