@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.9 2003-10-15 17:16:40 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.10 2003-10-15 21:37:37 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -452,5 +452,199 @@ void readOLattice(BinaryReader& bin,
   delete[] recv_buf;
 }
 
+
+
+
+//-----------------------------------------------------------------------
+// Read a QCD archive file
+//! Read a QCD (NERSC) Archive format gauge field
+/*!
+ * \ingroup io
+ *
+ * \param cfg_in     binary writer object ( Modify )
+ * \param u          gauge configuration ( Modify )
+ */    
+
+void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
+		int mat_size)
+{
+  size_t size = sizeof(float);
+  size_t su3_size = size*mat_size;
+  size_t tot_size = su3_size*Nd;
+  char  *input = new char[tot_size*Layout::sitesOnNode()];  // keep another copy in input buffers
+  char  *recv_buf = new char[tot_size];
+
+  // Find the location of each site and send to primary node
+  for(int site=0; site < Layout::vol(); ++site)
+  {
+    multi1d<int> coord = crtesn(site, Layout::lattSize());
+
+    int node   = Layout::nodeNumber(coord);
+    int linear = Layout::linearSiteIndex(coord);
+
+    // Only on primary node read the data
+    cfg_in.readArrayPrimaryNode(recv_buf, size, mat_size*Nd);
+
+    // Send result to destination node. Avoid sending prim-node sending to itself
+    if (node != 0)
+    {
+      if (Layout::primaryNode())
+	Internal::sendToWait((void *)recv_buf, node, tot_size);
+
+      if (Layout::nodeNumber() == node)
+	Internal::recvFromWait((void *)recv_buf, 0, tot_size);
+    }
+
+    if (Layout::nodeNumber() == node)
+      memcpy(input+linear*tot_size, recv_buf, tot_size);
+  }
+
+  delete[] recv_buf;
+
+  // First compute the checksum - not sure this is what they want...
+  unsigned int chksum = 0;
+//  for(int i=0; i < tot_size*Layout::sitesOnNode(); ++i)
+//    chksum += input;
+
+
+  // Reconstruct the gauge field
+  ColorMatrix  sitefield;
+  float su3[3][3][2];
+
+  for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
+  {
+    for(int dd=0; dd<Nd; dd++)        /* dir */
+    {
+      memcpy(&(su3[0][0][0]), input+su3_size*(dd+Nd*linear), su3_size);
+
+      /* Reconstruct the third column  if necessary */
+      if (mat_size == 12) 
+      {
+	su3[2][0][0] = su3[0][1][0]*su3[1][2][0] - su3[0][1][1]*su3[1][2][1]
+    	             - su3[0][2][0]*su3[1][1][0] + su3[0][2][1]*su3[1][1][1];
+	su3[2][0][1] = su3[0][2][0]*su3[1][1][1] + su3[0][2][1]*su3[1][1][0]
+	             - su3[0][1][0]*su3[1][2][1] - su3[0][1][1]*su3[1][2][0];
+
+	su3[2][1][0] = su3[0][2][0]*su3[1][0][0] - su3[0][2][1]*su3[1][0][1]
+	             - su3[0][0][0]*su3[1][2][0] + su3[0][0][1]*su3[1][2][1];
+	su3[2][1][1] = su3[0][0][0]*su3[1][2][1] + su3[0][0][1]*su3[1][2][0]
+	             - su3[0][2][0]*su3[1][0][1] - su3[0][2][1]*su3[1][0][0];
+          
+	su3[2][2][0] = su3[0][0][0]*su3[1][1][0] - su3[0][0][1]*su3[1][1][1]
+	             - su3[0][1][0]*su3[1][0][0] + su3[0][1][1]*su3[1][0][1];
+	su3[2][2][1] = su3[0][1][0]*su3[1][0][1] + su3[0][1][1]*su3[1][0][0]
+	             - su3[0][0][0]*su3[1][1][1] - su3[0][0][1]*su3[1][1][0];
+      }
+
+      /* Copy into the big array */
+      for(int kk=0; kk<Nc; kk++)      /* color */
+      {
+	for(int ii=0; ii<Nc; ii++)    /* color */
+	{
+	  Complex sitecomp = cmplx(Real(su3[ii][kk][0]), Real(su3[ii][kk][1]));
+	  pokeColor(sitefield,sitecomp,ii,kk);
+	}
+      }
+      
+      u[dd].elem(linear) = sitefield.elem();
+    }
+  }
+  
+  delete[] input;
+}
+
+
+//-----------------------------------------------------------------------
+// Write a QCD archive file
+//! Write a QCD (NERSC) Archive format gauge field
+/*!
+ * \ingroup io
+ *
+ * \param cfg_out    binary writer object ( Modify )
+ * \param u          gauge configuration ( Read )
+ */    
+void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
+		 int mat_size)
+{
+  size_t size = sizeof(float);
+  size_t su3_size = size*mat_size;
+  size_t tot_size = su3_size*Nd;
+  char *recv_buf = new char[tot_size];
+
+  multi1d<multi1d<ColorMatrix> > sa(Nd);   // extract gauge fields
+
+  for(int dd=0; dd<Nd; dd++)        /* dir */
+  {
+    sa[dd].resize(Layout::sitesOnNode());
+    QDP_extract(sa[dd], u[dd], all);
+  }
+
+  // Find the location of each site and send to primary node
+  for(int site=0; site < Layout::vol(); ++site)
+  {
+    multi1d<int> coord = crtesn(site, Layout::lattSize());
+
+    int node   = Layout::nodeNumber(coord);
+    int linear = Layout::linearSiteIndex(coord);
+
+    // Copy to buffer: be really careful since max(linear) could vary among nodes
+    if (Layout::nodeNumber() == node)
+    {
+      char *recv_buf_tmp = recv_buf;
+
+      for(int dd=0; dd<Nd; dd++)        /* dir */
+      {
+	if ( mat_size == 12 ) 
+	{
+	  float su3[2][3][2];
+
+	  for(int kk=0; kk<Nc; kk++)      /* color */
+	    for(int ii=0; ii<2; ii++)    /* color */
+	    {
+	      Complex sitecomp = peekColor(sa[dd][linear],ii,kk);
+	      su3[ii][kk][0] = toFloat(Real(real(sitecomp)));
+	      su3[ii][kk][1] = toFloat(Real(imag(sitecomp)));
+	    }
+
+	  memcpy(recv_buf_tmp, &(su3[0][0][0]), su3_size);
+	}
+	else
+	{
+	  float su3[3][3][2];
+
+	  for(int kk=0; kk<Nc; kk++)      /* color */
+	    for(int ii=0; ii<Nc; ii++)    /* color */
+	    {
+	      Complex sitecomp = peekColor(sa[dd][linear],ii,kk);
+	      su3[ii][kk][0] = toFloat(Real(real(sitecomp)));
+	      su3[ii][kk][1] = toFloat(Real(imag(sitecomp)));
+	    }
+
+	  memcpy(recv_buf_tmp, &(su3[0][0][0]), su3_size);
+	}
+
+	recv_buf_tmp += su3_size;
+      }
+    }
+
+    // Send result to primary node. Avoid sending prim-node sending to itself
+    if (node != 0)
+    {
+      if (Layout::primaryNode())
+	Internal::recvFromWait((void *)recv_buf, node, tot_size);
+
+      if (Layout::nodeNumber() == node)
+	Internal::sendToWait((void *)recv_buf, 0, tot_size);
+    }
+
+    if (Layout::primaryNode())
+      cfg_out.writeArray(recv_buf, size, mat_size*Nd);
+  }
+
+  delete[] recv_buf;
+
+  if (cfg_out.fail())
+    QDP_error_exit("writeArchiv: error writing configuration");
+}
 
 QDP_END_NAMESPACE();

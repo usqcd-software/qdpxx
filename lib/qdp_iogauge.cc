@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.11 2003-10-15 18:00:30 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.12 2003-10-15 21:37:37 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -95,6 +95,13 @@ void write(XMLWriter& xml, const string& path, const ArchivGauge_t& header)
 
   write(xml, "mat_size", header.mat_size);
   write(xml, "nrow", header.nrow);
+  write(xml, "boundary", header.boundary);
+  write(xml, "ensemble_id", header.ensemble_id);
+  write(xml, "ensemble_label", header.ensemble_label);
+  write(xml, "creator", header.creator);
+  write(xml, "creator_hardware", header.creator_hardware);
+  write(xml, "creation_date", header.creation_date);
+  write(xml, "archive_date", header.archive_date);
 
   pop(xml);
 }
@@ -118,6 +125,8 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 
   if (Nc != 3)
     QDP_error_exit("Expecting Nc == 3");
+
+  archivGaugeInit(header);
 
   const size_t max_line_length = 128;
 
@@ -147,19 +156,56 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
     cfg_in.read(line, max_line_length);
     QDPIO::cout << line << endl;
 
+    char linetype[max_line_length];
+    int itmp, dd;
+
     // Scan for the datatype then scan for it
-    char datatype[64];    /* We try to grab the datatype */
-    if ( sscanf(line.c_str(), "DATATYPE = %s", datatype) == 1 ) 
+    if ( sscanf(line.c_str(), "DATATYPE = %s", linetype) == 1 ) 
     {
       /* Check if it is uncompressed */
-      if (strcmp(datatype, "4D_SU3_GAUGE_3x3") == 0) 
+      if (strcmp(linetype, "4D_SU3_GAUGE_3x3") == 0) 
       {
 	header.mat_size=18;   /* Uncompressed matrix */
       }
     }
 
+    // Scan for the sequence number
+    if ( sscanf(line.c_str(), "SEQUENCE_NUMBER = %d", &itmp) == 1 ) 
+    {
+      header.sequence_number = itmp;
+    }
+
+    // Scan for the ensemble label
+    if ( sscanf(line.c_str(), "ENSEMBLE_LABEL = %s", linetype) == 1 ) 
+    {
+      header.ensemble_label = linetype;
+    }
+
+    // Scan for the creator
+    if ( sscanf(line.c_str(), "CREATOR = %s", linetype) == 1 ) 
+    {
+      header.creator = linetype;
+    }
+
+    // Scan for the creator
+    if ( sscanf(line.c_str(), "CREATOR_HARDWARE = %s", linetype) == 1 ) 
+    {
+      header.creator_hardware = linetype;
+    }
+
+    // Scan for the creation date
+    if ( sscanf(line.c_str(), "CREATION_DATE = %s", linetype) == 1 ) 
+    {
+      header.creation_date = linetype;
+    }
+
+    // Scan for the archive date
+    if ( sscanf(line.c_str(), "ARCHIVE_DATE = %s", linetype) == 1 ) 
+    {
+      header.archive_date = linetype;
+    }
+
     // Find the lattice size of the gauge field
-    int itmp, dd;
     if ( sscanf(line.c_str(), "DIMENSION_%d = %d", &dd, &itmp) == 2 ) 
     {
       /* Found a lat size */
@@ -168,6 +214,16 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 
       header.nrow[dd-1] = itmp;
       ++lat_size_cnt;
+      }
+    
+    // Find the boundary conditions
+    if ( sscanf(line.c_str(), "BOUNDARY_%d = %d", &dd, &itmp) == 2 ) 
+    {
+      /* Found a lat size */
+      if (dd < 1 || dd > Nd)
+	QDP_error_exit("oops, dimension number out of bounds");
+
+      header.boundary[dd-1] = itmp;
       }
     
     if (line == string("END_HEADER")) break;
@@ -188,6 +244,11 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 
 //-----------------------------------------------------------------------
 // Read a QCD archive file
+// See the corresponding  qdp_*_specific.cc files
+void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u, int mat_size);
+
+
+
 //! Read a QCD (NERSC) Archive format gauge field
 /*!
  * \ingroup io
@@ -200,85 +261,10 @@ void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const str
 {
   BinaryReader cfg_in(file);
 
-  readArchivHeader(cfg_in, header);
-
-  //
-  // Read gauge field
-  //
-  multi1d<int> coord(Nd);
-  ColorMatrix  sitefield;
-  float su3[3][3][2];
-  unsigned int chksum = 0;
-
-  for(int t=0; t < Layout::lattSize()[3]; t++)  /* t */
-    for(int z=0; z < Layout::lattSize()[2]; z++)  /* t */
-      for(int y=0; y < Layout::lattSize()[1]; y++)  /* y */
-        for(int x=0; x < Layout::lattSize()[0]; x++)  /* x */
-        {
-	  coord[0] = x; coord[1] = y; coord[2] = z; coord[3] = t;
-
-          for(int dd=0; dd<Nd; dd++)        /* dir */
-          {
-            /* Read an fe variable and write it to the BE */
-            cfg_in.readArray((char *)&(su3[0][0][0]),sizeof(float),header.mat_size);
-            if (cfg_in.fail())
-              QDP_error_exit("Error reading configuration");
-
-            /* Reconstruct the third column  if necessary */
-            if( header.mat_size == 12) 
-            {
-	      su3[2][0][0] = su3[0][1][0]*su3[1][2][0] - su3[0][1][1]*su3[1][2][1]
-		- su3[0][2][0]*su3[1][1][0] + su3[0][2][1]*su3[1][1][1];
-	      su3[2][0][1] = su3[0][2][0]*su3[1][1][1] + su3[0][2][1]*su3[1][1][0]
-		- su3[0][1][0]*su3[1][2][1] - su3[0][1][1]*su3[1][2][0];
-
-	      su3[2][1][0] = su3[0][2][0]*su3[1][0][0] - su3[0][2][1]*su3[1][0][1]
-		- su3[0][0][0]*su3[1][2][0] + su3[0][0][1]*su3[1][2][1];
-	      su3[2][1][1] = su3[0][0][0]*su3[1][2][1] + su3[0][0][1]*su3[1][2][0]
-		- su3[0][2][0]*su3[1][0][1] - su3[0][2][1]*su3[1][0][0];
-          
-	      su3[2][2][0] = su3[0][0][0]*su3[1][1][0] - su3[0][0][1]*su3[1][1][1]
-		- su3[0][1][0]*su3[1][0][0] + su3[0][1][1]*su3[1][0][1];
-	      su3[2][2][1] = su3[0][1][0]*su3[1][0][1] + su3[0][1][1]*su3[1][0][0]
-		- su3[0][0][0]*su3[1][1][1] - su3[0][0][1]*su3[1][1][0];
-            }
-
-            /* Copy into the big array */
-            for(int kk=0; kk<Nc; kk++)      /* color */
-	    {
-              for(int ii=0; ii<Nc; ii++)    /* color */
-	      {
-		Real re = su3[ii][kk][0];
-		Real im = su3[ii][kk][1];
-		Complex sitecomp = cmplx(re,im);
-		pokeColor(sitefield,sitecomp,ii,kk);
-
-		if ( header.mat_size == 12 ) 
-		{
-		  /* If compressed ignore 3rd row for checksum */
-		  if (ii < 2) 
-		  {
-		    chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+0));
-		    chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+1));
-		  }
-		}
-		else 
-		{
-		  /* If uncompressed take everything for checksum */
-		  chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+0));
-		  chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+1));
-		}
-	      }
-	    }
-
-	    pokeSite(u[dd], sitefield, coord);
-          }
-        }
-
-  QDPIO::cout << "Computed (in this endian-ness, maybe not Big) checksum = " << chksum << "d\n";
+  readArchivHeader(cfg_in, header);   // read header
+  readArchiv(cfg_in, u, header.mat_size);  // expects to be positioned at the beginning of the binary payload
 
   cfg_in.close();
-
 }
 
 
@@ -397,6 +383,12 @@ static void writeArchivHeader(BinaryWriter& cfg_out, const ArchivGauge_t& header
 }
 
 
+// Write a QCD archive file
+// See the corresponding  qdp_*_specific.cc files
+void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
+		 int mat_size);
+
+
 //-----------------------------------------------------------------------
 // Write a QCD archive file
 //! Write a QCD (NERSC) Archive format gauge field
@@ -411,62 +403,8 @@ void writeArchiv(ArchivGauge_t& header, const multi1d<LatticeColorMatrix>& u, co
 {
   BinaryWriter cfg_out(file);
 
-  writeArchivHeader(cfg_out, header);
-
-  //
-  // Write gauge field
-  //
-  multi1d<int> coord(Nd);
-  ColorMatrix  sitefield;
-
-  for(int t=0; t < Layout::lattSize()[3]; t++)  /* t */
-    for(int z=0; z < Layout::lattSize()[2]; z++)  /* t */
-      for(int y=0; y < Layout::lattSize()[1]; y++)  /* y */
-        for(int x=0; x < Layout::lattSize()[0]; x++)  /* x */
-        {
-	  coord[0] = x; coord[1] = y; coord[2] = z; coord[3] = t;
-
-          for(int dd=0; dd<Nd; dd++)        /* dir */
-          {
-	    sitefield = peekSite(u[dd], coord);
-
-	    if ( header.mat_size == 12 ) 
-	    {
-	      float su3[2][3][2];
-
-	      for(int kk=0; kk<Nc; kk++)      /* color */
-		for(int ii=0; ii<2; ii++)    /* color */
-		{
-		  Complex sitecomp = peekColor(sitefield,ii,kk);
-		  su3[ii][kk][0] = toFloat(Real(real(sitecomp)));
-		  su3[ii][kk][1] = toFloat(Real(imag(sitecomp)));
-		}
-
-	      // Write a site variable
-	      if (Layout::primaryNode())
-		cfg_out.writeArray((char *)&(su3[0][0][0]),sizeof(float),header.mat_size);
-	    }
-	    else
-	    {
-	      float su3[3][3][2];
-
-	      for(int kk=0; kk<Nc; kk++)      /* color */
-		for(int ii=0; ii<Nc; ii++)    /* color */
-		{
-		  Complex sitecomp = peekColor(sitefield,ii,kk);
-		  su3[ii][kk][0] = toFloat(Real(real(sitecomp)));
-		  su3[ii][kk][1] = toFloat(Real(imag(sitecomp)));
-		}
-	      
-	      // Write a site variable
-	      if (Layout::primaryNode())
-		cfg_out.writeArray((char *)&(su3[0][0][0]),sizeof(float),header.mat_size);
-	    }
-          }
-        }
-
-  if (cfg_out.fail())
-    QDP_error_exit("Error writing configuration");
+  writeArchivHeader(cfg_out, header);   // write header
+  writeArchiv(cfg_out, u, header.mat_size);  // continuing writing after header
 
   cfg_out.close();
 }
