@@ -1,4 +1,4 @@
-// $Id: t_formfac.cc,v 1.1 2002-09-12 18:22:17 edwards Exp $
+// $Id: t_formfac.cc,v 1.2 2002-09-26 21:27:36 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
   multi1d<int> t_source(Nd);
   t_source = 0;
 
-  int t_sink = 3;
+  int t_sink = length-1;
 
-  FormFac(u, quark_prop_1, quark_prop_2, t_source, t_sink, j_decay);
+  FormFac(u, quark_prop_1, quark_prop_2, t_source, t_sink);
 }

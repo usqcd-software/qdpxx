@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.2 2002-09-15 03:21:43 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.3 2002-09-26 21:27:35 edwards Exp $ 
 
 /*!
  * This routine is specific to Wilson fermions! 
@@ -59,20 +59,22 @@
 
 using namespace QDP;
 
+//! Function used for constructing the time-slice set
+static const int j_decay = Nd-1;
+static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate[j_decay];}
+  
+
 void baryon(LatticePropagator& quark_propagator, 
 	    multi2d<Complex>& barprop, 
-	    const multi1d<int>& t_source, int j_decay, int bc_spec)
-
-// int num_mom
-// multi3d& bardisp
-// COMPLEX(barprop, length, 9);
-// COMPLEX(bardisp, length, num_mom, 9);
+	    const multi1d<int>& t_source, int bc_spec)
 {
-  
   int length = layout.LattSize()[j_decay];
 
   if ( Ns != 4 || Nc != 3 )		/* Code is specific to Ns=4 and Nc=3. */
     return;
+
+  // Create the time-slice set
+  Set timeslice(set_timeslice_func, length);
 
   int t0 = t_source[j_decay];
   
@@ -186,7 +188,7 @@ void baryon(LatticePropagator& quark_propagator,
 
       /* Project on zero momentum: Do a slice-wise sum. */
       multi1d<DComplex> hsum(length);
-      hsum = slice_sum(b_prop, j_decay);
+      hsum = sumMulti(b_prop, timeslice);
 
       switch (time_rev)
       {

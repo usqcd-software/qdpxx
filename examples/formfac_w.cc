@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.2 2002-09-14 20:13:24 edwards Exp $
+// $Id: formfac_w.cc,v 1.3 2002-09-26 21:27:36 edwards Exp $
 
 /*! Compute contractions for current insertion 3-point functions.
  *
@@ -17,11 +17,16 @@
 
 using namespace QDP;
 
+//! Function used for constructing the time-slice set
+static const int j_decay = Nd-1;
+static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate[j_decay];}
+ 
+
 void FormFac(const multi1d<LatticeColorMatrix>& u, 
 	     const LatticePropagator& quark_propagator,
 	     const LatticePropagator& seq_quark_prop, 
 	     const multi1d<int>& t_source, 
-	     int t_sink, int j_decay)
+	     int t_sink)
 {
   // Length of lattice in j_decay direction and 3pt correlations fcns
   int length = layout.LattSize()[j_decay];
@@ -33,6 +38,9 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
   int t0 = t_source[j_decay];
   int G5 = Ns*Ns-1;
   
+  // Create the time-slice set
+  Set timeslice(set_timeslice_func, length);
+
   /*
    * Coordinates for insertion momenta
    */
@@ -64,7 +72,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
      *
      * The form of J_mu = (1/2)*[psibar(x+mu)*U^dag_mu*(1+gamma_mu)*psi(x) -
      *                           psibar(x)*U_mu*(1-gamma_mu)*psi(x+mu)]
-     * NOTE: the 1/2  is included down below in the slice_sum stuff
+     * NOTE: the 1/2  is included down below in the sumMulti stuff
      */
     LatticeComplex corr_nonlocal_fn = 
       trace(conj(u[mu] * shift(anti_quark_prop, FORWARD, mu)) * 
@@ -127,9 +135,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 
       // Local current
       multi1d<DComplex> hsum(length);
-
-      LatticeComplex corr_local_tmp = phasefac * corr_local_fn;
-      hsum = slice_sum(corr_local_tmp, j_decay);
+      hsum = sumMulti(phasefac * corr_local_fn, timeslice);
 
       for(int t = 0; t < length; ++t)
       {
@@ -140,8 +146,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 
 
       // Non-local current
-      LatticeComplex corr_nonlocal_tmp = phasefac * corr_nonlocal_fn;
-      hsum = slice_sum(corr_nonlocal_tmp, j_decay);
+      hsum = sumMulti(phasefac * corr_nonlocal_fn, timeslice);
 
       for(int t = 0; t < length; ++t)
       {
