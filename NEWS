@@ -1,5 +1,9 @@
 04/02/2003 -- Robert Edwards
 
+	Version 1.1.5 added preprocessor test of g++ to require V3.0 or greater.
+
+04/02/2003 -- Robert Edwards
+
 	Version 1.1.4 moved proto.h to qdp_util.h .
 
 04/02/2003 -- Robert Edwards
