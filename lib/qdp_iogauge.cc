@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.3 2003-05-23 05:20:27 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.4 2003-06-04 18:22:57 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -30,10 +30,7 @@ ostream& operator<<(ostream& s, const multi1d<T>& d)
 //! Read a QCD (NERSC) Archive format gauge field
 void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
 {
-#define MAX_LINE_LENGTH 1024
-  char line[MAX_LINE_LENGTH];
-  
-  char datatype[40];    /* We try to grab the datatype */
+  const size_t max_line_length = 128;
 
   if (Nd != 4)
     QDP_error_exit("Expecting Nd == 4");
@@ -53,11 +50,13 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
   multi1d<int> lat_size(Nd);
 
   /* For now, read and throw away the header */
-  cout << "Start of header\n";
-  fgets(line,MAX_LINE_LENGTH,cfg_in.get());
-  cout << line;
+  string line;
 
-  if (strcmp(line,"BEGIN_HEADER\n")!=0)
+  cout << "Start of header" << endl;
+  cfg_in.read(line, max_line_length);
+  cout << line << endl;
+  
+  if (line != string("BEGIN_HEADER"))
     QDP_error_exit("Missing BEGIN_HEADER");
 
   /* Begin loop on lines */
@@ -65,11 +64,12 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
 
   while (1)
   {
-    fgets(line,MAX_LINE_LENGTH,cfg_in.get());
-    cout << line;
+    cfg_in.read(line, max_line_length);
+    cout << line << endl;
 
     // Scan for the datatype then scan for it
-    if ( sscanf(line, "DATATYPE = %s\n", datatype) == 1 ) 
+    char datatype[64];    /* We try to grab the datatype */
+    if ( sscanf(line.c_str(), "DATATYPE = %s", datatype) == 1 ) 
     {
       /* Check if it is uncompressed */
       if (strcmp(datatype, "4D_SU3_GAUGE_3x3") == 0) 
@@ -80,7 +80,7 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
 
     // Find the lattice size of the gauge field
     int itmp, dd;
-    if ( sscanf(line, "DIMENSION_%d = %d\n", &dd, &itmp) == 2 ) 
+    if ( sscanf(line.c_str(), "DIMENSION_%d = %d", &dd, &itmp) == 2 ) 
     {
       /* Found a lat size */
       if (dd < 1 || dd > Nd)
@@ -88,12 +88,12 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
 
       lat_size[dd-1] = itmp;
       ++lat_size_cnt;
-    }
-
-    if (strcmp(line,"END_HEADER\n")==0) break;
+      }
+    
+    if (line == string("END_HEADER")) break;
   }
 
-  cout << "End of header\n";
+  cout << "End of header" << endl;
 
   // Sanity check
   if (lat_size_cnt != Nd)
@@ -124,8 +124,9 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
           for(int dd=0; dd<Nd; dd++)        /* dir */
           {
             /* Read an fe variable and write it to the BE */
-            if (QDPUtil::bfread((void *) &(su3[0][0][0]),sizeof(float),mat_size,cfg_in.get()) != mat_size)
-              QDP_error_exit("Error reading configuration");
+            cfg_in.readArray((char *)&(su3[0][0][0]),sizeof(float),mat_size);
+//            if (cfg_in.fail())
+//              QDP_error_exit("Error reading configuration");
 
             /* Reconstruct the third column  if necessary */
             if( mat_size == 12) 
