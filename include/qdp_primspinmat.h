@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinmat.h,v 1.2 2003-08-27 01:25:35 edwards Exp $
+// $Id: qdp_primspinmat.h,v 1.3 2003-12-08 21:41:52 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -879,6 +879,43 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConst<4,15>&)
   return d;
 }
 
+
+//-----------------------------------------------------------------------------
+//! PSpinVector<T,4> = P_+ * PSpinVector<T,4>
+template<class T>
+inline typename UnaryReturn<PSpinMatrix<T,4>, FnChiralProjectPlus>::Type_t
+chiralProjectPlus(const PSpinMatrix<T,4>& s1)
+{
+  typename UnaryReturn<PSpinMatrix<T,4>, FnChiralProjectPlus>::Type_t  d;
+
+  for(int i=0; i < 4; ++i)
+  {
+    d.elem(0,i) = s1.elem(0,i);
+    d.elem(1,i) = s1.elem(1,i);
+    zero_rep(d.elem(2,i));
+    zero_rep(d.elem(3,i));
+  }
+
+  return d;
+}
+
+//! PSpinVector<T,4> = P_- * PSpinVector<T,4>
+template<class T>
+inline typename UnaryReturn<PSpinMatrix<T,4>, FnChiralProjectMinus>::Type_t
+chiralProjectMinus(const PSpinMatrix<T,4>& s1)
+{
+  typename UnaryReturn<PSpinMatrix<T,4>, FnChiralProjectMinus>::Type_t  d;
+
+  for(int i=0; i < 4; ++i)
+  {
+    zero_rep(d.elem(0,i));
+    zero_rep(d.elem(1,i));
+    d.elem(2,i) = s1.elem(2,i);
+    d.elem(3,i) = s1.elem(3,i);
+  }
+
+  return d;
+}
 
 //------------------------------------------
 // quark propagator contraction

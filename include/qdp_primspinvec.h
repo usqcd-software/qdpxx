@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinvec.h,v 1.2 2003-08-27 01:25:35 edwards Exp $
+// $Id: qdp_primspinvec.h,v 1.3 2003-12-08 21:41:52 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Vector
@@ -915,6 +915,38 @@ spinReconstructDir3Plus(const PSpinVector<T,2>& s1)
 
   return d;
 }
+
+//-----------------------------------------------------------------------------
+//! PSpinVector<T,4> = P_+ * PSpinVector<T,4>
+template<class T>
+inline typename UnaryReturn<PSpinVector<T,4>, FnChiralProjectPlus>::Type_t
+chiralProjectPlus(const PSpinVector<T,4>& s1)
+{
+  typename UnaryReturn<PSpinVector<T,4>, FnChiralProjectPlus>::Type_t  d;
+
+  d.elem(0) = s1.elem(0);
+  d.elem(1) = s1.elem(1);
+  zero_rep(d.elem(2));
+  zero_rep(d.elem(3));
+
+  return d;
+}
+
+//! PSpinVector<T,4> = P_- * PSpinVector<T,4>
+template<class T>
+inline typename UnaryReturn<PSpinVector<T,4>, FnChiralProjectMinus>::Type_t
+chiralProjectMinus(const PSpinVector<T,4>& s1)
+{
+  typename UnaryReturn<PSpinVector<T,4>, FnChiralProjectMinus>::Type_t  d;
+
+  zero_rep(d.elem(0));
+  zero_rep(d.elem(1));
+  d.elem(2) = s1.elem(2);
+  d.elem(3) = s1.elem(3);
+
+  return d;
+}
+
 
 /*! @} */   // end of group primspinvector
 

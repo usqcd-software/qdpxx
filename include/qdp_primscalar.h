@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.14 2003-10-20 20:15:53 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.15 2003-12-08 21:41:52 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -1105,6 +1105,24 @@ spinReconstructDir3Plus(const PScalar<T>& s1)
 {
   return spinReconstructDir3Plus(s1.elem());
 }
+
+//-----------------------------------------------------------------------------
+//! PScalar = chiralProjectPlus(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnChiralProjectPlus>::Type_t
+chiralProjectPlus(const PScalar<T>& s1)
+{
+  return chiralProjectPlus(s1.elem());
+}
+
+//! PScalar = chiralProjectMinus(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnChiralProjectMinus>::Type_t
+chiralProjectMinus(const PScalar<T>& s1)
+{
+  return chiralProjectMinus(s1.elem());
+}
+
 
 //-----------------------------------------------------------------------------
 // quark propagator contraction
