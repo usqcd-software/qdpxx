@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.25 2004-11-22 19:31:32 edwards Exp $
+// $Id: qdp_reality.h,v 1.26 2004-12-27 01:25:04 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -461,7 +461,7 @@ void read(XMLReader& xml, const string& xpath, RComplex<T>& d)
 	
   // Try and recursively get the imaginary part
   try {
-    read(xml, path_real, d.imag());
+    read(xml, path_imag, d.imag());
   }
   catch(const string &e) {
     error_message << "XPath Query: " << xpath <<" Error:"
