@@ -1,3 +1,8 @@
+01/28/2004 -- Robert Edwards
+
+	Version 1.11.5. Further changes to qdp_io.h to put Remote IO
+        under REMOTE_USE_QIO control.
+
 01/24/2004 -- Robert Edwards
 
 	Version 1.11.4. Zbigniew has changed all qdp, qio, c-lime config.h 
