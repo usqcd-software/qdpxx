@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.20 2003-09-08 15:59:38 bjoo Exp $
+// $Id: qdp_xmlio.h,v 1.21 2003-09-09 14:07:32 uid3790 Exp $
 
 /*! @file
  * @brief XML IO support
@@ -79,6 +79,14 @@ public:
   int count(const std::string& xpath);
 
 
+private:
+  //! Hide the = operator
+  XMLReader& operator=(const XMLReader&) {}
+  
+  //! Hide the copy constructor
+  XMLReader(const XMLReader&) {}
+  
+
 protected:
   // The universal data-reader. All the read functions call this
   template<typename T>
@@ -112,10 +120,9 @@ void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
   XMLReader arraytop(xml, s);
 
   std::ostringstream error_message;
-  std::string elemName = "elem";
   
   // Count the number of elements
-  std::string elem_base_query = elemName;
+  std::string elem_base_query = "elem";
 	
   int array_size;
   try {
