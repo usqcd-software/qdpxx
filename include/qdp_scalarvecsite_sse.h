@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.7 2003-08-21 06:14:25 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.8 2003-08-21 06:20:25 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -545,14 +545,13 @@ __asm__ __volatile__ (                    \
 
 // Optimized version of  
 //    PColorMatrix<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorMatrix<RComplexFloat,3>
-template<>
-inline BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
-  PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiply>::Type_t
-operator*<>(const PMatrix<RComplexFloat,3,PColorMatrix>& l, 
-	    const PMatrix<RComplexFloat,3,PColorMatrix>& r)
+inline BinaryReturn<PColorMatrix<RComplexFloat,3>, 
+  PColorMatrix<RComplexFloat,3>, OpMultiply>::Type_t
+operator*(const PColorMatrix<RComplexFloat,3>& l, 
+	  const PColorMatrix<RComplexFloat,3>& r)
 {
-  BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
-    PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiply>::Type_t  d;
+  BinaryReturn<PColorMatrix<RComplexFloat,3>, 
+    PColorMatrix<RComplexFloat,3>, OpMultiply>::Type_t  d;
 
   float *dd = (float*)&d;
   float *ll = (float*)&l;
