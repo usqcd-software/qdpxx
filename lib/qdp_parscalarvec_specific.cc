@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_specific.cc,v 1.8 2005-01-22 20:20:19 edwards Exp $
+// $Id: qdp_parscalarvec_specific.cc,v 1.9 2005-02-21 15:25:48 bjoo Exp $
 
 /*! @file
  * @brief Parscalarvec specific routines
@@ -369,8 +369,10 @@ namespace Internal
  * \param u          gauge configuration ( Modify )
  */    
 
+// This code looks like the scalar version...
+// Not fixed.
 void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
-		int mat_size)
+		int mat_size, int float_size)
 {
   ColorMatrix  sitefield;
   float su3[3][3][2];

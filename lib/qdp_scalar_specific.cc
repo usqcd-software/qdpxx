@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_specific.cc,v 1.8 2004-05-05 14:37:04 bjoo Exp $
+// $Id: qdp_scalar_specific.cc,v 1.9 2005-02-21 15:25:48 bjoo Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -64,23 +64,52 @@ void Map::make(const MapFunc& func)
  */    
 
 void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
-		int mat_size)
+		int mat_size, int float_size)
 {
   ColorMatrix  sitefield;
-  float su3[Nc][Nc][2];
+  char *su3_buffer;
+
+  REAL su3[Nc][Nc][2];
   unsigned int chksum = 0;
+
+  su3_buffer = new char[ Nc*Nc*2*float_size ];
+  if( su3_buffer == 0x0 ) { 
+    QDP_error_exit("Unable to allocate input buffer\n");
+  }
 
   // Find the location of each site and send to primary node
   for(int site=0; site < Layout::vol(); ++site)
   {
     multi1d<int> coord = crtesn(site, Layout::lattSize());
-
+  
     for(int dd=0; dd<Nd; dd++)        /* dir */
     {
       /* Read an fe variable and write it to the BE */
-      cfg_in.readArray((char *)&(su3[0][0][0]),sizeof(float), mat_size);
-      if (cfg_in.fail())
+      cfg_in.readArray(su3_buffer, float_size, mat_size);
+
+      if (cfg_in.fail()) {
 	QDP_error_exit("Error reading configuration");
+      }
+
+      /* Transfer from input buffer to the actual su3 buffer, 
+	 downcasting it to float if necessary */
+      if ( float_size == 4 ) { 
+	REAL32 *su3_bufp = (REAL32 *)su3_buffer;
+	REAL *su3_p = (REAL *)su3;
+
+	for(int cp_index=0; cp_index < mat_size; cp_index++) { 
+	  su3_p[cp_index] = (REAL)su3_bufp[cp_index];
+	}
+      }
+      else if ( float_size == 8 ) {
+	REAL64 *su3_bufp = (REAL64 *)su3_buffer;
+	REAL  *su3_p = (REAL *)su3;
+
+	for(int cp_index =0; cp_index < mat_size; cp_index++) { 
+	  
+	  su3_p[cp_index] = (REAL)su3_bufp[cp_index];
+	}
+      }
 
       /* Reconstruct the third column  if necessary */
       if (mat_size == 12) 
@@ -132,6 +161,7 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
       pokeSite(u[dd], sitefield, coord);
     }
   }
+  delete [] su3_buffer;
 }
 
 

@@ -26,7 +26,8 @@ HDRS=examples.h
 # The programs to build
 # 
 check_PROGRAMS = t_skeleton t_io t_mesplq \
-      t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio 
+      t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
+      t_cugauge
 
 EXTRA_PROGRAMS  = t_qio_factory t_binx
 
@@ -70,6 +71,8 @@ t_linalg_SOURCES =  t_linalg.cc linalg1.cc linalg.h
 
 t_blas_SOURCES = t_blas.cc blas1.cc blas1.h
 t_cblas_SOURCES= t_cblas.cc cblas1.cc cblas1.h 
+
+t_cugauge_SOURCES = t_cugauge.cc mesplq.cc $(HDRS) 
 
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

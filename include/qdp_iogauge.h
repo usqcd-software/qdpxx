@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_iogauge.h,v 1.2 2003-10-15 18:00:30 edwards Exp $
+// $Id: qdp_iogauge.h,v 1.3 2005-02-21 15:25:48 bjoo Exp $
 
 /*! @file
  * @brief NERSC Archive gauge support
@@ -26,6 +26,9 @@ struct ArchivGauge_t
   /* assume matrix size is 12 (matrix is compressed) 
      and change if we find out otherwise */
   size_t      mat_size;
+
+  /* Our Columbia friends have sneakily defined IEEE64BIG  */
+  size_t      float_size;
 
   int         sequence_number;
   std::string ensemble_id;

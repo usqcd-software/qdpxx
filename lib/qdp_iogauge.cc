@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.14 2004-04-07 09:34:33 bjoo Exp $
+// $Id: qdp_iogauge.cc,v 1.15 2005-02-21 15:25:48 bjoo Exp $
 //
 // QDP data parallel interface
 /*!
@@ -32,6 +32,7 @@ ostream& operator<<(ostream& s, const multi1d<T>& d)
 void archivGaugeInit(ArchivGauge_t& header)
 {
   header.mat_size = 12;
+  header.float_size = 4; // 32 bits
   header.nrow = Layout::lattSize();
   header.boundary.resize(Nd);
   header.boundary = 1;   // periodic
@@ -81,6 +82,7 @@ void read(XMLReader& xml, const string& path, ArchivGauge_t& header)
   XMLReader paramtop(xml, path);
 
   read(paramtop, "mat_size", header.mat_size);
+  read(paramtop, "float_size", header.float_size);
   read(paramtop, "nrow", header.nrow);
   read(paramtop, "boundary", header.boundary);
   read(paramtop, "ensemble_id", header.ensemble_id);
@@ -98,6 +100,7 @@ void write(XMLWriter& xml, const string& path, const ArchivGauge_t& header)
   push(xml, path);
 
   write(xml, "mat_size", header.mat_size);
+  write(xml, "float_size", header.float_size);
   write(xml, "nrow", header.nrow);
   write(xml, "boundary", header.boundary);
   write(xml, "ensemble_id", header.ensemble_id);
@@ -237,10 +240,24 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
       /* Found a lat size */
       if (dd < 1 || dd > Nd)
 	QDP_error_exit("oops, dimension number out of bounds");
-
+      
       header.boundary[dd-1] = itmp;
+    }
+
+    char fpstring[12];
+    if( sscanf(line.c_str(), "FLOATING_POINT = %s", fpstring) == 1 ) {
+      if( strcmp(fpstring, "IEEE32BIG") == 0 ) { 
+	QDPIO::cout << "Floating type: IEEE32BIG" << endl; 
+	header.float_size=4;
       }
-    
+      else if (strcmp(fpstring, "IEEE64BIG") == 0 ) { 
+	header.float_size=8;
+      }
+      else { 
+	QDP_error_exit("oops unknown floating point type\n");
+      }
+    }
+ 
     if (line == string("END_HEADER")) break;
   }
 
@@ -260,7 +277,7 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 //-----------------------------------------------------------------------
 // Read a QCD archive file
 // See the corresponding  qdp_*_specific.cc files
-void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u, int mat_size);
+void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u, int mat_size, int float_size);
 
 
 
@@ -277,7 +294,7 @@ void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const str
   BinaryReader cfg_in(file);
 
   readArchivHeader(cfg_in, header);   // read header
-  readArchiv(cfg_in, u, header.mat_size);  // expects to be positioned at the beginning of the binary payload
+  readArchiv(cfg_in, u, header.mat_size, header.float_size);  // expects to be positioned at the beginning of the binary payload
 
   cfg_in.close();
 }

@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.22 2005-01-22 20:20:19 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.23 2005-02-21 15:25:48 bjoo Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -583,9 +583,9 @@ void readOLattice(BinaryReader& bin,
  */    
 
 void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
-		int mat_size)
+		int mat_size, int float_size)
 {
-  size_t size = sizeof(float);
+  size_t size = float_size;
   size_t su3_size = size*mat_size;
   size_t tot_size = su3_size*Nd;
   char  *input = new char[tot_size*Layout::sitesOnNode()];  // keep another copy in input buffers
@@ -640,13 +640,32 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
 
   // Reconstruct the gauge field
   ColorMatrix  sitefield;
-  float su3[3][3][2];
+  REAL su3[3][3][2];
 
   for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
   {
     for(int dd=0; dd<Nd; dd++)        /* dir */
     {
-      memcpy(&(su3[0][0][0]), input+su3_size*(dd+Nd*linear), su3_size);
+
+      // Transfer the data from input into SU3
+      if (float_size == 4) {
+	REAL* su3_p = (REAL *)su3;
+	REAL32* input_p = (REAL32 *)( input+su3_size*(dd+Nd*linear) );
+	for(int cp_index=0; cp_index < mat_size; cp_index++) {
+	  su3_p[cp_index] = (REAL)(input_p[cp_index]);
+	}
+      }
+      else if (float_size == 8) {
+	// IEEE64BIT case
+	REAL *su3_p = (REAL *)su3;
+	REAL64 *input_p = (REAL64 *)( input+su3_size*(dd+Nd*linear) );
+	for(int cp_index=0; cp_index < mat_size; cp_index++) { 
+	  su3_p[cp_index] = (REAL)input_p[cp_index];
+	}
+      }
+      else { 
+	QDP_error_exit("Unknown mat size\n");
+      }
 
       /* Reconstruct the third column  if necessary */
       if (mat_size == 12) 
