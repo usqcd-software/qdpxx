@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.16 2004-02-09 16:03:26 bjoo Exp $
+// $Id: t_linalg.cc,v 1.17 2005-03-21 05:31:07 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -22,14 +22,14 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  XMLFileWriter nml("t_linalg.xml");
-  push(nml, "linalgTest");
+  XMLFileWriter xml("t_linalg.xml");
+  push(xml, "linalgTest");
 
-  push(nml,"lattis");
-  write(nml,"Nd", Nd);
-  write(nml,"Nc", Nc);
-  write(nml,"nrow", nrow);
-  pop(nml);
+  push(xml,"lattis");
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"nrow", nrow);
+  pop(xml);
 
   QDPIO::cout << "CLOCKS_PER_SEC = " << CLOCKS_PER_SEC << endl;
 
@@ -67,9 +67,9 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-  push(nml,"QDP_M_eq_M_times_M");
-  write(nml,"c", c);
-  pop(nml);
+  push(xml,"QDP_M_eq_M_times_M");
+  write(xml,"c", c);
+  pop(xml);
 #endif
   
   // Test  M=adj(M)*M
@@ -80,11 +80,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-  push(nml,"QDP_M_eq_Ma_times_M");
-  write(nml,"a",a);
-  write(nml,"b",b);
-  write(nml,"c",c);
-  pop(nml);
+  push(xml,"QDP_M_eq_Ma_times_M");
+  write(xml,"a",a);
+  write(xml,"b",b);
+  write(xml,"c",c);
+  pop(xml);
 #endif
   
   // Test  M=M*adj(M)
@@ -95,11 +95,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-  push(nml,"QDP_M_eq_M_times_Ma");
-  write(nml,"a",a);
-  write(nml,"b",b);
-  write(nml,"c",c);
-  pop(nml);
+  push(xml,"QDP_M_eq_M_times_Ma");
+  write(xml,"a",a);
+  write(xml,"b",b);
+  write(xml,"c",c);
+  pop(xml);
 #endif
 
  
@@ -111,11 +111,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-  push(nml,"QDP_M_eq_Ma_times_Ma");
-  write(nml,"a",a);
-  write(nml,"b",b);
-  write(nml,"c",c);
-  pop(nml);
+  push(xml,"QDP_M_eq_Ma_times_Ma");
+  write(xml,"a",a);
+  write(xml,"b",b);
+  write(xml,"c",c);
+  pop(xml);
 #endif
 
   
@@ -128,9 +128,9 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-  push(nml,"QDP_M_peq_M_times_M");
-  write(nml,"c",c);
-  pop(nml);
+  push(xml,"QDP_M_peq_M_times_M");
+  write(xml,"c",c);
+  pop(xml);
 #endif
 
 
@@ -162,9 +162,9 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
 #else
-  push(nml,"QDP_V_eq_M_times_V");
-  write(nml,"lv2",lv2);
-  pop(nml);
+  push(xml,"QDP_V_eq_M_times_V");
+  write(xml,"lv2",lv2);
+  pop(xml);
 #endif
 
 
@@ -176,9 +176,9 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
 #else
-  push(nml,"QDP_V_eq_Ma_times_V");
-  write(nml,"lv2",lv2);
-  pop(nml);
+  push(xml,"QDP_V_eq_Ma_times_V");
+  write(xml,"lv2",lv2);
+  pop(xml);
 #endif
 
 
@@ -205,9 +205,9 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 6 / tt << " Mflops" << endl;   // check the flop count
 #else
-  push(nml,"QDP_V_eq_V_plus_V");
-  write(nml,"lv3",lv3);
-  pop(nml);
+  push(xml,"QDP_V_eq_V_plus_V");
+  write(xml,"lv3",lv3);
+  pop(xml);
 #endif
 
 
@@ -239,9 +239,9 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
 #else
-  push(nml,"QDP_D_eq_M_times_D");
-  write(nml,"lf2",lf2);
-  pop(nml);
+  push(xml,"QDP_D_eq_M_times_D");
+  write(xml,"lf2",lf2);
+  pop(xml);
 #endif
 
   // Test LatticeDiracFermion = adj(LatticeColorMatrix) * LatticeDiracFermion
@@ -252,9 +252,9 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
 #else
-  push(nml,"QDP_D_eq_Ma_times_D");
-  write(nml,"lf2",lf2);
-  pop(nml);
+  push(xml,"QDP_D_eq_Ma_times_D");
+  write(xml,"lf2",lf2);
+  pop(xml);
 #endif
 
 
@@ -285,9 +285,9 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 #else
-  push(nml,"QDP_H_eq_M_times_H");
-  write(nml,"lh2", lh2);
-  pop(nml);
+  push(xml,"QDP_H_eq_M_times_H");
+  write(xml,"lh2", lh2);
+  pop(xml);
 #endif
 
 
@@ -299,13 +299,14 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 #else
-  push(nml,"QDP_H_eq_Ma_times_H");
-  write(nml,"lh2", lh2);
-  pop(nml);
+  push(xml,"QDP_H_eq_Ma_times_H");
+  write(xml,"lh2", lh2);
+  pop(xml);
 #endif
 
+  pop(xml);
+  xml.close();
 
-  pop(nml);
   // Time to bolt
   QDP_finalize();
 

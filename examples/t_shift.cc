@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_shift.cc,v 1.4 2004-12-10 12:02:08 bjoo Exp $
+// $Id: t_shift.cc,v 1.5 2005-03-21 05:31:08 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -47,7 +47,8 @@ int main(int argc, char *argv[])
       write(xml,"b", b);
       pop(xml);
     }
-      pop(xml);
+    pop(xml);
+    xml.close();
   }
 #endif
   

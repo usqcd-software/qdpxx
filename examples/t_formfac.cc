@@ -1,4 +1,4 @@
-// $Id: t_formfac.cc,v 1.16 2004-11-22 19:31:30 edwards Exp $
+// $Id: t_formfac.cc,v 1.17 2005-03-21 05:31:07 edwards Exp $
 /*! \file
  *  \brief Test the form-factor routine
  */
@@ -55,6 +55,7 @@ int main(int argc, char **argv)
   FormFac(u, quark_prop_1, quark_prop_2, t_source, t_sink, j_decay, xml);
 
   pop(xml);
+  xml.close();
 
   // Time to bolt
   QDP_finalize();

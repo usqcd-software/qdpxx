@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.22 2005-02-28 16:46:37 bjoo Exp $
+// $Id: t_qio.cc,v 1.23 2005-03-21 05:31:08 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -299,6 +299,7 @@ int main(int argc, char **argv)
 
 
   pop(xml_out);   // t_qio
+  xml_out.close();
 
   // Time to bolt
   QDP_finalize();

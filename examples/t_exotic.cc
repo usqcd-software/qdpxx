@@ -1,4 +1,4 @@
-// $Id: t_exotic.cc,v 1.7 2004-11-22 19:31:30 edwards Exp $
+// $Id: t_exotic.cc,v 1.8 2005-03-21 05:31:07 edwards Exp $
 /*! \file
  *  \brief Test various exotic qdp routines
  */
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
   }
 
   pop(xml);
-  xml.flush();
+  xml.close();
 
   // Time to bolt
   QDP_finalize();

@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.23 2004-11-22 19:31:31 edwards Exp $
+// $Id: t_qdp.cc,v 1.24 2005-03-21 05:31:07 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -196,6 +196,7 @@ int main(int argc, char **argv)
   write(xml,"chi", chi);
 
   pop(xml);
+  xml.close();
 
   // Time to bolt
   QDP_finalize();

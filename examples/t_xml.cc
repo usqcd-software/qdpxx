@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.23 2004-04-27 19:31:38 edwards Exp $
+// $Id: t_xml.cc,v 1.24 2005-03-21 05:31:08 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -62,6 +62,7 @@ int main(int argc, char **argv)
     pop(toxml);
 
     pop(toxml);
+    toxml.close();
   }
   catch(const string& e)
   {

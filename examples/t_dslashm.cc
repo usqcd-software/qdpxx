@@ -1,4 +1,4 @@
-// $Id: t_dslashm.cc,v 1.18 2004-11-22 19:31:30 edwards Exp $
+// $Id: t_dslashm.cc,v 1.19 2005-03-21 05:31:07 edwards Exp $
 /*! \file
  *  \brief Test the Wilson-Dirac operator (dslash)
  */
@@ -65,6 +65,7 @@ int main(int argc, char **argv)
   write(xml,"psi", psi);
   write(xml,"chi", chi);
   pop(xml);
+  xml.close();
 #endif
 
   // Time to bolt

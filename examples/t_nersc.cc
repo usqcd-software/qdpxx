@@ -1,4 +1,4 @@
-// $Id: t_nersc.cc,v 1.6 2004-02-11 10:33:09 bjoo Exp $
+// $Id: t_nersc.cc,v 1.7 2005-03-21 05:31:07 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
   }
 
   pop(xml);
+  xml.close();
 
   // Time to bolt
   QDP_finalize();
