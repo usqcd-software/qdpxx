@@ -225,15 +225,85 @@ pokeSpin(dest,src,int row)            : insert src into spin vector elem row
 
 Gauge and spin related functions
 
-\begin{verbatim}
-spinProject(QDPType psi, int dir, int isign)
-		    : applies spin projection  (1 + isign*gamma_\mu)*psi
-		      returning a half spin vector or matrix
+\begin{itemize}
+\item
+\verb|spinProject(QDPType psi, int dir, int isign)|\\
+Applies spin projection $(1 + isign*\gamma_\mu)$*\verb|psi|
+returning a half spin vector or matrix
 
-spinReconstruct(QDPType psi, int dir, int isign)
-		    : applies spin reconstruction from  (1 + isign*gamma_\mu)*psi
-		      returning a full spin vector or matrix
-\end{verbatim}
+\item
+\verb|spinReconstruct(QDPType psi, int dir, int isign)|\\
+Applies spin reconstruction of $(1 + isign*\gamma_\mu)$*\verb|psi|
+returning a full spin vector or matrix
+
+\item
+\verb|quarkContract13(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+This is used for diquark constructions. Eventually, it could handle larger
+Nc. 
+The numbers represent which spin index to sum over.
+   
+The sources and targets must all be propagators but not
+necessarily of the same lattice type. Effectively, one can use
+this to construct an anti-quark from a di-quark contraction. In
+explicit index form, the operation  \verb|quarkContract13| does
+
+$$target^{k' k}_{\alpha\beta} =
+ \epsilon^{i j k}\epsilon^{i' j' k'}* source1^{i i'}_{\rho\alpha}* source2^{j j'}_{\rho\beta}$$
+   
+and is (currently) only appropriate for Nc=3  (or SU(3)).
+
+\item
+\verb|quarkContract14(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+   
+$$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\alpha}*source2^{j j'}_{\beta\rho}$$
+
+\item
+\verb|quarkContract23(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+   
+$$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\alpha\rho}*source2^{j j'}_{\rho\beta}$$
+
+\item
+\verb|quarkContract24(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+   
+$$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\alpha}*source2^{j j'}_{\beta\rho}$$
+
+\item
+\verb|quarkContract12(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+$$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\rho}*source2^{j j'}_{\alpha\beta}$$
+
+\item
+\verb|quarkContract34(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+$$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\alpha\beta}*source2^{j j'}_{\rho\rho}$$
+
+\item
+\verb|colorContract(a,b,c)|\\
+Epsilon contract 3 color primitives and return a primitive scalar.
+The sources and targets must all be of the same primitive type (a matrix or vector)
+but not necessarily of the same lattice type. In
+explicit index form, the operation  colorContract does
+$$
+target =
+  \epsilon^{i j k}\epsilon^{i' j' k'}* source1^{i i'}* source2^{j j'}*source3^{k k'}
+$$
+or
+$$
+target =
+ \epsilon^{i j k}* source1^{i}* source2^{j}*source3^{k}
+$$
+and is (currently) only appropriate for Nc=3  (or SU(3)).
+
+\end{itemize}
 
 \bigskip
 

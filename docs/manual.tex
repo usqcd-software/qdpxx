@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.7.2
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.11.8
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -108,12 +108,12 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.7.2}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.8.11}
 }
 \author{Robert G. Edwards\\
 SciDAC Software Coordinating Committee}
 
-\date{Feb. 28, 2004}
+\date{March 4, 2005}
 
 \maketitle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2651,19 +2651,86 @@ Peeking and poking (accessors) into various component indices of objects.
 \subsection{More exotic functions:}
 \label{sec:otherfuncs}
 
-\noindent
-Applies spin projection  $(1 + isign*\gamma_\mu)$*\verb|psi|
+\begin{itemize}
+\item
+\verb|spinProject(QDPType psi, int dir, int isign)|\\
+Applies spin projection $(1 + isign*\gamma_\mu)$*\verb|psi|
 returning a half spin vector or matrix
-\begin{flushleft}
-\verb|spinProject(QDPType psi, int dir, int isign)|
-\end{flushleft}
 
-\noindent
+\item
+\verb|spinReconstruct(QDPType psi, int dir, int isign)|\\
 Applies spin reconstruction of $(1 + isign*\gamma_\mu)$*\verb|psi|
 returning a full spin vector or matrix
-\begin{flushleft}
-\verb|spinReconstruct(QDPType psi, int dir, int isign)|
-\end{flushleft}
+
+\item
+\verb|quarkContract13(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+This is used for diquark constructions. Eventually, it could handle larger
+Nc. 
+The numbers represent which spin index to sum over.
+   
+The sources and targets must all be propagators but not
+necessarily of the same lattice type. Effectively, one can use
+this to construct an anti-quark from a di-quark contraction. In
+explicit index form, the operation  \verb|quarkContract13| does
+
+$$target^{k' k}_{\alpha\beta} =
+ \epsilon^{i j k}\epsilon^{i' j' k'}* source1^{i i'}_{\rho\alpha}* source2^{j j'}_{\rho\beta}$$
+   
+and is (currently) only appropriate for Nc=3  (or SU(3)).
+
+\item
+\verb|quarkContract14(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+   
+$$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\alpha}*source2^{j j'}_{\beta\rho}$$
+
+\item
+\verb|quarkContract23(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+   
+$$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\alpha\rho}*source2^{j j'}_{\rho\beta}$$
+
+\item
+\verb|quarkContract24(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+   
+$$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\alpha}*source2^{j j'}_{\beta\rho}$$
+
+\item
+\verb|quarkContract12(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+$$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\rho}*source2^{j j'}_{\alpha\beta}$$
+
+\item
+\verb|quarkContract34(a,b)|\\
+Epsilon contract 2 quark propagators and return a quark propagator.
+$$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\alpha\beta}*source2^{j j'}_{\rho\rho}$$
+
+\item
+\verb|colorContract(a,b,c)|\\
+Epsilon contract 3 color primitives and return a primitive scalar.
+The sources and targets must all be of the same primitive type (a matrix or vector)
+but not necessarily of the same lattice type. In
+explicit index form, the operation  colorContract does
+$$
+target =
+  \epsilon^{i j k}\epsilon^{i' j' k'}* source1^{i i'}* source2^{j j'}*source3^{k k'}
+$$
+or
+$$
+target =
+ \epsilon^{i j k}* source1^{i}* source2^{j}*source3^{k}
+$$
+and is (currently) only appropriate for Nc=3  (or SU(3)).
+
+\end{itemize}
+
 
 \bigskip
 
