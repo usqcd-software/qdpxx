@@ -1,4 +1,4 @@
-// $Id: parscalar_layout.cc,v 1.6 2003-01-24 21:07:16 edwards Exp $
+// $Id: parscalar_layout.cc,v 1.7 2003-02-14 02:38:44 flemingg Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -17,7 +17,7 @@
 #include "qdp.h"
 #include "proto.h"
 
-#include "QMP.h"
+#include "qmp.h"
 
 #define  USE_LEXICO_LAYOUT
 #undef   USE_CB2_LAYOUT

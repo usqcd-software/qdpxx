@@ -1,4 +1,4 @@
-// $Id: parscalar_init.cc,v 1.1 2003-01-14 04:46:26 edwards Exp $
+// $Id: parscalar_init.cc,v 1.2 2003-02-14 02:34:12 flemingg Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -8,7 +8,7 @@
 
 
 #include "qdp.h"
-#include "QMP.h"
+#include "qmp.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
