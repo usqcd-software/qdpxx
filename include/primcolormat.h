@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primcolormat.h,v 1.6 2002-11-07 19:25:50 edwards Exp $
+// $Id: primcolormat.h,v 1.7 2002-11-28 01:48:23 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -249,69 +249,92 @@ pokeColor(PColorMatrix<T1,N>& l, const PScalar<T2>& r, int row, int col)
 //-----------------------------------------------------------------------------
 // Contraction for quark propagators
 // QuarkContract 
-//! dest  = QuarkContractXX_rep(Qprop1,Qprop2)
+//! dest  = QuarkContractXX(Qprop1,Qprop2)
 /*!
- * This is a really slow implementation for now - I just want it
- * to run and work. It was probably simpler just to completely 
- * unroll the loops which is what I want to do anyway...
+ * Performs:
+ *  \f$dest^{k2,k1} = \sum_{i1,i2,j1,j2} \epsilon^{i1,j1,k1}\epsilon^{i2,j2,k2} Q1^{i1,i2} Q2^{j1,j2}\f$
+ *
+ * This routine is completely unrolled for 3 colors
  */
 template<class T1, class T2>
 inline typename BinaryReturn<PColorMatrix<T1,3>, PColorMatrix<T2,3>, FnQuarkContractXX>::Type_t
-quarkcontractxx(const PColorMatrix<T1,3>& s1, const PColorMatrix<T2,3>& s2)
+quarkContractXX(const PColorMatrix<T1,3>& s1, const PColorMatrix<T2,3>& s2)
 {
   typename BinaryReturn<PColorMatrix<T1,3>, PColorMatrix<T2,3>, FnQuarkContractXX>::Type_t  d;
 
-  bool first = true;
-  int antisym[3][3][3] = {{{0,0,0},{0,0,1},{0,-1,0}},
-			  {{0,0,-1},{0,0,0},{1,0,0}},
-			  {{0,1,0},{-1,0,0},{0,0,0}}};
+  // Permutations: +(0,1,2)+(1,2,0)+(2,0,1)-(1,0,2)-(0,2,1)-(2,1,0)
 
-  for(int k1=0; k1 < 3; ++k1)
-    for(int j1=0; j1 < 3; ++j1)
-      for(int i1=0; i1 < 3; ++i1)
-      {
-	int e1 = antisym[i1][j1][k1];
-	
-	if (e1 != 0)
-	{
-	  for(int k2=0; k2 < 3; ++k2)
-	    for(int j2=0; j2 < 3; ++j2)
-	      for(int i2=0; i2 < 3; ++i2)
-	      {
-		int e2 = e1*antisym[i2][j2][k2];
+  // k1 = 0, k2 = 0
+  // d(0,0) = eps^{i1,j1,0}\epsilon^{i2,j2,0} Q1^{i1,i2} Q2^{j1,j2}
+  //       +(1,2,0),-(2,1,0)    +(1,2,0),-(2,1,0)
+  d.elem(0,0) = s1.elem(1,1)*s2.elem(2,2)
+              - s1.elem(1,2)*s2.elem(2,1)
+              - s1.elem(2,1)*s2.elem(1,2)
+              + s1.elem(2,2)*s2.elem(1,1);
 
-		if (e2 != 0)
-		{
-		  if (first)
-		  {
-		    switch(e2)
-		    {
-		    case 1:
-		      d.elem(k2,k1) = s1.elem(i1,j1) * s2.elem(i2,j2);
-		      break;
-		    case -1:
-		      d.elem(k2,k1) = -s1.elem(i1,j1) * s2.elem(i2,j2);
-		      break;
-		    }
+  // k1 = 1, k2 = 0
+  // d(0,1) = eps^{i1,j1,1}\epsilon^{i2,j2,0} Q1^{i1,i2} Q2^{j1,j2}
+  //       +(2,0,1),-(0,2,1)    +(1,2,0),-(2,1,0)    
+  d.elem(0,1) = s1.elem(2,1)*s2.elem(0,2)
+              - s1.elem(2,2)*s2.elem(0,1)
+              - s1.elem(0,1)*s2.elem(2,2)
+              + s1.elem(0,2)*s2.elem(2,1);
 
-		    first = false;
-		  }
-		  else
-		  {
-		    switch(e2)
-		    {
-		    case 1:
-		      d.elem(k2,k1) += s1.elem(i1,j1) * s2.elem(i2,j2);
-		      break;
-		    case -1:
-		      d.elem(k2,k1) -= s1.elem(i1,j1) * s2.elem(i2,j2);
-		      break;
-		    }
-		  }
-		}
-	      }
-	}
-      }
+  // k1 = 2, k2 = 0
+  // d(0,2) = eps^{i1,j1,2}\epsilon^{i2,j2,0} Q1^{i1,i2} Q2^{j1,j2}
+  //       +(0,1,2),-(1,0,2)    +(1,2,0),-(2,1,0)    
+  d.elem(0,2) = s1.elem(0,1)*s2.elem(1,2)
+              - s1.elem(0,2)*s2.elem(1,1)
+              - s1.elem(1,1)*s2.elem(0,2)
+              + s1.elem(1,2)*s2.elem(0,1);
+
+  // k1 = 0, k2 = 1
+  // d(1,0) = eps^{i1,j1,0}\epsilon^{i2,j2,0} Q1^{i1,i2} Q2^{j1,j2}
+  //       +(1,2,0),-(2,1,0)    +(2,0,1),-(0,2,1)
+  d.elem(1,0) = s1.elem(1,2)*s2.elem(2,0)
+              - s1.elem(1,0)*s2.elem(2,2)
+              - s1.elem(2,2)*s2.elem(1,0)
+              + s1.elem(2,0)*s2.elem(1,2);
+
+  // k1 = 1, k2 = 1
+  // d(1,1) = eps^{i1,j1,1}\epsilon^{i2,j2,0} Q1^{i1,i2} Q2^{j1,j2}
+  //       +(2,0,1),-(0,2,1)    +(2,0,1),-(0,2,1)
+  d.elem(1,1) = s1.elem(2,2)*s2.elem(0,0)
+              - s1.elem(2,0)*s2.elem(0,2)
+              - s1.elem(0,2)*s2.elem(2,0)
+              + s1.elem(0,0)*s2.elem(2,2);
+
+  // k1 = 2, k2 = 1
+  // d(1,1) = eps^{i1,j1,2}\epsilon^{i2,j2,0} Q1^{i1,i2} Q2^{j1,j2}
+  //       +(0,1,2),-(1,0,2)    +(2,0,1),-(0,2,1)
+  d.elem(1,2) = s1.elem(0,2)*s2.elem(1,0)
+              - s1.elem(0,0)*s2.elem(1,2)
+              - s1.elem(1,2)*s2.elem(0,0)
+              + s1.elem(1,0)*s2.elem(0,2);
+
+  // k1 = 0, k2 = 2
+  // d(2,0) = eps^{i1,j1,0}\epsilon^{i2,j2,0} Q1^{i1,i2} Q2^{j1,j2}
+  //       +(1,2,0),-(2,1,0)    +(0,1,2),-(1,0,2)
+  d.elem(2,0) = s1.elem(1,0)*s2.elem(2,1)
+              - s1.elem(1,1)*s2.elem(2,0)
+              - s1.elem(2,0)*s2.elem(1,1)
+              + s1.elem(2,1)*s2.elem(1,0);
+
+  // k1 = 1, k2 = 2
+  // d(2,1) = eps^{i1,j1,1}\epsilon^{i2,j2,0} Q1^{i1,i2} Q2^{j1,j2}
+  //       +(2,0,1),-(0,2,1)    +(0,1,2),-(1,0,2)
+  d.elem(2,1) = s1.elem(2,0)*s2.elem(0,1)
+              - s1.elem(2,1)*s2.elem(0,0)
+              - s1.elem(0,0)*s2.elem(2,1)
+              + s1.elem(0,1)*s2.elem(2,0);
+
+  // k1 = 2, k2 = 2
+  // d(2,2) = eps^{i1,j1,2}\epsilon^{i2,j2,0} Q1^{i1,i2} Q2^{j1,j2}
+  //       +(0,1,2),-(1,0,2)    +(0,1,2),-(1,0,2)
+  d.elem(2,2) = s1.elem(0,0)*s2.elem(1,1)
+              - s1.elem(0,1)*s2.elem(1,0)
+              - s1.elem(1,0)*s2.elem(0,1)
+              + s1.elem(1,1)*s2.elem(0,0);
 
   return d;
 }
