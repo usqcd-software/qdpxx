@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.11 2003-12-23 18:06:13 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.12 2004-04-07 09:34:49 bjoo Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -1025,12 +1025,18 @@ public:
 	// Eventually these declarations should move into d - the return object
 	typedef Site_t * T1ptr;
 	Site_t **dest = new T1ptr[Layout::sitesOnNode()];
+	if( dest == 0x0 ) { 
+	  QDP_error_exit("Unable to new memory in OLattice<T1>::operator()\n");
+        } 
 	QMP_msgmem_t msg[2];
 	QMP_msghandle_t mh_a[2], mh;
 
 	//------------
 	// yukky hack - transform all source to packed format
 	Site_t *ll = new Site_t[Layout::sitesOnNode()]; 
+        if ( ll == 0x0 ) { 
+	   QDP_error_exit("Unable to new memory in OLattice<T1>::operator()\n");
+	}
 	for(int i=0; i < Layout::sitesOnNode(); ++i) 
 	{
 	  int iouter = i >> INNER_LOG;

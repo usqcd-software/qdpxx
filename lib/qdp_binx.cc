@@ -1,4 +1,4 @@
-// $Id: qdp_binx.cc,v 1.4 2004-03-27 20:43:13 mcneile Exp $
+// $Id: qdp_binx.cc,v 1.5 2004-04-07 09:34:33 bjoo Exp $
 //
 // QDP data parallel interface to binx writers
 //
@@ -23,7 +23,15 @@ void BinxWriter::open(const std::string& p)
 {
   std::string p_xml = p + "_binx.xml" ; 
   tobinary = new BinaryWriter(p); 
+  if( tobinary == 0x0 ) {
+    QDP_error_exit("UNable to new tobinary in qdp_binx.cc\n");
+  }
+  
   toxml =  new XMLFileWriter(p_xml) ;
+  if( toxml == 0x0 ) { 
+    QDP_error_exit("Unable to new toxml in qdp_binx.cc\n");
+  }
+
   write_xml = true ;
 
   // write some binx stuff

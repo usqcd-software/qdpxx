@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.13 2004-03-24 16:43:52 mcneile Exp $
+// $Id: qdp_iogauge.cc,v 1.14 2004-04-07 09:34:33 bjoo Exp $
 //
 // QDP data parallel interface
 /*!
@@ -45,6 +45,10 @@ void archivGaugeInit(ArchivGauge_t& header)
     char *tmp = ctime(&now);
     int date_size = strlen(tmp);
     char *datetime = new char[date_size+1];
+    if( datetime == 0x0 ) { 
+      QDP_error_exit("Unable to allocate datetime in qdp_iogauge.cc\n");
+    }
+
     strcpy(datetime,ctime(&now));
 
     for(int i=0; i < date_size; ++i)

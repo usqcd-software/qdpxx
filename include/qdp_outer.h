@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.30 2004-03-21 23:16:09 bjoo Exp $
+// $Id: qdp_outer.h,v 1.31 2004-04-07 09:34:49 bjoo Exp $
 
 #include "qdp_config.h"
 
@@ -411,6 +411,9 @@ private:
       }
 #else 
       F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
+      if (F_orig == 0x0) { 
+	QDP_error_exit("Unable to new memory in alloc mem in qdp_outer.h");
+      }
 #endif
       F = (T*)(((unsigned int)F_orig + (QDP_ALIGNMENT_SIZE-1)) & ~(QDP_ALIGNMENT_SIZE-1));
 

@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_specific.cc,v 1.10 2003-09-23 16:54:12 edwards Exp $
+// $Id: qdp_scalarvecsite_specific.cc,v 1.11 2004-04-07 09:34:33 bjoo Exp $
 
 /*! @file
  * @brief Scalarvec-like architecture specific routines
@@ -357,9 +357,13 @@ void read(NmlReader& nml, const string& s, string& d)
   Internal::broadcast(lleng);
 
   // Now every node can alloc space for string
-  if (! Layout::primaryNode()) 
+  if (! Layout::primaryNode()) {
     dd_tmp = new char[lleng];
-  
+    if( dd_tmp == 0x0 ) { 
+      QDP_error_exit("Unable to allocate dd_tmp\n");
+    }
+
+  }
   // Now broadcast char array out to all nodes
   Internal::broadcast((void *)dd_tmp, lleng);
 

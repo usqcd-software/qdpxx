@@ -1,4 +1,4 @@
-// $Id: qdp_random.cc,v 1.7 2003-10-09 18:28:04 edwards Exp $
+// $Id: qdp_random.cc,v 1.8 2004-04-07 09:34:33 bjoo Exp $
 //
 // Random number generator support
 
@@ -146,6 +146,9 @@ namespace RNG
     }
 
     lattice_ran_mult = new LatticeSeed;
+    if( lattice_ran_mult == 0x0 ) { 
+      QDP_error_exit("Unable to allocate ran_mult\n");
+    }
 
     *lattice_ran_mult = lattice_ran_mult_tmp;
     QDPIO::cout << "Finished init of RNG" << endl;

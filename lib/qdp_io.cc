@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.17 2003-09-23 16:21:14 edwards Exp $
+// $Id: qdp_io.cc,v 1.18 2004-04-07 09:34:33 bjoo Exp $
 //
 // QDP data parallel interface
 //
@@ -84,6 +84,10 @@ void TextReader::read(std::string& input)
 
   // Now every node can alloc space for string
   dd_tmp = new char[lleng];
+  if( dd_tmp == 0x0 ) { 
+    QDP_error_exit("Unable to allocate dd_tmp in qdp_io.cc\n");
+  }
+
   if (Layout::primaryNode())
     memcpy(dd_tmp, input.c_str(), lleng);
   
@@ -998,6 +1002,10 @@ BinaryReader& operator>>(BinaryReader& bin, bool& input)
 void BinaryReader::read(string& input, size_t maxBytes)
 {
   char *str = new char[maxBytes];
+  if( str == 0x0 ) { 
+    QDP_error_exit("Couldnt new str in qdp_io.cc\n");
+  }
+
   size_t n;
 
   if (Layout::primaryNode())

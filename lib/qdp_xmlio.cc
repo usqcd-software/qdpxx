@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.26 2003-09-10 16:58:45 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.27 2004-04-07 09:34:33 bjoo Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -129,6 +129,10 @@ void XMLReader::get(const std::string& xpath, string& result)
 
   // Now every node can alloc space for string
   dd_tmp = new char[lleng];
+  if( dd_tmp == 0x0 ) { 
+    QDP_error_exit("Unable to allocate dd_tmp\n");
+  }
+
   if (Layout::primaryNode())
     memcpy(dd_tmp, result.c_str(), lleng);
   

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.cc,v 1.5 2004-03-29 21:29:31 edwards Exp $
+// $Id: qdp_stdio.cc,v 1.6 2004-04-07 09:34:33 bjoo Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -67,6 +67,10 @@ StandardInputStream& StandardInputStream::operator>>(std::string& input)
 
   // Now every node can alloc space for string
   dd_tmp = new char[lleng];
+  if( dd_tmp == 0x0 ) { 
+    QDP_error_exit("Failed to allocate dd_tmp\n");
+  }
+
   if (Layout::primaryNode())
     memcpy(dd_tmp, input.c_str(), lleng);
   

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_filebuf.cc,v 1.5 2003-07-21 21:15:24 edwards Exp $
+// $Id: qdp_filebuf.cc,v 1.6 2004-04-07 09:34:33 bjoo Exp $
 
 /*! @file
  * @brief Remote file support
@@ -18,9 +18,12 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-
 #include "qdp_filebuf.h"
 
+namespace QDP { 
+extern void QDP_error_exit(const char *format, ...);
+};
+	
 namespace QDPUtil
 {
 
@@ -152,6 +155,9 @@ RemoteInputFileBuf::RemoteInputFileBuf()
 
   bufferSize = 50;    // size of the data buffer
   buffer = new char[bufferSize];  // data buffer
+  if( buffer == 0x0 ){
+    QDP::QDP_error_exit("Unable to new buffer in qdp_filebuf\n");
+  }
 
   setg (buffer+4,     // beginning of putback area
 	buffer+4,     // read position

@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.16 2004-03-27 04:02:04 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.17 2004-04-07 09:34:33 bjoo Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -339,6 +339,9 @@ void writeOLattice(BinaryWriter& bin,
 {
   size_t tot_size = size*nmemb;
   char *recv_buf = new char[tot_size];
+  if( recv_buf == 0x0 ) { 
+    QDP_error_exit("Unable to allocate recv_buf\n");
+  }
 
   // Find the location of each site and send to primary node
   int old_node = 0;
@@ -393,6 +396,10 @@ void writeOLattice(BinaryWriter& bin,
 {
   size_t tot_size = size*nmemb;
   char *recv_buf = new char[tot_size];
+  if( recv_buf == 0x0 ) { 
+    QDP_error_exit("Unable to allocate recvbuf\n");
+  }
+
 
   // Send site to primary node
   int node   = Layout::nodeNumber(coord);
@@ -435,6 +442,10 @@ void readOLattice(BinaryReader& bin,
 {
   size_t tot_size = size*nmemb;
   char *recv_buf = new char[tot_size];
+  if( recv_buf == 0x0 ) { 
+    QDP_error_exit("Unable to allocate recvbuf\n");
+  }
+
 
   // Find the location of each site and send to primary node
   for(int site=0; site < Layout::vol(); ++site)
@@ -477,6 +488,10 @@ void readOLattice(BinaryReader& bin,
 {
   size_t tot_size = size*nmemb;
   char *recv_buf = new char[tot_size];
+  if( recv_buf == 0x0 ) {
+    QDP_error_exit("Unable to allocate recv_buf\n");
+  }
+
 
   // Find the location of each site and send to primary node
   int node   = Layout::nodeNumber(coord);
@@ -526,7 +541,16 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
   size_t su3_size = size*mat_size;
   size_t tot_size = su3_size*Nd;
   char  *input = new char[tot_size*Layout::sitesOnNode()];  // keep another copy in input buffers
+  if( input == 0x0 ) { 
+    QDP_error_exit("Unable to allocate input\n");
+  }
+
+
   char  *recv_buf = new char[tot_size];
+  if( recv_buf == 0x0 ) { 
+    QDP_error_exit("Unable to allocate recv_buf\n");
+  }
+
 
   // Find the location of each site and send to primary node
   for(int site=0; site < Layout::vol(); ++site)
@@ -629,6 +653,10 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
   size_t su3_size = size*mat_size;
   size_t tot_size = su3_size*Nd;
   char *recv_buf = new char[tot_size];
+  if( recv_buf == 0x0 ) { 
+    QDP_error_exit("Unable to allocate recv_buf\n");
+  }
+
 
   multi1d<multi1d<ColorMatrix> > sa(Nd);   // extract gauge fields
 
