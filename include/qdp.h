@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.41 2003-10-20 20:16:42 edwards Exp $
+// $Id: qdp.h,v 1.42 2003-10-22 02:47:27 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -148,7 +148,7 @@ QDP_END_NAMESPACE();
 #include "qdp_outersubtype.h"
 
 #if defined(ARCH_SCALAR) || defined(ARCH_PARSCALAR)
-#include "qdp_defs.h"
+#include "qdp_dwdefs.h"
 
 #elif defined(ARCH_SCALARVEC) || defined(ARCH_PARSCALARVEC)
 #include "qdp_scalarvecsite_defs.h"
