@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.11 2003-04-23 04:46:02 edwards Exp $
+// $Id: io.cc,v 1.12 2003-04-24 05:33:44 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -155,6 +155,32 @@ NmlReader& push(NmlReader& nml, const string& s) {return nml.push(s);}
 //! Pop a namelist group
 NmlReader& pop(NmlReader& nml) {return nml.pop();}
 
+
+//! Function overload read of  multi1d<int>
+NmlReader& read(NmlReader& nml, const string& s, multi1d<int>& d)
+{
+  for(int i=0; i < d.size(); ++i)
+    read(nml, s, d[i], i);
+  return nml;
+}
+
+//! Function overload read of  multi1d<float>
+NmlReader& read(NmlReader& nml, const string& s, multi1d<float>& d)
+{
+  for(int i=0; i < d.size(); ++i)
+    read(nml, s, d[i], i);
+  return nml;
+}
+
+//! Function overload read of  multi1d<double>
+NmlReader& read(NmlReader& nml, const string& s, multi1d<double>& d)
+{
+  for(int i=0; i < d.size(); ++i)
+    read(nml, s, d[i], i);
+  return nml;
+}
+
+
 //! Function overload read of  Integer
 NmlReader& read(NmlReader& nml, const string& s, Integer& d)
 {
@@ -181,6 +207,48 @@ NmlReader& read(NmlReader& nml, const string& s, Double& d)
   WordType<Double>::Type_t  dd;
   read(nml,s,dd);
   d = dd;
+
+  return nml;
+}
+
+//! Function overload read of  multi1d<Integer>
+NmlReader& read(NmlReader& nml, const string& s, multi1d<Integer>& d)
+{
+  WordType<Integer>::Type_t  dd;
+
+  for(int i=0; i < d.size(); ++i)
+  {
+    read(nml,s,dd,i);
+    d[i] = dd;
+  }
+
+  return nml;
+}
+
+//! Function overload read of  multi1d<Real>
+NmlReader& read(NmlReader& nml, const string& s, multi1d<Real>& d)
+{
+  WordType<Real>::Type_t  dd;
+
+  for(int i=0; i < d.size(); ++i)
+  {
+    read(nml,s,dd,i);
+    d[i] = dd;
+  }
+
+  return nml;
+}
+
+//! Function overload read of  multi1d<Double>
+NmlReader& read(NmlReader& nml, const string& s, multi1d<Double>& d)
+{
+  WordType<Double>::Type_t  dd;
+
+  for(int i=0; i < d.size(); ++i)
+  {
+    read(nml,s,dd,i);
+    d[i] = dd;
+  }
 
   return nml;
 }
