@@ -1,4 +1,4 @@
-AC_INIT(qmp, 1.1, bj@ph.ed.ac.uk)
+AC_INIT(qdp++, 0.18, edwards@jlab.org)
 
 #
 # Options that may or may not be required. There is probably a 
