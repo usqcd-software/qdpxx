@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.6 2003-08-13 18:57:06 edwards Exp $
+// $Id: t_linalg.cc,v 1.7 2003-08-13 18:57:30 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -39,8 +39,6 @@ int main(int argc, char *argv[])
 
   int icnt;
   double tt;
-
-#define TEST_OPS
 
 #if defined(TEST_OPS)
   // Test c=a*b
