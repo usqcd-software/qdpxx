@@ -1,3 +1,8 @@
+06/16/2003 -- Robert Edwards
+
+	Version 1.4.7: changed Nml,XML,Txt,Bin reader/writers to use a more generic
+        implementation. Now works on odd-ball lattice and subgrid sizes.
+
 06/09/2003 -- Robert Edwards
 
 	Version 1.4.6: standardized XML output instances.
