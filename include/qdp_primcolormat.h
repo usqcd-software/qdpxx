@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.7 2004-07-02 21:53:03 edwards Exp $
+// $Id: qdp_primcolormat.h,v 1.8 2004-07-06 01:53:29 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -301,13 +301,13 @@ traceColorMultiply(const PColorMatrix<T1,N>& l, const PColorMatrix<T2,N>& r)
   typename BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnTraceColorMultiply>::Type_t  d;
 
   // The traceColor is eaten here
-  d.elem() = s1.elem(0,0) * s2.elem(0,0);
+  d.elem() = l.elem(0,0) * r.elem(0,0);
   for(int k=1; k < N; ++k)
-    d.elem() += s1.elem(0,k) * s2.elem(k,0);
+    d.elem() += l.elem(0,k) * r.elem(k,0);
 
   for(int j=1; j < N; ++j)
     for(int k=0; k < N; ++k)
-      d.elem() += s1.elem(j,k) * s2.elem(k,j);
+      d.elem() += l.elem(j,k) * r.elem(k,j);
 
   return d;
 }
@@ -325,9 +325,9 @@ traceColorMultiply(const PColorMatrix<T1,N>& l, const PScalar<T2>& r)
   typename BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnTraceColorMultiply>::Type_t  d;
 
   // The traceColor is eaten here
-  d.elem() = s1.elem(0,0) * s2.elem();
+  d.elem() = l.elem(0,0) * r.elem();
   for(int k=1; k < N; ++k)
-    d.elem() += s1.elem(k,k) * s2.elem();
+    d.elem() += l.elem(k,k) * r.elem();
 
   return d;
 }
@@ -345,9 +345,9 @@ traceColorMultiply(const PScalar<T1>& l, const PColorMatrix<T2,N>& r)
   typename BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnTraceColorMultiply>::Type_t  d;
 
   // The traceColor is eaten here
-  d.elem() = s1.elem() * s2.elem(0,0);
+  d.elem() = l.elem() * r.elem(0,0);
   for(int k=1; k < N; ++k)
-    d.elem() += s1.elem() * s2.elem(k,k);
+    d.elem() += l.elem() * r.elem(k,k);
 
   return d;
 }
