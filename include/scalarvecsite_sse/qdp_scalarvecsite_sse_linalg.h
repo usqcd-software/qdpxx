@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.1 2004-08-09 22:03:10 edwards Exp $
+// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.2 2004-08-10 03:43:51 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -26,8 +26,9 @@ QDP_BEGIN_NAMESPACE(QDP);
 typedef ILattice<REAL32,4>             ILatticeFloat;
 typedef RComplex<ILattice<REAL32,4> >  RComplexFloat; 
 
-#if 1
+#include "scalarvecsite_sse/ssevec_mult_nn.h"
 
+#if 1
 
 //--------------------------------------------------------------------------------------
 // Optimized version of  
@@ -65,7 +66,7 @@ operator*(const ILatticeFloat& l, const ILatticeFloat& r)
   typedef BinaryReturn<ILatticeFloat, ILatticeFloat, OpMultiply>::Type_t  Ret_t;
 
 //  cout << "I*I" << endl;
-  return Ret_t(__builtin_ia32_subps(l.elem_v(), r.elem_v()));
+  return Ret_t(__builtin_ia32_mulps(l.elem_v(), r.elem_v()));
 }
 
 
@@ -174,7 +175,6 @@ adjMultiplyAdj(const RComplexFloat& l, const RComplexFloat& r)
 
 
 //--------------------------------------------------------------------------------------
-#include "scalarvecsite_sse/ssevec_mult_nn.h"
 
 
 // Optimized version of  
