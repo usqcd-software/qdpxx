@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: proto.h,v 1.4 2002-11-02 04:05:23 edwards Exp $
+// $Id: proto.h,v 1.5 2002-11-04 04:36:29 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -71,6 +71,9 @@ size_t bfwrite(void *ptr, size_t size, size_t nmemb, FILE *stream);
 
 //! Read a QCD (NERSC) Archive format gauge field
 void readArchiv(multi1d<LatticeGauge>& u, char file[]);
+
+//! Read a SZIN format gauge field
+void readSzin(multi1d<LatticeGauge>& u, int cfg_io_location, char file[], Seed& seed_old);
 
 //! Read a SZIN quark propagator
 void readSzinQprop(LatticePropagator& q, char file[]);
