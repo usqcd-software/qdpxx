@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: proto.h,v 1.7 2002-12-14 01:12:35 edwards Exp $
+// $Id: proto.h,v 1.8 2003-01-20 16:16:02 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -19,6 +19,9 @@ multi1d<int> uniquify_list(const multi1d<int>& ll);
 
 //! Initializer for subsets
 void InitDefaultSets();
+
+//! Initializer for maps
+void InitDefaultMaps();
 
 //! Su2_extract: r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]  under a subset
 /*! 
