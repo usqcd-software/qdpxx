@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.21 2004-08-11 03:41:33 edwards Exp $
+// $Id: qdp_inner.h,v 1.22 2004-08-11 04:20:15 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -2081,7 +2081,24 @@ operator/(const IScalar<T1>& l, const ILattice<T2,N>& r)
 }
 
 
-// ILattice << IScalar
+//! ILattice << ILattice
+template<class T1, class T2, int N>
+struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpLeftShift> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpLeftShift>::Type_t, N>  Type_t;
+};
+ 
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpLeftShift>::Type_t
+operator<<(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpLeftShift>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) << r.elem(i);
+  return d;
+}
+
+//! ILattice << IScalar
 template<class T1, class T2, int N>
 struct BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpLeftShift> {
   typedef ILattice<typename BinaryReturn<T1, T2, OpLeftShift>::Type_t, N>  Type_t;
@@ -2098,6 +2115,40 @@ operator<<(const ILattice<T1,N>& l, const IScalar<T2>& r)
   return d;
 }
 
+//! IScalar << ILattice
+template<class T1, class T2, int N>
+struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpLeftShift> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpLeftShift>::Type_t, N>  Type_t;
+};
+ 
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpLeftShift>::Type_t
+operator<<(const IScalar<T1>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpLeftShift>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem() << r.elem(i);
+  return d;
+}
+
+
+//! ILattice >> ILattice
+template<class T1, class T2, int N>
+struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpRightShift> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpRightShift>::Type_t, N>  Type_t;
+};
+ 
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpRightShift>::Type_t
+operator>>(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpRightShift>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) >> r.elem(i);
+  return d;
+}
 
 // ILattice >> IScalar
 template<class T1, class T2, int N>
@@ -2116,8 +2167,47 @@ operator>>(const ILattice<T1,N>& l, const IScalar<T2>& r)
   return d;
 }
 
+// IScalar >> ILattice
+template<class T1, class T2, int N>
+struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpRightShift> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpRightShift>::Type_t, N>  Type_t;
+};
+ 
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, OpRightShift>::Type_t
+operator>>(const IScalar<T1>& l, const IScalar<T2>& r)
+{
+  typename BinaryReturn<IScalar<T1>, IScalar<T2>, OpRightShift>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem() >> r.elem(i);
+  return d;
+}
+
+
+// ILattice % ILattice
+template<class T1, class T2, int N>
+struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpMod> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpMod>::Type_t, N>  Type_t;
+};
+ 
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpMod>::Type_t
+operator%(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpMod>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) % r.elem(i);
+  return d;
+}
 
 // ILattice % IScalar
+template<class T1, class T2, int N>
+struct BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpMod> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpMod>::Type_t, N>  Type_t;
+};
+ 
 template<class T1, class T2, int N>
 inline typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpMod>::Type_t
 operator%(const ILattice<T1,N>& l, const IScalar<T2>& r)
@@ -2129,8 +2219,47 @@ operator%(const ILattice<T1,N>& l, const IScalar<T2>& r)
   return d;
 }
 
+// IScalar % ILattice
+template<class T1, class T2, int N>
+struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpMod> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpMod>::Type_t, N>  Type_t;
+};
+ 
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpMod>::Type_t
+operator%(const IScalar<T1>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpMod>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem() % r.elem(i);
+  return d;
+}
+
+
+// ILattice ^ ILattice
+template<class T1, class T2, int N>
+struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpBitwiseXor> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpBitwiseXor>::Type_t, N>  Type_t;
+};
+ 
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpBitwiseXor>::Type_t
+operator^(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpBitwiseXor>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) ^ r.elem(i);
+  return d;
+}
 
 // ILattice ^ IScalar
+template<class T1, class T2, int N>
+struct BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpBitwiseXor> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpBitwiseXor>::Type_t, N>  Type_t;
+};
+ 
 template<class T1, class T2, int N>
 inline typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpBitwiseXor>::Type_t
 operator^(const ILattice<T1,N>& l, const IScalar<T2>& r)
@@ -2142,8 +2271,47 @@ operator^(const ILattice<T1,N>& l, const IScalar<T2>& r)
   return d;
 }
 
+// IScalar ^ ILattice
+template<class T1, class T2, int N>
+struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseXor> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpBitwiseXor>::Type_t, N>  Type_t;
+};
+ 
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseXor>::Type_t
+operator^(const IScalar<T1>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseXor>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem() ^ r.elem(i);
+  return d;
+}
+
 
 // ILattice & IScalar
+template<class T1, class T2, int N>
+struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpBitwiseAnd> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpBitwiseAnd>::Type_t, N>  Type_t;
+};
+ 
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpBitwiseAnd>::Type_t
+operator&(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpBitwiseAnd>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) & r.elem(i);
+  return d;
+}
+
+// ILattice & IScalar
+template<class T1, class T2, int N>
+struct BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpBitwiseAnd> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpBitwiseAnd>::Type_t, N>  Type_t;
+};
+ 
 template<class T1, class T2, int N>
 inline typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpBitwiseAnd>::Type_t
 operator&(const ILattice<T1,N>& l, const IScalar<T2>& r)
@@ -2155,8 +2323,47 @@ operator&(const ILattice<T1,N>& l, const IScalar<T2>& r)
   return d;
 }
 
+// IScalar & ILattice
+template<class T1, class T2, int N>
+struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseAnd> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpBitwiseAnd>::Type_t, N>  Type_t;
+};
+ 
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseAnd>::Type_t
+operator&(const IScalar<T1>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseAnd>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) & r.elem(i);
+  return d;
+}
+
 
 // ILattice | IScalar
+template<class T1, class T2, int N>
+struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpBitwiseOr> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpBitwiseOr>::Type_t, N>  Type_t;
+};
+ 
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpBitwiseOr>::Type_t
+operator|(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpBitwiseOr>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) | r.elem(i);
+  return d;
+}
+
+// ILattice | IScalar
+template<class T1, class T2, int N>
+struct BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpBitwiseOr> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpBitwiseOr>::Type_t, N>  Type_t;
+};
+ 
 template<class T1, class T2, int N>
 inline typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpBitwiseOr>::Type_t
 operator|(const ILattice<T1,N>& l, const IScalar<T2>& r)
@@ -2165,6 +2372,23 @@ operator|(const ILattice<T1,N>& l, const IScalar<T2>& r)
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) | r.elem();
+  return d;
+}
+
+// IScalar | ILattice
+template<class T1, class T2, int N>
+struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseOr> {
+  typedef ILattice<typename BinaryReturn<T1, T2, OpBitwiseOr>::Type_t, N>  Type_t;
+};
+ 
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseOr>::Type_t
+operator|(const IScalar<T1>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseOr>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem() | r.elem(i);
   return d;
 }
 
