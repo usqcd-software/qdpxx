@@ -105,7 +105,6 @@ ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
 am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
 am__include = @am__include@
-am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 bindir = @bindir@
 build_alias = @build_alias@
@@ -139,28 +138,26 @@ AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
 
 lib_LIBRARIES = libqdp.a
 
-HDRS = defs.h forward.h globalfuncs.h inner.h io.h layout.h multi.h \
-       newops.h outer.h outersubtype.h params.h primcolormat.h \
-       primcolorvec.h primgamma.h primitive.h primmatrix.h \
-       primscalar.h primseed.h primspinmat.h primspinvec.h primvector.h \
-       qdp_util.h qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdpsubtype.h \
-       qdptype.h random.h reality.h simpleword.h map.h \
-       specializations.h subset.h traits.h word.h qdpio.h \
-       qio.h
+HDRS = qdp_defs.h qdp_forward.h qdp_globalfuncs.h qdp_inner.h qdp_io.h qdp_layout.h qdp_multi.h \
+       qdp_newops.h qdp_outer.h qdp_outersubtype.h qdp_params.h qdp_primcolormat.h \
+       qdp_primcolorvec.h qdp_primgamma.h qdp_primitive.h qdp_primmatrix.h \
+       qdp_primscalar.h qdp_primseed.h qdp_primspinmat.h qdp_primspinvec.h qdp_primvector.h \
+       qdp_util.h qdp_qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdp_qdpsubtype.h \
+       qdp_qdptype.h qdp_random.h qdp_reality.h qdp_simpleword.h qdp_map.h \
+       qdp_specializations.h qdp_subset.h qdp_traits.h qdp_word.h qdp_qdpio.h \
+       qio.h qdp_xmlio.h xml_simplewriter.h 
 
 
-
-# qdp_xmlio.h xml_simplewriter.h 
-GENERIC_SRCS = map.cc subset.cc random.cc qdp.cc layout.cc io.cc iogauge.cc \
-               byteorder.cc util.cc qdpio.cc qdp_xmlio.cc
+GENERIC_SRCS = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc qdp_layout.cc qdp_io.cc qdp_iogauge.cc \
+               qdp_byteorder.cc qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc
 
 
-SCALAR_SRCS = scalar_init.cc scalar_layout.cc scalar_specific.cc \
-              ../include/scalar_specific.h
+SCALAR_SRCS = qdp_scalar_init.cc qdp_scalar_layout.cc qdp_scalar_specific.cc \
+              ../include/qdp_scalar_specific.h
 
 
-PARSCALAR_SRCS = parscalar_init.cc parscalar_layout.cc parscalar_specific.cc \
-                 ../include/parscalar_specific.h
+PARSCALAR_SRCS = qdp_parscalar_init.cc qdp_parscalar_layout.cc qdp_parscalar_specific.cc \
+                 ../include/qdp_parscalar_specific.h
 
 
 @ARCH_PARSCALAR_TRUE@libqdp_a_SOURCES = $(GENERIC_SRCS) $(PARSCALAR_SRCS)
@@ -178,27 +175,30 @@ LIBRARIES = $(lib_LIBRARIES)
 
 libqdp_a_AR = $(AR) cru
 libqdp_a_LIBADD =
-am__libqdp_a_SOURCES_DIST = map.cc subset.cc random.cc qdp.cc layout.cc \
-	io.cc iogauge.cc byteorder.cc util.cc qdpio.cc qdp_xmlio.cc \
-	parscalar_init.cc parscalar_layout.cc parscalar_specific.cc \
-	../include/parscalar_specific.h scalar_init.cc scalar_layout.cc \
-	scalar_specific.cc ../include/scalar_specific.h
-am__objects_1 = map.$(OBJEXT) subset.$(OBJEXT) random.$(OBJEXT) \
-	qdp.$(OBJEXT) layout.$(OBJEXT) io.$(OBJEXT) iogauge.$(OBJEXT) \
-	byteorder.$(OBJEXT) util.$(OBJEXT) qdpio.$(OBJEXT) \
-	qdp_xmlio.$(OBJEXT)
-am__objects_2 = parscalar_init.$(OBJEXT) parscalar_layout.$(OBJEXT) \
-	parscalar_specific.$(OBJEXT)
-am__objects_3 = scalar_init.$(OBJEXT) scalar_layout.$(OBJEXT) \
-	scalar_specific.$(OBJEXT)
+am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
+	qdp.cc qdp_layout.cc qdp_io.cc qdp_iogauge.cc qdp_byteorder.cc \
+	qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc qdp_parscalar_init.cc \
+	qdp_parscalar_layout.cc qdp_parscalar_specific.cc \
+	../include/qdp_parscalar_specific.h qdp_scalar_init.cc \
+	qdp_scalar_layout.cc qdp_scalar_specific.cc \
+	../include/qdp_scalar_specific.h
+am__objects_1 = qdp_map.$(OBJEXT) qdp_subset.$(OBJEXT) \
+	qdp_random.$(OBJEXT) qdp.$(OBJEXT) qdp_layout.$(OBJEXT) \
+	qdp_io.$(OBJEXT) qdp_iogauge.$(OBJEXT) qdp_byteorder.$(OBJEXT) \
+	qdp_util.$(OBJEXT) qdp_qdpio.$(OBJEXT) qdp_xmlio.$(OBJEXT)
+am__objects_2 = qdp_parscalar_init.$(OBJEXT) \
+	qdp_parscalar_layout.$(OBJEXT) qdp_parscalar_specific.$(OBJEXT)
+am__objects_3 = qdp_scalar_init.$(OBJEXT) qdp_scalar_layout.$(OBJEXT) \
+	qdp_scalar_specific.$(OBJEXT)
 @ARCH_PARSCALAR_TRUE@am_libqdp_a_OBJECTS = $(am__objects_1) \
 @ARCH_PARSCALAR_TRUE@	$(am__objects_2)
 @ARCH_SCALAR_TRUE@am_libqdp_a_OBJECTS = $(am__objects_1) \
 @ARCH_SCALAR_TRUE@	$(am__objects_3)
-am__EXTRA_libqdp_a_SOURCES_DIST = scalar_init.cc scalar_layout.cc \
-	scalar_specific.cc ../include/scalar_specific.h \
-	parscalar_init.cc parscalar_layout.cc parscalar_specific.cc \
-	../include/parscalar_specific.h
+am__EXTRA_libqdp_a_SOURCES_DIST = qdp_scalar_init.cc \
+	qdp_scalar_layout.cc qdp_scalar_specific.cc \
+	../include/qdp_scalar_specific.h qdp_parscalar_init.cc \
+	qdp_parscalar_layout.cc qdp_parscalar_specific.cc \
+	../include/qdp_parscalar_specific.h
 am__objects_4 =
 nodist_libqdp_a_OBJECTS = $(am__objects_4)
 libqdp_a_OBJECTS = $(am_libqdp_a_OBJECTS) $(nodist_libqdp_a_OBJECTS)
@@ -206,17 +206,18 @@ libqdp_a_OBJECTS = $(am_libqdp_a_OBJECTS) $(nodist_libqdp_a_OBJECTS)
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/byteorder.Po ./$(DEPDIR)/io.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/iogauge.Po ./$(DEPDIR)/layout.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/map.Po ./$(DEPDIR)/parscalar_init.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/parscalar_layout.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/parscalar_specific.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qdp.Po ./$(DEPDIR)/qdp_xmlio.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qdpio.Po ./$(DEPDIR)/random.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/scalar_init.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/scalar_layout.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/scalar_specific.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/subset.Po ./$(DEPDIR)/util.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/qdp.Po ./$(DEPDIR)/qdp_byteorder.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_io.Po ./$(DEPDIR)/qdp_iogauge.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_layout.Po ./$(DEPDIR)/qdp_map.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_parscalar_init.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_parscalar_layout.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_parscalar_specific.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_qdpio.Po ./$(DEPDIR)/qdp_random.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_scalar_init.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_scalar_layout.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_scalar_specific.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_subset.Po ./$(DEPDIR)/qdp_util.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_xmlio.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -283,23 +284,23 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/byteorder.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iogauge.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/layout.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parscalar_init.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parscalar_layout.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parscalar_specific.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_byteorder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_iogauge.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_layout.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_map.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_parscalar_init.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_parscalar_layout.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_parscalar_specific.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_qdpio.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_random.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_scalar_init.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_scalar_layout.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_scalar_specific.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_subset.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_xmlio.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdpio.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_init.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_layout.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_specific.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/subset.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
