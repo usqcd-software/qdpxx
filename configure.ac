@@ -32,13 +32,6 @@ AC_ARG_ENABLE(Ns,
               ac_Ns=4)
 
 
-dnl --enable-max-volume
-AC_ARG_ENABLE(max-volume,
-	      AC_HELP_STRING([--enable-max-volume=<max no of sites>, default is 2048 ]),
-	      ac_max_volume=$enableval,
-	      ac_max_volume=2048)
-
-
 dnl--enable-parallel-arch argument
 AC_ARG_ENABLE(parallel-arch,
 	      AC_HELP_STRING([--enable-parallel-arch=<arch>],
@@ -55,9 +48,6 @@ AC_MSG_NOTICE([ Configuring QDP++ for Nc = ${ac_Nc} ])
 
 dnl Tell the user about Ns
 AC_MSG_NOTICE([ Configuring QDP for Ns = ${ac_Ns} ])
-
-dnl Tell the user about the Maximum volume -- this should go later
-AC_MSG_NOTICE([ Configuring Maximum volume = ${ac_max_volume} sites])
 
 dnl Balint Joo 13/12/2002 
 dnl Options for finding out where MPI/GM/QMP is
@@ -237,7 +227,6 @@ AC_SUBST(ARCHDEF_SUBSTITUTION)
 AC_SUBST(ac_Nc)
 AC_SUBST(ac_Nd)
 AC_SUBST(ac_Ns)
-AC_SUBST(ac_max_volume)
 
 
 ##################################

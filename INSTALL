@@ -24,7 +24,6 @@ Some important options for QDP++ are
 	--enable-Nc=<no of colours> 
 	--enable-Nd=<no of spacetime dimensions>
 	--enable-Ns=<no of spin components>
-	--enable-max-volume=<max volume sites>
 
 The values QMP_CXXFLAGS, QMP_LDFLAGS, QMP_LIBS, QMP_COMMS_CXXFLAGS,
 QMP_COMMS_LDFLAGS and QMP_COMMS_LIBS can also take their values from
@@ -141,10 +140,6 @@ The other individual switches:
 
 --enable-Nd=<Nd>                  Specify the number of spacetime dimensions
 				  (default is Nd=4)
-
---enable-max-volume=<sites>       Specify the maximum number of lattice sites
-			          this flag should go eventually (default is
-				  2048)
 
 Specifying a compiler:
 
@@ -268,8 +263,7 @@ Here is an example
 
 -- with MPICH installed in /Home/bj/scratch/mpich-1.2.4
 
--- building for parallel scalar architecture with Nc=3, Nd=4, Ns=4, 
-	max-volume = 2048 sites (defaults)
+-- building for parallel scalar architecture with Nc=3, Nd=4, Ns=4
 
 -- building the examples and the documentation
 
