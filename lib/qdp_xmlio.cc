@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.15 2003-06-24 02:29:03 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.16 2003-06-24 03:17:49 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -740,9 +740,9 @@ XMLArrayWriter::~XMLArrayWriter()
 
 void XMLArrayWriter::openArray(const string& tagname)
 {
-  QDP_info("openArray: stack_empty = %d  tagname=%s",
-	   (contextStack.empty()) ? 1 : 0,
-	   tagname.c_str());
+//  QDP_info("openArray: stack_empty = %d  tagname=%s",
+//	   (contextStack.empty()) ? 1 : 0,
+//	   tagname.c_str());
 
   if (initP)
     QDP_error_exit("XMLArrayWriter: calling openArray twice");
@@ -764,7 +764,7 @@ void XMLArrayWriter::openArray(const string& tagname)
 
 void XMLArrayWriter::closeArray()
 {
-  QDP_info("closeArray");
+//  QDP_info("closeArray");
 
   if (! initP)
     QDP_error_exit("XMLArrayWriter: calling closeArray but not initialized");
@@ -786,9 +786,9 @@ void XMLArrayWriter::closeArray()
 
 void XMLArrayWriter::openStruct(const string& tagname)
 {
-  QDP_info("openStruct: stack_empty = %d  tagname=%s",
-	   (contextStack.empty()) ? 1 : 0,
-	   tagname.c_str());
+//  QDP_info("openStruct: stack_empty = %d  tagname=%s",
+//	   (contextStack.empty()) ? 1 : 0,
+//	   tagname.c_str());
 
   if (! arrayTag)
   {
@@ -825,8 +825,8 @@ void XMLArrayWriter::openStruct(const string& tagname)
 
 void XMLArrayWriter::closeStruct()
 {
-  QDP_info("closeStruct: stack_empty = %d",
-	   (contextStack.empty()) ? 1 : 0);
+//  QDP_info("closeStruct: stack_empty = %d",
+//	   (contextStack.empty()) ? 1 : 0);
 
   if (! initP)
     QDP_error_exit("XMLArrayWriter: calling closeStruct but not initialized");
@@ -849,7 +849,7 @@ void XMLArrayWriter::closeStruct()
   if (contextStack.empty())
   {
     elements_written++;
-    QDP_info("finished writing element %d",elements_written);
+//    QDP_info("finished writing element %d",elements_written);
   }
 }
 
