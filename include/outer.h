@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.10 2002-10-28 03:08:44 edwards Exp $
+// $Id: outer.h,v 1.11 2002-11-04 04:45:01 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -147,7 +147,8 @@ template<class T>
 BinaryWriter& write(BinaryWriter& bin, const OScalar<T>& d)
 {
   if (Layout::primaryNode()) 
-    fwrite((void *)d.elem(), sizeof(T), 1, bin.get()); 
+    bfwrite((void *)&(d.elem()), sizeof(typename WordType<T>::Type_t), 
+	    sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get());
 
   return bin;
 }
