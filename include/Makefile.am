@@ -25,8 +25,8 @@ SSE_HDRS = qdp_scalarsite_sse.h \
 	$(ssedir)/sse_mult_na.h \
 	$(ssedir)/sse_mult_nn.h \
 	$(ssedir)/sse_s_m_a_mat.h \
-	$(ssedir)/sse_s_m_a_vec.h
-
+	$(ssedir)/sse_s_m_a_vec.h \
+	qdp_scalarvecsite_sse.h
 
 # All the include files - avoid flattening of dirs by using nobase
 nobase_include_HEADERS = \
@@ -72,6 +72,8 @@ nobase_include_HEADERS = \
 	        qdp_parscalar_specific.h \
 	        qdp_scalarvec_specific.h \
 	        qdp_parscalarvec_specific.h \
+		qdp_scalarsite_defs.h \
+		qdp_scalarvecsite_defs.h \
                 qdp_filebuf.h \
                 $(PETE_HDRS) \
 		$(SSE_HDRS)
