@@ -1,4 +1,4 @@
-// $Id: qdp_random.cc,v 1.9 2004-07-27 05:36:12 edwards Exp $
+// $Id: qdp_random.cc,v 1.10 2004-07-29 01:08:19 edwards Exp $
 //
 // Random number generator support
 
@@ -69,12 +69,8 @@ namespace RNG
 
     ran_mult = seed_tmp0;
 
-    /* Allocate space for the lexicographic ordering of the lattice sites */
-    /*   and initialize. */
-    /* NOTE!!!: increment the size by 1 to hold the lexicographic coordinate */
-    /*   at site  LATTICEVOLUME-1 (assumes ordering starts at zero). */
-    /* Since the lattice size is a power of 2, adding one will not overflow */
-    /*   onto requiring more bits. */
+    // Find the number of bits it takes to represent the total lattice volume.
+    // NOTE: there are no lattice size restrictions here.
     int nbits = numbits(Layout::vol());
 
     /* Get the lattice coordinate of each site (note the origin is 0) and
@@ -125,14 +121,21 @@ namespace RNG
       laa = laamult;
     }
 
-    /* Calculate separately the multiplier for the highest lexicographically ordered site. */
+    // Calculate separately the multiplier for the highest lexicographically ordered site.
+    // NOTE: I'm changing the meaning here slightly, but in an important way.
+    // Technically, ran_mult_n = ran_mult^{vol} . Instead, I'm going to throw
+    // away an rng call after every lattice call. So, I will DEFINE
+    //
+    //   ran_mult_n = ran_mult^{vol + 1}
+    //
     bool bit;
     Seed aa;
     Seed aamult;
 
     int ibit = Layout::vol();
     aa = ran_mult;
-    ran_mult_n = 1;
+//    ran_mult_n = 1;    // produces def    ran_mult_n = ran_mult^{vol}
+    ran_mult_n = ran_mult;   // produces def  ran_mult_n = ran_mult^{vol+1}
 
     for(int i=0; i<nbits; ++i)
     {
