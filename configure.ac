@@ -72,12 +72,12 @@ AC_ARG_ENABLE(sse2,
 
 
 dnl Tell the user about SSE
-if test "X${ac_sse}X" == "X1X" ; then
+if test "X${ac_sse}X" = "X1X" ; then
   AC_MSG_NOTICE([Configuring QDP++ to use Streaming SIMD Extensions (SSE)])
 fi
 
 dnl Tell the user about SSE2
-if test "X${ac_sse2}X" == "X1X" ; then
+if test "X${ac_sse2}X" = "X1X" ; then
   AC_MSG_NOTICE([Configuring QDP++ to use Streaming SIMD Extensions (SSE2)])
 fi
 
