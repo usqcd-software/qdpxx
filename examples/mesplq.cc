@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.1 2002-09-12 18:22:17 edwards Exp $
+// $Id: mesplq.cc,v 1.2 2002-09-14 19:48:46 edwards Exp $
 //
 //! Return the value of the average plaquette normalized to 1
 /*!
@@ -28,27 +28,21 @@ void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq,
     for(int nu=0; nu < mu; ++nu)
     {
 #if 0
-      LatticeGauge tmp_0, tmp_1;
-      LatticeReal wplaq_tmp;
-      Double tmp;
-  
       /* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
-      tmp_0 = shift(u[nu],FORWARD,mu) * conj(shift(u[mu],FORWARD,nu));
+      LatticeGauge tmp_0 = shift(u[nu],FORWARD,mu) * conj(shift(u[mu],FORWARD,nu));
 
       /* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
-      tmp_1 = tmp_0 * conj(u[nu]);
+      LatticeGauge tmp_1 = tmp_0 * conj(u[nu]);
 
-      /* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
-      wplaq_tmp = real(trace(u[mu]*tmp_1));
-
-      tmp = sum(wplaq_tmp);
+      /* tmp = sum(tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu))) */
+      Double tmp = sum(real(trace(u[mu]*tmp_1)));
 
 #else
       /* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
       /* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
       /* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
-      Double tmp = innerproduct_real(u[nu],
-				     LatticeGauge(u[mu]*(shift(u[nu],FORWARD,mu)*conj(shift(u[mu],FORWARD,nu)))));
+      Double tmp = real(innerproduct(u[nu],
+				     u[mu]*(shift(u[nu],FORWARD,mu)*conj(shift(u[mu],FORWARD,nu)))));
 #endif
       w_plaq += tmp;
 

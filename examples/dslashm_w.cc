@@ -1,4 +1,4 @@
-// $Id: dslashm_w.cc,v 1.2 2002-09-14 17:08:02 edwards Exp $
+// $Id: dslashm_w.cc,v 1.3 2002-09-14 19:48:46 edwards Exp $
 
 /*! 
  * DSLASH
@@ -89,22 +89,13 @@ void dslash(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFe
   }
   
 
-  /*  Recontruct the bottom two spinor components from the top two */
-#if 1
+  // Recontruct the bottom two spinor components from the top two
+  // NOTE: the loop is not unrolled - it should be all in a single line for
+  // optimal performance
   zero(chi);
   for(int mu = 0; mu < Nd; ++mu)
   {
     chi += spinReconstruct(a2[F_SWAP][mu],mu,-isign);
     chi += spinReconstruct(a2[B_SWAP][mu],mu,+isign);
   }
-#else
-  chi  = spinReconstruct(a2[F_SWAP][0],0,-isign);
-  chi += spinReconstruct(a2[B_SWAP][0],0,+isign);
-
-  for(int mu = 1; mu < Nd; ++mu)
-  {
-    chi += spinReconstruct(a2[F_SWAP][mu],mu,-isign);
-    chi += spinReconstruct(a2[B_SWAP][mu],mu,+isign);
-  }
-#endif
 }

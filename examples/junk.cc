@@ -1,4 +1,4 @@
-// $Id: junk.cc,v 1.1 2002-09-12 18:22:17 edwards Exp $
+// $Id: junk.cc,v 1.2 2002-09-14 19:48:46 edwards Exp $
 
 #include "tests.h"
 
@@ -13,15 +13,15 @@ void junk(LatticeGauge& b3, const LatticeGauge& b1, const LatticeGauge& b2, cons
   b3 = b1 * b2;
   Double sum;
 
-  sum = sumsq(b1);
-  cerr << "Sumsq before shift = " << sum << endl;
+  sum = norm2(b1);
+  cerr << "Norm2 before shift = " << sum << endl;
 
   b3 = shift(b1,FORWARD,0);
 
-  sum = sumsq(b3);
-  cerr << "Sumsq after shift = " << sum << endl;
+  sum = norm2(b3);
+  cerr << "Norm2 after shift = " << sum << endl;
 
-  sum = innerproduct_real(b3,b3);
+  sum = innerproductReal(b3,b3);
   cerr << "Inner product = " << sum << endl;
 
   DComplex dcsum;

@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.2 2002-09-13 18:32:53 edwards Exp $
+// $Id: t_qdp.cc,v 1.3 2002-09-14 19:48:46 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -107,8 +107,11 @@ int main(int argc, char **argv)
   WRITE_NAMELIST(cerr,b3);
   Pop(cerr);
   
+#if 1
   junk(b3,b1,b2,all);
+#endif
 
+#if 1
   // Test comparisons and mask operations
   LatticeBoolean lbtmp1, lbtmp2;
   LatticeReal lftmp1, lftmp2;
@@ -116,8 +119,8 @@ int main(int argc, char **argv)
   random(lftmp1);
   random(lftmp2);
   lbtmp1 = lftmp1 < lftmp2;
+#endif
 
-#if 1
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
   cerr << "Initialize vector of latticegauge\n";
@@ -133,6 +136,7 @@ int main(int argc, char **argv)
   cerr << "w_plaq = " << w_plaq << endl;
   cerr << "link = " << link << endl;
 
+#if 1
   // Play with gamma matrices - they should be implemented...
   //! Test out propagators
   LatticePropagator quark_prop_1, quark_prop_2;
@@ -151,7 +155,7 @@ int main(int argc, char **argv)
     for(int t=0; t < length; ++t)
       cerr << "meson_prop["<<n<<","<<t<<"] = " << meson_prop[n][t] << endl;
 
-#if 0
+#if 1
   multi2d<Complex> baryon_prop(9, length);
   baryon(quark_prop_1, baryon_prop, t_source, j_decay, 1);
   for(int n=0; n < 9; ++n)
@@ -167,9 +171,10 @@ int main(int argc, char **argv)
   zero(chi);
   dslash(chi, u, psi, +1, 0);
 
-  cerr << "psi = " << psi << endl;
-  cerr << "chi = " << chi << endl;
+  WRITE_NAMELIST(cerr,psi);
+  WRITE_NAMELIST(cerr,chi);
 
+#if 1
   //! SU(N) fiddling
   cerr << "Fiddle with SU(2) matrices\n" << endl;
   LatticeReal r_0,r_1,r_2,r_3;
@@ -194,4 +199,5 @@ int main(int argc, char **argv)
 
     cerr << "u[1] = " << u[1] << endl;
   }
+#endif
 }
