@@ -24,9 +24,6 @@
 /* Define to 1 if you have the `QMP_error_exit' function. */
 #undef HAVE_QMP_ERROR_EXIT
 
-/* Define to 1 if you have the `QMP_route' function. */
-#undef HAVE_QMP_ROUTE
-
 /* Define to 1 if you have the `QMP_verbose' function. */
 #undef HAVE_QMP_VERBOSE
 
