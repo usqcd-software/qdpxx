@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.10 2003-06-20 03:04:33 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.11 2003-06-20 18:18:24 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -203,6 +203,7 @@ XMLWriter& operator<<(XMLWriter& xml, const XMLBufferWriter& d);
 
 // Time to build a telephone book of basic primitives
 void write(XMLWriter& xml, const std::string& s, const std::string& output);
+void write(XMLWriter& xml, const std::string& s, const char* output);
 void write(XMLWriter& xml, const std::string& s, const char& output);
 void write(XMLWriter& xml, const std::string& s, const int& output);
 void write(XMLWriter& xml, const std::string& s, const unsigned int& output);
@@ -216,6 +217,7 @@ void write(XMLWriter& xml, const std::string& s, const bool& output);
 
 // Versions that do not print a name
 XMLWriter& operator<<(XMLWriter& xml, const std::string& output);
+XMLWriter& operator<<(XMLWriter& xml, const char* output);
 XMLWriter& operator<<(XMLWriter& xml, const char& output);
 XMLWriter& operator<<(XMLWriter& xml, const int& output);
 XMLWriter& operator<<(XMLWriter& xml, const unsigned int& output);

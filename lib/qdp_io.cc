@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.12 2003-06-16 21:11:47 edwards Exp $
+// $Id: qdp_io.cc,v 1.13 2003-06-20 18:18:24 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -246,61 +246,67 @@ TextWriter& operator<<(TextWriter& txt, const std::string& output)
   return txt;
 }
 
-TextWriter& operator<<(TextWriter& txt, const char& output)
+TextWriter& operator<<(TextWriter& txt, const char* output)
+{
+  writePrimitive<std::string>(txt, std::string(output));
+  return txt;
+}
+
+TextWriter& operator<<(TextWriter& txt, char output)
 {
   writePrimitive<char>(txt, output);
   return txt;
 }
 
-TextWriter& operator<<(TextWriter& txt, const int& output)
+TextWriter& operator<<(TextWriter& txt, int output)
 {
   writePrimitive<int>(txt, output);
   return txt;
 }
 
-TextWriter& operator<<(TextWriter& txt, const unsigned int& output)
+TextWriter& operator<<(TextWriter& txt, unsigned int output)
 {
   writePrimitive<unsigned int>(txt, output);
   return txt;
 }
 
-TextWriter& operator<<(TextWriter& txt, const short int& output)
+TextWriter& operator<<(TextWriter& txt, short int output)
 {
   writePrimitive<short int>(txt, output);
   return txt;
 }
 
-TextWriter& operator<<(TextWriter& txt, const unsigned short int& output)
+TextWriter& operator<<(TextWriter& txt, unsigned short int output)
 {
   writePrimitive<unsigned short int>(txt, output);
   return txt;
 }
 
-TextWriter& operator<<(TextWriter& txt, const long int& output)
+TextWriter& operator<<(TextWriter& txt, long int output)
 {
   writePrimitive<long int>(txt, output);
   return txt;
 }
 
-TextWriter& operator<<(TextWriter& txt, const unsigned long int& output)
+TextWriter& operator<<(TextWriter& txt, unsigned long int output)
 {
   writePrimitive<unsigned long int>(txt, output);
   return txt;
 }
 
-TextWriter& operator<<(TextWriter& txt, const float& output)
+TextWriter& operator<<(TextWriter& txt, float output)
 {
   writePrimitive<float>(txt, output);
   return txt;
 }
 
-TextWriter& operator<<(TextWriter& txt, const double& output)
+TextWriter& operator<<(TextWriter& txt, double output)
 {
   writePrimitive<double>(txt, output);
   return txt;
 }
 
-TextWriter& operator<<(TextWriter& txt, const bool& output)
+TextWriter& operator<<(TextWriter& txt, bool output)
 {
   writePrimitive<bool>(txt, output);
   return txt;
@@ -592,7 +598,7 @@ void pop(NmlWriter& nml) {nml.pop();}
 
 
 //! Write a comment
-NmlWriter& operator<<(NmlWriter& nml, const char* s)
+NmlWriter& operator<<(NmlWriter& nml, const std::string& s)
 {
   if (Layout::primaryNode()) 
     nml.get() << "! " << s << endl; 
@@ -601,7 +607,7 @@ NmlWriter& operator<<(NmlWriter& nml, const char* s)
 }
 
 //! Write a comment
-NmlWriter& operator<<(NmlWriter& nml, const std::string& s)
+NmlWriter& operator<<(NmlWriter& nml, const char* s)
 {
   if (Layout::primaryNode()) 
     nml.get() << "! " << s << endl; 
@@ -624,27 +630,63 @@ void write(NmlWriter& nml, const std::string& s, const std::string& d)
     nml.get() << " " << s << " = \"" << d << "\" ,\n";
 }
 
-void write(NmlWriter& nml, const std::string& s, const int& d)
+void write(NmlWriter& nml, const std::string& s, const char* d)
+{
+  if (Layout::primaryNode()) 
+    nml.get() << " " << s << " = \"" << d << "\" ,\n";
+}
+
+void write(NmlWriter& nml, const std::string& s, char d)
+{
+  writePrimitive<char>(nml, s, d);
+}
+
+void write(NmlWriter& nml, const std::string& s, unsigned char d)
+{
+  writePrimitive<unsigned char>(nml, s, d);
+}
+
+void write(NmlWriter& nml, const std::string& s, int d)
 {
   writePrimitive<int>(nml, s, d);
 }
 
-void write(NmlWriter& nml, const std::string& s, const unsigned int& d)
+void write(NmlWriter& nml, const std::string& s, unsigned int d)
 {
   writePrimitive<unsigned int>(nml, s, d);
 }
 
-void write(NmlWriter& nml, const std::string& s, const float& d)
+void write(NmlWriter& nml, const std::string& s, short int d)
+{
+  writePrimitive<short int>(nml, s, d);
+}
+
+void write(NmlWriter& nml, const std::string& s, unsigned short int d)
+{
+  writePrimitive<unsigned short int>(nml, s, d);
+}
+
+void write(NmlWriter& nml, const std::string& s, long int d)
+{
+  writePrimitive<long int>(nml, s, d);
+}
+
+void write(NmlWriter& nml, const std::string& s, unsigned long int d)
+{
+  writePrimitive<unsigned long int>(nml, s, d);
+}
+
+void write(NmlWriter& nml, const std::string& s, float d)
 {
   writePrimitive<float>(nml, s, d);
 }
 
-void write(NmlWriter& nml, const std::string& s, const double& d)
+void write(NmlWriter& nml, const std::string& s, double d)
 {
   writePrimitive<double>(nml, s, d);
 }
 
-void write(NmlWriter& nml, const std::string& s, const bool& d)
+void write(NmlWriter& nml, const std::string& s, bool d)
 {
   writePrimitive<bool>(nml, s, d);
 }
@@ -660,31 +702,31 @@ void writePrimitive(NmlWriter& nml, const T& d)
 }
 
 // Ascii output
-NmlWriter& operator<<(NmlWriter& nml, const int& d)
+NmlWriter& operator<<(NmlWriter& nml, int d)
 {
   writePrimitive<int>(nml,d);
   return nml;
 }
 
-NmlWriter& operator<<(NmlWriter& nml, const unsigned int& d)
+NmlWriter& operator<<(NmlWriter& nml, unsigned int d)
 {
   writePrimitive<unsigned int>(nml,d);
   return nml;
 }
 
-NmlWriter& operator<<(NmlWriter& nml, const float& d)
+NmlWriter& operator<<(NmlWriter& nml, float d)
 {
   writePrimitive<float>(nml,d);
   return nml;
 }
 
-NmlWriter& operator<<(NmlWriter& nml, const double& d)
+NmlWriter& operator<<(NmlWriter& nml, double d)
 {
   writePrimitive<double>(nml,d);
   return nml;
 }
 
-NmlWriter& operator<<(NmlWriter& nml, const bool& d)
+NmlWriter& operator<<(NmlWriter& nml, bool d)
 {
   writePrimitive<bool>(nml,d);
   return nml;
@@ -1027,52 +1069,57 @@ void write(BinaryWriter& bin, const std::string& output)
   bin.write(output);
 }
 
-void write(BinaryWriter& bin, const char& output)
+void write(BinaryWriter& bin, const char* output)
+{
+  bin.write(std::string(output));
+}
+
+void write(BinaryWriter& bin, char output)
 {
   bin.write(output);
 }
 
-void write(BinaryWriter& bin, const int& output)
+void write(BinaryWriter& bin, int output)
 {
   bin.write(output);
 }
 
-void write(BinaryWriter& bin, const unsigned int& output)
+void write(BinaryWriter& bin, unsigned int output)
 {
   bin.write(output);
 }
 
-void write(BinaryWriter& bin, const short int& output)
+void write(BinaryWriter& bin, short int output)
 {
   bin.write(output);
 }
 
-void write(BinaryWriter& bin, const unsigned short int& output)
+void write(BinaryWriter& bin, unsigned short int output)
 {
   bin.write(output);
 }
 
-void write(BinaryWriter& bin, const long int& output)
+void write(BinaryWriter& bin, long int output)
 {
   bin.write(output);
 }
 
-void write(BinaryWriter& bin, const unsigned long int& output)
+void write(BinaryWriter& bin, unsigned long int output)
 {
   bin.write(output);
 }
 
-void write(BinaryWriter& bin, const float& output)
+void write(BinaryWriter& bin, float output)
 {
   bin.write(output);
 }
 
-void write(BinaryWriter& bin, const double& output)
+void write(BinaryWriter& bin, double output)
 {
   bin.write(output);
 }
 
-void write(BinaryWriter& bin, const bool& output)
+void write(BinaryWriter& bin, bool output)
 {
   bin.write(output);
 }
@@ -1084,55 +1131,61 @@ BinaryWriter& operator<<(BinaryWriter& bin, const std::string& output)
   return bin;
 }
 
-BinaryWriter& operator<<(BinaryWriter& bin, const int& output)
+BinaryWriter& operator<<(BinaryWriter& bin, const char* output)
 {
   write(bin, output);
   return bin;
 }
 
-BinaryWriter& operator<<(BinaryWriter& bin, const unsigned int& output)
+BinaryWriter& operator<<(BinaryWriter& bin, int output)
 {
   write(bin, output);
   return bin;
 }
 
-BinaryWriter& operator<<(BinaryWriter& bin, const short int& output)
+BinaryWriter& operator<<(BinaryWriter& bin, unsigned int output)
 {
   write(bin, output);
   return bin;
 }
 
-BinaryWriter& operator<<(BinaryWriter& bin, const unsigned short int& output)
+BinaryWriter& operator<<(BinaryWriter& bin, short int output)
 {
   write(bin, output);
   return bin;
 }
 
-BinaryWriter& operator<<(BinaryWriter& bin, const long int& output)
+BinaryWriter& operator<<(BinaryWriter& bin, unsigned short int output)
 {
   write(bin, output);
   return bin;
 }
 
-BinaryWriter& operator<<(BinaryWriter& bin, const unsigned long int& output)
+BinaryWriter& operator<<(BinaryWriter& bin, long int output)
 {
   write(bin, output);
   return bin;
 }
 
-BinaryWriter& operator<<(BinaryWriter& bin, const float& output)
+BinaryWriter& operator<<(BinaryWriter& bin, unsigned long int output)
 {
   write(bin, output);
   return bin;
 }
 
-BinaryWriter& operator<<(BinaryWriter& bin, const double& output)
+BinaryWriter& operator<<(BinaryWriter& bin, float output)
 {
   write(bin, output);
   return bin;
 }
 
-BinaryWriter& operator<<(BinaryWriter& bin, const bool& output)
+BinaryWriter& operator<<(BinaryWriter& bin, double output)
+{
+  write(bin, output);
+  return bin;
+}
+
+BinaryWriter& operator<<(BinaryWriter& bin, bool output)
 {
   write(bin, output);
   return bin;
@@ -1143,6 +1196,11 @@ void BinaryWriter::write(const string& output)
   size_t n = output.length();
   writeArray(output.c_str(), sizeof(char), n);
   write('\n');   // Convention is to write a line terminator
+}
+
+void BinaryWriter::write(const char* output)
+{
+  write(string(output));
 }
 
 void BinaryWriter::write(const char& output) 

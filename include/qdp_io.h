@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.9 2003-06-08 04:51:30 edwards Exp $
+// $Id: qdp_io.h,v 1.10 2003-06-20 18:18:24 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -89,16 +89,17 @@ private:
 
 // Different bindings for same operators
 TextWriter& operator<<(TextWriter& bin, const std::string& output);
-TextWriter& operator<<(TextWriter& bin, const char& output);
-TextWriter& operator<<(TextWriter& bin, const int& output);
-TextWriter& operator<<(TextWriter& bin, const unsigned int& output);
-TextWriter& operator<<(TextWriter& bin, const short int& output);
-TextWriter& operator<<(TextWriter& bin, const unsigned short int& output);
-TextWriter& operator<<(TextWriter& bin, const long int& output);
-TextWriter& operator<<(TextWriter& bin, const unsigned long int& output);
-TextWriter& operator<<(TextWriter& bin, const float& output);
-TextWriter& operator<<(TextWriter& bin, const double& output);
-TextWriter& operator<<(TextWriter& bin, const bool& output);
+TextWriter& operator<<(TextWriter& bin, const char* output);
+TextWriter& operator<<(TextWriter& bin, char output);
+TextWriter& operator<<(TextWriter& bin, int output);
+TextWriter& operator<<(TextWriter& bin, unsigned int output);
+TextWriter& operator<<(TextWriter& bin, short int output);
+TextWriter& operator<<(TextWriter& bin, unsigned short int output);
+TextWriter& operator<<(TextWriter& bin, long int output);
+TextWriter& operator<<(TextWriter& bin, unsigned long int output);
+TextWriter& operator<<(TextWriter& bin, float output);
+TextWriter& operator<<(TextWriter& bin, double output);
+TextWriter& operator<<(TextWriter& bin, bool output);
 
 
 
@@ -229,11 +230,18 @@ NmlWriter& operator<<(NmlWriter& nml, const char* s);
 
 // Primitive writers
 void write(NmlWriter& nml, const std::string& s, const std::string& d);
-void write(NmlWriter& nml, const std::string& s, const int& d);
-void write(NmlWriter& nml, const std::string& s, const unsigned int& d);
-void write(NmlWriter& nml, const std::string& s, const float& d);
-void write(NmlWriter& nml, const std::string& s, const double& d);
-void write(NmlWriter& nml, const std::string& s, const bool& d);
+void write(NmlWriter& nml, const std::string& s, const char* d);
+void write(NmlWriter& nml, const std::string& s, char d);
+void write(NmlWriter& nml, const std::string& s, unsigned char d);
+void write(NmlWriter& nml, const std::string& s, int d);
+void write(NmlWriter& nml, const std::string& s, unsigned int d);
+void write(NmlWriter& nml, const std::string& s, short int d);
+void write(NmlWriter& nml, const std::string& s, unsigned short int d);
+void write(NmlWriter& nml, const std::string& s, long int d);
+void write(NmlWriter& nml, const std::string& s, unsigned long int d);
+void write(NmlWriter& nml, const std::string& s, float d);
+void write(NmlWriter& nml, const std::string& s, double d);
+void write(NmlWriter& nml, const std::string& s, bool d);
 
 //! Write an outer scalar namelist element
 /*! The second arg is the string for the variable name */
@@ -289,11 +297,11 @@ void write(NmlWriter& nml, const std::string& s, const multi2d<T>& s1)
 }
 
 // Different bindings for same operators
-NmlWriter& operator<<(NmlWriter& nml, const float& d);
-NmlWriter& operator<<(NmlWriter& nml, const int& d);
-NmlWriter& operator<<(NmlWriter& nml, const unsigned int& d);
-NmlWriter& operator<<(NmlWriter& nml, const double& d);
-NmlWriter& operator<<(NmlWriter& nml, const bool& d);
+NmlWriter& operator<<(NmlWriter& nml, float d);
+NmlWriter& operator<<(NmlWriter& nml, int d);
+NmlWriter& operator<<(NmlWriter& nml, unsigned int d);
+NmlWriter& operator<<(NmlWriter& nml, double d);
+NmlWriter& operator<<(NmlWriter& nml, bool d);
 
 
 #define WRITE_NAMELIST(nml,a) write(nml,#a,a)
@@ -352,29 +360,29 @@ private:
 };
 
 // Telephone book of basic primitives
-void read(BinaryReader& bin, std::string& output, size_t maxBytes);
-void read(BinaryReader& bin, char& output);
-void read(BinaryReader& bin, int& output);
-void read(BinaryReader& bin, unsigned int& output);
-void read(BinaryReader& bin, short int& output);
-void read(BinaryReader& bin, unsigned short int& output);
-void read(BinaryReader& bin, long int& output);
-void read(BinaryReader& bin, unsigned long int& output);
-void read(BinaryReader& bin, float& output);
-void read(BinaryReader& bin, double& output);
-void read(BinaryReader& bin, bool& output);
+void read(BinaryReader& bin, std::string& input, size_t maxBytes);
+void read(BinaryReader& bin, char& input);
+void read(BinaryReader& bin, int& input);
+void read(BinaryReader& bin, unsigned int& input);
+void read(BinaryReader& bin, short int& input);
+void read(BinaryReader& bin, unsigned short int& input);
+void read(BinaryReader& bin, long int& input);
+void read(BinaryReader& bin, unsigned long int& input);
+void read(BinaryReader& bin, float& input);
+void read(BinaryReader& bin, double& input);
+void read(BinaryReader& bin, bool& input);
 
 // Different bindings for same operators
-BinaryReader& operator>>(BinaryReader& bin, char& output);
-BinaryReader& operator>>(BinaryReader& bin, int& output);
-BinaryReader& operator>>(BinaryReader& bin, unsigned int& output);
-BinaryReader& operator>>(BinaryReader& bin, short int& output);
-BinaryReader& operator>>(BinaryReader& bin, unsigned short int& output);
-BinaryReader& operator>>(BinaryReader& bin, long int& output);
-BinaryReader& operator>>(BinaryReader& bin, unsigned long int& output);
-BinaryReader& operator>>(BinaryReader& bin, float& output);
-BinaryReader& operator>>(BinaryReader& bin, double& output);
-BinaryReader& operator>>(BinaryReader& bin, bool& output);
+BinaryReader& operator>>(BinaryReader& bin, char& input);
+BinaryReader& operator>>(BinaryReader& bin, int& input);
+BinaryReader& operator>>(BinaryReader& bin, unsigned int& input);
+BinaryReader& operator>>(BinaryReader& bin, short int& input);
+BinaryReader& operator>>(BinaryReader& bin, unsigned short int& input);
+BinaryReader& operator>>(BinaryReader& bin, long int& input);
+BinaryReader& operator>>(BinaryReader& bin, unsigned long int& input);
+BinaryReader& operator>>(BinaryReader& bin, float& input);
+BinaryReader& operator>>(BinaryReader& bin, double& input);
+BinaryReader& operator>>(BinaryReader& bin, bool& input);
 
 //! Read a binary multi1d element
 template<class T>
@@ -420,6 +428,7 @@ public:
 
   // Overloaded Writer Functions
   void write(const std::string& output);
+  void write(const char* output);
   void write(const char& output);
   void write(const int& output);
   void write(const unsigned int& output);
@@ -447,29 +456,31 @@ private:
 
 // Telephone book of basic primitives
 void write(BinaryWriter& bin, const std::string& output);
-void write(BinaryWriter& bin, const char& output);
-void write(BinaryWriter& bin, const int& output);
-void write(BinaryWriter& bin, const unsigned int& output);
-void write(BinaryWriter& bin, const short int& output);
-void write(BinaryWriter& bin, const unsigned short int& output);
-void write(BinaryWriter& bin, const long int& output);
-void write(BinaryWriter& bin, const unsigned long int& output);
-void write(BinaryWriter& bin, const float& output);
-void write(BinaryWriter& bin, const double& output);
-void write(BinaryWriter& bin, const bool& output);
+void write(BinaryWriter& bin, const char* output);
+void write(BinaryWriter& bin, char output);
+void write(BinaryWriter& bin, int output);
+void write(BinaryWriter& bin, unsigned int output);
+void write(BinaryWriter& bin, short int output);
+void write(BinaryWriter& bin, unsigned short int output);
+void write(BinaryWriter& bin, long int output);
+void write(BinaryWriter& bin, unsigned long int output);
+void write(BinaryWriter& bin, float output);
+void write(BinaryWriter& bin, double output);
+void write(BinaryWriter& bin, bool output);
 
 // Different bindings for same operators
 BinaryWriter& operator<<(BinaryWriter& bin, const std::string& output);
-BinaryWriter& operator<<(BinaryWriter& bin, const char& output);
-BinaryWriter& operator<<(BinaryWriter& bin, const int& output);
-BinaryWriter& operator<<(BinaryWriter& bin, const unsigned int& output);
-BinaryWriter& operator<<(BinaryWriter& bin, const short int& output);
-BinaryWriter& operator<<(BinaryWriter& bin, const unsigned short int& output);
-BinaryWriter& operator<<(BinaryWriter& bin, const long int& output);
-BinaryWriter& operator<<(BinaryWriter& bin, const unsigned long int& output);
-BinaryWriter& operator<<(BinaryWriter& bin, const float& output);
-BinaryWriter& operator<<(BinaryWriter& bin, const double& output);
-BinaryWriter& operator<<(BinaryWriter& bin, const bool& output);
+BinaryWriter& operator<<(BinaryWriter& bin, const char* output);
+BinaryWriter& operator<<(BinaryWriter& bin, char output);
+BinaryWriter& operator<<(BinaryWriter& bin, int output);
+BinaryWriter& operator<<(BinaryWriter& bin, unsigned int output);
+BinaryWriter& operator<<(BinaryWriter& bin, short int output);
+BinaryWriter& operator<<(BinaryWriter& bin, unsigned short int output);
+BinaryWriter& operator<<(BinaryWriter& bin, long int output);
+BinaryWriter& operator<<(BinaryWriter& bin, unsigned long int output);
+BinaryWriter& operator<<(BinaryWriter& bin, float output);
+BinaryWriter& operator<<(BinaryWriter& bin, double output);
+BinaryWriter& operator<<(BinaryWriter& bin, bool output);
 
 //! Read a binary multi1d element
 template<class T>

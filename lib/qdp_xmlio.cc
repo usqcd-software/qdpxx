@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.11 2003-06-10 16:02:01 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.12 2003-06-20 18:18:24 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -395,6 +395,11 @@ void write(XMLWriter& xml, const string& s, const string& d)
   writePrimitive<string>(xml, s, d);
 }
 
+void write(XMLWriter& xml, const string& s, const char* d)
+{
+  writePrimitive<string>(xml, s, string(d));
+}
+
 void write(XMLWriter& xml, const string& s, const char& d)
 {
   writePrimitive<char>(xml, s, d);
@@ -447,6 +452,7 @@ void write(XMLWriter& xml, const string& s, const bool& d)
 
 // Versions that do not print a name
 XMLWriter& operator<<(XMLWriter& xml, const string& d) {xml.write(d);return xml;}
+XMLWriter& operator<<(XMLWriter& xml, const char* d) {xml.write(string(d));return xml;}
 XMLWriter& operator<<(XMLWriter& xml, const char& d) {xml.write(d);return xml;}
 XMLWriter& operator<<(XMLWriter& xml, const int& d) {xml.write(d);return xml;}
 XMLWriter& operator<<(XMLWriter& xml, const unsigned int& d) {xml.write(d);return xml;}
