@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.5 2003-08-12 04:38:45 edwards Exp $
+// $Id: t_linalg.cc,v 1.6 2003-08-13 18:57:06 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -40,6 +40,8 @@ int main(int argc, char *argv[])
   int icnt;
   double tt;
 
+#define TEST_OPS
+
 #if defined(TEST_OPS)
   // Test c=a*b
   tt = QDP_M_eq_M_times_M(c, a, b, 1);
@@ -65,7 +67,7 @@ int main(int argc, char *argv[])
   double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
 
   tt *= rescale;
-  cout << "time(c=a*b) = " << tt
+  cout << "time(M=M*M) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 198 / tt << " Mflops" << endl;
   
@@ -82,7 +84,7 @@ int main(int argc, char *argv[])
   // Time the c=adj(a)*b
   cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_M_eq_Ma_times_M(c, a, b, icnt);
-  cout << "time(c=adj(a)*b) = " << tt
+  cout << "time(M=adj(M)*M) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 198 / tt << " Mflops" << endl;
   
@@ -99,7 +101,7 @@ int main(int argc, char *argv[])
   // Time the c=a*adj(b)
   cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_M_eq_M_times_Ma(c, a, b, icnt);
-  cout << "time(c=a*adj(b)) = " << tt
+  cout << "time(M=M*adj(M)) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 198 / tt << " Mflops" << endl;
   
@@ -116,7 +118,7 @@ int main(int argc, char *argv[])
   // Time the c=adj(a)*adj(b)
   cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_M_eq_Ma_times_Ma(c, a, b, icnt);
-  cout << "time(c=adj(a)*adj(b)) = " << tt
+  cout << "time(M=adj(M)*adj(M)) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 198 / tt << " Mflops" << endl;
   
@@ -131,7 +133,7 @@ int main(int argc, char *argv[])
   // Time the c+=a*b
   cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_M_peq_M_times_M(c, a, b, icnt);
-  cout << "time(c+=a*b) = " << tt
+  cout << "time(M+=M*M) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 216 / tt << " Mflops" << endl;
 
@@ -167,7 +169,7 @@ int main(int argc, char *argv[])
   // Test LatticeColorVector = LatticeColorMatrix * LatticeColorVector
   cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_V_eq_M_times_V(lv2, a, lv1, icnt);
-  cout << "time(lv=lm*lv) = " << tt
+  cout << "time(V=M*V) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 108 / tt << " Mflops" << endl;   // check the flop count
 
@@ -182,7 +184,7 @@ int main(int argc, char *argv[])
   // Test LatticeColorVector = LatticeColorMatrix * LatticeColorVector
   cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_V_eq_Ma_times_V(lv2, a, lv1, icnt);
-  cout << "time(lv=adj(lm)*lv) = " << tt
+  cout << "time(V=adj(M)*V) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 108 / tt << " Mflops" << endl;   // check the flop count
 
@@ -213,7 +215,7 @@ int main(int argc, char *argv[])
   // Test LatticeColorVector = LatticeColorVector * LatticeColorVector
   cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_V_eq_V_plus_V(lv3, lv1, lv2, icnt);
-  cout << "time(lv=lv+lv) = " << tt
+  cout << "time(V=V+V) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 6 / tt << " Mflops" << endl;   // check the flop count
 
@@ -246,10 +248,10 @@ int main(int argc, char *argv[])
   pop(nml);
 #endif
 
-  // Test LatticeColorVector = LatticeColorVector * LatticeColorVector
+  // Test LatticeDiracFermion = LatticeColorMatrix * LatticeDiracFermion
   cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_D_eq_M_times_D(lf2, a, lf1, icnt);
-  cout << "time(lf=lm*lf) = " << tt
+  cout << "time(D=M*D) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
 
@@ -284,7 +286,7 @@ int main(int argc, char *argv[])
   // Test LatticeHalfFermion = LatticeColorMatrix * LatticeHalfFermion
   cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_H_eq_M_times_H(lh2, a, lh1, icnt);
-  cout << "time(lh=lm*lh) = " << tt
+  cout << "time(H=M*H) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 
@@ -299,7 +301,7 @@ int main(int argc, char *argv[])
   // Test LatticeHalfFermion = adj(LatticeColorMatrix) * LatticeHalfFermion
   cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_H_eq_Ma_times_H(lh2, a, lh1, icnt);
-  cout << "time(lh=adj(lm)*lh) = " << tt
+  cout << "time(H=adj(M)*H) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 
