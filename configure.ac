@@ -1,4 +1,4 @@
-AC_INIT(qdp,1.6,edwards@jlab.org)
+AC_INIT([qdp],[1.6],[edwards@jlab.org])
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -328,7 +328,7 @@ fi
 dnl Support for memory debugging with DMALLOC
 AM_WITH_DMALLOC
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 AC_PROG_CXX(g++ cxx CC)
 AC_PROG_RANLIB
 
