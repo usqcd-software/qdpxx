@@ -1,3 +1,8 @@
+07/26/2003 -- Robert Edwards
+
+	Version 1.4.13. Cb=2 layout now works in parscalar. Changed to this as the
+        default layout.
+
 07/16/2003 -- Robert Edwards
 
 	Version 1.4.12. Doccumentation added and start of different layouts for 
