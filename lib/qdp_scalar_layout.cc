@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_layout.cc,v 1.13 2004-09-07 23:33:29 edwards Exp $
+// $Id: qdp_scalar_layout.cc,v 1.14 2005-01-21 02:57:34 edwards Exp $
 
 /*! @file
  * @brief Scalar layout routines
@@ -164,6 +164,21 @@ namespace Layout
     for(int i=0; i < _layout.vol; ++i) 
     {
       int j = Layout::linearSiteIndex(Layout::siteCoords(Layout::nodeNumber(),i));
+
+#if QDP_DEBUG >= 3
+      {
+	fprintf(stderr,"call nodenumber\n");
+	int noden = Layout::nodeNumber();
+	fprintf(stderr,"call sitecoords\n");
+	multi1d<int> coord = Layout::siteCoords(noden,i);
+	fprintf(stderr,"call linearsiteindex\n");
+	int j = Layout::linearSiteIndex(coord);
+	fprintf(stderr,"site= %d   coord= %d %d %d %d   j= %d node=%d\n",
+		i,coord[0],coord[1],coord[2],coord[3],
+		j,noden);
+      }
+#endif
+
       if (i != j)
 	QDP_error_exit("Layout::create - Layout problems, the layout functions do not work correctly with this lattice size");
     }
