@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.3 2004-08-10 03:55:50 edwards Exp $
+// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.4 2004-08-11 18:51:55 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -23,6 +23,7 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 
 // Use this def just to safe some typing later on in the file
+typedef IScalar<REAL32>                IScalarFloat;
 typedef ILattice<REAL32,4>             ILatticeFloat;
 typedef RComplex<ILattice<REAL32,4> >  RComplexFloat; 
 
@@ -30,7 +31,7 @@ typedef RComplex<ILattice<REAL32,4> >  RComplexFloat;
 
 //--------------------------------------------------------------------------------------
 // Optimized version of  
-//    ILatticeFloat <- ILatticeFloat + ILatticeFloat
+// ILatticeFloat <- ILatticeFloat + ILatticeFloat
 template<>
 inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpAdd>::Type_t
 operator+(const ILatticeFloat& l, const ILatticeFloat& r)
@@ -41,9 +42,31 @@ operator+(const ILatticeFloat& l, const ILatticeFloat& r)
   return Ret_t(__builtin_ia32_addps(l.elem_v(), r.elem_v()));
 }
 
+// ILatticeFloat <- ILatticeFloat + IScalarFloat
+template<>
+inline BinaryReturn<ILatticeFloat, IScalarFloat, OpAdd>::Type_t
+operator+(const ILatticeFloat& l, const IScalarFloat& r)
+{
+  typedef BinaryReturn<ILatticeFloat, IScalarFloat, OpAdd>::Type_t  Ret_t;
+
+//  cout << "I+I" << endl; 
+  return Ret_t(__builtin_ia32_addps(l.elem_v(), vmk1(r.elem())));
+}
+
+// ILatticeFloat <- IScalarFloat + ILatticeFloat
+template<>
+inline BinaryReturn<IScalarFloat, ILatticeFloat, OpAdd>::Type_t
+operator+(const IScalarFloat& l, const ILatticeFloat& r)
+{
+  typedef BinaryReturn<IScalarFloat, ILatticeFloat, OpAdd>::Type_t  Ret_t;
+
+//  cout << "I+I" << endl; 
+  return Ret_t(__builtin_ia32_addps(vmk1(l.elem()), r.elem_v()));
+}
+
 
 // Optimized version of  
-//    ILatticeFloat <- ILatticeFloat - ILatticeFloat
+// ILatticeFloat <- ILatticeFloat - ILatticeFloat
 template<>
 inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpSubtract>::Type_t
 operator-(const ILatticeFloat& l, const ILatticeFloat& r)
@@ -52,6 +75,28 @@ operator-(const ILatticeFloat& l, const ILatticeFloat& r)
 
 //  cout << "I-I" << endl;
   return Ret_t(__builtin_ia32_subps(l.elem_v(), r.elem_v()));
+}
+
+// ILatticeFloat <- ILatticeFloat - IScalarFloat
+template<>
+inline BinaryReturn<ILatticeFloat, IScalarFloat, OpSubtract>::Type_t
+operator-(const ILatticeFloat& l, const IScalarFloat& r)
+{
+  typedef BinaryReturn<ILatticeFloat, IScalarFloat, OpSubtract>::Type_t  Ret_t;
+
+//  cout << "I-I" << endl;
+  return Ret_t(__builtin_ia32_subps(l.elem_v(), vmk1(r.elem())));
+}
+
+// ILatticeFloat <- IScalarFloat - ILatticeFloat
+template<>
+inline BinaryReturn<IScalarFloat, ILatticeFloat, OpSubtract>::Type_t
+operator-(const IScalarFloat& l, const ILatticeFloat& r)
+{
+  typedef BinaryReturn<IScalarFloat, ILatticeFloat, OpSubtract>::Type_t  Ret_t;
+
+//  cout << "I-I" << endl;
+  return Ret_t(__builtin_ia32_subps(vmk1(l.elem()), r.elem_v()));
 }
 
 
@@ -67,9 +112,31 @@ operator*(const ILatticeFloat& l, const ILatticeFloat& r)
   return Ret_t(__builtin_ia32_mulps(l.elem_v(), r.elem_v()));
 }
 
+// ILatticeFloat <- ILatticeFloat * IScalarFloat
+template<>
+inline BinaryReturn<ILatticeFloat, IScalarFloat, OpMultiply>::Type_t
+operator*(const ILatticeFloat& l, const IScalarFloat& r)
+{
+  typedef BinaryReturn<ILatticeFloat, IScalarFloat, OpMultiply>::Type_t  Ret_t;
+
+//  cout << "I*I" << endl;
+  return Ret_t(__builtin_ia32_mulps(l.elem_v(), vmk1(r.elem())));
+}
+
+// ILatticeFloat <- IScalarFloat * ILatticeFloat
+template<>
+inline BinaryReturn<IScalarFloat, ILatticeFloat, OpMultiply>::Type_t
+operator*(const IScalarFloat& l, const ILatticeFloat& r)
+{
+  typedef BinaryReturn<IScalarFloat, ILatticeFloat, OpMultiply>::Type_t  Ret_t;
+
+//  cout << "I*I" << endl;
+  return Ret_t(__builtin_ia32_mulps(vmk1(l.elem()), r.elem_v()));
+}
+
 
 // Optimized version of  
-//    ILatticeFloat <- ILatticeFloat / ILatticeFloat
+// ILatticeFloat <- ILatticeFloat / ILatticeFloat
 template<>
 inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpDivide>::Type_t
 operator/(const ILatticeFloat& l, const ILatticeFloat& r)
@@ -80,11 +147,33 @@ operator/(const ILatticeFloat& l, const ILatticeFloat& r)
   return Ret_t(__builtin_ia32_divps(l.elem_v(), r.elem_v()));
 }
 
+// ILatticeFloat <- ILatticeFloat / IScalarFloat
+template<>
+inline BinaryReturn<ILatticeFloat, IScalarFloat, OpDivide>::Type_t
+operator/(const ILatticeFloat& l, const IScalarFloat& r)
+{
+  typedef BinaryReturn<ILatticeFloat, IScalarFloat, OpDivide>::Type_t  Ret_t;
+
+//  cout << "I/I" << endl;
+  return Ret_t(__builtin_ia32_divps(l.elem_v(), vmk1(r.elem())));
+}
+
+// ILatticeFloat <- IScalarFloat / ILatticeFloat
+template<>
+inline BinaryReturn<IScalarFloat, ILatticeFloat, OpDivide>::Type_t
+operator/(const IScalarFloat& l, const ILatticeFloat& r)
+{
+  typedef BinaryReturn<IScalarFloat, ILatticeFloat, OpDivide>::Type_t  Ret_t;
+
+//  cout << "I/I" << endl;
+  return Ret_t(__builtin_ia32_divps(vmk1(l.elem()), r.elem_v()));
+}
+
 
 
 //--------------------------------------------------------------------------------------
 // Optimized version of  
-//    RComplexFloat <- RComplexFloat + RComplexFloat
+//   RComplexFloat <- RComplexFloat + RComplexFloat
 template<>
 inline BinaryReturn<RComplexFloat, RComplexFloat, OpAdd>::Type_t
 operator+(const RComplexFloat& l, const RComplexFloat& r)
