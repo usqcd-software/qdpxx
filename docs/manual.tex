@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.4.13
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.4.14
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -106,7 +106,7 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.4.13}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.4.14}
 }
 \author{Robert G. Edwards\\
 SciDAC Software Coordinating Committee}
@@ -1266,6 +1266,7 @@ read/write to one primary node in the computer, namely
 \verb|Layout::primaryNode()| or node 0. Lattice quantities are read/written
 lexicographically as one contiguous field with the first index in the
 lattice size \verb|Layout::lattSize()| varying the fastest.
+The XML reader functions utilize \cpp{} {\em exceptions}. 
 
 A record structure format is available to store both metadata and binary data.
 The metadata uses the XML format. The binary I/O functions support more advanced
@@ -1327,7 +1328,7 @@ available in QDP++}.
 \end{flushleft}
 %
 To read and write ascii text from the file, use the standard operators
-familiar in the \cpp\ Standard Library. E.g.,
+familiar in the \cpp\ Standard Library. An example is as follows:
 %
 \begin{small}
 \begin{verbatim}
@@ -1362,6 +1363,8 @@ variable names. The semantics imposed by QDP is that no key can be
 repeated twice at the same nesting level. Also, the values are considered
 one of three types -- a simple type, a structure, or an array of one of these
 three types including array.
+
+The XML reader functions utilize \cpp{} {\em exceptions}. 
 
 The path specification for the XML reader functions is XPath. Namely,
 QDP only {\em requires} a simple unix like path to reference a
@@ -1410,7 +1413,11 @@ multi1d<Complex> d;
 read(xml_in, "/bar/a", a);  // primitive type reader
 read(xml_in, "/bar/b", b);  // QDP defined struct reader
 read(xml_in, "/bar/c", d);  // array of primitive type reader
-read(xml_in, "/bar/d", d);  // calls read(XMLReader, string, Complex) 
+try {   // try to do the following code, if an exception catch it
+  read(xml_in, "/bar/d", d);  // calls read(XMLReader, string, Complex) 
+} catch( const string& error) { 
+  cerr << "Error reading /bar/d : " << error << endl;
+}
 \end{verbatim}
 %
 The file ``foo'' might look like the following:
@@ -1645,7 +1652,7 @@ struct bar_t
 Hence, one views the \verb|push|/\verb|pop| semantics as a way of
 dynamically constructing structures. 
 
-\newpage
+% \newpage
 \paragraph{XML document format}
 
 \begin{flushleft}
