@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.2 2003-08-04 18:57:39 edwards Exp $
+// $Id: t_linalg.cc,v 1.3 2003-08-08 21:20:43 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
       break;
   }
 #else
+  cout << "***WARNING*** : debug mode - timings are bogus" << endl;
   icnt = 1;   // turn off timings for some testing
 #endif
 
@@ -133,6 +134,57 @@ int main(int argc, char *argv[])
   cout << "time(c+=a*b) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 216 / tt << " Mflops" << endl;
+
+  nml.flush();
+
+//----------------------------------------------------------------------------
+  LatticeColorVector lv1,lv2;
+  gaussian(lv1);
+  gaussian(lv2);
+
+#if ! defined(TEST_OPS)
+  // Time the c=a*b
+  for(icnt=1; ; icnt <<= 1)
+  {
+    cout << "calling " << icnt << " times" << endl;
+    tt = QDP_V_eq_M_times_V(lv2, a, lv1, icnt);
+    if (tt > 1)
+      break;
+  }
+#else
+  icnt = 1;   // turn off timings for some testing
+#endif
+
+#if defined(TEST_OPS)
+  // Test LatticeColorVector = LatticeColorMatrix * LatticeColorVector
+  tt = QDP_V_eq_M_times_V(lv2, a, lv1, 1);
+  push(nml,"QDP_V_eq_M_times_V");
+  Write(nml,lv2);
+  pop(nml);
+#endif
+
+  // Test LatticeColorVector = LatticeColorMatrix * LatticeColorVector
+  cout << "calling " << icnt << " times" << endl;
+  tt = rescale * QDP_V_eq_M_times_V(lv2, a, lv1, icnt);
+  cout << "time(lv=lm*lv) = " << tt
+       << " micro-secs/site/iteration" 
+       << " , " << 108 / tt << " Mflops" << endl;   // check the flop count
+
+#if defined(TEST_OPS)
+  // Test LatticeColorVector = LatticeColorMatrix * LatticeColorVector
+  tt = QDP_V_eq_Ma_times_V(lv2, a, lv1, 1);
+  push(nml,"QDP_V_eq_Ma_times_V");
+  Write(nml,lv2);
+  pop(nml);
+#endif
+
+  // Test LatticeColorVector = LatticeColorMatrix * LatticeColorVector
+  cout << "calling " << icnt << " times" << endl;
+  tt = rescale * QDP_V_eq_Ma_times_V(lv2, a, lv1, icnt);
+  cout << "time(lv=adj(lm)*lv) = " << tt
+       << " micro-secs/site/iteration" 
+       << " , " << 108 / tt << " Mflops" << endl;   // check the flop count
+
   nml.flush();
 
   // Time to bolt
