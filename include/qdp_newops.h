@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_newops.h,v 1.6 2003-08-20 21:02:17 edwards Exp $
+// $Id: qdp_newops.h,v 1.7 2003-08-21 02:42:57 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -76,6 +76,11 @@ struct FnInnerProductRealMulti
 //-----------------------------------------------------------------------------
 // Operators and tags for accessing elements of a QDP object
 //-----------------------------------------------------------------------------
+
+struct FnGetSite
+{
+  PETE_EMPTY_CONSTRUCTORS(FnGetSite)
+};
 
 struct FnPeekSite
 {
