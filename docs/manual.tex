@@ -34,7 +34,7 @@
 \newcommand{\tLatticeComplex}{LatticeComplex}
 \newcommand{\tLatticeInt}{LatticeInteger}
 \newcommand{\tLatticeBoolean}{LatticeBoolean}
-\newcommand{\tLatticeColorMatrix}{LatticeGauge}
+\newcommand{\tLatticeColorMatrix}{LatticeColorMatrix}
 \newcommand{\tLatticeHalfFermion}{LatticeHalfFermion}
 \newcommand{\tLatticeDiracFermion}{LatticeDiracFermion}
 \newcommand{\tLatticeStaggeredFermion}{LatticeStaggeredFermion}
@@ -46,7 +46,7 @@
 \newcommand{\tComplex}{Complex}
 \newcommand{\tInt}{Integer}
 \newcommand{\tBoolean}{Boolean}
-\newcommand{\tColorMatrix}{Gauge}
+\newcommand{\tColorMatrix}{ColorMatrix}
 \newcommand{\tHalfFermion}{HalfFermion}
 \newcommand{\tDiracFermion}{DiracFermion}
 \newcommand{\tStaggeredFermion}{StaggeredFermion}
@@ -55,16 +55,15 @@
 \newcommand{\tRandomState}{Seed}
 
 % Aliases/typedefs
-%\newcommand{\tColorMatrix}{ColorMatrix}
 \newcommand{\tColorVector}{ColorMatrix}
 \newcommand{\tSpinMatrix}{SpinMatrix}
-\newcommand{\tSpinVector}{SpinMatrix}
+\newcommand{\tSpinVector}{SpinVector}
 
 % Fixed precision
 \newcommand{\tRealD}{RealD}
 \newcommand{\tLatticeRealD}{LatticeRealD}
 \newcommand{\tLatticeComplexD}{LatticeComplexD}
-\newcommand{\tLatticeColorMatrixD}{LatticeGaugeD}
+\newcommand{\tLatticeColorMatrixD}{LatticeColorMatrixD}
 \newcommand{\tLatticeHalfFermionD}{LatticeHalfFermionD}
 \newcommand{\tLatticeDiracFermionD}{LatticeDiracFermionD}
 \newcommand{\tLatticeStaggeredFermionD}{LatticeStaggeredFermionD}
@@ -220,7 +219,7 @@ composition - there is very little inheritance. The basic objects are
 constructed (at the users choice) by compositions like the following:
 
 \begin{verbatim}
-typedef OLattice<PScalar<ColorMatrix<Complex<float>, Nc> > > LatticeGauge
+typedef OLattice<PScalar<ColorMatrix<Complex<float>, Nc> > > LatticeColorMatrix
 typedef OLattice<SpinVector<ColorVector<Complex<float>, Nc>, Ns> > LatticeFermion
 \end{verbatim}
 %
@@ -272,7 +271,7 @@ ensuring no type conflicts with other namespaces.
 
 According to the chosen color and precision, names for specific
 floating point types are constructed from names for generic types.
-Thus {\tt \tLatticeColorMatrix} becomes {\tt LatticeGauge}{\it PC},
+Thus {\tt \tLatticeColorMatrix} becomes {\tt LatticeColorMatrix}{\it PC},
 where the precision {\it P} is {\tt D} or {\tt F} according to the
 table below
 \begin{center}
@@ -626,7 +625,7 @@ the following:
 %
 \begin{verbatim}
   Lattice psi, chi;
-  LatticeGauge u;
+  LatticeColorMatrix u;
   chi = u * psi;
 \end{verbatim}
 %
@@ -1159,7 +1158,7 @@ Type declarations can be found in {\tt qdp++/defs.h} . A convenient
 definition of a \tLatticeColorMatrix and \tLatticeDiracFermion is as follows:
 
 \begin{verbatim}
-typedef OLattice<PScalar<ColorMatrix<Complex<float>, Nc> > > LatticeGauge
+typedef OLattice<PScalar<ColorMatrix<Complex<float>, Nc> > > LatticeColorMatrix
 typedef OLattice<SpinVector<ColorVector<Complex<float>, Nc>, Ns> > LatticeFermion
 \end{verbatim}
 
@@ -1167,7 +1166,7 @@ However, for the user to choose a specific number of colors:
 
 \begin{verbatim}
 const int NN = 17  // work in SU(17)
-typedef OLattice<PScalar<ColorMatrix<Complex<float>, NN> > > LatticeGauge17
+typedef OLattice<PScalar<ColorMatrix<Complex<float>, NN> > > LatticeColorMatrix17
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1407,7 +1406,7 @@ pokeSpin(dest,src,int row)            : insert into spin vector elem row
 \subsection{More exotic functions:}
 \label{sec:otherfuncs}
 
-Gauge and spin related functions
+Spin related functions
 
 \begin{verbatim}
 spinProject(QDPType psi, int dir, int isign)
@@ -1427,7 +1426,7 @@ Types in the QDP interface are parameterized by a variety of types, and
 can look like the following:
 
 \begin{verbatim}
-typedef OLattice<PScalar<PColorMatrix<RComplex<float>, Nc> > > LatticeGauge
+typedef OLattice<PScalar<PColorMatrix<RComplex<float>, Nc> > > LatticeColorMatrix
 typedef OLattice<PSpinVector<PColorVector<RComplex<float>, Nc>, Ns> > LatticeFermion
 \end{verbatim}
 
@@ -2193,7 +2192,7 @@ $\\
   \end{tabular}
 \end{flushleft}
 
-\paragraph{Gauge matrix from outer product}
+\paragraph{ColorMatrix matrix from outer product}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
