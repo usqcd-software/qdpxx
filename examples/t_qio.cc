@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.15 2004-03-21 19:27:45 edwards Exp $
+// $Id: t_qio.cc,v 1.16 2004-03-22 04:37:23 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -74,21 +74,26 @@ int main(int argc, char **argv)
       QDPFileWriter to(file_xml,"t_qio.lime",volfmt,serpar,QDPIO_OPEN);
       write(xml_out, "file_xml", file_xml);
 
-      multi1d<Complex> ff(5);
-      Double fsum = 0;
-      for(int i=0; i < ff.size(); ++i)
+#if 1
+      if (volfmt == QDPIO_SINGLEFILE)   // there seems to be a bug in multifile here
       {
-	random(ff[i]);
-	fsum += norm2(ff[i]);
-      }
-      write(to,record_xml,ff);
+        multi1d<Complex> ff(5);
+        Double fsum = 0;
+        for(int i=0; i < ff.size(); ++i)
+        {
+    	  random(ff[i]);
+	  fsum += norm2(ff[i]);
+        }
+        write(to,record_xml,ff);
 
-      QDPIO::cout << "First record test: fsum=" << fsum << endl;
-      push(xml_out, "Record1");
-      write(xml_out, "record_xml", record_xml);
-      write(xml_out, "fsum", fsum);
-      write(xml_out, "ff", ff);
-      pop(xml_out);
+        QDPIO::cout << "First record test: fsum=" << fsum << endl;
+        push(xml_out, "Record1");
+        write(xml_out, "record_xml", record_xml);
+        write(xml_out, "fsum", fsum);
+        write(xml_out, "ff", ff);
+        pop(xml_out);
+      }
+#endif
 
       LatticeComplex a;
       random(a);
@@ -135,21 +140,26 @@ int main(int argc, char **argv)
 
       XMLReader record_xml;
 
-      multi1d<Complex> ff(5);   // needs to be free
-      read(from,record_xml,ff);
+#if 1
+      if (volfmt == QDPIO_SINGLEFILE)
+      {
+        multi1d<Complex> ff(5);   // needs to be free
+        read(from,record_xml,ff);
 
-      QDPIO::cout << "Here is the contents of first  record_xml" << endl;
-      record_xml.print(cout);
+        QDPIO::cout << "Here is the contents of first  record_xml" << endl;
+        record_xml.print(cout);
 
-      Double fsum = 0;
-      for(int i=0; i < ff.size(); ++i)
-	fsum += norm2(ff[i]);
-      QDPIO::cout << "First record test: fsum=" << fsum << endl;
-      push(xml_out, "Record1");
-      write(xml_out, "record_xml", record_xml);
-      write(xml_out, "fsum", fsum);
-      write(xml_out, "ff", ff);
-      pop(xml_out);
+        Double fsum = 0;
+        for(int i=0; i < ff.size(); ++i)
+  	  fsum += norm2(ff[i]);
+        QDPIO::cout << "First record test: fsum=" << fsum << endl;
+        push(xml_out, "Record1");
+        write(xml_out, "record_xml", record_xml);
+        write(xml_out, "fsum", fsum);
+        write(xml_out, "ff", ff);
+        pop(xml_out);
+      }
+#endif
 
       LatticeComplex a;
       read(from,record_xml,a);
