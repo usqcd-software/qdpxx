@@ -1,9 +1,9 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.16 2003-08-26 15:25:09 edwards Exp $
-//
-// QDP data parallel interface
-//
-// Outer lattice routines specific to a parallel platform with scalar layout
+// $Id: qdp_parscalar_specific.h,v 1.17 2003-09-02 04:10:45 edwards Exp $
+
+/*! @file
+ * @brief Outer lattice routines specific to a parallel platform with scalar layout
+ */
 
 #include "qmp.h"
 
@@ -89,10 +89,6 @@ namespace Internal
   {
     QMP_broadcast(dest, nbytes);
   }
-
-  //! A really stupid way to do broadcast
-  /*! Use this to get around current MPICH problems for broadcast */
-  void stupidBroadcast(void* dest, unsigned int nbytes);
 }
 
 

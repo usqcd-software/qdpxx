@@ -1,14 +1,14 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.6 2003-08-29 02:44:23 edwards Exp $
-//
-// QDP data parallel interface
-//
-// Outer/inner lattice routines specific to a scalarvec platform 
+// $Id: qdp_scalarvec_specific.h,v 1.7 2003-09-02 04:10:46 edwards Exp $
+
+/*! @file
+ * @brief Outer/inner lattice routines specific to a scalarvec platform 
+ */
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 //-----------------------------------------------------------------------------
-// Layout stuff specific to a scalar architecture
+// Layout stuff specific to a scalarvec architecture
 namespace Layout
 {
   //! coord[mu]  <- mu  : fill with lattice coord in mu direction
@@ -30,9 +30,6 @@ namespace Internal
 
   //! Dummy broadcast from primary node to all other nodes
   inline void broadcast(void* dest, unsigned int nbytes) {}
-
-  //! Dummy broadcast from primary node to all other nodes
-  inline void stupidBroadcast(void* dest, unsigned int nbytes) {}
 }
 
 #define QDP_NOT_IMPLEMENTED
