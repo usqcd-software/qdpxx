@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.8 2003-06-07 19:10:37 edwards Exp $
+// $Id: qdp_io.h,v 1.9 2003-06-08 04:51:30 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -72,6 +72,9 @@ public:
   bool is_open();
   void open(const std::string& p);
   void close();
+
+  //! Flush the buffer
+  void flush();
 
   //! Return true if some failure occurred in previous IO operation
   bool fail();
@@ -193,6 +196,9 @@ public:
   //! Close file
   void close();
   bool is_open();
+
+  //! Flush the buffer
+  void flush();
 
   //! Return true if some failure occurred in previous IO operation
   bool fail();
@@ -402,6 +408,9 @@ public:
   bool is_open();
   void open(const std::string& p);
   void close();
+
+  //! Flush the buffer
+  void flush();
 
   //! Return true if some failure occurred in previous IO operation
   bool fail();

@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.8 2003-06-07 19:11:14 edwards Exp $
+// $Id: qdp_io.cc,v 1.9 2003-06-08 04:51:30 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -207,6 +207,15 @@ bool TextWriter::is_open()
 
   Internal::broadcast(s);
   return s;
+}
+
+void TextWriter::flush()
+{
+  if (is_open()) 
+  {
+    if (Layout::primaryNode()) 
+      f.flush();
+  }
 }
 
 // Propagate status to all nodes
@@ -516,6 +525,15 @@ bool NmlWriter::is_open()
 
   Internal::broadcast(s);
   return s;
+}
+
+void NmlWriter::flush()
+{
+  if (is_open()) 
+  {
+    if (Layout::primaryNode()) 
+      f.flush();
+  }
 }
 
 // Propagate status to all nodes
@@ -971,6 +989,15 @@ bool BinaryWriter::is_open()
 
   Internal::broadcast(s);
   return s;
+}
+
+void BinaryWriter::flush()
+{
+  if (is_open()) 
+  {
+    if (Layout::primaryNode()) 
+      f.flush();
+  }
 }
 
 // Propagate status to all nodes
