@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.15 2003-10-17 15:56:23 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.16 2003-11-01 20:30:54 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -923,61 +923,71 @@ peekDW(const PMatrix<T,N,C>& l, int row)
 //! Insert color vector components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T1, class T2, int N, template<class,int> class C>
-inline PMatrix<T1,N,C>&
+inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeColorMatrix>::Type_t&
 pokeColor(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
 {
+  typedef typename UnaryReturn<PMatrix<T1,N,C>, FnPokeColorMatrix>::Type_t  Return_t;
+
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       pokeColor(l.elem(i,j),r.elem(i,j),row);
-  return l;
+  return static_cast<Return_t&>(l);
 }
 
 //! Insert color matrix components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T1, class T2, int N, template<class,int> class C>
-inline PMatrix<T1,N,C>&
+inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeColorMatrix>::Type_t&
 pokeColor(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row, int col)
 {
+  typedef typename UnaryReturn<PMatrix<T1,N,C>, FnPokeColorMatrix>::Type_t  Return_t;
+
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       pokeColor(l.elem(i,j),r.elem(i,j),row,col);
-  return l;
+  return static_cast<Return_t&>(l);
 }
 
 //! Insert spin vector components 
 /*! Generically, this is an identity operation. Defined differently under spin */
 template<class T1, class T2, int N, template<class,int> class C>
-inline PMatrix<T1,N,C>&
+inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeSpinMatrix>::Type_t&
 pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
 {
+  typedef typename UnaryReturn<PMatrix<T1,N,C>, FnPokeSpinMatrix>::Type_t  Return_t;
+
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       pokeSpin(l.elem(i,j),r.elem(i,j),row);
-  return l;
+  return static_cast<Return_t&>(l);
 }
 
 //! Insert spin matrix components 
 /*! Generically, this is an identity operation. Defined differently under spin */
 template<class T1, class T2, int N, template<class,int> class C>
-inline PMatrix<T1,N,C>&
+inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeSpinMatrix>::Type_t&
 pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row, int col)
 {
+  typedef typename UnaryReturn<PMatrix<T1,N,C>, FnPokeSpinMatrix>::Type_t  Return_t;
+
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       pokeSpin(l.elem(i,j),r.elem(i,j),row,col);
-  return l;
+  return static_cast<Return_t&>(l);
 }
 
 //! Insert domain-wall vector components 
 /*! Generically, this is an identity operation. Defined differently under domain-wall */
 template<class T1, class T2, int N, template<class,int> class C>
-inline PMatrix<T1,N,C>&
+inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeDWMatrix>::Type_t&
 pokeDW(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
 {
+  typedef typename UnaryReturn<PMatrix<T1,N,C>, FnPokeDWMatrix>::Type_t  Return_t;
+
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       pokeDW(l.elem(i,j),r.elem(i,j),row);
-  return l;
+  return static_cast<Return_t&>(l);
 }
 
 
