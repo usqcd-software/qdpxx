@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.16 2003-01-20 16:24:02 edwards Exp $
+// $Id: t_qdp.cc,v 1.17 2003-03-28 05:17:10 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -195,32 +195,6 @@ int main(int argc, char **argv)
 
   Write(nml,psi);
   Write(nml,chi);
-
-#if 1
-  //! SU(N) fiddling
-  cerr << "Fiddle with SU(2) matrices\n" << endl;
-  multi1d<LatticeReal> r(4);
-
-  cerr << "u[0]" << endl;
-  Write(nml,u[0]);
-  cerr << "Start extract\n";
-  for(int su2_index=0; su2_index < Nc*(Nc-1)/2; ++su2_index)
-  {
-    r = su2Extract(u[0], su2_index, all);
-
-    cerr << "su2_index="<<su2_index<<"\n";
-    Write(nml,su2_index);
-    Write(nml,r);
-  }
-  cerr << "Start filling\n";
-  for(int su2_index=0; su2_index < Nc*(Nc-1)/2; ++su2_index)
-  {
-    cerr << "su2_index="<<su2_index<<"\n";
-    u[1] = sunFill(r, su2_index, all);
-
-    Write(nml,u[1]);
-  }
-#endif
 
   // Time to bolt
   QDP_finalize();
