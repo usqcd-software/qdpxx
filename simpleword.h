@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: simpleword.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -181,9 +181,15 @@ int sum(const int& s1)
 }
 
 inline
-int sumsq(const int& s1)
+int localNorm2(const int& s1)
 {
   return s1*s1;
+}
+
+inline
+int localInnerproduct(const int& s1, const int& s2)
+{
+  return s1*s2;
 }
 
 inline
@@ -193,9 +199,15 @@ double sum(const float& s1)
 }
 
 inline
-double sumsq(const float& s1)
+double localNorm2(const float& s1)
 {
   return double(s1*s1);
+}
+
+inline
+double localInnerproduct(const float& s1, const float& s2)
+{
+  return double(s1*s2);
 }
 
 inline
@@ -205,9 +217,15 @@ double sum(const double& s1)
 }
 
 inline
-double sumsq(const double& s1)
+double localNorm2(const double& s1)
 {
   return s1*s1;
+}
+
+inline
+double localInnerproduct(const double& s1, const double& s2)
+{
+  return s1*s2;
 }
 
 
@@ -221,25 +239,89 @@ struct UnaryReturn<int, FnSum > {
   typedef int  Type_t;
 };
 
-struct UnaryReturn<int, FnSumSq > {
+struct UnaryReturn<int, FnNorm2 > {
   typedef int  Type_t;
 };
+
+struct UnaryReturn<int, FnInnerproduct > {
+  typedef int  Type_t;
+};
+
+struct UnaryReturn<int, FnInnerproductReal > {
+  typedef int  Type_t;
+};
+
+struct UnaryReturn<int, FnLocalNorm2 > {
+  typedef int  Type_t;
+};
+
+struct UnaryReturn<int, FnLocalInnerproduct > {
+  typedef int  Type_t;
+};
+
+struct UnaryReturn<int, FnLocalInnerproductReal > {
+  typedef int  Type_t;
+};
+
+
 
 struct UnaryReturn<float, FnSum > {
   typedef double  Type_t;
 };
 
-struct UnaryReturn<float, FnSumSq > {
+struct UnaryReturn<float, FnNorm2 > {
   typedef double  Type_t;
 };
+
+struct UnaryReturn<float, FnInnerproduct > {
+  typedef double  Type_t;
+};
+
+struct UnaryReturn<float, FnInnerproductReal > {
+  typedef double  Type_t;
+};
+
+struct UnaryReturn<float, FnLocalNorm2 > {
+  typedef float  Type_t;
+};
+
+struct UnaryReturn<float, FnLocalInnerproduct > {
+  typedef float  Type_t;
+};
+
+struct UnaryReturn<float, FnLocalInnerproductReal > {
+  typedef float  Type_t;
+};
+
 
 struct UnaryReturn<double, FnSum > {
   typedef double  Type_t;
 };
 
-struct UnaryReturn<double, FnSumSq > {
+struct UnaryReturn<double, FnNorm2 > {
   typedef double  Type_t;
 };
+
+struct UnaryReturn<double, FnInnerproduct > {
+  typedef double  Type_t;
+};
+
+struct UnaryReturn<double, FnInnerproductReal > {
+  typedef double  Type_t;
+};
+
+struct UnaryReturn<double, FnLocalNorm2 > {
+  typedef double  Type_t;
+};
+
+struct UnaryReturn<double, FnLocalInnerproduct > {
+  typedef double  Type_t;
+};
+
+struct UnaryReturn<double, FnLocalInnerproductReal > {
+  typedef double  Type_t;
+};
+
 
 
 struct UnaryReturn<int, FnSliceSum > {

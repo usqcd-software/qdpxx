@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primvector.h,v 1.2 2002-09-13 19:18:05 edwards Exp $
+// $Id: primvector.h,v 1.3 2002-09-14 19:48:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -403,7 +403,7 @@ fill_gaussian(PVector<T,N,C>& d, PVector<T,N,C>& r1, PVector<T,N,C>& r2)
 }
 
 
-
+#if 0
 // Global sum over site indices only
 template<class T, int N, template<class,int> class C>
 struct UnaryReturn<PVector<T,N,C>, FnSum > {
@@ -421,23 +421,29 @@ sum(const PVector<T,N,C>& s1)
 
   return d;
 }
+#endif
 
 
 // Innerproduct (norm-seq) global sum = sum(tr(conj(s1)*s1))
 template<class T, int N, template<class,int> class C>
-struct UnaryReturn<PVector<T,N,C>, FnSumSq > {
-  typedef PScalar<typename UnaryReturn<T, FnSumSq>::Type_t>  Type_t;
+struct UnaryReturn<PVector<T,N,C>, FnNorm2 > {
+  typedef PScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PVector<T,N,C>, FnSumSq>::Type_t
-sumsq(const PVector<T,N,C>& s1)
-{
-  typename UnaryReturn<PVector<T,N,C>, FnSumSq>::Type_t  d;
+struct UnaryReturn<PVector<T,N,C>, FnLocalNorm2 > {
+  typedef PScalar<typename UnaryReturn<T, FnLocalNorm2>::Type_t>  Type_t;
+};
 
-  d.elem() = sumsq(s1.elem(0));
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PVector<T,N,C>, FnLocalNorm2>::Type_t
+localNorm2(const PVector<T,N,C>& s1)
+{
+  typename UnaryReturn<PVector<T,N,C>, FnLocalNorm2>::Type_t  d;
+
+  d.elem() = localNorm2(s1.elem(0));
   for(int i=1; i < N; ++i)
-    d.elem() += sumsq(s1.elem(i));
+    d.elem() += localNorm2(s1.elem(i));
 
   return d;
 }
@@ -450,37 +456,47 @@ struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnInnerproduct > {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnInnerproduct>::Type_t
-innerproduct(const PVector<T1,N,C>& s1, const PVector<T1,N,C>& s2)
-{
-  typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnInnerproduct>::Type_t  d;
+struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproduct > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+};
 
-  d.elem() = innerproduct(s1.elem(0), s2.elem(0));
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproduct>::Type_t
+localInnerproduct(const PVector<T1,N,C>& s1, const PVector<T1,N,C>& s2)
+{
+  typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproduct>::Type_t  d;
+
+  d.elem() = localInnerproduct(s1.elem(0), s2.elem(0));
   for(int i=1; i < N; ++i)
-    d.elem() += innerproduct(s1.elem(i), s2.elem(i));
+    d.elem() += localInnerproduct(s1.elem(i), s2.elem(i));
 
   return d;
 }
 
 
-//! PScalar<T> = Innerproduct_real(Conj(PVector<T1>)*PVector<T1>)
+//! PScalar<T> = InnerproductReal(Conj(PVector<T1>)*PVector<T1>)
 /*!
  * return  realpart of Innerproduct(Conj(s1)*s2)
  */
 template<class T1, class T2, int N, template<class,int> class C>
-struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnInnerproduct_real > {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproduct_real>::Type_t>  Type_t;
+struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnInnerproductReal > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnInnerproduct_real>::Type_t
-innerproduct_real(const PVector<T1,N,C>& s1, const PVector<T1,N,C>& s2)
-{
-  typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnInnerproduct_real>::Type_t  d;
+struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproductReal > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+};
 
-  d.elem() = innerproduct_real(s1.elem(0), s2.elem(0));
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproductReal>::Type_t
+localInnerproductReal(const PVector<T1,N,C>& s1, const PVector<T1,N,C>& s2)
+{
+  typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproductReal>::Type_t  d;
+
+  d.elem() = localInnerproductReal(s1.elem(0), s2.elem(0));
   for(int i=1; i < N; ++i)
-    d.elem() += innerproduct_real(s1.elem(i), s2.elem(i));
+    d.elem() += localInnerproductReal(s1.elem(i), s2.elem(i));
 
   return d;
 }

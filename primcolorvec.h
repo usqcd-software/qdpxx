@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primcolorvec.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: primcolorvec.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -100,6 +100,39 @@ struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, OpSubtractAssign > {
   typedef PColorVector<T1,N> &Type_t;
 };
  
+
+// ColorVector
+template<class T, int N>
+struct UnaryReturn<PColorVector<T,N>, FnNorm2 > {
+  typedef PScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
+};
+
+template<class T, int N>
+struct UnaryReturn<PColorVector<T,N>, FnLocalNorm2 > {
+  typedef PScalar<typename UnaryReturn<T, FnLocalNorm2>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnInnerproduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnLocalInnerproduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnInnerproductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnLocalInnerproductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+};
+
+
 
 
 //-----------------------------------------------------------------------------

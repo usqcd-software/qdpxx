@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primscalar.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: primscalar.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -807,6 +807,7 @@ void seed_to_float(PScalar<T>& d, const PScalar<T1>& s1)
 }
 
 
+#if 0
 // Global sum over site indices only
 template<class T>
 struct UnaryReturn<PScalar<T>, FnSum > {
@@ -822,21 +823,27 @@ sum(const PScalar<T>& s1)
   d.elem() = sum(s1.elem());
   return d;
 }
+#endif
 
 
 // Innerproduct (norm-seq) global sum = sum(tr(conj(s1)*s1))
 template<class T>
-struct UnaryReturn<PScalar<T>, FnSumSq > {
-  typedef PScalar<typename UnaryReturn<T, FnSumSq>::Type_t>  Type_t;
+struct UnaryReturn<PScalar<T>, FnNorm2 > {
+  typedef PScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
 };
 
 template<class T>
-inline typename UnaryReturn<PScalar<T>, FnSumSq>::Type_t
-sumsq(const PScalar<T>& s1)
-{
-  typename UnaryReturn<PScalar<T>, FnSumSq>::Type_t  d;
+struct UnaryReturn<PScalar<T>, FnLocalNorm2 > {
+  typedef PScalar<typename UnaryReturn<T, FnLocalNorm2>::Type_t>  Type_t;
+};
 
-  d.elem() = sumsq(s1.elem());
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnLocalNorm2>::Type_t
+localNorm2(const PScalar<T>& s1)
+{
+  typename UnaryReturn<PScalar<T>, FnLocalNorm2>::Type_t  d;
+
+  d.elem() = localNorm2(s1.elem());
   return d;
 }
 
@@ -849,29 +856,39 @@ struct BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproduct > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproduct>::Type_t
-innerproduct(const PScalar<T1>& s1, const PScalar<T2>& s2)
-{
-  typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproduct>::Type_t  d;
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, FnLocalInnerproduct > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+};
 
-  d.elem() = innerproduct(s1.elem(), s2.elem());
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnLocalInnerproduct>::Type_t
+localInnerproduct(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnLocalInnerproduct>::Type_t  d;
+
+  d.elem() = localInnerproduct(s1.elem(), s2.elem());
   return d;
 }
 
 
 //! PScalar<T> = Innerproduct_real(Conj(PMatrix<T1>)*PMatrix<T1>)
 template<class T1, class T2>
-struct BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproduct_real > {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproduct_real>::Type_t>  Type_t;
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproductReal > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproduct_real>::Type_t
-innerproduct_real(const PScalar<T1>& s1, const PScalar<T2>& s2)
-{
-  typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproduct_real>::Type_t  d;
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, FnLocalInnerproductReal > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+};
 
-  d.elem() = innerproduct_real(s1.elem(), s2.elem());
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnLocalInnerproductReal>::Type_t
+localInnerproductReal(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnLocalInnerproductReal>::Type_t  d;
+
+  d.elem() = localInnerproductReal(s1.elem(), s2.elem());
   return d;
 }
 

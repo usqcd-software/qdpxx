@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdpexpr.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: qdpexpr.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -27,7 +27,7 @@ public:
     return expr_m;
   }
 
-#if 1
+#if 0
   // Conversion (evaluation) to QDPType
   operator C() const
   {

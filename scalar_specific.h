@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.4 2002-09-14 03:07:34 edwards Exp $
+// $Id: scalar_specific.h,v 1.5 2002-09-14 19:48:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -210,102 +210,27 @@ void zero(OLattice<T>& dest)
 
 //-----------------------------------------------
 // Global sums
-//! OScalar<T> = Sum(OLattice<T>)
+//! OScalar = sum(OLattice)
 /*!
  * Allow a global sum that sums over the lattice, but returns an object
  * of the same primitive type. E.g., contract only over lattice indices
  */
-template<class T>
+template<class RHS, class T>
 typename UnaryReturn<OLattice<T>, FnSum>::Type_t
-sum(const OLattice<T>& s1)
+sum(const QDPExpr<RHS,OLattice<T> >& s1)
 {
   typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
   Subset s = global_context->Sub();
 
   if (! s.IndexRep())
   {
-    d.elem() = sum(s1.elem(s.Start()));
-    for(int i=s.Start()+1; i <= s.End(); ++i) 
-      d.elem() += sum(s1.elem(i));
-  }
-  else
-    diefunc();
+    // Must initialize to zero since we do not know if the loop will be entered
+    zero(d.elem());
 
-  return d;
-}
-
-
-//! OScalar<T> = Sumsq(Conj(OLattice<T1>)*OLattice<T1>)
-/*!
- * return  Sum(Conj(s1)*s1)
- *
- * Sum over the lattice
- * Allow a global sum that sums over all indices
- */
-template<class T>
-typename UnaryReturn<OLattice<T>, FnSumSq>::Type_t
-sumsq(const OLattice<T>& s1)
-{
-  typename UnaryReturn<OLattice<T>, FnSumSq>::Type_t  d;
-  Subset s = global_context->Sub();
-
-  if (! s.IndexRep())
-  {
-    d.elem() = sumsq(s1.elem(s.Start()));
-    for(int i=s.Start()+1; i <= s.End(); ++i) 
-      d.elem() += sumsq(s1.elem(i));
-  }
-  else
-    diefunc();
-
-  return d;
-}
-
-
-//! OScalar<T> = innerproduct(conj(OLattice<T1>)*OLattice<T2>)
-/*!
- * return  sum(trace(conj(s1)*s2))
- *
- * Sum over the lattice
- */
-template<class T1, class T2>
-typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerproduct>::Type_t
-innerproduct(const OLattice<T1>& s1, const OLattice<T2>& s2)
-{
-  typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerproduct>::Type_t  d;
-  Subset s = global_context->Sub();
-
-  if (! s.IndexRep())
-  {
-    d.elem() = innerproduct(s1.elem(s.Start()), s2.elem(s.Start()));
-    for(int i=s.Start()+1; i <= s.End(); ++i) 
-      d.elem() += innerproduct(s1.elem(i), s2.elem(i));
-  }
-  else
-    diefunc();
-
-  return d;
-}
-
-
-//! OScalar<T> = innerproduct_real(conj(OLattice<T1>)*OLattice<T2>)
-/*!
- * return  sum(real(trace(conj(s1)*s2)))
- *
- * Sum over the lattice
- */
-template<class T1, class T2>
-typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerproduct_real>::Type_t
-innerproduct_real(const OLattice<T1>& s1, const OLattice<T2>& s2)
-{
-  typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerproduct_real>::Type_t  d;
-  Subset s = global_context->Sub();
-
-  if (! s.IndexRep())
-  {
-    d.elem() = innerproduct_real(s1.elem(s.Start()), s2.elem(s.Start()));
-    for(int i=s.Start()+1; i <= s.End(); ++i) 
-      d.elem() += innerproduct_real(s1.elem(i), s2.elem(i));
+    for(int i=s.Start(); i <= s.End(); ++i) 
+    {
+      d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
+    }
   }
   else
     diefunc();
@@ -316,7 +241,7 @@ innerproduct_real(const OLattice<T1>& s1, const OLattice<T2>& s2)
 
 //-----------------------------------------------------------------------------
 // Global slice sums
-//! dest  = Slice_sum(source1,mu) 
+//! dest  = slice_sum(source1,mu) 
 /*!
  * Compute the global sum along the hypersurfuce orthogonal to
  * the direction mu
@@ -372,7 +297,7 @@ slice_sum(const OLattice<T>& s1, int mu)
 
 //-----------------------------------------------------------------------------
 // Multiple global sums 
-//! dest  = sum(source1,Set) 
+//! dest  = sumMulti(source1,Set) 
 /*!
  * Compute the global sum on multiple subsets specified by Set 
  *
@@ -388,7 +313,7 @@ struct UnaryReturn<OLattice<T>, FnSumMulti > {
 
 template<class T>
 typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t
-sum_multi(const OLattice<T>& s1, const Set& ss)
+sumMulti(const OLattice<T>& s1, const Set& ss)
 {
   typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.NumSubsets());
 
@@ -415,11 +340,19 @@ sum_multi(const OLattice<T>& s1, const Set& ss)
 
 //-----------------------------------------------
 //! OLattice<T> = Shift(OLattice<T1>, int isign, int dir)
-/*!
-   * Shifts on a OLattice are non-trivial.
-   * Notice, there may be an ILattice underneath which requires shift args.
-   * This routine is very architecture dependent.
-   */
+/*! 
+ * shift(source,isign,dir)
+ * isign = parity of direction (+1 or -1)
+ * dir   = direction ([0,...,Nd-1])
+ *
+ * Implements:  dest(x) = s1(x+isign*dir)
+ * There are cpp macros called  FORWARD and BACKWARD that are +1,-1 resp.
+ * that are often used as arguments
+ *
+ * Shifts on a OLattice are non-trivial.
+ * Notice, there may be an ILattice underneath which requires shift args.
+ * This routine is very architecture dependent.
+ */
 template<class T> 
 OLattice<T> shift(const OLattice<T>& s1, int isign, int dir)
 {

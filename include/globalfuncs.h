@@ -1,12 +1,122 @@
 // -*- C++ -*-
-// $Id: globalfuncs.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: globalfuncs.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
 //
 // QDP data parallel interface
 //
 QDP_BEGIN_NAMESPACE(QDP);
 
-//-----------------------------------------------------------------------------
 
+//-----------------------------------------------
+// Global sums
+//! OScalar = sum(OLattice)
+/*!
+ * Allow a global sum that sums over the lattice, but returns an object
+ * of the same primitive type. E.g., contract only over lattice indices
+ */
+template<class T, class C>
+inline
+typename UnaryReturn<C, FnSum>::Type_t
+sum(const QDPType<T,C>& s1)
+{
+  return sum(PETE_identity(s1));
+}
+
+
+//! OScalar = norm2(trace(conj(OLattice)*OLattice))
+/*!
+ * return  num(trace(conj(s1)*s1))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T, class C>
+inline
+typename UnaryReturn<C, FnNorm2>::Type_t
+norm2(const QDPType<T,C>& s1)
+{
+  return sum(localNorm2(s1));
+}
+
+template<class T, class C>
+typename UnaryReturn<C, FnNorm2>::Type_t
+norm2(const QDPExpr<T,C>& s1)
+{
+  return sum(localNorm2(s1));
+}
+
+
+//! OScalar = innerproduct(conj(OLattice)*OLattice)
+/*!
+ * return  sum(trace(conj(s1)*s2))
+ *
+ * Sum over the lattice
+ */
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+innerproduct(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2)
+{
+  return sum(localInnerproduct(s1,s2));
+}
+
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+innerproduct(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
+{
+  return sum(localInnerproduct(s1,s2));
+}
+
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+innerproduct(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2)
+{
+  return sum(localInnerproduct(s1,s2));
+}
+
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+innerproduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
+{
+  return sum(localInnerproduct(s1,s2));
+}
+
+
+//! OScalar = innerproductReal(conj(OLattice)*OLattice)
+/*!
+ * return  sum(trace(conj(s1)*s2))
+ *
+ * Sum over the lattice
+ */
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+innerproductReal(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2)
+{
+  return sum(localInnerproductReal(s1,s2));
+}
+
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+innerproductReal(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
+{
+  return sum(localInnerproductReal(s1,s2));
+}
+
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+innerproductReal(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2)
+{
+  return sum(localInnerproductReal(s1,s2));
+}
+
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
+{
+  return sum(localInnerproductReal(s1,s2));
+}
+
+
+
+//-----------------------------------------------------------------------------
 //! Su2_extract: r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]
 /*! 
  * Extract components r_k proportional to SU(2) submatrix su2_index
@@ -177,8 +287,8 @@ template<class T, class C>
 typename UnaryReturn<C, FnSpinReconstruct>::Type_t
 spinReconstruct(const QDPType<T,C>& s1, int mu, int isign)
 {
-  typedef typename UnaryReturn<C, FnSpinReconstruct>::Type_t  Ret_t;
-  Ret_t  d;
+//  typedef typename UnaryReturn<C, FnSpinReconstruct>::Type_t  Ret_t;
+//  Ret_t  d;
 
   switch (isign)
   {
@@ -186,17 +296,13 @@ spinReconstruct(const QDPType<T,C>& s1, int mu, int isign)
     switch (mu)
     {
     case 0:
-      d = spinReconstructDir0Minus(s1);
-      break;
+      return spinReconstructDir0Minus(s1);
     case 1:
-      d = spinReconstructDir1Minus(s1);
-      break;
+      return spinReconstructDir1Minus(s1);
     case 2:
-      d = spinReconstructDir2Minus(s1);
-      break;
+      return spinReconstructDir2Minus(s1);
     case 3:
-      d = spinReconstructDir3Minus(s1);
-      break;
+      return spinReconstructDir3Minus(s1);
     default:
       cerr << "Spin reconstruct: illegal direction\n";
       exit(1);
@@ -207,17 +313,13 @@ spinReconstruct(const QDPType<T,C>& s1, int mu, int isign)
     switch (mu)
     {
     case 0:
-      d = spinReconstructDir0Plus(s1);
-      break;
+      return spinReconstructDir0Plus(s1);
     case 1:
-      d = spinReconstructDir1Plus(s1);
-      break;
+      return spinReconstructDir1Plus(s1);
     case 2:
-      d = spinReconstructDir2Plus(s1);
-      break;
+      return spinReconstructDir2Plus(s1);
     case 3:
-      d = spinReconstructDir3Plus(s1);
-      break;
+      return spinReconstructDir3Plus(s1);
     default:
       cerr << "Spin reconstruct: illegal direction\n";
       exit(1);
@@ -229,36 +331,9 @@ spinReconstruct(const QDPType<T,C>& s1, int mu, int isign)
     exit(1);
   }
 
-  return d;
+//  return d;
 }
 
-
-
-#if 0
-//-----------------------------------------------------------------------------
-/** @addtogroup group5
- * Simple unary functions that return the same type as the source
- *  @{
- */
-//! QDP Shift return function: implements  dest(x) = s1(x+isign*dir)
-/*!
- * shift(source,isign,dir)
- * isign = parity of direction (+1 or -1)
- * dir   = direction ([0,...,Nd-1])
- *
- * Implements:  dest(x) = s1(x+isign*dir)
- * There are cpp macros called  FORWARD and BACKWARD that are +1,-1 resp.
- * that are often used as arguments
- */
-template<class T> QDPType<T> Shift(const QDPType<T>& s1, int isign, int dir) 
-{
-  QDPType<T> d;
-  fprintf(stderr,"explicit Shift\n"); 
-  d.elem().shift_rep(s1.elem(), isign, dir, global_context->Sub());
-  return d;
-}
-/** @} */ // end of group5
-#endif
 
 
 QDP_END_NAMESPACE();

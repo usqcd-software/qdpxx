@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primspinmat.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: primspinmat.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -155,14 +155,50 @@ struct BinaryReturn<PSpinMatrix<T1,N>, PScalar<T2>, OpMultiplyAssign > {
 
 // SpinMatrix
 template<class T, int N>
+struct UnaryReturn<PSpinMatrix<T,N>, FnTrace > {
+  typedef PScalar<typename UnaryReturn<T, FnTrace>::Type_t>  Type_t;
+};
+
+template<class T, int N>
 struct UnaryReturn<PSpinMatrix<T,N>, FnTraceReal > {
   typedef PScalar<typename UnaryReturn<T, FnTraceReal>::Type_t>  Type_t;
 };
 
 template<class T, int N>
-struct UnaryReturn<PSpinMatrix<T,N>, FnTrace > {
-  typedef PScalar<typename UnaryReturn<T, FnTrace>::Type_t>  Type_t;
+struct UnaryReturn<PSpinMatrix<T,N>, FnTraceImag > {
+  typedef PScalar<typename UnaryReturn<T, FnTraceImag>::Type_t>  Type_t;
 };
+
+template<class T, int N>
+struct UnaryReturn<PSpinMatrix<T,N>, FnNorm2 > {
+  typedef PScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
+};
+
+template<class T, int N>
+struct UnaryReturn<PSpinMatrix<T,N>, FnLocalNorm2 > {
+  typedef PScalar<typename UnaryReturn<T, FnLocalNorm2>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnInnerproduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnLocalInnerproduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnInnerproductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnLocalInnerproductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+};
+
 
 
 // Gamma algebra

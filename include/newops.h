@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: newops.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: newops.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -31,9 +31,19 @@ struct FnSum
   PETE_EMPTY_CONSTRUCTORS(FnSum)
 };
 
-struct FnSumSq
+struct FnNorm2
 {
-  PETE_EMPTY_CONSTRUCTORS(FnSumSq)
+  PETE_EMPTY_CONSTRUCTORS(FnNorm2)
+};
+
+struct FnInnerproduct
+{
+  PETE_EMPTY_CONSTRUCTORS(FnInnerproduct)
+};
+
+struct FnInnerproductReal
+{
+  PETE_EMPTY_CONSTRUCTORS(FnInnerproductReal)
 };
 
 struct FnSliceSum
@@ -46,14 +56,19 @@ struct FnSumMulti
   PETE_EMPTY_CONSTRUCTORS(FnSumMulti)
 };
 
-struct FnInnerproduct
+struct FnNorm2Multi
+{
+  PETE_EMPTY_CONSTRUCTORS(FnNorm2Multi)
+};
+
+struct FnInnerproductMulti
 {
   PETE_EMPTY_CONSTRUCTORS(FnInnerproduct)
 };
 
-struct FnInnerproduct_real
+struct FnInnerproductRealMulti
 {
-  PETE_EMPTY_CONSTRUCTORS(FnInnerproduct_real)
+  PETE_EMPTY_CONSTRUCTORS(FnInnerproductReal)
 };
 
 
