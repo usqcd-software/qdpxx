@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.7 2002-10-28 03:08:44 edwards Exp $
+// $Id: io.h,v 1.8 2002-11-04 04:45:39 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -12,6 +12,11 @@
 QDP_BEGIN_NAMESPACE(QDP);
 
 using std::string;
+
+// Useful prototypes
+size_t bfread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+size_t bfwrite(void *ptr, size_t size, size_t nmemb, FILE *stream);
+
 
 /*! @defgroup io IO
  *
@@ -280,12 +285,28 @@ private:
 };
 
 
-//! Read a binary element
+// Read a binary element
+// BinaryReader& read(BinaryReader& bin, T& d)
+/* See code in architecture specific section */
+
+
+//! Read a binary multi1d element
 template<class T>
-BinaryReader& read(BinaryReader& bin, const T& d)
+BinaryReader& read(BinaryReader& bin, multi1d<T>& d)
 {
-  if (Layout::primaryNode()) 
-    bfread((void *)&d, sizeof(T), 1, bin.get()); 
+  for(int i=0; i < d.size(); ++i)
+    read(bin, d[i]);
+
+  return bin;
+}
+
+//! Read a binary multi2d element
+template<class T>
+BinaryReader& read(BinaryReader& bin, multi2d<T>& d)
+{
+  for(int j=0; j < d.size2(); ++j)
+    for(int i=0; i < d.size1(); ++i)
+      read(bin, d[j][i]);
 
   return bin;
 }
@@ -318,7 +339,7 @@ private:
   bool iop;
 };
 
-#if 0
+
 //! Write a binary element
 template<class T>
 BinaryWriter& write(BinaryWriter& bin, const T& d)
@@ -328,7 +349,27 @@ BinaryWriter& write(BinaryWriter& bin, const T& d)
 
   return bin;
 }
-#endif
+
+//! Read a binary multi1d element
+template<class T>
+BinaryWriter& write(BinaryWriter& bin, const multi1d<T>& d)
+{
+  for(int i=0; i < d.size(); ++i)
+    write(bin, d[i]);
+
+  return bin;
+}
+
+//! Read a binary multi2d element
+template<class T>
+BinaryWriter& write(BinaryWriter& bin, const multi2d<T>& d)
+{
+  for(int j=0; j < d.size2(); ++j)
+    for(int i=0; i < d.size1(); ++i)
+      write(bin, d[j][i]);
+
+  return bin;
+}
 
 /*! @} */   // end of group io
 QDP_END_NAMESPACE();
