@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multi.h,v 1.4 2002-12-14 01:12:07 edwards Exp $
+// $Id: multi.h,v 1.5 2003-01-14 04:44:16 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -24,7 +24,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 template<class T> class multi1d
 {
 public:
-  multi1d() {F=0;copymem=false;}
+  multi1d() {F=0;n1=0;copymem=false;}
   multi1d(T *f, int ns1) {F=f; n1=ns1;copymem=true;}
   explicit multi1d(int ns1) {copymem=false;F=0;resize(ns1);}
   ~multi1d() {if (! copymem) {delete[] F;}}
