@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.15 2003-10-09 19:58:48 edwards Exp $
+// $Id: qdp_inner.h,v 1.16 2003-12-11 16:19:20 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -190,7 +190,7 @@ ostream& operator<<(ostream& s, const IScalar<T>& d)
 
 //! Ascii output
 template<class T>
-StandardOutputStream& operator<<(StandardOutputStream& os, IScalar<T>& d)
+StandardOutputStream& operator<<(StandardOutputStream& os, const IScalar<T>& d)
 {
   return os << d.elem();
 }
