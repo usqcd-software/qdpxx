@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: params.h,v 1.6 2002-10-28 03:08:44 edwards Exp $
+// $Id: params.h,v 1.7 2002-11-28 02:57:56 edwards Exp $
 
 /*! @file
  * @brief Fundamental parameters
@@ -24,11 +24,10 @@ QDP_BEGIN_NAMESPACE(QDP);
 //! Number of spin components
 #define NS  4
 
-//! Lattice size
-#define  LX0   4
-#define  LX1   2
-#define  LX2   2
-#define  LX3   2
+//! Compile time max sub-lattice size in  OLattice:F (private member) - run-time can be smaller
+/*! NOTE, the use of this macro is controlled by the   NO_MEM  variable 
+ * in outer.h */
+#define  VOLUME   256
 
 
 const int Nd = ND;
@@ -36,15 +35,6 @@ const int Nc = NC;
 const int Ns = NS;
 
 
-#if ND == 2
-#define  VOLUME   LX0*LX1
-#elif ND == 3
-#define  VOLUME   LX0*LX1*LX2
-#elif ND == 4
-#define  VOLUME   LX0*LX1*LX2*LX3
-#else
-#error "unsupported number of dimensions"
-#endif
 
 /*! @} */  // end of group params
 
