@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.15 2003-10-22 02:44:18 edwards Exp $
+// $Id: t_linalg.cc,v 1.16 2004-02-09 16:03:26 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -22,12 +22,13 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_linalg.nml");
+  XMLFileWriter nml("t_linalg.xml");
+  push(nml, "linalgTest");
 
   push(nml,"lattis");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,nrow);
+  write(nml,"Nd", Nd);
+  write(nml,"Nc", Nc);
+  write(nml,"nrow", nrow);
   pop(nml);
 
   QDPIO::cout << "CLOCKS_PER_SEC = " << CLOCKS_PER_SEC << endl;
@@ -67,7 +68,7 @@ int main(int argc, char *argv[])
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_eq_M_times_M");
-  Write(nml,c);
+  write(nml,"c", c);
   pop(nml);
 #endif
   
@@ -80,9 +81,9 @@ int main(int argc, char *argv[])
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_eq_Ma_times_M");
-  Write(nml,a);
-  Write(nml,b);
-  Write(nml,c);
+  write(nml,"a",a);
+  write(nml,"b",b);
+  write(nml,"c",c);
   pop(nml);
 #endif
   
@@ -95,9 +96,9 @@ int main(int argc, char *argv[])
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_eq_M_times_Ma");
-  Write(nml,a);
-  Write(nml,b);
-  Write(nml,c);
+  write(nml,"a",a);
+  write(nml,"b",b);
+  write(nml,"c",c);
   pop(nml);
 #endif
 
@@ -111,9 +112,9 @@ int main(int argc, char *argv[])
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_eq_Ma_times_Ma");
-  Write(nml,a);
-  Write(nml,b);
-  Write(nml,c);
+  write(nml,"a",a);
+  write(nml,"b",b);
+  write(nml,"c",c);
   pop(nml);
 #endif
 
@@ -128,11 +129,10 @@ int main(int argc, char *argv[])
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_peq_M_times_M");
-  Write(nml,c);
+  write(nml,"c",c);
   pop(nml);
 #endif
 
-  nml.flush();
 
 //----------------------------------------------------------------------------
   LatticeColorVector lv1,lv2,lv3;
@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
 	      << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_V_eq_M_times_V");
-  Write(nml,lv2);
+  write(nml,"lv2",lv2);
   pop(nml);
 #endif
 
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 	      << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_V_eq_Ma_times_V");
-  Write(nml,lv2);
+  write(nml,"lv2",lv2);
   pop(nml);
 #endif
 
@@ -206,11 +206,10 @@ int main(int argc, char *argv[])
 	      << " , " << 6 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_V_eq_V_plus_V");
-  Write(nml,lv3);
+  write(nml,"lv3",lv3);
   pop(nml);
 #endif
 
-  nml.flush();
 
 
 //----------------------------------------------------------------------------
@@ -241,7 +240,7 @@ int main(int argc, char *argv[])
 	      << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_D_eq_M_times_D");
-  Write(nml,lf2);
+  write(nml,"lf2",lf2);
   pop(nml);
 #endif
 
@@ -254,11 +253,10 @@ int main(int argc, char *argv[])
 	      << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_D_eq_Ma_times_D");
-  Write(nml,lf2);
+  write(nml,"lf2",lf2);
   pop(nml);
 #endif
 
-  nml.flush();
 
 //----------------------------------------------------------------------------
   LatticeHalfFermion lh1,lh2,lh3;
@@ -288,7 +286,7 @@ int main(int argc, char *argv[])
 	      << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_H_eq_M_times_H");
-  Write(nml,lh2);
+  write(nml,"lh2", lh2);
   pop(nml);
 #endif
 
@@ -302,12 +300,12 @@ int main(int argc, char *argv[])
 	      << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_H_eq_Ma_times_H");
-  Write(nml,lh2);
+  write(nml,"lh2", lh2);
   pop(nml);
 #endif
 
-  nml.flush();
 
+  pop(nml);
   // Time to bolt
   QDP_finalize();
 
