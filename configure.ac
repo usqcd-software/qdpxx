@@ -92,9 +92,10 @@ dnl --enable-pab-asm=<cpu>
 AC_ARG_ENABLE(pab-asm,
    AC_HELP_STRING([--enable-pab-asm=<target cpu>], 
      [Enable assembler optimisations by Peter Boyle for target_cpu]),
-     [ ac_pab_asm_enabled=1
-       ac_pab_asm_targ=${enableval}],
-     [ac_pab_asm=0]
+     [ac_pab_asm_enabled=1
+      ac_pab_asm_targ=${enableval}],
+     [ac_pab_asm_enabled=0
+      ac_pab_asm_targ=0]
 )
 
 
