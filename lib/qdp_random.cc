@@ -1,4 +1,4 @@
-// $Id: qdp_random.cc,v 1.1 2003-05-22 20:06:29 edwards Exp $
+// $Id: qdp_random.cc,v 1.2 2003-07-18 03:21:57 edwards Exp $
 //
 // Random number generator support
 
@@ -75,7 +75,7 @@ namespace RNG
     /*   onto requiring more bits. */
     int nbits = numbits(Layout::vol());
 
-    /* Get the NEWS coordinate of each vp (note the origin is 0) and
+    /* Get the lattice coordinate of each site (note the origin is 0) and
      *   build up a lexicographic ordering for the lattice. The definition
      *   here is totally arbitrary and only this routine needs to worry
      *   about it.  The lexicographic value of site K is
