@@ -12,6 +12,17 @@ PETE_HDRS =  PETE/Combiners.h \
              PETE/Scalar.h \
              PETE/TypeComputations.h
 
+# Generic optimization headers
+genericdir = scalarsite_generic
+
+GENERIC_HDRS = qdp_scalarsite_generic.h \
+	$(genericdir)/generic_addvec.h \
+	$(genericdir)/generic_adj_mat_vec.h \
+	$(genericdir)/generic_mat_vec.h \
+	$(genericdir)/generic_mult_an.h \
+	$(genericdir)/generic_mult_na.h \
+	$(genericdir)/generic_mult_nn.h
+
 # If using SSE, make sure those files are installed
 ssedir = scalarsite_sse
 
@@ -77,6 +88,7 @@ nobase_include_HEADERS = \
 		qdp_scalarvecsite_defs.h \
                 qdp_filebuf.h \
                 $(PETE_HDRS) \
+                $(GENERIC_HDRS) \
 		$(SSE_HDRS)
 
 nodist_include_HEADERS = qdp_config.h
