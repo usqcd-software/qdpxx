@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.13 2003-08-29 02:42:07 edwards Exp $
+// $Id: qdp_reality.h,v 1.14 2003-09-10 16:34:27 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -436,7 +436,7 @@ XMLWriter& operator<<(XMLWriter& xml, const RComplex<T>& d)
 //! XML input
 template<class T>
 inline
-void read(XMLReader& xml, const string& path, RComplex<T>& d)
+void read(XMLReader& xml, const string& xpath, RComplex<T>& d)
 {
   std::ostringstream error_message;
   
@@ -448,7 +448,7 @@ void read(XMLReader& xml, const string& path, RComplex<T>& d)
 	
   // Try and recursively get the real part
   try { 
-    read(xml, path_real, result.real());
+    read(xml, path_real, d.real());
   }
   catch(const string &e) {
     error_message << "XPath Query: " << xpath << " Error: "
@@ -459,7 +459,7 @@ void read(XMLReader& xml, const string& path, RComplex<T>& d)
 	
   // Try and recursively get the imaginary part
   try {
-    read(xml, path_real, result.imag());
+    read(xml, path_real, d.imag());
   }
   catch(const string &e) {
     error_message << "XPath Query: " << xpath <<" Error:"
