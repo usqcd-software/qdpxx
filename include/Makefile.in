@@ -1,0 +1,19 @@
+# $Id: Makefile.in,v 1.1 2002-11-22 21:29:47 edwards Exp $
+#
+# Makefile for producing the top-level QDP functions using PETE
+#
+
+TOPDIR	= @top_srcdir@
+
+PETE	= $(TOPDIR)/PETE
+MAKEEXPR  = $(PETE)/Tools/MakeOperators
+
+.PHONY: all
+
+all: QDPOperators.h
+
+QDPOperators.h: QDPClasses.in QDPOps.in
+	$(MAKE) -C $(TOPDIR)/PETE/Tools  MakeOperators
+	$(MAKEEXPR) --classes $< --operators QDPOps.in --pete-ops --op-tags --guard QDPOPS_H > $@
+
+

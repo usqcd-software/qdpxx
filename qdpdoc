@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 PROJECT_NAME           = QDP
 PROJECT_NUMBER         = 
-OUTPUT_DIRECTORY       = ./doc
+OUTPUT_DIRECTORY       = ./docs/doxygen
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = YES
@@ -51,10 +51,10 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = .
-FILE_PATTERNS          = 
+INPUT                  = ./src ./include
+FILE_PATTERNS          =  
 RECURSIVE              = YES
-EXCLUDE                = ./tests ./PETE/Tools
+EXCLUDE                = ./tests ./PETE/Tools ./docs
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 

@@ -1,0 +1,44 @@
+# $Id: Makefile.in,v 1.1 2002-11-22 21:29:47 edwards Exp $
+#
+# Makefile for C++ QDP code
+#
+
+TOPDIR	= @top_srcdir@
+CC	= @CC@
+CXX	= @CXX@
+CXXFLAGS = @CXXFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS    = @LIBS@
+LIBNAME  = @LIBNAME@
+SRCS	 = @SRCS@
+HDRS	 = @HDRS@
+DEFS	 = @DEFS@
+AC_SUBST_VPATH = @MY_VPATH@
+
+VPATH = $(AC_SUBST_VPATH)
+
+PETE	= $(TOPDIR)/PETE
+LIBFILE =lib${LIBNAME}.a
+CXXFLAGS += -I$(PETE) $(DEFS)
+
+OBJS :=  $(SRCS:%.cc=%.o)
+
+.PHONY: all clean
+
+all: $(LIBFILE)
+
+foo: foo.o $(LIBFILE) $(HDRS)
+	$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS) $(LIBS)
+
+$(LIBFILE): $(LIBFILE)($(OBJS)) $(HDRS)
+
+%.o : %.cc $(HDRS) 
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+.SUFFIXES:
+.SUFFIXES: .h .cc .o
+
+clean::
+	$(RM) $(OBJS) $(LIBFILE) foo.o foo.exe foo
+
+
