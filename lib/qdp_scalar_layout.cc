@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_layout.cc,v 1.5 2003-07-26 03:59:56 edwards Exp $
+// $Id: qdp_scalar_layout.cc,v 1.6 2003-07-31 01:00:57 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -108,16 +108,16 @@ namespace Layout
   }
 
   //! Initializer for all the layout defaults
-  void InitDefaults()
+  void initDefaults()
   {
     // Default set and subsets
-    InitDefaultSets();
+    initDefaultSets();
 
     // Default maps
-    InitDefaultMaps();
+    initDefaultMaps();
 
     // Initialize RNG
-    RNG::InitDefaultRNG();
+    RNG::initDefaultRNG();
   }
 
   //! Initializer for layout
@@ -153,7 +153,7 @@ namespace Layout
     }
 
     // Initialize various defaults
-    InitDefaults();
+    initDefaults();
 
     cerr << "Finished lattice layout\n";
   }
