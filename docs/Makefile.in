@@ -1,13 +1,22 @@
-all: manual.pdf
+all: manual.pdf quick_ref.pdf
 
 manual.ps: manual.dvi
 	dvips $< -o $@ 
 
-manual.pdf: manual.ps
-	ps2pdf $< $@
-	
+manual.pdf: manual.dvi
+	dvipdfm $<
 
 manual.dvi: manual.tex
+	latex $< 
+	latex $<
+
+quick_ref.ps: quick_ref.dvi
+	dvips $< -o $@ 
+
+quick_ref.pdf: quick_ref.dvi
+	dvipdfm $<
+
+quick_ref.dvi: quick_ref.tex
 	latex $< 
 	latex $<
 
