@@ -41,7 +41,7 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#if PETE_MAKE_EMPTY_CONSTRUCTORS
+#if defined(PETE_MAKE_EMPTY_CONSTRUCTORS)
 
 #define PETE_EMPTY_CONSTRUCTORS(CLASS)  \
   CLASS() { }   \
@@ -82,7 +82,7 @@
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: PETE.h,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2002-09-12 18:22:16 $
+// $Revision: 1.2 $   $Date: 2002-11-23 02:09:01 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo
 
