@@ -815,8 +815,7 @@ Optional Features:
   --enable-Nc=N           Set Number of Colours, ie N for SU(N) default is
                           SU(3)
   --enable-Ns=N           Set No of Spin Components, Default is Ns=4
-  --enable-print-expression-tree
-                          Prints QDP expression tree. Diagnostic use only.
+  --enable-profiling      Enable profiling. Diagnostic use only.
   --enable-parallel-arch=<arch>
                           Build QDP++ for parallel architecture <arch>
   --enable-sse            Optimize code with Intel SSE instructions
@@ -2485,12 +2484,12 @@ CONFIG_NS=${ac_Ns}
 echo "$as_me: Configuring QDP++ for Ns = ${ac_Ns}" >&6;}
 
 
-# Check whether --enable-print-expression-tree or --disable-print-expression-tree was given.
-if test "${enable_print_expression_tree+set}" = set; then
-  enableval="$enable_print_expression_tree"
-  ac_print_tree=1
+# Check whether --enable-profiling or --disable-profiling was given.
+if test "${enable_profiling+set}" = set; then
+  enableval="$enable_profiling"
+  ac_profile=1
 else
-  ac_print_tree=0
+  ac_profile=0
 
 fi;
 
@@ -2602,14 +2601,14 @@ echo "$as_me: Enabling allocation in EDRAM in QDP Outer" >&6;}
    fi
 fi
 
-if test ${ac_print_tree} -eq 1; then
+if test ${ac_profile} -eq 1; then
 
 cat >>confdefs.h <<_ACEOF
-#define QDP_PRINT_EXPR_TREE ${ac_print_tree}
+#define QDP_PRINT_EXPR_TREE ${ac_profile}
 _ACEOF
 
-   { echo "$as_me:$LINENO: Enabling printing of QDP expressions" >&5
-echo "$as_me: Enabling printing of QDP expressions" >&6;}
+   { echo "$as_me:$LINENO: Enable profiling" >&5
+echo "$as_me: Enable profiling" >&6;}
 fi
 
 # Check whether --enable-precision or --disable-precision was given.
