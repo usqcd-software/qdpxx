@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.15 2003-04-30 21:04:04 edwards Exp $
+// $Id: io.cc,v 1.16 2003-05-06 01:45:07 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -20,7 +20,7 @@ void TextReader::open(const std::string& p)
     f.open(p.c_str());
 
     if (! f.is_open())
-      QDP_error_exit("failed to open file %s",p);
+      QDP_error_exit("failed to open file %s",p.c_str());
   }
 
   iop=true;
@@ -87,14 +87,14 @@ void NmlReader::open(const std::string& p)
     FILE *f;
 
     if ((f = fopen(p.c_str(),"rb")) == NULL)
-      QDP_error_exit("NmlReader: error opening file %s",p);
+      QDP_error_exit("NmlReader: error opening file %s",p.c_str());
     
     if ((abs = new_abstract("abstract")) == NULL)   // create a parse tree
-      QDP_error_exit("NmlReader: Error initializing file - %s - for reading",p);
+      QDP_error_exit("NmlReader: Error initializing file - %s - for reading",p.c_str());
     
     // Parse from file
     if (param_scan_file(abs, f) != 0)
-      QDP_error_exit("NmlReader: Error scaning namelist file - %s - for reading",p);
+      QDP_error_exit("NmlReader: Error scaning namelist file - %s - for reading",p.c_str());
 
     fclose(f);
 
@@ -351,7 +351,7 @@ void BinaryReader::open(const std::string& p)
   if (Layout::primaryNode()) 
   {
     if ((f = fopen(p.c_str(),"rb")) == NULL)
-      QDP_error_exit("BinaryReader: error opening file %s",p);
+      QDP_error_exit("BinaryReader: error opening file %s",p.c_str());
   }
 
   iop = true;
@@ -388,7 +388,7 @@ void BinaryWriter::open(const std::string& p)
     if ((f = fopen(p.c_str(),"wb")) == NULL)
     {
       cerr << "BinaryWriter: error opening file: " << p << endl;
-      QDP_error_exit("BinaryWriter: error opening file %s",p);
+      QDP_error_exit("BinaryWriter: error opening file %s",p.c_str());
     }
   }
 
