@@ -130,6 +130,7 @@ include_HEADERS = qdp_defs.h \
 		qdp_forward.h \
 		qdp_globalfuncs.h \
 		qdp_inner.h \
+		qdp_init.h \
 		qdp_io.h \
 		qdp_layout.h \
 		qdp_map.h \
