@@ -157,12 +157,13 @@ HDRS = examples.h
 # The programs to build
 # 
 check_PROGRAMS = t_skeleton t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo \
-      t_nml t_xml t_qio
+      t_nml t_xml t_qio t_remote
 
 
 #
 # The program and its dependencies
 t_skeleton_SOURCES = t_skeleton.cc
+t_remote_SOURCES = t_remote.cc $(HDRS)
 t_foo_SOURCES = t_foo.cc $(HDRS)
 t_nml_SOURCES = t_nml.cc $(HDRS)
 t_xml_SOURCES = t_xml.cc $(HDRS)
@@ -183,7 +184,7 @@ CONFIG_CLEAN_FILES =
 check_PROGRAMS = t_skeleton$(EXEEXT) t_dslashm$(EXEEXT) \
 	t_formfac$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
 	t_qdp$(EXEEXT) t_spectrum$(EXEEXT) t_foo$(EXEEXT) \
-	t_nml$(EXEEXT) t_xml$(EXEEXT) t_qio$(EXEEXT)
+	t_nml$(EXEEXT) t_xml$(EXEEXT) t_qio$(EXEEXT) t_remote$(EXEEXT)
 am__objects_1 =
 am_t_dslashm_OBJECTS = t_dslashm.$(OBJEXT) dslashm_w.$(OBJEXT) \
 	$(am__objects_1)
@@ -230,6 +231,11 @@ t_qio_OBJECTS = $(am_t_qio_OBJECTS)
 t_qio_LDADD = $(LDADD)
 t_qio_DEPENDENCIES =
 t_qio_LDFLAGS =
+am_t_remote_OBJECTS = t_remote.$(OBJEXT) $(am__objects_1)
+t_remote_OBJECTS = $(am_t_remote_OBJECTS)
+t_remote_LDADD = $(LDADD)
+t_remote_DEPENDENCIES =
+t_remote_LDFLAGS =
 am_t_skeleton_OBJECTS = t_skeleton.$(OBJEXT)
 t_skeleton_OBJECTS = $(am_t_skeleton_OBJECTS)
 t_skeleton_LDADD = $(LDADD)
@@ -258,8 +264,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_mesplq.Po ./$(DEPDIR)/t_nml.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_qdp.Po ./$(DEPDIR)/t_qio.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_skeleton.Po ./$(DEPDIR)/t_spectrum.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_xml.Po
+@AMDEP_TRUE@	./$(DEPDIR)/t_remote.Po ./$(DEPDIR)/t_skeleton.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_spectrum.Po ./$(DEPDIR)/t_xml.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -272,9 +278,10 @@ LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(t_dslashm_SOURCES) $(t_foo_SOURCES) \
 	$(t_formfac_SOURCES) $(t_io_SOURCES) $(t_mesplq_SOURCES) \
 	$(t_nml_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) \
-	$(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_xml_SOURCES)
+	$(t_remote_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
+	$(t_xml_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(t_dslashm_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_mesplq_SOURCES) $(t_nml_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_xml_SOURCES)
+SOURCES = $(t_dslashm_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_mesplq_SOURCES) $(t_nml_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_remote_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_xml_SOURCES)
 
 all: all-am
 
@@ -312,6 +319,9 @@ t_qdp$(EXEEXT): $(t_qdp_OBJECTS) $(t_qdp_DEPENDENCIES)
 t_qio$(EXEEXT): $(t_qio_OBJECTS) $(t_qio_DEPENDENCIES) 
 	@rm -f t_qio$(EXEEXT)
 	$(CXXLINK) $(t_qio_LDFLAGS) $(t_qio_OBJECTS) $(t_qio_LDADD) $(LIBS)
+t_remote$(EXEEXT): $(t_remote_OBJECTS) $(t_remote_DEPENDENCIES) 
+	@rm -f t_remote$(EXEEXT)
+	$(CXXLINK) $(t_remote_LDFLAGS) $(t_remote_OBJECTS) $(t_remote_LDADD) $(LIBS)
 t_skeleton$(EXEEXT): $(t_skeleton_OBJECTS) $(t_skeleton_DEPENDENCIES) 
 	@rm -f t_skeleton$(EXEEXT)
 	$(CXXLINK) $(t_skeleton_LDFLAGS) $(t_skeleton_OBJECTS) $(t_skeleton_LDADD) $(LIBS)
@@ -342,6 +352,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_nml.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_qdp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_qio.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_remote.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_skeleton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spectrum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_xml.Po@am__quote@

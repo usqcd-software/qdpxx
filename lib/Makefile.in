@@ -149,7 +149,7 @@ HDRS = qdp_defs.h qdp_forward.h qdp_globalfuncs.h qdp_inner.h qdp_io.h qdp_layou
 
 
 GENERIC_SRCS = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc qdp_layout.cc qdp_io.cc qdp_iogauge.cc \
-               qdp_byteorder.cc qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc
+               qdp_byteorder.cc qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc   qdp_filebuf.cc
 
 
 SCALAR_SRCS = qdp_scalar_init.cc qdp_scalar_layout.cc qdp_scalar_specific.cc \
@@ -177,15 +177,16 @@ libqdp_a_AR = $(AR) cru
 libqdp_a_LIBADD =
 am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	qdp.cc qdp_layout.cc qdp_io.cc qdp_iogauge.cc qdp_byteorder.cc \
-	qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc qdp_parscalar_init.cc \
-	qdp_parscalar_layout.cc qdp_parscalar_specific.cc \
-	../include/qdp_parscalar_specific.h qdp_scalar_init.cc \
-	qdp_scalar_layout.cc qdp_scalar_specific.cc \
+	qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc qdp_filebuf.cc \
+	qdp_parscalar_init.cc qdp_parscalar_layout.cc \
+	qdp_parscalar_specific.cc ../include/qdp_parscalar_specific.h \
+	qdp_scalar_init.cc qdp_scalar_layout.cc qdp_scalar_specific.cc \
 	../include/qdp_scalar_specific.h
 am__objects_1 = qdp_map.$(OBJEXT) qdp_subset.$(OBJEXT) \
 	qdp_random.$(OBJEXT) qdp.$(OBJEXT) qdp_layout.$(OBJEXT) \
 	qdp_io.$(OBJEXT) qdp_iogauge.$(OBJEXT) qdp_byteorder.$(OBJEXT) \
-	qdp_util.$(OBJEXT) qdp_qdpio.$(OBJEXT) qdp_xmlio.$(OBJEXT)
+	qdp_util.$(OBJEXT) qdp_qdpio.$(OBJEXT) qdp_xmlio.$(OBJEXT) \
+	qdp_filebuf.$(OBJEXT)
 am__objects_2 = qdp_parscalar_init.$(OBJEXT) \
 	qdp_parscalar_layout.$(OBJEXT) qdp_parscalar_specific.$(OBJEXT)
 am__objects_3 = qdp_scalar_init.$(OBJEXT) qdp_scalar_layout.$(OBJEXT) \
@@ -207,7 +208,8 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/qdp.Po ./$(DEPDIR)/qdp_byteorder.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qdp_io.Po ./$(DEPDIR)/qdp_iogauge.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_filebuf.Po ./$(DEPDIR)/qdp_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_iogauge.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qdp_layout.Po ./$(DEPDIR)/qdp_map.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qdp_parscalar_init.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qdp_parscalar_layout.Po \
@@ -286,6 +288,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_byteorder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_filebuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_iogauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_layout.Po@am__quote@
