@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.10 2004-04-01 16:02:20 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.11 2004-04-01 16:25:14 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -11,7 +11,7 @@
 #define QDP_SCALARSITE_QCDOC_BLAS_H
 
 
-QDP_BEGIN_NAMESPACE(QDP);
+
 // Forward declarations of BLAS routines
 extern "C" { 
 void vaxpy3(REAL *Out, REAL *scalep,REAL *InScale, REAL *Add,int n_3vec);
@@ -21,14 +21,14 @@ void vaxpy3_norm (REAL *out, REAL *scalep, REAL *InScale, REAL *Add,int len,
 };
 
 #include "scalarsite_generic/generic_blas_vaxpby3.h"
-#include "scalarsite_generic/generic_blas vaxmby3.h"
+#include "scalarsite_generic/generic_blas_vaxmby3.h"
 #include "scalarsite_generic/generic_blas_vscal.h"
 #include "scalarsite_generic/generic_blas_local_sumsq.h"
-#include "scalarsite_generic/generic_blax_vaxmby3_norm.h"
+#include "scalarsite_generic/generic_blas_vaxmby3_norm.h"
 #include "scalarsite_generic/generic_blas_local_vcdot.h"
 #include "scalarsite_generic/generic_blas_local_vcdot_real.h"
 
-
+QDP_BEGIN_NAMESPACE(QDP);
 
 typedef PSpinVector<PColorVector<RComplex<PScalar<REAL> >, 3>, Ns> TVec;
 typedef PScalar<PScalar<RScalar<PScalar<REAL> > > >  TScal;
@@ -1316,7 +1316,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
     // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
     BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
     // Inner product is accumulated internally in DOUBLE
-    multi1d<DOUBLE> ip(2);
+    DOUBLE ip[2];
     ip[0]=0;
     ip[1]=0;
 
@@ -1331,7 +1331,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 
 
     // Global sum -- still on a vector of doubles
-    Internal::globalSum(ip);
+    Internal::globalSumArray(ip,2);
 
     // Downcast (and possibly lose precision) here 
     lprod.elem().elem().elem().real().elem() = (REAL)ip[0];
@@ -1361,7 +1361,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
     // This BinaryReturn has Type_t
     // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
     BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
-    multi1d<DOUBLE> ip(2);
+    DOUBLE ip[2];
     ip[0] = 0;
     ip[1] = 0;
 
@@ -1371,7 +1371,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 		(REAL *)&(v2.elem(s.start()).elem(0).elem(0).real().elem()),
 		n_3vec);
 
-    Internal::globalSum(ip);
+    Internal::globalSumArray(ip,2);
 
     lprod.elem().elem().elem().real().elem() = (REAL)ip[0];
     lprod.elem().elem().elem().imag().elem() = (REAL)ip[1];

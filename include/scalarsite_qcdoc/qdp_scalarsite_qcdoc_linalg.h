@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.3 2004-03-21 23:29:34 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.4 2004-04-01 16:25:15 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -32,7 +32,10 @@ typedef RComplex<PScalar<float> >  RComplexFloat;
 #include "scalarsite_generic/generic_adj_mat_vec.h"
 #include "scalarsite_generic/generic_addvec.h"
 
-
+extern "C" {
+ /* Peter's assembler  W = U * V  -- W, U, V are pointers to matrices */
+ void qcdoc_mult_su3_nn_subset(int *length, REAL *Uptr, REAL *Vptr, REAL *Wptr);
+};
 // #define QDP_SCALARSITE_DEBUG
 
 // Optimized version of  
@@ -474,14 +477,15 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
-	      const OrderedSubset& s) 
-{
+	      const OrderedSubset& s) {
+
   typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
   const C& l = static_cast<const C&>(rhs.expression().left());
   const C& r = static_cast<const C&>(rhs.expression().right());
 
-  double fp_regs[32];
-  _save_fp_regs(fp_regs);
+  /* 
+   double fp_regs[32];
+   _save_fp_regs(fp_regs);
 
 //  cout << "Bj Evaluate" << endl;
   for(int i=s.start(); i <= s.end(); ++i) 
@@ -491,6 +495,13 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 				d.elem(i).elem());
   }
   _restore_fp_regs(fp_regs);
+  */
+  int len = s.end()-s.start()+1;
+  qcdoc_mult_su3_nn_subset(&len,
+	(REAL *)&(l.elem(s.start()).elem().elem(0,0).real().elem()),
+	(REAL *)&(r.elem(s.start()).elem().elem(0,0).real().elem()),
+	(REAL *)&(d.elem(s.start()).elem().elem(0,0).real().elem()));
+  
 }
 
 #endif
