@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.15 2003-11-05 18:13:34 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.16 2003-11-10 03:40:54 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -257,6 +257,11 @@ namespace Layout
     QDPIO::cout << "  problem size =";
     for(int i=0; i < Nd; ++i)
       QDPIO::cout << " " << _layout.nrow[i];
+    QDPIO::cout << endl;
+
+    QDPIO::cout << "  layout size =";
+    for(int i=0; i < Nd; ++i)
+      QDPIO::cout << " " << unsigned_nrow[i];
     QDPIO::cout << endl;
 
     QDPIO::cout << "  logical machine size =";
