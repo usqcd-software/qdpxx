@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.4 2003-08-21 02:47:11 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.5 2003-08-26 15:26:44 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -281,7 +281,7 @@ random(OLattice<T>& d, const OrderedSubset& s)
     skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
     fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
   }
-
+   
   RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
 }
 
@@ -596,8 +596,8 @@ peekSite(const OLattice<T1>& l, const multi1d<int>& coord)
   typename UnaryReturn<OLattice<T1>, FnPeekSite>::Type_t  dest;
 
   int i      = Layout::linearSiteIndex(coord);
-  int iouter = i / INNER_LEN;
-  int iinner = i % INNER_LEN;
+  int iouter = i >> INNER_LEN;
+  int iinner = i & ((1 << INNER_LEN)-1);
   copy_site(dest.elem(), iinner, l.elem(iouter));
   return dest;
 }
@@ -616,8 +616,8 @@ inline OLattice<T1>&
 pokeSite(OLattice<T1>& l, const OScalar<T2>& r, const multi1d<int>& coord)
 {
   int i      = Layout::linearSiteIndex(coord);
-  int iouter = i / INNER_LEN;
-  int iinner = i % INNER_LEN;
+  int iouter = i >> INNER_LEN;
+  int iinner = i & ((1 << INNER_LEN)-1);
   copy_site(l.elem(iouter), iinner, r.elem());
   return l;
 }
@@ -1063,18 +1063,17 @@ template<class T>
 NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
 {
   nml.get() << "   [OUTER]" << endl;
-  const int iend = Layout::outerSitesOnNode();
-  for(int site=0; site < iend; ++site) 
+  const int vvol = Layout::vol();
+  for(int site=0; site < vvol; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
+    int outersite = i >> INNER_LEN;
+    int innersite = i & ((1 << INNER_LEN)-1);
+
     nml.get() << "   Site =  " << site << "   = ";
-    nml << d.elem(i);
+    nml << getSite(d.elem(outersite),innersite);  // write in conventional scalar form
     nml.get() << " ," << endl;
   }
-
-//  int site = Layout::outerSitesOnNode()-1;
-//  int i = Layout::linearSiteIndex(site);
-//  nml << "   Site =  " << site << "   = " << d.elem(i) << ",\n";
 
   return nml;
 }
@@ -1087,16 +1086,18 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
 
   XMLWriterAPI::AttributeList alist;
 
-  const int iend = Layout::outerSitesOnNode();
+  const int iend = Layout::vol();
   for(int site=0; site < iend; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
+    int outersite = i >> INNER_LEN;
+    int innersite = i & ((1 << INNER_LEN)-1);
 
     alist.clear();
     alist.push_back(XMLWriterAPI::Attribute("site", i));
 
     xml.openTag("elem", alist);
-    xml << d.elem(i);
+    xml << getSite(d.elem(outersite),innersite);
     xml.closeTag();
   }
 
@@ -1113,24 +1114,29 @@ template<class T>
 inline
 void write(BinaryWriter& bin, const OScalar<T>& d)
 {
-  if (Layout::primaryNode()) 
-    bin.writeArray((const char *)&(d.elem()), 
-		   sizeof(typename WordType<T>::Type_t), 
-		   sizeof(T) / sizeof(typename WordType<T>::Type_t));
+  bin.writeArray((const char *)&(d.elem()), 
+		 sizeof(typename WordType<T>::Type_t), 
+		 sizeof(T) / sizeof(typename WordType<T>::Type_t));
 }
 
 //! Binary output
-/*! Assumes no inner grid */
+/*! An inner grid is assumed */
 template<class T>  
 void write(BinaryWriter& bin, const OLattice<T>& d)
 {
-  const int iend = Layout::outerSitesOnNode();
+  const int iend = Layout::vol();
   for(int site=0; site < iend; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
-    bin.writeArray((const char*)&(d.elem(i)), 
-		   sizeof(typename WordType<T>::Type_t), 
-		   sizeof(T) / sizeof(typename WordType<T>::Type_t));
+    int outersite = i >> INNER_LEN;
+    int innersite = i & ((1 << INNER_LEN)-1);
+
+    typedef typename UnaryReturn<OLattice<T>, FnGetSite>::Type_t  Site_t;
+    Site_t  this_site = getSite(d.elem(outersite),innersite);
+
+    bin.writeArray((const char*)&this_site,
+		   sizeof(typename WordType<Site_t>::Type_t), 
+		   sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
   }
 }
 
@@ -1145,25 +1151,26 @@ void read(BinaryReader& bin, OScalar<T>& d)
 }
 
 //! Binary input
-/*! Assumes no inner grid */
+/*! An inner grid is assumed */
 template<class T>  
 void read(BinaryReader& bin, OLattice<T>& d)
 {
-  const int iend = Layout::outerSitesOnNode();
+  const int iend = Layout::vol();
   for(int site=0; site < iend; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
-    bin.readArray((char*)&(d.elem(i)), 
-		  sizeof(typename WordType<T>::Type_t), 
-		  sizeof(T) / sizeof(typename WordType<T>::Type_t));
-  }
-}
+    int outersite = i >> INNER_LEN;
+    int innersite = i & ((1 << INNER_LEN)-1);
 
-//! Text input
-template<class T>
-TextReader& operator>>(TextReader& txt, OScalar<T>& d)
-{
-  return txt >> d.elem();
+    typedef typename UnaryReturn<OLattice<T>, FnGetSite>::Type_t  Site_t;
+    Site_t  this_site;
+
+    bin.readArray((char*)&this_site,
+		  sizeof(typename WordType<Site_t>::Type_t), 
+		  sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
+
+    copy_site(d.elem(outersite), innersite, this_site.elem());
+  }
 }
 
 
