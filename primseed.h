@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primseed.h,v 1.6 2002-11-12 00:28:14 edwards Exp $
+// $Id: primseed.h,v 1.7 2002-11-12 00:29:12 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -79,7 +79,7 @@ public:
       return *this;
     }
 
-  /*! Hide copy constructor to prevent copying */
+  //! Deep copy constructor
 #if defined(QDP_USE_ARRAY_INITIALIZER)
   /*! This is an array initializer form - may not be strictly legal */
   PSeed(const PSeed& a) : F(a.F) {}
