@@ -273,6 +273,7 @@ PACKAGE_STRING='qdp 1.0.0'
 PACKAGE_BUGREPORT='edwards@jlab.org'
 
 ac_subdirs_all="$ac_subdirs_all other_libs/nml"
+ac_subdirs_all="$ac_subdirs_all other_libs/qio"
 ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE ac_Nd ac_Nc ac_Ns PARALLEL_ARCH ARCHDEF_SUBSTITUTION QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE RANLIB ac_ct_RANLIB ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE LATEX DVIPS DVIPDF DOXYGEN subdirs LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
@@ -3313,8 +3314,11 @@ fi
 
 
 subdirs="$subdirs other_libs/nml"
-  # need to make one of these...
-#AC_CONFIG_SUBDIRS(other_libs/qio)
+
+
+
+subdirs="$subdirs other_libs/qio"
+
 
 #
 # Set up the doxygen file
