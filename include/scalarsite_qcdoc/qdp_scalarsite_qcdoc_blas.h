@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.13 2004-12-10 18:31:20 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.14 2004-12-13 22:53:49 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -65,7 +65,7 @@ void evaluate(OLattice< TVec >& d,
   REAL* aptr = &ar;
   REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
   REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
-  // cout << "Specialised axpy a ="<< ar << endl;
+  //  QDPIO::cout << "Specialised axpy a ="<< ar << endl;
   
   int n_3vec = (s.end()-s.start()+1)*4;
   vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
@@ -555,7 +555,7 @@ void evaluate( OLattice< TVec > &d,
 
   REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
   REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
   REAL rone = (REAL)1;
 
@@ -564,6 +564,7 @@ void evaluate( OLattice< TVec > &d,
   //vadd(zptr, xptr, yptr, n_3vec);
   vaxpy3(zptr, &rone, xptr, yptr, n_3vec); 
 }
+
 
 template<>
 inline
@@ -585,7 +586,7 @@ void evaluate( OLattice< TVec > &d,
 
   REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
   REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
   REAL rone = (REAL)1;
 
   
@@ -594,6 +595,7 @@ void evaluate( OLattice< TVec > &d,
   // vsub(zptr, xptr, yptr, n_3vec);
   vaxmy3(zptr,&rone,xptr, yptr,n_3vec);
 }
+
 
 // Vec = Scal * Vec
 template<>

@@ -91,6 +91,10 @@ This can cause problems by failing if the local lattice volumes are too big.
 If you want to build a version that goes into DDR use the configure_qdp++_ddr.sh
 script (slower but should work)
 
+The configure_qdp++_bagelblas_edram.sh script configures for EDRAM and
+BAGEL routines for real (ie non-complex) BLAS (vaxpy-s etc) for LatticeDiracFermions.
+
+
 
 	
 

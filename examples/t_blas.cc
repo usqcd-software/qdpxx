@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.9 2004-12-09 13:18:37 bjoo Exp $
+// $Id: t_blas.cc,v 1.10 2004-12-13 22:53:48 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -24,13 +24,14 @@ int main(int argc, char *argv[])
   Layout::create();
 
   
-  Real a=1.5;
+  Real a=Real(1.5);
   LatticeFermion qx;
   LatticeFermion qy;
   LatticeFermion qz;
   LatticeFermion qtmp;
   LatticeFermion d;
   Double dnorm;
+  Double dnorm2;
 
   // Test norm2(x)
   gaussian(qx);
@@ -62,18 +63,75 @@ int main(int argc, char *argv[])
   // Test y += a*x
   gaussian(qx);
   gaussian(qy);
-  qz = qy;
-  qtmp = qx;
-  qtmp *= a;
 
-  // qtmp is now qy + a*qx
-  qz += qtmp;
-  
+  /*
+  // Hand roll it
+  for(int site=all.start(); site <=all.end(); site++) {
+    QDPIO::cout << "site=" << site << endl;
+    for(int spin=0; spin < 4; spin++) {
+      for(int col=0; col < 3; col++) {
+       qx.elem(site).elem(spin).elem(col).real() = 1;
+       qx.elem(site).elem(spin).elem(col).imag() = 2;
+
+       qy.elem(site).elem(spin).elem(col).real() = 3;
+       qy.elem(site).elem(spin).elem(col).imag() = 4;
+
+      }
+    }
+  }
+ 
+  // Hand roll it
+  for(int site=all.start(); site <=all.end(); site++) { 
+    QDPIO::cout << "site=" << site << endl;
+    for(int spin=0; spin < 4; spin++) { 
+      for(int col=0; col < 3; col++) { 
+       qz.elem(site).elem(spin).elem(col).real() = 
+          qy.elem(site).elem(spin).elem(col).real() 
+        + (a.elem().elem().elem().elem() * 
+           qx.elem(site).elem(spin).elem(col).real());
+
+       qz.elem(site).elem(spin).elem(col).imag() =
+          qy.elem(site).elem(spin).elem(col).imag()
+        + (a.elem().elem().elem().elem() *
+           qx.elem(site).elem(spin).elem(col).imag());
+      }
+    }
+  } 
+  */
+  qtmp = a*qx;
+  qz = qy + qtmp;
+
   // Now doit in a onner
   qy += a*qx;
-  d = qy - qz;
-  dnorm = norm2(d);
-  QDPIO::cout << "y+=a*x: diff = " << dnorm << endl;
+
+  dnorm = norm2(qy);
+  dnorm2 = norm2(qz);
+  QDPIO::cout << "norm(qy) = " << dnorm << endl;
+  QDPIO::cout << "norm(qz) = " << dnorm2 << endl;
+
+  LatticeFermion diff_q;
+  /*
+    for(int site=all.start(); site <= all.end(); site++) {
+    for(int spin=0; spin < 4; spin++) { 
+    for(int col=0; col < 3; col++) { 
+    QDPIO::cout << "qz = ( " <<
+    qz.elem(site).elem(spin).elem(col).real() <<" , "  <<
+    qz.elem(site).elem(spin).elem(col).imag() <<" ) " 
+    << "  qy = ( " << 
+    qy.elem(site).elem(spin).elem(col).real() <<" , "  << 
+    qy.elem(site).elem(spin).elem(col).imag() <<" ) " << endl;
+    
+    }
+    }
+    }
+  */
+  diff_q = qz - qy;
+
+  Double dnorm3=norm2(diff_q);
+  QDPIO::cout << "diff = " << dnorm3 << endl;
+
+  // QDPIO::cout << "y+=a*x: diff = " << dnorm << endl;
+
 
   // Test y -= a*x
   gaussian(qx);
@@ -820,6 +878,7 @@ int main(int argc, char *argv[])
 		<< " , " << Nflops / tt << " Mflops" << endl;
     
   }
+
 
   // Time to bolt
   QDP_finalize();
