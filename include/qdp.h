@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.51 2005-01-20 03:01:15 edwards Exp $
+// $Id: qdp.h,v 1.52 2005-01-21 02:51:03 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -49,7 +49,9 @@
 #define QDP_ALIGN8   __attribute__ ((aligned (8)))
 #define QDP_ALIGN16  __attribute__ ((aligned (16)))
 #define QDP_INLINE   __attribute__ ((always_inline))
-#define QDP_CONST    __attribute__ ((const,pure))
+// The attributes in QDP_CONST is buggering g++-3.4 
+// #define QDP_CONST    __attribute__ ((const,pure))
+#define QDP_CONST
 #define QDP_CINLINE  __attribute__ ((always_inline,const,pure))
 #else
 // default
