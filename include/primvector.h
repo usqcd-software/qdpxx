@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primvector.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: primvector.h,v 1.2 2002-09-13 19:18:05 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -399,8 +399,7 @@ void
 fill_gaussian(PVector<T,N,C>& d, PVector<T,N,C>& r1, PVector<T,N,C>& r2)
 {
   for(int i=0; i < N; ++i)
-    for(int j=0; j < N; ++j)
-      fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
+    fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
 }
 
 
