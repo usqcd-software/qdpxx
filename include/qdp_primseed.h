@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_primseed.h,v 1.2 2003-06-10 16:00:47 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -117,6 +117,27 @@ NmlWriter& operator<<(NmlWriter& nml, const PSeed<T>& d)
 
   return nml;
 }
+
+//! XML output
+template<class T>
+inline
+XMLWriter& operator<<(XMLWriter& xml, const PSeed<T>& d)
+{
+  xml.openTag("Seed");
+
+  // Copy into another array first
+  for(int i=0; i < 4; ++i)
+  {
+    xml.openTag("elem");
+    xml << d.elem(i);
+    xml.closeTag();
+  }
+
+  xml.closeTag();  // Seed
+  return xml;
+}
+
+
 
 /*! @} */   // end of group primseed
 
