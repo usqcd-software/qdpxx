@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_subset.h,v 1.3 2003-07-31 01:06:17 edwards Exp $
+// $Id: qdp_subset.h,v 1.4 2003-07-31 01:13:23 edwards Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -42,9 +42,6 @@ public:
 
   //! Access the coloring for this subset
   virtual int color() const = 0;
-
-  //! The = operator
-  Subset& operator=(const Subset& s) {}
 
 public:
   virtual const multi1d<int>& siteTable() const = 0;
