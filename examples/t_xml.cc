@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.22 2004-03-29 21:29:31 edwards Exp $
+// $Id: t_xml.cc,v 1.23 2004-04-27 19:31:38 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -186,6 +186,11 @@ int main(int argc, char **argv)
 
     XMLReader fromxml(fromxml_orig, "/complex_xml");
 
+    XMLReader fromxml_tmp(fromxml, "seedThingy");
+    ostringstream os;
+    fromxml_tmp.printCurrentContext(os);
+    QDPIO::cout << "Current context = XX" << os.str() << "XX" << endl;
+
     Seed seed;
     read(fromxml,"seedThingy",seed);
     QDPIO::cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << endl;
@@ -244,6 +249,43 @@ int main(int argc, char **argv)
   catch (const string& e)
   {
     QDP_error_exit("Error in array writing: %s",e.c_str());
+  }
+
+
+  try 
+  {
+    // Test moving around with derived readers
+    XMLReader fromxml_orig;
+    fromxml_orig.open("t_xml.input2");
+
+    XMLReader fromxml(fromxml_orig, "/complex_xml");
+
+    Seed seed;
+    read(fromxml,"seedThingy",seed);
+    QDPIO::cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << endl;
+
+    multi1d<int> arrayInt;
+    read(fromxml,"arrayInt",arrayInt);
+    for(int i=0; i < arrayInt.size(); ++i)
+      QDPIO::cout << "arrayInt[" << i << "] = " << arrayInt[i]  << "  node=" << Layout::nodeNumber() << endl;
+
+    multi1d<Real> arrayReal;
+    read(fromxml,"arrayReal",arrayReal);
+    for(int i=0; i < arrayReal.size(); ++i)
+      QDPIO::cout << "arrayReal[" << i << "] = " << arrayReal[i] << "  node=" << Layout::nodeNumber() << endl;
+
+    multi1d<Complex> arrayComplex;
+    read(fromxml,"arrayComplex",arrayComplex);
+    for(int i=0; i < arrayComplex.size(); ++i)
+      QDPIO::cout << "arrayComplex[" << i << "] = ("
+		  << real(arrayComplex[i]) << "," 
+		  << imag(arrayComplex[i]) << ")" << endl;
+
+    QDP_info("done with array snippet tests");
+  }
+  catch(const string& e)
+  {
+    QDP_error_exit("Error reading array snippets: %s",e.c_str());
   }
 
   // Time to bolt
