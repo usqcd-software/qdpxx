@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multi.h,v 1.3 2002-11-23 03:42:30 edwards Exp $
+// $Id: multi.h,v 1.4 2002-12-14 01:12:07 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -83,6 +83,66 @@ public:
 
       for(int i=0; i < n1; ++i)
 	F[i] = s1[i];
+      return *this;
+    }
+
+  //! Add-replace on each element
+  /*! Uses underlying += */
+  multi1d<T>& operator+=(const multi1d<T>& s1)
+    {
+      if (size() != s1.size())
+      {
+	cerr << "Sizes incompatible in +=\n";
+	exit(1);
+      }
+
+      for(int i=0; i < n1; ++i)
+	F[i] += s1.F[i];
+      return *this;
+    }
+
+  //! Subtract-replace on each element
+  /*! Uses underlying -= */
+  multi1d<T>& operator-=(const multi1d<T>& s1)
+    {
+      if (size() != s1.size())
+      {
+	cerr << "Sizes incompatible in -=\n";
+	exit(1);
+      }
+
+      for(int i=0; i < n1; ++i)
+	F[i] -= s1.F[i];
+      return *this;
+    }
+
+  //! Mult-replace on each element
+  /*! Uses underlying *= */
+  multi1d<T>& operator*=(const multi1d<T>& s1)
+    {
+      if (size() != s1.size())
+      {
+	cerr << "Sizes incompatible in *=\n";
+	exit(1);
+      }
+
+      for(int i=0; i < n1; ++i)
+	F[i] *= s1.F[i];
+      return *this;
+    }
+
+  //! Divide-replace on each element
+  /*! Uses underlying /= */
+  multi1d<T>& operator/=(const multi1d<T>& s1)
+    {
+      if (size() != s1.size())
+      {
+	cerr << "Sizes incompatible in /=\n";
+	exit(1);
+      }
+
+      for(int i=0; i < n1; ++i)
+	F[i] /= s1.F[i];
       return *this;
     }
 
