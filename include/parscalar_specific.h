@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.14 2003-01-21 21:19:45 edwards Exp $
+// $Id: parscalar_specific.h,v 1.15 2003-01-22 16:50:12 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -601,9 +601,9 @@ public:
       QDP_info("Map()");
 
       OLattice<T1> d;
-      fprintf(stderr,"Here a\n");
+//    fprintf(stderr,"Here a\n");
 
-      fprintf(stderr,"Here c: offnodeP = %d\n",offnodeP);
+//    fprintf(stderr,"Here c: offnodeP = %d\n",offnodeP);
 
       if (offnodeP)
       {
@@ -639,13 +639,13 @@ public:
 
 	  if (srcnode[i] != my_node)
 	  {
-	    QDP_info("Map_gather_send(olattice[%d],olattice[%d])",i,ri);
+//	    QDP_info("Map_gather_send(olattice[%d],olattice[%d])",i,ri);
 
 	    dest[i] = &(recv_buf[ri++]);
 	  }
 	  else
 	  {
-	    QDP_info("Map_gather_onnode(olattice[%d],olattice[%d])",i,soffsets[i]);
+//	    QDP_info("Map_gather_onnode(olattice[%d],olattice[%d])",i,soffsets[i]);
 
 	    dest[i] = &(const_cast<T1&>(l.elem(soffsets[i])));
 	  }
@@ -686,7 +686,7 @@ public:
 	// For now, use the all subset
 	for(int i=0; i < Layout::subgridVol(); ++i) 
 	{
-	  QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
+//	  QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
 	  d.elem(i) = *(dest[i]);
 	}
 
@@ -707,7 +707,7 @@ public:
 	// For now, use the all subset
 	for(int i=0; i < Layout::subgridVol(); ++i) 
 	{
-	  QDP_info("Map(olattice[%d],olattice[%d])",i,soffsets[i]);
+//	  QDP_info("Map(olattice[%d],olattice[%d])",i,soffsets[i]);
 	  d.elem(i) = l.elem(soffsets[i]);
 	}
       }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: traits.h,v 1.5 2002-10-16 00:42:38 edwards Exp $
+// $Id: traits.h,v 1.6 2003-01-22 16:50:12 edwards Exp $
 
 /*! @file
  * @brief Traits classes
@@ -9,6 +9,13 @@
 
 QDP_BEGIN_NAMESPACE(QDP);
 
+
+//-----------------------------------------------------------------------------
+// Traits class for returning the subset-ted class name of a outer grid class
+//-----------------------------------------------------------------------------
+
+template<class T>
+struct QDPSubTypeTrait {};
 
 //-----------------------------------------------------------------------------
 // Traits classes to support operations of simple scalars (floating constants, 

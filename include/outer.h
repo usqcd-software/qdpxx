@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.17 2003-01-21 21:19:45 edwards Exp $
+// $Id: outer.h,v 1.18 2003-01-22 16:50:12 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -310,7 +310,7 @@ public:
 
   //---------------------------------------------------------
   // Subsets
-  OSubLattice<T> operator[](const Subset& s) const {return OSubLattice<T>(*this,s);}
+  OSubLattice<T> operator[](const Subset& s) {return OSubLattice<T>(*this,s);}
 
 
   //---------------------------------------------------------

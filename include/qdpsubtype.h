@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdpsubtype.h,v 1.3 2002-10-12 04:10:15 edwards Exp $
+// $Id: qdpsubtype.h,v 1.4 2003-01-22 16:50:12 edwards Exp $
 
 /*! @file
  * @brief QDPType after a subset
@@ -19,12 +19,15 @@ QDP_BEGIN_NAMESPACE(QDP);
 template<class T, class C> 
 class QDPSubType
 {
+  //! This is a type name like OSubLattice<T> or OSubScalar<T>
+  typedef typename QDPSubTypeTrait<C>::Type_t CC;
+
 public:
-  //! Can only construct from a QDPType and a Subset
-  QDPSubType(const QDPType<T,C>& a, const Subset& ss): F(a), s(ss) {}
+  //! Default constructor 
+  QDPSubType() {}
 
   //! Copy constructor
-  QDPSubType(const QDPSubType& a): F(a.F), s(a.s) {}
+  QDPSubType(const QDPSubType&) {}
 
   //! Destructor
   ~QDPSubType() {}
@@ -36,299 +39,258 @@ public:
   inline
   void assign(const typename WordType<C>::Type_t& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(me,OpAssign(),PETE_identity(Scalar_t(rhs)),s);
+      evaluate(field(),OpAssign(),PETE_identity(Scalar_t(rhs)),subset());
     }
 
   inline
   void assign(const Zero&)
     {
-      zero_rep(static_cast<C&>(const_cast<QDPType<T,C>&>(F)),s);
+      zero_rep(field(),subset());
     }
 
   template<class T1,class C1>
   inline
   void assign(const QDPType<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpAssign(),PETE_identity(rhs),s);
+      evaluate(field(),OpAssign(),PETE_identity(rhs),subset());
     }
 
   template<class T1,class C1>
   inline
   void assign(const QDPExpr<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpAssign(),rhs,s);
+      evaluate(field(),OpAssign(),rhs,subset());
     }
-
 
   inline
   void operator+=(const typename WordType<C>::Type_t& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(me,OpAddAssign(),PETE_identity(Scalar_t(rhs)),s);
+      evaluate(field(),OpAddAssign(),PETE_identity(Scalar_t(rhs)),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator+=(const QDPType<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpAddAssign(),PETE_identity(rhs),s);
+      evaluate(field(),OpAddAssign(),PETE_identity(rhs),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator+=(const QDPExpr<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpAddAssign(),rhs,s);
+      evaluate(field(),OpAddAssign(),rhs,subset());
     }
 
 
   inline
   void operator-=(const typename WordType<C>::Type_t& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(me,OpSubtractAssign(),PETE_identity(Scalar_t(rhs)),s);
+      evaluate(field(),OpSubtractAssign(),PETE_identity(Scalar_t(rhs)),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator-=(const QDPType<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpSubtractAssign(),PETE_identity(rhs),s);
+      evaluate(field(),OpSubtractAssign(),PETE_identity(rhs),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator-=(const QDPExpr<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpSubtractAssign(),rhs,s);
+      evaluate(field(),OpSubtractAssign(),rhs,subset());
     }
 
 
   inline
   void operator*=(const typename WordType<C>::Type_t& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(me,OpMultiplyAssign(),PETE_identity(Scalar_t(rhs)),s);
+      evaluate(field(),OpMultiplyAssign(),PETE_identity(Scalar_t(rhs)),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator*=(const QDPType<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpMultiplyAssign(),PETE_identity(rhs),s);
+      evaluate(field(),OpMultiplyAssign(),PETE_identity(rhs),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator*=(const QDPExpr<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpMultiplyAssign(),rhs,s);
+      evaluate(field(),OpMultiplyAssign(),rhs,subset());
     }
 
 
   inline
   void operator/=(const typename WordType<C>::Type_t& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(me,OpDivideAssign(),PETE_identity(Scalar_t(rhs)),s);
+      evaluate(field(),OpDivideAssign(),PETE_identity(Scalar_t(rhs)),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator/=(const QDPType<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpDivideAssign(),PETE_identity(rhs),s);
+      evaluate(field(),OpDivideAssign(),PETE_identity(rhs),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator/=(const QDPExpr<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpDivideAssign(),rhs,s);
+      evaluate(field(),OpDivideAssign(),rhs,subset());
     }
 
 
   inline
   void operator%=(const typename WordType<C>::Type_t& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(me,OpModAssign(),PETE_identity(Scalar_t(rhs)),s);
+      evaluate(field(),OpModAssign(),PETE_identity(Scalar_t(rhs)),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator%=(const QDPType<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpModAssign(),PETE_identity(rhs),s);
+      evaluate(field(),OpModAssign(),PETE_identity(rhs),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator%=(const QDPExpr<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpModAssign(),rhs,s);
+      evaluate(field(),OpModAssign(),rhs,subset());
     }
 
 
   inline
   void operator|=(const typename WordType<C>::Type_t& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(me,OpBitwiseOrAssign(),PETE_identity(Scalar_t(rhs)),s);
+      evaluate(field(),OpBitwiseOrAssign(),PETE_identity(Scalar_t(rhs)),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator|=(const QDPType<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpBitwiseOrAssign(),PETE_identity(rhs),s);
+      evaluate(field(),OpBitwiseOrAssign(),PETE_identity(rhs),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator|=(const QDPExpr<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpBitwiseOrAssign(),PETE_identity(rhs),s);
+      evaluate(field(),OpBitwiseOrAssign(),PETE_identity(rhs),subset());
     }
 
 
   inline
   void operator&=(const typename WordType<C>::Type_t& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(me,OpBitwiseAndAssign(),PETE_identity(Scalar_t(rhs)),s);
+      evaluate(field(),OpBitwiseAndAssign(),PETE_identity(Scalar_t(rhs)),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator&=(const QDPType<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpBitwiseAndAssign(),PETE_identity(rhs),s);
+      evaluate(field(),OpBitwiseAndAssign(),PETE_identity(rhs),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator&=(const QDPExpr<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpBitwiseAndAssign(),rhs,s);
+      evaluate(field(),OpBitwiseAndAssign(),rhs,subset());
     }
 
 
   inline
   void operator^=(const typename WordType<C>::Type_t& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(me,OpBitwiseXorAssign(),PETE_identity(Scalar_t(rhs)));
+      evaluate(field(),OpBitwiseXorAssign(),PETE_identity(Scalar_t(rhs)));
     }
 
   template<class T1,class C1>
   inline
   void operator^=(const QDPType<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpBitwiseXorAssign(),PETE_identity(rhs),s);
+      evaluate(field(),OpBitwiseXorAssign(),PETE_identity(rhs),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator^=(const QDPExpr<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpBitwiseXorAssign(),rhs,s);
+      evaluate(field(),OpBitwiseXorAssign(),rhs,subset());
     }
 
 
   inline
   void operator<<=(const typename WordType<C>::Type_t& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(me,OpLeftShiftAssign(),PETE_identity(Scalar_t(rhs)),s);
+      evaluate(field(),OpLeftShiftAssign(),PETE_identity(Scalar_t(rhs)),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator<<=(const QDPType<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpLeftShiftAssign(),PETE_identity(rhs),s);
+      evaluate(field(),OpLeftShiftAssign(),PETE_identity(rhs),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator<<=(const QDPExpr<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpLeftShiftAssign(),rhs,s);
+      evaluate(field(),OpLeftShiftAssign(),rhs,subset());
     }
 
 
   inline
   void operator>>=(const typename WordType<C>::Type_t& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
-      evaluate(me,OpRightShiftAssign(),PETE_identity(Scalar_t(rhs)),s);
+      evaluate(field(),OpRightShiftAssign(),PETE_identity(Scalar_t(rhs)),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator>>=(const QDPType<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpRightShiftAssign(),PETE_identity(rhs),s);
+      evaluate(field(),OpRightShiftAssign(),PETE_identity(rhs),subset());
     }
 
   template<class T1,class C1>
   inline
   void operator>>=(const QDPExpr<T1,C1>& rhs)
     {
-      C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
-      evaluate(me,OpRightShiftAssign(),rhs,s);
+      evaluate(field(),OpRightShiftAssign(),rhs,subset());
     }
 
-private:
-  //! Hide default constructor 
-  QDPSubType() {}
-
-
 public:
-  C& field() {return static_cast<C&>(const_cast<QDPType<T,C>&>(F));}
-  const Subset& subset() const {return s;}
+  C& field() {return static_cast<CC*>(this)->field();}
+  const Subset& subset() const {return static_cast<const CC*>(this)->subset();}
 
-
-private:
-  const QDPType<T,C>&  F;
-  const Subset& s;
 };
 
 
 
 QDP_END_NAMESPACE();
+
+
 

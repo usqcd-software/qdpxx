@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outersubtype.h,v 1.3 2002-10-12 04:10:15 edwards Exp $
+// $Id: outersubtype.h,v 1.4 2003-01-22 16:50:12 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes after a subset
@@ -15,9 +15,11 @@ QDP_BEGIN_NAMESPACE(QDP);
 template<class T>
 class OSubScalar: public QDPSubType<T, OScalar<T> >
 {
+  typedef OScalar<T> C;
+
 public:
-  OSubScalar(const OScalar<T>& a, const Subset& ss): QDPSubType<T,OScalar<T> >(a,ss) {}
-  OSubScalar(const OSubScalar& a): QDPSubType<T,OScalar<T> >(a) {}
+  OSubScalar(const OScalar<T>& a, const Subset& ss): F(a), s(ss) {}
+  OSubScalar(const OSubScalar& a): F(a.F), s(a.s) {}
   ~OSubScalar() {}
 
   //---------------------------------------------------------
@@ -51,10 +53,17 @@ public:
       assign(rhs);
     }
 
-
 private:
   // Hide default constructor
   OSubScalar() {}
+
+public:
+  C& field() {return const_cast<C&>(F);}
+  const Subset& subset() const {return s;}
+
+private:
+  const C&  F;
+  const Subset& s;
 };
 
 
@@ -67,9 +76,11 @@ private:
 template<class T> 
 class OSubLattice: public QDPSubType<T, OLattice<T> >
 {
+  typedef OLattice<T> C;
+
 public:
-  OSubLattice(const OLattice<T>& a, const Subset& ss): QDPSubType<T,OLattice<T> >(a,ss) {}
-  OSubLattice(const OSubLattice& a): QDPSubType<T,OLattice<T> >(a) {}
+  OSubLattice(const OLattice<T>& a, const Subset& ss): F(a), s(ss) {}
+  OSubLattice(const OSubLattice& a): F(a.F), s(a.s) {}
   ~OSubLattice() {}
 
   //---------------------------------------------------------
@@ -107,20 +118,32 @@ public:
 private:
   // Hide default constructor
   OSubLattice() {}
+
+public:
+  C& field() {return const_cast<C&>(F);}
+  const Subset& subset() const {return s;}
+
+private:
+  const C&  F;
+  const Subset& s;
 };
 
 
+//-----------------------------------------------------------------------------
+// Traits class for returning the subset-ted class name of a outer grid class
+//-----------------------------------------------------------------------------
 
-// OSubLattice Op Scalar(Expression(source))
-/* Implementation in relevant specific files */
-template<class T, class T1, class Op, class RHS>
-void evaluate(OSubLattice<T>& dest, const Op& op, const QDPExpr<RHS,OSubScalar<T1> >& rhs);
+template<class T>
+struct QDPSubTypeTrait<OScalar<T> > 
+{
+  typedef OSubScalar<T>  Type_t;
+};
 
-// OSubLattice Op OSubLattice(Expression(source))
-/* Implementation in relevant specific files */
-template<class T, class T1, class Op, class RHS>
-void evaluate(OSubLattice<T>& dest, const Op& op, const QDPExpr<RHS,OSubLattice<T1> >& rhs);
-
+template<class T>
+struct QDPSubTypeTrait<OLattice<T> > 
+{
+  typedef OSubLattice<T>  Type_t;
+};
 
 
 //-----------------------------------------------------------------------------
