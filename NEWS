@@ -1,7 +1,8 @@
 09/07/2004 -- Robert Edwards
 
 	Version 1.10.0. Parallel version now exclusively uses QMP-2 . QMP-1.X is
-        not supported. Now one must specify the arch on configure.
+        not supported. Now one must specify the arch on configure. QIO support is
+        now 1.0. So, the default checkouts of QMP and QIO are consistent with QDP++.
 
 08/18/2004 -- Robert Edwards
 
