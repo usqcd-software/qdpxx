@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 2002-09-12 18:22:16 edwards Exp $
+# $Id: Makefile,v 1.2 2002-09-12 18:31:14 edwards Exp $
 #
 # Makefile for C++ QDP code
 #
@@ -23,7 +23,7 @@ libname = qdp.a
 
 sources = subset.cc random.cc qdp.cc layout.cc 
 headers = qdp.h word.h inner.h reality.h outer.h qdptype.h qdpexpr.h \
-	defs.h special.h subset.h params.h multi.h random.h layout.h proto.h \
+	defs.h specializations.h subset.h params.h multi.h random.h layout.h proto.h \
 	scalar_specific.h io.h QDPOperators.h globalfuncs.h \
 	primitive.h primscalar.h primmatrix.h primvector.h primseed.h primcolormat.h \
 	primcolorvec.h primgamma.h primspinmat.h primspinvec.h

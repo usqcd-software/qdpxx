@@ -1,3 +1,5 @@
+// $Id: QDPOperators.h,v 1.2 2002-09-12 18:31:14 edwards Exp $
+
 #ifndef QDPOPS_H
 #define QDPOPS_H
 
