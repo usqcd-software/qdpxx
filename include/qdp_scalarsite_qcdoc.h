@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_qcdoc.h,v 1.1 2004-03-16 02:48:28 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc.h,v 1.2 2004-03-16 02:51:49 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -25,7 +25,7 @@ typedef RComplex<PScalar<float> >  RComplexFloat;
 
 #include "scalarsite_qcdoc/save_fp_regs.h"
 #include "scalarsite_qcdoc/qcdoc_mult_nn.h"
-#include "scalarsite_generic/qcdoc_mult_an.h"
+#include "scalarsite_qcdoc/qcdoc_mult_an.h"
 #include "scalarsite_generic/generic_mult_na.h"
 #include "scalarsite_generic/generic_mult_aa.h"
 #include "scalarsite_generic/generic_mat_vec.h"
@@ -99,7 +99,7 @@ adjMultiply(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   cout << "adj(M)*M" << endl;
 #endif
 
-  _inline_generic_mult_su3_an(l,r,d);
+  _inline_qcdoc_mult_su3_an(l,r,d);
 
   return d;
 }
@@ -120,7 +120,7 @@ adjMultiply(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
   cout << "adj(PSc<M>)*PSc<M>" << endl;
 #endif
 
-  _inline_generic_mult_su3_an(l.elem(),r.elem(),d.elem());
+  _inline_qcdoc_mult_su3_an(l.elem(),r.elem(),d.elem());
 
   return d;
 }
