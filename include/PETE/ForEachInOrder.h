@@ -163,6 +163,7 @@ template <class Op, class VTag>
 struct TagVisitor 
 {
   static void start(Op, VTag) { }
+  static void center(Op, VTag) { }
   static void visit(Op, VTag) { }
   static void finish(Op, VTag) { }
 };  
@@ -214,33 +215,116 @@ struct ForEachInOrder<Reference<T>,FTag,VTag,CTag>
 // traversal described above.
 //
 
+template<class Op, class A, class FTag, class VTag, 
+  class CTag>
+struct ForEachInOrder<UnaryNode<Op, A>, FTag, VTag, CTag>
+{
+  typedef ForEachInOrder<A, FTag, VTag, CTag> ForEachA_t;
+  typedef TagVisitor<Op, VTag>          Visitor_t;
+
+  typedef typename ForEachA_t::Type_t   TypeA_t;
+
+  typedef Combine1<TypeA_t, Op, CTag>   Combiner_t;
+
+  typedef typename Combiner_t::Type_t   Type_t;
+
+  static Type_t apply(const UnaryNode<Op, A> &expr, const FTag &f, 
+		      const VTag &v, const CTag &c)
+  {
+    Visitor_t::visit(expr.operation(),v);
+
+    Visitor_t::start(expr.operation(),v);
+
+    TypeA_t A_val  = ForEachA_t::apply(expr.child(), f, v, c);
+    Type_t val = Combiner_t::combine(A_val, expr.operation(), c);
+        
+    Visitor_t::finish(expr.operation(),v);
+
+    return val;
+  }
+};
+
+
+/*!
+ * struct ForEachInOrder for BinaryNode
+ */
+
 template<class Op, class A, class B, class FTag, class VTag, 
   class CTag>
 struct ForEachInOrder<BinaryNode<Op, A, B>, FTag, VTag, CTag>
 {
-  typedef ForEachInOrder<A, FTag, VTag, CTag> ForEachLeft_t;
-  typedef ForEachInOrder<B, FTag, VTag, CTag> ForEachRight_t;
-  typedef TagVisitor<Op, VTag>              Visitor_t;
+  typedef ForEachInOrder<A, FTag, VTag, CTag> ForEachA_t;
+  typedef ForEachInOrder<B, FTag, VTag, CTag> ForEachB_t;
+  typedef TagVisitor<Op, VTag>                Visitor_t;
 
-  typedef typename ForEachLeft_t::Type_t   TypeL_t;
-  typedef typename ForEachRight_t::Type_t  TypeR_t;
+  typedef typename ForEachA_t::Type_t  TypeA_t;
+  typedef typename ForEachB_t::Type_t  TypeB_t;
 
-  typedef Combine2<TypeL_t, TypeR_t, Op, CTag> Combiner_t;
+  typedef Combine2<TypeA_t, TypeB_t, Op, CTag>  Combiner_t;
 
   typedef typename Combiner_t::Type_t Type_t;
 
   static Type_t apply(const BinaryNode<Op, A, B> &expr, const FTag &f, 
-    const VTag &v, const CTag &c) 
+		      const VTag &v, const CTag &c) 
   {
-    Visitor_t::start(expr.operation(),v);
-
-    TypeL_t left_val  = ForEachLeft_t::apply(expr.left(), f, v, c);
-
     Visitor_t::visit(expr.operation(),v);
 
-    TypeR_t right_val = ForEachRight_t::apply(expr.right(), f, v, c);
+    Visitor_t::start(expr.operation(),v);
+
+    TypeA_t left_val  = ForEachA_t::apply(expr.left(), f, v, c);
+
+    Visitor_t::center(expr.operation(),v);
+
+    TypeB_t right_val = ForEachB_t::apply(expr.right(), f, v, c);
 
     Type_t val = Combiner_t::combine(left_val, right_val, expr.operation(), c);
+        
+    Visitor_t::finish(expr.operation(),v);
+
+    return val;
+  }
+};
+
+
+/*!
+ * struct ForEachInOrder for BinaryNode
+ */
+
+template<class Op, class A, class B, class C, class FTag, class VTag, 
+  class CTag>
+struct ForEachInOrder<TrinaryNode<Op, A, B, C>, FTag, VTag, CTag>
+{
+  typedef ForEachInOrder<A, FTag, VTag, CTag> ForEachA_t;
+  typedef ForEachInOrder<B, FTag, VTag, CTag> ForEachB_t;
+  typedef ForEachInOrder<C, FTag, VTag, CTag> ForEachC_t;
+  typedef TagVisitor<Op, VTag>                Visitor_t;
+
+  typedef typename ForEachA_t::Type_t  TypeA_t;
+  typedef typename ForEachB_t::Type_t  TypeB_t;
+  typedef typename ForEachC_t::Type_t  TypeC_t;
+
+  typedef Combine3<TypeA_t, TypeB_t, TypeC_t, Op, CTag> Combiner_t;
+
+  typedef typename Combiner_t::Type_t Type_t;
+
+  static Type_t apply(const TrinaryNode<Op, A, B, C> &expr, const FTag &f, 
+		      const VTag &v, const CTag &c) 
+  {
+    Visitor_t::visit(expr.operation(),v);
+
+    Visitor_t::start(expr.operation(),v);
+
+    TypeA_t left_val  = ForEachA_t::apply(expr.left(), f, v, c);
+
+    Visitor_t::center(expr.operation(),v);
+
+    TypeB_t middle_val= ForEachB_t::apply(expr.middle(), f, v, c);
+
+    Visitor_t::center(expr.operation(),v);
+
+    TypeC_t right_val = ForEachC_t::apply(expr.right(), f, v, c);
+
+    Type_t val = Combiner_t::combine(left_val, middle_val, right_val, expr.operation(), c);
         
     Visitor_t::finish(expr.operation(),v);
 
@@ -269,6 +353,6 @@ struct Combine2<A, B, Op, NullTag>
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: ForEachInOrder.h,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2004-07-08 17:54:08 $
+// $Revision: 1.2 $   $Date: 2004-07-27 05:24:35 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo
