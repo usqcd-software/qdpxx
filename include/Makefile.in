@@ -148,6 +148,7 @@ include_HEADERS = defs.h \
 		qdp_util.h \
 		qdpexpr.h \
 		qdp.h \
+		qdpio.h \
 		QDPOperators.h \
 		qdpsubtype.h \
 		qdptype.h \
