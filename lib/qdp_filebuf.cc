@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_filebuf.cc,v 1.4 2003-06-11 21:00:18 edwards Exp $
+// $Id: qdp_filebuf.cc,v 1.5 2003-07-21 21:15:24 edwards Exp $
 
 /*! @file
  * @brief Remote file support
@@ -150,6 +150,9 @@ RemoteInputFileBuf::RemoteInputFileBuf()
   f   = NULL;
   iop = false;        // set file status
 
+  bufferSize = 50;    // size of the data buffer
+  buffer = new char[bufferSize];  // data buffer
+
   setg (buffer+4,     // beginning of putback area
 	buffer+4,     // read position
 	buffer+4);    // end position
@@ -188,7 +191,11 @@ void RemoteInputFileBuf::close()
   }
 }
 
-RemoteInputFileBuf::~RemoteInputFileBuf() {close();}
+RemoteInputFileBuf::~RemoteInputFileBuf()
+{
+  close();
+  delete[] buffer;
+}
 
 int_type RemoteInputFileBuf::underflow()
 {
