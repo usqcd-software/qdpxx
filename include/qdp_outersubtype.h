@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outersubtype.h,v 1.2 2003-07-31 01:07:11 edwards Exp $
+// $Id: qdp_outersubtype.h,v 1.3 2005-01-20 03:02:38 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes after a subset
@@ -30,34 +30,34 @@ public:
   inline
   void operator=(const typename WordType<T>::Type_t& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
   inline
   void operator=(const Zero& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
   template<class T1,class C1>
   inline
   void operator=(const QDPType<T1,C1>& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
   template<class T1,class C1>
   inline
   void operator=(const QDPExpr<T1,C1>& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
 
   inline
   void operator=(const OSubScalar& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
 
@@ -99,34 +99,34 @@ public:
   inline
   void operator=(const typename WordType<T>::Type_t& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
   inline
   void operator=(const Zero& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
   template<class T1,class C1>
   inline
   void operator=(const QDPType<T1,C1>& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
   template<class T1,class C1>
   inline
   void operator=(const QDPExpr<T1,C1>& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
 
   inline
   void operator=(const OSubLattice& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
 

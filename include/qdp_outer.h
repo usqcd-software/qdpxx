@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.34 2004-11-22 19:31:31 edwards Exp $
+// $Id: qdp_outer.h,v 1.35 2005-01-20 03:02:38 edwards Exp $
 
 #include "qdp_config.h"
 
@@ -53,7 +53,7 @@ public:
   //! construct dest = 0
   OScalar(const Zero& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
 
@@ -61,7 +61,7 @@ public:
   template<class T1>
   OScalar(const OScalar<T1>& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
 
@@ -69,39 +69,39 @@ public:
   template<class RHS, class T1>
   OScalar(const QDPExpr<RHS, OScalar<T1> >& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
     }
 
 
   //---------------------------------------------------------
   // Operators
-  // NOTE: all assignment-like operators except operator= are
+  // NOTE: all this->assignment-like operators except operator= are
   // inherited from QDPType
 
   inline
   OScalar& operator=(const typename WordType<T>::Type_t& rhs)
     {
-      return assign(rhs);
+      return this->assign(rhs);
     }
 
   inline
   OScalar& operator=(const Zero& rhs)
     {
-      return assign(rhs);
+      return this->assign(rhs);
     }
 
   template<class T1,class C1>
   inline
   OScalar& operator=(const QDPType<T1,C1>& rhs)
     {
-      return assign(rhs);
+      return this->assign(rhs);
     }
 
   template<class T1,class C1>
   inline
   OScalar& operator=(const QDPExpr<T1,C1>& rhs)
     {
-      return assign(rhs);
+      return this->assign(rhs);
     }
 
 
@@ -109,7 +109,7 @@ public:
   inline
   OScalar& operator=(const OScalar& rhs)
     {
-      return assign(rhs);
+      return this->assign(rhs);
     }
 
 
@@ -272,7 +272,7 @@ public:
   OLattice(const OScalar<T1>& rhs)
     {
       alloc_mem("construct from OScalar");
-      assign(rhs);
+      this->assign(rhs);
     }
 
 
@@ -281,7 +281,7 @@ public:
   OLattice(const OLattice<T1>& rhs)
     {
       alloc_mem("construct from OLattice");
-      assign(rhs);
+      this->assign(rhs);
     }
 
 
@@ -290,7 +290,7 @@ public:
   OLattice(const QDPExpr<RHS, OLattice<T1> >& rhs)
     {
       alloc_mem("construct from expr");
-      assign(rhs);
+      this->assign(rhs);
     }
 
 
@@ -300,7 +300,7 @@ public:
       alloc_mem("construct from const");
 
       typedef OScalar<typename InternalScalar<T>::Type_t>  Scalar_t;
-      assign(Scalar_t(rhs));
+      this->assign(Scalar_t(rhs));
     }
 
 
@@ -308,7 +308,7 @@ public:
   OLattice(const Zero& rhs)
     {
       alloc_mem("construct from zero");
-      assign(rhs);
+      this->assign(rhs);
     }
 
   //---------------------------------------------------------
@@ -319,33 +319,33 @@ public:
   inline
   OLattice& operator=(const typename WordType<T>::Type_t& rhs)
     {
-      return assign(rhs);
+      return this->assign(rhs);
     }
 
   inline
   OLattice& operator=(const Zero& rhs)
     {
-      return assign(rhs);
+      return this->assign(rhs);
     }
 
   template<class T1,class C1>
   inline
   OLattice& operator=(const QDPType<T1,C1>& rhs)
     {
-      return assign(rhs);
+      return this->assign(rhs);
     }
 
   template<class T1,class C1>
   inline
   OLattice& operator=(const QDPExpr<T1,C1>& rhs)
     {
-      return assign(rhs);
+      return this->assign(rhs);
     }
 
   inline
   OLattice& operator=(const OLattice& rhs)
     {
-      return assign(rhs);
+      return this->assign(rhs);
     }
 
 
@@ -364,7 +364,7 @@ public:
   OLattice(const OLattice& rhs)
     {
       alloc_mem("copy");
-      assign(rhs);
+      this->assign(rhs);
     }
 
 
