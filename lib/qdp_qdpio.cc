@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.8 2004-03-07 19:29:44 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.9 2004-03-07 20:23:14 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -85,7 +85,7 @@ void QDPFileReader::open(XMLReader& file_xml,
   if ((qio_in = QIO_open_read(xml_c, path.c_str(), serpar, &layout)) == NULL)
   {
     QDPIO::cerr << "QDPFileReader: failed to open file " << path << endl;
-    QDP_abort(1);
+    throw;
   }
 
   // Use string to initialize XMLReader
@@ -178,7 +178,7 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   if (xml_c == NULL)
   {
     QDPIO::cerr << "QDPFileWriter - error in creating QIO string" << endl;
-    QDP_abort(1);
+    throw;
   }
 
   // Wrappers over simple ints
@@ -230,7 +230,7 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
 				&layout)) == NULL)
   {
     QDPIO::cerr << "QDPFileWriter: failed to open file " << path << endl;
-    QDP_abort(1);
+    throw;
   }
 
   // Cleanup

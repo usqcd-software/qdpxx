@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.11 2004-03-07 19:29:44 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.12 2004-03-07 20:23:14 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -231,11 +231,15 @@ void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
   // Initialize string objects 
   QIO_String *xml_c  = QIO_string_create(0);
 
-  int status = QIO_read(get(), info, xml_c,
-			&(QDPFactoryPut<T>),
-                        sizeof(T), 
-			sizeof(typename WordType<T>::Type_t), 
-			(void *)s1.getF());
+  if (QIO_read(get(), info, xml_c,
+   	       &(QDPFactoryPut<T>),
+               sizeof(T), 
+	       sizeof(typename WordType<T>::Type_t), 
+	       (void *)s1.getF()) != QIO_SUCCESS)
+  {
+    QDPIO::cerr << "QDOPFileReader: error reading file" << endl;
+    throw;
+  }
 
   // Use string to initialize XMLReader
   istringstream ss;
@@ -284,11 +288,15 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
   }
 
   // Big call to qio
-  int status = QIO_write(get(), info, xml_c,
-			 &(QDPFactoryGet<T>),
-                         sizeof(T), 
-			 sizeof(typename WordType<T>::Type_t), 
-			 (void *)s1.getF());
+  if (QIO_write(get(), info, xml_c,
+	        &(QDPFactoryGet<T>),
+                sizeof(T), 
+ 	        sizeof(typename WordType<T>::Type_t), 
+	        (void *)s1.getF()) != QIO_SUCCESS)
+  {
+    QDPIO::cerr << "QDPFileWriter: error in write" << endl;
+    throw;
+  }
 
   // Cleanup
   QIO_string_destroy(xml_c);
