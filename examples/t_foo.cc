@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.36 2004-07-02 21:51:49 edwards Exp $
+// $Id: t_foo.cc,v 1.37 2004-07-06 01:57:13 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
   write(xml,"nrow", nrow);
   write(xml,"logicalSize",Layout::logicalSize());
 
-#if 1
+#if 0
   {
     LatticeColorMatrix a,b,c;
     LatticeComplex cc, dd;
@@ -53,21 +53,51 @@ int main(int argc, char *argv[])
     c = adj(a)*b;
     cc = trace(c);
     cerr << "Here 4" << endl;
-    dd = trace(adj(a)*b*1);
+    dd = trace(adj(a)*b);
     cerr << "Here 5" << endl;
     write(xml,"diff", Real(norm2(cc-dd)));
   }
 #endif
 
-#if 0
+#if 1
   {
-    LatticeColorMatrix a,b,c;
-    a = b = c = 1;
+    SpinMatrix S;
+    random(S);
 
-    LatticeComplex e;
-    e = colorContract(a,b,c);
+    LatticePropagator q;
+    random(q);
 
-    write(xml,"e",e);
+    LatticePropagator di_quark;
+    random(di_quark);
+
+    cerr << "Here 1" << endl;
+    LatticeComplex b = trace(S * traceColor(q * di_quark));
+
+    cerr << "Here 2" << endl;
+    di_quark = quarkContract13(q * Gamma(5), Gamma(5) * q);
+    LatticeComplex c = trace(S * traceColor(q * traceSpin(di_quark)));
+
+    cerr << "Here 3" << endl;
+    LatticeComplex d = trace(S * traceColor(q * traceSpin(quarkContract13(q * Gamma(5), 
+									  Gamma(5) * q))));
+
+    cerr << "Here 4" << endl;
+    write(xml,"diff", Real(norm2(c-d)));
+
+    c = trace(q * di_quark);
+    LatticeReal r = real(c);
+
+    cerr << "Here 5" << endl;
+    LatticeReal s = real(trace(adj(q) * di_quark));
+    
+    cerr << "Here 6" << endl;
+    write(xml,"diff", Real(norm2(r-s)));
+
+    cerr << "Here 7" << endl;
+    s = real(trace(adj(q) * di_quark * q));
+
+    cerr << "Here 8" << endl;
+    s = real(trace(q * di_quark * q));
   }
 #endif
   
