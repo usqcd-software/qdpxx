@@ -53,7 +53,6 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
 {
 
 
-  QMP_u32_t* l_mach_dims;       /* The size of the machine */
   QMP_u32_t* l_src_coords;      /* Coordinates of the source */
   QMP_u32_t* l_dst_coords;      /* Coordinates of the destination */
   int* l_disp_vec;              /* Displacement vector dst_coords - src_coords */
@@ -83,8 +82,8 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
   log_top_declP = QMP_logical_topology_is_declared();
   
   if ( log_top_declP == QMP_FALSE ) { 
-    QMP_fprintf(stderr, "QMP_route: QMP logical topology MUST be declared\n");
-    QMP_fprintf(stderr, "It appears not to be\n");
+    fprintf(stderr, "QMP_route: QMP logical topology MUST be declared\n");
+    fprintf(stderr, "It appears not to be\n");
     return QMP_TOPOLOGY_EXISTS;
   }
 
@@ -95,28 +94,24 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
   /* Get my node number -- use it to see whether I am source or dest */
   me = QMP_get_node_number();
 
-  /* Get the number of dimensions for the machine */
-  /* This I don't need to free I don't think */
-  l_mach_dims  =(QMP_u32_t *)QMP_get_logical_dimensions();
-
   /* Must free these later I think */
   /* Allocate space for the coordinates */
   l_src_coords =(QMP_u32_t *)QMP_get_logical_coordinates_from(src);
   if( l_src_coords == (QMP_u32_t *)NULL ) { 
-    QMP_fprintf(stderr, "QMP_route: QMP_get_logical_coordinates_from failed\n");
+    fprintf(stderr, "QMP_route: QMP_get_logical_coordinates_from failed\n");
     return QMP_NOMEM_ERR;
   }
 
   l_dst_coords = (QMP_u32_t *)QMP_get_logical_coordinates_from(dest);
   if( l_dst_coords == (QMP_u32_t *)NULL ) { 
-    QMP_fprintf(stderr, "QMP_route: QMP_get_logical_coordinates_from failed\n");
+    fprintf(stderr, "QMP_route: QMP_get_logical_coordinates_from failed\n");
     return QMP_NOMEM_ERR;
   }
 
   /* Will definitely have to free this */
   l_disp_vec = (int *)malloc(sizeof(int)*ndim);
   if( l_disp_vec == (int *)NULL ) {
-    QMP_fprintf(stderr, "QMP_route: Unable to allocate displacement array\n");
+    fprintf(stderr, "QMP_route: Unable to allocate displacement array\n");
     return QMP_NOMEM_ERR;
   }
 
@@ -125,37 +120,21 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
     l_disp_vec[i] = l_dst_coords[i] - l_src_coords[i];
   }
 
-#if QDP_DEBUG >= 2 || defined(QDP_QCDOC_DEBUG)
-  /* Debugging information */
-  fprintf(stdout, "QMP_route: src=%d dst=%, src coords=(", src, dest);
-  for(j=0; j < ndim; j++) { 
-    fprintf(stdout, " %d", l_src_coords[j]);
-  }
-  fprintf(stdout, ") dst_coords=(");
-  for(j=0; j < ndim; j++) { 
-    fprintf(stdout, " %d", l_dst_coords[j]);
-  }
-  fprintf(stdout, ") displ= (");
-  for(j=0; j < ndim; j++) { 
-    fprintf(stdout, " %d", l_disp_vec[j]);
-  }
-  fprintf(stdout, ")\n");
-#endif
-
   /* Don't need these anymore */
+  /* QMP_get_logical_coordinates_from ought to have used malloc to get these */
   free(l_src_coords);
   free(l_dst_coords);
 
   /* Will have to free these with QMP_free_aligned_memory */
   sendbuf = QMP_allocate_aligned_memory(count);
   if( sendbuf == NULL ) { 
-    QMP_fprintf(stderr, "Unable to allocate sendbuf in QMP_route\n");
+    fprintf(stderr, "Unable to allocate sendbuf in QMP_route\n");
     return QMP_NOMEM_ERR;
   }
 
   recvbuf = QMP_allocate_aligned_memory(count);
   if( recvbuf == NULL ) { 
-    QMP_fprintf(stderr ,"Unable to allocate recvbuf in QMP_route\n");
+    fprintf(stderr ,"Unable to allocate recvbuf in QMP_route\n");
     return QMP_NOMEM_ERR;
   }
 
@@ -169,6 +148,7 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
     /* I don't care what my buffer contains if I am not the source
        but it may be nice to set it to zero so I don't send complete 
        garbage */
+
     memset( sendbuf, 0, count);
   }
   /*   
@@ -191,9 +171,6 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
       /* Get the direction */
       direction_sign = ( l_disp_vec[i] > 0 ?  1 : -1 );
 
-#if QDP_DEBUG >= 2 || defined QDP_QCDOC_DEBUG
-      fprintf(stdout, "Direction=%d, n_hops=%d, direction_sign=%d\n", i, n_hops, direction_sign);
-#endif
       /* Declare relative sends in that direction */
       /* Do N Hops , in the direction. */
       /* I can re-use the handles for this direction */
@@ -205,7 +182,7 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
 						 0);
 
       if( recv_handle == NULL) { 
-	QMP_fprintf(stderr, "QMP_declare_receive_relative returned NULL\n");
+	fprintf(stderr, "QMP_declare_receive_relative returned NULL\n");
 	return QMP_BAD_MESSAGE;
       }
 
@@ -216,7 +193,7 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
 					      0);
 
       if( send_handle == NULL ) { 
-	QMP_fprintf(stderr, "QMP_declare_send_relative returned NULL\n");
+	fprintf(stderr, "QMP_declare_send_relative returned NULL\n");
 	return QMP_BAD_MESSAGE;
       }
 	
@@ -231,28 +208,30 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
 	/* Start sending */
 	err = QMP_start(send_handle);
 	if(err != QMP_SUCCESS ) { 
-	  QMP_fprintf(stderr, "QMP_start() failed on receive in QMP_route\n");
+	  fprintf(stderr, "QMP_start() failed on receive in QMP_route\n");
 	  return QMP_ERROR;
 	}
 	
 	/* Wait for send to complete */
 	err = QMP_wait(send_handle);
 	if( err != QMP_SUCCESS ) { 
-	  QMP_fprintf(stderr, "QMP_wait() failed on send in QMP_route\n");
+	  fprintf(stderr, "QMP_wait() failed on send in QMP_route\n");
 	  return QMP_ERROR;
 	}
 
 	/* Wait for receive to complete */
 	err = QMP_wait(recv_handle);
 	if( err != QMP_SUCCESS ) { 
-	  QMP_fprintf(stderr, "QMP_wait() recv on send in QMP_route\n");
+	  fprintf(stderr, "QMP_wait() recv on send in QMP_route\n");
 	  return QMP_ERROR;
 	}
 
 	/* Copy the contents of my recvbuf into my sendbuf, 
 	   ready for the next hop  -- In theory I could 
 	   pointer swap here, but this is clean if slow */
+
 	memcpy(sendbuf, recvbuf, count);
+
       }  /* Data is now in sendbuf */
 
       /* We have now done n_hops shifts. We need to change 
@@ -261,13 +240,6 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
       QMP_free_msghandle(recv_handle);
 
     }
-    else {
-      /* The displacement is zero in this direction */
-      /* Sendbuf contains the data -- ready for the next direction*/
-#if QDP_DEBUG >=2 || defined(QDP_QCDOC_DEBUG)
-      fprintf(stdout, "Direction=%d n_hops = 0\n", i);
-#endif
-    } 
 
     /* Next direction */
   }
@@ -289,7 +261,7 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
   QMP_free_aligned_memory(sendbuf);
   QMP_free_aligned_memory(recvbuf);
 
-
+  /* Alloced with malloc */
   free(l_disp_vec);
 
   return(QMP_SUCCESS);
