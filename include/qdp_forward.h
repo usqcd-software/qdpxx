@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_forward.h,v 1.5 2003-10-17 15:56:23 edwards Exp $
+// $Id: qdp_forward.h,v 1.6 2004-07-02 19:24:34 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -56,6 +56,9 @@ template<class T, class S> class OSubLattice;
 
 // Main type
 template<class T, class C> class QDPType;
+
+// Expression class for QDP
+template<class T, class C> class QDPExpr;
 
 // Main type narrowed to a subset
 template<class T, class C, class S> class QDPSubType;
