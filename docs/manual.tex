@@ -1976,24 +1976,14 @@ files are not intended for longer term storage.  Thus the file format
 in this case is implementation-dependent and not standardized.  A
 specific choice of format is described in the Appendix.
 
-\subsubsection{ASCII Metadata Files}
-
-The API also provides for reading and writing global values in a
-standard metadata format from or to a file or a character string.
-Startup parameters for controlling a simulation could be read in this
-way.  Results of a computation could be written in this way for post
-processing and analysis.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Metadata Standard and Manipulation}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Metadata Standard and Manipulation}
 
 Metadata is required by a number of components in the I/O system. 
 The XML I/O facilities described in Section~\ref{sec:xmlio} are used
 for manipulating the metadata.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{QDP/C++ API}
+\subsection{QDP/C++ Record API}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 As with standard Unix, a file must be opened before reading or
@@ -2008,73 +1998,121 @@ either mode.  However, the request may be overridden if the system
 permits only one mode.  Upon writing, we allow appending to an
 existing file.
 
-\paragraph{QDPSerialFileReader member functions and global functions}
+\paragraph{QDPRecordFileReader base class member functions and global functions}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Open           & \verb|QDPSerialFileReader::QDPSerialFileReader(XMLReader& file_xml, |\\
+  Open           & \verb|QDPRecordFileReader::QDPRecordFileReader(XMLReader& file_xml, |\\
                  & \qquad\verb|const string& path)|\\
-                 & \verb|void QDPSerialFileReader::open(XMLReader& file_xml, |\\
+                 & \verb|void QDPRecordFileReader::open(XMLReader& file_xml, |\\
                  & \qquad\verb|const string& path)|\\
   \hline
-  Close          & \verb|QDPSerialFileReader::~QDPSerialFileReader()|\\
-                 & \verb|void QDPSerialFileReader::close()|\\
+  Close          & \verb|QDPRecordFileReader::~QDPRecordFileReader()|\\
+                 & \verb|void QDPRecordFileReader::close()|\\
   \hline
-  Open?          & \verb|bool QDPSerialFileReader::is_open()| \\
+  Open?          & \verb|bool QDPRecordFileReader::is_open()| \\
   \hline
-  EOF?           & \verb|bool QDPSerialFileReader::eof()| \\
+  EOF?           & \verb|bool QDPRecordFileReader::eof()| \\
   \hline
-  Errors?        & \verb|bool QDPSerialFileReader::bad()| \\
+  Errors?        & \verb|bool QDPRecordFileReader::bad()| \\
   \hline
-  Read a \verb|T| & \verb|void read(QDPSerialFileReader&, XMLReader& rec_xml, T&)| \\
-  Array of \verb|T| & \verb|void vread(QDPSerialFileReader&, XMLReader& rec_xml, multi1d<T>&)| \\
+  Read a \verb|T| & \verb|void read(QDPRecordFileReader&, XMLReader& rec_xml, T&)| \\
+  Array of \verb|T| & \verb|void vread(QDPRecordFileReader&, XMLReader& rec_xml, multi1d<T>&)| \\
   \hline
-  Only xml & \verb|void peek(QDPSerialFileReader&, XMLReader& rec_xml)| \\
+  Only xml & \verb|void peek(QDPRecordFileReader&, XMLReader& rec_xml)| \\
   \hline
-  Next record & \verb|void skip(QDPSerialFileReader&)| \\
+  Next record & \verb|void skip(QDPRecordFileReader&)| \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+%
+Base class for the various derived classes. Here, \verb|vread| expects
+the sites to be the slowest varying index and the array indices
+(muli1d) inside of them. \verb|peek| returns only the metadata and
+repositions back to the beginning of the record.  \verb|skip| skips to
+the next logical record - it may read the data and discard
+it. \verb|bad| states if any fatal errors have occurred. There are no
+user functions that position within a logical record.
+
+\paragraph{QDP record reader implementation classes}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Single file read serially & \verb|QDPSingleFileSerialReader| \\
+  Single file read in parallel & \verb|QDPSingleFileParallelReader| \\
+  \hline
+  Multi-dump file read serially & \verb|QDPMultiDumpSerialReader| \\
+  Multi-dump file read in parallel & \verb|QDPMultiDumpParallelReader| \\
   \hline
  \end{tabular}
 \end{flushleft}
 
-\paragraph{QDPSerialFileWriter member functions and global functions}
+{\bf Implementation note: QDP++ currently has only QDPSerialFileReader in place
+of QDPSingleFileSerialReader}
+
+\paragraph{QDPRecordFileWriter base class member functions and global functions}
 
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Open           & \verb|QDPSerialFileWriter::QDPSerialFileWriter(|\\
+  Open           & \verb|QDPRecordFileWriter::QDPRecordFileWriter(|\\
                  & \qquad\verb|const XMLBufferWriter& file_xml, const string& path)|\\
-                 & \verb|void QDPSerialFileWriter::open(const XMLBufferWriter& file_xml, |\\
+                 & \verb|void QDPRecordFileWriter::open(const XMLBufferWriter& file_xml, |\\
                  & \qquad\verb|const string& path)|\\
   \hline
-  Close          & \verb|QDPSerialFileWriter::~QDPSerialFileWriter()|\\
-                 & \verb|void QDPSerialFileWriter::close()|\\
+  Close          & \verb|QDPRecordFileWriter::~QDPRecordFileWriter()|\\
+                 & \verb|void QDPRecordFileWriter::close()|\\
   \hline
-  Open?          & \verb|bool QDPSerialFileWriter::is_open()| \\
+  Open?          & \verb|bool QDPRecordFileWriter::is_open()| \\
   \hline
-  Errors?        & \verb|bool QDPSerialFileReader::bad()| \\
+  Errors?        & \verb|bool QDPRecordFileReader::bad()| \\
   \hline
-  Write a \verb|T| & \verb|void write(QDPSerialFileWriter&, XMLBufferWriter& rec_xml, const T&)| \\
-  Array of \verb|T| & \verb|void vwrite(QDPSerialFileWriter&, XMLBufferWriter& rec_xml, |\\
+  Write a \verb|T| & \verb|void write(QDPRecordFileWriter&, XMLBufferWriter& rec_xml, const T&)| \\
+  Array of \verb|T| & \verb|void vwrite(QDPRecordFileWriter&, XMLBufferWriter& rec_xml, |\\
                  & \qquad\verb|const multi1d<T>&)| \\
   \hline
  \end{tabular}
 \end{flushleft}
+%
+Base class for the various derived classes. Here, \verb|vwrites|
+writes the sites as the slowest varying index and the array indices
+(muli1d) inside of them. \verb|bad| states if any fatal errors have
+occurred.
+
+\paragraph{QDP record writer implementation classes}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Single file written serially & \verb|QDPSingleFileSerialWriter| \\
+  Single file written in parallel & \verb|QDPSingleFileParallelWriter| \\
+  \hline
+  Multi-dump file written serially & \verb|QDPMultiDumpSerialWriter| \\
+  Multi-dump file written in parallel & \verb|QDPMultiDumpParallelWriter| \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+
+{\bf Implementation note: QDP++ currently has only QDPSerialFileWriter in place
+of QDPSingleFileSerialWriter}
+
 %
 Here is an example of how to use the record I/O facility.
 %
 \begin{small}
 \begin{verbatim}
 XMLBufferWriter file_xml;
-QDPSerialFileWriter out(file_xml, "foo");
+QDPSingleFileSerialWriter out(file_xml, "foo");
 XMLBufferWriter rec_xml;
 LatticeColorMatrix a;
 out.write(rec_xml, a);
 write(out, rec_xml, a);  // for fun, write field twice
 out.close();
 
-QDPSerialFileReader in(file_xml, "foo");
+QDPSingleFileSerialReader in(file_xml, "foo");
 read(in, rec_xml, a);  // have choice of style
 in.skip();
 in.close();
