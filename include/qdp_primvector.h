@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.5 2003-07-31 19:27:59 edwards Exp $
+// $Id: qdp_primvector.h,v 1.6 2003-08-01 18:43:47 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -31,22 +31,6 @@ public:
   ~PVector() {}
 
   typedef C<T,N>  CC;
-
-#if 0
-  //! PVector = PScalar
-  /*! Fill with a primitive scalar */
-  template<class T1>
-  inline
-  PVector& operator=(const PScalar<T1>& rhs)
-    {
-      //! This should check on rhs !!!
-      for(int i=0; i < N; ++i)
-	elem(i) = rhs.elem();
-
-      return *this;
-    }
-#endif
-
 
   //! PVector = PVector
   /*! Set equal to another PVector */
@@ -110,6 +94,12 @@ public:
     }
 
 
+#if 0
+  // NOTE: intentially avoid defining a copy constructor - let the compiler
+  // generate one via the bit copy mechanism. This effectively achieves
+  // the first form of the if below (QDP_USE_ARRAY_INITIALIZER) without having
+  // to use that syntax which is not strictly legal in C++.
+
   //! Deep copy constructor
 #if defined(QDP_USE_ARRAY_INITIALIZER)
   PVector(const PVector& a) : F(a.F) {}
@@ -121,6 +111,8 @@ public:
 	F[i] = a.F[i];
     }
 #endif
+#endif
+
 
 public:
   T& elem(int i) {return F[i];}
