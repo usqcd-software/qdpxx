@@ -107,6 +107,7 @@ ac_Ns = @ac_Ns@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_RANLIB = @ac_ct_RANLIB@
 ac_ct_STRIP = @ac_ct_STRIP@
+ac_header_precision = @ac_header_precision@
 ac_sse = @ac_sse@
 ac_sse2 = @ac_sse2@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@

@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_defs.h,v 1.4 2003-08-29 02:42:07 edwards Exp $
+// $Id: qdp_scalarvecsite_defs.h,v 1.5 2003-09-01 15:10:53 bjoo Exp $
 
 /*! \file
  * \brief Type definitions for scalar/vector extensions-like architectures
  */
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+#include <qdp_config.h>
 
 /*! \addtogroup defs Type definitions
  *

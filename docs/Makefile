@@ -115,6 +115,7 @@ ac_Ns = 4
 ac_ct_CXX = g++
 ac_ct_RANLIB = ranlib
 ac_ct_STRIP = 
+ac_header_precision = DOUBLE_PRECISION
 ac_sse = 0
 ac_sse2 = 0
 am__fastdepCXX_FALSE = #

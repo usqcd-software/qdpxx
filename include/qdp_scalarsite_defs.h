@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_defs.h,v 1.3 2003-08-23 02:29:31 edwards Exp $
+// $Id: qdp_scalarsite_defs.h,v 1.4 2003-09-01 15:10:53 bjoo Exp $
 
 /*! \file
  * \brief Type definitions for scalar-site like architectures
  */
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+#include <qdp_config.h>
 
 /*! \addtogroup defs Type definitions
  *

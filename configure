@@ -275,7 +275,7 @@ PACKAGE_BUGREPORT='edwards@jlab.org'
 ac_subdirs_all="$ac_subdirs_all other_libs/nml"
 ac_subdirs_all="$ac_subdirs_all other_libs/qio"
 ac_subdirs_all="$ac_subdirs_all other_libs/xpath_reader"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE ac_Nd ac_Nc ac_Ns PARALLEL_ARCH ac_sse ac_sse2 ARCHDEF_SUBSTITUTION QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LIBXML2_CONFIG LIBXML2_CXXFLAGS LIBXML2_LIBS RANLIB ac_ct_RANLIB ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE ARCH_SCALARVEC_TRUE ARCH_SCALARVEC_FALSE ARCH_PARSCALARVEC_TRUE ARCH_PARSCALARVEC_FALSE QDP_USE_SSE_TRUE QDP_USE_SSE_FALSE QDP_USE_SSE2_TRUE QDP_USE_SSE2_FALSE LATEX DVIPS DVIPDF DOXYGEN subdirs LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE ac_Nd ac_Nc ac_Ns PARALLEL_ARCH ac_sse ac_sse2 ac_header_precision ARCHDEF_SUBSTITUTION QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LIBXML2_CONFIG LIBXML2_CXXFLAGS LIBXML2_LIBS RANLIB ac_ct_RANLIB ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE ARCH_SCALARVEC_TRUE ARCH_SCALARVEC_FALSE ARCH_PARSCALARVEC_TRUE ARCH_PARSCALARVEC_FALSE QDP_USE_SSE_TRUE QDP_USE_SSE_FALSE QDP_USE_SSE2_TRUE QDP_USE_SSE2_FALSE LATEX DVIPS DVIPDF DOXYGEN subdirs LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -817,6 +817,9 @@ Optional Features:
                           Build QDP++ for parallel architecture <arch>
   --enable-sse            Optimize code with Intel SSE instructions
   --enable-sse2           Optimize code with Intel SSE2 instructions
+   --enable precision=single|double
+                          Sets the base precision to be single or double
+                          precision (default is single)
   --disable-dependency-tracking Speeds up one-time builds
   --enable-dependency-tracking  Do not reject slow dependency extractors
 
@@ -1728,6 +1731,7 @@ else
 
 fi;
 
+
 if test "X${ac_sse}X" == "X1X" ; then
   { echo "$as_me:$LINENO: Configuring QDP++ to use Streaming SIMD Extensions (SSE)" >&5
 echo "$as_me: Configuring QDP++ to use Streaming SIMD Extensions (SSE)" >&6;}
@@ -1739,6 +1743,33 @@ echo "$as_me: Configuring QDP++ to use Streaming SIMD Extensions (SSE2)" >&6;}
 fi
 
 
+# Check whether --enable-precision or --disable-precision was given.
+if test "${enable_precision+set}" = set; then
+  enableval="$enable_precision"
+   ac_precision=${enableval}
+else
+   ac_precision="single"
+fi;
+
+case ${ac_precision} in
+single)
+	{ echo "$as_me:$LINENO: Configuring for single precision  " >&5
+echo "$as_me: Configuring for single precision  " >&6;}
+	ac_header_precision=SINGLE_PRECISION
+
+	;;
+double)
+	{ echo "$as_me:$LINENO: Configuring for double precision  " >&5
+echo "$as_me: Configuring for double precision  " >&6;}
+	ac_header_precision=DOUBLE_PRECISION
+
+	;;
+*)
+	{ { echo "$as_me:$LINENO: error: Unsupported value of precision. Check --enable-precision  " >&5
+echo "$as_me: error: Unsupported value of precision. Check --enable-precision  " >&2;}
+   { (exit 1); exit 1; }; }
+	;;
+esac
 
 
 # Check whether --with-qmp or --without-qmp was given.
@@ -4519,6 +4550,7 @@ s,@ac_Ns@,$ac_Ns,;t t
 s,@PARALLEL_ARCH@,$PARALLEL_ARCH,;t t
 s,@ac_sse@,$ac_sse,;t t
 s,@ac_sse2@,$ac_sse2,;t t
+s,@ac_header_precision@,$ac_header_precision,;t t
 s,@ARCHDEF_SUBSTITUTION@,$ARCHDEF_SUBSTITUTION,;t t
 s,@QMP_CFLAGS@,$QMP_CFLAGS,;t t
 s,@QMP_LDFLAGS@,$QMP_LDFLAGS,;t t

@@ -70,6 +70,7 @@ AC_ARG_ENABLE(sse2,
   AC_SUBST(ac_sse2,0)
 )
 
+
 dnl Tell the user about SSE
 if test "X${ac_sse}X" == "X1X" ; then
   AC_MSG_NOTICE([Configuring QDP++ to use Streaming SIMD Extensions (SSE)])
@@ -81,6 +82,25 @@ if test "X${ac_sse2}X" == "X1X" ; then
 fi
 
 
+AC_ARG_ENABLE(precision, 
+  AC_HELP_STRING( [ --enable precision=single|double ],
+                  [ Sets the base precision to be single or double precision (default is single) ] ),
+  [ ac_precision=${enableval} ],
+  [ ac_precision="single" ] )
+
+case ${ac_precision} in 
+single)
+	AC_MSG_NOTICE( [Configuring for single precision ] )
+	AC_SUBST(ac_header_precision, [SINGLE_PRECISION] )
+	;;
+double)
+	AC_MSG_NOTICE( [Configuring for double precision ] )
+	AC_SUBST(ac_header_precision, [DOUBLE_PRECISION] )
+	;;
+*)
+	AC_MSG_ERROR( [Unsupported value of precision. Check --enable-precision ] )
+	;;
+esac
 
 dnl George T. Fleming 03/03/2003
 dnl This is a total reworking of Balint Joo's implementation

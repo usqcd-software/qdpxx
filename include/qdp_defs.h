@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_defs.h,v 1.4 2003-08-23 02:25:39 edwards Exp $
+// $Id: qdp_defs.h,v 1.5 2003-09-01 15:10:53 bjoo Exp $
 
 /*! \file
  * \brief Type definitions
@@ -15,6 +15,8 @@ QDP_BEGIN_NAMESPACE(QDP);
  *
  * @{
  */
+
+#include <qdp_config.h>
 
 #if defined(SINGLE_PRECISION)
 #undef SINGLE_PRECISION

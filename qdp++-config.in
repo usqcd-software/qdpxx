@@ -27,6 +27,8 @@ qdp_cxxflags="@CXXFLAGS@ -I@includedir@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@"
 qdp_ldflags="@LDFLAGS@ -L@libdir@ @QMP_LDFLAGS@"
 qdp_libs="-lqdp -lnml -lXPathReader -lxmlWriter -lqio -ldime @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@"
 
+precision="@ac_header_precision@"
+
 usage()
 {
   cat <<EOF
@@ -39,6 +41,7 @@ Options:
   [--Nc]
   [--Ns]
   [--parallel-arch]
+  [--precision ]
   [--cxx]
   [--cxxflags]
   [--ldflags]
@@ -115,6 +118,19 @@ while test $# -gt 0; do
       echo_libs=yes
       ;;
 
+    --precision)
+      case "${precision}" in 
+	SINGLE_PRECISION)
+		echo "single"
+		;;
+	DOUBLE_PRECISION)
+		echo "double"
+		;;
+	*)
+		echo "Unknown Precision error"
+		;;
+      esac
+      ;;
     *)
       usage 1 1>&2
       ;;

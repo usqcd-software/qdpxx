@@ -18,4 +18,6 @@
 #define QDP_USE_SSE  @ac_sse@
 #define QDP_USE_SSE2 @ac_sse2@
 
+#define BASE_PRECISION @ac_header_precision@
+
 #endif 
