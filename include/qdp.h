@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.20 2003-06-07 19:10:01 edwards Exp $
+// $Id: qdp.h,v 1.21 2003-06-20 02:18:39 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -68,42 +68,14 @@ using std::ostream;
 #define QDP_END_NAMESPACE(a) };
 #endif
 
-
-// Info/error routines
-QDP_BEGIN_NAMESPACE(QDP);
-
-//! Turn on the machine
-extern void QDP_initialize (int *argc, char ***argv);
-
-//! Is the machine initialized?
-extern bool QDP_isInitialized ();
-
-//! Turn off the machine
-extern void QDP_finalize ();
-
-//! Panic button
-extern void QDP_abort (int status);
-
-//! Simple information display routine
-extern int  QDP_info (const char* format, ...);
-
-//! Simple error display routine
-extern int  QDP_error (const char* format, ...);
-
-//! Simple error display and abort routine
-extern void  QDP_error_exit (const char *format, ...);
-
-QDP_END_NAMESPACE();
-
-
 // Basic includes
 QDP_BEGIN_NAMESPACE(QDP);
 #define PETE_USER_DEFINED_EXPRESSION
 #include <PETE/PETE.h>
 QDP_END_NAMESPACE();
 
+#include "qdp_init.h"
 #include "qdp_forward.h"
-
 #include "qdp_multi.h"
 
 #include "qdp_params.h"
