@@ -1247,13 +1247,15 @@ QDPType  binary_function(const QDPType&, const QDPType&)
 
 \medskip
 
-\subsection{Subsets}
+\subsection{Subsets and Maps}
 \label{sec:subsets}
 
 \begin{flushleft}
 \begin{tabular}{lp{4.0in}}
-{\tt Set::Make(const SetFunc)} & Set construction of ordinality num subsets.
+{\tt Set::make(const SetFunc\&)} & Set construction of ordinality num subsets.
                                func maps coordinates to a coloring in [0,num)\\
+
+{\tt Map::make(const MapFunc\&)} & Construct a map function from source sites to the dest site.\\
 \end{tabular}
 \end{flushleft}
 
@@ -1594,8 +1596,12 @@ Only boolean ops allowed on bool.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:details}
 
-{\bf \Large [UNDER CONSTRUCTION]}
-
+The purpose of this section is to show some explicit prototypes and
+usages for the functions described in Section~\ref{sec:supported}.
+In that section, all the functions are shown with complete information
+on which operations and their meaning are supported on some combination
+of types. The purpose of this section is something like the inverse -
+namely show all the functions and what are some (selected) usages.
 
 \subsection{Unary Operations}
 
