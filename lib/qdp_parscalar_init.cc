@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.11 2005-01-24 04:00:55 edwards Exp $
+// $Id: qdp_parscalar_init.cc,v 1.12 2005-01-29 21:36:27 edwards Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -175,9 +175,11 @@ void QDP_initialize(int *argc, char ***argv)
   QDP_info("Init qio");
 #endif
 
+#ifdef USE_REMOTE_QIO
   // initialize remote file service (QIO)
   bool use_qio = (rtiP != 0) ? true : false;
   QDPUtil::RemoteFileInit(rtinode, use_qio);
+#endif
 
   // initialize the global streams
   QDPIO::cin.init(&std::cin);
@@ -203,8 +205,10 @@ void QDP_finalize()
 
   printProfile();
 
+#ifdef USE_REMOTE_QIO
   // shutdown remote file service (QIO)
   QDPUtil::RemoteFileShutdown();
+#endif
 
   QMP_finalize_msg_passing();
 
