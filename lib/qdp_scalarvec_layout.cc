@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvec_layout.cc,v 1.7 2003-08-31 20:26:18 edwards Exp $
+// $Id: qdp_scalarvec_layout.cc,v 1.8 2003-08-31 20:59:16 edwards Exp $
 
 /*! @file
  * @brief Scalarvec layout routines
@@ -169,7 +169,7 @@ namespace Layout
     // Initialize various defaults
     initDefaults();
 
-    cerr << "Finished lattice layout\n";
+    QDP_info("Finished lattice layout");
   }
 };
 

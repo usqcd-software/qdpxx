@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.10 2003-08-29 04:27:57 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.11 2003-08-31 20:59:16 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -276,7 +276,7 @@ namespace Layout
     initDefaults();
 
     if (Layout::primaryNode())
-      cerr << "Finished lattice layout\n";
+      QDP_info("Finished lattice layout");
   }
 };
 
