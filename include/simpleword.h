@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.13 2002-12-26 22:59:51 edwards Exp $
+// $Id: simpleword.h,v 1.14 2003-02-28 03:43:53 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -702,5 +702,12 @@ struct BinaryReturn<bool, bool, OpAssign > {
   typedef bool  Type_t;
 };
  
+
+
+template<>
+struct TrinaryReturn<float, float, float, FnColorContract> {
+  typedef float Type_t;
+};
+
 
 QDP_END_NAMESPACE();

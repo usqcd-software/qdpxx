@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.19 2003-01-24 21:06:18 edwards Exp $
+// $Id: outer.h,v 1.20 2003-02-28 03:43:53 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -749,6 +749,10 @@ struct BinaryReturn<OScalar<T1>, OScalar<T2>, OpRightShiftAssign > {
   typedef OScalar<typename BinaryReturn<T1, T2, OpRightShiftAssign>::Type_t>  &Type_t;
 };
  
+template<class T1, class T2, class T3>
+struct TrinaryReturn<OScalar<T1>, OScalar<T2>, OScalar<T3>, FnColorContract> {
+  typedef OScalar<typename TrinaryReturn<T1, T2, T3, FnColorContract>::Type_t>  Type_t;
+};
 
 // Specific OLattice cases
 // Global operations
@@ -932,6 +936,11 @@ struct BinaryReturn<OLattice<T1>, OLattice<T2>, OpRightShiftAssign > {
   typedef OLattice<typename BinaryReturn<T1, T2, OpRightShiftAssign>::Type_t>  &Type_t;
 };
  
+template<class T1, class T2, class T3>
+struct TrinaryReturn<OLattice<T1>, OLattice<T2>, OLattice<T3>, FnColorContract> {
+  typedef OLattice<typename TrinaryReturn<T1, T2, T3, FnColorContract>::Type_t>  Type_t;
+};
+
 
 // Mixed OLattice & OScalar cases
 // Global operations
@@ -1130,6 +1139,7 @@ struct BinaryReturn<OScalar<T1>, OLattice<T2>, OpRightShift > {
   typedef OLattice<typename BinaryReturn<T1, T2, OpRightShift>::Type_t>  Type_t;
 };
  
+
 
 
 //-----------------------------------------------------------------------------

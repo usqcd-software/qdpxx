@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.17 2003-01-20 16:14:48 edwards Exp $
+// $Id: reality.h,v 1.18 2003-02-28 03:43:53 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -495,6 +495,10 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpRightShiftAssign > {
   typedef RScalar<typename BinaryReturn<T1, T2, OpRightShiftAssign>::Type_t>  Type_t;
 };
  
+template<class T1, class T2, class T3>
+struct TrinaryReturn<RScalar<T1>, RScalar<T2>, RScalar<T3>, FnColorContract> {
+  typedef RScalar<typename TrinaryReturn<T1, T2, T3, FnColorContract>::Type_t>  Type_t;
+};
 
 // RScalar
 // Gamma algebra
@@ -600,6 +604,11 @@ struct BinaryReturn<RComplex<T1>, RComplex<T2>, OpRightShiftAssign > {
   typedef RComplex<typename BinaryReturn<T1, T2, OpRightShiftAssign>::Type_t>  Type_t;
 };
  
+template<class T1, class T2, class T3>
+struct TrinaryReturn<RComplex<T1>, RComplex<T2>, RComplex<T3>, FnColorContract> {
+  typedef RComplex<typename TrinaryReturn<T1, T2, T3, FnColorContract>::Type_t>  Type_t;
+};
+
 
 
 

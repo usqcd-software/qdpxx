@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primcolormat.h,v 1.9 2002-12-26 22:59:51 edwards Exp $
+// $Id: primcolormat.h,v 1.10 2003-02-28 03:43:53 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -248,6 +248,65 @@ pokeColor(PColorMatrix<T1,N>& l, const PScalar<T2>& r, int row, int col)
   // Note, do not need to propagate down since the function is eaten at this level
   l.elem(row,col) = r.elem();
   return l;
+}
+
+
+//-----------------------------------------------------------------------------
+// Contraction for color matrices
+// colorContract 
+template<class T1, class T2, class T3, int N>
+struct TrinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, PColorMatrix<T3,N>, FnColorContract> {
+  typedef PScalar<typename TrinaryReturn<T1, T2, T3, FnColorContract>::Type_t>  Type_t;
+};
+
+//! dest  = colorContract(Qprop1,Qprop2,Qprop3)
+/*!
+ * Performs:
+ *  \f$dest = \sum_{i1,i2,i3,j1,j2,j3} \epsilon^{i1,j1,k1}\epsilon^{i2,j2,k2} Q1^{i1,i2} Q2^{j1,j2} Q3^{k1,k2}\f$
+ *
+ * This routine is completely unrolled for 3 colors
+ */
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<PColorMatrix<T1,3>, PColorMatrix<T2,3>, PColorMatrix<T3,3>, FnColorContract>::Type_t
+colorContract(const PColorMatrix<T1,3>& s1, const PColorMatrix<T2,3>& s2, const PColorMatrix<T3,3>& s3)
+{
+  typename TrinaryReturn<PColorMatrix<T1,3>, PColorMatrix<T2,3>, PColorMatrix<T3,3>, FnColorContract>::Type_t  d;
+
+  // Permutations: +(0,1,2)+(1,2,0)+(2,0,1)-(1,0,2)-(0,2,1)-(2,1,0)
+
+  // d = \epsilon^{i1,j1,k1}\epsilon^{i2,j2,k2} Q1^{i1,i2} Q2^{j1,j2} Q3^{k1,k2}
+  d.elem() = (s1.elem(0,0)*s2.elem(1,1)
+           -  s1.elem(1,0)*s2.elem(0,1)
+           -  s1.elem(0,1)*s2.elem(1,0)
+           +  s1.elem(1,1)*s2.elem(0,0))*s3.elem(2,2)
+           + (s1.elem(1,1)*s2.elem(2,2)
+           -  s1.elem(2,1)*s2.elem(1,2)
+           -  s1.elem(1,2)*s2.elem(2,1)
+           +  s1.elem(2,2)*s2.elem(1,1))*s3.elem(0,0)
+           + (s1.elem(2,2)*s2.elem(0,0)
+           -  s1.elem(0,2)*s2.elem(2,0)
+           -  s1.elem(2,0)*s2.elem(0,2)
+           +  s1.elem(0,0)*s2.elem(2,2))*s3.elem(1,1)
+
+           + (s1.elem(1,0)*s2.elem(2,1)
+           -  s1.elem(2,0)*s2.elem(1,1)
+           -  s1.elem(1,1)*s2.elem(2,0)
+           +  s1.elem(2,1)*s2.elem(1,0))*s3.elem(0,2)
+           + (s1.elem(1,2)*s2.elem(2,0)
+           -  s1.elem(2,2)*s2.elem(1,0)
+           -  s1.elem(1,0)*s2.elem(2,2)
+           +  s1.elem(2,0)*s2.elem(1,2))*s3.elem(0,1)
+
+           + (s1.elem(2,0)*s2.elem(0,1)
+           -  s1.elem(0,0)*s2.elem(2,1)
+           -  s1.elem(2,1)*s2.elem(0,0)
+           +  s1.elem(0,1)*s2.elem(2,0))*s3.elem(1,2)
+           + (s1.elem(2,1)*s2.elem(0,2)
+           -  s1.elem(0,1)*s2.elem(2,2)
+           -  s1.elem(2,2)*s2.elem(0,1)
+           +  s1.elem(0,2)*s2.elem(2,1))*s3.elem(1,0);
+
+  return d;
 }
 
 

@@ -447,3 +447,27 @@ binaryOps
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
   @relates QDPType */"
+
+trinaryOps
+-----
+  TAG = "FnColorContract"
+  FUNCTION = "colorContract"
+  EXPR = "return (colorContract(a,b,c));"
+  COMMENTA = "//! Contraction for color objects"
+  COMMENTB = "/*! 
+   epsilon contract 3 color primitives and return a primitive scalar.
+   Eventually, it could handle larger Nc. 
+   
+   The sources and targets must all be of the same primitive type (a matrix or vector)
+   but not necessarily of the same lattice type. In
+   explicit index form, the operation  colorContract does
+   
+   \f$target =
+     \epsilon^{i j k}\epsilon^{i' j' k'}* source1^{i i'}* source2^{j j'}*source3^{k k'}\f$
+   or
+   \f$target =
+     \epsilon^{i j k}* source1^{i}* source2^{j}*source3^{k}\f$
+   
+   and is (currently) only appropriate for Nc=3  (or SU(3)).
+  @ingroup group1
+  @relates QDPType */"

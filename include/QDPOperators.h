@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: QDPOperators.h,v 1.16 2002-12-26 22:59:51 edwards Exp $
+// $Id: QDPOperators.h,v 1.17 2003-02-28 03:43:53 edwards Exp $
 
 /*! @file
  * @brief Bulk of QDP operators produced by PETE
@@ -459,6 +459,17 @@ struct FnQuarkContract34
   operator()(const T1 &a, const T2 &b) const
   {
     return (quarkContract34(a,b));
+  }
+};
+
+struct FnColorContract
+{
+  PETE_EMPTY_CONSTRUCTORS(FnColorContract)
+  template<class T1, class T2, class T3>
+  inline typename TrinaryReturn<T1, T2, T3, FnColorContract >::Type_t
+  operator()(const T1 &a, const T2 &b, const T3 &c) const
+  {
+    return (colorContract(a,b,c));
   }
 };
 
@@ -4126,6 +4137,25 @@ operator||(const typename WordType<C2>::Type_t & l,const QDPType<T2,C2> & r)
 }
 
 template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPType<T1,C1> & a,const QDPType<T2,C2> & b,const typename WordType<C1>::Type_t & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
+}
+
+template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
   typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
@@ -4142,6 +4172,25 @@ where(const QDPType<T1,C1> & a,const QDPType<T2,C2> & b,const typename WordType<
     CreateLeaf<QDPType<T1,C1> >::make(a),
     CreateLeaf<QDPType<T2,C2> >::make(b),
     CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
+}
+
+template<class T1,class C1,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPType<T1,C1> & a,const typename WordType<C1>::Type_t & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(b)),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
 }
 
 template<class T1,class C1,class T3,class C3>
@@ -4164,6 +4213,25 @@ where(const QDPType<T1,C1> & a,const typename WordType<C1>::Type_t & b,const QDP
 }
 
 template<class T1,class C1>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPType<T1,C1> & a,const typename WordType<C1>::Type_t & b,const typename WordType<C1>::Type_t & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(b)),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
+}
+
+template<class T1,class C1>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
   typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
@@ -4183,6 +4251,25 @@ where(const QDPType<T1,C1> & a,const typename WordType<C1>::Type_t & b,const typ
 }
 
 template<class T2,class C2>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,FnColorContract>::Type_t >::Expression_t
+colorContract(const typename WordType<C2>::Type_t & a,const QDPType<T2,C2> & b,const typename WordType<C2>::Type_t & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(c))));
+}
+
+template<class T2,class C2>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
   typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
@@ -4199,6 +4286,25 @@ where(const typename WordType<C2>::Type_t & a,const QDPType<T2,C2> & b,const typ
     CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
     CreateLeaf<QDPType<T2,C2> >::make(b),
     CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(c))));
+}
+
+template<class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const typename WordType<C3>::Type_t & a,const typename WordType<C3>::Type_t & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t(a)),
+    CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t(b)),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
 }
 
 template<class T3,class C3>
@@ -4253,6 +4359,43 @@ operator>>(const typename WordType<C2>::Type_t & l,const QDPType<T2,C2> & r)
     CreateLeaf<QDPType<T2,C2> >::make(r)));
 }
 #endif // PETE_ALLOW_SCALAR_SHIFT
+
+//! Contraction for color objects
+/*! 
+   epsilon contract 3 color primitives and return a primitive scalar.
+   Eventually, it could handle larger Nc. 
+   
+   The sources and targets must all be of the same primitive type (a matrix or vector)
+   but not necessarily of the same lattice type. In
+   explicit index form, the operation  colorContract does
+   
+   \f$target =
+     \epsilon^{i j k}\epsilon^{i' j' k'}* source1^{i i'}* source2^{j j'}*source3^{k k'}\f$
+   or
+   \f$target =
+     \epsilon^{i j k}* source1^{i}* source2^{j}*source3^{k}\f$
+   
+   and is (currently) only appropriate for Nc=3  (or SU(3)).
+  @ingroup group1
+  @relates QDPType */
+template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPType<T1,C1> & a,const QDPType<T2,C2> & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
+}
 
 //! The C ? operator
 /*! The where statement is similar to the C ? operator.
@@ -5456,6 +5599,25 @@ operator>>(const QDPExpr<T1,C1> & l,const QDPExpr<T2,C2> & r)
 }
 
 template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPExpr<T1,C1> & a,const QDPExpr<T2,C2> & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
   typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
@@ -6467,6 +6629,25 @@ operator||(const typename WordType<C2>::Type_t & l,const QDPExpr<T2,C2> & r)
 }
 
 template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPExpr<T1,C1> & a,const QDPType<T2,C2> & b,const typename WordType<C1>::Type_t & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
+}
+
+template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
   typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
@@ -6483,6 +6664,25 @@ where(const QDPExpr<T1,C1> & a,const QDPType<T2,C2> & b,const typename WordType<
     CreateLeaf<QDPExpr<T1,C1> >::make(a),
     CreateLeaf<QDPType<T2,C2> >::make(b),
     CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
+}
+
+template<class T1,class C1,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPExpr<T1,C1> & a,const typename WordType<C1>::Type_t & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(b)),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
 }
 
 template<class T1,class C1,class T3,class C3>
@@ -6505,6 +6705,25 @@ where(const QDPExpr<T1,C1> & a,const typename WordType<C1>::Type_t & b,const QDP
 }
 
 template<class T1,class C1>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPExpr<T1,C1> & a,const typename WordType<C1>::Type_t & b,const typename WordType<C1>::Type_t & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(b)),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
+}
+
+template<class T1,class C1>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
   typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
@@ -6520,6 +6739,25 @@ where(const QDPExpr<T1,C1> & a,const typename WordType<C1>::Type_t & b,const typ
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(a),
     CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(b)),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
+}
+
+template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPType<T1,C1> & a,const QDPExpr<T2,C2> & b,const typename WordType<C1>::Type_t & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
     CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
 }
 
@@ -6543,6 +6781,25 @@ where(const QDPType<T1,C1> & a,const QDPExpr<T2,C2> & b,const typename WordType<
 }
 
 template<class T1,class C1,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPType<T1,C1> & a,const typename WordType<C1>::Type_t & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(b)),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T3,class C3>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
   typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
@@ -6559,6 +6816,25 @@ where(const QDPType<T1,C1> & a,const typename WordType<C1>::Type_t & b,const QDP
     CreateLeaf<QDPType<T1,C1> >::make(a),
     CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(b)),
     CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const typename WordType<C2>::Type_t & a,const QDPExpr<T2,C2> & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
 }
 
 template<class T2,class C2,class T3,class C3>
@@ -6581,6 +6857,25 @@ where(const typename WordType<C2>::Type_t & a,const QDPExpr<T2,C2> & b,const QDP
 }
 
 template<class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const typename WordType<C2>::Type_t & a,const QDPType<T2,C2> & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T2,class C2,class T3,class C3>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
   typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
@@ -6596,6 +6891,25 @@ where(const typename WordType<C2>::Type_t & a,const QDPType<T2,C2> & b,const QDP
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
     CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const typename WordType<C2>::Type_t & a,const QDPExpr<T2,C2> & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
     CreateLeaf<QDPExpr<T3,C3> >::make(c)));
 }
 
@@ -6619,6 +6933,25 @@ where(const typename WordType<C2>::Type_t & a,const QDPExpr<T2,C2> & b,const QDP
 }
 
 template<class T2,class C2>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,FnColorContract>::Type_t >::Expression_t
+colorContract(const typename WordType<C2>::Type_t & a,const QDPExpr<T2,C2> & b,const typename WordType<C2>::Type_t & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(c))));
+}
+
+template<class T2,class C2>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
   typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
@@ -6635,6 +6968,25 @@ where(const typename WordType<C2>::Type_t & a,const QDPExpr<T2,C2> & b,const typ
     CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
     CreateLeaf<QDPExpr<T2,C2> >::make(b),
     CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(c))));
+}
+
+template<class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const typename WordType<C3>::Type_t & a,const typename WordType<C3>::Type_t & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t(a)),
+    CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t(b)),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
 }
 
 template<class T3,class C3>
@@ -6691,6 +7043,25 @@ operator>>(const typename WordType<C2>::Type_t & l,const QDPExpr<T2,C2> & r)
 #endif // PETE_ALLOW_SCALAR_SHIFT
 
 template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPExpr<T1,C1> & a,const QDPType<T2,C2> & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
   typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
@@ -6706,6 +7077,25 @@ where(const QDPExpr<T1,C1> & a,const QDPType<T2,C2> & b,const QDPType<T3,C3> & c
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(a),
     CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPType<T1,C1> & a,const QDPExpr<T2,C2> & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
     CreateLeaf<QDPType<T3,C3> >::make(c)));
 }
 
@@ -6729,6 +7119,25 @@ where(const QDPType<T1,C1> & a,const QDPExpr<T2,C2> & b,const QDPType<T3,C3> & c
 }
 
 template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPType<T1,C1> & a,const QDPType<T2,C2> & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
   typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
@@ -6745,6 +7154,25 @@ where(const QDPType<T1,C1> & a,const QDPType<T2,C2> & b,const QDPExpr<T3,C3> & c
     CreateLeaf<QDPType<T1,C1> >::make(a),
     CreateLeaf<QDPType<T2,C2> >::make(b),
     CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPExpr<T1,C1> & a,const QDPExpr<T2,C2> & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
 }
 
 template<class T1,class C1,class T2,class C2,class T3,class C3>
@@ -6767,6 +7195,25 @@ where(const QDPExpr<T1,C1> & a,const QDPExpr<T2,C2> & b,const QDPType<T3,C3> & c
 }
 
 template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPType<T1,C1> & a,const QDPExpr<T2,C2> & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
   typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
@@ -6782,6 +7229,25 @@ where(const QDPType<T1,C1> & a,const QDPExpr<T2,C2> & b,const QDPExpr<T3,C3> & c
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(a),
     CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnColorContract,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t >::Expression_t
+colorContract(const QDPExpr<T1,C1> & a,const QDPType<T2,C2> & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnColorContract,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnColorContract>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
     CreateLeaf<QDPExpr<T3,C3> >::make(c)));
 }
 

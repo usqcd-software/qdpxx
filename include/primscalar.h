@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primscalar.h,v 1.18 2002-12-26 22:59:51 edwards Exp $
+// $Id: primscalar.h,v 1.19 2003-02-28 03:43:53 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -943,6 +943,30 @@ pokeSpin(PScalar<T1>& l, const PScalar<T2>& r, int row, int col)
   pokeSpin(l.elem(),r.elem(),row,col);
   return l;
 }
+
+
+//-----------------------------------------------------------------------------
+// Contraction for color matrices
+// colorContract 
+//! dest  = colorContract(Qprop1,Qprop2,Qprop3)
+/*!
+ * This routine is completely unrolled for 3 colors
+ */
+template<class T1, class T2, class T3>
+struct TrinaryReturn<PScalar<T1>, PScalar<T2>, PScalar<T3>, FnColorContract> {
+  typedef PScalar<typename TrinaryReturn<T1, T2, T3, FnColorContract>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<PScalar<T1>, PScalar<T2>, PScalar<T3>, FnColorContract>::Type_t
+colorContract(const PScalar<T1>& s1, const PScalar<T2>& s2, const PScalar<T3>& s3)
+{
+  typename TrinaryReturn<PScalar<T1>, PScalar<T2>, PScalar<T3>, FnColorContract>::Type_t  d;
+
+  d.elem() = colorContract(s1.elem(), s2.elem(), s3.elem());
+  return d;
+}
+
 
 
 
