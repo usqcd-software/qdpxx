@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.4 2003-06-04 18:22:57 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.5 2003-06-04 19:43:30 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -52,9 +52,12 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
   /* For now, read and throw away the header */
   string line;
 
-  cout << "Start of header" << endl;
+  if (Layout::primaryNode())
+    cout << "Start of header" << endl;
+
   cfg_in.read(line, max_line_length);
-  cout << line << endl;
+  if (Layout::primaryNode())
+    cout << line << endl;
   
   if (line != string("BEGIN_HEADER"))
     QDP_error_exit("Missing BEGIN_HEADER");
@@ -65,7 +68,8 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
   while (1)
   {
     cfg_in.read(line, max_line_length);
-    cout << line << endl;
+    if (Layout::primaryNode())
+      cout << line << endl;
 
     // Scan for the datatype then scan for it
     char datatype[64];    /* We try to grab the datatype */
@@ -93,15 +97,12 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
     if (line == string("END_HEADER")) break;
   }
 
-  cout << "End of header" << endl;
+  if (Layout::primaryNode())
+    cout << "End of header" << endl;
 
   // Sanity check
   if (lat_size_cnt != Nd)
     QDP_error_exit("did not find all the lattice sizes");
-
-  // Check lattice size agrees with the one in use
-//  cout << "layout size = " << layout.LattSize() << endl;
-//  cout << "gauge lat size = " << lat_size << endl;
 
   for(int dd=0; dd < Nd; ++dd)
     if (lat_size[dd] != Layout::lattSize()[dd])
