@@ -33,7 +33,7 @@ VPATH+=@top_srcdir@/examples
 # The programs to build
 # 
 check_PROGRAMS= t_skeleton t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo \
-      t_nml t_xml t_qio t_remote
+      t_nml t_xml t_qio t_remote t_entry
 
 #
 # The program and its dependencies
@@ -44,6 +44,7 @@ t_nml_SOURCES = t_nml.cc $(HDRS)
 t_xml_SOURCES = t_xml.cc $(HDRS)
 t_qio_SOURCES = t_qio.cc $(HDRS)
 t_io_SOURCES = t_io.cc $(HDRS)
+t_entry_SOURCES = t_entry.cc $(HDRS)
 t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)
 t_mesplq_SOURCES = t_mesplq.cc mesplq.cc reunit.cc $(HDRS)
 t_formfac_SOURCES = t_formfac.cc formfac_w.cc $(HDRS)
