@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.6 2004-02-02 04:59:54 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.7 2004-02-27 22:37:45 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -91,7 +91,10 @@ void QDPFileReader::open(XMLReader& file_xml,
   // Use string to initialize XMLReader
   istringstream ss;
   if (Layout::primaryNode())
-    ss.str((const string)(XML_string_ptr(xml_c)));
+  {
+    string foo = XML_string_ptr(xml_c);
+    ss.str(foo);
+  }
   file_xml.open(ss);
 
   XML_string_destroy(xml_c);
@@ -166,8 +169,17 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   layout.number_of_nodes = Layout::numNodes(); 
 
   // Copy metadata string into simple qio string container
-  XML_String* xml_c = XML_string_create(file_xml.str().length()+1);  // check if +1 is needed
-  XML_string_set(xml_c, file_xml.str().c_str());
+  XML_String* xml_c;
+  if (Layout::primaryNode())
+    xml_c = XML_string_set(file_xml.str().c_str());
+  else
+    xml_c = XML_string_create(0);
+
+  if (xml_c == NULL)
+  {
+    QDPIO::cerr << "QDPFileWriter - error in creating XML string" << endl;
+    QDP_abort(1);
+  }
 
   // Wrappers over simple ints
   int serpar;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.9 2004-02-02 04:59:54 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.10 2004-02-27 22:37:01 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -238,7 +238,12 @@ void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 			(void *)s1.getF());
 
   // Use string to initialize XMLReader
-  istringstream ss((const string)(XML_string_ptr(xml_c)));
+  istringstream ss;
+  if (Layout::primaryNode())
+  {
+    string foo = XML_string_ptr(xml_c);
+    ss.str(foo);
+  }
   rec_xml.open(ss);
 
   XML_string_destroy(xml_c);
@@ -266,8 +271,17 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 						sizeof(T), 1);
 
   // Copy metadata string into simple qio string container
-  XML_String* xml_c  = XML_string_create(rec_xml.str().length()+1);  // check if +1 is needed
-  XML_string_set(xml_c, rec_xml.str().c_str());
+  XML_String* xml_c;
+  if (Layout::primaryNode())
+    xml_c = XML_string_set(rec_xml.str().c_str());
+  else
+    xml_c = XML_string_create(0);
+
+  if (xml_c == NULL)
+  {
+    QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << endl;
+    QDP_abort(1);
+  }
 
   // Big call to qio
   int status = QIO_write(get(), info, xml_c,
