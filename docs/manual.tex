@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.0.0
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.0.1
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -106,7 +106,7 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.0.0}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.0.1}
 }
 \author{SciDAC Software Coordinating Committee}
 
@@ -795,6 +795,30 @@ carries out the product
 %
 for all sites {\tt x} in subset {\tt all}.
 
+\subsubsection{Gamma matrices}
+
+Multiplication of spin vectors and matrices by $\gamma$-matrices is provided.
+%
+\begin{verbatim}
+  LatticeDiracFermion c, b;
+  int n;
+  c = Gamma(n) * b;
+\nonumber
+\end{verbatim}
+%
+Where the multiplciation is spin matrix times a spin vector. Right multiplication
+is also supported.
+\begin{verbatim}
+  LatticePropagator q, r;
+  int n;
+  q = r * Gamma(n);
+\nonumber
+\end{verbatim}
+
+The \verb|Gamma(n)| provides an enumeration of all possible
+$\gamma$-matrix combinations.  See the Section~\ref{sec:spin} for more
+details.
+
 \subsubsection{Shift}
 
 A shift function is a type of map that maps sites from one lattice
@@ -1270,6 +1294,92 @@ const int NN = 17  // work in SU(17)
 typedef OLattice<PScalar<ColorMatrix<Complex<float>, NN> > > LatticeColorMatrix17
 \end{verbatim}
 
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Spin Conventions}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\label{sec:spin}
+
+The following set of $\gamma$-matrices are used in four dimensions:
+\[
+\begin{array}{lccc}
+\gamma_0\quad\quad&
+ \left(\begin{array}{rrrr}
+   0&0&0&i\\
+   0&0&i&0\\
+   0&-i&0&0\\
+   -i&0&0&0\\
+ \end{array}\right)\quad &
+ \left(\begin{array}{rr}
+   0&i\sigma^1\\
+   -i\sigma^1&0
+ \end{array}\right)\quad\quad &
+ -\sigma^2\!\otimes\!\sigma^1\\
+\gamma_1\quad\quad&
+ \left(\begin{array}{rrrr}
+   0&0&0&-1\\
+   0&0&1&0\\
+   0&1&0&0\\
+   -1&0&0&0\\
+ \end{array}\right)\quad &
+ \left(\begin{array}{rr}
+   0&-i\sigma^2\\
+   i\sigma^2&0
+ \end{array}\right)\quad\quad &
+ \sigma^2\!\otimes\!\sigma^2\\
+\gamma_2\quad\quad&
+ \left(\begin{array}{rrrr}
+   0&0&i&0\\
+   0&0&0&-i\\
+   -i&0&0&0\\
+   0&i&0&0\\
+ \end{array}\right)\quad &
+ \left(\begin{array}{rr}
+   0&i\sigma^3\\
+   -i\sigma^3&0
+ \end{array}\right)\quad\quad &
+ -\sigma^2\!\otimes\!\sigma^3\\
+\gamma_3\quad\quad&
+ \left(\begin{array}{rrrr}
+   0&0&1&0\\
+   0&0&0&1\\
+   1&0&0&0\\
+   0&1&0&0\\
+ \end{array}\right)\quad &
+ \left(\begin{array}{rr}
+   0&\mathbf{1}\\
+   \mathbf{1}&0
+ \end{array}\right)\quad\quad &
+ \sigma^1\!\otimes\!1\\
+\end{array}
+\]
+%
+The basis is chiral. All the possible gamma matrix products are
+represented via
+\[
+\Gamma(n) = \gamma_0^{n_0} \gamma_1^{n_1} \gamma_2^{n_2} \gamma_3^{n_3}
+\]
+%
+where $n_i$ are single bit fields.  Since $\gamma_0$ comes first the
+bit for it must come first. %
+So, $\gamma_5 = \gamma_0\gamma_1\gamma_2\gamma_3$ 
+is represented as 1111b = 15d, and 
+$\gamma_0\gamma_1\gamma_3$ is represented as 1011b = 11d
+(note the ordering). The conventional $\gamma$-matrices are
+\begin{eqnarray}
+\Gamma(1) &=& \gamma_0\nonumber\\
+\Gamma(2) &=& \gamma_1\nonumber\\
+\Gamma(4) &=& \gamma_2\nonumber\\
+\Gamma(8) &=& \gamma_3\nonumber
+\end{eqnarray}
+
+This enumeration is $\gamma$-basis independent.
+
+
+\newpage
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implementation Details}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1294,7 +1404,6 @@ The following table lists some of the QDP headers.
 \hline
 \end{tabular}
 \end{center}
-
 
 \newpage
 
