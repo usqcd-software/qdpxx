@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.30 2003-10-09 19:59:39 edwards Exp $
+// $Id: t_foo.cc,v 1.31 2003-10-17 15:30:17 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -8,7 +8,7 @@
 
 
 #include "qdp.h"
-#include "qdp_util.h"
+#include "qdp_iogauge.h"
 
 //using namespace std;
 
