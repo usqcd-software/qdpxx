@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_dwdefs.h,v 1.6 2004-01-28 02:44:55 edwards Exp $
+// $Id: qdp_dwdefs.h,v 1.7 2004-02-07 03:54:19 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -117,6 +117,12 @@ typedef Seed ILatticeSeed;
 // Floating precision, but specific to a fixed color or spin
 typedef OLattice< PScalar< PColorMatrix< RComplex< PScalar<REAL> >, 3> > > LatticeColorMatrix3;
 typedef OScalar< PScalar< PColorMatrix< RComplex< PScalar<REAL> >, 3> > > ColorMatrix3;
+
+typedef OLattice< PScalar< PColorMatrix< RComplex< PScalar<REAL> >, 2> > > LatticeColorMatrix2;
+typedef OScalar< PScalar< PColorMatrix< RComplex< PScalar<REAL> >, 2> > > ColorMatrix2;
+
+typedef OLattice< PScalar< PColorMatrix< RComplex< PScalar<REAL> >, 1> > > LatticeColorMatrix1;
+typedef OScalar< PScalar< PColorMatrix< RComplex< PScalar<REAL> >, 1> > > ColorMatrix1;
 
 // Fixed precision
 typedef OLattice< PScalar< PColorMatrix< RComplex< PScalar<REAL32> >, Nc> > > LatticeColorMatrixF;
