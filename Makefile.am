@@ -32,8 +32,6 @@ doc-distclean:
 # All the headers get into the dist by default
 # 
 ARCH_SOURCES = lib/scalar_specific.cc \
-               lib/parscalar_specific.cc \
-	       lib/qdp_init_scalar.cc \
-	       lib/qdp_init_parscalar.cc 
+               lib/parscalar_specific.cc
 
 EXTRA_DIST= $(ARCH_SOURCES) PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools  examples/BuildingBlocks docs

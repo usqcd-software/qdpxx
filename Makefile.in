@@ -66,7 +66,6 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LATEX = @LATEX@
 LDFLAGS = @LDFLAGS@
-LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
@@ -136,9 +135,7 @@ SUBDIRS = lib examples include
 # All the headers get into the dist by default
 # 
 ARCH_SOURCES = lib/scalar_specific.cc \
-               lib/parscalar_specific.cc \
-	       lib/qdp_init_scalar.cc \
-	       lib/qdp_init_parscalar.cc 
+               lib/parscalar_specific.cc
 
 
 EXTRA_DIST = $(ARCH_SOURCES) PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools  examples/BuildingBlocks docs

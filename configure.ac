@@ -34,9 +34,9 @@ AC_ARG_ENABLE(Ns,
 
 dnl --enable-max-volume
 AC_ARG_ENABLE(max-volume,
-	      AC_HELP_STRING([--enable-max-volume=<max no of sites>, default is 2048 ]),
+	      AC_HELP_STRING([--enable-max-volume=<max no of sites>, default is 512 ]),
 	      ac_max_volume=$enableval,
-	      ac_max_volume=2048)
+	      ac_max_volume=512)
 
 
 dnl--enable-parallel-arch argument
@@ -190,14 +190,14 @@ dnl
 case ${ac_parallel_arch} in
   scalar) 
     ARCHDEF_SUBSTITUTION="ARCH_SCALAR" 
-    ARCH_SRCS="scalar_specific.cc qdp_init_scalar.cc"
+    ARCH_SRCS="scalar_specific.cc"
     ARCH_HDRS="scalar_specific.h"
     AC_SUBST(ARCH_SRCS)
     AC_SUBST(ARCH_HDRS)
     ;;
   parscalar)
     ARCHDEF_SUBSTITUTION="ARCH_PARSCALAR"
-    ARCH_SRCS="parscalar_specific.cc qdp_init_parscalar.cc"
+    ARCH_SRCS="parscalar_specific.cc"
     ARCH_HDRDS=" parscalar_specific.h"
     AC_SUBST(ARCH_SRCS)
     AC_SUBST(ARCH_HDRS)

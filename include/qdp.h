@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.10 2002-12-14 01:12:52 edwards Exp $
+// $Id: qdp.h,v 1.11 2002-12-14 04:49:01 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -32,6 +32,9 @@
 #include <cstdlib>
 #include <ostream>
 #include <iostream>
+
+/* Get local configuration options (ARCH_SCALAR/PARSCALAR, Nd, Nc, Ns) */
+#include <qdp_config.h>
 
 using namespace std;   // I do not like this
 
@@ -88,7 +91,7 @@ QDP_END_NAMESPACE();
 // Basic includes
 QDP_BEGIN_NAMESPACE(QDP);
 #define PETE_USER_DEFINED_EXPRESSION
-#include "./PETE/PETE.h"
+#include <PETE/PETE.h>
 QDP_END_NAMESPACE();
 
 #include "forward.h"
@@ -114,7 +117,7 @@ QDP_END_NAMESPACE();
 #include "primitive.h"
 #include "outer.h"
 #include "outersubtype.h"
-#include "defs.h"
+#include "./defs.h"
 #include "globalfuncs.h"
 #include "specializations.h"
 
