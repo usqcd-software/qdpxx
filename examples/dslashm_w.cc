@@ -1,4 +1,4 @@
-// $Id: dslashm_w.cc,v 1.13 2003-01-21 21:19:45 edwards Exp $
+// $Id: dslashm_w.cc,v 1.14 2003-01-26 04:01:53 edwards Exp $
 /*! \file
  *  \brief Wilson-Dirac operator
  */
@@ -63,9 +63,9 @@ void dslash_2d_plus(LatticeFermion& chi,
    *                        mu          mu
    */
   chi[rb[cb]] = spinReconstructDir0Minus(u[0] * shift(spinProjectDir0Minus(psi), FORWARD, 0))
-              + spinReconstructDir0Plus(shift(u[0] * spinProjectDir0Plus(psi), BACKWARD, 0))
+              + spinReconstructDir0Plus(shift(adj(u[0]) * spinProjectDir0Plus(psi), BACKWARD, 0))
               + spinReconstructDir1Minus(u[1] * shift(spinProjectDir1Minus(psi), FORWARD, 1))
-              + spinReconstructDir1Plus(shift(u[1] * spinProjectDir1Plus(psi), BACKWARD, 1));
+              + spinReconstructDir1Plus(shift(adj(u[1]) * spinProjectDir1Plus(psi), BACKWARD, 1));
 }
 
 
@@ -130,16 +130,16 @@ void dslash(LatticeFermion& chi,
   if (isign > 0)
   {
     chi[rb[cb]] = spinReconstructDir0Minus(u[0] * shift(spinProjectDir0Minus(psi), FORWARD, 0))
-      + spinReconstructDir0Plus(shift(u[0] * spinProjectDir0Plus(psi), BACKWARD, 0))
+      + spinReconstructDir0Plus(shift(adj(u[0]) * spinProjectDir0Plus(psi), BACKWARD, 0))
       + spinReconstructDir1Minus(u[1] * shift(spinProjectDir1Minus(psi), FORWARD, 1))
-      + spinReconstructDir1Plus(shift(u[1] * spinProjectDir1Plus(psi), BACKWARD, 1));
+      + spinReconstructDir1Plus(shift(adj(u[1]) * spinProjectDir1Plus(psi), BACKWARD, 1));
   }
   else
   {
     chi[rb[cb]] = spinReconstructDir0Plus(u[0] * shift(spinProjectDir0Plus(psi), FORWARD, 0))
-      + spinReconstructDir0Minus(shift(u[0] * spinProjectDir0Minus(psi), BACKWARD, 0))
+      + spinReconstructDir0Minus(shift(adj(u[0]) * spinProjectDir0Minus(psi), BACKWARD, 0))
       + spinReconstructDir1Plus(u[1] * shift(spinProjectDir1Plus(psi), FORWARD, 1))
-      + spinReconstructDir1Minus(shift(u[1] * spinProjectDir1Minus(psi), BACKWARD, 1));
+      + spinReconstructDir1Minus(shift(adj(u[1]) * spinProjectDir1Minus(psi), BACKWARD, 1));
   }
 #else
 
@@ -151,7 +151,7 @@ void dslash(LatticeFermion& chi,
   for(int mu = 0; mu < Nd; ++mu)
   {
     chi[rb[cb]] += spinReconstruct(LatticeHalfFermion(u[mu] * shift(spinProject(psi,mu,-isign), FORWARD, mu)),mu,-isign)
-      + spinReconstruct(LatticeHalfFermion(shift(u[mu] * spinProject(psi,mu,+isign), BACKWARD, mu)),mu,+isign);
+      + spinReconstruct(LatticeHalfFermion(shift(adj(u[mu]) * spinProject(psi,mu,+isign), BACKWARD, mu)),mu,+isign);
   }
 #endif
 
