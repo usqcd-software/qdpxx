@@ -1,3 +1,8 @@
+09/10/2004 -- Robert Edwards
+
+	Version 1.10.1. Added obsolete calling conventions of QDPFile{Reader,Writer}.
+        Fixed QIO string usage.
+
 09/07/2004 -- Robert Edwards
 
 	Version 1.10.0. Parallel version now exclusively uses QMP-2 . QMP-1.X is
