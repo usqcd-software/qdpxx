@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_forward.h,v 1.2 2003-07-31 01:03:04 edwards Exp $
+// $Id: qdp_forward.h,v 1.3 2003-08-14 03:47:29 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -25,7 +25,7 @@ namespace RNG
   
 // Inner
 template<class T> class IScalar;
-template<class T> class ILattice;
+template<class T, int N> class ILattice;
 
 // Reality
 template<class T> class RScalar;
