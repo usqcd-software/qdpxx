@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.14 2003-11-05 17:48:47 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.15 2003-11-05 18:13:34 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -143,7 +143,7 @@ namespace Layout
     for(int i=0; i < Nd; ++i)
       node_coord[i] = node_crd[i];
 
-//    free(node_crd);   // free up QMP's memory
+    free(node_crd);   // free up QMP's memory
     return node_coord;
   }
 
