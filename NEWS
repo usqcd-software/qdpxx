@@ -1,7 +1,14 @@
+01/24/2004 -- Robert Edwards
+
+	Version 1.11.3. Changed XMLFileWriter support. Now, explicitly
+        use ofstream in case of not USE_REMOTE_QIO. Make 
+        XMLFileWriter::is_open() check if QDP is (still) initialized
+        to avoid crashes on destructor calls.
+
 01/22/2004 -- Robert Edwards
 
-	Version 1.11.2. QCDOC fixes. Changed xmlreader.print functions to broadcast their
-        strings.
+	Version 1.11.2. QCDOC fixes. Changed xmlreader.print functions to 
+        broadcast their strings.
 
 01/18/2004 -- Robert Edwards
 
