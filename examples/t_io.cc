@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.17 2003-10-09 19:59:39 edwards Exp $
+// $Id: t_io.cc,v 1.18 2003-10-09 20:12:04 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -57,8 +57,13 @@ int main(int argc, char **argv)
   fromtext >> x;
   fromtext.close();
 
-  QDPIO::cout << "you entered :" << x << ":" << endl;
-  
+  QDPIO::cout << "The value :" << x << ": was read from t_io.txt" << endl;
+
+  x = -1;
+  QDPIO::cout << "Enter a float for a test of reading stdin" << endl;
+  QDPIO::cin >> x;
+  QDP_info("The value :%g: was read from stdin", toFloat(x));
+
   // Time to bolt
   QDP_finalize();
 
