@@ -1,5 +1,10 @@
 01/28/2004 -- Robert Edwards
 
+	Version 1.11.6. Removed member func. template params in
+        multi1,2,Nd<T>. 
+
+01/28/2004 -- Robert Edwards
+
 	Version 1.11.5. Further changes to qdp_io.h to put Remote IO
         under REMOTE_USE_QIO control.
 
