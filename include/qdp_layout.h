@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_layout.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_layout.h,v 1.2 2003-07-17 01:45:35 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -77,14 +77,21 @@ namespace Layout
   //! Returns whether this is the primary node
   bool primaryNode();
 
-  //! The lexicographic site index within a node for the corresponding lattice coordinate
-  int lexicoSiteIndex(const multi1d<int>& coord);
-
   //! The linearized site index for the corresponding lexicographic site
   int linearSiteIndex(int lexicosite);
 
-  //! The lexicographic site index from the corresponding linearized site
-  int lexicoSiteIndex(int linearsite);
+  //! Returns the logical node coordinates for this node
+  const multi1d<int>& nodeCoord();
+
+  //! Returns the logical node coordinates for the corresponding lattice coordinate
+  /*! The API requires this function to be here */
+  multi1d<int> nodeCoord(const multi1d<int>& coord);
+
+  //! Subgrid (grid on each node) lattice size
+  const multi1d<int>& subgridLattSize();
+
+  //! Returns the logical size of this machine
+  const multi1d<int>& logicalSize();
 }
 
 //! Declaration of shift function object
