@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.2 2003-05-23 04:45:53 edwards Exp $
+// $Id: qdp_io.h,v 1.3 2003-05-23 05:00:34 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -380,7 +380,7 @@ inline
 BinaryWriter& write(BinaryWriter& bin, const T& d)
 {
   if (Layout::primaryNode()) 
-    bfwrite((void *)&d, sizeof(T), 1, bin.get()); 
+    QDPUtil::bfwrite((void *)&d, sizeof(T), 1, bin.get()); 
 
   return bin;
 }
