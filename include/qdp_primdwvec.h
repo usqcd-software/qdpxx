@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primdwvec.h,v 1.3 2003-11-02 01:21:04 edwards Exp $
+// $Id: qdp_primdwvec.h,v 1.4 2003-11-10 03:41:30 edwards Exp $
 
 /*! \file
  * \brief Domain-wall Vector (lives in fictitious flavor space)
@@ -337,7 +337,7 @@ peekDW(const PDWVector<T,N>& l, int row)
   return d;
 }
 
-//! Insert color vector components
+//! Insert DW vector components
 template<class T1, class T2, int N>
 inline PDWVector<T1,N>&
 pokeDW(PDWVector<T1,N>& l, const PScalar<T2>& r, int row)
