@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.17 2004-03-23 03:10:47 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.18 2004-04-06 02:31:29 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -444,6 +444,20 @@ template<class T> void QDPOLatticeFactoryPut(char *buf, size_t linear, int count
   memcpy(dest,(const void*)buf,count*sizeof(T));
 }
 
+//! Function for inserting datum at specified site  in array
+template<class T> void QDPOLatticeFactoryPutArray(char *buf, size_t linear, int count, void *arg)
+{
+  /* Translate arg */
+  multi1d< OLattice<T> >& field = *(multi1d< OLattice<T> > *)arg;
+
+  for(int i=0; i < field.size(); ++i)
+  {
+    void *dest = (void*)&(field[i].elem(linear));
+    memcpy(dest,(const void*)buf,sizeof(T));
+    buf += sizeof(T);
+  }
+}
+
 
 //! Read an OLattice object
 /*! This implementation is only correct for scalar ILattice */
@@ -491,22 +505,15 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
   // Initialize string objects 
   QIO_String *xml_c  = QIO_string_create(0);
 
-  // Unfortunately, make one big contiguous array
-  T *ssa = new T[s1.size() * Layout::sitesOnNode()];
-
   if (QIO_read(get(), info, xml_c,
-   	       &(QDPOLatticeFactoryPut<T>),
+   	       &(QDPOLatticeFactoryPutArray<T>),
                s1.size()*sizeof(T), 
 	       sizeof(typename WordType<T>::Type_t), 
-	       ssa) != QIO_SUCCESS)
+	       (void*)&s1) != QIO_SUCCESS)
   {
     QDPIO::cerr << "QDPFileReader: error reading file" << endl;
     clear(QDPIO_badbit);
   }
-
-  for(int nn=0, mu=0; mu < s1.size(); ++mu)
-    for(int site=0; site < Layout::sitesOnNode(); ++site)
-      s1[mu].elem(site) = ssa[nn++];
 
   // Use string to initialize XMLReader
   istringstream ss;
@@ -517,7 +524,6 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
   }
   rec_xml.open(ss);
 
-  delete[] ssa;
   QIO_string_destroy(xml_c);
   QIO_destroy_record_info(info);
 }
@@ -531,6 +537,20 @@ template<class T> void QDPOLatticeFactoryGet(char *buf, size_t linear, int count
 
   void *src = (void*)(field+linear);
   memcpy(buf,(const void*)src,count*sizeof(T));
+}
+
+//! Function for extracting datum at specified site 
+template<class T> void QDPOLatticeFactoryGetArray(char *buf, size_t linear, int count, void *arg)
+{
+  /* Translate arg */
+  multi1d< OLattice<T> >& field = *(multi1d< OLattice<T> > *)arg;
+
+  for(int i=0; i < field.size(); ++i)
+  {
+    void *src = (void*)&(field[i].elem(linear));
+    memcpy(buf,(const void*)src,sizeof(T));
+    buf += sizeof(T);
+  }
 }
 
 
@@ -593,25 +613,18 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >
     QDP_abort(1);
   }
 
-  // Unfortunately, make one big contiguous array
-  T *ssa = new T[s1.size() * Layout::sitesOnNode()];
-  for(int nn=0, mu=0; mu < s1.size(); ++mu)
-    for(int site=0; site < Layout::sitesOnNode(); ++site)
-      ssa[nn++] = s1[mu].elem(site);
-
   // Big call to qio
   if (QIO_write(get(), info, xml_c,
-	        &(QDPOLatticeFactoryGet<T>),
+	        &(QDPOLatticeFactoryGetArray<T>),
                 s1.size()*sizeof(T), 
  	        sizeof(typename WordType<T>::Type_t), 
-	        ssa) != QIO_SUCCESS)
+		(void*)&s1) != QIO_SUCCESS)
   {
     QDPIO::cerr << "QDPFileWriter: error in write" << endl;
     clear(QDPIO_badbit);
   }
 
   // Cleanup
-  delete[] ssa;
   QIO_string_destroy(xml_c);
   QIO_destroy_record_info(info);
 }
