@@ -71,28 +71,6 @@ AC_ARG_ENABLE(sse2,
 )
 
 
-dnl SSE is not supported for all possible values of Ns. If it is not supported
-dnl we turn it off
-case "${ac_Ns}" in
-dnl SSE is supported for Ns = 4
-  4)
-    if test "X${ac_sse}X" = "X1X" ; then
-      AC_MSG_NOTICE([Configuring QDP++ to use Streaming SIMD Extensions (SSE)])
-    fi	
-
-    dnl Tell the user about SSE2
-    if test "X${ac_sse2}X" = "X1X" ; then
-      AC_MSG_NOTICE([Configuring QDP++ to use Streaming SIMD Extensions (SSE2)])
-    fi
-    ;;
-  *)
- 
-    AC_MSG_NOTICE([SSE Optimisations are not supported for Ns=${ac_Ns} -- turning off option ] )
-    AC_SUBST(ac_sse,0)
-    AC_SUBST(ac_sse2,0)
-    ;;
-esac
-
 AC_ARG_ENABLE(precision, 
   AC_HELP_STRING( [ --enable precision=single|double ],
                   [ Sets the base precision to be single or double precision (default is single) ] ),
@@ -202,6 +180,7 @@ case ${PARALLEL_ARCH} in
     AC_MSG_ERROR([ Unknown value for --enable-parallel-arch ])
     ;;
 esac
+
 
 dnl verify we can compile and link against QMP, if needed
 PAC_QMP_LINK_CXX_FUNC(
@@ -316,6 +295,16 @@ AM_CONDITIONAL(QDP_USE_SCALAR_SSE2, [test "X${ac_sse2}X" = "X1X" -a "X${ARCH_SIT
 
 AM_CONDITIONAL(QDP_USE_SCALARVEC_SSE, [test "X${ac_sse}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarvecsiteX"])
 AM_CONDITIONAL(QDP_USE_SCALARVEC_SSE2, [test "X${ac_sse2}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarvecsiteX"])
+
+#
+# For the examples directory, conditionally compile some files.
+# These conditionals are *only* used there.
+#
+AM_CONDITIONAL(BUILD_STAGGERED_EXAMPLES,
+  [test "X${ac_Ns}X" = "X1X"])
+AM_CONDITIONAL(BUILD_WILSON_EXAMPLES,
+  [test "X${ac_Ns}X" != "X1X"])
+
 
 ##################################
 # Check for programs to build docs

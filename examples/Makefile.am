@@ -32,8 +32,19 @@ VPATH+=@top_srcdir@/examples
 #
 # The programs to build
 # 
-check_PROGRAMS= t_skeleton t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo \
-      t_nml t_xml t_qio t_remote t_entry t_linalg t_nersc t_shift t_exotic
+check_PROGRAMS = t_skeleton t_io t_mesplq \
+      t_nml t_xml t_qio t_remote t_entry t_nersc t_shift t_exotic
+
+
+if BUILD_WILSON_EXAMPLES
+check_PROGRAMS += t_dslashm t_formfac t_spectrum t_qdp t_foo t_linalg
+endif
+
+
+if BUILD_STAGGERED_EXAMPLES
+check_PROGRAMS += 
+endif
+
 
 #
 # The program and its dependencies
