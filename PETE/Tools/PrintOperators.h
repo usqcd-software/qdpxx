@@ -515,6 +515,10 @@ public:
       << "                                 \""
       << opdef.expression() << "\"," << endl
       << "                                 \""
+      << opdef.comment1() << "\"," << endl
+      << "                                 \""
+      << opdef.comment2() << "\"," << endl
+      << "                                 \""
       << opdef.argDef() << "\"));"
       << endl;
   }
@@ -527,6 +531,6 @@ private:
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: PrintOperators.h,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2002-09-12 18:22:17 $
+// $Revision: 1.2 $   $Date: 2002-10-14 02:06:56 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

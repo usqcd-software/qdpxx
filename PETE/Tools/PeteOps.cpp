@@ -1,4 +1,3 @@
-// -*- C++ -*-
 // ACL:license
 // ACL:license
 
@@ -29,282 +28,538 @@ void peteOps(map<string,vector<OperatorDescriptor> > &m)
               OperatorDescriptor("OpAssign",
                                  "assign",
                                  "return (const_cast<T1 &>(a) = b);",
+                                 "//! Assignment",
+                                 "/*! Assign and return ref to left-hand-side.
+  @return (a = b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryAssignOps"].push_back(
               OperatorDescriptor("OpAddAssign",
                                  "operator+=",
                                  "(const_cast<T1 &>(a) += b); return const_cast<T1 &>(a);",
+                                 "//! Add and assign",
+                                 "/*! Add b to a and return ref to left-hand-side.
+  @sa operator+()
+  @return (a <- (a + b))
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryAssignOps"].push_back(
               OperatorDescriptor("OpSubtractAssign",
                                  "operator-=",
                                  "(const_cast<T1 &>(a) -= b); return const_cast<T1 &>(a);",
+                                 "//! Subtract and assign",
+                                 "/*! Add b from a and return ref to left-hand-side.
+  @sa operator-()
+  @return (a <- (a - b))
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryAssignOps"].push_back(
               OperatorDescriptor("OpMultiplyAssign",
                                  "operator*=",
                                  "(const_cast<T1 &>(a) *= b); return const_cast<T1 &>(a);",
+                                 "//! Multiply and assign",
+                                 "/*! Multiply b onto a and return ref to left-hand-side.
+  @sa operator*()
+  @return (a <- (a * b))
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryAssignOps"].push_back(
               OperatorDescriptor("OpDivideAssign",
                                  "operator/=",
                                  "(const_cast<T1 &>(a) /= b); return const_cast<T1 &>(a);",
+                                 "//! Divide and assign",
+                                 "/*! Divide b from a and return ref to left-hand-side.
+  @sa operator/()
+  @return (a <- (a / b))
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryAssignOps"].push_back(
               OperatorDescriptor("OpModAssign",
                                  "operator%=",
                                  "(const_cast<T1 &>(a) %= b); return const_cast<T1 &>(a);",
+                                 "//! Mod and assign",
+                                 "/*! Mod b onto a and return ref to left-hand-side.
+  @sa operator%()
+  @return (a <- (a & b))
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryAssignOps"].push_back(
               OperatorDescriptor("OpBitwiseOrAssign",
                                  "operator|=",
                                  "(const_cast<T1 &>(a) |= b); return const_cast<T1 &>(a);",
+                                 "//! Bitwise or and assign",
+                                 "/*! Bitwise or b with a and return ref to left-hand-side.
+  @sa operator|()
+  @return (a <- (a | b))
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryAssignOps"].push_back(
               OperatorDescriptor("OpBitwiseAndAssign",
                                  "operator&=",
                                  "(const_cast<T1 &>(a) &= b); return const_cast<T1 &>(a);",
+                                 "//! Bitwise and and assign",
+                                 "/*! Bitwise and b with a and return ref to left-hand-side.
+  @sa operator&()
+  @return (a <- (a & b))
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryAssignOps"].push_back(
               OperatorDescriptor("OpBitwiseXorAssign",
                                  "operator^=",
                                  "(const_cast<T1 &>(a) ^= b); return const_cast<T1 &>(a);",
+                                 "//! Bitwise xor and assign",
+                                 "/*! Bitwise xor b with a and return ref to left-hand-side.
+  @sa operator^()
+  @return (a <- (a ^ b))
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryAssignOps"].push_back(
               OperatorDescriptor("OpLeftShiftAssign",
                                  "operator<<=",
                                  "(const_cast<T1 &>(a) <<= b); return const_cast<T1 &>(a);",
+                                 "//! Left-shift and assign",
+                                 "/*! Left-shift a by b bits and return ref to left-hand-side.
+  @sa operator<<()
+  @return (a <- (a << b))
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryAssignOps"].push_back(
               OperatorDescriptor("OpRightShiftAssign",
                                  "operator>>=",
                                  "(const_cast<T1 &>(a) >>= b); return const_cast<T1 &>(a);",
+                                 "//! Right-shift and assign",
+                                 "/*! Right-shift a by b bits and return ref to left-hand-side.
+  @sa operator>>()
+  @return (a <- (a >> b))
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryBoolOps"].push_back(
               OperatorDescriptor("OpLT",
                                  "operator<",
                                  "return (a < b);",
+                                 "//! Less than",
+                                 "/*! Boolean result 
+  @return (a < b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryBoolOps"].push_back(
               OperatorDescriptor("OpLE",
                                  "operator<=",
                                  "return (a <= b);",
+                                 "//! Less than equal",
+                                 "/*! Boolean result 
+  @return (a <= b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryBoolOps"].push_back(
               OperatorDescriptor("OpGT",
                                  "operator>",
                                  "return (a > b);",
+                                 "//! Great than",
+                                 "/*! Boolean result 
+  @return (a > b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryBoolOps"].push_back(
               OperatorDescriptor("OpGE",
                                  "operator>=",
                                  "return (a >= b);",
+                                 "//! Great than equal",
+                                 "/*! Boolean result 
+  @return (a >= b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryBoolOps"].push_back(
               OperatorDescriptor("OpEQ",
                                  "operator==",
                                  "return (a == b);",
+                                 "//! Equality",
+                                 "/*! Boolean result 
+  @return (a == b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryBoolOps"].push_back(
               OperatorDescriptor("OpNE",
                                  "operator!=",
                                  "return (a != b);",
+                                 "//! Not equal",
+                                 "/*! Boolean result 
+  @return (a != b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryBoolOps"].push_back(
               OperatorDescriptor("OpAnd",
                                  "operator&&",
                                  "return (a && b);",
+                                 "//! Logical and",
+                                 "/*! Boolean result 
+  @return (a && b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryBoolOps"].push_back(
               OperatorDescriptor("OpOr",
                                  "operator||",
                                  "return (a || b);",
+                                 "//! Logical or",
+                                 "/*! Boolean result 
+  @return (a | b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryLeftOps"].push_back(
               OperatorDescriptor("OpLeftShift",
                                  "operator<<",
                                  "return (a << b);",
+                                 "//! Left shift",
+                                 "/*! Not cyclic
+  @return (a left shifted by b bits)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryLeftOps"].push_back(
               OperatorDescriptor("OpRightShift",
                                  "operator>>",
                                  "return (a >> b);",
+                                 "//! Right shift",
+                                 "/*! Not cyclic
+  @return (a right shifted by b bits)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryOps"].push_back(
               OperatorDescriptor("OpAdd",
                                  "operator+",
                                  "return (a + b);",
+                                 "//! Binary addition",
+                                 "/*! 
+  @return (a+b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryOps"].push_back(
               OperatorDescriptor("OpSubtract",
                                  "operator-",
                                  "return (a - b);",
+                                 "//! Binary subtract",
+                                 "/*! 
+  @return (a-b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryOps"].push_back(
               OperatorDescriptor("OpMultiply",
                                  "operator*",
                                  "return (a * b);",
+                                 "//! Binary multiply",
+                                 "/*! 
+  @return (a * b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryOps"].push_back(
               OperatorDescriptor("OpDivide",
                                  "operator/",
                                  "return (a / b);",
+                                 "//! Binary division",
+                                 "/*! 
+  @return (a / b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryOps"].push_back(
               OperatorDescriptor("OpMod",
                                  "operator%",
                                  "return (a % b);",
+                                 "//! Binary mod",
+                                 "/*! Also call mod(a,b)
+  @return (a % b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryOps"].push_back(
               OperatorDescriptor("OpBitwiseAnd",
                                  "operator&",
                                  "return (a & b);",
+                                 "//! Bitwise and",
+                                 "/*! 
+  @return (a & b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryOps"].push_back(
               OperatorDescriptor("OpBitwiseOr",
                                  "operator|",
                                  "return (a | b);",
+                                 "//! Bitwise or",
+                                 "/*! 
+  @return (a | b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryOps"].push_back(
               OperatorDescriptor("OpBitwiseXor",
                                  "operator^",
                                  "return (a ^ b);",
+                                 "//! Bitwise exclusive or",
+                                 "/*! 
+  @return (a ^ b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryOps"].push_back(
               OperatorDescriptor("FnLdexp",
                                  "ldexp",
                                  "return (ldexp(a,b));",
+                                 "//! Load exponent",
+                                 "/*! Calculates the value a times 2 to the power b.
+  Based on the C-math lib function.
+  @return ldexp(a,b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryOps"].push_back(
               OperatorDescriptor("FnPow",
                                  "pow",
                                  "return (pow(a,b));",
+                                 "//! a to the power b",
+                                 "/*! Based on the C-math lib function.
+  @return pow(a,b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryOps"].push_back(
               OperatorDescriptor("FnFmod",
                                  "fmod",
                                  "return (fmod(a,b));",
+                                 "//! Floating point remainder",
+                                 "/*! Computes a modulo b.
+  Based on the C-math lib function.
+  @return fmod(a,b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["binaryOps"].push_back(
               OperatorDescriptor("FnArcTan2",
                                  "atan2",
                                  "return (atan2(a,b));",
+                                 "//! Arctan of a/b",
+                                 "/*! Produces correct angles near +-pi/2 (or a near 0).
+  Based on the C-math lib function.
+  @return atan2(a,b)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["trinaryOps"].push_back(
               OperatorDescriptor("FnWhere",
                                  "where",
                                  "if (a) return b; else return c;",
+                                 "//! The C ? operator",
+                                 "/*! The where statement is similar to the C ? operator.
+  @return (if (a) return b; else return c;)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryBoolOps"].push_back(
               OperatorDescriptor("OpNot",
                                  "operator!",
                                  "return (!a);",
+                                 "//! Boolean not operator",
+                                 "/*! 
+  @return (!a)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnArcCos",
                                  "acos",
                                  "return (acos(a));",
+                                 "//! Arc cos",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnArcSin",
                                  "asin",
                                  "return (asin(a));",
+                                 "//! Arc sin",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnArcTan",
                                  "atan",
                                  "return (atan(a));",
+                                 "//! Arc tangent",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnCeil",
                                  "ceil",
                                  "return (ceil(a));",
+                                 "//! Floating point ceiling of source",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnCos",
                                  "cos",
                                  "return (cos(a));",
+                                 "//! Cosine",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnHypCos",
                                  "cosh",
                                  "return (cosh(a));",
+                                 "//! Hyperbolic cosine",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnExp",
                                  "exp",
                                  "return (exp(a));",
+                                 "//! Exponential",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnFabs",
                                  "fabs",
                                  "return (fabs(a));",
+                                 "//! Floating point absolute value",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnFloor",
                                  "floor",
                                  "return (floor(a));",
+                                 "//! floating point floor of source",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnLog",
                                  "log",
                                  "return (log(a));",
+                                 "//! Log",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnLog10",
                                  "log10",
                                  "return (log10(a));",
+                                 "//! Log base 10",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnSin",
                                  "sin",
                                  "return (sin(a));",
+                                 "//! Sine",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnHypSin",
                                  "sinh",
                                  "return (sinh(a));",
+                                 "//! Hyperbolic sine",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnSqrt",
                                  "sqrt",
                                  "return (sqrt(a));",
+                                 "//! Square root",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnTan",
                                  "tan",
                                  "return (tan(a));",
+                                 "//! Tangent",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("FnHypTan",
                                  "tanh",
                                  "return (tanh(a));",
+                                 "//! Hyperbolic tangent",
+                                 "/*! @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("OpUnaryMinus",
                                  "operator-",
                                  "return (-a);",
+                                 "//! Unary minus",
+                                 "/*! 
+  @return -a
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("OpUnaryPlus",
                                  "operator+",
                                  "return (+a);",
+                                 "//! Unary minus",
+                                 "/*!
+  @return +a
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("OpBitwiseNot",
                                  "operator~",
                                  "return (~a);",
+                                 "//! Bitwise not",
+                                 "/*!
+  @return (~a)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
   m["unaryOps"].push_back(
               OperatorDescriptor("OpIdentity",
                                  "PETE_identity",
                                  "return (a);",
+                                 "//! Identity operator",
+                                 "/*! Constructs expression form of a source
+  @return (a)
+  @ingroup group1
+  @relates QDPType */",
                                  ""));
 }
 
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: PeteOps.cpp,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2002-09-12 18:22:17 $
+// $Revision: 1.2 $   $Date: 2002-10-14 02:06:56 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

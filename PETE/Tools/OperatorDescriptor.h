@@ -40,7 +40,7 @@ using std::string;
 
 #include "Tools/DescriptorBase.h"
 
-class OperatorDescriptor: public DescriptorBase<4> {
+class OperatorDescriptor: public DescriptorBase<6> {
 public:
 
   //---------------------------------------------------------------------------
@@ -50,16 +50,19 @@ public:
   { }
 
   OperatorDescriptor(const string &tag, const string &func,
-		     const string &expr, const string &arg = "")
+		     const string &expr, const string &commnt1, 
+		     const string &commnt2, const string &arg = "")
   {
     addData(0, tag);
     addData(1, func);
     addData(2, expr);
-    addData(3, arg);
+    addData(3, commnt1);
+    addData(4, commnt2);
+    addData(5, arg);
   }
 
   OperatorDescriptor(const OperatorDescriptor &model)
-  : DescriptorBase<4>(model)
+  : DescriptorBase<6>(model)
   { }
 
   //---------------------------------------------------------------------------
@@ -72,7 +75,7 @@ public:
 
   OperatorDescriptor &operator=(const OperatorDescriptor &rhs)
   {
-    DescriptorBase<4>::operator=(rhs);
+    DescriptorBase<6>::operator=(rhs);
     
     return *this;
   }
@@ -98,9 +101,19 @@ public:
     return str(2);
   }
 
-  const string &argDef() const
+  const string &comment1() const
   {
     return str(3);
+  }
+
+  const string &comment2() const
+  {
+    return str(4);
+  }
+
+  const string &argDef() const
+  {
+    return str(5);
   }
 
   bool templateArgs() const
@@ -115,6 +128,8 @@ inline ostream &operator<<(ostream &os, const OperatorDescriptor &o)
   os << "TAG  = " << o.tag() << endl;
   os << "FUNC = " << o.function() << endl;
   os << "EXPR = " << o.expression() << endl;
+  os << "COMMENTA = " << o.comment1() << endl;
+  os << "COMMENTB = " << o.comment2() << endl;
   os << "ARG  = " << o.argDef() << endl;
   
   return os;
@@ -125,6 +140,6 @@ inline ostream &operator<<(ostream &os, const OperatorDescriptor &o)
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: OperatorDescriptor.h,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2002-09-12 18:22:17 $
+// $Revision: 1.2 $   $Date: 2002-10-14 02:06:56 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

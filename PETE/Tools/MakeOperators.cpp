@@ -164,6 +164,8 @@ int main(int argc, char *argv[])
     pOps.addKeyword("TAG");
     pOps.addKeyword("FUNCTION");
     pOps.addKeyword("EXPR");
+    pOps.addKeyword("COMMENTA");
+    pOps.addKeyword("COMMENTB");
     pOps.addKeyword("ARG");
 
     pOps.parse();
@@ -222,7 +224,7 @@ int main(int argc, char *argv[])
   vector<ClassDescriptor> scalars1;
   vector<ClassDescriptor> scalars2;
   vector<ClassDescriptor> scalars3;
-  vector<ClassDescriptor> generalT;
+//  vector<ClassDescriptor> generalT;
   vector<ClassDescriptor> userClasses;
   vector<ClassDescriptor> expressionClass;
 
@@ -262,20 +264,20 @@ int main(int argc, char *argv[])
     if (expression)
     {
       expressionClass.push_back(ClassDescriptor("class T[n],class C[n]",
-						"QDPExpr<T[n],C[n]>",false));
+						"QDPExpr<T[n],C[n]>",false,false));
       classes.push_back(ClassDescriptor("class T[n],class C[n]",
-					"QDPExpr<T[n],C[n]>",false));
+					"QDPExpr<T[n],C[n]>",false,false));
     }
 
     if (!justScalars)
       {
-	scalars1.push_back(ClassDescriptor("","typename WordType<C1>::Type_t",true));
-	scalars2.push_back(ClassDescriptor("","typename WordType<C2>::Type_t",true));
-	scalars3.push_back(ClassDescriptor("","typename WordType<C3>::Type_t",true));
+	scalars1.push_back(ClassDescriptor("","typename WordType<C1>::Type_t",true,false));
+	scalars2.push_back(ClassDescriptor("","typename WordType<C2>::Type_t",true,false));
+	scalars3.push_back(ClassDescriptor("","typename WordType<C3>::Type_t",true,false));
      }
   }
 
-  generalT.push_back(ClassDescriptor("","typename WordType<C1>::Type_t",true));
+//  generalT.push_back(ClassDescriptor("","typename WordType<C1>::Type_t",true,false));
 
   // Set up streams for printing.
   
@@ -596,6 +598,6 @@ int main(int argc, char *argv[])
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: MakeOperators.cpp,v $   $Author: edwards $
-// $Revision: 1.2 $   $Date: 2002-10-01 01:29:57 $
+// $Revision: 1.3 $   $Date: 2002-10-14 02:06:56 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

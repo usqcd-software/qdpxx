@@ -95,13 +95,22 @@ class UnaryFunction
 public:
   template<class OSTR>
   void print(OSTR& ostr,const OperatorDescriptor& opdef,
-	     const ClassDescriptor& class1) const
+	     const ClassDescriptor& class1) const 
   {
+    ostr << endl;
+
+    // Print a comment above the function
+    if (class1.userClass())
+    {
+      cerr << "func= " << opdef.function() << "  comment1 = " << opdef.comment1() << endl;
+      ostr << opdef.comment1() << endl;
+      ostr << opdef.comment2() << endl;
+    }
+
     string args = joinWithComma(opdef.argDef(), class1.argDef(1));
     bool temp = (args.size() > 0);
     string typenameString = temp ? "typename " : "";
 
-    ostr << endl;
     if (temp)
     {
       ostr << "template<" << args <<">" << endl;
@@ -138,8 +147,17 @@ public:
   void print(OSTR& ostr,const OperatorDescriptor& opdef,
 	     const ClassDescriptor& class1) const
   {
-    ostr << endl
-	 << "template<" << joinWithComma("class T1",class1.argDef(2))
+    ostr << endl;
+
+    // Print a comment above the function
+    if (class1.userClass())
+    {
+      cerr << "func= " << opdef.function() << "  comment1 = " << opdef.comment1() << endl;
+      ostr << opdef.comment1() << endl;
+      ostr << opdef.comment2() << endl;
+    }
+
+    ostr << "template<" << joinWithComma("class T1",class1.argDef(2))
 	 <<">" << endl
 	 << "inline typename MakeReturn<UnaryNode<" << opdef.tag() << "<T1>,"
 	 << endl
@@ -173,6 +191,16 @@ public:
 	     const ClassDescriptor& class1,
 	     const ClassDescriptor& class2) const
   {
+    ostr << endl;
+
+    // Print a comment above the function
+    if (class1.userClass() && class2.userClass())
+    {
+      cerr << "func= " << opdef.function() << "  comment = " << opdef.comment1() << endl;
+      ostr << opdef.comment1() << endl;
+      ostr << opdef.comment2() << endl;
+    }
+
     string args = joinWithComma(class1.argDef(1),class2.argDef(2));
     bool temp = (args.size() > 0);
     string typenameString = temp ? "typename " : "";
@@ -191,7 +219,6 @@ public:
     string arg1 = (class1.scalarClass()) ? inp1+"(l)" : "l";
     string arg2 = (class2.scalarClass()) ? inp2+"(r)" : "r";
 
-    ostr << endl;
     if (temp)
     {
       ostr << "template<" << args <<">" << endl;
@@ -244,6 +271,16 @@ public:
 	     const ClassDescriptor& class2,
 	     const ClassDescriptor& class3) const
   {
+    ostr << endl;
+
+    // Print a comment above the function
+    if (class1.userClass() && class2.userClass() && class3.userClass())
+    {
+      cerr << "func= " << opdef.function() << "  comment = " << opdef.comment1() << endl;
+      ostr << opdef.comment1() << endl;
+      ostr << opdef.comment2() << endl;
+    }
+
     string args = joinWithComma(class1.argDef(1),
 				class2.argDef(2),
 				class3.argDef(3));
@@ -269,7 +306,6 @@ public:
     string arg2 = (class2.scalarClass()) ? inp2+"(b)" : "b";
     string arg3 = (class3.scalarClass()) ? inp3+"(c)" : "c";
 
-    ostr << endl;
     if (temp)
     {
       ostr << "template<" << args <<">" << endl;
@@ -325,8 +361,17 @@ public:
   void print(OSTR& ostr,const OperatorDescriptor& opdef,
 	     const ClassDescriptor& class1) const
   {
+    ostr << endl;
+
+    // Print a comment above the function
+    if (class1.userClass())
+    {
+      cerr << "func= " << opdef.function() << "  comment1 = " << opdef.comment1() << endl;
+      ostr << opdef.comment1() << endl;
+      ostr << opdef.comment2() << endl;
+    }
+
     ostr
-      << endl
       << "template<" << joinWithComma(class1.argDef(1),"class RHS")
       <<  ">" << endl
       << "inline" << endl
@@ -352,8 +397,17 @@ public:
   template<class OSTR>
   void print(OSTR& ostr,const OperatorDescriptor& opdef) const
   {
+    ostr << endl;
+
+    // Print a comment above the function
+    if (class1.userClass())
+    {
+      cerr << "func= " << opdef.function() << "  comment1 = " << opdef.comment1() << endl;
+      ostr << opdef.comment1() << endl;
+      ostr << opdef.comment2() << endl;
+    }
+
     ostr
-      << endl
       << "template<class LHS,class RHS>" << endl
       << "inline LHS&" << endl
       << opdef.function()
@@ -375,6 +429,6 @@ public:
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: PrintFunctions.h,v $   $Author: edwards $
-// $Revision: 1.2 $   $Date: 2002-10-01 01:29:57 $
+// $Revision: 1.3 $   $Date: 2002-10-14 02:06:56 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

@@ -60,7 +60,9 @@ void printHeader(OSTR& ostr,const string& includeGuard,
   {
     ostr
       << "// -*- C++ -*-" << endl
-      << "// $Id: Header.h,v 1.2 2002-10-01 01:29:57 edwards Exp $" << endl
+      << "// $Id: Header.h,v 1.3 2002-10-14 02:06:56 edwards Exp $" << endl
+      << endl
+      << "/*! @file\n * @brief Bulk of QDP operators produced by PETE\n */" << endl
       << endl;
   }
 
@@ -110,7 +112,7 @@ void printFooter(OSTR& ostr,const string& includeGuard,
 	<< "// ----------------------------------------------------------------------"
 	<< endl
 	<< "// $RCSfile: Header.h,v $   $Author: edwards $" << endl
-	<< "// $Revision: 1.2 $   $Date: 2002-10-01 01:29:57 $" << endl
+	<< "// $Revision: 1.3 $   $Date: 2002-10-14 02:06:56 $" << endl
 	<< "// ----------------------------------------------------------------------"
 	<< endl
 	<< "// ACL:rcsinfo" << endl;
@@ -125,6 +127,6 @@ void printFooter(OSTR& ostr,const string& includeGuard,
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: Header.h,v $   $Author: edwards $
-// $Revision: 1.2 $   $Date: 2002-10-01 01:29:57 $
+// $Revision: 1.3 $   $Date: 2002-10-14 02:06:56 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

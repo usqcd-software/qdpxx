@@ -45,17 +45,20 @@ public:
   //---------------------------------------------------------------------------
   // Constructors.
 
-  ClassDescriptor() {scalar_class = false;}
+  ClassDescriptor() {scalar_class = false; user_class = true;}
 
-  ClassDescriptor(const string &ad, const string &ic, const bool myclass)
+  ClassDescriptor(const string &ad, const string &ic, 
+		  const bool _scalar_class, const bool _user_class)
   {
     addData(0, ad);
     addData(1, ic);
-    scalar_class = myclass;
+    scalar_class = _scalar_class;
+    user_class = _user_class;
   }
   
   ClassDescriptor(const ClassDescriptor &model)
-    : DescriptorBase<2>(model), scalar_class(model.scalar_class)
+    : DescriptorBase<2>(model), scalar_class(model.scalar_class),
+    user_class(model.user_class)
   { }
 
   //---------------------------------------------------------------------------
@@ -70,6 +73,7 @@ public:
   {
     DescriptorBase<2>::operator=(rhs);
     scalar_class = rhs.scalar_class;
+    user_class = rhs.user_class;
     
     return *this;
   }
@@ -92,8 +96,14 @@ public:
     return scalar_class;
   }
 
+  bool userClass() const
+  {
+    return user_class;
+  }
+
 private:
-  bool scalar_class;
+  bool scalar_class;   // indicates this is a number like class
+  bool user_class;     // indicates this is read in from a file - a user class
 
 
   string substituteNum(int i, const string &s) const
@@ -139,6 +149,6 @@ inline ostream &operator<<(ostream &os, const ClassDescriptor &o)
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: ClassDescriptor.h,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2002-09-12 18:22:17 $
+// $Revision: 1.2 $   $Date: 2002-10-14 02:06:56 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo
