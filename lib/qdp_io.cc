@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.9 2003-06-08 04:51:30 edwards Exp $
+// $Id: qdp_io.cc,v 1.10 2003-06-13 01:57:06 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -935,18 +935,14 @@ void BinaryReader::readArrayPrimaryNode(char* input, size_t size, size_t nmemb)
 {
   if (Layout::primaryNode())
   {
-    if (QDPUtil::big_endian())
+    // Read
+    // By default, we expect all data to be in big-endian
+    getIstream().read(input, size*nmemb);
+
+    if (! QDPUtil::big_endian())
     {
-      /* big-endian */
-      /* Write */
-      getIstream().read(input, size*nmemb);
-    }
-    else
-    {
-      /* little-endian */
-      /* Swap and write and swap */
-      QDPUtil::byte_swap(input, size, nmemb);
-      getIstream().read(input, size*nmemb);
+      // little-endian
+      // Swap
       QDPUtil::byte_swap(input, size, nmemb);
     }
   }
