@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primscalar.h,v 1.5 2002-10-02 20:29:37 edwards Exp $
+// $Id: primscalar.h,v 1.6 2002-10-06 02:48:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -977,9 +977,9 @@ sun_fill(PScalar<T>& d,
 // Broadcast operations
 //! dest = 0
 template<class T> 
-void zero(PScalar<T>& dest) 
+void zero_rep(PScalar<T>& dest) 
 {
-  zero(dest.elem());
+  zero_rep(dest.elem());
 }
 
 

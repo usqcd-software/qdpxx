@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.9 2002-10-02 20:29:37 edwards Exp $
+// $Id: scalar_specific.h,v 1.10 2002-10-06 02:48:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -240,26 +240,35 @@ void gaussian(OLattice<T>& d)
 // Broadcast operations
 //! dest  = 0 
 template<class T> 
-void zero(OSubLattice<T> dest) 
+inline
+void zero_rep(OLattice<T>& dest, const Subset& s) 
 {
-  OLattice<T>& d = dd.field();
-  const Subset& s = dd.subset();
-
   const int *tab = s.SiteTable()->slice();
   for(int j=0; j < s.NumSiteTable(); ++j) 
   {
     int i = tab[j];
-    zero(dest.elem(i));
+    zero_rep(dest.elem(i));
   }
 }
 
 
 //! dest  = 0 
 template<class T> 
-void zero(OLattice<T>& dest) 
+void zero_rep(OSubLattice<T> dd) 
+{
+  OLattice<T>& d = dd.field();
+  const Subset& s = dd.subset();
+  
+  zero_rep(d,s);
+}
+
+
+//! dest  = 0 
+template<class T> 
+void zero_rep(OLattice<T>& dest) 
 {
   for(int i=0; i < layout.Vol(); ++i) 
-    zero(dest.elem(i));
+    zero_rep(dest.elem(i));
 }
 
 
@@ -311,7 +320,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
   typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
 
   // Must initialize to zero since we do not know if the loop will be entered
-  zero(d.elem());
+  zero_rep(d.elem());
 
   const int *tab = s.SiteTable()->slice();
   for(int j=0; j < s.NumSiteTable(); ++j) 
@@ -336,7 +345,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
   typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
 
   // Loop always entered - could unroll
-  zero(d.elem());
+  zero_rep(d.elem());
 
   for(int i=0; i <= layout.Vol(); ++i) 
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
@@ -388,7 +397,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 
   // Initialize result with zero
   for(int k=0; k < ss.NumSubsets(); ++k)
-    zero(dest[k]);
+    zero_rep(dest[k]);
 
   // Loop over all sites and accumulate based on the coloring 
   const multi1d<int>& lat_color =  ss.LatticeColoring();

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.5 2002-10-02 20:29:37 edwards Exp $
+// $Id: foo.cc,v 1.6 2002-10-06 02:48:43 edwards Exp $
 //
 // Silly little internal test code
 
@@ -39,10 +39,16 @@ int main()
   float ccc = 2.0;
   float x;
   
+  LatticeComplex  foob(zero);
+  cerr << "Here is foob\n" << foob << endl;
+
+
 #if 1
   b = 3;
   c = 4;
   d = 5;
+
+  b(rb[1]) = zero;
 
   cerr << "First set of b\n";
   cerr << b << endl;

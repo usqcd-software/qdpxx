@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.4 2002-10-02 20:29:37 edwards Exp $
+// $Id: reality.h,v 1.5 2002-10-06 02:48:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -166,17 +166,8 @@ public:
   RComplex() {}
   ~RComplex() {}
 
-#if 0
-  //! dest = int
-  /*! Fill with an integer constant. Will be promoted to underlying word type */
-  inline
-  RComplex& operator=(const typename WordType<T>::Type_t& rhs)
-    {
-      real() = rhs;
-      zero(imag());
-      return *this;
-    }
-#endif
+  //! Construct from two reality scalars
+  RComplex(const RScalar<T>& _re, const RScalar<T>& _im): re(_re), im(_im) {}
 
   //! RComplex = RScalar
   /*! Set the real part and zero the imag part */
@@ -185,7 +176,7 @@ public:
   RComplex& operator=(const RScalar<T1>& rhs) 
     {
       real() = rhs.elem();
-      zero(imag());
+      zero_rep(imag());
       return *this;
     }
 
@@ -914,7 +905,7 @@ imag(const RScalar<T>& s1)
 {
   typename UnaryReturn<RScalar<T>, FnImag>::Type_t  d;
 
-  zero(d.elem());
+  zero_rep(d.elem());
   return d;
 }
 
@@ -1177,9 +1168,9 @@ where(const RScalar<T1>& a, const RScalar<T2>& b, const RScalar<T3>& c)
 //! dest = 0
 template<class T> 
 inline
-void zero(RScalar<T>& dest) 
+void zero_rep(RScalar<T>& dest) 
 {
-  zero(dest.elem());
+  zero_rep(dest.elem());
 }
 
 //! dest  = random  
@@ -1482,7 +1473,7 @@ multiplyI(const RScalar<T>& s1)
 {
   typename UnaryReturn<RScalar<T>, FnMultiplyI>::Type_t  d;
 
-  zero(d.real());
+  zero_rep(d.real());
   d.imag() = s1.elem();
   return d;
 }
@@ -1512,7 +1503,7 @@ multiplyMinusI(const RScalar<T>& s1)
 {
   typename UnaryReturn<RScalar<T>, FnMultiplyMinusI>::Type_t  d;
 
-  zero(d.real());
+  zero_rep(d.real());
   d.imag() = -s1.elem();
   return d;
 }
@@ -1662,10 +1653,10 @@ where(const RScalar<T1>& a, const RComplex<T2>& b, const RComplex<T3>& c)
 //! dest = 0
 template<class T> 
 inline
-void zero(RComplex<T>& dest) 
+void zero_rep(RComplex<T>& dest) 
 {
-  zero(dest.real());
-  zero(dest.imag());
+  zero_rep(dest.real());
+  zero_rep(dest.imag());
 }
 
 

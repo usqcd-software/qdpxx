@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: traits.h,v 1.2 2002-10-02 20:29:37 edwards Exp $
+// $Id: traits.h,v 1.3 2002-10-06 02:48:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -43,6 +43,14 @@ struct RealScalar {};
 template<class T>
 struct NoComplex {};
 
+
+// Simple zero tag
+struct Zero {};
+
+// Put zero in some unnamed space
+namespace {
+Zero zero;
+}
 
 QDP_END_NAMESPACE();
 

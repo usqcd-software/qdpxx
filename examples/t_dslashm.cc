@@ -1,4 +1,4 @@
-// $Id: t_dslashm.cc,v 1.2 2002-09-26 20:02:36 edwards Exp $
+// $Id: t_dslashm.cc,v 1.3 2002-10-06 02:48:43 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 
   LatticeFermion psi, chi;
   random(psi);
-  zero(chi);
+  chi = zero;
   dslash_2d_plus(chi, u, psi, 0);
 
 //  dslash(chi, u, psi, +1, 0);

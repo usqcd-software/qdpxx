@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.5 2002-10-02 20:29:37 edwards Exp $
+// $Id: simpleword.h,v 1.6 2002-10-06 02:48:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -12,21 +12,21 @@ QDP_BEGIN_NAMESPACE(QDP);
 
 //! dest = 0
 inline
-void zero(int& dest) 
+void zero_rep(int& dest) 
 {
   dest = 0;
 }
 
 //! dest = 0
 inline
-void zero(float& dest) 
+void zero_rep(float& dest) 
 {
   dest = 0;
 }
 
 //! dest = 0
 inline
-void zero(double& dest) 
+void zero_rep(double& dest) 
 {
   dest = 0;
 }

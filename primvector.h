@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primvector.h,v 1.4 2002-10-01 01:52:51 edwards Exp $
+// $Id: primvector.h,v 1.5 2002-10-06 02:48:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -367,10 +367,10 @@ multiplyMinusI(const PVector<T,N,C>& s1)
 
 //! dest = 0
 template<class T, int N, template<class,int> class C> 
-void zero(PVector<T,N,C>& dest) 
+void zero_rep(PVector<T,N,C>& dest) 
 {
   for(int i=0; i < N; ++i)
-    zero(dest.elem(i));
+    zero_rep(dest.elem(i));
 }
 
 //! dest = (mask) ? s1 : dest

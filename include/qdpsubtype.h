@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdpsubtype.h,v 1.1 2002-10-02 20:31:39 edwards Exp $
+// $Id: qdpsubtype.h,v 1.2 2002-10-06 02:48:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -36,6 +36,12 @@ public:
       C& me = static_cast<C&>(const_cast<QDPType<T,C>&>(F));
       typedef typename SimpleScalar<typename WordType<C>::Type_t>::Type_t  Scalar_t;
       evaluate(me,OpAssign(),PETE_identity(Scalar_t(rhs)),s);
+    }
+
+  inline
+  void assign(const Zero&)
+    {
+      zero_rep(static_cast<C&>(const_cast<QDPType<T,C>&>(F)),s);
     }
 
   template<class T1,class C1>

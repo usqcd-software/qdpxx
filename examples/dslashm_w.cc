@@ -1,4 +1,4 @@
-// $Id: dslashm_w.cc,v 1.6 2002-10-02 20:29:37 edwards Exp $
+// $Id: dslashm_w.cc,v 1.7 2002-10-06 02:48:43 edwards Exp $
 
 /*! 
  * DSLASH
@@ -105,7 +105,7 @@ void dslash(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFe
 
   // NOTE: the loop is not unrolled - it should be all in a single line for
   // optimal performance
-  zero(chi(rb[cb]));
+  chi(rb[cb]) = zero;
 
   // NOTE: temporarily has conversion call of LatticeHalfFermion - will be removed
   for(int mu = 0; mu < Nd; ++mu)

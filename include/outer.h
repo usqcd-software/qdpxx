@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.6 2002-10-02 20:29:37 edwards Exp $
+// $Id: outer.h,v 1.7 2002-10-06 02:48:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -21,6 +21,13 @@ public:
     {
       typedef typename InternalScalar<T>::Type_t  Scalar_t;
       elem() = Scalar_t(rhs);
+    }
+
+
+  //! construct dest = 0
+  OScalar(const Zero& rhs)
+    {
+      assign(rhs);
     }
 
 
@@ -47,6 +54,12 @@ public:
 
   inline
   OScalar& operator=(const typename WordType<T>::Type_t& rhs)
+    {
+      return assign(rhs);
+    }
+
+  inline
+  OScalar& operator=(const Zero& rhs)
     {
       return assign(rhs);
     }
@@ -152,7 +165,6 @@ public:
     }
 
 
-#if 1
   //! conversion by constructor  OLattice = Expr
   template<class RHS, class T1>
   OLattice(const QDPExpr<RHS, OLattice<T1> >& rhs)
@@ -167,9 +179,8 @@ public:
 
       assign(rhs);
     }
-#endif
 
-#if 1
+
   //! construct OLattice = const
   OLattice(const typename WordType<T>::Type_t& rhs)
     {
@@ -184,7 +195,21 @@ public:
       typedef OScalar<typename InternalScalar<T>::Type_t>  Scalar_t;
       assign(Scalar_t(rhs));
     }
+
+
+  //! construct OLattice = 0
+  OLattice(const Zero& rhs)
+    {
+#if ! defined(NO_MEM)
+      F = new T[layout.Vol()];
 #endif
+
+#if defined(DEBUG)
+      fprintf(stderr,"construct from zero OLattice[%d]=0x%x\n",layout.Vol(),F);
+#endif
+
+      assign(rhs);
+    }
 
   //---------------------------------------------------------
   // Operators
@@ -193,6 +218,12 @@ public:
 
   inline
   OLattice& operator=(const typename WordType<T>::Type_t& rhs)
+    {
+      return assign(rhs);
+    }
+
+  inline
+  OLattice& operator=(const Zero& rhs)
     {
       return assign(rhs);
     }
@@ -1034,9 +1065,9 @@ struct BinaryReturn<OScalar<T1>, OLattice<T2>, OpRightShift > {
 
 //! dest = 0
 template<class T> 
-void zero(OScalar<T>& dest) 
+void zero_rep(OScalar<T>& dest) 
 {
-  zero(dest.elem());
+  zero_rep(dest.elem());
 }
 
 //! dest = (mask) ? s1 : dest

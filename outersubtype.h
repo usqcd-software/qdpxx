@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outersubtype.h,v 1.1 2002-10-02 20:31:39 edwards Exp $
+// $Id: outersubtype.h,v 1.2 2002-10-06 02:48:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -25,6 +25,12 @@ public:
 
   inline
   void operator=(const typename WordType<T>::Type_t& rhs)
+    {
+      assign(rhs);
+    }
+
+  inline
+  void operator=(const Zero& rhs)
     {
       assign(rhs);
     }
@@ -71,6 +77,12 @@ public:
 
   inline
   void operator=(const typename WordType<T>::Type_t& rhs)
+    {
+      assign(rhs);
+    }
+
+  inline
+  void operator=(const Zero& rhs)
     {
       assign(rhs);
     }
@@ -133,9 +145,16 @@ struct WordType<OSubLattice<T> >
 
 //! dest = 0
 template<class T> 
-void zero(OSubScalar<T> dest) 
+void zero_rep(OScalar<T>& dest, const Subset& s) 
 {
-  zero(dest.field().elem());
+  zero_rep(dest.field().elem());
+}
+
+//! dest = 0
+template<class T> 
+void zero_rep(OSubScalar<T> dest) 
+{
+  zero_rep(dest.field().elem());
 }
 
 //! dest = (mask) ? s1 : dest

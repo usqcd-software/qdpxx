@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primmatrix.h,v 1.4 2002-10-01 01:52:51 edwards Exp $
+// $Id: primmatrix.h,v 1.5 2002-10-06 02:48:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -34,7 +34,7 @@ public:
 	  if (i == j)
 	    elem(i,j) = rhs.elem();
 	  else
-	    zero(elem(i,j));
+	    zero_rep(elem(i,j));
 
       return static_cast<CC&>(*this);
     }
@@ -559,11 +559,11 @@ multiplyMinusI(const PMatrix<T,N,C>& s1)
 //! dest = 0
 template<class T, int N, template<class,int> class C> 
 inline
-void zero(PMatrix<T,N,C>& dest) 
+void zero_rep(PMatrix<T,N,C>& dest) 
 {
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
-      zero(dest.elem(i,j));
+      zero_rep(dest.elem(i,j));
 }
 
 

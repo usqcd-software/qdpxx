@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.4 2002-09-26 21:27:36 edwards Exp $
+// $Id: t_qdp.cc,v 1.5 2002-10-06 02:48:43 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -168,7 +168,7 @@ int main(int argc, char **argv)
   // More frivolity and gaiety.
   LatticeFermion psi, chi;
   random(psi);
-  zero(chi);
+  chi = zero;
   dslash(chi, u, psi, +1, 0);
 
   WRITE_NAMELIST(cerr,psi);

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primseed.h,v 1.2 2002-10-02 20:29:37 edwards Exp $
+// $Id: primseed.h,v 1.3 2002-10-06 02:48:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -43,7 +43,7 @@ public:
       elem(1) = (rhs.elem() >> S(12)) & S(4095);
       elem(2) = (rhs.elem() >> S(24)) & S(4095);
 //      elem(3) = (rhs.elem() >> S(36)) & S(2047);  // This probably will never be nonzero
-      zero(elem(3));    // assumes 32 bit integers
+      zero_rep(elem(3));    // assumes 32 bit integers
 
       return *this;
     }
@@ -332,10 +332,10 @@ seedToFloat(const PSeed<T>& s1)
 // Functions
 //! dest = 0
 template<class T> 
-void zero(PSeed<T>& dest) 
+void zero_rep(PSeed<T>& dest) 
 {
   for(int i=0; i < 4; ++i)
-    zero(dest.elem(i));
+    zero_rep(dest.elem(i));
 }
 
 
