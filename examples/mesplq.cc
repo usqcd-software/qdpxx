@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.14 2003-01-15 21:46:51 edwards Exp $
+// $Id: mesplq.cc,v 1.15 2003-08-20 10:17:11 bjoo Exp $
 /*! \file
  *  \brief Plaquette measurement
  */
@@ -68,5 +68,5 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
   for(int mu=0; mu < Nd; ++mu)
     link += sum(real(trace(u[mu])));
 
-  link /= double(Layout::vol()*Nd*Nc);
+  link /= double(12*Layout::vol()*Nd);
 }
