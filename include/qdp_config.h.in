@@ -4,48 +4,48 @@
 /* include/qdp_config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Parallel-scalar architecture */
-#undef ARCH_PARSCALAR
+# undef ARCH_PARSCALAR
 
 /* Parallel-scalar with vector extensions layout */
-#undef ARCH_PARSCALARVEC
+# undef ARCH_PARSCALARVEC
 
 /* Scalar architecture */
-#undef ARCH_SCALAR
+# undef ARCH_SCALAR
 
 /* Scalar with vector extensions architecture */
-#undef ARCH_SCALARVEC
+# undef ARCH_SCALARVEC
 
 /* Double precision */
-#undef BASE_PRECISION
+# undef BASE_PRECISION
 
 /* Name of package */
 #ifndef PACKAGE
-#undef PACKAGE
+# undef PACKAGE
 #endif
 
 /* Define to the address where bug reports for this package should be sent. */
 #ifndef PACKAGE_BUGREPORT
-#undef PACKAGE_BUGREPORT
+# undef PACKAGE_BUGREPORT
 #endif
 
 /* Define to the full name of this package. */
 #ifndef PACKAGE_NAME
-#undef PACKAGE_NAME
+# undef PACKAGE_NAME
 #endif
 
 /* Define to the full name and version of this package. */
 #ifndef PACKAGE_STRING
-#undef PACKAGE_STRING
+# undef PACKAGE_STRING
 #endif
 
 /* Define to the one symbol short name of this package. */
 #ifndef PACKAGE_TARNAME
-#undef PACKAGE_TARNAME
+# undef PACKAGE_TARNAME
 #endif
 
 /* Define to the version of this package. */
 #ifndef PACKAGE_VERSION
-#undef PACKAGE_VERSION
+# undef PACKAGE_VERSION
 #endif
 
 /* Version number of package */
@@ -54,30 +54,30 @@
 #endif
 
 /* Number of color components */
-#undef QDP_NC
+# undef QDP_NC
 
 /* Number of dimensions */
-#undef QDP_ND
+# undef QDP_ND
 
 /* Number of spin components */
-#undef QDP_NS
+# undef QDP_NS
 
 /* Use checkerboarded layout */
-#undef QDP_USE_CB2_LAYOUT
+# undef QDP_USE_CB2_LAYOUT
 
 /* Use hypercube checkerboard layout */
-#undef QDP_USE_CB32_LAYOUT
+# undef QDP_USE_CB32_LAYOUT
 
 /* Use lexicographic layout */
-#undef QDP_USE_LEXICO_LAYOUT
+# undef QDP_USE_LEXICO_LAYOUT
 
 /* Enable SSE instructions */
-#undef QDP_USE_SSE
+# undef QDP_USE_SSE
 
 /* Enable SSE2 instructions */
-#undef QDP_USE_SSE2
+# undef QDP_USE_SSE2
 
 /* Define if using the dmalloc debugging malloc package */
-#undef WITH_DMALLOC
+# undef WITH_DMALLOC
 
 #endif
