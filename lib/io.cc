@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.13 2003-04-26 01:55:27 edwards Exp $
+// $Id: io.cc,v 1.14 2003-04-27 02:51:39 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -74,7 +74,7 @@ TextWriter::~TextWriter() {close();}
 //! text reader support
 NmlReader::NmlReader() {abs = NULL; iop = false; stack_cnt = 0;}
 
-NmlReader::NmlReader(const char* p) {stack_cnt = 0; open(p);}
+NmlReader::NmlReader(const char* p) {abs = NULL; iop = false; stack_cnt = 0; open(p);}
 
 void NmlReader::open(const char* p)
 {
@@ -110,6 +110,9 @@ void NmlReader::close()
 {
   if (iop)
   {
+    while(stack_cnt > 0)
+      pop();
+
     if (Layout::primaryNode()) 
       rm_abstract(abs);
 
@@ -121,9 +124,6 @@ bool NmlReader::is_open() {return iop;}
 
 NmlReader::~NmlReader()
 {
-  while(stack_cnt > 0)
-    pop();
-
   close();
 }
 
@@ -285,6 +285,9 @@ void NmlWriter::close()
   {
 //    pop(*this);  // Write final end of file group
 
+    while(stack_cnt > 0)
+      pop();
+
     if (Layout::primaryNode()) 
       f.close();
     iop = false;
@@ -295,9 +298,6 @@ bool NmlWriter::is_open() {return iop;}
 
 NmlWriter::~NmlWriter()
 {
-  while(stack_cnt > 0)
-    pop();
-
   close();
 }
 
