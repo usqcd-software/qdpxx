@@ -90,7 +90,7 @@ dnl to having QMP configured, built and installed separately, we only
 dnl need to know the flags necessary to compile and link user apps
 dnl against QMP and not the flags necessary to compile QMP itself.
 dnl
-dnl Also, QMP is not needed for ac_parallel_arch=scalar, so don't bother
+dnl Also, QMP is not needed for ac_parallel_arch={scalar,scalarvec}, so don't bother
 dnl looking for it in that case.
 AC_ARG_WITH(qmp,
   AC_HELP_STRING(
@@ -108,9 +108,40 @@ case ${PARALLEL_ARCH} in
     AC_SUBST(QMP_LDFLAGS)
     AC_SUBST(QMP_LIBS)
     ;;
+  scalarvec)
+    AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_SCALARVEC)
+    AC_MSG_NOTICE([ Scalar with Vector extensions Build! Not checking for QMP ])
+    AC_SUBST(QMP_CFLAGS)
+    AC_SUBST(QMP_LDFLAGS)
+    AC_SUBST(QMP_LIBS)
+    ;;
   parscalar)
     AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_PARSCALAR)
     AC_MSG_NOTICE([ Parscalar build! Checking for QMP ])
+
+    if test "X${QMP_HOME}X" = "XX" ; then
+      AC_PATH_PROG([QMP_CONFIG], [qmp-config], [])
+    else
+      AC_PATH_PROG([QMP_CONFIG], [qmp-config], [], [${QMP_HOME}/bin:${PATH}])
+    fi
+
+    if test "X${QMP_CONFIG}X" != "XX" ; then
+      AC_MSG_NOTICE([Found QMP configuration program ${QMP_CONFIG}])
+      AC_SUBST(QMP_CFLAGS,  "`${QMP_CONFIG} --cflags`")
+      AC_MSG_NOTICE([QMP compile flags: ${QMP_CFLAGS}])
+      AC_SUBST(QMP_LDFLAGS, "`${QMP_CONFIG} --ldflags`")
+      AC_MSG_NOTICE([QMP linking flags: ${QMP_LDFLAGS}])
+      AC_SUBST(QMP_LIBS,    "`${QMP_CONFIG} --libs`")
+      AC_MSG_NOTICE([QMP libraries flags: ${QMP_LIBS}])
+    else 
+      AC_MSG_WARN([QMP configuration program qmp-config not found.])
+      AC_MSG_WARN([Set environment variables QMP_CFLAGS QMP_LDFAGS QMP_LIBS
+        before configure])
+    fi
+    ;;
+  parscalarvec)
+    AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_PARSCALARVEC)
+    AC_MSG_NOTICE([ Parscalar with Vector extensions build! Checking for QMP ])
 
     if test "X${QMP_HOME}X" = "XX" ; then
       AC_PATH_PROG([QMP_CONFIG], [qmp-config], [])
@@ -151,6 +182,15 @@ PAC_QMP_LINK_CXX_FUNC(
 AC_MSG_CHECKING([if we can compile/link of a simple QMP C++ program])
 case ${PARALLEL_ARCH} in
   parscalar)
+    if test "X${qmp_link_ok}X" = "XyesX" ; then
+      AC_MSG_RESULT(yes)
+    else
+      AC_MSG_RESULT(no)
+      AC_MSG_ERROR([Cannot compile/link a basic QMP C++ program!
+        Check QMP_CFLAGS, QMP_LDFLAGS, QMP_LIBS.])
+    fi
+    ;;
+  parscalarvec)
     if test "X${qmp_link_ok}X" = "XyesX" ; then
       AC_MSG_RESULT(yes)
     else
@@ -231,8 +271,10 @@ dnl Now have all the options... Do some configuration
 dnl
 dnl
 
-AM_CONDITIONAL(ARCH_SCALAR,    [test "X${PARALLEL_ARCH}X" = "XscalarX"])
-AM_CONDITIONAL(ARCH_PARSCALAR, [test "X${PARALLEL_ARCH}X" = "XparscalarX"])
+AM_CONDITIONAL(ARCH_SCALAR,       [test "X${PARALLEL_ARCH}X" = "XscalarX"])
+AM_CONDITIONAL(ARCH_PARSCALAR,    [test "X${PARALLEL_ARCH}X" = "XparscalarX"])
+AM_CONDITIONAL(ARCH_SCALARVEC,    [test "X${PARALLEL_ARCH}X" = "XscalarvecX"])
+AM_CONDITIONAL(ARCH_PARSCALARVEC, [test "X${PARALLEL_ARCH}X" = "XparscalarvecX"])
 
 AM_CONDITIONAL(QDP_USE_SSE, [test "X${ac_sse}X" = "X1X"])
 AM_CONDITIONAL(QDP_USE_SSE2, [test "X${ac_sse2}X" = "X1X"])

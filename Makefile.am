@@ -33,7 +33,9 @@ doc-distclean:
 # All the headers get into the dist by default
 # 
 ARCH_SOURCES = lib/qdp_scalar_specific.cc lib/qdp_parscalar_specific.cc \
-               lib/qdp_scalarsite_specific.cc
+               lib/qdp_scalarsite_specific.cc \
+               lib/qdp_scalarvec_specific.cc lib/qdp_parscalarvec_specific.cc \
+               lib/qdp_scalarvecsite_specific.cc
 
 #
 # Some things that we want in the distribution tarball 
