@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.13 2003-10-14 15:29:12 edwards Exp $
+// $Id: qdp_io.h,v 1.14 2003-10-24 17:54:34 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -64,6 +64,7 @@ protected:
 
 private:
   QDPUtil::RemoteInputFileStream f;
+// ifstream f;
 };
 
 
@@ -125,7 +126,7 @@ protected:
 
 private:
   QDPUtil::RemoteOutputFileStream f;
-
+// ofstream f;
 };
 
 
@@ -173,6 +174,7 @@ private:
   section *abs;    // Abstract - holds parse tree
 
   QDPUtil::RemoteInputFileStream f;
+//  ifstream f;
 };
 
 //! Push a namelist group 
@@ -257,6 +259,7 @@ public:
 private:
   int stack_cnt;
   QDPUtil::RemoteOutputFileStream f;
+//  ofstream f;
 };
 
 
@@ -399,6 +402,7 @@ protected:
 
 private:
   QDPUtil::RemoteInputFileStream f;
+// ifstream f;
 };
 
 // Telephone book of basic primitives
@@ -495,6 +499,7 @@ protected:
 
 private:
   QDPUtil::RemoteOutputFileStream f;
+// ofstream f;
 };
 
 
