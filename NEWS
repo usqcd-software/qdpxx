@@ -1,3 +1,8 @@
+02/28/2004 -- Robert Edwards
+
+	Version 1.7.3. Small improvements/bug fixes in QIO. It is now 
+        fully autoconf-iscated.
+
 02/27/2004 -- Robert Edwards
 
 	Version 1.7.2. Fixed bugs in QIO.
