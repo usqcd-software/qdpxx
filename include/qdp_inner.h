@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.5 2003-08-21 03:02:39 edwards Exp $
+// $Id: qdp_inner.h,v 1.6 2003-08-23 02:30:58 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -553,7 +553,7 @@ public:
    * Used by optimization routines (e.g., SSE) that need the memory address of data.
    * BTW: to make this a friend would be a real pain since functions are templatized.
    */
-  inline T* data() const {return F;}
+  inline T* data() {return F;}
 
 
 public:
@@ -709,7 +709,7 @@ struct RealScalar<IScalar<T> > {
 
 template<class T, int N>
 struct RealScalar<ILattice<T,N> > {
-  typedef IScalar<typename RealScalar<T>::Type_t>  Type_t;
+  typedef ILattice<typename RealScalar<T>::Type_t, N>  Type_t;
 };
 
 
@@ -2795,9 +2795,7 @@ template<class T, int N, class T1, class T2>
 inline void
 fill_random(ILattice<T,N>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 {
-  // Loop over rows the slowest
-  for(int i=0; i < N; ++i)
-    fill_random(d.elem(i), seed, skewed_seed, seed_mult);
+  fill_random<T1,T2,N>(d.data(), seed, skewed_seed, seed_mult);
 }
 
 
