@@ -17,16 +17,14 @@ VPATH += @top_srcdir@/other_libs/qio/include
 
 lib_LIBRARIES = libqdp.a
 
-HDRS = defs.h forward.h globalfuncs.h inner.h io.h layout.h multi.h \
-       newops.h outer.h outersubtype.h params.h primcolormat.h \
-       primcolorvec.h primgamma.h primitive.h primmatrix.h \
-       primscalar.h primseed.h primspinmat.h primspinvec.h primvector.h \
-       qdp_util.h qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdpsubtype.h \
-       qdptype.h random.h reality.h simpleword.h map.h \
-       specializations.h subset.h traits.h word.h qdpio.h \
-       qio.h
-
-# qdp_xmlio.h xml_simplewriter.h 
+HDRS = qdp_defs.h qdp_forward.h qdp_globalfuncs.h qdp_inner.h qdp_io.h qdp_layout.h qdp_multi.h \
+       qdp_newops.h qdp_outer.h qdp_outersubtype.h qdp_params.h qdp_primcolormat.h \
+       qdp_primcolorvec.h qdp_primgamma.h qdp_primitive.h qdp_primmatrix.h \
+       qdp_primscalar.h qdp_primseed.h qdp_primspinmat.h qdp_primspinvec.h qdp_primvector.h \
+       qdp_util.h qdp_qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdp_qdpsubtype.h \
+       qdp_qdptype.h qdp_random.h qdp_reality.h qdp_simpleword.h qdp_map.h \
+       qdp_specializations.h qdp_subset.h qdp_traits.h qdp_word.h qdp_qdpio.h \
+       qio.h qdp_xmlio.h xml_simplewriter.h 
 
 ## GTF: Major bug fix here.  Had sources which were conditionally included
 ## in the library based on variable substitution from autoconf.  Basically,
@@ -37,14 +35,14 @@ HDRS = defs.h forward.h globalfuncs.h inner.h io.h layout.h multi.h \
 ## Only tedious part will be in the future if we have many choices
 ## for arch's then a conditional for each one has to be added.
 
-GENERIC_SRCS = map.cc subset.cc random.cc qdp.cc layout.cc io.cc iogauge.cc \
-               byteorder.cc util.cc qdpio.cc qdp_xmlio.cc
+GENERIC_SRCS = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc qdp_layout.cc qdp_io.cc qdp_iogauge.cc \
+               qdp_byteorder.cc qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc
 
-SCALAR_SRCS = scalar_init.cc scalar_layout.cc scalar_specific.cc \
-              ../include/scalar_specific.h
+SCALAR_SRCS = qdp_scalar_init.cc qdp_scalar_layout.cc qdp_scalar_specific.cc \
+              ../include/qdp_scalar_specific.h
 
-PARSCALAR_SRCS = parscalar_init.cc parscalar_layout.cc parscalar_specific.cc \
-                 ../include/parscalar_specific.h
+PARSCALAR_SRCS = qdp_parscalar_init.cc qdp_parscalar_layout.cc qdp_parscalar_specific.cc \
+                 ../include/qdp_parscalar_specific.h
 
 if ARCH_SCALAR
   libqdp_a_SOURCES = $(GENERIC_SRCS) $(SCALAR_SRCS)
