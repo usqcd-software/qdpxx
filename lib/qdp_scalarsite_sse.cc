@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.2 2003-08-08 18:58:53 edwards Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.3 2003-08-08 19:13:06 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -15,7 +15,7 @@
 QDP_BEGIN_NAMESPACE(QDP);
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
+//    LatticeColorMatrix[OrderedSubset] = LatticeColorMatrix * LatticeColorMatrix
 template<>
 void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d, 
 	      const OpAssign& op, 
@@ -32,7 +32,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
   const LatticeColorMatrix& r = static_cast<const LatticeColorMatrix&>(rhs.expression().right());
 
-  for(int i=s.start(); i < s.end(); ++i) 
+  for(int i=s.start(); i <= s.end(); ++i) 
   {
     _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
   }
