@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.16 2003-11-10 03:40:54 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.17 2004-01-29 14:41:06 bjoo Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -138,7 +138,7 @@ namespace Layout
     multi1d<int> node_coord(Nd);
 
     unsigned int unode = node;
-    unsigned int* node_crd = QMP_get_logical_coordinates_from(unode);  // QMP mallocs here
+    unsigned int* node_crd = (unsigned int *)QMP_get_logical_coordinates_from(unode);  // QMP mallocs here
 
     for(int i=0; i < Nd; ++i)
       node_coord[i] = node_crd[i];
