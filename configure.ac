@@ -203,28 +203,6 @@ dnl Now have all the options... Do some configuration
 dnl
 dnl
 
-## Depending on what Parallel Architecture is, do some configuring
-dnl GTF:
-dnl   This way of assigning sources to variables for variable substition
-dnl   in automake will totally break 'make dist' since automake won't
-dnl   know to include the sources for all possible arches.  Correct way
-dnl   is to handle it as a conditional in Makefile.am
-dnl
-dnl case ${PARALLEL_ARCH} in
-dnl   scalar) 
-dnl     ARCH_SRCS="scalar_init.cc scalar_layout.cc scalar_specific.cc"
-dnl     ARCH_HDRS="scalar_specific.h"
-dnl     AC_SUBST(ARCH_SRCS)
-dnl     AC_SUBST(ARCH_HDRS)
-dnl     ;;
-dnl   parscalar)
-dnl     ARCH_SRCS="parscalar_init.cc parscalar_layout.cc parscalar_specific.cc"
-dnl     ARCH_HDRDS=" parscalar_specific.h"
-dnl     AC_SUBST(ARCH_SRCS)
-dnl     AC_SUBST(ARCH_HDRS)
-dnl     ;;
-dnl esac
-
 AM_CONDITIONAL(ARCH_SCALAR,    [test "X${PARALLEL_ARCH}X" = "XscalarX"])
 AM_CONDITIONAL(ARCH_PARSCALAR, [test "X${PARALLEL_ARCH}X" = "XparscalarX"])
 
