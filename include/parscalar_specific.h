@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.17 2003-01-23 05:22:52 edwards Exp $
+// $Id: parscalar_specific.h,v 1.18 2003-01-26 05:44:53 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -616,17 +616,14 @@ public:
   OLattice<T1>
   operator()(const OLattice<T1> & l)
     {
-      QDP_info("Map()");
+//    QDP_info("Map()");
 
       OLattice<T1> d;
-//    fprintf(stderr,"Here a\n");
-
-//    fprintf(stderr,"Here c: offnodeP = %d\n",offnodeP);
 
       if (offnodeP)
       {
 	// Off-node communications required
-	QDP_info("Map: off-node communications required");
+//	QDP_info("Map: off-node communications required");
 
 	// Eventually these declarations should move into d - the return object
 	typedef T1 * T1ptr;
@@ -671,7 +668,7 @@ public:
 
 	QMP_status_t err;
 
-	QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
+//	QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
 
 	msg[0]  = QMP_declare_msgmem(recv_buf, srcnum);
 	msg[1]  = QMP_declare_msgmem(send_buf, dstnum);
@@ -679,19 +676,19 @@ public:
 	mh_a[1] = QMP_declare_send_to(msg[1], destnodes[0], 0);
 	mh      = QMP_declare_multiple(mh_a, 2);
 
-	QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
+//	QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
 
 	// Launch the faces
 	if ((err = QMP_start(mh)) != QMP_SUCCESS)
 	  QMP_error_exit(QMP_error_string(err));
 
-	QDP_info("Map: calling wait");
+//	QDP_info("Map: calling wait");
 
 	// Wait on the faces
 	if ((err = QMP_wait(mh)) != QMP_SUCCESS)
 	  QMP_error_exit(QMP_error_string(err));
 
-	QDP_info("Map: calling free msgs");
+//	QDP_info("Map: calling free msgs");
 
 	QMP_free_msghandle(mh_a[1]);
 	QMP_free_msghandle(mh_a[0]);
@@ -713,12 +710,12 @@ public:
 	QMP_free_aligned_memory(send_buf);
 	delete dest;
 
-	QDP_info("finished cleanup");
+//	QDP_info("finished cleanup");
       }
       else 
       {
 	// No off-node communications - copy on node
-	QDP_info("Map: copy on node - no communications");
+//	QDP_info("Map: copy on node - no communications");
 
 	// For now, use the all subset
 	for(int i=0; i < Layout::subgridVol(); ++i) 
@@ -728,7 +725,7 @@ public:
 	}
       }
 
-      QDP_info("exiting Map()");
+//      QDP_info("exiting Map()");
 
       return d;
     }
@@ -748,7 +745,7 @@ public:
       // For now, simply evaluate the expression and then do the map
       typedef OScalar<T1> C1;
 
-      fprintf(stderr,"map(QDPExpr<OScalar>)\n");
+//    fprintf(stderr,"map(QDPExpr<OScalar>)\n");
       OScalar<T1> d = this->operator()(C1(l));
 
       return d;
@@ -761,7 +758,7 @@ public:
       // For now, simply evaluate the expression and then do the map
       typedef OLattice<T1> C1;
 
-      fprintf(stderr,"map(QDPExpr<OLattice>)\n");
+//    fprintf(stderr,"map(QDPExpr<OLattice>)\n");
       OLattice<T1> d = this->operator()(C1(l));
 
       return d;
@@ -832,7 +829,7 @@ public:
   OLattice<T1>
   operator()(const OLattice<T1> & l, int dir)
     {
-      QDP_info("ArrayMap(OLattice,%d)",dir);
+//    QDP_info("ArrayMap(OLattice,%d)",dir);
 
       return mapsa[dir](l);
     }
@@ -841,7 +838,7 @@ public:
   OScalar<T1>
   operator()(const OScalar<T1> & l, int dir)
     {
-      QDP_info("ArrayMap(OScalar,%d)",dir);
+//    QDP_info("ArrayMap(OScalar,%d)",dir);
 
       return mapsa[dir](l);
     }
@@ -851,7 +848,7 @@ public:
   OScalar<T1>
   operator()(const QDPExpr<RHS,OScalar<T1> > & l, int dir)
     {
-      fprintf(stderr,"ArrayMap(QDPExpr<OScalar>,%d)\n",dir);
+//    fprintf(stderr,"ArrayMap(QDPExpr<OScalar>,%d)\n",dir);
 
       // For now, simply evaluate the expression and then do the map
       return mapsa[dir](l);
@@ -861,7 +858,7 @@ public:
   OLattice<T1>
   operator()(const QDPExpr<RHS,OLattice<T1> > & l, int dir)
     {
-      fprintf(stderr,"ArrayMap(QDPExpr<OLattice>,%d)\n",dir);
+//    fprintf(stderr,"ArrayMap(QDPExpr<OLattice>,%d)\n",dir);
 
       // For now, simply evaluate the expression and then do the map
       return mapsa[dir](l);
@@ -912,7 +909,7 @@ public:
   OLattice<T1>
   operator()(const OLattice<T1> & l, int isign)
     {
-      QDP_info("BiDirectionalMap(OLattice,%d)",isign);
+//    QDP_info("BiDirectionalMap(OLattice,%d)",isign);
 
       return bimaps[(isign+1)>>1](l);
     }
@@ -922,7 +919,7 @@ public:
   OScalar<T1>
   operator()(const OScalar<T1> & l, int isign)
     {
-      QDP_info("BiDirectionalMap(OScalar,%d)",isign);
+//    QDP_info("BiDirectionalMap(OScalar,%d)",isign);
 
       return bimaps[(isign+1)>>1](l);
     }
@@ -932,7 +929,7 @@ public:
   OScalar<T1>
   operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign)
     {
-      fprintf(stderr,"BiDirectionalMap(QDPExpr<OScalar>,%d)\n",isign);
+//    fprintf(stderr,"BiDirectionalMap(QDPExpr<OScalar>,%d)\n",isign);
 
       // For now, simply evaluate the expression and then do the map
       return bimaps[(isign+1)>>1](l);
@@ -942,7 +939,7 @@ public:
   OLattice<T1>
   operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign)
     {
-      fprintf(stderr,"BiDirectionalMap(QDPExpr<OLattice>,%d)\n",isign);
+//    fprintf(stderr,"BiDirectionalMap(QDPExpr<OLattice>,%d)\n",isign);
 
       // For now, simply evaluate the expression and then do the map
       return bimaps[(isign+1)>>1](l);
@@ -1002,7 +999,7 @@ public:
   OLattice<T1>
   operator()(const OLattice<T1> & l, int isign, int dir)
     {
-      QDP_info("ArrayBiDirectionalMap(OLattice,%d,%d)",isign,dir);
+//    QDP_info("ArrayBiDirectionalMap(OLattice,%d,%d)",isign,dir);
 
       return bimapsa((isign+1)>>1,dir)(l);
     }
@@ -1011,7 +1008,7 @@ public:
   OScalar<T1>
   operator()(const OScalar<T1> & l, int isign, int dir)
     {
-      QDP_info("ArrayBiDirectionalMap(OScalar,%d,%d)",isign,dir);
+//    QDP_info("ArrayBiDirectionalMap(OScalar,%d,%d)",isign,dir);
 
       return bimapsa((isign+1)>>1,dir)(l);
     }
@@ -1021,7 +1018,7 @@ public:
   OScalar<T1>
   operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign, int dir)
     {
-      fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OScalar>,%d,%d)\n",isign,dir);
+//    fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OScalar>,%d,%d)\n",isign,dir);
 
       // For now, simply evaluate the expression and then do the map
       return bimapsa((isign+1)>>1,dir)(l);
@@ -1031,7 +1028,7 @@ public:
   OLattice<T1>
   operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign, int dir)
     {
-      fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OLattice>,%d,%d)\n",isign,dir);
+//    fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OLattice>,%d,%d)\n",isign,dir);
 
       // For now, simply evaluate the expression and then do the map
       return bimapsa((isign+1)>>1,dir)(l);
