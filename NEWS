@@ -1,5 +1,9 @@
 06/05/2003 -- Robert Edwards
 
+	Version 1.4.2: small tweaks. Added is_open(), fail() to IO classes.
+
+06/05/2003 -- Robert Edwards
+
 	Version 1.4.1: small tweaks. Added IO ops for TextReader/Writer.
 
 06/04/2003 -- Robert Edwards
