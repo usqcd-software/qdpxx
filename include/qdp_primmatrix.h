@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.23 2004-07-27 05:33:35 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.24 2004-08-07 01:49:21 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -91,8 +91,7 @@ public:
   CC& operator+=(const PScalar<T1>& rhs) 
     {
       for(int i=0; i < N; ++i)
-	for(int j=0; j < N; ++j)
-	  elem(i,j) += rhs.elem();
+	elem(i,i) += rhs.elem();
 
       return static_cast<CC&>(*this);
     }
@@ -103,8 +102,7 @@ public:
   CC& operator-=(const PScalar<T1>& rhs) 
     {
       for(int i=0; i < N; ++i)
-	for(int j=0; j < N; ++j)
-	  elem(i,j) -= rhs.elem();
+	elem(i,i) -= rhs.elem();
 
       return static_cast<CC&>(*this);
     }
@@ -437,6 +435,44 @@ operator+(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
   return d;
 }
 
+// PMatrix = PMatrix + PScalar
+template<class T1, class T2, int N, template<class,int> class C>
+struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdd> {
+  typedef C<typename BinaryReturn<T1, T2, OpAdd>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdd>::Type_t
+operator+(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdd>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = (i == j) ? l.elem(i,i) + r.elem() : l.elem(i,j);
+
+  return d;
+}
+
+// PMatrix = PScalar + PMatrix
+template<class T1, class T2, int N, template<class,int> class C>
+struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdd> {
+  typedef C<typename BinaryReturn<T1, T2, OpAdd>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdd>::Type_t
+operator+(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdd>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = (i == j) ? l.elem() + r.elem(i,i) : r.elem(i,j);
+
+  return d;
+}
+
 
 // PMatrix = PMatrix - PMatrix
 template<class T1, class T2, int N, template<class,int> class C>
@@ -453,6 +489,44 @@ operator-(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       d.elem(i,j) = l.elem(i,j) - r.elem(i,j);
+
+  return d;
+}
+
+// PMatrix = PMatrix - PScalar
+template<class T1, class T2, int N, template<class,int> class C>
+struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpSubtract> {
+  typedef C<typename BinaryReturn<T1, T2, OpSubtract>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpSubtract>::Type_t
+operator+(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpSubtract>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = (i == j) ? l.elem(i,i) - r.elem() : l.elem(i,j);
+
+  return d;
+}
+
+// PMatrix = PScalar - PMatrix
+template<class T1, class T2, int N, template<class,int> class C>
+struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpSubtract> {
+  typedef C<typename BinaryReturn<T1, T2, OpSubtract>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpSubtract>::Type_t
+operator+(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpSubtract>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = (i == j) ? l.elem() - r.elem(i,i) : r.elem(i,j);
 
   return d;
 }
