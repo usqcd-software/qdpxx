@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_nml.cc,v 1.3 2003-04-26 01:54:25 edwards Exp $
+// $Id: t_nml.cc,v 1.4 2003-04-27 02:50:22 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -19,12 +19,12 @@ main(int argc, char *argv[])
 {
   QDP_initialize(&argc, &argv);
 
-  NmlReader nml_in("t_nml.input");
   NmlWriter nml_out("t_nml.output");
-
   push(nml_out, "Test");
 
+  NmlReader nml_in("t_nml.input");
   push(nml_in, "IO_version");
+
   int version;
   Read(nml_in, version);
   Write(nml_out, version);
@@ -76,13 +76,11 @@ main(int argc, char *argv[])
   Write(nml_out,cfg_file);
 
   pop(nml_in);
+  nml_in.close();
 
   pop(nml_out);
-
-  nml_in.close();
   nml_out.close();
 
   QDP_finalize();
-
   return 0;
 }
