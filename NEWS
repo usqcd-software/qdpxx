@@ -1,31 +1,35 @@
-01/28/2004 -- Robert Edwards
+02/03/2005 -- Robert Edwards
 
-	Version 1.11.6. Removed member func. template params in
+	Version 1.11.7. Removed member func. template params in
         multi1,2,Nd<T>. 
 
-01/28/2004 -- Robert Edwards
+01/28/2005 -- Robert Edwards
+
+	Version 1.11.6. Further fixes to multi1d,
+
+01/28/2005 -- Robert Edwards
 
 	Version 1.11.5. Further changes to qdp_io.h to put Remote IO
         under REMOTE_USE_QIO control.
 
-01/24/2004 -- Robert Edwards
+01/24/2005 -- Robert Edwards
 
 	Version 1.11.4. Zbigniew has changed all qdp, qio, c-lime config.h 
         to use char* for package names so they actually are useable.
 
-01/24/2004 -- Robert Edwards
+01/24/2005 -- Robert Edwards
 
 	Version 1.11.3. Changed XMLFileWriter support. Now, explicitly
         use ofstream in case of not USE_REMOTE_QIO. Make 
         XMLFileWriter::is_open() check if QDP is (still) initialized
         to avoid crashes on destructor calls.
 
-01/22/2004 -- Robert Edwards
+01/22/2005 -- Robert Edwards
 
 	Version 1.11.2. QCDOC fixes. Changed xmlreader.print functions to 
         broadcast their strings.
 
-01/18/2004 -- Robert Edwards
+01/18/2005 -- Robert Edwards
 
 	Version 1.11.1. Maintenance changes within QIO and other little
         things.
