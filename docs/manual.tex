@@ -1257,40 +1257,68 @@ Example  & \verb|QDP_resume();| \\
 
 There are three main types of user accessible classes for {\em simple}
 file I/O - Text, XML and Binary. For each of these classes there is a
-Reader and a Writer version. Each support I/O for both scalar and
-lattice quantities.
+Reader and a Writer version. Each support I/O for {\em any}\  QDP
+defined scalar and lattice quantity as well as the standard \cpp\
+builtin types like \verb|int| and \verb|float|. These classes all
+read/write to one primary node in the computer, namely
+\verb|Layout::primaryNode()| or node 0. Lattice quantities are read/written
+lexicographically as one contiguous field with the first index in the
+lattice size \verb|Layout::lattSize()| varying the fastest.
+
+A record structure format is available to store both metadata and binary data.
+The metadata uses the XML format. The binary I/O functions support more advanced
+
+The \cpp\ standard IO streams \verb|cout|, \verb|cerr| and \verb|cin|
+are, of course, provided by the language but will not work as
+expected. Namely, the output functions will write on all nodes, and
+\verb|cin| will try to read from all nodes and fail. QDP defined
+fields \verb|QDP_cout|, \verb|QDP_cerr|, and \verb|QDP_cin| are
+provided as replacements, and will write/read from only the primary
+node. In addition, a setup function is provided that will permanently
+change \verb|cout|, \verb|cerr| and \verb|cin| to have the same
+semantics (primary node usage) as their QDP counterparts. 
+{\bf Implementation note: these std IO stream replacements are not yet
+available in QDP++}.
 
 \subsection{Text Reading and Writing}
 
 \paragraph{TextReader member functions and global functions}
-\begin{flushleft}
-  \begin{tabular}{|l|l|}
-  \hline
-  Open           & \verb|TextReader::TextReader(const std::string& filename)|\\
-                 & \verb|TextReader::open(const std::string& filename)|\\
-  \hline
-  Close          & \verb|TextReader::~TextReader()|\\
-                 & \verb|TextReader::close()|\\
-  \hline
-  Open?          & \verb|TextReader::is_open()| \\
-  \hline
-  Any IO errors? & \verb|TextReader::fail()| \\
-  \hline
-  Input a type \verb|T| & \verb|operator>>(TextReader&, T&)| \\
-  \hline
- \end{tabular}
-\end{flushleft}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Prototype      & \verb|TextWriter::TextWriter(const std::string& filename)|\\
-                 & \verb|TextWriter::open(const std::string& filename)|\\
-    \hline
-  Purpose        & Open the file \verb|filename| for writing \\
-\hline
-  Example        & \verb|TextWriter my_file(\"a_file_on_disk\");| \\
-   \hline
+  Open to read   & \verb|TextReader::TextReader(const string& filename)|\\
+                 & \verb|void TextReader::open(const string& filename)|\\
+  \hline
+  Close          & \verb|TextReader::~TextReader()|\\
+                 & \verb|void TextReader::close()|\\
+  \hline
+  Open?          & \verb|bool TextReader::is_open()| \\
+  \hline
+  Any IO errors? & \verb|bool TextReader::fail()| \\
+  \hline
+  Input a type \verb|T| & \verb|TextReader& operator>>(TextReader&, T&)| \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+
+\paragraph{TextWriter member functions and global functions}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Open to write  & \verb|TextWriter::TextWriter(const string& filename)|\\
+                 & \verb|void TextWriter::open(const string& filename)|\\
+  \hline
+  Close          & \verb|TextWriter::~TextWriter()|\\
+                 & \verb|void TextWriter::close()|\\
+  \hline
+  Open?          & \verb|bool TextWriter::is_open()| \\
+  \hline
+  Any IO errors? & \verb|bool TextWriter::fail()| \\
+  \hline
+  Output a type \verb|T| & \verb|TextWriter& operator<<(TextWriter&, const T&)| \\
+  \hline
  \end{tabular}
 \end{flushleft}
 %
@@ -1299,18 +1327,323 @@ familiar in the \cpp\ Standard Library. E.g.,
 %
 \begin{small}
 \begin{verbatim}
-TextWriter out("output");
-Real a = 1.0;
-Complex b = cmplx(Real(1), Real(2));
+TextWriter out("foo");
+Real a = 1.2;
+Complex b = cmplx(Real(-1.1), Real(2.2));
 out << a << endl << b << endl;
 out.close();
+
+TextReader in("foo");
+Real a;
+Complex b;
+in >> a >> b;
+in.close();
 \end{verbatim}
 \end{small}
-
+%
+The \verb|TextWriter| functions would produce a file ``foo'' that looks
+like
+\begin{verbatim}
+1.2
+-1.1 2.2
+\end{verbatim}
 
 \subsection{XML Reading and Writing}
 
-\subsubsection{}
+XML is intended as the standard format for user produced human
+readable data as well as metadata. The XML format is always a tree of
+key/value pairs with arbitrarily deep nesting. Here, the keys are
+variable names. The semantics imposed by QDP is that no key can be
+repeated twice at the same nesting level. Also, the values are one of
+the types -- a simple type, a structure, or an array of one of these
+three types including array.
+
+The path specification for the XML reader functions is XPath. Namely,
+QDP only {\em requires} a simple unix like path is used to reference a
+tag. With a simple path and nested reading, all data can be read from
+a document.  However, more complicated queries are possible
+allowing the user to read individual pieces of a document - e.g., a
+single array element. See the XPath language specification for
+additional information: http://www.w3.org/TR/xpath.html .
+
+\paragraph{XMLReader member functions and global functions}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Read file      & \verb|XMLReader::XMLReader(const string& filename)|\\
+                 & \verb|void XMLReader::open(const string& filename)|\\
+  \hline
+  Read stream    & \verb|XMLReader::XMLReader(std::istream&)|\\
+                 & \verb|void XMLReader::open(std::istream&)|\\
+  \hline
+  Read buffer    & \verb|XMLReader::XMLReader(const XMLBufferWriter&)|\\
+                 & \verb|void XMLReader::open(const XMLBufferWriter&)|\\
+  \hline
+  Close          & \verb|XMLReader::~XMLReader()|\\
+                 & \verb|void XMLReader::close()|\\
+  \hline
+  Open?          & \verb|bool XMLReader::is_open()| \\
+  \hline
+  Any IO errors? & \verb|bool XMLReader::fail()| \\
+  \hline
+  Input a type \verb|T| & \verb|void read(XMLReader&, const string& path, T&)| \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+%
+An example of reading a file is
+\begin{verbatim}
+XMLReader xml_in("foo");
+int a;
+Complex b;
+multi1d<Real> c;
+multi1d<Complex> d;
+read(xml_in, "/fred/a", a);  // primitive type reader
+read(xml_in, "/fred/b", b);  // QDP defined struct reader
+read(xml_in, "/fred/c", d);  // array of primitive type reader
+read(xml_in, "/fred/d", d);  // calls read(XMLReader, string, Complex) 
+\end{verbatim}
+%
+The file ``foo'' might look like the following:
+%
+\begin{verbatim}
+<?xml version="1.0"?>
+<fred>
+ <!-- A simple primitive type -->
+ <a>17</d>
+
+ <!-- Considered a structure -->
+ <b>
+   <re>1.0</re>
+   <im>2.0</im>
+ </b>
+
+ <!-- A length 3 array of primitive types -->
+ <c>1 5.6 7.2</c>
+
+ <!-- A length 2 array of non-simple types -->
+ <d>
+   <elem>
+     <re>1.0</re>
+     <im>2.0</im>
+   </elem>
+   <elem>
+     <re>3.0</re>
+     <im>4.0</im>
+   </elem>
+ </d>
+</fred>
+\end{verbatim}
+%
+
+The user can defined their own reader functions following the same
+overloaded syntax as the predefined ones. This allows one to nest
+readers.
+%
+\begin{verbatim}
+struct MyStruct {int a; Real b;};
+
+void read(XMLReader& xml_in, const string path&, MyStruct& input)
+{
+  read(xml_in, path + "/a", input.a);
+  read(xml_in, path + "/b", input.b);
+}
+
+XMLReader xml_in;  // user should initialize here
+multi1d<MyStruct> foo;  // array size will be allocated in array reader
+read(xml_in, "/root", foo); // will call user defined read above for each element
+\end{verbatim}
+
+As stated before, the path specification for a read is actually an
+XPath query. For example, the user can read only one array element in the file
+``foo'' above via an XPath query:
+%
+\begin{verbatim}
+XMLReader xml_in("foo");
+Complex dd;
+read(xml_in, "/fred/d/elem[2]", dd);  // read the second array element of d, e.g. d[1]
+\end{verbatim}
+
+
+
+\paragraph{XMLWriter base class global functions}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Start a group  & \verb|void push(XMLWriter&, const string& name)|\\
+  End a group    & \verb|void pop(XMLWriter&, const string& name)|\\
+  \hline
+  Output a \verb|T| & \verb|void write(XMLWriter&, const string& path, const T&)| \\
+  Output  & \verb|void write(XMLWriter&, const string& path, const XMLBufferWriter&)| \\
+          & \verb|XMLWriter& operator<<(XMLWriter&, const XMLBufferWriter&)| \\
+          & \verb|void write(XMLWriter&, const string& path, const XMLReader&)| \\
+          & \verb|XMLWriter& operator<<(XMLWriter&, const XMLReader&)| \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+%
+The \verb|XMLWriter| is an abstract base class for three concrete
+classes which allow to write into a memory buffer, a file, or write an
+array of objects in a series of steps.
+
+\paragraph{XMLBufferWriter derived class member functions}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Return entire buffer  & \verb|string XMLBufferWriter::str()|\\
+  Return only root element & \verb|string XMLBufferWriter::printRoot()|\\
+  \hline
+ \end{tabular}
+\end{flushleft}
+
+
+\paragraph{XMLFileWriter derived class member functions}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  File to write  & \verb|XMLFileWriter::XMLFileWriter(const string& filename)|\\
+                 & \verb|void XMLFileWriter::open(const string& filename)|\\
+  \hline
+  Close          & \verb|XMLFileWriter::~XMLFileWriter()|\\
+                 & \verb|void XMLFileWriter::close()|\\
+  \hline
+  Open?          & \verb|bool XMLFileWriter::is_open()| \\
+  \hline
+  Any IO errors? & \verb|bool XMLFileWriter::fail()| \\
+  \hline
+  Flush          & \verb|void XMLFileWriter::flush()| \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+%
+Similar to the read case, the user can also create a tower of writer functions.
+In addition, the user can create memory held buffered output that can be
+used for metadata. Similarly, a user can go back and forth from readers to
+writers.
+%
+\begin{verbatim}
+XMLBufferWriter xml_buf;
+push(xml_buf, "fred");
+write(xml_buf, "a", 1);  // write /fred/a = 1
+pop(xml_buf);
+
+XMLReader xml_in(xml_buf);  // re-parse the xml_buf
+int a;
+read(xml_in, "/fred/a", a); // now have 1 in a
+
+XMLFileWriter xml_out("foo");
+xml_out << xml_in;     // will have ``fred'' as the root tag
+xml_out.close();
+\end{verbatim}
+
+
+\paragraph{XMLArrayWriter derived class member and global functions}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Constructor    & \verb|XMLArrayWriter::XMLArrayWriter(XMLWriter&, int size=-1)|\\
+  \hline
+  Close          & \verb|XMLArrayWriter::~XMLArrayWriter()|\\
+                 & \verb|void XMLArrayWriter::close()|\\
+  \hline
+  Size           & \verb|int XMLArrayWriter::size()| \\
+  \hline
+  Start an array  & \verb|void push(XMLArrayWriter&)|\\
+  End an array    & \verb|void pop(XMLArrayWriter&)|\\
+  \hline
+ \end{tabular}
+\end{flushleft}
+%
+The Array class allows one to break writing an array into multiple pieces.
+%
+\begin{verbatim}
+XMLFileWriter xml_out("foo");
+XMLArrayWriter xml_array(xml_out, 350000);  // Note: a big array size here
+push(xml_array, "the_name_of_my_array");
+for(int i=0; i < xml_array.size(); ++i)
+{
+  push(xml_array);  // start next array element - name of tag already defined
+  Real foo = i;
+  write(xml_array, "foo", foo);
+  pop(xml_array);   // finish this array element
+}
+\end{verbatim}
+
+\subsection{Binary Reading and Writing}
+
+\paragraph{BinaryReader member functions and global functions}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Open to read   & \verb|BinaryReader::BinaryReader(const string& filename)|\\
+                 & \verb|void BinaryReader::open(const string& filename)|\\
+  \hline
+  Close          & \verb|BinaryReader::~BinaryReader()|\\
+                 & \verb|void BinaryReader::close()|\\
+  \hline
+  Open?          & \verb|bool BinaryReader::is_open()| \\
+  \hline
+  Any IO errors? & \verb|bool BinaryReader::fail()| \\
+  \hline
+  Input a type \verb|T| & \verb|BinaryReader& operator>>(BinaryReader&, T&)| \\
+                 & \verb|void read(BinaryReader&, T&)| \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+
+\paragraph{BinaryWriter member functions and global functions}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Open to write  & \verb|BinaryWriter::BinaryWriter(const string& filename)|\\
+                 & \verb|void BinaryWriter::open(const string& filename)|\\
+  \hline
+  Close          & \verb|BinaryWriter::~BinaryWriter()|\\
+                 & \verb|void BinaryWriter::close()|\\
+  \hline
+  Open?          & \verb|bool BinaryWriter::is_open()| \\
+  \hline
+  Any IO errors? & \verb|bool BinaryWriter::fail()| \\
+  \hline
+  Flush          & \verb|bool BinaryWriter::flush()| \\
+  \hline
+  Output a type \verb|T| & \verb|BinaryWriter& operator<<(BinaryWriter&, const T&)| \\
+                 & \verb|void write(BinaryWriter&, const T&)| \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+%
+To read and write ascii text from the file, use the standard operators
+familiar in the \cpp\ Standard Library. E.g.,
+%
+\begin{small}
+\begin{verbatim}
+BinaryWriter out("foo");
+Real a;
+LatticeColorMatrix b
+write(out, a);
+out << b;      // have choice of style
+out.close();
+
+BinaryReader in("foo");
+Real a;
+LatticeColorMatrix b;
+in >> a >> b;
+in.close();
+\end{verbatim}
+\end{small}
+
+\subsection{QDP Record I/O}
+
+
+\newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Compilation with QDP}
