@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.5 2004-01-20 14:30:50 mcneile Exp $
+// $Id: qdp_primcolormat.h,v 1.6 2004-07-02 19:24:04 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -177,6 +177,11 @@ struct UnaryReturn<PColorMatrix<T,N>, FnNorm2 > {
 template<class T, int N>
 struct UnaryReturn<PColorMatrix<T,N>, FnLocalNorm2 > {
   typedef PScalar<typename UnaryReturn<T, FnLocalNorm2>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnTraceMultiply> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnTraceMultiply>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>

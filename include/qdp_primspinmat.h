@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinmat.h,v 1.4 2003-12-21 19:22:51 edwards Exp $
+// $Id: qdp_primspinmat.h,v 1.5 2004-07-02 19:24:04 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -205,6 +205,11 @@ struct UnaryReturn<PSpinMatrix<T,N>, FnNorm2 > {
 template<class T, int N>
 struct UnaryReturn<PSpinMatrix<T,N>, FnLocalNorm2 > {
   typedef PScalar<typename UnaryReturn<T, FnLocalNorm2>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnTraceMultiply> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnTraceMultiply>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
