@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.10 2003-07-31 01:07:11 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.11 2003-08-04 19:06:17 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -88,7 +88,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 {
 //  cerr << "In evaluateAll(olattice,oscalar)\n";
 
-  for(int i=0; i < Layout::vol(); ++i) 
+  const int vvol = Layout::vol();
+  for(int i=0; i < vvol; ++i) 
   {
 //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
     op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
@@ -146,7 +147,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 {
 //  cerr << "In evaluateAll(olattice,olattice)\n";
 
-  for(int i=0; i < Layout::vol(); ++i) 
+  const int vvol = Layout::vol();
+  for(int i=0; i < vvol; ++i) 
   {
 //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
     op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
@@ -189,7 +191,8 @@ template<class T1, class T2>
 void 
 copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
-  for(int i=0; i < Layout::vol(); ++i) 
+  const int vvol = Layout::vol();
+  for(int i=0; i < vvol; ++i) 
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
 
@@ -369,7 +372,8 @@ void zero_rep(OSubLattice<T,S> dd)
 template<class T> 
 void zero_rep(OLattice<T>& dest) 
 {
-  for(int i=0; i < Layout::vol(); ++i) 
+  const int vvol = Layout::vol();
+  for(int i=0; i < vvol; ++i) 
     zero_rep(dest.elem(i));
 }
 
@@ -449,7 +453,8 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
   // Loop always entered - could unroll
   zero_rep(d.elem());
 
-  for(int i=0; i < Layout::vol(); ++i) 
+  const int vvol = Layout::vol();
+  for(int i=0; i < vvol; ++i) 
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
 
   return d;
@@ -504,7 +509,8 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
   // Loop over all sites and accumulate based on the coloring 
   const multi1d<int>& lat_color =  ss.latticeColoring();
 
-  for(int i=0; i < Layout::vol(); ++i) 
+  const int vvol = Layout::vol();
+  for(int i=0; i < vvol; ++i) 
   {
     int j = lat_color[i];
     dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
@@ -922,7 +928,8 @@ template<class T>
 NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
 {
   nml.get() << "   [OUTER]" << endl;
-  for(int site=0; site < Layout::vol(); ++site) 
+  const int vvol = Layout::vol();
+  for(int site=0; site < vvol; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
     nml.get() << "   Site =  " << site << "   = ";
@@ -945,7 +952,8 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
 
   XMLWriterAPI::AttributeList alist;
 
-  for(int site=0; site < Layout::vol(); ++site) 
+  const int vvol = Layout::vol();
+  for(int site=0; site < vvol; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
 
@@ -981,7 +989,8 @@ void write(BinaryWriter& bin, const OScalar<T>& d)
 template<class T>  
 void write(BinaryWriter& bin, const OLattice<T>& d)
 {
-  for(int site=0; site < Layout::vol(); ++site) 
+  const int vvol = Layout::vol();
+  for(int site=0; site < vvol; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
     bin.writeArray((const char*)&(d.elem(i)), 
@@ -1005,7 +1014,8 @@ void read(BinaryReader& bin, OScalar<T>& d)
 template<class T>  
 void read(BinaryReader& bin, OLattice<T>& d)
 {
-  for(int site=0; site < Layout::vol(); ++site) 
+  const int vvol = Layout::vol();
+  for(int site=0; site < vvol; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
     bin.readArray((char*)&(d.elem(i)), 
