@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_init.cc,v 1.2 2003-06-07 19:11:14 edwards Exp $
+// $Id: qdp_scalar_init.cc,v 1.3 2003-06-09 16:36:36 edwards Exp $
 
 /*! @file
  * @brief Scalar init routines
@@ -21,7 +21,7 @@ void QDP_initialize(int *argc, char ***argv)
   Layout::init();   // setup extremely basic functionality in Layout
 
   // initialize remote file service (QIO)
-  QDPUtil::RemoteFileInit("qcdi01", true);
+  QDPUtil::RemoteFileInit("qcdi01", false);
 
   isInit = true;
 }
