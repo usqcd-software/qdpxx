@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvec_layout.cc,v 1.3 2003-08-20 21:19:14 edwards Exp $
+// $Id: qdp_scalarvec_layout.cc,v 1.4 2003-08-26 15:04:49 edwards Exp $
 
 /*! @file
  * @brief Scalarvec layout routines
@@ -139,7 +139,7 @@ namespace Layout
     for(int i=0; i < Nd; ++i) 
       _layout.vol *= _layout.nrow[i];
     _layout.subgrid_vol  = _layout.vol;
-    _layout.olattice_vol = _layout.vol / INNER_LEN;
+    _layout.olattice_vol = _layout.vol >> INNER_LEN;
   
     _layout.logical_coord.resize(Nd);
     _layout.logical_size.resize(Nd);
