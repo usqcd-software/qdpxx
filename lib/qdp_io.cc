@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.2 2003-06-04 18:22:29 edwards Exp $
+// $Id: qdp_io.cc,v 1.3 2003-06-04 19:41:50 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -519,14 +519,15 @@ BinaryReader& operator>>(BinaryReader& bin, bool& input)
   return bin;
 }
 
-void BinaryReader::read(string& input, size_t nbytes)
+void BinaryReader::read(string& input, size_t maxBytes)
 {
-  char *str = new char[nbytes];
+  char *str = new char[maxBytes];
   size_t n;
+
   if (Layout::primaryNode())
   {
-    getIstream().getline(str, nbytes);
-    n = strlen(str);
+    getIstream().getline(str, maxBytes);
+    n = strlen(str)+1;
   }
 
   Internal::broadcast(n);
