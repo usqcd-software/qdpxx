@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.4 2004-03-23 02:56:03 edwards Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.5 2004-03-23 12:56:11 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -654,14 +654,13 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     
     // I am relying on this being a Double here 
     UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
-    zero_rep(lsum.elem());
+    lsum = Double(0);
     
-    local_sumsq((DOUBLE *)&lsum.elem().elem().elem().elem().elem(),
+    local_sumsq((DOUBLE *)&(lsum.elem().elem().elem().elem().elem()),
 		(REAL *)s1ptr, 
 	       n_3vec); 
-    
-    Internal::globalSum(lsum.elem());
-    
+
+    Internal::globalSum(lsum);
     return lsum;
   }
   else {
@@ -688,14 +687,12 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
     
     // I am relying on this being a Double here 
     UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
-    zero_rep(lsum.elem());
-    
-    local_sumsq((DOUBLE *)&lsum.elem().elem().elem().elem().elem(),
+    lsum = Double(0);
+ 
+    local_sumsq((DOUBLE *)&(lsum.elem().elem().elem().elem().elem()),
 		(REAL *)s1ptr, 
 	       n_3vec); 
-    
-    Internal::globalSum(lsum.elem());
-    
+    Internal::globalSum(lsum);
     return lsum;
   }
   else {

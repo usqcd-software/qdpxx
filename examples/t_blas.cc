@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.2 2004-03-22 11:08:33 bjoo Exp $
+// $Id: t_blas.cc,v 1.3 2004-03-23 12:56:10 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -299,13 +299,36 @@ int main(int argc, char *argv[])
 
 
   // Test norm2(x)
-  gaussian(qx);
-  DComplex rc = innerProduct(qx,qx, rb[0]);
-  Double rcr = real(rc);
+  for(int site=all.start(); site <= all.end(); site++) {
+        for(int spin=0; spin < Ns; spin++) {
+           for(int col =0; col < Nc; col++) {
+             qx.elem(site).elem(spin).elem(col).real().elem()=1;
+             qx.elem(site).elem(spin).elem(col).imag().elem()=1;
+           }
+        }
+  }
+ 
+  // sum it by hand.
+  Double rc = Double(0);
+  for(int site=all.start(); site <= all.end(); site++) { 
+	for(int spin=0; spin < Ns; spin++) { 
+	   for(int col =0; col < Nc; col++) { 
+	     rc += qx.elem(site).elem(spin).elem(col).real().elem()
+		 * qx.elem(site).elem(spin).elem(col).real().elem();
+	     rc += qx.elem(site).elem(spin).elem(col).imag().elem()
+	         * qx.elem(site).elem(spin).elem(col).imag().elem();
+           }
+        }
+  } 
+  Internal::globalSum(rc);
 
-  Double bjs = norm2(qx, rb[0]);
   
-  QDPIO::cout << "norm2 diff = " << rcr - bjs << endl;
+  Double bjs = norm2(qx);
+  QDPIO::cout << "lattice volume = " << Layout::vol() << " Ns = " << Ns << " Nc = " << Nc << " Ncompx = 2.  Total Sum should be = " << Layout::vol()*Ns*Nc*2 << endl;
+
+  QDPIO::cout << "Hand sumsq-ed qx = " << rc << endl;
+  QDPIO::cout << "norm2(qx) = " << bjs << endl;
+  QDPIO::cout << "norm2 diff = " << rc - bjs << endl;
 
   // Timings
    // Test VSCAL

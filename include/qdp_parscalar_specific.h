@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.24 2004-03-21 21:19:44 bjoo Exp $
+// $Id: qdp_parscalar_specific.h,v 1.25 2004-03-23 12:56:11 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -86,6 +86,12 @@ namespace Internal
     // The implementation here is relying on the structure being packed
     // tightly in memory - no padding
     typedef typename WordType<T>::Type_t  W;   // find the machine word type
+
+#if 0 
+    QDPIO::cout << "sizeof(T) = " << sizeof(T) << endl;
+    QDPIO::cout << "sizeof(W) = " << sizeof(W) << endl;
+    QDPIO::cout << "Calling global sum array with length " << sizeof(T)/sizeof(W) << endl;
+#endif
     globalSumArray((W *)&dest, sizeof(T)/sizeof(W)); // call appropriate hook
   }
 
