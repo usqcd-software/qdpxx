@@ -818,6 +818,13 @@ Optional Features:
   --enable-profiling      Enable profiling. Diagnostic use only.
   --enable-parallel-arch=<arch>
                           Build QDP++ for parallel architecture <arch>
+  --enable-sse            Optimize code with Intel SSE instructions
+  --enable-sse2           Optimize code with Intel SSE2 instructions
+  --enable-qcdoc          Enable QCDOC Optimisations
+  --enable-qcdoc-edram    Make QDP Outer allocate in EDRAM
+  --enable-precision=single|double
+                          Sets the base precision to be single or double
+                          precision (default is single)
   --enable-layout=lexico|cb2|cb32
                           Sets the layout. lexico=lexicographic, cb2=even odd
                           checkerboard, cb32=hypercubic checkerboard. (default
@@ -2491,13 +2498,12 @@ if test "${enable_parallel_arch+set}" = set; then
   enableval="$enable_parallel_arch"
   PARALLEL_ARCH=${enableval}
 else
-  { { echo "$as_me:$LINENO: error: Require architecture to be set
-" >&5
-echo "$as_me: error: Require architecture to be set
-" >&2;}
+  { { echo "$as_me:$LINENO: error: Require architecture to be set" >&5
+echo "$as_me: error: Require architecture to be set" >&2;}
    { (exit 1); exit 1; }; }
 
-  --enable-sse            Optimize code with Intel SSE instructions
+fi;
+
 # Check whether --enable-sse or --disable-sse was given.
 if test "${enable_sse+set}" = set; then
   enableval="$enable_sse"
@@ -2507,7 +2513,6 @@ else
 
 fi;
 
-  --enable-sse2           Optimize code with Intel SSE2 instructions
 # Check whether --enable-sse2 or --disable-sse2 was given.
 if test "${enable_sse2+set}" = set; then
   enableval="$enable_sse2"
@@ -2518,7 +2523,6 @@ else
 
 fi;
 
-  --enable-qcdoc          Enable QCDOC Optimisations
 # Check whether --enable-qcdoc or --disable-qcdoc was given.
 if test "${enable_qcdoc+set}" = set; then
   enableval="$enable_qcdoc"
@@ -2530,7 +2534,6 @@ else
 
 fi;
 
-  --enable-qcdoc-edram    Make QDP Outer allocate in EDRAM
 # Check whether --enable-qcdoc-edram or --disable-qcdoc-edram was given.
 if test "${enable_qcdoc_edram+set}" = set; then
   enableval="$enable_qcdoc_edram"
@@ -2610,9 +2613,6 @@ _ACEOF
 echo "$as_me: Enable profiling" >&6;}
 fi
 
-  --enable-precision=single|double
-                          Sets the base precision to be single or double
-                          precision (default is single)
 # Check whether --enable-precision or --disable-precision was given.
 if test "${enable_precision+set}" = set; then
   enableval="$enable_precision"
@@ -2622,8 +2622,7 @@ else
 fi;
 
 case ${ac_precision} in
-single
-fi;
+single)
 	{ echo "$as_me:$LINENO: Configuring QDP++ for single precision  " >&5
 echo "$as_me: Configuring QDP++ for single precision  " >&6;}
 
