@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.19 2004-12-13 13:02:36 bjoo Exp $
+// $Id: t_qio.cc,v 1.20 2005-02-24 17:02:49 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -140,7 +140,20 @@ int main(int argc, char **argv)
     	  random(c[i]);
 	  fsum += innerProductReal(c[i],shift(c[i],FORWARD,0));
         }
+
+	QDPIO::cout << "Fourth record test is a lattice Color Matrix" << endl;
+	StopWatch swatch;
+	swatch.reset();
+	swatch.start();
         write(to,record_xml,c);
+	swatch.stop();
+	double secs = swatch.getTimeInSeconds();
+	double bytes = Layout::vol()*Nd*Nc*Nc*2*sizeof(REAL);
+	double Mbytes = bytes/(double)(1024*1024);
+	QDPIO::cout << "Wrote " << Mbytes << " Mbytes in " << secs << " seconds " << endl;
+	QDPIO::cout << "Transfer Rate: " << Mbytes/secs << " Mbytes/s" << endl;
+
+
 	write(xml_out, "fourth_to.bad", to.bad());
 
         QDPIO::cout << "Fourth record test: fsum=" << fsum << endl;
@@ -229,7 +242,18 @@ int main(int argc, char **argv)
 
       {
 	multi1d<LatticeColorMatrix> c(Nd);   // array size should be free
+	StopWatch swatch;
+	swatch.reset();
+	swatch.start();
         read(from,record_xml,c);
+	swatch.stop();
+
+	double secs = swatch.getTimeInSeconds();
+	double bytes = Layout::vol()*Nd*Nc*Nc*2*sizeof(REAL);
+	double Mbytes = bytes/(double)(1024*1024);
+	QDPIO::cout << "Read " << Mbytes << " Mbytes in " << secs << " seconds " << endl;
+	QDPIO::cout << "Transfer Rate: " << Mbytes/secs << " Mbytes/s" << endl;
+	
 	write(xml_out, "fourth_from.bad", from.bad());
 
         Double fsum = 0;
