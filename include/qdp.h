@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.30 2003-09-01 22:29:03 edwards Exp $
+// $Id: qdp.h,v 1.31 2003-09-02 03:01:27 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -62,10 +62,14 @@
 #define QDP_USE_SSE2  0
 #endif
 
-// HACK - If using SSE, force proper mem. alignment of operator new.
+// Alignment size: SSE requires a larger alignment
+// This should probably move under more compiler specific info
 #if QDP_USE_SSE == 1
-#define QDP_FIX_ALIGNMENT
 #define QDP_ALIGNMENT_SIZE  16
+
+#else
+
+#define QDP_ALIGNMENT_SIZE  8
 #endif
 
 
