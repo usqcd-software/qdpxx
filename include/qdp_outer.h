@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.2 2003-05-23 04:45:53 edwards Exp $
+// $Id: qdp_outer.h,v 1.3 2003-06-04 18:22:29 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -170,19 +170,6 @@ inline
 XMLWriter& operator<<(XMLWriter& xml, const OScalar<T>& d)
 {
   return xml << d.elem();
-}
-
-//! Binary output
-/*! Assumes no inner grid */
-template<class T>
-inline
-BinaryWriter& write(BinaryWriter& bin, const OScalar<T>& d)
-{
-  if (Layout::primaryNode()) 
-    QDPUtil::bfwrite((void *)&(d.elem()), sizeof(typename WordType<T>::Type_t), 
-		     sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get());
-
-  return bin;
 }
 
 //! XML input

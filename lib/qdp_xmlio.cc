@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.7 2003-05-23 05:20:27 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.8 2003-06-04 18:22:29 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -78,51 +78,81 @@ void XMLReader::get(const std::string& xpath, string& result)
 {
   if (Layout::primaryNode())
     BasicXPathReader::get(xpath, result);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(result);
 }
 void XMLReader::get(const std::string& xpath, int& result)
 {
   if (Layout::primaryNode())
     BasicXPathReader::get(xpath, result);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(result);
 }
 void XMLReader::get(const std::string& xpath, unsigned int& result)
 {
   if (Layout::primaryNode())
     BasicXPathReader::get(xpath, result);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(result);
 }
 void XMLReader::get(const std::string& xpath, short int& result)
 {
   if (Layout::primaryNode())
     BasicXPathReader::get(xpath, result);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(result);
 }
 void XMLReader::get(const std::string& xpath, unsigned short int& result)
 {
   if (Layout::primaryNode())
     BasicXPathReader::get(xpath, result);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(result);
 }
 void XMLReader::get(const std::string& xpath, long int& result)
 {
   if (Layout::primaryNode())
     BasicXPathReader::get(xpath, result);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(result);
 }
 void XMLReader::get(const std::string& xpath, unsigned long int& result)
 {
   if (Layout::primaryNode())
     BasicXPathReader::get(xpath, result);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(result);
 }
 void XMLReader::get(const std::string& xpath, float& result)
 {
   if (Layout::primaryNode())
     BasicXPathReader::get(xpath, result);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(result);
 }
 void XMLReader::get(const std::string& xpath, double& result)
 {
   if (Layout::primaryNode())
     BasicXPathReader::get(xpath, result);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(result);
 }
 void XMLReader::get(const std::string& xpath, bool& result)
 {
   if (Layout::primaryNode())
     BasicXPathReader::get(xpath, result);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(result);
 }
    
 void XMLReader::print(ostream& os)

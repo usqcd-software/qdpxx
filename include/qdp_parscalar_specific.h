@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.2 2003-05-23 04:45:53 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.3 2003-06-04 18:22:29 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -30,7 +30,7 @@ namespace Layout
 
   //! coord[mu]  <- mu  : fill with lattice coord in mu direction
   LatticeInteger latticeCoordinate(int mu);
-};
+}
 
 
 //-----------------------------------------------------------------------------
@@ -97,7 +97,13 @@ namespace Internal
     QMP_broadcast((void *)&dest, sizeof(T));
   }
 
-};
+  //! Broadcast from primary node to all other nodes
+  inline void broadcast(void* dest, unsigned int nbytes)
+  {
+    QMP_broadcast(dest, nbytes);
+  }
+
+}
 
 
 
@@ -1091,7 +1097,19 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
 //! Binary output
 /*! Assumes no inner grid */
 template<class T>
-BinaryWriter& write(BinaryWriter& bin, const OLattice<T>& d)
+inline
+void write(BinaryWriter& bin, const OScalar<T>& d)
+{
+  if (Layout::primaryNode()) 
+    bin.writeArray((const char *)&(d.elem()), 
+		   sizeof(typename WordType<T>::Type_t), 
+		   sizeof(T) / sizeof(typename WordType<T>::Type_t));
+}
+
+//! Binary output
+/*! Assumes no inner grid */
+template<class T>
+void write(BinaryWriter& bin, const OLattice<T>& d)
 {
   // Twice the subgrid vol - intermediate array we flip-flop writing data
   multi1d<T> data(2*Layout::sitesOnNode());
@@ -1108,47 +1126,31 @@ BinaryWriter& write(BinaryWriter& bin, const OLattice<T>& d)
     int xsite2 = QMP_shift(site,(unsigned char*)(data.slice()),sizeof(T),0);
 
     if (Layout::primaryNode())
-      QDPUtil::bfwrite((void *)(data.slice() + xsite2), 
-		       sizeof(typename WordType<T>::Type_t), 
-		       xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t), bin.get());
+      bin.writeArray((const char*)(data.slice() + xsite2), 
+		     sizeof(typename WordType<T>::Type_t), 
+		     xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t));
   }
-  return bin;
 }
 
 
-//! Read a binary element
+//! Binary input
+/*! Assumes no inner grid */
 template<class T>
-BinaryReader& read(BinaryReader& bin, T& d)
+void read(BinaryReader& bin, OScalar<T>& d)
 {
   if (Layout::primaryNode()) 
-    if (QDPUtil::bfread((void *)&d, sizeof(T), 1, bin.get()) != 1)
-      QDP_error_exit("BinaryReader: failed to read");
-
+    readArray((char*)&(d.elem()), 
+	      sizeof(typename WordType<T>::Type_t), 
+	      sizeof(T) / sizeof(typename WordType<T>::Type_t)); 
+  
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
-
-  return bin;
 }
 
 //! Binary input
 /*! Assumes no inner grid */
 template<class T>
-BinaryReader& read(BinaryReader& bin, OScalar<T>& d)
-{
-  if (Layout::primaryNode()) 
-    QDPUtil::bfread((void *)&(d.elem()), sizeof(typename WordType<T>::Type_t), 
-		    sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get()); 
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(d);
-
-  return bin;
-}
-
-//! Binary input
-/*! Assumes no inner grid */
-template<class T>
-BinaryReader& read(BinaryReader& bin, OLattice<T>& d)
+void read(BinaryReader& bin, OLattice<T>& d)
 {
   // Twice the subgrid vol - intermediate array we flip-flop reading data
   multi1d<T> data(2*Layout::sitesOnNode());
@@ -1158,9 +1160,9 @@ BinaryReader& read(BinaryReader& bin, OLattice<T>& d)
   for(int site=0, xsite2=0; site < Layout::vol(); site += xinc)
   {
     if (Layout::primaryNode())
-      QDPUtil::bfread((void *)(data.slice() + xsite2),
-		      sizeof(typename WordType<T>::Type_t), 
-		      xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t), bin.get());
+      readArray((char*)(data.slice() + xsite2),
+		sizeof(typename WordType<T>::Type_t), 
+		xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t));
 
     xsite2 = QMP_shift((site + xinc) % Layout::vol(),
 		       (unsigned char*)(data.slice()), sizeof(T), xinc);
@@ -1171,8 +1173,6 @@ BinaryReader& read(BinaryReader& bin, OLattice<T>& d)
 //    int i = Layout::linearSiteIndex(site);
     d.elem(site) = data[site];
   }
-
-  return bin;
 }
 
 // Text input

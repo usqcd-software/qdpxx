@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.2 2003-05-23 04:45:53 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.3 2003-06-04 18:22:29 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -15,6 +15,20 @@ namespace Layout
 {
   //! coord[mu]  <- mu  : fill with lattice coord in mu direction
   LatticeInteger latticeCoordinate(int mu);
+}
+
+
+//-----------------------------------------------------------------------------
+// Internal ops designed to look like those in parscalar
+// These dummy routines exist just to make code more portable
+namespace Internal
+{
+  //! Dummy broadcast from primary node to all other nodes
+  template<class T>
+  void broadcast(T& dest) {}
+
+  //! Dumy broadcast from primary node to all other nodes
+  inline void broadcast(void* dest, unsigned int nbytes) {}
 }
 
 
@@ -848,53 +862,53 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
 
 
 //! Binary output
+/*! Assumes no inner grid */
+template<class T>
+inline
+void write(BinaryWriter& bin, const OScalar<T>& d)
+{
+  if (Layout::primaryNode()) 
+    bin.writeArray((const char *)&(d.elem()), 
+		   sizeof(typename WordType<T>::Type_t), 
+		   sizeof(T) / sizeof(typename WordType<T>::Type_t));
+}
+
+//! Binary output
+/*! Assumes no inner grid */
 template<class T>  
-BinaryWriter& write(BinaryWriter& bin, const OLattice<T>& d)
+void write(BinaryWriter& bin, const OLattice<T>& d)
 {
   for(int site=0; site < Layout::vol(); ++site) 
   {
     int i = Layout::linearSiteIndex(site);
-    QDPUtil::bfwrite((void *)&(d.elem(i)), sizeof(typename WordType<T>::Type_t), 
-		     sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get());
+    bin.writeArray((const char*)&(d.elem(i)), 
+		   sizeof(typename WordType<T>::Type_t), 
+		   sizeof(T) / sizeof(typename WordType<T>::Type_t));
   }
-
-  return bin;
-}
-
-//! Generic read a binary element
-template<class T>
-BinaryReader& read(BinaryReader& bin, T& d)
-{
-  if (QDPUtil::bfread((void *)&d, sizeof(T), 1, bin.get()) != 1)
-    QDP_error_exit("BinaryReader: failed to read");
-
-  return bin;
 }
 
 //! Binary input
 /*! Assumes no inner grid */
 template<class T>
-BinaryReader& read(BinaryReader& bin, OScalar<T>& d)
+void read(BinaryReader& bin, OScalar<T>& d)
 {
-  QDPUtil::bfread((void *)&(d.elem()), sizeof(typename WordType<T>::Type_t), 
-		  sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get()); 
-
-  return bin;
+  readArray((char*)&(d.elem()), 
+	    sizeof(typename WordType<T>::Type_t), 
+	    sizeof(T) / sizeof(typename WordType<T>::Type_t)); 
 }
 
 //! Binary input
 /*! Assumes no inner grid */
 template<class T>  
-BinaryReader& read(BinaryReader& bin, OLattice<T>& d)
+void read(BinaryReader& bin, OLattice<T>& d)
 {
   for(int site=0; site < Layout::vol(); ++site) 
   {
     int i = Layout::linearSiteIndex(site);
-    QDPUtil::bfread((void *)&(d.elem(i)), sizeof(typename WordType<T>::Type_t), 
-		    sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get());
+    readArray((char*)&(d.elem(i)), 
+	      sizeof(typename WordType<T>::Type_t), 
+	      sizeof(T) / sizeof(typename WordType<T>::Type_t));
   }
-
-  return bin;
 }
 
 // Input
