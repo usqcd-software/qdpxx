@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.27 2003-05-22 19:02:02 edwards Exp $
+// $Id: t_foo.cc,v 1.28 2003-05-23 04:44:22 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -12,7 +12,7 @@
 
 //using namespace std;
 
-//using namespace QDP;
+using namespace QDP;
 
 struct Nearest : public MapFunc
 {
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
   nml_in.close();
 #endif
 
-#if 0
+#if 1
   {
     LatticeFermion a,b;
     random(a); random(b);
@@ -457,7 +457,7 @@ int main(int argc, char *argv[])
  }
 #endif
 
-#if 1
+#if 0
  {
    cerr << "create xml" << endl;
 
@@ -497,7 +497,7 @@ int main(int argc, char *argv[])
  }
 #endif
 
-#if 1
+#if 0
  {
    cerr << "create xml" << endl;
 

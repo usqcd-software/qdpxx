@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_nml.cc,v 1.4 2003-04-27 02:50:22 edwards Exp $
+// $Id: t_nml.cc,v 1.5 2003-05-23 04:44:22 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -12,7 +12,7 @@
 
 //using namespace std;
 
-//using namespace QDP;
+using namespace QDP;
 
 int
 main(int argc, char *argv[])
