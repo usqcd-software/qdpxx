@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: params.h,v 1.2 2002-09-12 18:47:53 edwards Exp $
+// $Id: params.h,v 1.3 2002-09-26 21:29:14 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -18,7 +18,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 
 //! Lattice size
 #define  LX0   2
-#define  LX1   2
+#define  LX1   4
 #define  LX2   2
 #define  LX3   2
 
