@@ -1,4 +1,4 @@
-// $Id: geom.cc,v 1.2 2002-10-28 03:08:44 edwards Exp $
+// $Id: geom.cc,v 1.3 2002-11-04 04:30:18 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -33,5 +33,5 @@ void Geometry::initAniso(const multi1d<int>& nrows, int aniso_dir, float xx)
   t_dir = aniso_dir;
 
   if (t_dir < 0 || _xi_0 <= 0.0)
-    SZ_ERROR("anisotropy values not set");
+    QDP_error_exit("anisotropy values not set");
 }

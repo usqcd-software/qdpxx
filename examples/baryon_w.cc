@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.5 2002-10-28 03:08:44 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.6 2002-11-04 04:30:18 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -186,7 +186,7 @@ void baryon(LatticePropagator& quark_propagator,
 	break;
 
       default:
-	SZ_ERROR("Unknown baryon");
+	QDP_error_exit("Unknown baryon: baryons=%d",baryons);
       }
 
       /* Project on zero momentum: Do a slice-wise sum. */
