@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.8 2003-06-09 19:34:07 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.9 2003-06-10 16:01:23 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -71,19 +71,28 @@ public:
   //! Return the root element of the Reader as a stream
   void printRoot(ostream& is);
         
+  //! Count the number of occurances from the xpath query
+  int count(const string& xpath);
+
 private:
   bool  iop;  //file open or closed?
 };
 
 
 // Time to build a telephone book of basic primitives
-void read(XMLReader& xml, const std::string& s, std::string& d);
-void read(XMLReader& xml, const std::string& s, int& d);
-void read(XMLReader& xml, const std::string& s, float& d);
-void read(XMLReader& xml, const std::string& s, double& d);
-void read(XMLReader& xml, const std::string& s, bool& d);
+void read(XMLReader& xml, const std::string& s, std::string& output);
+void read(XMLReader& xml, const std::string& s, int& output);
+void read(XMLReader& xml, const std::string& s, unsigned int& output);
+void read(XMLReader& xml, const std::string& s, short int& output);
+void read(XMLReader& xml, const std::string& s, unsigned short int& output);
+void read(XMLReader& xml, const std::string& s, long int& output);
+void read(XMLReader& xml, const std::string& s, unsigned long int& output);
+void read(XMLReader& xml, const std::string& s, float& output);
+void read(XMLReader& xml, const std::string& s, double& output);
+void read(XMLReader& xml, const std::string& s, bool& output);
 
 
+#define ReadPath(xml,path,a) read(xml,path+"/"+#a,a)
 
 
 //--------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.10 2003-06-09 19:34:07 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.11 2003-06-10 16:02:01 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -165,6 +165,17 @@ void XMLReader::printRoot(ostream& os)
 {
   if (Layout::primaryNode())
     BasicXPathReader::printRoot(os);
+}
+   
+int XMLReader::count(const string& xpath)
+{
+  int n;
+  if (Layout::primaryNode())
+    n = BasicXPathReader::count(xpath);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(n);
+  return n;
 }
    
 
