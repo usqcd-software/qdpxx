@@ -1,10 +1,9 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.4 2003-07-31 19:29:09 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.5 2003-08-01 18:42:57 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
  */
-
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -131,6 +130,12 @@ public:
       return static_cast<CC&>(*this);
     }
 
+#if 0
+  // NOTE: intentially avoid defining a copy constructor - let the compiler
+  // generate one via the bit copy mechanism. This effectively achieves
+  // the first form of the if below (QDP_USE_ARRAY_INITIALIZER) without having
+  // to use that syntax which is not strictly legal in C++.
+
   //! Deep copy here
 #if defined(QDP_USE_ARRAY_INITIALIZER)
   /*! This is an array initializer form - may not be strictly legal */
@@ -143,6 +148,7 @@ public:
 	for(int j=0; j < N; ++j)
 	  F[i][j] = a.F[i][j];
     }
+#endif
 #endif
 
 public:
