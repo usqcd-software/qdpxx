@@ -1,4 +1,4 @@
-AC_INIT([qdp],[1.9.3],[edwards@jlab.org])
+AC_INIT([qdp],[1.10.0],[edwards@jlab.org])
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -75,7 +75,7 @@ AC_ARG_ENABLE(parallel-arch,
   AC_HELP_STRING([--enable-parallel-arch=<arch>],
     [Build QDP++ for parallel architecture <arch>]),
   [PARALLEL_ARCH=${enableval}],
-  [PARALLEL_ARCH="scalar"]
+  AC_MSG_ERROR([Require architecture to be set]
 )
 
 dnl --enable-sse
