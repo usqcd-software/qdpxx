@@ -1,10 +1,10 @@
-// $Id: t_nersc.cc,v 1.3 2003-10-09 19:59:39 edwards Exp $
+// $Id: t_nersc.cc,v 1.4 2003-10-15 17:20:08 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "qdp.h"
-#include "qdp_util.h"
+#include "qdp_iogauge.h"
 #include "examples.h"
 
 using namespace QDP;
@@ -21,35 +21,67 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_mesplq.nml");
+  XMLFileWriter xml("t_nersc.xml");
+  push(xml, "t_nersc");
 
-  push(nml,"lattis");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,nrow);
-  pop(nml);
+  push(xml,"lattis");
+  Write(xml,Nd);
+  Write(xml,Nc);
+  Write(xml,nrow);
+  pop(xml);
 
-  //! Example of calling a plaquette routine
-  /*! NOTE: the STL is *not* used to hold gauge fields */
-  multi1d<LatticeColorMatrix> u(Nd);
-  Double w_plaq, s_plaq, t_plaq, link;
+  {
+    multi1d<LatticeColorMatrix> u(Nd);
+    Double w_plaq, s_plaq, t_plaq, link;
 
-  QDPIO::cout << "Trying to read NERSC Archive  t_nersc.cfg\n"
-	      << "  make sure it is in your current directory" << endl;
-  XMLReader xml;
-  readArchiv(xml, u, "t_nersc.cfg");
+    QDPIO::cout << "Start gaussian\n";
+    for(int m=0; m < u.size(); ++m)
+      gaussian(u[m]);
+
+    // Reunitarize the gauge field
+    QDPIO::cout << "Start reunit\n";
+    for(int m=0; m < u.size(); ++m)
+      reunit(u[m]);
+
+    QDPIO::cout << "Start mesplq\n";
+    MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+    QDPIO::cout << "w_plaq = " << w_plaq << endl;
+    QDPIO::cout << "link = " << link << endl;
+
+    // Write out the results
+    push(xml,"Initial_observables");
+    Write(xml,w_plaq);
+    Write(xml,link);
+    pop(xml);
+
+    // Now write the gauge field in NERSC format
+    QDPIO::cout << "Trying to write NERSC Archive  t_nersc.cfg" << endl;
+    writeArchiv(u, "t_nersc.cfg");
+  }
+
+  {
+    multi1d<LatticeColorMatrix> u(Nd);
+    Double w_plaq, s_plaq, t_plaq, link;
+
+    QDPIO::cout << "Trying to read back config" << endl;
+
+    XMLReader gauge_xml;
+    readArchiv(gauge_xml, u, "t_nersc.cfg");
  
-  // Try out the plaquette routine
-  QDPIO::cout << "Start mesplq\n";
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq = " << w_plaq << endl;
-  QDPIO::cout << "link = " << link << endl;
+    // Try out the plaquette routine
+    QDPIO::cout << "Start mesplq\n";
+    MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+    QDPIO::cout << "w_plaq = " << w_plaq << endl;
+    QDPIO::cout << "link = " << link << endl;
 
-  // Write out the results
-  push(nml,"observables");
-  Write(nml,w_plaq);
-  Write(nml,link);
-  pop(nml);
+    // Write out the results
+    push(xml,"Final_observables");
+    Write(xml,w_plaq);
+    Write(xml,link);
+    pop(xml);
+  }
+
+  pop(xml);
 
   // Time to bolt
   QDP_finalize();
