@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.5 2003-08-01 18:42:57 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.6 2003-08-01 19:51:55 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -327,6 +327,8 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpDivideAssign > {
 /*! @{ */
 
 // Primitive Matrices
+
+//  + PMatrix
 template<class T1, int N, template<class,int> class C>
 inline typename UnaryReturn<PMatrix<T1,N,C>, OpUnaryPlus>::Type_t
 operator+(const PMatrix<T1,N,C>& l)
@@ -341,6 +343,7 @@ operator+(const PMatrix<T1,N,C>& l)
 }
 
 
+//  - PMatrix
 template<class T1, int N, template<class,int> class C>
 inline typename UnaryReturn<PMatrix<T1,N,C>, OpUnaryMinus>::Type_t
 operator-(const PMatrix<T1,N,C>& l)
@@ -355,6 +358,7 @@ operator-(const PMatrix<T1,N,C>& l)
 }
 
 
+// PMatrix - PMatrix
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdd>::Type_t
 operator+(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
@@ -369,6 +373,7 @@ operator+(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 }
 
 
+// PMatrix - PMatrix
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpSubtract>::Type_t
 operator-(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
@@ -383,6 +388,7 @@ operator-(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 }
 
 
+// PMatrix * PScalar
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpMultiply>::Type_t
 operator*(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
@@ -396,6 +402,7 @@ operator*(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 }
 
 
+// PScalar * PMatrix
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpMultiply>::Type_t
 operator*(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
@@ -409,6 +416,7 @@ operator*(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 }
 
 
+// PMatrix * PMatrix
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpMultiply>::Type_t
 operator*(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
@@ -427,6 +435,26 @@ operator*(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 }
 
 
+// Optimized  adj(PMatrix)*PMatrix
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdjMultiply>::Type_t
+adjMultiply(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
+{
+  typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdjMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+    {
+      d.elem(i,j) = adjMultiply(l.elem(0,i), r.elem(0,j));
+      for(int k=1; k < N; ++k)
+	d.elem(i,j) += adjMultiply(l.elem(k,i), r.elem(k,j));
+    }
+
+  return d;
+}
+
+
+// PMatrix / PScalar
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpDivide>::Type_t
 operator/(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)

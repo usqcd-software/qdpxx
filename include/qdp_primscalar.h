@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.3 2003-08-01 18:41:11 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.4 2003-08-01 19:51:55 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -323,6 +323,8 @@ struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpRightShiftAssign > {
 /*! @{ */
 
 // Primitive Scalars
+
+// ! PScalar
 template<class T>
 struct UnaryReturn<PScalar<T>, OpNot > {
   typedef PScalar<typename UnaryReturn<T, OpNot>::Type_t>  Type_t;
@@ -335,7 +337,7 @@ operator!(const PScalar<T1>& l)
   return ! l.elem();
 }
 
-
+// + PScalar
 template<class T1>
 inline typename UnaryReturn<PScalar<T1>, OpUnaryPlus>::Type_t
 operator+(const PScalar<T1>& l)
@@ -343,7 +345,7 @@ operator+(const PScalar<T1>& l)
   return +l.elem();
 }
 
-
+// - PScalar
 template<class T1>
 inline typename UnaryReturn<PScalar<T1>, OpUnaryMinus>::Type_t
 operator-(const PScalar<T1>& l)
@@ -351,7 +353,7 @@ operator-(const PScalar<T1>& l)
   return -l.elem();
 }
 
-
+// PScalar + PScalar
 template<class T1, class T2>
 inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpAdd>::Type_t
 operator+(const PScalar<T1>& l, const PScalar<T2>& r)
@@ -359,7 +361,7 @@ operator+(const PScalar<T1>& l, const PScalar<T2>& r)
   return l.elem() + r.elem();
 }
 
-
+// PScalar - PScalar
 template<class T1, class T2>
 inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpSubtract>::Type_t
 operator-(const PScalar<T1>& l, const PScalar<T2>& r)
@@ -367,15 +369,23 @@ operator-(const PScalar<T1>& l, const PScalar<T2>& r)
   return l.elem() - r.elem();
 }
 
-
+// PScalar * PScalar
 template<class T1, class T2>
 inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpMultiply>::Type_t
 operator*(const PScalar<T1>& l, const PScalar<T2>& r)
 {
-  return  l.elem() * r.elem();
+  return l.elem() * r.elem();
 }
 
+// Optimized  adj(PMatrix)*PMatrix
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpAdjMultiply>::Type_t
+adjMultiply(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  return adjMultiply(l.elem(), r.elem());
+}
 
+// PScalar / PScalar
 template<class T1, class T2>
 inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpDivide>::Type_t
 operator/(const PScalar<T1>& l, const PScalar<T2>& r)
@@ -384,13 +394,12 @@ operator/(const PScalar<T1>& l, const PScalar<T2>& r)
 }
 
 
-
+// PScalar << PScalar
 template<class T1, class T2 >
 struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpLeftShift > {
   typedef PScalar<typename BinaryReturn<T1, T2, OpLeftShift>::Type_t>  Type_t;
 };
  
-
 template<class T1, class T2>
 inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpLeftShift>::Type_t
 operator<<(const PScalar<T1>& l, const PScalar<T2>& r)
@@ -398,12 +407,12 @@ operator<<(const PScalar<T1>& l, const PScalar<T2>& r)
   return l.elem() << r.elem();
 }
 
+// PScalar >> PScalar
 template<class T1, class T2 >
 struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpRightShift > {
   typedef PScalar<typename BinaryReturn<T1, T2, OpRightShift>::Type_t>  Type_t;
 };
  
-
 template<class T1, class T2>
 inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpRightShift>::Type_t
 operator>>(const PScalar<T1>& l, const PScalar<T2>& r)
@@ -411,7 +420,7 @@ operator>>(const PScalar<T1>& l, const PScalar<T2>& r)
   return l.elem() >> r.elem();
 }
 
-
+// PScalar % PScalar
 template<class T1, class T2>
 inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpMod>::Type_t
 operator%(const PScalar<T1>& l, const PScalar<T2>& r)
@@ -419,6 +428,7 @@ operator%(const PScalar<T1>& l, const PScalar<T2>& r)
   return l.elem() % r.elem();
 }
 
+// PScalar ^ PScalar
 template<class T1, class T2>
 inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpBitwiseXor>::Type_t
 operator^(const PScalar<T1>& l, const PScalar<T2>& r)
@@ -426,6 +436,7 @@ operator^(const PScalar<T1>& l, const PScalar<T2>& r)
   return l.elem() ^ r.elem();
 }
 
+// PScalar & PScalar
 template<class T1, class T2>
 inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpBitwiseAnd>::Type_t
 operator&(const PScalar<T1>& l, const PScalar<T2>& r)
@@ -433,6 +444,7 @@ operator&(const PScalar<T1>& l, const PScalar<T2>& r)
   return l.elem() & r.elem();
 }
 
+// PScalar | PScalar
 template<class T1, class T2>
 inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpBitwiseOr>::Type_t
 operator|(const PScalar<T1>& l, const PScalar<T2>& r)

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.4 2003-08-01 18:40:23 edwards Exp $
+// $Id: qdp_reality.h,v 1.5 2003-08-01 19:51:55 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -763,6 +763,14 @@ operator*(const RScalar<T1>& l, const RScalar<T2>& r)
   return l.elem() * r.elem();
 }
 
+// Optimized  adj(RScalar)*RScalar
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAdjMultiply>::Type_t
+adjMultiply(const RScalar<T1>& l, const RScalar<T2>& r)
+{
+  return adjMultiply(l.elem(), r.elem());
+}
+
 
 template<class T1, class T2>
 inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpDivide>::Type_t
@@ -1423,6 +1431,20 @@ operator*(const RComplex<T1>& l, const RScalar<T2>& r)
 
   d.real() = l.real()*r.elem();
   d.imag() = l.imag()*r.elem();
+  return d;
+}
+
+
+// Optimized  adj(RComplex)*RComplex
+template<class T1, class T2>
+inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiply>::Type_t
+adjMultiply(const RComplex<T1>& l, const RComplex<T2>& r)
+{
+  typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiply>::Type_t  d;
+
+  // The complex conjugate nature has been eaten here leaving simple multiples
+  d.real() = l.real()*r.real() + l.imag()*r.imag();
+  d.imag() = l.real()*r.imag() - l.imag()*r.real();
   return d;
 }
 
