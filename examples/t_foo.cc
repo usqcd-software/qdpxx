@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.34 2004-06-30 21:48:02 edwards Exp $
+// $Id: t_foo.cc,v 1.35 2004-07-02 19:25:56 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -22,13 +22,13 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {2,2,1,1};
+  const int foo[] = {2,1,1,1};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
   Layout::create();
 
-  XMLFileWriter xml("foo.xml");
+  XMLFileWriter xml("t_foo.xml");
 //  xml.open("foo.xml");
   push(xml, "foo");
 
@@ -42,7 +42,11 @@ int main(int argc, char *argv[])
     random(a); random(b); random(c);
     c = a*b;
     cc = trace(c);
+    cerr << "Here 1" << endl;
     dd = trace(a*b);
+    cerr << "Here 2" << endl;
+    dd = trace(a*(b*1));
+    cerr << "Here 3" << endl;
     write(xml,"diff", Real(norm2(cc-dd)));
   }
 #endif
