@@ -1,3 +1,9 @@
+02/10/2005 -- Robert Edwards
+
+	Version 1.11.8. Bug fix again in qdp_multi1d.h . Now have moved 
+        back to the old tried-and-true version if multiXd but added a few
+        new functions.
+
 02/03/2005 -- Robert Edwards
 
 	Version 1.11.7. Removed member func. template params in
