@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 0.4
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 0.5
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -104,7 +104,7 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 0.4}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 0.5}
 }
 \author{SciDAC Software Coordinating Committee}
 
@@ -707,17 +707,17 @@ In the \cpp{} API all operations are functions that act on their
 argument and most functions return their results. Except for explicit
 shift functions and global reductions, these functions are point-wise.
 The \cpp{} API differs from the C API in that there are no combined
-operations like conjugate with a multiply.  Instead, one simply calls
-the conjugate function.  Thus
+operations like adjoint with a multiply.  Instead, one simply calls
+the adjoint function.  Thus
 %
 \begin{verbatim}
-  c = conj(u)*b
+  c = adj(u)*b
 \end{verbatim}
 %
 carries out the product
 %
 \begin{verbatim}
-  c[x] = conj(u[x])*b[x]
+  c[x] = adj(u[x])*b[x]
 \end{verbatim}
 %
 for all sites {\tt x} in subset {\tt all}.
@@ -1351,16 +1351,16 @@ ldexp, pow, fmod, atan2
 
 \begin{flushleft}
 \begin{tabular}{lcp{4.0in}}
-\verb|conj|             &:& hermitian conjugate (adjoint)\\
+\verb|adj|              &:& hermitian conjugate (adjoint)\\
+\verb|conj|             &:& complex conjugate\\
 \verb|transpose|        &:& matrix tranpose, on a scalar it is a nop\\
 \verb|trace|            &:& matrix trace\\
 \verb|real|             &:& real part\\
 \verb|imag|             &:& imaginary part\\
 \verb|colorTrace|       &:& trace over color indices\\
 \verb|spinTrace|        &:& trace over spin indices\\
-\verb|multiplyI|        &:& multiplies argument by imag "i"\\
-\verb|multiplyMinusI|   &:& multiplies argument by imag "-i"\\
-\verb|localNorm2|       &:& on fibers computes trace(conj(source)*source)\\
+\verb|timesI|           &:& multiplies argument by imag "i"\\
+\verb|localNorm2|       &:& on fibers computes trace(adj(source)*source)\\
 \end{tabular}
 \end{flushleft}
 
@@ -1370,7 +1370,8 @@ ldexp, pow, fmod, atan2
 \begin{flushleft}
 \begin{tabular}{lcp{4.0in}}
 \verb|cmplx|              &:& returns complex object   arg1 + i*arg2\\
-\verb|localInnerproduct|  &:& at each site computes trace(conj(arg1)*arg2)\\
+\verb|localInnerProduct|  &:& at each site computes trace(adj(arg1)*arg2)\\
+\verb|outerProduct|       &:& at each site constructs (arg1_i * arg2_j^*)_{ij}\\
 \end{tabular}
 \end{flushleft}
 
@@ -1410,7 +1411,7 @@ ldexp, pow, fmod, atan2
 \verb|sum(arg1)|              &:& sum over lattice indices returning 
                                object of same fiber type\\
 \verb|norm2(arg1)|            &:& sum(localNorm2(arg1))\\
-\verb|innerproduct(arg1,arg2)|&:& sum(localInnerproduct(arg1,arg2))\\
+\verb|innerProduct(arg1,arg2)|&:& sum(localInnerProduct(arg1,arg2))\\
 \verb|sumMulti(arg1,Set)|     &:& sum over each subset of Set returning \#subset
                           objects of same fiber type\\
 \end{tabular}
@@ -1528,8 +1529,8 @@ All operations listed in Sections~\ref{sec:infix}--\ref{sec:otherfuncs}
        {\tt *=(PScalar)}\\
   {\em Trinary}:& {\tt where}\\
   {\em C-lib funcs}:& none\\
-  {\em QDP funcs}:& {\tt real}, {\tt imag}, {\tt multiplyI}, {\tt multiplyMinusI}, 
-        {\tt localNorm2}, {\tt cmplx}, {\tt localInnerproduct}\\
+  {\em QDP funcs}:& {\tt real}, {\tt imag}, {\tt timesI}, 
+        {\tt localNorm2}, {\tt cmplx}, {\tt localInnerProduct}, {\tt outerProduct}\\
   {\em In place funcs}:& all\\
   {\em Broadcasts}:& {\tt =(Zero)}\\
   {\em Reductions}:& all\\
@@ -1674,7 +1675,7 @@ namely show all the functions and what are some (selected) usages.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & \protoUnaryQual{\tt conj}  \\
+  Syntax      & \protoUnaryQual{\tt adj}  \\
   \hline
   Meaning     & $r = a^\dagger$ \\
   \hline
@@ -2407,7 +2408,7 @@ the left hand side of the assignment.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt Complex innerproduct(}{\it Type}{\tt \& a, const }{\it Type }{\tt \& b)}\\
+  Syntax      & {\tt Complex innerProduct(}{\it Type}{\tt \& a, const }{\it Type }{\tt \& b)}\\
   \hline
   Meaning     & $r = \sum a \cdot b$ \\
   \hline
