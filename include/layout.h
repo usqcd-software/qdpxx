@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: layout.h,v 1.9 2003-01-15 21:49:03 edwards Exp $
+// $Id: layout.h,v 1.10 2003-01-20 16:15:40 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -84,7 +84,7 @@ namespace Layout
 }
 
 //! Declaration of shift function object
-extern NearestNeighborMap  shift;
+extern ArrayBiDirectionalMap  shift;
 
 
 /*! @} */   // end of group layout
