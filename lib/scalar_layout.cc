@@ -1,4 +1,4 @@
-// $Id: scalar_layout.cc,v 1.2 2003-01-15 21:47:49 edwards Exp $
+// $Id: scalar_layout.cc,v 1.3 2003-01-17 05:45:19 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -94,7 +94,6 @@ namespace Layout
   //! Returns the number of nodes
   int numNodes() {return 1;}
 
-
   //! The linearized site index for the corresponding lexicographic site
   int linearSiteIndex(int site)
   {
@@ -143,6 +142,16 @@ namespace Layout
 
 namespace Layout
 {
+  //! Reconstruct the lattice coordinate from the node and site number
+  /*! 
+   * This is the inverse of the nodeNumber and linearSiteIndex functions.
+   * The API requires this function to be here.
+   */
+  multi1d<int> siteCoords(int node, int linearsite)
+  {
+    return crtesn(linearsite, lattSize());
+  }
+
   //! The linearized site index for the corresponding coordinate
   /*! This layout is a simple lexicographic lattice ordering */
   int linearSiteIndex(const multi1d<int>& coord)
@@ -206,6 +215,26 @@ namespace Layout
 
 namespace Layout
 {
+  //! Reconstruct the lattice coordinate from the node and site number
+  /*! 
+   * This is the inverse of the nodeNumber and linearSiteIndex functions.
+   * The API requires this function to be here.
+   */
+  multi1d<int> siteCoords(int node, int linearsite)
+  {
+    int cb = linearsite / vol_cb;
+    multi1d<int> coord = crtesn(linearsite % _layout.vol_cb, _layout.cb_nrow);
+
+    int cbb = cb;
+    for(int m=1; m<coord.size(); ++m)
+      cbb += coord[m];
+    cbb = cbb & 1;
+
+    coord[0] = 2*coord[0] + cbb;
+
+    return coord;
+  }
+
   //! The linearized site index for the corresponding coordinate
   /*! This layout is appropriate for a 2 checkerboard (red/black) lattice */
   int linearSiteIndex(const multi1d<int>& coord)
@@ -227,17 +256,7 @@ namespace Layout
   /*! This layout is appropriate for a 2 checkerboard (red/black) lattice */
   int lexicoSiteIndex(int linearsite)
   {
-    int cb = linearsite / vol_cb;
-    multi1d<int> coord = crtesn(linearsite % _layout.vol_cb, _layout.cb_nrow);
-
-    int cbb = cb;
-    for(int m=1; m<coord.size(); ++m)
-      cbb += coord[m];
-    cbb = cbb & 1;
-
-    coord[0] = 2*coord[0] + cbb;
-
-    return local_site(coord, lattSize());
+    return local_site(siteCoords(0,linearsite), lattSize());
   }
 
   //! Initializer for layout
@@ -286,6 +305,33 @@ namespace Layout
 
 namespace Layout
 {
+  //! Reconstruct the lattice coordinate from the node and site number
+  /*! 
+   * This is the inverse of the nodeNumber and linearSiteIndex functions.
+   * The API requires this function to be here.
+   */
+  multi1d<int> siteCoords(int node, int linearsite) // ignore node
+  {
+    int subl = linearsite / _layout.vol_cb;
+    multi1d<int> coord = crtesn(linearsite % vol_cb, cb_nrow);
+
+    int cb = 0;
+    for(int m=1; m<coord.size(); ++m)
+      cb += coord[m];
+    cb &= 1;
+
+    coord[0] <<= 2;
+    for(int m=1; m<coord.size(); ++m)
+      coord[m] <<= 1;
+
+    coord[0] ^= cb << 1;
+    for(int m=0; m<coord.size(); ++m)
+      coord[m] ^= (subl & (1 << m)) >> m;
+    coord[0] ^= (subl & (1 << Nd)) >> 1;
+
+    return coord;
+  }
+
   //! The linearized site index for the corresponding coordinate
   /*! This layout is appropriate for a 32-style checkerboard lattice */
   int linearSiteIndex(const multi1d<int>& coord)
@@ -316,24 +362,7 @@ namespace Layout
   /*! This layout is appropriate for a 32-style checkerboard lattice */
   int lexicoSiteIndex(int linearsite)
   {
-    int subl = linearsite / _layout.vol_cb;
-    multi1d<int> coord = crtesn(linearsite % vol_cb, cb_nrow);
-
-    int cb = 0;
-    for(int m=1; m<coord.size(); ++m)
-      cb += coord[m];
-    cb &= 1;
-
-    coord[0] <<= 2;
-    for(int m=1; m<coord.size(); ++m)
-      coord[m] <<= 1;
-
-    coord[0] ^= cb << 1;
-    for(int m=0; m<coord.size(); ++m)
-      coord[m] ^= (subl & (1 << m)) >> m;
-    coord[0] ^= (subl & (1 << Nd)) >> 1;
-
-    return local_site(coord, _layout.nrow);
+    return local_site(siteCoords(0,linearsite), lattSize());
   }
 
 
