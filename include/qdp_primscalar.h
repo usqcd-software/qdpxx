@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.4 2003-08-01 19:51:55 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.5 2003-08-04 19:03:10 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -383,6 +383,22 @@ inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpAdjMultiply>::Type_t
 adjMultiply(const PScalar<T1>& l, const PScalar<T2>& r)
 {
   return adjMultiply(l.elem(), r.elem());
+}
+
+// Optimized  PMatrix*adj(PMatrix)
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpMultiplyAdj>::Type_t
+multiplyAdj(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  return multiplyAdj(l.elem(), r.elem());
+}
+
+// Optimized  adj(PMatrix)*adj(PMatrix)
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpAdjMultiplyAdj>::Type_t
+adjMultiplyAdj(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  return adjMultiplyAdj(l.elem(), r.elem());
 }
 
 // PScalar / PScalar
