@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.7 2002-11-13 19:36:41 edwards Exp $
+// $Id: t_mesplq.cc,v 1.8 2002-11-28 02:56:50 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -12,7 +12,7 @@ NmlWriter nml;
 int main(int argc, char **argv)
 {
   // Setup the geometry
-  const int foo[] = {LX0,LX1,LX2,LX3};
+  const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   geom.init(nrow);

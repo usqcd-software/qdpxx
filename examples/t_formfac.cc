@@ -1,4 +1,4 @@
-// $Id: t_formfac.cc,v 1.5 2002-11-13 02:33:53 edwards Exp $
+// $Id: t_formfac.cc,v 1.6 2002-11-28 02:56:50 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -11,7 +11,7 @@ using namespace QDP;
 int main(int argc, char **argv)
 {
   // Setup the geometry
-  const int foo[] = {LX0,LX1,LX2,LX3};
+  const int foo[] = {2,2,2,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   geom.init(nrow);
