@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_forward.h,v 1.8 2004-11-22 19:31:31 edwards Exp $
+// $Id: qdp_forward.h,v 1.9 2005-03-21 05:28:30 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -15,6 +15,27 @@ class BinaryWriter;
 
 
 // Forward declarations
+//! dest  = random
+template<class T1, class T2>
+inline void
+fill_random(float& d, T1& seed, T2& skewed_seed, const T1& seed_mult);
+
+//! dest  = random
+template<class T1, class T2>
+inline void
+fill_random(double& d, T1& seed, T2& skewed_seed, const T1& seed_mult);
+
+//! dest  = random
+template<class T1, class T2, int N>
+inline void
+fill_random(float* d, T1& seed, T2& skewed_seed, const T1& seed_mult);
+
+//! dest  = random
+template<class T1, class T2, int N>
+inline void
+fill_random(double* d, T1& seed, T2& skewed_seed, const T1& seed_mult);
+
+
 namespace RNG 
 {
 //  float sranf(Seed&, Seed&, const Seed&);
