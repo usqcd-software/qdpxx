@@ -1,3 +1,9 @@
+06/07/2003 -- Robert Edwards
+
+	Version 1.4.3: added QIO support under new(er) MPICH. Changed ifstream/ofstream
+        into  qdp_io.cc  to now use a generic RemoteFile{Input,Output}{Buf,Stream}
+        for stream'ed files. This gives hooks for manipulating files.
+
 06/05/2003 -- Robert Edwards
 
 	Version 1.4.2: small tweaks. Added is_open(), fail() to IO classes.
