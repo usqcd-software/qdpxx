@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.17 2003-04-16 15:29:25 edwards Exp $
+// $Id: t_foo.cc,v 1.18 2003-04-17 18:48:33 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,2,2};
+  const int foo[] = {2,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -391,11 +391,18 @@ int main(int argc, char *argv[])
    XMLMetaWriter rec_xml;
    XML_set(rec_xml.get(),"Dummy record xml");
 
+   gaussian(a);
+   nml << "Test of QDPSerialWriter - here first is a";
+   Write(nml,a);
+
    cerr << "create serialwriter" << endl;
    QDPSerialWriter to(file_xml,"fred.dime");
    cerr << "write to" << endl;
    to.write(rec_xml,a);
    cerr << "end write" << endl;
+
+   nml << "Test of QDPSerialWriter";
+   Write(nml,a);
  }
 #endif
 
@@ -406,11 +413,16 @@ int main(int argc, char *argv[])
    XMLMetaReader file_xml;
    XMLMetaReader rec_xml;
 
+   a = 0;
+
    cerr << "open serialreader" << endl;
    QDPSerialReader from(file_xml,"fred.dime");
    cerr << "read from" << endl;
    from.read(rec_xml,a);
    cerr << "end read" << endl;
+
+   nml << "Read a from QDPSerialReader";
+   Write(nml,a);
  }
 #endif
 
