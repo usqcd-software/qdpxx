@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_layout.cc,v 1.5 2003-11-05 18:31:17 edwards Exp $
+// $Id: qdp_parscalarvec_layout.cc,v 1.6 2004-08-10 14:02:37 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec layout routines
@@ -188,6 +188,9 @@ namespace Layout
 
     // Initialize RNG
     RNG::initDefaultRNG();
+
+    // Set default profile level
+    setProfileLevel(getProgramProfileLevel());
   }
 
 

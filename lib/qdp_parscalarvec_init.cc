@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_init.cc,v 1.5 2003-12-23 18:05:46 edwards Exp $
+// $Id: qdp_parscalarvec_init.cc,v 1.6 2004-08-10 14:02:37 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec init routines
@@ -35,6 +35,10 @@ void QDP_initialize(int *argc, char ***argv)
       help_flag = true;
   }
 
+  bool setGeomP = false;
+  multi1d<QMP_u32_t> logical_geom(Nd);   // apriori logical geometry of the machine
+  logical_geom = 0;
+
   int rtiP = 0;
   int QMP_verboseP = 0;
   const int maxlen = 256;
@@ -47,9 +51,24 @@ void QDP_initialize(int *argc, char ***argv)
     {
       fprintf(stderr,"Usage:    %s options\n",(*argv)[0]);
       fprintf(stderr,"options:\n");
-      fprintf(stderr,"    -h                 help\n");
+      fprintf(stderr,"    -h        help\n");
       fprintf(stderr,"    -V        %%d [%d] verbose mode for QMP\n", 
 	      QMP_verboseP);
+#if defined(QDP_USE_PROFILING)   
+      fprintf(stderr,"    -p        %%d [%d] profile level\n", 
+	      getProfileLevel());
+#endif
+
+      // logical geometry info
+      fprintf(stderr,"    -geom     %%d");
+      for(int i=1; i < Nd; i++) 
+	fprintf(stderr," %%d");
+
+      fprintf(stderr," [-1");
+      for(int i=1; i < Nd; i++) 
+	fprintf(stderr,",-1");
+      fprintf(stderr,"] logical machine geometry\n");
+
 #ifdef USE_REMOTE_QIO
       fprintf(stderr,"    -cd       %%s [.] set working dir for QIO interface\n");
       fprintf(stderr,"    -rti      %%d [%d] use run-time interface\n", 
@@ -66,6 +85,24 @@ void QDP_initialize(int *argc, char ***argv)
     if (strcmp((*argv)[i], "-V")==0) 
     {
       QMP_verboseP = 1;
+    }
+#if defined(QDP_USE_PROFILING)   
+    else if (strcmp((*argv)[i], "-p")==0) 
+    {
+      int lev;
+      sscanf((*argv)[++i], "%d", &lev);
+      setProgramProfileLevel(lev);
+    }
+#endif
+    else if (strcmp((*argv)[i], "-geom")==0) 
+    {
+      setGeomP = true;
+      for(int j=0; j < Nd; j++) 
+      {
+	int uu;
+	sscanf((*argv)[++i], "%d", &uu);
+	logical_geom[j] = uu;
+      }
     }
 #ifdef USE_REMOTE_QIO
     else if (strcmp((*argv)[i], "-cd")==0) 
@@ -101,16 +138,38 @@ void QDP_initialize(int *argc, char ***argv)
 
   QMP_verbose (QMP_verboseP);
 
-  QDPIO::cout << "Now initialize QMP\n";
+#if QDP_DEBUG >= 1
+  // Print command line args
+  for (int i=0; i<*argc; i++) 
+    QDP_info("QDP_init: arg[%d] = XX%sXX",i,(*argv)[i]);
+#endif
+
+#if QDP_DEBUG >= 1
+  QDP_info("Now initialize QMP");
+#endif
 
   if (QMP_init_msg_passing(argc, argv, QMP_SMP_ONE_ADDRESS) != QMP_SUCCESS)
     QDP_error_exit("QDP_initialize failed");
 
-  QDPIO::cout << "Some layout init\n";
+#if QDP_DEBUG >= 1
+  QDP_info("QMP inititalized");
+#endif
+
+  if (setGeomP)
+    if (QMP_declare_logical_topology(logical_geom.slice(), (QMP_u32_t)Nd) != QMP_TRUE)
+      QDP_error_exit("QMP_declare_logical_topology failed");
+
+#if QDP_DEBUG >= 1
+  QDP_info("Some layout init");
+#endif
 
   Layout::init();   // setup extremely basic functionality in Layout
 
   isInit = true;
+
+#if QDP_DEBUG >= 1
+  QDP_info("Init qio");
+#endif
 
   // initialize remote file service (QIO)
   bool use_qio = (rtiP != 0) ? true : false;
@@ -121,7 +180,9 @@ void QDP_initialize(int *argc, char ***argv)
   QDPIO::cout.init(&std::cout);
   QDPIO::cerr.init(&std::cerr);
 
-  QDPIO::cout << "Initialize done\n";
+  initProfile(__FILE__, __func__, __LINE__);
+
+  QDPIO::cout << "Initialize done" << std::endl;
 }
 
 //! Is the machine initialized?
@@ -131,7 +192,12 @@ bool QDP_isInitialized() {return isInit;}
 void QDP_finalize()
 {
   if ( ! QDP_isInitialized() )
-    QDP_error_exit("QDP is not inited");
+  {
+    QDPIO::cerr << "QDP is not inited" << std::endl;
+    QDP_abort(1);
+  }
+
+  printProfile();
 
   // shutdown remote file service (QIO)
   QDPUtil::RemoteFileShutdown();
