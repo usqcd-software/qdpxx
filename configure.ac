@@ -89,7 +89,6 @@ AC_ARG_ENABLE(--enable-qio,
   AC_HELP_STRING([--disable-qio],
     [ Disable full QIO as it is not yet portable ]
   ),
-  [],
   []
 )
 

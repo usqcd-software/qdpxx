@@ -1762,8 +1762,6 @@ fi;
 if test "${enable___enable_qio+set}" = set; then
   enableval="$enable___enable_qio"
 
-else
-
 
 fi;
 
