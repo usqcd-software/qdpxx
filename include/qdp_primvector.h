@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.6 2003-08-01 18:43:47 edwards Exp $
+// $Id: qdp_primvector.h,v 1.7 2003-08-08 21:21:11 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -341,6 +341,7 @@ operator*(const PScalar<T1>& l, const PVector<T2,N,C>& r)
 }
 
 
+// PMatrix * PVector
 template<class T1, class T2, int N, template<class,int> class C1, template<class,int> class C2>
 inline typename BinaryReturn<PMatrix<T1,N,C1>, PVector<T2,N,C2>, OpMultiply>::Type_t
 operator*(const PMatrix<T1,N,C1>& l, const PVector<T2,N,C2>& r)
@@ -352,6 +353,23 @@ operator*(const PMatrix<T1,N,C1>& l, const PVector<T2,N,C2>& r)
     d.elem(i) = l.elem(i,0) * r.elem(0);
     for(int j=1; j < N; ++j)
       d.elem(i) += l.elem(i,j) * r.elem(j);
+  }
+
+  return d;
+}
+
+// Optimized  adj(PMatrix)*PVector
+template<class T1, class T2, int N, template<class,int> class C1, template<class,int> class C2>
+inline typename BinaryReturn<PMatrix<T1,N,C1>, PVector<T2,N,C2>, OpAdjMultiply>::Type_t
+adjMultiply(const PMatrix<T1,N,C1>& l, const PVector<T2,N,C2>& r)
+{
+  typename BinaryReturn<PMatrix<T1,N,C1>, PVector<T2,N,C2>, OpAdjMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+  {
+    d.elem(i) = adjMultiply(l.elem(0,i), r.elem(0));
+    for(int j=1; j < N; ++j)
+      d.elem(i) += adjMultiply(l.elem(j,i), r.elem(j));
   }
 
   return d;
