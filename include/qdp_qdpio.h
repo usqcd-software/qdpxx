@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.16 2004-03-21 19:28:18 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.17 2004-03-23 03:10:47 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -287,7 +287,7 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
 	       sizeof(typename WordType<T>::Type_t), 
 	       (void *)s1.elem()) != QIO_SUCCESS)
   {
-    QDPIO::cerr << "QDOPFileReader: error reading file" << endl;
+    QDPIO::cerr << "QDPFileReader: error reading file" << endl;
     clear(QDPIO_badbit);
   }
 
@@ -322,7 +322,7 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OScalar<T> >& s1)
 	       sizeof(typename WordType<T>::Type_t), 
 	       (void *)s1.slice()) != QIO_SUCCESS)
   {
-    QDPIO::cerr << "QDOPFileReader: error reading file" << endl;
+    QDPIO::cerr << "QDPFileReader: error reading file" << endl;
     clear(QDPIO_badbit);
   }
 
@@ -500,7 +500,7 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
 	       sizeof(typename WordType<T>::Type_t), 
 	       ssa) != QIO_SUCCESS)
   {
-    QDPIO::cerr << "QDOPFileReader: error reading file" << endl;
+    QDPIO::cerr << "QDPFileReader: error reading file" << endl;
     clear(QDPIO_badbit);
   }
 
