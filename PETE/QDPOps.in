@@ -7,6 +7,13 @@ unaryOps
   COMMENTB = "/*! @ingroup group1
   @relates QDPType */"
 -----
+  TAG = "FnTranspose"
+  FUNCTION = "transpose"
+  EXPR = "return (transpose(a));"
+  COMMENTA = "//! Transpose"
+  COMMENTB = "/*! @ingroup group1
+  @relates QDPType */"
+-----
   TAG = "FnTrace"
   FUNCTION = "trace"
   EXPR = "return (trace(a));"

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: QDPOperators.h,v 1.12 2002-10-14 02:36:15 edwards Exp $
+// $Id: QDPOperators.h,v 1.13 2002-11-03 02:48:06 edwards Exp $
 
 /*! @file
  * @brief Bulk of QDP operators produced by PETE
@@ -30,6 +30,17 @@ struct FnConj
   operator()(const T &a) const
   {
     return (conj(a));
+  }
+};
+
+struct FnTranspose
+{
+  PETE_EMPTY_CONSTRUCTORS(FnTranspose)
+  template<class T>
+  inline typename UnaryReturn<T, FnTranspose >::Type_t
+  operator()(const T &a) const
+  {
+    return (transpose(a));
   }
 };
 
@@ -463,6 +474,22 @@ conj(const QDPType<T1,C1> & l)
   typedef UnaryNode<FnConj,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
   typedef typename UnaryReturn<C1,FnConj >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(l)));
+}
+
+//! Transpose
+/*! @ingroup group1
+  @relates QDPType */
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnTranspose,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnTranspose >::Type_t >::Expression_t
+transpose(const QDPType<T1,C1> & l)
+{
+  typedef UnaryNode<FnTranspose,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnTranspose >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -4192,6 +4219,19 @@ conj(const QDPExpr<T1,C1> & l)
   typedef UnaryNode<FnConj,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
   typedef typename UnaryReturn<C1,FnConj >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+}
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnTranspose,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnTranspose >::Type_t >::Expression_t
+transpose(const QDPExpr<T1,C1> & l)
+{
+  typedef UnaryNode<FnTranspose,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnTranspose >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
