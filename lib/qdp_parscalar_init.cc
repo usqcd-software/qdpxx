@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.1 2003-05-22 20:06:29 edwards Exp $
+// $Id: qdp_parscalar_init.cc,v 1.2 2003-06-04 19:28:47 edwards Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -48,8 +48,7 @@ void QDP_finalize()
 //! Panic button
 void QDP_abort(int status)
 {
-  QDP_finalize(); 
-  exit(status);
+  QMP_abort(status); 
 }
 
 QDP_END_NAMESPACE();
