@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_defs.h,v 1.3 2003-08-21 03:01:45 edwards Exp $
+// $Id: qdp_defs.h,v 1.4 2003-08-23 02:25:39 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -110,6 +110,7 @@ typedef PScalar< PScalar< RScalar<DOUBLE> > > IntDouble;
 typedef PScalar< PScalar< RScalar<LOGICAL> > > IntBoolean;
 
 // Odd-ball to support random numbers
+typedef Real ILatticeReal;
 typedef Seed ILatticeSeed;
 
 // Fixed precision

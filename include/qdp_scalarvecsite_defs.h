@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_defs.h,v 1.2 2003-08-21 02:44:34 edwards Exp $
+// $Id: qdp_scalarvecsite_defs.h,v 1.3 2003-08-23 02:30:18 edwards Exp $
 
 /*! \file
  * \brief Type definitions for scalar/vector extensions-like architectures
@@ -117,6 +117,7 @@ typedef PScalar< PScalar< RScalar< IScalar<DOUBLE> > > > IntDouble;
 typedef PScalar< PScalar< RScalar< IScalar<LOGICAL> > > > IntBoolean;
 
 // Odd-ball to support random numbers
+typedef OScalar< PScalar< PScalar < RScalar< ILattice<REAL,INNER> > > > > ILatticeReal;
 typedef OScalar< PScalar< PSeed < RScalar< ILattice<INTEGER32,INNER> > > > > ILatticeSeed;
 
 // Fixed precision
