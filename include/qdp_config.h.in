@@ -1,0 +1,11 @@
+#ifndef QDP_CONFIG_INCLUDED
+#define QDP_CONFIG_INCLUDED
+
+#define @ARCHDEF_SUBSTITUTION@
+#define ND @ac_Nd@
+#define NC @ac_Nc@
+#define NS @ac_Ns@
+
+#define VOLUME @ac_max_volume@
+
+#endif 
