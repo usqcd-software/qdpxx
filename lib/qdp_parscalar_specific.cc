@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.10 2003-10-15 21:37:37 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.11 2003-11-05 17:49:26 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -65,31 +65,14 @@ void Map::make(const MapFunc& func)
     dstnode[linear]  = bnode;
 
 #if QDP_DEBUG >= 3
-    QDP_info("linear=%d  coord=%d %d %d %d   fcoord=%d %d %d %d    goffsets=%d", 
+    QDP_info("linear=%d  coord=%d %d %d %d   fcoord=%d %d %d %d   bcoord=%d %d %d %d   goffsets=%d", 
 	     linear, 
 	     coord[0], coord[1], coord[2], coord[3],
 	     fcoord[0], fcoord[1], fcoord[2], fcoord[3],
+	     bcoord[0], bcoord[1], bcoord[2], bcoord[3],
 	     goffsets[linear]);
 #endif
   }
-
-#if QDP_DEBUG >= 3
- {
-   ostringstream foon;
-   foon << "map." << Layout::nodeNumber();
-   NmlWriter nml(foon.str());
-
-   Write(nml,srcnode);
-   Write(nml,dstnode);
-
-   for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
-   {
-     QDP_info("goffsets(%d) = %d",linear,goffsets(linear));
-     QDP_info("srcnode(%d) = %d",linear,srcnode(linear));
-     QDP_info("dstnode(%d) = %d",linear,dstnode(linear));
-   }
- }
-#endif
 
   // Return a list of the unique nodes in the list
   // NOTE: my_node may be included as a unique node, so one extra
@@ -139,7 +122,7 @@ void Map::make(const MapFunc& func)
   if (! offnodeP)
   {
 #if QDP_DEBUG >= 3
-    QDP_info("exiting Map::make");
+    QDP_info("no off-node communications: exiting Map::make");
 #endif
     return;
   }
