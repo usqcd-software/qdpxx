@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.14 2003-07-16 21:32:40 edwards Exp $
+// $Id: t_io.cc,v 1.15 2003-07-16 21:33:26 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
   read(frombinary, dd);
   frombinary.close();
 
-  NmlWriter tonml("cat");
+  NmlWriter tonml("t_io.nml");
   Write(tonml,a);
   Write(tonml,aa);
   tonml.flush();
