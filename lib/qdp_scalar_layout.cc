@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_layout.cc,v 1.4 2003-07-18 20:03:01 edwards Exp $
+// $Id: qdp_scalar_layout.cc,v 1.5 2003-07-26 03:59:56 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -16,10 +16,6 @@
 
 #include "qdp.h"
 #include "qdp_util.h"
-
-#define  USE_LEXICO_LAYOUT
-#undef   USE_CB2_LAYOUT
-#undef   USE_CB32_LAYOUT
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -144,7 +140,7 @@ namespace Layout
     _layout.logical_coord = 0;
     _layout.logical_size = 1;
 
-#if defined(DEBUG)
+#if QDP_DEBUG >= 2
     fprintf(stderr,"vol=%d\n",_layout.vol);
 #endif
 
