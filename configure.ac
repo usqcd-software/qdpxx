@@ -1,4 +1,4 @@
-AC_INIT(qdp,0.19,edwards@jlab.org)
+AC_INIT(qdp,0.25,edwards@jlab.org)
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -240,11 +240,13 @@ AC_CONFIG_FILES(docs/qdpdoc)
 #
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(lib/Makefile)
-AC_CONFIG_FILES(docs/Makefile)
-AC_CONFIG_FILES(examples/Makefile)
 AC_CONFIG_FILES(include/Makefile)
 AC_CONFIG_FILES(include/PETE/Makefile)
 AC_CONFIG_FILES(include/qdp_config.h)
+AC_CONFIG_FILES(docs/Makefile)
+AC_CONFIG_FILES(examples/Makefile)
+AC_CONFIG_FILES(examples/BuildingBlocks/Makefile)
+AC_CONFIG_FILES(examples/propagator/Makefile)
 #
 # Finish
 #
