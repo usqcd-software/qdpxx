@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primdwvec.h,v 1.1 2003-10-17 15:56:23 edwards Exp $
+// $Id: qdp_primdwvec.h,v 1.2 2003-10-20 20:14:57 edwards Exp $
 
 /*! \file
  * \brief Domain-wall Vector (lives in fictitious flavor space)
@@ -196,6 +196,249 @@ pokeDW(PDWVector<T1,N>& l, const PScalar<T2>& r, int row)
   return l;
 }
 
+
+//-----------------------------------------------------------------------------
+//! PDWVector = Gamma<M,m> * PDWVector
+template<class T2, int N, int M, int m>
+inline typename BinaryReturn<GammaConst<M,m>, PDWVector<T2,N>, OpGammaConstMultiply>::Type_t
+operator*(const GammaConst<M,m>& l, const PDWVector<T2,N>& r)
+{
+  typename BinaryReturn<GammaConst<M,m>, PDWVector<T2,N>, OpGammaConstMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l * r.elem(i);
+
+  return d;
+}
+
+//! PDWVector = PDWVector * Gamma<M,m>
+template<class T2, int N, int M, int m>
+inline typename BinaryReturn<PDWVector<T2,N>, GammaConst<M,m>, OpGammaConstMultiply>::Type_t
+operator*(const PDWVector<T2,N>& l, const GammaConst<M,m>& r)
+{
+  typename BinaryReturn<GammaConst<M,m>, PDWVector<T2,N>, OpGammaConstMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem() * r;
+
+  return d;
+}
+
+//-----------------------------------------------------------------------------
+//! PDWVector = SpinProject(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir0Minus>::Type_t
+spinProjectDir0Minus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir0Minus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinProjectDir0Minus(s1.elem(i));
+
+  return d;
+}
+
+//! PDWVector = SpinReconstruct(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir0Minus>::Type_t
+spinReconstructDir0Minus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir0Minus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinReconstructDir0Minus(s1.elem(i));
+
+  return d;
+}
+
+
+//! PDWVector = SpinProject(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir1Minus>::Type_t
+spinProjectDir1Minus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir1Minus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinProjectDir1Minus(s1.elem(i));
+
+  return d;
+}
+
+//! PDWVector = SpinReconstruct(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir1Minus>::Type_t
+spinReconstructDir1Minus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir1Minus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinReconstructDir1Minus(s1.elem(i));
+
+  return d;
+}
+
+
+//! PDWVector = SpinProject(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir2Minus>::Type_t
+spinProjectDir2Minus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir2Minus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinProjectDir2Minus(s1.elem(i));
+
+  return d;
+}
+
+//! PDWVector = SpinReconstruct(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir2Minus>::Type_t
+spinReconstructDir2Minus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir2Minus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinReconstructDir2Minus(s1.elem(i));
+
+  return d;
+}
+
+
+//! PDWVector = SpinProject(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir3Minus>::Type_t
+spinProjectDir3Minus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir3Minus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinProjectDir3Minus(s1.elem(i));
+
+  return d;
+}
+
+//! PDWVector = SpinReconstruct(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir3Minus>::Type_t
+spinReconstructDir3Minus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir3Minus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinReconstructDir3Minus(s1.elem(i));
+
+  return d;
+}
+
+
+//! PDWVector = SpinProject(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir0Plus>::Type_t
+spinProjectDir0Plus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir0Plus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinProjectDir0Plus(s1.elem(i));
+
+  return d;
+}
+
+//! PDWVector = SpinReconstruct(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir0Plus>::Type_t
+spinReconstructDir0Plus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir0Plus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinReconstructDir0Plus(s1.elem(i));
+
+  return d;
+}
+
+
+//! PDWVector = SpinProject(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir1Plus>::Type_t
+spinProjectDir1Plus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir1Plus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinProjectDir1Plus(s1.elem(i));
+
+  return d;
+}
+
+//! PDWVector = SpinReconstruct(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir1Plus>::Type_t
+spinReconstructDir1Plus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir1Plus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinReconstructDir1Plus(s1.elem(i));
+
+  return d;
+}
+
+
+//! PDWVector = SpinProject(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir2Plus>::Type_t
+spinProjectDir2Plus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir2Plus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinProjectDir2Plus(s1.elem(i));
+
+  return d;
+}
+
+//! PDWVector = SpinReconstruct(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir2Plus>::Type_t
+spinReconstructDir2Plus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir2Plus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinReconstructDir2Plus(s1.elem(i));
+
+  return d;
+}
+
+
+//! PDWVector = SpinProject(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir3Plus>::Type_t
+spinProjectDir3Plus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinProjectDir3Plus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinProjectDir3Plus(s1.elem(i));
+
+  return d;
+}
+
+//! PDWVector = SpinReconstruct(PDWVector)
+template<class T, int N>
+inline typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir3Plus>::Type_t
+spinReconstructDir3Plus(const PDWVector<T,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T,N>, FnSpinReconstructDir3Plus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = spinReconstructDir3Plus(s1.elem(i));
+
+  return d;
+}
 
 
 QDP_END_NAMESPACE();
