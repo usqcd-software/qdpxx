@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.6 2003-08-21 06:07:05 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.7 2003-08-21 06:14:25 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -384,13 +384,13 @@ __asm__ __volatile__ (                    \
               "mulps  %6,%%xmm5\n\t"      \
               "mulps  %1,%%xmm0\n\t"      \
 	      :                           \
-	      : "m" (*((float*)&bb+0+8*j)),     \
-		"m" (*((float*)&aa+0)),     \
-		"m" (*((float*)&aa+4)),     \
-		"m" (*((float*)&aa+24)),     \
-		"m" (*((float*)&aa+28)),     \
-		"m" (*((float*)&aa+48)),     \
-		"m" (*((float*)&aa+52)));    \
+	      : "m" (*(bb+0+8*j)),     \
+		"m" (*(aa+0)),     \
+		"m" (*(aa+4)),     \
+		"m" (*(aa+24)),     \
+		"m" (*(aa+28)),     \
+		"m" (*(aa+48)),     \
+		"m" (*(aa+52)));    \
 __asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
@@ -411,13 +411,13 @@ __asm__ __volatile__ (                    \
               "mulps  %5,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      : "m" (*((float*)&bb+4+8*j)),     \
-		"m" (*((float*)&aa+0)),     \
-		"m" (*((float*)&aa+4)),     \
-		"m" (*((float*)&aa+24)),     \
-		"m" (*((float*)&aa+28)),     \
-		"m" (*((float*)&aa+48)),     \
-		"m" (*((float*)&aa+52)));    \
+	      : "m" (*(bb+4+8*j)),     \
+		"m" (*(aa+0)),     \
+		"m" (*(aa+4)),     \
+		"m" (*(aa+24)),     \
+		"m" (*(aa+28)),     \
+		"m" (*(aa+48)),     \
+		"m" (*(aa+52)));    \
 __asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
@@ -438,13 +438,13 @@ __asm__ __volatile__ (                    \
               "mulps  %6,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      : "m" (*((float*)&bb+24+8*j)),     \
-		"m" (*((float*)&aa+8)),     \
-		"m" (*((float*)&aa+12)),     \
-		"m" (*((float*)&aa+32)),     \
-		"m" (*((float*)&aa+36)),     \
-		"m" (*((float*)&aa+56)),     \
-		"m" (*((float*)&aa+60)));    \
+	      : "m" (*(bb+24+8*j)),     \
+		"m" (*(aa+8)),     \
+		"m" (*(aa+12)),     \
+		"m" (*(aa+32)),     \
+		"m" (*(aa+36)),     \
+		"m" (*(aa+56)),     \
+		"m" (*(aa+60)));    \
 __asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
@@ -465,13 +465,13 @@ __asm__ __volatile__ (                    \
               "mulps  %5,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      : "m" (*((float*)&bb+28+8*j)),     \
-		"m" (*((float*)&aa+8)),     \
-		"m" (*((float*)&aa+12)),     \
-		"m" (*((float*)&aa+32)),     \
-		"m" (*((float*)&aa+36)),     \
-		"m" (*((float*)&aa+56)),     \
-		"m" (*((float*)&aa+60)));    \
+	      : "m" (*(bb+28+8*j)),     \
+		"m" (*(aa+8)),     \
+		"m" (*(aa+12)),     \
+		"m" (*(aa+32)),     \
+		"m" (*(aa+36)),     \
+		"m" (*(aa+56)),     \
+		"m" (*(aa+60)));    \
 __asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
@@ -492,13 +492,13 @@ __asm__ __volatile__ (                    \
               "mulps  %6,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      : "m" (*((float*)&bb+48+8*j)),     \
-		"m" (*((float*)&aa+16)),     \
-		"m" (*((float*)&aa+20)),     \
-		"m" (*((float*)&aa+40)),     \
-		"m" (*((float*)&aa+44)),     \
-		"m" (*((float*)&aa+64)),     \
-		"m" (*((float*)&aa+68)));    \
+	      : "m" (*(bb+48+8*j)),     \
+		"m" (*(aa+16)),     \
+		"m" (*(aa+20)),     \
+		"m" (*(aa+40)),     \
+		"m" (*(aa+44)),     \
+		"m" (*(aa+64)),     \
+		"m" (*(aa+68)));    \
 __asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
@@ -519,13 +519,13 @@ __asm__ __volatile__ (                    \
               "mulps  %5,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      : "m" (*((float*)&bb+52+8*j)),     \
-		"m" (*((float*)&aa+16)),     \
-		"m" (*((float*)&aa+20)),     \
-		"m" (*((float*)&aa+40)),     \
-		"m" (*((float*)&aa+44)),     \
-		"m" (*((float*)&aa+64)),     \
-		"m" (*((float*)&aa+68)));    \
+	      : "m" (*(bb+52+8*j)),     \
+		"m" (*(aa+16)),     \
+		"m" (*(aa+20)),     \
+		"m" (*(aa+40)),     \
+		"m" (*(aa+44)),     \
+		"m" (*(aa+64)),     \
+		"m" (*(aa+68)));    \
 __asm__ __volatile__ (                    \
               "movaps %%xmm0,%0\n\t"      \
               "movaps %%xmm1,%1\n\t"      \
@@ -533,12 +533,12 @@ __asm__ __volatile__ (                    \
               "movaps %%xmm3,%3\n\t"      \
               "movaps %%xmm4,%4\n\t"      \
               "movaps %%xmm5,%5\n\t"      \
-	      : "=m" (*((float*)&cc+0+8*j)),    \
-		"=m" (*((float*)&cc+4+8*j)),    \
-		"=m" (*((float*)&cc+24+8*j)),    \
-		"=m" (*((float*)&cc+28+8*j)),    \
-		"=m" (*((float*)&cc+48+8*j)),    \
-		"=m" (*((float*)&cc+52+8*j)));   \
+	      : "=m" (*(cc+0+8*j)),    \
+		"=m" (*(cc+4+8*j)),    \
+		"=m" (*(cc+24+8*j)),    \
+		"=m" (*(cc+28+8*j)),    \
+		"=m" (*(cc+48+8*j)),    \
+		"=m" (*(cc+52+8*j)));   \
 }
 
 
@@ -554,9 +554,13 @@ operator*<>(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
     PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiply>::Type_t  d;
 
-  _inline_ssevec_mult_su3_nn(d,l,r,0);
-  _inline_ssevec_mult_su3_nn(d,l,r,1);
-  _inline_ssevec_mult_su3_nn(d,l,r,2);
+  float *dd = (float*)&d;
+  float *ll = (float*)&l;
+  float *rr = (float*)&r;
+
+  _inline_ssevec_mult_su3_nn(dd,ll,rr,0);
+  _inline_ssevec_mult_su3_nn(dd,ll,rr,1);
+  _inline_ssevec_mult_su3_nn(dd,ll,rr,2);
 
   return d;
 }
