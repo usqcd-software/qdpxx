@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primscalar.h,v 1.10 2002-11-02 04:09:51 edwards Exp $
+// $Id: primscalar.h,v 1.11 2002-11-04 04:34:58 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -553,6 +553,18 @@ conj(const PScalar<T1>& s1)
   typename UnaryReturn<PScalar<T1>, FnConj>::Type_t  d;
 
   d.elem() = conj(s1.elem());
+  return d;
+}
+
+
+// Transpose
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnTranspose>::Type_t
+transpose(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnTranspose>::Type_t  d;
+
+  d.elem() = transpose(s1.elem());
   return d;
 }
 

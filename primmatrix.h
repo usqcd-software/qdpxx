@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primmatrix.h,v 1.9 2002-11-02 04:09:51 edwards Exp $
+// $Id: primmatrix.h,v 1.10 2002-11-04 04:34:58 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -360,6 +360,21 @@ conj(const PMatrix<T1,N,C>& l)
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       d.elem(i,j) = conj(l.elem(j,i));
+
+  return d;
+}
+
+
+// Transpose
+template<class T1, int N, template<class,int> class C>
+inline typename UnaryReturn<PMatrix<T1,N,C>, FnTranspose>::Type_t
+transpose(const PMatrix<T1,N,C>& l)
+{
+  typename UnaryReturn<PMatrix<T1,N,C>, FnTranspose>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = transpose(l.elem(j,i));
 
   return d;
 }
