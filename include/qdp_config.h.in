@@ -6,6 +6,13 @@
 #define NC @ac_Nc@
 #define NS @ac_Ns@
 
-#undef DEBUG
+
+// Integer debug level
+#define QDP_DEBUG  0
+
+// Use one of the following site layouts
+#undef   USE_LEXICO_LAYOUT
+#define  USE_CB2_LAYOUT
+#undef   USE_CB32_LAYOUT
 
 #endif 
