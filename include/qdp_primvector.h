@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.11 2003-08-21 02:41:05 edwards Exp $
+// $Id: qdp_primvector.h,v 1.12 2003-08-26 15:25:45 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -121,6 +121,29 @@ public:
 private:
   T F[N];
 };
+
+
+//! Stream input
+template<class T, int N, template<class,int> class C>  
+inline
+istream& operator>>(istream& s, PVector<T,N,C>& d)
+{
+  for(int i=0; i < N; ++i)
+    s >> d.elem(i);
+
+  return s;
+}
+
+//! Stream output
+template<class T, int N, template<class,int> class C>  
+inline
+ostream& operator<<(ostream& s, const PVector<T,N,C>& d)
+{
+  for(int i=0; i < N; ++i)
+    s << d.elem(i);
+
+  return s;
+}
 
 
 //! Text input

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.4 2003-08-23 02:26:33 edwards Exp $
+// $Id: qdp_primseed.h,v 1.5 2003-08-26 15:25:27 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -100,6 +100,49 @@ public:
 private:
   T F[4];
 };
+
+
+//! Text input
+template<class T>
+inline
+istream& operator>>(istream& s, PSeed<T>& d)
+{
+  for(int i=0; i < 4; ++i)
+    s >> d.elem(i);
+
+  return s;
+}
+
+//! Text output
+template<class T>
+inline
+ostream& operator<<(ostream& s, const PSeed<T>& d)
+{
+  s << d.elem(0) << " " << d.elem(1) << " " << d.elem(2) << " " << d.elem(3) << "\n";
+  return s;
+}
+
+//! Text input
+template<class T>
+inline
+TextReader& operator>>(TextReader& txt, PSeed<T>& d)
+{
+  for(int i=0; i < 4; ++i)
+    txt >> d.elem(i);
+
+  return txt;
+}
+
+//! Text output
+template<class T>
+inline
+TextWriter& operator<<(TextWriter& txt, const PSeed<T>& d)
+{
+  for(int i=0; i < 4; ++i)
+    txt << d.elem(i) << "\n";
+
+  return txt;
+}
 
 //! Ascii output
 template<class T>
