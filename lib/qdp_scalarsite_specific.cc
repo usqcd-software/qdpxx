@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_specific.cc,v 1.4 2003-07-31 01:02:22 edwards Exp $
+// $Id: qdp_scalarsite_specific.cc,v 1.5 2003-07-31 01:23:40 edwards Exp $
 
 /*! @file
  * @brief Scalar-like architecture specific routines
@@ -224,53 +224,6 @@ void OrderedSet::make(const SetFunc& func)
     QDP_info("OrderedSubset(%d): start=%d end=%d",cb,start,end);
 #endif
   }
-}
-	  
-
-//! Simple constructor called to produce a Subset from inside a Set
-void UnorderedSubset::make(multi1d<int>* ind, int cb)
-{
-  sitetable = ind;
-  sub_index = cb;
-}
-
-//! Simple constructor called to produce a Subset from inside a Set
-void UnorderedSubset::make(const UnorderedSubset& s)
-{
-  sub_index = s.sub_index;
-  sitetable = s.sitetable;
-}
-
-//! Simple constructor called to produce a Subset from inside a Set
-UnorderedSubset& UnorderedSubset::operator=(const UnorderedSubset& s)
-{
-  make(s);
-  return *this;
-}
-
-//! Simple constructor called to produce a Subset from inside a Set
-void OrderedSubset::make(int _start, int _end, multi1d<int>* _ind, int _cb)
-{
-  startSite = _start;
-  endSite   = _end;
-  sitetable = _ind;
-  sub_index = _cb;
-}
-
-//! Simple constructor called to produce a Subset from inside a Set
-void OrderedSubset::make(const OrderedSubset& s)
-{
-  sub_index = s.sub_index;
-  startSite = s.startSite;
-  endSite   = s.endSite;
-  sitetable = s.sitetable;
-}
-
-//! Simple constructor called to produce a Subset from inside a Set
-OrderedSubset& OrderedSubset::operator=(const OrderedSubset& s)
-{
-  make(s);
-  return *this;
 }
 
 

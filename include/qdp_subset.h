@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_subset.h,v 1.4 2003-07-31 01:13:23 edwards Exp $
+// $Id: qdp_subset.h,v 1.5 2003-07-31 01:23:40 edwards Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -193,6 +193,9 @@ public:
   //! Destructor for a set
   ~UnorderedSet() {}
 
+  //! The = operator
+  UnorderedSet& operator=(const UnorderedSet& s);
+
 protected:
   //! A set is composed of an array of subsets
   multi1d<UnorderedSubset> sub;
@@ -231,6 +234,9 @@ public:
 
   //! Destructor for a set
   ~OrderedSet() {}
+
+  //! The = operator
+  OrderedSet& operator=(const OrderedSet& s);
 
 protected:
   //! A set is composed of an array of subsets
