@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.14 2002-11-13 18:23:50 edwards Exp $
+// $Id: foo.cc,v 1.15 2002-11-28 03:08:09 edwards Exp $
 //
 // Silly little internal test code
 
@@ -14,7 +14,7 @@
 int main()
 {
   // Setup the geometry
-  const int foo[] = {LX0,LX1,LX2,LX3};
+  const int foo[] = {2,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::initialize(nrow);
