@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.26 2003-04-17 18:48:13 edwards Exp $
+// $Id: scalar_specific.h,v 1.27 2003-04-18 01:33:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -885,6 +885,8 @@ TextReader& operator>>(TextReader& txt, OScalar<T>& d)
 
 //-------------------------------------------------
 // QIO support
+// NOTE: this is exactly the same bit of code as in scalar_specific.h 
+//       need to make common only on scalarsite.h  like architectures
 
 //! Function for inserting datum at specified site 
 template<class T> void QDPFactoryPut(char *buf, const int crd[], void *arg)

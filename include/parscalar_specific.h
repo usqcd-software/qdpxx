@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.23 2003-04-10 21:08:04 edwards Exp $
+// $Id: parscalar_specific.h,v 1.24 2003-04-18 01:33:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1216,5 +1216,71 @@ TextReader& operator>>(TextReader& txt, OScalar<T>& d)
 
   return txt;
 }
+
+
+//-------------------------------------------------
+// QIO support
+// NOTE: this is exactly the same bit of code as in scalar_specific.h 
+//       need to make common only on scalarsite.h  like architectures
+
+//! Function for inserting datum at specified site 
+template<class T> void QDPFactoryPut(char *buf, const int crd[], void *arg)
+{
+  /* Translate arg */
+  T *field = (T *)arg;
+
+  /* We expect the data belongs to our node */
+  multi1d<int> coord(Nd);
+  coord = crd;
+  if (Layout::nodeNumber(coord) != Layout::nodeNumber())
+  {
+    buf = '\0';
+    return;
+  }
+
+  void *dest = (void *)&(field->elem(Layout::linearSiteIndex(coord)));
+  memcpy(dest,buf,sizeof(T));
+}
+
+
+//! Read an OLattice object
+/*! This implementation is only correct for scalar ILattice */
+template<class T>
+void read_t(QDPSerialReader& qsw, XMLMetaReader& rec_xml, OLattice<T>& s1)
+{
+  int status = QIO_read(qsw.get(), rec_xml.get(), &(QDPFactoryPut<OLattice<T> >),
+                        sizeof(T), (void *)&s1);
+}
+
+
+//! Function for extracting datum at specified site 
+template<class T> void QDPFactoryGet(char *buf, const int crd[], void *arg)
+{
+  /* Translate arg */
+  T *field = (T *)arg;
+
+  /* We expect the data belongs to our node */
+  multi1d<int> coord(Nd);
+  coord = crd;
+  if (Layout::nodeNumber(coord) != Layout::nodeNumber())
+  {
+    buf = '\0';
+    return;
+  }
+
+  void *src = (void *)&(field->elem(Layout::linearSiteIndex(coord)));
+  memcpy(buf,src,sizeof(T));
+}
+
+
+//! Write an OLattice object
+/*! This implementation is only correct for scalar ILattice */
+template<class T>
+void write_t(QDPSerialWriter& qsw, const XMLMetaWriter& rec_xml, const OLattice<T>& s1)
+{
+  int status = QIO_write(qsw.get(), rec_xml.get(), &(QDPFactoryGet<OLattice<T> >),
+                         sizeof(T), (void *)&s1);
+}
+
 
 QDP_END_NAMESPACE();
