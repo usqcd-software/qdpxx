@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.12 2003-07-26 04:05:06 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.13 2003-07-31 01:07:11 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -98,7 +98,7 @@ namespace Internal
 
 
 //-----------------------------------------------------------------------------
-//! OLattice Op Scalar(Expression(source)) under a subset
+//! OLattice Op Scalar(Expression(source)) under an UnorderedSubset
 /*! 
  * OLattice Op Expression, where Op is some kind of binary operation 
  * involving the destination 
@@ -106,16 +106,35 @@ namespace Internal
 template<class T, class T1, class Op, class RHS>
 //inline
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
-	      const Subset& s)
+	      const UnorderedSubset& s)
 {
-//  cerr << "In evaluate(olattice,oscalar)\n";
+// cerr << "In evaluateUnorderedSubset(olattice,oscalar)\n";
 
-  const int *tab = s.SiteTable()->slice();
-  for(int j=0; j < s.NumSiteTable(); ++j) 
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
 //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
 //    op(dest.elem(i), forEach(rhs, ElemLeaf(), OpCombine()));
+    op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+  }
+}
+
+//! OLattice Op Scalar(Expression(source)) under an OrderedSubset
+/*! 
+ * OLattice Op Expression, where Op is some kind of binary operation 
+ * involving the destination 
+ */
+template<class T, class T1, class Op, class RHS>
+//inline
+void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
+	      const OrderedSubset& s)
+{
+//cerr << "In evaluateOrderedSubset(olattice,oscalar)\n";
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+  {
+//    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
     op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
   }
 }
@@ -133,11 +152,17 @@ template<class T, class T1, class Op, class RHS>
 inline
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs)
 {
-  evaluate(dest, op, rhs, all);
+//  cerr << "In evaluateAll(olattice,oscalar)\n";
+
+  for(int i=0; i < Layout::sitesOnNode(); ++i) 
+  {
+//    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
+    op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+  }
 }
 
 
-//! OLattice Op OLattice(Expression(source)) under a subset
+//! OLattice Op OLattice(Expression(source)) under an UnorderedSubset
 /*! 
  * OLattice Op Expression, where Op is some kind of binary operation 
  * involving the destination 
@@ -145,33 +170,13 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 template<class T, class T1, class Op, class RHS>
 //inline
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
-	      const Subset s)
+	      const UnorderedSubset& s)
 {
-//  cerr << "In evaluate(olattice,olattice)\n";
+//  cerr << "In evaluateUnorderedSubset(olattice,olattice)" << endl;
 
-// NOTE: this code below is the first way I did the loop. The
-// case when IndexRep is false is the optimal loop structure
-// However, for simplicity and maintenance I will use the general
-// form for all methods
-
-//   if (! s.IndexRep())
-//     for(int i=s.Start(); i <= s.End(); ++i) 
-//     {
-//       op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
-//     }
-//   else
-//   {
-//     const int *tab = s.SiteTable()->slice();
-//     for(int j=0; j < s.NumSiteTable(); ++j) 
-//     {
-//       int i = tab[j];
-//       op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
-//     }
-//   }
- 
   // General form of loop structure
-  const int *tab = s.SiteTable()->slice();
-  for(int j=0; j < s.NumSiteTable(); ++j) 
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
 //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
@@ -179,33 +184,66 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   }
 }
 
+//! OLattice Op OLattice(Expression(source)) under an OrderedSubset
+/*! 
+ * OLattice Op Expression, where Op is some kind of binary operation 
+ * involving the destination 
+ */
+template<class T, class T1, class Op, class RHS>
+//inline
+void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
+	      const OrderedSubset& s)
+{
+//  cerr << "In evaluateOrderedSubset(olattice,olattice)" << endl;
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+  {
+//    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+    op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+  }
+}
 
 //! OLattice Op OLattice(Expression(source))
 template<class T, class T1, class Op, class RHS>
 inline
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs)
 {
-  // Use the general loop form. However, could have an explicit loop
-  // with no index lookup.
-  evaluate(dest, op, rhs, all);
+//  cerr << "In evaluateAll(olattice,olattice)" << endl;
+
+  for(int i=0; i < Layout::sitesOnNode(); ++i) 
+  {
+//    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+    op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+  }
 }
 
 
 
 //-----------------------------------------------------------------------------
 //! dest = (mask) ? s1 : dest
-template<class T1, class T2> 
-void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
+template<class T1, class T2>
+void copymask(OSubLattice<T2,UnorderedSubset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
   OLattice<T2>& dest = d.field();
-  const Subset& s = d.subset();
+  const UnorderedSubset& s = d.subset();
 
-  const int *tab = s.SiteTable()->slice();
-  for(int j=0; j < s.NumSiteTable(); ++j) 
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
   }
+}
+
+//! dest = (mask) ? s1 : dest
+template<class T1, class T2>
+void copymask(OSubLattice<T2,OrderedSubset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
+{
+  OLattice<T2>& dest = d.field();
+  const OrderedSubset& s = d.subset();
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+    copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
 
 //! dest = (mask) ? s1 : dest
@@ -246,13 +284,13 @@ random(OScalar<T>& d)
 //! dest  = random    under a subset
 template<class T>
 void 
-random(OLattice<T>& d, const Subset& s)
+random(OLattice<T>& d, const UnorderedSubset& s)
 {
   Seed seed;
   Seed skewed_seed;
 
-  const int *tab = s.SiteTable()->slice();
-  for(int j=0; j < s.NumSiteTable(); ++j) 
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
     seed = RNG::ran_seed;
@@ -264,12 +302,31 @@ random(OLattice<T>& d, const Subset& s)
 }
 
 
-//! dest  = random   under a subset
+//! dest  = random    under a subset
 template<class T>
-void random(const OSubLattice<T>& dd)
+void 
+random(OLattice<T>& d, const OrderedSubset& s)
 {
-  OLattice<T>& d = const_cast<OSubLattice<T>&>(dd).field();
-  const Subset& s = dd.subset();
+  Seed seed;
+  Seed skewed_seed;
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+  {
+    seed = RNG::ran_seed;
+    skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
+    fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
+  }
+
+  RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
+}
+
+
+//! dest  = random   under a subset
+template<class T, class S>
+void random(const OSubLattice<T,S>& dd)
+{
+  OLattice<T>& d = const_cast<OSubLattice<T,S>&>(dd).field();
+  const S& s = dd.subset();
 
   random(d,s);
 }
@@ -285,15 +342,15 @@ void random(OLattice<T>& d)
 
 //! dest  = gaussian   under a subset
 template<class T>
-void gaussian(OLattice<T>& d, const Subset& s)
+void gaussian(OLattice<T>& d, const UnorderedSubset& s)
 {
   OLattice<T>  r1, r2;
 
   random(r1,s);
   random(r2,s);
 
-  const int *tab = s.SiteTable()->slice();
-  for(int j=0; j < s.NumSiteTable(); ++j) 
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
     fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
@@ -303,10 +360,26 @@ void gaussian(OLattice<T>& d, const Subset& s)
 
 //! dest  = gaussian   under a subset
 template<class T>
-void gaussian(const OSubLattice<T>& dd)
+void gaussian(OLattice<T>& d, const OrderedSubset& s)
 {
-  OLattice<T>& d = const_cast<OSubLattice<T>&>(dd).field();
-  const Subset& s = dd.subset();
+  OLattice<T>  r1, r2;
+
+  random(r1,s);
+  random(r2,s);
+
+  for(int i=s.start(); i <= s.end(); ++i)
+  {
+    fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
+  }
+}
+
+
+//! dest  = gaussian   under a subset
+template<class T, class S>
+void gaussian(const OSubLattice<T,S>& dd)
+{
+  OLattice<T>& d = const_cast<OSubLattice<T,S>&>(dd).field();
+  const S& s = dd.subset();
 
   gaussian(d,s);
 }
@@ -326,23 +399,32 @@ void gaussian(OLattice<T>& d)
 //! dest  = 0 
 template<class T> 
 inline
-void zero_rep(OLattice<T>& dest, const Subset& s) 
+void zero_rep(OLattice<T>& dest, const UnorderedSubset& s) 
 {
-  const int *tab = s.SiteTable()->slice();
-  for(int j=0; j < s.NumSiteTable(); ++j) 
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
     zero_rep(dest.elem(i));
   }
 }
 
-
 //! dest  = 0 
 template<class T> 
-void zero_rep(OSubLattice<T> dd) 
+inline
+void zero_rep(OLattice<T>& dest, const OrderedSubset& s) 
+{
+  for(int i=s.start(); i <= s.end(); ++i)
+    zero_rep(dest.elem(i));
+}
+
+
+//! dest  = 0 
+template<class T, class S>
+void zero_rep(OSubLattice<T,S> dd) 
 {
   OLattice<T>& d = dd.field();
-  const Subset& s = dd.subset();
+  const S& s = dd.subset();
   
   zero_rep(d,s);
 }
@@ -407,8 +489,8 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
   // Must initialize to zero since we do not know if the loop will be entered
   zero_rep(d.elem());
 
-  const int *tab = s.SiteTable()->slice();
-  for(int j=0; j < s.NumSiteTable(); ++j) 
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
@@ -491,7 +573,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
     zero_rep(dest[k]);
 
   // Loop over all sites and accumulate based on the coloring 
-  const multi1d<int>& lat_color =  ss.LatticeColoring();
+  const multi1d<int>& lat_color =  ss.latticeColoring();
 
   for(int i=0; i < Layout::sitesOnNode(); ++i) 
   {
@@ -588,8 +670,8 @@ template<class T>
 inline void 
 QDP_extract(multi1d<OScalar<T> >& dest, const OLattice<T>& src, const Subset& s)
 {
-  const int *tab = s.SiteTable()->slice();
-  for(int j=0; j < s.NumSiteTable(); ++j) 
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
     dest[i].elem() = src.elem(i);
@@ -607,8 +689,8 @@ template<class T>
 inline void 
 QDP_insert(OLattice<T>& dest, const multi1d<OScalar<T> >& src, const Subset& s)
 {
-  const int *tab = s.SiteTable()->slice();
-  for(int j=0; j < s.NumSiteTable(); ++j) 
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
     dest.elem(i) = src[i].elem();

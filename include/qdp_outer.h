@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.5 2003-07-26 04:03:06 edwards Exp $
+// $Id: qdp_outer.h,v 1.6 2003-07-31 01:07:11 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -108,7 +108,11 @@ public:
 
   //---------------------------------------------------------
   // Subsets
-  OSubScalar<T> operator[](const Subset& s) {return OSubScalar<T>(*this,s);}
+  OSubScalar<T,UnorderedSubset> operator[](const UnorderedSubset& s) 
+    {return OSubScalar<T,UnorderedSubset>(*this,s);}
+
+  OSubScalar<T,OrderedSubset> operator[](const OrderedSubset& s) 
+    {return OSubScalar<T,OrderedSubset>(*this,s);}
 
 
   //---------------------------------------------------------
@@ -339,7 +343,11 @@ public:
 
   //---------------------------------------------------------
   // Subsets
-  OSubLattice<T> operator[](const Subset& s) {return OSubLattice<T>(*this,s);}
+  OSubLattice<T,UnorderedSubset> operator[](const UnorderedSubset& s) 
+    {return OSubLattice<T,UnorderedSubset>(*this,s);}
+
+  OSubLattice<T,OrderedSubset> operator[](const OrderedSubset& s) 
+    {return OSubLattice<T,OrderedSubset>(*this,s);}
 
 
   //---------------------------------------------------------
@@ -1214,13 +1222,13 @@ void random(OScalar<T>& d);
 
 
 //! dest  = gaussian
-template<class T>
-void gaussian(OSubScalar<T>& d)
+template<class T, class S>
+void gaussian(OSubScalar<T,S>& d)
 {
   OScalar<T>  r1, r2;
 
-  random(OSubScalar<T>(r1,d.subset()));
-  random(OSubScalar<T>(r2,d.subset()));
+  random(OSubScalar<T,S>(r1,d.subset()));
+  random(OSubScalar<T,S>(r2,d.subset()));
 
   fill_gaussian(d.elem(), r1.elem(), r2.elem());
 }
@@ -1230,7 +1238,7 @@ void gaussian(OSubScalar<T>& d)
 template<class T>
 void gaussian(OScalar<T>& d)
 {
-  gaussian(OSubScalar<T>(d,all));
+  gaussian(OSubScalar<T,OrderedSubset>(d,all));
 }
 
 /*! @} */  // end of group olattice

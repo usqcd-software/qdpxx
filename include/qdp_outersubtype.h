@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outersubtype.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_outersubtype.h,v 1.2 2003-07-31 01:07:11 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes after a subset
@@ -12,13 +12,13 @@ QDP_BEGIN_NAMESPACE(QDP);
 /*! 
  * Only used for lvalues
  */
-template<class T>
-class OSubScalar: public QDPSubType<T, OScalar<T> >
+template<class T, class Sub>
+class OSubScalar: public QDPSubType<T, OScalar<T>, Sub>
 {
   typedef OScalar<T> C;
 
 public:
-  OSubScalar(const OScalar<T>& a, const Subset& ss): F(a), s(ss) {}
+  OSubScalar(const OScalar<T>& a, const Sub& ss): F(a), s(ss) {}
   OSubScalar(const OSubScalar& a): F(a.F), s(a.s) {}
   ~OSubScalar() {}
 
@@ -67,11 +67,11 @@ private:
 
 public:
   C& field() {return const_cast<C&>(F);}
-  const Subset& subset() const {return s;}
+  const Sub& subset() const {return s;}
 
 private:
   const C&  F;
-  const Subset& s;
+  const Sub& s;
 };
 
 
@@ -81,13 +81,13 @@ private:
 /*! 
  * Only used for lvalues
  */
-template<class T> 
-class OSubLattice: public QDPSubType<T, OLattice<T> >
+template<class T, class Sub> 
+class OSubLattice: public QDPSubType<T, OLattice<T>, Sub>
 {
   typedef OLattice<T> C;
 
 public:
-  OSubLattice(const OLattice<T>& a, const Subset& ss): F(a), s(ss) {}
+  OSubLattice(const OLattice<T>& a, const Sub& ss): F(a), s(ss) {}
   OSubLattice(const OSubLattice& a): F(a.F), s(a.s) {}
   ~OSubLattice() {}
 
@@ -136,11 +136,11 @@ private:
 
 public:
   C& field() {return const_cast<C&>(F);}
-  const Subset& subset() const {return s;}
+  const Sub& subset() const {return s;}
 
 private:
   const C&  F;
-  const Subset& s;
+  const Sub& s;
 };
 
 
@@ -149,15 +149,39 @@ private:
 //-----------------------------------------------------------------------------
 
 template<class T>
-struct QDPSubTypeTrait<OScalar<T> > 
+struct QDPSubTypeTrait<OScalar<T>, Subset> 
 {
-  typedef OSubScalar<T>  Type_t;
+  typedef OSubScalar<T,Subset>  Type_t;
 };
 
 template<class T>
-struct QDPSubTypeTrait<OLattice<T> > 
+struct QDPSubTypeTrait<OScalar<T>, UnorderedSubset> 
 {
-  typedef OSubLattice<T>  Type_t;
+  typedef OSubScalar<T,UnorderedSubset>  Type_t;
+};
+
+template<class T>
+struct QDPSubTypeTrait<OScalar<T>, OrderedSubset> 
+{
+  typedef OSubScalar<T,OrderedSubset>  Type_t;
+};
+
+template<class T>
+struct QDPSubTypeTrait<OLattice<T>, Subset> 
+{
+  typedef OSubLattice<T,Subset>  Type_t;
+};
+
+template<class T>
+struct QDPSubTypeTrait<OLattice<T>, UnorderedSubset> 
+{
+  typedef OSubLattice<T,UnorderedSubset>  Type_t;
+};
+
+template<class T>
+struct QDPSubTypeTrait<OLattice<T>, OrderedSubset> 
+{
+  typedef OSubLattice<T,OrderedSubset>  Type_t;
 };
 
 
@@ -167,13 +191,37 @@ struct QDPSubTypeTrait<OLattice<T> >
 //-----------------------------------------------------------------------------
 
 template<class T>
-struct WordType<OSubScalar<T> > 
+struct WordType<OSubScalar<T,Subset> > 
 {
   typedef typename WordType<T>::Type_t  Type_t;
 };
 
 template<class T>
-struct WordType<OSubLattice<T> > 
+struct WordType<OSubScalar<T,UnorderedSubset> > 
+{
+  typedef typename WordType<T>::Type_t  Type_t;
+};
+
+template<class T>
+struct WordType<OSubScalar<T,OrderedSubset> > 
+{
+  typedef typename WordType<T>::Type_t  Type_t;
+};
+
+template<class T>
+struct WordType<OSubLattice<T,Subset> > 
+{
+  typedef typename WordType<T>::Type_t  Type_t;
+};
+
+template<class T>
+struct WordType<OSubLattice<T,UnorderedSubset> > 
+{
+  typedef typename WordType<T>::Type_t  Type_t;
+};
+
+template<class T>
+struct WordType<OSubLattice<T,OrderedSubset> > 
 {
   typedef typename WordType<T>::Type_t  Type_t;
 };
@@ -191,15 +239,16 @@ void zero_rep(OScalar<T>& dest, const Subset& s)
 }
 
 //! dest = 0
-template<class T> 
-void zero_rep(OSubScalar<T> dest) 
+template<class T, class S>
+void zero_rep(OSubScalar<T,S> dest) 
 {
   zero_rep(dest.field().elem());
 }
 
 //! dest = (mask) ? s1 : dest
-template<class T1, class T2> 
-void copymask(OSubScalar<T2> dest, const OSubScalar<T1>& mask, const OSubScalar<T2>& s1) 
+template<class T1, class T2, class S> 
+void copymask(OSubScalar<T2,S> dest, const OScalar<T1>& mask, 
+	      const OScalar<T2>& s1) 
 {
   copymask(dest.field().elem(), mask.elem(), s1.elem());
 }
@@ -210,15 +259,20 @@ void copymask(OSubScalar<T2> dest, const OSubScalar<T1>& mask, const OSubScalar<
 //! dest  = random  
 /*! Implementation is in the specific files */
 template<class T>
-void random(OSubScalar<T> d);
+void random(OSubScalar<T,UnorderedSubset> d);
+
+//! dest  = random  
+/*! Implementation is in the specific files */
+template<class T>
+void random(OSubScalar<T,OrderedSubset> d);
 
 
 //! dest  = gaussian
-template<class T>
-void gaussian(OSubScalar<T> dd)
+template<class T, class S>
+void gaussian(OSubScalar<T,S> dd)
 {
   OLattice<T>& d = dd.field();
-  const Subset& s = dd.subset();
+  const S& s = dd.subset();
 
   OScalar<T>  r1, r2;
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_traits.h,v 1.2 2003-05-23 05:20:27 edwards Exp $
+// $Id: qdp_traits.h,v 1.3 2003-07-31 01:07:11 edwards Exp $
 
 /*! @file
  * @brief Traits classes
@@ -14,7 +14,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 // Traits class for returning the subset-ted class name of a outer grid class
 //-----------------------------------------------------------------------------
 
-template<class T>
+template<class T, class S>
 struct QDPSubTypeTrait {};
 
 //-----------------------------------------------------------------------------
