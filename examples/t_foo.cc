@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.1 2002-12-28 04:11:11 edwards Exp $
+// $Id: t_foo.cc,v 1.2 2003-01-04 03:33:19 edwards Exp $
 //
 // Silly little internal test code
 
@@ -27,20 +27,23 @@ struct Nearest : public MapFunc
     }
 
 private:
-  int sgnum(int x) {return (x > 0) ? 1 : -1;}
+  int sgnum(int x) const {return (x > 0) ? 1 : -1;}
 }; 
 
 
 NmlWriter nml;
 
 
-int main()
+int main(int argc, char *argv[])
 {
-  // Setup the geometry
+  // Put the machine into a known state
+  QDP_initialize(&argc, &argv);
+
+  // Setup the layout
   const int foo[] = {4,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
-  Layout::initialize(nrow);
+  Layout::create(nrow);
 
 //  NmlWriter nml("foo.nml");
   nml.open("foo.nml");
@@ -297,6 +300,5 @@ int main()
 #endif
 
   // Time to bolt
-  Layout::finalize();
-
+  QDP_finalize();
 }
