@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.13 2003-04-20 04:03:34 edwards Exp $
+// $Id: io.h,v 1.14 2003-04-23 04:46:02 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -108,7 +108,14 @@ public:
   void close();
   bool is_open();
 
+  //! Push a namelist group 
+  NmlReader& push(const string& s);
+
+  //! Pop a namelist group
+  NmlReader& pop();
+
 private:
+  int stack_cnt;
   bool iop;
   section *abs;    // Abstract - holds parse tree
 };
@@ -167,13 +174,23 @@ public:
   ~NmlWriter();
   explicit NmlWriter(const char* p);
 
-  bool is_open();
+  //! Open file
   void open(const char* p);
+
+  //! Close file
   void close();
+  bool is_open();
+
+  //! Push a namelist group 
+  NmlWriter& push(const string& s);
+
+  //! Pop a namelist group
+  NmlWriter& pop();
 
   std::ofstream& get() {return f;}
 
 private:
+  int stack_cnt;
   bool iop;
   std::ofstream f;
 };

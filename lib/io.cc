@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.10 2003-04-20 04:03:34 edwards Exp $
+// $Id: io.cc,v 1.11 2003-04-23 04:46:02 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -72,9 +72,9 @@ TextWriter::~TextWriter() {close();}
 
 //-----------------------------------------
 //! text reader support
-NmlReader::NmlReader() {abs = NULL;iop=false;}
+NmlReader::NmlReader() {abs = NULL; iop = false; stack_cnt = 0;}
 
-NmlReader::NmlReader(const char* p) {open(p);}
+NmlReader::NmlReader(const char* p) {stack_cnt = 0; open(p);}
 
 void NmlReader::open(const char* p)
 {
@@ -99,9 +99,6 @@ void NmlReader::open(const char* p)
     fclose(f);
 
     init_nml_section_stack(abs);
-
-    fprintf(stderr,"Section dump\n");
-    print_section(stderr, abs);
   }
 
   // Make a barrier call ?
@@ -122,27 +119,41 @@ void NmlReader::close()
 
 bool NmlReader::is_open() {return iop;}
 
-NmlReader::~NmlReader() {close();}
+NmlReader::~NmlReader()
+{
+  while(stack_cnt > 0)
+    pop();
 
+  close();
+}
 
 //! Push a namelist group 
-NmlReader& push(NmlReader& nml, const string& s)
+NmlReader& NmlReader::push(const string& s)
 {
+  ++stack_cnt;
+
   if (Layout::primaryNode()) 
     push_nml_section_stack(s.c_str());
 
-  return nml;
+  return *this;
 }
 
 //! Pop a namelist group
-NmlReader& pop(NmlReader& nml)
+NmlReader& NmlReader::pop()
 {
+  stack_cnt--;
+
   if (Layout::primaryNode()) 
     pop_nml_section_stack();
 
-  return nml;
+  return *this;
 }
 
+//! Push a namelist group 
+NmlReader& push(NmlReader& nml, const string& s) {return nml.push(s);}
+
+//! Pop a namelist group
+NmlReader& pop(NmlReader& nml) {return nml.pop();}
 
 //! Function overload read of  Integer
 NmlReader& read(NmlReader& nml, const string& s, Integer& d)
@@ -177,9 +188,9 @@ NmlReader& read(NmlReader& nml, const string& s, Double& d)
 
 //-----------------------------------------
 //! namelist writer support
-NmlWriter::NmlWriter() {iop=false;}
+NmlWriter::NmlWriter() {iop=false; stack_cnt = 0;}
 
-NmlWriter::NmlWriter(const char* p) {open(p);}
+NmlWriter::NmlWriter(const char* p) {stack_cnt = 0; open(p);}
 
 void NmlWriter::open(const char* p)
 {
@@ -187,14 +198,14 @@ void NmlWriter::open(const char* p)
     f.open(p,std::ios_base::out);
   iop=true;
 
-  push(*this,"FILE");  // Always start a file with this group
+//  push(*this,"FILE");  // Always start a file with this group
 }
 
 void NmlWriter::close()
 {
   if (iop) 
   {
-    pop(*this);  // Write final end of file group
+//    pop(*this);  // Write final end of file group
 
     if (Layout::primaryNode()) 
       f.close();
@@ -204,25 +215,41 @@ void NmlWriter::close()
 
 bool NmlWriter::is_open() {return iop;}
 
-NmlWriter::~NmlWriter() {close();}
+NmlWriter::~NmlWriter()
+{
+  while(stack_cnt > 0)
+    pop();
+
+  close();
+}
 
 //! Push a namelist group 
-NmlWriter& push(NmlWriter& nml, const string& s)
+NmlWriter& NmlWriter::push(const string& s)
 {
-  if (Layout::primaryNode()) 
-    nml.get() << "&" << s << endl; 
+  ++stack_cnt;
 
-  return nml;
+  if (Layout::primaryNode()) 
+    get() << "&" << s << endl; 
+
+  return *this;
 }
 
 //! Pop a namelist group
-NmlWriter& pop(NmlWriter& nml)
+NmlWriter& NmlWriter::pop()
 {
-  if (Layout::primaryNode()) 
-    nml.get() << "&END\n"; 
+  stack_cnt--;
 
-  return nml;
+  if (Layout::primaryNode()) 
+    get() << "&END\n"; 
+
+  return *this;
 }
+
+//! Push a namelist group 
+NmlWriter& push(NmlWriter& nml, const string& s) {return nml.push(s);}
+
+//! Pop a namelist group
+NmlWriter& pop(NmlWriter& nml) {return nml.pop();}
 
 //! Write a comment
 NmlWriter& operator<<(NmlWriter& nml, const char* s)
