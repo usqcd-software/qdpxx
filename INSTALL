@@ -144,7 +144,7 @@ The other individual switches:
 
 --enable-max-volume=<sites>       Specify the maximum number of lattice sites
 			          this flag should go eventually (default is
-				  512)
+				  2048)
 
 Specifying a compiler:
 
@@ -269,11 +269,11 @@ Here is an example
 -- with MPICH installed in /Home/bj/scratch/mpich-1.2.4
 
 -- building for parallel scalar architecture with Nc=3, Nd=4, Ns=4, 
-	max-volume = 512 sites (defaults)
+	max-volume = 2048 sites (defaults)
 
 -- building the examples and the documentation
 
--- to install in /Home/bj/scratch/qdp-0.19-Nd4-Ns4-Nc4-vol512-parscalar
+-- to install in /Home/bj/scratch/qdp-0.19-Nd4-Ns4-Nc4-vol2048-parscalar
 
 I do the following:
 
@@ -284,7 +284,7 @@ mkdir build; cd build
      --with-qmp-ldflags="-L/Home/bj/scratch/qmp-1.3-mpich/lib" \
      --with-qmp-libs="-lqmp" \
      --enable-parallel-arch=parscalar \
-     --prefix=/Home/bj/scratch/qdp-0.19-Nd4-Ns4-Nc4-vol512-parscalar
+     --prefix=/Home/bj/scratch/qdp-0.19-Nd4-Ns4-Nc4-vol2048-parscalar
 
 gmake 
 gmake examples
@@ -299,7 +299,7 @@ or another alternative, is if you use a version of QMP which leaves a
 ../configure CXX=/Home/bj/scratch/mpich-1.2.4/bin/mpiCC \
 	     --enable-parallel-arch=parscalar \
 	     --with-qmp=/Home/bj/scratch/qmp-install \
-	     --prefix=/Home/bj/scratch/qdp-0.19-Nd4-Ns4-Nc4-vol512-parscalar
+	     --prefix=/Home/bj/scratch/qdp-0.19-Nd4-Ns4-Nc4-vol2048-parscalar
 
 etc etc
 
