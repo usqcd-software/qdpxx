@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.17 2003-03-28 05:17:10 edwards Exp $
+// $Id: t_qdp.cc,v 1.18 2003-04-08 21:34:42 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -10,7 +10,7 @@
 
 #include "qdp.h"
 #include "examples.h"
-#include "proto.h"
+#include "qdp_util.h"
 
 using namespace QDP;
 
