@@ -105,14 +105,6 @@ AC_ARG_ENABLE(qcdoc-edram,
 	[ac_qcdoc_edram_enabled=0]
 )
      
-dnl --disable-qio -- does nothing here, but put it in to get the help string
-AC_ARG_ENABLE(--enable-qio, 
-  AC_HELP_STRING([--disable-qio],
-    [ Disable full QIO as it is not yet portable ]
-  ),
-  []
-)
-
 if test ${ac_sse} -eq 1; then
   if test "X${GXX}X" = "XyesX"; then 
     AC_MSG_NOTICE([Enabling -msse flag for g++])
