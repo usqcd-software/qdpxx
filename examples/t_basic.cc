@@ -1,4 +1,4 @@
-// $Id: t_basic.cc,v 1.3 2004-08-10 02:01:42 edwards Exp $
+// $Id: t_basic.cc,v 1.4 2004-08-11 18:53:10 edwards Exp $
 /*! \file
  *  \brief Test some simple basic routines
  */
@@ -46,14 +46,16 @@ int main(int argc, char *argv[])
   LatticeFermion    lftmp1;
   LatticeFermion    lftmp2;
   LatticeFermion    lftmp3;
-  LatticeReal r;
-  LatticeReal rtmp;
+  LatticeReal R1;
+  LatticeReal Rtmp;
   LatticeComplex c;
   LatticeComplex ctmp;
   SpinMatrix s1;
   SpinMatrix s2;
   SpinMatrix s3;
   SpinMatrix s4;
+  Real r1 = 1.7;
+  Real r2 = 2.1;
   int i;
   int mu;
   int nu;
@@ -70,7 +72,7 @@ int main(int argc, char *argv[])
   pop(xml_out);
 
   // Colormat ops
-  random(lctmp1); random(lctmp2); random(r); random(c);
+  random(lctmp1); random(lctmp2); random(R1); random(c);
   push(xml_out,"Lattice_ColorMat_ops");
   random(lctmp3); lctmp3 = lctmp1 * lctmp2;
   write(xml_out, "C_X_C",lctmp3);
@@ -84,23 +86,25 @@ int main(int argc, char *argv[])
   write(xml_out, "C_eq_C_x_aC",lctmp1*adj(lctmp2));
   write(xml_out, "C_eq_aC_x_aC",adj(lctmp1)*adj(lctmp2));
 
-  random(lctmp3); lctmp3 += r;
+  write(xml_out, "C_eq_r_x_C",r1*lctmp1);
+
+  random(lctmp3); lctmp3 += r1;
   write(xml_out, "C_peq_r",lctmp3);
-  random(lctmp3); lctmp3 -= r;
+  random(lctmp3); lctmp3 -= r1;
   write(xml_out, "C_meq_r",lctmp3);
-  random(lctmp3); lctmp3 *= r;
+  random(lctmp3); lctmp3 *=r1;
   write(xml_out, "C_teq_r",lctmp3);
-  random(lctmp3); lctmp3 /= r;
+  random(lctmp3); lctmp3 /= r1;
   write(xml_out, "C_deq_r",lctmp3);
 
-  random(lctmp3); lctmp3 += r;
-  write(xml_out, "C_peq_r",lctmp3);
-  random(lctmp3); lctmp3 -= r;
-  write(xml_out, "C_meq_r",lctmp3);
-  random(lctmp3); lctmp3 *= r;
-  write(xml_out, "C_teq_r",lctmp3);
-  random(lctmp3); lctmp3 /= r;
-  write(xml_out, "C_deq_r",lctmp3);
+  random(lctmp3); lctmp3 += R1;
+  write(xml_out, "C_peq_R",lctmp3);
+  random(lctmp3); lctmp3 -= R1;
+  write(xml_out, "C_meq_R",lctmp3);
+  random(lctmp3); lctmp3 *= R1;
+  write(xml_out, "C_teq_R",lctmp3);
+  random(lctmp3); lctmp3 /= R1;
+  write(xml_out, "C_deq_R",lctmp3);
 
   random(lctmp3); lctmp3 += c;
   write(xml_out, "C_peq_c",lctmp3);
@@ -116,9 +120,9 @@ int main(int argc, char *argv[])
   random(lctmp3); lctmp3 -= lctmp1;
   write(xml_out, "C_meq_C",lctmp3);
 
-  write(xml_out, "C_eq_R_pl_aC_x_C",r+adj(lctmp1)*lctmp2);
-  write(xml_out, "C_eq_R_pl_C_x_aC",r+lctmp1*adj(lctmp2));
-  write(xml_out, "C_eq_R_pl_aC_x_aC",r+adj(lctmp1)*adj(lctmp2));
+  write(xml_out, "C_eq_R_pl_aC_x_C",R1+adj(lctmp1)*lctmp2);
+  write(xml_out, "C_eq_R_pl_C_x_aC",R1+lctmp1*adj(lctmp2));
+  write(xml_out, "C_eq_R_pl_aC_x_aC",R1+adj(lctmp1)*adj(lctmp2));
 
   pop(xml_out);
 
