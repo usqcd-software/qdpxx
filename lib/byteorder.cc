@@ -1,5 +1,5 @@
 //
-//  $Id: byteorder.cc,v 1.1 2002-10-26 01:54:30 edwards Exp $
+//  $Id: byteorder.cc,v 1.2 2002-11-03 01:55:32 edwards Exp $
 //
 //  Determine the byte order of a platform
 //
@@ -119,7 +119,7 @@ void byte_swap(void *ptr, size_t size, size_t nmemb)
   break;
 
   default:
-    fprintf(stderr,"byte_swap: unsupported word size = %d\n",nmemb);
+    fprintf(stderr,"byte_swap: unsupported word size = %d\n",size);
     exit(1);
   }
 }
