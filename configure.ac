@@ -148,9 +148,9 @@ if test ${ac_qcdoc_enabled} -eq 1; then
    fi
 fi
 
-dnl Check if print-tree is enabled
+dnl Check if profiling is enabled
 if test ${ac_profile} -eq 1; then 
-   AC_DEFINE_UNQUOTED(QDP_PRINT_EXPR_TREE, ${ac_profile}, [Enable profiling])
+   AC_DEFINE_UNQUOTED(QDP_USE_PROFILING, ${ac_profile}, [Enable profiling])
    AC_MSG_NOTICE([Enable profiling])
 fi
 

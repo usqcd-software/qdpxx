@@ -54,9 +54,6 @@
 /* Number of spin components */
 #undef QDP_NS
 
-/* Print QDP expressions */
-#undef QDP_PRINT_EXPR_TREE
-
 /* Use checkerboarded layout */
 #undef QDP_USE_CB2_LAYOUT
 
@@ -65,6 +62,9 @@
 
 /* Use lexicographic layout */
 #undef QDP_USE_LEXICO_LAYOUT
+
+/* Enable profiling */
+#undef QDP_USE_PROFILING
 
 /* Enable QCDOC opts */
 #undef QDP_USE_QCDOC
