@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.11 2002-12-05 18:57:01 edwards Exp $
+// $Id: simpleword.h,v 1.12 2002-12-18 21:30:59 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -250,6 +250,38 @@ int trace(const int& s1)
 {
   return s1;
 }
+
+
+
+// int = toInt(source1)
+inline 
+int toInt(const int& s1)
+{
+  return s1;
+}
+
+// float = toFloat(source1)
+inline 
+float toFloat(const float& s1)
+{
+  return s1;
+}
+
+// double = toDouble(source1)
+inline 
+double toDouble(const double& s1)
+{
+  return s1;
+}
+
+// bool = toBool(source1)
+inline 
+bool toBool(const bool& s1)
+{
+  return s1;
+}
+
+
 
 
 // Where is the ? operator
