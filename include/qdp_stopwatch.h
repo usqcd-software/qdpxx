@@ -44,7 +44,7 @@ class StopWatch {
   }
 
   double getTimeInMicroseconds(void) {
-    long usecs;
+    long usecs=0;
     if( startedP && stoppedP ) { 
       if( t_end.tv_sec < t_start.tv_sec ) { 
 	QDP_error_exit("Critical timer rollover\n");

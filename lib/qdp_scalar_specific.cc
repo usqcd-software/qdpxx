@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_specific.cc,v 1.7 2004-03-24 17:00:31 mcneile Exp $
+// $Id: qdp_scalar_specific.cc,v 1.8 2004-05-05 14:37:04 bjoo Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -28,7 +28,8 @@ void Map::make(const MapFunc& func)
      * the offsets contain the current site, i.e the neighbour for site i
      * is  goffsets(i,dir,mu) and NOT  i + goffset(..) 
      */
-  const multi1d<int>& nrow = Layout::lattSize();
+  // nrow is not used here. Comment it out to satisfy -Wall 
+  // const multi1d<int>& nrow = Layout::lattSize();
 
   // Loop over the sites on this node
   for(int linear=0; linear < Layout::vol(); ++linear)

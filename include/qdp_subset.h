@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_subset.h,v 1.8 2003-09-02 20:19:22 edwards Exp $
+// $Id: qdp_subset.h,v 1.9 2004-05-05 14:37:04 bjoo Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -38,7 +38,7 @@ public:
   Subset(const Subset& s) {}
 
   //! Destructor for a subset
-  ~Subset() {}
+  virtual ~Subset() {}
 
   //! Access the coloring for this subset
   virtual int color() const = 0;
@@ -70,7 +70,7 @@ public:
   virtual int numSubsets() const = 0;
 
   //! Destructor for a set
-  ~Set() {}
+  virtual ~Set() {}
 
 public:
   //! The coloring of the lattice sites
@@ -102,7 +102,7 @@ public:
   void make(const UnorderedSubset& s);
 
   //! Destructor for a subset
-  ~UnorderedSubset() {}
+  virtual ~UnorderedSubset() {}
 
   //! The = operator
   UnorderedSubset& operator=(const UnorderedSubset& s);
@@ -153,7 +153,7 @@ public:
   void make(const OrderedSubset& s);
 
   //! Destructor for a subset
-  ~OrderedSubset() {}
+  virtual ~OrderedSubset() {}
 
   //! The = operator
   OrderedSubset& operator=(const OrderedSubset& s);
@@ -207,7 +207,7 @@ public:
   int numSubsets() const {return sub.size();}
 
   //! Destructor for a set
-  ~UnorderedSet() {}
+  virtual ~UnorderedSet() {}
 
   //! The = operator
   UnorderedSet& operator=(const UnorderedSet& s);

@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.28 2004-04-27 19:32:06 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.29 2004-05-05 14:37:04 bjoo Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -662,7 +662,7 @@ void writeArrayPrimitive(XMLWriter& xml, const std::string& s, const multi1d<T>&
   std::ostringstream output;
 
   output << s1[0];
-  for(unsigned index=1; index < s1.size(); index++) 
+  for(int index=1; index < s1.size(); index++) 
     output << " " << s1[index];
     
   // Write the array - do not use a normal string write

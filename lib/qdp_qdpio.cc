@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.11 2004-03-21 19:28:18 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.12 2004-05-05 14:37:04 bjoo Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -78,7 +78,9 @@ void QDPFileReader::open(XMLReader& file_xml,
     break;
 
   default:
-    QDPIO::cerr << "QDPFileReader: invalid serial mode" << endl;
+    QDPIO::cerr << "QDPFileReader: invalid serial mode" << qdp_serpar << endl;
+    QDP_abort(1);
+    return;
   }
 
   // Call QIO read
@@ -110,7 +112,8 @@ void QDPFileReader::close()
 {
   if (is_open()) 
   {
-    int status = QIO_close_read(qio_in);
+    //int status = QIO_close_read(qio_in);
+    QIO_close_read(qio_in);
   }
 
   iop = false;
@@ -196,6 +199,7 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   }
 
   // Wrappers over simple ints
+  // Default to serial to su
   int serpar;
   switch(qdp_serpar)
   {
@@ -206,9 +210,14 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   case QDPIO_PARALLEL:
     serpar = QIO_PARALLEL;
     break;
-  }
 
-  // Wrappers over simple ints
+  default: 
+    QDPIO::cerr << "Unknown value for qdp_serpar " << qdp_volfmt << endl;
+    QDP_abort(1);
+    return;
+  }
+  
+   // Wrappers over simple ints
   int volfmt;
   switch(qdp_volfmt)
   {
@@ -219,8 +228,13 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   case QDPIO_MULTIFILE:
     volfmt = QIO_MULTIFILE;
     break;
-  }
 
+  default: 
+    QDPIO::cerr << "Unknown value for qdp_volfmt " << qdp_volfmt << endl;
+    QDP_abort(1);
+    return;
+  }
+  
   // Wrappers over simple ints
   int mode;
   switch(qdp_mode)
@@ -236,6 +250,11 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   case QDPIO_APPEND:
     mode = QIO_APPEND;
     break;
+  
+  default:
+    QDPIO::cerr << "Unknown value for qdp_mode " << qdp_mode << endl;
+    QDP_abort(1);
+    return; 
   }
 
   // QIO write
@@ -261,7 +280,8 @@ void QDPFileWriter::close()
 {
   if (is_open()) 
   {
-    int status = QIO_close_write(qio_out);
+    // int status = QIO_close_write(qio_out);
+    QIO_close_write(qio_out);
   }
 
   iop = false;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.26 2004-04-27 19:32:06 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.27 2004-05-05 14:37:04 bjoo Exp $
 
 /*! @file
  * @brief XML IO support
@@ -189,7 +189,9 @@ class XMLWriter : protected XMLWriterAPI::XMLSimpleWriter
 {
 public:
   XMLWriter();
-  ~XMLWriter();
+
+  // Virtual destructor
+  virtual ~XMLWriter();
 
   virtual void openSimple(const std::string& tagname);
   virtual void closeSimple();
@@ -500,6 +502,10 @@ private:
   bool arrayTag;         // set once array tag is written
   bool initP;            // set once we know how the array is composed
   bool simpleElements;   // true if elements will all be simple types
+
+  // output stream is actually the original stream
+  XMLWriter& output_xml; 
+
   int array_size;        // total array element size
   int elements_written;  // elements written so far
 
@@ -507,8 +513,6 @@ private:
   enum ElementType {SIMPLE, STRUCT};
   std::stack<ElementType> contextStack;
 
-  // output stream is actually the original stream
-  XMLWriter& output_xml;
   ostream& getOstream(void) {return output_xml.getOstream();}
 };
 

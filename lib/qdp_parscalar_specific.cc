@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.19 2004-05-03 18:22:45 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.20 2004-05-05 14:37:04 bjoo Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -599,7 +599,7 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
   delete[] recv_buf;
 
   // First compute the checksum - not sure this is what they want...
-  unsigned int chksum = 0;
+  //junsigned int chksum = 0;
 //  for(int i=0; i < tot_size*Layout::sitesOnNode(); ++i)
 //    chksum += input;
 

@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_specific.cc,v 1.11 2004-04-07 09:34:33 bjoo Exp $
+// $Id: qdp_scalarsite_specific.cc,v 1.12 2004-05-05 14:37:04 bjoo Exp $
 
 /*! @file
  * @brief Scalar-like architecture specific routines
@@ -333,7 +333,8 @@ void read(NmlReader& nml, const string& s, bool& d)
 //! Function overload read of  string
 void read(NmlReader& nml, const string& s, string& d)
 {
-  char *dd_tmp;
+  // Initialise dd_tmp to NULL to make -Wall happy
+  char *dd_tmp=0x0;
   int lleng;
 
   // Only primary node can grab string
