@@ -1,5 +1,10 @@
 08/27/2003 -- Robert Edwards
 
+	Version 1.5.5. Changed qdp_scalarsite_sse.h to fix type conflicts with subsets
+        on LHS.
+
+08/27/2003 -- Robert Edwards
+
 	Version 1.5.4. Updated manual. Added better xml support. Added some
         new traits classes.
 
