@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: forward.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+// $Id: forward.h,v 1.5 2002-11-04 04:37:06 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -23,17 +23,6 @@ namespace RNG
 };
 
   
-// Word
-class Logical;
-template<class T> class Word;
-class Integer32;
-class Real64;
-class Real32;
-
-//typedef int Integer32;
-//typedef float Real32;
-//typedef double Real64;
-
 // Inner
 template<class T> class IScalar;
 template<class T> class ILattice;
@@ -79,6 +68,8 @@ template<class T> struct WordType;
 // Empty leaf functor tag
 struct ElemLeaf;
 
+// Map (shifts) class
+class NearestNeighborMap;
 
 QDP_END_NAMESPACE();
 
