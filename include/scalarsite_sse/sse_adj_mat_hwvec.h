@@ -8,12 +8,12 @@ __asm__ __volatile__ ("movlps %0, %%xmm0 \n\t" \
                       "movhps %5, %%xmm2" \
                       : \
                       : \
-                      "m" ((bb)->h[0].c[0]), \
-                      "m" ((bb)->h[0].c[1]), \
-                      "m" ((bb)->h[0].c[2]), \
-                      "m" ((bb)->h[1].c[0]), \
-                      "m" ((bb)->h[1].c[1]), \
-                      "m" ((bb)->h[1].c[2])); \
+                      "m" ((bb).elem(0).elem(0)), \
+                      "m" ((bb).elem(0).elem(1)), \
+                      "m" ((bb).elem(0).elem(2)), \
+                      "m" ((bb).elem(1).elem(0)), \
+                      "m" ((bb).elem(1).elem(1)), \
+                      "m" ((bb).elem(1).elem(2))); \
 __asm__ __volatile__ ("movss %0, %%xmm3 \n\t" \
                       "movss %1, %%xmm6 \n\t" \
                       "movss %2, %%xmm4 \n\t" \
@@ -125,10 +125,10 @@ __asm__ __volatile__ ("movlps %%xmm3, %0 \n\t" \
                       "movhps %%xmm4, %4 \n\t" \
                       "movhps %%xmm5, %5" \
                       : \
-                      "=m" ((cc)->h[0].c[0]), \
-                      "=m" ((cc)->h[0].c[1]), \
-                      "=m" ((cc)->h[0].c[2]), \
-                      "=m" ((cc)->h[1].c[0]), \
-                      "=m" ((cc)->h[1].c[1]), \
-                      "=m" ((cc)->h[1].c[2])); \
+                      "=m" ((cc).elem(0).elem(0)), \
+                      "=m" ((cc).elem(0).elem(1)), \
+                      "=m" ((cc).elem(0).elem(2)), \
+                      "=m" ((cc).elem(1).elem(0)), \
+                      "=m" ((cc).elem(1).elem(1)), \
+                      "=m" ((cc).elem(1).elem(2))); \
 }
