@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_profile.h,v 1.2 2004-08-09 21:54:55 edwards Exp $
+// $Id: qdp_profile.h,v 1.3 2004-08-11 02:25:28 edwards Exp $
 
 /*! @file
  * @brief Print profiling info
@@ -92,6 +92,26 @@ struct QDPProfile_t
 	printExprTree(os, dest, op, 
 		      MakeReturn<Tree_t,Container_t>::make(Tree_t(
 			CreateLeaf<QDPExpr<RHS,C1> >::make(rhs))));
+	expr = os.str();
+	registerProfile(this);
+      }
+    }
+
+  //! Profile  opOuter(rhs)
+  template<class T, class C, class Op, class OpOuter, class T1, class C1>
+  QDPProfile_t(const QDPType<T,C>& dest, const Op& op, const OpOuter& opOuter, const QDPType<T1,C1>& rhs)
+    {
+      init();
+
+      if (getProfileLevel() > 0)
+      {
+	typedef UnaryNode<OpOuter, typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+	typedef typename UnaryReturn<C1,OpOuter>::Type_t Container_t;
+
+	ostringstream os;
+	printExprTree(os, dest, op, 
+		      MakeReturn<Tree_t,Container_t>::make(Tree_t(
+			CreateLeaf<QDPType<T1,C1> >::make(rhs))));
 	expr = os.str();
 	registerProfile(this);
       }
