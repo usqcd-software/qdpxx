@@ -1,10 +1,12 @@
-// $Id: t_exotic.cc,v 1.1 2003-09-10 01:45:15 edwards Exp $
+// $Id: t_exotic.cc,v 1.2 2003-09-10 02:05:33 edwards Exp $
+/*! \file
+ *  \brief Test various exotic qdp routines
+ */
 
 #include <iostream>
 #include <cstdio>
 
 #include "qdp.h"
-#include "examples.h"
 
 using namespace QDP;
 
@@ -20,7 +22,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_mesplq.nml");
+  NmlWriter nml("t_exotic.nml");
 
   push(nml,"lattis");
   Write(nml,Nd);
@@ -28,31 +30,20 @@ int main(int argc, char *argv[])
   Write(nml,nrow);
   pop(nml);
 
-  //! Example of calling a plaquette routine
-  /*! NOTE: the STL is *not* used to hold gauge fields */
-  multi1d<LatticeColorMatrix> u(Nd);
-  Double w_plaq, s_plaq, t_plaq, link;
+  {
+    // Try out colorContract
+    LatticeColorMatrix a,b,c;
+    gaussian(a);
+    gaussian(b);
+    gaussian(c);
 
-  cout << "Start gaussian\n";
-  for(int m=0; m < u.size(); ++m)
-    gaussian(u[m]);
+    LatticeComplex lc1 = colorContract(a,b,c);
 
-  // Reunitarize the gauge field
-  cout << "Start reunit\n";
-  for(int m=0; m < u.size(); ++m)
-    reunit(u[m]);
-
-  // Try out the plaquette routine
-  cout << "Start mesplq\n";
-  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  cout << "w_plaq = " << w_plaq << endl;
-  cout << "link = " << link << endl;
-
-  // Write out the results
-  push(nml,"observables");
-  Write(nml,w_plaq);
-  Write(nml,link);
-  pop(nml);
+    push(nml,"color_contract_orig");
+    Write(nml,lc1);
+    pop(nml);
+   
+  }
 
   nml.flush();
 
