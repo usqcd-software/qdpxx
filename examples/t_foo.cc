@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.7 2003-01-21 21:19:45 edwards Exp $
+// $Id: t_foo.cc,v 1.8 2003-01-22 16:48:04 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
   c = 4;
   d = 5;
 
-  b(rb[1]) = zero;
+  b[rb[1]] = zero;
 
   nml << "First set of b";
   Write(nml,b);
@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
   nml << "Second set of b";
   Write(nml,b);
 
-  b(rb[0]) = -17;
+  b[rb[0]] = -17;
 
   nml << "Third set of b";
   Write(nml,b);
