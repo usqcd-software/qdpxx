@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: QDPOperators.h,v 1.17 2003-02-28 03:43:53 edwards Exp $
+// $Id: QDPOperators.h,v 1.18 2003-12-08 21:20:30 edwards Exp $
 
 /*! @file
  * @brief Bulk of QDP operators produced by PETE
@@ -352,6 +352,28 @@ struct FnSpinReconstructDir3Minus
   }
 };
 
+struct FnChiralProjectPlus
+{
+  PETE_EMPTY_CONSTRUCTORS(FnChiralProjectPlus)
+  template<class T>
+  inline typename UnaryReturn<T, FnChiralProjectPlus >::Type_t
+  operator()(const T &a) const
+  {
+    return (chiralProjectPlus(a));
+  }
+};
+
+struct FnChiralProjectMinus
+{
+  PETE_EMPTY_CONSTRUCTORS(FnChiralProjectMinus)
+  template<class T>
+  inline typename UnaryReturn<T, FnChiralProjectMinus >::Type_t
+  operator()(const T &a) const
+  {
+    return (chiralProjectMinus(a));
+  }
+};
+
 struct FnCmplx
 {
   PETE_EMPTY_CONSTRUCTORS(FnCmplx)
@@ -466,7 +488,8 @@ struct FnColorContract
 {
   PETE_EMPTY_CONSTRUCTORS(FnColorContract)
   template<class T1, class T2, class T3>
-  inline typename TrinaryReturn<T1, T2, T3, FnColorContract >::Type_t
+  inline typename TrinaryReturn<T1, T2, T3, FnColorContract >
+  ::Type_t
   operator()(const T1 &a, const T2 &b, const T3 &c) const
   {
     return (colorContract(a,b,c));
@@ -1010,6 +1033,44 @@ spinReconstructDir3Minus(const QDPType<T1,C1> & l)
   typedef UnaryNode<FnSpinReconstructDir3Minus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
   typedef typename UnaryReturn<C1,FnSpinReconstructDir3Minus >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(l)));
+}
+
+//! Apply P_+ = 0.5*(1+gamma_5)
+/*! Returns full-spin vector 
+  @param l  full-spin vector
+  @return 0.5*(1 + gamma[5])*l
+  @ingroup group1
+  @relates QDPType */
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnChiralProjectPlus,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnChiralProjectPlus >::Type_t >::Expression_t
+chiralProjectPlus(const QDPType<T1,C1> & l)
+{
+  typedef UnaryNode<FnChiralProjectPlus,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnChiralProjectPlus >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(l)));
+}
+
+//! Apply P_ = -0.5*(1-gamma_5)
+/*! Returns full-spin vector 
+  @param l  full-spin vector
+  @return 0.5*(1 - gamma[5])*l
+  @ingroup group1
+  @relates QDPType */
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnChiralProjectMinus,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnChiralProjectMinus >::Type_t >::Expression_t
+chiralProjectMinus(const QDPType<T1,C1> & l)
+{
+  typedef UnaryNode<FnChiralProjectMinus,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnChiralProjectMinus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -4809,6 +4870,32 @@ spinReconstructDir3Minus(const QDPExpr<T1,C1> & l)
   typedef UnaryNode<FnSpinReconstructDir3Minus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
   typedef typename UnaryReturn<C1,FnSpinReconstructDir3Minus >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+}
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnChiralProjectPlus,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnChiralProjectPlus >::Type_t >::Expression_t
+chiralProjectPlus(const QDPExpr<T1,C1> & l)
+{
+  typedef UnaryNode<FnChiralProjectPlus,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnChiralProjectPlus >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+}
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnChiralProjectMinus,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnChiralProjectMinus >::Type_t >::Expression_t
+chiralProjectMinus(const QDPExpr<T1,C1> & l)
+{
+  typedef UnaryNode<FnChiralProjectMinus,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnChiralProjectMinus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }

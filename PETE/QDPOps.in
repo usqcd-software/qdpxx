@@ -270,6 +270,26 @@ unaryOps
   @return (1 - gamma[3])*l
   @ingroup group1
   @relates QDPType */"
+-----
+  TAG = "FnChiralProjectPlus"
+  FUNCTION = "chiralProjectPlus"
+  EXPR = "return (chiralProjectPlus(a));"
+  COMMENTA = "//! Apply P_+ = 0.5*(1+gamma_5)"
+  COMMENTB = "/*! Returns full-spin vector 
+  @param l  full-spin vector
+  @return 0.5*(1 + gamma[5])*l
+  @ingroup group1
+  @relates QDPType */"
+-----
+  TAG = "FnChiralProjectMinus"
+  FUNCTION = "chiralProjectMinus"
+  EXPR = "return (chiralProjectMinus(a));"
+  COMMENTA = "//! Apply P_ = -0.5*(1-gamma_5)"
+  COMMENTB = "/*! Returns full-spin vector 
+  @param l  full-spin vector
+  @return 0.5*(1 - gamma[5])*l
+  @ingroup group1
+  @relates QDPType */"
 
 binaryOps
 -----
