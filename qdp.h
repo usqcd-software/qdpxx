@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.8 2002-10-28 03:08:44 edwards Exp $
+// $Id: qdp.h,v 1.9 2002-11-04 04:38:45 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -64,9 +64,24 @@ using std::ostream;
 #endif
 
 
+// Info/error routines
 QDP_BEGIN_NAMESPACE(QDP);
-//! General death routine
-void SZ_ERROR(const char *s, ...);
+
+/**
+ * Simple information display routine
+ */
+extern int  QDP_info (const char* format, ...);
+
+/**
+ * Simple error display routine
+ */
+extern int  QDP_error (const char* format, ...);
+
+/**
+ * Simple error display and abort routine
+ */
+extern void  QDP_error_exit (const char *format, ...);
+
 QDP_END_NAMESPACE();
 
 
