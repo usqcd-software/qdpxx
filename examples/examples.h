@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: examples.h,v 1.3 2003-11-14 20:56:00 edwards Exp $
+// $Id: examples.h,v 1.4 2004-07-27 05:37:41 edwards Exp $
 //
 // Include file for test suite
 
@@ -7,8 +7,9 @@
 
 using namespace QDP;
 
-#define START_CODE(a)
-#define END_CODE(a)
+#define START_CODE() QDP_PUSH_PROFILE(QDP::getProfileLevel())
+#define END_CODE()   QDP_POP_PROFILE()
+
 
 enum Reunitarize {REUNITARIZE, REUNITARIZE_ERROR, REUNITARIZE_LABEL};
 
