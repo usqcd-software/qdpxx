@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.23 2003-09-01 20:39:40 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.24 2003-09-08 15:59:38 bjoo Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -32,6 +32,12 @@ XMLReader::XMLReader(const XMLBufferWriter& mw)
   iop=false;
   open(mw);
 }
+
+XMLReader::XMLReader(XMLReader& old, const string& xpath) : BasicXPathReader((BasicXPathReader&)old, xpath) 
+{
+  iop=true;
+}
+
 
 void XMLReader::open(const string& filename)
 {
@@ -86,6 +92,8 @@ void XMLReader::close()
     iop = false;
   }
 }
+
+
 
 bool XMLReader::is_open() {return iop;}
 

@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.15 2003-08-27 18:56:34 edwards Exp $
+// $Id: t_xml.cc,v 1.16 2003-09-08 15:59:38 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -12,6 +12,8 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
+
+  XMLXPathReader::initXPath();
 
   // Setup the layout
   const int foo[] = {2,2,2,2};

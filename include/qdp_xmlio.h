@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.19 2003-08-27 18:53:56 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.20 2003-09-08 15:59:38 bjoo Exp $
 
 /*! @file
  * @brief XML IO support
@@ -46,6 +46,8 @@ public:
   //! Construct from contents of a XMLBufferWriter
   XMLReader(const XMLBufferWriter& mw);
 
+  //! Clone a reader but with a possibly different path
+  XMLReader(XMLReader& old, const string& xpath);
   ~XMLReader();
 
   /* The meaning of these should be clear to you */
@@ -77,27 +79,6 @@ public:
   int count(const std::string& xpath);
 
 
-  //! setCurrentXPath -- sets XPath context to current xpath
-  //  passes on the otherwise protected function from BasicXPathReader
-  //  for user defined types later on.
-  void setCurrentXPath(const std::string& xpath) { 
-    BasicXPathReader::setCurrentXPath(xpath);
-  }
-
-  //! getCurrentContextNode -- Gets a pointer to the current context node
-  //  in the XPATH Context. Passes Up otherwise protected function from 
-  // BasicXPathreader 
-  xmlNodePtr getCurrentContextNode(void) { 
-    return BasicXPathReader::getCurrentContextNode();
-  }
-
-  //! setCurrentContextNode -- Sets the current context node to be 
-  // new context node. Passes up otherwise protected function from 
-  // BasicXPathReader
-  void setCurrentContextNode(xmlNodePtr new_context_node) {
-    BasicXPathReader::setCurrentContextNode(new_context_node);
-  }
-
 protected:
   // The universal data-reader. All the read functions call this
   template<typename T>
@@ -128,17 +109,7 @@ inline
 void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
 {
 
-  // Preserve the context pointer
-  xmlNodePtr context_node_before_read = xml.getCurrentContextNode();
-
-
-  // Change context to the top of the array as a speed optimisation
-  try { 
-    xml.setCurrentXPath(s);
-  }
-  catch ( const string& e) { 
-    throw;
-  }
+  XMLReader arraytop(xml, s);
 
   std::ostringstream error_message;
   std::string elemName = "elem";
@@ -148,7 +119,7 @@ void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
 	
   int array_size;
   try {
-    array_size = xml.count(elem_base_query);
+    array_size = arraytop.count(elem_base_query);
   }
   catch( const std::string& e) { 
     error_message << "Exception occurred while counting " << elem_base_query 
@@ -169,12 +140,7 @@ void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
     // recursively try and read the element.
     try 
     {
-      // Preserve context pointer just in case the recursive read moves 
-      // it
-      xmlNodePtr context_node_before_elem_read = xml.getCurrentContextNode();
-      read(xml, element_xpath.str(), input[i]);
-      xml.setCurrentContextNode(context_node_before_elem_read);
-
+      read(arraytop, element_xpath.str(), input[i]);
     } 
     catch (const std::string& e) 
     {
@@ -186,8 +152,6 @@ void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
     }
   }
 
-  // Restore previous context pointer
-  xml.setCurrentContextNode(context_node_before_read);
 }
 
 
