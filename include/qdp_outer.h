@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.17 2003-08-30 02:29:22 edwards Exp $
+// $Id: qdp_outer.h,v 1.18 2003-08-31 20:25:11 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -236,7 +236,9 @@ class OLattice: public QDPType<T, OLattice<T> >
 public:
   OLattice() 
     {
+#if ! defined(QDP_USE_FIXED_MEMORY)
       F = new T[Layout::sitesOnNode()];
+#endif
 
 #if QDP_DEBUG >= 1
       QDP_info("create %d bytes of OLattice[%d]=0x%x, this=0x%x",
@@ -249,7 +251,9 @@ public:
       QDP_info("destroy %d bytes of OLattice=0x%x, this=0x%x",sizeof(T),F,this);
 #endif
 
+#if ! defined(QDP_USE_FIXED_MEMORY)
       delete[] F;
+#endif
     }
 
 
@@ -257,7 +261,9 @@ public:
   template<class T1>
   OLattice(const OLattice<T1>& rhs)
     {
+#if ! defined(QDP_USE_FIXED_MEMORY)
       F = new T[Layout::sitesOnNode()];
+#endif
 
 #if QDP_DEBUG >= 1
       QDP_info("construct %d bytes from expr OLattice[%d]=0x%x",
@@ -272,7 +278,9 @@ public:
   template<class RHS, class T1>
   OLattice(const QDPExpr<RHS, OLattice<T1> >& rhs)
     {
+#if ! defined(QDP_USE_FIXED_MEMORY)
       F = new T[Layout::sitesOnNode()];
+#endif
 
 #if QDP_DEBUG >= 1
       QDP_info("construct %d bytes from expr OLattice[%d]=0x%x",
@@ -286,7 +294,9 @@ public:
   //! construct OLattice = const
   OLattice(const typename WordType<T>::Type_t& rhs)
     {
+#if ! defined(QDP_USE_FIXED_MEMORY)
       F = new T[Layout::sitesOnNode()];
+#endif
 
 #if QDP_DEBUG >= 1
       QDP_info("construct %d bytes from const OLattice[%d]=0x%x",
@@ -301,7 +311,9 @@ public:
   //! construct OLattice = 0
   OLattice(const Zero& rhs)
     {
+#if ! defined(QDP_USE_FIXED_MEMORY)
       F = new T[Layout::sitesOnNode()];
+#endif
 
 #if QDP_DEBUG >= 1
       QDP_info("construct %d bytes from zero OLattice[%d]=0x%x",
@@ -363,7 +375,9 @@ public:
   /*! For now, a deep copy */
   OLattice(const OLattice& rhs)
     {
+#if ! defined(QDP_USE_FIXED_MEMORY)
       F = new T[Layout::sitesOnNode()];
+#endif
 
 #if QDP_DEBUG >= 1
       QDP_info("copy OLattice[%d]=0x%x",Layout::sitesOnNode(),F);
@@ -396,7 +410,11 @@ public:
   inline const T& elem(int i) const {return F[i];}
 
 private:
+#if ! defined(QDP_USE_FIXED_MEMORY)
   T *F;
+#else
+  T F[QDP_MAX_MEMORY]  QDP_ALIGN16;
+#endif
 };
 
 
