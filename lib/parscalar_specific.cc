@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.7 2003-01-14 04:46:26 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.8 2003-01-15 21:48:36 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -219,20 +219,97 @@ void Map::make(const MapFunc& func)
     dstnode[linear]  = bnode;
   }
 
+#if 1
 //  extern NmlWriter nml;
 
 //  Write(nml,srcnode);
 //  Write(nml,dstnode);
 
+  for(int linear=0; linear < Layout::subgridVol(); ++linear)
+  {
+    QMP_info("soffsets(%d) = %d",linear,soffsets(linear));
+    QMP_info("srcnode(%d) = %d",linear,srcnode(linear));
+    QMP_info("dstnode(%d) = %d",linear,dstnode(linear));
+  }
+#endif
+
   // Return a list of the unique nodes in the list
-  // NOTE: my_node is always included as a unique node, so one extra
-  srcenodes = uniquify_list(srcnode);
-  destnodes = uniquify_list(dstnode);
+  // NOTE: my_node may be included as a unique node, so one extra
+  multi1d<int> srcenodes_tmp = uniquify_list(srcnode);
+  multi1d<int> destnodes_tmp = uniquify_list(dstnode);
+
+  // To simplify life, remove a possible occurance of my_node
+  // This may mean that the list could be empty afterwards, so that
+  // means mark offnodeP as false
+  int cnt_srcenodes = 0;
+  for(int i=0; i < srcenodes_tmp.size(); ++i)
+    if (srcenodes_tmp[i] != my_node)
+      ++cnt_srcenodes;
+
+  int cnt_destnodes = 0;
+  for(int i=0; i < destnodes_tmp.size(); ++i)
+    if (destnodes_tmp[i] != my_node)
+      ++cnt_destnodes;
+
+#if 1
+  // Debugging
+  for(int i=0; i < srcenodes_tmp.size(); ++i)
+    QMP_info("srcenodes_tmp(%d) = %d",i,srcenodes_tmp[i]);
+
+  for(int i=0; i < destnodes_tmp.size(); ++i)
+    QMP_info("destnodes_tmp(%d) = %d",i,destnodes_tmp[i]);
+
+  QMP_info("cnt_srcenodes = %d", cnt_srcenodes);
+  QMP_info("cnt_destnodes = %d", cnt_destnodes);
+#endif
+
+
+  // A sanity check - both counts must be either 0 or non-zero
+  if (cnt_srcenodes > 0 && cnt_destnodes == 0)
+    QDP_error_exit("Map: some bizarre error - no dest nodes but have srce nodes");
+
+  if (cnt_srcenodes == 0 && cnt_destnodes > 0)
+    QDP_error_exit("Map: some bizarre error - no srce nodes but have dest nodes");
+
+  // If no srce/dest nodes, then we know no off-node communications
+  offnodeP = (cnt_srcenodes > 0) ? true : false;
+  
+  //
+  // The rest of the routine is devoted to supporting off-node communications
+  // If there is not any communications, then return
+  //
+  if (! offnodeP)
+  {
+    QMP_info("exiting Map::make");
+    return;
+  }
+
+  // Finally setup the srce and dest nodes now without my_node
+  srcenodes.resize(cnt_srcenodes);
+  destnodes.resize(cnt_destnodes);
+  
+  for(int i=0, j=0; i < srcenodes_tmp.size(); ++i)
+    if (srcenodes_tmp[i] != my_node)
+      srcenodes[j++] = srcenodes_tmp[i];
+
+  for(int i=0, j=0; i < destnodes.size(); ++i)
+    if (destnodes_tmp[i] != my_node)
+      destnodes[j++] = destnodes_tmp[i];
+
+#if 1
+  // Debugging
+  for(int i=0; i < srcenodes.size(); ++i)
+    fprintf(stderr,"srcenodes(%d) = %d\n",i,srcenodes(i));
+
+  for(int i=0; i < destnodes.size(); ++i)
+    fprintf(stderr,"destnodes(%d) = %d\n",i,destnodes(i));
+#endif
+
 
 //  Write(nml,srcenodes);
 //  Write(nml,destnodes);
 
-  // Run through the lists and find the number for each unique node
+  // Run through the lists and find the number of each unique node
   srcenodes_num.resize(srcenodes.size());
   destnodes_num.resize(destnodes.size());
 
@@ -242,24 +319,26 @@ void Map::make(const MapFunc& func)
   for(int linear=0; linear < Layout::subgridVol(); ++linear)
   {
     int this_node = srcnode[linear];
-    for(int i=0; i < srcenodes_num.size(); ++i)
-    {
-      if (srcenodes[i] == this_node)
+    if (this_node != my_node)
+      for(int i=0; i < srcenodes_num.size(); ++i)
       {
-	srcenodes_num[i]++;
-	break;
+	if (srcenodes[i] == this_node)
+	{
+	  srcenodes_num[i]++;
+	  break;
+	}
       }
-    }
 
-    this_node = dstnode[linear];
-    for(int i=0; i < destnodes_num.size(); ++i)
-    {
-      if (destnodes[i] == this_node)
+    int that_node = dstnode[linear];
+    if (that_node != my_node)
+      for(int i=0; i < destnodes_num.size(); ++i)
       {
-	destnodes_num[i]++;
-	break;
+	if (destnodes[i] == that_node)
+	{
+	  destnodes_num[i]++;
+	  break;
+	}
       }
-    }
   }
   
 //  Write(nml,srcenodes_num);
@@ -267,17 +346,14 @@ void Map::make(const MapFunc& func)
 
 
 #if 1
-  for(int linear=0; linear < Layout::subgridVol(); ++linear)
-  {
-    QMP_info("soffsets(%d) = %d",linear,soffsets(linear));
-    QMP_info("srcnode(%d) = %d",linear,srcnode(linear));
-    QMP_info("dstnode(%d) = %d",linear,dstnode(linear));
-  }
-
   for(int i=0; i < destnodes.size(); ++i)
   {
     QMP_info("srcenodes(%d) = %d",i,srcenodes(i));
     QMP_info("destnodes(%d) = %d",i,destnodes(i));
+  }
+
+  for(int i=0; i < destnodes_num.size(); ++i)
+  {
     QMP_info("srcenodes_num(%d) = %d",i,srcenodes_num(i));
     QMP_info("destnodes_num(%d) = %d",i,destnodes_num(i));
   }
