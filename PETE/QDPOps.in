@@ -32,6 +32,10 @@ unaryOps
   FUNCTION = "imag"
   EXPR = "return (imag(a));"
 -----
+  TAG = "FnLocalNorm2"
+  FUNCTION = "localNorm2"
+  EXPR = "return (localNorm2(a));"
+-----
   TAG = "FnMultiplyI"
   FUNCTION = "multiplyI"
   EXPR = "return (multiplyI(a));"
@@ -109,6 +113,14 @@ binaryOps
   TAG = "FnCmplx"
   FUNCTION = "cmplx"
   EXPR = "return (cmplx(a,b));"
+-----
+  TAG = "FnLocalInnerproduct"
+  FUNCTION = "localInnerproduct"
+  EXPR = "return (localInnerproduct(a,b));"
+-----
+  TAG = "FnLocalInnerproductReal"
+  FUNCTION = "localInnerproductReal"
+  EXPR = "return (localInnerproductReal(a,b));"
 -----
   TAG = "FnQuarkContract13"
   FUNCTION = "quarkContract13"
