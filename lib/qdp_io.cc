@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.3 2003-06-04 19:41:50 edwards Exp $
+// $Id: qdp_io.cc,v 1.4 2003-06-05 02:20:17 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -142,101 +142,86 @@ NmlReader::~NmlReader()
 }
 
 //! Push a namelist group 
-NmlReader& NmlReader::push(const string& s)
+void NmlReader::push(const string& s)
 {
   ++stack_cnt;
 
   if (Layout::primaryNode()) 
     push_nml_section_stack(s.c_str());
-
-  return *this;
 }
 
 //! Pop a namelist group
-NmlReader& NmlReader::pop()
+void NmlReader::pop()
 {
   stack_cnt--;
 
   if (Layout::primaryNode()) 
     pop_nml_section_stack();
-
-  return *this;
 }
 
 //! Push a namelist group 
-NmlReader& push(NmlReader& nml, const string& s) {return nml.push(s);}
+void push(NmlReader& nml, const string& s) {nml.push(s);}
 
 //! Pop a namelist group
-NmlReader& pop(NmlReader& nml) {return nml.pop();}
+void pop(NmlReader& nml) {nml.pop();}
 
 
 //! Function overload read of  multi1d<int>
-NmlReader& read(NmlReader& nml, const string& s, multi1d<int>& d)
+void read(NmlReader& nml, const string& s, multi1d<int>& d)
 {
   for(int i=0; i < d.size(); ++i)
     read(nml, s, d[i], i);
-  return nml;
 }
 
 //! Function overload read of  multi1d<float>
-NmlReader& read(NmlReader& nml, const string& s, multi1d<float>& d)
+void read(NmlReader& nml, const string& s, multi1d<float>& d)
 {
   for(int i=0; i < d.size(); ++i)
     read(nml, s, d[i], i);
-  return nml;
 }
 
 //! Function overload read of  multi1d<double>
-NmlReader& read(NmlReader& nml, const string& s, multi1d<double>& d)
+void read(NmlReader& nml, const string& s, multi1d<double>& d)
 {
   for(int i=0; i < d.size(); ++i)
     read(nml, s, d[i], i);
-  return nml;
 }
 
 
 //! Function overload read of  Integer
-NmlReader& read(NmlReader& nml, const string& s, Integer& d)
+void read(NmlReader& nml, const string& s, Integer& d)
 {
   WordType<Integer>::Type_t  dd;
   read(nml,s,dd);
   d = dd;
-
-  return nml;
 }
 
 //! Function overload read of  Real
-NmlReader& read(NmlReader& nml, const string& s, Real& d)
+void read(NmlReader& nml, const string& s, Real& d)
 {
   WordType<Real>::Type_t  dd;
   read(nml,s,dd);
   d = dd;
-
-  return nml;
 }
 
 //! Function overload read of  Double
-NmlReader& read(NmlReader& nml, const string& s, Double& d)
+void read(NmlReader& nml, const string& s, Double& d)
 {
   WordType<Double>::Type_t  dd;
   read(nml,s,dd);
   d = dd;
-
-  return nml;
 }
 
 //! Function overload read of  Boolean
-NmlReader& read(NmlReader& nml, const string& s, Boolean& d)
+void read(NmlReader& nml, const string& s, Boolean& d)
 {
   WordType<Boolean>::Type_t  dd;
   read(nml,s,dd);
   d = dd;
-
-  return nml;
 }
 
 //! Function overload read of  multi1d<Integer>
-NmlReader& read(NmlReader& nml, const string& s, multi1d<Integer>& d)
+void read(NmlReader& nml, const string& s, multi1d<Integer>& d)
 {
   WordType<Integer>::Type_t  dd;
 
@@ -245,12 +230,10 @@ NmlReader& read(NmlReader& nml, const string& s, multi1d<Integer>& d)
     read(nml,s,dd,i);
     d[i] = dd;
   }
-
-  return nml;
 }
 
 //! Function overload read of  multi1d<Real>
-NmlReader& read(NmlReader& nml, const string& s, multi1d<Real>& d)
+void read(NmlReader& nml, const string& s, multi1d<Real>& d)
 {
   WordType<Real>::Type_t  dd;
 
@@ -259,12 +242,10 @@ NmlReader& read(NmlReader& nml, const string& s, multi1d<Real>& d)
     read(nml,s,dd,i);
     d[i] = dd;
   }
-
-  return nml;
 }
 
 //! Function overload read of  multi1d<Double>
-NmlReader& read(NmlReader& nml, const string& s, multi1d<Double>& d)
+void read(NmlReader& nml, const string& s, multi1d<Double>& d)
 {
   WordType<Double>::Type_t  dd;
 
@@ -273,8 +254,6 @@ NmlReader& read(NmlReader& nml, const string& s, multi1d<Double>& d)
     read(nml,s,dd,i);
     d[i] = dd;
   }
-
-  return nml;
 }
 
 
@@ -321,32 +300,29 @@ NmlWriter::~NmlWriter()
 }
 
 //! Push a namelist group 
-NmlWriter& NmlWriter::push(const string& s)
+void NmlWriter::push(const string& s)
 {
   ++stack_cnt;
 
   if (Layout::primaryNode()) 
     get() << "&" << s << endl; 
-
-  return *this;
 }
 
 //! Pop a namelist group
-NmlWriter& NmlWriter::pop()
+void NmlWriter::pop()
 {
   stack_cnt--;
 
   if (Layout::primaryNode()) 
     get() << "&END\n"; 
-
-  return *this;
 }
 
 //! Push a namelist group 
-NmlWriter& push(NmlWriter& nml, const string& s) {return nml.push(s);}
+void push(NmlWriter& nml, const string& s) {nml.push(s);}
 
 //! Pop a namelist group
-NmlWriter& pop(NmlWriter& nml) {return nml.pop();}
+void pop(NmlWriter& nml) {nml.pop();}
+
 
 //! Write a comment
 NmlWriter& operator<<(NmlWriter& nml, const char* s)
@@ -363,6 +339,87 @@ NmlWriter& operator<<(NmlWriter& nml, const std::string& s)
   if (Layout::primaryNode()) 
     nml.get() << "! " << s << endl; 
 
+  return nml;
+}
+
+//! Write a primitive element
+template<class T>
+inline
+void writePrimitive(NmlWriter& nml, const std::string& s, const T& d)
+{
+  if (Layout::primaryNode()) 
+    nml.get() << " " << s << " = " << d << " ,\n";
+}
+
+void write(NmlWriter& nml, const std::string& s, const std::string& d)
+{
+  if (Layout::primaryNode()) 
+    nml.get() << " " << s << " = \"" << d << "\" ,\n";
+}
+
+void write(NmlWriter& nml, const std::string& s, const int& d)
+{
+  writePrimitive<int>(nml, s, d);
+}
+
+void write(NmlWriter& nml, const std::string& s, const unsigned int& d)
+{
+  writePrimitive<unsigned int>(nml, s, d);
+}
+
+void write(NmlWriter& nml, const std::string& s, const float& d)
+{
+  writePrimitive<float>(nml, s, d);
+}
+
+void write(NmlWriter& nml, const std::string& s, const double& d)
+{
+  writePrimitive<double>(nml, s, d);
+}
+
+void write(NmlWriter& nml, const std::string& s, const bool& d)
+{
+  writePrimitive<bool>(nml, s, d);
+}
+
+
+//! Write a primitive element
+template<class T>
+inline
+void writePrimitive(NmlWriter& nml, const T& d)
+{
+  if (Layout::primaryNode()) 
+    nml.get() << d; 
+}
+
+// Ascii output
+NmlWriter& operator<<(NmlWriter& nml, const int& d)
+{
+  writePrimitive<int>(nml,d);
+  return nml;
+}
+
+NmlWriter& operator<<(NmlWriter& nml, const unsigned int& d)
+{
+  writePrimitive<unsigned int>(nml,d);
+  return nml;
+}
+
+NmlWriter& operator<<(NmlWriter& nml, const float& d)
+{
+  writePrimitive<float>(nml,d);
+  return nml;
+}
+
+NmlWriter& operator<<(NmlWriter& nml, const double& d)
+{
+  writePrimitive<double>(nml,d);
+  return nml;
+}
+
+NmlWriter& operator<<(NmlWriter& nml, const bool& d)
+{
+  writePrimitive<bool>(nml,d);
   return nml;
 }
 
@@ -399,6 +456,24 @@ void BinaryReader::close()
 
 
 bool BinaryReader::is_open() {return iop;}
+
+// Propagate status to all nodes
+bool BinaryReader::fail()
+{
+  bool s;
+  int  c;
+
+  if (Layout::primaryNode()) 
+  {
+    s = f.fail();
+    c = (s) ? 1 : 0;   // convert true/false to 1/0
+  }
+
+  Internal::broadcast(c);
+  s = (c == 1) ? true : false;
+
+  return s;
+}
 
 BinaryReader::~BinaryReader() {close();}
 
@@ -591,12 +666,18 @@ template< typename T>
 void BinaryReader::readPrimitive(T& input)
 {
   readArray((char*)&input, sizeof(T), 1);
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(input);
 }
 
 void BinaryReader::readArray(char* input, size_t size, size_t nmemb)
+{
+  readArrayPrimaryNode(input, size, nmemb);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast((void*)input, size*nmemb);
+}
+
+
+void BinaryReader::readArrayPrimaryNode(char* input, size_t size, size_t nmemb)
 {
   if (Layout::primaryNode())
   {
