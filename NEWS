@@ -1,3 +1,8 @@
+10/14/2003 -- Robert Edwards
+
+	Version 1.6.0. Trival tweaks. Changed version of configure.ac to 1.6 to
+        reflect new IO formats and configuration methods.
+
 10/09/2003 -- Robert Edwards
 
 	Version 1.5.15. Added support for parallel versions of stdout,stdin, stderr.
