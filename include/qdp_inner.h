@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.4 2003-08-21 02:39:28 edwards Exp $
+// $Id: qdp_inner.h,v 1.5 2003-08-21 03:02:39 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -546,6 +546,15 @@ public:
 	F[i] = a.F[i];
     }
 #endif
+
+public:
+  //! The backdoor
+  /*! 
+   * Used by optimization routines (e.g., SSE) that need the memory address of data.
+   * BTW: to make this a friend would be a real pain since functions are templatized.
+   */
+  inline T* data() const {return F;}
+
 
 public:
   T& elem(int i) {return F[i];}
