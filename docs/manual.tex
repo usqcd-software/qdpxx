@@ -917,16 +917,28 @@ A subset definition remains valid until is destructor is called.
 
 \paragraph{Defining a set}
 
-Subsets are first defined through the construction of an object
-of type \verb|Set| using a function object. This function object is
-a derived type of \verb|SetFunc|. Function objects are described
-in Section~\ref{sec:funcobj}. Subsets are defined through the 
-data type \verb|Subset|.
+Subsets are first defined using a function object through the
+construction of an object of type \verb|OrderedSet| and
+\verb|UnorderedSet| whose parent type is \verb|Set|. This function
+object is a derived type of \verb|SetFunc|. Function objects are
+described in Section~\ref{sec:funcobj}. Subsets are defined through
+the parent data type \verb|Subset|. There are two derived useable
+(concrete) types called \verb|UnorderedSubset| and
+\verb|OrderedSubset|. The latter type is an optimization that assumes
+(and run-time enforces) that the subset of sites for a given site
+layout must be contiguous. It is an error if they are not. Clearly,
+this assumption is layout dependent and is used mainly by the system
+wide supplied \verb|even|, \verb|odd|, etc. subsets under compile time
+flags. A general user subset should be declared to be
+\verb|UnorderedSubset|. In both ordered and unordered subsets, they
+are constructed from the corresponding \verb|OrderedSet| and
+\verb|UnorderedSet|.
 
 \begin{flushleft}
 \begin{tabular}{|l|p{5.0in}|}
 \hline
-Prototype    & \verb|Set::make(const SetFunc& func)|\\
+Prototype    & \verb|UnorderedSet::make(const SetFunc& func)|\\
+             & \verb|OrderedSet::make(const SetFunc& func)|\\
              & \verb|int SetFunc::operator()(const multi1d<int>& x)|\\
              & \verb|int SetFunc::numSubsets()|\\
 \hline
@@ -936,7 +948,7 @@ Requirements & The \verb|func| is a derived type of \verb|SetFunc| and
                maps lattice coordinates to a partition number.\\
              & The function in \verb|func.numSubsets()| returns number of partitions.\\
 \hline
-Example  & \verb|Set timeslice|; \\
+Example  & \verb|UnorderedSet timeslice|; \\
          & \verb|class timesliceFunc : public SetFunc;| \\
          & \verb|timeslice.make(timesliceFunc);| \\
    \hline
@@ -961,27 +973,29 @@ struct TimeSliceFunc : public SetFunc
   int mu; // state
 }
 
-Set timeslice;
+UnorderedSet timeslice;
 timeslice.make(TimeSliceFunc(3)) // makes timeslice in direction 3
 \end{verbatim}
 
-It is permissible to call \verb|Set.make()| with a function object
+It is permissible to call \verb|UnorderedSet.make()| with a function object
 having only 1 subset.  In this case the partition function must return
 zero if the site is in the subset and nonzero if not.  (Note, this is
 opposite the ``true'', ``false'' convention in C).
 
 \paragraph{Extracting a subset}
 
-A subset is returned from indexing a \verb|Set| object.
+A subset is returned from indexing a \verb|UnorderedSet| or
+\verb|OrderedSet| object.
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Prototype    & \verb|Subset Set::operator[](int i)| \\
+  Prototype    & \verb|OrderedSubset Set::operator[](int i)| \\
+               & \verb|UnorderedSubset Set::operator[](int i)| \\
     \hline
 Purpose        & Returns the \verb|i|-th subset from a \verb|Set| object.\\
     \hline
-Example  & \verb|Set timeslice|; \\
+Example  & \verb|UnorderedSet timeslice|; \\
          & \verb|Subset origin = timeslice[0];| \\
    \hline
   \end{tabular}
@@ -998,7 +1012,7 @@ a computation:
 %
 \begin{verbatim}
   LatticeComplex r, a, b;
-  Subset s;
+  UnorderedSubset s;
   r[s] = 17 * a * b;
 \end{verbatim}
 %
