@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.11 2003-09-03 04:02:21 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.12 2003-10-06 18:32:16 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -626,6 +626,23 @@ peekSite(const OScalar<T1>& l, const multi1d<int>& coord)
   return l;
 }
 
+//! Extract site element
+/*! @ingroup group1
+  @param l  source to examine
+  @param coord Nd lattice coordinates to examine
+  @return single site object of the same primitive type
+  @ingroup group1
+  @relates QDPType */
+template<class RHS, class T1>
+inline OScalar<T1>
+peekSite(const QDPExpr<RHS,OScalar<T1> > & l, const multi1d<int>& coord)
+{
+  // For now, simply evaluate the expression and then call the function
+  typedef OScalar<T1> C1;
+  
+  return peekSite(C1(l), coord);
+}
+
 
 //! Extract site element
 /*! @ingroup group1
@@ -646,6 +663,23 @@ peekSite(const OLattice<T1>& l, const multi1d<int>& coord)
 
   dest.elem() = getSite(l.elem(iouter), iinner);
   return dest;
+}
+
+//! Extract site element
+/*! @ingroup group1
+  @param l  source to examine
+  @param coord Nd lattice coordinates to examine
+  @return single site object of the same primitive type
+  @ingroup group1
+  @relates QDPType */
+template<class RHS, class T1>
+inline OScalar<T1>
+peekSite(const QDPExpr<RHS,OLattice<T1> > & l, const multi1d<int>& coord)
+{
+  // For now, simply evaluate the expression and then call the function
+  typedef OLattice<T1> C1;
+  
+  return peekSite(C1(l), coord);
 }
 
 
