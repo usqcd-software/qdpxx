@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.7 2003-11-01 21:45:39 edwards Exp $
+// $Id: t_qio.cc,v 1.8 2004-01-30 22:15:13 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
   }
 #endif
 
-#if 0
+#if 1
   {
     XMLBufferWriter file_xml;
 
