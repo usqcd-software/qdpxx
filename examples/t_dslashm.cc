@@ -1,4 +1,4 @@
-// $Id: t_dslashm.cc,v 1.13 2003-07-18 20:04:10 edwards Exp $
+// $Id: t_dslashm.cc,v 1.14 2003-10-22 02:44:18 edwards Exp $
 /*! \file
  *  \brief Test the Wilson-Dirac operator (dslash)
  */
@@ -9,6 +9,8 @@
 #include "qdp.h"
 #include "examples.h"
 
+#include <sys/time.h>
+
 using namespace QDP;
 
 
@@ -18,7 +20,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,2,2,2};
+  const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -32,10 +34,28 @@ int main(int argc, char **argv)
   LatticeFermion psi, chi;
   random(psi);
   chi = zero;
-  dslash_2d_plus(chi, u, psi, 0);
 
-//  dslash(chi, u, psi, +1, 0);
+  int iter = 100;
 
+  {
+    int isign = +1;
+    int cb = 0;
+    QDPIO::cout << "Applying D" << endl;
+      
+    clock_t myt1=clock();
+    for(int i=0; i < iter; i++)
+      dslash(chi, u, psi, isign, cb);
+    clock_t myt2=clock();
+      
+    double mydt=(double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
+    mydt=1.0e6*mydt/((double)(iter*(Layout::vol()/2)));
+      
+    QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
+    QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
+		<< " (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
+  }
+
+#if 0
   NmlWriter nml("t_dslashm.nml");
   Write(nml,Nd);
   Write(nml,Nc);
@@ -43,6 +63,7 @@ int main(int argc, char **argv)
   Write(nml,nrow);
   Write(nml,psi);
   Write(nml,chi);
+#endif
 
   // Time to bolt
   QDP_finalize();

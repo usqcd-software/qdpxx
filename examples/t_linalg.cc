@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.14 2003-10-17 20:31:17 edwards Exp $
+// $Id: t_linalg.cc,v 1.15 2003-10-22 02:44:18 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -60,10 +60,11 @@ int main(int argc, char *argv[])
   double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
 
   tt *= rescale;
+  int Nflops = Nc*Nc*(4*Nc + (4*Nc-2));
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M=M*M) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << 198 / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_eq_M_times_M");
   Write(nml,c);
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M=adj(M)*M) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << 198 / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_eq_Ma_times_M");
   Write(nml,a);
@@ -91,7 +92,7 @@ int main(int argc, char *argv[])
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M=M*adj(M)) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << 198 / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_eq_M_times_Ma");
   Write(nml,a);
@@ -107,7 +108,7 @@ int main(int argc, char *argv[])
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M=adj(M)*adj(M)) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << 198 / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_eq_Ma_times_Ma");
   Write(nml,a);
@@ -120,10 +121,11 @@ int main(int argc, char *argv[])
   // Test  M+= M*M
   QDPIO::cout << "calling M+=M*M " << icnt << " times" << endl;
   tt = rescale * QDP_M_peq_M_times_M(c, a, b, icnt);
+  Nflops += Nc*Nc * 2;
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M+=M*M) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << 216 / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_peq_M_times_M");
   Write(nml,c);
