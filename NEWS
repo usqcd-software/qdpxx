@@ -1,3 +1,7 @@
+10/18/2004 -- Robert Edwards
+
+	Version 1.10.2. Improvements within QIO.
+
 09/10/2004 -- Robert Edwards
 
 	Version 1.10.1. Added obsolete calling conventions of QDPFile{Reader,Writer}.
