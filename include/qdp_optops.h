@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_optops.h,v 1.1 2004-06-30 21:47:40 edwards Exp $
+// $Id: qdp_optops.h,v 1.2 2004-06-30 21:49:20 edwards Exp $
 
 /*! @file
  * @brief PETE optimized operations on QDPTypes
@@ -9,6 +9,8 @@
  */
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+#if 0
 
 //-----------------------------------------------------------------------------
 // Optimization hooks
@@ -189,6 +191,7 @@ trace(const QDPExpr<BinaryNode<OpMultiply,
     CreateLeaf<QDPType<T2,C2> >::make(r.expression().child())));
 }
 
+#endif
 
 
 QDP_END_NAMESPACE();
