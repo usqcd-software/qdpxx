@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.4 2004-04-01 16:25:15 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.5 2004-07-27 05:34:29 edwards Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -20,7 +20,7 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 
 // Use this def just to safe some typing later on in the file
-typedef RComplex<PScalar<float> >  RComplexFloat;
+typedef RComplex<float>  RComplexFloat;
 
 
 #include "scalarsite_qcdoc/save_fp_regs.h"

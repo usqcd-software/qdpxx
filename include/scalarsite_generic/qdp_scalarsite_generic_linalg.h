@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_generic_linalg.h,v 1.3 2004-03-29 21:28:15 edwards Exp $
+// $Id: qdp_scalarsite_generic_linalg.h,v 1.4 2004-07-27 05:34:29 edwards Exp $
 
 /*! @file
  * @brief Generic optimizations
@@ -20,7 +20,7 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 
 // Use this def just to safe some typing later on in the file
-typedef RComplex<PScalar<REAL> >  RComplexFloat;
+typedef RComplex<REAL>  RComplexFloat;
 
 
 #include "scalarsite_generic/generic_mult_nn.h"

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.3 2004-03-29 21:28:15 edwards Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.4 2004-07-27 05:34:29 edwards Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -23,9 +23,7 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 
 // Use this def just to safe some typing later on in the file
-typedef RComplex<PScalar<float> >  RComplexFloat;
-typedef PDWVector<float,4>         PDWVectorFloat4;
-typedef RComplex<PDWVectorFloat4>  RComplexFloat4;
+typedef RComplex<float>  RComplexFloat;
 
 
 

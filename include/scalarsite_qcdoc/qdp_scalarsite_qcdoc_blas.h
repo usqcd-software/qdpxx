@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.11 2004-04-01 16:25:14 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.12 2004-07-27 05:34:29 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -30,8 +30,8 @@ void vaxpy3_norm (REAL *out, REAL *scalep, REAL *InScale, REAL *Add,int len,
 
 QDP_BEGIN_NAMESPACE(QDP);
 
-typedef PSpinVector<PColorVector<RComplex<PScalar<REAL> >, 3>, Ns> TVec;
-typedef PScalar<PScalar<RScalar<PScalar<REAL> > > >  TScal;
+typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, Ns> TVec;
+typedef PScalar<PScalar<RScalar<REAL> > >  TScal;
 
 // #define DEBUG_BLAS
 // TVec is the LatticeFermion from qdp_dwdefs.h with the OLattice<> stripped
@@ -61,10 +61,10 @@ void evaluate(OLattice< TVec >& d,
   const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().right());
   const OScalar< TScal >& a = static_cast<const OScalar< TScal > &> (rhs.expression().left());
   
-  REAL ar = a.elem().elem().elem().elem().elem();
+  REAL ar = a.elem().elem().elem().elem();
   REAL* aptr = &ar;
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+  REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
   // cout << "Specialised axpy a ="<< ar << endl;
   
   int n_3vec = (s.end()-s.start()+1)*Ns;
@@ -91,10 +91,10 @@ void evaluate(OLattice< TVec >& d,
   const OScalar< TScal >& a = static_cast<const OScalar< TScal > &> (rhs.expression().left());
 
   // - sign as y -= ax <=> y = y-ax = -ax + y = axpy with -a 
-  REAL ar = -( a.elem().elem().elem().elem().elem());
+  REAL ar = -( a.elem().elem().elem().elem());
   REAL* aptr = &ar;
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+  REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
   
   int n_3vec = (s.end()-s.start()+1)*Ns;
   vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
@@ -136,11 +136,11 @@ void evaluate( OLattice< TVec > &d,
   const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.left());
   const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.right());
   // Set pointers 
-  REAL ar =  a.elem().elem().elem().elem().elem();
+  REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -184,11 +184,11 @@ void evaluate( OLattice< TVec > &d,
   const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.left());
   const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.right());
   // Set pointers 
-  REAL ar =  a.elem().elem().elem().elem().elem();
+  REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
   int n_3vec = (s.end()-s.start()+1)*Ns;
@@ -229,11 +229,11 @@ void evaluate( OLattice< TVec > &d,
   const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.left());
   const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.right());
   // Set pointers 
-  REAL ar =  a.elem().elem().elem().elem().elem();
+  REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -274,11 +274,11 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers etc.
 
   // -ve sign as y - ax = -ax + y  = axpy with -a.
-  REAL ar =  -a.elem().elem().elem().elem().elem();
+  REAL ar =  -a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -305,10 +305,10 @@ void evaluate(OLattice< TVec >& d,
   const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().left());
   const OScalar< TScal >& a = static_cast<const OScalar< TScal > &> (rhs.expression().right());
   
-  REAL ar = a.elem().elem().elem().elem().elem();
+  REAL ar = a.elem().elem().elem().elem();
   REAL* aptr = &ar;
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+  REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
   // cout << "Specialised axpy a ="<< ar << endl;
   
   int n_3vec = (s.end()-s.start()+1)*Ns;
@@ -336,10 +336,10 @@ void evaluate(OLattice< TVec >& d,
   const OScalar< TScal >& a = static_cast<const OScalar< TScal > &> (rhs.expression().right());
 
   // - sign as y -= ax <=> y = y-ax = -ax + y = axpy with -a 
-  REAL ar = -( a.elem().elem().elem().elem().elem());
+  REAL ar = -( a.elem().elem().elem().elem());
   REAL* aptr = &ar;
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+  REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
   
   int n_3vec = (s.end()-s.start()+1)*Ns;
   vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
@@ -382,11 +382,11 @@ void evaluate( OLattice< TVec > &d,
   const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.right());
   const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.left());
   // Set pointers 
-  REAL ar =  a.elem().elem().elem().elem().elem();
+  REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -431,11 +431,11 @@ void evaluate( OLattice< TVec > &d,
   const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.right());
   const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.left());
   // Set pointers 
-  REAL ar =  a.elem().elem().elem().elem().elem();
+  REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
   int n_3vec = (s.end()-s.start()+1)*Ns;
@@ -476,11 +476,11 @@ void evaluate( OLattice< TVec > &d,
   const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.right());
   const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.left());
   // Set pointers 
-  REAL ar =  a.elem().elem().elem().elem().elem();
+  REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -522,11 +522,11 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers etc.
 
   // -ve sign as y - ax = -ax + y  = axpy with -a.
-  REAL ar =  -a.elem().elem().elem().elem().elem();
+  REAL ar =  -a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -553,9 +553,9 @@ void evaluate( OLattice< TVec > &d,
   const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(rhs.expression().left());
   const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(rhs.expression().right());
 
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
   REAL rone = (REAL)1;
 
@@ -583,9 +583,9 @@ void evaluate( OLattice< TVec > &d,
   const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(rhs.expression().left());
   const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(rhs.expression().right());
 
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
   REAL rone = (REAL)1;
 
   
@@ -613,16 +613,16 @@ void evaluate( OLattice< TVec > &d,
   const OLattice< TVec > &x = static_cast<const OLattice< TVec >&>(rhs.expression().right());
   const OScalar< TScal > &a = static_cast<const OScalar< TScal >&>(rhs.expression().left());
 
-  REAL ar =  a.elem().elem().elem().elem().elem();
+  REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = &ar;  
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
   int n_3vec = (s.end()-s.start()+1)*Ns;
 
   vscal(zptr, aptr, xptr, n_3vec);
 
   /*
-  REAL *yptr = (REAL *) &(internal_zero.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *yptr = (REAL *) &(internal_zero.elem(s.start()).elem(0).elem(0).real());
   vaxpy3(zptr, aptr, xptr, yptr, n_3vec); */
 }
 
@@ -644,14 +644,14 @@ void evaluate( OLattice< TVec > &d,
   const OLattice< TVec > &x = static_cast<const OLattice< TVec >&>(rhs.expression().left());
   const OScalar< TScal > &a = static_cast<const OScalar< TScal >&>(rhs.expression().right());
 
-  REAL ar =  a.elem().elem().elem().elem().elem();
+  REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = &ar;  
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
   int n_3vec = (s.end()-s.start()+1)*Ns;
 
   vscal(zptr, aptr, xptr, n_3vec);
-  /* REAL *yptr = (REAL *) &(internal_zero.elem(s.start()).elem(0).elem(0).real().elem());
+  /* REAL *yptr = (REAL *) &(internal_zero.elem(s.start()).elem(0).elem(0).real());
      vaxpy3(zptr, aptr, xptr, yptr, n_3vec); */
 }
 
@@ -673,8 +673,8 @@ void evaluate( OLattice< TVec > &d,
   QDPIO::cout << "BJ: v *= a, a = " << a << endl;
 #endif
   
-  REAL ar = a.elem().elem().elem().elem().elem();
-  REAL* xptr = &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL ar = a.elem().elem().elem().elem();
+  REAL* xptr = &(d.elem(s.start()).elem(0).elem(0).real());
   REAL* zptr = xptr;
   int n_3vec = (s.end()-s.start()+1)*Ns;
   vscal(zptr,&ar, xptr, n_3vec);
@@ -698,8 +698,8 @@ void evaluate( OLattice< TVec > &d,
   QDPIO::cout << "BJ: v /= a, a = " << a << endl;
 #endif
   
-  REAL ar = (REAL)1/a.elem().elem().elem().elem().elem();
-  REAL* xptr = &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL ar = (REAL)1/a.elem().elem().elem().elem();
+  REAL* xptr = &(d.elem(s.start()).elem(0).elem(0).real());
   REAL* zptr = xptr;
   int n_3vec = (s.end()-s.start()+1)*Ns;
   vscal(zptr,&ar, xptr, n_3vec);
@@ -725,8 +725,8 @@ void evaluate( OLattice< TVec > &d,
 #endif
 
   int n_3vec = (s.end() - s.start()+1)*Ns;
-  REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *)(&d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *)(&d.elem(s.start()).elem(0).elem(0).real());
   REAL one = 1;
   vaxpy3(yptr, &one, yptr, xptr,n_3vec);
 
@@ -752,8 +752,8 @@ void evaluate( OLattice< TVec > &d,
 #endif
 
   int n_3vec = (s.end() - s.start()+1)*Ns;
-  REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *)(&d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *)(&d.elem(s.start()).elem(0).elem(0).real());
   REAL one = 1;
   vaxmy3(yptr, &one, yptr, xptr, n_3vec);
 
@@ -803,11 +803,11 @@ void evaluate( OLattice< TVec > &d,
 
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -866,11 +866,11 @@ void evaluate( OLattice< TVec > &d,
 
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -934,11 +934,11 @@ void evaluate( OLattice< TVec > &d,
 
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -989,11 +989,11 @@ void evaluate( OLattice< TVec > &d,
   const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.right());
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1044,11 +1044,11 @@ void evaluate( OLattice< TVec > &d,
 
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1107,11 +1107,11 @@ void evaluate( OLattice< TVec > &d,
 
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1175,11 +1175,11 @@ void evaluate( OLattice< TVec > &d,
 
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1230,11 +1230,11 @@ void evaluate( OLattice< TVec > &d,
   const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.right());
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1257,7 +1257,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     QDPIO::cout << "BJ sumsq " << endl;
 #endif
     int n_3vec = (s.end() - s.start() + 1)*Ns;
-    const REAL *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real().elem());
+    const REAL *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real());
     
     // Has Type OScalar< PScalar < PScalar < RScalar < PScalar < REAL > > > > >
     UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  ret_val;
@@ -1287,7 +1287,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
     QDPIO::cout << "BJ sumsq all" << endl;
 #endif
     int n_3vec = (all.end() - all.start() + 1)*Ns;
-    const REAL *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real().elem());
+    const REAL *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real());
     
     // I am relying on this being a Double here 
     UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  ret_val;
@@ -1325,8 +1325,8 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
     
     // Call My CDOT
     local_vcdot(&(ip[0]), &(ip[1]),
-		(REAL *)&(v1.elem(all.start()).elem(0).elem(0).real().elem()),
-		(REAL *)&(v2.elem(all.start()).elem(0).elem(0).real().elem()),
+		(REAL *)&(v1.elem(all.start()).elem(0).elem(0).real()),
+		(REAL *)&(v2.elem(all.start()).elem(0).elem(0).real()),
 		n_3vec);
 
 
@@ -1367,8 +1367,8 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 
     unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
     local_vcdot(&(ip[0]), &(ip[1]),
-		(REAL *)&(v1.elem(s.start()).elem(0).elem(0).real().elem()),
-		(REAL *)&(v2.elem(s.start()).elem(0).elem(0).real().elem()),
+		(REAL *)&(v1.elem(s.start()).elem(0).elem(0).real()),
+		(REAL *)&(v2.elem(s.start()).elem(0).elem(0).real()),
 		n_3vec);
 
     Internal::globalSumArray(ip,2);
@@ -1408,8 +1408,8 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 
     // Call My CDOT
     local_vcdot_real(&ip_re,
-		(REAL *)&(v1.elem(all.start()).elem(0).elem(0).real().elem()),
-		(REAL *)&(v2.elem(all.start()).elem(0).elem(0).real().elem()),
+		(REAL *)&(v1.elem(all.start()).elem(0).elem(0).real()),
+		(REAL *)&(v2.elem(all.start()).elem(0).elem(0).real()),
 		n_3vec);
 
     // Global sum
@@ -1449,8 +1449,8 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 
     unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
     local_vcdot_real(&ip_re,
-		     (REAL *)&(v1.elem(s.start()).elem(0).elem(0).real().elem()),
-		     (REAL *)&(v2.elem(s.start()).elem(0).elem(0).real().elem()),
+		     (REAL *)&(v1.elem(s.start()).elem(0).elem(0).real()),
+		     (REAL *)&(v2.elem(s.start()).elem(0).elem(0).real()),
 		     n_3vec);
 
     Internal::globalSum(ip_re);
