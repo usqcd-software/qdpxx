@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.5 2003-09-26 15:26:16 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.6 2003-10-23 20:40:24 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -193,8 +193,8 @@ template<class T>
 void QDPSerialFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 {
   // Initialize string objects 
-  XML_string *xml_c  = XML_string_create(0);
-  XML_string *BinX_c = XML_string_create(0);
+  XML_String *xml_c  = XML_string_create(0);
+  XML_String *BinX_c = XML_string_create(0);
 
   int status = QIO_read(get(), xml_c, BinX_c, 
 			&(QDPFactoryPut<OLattice<T> >),
@@ -253,7 +253,7 @@ void QDPSerialFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 
 
   // Copy metadata string into simple qio string container
-  XML_string* xml_c  = XML_string_create(rec_xml.str().length()+1);  // check if +1 is needed
+  XML_String* xml_c  = XML_string_create(rec_xml.str().length()+1);  // check if +1 is needed
   XML_string_set(xml_c, rec_xml.str().c_str());
 
 //  cout << "len=" << (rec_xml.str().length()+1) << endl;
@@ -269,7 +269,7 @@ void QDPSerialFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
   binx << "         xsi:schemaLocation=\"http://schemas.nesc.ac.uk/binx/binx\" />" << endl;
 
   
-  XML_string* BinX_c = XML_string_create(binx.str().length()+1);  // check if +1 is needed -- Yes it is. Balint
+  XML_String* BinX_c = XML_string_create(binx.str().length()+1);  // check if +1 is needed -- Yes it is. Balint
 
   XML_string_set(BinX_c, binx.str().c_str());
 
