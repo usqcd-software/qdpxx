@@ -3,7 +3,7 @@
 INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
            -I@top_srcdir@/other_libs/nml \
            -I@top_srcdir@/other_libs/qio/include \
-           -I@top_srcdir@/other_libs/qio/other_libs/c-dime/include \
+           -I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
            -I@top_srcdir@/other_libs/xpath_reader/include
 
 ## GTF: Using @QMP_CFLAGS@ instead of @QMP_CXXFLAGS@ here since QMP
