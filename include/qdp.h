@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.29 2003-08-23 14:06:58 edwards Exp $
+// $Id: qdp.h,v 1.30 2003-09-01 22:29:03 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -31,6 +31,12 @@
 #ifndef QDP_INCLUDE
 #define QDP_INCLUDE
 
+
+/* Get local configuration options (ARCH_SCALAR/PARSCALAR, Nd, Nc, Ns) */
+#include <qdp_config.h>
+
+
+// GNU specific stuff
 #if defined(__GNUC__)
 // Under g++, enforce using V3 or greater
 #if __GNUC__ < 3
@@ -47,23 +53,33 @@
 #define QDP_CINLINE  __attribute__ ((always_inline,const,pure))
 #endif
 
+#if (QDP_USE_SSE == 1 || QDP_USE_SSE2 == 1) && ! defined(__GNUC__)
+// SSE requires GNUC
+#undef QDP_USE_SSE
+#undef QDP_USE_SSE2
 
+#define QDP_USE_SSE   0
+#define QDP_USE_SSE2  0
+#endif
+
+// HACK - If using SSE, force proper mem. alignment of operator new.
+#if QDP_USE_SSE == 1
+#define QDP_FIX_ALIGNMENT
+#define QDP_ALIGNMENT_SIZE  16
+#endif
+
+
+// YUKKY - Eventually get rid of these includes
 #include <cstdio>
 #include <cstdlib>
 #include <ostream>
 #include <iostream>
 
-/* Get local configuration options (ARCH_SCALAR/PARSCALAR, Nd, Nc, Ns) */
-#include <qdp_config.h>
-
-using namespace std;   // I do not like this
+using namespace std;   // I do not like this - fix later
 
 using std::iostream;
 using std::ostream;
-
-// Move to another file eventually
-#define FORWARD 1
-#define BACKWARD -1
+// END OF YUKKINESS
 
 
 #undef QDP_NO_NAMESPACE
