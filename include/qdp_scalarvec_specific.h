@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.20 2005-01-23 02:30:59 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.21 2005-03-21 05:29:48 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -607,7 +607,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
 
 //-----------------------------------------------------------------------------
 // Multiple global sums 
-//! multi1d<OScalar> dest  = sumMulti(OScalar,Set) 
+//! multi2d<OScalar> dest  = sumMulti(multi1d<OScalar>,Set) 
 /*!
  * Compute the global sum on multiple subsets specified by Set 
  *
@@ -616,13 +616,13 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
  * slices
  */
 template<class RHS, class T>
-typename UnaryReturn<OScalar<T>, FnSum>::Type_t
+multi1d<typename UnaryReturn<OScalar<T>, FnSum>::Type_t>
 sumMulti(const QDPExpr<RHS,OScalar<T> >& s1, const Set& ss)
 {
-  typename UnaryReturn<OScalar<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
+  multi2d<typename UnaryReturn<OScalar<T>, FnSum>::Type_t>  dest(s1.size(), ss.numSubsets());
 
 #if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(dest[0], OpAssign(), FnSum(), s1);
+  static QDPProfile_t prof(dest(0,0), OpAssign(), FnSum(), s1);
   prof.time -= getClockTime();
 #endif
 
@@ -674,7 +674,43 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 }
 
 
-//! multi1d<OScalar> dest  = sumMulti(OLattice,UnorderedSet) 
+//-----------------------------------------------------------------------------
+// Multiple global sums 
+//! multi2d<OScalar> dest  = sumMulti(multi1d<OScalar>,Set) 
+/*!
+ * Compute the global sum on multiple subsets specified by Set 
+ *
+ * This implementation is specific to a purely olattice like
+ * types. The scalar input value is replicated to all the
+ * slices
+ */
+template<class T>
+multi2d<typename UnaryReturn<OScalar<T>, FnSum>::Type_t>
+sumMulti(const multi1d< OScalar<T> >& s1, const Set& ss)
+{
+  multi2d<typename UnaryReturn<OScalar<T>, FnSum>::Type_t>  dest(s1.size(), ss.numSubsets());
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(dest(0,0), OpAssign(), FnSum(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  // lazy - evaluate repeatedly
+  for(int i=0; i < dest.size1(); ++i)
+    for(int j=0; j < dest.size2(); ++j)
+      dest(j,i) = s1[j];
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return dest;
+}
+
+
+//! multi2d<OScalar> dest  = sumMulti(multi1d<OLattice>,Set) 
 /*!
  * Compute the global sum on multiple subsets specified by Set 
  *
@@ -683,20 +719,21 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
  * slow. Otherwise, generalized sums happen so infrequently the slow
  * version is fine.
  */
-template<class RHS, class T>
-typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t
-sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const OrderedSet& ss)
+template<class T>
+multi2d<typename UnaryReturn<OLattice<T>, FnSum>::Type_t>
+sumMulti(const multi1d< OLattice<T> >& s1, const Set& ss)
 {
-  typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
+  multi2d<typename UnaryReturn<OLattice<T>, FnSum>::Type_t>  dest(s1.size(),ss.numSubsets());
 
 #if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(dest[0], OpAssign(), FnSum(), s1);
+  static QDPProfile_t prof(dest(0,0), OpAssign(), FnSum(), s1);
   prof.time -= getClockTime();
 #endif
 
   // lazy - evaluate repeatedly
-  for(int i=0; i < ss.numSubsets(); ++i)
-    dest[i] = sum(s1,ss[i]);
+  for(int k=0; k < s1.size(); ++k)
+    for(int i=0; i < ss.numSubsets(); ++i)
+      dest(k,i) = sum(s1[k],ss[i]);
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();

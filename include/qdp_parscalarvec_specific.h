@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.20 2005-02-22 16:36:55 bjoo Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.21 2005-03-21 05:29:48 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -744,7 +744,43 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 }
 
 
-//! multi1d<OScalar> dest  = sumMulti(OLattice,UnorderedSet) 
+//-----------------------------------------------------------------------------
+// Multiple global sums 
+//! multi2d<OScalar> dest  = sumMulti(multi1d<OScalar>,Set) 
+/*!
+ * Compute the global sum on multiple subsets specified by Set 
+ *
+ * This implementation is specific to a purely olattice like
+ * types. The scalar input value is replicated to all the
+ * slices
+ */
+template<class T>
+multi2d<typename UnaryReturn<OScalar<T>, FnSum>::Type_t>
+sumMulti(const multi1d< OScalar<T> >& s1, const Set& ss)
+{
+  multi2d<typename UnaryReturn<OScalar<T>, FnSum>::Type_t>  dest(s1.size(), ss.numSubsets());
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(dest(0,0), OpAssign(), FnSum(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  // lazy - evaluate repeatedly
+  for(int i=0; i < dest.size1(); ++i)
+    for(int j=0; j < dest.size2(); ++j)
+      dest(j,i) = s1[j];
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return dest;
+}
+
+
+//! multi2d<OScalar> dest  = sumMulti(multi1d<OLattice>,Set) 
 /*!
  * Compute the global sum on multiple subsets specified by Set 
  *
@@ -753,20 +789,21 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
  * slow. Otherwise, generalized sums happen so infrequently the slow
  * version is fine.
  */
-template<class RHS, class T>
-typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t
-sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const OrderedSet& ss)
+template<class T>
+multi2d<typename UnaryReturn<OLattice<T>, FnSum>::Type_t>
+sumMulti(const multi1d< OLattice<T> >& s1, const Set& ss)
 {
-  typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
+  multi2d<typename UnaryReturn<OLattice<T>, FnSum>::Type_t>  dest(s1.size(),ss.numSubsets());
 
 #if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(dest[0], OpAssign(), FnSum(), s1);
+  static QDPProfile_t prof(dest(0,0), OpAssign(), FnSum(), s1);
   prof.time -= getClockTime();
 #endif
 
   // lazy - evaluate repeatedly
-  for(int i=0; i < ss.numSubsets(); ++i)
-    dest[i] = sum(s1,ss[i]);
+  for(int k=0; k < s1.size(); ++k)
+    for(int i=0; i < ss.numSubsets(); ++i)
+      dest(k,i) = sum(s1[k],ss[i]);
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -1210,7 +1247,7 @@ public:
            }
         }
 
-	Site* send_buf=(Site *)QMP_get_memory_pointer(send_buf_mem_t);
+	Site_t* send_buf=(Site_t *)QMP_get_memory_pointer(send_buf_mem_t);
 	if( send_buf == 0x0 ) { 
 	   QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (send_buf)\n");
         }	
@@ -1219,10 +1256,10 @@ public:
 	if( recv_buf_mem_t == 0x0 ) { 
 	   recv_buf_mem_t = QMP_allocate_aligned_memory(srcnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
 	   if( recv_buf_mem_t == 0x0 ) {
-	     QDP_error_exit("QMP_allocate_aligned_memory failed (recv_buf_mem_t)\n"Â);
+	     QDP_error_exit("QMP_allocate_aligned_memory failed (recv_buf_mem_t)\n");
 	   }
         }
-	Site* recv_buf=(Site *)QMP_get_memory_pointer(recv_buf_mem_t);
+	Site_t* recv_buf=(Site_t *)QMP_get_memory_pointer(recv_buf_mem_t);
 	if (recv_buf == 0x0) { 
 	  QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n");
         }
@@ -1315,8 +1352,8 @@ public:
 	}
 
 	// Cleanup
-	QMP_free_aligned_memory(recv_buf);
-	QMP_free_aligned_memory(send_buf);
+	QMP_free_memory(recv_buf_mem_t);
+	QMP_free_memory(send_buf_mem_t);
 	delete[] ll;
 	delete[] dest;
 
@@ -1741,6 +1778,9 @@ void read(BinaryReader& bin, OScalar<T>& d)
 // However, this method more constrains the data layout - it must be
 // close to the original lexicographic order.
 // For now, use the direct send method
+
+//! Decompose a lexicographic site into coordinates
+multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
 
 //! XML output
 /*! An inner grid is assumed */

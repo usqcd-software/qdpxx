@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.29 2005-01-23 02:30:59 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.30 2005-03-21 05:29:48 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -23,13 +23,21 @@ namespace Layout
 // These dummy routines exist just to make code more portable
 namespace Internal
 {
-  //! Dummy sum across all nodes
-  template<class T>
-  inline void globalSum(T& dest) {}
-
   //! Dummy array sum accross all nodes
   template<class T>
   inline void globalSumArray(T* dest, int n) {}
+
+  //! Dummy global sum on a multi1d
+  template<class T>
+  inline void globalSumArray(multi1d<T>& dest) {}
+
+  //! Dummy global sum on a multi2d
+  template<class T>
+  inline void globalSumArray(multi2d<T>& dest) {}
+
+  //! Dummy sum across all nodes
+  template<class T>
+  inline void globalSum(T& dest) {}
 
   //! Dummy broadcast from primary node to all other nodes
   template<class T>
@@ -591,6 +599,92 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
   {
     int j = lat_color[i];
     dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
+  }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return dest;
+}
+
+
+//-----------------------------------------------------------------------------
+// Multiple global sums 
+//! multi2d<OScalar> dest  = sumMulti(multi1d<OScalar>,Set) 
+/*!
+ * Compute the global sum on multiple subsets specified by Set 
+ *
+ * This implementation is specific to a purely olattice like
+ * types. The scalar input value is replicated to all the
+ * slices
+ */
+template<class T>
+multi2d<typename UnaryReturn<OScalar<T>, FnSum>::Type_t>
+sumMulti(const multi1d< OScalar<T> >& s1, const Set& ss)
+{
+  multi2d<typename UnaryReturn<OScalar<T>, FnSum>::Type_t>  dest(s1.size(),ss.numSubsets());
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(dest(0,0), OpAssign(), FnSum(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  // lazy - evaluate repeatedly
+  for(int i=0; i < dest.size1(); ++i)
+    for(int j=0; j < dest.size2(); ++j)
+      dest(j,i) = s1[j];
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return dest;
+}
+
+
+//! multi2d<OScalar> dest  = sumMulti(multi1d<OLattice>,Set) 
+/*!
+ * Compute the global sum on multiple subsets specified by Set 
+ *
+ * This is a very simple implementation. There is no need for
+ * anything fancier unless global sums are just so extraordinarily
+ * slow. Otherwise, generalized sums happen so infrequently the slow
+ * version is fine.
+ */
+template<class T>
+multi2d<typename UnaryReturn<OLattice<T>, FnSum>::Type_t>
+sumMulti(const multi1d< OLattice<T> >& s1, const Set& ss)
+{
+  multi2d<typename UnaryReturn<OLattice<T>, FnSum>::Type_t>  dest(s1.size(),ss.numSubsets());
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(dest(0,0), OpAssign(), FnSum(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  // Initialize result with zero
+  for(int i=0; i < dest.size1(); ++i)
+    for(int j=0; j < dest.size2(); ++j)
+      zero_rep(dest(j,i));
+
+  // Loop over all sites and accumulate based on the coloring 
+  const multi1d<int>& lat_color =  ss.latticeColoring();
+
+  const int vvol = Layout::vol();
+  for(int k=0; k < s1.size(); ++k)
+  {
+    const OLattice<T>& ss1 = s1[k];
+
+    for(int i=0; i < vvol; ++i) 
+    {
+      int j = lat_color[i];
+      dest(k,j).elem() += ss1.elem(i);
+    }
   }
 
 #if defined(QDP_USE_PROFILING)   
