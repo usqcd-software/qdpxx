@@ -1,4 +1,4 @@
-// $Id: qdp_layout.cc,v 1.2 2004-09-08 00:54:11 edwards Exp $
+// $Id: qdp_layout.cc,v 1.3 2004-09-08 00:58:46 edwards Exp $
 
 /*! @file
  * @brief Layout support routines
@@ -16,7 +16,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 namespace Layout
 {
   //! Returns the logical node coordinates for the corresponding lattice coordinate
-  multi1d<int> nodeCoord(const multi1d<int>& coord) QDP_CONST
+  multi1d<int> nodeCoord(const multi1d<int>& coord) 
   {
     multi1d<int> logical(Nd);
 

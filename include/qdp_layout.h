@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_layout.h,v 1.5 2004-09-08 00:52:37 edwards Exp $
+// $Id: qdp_layout.h,v 1.6 2004-09-08 00:58:46 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -84,7 +84,7 @@ namespace Layout
   const multi1d<int>& nodeCoord() QDP_CONST;
 
   //! Returns the logical node coordinates for the corresponding lattice coordinate
-  multi1d<int> nodeCoord(const multi1d<int>& coord) QDP_CONST;
+  multi1d<int> nodeCoord(const multi1d<int>& coord);
 
   //! Subgrid (grid on each node) lattice size
   const multi1d<int>& subgridLattSize() QDP_CONST;
