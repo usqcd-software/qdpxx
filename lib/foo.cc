@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.1 2002-09-12 18:29:24 edwards Exp $
+// $Id: foo.cc,v 1.2 2002-09-23 19:29:15 edwards Exp $
 //
 // Silly little internal test code
 
@@ -33,13 +33,15 @@ int main()
 //  typedef OLattice<int> LatticeInteger;
 //  typedef QDPType<OLattice<int> > LatticeInteger;
 //  LatticeComplexInteger a, b, c;
-  LatticeReal a, b, c;
+//  LatticeReal a, b, c;
+  LatticeGauge a, b, c;
   Complex d;
   float ccc = 2.0;
 //  float x;
   
 #if 1
-  b = 3;
+//  b = 3;
+  random(b);
   c = 4;
   d = 5;
 
@@ -53,7 +55,8 @@ int main()
 //  a = c*d - b;
 //  a = b*c;
 //  a = -b + ccc*c;
-  a = -b + 2*c;
+//  a = -b + 2*c;
+  a = shift(b*c,FORWARD,0);
 //  a = b*c;
 //  a = ccc*c;
 //  x = ccc*c;
