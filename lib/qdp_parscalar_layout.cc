@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.13 2003-10-09 18:28:04 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.14 2003-11-05 17:48:47 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -114,6 +114,38 @@ namespace Layout
 
   //! Returns the logical size of this machine
   const multi1d<int>& logicalSize() {return _layout.logical_size;}
+
+  //! Returns the node number given some logical node coordinate
+  /*! This is not meant to be speedy */
+  int getNodeNumberFrom(const multi1d<int>& node_coord) 
+  {
+    // To make QMP happy, cast to unsigned ints
+    unsigned int node_crd[Nd];
+    if (node_coord.size() != Nd)
+      QDP_error_exit("getNodeNumberFrom: unexpected coordinate size");
+
+    for(int i=0; i < Nd; ++i)
+      node_crd[i] = node_coord[i];
+
+    int node = QMP_get_node_number_from(node_crd);
+    return node;
+  }
+
+  //! Returns the logical node coordinates given some node number
+  /*! This is not meant to be speedy */
+  multi1d<int> getLogicalCoordFrom(int node) 
+  {
+    multi1d<int> node_coord(Nd);
+
+    unsigned int unode = node;
+    unsigned int* node_crd = QMP_get_logical_coordinates_from(unode);  // QMP mallocs here
+
+    for(int i=0; i < Nd; ++i)
+      node_coord[i] = node_crd[i];
+
+//    free(node_crd);   // free up QMP's memory
+    return node_coord;
+  }
 
   //! Return the smallest lattice size per node allowed
   multi1d<int> minimalLayoutMapping();
@@ -245,6 +277,17 @@ namespace Layout
     QDPIO::cout << "  total volume = " << _layout.vol << endl;
     QDPIO::cout << "  subgrid volume = " << _layout.subgrid_vol << endl;
 
+
+    // Sanity check - check the QMP node number functions
+    for(int node=0; node < Layout::numNodes(); ++node)
+    { 
+      multi1d<int> coord = Layout::getLogicalCoordFrom(node);
+      int node2 = Layout::getNodeNumberFrom(coord);
+
+      if (node != node2)
+	QDP_error_exit("Layout::create - Layout problems, the QMP logical to physical node map functions do not work correctly with this lattice size");
+    }
+
     // Sanity check - check the layout functions make sense
     for(int site=0; site < vol(); ++site) 
     {
@@ -257,10 +300,10 @@ namespace Layout
       int j = local_site(coord2, lattSize());
       
 #if QDP_DEBUG >= 2
-      QDP_info("site= %d   coord= %d %d %d %d   linear= %d node=%d   crd= %d %d  j= %d",
+      QDP_info("site= %d   coord= %d %d %d %d   linear= %d node=%d   crd=%d %d %d %d   j= %d",
 	       site,coord1[0],coord1[1],coord1[2],coord1[3],
 	       linear,node,
-	       coord2[0],coord2[1],
+	       coord2[0],coord2[1],coord2[2],coord2[3],
 	       j);
 #endif
       if (site != j)
@@ -271,6 +314,10 @@ namespace Layout
     initDefaults();
 
     QDPIO::cout << "Finished lattice layout" << endl;
+
+#if QDP_DEBUG >= 2
+    QDP_info("Layout successfully initialized");
+#endif
   }
 };
 
@@ -304,7 +351,7 @@ namespace Layout
     for(int i=0; i < coord.size(); ++i)
       tmp_coord[i] = coord[i] / Layout::subgridLattSize()[i];
     
-    return local_site(tmp_coord, Layout::logicalSize());
+    return Layout::getNodeNumberFrom(tmp_coord);
   }
 
 
@@ -312,7 +359,7 @@ namespace Layout
   /*! This layout is a simple lexicographic lattice ordering */
   multi1d<int> siteCoords(int node, int linear)
   {
-    multi1d<int> coord = crtesn(node, Layout::logicalSize());
+    multi1d<int> coord = getLogicalCoordFrom(node);
 
     // Get the base (origins) of the absolute lattice coord
     coord *= Layout::subgridLattSize();
@@ -379,7 +426,7 @@ namespace Layout
     for(int i=0; i < coord.size(); ++i)
       tmp_coord[i] = coord[i] / Layout::subgridLattSize()[i];
     
-    return local_site(tmp_coord, Layout::logicalSize());
+    return Layout::getNodeNumberFrom(tmp_coord);
   }
 
 
@@ -395,7 +442,7 @@ namespace Layout
     subgrid_cb_nrow[0] >>= 1;
 
     // Get the base (origins) of the absolute lattice coord
-    multi1d<int> coord = crtesn(node, Layout::logicalSize());
+    multi1d<int> coord = getLogicalCoordFrom(node);
     coord *= Layout::subgridLattSize();
     
     int cb = linearsite / subgrid_vol_cb;
@@ -484,7 +531,7 @@ namespace Layout
     for(int i=0; i < coord.size(); ++i)
       tmp_coord[i] = coord[i] / Layout::subgridLattSize()[i];
     
-    return local_site(tmp_coord, Layout::logicalSize());
+    return Layout::getNodeNumberFrom(tmp_coord);
   }
 
 
@@ -502,7 +549,7 @@ namespace Layout
       subgrid_cb_nrow[i] >>= 1;
 
     // Get the base (origins) of the absolute lattice coord
-    multi1d<int> coord = crtesn(node, Layout::logicalSize());
+    multi1d<int> coord = Layout::getLogicalCoordFrom(node);
     coord *= Layout::subgridLattSize();
     
     int subl = linearsite / subgrid_vol_cb;
