@@ -1,3 +1,8 @@
+03/03/2004 -- Robert Edwards
+
+	Version 1.7.4. Possibly a bug fix in mem-alignment. 
+        Small improvements/bug fixes in QIO. 
+
 02/28/2004 -- Robert Edwards
 
 	Version 1.7.3. Small improvements/bug fixes in QIO. It is now 
