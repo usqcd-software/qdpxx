@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.8 2003-01-22 16:48:04 edwards Exp $
+// $Id: t_foo.cc,v 1.9 2003-01-24 19:42:21 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -340,7 +340,7 @@ int main(int argc, char *argv[])
 #endif
 
 
-#if 1
+#if 0
   if (Nd == 4)
   {
     // Read a szin gauge file
