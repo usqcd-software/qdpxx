@@ -1,4 +1,4 @@
-// $Id: qdp_layout.cc,v 1.1 2003-05-22 20:06:29 edwards Exp $
+// $Id: qdp_layout.cc,v 1.2 2004-09-08 00:54:11 edwards Exp $
 
 /*! @file
  * @brief Layout support routines
@@ -12,6 +12,21 @@
 #include "qdp_util.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+namespace Layout
+{
+  //! Returns the logical node coordinates for the corresponding lattice coordinate
+  multi1d<int> nodeCoord(const multi1d<int>& coord) QDP_CONST
+  {
+    multi1d<int> logical(Nd);
+
+    for(int i=0; i < Nd; ++i)
+      logical[i] = coord[i] / subgridLattSize()[i];
+
+    return logical;
+  }
+}
+
 
 //! Decompose a lexicographic site into coordinates
 multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size)
