@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_profile.h,v 1.3 2004-08-11 02:25:28 edwards Exp $
+// $Id: qdp_profile.h,v 1.4 2005-03-03 18:25:48 edwards Exp $
 
 /*! @file
  * @brief Print profiling info
@@ -45,6 +45,10 @@ void popProfileInfo();
 //-----------------------------------------------------------------------------
 // Support of printing
 //-----------------------------------------------------------------------------
+
+struct QDPProfile_t;
+void registerProfile(QDPProfile_t* qp);
+
 
 //! Profiling object
 /*!
@@ -148,9 +152,6 @@ struct QDPProfileHead_t
 };
 
 
-void registerProfile(QDPProfile_t* qp);
-
-
 
 //! Print an expression tree
 /*! 
@@ -228,6 +229,7 @@ struct LeafFunctor<QDPType<T,C>, PrintTag>
 // ostream carried by PrintTag.
 //
 
+template<>
 struct LeafFunctor<float, PrintTag>
 {
   typedef int Type_t;
@@ -238,6 +240,7 @@ struct LeafFunctor<float, PrintTag>
     }
 };
 
+template<>
 struct LeafFunctor<double, PrintTag>
 {
   typedef int Type_t;
@@ -248,6 +251,7 @@ struct LeafFunctor<double, PrintTag>
     }
 };
 
+template<>
 struct LeafFunctor<int, PrintTag>
 {
   typedef int Type_t;
@@ -258,6 +262,7 @@ struct LeafFunctor<int, PrintTag>
     }
 };
 
+template<>
 struct LeafFunctor<char, PrintTag>
 {
   typedef int Type_t;
@@ -268,6 +273,7 @@ struct LeafFunctor<char, PrintTag>
     }
 };
 
+template<>
 struct LeafFunctor<bool, PrintTag>
 {
   typedef int Type_t;
