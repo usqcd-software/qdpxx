@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.12 2003-01-23 05:22:52 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.13 2003-01-26 05:38:06 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -122,7 +122,7 @@ void Set::make(const SetFunc& func)
 //! Initializer for generic map constructor
 void Map::make(const MapFunc& func)
 {
-  QDP_info("Map::make");
+//  QDP_info("Map::make");
 
   //--------------------------------------
   // Setup the communication index arrays
@@ -217,7 +217,7 @@ void Map::make(const MapFunc& func)
   //
   if (! offnodeP)
   {
-    QDP_info("exiting Map::make");
+//  QDP_info("exiting Map::make");
     return;
   }
 
@@ -296,7 +296,7 @@ void Map::make(const MapFunc& func)
   }
 #endif
 
-  QDP_info("exiting Map::make");
+//  QDP_info("exiting Map::make");
 }
 
 
