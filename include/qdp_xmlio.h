@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.14 2003-06-24 02:29:03 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.15 2003-06-24 03:20:13 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -205,7 +205,7 @@ public:
   // Write XML std::string
   void writeXML(const std::string& output);
 
-  friend XMLArrayWriter;
+  friend class XMLArrayWriter;
 };
 
 
