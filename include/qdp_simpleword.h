@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_simpleword.h,v 1.4 2003-08-20 21:07:34 edwards Exp $
+// $Id: qdp_simpleword.h,v 1.5 2003-08-23 02:36:10 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -109,6 +109,27 @@ inline void
 fill_random(double& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 {
   d = double(RNG::sranf(seed, skewed_seed, seed_mult));
+}
+
+
+//! dest  = random  
+template<class T1, class T2, int N>
+inline void
+fill_random(float* d, T1& seed, T2& skewed_seed, const T1& seed_mult)
+{
+  RNG::sranf(d, N, seed, skewed_seed, seed_mult);
+}
+
+
+//! dest  = random  
+template<class T1, class T2, int N>
+inline void
+fill_random(double* d, T1& seed, T2& skewed_seed, const T1& seed_mult)
+{
+  float dd[N];
+  RNG::sranf(dd, N, seed, skewed_seed, seed_mult);
+  for(int i=0; i < N; ++i)
+    d[i] = float(dd[i]);
 }
 
 
