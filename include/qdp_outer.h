@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.27 2003-12-16 02:32:10 edwards Exp $
+// $Id: qdp_outer.h,v 1.28 2004-03-03 22:32:48 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -398,7 +398,7 @@ private:
   inline void alloc_mem(const char* const p) 
     {
       F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
-      F = (T*)(((int)F_orig + (QDP_ALIGNMENT_SIZE-1)) & ~(QDP_ALIGNMENT_SIZE-1));
+      F = (T*)(((unsigned int)F_orig + (QDP_ALIGNMENT_SIZE-1)) & ~(QDP_ALIGNMENT_SIZE-1));
 
 #if QDP_DEBUG >= 1
       QDP_info("%s OLattice_orig=0x%x, OLattice[%d]=0x%x, this=0x%x, bytes/site=%d",
