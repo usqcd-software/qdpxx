@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primscalar.h,v 1.11 2002-11-04 04:34:58 edwards Exp $
+// $Id: primscalar.h,v 1.12 2002-11-07 19:25:50 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -584,72 +584,48 @@ trace(const PScalar<T1>& s1)
 
 // trace = Re(Trace(source1))
 template<class T1>
-inline typename UnaryReturn<PScalar<T1>, FnTraceReal>::Type_t
-trace_real(const PScalar<T1>& s1)
+inline typename UnaryReturn<PScalar<T1>, FnRealTrace>::Type_t
+realTrace(const PScalar<T1>& s1)
 {
-  typename UnaryReturn<PScalar<T1>, FnTraceReal>::Type_t  d;
+  typename UnaryReturn<PScalar<T1>, FnRealTrace>::Type_t  d;
 
-  d.elem() = trace_real(s1.elem());
+  d.elem() = realTrace(s1.elem());
   return d;
 }
 
 
 // trace = Im(Trace(source1))
 template<class T1>
-inline typename UnaryReturn<PScalar<T1>, FnTraceImag>::Type_t
-trace_imag(const PScalar<T1>& s1)
+inline typename UnaryReturn<PScalar<T1>, FnImagTrace>::Type_t
+imagTrace(const PScalar<T1>& s1)
 {
-  typename UnaryReturn<PScalar<T1>, FnTraceImag>::Type_t  d;
+  typename UnaryReturn<PScalar<T1>, FnImagTrace>::Type_t  d;
 
-  d.elem() = trace_imag(s1.elem());
+  d.elem() = imagTrace(s1.elem());
   return d;
 }
 
 
 // trace = colorTrace(source1)
 template<class T1>
-inline typename UnaryReturn<PScalar<T1>, FnColorTrace>::Type_t
-colorTrace(const PScalar<T1>& s1)
+inline typename UnaryReturn<PScalar<T1>, FnTraceColor>::Type_t
+traceColor(const PScalar<T1>& s1)
 {
-  typename UnaryReturn<PScalar<T1>, FnColorTrace>::Type_t  d;
+  typename UnaryReturn<PScalar<T1>, FnTraceColor>::Type_t  d;
 
-  d.elem() = colorTrace(s1.elem());
+  d.elem() = traceColor(s1.elem());
   return d;
 }
 
 
-// trace = spinTrace(source1)
+// trace = traceSpin(source1)
 template<class T1>
-inline typename UnaryReturn<PScalar<T1>, FnSpinTrace>::Type_t
-spinTrace(const PScalar<T1>& s1)
+inline typename UnaryReturn<PScalar<T1>, FnTraceSpin>::Type_t
+traceSpin(const PScalar<T1>& s1)
 {
-  typename UnaryReturn<PScalar<T1>, FnSpinTrace>::Type_t  d;
+  typename UnaryReturn<PScalar<T1>, FnTraceSpin>::Type_t  d;
 
-  d.elem() = spinTrace(s1.elem());
-  return d;
-}
-
-
-// trace = noColorTrace(source1)
-template<class T1>
-inline typename UnaryReturn<PScalar<T1>, FnNoColorTrace>::Type_t
-noColorTrace(const PScalar<T1>& s1)
-{
-  typename UnaryReturn<PScalar<T1>, FnNoColorTrace>::Type_t  d;
-
-  d.elem() = noColorTrace(s1.elem());
-  return d;
-}
-
-
-// trace = noSpinTrace(source1)
-template<class T1>
-inline typename UnaryReturn<PScalar<T1>, FnNoSpinTrace>::Type_t
-noSpinTrace(const PScalar<T1>& s1)
-{
-  typename UnaryReturn<PScalar<T1>, FnNoSpinTrace>::Type_t  d;
-
-  d.elem() = noSpinTrace(s1.elem());
+  d.elem() = traceSpin(s1.elem());
   return d;
 }
 

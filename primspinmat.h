@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primspinmat.h,v 1.5 2002-11-02 04:09:51 edwards Exp $
+// $Id: primspinmat.h,v 1.6 2002-11-07 19:25:50 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -170,18 +170,13 @@ struct UnaryReturn<PSpinMatrix<T,N>, FnTrace > {
 };
 
 template<class T, int N>
-struct UnaryReturn<PSpinMatrix<T,N>, FnTraceReal > {
-  typedef PScalar<typename UnaryReturn<T, FnTraceReal>::Type_t>  Type_t;
+struct UnaryReturn<PSpinMatrix<T,N>, FnRealTrace > {
+  typedef PScalar<typename UnaryReturn<T, FnRealTrace>::Type_t>  Type_t;
 };
 
 template<class T, int N>
-struct UnaryReturn<PSpinMatrix<T,N>, FnTraceImag > {
-  typedef PScalar<typename UnaryReturn<T, FnTraceImag>::Type_t>  Type_t;
-};
-
-template<class T, int N>
-struct UnaryReturn<PSpinMatrix<T,N>, FnNoColorTrace > {
-  typedef PScalar<typename UnaryReturn<T, FnNoColorTrace>::Type_t>  Type_t;
+struct UnaryReturn<PSpinMatrix<T,N>, FnImagTrace > {
+  typedef PScalar<typename UnaryReturn<T, FnImagTrace>::Type_t>  Type_t;
 };
 
 template<class T, int N>
@@ -248,47 +243,24 @@ struct BinaryReturn<PSpinMatrix<T2,N>, GammaType<N>, OpMultiplyGammaType> {
 
 // SpinMatrix class primitive operations
 
-// trace = spinTrace(source1)
+// trace = traceSpin(source1)
 /*! This only acts on spin indices and is diagonal in all other indices */
 template<class T, int N>
-struct UnaryReturn<PSpinMatrix<T,N>, FnSpinTrace > {
-  typedef PScalar<typename UnaryReturn<T, FnSpinTrace>::Type_t>  Type_t;
+struct UnaryReturn<PSpinMatrix<T,N>, FnTraceSpin > {
+  typedef PScalar<typename UnaryReturn<T, FnTraceSpin>::Type_t>  Type_t;
 };
 
 template<class T, int N>
-inline typename UnaryReturn<PSpinMatrix<T,N>, FnSpinTrace>::Type_t
-spinTrace(const PSpinMatrix<T,N>& s1)
+inline typename UnaryReturn<PSpinMatrix<T,N>, FnTraceSpin>::Type_t
+traceSpin(const PSpinMatrix<T,N>& s1)
 {
-  typename UnaryReturn<PSpinMatrix<T,N>, FnSpinTrace>::Type_t  d;
+  typename UnaryReturn<PSpinMatrix<T,N>, FnTraceSpin>::Type_t  d;
 
   // Since the spin index is eaten, do not need to pass on function by
   // calling trace(...) again
   d.elem() = s1.elem(0,0);
   for(int i=1; i < N; ++i)
     d.elem() += s1.elem(i,i);
-
-  return d;
-}
-
-
-// trace = noSpinTrace(source1)   [this is an identity for spin]
-/*! This acts on all indices except spin */
-template<class T, int N>
-struct UnaryReturn<PSpinMatrix<T,N>, FnNoSpinTrace > {
-  typedef PSpinMatrix<typename UnaryReturn<T, FnNoSpinTrace>::Type_t, N>  Type_t;
-};
-
-template<class T, int N>
-inline typename UnaryReturn<PSpinMatrix<T,N>, FnNoSpinTrace>::Type_t
-noSpinTrace(const PSpinMatrix<T,N>& s1)
-{
-  typename UnaryReturn<PSpinMatrix<T,N>, FnNoSpinTrace>::Type_t  d;
-
-  // Since the spin index is eaten, do not need to pass on function by
-  // calling trace(...) again
-  for(int i=0; i < N; ++i)
-    for(int j=0; j < N; ++j)
-      d.elem(i,j) = trace(s1.elem(i,j));
 
   return d;
 }

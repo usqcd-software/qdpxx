@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primmatrix.h,v 1.10 2002-11-04 04:34:58 edwards Exp $
+// $Id: primmatrix.h,v 1.11 2002-11-07 19:25:50 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -403,19 +403,19 @@ trace(const PMatrix<T,N,C>& s1)
 
 // trace = Re(Trace(source1))
 template<class T, int N, template<class,int> class C>
-struct UnaryReturn<PMatrix<T,N,C>, FnTraceReal > {
-  typedef PScalar<typename UnaryReturn<T, FnTraceReal>::Type_t>  Type_t;
+struct UnaryReturn<PMatrix<T,N,C>, FnRealTrace > {
+  typedef PScalar<typename UnaryReturn<T, FnRealTrace>::Type_t>  Type_t;
 };
 
 template<class T1, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, FnTraceReal>::Type_t
-trace_real(const PMatrix<T1,N,C>& s1)
+inline typename UnaryReturn<PMatrix<T1,N,C>, FnRealTrace>::Type_t
+realTrace(const PMatrix<T1,N,C>& s1)
 {
-  typename UnaryReturn<PMatrix<T1,N,C>, FnTraceReal>::Type_t  d;
+  typename UnaryReturn<PMatrix<T1,N,C>, FnRealTrace>::Type_t  d;
 
-  d.elem() = trace_real(s1.elem(0,0));
+  d.elem() = realTrace(s1.elem(0,0));
   for(int i=1; i < N; ++i)
-    d.elem() += trace_real(s1.elem(i,i));
+    d.elem() += realTrace(s1.elem(i,i));
 
   return d;
 }
@@ -423,89 +423,49 @@ trace_real(const PMatrix<T1,N,C>& s1)
 
 //! trace = Im(Trace(source1))
 template<class T, int N, template<class,int> class C>
-struct UnaryReturn<PMatrix<T,N,C>, FnTraceImag > {
-  typedef PScalar<typename UnaryReturn<T, FnTraceImag>::Type_t>  Type_t;
+struct UnaryReturn<PMatrix<T,N,C>, FnImagTrace > {
+  typedef PScalar<typename UnaryReturn<T, FnImagTrace>::Type_t>  Type_t;
 };
 
 template<class T1, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, FnTraceImag>::Type_t
-trace_imag(const PMatrix<T1,N,C>& s1)
+inline typename UnaryReturn<PMatrix<T1,N,C>, FnImagTrace>::Type_t
+imagTrace(const PMatrix<T1,N,C>& s1)
 {
-  typename UnaryReturn<PMatrix<T1,N,C>, FnTraceImag>::Type_t  d;
+  typename UnaryReturn<PMatrix<T1,N,C>, FnImagTrace>::Type_t  d;
 
-  d.elem() = trace_imag(s1.elem(0,0));
+  d.elem() = imagTrace(s1.elem(0,0));
   for(int i=1; i < N; ++i)
-    d.elem() += trace_imag(s1.elem(i,i));
+    d.elem() += imagTrace(s1.elem(i,i));
 
   return d;
 }
 
 
-//! trace = colorTrace(source1)   [this is an identity in general]
+//! trace = traceColor(source1)   [this is an identity in general]
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnColorTrace>::Type_t
-colorTrace(const PMatrix<T,N,C>& s1)
+inline typename UnaryReturn<PMatrix<T,N,C>, FnTraceColor>::Type_t
+traceColor(const PMatrix<T,N,C>& s1)
 {
-  typename UnaryReturn<PMatrix<T,N,C>, FnColorTrace>::Type_t  d;
+  typename UnaryReturn<PMatrix<T,N,C>, FnTraceColor>::Type_t  d;
 
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
-      d.elem(i,j) = colorTrace(s1.elem(i,j));
+      d.elem(i,j) = traceColor(s1.elem(i,j));
 
   return d;
 }
 
 
-//! trace = spinTrace(source1)   [this is an identity in general]
+//! trace = traceSpin(source1)   [this is an identity in general]
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnSpinTrace>::Type_t
-spinTrace(const PMatrix<T,N,C>& s1)
+inline typename UnaryReturn<PMatrix<T,N,C>, FnTraceSpin>::Type_t
+traceSpin(const PMatrix<T,N,C>& s1)
 {
-  typename UnaryReturn<PMatrix<T,N,C>, FnSpinTrace>::Type_t  d;
+  typename UnaryReturn<PMatrix<T,N,C>, FnTraceSpin>::Type_t  d;
 
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
-      d.elem(i,j) = spinTrace(s1.elem(i,j));
-
-  return d;
-}
-
-
-//! trace = noColorTrace(source1)   [only under color is this an identity]
-template<class T, int N, template<class,int> class C>
-struct UnaryReturn<PMatrix<T,N,C>, FnNoColorTrace > {
-  typedef PScalar<typename UnaryReturn<T, FnNoColorTrace>::Type_t>  Type_t;
-};
-
-template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnNoColorTrace>::Type_t
-noColorTrace(const PMatrix<T,N,C>& s1)
-{
-  typename UnaryReturn<PMatrix<T,N,C>, FnNoColorTrace>::Type_t  d;
-
-  d.elem() = noColorTrace(s1.elem(0,0));
-  for(int i=1; i < N; ++i)
-    d.elem() += noColorTrace(s1.elem(i,i));
-
-  return d;
-}
-
-
-//! trace = noSpinTrace(source1)   [only under noSpin is this is an identity]
-template<class T, int N, template<class,int> class C>
-struct UnaryReturn<PMatrix<T,N,C>, FnNoSpinTrace > {
-  typedef PScalar<typename UnaryReturn<T, FnNoSpinTrace>::Type_t>  Type_t;
-};
-
-template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnNoSpinTrace>::Type_t
-noSpinTrace(const PMatrix<T,N,C>& s1)
-{
-  typename UnaryReturn<PMatrix<T,N,C>, FnNoSpinTrace>::Type_t  d;
-
-  d.elem() = noSpinTrace(s1.elem(0,0));
-  for(int i=1; i < N; ++i)
-    d.elem() += noSpinTrace(s1.elem(i,i));
+      d.elem(i,j) = traceSpin(s1.elem(i,j));
 
   return d;
 }

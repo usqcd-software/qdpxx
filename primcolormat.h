@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primcolormat.h,v 1.5 2002-10-25 03:33:26 edwards Exp $
+// $Id: primcolormat.h,v 1.6 2002-11-07 19:25:50 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -142,18 +142,13 @@ struct UnaryReturn<PColorMatrix<T,N>, FnTrace > {
 };
 
 template<class T, int N>
-struct UnaryReturn<PColorMatrix<T,N>, FnTraceReal > {
-  typedef PScalar<typename UnaryReturn<T, FnTraceReal>::Type_t>  Type_t;
+struct UnaryReturn<PColorMatrix<T,N>, FnRealTrace > {
+  typedef PScalar<typename UnaryReturn<T, FnRealTrace>::Type_t>  Type_t;
 };
 
 template<class T, int N>
-struct UnaryReturn<PColorMatrix<T,N>, FnTraceImag > {
-  typedef PScalar<typename UnaryReturn<T, FnTraceImag>::Type_t>  Type_t;
-};
-
-template<class T, int N>
-struct UnaryReturn<PColorMatrix<T,N>, FnNoSpinTrace > {
-  typedef PScalar<typename UnaryReturn<T, FnNoSpinTrace>::Type_t>  Type_t;
+struct UnaryReturn<PColorMatrix<T,N>, FnImagTrace > {
+  typedef PScalar<typename UnaryReturn<T, FnImagTrace>::Type_t>  Type_t;
 };
 
 template<class T, int N>
@@ -197,46 +192,24 @@ struct BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnLocalInnerproductR
 /*! \addtogroup primcolormatrix */
 /*! @{ */
 
-// trace = colorTrace(source1)
+// trace = traceColor(source1)
 /*! This only acts on color indices and is diagonal in all other indices */
 template<class T, int N>
-struct UnaryReturn<PColorMatrix<T,N>, FnColorTrace > {
-  typedef PScalar<typename UnaryReturn<T, FnColorTrace>::Type_t>  Type_t;
+struct UnaryReturn<PColorMatrix<T,N>, FnTraceColor > {
+  typedef PScalar<typename UnaryReturn<T, FnTraceColor>::Type_t>  Type_t;
 };
 
 template<class T, int N>
-inline typename UnaryReturn<PColorMatrix<T,N>, FnColorTrace>::Type_t
-colorTrace(const PColorMatrix<T,N>& s1)
+inline typename UnaryReturn<PColorMatrix<T,N>, FnTraceColor>::Type_t
+traceColor(const PColorMatrix<T,N>& s1)
 {
-  typename UnaryReturn<PColorMatrix<T,N>, FnColorTrace>::Type_t  d;
+  typename UnaryReturn<PColorMatrix<T,N>, FnTraceColor>::Type_t  d;
 
   // Since the color index is eaten, do not need to pass on function by
   // calling trace(...) again
   d.elem() = s1.elem(0,0);
   for(int i=1; i < N; ++i)
     d.elem() += s1.elem(i,i);
-
-  return d;
-}
-
-
-// trace = noColorTrace(source1)   [only under color is this an identity]
-template<class T, int N>
-struct UnaryReturn<PColorMatrix<T,N>, FnNoColorTrace > {
-  typedef PColorMatrix<typename UnaryReturn<T, FnNoColorTrace>::Type_t, N>  Type_t;
-};
-
-template<class T, int N>
-inline typename UnaryReturn<PColorMatrix<T,N>, FnNoColorTrace>::Type_t
-noColorTrace(const PColorMatrix<T,N>& s1)
-{
-  typename UnaryReturn<PColorMatrix<T,N>, FnNoColorTrace>::Type_t  d;
-
-  // Since the color index is eaten, do not need to pass on function by
-  // calling trace(...) again
-  for(int i=0; i < N; ++i)
-    for(int j=0; j < N; ++j)
-      d.elem(i,j) = trace(s1.elem(i,j));
 
   return d;
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: QDPOperators.h,v 1.13 2002-11-03 02:48:06 edwards Exp $
+// $Id: QDPOperators.h,v 1.14 2002-11-07 19:25:50 edwards Exp $
 
 /*! @file
  * @brief Bulk of QDP operators produced by PETE
@@ -55,69 +55,47 @@ struct FnTrace
   }
 };
 
-struct FnTraceReal
+struct FnRealTrace
 {
-  PETE_EMPTY_CONSTRUCTORS(FnTraceReal)
+  PETE_EMPTY_CONSTRUCTORS(FnRealTrace)
   template<class T>
-  inline typename UnaryReturn<T, FnTraceReal >::Type_t
+  inline typename UnaryReturn<T, FnRealTrace >::Type_t
   operator()(const T &a) const
   {
-    return (traceReal(a));
+    return (realTrace(a));
   }
 };
 
-struct FnTraceImag
+struct FnImagTrace
 {
-  PETE_EMPTY_CONSTRUCTORS(FnTraceImag)
+  PETE_EMPTY_CONSTRUCTORS(FnImagTrace)
   template<class T>
-  inline typename UnaryReturn<T, FnTraceImag >::Type_t
+  inline typename UnaryReturn<T, FnImagTrace >::Type_t
   operator()(const T &a) const
   {
-    return (traceImag(a));
+    return (imagTrace(a));
   }
 };
 
-struct FnColorTrace
+struct FnTraceColor
 {
-  PETE_EMPTY_CONSTRUCTORS(FnColorTrace)
+  PETE_EMPTY_CONSTRUCTORS(FnTraceColor)
   template<class T>
-  inline typename UnaryReturn<T, FnColorTrace >::Type_t
+  inline typename UnaryReturn<T, FnTraceColor >::Type_t
   operator()(const T &a) const
   {
-    return (colorTrace(a));
+    return (traceColor(a));
   }
 };
 
-struct FnSpinTrace
+struct FnTraceSpin
 {
-  PETE_EMPTY_CONSTRUCTORS(FnSpinTrace)
+  PETE_EMPTY_CONSTRUCTORS(FnTraceSpin)
   template<class T>
-  inline typename UnaryReturn<T, FnSpinTrace >::Type_t
+  inline typename UnaryReturn<T, FnTraceSpin >::Type_t
   operator()(const T &a) const
   {
-    return (spinTrace(a));
-  }
-};
-
-struct FnNoColorTrace
-{
-  PETE_EMPTY_CONSTRUCTORS(FnNoColorTrace)
-  template<class T>
-  inline typename UnaryReturn<T, FnNoColorTrace >::Type_t
-  operator()(const T &a) const
-  {
-    return (noColorTrace(a));
-  }
-};
-
-struct FnNoSpinTrace
-{
-  PETE_EMPTY_CONSTRUCTORS(FnNoSpinTrace)
-  template<class T>
-  inline typename UnaryReturn<T, FnNoSpinTrace >::Type_t
-  operator()(const T &a) const
-  {
-    return (noSpinTrace(a));
+    return (traceSpin(a));
   }
 };
 
@@ -515,14 +493,14 @@ trace(const QDPType<T1,C1> & l)
   @sa real()
   @relates QDPType */
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnTraceReal,
+inline typename MakeReturn<UnaryNode<FnRealTrace,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnTraceReal >::Type_t >::Expression_t
-traceReal(const QDPType<T1,C1> & l)
+  typename UnaryReturn<C1,FnRealTrace >::Type_t >::Expression_t
+realTrace(const QDPType<T1,C1> & l)
 {
-  typedef UnaryNode<FnTraceReal,
+  typedef UnaryNode<FnRealTrace,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnTraceReal >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnRealTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -532,31 +510,31 @@ traceReal(const QDPType<T1,C1> & l)
   @sa imag()
   @relates QDPType */
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnTraceImag,
+inline typename MakeReturn<UnaryNode<FnImagTrace,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnTraceImag >::Type_t >::Expression_t
-traceImag(const QDPType<T1,C1> & l)
+  typename UnaryReturn<C1,FnImagTrace >::Type_t >::Expression_t
+imagTrace(const QDPType<T1,C1> & l)
 {
-  typedef UnaryNode<FnTraceImag,
+  typedef UnaryNode<FnImagTrace,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnTraceImag >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnImagTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
 
 //! Trace on only color indices
 /*! @ingroup group1
-  @sa trace(), noColorTrace()
+  @sa trace(), TraceColor()
   @relates QDPType */
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnColorTrace,
+inline typename MakeReturn<UnaryNode<FnTraceColor,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnColorTrace >::Type_t >::Expression_t
-colorTrace(const QDPType<T1,C1> & l)
+  typename UnaryReturn<C1,FnTraceColor >::Type_t >::Expression_t
+traceColor(const QDPType<T1,C1> & l)
 {
-  typedef UnaryNode<FnColorTrace,
+  typedef UnaryNode<FnTraceColor,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnColorTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnTraceColor >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -566,48 +544,14 @@ colorTrace(const QDPType<T1,C1> & l)
   @sa trace()
   @relates QDPType */
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnSpinTrace,
+inline typename MakeReturn<UnaryNode<FnTraceSpin,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnSpinTrace >::Type_t >::Expression_t
-spinTrace(const QDPType<T1,C1> & l)
+  typename UnaryReturn<C1,FnTraceSpin >::Type_t >::Expression_t
+traceSpin(const QDPType<T1,C1> & l)
 {
-  typedef UnaryNode<FnSpinTrace,
+  typedef UnaryNode<FnTraceSpin,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnSpinTrace >::Type_t Container_t;
-  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
-    CreateLeaf<QDPType<T1,C1> >::make(l)));
-}
-
-//! Trace on all fiber indices except color
-/*! @ingroup group1
-  @sa trace(), colorTrace()
-  @relates QDPType */
-template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnNoColorTrace,
-  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnNoColorTrace >::Type_t >::Expression_t
-noColorTrace(const QDPType<T1,C1> & l)
-{
-  typedef UnaryNode<FnNoColorTrace,
-    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnNoColorTrace >::Type_t Container_t;
-  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
-    CreateLeaf<QDPType<T1,C1> >::make(l)));
-}
-
-//! Trace on all fiber indices except spin
-/*! @ingroup group1
-  @sa trace(), SpinTrace()
-  @relates QDPType */
-template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnNoSpinTrace,
-  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnNoSpinTrace >::Type_t >::Expression_t
-noSpinTrace(const QDPType<T1,C1> & l)
-{
-  typedef UnaryNode<FnNoSpinTrace,
-    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnNoSpinTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnTraceSpin >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -4250,79 +4194,53 @@ trace(const QDPExpr<T1,C1> & l)
 }
 
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnTraceReal,
+inline typename MakeReturn<UnaryNode<FnRealTrace,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnTraceReal >::Type_t >::Expression_t
-traceReal(const QDPExpr<T1,C1> & l)
+  typename UnaryReturn<C1,FnRealTrace >::Type_t >::Expression_t
+realTrace(const QDPExpr<T1,C1> & l)
 {
-  typedef UnaryNode<FnTraceReal,
+  typedef UnaryNode<FnRealTrace,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnTraceReal >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnRealTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
 
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnTraceImag,
+inline typename MakeReturn<UnaryNode<FnImagTrace,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnTraceImag >::Type_t >::Expression_t
-traceImag(const QDPExpr<T1,C1> & l)
+  typename UnaryReturn<C1,FnImagTrace >::Type_t >::Expression_t
+imagTrace(const QDPExpr<T1,C1> & l)
 {
-  typedef UnaryNode<FnTraceImag,
+  typedef UnaryNode<FnImagTrace,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnTraceImag >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnImagTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
 
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnColorTrace,
+inline typename MakeReturn<UnaryNode<FnTraceColor,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnColorTrace >::Type_t >::Expression_t
-colorTrace(const QDPExpr<T1,C1> & l)
+  typename UnaryReturn<C1,FnTraceColor >::Type_t >::Expression_t
+traceColor(const QDPExpr<T1,C1> & l)
 {
-  typedef UnaryNode<FnColorTrace,
+  typedef UnaryNode<FnTraceColor,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnColorTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnTraceColor >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
 
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnSpinTrace,
+inline typename MakeReturn<UnaryNode<FnTraceSpin,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnSpinTrace >::Type_t >::Expression_t
-spinTrace(const QDPExpr<T1,C1> & l)
+  typename UnaryReturn<C1,FnTraceSpin >::Type_t >::Expression_t
+traceSpin(const QDPExpr<T1,C1> & l)
 {
-  typedef UnaryNode<FnSpinTrace,
+  typedef UnaryNode<FnTraceSpin,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnSpinTrace >::Type_t Container_t;
-  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
-    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
-}
-
-template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnNoColorTrace,
-  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnNoColorTrace >::Type_t >::Expression_t
-noColorTrace(const QDPExpr<T1,C1> & l)
-{
-  typedef UnaryNode<FnNoColorTrace,
-    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnNoColorTrace >::Type_t Container_t;
-  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
-    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
-}
-
-template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnNoSpinTrace,
-  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnNoSpinTrace >::Type_t >::Expression_t
-noSpinTrace(const QDPExpr<T1,C1> & l)
-{
-  typedef UnaryNode<FnNoSpinTrace,
-    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnNoSpinTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnTraceSpin >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }

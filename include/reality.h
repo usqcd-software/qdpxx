@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.9 2002-11-04 04:35:54 edwards Exp $
+// $Id: reality.h,v 1.10 2002-11-07 19:25:50 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -909,15 +909,15 @@ trace(const RScalar<T1>& s1)
 
 // trace = Re(Trace(source1))
 template<class T>
-struct UnaryReturn<RScalar<T>, FnTraceReal > {
-  typedef RScalar<typename UnaryReturn<T, FnTraceReal>::Type_t>  Type_t;
+struct UnaryReturn<RScalar<T>, FnRealTrace > {
+  typedef RScalar<typename UnaryReturn<T, FnRealTrace>::Type_t>  Type_t;
 };
 
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnTraceReal>::Type_t
+inline typename UnaryReturn<RScalar<T1>, FnRealTrace>::Type_t
 trace_real(const RScalar<T1>& s1)
 {
-  typename UnaryReturn<RScalar<T1>, FnTraceReal>::Type_t  d;
+  typename UnaryReturn<RScalar<T1>, FnRealTrace>::Type_t  d;
 
   d.elem() = trace_real(s1.elem());
   return d;
@@ -926,15 +926,15 @@ trace_real(const RScalar<T1>& s1)
 
 // trace = Im(Trace(source1))
 template<class T>
-struct UnaryReturn<RScalar<T>, FnTraceImag > {
-  typedef RScalar<typename UnaryReturn<T, FnTraceImag>::Type_t>  Type_t;
+struct UnaryReturn<RScalar<T>, FnImagTrace > {
+  typedef RScalar<typename UnaryReturn<T, FnImagTrace>::Type_t>  Type_t;
 };
 
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnTraceImag>::Type_t
+inline typename UnaryReturn<RScalar<T1>, FnImagTrace>::Type_t
 trace_imag(const RScalar<T1>& s1)
 {
-  typename UnaryReturn<RScalar<T1>, FnTraceImag>::Type_t  d;
+  typename UnaryReturn<RScalar<T1>, FnImagTrace>::Type_t  d;
 
   d.elem() = trace_imag(s1.elem());
   return d;
@@ -1495,15 +1495,15 @@ trace(const RComplex<T1>& s1)
 
 // trace = Re(Trace(source1))
 template<class T>
-struct UnaryReturn<RComplex<T>, FnTraceReal > {
-  typedef RScalar<typename UnaryReturn<T, FnTraceReal>::Type_t>  Type_t;
+struct UnaryReturn<RComplex<T>, FnRealTrace > {
+  typedef RScalar<typename UnaryReturn<T, FnRealTrace>::Type_t>  Type_t;
 };
 
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, FnTraceReal>::Type_t
+inline typename UnaryReturn<RComplex<T1>, FnRealTrace>::Type_t
 trace_real(const RComplex<T1>& s1)
 {
-  typename UnaryReturn<RComplex<T1>, FnTraceReal>::Type_t  d;
+  typename UnaryReturn<RComplex<T1>, FnRealTrace>::Type_t  d;
 
   d.elem() = trace(s1.real());
   return d;
@@ -1512,15 +1512,15 @@ trace_real(const RComplex<T1>& s1)
 
 // trace = Im(Trace(source1))
 template<class T>
-struct UnaryReturn<RComplex<T>, FnTraceImag > {
-  typedef RScalar<typename UnaryReturn<T, FnTraceImag>::Type_t>  Type_t;
+struct UnaryReturn<RComplex<T>, FnImagTrace > {
+  typedef RScalar<typename UnaryReturn<T, FnImagTrace>::Type_t>  Type_t;
 };
 
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, FnTraceImag>::Type_t
+inline typename UnaryReturn<RComplex<T1>, FnImagTrace>::Type_t
 trace_imag(const RComplex<T1>& s1)
 {
-  typename UnaryReturn<RComplex<T1>, FnTraceImag>::Type_t  d;
+  typename UnaryReturn<RComplex<T1>, FnImagTrace>::Type_t  d;
 
   d.elem() = trace(s1.imag());
   return d;
