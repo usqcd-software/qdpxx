@@ -1,4 +1,4 @@
-// $Id: qdp.cc,v 1.3 2002-10-28 03:08:44 edwards Exp $
+// $Id: qdp.cc,v 1.4 2002-11-02 16:30:02 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -10,50 +10,6 @@ QDP_BEGIN_NAMESPACE(QDP);
 //! General death routine
 void SZ_ERROR(const char *s, ...) {fprintf(stderr,"%s\n",s);exit(1);}
   
-//! Decompose a lexicographic site into coordinates
-multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size)
-{
-  multi1d<int> coord(latt_size.size());
-
-  /* Calculate the Cartesian coordinates of the VALUE of IPOS where the 
-   * value is defined by
-   *
-   *     for i = 0 to NDIM-1  {
-   *        X_i  <- mod( IPOS, L(i) )
-   *        IPOS <- int( IPOS / L(i) )
-   *     }
-   *
-   * NOTE: here the coord(i) and IPOS have their origin at 0. 
-   */
-  for(int i=0; i < latt_size.size(); ++i)
-  {
-    coord[i] = ipos % latt_size[i];
-    ipos = ipos / latt_size[i];
-  }
-
-  return coord;
-}
-
-
-//! Calculates the lexicographic site index from the coordinate of a site
-/*! 
- * Nothing specific about the actual lattice size, can be used for 
- * any kind of latt size 
- */
-int local_site(const multi1d<int>& coord, const multi1d<int>& latt_size)
-{
-  int order = 0;
-
-  for(int mmu=latt_size.size()-1; mmu >= 1; --mmu)
-    order = latt_size[mmu-1]*(coord[mmu] + order);
-
-  order += coord[0];
-
-  return order;
-}
-
-
-
 //-----------------------------------------------------------------------------
 //! Su2_extract: r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]  under a subset
 /*! 
