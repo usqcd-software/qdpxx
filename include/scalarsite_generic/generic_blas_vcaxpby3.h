@@ -1,17 +1,9 @@
-// $Id: generic_blas_vcaxpby3.h,v 1.1 2004-04-01 14:49:50 bjoo Exp $
-
-/*! @file
- *  @brief Generic Scalar VAXPY routine
- *
- */
-
 #ifndef QDP_GENERIC_BLAS_VCAXPBY3
 #define QDP_GENERIC_BLAS_VCAXPBY3
 
 QDP_BEGIN_NAMESPACE(QDP);
-// (Vector) out = (Complex) (*scalep) * (Vector) InScale + (Vector) Add
 inline
-void vcaxpby3(REAL *Out,REAL *ap,REAL *xp, REAL *bp REAL *yp,int n_3vec)
+void vcaxpby3(REAL* Out, REAL* ap, REAL* xp, REAL* bp, REAL *yp, int n_3vec)
 {
   register double a_r;
   register double a_i;

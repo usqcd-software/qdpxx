@@ -216,7 +216,7 @@ t_qdp_SOURCES = t_qdp.cc formfac_w.cc dslashm_w.cc baryon_w.cc \
 t_linalg_SOURCES = t_linalg.cc linalg1.cc linalg.h
 
 t_blas_SOURCES = t_blas.cc blas1.cc blas1.h
-t_cblas_SOURCES = t_cblas.cc
+t_cblas_SOURCES = t_cblas.cc cblas1.cc cblas1.h 
 subdir = examples
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/include/qdp_config_internal.h
@@ -286,7 +286,7 @@ t_blas_OBJECTS = $(am_t_blas_OBJECTS)
 t_blas_LDADD = $(LDADD)
 t_blas_DEPENDENCIES =
 t_blas_LDFLAGS =
-am_t_cblas_OBJECTS = t_cblas.$(OBJEXT)
+am_t_cblas_OBJECTS = t_cblas.$(OBJEXT) cblas1.$(OBJEXT)
 t_cblas_OBJECTS = $(am_t_cblas_OBJECTS)
 t_cblas_LDADD = $(LDADD)
 t_cblas_DEPENDENCIES =
@@ -399,18 +399,19 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/include
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/blas1.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/dslashm_w.Po ./$(DEPDIR)/expm12.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/linalg1.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mesons_w.Po ./$(DEPDIR)/mesplq.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/rgauge.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_blas.Po ./$(DEPDIR)/t_cblas.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_dslash5.Po ./$(DEPDIR)/t_dslashm.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_entry.Po ./$(DEPDIR)/t_exotic.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_foo.Po ./$(DEPDIR)/t_formfac.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_io.Po ./$(DEPDIR)/t_linalg.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_mesplq.Po ./$(DEPDIR)/t_nersc.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_nml.Po ./$(DEPDIR)/t_qdp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_qio.Po ./$(DEPDIR)/t_qio_factory.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/cblas1.Po ./$(DEPDIR)/dslashm_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/formfac_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/linalg1.Po ./$(DEPDIR)/mesons_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po ./$(DEPDIR)/reunit.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/rgauge.Po ./$(DEPDIR)/t_blas.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_cblas.Po ./$(DEPDIR)/t_dslash5.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_dslashm.Po ./$(DEPDIR)/t_entry.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_exotic.Po ./$(DEPDIR)/t_foo.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_linalg.Po ./$(DEPDIR)/t_mesplq.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_nersc.Po ./$(DEPDIR)/t_nml.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_qdp.Po ./$(DEPDIR)/t_qio.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_qio_factory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_remote.Po ./$(DEPDIR)/t_shift.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_skeleton.Po ./$(DEPDIR)/t_spectrum.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_xml.Po ./$(DEPDIR)/taproj.Po
@@ -517,6 +518,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/blas1.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cblas1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dslashm_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@

@@ -77,7 +77,7 @@ t_qdp_SOURCES =  t_qdp.cc formfac_w.cc dslashm_w.cc baryon_w.cc \
 t_linalg_SOURCES =  t_linalg.cc linalg1.cc linalg.h
 
 t_blas_SOURCES = t_blas.cc blas1.cc blas1.h
-t_cblas_SOURCES= t_cblas.cc
+t_cblas_SOURCES= t_cblas.cc cblas1.cc cblas1.h 
 
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

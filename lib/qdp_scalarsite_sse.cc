@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.9 2004-03-29 17:55:33 edwards Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.10 2004-05-09 11:54:44 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -13,6 +13,8 @@
 #if defined(__GNUC__)
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+#if BASE_PRECISION==32
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix[OrderedSubset] = LatticeColorMatrix * LatticeColorMatrix
@@ -208,6 +210,8 @@ void local_sumsq(REAL32 *Out, REAL32 *In, int n_3vec)
   __builtin_ia32_storeaps(fsum, vsum);
   *Out = fsum[0] + fsum[1] + fsum[2] + fsum[3];
 }
+
+#endif // BASE PRECISION==32
 
 QDP_END_NAMESPACE();
 
