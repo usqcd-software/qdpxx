@@ -180,7 +180,7 @@ HDRS = qdp_defs.h qdp_forward.h qdp_globalfuncs.h qdp_inner.h qdp_io.h qdp_layou
        qdp_stdio.h qdp_newops.h qdp_outer.h qdp_outersubtype.h qdp_params.h qdp_primcolormat.h \
        qdp_primcolorvec.h qdp_primgamma.h qdp_primitive.h qdp_primmatrix.h \
        qdp_primscalar.h qdp_primseed.h qdp_primspinmat.h qdp_primspinvec.h qdp_primvector.h \
-       qdp_util.h qdp_qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdp_qdpsubtype.h \
+       qdp_util.h qdp_iogauge.h qdp_qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdp_qdpsubtype.h \
        qdp_qdptype.h qdp_random.h qdp_reality.h qdp_simpleword.h qdp_map.h \
        qdp_specializations.h qdp_subset.h qdp_traits.h qdp_word.h qdp_qdpio.h \
        qio.h qdp_xmlio.h xml_simplewriter.h qdp_init.h
