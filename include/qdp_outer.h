@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.32 2004-07-27 05:30:19 edwards Exp $
+// $Id: qdp_outer.h,v 1.33 2004-08-12 04:05:50 edwards Exp $
 
 #include "qdp_config.h"
 
@@ -645,51 +645,48 @@ struct BinaryReturn<OLattice<T1>, OScalar<T2>, Op> {
 };
 
 
-// Currently, the only trinary operator is ``where'', so return 
-// based on T2 and T3
-
 // Default trinary(OLattice,OLattice,OLattice) -> OLattice
 template<class T1, class T2, class T3, class Op>
 struct TrinaryReturn<OLattice<T1>, OLattice<T2>, OLattice<T3>, Op> {
-  typedef OLattice<typename BinaryReturn<T2, T3, Op>::Type_t>  Type_t;
+  typedef OLattice<typename TrinaryReturn<T1, T2, T3, Op>::Type_t>  Type_t;
 };
 
 
 // Default trinary(OLattice,OScalar,OLattice) -> OLattice
 template<class T1, class T2, class T3, class Op>
 struct TrinaryReturn<OLattice<T1>, OScalar<T2>, OLattice<T3>, Op> {
-  typedef OLattice<typename BinaryReturn<T2, T3, Op>::Type_t>  Type_t;
+  typedef OLattice<typename TrinaryReturn<T1, T2, T3, Op>::Type_t>  Type_t;
 };
 
 // Default trinary(OLattice,OLattice,OScalar) -> OLattice
 template<class T1, class T2, class T3, class Op>
 struct TrinaryReturn<OLattice<T1>, OLattice<T2>, OScalar<T3>, Op> {
-  typedef OLattice<typename BinaryReturn<T2, T3, Op>::Type_t>  Type_t;
+  typedef OLattice<typename TrinaryReturn<T1, T2, T3, Op>::Type_t>  Type_t;
 };
 
 // Default trinary(OScalar,OLattice,OLattice) -> OLattice
 template<class T1, class T2, class T3, class Op>
 struct TrinaryReturn<OScalar<T1>, OLattice<T2>, OLattice<T3>, Op> {
-  typedef OLattice<typename BinaryReturn<T2, T3, Op>::Type_t>  Type_t;
+  typedef OLattice<typename TrinaryReturn<T1, T2, T3, Op>::Type_t>  Type_t;
 };
 
 
 // Default trinary(OScalar,OScalar,OLattice) -> OLattice
 template<class T1, class T2, class T3, class Op>
 struct TrinaryReturn<OScalar<T1>, OScalar<T2>, OLattice<T3>, Op> {
-  typedef OLattice<typename BinaryReturn<T2, T3, Op>::Type_t>  Type_t;
+  typedef OLattice<typename TrinaryReturn<T1, T2, T3, Op>::Type_t>  Type_t;
 };
 
 // Default trinary(OSscalar,OLattice,OScalar) -> OLattice
 template<class T1, class T2, class T3, class Op>
 struct TrinaryReturn<OScalar<T1>, OLattice<T2>, OScalar<T3>, Op> {
-  typedef OLattice<typename BinaryReturn<T2, T3, Op>::Type_t>  Type_t;
+  typedef OLattice<typename TrinaryReturn<T1, T2, T3, Op>::Type_t>  Type_t;
 };
 
 // Default trinary(OLattice,OScalar,OScalar) -> OLattice
 template<class T1, class T2, class T3, class Op>
 struct TrinaryReturn<OLattice<T1>, OScalar<T2>, OScalar<T3>, Op> {
-  typedef OLattice<typename BinaryReturn<T2, T3, Op>::Type_t>  Type_t;
+  typedef OLattice<typename TrinaryReturn<T1, T2, T3, Op>::Type_t>  Type_t;
 };
 
 
