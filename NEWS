@@ -1,3 +1,9 @@
+10/15/2003 -- Robert Edwards
+
+	Version 1.6.2. New read/write(Binary,Lattice,coord) routines that
+        combine peekSite and read, and pokeSite with write. New NERSC
+        Archive read/write functions with more header support.
+
 10/14/2003 -- Robert Edwards
 
 	Version 1.6.1. Changed BinaryReader/Writer to write out the size of an
