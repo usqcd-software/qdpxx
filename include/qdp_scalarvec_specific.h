@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.15 2004-08-09 22:08:53 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.16 2004-08-10 03:28:04 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -1466,7 +1466,7 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
     int innersite = i & ((1 << INNER_LOG)-1);
 
     alist.clear();
-    alist.push_back(XMLWriterAPI::Attribute("site", i));
+    alist.push_back(XMLWriterAPI::Attribute("site", site));
 
     xml.openTag("elem", alist);
     xml << getSite(d.elem(outersite),innersite);
