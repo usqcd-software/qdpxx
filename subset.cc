@@ -1,4 +1,4 @@
-// $Id: subset.cc,v 1.2 2002-09-26 20:04:25 edwards Exp $
+// $Id: subset.cc,v 1.3 2002-09-26 21:28:17 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -159,27 +159,32 @@ void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
       ++ntotal;
     }
 
+    // Always construct the sitetables. This could be moved into
+    // the found_gap and only initialized if the interval method 
+    // was not possible
+
+    // First loop and see how many sites are needed
+    int num_sitetable = 0;
+    for(int linear=0; linear < layout.Vol(); ++linear)
+      if (lat_color[linear] == cb)
+	++num_sitetable;
+
+    // Now take the inverse of the lattice coloring to produce
+    // the site list
+    multi1d<int>& sitetable = sitetables[cb];
+    sitetable.resize(num_sitetable);
+
+    for(int linear=0, j=0; linear < layout.Vol(); ++linear)
+      if (lat_color[linear] == cb)
+	sitetable[j++] = linear;
+
+
     // If a gap is found, then resort to a site table lookup
     if (found_gap)
     {
       start = 0;
       end = -1;
       indexrep = true;
-
-      // First loop and see how many sites are needed
-      int num_sitetable = 0;
-      for(int linear=0; linear < layout.Vol(); ++linear)
-	if (lat_color[linear] == cb)
-	  ++num_sitetable;
-
-      // Now take the inverse of the lattice coloring to produce
-      // the site list
-      multi1d<int>& sitetable = sitetables[cb];
-      sitetable.resize(num_sitetable);
-
-      for(int linear=0, j=0; linear < layout.Vol(); ++linear)
-	if (lat_color[linear] == cb)
-	  sitetable[j++] = linear;
     }
 
     sub[cb].Make(start, end, indexrep, &soffsets, &(sitetables[cb]), cb);
