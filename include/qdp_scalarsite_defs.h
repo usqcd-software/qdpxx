@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_defs.h,v 1.6 2004-04-02 11:57:21 bjoo Exp $
+// $Id: qdp_scalarsite_defs.h,v 1.7 2004-04-06 15:35:12 bjoo Exp $
 
 /*! \file
  * \brief Type definitions for scalar-site like architectures
@@ -84,7 +84,8 @@ typedef Seed ILatticeSeed;
 // Fixed precision
 typedef OLattice< PScalar< PColorMatrix< RComplex< IScalar<REAL32> >, Nc> > > LatticeColorMatrixF;
 typedef OScalar< PScalar< PColorMatrix< RComplex< IScalar<REAL32> >, Nc> > > ColorMatrixF;
-
+typedef OLattice< PSpinVector< PColorVector< RComplex< IScalar<REAL64> >, Nc>, Ns> > LatticeFermionF;
+typedef OLattice< PSpinVector< PColorVector< RComplex< IScalar<REAL64> >, Nc>, Ns> > LatticeFermionD;
 
 typedef OScalar< PScalar< PScalar< RScalar< IScalar<REAL32> > > > > Real32;
 typedef OScalar< PScalar< PScalar< RScalar< IScalar<REAL64> > > > > Real64;

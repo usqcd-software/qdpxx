@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_defs.h,v 1.11 2004-04-02 11:57:21 bjoo Exp $
+// $Id: qdp_defs.h,v 1.12 2004-04-06 15:35:12 bjoo Exp $
 
 /*! \file
  * \brief Type definitions
@@ -96,12 +96,12 @@ typedef OLattice< PScalar< PColorMatrix< RComplex<REAL32>, Nc> > > LatticeColorM
 typedef OLattice< PScalar< PColorMatrix< RComplex<REAL32>, 3> > > LatticeColorMatrixF3;
 typedef OScalar< PScalar< PColorMatrix< RComplex<REAL32>, Nc> > > ColorMatrixF;
 typedef OScalar< PScalar< PColorMatrix< RComplex<REAL32>, 3> > > ColorMatrixF3;
-
+typedef OLattice< PSpinVector< PColorVector< RComplex<REAL32>, Nc>, Ns> > LatticeFermionF;
 typedef OLattice< PScalar< PColorMatrix< RComplex<REAL64>, Nc> > > LatticeColorMatrixD;
 typedef OLattice< PScalar< PColorMatrix< RComplex<REAL64>, 3> > > LatticeColorMatrixD3;
 typedef OScalar< PScalar< PColorMatrix< RComplex<REAL64>, Nc> > > ColorMatrixD;
 typedef OScalar< PScalar< PColorMatrix< RComplex<REAL64>, 3> > > ColorMatrixD3;
-
+typedef OLattice< PSpinVector< PColorVector< RComplex<REAL64>, Nc>, Ns> > LatticeFermionD;
 typedef OScalar< PScalar< PScalar< RScalar<REAL32> > > > Real32;
 typedef OScalar< PScalar< PScalar< RScalar<REAL64> > > > Real64;
 typedef OScalar< PScalar< PScalar< RComplex<REAL32> > > > Complex32;

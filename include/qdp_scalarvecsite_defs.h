@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_defs.h,v 1.9 2004-04-02 11:57:21 bjoo Exp $
+// $Id: qdp_scalarvecsite_defs.h,v 1.10 2004-04-06 15:35:12 bjoo Exp $
 
 /*! \file
  * \brief Type definitions for scalar/vector extensions-like architectures
@@ -89,7 +89,8 @@ typedef OScalar< PScalar< PSeed < RScalar< ILattice<INTEGER32,INNER_LEN> > > > >
 // Fixed precision
 typedef OLattice< PScalar< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc> > > LatticeColorMatrixF;
 typedef OScalar< PScalar< PColorMatrix< RComplex< IScalar<REAL32> >, Nc> > > ColorMatrixF;
-
+typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL32,INNER_LEN> >, Nc>, Ns> > LatticeFermionF;
+typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL64,INNER_LEN> >, Nc>, Ns> > LatticeFermionD;
 
 typedef OScalar< PScalar< PScalar< RScalar< IScalar<REAL32> > > > > Real32;
 typedef OScalar< PScalar< PScalar< RScalar< IScalar<REAL64> > > > > Real64;
