@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_newops.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_newops.h,v 1.2 2003-05-23 05:20:27 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes

@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.2 2003-05-23 04:45:26 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.3 2003-05-23 05:20:27 edwards Exp $
 //
 // QDP data parallel interface
 /*!
