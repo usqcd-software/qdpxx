@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.17 2005-01-27 19:59:57 mcneile Exp $
+// $Id: qdp_io.h,v 1.18 2005-01-29 14:34:54 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -61,8 +61,11 @@ protected:
   std::istream& getIstream() {return f;}
 
 private:
+#if defined(USE_REMOTE_QIO)
   QDPUtil::RemoteInputFileStream f;
-// ifstream f;
+#else
+  ifstream f;
+#endif
 };
 
 
@@ -123,8 +126,11 @@ protected:
   std::ostream& getOstream() {return f;}
 
 private:
+#if defined(USE_REMOTE_QIO)
   QDPUtil::RemoteOutputFileStream f;
-// ofstream f;
+#else
+  ofstream f;
+#endif
 };
 
 
@@ -191,8 +197,11 @@ protected:
   std::istream& getIstream() {return f;}
 
 private:
+#if defined(USE_REMOTE_QIO)
   QDPUtil::RemoteInputFileStream f;
-// ifstream f;
+#else
+  ifstream f;
+#endif
 };
 
 // Telephone book of basic primitives
@@ -347,8 +356,11 @@ protected:
   std::ostream& getOstream() {return f;}
 
 private:
+#if defined(USE_REMOTE_QIO)
   QDPUtil::RemoteOutputFileStream f;
-// ofstream f;
+#else
+  ofstream f;
+#endif
 };
 
 
