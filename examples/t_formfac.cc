@@ -1,4 +1,4 @@
-// $Id: t_formfac.cc,v 1.10 2002-12-18 21:33:24 edwards Exp $
+// $Id: t_formfac.cc,v 1.11 2002-12-26 23:01:11 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
   gaussian(quark_prop_2);
 
   int j_decay = Nd-1;
-  int length = Layout:lattSize()[j_decay];
+  int length = Layout::lattSize()[j_decay];
   multi1d<int> t_source(Nd);
   t_source = 0;
 

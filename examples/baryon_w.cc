@@ -1,9 +1,9 @@
-// $Id: baryon_w.cc,v 1.8 2002-12-14 01:09:54 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.9 2002-12-26 23:01:11 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
 
-#include "tests.h"
+#include "examples.h"
 
 using namespace QDP;
 
@@ -104,14 +104,14 @@ void baryon(LatticePropagator& quark_propagator,
   SpinMatrix g_tmp1;
 
   /* C = Gamma(10) */
-  g_tmp1 = 0.5 * (Gamma(2) * g_one  +  multiplyI(Gamma(1) * g_one));
+  g_tmp1 = 0.5 * (Gamma(2) * g_one  +  timesI(Gamma(1) * g_one));
   Cgm = Gamma(10) * g_tmp1;
 
   Cg4m = Gamma(10) * (Gamma(8) * g_tmp1);
   CgmNR = Cgm - Cg4m;
 
   SpinMatrix S_proj = 
-    0.5*((g_one + Gamma(8) * g_one) - multiplyI(Gamma(3) * g_one  +  Gamma(11) * g_one));
+    0.5*((g_one + Gamma(8) * g_one) - timesI(Gamma(3) * g_one  +  Gamma(11) * g_one));
 
   /*Loop over time-charge reversals */
   for(int time_rev = 0; time_rev < 2; ++time_rev)

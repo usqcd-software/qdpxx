@@ -1,4 +1,4 @@
-// $Id: junk.cc,v 1.4 2002-12-05 21:27:10 edwards Exp $
+// $Id: junk.cc,v 1.5 2002-12-26 23:01:11 edwards Exp $
 
 #include "tests.h"
 
@@ -46,7 +46,7 @@ void junk(NmlWriter& nml,
 //  b3 = b1*b2;
 
 //  fprintf(stderr,"Test 4\n");
-//  b3 = conj(b1)*b2;
+//  b3 = adj(b1)*b2;
 
 //  fprintf(stderr,"Test 5\n");
 //  b3 = b1*b1*b2;

@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.4 2002-12-18 21:33:25 edwards Exp $
+ *  $Id: t_spectrum.cc,v 1.5 2002-12-26 23:01:11 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
   const int foo[] = {4, 4, 4, 8};
   nsize = foo;
   // Initialise the layout
-  Layout::create(nrow);
+  Layout::create(nsize);
 
   int j_decay = Nd-1;
   int length = Layout::lattSize()[j_decay]; // Define the temporal direction
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 
     multi2d<Real> meson_prop(Ns*Ns, length);
   
-    mesons(quark_prop_1, quark_prop_1, meson_prop, t_source);
+    mesons(quark_prop_1, quark_prop_1, meson_prop, t_source, j_decay);
 
     /*
      *  Print the results
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
 
     multi2d<Complex> baryon_prop(9, length);
   
-    baryon(quark_prop_1, baryon_prop, t_source, 1);
+    baryon(quark_prop_1, baryon_prop, t_source, j_decay, 1);
 
     /*
      *  Print the results

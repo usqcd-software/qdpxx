@@ -1,6 +1,6 @@
-// $Id: mesplq.cc,v 1.12 2002-12-16 06:13:49 edwards Exp $
+// $Id: mesplq.cc,v 1.13 2002-12-26 23:01:11 edwards Exp $
 //
-#include "tests.h"
+#include "examples.h"
 
 using namespace QDP;
 
@@ -28,10 +28,10 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
     {
 #if 0
       /* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
-      LatticeColorMatrix tmp_0 = shift(u[nu],FORWARD,mu) * conj(shift(u[mu],FORWARD,nu));
+      LatticeColorMatrix tmp_0 = shift(u[nu],FORWARD,mu) * adj(shift(u[mu],FORWARD,nu));
 
       /* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
-      LatticeColorMatrix tmp_1 = tmp_0 * conj(u[nu]);
+      LatticeColorMatrix tmp_1 = tmp_0 * adj(u[nu]);
 
       /* tmp = sum(tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu))) */
       Double tmp = sum(real(trace(u[mu]*tmp_1)));
@@ -41,7 +41,7 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
       /* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
       /* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
       Double tmp = 
-	sum(real(trace(u[mu]*shift(u[nu],FORWARD,mu)*conj(shift(u[mu],FORWARD,nu))*conj(u[nu]))));
+	sum(real(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu]))));
 #endif
       w_plaq += tmp;
 

@@ -1,6 +1,6 @@
-// $Id: formfac_w.cc,v 1.8 2002-12-14 01:09:55 edwards Exp $
+// $Id: formfac_w.cc,v 1.9 2002-12-26 23:01:11 edwards Exp $
 
-#include "tests.h"
+#include "examples.h"
 #include "proto.h"
 
 using namespace QDP;
@@ -79,7 +79,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
      * The local non-conserved vector-current matrix element 
      */
     int n = 1 << mu;
-    LatticeComplex corr_local_fn = trace(conj(anti_quark_prop) * Gamma(n) * quark_propagator);
+    LatticeComplex corr_local_fn = trace(adj(anti_quark_prop) * Gamma(n) * quark_propagator);
 
     /* 
      * Construct the conserved non-local vector-current matrix element 
@@ -90,11 +90,11 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
      * NOTE: the 1/2  is included down below in the sumMulti stuff
      */
     LatticeComplex corr_nonlocal_fn = 
-      trace(conj(u[mu] * shift(anti_quark_prop, FORWARD, mu)) * 
+      trace(adj(u[mu] * shift(anti_quark_prop, FORWARD, mu)) * 
 	    (quark_propagator + Gamma(n) * quark_propagator));
 
     LatticePropagator tmp_prop1 = u[mu] * shift(quark_propagator, FORWARD, mu);
-    corr_nonlocal_fn -= trace(conj(anti_quark_prop) * (tmp_prop1 - Gamma(n) * tmp_prop1));
+    corr_nonlocal_fn -= trace(adj(anti_quark_prop) * (tmp_prop1 - Gamma(n) * tmp_prop1));
 
 
     /*

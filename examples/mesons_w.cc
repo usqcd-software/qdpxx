@@ -1,6 +1,6 @@
-//  $Id: mesons_w.cc,v 1.5 2002-12-14 01:09:55 edwards Exp $
+//  $Id: mesons_w.cc,v 1.6 2002-12-26 23:01:11 edwards Exp $
 
-#include "tests.h"
+#include "examples.h"
 
 using namespace QDP;
 
@@ -63,7 +63,7 @@ void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quar
 
   for(int n = 0; n < (Ns*Ns); ++n)
   {
-    LatticeReal psi_sq = real(trace(conj(anti_quark_prop) * Gamma(n) * quark_prop_1 * Gamma(n)));
+    LatticeReal psi_sq = real(trace(adj(anti_quark_prop) * Gamma(n) * quark_prop_1 * Gamma(n)));
 
     // Do a slice-wise sum.
     hsum = sumMulti(psi_sq, timeslice);

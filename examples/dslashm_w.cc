@@ -1,6 +1,6 @@
-// $Id: dslashm_w.cc,v 1.10 2002-12-05 21:27:10 edwards Exp $
+// $Id: dslashm_w.cc,v 1.11 2002-12-26 23:01:11 edwards Exp $
 
-#include "tests.h"
+#include "examples.h"
 
 using namespace QDP;
 
