@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.12 2003-12-23 17:29:04 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.13 2004-02-17 11:48:38 bjoo Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -10,6 +10,8 @@
 #include "qdp.h"
 #include "qdp_util.h"
 #include "qmp.h"
+#include "qdp_qmp_extensions.h"
+
 
 QDP_BEGIN_NAMESPACE(QDP);
 
