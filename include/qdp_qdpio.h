@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.14 2004-03-09 02:14:46 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.15 2004-03-21 17:25:03 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -82,7 +82,11 @@ public:
 
   //! Read an array of objects all in a single record
   template<class T>
-  void read(XMLReader& xml, multi1d<T>& s1);
+  void read(XMLReader& xml, multi1d< OScalar<T> >& s1);
+
+  //! Read an array of objects all in a single record
+  template<class T>
+  void read(XMLReader& xml, multi1d< OLattice<T> >& s1);
 
   //! Check if end-of-file has been reached
   bool eof() const;
@@ -109,9 +113,23 @@ void read(QDPFileReader& qsw, XMLReader& rec_xml, OScalar<T>& s1)
   qsw.read(rec_xml,s1);
 }
 
-//! Read an OLattice object
+//! Read an array of OLattice objects
 template<class T>
 void read(QDPFileReader& qsw, XMLReader& rec_xml, OLattice<T>& s1)
+{
+  qsw.read(rec_xml,s1);
+}
+
+//! Read an array of OScalar object
+template<class T>
+void read(QDPFileReader& qsw, XMLReader& rec_xml, multi1d< OScalar<T> >& s1)
+{
+  qsw.read(rec_xml,s1);
+}
+
+//! Read an array of OLattice objects
+template<class T>
+void read(QDPFileReader& qsw, XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
 {
   qsw.read(rec_xml,s1);
 }
@@ -167,7 +185,11 @@ public:
 
   //! Write an array of objects all in a single record
   template<class T>
-  void write(XMLBufferWriter& xml, const multi1d<T>& s1);
+  void write(XMLBufferWriter& xml, const multi1d< OScalar<T> >& s1);
+
+  //! Write an array of objects all in a single record
+  template<class T>
+  void write(XMLBufferWriter& xml, const multi1d< OLattice<T> >& s1);
 
   //!  Check if an unrecoverable error has occurred
   bool bad() const;
@@ -194,6 +216,20 @@ void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const OScalar<T>& s1)
 //! Write an OLattice object
 template<class T>
 void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const OLattice<T>& s1)
+{
+  qsw.write(rec_xml,s1);
+}
+
+//! Write an array of OScalar objects
+template<class T>
+void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const multi1d< OScalar<T> >& s1)
+{
+  qsw.write(rec_xml,s1);
+}
+
+//! Write an array of OLattice objects
+template<class T>
+void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >& s1)
 {
   qsw.write(rec_xml,s1);
 }
