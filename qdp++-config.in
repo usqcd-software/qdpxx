@@ -39,6 +39,7 @@ Options:
   [--Nc]
   [--Ns]
   [--parallel-arch]
+  [--cxx]
   [--cxxflags]
   [--ldflags]
   [--libs]
