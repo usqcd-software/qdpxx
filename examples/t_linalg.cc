@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.3 2003-08-08 21:20:43 edwards Exp $
+// $Id: t_linalg.cc,v 1.4 2003-08-11 16:58:15 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -138,9 +138,10 @@ int main(int argc, char *argv[])
   nml.flush();
 
 //----------------------------------------------------------------------------
-  LatticeColorVector lv1,lv2;
+  LatticeColorVector lv1,lv2,lv3;
   gaussian(lv1);
   gaussian(lv2);
+  gaussian(lv3);
 
 #if ! defined(TEST_OPS)
   // Time the c=a*b
@@ -184,6 +185,73 @@ int main(int argc, char *argv[])
   cout << "time(lv=adj(lm)*lv) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 108 / tt << " Mflops" << endl;   // check the flop count
+
+
+
+//----------------------------------------------------------------------------
+#if ! defined(TEST_OPS)
+  // Time the c=a*b
+  for(icnt=1; ; icnt <<= 1)
+  {
+    cout << "calling " << icnt << " times" << endl;
+    tt = QDP_V_eq_V_plus_V(lv3, lv1, lv2, icnt);
+    if (tt > 1)
+      break;
+  }
+#else
+  icnt = 1;   // turn off timings for some testing
+#endif
+
+#if defined(TEST_OPS)
+  // Test LatticeColorVector = LatticeColorVector + LatticeColorVector
+  tt = QDP_V_eq_V_plus_V(lv3, lv1, lv2, 1);
+  push(nml,"QDP_V_eq_V_plus_V");
+  Write(nml,lv3);
+  pop(nml);
+#endif
+
+  // Test LatticeColorVector = LatticeColorVector * LatticeColorVector
+  cout << "calling " << icnt << " times" << endl;
+  tt = rescale * QDP_V_eq_V_plus_V(lv3, lv1, lv2, icnt);
+  cout << "time(lv=lv+lv) = " << tt
+       << " micro-secs/site/iteration" 
+       << " , " << 6 / tt << " Mflops" << endl;   // check the flop count
+
+  nml.flush();
+
+
+//----------------------------------------------------------------------------
+  LatticeDiracFermion lf1,lf2,lf3;
+  gaussian(lf1);
+  gaussian(lf2);
+
+#if ! defined(TEST_OPS)
+  // Time the c=a*b
+  for(icnt=1; ; icnt <<= 1)
+  {
+    cout << "calling " << icnt << " times" << endl;
+    tt = QDP_D_eq_M_times_D(lf2, a, lf1, icnt);
+    if (tt > 1)
+      break;
+  }
+#else
+  icnt = 1;   // turn off timings for some testing
+#endif
+
+#if defined(TEST_OPS)
+  // Test LatticeDiracFermion = LatticeColorMatrix + LatticeDiracFermion
+  tt = QDP_D_eq_M_times_D(lf2, a, lf1, 1);
+  push(nml,"QDP_D_eq_M_times_D");
+  Write(nml,lf2);
+  pop(nml);
+#endif
+
+  // Test LatticeColorVector = LatticeColorVector * LatticeColorVector
+  cout << "calling " << icnt << " times" << endl;
+  tt = rescale * QDP_D_eq_M_times_D(lf2, a, lf1, icnt);
+  cout << "time(lf=lm*lf) = " << tt
+       << " micro-secs/site/iteration" 
+       << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 
   nml.flush();
 

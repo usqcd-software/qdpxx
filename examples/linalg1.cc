@@ -1,4 +1,4 @@
-// $Id: linalg1.cc,v 1.11 2003-08-08 21:20:43 edwards Exp $
+// $Id: linalg1.cc,v 1.12 2003-08-11 16:58:15 edwards Exp $
 
 #include <stdlib.h>
 #include <sys/time.h>
@@ -896,4 +896,35 @@ double QDP_V_eq_Ma_times_V(LatticeColorVector& dest,
   return double(t2-t1)/double(CLOCKS_PER_SEC);
 //    return 2.0;
 }
+
+
+double QDP_V_eq_V_plus_V(LatticeColorVector& dest, 
+			 const LatticeColorVector& s1, 
+			 const LatticeColorVector& s2,
+			 int cnt)
+{
+  clock_t t1 = clock();
+  for (; cnt-- > 0; )
+    dest = s1 + s2;
+  clock_t t2 = clock();
+
+  return double(t2-t1)/double(CLOCKS_PER_SEC);
+//    return 2.0;
+}
+
+
+double QDP_D_eq_M_times_D(LatticeDiracFermion& dest, 
+			  const LatticeColorMatrix& s1, 
+			  const LatticeDiracFermion& s2,
+			  int cnt)
+{
+  clock_t t1 = clock();
+  for (; cnt-- > 0; )
+    dest = s1 * s2;
+  clock_t t2 = clock();
+
+  return double(t2-t1)/double(CLOCKS_PER_SEC);
+//    return 2.0;
+}
+
 
