@@ -137,8 +137,8 @@ if test "X${echo_cxxflags}X" = "XyesX" ; then
     case $i in
       -I/usr/include) ;;
       -g) ;;
-      -O*) ;;
-      -W*) ;;
+#     -O*) ;;
+#     -W*) ;;
       *)
         case " $output_cxxflags " in
           *\ $i\ *) ;;                             # already there, skip it
