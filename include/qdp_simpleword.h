@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_simpleword.h,v 1.5 2003-08-23 02:36:10 edwards Exp $
+// $Id: qdp_simpleword.h,v 1.6 2003-08-23 03:04:36 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -297,6 +297,13 @@ int trace(int s1)
 {
   return s1;
 }
+
+
+// GetSite is only non-trivial at an inner grid sit
+inline float  getSite(float s1, int innersite) {return s1;}
+inline double getSite(double s1, int innersite) {return s1;}
+inline int    getSite(int s1, int innersite) {return s1;}
+inline bool   getSite(bool s1, int innersite) {return s1;}
 
 
 
