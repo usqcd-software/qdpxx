@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primdwvec.h,v 1.2 2003-10-20 20:14:57 edwards Exp $
+// $Id: qdp_primdwvec.h,v 1.3 2003-11-02 01:21:04 edwards Exp $
 
 /*! \file
  * \brief Domain-wall Vector (lives in fictitious flavor space)
@@ -165,9 +165,160 @@ struct BinaryReturn<PDWVector<T1,N>, PDWVector<T2,N>, FnLocalInnerProductReal> {
 
 
 //-----------------------------------------------------------------------------
-// Operators
-//-----------------------------------------------------------------------------
+// Functions
 
+
+// ArcCos
+template<class T1, int N>
+inline typename UnaryReturn<PDWVector<T1,N>, FnArcCos>::Type_t
+acos(const PDWVector<T1,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T1,N>, FnArcCos>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = acos(s1.elem(i));
+  return d;
+}
+
+// ArcSin
+template<class T1, int N>
+inline typename UnaryReturn<PDWVector<T1,N>, FnArcSin>::Type_t
+asin(const PDWVector<T1,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T1,N>, FnArcSin>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = asin(s1.elem(i));
+  return d;
+}
+
+// ArcTan
+template<class T1, int N>
+inline typename UnaryReturn<PDWVector<T1,N>, FnArcTan>::Type_t
+atan(const PDWVector<T1,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T1,N>, FnArcTan>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = atan(s1.elem(i));
+  return d;
+}
+
+// Cos
+template<class T1, int N>
+inline typename UnaryReturn<PDWVector<T1,N>, FnCos>::Type_t
+cos(const PDWVector<T1,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T1,N>, FnCos>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = cos(s1.elem(i));
+  return d;
+}
+
+// Exp
+template<class T1, int N>
+inline typename UnaryReturn<PDWVector<T1,N>, FnExp>::Type_t
+exp(const PDWVector<T1,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T1,N>, FnExp>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = exp(s1.elem(i));
+  return d;
+}
+
+// Fabs
+template<class T1, int N>
+inline typename UnaryReturn<PDWVector<T1,N>, FnFabs>::Type_t
+fabs(const PDWVector<T1,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T1,N>, FnFabs>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = fabs(s1.elem(i));
+  return d;
+}
+
+// Log
+template<class T1, int N>
+inline typename UnaryReturn<PDWVector<T1,N>, FnLog>::Type_t
+log(const PDWVector<T1,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T1,N>, FnLog>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = log(s1.elem(i));
+  return d;
+}
+
+// Sin
+template<class T1, int N>
+inline typename UnaryReturn<PDWVector<T1,N>, FnSin>::Type_t
+sin(const PDWVector<T1,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T1,N>, FnSin>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = sin(s1.elem(i));
+  return d;
+}
+
+// Sqrt
+template<class T1, int N>
+inline typename UnaryReturn<PDWVector<T1,N>, FnSqrt>::Type_t
+sqrt(const PDWVector<T1,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T1,N>, FnSqrt>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = sqrt(s1.elem(i));
+  return d;
+}
+
+// Tan
+template<class T1, int N>
+inline typename UnaryReturn<PDWVector<T1,N>, FnTan>::Type_t
+tan(const PDWVector<T1,N>& s1)
+{
+  typename UnaryReturn<PDWVector<T1,N>, FnTan>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = tan(s1.elem(i));
+  return d;
+}
+
+
+//! PDWVector = pow(PDWVector, PScalar)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PDWVector<T1,N>, PScalar<T2>, FnPow>::Type_t
+pow(const PDWVector<T1,N>& s1, const PScalar<T2>& s2)
+{
+  typename BinaryReturn<PDWVector<T1,N>, PScalar<T2>, FnPow>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = pow(s1.elem(i), s2.elem());
+  return d;
+}
+
+
+//! PDWVector = atan2(PDWVector, PScalar)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PDWVector<T1,N>, PScalar<T2>, FnArcTan2>::Type_t
+atan2(const PDWVector<T1,N>& s1, const PScalar<T2>& s2)
+{
+  typename BinaryReturn<PDWVector<T1,N>, PScalar<T2>, FnArcTan2>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = atan2(s1.elem(i), s2.elem());
+  return d;
+}
+
+
+
+
+
+//-----------------------------------------------------------------------------
 // Peeking and poking
 //! Extract DW vector components 
 template<class T, int N>
@@ -197,7 +348,11 @@ pokeDW(PDWVector<T1,N>& l, const PScalar<T2>& r, int row)
 }
 
 
+
 //-----------------------------------------------------------------------------
+// Operators
+//-----------------------------------------------------------------------------
+
 //! PDWVector = Gamma<M,m> * PDWVector
 template<class T2, int N, int M, int m>
 inline typename BinaryReturn<GammaConst<M,m>, PDWVector<T2,N>, OpGammaConstMultiply>::Type_t
