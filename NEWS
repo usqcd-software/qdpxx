@@ -1,3 +1,11 @@
+10/02/2003 -- Robert Edwards
+
+	Version 1.5.13. Added generic optimizations for basic linear
+        algebra ops. These are used if no sse, etc. are specified.
+	Balint Joo fixed QIO support. QIO still in alpha development 
+	stage.
+
+
 09/23/2003 -- Balint Joo
 
 	Version 1.5.12. Overhauled configure system for writing defines. Now has
