@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.19 2003-09-01 22:30:10 edwards Exp $
+// $Id: qdp_outer.h,v 1.20 2003-09-02 00:46:40 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -236,35 +236,11 @@ class OLattice: public QDPType<T, OLattice<T> >
 public:
   OLattice() 
     {
-#if ! defined(QDP_FIX_ALIGNMENT)
-      F = new T[Layout::sitesOnNode()];
-
-#if QDP_DEBUG >= 1
-      QDP_info("create %d bytes of OLattice[%d]=0x%x, this=0x%x",
-	       sizeof(T), Layout::sitesOnNode(),(void *)F,this);
-#endif
-#else
-      // ANNOYANCE of GNUC++, need extra space for proper alignment
-      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
-      F = (T*)((F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
-
-#if QDP_DEBUG >= 1
-      QDP_info("create %d bytes of OLattice[%d]=0x%x, this=0x%x",
-	       sizeof(T), Layout::sitesOnNode(),(void *)F,this);
-#endif
-#endif
+      alloc_mem("create");
     }
   ~OLattice()
     {
-#if QDP_DEBUG >= 1
-      QDP_info("destroy %d bytes of OLattice=0x%x, this=0x%x",sizeof(T),F,this);
-#endif
-
-#if defined(QDP_FIX_ALIGNMENT)
-      F = (T*)F_orig;
-#endif
-
-      delete[] F;
+      free_mem();
     }
 
 
@@ -272,19 +248,7 @@ public:
   template<class T1>
   OLattice(const OLattice<T1>& rhs)
     {
-#if ! defined(QDP_FIX_ALIGNMENT)
-      F = new T[Layout::sitesOnNode()];
-#else
-      // ANNOYANCE of GNUC++, need extra space for proper alignment
-      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
-      F = (T*)((F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
-#endif
-
-#if QDP_DEBUG >= 1
-      QDP_info("construct %d bytes from expr OLattice[%d]=0x%x",
-	       sizeof(T),Layout::sitesOnNode(),F);
-#endif
-
+      alloc_mem("construct from OLattice");
       assign(rhs);
     }
 
@@ -293,19 +257,7 @@ public:
   template<class RHS, class T1>
   OLattice(const QDPExpr<RHS, OLattice<T1> >& rhs)
     {
-#if ! defined(QDP_FIX_ALIGNMENT)
-      F = new T[Layout::sitesOnNode()];
-#else
-      // ANNOYANCE of GNUC++, need extra space for proper alignment
-      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
-      F = (T*)((F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
-#endif
-
-#if QDP_DEBUG >= 1
-      QDP_info("construct %d bytes from expr OLattice[%d]=0x%x",
-	       sizeof(T),Layout::sitesOnNode(),F);
-#endif
-
+      alloc_mem("construct from expr");
       assign(rhs);
     }
 
@@ -313,18 +265,7 @@ public:
   //! construct OLattice = const
   OLattice(const typename WordType<T>::Type_t& rhs)
     {
-#if ! defined(QDP_FIX_ALIGNMENT)
-      F = new T[Layout::sitesOnNode()];
-#else
-      // ANNOYANCE of GNUC++, need extra space for proper alignment
-      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
-      F = (T*)((F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
-#endif
-
-#if QDP_DEBUG >= 1
-      QDP_info("construct %d bytes from const OLattice[%d]=0x%x",
-	       sizeof(T),Layout::sitesOnNode(),F);
-#endif
+      alloc_mem("construct from const");
 
       typedef OScalar<typename InternalScalar<T>::Type_t>  Scalar_t;
       assign(Scalar_t(rhs));
@@ -334,19 +275,7 @@ public:
   //! construct OLattice = 0
   OLattice(const Zero& rhs)
     {
-#if ! defined(QDP_FIX_ALIGNMENT)
-      F = new T[Layout::sitesOnNode()];
-#else
-      // ANNOYANCE of GNUC++, need extra space for proper alignment
-      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
-      F = (T*)((F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
-#endif
-
-#if QDP_DEBUG >= 1
-      QDP_info("construct %d bytes from zero OLattice[%d]=0x%x",
-	       sizeof(T),Layout::sitesOnNode(),F);
-#endif
-
+      alloc_mem("construct from zero");
       assign(rhs);
     }
 
@@ -402,28 +331,8 @@ public:
   /*! For now, a deep copy */
   OLattice(const OLattice& rhs)
     {
-#if ! defined(QDP_FIX_ALIGNMENT)
-      F = new T[Layout::sitesOnNode()];
-#else
-      // ANNOYANCE of GNUC++, need extra space for proper alignment
-      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
-      F = (T*)((F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
-#endif
-
-#if QDP_DEBUG >= 1
-      QDP_info("copy OLattice[%d]=0x%x",Layout::sitesOnNode(),F);
-#endif
-      
+      alloc_mem("copy");
       assign(rhs);
-    }
-
-
-public:
-  //! Debugging info
-  void print_info(char *name)
-    {
-      QDP_info("Info: %s = OLattice[%d]=0x%x, this=0x%xn",
-	       name,Layout::sitesOnNode(),(void *)F,this);
     }
 
 
@@ -439,6 +348,64 @@ public:
 public:
   inline T& elem(int i) {return F[i];}
   inline const T& elem(int i) const {return F[i];}
+
+
+private:
+#if ! defined(QDP_FIX_ALIGNMENT)
+  // Memory allocator
+  inline void alloc_mem(const char* const p) 
+    {
+      F = new T[Layout::sitesOnNode()];
+
+#if QDP_DEBUG >= 1
+      QDP_info("%s OLattice[%d]=0x%x, this=0x%x, bytes/site=%d",
+	       p, Layout::sitesOnNode(),(void *)F,this,sizeof(T));
+#endif
+    }
+#else
+  //! ANNOYANCE of GNUC++, need extra space for proper alignment
+  inline void alloc_mem(const char* const p) 
+    {
+      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
+      F = (T*)(((int)F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
+
+#if QDP_DEBUG >= 1
+      QDP_info("%s OLattice_orig=0x%x, OLattice[%d]=0x%xthis=0x%x, bytes/site=%d",
+	       p,F_orig,Layout::sitesOnNode(),F,this,sizeof(T));
+#endif
+    }
+#endif
+
+
+#if ! defined(QDP_FIX_ALIGNMENT)
+  inline void free_mem()
+    {
+#if QDP_DEBUG >= 1
+      QDP_info("destroy OLattice=0x%x, this=0x%x, bytes/site=%d",
+	       F,this,sizeof(T));
+#endif
+      delete[] F;
+    }
+#else 
+  inline void free_mem()
+    {
+#if QDP_DEBUG >= 1
+      QDP_info("destroy OLattice_orig=0x%x, OLattice=0x%x, this=0x%x, bytes/site=%d",
+	       F_orig,F,this,sizeof(T));
+#endif
+      delete[] F_orig;
+    }
+#endif
+
+
+public:
+  //! Debugging info
+  void print_info(char *name)
+    {
+      QDP_info("Info: %s = OLattice[%d]=0x%x, this=0x%xn",
+	       name,Layout::sitesOnNode(),(void *)F,this);
+    }
+
 
 private:
   T *F;
