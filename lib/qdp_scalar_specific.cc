@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_specific.cc,v 1.6 2003-10-15 21:37:37 edwards Exp $
+// $Id: qdp_scalar_specific.cc,v 1.7 2004-03-24 17:00:31 mcneile Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -66,7 +66,7 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
 		int mat_size)
 {
   ColorMatrix  sitefield;
-  float su3[3][3][2];
+  float su3[Nc][Nc][2];
   unsigned int chksum = 0;
 
   // Find the location of each site and send to primary node
