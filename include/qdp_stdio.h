@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.h,v 1.1 2003-09-25 22:13:28 edwards Exp $
+// $Id: qdp_stdio.h,v 1.2 2003-10-03 02:56:17 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -141,4 +141,4 @@ private:
 
 /*! @} */   // end of group stdio
 
-} // namespace QDPUtil
+QDP_END_NAMESPACE();

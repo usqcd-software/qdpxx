@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.cc,v 1.1 2003-09-25 22:13:50 edwards Exp $
+// $Id: qdp_stdio.cc,v 1.2 2003-10-03 02:56:17 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -241,3 +241,5 @@ StandardOutputStream& StandardOutputStream::writePrimitive(T output)
   return *this;
 }
 
+
+QDP_END_NAMESPACE();
