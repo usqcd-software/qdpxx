@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.10 2004-03-09 02:15:01 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.11 2004-03-21 19:28:18 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -85,11 +85,11 @@ void QDPFileReader::open(XMLReader& file_xml,
   if ((qio_in = QIO_open_read(xml_c, path.c_str(), serpar, &layout)) == NULL)
   {
     QDPIO::cerr << "QDPFileReader: failed to open file " << path << endl;
-    bad_state = true;
+    iostate = QDPIO_badbit;
   }
   else
   {
-    bad_state = false;
+    iostate = QDPIO_goodbit;
   }
 
   // Use string to initialize XMLReader
@@ -114,14 +114,19 @@ void QDPFileReader::close()
   }
 
   iop = false;
-  bad_state = false;
+  iostate = QDPIO_badbit;
 }
 
 bool QDPFileReader::is_open() {return iop;}
 
 bool QDPFileReader::eof() const {return false;}
 
-bool QDPFileReader::bad() const {return bad_state;}
+bool QDPFileReader::bad() const {return iostate;}
+
+void QDPFileReader::clear(QDP_iostate_t state)
+{
+  iostate = state;
+}
 
 QDPFileReader::~QDPFileReader() {close();}
 
@@ -183,11 +188,11 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   if (xml_c == NULL)
   {
     QDPIO::cerr << "QDPFileWriter - error in creating QIO string" << endl;
-    bad_state = true;
+    iostate = QDPIO_badbit;
   }
   else
   {
-    bad_state = false;
+    iostate = QDPIO_goodbit;
   }
 
   // Wrappers over simple ints
@@ -239,11 +244,11 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
 				&layout)) == NULL)
   {
     QDPIO::cerr << "QDPFileWriter: failed to open file " << path << endl;
-    bad_state = true;
+    iostate = QDPIO_badbit;
   }
   else
   {
-    bad_state = false;
+    iostate = QDPIO_goodbit;
   }
 
   // Cleanup
@@ -260,12 +265,17 @@ void QDPFileWriter::close()
   }
 
   iop = false;
-  bad_state = false;
+  iostate = QDPIO_badbit;
 }
 
 bool QDPFileWriter::is_open() {return iop;}
 
-bool QDPFileWriter::bad() const {return bad_state;}
+bool QDPFileWriter::bad() const {return iostate;}
+
+void QDPFileWriter::clear(QDP_iostate_t state)
+{
+  iostate = state;
+}
 
 QDPFileWriter::~QDPFileWriter() {close();}
 
