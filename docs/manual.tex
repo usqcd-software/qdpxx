@@ -54,6 +54,12 @@
 \newcommand{\tStaggeredPropagator}{StaggeredPropagator}
 \newcommand{\tRandomState}{Seed}
 
+% Aliases/typedefs
+%\newcommand{\tColorMatrix}{ColorMatrix}
+\newcommand{\tColorVector}{ColorMatrix}
+\newcommand{\tSpinMatrix}{SpinMatrix}
+\newcommand{\tSpinVector}{SpinMatrix}
+
 % Fixed precision
 \newcommand{\tRealD}{RealD}
 \newcommand{\tLatticeRealD}{LatticeRealD}
@@ -280,18 +286,9 @@ abbreviation & description \\
 \end{tabular}
 \end{center}
 and {\it C} is {\tt 2}, {\tt 3}, or some arbitrary {\tt N}, if color is a
-consideration, as listed below.
-\begin{center}
-\begin{tabular}{|l|l|}
-\hline
-abbreviation & description \\
-\hline
-{\tt 2}            & SU(2) \\
-{\tt 3}            & SU(3) \\
-{\tt N}            & SU(N) \\
-\hline
-\end{tabular}
-\end{center}
+consideration. Note, the value of {\tt N} is an arbitrary compile
+time constant.
+
 If the datatype carries no color, the color label is omitted. Also,
 if the number of color components is the same as the compile
 time constant, then the color label can be omitted.
@@ -545,21 +542,6 @@ The following global entry points are provided by the \verb|Layout| class:
  \end{tabular}
 \end{flushleft}
 
-\paragraph{Logical node coordinate of site}
-
-\begin{flushleft}
-  \begin{tabular}{|l|l|}
-  \hline
-  Prototype      & \verb|multi1d<int> Layout::nodeCoords(const multi1d<int>& x)|\\
-    \hline
-  Purpose        & Returns logical coordinates \verb|lc| for the node \\
-                 & containing site \verb|x|. \\
-\hline
-  Example  & \verb|multi1d<int> lc = Layout::nodeCoords(x);| \\
-   \hline
- \end{tabular}
-\end{flushleft}
-
 \paragraph{Linear index of site}
 
 \begin{flushleft}
@@ -574,15 +556,37 @@ The following global entry points are provided by the \verb|Layout| class:
  \end{tabular}
 \end{flushleft}
 
+\paragraph{Map node and linear index to coordinate}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Prototype      & \verb|multi1d<int> Layout::siteCoords(int node, int index)|\\
+    \hline
+  Purpose        & Returns site coordinate \verb|x| for the given node \\
+                 & \verb|node| and linear index \verb|index|. \\
+\hline
+  Example  & \verb|multi1d<int> lc = Layout::siteCoords(n, i);| \\
+   \hline
+ \end{tabular}
+\end{flushleft}
+
 \paragraph{Number of sites on a node}
 
-The function
 \begin{flushleft}
-  \verb|int Layout::sitesOnNode()|
+  \begin{tabular}{|l|l|}
+  \hline
+  Prototype      & \verb|int Layout::sitesOnNode()|\\
+  \hline
+  Purpose        & Returns number of sites assigned to a node.\\
+  \hline
+  Example        & \verb|int num = Layout::sitesOnNode();| \\
+  \hline
+ \end{tabular}
 \end{flushleft}
-gives the number of sites assigned to a node by the layout utility.
-The linear index returned by \verb|Layout::linearIndex()| ranges from 0 to
-\verb|Layout:sitesOnNode()|$ - 1$.
+%
+The linear index returned by \verb|Layout::linearIndex()| 
+ranges from 0 to \verb|Layout:sitesOnNode()|$ - 1$.
 
 \paragraph{Defining the spacetime coordinate}
 
@@ -590,11 +594,11 @@ The linear index returned by \verb|Layout::linearIndex()| ranges from 0 to
   \begin{tabular}{|l|l|}
   \hline
   Prototype      & {\tt \tLatticeInt}\verb|latticeCoordinates(int i)|\\
-    \hline
+  \hline
   Purpose        & The {\tt i}th spacetime coordinate. \\
-\hline
-  Example  & \verb|LatticeInt coord = latticeCoordinates(2);| \\
-   \hline
+  \hline
+  Example        & \verb|LatticeInt coord = latticeCoordinates(2);| \\
+  \hline
  \end{tabular}
 \end{flushleft}
 %
@@ -1861,197 +1865,193 @@ The QDP type \tBoolean is not a primitive type, so an explicit conversion is pro
   \end{tabular}
 \end{flushleft}
 
-\paragraph{Accessing a half fermion or Dirac fermion spinor element}
+\paragraph{Accessing a color vector element}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt void \namespace}\ttdash{\tt C}\ttdash{\it eqop}\ttdash{\tt elem}\ttdash\itt{\tt ( restrict \tComplex *r, Type *a,}\\
-              & {\tt int i\_c, int i\_s\extraarg)} \\
+  Syntax      & {\tt LatticeComplex }{\tt peekColor(const LatticeColorVector}{\tt \& a, }\\
+              &\quad         {\tt int i)}\\
+              & {\tt LatticeSpinVector }{\tt peekColor(const LatticeDiracFermion}{\tt \& a, }\\
+              &\quad         {\tt int i)}\\
   \hline
-  Meaning     & $r = a_{i_c,i_s}$\\
-  \hline
-  \itt        & {\tt H, D} \\
+  Meaning     & $r = a_{i}$\\
   \hline
   \end{tabular}
 \end{flushleft}
 
-\paragraph{Inserting a half fermion or Dirac fermion spinor element}
+This function will extract the desired color component with all the
+other indices unchanged.
+
+A lattice color vector is another name (typedef) for a
+\tLatticeStaggeredFermion. Namely, an object that is vector in color
+spin and a scalar in spin space.  Together with spin accessors, one
+can build a \tLatticeDiracFermion.
+
+\paragraph{Inserting a color vector element}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt void \namespace}\ttdash\itt\ttdash{\it eqop}\ttdash{\tt elem}\ttdash{\tt C( restrict Type *r, \tComplex *a, }\\
-              & {\tt int i\_c, int i\_s\extraarg)} \\
+  Syntax      & {\tt LatticeColorVector\& pokeColor(LatticeColorVector\& r, }\\
+              &   \quad{\tt const LatticeComplex\& a, int i)}\\
   \hline
-  Meaning     & $r_{i_c,i_s} = a$\\
-  \hline
-  \itt        & {\tt H, D} \\
+  Meaning     & $r_{i} = a$\\
   \hline
   \end{tabular}
 \end{flushleft}
 
-\paragraph{Accessing a staggered fermion spinor element}
+This function will extract the desired color component with all the
+other indices unchanged.
+
+A lattice color vector is another name (typedef) for a
+\tLatticeStaggeredFermion. Namely, an object that is vector in color
+spin and a scalar in spin space.  Together with spin accessors, one
+can build a \tLatticeDiracFermion or a \tLatticeDiracPropagator.
+
+X\paragraph{Accessing a spin matrix element}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt void \namespace}\ttdash{\tt C}\ttdash{\it eqop}\ttdash{\tt elem}\ttdash{\tt V( restrict \tComplex *r,}\\
-              & {\tt \tStaggeredFermion *a, int i\extraarg)} \\
+  Syntax      & {\tt LatticeComplex }{\tt peekSpin(const LatticeSpinMatrix}{\tt \& a, }\\
+              &\quad         {\tt int i, int j)}\\
+              & {\tt LatticeColorMatrix }{\tt peekSpin(const LatticePropagator}{\tt \& a, }\\
+              &\quad         {\tt int i, int j)}\\
   \hline
-  Meaning     & $r = a_i$\\
+  Meaning     & $r = a_{i,j}$\\
   \hline
   \end{tabular}
 \end{flushleft}
 
-\paragraph{Inserting a staggered fermion spinor element}
+\paragraph{Inserting a spin matrix element}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt void \namespace}\ttdash{\tt V}\ttdash{\it eqop}\ttdash{\tt elem}\ttdash{\tt C( restrict \tStaggeredFermion *r,}\\
-              & {\tt \tComplex *a, int I\extraarg)} \\
+  Syntax      & {\tt LatticeSpinMatrix\& pokeSpin(LatticeSpinMatrix\& r, }\\
+              &   \quad{\tt const LatticeComplex\& a, int i, int j)}\\
   \hline
-  Meaning     & $r_i = a$\\
+  Meaning     & $r_{i,j} = a$\\
   \hline
   \end{tabular}
 \end{flushleft}
 
-\paragraph{Accessing a Dirac propagator matrix element}
+\paragraph{Accessing a spin vector element}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt void \namespace}\ttdash{\tt C}\ttdash{\it eqop}\ttdash{\tt elem}\ttdash{\tt P( restrict \tComplex *r, \tDiracPropagator *a,} \\
-              & {\tt int i\_c, int i\_s, int j\_c, int j\_s\extraarg)} \\
+  Syntax      & {\tt LatticeComplex }{\tt peekSpin(const LatticeSpinVector}{\tt \& a, }\\
+              &\quad         {\tt int i)}\\
+              & {\tt LatticeColorVector }{\tt peekSpin(const LatticeDiracFermion}{\tt \& a, }\\
+              &\quad         {\tt int i)}\\
   \hline
-  Meaning     & $r = a_{i_c,i_s,j_c,j_s}$\\
+  Meaning     & $r = a_{i}$\\
   \hline
   \end{tabular}
 \end{flushleft}
 
-\paragraph{Inserting a Dirac propagator matrix element}
+This function will extract the desired spin component with all the
+other indices unchanged.
+
+A lattice spin vector is an object that is a vector in spin space and
+a scalar in color space.  Together with color accessors, one can build
+a \tLatticeDiracFermion or a \tLatticeDiracPropagator.
+
+\paragraph{Inserting a spin vector element}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt void \namespace}\ttdash{\tt P}\ttdash{\it eqop}\ttdash{\tt elem}\ttdash{\tt C( restrict \tDiracPropagator *r, \tComplex *a,} \\
-              & {\tt int i\_c, int i\_s, int j\_c, int j\_s\extraarg)} \\
+  Syntax      & {\tt LatticeSpinVector\& pokeSpin(LatticeSpinVector\& r, }\\
+              &   \quad{\tt const LatticeComplex\& a, int i)}\\
   \hline
-  Meaning     & $r_{i_c,i_s,j_c,j_s} = a$\\
-  \hline
-  \end{tabular}
-\end{flushleft}
-
-\paragraph{Extracting a color column vector from a gauge or staggered propagator matrix}
-
-\begin{flushleft}
-  \begin{tabular}{|l|l|}
-  \hline
-  Syntax      & {\tt void \namespace}\ttdash{\tt V}\ttdash{\it eqop}\ttdash{\tt colorvec}\ttdash\itt{\tt ( restrict \tStaggeredFermion *r,}\\
-              & {\tt Type *a, int j\extraarg)} \\
-  \hline
-  Meaning     & $r_i = a_{i,j}\ \ \ \mbox{for $i = 1\ldots{}n_c$}$\\
-  \hline
-  \itt        & {\tt G, M} \\
+  Meaning     & $r_{i} = a$\\
   \hline
   \end{tabular}
 \end{flushleft}
 
-\paragraph{Inserting a color vector into a gauge or staggered propagator matrix}
+This function will extract the desired spin component with all the
+other indices unchanged.
 
-\begin{flushleft}
-  \begin{tabular}{|l|l|}
-  \hline
-  Syntax      & {\tt void \namespace}\ttdash\itt\ttdash{\it eqop}\ttdash{\tt colorvec}\ttdash{\tt V( restrict Type *r, \tStaggeredFermion *a,}\\
-              & {\tt int i, int j\extraarg)} \\
-  \hline
-  Meaning     & $r_{i,j} = a_i\ \ \ \mbox{for $i = 1\ldots{}n_c$}$\\
-  \hline
-  \itt        & {\tt G, M} \\
-  \hline
-  \end{tabular}
-\end{flushleft}
-
-\paragraph{Extracting a color column vector from a half fermion or Dirac fermion spinor}
-
-\begin{flushleft}
-  \begin{tabular}{|l|l|}
-  \hline
-  Syntax      & {\tt void \namespace}\ttdash{\tt V}\ttdash{\it eqop}\ttdash{\tt colorvec}\ttdash\itt{\tt ( restrict \tStaggeredFermion *r, Type *a,}\\
-              & {\tt int i\_s\extraarg)} \\
-  \hline
-  Meaning     & $r_{i_c} = a_{i_c,i_s}\ \ \ \mbox{for $i_c = 1\ldots{}n_c$}$\\
-  \hline
-  \itt        & {\tt H, D} \\
-  \hline
-  \end{tabular}
-\end{flushleft}
-
-\paragraph{Inserting a color column vector into a half fermion or Dirac fermion spinor}
-
-\begin{flushleft}
-  \begin{tabular}{|l|l|}
-  \hline
-  Syntax      & {\tt void \namespace}\ttdash\itt\ttdash{\it eqop}\ttdash{\tt colorvec}\ttdash{\tt V( restrict Type *r, \tStaggeredFermion *a, }\\
-              & {\tt int i\_s\extraarg)} \\
-  \hline
-  Meaning     & $r_{i_c,i_s} = a_{i_c}\ \ \ \mbox{for $i_c = 1\ldots{}n_c$}$\\
-  \hline
-  \itt        & {\tt H, D} \\
-  \hline
-  \end{tabular}
-\end{flushleft}
-
-\paragraph{Extracting a Dirac column vector from a Dirac propagator matrix}
-
-\begin{flushleft}
-  \begin{tabular}{|l|l|}
-  \hline
-  Syntax      & {\tt void \namespace}\ttdash{\tt D}\ttdash{\it eqop}\ttdash{\tt diracvec}\ttdash\itt{\tt ( restrict \tDiracFermion *r,}\\
-              & {\tt \tDiracPropagator *a, int jc, int js\extraarg)} \\
-  \hline
-  Meaning     & $r_{i_c,i_s} = a_{i_c,i_s,j_c,j_s}\ \ \ \mbox{for $i_c = 1\ldots{}n_c, i_s = 1\ldots{}4$}$\\
-  \hline
-  \end{tabular}
-\end{flushleft}
-
-\paragraph{Inserting a Dirac column vector into a Dirac propagator matrix}
-
-\begin{flushleft}
-  \begin{tabular}{|l|l|}
-  \hline
-  Syntax      & {\tt void \namespace}\ttdash\itt\ttdash{\it eqop}\ttdash{\tt diracvec}\ttdash{\tt D( restrict \tDiracPropagator *r,}\\
-              & {\tt \tDiracFermion *a, int jc, int js\extraarg)} \\
-  \hline
-  Meaning     & $r_{i_c,i_s,j_c,j_s} = a_{i_c,i_s} \ \ \ \mbox{for $i_c = 1\ldots{}n_c, i_s = 1\ldots{}4$}$\\
-  \hline
-  \end{tabular}
-\end{flushleft}
+A lattice spin vector is an object that is a vector in spin space and
+a scalar in color space.  Together with color accessors, one can build
+a \tLatticeDiracFermion or a \tLatticeDiracPropagator.
 
 \paragraph{Trace of matrix}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & \protoUnarySingleTypesQual{C}{\tt trace}{G}{\tComplex}{\tColorMatrix} \\
+  Syntax      & {\it Type2 }{\tt trace(const }{\it Type1}{\tt \& a)}\\
   \hline
   Meaning     & $r = \Tr a$ \\
   \hline
+  {\it Type1} & \tColorMatrix, \tDiracPropagator, \simLatticeVariants\\
+  {\it Type2} & \tComplex, \tComplex, \simLatticeVariants\\
+  \hline
+  Example     & {\it LatticeComplex }{\tt trace(const }{\it LatticeColorMatrix}{\tt \& a)}\\
+  \hline
   \end{tabular}
 \end{flushleft}
+
+Traces over all matrix indices. It is an error to trace over a vector index.
+It will trivially trace a scalar variable.
+
+\paragraph{Color trace of matrix}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Syntax      & {\it Type2 }{\tt traceColor(const }{\it Type1}{\tt \& a)}\\
+  \hline
+  Meaning     & $r = \Tr a$ \\
+  \hline
+  {\it Type1} & \tSpinMatrix, \simLatticeVariants\\
+  {\it Type2} & \tComplex, \simLatticeVariants\\
+  \hline
+  Example     & {\it LatticeComplex }{\tt trace(const }{\it LatticeColorMatrix}{\tt \& a)}\\
+  \hline
+  \end{tabular}
+\end{flushleft}
+
+Traces only over color matrix indices. It is an error to trace over a color vector index.
+All other indices are left untouched.
+It will trivially trace a scalar variable.
+
+\paragraph{Spin trace of matrix}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Syntax      & {\it Type2 }{\tt traceSpin(const }{\it Type1}{\tt \& a)}\\
+  \hline
+  Meaning     & $r = \Tr a$ \\
+  \hline
+  {\it Type1} & \tDiracPropagator, \simLatticeVariants\\
+  {\it Type2} & \tColorMatrix, \simLatticeVariants\\
+  \hline
+  Example     & {\it LatticeColorMatrix }{\tt trace(const }{\it LatticeDiracPropagator}{\tt \& a)}\\
+  \hline
+  \end{tabular}
+\end{flushleft}
+
+Traces only over spin matrix indices. It is an error to trace over a spin vector index.
+All other indices are left untouched.
+It will trivially trace a scalar variable.
 
 \paragraph{Dirac spin projection}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
-  \hline
-  Syntax      & {\tt void \namespace}\ttdash{\tt H}\ttdash{\it eqop}\ttdash{\tt spproj}\ttdash{\tt D( restrict \tHalfFermion *r,}\\
-              & {\tDiracFermion *a, int d, int p\extraarg)} \\
+  \hline 
+  Syntax      & {\it Type2 }{\tt spinProject(const }{\it Type1}{\tt \& a, int d, int p)}\\
   \hline
   Meaning     & $r = (1 + p\gamma_d)a$\\
   \hline
-  {\it eqop}  & {\tt eq} \\
+  {\it Type1} & \tDiracFermion, \simLatticeVariants\\
+  {\it Type2} & \tHalfFermion, \simLatticeVariants\\
   \hline
   \end{tabular}
 \end{flushleft}
@@ -2061,12 +2061,12 @@ The QDP type \tBoolean is not a primitive type, so an explicit conversion is pro
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt void \namespace}\ttdash{\tt D}\ttdash{\it eqop}\ttdash{\tt sprecon}\ttdash{\tt H( restrict \tDiracFermion *r,}\\
-              & {\tt \tHalfFermion *a, int d, int p\extraarg)} \\
+  Syntax      & {\it Type2 }{\tt spinProject(const }{\it Type1}{\tt \& a, int d, int p)}\\
   \hline
   Meaning     & $r = {\rm recon\,}(p,d,a)$\\
   \hline
-  {\it eqop}  & {\tt eq} \\
+  {\it Type1} & \tHalfFermion, \simLatticeVariants\\
+  {\it Type2} & \tDiracFermion, \simLatticeVariants\\
   \hline
   \end{tabular}
 \end{flushleft}
