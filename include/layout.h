@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: layout.h,v 1.10 2003-01-20 16:15:40 edwards Exp $
+// $Id: layout.h,v 1.11 2003-04-08 21:19:19 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -68,7 +68,11 @@ namespace Layout
   int vol();
 
   //! Subgrid lattice volume
+  /*! Deprecated */
   int subgridVol();
+
+  //! Subgrid lattice volume - this is equiv to subgridVol
+  int sitesOnNode() {return subgridVol();}
 
   //! Returns whether this is the primary node
   bool primaryNode();
