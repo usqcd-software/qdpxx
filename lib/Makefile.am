@@ -2,7 +2,7 @@
 
 INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
            -I@top_srcdir@/other_libs/qio/include \
-           -I@top_srcdir@/other_libs/qio/lib/lrl/c-dime/include
+           -I@top_srcdir@/other_libs/qio/other_libs/c-dime/include
 
 ## GTF: Using @QMP_CFLAGS@ instead of @QMP_CXXFLAGS@ here since QMP
 ## is written in C, not C++
