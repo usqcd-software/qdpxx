@@ -1,2 +1,1 @@
-# SUBDIRS=nml qio
-SUBDIRS=nml
+SUBDIRS = nml qio
