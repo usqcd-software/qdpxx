@@ -1,4 +1,7 @@
-// $Id: t_dslashm.cc,v 1.10 2003-01-14 04:43:29 edwards Exp $
+// $Id: t_dslashm.cc,v 1.11 2003-01-15 21:46:51 edwards Exp $
+/*! \file
+ *  \brief Test the Wilson-Dirac operator (dslash)
+ */
 
 #include <iostream>
 #include <cstdio>

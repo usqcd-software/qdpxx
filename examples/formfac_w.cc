@@ -1,4 +1,9 @@
-// $Id: formfac_w.cc,v 1.10 2003-01-14 04:43:29 edwards Exp $
+// $Id: formfac_w.cc,v 1.11 2003-01-15 21:46:51 edwards Exp $
+/*! \file
+ *  \brief Form-factors 
+ *
+ * Form factors constructed from a quark and a sequential quark propagator
+ */
 
 #include "examples.h"
 #include "proto.h"

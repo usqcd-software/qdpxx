@@ -1,4 +1,7 @@
-// $Id: mesplq.cc,v 1.13 2002-12-26 23:01:11 edwards Exp $
+// $Id: mesplq.cc,v 1.14 2003-01-15 21:46:51 edwards Exp $
+/*! \file
+ *  \brief Plaquette measurement
+ */
 //
 #include "examples.h"
 

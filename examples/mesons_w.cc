@@ -1,4 +1,7 @@
-//  $Id: mesons_w.cc,v 1.6 2002-12-26 23:01:11 edwards Exp $
+//  $Id: mesons_w.cc,v 1.7 2003-01-15 21:46:51 edwards Exp $
+/*! \file
+ *  \brief Meson 2-pt functions
+ */
 
 #include "examples.h"
 

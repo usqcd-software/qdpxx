@@ -1,8 +1,11 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.3 2003-01-14 04:43:29 edwards Exp $
+// $Id: t_foo.cc,v 1.4 2003-01-15 21:46:51 edwards Exp $
 //
-// Silly little internal test code
+/*! \file
+ *  \brief Silly little internal test code
+ */
+
 
 #include "qdp.h"
 #include "proto.h"
@@ -20,8 +23,8 @@ struct Nearest : public MapFunc
       multi1d<int> lc = coord;
 
       const multi1d<int>& nrow = Layout::lattSize();
-      int m = 0;
-      lc[m] = (coord[m] + sgnum(sign) + nrow[m]) % nrow[m];
+      int m = 1;
+      lc[m] = (coord[m] + 2*sgnum(sign) + 4*nrow[m]) % nrow[m];
 
       return lc;
     }
@@ -40,7 +43,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,2,2,2};
+  const int foo[] = {2,4,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -55,7 +58,15 @@ int main(int argc, char *argv[])
   Map near;
   Nearest bbb;
   near.make(bbb);
+  {
+    LatticeReal fred,sue;
+    random(fred);
 
+    sue = near(fred);
+
+    Write(nml,fred);
+    Write(nml,sue);
+  }
 #endif
 
   exit(0);

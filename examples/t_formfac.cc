@@ -1,4 +1,7 @@
-// $Id: t_formfac.cc,v 1.12 2003-01-14 04:43:29 edwards Exp $
+// $Id: t_formfac.cc,v 1.13 2003-01-15 21:46:51 edwards Exp $
+/*! \file
+ *  \brief Test the form-factor routine
+ */
 
 #include <iostream>
 #include <cstdio>

@@ -1,4 +1,7 @@
-// $Id: dslashm_w.cc,v 1.11 2002-12-26 23:01:11 edwards Exp $
+// $Id: dslashm_w.cc,v 1.12 2003-01-15 21:46:51 edwards Exp $
+/*! \file
+ *  \brief Wilson-Dirac operator
+ */
 
 #include "examples.h"
 
