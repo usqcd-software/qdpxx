@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_filebuf.cc,v 1.3 2003-06-07 19:11:14 edwards Exp $
+// $Id: qdp_filebuf.cc,v 1.4 2003-06-11 21:00:18 edwards Exp $
 
 /*! @file
  * @brief Remote file support
@@ -28,6 +28,8 @@ typedef std::char_traits<char>::int_type int_type;
 
 
 //-------------------------------------------------------------
+static bool remoteFileUse = false;
+
 #if defined(USE_REMOTE_QIO)
 extern "C"
 {
@@ -39,6 +41,7 @@ extern "C"
 void RemoteFileInit(const char *remote_node, bool useP)
 {
   qio_init(remote_node, (useP)? 1 : 0);
+  remoteFileUse = useP;
 }
 
 void RemoteFileShutdown()
@@ -48,7 +51,7 @@ void RemoteFileShutdown()
 
 FILE* RemoteFileOpen(const char* filename, const char *mode)
 {
-  return qfopen(filename, mode);
+  return (remoteFileUse) ? qfopen(filename, mode) : fopen(filename, mode);
 }
 
 #else  // ! defined(USE_REMOTE_QIO)
