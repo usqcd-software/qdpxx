@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.9 2002-10-28 03:08:44 edwards Exp $
+// $Id: mesplq.cc,v 1.10 2002-11-13 15:44:29 edwards Exp $
 //
 #include "tests.h"
 
@@ -37,8 +37,8 @@ void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq,
       /* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
       /* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
       /* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
-      Double tmp = real(
-	innerproduct(u[nu],u[mu]*(shift(u[nu],FORWARD,mu)*conj(shift(u[mu],FORWARD,nu)))));
+      Double tmp = 
+	sum(real(trace(u[mu]*shift(u[nu],FORWARD,mu)*conj(shift(u[mu],FORWARD,nu))*conj(u[nu]))));
 #endif
       w_plaq += tmp;
 
