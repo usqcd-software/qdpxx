@@ -1,3 +1,8 @@
+10/17/2003 -- Robert Edwards
+
+	Version 1.6.4. Fixed up optimizations (again). Added, but not turned
+        on a new primitive index for domain-wall like fermions.
+
 10/15/2003 -- Robert Edwards
 
 	Version 1.6.3. New architecture and hopefully faster versions
