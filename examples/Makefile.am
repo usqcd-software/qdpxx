@@ -49,8 +49,7 @@ t_nersc_SOURCES = t_nersc.cc mesplq.cc $(HDRS)
 t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)
 t_mesplq_SOURCES = t_mesplq.cc mesplq.cc reunit.cc $(HDRS)
 t_formfac_SOURCES = t_formfac.cc formfac_w.cc $(HDRS)
-t_spectrum_SOURCES = t_spectrum.cc formfac_w.cc dslashm_w.cc \
-          baryon_w.cc mesons_w.cc mesplq.cc reunit.cc $(HDRS)
+t_spectrum_SOURCES = t_spectrum.cc baryon_w.cc mesons_w.cc mesplq.cc $(HDRS)
 t_qdp_SOURCES =  t_qdp.cc formfac_w.cc dslashm_w.cc baryon_w.cc \
 	 mesons_w.cc mesplq.cc reunit.cc $(HDRS)
 t_linalg_SOURCES =  t_linalg.cc linalg1.cc linalg.h
