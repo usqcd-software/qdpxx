@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.3 2003-09-03 01:30:41 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.4 2003-09-03 02:11:12 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -828,7 +828,7 @@ public:
    *
    * Shifts on a OLattice are non-trivial.
    *
-   * Notice, this implementation supports an Inner grid
+   * Notice, this implementation does not allow an Inner grid
    */
   template<class T1>
   OLattice<T1>
@@ -840,41 +840,180 @@ public:
       QDP_info("Map()");
 #endif
 
-      // *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
-      // For now, use the all subset
-#if INNER_LOG == 2
-      const int vvol = Layout::sitesOnNode();
-      for(int i=0; i < vvol; i+= INNER_LEN) 
+      typedef typename UnaryReturn<T1, FnGetSite>::Type_t  Site_t;  // strip-off inner-grid
+
+      if (offnodeP)
       {
-	int ii = i >> INNER_LOG;
-	int o0 = goffsets[i+0] >> INNER_LOG;
-	int i0 = goffsets[i+0] & (INNER_LEN - 1);
-
-	int o1 = goffsets[i+1] >> INNER_LOG;
-	int i1 = goffsets[i+1] & (INNER_LEN - 1);
-
-	int o2 = goffsets[i+2] >> INNER_LOG;
-	int i2 = goffsets[i+2] & (INNER_LEN - 1);
-
-	int o3 = goffsets[i+3] >> INNER_LOG;
-	int i3 = goffsets[i+3] & (INNER_LEN - 1);
-
+	// Off-node communications required
 #if QDP_DEBUG >= 3
-	QDP_info("Map(lattice[%d]=lattice([%d,%d],[%d,%d],[%d,%d],[%d,%d])",
-		 ii,o0,i0,o1,i1,o2,i2,o3,i3);
+	QDP_info("Map: off-node communications required");
 #endif
 
-	// Gather 4 inner-grid sites together
-	gather_sites(d.elem(ii),
-		     l.elem(o0),i0,
-		     l.elem(o1),i1,
-		     l.elem(o2),i2,
-		     l.elem(o3),i3);
+	// Eventually these declarations should move into d - the return object
+	typedef Site_t * T1ptr;
+	Site_t **dest = new T1ptr[Layout::sitesOnNode()];
+	QMP_msgmem_t msg[2];
+	QMP_msghandle_t mh_a[2], mh;
+
+	//------------
+	// yukky hack - transform all source to packed format
+	Site_t *ll = new Site_t[Layout::sitesOnNode()]; 
+	for(int i=0; i < Layout::sitesOnNode(); ++i) 
+	{
+	  int iouter = i >> INNER_LOG;
+	  int iinner = i & (INNER_LEN - 1);
+
+	  ll[i] = getSite(l.elem(iouter), iinner);
+	}
+	//-------------
+
+
+	int dstnum = destnodes_num[0]*sizeof(Site_t);
+	int srcnum = srcenodes_num[0]*sizeof(Site_t);
+	Site_t *send_buf = (Site_t *)(QMP_allocate_aligned_memory(dstnum)); // packed data to send
+	Site_t *recv_buf = (Site_t *)(QMP_allocate_aligned_memory(srcnum)); // packed receive data
+
+	const int my_node = Layout::nodeNumber();
+
+	// Gather the face of data to send
+	// For now, use the all subset
+	for(int si=0; si < soffsets.size(); ++si) 
+	{
+#if QDP_DEBUG >= 3
+	  QDP_info("Map_scatter_send(buf[%d],olattice[%d])",si,soffsets[si]);
+#endif
+
+	  send_buf[si] = ll[soffsets[si]];
+	}
+
+	// Set the dest gather pointers
+	// For now, use the all subset
+	for(int i=0, ri=0; i < Layout::sitesOnNode(); ++i) 
+	{
+	  if (srcnode[i] != my_node)
+	  {
+#if QDP_DEBUG >= 3
+	    QDP_info("Map_gather_recv(olattice[%d],recv[%d])",i,ri);
+#endif
+
+	    dest[i] = &(recv_buf[ri++]);
+	  }
+	  else
+	  {
+#if QDP_DEBUG >= 3
+	    QDP_info("Map_gather_onnode(olattice[%d],olattice[%d])",i,goffsets[i]);
+#endif
+
+	    dest[i] = &(ll[goffsets[i]]);
+	  }
+	}
+
+	QMP_status_t err;
+
+#if QDP_DEBUG >= 3
+	QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
+#endif
+
+	msg[0]  = QMP_declare_msgmem(recv_buf, srcnum);
+	msg[1]  = QMP_declare_msgmem(send_buf, dstnum);
+	mh_a[0] = QMP_declare_receive_from(msg[0], srcenodes[0], 0);
+	mh_a[1] = QMP_declare_send_to(msg[1], destnodes[0], 0);
+	mh      = QMP_declare_multiple(mh_a, 2);
+
+#if QDP_DEBUG >= 3
+	QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
+#endif
+
+	// Launch the faces
+	if ((err = QMP_start(mh)) != QMP_SUCCESS)
+	  QMP_error_exit(QMP_error_string(err));
+
+#if QDP_DEBUG >= 3
+	QDP_info("Map: calling wait");
+#endif
+
+	// Wait on the faces
+	if ((err = QMP_wait(mh)) != QMP_SUCCESS)
+	  QMP_error_exit(QMP_error_string(err));
+
+#if QDP_DEBUG >= 3
+	QDP_info("Map: calling free msgs");
+#endif
+
+	QMP_free_msghandle(mh_a[1]);
+	QMP_free_msghandle(mh_a[0]);
+	QMP_free_msghandle(mh);
+	QMP_free_msgmem(msg[1]);
+	QMP_free_msgmem(msg[0]);
+
+	// Scatter the data into the destination
+	// Some of the data maybe in receive buffers
+	// For now, use the all subset
+	for(int i=0; i < Layout::sitesOnNode(); ++i) 
+	{
+#if QDP_DEBUG >= 3
+	  QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
+#endif
+	  int iouter = i >> INNER_LOG;
+	  int iinner = i & (INNER_LEN-1);
+
+	  copy_site(d.elem(iouter), iinner, *(dest[i]));    // slow - should use gather_sites
+	}
+
+	// Cleanup
+	QMP_free_aligned_memory(recv_buf);
+	QMP_free_aligned_memory(send_buf);
+	delete[] ll;
+	delete[] dest;
+
+#if QDP_DEBUG >= 3
+	QDP_info("finished cleanup");
+#endif
       }
+      else 
+      {
+	// No off-node communications - copy on node
+#if QDP_DEBUG >= 3
+	QDP_info("Map: copy on node - no communications, try this");
+#endif
+
+	// *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
+	// For now, use the all subset
+#if INNER_LOG == 2
+	const int vvol = Layout::sitesOnNode();
+	for(int i=0; i < vvol; i+= INNER_LEN) 
+	{
+	  int ii = i >> INNER_LOG;
+	  int o0 = goffsets[i+0] >> INNER_LOG;
+	  int i0 = goffsets[i+0] & (INNER_LEN - 1);
+
+	  int o1 = goffsets[i+1] >> INNER_LOG;
+	  int i1 = goffsets[i+1] & (INNER_LEN - 1);
+
+	  int o2 = goffsets[i+2] >> INNER_LOG;
+	  int i2 = goffsets[i+2] & (INNER_LEN - 1);
+
+	  int o3 = goffsets[i+3] >> INNER_LOG;
+	  int i3 = goffsets[i+3] & (INNER_LEN - 1);
+
+#if QDP_DEBUG >= 3
+	  QDP_info("Map(lattice[%d]=lattice([%d,%d],[%d,%d],[%d,%d],[%d,%d])",
+		   ii,o0,i0,o1,i1,o2,i2,o3,i3);
+#endif
+
+	  // Gather 4 inner-grid sites together
+	  gather_sites(d.elem(ii),
+		       l.elem(o0),i0,
+		       l.elem(o1),i1,
+		       l.elem(o2),i2,
+		       l.elem(o3),i3);
+	}
 
 #else
 #error "Map: this inner grid length is not supported - easy to fix"
 #endif
+
+      }
 
 #if QDP_DEBUG >= 3
       QDP_info("exiting Map()");
@@ -921,6 +1060,7 @@ public:
 public:
   //! Accessor to offsets
   const multi1d<int>& goffset() const {return goffsets;}
+  const multi1d<int>& soffset() const {return soffsets;}
 
 private:
   //! Hide copy constructor
@@ -930,11 +1070,24 @@ private:
   void operator=(const Map&) {}
 
 private:
+  //! Offset table used for communications. 
   /*! 
    * The direction is in the sense of the Map or Shift functions from QDP.
    * goffsets(position) 
    */ 
   multi1d<int> goffsets;
+  multi1d<int> soffsets;
+  multi1d<int> srcnode;
+  multi1d<int> dstnode;
+
+  multi1d<int> srcenodes;
+  multi1d<int> destnodes;
+
+  multi1d<int> srcenodes_num;
+  multi1d<int> destnodes_num;
+
+  // Indicate off-node communications is needed;
+  bool offnodeP;
 };
 
 
