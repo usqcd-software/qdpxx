@@ -1,4 +1,4 @@
-// $Id: qdp_random.cc,v 1.2 2003-07-18 03:21:57 edwards Exp $
+// $Id: qdp_random.cc,v 1.3 2003-07-31 01:00:30 edwards Exp $
 //
 // Random number generator support
 
@@ -42,7 +42,7 @@ namespace RNG
 
 
   //! Initialize the random number generator
-  void InitDefaultRNG()
+  void initDefaultRNG()
   {
     Seed seed = 11;
     RNG::setrn(seed);
