@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.28 2004-08-09 21:59:00 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.29 2005-01-10 16:14:01 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -297,7 +297,7 @@ void write(XMLWriter& xml, const std::string& s, const multi1d<T>& s1)
   xml.openTag("sequence", alist);
 #endif
 
-  for(unsigned index=0; index < s1.size(); index++) 
+  for(int index=0; index < s1.size(); index++) 
   {
     write(xml, "elem", s1[index]);  // Possibly grab user defines here
   }
