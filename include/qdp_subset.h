@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_subset.h,v 1.5 2003-07-31 01:23:40 edwards Exp $
+// $Id: qdp_subset.h,v 1.6 2003-08-04 19:06:48 edwards Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -115,7 +115,7 @@ private:
 
 public:
   const multi1d<int>& siteTable() const {return *sitetable;}
-  int numSiteTable() const {return sitetable->size();}
+  inline int numSiteTable() const {return sitetable->size();}
 
   friend class UnorderedSet;
 };
@@ -160,11 +160,11 @@ private:
   multi1d<int>* sitetable;
 
 public:
-  int start() const {return startSite;}
-  int end() const {return endSite;}
+  inline int start() const {return startSite;}
+  inline int end() const {return endSite;}
 
   const multi1d<int>& siteTable() const {return *sitetable;}
-  int numSiteTable() const {return sitetable->size();}
+  inline int numSiteTable() const {return sitetable->size();}
 
   friend class OrderedSet;
 };
