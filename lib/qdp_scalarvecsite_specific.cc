@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_specific.cc,v 1.5 2003-08-29 04:13:13 edwards Exp $
+// $Id: qdp_scalarvecsite_specific.cc,v 1.6 2003-08-30 02:22:15 edwards Exp $
 
 /*! @file
  * @brief Scalarvec-like architecture specific routines
@@ -79,7 +79,7 @@ void UnorderedSet::make(const SetFunc& func)
     int icolor = func(coord);
 
 #if QDP_DEBUG >= 3
-    cerr << " coord="<<coord<<" node="<<node<<" linear="<<linear<<" col="<<icolor << endl;
+    cout << " coord="<<coord<<" node="<<node<<" linear="<<linear<<" col="<<icolor << endl;
 #endif
 
     // Sanity checks
@@ -160,7 +160,7 @@ void OrderedSet::make(const SetFunc& func)
     int icolor = func(coord);
 
 #if QDP_DEBUG >= 3
-    cerr << " coord="<<coord<<" node="<<node<<" linear="<<linear<<" col="<<icolor << endl;
+    cout << " coord="<<coord<<" node="<<node<<" linear="<<linear<<" col="<<icolor << endl;
 #endif
 
     // Sanity checks
