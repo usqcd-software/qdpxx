@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.20 2003-04-10 21:08:04 edwards Exp $
+// $Id: reality.h,v 1.21 2003-04-25 18:53:02 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -351,11 +351,11 @@ template<class T>
 inline
 NmlWriter& operator<<(NmlWriter& nml, const RComplex<T>& d)
 {
-  nml.get() << "( ";
+  nml.get() << "[ ";
   nml << d.real();
   nml.get() << " , ";
   nml << d.imag();
-  nml.get() << " )";
+  nml.get() << " ]";
 
   return nml;
 }
