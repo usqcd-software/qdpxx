@@ -1,4 +1,4 @@
-// $Id: iogauge.cc,v 1.4 2002-11-02 04:05:22 edwards Exp $
+// $Id: iogauge.cc,v 1.5 2002-11-04 04:37:48 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -36,10 +36,10 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
   char datatype[20];    /* We try to grab the datatype */
 
   if (Nd != 4)
-    SZ_ERROR("Expecting Nd == 4");
+    QDP_error_exit("Expecting Nd == 4");
 
   if (Nc != 3)
-    SZ_ERROR("Expecting Nc == 3");
+    QDP_error_exit("Expecting Nc == 3");
 
   unsigned int chksum = 0;
 
@@ -58,7 +58,7 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
   cout << line;
 
   if (strcmp(line,"BEGIN_HEADER\n")!=0)
-    SZ_ERROR("Missing BEGIN_HEADER");
+    QDP_error_exit("Missing BEGIN_HEADER");
 
   /* Begin loop on lines */
   int  lat_size_cnt = 0;
@@ -84,7 +84,7 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
     {
       /* Found a lat size */
       if (dd < 1 || dd > Nd)
-	SZ_ERROR("oops, dimension number out of bounds");
+	QDP_error_exit("oops, dimension number out of bounds");
 
       lat_size[dd-1] = itmp;
       ++lat_size_cnt;
@@ -97,7 +97,7 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
 
   // Sanity check
   if (lat_size_cnt != Nd)
-    SZ_ERROR("did not find all the lattice sizes");
+    QDP_error_exit("did not find all the lattice sizes");
 
   // Check lattice size agrees with the one in use
 //  cout << "layout size = " << layout.LattSize() << endl;
@@ -105,7 +105,7 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
 
   for(int dd=0; dd < Nd; ++dd)
     if (lat_size[dd] != Layout::lattSize()[dd])
-      SZ_ERROR("readArchiv: archive lattice size does not agree with current size");
+      QDP_error_exit("readArchiv: archive lattice size does not agree with current size");
 
   //
   // Read gauge field
@@ -125,9 +125,7 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
           {
             /* Read an fe variable and write it to the BE */
             if (bfread((void *) &(su3[0][0][0]),sizeof(float),mat_size,cfg_in.get()) != mat_size)
-            {
-              SZ_ERROR("Error reading configuration");
-            }
+              QDP_error_exit("Error reading configuration");
 
             /* Reconstruct the third column  if necessary */
             if( mat_size == 12) 
@@ -207,7 +205,7 @@ void readSzinQprop(LatticePropagator& q, char file[])
 
   // Read kappa
   if (bfread((void *)&kappa,sizeof(float),1,cfg_in.get()) != 1)
-    SZ_ERROR("Error kappa from reading propagator");
+    QDP_error_exit("Error kappa from reading propagator");
 
   // Read prop
   for(int cb=0; cb < 2; ++cb)
@@ -226,7 +224,7 @@ void readSzinQprop(LatticePropagator& q, char file[])
 
       /* Read an fe variable */
       if (bfread((void *) &(prop[0][0][0][0][0]),sizeof(float),prop_size,cfg_in.get()) != prop_size)
-	SZ_ERROR("Error reading propagator");
+	QDP_error_exit("Error reading propagator");
 
       /* Copy into the big array */
       for(int s2=0; s2<Ns; s2++)    /* spin */
