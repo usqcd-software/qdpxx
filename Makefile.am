@@ -41,4 +41,4 @@ ARCH_SOURCES = lib/scalar_specific.cc \
                lib/parscalar_specific.cc
 
 EXTRA_DIST= $(ARCH_SOURCES) PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools  \
-            examples/BuildingBlocks examples/propagator docs
+            examples/BuildingBlocks examples/propagator docs qdp_build_env.sh.in

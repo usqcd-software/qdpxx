@@ -1,4 +1,4 @@
-AC_INIT(qdp,0.25,edwards@jlab.org)
+AC_INIT(qdp,0.26,edwards@jlab.org)
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -65,10 +65,10 @@ dnl folowing George Flemings QMP mods
 
 dnl Balint Joo 3/1/2003
 dnl Option for trying to get the config info from QMP compilation
-AC_ARG_WITH(qmp-home,
-  AC_HELP_STRING([--with-qmp-home=DIR],
+AC_ARG_WITH(qmp,
+  AC_HELP_STRING([--with-qmp=DIR],
     [Build QDP++ on top of QMP, where QMP is installed in DIR]),
-    [ QMP_HOME="$with_qmp_home"
+    [ QMP_HOME="$with_qmp"
       AC_MSG_CHECKING([if $QMP_HOME/config/qmp_build_env.sh exists])
       if test -f $QMP_HOME/config/qmp_build_env.sh ;
       then
@@ -79,9 +79,7 @@ AC_ARG_WITH(qmp-home,
 	AC_MSG_RESULT([no])
 	AC_MSG_NOTICE([ configuration may still work if you set the relevant ])
 	AC_MSG_NOTICE([ environment variables elsewhere ])
-      fi
-      AC_SUBST(QMP_HOME)
-    ]
+      fi]
 )
 
 AC_ARG_WITH(qmp-comms-type,

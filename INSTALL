@@ -13,6 +13,7 @@ Some important options for QDP++ are
 
         --enable-parallel-arch=<arch>
         --prefix=<installation directory>
+	--with-qmp=DIR
         --with-qmp-cxxflags=QMP_CXXFLAGS
 	--with-qmp-ldflags=QMP_LDFLAGS
 	--with-qmp-libs=QMP_LIBS
@@ -70,6 +71,20 @@ QMP_COMMS_LIBS  -- additional libraries to do with QMP for its comms
 		
 		if QMP is built over a version of MPICH using Ethernet.
 
+
+Since this may mean that a user has to enter a mammoth amount of 
+environment variables or --with-qmp-xxx switches, we have modified 
+qmp so that when built and installed the installation directory
+may have a config/qmp_build_env.sh shellscript in it defining these
+environment variables.  In particular later versions of QMP automatically
+make this script and install it. In this case the configure script 
+can be pointed to this file using the --with-qmp option -- see below.
+Note that the definitions in this file are volatile and are over ridden
+by the values for the environment variables in the shell that 
+calls configure (if these environment variables are not empty values 
+in that shell) and also by --with-xxxx switches (see above).
+
+
 In particular if your comms system underneath QMP is MPI, you may 
 have some wrapper script such as mpiCC. You can use this compiler, 
 which can hide QMP_COMMS_CXXFLAGS QMP_COMMS_LDFLAGS and QMP_LIBS 
@@ -83,6 +98,17 @@ by say:
 
 
 The other individual switches:
+
+--with-qmp=<DIR> 	Specifies a directory where QMP is installed.
+		  This option is only useful for versions of QMP 1.4 or 
+		  higher, where the QMP build system leaves a file in 
+		  <DIR>/config/qmp_build_env.sh  listing the environment
+		  variables needed for compiling with QMP. All values in 
+		  qmp_build_env.sh are overriden, if the relevant values
+		  are already defined in the shell, or if they are defined
+		  on the configure command line with --with-qmp-xxxx= 
+		  switches. 
+
 
  --enable-parallel-arch=<arch>    Specifies the type of architecture. Allowed
                                   values for <arch> are:
@@ -254,9 +280,9 @@ I do the following:
 mkdir build; cd build
 
 ../configure CXX=/Home/bj/scratch/mpich-1.2.4/bin/mpiCC \
-     --with-qmp-comms-cxxflags="-I/Home/bj/scratch/qmp-1.3-mpich/include" \
-     --with-qmp-comms-ldflags="-L/Home/bj/scratch/qmp-1.3-mpich/lib" \
-     --with-qmp-comms-libs="-lqmp" \
+     --with-qmp-cxxflags="-I/Home/bj/scratch/qmp-1.3-mpich/include" \
+     --with-qmp-ldflags="-L/Home/bj/scratch/qmp-1.3-mpich/lib" \
+     --with-qmp-libs="-lqmp" \
      --enable-parallel-arch=parscalar \
      --prefix=/Home/bj/scratch/qdp-0.19-Nd4-Ns4-Nc4-vol512-parscalar
 
@@ -266,6 +292,35 @@ gmake doc
 gmake install
 gmake doc-install
 
+
+or another alternative, is if you use a version of QMP which leaves a 
+<qmp_dir>/config/qmp_build_env.sh file on installation, you can try
+
+../configure CXX=/Home/bj/scratch/mpich-1.2.4/bin/mpiCC \
+	     --enable-parallel-arch=parscalar \
+	     --with-qmp=/Home/bj/scratch/qmp-install \
+	     --prefix=/Home/bj/scratch/qdp-0.19-Nd4-Ns4-Nc4-vol512-parscalar
+
+etc etc
+
+
+5) Leaving a file containing the values of the environment variables.
+---------------------------------------------------------------------
+
+As of version 0.26, qdp++ creates and installs a file called 
+qdp_build_env.sh in <prefix>/config/qdp_build_env.sh.
+
+This file defines all the environment variables used in configuring 
+QDP++, (ie: QMP_CXXFLAGS, QMP_LDFLAGS, QMP_LIBS, QMP_COMMS_CXXFLAGS, QMP_COMMS_LDFLAGS, QMP_LIBS) as well as QDP_CXXFLAGS, QDP_LDFLAGS and QDP_LIBS which 
+contain the relevant compiler options to compile programs with QDP++. 
+Each environment variable definition in this file is guarded, so that
+environment variables defined in the shell calling ./configure take
+precedence over those defined in the file, when the file is sourced.
+
+This file may be useful in projects that use QDP++. For example a configure
+script in such a project may source this file, and then attempt 
+to compile a simple QDP++ program, saving the user from entering 
+8-9 configuration options. 
 
 5) Reporting Bugs etc.
 ---------------------

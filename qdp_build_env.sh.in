@@ -1,11 +1,68 @@
-QDP_CXXFLAGS="-I@prefix@/include"
-QDP_LDFLAGS="-L@prefix@/lib"
-QDP_LIBS="-lqdp"
+#
+# File qdp_build_env.sh
+#
+# Purpose: To define environment variables that may make building 
+#          packages on QDP++ easier -- stuff you can use in configure
+#          scripts / Makefiles
+#
+# each env var is checked to makes sure it has no value before being set 
+# and exported. That way, you can override everything by setting it in the 
+# shell that calls configure. You should also be able to override everything
+# after this file is sourcd with configure command line switches
+#
+#
+# Author: Balint Joo
+#
+if test "x$QDP_CXXFLAGS" == "x";
+then 
+	QDP_CXXFLAGS="-I@prefix@/include"
+	export QDP_CXXFLAGS
+fi
 
-if test "x@QMP_HOME@" != "x";
+if test "x$QDP_LDFLAGS" == "x";
 then
-   if test -f @QMP_HOME@/config/qmp_build_env.sh;
-   then 
-	source @QMP_HOME@/config/qmp_build_env.sh
-   fi
-fi 
+	QDP_LDFLAGS="-L@prefix@/lib"
+	export QDP_LDFLAGS
+fi
+
+if test "x$QDP_LIBS" == "x";
+then
+	QDP_LIBS="-lqdp"
+	export QDP_LIBS
+fi
+
+if test "x$QMP_CXXFLAGS" == "x";
+then
+	QMP_CXXFLAGS="@QMP_CXXFLAGS@"
+	export QMP_CXXFLAGS
+fi
+
+if test "x$QMP_LDFLAGS" == "x";
+then
+	QMP_LDFLAGS="@QMP_LDFLAGS@"
+	export QMP_LDFLAGS
+fi
+
+if test "x$QMP_LIBS" == "x";
+then 
+	QMP_LIBS="@QMP_LIBS@"
+	export QMP_LIBS
+fi
+
+if test "x$QMP_COMMS_CXXFLAGS" == "x";
+then 
+	QMP_COMMS_CXXFLAGS="@QMP_COMMS_CXXFLAGS@"
+	export QMP_COMMS_CXXFLAGS
+fi
+
+if test "x$QMP_COMMS_LDFLAGS" == "x";
+then
+	QMP_COMMS_LDFLAGS="@QMP_COMMS_LDFLAGS@"
+	export QMP_COMMS_LDFLAGS
+fi
+
+if test "x$QMP_COMMS_LIBS" == "x";
+then
+	QMP_COMMS_LIBS="@QMP_COMMS_LIBS@"
+	export QMP_COMMS_LIBS
+fi
