@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.4 2003-08-28 18:31:04 edwards Exp $
+// $Id: t_qio.cc,v 1.5 2003-09-24 15:49:43 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -31,8 +31,9 @@ int main(int argc, char **argv)
     XMLBufferWriter file_xml;
     file_xml << tmp_file_xml;
 
-    QDPSerialFileWriter to(file_xml,source_filename);
 
+    QDPSerialFileWriter to(file_xml,source_filename);
+    cout << "QDPSerialFile Writer opened" << endl << flush;
     XMLReader tmp_record_xml("record.xml");
     XMLBufferWriter record_xml;
     record_xml << tmp_record_xml;

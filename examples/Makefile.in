@@ -190,6 +190,7 @@ t_foo_SOURCES = t_foo.cc $(HDRS)
 t_nml_SOURCES = t_nml.cc $(HDRS)
 t_xml_SOURCES = t_xml.cc $(HDRS)
 t_qio_SOURCES = t_qio.cc $(HDRS)
+t_qio_DEPENDENCIES = build_lib rebuild_other_libs
 t_shift_SOURCES = t_shift.cc $(HDRS)
 t_io_SOURCES = t_io.cc $(HDRS)
 t_entry_SOURCES = t_entry.cc $(HDRS)
@@ -333,7 +334,6 @@ t_qdp_LDFLAGS =
 am_t_qio_OBJECTS = t_qio.$(OBJEXT) $(am__objects_1)
 t_qio_OBJECTS = $(am_t_qio_OBJECTS)
 t_qio_LDADD = $(LDADD)
-t_qio_DEPENDENCIES =
 t_qio_LDFLAGS =
 am_t_remote_OBJECTS = t_remote.$(OBJEXT) $(am__objects_1)
 t_remote_OBJECTS = $(am_t_remote_OBJECTS)
@@ -700,6 +700,10 @@ uninstall-am: uninstall-info-am
 .PHONY: build_lib
 build_lib:
 	cd @top_builddir@/lib ; $(MAKE)
+
+.PHONY: rebuild_other_libs
+rebuild_other_libs:
+	cd @top_builddir@/other_libs ; $(MAKE)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

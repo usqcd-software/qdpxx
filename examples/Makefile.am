@@ -54,6 +54,7 @@ t_foo_SOURCES = t_foo.cc $(HDRS)
 t_nml_SOURCES = t_nml.cc $(HDRS)
 t_xml_SOURCES = t_xml.cc $(HDRS)
 t_qio_SOURCES = t_qio.cc $(HDRS)
+t_qio_DEPENDENCIES = build_lib rebuild_other_libs
 t_shift_SOURCES = t_shift.cc $(HDRS)
 t_io_SOURCES = t_io.cc $(HDRS)
 t_entry_SOURCES = t_entry.cc $(HDRS)
@@ -74,3 +75,6 @@ t_linalg_SOURCES =  t_linalg.cc linalg1.cc linalg.h
 build_lib:
 	cd @top_builddir@/lib ; $(MAKE)
 
+.PHONY: rebuild_other_libs
+rebuild_other_libs:
+	cd @top_builddir@/other_libs ; $(MAKE)
