@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.37 2003-10-02 20:33:43 edwards Exp $
+// $Id: qdp.h,v 1.38 2003-10-02 21:39:00 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -179,7 +179,7 @@ QDP_END_NAMESPACE();
 #if QDP_USE_SSE == 1
 #include "qdp_scalarsite_sse.h"
 #else
-#include "qdp_scalarsite_generic.h"
+//#include "qdp_scalarsite_generic.h"
 #endif
 
 #elif defined(ARCH_PARSCALAR)
@@ -191,7 +191,7 @@ QDP_END_NAMESPACE();
 #if QDP_USE_SSE == 1
 #include "qdp_scalarsite_sse.h"
 #else
-#include "qdp_scalarsite_generic.h"
+//#include "qdp_scalarsite_generic.h"
 #endif
 
 #elif defined(ARCH_SCALARVEC)
