@@ -1,4 +1,4 @@
-// $Id: linalg1.cc,v 1.16 2003-08-23 21:10:20 edwards Exp $
+// $Id: linalg1.cc,v 1.17 2004-02-09 15:21:04 bjoo Exp $
 
 #include <stdlib.h>
 #include <sys/time.h>
@@ -15,12 +15,13 @@ double QDP_M_eq_M_times_M(LatticeColorMatrix& dest,
 			  const LatticeColorMatrix& s2,
 			  int cnt)
 {
-  clock_t t1 = clock();
+  StopWatch swatch;
+
+  swatch.start();
   for (; cnt-- > 0; )
     dest = s1 * s2;
-  clock_t t2 = clock();
-
-  return (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC);
+  swatch.stop(); 
+  return swatch.getTimeInSeconds();
 //  return 2;
 }
 
@@ -29,12 +30,13 @@ double QDP_M_eq_Ma_times_M(LatticeColorMatrix& dest,
 			  const LatticeColorMatrix& s2,
 			  int cnt)
 {
-  clock_t t1 = clock();
+  StopWatch swatch;
+ 
+  swatch.start();
   for (; cnt-- > 0; )
     dest = adj(s1) * s2;
-  clock_t t2 = clock();
-
-  return double(t2-t1)/double(CLOCKS_PER_SEC);
+  swatch.stop();
+  return swatch.getTimeInSeconds();
 //    return 2.0;
 }
 
@@ -43,12 +45,14 @@ double QDP_M_eq_M_times_Ma(LatticeColorMatrix& dest,
 			   const LatticeColorMatrix& s2,
 			   int cnt)
 {
-  clock_t t1 = clock();
+  StopWatch swatch;
+                                                                                
+  swatch.start();
   for (; cnt-- > 0; )
     dest = s1 * adj(s2);
-  clock_t t2 = clock();
+  swatch.stop();
 
-  return double(t2-t1)/double(CLOCKS_PER_SEC);
+  return swatch.getTimeInSeconds();
 //  return 2.0;
 }
 
@@ -57,12 +61,16 @@ double QDP_M_eq_Ma_times_Ma(LatticeColorMatrix& dest,
 			    const LatticeColorMatrix& s2,
 			    int cnt)
 {
-  clock_t t1 = clock();
+
+  StopWatch swatch;
+  swatch.start();
+
   for (; cnt-- > 0; )
     dest = adj(s1) * adj(s2);
-  clock_t t2 = clock();
 
-  return double(t2-t1)/double(CLOCKS_PER_SEC);
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
 //    return 2.0;
 }
 
@@ -71,12 +79,16 @@ double QDP_M_peq_M_times_M(LatticeColorMatrix& dest,
 			  const LatticeColorMatrix& s2,
 			  int cnt)
 {
-  clock_t t1 = clock();
+  StopWatch swatch;
+
+  swatch.start();
+
   for (; cnt-- > 0; )
     dest += s1 * s2;
-  clock_t t2 = clock();
 
-  return double(t2-t1)/double(CLOCKS_PER_SEC);
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
 //    return 2;
 }
 
@@ -86,12 +98,16 @@ double QDP_V_eq_M_times_V(LatticeColorVector& dest,
 			  const LatticeColorVector& s2,
 			  int cnt)
 {
-  clock_t t1 = clock();
+
+  StopWatch swatch;
+
+  swatch.start();
   for (; cnt-- > 0; )
     dest = s1 * s2;
-  clock_t t2 = clock();
+  swatch.stop();
 
-  return double(t2-t1)/double(CLOCKS_PER_SEC);
+
+  return swatch.getTimeInSeconds();
 //    return 2.0;
 }
 
@@ -101,12 +117,17 @@ double QDP_V_eq_Ma_times_V(LatticeColorVector& dest,
 			   const LatticeColorVector& s2,
 			   int cnt)
 {
-  clock_t t1 = clock();
+
+  StopWatch swatch;
+
+  swatch.start();
+
   for (; cnt-- > 0; )
     dest = adj(s1) * s2;
-  clock_t t2 = clock();
+  
+  swatch.stop();
 
-  return double(t2-t1)/double(CLOCKS_PER_SEC);
+  return swatch.getTimeInSeconds();
 //    return 2.0;
 }
 
@@ -116,12 +137,16 @@ double QDP_V_eq_V_plus_V(LatticeColorVector& dest,
 			 const LatticeColorVector& s2,
 			 int cnt)
 {
-  clock_t t1 = clock();
+
+  StopWatch swatch;
+
+  swatch.start();
   for (; cnt-- > 0; )
     dest = s1 + s2;
-  clock_t t2 = clock();
 
-  return double(t2-t1)/double(CLOCKS_PER_SEC);
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
 //    return 2.0;
 }
 
@@ -131,12 +156,15 @@ double QDP_D_eq_M_times_D(LatticeDiracFermion& dest,
 			  const LatticeDiracFermion& s2,
 			  int cnt)
 {
-  clock_t t1 = clock();
+  StopWatch swatch;
+
+  swatch.start();
   for (; cnt-- > 0; )
     dest = s1 * s2;
-  clock_t t2 = clock();
 
-  return double(t2-t1)/double(CLOCKS_PER_SEC);
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
 //    return 2.0;
 }
 
@@ -146,12 +174,18 @@ double QDP_D_eq_Ma_times_D(LatticeDiracFermion& dest,
 			   const LatticeDiracFermion& s2,
 			   int cnt)
 {
-  clock_t t1 = clock();
+
+  StopWatch swatch;
+
+  swatch.start();
+
   for (; cnt-- > 0; )
     dest = adj(s1) * s2;
-  clock_t t2 = clock();
 
-  return double(t2-t1)/double(CLOCKS_PER_SEC);
+  swatch.stop();
+
+
+  return swatch.getTimeInSeconds();
 //    return 2.0;
 }
 
@@ -161,12 +195,15 @@ double QDP_H_eq_M_times_H(LatticeHalfFermion& dest,
 			  const LatticeHalfFermion& s2,
 			  int cnt)
 {
-  clock_t t1 = clock();
+
+  StopWatch swatch;
+
+  swatch.start();
   for (; cnt-- > 0; )
     dest = s1 * s2;
-  clock_t t2 = clock();
+  swatch.stop();
 
-  return double(t2-t1)/double(CLOCKS_PER_SEC);
+  return swatch.getTimeInSeconds();
 //    return 2.0;
 }
 
@@ -176,12 +213,14 @@ double QDP_H_eq_Ma_times_H(LatticeHalfFermion& dest,
 			   const LatticeHalfFermion& s2,
 			   int cnt)
 {
-  clock_t t1 = clock();
+  StopWatch swatch;
+
+  swatch.start();
   for (; cnt-- > 0; )
     dest = adj(s1) * s2;
-  clock_t t2 = clock();
+  swatch.stop();
 
-  return double(t2-t1)/double(CLOCKS_PER_SEC);
+  return swatch.getTimeInSeconds();
 //    return 2.0;
 }
 
