@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.20 2003-01-20 16:17:48 edwards Exp $
+// $Id: scalar_specific.h,v 1.21 2003-01-21 21:19:45 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -195,7 +195,7 @@ random(OSubLattice<T> dd)
 template<class T>
 void random(OLattice<T>& d)
 {
-  random(d(all));
+  random(d[all]);
 }
 
 
@@ -208,8 +208,8 @@ void gaussian(OSubLattice<T> dd)
 
   OLattice<T>  r1, r2;
 
-  random(r1(s));
-  random(r2(s));
+  random(r1[s]);
+  random(r2[s]);
 
   const int *tab = s.SiteTable()->slice();
   for(int j=0; j < s.NumSiteTable(); ++j) 
@@ -224,7 +224,7 @@ void gaussian(OSubLattice<T> dd)
 template<class T>
 void gaussian(OLattice<T>& d)
 {
-  gaussian(d(all));
+  gaussian(d[all]);
 }
 
 
