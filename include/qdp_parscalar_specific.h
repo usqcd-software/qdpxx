@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.31 2004-09-07 23:33:29 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.32 2004-10-29 15:03:21 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -1139,8 +1139,8 @@ public:
 	QDP_info("Map: calling free msgs");
 #endif
 
-	QMP_free_msghandle(mh_a[1]);
-	QMP_free_msghandle(mh_a[0]);
+	//	QMP_free_msghandle(mh_a[1]);
+	//	QMP_free_msghandle(mh_a[0]);
 	QMP_free_msghandle(mh);
 	QMP_free_msgmem(msg[1]);
 	QMP_free_msgmem(msg[0]);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.15 2004-10-14 14:35:43 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.16 2004-10-29 15:03:21 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -1266,8 +1266,8 @@ public:
 	QDP_info("Map: calling free msgs");
 #endif
 
-	QMP_free_msghandle(mh_a[1]);
-	QMP_free_msghandle(mh_a[0]);
+	/* QMP_free_msghandle(mh_a[1]); */
+	/* QMP_free_msghandle(mh_a[0]); */
 	QMP_free_msghandle(mh);
 	QMP_free_msgmem(msg[1]);
 	QMP_free_msgmem(msg[0]);
