@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.11 2003-01-20 16:17:48 edwards Exp $
+// $Id: parscalar_specific.h,v 1.12 2003-01-21 03:37:38 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -63,7 +63,7 @@ namespace Internal
 
   //! Sum across all nodes
   template<class T>
-  void global_sum(T& dest)
+  void globalSum(T& dest)
   {
 //    QMP_global_sum((void *)&dest, sizeof(T));
   }
@@ -379,7 +379,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
   }
 
   // Do a global sum on the result
-  Internal::global_sum(d);
+  Internal::globalSum(d);
   
   return d;
 }
@@ -403,7 +403,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
 
   // Do a global sum on the result
-  Internal::global_sum(d);
+  Internal::globalSum(d);
   
   return d;
 }
@@ -465,7 +465,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 
   // Do a global sum on the result
   for(int k=0; k < ss.numSubsets(); ++k)
-    Internal::global_sum(dest[k]);
+    Internal::globalSum(dest[k]);
   
   return dest;
 }
@@ -569,19 +569,17 @@ public:
    * Implements:  dest(x) = s1(x+offsets)
    *
    * Shifts on a OLattice are non-trivial.
-   * Notice, there may be an ILattice underneath which requires shift args.
-   * This routine is very architecture dependent.
+   *
+   * Notice, this implementation does not allow an Inner grid
    */
-  template<class T1,class C1>
-  QDPType<T1,C1>
-  operator()(const QDPType<T1,C1> & l)
+  template<class T1>
+  OLattice<T1>
+  operator()(const OLattice<T1> & l)
     {
       QDP_info("Map()");
 
-      QDPType<T1,C1> dd;
+      OLattice<T1> d;
       fprintf(stderr,"Here a\n");
-      C1& d = static_cast<C1&>(const_cast<QDPType<T1,C1>&>(dd));
-      fprintf(stderr,"Here b\n");
 
       fprintf(stderr,"Here c: offnodeP = %d\n",offnodeP);
 
@@ -688,47 +686,46 @@ public:
 	for(int i=0; i < Layout::subgridVol(); ++i) 
 	{
 	  QDP_info("Map(olattice[%d],olattice[%d])",i,soffsets[i]);
-//	  cerr << "olat[" << soffsets[i] << "]=" << l.elem(soffsets[i]) << endl;
 	  d.elem(i) = l.elem(soffsets[i]);
 	}
       }
 
-
-#if 0
-      // Result
-      for(int i=0; i < Layout::subgridVol(); ++i) 
-      {
-	cerr << "d["<<i<<"] = "<< d.elem(i) << endl;
-      }
-#endif
-
       QDP_info("exiting Map()");
 
-      return dd;
+      return d;
     }
 
 
+  template<class T1>
+  OScalar<T1>
+  operator()(const OScalar<T1> & l)
+    {
+      return l;
+    }
+
   template<class RHS, class T1>
-  QDPType<T1,OScalar<T1> >
+  OScalar<T1>
   operator()(const QDPExpr<RHS,OScalar<T1> > & l)
     {
       // For now, simply evaluate the expression and then do the map
       typedef OScalar<T1> C1;
-      QDPType<T1,C1> d = this->operator()(C1(l));
 
-      fprintf(stderr,"map(QDPExpr)\n");
+      fprintf(stderr,"map(QDPExpr<OScalar>)\n");
+      OScalar<T1> d = this->operator()(C1(l));
+
       return d;
     }
 
   template<class RHS, class T1>
-  QDPType<T1,OLattice<T1> >
+  OLattice<T1>
   operator()(const QDPExpr<RHS,OLattice<T1> > & l)
     {
       // For now, simply evaluate the expression and then do the map
       typedef OLattice<T1> C1;
-      QDPType<T1,C1> d = this->operator()(C1(l));
 
-      fprintf(stderr,"map(QDPExpr)\n");
+      fprintf(stderr,"map(QDPExpr<OLattice>)\n");
+      OLattice<T1> d = this->operator()(C1(l));
+
       return d;
     }
 
@@ -793,18 +790,27 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
-  template<class T1,class C1>
-  QDPType<T1,C1>
-  operator()(const QDPType<T1,C1> & l, int dir)
+  template<class T1>
+  OLattice<T1>
+  operator()(const OLattice<T1> & l, int dir)
     {
-      QDP_info("ArrayMap(QDPType,%d)",dir);
+      QDP_info("ArrayMap(OLattice,%d)",dir);
+
+      return mapsa[dir](l);
+    }
+
+  template<class T1>
+  OScalar<T1>
+  operator()(const OScalar<T1> & l, int dir)
+    {
+      QDP_info("ArrayMap(OScalar,%d)",dir);
 
       return mapsa[dir](l);
     }
 
 
   template<class RHS, class T1>
-  QDPType<T1,OScalar<T1> >
+  OScalar<T1>
   operator()(const QDPExpr<RHS,OScalar<T1> > & l, int dir)
     {
       fprintf(stderr,"ArrayMap(QDPExpr<OScalar>,%d)\n",dir);
@@ -814,7 +820,7 @@ public:
     }
 
   template<class RHS, class T1>
-  QDPType<T1,OLattice<T1> >
+  OLattice<T1>
   operator()(const QDPExpr<RHS,OLattice<T1> > & l, int dir)
     {
       fprintf(stderr,"ArrayMap(QDPExpr<OLattice>,%d)\n",dir);
@@ -864,18 +870,28 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
-  template<class T1,class C1>
-  QDPType<T1,C1>
-  operator()(const QDPType<T1,C1> & l, int isign)
+  template<class T1>
+  OLattice<T1>
+  operator()(const OLattice<T1> & l, int isign)
     {
-      QDP_info("BiDirectionalMap(QDPType,%d)",isign);
+      QDP_info("BiDirectionalMap(OLattice,%d)",isign);
+
+      return bimaps[(isign+1)>>1](l);
+    }
+
+
+  template<class T1>
+  OScalar<T1>
+  operator()(const OScalar<T1> & l, int isign)
+    {
+      QDP_info("BiDirectionalMap(OScalar,%d)",isign);
 
       return bimaps[(isign+1)>>1](l);
     }
 
 
   template<class RHS, class T1>
-  QDPType<T1,OScalar<T1> >
+  OScalar<T1>
   operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign)
     {
       fprintf(stderr,"BiDirectionalMap(QDPExpr<OScalar>,%d)\n",isign);
@@ -885,7 +901,7 @@ public:
     }
 
   template<class RHS, class T1>
-  QDPType<T1,OLattice<T1> >
+  OLattice<T1>
   operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign)
     {
       fprintf(stderr,"BiDirectionalMap(QDPExpr<OLattice>,%d)\n",isign);
@@ -944,18 +960,27 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
-  template<class T1,class C1>
-  QDPType<T1,C1>
-  operator()(const QDPType<T1,C1> & l, int isign, int dir)
+  template<class T1>
+  OLattice<T1>
+  operator()(const OLattice<T1> & l, int isign, int dir)
     {
-      QDP_info("ArrayBiDirectionalMap(QDPType,%d,%d)",isign,dir);
+      QDP_info("ArrayBiDirectionalMap(OLattice,%d,%d)",isign,dir);
+
+      return bimapsa((isign+1)>>1,dir)(l);
+    }
+
+  template<class T1>
+  OScalar<T1>
+  operator()(const OScalar<T1> & l, int isign, int dir)
+    {
+      QDP_info("ArrayBiDirectionalMap(OScalar,%d,%d)",isign,dir);
 
       return bimapsa((isign+1)>>1,dir)(l);
     }
 
 
   template<class RHS, class T1>
-  QDPType<T1,OScalar<T1> >
+  OScalar<T1>
   operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign, int dir)
     {
       fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OScalar>,%d,%d)\n",isign,dir);
@@ -965,7 +990,7 @@ public:
     }
 
   template<class RHS, class T1>
-  QDPType<T1,OLattice<T1> >
+  OLattice<T1>
   operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign, int dir)
     {
       fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OLattice>,%d,%d)\n",isign,dir);
