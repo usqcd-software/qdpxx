@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: newops.h,v 1.7 2002-12-26 22:59:51 edwards Exp $
+// $Id: newops.h,v 1.8 2003-04-02 21:11:28 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -325,9 +325,9 @@ pokeColor(QDPType<T1,C1> & l, const QDPExpr<T2,C2>& r, int row, int col)
 
 template<class T1,class C1,class T2,class C2>
 inline C1
-pokeColor(QDPSubType<T1,C1> l, const QDPType<T2,C2>& r, int row, int col)
+pokeColor(const QDPSubType<T1,C1>& l, const QDPType<T2,C2>& r, int row, int col)
 {
-  C1& ll = static_cast<C1&>(l.field());
+  C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
   const Subset& s = l.subset();
 
   evaluate(ll,FnPokeColorMatrix(row,col),PETE_identity(r),s);
@@ -337,9 +337,9 @@ pokeColor(QDPSubType<T1,C1> l, const QDPType<T2,C2>& r, int row, int col)
 
 template<class T1,class C1,class T2,class C2>
 inline C1
-pokeColor(QDPSubType<T1,C1> l, const QDPExpr<T2,C2>& r, int row, int col)
+pokeColor(const QDPSubType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row, int col)
 {
-  C1& ll = static_cast<C1&>(l.field());
+  C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
   const Subset& s = l.subset();
 
   evaluate(ll,FnPokeColorMatrix(row,col),r,s);
@@ -396,9 +396,9 @@ pokeColor(QDPType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
 
 template<class T1,class C1,class T2,class C2>
 inline C1
-pokeColor(QDPSubType<T1,C1> l, const QDPType<T2,C2>& r, int row)
+pokeColor(const QDPSubType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
 {
-  C1& ll = static_cast<C1&>(l.field());
+  C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
   const Subset& s = l.subset();
 
   evaluate(ll,FnPokeColorVector(row),PETE_identity(r),s);
@@ -408,9 +408,9 @@ pokeColor(QDPSubType<T1,C1> l, const QDPType<T2,C2>& r, int row)
 
 template<class T1,class C1,class T2,class C2>
 inline C1
-pokeColor(QDPSubType<T1,C1> l, const QDPExpr<T2,C2>& r, int row)
+pokeColor(const QDPSubType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
 {
-  C1& ll = static_cast<C1&>(l.field());
+  C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
   const Subset& s = l.subset();
 
   evaluate(ll,FnPokeColorVector(row),r,s);
@@ -466,9 +466,9 @@ pokeSpin(QDPType<T1,C1> & l, const QDPExpr<T2,C2>& r, int row, int col)
 
 template<class T1,class C1,class T2,class C2>
 inline C1
-pokeSpin(QDPSubType<T1,C1> l, const QDPType<T2,C2>& r, int row, int col)
+pokeSpin(const QDPSubType<T1,C1>& l, const QDPType<T2,C2>& r, int row, int col)
 {
-  C1& ll = static_cast<C1&>(l.field());
+  C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
   const Subset& s = l.subset();
 
   evaluate(ll,FnPokeSpinMatrix(row,col),PETE_identity(r),s);
@@ -478,9 +478,9 @@ pokeSpin(QDPSubType<T1,C1> l, const QDPType<T2,C2>& r, int row, int col)
 
 template<class T1,class C1,class T2,class C2>
 inline C1
-pokeSpin(QDPSubType<T1,C1> l, const QDPExpr<T2,C2>& r, int row, int col)
+pokeSpin(const QDPSubType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row, int col)
 {
-  C1& ll = static_cast<C1&>(l.field());
+  C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
   const Subset& s = l.subset();
 
   evaluate(ll,FnPokeSpinMatrix(row,col),r,s);
@@ -537,9 +537,9 @@ pokeSpin(QDPType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
 
 template<class T1,class C1,class T2,class C2>
 inline C1
-pokeSpin(QDPSubType<T1,C1> l, const QDPType<T2,C2>& r, int row)
+pokeSpin(const QDPSubType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
 {
-  C1& ll = static_cast<C1&>(l.field());
+  C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
   const Subset& s = l.subset();
 
   evaluate(ll,FnPokeSpinVector(row),PETE_identity(r),s);
@@ -549,9 +549,9 @@ pokeSpin(QDPSubType<T1,C1> l, const QDPType<T2,C2>& r, int row)
 
 template<class T1,class C1,class T2,class C2>
 inline C1
-pokeSpin(QDPSubType<T1,C1> l, const QDPExpr<T2,C2>& r, int row)
+pokeSpin(const QDPSubType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
 {
-  C1& ll = static_cast<C1&>(l.field());
+  C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
   const Subset& s = l.subset();
 
   evaluate(ll,FnPokeSpinVector(row),r,s);
