@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.23 2003-09-02 20:17:07 edwards Exp $
+// $Id: qdp_outer.h,v 1.24 2003-09-10 16:56:48 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -132,26 +132,23 @@ private:
 };
 
 
-// Input
 //! Ascii input
 /*! Treat all istreams here like all nodes can read. To use specialized ones
  *  that can broadcast, use TextReader */
 template<class T>
 istream& operator>>(istream& s, OScalar<T>& d)
 {
-  s >> d.elem();
-  return s;
+  return s >> d.elem();
 }
 
 //! Ascii output
+/*! Treat all ostreams here like all nodes can write. To use specialized ones
+ *  that can broadcast, use TextReader */
 template<class T>
 inline
 ostream& operator<<(ostream& s, const OScalar<T>& d)
 {
-  if (Layout::primaryNode())
-    s << d.elem();
-
-  return s;
+  return s << d.elem();
 }
 
 //! Text input
