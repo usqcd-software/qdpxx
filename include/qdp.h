@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.17 2003-05-10 23:40:02 edwards Exp $
+// $Id: qdp.h,v 1.18 2003-05-22 20:06:27 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -106,47 +106,47 @@ QDP_BEGIN_NAMESPACE(QDP);
 #include <PETE/PETE.h>
 QDP_END_NAMESPACE();
 
-#include "forward.h"
+#include "qdp_forward.h"
 
-#include "multi.h"
+#include "qdp_multi.h"
 
-#include "params.h"
-#include "layout.h"
-#include "io.h"
+#include "qdp_params.h"
+#include "qdp_layout.h"
+#include "qdp_io.h"
 #include "qdp_xmlio.h"
-#include "qdpio.h"
-#include "subset.h"
-#include "map.h"
+#include "qdp_qdpio.h"
+#include "qdp_subset.h"
+#include "qdp_map.h"
 
-#include "traits.h"
-#include "qdpexpr.h"
-#include "qdptype.h"
-#include "qdpsubtype.h"
+#include "qdp_traits.h"
+#include "qdp_qdpexpr.h"
+#include "qdp_qdptype.h"
+#include "qdp_qdpsubtype.h"
 #include "QDPOperators.h"
-#include "newops.h"
-//#include "word.h"
-#include "simpleword.h"
-#include "reality.h"
-//#include "inner.h"
-#include "primitive.h"
-#include "outer.h"
-#include "outersubtype.h"
-#include "./defs.h"
-#include "globalfuncs.h"
-#include "specializations.h"
+#include "qdp_newops.h"
+//#include "qdp_word.h"
+#include "qdp_simpleword.h"
+#include "qdp_reality.h"
+//#include "qdp_inner.h"
+#include "qdp_primitive.h"
+#include "qdp_outer.h"
+#include "qdp_outersubtype.h"
+#include "qdp_defs.h"
+#include "qdp_globalfuncs.h"
+#include "qdp_specializations.h"
 
-//#include "special.h"
-#include "random.h"
+//#include "qdp_special.h"
+#include "qdp_random.h"
 
 #if defined(ARCH_SCALAR)
 // Architectural specific code to a single node/single proc box
 #warning "Using scalar architecture"
-#include "scalar_specific.h"
+#include "qdp_scalar_specific.h"
 
 #elif defined(ARCH_PARSCALAR)
 // Architectural specific code to a parallel/single proc box
 #warning "Using parallel scalar architecture"
-#include "parscalar_specific.h"
+#include "qdp_parscalar_specific.h"
 
 #else
 #error "Unknown architecture ARCH"
