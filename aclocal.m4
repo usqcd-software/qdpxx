@@ -1,5 +1,5 @@
 # generated automatically by aclocal 1.7.1 -*- Autoconf -*-
-
+# $Id: aclocal.m4,v 1.4 2002-12-28 03:43:18 edwards Exp $
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002
 # Free Software Foundation, Inc.
 # This file is free software; the Free Software Foundation
