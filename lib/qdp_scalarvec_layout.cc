@@ -1,0 +1,217 @@
+// $Id: qdp_scalarvec_layout.cc,v 1.2 2003-08-20 21:08:29 edwards Exp $
+
+/*! @file
+ * @brief Scalarvec layout routines
+ * 
+ * Layout routines for scalarvec implementation
+ * QDP data parallel interface
+ *
+ * Layout
+ *
+ * This routine provides various layouts, including
+ *    lexicographic
+ *    2-checkerboard  (even/odd-checkerboarding of sites)
+ *    32-style checkerboard (even/odd-checkerboarding of hypercubes)
+ */
+
+#include "qdp.h"
+#include "qdp_util.h"
+
+QDP_BEGIN_NAMESPACE(QDP);
+
+//-----------------------------------------------------------------------------
+// Layout stuff specific to a scalarvec architecture
+namespace Layout
+{
+  //-----------------------------------------------------
+  //! Local data specific to a scalarvec architecture
+  /*! 
+   * NOTE: the disadvantage to using a struct to keep things together is
+   * that subsequent groupings of namespaces can not just add onto the
+   * current namespace. 
+   */
+  struct
+  {
+    //! Total lattice volume
+    int vol;
+
+    //! Lattice size
+    multi1d<int> nrow;
+
+    //! Subgrid lattice volume
+    int subgrid_vol;
+
+    //! Outergrid lattice volume
+    int olattice_vol;
+
+    //! Logical node coordinates
+    multi1d<int> logical_coord;
+
+    //! Logical system size
+    multi1d<int> logical_size;
+
+  } _layout;
+
+
+  //-----------------------------------------------------
+  // Functions
+
+  //! Main destruction routine
+  void destroy() {}
+
+  //! Set virtual grid (problem grid) lattice size
+  void setLattSize(const multi1d<int>& nrows) {_layout.nrow = nrows;}
+
+  //! Set SMP flag -- true if using smp/multiprocessor mode on a node
+  /*! For now, this is ignored */
+  void setSMPFlag(bool flag) {}
+
+  //! Set number of processors in a multi-threaded implementation
+  /*! For now, this is ignored */
+  void setNumProc(int N) {}
+
+  //! Virtual grid (problem grid) lattice size
+  const multi1d<int>& lattSize() {return _layout.nrow;}
+
+  //! Total lattice volume
+  int vol() {return _layout.vol;}
+
+  //! Subgrid lattice volume
+  int sitesOnNode() {return _layout.subgrid_vol;}
+
+  //! Subgrid lattice volume
+  int outerSitesOnNode() {return _layout.olattice_vol;}
+
+  //! Returns whether this is the primary node
+  /*! Always true on a scalarvec platform */
+  bool primaryNode() {return true;}
+
+  //! Subgrid (grid on each node) lattice size
+  const multi1d<int>& subgridLattSize() {return _layout.nrow;}
+
+  //! Returns the node number of this node
+  int nodeNumber() {return 0;}
+
+  //! Returns the logical node number for the corresponding lattice coordinate
+  int nodeNumber(const multi1d<int>& coord) {return 0;}
+
+  //! Returns the number of nodes
+  int numNodes() {return 1;}
+
+  //! Returns the logical node coordinates for this node
+  const multi1d<int>& nodeCoord() {return _layout.logical_coord;}
+
+  //! Returns the logical size of this machine
+  const multi1d<int>& logicalSize() {return _layout.logical_size;}
+
+  //! Initializer for layout
+  void init() {}
+
+  //! The linearized site index for the corresponding lexicographic site
+  int linearSiteIndex(int lexicosite)
+  {
+    return linearSiteIndex(crtesn(lexicosite, lattSize()));
+  }
+
+  //! Initializer for all the layout defaults
+  void initDefaults()
+  {
+    // Default set and subsets
+    initDefaultSets();
+
+    // Default maps
+    initDefaultMaps();
+
+    // Initialize RNG
+    RNG::initDefaultRNG();
+  }
+
+  //! Initializer for layout
+  void create()
+  {
+    if ( ! QDP_isInitialized() )
+      QDP_error_exit("QDP is not initialized");
+
+    if (_layout.nrow.size() != Nd)
+      QDP_error_exit("dimension of lattice size not the same as the default");
+
+    _layout.vol=1;
+    for(int i=0; i < Nd; ++i) 
+      _layout.vol *= _layout.nrow[i];
+    _layout.subgrid_vol  = _layout.vol;
+    _layout.olattice_vol = _layout.vol / INNER_LEN;
+  
+    _layout.logical_coord.resize(Nd);
+    _layout.logical_size.resize(Nd);
+
+    _layout.logical_coord = 0;
+    _layout.logical_size = 1;
+
+#if QDP_DEBUG >= 2
+    fprintf(stderr,"vol=%d\n",_layout.vol);
+#endif
+
+    // Sanity check - check the layout functions make sense
+    for(int i=0; i < sitesOnNode(); ++i) 
+    {
+      int ii = Layout::linearSiteIndex(Layout::siteCoords(Layout::nodeNumber(),i));
+      if (i != ii)
+	QDP_error_exit("Layout::create - Layout problems, the layout functions do not work correctly with this lattice size");
+    }
+
+    // Initialize various defaults
+    initDefaults();
+
+    cerr << "Finished lattice layout\n";
+  }
+};
+
+
+//-----------------------------------------------------------------------------
+#if QDP_USE_LEXICO_LAYOUT == 1
+
+#warning "Using a lexicographic layout"
+
+namespace Layout
+{
+  //! Reconstruct the lattice coordinate from the node and site number
+  /*! 
+   * This is the inverse of the nodeNumber and linearSiteIndex functions.
+   * The API requires this function to be here.
+   */
+  multi1d<int> siteCoords(int node, int linearsite) // ignore node
+  {
+    return crtesn(linearsite, lattSize());
+  }
+
+  //! The linearized site index for the corresponding coordinate
+  /*! This layout is a simple lexicographic lattice ordering */
+  int linearSiteIndex(const multi1d<int>& coord)
+  {
+    return local_site(coord, lattSize());
+  }
+};
+
+
+//-----------------------------------------------------------------------------
+
+#elif QDP_USE_CB2_LAYOUT == 1
+
+#error "Using a 2 checkerboard (red/black) layout"
+
+//-----------------------------------------------------------------------------
+
+#elif QDP_LAYOUT == 1
+
+#error "Using a 32 checkerboard layout"
+
+#else
+
+#error "no appropriate layout defined"
+
+#endif
+
+//-----------------------------------------------------------------------------
+
+
+QDP_END_NAMESPACE();
