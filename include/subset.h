@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: subset.h,v 1.6 2002-10-12 04:10:15 edwards Exp $
+// $Id: subset.h,v 1.7 2002-10-25 03:29:57 edwards Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -29,7 +29,7 @@ public:
 
   //! Copy constructor
   Subset(const Subset& s): startSite(s.startSite), endSite(s.endSite), 
-    indexrep(s.indexrep), soffsets(s.soffsets), sitetable(s.sitetable) {}
+    indexrep(s.indexrep), sitetable(s.sitetable), soffsets(s.soffsets) {}
 
   // Simple constructor
   void Make(const Subset& s)
