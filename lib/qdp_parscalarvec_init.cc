@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_init.cc,v 1.6 2004-08-10 14:02:37 edwards Exp $
+// $Id: qdp_parscalarvec_init.cc,v 1.7 2005-01-24 04:01:53 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec init routines
@@ -148,15 +148,19 @@ void QDP_initialize(int *argc, char ***argv)
   QDP_info("Now initialize QMP");
 #endif
 
-  if (QMP_init_msg_passing(argc, argv, QMP_SMP_ONE_ADDRESS) != QMP_SUCCESS)
-    QDP_error_exit("QDP_initialize failed");
+  if (QMP_is_initialized() == QMP_FALSE)
+  {
+    QMP_thread_level_t prv;
+    if (QMP_init_msg_passing(argc, argv, QMP_THREAD_SINGLE, &prv) != QMP_SUCCESS)
+      QDP_error_exit("QDP_initialize failed");
+  }
 
 #if QDP_DEBUG >= 1
   QDP_info("QMP inititalized");
 #endif
 
   if (setGeomP)
-    if (QMP_declare_logical_topology(logical_geom.slice(), (QMP_u32_t)Nd) != QMP_TRUE)
+    if (QMP_declare_logical_topology(logical_geom.slice(), Nd) != QMP_SUCCESS)
       QDP_error_exit("QMP_declare_logical_topology failed");
 
 #if QDP_DEBUG >= 1
