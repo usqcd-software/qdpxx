@@ -71,16 +71,27 @@ AC_ARG_ENABLE(sse2,
 )
 
 
-dnl Tell the user about SSE
-if test "X${ac_sse}X" = "X1X" ; then
-  AC_MSG_NOTICE([Configuring QDP++ to use Streaming SIMD Extensions (SSE)])
-fi
+dnl SSE is not supported for all possible values of Ns. If it is not supported
+dnl we turn it off
+case "${ac_Ns}" in
+dnl SSE is supported for Ns = 4
+  4)
+    if test "X${ac_sse}X" = "X1X" ; then
+      AC_MSG_NOTICE([Configuring QDP++ to use Streaming SIMD Extensions (SSE)])
+    fi	
 
-dnl Tell the user about SSE2
-if test "X${ac_sse2}X" = "X1X" ; then
-  AC_MSG_NOTICE([Configuring QDP++ to use Streaming SIMD Extensions (SSE2)])
-fi
-
+    dnl Tell the user about SSE2
+    if test "X${ac_sse2}X" = "X1X" ; then
+      AC_MSG_NOTICE([Configuring QDP++ to use Streaming SIMD Extensions (SSE2)])
+    fi
+    ;;
+  *)
+ 
+    AC_MSG_NOTICE([SSE Optimisations are not supported for Ns=${ac_Ns} -- turning off option ] )
+    AC_SUBST(ac_sse,0)
+    AC_SUBST(ac_sse2,0)
+    ;;
+esac
 
 AC_ARG_ENABLE(precision, 
   AC_HELP_STRING( [ --enable precision=single|double ],

@@ -1732,16 +1732,28 @@ else
 fi;
 
 
-if test "X${ac_sse}X" = "X1X" ; then
-  { echo "$as_me:$LINENO: Configuring QDP++ to use Streaming SIMD Extensions (SSE)" >&5
+case "${ac_Ns}" in
+  4)
+    if test "X${ac_sse}X" = "X1X" ; then
+      { echo "$as_me:$LINENO: Configuring QDP++ to use Streaming SIMD Extensions (SSE)" >&5
 echo "$as_me: Configuring QDP++ to use Streaming SIMD Extensions (SSE)" >&6;}
-fi
+    fi
 
-if test "X${ac_sse2}X" = "X1X" ; then
-  { echo "$as_me:$LINENO: Configuring QDP++ to use Streaming SIMD Extensions (SSE2)" >&5
+        if test "X${ac_sse2}X" = "X1X" ; then
+      { echo "$as_me:$LINENO: Configuring QDP++ to use Streaming SIMD Extensions (SSE2)" >&5
 echo "$as_me: Configuring QDP++ to use Streaming SIMD Extensions (SSE2)" >&6;}
-fi
+    fi
+    ;;
+  *)
 
+    { echo "$as_me:$LINENO: SSE Optimisations are not supported for Ns=${ac_Ns} -- turning off option  " >&5
+echo "$as_me: SSE Optimisations are not supported for Ns=${ac_Ns} -- turning off option  " >&6;}
+    ac_sse=0
+
+    ac_sse2=0
+
+    ;;
+esac
 
 # Check whether --enable-precision or --disable-precision was given.
 if test "${enable_precision+set}" = set; then

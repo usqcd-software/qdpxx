@@ -58,7 +58,7 @@ AUTOHEADER = ${SHELL} /home/bj/Devel/SciDAC/packages/qdp++/config/missing --run 
 AUTOMAKE = ${SHELL} /home/bj/Devel/SciDAC/packages/qdp++/config/missing --run automake-1.7
 AWK = gawk
 CPPFLAGS = 
-CXX = mpiCC
+CXX = g++
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -O2 -finline-limit=50000
 CYGPATH_W = echo
@@ -101,14 +101,14 @@ QDP_USE_SCALARVEC_SSE2_FALSE =
 QDP_USE_SCALARVEC_SSE2_TRUE = #
 QDP_USE_SCALARVEC_SSE_FALSE = 
 QDP_USE_SCALARVEC_SSE_TRUE = #
-QDP_USE_SCALAR_SSE2_FALSE = 
-QDP_USE_SCALAR_SSE2_TRUE = #
-QDP_USE_SCALAR_SSE_FALSE = 
-QDP_USE_SCALAR_SSE_TRUE = #
+QDP_USE_SCALAR_SSE2_FALSE = #
+QDP_USE_SCALAR_SSE2_TRUE = 
+QDP_USE_SCALAR_SSE_FALSE = #
+QDP_USE_SCALAR_SSE_TRUE = 
 QMP_CFLAGS = -I/home/bj/Devel/SciDAC/install/qmp/include
 QMP_CONFIG = /home/bj/Devel/SciDAC/install/qmp/bin/qmp-config
 QMP_LDFLAGS = -L/home/bj/Devel/SciDAC/install/qmp/lib -L/usr/local/mpich-1.2.5/lib
-QMP_LIBS = -lqmp -lmpich -lpmpich
+QMP_LIBS = -lqmp -lmpich
 RANLIB = ranlib
 SET_MAKE = 
 SHELL = /bin/sh
@@ -117,12 +117,12 @@ VERSION = 1.5
 ac_Nc = 3
 ac_Nd = 4
 ac_Ns = 4
-ac_ct_CXX = 
+ac_ct_CXX = g++
 ac_ct_RANLIB = ranlib
 ac_ct_STRIP = 
 ac_header_precision = SINGLE_PRECISION
-ac_sse = 0
-ac_sse2 = 0
+ac_sse = 1
+ac_sse2 = 1
 am__fastdepCXX_FALSE = #
 am__fastdepCXX_TRUE = 
 am__include = include
@@ -140,7 +140,7 @@ libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
 mandir = ${prefix}/man
 oldincludedir = /usr/include
-prefix = /usr/local
+prefix = /home/bj/Devel/SciDAC/install/qdp_parscalar_stag
 program_transform_name = s,x,x,
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
@@ -156,7 +156,7 @@ SUFFIXES = .tex .dvi .ps .pdf
 #
 # Install time docdir
 #
-docdir = /usr/local/docs
+docdir = /home/bj/Devel/SciDAC/install/qdp_parscalar_stag/docs
 
 #
 # Documentation targets -- apart from doxygen, the rules above should be able
