@@ -155,6 +155,18 @@ PETE_HDRS = PETE/Combiners.h \
              PETE/TypeComputations.h
 
 
+# Generic optimization headers
+genericdir = scalarsite_generic
+
+GENERIC_HDRS = qdp_scalarsite_generic.h \
+	$(genericdir)/generic_addvec.h \
+	$(genericdir)/generic_adj_mat_vec.h \
+	$(genericdir)/generic_mat_vec.h \
+	$(genericdir)/generic_mult_an.h \
+	$(genericdir)/generic_mult_na.h \
+	$(genericdir)/generic_mult_nn.h
+
+
 # If using SSE, make sure those files are installed
 ssedir = scalarsite_sse
 
@@ -221,6 +233,7 @@ nobase_include_HEADERS = \
 		qdp_scalarvecsite_defs.h \
                 qdp_filebuf.h \
                 $(PETE_HDRS) \
+                $(GENERIC_HDRS) \
 		$(SSE_HDRS)
 
 
@@ -357,7 +370,7 @@ top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
-	$(mkinstalldirs) $(distdir)/$(ssedir) $(distdir)/PETE
+	$(mkinstalldirs) $(distdir)/$(genericdir) $(distdir)/$(ssedir) $(distdir)/PETE
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
