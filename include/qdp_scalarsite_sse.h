@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.16 2004-03-23 22:43:10 edwards Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.17 2004-03-24 03:40:14 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -17,7 +17,7 @@
 #include "scalarsite_sse/qdp_scalarsite_sse_linalg.h"
 
 // Use SSE specific blas stuff (inline assembler etc)
-//#include "scalarsite_sse/qdp_scalarsite_sse_blas.h"
+#include "scalarsite_sse/qdp_scalarsite_sse_blas.h"
 
 #else
 

@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.1 2004-03-23 22:43:10 edwards Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.2 2004-03-24 03:40:14 edwards Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -19,12 +19,13 @@ void vaxmy3(REAL *Out, REAL *scalep,REAL *InScale, REAL *Sub,int n_3vec);
 void vadd(REAL *Out, REAL *In1, REAL *In2, int n_3vec);
 void vsub(REAL *Out, REAL *In1, REAL *In2, int n_3vec);
 void vscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec);
-void local_sumsq(DOUBLE *Out, REAL *In, int n_3vec);
+void local_sumsq(REAL *Out, REAL *In, int n_3vec);
 
 typedef PSpinVector<PColorVector<RComplex<PScalar<REAL> >, 3>, 4> TVec;
 typedef PScalar<PScalar<RScalar<PScalar<REAL> > > >  TScal;
 
-// #define DEBUG_BLAS
+//#define DEBUG_BLAS
+
 // TVec is the LatticeFermion from qdp_dwdefs.h with the OLattice<> stripped
 // from around it
 
@@ -636,6 +637,7 @@ void evaluate( OLattice< TVec > &d,
   vscal(zptr, aptr, xptr, n_3vec);
 }
 
+#if 1
 // Global norm squared of a vector...
 template<>
 inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
@@ -654,13 +656,10 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     const REAL *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real().elem());
     
     // I am relying on this being a Double here 
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
-    lsum = Double(0);
-    
-    local_sumsq((DOUBLE *)&(lsum.elem().elem().elem().elem().elem()),
-		(REAL *)s1ptr, 
-		n_3vec); 
+    REAL ltmp;
+    local_sumsq(&ltmp, (REAL *)s1ptr, n_3vec); 
 
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
     Internal::globalSum(lsum);
     return lsum;
   }
@@ -687,12 +686,10 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
     const REAL *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real().elem());
     
     // I am relying on this being a Double here 
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
-    lsum = Double(0);
- 
-    local_sumsq((DOUBLE *)&(lsum.elem().elem().elem().elem().elem()),
-		(REAL *)s1ptr, 
-		n_3vec); 
+    REAL ltmp;
+    local_sumsq(&ltmp, (REAL *)s1ptr, n_3vec); 
+
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
     Internal::globalSum(lsum);
     return lsum;
   }
@@ -700,6 +697,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
     return sum(localNorm2(s1),all);
   }
 }
+#endif
 
   
 QDP_END_NAMESPACE();
