@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.1 2003-05-10 23:15:19 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.2 2003-05-12 06:07:45 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -26,7 +26,13 @@ QDP_BEGIN_NAMESPACE(QDP);
 class XMLReader : protected XMLXPathReader::BasicXPathReader
 {
 public:
+  //! Empty constructor
   XMLReader();
+  //! Construct from contents of file
+  XMLReader(const std::string& filename);
+  //! Construct from contents of stream
+  XMLReader(std::istream& is);
+
   ~XMLReader();
 
   /* The meaning of these should be clear to you */
@@ -47,8 +53,11 @@ public:
   void get(const std::string& xpath, double& result);
   void get(const std::string& xpath, bool& result);
 
-  //! Return the contents of the Reader as a stream
+  //! Return the entire contents of the Reader as a stream
   void print(ostream& is) const;
+        
+  //! Return the root element of the Reader as a stream
+  void printRoot(ostream& is) const;
         
 private:
   bool  iop;  //file open or closed?
@@ -245,8 +254,11 @@ public:
   //! Destructor
   ~XMLMetaWriter();
 
-  // Get the string -- not the stream...
-  std::string str() const {return output_stream.str();}
+  // Return entire stream as a string
+  std::string str() const;
+        
+  // Return root element as a string
+  std::string printRoot() const;
         
 private:
   // The output stream...
