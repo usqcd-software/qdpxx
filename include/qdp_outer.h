@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.16 2003-08-27 01:25:34 edwards Exp $
+// $Id: qdp_outer.h,v 1.17 2003-08-30 02:29:22 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -239,14 +239,14 @@ public:
       F = new T[Layout::sitesOnNode()];
 
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"create %d bytes of OLattice[%d]=0x%x, this=0x%x\n",
-              sizeof(T), Layout::sitesOnNode(),(void *)F,this);
+      QDP_info("create %d bytes of OLattice[%d]=0x%x, this=0x%x",
+	       sizeof(T), Layout::sitesOnNode(),(void *)F,this);
 #endif
     }
   ~OLattice()
     {
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"destroy %d bytes of OLattice=0x%x, this=0x%x\n",sizeof(T),F,this);
+      QDP_info("destroy %d bytes of OLattice=0x%x, this=0x%x",sizeof(T),F,this);
 #endif
 
       delete[] F;
@@ -260,7 +260,8 @@ public:
       F = new T[Layout::sitesOnNode()];
 
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"construct %d bytes from expr OLattice[%d]=0x%x\n",sizeof(T),Layout::sitesOnNode(),F);
+      QDP_info("construct %d bytes from expr OLattice[%d]=0x%x",
+	       sizeof(T),Layout::sitesOnNode(),F);
 #endif
 
       assign(rhs);
@@ -274,7 +275,8 @@ public:
       F = new T[Layout::sitesOnNode()];
 
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"construct %d bytes from expr OLattice[%d]=0x%x\n",sizeof(T),Layout::sitesOnNode(),F);
+      QDP_info("construct %d bytes from expr OLattice[%d]=0x%x",
+	       sizeof(T),Layout::sitesOnNode(),F);
 #endif
 
       assign(rhs);
@@ -287,7 +289,8 @@ public:
       F = new T[Layout::sitesOnNode()];
 
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"construct %d bytes from const OLattice[%d]=0x%x\n",sizeof(T),Layout::sitesOnNode(),F);
+      QDP_info("construct %d bytes from const OLattice[%d]=0x%x",
+	       sizeof(T),Layout::sitesOnNode(),F);
 #endif
 
       typedef OScalar<typename InternalScalar<T>::Type_t>  Scalar_t;
@@ -301,7 +304,8 @@ public:
       F = new T[Layout::sitesOnNode()];
 
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"construct %d bytes from zero OLattice[%d]=0x%x\n",sizeof(T),Layout::sitesOnNode(),F);
+      QDP_info("construct %d bytes from zero OLattice[%d]=0x%x",
+	       sizeof(T),Layout::sitesOnNode(),F);
 #endif
 
       assign(rhs);
@@ -362,7 +366,7 @@ public:
       F = new T[Layout::sitesOnNode()];
 
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"copy OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
+      QDP_info("copy OLattice[%d]=0x%x",Layout::sitesOnNode(),F);
 #endif
       
       assign(rhs);
@@ -373,8 +377,8 @@ public:
   //! Debugging info
   void print_info(char *name)
     {
-      fprintf(stderr,"Info: %s = OLattice[%d]=0x%x, this=0x%x\n",
-              name,Layout::sitesOnNode(),(void *)F,this);
+      QDP_info("Info: %s = OLattice[%d]=0x%x, this=0x%xn",
+	       name,Layout::sitesOnNode(),(void *)F,this);
     }
 
 
