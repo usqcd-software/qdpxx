@@ -11,7 +11,7 @@ relevant compiler flags
 % cd scalar
 % ../configure --prefix=/usr/local/qdp++/scalar --enable-sse2  \
     CXX=/opt/gcc-3.2/bin/gcc CC=/opt/gcc-3.2/bin/gcc  \
-    CXXFLAGS="-O2 -finline-limit=50000 -march=pentium4" LDFLAGS=-static
+    CXXFLAGS="-O2 -msse -finline-limit=50000 -march=pentium4" LDFLAGS=-static
 
 
 2) g++-3.2, INTEL, architecture = parscalar
@@ -23,7 +23,7 @@ relevant compiler flags
     --with-qmp=/usr/local/qmp/mpi-1.2.5  \
     --prefix=/usr/local/qdp++/parscalar --enable-sse2  \
     CXX=/opt/gcc-3.2/bin/gcc CC=/opt/gcc-3.2/bin/gcc  \
-    CXXFLAGS="-O2 -finline-limit=50000 -march=pentium4" LDFLAGS=-static
+    CXXFLAGS="-O2 -msse -finline-limit=50000 -march=pentium4" LDFLAGS=-static
 
 
 
