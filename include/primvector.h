@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primvector.h,v 1.9 2002-11-02 04:09:51 edwards Exp $
+// $Id: primvector.h,v 1.10 2002-11-23 01:57:40 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -579,7 +579,7 @@ struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproduct > {
 
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproduct>::Type_t
-localInnerproduct(const PVector<T1,N,C>& s1, const PVector<T1,N,C>& s2)
+localInnerproduct(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
 {
   typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproduct>::Type_t  d;
 
@@ -607,7 +607,7 @@ struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproductReal > 
 
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproductReal>::Type_t
-localInnerproductReal(const PVector<T1,N,C>& s1, const PVector<T1,N,C>& s2)
+localInnerproductReal(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
 {
   typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproductReal>::Type_t  d;
 
