@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.21 2003-04-20 03:33:33 edwards Exp $
+// $Id: t_foo.cc,v 1.22 2003-04-21 11:30:24 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -76,9 +76,9 @@ int main(int argc, char *argv[])
 #endif
 
 #if 1
-  cerr << "Open foo.input" << endl;
+  cerr << "Open t_foo.input" << endl;
 
-  NmlReader nml_in("foo.input");
+  NmlReader nml_in("t_foo.input");
   {
     int x;
     push(nml_in,"stuff");
