@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.11 2003-06-16 01:54:30 edwards Exp $
+// $Id: qdp_io.cc,v 1.12 2003-06-16 21:11:47 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -320,8 +320,12 @@ void NmlReader::open(const std::string& p)
 
   // Make a barrier call ?
 
-  if (Layout::primaryNode()) 
+  if (Layout::primaryNode())
+  {
     f.open(p.c_str(),std::ifstream::in);
+    if (f.is_open())
+      iop = true;
+  }
 
   if (! is_open())
     QDP_error_exit("NmlReader: error opening file %s",p.c_str());
@@ -344,12 +348,12 @@ void NmlReader::open(const std::string& p)
 
   // Make a barrier call ?
 
-  iop=true;
+  iop = true;
 }
 
 void NmlReader::close()
 {
-  if (iop)
+  if (is_open())
   {
     while(stack_cnt > 0)
       pop();
@@ -361,7 +365,16 @@ void NmlReader::close()
   }
 }
 
-bool NmlReader::is_open() {return iop;}
+bool NmlReader::is_open()
+{
+  bool s;
+
+  if (Layout::primaryNode()) 
+    s = iop;
+
+  Internal::broadcast(s);
+  return s;
+}
 
 NmlReader::~NmlReader()
 {
