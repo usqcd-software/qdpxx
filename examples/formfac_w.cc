@@ -1,16 +1,4 @@
-// $Id: formfac_w.cc,v 1.4 2002-10-09 15:33:26 edwards Exp $
-
-/*! Compute contractions for current insertion 3-point functions.
- *
- * This routine is specific to Wilson fermions!
- *
- * u    -- gauge fields (used for non-local currents) ( Read )
- * quark_propagator -- quark propagator ( Read )
- * seq_quark_prop -- sequential quark propagator ( Read )
- * t_source -- cartesian coordinates of the source ( Read )
- * t_sink -- time coordinate of the sink ( Read )
- * j_decay -- direction of the exponential decay ( Read ) 
- */
+// $Id: formfac_w.cc,v 1.5 2002-10-09 16:54:08 edwards Exp $
 
 #include "tests.h"
 #include "proto.h"
@@ -21,6 +9,18 @@ using namespace QDP;
 static const int j_decay = Nd-1;
 static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate[j_decay];}
  
+//! Compute contractions for current insertion 3-point functions.
+/*!
+ *
+ * This routine is specific to Wilson fermions!
+ *
+ * \param u    -- gauge fields (used for non-local currents) ( Read )
+ * \param quark_propagator -- quark propagator ( Read )
+ * \param seq_quark_prop -- sequential quark propagator ( Read )
+ * \param t_source -- cartesian coordinates of the source ( Read )
+ * \param t_sink -- time coordinate of the sink ( Read )
+ * \param j_decay -- direction of the exponential decay ( Read ) 
+ */
 
 void FormFac(const multi1d<LatticeColorMatrix>& u, 
 	     const LatticePropagator& quark_propagator,

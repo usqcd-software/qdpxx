@@ -1,6 +1,15 @@
-//  $Id: mesons_w.cc,v 1.2 2002-09-26 21:27:36 edwards Exp $
+//  $Id: mesons_w.cc,v 1.3 2002-10-09 16:54:08 edwards Exp $
 
-/*! This routine is specific to Wilson fermions!
+#include "tests.h"
+
+using namespace QDP;
+
+//! Function used for constructing the time-slice set
+static const int j_decay = Nd-1;
+static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate[j_decay];}
+ 
+//! Meson 2-pt functions
+/* This routine is specific to Wilson fermions!
  *
  * Construct meson propagators
  * The two propagators can be identical or different.
@@ -18,15 +27,6 @@
  *        ----
  *          x
  */
-
-#include "tests.h"
-
-using namespace QDP;
-
-//! Function used for constructing the time-slice set
-static const int j_decay = Nd-1;
-static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate[j_decay];}
- 
 
 void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quark_prop_2, 
 	    multi2d<Real>& meson_propagator, 

@@ -1,5 +1,14 @@
-// $Id: baryon_w.cc,v 1.3 2002-09-26 21:27:35 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.4 2002-10-09 16:54:08 edwards Exp $ 
 
+#include "tests.h"
+
+using namespace QDP;
+
+//! Function used for constructing the time-slice set
+static const int j_decay = Nd-1;
+static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate[j_decay];}
+  
+//! Baryon 2-pt functions
 /*!
  * This routine is specific to Wilson fermions! 
  *
@@ -54,15 +63,6 @@
  * The Proton_k is baryon 3*(k-1), the Lambda_k is baryon 3*(k-1)+1
  * and the Delta^+_k is baryon 3*(k-1)+2. 
  */
-
-#include "tests.h"
-
-using namespace QDP;
-
-//! Function used for constructing the time-slice set
-static const int j_decay = Nd-1;
-static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate[j_decay];}
-  
 
 void baryon(LatticePropagator& quark_propagator, 
 	    multi2d<Complex>& barprop, 

@@ -1,4 +1,4 @@
-// $Id: random.cc,v 1.3 2002-10-02 20:29:37 edwards Exp $
+// $Id: random.cc,v 1.4 2002-10-09 16:54:08 edwards Exp $
 //
 // Random number generator support
 
@@ -7,8 +7,8 @@
 
 QDP_BEGIN_NAMESPACE(QDP);
 
-//! Random number generator namespace
-/*! 
+// Random number generator namespace
+/* 
  * A collection of routines and data for supporting random numbers
  * 
  * It is a linear congruential with modulus m = 2**47, increment c = 0,

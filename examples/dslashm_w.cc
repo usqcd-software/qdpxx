@@ -1,6 +1,11 @@
-// $Id: dslashm_w.cc,v 1.7 2002-10-06 02:48:43 edwards Exp $
+// $Id: dslashm_w.cc,v 1.8 2002-10-09 16:54:08 edwards Exp $
 
-/*! 
+#include "tests.h"
+
+using namespace QDP;
+
+//! Wilson-Dirac operator
+/*!
  * DSLASH
  *
  * This routine is specific to Wilson fermions!
@@ -27,17 +32,12 @@
  *
  * Arguments:
  *
- *  Chi	      Pseudofermion field				(Write)
- *  U	      Gauge field					(Read)
- *  Psi	      Pseudofermion field				(Read)
- *		      +
- *  ISign      D' or D'  ( +1 | -1 ) respectively		(Read)
- *  CB	      Checkerboard of output vector			(Read) 
+ *  \param Chi	      Pseudofermion field				(Write)
+ *  \param U	      Gauge field					(Read)
+ *  \param Psi	      Pseudofermion field				(Read)
+ *  \param ISign      D'^dag or D'  ( +1 | -1 ) respectively		(Read)
+ *  \param CB	      Checkerboard of output vector			(Read) 
  */
-
-#include "tests.h"
-
-using namespace QDP;
 
 void dslash_2d_plus(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFermion& psi,
 		    int cb)

@@ -1,5 +1,9 @@
-// $Id: mesplq.cc,v 1.5 2002-10-02 20:29:37 edwards Exp $
+// $Id: mesplq.cc,v 1.6 2002-10-09 16:54:08 edwards Exp $
 //
+#include "tests.h"
+
+using namespace QDP;
+
 //! Return the value of the average plaquette normalized to 1
 /*!
  * \param u -- gauge field (Read)
@@ -7,10 +11,6 @@
  * \return s_plaq -- space-like plaquette average (Write)
  * \return t_plaq -- time-like plaquette average (Write)
  */
-
-#include "tests.h"
-
-using namespace QDP;
 
 void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq, 
 	    Double& t_plaq, Double& link)
