@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.cc,v 1.3 2003-10-09 17:07:20 edwards Exp $
+// $Id: qdp_stdio.cc,v 1.4 2003-10-09 18:27:14 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -12,6 +12,16 @@
 #include "qdp.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+//-----------------------------------------
+// Make global (parallel) versions of stdin, stdout, stderr
+// Put this in a different namespace to avoid collisions
+namespace QDPIO
+{
+  StandardInputStream  cin;
+  StandardOutputStream cout;
+  StandardOutputStream cerr;
+}
 
 
 //-----------------------------------------
@@ -109,6 +119,10 @@ StandardInputStream& StandardInputStream::operator>>(double& input)
 {
   return readPrimitive<double>(input);
 }
+StandardInputStream& StandardInputStream::operator>>(long double& input)
+{
+  return readPrimitive<long double>(input);
+}
 StandardInputStream& StandardInputStream::operator>>(bool& input)
 {
   return readPrimitive<bool>(input);
@@ -159,6 +173,20 @@ bool StandardOutputStream::fail()
 }
 
 StandardOutputStream::~StandardOutputStream() {}
+
+
+// Hook for manipulators
+StandardOutputStream& StandardOutputStream::operator<<(std::ostream& (*op)(std::ostream&))
+{
+  // Call the function passed as parameter with this stream as the argument.
+  // Hmm, for now do this on only the primary stream. This could potentially
+  // cause problems since somebody might set hex mode or something and it
+  // won't be done on all nodes.
+  if (Layout::primaryNode())
+    (*op)(getOstream());
+
+  return *this;
+}
 
 
 StandardOutputStream& StandardOutputStream::operator<<(const string& output)
@@ -220,6 +248,11 @@ StandardOutputStream& StandardOutputStream::operator<<(float output)
 StandardOutputStream& StandardOutputStream::operator<<(double output)
 {
   return writePrimitive<double>(output);
+}
+
+StandardOutputStream& StandardOutputStream::operator<<(long double output)
+{
+  return writePrimitive<long double>(output);
 }
 
 StandardOutputStream& StandardOutputStream::operator<<(bool output)
