@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 0.6.1
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 0.6.2
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -106,7 +106,7 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 0.6.1}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 0.6.2}
 }
 \author{SciDAC Software Coordinating Committee}
 
@@ -435,24 +435,24 @@ the layout parameters have to be set from the environment or fixed in
 the compilation.
 
 
-%\paragraph{Exit from QDP}
+\paragraph{Exit from QDP}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Prototype      & \verb|void Layout::destroy()|\\
+    \hline
+  Purpose        & Exits QDP. \\
+\hline
+  Example  & \verb|Layout::destroy();| \\
+   \hline
+ \end{tabular}
+\end{flushleft}
 %
-%\begin{flushleft}
-%  \begin{tabular}{|l|l|}
-%  \hline
-%  Prototype      & \verb|void Layout::destroy()|\\
-%    \hline
-%  Purpose        & Exits QDP. \\
-%\hline
-%  Example  & \verb|Layout::destroy();| \\
-%   \hline
-% \end{tabular}
-%\end{flushleft}
-%%
-%This call provides for an orderly exit from QDP.  It is called by all
-%nodes. It concludes all communications, does housekeeping, if needed
-%and performs a barrier wait for all nodes. The communication layer is
-%not finalized.
+This call provides for an orderly exit from QDP.  It is called by all
+nodes. It concludes all communications, does housekeeping, if needed
+and performs a barrier wait for all nodes. The communication layer is
+not finalized.
 
 \subsection{Layout utilities}
 \label{sec:layout}
