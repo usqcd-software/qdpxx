@@ -1,4 +1,4 @@
-// $Id: linalg1.cc,v 1.8 2003-08-05 03:56:33 edwards Exp $
+// $Id: linalg1.cc,v 1.9 2003-08-05 03:58:22 edwards Exp $
 
 #include <time.h>
 
@@ -729,7 +729,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d,
 #if 0
 #include "jlab_sse.h"
 
+extern "C" {
 void QDP_M_eq_M_times_M_jlab(su3* u3_base, su3* u1_base, su3* u2_base, int size);
+}
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
