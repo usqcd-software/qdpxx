@@ -88,14 +88,13 @@ AC_ARG_ENABLE(sse2,
   [ac_sse2=0]
 )
 
-dnl --enable-pab-asm=<cpu>
-AC_ARG_ENABLE(pab-asm,
-   AC_HELP_STRING([--enable-pab-asm=<target cpu>], 
-     [Enable assembler optimisations by Peter Boyle for target_cpu]),
-     [ac_pab_asm_enabled=1
-      ac_pab_asm_targ=${enableval}],
-     [ac_pab_asm_enabled=0
-      ac_pab_asm_targ=0]
+dnl --enable-qcdoc
+AC_ARG_ENABLE(qcdoc,
+   AC_HELP_STRING([--enable-qcdoc], 
+     [Enable QCDOC Optimisations]),
+     [ac_qcdoc_enabled=1
+      AC_MSG_NOTICE([Enabling QCDOC Specific Optimisations])],
+     [ac_qcdoc_enabled=0]
 )
 
 
@@ -142,20 +141,10 @@ if test ${ac_sse2} -eq 1; then
   fi
 fi
 
-dnl if Peters assembler is enabled, define the CPP macro and substitute
-dnl both the config flag and the target value
-if test ${ac_pab_asm_enabled} -eq 1; then 
-case ${ac_pab_asm_targ} in
-noarch|qcdoc|power|sparc) 
- AC_MSG_NOTICE([Enabling Peter Boyle assembler for target ${ac_pab_asm_targ}])
- ;;
-*)
- AC_MSG_ERROR([Unknown target for Peter Boyle Assembler: ${ac_pab_asm_targ}])
- ;;
-esac
-   AC_DEFINE_UNQUOTED(QDP_USE_PABASM, ${ac_pab_asm_enabled}, [Enable PAB Asm])
-   AC_SUBST(CONFIG_PABASM,[${ac_pab_asm_enabled}])
-   AC_SUBST(CONFIG_PABASM_TARGET, [${ac_pab_asm_targ}])
+dnl if QCDOC is enabled change some settings
+if test ${ac_qcdoc_enabled} -eq 1; then 
+   AC_DEFINE_UNQUOTED(QDP_USE_QCDOC, ${ac_pab_asm_enabled}, [Enable PAB Asm])
+
 fi
 
 
@@ -403,7 +392,7 @@ AM_CONDITIONAL(QDP_USE_SCALAR_SSE, [test "X${ac_sse}X" = "X1X" -a "X${ARCH_SITE}
 AM_CONDITIONAL(QDP_USE_SCALAR_SSE2, [test "X${ac_sse2}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarsiteX"])
 
 dnl conditional for using Peters assembler
-AM_CONDITIONAL(QDP_USE_SCALAR_PABASM, [test "X${ac_pab_asm_enabled}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarsiteX"])
+AM_CONDITIONAL(QDP_USE_QCDOC, [test "X${ac_qcdoc_enabled}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarsiteX"])
 
 AM_CONDITIONAL(QDP_USE_SCALARVEC_SSE, [test "X${ac_sse}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarvecsiteX"])
 AM_CONDITIONAL(QDP_USE_SCALARVEC_SSE2, [test "X${ac_sse2}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarvecsiteX"])

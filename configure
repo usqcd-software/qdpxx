@@ -275,7 +275,7 @@ PACKAGE_BUGREPORT='edwards@jlab.org'
 ac_subdirs_all="$ac_subdirs_all other_libs/nml"
 ac_subdirs_all="$ac_subdirs_all other_libs/qio"
 ac_subdirs_all="$ac_subdirs_all other_libs/xpath_reader"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT RANLIB ac_ct_RANLIB INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CONFIG_ND CONFIG_NC CONFIG_NS CONFIG_SSE CONFIG_SSE2 CONFIG_PABASM CONFIG_PABASM_TARGET CONFIG_PRECISION CONFIG_LAYOUT ARCH_SITE QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CONFIG_PARALLEL_ARCH LIBXML2_CONFIG LIBXML2_CXXFLAGS LIBXML2_LIBS ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE ARCH_SCALARVEC_TRUE ARCH_SCALARVEC_FALSE ARCH_PARSCALARVEC_TRUE ARCH_PARSCALARVEC_FALSE QDP_USE_SCALAR_SSE_TRUE QDP_USE_SCALAR_SSE_FALSE QDP_USE_SCALAR_SSE2_TRUE QDP_USE_SCALAR_SSE2_FALSE QDP_USE_SCALAR_PABASM_TRUE QDP_USE_SCALAR_PABASM_FALSE QDP_USE_SCALARVEC_SSE_TRUE QDP_USE_SCALARVEC_SSE_FALSE QDP_USE_SCALARVEC_SSE2_TRUE QDP_USE_SCALARVEC_SSE2_FALSE BUILD_STAGGERED_EXAMPLES_TRUE BUILD_STAGGERED_EXAMPLES_FALSE BUILD_WILSON_EXAMPLES_TRUE BUILD_WILSON_EXAMPLES_FALSE LATEX DVIPS DVIPDF DOXYGEN subdirs LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT RANLIB ac_ct_RANLIB INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CONFIG_ND CONFIG_NC CONFIG_NS CONFIG_SSE CONFIG_SSE2 CONFIG_PRECISION CONFIG_LAYOUT ARCH_SITE QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CONFIG_PARALLEL_ARCH LIBXML2_CONFIG LIBXML2_CXXFLAGS LIBXML2_LIBS ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE ARCH_SCALARVEC_TRUE ARCH_SCALARVEC_FALSE ARCH_PARSCALARVEC_TRUE ARCH_PARSCALARVEC_FALSE QDP_USE_SCALAR_SSE_TRUE QDP_USE_SCALAR_SSE_FALSE QDP_USE_SCALAR_SSE2_TRUE QDP_USE_SCALAR_SSE2_FALSE QDP_USE_QCDOC_TRUE QDP_USE_QCDOC_FALSE QDP_USE_SCALARVEC_SSE_TRUE QDP_USE_SCALARVEC_SSE_FALSE QDP_USE_SCALARVEC_SSE2_TRUE QDP_USE_SCALARVEC_SSE2_FALSE BUILD_STAGGERED_EXAMPLES_TRUE BUILD_STAGGERED_EXAMPLES_FALSE BUILD_WILSON_EXAMPLES_TRUE BUILD_WILSON_EXAMPLES_FALSE LATEX DVIPS DVIPDF DOXYGEN subdirs LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -819,9 +819,7 @@ Optional Features:
                           Build QDP++ for parallel architecture <arch>
   --enable-sse            Optimize code with Intel SSE instructions
   --enable-sse2           Optimize code with Intel SSE2 instructions
-  --enable-pab-asm=<target cpu>
-                          Enable assembler optimisations by Peter Boyle for
-                          target_cpu
+  --enable-qcdoc          Enable QCDOC Optimisations
   --disable-qio           Disable full QIO as it is not yet portable
    --enable-precision=single|double
                           Sets the base precision to be single or double
@@ -2514,14 +2512,14 @@ else
 
 fi;
 
-# Check whether --enable-pab-asm or --disable-pab-asm was given.
-if test "${enable_pab_asm+set}" = set; then
-  enableval="$enable_pab_asm"
-  ac_pab_asm_enabled=1
-      ac_pab_asm_targ=${enableval}
+# Check whether --enable-qcdoc or --disable-qcdoc was given.
+if test "${enable_qcdoc+set}" = set; then
+  enableval="$enable_qcdoc"
+  ac_qcdoc_enabled=1
+      { echo "$as_me:$LINENO: Enabling QCDOC Specific Optimisations" >&5
+echo "$as_me: Enabling QCDOC Specific Optimisations" >&6;}
 else
-  ac_pab_asm_enabled=0
-      ac_pab_asm_targ=0
+  ac_qcdoc_enabled=0
 
 fi;
 
@@ -2585,26 +2583,12 @@ echo "$as_me:  WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or g
   fi
 fi
 
-if test ${ac_pab_asm_enabled} -eq 1; then
-case ${ac_pab_asm_targ} in
-noarch|qcdoc|power|sparc)
- { echo "$as_me:$LINENO: Enabling Peter Boyle assembler for target ${ac_pab_asm_targ}" >&5
-echo "$as_me: Enabling Peter Boyle assembler for target ${ac_pab_asm_targ}" >&6;}
- ;;
-*)
- { { echo "$as_me:$LINENO: error: Unknown target for Peter Boyle Assembler: ${ac_pab_asm_targ}" >&5
-echo "$as_me: error: Unknown target for Peter Boyle Assembler: ${ac_pab_asm_targ}" >&2;}
-   { (exit 1); exit 1; }; }
- ;;
-esac
+if test ${ac_qcdoc_enabled} -eq 1; then
 
 cat >>confdefs.h <<_ACEOF
-#define QDP_USE_PABASM ${ac_pab_asm_enabled}
+#define QDP_USE_QCDOC ${ac_pab_asm_enabled}
 _ACEOF
 
-   CONFIG_PABASM=${ac_pab_asm_enabled}
-
-   CONFIG_PABASM_TARGET=${ac_pab_asm_targ}
 
 fi
 
@@ -3367,12 +3351,12 @@ fi
 
 
 
-if test "X${ac_pab_asm_enabled}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarsiteX"; then
-  QDP_USE_SCALAR_PABASM_TRUE=
-  QDP_USE_SCALAR_PABASM_FALSE='#'
+if test "X${ac_qcdoc_enabled}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarsiteX"; then
+  QDP_USE_QCDOC_TRUE=
+  QDP_USE_QCDOC_FALSE='#'
 else
-  QDP_USE_SCALAR_PABASM_TRUE='#'
-  QDP_USE_SCALAR_PABASM_FALSE=
+  QDP_USE_QCDOC_TRUE='#'
+  QDP_USE_QCDOC_FALSE=
 fi
 
 
@@ -3962,10 +3946,10 @@ echo "$as_me: error: conditional \"QDP_USE_SCALAR_SSE2\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${QDP_USE_SCALAR_PABASM_TRUE}" && test -z "${QDP_USE_SCALAR_PABASM_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"QDP_USE_SCALAR_PABASM\" was never defined.
+if test -z "${QDP_USE_QCDOC_TRUE}" && test -z "${QDP_USE_QCDOC_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"QDP_USE_QCDOC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"QDP_USE_SCALAR_PABASM\" was never defined.
+echo "$as_me: error: conditional \"QDP_USE_QCDOC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -4576,8 +4560,6 @@ s,@CONFIG_NC@,$CONFIG_NC,;t t
 s,@CONFIG_NS@,$CONFIG_NS,;t t
 s,@CONFIG_SSE@,$CONFIG_SSE,;t t
 s,@CONFIG_SSE2@,$CONFIG_SSE2,;t t
-s,@CONFIG_PABASM@,$CONFIG_PABASM,;t t
-s,@CONFIG_PABASM_TARGET@,$CONFIG_PABASM_TARGET,;t t
 s,@CONFIG_PRECISION@,$CONFIG_PRECISION,;t t
 s,@CONFIG_LAYOUT@,$CONFIG_LAYOUT,;t t
 s,@ARCH_SITE@,$ARCH_SITE,;t t
@@ -4601,8 +4583,8 @@ s,@QDP_USE_SCALAR_SSE_TRUE@,$QDP_USE_SCALAR_SSE_TRUE,;t t
 s,@QDP_USE_SCALAR_SSE_FALSE@,$QDP_USE_SCALAR_SSE_FALSE,;t t
 s,@QDP_USE_SCALAR_SSE2_TRUE@,$QDP_USE_SCALAR_SSE2_TRUE,;t t
 s,@QDP_USE_SCALAR_SSE2_FALSE@,$QDP_USE_SCALAR_SSE2_FALSE,;t t
-s,@QDP_USE_SCALAR_PABASM_TRUE@,$QDP_USE_SCALAR_PABASM_TRUE,;t t
-s,@QDP_USE_SCALAR_PABASM_FALSE@,$QDP_USE_SCALAR_PABASM_FALSE,;t t
+s,@QDP_USE_QCDOC_TRUE@,$QDP_USE_QCDOC_TRUE,;t t
+s,@QDP_USE_QCDOC_FALSE@,$QDP_USE_QCDOC_FALSE,;t t
 s,@QDP_USE_SCALARVEC_SSE_TRUE@,$QDP_USE_SCALARVEC_SSE_TRUE,;t t
 s,@QDP_USE_SCALARVEC_SSE_FALSE@,$QDP_USE_SCALARVEC_SSE_FALSE,;t t
 s,@QDP_USE_SCALARVEC_SSE2_TRUE@,$QDP_USE_SCALARVEC_SSE2_TRUE,;t t
