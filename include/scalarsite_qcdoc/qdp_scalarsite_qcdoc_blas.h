@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.7 2004-03-26 14:53:49 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.8 2004-03-26 15:04:44 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -20,9 +20,26 @@ void vaxpy3_norm (REAL *out, REAL *scalep, REAL *InScale, REAL *Add,int len,
 		  REAL *norm);
 };
 
+// (Vector) Out = (Scalar) (*ap) * (Vector)xp + (Scalar)(*bp) * (Vector)yp
+void vaxpby3(REAL *Out, REAL *ap, REAL *xp, REAL *bp, REAL *yp, int n_3vec);
+
+// (Vector) Out = (Scalar) (*ap) * (Vector)xp - (Scalar)(*bp) * (Vector)yp
+void vaxmby3(REAL *Out, REAL *ap, REAL *xp, REAL *bp, REAL *yp, int n_3vec);
+
+// VAXMY with local norm of result accumulated in *norm
+void vaxpmy3_norm(REAL *Out,REAL *ap,REAL *xp, REAL *bp, REAL *yp, 
+		  int n_3vec, REAL *norm);
+
+// (Vector) Out = (Vector) In1 + (Vector) In2
 void vadd(REAL *Out, REAL *In1, REAL *In2, int n_3vec);
+
+// (Vector) Out = (Vector) In1 - (Vector) In2
 void vsub(REAL *Out, REAL *In1, REAL *In2, int n_3vec);
+
+// (Vector) out = (Scalar) (*scalep) * (Vector) In
 void vscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec);
+
+// (Double) (*out) = || (Vector) In ||^2
 void local_sumsq(DOUBLE *Out, REAL *In, int n_3vec);
 
 typedef PSpinVector<PColorVector<RComplex<PScalar<REAL> >, Nc>, Ns> TVec;
@@ -755,6 +772,488 @@ void evaluate( OLattice< TVec > &d,
 }
 
 
+// z = ax + by
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	       BinaryNode<OpAdd,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TScal, OScalar< TScal > > >,
+	         Reference< QDPType< TVec, OLattice< TVec > > > >,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TScal, OScalar< TScal > > >,
+	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
+	        OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "z = a*x + b*y" << endl;
+#endif
+
+  // Peel the stuff out of the expression
+  // y is the right side of rhs
+
+  // ax is the left side of rhs and is in a binary node
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TScal, OScalar< TScal > > >,
+    Reference< QDPType< TVec, OLattice< TVec > > > > BN;
+
+  // get the binary node
+  const BN &mulNode1 = static_cast<const BN&> (rhs.expression().left());
+  const BN &mulNode2 = static_cast<const BN&> (rhs.expression().right());
+
+  // get a and x out of the binary node
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.left());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.right());
+  
+  // get b and y out of the binary node
+  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.left());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.right());
+
+  
+  // Set pointers 
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_3vec = (s.end()-s.start()+1)*Ns;
+  vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+}
+
+
+// z = xa + by
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	       BinaryNode<OpAdd,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TVec, OLattice< TVec > > >,
+	         Reference< QDPType< TScal, OScalar< TScal > > > >,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TScal, OScalar< TScal > > >,
+	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
+	        OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "z = x*a + b*y" << endl;
+#endif
+
+  // Peel the stuff out of the expression
+  // y is the right side of rhs
+
+  // ax is the left side of rhs and is in a binary node
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TVec, OLattice< TVec > > >,
+    Reference< QDPType< TScal, OScalar< TScal > > > > BN1;
+
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TScal, OScalar< TScal > > >,
+    Reference< QDPType< TVec, OLattice< TVec > > > > BN2;
+
+
+  
+  // get the binary node
+  const BN1 &mulNode1 = static_cast<const BN1&> (rhs.expression().left());
+  const BN2 &mulNode2 = static_cast<const BN2&> (rhs.expression().right());
+
+  // get a and x out of the binary node
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.left());
+
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.right());
+  
+  // get b and y out of the binary node
+  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.left());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.right());
+
+  
+  // Set pointers 
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_3vec = (s.end()-s.start()+1)*Ns;
+  vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+}
+
+// z = ax + yb
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	       BinaryNode<OpAdd,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TScal, OScalar< TScal > > >,
+	         Reference< QDPType< TVec, OLattice< TVec > > > >,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TVec, OLattice< TVec > > >,
+	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
+	        OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "z = a*x + y*b" << endl;
+#endif
+
+  // Peel the stuff out of the expression
+  // y is the right side of rhs
+
+  // type of a*x
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TScal, OScalar< TScal > > >,
+    Reference< QDPType< TVec, OLattice< TVec > > > > BN1;
+
+  // type of y*b
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TVec, OLattice< TVec > > >,
+    Reference< QDPType< TScal, OScalar< TScal > > > > BN2;
+
+
+  
+  // get the binary nodes
+  // a*x node
+  const BN1 &mulNode1 = static_cast<const BN1&> (rhs.expression().left());
+
+  // y*b node
+  const BN2 &mulNode2 = static_cast<const BN2&> (rhs.expression().right());
+
+  // get a and x out of the binary node
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.left());
+
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.right());
+
+  
+  // get b and y out of the binary node
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.left());
+
+  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.right());
+
+  
+  // Set pointers 
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_3vec = (s.end()-s.start()+1)*Ns;
+  vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+}
+
+// z = xa + yb
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	       BinaryNode<OpAdd,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TVec, OLattice< TVec > > >,
+	         Reference< QDPType< TScal, OScalar< TScal > > > >,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TVec, OLattice< TVec > > >,
+	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
+	        OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "z = x*a + y*b" << endl;
+#endif
+
+  // Peel the stuff out of the expression
+  // y is the right side of rhs
+
+  // ax is the left side of rhs and is in a binary node
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TVec, OLattice< TVec > > >,
+    Reference< QDPType< TScal, OScalar< TScal > > > > BN;
+
+  // get the binary node
+  const BN &mulNode1 = static_cast<const BN&> (rhs.expression().left());
+  const BN &mulNode2 = static_cast<const BN&> (rhs.expression().right());
+
+  // get a and x out of the binary node
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.left());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.right());
+  
+  // get b and y out of the binary node
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.left());
+
+  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.right());
+  
+  // Set pointers 
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_3vec = (s.end()-s.start()+1)*Ns;
+  vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+}
+
+// z = ax - by
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	       BinaryNode<OpSubtract,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TScal, OScalar< TScal > > >,
+	         Reference< QDPType< TVec, OLattice< TVec > > > >,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TScal, OScalar< TScal > > >,
+	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
+	        OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "z = a*x - b*y" << endl;
+#endif
+
+  // Peel the stuff out of the expression
+  // y is the right side of rhs
+
+  // ax is the left side of rhs and is in a binary node
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TScal, OScalar< TScal > > >,
+    Reference< QDPType< TVec, OLattice< TVec > > > > BN;
+
+  // get the binary node
+  const BN &mulNode1 = static_cast<const BN&> (rhs.expression().left());
+  const BN &mulNode2 = static_cast<const BN&> (rhs.expression().right());
+
+  // get a and x out of the binary node
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.left());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.right());
+  
+  // get b and y out of the binary node
+  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.left());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.right());
+
+  
+  // Set pointers 
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_3vec = (s.end()-s.start()+1)*Ns;
+  vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+}
+
+
+// z = xa - by
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	       BinaryNode<OpSubtract,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TVec, OLattice< TVec > > >,
+	         Reference< QDPType< TScal, OScalar< TScal > > > >,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TScal, OScalar< TScal > > >,
+	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
+	        OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "z = x*a - b*y" << endl;
+#endif
+
+  // Peel the stuff out of the expression
+  // y is the right side of rhs
+
+  // ax is the left side of rhs and is in a binary node
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TVec, OLattice< TVec > > >,
+    Reference< QDPType< TScal, OScalar< TScal > > > > BN1;
+
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TScal, OScalar< TScal > > >,
+    Reference< QDPType< TVec, OLattice< TVec > > > > BN2;
+
+
+  
+  // get the binary node
+  const BN1 &mulNode1 = static_cast<const BN1&> (rhs.expression().left());
+  const BN2 &mulNode2 = static_cast<const BN2&> (rhs.expression().right());
+
+  // get a and x out of the binary node
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.left());
+
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.right());
+  
+  // get b and y out of the binary node
+  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.left());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.right());
+
+  
+  // Set pointers 
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_3vec = (s.end()-s.start()+1)*Ns;
+  vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+}
+
+// z = ax - yb
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	       BinaryNode<OpSubtract,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TScal, OScalar< TScal > > >,
+	         Reference< QDPType< TVec, OLattice< TVec > > > >,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TVec, OLattice< TVec > > >,
+	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
+	        OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "z = a*x - y*b" << endl;
+#endif
+
+  // Peel the stuff out of the expression
+  // y is the right side of rhs
+
+  // type of a*x
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TScal, OScalar< TScal > > >,
+    Reference< QDPType< TVec, OLattice< TVec > > > > BN1;
+
+  // type of y*b
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TVec, OLattice< TVec > > >,
+    Reference< QDPType< TScal, OScalar< TScal > > > > BN2;
+
+
+  
+  // get the binary nodes
+  // a*x node
+  const BN1 &mulNode1 = static_cast<const BN1&> (rhs.expression().left());
+
+  // y*b node
+  const BN2 &mulNode2 = static_cast<const BN2&> (rhs.expression().right());
+
+  // get a and x out of the binary node
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.left());
+
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.right());
+
+  
+  // get b and y out of the binary node
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.left());
+
+  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.right());
+
+  
+  // Set pointers 
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_3vec = (s.end()-s.start()+1)*Ns;
+  vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+}
+
+// z = xa - yb
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	       BinaryNode<OpSubtract,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TVec, OLattice< TVec > > >,
+	         Reference< QDPType< TScal, OScalar< TScal > > > >,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TVec, OLattice< TVec > > >,
+	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
+	        OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "z = x*a - y*b" << endl;
+#endif
+
+  // Peel the stuff out of the expression
+  // y is the right side of rhs
+
+  // ax is the left side of rhs and is in a binary node
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TVec, OLattice< TVec > > >,
+    Reference< QDPType< TScal, OScalar< TScal > > > > BN;
+
+  // get the binary node
+  const BN &mulNode1 = static_cast<const BN&> (rhs.expression().left());
+  const BN &mulNode2 = static_cast<const BN&> (rhs.expression().right());
+
+  // get a and x out of the binary node
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.left());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.right());
+  
+  // get b and y out of the binary node
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.left());
+
+  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.right());
+  
+  // Set pointers 
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_3vec = (s.end()-s.start()+1)*Ns;
+  vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+}
+
 // Global norm squared of a vector...
 template<>
 inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
@@ -1286,7 +1785,263 @@ void local_sumsq(DOUBLE *Out, REAL *In, int n_3vec)
   *Out=(DOUBLE)result;
 }
 
+
+// AXPY and AXMY routines
+// Similar calling interface to assembler
+// But with REAL instead of float
+inline
+void vaxpby3(REAL *Out,REAL *ap ,REAL *xp, REAL *bp,  REAL *yp ,int n_3vec)
+{
+  register double a;
+  register double b;
+
+  register double x0r;
+  register double x0i;
   
+  register double x1r;
+  register double x1i;
+  
+  register double x2r;
+  register double x2i;
+  
+  register double y0r;
+  register double y0i;
+  
+  register double y1r;
+  register double y1i;
+  
+  register double y2r;
+  register double y2i;
+  
+  register double z0r;
+  register double z0i;
+  
+  register double z1r;
+  register double z1i;
+  
+  register double z2r;
+  register double z2i;
+  
+  a = *ap;
+  b = *bp;
+
+  register int index_x = 0;
+  register int index_y = 0;
+  register int index_z = 0;
+  
+  register int counter;
+  
+  for( counter = 0; counter < n_3vec; counter++) {
+    x0r = (double)xp[index_x++];
+    y0r = (double)yp[index_y++];
+    z0r = a*x0r;
+    z0r = z0r + b*y0r;
+    Out[index_z++] =(REAL) z0r;
+    
+    x0i = (double)xp[index_x++];
+    y0i = (double)yp[index_y++];
+    z0i = a*x0i;
+    z0i = z0i + b*y0i;
+    Out[index_z++] =(REAL) z0i;
+    
+    x1r = (double)xp[index_x++];
+    y1r = (double)yp[index_y++];
+    z1r = a*x1r;
+    z1r = z1r + b*y1r;
+    Out[index_z++] = (REAL)z1r;
+    
+    x1i = (double)xp[index_x++];
+    y1i = (double)yp[index_y++];
+    z1i = a*x1i;
+    z1i = z1i + b*y1i;
+
+    Out[index_z++] = (REAL)z1i;
+    
+    x2r = (double)xp[index_x++];     
+    y2r = (double)yp[index_y++];
+    z2r = a*x2r;
+    z2r = z2r + b*y2r;
+    Out[index_z++] = (REAL)z2r;
+    
+    x2i = (double)xp[index_x++];
+    y2i = (double)yp[index_y++];
+    z2i = a*x2i;
+    z2i = z2i + b*y2i;
+    Out[index_z++] = (REAL)z2i;
+  }
+}
+
+inline
+void vaxmby3(REAL *Out,REAL *ap,REAL *xp, REAL *bp, REAL *yp,int n_3vec)
+{
+  register double a;
+  register double b;
+
+  register double x0r;
+  register double x0i;
+  
+  register double x1r;
+  register double x1i;
+  
+  register double x2r;
+  register double x2i;
+  
+  register double y0r;
+  register double y0i;
+  
+  register double y1r;
+  register double y1i;
+  
+  register double y2r;
+  register double y2i;
+  
+  register double z0r;
+  register double z0i;
+  
+  register double z1r;
+  register double z1i;
+  
+  register double z2r;
+  register double z2i;
+  
+  a = *ap;
+  b = *bp;
+
+  register int index_x = 0;
+  register int index_y = 0;
+  register int index_z = 0;
+  
+  register int counter;
+  
+  for( counter = 0; counter < n_3vec; counter++) {
+    x0r = (double)xp[index_x++];
+    y0r = (double)yp[index_y++];
+    z0r = a*x0r;
+    z0r = z0r - b*y0r;
+    Out[index_z++] = (REAL)z0r;
+    
+    x0i = (double)xp[index_x++];
+    y0i = (double)yp[index_y++];
+    z0i = a*x0i;
+    z0i = z0i - b*y0i;
+    Out[index_z++] = (REAL)z0i;
+    
+    x1r = (double)xp[index_x++];
+    y1r = (double)yp[index_y++];
+    z1r = a*x1r;
+    z1r = z1r - b*y1r;
+    Out[index_z++] = (REAL)z1r;
+    
+    x1i = (double)xp[index_x++];
+    y1i = (double)yp[index_y++];
+    z1i = a*x1i;
+    z1i = z1i - b*y1i;
+    Out[index_z++] = (REAL)z1i;
+    
+    x2r = (double)xp[index_x++];     
+    y2r = (double)yp[index_y++];
+    z2r = a*x2r;
+    z2r = z2r - b*y2r;
+    Out[index_z++] = (REAL)z2r;
+    
+    x2i = (double)xp[index_x++];
+    y2i = (double)yp[index_y++];
+    z2i = a*x2i;
+    z2i = z2i - b*y2i;  
+    Out[index_z++] = (REAL)z2i;
+  }
+}
+
+
+  // z = aX - bY, norm = || z ||^2 (local) 
+inline
+void vaxpmy3_norm(REAL *Out,REAL *ap,REAL *xp, REAL *bp, REAL *yp, 
+		  int n_3vec, REAL *norm)
+{
+  register double a;
+  register double b;
+  register double x0r;
+  register double x0i;
+  
+  register double x1r;
+  register double x1i;
+  
+  register double x2r;
+  register double x2i;
+  
+  register double y0r;
+  register double y0i;
+  
+  register double y1r;
+  register double y1i;
+  
+  register double y2r;
+  register double y2i;
+  
+  register double z0r;
+  register double z0i;
+  
+  register double z1r;
+  register double z1i;
+  
+  register double z2r;
+  register double z2i;
+  register double norm_out=0;
+
+  a = *ap;
+  b = *bp;
+  register int index_x = 0;
+  register int index_y = 0;
+  register int index_z = 0;
+  
+  register int counter;
+  
+  for( counter = 0; counter < n_3vec; counter++) {
+    x0r = (double)xp[index_x++];
+    y0r = (double)yp[index_y++];
+    z0r = a*x0r;
+    z0r = z0r - b*y0r;
+    Out[index_z++] =(REAL) z0r;
+    norm_out += z0r*z0r;
+
+    x0i = (double)xp[index_x++];
+    y0i = (double)yp[index_y++];
+    z0i = a*x0i;
+    z0i = z0i - b*y0i;
+    Out[index_z++] =(REAL) z0i;
+    norm_out += z0i*z0i;    
+
+    x1r = (double)xp[index_x++];
+    y1r = (double)yp[index_y++];
+    z1r = a*x1r;
+    z1r = z1r - b*y1r;
+    Out[index_z++] = (REAL)z1r;
+    norm_out += z1r * z1r; 
+    
+    x1i = (double)xp[index_x++];
+    y1i = (double)yp[index_y++];
+    z1i = a*x1i;
+    z1i = z1i - b*y1i;
+    Out[index_z++] = (REAL)z1i;
+    norm_out += z1i*z1i;
+    
+    x2r = (double)xp[index_x++];     
+    y2r = (double)yp[index_y++];
+    z2r = a*x2r;
+    z2r = z2r - b*y2r;
+    Out[index_z++] = (REAL)z2r;
+    norm_out += z2r*z2r;
+    
+    x2i = (double)xp[index_x++];
+    y2i = (double)yp[index_y++];
+    z2i = a*x2i;
+    z2i = z2i - b*y2i;  
+    Out[index_z++] = (REAL)z2i;
+    norm_out += z2i*z2i;    
+  }
+  *norm=(REAL)norm_out;
+}
+
 QDP_END_NAMESPACE();
 
 #endif  // guard
