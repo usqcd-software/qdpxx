@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinmat.h,v 1.8 2004-08-10 00:48:58 edwards Exp $
+// $Id: qdp_primspinmat.h,v 1.9 2004-08-10 02:02:58 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -424,7 +424,7 @@ outerProduct(const PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r)
   typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnOuterProduct>::Type_t  d;
 
   for(int i=0; i < N; ++i)
-    for(int j=1; j < N; ++j)
+    for(int j=0; j < N; ++j)
       d.elem(i,j) = outerProduct(l.elem(i),r.elem(j));
 
   return d;
