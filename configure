@@ -2586,7 +2586,7 @@ fi
 if test ${ac_qcdoc_enabled} -eq 1; then
 
 cat >>confdefs.h <<_ACEOF
-#define QDP_USE_QCDOC ${ac_pab_asm_enabled}
+#define QDP_USE_QCDOC ${ac_qcdoc_enabled}
 _ACEOF
 
 

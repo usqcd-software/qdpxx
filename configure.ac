@@ -143,7 +143,7 @@ fi
 
 dnl if QCDOC is enabled change some settings
 if test ${ac_qcdoc_enabled} -eq 1; then 
-   AC_DEFINE_UNQUOTED(QDP_USE_QCDOC, ${ac_pab_asm_enabled}, [Enable PAB Asm])
+   AC_DEFINE_UNQUOTED(QDP_USE_QCDOC, ${ac_qcdoc_enabled}, [Enable QCDOC opts])
 
 fi
 
