@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_random.h,v 1.3 2003-08-23 02:27:13 edwards Exp $
+// $Id: qdp_random.h,v 1.4 2003-08-31 21:10:00 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -21,13 +21,16 @@ namespace RNG
   /*! Uses arbitrary internal seed to initialize the RNG */
   void initDefaultRNG(void);
 
-  //! Initialize the RNG
+  //! Initialize the internals of the RNG
+  void initRNG(void);
+
+  //! Initialize the RNG seed
   /*!
    * Seeds are big-ints
    */
   void setrn(const Seed& lseed);
 
-  //! Recover the current seed
+  //! Recover the current RNG seed
   /*!
    * Seeds are big-ints
    */

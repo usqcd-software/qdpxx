@@ -1,4 +1,4 @@
-// $Id: qdp_random.cc,v 1.4 2003-08-23 03:05:50 edwards Exp $
+// $Id: qdp_random.cc,v 1.5 2003-08-31 21:10:00 edwards Exp $
 //
 // Random number generator support
 
@@ -41,19 +41,19 @@ namespace RNG
   }
 
 
-  //! Initialize the random number generator
+  //! Initialize the random number generator with a default seed
   void initDefaultRNG()
   {
+    RNG::initRNG();
+
     Seed seed = 11;
     RNG::setrn(seed);
   }
 
 
-  //! Initialize the random number generator
-  void setrn(const Seed& seed_tmp)
+  //! Initialize the internals of the random number generator
+  void initRNG()
   {
-    ran_seed = seed_tmp;
-
     /* Multiplier used. Use big integer arithmetic */
     Seed seed_tmp3;
     Seed seed_tmp2;
@@ -148,6 +148,13 @@ namespace RNG
     lattice_ran_mult = new LatticeSeed;
 
     *lattice_ran_mult = lattice_ran_mult_tmp;
+  }
+
+
+  //! Initialize the random number generator seed
+  void setrn(const Seed& seed)
+  {
+    ran_seed = seed;
   }
 
 
