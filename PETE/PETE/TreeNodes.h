@@ -35,6 +35,9 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+// For some reason, IBM xlC barfs on these usages. Turn them off.
+#define MAKES_XLC_BARF
+
 //-----------------------------------------------------------------------------
 //
 // CLASS NAME
@@ -178,6 +181,7 @@ public:
   UnaryNode(const UnaryNode<Op, OtherChild> &t)
     : op_m(t.operation()), child_m(t.child()) { }
 
+#if ! defined(MAKES_XLC_BARF)
   //---------------------------------------------------------------------------
   // Constructor using a UnaryNode with a different child,
   // some arbitrary argument, and a different storage tag.
@@ -188,7 +192,9 @@ public:
   inline
   UnaryNode(const UnaryNode<Op, OtherChild> &t, const Arg &a)
     : op_m(t.operation()), child_m(t.child(), a) { }
+#endif
 
+#if ! defined(MAKES_XLC_BARF)
   //---------------------------------------------------------------------------
   // Constructor using a BinaryNode with a different Child and
   // two arbitrary arguments.
@@ -201,6 +207,7 @@ public:
     const Arg1 &a1, const Arg2 &a2)
     : op_m(t.operation()), child_m(t.child(), a1, a2)
     { }
+#endif
 
 private:
 
@@ -278,6 +285,7 @@ public:
     : op_m(t.operation()), left_m(t.left()), right_m(t.right())
   { }
 
+#if ! defined(MAKES_XLC_BARF)
   //---------------------------------------------------------------------------
   // Constructor using a BinaryNode with a different Left/Right and
   // some arbitrary argument.
@@ -290,7 +298,9 @@ public:
 	     const Arg &a)
     : op_m(t.operation()), left_m(t.left(), a), right_m(t.right(), a)
   { }
+#endif
 
+#if ! defined(MAKES_XLC_BARF)
   //---------------------------------------------------------------------------
   // Constructor using a BinaryNode with a different Left/Right and
   // two arbitrary arguments.
@@ -304,6 +314,7 @@ public:
     : op_m(t.operation()),
       left_m(t.left(), a1, a2), right_m(t.right(), a1, a2) 
   { }
+#endif
 
 private:
 
@@ -394,6 +405,7 @@ public:
       right_m(t.right())
   { }
 
+#if ! defined(MAKES_XLC_BARF)
   //---------------------------------------------------------------------------
   // Constructor using a TrinaryNode with a different Left/Middle/Right and
   // some arbitrary argument.
@@ -407,7 +419,9 @@ public:
     : op_m(t.operation()), left_m(t.left(), a), middle_m(t.middle(), a), 
       right_m(t.right(), a)
   { }
+#endif
 
+#if ! defined(MAKES_XLC_BARF)
   //---------------------------------------------------------------------------
   // Constructor using a TrinaryNode with a different Left/Middle/Right and
   // two arbitrary arguments.
@@ -422,6 +436,7 @@ public:
     : op_m(t.operation()), left_m(t.left(), a1, a2), 
       middle_m(t.middle(), a1, a2) , right_m(t.right(), a1, a2) 
   { }
+#endif
 
 private:
 
@@ -440,6 +455,6 @@ private:
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: TreeNodes.h,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2002-09-12 18:22:16 $
+// $Revision: 1.2 $   $Date: 2002-12-05 19:11:30 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo
