@@ -173,7 +173,7 @@ HDRS = examples.h
 # The programs to build
 # 
 check_PROGRAMS = t_skeleton t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo \
-      t_nml t_xml t_qio t_remote t_entry t_linalg t_nersc t_shift
+      t_nml t_xml t_qio t_remote t_entry t_linalg t_nersc t_shift t_exotic
 
 
 #
@@ -190,6 +190,7 @@ t_entry_SOURCES = t_entry.cc $(HDRS)
 t_nersc_SOURCES = t_nersc.cc mesplq.cc $(HDRS)
 t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)
 t_mesplq_SOURCES = t_mesplq.cc mesplq.cc reunit.cc $(HDRS)
+t_exotic_SOURCES = t_exotic.cc rgauge.cc taproj.cc expm12.cc reunit.cc $(HDRS)
 t_formfac_SOURCES = t_formfac.cc formfac_w.cc $(HDRS)
 t_spectrum_SOURCES = t_spectrum.cc baryon_w.cc mesons_w.cc mesplq.cc $(HDRS)
 t_qdp_SOURCES = t_qdp.cc formfac_w.cc dslashm_w.cc baryon_w.cc \
@@ -204,7 +205,7 @@ check_PROGRAMS = t_skeleton$(EXEEXT) t_dslashm$(EXEEXT) \
 	t_qdp$(EXEEXT) t_spectrum$(EXEEXT) t_foo$(EXEEXT) \
 	t_nml$(EXEEXT) t_xml$(EXEEXT) t_qio$(EXEEXT) t_remote$(EXEEXT) \
 	t_entry$(EXEEXT) t_linalg$(EXEEXT) t_nersc$(EXEEXT) \
-	t_shift$(EXEEXT)
+	t_shift$(EXEEXT) t_exotic$(EXEEXT)
 am__objects_1 =
 am_t_dslashm_OBJECTS = t_dslashm.$(OBJEXT) dslashm_w.$(OBJEXT) \
 	$(am__objects_1)
@@ -217,6 +218,13 @@ t_entry_OBJECTS = $(am_t_entry_OBJECTS)
 t_entry_LDADD = $(LDADD)
 t_entry_DEPENDENCIES =
 t_entry_LDFLAGS =
+am_t_exotic_OBJECTS = t_exotic.$(OBJEXT) rgauge.$(OBJEXT) \
+	taproj.$(OBJEXT) expm12.$(OBJEXT) reunit.$(OBJEXT) \
+	$(am__objects_1)
+t_exotic_OBJECTS = $(am_t_exotic_OBJECTS)
+t_exotic_LDADD = $(LDADD)
+t_exotic_DEPENDENCIES =
+t_exotic_LDFLAGS =
 am_t_foo_OBJECTS = t_foo.$(OBJEXT) $(am__objects_1)
 t_foo_OBJECTS = $(am_t_foo_OBJECTS)
 t_foo_LDADD = $(LDADD)
@@ -297,17 +305,19 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/dslashm_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/linalg1.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mesons_w.Po ./$(DEPDIR)/mesplq.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/t_dslashm.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_entry.Po ./$(DEPDIR)/t_foo.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_io.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_linalg.Po ./$(DEPDIR)/t_mesplq.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_nersc.Po ./$(DEPDIR)/t_nml.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_qdp.Po ./$(DEPDIR)/t_qio.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_remote.Po ./$(DEPDIR)/t_shift.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_skeleton.Po ./$(DEPDIR)/t_spectrum.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_xml.Po
+@AMDEP_TRUE@	./$(DEPDIR)/expm12.Po ./$(DEPDIR)/formfac_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/linalg1.Po ./$(DEPDIR)/mesons_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po ./$(DEPDIR)/reunit.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/rgauge.Po ./$(DEPDIR)/t_dslashm.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_entry.Po ./$(DEPDIR)/t_exotic.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_foo.Po ./$(DEPDIR)/t_formfac.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_io.Po ./$(DEPDIR)/t_linalg.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_mesplq.Po ./$(DEPDIR)/t_nersc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_nml.Po ./$(DEPDIR)/t_qdp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_qio.Po ./$(DEPDIR)/t_remote.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_shift.Po ./$(DEPDIR)/t_skeleton.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_spectrum.Po ./$(DEPDIR)/t_xml.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/taproj.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -317,14 +327,14 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_foo_SOURCES) \
-	$(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) \
-	$(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_nml_SOURCES) \
-	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_remote_SOURCES) \
-	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
-	$(t_xml_SOURCES)
+DIST_SOURCES = $(t_dslashm_SOURCES) $(t_entry_SOURCES) \
+	$(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) \
+	$(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) \
+	$(t_nersc_SOURCES) $(t_nml_SOURCES) $(t_qdp_SOURCES) \
+	$(t_qio_SOURCES) $(t_remote_SOURCES) $(t_shift_SOURCES) \
+	$(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_xml_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_nml_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_xml_SOURCES)
+SOURCES = $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_nml_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_xml_SOURCES)
 
 all: all-am
 
@@ -344,6 +354,9 @@ t_dslashm$(EXEEXT): $(t_dslashm_OBJECTS) $(t_dslashm_DEPENDENCIES)
 t_entry$(EXEEXT): $(t_entry_OBJECTS) $(t_entry_DEPENDENCIES) 
 	@rm -f t_entry$(EXEEXT)
 	$(CXXLINK) $(t_entry_LDFLAGS) $(t_entry_OBJECTS) $(t_entry_LDADD) $(LIBS)
+t_exotic$(EXEEXT): $(t_exotic_OBJECTS) $(t_exotic_DEPENDENCIES) 
+	@rm -f t_exotic$(EXEEXT)
+	$(CXXLINK) $(t_exotic_LDFLAGS) $(t_exotic_OBJECTS) $(t_exotic_LDADD) $(LIBS)
 t_foo$(EXEEXT): $(t_foo_OBJECTS) $(t_foo_DEPENDENCIES) 
 	@rm -f t_foo$(EXEEXT)
 	$(CXXLINK) $(t_foo_LDFLAGS) $(t_foo_OBJECTS) $(t_foo_LDADD) $(LIBS)
@@ -395,13 +408,16 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dslashm_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linalg1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_dslashm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_entry.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_exotic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_foo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_formfac.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_io.Po@am__quote@
@@ -416,6 +432,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_skeleton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spectrum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_xml.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
