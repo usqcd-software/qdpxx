@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_primcolormat.h,v 1.2 2003-08-27 01:25:35 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -60,6 +60,18 @@ struct WordType<PColorMatrix<T1,N> >
 template<class T, int N>
 struct InternalScalar<PColorMatrix<T,N> > {
   typedef PScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a primitive into a scalar leaving grid along
+template<class T, int N>
+struct PrimitiveScalar<PColorMatrix<T,N> > {
+  typedef PScalar<typename PrimitiveScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a lattice scalar leaving primitive indices along
+template<class T, int N>
+struct LatticeScalar<PColorMatrix<T,N> > {
+  typedef PColorMatrix<typename LatticeScalar<T>::Type_t, N>  Type_t;
 };
 
 //-----------------------------------------------------------------------------

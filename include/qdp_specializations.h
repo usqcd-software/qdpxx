@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_specializations.h,v 1.3 2003-06-21 18:28:49 edwards Exp $
+// $Id: qdp_specializations.h,v 1.4 2003-08-27 01:25:35 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -102,32 +102,84 @@ struct SimpleScalar<bool>
 // at some level like a primitive, sometimes scalar temporaries are needed
 // These are the bottom most constructors given a machine type
 //
+// Construct simple word
 template<>
 struct InternalScalar<float>
 {
   typedef float  Type_t;
 };
 
-// Construct simple int word
 template<>
 struct InternalScalar<int>
 {
   typedef int   Type_t;
 };
 
-// Construct simple double word
 template<>
 struct InternalScalar<double>
 {
   typedef double   Type_t;
 };
 
-// Construct simple boolean word
 template<>
 struct InternalScalar<bool>
 {
   typedef bool  Type_t;
 };
+
+
+// Makes a primitive scalar leaving grid alone
+template<>
+struct PrimitiveScalar<float>
+{
+  typedef float  Type_t;
+};
+
+template<>
+struct PrimitiveScalar<int>
+{
+  typedef int   Type_t;
+};
+
+template<>
+struct PrimitiveScalar<double>
+{
+  typedef double   Type_t;
+};
+
+template<>
+struct PrimitiveScalar<bool>
+{
+  typedef bool  Type_t;
+};
+
+
+
+// Makes a lattice scalar leaving primitive indices alone
+template<>
+struct LatticeScalar<float>
+{
+  typedef float  Type_t;
+};
+
+template<>
+struct LatticeScalar<int>
+{
+  typedef int   Type_t;
+};
+
+template<>
+struct LatticeScalar<double>
+{
+  typedef double   Type_t;
+};
+
+template<>
+struct LatticeScalar<bool>
+{
+  typedef bool  Type_t;
+};
+
 
 
 // Internally used real scalars

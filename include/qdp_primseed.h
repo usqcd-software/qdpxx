@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.5 2003-08-26 15:25:27 edwards Exp $
+// $Id: qdp_primseed.h,v 1.6 2003-08-27 01:25:35 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -182,6 +182,24 @@ XMLWriter& operator<<(XMLWriter& xml, const PSeed<T>& d)
 }
 
 
+//! XML input
+template<class T>
+inline
+void read(XMLReader& xml, const string& path, PSeed<T>& d)
+{
+  typedef typename PrimitiveScalar<T>::Type_t  S;
+  multi1d<S> ff(4);
+
+  read(xml, path + "/Seed", ff);
+  
+  for(int i=0; i < 4; ++i)
+  {
+    typedef typename PrimitiveScalar<T>::Type_t  S;
+
+    d.elem(i) = S(ff[i]);
+  }
+}
+
 
 /*! @} */   // end of group primseed
 
@@ -200,6 +218,18 @@ struct WordType<PSeed<T1> >
 template<class T>
 struct InternalScalar<PSeed<T> > {
   typedef PScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a primitive scalar leaving grid alone
+template<class T>
+struct PrimitiveScalar<PSeed<T> > {
+  typedef PScalar<typename PrimitiveScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a lattice scalar leaving primitive indices alone
+template<class T>
+struct LatticeScalar<PSeed<T> > {
+  typedef PSeed<typename LatticeScalar<T>::Type_t>  Type_t;
 };
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.12 2003-08-26 15:25:45 edwards Exp $
+// $Id: qdp_primvector.h,v 1.13 2003-08-27 01:25:35 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -231,6 +231,18 @@ struct WordType<PVector<T1,N,C> >
 template<class T, int N, template<class,int> class C>
 struct InternalScalar<PVector<T,N,C> > {
   typedef PScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a primitive scalar leaving grid alone
+template<class T, int N, template<class,int> class C>
+struct PrimitiveScalar<PVector<T,N,C> > {
+  typedef PScalar<typename PrimitiveScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a lattice scalar leaving primitive indices alone
+template<class T, int N, template<class,int> class C>
+struct LatticeScalar<PVector<T,N,C> > {
+  typedef C<typename LatticeScalar<T>::Type_t, N>  Type_t;
 };
 
 //-----------------------------------------------------------------------------

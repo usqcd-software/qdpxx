@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_forward.h,v 1.3 2003-08-14 03:47:29 edwards Exp $
+// $Id: qdp_forward.h,v 1.4 2003-08-27 01:25:34 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -62,6 +62,8 @@ template<class T, class C, class S> class QDPSubType;
 // Simple scalar trait class
 template<class T> struct SimpleScalar;
 template<class T> struct InternalScalar;
+template<class T> struct LatticeScalar;
+template<class T> struct PrimitiveScalar;
 template<class T> struct RealScalar;
 template<class T> struct WordType;
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinvec.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_primspinvec.h,v 1.2 2003-08-27 01:25:35 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Vector
@@ -78,6 +78,18 @@ struct WordType<PSpinVector<T1,N> >
 template<class T, int N>
 struct InternalScalar<PSpinVector<T,N> > {
   typedef PScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a primitive into a scalar leaving grid alone
+template<class T, int N>
+struct PrimitiveScalar<PSpinVector<T,N> > {
+  typedef PScalar<typename PrimitiveScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a lattice scalar leaving primitive indices alone
+template<class T, int N>
+struct LatticeScalar<PSpinVector<T,N> > {
+  typedef PSpinVector<typename LatticeScalar<T>::Type_t, N>  Type_t;
 };
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.9 2003-08-21 02:40:51 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.10 2003-08-27 01:25:35 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -244,6 +244,18 @@ struct InternalScalar<PScalar<T> > {
 template<class T>
 struct RealScalar<PScalar<T> > {
   typedef PScalar<typename RealScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a primitive scalar leaving grid alone
+template<class T>
+struct PrimitiveScalar<PScalar<T> > {
+  typedef PScalar<typename PrimitiveScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a lattice scalar leaving primitive indices alone
+template<class T>
+struct LatticeScalar<PScalar<T> > {
+  typedef PScalar<typename LatticeScalar<T>::Type_t>  Type_t;
 };
 
 

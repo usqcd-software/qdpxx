@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_traits.h,v 1.3 2003-07-31 01:07:11 edwards Exp $
+// $Id: qdp_traits.h,v 1.4 2003-08-27 01:25:35 edwards Exp $
 
 /*! @file
  * @brief Traits classes
@@ -42,6 +42,16 @@ struct SimpleScalar {};
 //! Construct simple word type used at some level within primitives
 template<class T>
 struct InternalScalar {};
+
+
+//! Makes a primitive scalar leaving grid alone
+template<class T>
+struct PrimitiveScalar {};
+
+
+//! Makes a lattice scalar leaving primitive indices alone
+template<class T>
+struct LatticeScalar {};
 
 
 //! Construct simple word type used at some level within primitives

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.11 2003-08-21 02:42:22 edwards Exp $
+// $Id: qdp_reality.h,v 1.12 2003-08-27 01:25:35 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -499,6 +499,29 @@ struct InternalScalar<RScalar<T> > {
 template<class T>
 struct InternalScalar<RComplex<T> > {
   typedef RScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+
+// Makes a primitive scalar leaving grid alone
+template<class T>
+struct PrimitiveScalar<RScalar<T> > {
+  typedef RScalar<typename PrimitiveScalar<T>::Type_t>  Type_t;
+};
+
+template<class T>
+struct PrimitiveScalar<RComplex<T> > {
+  typedef RScalar<typename PrimitiveScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a lattice scalar leaving primitive indices alone
+template<class T>
+struct LatticeScalar<RScalar<T> > {
+  typedef RScalar<typename LatticeScalar<T>::Type_t>  Type_t;
+};
+
+template<class T>
+struct LatticeScalar<RComplex<T> > {
+  typedef RComplex<typename LatticeScalar<T>::Type_t>  Type_t;
 };
 
 

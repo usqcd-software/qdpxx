@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.8 2003-08-26 15:24:07 edwards Exp $
+// $Id: qdp_inner.h,v 1.9 2003-08-27 01:25:34 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -657,6 +657,30 @@ struct InternalScalar<IScalar<T> > {
 template<class T, int N>
 struct InternalScalar<ILattice<T,N> > {
   typedef IScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+
+// Trait to make a primitive scalar leaving grid along
+template<class T>
+struct PrimitiveScalar<IScalar<T> > {
+  typedef IScalar<typename PrimitiveScalar<T>::Type_t>  Type_t;
+};
+
+template<class T, int N>
+struct PrimitiveScalar<ILattice<T,N> > {
+  typedef ILattice<typename PrimitiveScalar<T>::Type_t, N>  Type_t;
+};
+
+
+// Trait to make a lattice scalar leaving other indices alone
+template<class T>
+struct LatticeScalar<IScalar<T> > {
+  typedef IScalar<typename LatticeScalar<T>::Type_t>  Type_t;
+};
+
+template<class T, int N>
+struct LatticeScalar<ILattice<T,N> > {
+  typedef IScalar<typename LatticeScalar<T>::Type_t>  Type_t;
 };
 
 

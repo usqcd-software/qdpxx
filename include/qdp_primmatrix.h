@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.12 2003-08-21 02:40:34 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.13 2003-08-27 01:25:35 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -258,6 +258,18 @@ struct WordType<PMatrix<T1,N,C> >
 template<class T, int N, template<class,int> class C>
 struct InternalScalar<PMatrix<T,N,C> > {
   typedef PScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a primitive scalar leaving grid alone
+template<class T, int N, template<class,int> class C>
+struct PrimitiveScalar<PMatrix<T,N,C> > {
+  typedef PScalar<typename PrimitiveScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a lattice scalar leaving primitive indices alone
+template<class T, int N, template<class,int> class C>
+struct LatticeScalar<PMatrix<T,N,C> > {
+  typedef C<typename LatticeScalar<T>::Type_t, N>  Type_t;
 };
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.15 2003-08-26 15:24:41 edwards Exp $
+// $Id: qdp_outer.h,v 1.16 2003-08-27 01:25:34 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -500,6 +500,30 @@ struct InternalScalar<OScalar<T> > {
 template<class T>
 struct InternalScalar<OLattice<T> > {
   typedef OScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+
+// Trait to make a primitive scalar leaving grid along
+template<class T>
+struct PrimitiveScalar<OScalar<T> > {
+  typedef OScalar<typename PrimitiveScalar<T>::Type_t>  Type_t;
+};
+
+template<class T>
+struct PrimitiveScalar<OLattice<T> > {
+  typedef OLattice<typename PrimitiveScalar<T>::Type_t>  Type_t;
+};
+
+
+// Trait to make a lattice scalar leaving primitive indices alone
+template<class T>
+struct LatticeScalar<OScalar<T> > {
+  typedef OScalar<typename LatticeScalar<T>::Type_t>  Type_t;
+};
+
+template<class T>
+struct LatticeScalar<OLattice<T> > {
+  typedef OScalar<typename LatticeScalar<T>::Type_t>  Type_t;
 };
 
 

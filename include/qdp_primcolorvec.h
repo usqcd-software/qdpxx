@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolorvec.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_primcolorvec.h,v 1.2 2003-08-27 01:25:35 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Vector
@@ -49,6 +49,18 @@ struct WordType<PColorVector<T1,N> >
 template<class T, int N>
 struct InternalScalar<PColorVector<T,N> > {
   typedef PScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a primitive scalar leaving other indices along
+template<class T, int N>
+struct PrimitiveScalar<PColorVector<T,N> > {
+  typedef PScalar<typename PrimitiveScalar<T>::Type_t>  Type_t;
+};
+
+// Makes a lattice scalar leaving primitive indices alone
+template<class T, int N>
+struct LatticeScalar<PColorVector<T,N> > {
+  typedef PColorVector<typename LatticeScalar<T>::Type_t, N>  Type_t;
 };
 
 //-----------------------------------------------------------------------------
