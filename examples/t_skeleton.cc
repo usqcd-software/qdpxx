@@ -1,4 +1,4 @@
-// $Id: t_skeleton.cc,v 1.1 2003-01-15 21:46:51 edwards Exp $
+// $Id: t_skeleton.cc,v 1.2 2003-01-16 01:31:20 edwards Exp $
 /*! \file
  *  \brief Skeleton of a QDP main program
  */
@@ -29,13 +29,7 @@ int main(int argc, char *argv[])
   // Do some wonderful and amazing things - impress your friends
 
 
-  // Start of the cleanup
-  // This will remove all QDP context associated with the layout
-  // Not really needed 
-  Layout::destroy();
-
   // Possibly shutdown the machine
-  // NOTE: will also try to call Layout::destroy()
   QDP_finalize();
 
   return 0;
