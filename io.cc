@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.3 2002-10-25 03:29:00 edwards Exp $
+// $Id: io.cc,v 1.4 2002-10-26 02:25:27 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -9,16 +9,23 @@ QDP_BEGIN_NAMESPACE(QDP);
 
 //-----------------------------------------
 //! text reader support
-TextReader::TextReader() {}
+TextReader::TextReader() {iop=false;}
 
 TextReader::TextReader(const char* p) {open(p);}
 
-void TextReader::open(const char* p) {f.open(p,std::ios_base::in);}
+void TextReader::open(const char* p)
+{
+  f.open(p,std::ios_base::in);
+  iop=true;
+}
 
 void TextReader::close()
 {
-  if (is_open()) 
+  if (iop)
+  {
     f.close();
+    iop = false;
+  }
 }
 
 #if 0
@@ -31,23 +38,30 @@ TextReader& TextReader::operator>>(T& d)
 #endif
 
 
-bool TextReader::is_open() {return f.is_open();}
+bool TextReader::is_open() {return iop;}
 
 TextReader::~TextReader() {close();}
 
 
 //-----------------------------------------
 //! text writer support
-TextWriter::TextWriter() {}
+TextWriter::TextWriter() {iop=false;}
 
 TextWriter::TextWriter(const char* p) {open(p);}
 
-void TextWriter::open(const char* p) {return f.open(p,std::ios_base::out);}
+void TextWriter::open(const char* p)
+{
+  f.open(p,std::ios_base::out);
+  iop=true;
+}
 
 void TextWriter::close()
 {
-  if (is_open()) 
+  if (iop) 
+  {
     f.close();
+    iop = false;
+  }
 }
 
 #if 0
@@ -61,26 +75,33 @@ TextWriter& TextWriter::operator<<(const T& d)
 
 
 
-bool TextWriter::is_open() {return f.is_open();}
+bool TextWriter::is_open() {return iop;}
 
 TextWriter::~TextWriter() {close();}
 
 
 //-----------------------------------------
 //! text reader support
-NmlReader::NmlReader() {}
+NmlReader::NmlReader() {iop=false;}
 
 NmlReader::NmlReader(const char* p) {open(p);}
 
-void NmlReader::open(const char* p) {f.open(p,std::ios_base::in);}
+void NmlReader::open(const char* p)
+{
+  f.open(p,std::ios_base::in);
+  iop = true;
+}
 
 void NmlReader::close()
 {
-  if (is_open()) 
+  if (iop)
+  {
     f.close();
+    iop = false;
+  }
 }
 
-bool NmlReader::is_open() {return f.is_open();}
+bool NmlReader::is_open() {return iop;}
 
 NmlReader::~NmlReader() {close();}
 
@@ -140,7 +161,12 @@ BinaryReader::BinaryReader(const char* p) {open(p);}
 
 void BinaryReader::open(const char* p) 
 {
-  f = fopen(p,"rb");
+  if ((f = fopen(p,"rb")) == NULL)
+  {
+    cerr << "BinaryReader: error opening file: " << p << endl;
+    SZ_ERROR("BinaryReader: error opening file");
+  }
+
   iop = true;
 }
 
@@ -176,7 +202,12 @@ BinaryWriter::BinaryWriter(const char* p) {open(p);}
 
 void BinaryWriter::open(const char* p) 
 {
-  f = fopen(p,"wb");
+  if ((f = fopen(p,"wb")) == NULL)
+  {
+    cerr << "BinaryWriter: error opening file: " << p << endl;
+    SZ_ERROR("BinaryWriter: error opening file");
+  }
+
   iop = true;
 }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.5 2002-10-12 04:10:15 edwards Exp $
+// $Id: io.h,v 1.6 2002-10-26 02:25:27 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -42,6 +42,7 @@ public:
 
 
 private:
+  bool iop;
   std::ifstream f;
 };
 
@@ -64,6 +65,7 @@ public:
   TextWriter& operator<<(const T& d) {f << d; return *this;}
 
 private:
+  bool iop;
   std::ofstream f;
 };
 
@@ -110,6 +112,7 @@ public:
 
 
 private:
+  bool iop;
   std::ifstream f;
 };
 
