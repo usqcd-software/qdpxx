@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: QDPOperators.h,v 1.10 2002-10-14 02:08:56 edwards Exp $
+// $Id: QDPOperators.h,v 1.11 2002-10-14 02:25:25 edwards Exp $
 
 /*! @file
  * @brief Bulk of QDP operators produced by PETE
@@ -1418,6 +1418,9 @@ localInnerproductReal(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
    necessarily of the same lattice type. Effectively, one can use
    this to construct an anti-quark from a di-quark contraction. In
    explicit index form, the operation  QuarkContract13 does
+   
+   \f$target^{k' k}_{\alpha\beta} =
+     \epsilon^{i j k}\epsilon^{i' j' k'}* source1^{i i'}_{\rho\alpha}* source2^{j j'}_{\rho\beta}\f$
    
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
