@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.12 2003-04-20 04:03:34 edwards Exp $
+// $Id: scalar_specific.cc,v 1.13 2003-04-23 04:41:52 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -124,7 +124,7 @@ void Set::make(const SetFunc& func)
 //! Initializer for generic map constructor
 void Map::make(const MapFunc& func)
 {
-  QDP_info("Map::make");
+//  QDP_info("Map::make");
 
   //--------------------------------------
   // Setup the communication index arrays
