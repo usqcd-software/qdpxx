@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.18 2003-07-05 17:02:35 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.19 2003-07-05 17:40:41 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -100,7 +100,7 @@ void XMLReader::get(const std::string& xpath, string& input)
   // Now every node can alloc space for string
   dd_tmp = new char[lleng];
   if (Layout::primaryNode())
-    input.copy(dd_tmp, lleng);
+    memcpy(dd_tmp, input.c_str(), lleng);
   
   // Now broadcast char array out to all nodes
   Internal::broadcast((void *)dd_tmp, lleng);
