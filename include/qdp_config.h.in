@@ -1,32 +1,64 @@
-#ifndef QDP_CONFIG_INCLUDED
-#define QDP_CONFIG_INCLUDED
+/* include/qdp_config.h.in.  Generated from configure.ac by autoheader.  */
 
-// One of these will be defined by the --enable-parallel-arch
-#undef ARCH_SCALAR
-#undef ARCH_SCALARVEC
+/* Parallel-scalar architecture */
 #undef ARCH_PARSCALAR
+
+/* Parallel-scalar with vector extensions layout */
 #undef ARCH_PARSCALARVEC
 
-// Fundamental constants
-#undef ND    
-#undef NC 
-#undef NS
+/* Scalar architecture */
+#undef ARCH_SCALAR
 
+/* Scalar with vector extensions architecture */
+#undef ARCH_SCALARVEC
 
-// Integer debug level
-#undef QDP_DEBUG
-
-
-// Underlying layout definitions
-#undef QDP_USE_LEXICO_LAYOUT
-#undef QDP_USE_CB2_LAYOUT
-#undef QDP_USE_CB32_LAYOUT
-
-// SSE Optimisations
-#undef QDP_USE_SSE
-#undef QDP_USE_SSE2
-
-// Base Precision
+/* Double precision */
 #undef BASE_PRECISION
 
-#endif 
+/* Number of color components */
+#undef NC
+
+/* Number of dimensions */
+#undef ND
+
+/* Number of spin components */
+#undef NS
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Use checkerboarded layout */
+#undef QDP_USE_CB2_LAYOUT
+
+/* Use hypercube checkerboard layout */
+#undef QDP_USE_CB32_LAYOUT
+
+/* Use lexicographic layout */
+#undef QDP_USE_LEXICO_LAYOUT
+
+/* Enable SSE instructions */
+#undef QDP_USE_SSE
+
+/* Enable SSE2 instructions */
+#undef QDP_USE_SSE2
+
+/* Version number of package */
+#undef VERSION
+
+/* Define if using the dmalloc debugging malloc package */
+#undef WITH_DMALLOC
