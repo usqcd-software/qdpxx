@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multi.h,v 1.5 2003-01-14 04:44:16 edwards Exp $
+// $Id: multi.h,v 1.6 2003-03-08 03:52:31 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -322,38 +322,47 @@ private:
 };
 
 
-//! Container for a multi-dimensional 4D array
-template<class T> class multi4d
+//! Container for a generic N dimensional array
+template<class T> class multiNd
 {
 public:
-  multi4d() {F=0;n1=n2=n3=sz=0;}
-  explicit multi4d(int ns4, int ns3, int ns2, int ns1) {F=0;resize(ns4,ns3,ns2,ns1);}
-  ~multi4d() {delete[] F;}
+  multiNd() {F=0;}
+  explicit multiNd(const multi1d<int>& _nz) {F=0;resize(_nz);}
+  ~multiNd() {delete[] F;}
 
   //! Copy constructor
-  multi4d(const multi4d& s): n1(s.n1), n2(s.n2), n3(s.n3), n4(s.n4), sz(s.sz), F(0)
+  multiNd(const multiNd& s): nz(s.nz), sz(s.sz), F(0)
     {
-      resize(n4,n3,n2,n1);
+      resize(nz);
 
       for(int i=0; i < sz; ++i)
 	F[i] = s.F[i];
     }
 
   //! Allocate mem for the array
-  void resize(int ns4, int ns3, int ns2, int ns1) 
-    {delete[] F; n1=ns1; n2=ns2; n3=ns3; n4=ns4; sz=n1*n2*n3*n4; F = new T[sz];}
+  void resize(const multi1d<int>& _nz) 
+    {
+      delete[] F; 
+      nz = _nz;
+      sz = nz[0];
+      for(int i=1; i < nz.size(); ++i)
+	sz *= nz[i];
+      F = new T[sz];
+    }
 
-  //! Size of array
-  int size1() const {return n1;}
-  int size2() const {return n2;}
-  int size3() const {return n3;}
-  int size4() const {return n4;}
+  //! Size of i-th array index. Indices run from left to right in operator() 
+  /*! Note, the last/right index is the fastest varying index */
+  int size(int i) const {return nz[i];}
+
+  //! Size of an array containing sizes of each index.
+  /*! Note, the last/right index is the fastest varying index */
+  const multi1d<int>& size() const {return nz;}
 
   //! Equal operator uses underlying = of T
-  multi4d<T>& operator=(const multi4d<T>& s1)
+  multiNd<T>& operator=(const multiNd<T>& s1)
     {
       if (F == 0)
-	resize(s1.size4(), s1.size3(), s1.size2(), s1.size());
+	resize(s1.size());
 
       for(int i=0; i < sz; ++i)
 	F[i] = s1.F[i];
@@ -362,7 +371,7 @@ public:
 
   //! Equal operator uses underlying = of T
   template<class T1>
-  multi4d<T>& operator=(const T1& s1)
+  multiNd<T>& operator=(const T1& s1)
     {
       if (F == 0)
       {
@@ -375,26 +384,40 @@ public:
       return *this;
     }
 
-  //! Return ref to a column slice
-  const T* slice(int l, int k, int j) const {return F+n1*(j+n2*(k+n3*(l)));}
+  //! Return ref to an element via indices packed in a multi1d array
+  T& operator[](const multi1d<int>& ind)
+    {
+      if (ind.size() != nz.size())
+      {
+	cerr << "multiNd: improper rank of array indices\n";
+	exit(1);
+      }
 
-  //! Return ref to an element
-  T& operator()(int l, int k, int j, int i) {return F[i+n1*(j+n2*(k+n3*(l)))];}
+      int off = ind[0];
+      for(int i=1; i < nz.size(); ++i)
+	off = off*nz[i] + ind[i];
 
-  //! Return const ref to an element
-  const T& operator()(int l, int k, int j, int i) const {return F[i+n1*(j+n2*(k+n3*(l)))];}
+      return F[off];
+    }
 
-  //! Return ref to an element
-  multi3d<T> operator[](int l) {return multi3d<T>(F+n1*n2*n3*l,n3,n2,n1);}
+  //! Return ref to an element via indices packed in a multi1d array
+  const T& operator[](const multi1d<int>& ind) const
+    {
+      if (ind.size() != nz.size())
+      {
+	cerr << "multiNd: improper rank of array indices\n";
+	exit(1);
+      }
 
-  //! Return const ref to an element
-  const multi3d<T> operator[](int l) const {return multi3d<T>(F+n1*n2*n3*k,n3,n2,n1);}
+      int off = ind[0];
+      for(int i=1; i < nz.size(); ++i)
+	off = off*nz[i] + ind[i];
+
+      return F[off];
+    }
 
 private:
-  int n1;
-  int n2;
-  int n3;
-  int n4;
+  multi1d<int> nz;
   int sz;
   T *F;
 };
