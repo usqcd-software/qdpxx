@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.18 2003-09-10 16:55:45 edwards Exp $
+// $Id: t_xml.cc,v 1.19 2003-09-10 17:10:04 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -181,25 +181,27 @@ int main(int argc, char **argv)
   try 
   {
     // Test reading some more complex snippets
-    XMLReader fromxml;
-    fromxml.open("t_xml.input2");
+    XMLReader fromxml_orig;
+    fromxml_orig.open("t_xml.input2");
+
+    XMLReader fromxml(fromxml_orig, "/complex_xml");
 
     Seed seed;
-    read(fromxml,"/complex_xml/seedThingy",seed);
+    read(fromxml,"seedThingy",seed);
     cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << endl;
 
     multi1d<int> arrayInt;
-    read(fromxml,"/complex_xml/arrayInt",arrayInt);
+    read(fromxml,"arrayInt",arrayInt);
     for(int i=0; i < arrayInt.size(); ++i)
       cout << "arrayInt[" << i << "] = " << arrayInt[i]  << "  node=" << Layout::nodeNumber() << endl;
 
     multi1d<Real> arrayReal;
-    read(fromxml,"/complex_xml/arrayReal",arrayReal);
+    read(fromxml,"arrayReal",arrayReal);
     for(int i=0; i < arrayReal.size(); ++i)
       cout << "arrayReal[" << i << "] = " << arrayReal[i] << "  node=" << Layout::nodeNumber() << endl;
 
     multi1d<Complex> arrayComplex;
-    read(fromxml,"/complex_xml/arrayComplex",arrayComplex);
+    read(fromxml,"arrayComplex",arrayComplex);
     for(int i=0; i < arrayComplex.size(); ++i)
       cout << "arrayComplex[" << i << "] = (" 
 	   << Real(real(arrayComplex[i])) << ","            // The Real() shouldn't be necesary - 
