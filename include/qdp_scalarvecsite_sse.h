@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.1 2003-08-21 03:29:46 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.2 2003-08-21 04:18:04 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -26,6 +26,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 #define RComplexFloat  RComplex<ILattice<float,4> >
 
 
+#if 0
 //! Specialized Inner lattice class
 /*! Uses sse  */
 template<> class ILattice<float, 4>
@@ -354,6 +355,244 @@ private:
   v4sf F;
 
 } QDP_ALIGN16;   // possibly force alignment
+#endif
+
+
+
+
+//--------------------------------------------------------------------------------------
+#if 0
+#define PREFETCH(addr)  __asm__ __volatile__("prefetcht0 %0"::"m"(*(addr)))
+#else
+#define PREFETCH(addr)
+#endif
+
+#define _inline_ssevec_mult_su3_nn(cc,aa,bb,j) \
+{ \
+          __asm__ __volatile__ (          \
+              "movlps %0, %%xmm0 \n\t"    \
+              "movaps %0,%%xmm0\n\t"      \
+              "movaps %%xmm0,%%xmm1\n\t"  \
+              "mulps  %2,%%xmm1\n\t"      \
+              "movaps %%xmm0,%%xmm2\n\t"  \
+              "mulps  %3,%%xmm2\n\t"      \
+              "movaps %%xmm0,%%xmm3\n\t"  \
+              "mulps  %4,%%xmm3\n\t"      \
+              "movaps %%xmm0,%%xmm4\n\t"  \
+              "mulps  %5,%%xmm4\n\t"      \
+              "movaps %%xmm0,%%xmm5\n\t"  \
+              "mulps  %6,%%xmm5\n\t"      \
+              "mulps  %1,%%xmm0\n\t"      \
+	      :                           \
+	      : "m" ((bb).elem(0,j).real()),     \
+		"m" ((aa).elem(0,0).real()),     \
+		"m" ((aa).elem(0,0).imag()),     \
+		"m" ((aa).elem(1,0).real()),     \
+		"m" ((aa).elem(1,0).imag()),     \
+		"m" ((aa).elem(2,0).real()),     \
+		"m" ((aa).elem(2,0).imag()));    \
+          __asm__ __volatile__ (          \
+              "movaps %0,%%xmm6\n\t"      \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %2,%%xmm7\n\t"      \
+              "subps  %%xmm7,%%xmm0\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %1,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm1\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %4,%%xmm7\n\t"      \
+              "subps  %%xmm7,%%xmm2\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %3,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm3\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %6,%%xmm7\n\t"      \
+              "subps  %%xmm7,%%xmm4\n\t"  \
+              "mulps  %5,%%xmm6\n\t"      \
+              "addps  %%xmm6,%%xmm5\n\t"  \
+	      :                           \
+	      : "m" ((bb).elem(0,j).imag()),     \
+		"m" ((aa).elem(0,0).real()),     \
+		"m" ((aa).elem(0,0).imag()),     \
+		"m" ((aa).elem(1,0).real()),     \
+		"m" ((aa).elem(1,0).imag()),     \
+		"m" ((aa).elem(2,0).real()),     \
+		"m" ((aa).elem(2,0).imag()));    \
+          __asm__ __volatile__ (          \
+              "movaps %0,%%xmm6\n\t"      \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %1,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm0\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %2,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm1\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %3,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm2\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %4,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm3\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %5,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm4\n\t"  \
+              "mulps  %6,%%xmm6\n\t"      \
+              "addps  %%xmm6,%%xmm5\n\t"  \
+	      :                           \
+	      : "m" ((bb).elem(1,j).real()),     \
+		"m" ((aa).elem(0,1).real()),     \
+		"m" ((aa).elem(0,1).imag()),     \
+		"m" ((aa).elem(1,1).real()),     \
+		"m" ((aa).elem(1,1).imag()),     \
+		"m" ((aa).elem(2,1).real()),     \
+		"m" ((aa).elem(2,1).imag()));    \
+          __asm__ __volatile__ (          \
+              "movaps %0,%%xmm6\n\t"      \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %2,%%xmm7\n\t"      \
+              "subps  %%xmm7,%%xmm0\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %1,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm1\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %4,%%xmm7\n\t"      \
+              "subps  %%xmm7,%%xmm2\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %3,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm3\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %6,%%xmm7\n\t"      \
+              "subps  %%xmm7,%%xmm4\n\t"  \
+              "mulps  %5,%%xmm6\n\t"      \
+              "addps  %%xmm6,%%xmm5\n\t"  \
+	      :                           \
+	      : "m" ((bb).elem(1,j).imag()),     \
+		"m" ((aa).elem(0,1).real()),     \
+		"m" ((aa).elem(0,1).imag()),     \
+		"m" ((aa).elem(1,1).real()),     \
+		"m" ((aa).elem(1,1).imag()),     \
+		"m" ((aa).elem(2,1).real()),     \
+		"m" ((aa).elem(2,1).imag()));    \
+          __asm__ __volatile__ (          \
+              "movaps %0,%%xmm6\n\t"      \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %1,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm0\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %2,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm1\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %3,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm2\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %4,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm3\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %5,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm4\n\t"  \
+              "mulps  %6,%%xmm6\n\t"      \
+              "addps  %%xmm6,%%xmm5\n\t"  \
+	      :                           \
+	      : "m" ((bb).elem(2,j).real()),     \
+		"m" ((aa).elem(0,2).real()),     \
+		"m" ((aa).elem(0,2).imag()),     \
+		"m" ((aa).elem(1,2).real()),     \
+		"m" ((aa).elem(1,2).imag()),     \
+		"m" ((aa).elem(2,2).real()),     \
+		"m" ((aa).elem(2,2).imag()));    \
+          __asm__ __volatile__ (          \
+              "movaps %0,%%xmm6\n\t"      \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %2,%%xmm7\n\t"      \
+              "subps  %%xmm7,%%xmm0\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %1,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm1\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %4,%%xmm7\n\t"      \
+              "subps  %%xmm7,%%xmm2\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %3,%%xmm7\n\t"      \
+              "addps  %%xmm7,%%xmm3\n\t"  \
+              "movaps %%xmm6,%%xmm7\n\t"  \
+              "mulps  %6,%%xmm7\n\t"      \
+              "subps  %%xmm7,%%xmm4\n\t"  \
+              "mulps  %5,%%xmm6\n\t"      \
+              "addps  %%xmm6,%%xmm5\n\t"  \
+	      :                           \
+	      : "m" ((bb).elem(2,j).imag()),     \
+		"m" ((aa).elem(0,2).real()),     \
+		"m" ((aa).elem(0,2).imag()),     \
+		"m" ((aa).elem(1,2).real()),     \
+		"m" ((aa).elem(1,2).imag()),     \
+		"m" ((aa).elem(2,2).real()),     \
+		"m" ((aa).elem(2,2).imag()));    \
+          __asm__ __volatile__(           \
+              "movaps %%xmm0,%0\n\t"      \
+              "movaps %%xmm1,%1\n\t"      \
+              "movaps %%xmm2,%2\n\t"      \
+              "movaps %%xmm3,%3\n\t"      \
+              "movaps %%xmm4,%4\n\t"      \
+              "movaps %%xmm5,%5\n\t"      \
+	      : "=m" ((cc).elem(0,j).real()),    \
+		"=m" ((cc).elem(0,j).imag()),    \
+		"=m" ((cc).elem(1,j).real()),    \
+		"=m" ((cc).elem(1,j).imag()),    \
+		"=m" ((cc).elem(2,j).real()),    \
+		"=m" ((cc).elem(2,j).imag()));   \
+}
+
+
+
+// Optimized version of  
+//    PColorMatrix<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorMatrix<RComplexFloat,3>
+template<>
+inline BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
+  PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiply>::Type_t
+operator*<>(const PMatrix<RComplexFloat,3,PColorMatrix>& l, 
+	    const PMatrix<RComplexFloat,3,PColorMatrix>& r)
+{
+  BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
+    PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiply>::Type_t  d;
+
+  _inline_ssevec_mult_su3_nn(d,l,r,0);
+  _inline_ssevec_mult_su3_nn(d,l,r,1);
+  _inline_ssevec_mult_su3_nn(d,l,r,2);
+
+  return d;
+}
+
+
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
+template<>
+void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiply, 
+	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
+	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > >, 
+	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
+	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
+	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
+	      const OrderedSubset& s)
+{
+// cout << "call single site QDP_M_eq_M_times_M" << endl;
+
+  const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
+  const LatticeColorMatrix& r = static_cast<const LatticeColorMatrix&>(rhs.expression().right());
+
+  const int istart = s.start() >> INNER_LEN;
+  const int iend   = s.end()   >> INNER_LEN;
+
+  for(int i=istart; i <= iend; ++i) 
+  {
+    _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+  }
+}
+
+
+
+
 
 
 /*! @} */   // end of group optimizations
