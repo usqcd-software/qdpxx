@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: traits.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: traits.h,v 1.2 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -32,6 +32,11 @@ struct SimpleScalar {};
 // Construct simple word type used at some level within primitives
 template<class T>
 struct InternalScalar {};
+
+
+// Construct simple word type used at some level within primitives
+template<class T>
+struct RealScalar {};
 
 
 // Construct primitive type of input but always RScalar complex type

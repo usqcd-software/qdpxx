@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.4 2002-10-01 01:52:51 edwards Exp $
+// $Id: simpleword.h,v 1.5 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -75,7 +75,7 @@ fill_random(double& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 }
 
 
-
+//---------------------------
 //! dest [float type] = source [int type]
 inline
 void cast_rep(float& d, const int& s1)
@@ -118,6 +118,52 @@ void cast_rep(double& d, const double& s1)
 {
   d = double(s1);
 }
+
+
+//---------------------------
+//! dest [float type] = source [int type]
+inline
+void recast_rep(float& d, const int& s1)
+{
+  cast_rep(d,s1);
+}
+
+//! dest [float type] = source [float type]
+inline
+void recast_rep(float& d, const float& s1)
+{
+  cast_rep(d,s1);
+}
+
+//! dest [float type] = source [double type]
+inline
+void recast_rep(float& d, const double& s1)
+{
+  cast_rep(d,s1);
+}
+
+
+//! dest [float type] = source [int type]
+inline
+void recast_rep(double& d, const int& s1)
+{
+  cast_rep(d,s1);
+}
+
+//! dest [double type] = source [float type]
+inline
+void recast_rep(double& d, const float& s1)
+{
+  cast_rep(d,s1);
+}
+
+//! dest [double type] = source [double type]
+inline
+void recast_rep(double& d, const double& s1)
+{
+  cast_rep(d,s1);
+}
+
 
 
 
@@ -255,6 +301,11 @@ double localInnerproduct(const double& s1, const double& s2)
 //-----------------------------------------------------------------------------
 // Traits classes 
 //-----------------------------------------------------------------------------
+
+// Return types
+struct UnaryReturn<int, FnSeedToFloat > {
+  typedef float  Type_t;
+};
 
 struct UnaryReturn<int, FnSum > {
   typedef int  Type_t;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.2 2002-09-26 20:03:43 edwards Exp $
+// $Id: qdp.h,v 1.3 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -55,6 +55,7 @@ QDP_END_NAMESPACE();
 #include "traits.h"
 #include "qdpexpr.h"
 #include "qdptype.h"
+#include "qdpsubtype.h"
 #include "QDPOperators.h"
 #include "newops.h"
 //#include "word.h"
@@ -63,6 +64,7 @@ QDP_END_NAMESPACE();
 //#include "inner.h"
 #include "primitive.h"
 #include "outer.h"
+#include "outersubtype.h"
 #include "defs.h"
 #include "globalfuncs.h"
 #include "specializations.h"

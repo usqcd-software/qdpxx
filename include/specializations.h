@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: specializations.h,v 1.2 2002-09-21 16:16:13 edwards Exp $
+// $Id: specializations.h,v 1.3 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -67,6 +67,23 @@ template<>
 struct InternalScalar<bool>
 {
   typedef bool  Type_t;
+};
+
+
+// Internally used real scalars
+template<>
+struct RealScalar<int> {
+  typedef REAL32  Type_t;
+};
+
+template<>
+struct RealScalar<float> {
+  typedef REAL32  Type_t;
+};
+
+template<>
+struct RealScalar<double> {
+  typedef REAL64  Type_t;
 };
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.8 2002-09-26 21:30:07 edwards Exp $
+// $Id: scalar_specific.h,v 1.9 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -15,65 +15,96 @@ void diefunc();
 
 
 //-----------------------------------------------------------------------------
-//! OLattice Op Scalar(Expression(source))
+//! OLattice Op Scalar(Expression(source)) under a subset
 /*! 
  * OLattice Op Expression, where Op is some kind of binary operation 
  * involving the destination 
  */
 template<class T, class T1, class Op, class RHS>
 //inline
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs)
+void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
+	      const Subset& s)
 {
-  const Subset s = global_context->Sub();
-
 //  cerr << "In evaluate(olattice,oscalar)\n";
 
-  if (! s.IndexRep())
-    for(int i=s.Start(); i <= s.End(); ++i) 
-    {
-//      fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
-//      op(dest.elem(i), forEach(rhs, ElemLeaf(), OpCombine()));
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
-    }
-  else
+  const int *tab = s.SiteTable()->slice();
+  for(int j=0; j < s.NumSiteTable(); ++j) 
   {
-    const int *tab = s.SiteTable()->slice();
-    for(int j=0; j < s.NumSiteTable(); ++j) 
-    {
-      int i = tab[j];
-//      fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
-//      op(dest.elem(i), forEach(rhs, ElemLeaf(), OpCombine()));
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
-    }
+    int i = tab[j];
+//    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
+//    op(dest.elem(i), forEach(rhs, ElemLeaf(), OpCombine()));
+    op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+  }
+}
+
+//! OLattice Op Scalar(Expression(source)) under the ALL subset
+/*! 
+ * OLattice Op Expression, where Op is some kind of binary operation 
+ * involving the destination 
+ *
+ * For now, always goes through the ALL subset
+ * This helps with simplifying code development, but eventually
+ * should be specific to the all subset
+ */
+template<class T, class T1, class Op, class RHS>
+inline
+void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs)
+{
+  evaluate(dest, op, rhs, all);
+}
+
+
+//! OLattice Op OLattice(Expression(source)) under a subset
+/*! 
+ * OLattice Op Expression, where Op is some kind of binary operation 
+ * involving the destination 
+ */
+template<class T, class T1, class Op, class RHS>
+//inline
+void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
+	      const Subset s)
+{
+//  cerr << "In evaluate(olattice,olattice)\n";
+
+// NOTE: this code below is the first way I did the loop. The
+// case when IndexRep is false is the optimal loop structure
+// However, for simplicity and maintenance I will use the general
+// form for all methods
+
+//   if (! s.IndexRep())
+//     for(int i=s.Start(); i <= s.End(); ++i) 
+//     {
+//       op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+//     }
+//   else
+//   {
+//     const int *tab = s.SiteTable()->slice();
+//     for(int j=0; j < s.NumSiteTable(); ++j) 
+//     {
+//       int i = tab[j];
+//       op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+//     }
+//   }
+ 
+  // General form of loop structure
+  const int *tab = s.SiteTable()->slice();
+  for(int j=0; j < s.NumSiteTable(); ++j) 
+  {
+    int i = tab[j];
+//    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+    op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
   }
 }
 
 
 //! OLattice Op OLattice(Expression(source))
 template<class T, class T1, class Op, class RHS>
-//inline
+inline
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs)
 {
-  Subset s = global_context->Sub();
-
-//  cerr << "In evaluate(olattice,olattice)\n";
-
-  if (! s.IndexRep())
-    for(int i=s.Start(); i <= s.End(); ++i) 
-    {
-//      fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
-    }
-  else
-  {
-    const int *tab = s.SiteTable()->slice();
-    for(int j=0; j < s.NumSiteTable(); ++j) 
-    {
-      int i = tab[j];
-//      fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
-    }
-  }
+  // Use the general loop form. However, could have an explicit loop
+  // with no index lookup.
+  evaluate(dest, op, rhs, all);
 }
 
 
@@ -81,26 +112,25 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 //-----------------------------------------------------------------------------
 //! dest = (mask) ? s1 : dest
 template<class T1, class T2> 
-//inline
+void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
+{
+  OLattice<T2>& dest = d.field();
+  const Subset& s = d.subset();
+
+  const int *tab = s.SiteTable()->slice();
+  for(int j=0; j < s.NumSiteTable(); ++j) 
+  {
+    int i = tab[j];
+    copymask(dest.elem(i), mask.elem(i), s1.elem(i));
+  }
+}
+
+//! dest = (mask) ? s1 : dest
+template<class T1, class T2> 
 void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
-  Subset s = global_context->Sub();
-
-  if (! s.IndexRep())
-  {
-    for(int i=s.Start(); i <= s.End(); ++i) 
-      copymask(dest.elem(i), mask.elem(i), s1.elem(i));
-  }
-  else
-  {
-    const int *tab = s.SiteTable()->slice();
-    for(int j=0; j < s.NumSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      copymask(dest.elem(i), mask.elem(i), s1.elem(i));
-    }
-  }
-
+  for(int i=0; i < layout.Vol(); ++i) 
+    copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
 
 
@@ -117,31 +147,6 @@ void indexing(OLattice<T>& d, const OScalar<T1>& s1, const multi1d<int>& coord)
 {
   int linearsite = layout.LinearSiteIndex(coord);
   d.elem(linearsite) = s1.elem();
-}
-
-
-//-----------------------------------------------------------------------------
-// Seed_to_float
-//! dest [float type] = source [seed type]
-template<class T, class T1>
-void seed_to_float(OLattice<T>& d, const OLattice<T1>& s1)
-{
-  Subset s = global_context->Sub();
-
-  if (! s.IndexRep())
-  {
-    for(int i=s.Start(); i <= s.End(); ++i) 
-      seed_to_float(d.elem(i), s1.elem(i));
-  }
-  else
-  {
-    const int *tab = s.SiteTable()->slice();
-    for(int j=0; j < s.NumSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      seed_to_float(d.elem(i), s1.elem(i));
-    }
-  }
 }
 
 
@@ -169,108 +174,114 @@ void random(OScalar<T>& d)
   RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
 }
 
+
+//! dest  = random    under a subset
+template<class T>
+void random(OSubLattice<T> dd)
+{
+  OLattice<T>& d = dd.field();
+  const Subset& s = dd.subset();
+
+  Seed seed;
+  Seed skewed_seed;
+
+  const int *tab = s.SiteTable()->slice();
+  for(int j=0; j < s.NumSiteTable(); ++j) 
+  {
+    int i = tab[j];
+    seed = RNG::ran_seed;
+    skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
+    fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
+  }
+
+  RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
+}
+
+
 //! dest  = random  
 template<class T>
 void random(OLattice<T>& d)
 {
-  Subset s = global_context->Sub();
+  random(d(all));
+}
 
-  if (! s.IndexRep())
+
+//! dest  = random   under a subset
+template<class T>
+void gaussian(OSubLattice<T> dd)
+{
+  OLattice<T>& d = dd.field();
+  const Subset& s = dd.subset();
+
+  OLattice<T>  r1, r2;
+
+  random(r1(s));
+  random(r2(s));
+
+  const int *tab = s.SiteTable()->slice();
+  for(int j=0; j < s.NumSiteTable(); ++j) 
   {
-    Seed seed;
-    Seed skewed_seed;
-
-    for(int i=s.Start(); i <= s.End(); ++i) 
-    {
-      seed = RNG::ran_seed;
-      skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
-
-//      cerr << "site = " << i << endl;
-//      WRITE_NAMELIST(cerr,seed);
-//      WRITE_NAMELIST(cerr,skewed_seed);
-
-      fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
-
-//      WRITE_NAMELIST(cerr,seed);
-//      WRITE_NAMELIST(cerr,skewed_seed);
-    }
-
-    RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
-  }
-  else
-  {
-    Seed seed;
-    Seed skewed_seed;
-
-    const int *tab = s.SiteTable()->slice();
-    for(int j=0; j < s.NumSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      seed = RNG::ran_seed;
-      skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
-      fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
-    }
-
-    RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
+    int i = tab[j];
+    fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
   }
 }
+
 
 //! dest  = random  
 template<class T>
 void gaussian(OLattice<T>& d)
 {
-  OLattice<T>  r1, r2;
-
-  random(r1);
-  random(r2);
-
-  Subset s = global_context->Sub();
-
-  if (! s.IndexRep())
-  {
-    for(int i=s.Start(); i <= s.End(); ++i) 
-      fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
-  }
-  else
-  {
-    const int *tab = s.SiteTable()->slice();
-    for(int j=0; j < s.NumSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
-    }
-  }
+  gaussian(d(all));
 }
+
 
 
 //-----------------------------------------------------------------------------
 // Broadcast operations
 //! dest  = 0 
 template<class T> 
+void zero(OSubLattice<T> dest) 
+{
+  OLattice<T>& d = dd.field();
+  const Subset& s = dd.subset();
+
+  const int *tab = s.SiteTable()->slice();
+  for(int j=0; j < s.NumSiteTable(); ++j) 
+  {
+    int i = tab[j];
+    zero(dest.elem(i));
+  }
+}
+
+
+//! dest  = 0 
+template<class T> 
 void zero(OLattice<T>& dest) 
 {
-  Subset s = global_context->Sub();
-
-  if (! s.IndexRep())
-  {
-    for(int i=s.Start(); i <= s.End(); ++i) 
-      zero(dest.elem(i));
-  }
-  else
-  {
-    const int *tab = s.SiteTable()->slice();
-    for(int j=0; j < s.NumSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      zero(dest.elem(i));
-    }
-  }
+  for(int i=0; i < layout.Vol(); ++i) 
+    zero(dest.elem(i));
 }
 
 
 
 //-----------------------------------------------
 // Global sums
+//! OScalar = sum(OScalar) under an explicit subset
+/*!
+ * Allow a global sum that sums over the lattice, but returns an object
+ * of the same primitive type. E.g., contract only over lattice indices
+ */
+template<class RHS, class T>
+typename UnaryReturn<OScalar<T>, FnSum>::Type_t
+sum(const QDPExpr<RHS,OScalar<T> >& s1, const Subset& s)
+{
+  typename UnaryReturn<OScalar<T>, FnSum>::Type_t  d;
+
+  evaluate(d,OpAssign(),s1);
+  return d;
+}
+
+
 //! OScalar = sum(OScalar)
 /*!
  * Allow a global sum that sums over the lattice, but returns an object
@@ -288,6 +299,31 @@ sum(const QDPExpr<RHS,OScalar<T> >& s1)
 
 
 
+//! OScalar = sum(OLattice)  under an explicit subset
+/*!
+ * Allow a global sum that sums over the lattice, but returns an object
+ * of the same primitive type. E.g., contract only over lattice indices
+ */
+template<class RHS, class T>
+typename UnaryReturn<OLattice<T>, FnSum>::Type_t
+sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
+{
+  typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
+
+  // Must initialize to zero since we do not know if the loop will be entered
+  zero(d.elem());
+
+  const int *tab = s.SiteTable()->slice();
+  for(int j=0; j < s.NumSiteTable(); ++j) 
+  {
+    int i = tab[j];
+    d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
+  }
+
+  return d;
+}
+
+
 //! OScalar = sum(OLattice)
 /*!
  * Allow a global sum that sums over the lattice, but returns an object
@@ -298,25 +334,12 @@ typename UnaryReturn<OLattice<T>, FnSum>::Type_t
 sum(const QDPExpr<RHS,OLattice<T> >& s1)
 {
   typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
-  Subset s = global_context->Sub();
 
-  // Must initialize to zero since we do not know if the loop will be entered
+  // Loop always entered - could unroll
   zero(d.elem());
 
-  if (! s.IndexRep())
-  {
-    for(int i=s.Start(); i <= s.End(); ++i) 
-      d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
-  }
-  else
-  {
-    const int *tab = s.SiteTable()->slice();
-    for(int j=0; j < s.NumSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
-    }
-  }
+  for(int i=0; i <= layout.Vol(); ++i) 
+    d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
 
   return d;
 }
@@ -334,7 +357,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
  */
 template<class RHS, class T>
 typename UnaryReturn<OScalar<T>, FnSum>::Type_t
-sumMulti(const QDPExpr<RHS,OScalar<T> >& s1)
+sumMulti(const QDPExpr<RHS,OScalar<T> >& s1, const Set& ss)
 {
   typename UnaryReturn<OScalar<T>, FnSumMulti>::Type_t  dest(ss.NumSubsets());
 
@@ -479,6 +502,25 @@ shift(const QDPExpr<T1,C1> & l, int isign, int dir)
 
 
 //-----------------------------------------------
+// Su2_extract  under an explicit subset
+//! (OLattice<T1>,OLattice<T1>,OLattice<T1>,OLattice<T1>,su2_index) <- OLattice<T>
+template<class T, class T1> 
+void
+su2_extract(OLattice<T1>& r_0, OLattice<T1>& r_1, 
+	    OLattice<T1>& r_2, OLattice<T1>& r_3, 
+	    const OLattice<T>& s1, 
+	    int i1, int i2, const Subset& s)
+{
+  const int *tab = s.SiteTable()->slice();
+  for(int j=0; j < s.NumSiteTable(); ++j) 
+  {
+    int i = tab[j];
+    su2_extract(r_0.elem(i), r_1.elem(i), r_2.elem(i), r_3.elem(i), 
+		i1, i2, s1.elem(i));
+  }
+}
+
+
 // Su2_extract
 //! (OLattice<T1>,OLattice<T1>,OLattice<T1>,OLattice<T1>,su2_index) <- OLattice<T>
 template<class T, class T1> 
@@ -488,28 +530,33 @@ su2_extract(OLattice<T1>& r_0, OLattice<T1>& r_1,
 	    const OLattice<T>& s1, 
 	    int i1, int i2)
 {
-  Subset s = global_context->Sub();
-
-  if (! s.IndexRep())
-  {
-    for(int i=s.Start(); i <= s.End(); ++i) 
-      su2_extract(r_0.elem(i), r_1.elem(i), r_2.elem(i), r_3.elem(i), 
-		  i1, i2, s1.elem(i));
-  }
-  else
-  {
-    const int *tab = s.SiteTable()->slice();
-    for(int j=0; j < s.NumSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      su2_extract(r_0.elem(i), r_1.elem(i), r_2.elem(i), r_3.elem(i), 
-		  i1, i2, s1.elem(i));
-    }
-  }
+  // Lazy method
+  su2_extract(r_0, r_1, r_2, r_3, s1, i1, i2, all);
 }
 
 
 //-----------------------------------------------
+// Sun_fill   under an explicit subset
+//! OLattice<T> <- (OLattice<T1>,OLattice<T1>,OLattice<T1>,OLattice<T1>,su2_index)
+template<class T, class T1>
+void
+sun_fill(OLattice<T>& d, 
+	 const OLattice<T1>& r_0, const OLattice<T1>& r_1, 
+	 const OLattice<T1>& r_2, const OLattice<T1>& r_3, 
+	 int i1, int i2, const Subset& s)
+{
+  const int *tab = s.SiteTable()->slice();
+  for(int j=0; j < s.NumSiteTable(); ++j) 
+  {
+    int i = tab[j];
+    sun_fill(d.elem(i), 
+	     i1, i2,
+	     r_0.elem(i), r_1.elem(i), r_2.elem(i), r_3.elem(i));
+  }
+}
+
+
+
 // Sun_fill
 //! OLattice<T> <- (OLattice<T1>,OLattice<T1>,OLattice<T1>,OLattice<T1>,su2_index)
 template<class T, class T1>
@@ -519,61 +566,10 @@ sun_fill(OLattice<T>& d,
 	 const OLattice<T1>& r_2, const OLattice<T1>& r_3, 
 	 int i1, int i2)
 {
-  Subset s = global_context->Sub();
-
-  if (! s.IndexRep())
-  {
-    for(int i=s.Start(); i <= s.End(); ++i) 
-      sun_fill(d.elem(i), 
-	       i1, i2,
-	       r_0.elem(i), r_1.elem(i), r_2.elem(i), r_3.elem(i));
-  }
-  else
-  {
-    const int *tab = s.SiteTable()->slice();
-    for(int j=0; j < s.NumSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      sun_fill(d.elem(i), 
-	       i1, i2,
-	       r_0.elem(i), r_1.elem(i), r_2.elem(i), r_3.elem(i));
-    }
-  }
+  // Lazy method
+  sun_fill(d, r_0, r_1, r_2, r_3, i1, i2, all);
 }
 
-
-#if 0
-//-----------------------------------------------------------------------------
-// Spin project
-//! OLattice = spinProject(OLattice)
-template<class T>
-struct UnaryReturn<OLattice<T>, FnSpinProject > {
-  typedef OLattice<OScalar<typename UnaryReturn<T, FnSpinProject>::Type_t> >  Type_t;
-};
-
-template<class T>
-typename UnaryReturn<OLattice<T>, FnSpinProject>::Type_t
-spin_project(const OLattice<T>& s1, int mu, int isign)
-{
-  typename UnaryReturn<OLattice<T>, FnSpinProject>::Type_t  d;
-  Subset s = global_context->Sub();
-
-  if (! s.IndexRep())
-  {
-    for(int i=s.Start(); i <= s.End(); ++i) 
-      d.elem(i) = spin_project(d.elem(i), s1.elem(i));
-  }
-  else
-  {
-    const int *tab = s.SiteTable()->slice();
-    for(int j=0; j < s.NumSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      d.elem(i) = spin_project(d.elem(i), s1.elem(i));
-    }
-  }
-}
-#endif
 
 
 

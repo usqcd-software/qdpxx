@@ -1,4 +1,4 @@
-// $Id: layout.cc,v 1.4 2002-09-26 20:05:34 edwards Exp $
+// $Id: layout.cc,v 1.5 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -57,27 +57,21 @@ int Layout::LexicoSiteIndex(const multi1d<int>& coord)
 LatticeInteger latticeCoordinate(int mu)
 {
   LatticeInteger d;
-  Subset s = global_context->Sub();
 
   if (mu < 0 || mu >= Nd)
     diefunc();
 
-  if (! s.IndexRep())
-  {
-    const multi1d<int> &nrow = layout.LattSize();
+  const multi1d<int> &nrow = layout.LattSize();
 
-    for(int i=s.Start(); i <= s.End(); ++i) 
+  for(int i=0; i < layout.Vol(); ++i) 
+  {
+    int site = layout.LexicoSiteIndex(i);
+    for(int k=0; k <= mu; ++k)
     {
-      int site = layout.LexicoSiteIndex(i);
-      for(int k=0; k <= mu; ++k)
-      {
-	d.elem(i) = Integer(site % nrow[k]).elem();
-	site /= nrow[k];
-      } 
-    }
+      d.elem(i) = Integer(site % nrow[k]).elem();
+      site /= nrow[k];
+    } 
   }
-  else
-    diefunc();
 
   return d;
 }

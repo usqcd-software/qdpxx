@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: forward.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: forward.h,v 1.2 2002-10-02 20:29:37 edwards Exp $
 //
 // Forward declarations for QDP
 //
@@ -50,12 +50,20 @@ template<int N, int m> class GammaConst;
 template<class T> class OScalar;
 template<class T> class OLattice;
 
+// Outer types narrowed to a subset
+template<class T> class OSubScalar;
+template<class T> class OSubLattice;
+
 // Main type
 template<class T, class C> class QDPType;
+
+// Main type narrowed to a subset
+template<class T, class C> class QDPSubType;
 
 // Simple scalar trait class
 template<class T> struct SimpleScalar;
 template<class T> struct InternalScalar;
+template<class T> struct RealScalar;
 template<class T> struct WordType;
 
 // Empty leaf functor tag

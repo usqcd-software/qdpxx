@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.3 2002-10-01 01:52:51 edwards Exp $
+// $Id: reality.h,v 1.4 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -337,6 +337,18 @@ struct InternalScalar<RScalar<T> > {
 template<class T>
 struct InternalScalar<RComplex<T> > {
   typedef RScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+
+// Internally used real scalars
+template<class T>
+struct RealScalar<RScalar<T> > {
+  typedef RScalar<typename RealScalar<T>::Type_t>  Type_t;
+};
+
+template<class T>
+struct RealScalar<RComplex<T> > {
+  typedef RScalar<typename RealScalar<T>::Type_t>  Type_t;
 };
 
 
@@ -1018,6 +1030,18 @@ tan(const RScalar<T1>& s1)
 }
 
 
+//! dest [float type] = source [seed type]
+template<class T1>
+inline typename UnaryReturn<RScalar<T1>, FnSeedToFloat>::Type_t
+seedToFloat(const RScalar<T1>& s1)
+{
+  typename UnaryReturn<RScalar<T1>, FnSeedToFloat>::Type_t  d;
+
+  d.elem() = seedToFloat(s1.elem());
+  return d;
+}
+
+
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 
@@ -1027,20 +1051,21 @@ void copymask(RScalar<T>& d, const RScalar<T1>& mask, const RScalar<T>& s1)
   copymask(d.elem(),mask.elem(),s1.elem());
 }
 
-//! dest [float type] = source [seed type]
-template<class T, class T1>
-inline
-void seed_to_float(RScalar<T>& d, const RScalar<T1>& s1)
-{
-  seed_to_float(d.elem(), s1.elem());
-}
-
 //! dest [float type] = source [int type]
 template<class T, class T1>
 inline
 void cast_rep(T& d, const RScalar<T1>& s1)
 {
   cast_rep(d, s1.elem());
+}
+
+
+//! dest [float type] = source [int type]
+template<class T, class T1>
+inline
+void recast_rep(RScalar<T>& d, const RScalar<T1>& s1)
+{
+  cast_rep(d.elem(), s1.elem());
 }
 
 

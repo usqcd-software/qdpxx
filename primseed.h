@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primseed.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: primseed.h,v 1.2 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -288,6 +288,46 @@ operator<<(const PSeed<T1>& s1, const PScalar<T2>& s2)
 }
 
 
+//! dest [float type] = source [seed type]
+template<class T>
+struct UnaryReturn<PSeed<T>, FnSeedToFloat> {
+  typedef PScalar<typename UnaryReturn<T, FnSeedToFloat>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<PSeed<T>, FnSeedToFloat>::Type_t
+seedToFloat(const PSeed<T>& s1)
+{
+  typename UnaryReturn<PSeed<T>, FnSeedToFloat>::Type_t  d;
+  typedef typename RealScalar<T>::Type_t  S;
+
+  S  twom11(1.0 / 2048.0);
+  S  twom12(1.0 / 4096.0);
+  S  fs1, fs2;
+
+//  recast_rep(fs1, s1.elem(0));
+  fs1 = S(s1.elem(0));
+  d.elem() = twom12 * S(s1.elem(0));
+
+//  recast_rep(fs1, s1.elem(1));
+  fs1 = S(s1.elem(1));
+  fs2 = fs1 + d.elem();
+  d.elem() = twom12 * fs2;
+
+//  recast_rep(fs1, s1.elem(2));
+  fs1 = S(s1.elem(2));
+  fs2 = fs1 + d.elem();
+  d.elem() = twom12 * fs2;
+
+//  recast_rep(fs1, s1.elem(3));
+  fs1 = S(s1.elem(3));
+  fs2 = fs1 + d.elem();
+  d.elem() = twom11 * fs2;
+
+  return d;
+}
+
+
 
 // Functions
 //! dest = 0
@@ -305,37 +345,6 @@ void copymask(PSeed<T>& d, const PScalar<T1>& mask, const PSeed<T>& s1)
 {
   for(int i=0; i < 4; ++i)
     copymask(d.elem(i),mask.elem(),s1.elem(i));
-}
-
-
-//! dest [float type] = source [seed type]
-template<class T, class T1>
-void seed_to_float(PScalar<T>& d, const PSeed<T1>& s1)
-{
-  typedef typename InternalScalar<T>::Type_t  S;
-
-  S  twom11(1.0 / 2048.0);
-  S  twom12(1.0 / 4096.0);
-  T  fs1, fs2;
-
-//  cast_rep(fs1, s1.elem(0));
-  fs1 = S(s1.elem(0));
-  d.elem() = twom12 * S(s1.elem(0));
-
-//  cast_rep(fs1, s1.elem(1));
-  fs1 = S(s1.elem(1));
-  fs2 = fs1 + d.elem();
-  d.elem() = twom12 * fs2;
-
-//  cast_rep(fs1, s1.elem(2));
-  fs1 = S(s1.elem(2));
-  fs2 = fs1 + d.elem();
-  d.elem() = twom12 * fs2;
-
-//  cast_rep(fs1, s1.elem(3));
-  fs1 = S(s1.elem(3));
-  fs2 = fs1 + d.elem();
-  d.elem() = twom11 * fs2;
 }
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.5 2002-10-01 01:52:51 edwards Exp $
+// $Id: outer.h,v 1.6 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -15,11 +15,6 @@ class OScalar: public QDPType<T, OScalar<T> >
 public:
   OScalar() {}
   ~OScalar() {}
-
-#if 0
-  //! construct dest = const
-  OScalar(const typename WordType<T>::Type_t& rhs) : F(rhs) {}
-#endif
 
   //! construct dest = const
   OScalar(const typename WordType<T>::Type_t& rhs)
@@ -50,13 +45,11 @@ public:
   // NOTE: all assignment-like operators except operator= are
   // inherited from QDPType
 
-#if 0
   inline
   OScalar& operator=(const typename WordType<T>::Type_t& rhs)
     {
       return assign(rhs);
     }
-#endif
 
   template<class T1,class C1>
   inline
@@ -73,6 +66,12 @@ public:
     }
 
 
+  //---------------------------------------------------------
+  // Subsets
+  OSubScalar<T> operator()(const Subset& s) {return OSubScalar<T>(*this,s);}
+
+
+  //---------------------------------------------------------
   //! Deep copy constructor
   OScalar(const OScalar& a): F(a.F) {/*fprintf(stderr,"copy OScalar\n");*/}
 
@@ -214,6 +213,11 @@ public:
 
 
   //---------------------------------------------------------
+  // Subsets
+  OSubLattice<T> operator()(const Subset& s) const {return OSubLattice<T>(*this,s);}
+
+
+  //---------------------------------------------------------
   //! Copy constructor
   /*! For now, a deep copy */
   OLattice(const OLattice& rhs)
@@ -344,6 +348,18 @@ struct InternalScalar<OScalar<T> > {
 template<class T>
 struct InternalScalar<OLattice<T> > {
   typedef OScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+
+// Internally used real scalars
+template<class T>
+struct RealScalar<OScalar<T> > {
+  typedef OScalar<typename RealScalar<T>::Type_t>  Type_t;
+};
+
+template<class T>
+struct RealScalar<OLattice<T> > {
+  typedef OScalar<typename RealScalar<T>::Type_t>  Type_t;
 };
 
 
@@ -1037,20 +1053,18 @@ void indexing(OScalar<T>& d, const OScalar<T1>& s1, const multi1d<int>& coord)
   Indexing(d.elem(), s1.elem(), coord);
 }
 
-// Seed_to_float
-//! dest [float type] = source [seed type]
-template<class T, class T1>
-void seed_to_float(OScalar<T>& d, const OScalar<T1>& s1)
-{
-  seed_to_float(d.elem(), s1.elem());
-}
-
-
 //! dest [some type] = source [some type]
 template<class T, class T1>
 void cast_rep(T& d, const OScalar<T1>& s1)
 {
   cast_rep(d, s1.elem());
+}
+
+//! dest [some type] = source [some type]
+template<class T, class T1>
+void recast_rep(OScalar<T>& d, const OScalar<T1>& s1)
+{
+  cast_rep(d.elem(), s1.elem());
 }
 
 
@@ -1064,14 +1078,22 @@ void random(OScalar<T>& d);
 
 //! dest  = gaussian
 template<class T>
-void gaussian(OScalar<T>& d)
+void gaussian(OSubScalar<T>& d)
 {
   OScalar<T>  r1, r2;
 
-  random(r1);
-  random(r2);
+  random(OSubScalar<T>(r1,d.subset()));
+  random(OSubScalar<T>(r2,d.subset()));
 
   fill_gaussian(d.elem(), r1.elem(), r2.elem());
+}
+
+
+//! dest  = gaussian
+template<class T>
+void gaussian(OScalar<T>& d)
+{
+  gaussian(OSubScalar<T>(d,all));
 }
 
 

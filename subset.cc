@@ -1,4 +1,4 @@
-// $Id: subset.cc,v 1.3 2002-09-26 21:28:17 edwards Exp $
+// $Id: subset.cc,v 1.4 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -20,9 +20,6 @@ Set rb;
 
 //! Default 2^{Nd+1}-checkerboard set. Useful for pure gauge updating.
 Set mcb;
-
-//! Global context
-Context *global_context;
 
 //! Function used for constructing the all subset
 int subset_all_func(const multi1d<int>& coordinate) {return 0;}
@@ -67,9 +64,6 @@ void InitDefaultSets()
 
   // The all subset
   all.Make(set_all[0]);
-
-  // Set the global context
-  global_context = new Context(all);
 }
 
 

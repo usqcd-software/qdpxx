@@ -1,9 +1,12 @@
 // -*- C++ -*-
-// $Id: globalfuncs.h,v 1.4 2002-09-26 21:30:07 edwards Exp $
+// $Id: globalfuncs.h,v 1.5 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
 QDP_BEGIN_NAMESPACE(QDP);
+
+// NOTE: there is no inlining anywhere in this file - some
+// small effort at controlling code bloat.
 
 
 /** @defgroup group2 QDP global reductions
@@ -13,13 +16,12 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 //-----------------------------------------------
 // Global sums
-//! OScalar = sum(OLattice)
+//! OScalar = sum(source)
 /*!
  * Allow a global sum that sums over the lattice, but returns an object
  * of the same primitive type. E.g., contract only over lattice indices
  */
 template<class T, class C>
-inline
 typename UnaryReturn<C, FnSum>::Type_t
 sum(const QDPType<T,C>& s1)
 {
@@ -27,15 +29,27 @@ sum(const QDPType<T,C>& s1)
 }
 
 
-//! OScalar = norm2(trace(conj(OLattice)*OLattice))
+//! OScalar = sum(source)  under an explicit subset
 /*!
- * return  num(trace(conj(s1)*s1))
+ * Allow a global sum that sums over the lattice, but returns an object
+ * of the same primitive type. E.g., contract only over lattice indices
+ */
+template<class T, class C>
+typename UnaryReturn<C, FnSum>::Type_t
+sum(const QDPType<T,C>& s1, const Subset& s)
+{
+  return sum(PETE_identity(s1),s);
+}
+
+
+//! OScalar = norm2(trace(conj(source)*source))
+/*!
+ * return  num(trace(conj(source)*source))
  *
  * Sum over the lattice
  * Allow a global sum that sums over all indices
  */
 template<class T, class C>
-inline
 typename UnaryReturn<C, FnNorm2>::Type_t
 norm2(const QDPType<T,C>& s1)
 {
@@ -50,9 +64,31 @@ norm2(const QDPExpr<T,C>& s1)
 }
 
 
-//! OScalar = innerproduct(conj(OLattice)*OLattice)
+//! OScalar = norm2(trace(conj(source)*source)) under an explicit subset
 /*!
- * return  sum(trace(conj(s1)*s2))
+ * return  num(trace(conj(source)*source))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T, class C>
+typename UnaryReturn<C, FnNorm2>::Type_t
+norm2(const QDPType<T,C>& s1, const Subset& s)
+{
+  return sum(localNorm2(s1),s);
+}
+
+template<class T, class C>
+typename UnaryReturn<C, FnNorm2>::Type_t
+norm2(const QDPExpr<T,C>& s1, const Subset& s)
+{
+  return sum(localNorm2(s1),s);
+}
+
+
+//! OScalar = innerproduct(conj(source1)*source2)
+/*!
+ * return  sum(trace(conj(source1)*source2))
  *
  * Sum over the lattice
  */
@@ -85,9 +121,48 @@ innerproduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
 }
 
 
-//! OScalar = innerproductReal(conj(OLattice)*OLattice)
+//! OScalar = innerproduct(conj(source1)*source2) under an explicit subset
 /*!
- * return  sum(trace(conj(s1)*s2))
+ * return  sum(trace(conj(source1)*source2))
+ *
+ * Sum over the lattice
+ */
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+innerproduct(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2,
+	     const Subset& s)
+{
+  return sum(localInnerproduct(s1,s2),s);
+}
+
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+innerproduct(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
+  	     const Subset& s)
+{
+  return sum(localInnerproduct(s1,s2),s);
+}
+
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+innerproduct(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2,
+  	     const Subset& s)
+{
+  return sum(localInnerproduct(s1,s2),s);
+}
+
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproduct>::Type_t
+innerproduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
+  	     const Subset& s)
+{
+  return sum(localInnerproduct(s1,s2),s);
+}
+
+
+//! OScalar = innerproductReal(conj(source1)*source2)
+/*!
+ * return  sum(trace(conj(source1)*source2))
  *
  * Sum over the lattice
  */
@@ -119,6 +194,46 @@ innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
   return sum(localInnerproductReal(s1,s2));
 }
 
+
+//! OScalar = innerproductReal(conj(source1)*source2) under an explicit subset
+/*!
+ * return  sum(trace(conj(source1)*source2))
+ *
+ * Sum over the lattice
+ */
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+innerproductReal(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2,
+		 const Subset& s)
+{
+  return sum(localInnerproductReal(s1,s2),s);
+}
+
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+innerproductReal(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
+		 const Subset& s)
+{
+  return sum(localInnerproductReal(s1,s2),s);
+}
+
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+innerproductReal(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2,
+		 const Subset& s)
+{
+  return sum(localInnerproductReal(s1,s2),s);
+}
+
+template<class T1, class C1, class T2, class C2>
+typename BinaryReturn<C1, C2, FnInnerproductReal>::Type_t
+innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
+		 const Subset& s)
+{
+  return sum(localInnerproductReal(s1,s2),s);
+}
+
+
 //-----------------------------------------------------------------------------
 // Multiple global sums 
 //! dest  = sumMulti(source1,Set) 
@@ -131,7 +246,6 @@ innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
  * version is fine.
  */
 template<class T, class C>
-inline
 typename UnaryReturn<C, FnSumMulti>::Type_t
 sumMulti(const QDPType<T,C>& s1, const Set& ss)
 {
@@ -148,7 +262,7 @@ sumMulti(const QDPType<T,C>& s1, const Set& ss)
  *  @{
  */
 //-----------------------------------------------------------------------------
-//! Su2_extract: r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]
+//! Su2_extract: r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]  under a subset
 /*! 
  * Extract components r_k proportional to SU(2) submatrix su2_index
  * from the "SU(Nc)" matrix V. The SU(2) matrix is parametrized in the
@@ -158,9 +272,10 @@ sumMulti(const QDPType<T,C>& s1, const Set& ss)
    * The user does not need to know exactly which one is which, just that
    * they are unique.
    */
-template<class T, class C, class T1, class C1> inline
+template<class T, class C, class T1, class C1> 
 void su2_extract(QDPType<T,C>& r_0, QDPType<T,C>& r_1, QDPType<T,C>& r_2, QDPType<T,C>& r_3, 
-		 int su2_index, QDPType<T1,C1>& source)
+		 int su2_index, QDPType<T1,C1>& source, 
+		 const Subset& s)
 {
   /* Determine the SU(N) indices corresponding to the SU(2) indices */
   /* of the SU(2) subgroup $3 */
@@ -191,11 +306,32 @@ void su2_extract(QDPType<T,C>& r_0, QDPType<T,C>& r_1, QDPType<T,C>& r_2, QDPTyp
   su2_extract(static_cast<C&>(r_0), static_cast<C&>(r_1), 
 	      static_cast<C&>(r_2), static_cast<C&>(r_3), 
 	      static_cast<C1 &>(source), 
-	      i1, i2);
+	      i1, i2, s);
 }
   
 
-//! Sun_fill: dest(su2_index) <- r_0,r_1,r_2,r_3
+//! Su2_extract: r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]
+/*! 
+ * Extract components r_k proportional to SU(2) submatrix su2_index
+ * from the "SU(Nc)" matrix V. The SU(2) matrix is parametrized in the
+ * sigma matrix basis.
+   *
+   * There are Nc*(Nc-1)/2 unique SU(2) submatrices in an SU(Nc) matrix.
+   * The user does not need to know exactly which one is which, just that
+   * they are unique.
+   */
+template<class T, class C, class T1, class C1> 
+void su2_extract(QDPType<T,C>& r_0, QDPType<T,C>& r_1, QDPType<T,C>& r_2, QDPType<T,C>& r_3, 
+		 int su2_index, QDPType<T1,C1>& source)
+{
+  su2_extract(r_0, r_1, r_2, r_3, su2_index, source, all);
+}
+
+
+
+
+//-----------------------------------------------
+//! Sun_fill: dest(su2_index) <- r_0,r_1,r_2,r_3  under a subset
 /*!
  * Fill an SU(Nc) matrix V with the SU(2) submatrix su2_index
  * paramtrized by b_k in the sigma matrix basis.
@@ -206,11 +342,12 @@ void su2_extract(QDPType<T,C>& r_0, QDPType<T,C>& r_1, QDPType<T,C>& r_2, QDPTyp
    * The user does not need to know exactly which one is which, just that
    * they are unique.
    */
-template<class T, class C, class T1, class C1> inline
+template<class T, class C, class T1, class C1> 
 void sun_fill(QDPType<T,C>& dest, 
 	      int su2_index,
 	      const QDPType<T1,C1>& r_0, const QDPType<T1,C1>& r_1, 
-	      const QDPType<T1,C1>& r_2, const QDPType<T1,C1>& r_3)
+	      const QDPType<T1,C1>& r_2, const QDPType<T1,C1>& r_3,
+	      const Subset& s)
 {
   /* Determine the SU(N) indices corresponding to the SU(2) indices */
   /* of the SU(2) subgroup $3 */
@@ -244,10 +381,34 @@ void sun_fill(QDPType<T,C>& dest,
   sun_fill(static_cast<C&>(dest), 
 	   static_cast<const C1&>(r_0), static_cast<const C1&>(r_1), 
 	   static_cast<const C1&>(r_2), static_cast<const C1&>(r_3), 
-	   i1, i2);
+	   i1, i2, s);
 }
   
 
+//! Sun_fill: dest(su2_index) <- r_0,r_1,r_2,r_3  under a subset
+/*!
+ * Fill an SU(Nc) matrix V with the SU(2) submatrix su2_index
+ * paramtrized by b_k in the sigma matrix basis.
+   *
+   * Fill in B from B_SU(2) = b0 + i sum_k bk sigma_k
+   *
+   * There are Nc*(Nc-1)/2 unique SU(2) submatrices in an SU(Nc) matrix.
+   * The user does not need to know exactly which one is which, just that
+   * they are unique.
+   */
+template<class T, class C, class T1, class C1> 
+void sun_fill(QDPType<T,C>& dest, 
+	      int su2_index,
+	      const QDPType<T1,C1>& r_0, const QDPType<T1,C1>& r_1, 
+	      const QDPType<T1,C1>& r_2, const QDPType<T1,C1>& r_3)
+{
+  sun_fill(dest, su2_index, r_0, r_1, r_2, r_3, all);
+}
+
+
+
+
+//-----------------------------------------------
 // Spin projection
 //! dest  = spinProject(source1) 
 /*! Boneheaded simple implementation till I get a better one... */
@@ -311,6 +472,7 @@ spinProject(const QDPType<T,C>& s1, int mu, int isign)
 }
 
 
+//-----------------------------------------------
 // Spin reconstruction
 //! dest  = spinReconstruct(source1) 
 /*! Boneheaded simple implementation till I get a better one... */

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.4 2002-10-01 16:24:41 edwards Exp $
+// $Id: foo.cc,v 1.5 2002-10-02 20:29:37 edwards Exp $
 //
 // Silly little internal test code
 
@@ -34,16 +34,28 @@ int main()
 //  typedef QDPType<OLattice<int> > LatticeInteger;
 //  LatticeComplexInteger a, b, c;
 //  LatticeReal a, b, c;
-  LatticeComplex a, b, c, e;
+  LatticeReal a, b, c, e;
   Complex d;
   float ccc = 2.0;
   float x;
   
 #if 1
-//  b = 3;
-  random(b);
+  b = 3;
   c = 4;
   d = 5;
+
+  cerr << "First set of b\n";
+  cerr << b << endl;
+
+  random(b);
+
+  cerr << "Second set of b\n";
+  cerr << b << endl;
+
+  b(rb[0]) = -17;
+
+  cerr << "Third set of b\n";
+  cerr << b << endl;
 
 //  b.elem(1).elem() = -1;
 //  b.elem().elem(1).elem() = -1;
@@ -68,7 +80,8 @@ int main()
 
   cerr << "here e\n";
   LatticeReal rr;
-  random(rr);
+//  random(rr);
+  rr = 0.2;
   e = where(rr < 0.5, a, c);
   cerr << e << endl;
 
@@ -83,7 +96,7 @@ int main()
   cerr << a << endl;
 #endif
 
-#if 1
+#if 0
   std::ofstream f;
   f.open("foobar",std::ios_base::out|std::ios_base::binary);
   float aa[3] = {0.0,0.0,0.0};

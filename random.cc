@@ -1,13 +1,20 @@
-// $Id: random.cc,v 1.2 2002-09-23 18:19:25 edwards Exp $
+// $Id: random.cc,v 1.3 2002-10-02 20:29:37 edwards Exp $
 //
-//! Random number generator support
+// Random number generator support
+
 
 #include "qdp.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 //! Random number generator namespace
-/*! A collection of routines and data for supporting random numbers */
+/*! 
+ * A collection of routines and data for supporting random numbers
+ * 
+ * It is a linear congruential with modulus m = 2**47, increment c = 0,
+ * and multiplier a = (2**36)*m3 + (2**24)*m2 + (2**12)*m1 + m0.  
+ */
+
 namespace RNG
 {
   //! Global (current) seed
@@ -200,7 +207,7 @@ namespace RNG
     float _ssranf;
     Seed ran_tmp;
 
-    seed_to_float(_sranf, skewed_seed);
+    _sranf = seedToFloat(skewed_seed);
     cast_rep(_ssranf, _sranf);
 
     ran_tmp = seed * seed_mult;

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primscalar.h,v 1.4 2002-10-01 01:52:51 edwards Exp $
+// $Id: primscalar.h,v 1.5 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -172,6 +172,12 @@ struct WordType<PScalar<T> >
 template<class T>
 struct InternalScalar<PScalar<T> > {
   typedef PScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+// Internally used real scalars
+template<class T>
+struct RealScalar<PScalar<T> > {
+  typedef PScalar<typename RealScalar<T>::Type_t>  Type_t;
 };
 
 
@@ -797,6 +803,18 @@ multiplyMinusI(const PScalar<T>& s1)
 }
 
 
+//! dest [float type] = source [seed type]
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSeedToFloat>::Type_t
+seedToFloat(const PScalar<T>& s1)
+{
+  typename UnaryReturn<PScalar<T>, FnSeedToFloat>::Type_t  d;
+
+  d.elem() = seedToFloat(s1.elem());
+  return d;
+}
+
+
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 
@@ -820,14 +838,6 @@ inline void
 fill_gaussian(PScalar<T>& d, PScalar<T>& r1, PScalar<T>& r2)
 {
   fill_gaussian(d.elem(), r1.elem(), r2.elem());
-}
-
-
-//! dest [float type] = source [seed type]
-template<class T, class T1>
-void seed_to_float(PScalar<T>& d, const PScalar<T1>& s1)
-{
-  seed_to_float(d.elem(), s1.elem());
 }
 
 
@@ -978,6 +988,14 @@ template<class T, class T1>
 void cast_rep(T& d, const PScalar<T1>& s1)
 {
   cast_rep(d, s1.elem());
+}
+
+
+//! dest [some type] = source [some type]
+template<class T, class T1>
+void cast_rep(PScalar<T>& d, const PScalar<T1>& s1)
+{
+  cast_rep(d.elem(), s1.elem());
 }
 
 

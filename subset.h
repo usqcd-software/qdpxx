@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: subset.h,v 1.3 2002-09-26 21:30:07 edwards Exp $
+// $Id: subset.h,v 1.4 2002-10-02 20:29:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -137,50 +137,6 @@ extern Set rb;
 //! Default 2^{Nd+1}-checkerboard subset. Useful for pure gauge updating.
 extern Set mcb;
     
-// Forward declaration
-class Context;
-
-//! Global context
-extern Context *global_context;
-
-/** @defgroup group3 Contexts and subsets
-   *  
-   *  Sets the context for all subsequent operations.
-   *  The semantics is stack based and context are restored upon
-   *  exiting an enclosing block of the declaration
-   *
-   *  @{
-   */
-  //! Context - simple class with a declaration having a side effect of setting default subset
-  /*!
-   *  Sets the context for all subsequent operations.
-   *  The semantics is stack based and context are restored upon
-   *  exiting an enclosing block of the declaration
-   *
-   *  To set a context, a user declares a Context like
-   *  Context foo(rb[0]);
-   *  which set the context to be the even of the red-black checkerboards
-   */
-class Context 
-{
-public:
-  //! Constructor from a subset
-  Context(const Subset& s): sub(s), prev(global_context)
-    {global_context = this;}
-
-  //! Destructor pops context
-  ~Context() {global_context = prev;}
-
-  //! Return the subset for this context
-  const Subset& Sub() const {return sub;}
-
-private:
-  Context(): sub(all) {}
-
-private:
-  const Subset& sub;
-  Context *prev;
-};
 /** @} */ // end of group3
 
 QDP_END_NAMESPACE();

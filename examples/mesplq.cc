@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.4 2002-10-02 20:16:02 edwards Exp $
+// $Id: mesplq.cc,v 1.5 2002-10-02 20:29:37 edwards Exp $
 //
 //! Return the value of the average plaquette normalized to 1
 /*!
@@ -17,6 +17,7 @@ void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq,
 {
   s_plaq = t_plaq = w_plaq = link = 0.0;
 
+  // Compute the average plaquettes
   for(int mu=1; mu < Nd; ++mu)
   {
     for(int nu=0; nu < mu; ++nu)
@@ -47,6 +48,7 @@ void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq,
     }
   }
   
+  // Normalize
   w_plaq *= 2.0 / double(geom.Vol()*Nd*(Nd-1)*Nc);
   
   if (Nd > 2) 
@@ -54,6 +56,8 @@ void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq,
   
   t_plaq /= double(geom.Vol()*(Nd-1)*Nc);
   
+
+  // Compute the average link
   for(int mu=0; mu < Nd; ++mu)
     link += sum(real(trace(u[mu])));
 

@@ -52,6 +52,10 @@ unaryOps
   FUNCTION = "multiplyMinusI"
   EXPR = "return (multiplyMinusI(a));"
 -----
+  TAG = "FnSeedToFloat"
+  FUNCTION = "seedToFloat"
+  EXPR = "return (seedToFloat(a));"
+-----
   TAG = "FnSpinProjectDir0Plus"
   FUNCTION = "spinProjectDir0Plus"
   EXPR = "return (spinProjectDir0Plus(a));"
