@@ -63,10 +63,10 @@
 /* Use lexicographic layout */
 #undef QDP_USE_LEXICO_LAYOUT
 
-/* Enable QCDOC ASsembler */
+/* Enable QCDOC opts */
 #undef QDP_USE_QCDOC
 
-/* Enable Allocation in EDRAM */
+/* Enable QCDOC Edram */
 #undef QDP_USE_QCDOC_EDRAM
 
 /* Enable SSE instructions */

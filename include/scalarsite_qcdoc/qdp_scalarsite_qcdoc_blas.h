@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.1 2004-03-21 23:49:47 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.2 2004-03-22 07:52:43 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -17,6 +17,8 @@ extern "C" {
 void vaxpy3(REAL *Out, REAL *scalep,REAL *InScale, REAL *Add,int n_3vec);
 void vaxmy3(REAL *Out, REAL *scalep,REAL *InScale, REAL *Sub,int n_3vec);
 };
+
+static LatticeFermion internal_zero = zero;
 
 void vadd(REAL *Out, REAL *In1, REAL *In2, int n_3vec);
 void vsub(REAL *Out, REAL *In1, REAL *In2, int n_3vec);
@@ -550,10 +552,12 @@ void evaluate( OLattice< TVec > &d,
   REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
   REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
 
+  REAL rone = (REAL)1;
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
   int n_3vec = (s.end()-s.start()+1)*Ns;
-  vadd(zptr, xptr, yptr, n_3vec);
+  //vadd(zptr, xptr, yptr, n_3vec);
+  vaxpy3(zptr, &rone, xptr, yptr, n_3vec); 
 }
 
 template<>
@@ -577,11 +581,13 @@ void evaluate( OLattice< TVec > &d,
   REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
   REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
   REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL rone = (REAL)1;
 
   
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
   int n_3vec = (s.end()-s.start()+1)*Ns;
-  vsub(zptr, xptr, yptr, n_3vec);
+  // vsub(zptr, xptr, yptr, n_3vec);
+  vaxmy3(zptr,&rone,xptr, yptr,n_3vec);
 }
 
 // Vec = Scal * Vec
@@ -609,6 +615,10 @@ void evaluate( OLattice< TVec > &d,
   int n_3vec = (s.end()-s.start()+1)*Ns;
 
   vscal(zptr, aptr, xptr, n_3vec);
+
+  /*
+  REAL *yptr = (REAL *) &(internal_zero.elem(s.start()).elem(0).elem(0).real().elem());
+  vaxpy3(zptr, aptr, xptr, yptr, n_3vec); */
 }
 
 template<>
@@ -636,6 +646,8 @@ void evaluate( OLattice< TVec > &d,
   int n_3vec = (s.end()-s.start()+1)*Ns;
 
   vscal(zptr, aptr, xptr, n_3vec);
+  /* REAL *yptr = (REAL *) &(internal_zero.elem(s.start()).elem(0).elem(0).real().elem());
+     vaxpy3(zptr, aptr, xptr, yptr, n_3vec); */
 }
 // AXPY and AXMY routines
 // Similar calling interface to assembler
