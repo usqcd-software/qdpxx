@@ -1,4 +1,4 @@
-// $Id: random.cc,v 1.5 2002-10-28 03:08:44 edwards Exp $
+// $Id: random.cc,v 1.6 2003-01-14 04:46:26 edwards Exp $
 //
 // Random number generator support
 
@@ -86,12 +86,12 @@ namespace RNG
      *     lexoc(k) = sum_{i = 1, ndim} x(k,i)*L^i     +   1
      */
     LatticeInteger lexoc;
-    lexoc = latticeCoordinate(Nd-1);
+    lexoc = Layout::latticeCoordinate(Nd-1);
 
     for(int m=Nd-2; m>=0; --m)
     {
       lexoc *= Layout::lattSize()[m];
-      lexoc += latticeCoordinate(m);
+      lexoc += Layout::latticeCoordinate(m);
     }
 
     lexoc += 1;
