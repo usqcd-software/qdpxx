@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.1 2002-09-12 18:22:17 edwards Exp $
+// $Id: t_qdp.cc,v 1.2 2002-09-13 18:32:53 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -13,8 +13,7 @@ int main(int argc, char **argv)
   // Setup the geometry
   const int foo[Nd] = {2,2};
   multi1d<int> nrow(Nd);
-  for(int i=0; i < nrow.size(); ++i)
-    nrow[i] = foo[i];
+  nrow = foo;
   geom.Init(nrow);
 
   // Initialize the random number generator
@@ -168,7 +167,8 @@ int main(int argc, char **argv)
   zero(chi);
   dslash(chi, u, psi, +1, 0);
 
-  cerr << "psi = " << psi << "chi = " << chi << endl;
+  cerr << "psi = " << psi << endl;
+  cerr << "chi = " << chi << endl;
 
   //! SU(N) fiddling
   cerr << "Fiddle with SU(2) matrices\n" << endl;
