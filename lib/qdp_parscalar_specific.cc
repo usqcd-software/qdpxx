@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.20 2004-05-05 14:37:04 bjoo Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.21 2004-09-02 16:35:33 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -200,10 +200,10 @@ void Map::make(const MapFunc& func)
   // Implementation limitation in the Map::operator(). Only support
   // a node sending data all to one node or no sending at all (offNodeP == false).
   if (srcenodes.size() != 1)
-    QMP_error_exit("Map: for now only allow 1 destination node");
+    QDP_error_exit("Map: for now only allow 1 destination node");
       
   if (destnodes.size() != 1)
-    QMP_error_exit("Map: for now only allow receives from 1 node");
+    QDP_error_exit("Map: for now only allow receives from 1 node");
 
 
   // Now make a small scatter array for the dest_buf so that when data
@@ -293,7 +293,7 @@ namespace Internal
     QMP_msghandle_t request_mh = QMP_declare_send_to(request_msg, dest_node, 0);
 
     if (QMP_start(request_mh) != QMP_SUCCESS)
-      QMP_error_exit("sendToWait failed\n");
+      QDP_error_exit("sendToWait failed\n");
 
     QMP_wait(request_mh);
 
@@ -317,7 +317,7 @@ namespace Internal
     QMP_msghandle_t request_mh = QMP_declare_receive_from(request_msg, srce_node, 0);
 
     if (QMP_start(request_mh) != QMP_SUCCESS)
-      QMP_error_exit("recvFromWait failed\n");
+      QDP_error_exit("recvFromWait failed\n");
 
     QMP_wait(request_mh);
 

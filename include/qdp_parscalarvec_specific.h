@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.13 2004-08-09 22:08:52 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.14 2004-09-02 16:35:32 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -53,20 +53,20 @@ namespace Internal
   }
 
   //! Low level hook to QMP_global_sum
-  inline void globalSumArray(int *dest, unsigned int len)
+  inline void globalSumArray(int *dest, int len)
   {
     for(unsigned int i=0; i < len; i++, dest++)
       QMP_sum_int(dest);
   }
 
   //! Low level hook to QMP_global_sum
-  inline void globalSumArray(float *dest, unsigned int len)
+  inline void globalSumArray(float *dest, int len)
   {
     QMP_sum_float_array(dest, len);
   }
 
   //! Low level hook to QMP_global_sum
-  inline void globalSumArray(double *dest, unsigned int len)
+  inline void globalSumArray(double *dest, int len)
   {
     QMP_sum_double_array(dest, len);
   }
@@ -89,7 +89,7 @@ namespace Internal
   }
 
   //! Broadcast from primary node to all other nodes
-  inline void broadcast(void* dest, unsigned int nbytes)
+  inline void broadcast(void* dest, size_t nbytes)
   {
     QMP_broadcast(dest, nbytes);
   }
@@ -1252,7 +1252,7 @@ public:
 
 	// Launch the faces
 	if ((err = QMP_start(mh)) != QMP_SUCCESS)
-	  QMP_error_exit(QMP_error_string(err));
+	  QDP_error_exit(QMP_error_string(err));
 
 #if QDP_DEBUG >= 3
 	QDP_info("Map: calling wait");
@@ -1260,7 +1260,7 @@ public:
 
 	// Wait on the faces
 	if ((err = QMP_wait(mh)) != QMP_SUCCESS)
-	  QMP_error_exit(QMP_error_string(err));
+	  QDP_error_exit(QMP_error_string(err));
 
 #if QDP_DEBUG >= 3
 	QDP_info("Map: calling free msgs");

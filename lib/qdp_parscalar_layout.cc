@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.18 2004-07-27 05:36:36 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.19 2004-09-02 16:35:33 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -119,16 +119,7 @@ namespace Layout
   /*! This is not meant to be speedy */
   int getNodeNumberFrom(const multi1d<int>& node_coord) 
   {
-    // To make QMP happy, cast to unsigned ints
-    unsigned int node_crd[Nd];
-    if (node_coord.size() != Nd)
-      QDP_error_exit("getNodeNumberFrom: unexpected coordinate size");
-
-    for(int i=0; i < Nd; ++i)
-      node_crd[i] = node_coord[i];
-
-    int node = QMP_get_node_number_from(node_crd);
-    return node;
+    return QMP_get_node_number_from(node_coord.slice());
   }
 
   //! Returns the logical node coordinates given some node number
@@ -136,9 +127,7 @@ namespace Layout
   multi1d<int> getLogicalCoordFrom(int node) 
   {
     multi1d<int> node_coord(Nd);
-
-    unsigned int unode = node;
-    unsigned int* node_crd = (unsigned int *)QMP_get_logical_coordinates_from(unode);  // QMP mallocs here
+    int* node_crd = QMP_get_logical_coordinates_from(node);  // QMP mallocs here
 
     for(int i=0; i < Nd; ++i)
       node_coord[i] = node_crd[i];
@@ -228,17 +217,16 @@ namespace Layout
 
     // Now, layout the machine. Note, if the logical_machine size was set previously
     // it will be used
-    /* Crap to make the compiler happy with the C prototype */
-    unsigned int unsigned_nrow[Nd];
+    multi1d<int> nrow(Nd);
     for(int i=0; i < Nd; ++i)
-      unsigned_nrow[i] = _layout.nrow[i] / min_dim[i];
+      nrow[i] = _layout.nrow[i] / min_dim[i];
 
-    QMP_layout_grid(unsigned_nrow, Nd);
+    QMP_layout_grid(nrow.slice(), Nd);
 
 
     // Pull out useful stuff
-    const unsigned int* phys_size = QMP_get_logical_dimensions();
-    const unsigned int* phys_coord = QMP_get_logical_coordinates();
+    const int* phys_size = QMP_get_logical_dimensions();
+    const int* phys_coord = QMP_get_logical_coordinates();
 
     _layout.subgrid_nrow.resize(Nd);
     _layout.logical_coord.resize(Nd);
@@ -264,7 +252,7 @@ namespace Layout
 
     QDPIO::cout << "  layout size =";
     for(int i=0; i < Nd; ++i)
-      QDPIO::cout << " " << unsigned_nrow[i];
+      QDPIO::cout << " " << nrow[i];
     QDPIO::cout << endl;
 
     QDPIO::cout << "  logical machine size =";

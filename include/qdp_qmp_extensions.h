@@ -3,18 +3,6 @@
 
 #include "qdp_config.h"
 
-#ifndef HAVE_QMP_ABORT
-extern "C" { 
-	void QMP_abort(int);
-};
-#endif
-
-#ifndef HAVE_QMP_ERROR_EXIT
-extern "C" { 
-	void QMP_error_exit (const char* format, ...);
-};
-#endif
-
 #ifndef HAVE_QMP_ROUTE
 extern "C" { 
 	QMP_status_t QMP_route (void* buffer, QMP_u32_t count,

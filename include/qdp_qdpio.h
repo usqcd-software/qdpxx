@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.18 2004-04-06 02:31:29 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.19 2004-09-02 16:35:32 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -30,15 +30,8 @@ enum QDP_serialparallel_t
 enum QDP_volfmt_t
 {
   QDPIO_SINGLEFILE,
-  QDPIO_MULTIFILE
-};
-
-//! File open mode
-enum QDP_filemode_t
-{
-  QDPIO_CREATE,
-  QDPIO_OPEN,
-  QDPIO_APPEND,
+  QDPIO_MULTIFILE,
+  QDPIO_PARTFILE
 };
 
 //! QDPIO state
@@ -63,11 +56,11 @@ public:
 
   //! Open file
   QDPFileReader(XMLReader& xml, const std::string& path,
-		QDP_serialparallel_t qdp_serpar);
-
+		int iflag);
+  
   //! Open file
   void open(XMLReader& xml, const std::string& path,
-	    QDP_serialparallel_t qdp_serpar);
+	    int iflag);
 
   //! Close file
   void close();
@@ -165,14 +158,12 @@ public:
   //! Open file
   QDPFileWriter(XMLBufferWriter& xml, const std::string& path,
 		QDP_volfmt_t qdp_volfmt,
-		QDP_serialparallel_t qdp_serpar,
-		QDP_filemode_t qdp_mode);
+		int oflag);
   
   //! Open file
   void open(XMLBufferWriter& xml, const std::string& path,
 	    QDP_volfmt_t qdp_volfmt,
-	    QDP_serialparallel_t qdp_serpar,
-	    QDP_filemode_t qdp_mode);
+	    int oflag);
 
   //! Close file
   void close();

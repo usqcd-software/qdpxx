@@ -3015,8 +3015,9 @@ main ()
 {
 
         int argc ; char **argv ;
+        QMP_thread_level_t prv;
          ;
-        QMP_init_msg_passing(&argc, &argv, QMP_SMP_ONE_ADDRESS) ;
+        QMP_init_msg_passing(&argc, &argv, QMP_THREAD_SINGLE, &prv) ;
          ;
         QMP_finalize_msg_passing() ;
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.29 2004-08-09 22:05:46 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.30 2004-09-02 16:35:32 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -61,20 +61,20 @@ namespace Internal
   }
 
   //! Low level hook to QMP_global_sum
-  inline void globalSumArray(int *dest, unsigned int len)
+  inline void globalSumArray(int *dest, int len)
   {
-    for(unsigned int i=0; i < len; i++, dest++)
+    for(int i=0; i < len; i++, dest++)
       QMP_sum_int(dest);
   }
 
   //! Low level hook to QMP_global_sum
-  inline void globalSumArray(float *dest, unsigned int len)
+  inline void globalSumArray(float *dest, int len)
   {
     QMP_sum_float_array(dest, len);
   }
 
   //! Low level hook to QMP_global_sum
-  inline void globalSumArray(double *dest, unsigned int len)
+  inline void globalSumArray(double *dest, int len)
   {
     QMP_sum_double_array(dest, len);
   }
@@ -103,7 +103,7 @@ namespace Internal
   }
 
   //! Broadcast from primary node to all other nodes
-  inline void broadcast(void* dest, unsigned int nbytes)
+  inline void broadcast(void* dest, size_t nbytes)
   {
     QMP_broadcast(dest, nbytes);
   }
@@ -1057,16 +1057,18 @@ public:
 	// For now, will assume there is only 1 destination node 
 	// and receive from only 1 node
 	if (srcenodes.size() != 1)
-	  QMP_error_exit("Map: for now only allow 1 destination node");
+	  QDP_error_exit("Map: for now only allow 1 destination node");
       
 	if (destnodes.size() != 1)
-	  QMP_error_exit("Map: for now only allow receives from 1 node");
+	  QDP_error_exit("Map: for now only allow receives from 1 node");
 #endif
 
 	int dstnum = destnodes_num[0]*sizeof(T1);
 	int srcnum = srcenodes_num[0]*sizeof(T1);
-	T1 *send_buf = (T1 *)(QMP_allocate_aligned_memory(dstnum)); // packed data to send
-	T1 *recv_buf = (T1 *)(QMP_allocate_aligned_memory(srcnum)); // packed receive data
+	QMP_mem_t *send_buf_mem = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE,0); // packed data to send
+	QMP_mem_t *recv_buf_mem = QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE,0); // packed receive data
+	T1 *send_buf = (T1 *)QMP_get_memory_pointer(send_buf_mem);
+	T1 *recv_buf = (T1 *)QMP_get_memory_pointer(recv_buf_mem);
 
 	const int my_node = Layout::nodeNumber();
 
@@ -1131,7 +1133,7 @@ public:
 
 	// Launch the faces
 	if ((err = QMP_start(mh)) != QMP_SUCCESS)
-	  QMP_error_exit(QMP_error_string(err));
+	  QDP_error_exit(QMP_error_string(err));
 
 #if QDP_DEBUG >= 3
 	QDP_info("Map: calling wait");
@@ -1139,7 +1141,7 @@ public:
 
 	// Wait on the faces
 	if ((err = QMP_wait(mh)) != QMP_SUCCESS)
-	  QMP_error_exit(QMP_error_string(err));
+	  QDP_error_exit(QMP_error_string(err));
 
 #if QDP_DEBUG >= 3
 	QDP_info("Map: calling free msgs");
@@ -1163,8 +1165,8 @@ public:
 	}
 
 	// Cleanup
-	QMP_free_aligned_memory(recv_buf);
-	QMP_free_aligned_memory(send_buf);
+	QMP_free_memory(recv_buf_mem);
+	QMP_free_memory(send_buf_mem);
 	delete[] dest;
 
 #if QDP_DEBUG >= 3
@@ -1564,7 +1566,6 @@ void read(BinaryReader& bin, OScalar<T>& d)
 
 
 
-#if ! defined(USE_ROLL_AROUND)
 // There are 2 main classes of binary/nml/xml reader/writer methods.
 // The first is a simple/portable but inefficient method of send/recv
 // to/from the destination node.
@@ -1740,140 +1741,6 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
 	       sizeof(T) / sizeof(typename WordType<T>::Type_t),
 	       coord);
 }
-
-#else   // ! defined(USE_ROLL_AROUND)
-
-extern "C"
-{
-  extern int QMP_shift(int site, unsigned char *data, int prim_size, int sn);
-}
-
-//! Ascii output
-/*! Assumes no inner grid */
-template<class T>  
-NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
-{
-  if (Layout::primaryNode())
-    nml.get() << "   [OUTER]" << endl;
-
-  // Twice the subgrid vol - intermediate array we flip-flop writing data
-  multi1d<T> data(2*Layout::sitesOnNode());
-
-  for(int site=0; site < Layout::sitesOnNode(); ++site)
-    data[site] = d.elem(site);
-
-  const int xinc = Layout::subgridLattSize()[0];
-
-  // Assume lexicographic for the moment...
-  for(int site=0, xsite1=0; site < Layout::vol(); site += xinc)
-  {
-//    int i = Layout::linearSiteIndex(site);
-    int xsite2 = QMP_shift(site,(unsigned char*)(data.slice()),sizeof(T),0);
-
-    if (Layout::primaryNode())
-      for(int xsite3=0; xsite3 < xinc; xsite3++,xsite2++,xsite1++)
-      {
-	nml.get() << "   Site =  " << xsite1 << "   = ";
-	nml << data[xsite2];
-	nml.get() << " ," << endl;
-      }
-  }
-
-  return nml;
-}
-
-//! XML output
-template<class T>  
-XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
-{
-  xml.openTag("OLattice");
-  XMLWriterAPI::AttributeList alist;
-
-  // Twice the subgrid vol - intermediate array we flip-flop writing data
-  multi1d<T> data(2*Layout::sitesOnNode());
-
-  for(int site=0; site < Layout::sitesOnNode(); ++site)
-    data[site] = d.elem(site);
-
-  const int xinc = Layout::subgridLattSize()[0];
-
-  // Assume lexicographic for the moment...
-  for(int site=0, xsite1=0; site < Layout::vol(); site += xinc)
-  {
-//    int i = Layout::linearSiteIndex(site);
-    int xsite2 = QMP_shift(site,(unsigned char*)(data.slice()),sizeof(T),0);
-
-    for(int xsite3=0; xsite3 < xinc; xsite3++,xsite2++,xsite1++)
-    {
-      alist.clear();
-      alist.push_back(XMLWriterAPI::Attribute("site", xsite1));
-
-      xml.openTag("elem", alist);
-      xml << data[xsite2];
-      xml.closeTag();
-    }
-  }
-
-  xml.closeTag(); // OLattice
-  return xml;
-}
-
-
-//! Binary output
-/*! Assumes no inner grid */
-template<class T>
-void write(BinaryWriter& bin, const OLattice<T>& d)
-{
-  // Twice the subgrid vol - intermediate array we flip-flop writing data
-  multi1d<T> data(2*Layout::sitesOnNode());
-
-  for(int site=0; site < Layout::sitesOnNode(); ++site)
-    data[site] = d.elem(site);
-
-  const int xinc = Layout::subgridLattSize()[0];
-
-  // Assume lexicographic for the moment...
-  for(int site=0; site < Layout::vol(); site += xinc)
-  {
-//    int i = Layout::linearSiteIndex(site);
-    int xsite2 = QMP_shift(site,(unsigned char*)(data.slice()),sizeof(T),0);
-
-    if (Layout::primaryNode())
-      bin.writeArray((const char*)(data.slice() + xsite2), 
-		     sizeof(typename WordType<T>::Type_t), 
-		     xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t));
-  }
-}
-
-
-//! Binary input
-/*! Assumes no inner grid */
-template<class T>
-void read(BinaryReader& bin, OLattice<T>& d)
-{
-  // Twice the subgrid vol - intermediate array we flip-flop reading data
-  multi1d<T> data(2*Layout::sitesOnNode());
-  const int xinc = Layout::subgridLattSize()[0];
-
-  // Assume lexicographic for the moment...
-  for(int site=0, xsite2=0; site < Layout::vol(); site += xinc)
-  {
-    bin.readArrayPrimaryNode((char*)(data.slice() + xsite2),
-			     sizeof(typename WordType<T>::Type_t), 
-			     xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t));
-
-    xsite2 = QMP_shift((site + xinc) % Layout::vol(),
-		       (unsigned char*)(data.slice()), sizeof(T), xinc);
-  }
-
-  for(int site=0; site < Layout::sitesOnNode(); ++site)
-  {
-//    int i = Layout::linearSiteIndex(site);
-    d.elem(site) = data[site];
-  }
-}
-
-#endif
 
 
 QDP_END_NAMESPACE();

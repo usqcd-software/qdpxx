@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.9 2004-07-27 05:36:36 edwards Exp $
+// $Id: qdp_parscalar_init.cc,v 1.10 2004-09-02 16:35:33 edwards Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -36,7 +36,7 @@ void QDP_initialize(int *argc, char ***argv)
   }
 
   bool setGeomP = false;
-  multi1d<QMP_u32_t> logical_geom(Nd);   // apriori logical geometry of the machine
+  multi1d<int> logical_geom(Nd);   // apriori logical geometry of the machine
   logical_geom = 0;
 
   int rtiP = 0;
@@ -148,7 +148,8 @@ void QDP_initialize(int *argc, char ***argv)
   QDP_info("Now initialize QMP");
 #endif
 
-  if (QMP_init_msg_passing(argc, argv, QMP_SMP_ONE_ADDRESS) != QMP_SUCCESS)
+  QMP_thread_level_t prv;
+  if (QMP_init_msg_passing(argc, argv, QMP_THREAD_SINGLE, &prv) != QMP_SUCCESS)
     QDP_error_exit("QDP_initialize failed");
 
 #if QDP_DEBUG >= 1
@@ -156,7 +157,7 @@ void QDP_initialize(int *argc, char ***argv)
 #endif
 
   if (setGeomP)
-    if (QMP_declare_logical_topology(logical_geom.slice(), (QMP_u32_t)Nd) != QMP_TRUE)
+    if (QMP_declare_logical_topology(logical_geom.slice(), Nd) != QMP_SUCCESS)
       QDP_error_exit("QMP_declare_logical_topology failed");
 
 #if QDP_DEBUG >= 1
