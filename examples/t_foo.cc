@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.23 2003-04-30 21:08:50 edwards Exp $
+// $Id: t_foo.cc,v 1.24 2003-05-10 23:31:08 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,2,2};
+  const int foo[] = {2,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -408,13 +408,87 @@ int main(int argc, char *argv[])
 
 #if 1
  {
+   cerr << "create metadata xml" << endl;
+
+   XMLMetaWriter xml;
+
+   push(xml,"fred");
+   float yy = 42.1;
+   write(xml,"yy",yy);
+   Real zzz = 3.1;
+   Complex zz = cmplx(17.5,zzz);
+   write(xml,"zz",zz);
+
+#if 0
+   LatticeComplex ee;
+   random(ee);
+   write(xml,"ee",ee);
+
+   LatticeFermion ff;
+   random(ff);
+   write(xml,"ff",ff);
+#endif
+
+   string blech;
+   blech = "my number";
+   cerr << "test writing string into meta" << endl;
+   xml << blech;
+//   write(xml,"foo",blech);
+   cerr << "done with foo" << endl;
+
+   pop(xml);
+
+   cout << "Here is the metadata" << endl << xml.str() << endl;
+
+   XMLDataWriter file_xml("t_foo.xml_output");
+//   push(file_xml,"fred");
+//   write(file_xml,"yy",yy);
+//   pop(file_xml);
+
+//   file_xml << xml.str();
+
+   string ffo;
+   ffo = "hello friend";
+   cerr << "start of string: " << ffo << endl;
+//   file_xml << ffo;
+//   write(file_xml,"foo",ffo);
+//   push(file_xml,"ladies_and_gents");
+   file_xml.write(ffo);
+//   pop(file_xml);
+//   file_xml.close();
+ }
+#endif
+
+ return 0;
+
+#if 1
+ {
+   cerr << "read metadata xml" << endl;
+
+   XMLReader xml;
+   xml.open("t_foo.xml_output");
+
+   float yy;
+   read(xml,"/fred/yy",yy);
+   Write(nml,yy);
+
+//   Complex zz;
+//   read(xml,"zz",zz);
+//   Write(nml,zz);
+ }
+#endif
+
+#if 1
+ {
    cerr << "create xml" << endl;
 
    XMLMetaWriter file_xml;
-   XML_set(file_xml.get(),"Dummy file xml");
+   string file_string = "Here is the file xml";
+   write(file_xml,"file_string",file_string);
 
    XMLMetaWriter rec_xml;
-   XML_set(rec_xml.get(),"Dummy record xml");
+   string rec_string = "Here is the record xml";
+   write(rec_xml,"rec_string",rec_string);
 
    gaussian(a);
    gaussian(b);
@@ -441,8 +515,8 @@ int main(int argc, char *argv[])
  {
    cerr << "create xml" << endl;
 
-   XMLMetaReader file_xml;
-   XMLMetaReader rec_xml;
+   XMLReader file_xml;
+   XMLReader rec_xml;
 
    a = 0;
    b = 0;
