@@ -1,4 +1,4 @@
-// $Id: t_binx.cc,v 1.1 2004-03-25 14:01:02 mcneile Exp $
+// $Id: t_binx.cc,v 1.2 2004-03-26 12:25:23 mcneile Exp $
 //
 // Write out binary with some XML markup
 // in the binx format.
@@ -26,6 +26,7 @@ int main(int argc, char **argv)
 
   LatticeReal a;
   Double d = 17;
+  int bb = 4 ;
   random(a);
 
   QDPIO::cout << "Test the binx IO routines\n";
@@ -33,6 +34,9 @@ int main(int argc, char **argv)
   BinxWriter tobinary("t_io.bin");
   //  write(tobinary, a);
   write(tobinary, d);
+  write(tobinary, bb);
+  float cc = 3.2 ;
+  write(tobinary, cc);
   tobinary.close();
   // Time to bolt
   QDP_finalize();
