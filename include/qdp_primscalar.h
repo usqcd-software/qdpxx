@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.13 2003-10-17 15:56:23 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.14 2003-10-20 20:15:53 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -166,8 +166,7 @@ template<class T>
 inline
 istream& operator>>(istream& s, PScalar<T>& d)
 {
-  s >> d.elem();
-  return s;
+  return s >> d.elem();
 }
 
 //! Ascii input
@@ -175,8 +174,7 @@ template<class T>
 inline
 StandardInputStream& operator>>(StandardInputStream& s, PScalar<T>& d)
 {
-  s >> d.elem();
-  return s;
+  return s >> d.elem();
 }
 
 // Output
@@ -953,6 +951,203 @@ pokeDW(PScalar<T1>& l, const PScalar<T2>& r, int row)
 {
   pokeDW(l.elem(),r.elem(),row);
   return l;
+}
+
+//-----------------------------------------------------------------------------
+//! PScalar = Gamma<N,m> * PScalar
+template<class T2, int N, int m>
+inline typename BinaryReturn<GammaConst<N,m>, PScalar<T2>, OpGammaConstMultiply>::Type_t
+operator*(const GammaConst<N,m>& l, const PScalar<T2>& r)
+{
+  return l * r.elem();
+}
+
+//! PScalar = PScalar * Gamma<N,m>
+template<class T2, int N, int m>
+inline typename BinaryReturn<PScalar<T2>, GammaConst<N,m>, OpGammaConstMultiply>::Type_t
+operator*(const PScalar<T2>& l, const GammaConst<N,m>& r)
+{
+  return l.elem() * r;
+}
+
+//-----------------------------------------------------------------------------
+//! PScalar = SpinProject(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinProjectDir0Minus>::Type_t
+spinProjectDir0Minus(const PScalar<T>& s1)
+{
+  return spinProjectDir0Minus(s1.elem());
+}
+
+//! PScalar = SpinReconstruct(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinReconstructDir0Minus>::Type_t
+spinReconstructDir0Minus(const PScalar<T>& s1)
+{
+  return spinReconstructDir0Minus(s1.elem());
+}
+
+
+//! PScalar = SpinProject(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinProjectDir1Minus>::Type_t
+spinProjectDir1Minus(const PScalar<T>& s1)
+{
+  return spinProjectDir1Minus(s1.elem());
+}
+
+//! PScalar = SpinReconstruct(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinReconstructDir1Minus>::Type_t
+spinReconstructDir1Minus(const PScalar<T>& s1)
+{
+  return spinReconstructDir1Minus(s1.elem());
+}
+
+
+//! PScalar = SpinProject(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinProjectDir2Minus>::Type_t
+spinProjectDir2Minus(const PScalar<T>& s1)
+{
+  return spinProjectDir2Minus(s1.elem());
+}
+
+//! PScalar = SpinReconstruct(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinReconstructDir2Minus>::Type_t
+spinReconstructDir2Minus(const PScalar<T>& s1)
+{
+  return spinReconstructDir2Minus(s1.elem());
+}
+
+
+//! PScalar = SpinProject(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinProjectDir3Minus>::Type_t
+spinProjectDir3Minus(const PScalar<T>& s1)
+{
+  return spinProjectDir3Minus(s1.elem());
+}
+
+//! PScalar = SpinReconstruct(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinReconstructDir3Minus>::Type_t
+spinReconstructDir3Minus(const PScalar<T>& s1)
+{
+  return spinReconstructDir3Minus(s1.elem());
+}
+
+
+//! PScalar = SpinProject(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinProjectDir0Plus>::Type_t
+spinProjectDir0Plus(const PScalar<T>& s1)
+{
+  return spinProjectDir0Plus(s1.elem());
+}
+
+//! PScalar = SpinReconstruct(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinReconstructDir0Plus>::Type_t
+spinReconstructDir0Plus(const PScalar<T>& s1)
+{
+  return spinReconstructDir0Plus(s1.elem());
+}
+
+
+//! PScalar = SpinProject(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinProjectDir1Plus>::Type_t
+spinProjectDir1Plus(const PScalar<T>& s1)
+{
+  return spinProjectDir1Plus(s1.elem());
+}
+
+//! PScalar = SpinReconstruct(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinReconstructDir1Plus>::Type_t
+spinReconstructDir1Plus(const PScalar<T>& s1)
+{
+  return spinReconstructDir1Plus(s1.elem());
+}
+
+
+//! PScalar = SpinProject(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinProjectDir2Plus>::Type_t
+spinProjectDir2Plus(const PScalar<T>& s1)
+{
+  return spinProjectDir2Plus(s1.elem());
+}
+
+//! PScalar = SpinReconstruct(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinReconstructDir2Plus>::Type_t
+spinReconstructDir2Plus(const PScalar<T>& s1)
+{
+  return spinReconstructDir2Plus(s1.elem());
+}
+
+
+//! PScalar = SpinProject(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinProjectDir3Plus>::Type_t
+spinProjectDir3Plus(const PScalar<T>& s1)
+{
+  return spinProjectDir3Plus(s1.elem());
+}
+
+//! PScalar = SpinReconstruct(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSpinReconstructDir3Plus>::Type_t
+spinReconstructDir3Plus(const PScalar<T>& s1)
+{
+  return spinReconstructDir3Plus(s1.elem());
+}
+
+//-----------------------------------------------------------------------------
+// quark propagator contraction
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnQuarkContract13>::Type_t
+quarkContract13(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  return quarkContract13(s1.elem(), s2.elem());
+}
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnQuarkContract14>::Type_t
+quarkContract14(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  return quarkContract14(s1.elem(), s2.elem());
+}
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnQuarkContract23>::Type_t
+quarkContract23(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  return quarkContract23(s1.elem(), s2.elem());
+}
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnQuarkContract24>::Type_t
+quarkContract24(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  return quarkContract24(s1.elem(), s2.elem());
+}
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnQuarkContract12>::Type_t
+quarkContract12(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  return quarkContract12(s1.elem(), s2.elem());
+}
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnQuarkContract34>::Type_t
+quarkContract34(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  return quarkContract34(s1.elem(), s2.elem());
 }
 
 
