@@ -29,12 +29,14 @@ VPATH+=@top_srcdir@/examples
 #
 # The programs to build
 # 
-check_PROGRAMS= t_skeleton t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo
+check_PROGRAMS= t_skeleton t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo \
+      t_nml
 
 #
 # The program and its dependencies
 t_skeleton_SOURCES = t_skeleton.cc
 t_foo_SOURCES = t_foo.cc $(HDRS)
+t_nml_SOURCES = t_nml.cc $(HDRS)
 t_io_SOURCES = t_io.cc $(HDRS)
 t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)
 t_mesplq_SOURCES = t_mesplq.cc mesplq.cc reunit.cc $(HDRS)
