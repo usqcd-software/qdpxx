@@ -1,3 +1,7 @@
+03/19/2004 -- Robert Edwards
+
+	Version 1.7.8. Added back in tests for QMP_route.
+
 03/15/2004 -- Robert Edwards
 
 	Version 1.7.7. Rearranged internally to remove QMP_route.
