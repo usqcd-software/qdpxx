@@ -2,6 +2,7 @@
 
 	Version 1.7.9. Added in support for scalar array reading/writing in
         QDPFileReader/QDPFileWriter.
+        Added generic blas support.
 
 03/19/2004 -- Robert Edwards
 
