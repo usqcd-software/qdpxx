@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_multi.h,v 1.2 2003-10-09 15:00:24 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -49,7 +49,7 @@ public:
   //! Equal operator uses underlying = of T
   multi1d<T>& operator=(const multi1d<T>& s1)
     {
-      if (F == 0)
+      if (size() != s1.size())   // a simple check avoids resizing always
 	resize(s1.size());
 
       for(int i=0; i < n1; ++i)
@@ -197,8 +197,7 @@ public:
   //! Equal operator uses underlying = of T
   multi2d<T>& operator=(const multi2d<T>& s1)
     {
-      if (F == 0)
-	resize(s1.size2(), s1.size1());
+      resize(s1.size2(), s1.size1());   // always resize
 
       for(int i=0; i < sz; ++i)
 	F[i] = s1.F[i];
@@ -274,8 +273,7 @@ public:
   //! Equal operator uses underlying = of T
   multi3d<T>& operator=(const multi3d<T>& s1)
     {
-      if (F == 0)
-	resize(s1.size3(), s1.size2(), s1.size());
+      resize(s1.size3(), s1.size2(), s1.size());
 
       for(int i=0; i < sz; ++i)
 	F[i] = s1.F[i];
@@ -361,8 +359,7 @@ public:
   //! Equal operator uses underlying = of T
   multiNd<T>& operator=(const multiNd<T>& s1)
     {
-      if (F == 0)
-	resize(s1.size());
+      resize(s1.size());
 
       for(int i=0; i < sz; ++i)
 	F[i] = s1.F[i];
