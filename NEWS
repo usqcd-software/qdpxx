@@ -1,3 +1,10 @@
+07/28/2004 -- Robert Edwards
+
+	Version 1.9.1. Changed RNG generation so that a lattice wide
+        fill of rngs will also throw away an additional rng. This
+        dirty trick helps to avoid correlations induced from generating
+        large powers of 2 of rngs.
+
 07/26/2004 -- Robert Edwards
 
 	Version 1.9.0. Added profiling capability at configure with  --enable-profiling.
