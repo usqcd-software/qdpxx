@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.1 2003-05-22 20:06:28 edwards Exp $
+// $Id: qdp_reality.h,v 1.2 2003-06-09 19:34:07 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -384,13 +384,11 @@ template<class T>
 inline
 XMLWriter& operator<<(XMLWriter& xml, const RComplex<T>& d)
 {
-  xml.openTag("cmpx");
   xml.openTag("re");
   xml << d.real();
   xml.closeTag();
   xml.openTag("im");
   xml << d.imag();
-  xml.closeTag();
   xml.closeTag();
 
   return xml;
@@ -404,10 +402,10 @@ void read(XMLReader& xml, const string& path, RComplex<T>& d)
   std::ostringstream error_message;
   
   // XPath for the real part 
-  string path_real = xpath + "/cmpx/re";
+  string path_real = xpath + "/re";
 	
   // XPath for the imaginary part.
-  string path_imag = xpath + "/cmpx/im";
+  string path_imag = xpath + "/im";
 	
   // Try and recursively get the real part
   try { 

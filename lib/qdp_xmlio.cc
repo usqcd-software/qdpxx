@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.9 2003-06-09 04:17:26 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.10 2003-06-09 19:34:07 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -371,53 +371,81 @@ XMLWriter& operator<<(XMLWriter& xml, const XMLBufferWriter& d)
 }
 
 // Time to build a telephone book of basic primitives
+template<typename T>
+void writePrimitive(XMLWriter& xml, const string& s, const T& d)
+{
+  xml.openTag(s);
+  xml.write(d);
+  xml.closeTag();
+}
+
 void write(XMLWriter& xml, const string& s, const string& d)
 {
-  xml.openTag(s);
-  xml.write(d);
-  xml.closeTag();
+  writePrimitive<string>(xml, s, d);
 }
 
-//! Write an int
+void write(XMLWriter& xml, const string& s, const char& d)
+{
+  writePrimitive<char>(xml, s, d);
+}
+
 void write(XMLWriter& xml, const string& s, const int& d)
 {
-  xml.openTag(s);
-  xml.write(d);
-  xml.closeTag();
+  writePrimitive<int>(xml, s, d);
 }
 
-//! Write a float
+void write(XMLWriter& xml, const string& s, const unsigned int& d)
+{
+  writePrimitive<unsigned int>(xml, s, d);
+}
+
+void write(XMLWriter& xml, const string& s, const short int& d)
+{
+  writePrimitive<short int>(xml, s, d);
+}
+
+void write(XMLWriter& xml, const string& s, const unsigned short int& d)
+{
+  writePrimitive<unsigned short int>(xml, s, d);
+}
+
+void write(XMLWriter& xml, const string& s, const long int& d)
+{
+  writePrimitive<long int>(xml, s, d);
+}
+
+void write(XMLWriter& xml, const string& s, const unsigned long int& d)
+{
+  writePrimitive<unsigned long int>(xml, s, d);
+}
+
 void write(XMLWriter& xml, const string& s, const float& d)
 {
-  xml.openTag(s);
-  xml.write(d);
-  xml.closeTag();
+  writePrimitive<float>(xml, s, d);
 }
 
-//! Write a double
 void write(XMLWriter& xml, const string& s, const double& d)
 {
-  xml.openTag(s);
-  xml.write(d);
-  xml.openTag(s);
+  writePrimitive<double>(xml, s, d);
 }
 
-//! Write a bool
 void write(XMLWriter& xml, const string& s, const bool& d)
 {
-  xml.openTag(s);
-  xml.write(d);
-  xml.openTag(s);
+  writePrimitive<bool>(xml, s, d);
 }
 
 // Versions that do not print a name
 XMLWriter& operator<<(XMLWriter& xml, const string& d) {xml.write(d);return xml;}
+XMLWriter& operator<<(XMLWriter& xml, const char& d) {xml.write(d);return xml;}
 XMLWriter& operator<<(XMLWriter& xml, const int& d) {xml.write(d);return xml;}
+XMLWriter& operator<<(XMLWriter& xml, const unsigned int& d) {xml.write(d);return xml;}
+XMLWriter& operator<<(XMLWriter& xml, const short int& d) {xml.write(d);return xml;}
+XMLWriter& operator<<(XMLWriter& xml, const unsigned short int& d) {xml.write(d);return xml;}
+XMLWriter& operator<<(XMLWriter& xml, const long int& d) {xml.write(d);return xml;}
+XMLWriter& operator<<(XMLWriter& xml, const unsigned long int& d) {xml.write(d);return xml;}
 XMLWriter& operator<<(XMLWriter& xml, const float& d) {xml.write(d);return xml;}
 XMLWriter& operator<<(XMLWriter& xml, const double& d) {xml.write(d);return xml;}
 XMLWriter& operator<<(XMLWriter& xml, const bool& d) {xml.write(d);return xml;}
-
-
 
 
 //--------------------------------------------------------------------------------

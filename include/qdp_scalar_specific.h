@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.4 2003-06-05 03:38:22 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.5 2003-06-09 19:34:07 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -822,38 +822,22 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
 template<class T>  
 XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
 {
-  // These attributes are the defaults
-  std::string sizeName = "volume";
-  std::string elemName = "site";
-  std::string indexName = "index";
-
-  XMLWriterAPI::AttributeList alist;
-  alist.push_back(XMLWriterAPI::Attribute("sizeName",  sizeName));
-  alist.push_back(XMLWriterAPI::Attribute("elemName",  elemName));
-  alist.push_back(XMLWriterAPI::Attribute("indexName", indexName));
-  alist.push_back(XMLWriterAPI::Attribute("indexStart", 0));
-      
-  // Write the OLattice - tag
   xml.openTag("OLattice");
 
-  // Write the array - tag
-  xml.openTag("array", alist);
-
-  xml.openTag(sizeName);
-  xml.write(Layout::vol());
-  xml.closeTag();
+  XMLWriterAPI::AttributeList alist;
 
   for(int site=0; site < Layout::vol(); ++site) 
   {
     int i = Layout::linearSiteIndex(site);
+
     alist.clear();
-    alist.push_back(XMLWriterAPI::Attribute(indexName, site));
-    xml.openTag(elemName, alist);
-    xml << d.elem(i);   // NOTE, can possibly grab user defined write's here
+    alist.push_back(XMLWriterAPI::Attribute("site", i));
+
+    xml.openTag("elem", alist);
+    xml << d.elem(i);
     xml.closeTag();
   }
 
-  xml.closeTag(); // Array
   xml.closeTag(); // OLattice
 
   return xml;

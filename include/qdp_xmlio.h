@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.7 2003-06-09 04:17:26 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.8 2003-06-09 19:34:07 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -145,79 +145,60 @@ void write(XMLWriter& xml, const std::string& s, const XMLBufferWriter& d);
 XMLWriter& operator<<(XMLWriter& xml, const XMLBufferWriter& d);
 
 // Time to build a telephone book of basic primitives
-void write(XMLWriter& xml, const std::string& s, const std::string& d);
-void write(XMLWriter& xml, const std::string& s, const int& d);
-void write(XMLWriter& xml, const std::string& s, const float& d);
-void write(XMLWriter& xml, const std::string& s, const double& d);
-void write(XMLWriter& xml, const std::string& s, const bool& d);
+void write(XMLWriter& xml, const std::string& s, const std::string& output);
+void write(XMLWriter& xml, const std::string& s, const char& output);
+void write(XMLWriter& xml, const std::string& s, const int& output);
+void write(XMLWriter& xml, const std::string& s, const unsigned int& output);
+void write(XMLWriter& xml, const std::string& s, const short int& output);
+void write(XMLWriter& xml, const std::string& s, const unsigned short int& output);
+void write(XMLWriter& xml, const std::string& s, const long int& output);
+void write(XMLWriter& xml, const std::string& s, const unsigned long int& output);
+void write(XMLWriter& xml, const std::string& s, const float& output);
+void write(XMLWriter& xml, const std::string& s, const double& output);
+void write(XMLWriter& xml, const std::string& s, const bool& output);
 
 // Versions that do not print a name
-XMLWriter& operator<<(XMLWriter& xml, const std::string& d);
-XMLWriter& operator<<(XMLWriter& xml, const int& d);
-XMLWriter& operator<<(XMLWriter& xml, const float& d);
-XMLWriter& operator<<(XMLWriter& xml, const double& d);
-XMLWriter& operator<<(XMLWriter& xml, const bool& d);
-
+XMLWriter& operator<<(XMLWriter& xml, const std::string& output);
+XMLWriter& operator<<(XMLWriter& xml, const char& output);
+XMLWriter& operator<<(XMLWriter& xml, const int& output);
+XMLWriter& operator<<(XMLWriter& xml, const unsigned int& output);
+XMLWriter& operator<<(XMLWriter& xml, const short int& output);
+XMLWriter& operator<<(XMLWriter& xml, const unsigned short int& output);
+XMLWriter& operator<<(XMLWriter& xml, const long int& output);
+XMLWriter& operator<<(XMLWriter& xml, const unsigned long int& output);
+XMLWriter& operator<<(XMLWriter& xml, const float& output);
+XMLWriter& operator<<(XMLWriter& xml, const double& output);
+XMLWriter& operator<<(XMLWriter& xml, const bool& output);
 
 //! Write a XML multi1d element
 template<class T>
 inline
 void write(XMLWriter& xml, const std::string& s, const multi1d<T>& s1)
 {
+  // Write the array name
   xml.openTag(s);
-  xml << s1;
-  xml.closeTag(s);
-}
 
-//! Write a XML multi1d element
-/*! This is the verbose method */
-template<class T>
-inline
-void writeArray(XMLWriter& xml, 
-		const std::string& sizeName, 
-		const std::string& elemName, 
-		const std::string& indexName,
-		const unsigned int& indexStart,
-		const multi1d<T>& s1)
-{
+#if 0
+  // This stuff is for schemas
   XMLWriterAPI::AttributeList alist;
-  alist.push_back(XMLWriterAPI::Attribute("sizeName",  sizeName));
-  alist.push_back(XMLWriterAPI::Attribute("elemName",  elemName));
-  alist.push_back(XMLWriterAPI::Attribute("indexName", indexName));
-  alist.push_back(XMLWriterAPI::Attribute("indexStart", indexStart));
+  alist.push_back(XMLWriterAPI::Attribute("minOccurs", s1.size()));
+  alist.push_back(XMLWriterAPI::Attribute("maxOccurs", s1.size()));
       
-  // Write the array - tag
-  xml.openTag("array", alist);
+  xml.openTag("complexType");
+  xml.openTag("sequence", alist);
+#endif
 
-  xml.openTag(sizeName);
-  xml.write(s1.size());
-  xml.closeTag();
-
-  unsigned int index;
-  for(index=0; index < s1.size(); index++) {
-    alist.clear();
-    alist.push_back(XMLWriterAPI::Attribute(indexName, index + indexStart));
-    xml.openTag(elemName, alist);
-    xml << s1[index];   // NOTE, can possibly grab user defined write's here
-    xml.closeTag();
+  for(unsigned index=0; index < s1.size(); index++) 
+  {
+    write(xml, "elem", s1[index]);  // Possibly grab user defines here
   }
 
-  xml.closeTag(); // Array
-}
-
-
-//! Write a XML multi1d element
-template<class T>
-inline
-XMLWriter& operator<<(XMLWriter& xml, const multi1d<T>& s1)
-{
-  // These attributes are the defaults
-  std::string sizeName = "size";
-  std::string elemName = "element";
-  std::string indexName = "index";
-
-  writeArray(xml, sizeName, elemName, indexName, 0, s1);
-  return xml;
+#if 0
+  // This stuff is for schemas
+  xml.closeTag(); // sequence
+  xml.closeTag(); // complexType
+#endif
+  xml.closeTag(); // Array name
 }
 
 
@@ -243,6 +224,7 @@ void write(XMLWriter& xml, const std::string& s, const OLattice<T>& d)
 
 
 #if 0
+// NEED TO FIX THIS
 //! Write a XML multi2d element
 template<class T> 
 inline

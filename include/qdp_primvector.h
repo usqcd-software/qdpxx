@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.2 2003-05-22 21:33:06 edwards Exp $
+// $Id: qdp_primvector.h,v 1.3 2003-06-09 19:34:07 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -145,17 +145,22 @@ template<class T, int N, template<class,int> class C>
 inline
 XMLWriter& operator<<(XMLWriter& xml, const PVector<T,N,C>& d)
 {
-  multi1d<T> dd(N);
-
   xml.openTag("Vector");
+
+  XMLWriterAPI::AttributeList alist;
 
   // Copy into another array first
   for(int i=0; i < N; ++i)
-    dd[i] = d.elem(i);
-    
-  xml << dd;
+  {
+    alist.clear();
+    alist.push_back(XMLWriterAPI::Attribute("row", i));
+
+    xml.openTag("elem", alist);
+    xml << d.elem(i);
+    xml.closeTag();
+  }
+
   xml.closeTag();  // Vector
-    
   return xml;
 }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.5 2003-06-05 03:38:22 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.6 2003-06-09 19:34:07 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1093,6 +1093,43 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
 
   return nml;
 }
+
+//! XML output
+template<class T>  
+XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
+{
+  xml.openTag("OLattice");
+  XMLWriterAPI::AttributeList alist;
+
+  // Twice the subgrid vol - intermediate array we flip-flop writing data
+  multi1d<T> data(2*Layout::sitesOnNode());
+
+  for(int site=0; site < Layout::sitesOnNode(); ++site)
+    data[site] = d.elem(site);
+
+  const int xinc = Layout::subgridLattSize()[0];
+
+  // Assume lexicographic for the moment...
+  for(int site=0, xsite1=0; site < Layout::vol(); site += xinc)
+  {
+//    int i = Layout::linearSiteIndex(site);
+    int xsite2 = QMP_shift(site,(unsigned char*)(data.slice()),sizeof(T),0);
+
+    for(int xsite3=0; xsite3 < xinc; xsite3++,xsite2++,xsite1++)
+    {
+      alist.clear();
+      alist.push_back(XMLWriterAPI::Attribute("site", xsite1));
+
+      xml.openTag("elem", alist);
+      xml << data[xsite2];
+      xml.closeTag();
+    }
+  }
+
+  xml.closeTag(); // OLattice
+  return xml;
+}
+
 
 //! Binary output
 /*! Assumes no inner grid */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.2 2003-06-09 19:34:07 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -189,20 +189,25 @@ template<class T, int N, template<class,int> class C>
 inline
 XMLWriter& operator<<(XMLWriter& xml, const PMatrix<T,N,C>& d)
 {
-  multi1d<T> dd(N);
-
   xml.openTag("Matrix");
+
+  XMLWriterAPI::AttributeList alist;
 
   for(int i=0; i < N; ++i)
   {
     for(int j=0; j < N; ++j)
-      dd[j] = d.elem(i,j);
+    {
+      alist.clear();
+      alist.push_back(XMLWriterAPI::Attribute("row", i));
+      alist.push_back(XMLWriterAPI::Attribute("col", j));
 
-    nml << dd;
+      xml.openTag("elem", alist);
+      xml << d.elem(i,j);
+      xml.closeTag();
+    }
   }
 
   xml.closeTag(); // Matrix
-
   return xml;
 }
 
