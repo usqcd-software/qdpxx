@@ -21,7 +21,7 @@ AC_ARG_ENABLE(Nd,
   [ ac_Nd=4 ]
 )
     
-AC_DEFINE_UNQUOTED(ND, ${ac_Nd}, [Number of dimensions])        dnl config.h file
+AC_DEFINE_UNQUOTED(QDP_ND, ${ac_Nd}, [Number of dimensions])        dnl config.h file
 AC_SUBST(CONFIG_ND, [${ac_Nd}] )  dnl qdp++_config
 
 dnl Tell the user about Nd
@@ -36,7 +36,7 @@ AC_ARG_ENABLE(Nc,
   [ac_Nc=3]
 )
 
-AC_DEFINE_UNQUOTED(NC, ${ac_Nc}, [Number of color components])
+AC_DEFINE_UNQUOTED(QDP_NC, ${ac_Nc}, [Number of color components])
 AC_SUBST(CONFIG_NC, [${ac_Nc}] )
 
 dnl Tell the user about Nc
@@ -52,7 +52,7 @@ AC_ARG_ENABLE(Ns,
   [ac_Ns=4]
 )
 
-AC_DEFINE_UNQUOTED(NS, ${ac_Ns}, [Number of spin components])
+AC_DEFINE_UNQUOTED(QDP_NS, ${ac_Ns}, [Number of spin components])
 AC_SUBST(CONFIG_NS, [${ac_Ns}] )
 dnl Tell the user about Ns
 AC_MSG_NOTICE([Configuring QDP++ for Ns = ${ac_Ns}])
