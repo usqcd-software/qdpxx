@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: defs.h,v 1.5 2002-12-05 21:27:10 edwards Exp $
+// $Id: defs.h,v 1.6 2002-12-18 21:30:40 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -30,6 +30,8 @@ QDP_BEGIN_NAMESPACE(QDP);
 typedef GammaType<Ns> Gamma;
 
 // Aliases for a scalar architecture
+typedef OLattice< PScalar< PColorVector< RComplex<REAL>, Nc> > > LatticeColorVector;
+typedef OLattice< PSpinVector< PScalar< RComplex<REAL> >, Ns> > LatticeSpinVector;
 typedef OLattice< PScalar< PColorMatrix< RComplex<REAL>, Nc> > > LatticeColorMatrix;
 typedef OLattice< PSpinMatrix< PScalar< RComplex<REAL> >, Ns> > LatticeSpinMatrix;
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns> > LatticeFermion;
@@ -43,8 +45,12 @@ typedef OLattice< PScalar< PScalar< RScalar<REAL> > > > LatticeReal;
 typedef OLattice< PScalar< PScalar< RScalar<DOUBLE> > > > LatticeDouble;
 typedef OLattice< PScalar< PScalar< RScalar<LOGICAL> > > > LatticeBoolean;
 
+typedef OScalar< PScalar< PColorVector< RComplex<REAL>, Nc> > > ColorVector;
 typedef OScalar< PScalar< PColorMatrix< RComplex<REAL>, Nc> > > ColorMatrix;
+typedef OScalar< PSpinVector< PScalar< RComplex<REAL> >, Ns> > SpinVector;
+typedef OScalar< PSpinMatrix< PScalar< RComplex<REAL> >, Ns> > SpinMatrix;
 typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns> > Fermion;
+typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns>>1 > > HalfFermion;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, Ns> > Propagator;
 typedef OScalar< PScalar< PScalar< RComplex<REAL> > > > Complex;
 
@@ -58,9 +64,6 @@ typedef OScalar< PScalar< PScalar< RComplex<DOUBLE> > > > DComplex;
 
 
 // Other useful names
-typedef OScalar< PScalar< PColorVector< RComplex<REAL>, Nc> > > ColorVector;
-typedef OScalar< PSpinMatrix< PScalar< RComplex<REAL> >, Ns> > SpinMatrix;
-typedef OScalar< PSpinVector< PScalar< RComplex<REAL> >, Ns> > SpinVector;
 typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns> > ColorVectorSpinVector;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, Ns> > ColorMatrixSpinMatrix;
 
@@ -71,7 +74,7 @@ typedef PScalar< PScalar< RScalar<DOUBLE> > > IntDouble;
 typedef PScalar< PScalar< RScalar<LOGICAL> > > IntBoolean;
 
 // Fixed precision
-typedef OLattice< PScalar< PColorMatrix< RComplex<REAL32>, Nc> > > LatticeColorMatrix32;
+typedef OLattice< PScalar< PColorMatrix< RComplex<REAL32>, Nc> > > LatticeColorMatrixF;
 typedef OScalar< PScalar< PScalar< RScalar<REAL32> > > > Real32;
 
 /*! @} */   // end of group defs
