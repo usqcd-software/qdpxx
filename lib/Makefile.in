@@ -188,7 +188,7 @@ HDRS = qdp_defs.h qdp_forward.h qdp_globalfuncs.h qdp_inner.h qdp_io.h qdp_layou
 
 libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc qdp_layout.cc qdp_io.cc \
                qdp_iogauge.cc qdp_byteorder.cc qdp_util.cc \
-               qdp_qdpio.cc qdp_xmlio.cc   qdp_filebuf.cc\
+               qdp_qdpio.cc qdp_xmlio.cc   qdp_filebuf.cc   qdp_stdio.cc\
 $(am__append_1) $(am__append_2) $(am__append_3) $(am__append_4) $(am__append_5) $(am__append_6)
 
 # Need this header as part of libqdp_a_sources
@@ -204,13 +204,14 @@ libqdp_a_LIBADD =
 am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	qdp.cc qdp_layout.cc qdp_io.cc qdp_iogauge.cc qdp_byteorder.cc \
 	qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc qdp_filebuf.cc \
-	qdp_scalar_init.cc qdp_scalar_layout.cc qdp_scalar_specific.cc \
-	qdp_scalarsite_specific.cc ../include/qdp_scalar_specific.h \
-	qdp_parscalar_init.cc qdp_parscalar_layout.cc \
-	qdp_parscalar_specific.cc ../include/qdp_parscalar_specific.h \
-	qdp_scalarsite_sse.cc ../include/qdp_scalarsite_sse.h \
-	qdp_scalarvec_init.cc qdp_scalarvec_layout.cc \
-	qdp_scalarvec_specific.cc qdp_scalarvecsite_specific.cc \
+	qdp_stdio.cc qdp_scalar_init.cc qdp_scalar_layout.cc \
+	qdp_scalar_specific.cc qdp_scalarsite_specific.cc \
+	../include/qdp_scalar_specific.h qdp_parscalar_init.cc \
+	qdp_parscalar_layout.cc qdp_parscalar_specific.cc \
+	../include/qdp_parscalar_specific.h qdp_scalarsite_sse.cc \
+	../include/qdp_scalarsite_sse.h qdp_scalarvec_init.cc \
+	qdp_scalarvec_layout.cc qdp_scalarvec_specific.cc \
+	qdp_scalarvecsite_specific.cc \
 	../include/qdp_scalarvec_specific.h qdp_parscalarvec_init.cc \
 	qdp_parscalarvec_layout.cc qdp_parscalarvec_specific.cc \
 	../include/qdp_parscalarvec_specific.h qdp_scalarvecsite_sse.cc \
@@ -238,9 +239,9 @@ am_libqdp_a_OBJECTS = qdp_map.$(OBJEXT) qdp_subset.$(OBJEXT) \
 	qdp_random.$(OBJEXT) qdp.$(OBJEXT) qdp_layout.$(OBJEXT) \
 	qdp_io.$(OBJEXT) qdp_iogauge.$(OBJEXT) qdp_byteorder.$(OBJEXT) \
 	qdp_util.$(OBJEXT) qdp_qdpio.$(OBJEXT) qdp_xmlio.$(OBJEXT) \
-	qdp_filebuf.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6)
+	qdp_filebuf.$(OBJEXT) qdp_stdio.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
+	$(am__objects_5) $(am__objects_6)
 am__objects_7 =
 nodist_libqdp_a_OBJECTS = $(am__objects_7)
 libqdp_a_OBJECTS = $(am_libqdp_a_OBJECTS) $(nodist_libqdp_a_OBJECTS)
@@ -269,8 +270,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/qdp_scalarvec_specific.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qdp_scalarvecsite_specific.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/qdp_scalarvecsite_sse.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qdp_subset.Po ./$(DEPDIR)/qdp_util.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qdp_xmlio.Po
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_stdio.Po ./$(DEPDIR)/qdp_subset.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp_util.Po ./$(DEPDIR)/qdp_xmlio.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -361,6 +362,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_scalarvec_specific.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_scalarvecsite_specific.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_scalarvecsite_sse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_stdio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_subset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_xmlio.Po@am__quote@
