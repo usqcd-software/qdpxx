@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------------
 # General configuration options
 #---------------------------------------------------------------------------
-PROJECT_NAME           = qdp++
+PROJECT_NAME           = QDP
 PROJECT_NUMBER         = 
 OUTPUT_DIRECTORY       = ./doc
 OUTPUT_LANGUAGE        = English
@@ -54,7 +54,7 @@ WARN_LOGFILE           =
 INPUT                  = .
 FILE_PATTERNS          = 
 RECURSIVE              = YES
-EXCLUDE                = ./PETE
+EXCLUDE                = ./tests ./PETE/Tools
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 
@@ -85,8 +85,8 @@ HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = 
 HTML_FOOTER            = 
 HTML_STYLESHEET        = 
-# HTML_ALIGN_MEMBERS     = YES
-HTML_ALIGN_MEMBERS     = NO
+HTML_ALIGN_MEMBERS     = YES
+# HTML_ALIGN_MEMBERS     = NO
 GENERATE_HTMLHELP      = NO
 GENERATE_CHI           = NO
 BINARY_TOC             = NO

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.6 2002-10-12 04:10:15 edwards Exp $
+// $Id: qdp.h,v 1.7 2002-10-14 02:08:56 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -7,11 +7,11 @@
  * No other file should be included by the user
  */
 
-/*! \mainpage  QDP++: A C++ data-parallel interface for Lattice field theory
+/*! \mainpage  QDP
  *
  * \section Description
  *
- * QDP++ is a C++ data-parallel interface for Lattice field theory.
+ * QDP is a C++ data-parallel interface for Lattice field theory.
  * The QDP interface provides an environment somewhat similar to 
  * Fortran 90 - namely data-parallel operations (operator/infix form)
  * which can be applied on lattice wide objects. The interface provides a
