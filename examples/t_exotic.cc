@@ -1,4 +1,4 @@
-// $Id: t_exotic.cc,v 1.3 2003-09-10 02:21:25 edwards Exp $
+// $Id: t_exotic.cc,v 1.4 2003-12-08 21:41:03 edwards Exp $
 /*! \file
  *  \brief Test various exotic qdp routines
  */
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
   expm12(g);
   reunit(g);
 
-
+#if 0
   // Try out colorContract
   {
     LatticeColorMatrix a,b,c;
@@ -65,6 +65,25 @@ int main(int argc, char *argv[])
     push(nml,"color_contract_gauge_transf");
     Write(nml,lc2);
     pop(nml);
+  }
+#endif
+
+  // Try out chiralProject{Plus,Minus}
+  {
+    LatticeFermion psi, chi1, chi2;
+    gaussian(psi);
+
+    chi1 = 0.5*(psi + Gamma(Ns*Ns-1)*psi);
+    chi2 = chiralProjectPlus(psi);
+    QDPIO::cout << "|chi1|^2 = " << norm2(chi1) << endl
+		<< "|chi2|^2 = " << norm2(chi2) << endl
+		<< "|chi2 - chi1|^2 = " << norm2(chi2-chi1) << endl;
+
+    chi1 = 0.5*(psi - Gamma(Ns*Ns-1)*psi);
+    chi2 = chiralProjectMinus(psi);
+    QDPIO::cout << "|chi1|^2 = " << norm2(chi1) << endl
+		<< "|chi2|^2 = " << norm2(chi2) << endl
+		<< "|chi2 - chi1|^2 = " << norm2(chi2-chi1) << endl;
   }
 
   nml.flush();
