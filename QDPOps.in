@@ -321,6 +321,9 @@ binaryOps
    this to construct an anti-quark from a di-quark contraction. In
    explicit index form, the operation  QuarkContract13 does
    
+   \f$target^{k' k}_{\alpha\beta} =
+     \epsilon^{i j k}\epsilon^{i' j' k'}* source1^{i i'}_{\rho\alpha}* source2^{j j'}_{\rho\beta}\f$
+   
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
   @relates QDPType */"
