@@ -163,16 +163,16 @@ bin_SCRIPTS = qdp++-config
 # All the sources that are somehow arch-specific
 # All the headers get into the dist by default
 # 
-ARCH_SOURCES = lib/qdp_scalar_specific.cc lib/qdp_parscalar_specific.cc \
-               lib/qdp_scalarsite_specific.cc \
-               lib/qdp_scalarvec_specific.cc lib/qdp_parscalarvec_specific.cc \
-               lib/qdp_scalarvecsite_specific.cc
-
+#ARCH_SOURCES = lib/qdp_scalar_specific.cc lib/qdp_parscalar_specific.cc \
+#               lib/qdp_scalarsite_specific.cc \
+#               lib/qdp_scalarvec_specific.cc lib/qdp_parscalarvec_specific.cc \
+#               lib/qdp_scalarvecsite_specific.cc
 
 #
 # Some things that we want in the distribution tarball 
 #
-EXTRA_DIST = $(ARCH_SOURCES) PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools docs
+#EXTRA_DIST  = $(ARCH_SOURCES)
+EXTRA_DIST = PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools docs
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
@@ -369,7 +369,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/. $(distdir)/PETE $(distdir)/config $(distdir)/docs $(distdir)/lib
+	$(mkinstalldirs) $(distdir)/. $(distdir)/PETE $(distdir)/config
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -574,24 +574,6 @@ uninstall-info: uninstall-info-recursive
 	uninstall-binSCRIPTS uninstall-info-am uninstall-info-recursive \
 	uninstall-recursive
 
-
-#
-# User explicitly has to make docs -- you may not want them
-#
-doc:
-	cd docs ; $(MAKE)
-
-doc-install: 
-	cd docs ; $(MAKE) install
-
-doc-uninstall:
-	cd docs ; $(MAKE) uninstall
-
-doc-clean:
-	cd docs ; $(MAKE) clean
-
-doc-distclean:
-	cd docs ; $(MAKE) distclean
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

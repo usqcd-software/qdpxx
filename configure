@@ -3797,8 +3797,7 @@ subdirs="$subdirs other_libs/xpath_reader"
 # Set up the doxygen file
 # Substitute the right directories
 #
-          ac_config_files="$ac_config_files docs/qdpdoc"
-
+# AC_CONFIG_FILES(docs/qdpdoc)
 
 #
 # Generate makefiles
@@ -3814,8 +3813,7 @@ subdirs="$subdirs other_libs/xpath_reader"
           ac_config_files="$ac_config_files include/Makefile"
 
 #AC_CONFIG_FILES(include/qdp_config.h)
-          ac_config_files="$ac_config_files docs/Makefile"
-
+#AC_CONFIG_FILES(docs/Makefile)
           ac_config_files="$ac_config_files examples/Makefile"
 
 #
@@ -4446,13 +4444,11 @@ for ac_config_target in $ac_config_targets
 do
   case "$ac_config_target" in
   # Handling of arguments.
-  "docs/qdpdoc" ) CONFIG_FILES="$CONFIG_FILES docs/qdpdoc" ;;
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "qdp++-config" ) CONFIG_FILES="$CONFIG_FILES qdp++-config" ;;
   "lib/Makefile" ) CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
   "other_libs/Makefile" ) CONFIG_FILES="$CONFIG_FILES other_libs/Makefile" ;;
   "include/Makefile" ) CONFIG_FILES="$CONFIG_FILES include/Makefile" ;;
-  "docs/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
   "examples/Makefile" ) CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "include/qdp_config_internal.h" ) CONFIG_HEADERS="$CONFIG_HEADERS include/qdp_config_internal.h" ;;
