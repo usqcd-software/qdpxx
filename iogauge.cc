@@ -1,4 +1,4 @@
-// $Id: iogauge.cc,v 1.1 2002-10-26 01:54:30 edwards Exp $
+// $Id: iogauge.cc,v 1.2 2002-10-26 02:25:46 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -50,9 +50,9 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
   multi1d<int> lat_size(Nd);
 
   /* For now, read and throw away the header */
-  cerr << "Start of header\n";
+  cout << "Start of header\n";
   fgets(line,MAX_LINE_LENGTH,cfg_in.get());
-  cerr << line;
+  cout << line;
 
   if (strcmp(line,"BEGIN_HEADER\n")!=0)
     SZ_ERROR("Missing BEGIN_HEADER");
@@ -63,13 +63,11 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
   while (1)
   {
     fgets(line,MAX_LINE_LENGTH,cfg_in.get());
-    cerr << line;
+    cout << line;
 
     // Scan for the datatype then scan for it
     if ( sscanf(line, "DATATYPE = %s\n", datatype) == 1 ) 
     {
-      cerr << "datatype: " << line;
-      
       /* Check if it is uncompressed */
       if (strcmp(datatype, "4D_SU3_GAUGE_3x3") == 0) 
       {
@@ -81,8 +79,6 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
     int itmp, dd;
     if ( sscanf(line, "DIMENSION_%d = %d\n", &dd, &itmp) == 2 ) 
     {
-      cerr << "latsize: " << line;
-
       /* Found a lat size */
       if (dd < 1 || dd > Nd)
 	SZ_ERROR("oops, dimension number out of bounds");
@@ -94,15 +90,15 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
     if (strcmp(line,"END_HEADER\n")==0) break;
   }
 
-  cerr << "End of header\n";
+  cout << "End of header\n";
 
   // Sanity check
   if (lat_size_cnt != Nd)
     SZ_ERROR("did not find all the lattice sizes");
 
   // Check lattice size agrees with the one in use
-  cerr << "layout size = " << layout.LattSize() << endl;
-  cerr << "gauge lat size = " << lat_size << endl;
+//  cout << "layout size = " << layout.LattSize() << endl;
+//  cout << "gauge lat size = " << lat_size << endl;
 
   for(int dd=0; dd < Nd; ++dd)
     if (lat_size[dd] != layout.LattSize()[dd])
