@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.17 2004-01-29 14:41:06 bjoo Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.18 2004-07-27 05:36:36 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -182,6 +182,9 @@ namespace Layout
 
     // Initialize RNG
     RNG::initDefaultRNG();
+
+    // Set default profile level
+    setProfileLevel(getProgramProfileLevel());
   }
 
 

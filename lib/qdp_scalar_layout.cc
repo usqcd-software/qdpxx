@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_layout.cc,v 1.11 2003-10-10 17:49:16 edwards Exp $
+// $Id: qdp_scalar_layout.cc,v 1.12 2004-07-27 05:36:36 edwards Exp $
 
 /*! @file
  * @brief Scalar layout routines
@@ -118,6 +118,9 @@ namespace Layout
 
     // Initialize RNG
     RNG::initDefaultRNG();
+
+    // Set default profile level
+    setProfileLevel(getProgramProfileLevel());
   }
 
   //! Initializer for layout
