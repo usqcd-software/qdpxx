@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.5 2004-03-23 12:56:11 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.6 2004-03-23 23:04:13 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -13,11 +13,32 @@
 
 QDP_BEGIN_NAMESPACE(QDP);
 // Forward declarations of BLAS routines
+
+// Level 1 BLAS like operations. Vector operations all work 
+// on 3 component vector -- reasonable prefetching on QCDOC on 
+// whose assembler the C code is based.
+// Hence typical value for n_3vec = ( s.end() - s.start() + 1 )*Ns
+// where s is the subset under which the operation takes place.
+// Scalars are always passed by address -- again for compatibility
+// with assembler -- of course the QCDOC assembler is completely
+// independent so this could be different.
+
+// (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (Vector) Add
 void vaxpy3(REAL *Out, REAL *scalep,REAL *InScale, REAL *Add,int n_3vec);
+
+// (Vector) Out = (Scalar) (*scalep) * (Vector) InScale - (Vector) Add
 void vaxmy3(REAL *Out, REAL *scalep,REAL *InScale, REAL *Sub,int n_3vec);
+
+// (Vector) Out = (Vector) In1 + (Vector) In2
 void vadd(REAL *Out, REAL *In1, REAL *In2, int n_3vec);
+
+// (Vector) Out = (Vector) In1 - (Vector) In2
 void vsub(REAL *Out, REAL *In1, REAL *In2, int n_3vec);
+
+// (Vector) out = (Scalar) (*scalep) * (Vector) In
 void vscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec);
+
+// (Double) (*out) = || (Vector) In ||^2
 void local_sumsq(DOUBLE *Out, REAL *In, int n_3vec);
 
 typedef PSpinVector<PColorVector<RComplex<PScalar<REAL> >, 3>, 4> TVec;
