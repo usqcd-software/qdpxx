@@ -94,7 +94,8 @@ script (slower but should work)
 The configure_qdp++_bagelblas_edram.sh script configures for EDRAM and
 BAGEL routines for real (ie non-complex) BLAS (vaxpy-s etc) for LatticeDiracFermions.
 
-
+The configure_qdp++_bagelblas_ddr.sh script configures for DDR and 
+BAGEL routines for real BLAS for LatticeDiracFermions
 
 	
 
