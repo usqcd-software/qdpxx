@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.6 2003-06-15 03:06:50 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.7 2003-06-20 02:40:19 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -487,6 +487,45 @@ pokeSite(OLattice<T1>& l, const OScalar<T1>& r, const multi1d<int>& coord)
 {
   l.elem(Layout::linearSiteIndex(coord)) = r.elem();
   return l;
+}
+
+
+//! Copy data values from field src to array dest
+/*! @ingroup group1
+  @param dest  target to update
+  @param src   QDP source to insert
+  @param s     subset
+  @ingroup group1
+  @relates QDPType */
+template<class T>
+inline void 
+QDP_extract(multi1d<OScalar<T> >& dest, const OLattice<T>& src, const Subset& s)
+{
+  const int *tab = s.SiteTable()->slice();
+  for(int j=0; j < s.NumSiteTable(); ++j) 
+  {
+    int i = tab[j];
+    dest[i].elem() = src.elem(i);
+  }
+}
+
+//! Inserts data values from site array src.
+/*! @ingroup group1
+  @param dest  QDP target to update
+  @param src   source to insert
+  @param s     subset
+  @ingroup group1
+  @relates QDPType */
+template<class T>
+inline void 
+QDP_insert(OLattice<T>& dest, const multi1d<OScalar<T> >& src, const Subset& s)
+{
+  const int *tab = s.SiteTable()->slice();
+  for(int j=0; j < s.NumSiteTable(); ++j) 
+  {
+    int i = tab[j];
+    dest.elem(i) = src[i].elem();
+  }
 }
 
 
