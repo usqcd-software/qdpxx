@@ -1,9 +1,11 @@
-// $Id: t_skeleton.cc,v 1.2 2003-01-16 01:31:20 edwards Exp $
+// $Id: t_skeleton.cc,v 1.3 2003-01-31 20:47:09 edwards Exp $
 /*! \file
  *  \brief Skeleton of a QDP main program
  */
 
 #include "qdp.h"
+
+using namespace QDP;
 
 int main(int argc, char *argv[])
 {
