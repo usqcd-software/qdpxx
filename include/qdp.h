@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.47 2004-03-27 03:46:09 edwards Exp $
+// $Id: qdp.h,v 1.48 2004-04-02 11:57:21 bjoo Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -34,7 +34,7 @@
 
 /* Get local configuration options (ARCH_SCALAR/PARSCALAR, Nd, Nc, Ns) */
 #include <qdp_config.h>
-
+#include "qdp_precision.h"
 
 // GNU specific stuff
 #if defined(__GNUC__)

@@ -82,6 +82,7 @@ nobase_include_HEADERS = \
 		qdp_outer.h \
 		qdp_outersubtype.h \
 		qdp_params.h \
+		qdp_precision.h \
 		qdp_primcolormat.h \
 		qdp_primcolorvec.h \
 		qdp_primdwvec.h \
