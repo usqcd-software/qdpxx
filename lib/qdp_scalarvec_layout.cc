@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvec_layout.cc,v 1.5 2003-08-29 02:45:25 edwards Exp $
+// $Id: qdp_scalarvec_layout.cc,v 1.6 2003-08-29 04:27:37 edwards Exp $
 
 /*! @file
  * @brief Scalarvec layout routines
@@ -248,7 +248,7 @@ namespace Layout
 
 //-----------------------------------------------------------------------------
 
-#elif QDP_LAYOUT == 1
+#elif QDP_USE_CB32_LAYOUT == 1
 
 #warning "Using a 32 checkerboard layout"
 
