@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvec_layout.cc,v 1.2 2003-08-20 21:08:29 edwards Exp $
+// $Id: qdp_scalarvec_layout.cc,v 1.3 2003-08-20 21:19:14 edwards Exp $
 
 /*! @file
  * @brief Scalarvec layout routines
@@ -197,13 +197,126 @@ namespace Layout
 
 #elif QDP_USE_CB2_LAYOUT == 1
 
-#error "Using a 2 checkerboard (red/black) layout"
+#warning "Using a 2 checkerboard (red/black) layout"
+
+namespace Layout
+{
+  //! Reconstruct the lattice coordinate from the node and site number
+  /*! 
+   * This is the inverse of the nodeNumber and linearSiteIndex functions.
+   * The API requires this function to be here.
+   */
+  multi1d<int> siteCoords(int node, int linearsite) // ignore node
+  {
+    int vol_cb = vol() >> 1;
+    multi1d<int> cb_nrow = lattSize();
+    cb_nrow[0] >>= 1;
+
+    int cb = linearsite / vol_cb;
+    multi1d<int> coord = crtesn(linearsite % vol_cb, cb_nrow);
+
+    int cbb = cb;
+    for(int m=1; m<coord.size(); ++m)
+      cbb += coord[m];
+    cbb = cbb & 1;
+
+    coord[0] = 2*coord[0] + cbb;
+
+    return coord;
+  }
+
+  //! The linearized site index for the corresponding coordinate
+  /*! This layout is appropriate for a 2 checkerboard (red/black) lattice */
+  int linearSiteIndex(const multi1d<int>& coord)
+  {
+    int vol_cb = vol() >> 1;
+    multi1d<int> cb_nrow = lattSize();
+    cb_nrow[0] >>= 1;
+
+    multi1d<int> cb_coord = coord;
+
+    cb_coord[0] >>= 1;    // Number of checkerboards
+    
+    int cb = 0;
+    for(int m=0; m<coord.size(); ++m)
+      cb += coord[m];
+    cb = cb & 1;
+
+    return local_site(cb_coord, cb_nrow) + cb*vol_cb;
+  }
+};
 
 //-----------------------------------------------------------------------------
 
 #elif QDP_LAYOUT == 1
 
-#error "Using a 32 checkerboard layout"
+#warning "Using a 32 checkerboard layout"
+
+namespace Layout
+{
+  //! Reconstruct the lattice coordinate from the node and site number
+  /*! 
+   * This is the inverse of the nodeNumber and linearSiteIndex functions.
+   * The API requires this function to be here.
+   */
+  multi1d<int> siteCoords(int node, int linearsite) // ignore node
+  {
+    int vol_cb = vol() >> (Nd+1);
+    multi1d<int> cb_nrow(Nd);
+    cb_nrow[0] = lattSize()[0] >> 2;
+    for(int i=1; i < Nd; ++i) 
+      cb_nrow[i] = lattSize()[i] >> 1;
+
+    int subl = linearsite / vol_cb;
+    multi1d<int> coord = crtesn(linearsite % vol_cb, cb_nrow);
+
+    int cb = 0;
+    for(int m=1; m<Nd; ++m)
+      cb += coord[m];
+    cb &= 1;
+
+    coord[0] <<= 2;
+    for(int m=1; m<Nd; ++m)
+      coord[m] <<= 1;
+
+    subl ^= (cb << Nd);
+    for(int m=0; m<Nd; ++m)
+      coord[m] ^= (subl & (1 << m)) >> m;
+    coord[0] ^= (subl & (1 << Nd)) >> (Nd-1);   // this gets the hypercube cb
+
+    return coord;
+  }
+
+  //! The linearized site index for the corresponding coordinate
+  /*! This layout is appropriate for a 32-style checkerboard lattice */
+  int linearSiteIndex(const multi1d<int>& coord)
+  {
+    int vol_cb = vol() >> (Nd+1);
+    multi1d<int> cb_nrow(Nd);
+    cb_nrow[0] = lattSize()[0] >> 2;
+    for(int i=1; i < Nd; ++i) 
+      cb_nrow[i] = lattSize()[i] >> 1;
+
+    int subl = coord[Nd-1] & 1;
+    for(int m=Nd-2; m >= 0; --m)
+      subl = (subl << 1) + (coord[m] & 1);
+
+    int cb = 0;
+    for(int m=0; m < Nd; ++m)
+      cb += coord[m] >> 1;
+
+    subl += (cb & 1) << Nd;   // Final color or checkerboard
+
+    // Construct the checkerboard lattice coord
+    multi1d<int> cb_coord(Nd);
+
+    cb_coord[0] = coord[0] >> 2;
+    for(int m=1; m < Nd; ++m)
+      cb_coord[m] = coord[m] >> 1;
+
+    return local_site(cb_coord, cb_nrow) + subl*vol_cb;
+  }
+};
 
 #else
 
