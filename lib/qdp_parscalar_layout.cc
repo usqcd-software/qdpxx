@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.8 2003-07-31 01:01:33 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.9 2003-08-06 21:33:55 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -282,7 +282,7 @@ namespace Layout
 
 
 //-----------------------------------------------------------------------------
-#if defined(USE_LEXICO_LAYOUT)
+#if QDP_LAYOUT == QDP_LEXICO_LAYOUT
 
 #warning "Using a lexicographic layout"
 
@@ -344,7 +344,7 @@ namespace Layout
 
 //-----------------------------------------------------------------------------
 
-#elif defined(USE_CB2_LAYOUT)
+#elif QDP_LAYOUT == QDP_CB2_LAYOUT
 
 #warning "Using a 2 checkerboard (red/black) layout"
 
@@ -438,7 +438,7 @@ namespace Layout
 
 //-----------------------------------------------------------------------------
 
-#elif defined(USE_CB32_LAYOUT)
+#elif QDP_LAYOUT == QDP_CB32_LAYOUT
 
 #warning "Using a 32 checkerboard layout"
 
