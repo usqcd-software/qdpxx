@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.18 2003-04-24 05:32:49 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.19 2003-04-26 01:55:27 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -394,11 +394,62 @@ NmlReader& read(NmlReader& nml, const string& s, double& d)
   return nml;
 }
 
+//! Function overload read of  bool
+NmlReader& read(NmlReader& nml, const string& s, bool& d)
+{
+  if (Layout::primaryNode()) 
+  {
+    int dd;
+    param_bool_array(&dd, get_current_nml_section(), s.c_str(), 0);
+    d = (dd == 0) ? false : true;
+  }
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+
+  return nml;
+}
+
+//! Function overload read of  string
+NmlReader& read(NmlReader& nml, const string& s, string& d)
+{
+  char *dd_tmp;
+  int lleng;
+
+  // Only primary node can grab string
+  if (Layout::primaryNode()) 
+  {
+    dd_tmp = param_string_array(get_current_nml_section(), s.c_str(), 0);
+    lleng = strlen(dd_tmp) + 1;
+  }
+
+  // First must broadcast size of string
+  Internal::broadcast(lleng);
+
+  // Now every node can alloc space for string
+  if (! Layout::primaryNode()) 
+    dd_tmp = new char[lleng];
+  
+  // Now broadcast char array out to all nodes
+  QMP_broadcast((void *)&dd_tmp, lleng);
+
+  // All nodes can now grab char array and make a string
+  d = dd_tmp;
+
+  // Clean-up and boogie
+  if (! Layout::primaryNode()) 
+    delete[] dd_tmp;
+
+  return nml;
+}
+
+
 
 //! Function overload read of  int  into element position n
 NmlReader& read(NmlReader& nml, const string& s, int& d, int n)
 {
-  param_int_array(&d, get_current_nml_section(), s.c_str(), 1, n);
+  if (Layout::primaryNode()) 
+    param_int_array(&d, get_current_nml_section(), s.c_str(), 1, n);
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
@@ -409,7 +460,8 @@ NmlReader& read(NmlReader& nml, const string& s, int& d, int n)
 //! Function overload read of  float  into element position n
 NmlReader& read(NmlReader& nml, const string& s, float& d, int n)
 {
-  param_float_array(&d, get_current_nml_section(), s.c_str(), 1, n);
+  if (Layout::primaryNode()) 
+    param_float_array(&d, get_current_nml_section(), s.c_str(), 1, n);
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
@@ -420,7 +472,24 @@ NmlReader& read(NmlReader& nml, const string& s, float& d, int n)
 //! Function overload read of  double  into element position n
 NmlReader& read(NmlReader& nml, const string& s, double& d, int n)
 {
-  param_double_array(&d, get_current_nml_section(), s.c_str(), 1, n);
+  if (Layout::primaryNode()) 
+    param_double_array(&d, get_current_nml_section(), s.c_str(), 1, n);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+
+  return nml;
+}
+
+//! Function overload read of  bool  into element position n
+NmlReader& read(NmlReader& nml, const string& s, bool& d, int n)
+{
+  if (Layout::primaryNode()) 
+  {
+    int dd;
+    param_bool_array(&dd, get_current_nml_section(), s.c_str(), 1, n);
+    d = (dd == 0) ? false : true;
+  }
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
@@ -440,6 +509,38 @@ NmlReader& read(NmlReader& nml, const string& s, Complex& d)
     Real Dre(dre);
     Real Dim(dim);
     d = cmplx(Dre,Dim);
+  }
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+
+  return nml;
+}
+
+
+//! Function overload read of  Seed
+NmlReader& read(NmlReader& nml, const string& s, Seed& d)
+{
+  if (Layout::primaryNode()) 
+  {
+    int ss[4];
+
+    // Snarf all 4 ints used to serialize a seed
+    for(int n=0; n < 4; ++n)
+      param_int_array(ss+n, get_current_nml_section(), s.c_str(), 1, n);
+
+    // Taken from random.cc - a platform independent (peculiar) way to load up a seed
+    Seed seed_tmp3;
+    Seed seed_tmp2;
+    Seed seed_tmp1;
+    Seed seed_tmp0;
+
+    seed_tmp3 = ss[3];
+    seed_tmp2 = (seed_tmp3 << 12) | ss[2];
+    seed_tmp1 = (seed_tmp2 << 12) | ss[1];
+    seed_tmp0 = (seed_tmp1 << 12) | ss[0];
+
+    d = seed_tmp0;
   }
 
   // Now broadcast back out to all nodes

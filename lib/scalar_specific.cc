@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.14 2003-04-24 05:32:49 edwards Exp $
+// $Id: scalar_specific.cc,v 1.15 2003-04-26 01:55:27 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -179,6 +179,22 @@ NmlReader& read(NmlReader& nml, const string& s, double& d)
   return nml;
 }
 
+//! Function overload read of  bool
+NmlReader& read(NmlReader& nml, const string& s, bool& d)
+{
+  int dd;
+  param_bool_array(&dd, get_current_nml_section(), s.c_str(), 0);
+  d = (dd == 0) ? false : true;
+  return nml;
+}
+
+//! Function overload read of  string
+NmlReader& read(NmlReader& nml, const string& s, string& d)
+{
+  d = param_string_array(get_current_nml_section(), s.c_str(), 0);
+  return nml;
+}
+
 
 //! Function overload read of  int  into element position n
 NmlReader& read(NmlReader& nml, const string& s, int& d, int n)
@@ -201,6 +217,15 @@ NmlReader& read(NmlReader& nml, const string& s, double& d, int n)
   return nml;
 }
 
+//! Function overload read of  bool  into element position n
+NmlReader& read(NmlReader& nml, const string& s, bool& d, int n)
+{
+  int dd;
+  param_bool_array(&dd, get_current_nml_section(), s.c_str(), 1, n);
+  d = (dd == 0) ? false : true;
+  return nml;
+}
+
 
 //! Function overload read of  Complex
 NmlReader& read(NmlReader& nml, const string& s, Complex& d)
@@ -211,6 +236,31 @@ NmlReader& read(NmlReader& nml, const string& s, Complex& d)
   Real Dre(dre);
   Real Dim(dim);
   d = cmplx(Dre,Dim);
+
+  return nml;
+}
+
+//! Function overload read of  Seed
+NmlReader& read(NmlReader& nml, const string& s, Seed& d)
+{
+  int ss[4];
+
+  // Snarf all 4 ints used to serialize a seed
+  for(int n=0; n < 4; ++n)
+    param_int_array(ss+n, get_current_nml_section(), s.c_str(), 1, n);
+
+  // Taken from random.cc - a platform independent (peculiar) way to load up a seed
+  Seed seed_tmp3;
+  Seed seed_tmp2;
+  Seed seed_tmp1;
+  Seed seed_tmp0;
+
+  seed_tmp3 = ss[3];
+  seed_tmp2 = (seed_tmp3 << 12) | ss[2];
+  seed_tmp1 = (seed_tmp2 << 12) | ss[1];
+  seed_tmp0 = (seed_tmp1 << 12) | ss[0];
+
+  d = seed_tmp0;
 
   return nml;
 }

@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.12 2003-04-24 05:33:44 edwards Exp $
+// $Id: io.cc,v 1.13 2003-04-26 01:55:27 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -205,6 +205,16 @@ NmlReader& read(NmlReader& nml, const string& s, Real& d)
 NmlReader& read(NmlReader& nml, const string& s, Double& d)
 {
   WordType<Double>::Type_t  dd;
+  read(nml,s,dd);
+  d = dd;
+
+  return nml;
+}
+
+//! Function overload read of  Boolean
+NmlReader& read(NmlReader& nml, const string& s, Boolean& d)
+{
+  WordType<Boolean>::Type_t  dd;
   read(nml,s,dd);
   d = dd;
 
