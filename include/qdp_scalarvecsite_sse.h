@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.11 2003-09-01 04:45:39 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.12 2003-09-02 03:02:12 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -106,19 +106,6 @@ public:
 	elem(i) = rhs;
     }
 
-  //---------------------------------------------------------
-#if 0
-  //! dest = const
-  /*! Fill with an integer constant. Will be promoted to underlying word type */
-  inline
-  ILattice& operator=(const typename WordType<T>::Type_t& rhs)
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) = rhs;
-
-      return *this;
-    }
-#endif
 
   //---------------------------------------------------------
   //! ILattice = IScalar
@@ -177,71 +164,6 @@ public:
       return *this;
     }
 
-  //! ILattice %= IScalar
-  template<class T1>
-  inline
-  ILattice& operator%=(const IScalar<T1>& rhs) 
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) %= rhs.elem();
-
-      return *this;
-    }
-
-  //! ILattice |= IScalar
-  template<class T1>
-  inline
-  ILattice& operator|=(const IScalar<T1>& rhs) 
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) |= rhs.elem();
-
-      return *this;
-    }
-
-  //! ILattice &= IScalar
-  template<class T1>
-  inline
-  ILattice& operator&=(const IScalar<T1>& rhs) 
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) &= rhs.elem();
-
-      return *this;
-    }
-
-  //! ILattice ^= IScalar
-  template<class T1>
-  inline
-  ILattice& operator^=(const IScalar<T1>& rhs) 
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) ^= rhs.elem();
-
-      return *this;
-    }
-
-  //! ILattice <<= IScalar
-  template<class T1>
-  inline
-  ILattice& operator<<=(const IScalar<T1>& rhs) 
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) <<= rhs.elem();
-
-      return *this;
-    }
-
-  //! ILattice >>= IScalar
-  template<class T1>
-  inline
-  ILattice& operator>>=(const IScalar<T1>& rhs) 
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) >>= rhs.elem();
-
-      return *this;
-    }
 
   //---------------------------------------------------------
   //! ILattice = ILattice
@@ -249,16 +171,7 @@ public:
   inline
   ILattice& operator=(const ILattice& rhs) 
     {
-//      for(int i=0; i < N; ++i)
-//	elem(i) = rhs.elem(i);
-
-#if 1
       F.v = rhs.F.v;
-#else
-//      v4sf tmp = __builtin_ia32_loadaps(const_cast<float*>(rhs.F.a));
-      __builtin_ia32_storeaps(F.a, rhs.F.v);
-#endif
-
       return *this;
     }
 
@@ -266,17 +179,7 @@ public:
   inline
   ILattice& operator+=(const ILattice& rhs) 
     {
-//      for(int i=0; i < N; ++i)
-//	elem(i) += rhs.elem(i);
-
-#if 1
-      v4sf tmp = __builtin_ia32_addps(F.v, rhs.F.v);
-      __builtin_ia32_storeaps(F.a, tmp);
-#else
-      v4sf tmp = F.v + rhs.F.v;    // This does not compile!!
-      F.v = tmp;
-#endif
-
+      F.v = __builtin_ia32_addps(F.v, rhs.F.v);
       return *this;
     }
 
@@ -284,12 +187,7 @@ public:
   inline
   ILattice& operator-=(const ILattice& rhs) 
     {
-//      for(int i=0; i < N; ++i)
-//	elem(i) -= rhs.elem(i);
-
-      v4sf tmp = __builtin_ia32_subps(F.v, rhs.F.v);
-      __builtin_ia32_storeaps(F.a, tmp);
-
+      F.v = __builtin_ia32_subps(F.v, rhs.F.v);
       return *this;
     }
 
@@ -297,12 +195,7 @@ public:
   inline
   ILattice& operator*=(const ILattice& rhs) 
     {
-//      for(int i=0; i < N; ++i)
-//	elem(i) *= rhs.elem(i);
-
-      v4sf tmp = __builtin_ia32_mulps(F.v, rhs.F.v);
-      __builtin_ia32_storeaps(F.a, tmp);
-
+      F.v = __builtin_ia32_mulps(F.v, rhs.F.v);
       return *this;
     }
 
@@ -310,34 +203,18 @@ public:
   inline
   ILattice& operator/=(const ILattice& rhs) 
     {
-//      for(int i=0; i < N; ++i)
-//	elem(i) /= rhs.elem(i);
-
-      v4sf tmp = __builtin_ia32_divps(F.v, rhs.F.v);
-      __builtin_ia32_storeaps(F.a, tmp);
-
+      F.v = __builtin_ia32_divps(F.v, rhs.F.v);
       return *this;
     }
 
 
-#if 0
-  // NOTE: intentially avoid defining a copy constructor - let the compiler
-  // generate one via the bit copy mechanism. This effectively achieves
-  // the first form of the if below (QDP_USE_ARRAY_INITIALIZER) without having
-  // to use that syntax which is not strictly legal in C++.
-#endif
-
   //! Deep copy constructor
-#if defined(QDP_USE_ARRAY_INITIALIZER)
-  ILattice(const ILattice& a) : F(a.F) {}
-#else
-  /*! This is a copy form - legal but not necessarily efficient */
   ILattice(const ILattice& a)
     {
       // fprintf(stderr,"copy ILattice\n");
-      F = a.F;
+      F.v = a.F.v;
     }
-#endif
+
 
 public:
   //! The backdoor
@@ -362,7 +239,7 @@ private:
     T    a[4];
   } F  QDP_ALIGN16;
 
-} QDP_ALIGN16;   // possibly force alignment
+};
 #endif
 
 
@@ -484,7 +361,69 @@ operator*(const RComplexFloat& l, const RComplexFloat& r)
   return d;
 }
 
+// Optimized version of  
+//    RComplexFloat <- adj(RComplexFloat) * RComplexFloat
+inline BinaryReturn<RComplexFloat, RComplexFloat, OpAdjMultiply>::Type_t
+adjMultiply(const RComplexFloat& l, const RComplexFloat& r)
+{
+  BinaryReturn<RComplexFloat, RComplexFloat, OpAdjMultiply>::Type_t  d;
 
+//  cout << "adj(C)*C" << endl;
+
+  v4sf tmp1 = __builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v());
+  v4sf tmp2 = __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v());
+  d.real().elem_v() = __builtin_ia32_addps(tmp1, tmp2);
+
+  v4sf tmp3 = __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v());
+  v4sf tmp4 = __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v());
+  d.imag().elem_v() = __builtin_ia32_subps(tmp3, tmp4);
+
+  return d;
+}
+
+// Optimized  RComplex*adj(RComplex)
+inline BinaryReturn<RComplexFloat, RComplexFloat, OpMultiplyAdj>::Type_t
+multiplyAdj(const RComplexFloat& l, const RComplexFloat& r)
+{
+  BinaryReturn<RComplexFloat, RComplexFloat, OpMultiplyAdj>::Type_t  d;
+
+  v4sf tmp1 = __builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v());
+  v4sf tmp2 = __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v());
+  d.real().elem_v() = __builtin_ia32_addps(tmp1, tmp2);
+
+  v4sf tmp3 = __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v());
+  v4sf tmp4 = __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v());
+  d.imag().elem_v() = __builtin_ia32_subps(tmp3, tmp4);
+
+  return d;
+}
+
+// Optimized  adj(RComplex)*adj(RComplex)
+inline BinaryReturn<RComplexFloat, RComplexFloat, OpAdjMultiplyAdj>::Type_t
+adjMultiplyAdj(const RComplexFloat& l, const RComplexFloat& r)
+{
+  BinaryReturn<RComplexFloat, RComplexFloat, OpAdjMultiplyAdj>::Type_t  d;
+
+  typedef struct
+  {
+    unsigned int c[4];
+  } sse_mask __attribute__ ((aligned (16)));
+  
+  static sse_mask _sse_sgn __attribute__ ((unused)) ={0x80000000, 0x80000000, 0x80000000, 0x80000000};
+
+  v4sf tmp1 = __builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v());
+  v4sf tmp2 = __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v());
+  d.real().elem_v() = __builtin_ia32_subps(tmp1, tmp2);
+
+  v4sf tmp3 = __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v());
+  v4sf tmp4 = __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v());
+  v4sf tmp5 = __builtin_ia32_addps(tmp3, tmp4);
+//  d.imag().elem_v() = __builtin_ia32_xorps(tmp5, _sse_sgn.v);
+  v4sf tmp6 = __builtin_ia32_loadaps((float*)&_sse_sgn);
+  d.imag().elem_v() = __builtin_ia32_xorps(tmp5, tmp6);
+
+  return d;
+}
 
 
 
