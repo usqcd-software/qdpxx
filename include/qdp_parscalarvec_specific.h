@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.4 2003-09-03 02:11:12 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.5 2003-09-03 02:28:50 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -1396,7 +1396,7 @@ multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
 template<class T>  
 NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
 {
-  typedef typename UnaryReturn<OLattice<T>, FnGetSite>::Type_t  Site_t;
+  typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
   Site_t  recv_buf;
 
   if (Layout::primaryNode())
@@ -1442,7 +1442,7 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
 template<class T>  
 XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
 {
-  typedef typename UnaryReturn<OLattice<T>, FnGetSite>::Type_t  Site_t;
+  typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
   Site_t  recv_buf;
 
   xml.openTag("OLattice");
@@ -1493,7 +1493,7 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
 template<class T>
 void write(BinaryWriter& bin, const OLattice<T>& d)
 {
-  typedef typename UnaryReturn<OLattice<T>, FnGetSite>::Type_t  Site_t;
+  typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
   Site_t  recv_buf;
 
   // Find the location of each site and send to primary node
@@ -1533,7 +1533,7 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
 template<class T>
 void read(BinaryReader& bin, OLattice<T>& d)
 {
-  typedef typename UnaryReturn<OLattice<T>, FnGetSite>::Type_t  Site_t;
+  typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
   Site_t  recv_buf;
 
   // Find the location of each site and send to primary node
