@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.10 2004-02-27 22:37:01 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.11 2004-03-07 19:29:44 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -210,7 +210,7 @@ bool is_open(QDPFileWriter& qsw);
 //       need to make common only on scalarsite.h  like architectures
 
 //! Function for inserting datum at specified site 
-template<class T> void QDPFactoryPut(char *buf, size_t linear, size_t count, void *arg)
+template<class T> void QDPFactoryPut(char *buf, size_t linear, int count, void *arg)
 {
   /* Translate arg */
   T *field = (T *)arg;
@@ -225,11 +225,11 @@ template<class T> void QDPFactoryPut(char *buf, size_t linear, size_t count, voi
 template<class T>
 void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 {
-  QIO_RecordInfo* info = QIO_create_record_info("Lattice", "F", Nc, Ns, 
+  QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, "Lattice", "F", Nc, Ns, 
 						sizeof(T), 1);
 
   // Initialize string objects 
-  XML_String *xml_c  = XML_string_create(0);
+  QIO_String *xml_c  = QIO_string_create(0);
 
   int status = QIO_read(get(), info, xml_c,
 			&(QDPFactoryPut<T>),
@@ -241,18 +241,18 @@ void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
   istringstream ss;
   if (Layout::primaryNode())
   {
-    string foo = XML_string_ptr(xml_c);
+    string foo = QIO_string_ptr(xml_c);
     ss.str(foo);
   }
   rec_xml.open(ss);
 
-  XML_string_destroy(xml_c);
+  QIO_string_destroy(xml_c);
   QIO_destroy_record_info(info);
 }
 
 
 //! Function for extracting datum at specified site 
-template<class T> void QDPFactoryGet(char *buf, size_t linear, size_t count, void *arg)
+template<class T> void QDPFactoryGet(char *buf, size_t linear, int count, void *arg)
 {
   /* Translate arg */
   T *field = (T *)arg;
@@ -267,15 +267,15 @@ template<class T> void QDPFactoryGet(char *buf, size_t linear, size_t count, voi
 template<class T>
 void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 {
-  QIO_RecordInfo* info = QIO_create_record_info("Lattice", "F", Nc, Ns, 
+  QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, "Lattice", "F", Nc, Ns, 
 						sizeof(T), 1);
 
   // Copy metadata string into simple qio string container
-  XML_String* xml_c;
+  QIO_String* xml_c;
   if (Layout::primaryNode())
-    xml_c = XML_string_set(rec_xml.str().c_str());
+    xml_c = QIO_string_set(rec_xml.str().c_str());
   else
-    xml_c = XML_string_create(0);
+    xml_c = QIO_string_create(0);
 
   if (xml_c == NULL)
   {
@@ -291,7 +291,7 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 			 (void *)s1.getF());
 
   // Cleanup
-  XML_string_destroy(xml_c);
+  QIO_string_destroy(xml_c);
   QIO_destroy_record_info(info);
 }
 
