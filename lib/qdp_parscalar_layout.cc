@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.3 2003-07-18 20:03:44 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.4 2003-07-18 20:12:45 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -227,7 +227,7 @@ namespace Layout
     }
 
     // Sanity check - check the layout functions make sense
-    for(int i=0; i < _layout.vol; ++i) 
+    for(int i=0; i < _layout.subgrid_vol; ++i) 
     {
       int j = Layout::linearSiteIndex(Layout::siteCoords(Layout::nodeNumber(),i));
       if (i != j)
