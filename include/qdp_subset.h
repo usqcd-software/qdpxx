@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_subset.h,v 1.1 2003-05-22 20:06:28 edwards Exp $
+// $Id: qdp_subset.h,v 1.2 2003-06-20 02:40:55 edwards Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -137,6 +137,12 @@ extern Set rb;
 //! Default 2^{Nd+1}-checkerboard subset. Useful for pure gauge updating.
 extern Set mcb;
     
+//! Default even subset
+extern Subset even;
+
+//! Default odd subset
+extern Subset odd;
+
 /** @} */ // end of group subsetss
 
 QDP_END_NAMESPACE();
