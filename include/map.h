@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: map.h,v 1.2 2003-01-17 05:42:06 edwards Exp $
+// $Id: map.h,v 1.3 2003-01-20 16:16:44 edwards Exp $
 
 /*! @file
  * @brief Map classes
@@ -29,6 +29,7 @@ public:
   virtual multi1d<int> operator() (const multi1d<int>& coordinate, int sign) const = 0;
 };
     
+
 //! ArrayMapFunc 
 /*! Abstract base class used as a function object for constructing maps */
 class ArrayMapFunc
@@ -39,7 +40,7 @@ public:
   virtual multi1d<int> operator() (const multi1d<int>& coordinate, int sign, int dir) const = 0;
 
   //! Returns the array size - the number of directions which are to be used
-  virtual int numArray() const;
+  virtual int numArray() const = 0;
 };
     
 /** @} */ // end of group map
