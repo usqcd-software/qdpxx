@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.13 2003-04-08 21:18:54 edwards Exp $
+// $Id: t_foo.cc,v 1.14 2003-04-10 18:35:17 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -330,7 +330,7 @@ int main(int argc, char *argv[])
   Write(nml,a);
 #endif
 
-#if 0
+#if 1
 //  std::ofstream f;
 //  f.open("foobar",std::ios_base::out|std::ios_base::binary);
 //  float aa[3] = {0.0,0.0,0.0};
@@ -350,12 +350,23 @@ int main(int argc, char *argv[])
   }
 
   {
-    cerr << "enter some data";
+    float x;
+    cerr << "enter some data" << endl;
     TextReader from("input");
     from >> x;
+
+    cerr << "float: you entered :" << x << ":" << endl;
   }
 
-  cerr << "you entered :" << x << ":";
+  {
+    Real x;
+    cerr << "enter some data" << endl;
+    TextReader from("input");
+    from >> x;
+
+    cerr << "Real: you entered :" << x << ":" << endl;
+  }
+
   
   // Zero out a and read it again
   a = zero;
