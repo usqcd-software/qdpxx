@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.18 2003-12-12 01:53:25 edwards Exp $
+// $Id: qdp_reality.h,v 1.19 2003-12-23 18:04:43 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1744,8 +1744,7 @@ operator/(const RComplex<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpDivide>::Type_t  Ret_t;
 
-  typedef typename InternalScalar<T2>::Type_t  S;
-  S tmp = S(1.0) / (r.real()*r.real() + r.imag()*r.imag());
+  T2 tmp = T2(1.0) / (r.real()*r.real() + r.imag()*r.imag());
 
   return Ret_t((l.real()*r.real() + l.imag()*r.imag()) * tmp,
 	       (l.imag()*r.real() - l.real()*r.imag()) * tmp);
@@ -1758,8 +1757,7 @@ operator/(const RComplex<T1>& l, const RScalar<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpDivide>::Type_t  Ret_t;
 
-  typedef typename InternalScalar<T2>::Type_t  S;
-  S tmp = S(1.0) / r.elem();
+  T2 tmp = T2(1.0) / r.elem();
 
   return Ret_t(l.real() * tmp, 
 	       l.imag() * tmp);
@@ -1772,8 +1770,7 @@ operator/(const RScalar<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpDivide>::Type_t  Ret_t;
 
-  typedef typename InternalScalar<T2>::Type_t  S;
-  S tmp = S(1.0) / (r.real()*r.real() + r.imag()*r.imag());
+  T2 tmp = T2(1.0) / (r.real()*r.real() + r.imag()*r.imag());
 
   return Ret_t(l.elem() * r.real() * tmp,
 	       -l.elem() * r.imag() * tmp);
