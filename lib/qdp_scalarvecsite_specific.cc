@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_specific.cc,v 1.9 2003-09-16 15:58:49 bjoo Exp $
+// $Id: qdp_scalarvecsite_specific.cc,v 1.10 2003-09-23 16:54:12 edwards Exp $
 
 /*! @file
  * @brief Scalarvec-like architecture specific routines
@@ -418,17 +418,31 @@ void read(NmlReader& nml, const string& s, bool& d, int n)
 }
 
 
-//! Function overload read of  Complex
-void read(NmlReader& nml, const string& s, Complex& d)
+//! Function overload read of  Complex32
+void read(NmlReader& nml, const string& s, Complex32& d)
 {
   if (Layout::primaryNode()) 
   {
-    WordType<Complex>::Type_t  dre, dim;
-#ifdef BASE_PRECISION == 32
+    WordType<Complex32>::Type_t  dre, dim;
     param_complex_float_array(&dre, &dim, get_current_nml_section(), s.c_str(), 0);
-#else
-    param_complex_double_array(&dre, &dim, get_current_nml_section(), s.c_str(),0);
-#endif
+
+    Real Dre(dre);
+    Real Dim(dim);
+    d = cmplx(Dre,Dim);
+  }
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+}
+
+//! Function overload read of  Complex64
+void read(NmlReader& nml, const string& s, Complex64& d)
+{
+  if (Layout::primaryNode()) 
+  {
+    WordType<Complex64>::Type_t  dre, dim;
+    param_complex_double_array(&dre, &dim, get_current_nml_section(), s.c_str(), 0);
+
     Real Dre(dre);
     Real Dim(dim);
     d = cmplx(Dre,Dim);

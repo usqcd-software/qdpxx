@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_defs.h,v 1.5 2003-09-01 15:10:53 bjoo Exp $
+// $Id: qdp_scalarvecsite_defs.h,v 1.6 2003-09-23 16:54:12 edwards Exp $
 
 /*! \file
  * \brief Type definitions for scalar/vector extensions-like architectures
@@ -19,17 +19,9 @@ QDP_BEGIN_NAMESPACE(QDP);
  * @{
  */
 
-#if defined(SINGLE_PRECISION)
-#undef SINGLE_PRECISION
-#endif
-
-#if defined(DOUBLE_PRECISION)
-#undef DOUBLE_PRECISION
-#endif
-
 // Fix default precision
 #if ! defined(BASE_PRECISION)
-#define BASE_PRECISION SINGLE_PRECISION
+#define BASE_PRECISION 32
 #endif
 
 // These are fixed precision versions
@@ -39,17 +31,15 @@ QDP_BEGIN_NAMESPACE(QDP);
 #define LOGICAL   bool
 
 // Set the base floating precision
-#if BASE_PRECISION == SINGLE_PRECISION
+#if BASE_PRECISION == 32
 // Use single precision for base precision
 #define REAL      REAL32
 #define DOUBLE    REAL64
-#define INNER_LOG 2
 
-#elif BASE_PRECISION == DOUBLE_PRECISION
+#elif BASE_PRECISION == 64
 // Use double precision for base precision
 #define REAL      REAL64
 #define DOUBLE    REAL64
-#define INNER_LOG 1
 
 #else
 #error "Unknown BASE_PRECISION"
@@ -129,6 +119,8 @@ typedef OScalar< PScalar< PColorMatrix< RComplex< IScalar<REAL32> >, Nc> > > Col
 
 typedef OScalar< PScalar< PScalar< RScalar< IScalar<REAL32> > > > > Real32;
 typedef OScalar< PScalar< PScalar< RScalar< IScalar<REAL64> > > > > Real64;
+typedef OScalar< PScalar< PScalar< RComplex< IScalar<REAL32> > > > > Complex32;
+typedef OScalar< PScalar< PScalar< RComplex< IScalar<REAL64> > > > > Complex64;
 
 // Equivalent names
 typedef Integer  Int;
