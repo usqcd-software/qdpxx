@@ -1,4 +1,4 @@
-// $Id: subset.cc,v 1.6 2002-11-04 04:40:40 edwards Exp $
+// $Id: subset.cc,v 1.7 2002-12-14 01:13:56 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -21,46 +21,65 @@ Set rb;
 //! Default 2^{Nd+1}-checkerboard set. Useful for pure gauge updating.
 Set mcb;
 
-//! Function used for constructing the all subset
-int subset_all_func(const multi1d<int>& coordinate) {return 0;}
-  
-//! Function used for constructing red-black (2) checkerboard */
-int subset_rb_func(const multi1d<int>& coordinate)
+//! Function object used for constructing the all subset
+class SetAllFunc : public SetFunc
 {
-  int sum = 0;
-  for(int m=0; m < coordinate.size(); ++m)
-    sum += coordinate[m];
+public:
+  int operator() (const multi1d<int>& coordinate) const {return 0;}
+  int numSubsets() const {return 1;}
+};
 
-  return sum & 1;
-}
   
-//! Function used for constructing 32 checkerboard. */
-int subset_32cb_func(const multi1d<int>& coordinate)
+//! Function object used for constructing red-black (2) checkerboard */
+class SetRBFunc : public SetFunc
 {
-  int initial_color = 0;
-  for(int m=Nd-1; m >= 0; --m)
-    initial_color = (initial_color << 1) + (coordinate[m] & 1);
+public:
+  int operator() (const multi1d<int>& coordinate) const
+    {
+      int sum = 0;
+      for(int m=0; m < coordinate.size(); ++m)
+	sum += coordinate[m];
 
-  int cb = 0;
-  for(int m=0; m < Nd; ++m)
-    cb += coordinate[m] >> 1;
+      return sum & 1;
+    }
 
-  cb &= 1;
-  return initial_color + (cb << Nd);
-}
+  int numSubsets() const {return 2;}
+};
+
   
+//! Function object used for constructing 32 checkerboard. */
+class Set32CBFunc : public SetFunc
+{
+public:
+  int operator() (const multi1d<int>& coordinate) const
+    {
+      int initial_color = 0;
+      for(int m=Nd-1; m >= 0; --m)
+	initial_color = (initial_color << 1) + (coordinate[m] & 1);
+
+      int cb = 0;
+      for(int m=0; m < Nd; ++m)
+	cb += coordinate[m] >> 1;
+
+      cb &= 1;
+      return initial_color + (cb << Nd);
+    }
+
+  int numSubsets() const {return 1 << (Nd+1);}
+};
+
 
 //! Initializer for sets
 void InitDefaultSets()
 {
   // Initialize the red/black checkerboard
-  rb.make(subset_rb_func, 2);
+  rb.make(SetRBFunc());
 
     // Initialize the 32-style checkerboard
-  mcb.make(subset_32cb_func, 1 << (Nd+1));
+  mcb.make(Set32CBFunc());
 
   // The all set
-  set_all.make(subset_all_func, 1);
+  set_all.make(SetAllFunc());
 
   // The all subset
   all.make(set_all[0]);
@@ -81,7 +100,7 @@ void Subset::make(int start, int end, bool rep, multi1d<int>* ind, int cb)
 //-----------------------------------------------------------------------------
 // Find these in the respective  architecture  *_specific.cc  files
 //! Constructor from an int function
-//void Set::make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices);
+//void Set::make(const SetFunc& fn);
 
 //! Initializer for sets
 //void Set::InitOffsets();

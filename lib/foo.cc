@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.16 2002-12-05 21:27:10 edwards Exp $
+// $Id: foo.cc,v 1.17 2002-12-14 01:13:56 edwards Exp $
 //
 // Silly little internal test code
 
@@ -11,17 +11,49 @@
 
 //using namespace QDP;
 
+int sgnum(int x) {return (x > 0) ? 1 : -1;}
+
+struct Nearest : public MapFunc
+{
+  Nearest() {}
+
+  virtual multi1d<int> operator() (const multi1d<int>& coord, int sign) const
+    {
+      multi1d<int> lc = coord;
+
+      const multi1d<int>& nrow = Layout::lattSize();
+      int m = 1;
+      lc[m] = (coord[m] + sgnum(sign) + nrow[m]) % nrow[m];
+
+      return lc;
+    }
+}; 
+
+
+NmlWriter nml;
+
+
 int main()
 {
   // Setup the geometry
-  const int foo[] = {2,2,2,2};
+  const int foo[] = {4,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::initialize(nrow);
 
-  NmlWriter nml("foo.nml");
+//  NmlWriter nml("foo.nml");
+  nml.open("foo.nml");
 
   Write(nml,nrow);
+
+#if 1
+  Map near;
+  Nearest bbb;
+  near.make(bbb);
+
+#endif
+
+  exit(0);
 
   cerr << "try a string\n";
   nml << "write a string";
@@ -60,7 +92,7 @@ int main()
   LatticeReal a, b, c, e;
   Complex d;
 //  float ccc = 2.0;
-  float x;
+//  float x;
   
 #if 0
   LatticeComplex  foob(zero);

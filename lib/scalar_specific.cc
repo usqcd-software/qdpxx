@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.4 2002-11-23 02:02:30 edwards Exp $
+// $Id: scalar_specific.cc,v 1.5 2002-12-14 01:13:56 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -377,8 +377,10 @@ LatticeInteger latticeCoordinate(int mu)
 
 //-----------------------------------------------------------------------------
 //! Constructor from an int function
-void Set::make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
+void Set::make(const SetFunc& func)
 {
+  int nsubset_indices = func.numSubsets();
+
 #if 1
   fprintf(stderr,"Set a subset: nsubset = %d\n",nsubset_indices);
 #endif

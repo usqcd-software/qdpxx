@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.16 2002-11-23 02:29:40 edwards Exp $
+// $Id: scalar_specific.h,v 1.17 2002-12-14 01:13:56 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -364,10 +364,10 @@ template<class RHS, class T>
 typename UnaryReturn<OScalar<T>, FnSum>::Type_t
 sumMulti(const QDPExpr<RHS,OScalar<T> >& s1, const Set& ss)
 {
-  typename UnaryReturn<OScalar<T>, FnSumMulti>::Type_t  dest(ss.NumSubsets());
+  typename UnaryReturn<OScalar<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
 
   // lazy - evaluate repeatedly
-  for(int i=0; i < ss.NumSubsets(); ++i)
+  for(int i=0; i < ss.numSubsets(); ++i)
   {
     evaluate(dest[i],OpAssign(),s1);
   }
@@ -389,10 +389,10 @@ template<class RHS, class T>
 typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t
 sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 {
-  typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.NumSubsets());
+  typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
 
   // Initialize result with zero
-  for(int k=0; k < ss.NumSubsets(); ++k)
+  for(int k=0; k < ss.numSubsets(); ++k)
     zero_rep(dest[k]);
 
   // Loop over all sites and accumulate based on the coloring 

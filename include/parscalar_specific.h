@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.3 2002-11-13 19:04:41 edwards Exp $
+// $Id: parscalar_specific.h,v 1.4 2002-12-14 01:13:56 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -436,10 +436,10 @@ template<class RHS, class T>
 typename UnaryReturn<OScalar<T>, FnSum>::Type_t
 sumMulti(const QDPExpr<RHS,OScalar<T> >& s1, const Set& ss)
 {
-  typename UnaryReturn<OScalar<T>, FnSumMulti>::Type_t  dest(ss.NumSubsets());
+  typename UnaryReturn<OScalar<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
 
   // lazy - evaluate repeatedly
-  for(int i=0; i < ss.NumSubsets(); ++i)
+  for(int i=0; i < ss.numSubsets(); ++i)
   {
     evaluate(dest[i],OpAssign(),s1);
   }
@@ -461,10 +461,10 @@ template<class RHS, class T>
 typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t
 sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 {
-  typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.NumSubsets());
+  typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
 
   // Initialize result with zero
-  for(int k=0; k < ss.NumSubsets(); ++k)
+  for(int k=0; k < ss.numSubsets(); ++k)
     zero_rep(dest[k]);
 
   // Loop over all sites and accumulate based on the coloring 
@@ -477,7 +477,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
   }
 
   // Do a global sum on the result
-  for(int k=0; k < ss.NumSubsets(); ++k)
+  for(int k=0; k < ss.numSubsets(); ++k)
     Internal::global_sum(d[k]);
   
   return dest;
@@ -556,6 +556,124 @@ pokeSite(OLattice<T1>& l, const OScalar<T1>& r, const multi1d<int>& coord)
 
 
 //-----------------------------------------------------------------------------
+// Map
+//! General permutation map class for communications */
+class Map
+{
+public:
+  //! Constructor - does nothing really
+  Map() {}
+
+  //! Destructor
+  ~Map() {}
+
+  //! Constructor from a function object
+  Map(const MapFunc& fn) {make(fn);}
+
+  //! Actual constructor from a function object
+  /*! The semantics are   source_site = func(dest_site) */
+  void make(const MapFunc& func);
+
+  //! Function call operator for a shift
+  /*! 
+   * map(source)
+   *
+   * Implements:  dest(x) = s1(x+offsets)
+   *
+   * Shifts on a OLattice are non-trivial.
+   * Notice, there may be an ILattice underneath which requires shift args.
+   * This routine is very architecture dependent.
+   */
+  template<class T1,class C1>
+  C1
+  operator()(const QDPType<T1,C1> & l)
+    {
+      QMP_TRACE("Map()");
+
+      C1 d;
+
+//      if (srcenodes_num.size() != 2)
+
+      int dstnum = destnodes_num;
+      int srcnum = srcenodes_num;
+      int dstcnt = sizeof(T1)*dstnum;
+      T1 *send_buf = new T1[dstnum];
+      T1 *recv_buf = new T1[srcnum];
+
+      QMP_msgmem_t msg[2];
+      QMP_msghandle_t mh_a[2], mh;
+      QMP_status_t err;
+
+      QMP_info("QMP_sendrecv_wait: send = 0x%x  recv = 0x%x\n",send_buf,recv_buf);
+
+      msg[0]  = QMP_declare_msgmem(QMP_allocate_aligned_memory(count));
+      msg[1]  = QMP_declare_msgmem(recv_buf, count);
+      mh_a[0] = QMP_declare_send_to(msg[0], dir, isign, 0);
+      mh_a[1] = QMP_declare_receive_from(msg[1], dir, -isign, 0);
+      mh = QMP_declare_multiple(mh_a, 2);
+
+      if ((err = QMP_start(mh)) != QMP_SUCCESS)
+	QMP_error_exit(QMP_error_string(err));
+
+      if ((err = QMP_wait(mh)) != QMP_SUCCESS)
+	QMP_error_exit(QMP_error_string(err));
+
+      QMP_free_msghandle(mh_a[1]);
+      QMP_free_msghandle(mh_a[0]);
+      QMP_free_msghandle(mh);
+      QMP_free_msgmem(msg[1]);
+      QMP_free_msgmem(msg[0]);
+
+      QMP_info("shift(QDPType,%d)\n",isign);
+      QMP_TRACE("exiting Map()");
+
+      return d;
+    }
+
+
+  template<class T1,class C1>
+  C1
+  operator()(const QDPExpr<T1,C1> & l)
+    {
+      // Implementation for now just evaluates expression and then does map
+      C1 ll = l;
+      C1 d = this->operator()(ll);
+
+      fprintf(stderr,"map(QDPExpr)\n");
+      return d;
+    }
+
+
+public:
+  //! Accessor to offsets
+  const multi1d<int>& offsets() const {return soffsets;}
+
+private:
+  //! Hide copy constructor
+  Map(const Map&) {}
+
+  //! Hide operator=
+  void operator=(const Map&) {}
+
+private:
+  //! Offset table used for communications. 
+  /*! 
+   * The direction is in the sense of the Map or Shift functions from QDP.
+   * soffsets(position) 
+   */ 
+  multi1d<int> soffsets;
+  multi1d<int> srcnode;
+  multi1d<int> dstnode;
+
+  multi1d<int> srcenodes;
+  multi1d<int> destnodes;
+
+  multi1d<int> srcenodes_num;
+  multi1d<int> destnodes_num;
+};
+
+
+//-----------------------------------------------------------------------------
 //
 // This is the PETE version of a shift, namely return an expression
 //
@@ -593,24 +711,34 @@ public:
    * This routine is very architecture dependent.
    */
   template<class T1,class C1>
-  C1
+  inline typename MakeReturn<UnaryNode<OpIdentity,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
+    typename UnaryReturn<C1,OpIdentity >::Type_t >::Expression_t
   operator()(const QDPType<T1,C1> & l, int isign, int dir)
     {
-      C1 d = l;
-
       fprintf(stderr,"shift(QDPType,%d,%d)\n",isign,dir);
-      return d;
+
+      typedef UnaryNode<OpIdentity,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      typedef typename UnaryReturn<C1,OpIdentity >::Type_t Container_t;
+      return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
     }
 
 
   template<class T1,class C1>
-  C1
+  inline typename MakeReturn<UnaryNode<OpIdentity,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
+    typename UnaryReturn<C1,OpIdentity >::Type_t >::Expression_t
   operator()(const QDPExpr<T1,C1> & l, int isign, int dir)
     {
-      C1 d = l;
-
       fprintf(stderr,"shift(QDPExpr,%d,%d)\n",isign,dir);
-      return d;
+
+      typedef UnaryNode<OpIdentity,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      typedef typename UnaryReturn<C1,OpIdentity >::Type_t Container_t;
+      return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
 
 
@@ -632,6 +760,11 @@ private:
    * soffsets(direction,isign,position) 
    */ 
   multi3d<int> soffsets;
+  multi3d<int> srcnode;
+  multi3d<int> dstnode;
+
+  multi2d<int> srcenodes_num;
+  multi2d<int> dstenodes_num;
 };
 
 

@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.3 2002-11-13 18:24:40 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.4 2002-12-14 01:13:56 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -162,20 +162,29 @@ namespace Layout
   /*! This layout is a simple lexicographic lattice ordering */
   int nodeNumber(const multi1d<int>& coord)
   {
-    return local_site(nodeCoord(coord), Layout::logicalSize());
-  }
-
-
-  //! Returns the logical node coordinates for the corresponding lattice coordinate
-  /*! The API requires this function to be here */
-  multi1d<int> nodeCoord(const multi1d<int>& coord)
-  {
     multi1d<int> tmp_coord(Nd);
 
     for(int i=0; i < coord.size(); ++i)
       tmp_coord[i] = coord[i] / Layout::subgridLattSize()[i];
     
-    return tmp_coord;
+    return local_site(tmp_coord, Layout::logicalSize());
+  }
+
+
+  //! Returns the lattice site for some input node and linear index
+  /*! This layout is a simple lexicographic lattice ordering */
+  multi1d<int> siteCoords(int node, int linear)
+  {
+    multi1d<int> coord = crtesn(node, Layout::logicalSize());
+
+    // Get the base (origins) of the absolute lattice coord
+    coord *= Layout::subgridLattSize();
+    
+    // Find the coordinate within a node and accumulate
+    // This is a lexicographic ordering
+    coord += crtesn(linear, Layout::subgridLattSize());
+
+    return coord;
   }
 
 
@@ -340,8 +349,10 @@ LatticeInteger latticeCoordinate(int mu)
 
 //-----------------------------------------------------------------------------
 //! Constructor from an int function
-void Set::make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
+void Set::make(const SetFunc& func)
 {
+  int nsubset_indices = func.numSubsets();
+
 #if 1
   fprintf(stderr,"Set a subset: nsubset = %d\n",nsubset_indices);
 #endif
@@ -488,6 +499,111 @@ void NearestNeighborMap::make()
       for(int ipos=0; ipos < Layout::subgridVol(); ++ipos)
 	fprintf(stderr,"soffsets(%d,%d,%d) = %d\n",ipos,s,m,soffsets(m,s,ipos));
 #endif
+}
+
+
+//! Initializer for generic map constructor
+void Map::make(const MapFunc& func)
+{
+  QMP_info("Map::make");
+
+  //--------------------------------------
+  // Setup the communication index arrays
+  soffsets.resize(Layout::subgridVol());
+  srcnode.resize(Layout::subgridVol());
+  dstnode.resize(Layout::subgridVol());
+
+  const int my_node = Layout::nodeNumber();
+
+  // Loop over the sites on this node
+  for(int linear=0; linear < Layout::subgridVol(); ++linear)
+  {
+    // Get the true lattice coord of this linear site index
+    multi1d<int> coord = Layout::siteCoords(my_node, linear);
+
+    // Source neighbor for this destination site
+    multi1d<int> fcoord = func(coord,+1);
+
+    // Destination neighbor receiving data from this site
+    // This functions as the inverse map
+    multi1d<int> bcoord = func(coord,-1);
+
+    int fnode = Layout::nodeNumber(fcoord);
+    int bnode = Layout::nodeNumber(bcoord);
+
+    // Source linear site and node
+    soffsets[linear] = Layout::linearSiteIndex(fcoord);
+    srcnode[linear]  = fnode;
+
+    // Destination node
+    dstnode[linear]  = bnode;
+  }
+
+//  extern NmlWriter nml;
+
+//  Write(nml,srcnode);
+//  Write(nml,dstnode);
+
+  // Return a list of the unique nodes in the list
+  // NOTE: my_node is always included as a unique node, so one extra
+  srcenodes = uniquify_list(srcnode);
+  destnodes = uniquify_list(dstnode);
+
+//  Write(nml,srcenodes);
+//  Write(nml,destnodes);
+
+  // Run through the lists and find the number for each unique node
+  srcenodes_num.resize(srcenodes.size());
+  destnodes_num.resize(destnodes.size());
+
+  srcenodes_num = 0;
+  destnodes_num = 0;
+
+  for(int linear=0; linear < Layout::subgridVol(); ++linear)
+  {
+    int this_node = srcnode[linear];
+    for(int i=0; i < srcenodes_num.size(); ++i)
+    {
+      if (srcenodes[i] == this_node)
+      {
+	srcenodes_num[i]++;
+	break;
+      }
+    }
+
+    this_node = dstnode[linear];
+    for(int i=0; i < destnodes_num.size(); ++i)
+    {
+      if (destnodes[i] == this_node)
+      {
+	destnodes_num[i]++;
+	break;
+      }
+    }
+  }
+  
+//  Write(nml,srcenodes_num);
+//  Write(nml,destnodes_num);
+
+
+#if 1
+  for(int linear=0; linear < Layout::subgridVol(); ++linear)
+  {
+    QMP_info("soffsets(%d) = %d",linear,soffsets(linear));
+    QMP_info("srcnode(%d) = %d",linear,srcnode(linear));
+    QMP_info("dstnode(%d) = %d",linear,dstnode(linear));
+  }
+
+  for(int i=0; i < destnodes.size(); ++i)
+  {
+    QMP_info("srcenodes(%d) = %d",i,srcenodes(i));
+    QMP_info("destnodes(%d) = %d",i,destnodes(i));
+    QMP_info("srcenodes_num(%d) = %d",i,srcenodes_num(i));
+    QMP_info("destnodes_num(%d) = %d",i,destnodes_num(i));
+  }
+#endif
+
+  QMP_info("exiting Map::make");
 }
 
 

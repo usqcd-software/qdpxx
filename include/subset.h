@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: subset.h,v 1.9 2002-11-23 03:42:30 edwards Exp $
+// $Id: subset.h,v 1.10 2002-12-14 01:13:56 edwards Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -74,6 +74,16 @@ public:
 };
 
 
+//! SetMap
+class SetFunc
+{
+public:
+  virtual int operator() (const multi1d<int>& coordinate) const = 0;
+  virtual int numSubsets() const = 0;
+};
+
+
+
 //! Set - collection of subsets controlling which sites are involved in an operation
 class Set
 {
@@ -81,18 +91,17 @@ public:
   //! There can be an empty constructor
   Set() {}
 
-  //! Constructor from an int function
-  void make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices);
+  //! Constructor from a function object
+  Set(const SetFunc& fn) {make(fn);}
 
-  //! Constructor from an int function
-  Set(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
-    {make(func,nsubset_indices);}
+  //! Constructor from a function object
+  void make(const SetFunc& fn);
 
   //! Index operator selects a subset from a set
   const Subset& operator[](int subset_index) const {return sub[subset_index];}
 
   //! Return number of subsets
-  int NumSubsets() const {return sub.size();}
+  int numSubsets() const {return sub.size();}
 
   //! Destructor for a set
   ~Set() {}
