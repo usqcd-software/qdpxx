@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.9 2003-08-21 06:46:54 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.10 2003-08-29 02:42:07 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -585,8 +585,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
   const LatticeColorMatrix& r = static_cast<const LatticeColorMatrix&>(rhs.expression().right());
 
-  const int istart = s.start() >> INNER_LEN;
-  const int iend   = s.end()   >> INNER_LEN;
+  const int istart = s.start() >> INNER_LOG;
+  const int iend   = s.end()   >> INNER_LOG;
 
   for(int i=istart; i <= iend; ++i) 
   {

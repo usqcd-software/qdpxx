@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_defs.h,v 1.3 2003-08-23 02:30:18 edwards Exp $
+// $Id: qdp_scalarvecsite_defs.h,v 1.4 2003-08-29 02:42:07 edwards Exp $
 
 /*! \file
  * \brief Type definitions for scalar/vector extensions-like architectures
@@ -41,13 +41,13 @@ QDP_BEGIN_NAMESPACE(QDP);
 // Use single precision for base precision
 #define REAL      REAL32
 #define DOUBLE    REAL64
-#define INNER_LEN 2
+#define INNER_LOG 2
 
 #elif BASE_PRECISION == DOUBLE_PRECISION
 // Use double precision for base precision
 #define REAL      REAL64
 #define DOUBLE    REAL64
-#define INNER_LEN 1
+#define INNER_LOG 1
 
 #else
 #error "Unknown BASE_PRECISION"
@@ -60,32 +60,32 @@ typedef GammaType<Ns> Gamma;
 
 // For now, fix this inner-grid length to 4 or 2 depending on base precision. 
 // This causes problems for doubles which I eventually must work out.
-// Here, INNER_LEN is the log_2(INNER)
-#define INNER (1 << INNER_LEN)
+// Here, INNER_LOG is the log_2(INNER)
+#define INNER_LEN (1 << INNER_LOG)
 
 // Aliases for a scalarvec-like architecture
 
 // Fixed fermion type
-typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL,INNER> >, 3>, 4> > LatticeDiracFermion;
-typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL,INNER> >, 3>, 1> > LatticeStaggeredFermion;
-typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL,INNER> >, 3>, 4> > LatticeDiracPropagator;
+typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL,INNER_LEN> >, 3>, 4> > LatticeDiracFermion;
+typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL,INNER_LEN> >, 3>, 1> > LatticeStaggeredFermion;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL,INNER_LEN> >, 3>, 4> > LatticeDiracPropagator;
 
 // Floating aliases
-typedef OLattice< PScalar< PColorVector< RComplex< ILattice<REAL,INNER> >, Nc> > > LatticeColorVector;
-typedef OLattice< PSpinVector< PScalar< RComplex< ILattice<REAL,INNER> > >, Ns> > LatticeSpinVector;
-typedef OLattice< PScalar< PColorMatrix< RComplex< ILattice<REAL,INNER> >, Nc> > > LatticeColorMatrix;
-typedef OLattice< PSpinMatrix< PScalar< RComplex< ILattice<REAL,INNER> > >, Ns> > LatticeSpinMatrix;
-typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL,INNER> >, Nc>, 1> > LatticeStaggeredFermion;
-typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL,INNER> >, Nc>, Ns> > LatticeFermion;
-typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL,INNER> >, Nc>, Ns>>1 > > LatticeHalfFermion;
-typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL,INNER> >, Nc>, Ns> > LatticePropagator;
-typedef OLattice< PScalar< PScalar< RComplex< ILattice<REAL,INNER> > > > > LatticeComplex;
+typedef OLattice< PScalar< PColorVector< RComplex< ILattice<REAL,INNER_LEN> >, Nc> > > LatticeColorVector;
+typedef OLattice< PSpinVector< PScalar< RComplex< ILattice<REAL,INNER_LEN> > >, Ns> > LatticeSpinVector;
+typedef OLattice< PScalar< PColorMatrix< RComplex< ILattice<REAL,INNER_LEN> >, Nc> > > LatticeColorMatrix;
+typedef OLattice< PSpinMatrix< PScalar< RComplex< ILattice<REAL,INNER_LEN> > >, Ns> > LatticeSpinMatrix;
+typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, 1> > LatticeStaggeredFermion;
+typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, Ns> > LatticeFermion;
+typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, Ns>>1 > > LatticeHalfFermion;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, Ns> > LatticePropagator;
+typedef OLattice< PScalar< PScalar< RComplex< ILattice<REAL,INNER_LEN> > > > > LatticeComplex;
 
-typedef OLattice< PScalar< PSeed < RScalar< ILattice<INTEGER32,INNER> > > > > LatticeSeed;
-typedef OLattice< PScalar< PScalar< RScalar< ILattice<INTEGER32,INNER> > > > > LatticeInteger;
-typedef OLattice< PScalar< PScalar< RScalar< ILattice<REAL,INNER> > > > > LatticeReal;
-typedef OLattice< PScalar< PScalar< RScalar< ILattice<DOUBLE,INNER> > > > > LatticeDouble;
-typedef OLattice< PScalar< PScalar< RScalar< ILattice<LOGICAL,INNER> > > > > LatticeBoolean;
+typedef OLattice< PScalar< PSeed < RScalar< ILattice<INTEGER32,INNER_LEN> > > > > LatticeSeed;
+typedef OLattice< PScalar< PScalar< RScalar< ILattice<INTEGER32,INNER_LEN> > > > > LatticeInteger;
+typedef OLattice< PScalar< PScalar< RScalar< ILattice<REAL,INNER_LEN> > > > > LatticeReal;
+typedef OLattice< PScalar< PScalar< RScalar< ILattice<DOUBLE,INNER_LEN> > > > > LatticeDouble;
+typedef OLattice< PScalar< PScalar< RScalar< ILattice<LOGICAL,INNER_LEN> > > > > LatticeBoolean;
 
 typedef OScalar< PScalar< PColorVector< RComplex< IScalar<REAL> >, Nc> > > ColorVector;
 typedef OScalar< PScalar< PColorMatrix< RComplex< IScalar<REAL> >, Nc> > > ColorMatrix;
@@ -117,11 +117,11 @@ typedef PScalar< PScalar< RScalar< IScalar<DOUBLE> > > > IntDouble;
 typedef PScalar< PScalar< RScalar< IScalar<LOGICAL> > > > IntBoolean;
 
 // Odd-ball to support random numbers
-typedef OScalar< PScalar< PScalar < RScalar< ILattice<REAL,INNER> > > > > ILatticeReal;
-typedef OScalar< PScalar< PSeed < RScalar< ILattice<INTEGER32,INNER> > > > > ILatticeSeed;
+typedef OScalar< PScalar< PScalar < RScalar< ILattice<REAL,INNER_LEN> > > > > ILatticeReal;
+typedef OScalar< PScalar< PSeed < RScalar< ILattice<INTEGER32,INNER_LEN> > > > > ILatticeSeed;
 
 // Fixed precision
-typedef OLattice< PScalar< PColorMatrix< RComplex< ILattice<REAL32,INNER> >, Nc> > > LatticeColorMatrixF;
+typedef OLattice< PScalar< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc> > > LatticeColorMatrixF;
 typedef OScalar< PScalar< PColorMatrix< RComplex< IScalar<REAL32> >, Nc> > > ColorMatrixF;
 
 
