@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.19 2004-07-02 21:53:39 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.20 2004-07-06 01:54:28 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -671,7 +671,7 @@ transpose(const PMatrix<T1,N,C>& l)
 
 
 // TRACE
-// trace = Trace(source1)
+// PScalar = Trace(PMatrix)
 template<class T, int N, template<class,int> class C>
 struct UnaryReturn<PMatrix<T,N,C>, FnTrace > {
   typedef PScalar<typename UnaryReturn<T, FnTrace>::Type_t>  Type_t;
@@ -691,7 +691,7 @@ trace(const PMatrix<T,N,C>& s1)
 }
 
 
-// trace = Re(Trace(source1))
+// PScalar = Re(Trace(PMatrix))
 template<class T, int N, template<class,int> class C>
 struct UnaryReturn<PMatrix<T,N,C>, FnRealTrace > {
   typedef PScalar<typename UnaryReturn<T, FnRealTrace>::Type_t>  Type_t;
@@ -711,7 +711,7 @@ realTrace(const PMatrix<T1,N,C>& s1)
 }
 
 
-//! trace = Im(Trace(source1))
+//! PScalar = Im(Trace(PMatrix))
 template<class T, int N, template<class,int> class C>
 struct UnaryReturn<PMatrix<T,N,C>, FnImagTrace > {
   typedef PScalar<typename UnaryReturn<T, FnImagTrace>::Type_t>  Type_t;
@@ -731,7 +731,7 @@ imagTrace(const PMatrix<T1,N,C>& s1)
 }
 
 
-//! trace = traceColor(source1)   [this is an identity in general]
+//! PMatrix = traceColor(PMatrix)   [this is an identity in general]
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PMatrix<T,N,C>, FnTraceColor>::Type_t
 traceColor(const PMatrix<T,N,C>& s1)
@@ -746,7 +746,7 @@ traceColor(const PMatrix<T,N,C>& s1)
 }
 
 
-//! PScalar = traceSpin(PMatrix)   [this is an identity in general]
+//! PMatrix = traceSpin(PMatrix)   [this is an identity in general]
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PMatrix<T,N,C>, FnTraceSpin>::Type_t
 traceSpin(const PMatrix<T,N,C>& s1)
@@ -773,13 +773,13 @@ traceMultiply(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceMultiply>::Type_t  d;
 
-  d.elem() = traceMultiply(s1.elem(0,0), s2.elem(0,0));
+  d.elem() = traceMultiply(l.elem(0,0), r.elem(0,0));
   for(int k=1; k < N; ++k)
-    d.elem() += traceMultiply(s1.elem(0,k), s2.elem(k,0));
+    d.elem() += traceMultiply(l.elem(0,k), r.elem(k,0));
 
   for(int j=1; j < N; ++j)
     for(int k=0; k < N; ++k)
-      d.elem() += traceMultiply(s1.elem(j,k), s2.elem(k,j));
+      d.elem() += traceMultiply(l.elem(j,k), r.elem(k,j));
 
   return d;
 }
@@ -796,9 +796,9 @@ traceMultiply(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceMultiply>::Type_t  d;
 
-  d.elem() = traceMultiply(s1.elem(0,0), s2.elem());
+  d.elem() = traceMultiply(l.elem(0,0), r.elem());
   for(int k=1; k < N; ++k)
-    d.elem() += traceMultiply(s1.elem(k,k), s2.elem());
+    d.elem() += traceMultiply(l.elem(k,k), r.elem());
 
   return d;
 }
@@ -815,16 +815,16 @@ traceMultiply(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceMultiply>::Type_t  d;
 
-  d.elem() = traceMultiply(s1.elem(), s2.elem(0,0));
+  d.elem() = traceMultiply(l.elem(), r.elem(0,0));
   for(int k=1; k < N; ++k)
-    d.elem() += traceMultiply(s1.elem(), s2.elem(k,k));
+    d.elem() += traceMultiply(l.elem(), r.elem(k,k));
 
   return d;
 }
 
 
 
-//! PScalar = traceColorMultiply(PMatrix,PMatrix)   [the trace is an identity in general]
+//! PMatrix = traceColorMultiply(PMatrix,PMatrix)   [the trace is an identity in general]
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceColorMultiply>::Type_t
 traceColorMultiply(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
@@ -844,12 +844,7 @@ traceColorMultiply(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 
 // PScalar = traceColorMultiply(PMatrix,PScalar)   [the trace is an identity in general]
 template<class T1, class T2, int N, template<class,int> class C>
-struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceColorMultiply> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnTraceColorMultiply>::Type_t>  Type_t;
-};
-
-template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceColorMultiply>::Type_t
+inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceColorMultiply>::Type_t
 traceColorMultiply(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceColorMultiply>::Type_t  d;
@@ -862,11 +857,6 @@ traceColorMultiply(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 }
 
 // PScalar = traceColorMultiply(PScalar,PMatrix)   [the trace is an identity in general]
-template<class T1, class T2, int N, template<class,int> class C>
-struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceColorMultiply> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnTraceColorMultiply>::Type_t>  Type_t;
-};
-
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceColorMultiply>::Type_t
 traceColorMultiply(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
@@ -881,7 +871,7 @@ traceColorMultiply(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 }
 
 
-//! trace = traceSpinMultiply(source1)   [the trace is an identity in general]
+//! PMatrix = traceSpinMultiply(PMatrix,PMatrix)   [the trace is an identity in general]
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceSpinMultiply>::Type_t
 traceSpinMultiply(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
@@ -899,6 +889,33 @@ traceSpinMultiply(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
   return d;
 }
 
+// PScalar = traceSpinMultiply(PMatrix,PScalar)   [the trace is an identity in general]
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceSpinMultiply>::Type_t
+traceSpinMultiply(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceSpinMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = traceSpinMultiply(l.elem(i,j), r.elem());
+
+  return d;
+}
+
+// PScalar = traceSpinMultiply(PScalar,PMatrix)   [the trace is an identity in general]
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceSpinMultiply>::Type_t
+traceSpinMultiply(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceSpinMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = traceSpinMultiply(l.elem(), r.elem(i,j));
+
+  return d;
+}
 
 
 //! PMatrix = Re(PMatrix)
