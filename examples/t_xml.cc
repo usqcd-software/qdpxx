@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.2 2003-05-20 03:32:33 edwards Exp $
+// $Id: t_xml.cc,v 1.3 2003-05-22 18:24:36 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -48,6 +48,26 @@ int main(int argc, char **argv)
     int rob;
     read(fromxml,"/fred/my_life/rob",rob);
     cout << "found rob = " << rob << endl;
+  }
+
+  {
+    // Test reading some xml snippet and dumping it back out
+    XMLReader fromxml;
+    fromxml.open("cat.xml");
+
+    XMLMetaWriter toxml_1;
+    toxml_1 << fromxml;
+
+    XMLMetaWriter toxml_2;
+    push(toxml_2,"imbed_some_xml");
+    write(toxml_2,"this_is_my_xml",fromxml);
+    pop(toxml_2);
+
+    XMLDataWriter toxml_3("dog1.xml");
+    toxml_3 << toxml_1;
+
+    XMLDataWriter toxml_4("dog2.xml");
+    write(toxml_4,"imbed_some_more",toxml_2);
   }
 
   // Time to bolt

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.3 2003-05-13 05:13:42 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.4 2003-05-22 18:24:36 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -13,6 +13,13 @@
 #include "basic_xpath_reader.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+// Forward declarations
+class XMLReader;
+class XMLWriter;
+class XMLMetaWriter;
+class XMLDataWriter;
+
 
 /*! @addtogroup io
  *
@@ -28,16 +35,22 @@ class XMLReader : protected XMLXPathReader::BasicXPathReader
 public:
   //! Empty constructor
   XMLReader();
+
   //! Construct from contents of file
   XMLReader(const std::string& filename);
+
   //! Construct from contents of stream
   XMLReader(std::istream& is);
+
+  //! Construct from contents of a XMLMetaWriter
+  XMLReader(const XMLMetaWriter& mw);
 
   ~XMLReader();
 
   /* The meaning of these should be clear to you */
   void open(const std::string& filename);
   void open(std::istream& is);
+  void open(const XMLMetaWriter& mw);
   bool is_open();
   void close();
     
@@ -123,6 +136,14 @@ void push(XMLWriter& xml, const std::string& s);
 
 //! Pop a group name
 void pop(XMLWriter& xml);
+
+//! Write something from a reader
+void write(XMLWriter& xml, const std::string& s, const XMLReader& d);
+XMLWriter& operator<<(XMLWriter& xml, const XMLReader& d);
+
+//! Write something from a XMLMetaWriter
+void write(XMLWriter& xml, const std::string& s, const XMLMetaWriter& d);
+XMLWriter& operator<<(XMLWriter& xml, const XMLMetaWriter& d);
 
 // Time to build a telephone book of basic primitives
 void write(XMLWriter& xml, const std::string& s, const std::string& d);

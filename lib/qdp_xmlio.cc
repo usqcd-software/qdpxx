@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.3 2003-05-13 05:13:42 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.4 2003-05-22 18:24:36 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -27,6 +27,12 @@ XMLReader::XMLReader(std::istream& is)
   open(is);
 }
 
+XMLReader::XMLReader(const XMLMetaWriter& mw)
+{
+  iop=false;
+  open(mw);
+}
+
 void XMLReader::open(const string& filename)
 {
   if (Layout::primaryNode())
@@ -39,6 +45,14 @@ void XMLReader::open(std::istream& is)
 {
   if (Layout::primaryNode())
     BasicXPathReader::open(is);
+
+  iop = true;
+}
+
+void XMLReader::open(const XMLMetaWriter& mw)
+{
+  if (Layout::primaryNode())
+    BasicXPathReader::open(const_cast<XMLMetaWriter&>(mw).str());
 
   iop = true;
 }
@@ -295,6 +309,34 @@ void push(XMLWriter& xml, const string& s) {xml.openTag(s);}
 
 // Pop a group name
 void pop(XMLWriter& xml) {xml.closeTag();}
+
+// Write something from a reader
+void write(XMLWriter& xml, const std::string& s, const XMLReader& d)
+{
+  xml.openTag(s);
+  xml << d;
+  xml.closeTag();
+}
+
+XMLWriter& operator<<(XMLWriter& xml, const XMLReader& d)
+{
+  ostringstream os;
+  const_cast<XMLReader&>(d).printRoot(os);
+  xml.writeXML(os.str());
+}
+
+// Write something from a XMLMetaWriter
+void write(XMLWriter& xml, const std::string& s, const XMLMetaWriter& d)
+{
+  xml.openTag(s);
+  xml << d;
+  xml.closeTag();
+}
+
+XMLWriter& operator<<(XMLWriter& xml, const XMLMetaWriter& d)
+{
+  xml.writeXML(const_cast<XMLMetaWriter&>(d).printRoot());
+}
 
 // Time to build a telephone book of basic primitives
 void write(XMLWriter& xml, const string& s, const string& d)
