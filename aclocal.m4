@@ -58,8 +58,9 @@ dnl - set the parallel compiler environment
       [#include "qmp.h"],
       [
         int argc ; char **argv ;
+        QMP_thread_level_t prv;
         $4 ;
-        QMP_init_msg_passing(&argc, &argv, QMP_SMP_ONE_ADDRESS) ;
+        QMP_init_msg_passing(&argc, &argv, QMP_THREAD_SINGLE, &prv) ;
         $5 ;
         QMP_finalize_msg_passing() ;
       ],
