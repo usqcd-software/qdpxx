@@ -1,3 +1,8 @@
+01/18/2004 -- Robert Edwards
+
+	Version 1.11.1. Maintenance changes within QIO and other little
+        things.
+
 11/22/2004 -- Robert Edwards
 
 	Version 1.11.0. Removed all Namelist usage and files. Switched all regression
