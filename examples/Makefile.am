@@ -4,6 +4,7 @@
 ## Should only need @QMP_CFLAGS@, @QMP_LDFLAGS@ and @QMP_LIBS@
 ## n.b. Only defined for some parallel architectures
 INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
+           -I@top_srcdir@/other_libs/nml \
            -I@top_srcdir@/other_libs/qio/include \
            -I@top_srcdir@/other_libs/qio/other_libs/c-dime/include
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QMP_CFLAGS@
