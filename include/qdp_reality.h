@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.21 2004-07-27 05:33:35 edwards Exp $
+// $Id: qdp_reality.h,v 1.22 2004-08-09 21:56:35 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -260,12 +260,12 @@ public:
   ~RComplex() {}
 
   //! Construct from two reality scalars
-  template<class T1>
-  RComplex(const RScalar<T1>& _re, const RScalar<T1>& _im): re(_re.elem()), im(_im.elem()) {}
+  template<class T1, class T2>
+  RComplex(const RScalar<T1>& _re, const RScalar<T2>& _im): re(_re.elem()), im(_im.elem()) {}
 
   //! Construct from two scalars
-  template<class T1>
-  RComplex(const T1& _re, const T1& _im): re(_re), im(_im) {}
+  template<class T1, class T2>
+  RComplex(const T1& _re, const T2& _im): re(_re), im(_im) {}
 
   //---------------------------------------------------------
   //! RComplex = RScalar
@@ -1465,21 +1465,22 @@ localInnerProduct(const RScalar<T1>& s1, const RScalar<T2>& s2)
 
 
 //! RScalar<T> = InnerProductReal(adj(PMatrix<T1>)*PMatrix<T1>)
+// Real-ness is eaten at this level
 template<class T1, class T2>
 struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnInnerProductReal > {
-  typedef RScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
+  typedef RScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
 struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProductReal > {
-  typedef RScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
+  typedef RScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
 inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProductReal>::Type_t
 localInnerProductReal(const RScalar<T1>& s1, const RScalar<T2>& s2)
 {
-  return localInnerProductReal(s1.elem(), s2.elem());
+  return localInnerProduct(s1.elem(), s2.elem());
 }
 
 
@@ -1598,6 +1599,7 @@ fill_gaussian(RScalar<T>& d, RScalar<T>& r1, RScalar<T>& r2)
  * @{ 
  */
 
+//! RComplex = +RComplex
 template<class T1>
 inline typename UnaryReturn<RComplex<T1>, OpUnaryPlus>::Type_t
 operator+(const RComplex<T1>& l)
@@ -1609,6 +1611,7 @@ operator+(const RComplex<T1>& l)
 }
 
 
+//! RComplex = -RComplex
 template<class T1>
 inline typename UnaryReturn<RComplex<T1>, OpUnaryMinus>::Type_t
 operator-(const RComplex<T1>& l)
@@ -1620,6 +1623,7 @@ operator-(const RComplex<T1>& l)
 }
 
 
+//! RComplex = RComplex + RComplex
 template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdd>::Type_t
 operator+(const RComplex<T1>& l, const RComplex<T2>& r)
@@ -1630,7 +1634,30 @@ operator+(const RComplex<T1>& l, const RComplex<T2>& r)
 	       l.imag()+r.imag());
 }
 
+//! RComplex = RComplex + RScalar
+template<class T1, class T2>
+inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpAdd>::Type_t
+operator+(const RComplex<T1>& l, const RScalar<T2>& r)
+{
+  typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpAdd>::Type_t  Ret_t;
 
+  return Ret_t(l.real()+r.elem(),
+	       l.imag()+r.elem());
+}
+
+//! RComplex = RScalar + RComplex
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpAdd>::Type_t
+operator+(const RScalar<T1>& l, const RComplex<T2>& r)
+{
+  typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpAdd>::Type_t  Ret_t;
+
+  return Ret_t(l.elem()+r.real(),
+	       l.elem()+r.imag());
+}
+
+
+//! RComplex = RComplex - RComplex
 template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpSubtract>::Type_t
 operator-(const RComplex<T1>& l, const RComplex<T2>& r)
@@ -1641,7 +1668,30 @@ operator-(const RComplex<T1>& l, const RComplex<T2>& r)
 	       l.imag() - r.imag());
 }
 
+//! RComplex = RComplex - RScalar
+template<class T1, class T2>
+inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpSubtract>::Type_t
+operator-(const RComplex<T1>& l, const RScalar<T2>& r)
+{
+  typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpSubtract>::Type_t  Ret_t;
 
+  return Ret_t(l.real() - r.elem(),
+	       l.imag() - r.elem());
+}
+
+//! RComplex = RScalar - RComplex
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpSubtract>::Type_t
+operator-(const RScalar<T1>& l, const RComplex<T2>& r)
+{
+  typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpSubtract>::Type_t  Ret_t;
+
+  return Ret_t(l.elem() - r.real(),
+	       l.elem() - r.imag());
+}
+
+
+//! RComplex = RComplex * RComplex
 template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t
 operator*(const RComplex<T1>& __restrict__ l, const RComplex<T2>& __restrict__ r) 
@@ -1652,7 +1702,7 @@ operator*(const RComplex<T1>& __restrict__ l, const RComplex<T2>& __restrict__ r
 	       l.real()*r.imag() + l.imag()*r.real());
 }
 
-
+//! RComplex = RScalar * RComplex
 template<class T1, class T2>
 inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpMultiply>::Type_t
 operator*(const RScalar<T1>& l, const RComplex<T2>& r)
@@ -1663,6 +1713,7 @@ operator*(const RScalar<T1>& l, const RComplex<T2>& r)
 	       l.elem()*r.imag());
 }
 
+//! RComplex = RComplex * RScalar
 template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpMultiply>::Type_t
 operator*(const RComplex<T1>& l, const RScalar<T2>& r)
@@ -1730,6 +1781,7 @@ adjMultiplyAdj(const RComplex<T1>& l, const RComplex<T2>& r)
 }
 
 
+//! RComplex = RComplex / RComplex
 template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpDivide>::Type_t
 operator/(const RComplex<T1>& l, const RComplex<T2>& r)
@@ -1742,7 +1794,7 @@ operator/(const RComplex<T1>& l, const RComplex<T2>& r)
 	       (l.imag()*r.real() - l.real()*r.imag()) * tmp);
 }
 
-
+//! RComplex = RComplex / RScalar
 template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpDivide>::Type_t
 operator/(const RComplex<T1>& l, const RScalar<T2>& r)
@@ -1755,7 +1807,7 @@ operator/(const RComplex<T1>& l, const RScalar<T2>& r)
 	       l.imag() * tmp);
 }
 
-
+//! RComplex = RScalar / RComplex
 template<class T1, class T2>
 inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpDivide>::Type_t
 operator/(const RScalar<T1>& l, const RComplex<T2>& r)
@@ -2069,14 +2121,15 @@ localInnerProduct(const RComplex<T1>& l, const RComplex<T2>& r)
 
 
 //! RScalar<T> = InnerProductReal(adj(RComplex<T1>)*RComplex<T1>)
+// Real-ness is eaten at this level
 template<class T1, class T2>
 struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnInnerProductReal > {
-  typedef RScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
+  typedef RScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
 struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProductReal > {
-  typedef RScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
+  typedef RScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
