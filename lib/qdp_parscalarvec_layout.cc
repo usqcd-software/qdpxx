@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_layout.cc,v 1.2 2003-09-03 01:24:19 edwards Exp $
+// $Id: qdp_parscalarvec_layout.cc,v 1.3 2003-09-03 02:28:28 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec layout routines
@@ -237,29 +237,29 @@ namespace Layout
     // Diagnostics
     if (Layout::primaryNode())
     {
-      cerr << "Lattice initialized:\n";
-      cerr << "  problem size =";
+      cout << "Lattice initialized:\n";
+      cout << "  problem size =";
       for(int i=0; i < Nd; ++i)
-	cerr << " " << _layout.nrow[i];
-      cerr << endl;
+	cout << " " << _layout.nrow[i];
+      cout << endl;
 
-      cerr << "  logical machine size =";
+      cout << "  logical machine size =";
       for(int i=0; i < Nd; ++i)
-	cerr << " " << _layout.logical_size[i];
-      cerr << endl;
+	cout << " " << _layout.logical_size[i];
+      cout << endl;
 
-      cerr << "  logical node coord =";
+      cout << "  logical node coord =";
       for(int i=0; i < Nd; ++i)
-	cerr << " " << _layout.logical_coord[i];
-      cerr << endl;
+	cout << " " << _layout.logical_coord[i];
+      cout << endl;
 
-      cerr << "  subgrid size =";
+      cout << "  subgrid size =";
       for(int i=0; i < Nd; ++i)
-	cerr << " " << _layout.subgrid_nrow[i];
-      cerr << endl;
+	cout << " " << _layout.subgrid_nrow[i];
+      cout << endl;
 
-      cerr << "  total volume = " << _layout.vol << endl;
-      cerr << "  subgrid volume = " << _layout.subgrid_vol << endl;
+      cout << "  total volume = " << _layout.vol << endl;
+      cout << "  subgrid volume = " << _layout.subgrid_vol << endl;
     }
 
     // This implementation requires there be a multiple of INNER_LEN sites 
