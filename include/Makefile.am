@@ -26,6 +26,7 @@ include_HEADERS = defs.h \
 		primspinvec.h \
 		primvector.h \
 		qdp_util.h \
+		qdp_xmlio.h \
 		qdpexpr.h \
 		qdp.h \
 		qdpio.h \
