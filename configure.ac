@@ -101,7 +101,7 @@ dnl --enable-qcdoc-edram
 AC_ARG_ENABLE(qcdoc-edram,
    AC_HELP_STRING([--enable-qcdoc-edram],
 	[ Make QDP Outer allocate in EDRAM]),
-	[ac_qcdoc_edram_enabled=1]
+	[ac_qcdoc_edram_enabled=1],
 	[ac_qcdoc_edram_enabled=0]
 )
      
@@ -145,7 +145,7 @@ if test ${ac_qcdoc_enabled} -eq 1; then
    AC_DEFINE_UNQUOTED(QDP_USE_QCDOC, ${ac_qcdoc_enabled}, [Enable QCDOC opts])
    if test ${ac_qcdoc_edram_enabled} -eq 1; then
      AC_DEFINE_UNQUOTED(QDP_USE_QCDOC_EDRAM, ${ac_qcdoc_edram_enabled}, [Enable QCDOC Edram])
-     AC_MSG_NOTICE([ Enabling allocation in EDRAM in QDP Outer])
+     AC_MSG_NOTICE([Enabling allocation in EDRAM in QDP Outer])
    fi
 fi
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.29 2004-03-21 23:10:18 bjoo Exp $
+// $Id: qdp_outer.h,v 1.30 2004-03-21 23:16:09 bjoo Exp $
 
 #include "qdp_config.h"
 
@@ -405,10 +405,9 @@ private:
   inline void alloc_mem(const char* const p) 
     {
 #ifdef QDP_USE_QCDOC_EDRAM
-#warning Allocating in EDRAM
       F_orig = (char *)qalloc(QFAST, sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE);
       if(F_orig == (char *)NULL) {
-        QDP_error_exit("Unable to malloc in alloc mem");
+        QDP_error_exit("Unable to qalloc in alloc mem");
       }
 #else 
       F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];

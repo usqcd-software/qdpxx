@@ -2528,7 +2528,8 @@ fi;
 if test "${enable_qcdoc_edram+set}" = set; then
   enableval="$enable_qcdoc_edram"
   ac_qcdoc_edram_enabled=1
-	ac_qcdoc_edram_enabled=0
+else
+  ac_qcdoc_edram_enabled=0
 
 fi;
 
@@ -2594,8 +2595,8 @@ cat >>confdefs.h <<_ACEOF
 #define QDP_USE_QCDOC_EDRAM ${ac_qcdoc_edram_enabled}
 _ACEOF
 
-     { echo "$as_me:$LINENO:  Enabling allocation in EDRAM in QDP Outer" >&5
-echo "$as_me:  Enabling allocation in EDRAM in QDP Outer" >&6;}
+     { echo "$as_me:$LINENO: Enabling allocation in EDRAM in QDP Outer" >&5
+echo "$as_me: Enabling allocation in EDRAM in QDP Outer" >&6;}
    fi
 fi
 
