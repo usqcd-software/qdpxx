@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primseed.h,v 1.9 2003-01-20 16:14:20 edwards Exp $
+// $Id: primseed.h,v 1.10 2003-01-27 05:47:22 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -50,7 +50,7 @@ public:
     {
       typedef typename InternalScalar<T1>::Type_t  S;
 
-      elem(0) = (rhs.elem() | S(1)) & S(4095);
+      elem(0) = rhs.elem() & S(4095);
       elem(1) = (rhs.elem() >> S(12)) & S(4095);
       elem(2) = (rhs.elem() >> S(24)) & S(4095);
 //      elem(3) = (rhs.elem() >> S(36)) & S(2047);  // This probably will never be nonzero
@@ -221,18 +221,18 @@ operator*(const PSeed<T1>& s1, const PSeed<T2>& s2)
   d.elem(0) = i0 & S(4095);
 
   /* i1 = i1 + i0/4096 */
-  i1 += i0 << S(12);
+  i1 += i0 >> S(12);
 
   /* dest(1) = mod(i1, 4096) */
   d.elem(1) = i1 & S(4095);
 
   /* i2 = i2 + i1/4096 */
-  i2 += i1 << S(12);
+  i2 += i1 >> S(12);
 
   /* dest(2) = mod(i2, 4096) */
   d.elem(2) = i2 & S(4095);
   /* i3 = i3 + i2/4096 */
-  i3 += i2 << S(12);
+  i3 += i2 >> S(12);
 
   /* dest(3) = mod(i3, 2048) */
   d.elem(3) = i3 & S(2047);
@@ -301,14 +301,14 @@ operator<<(const PSeed<T1>& s1, const PScalar<T2>& s2)
   i2 = s1.elem(2) << s2.elem();
   i3 = s1.elem(3) << s2.elem();
 
-  d.elem(0) = i0 & S(4905);
+  d.elem(0) = i0 & S(4095);
   i0 >>= S(12);
   i1 |= i0 & S(4095);
   d.elem(1) = i1 & S(4095);
   i1 >>= S(12);
   i2 |= i1 & S(4095);
   d.elem(2) = i2 & S(4095);
-  i1 >>= S(12);
+  i2 >>= S(12);
   i3 |= i2 & S(4095);
   d.elem(3) = i3 & S(2047);
 
