@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.4 2003-08-11 16:58:15 edwards Exp $
+// $Id: t_linalg.cc,v 1.5 2003-08-12 04:38:45 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -250,6 +250,56 @@ int main(int argc, char *argv[])
   cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_D_eq_M_times_D(lf2, a, lf1, icnt);
   cout << "time(lf=lm*lf) = " << tt
+       << " micro-secs/site/iteration" 
+       << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
+
+  nml.flush();
+
+//----------------------------------------------------------------------------
+  LatticeHalfFermion lh1,lh2,lh3;
+  gaussian(lh1);
+  gaussian(lh2);
+
+#if ! defined(TEST_OPS)
+  // Time the c=a*b
+  for(icnt=1; ; icnt <<= 1)
+  {
+    cout << "calling " << icnt << " times" << endl;
+    tt = QDP_H_eq_M_times_H(lh2, a, lh1, icnt);
+    if (tt > 1)
+      break;
+  }
+#else
+  icnt = 1;   // turn off timings for some testing
+#endif
+
+#if defined(TEST_OPS)
+  // Test LatticeDiracFermion = LatticeColorMatrix + LatticeDiracFermion
+  tt = QDP_H_eq_M_times_H(lh2, a, lh1, 1);
+  push(nml,"QDP_H_eq_M_times_H");
+  Write(nml,lh2);
+  pop(nml);
+#endif
+
+  // Test LatticeHalfFermion = LatticeColorMatrix * LatticeHalfFermion
+  cout << "calling " << icnt << " times" << endl;
+  tt = rescale * QDP_H_eq_M_times_H(lh2, a, lh1, icnt);
+  cout << "time(lh=lm*lh) = " << tt
+       << " micro-secs/site/iteration" 
+       << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
+
+#if defined(TEST_OPS)
+  // Test LatticeHalfFermion = adj(LatticeColorMatrix) + LatticeHalfFermion
+  tt = QDP_H_eq_Ma_times_H(lh2, a, lh1, 1);
+  push(nml,"QDP_H_eq_Ma_times_H");
+  Write(nml,lh2);
+  pop(nml);
+#endif
+
+  // Test LatticeHalfFermion = adj(LatticeColorMatrix) * LatticeHalfFermion
+  cout << "calling " << icnt << " times" << endl;
+  tt = rescale * QDP_H_eq_Ma_times_H(lh2, a, lh1, icnt);
+  cout << "time(lh=adj(lm)*lh) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 

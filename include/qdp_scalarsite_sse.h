@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.6 2003-08-11 16:57:23 edwards Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.7 2003-08-12 04:38:45 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -43,6 +43,8 @@ static sse_mask _sse_sgn4  __attribute__ ((unused)) ={0x00000000, 0x00000000, 0x
 #include "scalarsite_sse/sse_mat_vec.h"
 #include "scalarsite_sse/sse_adj_mat_vec.h"
 #include "scalarsite_sse/sse_addvec.h"
+#include "scalarsite_sse/sse_mat_hwvec.h"
+#include "scalarsite_sse/sse_adj_mat_hwvec.h"
 
 // Optimized version of  
 //    PColorMatrix<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorMatrix<RComplexFloat,3>
@@ -145,6 +147,40 @@ adjMultiply(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
     PVector<RComplexFloat,3,PColorVector>, OpAdjMultiply>::Type_t  d;
 
   _inline_sse_mult_adj_su3_mat_vec(l,r,d);
+
+  return d;
+}
+
+
+// Optimized version of    HalfFermion <- ColorMatrix*HalfFermion
+//    PSpinVector<PColorVector<RComplexFloat,3>,2> <- PScalar<PColorMatrix<RComplexFloat,3>> * 
+//                     PSpinVector<ColorVector<RComplexFloat,3>,2>
+inline BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
+  PSpinVector<PColorVector<RComplexFloat,3>,2>, OpMultiply>::Type_t
+operator*(const PScalar<PColorMatrix<RComplexFloat,3> >& l, 
+          const PSpinVector<PColorVector<RComplexFloat,3>,2>& r)
+{
+  BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
+    PSpinVector<PColorVector<RComplexFloat,3>,2>, OpMultiply>::Type_t  d;
+
+  _inline_sse_mult_su3_mat_hwvec(l,r,d);
+
+  return d;
+}
+
+
+// Optimized version of    HalfFermion <- ColorMatrix*HalfFermion
+//    PSpinVector<PColorVector<RComplexFloat,3>,2> <- adj(PScalar<PColorMatrix<RComplexFloat,3>>) * 
+//                     PSpinVector<ColorVector<RComplexFloat,3>,2>
+inline BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
+  PSpinVector<PColorVector<RComplexFloat,3>,2>, OpAdjMultiply>::Type_t
+adjMultiply(const PScalar<PColorMatrix<RComplexFloat,3> >& l, 
+            const PSpinVector<PColorVector<RComplexFloat,3>,2>& r)
+{
+  BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
+    PSpinVector<PColorVector<RComplexFloat,3>,2>, OpAdjMultiply>::Type_t  d;
+
+  _inline_sse_mult_adj_su3_mat_hwvec(l,r,d);
 
   return d;
 }
