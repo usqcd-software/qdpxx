@@ -1,4 +1,4 @@
-// $Id: dslashm_w.cc,v 1.3 2002-09-14 19:48:46 edwards Exp $
+// $Id: dslashm_w.cc,v 1.4 2002-09-24 03:12:13 edwards Exp $
 
 /*! 
  * DSLASH
@@ -39,63 +39,29 @@
 
 using namespace QDP;
 
-#define F_SWAP 1
-#define B_SWAP 0
-
 void dslash(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFermion& psi,
 	    int isign, int cb)
 {
-  multi2d<LatticeHalfFermion> a1(2,Nd);
-  multi2d<LatticeHalfFermion> a2(2,Nd);
-
   Context s(rb[1-cb]);
 
-  for(int mu = 0; mu < Nd; ++mu)
-  {
-    Context s(rb[cb]);
-
-    /*     F
-     *   a1  (x) := (1 - isign gamma  ) psi(x)
-     *     mu		       mu
-     *
-     *     B
-     *   a1  (x) := (1 + isign gamma  ) psi(x)
-     *     mu		       mu 
-     */
-
-    /* [Only the first two components of a1 are computed] */
-
-    a1[F_SWAP][mu] = spinProject(psi,mu,-isign);
-    a1[B_SWAP][mu] = spinProject(psi,mu,+isign);
-  }
-
-  for(int mu = 0; mu < Nd; ++mu)
-  {	
-    Context s(rb[1-cb]);
-
-    /*     B           +          B             +
-     *   a2  (x)  :=  U  (x-mu) a1  (x-mu)  =  U  (x-mu) (1 + isign gamma  ) psi(x-mu)
-     *     mu          mu         mu            mu                       mu 
-     */
-
-    a2[B_SWAP][mu] = shift(u[mu]*a1[B_SWAP][mu], BACKWARD, mu);
-  
-    /*     F                    F
-     *   a 2  (x)  :=  U  (x) a1  (x+mu)
-     *     mu           mu      mu
-     */
-
-    a2[F_SWAP][mu] = u[mu] * shift(a1[F_SWAP][mu], FORWARD, mu);
-  }
-  
-
+  /*     F 
+   *   a2  (x)  :=  U  (x) (1 - isign gamma  ) psi(x)
+   *     mu          mu                    mu
+   */
+  /*     B           +
+   *   a2  (x)  :=  U  (x-mu) (1 + isign gamma  ) psi(x-mu)
+   *     mu          mu                       mu
+   */
   // Recontruct the bottom two spinor components from the top two
   // NOTE: the loop is not unrolled - it should be all in a single line for
   // optimal performance
   zero(chi);
+
+  // NOTE: temporarily has conversion call of LatticeHalfFermion - will be removed
   for(int mu = 0; mu < Nd; ++mu)
   {
-    chi += spinReconstruct(a2[F_SWAP][mu],mu,-isign);
-    chi += spinReconstruct(a2[B_SWAP][mu],mu,+isign);
+    chi += spinReconstruct(LatticeHalfFermion(u[mu] * shift(spinProject(psi,mu,-isign), FORWARD, mu)),mu,-isign)
+         + spinReconstruct(LatticeHalfFermion(shift(u[mu] * spinProject(psi,mu,+isign), BACKWARD, mu)),mu,+isign);
   }
+
 }
