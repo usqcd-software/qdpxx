@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_qcdoc.h,v 1.3 2004-03-21 21:19:44 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc.h,v 1.4 2004-03-21 23:51:19 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -16,7 +16,7 @@
 #include "scalarsite_qcdoc/qdp_scalarsite_qcdoc_linalg.h"
 
 // Use Generically optimized BLAS for now
-#include "scalarsite_generic/qdp_scalarsite_generic_blas.h"
+#include "scalarsite_qcdoc/qdp_scalarsite_qcdoc_blas.h"
 
 
 #endif
