@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_nml.cc,v 1.6 2003-06-07 19:09:32 edwards Exp $
+// $Id: t_nml.cc,v 1.7 2003-06-20 18:12:24 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -73,7 +73,9 @@ main(int argc, char *argv[])
 
   string cfg_file;
   Read(nml_in,cfg_file);
-  Write(nml_out,cfg_file);
+  write(nml_out,"cfg_file",cfg_file);
+
+  write(nml_out,"my_string","hello world");
 
   pop(nml_in);
   nml_in.close();
