@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_subset.h,v 1.2 2003-06-20 02:40:55 edwards Exp $
+// $Id: qdp_subset.h,v 1.3 2003-07-31 01:06:17 edwards Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -17,63 +17,7 @@ QDP_BEGIN_NAMESPACE(QDP);
  * @{
  */
 
-// Forward declaration
-class Set;
-
-//! Subsets - controls how lattices are looped
-class Subset
-{
-public:
-  //! There can be an empty constructor
-  Subset() {}
-
-  //! Copy constructor
-  Subset(const Subset& s): startSite(s.startSite), endSite(s.endSite), 
-    indexrep(s.indexrep), sitetable(s.sitetable) {}
-
-  // Simple constructor
-  void make(const Subset& s)
-    {
-      startSite = s.startSite;
-      endSite = s.endSite;
-      indexrep = s.indexrep;
-      sitetable = s.sitetable;
-    }
-
-  //! Destructor for a subset
-  ~Subset() {}
-
-  //! Access the coloring for this subset
-  int Index() const {return sub_index;}
-
-protected:
-  // Simple constructor
-  void make(int start, int end, bool rep, multi1d<int>* ind, int cb);
-
-
-private:
-  int startSite;
-  int endSite;
-  int sub_index;
-  bool indexrep;
-
-  //! Site lookup table
-  multi1d<int>* sitetable;
-
-public:
-  // These should be a no-no. Must fix the friend syntax
-  /*! Is the representation a boolean mask? */
-  bool IndexRep() const {return indexrep;}
-
-  int Start() const {return startSite;}
-  int End() const {return endSite;}
-  const multi1d<int>* SiteTable() const {return sitetable;}
-  int NumSiteTable() const {return sitetable->size();}
-
-  friend class Set;
-};
-
-
+//-----------------------------------------------------------------------
 //! SetMap
 class SetFunc
 {
@@ -82,8 +26,32 @@ public:
   virtual int numSubsets() const = 0;
 };
 
+//-----------------------------------------------------------------------
+//! Subsets - controls how lattices are looped
+class Subset
+{
+public:
+  //! There can be an empty constructor
+  Subset() {}
 
+  //! Copy constructor
+  Subset(const Subset& s) {}
 
+  //! Destructor for a subset
+  ~Subset() {}
+
+  //! Access the coloring for this subset
+  virtual int color() const = 0;
+
+  //! The = operator
+  Subset& operator=(const Subset& s) {}
+
+public:
+  virtual const multi1d<int>& siteTable() const = 0;
+  virtual int numSiteTable() const = 0;
+};
+
+//-----------------------------------------------------------------------
 //! Set - collection of subsets controlling which sites are involved in an operation
 class Set
 {
@@ -92,28 +60,145 @@ public:
   Set() {}
 
   //! Constructor from a function object
-  Set(const SetFunc& fn) {make(fn);}
+  virtual void make(const SetFunc& fn) = 0;
+
+  //! Index operator selects a subset from a set
+  virtual const Subset& operator[](int subset_index) const = 0;
+
+  //! Return number of subsets
+  virtual int numSubsets() const = 0;
+
+  //! Destructor for a set
+  ~Set() {}
+
+public:
+  //! The coloring of the lattice sites
+  virtual const multi1d<int>& latticeColoring() const = 0;
+};
+
+
+//-----------------------------------------------------------------------
+// Forward declaration
+class UnOrderedSet;
+class OrderedSet;
+
+
+//-----------------------------------------------------------------------
+//! UnorderedSubsets - controls how lattices are looped
+class UnorderedSubset : public Subset
+{
+public:
+  //! There can be an empty constructor
+  UnorderedSubset() {}
+
+  //! Copy constructor
+  UnorderedSubset(const UnorderedSubset& s): sitetable(s.sitetable), sub_index(s.sub_index) {}
+
+  // Simple constructor
+  void make(const UnorderedSubset& s);
+
+  //! Destructor for a subset
+  ~UnorderedSubset() {}
+
+  //! The = operator
+  UnorderedSubset& operator=(const UnorderedSubset& s);
+
+  //! Access the coloring for this subset
+  int color() const {return sub_index;}
+
+protected:
+  // Simple constructor
+  void make(multi1d<int>* ind, int cb);
+
+private:
+  int sub_index;
+
+  //! Site lookup table
+  multi1d<int>* sitetable;
+
+public:
+  const multi1d<int>& siteTable() const {return *sitetable;}
+  int numSiteTable() const {return sitetable->size();}
+
+  friend class UnorderedSet;
+};
+
+
+//-----------------------------------------------------------------------
+//! Ordered Subsets - optimized subsets for lattice looping
+class OrderedSubset : public Subset
+{
+public:
+  //! There can be an empty constructor
+  OrderedSubset() {}
+
+  //! Copy constructor
+  OrderedSubset(const OrderedSubset& s): startSite(s.startSite), endSite(s.endSite),
+					 sitetable(s.sitetable), sub_index(s.sub_index)
+    {}
+
+  // Simple constructor
+  void make(const OrderedSubset& s);
+
+  //! Destructor for a subset
+  ~OrderedSubset() {}
+
+  //! The = operator
+  OrderedSubset& operator=(const OrderedSubset& s);
+
+  //! Access the coloring for this subset
+  int color() const {return sub_index;}
+
+protected:
+  // Simple constructor
+  void make(int start, int end, multi1d<int>* ind, int cb);
+
+
+private:
+  int startSite;
+  int endSite;
+  int sub_index;
+
+  //! Site lookup table
+  multi1d<int>* sitetable;
+
+public:
+  int start() const {return startSite;}
+  int end() const {return endSite;}
+
+  const multi1d<int>& siteTable() const {return *sitetable;}
+  int numSiteTable() const {return sitetable->size();}
+
+  friend class OrderedSet;
+};
+
+
+//-----------------------------------------------------------------------
+//! UnorderedSet - collection of subsets controlling which sites are involved in an operation
+class UnorderedSet : public Set
+{
+public:
+  //! There can be an empty constructor
+  UnorderedSet() {}
+
+  //! Constructor from a function object
+  UnorderedSet(const SetFunc& fn) {make(fn);}
 
   //! Constructor from a function object
   void make(const SetFunc& fn);
 
   //! Index operator selects a subset from a set
-  const Subset& operator[](int subset_index) const {return sub[subset_index];}
+  const UnorderedSubset& operator[](int subset_index) const {return sub[subset_index];}
 
   //! Return number of subsets
   int numSubsets() const {return sub.size();}
 
   //! Destructor for a set
-  ~Set() {}
-
-protected:
-  //! Initializer for sets
-  void InitOffsets();
-    
+  ~UnorderedSet() {}
 
 protected:
   //! A set is composed of an array of subsets
-  multi1d<Subset> sub;
+  multi1d<UnorderedSubset> sub;
 
   //! Index or color array of lattice
   multi1d<int> lat_color;
@@ -122,26 +207,66 @@ protected:
   multi1d<multi1d<int> > sitetables;
 
 public:
-  // These should be a no-no. Must fix the friend syntax
-  const multi1d<int>& LatticeColoring() const {return lat_color;}
+  //! The coloring of the lattice sites
+  const multi1d<int>& latticeColoring() const {return lat_color;}
 };
 
 
+//-----------------------------------------------------------------------
+//! OrderedSet - collection of subsets controlling which sites are involved in an operation
+class OrderedSet : public Set
+{
+public:
+  //! There can be an empty constructor
+  OrderedSet() {}
+
+  //! Constructor from a function object
+  OrderedSet(const SetFunc& fn) {make(fn);}
+
+  //! Constructor from a function object
+  void make(const SetFunc& fn);
+
+  //! Index operator selects a subset from a set
+  const OrderedSubset& operator[](int subset_index) const {return sub[subset_index];}
+
+  //! Return number of subsets
+  int numSubsets() const {return sub.size();}
+
+  //! Destructor for a set
+  ~OrderedSet() {}
+
+protected:
+  //! A set is composed of an array of subsets
+  multi1d<OrderedSubset> sub;
+
+  //! Index or color array of lattice
+  multi1d<int> lat_color;
+
+  //! Array of sitetable arrays
+  multi1d<multi1d<int> > sitetables;
+
+public:
+  //! The coloring of the lattice sites
+  const multi1d<int>& latticeColoring() const {return lat_color;}
+};
+
+
+//-----------------------------------------------------------------------
 
 //! Default all subset
-extern Subset all;
+extern OrderedSubset all;
 
 //! Default 2-checkerboard (red/black) subset
-extern Set rb;
+extern UnorderedSet rb;
 
 //! Default 2^{Nd+1}-checkerboard subset. Useful for pure gauge updating.
-extern Set mcb;
+extern UnorderedSet mcb;
     
 //! Default even subset
-extern Subset even;
+extern UnorderedSubset even;
 
 //! Default odd subset
-extern Subset odd;
+extern UnorderedSubset odd;
 
 /** @} */ // end of group subsetss
 
