@@ -1,8 +1,11 @@
-// $Id: mesplq.cc,v 1.11 2002-12-05 21:27:10 edwards Exp $
+// $Id: mesplq.cc,v 1.12 2002-12-16 06:13:49 edwards Exp $
 //
 #include "tests.h"
 
 using namespace QDP;
+
+// Primitive way to indicate the time direction
+static int tDir() {return Nd-1;}
 
 //! Return the value of the average plaquette normalized to 1
 /*!
@@ -42,7 +45,7 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
 #endif
       w_plaq += tmp;
 
-      if (mu == geom.tDir() || nu == geom.tDir())
+      if (mu == tDir() || nu == tDir())
 	t_plaq += tmp;
       else 
 	s_plaq += tmp;
@@ -50,17 +53,17 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
   }
   
   // Normalize
-  w_plaq *= 2.0 / double(geom.vol()*Nd*(Nd-1)*Nc);
+  w_plaq *= 2.0 / double(Layout::vol()*Nd*(Nd-1)*Nc);
   
   if (Nd > 2) 
-    s_plaq *= 2.0 / double(geom.vol()*(Nd-1)*(Nd-2)*Nc);
+    s_plaq *= 2.0 / double(Layout::vol()*(Nd-1)*(Nd-2)*Nc);
   
-  t_plaq /= double(geom.vol()*(Nd-1)*Nc);
+  t_plaq /= double(Layout::vol()*(Nd-1)*Nc);
   
 
   // Compute the average link
   for(int mu=0; mu < Nd; ++mu)
     link += sum(real(trace(u[mu])));
 
-  link /= double(geom.vol()*Nd*Nc);
+  link /= double(Layout::vol()*Nd*Nc);
 }

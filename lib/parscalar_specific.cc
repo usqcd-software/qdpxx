@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.4 2002-12-14 01:13:56 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.5 2002-12-16 06:13:49 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -24,6 +24,47 @@ QDP_BEGIN_NAMESPACE(QDP);
 NearestNeighborMap  shift;
 
 
+//-----------------------------------------------------------------------------
+//! Private flag for status
+static bool isInit = false;
+
+//! Turn on the machine
+void QDP_initialize(int *argc, char ***argv)
+{
+  if (isInit)
+    QDP_error_exit("QDP already inited");
+
+  QMP_verbose (QMP_TRUE);
+
+  if (QMP_init_msg_passing(argc, argv, QMP_SMP_ONE_ADDRESS) != QMP_SUCCESS)
+    QDP_error_exit("QDP_initialize failed");
+
+  isInit = true;
+}
+
+//! Is the machine initialized?
+bool QDP_isInitialized() {return isInit;}
+
+//! Turn off the machine
+void QDP_finalize()
+{
+  if ( ! QDP_isInitialized() )
+    QDP_error_exit("QDP is not inited");
+
+  QMP_finalize_msg_passing();
+  isInit = false;
+}
+
+//! Panic button
+void QDP_abort(int status)
+{
+  QDP_finalize(); 
+  exit(status);
+}
+
+
+
+//-----------------------------------------------------------------------------
 
 namespace Layout
 {
@@ -75,12 +116,6 @@ namespace Layout
 
   //-----------------------------------------------------
   // Functions
-
-  //! Finalizer for a layout
-  void finalize() {QMP_finalize_msg_passing();}
-
-  //! Panic button
-  void abort(int status) {finalize(); exit(status);}
 
   //! Virtual grid (problem grid) lattice size
   const multi1d<int>& lattSize() {return _layout.nrow;}
@@ -191,8 +226,11 @@ namespace Layout
 
   //! Initializer for layout
   /*! This layout is a simple lexicographic lattice ordering */
-  void initialize(const multi1d<int>& nrows)
+  void create(const multi1d<int>& nrows)
   {
+    if ( ! QDP_isInitialized() )
+      QDP_error_exit("QDP is not initialized");
+
     if (nrows.size() != Nd)
       QDP_error_exit("dimension of lattice size not the same as the default");
 
@@ -215,14 +253,6 @@ namespace Layout
 #if defined(DEBUG)
     fprintf(stderr,"vol=%d, nsubl=%d\n",_layout.vol,_layout.nsubl);
 #endif
-
-#if defined(DEBUG)
-    cerr << "Initialize msg passing\n";
-#endif
-    QMP_verbose (QMP_TRUE);
-
-    if (QMP_init_msg_passing(0, 0, QMP_SMP_ONE_ADDRESS) != QMP_SUCCESS)
-      QMP_error_exit("QMP_init failed");
 
 #if defined(DEBUG)
     cerr << "Initialize layout\n";

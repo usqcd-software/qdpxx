@@ -1,4 +1,4 @@
-// $Id: t_formfac.cc,v 1.8 2002-12-14 01:09:55 edwards Exp $
+// $Id: t_formfac.cc,v 1.9 2002-12-16 06:13:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -10,11 +10,14 @@ using namespace QDP;
 
 int main(int argc, char **argv)
 {
-  // Setup the geometry
+  // Put the machine into a known state
+  QDP_initialize(&argc, &argv);
+
+  // Setup the layout
   const int foo[] = {2,2,2,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
-  geom.init(nrow);
+  Layout::create(nrow);
 
   NmlWriter nml("t_formfac.nml");
 
@@ -37,11 +40,14 @@ int main(int argc, char **argv)
   gaussian(quark_prop_2);
 
   int j_decay = Nd-1;
-  int length = geom.LattSize()[j_decay];
+  int length = Layout:lattSize()[j_decay];
   multi1d<int> t_source(Nd);
   t_source = 0;
 
   int t_sink = length-1;
 
   FormFac(u, quark_prop_1, quark_prop_2, t_source, t_sink, j_decay, nml);
+
+  // Time to bolt
+  QDP_finalize();
 }

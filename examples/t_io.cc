@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.5 2002-11-28 02:56:50 edwards Exp $
+// $Id: t_io.cc,v 1.6 2002-12-16 06:13:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -10,11 +10,14 @@ using namespace QDP;
 
 int main(int argc, char **argv)
 {
-  // Setup the geometry
+  // Put the machine into a known state
+  QDP_initialize(&argc, &argv);
+
+  // Setup the layout
   const int foo[] = {2,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
-  geom.init(nrow);
+  Layout::create(nrow);
 
   LatticeReal a;
   Double d = 17;
@@ -37,4 +40,6 @@ int main(int argc, char **argv)
 
   cerr << "you entered :" << x << ":\n";
   
+  // Time to bolt
+  QDP_finalize();
 }

@@ -254,9 +254,9 @@ I do the following:
 mkdir build; cd build
 
 ../configure CXX=/Home/bj/scratch/mpich-1.2.4/bin/mpiCC \
-     --with-qmp-cxxflags="-I/Home/bj/scratch/qmp-1.3-mpich/include" \
-     --with-qmp-ldflags="-L/Home/bj/scratch/qmp-1.3-mpich/lib" \
-     --with-qmp-libs="-lqmp" \
+     --with-qmp-comms-cxxflags="-I/Home/bj/scratch/qmp-1.3-mpich/include" \
+     --with-qmp-comms-ldflags="-L/Home/bj/scratch/qmp-1.3-mpich/lib" \
+     --with-qmp-comms-libs="-lqmp" \
      --enable-parallel-arch=parscalar \
      --prefix=/Home/bj/scratch/qdp-0.19-Nd4-Ns4-Nc4-vol512-parscalar
 

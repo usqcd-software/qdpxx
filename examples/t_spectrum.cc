@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.2 2002-12-05 21:27:10 edwards Exp $
+ *  $Id: t_spectrum.cc,v 1.3 2002-12-16 06:13:49 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -16,7 +16,10 @@ using namespace QDP;
 
 
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
+  // Put the machine into a known state
+  QDP_initialize(&argc, &argv);
 
 
   //  Begin by specifying the lattice sizes, of dimension Nd, defined in QDP
@@ -39,12 +42,11 @@ int main(int argc, char **argv){
 
   const int foo[] = {4, 4, 4, 8};
   nsize = foo;
-  // Initialise the geometry
-
-  geom.init(nsize);
+  // Initialise the layout
+  Layout::create(nrow);
 
   int j_decay = Nd-1;
-  int length = geom.LattSize()[j_decay]; // Define the temporal direction
+  int length = Layout::lattSize()[j_decay]; // Define the temporal direction
 
   NmlWriter nml("t_spectrum.nml"); // Open file for sample output
 
@@ -168,4 +170,6 @@ int main(int argc, char **argv){
 
   cerr << "...done" << endl;
 
+  // Time to bolt
+  QDP_finalize();
 }

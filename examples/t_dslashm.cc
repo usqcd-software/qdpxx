@@ -1,4 +1,4 @@
-// $Id: t_dslashm.cc,v 1.7 2002-12-05 21:27:10 edwards Exp $
+// $Id: t_dslashm.cc,v 1.8 2002-12-16 06:13:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -10,11 +10,14 @@ using namespace QDP;
 
 int main(int argc, char **argv)
 {
-  // Setup the geometry
+  // Put the machine into a known state
+  QDP_initialize(&argc, &argv);
+
+  // Setup the layout
   const int foo[] = {2,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
-  geom.init(nrow);
+  Layout::create(nrow);
 
   //! Test out propagators
   multi1d<LatticeColorMatrix> u(Nd);
@@ -36,4 +39,6 @@ int main(int argc, char **argv)
   Write(nml,psi);
   Write(nml,chi);
 
+  // Time to bolt
+  QDP_finalize();
 }

@@ -8,7 +8,7 @@ LDADD = @LIBS@ -lqdp @QMP_LIBS@ @QMP_COMMS_LIBS@ @LIBS@
 #
 # Local Headers
 #
-HDRS=tests.h geom.h
+HDRS=tests.h 
 
 #
 # VPATH
@@ -24,14 +24,14 @@ check_PROGRAMS=t_config t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum
 #
 # The program and its dependencies
 t_config_SOURCES=t_config.cc $(HDRS)
-t_io_SOURCES = t_io.cc geom.cc $(HDRS)
-t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc geom.cc $(HDRS)
-t_mesplq_SOURCES = t_mesplq.cc mesplq.cc reunit.cc geom.cc $(HDRS)
-t_formfac_SOURCES = t_formfac.cc formfac_w.cc geom.cc $(HDRS)
+t_io_SOURCES = t_io.cc $(HDRS)
+t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)
+t_mesplq_SOURCES = t_mesplq.cc mesplq.cc reunit.cc $(HDRS)
+t_formfac_SOURCES = t_formfac.cc formfac_w.cc $(HDRS)
 t_spectrum_SOURCES = t_spectrum.cc formfac_w.cc dslashm_w.cc \
-          baryon_w.cc mesons_w.cc mesplq.cc geom.cc reunit.cc $(HDRS)
+          baryon_w.cc mesons_w.cc mesplq.cc reunit.cc $(HDRS)
 t_qdp_SOURCES =  t_qdp.cc formfac_w.cc dslashm_w.cc baryon_w.cc \
-	 mesons_w.cc mesplq.cc geom.cc reunit.cc $(HDRS)
+	 mesons_w.cc mesplq.cc reunit.cc $(HDRS)
 
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

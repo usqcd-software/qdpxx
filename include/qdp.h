@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.11 2002-12-14 04:49:01 edwards Exp $
+// $Id: qdp.h,v 1.12 2002-12-16 06:13:49 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -69,6 +69,18 @@ using std::ostream;
 
 // Info/error routines
 QDP_BEGIN_NAMESPACE(QDP);
+
+//! Turn on the machine
+extern void QDP_initialize (int *argc, char ***argv);
+
+//! Is the machine initialized?
+extern bool QDP_isInitialized ();
+
+//! Turn off the machine
+extern void QDP_finalize ();
+
+//! Panic button
+extern void QDP_abort (int status);
 
 /**
  * Simple information display routine

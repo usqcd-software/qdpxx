@@ -1,10 +1,9 @@
 // -*- C++ -*-
-// $Id: tests.h,v 1.8 2002-12-14 01:09:55 edwards Exp $
+// $Id: tests.h,v 1.9 2002-12-16 06:13:49 edwards Exp $
 //
 // Include file for test suite
 
 #include "qdp.h"
-#include "geom.h"
 
 using namespace QDP;
 

@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.9 2002-12-05 21:27:10 edwards Exp $
+// $Id: t_mesplq.cc,v 1.10 2002-12-16 06:13:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -9,13 +9,16 @@ using namespace QDP;
 
 NmlWriter nml;
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
-  // Setup the geometry
+  // Put the machine into a known state
+  QDP_initialize(&argc, &argv);
+
+  // Setup the layout
   const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
-  geom.init(nrow);
+  Layout::create(nrow);
 
   nml.open("t_mesplq.nml");
 
@@ -48,4 +51,7 @@ int main(int argc, char **argv)
   Write(nml,w_plaq);
   Write(nml,link);
   pop(nml);
+
+  // Time to bolt
+  QDP_finalize();
 }

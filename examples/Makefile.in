@@ -133,7 +133,7 @@ LDADD = @LIBS@ -lqdp @QMP_LIBS@ @QMP_COMMS_LIBS@ @LIBS@
 #
 # Local Headers
 #
-HDRS = tests.h geom.h
+HDRS = tests.h 
 
 #
 # The programs to build
@@ -143,15 +143,15 @@ check_PROGRAMS = t_config t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum
 #
 # The program and its dependencies
 t_config_SOURCES = t_config.cc $(HDRS)
-t_io_SOURCES = t_io.cc geom.cc $(HDRS)
-t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc geom.cc $(HDRS)
-t_mesplq_SOURCES = t_mesplq.cc mesplq.cc reunit.cc geom.cc $(HDRS)
-t_formfac_SOURCES = t_formfac.cc formfac_w.cc geom.cc $(HDRS)
+t_io_SOURCES = t_io.cc $(HDRS)
+t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)
+t_mesplq_SOURCES = t_mesplq.cc mesplq.cc reunit.cc $(HDRS)
+t_formfac_SOURCES = t_formfac.cc formfac_w.cc $(HDRS)
 t_spectrum_SOURCES = t_spectrum.cc formfac_w.cc dslashm_w.cc \
-          baryon_w.cc mesons_w.cc mesplq.cc geom.cc reunit.cc $(HDRS)
+          baryon_w.cc mesons_w.cc mesplq.cc reunit.cc $(HDRS)
 
 t_qdp_SOURCES = t_qdp.cc formfac_w.cc dslashm_w.cc baryon_w.cc \
-	 mesons_w.cc mesplq.cc geom.cc reunit.cc $(HDRS)
+	 mesons_w.cc mesplq.cc reunit.cc $(HDRS)
 
 subdir = examples
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
@@ -166,40 +166,38 @@ t_config_LDADD = $(LDADD)
 t_config_DEPENDENCIES =
 t_config_LDFLAGS =
 am_t_dslashm_OBJECTS = t_dslashm.$(OBJEXT) dslashm_w.$(OBJEXT) \
-	geom.$(OBJEXT) $(am__objects_1)
+	$(am__objects_1)
 t_dslashm_OBJECTS = $(am_t_dslashm_OBJECTS)
 t_dslashm_LDADD = $(LDADD)
 t_dslashm_DEPENDENCIES =
 t_dslashm_LDFLAGS =
 am_t_formfac_OBJECTS = t_formfac.$(OBJEXT) formfac_w.$(OBJEXT) \
-	geom.$(OBJEXT) $(am__objects_1)
+	$(am__objects_1)
 t_formfac_OBJECTS = $(am_t_formfac_OBJECTS)
 t_formfac_LDADD = $(LDADD)
 t_formfac_DEPENDENCIES =
 t_formfac_LDFLAGS =
-am_t_io_OBJECTS = t_io.$(OBJEXT) geom.$(OBJEXT) $(am__objects_1)
+am_t_io_OBJECTS = t_io.$(OBJEXT) $(am__objects_1)
 t_io_OBJECTS = $(am_t_io_OBJECTS)
 t_io_LDADD = $(LDADD)
 t_io_DEPENDENCIES =
 t_io_LDFLAGS =
 am_t_mesplq_OBJECTS = t_mesplq.$(OBJEXT) mesplq.$(OBJEXT) \
-	reunit.$(OBJEXT) geom.$(OBJEXT) $(am__objects_1)
+	reunit.$(OBJEXT) $(am__objects_1)
 t_mesplq_OBJECTS = $(am_t_mesplq_OBJECTS)
 t_mesplq_LDADD = $(LDADD)
 t_mesplq_DEPENDENCIES =
 t_mesplq_LDFLAGS =
 am_t_qdp_OBJECTS = t_qdp.$(OBJEXT) formfac_w.$(OBJEXT) \
 	dslashm_w.$(OBJEXT) baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
-	mesplq.$(OBJEXT) geom.$(OBJEXT) reunit.$(OBJEXT) \
-	$(am__objects_1)
+	mesplq.$(OBJEXT) reunit.$(OBJEXT) $(am__objects_1)
 t_qdp_OBJECTS = $(am_t_qdp_OBJECTS)
 t_qdp_LDADD = $(LDADD)
 t_qdp_DEPENDENCIES =
 t_qdp_LDFLAGS =
 am_t_spectrum_OBJECTS = t_spectrum.$(OBJEXT) formfac_w.$(OBJEXT) \
 	dslashm_w.$(OBJEXT) baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
-	mesplq.$(OBJEXT) geom.$(OBJEXT) reunit.$(OBJEXT) \
-	$(am__objects_1)
+	mesplq.$(OBJEXT) reunit.$(OBJEXT) $(am__objects_1)
 t_spectrum_OBJECTS = $(am_t_spectrum_OBJECTS)
 t_spectrum_LDADD = $(LDADD)
 t_spectrum_DEPENDENCIES =
@@ -209,12 +207,12 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/baryon_w.Po ./$(DEPDIR)/dslashm_w.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/geom.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/mesons_w.Po ./$(DEPDIR)/mesplq.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/reunit.Po ./$(DEPDIR)/t_config.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_dslashm.Po ./$(DEPDIR)/t_formfac.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_io.Po ./$(DEPDIR)/t_mesplq.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_qdp.Po ./$(DEPDIR)/t_spectrum.Po
+@AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/mesons_w.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po ./$(DEPDIR)/reunit.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_config.Po ./$(DEPDIR)/t_dslashm.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_io.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_mesplq.Po ./$(DEPDIR)/t_qdp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_spectrum.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -273,7 +271,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dslashm_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/geom.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@

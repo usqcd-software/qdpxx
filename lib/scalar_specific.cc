@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.5 2002-12-14 01:13:56 edwards Exp $
+// $Id: scalar_specific.cc,v 1.6 2002-12-16 06:13:49 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -20,6 +20,22 @@ QDP_BEGIN_NAMESPACE(QDP);
 
 //! Definition of shift function object
 NearestNeighborMap  shift;
+
+//-----------------------------------------------------------------------------
+//! Private flag for status
+static bool isInit = false;
+
+//! Turn on the machine
+void QDP_initialize(int *argc, char ***argv) {isInit = true;}
+
+//! Is the machine initialized?
+bool QDP_isInitialized() {return isInit;}
+
+//! Turn off the machine
+void QDP_finalize() {isInit = false;}
+
+//! Panic button
+void QDP_abort(int status) {QDP_finalize(); exit(status);}
 
 
 //-----------------------------------------------------------------------------
@@ -59,12 +75,6 @@ namespace Layout
 
   //-----------------------------------------------------
   // Functions
-
-  //! Finalizer for a layout
-  void finalize() {}
-
-  //! Panic button
-  void abort(int status) {exit(status);}
 
   //! Virtual grid (problem grid) lattice size
   const multi1d<int>& lattSize() {return _layout.nrow;}
@@ -127,8 +137,11 @@ namespace Layout
 
   //! Initializer for layout
   /*! This layout is a simple lexicographic lattice ordering */
-  void initialize(const multi1d<int>& nrows)
+  void create(const multi1d<int>& nrows)
   {
+    if ( ! QDP_isInitialized() )
+      QDP_error_exit("QDP is not initialized");
+
     if (nrows.size() != Nd)
       QDP_error_exit("dimension of lattice size not the same as the default");
 
@@ -207,8 +220,11 @@ namespace Layout
 
   //! Initializer for layout
   /*! This layout is appropriate for a 2 checkerboard (red/black) lattice */
-  void initialize(const multi1d<int>& nrows)
+  void create(const multi1d<int>& nrows)
   {
+    if ( ! QDP_isInitialized() )
+      QDP_error_exit("QDP is not initialized");
+
     if (nrows.size() != Nd)
       QDP_error_exit("dimension of lattice size not the same as the default");
 
@@ -302,8 +318,11 @@ namespace Layout
 
   //! Initializer for layout
   /*! This layout is appropriate for a 32-style checkerboard lattice */
-  void initialize(const multi1d<int>& nrows)
+  void create(const multi1d<int>& nrows)
   {
+    if ( ! QDP_isInitialized() )
+      QDP_error_exit("QDP is not initialized");
+
     if (nrows.size() != Nd)
       QDP_error_exit("dimension of lattice size not the same as the default");
 

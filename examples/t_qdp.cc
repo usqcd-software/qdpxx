@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.12 2002-12-14 01:09:55 edwards Exp $
+// $Id: t_qdp.cc,v 1.13 2002-12-16 06:13:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -11,11 +11,14 @@ using namespace QDP;
 
 int main(int argc, char **argv)
 {
-  // Setup the geometry
+  // Put the machine into a known state
+  QDP_initialize(&argc, &argv);
+
+  // Setup the layout
   const int foo[] = {2,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
-  geom.init(nrow);
+  Layout::create(nrow);
 
   // Open a file for some sample output
   NmlWriter nml("t_qdp.nml");
@@ -156,7 +159,7 @@ int main(int argc, char **argv)
   gaussian(quark_prop_2);
 
   int j_decay = Nd-1;
-  int length = geom.LattSize()[j_decay];
+  int length = Layout::lattSize()[j_decay];
   multi2d<Real> meson_prop(Ns*Ns, length);
   multi1d<int> t_source(Nd);
   t_source = 0;
@@ -211,4 +214,7 @@ int main(int argc, char **argv)
     Write(nml,u[1]);
   }
 #endif
+
+  // Time to bolt
+  QDP_finalize();
 }

@@ -74,7 +74,6 @@ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 ###########################################################
 LATEX = @LATEX@
 LDFLAGS = @LDFLAGS@
-LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@

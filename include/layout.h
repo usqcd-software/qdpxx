@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: layout.h,v 1.6 2002-11-23 02:29:40 edwards Exp $
+// $Id: layout.h,v 1.7 2002-12-16 06:13:49 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -25,18 +25,8 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 namespace Layout
 {
-  //! Probably standard initializer for a layout
-  /*! This should read from some internal state and start initializing */
-  inline void initialize() {QDP_error_exit("generic initialize not implemented");}
-
   //! Rudimentary initializer for a layout
-  void initialize(const multi1d<int>& nrows);
-
-  //! Finalizer for a layout
-  void finalize();
-
-  //! Panic button
-  void abort(int status);
+  void create(const multi1d<int>& nrows);
 
   //! Returns the logical node number for the corresponding lattice coordinate
   /*! The API requires this function to be here */

@@ -1,4 +1,4 @@
-// $Id: util.cc,v 1.2 2002-12-14 01:11:01 edwards Exp $
+// $Id: util.cc,v 1.3 2002-12-16 06:13:49 edwards Exp $
 //
 /*! 
  * @file
@@ -84,7 +84,7 @@ QDP_error_exit (const char* format, ...)
 
   fprintf (stderr, "%s %s\n", info, buffer);
 
-  Layout::abort(1);  // Layout abort knows how to shutdown the machine
+  QDP_abort(1);  // Layout abort knows how to shutdown the machine
 }
 
 #if 0
