@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.8 2003-06-20 18:17:40 edwards Exp $
+// $Id: t_xml.cc,v 1.9 2003-06-21 18:28:11 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -91,6 +91,11 @@ int main(int argc, char **argv)
       arrayInt[i] = i+37;
     write(toxml,"arrayInt",arrayInt);
 
+    multi1d<Real> arrayReal(3);
+    for(int i=0; i < arrayReal.size(); ++i)
+      arrayReal[i] = i+107.5;
+    write(toxml,"arrayReal",arrayReal);
+
     multi1d<Complex> arrayComplex(2);
     for(int i=0; i < arrayComplex.size(); ++i)
       arrayComplex[i] = cmplx(Real(1.0),Real(i+42));
@@ -121,6 +126,11 @@ int main(int argc, char **argv)
     read(fromxml,"/complex_xml/arrayInt",arrayInt);
     for(int i=0; i < arrayInt.size(); ++i)
       cout << "arrayInt[" << i << "] = " << arrayInt[i] << endl;
+
+    multi1d<Real> arrayReal;
+    read(fromxml,"/complex_xml/arrayReal",arrayReal);
+    for(int i=0; i < arrayReal.size(); ++i)
+      cout << "arrayReal[" << i << "] = " << arrayReal[i] << endl;
 
     multi1d<Complex> arrayComplex;
     for(int i=0; i < arrayComplex.size(); ++i)
