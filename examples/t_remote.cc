@@ -1,9 +1,9 @@
-// $Id: t_remote.cc,v 1.3 2003-06-07 19:09:32 edwards Exp $
+// $Id: t_remote.cc,v 1.4 2003-10-09 19:49:07 edwards Exp $
 
 #include <iostream>
 #include <fstream>
 
-#include "qdp_filebuf.h"
+#include "qdp.h"
 
 using namespace QDPUtil;
 using namespace std;
@@ -15,6 +15,9 @@ static const char* rtinode = "qcdi01.jlab.org";
 
 int main(int argc, char *argv[])
 {
+  // Put the machine into a known state
+  QDP::QDP_initialize(&argc, &argv);
+
   // initialize remote file service (QIO)
   RemoteFileInit(rtinode, true);
 
@@ -65,6 +68,9 @@ int main(int argc, char *argv[])
 
   // shutdown remote file service (QIO)
   RemoteFileShutdown();
+
+  // Time to bolt
+  QDP::QDP_finalize();
 
   exit(0);
 }
