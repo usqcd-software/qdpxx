@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.19 2004-09-02 16:35:33 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.20 2004-12-09 13:18:37 bjoo Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -127,12 +127,15 @@ namespace Layout
   multi1d<int> getLogicalCoordFrom(int node) 
   {
     multi1d<int> node_coord(Nd);
-    int* node_crd = QMP_get_logical_coordinates_from(node);  // QMP mallocs here
+    const int* node_crd = QMP_get_logical_coordinates_from(node);  // QMP mallocs here
 
     for(int i=0; i < Nd; ++i)
       node_coord[i] = node_crd[i];
 
-    free(node_crd);   // free up QMP's memory
+    // Hackery as free cannot take a const void*, so grab
+    // node_crd with a non const pointer
+    int* non_const_node_crd = const_cast<int*>(node_crd);
+    free(non_const_node_crd);   // free up QMP's memory
     return node_coord;
   }
 
@@ -221,7 +224,8 @@ namespace Layout
     for(int i=0; i < Nd; ++i)
       nrow[i] = _layout.nrow[i] / min_dim[i];
 
-    QMP_layout_grid(nrow.slice(), Nd);
+    int* nrow_slice=const_cast<int*>(nrow.slice());
+    QMP_layout_grid(nrow_slice, Nd);
 
 
     // Pull out useful stuff
