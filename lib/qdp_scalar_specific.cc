@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_specific.cc,v 1.3 2003-07-17 01:47:42 edwards Exp $
+// $Id: qdp_scalar_specific.cc,v 1.4 2003-07-26 04:02:23 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -19,12 +19,12 @@ void Map::make(const MapFunc& func)
 
   //--------------------------------------
   // Setup the communication index arrays
-  soffsets.resize(Layout::vol());
+  goffsets.resize(Layout::vol());
 
   /* Get the offsets needed for neighbour comm.
-     * soffsets(position)
+     * goffsets(position)
      * the offsets contain the current site, i.e the neighbour for site i
-     * is  soffsets(i,dir,mu) and NOT  i + soffset(..) 
+     * is  goffsets(i,dir,mu) and NOT  i + goffset(..) 
      */
   const multi1d<int>& nrow = Layout::lattSize();
 
@@ -38,12 +38,12 @@ void Map::make(const MapFunc& func)
     multi1d<int> fcoord = func(coord,+1);
 
     // Source linear site and node
-    soffsets[linear] = Layout::linearSiteIndex(fcoord);
+    goffsets[linear] = Layout::linearSiteIndex(fcoord);
   }
 
 #if 0
   for(int ipos=0; ipos < Layout::vol(); ++ipos)
-    fprintf(stderr,"soffsets(%d,%d,%d) = %d\n",ipos,soffsets(ipos));
+    fprintf(stderr,"goffsets(%d,%d,%d) = %d\n",ipos,goffsets(ipos));
 #endif
 }
 

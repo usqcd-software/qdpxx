@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.8 2003-07-06 19:10:27 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.9 2003-07-26 04:05:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -567,7 +567,7 @@ public:
     {
       typedef UnaryNode<FnMap,
 	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(soffsets.slice()),
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(goffsets.slice()),
 	CreateLeaf<QDPType<T1,C1> >::make(l)));
     }
 
@@ -579,14 +579,14 @@ public:
     {
       typedef UnaryNode<FnMap,
 	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(soffsets.slice()),
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(goffsets.slice()),
 	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
 
 
 public:
   //! Accessor to offsets
-  const multi1d<int>& Offsets() const {return soffsets;}
+  const multi1d<int>& Offsets() const {return goffsets;}
 
 private:
   //! Hide copy constructor
@@ -597,7 +597,7 @@ private:
 
 private:
   //! Offset table used for communications. 
-  multi1d<int> soffsets;
+  multi1d<int> goffsets;
 };
 
 
@@ -607,10 +607,10 @@ struct FnMap
 {
   PETE_EMPTY_CONSTRUCTORS(FnMap)
 
-  const int *soff;
-  FnMap(const int *soffsets): soff(soffsets)
+  const int *goff;
+  FnMap(const int *goffsets): goff(goffsets)
     {
-//    fprintf(stderr,"FnMap(): soff=0x%x\n",soff);
+//    fprintf(stderr,"FnMap(): goff=0x%x\n",goff);
     }
   
   template<class T>
@@ -632,7 +632,7 @@ struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
   Type_t apply(const UnaryNode<FnMap, A> &expr, const EvalLeaf1 &f, 
     const CTag &c) 
   {
-    EvalLeaf1 ff(expr.operation().soff[f.val1()]);
+    EvalLeaf1 ff(expr.operation().goff[f.val1()]);
 //  fprintf(stderr,"ForEach<Unary<FnMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
 
     return Combine1<TypeA_t, FnMap, CTag>::
