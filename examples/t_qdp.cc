@@ -1,9 +1,10 @@
-// $Id: t_qdp.cc,v 1.13 2002-12-16 06:13:49 edwards Exp $
+// $Id: t_qdp.cc,v 1.14 2002-12-18 21:33:24 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
-#include "tests.h"
+#include "qdp.h"
+#include "examples.h"
 #include "proto.h"
 
 using namespace QDP;

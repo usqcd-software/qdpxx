@@ -1,9 +1,10 @@
-// $Id: t_mesplq.cc,v 1.10 2002-12-16 06:13:49 edwards Exp $
+// $Id: t_mesplq.cc,v 1.11 2002-12-18 21:33:24 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
-#include "tests.h"
+#include "qdp.h"
+#include "examples.h"
 
 using namespace QDP;
 
