@@ -21,52 +21,36 @@ unaryOps
   COMMENTB = "/*! @ingroup group1
   @relates QDPType */"
 -----
-  TAG = "FnTraceReal"
-  FUNCTION = "traceReal"
-  EXPR = "return (traceReal(a));"
+  TAG = "FnRealTrace"
+  FUNCTION = "realTrace"
+  EXPR = "return (realTrace(a));"
   COMMENTA = "//! Real part of the trace on all fiber indices"
   COMMENTB = "/*! @ingroup group1
   @sa real()
   @relates QDPType */"
 -----
-  TAG = "FnTraceImag"
-  FUNCTION = "traceImag"
-  EXPR = "return (traceImag(a));"
+  TAG = "FnImagTrace"
+  FUNCTION = "imagTrace"
+  EXPR = "return (imagTrace(a));"
   COMMENTA = "//! Imag part of the trace on all fiber indices"
   COMMENTB = "/*! @ingroup group1
   @sa imag()
   @relates QDPType */"
 -----
-  TAG = "FnColorTrace"
-  FUNCTION = "colorTrace"
-  EXPR = "return (colorTrace(a));"
+  TAG = "FnTraceColor"
+  FUNCTION = "traceColor"
+  EXPR = "return (traceColor(a));"
   COMMENTA = "//! Trace on only color indices"
   COMMENTB = "/*! @ingroup group1
-  @sa trace(), noColorTrace()
+  @sa trace(), TraceColor()
   @relates QDPType */"
 -----
-  TAG = "FnSpinTrace"
-  FUNCTION = "spinTrace"
-  EXPR = "return (spinTrace(a));"
+  TAG = "FnTraceSpin"
+  FUNCTION = "traceSpin"
+  EXPR = "return (traceSpin(a));"
   COMMENTA = "//! Trace on only spin indices"
   COMMENTB = "/*! @ingroup group1
   @sa trace()
-  @relates QDPType */"
------
-  TAG = "FnNoColorTrace"
-  FUNCTION = "noColorTrace"
-  EXPR = "return (noColorTrace(a));"
-  COMMENTA = "//! Trace on all fiber indices except color"
-  COMMENTB = "/*! @ingroup group1
-  @sa trace(), colorTrace()
-  @relates QDPType */"
------
-  TAG = "FnNoSpinTrace"
-  FUNCTION = "noSpinTrace"
-  EXPR = "return (noSpinTrace(a));"
-  COMMENTA = "//! Trace on all fiber indices except spin"
-  COMMENTB = "/*! @ingroup group1
-  @sa trace(), SpinTrace()
   @relates QDPType */"
 -----
   TAG = "FnReal"
