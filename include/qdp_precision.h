@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_precision.h,v 1.4 2004-08-07 01:38:57 edwards Exp $
+// $Id: qdp_precision.h,v 1.5 2004-08-09 21:57:40 edwards Exp $
 
 /*! \file
  * \brief PRECISION ISSUES
@@ -18,23 +18,23 @@
 #endif
 
 // These are fixed precision versions
-#define INTEGER32 int
-#define REAL32    float
-#define REAL64    double
-#define LOGICAL   bool
+typedef int       INTEGER32;
+typedef float     REAL32;
+typedef double    REAL64;
+typedef bool      LOGICAL;
 
 // Set the base floating precision
 #if BASE_PRECISION == 32
 // Use single precision for base precision
-#define REAL      REAL32
-#define DOUBLE    REAL64
+typedef REAL32    REAL;
+typedef REAL64    DOUBLE;
 
 #define INNER_LOG 2
 
 #elif BASE_PRECISION == 64
 // Use double precision for base precision
-#define REAL      REAL64
-#define DOUBLE    REAL64
+typedef REAL64    REAL;
+typedef REAL64    DOUBLE;
 
 #define INNER_LOG 1
 
