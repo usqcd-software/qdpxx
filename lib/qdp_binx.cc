@@ -1,4 +1,4 @@
-// $Id: qdp_binx.cc,v 1.3 2004-03-26 12:24:39 mcneile Exp $
+// $Id: qdp_binx.cc,v 1.4 2004-03-27 20:43:13 mcneile Exp $
 //
 // QDP data parallel interface to binx writers
 //
@@ -24,6 +24,7 @@ void BinxWriter::open(const std::string& p)
   std::string p_xml = p + "_binx.xml" ; 
   tobinary = new BinaryWriter(p); 
   toxml =  new XMLFileWriter(p_xml) ;
+  write_xml = true ;
 
   // write some binx stuff
   XMLWriterAPI::AttributeList alist;
@@ -235,44 +236,52 @@ BinxWriter& operator<<(BinxWriter& bin, bool output)
   return bin;
 }
 
+// ========================================
 //
 //  write based methods for binx
 //
-
+// ========================================
 
 void BinxWriter::write(const string& output)
 {
-  string nn = "<character-8 />" ;
-  push(*toxml,nn);
-  pop(*toxml); 
-
+  if( write_xml )
+    {
+      string nn = "character-8" ;
+      toxml->emptyTag(nn) ; 
+    }
   tobinary->write(output);
+
 }
 
 void BinxWriter::write(const char* output)
 {
-  string nn = "<character-8 />" ;
-  push(*toxml,nn);
-  pop(*toxml); 
 
-  write(string(output));
+  if( write_xml )
+    {
+      string nn = "character-8" ;
+      toxml->emptyTag(nn) ; 
+    }
+  tobinary->write(output);
 }
 
 void BinxWriter::write(const char& output) 
 {
   tobinary->write(output);
-  string nn = "<character-8 />" ;
-  push(*toxml,nn);
-  pop(*toxml); 
+  if( write_xml )
+    {
+      string nn = "character-8" ;
+      toxml->emptyTag(nn) ; 
+    }
 
 }
 
 void BinxWriter::write(const int& output) 
 {
-  string nn = "integer-32";
-  push(*toxml,nn);
-  pop(*toxml); 
-
+  if( write_xml )
+    {
+      string nn = "integer-32";
+      toxml->emptyTag(nn) ; 
+    }
   tobinary->write(output);
 }
 
@@ -303,19 +312,22 @@ void BinxWriter::write(const unsigned long int& output)
 
 void BinxWriter::write(const float& output)
 {
-  string nn = "float-32";
-  push(*toxml,nn);
-  pop(*toxml); 
+  if( write_xml )
+    {
+      string nn = "float-32";
+      toxml->emptyTag(nn) ; 
+    }
 
   tobinary->write(output);
 }
 
 void BinxWriter::write(const double& output)
 {
-  string nn = "float-64";
-  push(*toxml,nn);
-  pop(*toxml); 
-
+  if( write_xml )
+    {
+      string nn = "float-64";
+      toxml->emptyTag(nn) ; 
+    }
   tobinary->write(output);
 }
 
@@ -328,6 +340,35 @@ void BinxWriter::writeArray(const char* output, size_t size, size_t nmemb)
 {
   tobinary->writeArray(output, size, nmemb) ;
 }
+
+//
+//  header information 
+//
+void BinxWriter::write_1D_header(const int& output,const int& dim)
+{
+
+  push(*toxml,"arrayFixed"); 
+  XMLWriterAPI::AttributeList alist;
+  string varName = "QDP_array" ;
+  alist.clear();
+  alist.push_back(XMLWriterAPI::Attribute("varName",varName ));
+
+  string nn = "integer-32";
+  toxml->emptyTag(nn,alist) ; 
+
+  alist.clear();
+  alist.push_back(XMLWriterAPI::Attribute("indexTo",dim ));
+  string name = "QCD_array" ;
+  alist.push_back(XMLWriterAPI::Attribute("name",name ));
+  string nnn = "dim";
+  toxml->emptyTag(nnn,alist) ; 
+
+
+
+  pop(*toxml);  // push(toxml,"dataset");  
+  write_xml  = false ;
+}
+
 
 
 QDP_END_NAMESPACE();
