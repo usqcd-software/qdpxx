@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.14 2003-01-20 15:46:17 edwards Exp $
+// $Id: qdp.h,v 1.15 2003-04-04 20:34:46 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -27,6 +27,14 @@
 /*! \namespace QDP
  * \brief Primary namespace holding all QDP types, operations and objects
  */
+
+#if defined(__GNUC__)
+// Under g++, enforce using V3 or greater
+#if __GNUC__ < 3
+#error "QDP++ requires g++ 3.0 or higher. This compiler is not supported"
+#endif
+#endif
+
 
 #include <cstdio>
 #include <cstdlib>
