@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.16 2003-04-26 01:55:06 edwards Exp $
+// $Id: io.h,v 1.17 2003-04-30 21:09:17 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -34,10 +34,10 @@ class TextReader
 public:
   TextReader();
   ~TextReader();
-  explicit TextReader(const char* p);
+  explicit TextReader(const string& p);
 
   //! Open file
-  void open(const char* p);
+  void open(const string& p);
 
   //! Close file
   void close();
@@ -58,10 +58,10 @@ class TextWriter
 public:
   TextWriter();
   ~TextWriter();
-  explicit TextWriter(const char* p);
+  explicit TextWriter(const string& p);
 
   bool is_open();
-  void open(const char* p);
+  void open(const string& p);
   void close();
 
   std::ofstream& get() {return f;}
@@ -85,9 +85,9 @@ template<class T>
 class Nml
 {
 public:
-  Nml(const char* s, const T& d): name(s), obj(d) {}
+  Nml(const string& s, const T& d): name(s), obj(d) {}
 
-  const char* name;
+  const string& name;
   const T&  obj;
 };
 #endif
@@ -99,10 +99,10 @@ class NmlReader
 public:
   NmlReader();
   ~NmlReader();
-  explicit NmlReader(const char* p);
+  explicit NmlReader(const string& p);
 
   //! Open file
-  void open(const char* p);
+  void open(const string& p);
 
   //! Close file
   void close();
@@ -176,10 +176,10 @@ class NmlWriter
 public:
   NmlWriter();
   ~NmlWriter();
-  explicit NmlWriter(const char* p);
+  explicit NmlWriter(const string& p);
 
   //! Open file
-  void open(const char* p);
+  void open(const string& p);
 
   //! Close file
   void close();
@@ -207,7 +207,7 @@ NmlWriter& push(NmlWriter& nml, const string& s);
 NmlWriter& pop(NmlWriter& nml);
 
 //! Write a comment
-NmlWriter& operator<<(NmlWriter& nml, const char* s);
+NmlWriter& operator<<(NmlWriter& nml, const string& s);
 
 //! Write a namelist element
 template<class T>
@@ -297,10 +297,10 @@ class BinaryReader
 public:
   BinaryReader();
   ~BinaryReader();
-  explicit BinaryReader(const char* p);
+  explicit BinaryReader(const string& p);
 
   bool is_open();
-  void open(const char* p);
+  void open(const string& p);
   void close();
 
   FILE* get() {return f;}
@@ -351,10 +351,10 @@ class BinaryWriter
 public:
   BinaryWriter();
   ~BinaryWriter();
-  explicit BinaryWriter(const char* p);
+  explicit BinaryWriter(const string& p);
 
   bool is_open();
-  void open(const char* p);
+  void open(const string& p);
   void close();
 
   FILE* get() {return f;}

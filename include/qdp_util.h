@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: qdp_util.h,v 1.1 2003-04-02 21:27:43 edwards Exp $
+// $Id: qdp_util.h,v 1.2 2003-04-30 21:09:17 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -31,13 +31,7 @@ size_t bfwrite(void *ptr, size_t size, size_t nmemb, FILE *stream);
 
 
 //! Read a QCD (NERSC) Archive format gauge field
-void readArchiv(multi1d<LatticeColorMatrix>& u, char file[]);
-
-//! Read a SZIN format gauge field
-void readSzin(multi1d<LatticeColorMatrix>& u, int cfg_io_location, char file[], Seed& seed_old);
-
-//! Read a SZIN quark propagator
-void readSzinQprop(LatticePropagator& q, char file[]);
+void readArchiv(multi1d<LatticeColorMatrix>& u, const std::string& file);
 
 QDP_END_NAMESPACE();
 

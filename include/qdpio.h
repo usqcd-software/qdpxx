@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdpio.h,v 1.3 2003-04-17 03:47:02 edwards Exp $
+// $Id: qdpio.h,v 1.4 2003-04-30 21:09:17 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -61,10 +61,10 @@ public:
   ~QDPSerialReader();
 
   //! Open file
-  explicit QDPSerialReader(XMLMetaReader& xml, const char* p);
+  explicit QDPSerialReader(XMLMetaReader& xml, const std::string& p);
 
   //! Open file
-  void open(XMLMetaReader& xml, const char* p);
+  void open(XMLMetaReader& xml, const std::string& p);
 
   //! Close file
   void close();
@@ -115,10 +115,10 @@ public:
   ~QDPSerialWriter();
 
   //! Open file
-  explicit QDPSerialWriter(const XMLMetaWriter& xml, const char* p);
+  explicit QDPSerialWriter(const XMLMetaWriter& xml, const std::string& p);
 
   //! Open file
-  void open(const XMLMetaWriter& xml, const char* p);
+  void open(const XMLMetaWriter& xml, const std::string& p);
 
   //! Close file
   void close();
