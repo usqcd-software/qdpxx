@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.17 2002-12-14 01:13:56 edwards Exp $
+// $Id: scalar_specific.h,v 1.18 2003-01-14 04:45:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -13,6 +13,8 @@ QDP_BEGIN_NAMESPACE(QDP);
 // Layout stuff specific to a scalar architecture
 namespace Layout
 {
+  //! coord[mu]  <- mu  : fill with lattice coord in mu direction
+  LatticeInteger latticeCoordinate(int mu);
 }
 
 
@@ -136,12 +138,6 @@ copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1)
   for(int i=0; i < Layout::vol(); ++i) 
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
-
-
-//-----------------------------------------------------------------------------
-// Auxilliary operations
-//! coord[mu]  <- mu  : fill with lattice coord in mu direction
-LatticeInteger latticeCoordinate(int mu);
 
 
 

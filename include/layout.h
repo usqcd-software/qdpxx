@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: layout.h,v 1.7 2002-12-16 06:13:49 edwards Exp $
+// $Id: layout.h,v 1.8 2003-01-14 04:45:37 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -25,8 +25,17 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 namespace Layout
 {
-  //! Rudimentary initializer for a layout
-  void create(const multi1d<int>& nrows);
+  //! Main creation routine
+  void create();
+
+  //! Set lattice size -- problem size
+  void setLattSize(const multi1d<int>& nrows);
+
+  //! Set SMP flag -- true if using smp/multiprocessor mode on a node
+  void setSMPFlag(bool);
+
+  //! Set number of processors in a multi-threaded implementation
+  void setNumProc(int N);
 
   //! Returns the logical node number for the corresponding lattice coordinate
   /*! The API requires this function to be here */
@@ -69,7 +78,6 @@ namespace Layout
 
   //! The lexicographic site index from the corresponding linearized site
   int lexicoSiteIndex(int linearsite);
-
 }
 
 //! Declaration of shift function object

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.6 2003-01-04 10:55:12 bjoo Exp $
+// $Id: parscalar_specific.h,v 1.7 2003-01-14 04:45:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -28,6 +28,8 @@ namespace Layout
   //! Subgrid (grid on each node) lattice size
   const multi1d<int>& subgridLattSize();
 
+  //! coord[mu]  <- mu  : fill with lattice coord in mu direction
+  LatticeInteger latticeCoordinate(int mu);
 };
 
 
@@ -203,13 +205,6 @@ void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& 
   for(int i=0; i < Layout::subgridVol(); ++i) 
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
-
-
-//-----------------------------------------------------------------------------
-// Auxilliary operations
-//! coord[mu]  <- mu  : fill with lattice coord in mu direction
-LatticeInteger latticeCoordinate(int mu);
-
 
 
 //-----------------------------------------------------------------------------
