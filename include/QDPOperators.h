@@ -1,3 +1,6 @@
+// -*- C++ -*-
+// $Id: QDPOperators.h,v 1.6 2002-09-23 19:27:39 edwards Exp $
+
 #ifndef QDPOPS_H
 #define QDPOPS_H
 
