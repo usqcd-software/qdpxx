@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.13 2003-06-20 18:18:24 edwards Exp $
+// $Id: qdp_io.cc,v 1.14 2003-07-06 19:10:28 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -66,19 +66,8 @@ bool TextReader::fail()
 TextReader::~TextReader() {close();}
 
 
-// Readers
-template<typename T>
-void readPrimitive(TextReader& txt, T& input)
-{
-  if (Layout::primaryNode())
-    txt.get() >> input;
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(input);
-}
-
-
-TextReader& operator>>(TextReader& txt, std::string& input)
+// String reader
+void TextReader::read(std::string& input)
 {
   char *dd_tmp;
   int lleng;
@@ -86,7 +75,7 @@ TextReader& operator>>(TextReader& txt, std::string& input)
   // Only primary node can grab string
   if (Layout::primaryNode()) 
   {
-    txt.get() >> input;
+    getIstream() >> input;
     lleng = input.length() + 1;
   }
 
@@ -96,7 +85,7 @@ TextReader& operator>>(TextReader& txt, std::string& input)
   // Now every node can alloc space for string
   dd_tmp = new char[lleng];
   if (Layout::primaryNode())
-    input.copy(dd_tmp, lleng);
+    memcpy(dd_tmp, input.c_str(), lleng);
   
   // Now broadcast char array out to all nodes
   Internal::broadcast((void *)dd_tmp, lleng);
@@ -106,67 +95,114 @@ TextReader& operator>>(TextReader& txt, std::string& input)
 
   // Clean-up and boogie
   delete[] dd_tmp;
-
-  return txt;
 }
 
+// Readers
+void TextReader::read(char& input) 
+{
+  readPrimitive<char>(input);
+}
+void TextReader::read(int& input) 
+{
+  readPrimitive<int>(input);
+}
+void TextReader::read(unsigned int& input)
+{
+  readPrimitive<unsigned int>(input);
+}
+void TextReader::read(short int& input)
+{
+  readPrimitive<short int>(input);
+}
+void TextReader::read(unsigned short int& input)
+{
+  readPrimitive<unsigned short int>(input);
+}
+void TextReader::read(long int& input)
+{
+  readPrimitive<long int>(input);
+}
+void TextReader::read(unsigned long int& input)
+{
+  readPrimitive<unsigned long int>(input);
+}
+void TextReader::read(float& input)
+{
+  readPrimitive<float>(input);
+}
+void TextReader::read(double& input)
+{
+  readPrimitive<double>(input);
+}
+void TextReader::read(bool& input)
+{
+  readPrimitive<bool>(input);
+}
+
+template< typename T>
+void TextReader::readPrimitive(T& input)
+{
+  if (Layout::primaryNode())
+    getIstream() >> input;
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(input);
+}
+
+// Different bindings for read functions
+TextReader& operator>>(TextReader& txt, std::string& input)
+{
+  txt.read(input);
+  return txt;
+}
 TextReader& operator>>(TextReader& txt, char& input)
 {
-  readPrimitive<char>(txt, input);
+  txt.read(input);
   return txt;
 }
-
 TextReader& operator>>(TextReader& txt, int& input)
 {
-  readPrimitive<int>(txt, input);
+  txt.read(input);
   return txt;
 }
-
 TextReader& operator>>(TextReader& txt, unsigned int& input)
 {
-  readPrimitive<unsigned int>(txt, input);
+  txt.read(input);
   return txt;
 }
-
 TextReader& operator>>(TextReader& txt, short int& input)
 {
-  readPrimitive<short int>(txt, input);
+  txt.read(input);
   return txt;
 }
-
 TextReader& operator>>(TextReader& txt, unsigned short int& input)
 {
-  readPrimitive<unsigned short int>(txt, input);
+  txt.read(input);
   return txt;
 }
-
 TextReader& operator>>(TextReader& txt, long int& input)
 {
-  readPrimitive<long int>(txt, input);
+  txt.read(input);
   return txt;
 }
-
 TextReader& operator>>(TextReader& txt, unsigned long int& input)
 {
-  readPrimitive<unsigned long int>(txt, input);
+  txt.read(input);
   return txt;
 }
-
 TextReader& operator>>(TextReader& txt, float& input)
 {
-  readPrimitive<float>(txt, input);
+  txt.read(input);
   return txt;
 }
-
 TextReader& operator>>(TextReader& txt, double& input)
 {
-  readPrimitive<double>(txt, input);
+  txt.read(input);
   return txt;
 }
-
 TextReader& operator>>(TextReader& txt, bool& input)
 {
-  readPrimitive<bool>(txt, input);
+  txt.read(input);
   return txt;
 }
 
@@ -1063,7 +1099,7 @@ bool BinaryWriter::fail()
 
 BinaryWriter::~BinaryWriter() {close();}
 
-// Wrappers for read functions
+// Wrappers for write functions
 void write(BinaryWriter& bin, const std::string& output)
 {
   bin.write(output);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.3 2003-06-04 18:22:29 edwards Exp $
+// $Id: qdp_outer.h,v 1.4 2003-07-06 19:10:27 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -127,6 +127,17 @@ private:
   T F;
 };
 
+
+// Input
+//! Ascii input
+/*! Treat all istreams here like all nodes can read. To use specialized ones
+ *  that can broadcast, use TextReader */
+template<class T>
+istream& operator>>(istream& s, OScalar<T>& d)
+{
+  s >> d.elem();
+  return s;
+}
 
 //! Ascii output
 template<class T>

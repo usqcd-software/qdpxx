@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.7 2003-06-20 02:40:19 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.8 2003-07-06 19:10:27 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -935,16 +935,6 @@ void read(BinaryReader& bin, OLattice<T>& d)
 		  sizeof(typename WordType<T>::Type_t), 
 		  sizeof(T) / sizeof(typename WordType<T>::Type_t));
   }
-}
-
-// Input
-//! Ascii input
-/*! Assumes no inner grid */
-template<class T>
-istream& operator>>(istream& s, OScalar<T>& d)
-{
-  s >> d.elem();
-  return s;
 }
 
 //! Read a text element

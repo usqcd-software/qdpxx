@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.9 2003-06-20 02:40:19 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.10 2003-07-06 19:10:27 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1388,21 +1388,6 @@ void read(BinaryReader& bin, OLattice<T>& d)
 
 #endif
 
-
-// Text input
-//! Ascii input
-/*! Assumes no inner grid */
-template<class T>
-istream& operator>>(istream& s, OScalar<T>& d)
-{
-  if (Layout::primaryNode())
-    s >> d.elem();
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(d);
-
-  return s;
-}
 
 //! Generic read a text element
 template<class T>

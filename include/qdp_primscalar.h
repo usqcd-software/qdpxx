@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.2 2003-07-06 19:10:27 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -163,9 +163,7 @@ template<class T>
 inline
 istream& operator>>(istream& s, PScalar<T>& d)
 {
-  if (Layout::primaryNode())
-    s >> d.elem();
-
+  s >> d.elem();
   return s;
 }
 

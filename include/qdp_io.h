@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.10 2003-06-20 18:18:24 edwards Exp $
+// $Id: qdp_io.h,v 1.11 2003-07-06 19:10:27 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -40,7 +40,27 @@ public:
   //! Return true if some failure occurred in previous IO operation
   bool fail();
 
-  std::istream& get() {return f;}
+  // Readers for builtin types
+  void read(std::string& result);
+  void read(char& result);
+  void read(int& result);
+  void read(unsigned int& result);
+  void read(short int& result);
+  void read(unsigned short int& result);
+  void read(long int& result);
+  void read(unsigned long int& result);
+  void read(float& result);
+  void read(double& result);
+  void read(bool& result);
+
+protected:
+  // The universal data-reader. All the read functions call this
+  template< typename T>
+  void
+  readPrimitive(T& output);
+
+  // Get the internal ostream
+  std::istream& getIstream() {return f;}
 
 private:
   QDPUtil::RemoteInputFileStream f;
@@ -48,16 +68,17 @@ private:
 
 
 // Different bindings for same operators
-TextReader& operator>>(TextReader& bin, char& input);
-TextReader& operator>>(TextReader& bin, int& input);
-TextReader& operator>>(TextReader& bin, unsigned int& input);
-TextReader& operator>>(TextReader& bin, short int& input);
-TextReader& operator>>(TextReader& bin, unsigned short int& input);
-TextReader& operator>>(TextReader& bin, long int& input);
-TextReader& operator>>(TextReader& bin, unsigned long int& input);
-TextReader& operator>>(TextReader& bin, float& input);
-TextReader& operator>>(TextReader& bin, double& input);
-TextReader& operator>>(TextReader& bin, bool& input);
+TextReader& operator>>(TextReader& txt, std::string& input);
+TextReader& operator>>(TextReader& txt, char& input);
+TextReader& operator>>(TextReader& txt, int& input);
+TextReader& operator>>(TextReader& txt, unsigned int& input);
+TextReader& operator>>(TextReader& txt, short int& input);
+TextReader& operator>>(TextReader& txt, unsigned short int& input);
+TextReader& operator>>(TextReader& txt, long int& input);
+TextReader& operator>>(TextReader& txt, unsigned long int& input);
+TextReader& operator>>(TextReader& txt, float& input);
+TextReader& operator>>(TextReader& txt, double& input);
+TextReader& operator>>(TextReader& txt, bool& input);
 
 
 //-----------------------------------------
@@ -88,18 +109,18 @@ private:
 
 
 // Different bindings for same operators
-TextWriter& operator<<(TextWriter& bin, const std::string& output);
-TextWriter& operator<<(TextWriter& bin, const char* output);
-TextWriter& operator<<(TextWriter& bin, char output);
-TextWriter& operator<<(TextWriter& bin, int output);
-TextWriter& operator<<(TextWriter& bin, unsigned int output);
-TextWriter& operator<<(TextWriter& bin, short int output);
-TextWriter& operator<<(TextWriter& bin, unsigned short int output);
-TextWriter& operator<<(TextWriter& bin, long int output);
-TextWriter& operator<<(TextWriter& bin, unsigned long int output);
-TextWriter& operator<<(TextWriter& bin, float output);
-TextWriter& operator<<(TextWriter& bin, double output);
-TextWriter& operator<<(TextWriter& bin, bool output);
+TextWriter& operator<<(TextWriter& txt, const std::string& output);
+TextWriter& operator<<(TextWriter& txt, const char* output);
+TextWriter& operator<<(TextWriter& txt, char output);
+TextWriter& operator<<(TextWriter& txt, int output);
+TextWriter& operator<<(TextWriter& txt, unsigned int output);
+TextWriter& operator<<(TextWriter& txt, short int output);
+TextWriter& operator<<(TextWriter& txt, unsigned short int output);
+TextWriter& operator<<(TextWriter& txt, long int output);
+TextWriter& operator<<(TextWriter& txt, unsigned long int output);
+TextWriter& operator<<(TextWriter& txt, float output);
+TextWriter& operator<<(TextWriter& txt, double output);
+TextWriter& operator<<(TextWriter& txt, bool output);
 
 
 

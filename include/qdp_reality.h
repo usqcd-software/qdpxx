@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.2 2003-06-09 19:34:07 edwards Exp $
+// $Id: qdp_reality.h,v 1.3 2003-07-06 19:10:27 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -168,9 +168,7 @@ template<class T>
 inline
 istream& operator>>(istream& s, RScalar<T>& d)
 {
-   if (Layout::primaryNode())
-    s >> d.elem();
-
+  s >> d.elem();
   return s;
 }
 
