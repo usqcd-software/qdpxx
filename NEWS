@@ -1,3 +1,8 @@
+01/22/2004 -- Robert Edwards
+
+	Version 1.11.2. QCDOC fixes. Changed xmlreader.print functions to broadcast their
+        strings.
+
 01/18/2004 -- Robert Edwards
 
 	Version 1.11.1. Maintenance changes within QIO and other little
