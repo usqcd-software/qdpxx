@@ -39,7 +39,13 @@ GENERIC_HDRS = qdp_scalarsite_generic.h \
 	$(genericdir)/generic_blas_local_vcdot_real.h \
 	$(genericdir)/qdp_scalarsite_generic_linalg.h \
 	$(genericdir)/qdp_scalarsite_generic_blas.h \
-	$(genericdir)/qdp_scalarsite_generic_cblas.h
+	$(genericdir)/qdp_scalarsite_generic_cblas.h \
+	$(genericdir)/qdp_scalarsite_generic_blas_g5.h \
+	$(genericdir)/generic_blas_vadd3_g5.h \
+	$(genericdir)/generic_blas_vscal_g5.h \
+	$(genericdir)/generic_blas_vaxpy3_g5.h \
+	$(genericdir)/generic_blas_vaypx3_g5.h \
+	$(genericdir)/generic_blas_vaxpby3_g5.h
 
 
 # If using SSE, make sure those files are installed
@@ -57,7 +63,14 @@ SSESITE_HDRS = qdp_scalarsite_sse.h \
 	$(ssesitedir)/sse_s_m_a_mat.h \
 	$(ssesitedir)/sse_s_m_a_vec.h \
 	$(ssesitedir)/qdp_scalarsite_sse_linalg.h \
-	$(ssesitedir)/qdp_scalarsite_sse_blas.h
+	$(ssesitedir)/qdp_scalarsite_sse_blas.h \
+	$(ssesitedir)/qdp_scalarsite_sse_blas_g5.h \
+	$(ssesitedir)/qdp_scalarsite_sse_blas_g5_includes.h \
+	$(ssesitedir)/sse_blas_vadd3_g5.h \
+	$(ssesitedir)/sse_blas_vscal3_g5.h \
+	$(ssesitedir)/sse_blas_vaxpy3_g5.h \
+	$(ssesitedir)/sse_blas_vaypx3_g5.h \
+	$(ssesitedir)/sse_blas_vaxpby3_g5.h
 
 # Scalarvectsite SSE extensions
 ssevecdir = scalarvecsite_sse
