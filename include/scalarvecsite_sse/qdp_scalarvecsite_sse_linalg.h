@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.2 2004-08-10 03:43:51 edwards Exp $
+// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.3 2004-08-10 03:55:50 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -27,8 +27,6 @@ typedef ILattice<REAL32,4>             ILatticeFloat;
 typedef RComplex<ILattice<REAL32,4> >  RComplexFloat; 
 
 #include "scalarvecsite_sse/ssevec_mult_nn.h"
-
-#if 1
 
 //--------------------------------------------------------------------------------------
 // Optimized version of  
@@ -217,8 +215,6 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
 	      const OrderedSubset& s);
 
-
-#endif
 
 /*! @} */   // end of group optimizations
 

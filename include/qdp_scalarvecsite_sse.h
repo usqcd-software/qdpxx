@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.16 2004-03-29 21:28:15 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.17 2004-08-10 03:55:50 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -10,101 +10,73 @@
 #ifndef QDP_SCALARVECSITE_SSE_H
 #define QDP_SCALARVECSITE_SSE_H
 
+
 // These SSE asm instructions are only supported under GCC/G++
-#if defined(__GNUC__)
+// Only supported on gcc >= 3.2
+#if defined(__GNUC__) && __GNUC_MINOR__ >= 2
 
 QDP_BEGIN_NAMESPACE(QDP);
 
-/*! @defgroup optimizations  Optimizations
- *
- * Optimizations for basic QDP operations
- *
- * @{
- */
-
-// Use this def just to safe some typing later on in the file
-#define ILatticeFloat  ILattice<float,4>
-#define RComplexFloat  RComplex<ILattice<float,4> >
+typedef REAL32 vReal32 __attribute__ ((aligned (16),mode(V4SF)));
 
 
-typedef float v4sf __attribute__ ((aligned (16),mode(V4SF)));
-
-
-#if 0
-// NOTE: the   operator+(v4sf,v4sf) first exists in gcc 3.3.X, not 3.2.X
-
-// v4sf + v4sf
-inline v4sf
-operator+(v4sf l, v4sf r)
+static inline vReal32 vmk1(REAL32 a) 
 {
-  v4sf tmp = __builtin_ia32_addps(l, r);
-  return tmp;
+  vReal32 v = __builtin_ia32_loadss((float *)&a);
+  asm("shufps\t$0,%0,%0" : "+x" (v));
+  return v;
+}
+
+static inline vReal32 vmk4(REAL32 a0, REAL32 a1, REAL32 a2, REAL32 a3) 
+{
+  vReal32 v;
+  REAL32 *r = (REAL32 *)&v;
+  r[0] = a0;
+  r[1] = a1;
+  r[2] = a2;
+  r[3] = a3;
+  return v;
 }
 
 
-// v4sf - v4sf
-inline v4sf
-operator-(v4sf l, v4sf r)
-{
-  return __builtin_ia32_subps(l, r);
-}
-
-
-// v4sf * v4sf
-inline v4sf
-operator*(v4sf l, v4sf r)
-{
-  return __builtin_ia32_mulps(l, r);
-}
-
-
-// v4sf / v4sf
-inline v4sf
-operator/(v4sf l, v4sf r)
-{
-  return __builtin_ia32_divps(l, r);
-}
-#endif
-
-
-
-
-
-#if 1
 //! Specialized Inner lattice class
 /*! Uses sse  */
-template<> class ILattice<float, 4>
+template<> class ILattice<REAL32,4>
 {
 public:
-  typedef float  T;
+  typedef REAL32  T;
   static const int N = 4;
 
   ILattice() {}
   ~ILattice() {}
 
   //---------------------------------------------------------
+  //! construct dest = 4 consts
+  ILattice(REAL32 a0, REAL32 a1, REAL32 a2, REAL32 a3) : v(vmk4(a0,a1,a2,a3)) {}
+  
   //! construct dest = const
-  ILattice(const WordType<float>::Type_t& rhs)
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) = rhs;
-    }
+  ILattice(REAL32 rhs) : v(vmk1(rhs)) {}
 
   //! construct dest = rhs
   template<class T1>
   ILattice(const ILattice<T1,N>& rhs)
     {
-      for(int i=0; i < N; ++i)
-	elem(i) = rhs.elem(i);
+      vput_0(rhs.elem(0)); 
+      vput_1(rhs.elem(1)); 
+      vput_2(rhs.elem(2));
+      vput_3(rhs.elem(3));
     }
 
   //! construct dest = rhs
+  ILattice(vReal32 rhs) : v(rhs) {}
+
+  //! construct dest = rhs
   template<class T1>
-  ILattice(const T1& rhs)
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) = rhs;
-    }
+  ILattice(const IScalar<T1>& rhs) : v(vmk1(REAL32(rhs.elem()))) {}
+
+  //! construct dest = rhs
+  template<class T1>
+  ILattice(const T1& rhs) : v(vmk1(REAL32(rhs))) {}
 
 
   //---------------------------------------------------------
@@ -114,9 +86,7 @@ public:
   inline
   ILattice& operator=(const IScalar<T1>& rhs) 
     {
-      for(int i=0; i < N; ++i)
-	elem(i) = rhs.elem();
-
+      v = vmk1(REAL32(rhs.elem()));
       return *this;
     }
 
@@ -125,9 +95,7 @@ public:
   inline
   ILattice& operator+=(const IScalar<T1>& rhs) 
     {
-      for(int i=0; i < N; ++i)
-	elem(i) += rhs.elem();
-
+      v = __builtin_ia32_addps(v, vmk1(REAL32(rhs.elem())));
       return *this;
     }
 
@@ -136,9 +104,7 @@ public:
   inline
   ILattice& operator-=(const IScalar<T1>& rhs) 
     {
-      for(int i=0; i < N; ++i)
-	elem(i) -= rhs.elem();
-
+      v = __builtin_ia32_subps(v, vmk1(REAL32(rhs.elem())));
       return *this;
     }
 
@@ -147,9 +113,7 @@ public:
   inline
   ILattice& operator*=(const IScalar<T1>& rhs) 
     {
-      for(int i=0; i < N; ++i)
-	elem(i) *= rhs.elem();
-
+      v = __builtin_ia32_mulps(v, vmk1(REAL32(rhs.elem())));
       return *this;
     }
 
@@ -158,9 +122,7 @@ public:
   inline
   ILattice& operator/=(const IScalar<T1>& rhs) 
     {
-      for(int i=0; i < N; ++i)
-	elem(i) /= rhs.elem();
-
+      v = __builtin_ia32_divps(v, vmk1(REAL32(rhs.elem())));
       return *this;
     }
 
@@ -171,7 +133,7 @@ public:
   inline
   ILattice& operator=(const ILattice& rhs) 
     {
-      F.v = rhs.F.v;
+      v = rhs.v;
       return *this;
     }
 
@@ -179,7 +141,7 @@ public:
   inline
   ILattice& operator+=(const ILattice& rhs) 
     {
-      F.v = __builtin_ia32_addps(F.v, rhs.F.v);
+      v = __builtin_ia32_addps(v, rhs.v);
       return *this;
     }
 
@@ -187,7 +149,7 @@ public:
   inline
   ILattice& operator-=(const ILattice& rhs) 
     {
-      F.v = __builtin_ia32_subps(F.v, rhs.F.v);
+      v = __builtin_ia32_subps(v, rhs.v);
       return *this;
     }
 
@@ -195,7 +157,7 @@ public:
   inline
   ILattice& operator*=(const ILattice& rhs) 
     {
-      F.v = __builtin_ia32_mulps(F.v, rhs.F.v);
+      v = __builtin_ia32_mulps(v, rhs.v);
       return *this;
     }
 
@@ -203,17 +165,13 @@ public:
   inline
   ILattice& operator/=(const ILattice& rhs) 
     {
-      F.v = __builtin_ia32_divps(F.v, rhs.F.v);
+      v = __builtin_ia32_divps(v, rhs.v);
       return *this;
     }
 
 
   //! Deep copy constructor
-  ILattice(const ILattice& a)
-    {
-      // fprintf(stderr,"copy ILattice\n");
-      F.v = a.F.v;
-    }
+  ILattice(const ILattice& a) : v(a.v) {}
 
 
 public:
@@ -222,452 +180,39 @@ public:
    * Used by optimization routines (e.g., SSE) that need the memory address of data.
    * BTW: to make this a friend would be a real pain since functions are templatized.
    */
-  inline T* data() {return F.a;}
+  inline T* data() {return (REAL32*)&v;}
 
 
 public:
-  T& elem(int i) {return F.a[i];}
-  const T& elem(int i) const {return F.a[i];}
+  void vput_0(REAL32 a) { ((REAL32 *)&v)[0] = a; }
+  void vput_1(REAL32 a) { ((REAL32 *)&v)[1] = a; }
+  void vput_2(REAL32 a) { ((REAL32 *)&v)[2] = a; }
+  void vput_3(REAL32 a) { ((REAL32 *)&v)[3] = a; }  
+  
+  T& elem(int i) {return ((REAL32*)&v)[i];}
+  const T& elem(int i) const {return ((REAL32*)&v)[i];}
 
-  v4sf& elem_v() {return F.v;}
-  const v4sf elem_v() const {return F.v;}
+  vReal32& elem_v() {return v;}
+  const vReal32 elem_v() const {return v;}
 
 private:
   // SSE attributes
-  union {
-    v4sf v;
-    T    a[4];
-  } F  QDP_ALIGN16;
+  vReal32 v;
 
-};
-#endif
+} QDP_ALIGN16;
 
-
-
-
-//--------------------------------------------------------------------------------------
-// Optimized version of  
-//    ILatticeFloat <- ILatticeFloat + ILatticeFloat
-template<>
-inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpAdd>::Type_t
-operator+(const ILatticeFloat& l, const ILatticeFloat& r)
-{
-  BinaryReturn<ILatticeFloat, ILatticeFloat, OpAdd>::Type_t  d;
-
-//  cout << "I+I" << endl;
-
-  d.elem_v() = __builtin_ia32_addps(l.elem_v(), r.elem_v());
-
-  return d;
-}
-
-
-// Optimized version of  
-//    ILatticeFloat <- ILatticeFloat - ILatticeFloat
-template<>
-inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpSubtract>::Type_t
-operator-(const ILatticeFloat& l, const ILatticeFloat& r)
-{
-  BinaryReturn<ILatticeFloat, ILatticeFloat, OpSubtract>::Type_t  d;
-
-//  cout << "I-I" << endl;
-
-  d.elem_v() = __builtin_ia32_subps(l.elem_v(), r.elem_v());
-
-  return d;
-}
-
-
-// Optimized version of  
-//    ILatticeFloat <- ILatticeFloat * ILatticeFloat
-template<>
-inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpMultiply>::Type_t
-operator*(const ILatticeFloat& l, const ILatticeFloat& r)
-{
-  BinaryReturn<ILatticeFloat, ILatticeFloat, OpMultiply>::Type_t  d;
-
-//  cout << "I*I" << endl;
-
-  d.elem_v() = __builtin_ia32_mulps(l.elem_v(), r.elem_v());
-
-  return d;
-}
-
-
-// Optimized version of  
-//    ILatticeFloat <- ILatticeFloat / ILatticeFloat
-template<>
-inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpDivide>::Type_t
-operator/(const ILatticeFloat& l, const ILatticeFloat& r)
-{
-  BinaryReturn<ILatticeFloat, ILatticeFloat, OpDivide>::Type_t  d;
-
-//  cout << "I/I" << endl;
-
-  d.elem_v() = __builtin_ia32_mulps(l.elem_v(), r.elem_v());
-
-  return d;
-}
-
-
-
-
-//--------------------------------------------------------------------------------------
-// Optimized version of  
-//    RComplexFloat <- RComplexFloat + RComplexFloat
-template<>
-inline BinaryReturn<RComplexFloat, RComplexFloat, OpAdd>::Type_t
-operator+(const RComplexFloat& l, const RComplexFloat& r)
-{
-  BinaryReturn<RComplexFloat, RComplexFloat, OpAdd>::Type_t  d;
-
-//  cout << "C+C" << endl;
-
-  d.real().elem_v() = __builtin_ia32_addps(l.real().elem_v(), r.real().elem_v());
-  d.imag().elem_v() = __builtin_ia32_addps(l.imag().elem_v(), r.imag().elem_v());
-
-  return d;
-}
-
-
-// Optimized version of  
-//    RComplexFloat <- RComplexFloat - RComplexFloat
-template<>
-inline BinaryReturn<RComplexFloat, RComplexFloat, OpSubtract>::Type_t
-operator-(const RComplexFloat& l, const RComplexFloat& r)
-{
-  BinaryReturn<RComplexFloat, RComplexFloat, OpSubtract>::Type_t  d;
-
-//  cout << "C-C" << endl;
-
-  d.real().elem_v() = __builtin_ia32_subps(l.real().elem_v(), r.real().elem_v());
-  d.imag().elem_v() = __builtin_ia32_subps(l.imag().elem_v(), r.imag().elem_v());
-
-  return d;
-}
-
-
-// Optimized version of  
-//    RComplexFloat <- RComplexFloat * RComplexFloat
-template<>
-inline BinaryReturn<RComplexFloat, RComplexFloat, OpMultiply>::Type_t
-operator*(const RComplexFloat& l, const RComplexFloat& r)
-{
-  BinaryReturn<RComplexFloat, RComplexFloat, OpMultiply>::Type_t  d;
-
-//  cout << "C*C" << endl;
-
-  v4sf tmp1 = __builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v());
-  v4sf tmp2 = __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v());
-  d.real().elem_v() = __builtin_ia32_subps(tmp1, tmp2);
-
-  v4sf tmp3 = __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v());
-  v4sf tmp4 = __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v());
-  d.imag().elem_v() = __builtin_ia32_addps(tmp3, tmp4);
-
-  return d;
-}
-
-// Optimized version of  
-//    RComplexFloat <- adj(RComplexFloat) * RComplexFloat
-template<>
-inline BinaryReturn<RComplexFloat, RComplexFloat, OpAdjMultiply>::Type_t
-adjMultiply(const RComplexFloat& l, const RComplexFloat& r)
-{
-  BinaryReturn<RComplexFloat, RComplexFloat, OpAdjMultiply>::Type_t  d;
-
-//  cout << "adj(C)*C" << endl;
-
-  v4sf tmp1 = __builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v());
-  v4sf tmp2 = __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v());
-  d.real().elem_v() = __builtin_ia32_addps(tmp1, tmp2);
-
-  v4sf tmp3 = __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v());
-  v4sf tmp4 = __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v());
-  d.imag().elem_v() = __builtin_ia32_subps(tmp3, tmp4);
-
-  return d;
-}
-
-// Optimized  RComplex*adj(RComplex)
-template<>
-inline BinaryReturn<RComplexFloat, RComplexFloat, OpMultiplyAdj>::Type_t
-multiplyAdj(const RComplexFloat& l, const RComplexFloat& r)
-{
-  BinaryReturn<RComplexFloat, RComplexFloat, OpMultiplyAdj>::Type_t  d;
-
-  v4sf tmp1 = __builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v());
-  v4sf tmp2 = __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v());
-  d.real().elem_v() = __builtin_ia32_addps(tmp1, tmp2);
-
-  v4sf tmp3 = __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v());
-  v4sf tmp4 = __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v());
-  d.imag().elem_v() = __builtin_ia32_subps(tmp3, tmp4);
-
-  return d;
-}
-
-// Optimized  adj(RComplex)*adj(RComplex)
-template<>
-inline BinaryReturn<RComplexFloat, RComplexFloat, OpAdjMultiplyAdj>::Type_t
-adjMultiplyAdj(const RComplexFloat& l, const RComplexFloat& r)
-{
-  BinaryReturn<RComplexFloat, RComplexFloat, OpAdjMultiplyAdj>::Type_t  d;
-
-  typedef struct
-  {
-    unsigned int c[4];
-  } sse_mask __attribute__ ((aligned (16)));
-  
-  static sse_mask _sse_sgn __attribute__ ((unused)) ={0x80000000, 0x80000000, 0x80000000, 0x80000000};
-
-  v4sf tmp1 = __builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v());
-  v4sf tmp2 = __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v());
-  d.real().elem_v() = __builtin_ia32_subps(tmp1, tmp2);
-
-  v4sf tmp3 = __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v());
-  v4sf tmp4 = __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v());
-  v4sf tmp5 = __builtin_ia32_addps(tmp3, tmp4);
-//  d.imag().elem_v() = __builtin_ia32_xorps(tmp5, _sse_sgn.v);
-  v4sf tmp6 = __builtin_ia32_loadaps((float*)&_sse_sgn);
-  d.imag().elem_v() = __builtin_ia32_xorps(tmp5, tmp6);
-
-  return d;
-}
-
-
-
-
-
-
-
-//--------------------------------------------------------------------------------------
-#if 1
-#define PREFETCH(addr)  __asm__ __volatile__("prefetcht0 %0"::"m"(*(addr)))
-#else
-#define PREFETCH(addr)
-#endif
-
-#define _inline_ssevec_mult_su3_nn(cc,aa,bb,j) \
-{ \
-__asm__ __volatile__ (                    \
-              "movaps %0,%%xmm0\n\t"      \
-              "movaps %%xmm0,%%xmm1\n\t"  \
-              "mulps  %2,%%xmm1\n\t"      \
-              "movaps %%xmm0,%%xmm2\n\t"  \
-              "mulps  %3,%%xmm2\n\t"      \
-              "movaps %%xmm0,%%xmm3\n\t"  \
-              "mulps  %4,%%xmm3\n\t"      \
-              "movaps %%xmm0,%%xmm4\n\t"  \
-              "mulps  %5,%%xmm4\n\t"      \
-              "movaps %%xmm0,%%xmm5\n\t"  \
-              "mulps  %6,%%xmm5\n\t"      \
-              "mulps  %1,%%xmm0\n\t"      \
-	      :                           \
-	      : "m" (*(bb+0+8*j)),     \
-		"m" (*(aa+0)),     \
-		"m" (*(aa+4)),     \
-		"m" (*(aa+24)),     \
-		"m" (*(aa+28)),     \
-		"m" (*(aa+48)),     \
-		"m" (*(aa+52)));    \
-__asm__ __volatile__ (                    \
-              "movaps %0,%%xmm6\n\t"      \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %2,%%xmm7\n\t"      \
-              "subps  %%xmm7,%%xmm0\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %1,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm1\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %4,%%xmm7\n\t"      \
-              "subps  %%xmm7,%%xmm2\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %3,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm3\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %6,%%xmm7\n\t"      \
-              "subps  %%xmm7,%%xmm4\n\t"  \
-              "mulps  %5,%%xmm6\n\t"      \
-              "addps  %%xmm6,%%xmm5\n\t"  \
-	      :                           \
-	      : "m" (*(bb+4+8*j)),     \
-		"m" (*(aa+0)),     \
-		"m" (*(aa+4)),     \
-		"m" (*(aa+24)),     \
-		"m" (*(aa+28)),     \
-		"m" (*(aa+48)),     \
-		"m" (*(aa+52)));    \
-__asm__ __volatile__ (                    \
-              "movaps %0,%%xmm6\n\t"      \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %1,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm0\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %2,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm1\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %3,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm2\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %4,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm3\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %5,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm4\n\t"  \
-              "mulps  %6,%%xmm6\n\t"      \
-              "addps  %%xmm6,%%xmm5\n\t"  \
-	      :                           \
-	      : "m" (*(bb+24+8*j)),     \
-		"m" (*(aa+8)),     \
-		"m" (*(aa+12)),     \
-		"m" (*(aa+32)),     \
-		"m" (*(aa+36)),     \
-		"m" (*(aa+56)),     \
-		"m" (*(aa+60)));    \
-__asm__ __volatile__ (                    \
-              "movaps %0,%%xmm6\n\t"      \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %2,%%xmm7\n\t"      \
-              "subps  %%xmm7,%%xmm0\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %1,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm1\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %4,%%xmm7\n\t"      \
-              "subps  %%xmm7,%%xmm2\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %3,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm3\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %6,%%xmm7\n\t"      \
-              "subps  %%xmm7,%%xmm4\n\t"  \
-              "mulps  %5,%%xmm6\n\t"      \
-              "addps  %%xmm6,%%xmm5\n\t"  \
-	      :                           \
-	      : "m" (*(bb+28+8*j)),     \
-		"m" (*(aa+8)),     \
-		"m" (*(aa+12)),     \
-		"m" (*(aa+32)),     \
-		"m" (*(aa+36)),     \
-		"m" (*(aa+56)),     \
-		"m" (*(aa+60)));    \
-__asm__ __volatile__ (                    \
-              "movaps %0,%%xmm6\n\t"      \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %1,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm0\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %2,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm1\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %3,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm2\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %4,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm3\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %5,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm4\n\t"  \
-              "mulps  %6,%%xmm6\n\t"      \
-              "addps  %%xmm6,%%xmm5\n\t"  \
-	      :                           \
-	      : "m" (*(bb+48+8*j)),     \
-		"m" (*(aa+16)),     \
-		"m" (*(aa+20)),     \
-		"m" (*(aa+40)),     \
-		"m" (*(aa+44)),     \
-		"m" (*(aa+64)),     \
-		"m" (*(aa+68)));    \
-__asm__ __volatile__ (                    \
-              "movaps %0,%%xmm6\n\t"      \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %2,%%xmm7\n\t"      \
-              "subps  %%xmm7,%%xmm0\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %1,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm1\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %4,%%xmm7\n\t"      \
-              "subps  %%xmm7,%%xmm2\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %3,%%xmm7\n\t"      \
-              "addps  %%xmm7,%%xmm3\n\t"  \
-              "movaps %%xmm6,%%xmm7\n\t"  \
-              "mulps  %6,%%xmm7\n\t"      \
-              "subps  %%xmm7,%%xmm4\n\t"  \
-              "mulps  %5,%%xmm6\n\t"      \
-              "addps  %%xmm6,%%xmm5\n\t"  \
-	      :                           \
-	      : "m" (*(bb+52+8*j)),     \
-		"m" (*(aa+16)),     \
-		"m" (*(aa+20)),     \
-		"m" (*(aa+40)),     \
-		"m" (*(aa+44)),     \
-		"m" (*(aa+64)),     \
-		"m" (*(aa+68)));    \
-__asm__ __volatile__ (                    \
-              "movaps %%xmm0,%0\n\t"      \
-              "movaps %%xmm1,%1\n\t"      \
-              "movaps %%xmm2,%2\n\t"      \
-              "movaps %%xmm3,%3\n\t"      \
-              "movaps %%xmm4,%4\n\t"      \
-              "movaps %%xmm5,%5\n\t"      \
-	      : "=m" (*(cc+0+8*j)),    \
-		"=m" (*(cc+4+8*j)),    \
-		"=m" (*(cc+24+8*j)),    \
-		"=m" (*(cc+28+8*j)),    \
-		"=m" (*(cc+48+8*j)),    \
-		"=m" (*(cc+52+8*j)));   \
-}
-
-
-
-// Optimized version of  
-//    PColorMatrix<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorMatrix<RComplexFloat,3>
-template<>
-inline BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
-  PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiply>::Type_t
-operator*(const PMatrix<RComplexFloat,3,PColorMatrix>& l, 
-	  const PMatrix<RComplexFloat,3,PColorMatrix>& r)
-{
-//  cout << "M*M" << endl;
-
-  BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
-    PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiply>::Type_t  d;
-
-  float *dd = (float*)&d;
-  float *ll = (float*)&l;
-  float *rr = (float*)&r;
-
-  _inline_ssevec_mult_su3_nn(dd,ll,rr,0);
-  _inline_ssevec_mult_su3_nn(dd,ll,rr,1);
-  _inline_ssevec_mult_su3_nn(dd,ll,rr,2);
-
-  return d;
-}
-
-
-
-// Specialization to optimize the case   
-//    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
-// NOTE: let this be a subroutine to save space
-template<>
-void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d, 
-	      const OpAssign& op, 
-	      const QDPExpr<BinaryNode<OpMultiply, 
-	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > >, 
-	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
-	      const OrderedSubset& s);
-
-
-/*! @} */   // end of group optimizations
 
 QDP_END_NAMESPACE();
 
-#endif  // defined(__GNUC__)
+// Use SSE specific Linalg stuff (inline assembler etc)
+#include "scalarvecsite_sse/qdp_scalarvecsite_sse_linalg.h"
 
-#endif
+// Use SSE specific blas stuff (inline assembler etc)
+//#include "scalarvecsite_sse/qdp_scalarvecsite_sse_blas.h"
+
+#else
+#error "This is not a GNUC 3.3 or greater compiler, and therefore does not support the GNU specific asm directives."
+#endif  // gnuc
+
+#endif  // guard
+
