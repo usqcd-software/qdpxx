@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.26 2003-08-20 01:24:19 edwards Exp $
+// $Id: qdp.h,v 1.27 2003-08-20 18:47:07 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -119,6 +119,12 @@ QDP_END_NAMESPACE();
 
 #elif defined(ARCH_PARSCALAR)
 #include "qdp_defs.h"
+
+#elif defined(ARCH_SCALARVEC)
+#include "qdp_scalarvecsite_defs.h"
+
+#elif defined(ARCH_PARSCALARVEC)
+#include "qdp_scalarvecsite_defs.h"
 
 #else
 #error "Unknown architecture ARCH"
