@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.2 2002-09-12 18:31:14 edwards Exp $
+# $Id: Makefile,v 1.3 2002-09-23 19:21:58 edwards Exp $
 #
 # Makefile for C++ QDP code
 #
@@ -8,7 +8,7 @@ CXXFLAGS = -g -Wno-deprecated
 #CXXFLAGS = -O3
 #CXXFLAGS = -O4 -fomit-frame-pointer -felide-constructors
 #CXXFLAGS = -O4 -fomit-frame-pointer
-#CXXFLAGS = -ftemplate-depth-80 -O3 -fomit-frame-pointer -ffast-math \
+#CXXFLAGS =  -Wno-deprecated -ftemplate-depth-80 -O3 -fomit-frame-pointer -ffast-math \
 #	-funsafe-math-optimizations -Winline -felide-constructors -fargument-noalias-global \
 #	-msse -fprefetch-loop-arrays -finline-limit=2000 
 
