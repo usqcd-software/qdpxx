@@ -1,11 +1,9 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.18 2003-01-22 16:50:12 edwards Exp $
+// $Id: outer.h,v 1.19 2003-01-24 21:06:18 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
  */
-
-#define NO_MEM
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -100,6 +98,14 @@ public:
     }
 
 
+  //! Use this for default operator=
+  inline
+  OScalar& operator=(const OScalar& rhs)
+    {
+      return assign(rhs);
+    }
+
+
   //---------------------------------------------------------
   // Subsets
   OSubScalar<T> operator[](const Subset& s) {return OSubScalar<T>(*this,s);}
@@ -108,6 +114,7 @@ public:
   //---------------------------------------------------------
   //! Deep copy constructor
   OScalar(const OScalar& a): F(a.F) {/*fprintf(stderr,"copy OScalar\n");*/}
+
 
 public:
   T& elem() {return F;}
@@ -194,23 +201,20 @@ class OLattice: public QDPType<T, OLattice<T> >
 public:
   OLattice() 
     {
-#if ! defined(NO_MEM)
       F = new T[Layout::subgridVol()];
-#endif
 
 #if defined(DEBUG)
-      fprintf(stderr,"create OLattice[%d]=0x%x\n",Layout::subgridVol(),(void *)F);
+      fprintf(stderr,"create OLattice[%d]=0x%x, this=0x%x\n",
+              Layout::subgridVol(),(void *)F,this);
 #endif
     }
   ~OLattice()
     {
 #if defined(DEBUG)
-      fprintf(stderr,"destroy OLattice=0x%x\n",F);
+      fprintf(stderr,"destroy OLattice=0x%x, this=0x%x\n",F,this);
 #endif
 
-#if ! defined(NO_MEM)
       delete[] F;
-#endif
     }
 
 
@@ -218,9 +222,7 @@ public:
   template<class T1>
   OLattice(const OLattice<T1>& rhs)
     {
-#if ! defined(NO_MEM)
       F = new T[Layout::subgridVol()];
-#endif
 
 #if defined(DEBUG)
       fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
@@ -234,9 +236,7 @@ public:
   template<class RHS, class T1>
   OLattice(const QDPExpr<RHS, OLattice<T1> >& rhs)
     {
-#if ! defined(NO_MEM)
       F = new T[Layout::subgridVol()];
-#endif
 
 #if defined(DEBUG)
       fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
@@ -249,9 +249,7 @@ public:
   //! construct OLattice = const
   OLattice(const typename WordType<T>::Type_t& rhs)
     {
-#if ! defined(NO_MEM)
       F = new T[Layout::subgridVol()];
-#endif
 
 #if defined(DEBUG)
       fprintf(stderr,"construct from const OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
@@ -265,9 +263,7 @@ public:
   //! construct OLattice = 0
   OLattice(const Zero& rhs)
     {
-#if ! defined(NO_MEM)
       F = new T[Layout::subgridVol()];
-#endif
 
 #if defined(DEBUG)
       fprintf(stderr,"construct from zero OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
@@ -307,6 +303,12 @@ public:
       return assign(rhs);
     }
 
+  inline
+  OLattice& operator=(const OLattice& rhs)
+    {
+      return assign(rhs);
+    }
+
 
   //---------------------------------------------------------
   // Subsets
@@ -318,9 +320,7 @@ public:
   /*! For now, a deep copy */
   OLattice(const OLattice& rhs)
     {
-#if ! defined(NO_MEM)
       F = new T[Layout::subgridVol()];
-#endif
 
 #if defined(DEBUG)
       fprintf(stderr,"copy OLattice[%d]=0x%x\n",Layout::subgridVol(),F);
@@ -329,16 +329,22 @@ public:
       assign(rhs);
     }
 
+
+public:
+  //! Debugging info
+  void print_info(char *name)
+    {
+      fprintf(stderr,"Info: %s = OLattice[%d]=0x%x, this=0x%x\n",
+              name,Layout::subgridVol(),(void *)F,this);
+    }
+
+
 public:
   T& elem(int i) {return F[i];}
   const T& elem(int i) const {return F[i];}
 
 private:
-#if ! defined(NO_MEM)
   T *F;
-#else
-  T F[VOLUME];
-#endif
 };
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdpsubtype.h,v 1.4 2003-01-22 16:50:12 edwards Exp $
+// $Id: qdpsubtype.h,v 1.5 2003-01-24 21:06:19 edwards Exp $
 
 /*! @file
  * @brief QDPType after a subset
@@ -281,6 +281,12 @@ public:
     {
       evaluate(field(),OpRightShiftAssign(),rhs,subset());
     }
+
+private:
+  //! Hide default operator=
+  inline
+  C& operator=(const QDPSubType& rhs) {}
+
 
 public:
   C& field() {return static_cast<CC*>(this)->field();}

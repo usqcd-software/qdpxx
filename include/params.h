@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: params.h,v 1.8 2002-12-14 04:49:01 edwards Exp $
+// $Id: params.h,v 1.9 2003-01-24 21:06:19 edwards Exp $
 
 /*! @file
  * @brief Fundamental parameters
@@ -17,10 +17,6 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 
 #include <qdp_config.h>
-
-//! Compile time max sub-lattice size in  OLattice:F (private member) - run-time can be smaller
-/*! NOTE, the use of this macro is controlled by the   NO_MEM  variable 
- * in outer.h */
 
 const int Nd = ND;
 const int Nc = NC;

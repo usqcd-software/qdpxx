@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outersubtype.h,v 1.4 2003-01-22 16:50:12 edwards Exp $
+// $Id: outersubtype.h,v 1.5 2003-01-24 21:06:19 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes after a subset
@@ -52,6 +52,14 @@ public:
     {
       assign(rhs);
     }
+
+
+  inline
+  void operator=(const OSubScalar& rhs)
+    {
+      assign(rhs);
+    }
+
 
 private:
   // Hide default constructor
@@ -110,6 +118,13 @@ public:
   template<class T1,class C1>
   inline
   void operator=(const QDPExpr<T1,C1>& rhs)
+    {
+      assign(rhs);
+    }
+
+
+  inline
+  void operator=(const OSubLattice& rhs)
     {
       assign(rhs);
     }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdptype.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+// $Id: qdptype.h,v 1.5 2003-01-24 21:06:19 edwards Exp $
 
 /*! @file
  * @brief Main type class for QDP
@@ -27,11 +27,13 @@ class QDPType
 {
 public:
   //! Main constructor 
-  QDPType() {}
+  QDPType(){}
+
   //! Copy constructor
   QDPType(const QDPType&) {}
+
   //! Destructor
-  ~QDPType() {}
+  ~QDPType(){}
 
 
   //---------------------------------------------------------
@@ -70,6 +72,14 @@ public:
       C* me = static_cast<C*>(this);
       evaluate(*me,OpAssign(),rhs);
       return *me;
+    }
+
+
+  //! Use this for default operator=
+  inline
+  C& operator=(const QDPType& rhs)
+    {
+      return assign(rhs);
     }
 
 
@@ -351,7 +361,6 @@ public:
       evaluate(*me,OpRightShiftAssign(),rhs);
       return *me;
     }
-
 
 public:
   T& elem(int i) {return static_cast<const C*>(this)->elem(i);}
