@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.13 2002-10-28 03:08:44 edwards Exp $
+// $Id: scalar_specific.h,v 1.14 2002-11-04 04:47:16 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -8,6 +8,13 @@
 QDP_BEGIN_NAMESPACE(QDP);
 
 // Use separate defs here. This will cause subroutine calls under g++
+
+//-----------------------------------------------------------------------------
+// Layout stuff specific to a scalar architecture
+namespace Layout
+{
+};
+
 
 //-----------------------------------------------------------------------------
 //! OLattice Op Scalar(Expression(source)) under a subset
@@ -452,7 +459,83 @@ pokeSite(OLattice<T1>& l, const OScalar<T1>& r, const multi1d<int>& coord)
 
 
 //-----------------------------------------------------------------------------
-//
+// Forward declaration
+struct FnShift;
+
+//! Nearest neighbor shift function class
+class NearestNeighborMap
+{
+public:
+  //! Constructor - does nothing really
+  NearestNeighborMap() {}
+
+  //! Destructor
+  ~NearestNeighborMap() {}
+
+  //! Actual constructor
+  void make();
+
+  //! Function call operator for a shift
+  /*! 
+   * shift(source,isign,dir)
+   * isign = parity of direction (+1 or -1)
+   * dir   = direction ([0,...,Nd-1])
+   *
+   * Implements:  dest(x) = s1(x+isign*dir)
+   * There are cpp macros called  FORWARD and BACKWARD that are +1,-1 resp.
+   * that are often used as arguments
+   *
+   * Shifts on a OLattice are non-trivial.
+   * Notice, there may be an ILattice underneath which requires shift args.
+   * This routine is very architecture dependent.
+   */
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnShift,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int isign, int dir)
+    {
+      //  fprintf(stderr,"shift(QDPType,%d,%d)\n",isign,dir);
+
+      typedef UnaryNode<FnShift,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
+    }
+
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnShift,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l, int isign, int dir)
+    {
+      //  fprintf(stderr,"shift(QDPExpr,%d,%d)\n",isign,dir);
+
+      typedef UnaryNode<FnShift,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+    }
+
+
+public:
+  //! Accessor to offsets
+  const multi3d<int>& Offsets() const {return soffsets;}
+
+private:
+  //! Hide copy constructor
+  NearestNeighborMap(const NearestNeighborMap&) {}
+
+private:
+  //! Offset table used for communications. 
+  /*! 
+   * The direction is in the sense of the Map or Shift functions from QDP.
+   * soffsets(direction,isign,position) 
+   */ 
+  multi3d<int> soffsets;
+};
+
+
+
 // This is the PETE version of a shift, namely return an expression
 //
 // This class looks like those in OperatorTags, but has a specific constructor
@@ -467,7 +550,7 @@ struct FnShift
   PETE_EMPTY_CONSTRUCTORS(FnShift)
 
   const int *soff;
-  FnShift(int isign, int dir): soff(all.Offsets()->slice(dir,(isign+1)>>1))
+  FnShift(int isign, int dir): soff(shift.Offsets().slice(dir,(isign+1)>>1))
     {
 //      fprintf(stderr,"FnShift(%d,%d): soff=0x%x\n",isign,dir,soff);
     }
@@ -502,51 +585,6 @@ struct ForEach<UnaryNode<FnShift, A>, EvalLeaf1, CTag>
 };
 
 
-//-----------------------------------------------
-//! OLattice<T> = shift(OLattice<T1>, int isign, int dir)
-/*! 
- * shift(source,isign,dir)
- * isign = parity of direction (+1 or -1)
- * dir   = direction ([0,...,Nd-1])
- *
- * Implements:  dest(x) = s1(x+isign*dir)
- * There are cpp macros called  FORWARD and BACKWARD that are +1,-1 resp.
- * that are often used as arguments
- *
- * Shifts on a OLattice are non-trivial.
- * Notice, there may be an ILattice underneath which requires shift args.
- * This routine is very architecture dependent.
- */
-template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnShift,
-  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
-shift(const QDPType<T1,C1> & l, int isign, int dir)
-{
-//  fprintf(stderr,"shift(QDPType,%d,%d)\n",isign,dir);
-
-  typedef UnaryNode<FnShift,
-    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-  return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
-    CreateLeaf<QDPType<T1,C1> >::make(l)));
-}
-
-
-template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnShift,
-  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
-shift(const QDPExpr<T1,C1> & l, int isign, int dir)
-{
-//  fprintf(stderr,"shift(QDPExpr,%d,%d)\n",isign,dir);
-
-  typedef UnaryNode<FnShift,
-    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-  return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
-    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
-}
-
-
-
-
 //-----------------------------------------------------------------------------
 // Input and output of various flavors that are architecture specific
 
@@ -570,5 +608,55 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
   return nml;
 }
 
+
+//! Binary output
+template<class T>  
+BinaryWriter& write(BinaryWriter& bin, const OLattice<T>& d)
+{
+  for(int site=0; site < Layout::vol(); ++site) 
+  {
+    int i = Layout::linearSiteIndex(site);
+    bfwrite((void *)&(d.elem(i)), sizeof(typename WordType<T>::Type_t), 
+	    sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get());
+  }
+
+  return bin;
+}
+
+//! Generic read a binary element
+template<class T>
+BinaryReader& read(BinaryReader& bin, T& d)
+{
+  if (bfread((void *)&d, sizeof(T), 1, bin.get()) != 1)
+    QDP_error_exit("BinaryReader: failed to read");
+
+  return bin;
+}
+
+//! Binary input
+/*! Assumes no inner grid */
+template<class T>
+BinaryReader& read(BinaryReader& bin, OScalar<T>& d)
+{
+  bfread((void *)&(d.elem()), sizeof(typename WordType<T>::Type_t), 
+	 sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get()); 
+
+  return bin;
+}
+
+//! Binary input
+/*! Assumes no inner grid */
+template<class T>  
+BinaryReader& read(BinaryReader& bin, OLattice<T>& d)
+{
+  for(int site=0; site < Layout::vol(); ++site) 
+  {
+    int i = Layout::linearSiteIndex(site);
+    bfread((void *)&(d.elem(i)), sizeof(typename WordType<T>::Type_t), 
+	   sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get());
+  }
+
+  return bin;
+}
 
 QDP_END_NAMESPACE();

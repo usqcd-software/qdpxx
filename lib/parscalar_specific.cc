@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.1 2002-10-28 03:08:44 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.2 2002-11-04 04:47:16 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -19,6 +19,10 @@
 #undef   USE_CB32_LAYOUT
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+//! Definition of shift function object
+NearestNeighborMap  shift;
+
 
 
 namespace Layout
@@ -61,13 +65,22 @@ namespace Layout
     //! Logical system size
     multi1d<int> logical_size;
 
-    //! Logical node number
-    int logical_number;
+    //! Node rank
+    int node_rank;
+
+    //! Total number of nodes
+    int num_nodes;
   } _layout;
 
 
   //-----------------------------------------------------
   // Functions
+
+  //! Finalizer for a layout
+  void finalize() {QMP_finalize_msg_passing();}
+
+  //! Panic button
+  void abort(int status) {finalize(); exit(status);}
 
   //! Virtual grid (problem grid) lattice size
   const multi1d<int>& lattSize() {return _layout.nrow;}
@@ -79,19 +92,19 @@ namespace Layout
   int subgridVol() {return _layout.subgrid_vol;}
 
   //! Returns whether this is the primary node
-  bool primaryNode()
-  {
-    return (_layout.logical_number == 0) ? true : false;
-  }
+  bool primaryNode() {return (_layout.node_rank == 0) ? true : false;}
 
   //! Subgrid (grid on each node) lattice size
   const multi1d<int>& subgridLattSize() {return _layout.subgrid_nrow;}
 
   //! Returns the node number of this node
-  int nodeNumber() {return _layout.logical_number;}
+  int nodeNumber() {return _layout.node_rank;}
+
+  //! Returns the number of nodes
+  int numNodes() {return _layout.num_nodes;}
 
   //! Returns the logical node coordinates for this node
-  const multi1d<int>& logicalCoord() {return _layout.logical_coord;}
+  const multi1d<int>& nodeCoord() {return _layout.logical_coord;}
 
   //! Returns the logical size of this machine
   const multi1d<int>& logicalSize() {return _layout.logical_size;}
@@ -172,7 +185,7 @@ namespace Layout
   void initialize(const multi1d<int>& nrows)
   {
     if (nrows.size() != Nd)
-      SZ_ERROR("dimension of lattice size not the same as the default");
+      QDP_error_exit("dimension of lattice size not the same as the default");
 
     _layout.vol=1;
     _layout.nrow = nrows;
@@ -213,7 +226,8 @@ namespace Layout
     const unsigned int* subgrid_size = QMP_get_subgrid_dimensions();
 
     _layout.subgrid_vol = QMP_get_number_of_subgrid_sites();
-    _layout.logical_number = QMP_get_node_number();
+    _layout.num_nodes = QMP_get_number_of_nodes();
+    _layout.node_rank = QMP_get_node_number();
 
     _layout.subgrid_nrow.resize(Nd);
     _layout.logical_coord.resize(Nd);
@@ -299,10 +313,10 @@ LatticeInteger latticeCoordinate(int mu)
   LatticeInteger d;
 
   if (mu < 0 || mu >= Nd)
-    SZ_ERROR("dimension out of bounds");
+    QDP_error_exit("dimension out of bounds");
 
   const multi1d<int>& subgrid = Layout::subgridLattSize();
-  const multi1d<int>& node_coord = Layout::logicalCoord();
+  const multi1d<int>& node_coord = Layout::nodeCoord();
 
   for(int i=0; i < Layout::subgridVol(); ++i) 
   {
@@ -320,14 +334,11 @@ LatticeInteger latticeCoordinate(int mu)
 
 //-----------------------------------------------------------------------------
 //! Constructor from an int function
-void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
+void Set::make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
 {
 #if 1
   fprintf(stderr,"Set a subset: nsubset = %d\n",nsubset_indices);
 #endif
-
-  // First initialize the offsets
-  InitOffsets();
 
   // This actually allocates the subsets
   sub.resize(nsubset_indices);
@@ -348,7 +359,7 @@ void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
     multi1d<int> coord = crtesn(site, Layout::subgridLattSize());
 
     for(int m=0; m<Nd; ++m)
-      coord[m] += Layout::logicalCoord()[m]*Layout::subgridLattSize()[m];
+      coord[m] += Layout::nodeCoord()[m]*Layout::subgridLattSize()[m];
 
     int node   = Layout::nodeNumber(coord);
     int linear = Layout::linearSiteIndex(coord);
@@ -358,7 +369,7 @@ void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
     cerr << endl;
 
     if (node != Layout::nodeNumber())
-      SZ_ERROR("Set: found site with node outside current node!");
+      QDP_error_exit("Set: found site with node outside current node!");
 
     lat_color[linear] = icolor;
   }
@@ -367,7 +378,7 @@ void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
   for(int site=0; site < Layout::subgridVol(); ++site)
   {
     if (lat_color[site] == -1)
-      SZ_ERROR("Set: found site with coloring not set");
+      QDP_error_exit("Set: found site with coloring not set");
   }
 
 
@@ -403,7 +414,7 @@ void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
 	sitetable[j++] = linear;
 
 
-    sub[cb].Make(start, end, indexrep, &soffsets, &(sitetables[cb]), cb);
+    sub[cb].make(start, end, indexrep, &(sitetables[cb]), cb);
 
 #if 1
     fprintf(stderr,"Subset(%d): indexrep=%d start=%d end=%d\n",cb,indexrep,start,end);
@@ -412,40 +423,56 @@ void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
 }
 	  
 
-//! Initializer for sets
-void Set::InitOffsets()
+//! Initializer for nearest neighbor shift
+void NearestNeighborMap::make()
 {
   //--------------------------------------
   // Setup the communication index arrays
   soffsets.resize(Nd, 2, Layout::subgridVol());
 
   /* Get the offsets needed for neighbour comm.
-     * soffsets(direction,isign,position)
-     *  where  isign    = +1 : plus direction
-     *                  =  0 : negative direction
-     *         cb       =  0 : even lattice (includes origin)
-     *                  = +1 : odd lattice (does not include origin)
-     * the offsets cotain the current site, i.e the neighbour for site i
-     * is  soffsets(i,dir,mu) and NOT  i + soffset(..) 
-     */
+   * soffsets(direction,isign,position)
+   *  where  isign    = +1 : plus direction
+   *                  =  0 : negative direction
+   *         cb       =  0 : even lattice (includes origin)
+   *                  = +1 : odd lattice (does not include origin)
+   * the offsets cotain the current site, i.e the neighbour for site i
+   * is  soffsets(i,dir,mu) and NOT  i + soffset(..) 
+   */
   const multi1d<int>& nrow = Layout::lattSize();
+  const multi1d<int>& subgrid = Layout::subgridLattSize();
+  const multi1d<int>& node_coord = Layout::nodeCoord();
+  multi1d<int> node_offset(Nd);
 
-  for(int site=0; site < Layout::subgridVol(); ++site)
+  for(int m=0; m<Nd; ++m)
+    node_offset[m] = node_coord[m]*subgrid[m];
+
+  for(int site=0; site < Layout::vol(); ++site)
   {
+    // Get the true grid of this site
     multi1d<int> coord = crtesn(site, nrow);
+
+    // Site and node for this lattice site within the machine
     int ipos = Layout::linearSiteIndex(coord);
+    int node = Layout::nodeNumber(coord);
 
-    for(int m=0; m<Nd; ++m)
+    // If this is my node, then add it to my list
+    if (Layout::nodeNumber() == node)
     {
-      multi1d<int> tmpcoord = coord;
+//      <must get a new ipos within a node>
 
-      /* Neighbor in backward direction */
-      tmpcoord[m] = (coord[m] - 1 + nrow[m]) % nrow[m];
-      soffsets(m,0,ipos) = Layout::linearSiteIndex(tmpcoord);
+      for(int m=0; m<Nd; ++m)
+      {
+	multi1d<int> tmpcoord = coord;
 
-      /* Neighbor in forward direction */
-      tmpcoord[m] = (coord[m] + 1) % nrow[m];
-      soffsets(m,1,ipos) = Layout::linearSiteIndex(tmpcoord);
+	/* Neighbor in backward direction */
+	tmpcoord[m] = (coord[m] - 1 + nrow[m]) % nrow[m];
+	soffsets(m,0,ipos) = Layout::linearSiteIndex(tmpcoord);
+
+	/* Neighbor in forward direction */
+	tmpcoord[m] = (coord[m] + 1) % nrow[m];
+	soffsets(m,1,ipos) = Layout::linearSiteIndex(tmpcoord);
+      }
     }
   }
 

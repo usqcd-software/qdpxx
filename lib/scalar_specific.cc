@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.1 2002-10-28 03:12:27 edwards Exp $
+// $Id: scalar_specific.cc,v 1.2 2002-11-04 04:47:16 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -17,6 +17,9 @@
 #undef   USE_CB32_LAYOUT
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+//! Definition of shift function object
+NearestNeighborMap  shift;
 
 
 //-----------------------------------------------------------------------------
@@ -56,6 +59,13 @@ namespace Layout
 
   //-----------------------------------------------------
   // Functions
+
+  //! Finalizer for a layout
+  void finalize() {}
+
+  //! Panic button
+  void abort(int status) {exit(status);}
+
   //! Virtual grid (problem grid) lattice size
   const multi1d<int>& lattSize() {return _layout.nrow;}
 
@@ -68,6 +78,12 @@ namespace Layout
   //! Returns whether this is the primary node
   /*! Always true on a scalar platform */
   bool primaryNode() {return true;}
+
+  //! Returns the node number of this node
+  int nodeNumber() {return 0;}
+
+  //! Returns the number of nodes
+  int numNodes() {return 1;}
 
 
   //! The linearized site index for the corresponding lexicographic site
@@ -114,7 +130,7 @@ namespace Layout
   void initialize(const multi1d<int>& nrows)
   {
     if (nrows.size() != Nd)
-      SZ_ERROR("dimension of lattice size not the same as the default");
+      QDP_error_exit("dimension of lattice size not the same as the default");
 
     _layout.vol=1;
     _layout.nrow = nrows;
@@ -131,7 +147,11 @@ namespace Layout
     fprintf(stderr,"vol=%d, nsubl=%d\n",_layout.vol,_layout.nsubl);
 #endif
 
+    // Default set and subsets
     InitDefaultSets();
+
+    // Make the nearest neighbor shift function available
+    shift.make();
 
     // Initialize RNG
     RNG::InitDefaultRNG();
@@ -184,7 +204,7 @@ namespace Layout
   void initialize(const multi1d<int>& nrows)
   {
     if (nrows.size() != Nd)
-      SZ_ERROR("dimension of lattice size not the same as the default");
+      QDP_error_exit("dimension of lattice size not the same as the default");
 
     _layout.vol=1;
     _layout.nrow = nrows;
@@ -273,7 +293,7 @@ namespace Layout
   void initialize(const multi1d<int>& nrows)
   {
     if (nrows.size() != Nd)
-      SZ_ERROR("dimension of lattice size not the same as the default");
+      QDP_error_exit("dimension of lattice size not the same as the default");
 
     _layout.vol=1;
     _layout.nrow = nrows;
@@ -318,7 +338,7 @@ LatticeInteger latticeCoordinate(int mu)
   LatticeInteger d;
 
   if (mu < 0 || mu >= Nd)
-    SZ_ERROR("dimension out of bounds");
+    QDP_error_exit("dimension out of bounds");
 
   const multi1d<int> &nrow = Layout::lattSize();
 
@@ -339,14 +359,11 @@ LatticeInteger latticeCoordinate(int mu)
 
 //-----------------------------------------------------------------------------
 //! Constructor from an int function
-void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
+void Set::make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
 {
 #if 1
   fprintf(stderr,"Set a subset: nsubset = %d\n",nsubset_indices);
 #endif
-
-  // First initialize the offsets
-  InitOffsets();
 
   // This actually allocates the subsets
   sub.resize(nsubset_indices);
@@ -438,7 +455,7 @@ void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
       indexrep = true;
     }
 
-    sub[cb].Make(start, end, indexrep, &soffsets, &(sitetables[cb]), cb);
+    sub[cb].make(start, end, indexrep, &(sitetables[cb]), cb);
 
 #if 1
     fprintf(stderr,"Subset(%d): indexrep=%d start=%d end=%d\n",cb,indexrep,start,end);
@@ -447,8 +464,9 @@ void Set::Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
 }
 	  
 
-//! Initializer for sets
-void Set::InitOffsets()
+//-----------------------------------------------------------------------------
+//! Initializer for nearest neighbor shift
+void NearestNeighborMap::make()
 {
   //--------------------------------------
   // Setup the communication index arrays
@@ -458,9 +476,8 @@ void Set::InitOffsets()
      * soffsets(direction,isign,position)
      *  where  isign    = +1 : plus direction
      *                  =  0 : negative direction
-     *         cb       =  0 : even lattice (includes origin)
-     *                  = +1 : odd lattice (does not include origin)
-     * the offsets cotain the current site, i.e the neighbour for site i
+     *         dir      =  0, ..., Nd-1
+     * the offsets contain the current site, i.e the neighbour for site i
      * is  soffsets(i,dir,mu) and NOT  i + soffset(..) 
      */
   const multi1d<int>& nrow = Layout::lattSize();

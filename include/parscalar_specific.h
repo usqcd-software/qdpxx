@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.1 2002-10-28 03:08:44 edwards Exp $
+// $Id: parscalar_specific.h,v 1.2 2002-11-04 04:47:16 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -15,25 +15,18 @@ QDP_BEGIN_NAMESPACE(QDP);
 // Layout stuff specific to a parallel architecture
 namespace Layout
 {
-  //! Subgrid (grid on each node) lattice size
-  const multi1d<int>& subgridLattSize();
-
-  //! Returns the node number of this node
-  int nodeNumber();
-
   //! Returns the logical node coordinates for this node
-  const multi1d<int>& logicalCoord();
+  const multi1d<int>& nodeCoord();
 
   //! Returns the logical size of this machine
   const multi1d<int>& logicalSize();
 
-  //! Returns the logical node number for the corresponding lattice coordinate
-  /*! The API requires this function to be here */
-  int nodeNumber(const multi1d<int>& coord);
-
   //! Returns the logical node coordinates for the corresponding lattice coordinate
   /*! The API requires this function to be here */
   multi1d<int> nodeCoord(const multi1d<int>& coord);
+
+  //! Subgrid (grid on each node) lattice size
+  const multi1d<int>& subgridLattSize();
 
 };
 
@@ -355,11 +348,7 @@ sum(const QDPExpr<RHS,OScalar<T> >& s1, const Subset& s)
 {
   typename UnaryReturn<OScalar<T>, FnSum>::Type_t  d;
 
-  evaluate(d,OpAssign(),s1);
-
-  // Now broadcast back out to all nodes
-  Internal::broadcast(d);
-  
+  evaluate(d,OpAssign(),s1);   // since OScalar, no global sum needed
   return d;
 }
 
@@ -375,7 +364,7 @@ sum(const QDPExpr<RHS,OScalar<T> >& s1)
 {
   typename UnaryReturn<OScalar<T>, FnSum>::Type_t  d;
 
-  evaluate(d,OpAssign(),s1);
+  evaluate(d,OpAssign(),s1);   // since OScalar, no global sum needed
   return d;
 }
 
@@ -402,6 +391,9 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
   }
 
+  // Do a global sum on the result
+  Internal::global_sum(d);
+  
   return d;
 }
 
@@ -421,8 +413,11 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
   zero_rep(d.elem());
 
   for(int i=0; i <= Layout::subgridVol(); ++i) 
-    d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
+    d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
 
+  // Do a global sum on the result
+  Internal::global_sum(d);
+  
   return d;
 }
 
@@ -481,6 +476,10 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
     dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
   }
 
+  // Do a global sum on the result
+  for(int k=0; k < ss.NumSubsets(); ++k)
+    Internal::global_sum(d[k]);
+  
   return dest;
 }
 
@@ -567,87 +566,74 @@ pokeSite(OLattice<T1>& l, const OScalar<T1>& r, const multi1d<int>& coord)
 // NOTE: the use of "all" is not desired. The offsets is not suppose to
 // be subset dependent, but is general to the class. E.g., all shifts should be
 // static classes
-struct FnShift
+class NearestNeighborMap
 {
-  PETE_EMPTY_CONSTRUCTORS(FnShift)
+public:
+  //! Constructor - does nothing really
+  NearestNeighborMap() {}
 
-  const int *soff;
-  FnShift(int isign, int dir): soff(all.Offsets()->slice(dir,(isign+1)>>1))
+  //! Destructor
+  ~NearestNeighborMap() {}
+
+  //! Actual constructor
+  void make();
+
+  //! Function call operator for a shift
+  /*! 
+   * shift(source,isign,dir)
+   * isign = parity of direction (+1 or -1)
+   * dir   = direction ([0,...,Nd-1])
+   *
+   * Implements:  dest(x) = s1(x+isign*dir)
+   * There are cpp macros called  FORWARD and BACKWARD that are +1,-1 resp.
+   * that are often used as arguments
+   *
+   * Shifts on a OLattice are non-trivial.
+   * Notice, there may be an ILattice underneath which requires shift args.
+   * This routine is very architecture dependent.
+   */
+  template<class T1,class C1>
+  C1
+  operator()(const QDPType<T1,C1> & l, int isign, int dir)
     {
-//      fprintf(stderr,"FnShift(%d,%d): soff=0x%x\n",isign,dir,soff);
+      C1 d = l;
+
+      fprintf(stderr,"shift(QDPType,%d,%d)\n",isign,dir);
+      return d;
     }
-  
-  template<class T>
-  inline typename UnaryReturn<T, FnShift>::Type_t
-  operator()(const T &a) const
-  {
-    return (a);
-  }
+
+
+  template<class T1,class C1>
+  C1
+  operator()(const QDPExpr<T1,C1> & l, int isign, int dir)
+    {
+      C1 d = l;
+
+      fprintf(stderr,"shift(QDPExpr,%d,%d)\n",isign,dir);
+      return d;
+    }
+
+
+public:
+  //! Accessor to offsets
+  const multi3d<int>& Offsets() const {return soffsets;}
+
+private:
+  //! Hide copy constructor
+  NearestNeighborMap(const NearestNeighborMap&) {}
+
+  //! Hide operator=
+  void operator=(const NearestNeighborMap&) {}
+
+private:
+  //! Offset table used for communications. 
+  /*! 
+   * The direction is in the sense of the Map or Shift functions from QDP.
+   * soffsets(direction,isign,position) 
+   */ 
+  multi3d<int> soffsets;
 };
 
-
-// Specialization of ForEach deals with shifts. 
-// This mechanism needs to be more general - this implementation is a prototype.
-template<class A, class CTag>
-struct ForEach<UnaryNode<FnShift, A>, EvalLeaf1, CTag>
-{
-  typedef typename ForEach<A, EvalLeaf1, CTag>::Type_t TypeA_t;
-  typedef typename Combine1<TypeA_t, FnShift, CTag>::Type_t Type_t;
-  inline static
-  Type_t apply(const UnaryNode<FnShift, A> &expr, const EvalLeaf1 &f, 
-    const CTag &c) 
-  {
-    EvalLeaf1 ff(expr.operation().soff[f.val1()]);
-//    fprintf(stderr,"ForEach<Unary<FnShift>>: site = %d, new = %d\n",f.val1(),ff.val1());
-
-    return Combine1<TypeA_t, FnShift, CTag>::
-      combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),
-              expr.operation(), c);
-  }
-};
-
-
-//-----------------------------------------------
-//! OLattice<T> = shift(OLattice<T1>, int isign, int dir)
-/*! 
- * shift(source,isign,dir)
- * isign = parity of direction (+1 or -1)
- * dir   = direction ([0,...,Nd-1])
- *
- * Implements:  dest(x) = s1(x+isign*dir)
- * There are cpp macros called  FORWARD and BACKWARD that are +1,-1 resp.
- * that are often used as arguments
- *
- * Shifts on a OLattice are non-trivial.
- * Notice, there may be an ILattice underneath which requires shift args.
- * This routine is very architecture dependent.
- */
-template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnShift,
-  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
-shift(const QDPType<T1,C1> & l, int isign, int dir)
-{
-//  fprintf(stderr,"shift(QDPType,%d,%d)\n",isign,dir);
-
-  typedef UnaryNode<FnShift,
-    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-  return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
-    CreateLeaf<QDPType<T1,C1> >::make(l)));
-}
-
-
-template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnShift,
-  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
-shift(const QDPExpr<T1,C1> & l, int isign, int dir)
-{
-//  fprintf(stderr,"shift(QDPExpr,%d,%d)\n",isign,dir);
-
-  typedef UnaryNode<FnShift,
-    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-  return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
-    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
-}
 
 
 
@@ -668,7 +654,6 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
   // Twice the subgrid vol - intermediate array we flip-flop writing data
   multi1d<T> data(2*Layout::subgridVol());
 
-  const int temp_size = sizeof(T);
   for(int site=0; site < Layout::subgridVol(); ++site)
     data[site] = d.elem(site);
 
@@ -678,7 +663,7 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
   for(int site=0, xsite1=0; site < Layout::vol(); site += xinc)
   {
 //    int i = Layout::linearSiteIndex(site);
-    int xsite2 = QMP_shift(site,(unsigned char*)(data.slice()),temp_size,0);
+    int xsite2 = QMP_shift(site,(unsigned char*)(data.slice()),sizeof(T),0);
 
     if (Layout::primaryNode())
       for(int xsite3=0; xsite3 < xinc; xsite3++,xsite2++,xsite1++)
@@ -700,7 +685,6 @@ BinaryWriter& write(BinaryWriter& bin, const OLattice<T>& d)
   // Twice the subgrid vol - intermediate array we flip-flop writing data
   multi1d<T> data(2*Layout::subgridVol());
 
-  const int temp_size = sizeof(T);
   for(int site=0; site < Layout::subgridVol(); ++site)
     data[site] = d.elem(site);
 
@@ -710,11 +694,73 @@ BinaryWriter& write(BinaryWriter& bin, const OLattice<T>& d)
   for(int site=0; site < Layout::vol(); site += xinc)
   {
 //    int i = Layout::linearSiteIndex(site);
-    int xsite2 = QMP_shift(site,(unsigned char*)(data.slice()),temp_size,0);
+    int xsite2 = QMP_shift(site,(unsigned char*)(data.slice()),sizeof(T),0);
 
     if (Layout::primaryNode())
-      bfwrite((void *)(data.slice() + xsite2), sizeof(T), xinc, bin.get()); 
+      bfwrite((void *)(data.slice() + xsite2), 
+	      sizeof(typename WordType<T>::Type_t), 
+	      xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t), bin.get());
   }
+  return bin;
+}
+
+
+//! Read a binary element
+template<class T>
+BinaryReader& read(BinaryReader& bin, T& d)
+{
+  if (Layout::primaryNode()) 
+    if (bfread((void *)&d, sizeof(T), 1, bin.get()) != 1)
+      QDP_error_exit("BinaryReader: failed to read");
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+
+  return bin;
+}
+
+//! Binary input
+/*! Assumes no inner grid */
+template<class T>
+BinaryReader& read(BinaryReader& bin, OScalar<T>& d)
+{
+  if (Layout::primaryNode()) 
+    bfread((void *)&(d.elem()), sizeof(typename WordType<T>::Type_t), 
+	   sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get()); 
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+
+  return bin;
+}
+
+//! Binary input
+/*! Assumes no inner grid */
+template<class T>
+BinaryReader& read(BinaryReader& bin, OLattice<T>& d)
+{
+  // Twice the subgrid vol - intermediate array we flip-flop reading data
+  multi1d<T> data(2*Layout::subgridVol());
+  const int xinc = Layout::subgridLattSize()[0];
+
+  // Assume lexicographic for the moment...
+  for(int site=0, xsite2=0; site < Layout::vol(); site += xinc)
+  {
+    if (Layout::primaryNode())
+      bfread((void *)(data.slice() + xsite2),
+	     sizeof(typename WordType<T>::Type_t), 
+	     xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t), bin.get());
+
+    xsite2 = QMP_shift((site + xinc) % Layout::vol(),
+		       (unsigned char*)(data.slice()), sizeof(T), xinc);
+  }
+
+  for(int site=0; site < Layout::subgridVol(); ++site)
+  {
+//    int i = Layout::linearSiteIndex(site);
+    d.elem(site) = data[site];
+  }
+
   return bin;
 }
 
