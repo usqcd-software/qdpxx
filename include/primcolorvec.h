@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primcolorvec.h,v 1.6 2002-12-26 22:59:51 edwards Exp $
+// $Id: primcolorvec.h,v 1.7 2003-02-28 04:16:14 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Vector
@@ -185,6 +185,41 @@ pokeColor(PColorVector<T1,N>& l, const PScalar<T2>& r, int row)
   // Note, do not need to propagate down since the function is eaten at this level
   l.elem(row) = r.elem();
   return l;
+}
+
+
+//-----------------------------------------------------------------------------
+// Contraction for color vectors
+// colorContract 
+template<class T1, class T2, class T3, int N>
+struct TrinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, PColorVector<T3,N>, FnColorContract> {
+  typedef PScalar<typename TrinaryReturn<T1, T2, T3, FnColorContract>::Type_t>  Type_t;
+};
+
+//! dest  = colorContract(Qvec1,Qvec2,Qvec3)
+/*!
+ * Performs:
+ *  \f$dest = \sum_{i,j,k} \epsilon^{i,j,k} V1^{i} V2^{j} V3^{k}\f$
+ *
+ * This routine is completely unrolled for 3 colors
+ */
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<PColorVector<T1,3>, PColorVector<T2,3>, PColorVector<T3,3>, FnColorContract>::Type_t
+colorContract(const PColorVector<T1,3>& s1, const PColorVector<T2,3>& s2, const PColorVector<T3,3>& s3)
+{
+  typename TrinaryReturn<PColorVector<T1,3>, PColorVector<T2,3>, PColorVector<T3,3>, FnColorContract>::Type_t  d;
+
+  // Permutations: +(0,1,2)+(1,2,0)+(2,0,1)-(1,0,2)-(0,2,1)-(2,1,0)
+
+  // d = \epsilon^{i,j,k} V1^{i} V2^{j} V3^{k}
+  d.elem() = (s1.elem(0)*s2.elem(1)
+           -  s1.elem(1)*s2.elem(0))*s3.elem(2)
+           + (s1.elem(1)*s2.elem(2)
+           -  s1.elem(2)*s2.elem(1))*s3.elem(0)
+           + (s1.elem(2)*s2.elem(0)
+           -  s1.elem(0)*s2.elem(2))*s3.elem(1);
+
+  return d;
 }
 
 
