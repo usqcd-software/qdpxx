@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdptype.h,v 1.2 2004-07-02 19:20:25 edwards Exp $
+// $Id: qdp_qdptype.h,v 1.3 2004-07-02 21:54:25 edwards Exp $
 
 /*! @file
  * @brief Main type class for QDP
@@ -377,6 +377,34 @@ public:
 };
 
 /*! @} */ // end of group1
+
+//-----------------------------------------------------------------------------
+// Traits classes to support return types
+//-----------------------------------------------------------------------------
+
+// Default unary(QDPType) -> QDPType
+template<class T1, class C1, class Op>
+struct UnaryReturn<QDPType<T1,C1>, Op> {
+  typedef QDPType<typename UnaryReturn<T1, Op>::Type_t,
+		  typename UnaryReturn<C1, Op>::Type_t>  Type_t;
+};
+
+// Default binary(QDPType,QDPType) -> QDPType
+template<class T1, class C1, class T2, class C2, class Op>
+struct BinaryReturn<QDPType<T1,C1>, QDPType<T2,C2>, Op> {
+  typedef QDPType<typename BinaryReturn<T1, T2, Op>::Type_t,
+		  typename BinaryReturn<C1, C2, Op>::Type_t>  Type_t;
+};
+
+// Currently, the only trinary operator is ``where'', so return 
+// based on T2 and T3
+// Default trinary(QDPType,QDPType,QDPType) -> QDPType
+template<class T1, class C1, class T2, class C2, class T3, class C3, class Op>
+struct TrinaryReturn<QDPType<T1,C1>, QDPType<T2,C2>, QDPType<T3,C3>, Op> {
+  typedef QDPType<typename BinaryReturn<T2, T3, Op>::Type_t,
+		  typename BinaryReturn<C2, C3, Op>::Type_t>  Type_t;
+};
+
 
 //-----------------------------------------------------------------------------
 // We need to specialize CreateLeaf<T> for our class, so that operators
