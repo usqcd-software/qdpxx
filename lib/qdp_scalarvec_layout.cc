@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvec_layout.cc,v 1.6 2003-08-29 04:27:37 edwards Exp $
+// $Id: qdp_scalarvec_layout.cc,v 1.7 2003-08-31 20:26:18 edwards Exp $
 
 /*! @file
  * @brief Scalarvec layout routines
@@ -150,6 +150,13 @@ namespace Layout
 #if QDP_DEBUG >= 2
     fprintf(stderr,"vol=%d\n",_layout.vol);
 #endif
+
+
+#if defined(QDP_USE_FIXED_MEMORY)
+    if (_layout.vol > QDP_MAX_MEMORY)
+      QDP_error_exit("The CPP var QDP_MAX_MEMORY is not large enough");
+#endif
+
 
     // Sanity check - check the layout functions make sense
     for(int i=0; i < sitesOnNode(); ++i) 
