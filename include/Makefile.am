@@ -19,6 +19,7 @@ GENERIC_HDRS = qdp_scalarsite_generic.h \
 	$(genericdir)/generic_addvec.h \
 	$(genericdir)/generic_adj_mat_vec.h \
 	$(genericdir)/generic_mat_vec.h \
+	$(genericdir)/generic_mult_aa.h \
 	$(genericdir)/generic_mult_an.h \
 	$(genericdir)/generic_mult_na.h \
 	$(genericdir)/generic_mult_nn.h
