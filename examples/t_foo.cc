@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.5 2003-01-17 05:46:03 edwards Exp $
+// $Id: t_foo.cc,v 1.6 2003-01-20 16:25:35 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -76,10 +76,11 @@ int main(int argc, char *argv[])
   Write(nml,nrow);
 
 #if 0
-  Map near;
-  Nearest bbb;
-  near.make(bbb);
   {
+    Map near;
+    Nearest bbb;
+    near.make(bbb);
+
     LatticeReal fred,sue;
     random(fred);
 
@@ -90,11 +91,30 @@ int main(int argc, char *argv[])
   }
 #endif
 
-#if 1
-  ArrayMap nearneigh;
-  NearestNeighborMapFunc bbb;
-  nearneigh.make(bbb);
+#if 0
   {
+    BiDirectionalMap near;
+    Nearest bbb;
+    near.make(bbb);
+
+    LatticeReal fred,sue,sam;
+    random(fred);
+
+    sue = near(fred,+1);
+    sam = near(fred,-1);
+
+    Write(nml,fred);
+    Write(nml,sue);
+    Write(nml,sam);
+  }
+#endif
+
+#if 0
+  {
+    ArrayMap nearneigh;
+    NearestNeighborMapFunc bbb;
+    nearneigh.make(bbb);
+
     LatticeReal fred,sue;
     random(fred);
 
@@ -108,7 +128,29 @@ int main(int argc, char *argv[])
   }
 #endif
 
-  exit(0);
+#if 1
+  {
+    ArrayBiDirectionalMap nearneigh;
+    NearestNeighborMapFunc bbb;
+    nearneigh.make(bbb);
+
+    LatticeReal fred,sue,sam;
+    random(fred);
+
+    Write(nml,fred);
+    for(int m=0; m < Nd; ++m)
+    {
+      sue = nearneigh(fred,+1,m);
+      sam = nearneigh(fred,-1,m);
+
+      Write(nml,m);
+      Write(nml,sue);
+      Write(nml,sam);
+    }
+  }
+#endif
+
+//  exit(0);
 
   cerr << "try a string\n";
   nml << "write a string";
