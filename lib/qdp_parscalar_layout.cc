@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.6 2003-07-26 04:01:01 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.7 2003-07-27 03:04:13 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -455,11 +455,11 @@ namespace Layout
   /*! This layout is appropriate for a 32-style checkerboard lattice */
   int linearSiteIndex(const multi1d<int>& coord)
   {
-    int vol_cb = vol() >> (Nd+1);
-    multi1d<int> cb_nrow(Nd);
-    cb_nrow[0] = lattSize()[0] >> 2;
+    int subgrid_vol_cb = Layout::sitesOnNode() >> (Nd+1);
+    multi1d<int> subgrid_cb_nrow = Layout::subgridLattSize();
+    subgrid_cb_nrow[0] >>= 2;
     for(int i=1; i < Nd; ++i) 
-      cb_nrow[i] = lattSize()[i] >> 1;
+      subgrid_cb_nrow[i] >>= 1;
 
     int subl = coord[Nd-1] & 1;
     for(int m=Nd-2; m >= 0; --m)
@@ -472,19 +472,19 @@ namespace Layout
     subl += (cb & 1) << Nd;   // Final color or checkerboard
 
     // Construct the checkerboard lattice coord
-    multi1d<int> cb_coord(Nd);
+    multi1d<int> subgrid_cb_coord(Nd);
 
-    cb_coord[0] = coord[0] >> 2;
-    for(int m=1; m < Nd; ++m)
-      cb_coord[m] = coord[m] >> 1;
-
-    return local_site(cb_coord, cb_nrow) + subl*vol_cb;
+    subgrid_cb_coord[0] = (coord[0] >> 2) % subgrid_cb_nrow[0];
+    for(int i=1; i < Nd; ++i)
+      subgrid_cb_coord[i] = (coord[i] >> 1) % subgrid_cb_nrow[i];
+    
+    return local_site(subgrid_cb_coord, subgrid_cb_nrow) + subl*subgrid_vol_cb;
   }
 
 
   //! The node number for the corresponding lattice coordinate
   /*! 
-   * This layout is appropriate for a 2 checkerboard (red/black) lattice,
+   * This layout is appropriate for a 32 checkerboard (red/black) lattice,
    * but to find the nodeNumber this function resembles a simple lexicographic 
    * layout
    */
@@ -506,23 +506,29 @@ namespace Layout
    */
   multi1d<int> siteCoords(int node, int linearsite) // ignore node
   {
-    int vol_cb = vol() >> (Nd+1);
-    multi1d<int> cb_nrow(Nd);
-    cb_nrow[0] = lattSize()[0] >> 2;
+    int subgrid_vol_cb = Layout::sitesOnNode() >> (Nd+1);
+    multi1d<int> subgrid_cb_nrow = Layout::subgridLattSize();
+    subgrid_cb_nrow[0] >>= 2;
     for(int i=1; i < Nd; ++i) 
-      cb_nrow[i] = lattSize()[i] >> 1;
+      subgrid_cb_nrow[i] >>= 1;
 
-    int subl = linearsite / vol_cb;
-    multi1d<int> coord = crtesn(linearsite % vol_cb, cb_nrow);
+    // Get the base (origins) of the absolute lattice coord
+    multi1d<int> coord = crtesn(node, Layout::logicalSize());
+    coord *= Layout::subgridLattSize();
+    
+    int subl = linearsite / subgrid_vol_cb;
+    multi1d<int> tmp_coord = crtesn(linearsite % subgrid_vol_cb, subgrid_cb_nrow);
+
+    // Add on position within the node
+    // NOTE: the cb for the x-coord is not yet determined
+    coord[0] += tmp_coord[0] << 2;
+    for(int m=1; m < Nd; ++m)
+      coord[m] += tmp_coord[m] << 1;
 
     int cb = 0;
     for(int m=1; m<Nd; ++m)
       cb += coord[m];
     cb &= 1;
-
-    coord[0] <<= 2;
-    for(int m=1; m<Nd; ++m)
-      coord[m] <<= 1;
 
     subl ^= (cb << Nd);
     for(int m=0; m<Nd; ++m)
