@@ -168,6 +168,18 @@ GENERIC_HDRS = qdp_scalarsite_generic.h \
 	$(genericdir)/generic_mult_an.h \
 	$(genericdir)/generic_mult_na.h \
 	$(genericdir)/generic_mult_nn.h \
+	$(genericdir)/generic_blas_local_sumsq.h \
+	$(genericdir)/generic_blas_vadd.h  \
+	$(genericdir)/generic_blas_vaxmby3.h \
+	$(genericdir)/generic_blas_vaxmby3_norm.h \
+	$(genericdir)/generic_blas_vaxmy3.h \
+	$(genericdir)/generic_blas_vaxpby3.h \
+	$(genericdir)/generic_blas_vaxpy3.h \
+	$(genericdir)/generic_blas_vaxpy3_norm.h \
+	$(genericdir)/generic_blas_vscal.h \
+	$(genericdir)/generic_blas_vsub.h \
+	$(genericdir)/generic_blas_local_vcdot.h \
+	$(genericdir)/generic_blas_local_vcdot_real.h \
 	$(genericdir)/qdp_scalarsite_generic_linalg.h \
 	$(genericdir)/qdp_scalarsite_generic_blas.h
 
