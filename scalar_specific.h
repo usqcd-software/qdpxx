@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.7 2002-09-26 20:06:14 edwards Exp $
+// $Id: scalar_specific.h,v 1.8 2002-09-26 21:30:07 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -271,6 +271,23 @@ void zero(OLattice<T>& dest)
 
 //-----------------------------------------------
 // Global sums
+//! OScalar = sum(OScalar)
+/*!
+ * Allow a global sum that sums over the lattice, but returns an object
+ * of the same primitive type. E.g., contract only over lattice indices
+ */
+template<class RHS, class T>
+typename UnaryReturn<OScalar<T>, FnSum>::Type_t
+sum(const QDPExpr<RHS,OScalar<T> >& s1)
+{
+  typename UnaryReturn<OScalar<T>, FnSum>::Type_t  d;
+
+  evaluate(d,OpAssign(),s1);
+  return d;
+}
+
+
+
 //! OScalar = sum(OLattice)
 /*!
  * Allow a global sum that sums over the lattice, but returns an object
@@ -283,11 +300,11 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
   typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
   Subset s = global_context->Sub();
 
+  // Must initialize to zero since we do not know if the loop will be entered
+  zero(d.elem());
+
   if (! s.IndexRep())
   {
-    // Must initialize to zero since we do not know if the loop will be entered
-    zero(d.elem());
-
     for(int i=s.Start(); i <= s.End(); ++i) 
       d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
   }
@@ -306,75 +323,32 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
 
 
 //-----------------------------------------------------------------------------
-// Global slice sums
-//! dest  = slice_sum(source1,mu) 
+// Multiple global sums 
+//! multi1d<OScalar> dest  = sumMulti(OScalar,Set) 
 /*!
- * Compute the global sum along the hypersurfuce orthogonal to
- * the direction mu
+ * Compute the global sum on multiple subsets specified by Set 
  *
- * This is a very simple implementation. There is no need for
- * anything fancier unless global sums are just so extraordinarily
- * slow. Otherwise, slice_sums happen so infrequently the slow
- * version is fine.
-   */
-template<class T>
-struct UnaryReturn<OLattice<T>, FnSliceSum > {
-  typedef multi1d<OScalar<typename UnaryReturn<T, FnSliceSum>::Type_t> >  Type_t;
-};
-
-
-template<class T>
-typename UnaryReturn<OLattice<T>, FnSliceSum>::Type_t
-slice_sum(const OLattice<T>& s1, int mu)
+ * This implementation is specific to a purely olattice like
+ * types. The scalar input value is replicated to all the
+ * slices
+ */
+template<class RHS, class T>
+typename UnaryReturn<OScalar<T>, FnSum>::Type_t
+sumMulti(const QDPExpr<RHS,OScalar<T> >& s1)
 {
-  if (mu < 0 || mu >= Nd)
-    SZ_ERROR("direction out of bounds in slice sum");
+  typename UnaryReturn<OScalar<T>, FnSumMulti>::Type_t  dest(ss.NumSubsets());
 
-  typename UnaryReturn<OLattice<T>, FnSliceSum>::Type_t  dest(layout.LattSize()[mu]);
-  Subset s = global_context->Sub();
-
-  int len2 = 1;
-  for(int dir=0; dir < mu; ++dir)
-    len2 = len2 * layout.LattSize()[dir];
-  int len1 = len2 * layout.LattSize()[mu];
-
-  // Initialize result with zero
-  for(int i=0; i < layout.LattSize()[mu]; ++i)
-    zero(dest[i]);
-
-  if (! s.IndexRep())
+  // lazy - evaluate repeatedly
+  for(int i=0; i < ss.NumSubsets(); ++i)
   {
-    for(int i=s.Start(); i <= s.End(); ++i) 
-    {
-      int site   = layout.LexicoSiteIndex(i);
-      int hypsec = site % len1;
-      int plane  = hypsec / len2;
-
-      dest[plane].elem() += s1.elem(site);
-    }
-  }
-  else
-  {
-    const int *tab = s.SiteTable()->slice();
-    for(int j=0; j < s.NumSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      int site   = layout.LexicoSiteIndex(i);
-      int hypsec = site % len1;
-      int plane  = hypsec / len2;
-
-      dest[plane].elem() += s1.elem(site);
-    }
+    evaluate(dest[i],OpAssign(),s1);
   }
 
   return dest;
 }
 
 
-
-//-----------------------------------------------------------------------------
-// Multiple global sums 
-//! dest  = sumMulti(source1,Set) 
+//! multi1d<OScalar> dest  = sumMulti(OLattice,Set) 
 /*!
  * Compute the global sum on multiple subsets specified by Set 
  *
@@ -383,38 +357,23 @@ slice_sum(const OLattice<T>& s1, int mu)
  * slow. Otherwise, generalized sums happen so infrequently the slow
  * version is fine.
  */
-template<class T>
-struct UnaryReturn<OLattice<T>, FnSumMulti > {
-  typedef multi1d<OScalar<typename UnaryReturn<T, FnSumMulti>::Type_t> >  Type_t;
-};
-
-template<class T>
+template<class RHS, class T>
 typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t
-sumMulti(const OLattice<T>& s1, const Set& ss)
+sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 {
   typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.NumSubsets());
 
   // Initialize result with zero
-  for(int i=0; i < ss.NumSubsets(); ++i)
+  for(int k=0; k < ss.NumSubsets(); ++k)
+    zero(dest[k]);
+
+  // Loop over all sites and accumulate based on the coloring 
+  const multi1d<int>& lat_color =  ss.LatticeColoring();
+
+  for(int i=0; i < layout.Vol(); ++i) 
   {
-    Subset s = ss[i];
-
-    zero(dest[i]);
-
-    if (! s.IndexRep())
-    {
-      for(int i=s.Start(); i <= s.End(); ++i) 
-	dest[i].elem() += s1.elem(layout.LexicoSiteIndex(i));
-    }
-    else
-    {
-      const int *tab = s.SiteTable()->slice();
-      for(int j=0; j < s.NumSiteTable(); ++j) 
-      {
-	int i = tab[j];
-	dest[i].elem() += s1.elem(layout.LexicoSiteIndex(i));
-      }
-    }
+    int j = lat_color[i];
+    dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
   }
 
   return dest;

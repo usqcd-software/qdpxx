@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: subset.h,v 1.2 2002-09-26 20:04:25 edwards Exp $
+// $Id: subset.h,v 1.3 2002-09-26 21:30:07 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -33,7 +33,7 @@ public:
   ~Subset() {}
 
   //! Access the coloring for this subset
-  int Index() {return sub_index;}
+  const int Index() const {return sub_index;}
 
 protected:
   // Simple constructor
@@ -90,7 +90,7 @@ public:
   const Subset& operator[](int subset_index) const {return sub[subset_index];}
 
   //! Return number of subsets
-  int NumSubsets() {return sub.size();}
+  const int NumSubsets() const {return sub.size();}
 
   //! Destructor for a set
   ~Set() {}
@@ -118,6 +118,12 @@ protected:
    * NOTE: this should be moved off to a shift class
    */ 
   multi3d<int> soffsets;
+
+
+
+public:
+  // These should be a no-no. Must fix the friend syntax
+  const multi1d<int>& LatticeColoring() const {return lat_color;}
 };
 
 

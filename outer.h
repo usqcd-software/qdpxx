@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.3 2002-09-14 19:48:26 edwards Exp $
+// $Id: outer.h,v 1.4 2002-09-26 21:30:07 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -397,6 +397,11 @@ struct UnaryReturn<OScalar<T>, FnSum > {
 };
 
 template<class T>
+struct UnaryReturn<OScalar<T>, FnSumMulti > {
+  typedef multi1d<OScalar<typename UnaryReturn<T, FnSumMulti>::Type_t> >  Type_t;
+};
+
+template<class T>
 struct UnaryReturn<OScalar<T>, FnNorm2 > {
   typedef OScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
 };
@@ -572,6 +577,11 @@ struct BinaryReturn<OScalar<T1>, OScalar<T2>, OpRightShiftAssign > {
 template<class T>
 struct UnaryReturn<OLattice<T>, FnSum > {
   typedef OScalar<typename UnaryReturn<T, FnSum>::Type_t>  Type_t;
+};
+
+template<class T>
+struct UnaryReturn<OLattice<T>, FnSumMulti > {
+  typedef multi1d<OScalar<typename UnaryReturn<T, FnSumMulti>::Type_t> >  Type_t;
 };
 
 template<class T>
@@ -1005,25 +1015,6 @@ void gaussian(OScalar<T>& d)
 
   fill_gaussian(d.elem(), r1.elem(), r2.elem());
 }
-
-
-//-----------------------------------------------
-// Global sums
-//! OScalar = sum(OScalar)
-/*!
- * Allow a global sum that sums over the lattice, but returns an object
- * of the same primitive type. E.g., contract only over lattice indices
- */
-template<class RHS, class T>
-typename UnaryReturn<OScalar<T>, FnSum>::Type_t
-sum(const QDPExpr<RHS,OScalar<T> >& s1)
-{
-  typename UnaryReturn<OScalar<T>, FnSum>::Type_t  d;
-
-  evaluate(d,OpAssign(),s1);
-  return d;
-}
-
 
 
 QDP_END_NAMESPACE();

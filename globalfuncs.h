@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: globalfuncs.h,v 1.3 2002-09-25 00:31:51 edwards Exp $
+// $Id: globalfuncs.h,v 1.4 2002-09-26 21:30:07 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -118,6 +118,26 @@ innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
 {
   return sum(localInnerproductReal(s1,s2));
 }
+
+//-----------------------------------------------------------------------------
+// Multiple global sums 
+//! dest  = sumMulti(source1,Set) 
+/*!
+ * Compute the global sum on multiple subsets specified by Set 
+ *
+ * This is a very simple implementation. There is no need for
+ * anything fancier unless global sums are just so extraordinarily
+ * slow. Otherwise, generalized sums happen so infrequently the slow
+ * version is fine.
+ */
+template<class T, class C>
+inline
+typename UnaryReturn<C, FnSumMulti>::Type_t
+sumMulti(const QDPType<T,C>& s1, const Set& ss)
+{
+  return sumMulti(PETE_identity(s1), ss);
+}
+
 
 /** @} */ // end of group2
 
