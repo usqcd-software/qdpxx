@@ -404,8 +404,6 @@ AM_CONDITIONAL(QDP_USE_QCDOC, [test "X${ac_qcdoc_enabled}X" = "X1X" -a "X${ARCH_
 AM_CONDITIONAL(QDP_USE_SCALARVEC_SSE, [test "X${ac_sse}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarvecsiteX"])
 AM_CONDITIONAL(QDP_USE_SCALARVEC_SSE2, [test "X${ac_sse2}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarvecsiteX"])
 
-AM_CONDITIONAL(QDP_USE_PROFILING, [test "X${ac_profile}X" = "X1X"])
-
 #
 # For the examples directory, conditionally compile some files.
 # These conditionals are *only* used there.
