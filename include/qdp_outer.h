@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.36 2005-02-21 11:14:35 bjoo Exp $
+// $Id: qdp_outer.h,v 1.37 2005-02-22 16:09:56 bjoo Exp $
 
 #include "qdp_config.h"
 
@@ -427,7 +427,13 @@ private:
       QDP_info("destroy OLattice_orig=0x%x, OLattice=0x%x, this=0x%x, bytes/site=%d",
 	       F_orig,F,this,sizeof(T));
 #endif
+
+#ifdef QDP_USE_QCDOC_EDRAM
+      // We used Qalloc so we must free with qfree
+      qfree(F_orig);
+#else
       delete[] F_orig;
+#endif
     }
 
 
