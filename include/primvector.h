@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primvector.h,v 1.8 2002-10-25 03:33:26 edwards Exp $
+// $Id: primvector.h,v 1.9 2002-11-02 04:09:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -443,7 +443,7 @@ inline PVector<T1,N,C>&
 pokeColor(PVector<T1,N,C>& l, const PVector<T2,N,C>& r, int row)
 {
   for(int i=0; i < N; ++i)
-    l.elem(i) = pokeColor(l.elem(i),r.elem(i),row);
+    pokeColor(l.elem(i),r.elem(i),row);
   return l;
 }
 
@@ -454,7 +454,7 @@ inline PVector<T1,N,C>&
 pokeColor(PVector<T1,N,C>& l, const PVector<T2,N,C>& r, int row, int col)
 {
   for(int i=0; i < N; ++i)
-    l.elem(i) = pokeColor(l.elem(i),r.elem(i),row,col);
+    pokeColor(l.elem(i),r.elem(i),row,col);
   return l;
 }
 
@@ -465,7 +465,7 @@ inline PVector<T1,N,C>&
 pokeSpin(PVector<T1,N,C>& l, const PVector<T2,N,C>& r, int row)
 {
   for(int i=0; i < N; ++i)
-    l.elem(i) = pokeSpin(l.elem(i),r.elem(i),row);
+    pokeSpin(l.elem(i),r.elem(i),row);
   return l;
 }
 
@@ -476,7 +476,7 @@ inline PVector<T1,N,C>&
 pokeSpin(PVector<T1,N,C>& l, const PVector<T2,N,C>& r, int row, int col)
 {
   for(int i=0; i < N; ++i)
-    l.elem(i) = pokeSpin(l.elem(i),r.elem(i),row,col);
+    pokeSpin(l.elem(i),r.elem(i),row,col);
   return l;
 }
 

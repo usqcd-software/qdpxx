@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primspinmat.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+// $Id: primspinmat.h,v 1.5 2002-11-02 04:09:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -294,7 +294,39 @@ noSpinTrace(const PSpinMatrix<T,N>& s1)
 }
 
 
+//-----------------------------------------------
+// Peeking and poking
+//! Extract spin matrix components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T, int N>
+struct UnaryReturn<PSpinMatrix<T,N>, FnPeekSpinMatrix > {
+  typedef PScalar<typename UnaryReturn<T, FnPeekSpinMatrix>::Type_t>  Type_t;
+};
 
+template<class T, int N>
+inline typename UnaryReturn<PSpinMatrix<T,N>, FnPeekSpinMatrix>::Type_t
+peekSpin(const PSpinMatrix<T,N>& l, int row, int col)
+{
+  typename UnaryReturn<PSpinMatrix<T,N>, FnPeekSpinMatrix>::Type_t  d;
+
+  // Note, do not need to propagate down since the function is eaten at this level
+  d.elem() = l.elem(row,col);
+  return d;
+}
+
+//! Insert spin matrix components
+template<class T1, class T2, int N>
+inline PSpinMatrix<T1,N>&
+pokeSpin(PSpinMatrix<T1,N>& l, const PScalar<T2>& r, int row, int col)
+{
+  // Note, do not need to propagate down since the function is eaten at this level
+  l.elem(row,col) = r.elem();
+  return l;
+}
+
+
+
+//-----------------------------------------------
 
 #if 0
 // SpinMatrix<N> = Gamma<N,m> * SpinMatrix<N>

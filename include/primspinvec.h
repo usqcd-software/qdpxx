@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primspinvec.h,v 1.3 2002-10-12 04:10:15 edwards Exp $
+// $Id: primspinvec.h,v 1.4 2002-11-02 04:09:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Vector
@@ -295,6 +295,36 @@ struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstructDir3Minus > {
 /*! \addtogroup primspinvector */
 /*! @{ */
 
+// Peeking and poking
+//! Extract spin vector components 
+template<class T, int N>
+struct UnaryReturn<PSpinVector<T,N>, FnPeekSpinVector > {
+  typedef PScalar<typename UnaryReturn<T, FnPeekSpinVector>::Type_t>  Type_t;
+};
+
+template<class T, int N>
+inline typename UnaryReturn<PSpinVector<T,N>, FnPeekSpinVector>::Type_t
+peekSpin(const PSpinVector<T,N>& l, int row)
+{
+  typename UnaryReturn<PSpinVector<T,N>, FnPeekSpinVector>::Type_t  d;
+
+  // Note, do not need to propagate down since the function is eaten at this level
+  d.elem() = l.elem(row);
+  return d;
+}
+
+//! Insert spin vector components
+template<class T1, class T2, int N>
+inline PSpinVector<T1,N>&
+pokeSpin(PSpinVector<T1,N>& l, const PScalar<T2>& r, int row)
+{
+  // Note, do not need to propagate down since the function is eaten at this level
+  l.elem(row) = r.elem();
+  return l;
+}
+
+
+//-----------------------------------------------
 #if 0
 // SpinMatrix<N> = Gamma<N,m> * SpinMatrix<N>
 // Default case 

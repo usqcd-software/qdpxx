@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primcolorvec.h,v 1.3 2002-10-12 04:10:15 edwards Exp $
+// $Id: primcolorvec.h,v 1.4 2002-11-02 04:09:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Vector
@@ -148,6 +148,35 @@ struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnLocalInnerproductR
 //-----------------------------------------------------------------------------
 // Operators
 //-----------------------------------------------------------------------------
+
+// Peeking and poking
+//! Extract color vector components 
+template<class T, int N>
+struct UnaryReturn<PColorVector<T,N>, FnPeekColorVector > {
+  typedef PScalar<typename UnaryReturn<T, FnPeekColorVector>::Type_t>  Type_t;
+};
+
+template<class T, int N>
+inline typename UnaryReturn<PColorVector<T,N>, FnPeekColorVector>::Type_t
+peekColor(const PColorVector<T,N>& l, int row)
+{
+  typename UnaryReturn<PColorVector<T,N>, FnPeekColorVector>::Type_t  d;
+
+  // Note, do not need to propagate down since the function is eaten at this level
+  d.elem() = l.elem(row);
+  return d;
+}
+
+//! Insert color vector components
+template<class T1, class T2, int N>
+inline PColorVector<T1,N>&
+pokeColor(PColorVector<T1,N>& l, const PScalar<T2>& r, int row)
+{
+  // Note, do not need to propagate down since the function is eaten at this level
+  l.elem(row) = r.elem();
+  return l;
+}
+
 
 
 QDP_END_NAMESPACE();

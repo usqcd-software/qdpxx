@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primscalar.h,v 1.9 2002-10-25 03:33:26 edwards Exp $
+// $Id: primscalar.h,v 1.10 2002-11-02 04:09:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -888,7 +888,7 @@ template<class T1, class T2>
 inline PScalar<T1>&
 pokeColor(PScalar<T1>& l, const PScalar<T2>& r, int row)
 {
-  l.elem() = pokeColor(l.elem(),r.elem(),row);
+  pokeColor(l.elem(),r.elem(),row);
   return l;
 }
 
@@ -898,7 +898,7 @@ template<class T1, class T2>
 inline PScalar<T1>&
 pokeColor(PScalar<T1>& l, const PScalar<T2>& r, int row, int col)
 {
-  l.elem() = pokeColor(l.elem(),r.elem(),row,col);
+  pokeColor(l.elem(),r.elem(),row,col);
   return l;
 }
 
@@ -908,7 +908,7 @@ template<class T1, class T2>
 inline PScalar<T1>&
 pokeSpin(PScalar<T1>& l, const PScalar<T2>& r, int row)
 {
-  l.elem() = pokeSpin(l.elem(),r.elem(),row);
+  pokeSpin(l.elem(),r.elem(),row);
   return l;
 }
 
@@ -918,7 +918,7 @@ template<class T1, class T2>
 inline PScalar<T1>&
 pokeSpin(PScalar<T1>& l, const PScalar<T2>& r, int row, int col)
 {
-  l.elem() = pokeSpin(l.elem(),r.elem(),row,col);
+  pokeSpin(l.elem(),r.elem(),row,col);
   return l;
 }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primmatrix.h,v 1.8 2002-10-25 03:33:26 edwards Exp $
+// $Id: primmatrix.h,v 1.9 2002-11-02 04:09:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -637,7 +637,7 @@ pokeColor(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
 {
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
-      l.elem(i,j) = pokeColor(l.elem(i,j),r.elem(i,j),row);
+      pokeColor(l.elem(i,j),r.elem(i,j),row);
   return l;
 }
 
@@ -649,7 +649,7 @@ pokeColor(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row, int col)
 {
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
-      l.elem(i,j) = pokeColor(l.elem(i,j),r.elem(i,j),row,col);
+      pokeColor(l.elem(i,j),r.elem(i,j),row,col);
   return l;
 }
 
@@ -661,7 +661,7 @@ pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
 {
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
-      l.elem(i,j) = pokeSpin(l.elem(i,j),r.elem(i,j),row);
+      pokeSpin(l.elem(i,j),r.elem(i,j),row);
   return l;
 }
 
@@ -673,7 +673,7 @@ pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row, int col)
 {
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
-      l.elem(i,j) = pokeSpin(l.elem(i,j),r.elem(i,j),row,col);
+      pokeSpin(l.elem(i,j),r.elem(i,j),row,col);
   return l;
 }
 
