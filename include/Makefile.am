@@ -44,24 +44,35 @@ GENERIC_HDRS = qdp_scalarsite_generic.h \
 	$(genericdir)/qdp_scalarsite_generic_linalg.h \
 	$(genericdir)/qdp_scalarsite_generic_blas.h \
 	$(genericdir)/qdp_scalarsite_generic_cblas.h
+
+
 # If using SSE, make sure those files are installed
-ssedir = scalarsite_sse
+ssesitedir = scalarsite_sse
 
-SSE_HDRS = qdp_scalarsite_sse.h \
-	$(ssedir)/sse_addvec.h \
-	$(ssedir)/sse_adj_mat_hwvec.h \
-	$(ssedir)/sse_adj_mat_vec.h \
-	$(ssedir)/sse_mat_hwvec.h \
-	$(ssedir)/sse_mat_vec.h \
-	$(ssedir)/sse_mult_an.h \
-	$(ssedir)/sse_mult_na.h \
-	$(ssedir)/sse_mult_nn.h \
-	$(ssedir)/sse_s_m_a_mat.h \
-	$(ssedir)/sse_s_m_a_vec.h \
-	$(ssedir)/qdp_scalarsite_sse_linalg.h \
-	$(ssedir)/qdp_scalarsite_sse_blas.h \
-	qdp_scalarvecsite_sse.h
+SSESITE_HDRS = qdp_scalarsite_sse.h \
+	$(ssesitedir)/sse_addvec.h \
+	$(ssesitedir)/sse_adj_mat_hwvec.h \
+	$(ssesitedir)/sse_adj_mat_vec.h \
+	$(ssesitedir)/sse_mat_hwvec.h \
+	$(ssesitedir)/sse_mat_vec.h \
+	$(ssesitedir)/sse_mult_an.h \
+	$(ssesitedir)/sse_mult_na.h \
+	$(ssesitedir)/sse_mult_nn.h \
+	$(ssesitedir)/sse_s_m_a_mat.h \
+	$(ssesitedir)/sse_s_m_a_vec.h \
+	$(ssesitedir)/qdp_scalarsite_sse_linalg.h \
+	$(ssesitedir)/qdp_scalarsite_sse_blas.h
 
+# Scalarvectsite SSE extensions
+ssevecdir = scalarvecsite_sse
+
+SSEVEC_HDRS = qdp_scalarvecsite_sse.h \
+	$(ssevecdir)/ssevec_mult_nn.h \
+	$(ssevecdir)/qdp_scalarvecsite_sse_linalg.h \
+	$(ssevecdir)/qdp_scalarvecsite_sse_blas.h
+
+
+# QCDOC stuff
 qcdocdir = scalarsite_qcdoc
 
 QCDOC_HDRS = qdp_scalarsite_qcdoc.h \
@@ -70,6 +81,7 @@ QCDOC_HDRS = qdp_scalarsite_qcdoc.h \
 	$(qcdocdir)/qcdoc_mult_nn.h \
 	$(qcdocdir)/qcdoc_mult_an.h \
 	$(qcdocdir)/save_fp_regs.h
+
 
 # All the include files - avoid flattening of dirs by using nobase
 nobase_include_HEADERS = \
@@ -128,7 +140,8 @@ nobase_include_HEADERS = \
                 $(PETE_HDRS) \
                 $(GENERIC_HDRS) \
 		$(QCDOC_HDRS) \
-		$(SSE_HDRS)
+		$(SSESITE_HDRS) \
+		$(SSEVEC_HDRS)
 
 nodist_include_HEADERS = qdp_config_internal.h
 
