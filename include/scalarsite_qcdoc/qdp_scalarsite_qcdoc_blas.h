@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.4 2004-03-23 12:56:11 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.5 2004-03-23 16:16:09 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -53,8 +53,8 @@ void evaluate(OLattice< TVec >& d,
   QDPIO::cout << "y += a*x" << endl;
 #endif
 
-  const LatticeFermion& x = static_cast<const LatticeFermion &>(rhs.expression().right());
-  const Real& a = static_cast<const Real &> (rhs.expression().left());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().right());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal > &> (rhs.expression().left());
   
   REAL ar = a.elem().elem().elem().elem().elem();
   REAL* aptr = &ar;
@@ -82,8 +82,8 @@ void evaluate(OLattice< TVec >& d,
   QDPIO::cout << "y -= a*x" << endl;
 #endif
 
-  const LatticeFermion& x = static_cast<const LatticeFermion &>(rhs.expression().right());
-  const Real& a = static_cast<const Real &> (rhs.expression().left());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().right());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal > &> (rhs.expression().left());
 
   // - sign as y -= ax <=> y = y-ax = -ax + y = axpy with -a 
   REAL ar = -( a.elem().elem().elem().elem().elem());
@@ -117,7 +117,7 @@ void evaluate( OLattice< TVec > &d,
 
   // Peel the stuff out of the expression
   // y is the right side of rhs
-  const LatticeFermion& y = static_cast<const LatticeFermion&> (rhs.expression().right());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().right());
 
   // ax is the left side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
@@ -128,8 +128,8 @@ void evaluate( OLattice< TVec > &d,
   const BN &mulNode = static_cast<const BN&> (rhs.expression().left());
 
   // get a and x out of the bynary node
-  const Real& a = static_cast<const Real&>(mulNode.left());
-  const LatticeFermion& x = static_cast<const LatticeFermion&>(mulNode.right());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.left());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.right());
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
@@ -165,7 +165,7 @@ void evaluate( OLattice< TVec > &d,
   // Peel the stuff out of the expression
 
   // y is the left side of rhs
-  const LatticeFermion& y = static_cast<const LatticeFermion&> (rhs.expression().left());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().left());
 
   // ax is the right side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
@@ -176,8 +176,8 @@ void evaluate( OLattice< TVec > &d,
   const BN &mulNode = static_cast<const BN&> (rhs.expression().right());
 
   // get a and x out of the bynary node
-  const Real& a = static_cast<const Real&>(mulNode.left());
-  const LatticeFermion& x = static_cast<const LatticeFermion&>(mulNode.right());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.left());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.right());
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
@@ -210,7 +210,7 @@ void evaluate( OLattice< TVec > &d,
 #endif
 
 
-  const LatticeFermion& y = static_cast<const LatticeFermion&> (rhs.expression().right());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().right());
 
   // ax is the left side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
@@ -221,8 +221,8 @@ void evaluate( OLattice< TVec > &d,
   const BN &mulNode = static_cast<const BN&> (rhs.expression().left());
 
   // get a and x out of the bynary node
-  const Real& a = static_cast<const Real&>(mulNode.left());
-  const LatticeFermion& x = static_cast<const LatticeFermion&>(mulNode.right());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.left());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.right());
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
@@ -253,7 +253,7 @@ void evaluate( OLattice< TVec > &d,
   QDPIO::cout << "z = y - a*x" << endl;
 #endif
 
-  const LatticeFermion& y = static_cast<const LatticeFermion&> (rhs.expression().left());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().left());
 
   // ax is the right side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
@@ -264,8 +264,8 @@ void evaluate( OLattice< TVec > &d,
   const BN &mulNode = static_cast<const BN&> (rhs.expression().right());
 
   // get a and x out of the bynary node
-  const Real& a = static_cast<const Real&>(mulNode.left());
-  const LatticeFermion& x = static_cast<const LatticeFermion&>(mulNode.right());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.left());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.right());
   // Set pointers etc.
 
   // -ve sign as y - ax = -ax + y  = axpy with -a.
@@ -297,8 +297,8 @@ void evaluate(OLattice< TVec >& d,
   QDPIO::cout << "y += x*a" << endl;
 #endif
 
-  const LatticeFermion& x = static_cast<const LatticeFermion &>(rhs.expression().left());
-  const Real& a = static_cast<const Real &> (rhs.expression().right());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().left());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal > &> (rhs.expression().right());
   
   REAL ar = a.elem().elem().elem().elem().elem();
   REAL* aptr = &ar;
@@ -327,8 +327,8 @@ void evaluate(OLattice< TVec >& d,
   QDPIO::cout << "y -= x*a" << endl;
 #endif
 
-  const LatticeFermion& x = static_cast<const LatticeFermion &>(rhs.expression().left());
-  const Real& a = static_cast<const Real &> (rhs.expression().right());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().left());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal > &> (rhs.expression().right());
 
   // - sign as y -= ax <=> y = y-ax = -ax + y = axpy with -a 
   REAL ar = -( a.elem().elem().elem().elem().elem());
@@ -363,7 +363,7 @@ void evaluate( OLattice< TVec > &d,
 
   // Peel the stuff out of the expression
   // y is the right side of rhs
-  const LatticeFermion& y = static_cast<const LatticeFermion&> (rhs.expression().right());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().right());
 
   // ax is the right side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
@@ -374,8 +374,8 @@ void evaluate( OLattice< TVec > &d,
   const BN &mulNode = static_cast<const BN&> (rhs.expression().left());
 
   // get a and x out of the bynary node
-  const Real& a = static_cast<const Real&>(mulNode.right());
-  const LatticeFermion& x = static_cast<const LatticeFermion&>(mulNode.left());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.right());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.left());
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
@@ -412,7 +412,7 @@ void evaluate( OLattice< TVec > &d,
   // Peel the stuff out of the expression
 
   // y is the left side of rhs
-  const LatticeFermion& y = static_cast<const LatticeFermion&> (rhs.expression().left());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().left());
 
   // ax is the right side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
@@ -423,8 +423,8 @@ void evaluate( OLattice< TVec > &d,
   const BN &mulNode = static_cast<const BN&> (rhs.expression().right());
 
   // get a and x out of the bynary node
-  const Real& a = static_cast<const Real&>(mulNode.right());
-  const LatticeFermion& x = static_cast<const LatticeFermion&>(mulNode.left());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.right());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.left());
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
@@ -457,7 +457,7 @@ void evaluate( OLattice< TVec > &d,
   QDPIO::cout << "z = x*a - y" << endl;
 #endif
 
-  const LatticeFermion& y = static_cast<const LatticeFermion&> (rhs.expression().right());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().right());
 
 
   typedef BinaryNode<OpMultiply, 
@@ -468,8 +468,8 @@ void evaluate( OLattice< TVec > &d,
   const BN &mulNode = static_cast<const BN&> (rhs.expression().left());
 
   // get a and x out of the bynary node
-  const Real& a = static_cast<const Real&>(mulNode.right());
-  const LatticeFermion& x = static_cast<const LatticeFermion&>(mulNode.left());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.right());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.left());
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
@@ -502,7 +502,7 @@ void evaluate( OLattice< TVec > &d,
   QDPIO::cout << "z = y - x*a" << endl;
 #endif
 
-  const LatticeFermion& y = static_cast<const LatticeFermion&> (rhs.expression().left());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().left());
 
   typedef BinaryNode<OpMultiply, 
     Reference< QDPType< TVec, OLattice< TVec > > >,    
@@ -512,8 +512,8 @@ void evaluate( OLattice< TVec > &d,
   const BN &mulNode = static_cast<const BN&> (rhs.expression().right());
 
   // get a and x out of the bynary node
-  const Real& a = static_cast<const Real&>(mulNode.right());
-  const LatticeFermion& x = static_cast<const LatticeFermion&>(mulNode.left());
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.right());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.left());
   // Set pointers etc.
 
   // -ve sign as y - ax = -ax + y  = axpy with -a.
@@ -545,8 +545,8 @@ void evaluate( OLattice< TVec > &d,
   cout << "BJ: v+v " << endl;
 #endif
 
-  const LatticeFermion& x = static_cast<const LatticeFermion&>(rhs.expression().left());
-  const LatticeFermion& y = static_cast<const LatticeFermion&>(rhs.expression().right());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(rhs.expression().left());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(rhs.expression().right());
 
   REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
   REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
@@ -575,8 +575,8 @@ void evaluate( OLattice< TVec > &d,
   cout << "BJ: v-v " << endl;
 #endif
 
-  const LatticeFermion& x = static_cast<const LatticeFermion&>(rhs.expression().left());
-  const LatticeFermion& y = static_cast<const LatticeFermion&>(rhs.expression().right());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(rhs.expression().left());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(rhs.expression().right());
 
   REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real().elem());
   REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real().elem());
@@ -605,8 +605,8 @@ void evaluate( OLattice< TVec > &d,
 #ifdef DEBUG_BLAS
   cout << "BJ: v = a*v " << endl;
 #endif
-  const LatticeFermion &x = static_cast<const LatticeFermion&>(rhs.expression().right());
-  const Real &a = static_cast<const Real&>(rhs.expression().left());
+  const OLattice< TVec > &x = static_cast<const OLattice< TVec >&>(rhs.expression().right());
+  const OScalar< TScal > &a = static_cast<const OScalar< TScal >&>(rhs.expression().left());
 
   REAL ar =  a.elem().elem().elem().elem().elem();
   REAL *aptr = &ar;  
@@ -636,8 +636,8 @@ void evaluate( OLattice< TVec > &d,
   cout << "BJ: v = v*a " << endl;
 #endif
 
-  const LatticeFermion &x = static_cast<const LatticeFermion&>(rhs.expression().left());
-  const Real &a = static_cast<const Real&>(rhs.expression().right());
+  const OLattice< TVec > &x = static_cast<const OLattice< TVec >&>(rhs.expression().left());
+  const OScalar< TScal > &a = static_cast<const OScalar< TScal >&>(rhs.expression().right());
 
   REAL ar =  a.elem().elem().elem().elem().elem();
   REAL *aptr = &ar;  
