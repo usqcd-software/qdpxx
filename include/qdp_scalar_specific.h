@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.13 2003-08-10 02:27:11 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.14 2003-08-26 15:26:15 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -927,10 +927,6 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
     nml.get() << " ," << endl;
   }
 
-//  int site = Layout::vol()-1;
-//  int i = Layout::linearSiteIndex(site);
-//  nml << "   Site =  " << site << "   = " << d.elem(i) << ",\n";
-
   return nml;
 }
 
@@ -1012,13 +1008,6 @@ void read(BinaryReader& bin, OLattice<T>& d)
 		  sizeof(typename WordType<T>::Type_t), 
 		  sizeof(T) / sizeof(typename WordType<T>::Type_t));
   }
-}
-
-//! Text input
-template<class T>
-TextReader& operator>>(TextReader& txt, OScalar<T>& d)
-{
-  return txt >> d.elem();
 }
 
 
