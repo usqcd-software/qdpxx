@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.9 2003-01-16 03:35:57 edwards Exp $
+// $Id: parscalar_specific.h,v 1.10 2003-01-17 05:42:44 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -552,7 +552,7 @@ pokeSite(OLattice<T1>& l, const OScalar<T1>& r, const multi1d<int>& coord)
 
 //-----------------------------------------------------------------------------
 // Map
-//! General permutation map class for communications */
+//! General permutation map class for communications
 class Map
 {
 public:
@@ -700,7 +700,7 @@ public:
   QDPType<T1,OScalar<T1> >
   operator()(const QDPExpr<RHS,OScalar<T1> > & l)
     {
-      // For now, simply evalute the expression and then do the map
+      // For now, simply evaluate the expression and then do the map
       typedef OScalar<T1> C1;
       QDPType<T1,C1> d = this->operator()(C1(l));
 
@@ -712,7 +712,7 @@ public:
   QDPType<T1,OLattice<T1> >
   operator()(const QDPExpr<RHS,OLattice<T1> > & l)
     {
-      // For now, simply evalute the expression and then do the map
+      // For now, simply evaluate the expression and then do the map
       typedef OLattice<T1> C1;
       QDPType<T1,C1> d = this->operator()(C1(l));
 
@@ -750,6 +750,78 @@ private:
 
   // Indicate off-node communications is needed;
   bool offnodeP;
+};
+
+
+//-----------------------------------------------------------------------------
+//! Array of general permutation map class for communications
+class ArrayMap
+{
+public:
+  //! Constructor - does nothing really
+  ArrayMap() {}
+
+  //! Destructor
+  ~ArrayMap() {}
+
+  //! Constructor from a function object
+  ArrayMap(const ArrayMapFunc& fn) {make(fn);}
+
+  //! Actual constructor from a function object
+  /*! The semantics are   source_site = func(dest_site,dir) */
+  void make(const ArrayMapFunc& func);
+
+  //! Function call operator for a shift
+  /*! 
+   * map(source,dir)
+   *
+   * Implements:  dest(x) = source(map(x,dir))
+   *
+   * Shifts on a OLattice are non-trivial.
+   * Notice, there may be an ILattice underneath which requires shift args.
+   * This routine is very architecture dependent.
+   */
+  template<class T1,class C1>
+  QDPType<T1,C1>
+  operator()(const QDPType<T1,C1> & l, int dir)
+    {
+      QMP_info("ArrayMap(QDPType,%d)",dir);
+
+      return mapsa[dir](l);
+    }
+
+
+  template<class RHS, class T1>
+  QDPType<T1,OScalar<T1> >
+  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int dir)
+    {
+      fprintf(stderr,"ArrayMap(QDPExpr<OScalar>,%d)\n",dir);
+
+      // For now, simply evaluate the expression and then do the map
+      return mapsa[dir](l);
+    }
+
+  template<class RHS, class T1>
+  QDPType<T1,OLattice<T1> >
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int dir)
+    {
+      fprintf(stderr,"ArrayMap(QDPExpr<OLattice>,%d)\n",dir);
+
+      // For now, simply evaluate the expression and then do the map
+      return mapsa[dir](l);
+    }
+
+
+private:
+  //! Hide copy constructor
+  ArrayMap(const ArrayMap&) {}
+
+  //! Hide operator=
+  void operator=(const ArrayMap&) {}
+
+private:
+  multi1d<Map> mapsa;
+  
 };
 
 

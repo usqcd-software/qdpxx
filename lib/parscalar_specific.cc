@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.8 2003-01-15 21:48:36 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.9 2003-01-17 05:45:43 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -122,70 +122,11 @@ void Set::make(const SetFunc& func)
 }
 	  
 
-//! Initializer for nearest neighbor shift
-void NearestNeighborMap::make()
-{
-  //--------------------------------------
-  // Setup the communication index arrays
-  soffsets.resize(Nd, 2, Layout::subgridVol());
-
-  /* Get the offsets needed for neighbour comm.
-   * soffsets(direction,isign,position)
-   *  where  isign    = +1 : plus direction
-   *                  =  0 : negative direction
-   * the offsets cotain the current site, i.e the neighbour for site i
-   * is  soffsets(i,dir,mu) and NOT  i + soffset(..) 
-   */
-  const multi1d<int>& nrow = Layout::lattSize();
-  const multi1d<int>& subgrid = Layout::subgridLattSize();
-  const multi1d<int>& node_coord = Layout::nodeCoord();
-  multi1d<int> node_offset(Nd);
-
-  for(int m=0; m<Nd; ++m)
-    node_offset[m] = node_coord[m]*subgrid[m];
-
-  for(int site=0; site < Layout::vol(); ++site)
-  {
-    // Get the true grid of this site
-    multi1d<int> coord = crtesn(site, nrow);
-
-    // Site and node for this lattice site within the machine
-    int ipos = Layout::linearSiteIndex(coord);
-    int node = Layout::nodeNumber(coord);
-
-    // If this is my node, then add it to my list
-    if (Layout::nodeNumber() == node)
-    {
-//      <must get a new ipos within a node>
-
-      for(int m=0; m<Nd; ++m)
-      {
-	multi1d<int> tmpcoord = coord;
-
-	/* Neighbor in backward direction */
-	tmpcoord[m] = (coord[m] - 1 + nrow[m]) % nrow[m];
-	soffsets(m,0,ipos) = Layout::linearSiteIndex(tmpcoord);
-
-	/* Neighbor in forward direction */
-	tmpcoord[m] = (coord[m] + 1) % nrow[m];
-	soffsets(m,1,ipos) = Layout::linearSiteIndex(tmpcoord);
-      }
-    }
-  }
-
-#if 0
-  for(int m=0; m < Nd; ++m)
-    for(int s=0; s < 2; ++s)
-      for(int ipos=0; ipos < Layout::subgridVol(); ++ipos)
-	fprintf(stderr,"soffsets(%d,%d,%d) = %d\n",ipos,s,m,soffsets(m,s,ipos));
-#endif
-}
-
-
+//-----------------------------------------------------------------------------
 //! Initializer for generic map constructor
 void Map::make(const MapFunc& func)
 {
-  QMP_info("Map::make");
+  QDP_info("Map::make");
 
   //--------------------------------------
   // Setup the communication index arrays
@@ -227,9 +168,9 @@ void Map::make(const MapFunc& func)
 
   for(int linear=0; linear < Layout::subgridVol(); ++linear)
   {
-    QMP_info("soffsets(%d) = %d",linear,soffsets(linear));
-    QMP_info("srcnode(%d) = %d",linear,srcnode(linear));
-    QMP_info("dstnode(%d) = %d",linear,dstnode(linear));
+    QDP_info("soffsets(%d) = %d",linear,soffsets(linear));
+    QDP_info("srcnode(%d) = %d",linear,srcnode(linear));
+    QDP_info("dstnode(%d) = %d",linear,dstnode(linear));
   }
 #endif
 
@@ -254,13 +195,13 @@ void Map::make(const MapFunc& func)
 #if 1
   // Debugging
   for(int i=0; i < srcenodes_tmp.size(); ++i)
-    QMP_info("srcenodes_tmp(%d) = %d",i,srcenodes_tmp[i]);
+    QDP_info("srcenodes_tmp(%d) = %d",i,srcenodes_tmp[i]);
 
   for(int i=0; i < destnodes_tmp.size(); ++i)
-    QMP_info("destnodes_tmp(%d) = %d",i,destnodes_tmp[i]);
+    QDP_info("destnodes_tmp(%d) = %d",i,destnodes_tmp[i]);
 
-  QMP_info("cnt_srcenodes = %d", cnt_srcenodes);
-  QMP_info("cnt_destnodes = %d", cnt_destnodes);
+  QDP_info("cnt_srcenodes = %d", cnt_srcenodes);
+  QDP_info("cnt_destnodes = %d", cnt_destnodes);
 #endif
 
 
@@ -280,7 +221,7 @@ void Map::make(const MapFunc& func)
   //
   if (! offnodeP)
   {
-    QMP_info("exiting Map::make");
+    QDP_info("exiting Map::make");
     return;
   }
 
@@ -348,19 +289,119 @@ void Map::make(const MapFunc& func)
 #if 1
   for(int i=0; i < destnodes.size(); ++i)
   {
-    QMP_info("srcenodes(%d) = %d",i,srcenodes(i));
-    QMP_info("destnodes(%d) = %d",i,destnodes(i));
+    QDP_info("srcenodes(%d) = %d",i,srcenodes(i));
+    QDP_info("destnodes(%d) = %d",i,destnodes(i));
   }
 
   for(int i=0; i < destnodes_num.size(); ++i)
   {
-    QMP_info("srcenodes_num(%d) = %d",i,srcenodes_num(i));
-    QMP_info("destnodes_num(%d) = %d",i,destnodes_num(i));
+    QDP_info("srcenodes_num(%d) = %d",i,srcenodes_num(i));
+    QDP_info("destnodes_num(%d) = %d",i,destnodes_num(i));
   }
 #endif
 
-  QMP_info("exiting Map::make");
+  QDP_info("exiting Map::make");
 }
+
+
+//-----------------------------------------------------------------------------
+//! Initializer for nearest neighbor shift
+void NearestNeighborMap::make()
+{
+  //--------------------------------------
+  // Setup the communication index arrays
+  soffsets.resize(Nd, 2, Layout::subgridVol());
+
+  /* Get the offsets needed for neighbour comm.
+   * soffsets(direction,isign,position)
+   *  where  isign    = +1 : plus direction
+   *                  =  0 : negative direction
+   * the offsets cotain the current site, i.e the neighbour for site i
+   * is  soffsets(i,dir,mu) and NOT  i + soffset(..) 
+   */
+  const multi1d<int>& nrow = Layout::lattSize();
+  const multi1d<int>& subgrid = Layout::subgridLattSize();
+  const multi1d<int>& node_coord = Layout::nodeCoord();
+  multi1d<int> node_offset(Nd);
+
+  for(int m=0; m<Nd; ++m)
+    node_offset[m] = node_coord[m]*subgrid[m];
+
+  for(int site=0; site < Layout::vol(); ++site)
+  {
+    // Get the true grid of this site
+    multi1d<int> coord = crtesn(site, nrow);
+
+    // Site and node for this lattice site within the machine
+    int ipos = Layout::linearSiteIndex(coord);
+    int node = Layout::nodeNumber(coord);
+
+    // If this is my node, then add it to my list
+    if (Layout::nodeNumber() == node)
+    {
+//      <must get a new ipos within a node>
+
+      for(int m=0; m<Nd; ++m)
+      {
+	multi1d<int> tmpcoord = coord;
+
+	/* Neighbor in backward direction */
+	tmpcoord[m] = (coord[m] - 1 + nrow[m]) % nrow[m];
+	soffsets(m,0,ipos) = Layout::linearSiteIndex(tmpcoord);
+
+	/* Neighbor in forward direction */
+	tmpcoord[m] = (coord[m] + 1) % nrow[m];
+	soffsets(m,1,ipos) = Layout::linearSiteIndex(tmpcoord);
+      }
+    }
+  }
+
+#if 0
+  for(int m=0; m < Nd; ++m)
+    for(int s=0; s < 2; ++s)
+      for(int ipos=0; ipos < Layout::subgridVol(); ++ipos)
+	fprintf(stderr,"soffsets(%d,%d,%d) = %d\n",ipos,s,m,soffsets(m,s,ipos));
+#endif
+}
+
+
+//----------------------------------------------------------------------------
+// ArrayMap
+
+// This class is is used for binding the direction index of an ArrayMapFunc
+// so as to construct a MapFunc
+struct PackageArrayMapFunc : public MapFunc
+{
+  PackageArrayMapFunc(const ArrayMapFunc& mm, int ddir): pmap(mm), dir(ddir) {}
+
+  virtual multi1d<int> operator() (const multi1d<int>& coord, int sign) const
+    {
+      return pmap(coord, sign, dir);
+    }
+
+private:
+  const ArrayMapFunc& pmap;
+  int dir;
+}; 
+
+
+//! Initializer for generic map constructor
+void ArrayMap::make(const ArrayMapFunc& func)
+{
+  // We are allowed to declare a mapsa, but not allocate one.
+  // There is an empty constructor for Map. Hence, the resize will
+  // actually allocate the space.
+  mapsa.resize(func.numArray());
+
+  // Loop over each direction making the Map
+  for(int dir=0; dir < func.numArray(); ++dir)
+  {
+    PackageArrayMapFunc  my_local_map(func,dir);
+
+    mapsa[dir].make(my_local_map);
+  }
+}
+
 
 
 //------------------------------------------------------------------------
@@ -380,7 +421,7 @@ namespace Internal
 	       int count, int isign, int dir)
   {
 #ifdef DEBUG
-    QMP_info("starting a sendRecvWait, count=%d",count);
+    QDP_info("starting a sendRecvWait, count=%d",count);
 #endif
 
     QMP_msgmem_t msg[2] = {QMP_declare_msgmem(send_buf, count),
@@ -399,7 +440,7 @@ namespace Internal
     QMP_free_msgmem(msg[0]);
 
 #ifdef DEBUG
-    QMP_info("finished a sendRecvWait");
+    QDP_info("finished a sendRecvWait");
 #endif
   }
 
@@ -410,7 +451,7 @@ namespace Internal
 	   int count, int isign0, int dir)
   {
 #ifdef DEBUG
-    QMP_info("starting a sendRecv, count=%d, isign=%d dir=%d",
+    QDP_info("starting a sendRecv, count=%d, isign=%d dir=%d",
 	     count,isign,dir);
 #endif
 
@@ -426,7 +467,7 @@ namespace Internal
       QMP_error_exit("QMP_create_physical_topology failed\n");
 
 #ifdef DEBUG
-    QMP_info("finished a sendRecv");
+    QDP_info("finished a sendRecv");
 #endif
   }
 
@@ -435,7 +476,7 @@ namespace Internal
   wait(int dir)
   {
 #ifdef DEBUG
-    QMP_info("starting a wait");
+    QDP_info("starting a wait");
 #endif
     
     QMP_wait(mh_both[dir]);
@@ -447,7 +488,7 @@ namespace Internal
     QMP_free_msgmem(request_msg[dir][0]);
 
 #ifdef DEBUG
-    QMP_info("finished a wait");
+    QDP_info("finished a wait");
 #endif
   }
 
@@ -457,7 +498,7 @@ namespace Internal
   sendToWait(void *send_buf, int dest_node, int count)
   {
 #ifdef DEBUG
-    QMP_info("starting a sendToWait, count=%d, destnode=%d", count,dest_node);
+    QDP_info("starting a sendToWait, count=%d, destnode=%d", count,dest_node);
 #endif
 
     QMP_msgmem_t request_msg = QMP_declare_msgmem(send_buf, count);
@@ -472,7 +513,7 @@ namespace Internal
     QMP_free_msgmem(request_msg);
 
 #ifdef DEBUG
-    QMP_info("finished a sendToWait");
+    QDP_info("finished a sendToWait");
 #endif
   }
 
@@ -481,7 +522,7 @@ namespace Internal
   recvFromWait(void *recv_buf, int srce_node, int count)
   {
 #ifdef DEBUG
-    QMP_info("starting a recvFromWait, count=%d, srcenode=%d", count, srce_node);
+    QDP_info("starting a recvFromWait, count=%d, srcenode=%d", count, srce_node);
 #endif
 
     QMP_msgmem_t request_msg = QMP_declare_msgmem(recv_buf, count);
@@ -496,7 +537,7 @@ namespace Internal
     QMP_free_msgmem(request_msg);
 
 #ifdef DEBUG
-    QMP_info("finished a recvFromWait");
+    QDP_info("finished a recvFromWait");
 #endif
   }
 

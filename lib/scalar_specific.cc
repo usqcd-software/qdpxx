@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.7 2003-01-14 04:46:26 edwards Exp $
+// $Id: scalar_specific.cc,v 1.8 2003-01-17 05:45:43 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -122,6 +122,81 @@ void Set::make(const SetFunc& func)
   }
 }
 	  
+
+//-----------------------------------------------------------------------------
+//! Initializer for generic map constructor
+void Map::make(const MapFunc& func)
+{
+  QDP_info("Map::make");
+
+  //--------------------------------------
+  // Setup the communication index arrays
+  soffsets.resize(Layout::vol());
+
+  /* Get the offsets needed for neighbour comm.
+     * soffsets(position)
+     * the offsets contain the current site, i.e the neighbour for site i
+     * is  soffsets(i,dir,mu) and NOT  i + soffset(..) 
+     */
+  const multi1d<int>& nrow = Layout::lattSize();
+
+  // Loop over the sites on this node
+  for(int linear=0; linear < Layout::vol(); ++linear)
+  {
+    // Get the true lattice coord of this linear site index
+    multi1d<int> coord = Layout::siteCoords(0, linear);
+
+    // Source neighbor for this destination site
+    multi1d<int> fcoord = func(coord,+1);
+
+    // Source linear site and node
+    soffsets[linear] = Layout::linearSiteIndex(fcoord);
+  }
+
+#if 0
+  for(int ipos=0; ipos < Layout::vol(); ++ipos)
+    fprintf(stderr,"soffsets(%d,%d,%d) = %d\n",ipos,soffsets(ipos));
+#endif
+}
+
+
+//----------------------------------------------------------------------------
+// ArrayMap
+
+// This class is is used for binding the direction index of an ArrayMapFunc
+// so as to construct a MapFunc
+struct PackageArrayMapFunc : public MapFunc
+{
+  PackageArrayMapFunc(const ArrayMapFunc& mm, int ddir): pmap(mm), dir(ddir) {}
+
+  virtual multi1d<int> operator() (const multi1d<int>& coord, int sign) const
+    {
+      return pmap(coord, sign, dir);
+    }
+
+private:
+  const ArrayMapFunc& pmap;
+  int dir;
+}; 
+
+
+//! Initializer for generic map constructor
+void ArrayMap::make(const ArrayMapFunc& func)
+{
+  // We are allowed to declare a mapsa, but not allocate one.
+  // There is an empty constructor for Map. Hence, the resize will
+  // actually allocate the space.
+  mapsa.resize(func.numArray());
+
+  // Loop over each direction making the Map
+  for(int dir=0; dir < func.numArray(); ++dir)
+  {
+    PackageArrayMapFunc  my_local_map(func,dir);
+
+    mapsa[dir].make(my_local_map);
+  }
+}
+
 
 //-----------------------------------------------------------------------------
 //! Initializer for nearest neighbor shift

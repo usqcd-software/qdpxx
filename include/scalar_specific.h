@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.18 2003-01-14 04:45:37 edwards Exp $
+// $Id: scalar_specific.h,v 1.19 2003-01-17 05:42:44 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -459,6 +459,229 @@ pokeSite(OLattice<T1>& l, const OScalar<T1>& r, const multi1d<int>& coord)
 
 //-----------------------------------------------------------------------------
 // Forward declaration
+struct FnMap;
+
+//! General permutation map class for communications
+class Map
+{
+public:
+  //! Constructor - does nothing really
+  Map() {}
+
+  //! Destructor
+  ~Map() {}
+
+  //! Constructor from a function object
+  Map(const MapFunc& fn) {make(fn);}
+
+  //! Actual constructor from a function object
+  /*! The semantics are   source_site = func(dest_site) */
+  void make(const MapFunc& func);
+
+  //! Function call operator for a shift
+  /*! 
+   * map(source)
+   *
+   * Implements:  dest(x) = s1(x+offsets)
+   *
+   * Shifts on a OLattice are non-trivial.
+   * Notice, there may be an ILattice underneath which requires shift args.
+   * This routine is very architecture dependent.
+   */
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(soffsets.slice()),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
+    }
+
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(soffsets.slice()),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+    }
+
+
+public:
+  //! Accessor to offsets
+  const multi1d<int>& Offsets() const {return soffsets;}
+
+private:
+  //! Hide copy constructor
+  Map(const Map&) {}
+
+  //! Hide operator=
+  void operator=(const Map&) {}
+
+private:
+  //! Offset table used for communications. 
+  multi1d<int> soffsets;
+};
+
+
+
+// This is the PETE version of a map, namely return an expression
+struct FnMap
+{
+  PETE_EMPTY_CONSTRUCTORS(FnMap)
+
+  const int *soff;
+  FnMap(const int *soffsets): soff(soffsets)
+    {
+//    fprintf(stderr,"FnMap(): soff=0x%x\n",soff);
+    }
+  
+  template<class T>
+  inline typename UnaryReturn<T, FnMap>::Type_t
+  operator()(const T &a) const
+  {
+    return (a);
+  }
+};
+
+
+// Specialization of ForEach deals with maps. 
+// This mechanism needs to be more general - this implementation is a prototype.
+template<class A, class CTag>
+struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
+{
+  typedef typename ForEach<A, EvalLeaf1, CTag>::Type_t TypeA_t;
+  typedef typename Combine1<TypeA_t, FnMap, CTag>::Type_t Type_t;
+  inline static
+  Type_t apply(const UnaryNode<FnMap, A> &expr, const EvalLeaf1 &f, 
+    const CTag &c) 
+  {
+    EvalLeaf1 ff(expr.operation().soff[f.val1()]);
+//  fprintf(stderr,"ForEach<Unary<FnMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
+
+    return Combine1<TypeA_t, FnMap, CTag>::
+      combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),
+              expr.operation(), c);
+  }
+};
+
+
+//-----------------------------------------------------------------------------
+// Forward declaration
+struct FnArrayMap;
+
+//! Array of general permutation map class for communications
+class ArrayMap
+{
+public:
+  //! Constructor - does nothing really
+  ArrayMap() {}
+
+  //! Destructor
+  ~ArrayMap() {}
+
+  //! Constructor from a function object
+  ArrayMap(const ArrayMapFunc& fn) {make(fn);}
+
+  //! Actual constructor from a function object
+  /*! The semantics are   source_site = func(dest_site,dir) */
+  void make(const ArrayMapFunc& func);
+
+  //! Function call operator for a shift
+  /*! 
+   * map(source,dir)
+   *
+   * Implements:  dest(x) = source(map(x,dir))
+   *
+   * Shifts on a OLattice are non-trivial.
+   * Notice, there may be an ILattice underneath which requires shift args.
+   * This routine is very architecture dependent.
+   */
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnArrayMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int dir)
+    {
+      typedef UnaryNode<FnArrayMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnArrayMap(mapsa[dir].Offsets().slice()),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
+    }
+
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnArrayMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l, int dir)
+    {
+      typedef UnaryNode<FnArrayMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnArrayMap(mapsa[dir].Offsets().slice()),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+    }
+
+
+private:
+  //! Hide copy constructor
+  ArrayMap(const ArrayMap&) {}
+
+  //! Hide operator=
+  void operator=(const ArrayMap&) {}
+
+private:
+  multi1d<Map> mapsa;
+  
+};
+
+
+// This is the PETE version of an ArrayMap, namely return an expression
+struct FnArrayMap
+{
+  PETE_EMPTY_CONSTRUCTORS(FnArrayMap)
+
+  const int *soff;
+  FnArrayMap(const int *soffsets): soff(soffsets)
+    {
+//      fprintf(stderr,"FnArrayMap(): soff=0x%x\n",soff);
+    }
+  
+  template<class T>
+  inline typename UnaryReturn<T, FnArrayMap>::Type_t
+  operator()(const T &a) const
+  {
+    return (a);
+  }
+};
+
+
+// Specialization of ForEach deals with maps. 
+// This mechanism needs to be more general - this implementation is a prototype.
+template<class A, class CTag>
+struct ForEach<UnaryNode<FnArrayMap, A>, EvalLeaf1, CTag>
+{
+  typedef typename ForEach<A, EvalLeaf1, CTag>::Type_t TypeA_t;
+  typedef typename Combine1<TypeA_t, FnArrayMap, CTag>::Type_t Type_t;
+  inline static
+  Type_t apply(const UnaryNode<FnArrayMap, A> &expr, const EvalLeaf1 &f, 
+    const CTag &c) 
+  {
+    EvalLeaf1 ff(expr.operation().soff[f.val1()]);
+//  fprintf(stderr,"ForEach<Unary<FnArrayMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
+
+    return Combine1<TypeA_t, FnArrayMap, CTag>::
+      combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),
+              expr.operation(), c);
+  }
+};
+
+
+//-----------------------------------------------------------------------------
+// Forward declaration
 struct FnShift;
 
 //! Nearest neighbor shift function class
@@ -493,8 +716,6 @@ public:
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
   operator()(const QDPType<T1,C1> & l, int isign, int dir)
     {
-      //  fprintf(stderr,"shift(QDPType,%d,%d)\n",isign,dir);
-
       typedef UnaryNode<FnShift,
 	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
       return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
@@ -507,8 +728,6 @@ public:
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
   operator()(const QDPExpr<T1,C1> & l, int isign, int dir)
     {
-      //  fprintf(stderr,"shift(QDPExpr,%d,%d)\n",isign,dir);
-
       typedef UnaryNode<FnShift,
 	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
       return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
@@ -540,10 +759,6 @@ private:
 // This class looks like those in OperatorTags, but has a specific constructor
 // for a given direction
 // This mechanism needs to be more general - this implementation is a prototype.
-//
-// NOTE: the use of "all" is not desired. The offsets is not suppose to
-// be subset dependent, but is general to the class. E.g., all shifts should be
-// static classes
 struct FnShift
 {
   PETE_EMPTY_CONSTRUCTORS(FnShift)
