@@ -25,7 +25,7 @@ include_HEADERS = defs.h \
 		primspinmat.h \
 		primspinvec.h \
 		primvector.h \
-		proto.h \
+		qdp_util.h \
 		qdpexpr.h \
 		qdp.h \
 		QDPOperators.h \
