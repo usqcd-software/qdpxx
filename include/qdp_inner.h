@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.13 2003-09-02 20:16:46 edwards Exp $
+// $Id: qdp_inner.h,v 1.14 2003-09-09 16:56:21 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -911,12 +911,12 @@ struct UnaryReturn<ILattice<T,N>, FnSumMulti> {
 
 
 // Gamma algebra
-template<int M, int m, class T2, class OpGammaConstMultiply>
+template<int M, int m, class T2, int N, class OpGammaConstMultiply>
 struct BinaryReturn<GammaConst<M,m>, ILattice<T2,N>, OpGammaConstMultiply> {
   typedef ILattice<typename UnaryReturn<T2, OpUnaryPlus>::Type_t, N>  Type_t;
 };
 
-template<class T2, int M, int m, class OpMultiplyGammaConst>
+template<class T2, int N, int M, int m, class OpMultiplyGammaConst>
 struct BinaryReturn<ILattice<T2,N>, GammaConst<M,m>, OpMultiplyGammaConst> {
   typedef ILattice<typename UnaryReturn<T2, OpUnaryPlus>::Type_t, N>  Type_t;
 };
