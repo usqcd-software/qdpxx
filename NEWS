@@ -1,3 +1,8 @@
+02/16/2003 -- Robert Edwards
+
+        Version 1.0.0 considered ready. The arch  "scalar" and "parscalar"
+	are considered working.
+
 02/10/2003 -- George Fleming:
 
         Totally reworked the way QDP gets information about how to compile
