@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.5.0
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.6.0
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -106,7 +106,7 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.5.0}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.6.0}
 }
 \author{Robert G. Edwards\\
 SciDAC Software Coordinating Committee}
@@ -1289,17 +1289,40 @@ I/O mechanisms and is described in Section~\ref{sec:qio}.
 The \cpp\ standard IO streams \verb|cout|, \verb|cerr| and \verb|cin|
 are, of course, provided by the language but will not work as
 expected. Namely, the output functions will write on all nodes, and
-\verb|cin| will try to read from all nodes and fail. QDP defined
-fields \verb|QDP_cout|, \verb|QDP_cerr|, and \verb|QDP_cin| are
+\verb|cin| will try to read from all nodes and fail. QDP predefined
+glbal objects \verb|QDPIO::cout|, \verb|QDPIO::cerr|, and \verb|QDPIO::cin| are
 provided as replacements, and will write/read from only the primary
-node. In addition, a setup function is provided that will permanently
-change \verb|cout|, \verb|cerr| and \verb|cin| to have the same
-semantics (primary node usage) as their QDP counterparts. 
-{\bf Implementation note: these std IO stream replacements are not yet
-available in QDP++}.
+node. Output can be selected from any 1 or all nodes for debugging.
+The QDP implementation does not destroy the standard IO streams.
 
 \subsection{Text Reading and Writing}
 \label{sec:textio}
+
+\paragraph{Standard IO streams}
+
+The global predefined objects \verb|QDPIO::cout|, \verb|QDPIO::cerr|,
+and \verb|QDPIO::cin| are used like their \cpp\ standard IO streams 
+counterparts. All QDP scalar site fields (e.g., non-lattice) fields
+can be read and written with these streams. For example, one can
+read data and be assured the data is appropriately distributed to
+all nodes.
+%
+\begin{small}
+\begin{verbatim}
+multi1d<int> my_array(4);
+QDPIO::cin >> my_array;  // broadcasted to all nodes
+Real x;
+random(x);
+QDPIO::cout << "QDP is GREAT: x = " << x << std::endl; // one copy on output
+\end{verbatim}
+\end{small}
+%
+The default behavior is for only the primary node to print on output.
+Also provided are \cpp\ Standard Library-like IO manipulators that can 
+be used to change this behavior. Namely, IO can be directed from any
+node which can aid debugging.
+{\bf Implementation note: this IO manipulator for changing node output is not yet implemented}
+
 
 \paragraph{TextReader member functions and global functions}
 
@@ -2170,6 +2193,19 @@ const int Ns = NS;
 \noindent
 They are set in the build directories file {\tt include/qdp\_config.h} 
 during configuration.
+
+\subsection{How to configure QDP++}
+
+QDP++ uses the GNU autoconf and automake systems for builds. Help on
+configuration parameters can be found with
+\begin{verbatim}
+% cd qdp++
+% configure --help
+\end{verbatim}
+%
+The most important flag is the \verb|--enable-parallel-arch=<some arch>|
+with the architectural choices \verb|scalar|, \verb|parscalar|, \verb|scalarvec|,
+\verb|parscalarvec|.
 
 \subsection{Nonuniform color and precision}
 
