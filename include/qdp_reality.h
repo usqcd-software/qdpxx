@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.10 2003-08-20 21:05:57 edwards Exp $
+// $Id: qdp_reality.h,v 1.11 2003-08-21 02:42:22 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1193,6 +1193,15 @@ seedToFloat(const RScalar<T1>& s1)
   return seedToFloat(s1.elem());
 }
 
+//! dest [some type] = source [some type]
+/*! Portable (internal) way of returning a single site */
+template<class T>
+inline typename UnaryReturn<RScalar<T>, FnGetSite>::Type_t
+getSite(const RScalar<T>& s1, int innersite)
+{
+  return getSite(s1.elem(), innersite);
+}
+
 //! Extract color vector components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T>
@@ -1844,6 +1853,18 @@ timesMinusI(const RComplex<T>& s1)
   return d;
 }
 
+
+//! dest [some type] = source [some type]
+/*! Portable (internal) way of returning a single site */
+template<class T>
+inline typename UnaryReturn<RComplex<T>, FnGetSite>::Type_t
+getSite(const RComplex<T>& s1, int innersite)
+{
+  typedef typename UnaryReturn<RComplex<T>, FnGetSite>::Type_t  Return_t;
+
+  return Return_t(getSite(s1.real(), innersite), 
+		  getSite(s1.imag(), innersite));
+}
 
 
 //! dest = (mask) ? s1 : dest

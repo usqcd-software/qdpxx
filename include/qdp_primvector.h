@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.10 2003-08-20 21:04:51 edwards Exp $
+// $Id: qdp_primvector.h,v 1.11 2003-08-21 02:41:05 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -521,6 +521,20 @@ timesMinusI(const PVector<T,N,C>& s1)
   return d;
 }
 
+
+//! dest [some type] = source [some type]
+/*! Portable (internal) way of returning a single site */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PVector<T,N,C>, FnGetSite>::Type_t
+getSite(const PVector<T,N,C>& s1, int innersite)
+{ 
+  typename UnaryReturn<PVector<T,N,C>, FnGetSite>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = getSite(s1.elem(i), innersite);
+
+  return d;
+}
 
 //! Extract color vector components 
 /*! Generically, this is an identity operation. Defined differently under color */

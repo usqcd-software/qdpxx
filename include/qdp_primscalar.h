@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.8 2003-08-20 21:03:56 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.9 2003-08-21 02:40:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -819,6 +819,15 @@ seedToFloat(const PScalar<T>& s1)
   return seedToFloat(s1.elem());
 }
 
+
+//! dest [some type] = source [some type]
+/*! Portable (internal) way of returning a single site */
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnGetSite>::Type_t
+getSite(const PScalar<T>& s1, int innersite)
+{
+  return getSite(s1.elem(), innersite);
+}
 
 //! Extract color vector components 
 /*! Generically, this is an identity operation. Defined differently under color */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.11 2003-08-20 21:03:31 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.12 2003-08-21 02:40:34 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -818,6 +818,21 @@ timesMinusI(const PMatrix<T,N,C>& s1)
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       d.elem(i,j) = timesMinusI(s1.elem(i,j));
+
+  return d;
+}
+
+//! dest [some type] = source [some type]
+/*! Portable (internal) way of returning a single site */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PMatrix<T,N,C>, FnGetSite>::Type_t
+getSite(const PMatrix<T,N,C>& s1, int innersite)
+{ 
+  typename UnaryReturn<PMatrix<T,N,C>, FnGetSite>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = getSite(s1.elem(i,j), innersite);
 
   return d;
 }
