@@ -1,4 +1,4 @@
-#define _inline_generic_mult_su3_an(aa,bb,cc) \
+#define _inline_qcdoc_mult_su3_an(aa,bb,cc) \
 { \
   register REAL B0R;  \
   register REAL B0I;  \

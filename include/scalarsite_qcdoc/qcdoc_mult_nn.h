@@ -1,4 +1,4 @@
-#define _inline_generic_mult_su3_nn(aa,bb,cc) \
+#define _inline_qcdoc_mult_su3_nn(aa,bb,cc) \
 { \
   float *aptr =(float *)&(aa.elem(0,0).real().elem());  \
   float *bptr =(float *)&(bb.elem(0,0).real().elem());  \
