@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_specific.cc,v 1.2 2003-08-20 21:08:29 edwards Exp $
+// $Id: qdp_scalarvecsite_specific.cc,v 1.3 2003-08-26 15:18:30 edwards Exp $
 
 /*! @file
  * @brief Scalarvec-like architecture specific routines
@@ -28,8 +28,8 @@ namespace Layout
     for(int i=0; i < Layout::sitesOnNode(); ++i) 
     {
       Integer cc = Layout::siteCoords(Layout::nodeNumber(),i)[mu];
-      int iouter = i / INNER_LEN;
-      int iinner = i & INNER_LEN;
+      int iouter = i >> INNER_LEN;
+      int iinner = i & ((1 <<INNER_LEN)-1);
       copy_site(d.elem(iouter), iinner, cc.elem());
     }
 
