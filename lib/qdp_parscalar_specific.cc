@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.24 2005-02-28 16:46:37 bjoo Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.25 2005-03-18 13:56:23 zbigniew Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -574,8 +574,8 @@ void readOLattice(BinaryReader& bin,
 
 //-----------------------------------------------------------------------
 // Read a QCD archive file
-//! Read a QCD (NERSC) Archive format gauge field
-/*!
+// Read a QCD (NERSC) Archive format gauge field
+/*
  * \ingroup io
  *
  * \param cfg_in     binary writer object ( Modify )
@@ -706,8 +706,8 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
 
 //-----------------------------------------------------------------------
 // Write a QCD archive file
-//! Write a QCD (NERSC) Archive format gauge field
-/*!
+// Write a QCD (NERSC) Archive format gauge field
+/*
  * \ingroup io
  *
  * \param cfg_out    binary writer object ( Modify )

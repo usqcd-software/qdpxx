@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.30 2005-01-24 04:03:33 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.31 2005-03-18 13:56:23 zbigniew Exp $
 
 /*! @file
  * @brief XML IO support
@@ -22,22 +22,29 @@ class XMLFileWriter;
 class XMLArrayWriter;
 
 
-/*! @addtogroup io
- *
- * XML File input and output operations on QDP types
- *
+/*! @ingroup io
  * @{
  */
 
 //--------------------------------------------------------------------------------
 //! XML reader class
+/*!
+  This is used to read data from an XML file using Xpath.
+
+  Note that only the primary node opens and reads XML files. Results from
+  Xpath queries are broadcast to all nodes.
+*/
 class XMLReader : protected XMLXPathReader::BasicXPathReader
 {
 public:
   //! Empty constructor
   XMLReader();
 
-  //! Construct from contents of file
+    //! Construct from contents of file
+    /*!
+      Opens and reads an XML file.
+      \param filename The name of the file.
+    */
   XMLReader(const std::string& filename);
 
   //! Construct from contents of stream
@@ -51,23 +58,60 @@ public:
   ~XMLReader();
 
   /* The meaning of these should be clear to you */
+
+    //! Opens and reads an XML file.
+    /*!
+      \param filename The name of the file
+      \post Any previously opened file is closed.
+    */
   void open(const std::string& filename);
-  void open(std::istream& is);
+
+    //! Opens and reads an XML file.
+    /*!
+      \param id The input stream of the file
+      \post Any previously opened file is closed      
+    */
+    void open(std::istream& is);
+
+    //! Reads content of a  XMLBufferWriter
   void open(const XMLBufferWriter& mw);
-  bool is_open();
-  bool is_derived() const;
+
+    //! Queries whether the binary file is open
+    /*!
+      \return true if the binary file is open; false otherwise.
+    */
+    bool is_open();
+
+    //! Queries whether the XML data has been obtained from another XMLReader
+    /*!
+      A private method allows this XMLReader to be copy the contents of
+      another.
+     */
+    bool is_derived() const;
+
+    //! Closes the last file opened
   void close();
     
-  /* So should these, there is just a lot of overloading */
+    /* So should these, there is just a lot of overloading */
+    //! Xpath query
   void get(const std::string& xpath, std::string& result);
+    //! Xpath query
   void get(const std::string& xpath, int& result);
+    //! Xpath query
   void get(const std::string& xpath, unsigned int& result);
+    //! Xpath query
   void get(const std::string& xpath, short int& result);
+    //! Xpath query
   void get(const std::string& xpath, unsigned short int& result);
+    //! Xpath query
   void get(const std::string& xpath, long int& result);
+    //! Xpath query
   void get(const std::string& xpath, unsigned long int& result);
+    //! Xpath query
   void get(const std::string& xpath, float& result);
+    //! Xpath query
   void get(const std::string& xpath, double& result);
+    //! Xpath query
   void get(const std::string& xpath, bool& result);
 
   //! Return the entire contents of the Reader as a stream
@@ -76,8 +120,9 @@ public:
   //! Print the current context
   void printCurrentContext(ostream& is);
         
-  //! Count the number of occurances from the xpath query
+  //! Count the number of occurances from the Xpath query
   int count(const std::string& xpath);
+
   void registerNamespace(const std::string& prefix, const std::string& uri);
 
 private:
@@ -101,15 +146,25 @@ private:
 
 
 // Time to build a telephone book of basic primitives
+    //! Xpath query
 void read(XMLReader& xml, const std::string& s, std::string& input);
+    //! Xpath query
 void read(XMLReader& xml, const std::string& s, int& input);
+    //! Xpath query
 void read(XMLReader& xml, const std::string& s, unsigned int& input);
+    //! Xpath query
 void read(XMLReader& xml, const std::string& s, short int& input);
+    //! Xpath query
 void read(XMLReader& xml, const std::string& s, unsigned short int& input);
+    //! Xpath query
 void read(XMLReader& xml, const std::string& s, long int& input);
+    //! Xpath query
 void read(XMLReader& xml, const std::string& s, unsigned long int& input);
+    //! Xpath query
 void read(XMLReader& xml, const std::string& s, float& input);
+    //! Xpath query
 void read(XMLReader& xml, const std::string& s, double& input);
+    //! Xpath query
 void read(XMLReader& xml, const std::string& s, bool& input);
 
 
@@ -185,6 +240,13 @@ void read(XMLReader& xml, const std::string& s, multi1d<bool>& input);
 
 //--------------------------------------------------------------------------------
 //! Metadata output class
+/*!
+  Use this to write XML.When closing tags, you do not have to specify which
+  tag to close since this class will remember the order in which you opened
+  the tags and close them in reverse order to ensure well-formed XML.
+
+  Note that only the primary node writes XML.
+*/
 class XMLWriter : protected XMLWriterAPI::XMLSimpleWriter
 {
 public:
@@ -193,44 +255,108 @@ public:
   // Virtual destructor
   virtual ~XMLWriter();
 
+    //! Writes an opening XML tag
+    /*!
+      \param tagname The name of the tag
+    */
   virtual void openSimple(const std::string& tagname);
   virtual void closeSimple();
 
+    //! Writes an opening XML tag    
+    /*!
+      \param tagname The name of the tag
+    */
   virtual void openStruct(const std::string& tagname);
   virtual void closeStruct();
 
+    //! Writes an opening XML tag    
+    /*!
+      \param tagname The name of the tag
+    */
   void openTag(const std::string& tagname);
+
+    //! Writes an opening XML tag    
+    /*!
+      \param nsprefix A namespace prefix for the tag 
+      \param tagname The name of the tag
+    */
   void openTag(const std::string& nsprefix, const std::string& tagname);
+
+    //! Writes an opening XML tag    
+    /*!
+      \param tagname The name of the tag
+      \param al A list of attributes for this tag
+    */
   void openTag(const std::string& tagname, XMLWriterAPI::AttributeList& al);
 
+    //! Writes an opening XML tag    
+    /*!
+      \param nsprefix A namespace prefix for the tag 
+      \param tagname The name of the tag
+      \param al A list of attributes for this tag      
+    */
   void openTag(const std::string& nsprefix,
 	       const std::string& tagname, 
 	       XMLWriterAPI::AttributeList& al);
 
+    //! Closes a tag
   void closeTag();
 
+    //! Writes an empty tag
+    /*!
+      \param tagname The name of the tag
+    */
   void emptyTag(const std::string& tagname);
-  void emptyTag(const std::string& nsprefix, const std::string& tagname);
-  void emptyTag(const std::string& tagname, XMLWriterAPI::AttributeList& al);
 
+    //! Writes an empty tag
+    /*!
+      \param nsprefix A namespace prefix for the tag 
+      \param tagname The name of the tag
+    */
+    void emptyTag(const std::string& nsprefix, const std::string& tagname);
+
+    //! Writes an empty tag
+    /*!
+      \param tagname The name of the tag
+      \param al A list of attributes for this tag            
+    */
+    void emptyTag(const std::string& tagname, XMLWriterAPI::AttributeList& al);
+
+    //! Writes an empty tag
+    /*!
+      \param nsprefix A namespace prefix for the tag 
+      \param tagname The name of the tag
+      \param al A list of attributes for this tag            
+    */
   void emptyTag(const std::string& nsprefix,
 		const std::string& tagname, 
 		XMLWriterAPI::AttributeList& al);
     
 
-  // Overloaded Writer Functions
+    // Overloaded Writer Functions
+
+    //! Write tag contents
   void write(const std::string& output);
+    //! Write tag contents
   void write(const int& output);
+    //! Write tag contents
   void write(const unsigned int& output);
+    //! Write tag contents
   void write(const short int& output);
+    //! Write tag contents
   void write(const unsigned short int& output);
+    //! Write tag contents
   void write(const long int& output);
+    //! Write tag contents
   void write(const unsigned long int& output);
+    //! Write tag contents
   void write(const float& output);
+    //! Write tag contents
   void write(const double& output);
+    //! Write tag contents
   void write(const bool& output);
 
-  // Write XML std::string
+  // Write all the XML to std::string
   void writeXML(const std::string& output);
 
   friend class XMLArrayWriter;
@@ -238,9 +364,15 @@ public:
 
 
 //! Push a group name
+/*! Write an opening tag
+  \param xml The writer
+  \param s the name of the tag
+*/
 void push(XMLWriter& xml, const std::string& s);
 
 //! Pop a group name
+/*! Write an closing tag */
+
 void pop(XMLWriter& xml);
 
 //! Write something from a reader
@@ -252,17 +384,89 @@ void write(XMLWriter& xml, const std::string& s, const XMLBufferWriter& d);
 XMLWriter& operator<<(XMLWriter& xml, const XMLBufferWriter& d);
 
 // Time to build a telephone book of basic primitives
+//! Write a opening tag, contents and a closing tag
+/*!
+  \param xml The writer
+  \param s the tag name
+  \param output The  contents
+*/
 void write(XMLWriter& xml, const std::string& s, const std::string& output);
+//! Write a opening tag, contents and a closing tag
+/*!
+  \param xml The writer
+  \param s the tag name
+  \param output The  contents
+*/
 void write(XMLWriter& xml, const std::string& s, const char* output);
+//! Write a opening tag, contents and a closing tag
+/*!
+  \param xml The writer
+  \param s the tag name
+  \param output The  contents
+*/
 void write(XMLWriter& xml, const std::string& s, const char& output);
+//! Write a opening tag, contents and a closing tag
+/*!
+  \param xml The writer
+  \param s the tag name
+  \param output The  contents
+*/
 void write(XMLWriter& xml, const std::string& s, const int& output);
+//! Write a opening tag, contents and a closing tag
+/*!
+  \param xml The writer
+  \param s the tag name
+  \param output The  contents
+*/
 void write(XMLWriter& xml, const std::string& s, const unsigned int& output);
+//! Write a opening tag, contents and a closing tag
+/*!
+  \param xml The writer
+  \param s the tag name
+  \param output The  contents
+*/
 void write(XMLWriter& xml, const std::string& s, const short int& output);
+//! Write a opening tag, contents and a closing tag
+/*!
+  \param xml The writer
+  \param s the tag name
+  \param output The  contents
+*/
 void write(XMLWriter& xml, const std::string& s, const unsigned short int& output);
+//! Write a opening tag, contents and a closing tag
+/*!
+  \param xml The writer
+  \param s the tag name
+  \param output The  contents
+*/
 void write(XMLWriter& xml, const std::string& s, const long int& output);
+//! Write a opening tag, contents and a closing tag
+/*!
+  \param xml The writer
+  \param s the tag name
+  \param output The  contents
+*/
 void write(XMLWriter& xml, const std::string& s, const unsigned long int& output);
+//! Write a opening tag, contents and a closing tag
+/*!
+  \param xml The writer
+  \param s the tag name
+  \param output The  contents
+*/
 void write(XMLWriter& xml, const std::string& s, const float& output);
+//! Write a opening tag, contents and a closing tag
+/*!
+  \param xml The writer
+  \param s the tag name
+  \param output The  contents
+*/
 void write(XMLWriter& xml, const std::string& s, const double& output);
+//! Write a opening tag, contents and a closing tag
+/*!
+  \param xml The writer
+  \param s the tag name
+  \param output The  contents
+*/
 void write(XMLWriter& xml, const std::string& s, const bool& output);
 
 // Versions that do not print a name
@@ -279,7 +483,13 @@ XMLWriter& operator<<(XMLWriter& xml, const float& output);
 XMLWriter& operator<<(XMLWriter& xml, const double& output);
 XMLWriter& operator<<(XMLWriter& xml, const bool& output);
 
-//! Write a XML multi1d element
+//! Write a opening tag, array contents and a closing tag
+/*!
+  Each element of the array is written in a "elem" tag.
+  \param xml The writer
+  \param s the tag name
+  \param s1 The array of contents
+*/
 template<class T>
 inline
 void write(XMLWriter& xml, const std::string& s, const multi1d<T>& s1)
@@ -312,22 +522,85 @@ void write(XMLWriter& xml, const std::string& s, const multi1d<T>& s1)
 
 
 // Writers for arrays of basic types
+//! Writes an array of data
+/*!
+  All the data are written inside a single tag pair
+  \param xml The writer
+  \param s the tag name
+  \param s1 The array of contents
+ */
 template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<int>& output);
+//! Writes an array of data
+/*!
+  All the data are written inside a single tag pair
+  \param xml The writer
+  \param s the tag name
+  \param s1 The array of contents
+ */
 template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<unsigned int>& output);
+//! Writes an array of data
+/*!
+  All the data are written inside a single tag pair
+  \param xml The writer
+  \param s the tag name
+  \param s1 The array of contents
+ */
 template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<short int>& output);
+//! Writes an array of data
+/*!
+  All the data are written inside a single tag pair
+  \param xml The writer
+  \param s the tag name
+  \param s1 The array of contents
+ */
 template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<unsigned short int>& output);
+//! Writes an array of data
+/*!
+  All the data are written inside a single tag pair
+  \param xml The writer
+  \param s the tag name
+  \param s1 The array of contents
+ */
 template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<long int>& output);
+//! Writes an array of data
+/*!
+  All the data are written inside a single tag pair
+  \param xml The writer
+  \param s the tag name
+  \param s1 The array of contents
+ */
 template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<unsigned long int>& output);
+//! Writes an array of data
+/*!
+  All the data are written inside a single tag pair
+  \param xml The writer
+  \param s the tag name
+  \param s1 The array of contents
+ */
 template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<float>& output);
+//! Writes an array of data
+/*!
+  All the data are written inside a single tag pair
+  \param xml The writer
+  \param s the tag name
+  \param s1 The array of contents
+ */
 template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<double>& output);
+//! Writes an array of data
+/*!
+  All the data are written inside a single tag pair
+  \param xml The writer
+  \param s the tag name
+  \param s1 The array of contents
+ */
 template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<bool>& output);
 
@@ -381,18 +654,18 @@ void write(XMLWriter& xml, const std::string& s, const multi2d<T>& s1)
 
 
 //--------------------------------------------------------------------------------
-//! Write metadata to a buffer
+//! Writes XML metadata to a buffer
 class XMLBufferWriter : public XMLWriter
 {
 public:
-  //! Constructor
+
   /*! No prologue written */
   XMLBufferWriter();
   
-  //! Destructor
+
   ~XMLBufferWriter();
 
-  // Return entire stream as a string
+  //! Return entire buffer as a string
   std::string str();
         
   // Return root element as a string
@@ -414,23 +687,38 @@ private:
 
 
 //--------------------------------------------------------------------------------
-//! Write data to a file
+//! Writes XML metadata to a file
+/*!
+  \ingroup io
+*/
+
 class XMLFileWriter : public XMLWriter
 {
 public:
-  //! Empty constructor
+
   XMLFileWriter();
 
-  //! Constructor from a filename
+    //! Constructor from a filename
+    /*!
+      \param filename The name of the file
+      \param write_prologue Whether to write the standard opening line of
+      XML files. Defaults to true.
+    */
   explicit XMLFileWriter(const std::string& filename, bool write_prologue=true)
     {
       open(filename, write_prologue);
     }
 
-  //! Destructor
   ~XMLFileWriter();
 
-  bool is_open();
+    bool is_open();
+
+    //!Opens a file
+    /*!
+      \param filename The name of the file
+      \param write_prologue Whether to write the standard opening line of
+      XML files. Defaults to true.
+    */
   void open(const std::string& filename, bool write_prologue=true)
     {
       if (Layout::primaryNode())
@@ -449,7 +737,7 @@ public:
   //! Return true if some failure occurred in previous IO operation
   bool fail() const;
 
-  //! Close the file
+  //! Closes the last  file  opened.
   void close();
         
 private:
@@ -464,11 +752,11 @@ private:
 
 
 //--------------------------------------------------------------------------------
-//! Write metadata to an array which serves as a handle for another XML object
+//! Writes metadata to an array which serves as a handle for another XML object
 class XMLArrayWriter : public XMLWriter
 {
 public:
-  //! Constructor
+
   /*! No prologue written
    * @param xml_out  previous XMLWriter object - used for handle source
    * @param size     size of array - default unbounded
@@ -482,17 +770,17 @@ public:
       simpleElements = false; // do not know this yet
     }
   
-  //! Destructor
+
   ~XMLArrayWriter();
 
-  //! Flush the buffer
+  // Flush the buffer
 //  void flush();
 
-  //! Close the array writer
+  //! Closes the array writer
   /*! It is an error to close before all data is written, unless unbounded */
   void close();
        
-  //! Size of array
+  //! Returns the size of the array
   int size() const {return array_size;}
 
   void openArray(const std::string& tagname);

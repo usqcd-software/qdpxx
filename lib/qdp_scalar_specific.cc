@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_specific.cc,v 1.9 2005-02-21 15:25:48 bjoo Exp $
+// $Id: qdp_scalar_specific.cc,v 1.10 2005-03-18 13:56:23 zbigniew Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -55,8 +55,8 @@ void Map::make(const MapFunc& func)
 
 //-----------------------------------------------------------------------
 // Read a QCD archive file
-//! Read a QCD (NERSC) Archive format gauge field
-/*!
+// Read a QCD (NERSC) Archive format gauge field
+/*
  * \ingroup io
  *
  * \param cfg_in     binary writer object ( Modify )
@@ -168,8 +168,8 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
 
 //-----------------------------------------------------------------------
 // Write a QCD archive file
-//! Write a QCD (NERSC) Archive format gauge field
-/*!
+// Write a QCD (NERSC) Archive format gauge field
+/*
  * \ingroup io
  *
  * \param cfg_out    binary writer object ( Modify )

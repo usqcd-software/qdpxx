@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.21 2005-02-28 16:46:37 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.22 2005-03-18 13:56:23 zbigniew Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -14,7 +14,6 @@ QDP_BEGIN_NAMESPACE(QDP);
 
 /*! @defgroup qio QIO
  *
- * File input and output operations on QDP types
  *
  * @{
  */
@@ -53,37 +52,70 @@ enum QDP_iostate_t
 
 //--------------------------------------------------------------------------------
 //! QIO class
+/*!
+ This is a QDP object wrapper around the QIO library.
+ 
+ QIO is a C library independent of QDP. It is designed to read/write SCIDAC
+ format data files, which means a mixture of binary data and XML
+ metadata together in the same file according to a scheme called Lime.
+ There is a seperate independent library for handling general Lime files.
+
+ The data is assumed to be a record in a Lime file. The user metadata (both
+ file and record) is also read.
+ 
+ Data is assumed to be stored in the file in big-endian format and any
+ necessary byte-swapping is taken care of.
+
+ The status of the IO operations is monitored internally and can be queried.
+*/
+
 class QDPFileReader
 {
 public:
   //! Partial constructor
   QDPFileReader();
 
-  //! Destructor
+
+  //! Closes the last file opened.
   ~QDPFileReader();
 
-  //! Open file
+  //! Opens a file for reading
+    /*!
+      Also reads the file user metadata record.
+      \param xml Container for the file metadata
+      \param path The name of the file
+      \param iflag Not used.
+    */
   QDPFileReader(XMLReader& xml, const std::string& path,
 		int iflag);
   
-  //! Open file
+    //! Opens a file for reading
+    /*!
+      Also reads the file user metadata record.
+      \param xml Container for the file metadata
+      \param path The name of the file
+      \param iflag Not used.
+    */
   void open(XMLReader& xml, const std::string& path,
 	    int iflag);
 
   //! Open file
-  /*! OBSOLETE */
+  /*! \deprecated OBSOLETE  */
   QDPFileReader(XMLReader& xml, const std::string& path,
 		QDP_serialparallel_t qdp_serpar);
 
   //! Open file
-  /*! OBSOLETE */
+  /*! \deprecated  OBSOLETE */
   void open(XMLReader& xml, const std::string& path,
 	    QDP_serialparallel_t qdp_serpar);
 
-  //! Close file
+  //! Closes the last file opened.
   void close();
 
-  //! Is the file open?
+    //! Queries whether a file is open
+    /*!
+      \return true if a file is open; false otherwise.
+    */
   bool is_open();
 
   //! Read a QDP object
@@ -91,29 +123,38 @@ public:
   void read(XMLReader& xml, QDPType<T,C>& s1)
     {this->read(xml,static_cast<C&>(s1));}
 
-  //! Read an OScalar object
+  //! Reads an OScalar object
   template<class T>
   void read(XMLReader& xml, OScalar<T>& s1);
 
-  //! Read an OLattice object
+  //! Reads an OLattice object
   template<class T>
   void read(XMLReader& xml, OLattice<T>& s1);
 
-  //! Read an array of objects all in a single record
+  //! Reads an array of objects all in a single record
   template<class T>
   void read(XMLReader& xml, multi1d< OScalar<T> >& s1);
 
-  //! Read an array of objects all in a single record
+  //! Reads an array of objects all in a single record
   template<class T>
   void read(XMLReader& xml, multi1d< OLattice<T> >& s1);
 
-  //! Check if end-of-file has been reached
+    //! Query whether the end-of-file has been reached.
+    /*!
+      \return True if  the end-of-file has been reached; false otherwise
+    */
   bool eof() const;
 
-  //! Check if an unrecoverable error has occurred
+    //! Query whether an unrecoverable error has occurred
+    /*!
+      \return True if an error has occured; false otherwise
+    */
   bool bad() const;
 
-  //! Sets a new value for the control state ignoring the existing value
+    //! Sets a new value for the IO status, ignoring the existing value
+    /*!
+      \param state The new state (defaults to QDPIO_goodbit).
+    */
   void clear(QDP_iostate_t state = QDPIO_goodbit);
 
 protected:
@@ -127,107 +168,188 @@ private:
 
 
 // Convenience functions
-//! Read an OScalar object
+
+//! Reads an OScalar object
+/*!
+  \param qsw The reader
+  \param rec_xml The user record metadata.
+  \param sl The data
+*/
 template<class T>
 void read(QDPFileReader& qsw, XMLReader& rec_xml, OScalar<T>& s1)
 {
   qsw.read(rec_xml,s1);
 }
 
-//! Read an array of OLattice objects
+//! Reads an array of OLattice objects
+/*!
+  \param qsw The reader
+  \param rec_xml The user record metadata.
+  \param sl The data
+*/
 template<class T>
 void read(QDPFileReader& qsw, XMLReader& rec_xml, OLattice<T>& s1)
 {
   qsw.read(rec_xml,s1);
 }
 
-//! Read an array of OScalar object
+//! Reads an array of OScalar object
+/*!
+  \param qsw The reader
+  \param rec_xml The user record metadata.
+  \param sl The data
+*/
 template<class T>
 void read(QDPFileReader& qsw, XMLReader& rec_xml, multi1d< OScalar<T> >& s1)
 {
   qsw.read(rec_xml,s1);
 }
 
-//! Read an array of OLattice objects
+//! Reads an array of OLattice objects
+/*!
+  \param qsw The reader
+  \param rec_xml The user record metadata.
+  \param sl The data
+*/
 template<class T>
 void read(QDPFileReader& qsw, XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
 {
   qsw.read(rec_xml,s1);
 }
 
-//! Close a QDPFileReader
+//! Closes a QDPFileReader.
 void close(QDPFileReader& qsw);
 
-//! Is a QDPFileReader open
+//! Queries whether a QDPFileReader is open.
 bool is_open(QDPFileReader& qsw);
 
 
 //-------------------------------------------------
-//! QIO Writer class
+//! QIO writer class
+/*!
+ This is a QDP object wrapper around the QIO library.
+ 
+ QIO is a C library independent of QDP. It is designed to read/write SCIDAC
+ format data files, which means a mixture of binary data and XML
+ metadata together in the same file according to a scheme called Lime.
+ There is a seperate independent library for handling general Lime files.
+
+ The data is written as a record in a Lime file. The user metadata (both
+ file and record) is also written.
+ 
+ Data is stored in the file in big-endian format and any
+ necessary byte-swapping is taken care of.
+
+ The status of the IO operations is monitored internally and can be queried. 
+*/
+
 class QDPFileWriter
 {
 public:
   //! Partial constructor
   QDPFileWriter();
 
-  //! Destructor
+  //! Closes the last file opened.
   ~QDPFileWriter();
 
-  //! Open file
+  //! Opens a file for writing and writes the file metadata
+    /*!
+      Also reads the file user metadata record.
+      \param xml Container for the file metadata
+      \param path The name of the file
+      \param volfmt The type of IO to perform
+      \param oflag Not used.
+    */
   QDPFileWriter(XMLBufferWriter& xml, const std::string& path,
 		QDP_volfmt_t qdp_volfmt,
 		int oflag);
   
-  //! Open file
+  //! Opens a file for writing and writes the file metadata
+    /*!
+      Also reads the file user metadata record.
+      \param xml Container for the file metadata
+      \param path The name of the file
+      \param volfmt The type of IO to perform
+      \param oflag Not used.
+    */
   void open(XMLBufferWriter& xml, const std::string& path,
 	    QDP_volfmt_t qdp_volfmt,
 	    int oflag);
 
   //! Open file
-  /*! THIS IS OBSOLETE */
+  /*! \deprecated THIS IS OBSOLETE */
   QDPFileWriter(XMLBufferWriter& xml, const std::string& path,
 		QDP_volfmt_t qdp_volfmt,
 		QDP_serialparallel_t qdp_serpar,
 		QDP_filemode_t qdp_mode);
   
   //! Open file
-  /*! THIS IS OBSOLETE */
+  /*! \deprecated THIS IS OBSOLETE */
   void open(XMLBufferWriter& xml, const std::string& path,
 	    QDP_volfmt_t qdp_volfmt,
 	    QDP_serialparallel_t qdp_serpar,
 	    QDP_filemode_t qdp_mode);
 
-  //! Close file
+  //! Closes the last file opened.
   void close();
 
-  //! Is the file open?
+    //! Queries whether a file is open
+    /*!
+      \return true if a file is open; false otherwise.
+    */
   bool is_open();
 
-  //! Write a QDP object
+    //! Write a QDP object
+    /*!
+      \param xml The user record metadata.
+      \param sl The data
+    */
   template<class T, class C>
   void write(XMLBufferWriter& xml, const QDPType<T,C>& s1)
     {this->write(xml,static_cast<const C&>(s1));}
 
-  //! Write an OScalar object
+  //! Writes an OScalar object
+    /*!
+      \param xml The user record metadata.
+      \param sl The data
+    */
   template<class T>
   void write(XMLBufferWriter& xml, const OScalar<T>& s1);
 
-  //! Write an OLattice object
+  //! Writes an OLattice object
+    /*!
+      \param xml The user record metadata.
+      \param sl The data
+    */
   template<class T>
   void write(XMLBufferWriter& xml, const OLattice<T>& s1);
 
-  //! Write an array of objects all in a single record
+  //! Writes an array of objects all to a single record
+    /*!
+      \param xml The user record metadata.
+      \param sl The data
+    */
   template<class T>
   void write(XMLBufferWriter& xml, const multi1d< OScalar<T> >& s1);
 
-  //! Write an array of objects all in a single record
+  //! Writes an array of objects all to a single record
+    /*!
+      \param xml The user record metadata.
+      \param sl The data
+    */
   template<class T>
   void write(XMLBufferWriter& xml, const multi1d< OLattice<T> >& s1);
 
-  //!  Check if an unrecoverable error has occurred
+    //! Query whether an unrecoverable error has occurred
+    /*!
+      \return True if an error has occured; false otherwise
+    */
   bool bad() const;
 
-  //! Sets a new value for the control state ignoring the existing value
+    //! Sets a new value for the control state ignoring the existing value
+    /*!
+      \param state The new state (defaults to QDPIO_goodbit).
+    */
   void clear(QDP_iostate_t state = QDPIO_goodbit);
 
 protected:
@@ -241,38 +363,58 @@ private:
 
 
 // Convenience functions
-//! Write an OScalar object
+//! Writes an OScalar object
+/*!
+  \param qsw The writer
+  \param xml The user record metadata.
+  \param sl The data
+*/
 template<class T>
 void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const OScalar<T>& s1)
 {
   qsw.write(rec_xml,s1);
 }
 
-//! Write an OLattice object
+//! Writes an OLattice object
+/*!
+  \param qsw The writer
+  \param xml The user record metadata.
+  \param sl The data
+*/
 template<class T>
 void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 {
   qsw.write(rec_xml,s1);
 }
 
-//! Write an array of OScalar objects
+//! Writes an array of OScalar objects
+/*!
+  \param qsw The writer
+  \param xml The user record metadata.
+  \param sl The data
+*/
 template<class T>
 void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const multi1d< OScalar<T> >& s1)
 {
   qsw.write(rec_xml,s1);
 }
 
-//! Write an array of OLattice objects
+//! Writes an array of OLattice objects
+/*!
+  \param qsw The writer
+  \param xml The user record metadata.
+  \param sl The data
+*/
 template<class T>
 void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >& s1)
 {
   qsw.write(rec_xml,s1);
 }
 
-//! Close a QDPFileWriter
+//! Closes a QDPFileWriter.
 void close(QDPFileWriter& qsw);
 
-//! Is a QDPFileWriter open
+//! Queries whether a QDPFileWriter is open.
 bool is_open(QDPFileWriter& qsw);
 
 
@@ -282,8 +424,16 @@ bool is_open(QDPFileWriter& qsw);
 //
 // Scalar support
 
-//! Function for inserting datum at specified site 
-template<class T> void QDPOScalarFactoryPut(char *buf, size_t linear, int count, void *arg)
+//! Function for moving data
+/*!
+  Data is moved from the one buffer to another with a specified offset.
+
+  \param buf The source buffer
+  \param linear The offset
+  \param count The number of data to move
+  \param arg The destination buffer.
+*/
+template<class T> void QDPOScalarFactoryPut(char *buf, size_t linear, int count, void *arg) 
 {
   /* Translate arg */
   T *field = (T *)arg;
@@ -293,8 +443,13 @@ template<class T> void QDPOScalarFactoryPut(char *buf, size_t linear, int count,
 }
 
 
-//! Read an OScalar object
-/*! This implementation is only correct for scalar ILattice */
+//! Reads an OScalar object
+/*!
+  This implementation is only correct for scalar ILattice
+
+  \param rec_xml The (user) record metadata.
+  \param sl The data
+*/
 template<class T>
 void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
 {
@@ -348,8 +503,13 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
 }
 
 
-//! Read an array of OScalar objects
-/*! This implementation is only correct for scalar ILattice */
+//! Reads an array of OScalar objects
+/*!
+  This implementation is only correct for scalar ILattice
+
+  \param rec_xml The (user) record metadata.
+  \param sl The data
+*/
 template<class T>
 void QDPFileReader::read(XMLReader& rec_xml, multi1d< OScalar<T> >& s1)
 {
@@ -383,7 +543,16 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OScalar<T> >& s1)
 }
 
 
-//! Function for extracting datum at specified site 
+//! Function for moving data
+/*!
+  Data is moved from the one buffer to another with a specified offset.
+
+  \param buf The destination buffer
+  \param linear The source buffer offset
+  \param count The number of data to move
+  \param arg The source buffer.
+*/
+
 template<class T> void QDPOScalarFactoryGet(char *buf, size_t linear, int count, void *arg)
 {
   /* Translate arg */
@@ -394,8 +563,13 @@ template<class T> void QDPOScalarFactoryGet(char *buf, size_t linear, int count,
 }
 
 
-//! Write an OScalar object
-/*! This implementation is only correct for scalar ILattice */
+//! Writes an OScalar object
+/*!
+  This implementation is only correct for scalar ILattice.
+
+  \param rec_xml The (user) record metadata.
+  \param sl The data
+*/
 template<class T>
 void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OScalar<T>& s1)
 {
@@ -432,8 +606,13 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OScalar<T>& s1)
 }
 
 
-//! Write an array of OScalar objects
-/*! This implementation is only correct for scalar ILattice */
+//! Writes an array of OScalar objects
+/*!
+  This implementation is only correct for scalar ILattice.
+
+  \param rec_xml The (user) record metadata.
+  \param sl The data
+*/
 template<class T>
 void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OScalar<T> >& s1)
 {
@@ -475,7 +654,15 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OScalar<T> >&
 // NOTE: this is exactly the same bit of code as in scalar_specific.h 
 //       need to make common only on scalarsite.h  like architectures
 
-//! Function for inserting datum at specified site 
+//! Function for moving data
+/*!
+  Data is moved from the one buffer to another with a specified offset.
+
+  \param buf The source buffer
+  \param linear The destination buffer offset
+  \param count The number of data to move
+  \param arg The destination buffer.
+*/
 template<class T> void QDPOLatticeFactoryPut(char *buf, size_t linear, int count, void *arg)
 {
   /* Translate arg */
@@ -485,7 +672,17 @@ template<class T> void QDPOLatticeFactoryPut(char *buf, size_t linear, int count
   memcpy(dest,(const void*)buf,count*sizeof(T));
 }
 
-//! Function for inserting datum at specified site  in array
+//! Function for moving array data
+/*!
+  Data is moved from the one buffer to another buffer array with a
+  specified offset. 
+  The data is taken to be in multi1d< OLattice<T> > form.
+
+  \param buf The source buffer
+  \param linear The destination buffer offset
+  \param count Ignored
+  \param arg The destination buffer.
+*/
 template<class T> void QDPOLatticeFactoryPutArray(char *buf, size_t linear, int count, void *arg)
 {
   /* Translate arg */
@@ -500,8 +697,13 @@ template<class T> void QDPOLatticeFactoryPutArray(char *buf, size_t linear, int 
 }
 
 
-//! Read an OLattice object
-/*! This implementation is only correct for scalar ILattice */
+//! Reads an OLattice object
+/*!
+  This implementation is only correct for scalar ILattice.
+
+  \param rec_xml The (user) record metadata.
+  \param sl The data
+*/
 template<class T>
 void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 {
@@ -547,8 +749,13 @@ void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 }
 
 
-//! Read an array of OLattice objects
-/*! This implementation is only correct for scalar ILattice */
+//! Reads an array of OLattice objects
+/*!
+  This implementation is only correct for scalar ILattice.
+
+  \param rec_xml The (user) record metadata.
+  \param sl The data
+*/
 template<class T>
 void QDPFileReader::read(XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
 {
@@ -583,7 +790,16 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
 }
 
 
-//! Function for extracting datum at specified site 
+//! Function for moving data
+/*!
+  Data is moved from the one buffer to another with a specified offset.
+
+  \param buf The destination buffer
+  \param linear The source buffer offset
+  \param count The number of data to move
+  \param arg The source buffer.
+*/
+
 template<class T> void QDPOLatticeFactoryGet(char *buf, size_t linear, int count, void *arg)
 {
   /* Translate arg */
@@ -593,7 +809,16 @@ template<class T> void QDPOLatticeFactoryGet(char *buf, size_t linear, int count
   memcpy(buf,(const void*)src,count*sizeof(T));
 }
 
-//! Function for extracting datum at specified site 
+//! Function for moving array data
+/*!
+  Data is moved from the one buffer to another with a specified offset.
+  The data is taken to be in multi1d< OLattice<T> > form.
+
+  \param buf The source buffer
+  \param linear The source buffer offset
+  \param count Ignored
+  \param arg The destination buffer.
+*/
 template<class T> void QDPOLatticeFactoryGetArray(char *buf, size_t linear, int count, void *arg)
 {
   /* Translate arg */
@@ -608,8 +833,13 @@ template<class T> void QDPOLatticeFactoryGetArray(char *buf, size_t linear, int 
 }
 
 
-//! Write an OLattice object
-/*! This implementation is only correct for scalar ILattice */
+//! Writes an OLattice object
+/*!
+  This implementation is only correct for scalar ILattice.
+
+  \param rec_xml The user record metadata.
+  \param sl The data
+*/
 template<class T>
 void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 {
@@ -644,8 +874,13 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 }
 
 
-//! Write an array of OLattice objects
-/*! This implementation is only correct for scalar ILattice */
+//! Writes an array of OLattice objects
+/*!
+  This implementation is only correct for scalar ILattice.
+
+  \param rec_xml The (user) record metadata.
+  \param sl The data
+*/
 template<class T>
 void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >& s1)
 {

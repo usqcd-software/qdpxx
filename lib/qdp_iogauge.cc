@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.17 2005-03-14 19:14:22 bjoo Exp $
+// $Id: qdp_iogauge.cc,v 1.18 2005-03-18 13:56:23 zbigniew Exp $
 //
 // QDP data parallel interface
 /*!
@@ -28,7 +28,7 @@ ostream& operator<<(ostream& s, const multi1d<T>& d)
   return s;
 }
 
-//! Initialize header with default values
+
 void archivGaugeInit(ArchivGauge_t& header)
 {
   header.mat_size = 12;
@@ -123,7 +123,13 @@ void write(XMLWriter& xml, const string& path, const ArchivGauge_t& header)
  *
  * \param header     structure holding config info ( Modify )
  * \param cfg_in     binary writer object ( Modify )
- */    
+
+ \note This can handle three-row format link matrices if the
+ \c DATATYPE key has the value \c 4D_SU3_GAUGE_3x3
+ or two-row format matrices if it has the value \c 4D_SU3_GAUGE
+
+ The plaquette, link and checksum values are ignored.
+*/    
 
 static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 {
@@ -276,14 +282,33 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 
 
 //-----------------------------------------------------------------------
-// Read a QCD archive file
+//! Read a NERSC Gauge Connection  Archive file
 // See the corresponding  qdp_*_specific.cc files
+//! Writes a NERSC Gauge Connection Archive gauge configuration file
+/*!
+ * \ingroup io
+ An architecture-specific version of this routine is called by the generic
+ readArchiv functions.
+
+ The data is written in big-endian IEEE format to the file.
+ If the host nachine is little-endian, the data is byte-swapped.
+
+  \param cfg_in    A binary reader
+  \param u          The gauge configuration 
+  \param mat_size   The number of floating-point numbers per link matrix in
+  the file. This should be 12 to write two-row format or 18 for three-row
+  format. 
+  \param float_size
+  
+  \pre The binary writer should have already opened the file, and should be
+  pointing to the beginning of the binary data.
+*/
 void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u, int mat_size, int float_size);
 
 
 
-//! Read a QCD (NERSC) Archive format gauge field
-/*!
+// Read a QCD (NERSC) Archive format gauge field
+/*
  * \ingroup io
  *
  * \param header     structure holding config info ( Modify )
@@ -302,8 +327,8 @@ void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const str
 
 
 //-----------------------------------------------------------------------
-//! Read a Archive configuration file
-/*!
+// Read a Archive configuration file
+/*
  * \ingroup io
  *
  * \param xml        xml reader holding config info ( Modify )
@@ -336,8 +361,8 @@ void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cf
 
 
 //-----------------------------------------------------------------------
-//! Read a QCD (NERSC) Archive format gauge field
-/*!
+// Read a QCD (NERSC) Archive format gauge field
+/*
  * \ingroup io
  *
  * \param u          gauge configuration ( Modify )
@@ -360,6 +385,11 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
  *
  * \param header     structure holding config info ( Modify )
  * \param cfg_out     binary writer object ( Modify )
+
+ \pre The information in the header should be filled in.
+ 
+ \note The value 0 is written as checksum.
+ \note The token \c FLOATING_POINT is always given the value \c IEEE32BIG
  */    
 static void writeArchivHeader(BinaryWriter& cfg_out, const ArchivGauge_t& header)
 {
@@ -418,14 +448,32 @@ static void writeArchivHeader(BinaryWriter& cfg_out, const ArchivGauge_t& header
 
 // Write a QCD archive file
 // See the corresponding  qdp_*_specific.cc files
+
+//! Writes a NERSC Gauge Connection Archive gauge configuration file
+/*!
+ * \ingroup io
+ An architecture-specific version of this routine is called by the generic
+ readArchiv functions.
+
+ The data is written in big-endian IEEE format to the file.
+ If the host nachine is little-endian, the data is byte-swapped.
+
+  \param cfg_out    A binary writer
+  \param u          The gauge configuration 
+  \param mat_size   The number of floating-point numbers per link matrix to
+  write. This should be 12 to write two-row format or 18 for three-row format.
+
+  \pre The binary writer should have already opened the file.
+*/
+  
 void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
 		 int mat_size);
 
 
 //-----------------------------------------------------------------------
 // Write a QCD archive file
-//! Write a QCD (NERSC) Archive format gauge field
-/*!
+// Write a QCD (NERSC) Archive format gauge field
+/*
  * \ingroup io
  *
  * \param xml        xml writer holding config info ( Modify )
@@ -443,8 +491,8 @@ void writeArchiv(ArchivGauge_t& header, const multi1d<LatticeColorMatrix>& u, co
 }
 
 
-//! Write a Archive configuration file
-/*!
+// Write a Archive configuration file
+/*
  * \ingroup io
  *
  * \param xml        xml writer holding config info ( Read )
@@ -463,8 +511,8 @@ void writeArchiv(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u,
 }
 
 
-//! Write a Archive configuration file
-/*!
+// Write a Archive configuration file
+/*
  * \ingroup io
  *
  * \param u          gauge configuration ( Read )

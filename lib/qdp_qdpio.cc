@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.14 2004-09-10 21:23:41 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.15 2005-03-18 13:56:23 zbigniew Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -273,13 +273,13 @@ void QDPFileWriter::clear(QDP_iostate_t state)
 
 QDPFileWriter::~QDPFileWriter() {close();}
 
-//! Close a QDPFileWriter
+
 void close(QDPFileWriter& qsw)
 {
   qsw.close();
 }
 
-//! Is a QDPFileWriter open
+
 bool is_open(QDPFileWriter& qsw)
 {
   return qsw.is_open();

@@ -1,10 +1,10 @@
 // -*- C++ -*-
-// $Id: qdp_filebuf.h,v 1.3 2003-07-21 21:15:06 edwards Exp $
+// $Id: qdp_filebuf.h,v 1.4 2005-03-18 13:56:23 zbigniew Exp $
 
 /*! @file
  * @brief Remote file support
  *
- * The routines here are only used in support of remote file IO
+ * The routines here are only used in support of remote file IO.
  * If the compile time flag USE_REMOTE_QIO is not defined, these
  * classes function as conventional streams writing/reading from
  * local (on node) files.
@@ -17,28 +17,39 @@
 namespace QDPUtil
 {
 
-/*! @defgroup io IO
- *
- * File input and output operations on QDP types
+/*! @ingroup io
  *
  * @{
  */
 
 //--------------------------------------------------------------------------------
-//! Initialize remote file system (QIO)
+//! Initialize remote file system
+/*!
+  QIO wrapper.
+  \param remote_node
+  \param useP
+*/
 void RemoteFileInit(const char *remote_node, bool useP);
 
-//! Shutdown remote file system (QIO)
+//! Shutdown remote file system
+/*!
+  QIO wrapper.
+*/
 void RemoteFileShutdown();
 
-//! Open a remote file (via QIO)
+//! Open a remote file
+/*!
+  QIO wrapper.
+  \param path
+  \param mode
+ */
 FILE* RemoteFileOpen(const char *path, const char *mode);
 
 
 
 //--------------------------------------------------------------------------------
 //! RemoteOutputFileBuf class
-/*! Use the qdaemon/qio facility for remote opening of files
+/*! Use the qdaemon/QIO facility for remote opening of files
  *  The returned file descriptor is wrapped inside the streambuf
  */
 class RemoteOutputFileBuf : public std::streambuf 
@@ -47,21 +58,38 @@ public:
   //! Constructors are always empty
   RemoteOutputFileBuf();
 
-  //! open a remote file
+    //! Opens a remote file
+    /*!
+      If this object already has a file open, then this returns without
+      doing anything.
+    */
   void open(const char *filename, std::ios_base::openmode mode);
   
-  //! close a remote file
+  //! Closes the remote file
   void close();
   
-  //! test if file is open
+    //! Queries whether the file is open
+    /*!
+      \return true if the file is open; false otherwise.
+    */
   bool is_open();
- 
-  //! destructor
-  ~RemoteOutputFileBuf();
+
+    /*! Closes the remote file    */
+  ~RemoteOutputFileBuf(); 
 
 protected:
+    //! Write a character to the file
+    /*!
+      \param c The character to write
+      \return The character just written, or EOF if it could not be written.
+    */
   virtual int_type overflow (int_type c);
 
+    //! Write characters to the file
+    /*!
+      \param s The characters to write
+      \return The number of characters written.
+    */
   virtual std::streamsize xsputn (const char* s, 
 				  std::streamsize num);
 

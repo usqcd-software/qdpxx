@@ -1,10 +1,13 @@
 // -*- C++ -*-
-// $Id: qdp_iogauge.h,v 1.3 2005-02-21 15:25:48 bjoo Exp $
+// $Id: qdp_iogauge.h,v 1.4 2005-03-18 13:56:23 zbigniew Exp $
 
 /*! @file
- * @brief NERSC Archive gauge support
+ * @brief NERSC Gauge Connection Archive gauge support
  *
- * Functions for reading and writing gauge fields in NERSC Archive format
+ * Functions for reading and writing gauge fields in NERSC Gauge Connection
+   Archive format.
+
+   See http://qcd.nersc.gov/ for details.
  */
 
 #ifndef QDP_IOGAUGE_INCLUDE
@@ -14,106 +17,219 @@
 QDP_BEGIN_NAMESPACE(QDP);
 
 
-//! Archive gauge field header
+//! NERSC Archive gauge field header
+/*!
+  See http://qcd.nersc.gov/ for details.
+ 
+  \note This does not contain the checksum value.
+ */
 struct ArchivGauge_t
 {
-  multi1d<int> nrow;       // Lattice size
-  multi1d<int> boundary;   // Lattice size
+    multi1d<int> nrow;            /*!< Lattice size */
+    multi1d<int> boundary;        /*!< Boundary conditions */
 
-  Real  w_plaq;
-  Real  link;
+    Real  w_plaq;                 /*!< Mean normalised plaquette */
+    Real  link;                   /*!< Mean link trace */
 
   /* assume matrix size is 12 (matrix is compressed) 
      and change if we find out otherwise */
-  size_t      mat_size;
+    size_t      mat_size;         /*!< Number of floating point numbers stored
+				    per link matrix. This effectively specifies
+				    whether the matrix is stored in two or
+				    three-row format.
+				  */
 
-  /* Our Columbia friends have sneakily defined IEEE64BIG  */
-  size_t      float_size;
+    /* Our Columbia friends have sneakily defined IEEE64BIG  */
+    size_t      float_size;       /*!< Floating-point precision */
 
-  int         sequence_number;
-  std::string ensemble_id;
-  std::string ensemble_label;
-  std::string creator;
-  std::string creator_hardware;
-  std::string creation_date;
-  std::string archive_date;
+    int         sequence_number;  /*!< Sequence number */
+    std::string ensemble_id;      /*!< Ensemble ID */
+    std::string ensemble_label;   /*!< Ensemble label */
+    std::string creator;          /*!< Creator */		
+    std::string creator_hardware; /*!< Creator hardware */
+    std::string creation_date;	  /*!< Creation date */
+    std::string archive_date;     /*!< Archive date */     
 };
 
 
-//! Initialize header with default values
+//! Initializes a NERSC Archive header with default values
 /*!
  * \ingroup io
+
+ 
+ The defaults are:
+ - Two-row matrix storage
+ - Floating-point precision is 32 bits
+ - Periodic boundary conditions
+ - Sequence number 1
+ - Ensemble label is "NERSC archive"
+ - Creator is "QDP++"
+ - Creator hardware is "QDP++"
+ -  The creation date is obtained from the system clock as the time when this
+    function is called.
+ - The archival date is the creation date.
+ - The average plaquette and link are 0.
+ - The ensemble ID is "X" followed by the creation date.
+ .
  *
  * \param header     structure holding config info ( Modify )
  */    
 void archivGaugeInit(ArchivGauge_t& header);
 
-//! Source header read
+//! Reads a Gauge Connection header from XML into a header container
+/*!
+  \pre The XMLReader should contain the header information in the following
+  tags:
+  \verbatim
+     <mat_size>...        </mat_size>
+     <float_size>...      </float_size>
+     <nrow>...            </nrow>
+     <boundary>...        </boundary>
+     <ensemble_id>...     </ensemble_id>
+     <ensemble_label>...  </ensemble_label>
+     <creator>...         </creator>
+     <creator_hardware>...</creator_hardware>
+     <creation_date>...   </creation_date>
+     <archive_date>...    </archive_date>
+  \endverbatim
+
+  \param xml The container of the XML metadata
+  \param path The Xpath to the tag containing the NERSC tags
+  \param header The header to which the NERSC header information is written.
+*/
 void read(XMLReader& xml, const string& path, ArchivGauge_t& header);
 
-//! Source header writer
+//! Writes a Gauge Connection header from a header container into XML
+/*!
+  \param xml The XML container to which the metadata is written
+  \param path The Xpath to the tag containing the NERSC tags
+  \param header The header from which the NERSC header information is read..
+  
+\post The XMLWriter will contain the header information in the following
+  tags:
+  \verbatim
+     <mat_size>...	  </mat_size>
+     <nrow>...    	  </nrow>
+     <float_size>...      </float_size>
+     <boundary>...	  </boundary>
+     <ensemble_id>...     </ensemble_id>
+     <ensemble_label>...  </ensemble_label>
+     <creator>...         </creator>
+     <creator_hardware>...</creator_hardware>
+     <creation_date>...   </creation_date>
+     <archive_date>...    </archive_date>
+  \endverbatim
+*/
 void write(XMLWriter& xml, const string& path, const ArchivGauge_t& header);
 
 
-//! Read a QCD (NERSC) Archive format gauge field
+//! Reads a NERSC Gauge Connection Archive format gauge field
 /*!
- * \ingroup io
- *
- * \param header     structure holding config info ( Modify )
- * \param u          gauge configuration ( Modify )
- * \param file       path ( Read )
+  \ingroup io
+ The data in the file is assumed to be big-endian.
+ If the host nachine is little-endian, the data is byte-swapped.
+ Based on the header information, the precision of the data can be converted.
+ 
+  \param header     A container for the Gauge Connection header metadata ( Modify )
+  \param u          The gauge configuration ( Modify )
+  \param file       The file name ( Read )
+
+ \note This can handle three-row format link matrices if the
+ \c DATATYPE header token has the value \c 4D_SU3_GAUGE_3x3
+ or two-row format matrices if it has the value \c 4D_SU3_GAUGE
+ 
+ The plaquette, link and checksum values are ignored.
+  
  */    
 void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& file);
 
-//! Read a Archive configuration file
+//! Reads a NERSC Gauge Connection Archive gauge configuration file
 /*!
- * \ingroup io
- *
- * \param xml        xml reader holding config info ( Modify )
- * \param u          gauge configuration ( Modify )
- * \param cfg_file   path ( Read )
- */    
+  \ingroup io
+ The data in the file is assumed to be big-endian.
+ If the host nachine is little-endian, the data is byte-swapped.
+ Based on the header information, the precision of the data can be converted.
+ 
+  \param xml        A container for the Gauge Connection header metadata as XML  ( Modify )
+  \param u          The gauge configuration ( Modify )
+  \param cfg_file   The file name ( Read )
+
+  \note This can handle three-row format link matrices if the
+ \c DATATYPE header token has the value \c 4D_SU3_GAUGE_3x3
+ or two-row format matrices if it has the value \c 4D_SU3_GAUGE
+
+ The plaquette, link and checksum values are ignored.
+
+*/    
 void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file);
 
-//! Read a QCD (NERSC) Archive format gauge field
+
+//! Reads a NERSC Gauge Connection Archive gauge configuration file
 /*!
- * \ingroup io
- *
- * \param u          gauge configuration ( Modify )
- * \param cfg_file   path ( Read )
- */    
+ \ingroup io
+ The data in the file is assumed to be big-endian.
+ If the host nachine is little-endian, the data is byte-swapped.
+
+ \param u          The gauge configuration ( Modify )
+ \param cfg_file   The file name ( Read )
+
+  \note This can handle three-row format link matrices if the
+ \c DATATYPE header token has the value \c 4D_SU3_GAUGE_3x3
+ or two-row format matrices if it has the value \c 4D_SU3_GAUGE
+
+ The plaquette, link and checksum values are ignored.
+*/
+
 void readArchiv(multi1d<LatticeColorMatrix>& u, const string& cfg_file);
 
 
-//! Write a QCD (NERSC) Archive format gauge field
+//! Writes a NERSC Gauge Connection Archive gauge configuration file
 /*!
  * \ingroup io
- *
- * \param xml        xml writer holding config info ( Modify )
- * \param u          gauge configuration ( Modify )
- * \param file       path ( Read )
+ The data is written in 32-bit big-endian IEEE format to the file.
+ If the host nachine is little-endian, the data is byte-swapped.
+
+  \param header     A container for the Gauge Connection header metadata
+  \param u          The gauge configuration 
+  \param file       The file name 
+
+  \pre The information in the header should be filled in.
+ 
+ \note The value 0 is written as checksum.
  */    
 void writeArchiv(ArchivGauge_t& header, const multi1d<LatticeColorMatrix>& u, const string& file);
 
-//! Write a Archive configuration file
+
+//! Writes a NERSC Gauge Connection Archive gauge configuration file
 /*!
  * \ingroup io
- *
- * \param xml        xml writer holding config info ( Read )
- * \param u          gauge configuration ( Read )
- * \param cfg_file   path ( Read )
- */    
+ The data is written in 32-bit big-endian IEEE format to the file.
+ If the host nachine is little-endian, the data is byte-swapped.
 
+  \param header     A container for the Gauge Connection header metadata as XML
+  \param u          The gauge configuration 
+  \param cfg_file       The file name
+
+ \pre The information in the header should be filled in.
+ 
+ \note The value 0 is written as checksum.
+ \note The token \c FLOATING_POINT is always given the value \c IEEE32BIG
+ */    
 void writeArchiv(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u, 
 		 const string& cfg_file);
 
-//! Write a Archive configuration file
+//! Writes a NERSC Gauge Connection Archive gauge configuration file
 /*!
  * \ingroup io
- *
- * \param u          gauge configuration ( Read )
- * \param cfg_file   path ( Read )
- */    
+ The data is written in 32-bit big-endian IEEE format to the file.
+ If the host nachine is little-endian, the data is byte-swapped.
+
+  \param u          The gauge configuration 
+  \param cfg_file       The file name
+
+  \note Since no header information is supplied, the default ArchivGauge_t
+  values are used.
+*/    
 
 void writeArchiv(const multi1d<LatticeColorMatrix>& u, 
 		 const string& cfg_file);

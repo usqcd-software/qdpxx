@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.25 2004-11-22 19:31:31 edwards Exp $
+// $Id: qdp_inner.h,v 1.26 2005-03-18 13:56:23 zbigniew Exp $
 
 /*! \file
  * \brief Inner grid
@@ -240,7 +240,9 @@ void read(XMLReader& xml, const string& path, IScalar<T>& d)
 /*!
  * Lattice class for vector like architectures. 
  * Also mixed mode super-scalar architectures with vector extensions
- *
+
+ * \addtogroup ilattice Lattice inner grid
+ * \ingroup fiberbundle 
  * @{
  */
 template<class T, int N> class ILattice
@@ -1755,6 +1757,7 @@ fill_gaussian(IScalar<T>& d, IScalar<T>& r1, IScalar<T>& r2)
 }
 
 
+/*! @} */  // end of group iscalar
 
 //-----------------------------------------------------------------------------
 // Inner-grid lattice operations
