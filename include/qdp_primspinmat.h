@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinmat.h,v 1.6 2004-07-02 21:53:03 edwards Exp $
+// $Id: qdp_primspinmat.h,v 1.7 2004-07-06 01:55:27 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -352,13 +352,13 @@ traceSpinMultiply(const PSpinMatrix<T1,N>& l, const PSpinMatrix<T2,N>& r)
   typename BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnTraceSpinMultiply>::Type_t  d;
 
   // The traceSpin is eaten here
-  d.elem() = s1.elem(0,0) * s2.elem(0,0);
+  d.elem() = l.elem(0,0) * r.elem(0,0);
   for(int k=1; k < N; ++k)
-    d.elem() += s1.elem(0,k) * s2.elem(k,0);
+    d.elem() += l.elem(0,k) * r.elem(k,0);
 
   for(int j=1; j < N; ++j)
     for(int k=0; k < N; ++k)
-      d.elem() += s1.elem(j,k) * s2.elem(k,j);
+      d.elem() += l.elem(j,k) * r.elem(k,j);
 
   return d;
 }
@@ -376,9 +376,9 @@ traceSpinMultiply(const PSpinMatrix<T1,N>& l, const PScalar<T2>& r)
   typename BinaryReturn<PSpinMatrix<T1,N>, PScalar<T2>, FnTraceSpinMultiply>::Type_t  d;
 
   // The traceSpin is eaten here
-  d.elem() = s1.elem(0,0) * s2.elem();
+  d.elem() = l.elem(0,0) * r.elem();
   for(int k=1; k < N; ++k)
-    d.elem() += s1.elem(k,k) * s2.elem();
+    d.elem() += l.elem(k,k) * r.elem();
 
   return d;
 }
@@ -396,9 +396,9 @@ traceSpinMultiply(const PScalar<T1>& l, const PSpinMatrix<T2,N>& r)
   typename BinaryReturn<PScalar<T1>, PSpinMatrix<T2,N>, FnTraceSpinMultiply>::Type_t  d;
 
   // The traceSpin is eaten here
-  d.elem() = s1.elem() * s2.elem(0,0);
+  d.elem() = l.elem() * r.elem(0,0);
   for(int k=1; k < N; ++k)
-    d.elem() += s1.elem() * s2.elem(k,k);
+    d.elem() += l.elem() * r.elem(k,k);
 
   return d;
 }
@@ -1040,6 +1040,31 @@ chiralProjectMinus(const PSpinMatrix<T,4>& s1)
 }
 
 //------------------------------------------
+// PScalar = traceSpinQuarkContract13(PSpinMatrix,PSpinMatrix)
+template<class T1, class T2>
+struct BinaryReturn<PSpinMatrix<T1,4>, PSpinMatrix<T2,4>, FnTraceSpinQuarkContract13> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnTraceSpinQuarkContract13>::Type_t>  Type_t;
+};
+
+//! PScalar = traceSpinQuarkContract13(PSpinMatrix,PSpinMatrix)
+template<class T1, class T2>
+inline typename BinaryReturn<PSpinMatrix<T1,4>, PSpinMatrix<T2,4>, FnTraceSpinQuarkContract13>::Type_t
+traceSpinQuarkContract13(const PSpinMatrix<T1,4>& l, const PSpinMatrix<T2,4>& r)
+{
+  typename BinaryReturn<PSpinMatrix<T1,4>, PSpinMatrix<T2,4>, FnTraceSpinQuarkContract13>::Type_t  d;
+
+  d.elem() = quarkContractXX(l.elem(0,0), r.elem(0,0));
+  for(int k=1; k < 4; ++k)
+    d.elem() += quarkContractXX(l.elem(k,0), r.elem(k,0));
+
+  for(int j=1; j < 4; ++j)
+    for(int k=0; k < 4; ++k)
+      d.elem() += quarkContractXX(l.elem(k,j), r.elem(k,j));
+
+  return d;
+}
+
+
 // quark propagator contraction
 template<class T1, class T2>
 inline typename BinaryReturn<PSpinMatrix<T1,4>, PSpinMatrix<T2,4>, FnQuarkContract13>::Type_t
