@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.10 2003-08-14 03:50:04 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.11 2003-08-20 21:03:31 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -948,6 +948,27 @@ copymask(PMatrix<T,N,C>& d, const PScalar<T1>& mask, const PMatrix<T,N,C>& s1)
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       copymask(d.elem(i,j),mask.elem(),s1.elem(i,j));
+}
+
+
+//! dest [some type] = source [some type]
+template<class T, class T1, int N, template<class,int> class C>
+inline void 
+copy_site(PMatrix<T,N,C>& d, int isite, const PMatrix<T1,N,C>& s1)
+{
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      copy_site(d.elem(i,j), isite, s1.elem(i,j));
+}
+
+//! dest [some type] = source [some type]
+template<class T, class T1, int N, template<class,int> class C>
+inline void 
+copy_site(PMatrix<T,N,C>& d, int isite, const PScalar<T1>& s1)
+{
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      copy_site(d.elem(i,j), isite, s1.elem());
 }
 
 

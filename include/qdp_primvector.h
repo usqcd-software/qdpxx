@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.9 2003-08-10 02:27:11 edwards Exp $
+// $Id: qdp_primvector.h,v 1.10 2003-08-20 21:04:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -637,6 +637,25 @@ copymask(PVector<T,N,C>& d, const PScalar<T1>& mask, const PVector<T,N,C>& s1)
 {
   for(int i=0; i < N; ++i)
     copymask(d.elem(i),mask.elem(),s1.elem(i));
+}
+
+
+//! dest [some type] = source [some type]
+template<class T, class T1, int N, template<class,int> class C>
+inline void 
+copy_site(PVector<T,N,C>& d, int isite, const PVector<T1,N,C>& s1)
+{
+  for(int i=0; i < N; ++i)
+    copy_site(d.elem(i), isite, s1.elem(i));
+}
+
+//! dest [some type] = source [some type]
+template<class T, class T1, int N, template<class,int> class C>
+inline void 
+copy_site(PVector<T,N,C>& d, int isite, const PScalar<T1>& s1)
+{
+  for(int i=0; i < N; ++i)
+    copy_site(d.elem(i), isite, s1.elem());
 }
 
 
