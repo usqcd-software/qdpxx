@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_defs.h,v 1.6 2003-09-16 15:58:49 bjoo Exp $
+// $Id: qdp_defs.h,v 1.7 2003-09-23 16:18:20 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -17,14 +17,6 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 
 #include <qdp_config.h>
-
-#if defined(SINGLE_PRECISION)
-#undef SINGLE_PRECISION
-#endif
-
-#if defined(DOUBLE_PRECISION)
-#undef DOUBLE_PRECISION
-#endif
 
 // Fix default precision
 #if ! defined(BASE_PRECISION)
@@ -122,6 +114,8 @@ typedef OScalar< PScalar< PColorMatrix< RComplex<REAL32>, Nc> > > ColorMatrixF;
 
 typedef OScalar< PScalar< PScalar< RScalar<REAL32> > > > Real32;
 typedef OScalar< PScalar< PScalar< RScalar<REAL64> > > > Real64;
+typedef OScalar< PScalar< PScalar< RComplex<REAL32> > > > Complex32;
+typedef OScalar< PScalar< PScalar< RComplex<REAL64> > > > Complex64;
 
 // Equivalent names
 typedef Integer  Int;
