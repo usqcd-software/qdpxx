@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primmatrix.h,v 1.16 2002-12-26 22:59:51 edwards Exp $
+// $Id: primmatrix.h,v 1.17 2003-01-26 01:40:40 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -83,6 +83,30 @@ public:
       return static_cast<CC&>(*this);
     }
 
+  //! PMatrix += PScalar
+  template<class T1>
+  inline
+  CC& operator+=(const PScalar<T1>& rhs) 
+    {
+      for(int i=0; i < N; ++i)
+	for(int j=0; j < N; ++j)
+	  elem(i,j) += rhs.elem();
+
+      return static_cast<CC&>(*this);
+    }
+
+  //! PMatrix -= PScalar
+  template<class T1>
+  inline
+  CC& operator-=(const PScalar<T1>& rhs) 
+    {
+      for(int i=0; i < N; ++i)
+	for(int j=0; j < N; ++j)
+	  elem(i,j) -= rhs.elem();
+
+      return static_cast<CC&>(*this);
+    }
+
   //! PMatrix *= PScalar
   template<class T1>
   inline
@@ -91,6 +115,18 @@ public:
       for(int i=0; i < N; ++i)
 	for(int j=0; j < N; ++j)
 	  elem(i,j) *= rhs.elem();
+
+      return static_cast<CC&>(*this);
+    }
+
+  //! PMatrix /= PScalar
+  template<class T1>
+  inline
+  CC& operator/=(const PScalar<T1>& rhs) 
+    {
+      for(int i=0; i < N; ++i)
+	for(int j=0; j < N; ++j)
+	  elem(i,j) /= rhs.elem();
 
       return static_cast<CC&>(*this);
     }
