@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.9 2003-10-15 17:15:32 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.10 2003-12-11 16:20:58 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -671,6 +671,140 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const OrderedSet& ss)
     dest[i] = sum(s1,ss[i]);
 
   return dest;
+}
+
+
+//-----------------------------------------------------------------------------
+//! OScalar = norm2(trace(adj(multi1d<source>)*multi1d<source>))
+/*!
+ * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T>
+inline typename UnaryReturn<OScalar<T>, FnNorm2>::Type_t
+norm2(const multi1d< OScalar<T> >& s1)
+{
+  typename UnaryReturn<OScalar<T>, FnNorm2>::Type_t  d;
+
+  // Possibly loop entered
+  zero_rep(d.elem());
+
+  for(int n=0; n < s1.size(); ++n)
+  {
+    OScalar<T>& ss1 = s1[n];
+    d.elem() += localNorm2(ss1.elem());
+  }
+
+  return d;
+}
+
+//! OScalar = sum(OScalar)  under an explicit subset
+/*! Discards subset */
+template<class T>
+inline typename UnaryReturn<OScalar<T>, FnNorm2>::Type_t
+norm2(const multi1d< OScalar<T> >& s1, const UnorderedSubset& s)
+{
+  return norm2(s1);
+}
+
+//! OScalar = sum(OScalar)  under an explicit subset
+/*! Discards subset */
+template<class T>
+inline typename UnaryReturn<OScalar<T>, FnNorm2>::Type_t
+norm2(const multi1d< OScalar<T> >& s1, const OrderedSubset& s)
+{
+  return norm2(s1);
+}
+
+
+//! OScalar = norm2(multi1d<OLattice>) under an explicit subset
+/*!
+ * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T>
+inline typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t
+norm2(const multi1d< OLattice<T> >& s1, const UnorderedSubset& s)
+{
+  typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
+
+  // Possibly loop entered
+  zero_rep(d.elem());
+
+#if ! defined(QDP_NOT_IMPLEMENTED)
+  const int *tab = s.siteTable().slice();
+  for(int n=0; n < s1.size(); ++n)
+  {
+    const OLattice<T>& ss1 = s1[n];
+    for(int j=0; j < s.numSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      d.elem() += localNorm2(ss1.elem(i));
+    }
+  }
+#else
+  QDP_error_exit("norm2-UnorderedSubset not implemented");
+#endif
+
+  // Do a global sum on the result
+  Internal::globalSum(d);
+  
+  return d;
+}
+
+//! OScalar = norm2(multi1d<OLattice>) under an explicit subset
+/*!
+ * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T>
+inline typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t
+norm2(const multi1d< OLattice<T> >& s1, const OrderedSubset& s)
+{
+  typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
+  typename UnaryReturn<OScalar<T>, FnLocalNorm2>::Type_t  tmp;
+
+  // Possibly loop entered
+  zero_rep(d.elem());
+
+  const int istart = s.start() >> INNER_LOG;
+  const int iend   = s.end()   >> INNER_LOG;
+
+  for(int n=0; n < s1.size(); ++n)
+  {
+    const OLattice<T>& ss1 = s1[n];
+    for(int i=istart; i <= iend; ++i) 
+    {
+      tmp.elem() = localNorm2(ss1.elem(i)); // Evaluate to ILattice part
+      d.elem() += sum(tmp.elem());    // sum as well the ILattice part
+    }
+  }
+
+  // Do a global sum on the result
+  Internal::globalSum(d);
+  
+  return d;
+}
+
+
+//! OScalar = norm2(multi1d<OLattice>)
+/*!
+ * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T>
+inline typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t
+norm2(const multi1d< OLattice<T> >& s1)
+{
+  return norm2(s1,all);
 }
 
 
