@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.5 2003-08-26 15:26:44 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.6 2003-08-29 02:44:23 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -76,8 +76,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 {
 //  cerr << "In evaluateOrderedSubset(olattice,oscalar)\n";
 
-  const int istart = s.start() >> INNER_LEN;
-  const int iend   = s.end()   >> INNER_LEN;
+  const int istart = s.start() >> INNER_LOG;
+  const int iend   = s.end()   >> INNER_LOG;
 
   for(int i=istart; i <= iend; ++i) 
   {
@@ -140,8 +140,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 {
 //  cerr << "In evaluateOrderedSubset(olattice,olattice)" << endl;
 
-  const int istart = s.start() >> INNER_LEN;
-  const int iend   = s.end()   >> INNER_LEN;
+  const int istart = s.start() >> INNER_LOG;
+  const int iend   = s.end()   >> INNER_LOG;
 
   for(int i=istart; i <= iend; ++i) 
   {
@@ -192,8 +192,8 @@ copymask(OSubLattice<T2,OrderedSubset> d, const OLattice<T1>& mask, const OLatti
   OLattice<T2>& dest = d.field();
   const OrderedSubset& s = d.subset();
 
-  const int istart = s.start() >> INNER_LEN;
-  const int iend   = s.end()   >> INNER_LEN;
+  const int istart = s.start() >> INNER_LOG;
+  const int iend   = s.end()   >> INNER_LOG;
 
   for(int i=istart; i <= iend; ++i) 
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
@@ -272,8 +272,8 @@ random(OLattice<T>& d, const OrderedSubset& s)
   Seed seed;
   ILatticeSeed skewed_seed;
 
-  const int istart = s.start() >> INNER_LEN;
-  const int iend   = s.end()   >> INNER_LEN;
+  const int istart = s.start() >> INNER_LOG;
+  const int iend   = s.end()   >> INNER_LOG;
 
   for(int i=istart; i <= iend; ++i) 
   {
@@ -335,8 +335,8 @@ void gaussian(OLattice<T>& d, const OrderedSubset& s)
   random(r1,s);
   random(r2,s);
 
-  const int istart = s.start() >> INNER_LEN;
-  const int iend   = s.end()   >> INNER_LEN;
+  const int istart = s.start() >> INNER_LOG;
+  const int iend   = s.end()   >> INNER_LOG;
 
   for(int i=istart; i <= iend; ++i) 
     fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
@@ -385,8 +385,8 @@ void zero_rep(OLattice<T>& dest, const UnorderedSubset& s)
 template<class T> 
 void zero_rep(OLattice<T>& dest, const OrderedSubset& s) 
 {
-  const int istart = s.start() >> INNER_LEN;
-  const int iend   = s.end()   >> INNER_LEN;
+  const int istart = s.start() >> INNER_LOG;
+  const int iend   = s.end()   >> INNER_LOG;
 
   for(int i=istart; i <= iend; ++i) 
     zero_rep(dest.elem(i));
@@ -596,8 +596,8 @@ peekSite(const OLattice<T1>& l, const multi1d<int>& coord)
   typename UnaryReturn<OLattice<T1>, FnPeekSite>::Type_t  dest;
 
   int i      = Layout::linearSiteIndex(coord);
-  int iouter = i >> INNER_LEN;
-  int iinner = i & ((1 << INNER_LEN)-1);
+  int iouter = i >> INNER_LOG;
+  int iinner = i & ((1 << INNER_LOG)-1);
   copy_site(dest.elem(), iinner, l.elem(iouter));
   return dest;
 }
@@ -616,8 +616,8 @@ inline OLattice<T1>&
 pokeSite(OLattice<T1>& l, const OScalar<T2>& r, const multi1d<int>& coord)
 {
   int i      = Layout::linearSiteIndex(coord);
-  int iouter = i >> INNER_LEN;
-  int iinner = i & ((1 << INNER_LEN)-1);
+  int iouter = i >> INNER_LOG;
+  int iinner = i & ((1 << INNER_LOG)-1);
   copy_site(l.elem(iouter), iinner, r.elem());
   return l;
 }
@@ -704,31 +704,47 @@ public:
   OLattice<T1>
   operator()(const OLattice<T1> & l)
     {
+      OLattice<T1> d;
+
 #if QDP_DEBUG >= 3
       QDP_info("Map()");
 #endif
 
-      OLattice<T1> d;
-      int igather[1 << INNER_LEN];
-
-      // *** THIS IS A TERRIBLE IMPLEMENTATION - I JUST WANT IT TO WORK FIRST!!!
+      // *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
       // For now, use the all subset
-      // *** THIS IS WRONG ***
-      for(int outersite=0; outersite < Layout::outerSitesOnNode(); ++outersite) 
+#if INNER_LOG == 2
+      const int vvol = Layout::sitesOnNode();
+      for(int i=0; i < vvol; i+= INNER_LEN) 
       {
-	for(int innersite=0; innersite < (1 << INNER_LEN); ++innersite) 
-	{
-	  int i = (outersite << INNER_LEN) + innersite;
+	int ii = i >> INNER_LOG;
+	int o0 = goffsets[i+0] >> INNER_LOG;
+	int i0 = goffsets[i+0] & (INNER_LEN - 1);
+
+	int o1 = goffsets[i+1] >> INNER_LOG;
+	int i1 = goffsets[i+1] & (INNER_LEN - 1);
+
+	int o2 = goffsets[i+2] >> INNER_LOG;
+	int i2 = goffsets[i+2] & (INNER_LEN - 1);
+
+	int o3 = goffsets[i+3] >> INNER_LOG;
+	int i3 = goffsets[i+3] & (INNER_LEN - 1);
 
 #if QDP_DEBUG >= 3
-	  QDP_info("Map(olattice[%d],olattice[%d])",i,goffsets[i]);
+	QDP_info("Map(lattice[%d]=lattice([%d,%d],[%d,%d],[%d,%d],[%d,%d])",
+		 ii,o0,i0,o1,i1,o2,i2,o3,i3);
 #endif
-//	  d.elem(iouter) = l.elem(gouter,ginner);
-	  zero_rep(d.elem(outersite));
 
-#warning "Map is broken"
-	}
+	// Gather 4 inner-grid sites together
+	gather_sites(d.elem(ii),
+		     l.elem(o0),i0,
+		     l.elem(o1),i1,
+		     l.elem(o2),i2,
+		     l.elem(o3),i3);
       }
+
+#else
+#error "Map: this inner grid length is not supported - easy to fix"
+#endif
 
 #if QDP_DEBUG >= 3
       QDP_info("exiting Map()");
@@ -1067,8 +1083,8 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
   for(int site=0; site < vvol; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
-    int outersite = i >> INNER_LEN;
-    int innersite = i & ((1 << INNER_LEN)-1);
+    int outersite = i >> INNER_LOG;
+    int innersite = i & ((1 << INNER_LOG)-1);
 
     nml.get() << "   Site =  " << site << "   = ";
     nml << getSite(d.elem(outersite),innersite);  // write in conventional scalar form
@@ -1090,8 +1106,8 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
   for(int site=0; site < iend; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
-    int outersite = i >> INNER_LEN;
-    int innersite = i & ((1 << INNER_LEN)-1);
+    int outersite = i >> INNER_LOG;
+    int innersite = i & ((1 << INNER_LOG)-1);
 
     alist.clear();
     alist.push_back(XMLWriterAPI::Attribute("site", i));
@@ -1128,8 +1144,8 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
   for(int site=0; site < iend; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
-    int outersite = i >> INNER_LEN;
-    int innersite = i & ((1 << INNER_LEN)-1);
+    int outersite = i >> INNER_LOG;
+    int innersite = i & ((1 << INNER_LOG)-1);
 
     typedef typename UnaryReturn<OLattice<T>, FnGetSite>::Type_t  Site_t;
     Site_t  this_site = getSite(d.elem(outersite),innersite);
@@ -1159,8 +1175,8 @@ void read(BinaryReader& bin, OLattice<T>& d)
   for(int site=0; site < iend; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
-    int outersite = i >> INNER_LEN;
-    int innersite = i & ((1 << INNER_LEN)-1);
+    int outersite = i >> INNER_LOG;
+    int innersite = i & ((1 << INNER_LOG)-1);
 
     typedef typename UnaryReturn<OLattice<T>, FnGetSite>::Type_t  Site_t;
     Site_t  this_site;
