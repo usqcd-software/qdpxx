@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_init.cc,v 1.3 2003-10-09 18:27:40 edwards Exp $
+// $Id: qdp_parscalarvec_init.cc,v 1.4 2003-11-05 17:49:49 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec init routines
@@ -101,18 +101,16 @@ void QDP_initialize(int *argc, char ***argv)
 
   QMP_verbose (QMP_verboseP);
 
-  QDP_info("Now initialize QMP");
+  QDP::cout << "Now initialize QMP\n";
 
   if (QMP_init_msg_passing(argc, argv, QMP_SMP_ONE_ADDRESS) != QMP_SUCCESS)
     QDP_error_exit("QDP_initialize failed");
 
-  QDP_info("Some layout init");
+  QDP::cout << "Some layout init\n";
 
   Layout::init();   // setup extremely basic functionality in Layout
 
   isInit = true;
-
-  QDP_info("Init qio");
 
   // initialize remote file service (QIO)
   bool use_qio = (rtiP != 0) ? true : false;
@@ -123,7 +121,7 @@ void QDP_initialize(int *argc, char ***argv)
   QDPIO::cout.init(&std::cout);
   QDPIO::cerr.init(&std::cerr);
 
-  QDP_info("Initialize done");
+  QDP::cout << "Initialize done\n";
 }
 
 //! Is the machine initialized?
