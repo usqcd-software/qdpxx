@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.6 2003-09-03 03:35:22 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.7 2003-09-03 19:53:32 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -545,7 +545,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
     {
       int i = tab[j];
       int outersite = i >> INNER_LOG;
-      int innersite = i & ((1 << INNER_LOG)-1);
+      int innersite = i & (INNER_LEN-1);
 
       tmp.elem() = forEach(s1, EvalLeaf1(outersite), OpCombine()); // Evaluate to ILattice part
       d.elem() += getSite(tmp.elem(),innersite);    // wasteful - only extract a single site worth
@@ -623,7 +623,7 @@ sumMulti(const QDPExpr<RHS,OScalar<T> >& s1, const Set& ss)
   // lazy - evaluate repeatedly
   for(int i=0; i < ss.numSubsets(); ++i)
     dest[i] = sum(s1,ss[i]);
-
+  
   return dest;
 }
 
