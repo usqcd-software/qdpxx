@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.5 2004-03-23 16:16:09 edwards Exp $
+// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.6 2004-03-25 10:37:30 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -16,16 +16,16 @@ QDP_BEGIN_NAMESPACE(QDP);
 extern "C" { 
 void vaxpy3(REAL *Out, REAL *scalep,REAL *InScale, REAL *Add,int n_3vec);
 void vaxmy3(REAL *Out, REAL *scalep,REAL *InScale, REAL *Sub,int n_3vec);
+void vaxpy3_norm (REAL *out, REAL *scalep, REAL *InScale, REAL *Add,int len, 
+		  REAL *norm);
 };
-
-static LatticeFermion internal_zero = zero;
 
 void vadd(REAL *Out, REAL *In1, REAL *In2, int n_3vec);
 void vsub(REAL *Out, REAL *In1, REAL *In2, int n_3vec);
 void vscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec);
 void local_sumsq(DOUBLE *Out, REAL *In, int n_3vec);
 
-typedef PSpinVector<PColorVector<RComplex<PScalar<REAL> >, 3>, 4> TVec;
+typedef PSpinVector<PColorVector<RComplex<PScalar<REAL> >, Nc>, Ns> TVec;
 typedef PScalar<PScalar<RScalar<PScalar<REAL> > > >  TScal;
 
 // #define DEBUG_BLAS
