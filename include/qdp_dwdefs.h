@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_dwdefs.h,v 1.2 2003-10-20 20:14:29 edwards Exp $
+// $Id: qdp_dwdefs.h,v 1.3 2003-10-22 00:59:44 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -53,16 +53,15 @@ typedef GammaType<Ns> Gamma;
 // Aliases for a scalar architecture
 
 // Fixed fermion type
-typedef OLattice< PScalar< PSpinVector< PColorVector< RComplex<REAL>, 3>, 4> > > LatticeDiracFermion;
-typedef OLattice< PScalar< PSpinVector< PColorVector< RComplex<REAL>, 3>, 1> > > LatticeStaggeredFermion;
-typedef OLattice< PScalar< PSpinMatrix< PColorMatrix< RComplex<REAL>, 3>, 4> > > LatticeDiracPropagator;
+typedef OLattice< PScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 4> > > LatticeDiracFermion;
+typedef OLattice< PScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 1> > > LatticeStaggeredFermion;
+typedef OLattice< PScalar< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, 4> > > LatticeDiracPropagator;
 
 // Floating aliases
 typedef OLattice< PScalar< PScalar< PColorVector< RComplex<REAL>, Nc> > > > LatticeColorVector;
 typedef OLattice< PScalar< PSpinVector< PScalar< RComplex<REAL> >, Ns> > > LatticeSpinVector;
 typedef OLattice< PScalar< PScalar< PColorMatrix< RComplex<REAL>, Nc> > > > LatticeColorMatrix;
 typedef OLattice< PScalar< PSpinMatrix< PScalar< RComplex<REAL> >, Ns> > > LatticeSpinMatrix;
-typedef OLattice< PScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 1> > > LatticeStaggeredFermion;
 typedef OLattice< PScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns> > > LatticeFermion;
 typedef OLattice< PScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns>>1 > > > LatticeHalfFermion;
 typedef OLattice< PScalar< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, Ns> > > LatticePropagator;
