@@ -25,9 +25,9 @@ only for the experts.
 --with-qmp=<DIR> 	Specifies a directory where QMP is installed.
 		  This option is only useful for versions of QMP 1.4 or 
 		  higher, where the QMP build system leaves a file in 
-		  <DIR>/config/qmp_build_env.sh  listing the environment
+		  <DIR>/bin/qmp-config  listing the environment
 		  variables needed for compiling with QMP. All values in 
-		  qmp_build_env.sh are overriden, if the relevant values
+		  qmp-config are overriden, if the relevant values
 		  are already defined in the shell, or if they are defined
 		  on the configure command line with --with-qmp-xxxx= 
 		  switches. 
@@ -212,7 +212,7 @@ gmake doc-install
 
 
 or another alternative, is if you use a version of QMP which leaves a 
-<qmp_dir>/config/qmp_build_env.sh file on installation, you can try
+<qmp_dir>/bin/qmp-config file on installation, you can try
 
 ../configure CXX=/Home/bj/scratch/mpich-1.2.4/bin/mpiCC \
 	     --enable-parallel-arch=parscalar \
@@ -225,8 +225,8 @@ etc etc
 5) Leaving a file containing the values of the environment variables.
 ---------------------------------------------------------------------
 
-As of version 0.26, qdp++ creates and installs a file called 
-qdp_build_env.sh in <prefix>/config/qdp_build_env.sh.
+As of version 1.0, qdp++ creates and installs a file called 
+qdp++-config in <prefix>/bin
 
 This file defines all the environment variables used in configuring 
 QDP++, (ie: QMP_CXXFLAGS, QMP_LDFLAGS, QMP_LIBS, QMP_COMMS_CXXFLAGS, QMP_COMMS_LDFLAGS, QMP_LIBS) as well as QDP_CXXFLAGS, QDP_LDFLAGS and QDP_LIBS which 
