@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.6 2003-08-04 19:05:24 edwards Exp $
+// $Id: qdp_reality.h,v 1.7 2003-08-05 20:06:33 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -358,7 +358,7 @@ public:
 private:
   T re;
   T im;
-};
+} QDP_ALIGN8;   // possibly force alignment
 
 
 //! Stream output
