@@ -767,8 +767,7 @@ struct FnWhere
 {
   PETE_EMPTY_CONSTRUCTORS(FnWhere)
   template<class T1, class T2, class T3>
-//  inline typename TrinaryReturn<T1, T2, T3, FnWhere >::Type_t
-  inline typename BinaryReturn<T2, T3, FnWhere >::Type_t
+  inline typename TrinaryReturn<T1, T2, T3, FnWhere >::Type_t
   operator()(const T1 &a, const T2 &b, const T3 &c) const
   {
 //    if (a) return b; else return c;
@@ -781,6 +780,6 @@ struct FnWhere
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: OperatorTags.h,v $   $Author: edwards $
-// $Revision: 1.3 $   $Date: 2003-02-28 03:42:48 $
+// $Revision: 1.4 $   $Date: 2004-08-12 00:38:07 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo
