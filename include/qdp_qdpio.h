@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.4 2003-09-26 13:24:24 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.5 2003-09-26 15:26:16 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
  */
 
 #include "qio.h"
+#include <sstream>
+using namespace std;
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -247,7 +249,8 @@ template < class T > void QDPFactoryGet(char *buf, const int crd[], void *arg) {
 template<class T>
 void QDPSerialFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 {
-//  cout << "QDPSerialFileWriter::write" << endl;
+  //  cout << "QDPSerialFileWriter::write" << endl;
+
 
   // Copy metadata string into simple qio string container
   XML_string* xml_c  = XML_string_create(rec_xml.str().length()+1);  // check if +1 is needed
@@ -257,9 +260,18 @@ void QDPSerialFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 //  cout << "rec_c= XXX" << xml_c << "XXX" << endl;
 
   // For now, create an empty binX field
-  string binx = "Empty binX entry";
-  XML_string* BinX_c = XML_string_create(binx.length()+1);  // check if +1 is needed
-  XML_string_set(BinX_c, binx.c_str());
+  ostringstream binx;
+
+  // Make up a dummy binX string
+  binx << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << endl;
+  binx << "<dataset xmlns=\"http://schemas.nesc.ac.uk/binx/binx\" " << endl;
+  binx << "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " << endl;
+  binx << "         xsi:schemaLocation=\"http://schemas.nesc.ac.uk/binx/binx\" />" << endl;
+
+  
+  XML_string* BinX_c = XML_string_create(binx.str().length()+1);  // check if +1 is needed -- Yes it is. Balint
+
+  XML_string_set(BinX_c, binx.str().c_str());
 
 //  cout << "len=" << (rec_xml.str().length()+1) << endl;
 //  cout << "BinX_c= XXX" << xml_c << "XXX" << endl;
