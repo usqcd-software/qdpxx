@@ -1,4 +1,4 @@
-// $Id: linalg1.cc,v 1.3 2003-07-31 04:19:21 edwards Exp $
+// $Id: linalg1.cc,v 1.4 2003-08-01 18:14:18 edwards Exp $
 
 #include <time.h>
 
@@ -334,7 +334,7 @@ double QDP_M_eq_M_times_M(LatticeColorMatrix& dest,
 			  int cnt)
 {
   clock_t t1 = clock();
-  for(int i=0; i < cnt; ++i)
+  for (; cnt-- > 0; )
     dest = s1 * s2;
   clock_t t2 = clock();
 
@@ -347,7 +347,7 @@ double QDP_M_eq_Ma_times_M(LatticeColorMatrix& dest,
 			  int cnt)
 {
   clock_t t1 = clock();
-  for(int i=0; i < cnt; ++i)
+  for (; cnt-- > 0; )
     dest = adj(s1) * s2;
   clock_t t2 = clock();
 
@@ -360,7 +360,7 @@ double QDP_M_peq_M_times_M(LatticeColorMatrix& dest,
 			  int cnt)
 {
   clock_t t1 = clock();
-  for(int i=0; i < cnt; ++i)
+  for (; cnt-- > 0; )
     dest += s1 * s2;
   clock_t t2 = clock();
 
