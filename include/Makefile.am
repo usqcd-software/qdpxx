@@ -8,6 +8,7 @@ PETE_HDRS =  PETE/Combiners.h \
              PETE/TreeNodes.h \
              PETE/CreateLeaf.h \
              PETE/ForEach.h \
+             PETE/ForEachInOrder.h \
              PETE/OperatorTags.h \
              PETE/Scalar.h \
              PETE/TypeComputations.h
@@ -73,7 +74,6 @@ QCDOC_HDRS = qdp_scalarsite_qcdoc.h \
 # All the include files - avoid flattening of dirs by using nobase
 nobase_include_HEADERS = \
 		qdp_config.h \
-		qdp_defs.h \
 		qdp_forward.h \
 		qdp_globalfuncs.h \
 		qdp_inner.h \
@@ -92,7 +92,6 @@ nobase_include_HEADERS = \
 		qdp_precision.h \
 		qdp_primcolormat.h \
 		qdp_primcolorvec.h \
-		qdp_primdwvec.h \
 		qdp_primgamma.h \
 		qdp_primitive.h \
 		qdp_primmatrix.h \
@@ -101,6 +100,7 @@ nobase_include_HEADERS = \
 		qdp_primspinmat.h \
 		qdp_primspinvec.h \
 		qdp_primvector.h \
+		qdp_profile.h \
                 qdp_stopwatch.h \
 		qdp_iogauge.h \
 		qdp_util.h \
@@ -122,7 +122,6 @@ nobase_include_HEADERS = \
 	        qdp_parscalar_specific.h \
 	        qdp_scalarvec_specific.h \
 	        qdp_parscalarvec_specific.h \
-		qdp_dwdefs.h \
 		qdp_scalarsite_defs.h \
 		qdp_scalarvecsite_defs.h \
                 qdp_filebuf.h \
