@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.7 2005-01-30 05:39:40 edwards Exp $
+// $Id: qdp_multi.h,v 1.8 2005-02-03 22:47:44 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -70,8 +70,7 @@ public:
     }
 
   //! Equal operator uses underlying = of T
-  template<class T1>
-  multi1d<T>& operator=(const T1& s1)
+  multi1d<T>& operator=(const T& s1)
     {
       if (F == 0)
       {
@@ -85,8 +84,7 @@ public:
     }
 
   //! Set equal to a old-style C 1-D array
-  template<class T1>
-  multi1d<T>& operator=(const T1 s1[])
+  multi1d<T>& operator=(const T* s1)
     {
       if (F == 0)
       {
@@ -101,8 +99,7 @@ public:
 
   //! Add-replace on each element
   /*! Uses underlying += */
-  template<class T1>
-  multi1d<T>& operator+=(const multi1d<T1>& s1)
+  multi1d<T>& operator+=(const multi1d<T>& s1)
     {
       if (size() != s1.size())
       {
@@ -117,8 +114,7 @@ public:
 
   //! Add-replace on each element
   /*! Uses underlying += */
-  template<class T1>
-  multi1d<T>& operator+=(const T1& s1)
+  multi1d<T>& operator+=(const T& s1)
     {
       if (F == 0)
       {
@@ -131,26 +127,9 @@ public:
       return *this;
     }
 
-  //! Add-replace on each element
-  /*! Uses underlying += */
-  template<class T1>
-  multi1d<T>& operator+=(const T1 s1[])
-    {
-      if (F == 0)
-      {
-	cerr << "multi1d: left hand side not initialized in +\n";
-	exit(1);
-      }
-
-      for(int i=0; i < n1; ++i)
-	F[i] += s1[i];
-      return *this;
-    }
-
   //! Subtract-replace on each element
   /*! Uses underlying -= */
-  template<class T1>
-  multi1d<T>& operator-=(const multi1d<T1>& s1)
+  multi1d<T>& operator-=(const multi1d<T>& s1)
     {
       if (size() != s1.size())
       {
@@ -165,8 +144,7 @@ public:
 
   //! Subtract-replace on each element
   /*! Uses underlying -= */
-  template<class T1>
-  multi1d<T>& operator-=(const T1& s1)
+  multi1d<T>& operator-=(const T& s1)
     {
       if (F == 0)
       {
@@ -179,26 +157,9 @@ public:
       return *this;
     }
 
-  //! Subtract-replace on each element
-  /*! Uses underlying -= */
-  template<class T1>
-  multi1d<T>& operator-=(const T1 s1[])
-    {
-      if (F == 0)
-      {
-	cerr << "multi1d: left hand side not initialized in -=\n";
-	exit(1);
-      }
-
-      for(int i=0; i < n1; ++i)
-	F[i] -= s1[i];
-      return *this;
-    }
-
   //! Mult-replace on each element
   /*! Uses underlying *= */
-  template<class T1>
-  multi1d<T>& operator*=(const multi1d<T1>& s1)
+  multi1d<T>& operator*=(const multi1d<T>& s1)
     {
       if (size() != s1.size())
       {
@@ -213,8 +174,7 @@ public:
 
   //! Mult-replace on each element
   /*! Uses underlying *= */
-  template<class T1>
-  multi1d<T>& operator*=(const T1& s1)
+  multi1d<T>& operator*=(const T& s1)
     {
       if (F == 0)
       {
@@ -227,26 +187,9 @@ public:
       return *this;
     }
 
-  //! Mult-replace on each element
-  /*! Uses underlying *= */
-  template<class T1>
-  multi1d<T>& operator*=(const T1 s1[])
-    {
-      if (F == 0)
-      {
-	cerr << "multi1d: left hand side not initialized in *=\n";
-	exit(1);
-      }
-
-      for(int i=0; i < n1; ++i)
-	F[i] *= s1[i];
-      return *this;
-    }
-
   //! Divide-replace on each element
   /*! Uses underlying /= */
-  template<class T1>
-  multi1d<T>& operator/=(const multi1d<T1>& s1)
+  multi1d<T>& operator/=(const multi1d<T>& s1)
     {
       if (size() != s1.size())
       {
@@ -261,8 +204,7 @@ public:
 
   //! Divide-replace on each element
   /*! Uses underlying /= */
-  template<class T1>
-  multi1d<T>& operator/=(const T1& s1)
+  multi1d<T>& operator/=(const T& s1)
     {
       if (F == 0)
       {
@@ -272,22 +214,6 @@ public:
 
       for(int i=0; i < n1; ++i)
 	F[i] /= s1;
-      return *this;
-    }
-
-  //! Divide-replace on each element
-  /*! Uses underlying /= */
-  template<class T1>
-  multi1d<T>& operator/=(const T1 s1[])
-    {
-      if (F == 0)
-      {
-	cerr << "multi1d: left hand side not initialized in /=\n";
-	exit(1);
-      }
-
-      for(int i=0; i < n1; ++i)
-	F[i] /= s1[i];
       return *this;
     }
 
@@ -361,8 +287,7 @@ public:
     }
 
   //! Equal operator uses underlying = of T
-  template<class T1>
-  multi2d<T>& operator=(const T1& s1)
+  multi2d<T>& operator=(const T& s1)
     {
       if (F == 0)
       {
@@ -441,8 +366,7 @@ public:
     }
 
   //! Equal operator uses underlying = of T
-  template<class T1>
-  multi3d<T>& operator=(const T1& s1)
+  multi3d<T>& operator=(const T& s1)
     {
       if (F == 0)
       {
@@ -530,8 +454,7 @@ public:
     }
 
   //! Equal operator uses underlying = of T
-  template<class T1>
-  multiNd<T>& operator=(const T1& s1)
+  multiNd<T>& operator=(const T& s1)
     {
       if (F == 0)
       {
