@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.19 2003-12-21 19:22:51 edwards Exp $
+// $Id: qdp_primvector.h,v 1.20 2004-07-27 05:33:35 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -648,20 +648,6 @@ peekSpin(const PVector<T,N,C>& l, int row, int col)
   return d;
 }
 
-//! Extract domain-wall vector components 
-/*! Generically, this is an identity operation. Defined differently under domain-wall index */
-template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PVector<T,N,C>, FnPeekDWVector>::Type_t
-peekDW(const PVector<T,N,C>& l, int row)
-{
-  typename UnaryReturn<PVector<T,N,C>, FnPeekDWVector>::Type_t  d;
-
-  for(int i=0; i < N; ++i)
-    d.elem(i) = peekDW(l.elem(i),row);
-  return d;
-}
-
-
 //! Insert color vector components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T1, class T2, int N, template<class,int> class C>
@@ -711,22 +697,6 @@ pokeSpin(PVector<T1,N,C>& l, const PVector<T2,N,C>& r, int row, int col)
 
   for(int i=0; i < N; ++i)
     pokeSpin(l.elem(i),r.elem(i),row,col);
-  return static_cast<Return_t&>(l);
-}
-
-//! Insert domain-wall vector components 
-/*! Generically, this is an identity operation. Defined differently under domain-wall index */
-template<class T1, class T2, int N, template<class,int> class C>
-inline typename UnaryReturn<PVector<T1,N,C>, FnPokeDWVector>::Type_t&
-pokeDW(PVector<T1,N,C>& l, const PVector<T2,N,C>& r, int row)
-{
-  typedef typename UnaryReturn<PVector<T1,N,C>, FnPokeDWVector>::Type_t  Return_t;
-
-  for(int i=0; i < N; ++i)
-    pokeDW(l.elem(i),r.elem(i),row);
-
-//  cout << "Vector: pokeDW: l.elem() = " << l << endl;
-
   return static_cast<Return_t&>(l);
 }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.16 2004-07-06 01:54:57 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.17 2004-07-27 05:33:35 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -917,16 +917,6 @@ peekSpin(const PScalar<T>& l, int row, int col)
 }
 
 
-//! Extract domain-wall vector components 
-/*! Generically, this is an identity operation. Defined differently under domain-wall index */
-template<class T>
-inline typename UnaryReturn<PScalar<T>, FnPeekDWVector>::Type_t
-peekDW(const PScalar<T>& l, int row)
-{
-  return peekDW(l.elem(),row);
-}
-
-
 //! Insert color vector components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T1, class T2>
@@ -967,15 +957,6 @@ pokeSpin(PScalar<T1>& l, const PScalar<T2>& r, int row, int col)
   return l;
 }
 
-//! Insert domain-wall vector components 
-/*! Generically, this is an identity operation. Defined differently under domain-wall */
-template<class T1, class T2>
-inline PScalar<T1>&
-pokeDW(PScalar<T1>& l, const PScalar<T2>& r, int row)
-{
-  pokeDW(l.elem(),r.elem(),row);
-  return l;
-}
 
 //-----------------------------------------------------------------------------
 //! PScalar = Gamma<N,m> * PScalar

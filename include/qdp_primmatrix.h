@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.22 2004-07-07 20:10:46 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.23 2004-07-27 05:33:35 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -1261,26 +1261,6 @@ peekSpin(const PMatrix<T,N,C>& l, int row, int col)
   return d;
 }
 
-//! Extract domain-wall vector components 
-/*! Generically, this is an identity operation. Defined differently under domain-wall index */
-template<class T, int N, template<class,int> class C>
-struct UnaryReturn<PMatrix<T,N,C>, FnPeekDWVector> {
-  typedef C<typename UnaryReturn<T, FnPeekDWVector>::Type_t, N>  Type_t;
-};
-
-template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekDWVector>::Type_t
-peekDW(const PMatrix<T,N,C>& l, int row)
-{
-  typename UnaryReturn<PMatrix<T,N,C>, FnPeekDWVector>::Type_t  d;
-
-  for(int i=0; i < N; ++i)
-    for(int j=0; j < N; ++j)
-      d.elem(i,j) = peekDW(l.elem(i,j),row);
-  return d;
-}
-
-
 //! Insert color vector components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T, int N, template<class,int> class C>
@@ -1344,25 +1324,6 @@ pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row, int col)
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       pokeSpin(l.elem(i,j),r.elem(i,j),row,col);
-  return static_cast<Return_t&>(l);
-}
-
-//! Insert domain-wall vector components 
-/*! Generically, this is an identity operation. Defined differently under domain-wall */
-template<class T, int N, template<class,int> class C>
-struct UnaryReturn<PMatrix<T,N,C>, FnPokeDWMatrix> {
-  typedef C<typename UnaryReturn<T, FnPokeDWMatrix>::Type_t, N>  Type_t;
-};
-
-template<class T1, class T2, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeDWMatrix>::Type_t&
-pokeDW(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
-{
-  typedef typename UnaryReturn<PMatrix<T1,N,C>, FnPokeDWMatrix>::Type_t  Return_t;
-
-  for(int i=0; i < N; ++i)
-    for(int j=0; j < N; ++j)
-      pokeDW(l.elem(i,j),r.elem(i,j),row);
   return static_cast<Return_t&>(l);
 }
 
