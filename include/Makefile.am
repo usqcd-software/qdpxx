@@ -39,6 +39,8 @@ SSE_HDRS = qdp_scalarsite_sse.h \
 	$(ssedir)/sse_mult_nn.h \
 	$(ssedir)/sse_s_m_a_mat.h \
 	$(ssedir)/sse_s_m_a_vec.h \
+	$(ssedir)/qdp_scalarsite_sse_linalg.h \
+	$(ssedir)/qdp_scalarsite_sse_blas.h \
 	qdp_scalarvecsite_sse.h
 
 qcdocdir = scalarsite_qcdoc
