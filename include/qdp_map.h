@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_map.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_map.h,v 1.2 2003-09-01 22:29:29 edwards Exp $
 
 /*! @file
  * @brief Map classes
@@ -8,6 +8,11 @@
  */
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+// Helpful for communications
+#define FORWARD 1
+#define BACKWARD -1
+
 
 /*! @defgroup map Maps and shifts
  *
