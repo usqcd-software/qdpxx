@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.12 2002-11-13 22:25:00 edwards Exp $
+// $Id: reality.h,v 1.13 2002-11-20 03:40:33 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1415,7 +1415,7 @@ operator*(const RComplex<T1>& l, const RScalar<T2>& r)
   typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpMultiply>::Type_t  d;
 
   d.real() = l.real()*r.elem();
-  d.imag() = l.real()*r.elem();
+  d.imag() = l.imag()*r.elem();
   return d;
 }
 
