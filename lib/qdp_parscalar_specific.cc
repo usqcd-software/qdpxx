@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.18 2004-05-03 16:48:57 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.19 2004-05-03 18:22:45 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -337,7 +337,10 @@ namespace Internal
 void writeOLattice(BinaryWriter& bin, 
 		   const char* output, size_t size, size_t nmemb)
 {
-  size_t tot_size = size*nmemb;
+  const int xinc = Layout::subgridLattSize()[0];
+
+  size_t sizemem = size*nmemb;
+  size_t tot_size = sizemem*xinc;
   char *recv_buf = new char[tot_size];
   if( recv_buf == 0x0 ) { 
     QDP_error_exit("Unable to allocate recv_buf\n");
@@ -346,12 +349,10 @@ void writeOLattice(BinaryWriter& bin,
   // Find the location of each site and send to primary node
   int old_node = 0;
 
-  for(int site=0; site < Layout::vol(); ++site)
+  for(int site=0; site < Layout::vol(); site += xinc)
   {
-    multi1d<int> coord = crtesn(site, Layout::lattSize());
-
-    int node   = Layout::nodeNumber(coord);
-    int linear = Layout::linearSiteIndex(coord);
+    // first site in each segment uniquely identifies the node
+    int node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
 
     // Send nodes must wait for a ready signal from the master node
     // to prevent message pileups on the master node
@@ -364,7 +365,13 @@ void writeOLattice(BinaryWriter& bin,
     
     // Copy to buffer: be really careful since max(linear) could vary among nodes
     if (Layout::nodeNumber() == node)
-      memcpy(recv_buf, output+linear*tot_size, tot_size);
+    {
+      for(int i=0; i < xinc; ++i)
+      {
+	int linear = Layout::linearSiteIndex(crtesn(site+i, Layout::lattSize()));
+	memcpy(recv_buf+i*sizemem, output+linear*sizemem, sizemem);
+      }
+    }
 
     // Send result to primary node. Avoid sending prim-node sending to itself
     if (node != 0)
@@ -382,7 +389,7 @@ void writeOLattice(BinaryWriter& bin,
     }
 
     if (Layout::primaryNode())
-      bin.writeArray(recv_buf, size, nmemb);
+      bin.writeArray(recv_buf, size, nmemb*xinc);
   }
 
   delete[] recv_buf;
