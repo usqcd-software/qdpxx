@@ -22,6 +22,7 @@ version="@VERSION@"
 
 parallel_arch="@CONFIG_PARALLEL_ARCH@"
 
+qmp_home="@QMP_HOME@"
 qdp_cxx="@CXX@"
 qdp_cxxflags="@CXXFLAGS@ -I@includedir@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@"
 qdp_ldflags="@LDFLAGS@ -L@libdir@ @QMP_LDFLAGS@"
@@ -42,8 +43,9 @@ Options:
   [--Nc]
   [--Ns]
   [--parallel-arch]
-  [--precision ]
-  [--layout ]
+  [--qmp-home]
+  [--precision]
+  [--layout]
   [--cxx]
   [--cxxflags]
   [--ldflags]
@@ -102,6 +104,10 @@ while test $# -gt 0; do
 
     --parallel-arch)
       echo $parallel_arch
+      ;;
+
+    --qmp-home)
+      echo $qmp_home
       ;;
 
     --cxx)
