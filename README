@@ -2,3 +2,9 @@ This implementation has been developed under gcc-3.2.
 It is known (for simple reasons) not to compile under
 gcc-2.X . The problem parts could easily be changed,
 but I can't be bothered at the moment.
+
+However, gcc-2.X is not compliant with the final
+version of C++-3 standard on I/O. In particular, stream
+support is not all in the correct place with correct
+names. That is more annoying to try and backward support
+so it won't be supported.
