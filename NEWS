@@ -1,3 +1,7 @@
+08/31/2003 -- Robert Edwards
+
+	Version 1.5.6. Changes to make scalarvec work.
+
 08/27/2003 -- Robert Edwards
 
 	Version 1.5.5. Changed qdp_scalarsite_sse.h to fix type conflicts with subsets
