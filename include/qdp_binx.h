@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_binx.h,v 1.3 2004-03-26 12:26:36 mcneile Exp $
+// $Id: qdp_binx.h,v 1.4 2004-03-27 20:43:44 mcneile Exp $
 
 /*! @file
  * @brief IO support
@@ -40,6 +40,10 @@ public:
   //! Return true if some failure occurred in previous IO operation
   bool fail();
 
+  //! switch on and off xml writing
+  void no_xml() { write_xml = false ; } 
+  void yes_xml() { write_xml = true ; } 
+
   // Basic write function
   void writeArray(const char* output, size_t nbytes, size_t nmemb);
 
@@ -57,14 +61,16 @@ public:
   void write(const double& output);
   void write(const bool& output);
 
+  void write_1D_header(const int& output,const int& dim) ;
+
 protected:
 
-  // Get the internal ostream
-  //  std::ostream& getOstream() {return f;}
 
 private:
   XMLFileWriter *toxml;
   BinaryWriter *tobinary ;
+  bool write_xml ; 
+
 };
 
 
@@ -102,8 +108,12 @@ inline
 void write(BinxWriter& bin, const multi1d<T>& d)
 {
   write(bin, d.size());    // always write the size
+  bin.no_xml() ;
+  bin.write_1D_header(d[0],d.size()); 
   for(int i=0; i < d.size(); ++i)
     write(bin, d[i]);
+  bin.yes_xml() ;
+
 }
 
 //! Write a fixed number of binary multi1d element - no element count written
@@ -111,8 +121,11 @@ template<class T>
 inline
 void write(BinxWriter& bin, const multi1d<T>& d, int num)
 {
+  bin.no_xml() ;
+  bin.write_1D_header(d[0],d.size()); 
   for(int i=0; i < num; ++i)
     write(bin, d[i]);
+  bin.yes_xml() ;
 }
 
 /*! @} */   // end of group io
