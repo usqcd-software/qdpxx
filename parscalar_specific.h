@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.2 2002-11-04 04:47:16 edwards Exp $
+// $Id: parscalar_specific.h,v 1.3 2002-11-13 19:04:41 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -412,7 +412,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
   // Loop always entered - could unroll
   zero_rep(d.elem());
 
-  for(int i=0; i <= Layout::subgridVol(); ++i) 
+  for(int i=0; i < Layout::subgridVol(); ++i) 
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
 
   // Do a global sum on the result

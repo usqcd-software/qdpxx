@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.14 2002-11-04 04:47:16 edwards Exp $
+// $Id: scalar_specific.h,v 1.15 2002-11-13 19:04:42 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -340,7 +340,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
   // Loop always entered - could unroll
   zero_rep(d.elem());
 
-  for(int i=0; i <= Layout::vol(); ++i) 
+  for(int i=0; i < Layout::vol(); ++i) 
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
 
   return d;
