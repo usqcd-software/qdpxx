@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: examples.h,v 1.2 2003-09-10 02:10:10 edwards Exp $
+// $Id: examples.h,v 1.3 2003-11-14 20:56:00 edwards Exp $
 //
 // Include file for test suite
 
@@ -40,3 +40,5 @@ void expm12(LatticeColorMatrix& a);
 void rgauge(multi1d<LatticeColorMatrix>& u, LatticeColorMatrix& g);
 
 void taproj(LatticeColorMatrix& a);
+
+void polylp(const multi1d<LatticeColorMatrix>& u, DComplex& poly_loop, int mu);
