@@ -1,4 +1,4 @@
-// $Id: iogauge.cc,v 1.7 2003-04-02 21:27:43 edwards Exp $
+// $Id: iogauge.cc,v 1.8 2003-04-30 21:03:50 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -28,12 +28,12 @@ ostream& operator<<(ostream& s, const multi1d<T>& d)
 //-----------------------------------------------------------------------
 // Read a QCD archive file
 //! Read a QCD (NERSC) Archive format gauge field
-void readArchiv(multi1d<LatticeColorMatrix>& u, char file[])
+void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
 {
 #define MAX_LINE_LENGTH 1024
   char line[MAX_LINE_LENGTH];
   
-  char datatype[20];    /* We try to grab the datatype */
+  char datatype[40];    /* We try to grab the datatype */
 
   if (Nd != 4)
     QDP_error_exit("Expecting Nd == 4");
@@ -183,68 +183,5 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, char file[])
   cfg_in.close();
 }
 
-
-//-----------------------------------------------------------------------
-// Read a SZIN propagator file
-//! Read a SZIN propagator file. This is a simple memory dump reader.
-void readSzinQprop(LatticePropagator& q, char file[])
-{
-  BinaryReader cfg_in(file);
-
-  //
-  // Read propagator field
-  //
-  multi1d<int> lattsize_cb = Layout::lattSize();
-  ColorMatrix  siteColorField;
-  Propagator   siteField;
-  float prop[Ns][Ns][Nc][Nc][2];
-  size_t prop_size = Ns*Ns*Nc*Nc*2;
-  float kappa;
-
-  lattsize_cb[0] /= 2;  // checkerboard in the x-direction in szin
-
-  // Read kappa
-  if (bfread((void *)&kappa,sizeof(float),1,cfg_in.get()) != 1)
-    QDP_error_exit("Error kappa from reading propagator");
-
-  // Read prop
-  for(int cb=0; cb < 2; ++cb)
-  {
-    for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
-    {
-      multi1d<int> coord = crtesn(sitecb, lattsize_cb);
-
-      // construct the checkerboard offset
-      int sum = 0;
-      for(int m=1; m<Nd; m++)
-	sum += coord[m];
-
-      // The true lattice x-coord
-      coord[0] = 2*coord[0] + ((sum + cb) & 1);
-
-      /* Read an fe variable */
-      if (bfread((void *) &(prop[0][0][0][0][0]),sizeof(float),prop_size,cfg_in.get()) != prop_size)
-	QDP_error_exit("Error reading propagator");
-
-      /* Copy into the big array */
-      for(int s2=0; s2<Ns; s2++)    /* spin */
-	for(int s1=0; s1<Ns; s1++)    /* spin */
-	  for(int c2=0; c2<Nc; c2++)    /* color */
-	    for(int c1=0; c1<Nc; c1++)    /* color */
-	    {
-	      Real re = prop[s2][s1][c2][c1][0];
-	      Real im = prop[s2][s1][c2][c1][1];
-	      Complex siteComp = cmplx(re,im);
-	      
-	      pokeColor(siteColorField,siteComp,c1,c2);  // insert complex into colormatrix
-	      pokeSpin(siteField,siteColorField,s1,s2);  // insert color mat into prop
-	    }
-
-      pokeSite(q, siteField, coord);
-    }
-  }
-
-  cfg_in.close();
-}
 
 QDP_END_NAMESPACE();
