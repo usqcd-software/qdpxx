@@ -76,36 +76,20 @@ gmake
 Note I see lots of warnings to do with the redefinition of assert (which
 Pete no doubt redefined from its original incarnation)
 
-In qdp_parscalar_layout.cc I had to add in some const_cast<int*>-s
-to convert from const int* to int*-s for some calls.
-
 Once the code is built, go to 
 
 examples 
 
 and build some apps. I have tried:
 
-On one node: 
 	t_mesplq   --  Works fine
         t_blas     --  Works fine but BLAS is slow
-        t_qio      --  Succeeds writing fails reading with a SIG_BUS
+        t_qio      --  Works Fine
 
-On 8 nodes:
-	(mapped wires as qpartition_remap -X3 -Y4 -Z5 -T0 -S1 -W2
-         giving a 2x2x2x1 machine hopefully )
-
-	t_mesplq   --  Failure with : QMP::NodeNum = 0:QMP::freeAlignedMemory: cannot free memory not allocated by QMP::allocateAlignedMemory(0x40104a0)
-
-On 2 nodes:
-	t_mesplq   --  Same failure as with 8 nodes
-
-	t_blas     --  Succeeded 
-
-On 64 nodes:
-	(mapped wires to give 2x2x4x4 machine and increased size of
-	 lattice to 8x8x8x8)
-
-	t_blas     -- Succeeded.
+The configure_qdp++.sh script for the now puts everything into EDRAM.
+This can cause problems by failing if the local lattice volumes are too big.
+If you want to build a version that goes into DDR use the configure_qdp++_ddr.sh
+script (slower but should work)
 
 
 	

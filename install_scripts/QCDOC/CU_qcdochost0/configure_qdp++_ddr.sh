@@ -11,8 +11,7 @@ QOS=/qcdoc/sfw/qos/devel/QMP_v2/qcdochost0
 	QMP_LIBS="-lqcd_api" \
 	CXXFLAGS="-O2 -finline-limit=50000" CFLAGS="-O2" \
 	--enable-precision=single \
-        --enable-qcdoc-edram \
         --disable-qmp-route \
 	--with-libxml2=/home/bj/install/QOS_QMP_v2/libxml-2.6.6 \
 	--host=powerpc-gnu-elf --build=sparc-sun-solaris2.9 \
-	--prefix=/home/bj/install/qdp_parscalar_single
+	--prefix=/home/bj/install/qdp_parscalar_single_ddr
