@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.5 2003-06-07 19:09:32 edwards Exp $
+// $Id: t_xml.cc,v 1.6 2003-06-09 19:33:52 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -68,6 +68,43 @@ int main(int argc, char **argv)
 
     XMLFileWriter toxml_4("dog2.xml");
     write(toxml_4,"imbed_some_more",toxml_2);
+  }
+
+  {
+    // Test writing some more complex snippets
+    XMLFileWriter toxml("dog3.xml");
+    push(toxml,"complex_xml");
+
+    Real a = 0.2;
+    write(toxml,"realThingy",a);
+
+    Complex b = cmplx(a,-1.2);
+    write(toxml,"complexThingy",b);
+
+    multi1d<int> arrayInt(3);
+    for(int i=0; i < arrayInt.size(); ++i)
+      arrayInt[i] = i+37;
+    write(toxml,"arrayInt",arrayInt);
+
+    multi1d<Complex> arrayComplex(2);
+    for(int i=0; i < arrayComplex.size(); ++i)
+      arrayComplex[i] = cmplx(Real(1.0),Real(i+42));
+    write(toxml,"arrayComplex",arrayComplex);
+
+    ColorVector c;
+    random(c);
+    write(toxml,"colorVectorThingy",c);
+
+    SpinMatrix d;
+    random(d);
+    write(toxml,"spinMatrixThingy",d);
+
+    LatticeColorMatrix u;
+    random(u);
+    write(toxml,"latticeColorMatrixThingy",u);
+    toxml.flush();
+
+    pop(toxml);
   }
 
   // Time to bolt
