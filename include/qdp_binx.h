@@ -1,14 +1,18 @@
 // -*- C++ -*-
-// $Id: qdp_binx.h,v 1.1 2004-03-25 13:59:52 mcneile Exp $
+// $Id: qdp_binx.h,v 1.2 2004-03-25 15:13:35 mcneile Exp $
 
 /*! @file
  * @brief IO support
  */
+#ifndef QDP_BINX_INC
+#define QDP_BINX_INC
 
 #include <string>
 #include <fstream>
 #include <sstream>
 
+//#include"qdp_xmlio.h"
+//#include"qdp_io.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -56,16 +60,14 @@ public:
   void write(const bool& output);
 
 protected:
-  // The universal data-write. All the write functions call this
-  template< typename T>
-  void
-  writePrimitive(const T& output);
 
   // Get the internal ostream
   std::ostream& getOstream() {return f;}
 
 private:
   QDPUtil::RemoteOutputFileStream f;
+  XMLFileWriter *toxml;
+  BinaryWriter *tobinary ;
 // ofstream f;
 };
 
@@ -119,3 +121,6 @@ void write(BinxWriter& bin, const multi1d<T>& d, int num)
 
 /*! @} */   // end of group io
 QDP_END_NAMESPACE();
+
+
+#endif
