@@ -36,7 +36,7 @@ VPATH+=@top_srcdir@/examples
 check_PROGRAMS = t_skeleton t_io t_mesplq \
       t_nml t_xml t_remote t_entry t_nersc t_shift t_exotic
 
-EXTRA_PROGRAMS  = t_qio t_qio_factory
+EXTRA_PROGRAMS  = t_qio t_qio_factory t_binx
 
 
 if BUILD_WILSON_EXAMPLES
@@ -57,6 +57,7 @@ t_remote_SOURCES = t_remote.cc $(HDRS)
 t_foo_SOURCES = t_foo.cc $(HDRS)
 t_nml_SOURCES = t_nml.cc $(HDRS)
 t_xml_SOURCES = t_xml.cc $(HDRS)
+t_binx_SOURCES = t_binx.cc $(HDRS)
 t_qio_SOURCES = t_qio.cc $(HDRS)
 t_qio_DEPENDENCIES = build_lib rebuild_other_libs
 t_qio_factory_SOURCES = t_qio_factory.cc $(HDRS)
