@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.4 2003-08-08 18:58:53 edwards Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.5 2003-08-08 21:22:09 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -40,9 +40,11 @@ static sse_mask _sse_sgn4  __attribute__ ((unused)) ={0x00000000, 0x00000000, 0x
 #include "scalarsite_sse/sse_mult_nn.h"
 #include "scalarsite_sse/sse_mult_na.h"
 #include "scalarsite_sse/sse_mult_an.h"
+#include "scalarsite_sse/sse_mat_vec.h"
+#include "scalarsite_sse/sse_adj_mat_vec.h"
 
 // Optimized version of  
-//    PColorMatrix<RComplexFloat> <- PColorMatrix<RComplexFloat> * PColorMatrix<RComplexFloat>
+//    PColorMatrix<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorMatrix<RComplexFloat,3>
 template<>
 inline BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
   PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiply>::Type_t
@@ -59,7 +61,7 @@ operator*<>(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 
 
 // Optimized version of  
-//   PColorMatrix<RComplexFloat> <- adj(PColorMatrix<RComplexFloat>) * PColorMatrix<RComplexFloat>
+//   PColorMatrix<RComplexFloat,3> <- adj(PColorMatrix<RComplexFloat,3>) * PColorMatrix<RComplexFloat,3>
 template<>
 inline BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
   PMatrix<RComplexFloat,3,PColorMatrix>, OpAdjMultiply>::Type_t
@@ -76,7 +78,7 @@ adjMultiply<>(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 
 
 // Optimized version of  
-//   PColorMatrix<RComplexFloat> <- PColorMatrix<RComplexFloat> * adj(PColorMatrix<RComplexFloat>)
+//   PColorMatrix<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * adj(PColorMatrix<RComplexFloat,3>)
 template<>
 inline BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
   PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiplyAdj>::Type_t
@@ -96,7 +98,7 @@ multiplyAdj<>(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 // Ooops, this macro does not exist!!
 
 // Optimized version of  
-//   PColorMatrix<RComplexFloat> <- adj(PColorMatrix<RComplexFloat>) * adj(PColorMatrix<RComplexFloat>)
+//   PColorMatrix<RComplexFloat,3> <- adj(PColorMatrix<RComplexFloat,3>) * adj(PColorMatrix<RComplexFloat,3>)
 template<>
 inline BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
   PMatrix<RComplexFloat,3,PColorMatrix>, OpAdjMultiplyAdj>::Type_t
@@ -111,6 +113,40 @@ adjMultiplyAdj<>(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   return d;
 }
 #endif
+
+
+// Optimized version of  
+//    PColorVector<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorVector<RComplexFloat,3>
+template<>
+inline BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
+  PVector<RComplexFloat,3,PColorVector>, OpMultiply>::Type_t
+operator*<>(const PMatrix<RComplexFloat,3,PColorMatrix>& l, 
+	    const PVector<RComplexFloat,3,PColorVector>& r)
+{
+  BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
+    PVector<RComplexFloat,3,PColorVector>, OpMultiply>::Type_t  d;
+
+   _inline_sse_mult_su3_mat_vec(l,r,d);
+
+  return d;
+}
+
+
+// Optimized version of  
+//    PColorVector<RComplexFloat,3> <- adj(PColorMatrix<RComplexFloat,3>) * PColorVector<RComplexFloat,3>
+template<>
+inline BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
+  PVector<RComplexFloat,3,PColorVector>, OpAdjMultiply>::Type_t
+adjMultiply(const PMatrix<RComplexFloat,3,PColorMatrix>& l, 
+	    const PVector<RComplexFloat,3,PColorVector>& r)
+{
+  BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
+    PVector<RComplexFloat,3,PColorVector>, OpAdjMultiply>::Type_t  d;
+
+   _inline_sse_mult_adj_su3_mat_vec(l,r,d);
+
+  return d;
+}
 
 
 // Specialization to optimize the case   
