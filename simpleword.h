@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
+// $Id: simpleword.h,v 1.3 2002-09-26 21:28:54 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -239,6 +239,10 @@ struct UnaryReturn<int, FnSum > {
   typedef int  Type_t;
 };
 
+struct UnaryReturn<int, FnSumMulti > {
+  typedef int  Type_t;
+};
+
 struct UnaryReturn<int, FnNorm2 > {
   typedef int  Type_t;
 };
@@ -269,6 +273,10 @@ struct UnaryReturn<float, FnSum > {
   typedef double  Type_t;
 };
 
+struct UnaryReturn<float, FnSumMulti > {
+  typedef double  Type_t;
+};
+
 struct UnaryReturn<float, FnNorm2 > {
   typedef double  Type_t;
 };
@@ -295,6 +303,10 @@ struct UnaryReturn<float, FnLocalInnerproductReal > {
 
 
 struct UnaryReturn<double, FnSum > {
+  typedef double  Type_t;
+};
+
+struct UnaryReturn<double, FnSumMulti > {
   typedef double  Type_t;
 };
 
