@@ -1,4 +1,4 @@
-// $Id: qdp_binx.cc,v 1.5 2004-04-07 09:34:33 bjoo Exp $
+// $Id: qdp_binx.cc,v 1.6 2004-06-05 20:08:43 edwards Exp $
 //
 // QDP data parallel interface to binx writers
 //
@@ -36,23 +36,19 @@ void BinxWriter::open(const std::string& p)
 
   // write some binx stuff
   XMLWriterAPI::AttributeList alist;
-  string xmlns = "http://www.edikt.org/binx/2003/06/databinx" ;
   alist.clear();
-  alist.push_back(XMLWriterAPI::Attribute("xmlns", xmlns));
-  toxml->openTag("databinx", alist);
+  alist.push_back(XMLWriterAPI::Attribute("byteOrder", string("bigEndian")));
+  toxml->openTag("binx", alist);
 
   alist.clear();
   alist.push_back(XMLWriterAPI::Attribute("src", p));
-  toxml->openTag("binx", alist);
+  toxml->openTag("dataset", alist);
 
 
   //xml << d.elem(i);
   //toxml.closeTag();
 
 
-
-  string dataset = "dataset" ; 
-  push(*toxml,dataset);
 
   if (! is_open())
     QDP_error_exit("BinxWriter: error opening file %s",p.c_str());
@@ -62,7 +58,6 @@ void BinxWriter::close()
 {
   if (is_open())
   {
-    pop(*toxml);  // push(toxml,"dataset");
     toxml->closeTag();
     toxml->closeTag();
 
@@ -333,7 +328,7 @@ void BinxWriter::write(const double& output)
 {
   if( write_xml )
     {
-      string nn = "float-64";
+      string nn = "double-64";
       toxml->emptyTag(nn) ; 
     }
   tobinary->write(output);
