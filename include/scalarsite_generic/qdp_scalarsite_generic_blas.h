@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.1 2004-03-21 21:19:44 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.2 2004-03-21 23:02:02 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -7,8 +7,8 @@
  */
 
 
-#ifndef QDP_SCALARSITE_BLAS_H
-#define QDP_SCALARSITE_BLAS_H
+#ifndef QDP_SCALARSITE_GENERIC_BLAS_H
+#define QDP_SCALARSITE_GENERIC_BLAS_H
 
 
 QDP_BEGIN_NAMESPACE(QDP);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_generic_linalg.h,v 1.1 2004-03-21 21:19:45 bjoo Exp $
+// $Id: qdp_scalarsite_generic_linalg.h,v 1.2 2004-03-21 23:02:03 bjoo Exp $
 
 /*! @file
  * @brief Generic optimizations
@@ -23,13 +23,13 @@ QDP_BEGIN_NAMESPACE(QDP);
 typedef RComplex<PScalar<REAL> >  RComplexFloat;
 
 
-#include "generic_mult_nn.h"
-#include "generic_mult_na.h"
-#include "generic_mult_an.h"
-#include "generic_mult_aa.h"
-#include "generic_mat_vec.h"
-#include "generic_adj_mat_vec.h"
-#include "generic_addvec.h"
+#include "scalarsite_generic/generic_mult_nn.h"
+#include "scalarsite_generic/generic_mult_na.h"
+#include "scalarsite_generic/generic_mult_an.h"
+#include "scalarsite_generic/generic_mult_aa.h"
+#include "scalarsite_generic/generic_mat_vec.h"
+#include "scalarsite_generic/generic_adj_mat_vec.h"
+#include "scalarsite_generic/generic_addvec.h"
 
 
 // #define QDP_SCALARSITE_DEBUG

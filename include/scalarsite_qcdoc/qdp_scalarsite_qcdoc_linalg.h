@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.1 2004-03-21 21:19:45 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.2 2004-03-21 23:02:03 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -7,8 +7,8 @@
  * Qcdoc version of optimized basic operations
  */
 
-#ifndef QDP_SCALARSITE_QCDOC_H
-#define QDP_SCALARSITE_QCDOC_H
+#ifndef QDP_SCALARSITE_QCDOC_LINALG_H
+#define QDP_SCALARSITE_QCDOC_LINALG_H
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -23,14 +23,14 @@ QDP_BEGIN_NAMESPACE(QDP);
 typedef RComplex<PScalar<float> >  RComplexFloat;
 
 
-#include "save_fp_regs.h"
-#include "qcdoc_mult_nn.h"
-#include "qcdoc_mult_an.h"
-#include "../scalarsite_generic/generic_mult_na.h"
-#include "../scalarsite_generic/generic_mult_aa.h"
-#include "../scalarsite_generic/generic_mat_vec.h"
-#include "../scalarsite_generic/generic_adj_mat_vec.h"
-#include "../scalarsite_generic/generic_addvec.h"
+#include "scalarsite_qcdoc/save_fp_regs.h"
+#include "scalarsite_qcdoc/qcdoc_mult_nn.h"
+#include "scalarsite_qcdoc/qcdoc_mult_an.h"
+#include "scalarsite_generic/generic_mult_na.h"
+#include "scalarsite_generic/generic_mult_aa.h"
+#include "calarsite_generic/generic_mat_vec.h"
+#include "scalarsite_generic/generic_adj_mat_vec.h"
+#include "scalarsite_generic/generic_addvec.h"
 
 
 // #define QDP_SCALARSITE_DEBUG

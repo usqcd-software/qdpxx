@@ -820,6 +820,7 @@ Optional Features:
   --enable-sse            Optimize code with Intel SSE instructions
   --enable-sse2           Optimize code with Intel SSE2 instructions
   --enable-qcdoc          Enable QCDOC Optimisations
+  --enable-qcdoc-edram    Make QDP Outer allocate in EDRAM
   --disable-qio           Disable full QIO as it is not yet portable
    --enable-precision=single|double
                           Sets the base precision to be single or double
@@ -2523,7 +2524,13 @@ else
 
 fi;
 
+# Check whether --enable-qcdoc-edram or --disable-qcdoc-edram was given.
+if test "${enable_qcdoc_edram+set}" = set; then
+  enableval="$enable_qcdoc_edram"
+  ac_qcdoc_edram_enabled=1
+	ac_qcdoc_edram_enabled=0
 
+fi;
 
 # Check whether --enable---enable-qio or --disable---enable-qio was given.
 if test "${enable___enable_qio+set}" = set; then
@@ -2531,14 +2538,6 @@ if test "${enable___enable_qio+set}" = set; then
 
 
 fi;
-
-if test ${ac_sse} -eq 1; then
-  if test ${ac_pab_asm_enabled} -eq 1; then
-    { { echo "$as_me:$LINENO: error: --enable-sse or --enable-sse2 is incompatible with --enable-pab-asm" >&5
-echo "$as_me: error: --enable-sse or --enable-sse2 is incompatible with --enable-pab-asm" >&2;}
-   { (exit 1); exit 1; }; }
-  fi
-fi
 
 if test ${ac_sse} -eq 1; then
   if test "X${GXX}X" = "XyesX"; then
@@ -2589,7 +2588,15 @@ cat >>confdefs.h <<_ACEOF
 #define QDP_USE_QCDOC ${ac_qcdoc_enabled}
 _ACEOF
 
+   if test ${ac_qcdoc_edram_enabled} -eq 1; then
 
+cat >>confdefs.h <<_ACEOF
+#define QDP_USE_QCDOC_EDRAM ${ac_qcdoc_edram_enabled}
+_ACEOF
+
+     { echo "$as_me:$LINENO:  Enabling allocation in EDRAM in QDP Outer" >&5
+echo "$as_me:  Enabling allocation in EDRAM in QDP Outer" >&6;}
+   fi
 fi
 
 

@@ -97,7 +97,13 @@ AC_ARG_ENABLE(qcdoc,
      [ac_qcdoc_enabled=0]
 )
 
-
+dnl --enable-qcdoc-edram
+AC_ARG_ENABLE(qcdoc-edram,
+   AC_HELP_STRING([--enable-qcdoc-edram],
+	[ Make QDP Outer allocate in EDRAM]),
+	[ac_qcdoc_edram_enabled=1]
+	[ac_qcdoc_edram_enabled=0]
+)
      
 dnl --disable-qio -- does nothing here, but put it in to get the help string
 AC_ARG_ENABLE(--enable-qio, 
@@ -106,13 +112,6 @@ AC_ARG_ENABLE(--enable-qio,
   ),
   []
 )
-
-dnl Make sure pab_asm and sse are not both swtiched on
-if test ${ac_sse} -eq 1; then
-  if test ${ac_pab_asm_enabled} -eq 1; then
-    AC_MSG_ERROR([--enable-sse or --enable-sse2 is incompatible with --enable-pab-asm])
-  fi
-fi
 
 if test ${ac_sse} -eq 1; then
   if test "X${GXX}X" = "XyesX"; then 
@@ -144,7 +143,10 @@ fi
 dnl if QCDOC is enabled change some settings
 if test ${ac_qcdoc_enabled} -eq 1; then 
    AC_DEFINE_UNQUOTED(QDP_USE_QCDOC, ${ac_qcdoc_enabled}, [Enable QCDOC opts])
-
+   if test ${ac_qcdoc_edram_enabled} -eq 1; then
+     AC_DEFINE_UNQUOTED(QDP_USE_QCDOC_EDRAM, ${ac_qcdoc_edram_enabled}, [Enable QCDOC Edram])
+     AC_MSG_NOTICE([ Enabling allocation in EDRAM in QDP Outer])
+   fi
 fi
 
 
