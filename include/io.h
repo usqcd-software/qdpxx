@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.15 2003-04-24 05:32:49 edwards Exp $
+// $Id: io.h,v 1.16 2003-04-26 01:55:06 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -135,6 +135,12 @@ NmlReader& read(NmlReader& nml, const string& s, float& d);
 //! Function overload read of  double
 NmlReader& read(NmlReader& nml, const string& s, double& d);
 
+//! Function overload read of  bool
+NmlReader& read(NmlReader& nml, const string& s, bool& d);
+
+//! Function overload read of  string
+NmlReader& read(NmlReader& nml, const string& s, string& d);
+
 //! Function overload read of  int  into element position n
 NmlReader& read(NmlReader& nml, const string& s, int& d, int n);
 
@@ -143,6 +149,9 @@ NmlReader& read(NmlReader& nml, const string& s, float& d, int n);
 
 //! Function overload read of  double  into element position n
 NmlReader& read(NmlReader& nml, const string& s, double& d, int n);
+
+//! Function overload read of  bool  into element position n
+NmlReader& read(NmlReader& nml, const string& s, bool& d, int n);
 
 //! Function overload read of  multi1d<int>
 NmlReader& read(NmlReader& nml, const string& s, multi1d<int>& d);
@@ -207,6 +216,16 @@ NmlWriter& write(NmlWriter& nml, const string& s, const T& d)
 {
   if (Layout::primaryNode()) 
     nml.get() << " " << s << " = " << d << " ,\n";
+  return nml;
+}
+
+//! Write a string
+template<>
+inline
+NmlWriter& write<string>(NmlWriter& nml, const string& s, const string& d)
+{
+  if (Layout::primaryNode()) 
+    nml.get() << " " << s << " = \"" << d << "\" ,\n";
   return nml;
 }
 

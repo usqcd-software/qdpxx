@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: specializations.h,v 1.8 2003-04-24 05:32:49 edwards Exp $
+// $Id: specializations.h,v 1.9 2003-04-26 01:55:06 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -50,8 +50,14 @@ NmlReader& read(NmlReader& nml, const string& s, Real& d);
 //! Function overload read of  Double
 NmlReader& read(NmlReader& nml, const string& s, Double& d);
 
+//! Function overload read of  Boolean
+NmlReader& read(NmlReader& nml, const string& s, Boolean& d);
+
 //! Function overload read of  Complex
 NmlReader& read(NmlReader& nml, const string& s, Complex& d);
+
+//! Function overload read of  Seed
+NmlReader& read(NmlReader& nml, const string& s, Seed& d);
 
 //! Function overload read of  multi1d<Integer>
 NmlReader& read(NmlReader& nml, const string& s, multi1d<Integer>& d);
