@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.6 2003-06-05 04:15:55 edwards Exp $
+// $Id: qdp_io.h,v 1.7 2003-06-05 15:56:57 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -37,10 +37,12 @@ public:
   void close();
   bool is_open();
 
+  //! Return true if some failure occurred in previous IO operation
+  bool fail();
+
   std::ifstream& get() {return f;}
 
 private:
-  bool iop;
   std::ifstream f;
 };
 
@@ -71,10 +73,12 @@ public:
   void open(const std::string& p);
   void close();
 
+  //! Return true if some failure occurred in previous IO operation
+  bool fail();
+
   std::ofstream& get() {return f;}
 
 private:
-  bool iop;
   std::ofstream f;
 };
 
@@ -206,6 +210,9 @@ public:
   void close();
   bool is_open();
 
+  //! Return true if some failure occurred in previous IO operation
+  bool fail();
+
   //! Push a namelist group 
   void push(const std::string& s);
 
@@ -216,7 +223,6 @@ public:
 
 private:
   int stack_cnt;
-  bool iop;
   std::ofstream f;
 };
 
@@ -353,7 +359,6 @@ protected:
 
 private:
   std::ifstream f;
-  bool iop;
 };
 
 // Telephone book of basic primitives
@@ -414,6 +419,9 @@ public:
   void open(const std::string& p);
   void close();
 
+  //! Return true if some failure occurred in previous IO operation
+  bool fail();
+
   // Basic write function
   void writeArray(const char* output, size_t nbytes, size_t nmemb);
 
@@ -441,7 +449,6 @@ protected:
 
 private:
   std::ofstream f;
-  bool iop;
 };
 
 

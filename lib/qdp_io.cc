@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.5 2003-06-05 04:15:55 edwards Exp $
+// $Id: qdp_io.cc,v 1.6 2003-06-05 15:56:57 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -17,7 +17,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 
 //-----------------------------------------
 //! text reader support
-TextReader::TextReader() {iop=false;}
+TextReader::TextReader() {}
 
 TextReader::TextReader(const std::string& p) {open(p);}
 
@@ -29,8 +29,6 @@ void TextReader::open(const std::string& p)
     if (! f.is_open())
       QDP_error_exit("failed to open file %s",p.c_str());
   }
-
-  iop=true;
 }
 
 void TextReader::close()
@@ -39,11 +37,32 @@ void TextReader::close()
   {
     if (Layout::primaryNode()) 
       f.close();
-    iop = false;
   }
 }
 
-bool TextReader::is_open() {return iop;}
+// Propagate status to all nodes
+bool TextReader::is_open()
+{
+  int  c;
+
+  if (Layout::primaryNode()) 
+    c = (f.is_open()) ? 1 : 0;   // convert true/false to 1/0
+
+  Internal::broadcast(c);
+  return (c == 1) ? true : false;
+}
+
+// Propagate status to all nodes
+bool TextReader::fail()
+{
+  int  c;
+
+  if (Layout::primaryNode()) 
+    c = (f.fail()) ? 1 : 0;   // convert true/false to 1/0
+
+  Internal::broadcast(c);
+  return (c == 1) ? true : false;
+}
 
 TextReader::~TextReader() {close();}
 
@@ -155,7 +174,7 @@ TextReader& operator>>(TextReader& txt, bool& input)
 
 //-----------------------------------------
 //! text writer support
-TextWriter::TextWriter() {iop=false;}
+TextWriter::TextWriter() {}
 
 TextWriter::TextWriter(const std::string& p) {open(p);}
 
@@ -167,8 +186,6 @@ void TextWriter::open(const std::string& p)
     if (! f.is_open())
       QDP_error_exit("failed to open file %s",p.c_str());
   }
-
-  iop=true;
 }
 
 void TextWriter::close()
@@ -177,11 +194,32 @@ void TextWriter::close()
   {
     if (Layout::primaryNode()) 
       f.close();
-    iop = false;
   }
 }
 
-bool TextWriter::is_open() {return iop;}
+// Propagate status to all nodes
+bool TextWriter::is_open()
+{
+  int  c;
+
+  if (Layout::primaryNode()) 
+    c = (f.is_open()) ? 1 : 0;   // convert true/false to 1/0
+
+  Internal::broadcast(c);
+  return (c == 1) ? true : false;
+}
+
+// Propagate status to all nodes
+bool TextWriter::fail()
+{
+  int  c;
+
+  if (Layout::primaryNode()) 
+    c = (f.fail()) ? 1 : 0;   // convert true/false to 1/0
+
+  Internal::broadcast(c);
+  return (c == 1) ? true : false;
+}
 
 TextWriter::~TextWriter() {close();}
 
@@ -441,7 +479,7 @@ void read(NmlReader& nml, const string& s, multi1d<Double>& d)
 
 //-----------------------------------------
 //! namelist writer support
-NmlWriter::NmlWriter() {iop=false; stack_cnt = 0;}
+NmlWriter::NmlWriter() {stack_cnt = 0;}
 
 NmlWriter::NmlWriter(const std::string& p) {stack_cnt = 0; open(p);}
 
@@ -453,15 +491,12 @@ void NmlWriter::open(const std::string& p)
     if (! f.is_open())
       QDP_error_exit("failed to open file %s",p.c_str());
   }
-
-  iop=true;
-
 //  push(*this,"FILE");  // Always start a file with this group
 }
 
 void NmlWriter::close()
 {
-  if (iop) 
+  if (is_open()) 
   {
 //    pop(*this);  // Write final end of file group
 
@@ -470,11 +505,32 @@ void NmlWriter::close()
 
     if (Layout::primaryNode()) 
       f.close();
-    iop = false;
   }
 }
 
-bool NmlWriter::is_open() {return iop;}
+// Propagate status to all nodes
+bool NmlWriter::is_open()
+{
+  int  c;
+
+  if (Layout::primaryNode()) 
+    c = (f.is_open()) ? 1 : 0;   // convert true/false to 1/0
+
+  Internal::broadcast(c);
+  return (c == 1) ? true : false;
+}
+
+// Propagate status to all nodes
+bool NmlWriter::fail()
+{
+  int  c;
+
+  if (Layout::primaryNode()) 
+    c = (f.fail()) ? 1 : 0;   // convert true/false to 1/0
+
+  Internal::broadcast(c);
+  return (c == 1) ? true : false;
+}
 
 NmlWriter::~NmlWriter()
 {
@@ -609,7 +665,7 @@ NmlWriter& operator<<(NmlWriter& nml, const bool& d)
 
 //-----------------------------------------
 //! Binary reader support
-BinaryReader::BinaryReader() {iop=false;}
+BinaryReader::BinaryReader() {}
 
 BinaryReader::BinaryReader(const std::string& p) {open(p);}
 
@@ -621,40 +677,40 @@ void BinaryReader::open(const std::string& p)
     if (! f.is_open())
       QDP_error_exit("BinaryReader: error opening file %s",p.c_str());
   }
-
-  iop = true;
 }
 
 void BinaryReader::close()
 {
-  if (iop)
+  if (is_open())
   {
     if (Layout::primaryNode()) 
       f.close();
-
-    iop = false;
   }
 }
 
 
-bool BinaryReader::is_open() {return iop;}
+// Propagate status to all nodes
+bool BinaryReader::is_open()
+{
+  int  c;
+
+  if (Layout::primaryNode()) 
+    c = (f.is_open()) ? 1 : 0;   // convert true/false to 1/0
+
+  Internal::broadcast(c);
+  return (c == 1) ? true : false;
+}
 
 // Propagate status to all nodes
 bool BinaryReader::fail()
 {
-  bool s;
   int  c;
 
   if (Layout::primaryNode()) 
-  {
-    s = f.fail();
-    c = (s) ? 1 : 0;   // convert true/false to 1/0
-  }
+    c = (f.fail()) ? 1 : 0;   // convert true/false to 1/0
 
   Internal::broadcast(c);
-  s = (c == 1) ? true : false;
-
-  return s;
+  return (c == 1) ? true : false;
 }
 
 BinaryReader::~BinaryReader() {close();}
@@ -883,7 +939,7 @@ void BinaryReader::readArrayPrimaryNode(char* input, size_t size, size_t nmemb)
 
 //-----------------------------------------
 //! Binary writer support
-BinaryWriter::BinaryWriter() {iop=false;}
+BinaryWriter::BinaryWriter() {}
 
 BinaryWriter::BinaryWriter(const std::string& p) {open(p);}
 
@@ -895,23 +951,41 @@ void BinaryWriter::open(const std::string& p)
     if (! f.is_open())
       QDP_error_exit("BinaryWriter: error opening file %s",p.c_str());
   }
-
-  iop = true;
 }
 
 void BinaryWriter::close()
 {
-  if (iop)
+  if (is_open())
   {
     if (Layout::primaryNode()) 
       f.close();
-
-    iop = false;
   }
 }
 
 
-bool BinaryWriter::is_open() {return iop;}
+// Propagate status to all nodes
+bool BinaryWriter::is_open()
+{
+  int  c;
+
+  if (Layout::primaryNode()) 
+    c = (f.is_open()) ? 1 : 0;   // convert true/false to 1/0
+
+  Internal::broadcast(c);
+  return (c == 1) ? true : false;
+}
+
+// Propagate status to all nodes
+bool BinaryWriter::fail()
+{
+  int  c;
+
+  if (Layout::primaryNode()) 
+    c = (f.fail()) ? 1 : 0;   // convert true/false to 1/0
+
+  Internal::broadcast(c);
+  return (c == 1) ? true : false;
+}
 
 BinaryWriter::~BinaryWriter() {close();}
 
