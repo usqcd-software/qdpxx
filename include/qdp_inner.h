@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.17 2003-12-16 02:32:52 edwards Exp $
+// $Id: qdp_inner.h,v 1.18 2004-08-09 22:01:29 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -1033,48 +1033,6 @@ struct UnaryReturn<ILattice<T,N>, FnPeekSite> {
   typedef IScalar<typename UnaryReturn<T, FnPeekSite>::Type_t>  Type_t;
 };
 
-template<class T1, class T2, int N>
-struct BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnInnerProduct> {
-  typedef IScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
-};
-
-template<class T1, class T2, int N>
-struct BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnInnerProductReal> {
-  typedef IScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
-};
-
-template<class T1, class T2, int N>
-struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnInnerProduct> {
-  typedef IScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
-};
-
-template<class T1, class T2, int N>
-struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnInnerProductReal> {
-  typedef IScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
-};
-
-
-template<class T1, class T2, int N>
-struct BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnLocalInnerProduct> {
-  typedef ILattice<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t, N>  Type_t;
-};
-
-template<class T1, class T2, int N>
-struct BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnLocalInnerProductReal> {
-  typedef ILattice<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t, N>  Type_t;
-};
-
-template<class T1, class T2, int N>
-struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnLocalInnerProduct> {
-  typedef ILattice<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t, N>  Type_t;
-};
-
-template<class T1, class T2, int N>
-struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnLocalInnerProductReal> {
-  typedef ILattice<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t, N>  Type_t;
-};
-
-
 // Local operations
 template<class T1, class T2, int N>
 struct BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpAddAssign> {
@@ -1746,25 +1704,6 @@ inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, FnLocalInnerProduct>::Typ
 localInnerProduct(const IScalar<T1>& s1, const IScalar<T2>& s2)
 {
   return localInnerProduct(s1.elem(), s2.elem());
-}
-
-
-//! IScalar = InnerProductReal(adj(PMatrix)*PMatrix)
-template<class T1, class T2>
-struct BinaryReturn<IScalar<T1>, IScalar<T2>, FnInnerProductReal> {
-  typedef IScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
-};
-
-template<class T1, class T2>
-struct BinaryReturn<IScalar<T1>, IScalar<T2>, FnLocalInnerProductReal> {
-  typedef IScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
-};
-
-template<class T1, class T2>
-inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, FnLocalInnerProductReal>::Type_t
-localInnerProductReal(const IScalar<T1>& s1, const IScalar<T2>& s2)
-{
-  return localInnerProductReal(s1.elem(), s2.elem());
 }
 
 
@@ -2972,29 +2911,48 @@ localInnerProduct(const ILattice<T1,N>& s1, const ILattice<T2,N>& s2)
   return d;
 }
 
-
-//! IScalar = InnerProductReal(adj(ILattice)*ILattice)
-/*!
- * return  realpart of InnerProduct(adj(s1)*s2)
- */
+//! IScalar = InnerProduct(adj(ILattice)*IScalar)
 template<class T1, class T2, int N>
-struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnInnerProductReal> {
-  typedef IScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
+struct BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnInnerProduct> {
+  typedef IScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnLocalInnerProductReal> {
-  typedef ILattice<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t, N>  Type_t;
+struct BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnLocalInnerProduct> {
+  typedef ILattice<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t, N>  Type_t;
 };
 
 template<class T1, class T2, int N>
-inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnLocalInnerProductReal>::Type_t
-localInnerProductReal(const ILattice<T1,N>& s1, const ILattice<T2,N>& s2)
+inline typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnLocalInnerProduct>::Type_t
+localInnerProduct(const ILattice<T1,N>& s1, const IScalar<T2>& s2)
 {
-  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnLocalInnerProductReal>::Type_t  d;
+  typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnLocalInnerProduct>::Type_t  d;
 
   for(int i=0; i < N; ++i)
-    d.elem(i) = localInnerProductReal(s1.elem(i), s2.elem(i));
+    d.elem(i) = localInnerProduct(s1.elem(i), s2.elem());
+
+  return d;
+}
+
+//! IScalar = InnerProduct(adj(IScalar)*ILattice)
+template<class T1, class T2, int N>
+struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnInnerProduct> {
+  typedef IScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnLocalInnerProduct> {
+  typedef ILattice<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnLocalInnerProduct>::Type_t
+localInnerProduct(const IScalar<T1>& s1, const ILattice<T2,N>& s2)
+{
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnLocalInnerProduct>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = localInnerProduct(s1.elem(), s2.elem(i));
 
   return d;
 }
