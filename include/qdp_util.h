@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: qdp_util.h,v 1.3 2003-05-23 04:45:26 edwards Exp $
+// $Id: qdp_util.h,v 1.4 2003-07-31 01:05:08 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -18,10 +18,10 @@ int local_site(const multi1d<int>& coord, const multi1d<int>& latt_size);
 multi1d<int> uniquify_list(const multi1d<int>& ll);
 
 //! Initializer for subsets
-void InitDefaultSets();
+void initDefaultSets();
 
 //! Initializer for maps
-void InitDefaultMaps();
+void initDefaultMaps();
 
 //! Read a QCD (NERSC) Archive format gauge field
 void readArchiv(multi1d<LatticeColorMatrix>& u, const std::string& file);
