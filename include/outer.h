@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.23 2003-04-10 18:36:09 edwards Exp $
+// $Id: outer.h,v 1.24 2003-05-10 23:40:02 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -139,7 +139,7 @@ ostream& operator<<(ostream& s, const OScalar<T>& d)
   return s;
 }
 
-//! text output
+//! Text output
 template<class T>
 inline
 TextWriter& operator<<(TextWriter& txt, const OScalar<T>& d)
@@ -150,7 +150,7 @@ TextWriter& operator<<(TextWriter& txt, const OScalar<T>& d)
   return txt;
 }
 
-//! namelist output
+//! Namelist output
 template<class T>
 inline
 NmlWriter& operator<<(NmlWriter& nml, const OScalar<T>& d)
@@ -161,6 +161,15 @@ NmlWriter& operator<<(NmlWriter& nml, const OScalar<T>& d)
     nml.get() << " ," << endl;
   }
   return nml;
+}
+
+//! XML output
+/*! Supports also having an inner grid */
+template<class T>
+inline
+XMLWriter& operator<<(XMLWriter& xml, const OScalar<T>& d)
+{
+  return xml << d.elem();
 }
 
 //! Binary output
@@ -175,6 +184,16 @@ BinaryWriter& write(BinaryWriter& bin, const OScalar<T>& d)
 
   return bin;
 }
+
+//! XML input
+/*! Supports also having an inner grid */
+template<class T>
+inline
+void read(XMLReader& xml, const string& path, OScalar<T>& d)
+{
+  read(xml, path, d.elem());
+}
+
 
 /*! @} */  // end of group oscalar
 

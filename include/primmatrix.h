@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primmatrix.h,v 1.17 2003-01-26 01:40:40 edwards Exp $
+// $Id: primmatrix.h,v 1.18 2003-05-10 23:40:02 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -154,7 +154,7 @@ private:
 };
 
 
-//! Ascii output
+//! Nml output
 template<class T, int N, template<class,int> class C>  
 inline
 NmlWriter& operator<<(NmlWriter& nml, const PMatrix<T,N,C>& d)
@@ -181,6 +181,29 @@ NmlWriter& operator<<(NmlWriter& nml, const PMatrix<T,N,C>& d)
   nml << d.elem(i,j);
 
   return nml;
+}
+
+
+//! XML output
+template<class T, int N, template<class,int> class C>  
+inline
+XMLWriter& operator<<(XMLWriter& xml, const PMatrix<T,N,C>& d)
+{
+  multi1d<T> dd(N);
+
+  xml.openTag("Matrix");
+
+  for(int i=0; i < N; ++i)
+  {
+    for(int j=0; j < N; ++j)
+      dd[j] = d.elem(i,j);
+
+    nml << dd;
+  }
+
+  xml.closeTag(); // Matrix
+
+  return xml;
 }
 
 /*! @} */  // end of group primmatrix

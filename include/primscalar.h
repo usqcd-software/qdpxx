@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primscalar.h,v 1.21 2003-04-10 21:08:04 edwards Exp $
+// $Id: primscalar.h,v 1.22 2003-05-10 23:40:02 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -185,6 +185,23 @@ NmlWriter& operator<<(NmlWriter& nml, const PScalar<T>& d)
 {
   return nml << d.elem();
 }
+
+//! XML output
+template<class T>
+inline
+XMLWriter& operator<<(XMLWriter& xml, const PScalar<T>& d)
+{
+  return xml << d.elem();
+}
+
+//! XML input
+template<class T>
+inline
+void read(XMLReader& xml, const string& path, PScalar<T>& d)
+{
+  read(xml, path, d.elem());
+}
+
 
 /*! @} */  // end of group primscalar
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.24 2003-04-18 01:33:37 edwards Exp $
+// $Id: parscalar_specific.h,v 1.25 2003-05-10 23:40:02 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1278,8 +1278,16 @@ template<class T> void QDPFactoryGet(char *buf, const int crd[], void *arg)
 template<class T>
 void write_t(QDPSerialWriter& qsw, const XMLMetaWriter& rec_xml, const OLattice<T>& s1)
 {
-  int status = QIO_write(qsw.get(), rec_xml.get(), &(QDPFactoryGet<OLattice<T> >),
+  // Copy metadata string into simple qio string container
+  XML_MetaData* xml_c = XML_create(rec_xml.str().length()+1);  // check if +1 is needed
+  XML_set(xml_c, rec_xml.str().c_str());
+
+  // Big call to qio
+  int status = QIO_write(qsw.get(), xml_c, &(QDPFactoryGet<OLattice<T> >),
                          sizeof(T), (void *)&s1);
+
+  // Cleanup
+  XML_destroy(xml_c);
 }
 
 

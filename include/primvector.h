@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primvector.h,v 1.13 2002-12-26 22:59:51 edwards Exp $
+// $Id: primvector.h,v 1.14 2003-05-10 23:40:02 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -120,7 +120,7 @@ private:
 };
 
 
-//! Ascii output
+//! Nml output
 template<class T, int N, template<class,int> class C> 
 inline
 NmlWriter& operator<<(NmlWriter& nml, const PVector<T,N,C>& d)
@@ -138,6 +138,25 @@ NmlWriter& operator<<(NmlWriter& nml, const PVector<T,N,C>& d)
   nml << d.elem(i);
     
   return nml;
+}
+
+//! XML output
+template<class T, int N, template<class,int> class C> 
+inline
+XMLWriter& operator<<(XMLWriter& xml, const PVector<T,N,C>& d)
+{
+  multi1d<T> dd(N);
+
+  xml.openTag("Vector");
+
+  // Copy into another array first
+  for(int i=0; i < N; ++i)
+    dd[i] = d.elem(i);
+    
+  xml << dd;
+  xml.closeTag();  // Vector
+    
+  return xml;
 }
 
 /*! @} */  // end of group primvector

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.27 2003-04-18 01:33:37 edwards Exp $
+// $Id: scalar_specific.h,v 1.28 2003-05-10 23:40:02 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -804,6 +804,48 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
   return nml;
 }
 
+//! XML output
+template<class T>  
+XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
+{
+  // These attributes are the defaults
+  std::string sizeName = "volume";
+  std::string elemName = "site";
+  std::string indexName = "index";
+
+  XMLWriterAPI::AttributeList alist;
+  alist.push_back(XMLWriterAPI::Attribute("sizeName",  sizeName));
+  alist.push_back(XMLWriterAPI::Attribute("elemName",  elemName));
+  alist.push_back(XMLWriterAPI::Attribute("indexName", indexName));
+  alist.push_back(XMLWriterAPI::Attribute("indexStart", 0));
+      
+  // Write the OLattice - tag
+  xml.openTag("OLattice");
+
+  // Write the array - tag
+  xml.openTag("array", alist);
+
+  xml.openTag(sizeName);
+  xml.write(Layout::vol());
+  xml.closeTag();
+
+  for(int site=0; site < Layout::vol(); ++site) 
+  {
+    int i = Layout::linearSiteIndex(site);
+    alist.clear();
+    alist.push_back(XMLWriterAPI::Attribute(indexName, site));
+    xml.openTag(elemName, alist);
+    xml << d.elem(i);   // NOTE, can possibly grab user defined write's here
+    xml.closeTag();
+  }
+
+  xml.closeTag(); // Array
+  xml.closeTag(); // OLattice
+
+  return xml;
+}
+
+
 
 //! Binary output
 template<class T>  
@@ -911,10 +953,17 @@ template<class T> void QDPFactoryPut(char *buf, const int crd[], void *arg)
 //! Read an OLattice object
 /*! This implementation is only correct for scalar ILattice */
 template<class T>
-void read_t(QDPSerialReader& qsw, XMLMetaReader& rec_xml, OLattice<T>& s1)
+void read_t(QDPSerialReader& qsw, XMLReader& rec_xml, OLattice<T>& s1)
 {
+// FIX THIS!!!!
+#if 0
+  // Copy metadata string into simple qio string container
+  XML_MetaData* xml_c = XML_create(xmlstr.str().length()+1);  // check if +1 is needed
+  XML_set(xml_c, xmlstr.str().c_str());
+
   int status = QIO_read(qsw.get(), rec_xml.get(), &(QDPFactoryPut<OLattice<T> >),
                         sizeof(T), (void *)&s1);
+#endif
 }
 
 
@@ -943,8 +992,15 @@ template<class T> void QDPFactoryGet(char *buf, const int crd[], void *arg)
 template<class T>
 void write_t(QDPSerialWriter& qsw, const XMLMetaWriter& rec_xml, const OLattice<T>& s1)
 {
-  int status = QIO_write(qsw.get(), rec_xml.get(), &(QDPFactoryGet<OLattice<T> >),
+  // Copy metadata string into simple qio string container
+  XML_MetaData* xml_c = XML_create(rec_xml.str().length()+1);  // check if +1 is needed
+  XML_set(xml_c, rec_xml.str().c_str());
+
+  // Big call to qio
+  int status = QIO_write(qsw.get(), xml_c, &(QDPFactoryGet<OLattice<T> >),
                          sizeof(T), (void *)&s1);
+  // Cleanup
+  XML_destroy(xml_c);
 }
 
 

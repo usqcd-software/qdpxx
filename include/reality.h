@@ -1,10 +1,12 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.21 2003-04-25 18:53:02 edwards Exp $
+// $Id: reality.h,v 1.22 2003-05-10 23:40:02 edwards Exp $
 
 /*! \file
  * \brief Reality
  */
 
+
+#include <sstream>
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -189,6 +191,23 @@ NmlWriter& operator<<(NmlWriter& s, const RScalar<T>& d)
   return s << d.elem();
 }
 
+//! XML output
+template<class T>
+inline
+XMLWriter& operator<<(XMLWriter& xml, const RScalar<T>& d)
+{
+  return xml << d.elem();
+}
+
+//! XML input
+template<class T>
+inline
+void read(XMLReader& xml, const string& path, RScalar<T>& d)
+{
+  read(xml, path, d.elem());
+}
+
+
 /*! @} */  // end of group rscalar
 
 
@@ -359,6 +378,60 @@ NmlWriter& operator<<(NmlWriter& nml, const RComplex<T>& d)
 
   return nml;
 }
+
+//! XML output
+template<class T>
+inline
+XMLWriter& operator<<(XMLWriter& xml, const RComplex<T>& d)
+{
+  xml.openTag("cmpx");
+  xml.openTag("re");
+  xml << d.real();
+  xml.closeTag();
+  xml.openTag("im");
+  xml << d.imag();
+  xml.closeTag();
+  xml.closeTag();
+
+  return xml;
+}
+
+//! XML input
+template<class T>
+inline
+void read(XMLReader& xml, const string& path, RComplex<T>& d)
+{
+  std::ostringstream error_message;
+  
+  // XPath for the real part 
+  string path_real = xpath + "/cmpx/re";
+	
+  // XPath for the imaginary part.
+  string path_imag = xpath + "/cmpx/im";
+	
+  // Try and recursively get the real part
+  try { 
+    read(xml, path_real, result.real());
+  }
+  catch(const string &e) {
+    error_message << "XPath Query: " << xpath << " Error: "
+		  << "Failed to match real part of RComplex Object with self constructed path: " << path_real;
+    
+    throw error_message.str();
+  }
+	
+  // Try and recursively get the imaginary part
+  try {
+    read(xml, path_real, result.imag());
+  }
+  catch(const string &e) {
+    error_message << "XPath Query: " << xpath <<" Error:"
+		  <<"Failed to match imaginary part of RComplex Object with self constructed path: " << path_imag;
+    
+    throw error_message.str();
+  }
+}
+
 
 /*! @} */   // end of group rcomplex
 
