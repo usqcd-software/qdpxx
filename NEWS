@@ -1,6 +1,7 @@
 08/26/2003 -- Robert Edwards
 
 	Version 1.5.3. More changes in inner grid stuff. Still need map support.
+        Added more SSE support in  qdp_scalarsite_sse.h .
 
 08/22/2003 -- Robert Edwards
 
