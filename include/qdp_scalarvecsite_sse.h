@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.2 2003-08-21 04:18:04 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.3 2003-08-21 04:21:59 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -586,7 +586,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
   for(int i=istart; i <= iend; ++i) 
   {
-    _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+    _inline_ssevec_mult_su3_nn(d.elem(i).elem(),l.elem(i).elem(),r.elem(i).elem(),0);
+    _inline_ssevec_mult_su3_nn(d.elem(i).elem(),l.elem(i).elem(),r.elem(i).elem(),1);
+    _inline_ssevec_mult_su3_nn(d.elem(i).elem(),l.elem(i).elem(),r.elem(i).elem(),2);
   }
 }
 
