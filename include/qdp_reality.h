@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.5 2003-08-01 19:51:55 edwards Exp $
+// $Id: qdp_reality.h,v 1.6 2003-08-04 19:05:24 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -768,7 +768,23 @@ template<class T1, class T2>
 inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAdjMultiply>::Type_t
 adjMultiply(const RScalar<T1>& l, const RScalar<T2>& r)
 {
-  return adjMultiply(l.elem(), r.elem());
+  return transpose(l.elem()) * r.elem();
+}
+
+// Optimized  RScalar*adj(RScalar)
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpMultiplyAdj>::Type_t
+multiplyAdj(const RScalar<T1>& l, const RScalar<T2>& r)
+{
+  return l.elem() * transpose(r.elem());
+}
+
+// Optimized  adj(RScalar)*adj(RScalar)
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAdjMultiplyAdj>::Type_t
+adjMultiplyAdj(const RScalar<T1>& l, const RScalar<T2>& r)
+{
+  return transpose(l.elem()) * transpose(r.elem());
 }
 
 
@@ -1392,9 +1408,15 @@ operator-(const RComplex<T1>& l, const RComplex<T2>& r)
 }
 
 
+#if 0
 template<class T1, class T2>
 inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t
-operator*(const RComplex<T1>& l, const RComplex<T2>& r)
+operator*(const RComplex<T1>& l, const RComplex<T2>& r) __attribute__ ((const,always_inline));
+#endif
+
+template<class T1, class T2>
+inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t
+operator*(const RComplex<T1>& __restrict__ l, const RComplex<T2>& __restrict__ r) 
 {
 #if 1
   typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t  d;
@@ -1443,8 +1465,37 @@ adjMultiply(const RComplex<T1>& l, const RComplex<T2>& r)
   typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiply>::Type_t  d;
 
   // The complex conjugate nature has been eaten here leaving simple multiples
-  d.real() = l.real()*r.real() + l.imag()*r.imag();
-  d.imag() = l.real()*r.imag() - l.imag()*r.real();
+  // involving transposes - which are probably null
+  d.real() = transpose(l.real())*r.real() + transpose(l.imag())*r.imag();
+  d.imag() = transpose(l.real())*r.imag() - transpose(l.imag())*r.real();
+  return d;
+}
+
+// Optimized  RComplex*adj(RComplex)
+template<class T1, class T2>
+inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiplyAdj>::Type_t
+multiplyAdj(const RComplex<T1>& l, const RComplex<T2>& r)
+{
+  typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiplyAdj>::Type_t  d;
+
+  // The complex conjugate nature has been eaten here leaving simple multiples
+  // involving transposes - which are probably null
+  d.real() = l.real()*transpose(r.real()) + l.imag()*transpose(r.imag());
+  d.imag() = l.imag()*transpose(r.real()) - l.real()*transpose(r.imag());
+  return d;
+}
+
+// Optimized  adj(RComplex)*adj(RComplex)
+template<class T1, class T2>
+inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiplyAdj>::Type_t
+adjMultiplyAdj(const RComplex<T1>& l, const RComplex<T2>& r)
+{
+  typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiplyAdj>::Type_t  d;
+
+  // The complex conjugate nature has been eaten here leaving simple multiples
+  // involving transposes - which are probably null
+  d.real() = transpose(l.real())*transpose(r.real()) - transpose(l.imag())*transpose(r.imag());
+  d.imag() = -(transpose(l.real())*transpose(r.imag()) + transpose(l.imag())*transpose(r.real()));
   return d;
 }
 
