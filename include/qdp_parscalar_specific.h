@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.7 2003-06-15 03:11:27 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.8 2003-06-15 04:17:28 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1058,6 +1058,165 @@ private:
 
 
 //-----------------------------------------------------------------------------
+
+//! Binary output
+/*! Assumes no inner grid */
+template<class T>
+inline
+void write(BinaryWriter& bin, const OScalar<T>& d)
+{
+  bin.writeArray((const char *)&(d.elem()), 
+		 sizeof(typename WordType<T>::Type_t), 
+		 sizeof(T) / sizeof(typename WordType<T>::Type_t));
+}
+
+//! Binary input
+/*! Assumes no inner grid */
+template<class T>
+void read(BinaryReader& bin, OScalar<T>& d)
+{
+  bin.readArray((char*)&(d.elem()), 
+		sizeof(typename WordType<T>::Type_t), 
+		sizeof(T) / sizeof(typename WordType<T>::Type_t)); 
+}
+
+
+
+#if ! defined(USE_ROLL_AROUND)
+// There are 2 main classes of binary/nml/xml reader/writer methods.
+// The first is a simple/portable but inefficient method of send/recv
+// to/from the destination node.
+// The second method (the else) is a more efficient roll-around method.
+// However, this method more constrains the data layout - it must be
+// close to the original lexicographic order.
+// For now, use the direct send method
+
+//! Decompose a lexicographic site into coordinates
+multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
+
+//! Ascii output
+/*! Assumes no inner grid */
+template<class T>  
+NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
+{
+  T recv_buf;
+
+  if (Layout::primaryNode())
+    nml.get() << "   [OUTER]" << endl;
+
+  // Find the location of each site and send to primary node
+  for(int site=0; site < Layout::vol(); ++site)
+  {
+    multi1d<int> coord = crtesn(site, Layout::lattSize());
+
+    int node   = Layout::nodeNumber(coord);
+    int linear = Layout::linearSiteIndex(coord);
+
+    // Copy to buffer: be really careful since max(linear) could vary among nodes
+    if (Layout::nodeNumber() == node)
+      recv_buf = d.elem(linear);
+
+    // Send result to primary node. Avoid sending prim-node sending to itself
+    if (node != 0)
+    {
+      if (Layout::primaryNode())
+	Internal::recvFromWait((void *)&recv_buf, node, sizeof(T));
+
+      if (Layout::nodeNumber() == node)
+	Internal::sendToWait((void *)&recv_buf, 0, sizeof(T));
+    }
+
+    if (Layout::primaryNode())
+    {
+      nml.get() << "   Site =  " << site << "   = ";
+      nml << recv_buf;
+      nml.get() << " ," << endl;
+    }
+  }
+
+  return nml;
+}
+
+//! XML output
+template<class T>  
+XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
+{
+  T recv_buf;
+
+  xml.openTag("OLattice");
+  XMLWriterAPI::AttributeList alist;
+
+  // Find the location of each site and send to primary node
+  for(int site=0; site < Layout::vol(); ++site)
+  {
+    multi1d<int> coord = crtesn(site, Layout::lattSize());
+
+    int node   = Layout::nodeNumber(coord);
+    int linear = Layout::linearSiteIndex(coord);
+
+    // Copy to buffer: be really careful since max(linear) could vary among nodes
+    if (Layout::nodeNumber() == node)
+      recv_buf = d.elem(linear);
+
+    // Send result to primary node. Avoid sending prim-node sending to itself
+    if (node != 0)
+    {
+      if (Layout::primaryNode())
+	Internal::recvFromWait((void *)&recv_buf, node, sizeof(T));
+
+      if (Layout::nodeNumber() == node)
+	Internal::sendToWait((void *)&recv_buf, 0, sizeof(T));
+    }
+
+    if (Layout::primaryNode())
+    {
+      alist.clear();
+      alist.push_back(XMLWriterAPI::Attribute("site", site));
+
+      xml.openTag("elem", alist);
+      xml << recv_buf;
+      xml.closeTag();
+    }
+  }
+
+  xml.closeTag(); // OLattice
+  return xml;
+}
+
+
+//! Write a lattice quantity
+/*! This code assumes no inner grid */
+void writeOLattice(BinaryWriter& bin, 
+		   const char* output, size_t size, size_t nmemb);
+
+//! Binary output
+/*! Assumes no inner grid */
+template<class T>
+void write(BinaryWriter& bin, const OLattice<T>& d)
+{
+  writeOLattice(bin, (const char *)&(d.elem(0)), 
+		sizeof(typename WordType<T>::Type_t), 
+		sizeof(T) / sizeof(typename WordType<T>::Type_t));
+}
+
+
+//! Read a lattice quantity
+/*! This code assumes no inner grid */
+void readOLattice(BinaryReader& bin, 
+		  char* input, size_t size, size_t nmemb);
+
+//! Binary input
+/*! Assumes no inner grid */
+template<class T>
+void read(BinaryReader& bin, OLattice<T>& d)
+{
+  readOLattice(bin, (char *)&(d.elem(0)), 
+	       sizeof(typename WordType<T>::Type_t), 
+	       sizeof(T) / sizeof(typename WordType<T>::Type_t));
+}
+
+#else   // ! defined(USE_ROLL_AROUND)
+
 extern "C"
 {
   extern int QMP_shift(int site, unsigned char *data, int prim_size, int sn);
@@ -1133,70 +1292,6 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
   return xml;
 }
 
-
-//! Binary output
-/*! Assumes no inner grid */
-template<class T>
-inline
-void write(BinaryWriter& bin, const OScalar<T>& d)
-{
-  if (Layout::primaryNode()) 
-    bin.writeArray((const char *)&(d.elem()), 
-		   sizeof(typename WordType<T>::Type_t), 
-		   sizeof(T) / sizeof(typename WordType<T>::Type_t));
-}
-
-//! Binary input
-/*! Assumes no inner grid */
-template<class T>
-void read(BinaryReader& bin, OScalar<T>& d)
-{
-  bin.readArray((char*)&(d.elem()), 
-		sizeof(typename WordType<T>::Type_t), 
-		sizeof(T) / sizeof(typename WordType<T>::Type_t)); 
-}
-
-#if ! defined(USE_ROLL_AROUND)
-// There are 2 main classes of binary reader/writer methods.
-// The first is a simple/portable but inefficient method of send/recv
-// to/from the destination node.
-// The second method (the else) is a more efficient roll-around method.
-// However, this method more constrains the data layout - it must be
-// close to the original lexicographic order.
-// For now, use the direct send method
-
-//! Write a lattice quantity
-/*! This code assumes no inner grid */
-void writeOLattice(BinaryWriter& bin, 
-		   const char* output, size_t size, size_t nmemb);
-
-//! Binary output
-/*! Assumes no inner grid */
-template<class T>
-void write(BinaryWriter& bin, const OLattice<T>& d)
-{
-  writeOLattice(bin, (const char *)&(d.elem(0)), 
-		sizeof(typename WordType<T>::Type_t), 
-		sizeof(T) / sizeof(typename WordType<T>::Type_t));
-}
-
-
-//! Read a lattice quantity
-/*! This code assumes no inner grid */
-void readOLattice(BinaryReader& bin, 
-		  char* input, size_t size, size_t nmemb);
-
-//! Binary input
-/*! Assumes no inner grid */
-template<class T>
-void read(BinaryReader& bin, OLattice<T>& d)
-{
-  readOLattice(bin, (char *)&(d.elem(0)), 
-	       sizeof(typename WordType<T>::Type_t), 
-	       sizeof(T) / sizeof(typename WordType<T>::Type_t));
-}
-
-#else   // ! defined(USE_ROLL_AROUND)
 
 //! Binary output
 /*! Assumes no inner grid */
