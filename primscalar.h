@@ -1,0 +1,929 @@
+// -*- C++ -*-
+//
+// $Id: primscalar.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+//
+// QDP data parallel interface
+//
+
+QDP_BEGIN_NAMESPACE(QDP);
+
+//-------------------------------------------------------------------------------------
+//! Primitive Scalar
+/*! Placeholder for no primitive structure */
+template<class T> class PScalar
+{
+public:
+  PScalar() {}
+  ~PScalar() {}
+
+  //! construct dest = const
+  PScalar(const typename WordType<T>::Type_t rhs) : F(rhs) {}
+
+
+  //! construct dest = const
+  template<class T1>
+  PScalar(const PScalar<T1> rhs) : F(rhs) {}
+
+
+#if 0
+  //! dest = const
+  /*! Fill with an integer constant. Will be promoted to underlying word type */
+  inline
+  PScalar& operator=(const typename WordType<T>::Type_t& rhs)
+    {
+      elem() = rhs;
+      return *this;
+    }
+#endif
+
+  //! PScalar = PScalar
+  /*! Set equal to another PScalar */
+  template<class T1>
+  inline
+  PScalar& operator=(const PScalar<T1>& rhs) 
+    {
+      elem() = rhs.elem();
+      return *this;
+    }
+
+  //! PScalar += PScalar
+  template<class T1>
+  inline
+  PScalar& operator+=(const PScalar<T1>& rhs) 
+    {
+      elem() += rhs.elem();
+      return *this;
+    }
+
+  //! PScalar -= PScalar
+  template<class T1>
+  inline
+  PScalar& operator-=(const PScalar<T1>& rhs) 
+    {
+      elem() -= rhs.elem();
+      return *this;
+    }
+
+  //! PScalar *= PScalar
+  template<class T1>
+  inline
+  PScalar& operator*=(const PScalar<T1>& rhs) 
+    {
+      elem() *= rhs.elem();
+      return *this;
+    }
+
+  //! PScalar /= PScalar
+  template<class T1>
+  inline
+  PScalar& operator/=(const PScalar<T1>& rhs) 
+    {
+      elem() /= rhs.elem();
+      return *this;
+    }
+
+  //! PScalar %= PScalar
+  template<class T1>
+  inline
+  PScalar& operator%=(const PScalar<T1>& rhs) 
+    {
+      elem() %= rhs.elem();
+      return *this;
+    }
+
+  //! PScalar |= PScalar
+  template<class T1>
+  inline
+  PScalar& operator|=(const PScalar<T1>& rhs) 
+    {
+      elem() |= rhs.elem();
+      return *this;
+    }
+
+  //! PScalar &= PScalar
+  template<class T1>
+  inline
+  PScalar& operator&=(const PScalar<T1>& rhs) 
+    {
+      elem() &= rhs.elem();
+      return *this;
+    }
+
+  //! PScalar ^= PScalar
+  template<class T1>
+  inline
+  PScalar& operator^=(const PScalar<T1>& rhs) 
+    {
+      elem() ^= rhs.elem();
+      return *this;
+    }
+
+  //! PScalar <<= PScalar
+  template<class T1>
+  inline
+  PScalar& operator<<=(const PScalar<T1>& rhs) 
+    {
+      elem() <<= rhs.elem();
+      return *this;
+    }
+
+  //! PScalar >>= PScalar
+  template<class T1>
+  inline
+  PScalar& operator>>=(const PScalar<T1>& rhs) 
+    {
+      elem() >>= rhs.elem();
+      return *this;
+    }
+
+  //! Deep copies here
+  PScalar(const PScalar& a): F(a.F) {/* fprintf(stderr,"copy PScalar\n"); */}
+
+public:
+  T& elem() {return F;}
+  const T& elem() const {return F;}
+
+private:
+  T F;
+};
+
+
+// Output
+//! Ascii output
+template<class T>  ostream& operator<<(ostream& s, const PScalar<T>& d)
+{
+  return s << d.elem();
+}
+
+
+
+//-----------------------------------------------------------------------------
+// Traits classes 
+//-----------------------------------------------------------------------------
+
+// Underlying word type
+template<class T>
+struct WordType<PScalar<T> > 
+{
+  typedef typename WordType<T>::Type_t  Type_t;
+};
+
+// Internally used scalars
+template<class T>
+struct InternalScalar<PScalar<T> > {
+  typedef PScalar<typename InternalScalar<T>::Type_t>  Type_t;
+};
+
+
+//-----------------------------------------------------------------------------
+// Traits classes to support return types
+//-----------------------------------------------------------------------------
+
+// Default unary(PScalar) -> PScalar
+template<class T1, class Op>
+struct UnaryReturn<PScalar<T1>, Op> {
+  typedef PScalar<typename UnaryReturn<T1, Op>::Type_t>  Type_t;
+};
+
+// Default binary(PScalar,PScalar) -> PScalar
+template<class T1, class T2, class Op>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, Op> {
+  typedef PScalar<typename BinaryReturn<T1, T2, Op>::Type_t>  Type_t;
+};
+
+
+#if 0
+template<class T1, class T2>
+struct UnaryReturn<PScalar<T2>, OpCast<T1> > {
+  typedef PScalar<typename UnaryReturn<T, OpCast>::Type_t>  Type_t;
+//  typedef T1 Type_t;
+};
+#endif
+
+// Assignment is different
+template<class T1, class T2 >
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpAssign > {
+  typedef PScalar<T1> &Type_t;
+};
+
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpAddAssign > {
+  typedef PScalar<T1> &Type_t;
+};
+ 
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpSubtractAssign > {
+  typedef PScalar<T1> &Type_t;
+};
+ 
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpMultiplyAssign > {
+  typedef PScalar<T1> &Type_t;
+};
+ 
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpDivideAssign > {
+  typedef PScalar<T1> &Type_t;
+};
+ 
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpModAssign > {
+  typedef PScalar<T1> &Type_t;
+};
+ 
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpBitwiseOrAssign > {
+  typedef PScalar<T1> &Type_t;
+};
+ 
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpBitwiseAndAssign > {
+  typedef PScalar<T1> &Type_t;
+};
+ 
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpBitwiseXorAssign > {
+  typedef PScalar<T1> &Type_t;
+};
+ 
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpLeftShiftAssign > {
+  typedef PScalar<T1> &Type_t;
+};
+ 
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpRightShiftAssign > {
+  typedef PScalar<T1> &Type_t;
+};
+ 
+
+
+
+//-----------------------------------------------------------------------------
+// Operators
+//-----------------------------------------------------------------------------
+
+// Primitive Scalars
+template<class T>
+struct UnaryReturn<PScalar<T>, OpNot > {
+  typedef PScalar<typename UnaryReturn<T, OpNot>::Type_t>  Type_t;
+};
+
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, OpNot>::Type_t
+operator!(const PScalar<T1>& l)
+{
+  typename UnaryReturn<PScalar<T1>, OpNot>::Type_t  d;
+
+  d.elem() = ! l.elem();
+  return d;
+}
+
+
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, OpUnaryPlus>::Type_t
+operator+(const PScalar<T1>& l)
+{
+  typename UnaryReturn<PScalar<T1>, OpUnaryPlus>::Type_t  d;
+
+  d.elem() = +l.elem();
+  return d;
+}
+
+
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, OpUnaryMinus>::Type_t
+operator-(const PScalar<T1>& l)
+{
+  typename UnaryReturn<PScalar<T1>, OpUnaryMinus>::Type_t  d;
+
+  d.elem() = -l.elem();
+  return d;
+}
+
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpAdd>::Type_t
+operator+(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpAdd>::Type_t  d;
+
+  d.elem() = l.elem() + r.elem();
+  return d;
+}
+
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpSubtract>::Type_t
+operator-(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpSubtract>::Type_t  d;
+
+  d.elem() = l.elem() - r.elem();
+  return d;
+}
+
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpMultiply>::Type_t
+operator*(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpMultiply>::Type_t  d;
+
+  d.elem() = l.elem() * r.elem();
+  return d;
+}
+
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpDivide>::Type_t
+operator/(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpDivide>::Type_t  d;
+
+  d.elem() = l.elem() / r.elem();
+  return d;
+}
+
+
+
+template<class T1, class T2 >
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpLeftShift > {
+  typedef PScalar<typename BinaryReturn<T1, T2, OpLeftShift>::Type_t>  Type_t;
+};
+ 
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpLeftShift>::Type_t
+operator<<(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpLeftShift>::Type_t  d;
+
+  d.elem() = l.elem() << r.elem();
+  return d;
+}
+
+template<class T1, class T2 >
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpRightShift > {
+  typedef PScalar<typename BinaryReturn<T1, T2, OpRightShift>::Type_t>  Type_t;
+};
+ 
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpRightShift>::Type_t
+operator>>(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpRightShift>::Type_t  d;
+
+  d.elem() = l.elem() >> r.elem();
+  return d;
+}
+
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpMod>::Type_t
+operator%(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpMod>::Type_t  d;
+
+  d.elem() = l.elem() % r.elem();
+  return d;
+}
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpBitwiseXor>::Type_t
+operator^(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpBitwiseXor>::Type_t  d;
+
+  d.elem() = l.elem() ^ r.elem();
+  return d;
+}
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpBitwiseAnd>::Type_t
+operator&(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpBitwiseAnd>::Type_t  d;
+
+  d.elem() = l.elem() & r.elem();
+  return d;
+}
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpBitwiseOr>::Type_t
+operator|(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpBitwiseOr>::Type_t  d;
+
+  d.elem() = l.elem() | r.elem();
+  return d;
+}
+
+
+// Comparisons
+template<class T1, class T2 >
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpLT > {
+  typedef PScalar<typename BinaryReturn<T1, T2, OpLT>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpLT>::Type_t
+operator<(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpLT>::Type_t  d;
+
+  d.elem() = l.elem() < r.elem();
+  return d;
+}
+
+
+template<class T1, class T2 >
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpLE > {
+  typedef PScalar<typename BinaryReturn<T1, T2, OpLE>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpLE>::Type_t
+operator<=(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpLE>::Type_t  d;
+
+  d.elem() = l.elem() <= r.elem();
+  return d;
+}
+
+
+template<class T1, class T2 >
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpGT > {
+  typedef PScalar<typename BinaryReturn<T1, T2, OpGT>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpGT>::Type_t
+operator>(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpGT>::Type_t  d;
+
+  d.elem() = l.elem() > r.elem();
+  return d;
+}
+
+
+template<class T1, class T2 >
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpGE > {
+  typedef PScalar<typename BinaryReturn<T1, T2, OpGE>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpGE>::Type_t
+operator>=(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpGE>::Type_t  d;
+
+  d.elem() = l.elem() >= r.elem();
+  return d;
+}
+
+
+template<class T1, class T2 >
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpEQ > {
+  typedef PScalar<typename BinaryReturn<T1, T2, OpEQ>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpEQ>::Type_t
+operator==(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpEQ>::Type_t  d;
+
+  d.elem() = l.elem() == r.elem();
+  return d;
+}
+
+
+template<class T1, class T2 >
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpNE > {
+  typedef PScalar<typename BinaryReturn<T1, T2, OpNE>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpNE>::Type_t
+operator!=(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpNE>::Type_t  d;
+
+  d.elem() = l.elem() != r.elem();
+  return d;
+}
+
+
+//-----------------------------------------------------------------------------
+// Functions
+
+// Conjugate
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnConj>::Type_t
+conj(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnConj>::Type_t  d;
+
+  d.elem() = conj(s1.elem());
+  return d;
+}
+
+
+// TRACE
+// trace = Trace(source1)
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnTrace>::Type_t
+trace(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnTrace>::Type_t  d;
+
+  d.elem() = trace(s1.elem());
+  return d;
+}
+
+
+// trace = Re(Trace(source1))
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnTraceReal>::Type_t
+trace_real(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnTraceReal>::Type_t  d;
+
+  d.elem() = trace_real(s1.elem());
+  return d;
+}
+
+
+// trace = Im(Trace(source1))
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnTraceImag>::Type_t
+trace_imag(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnTraceImag>::Type_t  d;
+
+  d.elem() = trace_imag(s1.elem());
+  return d;
+}
+
+
+// trace = colorTrace(source1)
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnColorTrace>::Type_t
+colorTrace(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnColorTrace>::Type_t  d;
+
+  d.elem() = colorTrace(s1.elem());
+  return d;
+}
+
+
+// trace = spinTrace(source1)
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnSpinTrace>::Type_t
+spinTrace(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnSpinTrace>::Type_t  d;
+
+  d.elem() = spinTrace(s1.elem());
+  return d;
+}
+
+
+// PScalar = Re(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnReal>::Type_t
+real(const PScalar<T>& s1)
+{
+  typename UnaryReturn<PScalar<T>, FnReal>::Type_t  d;
+
+  d.elem() = real(s1.elem());
+  return d;
+}
+
+
+// PScalar = Im(PScalar)
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnImag>::Type_t
+imag(const PScalar<T>& s1)
+{
+  typename UnaryReturn<PScalar<T>, FnImag>::Type_t  d;
+
+  d.elem() = imag(s1.elem());
+  return d;
+}
+
+
+// ArcCos
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnArcCos>::Type_t
+arccos(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnArcCos>::Type_t  d;
+
+  d.elem() = arccos(s1.elem());
+  return d;
+}
+
+// ArcSin
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnArcSin>::Type_t
+arcsin(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnArcSin>::Type_t  d;
+
+  d.elem() = arcsin(s1.elem());
+  return d;
+}
+
+// ArcTan
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnArcTan>::Type_t
+arctan(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnArcTan>::Type_t  d;
+
+  d.elem() = arctan(s1.elem());
+  return d;
+}
+
+// Cos
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnCos>::Type_t
+cos(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnCos>::Type_t  d;
+
+  d.elem() = cos(s1.elem());
+  return d;
+}
+
+// Exp
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnExp>::Type_t
+exp(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnExp>::Type_t  d;
+
+  d.elem() = exp(s1.elem());
+  return d;
+}
+
+// Fabs
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnFabs>::Type_t
+fabs(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnFabs>::Type_t  d;
+
+  d.elem() = fabs(s1.elem());
+  return d;
+}
+
+// Log
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnLog>::Type_t
+log(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnLog>::Type_t  d;
+
+  d.elem() = log(s1.elem());
+  return d;
+}
+
+// Sin
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnSin>::Type_t
+sin(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnSin>::Type_t  d;
+
+  d.elem() = sin(s1.elem());
+  return d;
+}
+
+// Sqrt
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnSqrt>::Type_t
+sqrt(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnSqrt>::Type_t  d;
+
+  d.elem() = sqrt(s1.elem());
+  return d;
+}
+
+// Tan
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnTan>::Type_t
+tan(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnTan>::Type_t  d;
+
+  d.elem() = tan(s1.elem());
+  return d;
+}
+
+
+
+
+
+
+
+
+
+//! PScalar<T> = (PScalar<T> , PScalar<T>)
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnCmplx>::Type_t
+cmplx(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnCmplx>::Type_t  d;
+
+  d.elem() = cmplx(s1.elem(), s2.elem());
+  return d;
+}
+
+
+
+// Global Functions
+// PScalar = i * PScalar
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnMultiplyI>::Type_t
+multiplyI(const PScalar<T>& s1)
+{
+  typename UnaryReturn<PScalar<T>, FnMultiplyI>::Type_t  d;
+
+  d.elem() = multiplyI(s1.elem());
+  return d;
+}
+
+// PScalar = -i * PScalar
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnMultiplyMinusI>::Type_t
+multiplyMinusI(const PScalar<T>& s1)
+{
+  typename UnaryReturn<PScalar<T>, FnMultiplyMinusI>::Type_t  d;
+
+  d.elem() = multiplyMinusI(s1.elem());
+  return d;
+}
+
+
+
+//! dest = (mask) ? s1 : dest
+template<class T, class T1> 
+void copymask(PScalar<T>& d, const PScalar<T1>& mask, const PScalar<T>& s1) 
+{
+  copymask(d.elem(),mask.elem(),s1.elem());
+}
+
+//! dest  = random  
+template<class T, class T1, class T2>
+inline void
+fill_random(PScalar<T>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
+{
+  fill_random(d.elem(), seed, skewed_seed, seed_mult);
+}
+
+
+//! dest  = gaussian  
+template<class T>
+inline void
+fill_gaussian(PScalar<T>& d, PScalar<T>& r1, PScalar<T>& r2)
+{
+  fill_gaussian(d.elem(), r1.elem(), r2.elem());
+}
+
+
+//! dest [float type] = source [seed type]
+template<class T, class T1>
+void seed_to_float(PScalar<T>& d, const PScalar<T1>& s1)
+{
+  seed_to_float(d.elem(), s1.elem());
+}
+
+
+// Global sum over site indices only
+template<class T>
+struct UnaryReturn<PScalar<T>, FnSum > {
+  typedef PScalar<typename UnaryReturn<T, FnSum>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSum>::Type_t
+sum(const PScalar<T>& s1)
+{
+  typename UnaryReturn<PScalar<T>, FnSum>::Type_t  d;
+
+  d.elem() = sum(s1.elem());
+  return d;
+}
+
+
+// Innerproduct (norm-seq) global sum = sum(tr(conj(s1)*s1))
+template<class T>
+struct UnaryReturn<PScalar<T>, FnSumSq > {
+  typedef PScalar<typename UnaryReturn<T, FnSumSq>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSumSq>::Type_t
+sumsq(const PScalar<T>& s1)
+{
+  typename UnaryReturn<PScalar<T>, FnSumSq>::Type_t  d;
+
+  d.elem() = sumsq(s1.elem());
+  return d;
+}
+
+
+
+//! PScalar<T> = Innerproduct(Conj(PScalar<T1>)*PScalar<T2>)
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproduct > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproduct>::Type_t
+innerproduct(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproduct>::Type_t  d;
+
+  d.elem() = innerproduct(s1.elem(), s2.elem());
+  return d;
+}
+
+
+//! PScalar<T> = Innerproduct_real(Conj(PMatrix<T1>)*PMatrix<T1>)
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproduct_real > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproduct_real>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproduct_real>::Type_t
+innerproduct_real(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnInnerproduct_real>::Type_t  d;
+
+  d.elem() = innerproduct_real(s1.elem(), s2.elem());
+  return d;
+}
+
+
+//-----------------------------------------------
+// Su2_extract
+//! (PScalar<T1>,PScalar<T1>,PScalar<T1>,PScalar<T1>,su2_index) <- PScalar<T>
+template<class T, class T1> 
+inline void
+su2_extract(PScalar<T>& r_0, PScalar<T>& r_1, 
+	    PScalar<T>& r_2, PScalar<T>& r_3, 
+	    int i1, int i2,
+	    const PScalar<T1>& s1)
+{
+  su2_extract(r_0.elem(), r_1.elem(), r_2.elem(), r_3.elem(),
+	      i1, i2, s1.elem());
+}
+
+// Sun_fill
+//! PScalar<T> <- (PScalar<T1>,PScalar<T1>,PScalar<T1>,PScalar<T1>,su2_index)
+template<class T, class T1> 
+inline void
+sun_fill(PScalar<T>& d, 
+	 int i1, int i2,
+	 const PScalar<T1>& r_0, const PScalar<T1>& r_1, 
+	 const PScalar<T1>& r_2, const PScalar<T1>& r_3)
+{
+  sun_fill(d.elem(), i1, i2, 
+	   r_0.elem(), r_1.elem(), r_2.elem(), r_3.elem());
+}
+
+
+
+
+//-----------------------------------------------------------------------------
+// Broadcast operations
+//! dest = 0
+template<class T> 
+void zero(PScalar<T>& dest) 
+{
+  zero(dest.elem());
+}
+
+
+//! dest [some type] = source [some type]
+template<class T, class T1>
+void cast_rep(T& d, const PScalar<T1>& s1)
+{
+  cast_rep(d, s1.elem());
+}
+
+
+
+QDP_END_NAMESPACE();
+
