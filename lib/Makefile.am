@@ -39,9 +39,11 @@ GENERIC_SRCS = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc qdp_layout.cc qdp_i
                qdp_byteorder.cc qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc   qdp_filebuf.cc
 
 SCALAR_SRCS = qdp_scalar_init.cc qdp_scalar_layout.cc qdp_scalar_specific.cc \
+              qdp_scalarsite_specific.cc \
               ../include/qdp_scalar_specific.h
 
 PARSCALAR_SRCS = qdp_parscalar_init.cc qdp_parscalar_layout.cc qdp_parscalar_specific.cc \
+                 qdp_scalarsite_specific.cc \
                  ../include/qdp_parscalar_specific.h
 
 if ARCH_SCALAR
