@@ -1,4 +1,4 @@
-// $Id: t_dslashm.cc,v 1.12 2003-06-07 19:09:31 edwards Exp $
+// $Id: t_dslashm.cc,v 1.13 2003-07-18 20:04:10 edwards Exp $
 /*! \file
  *  \brief Test the Wilson-Dirac operator (dslash)
  */
@@ -18,7 +18,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {2,2,2,2};
+  const int foo[] = {4,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
