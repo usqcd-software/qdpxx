@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primmatrix.h,v 1.12 2002-11-12 00:21:52 edwards Exp $
+// $Id: primmatrix.h,v 1.13 2002-11-12 00:28:14 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -96,7 +96,7 @@ public:
     }
 
   //! Deep copy here
-#if 0
+#if defined(QDP_USE_ARRAY_INITIALIZER)
   /*! This is an array initializer form - may not be strictly legal */
   PMatrix(const PMatrix& a) : F(a.F) {}
 #else
