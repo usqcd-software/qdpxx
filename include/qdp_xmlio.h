@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.18 2003-08-25 12:11:22 bjoo Exp $
+// $Id: qdp_xmlio.h,v 1.19 2003-08-27 18:53:56 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -404,6 +404,12 @@ public:
   // Return root element as a string
   std::string printRoot();
         
+  //! Flush the buffer
+  void flush() {}
+
+  //! Return true if some failure occurred in previous IO operation
+  bool fail() {return false;}
+
 private:
   // The output stream...
   ostringstream output_stream;
