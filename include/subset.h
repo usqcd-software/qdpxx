@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: subset.h,v 1.7 2002-10-25 03:29:57 edwards Exp $
+// $Id: subset.h,v 1.8 2002-11-04 04:41:26 edwards Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -29,15 +29,14 @@ public:
 
   //! Copy constructor
   Subset(const Subset& s): startSite(s.startSite), endSite(s.endSite), 
-    indexrep(s.indexrep), sitetable(s.sitetable), soffsets(s.soffsets) {}
+    indexrep(s.indexrep), sitetable(s.sitetable) {}
 
   // Simple constructor
-  void Make(const Subset& s)
+  void make(const Subset& s)
     {
       startSite = s.startSite;
       endSite = s.endSite;
       indexrep = s.indexrep;
-      soffsets = s.soffsets;
       sitetable = s.sitetable;
     }
 
@@ -49,7 +48,7 @@ public:
 
 protected:
   // Simple constructor
-  void Make(int start, int end, bool rep, multi3d<int>* soff, multi1d<int>* ind, int cb);
+  void make(int start, int end, bool rep, multi1d<int>* ind, int cb);
 
 
 private:
@@ -61,14 +60,6 @@ private:
   //! Site lookup table
   multi1d<int>* sitetable;
 
-  //! Offset table used for communications. 
-  /*! 
-   * The direction is in the sense of the Map or Shift functions from QDP.
-   * soffsets(direction,isign,position) 
-   */ 
-  multi3d<int>* soffsets;
-
-
 public:
   // These should be a no-no. Must fix the friend syntax
   /*! Is the representation a boolean mask? */
@@ -78,7 +69,6 @@ public:
   const int End() const {return endSite;}
   const multi1d<int>* SiteTable() const {return sitetable;}
   const int NumSiteTable() const {return sitetable->size();}
-  const multi3d<int>* Offsets() const {return soffsets;}
 
   friend class Set;
 };
@@ -92,11 +82,11 @@ public:
   Set() {}
 
   //! Constructor from an int function
-  void Make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices);
+  void make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices);
 
   //! Constructor from an int function
   Set(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
-    {Make(func,nsubset_indices);}
+    {make(func,nsubset_indices);}
 
   //! Index operator selects a subset from a set
   const Subset& operator[](int subset_index) const {return sub[subset_index];}
@@ -121,17 +111,6 @@ protected:
 
   //! Array of sitetable arrays
   multi1d<multi1d<int> > sitetables;
-
-  //! Offset table used for communications. 
-  /*! 
-   * The direction is in the sense of the Map or Shift functions from QDP.
-   * soffsets(direction,isign,position) 
-   *
-   * NOTE: this should be moved off to a shift class
-   */ 
-  multi3d<int> soffsets;
-
-
 
 public:
   // These should be a no-no. Must fix the friend syntax
