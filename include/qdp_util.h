@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: qdp_util.h,v 1.7 2003-10-09 16:21:58 edwards Exp $
+// $Id: qdp_util.h,v 1.8 2003-10-15 17:14:39 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -22,26 +22,6 @@ void initDefaultSets();
 
 //! Initializer for maps
 void initDefaultMaps();
-
-//! Read a QCD (NERSC) Archive format gauge field
-/*!
- * \ingroup io
- *
- * \param u          gauge configuration ( Modify )
- * \param file       path ( Read )
- */    
-void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file);
-
-//! Read a QCD (NERSC) Archive format gauge field
-/*!
- * \ingroup io
- *
- * \param xml        xml reader holding config info ( Modify )
- * \param u          gauge configuration ( Modify )
- * \param file       path ( Read )
- */    
-void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& file);
-
 
 QDP_END_NAMESPACE();
 
