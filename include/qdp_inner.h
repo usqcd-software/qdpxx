@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.11 2003-08-30 02:11:47 edwards Exp $
+// $Id: qdp_inner.h,v 1.12 2003-09-01 21:14:11 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -562,9 +562,9 @@ public:
 
 private:
   /*! For now a fixed representation */
-  T F[N];
+  T F[N]  QDP_ALIGN16;
 
-} QDP_ALIGN16;   // possibly force alignment
+};
 
 
 
