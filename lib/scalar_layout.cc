@@ -1,4 +1,4 @@
-// $Id: scalar_layout.cc,v 1.1 2003-01-14 04:46:26 edwards Exp $
+// $Id: scalar_layout.cc,v 1.2 2003-01-15 21:47:49 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -60,6 +60,9 @@ namespace Layout
 
   //-----------------------------------------------------
   // Functions
+
+  //! Main destruction routine
+  void destroy() {}
 
   //! Set virtual grid (problem grid) lattice size
   void setLattSize(const multi1d<int>& nrows) {_layout.nrow = nrows;}
