@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primspinmat.h,v 1.7 2002-11-28 01:47:11 edwards Exp $
+// $Id: primspinmat.h,v 1.8 2002-12-18 21:30:26 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -158,6 +158,11 @@ struct BinaryReturn<PSpinMatrix<T1,N>, PScalar<T2>, OpSubtractAssign > {
  
 template<class T1, class T2, int N>
 struct BinaryReturn<PSpinMatrix<T1,N>, PScalar<T2>, OpMultiplyAssign > {
+  typedef PSpinMatrix<T1,N> &Type_t;
+};
+ 
+template<class T1, class T2, int N>
+struct BinaryReturn<PSpinMatrix<T1,N>, PScalar<T2>, OpDivideAssign > {
   typedef PSpinMatrix<T1,N> &Type_t;
 };
  

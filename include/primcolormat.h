@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primcolormat.h,v 1.7 2002-11-28 01:48:23 edwards Exp $
+// $Id: primcolormat.h,v 1.8 2002-12-18 21:30:26 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -130,6 +130,11 @@ struct BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, OpSubtractAssign > {
  
 template<class T1, class T2, int N>
 struct BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, OpMultiplyAssign > {
+  typedef PColorMatrix<T1,N> &Type_t;
+};
+ 
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, OpDivideAssign > {
   typedef PColorMatrix<T1,N> &Type_t;
 };
  

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primspinvec.h,v 1.4 2002-11-02 04:09:51 edwards Exp $
+// $Id: primspinvec.h,v 1.5 2002-12-18 21:30:26 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Vector
@@ -140,7 +140,12 @@ struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, OpSubtractAssign > {
 };
  
 template<class T1, class T2, int N>
-struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, OpMultiplyAssign > {
+struct BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpMultiplyAssign > {
+  typedef PSpinVector<T1,N> &Type_t;
+};
+ 
+template<class T1, class T2, int N>
+struct BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpDivideAssign > {
   typedef PSpinVector<T1,N> &Type_t;
 };
  

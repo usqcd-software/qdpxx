@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primcolorvec.h,v 1.4 2002-11-02 04:09:51 edwards Exp $
+// $Id: primcolorvec.h,v 1.5 2002-12-18 21:30:26 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Vector
@@ -107,6 +107,16 @@ struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, OpAddAssign > {
  
 template<class T1, class T2, int N>
 struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, OpSubtractAssign > {
+  typedef PColorVector<T1,N> &Type_t;
+};
+ 
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorVector<T1,N>, PScalar<T2>, OpMultiplyAssign > {
+  typedef PColorVector<T1,N> &Type_t;
+};
+ 
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorVector<T1,N>, PScalar<T2>, OpDivideAssign > {
   typedef PColorVector<T1,N> &Type_t;
 };
  

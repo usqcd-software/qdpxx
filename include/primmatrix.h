@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primmatrix.h,v 1.14 2002-11-23 02:23:24 edwards Exp $
+// $Id: primmatrix.h,v 1.15 2002-12-18 21:30:26 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -224,12 +224,6 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpSubtractAssign > {
 };
  
 template<class T1, class T2, int N, template<class,int> class C>
-struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpMultiplyAssign > {
-  typedef C<T1,N> &Type_t;
-};
- 
-
-template<class T1, class T2, int N, template<class,int> class C>
 struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAssign > {
   typedef C<T1,N> &Type_t;
 };
@@ -246,6 +240,11 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpSubtractAssign > {
  
 template<class T1, class T2, int N, template<class,int> class C>
 struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpMultiplyAssign > {
+  typedef C<T1,N> &Type_t;
+};
+ 
+template<class T1, class T2, int N, template<class,int> class C>
+struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpDivideAssign > {
   typedef C<T1,N> &Type_t;
 };
  
