@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_optops.h,v 1.2 2004-06-30 21:49:20 edwards Exp $
+// $Id: qdp_optops.h,v 1.3 2004-06-30 21:51:20 edwards Exp $
 
 /*! @file
  * @brief PETE optimized operations on QDPTypes
@@ -9,8 +9,6 @@
  */
 
 QDP_BEGIN_NAMESPACE(QDP);
-
-#if 0
 
 //-----------------------------------------------------------------------------
 // Optimization hooks
@@ -156,6 +154,8 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
     CreateLeaf<QDPExpr<NewExpr2_t,C2> >::make(NewExpr2_t(r.expression().child()))));
 }
 
+
+#if 0
 
 struct FnTraceMultiply
 {
