@@ -1,13 +1,15 @@
 // -*- C++ -*-
-// $Id: qdp_filebuf.cc,v 1.1 2003-06-06 02:39:30 edwards Exp $
+// $Id: qdp_filebuf.cc,v 1.2 2003-06-07 04:16:38 edwards Exp $
 
 /*! @file
  * @brief Remote file support
  *
  * The routines here are only used in support of remote file IO
+ * If the compile time flag USE_REMOTE_QIO is not defined, these
+ * classes function as conventional streams writing/reading from
+ * local (on node) files.
  */
 
-// #include <cstdio>
 #include <iostream>
 
 #include <unistd.h>
@@ -18,18 +20,50 @@
 
 #include "qdp_filebuf.h"
 
-extern "C"
-{
-  FILE *qfopen(const char *pathname, const char *type);
-}
-
-
 namespace QDPUtil
 {
 
 typedef std::char_traits<char>::int_type int_type;
 
-//-----------------------------------------
+
+//-------------------------------------------------------------
+#if defined(USE_REMOTE_QIO)
+extern "C"
+{
+  int qio_init(const char *node, int rtiP0);
+  void qio_shutdown();
+  FILE *qfopen(const char *pathname, const char *type);
+}
+
+void RemoteFileInit(const char *remote_node, bool useP)
+{
+  qio_init(remote_node, (useP)? 1 : 0);
+}
+
+void RemoteFileShutdown()
+{
+  qio_shutdown();
+}
+
+FILE* RemoteFileOpen(const char* filename, const char *mode)
+{
+  return qfopen(filename, mode);
+}
+
+#else  // ! defined(USE_REMOTE_QIO)
+
+void RemoteFileInit(const char *remote_node, bool useP) {}
+
+void RemoteFileShutdown() {}
+
+FILE* RemoteFileOpen(const char *path, const char *mode)
+{
+  return fopen(path, mode);
+}
+#endif
+
+
+//-------------------------------------------------------------
 // Remote output file streambuf
 RemoteOutputFileBuf::RemoteOutputFileBuf()
 {
@@ -37,7 +71,7 @@ RemoteOutputFileBuf::RemoteOutputFileBuf()
   iop = false;         // set file status
 }
 
-void RemoteOutputFileBuf::open(const char *p)
+void RemoteOutputFileBuf::open(const char *p, std::ios_base::openmode mode)
 {
   if (is_open())
   {
@@ -45,7 +79,7 @@ void RemoteOutputFileBuf::open(const char *p)
     return;
   }
 
-  if ((f = qfopen(p, "wb")) != NULL)
+  if ((f = RemoteFileOpen(p, "wb")) != NULL)
     iop = true;
 
   if (! iop)
@@ -99,27 +133,23 @@ RemoteOutputFileBuf::xsputn (const char* s,
 //
 RemoteInputFileBuf::RemoteInputFileBuf()
 {
+  f   = NULL;
   iop = false;        // set file status
 
-  init();
-}
-
-void RemoteInputFileBuf::init()
-{
   setg (buffer+4,     // beginning of putback area
 	buffer+4,     // read position
 	buffer+4);    // end position
 }
 
-void RemoteInputFileBuf::open(const char *p)
+void RemoteInputFileBuf::open(const char *p, std::ios_base::openmode mode)
 {
   if (is_open()) 
     std::cerr << "Buf already open: error opening" << p << std::endl;
 
-  if ((f = qfopen(p,"rb")) != NULL)
+  if ((f = RemoteFileOpen(p,"r")) != NULL)
     iop = true;
 
-  if (f == NULL)
+  if (! iop)
     std::cerr << "Serial: open: error opening file  " << p << std::endl;
 }
 
@@ -138,14 +168,10 @@ RemoteInputFileBuf::~RemoteInputFileBuf() {close();}
 
 int_type RemoteInputFileBuf::underflow()
 {
-  std::cerr << "enter underflow" << std::endl;
-
   // is read position before end of buffer?
   if (gptr() < egptr()) {
     return traits_type::to_int_type(*gptr());
   }
-
-  std::cerr << "here a" << std::endl;
 
   /* process size of putback area
    * - use number of characters read
@@ -156,8 +182,6 @@ int_type RemoteInputFileBuf::underflow()
     numPutback = 4;
   }
 
-  std::cerr << "here b" << std::endl;
-
   /* copy up to four characters previously read into
    * the putback buffer (area of first four characters)
    */
@@ -167,21 +191,16 @@ int_type RemoteInputFileBuf::underflow()
   // read new characters
   int num;
   num = fread (buffer+4, sizeof(char), bufferSize-4, f);
-  std::cerr << "read " << num << "  chars" << std::endl;
   if (num <= 0) 
   {
     // ERROR or EOF
     return EOF;
   }
 
-  std::cerr << "reset" << std::endl;
-
   // reset buffer pointers
   setg (buffer+(4-numPutback),   // beginning of putback area
 	buffer+4,                // read position
 	buffer+4+num);           // end of buffer
-
-  std::cerr << "return " << *gptr() << std::endl;
 
   // return next character
   return traits_type::to_int_type(*gptr());
@@ -191,12 +210,12 @@ int_type RemoteInputFileBuf::underflow()
 
 
 //----------------------------------------------------------------
-void RemoteOutputFileStream::open(const char *f)
+void RemoteOutputFileStream::open(const char *f, std::ios_base::openmode mode)
 {
   if (ib->is_open()) 
     std::cerr << "Stream already open: error opening: " << f << std::endl;
 
-  ib->open(f);
+  ib->open(f,mode);
 }
 
 bool RemoteOutputFileStream::is_open()
@@ -213,12 +232,12 @@ void RemoteOutputFileStream::close()
 
 
 //----------------------------------------------------------------
-void RemoteInputFileStream::open(const char *f)
+void RemoteInputFileStream::open(const char *f, std::ios_base::openmode mode)
 {
   if (ib->is_open()) 
     std::cerr << "Stream already open: error opening: " << f << std::endl;
 
-  ib->open(f);
+  ib->open(f,mode);
 }
 
 bool RemoteInputFileStream::is_open()
