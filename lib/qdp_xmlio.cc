@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.5 2003-05-22 19:02:03 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.6 2003-05-22 20:41:47 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -323,6 +323,7 @@ XMLWriter& operator<<(XMLWriter& xml, const XMLReader& d)
   ostringstream os;
   const_cast<XMLReader&>(d).printRoot(os);
   xml.writeXML(os.str());
+  return xml;
 }
 
 // Write something from a XMLBufferWriter
@@ -336,6 +337,7 @@ void write(XMLWriter& xml, const std::string& s, const XMLBufferWriter& d)
 XMLWriter& operator<<(XMLWriter& xml, const XMLBufferWriter& d)
 {
   xml.writeXML(const_cast<XMLBufferWriter&>(d).printRoot());
+  return xml;
 }
 
 // Time to build a telephone book of basic primitives
