@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.19 2003-04-18 01:41:00 edwards Exp $
+// $Id: t_foo.cc,v 1.20 2003-04-18 20:05:06 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -74,7 +74,9 @@ int main(int argc, char *argv[])
   nml.open("foo.nml");
 
   Write(nml,nrow);
+#if defined(ARCH_PARSCALAR)
   write(nml,"logicalSize",Layout::logicalSize());
+#endif
 
 #if 0
   {
@@ -393,17 +395,23 @@ int main(int argc, char *argv[])
    XML_set(rec_xml.get(),"Dummy record xml");
 
    gaussian(a);
+   gaussian(b);
    nml << "Test of QDPSerialWriter - here first is a";
    Write(nml,a);
+   nml << "Test of QDPSerialWriter - here first is a";
+   Write(nml,b);
 
    cerr << "create serialwriter" << endl;
    QDPSerialWriter to(file_xml,"fred.dime");
    cerr << "write to" << endl;
    to.write(rec_xml,a);
    cerr << "end write" << endl;
+   to.write(rec_xml,b);
+   cerr << "end write" << endl;
 
    nml << "Test of QDPSerialWriter";
    Write(nml,a);
+   Write(nml,b);
  }
 #endif
 
@@ -415,15 +423,19 @@ int main(int argc, char *argv[])
    XMLMetaReader rec_xml;
 
    a = 0;
+   b = 0;
 
    cerr << "open serialreader" << endl;
    QDPSerialReader from(file_xml,"fred.dime");
    cerr << "read from" << endl;
    from.read(rec_xml,a);
    cerr << "end read" << endl;
+   from.read(rec_xml,b);
+   cerr << "end read" << endl;
 
-   nml << "Read a from QDPSerialReader";
+   nml << "Read a and b from QDPSerialReader";
    Write(nml,a);
+   Write(nml,b);
  }
 #endif
 
