@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_specializations.h,v 1.5 2003-09-10 16:58:45 edwards Exp $
+// $Id: qdp_specializations.h,v 1.6 2003-09-16 15:58:49 bjoo Exp $
 //
 // QDP data parallel interface
 //
@@ -260,6 +260,7 @@ struct CreateLeaf<OScalar<IntReal> >
 };
 
 
+#if BASE_PRECISION != 64
 template<>
 struct CreateLeaf<OScalar<IntDouble> >
 {
@@ -267,7 +268,7 @@ struct CreateLeaf<OScalar<IntDouble> >
   inline static
   Leaf_t make(const OScalar<IntDouble> &a) { return Leaf_t(a); }
 };
-
+#endif
 
 template<>
 struct CreateLeaf<OScalar<IntInteger> >

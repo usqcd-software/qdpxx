@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_specific.cc,v 1.7 2003-09-03 19:52:50 edwards Exp $
+// $Id: qdp_scalarsite_specific.cc,v 1.8 2003-09-16 15:58:49 bjoo Exp $
 
 /*! @file
  * @brief Scalar-like architecture specific routines
@@ -414,7 +414,13 @@ void read(NmlReader& nml, const string& s, Complex& d)
   if (Layout::primaryNode()) 
   {
     WordType<Complex>::Type_t  dre, dim;
+
+#if BASE_PRECISION == 32
     param_complex_float_array(&dre, &dim, get_current_nml_section(), s.c_str(), 0);
+#else 
+    param_complex_double_array(&dre, &dim, get_current_nml_section(), s.c_str(),
+0);
+#endif
 
     Real Dre(dre);
     Real Dim(dim);

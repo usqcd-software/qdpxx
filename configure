@@ -1744,13 +1744,13 @@ case ${ac_precision} in
 single)
 	{ echo "$as_me:$LINENO: Configuring for single precision  " >&5
 echo "$as_me: Configuring for single precision  " >&6;}
-	ac_header_precision=SINGLE_PRECISION
+	ac_header_precision=32
 
 	;;
 double)
 	{ echo "$as_me:$LINENO: Configuring for double precision  " >&5
 echo "$as_me: Configuring for double precision  " >&6;}
-	ac_header_precision=DOUBLE_PRECISION
+	ac_header_precision=64
 
 	;;
 *)

@@ -57,10 +57,14 @@ AUTOCONF = ${SHELL} /home/bj/Devel/SciDAC/packages/qdp++/config/missing --run au
 AUTOHEADER = ${SHELL} /home/bj/Devel/SciDAC/packages/qdp++/config/missing --run autoheader
 AUTOMAKE = ${SHELL} /home/bj/Devel/SciDAC/packages/qdp++/config/missing --run automake-1.7
 AWK = gawk
+BUILD_STAGGERED_EXAMPLES_FALSE = 
+BUILD_STAGGERED_EXAMPLES_TRUE = #
+BUILD_WILSON_EXAMPLES_FALSE = #
+BUILD_WILSON_EXAMPLES_TRUE = 
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -O2 -finline-limit=50000
+CXXFLAGS = -g -O2
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"qdp\" -DPACKAGE_TARNAME=\"qdp\" -DPACKAGE_VERSION=\"1.5\" -DPACKAGE_STRING=\"qdp\ 1.5\" -DPACKAGE_BUGREPORT=\"edwards@jlab.org\" -DPACKAGE=\"qdp\" -DVERSION=\"1.5\" 
 DEPDIR = .deps
@@ -101,10 +105,10 @@ QDP_USE_SCALARVEC_SSE2_FALSE =
 QDP_USE_SCALARVEC_SSE2_TRUE = #
 QDP_USE_SCALARVEC_SSE_FALSE = 
 QDP_USE_SCALARVEC_SSE_TRUE = #
-QDP_USE_SCALAR_SSE2_FALSE = #
-QDP_USE_SCALAR_SSE2_TRUE = 
-QDP_USE_SCALAR_SSE_FALSE = #
-QDP_USE_SCALAR_SSE_TRUE = 
+QDP_USE_SCALAR_SSE2_FALSE = 
+QDP_USE_SCALAR_SSE2_TRUE = #
+QDP_USE_SCALAR_SSE_FALSE = 
+QDP_USE_SCALAR_SSE_TRUE = #
 QMP_CFLAGS = -I/home/bj/Devel/SciDAC/install/qmp/include
 QMP_CONFIG = /home/bj/Devel/SciDAC/install/qmp/bin/qmp-config
 QMP_LDFLAGS = -L/home/bj/Devel/SciDAC/install/qmp/lib -L/usr/local/mpich-1.2.5/lib
@@ -120,9 +124,9 @@ ac_Ns = 4
 ac_ct_CXX = g++
 ac_ct_RANLIB = ranlib
 ac_ct_STRIP = 
-ac_header_precision = SINGLE_PRECISION
-ac_sse = 1
-ac_sse2 = 1
+ac_header_precision = 64
+ac_sse = 0
+ac_sse2 = 0
 am__fastdepCXX_FALSE = #
 am__fastdepCXX_TRUE = 
 am__include = include
@@ -140,7 +144,7 @@ libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
 mandir = ${prefix}/man
 oldincludedir = /usr/include
-prefix = /home/bj/Devel/SciDAC/install/qdp_parscalar_stag
+prefix = /usr/local
 program_transform_name = s,x,x,
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
@@ -156,7 +160,7 @@ SUFFIXES = .tex .dvi .ps .pdf
 #
 # Install time docdir
 #
-docdir = /home/bj/Devel/SciDAC/install/qdp_parscalar_stag/docs
+docdir = /usr/local/docs
 
 #
 # Documentation targets -- apart from doxygen, the rules above should be able

@@ -120,10 +120,10 @@ while test $# -gt 0; do
 
     --precision)
       case "${precision}" in 
-	SINGLE_PRECISION)
+	32)
 		echo "single"
 		;;
-	DOUBLE_PRECISION)
+	64)
 		echo "double"
 		;;
 	*)

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_defs.h,v 1.5 2003-09-01 15:10:53 bjoo Exp $
+// $Id: qdp_defs.h,v 1.6 2003-09-16 15:58:49 bjoo Exp $
 
 /*! \file
  * \brief Type definitions
@@ -28,7 +28,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 
 // Fix default precision
 #if ! defined(BASE_PRECISION)
-#define BASE_PRECISION SINGLE_PRECISION
+#define BASE_PRECISION 32
 #endif
 
 // These are fixed precision versions
@@ -38,12 +38,12 @@ QDP_BEGIN_NAMESPACE(QDP);
 #define LOGICAL   bool
 
 // Set the base floating precision
-#if BASE_PRECISION == SINGLE_PRECISION
+#if BASE_PRECISION == 32
 // Use single precision for base precision
 #define REAL      REAL32
 #define DOUBLE    REAL64
 
-#elif BASE_PRECISION == DOUBLE_PRECISION
+#elif BASE_PRECISION == 64
 // Use double precision for base precision
 #define REAL      REAL64
 #define DOUBLE    REAL64

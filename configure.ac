@@ -80,11 +80,11 @@ AC_ARG_ENABLE(precision,
 case ${ac_precision} in 
 single)
 	AC_MSG_NOTICE( [Configuring for single precision ] )
-	AC_SUBST(ac_header_precision, [SINGLE_PRECISION] )
+	AC_SUBST(ac_header_precision, [32] )
 	;;
 double)
 	AC_MSG_NOTICE( [Configuring for double precision ] )
-	AC_SUBST(ac_header_precision, [DOUBLE_PRECISION] )
+	AC_SUBST(ac_header_precision, [64] )
 	;;
 *)
 	AC_MSG_ERROR( [Unsupported value of precision. Check --enable-precision ] )

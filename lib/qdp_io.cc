@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.15 2003-08-10 02:27:11 edwards Exp $
+// $Id: qdp_io.cc,v 1.16 2003-09-16 15:58:49 bjoo Exp $
 //
 // QDP data parallel interface
 //
@@ -542,6 +542,8 @@ void read(NmlReader& nml, const string& s, Real& d)
   d = dd;
 }
 
+
+#if BASE_PRECISION != 64
 //! Function overload read of  Double
 void read(NmlReader& nml, const string& s, Double& d)
 {
@@ -549,6 +551,7 @@ void read(NmlReader& nml, const string& s, Double& d)
   read(nml,s,dd);
   d = dd;
 }
+#endif
 
 //! Function overload read of  Boolean
 void read(NmlReader& nml, const string& s, Boolean& d)
@@ -582,6 +585,7 @@ void read(NmlReader& nml, const string& s, multi1d<Real>& d)
   }
 }
 
+#if BASE_PRECISION != 64
 //! Function overload read of  multi1d<Double>
 void read(NmlReader& nml, const string& s, multi1d<Double>& d)
 {
@@ -593,6 +597,7 @@ void read(NmlReader& nml, const string& s, multi1d<Double>& d)
     d[i] = dd;
   }
 }
+#endif
 
 
 //-----------------------------------------
