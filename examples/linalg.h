@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linalg.h,v 1.6 2003-08-23 21:10:20 edwards Exp $
+// $Id: linalg.h,v 1.7 2004-07-27 05:42:28 edwards Exp $
 //
 // Include file for test suite
 

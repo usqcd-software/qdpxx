@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_profile.cc,v 1.1 2004-07-27 05:34:58 edwards Exp $
+// $Id: qdp_profile.cc,v 1.2 2004-07-27 05:41:44 edwards Exp $
 
 /*! @file
  * @brief Profiling info
