@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.9 2003-04-08 21:18:54 edwards Exp $
+ *  $Id: t_spectrum.cc,v 1.10 2003-04-30 21:08:14 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -118,12 +118,7 @@ int main(int argc, char **argv)
    */
 
   LatticePropagator quark_prop_1;
-
-  cerr << "Reading in lattice propagator...";
-
-  readSzinQprop(quark_prop_1, "propagator_0");
-
-  cerr << "...done" << endl;
+  gaussian(quark_prop_1);
 
   multi1d<int> t_source(Nd);	// Source coordinate of propagators
   t_source = 0;
