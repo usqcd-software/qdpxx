@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.8 2003-08-15 18:26:39 edwards Exp $
+// $Id: t_linalg.cc,v 1.9 2003-08-15 18:27:14 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
