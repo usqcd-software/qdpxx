@@ -1,4 +1,4 @@
-// $Id: t_exotic.cc,v 1.2 2003-09-10 02:05:33 edwards Exp $
+// $Id: t_exotic.cc,v 1.3 2003-09-10 02:21:25 edwards Exp $
 /*! \file
  *  \brief Test various exotic qdp routines
  */
@@ -7,6 +7,7 @@
 #include <cstdio>
 
 #include "qdp.h"
+#include "examples.h"
 
 using namespace QDP;
 
@@ -16,7 +17,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,4};
+  const int foo[] = {2,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -30,8 +31,18 @@ int main(int argc, char *argv[])
   Write(nml,nrow);
   pop(nml);
 
+
+  // Construct a random gauge transformation
+  LatticeColorMatrix g;
+
+  gaussian(g);
+  taproj(g);
+  expm12(g);
+  reunit(g);
+
+
+  // Try out colorContract
   {
-    // Try out colorContract
     LatticeColorMatrix a,b,c;
     gaussian(a);
     gaussian(b);
@@ -43,6 +54,17 @@ int main(int argc, char *argv[])
     Write(nml,lc1);
     pop(nml);
    
+    // Do a random gauge transformation
+    LatticeColorMatrix tmp;
+    tmp = g * a * adj(g);  a = tmp;
+    tmp = g * b * adj(g);  b = tmp;
+    tmp = g * c * adj(g);  c = tmp;
+
+    // Try colorcontract again
+    LatticeComplex lc2 = colorContract(a,b,c);
+    push(nml,"color_contract_gauge_transf");
+    Write(nml,lc2);
+    pop(nml);
   }
 
   nml.flush();
