@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_forward.h,v 1.6 2004-07-02 19:24:34 edwards Exp $
+// $Id: qdp_forward.h,v 1.7 2004-07-27 05:27:33 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -39,7 +39,6 @@ template <class T, int N> class PColorVector;
 template <class T, int N> class PSpinVector;
 template <class T, int N> class PColorMatrix;
 template <class T, int N> class PSpinMatrix;
-template <class T, int N> class PDWVector;
 template <class T> class PSeed;
 
 template<int N> class GammaType;
@@ -73,6 +72,9 @@ template<class T> struct WordType;
 
 // Empty leaf functor tag
 struct ElemLeaf;
+
+// Empty print tag
+struct PrintTag;
 
 // Used for nearest neighbor shift (a map)
 class ArrayBiDirectionalMap;
