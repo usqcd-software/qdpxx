@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.2 2004-03-21 23:02:03 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.3 2004-03-21 23:29:34 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -28,7 +28,7 @@ typedef RComplex<PScalar<float> >  RComplexFloat;
 #include "scalarsite_qcdoc/qcdoc_mult_an.h"
 #include "scalarsite_generic/generic_mult_na.h"
 #include "scalarsite_generic/generic_mult_aa.h"
-#include "calarsite_generic/generic_mat_vec.h"
+#include "scalarsite_generic/generic_mat_vec.h"
 #include "scalarsite_generic/generic_adj_mat_vec.h"
 #include "scalarsite_generic/generic_addvec.h"
 
