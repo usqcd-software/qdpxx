@@ -388,11 +388,6 @@ fi
 
 
 
-dnl Support for memory debugging with DMALLOC
-AM_WITH_DMALLOC
-
-
-
 dnl
 dnl
 dnl Now have all the options... Do some configuration 
