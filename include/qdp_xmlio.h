@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.17 2003-08-25 10:58:25 bjoo Exp $
+// $Id: qdp_xmlio.h,v 1.18 2003-08-25 12:11:22 bjoo Exp $
 
 /*! @file
  * @brief XML IO support
@@ -75,6 +75,28 @@ public:
         
   //! Count the number of occurances from the xpath query
   int count(const std::string& xpath);
+
+
+  //! setCurrentXPath -- sets XPath context to current xpath
+  //  passes on the otherwise protected function from BasicXPathReader
+  //  for user defined types later on.
+  void setCurrentXPath(const std::string& xpath) { 
+    BasicXPathReader::setCurrentXPath(xpath);
+  }
+
+  //! getCurrentContextNode -- Gets a pointer to the current context node
+  //  in the XPATH Context. Passes Up otherwise protected function from 
+  // BasicXPathreader 
+  xmlNodePtr getCurrentContextNode(void) { 
+    return BasicXPathReader::getCurrentContextNode();
+  }
+
+  //! setCurrentContextNode -- Sets the current context node to be 
+  // new context node. Passes up otherwise protected function from 
+  // BasicXPathReader
+  void setCurrentContextNode(xmlNodePtr new_context_node) {
+    BasicXPathReader::setCurrentContextNode(new_context_node);
+  }
 
 protected:
   // The universal data-reader. All the read functions call this
