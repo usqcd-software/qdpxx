@@ -1,5 +1,9 @@
 10/29/2004 -- Robert Edwards
 
+	Version 1.10.5. Changed QIO to (again) use optimized QMP_gigE calls
+
+10/29/2004 -- Robert Edwards
+
 	Version 1.10.4. Bug fix. Fix free'ing of msghandles in parscalar
         and parscalarvec per the new QMP-2 specification.
 
