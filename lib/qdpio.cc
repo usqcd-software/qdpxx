@@ -1,4 +1,4 @@
-// $Id: qdpio.cc,v 1.6 2003-04-30 21:09:48 edwards Exp $
+// $Id: qdpio.cc,v 1.7 2003-05-08 03:32:57 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -67,7 +67,7 @@ void QDPSerialReader::open(XMLMetaReader& xml, const std::string& p)
   layout->this_node = Layout::nodeNumber(); 
 
   if ((qio_in = QIO_open_read(xml.get(), p.c_str(), QIO_SERIAL, layout)) == NULL)
-    QDP_error_exit("QDPSerial::Reader: failed to open file %s",p);
+    QDP_error_exit("QDPSerial::Reader: failed to open file %s",p.c_str());
 
   delete layout;
 
@@ -97,7 +97,10 @@ QDPSerialReader::~QDPSerialReader() {close();}
 //! text writer support
 QDPSerialWriter::QDPSerialWriter() {iop=false;}
 
-QDPSerialWriter::QDPSerialWriter(const XMLMetaWriter& xml, const std::string& p) {open(xml,p);}
+QDPSerialWriter::QDPSerialWriter(const XMLMetaWriter& xml, const std::string& p) 
+{
+  open(xml,p);
+}
 
 void QDPSerialWriter::open(const XMLMetaWriter& xml, const std::string& p) 
 {
@@ -115,7 +118,7 @@ void QDPSerialWriter::open(const XMLMetaWriter& xml, const std::string& p)
 
   if ((qio_out = QIO_open_write(xml.get(), p.c_str(), QIO_SERIAL, QIO_LEX_ORDER, QIO_CREATE, 
 				layout)) == NULL)
-    QDP_error_exit("QDPSerial::Writer: failed to open file %s",p);
+    QDP_error_exit("QDPSerial::Writer: failed to open file %s",p.c_str());
 
   delete layout;
 
