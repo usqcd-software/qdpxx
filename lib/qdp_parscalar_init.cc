@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.6 2003-10-09 18:27:40 edwards Exp $
+// $Id: qdp_parscalar_init.cc,v 1.7 2003-11-05 17:47:37 edwards Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -101,18 +101,30 @@ void QDP_initialize(int *argc, char ***argv)
 
   QMP_verbose (QMP_verboseP);
 
-//  QDP_info("Now initialize QMP");
+#if QDP_DEBUG >= 1
+  // Print command line args
+  for (int i=0; i<*argc; i++) 
+    QDP_info("QDP_init: arg[%d] = XX%sXX",i,(*argv)[i]);
+#endif
+
+#if QDP_DEBUG >= 1
+  QDP_info("Now initialize QMP");
+#endif
 
   if (QMP_init_msg_passing(argc, argv, QMP_SMP_ONE_ADDRESS) != QMP_SUCCESS)
     QDP_error_exit("QDP_initialize failed");
 
-//  QDP_info("Some layout init");
+#if QDP_DEBUG >= 1
+  QDP_info("Some layout init");
+#endif
 
   Layout::init();   // setup extremely basic functionality in Layout
 
   isInit = true;
 
-//  QDP_info("Init qio");
+#if QDP_DEBUG >= 1
+  QDP_info("Init qio");
+#endif
 
   // initialize remote file service (QIO)
   bool use_qio = (rtiP != 0) ? true : false;
