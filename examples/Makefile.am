@@ -6,14 +6,17 @@
 INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
            -I@top_srcdir@/other_libs/nml \
            -I@top_srcdir@/other_libs/qio/include \
-           -I@top_srcdir@/other_libs/qio/other_libs/c-dime/include
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QMP_CFLAGS@
+           -I@top_srcdir@/other_libs/qio/other_libs/c-dime/include \
+           -I@top_srcdir@/other_libs/xpath_reader/include
+
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
 AM_LDFLAGS = -L@top_builddir@/lib \
              -L@top_builddir@/other_libs/nml \
              -L@top_builddir@/other_libs/qio/lib \
              -L@top_builddir@/other_libs/qio/other_libs/c-dime/lib \
+             -L@top_builddir@/other_libs/xpath_reader/lib \
              @LDFLAGS@ @QMP_LDFLAGS@
-LDADD = -lqdp -lnml -lqio -ldime @QMP_LIBS@ @LIBS@
+LDADD = -lqdp -lnml -lXPathReader -lxmlWriter -lqio -ldime @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@
 
 #
 # Local Headers
@@ -30,13 +33,14 @@ VPATH+=@top_srcdir@/examples
 # The programs to build
 # 
 check_PROGRAMS= t_skeleton t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo \
-      t_nml
+      t_nml t_xml
 
 #
 # The program and its dependencies
 t_skeleton_SOURCES = t_skeleton.cc
 t_foo_SOURCES = t_foo.cc $(HDRS)
 t_nml_SOURCES = t_nml.cc $(HDRS)
+t_xml_SOURCES = t_xml.cc $(HDRS)
 t_io_SOURCES = t_io.cc $(HDRS)
 t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)
 t_mesplq_SOURCES = t_mesplq.cc mesplq.cc reunit.cc $(HDRS)
