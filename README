@@ -1,4 +1,4 @@
-This implementation has been developed under gcc-3.X.
+This implementation has been developed under gcc-3.2.
 It is known (for simple reasons) not to compile under
 gcc-2.X . The problem parts could easily be changed,
 but I can't be bothered at the moment.
