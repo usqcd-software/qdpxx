@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.25 2003-08-14 03:53:34 edwards Exp $
+// $Id: qdp.h,v 1.26 2003-08-20 01:24:19 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -43,8 +43,8 @@
 #define QDP_ALIGN8   __attribute__ ((aligned (8)))
 #define QDP_ALIGN16  __attribute__ ((aligned (16)))
 #define QDP_INLINE   __attribute__ ((always_inline))
-#define QDP_CONST    __attribute__ ((const))
-#define QDP_CINLINE  __attribute__ ((always_inline,const))
+#define QDP_CONST    __attribute__ ((const,pure))
+#define QDP_CINLINE  __attribute__ ((always_inline,const,pure))
 #endif
 
 
@@ -150,6 +150,18 @@ QDP_END_NAMESPACE();
 #if QDP_USE_SSE == 1
 #include "qdp_scalarsite_sse.h"
 #endif
+
+#elif defined(ARCH_SCALARVEC)
+// Architectural specific code to a single node/single proc box 
+// with vector extension
+#warning "Using scalar architecture with vector extensions"
+#include "qdp_scalarvec_specific.h"
+
+#elif defined(ARCH_PARSCALARVEC)
+// Architectural specific code to a parallel/single proc box
+// with vector extension
+#warning "Using parallel scalar architecture with vector extensions"
+#include "qdp_parscalarvec_specific.h"
 
 #else
 #error "Unknown architecture ARCH"
