@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.8 2003-09-02 20:18:44 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.9 2003-09-03 01:29:24 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -492,6 +492,9 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
     }
   }
 
+  // Do a global sum on the result
+  Internal::globalSum(d);
+  
   return d;
 }
 
@@ -521,6 +524,9 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const OrderedSubset& s)
     d.elem() += sum(tmp.elem());    // sum as well the ILattice part
   }
 
+  // Do a global sum on the result
+  Internal::globalSum(d);
+  
   return d;
 }
 
