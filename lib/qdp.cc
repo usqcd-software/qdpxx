@@ -1,4 +1,4 @@
-// $Id: qdp.cc,v 1.6 2002-12-05 21:27:10 edwards Exp $
+// $Id: qdp.cc,v 1.7 2003-01-21 21:23:57 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -51,10 +51,10 @@ su2Extract(const LatticeColorMatrix& source,
     QDP_error_exit("Trouble with SU2 subgroup index");
 
   /* Compute the b(k) of A_SU(2) = b0 + i sum_k bk sigma_k */ 
-  r[0](s) = real(peekColor(source,i1,i1)) + real(peekColor(source,i2,i2));
-  r[1](s) = imag(peekColor(source,i1,i2)) + imag(peekColor(source,i2,i1));
-  r[2](s) = real(peekColor(source,i1,i2)) - real(peekColor(source,i2,i1));
-  r[3](s) = imag(peekColor(source,i1,i1)) - imag(peekColor(source,i2,i2));
+  r[0][s] = real(peekColor(source,i1,i1)) + real(peekColor(source,i2,i2));
+  r[1][s] = imag(peekColor(source,i1,i2)) + imag(peekColor(source,i2,i1));
+  r[2][s] = real(peekColor(source,i1,i2)) - real(peekColor(source,i2,i1));
+  r[3][s] = imag(peekColor(source,i1,i1)) - imag(peekColor(source,i2,i2));
 
   return r;
 }
@@ -108,12 +108,12 @@ sunFill(const multi1d<LatticeReal> r,
    * Insert the b(k) of A_SU(2) = b0 + i sum_k bk sigma_k 
    * back into the SU(N) matrix
    */ 
-  dest(s) = 1.0;
+  dest[s] = 1.0;
 
-  pokeColor(dest(s), cmplx( r[0], r[3]), i1, i1);
-  pokeColor(dest(s), cmplx( r[2], r[1]), i1, i2);
-  pokeColor(dest(s), cmplx(-r[2], r[1]), i2, i1);
-  pokeColor(dest(s), cmplx( r[0],-r[3]), i2, i2);
+  pokeColor(dest[s], cmplx( r[0], r[3]), i1, i1);
+  pokeColor(dest[s], cmplx( r[2], r[1]), i1, i2);
+  pokeColor(dest[s], cmplx(-r[2], r[1]), i2, i1);
+  pokeColor(dest[s], cmplx( r[0],-r[3]), i2, i2);
 
   return dest;
 }
