@@ -1,5 +1,10 @@
 05/22/2003 -- Robert Edwards
 
+	Version 1.3.1 tweaked qdp_primvector.h in localInnerProduct to make intel compiler
+        happy.
+
+05/22/2003 -- Robert Edwards
+
 	Version 1.3.0 pre-release. Added XML support. Changed QIO
         support.
 
