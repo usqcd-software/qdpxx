@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.16 2003-09-16 15:58:49 bjoo Exp $
+// $Id: qdp_io.cc,v 1.17 2003-09-23 16:21:14 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -534,24 +534,21 @@ void read(NmlReader& nml, const string& s, Integer& d)
   d = dd;
 }
 
-//! Function overload read of  Real
-void read(NmlReader& nml, const string& s, Real& d)
+//! Function overload read of  Real32
+void read(NmlReader& nml, const string& s, Real32& d)
 {
-  WordType<Real>::Type_t  dd;
+  WordType<Real32>::Type_t  dd;
   read(nml,s,dd);
   d = dd;
 }
 
-
-#if BASE_PRECISION != 64
-//! Function overload read of  Double
-void read(NmlReader& nml, const string& s, Double& d)
+//! Function overload read of  Real64
+void read(NmlReader& nml, const string& s, Real64& d)
 {
-  WordType<Double>::Type_t  dd;
+  WordType<Real64>::Type_t  dd;
   read(nml,s,dd);
   d = dd;
 }
-#endif
 
 //! Function overload read of  Boolean
 void read(NmlReader& nml, const string& s, Boolean& d)
@@ -573,10 +570,10 @@ void read(NmlReader& nml, const string& s, multi1d<Integer>& d)
   }
 }
 
-//! Function overload read of  multi1d<Real>
-void read(NmlReader& nml, const string& s, multi1d<Real>& d)
+//! Function overload read of  multi1d<Real32>
+void read(NmlReader& nml, const string& s, multi1d<Real32>& d)
 {
-  WordType<Real>::Type_t  dd;
+  WordType<Real32>::Type_t  dd;
 
   for(int i=0; i < d.size(); ++i)
   {
@@ -585,11 +582,10 @@ void read(NmlReader& nml, const string& s, multi1d<Real>& d)
   }
 }
 
-#if BASE_PRECISION != 64
-//! Function overload read of  multi1d<Double>
-void read(NmlReader& nml, const string& s, multi1d<Double>& d)
+//! Function overload read of  multi1d<Real64>
+void read(NmlReader& nml, const string& s, multi1d<Real64>& d)
 {
-  WordType<Double>::Type_t  dd;
+  WordType<Real64>::Type_t  dd;
 
   for(int i=0; i < d.size(); ++i)
   {
@@ -597,7 +593,7 @@ void read(NmlReader& nml, const string& s, multi1d<Double>& d)
     d[i] = dd;
   }
 }
-#endif
+
 
 
 //-----------------------------------------
