@@ -3,6 +3,9 @@
 	Version 1.2.1 added push/pop to NmlReader/Writer members. Keep
         a push/pop count. Improved regexp for reals in NmlReader.
 
+        Removed check of various std-headers in qio & c-dime. Causing
+        problems with malloc on IBM's.
+
 04/21/2003 -- Robert Edwards
 
 	Version 1.2.0 now have support for namelist reading and QIO. Still missing
