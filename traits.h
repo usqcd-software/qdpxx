@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: traits.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+// $Id: traits.h,v 1.5 2002-10-16 00:42:38 edwards Exp $
 
 /*! @file
  * @brief Traits classes
@@ -15,7 +15,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 // etc.) on QDPTypes
 //-----------------------------------------------------------------------------
 
-// Find the underlying word type of a field
+//! Find the underlying word type of a field
 template<class T>
 struct WordType
 {
@@ -27,30 +27,30 @@ struct WordType
 // Constructors for simple word types
 //-----------------------------------------------------------------------------
 
-// Construct simple word type. Default behavior is empty
+//! Construct simple word type. Default behavior is empty
 template<class T>
 struct SimpleScalar {};
 
 
-// Construct simple word type used at some level within primitives
+//! Construct simple word type used at some level within primitives
 template<class T>
 struct InternalScalar {};
 
 
-// Construct simple word type used at some level within primitives
+//! Construct simple word type used at some level within primitives
 template<class T>
 struct RealScalar {};
 
 
-// Construct primitive type of input but always RScalar complex type
+//! Construct primitive type of input but always RScalar complex type
 template<class T>
 struct NoComplex {};
 
 
-// Simple zero tag
+//! Simple zero tag
 struct Zero {};
 
-// Put zero in some unnamed space
+//! Put zero in some unnamed space
 namespace {
 Zero zero;
 }

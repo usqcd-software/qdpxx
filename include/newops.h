@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: newops.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+// $Id: newops.h,v 1.5 2002-10-16 00:41:17 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -159,10 +159,8 @@ struct LeafFunctor<GammaType<N>, EvalLeaf1>
 // Additional operators
 //-----------------------------------------------------------------------------
 
-/*! @addtogroup group1 */
-/*! @{ */
- 
-// GammaConst * QDPType
+//! GammaConst * QDPType
+/*! @ingroup group1 */
 template<int N,int m,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpGammaConstMultiply,
   typename CreateLeaf<GammaConst<N,m> >::Leaf_t,
@@ -179,7 +177,7 @@ operator*(const GammaConst<N,m> & l,const QDPType<T2,C2> & r)
     CreateLeaf<QDPType<T2,C2> >::make(r)));
 }
 
-// GammaConst * QDPType
+//! GammaConst * QDPExpr
 template<int N,int m,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpGammaConstMultiply,
   typename CreateLeaf<GammaConst<N,m> >::Leaf_t,
@@ -196,7 +194,8 @@ operator*(const GammaConst<N,m> & l,const QDPExpr<T2,C2> & r)
     CreateLeaf<QDPExpr<T2,C2> >::make(r)));
 }
 
-// QDPType * GammaConst
+//! QDPType * GammaConst
+/*! @ingroup group1 */
 template<class T1,class C1,int N,int m>
 inline typename MakeReturn<BinaryNode<OpMultiplyGammaConst,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -213,7 +212,7 @@ operator*(const QDPType<T1,C1> & l,const GammaConst<N,m> & r)
     CreateLeaf<GammaConst<N,m> >::make(r)));
 }
 
-// QDPType * GammaConst
+//! QDPExpr * GammaConst
 template<class T1,class C1,int N,int m>
 inline typename MakeReturn<BinaryNode<OpMultiplyGammaConst,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
@@ -231,7 +230,8 @@ operator*(const QDPExpr<T1,C1> & l,const GammaConst<N,m> & r)
 }
 
 
-// GammaType * QDPType
+//! GammaType * QDPType
+/*! @ingroup group1 */
 template<int N,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpGammaTypeMultiply,
   typename CreateLeaf<GammaType<N> >::Leaf_t,
@@ -248,7 +248,7 @@ operator*(const GammaType<N> & l,const QDPType<T2,C2> & r)
     CreateLeaf<QDPType<T2,C2> >::make(r)));
 }
 
-// GammaType * QDPType
+//! GammaType * QDPExpr
 template<int N,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpGammaTypeMultiply,
   typename CreateLeaf<GammaType<N> >::Leaf_t,
@@ -265,7 +265,8 @@ operator*(const GammaType<N> & l,const QDPExpr<T2,C2> & r)
     CreateLeaf<QDPExpr<T2,C2> >::make(r)));
 }
 
-// QDPType * GammaType
+//! QDPType * GammaType
+/*! @ingroup group1 */
 template<class T1,class C1,int N>
 inline typename MakeReturn<BinaryNode<OpMultiplyGammaType,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -282,7 +283,7 @@ operator*(const QDPType<T1,C1> & l,const GammaType<N> & r)
     CreateLeaf<GammaType<N> >::make(r)));
 }
 
-// QDPType * GammaType
+//! QDPExpr * GammaType
 template<class T1,class C1,int N>
 inline typename MakeReturn<BinaryNode<OpMultiplyGammaType,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
@@ -298,7 +299,6 @@ operator*(const QDPExpr<T1,C1> & l,const GammaType<N> & r)
     CreateLeaf<QDPExpr<T1,C1> >::make(l),
     CreateLeaf<GammaType<N> >::make(r)));
 }
-/*! @} */ // end of group1
 
 
 // Explicit casts

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdpexpr.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+// $Id: qdpexpr.h,v 1.5 2002-10-16 00:42:04 edwards Exp $
 
 /*! @file
  * @brief Expression class for QDP
@@ -12,24 +12,24 @@ template<class T, class C>
 class QDPExpr
 {
 public:
-  // Type of the expression.
+  //! Type of the expression.
   typedef T Expression_t;
 
-  // Type of the container class
+  //! Type of the container class
   typedef C Container_t;
 
-  // Construct from an expression.
+  //! Construct from an expression.
   QDPExpr(const T& expr) : expr_m(expr)
   { }
 
-  // Accessor that returns the expression.
+  //! Accessor that returns the expression.
   const Expression_t& expression() const
   {
     return expr_m;
   }
 
 #if 0
-  // Conversion (evaluation) to QDPType
+  //! Conversion (evaluation) to QDPType
   operator C() const
   {
     return C(*this);
@@ -37,8 +37,10 @@ public:
 #endif
 
 private:
-  // Store the expression by value since it is a temporary produced
-  // by operator functions.
+  /*! 
+   * Store the expression by value since it is a temporary produced
+   * by operator functions.
+   */
 
   T expr_m;
 };
