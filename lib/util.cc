@@ -1,4 +1,4 @@
-// $Id: util.cc,v 1.3 2002-12-16 06:13:49 edwards Exp $
+// $Id: util.cc,v 1.4 2003-01-15 06:13:07 edwards Exp $
 //
 /*! 
  * @file
@@ -116,26 +116,25 @@ uniquify_list(const multi1d<int>& ll)
   // Find the unique source nodes
   while (ipos < ll.size())
   {
-    for(; ipos < ll.size(); ++ipos)
-      if (ll[ipos] != prev_node)
-	break;
+    int this_node = ll[ipos++];
 
-    int this_node = ll[ipos];
+    if (this_node != prev_node)
+    {
+      // Has this node occured before?
+      bool found = false;
+      for(int i=0; i < num; ++i)
+	if (d[i] == this_node)
+	{
+	  found = true;
+	  break;
+	}
 
-    // Has this node occured before?
-    bool found = false;
-    for(int i=0; i < num; ++i)
-      if (d[i] == prev_node)
-      {
-	found = true;
-	break;
-      }
+      // If this is the first time this value has occurred, enter it
+      if (! found)
+	d[num++] = this_node;
+    }
 
-    // If this is the first time this value has occurred, enter it
-    if (! found)
-      d[num++] = this_node;
-
-    ipos++;
+    prev_node = this_node;
   }
 
   // Copy into a compact size array
