@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.25 2003-10-09 18:28:55 edwards Exp $
+// $Id: qdp_outer.h,v 1.26 2003-10-09 19:58:33 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -151,6 +151,14 @@ ostream& operator<<(ostream& s, const OScalar<T>& d)
   return s << d.elem();
 }
 
+//! Text output
+template<class RHS, class T1>
+ostream& operator<<(ostream& s, const QDPExpr<RHS, OScalar<T1> >& l)
+{
+  typedef OScalar<T1> C1;
+  return s << C1(l);
+}
+
 //! Text input
 template<class T>
 TextReader& operator>>(TextReader& txt, OScalar<T>& d)
@@ -175,9 +183,17 @@ TextWriter& operator<<(TextWriter& txt, const OScalar<T>& d)
 
 //! Text output
 template<class T>
-StandardOutputStream& operator<<(StandardOutputStream& os, OScalar<T>& d)
+StandardOutputStream& operator<<(StandardOutputStream& s, const OScalar<T>& d)
 {
-  return os << d.elem();
+  return s << d.elem();
+}
+
+//! Text output
+template<class RHS, class T1>
+StandardOutputStream& operator<<(StandardOutputStream& s, const QDPExpr<RHS, OScalar<T1> >& l)
+{
+  typedef OScalar<T1> C1;
+  return s << C1(l);
 }
 
 //! Namelist output
