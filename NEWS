@@ -1,5 +1,10 @@
 10/15/2003 -- Robert Edwards
 
+	Version 1.6.3. New architecture and hopefully faster versions
+        of NERSC archive read/write routines.
+
+10/15/2003 -- Robert Edwards
+
 	Version 1.6.2. New read/write(Binary,Lattice,coord) routines that
         combine peekSite and read, and pokeSite with write. New NERSC
         Archive read/write functions with more header support.
