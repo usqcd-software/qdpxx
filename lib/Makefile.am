@@ -8,7 +8,7 @@ INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
 
 ## GTF: Using @QMP_CFLAGS@ instead of @QMP_CXXFLAGS@ here since QMP
 ## is written in C, not C++
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
+AM_CXXFLAGS = $(INCFLAGS) @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
 
 VPATH = @top_srcdir@
 VPATH += @top_srcdir@/lib

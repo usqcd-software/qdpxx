@@ -172,7 +172,7 @@ INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
            -I@top_srcdir@/other_libs/xpath_reader/include
 
 
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
+AM_CXXFLAGS = $(INCFLAGS) @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
 
 lib_LIBRARIES = libqdp.a
 
