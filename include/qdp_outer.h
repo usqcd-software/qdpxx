@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_outer.h,v 1.2 2003-05-23 04:45:53 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -179,8 +179,8 @@ inline
 BinaryWriter& write(BinaryWriter& bin, const OScalar<T>& d)
 {
   if (Layout::primaryNode()) 
-    bfwrite((void *)&(d.elem()), sizeof(typename WordType<T>::Type_t), 
-	    sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get());
+    QDPUtil::bfwrite((void *)&(d.elem()), sizeof(typename WordType<T>::Type_t), 
+		     sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get());
 
   return bin;
 }

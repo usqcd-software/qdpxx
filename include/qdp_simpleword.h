@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_simpleword.h,v 1.1 2003-05-22 20:06:28 edwards Exp $
+// $Id: qdp_simpleword.h,v 1.2 2003-05-23 04:45:53 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -8,6 +8,32 @@
 #include <cmath>
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+using std::abs;
+using std::div;
+using std::acos;
+using std::asin;
+using std::atan;
+using std::atan2;
+using std::ceil;
+using std::cos;
+using std::cosh;
+using std::exp;
+using std::fabs;
+using std::floor;
+using std::fmod;
+using std::frexp;
+using std::ldexp;
+using std::log;
+using std::log10;
+using std::modf;
+using std::pow;
+using std::sin;
+using std::sinh;
+using std::sqrt;
+using std::tan;
+using std::tanh;
+
 
 /*! \addtogroup simpleword Builtin word operations
  * \ingroup fiber

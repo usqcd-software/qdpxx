@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.2 2003-05-23 04:45:53 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1108,9 +1108,9 @@ BinaryWriter& write(BinaryWriter& bin, const OLattice<T>& d)
     int xsite2 = QMP_shift(site,(unsigned char*)(data.slice()),sizeof(T),0);
 
     if (Layout::primaryNode())
-      bfwrite((void *)(data.slice() + xsite2), 
-	      sizeof(typename WordType<T>::Type_t), 
-	      xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t), bin.get());
+      QDPUtil::bfwrite((void *)(data.slice() + xsite2), 
+		       sizeof(typename WordType<T>::Type_t), 
+		       xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t), bin.get());
   }
   return bin;
 }
@@ -1121,7 +1121,7 @@ template<class T>
 BinaryReader& read(BinaryReader& bin, T& d)
 {
   if (Layout::primaryNode()) 
-    if (bfread((void *)&d, sizeof(T), 1, bin.get()) != 1)
+    if (QDPUtil::bfread((void *)&d, sizeof(T), 1, bin.get()) != 1)
       QDP_error_exit("BinaryReader: failed to read");
 
   // Now broadcast back out to all nodes
@@ -1136,8 +1136,8 @@ template<class T>
 BinaryReader& read(BinaryReader& bin, OScalar<T>& d)
 {
   if (Layout::primaryNode()) 
-    bfread((void *)&(d.elem()), sizeof(typename WordType<T>::Type_t), 
-	   sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get()); 
+    QDPUtil::bfread((void *)&(d.elem()), sizeof(typename WordType<T>::Type_t), 
+		    sizeof(T) / sizeof(typename WordType<T>::Type_t), bin.get()); 
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
@@ -1158,9 +1158,9 @@ BinaryReader& read(BinaryReader& bin, OLattice<T>& d)
   for(int site=0, xsite2=0; site < Layout::vol(); site += xinc)
   {
     if (Layout::primaryNode())
-      bfread((void *)(data.slice() + xsite2),
-	     sizeof(typename WordType<T>::Type_t), 
-	     xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t), bin.get());
+      QDPUtil::bfread((void *)(data.slice() + xsite2),
+		      sizeof(typename WordType<T>::Type_t), 
+		      xinc*sizeof(T)/sizeof(typename WordType<T>::Type_t), bin.get());
 
     xsite2 = QMP_shift((site + xinc) % Layout::vol(),
 		       (unsigned char*)(data.slice()), sizeof(T), xinc);

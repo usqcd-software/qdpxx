@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_io.h,v 1.2 2003-05-23 04:45:53 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -11,13 +11,17 @@
 
 #include "qcd-nml.h"
 
+namespace QDPUtil
+{
+  // Useful prototypes
+  size_t bfread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+  size_t bfwrite(void *ptr, size_t size, size_t nmemb, FILE *stream);
+}
+
+
 QDP_BEGIN_NAMESPACE(QDP);
 
 using std::string;
-
-// Useful prototypes
-size_t bfread(void *ptr, size_t size, size_t nmemb, FILE *stream);
-size_t bfwrite(void *ptr, size_t size, size_t nmemb, FILE *stream);
 
 
 /*! @defgroup io IO

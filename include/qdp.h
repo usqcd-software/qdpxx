@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.18 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp.h,v 1.19 2003-05-23 04:45:53 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -57,19 +57,15 @@ using std::ostream;
 #define BACKWARD -1
 
 
-// HACK to make class names shorter
-// Definitely do not want this in production
-#define QDP std
-
-#define QDP_NO_NAMESPACE
+#undef QDP_NO_NAMESPACE
 
 #if defined(QDP_NO_NAMESPACE)
 #define QDP_BEGIN_NAMESPACE(a)
 #define QDP_END_NAMESPACE()
 
 #else // ! defined(QDP_NO_NAMESPACE)
-#define BEGIN_NAMESPACE(a) namespace a {
-#define END_NAMESPACE(a) };
+#define QDP_BEGIN_NAMESPACE(a) namespace a {
+#define QDP_END_NAMESPACE(a) };
 #endif
 
 
@@ -122,7 +118,11 @@ QDP_END_NAMESPACE();
 #include "qdp_qdpexpr.h"
 #include "qdp_qdptype.h"
 #include "qdp_qdpsubtype.h"
+
+QDP_BEGIN_NAMESPACE(QDP);
 #include "QDPOperators.h"
+QDP_END_NAMESPACE();
+
 #include "qdp_newops.h"
 //#include "qdp_word.h"
 #include "qdp_simpleword.h"
