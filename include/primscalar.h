@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primscalar.h,v 1.15 2002-11-23 02:23:24 edwards Exp $
+// $Id: primscalar.h,v 1.16 2002-11-23 02:29:40 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -936,7 +936,8 @@ pokeSpin(PScalar<T1>& l, const PScalar<T2>& r, int row, int col)
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 
-void copymask(PScalar<T>& d, const PScalar<T1>& mask, const PScalar<T>& s1) 
+inline void 
+copymask(PScalar<T>& d, const PScalar<T1>& mask, const PScalar<T>& s1) 
 {
   copymask(d.elem(),mask.elem(),s1.elem());
 }

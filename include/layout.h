@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: layout.h,v 1.5 2002-11-04 04:42:43 edwards Exp $
+// $Id: layout.h,v 1.6 2002-11-23 02:29:40 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -80,7 +80,7 @@ namespace Layout
   //! The lexicographic site index from the corresponding linearized site
   int lexicoSiteIndex(int linearsite);
 
-};
+}
 
 //! Declaration of shift function object
 extern NearestNeighborMap  shift;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.15 2002-11-13 19:04:42 edwards Exp $
+// $Id: scalar_specific.h,v 1.16 2002-11-23 02:29:40 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -13,7 +13,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 // Layout stuff specific to a scalar architecture
 namespace Layout
 {
-};
+}
 
 
 //-----------------------------------------------------------------------------
@@ -114,7 +114,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 //-----------------------------------------------------------------------------
 //! dest = (mask) ? s1 : dest
 template<class T1, class T2> 
-void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
+void 
+copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
   OLattice<T2>& dest = d.field();
   const Subset& s = d.subset();
@@ -129,7 +130,8 @@ void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s
 
 //! dest = (mask) ? s1 : dest
 template<class T1, class T2> 
-void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
+void 
+copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
   for(int i=0; i < Layout::vol(); ++i) 
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
@@ -151,13 +153,14 @@ namespace RNG
   extern Seed ran_mult;
   extern Seed ran_mult_n;
   extern LatticeSeed *lattice_ran_mult;
-};
+}
 
 
 //! dest  = random  
 /*! This implementation is correct for no inner grid */
 template<class T>
-void random(OScalar<T>& d)
+void 
+random(OScalar<T>& d)
 {
   Seed seed = RNG::ran_seed;
   Seed skewed_seed = RNG::ran_seed * RNG::ran_mult;
@@ -170,7 +173,8 @@ void random(OScalar<T>& d)
 
 //! dest  = random    under a subset
 template<class T>
-void random(OSubLattice<T> dd)
+void 
+random(OSubLattice<T> dd)
 {
   OLattice<T>& d = dd.field();
   const Subset& s = dd.subset();
@@ -233,7 +237,6 @@ void gaussian(OLattice<T>& d)
 // Broadcast operations
 //! dest  = 0 
 template<class T> 
-inline
 void zero_rep(OLattice<T>& dest, const Subset& s) 
 {
   const int *tab = s.SiteTable()->slice();

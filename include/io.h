@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.9 2002-11-23 02:12:01 edwards Exp $
+// $Id: io.h,v 1.10 2002-11-23 02:29:40 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -349,6 +349,7 @@ private:
 
 //! Write a binary element
 template<class T>
+inline
 BinaryWriter& write(BinaryWriter& bin, const T& d)
 {
   if (Layout::primaryNode()) 

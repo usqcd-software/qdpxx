@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: forward.h,v 1.5 2002-11-04 04:37:06 edwards Exp $
+// $Id: forward.h,v 1.6 2002-11-23 02:29:40 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -20,7 +20,7 @@ class BinaryWriter;
 namespace RNG 
 {
 //  float sranf(Seed&, Seed&, const Seed&);
-};
+}
 
   
 // Inner
