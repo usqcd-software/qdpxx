@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.7 2003-01-14 04:45:37 edwards Exp $
+// $Id: parscalar_specific.h,v 1.8 2003-01-15 21:49:25 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -583,55 +583,120 @@ public:
   C1
   operator()(const QDPType<T1,C1> & l)
     {
-      QMP_TRACE("Map()");
+      QMP_info("Map()");
 
-      C1 d = zero;  // For the moment, zero it out to help debugging
+      C1 d;
 
-//      if (srcenodes_num.size() != 2)
+      if (offnodeP)
+      {
+	// Off-node communications required
+	QMP_info("Map: off-node communications required");
 
-      int dstnum = destnodes_num;
-      int srcnum = srcenodes_num;
-      T1 *send_buf = new T1[dstnum];  // QMP_allocate_aligned_memory(count)
-      T1 *recv_buf = new T1[srcnum];
+	// Eventually these declarations should move into d - the return object
+	typedef T1 * T1ptr;
+	T1 **dest = new T1ptr[Layout::subgridVol()];
+	QMP_msgmem_t msg[2];
+	QMP_msghandle_t mh_a[2], mh;
 
-      QMP_msgmem_t msg[2];
-      QMP_msghandle_t mh_a[2], mh;
-      QMP_status_t err;
-
-      QMP_info("QMP_sendrecv_wait: send = 0x%x  recv = 0x%x\n",send_buf,recv_buf);
-
-      msg[0]  = QMP_declare_msgmem(send_buf, dstnum*sizeof(T1));
-      msg[1]  = QMP_declare_msgmem(recv_buf, srcnum*sizeof(T1));
-      mh_a[0] = QMP_declare_send_to(msg[0], 0);
-      mh_a[1] = QMP_declare_receive_from(msg[1], 0);
-      mh      = QMP_declare_multiple(mh_a, 2);
-
-      // Launch the faces
-      if ((err = QMP_start(mh)) != QMP_SUCCESS)
-	QMP_error_exit(QMP_error_string(err));
-
-      // Do an internal copy
+	// For now, will assume there is only 1 destination node 
+	// and receive from only 1 node
+	if (srcenodes.size() != 1)
+	  QMP_error_exit("Map: for now only allow 1 destination node");
       
+	if (destnodes.size() != 1)
+	  QMP_error_exit("Map: for now only allow receives from 1 node");
+      
+	int dstnum = destnodes_num[0]*sizeof(T1);
+	int srcnum = srcenodes_num[0]*sizeof(T1);
+	T1 *send_buf = (T1 *)(QMP_allocate_aligned_memory(dstnum)); // packed data to send
+	T1 *recv_buf = (T1 *)(QMP_allocate_aligned_memory(srcnum)); // packed receive data
 
-      // Wait on the faces
-      if ((err = QMP_wait(mh)) != QMP_SUCCESS)
-	QMP_error_exit(QMP_error_string(err));
+	// Gather the face of data to send
+	// For now, use the all subset
+	const int my_node = Layout::nodeNumber();
+	for(int i=0, si=0, ri=0; i < Layout::subgridVol(); ++i) 
+	{
+	  if (dstnode[i] != my_node)
+	    send_buf[si++] = l.elem(i);
 
-      QMP_free_msghandle(mh_a[1]);
-      QMP_free_msghandle(mh_a[0]);
-      QMP_free_msghandle(mh);
-      QMP_free_msgmem(msg[1]);
-      QMP_free_msgmem(msg[0]);
+	  if (srcnode[i] != my_node)
+	  {
+	    QMP_info("Map_gather_send(olattice[%d],olattice[%d])",i,ri);
 
-      QMP_info("shift(QDPType,%d)\n",isign);
-      QMP_TRACE("exiting Map()");
+	    dest[i] = &(recv_buf[ri++]);
+	  }
+	  else
+	  {
+	    QMP_info("Map_gather_onnode(olattice[%d],olattice[%d])",i,soffsets[i]);
+
+	    dest[i] = &(const_cast<T1&>(l.elem(soffsets[i])));
+	  }
+	}
+
+	QMP_status_t err;
+
+	QMP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
+
+	msg[0]  = QMP_declare_msgmem(recv_buf, srcnum);
+	msg[1]  = QMP_declare_msgmem(send_buf, dstnum);
+	mh_a[0] = QMP_declare_receive_from(msg[0], srcenodes[0], 0);
+	mh_a[1] = QMP_declare_send_to(msg[1], destnodes[0], 0);
+	mh      = QMP_declare_multiple(mh_a, 2);
+
+	// Launch the faces
+	if ((err = QMP_start(mh)) != QMP_SUCCESS)
+	  QMP_error_exit(QMP_error_string(err));
+
+	// Wait on the faces
+	if ((err = QMP_wait(mh)) != QMP_SUCCESS)
+	  QMP_error_exit(QMP_error_string(err));
+
+	QMP_free_msghandle(mh_a[1]);
+	QMP_free_msghandle(mh_a[0]);
+	QMP_free_msghandle(mh);
+	QMP_free_msgmem(msg[1]);
+	QMP_free_msgmem(msg[0]);
+
+	// Scatter the data into the destination
+	// Some of the data maybe in receive buffers
+	// For now, use the all subset
+	for(int i=0; i < Layout::subgridVol(); ++i) 
+	{
+	  QMP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
+	  d.elem(i) = *(dest[i]);
+	}
+
+	QMP_info("finished scatter");
+
+	// Cleanup
+	QMP_free_aligned_memory(recv_buf);
+	QMP_free_aligned_memory(send_buf);
+	delete dest;
+
+	QMP_info("finished cleanup");
+      }
+      else 
+      {
+	// No off-node communications - copy on node
+	QMP_info("Map: copy on node - no communications");
+
+	// For now, use the all subset
+	for(int i=0; i < Layout::subgridVol(); ++i) 
+	{
+	  QMP_info("Map(olattice[%d],olattice[%d])",i,soffsets[i]);
+	  d.elem(i) = l.elem(soffsets[i]);
+	}
+      }
+
+
+      QMP_info("exiting Map()");
 
       return d;
     }
 
 
   template<class T1,class C1>
-  QDPType<T1,C1>
+  C1
   operator()(const QDPExpr<T1,C1> & l)
     {
       // Implementation for now just evaluates expression and then does map
@@ -669,6 +734,9 @@ private:
 
   multi1d<int> srcenodes_num;
   multi1d<int> destnodes_num;
+
+  // Indicate off-node communications is needed;
+  bool offnodeP;
 };
 
 
