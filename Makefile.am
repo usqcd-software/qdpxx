@@ -32,7 +32,7 @@ doc-distclean:
 # All the sources that are somehow arch-specific
 # All the headers get into the dist by default
 # 
-ARCH_SOURCES = lib/scalar_specific.cc lib/parscalar_specific.cc
+ARCH_SOURCES = lib/qdp_scalar_specific.cc lib/qdp_parscalar_specific.cc
 
 #
 # Some things that we want in the distribution tarball 
