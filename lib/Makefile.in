@@ -121,6 +121,7 @@ prefix = @prefix@
 program_transform_name = @program_transform_name@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
+subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
@@ -134,7 +135,7 @@ HDRS = defs.h forward.h globalfuncs.h inner.h io.h layout.h multi.h \
        newops.h outer.h outersubtype.h params.h primcolormat.h \
        primcolorvec.h primgamma.h primitive.h primmatrix.h \
        primscalar.h primseed.h primspinmat.h primspinvec.h primvector.h \
-       proto.h qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdpsubtype.h \
+       qdp_util.h qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdpsubtype.h \
        qdptype.h random.h reality.h simpleword.h map.h \
        specializations.h subset.h traits.h word.h
 
