@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.10 2003-08-23 21:10:20 edwards Exp $
+// $Id: t_linalg.cc,v 1.11 2003-08-26 20:16:33 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
   tt = rescale * QDP_V_eq_M_times_V(lv2, a, lv1, icnt);
   cout << "time(V=M*V) = " << tt
        << " micro-secs/site/iteration" 
-       << " , " << 108 / tt << " Mflops" << endl;   // check the flop count
+       << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
 
 #if defined(TEST_OPS)
   // Test LatticeColorVector = LatticeColorMatrix * LatticeColorVector
@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
   tt = rescale * QDP_V_eq_Ma_times_V(lv2, a, lv1, icnt);
   cout << "time(V=adj(M)*V) = " << tt
        << " micro-secs/site/iteration" 
-       << " , " << 108 / tt << " Mflops" << endl;   // check the flop count
+       << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
 
 
 
