@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.h,v 1.2 2003-10-03 02:56:17 edwards Exp $
+// $Id: qdp_stdio.h,v 1.3 2003-10-09 17:07:58 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -33,14 +33,14 @@ public:
   //! Constructor
   StandardInputStream();
 
-  //! Constructor from a streambuf
-  StandardInputStream(std::streambuf* b);
-
   //! destructor
   ~StandardInputStream();
 
-  //! Redirect input stream
-  void rdbuf(std::streambuf* b);
+  //! Constructor from a stream
+  void init(std::istream *is);
+
+//  //! Redirect input stream
+//  void rdbuf(std::streambuf* b);
 
   //! Return true if some failure occurred in previous IO operation
   bool fail();
@@ -71,10 +71,14 @@ protected:
   StandardInputStream& readPrimitive(T& output);
 
   // Get the internal ostream
-  std::istream& getIstream() {return is;}
+  std::istream& getIstream() {return *is;}
+
+  //! Is the stream open?
+  bool is_open() {return open;}
 
 private:
-  std::istream is;
+  std::istream* is;
+  bool open;
 };
 
 
@@ -90,14 +94,13 @@ public:
   //! Constructor
   StandardOutputStream();
 
-  //! Constructor from a streambuf
-  StandardOutputStream(std::streambuf* b);
-
-  //! destructor
   ~StandardOutputStream();
 
-  //! Redirect output stream
-  void rdbuf(std::streambuf* b);
+  //! Constructor from a stream
+  void init(std::ostream *os);
+
+//  //! Redirect output stream
+//  void rdbuf(std::streambuf* b);
 
   //! Flush the buffer
   void flush();
@@ -106,8 +109,8 @@ public:
   bool fail();
 
   // Overloaded output functions
-  StandardOutputStream& operator<<(std::string& output);
-  StandardOutputStream& operator<<(char* output);
+  StandardOutputStream& operator<<(const std::string& output);
+  StandardOutputStream& operator<<(const char* output);
   StandardOutputStream& operator<<(char output);
   StandardOutputStream& operator<<(int output);
   StandardOutputStream& operator<<(unsigned int output);
@@ -132,10 +135,14 @@ protected:
   StandardOutputStream& writePrimitive(T output);
 
   // Get the internal ostream
-  std::ostream& getOstream() {return os;}
+  std::ostream& getOstream() {return *os;}
+
+  //! Is the stream open?
+  bool is_open() {return open;}
 
 private:
-  std::ostream os;
+  std::ostream* os;
+  bool open;
 };
 
 
