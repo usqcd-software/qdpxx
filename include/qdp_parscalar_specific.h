@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.11 2003-07-17 01:46:03 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.12 2003-07-26 04:05:06 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -651,14 +651,18 @@ public:
   OLattice<T1>
   operator()(const OLattice<T1> & l)
     {
-//    QDP_info("Map()");
+#if QDP_DEBUG >= 3
+      QDP_info("Map()");
+#endif
 
       OLattice<T1> d;
 
       if (offnodeP)
       {
 	// Off-node communications required
-//	QDP_info("Map: off-node communications required");
+#if QDP_DEBUG >= 3
+	QDP_info("Map: off-node communications required");
+#endif
 
 	// Eventually these declarations should move into d - the return object
 	typedef T1 * T1ptr;
@@ -666,6 +670,8 @@ public:
 	QMP_msgmem_t msg[2];
 	QMP_msghandle_t mh_a[2], mh;
 
+#if 0
+// This test has been moved into Map::create.
 	// For now, will assume there is only 1 destination node 
 	// and receive from only 1 node
 	if (srcenodes.size() != 1)
@@ -673,37 +679,53 @@ public:
       
 	if (destnodes.size() != 1)
 	  QMP_error_exit("Map: for now only allow receives from 1 node");
-      
+#endif
+
 	int dstnum = destnodes_num[0]*sizeof(T1);
 	int srcnum = srcenodes_num[0]*sizeof(T1);
 	T1 *send_buf = (T1 *)(QMP_allocate_aligned_memory(dstnum)); // packed data to send
 	T1 *recv_buf = (T1 *)(QMP_allocate_aligned_memory(srcnum)); // packed receive data
 
+	const int my_node = Layout::nodeNumber();
+
 	// Gather the face of data to send
 	// For now, use the all subset
-	const int my_node = Layout::nodeNumber();
-	for(int i=0, si=0, ri=0; i < Layout::sitesOnNode(); ++i) 
+	for(int si=0; si < soffsets.size(); ++si) 
 	{
-	  if (dstnode[i] != my_node)
-	    send_buf[si++] = l.elem(i);
+#if QDP_DEBUG >= 3
+	  QDP_info("Map_scatter_send(buf[%d],olattice[%d])",si,soffsets[si]);
+#endif
 
+	  send_buf[si] = l.elem(soffsets[si]);
+	}
+
+	// Set the dest gather pointers
+	// For now, use the all subset
+	for(int i=0, ri=0; i < Layout::sitesOnNode(); ++i) 
+	{
 	  if (srcnode[i] != my_node)
 	  {
-//	    QDP_info("Map_gather_send(olattice[%d],olattice[%d])",i,ri);
+#if QDP_DEBUG >= 3
+	    QDP_info("Map_gather_recv(olattice[%d],recv[%d])",i,ri);
+#endif
 
 	    dest[i] = &(recv_buf[ri++]);
 	  }
 	  else
 	  {
-//	    QDP_info("Map_gather_onnode(olattice[%d],olattice[%d])",i,soffsets[i]);
+#if QDP_DEBUG >= 3
+	    QDP_info("Map_gather_onnode(olattice[%d],olattice[%d])",i,goffsets[i]);
+#endif
 
-	    dest[i] = &(const_cast<T1&>(l.elem(soffsets[i])));
+	    dest[i] = &(const_cast<T1&>(l.elem(goffsets[i])));
 	  }
 	}
 
 	QMP_status_t err;
 
-//	QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
+#if QDP_DEBUG >= 3
+	QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
+#endif
 
 	msg[0]  = QMP_declare_msgmem(recv_buf, srcnum);
 	msg[1]  = QMP_declare_msgmem(send_buf, dstnum);
@@ -711,19 +733,25 @@ public:
 	mh_a[1] = QMP_declare_send_to(msg[1], destnodes[0], 0);
 	mh      = QMP_declare_multiple(mh_a, 2);
 
-//	QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
+#if QDP_DEBUG >= 3
+	QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
+#endif
 
 	// Launch the faces
 	if ((err = QMP_start(mh)) != QMP_SUCCESS)
 	  QMP_error_exit(QMP_error_string(err));
 
-//	QDP_info("Map: calling wait");
+#if QDP_DEBUG >= 3
+	QDP_info("Map: calling wait");
+#endif
 
 	// Wait on the faces
 	if ((err = QMP_wait(mh)) != QMP_SUCCESS)
 	  QMP_error_exit(QMP_error_string(err));
 
-//	QDP_info("Map: calling free msgs");
+#if QDP_DEBUG >= 3
+	QDP_info("Map: calling free msgs");
+#endif
 
 	QMP_free_msghandle(mh_a[1]);
 	QMP_free_msghandle(mh_a[0]);
@@ -736,31 +764,41 @@ public:
 	// For now, use the all subset
 	for(int i=0; i < Layout::sitesOnNode(); ++i) 
 	{
-//	  QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
+#if QDP_DEBUG >= 3
+	  QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
+#endif
 	  d.elem(i) = *(dest[i]);
 	}
 
 	// Cleanup
 	QMP_free_aligned_memory(recv_buf);
 	QMP_free_aligned_memory(send_buf);
-	delete dest;
+	delete[] dest;
 
-//	QDP_info("finished cleanup");
+#if QDP_DEBUG >= 3
+	QDP_info("finished cleanup");
+#endif
       }
       else 
       {
 	// No off-node communications - copy on node
-//	QDP_info("Map: copy on node - no communications");
+#if QDP_DEBUG >= 3
+	QDP_info("Map: copy on node - no communications, try this");
+#endif
 
 	// For now, use the all subset
 	for(int i=0; i < Layout::sitesOnNode(); ++i) 
 	{
-//	  QDP_info("Map(olattice[%d],olattice[%d])",i,soffsets[i]);
-	  d.elem(i) = l.elem(soffsets[i]);
+#if QDP_DEBUG >= 3
+	  QDP_info("Map(olattice[%d],olattice[%d])",i,goffsets[i]);
+#endif
+	  d.elem(i) = l.elem(goffsets[i]);
 	}
       }
 
-//      QDP_info("exiting Map()");
+#if QDP_DEBUG >= 3
+      QDP_info("exiting Map()");
+#endif
 
       return d;
     }
@@ -802,7 +840,8 @@ public:
 
 public:
   //! Accessor to offsets
-  const multi1d<int>& offsets() const {return soffsets;}
+  const multi1d<int>& goffset() const {return goffsets;}
+  const multi1d<int>& soffset() const {return soffsets;}
 
 private:
   //! Hide copy constructor
@@ -815,8 +854,9 @@ private:
   //! Offset table used for communications. 
   /*! 
    * The direction is in the sense of the Map or Shift functions from QDP.
-   * soffsets(position) 
+   * goffsets(position) 
    */ 
+  multi1d<int> goffsets;
   multi1d<int> soffsets;
   multi1d<int> srcnode;
   multi1d<int> dstnode;
@@ -864,7 +904,9 @@ public:
   OLattice<T1>
   operator()(const OLattice<T1> & l, int dir)
     {
-//    QDP_info("ArrayMap(OLattice,%d)",dir);
+#if QDP_DEBUG >= 3
+      QDP_info("ArrayMap(OLattice,%d)",dir);
+#endif
 
       return mapsa[dir](l);
     }
@@ -873,7 +915,9 @@ public:
   OScalar<T1>
   operator()(const OScalar<T1> & l, int dir)
     {
-//    QDP_info("ArrayMap(OScalar,%d)",dir);
+#if QDP_DEBUG >= 3
+      QDP_info("ArrayMap(OScalar,%d)",dir);
+#endif
 
       return mapsa[dir](l);
     }
@@ -944,7 +988,9 @@ public:
   OLattice<T1>
   operator()(const OLattice<T1> & l, int isign)
     {
-//    QDP_info("BiDirectionalMap(OLattice,%d)",isign);
+#if QDP_DEBUG >= 3
+      QDP_info("BiDirectionalMap(OLattice,%d)",isign);
+#endif
 
       return bimaps[(isign+1)>>1](l);
     }
@@ -954,7 +1000,9 @@ public:
   OScalar<T1>
   operator()(const OScalar<T1> & l, int isign)
     {
-//    QDP_info("BiDirectionalMap(OScalar,%d)",isign);
+#if QDP_DEBUG >= 3
+      QDP_info("BiDirectionalMap(OScalar,%d)",isign);
+#endif
 
       return bimaps[(isign+1)>>1](l);
     }
@@ -1034,7 +1082,9 @@ public:
   OLattice<T1>
   operator()(const OLattice<T1> & l, int isign, int dir)
     {
-//    QDP_info("ArrayBiDirectionalMap(OLattice,%d,%d)",isign,dir);
+#if QDP_DEBUG >= 3
+      QDP_info("ArrayBiDirectionalMap(OLattice,%d,%d)",isign,dir);
+#endif
 
       return bimapsa((isign+1)>>1,dir)(l);
     }
@@ -1043,7 +1093,9 @@ public:
   OScalar<T1>
   operator()(const OScalar<T1> & l, int isign, int dir)
     {
-//    QDP_info("ArrayBiDirectionalMap(OScalar,%d,%d)",isign,dir);
+#if QDP_DEBUG >= 3
+      QDP_info("ArrayBiDirectionalMap(OScalar,%d,%d)",isign,dir);
+#endif
 
       return bimapsa((isign+1)>>1,dir)(l);
     }
