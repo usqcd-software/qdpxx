@@ -123,6 +123,7 @@ AC_ARG_WITH(qmp,
 case ${PARALLEL_ARCH} in
   scalar)
     AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_SCALAR)
+    AC_SUBST(ARCH_SITE, "scalarsite")
     AC_MSG_NOTICE([ Scalar Build! Not checking for QMP ])
     AC_SUBST(QMP_CFLAGS)
     AC_SUBST(QMP_LDFLAGS)
@@ -130,6 +131,7 @@ case ${PARALLEL_ARCH} in
     ;;
   scalarvec)
     AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_SCALARVEC)
+    AC_SUBST(ARCH_SITE, "scalarvecsite")
     AC_MSG_NOTICE([ Scalar with Vector extensions Build! Not checking for QMP ])
     AC_SUBST(QMP_CFLAGS)
     AC_SUBST(QMP_LDFLAGS)
@@ -137,6 +139,7 @@ case ${PARALLEL_ARCH} in
     ;;
   parscalar)
     AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_PARSCALAR)
+    AC_SUBST(ARCH_SITE, "scalarsite")
     AC_MSG_NOTICE([ Parscalar build! Checking for QMP ])
 
     if test "X${QMP_HOME}X" = "XX" ; then
@@ -161,6 +164,7 @@ case ${PARALLEL_ARCH} in
     ;;
   parscalarvec)
     AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_PARSCALARVEC)
+    AC_SUBST(ARCH_SITE, "scalarvecsite")
     AC_MSG_NOTICE([ Parscalar with Vector extensions build! Checking for QMP ])
 
     if test "X${QMP_HOME}X" = "XX" ; then
@@ -296,8 +300,11 @@ AM_CONDITIONAL(ARCH_PARSCALAR,    [test "X${PARALLEL_ARCH}X" = "XparscalarX"])
 AM_CONDITIONAL(ARCH_SCALARVEC,    [test "X${PARALLEL_ARCH}X" = "XscalarvecX"])
 AM_CONDITIONAL(ARCH_PARSCALARVEC, [test "X${PARALLEL_ARCH}X" = "XparscalarvecX"])
 
-AM_CONDITIONAL(QDP_USE_SSE, [test "X${ac_sse}X" = "X1X"])
-AM_CONDITIONAL(QDP_USE_SSE2, [test "X${ac_sse2}X" = "X1X"])
+AM_CONDITIONAL(QDP_USE_SCALAR_SSE, [test "X${ac_sse}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarsiteX"])
+AM_CONDITIONAL(QDP_USE_SCALAR_SSE2, [test "X${ac_sse2}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarsiteX"])
+
+AM_CONDITIONAL(QDP_USE_SCALARVEC_SSE, [test "X${ac_sse}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarvecsiteX"])
+AM_CONDITIONAL(QDP_USE_SCALARVEC_SSE2, [test "X${ac_sse2}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarvecsiteX"])
 
 ##################################
 # Check for programs to build docs
