@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.22 2003-09-02 01:38:59 edwards Exp $
+// $Id: qdp_outer.h,v 1.23 2003-09-02 20:17:07 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -640,13 +640,13 @@ struct TrinaryReturn<OLattice<T1>, OScalar<T2>, OScalar<T3>, Op> {
 
 // Specific OScalar cases
 // Global operations
-template<class T1, class T2 >
-struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnPeekSite> {
-  typedef OScalar<typename BinaryReturn<T1, T2, FnPeekSite>::Type_t>  Type_t;
+template<class T>
+struct UnaryReturn<OScalar<T>, FnPeekSite> {
+  typedef OScalar<typename UnaryReturn<T, FnPeekSite>::Type_t>  Type_t;
 };
 
 template<class T>
-struct UnaryReturn<OScalar<T>, FnSum > {
+struct UnaryReturn<OScalar<T>, FnSum> {
   typedef OScalar<typename UnaryReturn<T, FnSum>::Type_t>  Type_t;
 };
 
@@ -837,9 +837,9 @@ struct UnaryReturn<OLattice<T>, FnGetSite> {
   typedef OScalar<typename UnaryReturn<T, FnGetSite>::Type_t>  Type_t;
 };
 
-template<class T1, class T2 >
-struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnPeekSite> {
-  typedef OScalar<typename BinaryReturn<T1, T2, FnPeekSite>::Type_t>  Type_t;
+template<class T>
+struct UnaryReturn<OLattice<T>, FnPeekSite> {
+  typedef OScalar<typename UnaryReturn<T, FnPeekSite>::Type_t>  Type_t;
 };
 
 template<class T>
