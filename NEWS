@@ -1,3 +1,7 @@
+02/18/2004 -- Robert Edwards
+
+	Version 1.7.1. Small code cleanups. Should pass make check.
+
 02/17/2004 -- Robert Edwards
 
 	Version 1.7.0. First official QIO version.
