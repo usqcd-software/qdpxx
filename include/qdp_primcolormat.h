@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.4 2003-12-21 19:22:51 edwards Exp $
+// $Id: qdp_primcolormat.h,v 1.5 2004-01-20 14:30:50 mcneile Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -424,6 +424,39 @@ quarkContractXX(const PColorMatrix<T1,3>& s1, const PColorMatrix<T2,3>& s2)
 
   return d;
 }
+
+
+//
+//  These are some place holders for Nc = 4 
+//  These routine are actually used in the 
+//  baryon routines. Seperate baryon routines
+//  should be written for every number of colors.
+
+template<class T1, class T2>
+inline typename BinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, FnQuarkContractXX>::Type_t
+quarkContractXX(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2)
+{
+  typename BinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, FnQuarkContractXX>::Type_t  d;
+
+  // not yet written 
+  QDP_abort(1);
+
+  return d ; 
+}
+
+
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, PColorMatrix<T3,4>, FnColorContract>::Type_t
+colorContract(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2, const PColorMatrix<T3,4>& s3)
+{
+  typename TrinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, PColorMatrix<T3,4>, FnColorContract>::Type_t  d;
+
+  // not yet written 
+  QDP_abort(1);
+
+  return d ; 
+}
+
 
 /*! @} */   // end of group primcolormatrix
 
