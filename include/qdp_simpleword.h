@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_simpleword.h,v 1.7 2004-07-27 05:26:37 edwards Exp $
+// $Id: qdp_simpleword.h,v 1.8 2004-08-09 21:58:35 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -467,22 +467,12 @@ struct BinaryReturn<int, int, FnInnerProduct > {
 };
 
 template<>
-struct BinaryReturn<int, int, FnInnerProductReal > {
-  typedef int  Type_t;
-};
-
-template<>
 struct UnaryReturn<int, FnLocalNorm2 > {
   typedef int  Type_t;
 };
 
 template<>
 struct BinaryReturn<int, int, FnLocalInnerProduct > {
-  typedef int  Type_t;
-};
-
-template<>
-struct BinaryReturn<int, int, FnLocalInnerProductReal > {
   typedef int  Type_t;
 };
 
@@ -509,22 +499,12 @@ struct BinaryReturn<float, float, FnInnerProduct > {
 };
 
 template<>
-struct BinaryReturn<float, float, FnInnerProductReal > {
-  typedef double  Type_t;
-};
-
-template<>
 struct UnaryReturn<float, FnLocalNorm2 > {
   typedef float  Type_t;
 };
 
 template<>
 struct BinaryReturn<float, float, FnLocalInnerProduct > {
-  typedef float  Type_t;
-};
-
-template<>
-struct BinaryReturn<float, float, FnLocalInnerProductReal > {
   typedef float  Type_t;
 };
 
@@ -550,22 +530,12 @@ struct BinaryReturn<double, double, FnInnerProduct > {
 };
 
 template<>
-struct BinaryReturn<double, double, FnInnerProductReal > {
-  typedef double  Type_t;
-};
-
-template<>
 struct UnaryReturn<double, FnLocalNorm2 > {
   typedef double  Type_t;
 };
 
 template<>
 struct BinaryReturn<double, double, FnLocalInnerProduct > {
-  typedef double  Type_t;
-};
-
-template<>
-struct BinaryReturn<double, double, FnLocalInnerProductReal > {
   typedef double  Type_t;
 };
 
