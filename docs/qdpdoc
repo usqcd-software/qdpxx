@@ -149,7 +149,7 @@ SKIP_FUNCTION_MACROS   = YES
 # Configuration::addtions related to external references   
 #---------------------------------------------------------------------------
 TAGFILES               = 
-GENERATE_TAGFILE       = 
+GENERATE_TAGFILE       = doxygen/tags
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = YES
 PERL_PATH              = /usr/bin/perl
