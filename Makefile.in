@@ -175,7 +175,7 @@ EXTRA_DIST = $(ARCH_SOURCES) PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools docs
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/include/qdp_config.h
+CONFIG_HEADER = $(top_builddir)/include/qdp_config_internal.h
 CONFIG_CLEAN_FILES = qdp++-config
 SCRIPTS = $(bin_SCRIPTS)
 

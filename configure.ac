@@ -10,7 +10,7 @@ dnl Initialise automake
 AM_INIT_AUTOMAKE
 
 dnl defines...
-AC_CONFIG_HEADERS([include/qdp_config.h])
+AC_CONFIG_HEADERS([include/qdp_config_internal.h])
 
 dnl
 dnl

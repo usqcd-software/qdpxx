@@ -1,4 +1,4 @@
-# Have to add top_builddir/include to pick up made qdp_config.h
+# Have to add top_builddir/include to pick up made qdp_config_internal.h
 
 INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
            -I@top_srcdir@/other_libs/nml \
@@ -18,13 +18,14 @@ VPATH += @top_srcdir@/other_libs/qio/include
 
 lib_LIBRARIES = libqdp.a
 
-HDRS = qdp_defs.h  qdp_forward.h qdp_globalfuncs.h qdp_inner.h qdp_io.h \
+HDRS = qdp_config.h qdp_defs.h  qdp_forward.h qdp_globalfuncs.h qdp_inner.h \
+	qdp_io.h \
 	qdp_layout.h qdp_multi.h qdp_stdio.h qdp_newops.h qdp_outer.h \
 	qdp_outersubtype.h qdp_params.h qdp_primcolormat.h \
 	qdp_primcolorvec.h qdp_primdwvec.h qdp_primgamma.h qdp_primitive.h \
 	qdp_primmatrix.h qdp_primscalar.h qdp_primseed.h qdp_primspinmat.h \
 	qdp_primspinvec.h qdp_primvector.h qdp_util.h qdp_iogauge.h \
-	qdp_qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdp_qdpsubtype.h \
+	qdp_qdpexpr.h qdp.h qdp_config_internal.h QDPOperators.h qdp_qdpsubtype.h \
 	qdp_qdptype.h qdp_random.h qdp_reality.h qdp_simpleword.h qdp_map.h \
 	qdp_specializations.h qdp_subset.h qdp_traits.h qdp_word.h \
 	qdp_qdpio.h qio.h qdp_xmlio.h xml_simplewriter.h qdp_init.h

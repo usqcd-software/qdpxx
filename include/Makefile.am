@@ -54,6 +54,7 @@ QCDOC_HDRS = qdp_scalarsite_qcdoc.h \
 
 # All the include files - avoid flattening of dirs by using nobase
 nobase_include_HEADERS = \
+		qdp_config.h \
 		qdp_defs.h \
 		qdp_forward.h \
 		qdp_globalfuncs.h \
@@ -109,6 +110,6 @@ nobase_include_HEADERS = \
 		$(QCDOC_HDRS) \
 		$(SSE_HDRS)
 
-nodist_include_HEADERS = qdp_config.h
+nodist_include_HEADERS = qdp_config_internal.h
 
 

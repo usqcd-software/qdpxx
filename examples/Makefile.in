@@ -218,7 +218,7 @@ t_linalg_SOURCES = t_linalg.cc linalg1.cc linalg.h
 t_blas_SOURCES = t_blas.cc blas1.cc blas1.h
 subdir = examples
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/include/qdp_config.h
+CONFIG_HEADER = $(top_builddir)/include/qdp_config_internal.h
 CONFIG_CLEAN_FILES =
 @BUILD_WILSON_EXAMPLES_TRUE@EXTRA_PROGRAMS = t_qio$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_qio_factory$(EXEEXT) \

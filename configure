@@ -2419,7 +2419,7 @@ fi
 
 
 
-          ac_config_headers="$ac_config_headers include/qdp_config.h"
+          ac_config_headers="$ac_config_headers include/qdp_config_internal.h"
 
 
 
@@ -4433,7 +4433,7 @@ do
   "docs/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
   "examples/Makefile" ) CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
-  "include/qdp_config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS include/qdp_config.h" ;;
+  "include/qdp_config_internal.h" ) CONFIG_HEADERS="$CONFIG_HEADERS include/qdp_config_internal.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
