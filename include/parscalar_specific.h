@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.15 2003-01-22 16:50:12 edwards Exp $
+// $Id: parscalar_specific.h,v 1.16 2003-01-23 03:58:35 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -229,13 +229,14 @@ namespace RNG
   extern Seed ran_mult;
   extern Seed ran_mult_n;
   extern LatticeSeed *lattice_ran_mult;
-};
+}
 
 
 //! dest  = random  
 /*! This implementation is correct for no inner grid */
 template<class T>
-void random(OScalar<T>& d)
+void 
+random(OScalar<T>& d)
 {
   Seed seed = RNG::ran_seed;
   Seed skewed_seed = RNG::ran_seed * RNG::ran_mult;
@@ -248,11 +249,9 @@ void random(OScalar<T>& d)
 
 //! dest  = random    under a subset
 template<class T>
-void random(OSubLattice<T> dd)
+void 
+random(OLattice<T>& d, const Subset& s)
 {
-  OLattice<T>& d = dd.field();
-  const Subset& s = dd.subset();
-
   Seed seed;
   Seed skewed_seed;
 
@@ -269,25 +268,33 @@ void random(OSubLattice<T> dd)
 }
 
 
+//! dest  = random   under a subset
+template<class T>
+void random(const OSubLattice<T>& dd)
+{
+  OLattice<T>& d = const_cast<OSubLattice<T>&>(dd).field();
+  const Subset& s = dd.subset();
+
+  random(d,s);
+}
+
+
 //! dest  = random  
 template<class T>
 void random(OLattice<T>& d)
 {
-  random(d[all]);
+  random(d,all);
 }
 
 
-//! dest  = random   under a subset
+//! dest  = gaussian   under a subset
 template<class T>
-void gaussian(OSubLattice<T> dd)
+void gaussian(OLattice<T>& d, const Subset& s)
 {
-  OLattice<T>& d = dd.field();
-  const Subset& s = dd.subset();
-
   OLattice<T>  r1, r2;
 
-  random(r1[s]);
-  random(r2[s]);
+  random(r1,s);
+  random(r2,s);
 
   const int *tab = s.SiteTable()->slice();
   for(int j=0; j < s.NumSiteTable(); ++j) 
@@ -298,11 +305,22 @@ void gaussian(OSubLattice<T> dd)
 }
 
 
-//! dest  = random  
+//! dest  = gaussian   under a subset
+template<class T>
+void gaussian(const OSubLattice<T>& dd)
+{
+  OLattice<T>& d = const_cast<OSubLattice<T>&>(dd).field();
+  const Subset& s = dd.subset();
+
+  gaussian(d,s);
+}
+
+
+//! dest  = gaussian
 template<class T>
 void gaussian(OLattice<T>& d)
 {
-  gaussian(d[all]);
+  gaussian(d,all);
 }
 
 

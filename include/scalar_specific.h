@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.21 2003-01-21 21:19:45 edwards Exp $
+// $Id: scalar_specific.h,v 1.22 2003-01-23 03:58:35 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -170,11 +170,8 @@ random(OScalar<T>& d)
 //! dest  = random    under a subset
 template<class T>
 void 
-random(OSubLattice<T> dd)
+random(OLattice<T>& d, const Subset& s)
 {
-  OLattice<T>& d = dd.field();
-  const Subset& s = dd.subset();
-
   Seed seed;
   Seed skewed_seed;
 
@@ -191,25 +188,33 @@ random(OSubLattice<T> dd)
 }
 
 
+//! dest  = random   under a subset
+template<class T>
+void random(const OSubLattice<T>& dd)
+{
+  OLattice<T>& d = const_cast<OSubLattice<T>&>(dd).field();
+  const Subset& s = dd.subset();
+
+  random(d,s);
+}
+
+
 //! dest  = random  
 template<class T>
 void random(OLattice<T>& d)
 {
-  random(d[all]);
+  random(d,all);
 }
 
 
-//! dest  = random   under a subset
+//! dest  = gaussian   under a subset
 template<class T>
-void gaussian(OSubLattice<T> dd)
+void gaussian(OLattice<T>& d, const Subset& s)
 {
-  OLattice<T>& d = dd.field();
-  const Subset& s = dd.subset();
-
   OLattice<T>  r1, r2;
 
-  random(r1[s]);
-  random(r2[s]);
+  random(r1,s);
+  random(r2,s);
 
   const int *tab = s.SiteTable()->slice();
   for(int j=0; j < s.NumSiteTable(); ++j) 
@@ -220,11 +225,22 @@ void gaussian(OSubLattice<T> dd)
 }
 
 
-//! dest  = random  
+//! dest  = gaussian   under a subset
+template<class T>
+void gaussian(const OSubLattice<T>& dd)
+{
+  OLattice<T>& d = const_cast<OSubLattice<T>&>(dd).field();
+  const Subset& s = dd.subset();
+
+  gaussian(d,s);
+}
+
+
+//! dest  = gaussian
 template<class T>
 void gaussian(OLattice<T>& d)
 {
-  gaussian(d[all]);
+  gaussian(d,all);
 }
 
 
