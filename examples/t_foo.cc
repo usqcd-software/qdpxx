@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.37 2004-07-06 01:57:13 edwards Exp $
+// $Id: t_foo.cc,v 1.38 2004-07-07 01:58:53 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -53,8 +53,11 @@ int main(int argc, char *argv[])
     c = adj(a)*b;
     cc = trace(c);
     cerr << "Here 4" << endl;
-    dd = trace(adj(a)*b);
+    dd = trace(adj(a*b)*b*a*b);
     cerr << "Here 5" << endl;
+    write(xml,"diff", Real(norm2(cc-dd)));
+    dd = localInnerProduct(a,b);
+    cerr << "Here 6" << endl;
     write(xml,"diff", Real(norm2(cc-dd)));
   }
 #endif
@@ -69,6 +72,13 @@ int main(int argc, char *argv[])
 
     LatticePropagator di_quark;
     random(di_quark);
+
+    SpinMatrix gamma_1 = zero;
+    SpinMatrix gamma_5 = zero;
+//    LatticeComplex ps_rho = trace(adj(gamma_5 * q * gamma_5) * gamma_1 * q * gamma_1);
+//    LatticeComplex ps_rho = trace(adj(gamma_5 * q * gamma_5) * q * gamma_1);
+    LatticeComplex ps_rho = trace(adj(gamma_5 * q) * gamma_1);
+//    Complex ps_rho = trace(adj(gamma_5 * q) * gamma_1);
 
     cerr << "Here 1" << endl;
     LatticeComplex b = trace(S * traceColor(q * di_quark));
@@ -88,7 +98,7 @@ int main(int argc, char *argv[])
     LatticeReal r = real(c);
 
     cerr << "Here 5" << endl;
-    LatticeReal s = real(trace(adj(q) * di_quark));
+    LatticeReal s = real(trace(q * di_quark));
     
     cerr << "Here 6" << endl;
     write(xml,"diff", Real(norm2(r-s)));
