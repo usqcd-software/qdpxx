@@ -106,7 +106,7 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.0.2}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.0.3}
 }
 \author{SciDAC Software Coordinating Committee}
 
@@ -489,10 +489,11 @@ remainder of the QDP library is assured.
 \noindent
 The layout creation routine \verb|Layout::create()| defined in
 Section~\ref{sec:init_qdp} generates predefined lattice subsets for
-specifying even, odd, and global subsets of the lattice:
+specifying even, odd, and global subsets of the lattice. The \verb|rb|
+set can be dereferenced to produce the \verb|even| and \verb|odd| subsets:
 %
 \begin{verbatim}
-Subset even, odd, all
+Subset even, odd, all,  rb[0], rb[1]
 \end{verbatim}
 %
 It also creates the nearest-neighbor shifts for each coordinate
@@ -597,7 +598,7 @@ space-time coordinate on that site.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Prototype      & {\tt int} \verb|vol()|\\
+  Prototype      & {\tt int} \verb|Layout::vol()|\\
   \hline
   Purpose        & Return the total lattice volume\\
   \hline
@@ -630,11 +631,11 @@ They reveal some information specific to the implementation.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Prototype      & \verb|int Layout::linearIndex(const multi1d<int>& x)|\\
+  Prototype      & \verb|int Layout::linearSiteIndex(const multi1d<int>& x)|\\
     \hline
   Purpose        & Returns the linearized index for the lattice site \verb|x|. \\
 \hline
-  Example  & \verb|int k = Layout::linearIndex(x);| \\
+  Example  & \verb|int k = Layout::linearSiteIndex(x);| \\
    \hline
  \end{tabular}
 \end{flushleft}
@@ -668,7 +669,7 @@ They reveal some information specific to the implementation.
  \end{tabular}
 \end{flushleft}
 %
-The linear index returned by \verb|Layout::linearIndex()| 
+The linear index returned by \verb|Layout::linearSiteIndex()| 
 ranges from 0 to \verb|Layout:sitesOnNode()|$ - 1$.
 
 \newpage
@@ -1109,63 +1110,69 @@ communications layer.  For this purpose function calls are provided to
 put the QDP implementation and/or QDP objects into a known state,
 extract values, and reinsert them.
 
-\paragraph{Exposing QDP data}
+%% \paragraph{Exposing QDP data}
+%% 
+%% \indent
+%% {\bf THIS ROUTINE IS NOT IMPLEMENTED. IT IS A LOW LEVEL AND HIGHLY PLATFORM SPECIFIC OPTIMIZATION.}
+%% 
+%% \begin{flushleft}
+%% \begin{tabular}{|l|l|}
+%% \hline
+%% Prototype    & {\tt {\it QLA\_Type *} QDP\_expose}({\tt {\it Type}\& src})\\
+%% \hline
+%% Purpose        & Deliver data values from field {\tt src}. \\
+%% \hline
+%% \itt     & \allNumericTypes \\
+%% \hline
+%% Example  & \verb|r = QDP_expose(a);| \\
+%% \hline
+%% \end{tabular}
+%% \end{flushleft}
+%% %
+%% This function grants direct access to the data values contained in the
+%% QDP field {\tt src}.  The return value is a pointer to an array of QLA
+%% data {\tt dest} of type {\it QLA\_Type}.  The order of the data is given by
+%% \verb|Layout::linearSiteIndex|.  No QDP operations except \verb|QDP_insert| are
+%% permitted on exposed data until \verb|QDP_reset| is called. (See
+%% below.)
 
-\begin{flushleft}
-\begin{tabular}{|l|l|}
-\hline
-Prototype    & {\tt {\it QLA\_Type *} QDP\_expose}({\tt {\it Type}\& src})\\
-\hline
-Purpose        & Deliver data values from field {\tt src}. \\
-\hline
-\itt     & \allNumericTypes \\
-\hline
-Example  & \verb|r = QDP_expose(a);| \\
-\hline
-\end{tabular}
-\end{flushleft}
-%
-This function grants direct access to the data values contained in the
-QDP field {\tt src}.  The return value is a pointer to an array of QLA
-data {\tt dest} of type {\it QLA\_Type}.  The order of the data is given by
-\verb|Layout::linearIndex|.  No QDP operations except \verb|QDP_insert| are
-permitted on exposed data until \verb|QDP_reset| is called. (See
-below.)
-
-\paragraph{Returning control of QDP data}
-
-\begin{flushleft}
-\begin{tabular}{|l|l|}
-\hline
-Prototype      & \verb|void QDP_reset|({\tt {\it Type}\& field})\\
-\hline
-Purpose        & Returns control of data values to QDP. \\
-\hline
-\itt     & \allNumericTypes \\
-\hline
-Example  & \verb|QDP_reset(r);| \\
-\hline
-\end{tabular}
-\end{flushleft}
-%
-This call signals to QDP that the user is ready to resume QDP
-operations with the data in the specified field.
+%% \paragraph{Returning control of QDP data}
+%% 
+%% {\bf\large THIS ROUTINE IS NOT IMPLEMENTED.}
+%% 
+%% \begin{flushleft}
+%% \begin{tabular}{|l|l|}
+%% \hline
+%% Prototype      & \verb|void QDP_reset|({\tt {\it Type}\& field})\\
+%% \hline
+%% Purpose        & Returns control of data values to QDP. \\
+%% \hline
+%% \itt     & \allNumericTypes \\
+%% \hline
+%% Example  & \verb|QDP_reset(r);| \\
+%% \hline
+%% \end{tabular}
+%% \end{flushleft}
+%% %
+%% This call signals to QDP that the user is ready to resume QDP
+%% operations with the data in the specified field.
 
 \paragraph{Extracting QDP data}
 
 \begin{flushleft}
 \begin{tabular}{|l|l|}
   \hline
-  Prototype    & \verb|void QDP_extract|({\tt multi1d<{\it QLA\_Type}>\& dest}, 
-                   {\tt const {\it Type}\& src}, \\
+  Prototype    & \verb|void QDP_extract|({\tt multi1d<{\it Type2}>\& dest}, 
+                   {\tt const {\it Type1}\& src}, \\
                & \qquad{\tt const Subset\& s})\\
 \hline
 Purpose        & Copy data values from field {\tt src} to array {\tt dest}. \\
 \hline
-  \itt     & \allNumericTypes \\
+  {\it Type1} & All lattice types \\
+  {\it Type2} & All corresponding scalar lattice types \\
 \hline
-Example  & \verb|LatticeReal a;| \\
-         & \verb|multi1d<Real> r(Layout::sitesOnNode());| \\
+Example  & \verb|LatticeFermion a;| \\
+         & \verb|multi1d<Fermion> r(Layout::sitesOnNode());| \\
          & \verb|QDP_extract(r,a,even);| \\
 \hline
   \end{tabular}
@@ -1179,7 +1186,7 @@ This function copies the data values contained in the QDP field {\tt
 src} to the destination field.  Only values belonging to the specified
 subset are copied.  Any values in the destination array not associated
 with the subset are left unmodified.  The order of the data is given
-by \verb|Layout::linearIndex|.  Since a copy is made, QDP operations
+by \verb|Layout::linearSiteIndex|.  Since a copy is made, QDP operations
 involving the source field may proceed without disruption.
 
 \paragraph{Inserting QDP data}
@@ -1187,13 +1194,14 @@ involving the source field may proceed without disruption.
 \begin{flushleft}
 \begin{tabular}{|l|l|}
 \hline
-Prototype      & \verb|void QDP_insert|({\tt {\it Type}\& dest}, 
-                 {\tt const {\it QLA\_Type}\& src},\\
+Prototype      & \verb|void QDP_insert|({\tt {\it Type1}\& dest}, 
+                 {\tt const multi1d<{\it Type2}>\& src}, \\
                & \qquad{\tt const Subset\& s})\\
 \hline
 Purpose        & Inserts data values from QLA array {\tt src}. \\
 \hline
-  \itt     & \allNumericTypes \\
+  {\it Type1} & All lattice types \\
+  {\it Type2} & All corresponding scalar lattice types \\
 \hline
 Example  & \verb|multi1d<Fermion> a(Layout::sitesOnNode());|\\
          & \verb|LatticeFermion r;| \\
@@ -1203,8 +1211,8 @@ Example  & \verb|multi1d<Fermion> a(Layout::sitesOnNode());|\\
 \end{flushleft}
 %
 Only data associated with the specified subset are inserted.  Other
-values are unmodified.  The data order must conform to
-\verb|Layout::linearIndex|.  This call, analogous to a fill operation, is
+values are unmodified.  The data site order must conform to
+\verb|Layout::linearSiteIndex|.  This call, analogous to a fill operation, is
 permitted at any time and does not interfere with QDP operations.
 
 \paragraph{Suspending QDP communications}
