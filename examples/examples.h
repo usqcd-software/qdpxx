@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: examples.h,v 1.1 2002-12-18 21:31:46 edwards Exp $
+// $Id: examples.h,v 1.2 2003-09-10 02:10:10 edwards Exp $
 //
 // Include file for test suite
 
@@ -34,3 +34,9 @@ void dslash(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const Lat
 void FormFac(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& quark_propagator,
 	     const LatticePropagator& seq_quark_prop, const multi1d<int>& t_source, 
 	     int t_sink, int j_decay, NmlWriter& nml);
+
+void expm12(LatticeColorMatrix& a);
+
+void rgauge(multi1d<LatticeColorMatrix>& u, LatticeColorMatrix& g);
+
+void taproj(LatticeColorMatrix& a);
