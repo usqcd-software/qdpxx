@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_iogauge.h,v 1.1 2003-10-15 16:53:24 edwards Exp $
+// $Id: qdp_iogauge.h,v 1.2 2003-10-15 18:00:30 edwards Exp $
 
 /*! @file
  * @brief NERSC Archive gauge support
@@ -25,10 +25,10 @@ struct ArchivGauge_t
 
   /* assume matrix size is 12 (matrix is compressed) 
      and change if we find out otherwise */
-  size_t mat_size;
+  size_t      mat_size;
 
-  int ensemble_id;
-  int sequence_number;
+  int         sequence_number;
+  std::string ensemble_id;
   std::string ensemble_label;
   std::string creator;
   std::string creator_hardware;

@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.10 2003-10-15 17:17:11 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.11 2003-10-15 18:00:30 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -8,6 +8,8 @@
 
 #include "qdp.h"
 #include "qdp_iogauge.h"
+
+#include "time.h"
 
 #include <string>
 using std::string;
@@ -34,12 +36,35 @@ void archivGaugeInit(ArchivGauge_t& header)
   header.boundary.resize(Nd);
   header.boundary = 1;   // periodic
   header.sequence_number = 0;
-  header.ensemble_id = 0;
   header.ensemble_label = "NERSC archive";
   header.creator = "QDP++";
   header.creator_hardware = "QDP++";
-  header.creation_date = "";
-  header.archive_date  = "";
+
+  time_t now = time(NULL);
+  {
+    char *tmp = ctime(&now);
+    int date_size = strlen(tmp);
+    char *datetime = new char[date_size+1];
+    strcpy(datetime,ctime(&now));
+
+    for(int i=0; i < date_size; ++i)
+      if ( datetime[i] == '\n' )
+      {
+	datetime[i] = '\0';
+	date_size = i;
+	break;
+     }   
+
+    header.creation_date = datetime;
+    delete[] datetime;
+  }
+  header.archive_date  = header.creation_date;
+
+  {
+    ostringstream s;
+    s << "X" << now;
+    header.ensemble_id = s.str();
+  }
 
   header.w_plaq = 0;   // WARNING: bogus
   header.link = 0;     // WARNING: bogus
