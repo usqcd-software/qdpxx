@@ -440,7 +440,7 @@ parscalar|parscalarvec)
         CXXFLAGS="${CXXFLAGS} ${QMP_CFLAGS}"
 	LDFLAGS="${LDFLAGS} ${QMP_LDFLAGS}"
 	LIBS="${LIBS} ${QMP_LIBS}"
-	AC_CHECK_FUNCS(QMP_abort QMP_error_exit QMP_route QMP_verbose)
+	AC_CHECK_FUNCS(QMP_abort QMP_error_exit QMP_verbose)
 	CXXFLAGS="${QMP_BKUP_CXXFLAGS}"
 	LDFLAGS="${QMP_BKUP_LDFLAGS}"
 	LIBS="${LIBS}"
