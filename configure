@@ -272,7 +272,8 @@ PACKAGE_VERSION='1.0.0'
 PACKAGE_STRING='qdp 1.0.0'
 PACKAGE_BUGREPORT='edwards@jlab.org'
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot ac_Nd ac_Nc ac_Ns PARALLEL_ARCH ARCHDEF_SUBSTITUTION QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE RANLIB ac_ct_RANLIB ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
+ac_subdirs_all="$ac_subdirs_all other_libs/nml"
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE am__leading_dot ac_Nd ac_Nc ac_Ns PARALLEL_ARCH ARCHDEF_SUBSTITUTION QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE RANLIB ac_ct_RANLIB ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE LATEX DVIPS DVIPDF DOXYGEN subdirs LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -3319,6 +3320,15 @@ fi
 #######################
 
 #
+# Configure subdir packages
+#
+
+
+subdirs="$subdirs other_libs/nml"
+  # need to make one of these...
+#AC_CONFIG_SUBDIRS(other_libs/qio)
+
+#
 # Set up the doxygen file
 # Substitute the right directories
 #
@@ -3333,6 +3343,8 @@ fi
           ac_config_files="$ac_config_files qdp++-config"
 
           ac_config_files="$ac_config_files lib/Makefile"
+
+          ac_config_files="$ac_config_files other_libs/Makefile"
 
           ac_config_files="$ac_config_files include/Makefile"
 
@@ -3946,6 +3958,7 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "qdp++-config" ) CONFIG_FILES="$CONFIG_FILES qdp++-config" ;;
   "lib/Makefile" ) CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
+  "other_libs/Makefile" ) CONFIG_FILES="$CONFIG_FILES other_libs/Makefile" ;;
   "include/Makefile" ) CONFIG_FILES="$CONFIG_FILES include/Makefile" ;;
   "include/PETE/Makefile" ) CONFIG_FILES="$CONFIG_FILES include/PETE/Makefile" ;;
   "include/qdp_config.h" ) CONFIG_FILES="$CONFIG_FILES include/qdp_config.h" ;;
@@ -4090,6 +4103,7 @@ s,@LATEX@,$LATEX,;t t
 s,@DVIPS@,$DVIPS,;t t
 s,@DVIPDF@,$DVIPDF,;t t
 s,@DOXYGEN@,$DOXYGEN,;t t
+s,@subdirs@,$subdirs,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF
@@ -4475,6 +4489,150 @@ if test "$no_create" != yes; then
   # Use ||, not &&, to avoid exiting from the if with $? = 1, which
   # would make configure fail if this is the last instruction.
   $ac_cs_success || { (exit 1); exit 1; }
+fi
+
+#
+# CONFIG_SUBDIRS section.
+#
+if test "$no_recursion" != yes; then
+
+  # Remove --cache-file and --srcdir arguments so they do not pile up.
+  ac_sub_configure_args=
+  ac_prev=
+  for ac_arg in $ac_configure_args; do
+    if test -n "$ac_prev"; then
+      ac_prev=
+      continue
+    fi
+    case $ac_arg in
+    -cache-file | --cache-file | --cache-fil | --cache-fi \
+    | --cache-f | --cache- | --cache | --cach | --cac | --ca | --c)
+      ac_prev=cache_file ;;
+    -cache-file=* | --cache-file=* | --cache-fil=* | --cache-fi=* \
+    | --cache-f=* | --cache-=* | --cache=* | --cach=* | --cac=* | --ca=* \
+    | --c=*)
+      ;;
+    --config-cache | -C)
+      ;;
+    -srcdir | --srcdir | --srcdi | --srcd | --src | --sr)
+      ac_prev=srcdir ;;
+    -srcdir=* | --srcdir=* | --srcdi=* | --srcd=* | --src=* | --sr=*)
+      ;;
+    -prefix | --prefix | --prefi | --pref | --pre | --pr | --p)
+      ac_prev=prefix ;;
+    -prefix=* | --prefix=* | --prefi=* | --pref=* | --pre=* | --pr=* | --p=*)
+      ;;
+    *) ac_sub_configure_args="$ac_sub_configure_args $ac_arg" ;;
+    esac
+  done
+
+  # Always prepend --prefix to ensure using the same prefix
+  # in subdir configurations.
+  ac_sub_configure_args="--prefix=$prefix $ac_sub_configure_args"
+
+  ac_popdir=`pwd`
+  for ac_dir in : $subdirs; do test "x$ac_dir" = x: && continue
+
+    # Do not complain, so a configure script can configure whichever
+    # parts of a large source tree are present.
+    test -d $srcdir/$ac_dir || continue
+
+    { echo "$as_me:$LINENO: configuring in $ac_dir" >&5
+echo "$as_me: configuring in $ac_dir" >&6;}
+    { if $as_mkdir_p; then
+    mkdir -p "$ac_dir"
+  else
+    as_dir="$ac_dir"
+    as_dirs=
+    while test ! -d "$as_dir"; do
+      as_dirs="$as_dir $as_dirs"
+      as_dir=`(dirname "$as_dir") 2>/dev/null ||
+$as_expr X"$as_dir" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+         X"$as_dir" : 'X\(//\)[^/]' \| \
+         X"$as_dir" : 'X\(//\)$' \| \
+         X"$as_dir" : 'X\(/\)' \| \
+         .     : '\(.\)' 2>/dev/null ||
+echo X"$as_dir" |
+    sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
+  	  /^X\(\/\/\)[^/].*/{ s//\1/; q; }
+  	  /^X\(\/\/\)$/{ s//\1/; q; }
+  	  /^X\(\/\).*/{ s//\1/; q; }
+  	  s/.*/./; q'`
+    done
+    test ! -n "$as_dirs" || mkdir $as_dirs
+  fi || { { echo "$as_me:$LINENO: error: cannot create directory \"$ac_dir\"" >&5
+echo "$as_me: error: cannot create directory \"$ac_dir\"" >&2;}
+   { (exit 1); exit 1; }; }; }
+
+    ac_builddir=.
+
+if test "$ac_dir" != .; then
+  ac_dir_suffix=/`echo "$ac_dir" | sed 's,^\.[\\/],,'`
+  # A "../" for each directory in $ac_dir_suffix.
+  ac_top_builddir=`echo "$ac_dir_suffix" | sed 's,/[^\\/]*,../,g'`
+else
+  ac_dir_suffix= ac_top_builddir=
+fi
+
+case $srcdir in
+  .)  # No --srcdir option.  We are building in place.
+    ac_srcdir=.
+    if test -z "$ac_top_builddir"; then
+       ac_top_srcdir=.
+    else
+       ac_top_srcdir=`echo $ac_top_builddir | sed 's,/$,,'`
+    fi ;;
+  [\\/]* | ?:[\\/]* )  # Absolute path.
+    ac_srcdir=$srcdir$ac_dir_suffix;
+    ac_top_srcdir=$srcdir ;;
+  *) # Relative path.
+    ac_srcdir=$ac_top_builddir$srcdir$ac_dir_suffix
+    ac_top_srcdir=$ac_top_builddir$srcdir ;;
+esac
+# Don't blindly perform a `cd "$ac_dir"/$ac_foo && pwd` since $ac_foo can be
+# absolute.
+ac_abs_builddir=`cd "$ac_dir" && cd $ac_builddir && pwd`
+ac_abs_top_builddir=`cd "$ac_dir" && cd ${ac_top_builddir}. && pwd`
+ac_abs_srcdir=`cd "$ac_dir" && cd $ac_srcdir && pwd`
+ac_abs_top_srcdir=`cd "$ac_dir" && cd $ac_top_srcdir && pwd`
+
+
+    cd $ac_dir
+
+    # Check for guested configure; otherwise get Cygnus style configure.
+    if test -f $ac_srcdir/configure.gnu; then
+      ac_sub_configure="$SHELL '$ac_srcdir/configure.gnu'"
+    elif test -f $ac_srcdir/configure; then
+      ac_sub_configure="$SHELL '$ac_srcdir/configure'"
+    elif test -f $ac_srcdir/configure.in; then
+      ac_sub_configure=$ac_configure
+    else
+      { echo "$as_me:$LINENO: WARNING: no configuration information is in $ac_dir" >&5
+echo "$as_me: WARNING: no configuration information is in $ac_dir" >&2;}
+      ac_sub_configure=
+    fi
+
+    # The recursion is here.
+    if test -n "$ac_sub_configure"; then
+      # Make the cache file name correct relative to the subdirectory.
+      case $cache_file in
+      [\\/]* | ?:[\\/]* ) ac_sub_cache_file=$cache_file ;;
+      *) # Relative path.
+        ac_sub_cache_file=$ac_top_builddir$cache_file ;;
+      esac
+
+      { echo "$as_me:$LINENO: running $ac_sub_configure $ac_sub_configure_args --cache-file=$ac_sub_cache_file --srcdir=$ac_srcdir" >&5
+echo "$as_me: running $ac_sub_configure $ac_sub_configure_args --cache-file=$ac_sub_cache_file --srcdir=$ac_srcdir" >&6;}
+      # The eval makes quoting arguments work.
+      eval $ac_sub_configure $ac_sub_configure_args \
+           --cache-file=$ac_sub_cache_file --srcdir=$ac_srcdir ||
+        { { echo "$as_me:$LINENO: error: $ac_sub_configure failed for $ac_dir" >&5
+echo "$as_me: error: $ac_sub_configure failed for $ac_dir" >&2;}
+   { (exit 1); exit 1; }; }
+    fi
+
+    cd $ac_popdir
+  done
 fi
 
 
