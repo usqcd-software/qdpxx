@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.10 2002-11-13 15:44:29 edwards Exp $
+// $Id: mesplq.cc,v 1.11 2002-12-05 21:27:10 edwards Exp $
 //
 #include "tests.h"
 
@@ -13,7 +13,7 @@ using namespace QDP;
  * \param link   -- space-time average link (Write)
  */
 
-void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq, 
+void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq, 
 	    Double& t_plaq, Double& link)
 {
   s_plaq = t_plaq = w_plaq = link = 0.0;
@@ -25,10 +25,10 @@ void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq,
     {
 #if 0
       /* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
-      LatticeGauge tmp_0 = shift(u[nu],FORWARD,mu) * conj(shift(u[mu],FORWARD,nu));
+      LatticeColorMatrix tmp_0 = shift(u[nu],FORWARD,mu) * conj(shift(u[mu],FORWARD,nu));
 
       /* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
-      LatticeGauge tmp_1 = tmp_0 * conj(u[nu]);
+      LatticeColorMatrix tmp_1 = tmp_0 * conj(u[nu]);
 
       /* tmp = sum(tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu))) */
       Double tmp = sum(real(trace(u[mu]*tmp_1)));

@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.1 2002-12-02 19:29:46 dgr Exp $
+ *  $Id: t_spectrum.cc,v 1.2 2002-12-05 21:27:10 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -49,7 +49,7 @@ int main(int argc, char **argv){
   NmlWriter nml("t_spectrum.nml"); // Open file for sample output
 
 
-  multi1d<LatticeGauge> u(Nd);
+  multi1d<LatticeColorMatrix> u(Nd);
 
 #if 1
 
@@ -102,7 +102,7 @@ int main(int argc, char **argv){
    *  set equal to the original gauge field
    */
 
-  multi1d<LatticeGauge> u_smr(Nd);
+  multi1d<LatticeColorMatrix> u_smr(Nd);
 
   for(int mu = 0; mu < u.size(); mu++)
     u_smr[mu] = u[mu];

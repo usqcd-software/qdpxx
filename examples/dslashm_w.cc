@@ -1,4 +1,4 @@
-// $Id: dslashm_w.cc,v 1.9 2002-10-09 17:03:30 edwards Exp $
+// $Id: dslashm_w.cc,v 1.10 2002-12-05 21:27:10 edwards Exp $
 
 #include "tests.h"
 
@@ -38,7 +38,7 @@ using namespace QDP;
  *  \param cb	      Checkerboard of output vector			(Read) 
  */
 
-void dslash_2d_plus(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFermion& psi,
+void dslash_2d_plus(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const LatticeFermion& psi,
 		    int cb)
 {
   // NOTE: this is unrolled for 2 dimensions. Tests or some preproc hooks needed
@@ -101,7 +101,7 @@ void dslash_2d_plus(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const L
  *  \param cb	      Checkerboard of output vector			(Read) 
  */
 
-void dslash(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFermion& psi,
+void dslash(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const LatticeFermion& psi,
 	    int isign, int cb)
 {
   /*     F 

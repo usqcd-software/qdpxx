@@ -1,4 +1,4 @@
-// $Id: qdp.cc,v 1.5 2002-11-04 04:39:30 edwards Exp $
+// $Id: qdp.cc,v 1.6 2002-12-05 21:27:10 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -19,7 +19,7 @@ QDP_BEGIN_NAMESPACE(QDP);
  * they are unique.
  */
 multi1d<LatticeReal> 
-su2Extract(const LatticeGauge& source, 
+su2Extract(const LatticeColorMatrix& source, 
 	   int su2_index, 
 	   const Subset& s)
 {
@@ -72,12 +72,12 @@ su2Extract(const LatticeGauge& source,
  * The user does not need to know exactly which one is which, just that
  * they are unique.
  */
-LatticeGauge
+LatticeColorMatrix
 sunFill(const multi1d<LatticeReal> r,
 	     int su2_index,
 	     const Subset& s)
 {
-  LatticeGauge dest;
+  LatticeColorMatrix dest;
 
   /* Determine the SU(N) indices corresponding to the SU(2) indices */
   /* of the SU(2) subgroup $3 */

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: defs.h,v 1.4 2002-11-04 04:34:02 edwards Exp $
+// $Id: defs.h,v 1.5 2002-12-05 21:27:10 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -30,12 +30,11 @@ QDP_BEGIN_NAMESPACE(QDP);
 typedef GammaType<Ns> Gamma;
 
 // Aliases for a scalar architecture
-typedef OLattice< PScalar< PColorMatrix< RComplex<REAL>, Nc> > > LatticeGauge;
+typedef OLattice< PScalar< PColorMatrix< RComplex<REAL>, Nc> > > LatticeColorMatrix;
+typedef OLattice< PSpinMatrix< PScalar< RComplex<REAL> >, Ns> > LatticeSpinMatrix;
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns> > LatticeFermion;
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns>>1 > > LatticeHalfFermion;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, Ns> > LatticePropagator;
-typedef OLattice< PScalar< PColorMatrix< RComplex<REAL>, Nc> > > LatticeColorMatrix;
-typedef OLattice< PSpinMatrix< PScalar< RComplex<REAL> >, Ns> > LatticeSpinMatrix;
 typedef OLattice< PScalar< PScalar< RComplex<REAL> > > > LatticeComplex;
 
 typedef OLattice< PScalar< PSeed < RScalar<INTEGER32> > > > LatticeSeed;
@@ -44,7 +43,7 @@ typedef OLattice< PScalar< PScalar< RScalar<REAL> > > > LatticeReal;
 typedef OLattice< PScalar< PScalar< RScalar<DOUBLE> > > > LatticeDouble;
 typedef OLattice< PScalar< PScalar< RScalar<LOGICAL> > > > LatticeBoolean;
 
-typedef OScalar< PScalar< PColorMatrix< RComplex<REAL>, Nc> > > Gauge;
+typedef OScalar< PScalar< PColorMatrix< RComplex<REAL>, Nc> > > ColorMatrix;
 typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns> > Fermion;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, Ns> > Propagator;
 typedef OScalar< PScalar< PScalar< RComplex<REAL> > > > Complex;
@@ -58,8 +57,7 @@ typedef OScalar< PScalar< PScalar< RScalar<LOGICAL> > > > Boolean;
 typedef OScalar< PScalar< PScalar< RComplex<DOUBLE> > > > DComplex;
 
 
-// Duplicate names
-typedef OScalar< PScalar< PColorMatrix< RComplex<REAL>, Nc> > > ColorMatrix;
+// Other useful names
 typedef OScalar< PScalar< PColorVector< RComplex<REAL>, Nc> > > ColorVector;
 typedef OScalar< PSpinMatrix< PScalar< RComplex<REAL> >, Ns> > SpinMatrix;
 typedef OScalar< PSpinVector< PScalar< RComplex<REAL> >, Ns> > SpinVector;

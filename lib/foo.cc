@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.15 2002-11-28 03:08:09 edwards Exp $
+// $Id: foo.cc,v 1.16 2002-12-05 21:27:10 edwards Exp $
 //
 // Silly little internal test code
 
@@ -120,7 +120,7 @@ int main()
 
 #if 1
   nml << "test peekColor";
-  LatticeGauge barf = 1.0;
+  LatticeColorMatrix barf = 1.0;
   LatticeComplex fred = peekColor(barf,0,0);
   Write(nml,barf);
   Write(nml,fred);
@@ -138,7 +138,7 @@ int main()
   nml << "test pokeColor";
   random(barf);
   fred = 1.0;
-  LatticeGauge barfagain = pokeColor(barf,fred,0,0);
+  LatticeColorMatrix barfagain = pokeColor(barf,fred,0,0);
   Write(nml,barfagain);
 
   nml << "test pokeSite";
@@ -201,7 +201,7 @@ int main()
   if (Nd == 4)
   {
     // Read a nersc file
-    multi1d<LatticeGauge> u(Nd);
+    multi1d<LatticeColorMatrix> u(Nd);
     readArchiv(u, "archiv.cfg");
     nml << "Here is the nersc archive u field";
     Write(nml,u);
@@ -213,7 +213,7 @@ int main()
   if (Nd == 4)
   {
     // Read a szin gauge file
-    multi1d<LatticeGauge> u(Nd);
+    multi1d<LatticeColorMatrix> u(Nd);
     Seed seed_old;
     cerr << "Calling szin reader" << endl;
     readSzin(u, 0, "szin.cfg", seed_old);

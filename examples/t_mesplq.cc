@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.8 2002-11-28 02:56:50 edwards Exp $
+// $Id: t_mesplq.cc,v 1.9 2002-12-05 21:27:10 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
-  multi1d<LatticeGauge> u(Nd);
+  multi1d<LatticeColorMatrix> u(Nd);
   Double w_plaq, s_plaq, t_plaq, link;
 
   cerr << "Start gaussian\n";

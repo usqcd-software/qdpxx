@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: proto.h,v 1.5 2002-11-04 04:36:29 edwards Exp $
+// $Id: proto.h,v 1.6 2002-12-05 21:27:10 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -34,7 +34,7 @@ void InitDefaultSets();
  * they are unique.
  */
 multi1d<LatticeReal> 
-su2Extract(const LatticeGauge& source, 
+su2Extract(const LatticeColorMatrix& source, 
 	   int su2_index, 
 	   const Subset& s);
 
@@ -56,7 +56,7 @@ su2Extract(const LatticeGauge& source,
  * The user does not need to know exactly which one is which, just that
  * they are unique.
  */
-LatticeGauge
+LatticeColorMatrix
 sunFill(const multi1d<LatticeReal> r,
 	int su2_index,
 	const Subset& s);
@@ -70,10 +70,10 @@ size_t bfwrite(void *ptr, size_t size, size_t nmemb, FILE *stream);
 
 
 //! Read a QCD (NERSC) Archive format gauge field
-void readArchiv(multi1d<LatticeGauge>& u, char file[]);
+void readArchiv(multi1d<LatticeColorMatrix>& u, char file[]);
 
 //! Read a SZIN format gauge field
-void readSzin(multi1d<LatticeGauge>& u, int cfg_io_location, char file[], Seed& seed_old);
+void readSzin(multi1d<LatticeColorMatrix>& u, int cfg_io_location, char file[], Seed& seed_old);
 
 //! Read a SZIN quark propagator
 void readSzinQprop(LatticePropagator& q, char file[]);

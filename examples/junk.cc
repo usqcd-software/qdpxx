@@ -1,11 +1,11 @@
-// $Id: junk.cc,v 1.3 2002-10-25 03:33:26 edwards Exp $
+// $Id: junk.cc,v 1.4 2002-12-05 21:27:10 edwards Exp $
 
 #include "tests.h"
 
 using namespace QDP;
 
 void junk(NmlWriter& nml, 
-	  LatticeGauge& b3, const LatticeGauge& b1, const LatticeGauge& b2, 
+	  LatticeColorMatrix& b3, const LatticeColorMatrix& b1, const LatticeColorMatrix& b2, 
 	  const Subset& s)
 {
 //  Fermion f1, f2;

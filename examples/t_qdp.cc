@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.10 2002-11-28 02:56:50 edwards Exp $
+// $Id: t_qdp.cc,v 1.11 2002-12-05 21:27:10 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 	cerr << goo[k][j][i] << endl;
 
   // Test out lattice fields
-  LatticeGauge b1,b2,b3;
+  LatticeColorMatrix b1,b2,b3;
 
   b1 = 1.0;
   cerr << "b1 after fill\n" << endl;
@@ -136,7 +136,7 @@ int main(int argc, char **argv)
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
   cerr << "Initialize vector of latticegauge\n";
-  multi1d<LatticeGauge> u(Nd);
+  multi1d<LatticeColorMatrix> u(Nd);
   cerr << "After initialize vector of latticegauge\n";
   Double w_plaq, s_plaq, t_plaq, link;
 

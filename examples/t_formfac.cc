@@ -1,4 +1,4 @@
-// $Id: t_formfac.cc,v 1.6 2002-11-28 02:56:50 edwards Exp $
+// $Id: t_formfac.cc,v 1.7 2002-12-05 21:27:10 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -19,7 +19,7 @@ int main(int argc, char **argv)
   NmlWriter nml("formfac.nml");
 
   //! Test out propagators
-  multi1d<LatticeGauge> u(Nd);
+  multi1d<LatticeColorMatrix> u(Nd);
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 

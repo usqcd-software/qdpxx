@@ -1,4 +1,4 @@
-// $Id: iogauge.cc,v 1.5 2002-11-04 04:37:48 edwards Exp $
+// $Id: iogauge.cc,v 1.6 2002-12-05 21:27:10 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -28,7 +28,7 @@ ostream& operator<<(ostream& s, const multi1d<T>& d)
 //-----------------------------------------------------------------------
 // Read a QCD archive file
 //! Read a QCD (NERSC) Archive format gauge field
-void readArchiv(multi1d<LatticeGauge>& u, char file[])
+void readArchiv(multi1d<LatticeColorMatrix>& u, char file[])
 {
 #define MAX_LINE_LENGTH 1024
   char line[MAX_LINE_LENGTH];
@@ -111,7 +111,7 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
   // Read gauge field
   //
   multi1d<int> coord(Nd);
-  Gauge  sitefield;
+  ColorMatrix  sitefield;
   float su3[3][3][2];
 
   for(int t=0; t < Layout::lattSize()[3]; t++)  /* t */
