@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.3 2003-06-05 04:15:55 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.4 2003-06-15 03:05:20 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -354,10 +354,96 @@ namespace Internal
 #endif
   }
 
+
+  // A really stupid way to do broadcast
+  void 
+  stupidBroadcast(void* dest, unsigned int nbytes)
+  {
+    // Send to each node
+    for(int node=1; node < Layout::numNodes(); ++node)
+    {
+      if (Layout::nodeNumber() == node)
+	Internal::recvFromWait(dest, 0, nbytes);
+
+      if (Layout::primaryNode())
+	Internal::sendToWait(dest, node, nbytes);
+    }
+  }
+
 };
 
 
 //-----------------------------------------------------------------------------
+// Write a lattice quantity
+void writeOLattice(BinaryWriter& bin, 
+		   const char* output, size_t size, size_t nmemb)
+{
+  size_t tot_size = size*nmemb;
+  char recv_buf[tot_size];
+
+  // Find the location of each site and send to primary node
+  for(int site=0; site < Layout::vol(); ++site)
+  {
+    multi1d<int> coord = crtesn(site, Layout::lattSize());
+
+    int node   = Layout::nodeNumber(coord);
+    int linear = Layout::linearSiteIndex(coord);
+
+    // Copy to buffer: be really careful since max(linear) could vary among nodes
+    if (Layout::nodeNumber() == node)
+      memcpy(recv_buf, output+linear*tot_size, tot_size);
+
+    // Send result to primary node. Avoid sending prim-node sending to itself
+    if (node != 0)
+    {
+      if (Layout::primaryNode())
+	Internal::recvFromWait((void *)recv_buf, node, tot_size);
+
+      if (Layout::nodeNumber() == node)
+	Internal::sendToWait((void *)recv_buf, 0, tot_size);
+    }
+
+    if (Layout::primaryNode())
+      bin.writeArray(recv_buf, size, nmemb);
+  }
+}
+
+
+//! Read a lattice quantity
+/*! This code assumes no inner grid */
+void readOLattice(BinaryReader& bin, 
+		  char* input, size_t size, size_t nmemb)
+{
+  size_t tot_size = size*nmemb;
+  char recv_buf[tot_size];
+
+  // Find the location of each site and send to primary node
+  for(int site=0; site < Layout::vol(); ++site)
+  {
+    multi1d<int> coord = crtesn(site, Layout::lattSize());
+
+    int node   = Layout::nodeNumber(coord);
+    int linear = Layout::linearSiteIndex(coord);
+
+    // Only on primary node read the data
+    bin.readArrayPrimaryNode(recv_buf, size, nmemb);
+
+    // Send result to destination node. Avoid sending prim-node sending to itself
+    if (node != 0)
+    {
+      if (Layout::primaryNode())
+	Internal::sendToWait((void *)recv_buf, node, tot_size);
+
+      if (Layout::nodeNumber() == node)
+	Internal::recvFromWait((void *)recv_buf, 0, tot_size);
+    }
+
+    if (Layout::nodeNumber() == node)
+      memcpy(input+linear*tot_size, recv_buf, tot_size);
+  }
+}
+
+
 //! Function overload read of  int
 void read(NmlReader& nml, const string& s, int& d)
 {
