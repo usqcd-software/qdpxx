@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.12 2003-01-14 04:43:29 edwards Exp $
+// $Id: t_mesplq.cc,v 1.13 2003-01-20 16:24:45 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -38,10 +38,12 @@ int main(int argc, char *argv[])
     gaussian(u[m]);
 
   // Reunitarize the gauge field
+  cerr << "Start reunit\n";
   for(int m=0; m < u.size(); ++m)
     reunit(u[m]);
 
   // Try out the plaquette routine
+  cerr << "Start mesplq\n";
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
   cerr << "w_plaq = " << w_plaq << endl;
   cerr << "link = " << link << endl;
