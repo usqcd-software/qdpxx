@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.13 2004-02-17 11:48:38 bjoo Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.14 2004-03-15 20:35:24 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -247,6 +247,25 @@ void Map::make(const MapFunc& func)
 
 namespace Internal
 {
+  //! Is this a grid architecture
+  bool gridArch()
+  { 
+    return (QMP_get_msg_passing_type() == QMP_GRID) ? true : false;
+  }
+
+  //! Send a clear-to-send
+  void clearToSend(void *buffer, int count, int node)
+  { 
+    // On non-grid machines, use a clear-to-send like protocol
+    if (! Internal::gridArch())
+    {
+      if(Layout::nodeNumber() == 0 && node != 0)
+	Internal::sendToWait(buffer, node, count);
+      if(Layout::nodeNumber() == node && node != 0)
+	Internal::recvFromWait(buffer, 0, count);
+    }
+  }
+
   //! Route to another node (blocking)
   void route(void *buffer, int srce_node, int dest_node, int count)
   { 
@@ -255,7 +274,8 @@ namespace Internal
 	     count,srce_node,dest_node);
 #endif
 
-    QMP_route(buffer, count, srce_node, dest_node);
+//    QMP_route(buffer, count, srce_node, dest_node);
+    DML_route_bytes((char*)buffer, count, srce_node, dest_node);
 
 #if QDP_DEBUG >= 2
     QDP_info("finished a route");
@@ -322,6 +342,8 @@ void writeOLattice(BinaryWriter& bin,
   char *recv_buf = new char[tot_size];
 
   // Find the location of each site and send to primary node
+  int old_node = 0;
+
   for(int site=0; site < Layout::vol(); ++site)
   {
     multi1d<int> coord = crtesn(site, Layout::lattSize());
@@ -329,6 +351,15 @@ void writeOLattice(BinaryWriter& bin,
     int node   = Layout::nodeNumber(coord);
     int linear = Layout::linearSiteIndex(coord);
 
+    // Send nodes must wait for a ready signal from the master node
+    // to prevent message pileups on the master node
+    if (node != old_node)
+    {
+      // On non-grid machines, use a clear-to-send like protocol
+      Internal::clearToSend(recv_buf,sizeof(int),node);
+      old_node = node;
+    }
+    
     // Copy to buffer: be really careful since max(linear) could vary among nodes
     if (Layout::nodeNumber() == node)
       memcpy(recv_buf, output+linear*tot_size, tot_size);
