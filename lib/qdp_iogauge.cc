@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.6 2003-06-05 16:15:43 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.7 2003-08-26 21:37:34 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -28,7 +28,30 @@ ostream& operator<<(ostream& s, const multi1d<T>& d)
 //-----------------------------------------------------------------------
 // Read a QCD archive file
 //! Read a QCD (NERSC) Archive format gauge field
+/*!
+ * \ingroup io
+ *
+ * \param u          gauge configuration ( Modify )
+ * \param file       path ( Read )
+ */    
 void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
+{
+  XMLReader xml;
+  readArchiv(xml, u, file);  // throw away the xml
+}
+
+
+//-----------------------------------------------------------------------
+// Read a QCD archive file
+//! Read a QCD (NERSC) Archive format gauge field
+/*!
+ * \ingroup io
+ *
+ * \param xml        xml reader holding config info ( Modify )
+ * \param u          gauge configuration ( Modify )
+ * \param file       path ( Read )
+ */    
+void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& file)
 {
   const size_t max_line_length = 128;
 
@@ -184,6 +207,19 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
     printf("Computed (in this endian-ness, maybe not Big) checksum = %x\n", chksum);
 
   cfg_in.close();
+
+
+  // Now, set up the XML header. Do this by first making a buffer
+  // writer that is then used to make the reader.
+  // NOTE: for now, this is a pretty useless header
+  XMLBufferWriter  xml_buf;
+
+  push(xml_buf, "NERSC");
+  write(xml_buf,"nrow",lat_size);
+  pop(xml_buf);
+
+  cout << "now open xmlreader" << endl;
+  xml.open(xml_buf);
 }
 
 
