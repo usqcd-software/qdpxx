@@ -26,7 +26,7 @@ qmp_home="@QMP_HOME@"
 qdp_cxx="@CXX@"
 qdp_cxxflags="@CXXFLAGS@ -I@includedir@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@"
 qdp_ldflags="@LDFLAGS@ -L@libdir@ @QMP_LDFLAGS@"
-qdp_libs="-lqdp -lnml -lXPathReader -lxmlWriter -lqio -llime @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@"
+qdp_libs="-lqdp -lXPathReader -lxmlWriter -lqio -llime @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@"
 
 precision="@CONFIG_PRECISION@"
 layout="@CONFIG_LAYOUT@"
