@@ -1,3 +1,9 @@
+08/22/2003 -- Robert Edwards
+
+	Version 1.5.1. Start of support for new  scalarvec and parscalarvec
+        architectures. These have an inner grid and outer grid - suitable for
+        pentiums with SSE/SSE2.
+
 08/12/2003 -- Robert Edwards
 
 	Version 1.5.0. Major change of subset support. Now have an Ordered{Set,Subset}
