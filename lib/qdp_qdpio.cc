@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.3 2003-08-28 18:03:20 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.4 2003-10-23 20:00:50 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -39,7 +39,7 @@ void QDPSerialFileReader::open(XMLReader& file_xml, const std::string& path)
   layout->this_node = Layout::nodeNumber(); 
 
   // Initialize string objects 
-  XML_string *xml_c  = XML_string_create(0);
+  XML_String *xml_c  = XML_string_create(0);
 
   if ((qio_in = QIO_open_read(xml_c, path.c_str(), QIO_SERIAL, layout)) == NULL)
     QDP_error_exit("QDPSerialFile::Reader: failed to open file %s",path.c_str());
@@ -100,7 +100,7 @@ void QDPSerialFileWriter::open(XMLBufferWriter& file_xml, const std::string& pat
 
   // Copy metadata string into simple qio string container
   XMLBufferWriter& foo_xml = const_cast<XMLBufferWriter&>(file_xml);
-  XML_string* xml_c = XML_string_create(foo_xml.str().length()+1);  // check if +1 is needed
+  XML_String* xml_c = XML_string_create(foo_xml.str().length()+1);  // check if +1 is needed
   XML_string_set(xml_c, foo_xml.str().c_str());
 
   // Big call to qio
