@@ -134,12 +134,12 @@ HDRS = defs.h forward.h globalfuncs.h inner.h io.h layout.h multi.h \
        primcolorvec.h primgamma.h primitive.h primmatrix.h \
        primscalar.h primseed.h primspinmat.h primspinvec.h primvector.h \
        proto.h qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdpsubtype.h \
-       qdptype.h random.h reality.h simpleword.h \
+       qdptype.h random.h reality.h simpleword.h map.h \
        specializations.h subset.h traits.h word.h
 
 ARCH_OBJS = $(ARCH_SRCS:.cc=.o)
 
-libqdp_a_SOURCES = subset.cc random.cc qdp.cc layout.cc io.cc \
+libqdp_a_SOURCES = map.cc subset.cc random.cc qdp.cc layout.cc io.cc \
 	iogauge.cc byteorder.cc util.cc readszin.cc
 
 
@@ -154,8 +154,8 @@ CONFIG_CLEAN_FILES =
 LIBRARIES = $(lib_LIBRARIES)
 
 libqdp_a_AR = $(AR) cru
-am_libqdp_a_OBJECTS = subset.$(OBJEXT) random.$(OBJEXT) qdp.$(OBJEXT) \
-	layout.$(OBJEXT) io.$(OBJEXT) iogauge.$(OBJEXT) \
+am_libqdp_a_OBJECTS = map.$(OBJEXT) subset.$(OBJEXT) random.$(OBJEXT) \
+	qdp.$(OBJEXT) layout.$(OBJEXT) io.$(OBJEXT) iogauge.$(OBJEXT) \
 	byteorder.$(OBJEXT) util.$(OBJEXT) readszin.$(OBJEXT)
 am__objects_1 =
 nodist_libqdp_a_OBJECTS = $(am__objects_1)
@@ -166,9 +166,9 @@ depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/byteorder.Po ./$(DEPDIR)/io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/iogauge.Po ./$(DEPDIR)/layout.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qdp.Po ./$(DEPDIR)/random.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/readszin.Po ./$(DEPDIR)/subset.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/util.Po
+@AMDEP_TRUE@	./$(DEPDIR)/map.Po ./$(DEPDIR)/qdp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/random.Po ./$(DEPDIR)/readszin.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/subset.Po ./$(DEPDIR)/util.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -238,6 +238,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iogauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/layout.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@
