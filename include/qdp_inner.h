@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.20 2004-08-11 03:38:47 edwards Exp $
+// $Id: qdp_inner.h,v 1.21 2004-08-11 03:41:33 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -1159,7 +1159,8 @@ template<class T1, class T2>
 inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, OpAdjMultiply>::Type_t
 adjMultiply(const IScalar<T1>& l, const IScalar<T2>& r)
 {
-  return transpose(l.elem()) * r.elem();
+  // Do not pass on the transpose or the conj
+  return l.elem() * r.elem();
 }
 
 // Optimized  IScalar*adj(IScalar)
@@ -1167,7 +1168,8 @@ template<class T1, class T2>
 inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, OpMultiplyAdj>::Type_t
 multiplyAdj(const IScalar<T1>& l, const IScalar<T2>& r)
 {
-  return l.elem() * transpose(r.elem());
+  // Do not pass on the transpose or the conj
+  return l.elem() * r.elem();
 }
 
 // Optimized  adj(IScalar)*adj(IScalar)
@@ -1175,7 +1177,8 @@ template<class T1, class T2>
 inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, OpAdjMultiplyAdj>::Type_t
 adjMultiplyAdj(const IScalar<T1>& l, const IScalar<T2>& r)
 {
-  return transpose(l.elem()) * transpose(r.elem());
+  // Do not pass on the transpose or the conj
+  return l.elem() * r.elem();
 }
 
 
