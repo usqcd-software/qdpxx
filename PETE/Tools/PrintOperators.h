@@ -482,7 +482,7 @@ public:
 	 << "TrinaryReturn<T1, T2, T3, "
 	 << opdef.tag() << " >" << endl
 	 << "  ::Type_t" << endl
-         << "  operator()(T1 &a, const T2 &b, const T3 &c) const" << endl
+         << "  operator()(const T1 &a, const T2 &b, const T3 &c) const" << endl
          << "  {" << endl
          << "    " << opdef.expression() << endl
          << "  }" << endl
@@ -531,6 +531,6 @@ private:
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: PrintOperators.h,v $   $Author: edwards $
-// $Revision: 1.2 $   $Date: 2002-10-14 02:06:56 $
+// $Revision: 1.3 $   $Date: 2003-02-28 03:41:21 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo
