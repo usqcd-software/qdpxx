@@ -274,5 +274,6 @@ AC_CONFIG_FILES(docs/Makefile)
 AC_CONFIG_FILES(include/Makefile)
 AC_CONFIG_FILES(lib/Makefile)
 AC_CONFIG_FILES(tests/Makefile)
+AC_CONFIG_FILES(tests/BuildingBlocks/Makefile)
 
 AC_OUTPUT
