@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.5 2002-10-06 02:48:43 edwards Exp $
+// $Id: reality.h,v 1.6 2002-10-09 15:33:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -156,6 +156,13 @@ template<class T>  ostream& operator<<(ostream& s, const RScalar<T>& d)
 }
 
 
+//! Namelist output
+template<class T>  NmlWriter& operator<<(NmlWriter& s, const RScalar<T>& d)
+{
+  return s << d.elem();
+}
+
+
 
 //-------------------------------------------------------------------------------------
 //! Reality complex
@@ -293,10 +300,24 @@ private:
   T im;
 };
 
-//! Ascii output
+
+//! Stream output
 template<class T>  ostream& operator<<(ostream& s, const RComplex<T>& d)
 {
-  return s << "( " << d.real() << " , " << d.imag() << " )";
+  s << "( " << d.real() << " , " << d.imag() << " )";
+  return s;
+}
+
+//! Namelist output
+template<class T>  NmlWriter& operator<<(NmlWriter& nml, const RComplex<T>& d)
+{
+  nml.get() << "( ";
+  nml << d.real();
+  nml.get() << " , ";
+  nml << d.imag();
+  nml.get() << " )";
+
+  return nml;
 }
 
 

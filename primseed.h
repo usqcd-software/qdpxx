@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primseed.h,v 1.3 2002-10-06 02:48:43 edwards Exp $
+// $Id: primseed.h,v 1.4 2002-10-09 15:33:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -80,7 +80,7 @@ private:
 };
 
 //! Ascii output
-template<class T>  ostream& operator<<(ostream& s, const PSeed<T>& d)
+template<class T>  NmlWriter& operator<<(NmlWriter& s, const PSeed<T>& d)
 {
   return s << "  [SEED]\n\t( " << d.elem(0).elem() << " , " << d.elem(1).elem() << " , "
 	   << d.elem(2).elem() << " , " << d.elem(3).elem() << " )";

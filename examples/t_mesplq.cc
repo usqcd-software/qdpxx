@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.3 2002-09-26 18:07:18 edwards Exp $
+// $Id: t_mesplq.cc,v 1.4 2002-10-09 15:33:26 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -16,6 +16,14 @@ int main(int argc, char **argv)
   nrow = foo;
   geom.Init(nrow);
 
+  NmlWriter nml("t_mesplq.nml");
+
+  push(nml,"lattis");
+  Write(nml,Nd);
+  Write(nml,Nc);
+  Write(nml,nrow);
+  pop(nml);
+
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
   multi1d<LatticeGauge> u(Nd);
@@ -29,4 +37,9 @@ int main(int argc, char **argv)
   cerr << "w_plaq = " << w_plaq << endl;
   cerr << "link = " << link << endl;
 
+  // Write out the results
+  push(nml,"observables");
+  Write(nml,w_plaq);
+  Write(nml,link);
+  pop(nml);
 }

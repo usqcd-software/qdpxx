@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primscalar.h,v 1.6 2002-10-06 02:48:43 edwards Exp $
+// $Id: primscalar.h,v 1.7 2002-10-09 15:33:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -153,6 +153,12 @@ private:
 template<class T>  ostream& operator<<(ostream& s, const PScalar<T>& d)
 {
   return s << d.elem();
+}
+
+//! Namelist output
+template<class T>  NmlWriter& operator<<(NmlWriter& nml, const PScalar<T>& d)
+{
+  return nml << d.elem();
 }
 
 

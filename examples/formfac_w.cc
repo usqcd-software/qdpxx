@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.3 2002-09-26 21:27:36 edwards Exp $
+// $Id: formfac_w.cc,v 1.4 2002-10-09 15:33:26 edwards Exp $
 
 /*! Compute contractions for current insertion 3-point functions.
  *
@@ -26,7 +26,8 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 	     const LatticePropagator& quark_propagator,
 	     const LatticePropagator& seq_quark_prop, 
 	     const multi1d<int>& t_source, 
-	     int t_sink)
+	     int t_sink,
+	     NmlWriter& nml)
 {
   // Length of lattice in j_decay direction and 3pt correlations fcns
   int length = layout.LattSize()[j_decay];
@@ -156,13 +157,13 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
       }
 
       // Print out the results
-      Push(cerr,"Wilson_Current_3Pt_fn");
-      WRITE_NAMELIST(cerr,mu);
-      WRITE_NAMELIST(cerr,j_decay);
-      WRITE_NAMELIST(cerr,inser_mom);
-      WRITE_NAMELIST(cerr,local_cur3ptfn);
-      WRITE_NAMELIST(cerr,nonlocal_cur3ptfn);
-      Pop(cerr);
+      push(nml,"Wilson_Current_3Pt_fn");
+      Write(nml,mu);
+      Write(nml,j_decay);
+      Write(nml,inser_mom);
+      Write(nml,local_cur3ptfn);
+      Write(nml,nonlocal_cur3ptfn);
+      pop(nml);
     }
   }
                             

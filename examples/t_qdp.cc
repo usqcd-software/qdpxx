@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.5 2002-10-06 02:48:43 edwards Exp $
+// $Id: t_qdp.cc,v 1.6 2002-10-09 15:33:26 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -15,6 +15,9 @@ int main(int argc, char **argv)
   multi1d<int> nrow(Nd);
   nrow = foo;
   geom.Init(nrow);
+
+  // Open a file for some sample output
+  NmlWriter nml("t_qdp.nml");
 
   // Initialize the random number generator
   Seed seed;
@@ -94,18 +97,20 @@ int main(int argc, char **argv)
   LatticeGauge b1,b2,b3;
 
   b1 = 1.0;
-  cerr << "b1 after fill\n" << b1 << endl;
+  cerr << "b1 after fill\n" << endl;
+  Write(nml,b1);
 
   random(b1);
-  cerr << "b1 after random\n" << b1 << endl;
+  cerr << "b1 after random\n" << endl;
+  Write(nml,b1);
 
   random(b2);
   gaussian(b3);
   cerr << "b3 after gaussian\n";
-  Push(cerr,"test_stuff");
-  Write(cerr,"b3",b3);
-  WRITE_NAMELIST(cerr,b3);
-  Pop(cerr);
+  push(nml,"test_stuff");
+  write(nml,"b3",b3);
+  Write(nml,b3);
+  pop(nml);
   
 #if 1
   junk(b3,b1,b2,all);
@@ -160,7 +165,7 @@ int main(int argc, char **argv)
   baryon(quark_prop_1, baryon_prop, t_source, 1);
   for(int n=0; n < 9; ++n)
     for(int t=0; t < length; ++t)
-      cerr << "baryon_prop["<<n<<","<<t<<"] = " << baryon_prop[n][t] << endl;
+      Write(nml,baryon_prop);
 #endif
 
 #endif
@@ -171,25 +176,27 @@ int main(int argc, char **argv)
   chi = zero;
   dslash(chi, u, psi, +1, 0);
 
-  WRITE_NAMELIST(cerr,psi);
-  WRITE_NAMELIST(cerr,chi);
+  Write(nml,psi);
+  Write(nml,chi);
 
 #if 1
   //! SU(N) fiddling
   cerr << "Fiddle with SU(2) matrices\n" << endl;
   LatticeReal r_0,r_1,r_2,r_3;
 
-  cerr << "u[0] = " << u[0] << endl;
+  cerr << "u[0]" << endl;
+  Write(nml,u[0]);
   cerr << "Start extract\n";
   for(int su2_index=0; su2_index < Nc*(Nc-1)/2; ++su2_index)
   {
     su2_extract(r_0,r_1,r_2,r_3, su2_index, u[0]);
 
     cerr << "su2_index="<<su2_index<<"\n";
-    cerr << "r_0 = " << r_0 << endl;
-    cerr << "r_1 = " << r_1 << endl;
-    cerr << "r_2 = " << r_2 << endl;
-    cerr << "r_3 = " << r_3 << endl;
+    Write(nml,su2_index);
+    Write(nml,r_0);
+    Write(nml,r_1);
+    Write(nml,r_2);
+    Write(nml,r_3);
   }
   cerr << "Start filling\n";
   for(int su2_index=0; su2_index < Nc*(Nc-1)/2; ++su2_index)
@@ -197,7 +204,7 @@ int main(int argc, char **argv)
     cerr << "su2_index="<<su2_index<<"\n";
     sun_fill(u[1], su2_index, r_0,r_1,r_2,r_3);
 
-    cerr << "u[1] = " << u[1] << endl;
+    Write(nml,u[1]);
   }
 #endif
 }

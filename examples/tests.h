@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tests.h,v 1.3 2002-09-26 21:27:36 edwards Exp $
+// $Id: tests.h,v 1.4 2002-10-09 15:33:26 edwards Exp $
 //
 // Include file for test suite
 
@@ -24,4 +24,4 @@ void dslash(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFe
 
 void FormFac(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& quark_propagator,
 	     const LatticePropagator& seq_quark_prop, const multi1d<int>& t_source, 
-	     int t_sink);
+	     int t_sink, NmlWriter& nml);

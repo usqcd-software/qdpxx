@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.10 2002-10-06 02:48:43 edwards Exp $
+// $Id: scalar_specific.h,v 1.11 2002-10-09 15:33:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -584,20 +584,23 @@ sun_fill(OLattice<T>& d,
 
 //-----------------------------------------------------------------------------
 //! Ascii output
-template<class T>  ostream& operator<<(ostream& s, const OLattice<T>& d)
+template<class T>  
+NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
 {
-  s << "   [OUTER]\n";
-  for(int site=0; site < layout.Vol()-1; ++site) 
+  nml.get() << "   [OUTER]\n";
+  for(int site=0; site < layout.Vol(); ++site) 
   {
     int i = layout.LinearSiteIndex(site);
-    s << "   Site =  " << site << "   = " << d.elem(i) << ",\n";
+    nml.get() << "   Site =  " << site << "   = ";
+    nml << d.elem(i);
+    nml.get() << ",\n";
   }
 
-  int site = layout.Vol()-1;
-  int i = layout.LinearSiteIndex(site);
-  s << "   Site =  " << site << "   = " << d.elem(i) << ",";
+//  int site = layout.Vol()-1;
+//  int i = layout.LinearSiteIndex(site);
+//  nml << "   Site =  " << site << "   = " << d.elem(i) << ",\n";
 
-  return s;
+  return nml;
 }
 
 

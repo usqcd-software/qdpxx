@@ -1,11 +1,17 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.3 2002-10-02 20:29:37 edwards Exp $
+// $Id: qdp.h,v 1.4 2002-10-09 15:33:26 edwards Exp $
 //
 // QDP data parallel interface
 //
 #include <cstdio>
-#include <iostream.h>
 #include <cstdlib>
+#include <ostream>
+#include <iostream>
+
+using namespace std;   // I do not like this
+
+using std::iostream;
+using std::ostream;
 
 #undef DEBUG
 
@@ -48,6 +54,8 @@ QDP_END_NAMESPACE();
 #include "forward.h"
 
 #include "multi.h"
+#include "io.h"
+
 #include "params.h"
 #include "layout.h"
 #include "subset.h"
@@ -71,7 +79,6 @@ QDP_END_NAMESPACE();
 
 //#include "special.h"
 #include "random.h"
-#include "io.h"
 
 // Architectural specific code
 #include "scalar_specific.h"

@@ -1,10 +1,19 @@
 // -*- C++ -*-
-// $Id: forward.h,v 1.2 2002-10-02 20:29:37 edwards Exp $
+// $Id: forward.h,v 1.3 2002-10-09 15:33:25 edwards Exp $
 //
 // Forward declarations for QDP
 //
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+// IO
+class TextReader;
+class TextWriter;
+class NmlReader;
+class NmlWriter;
+class BinaryReader;
+class BinaryWriter;
+
 
 // Forward declarations
 namespace RNG 

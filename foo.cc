@@ -1,14 +1,12 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.6 2002-10-06 02:48:43 edwards Exp $
+// $Id: foo.cc,v 1.7 2002-10-09 15:33:25 edwards Exp $
 //
 // Silly little internal test code
 
-//#include <iostream.h>
-#include <cstdio>
-#include <cstdlib>
-
 #include "qdp.h"
+
+//using namespace std;
 
 //using namespace QDP;
 
@@ -20,11 +18,13 @@ int main()
   nrow = foo;
   layout.Init(nrow);
 
+  NmlWriter nml("foo.nml");
+
 #if 0
   // Initialize the random number generator
   Seed seed;
   seed = 11;
-  cerr << seed << endl;
+  nml << seed;
   RNG::setrn(seed);
 #endif
 
@@ -39,8 +39,11 @@ int main()
   float ccc = 2.0;
   float x;
   
+#if 0
   LatticeComplex  foob(zero);
-  cerr << "Here is foob\n" << foob << endl;
+  nml << "Here is foob";
+  Write(nml,foob);
+#endif
 
 
 #if 1
@@ -50,24 +53,24 @@ int main()
 
   b(rb[1]) = zero;
 
-  cerr << "First set of b\n";
-  cerr << b << endl;
+  nml << "First set of b";
+  Write(nml,b);
 
   random(b);
 
-  cerr << "Second set of b\n";
-  cerr << b << endl;
+  nml << "Second set of b";
+  Write(nml,b);
 
   b(rb[0]) = -17;
 
-  cerr << "Third set of b\n";
-  cerr << b << endl;
+  nml << "Third set of b";
+  Write(nml,b);
 
 //  b.elem(1).elem() = -1;
 //  b.elem().elem(1).elem() = -1;
 //  b.elem().elem(1) = -1;
 
-  cerr << "here 0\n";
+  nml << "here 0";
 #endif
 //  a = -b + c*d;
 //  a = c*d - b;
@@ -79,17 +82,17 @@ int main()
 //  a = ccc*c;
 //  x = ccc*c;
 
-  cerr << "here b\n";
-  cerr << b << endl;
-  cerr << "here a\n";
-  cerr << a << endl;
+  nml << "here b";
+  Write(nml,b);
+  nml << "here a";
+  Write(nml,a);
 
-  cerr << "here e\n";
+  nml << "here e";
   LatticeReal rr;
 //  random(rr);
   rr = 0.2;
   e = where(rr < 0.5, a, c);
-  cerr << e << endl;
+  Write(nml,e);
 
 
 
@@ -98,56 +101,75 @@ int main()
   a = -b + ccc*c;
 //  a = ccc*c;
 
-  cerr << "here c\n";
-  cerr << a << endl;
+  nml << "here a";
+  Write(nml,a);
 #endif
 
-#if 0
-  std::ofstream f;
-  f.open("foobar",std::ios_base::out|std::ios_base::binary);
-  float aa[3] = {0.0,0.0,0.0};
-  std::fwrite(&aa,sizeof(LatticeComplex),1,f.rdbuf());
-  f.close();
+#if 1
+//  std::ofstream f;
+//  f.open("foobar",std::ios_base::out|std::ios_base::binary);
+//  float aa[3] = {0.0,0.0,0.0};
+//  std::fwrite(&aa,sizeof(LatticeComplex),1,f.rdbuf());
+//  f.close();
 
 
-  BinaryWriter to("fred");
-  to << a;
-  to.close();
+  {
+    NmlWriter to("fred.txt");
+    write(to,"a",a);
+  }
 
-  cerr << "enter some data\n";
-  TextReader from("input");
-  from >> x;
-  from.close();
+  {
+    cerr << "open fred.bin\n";
+    BinaryWriter to("fred.bin");
+    write(to,a);
+  }
 
-  cerr << "you entered :" << x << ":\n";
+  {
+    cout << "enter some data";
+    TextReader from("input");
+    from >> x;
+  }
+
+  cout << "you entered :" << x << ":";
   
+  // Zero out a and read it again
+  a = zero;
+
+  {
+    BinaryReader from("fred.bin");
+    read(from,a);
+  }
+
+  nml << "Reset and reread a";
+  Write(nml,a);
+
 #endif
 
 
 #if 0
   LatticeInteger d;
-  cerr << "here c\n";
+  nml << "here c";
   const Expression<BinaryNode<OpAdd,
     Reference<LatticeInteger>, Reference<LatticeInteger> > > &expr1 = b + c;
-  cerr << "here d\n";
+  nml << "here d";
   d = expr1;
-  cerr << "here e\n";
-  cerr << d << endl;
-  cerr << "here f\n";
+  nml << "here e";
+  nml << d;
+  nml << "here f";
   
   int num = forEach(expr1, CountLeaf(), SumCombine());
-  cerr << num << endl;
+  nml << num << endl;
 
 //  const Expression<BinaryNode<OpAdd, Reference<LatticeInteger>, 
 //    BinaryNode<OpMultiply, Scalar<int>,
 //    Reference<LatticeInteger> > > > &expr2 = b + 3 * c;
 //  num = forEach(expr2, CountLeaf(), SumCombine());
-//  cerr << num << endl;
+//  nml << num << endl;
   
   const Expression<BinaryNode<OpAdd, Reference<LatticeInteger>, 
     BinaryNode<OpMultiply, Reference<LatticeInteger>,
     Reference<LatticeInteger> > > > &expr3 = b + c * d;
   num = forEach(expr3, CountLeaf(), SumCombine());
-  cerr << num << endl;
+  nml << num << endl;
 #endif
 }

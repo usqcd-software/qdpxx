@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.6 2002-10-06 02:48:43 edwards Exp $
+// $Id: simpleword.h,v 1.7 2002-10-09 15:33:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -296,6 +296,19 @@ double localInnerproduct(const double& s1, const double& s2)
 }
 
 
+
+//-----------------------------------------------------------
+//! Ascii output
+inline NmlWriter& operator<<(NmlWriter& nml, const float& d) {nml.get() << d; return nml;}
+
+//! Ascii output
+inline NmlWriter& operator<<(NmlWriter& nml, const int& d) {nml.get() << d; return nml;}
+
+//! Ascii output
+inline NmlWriter& operator<<(NmlWriter& nml, const double& d) {nml.get() << d; return nml;}
+
+//! Ascii output
+inline NmlWriter& operator<<(NmlWriter& nml, const bool& d) {nml.get() << d; return nml;}
 
 
 //-----------------------------------------------------------------------------

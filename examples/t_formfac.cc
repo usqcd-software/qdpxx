@@ -1,4 +1,4 @@
-// $Id: t_formfac.cc,v 1.2 2002-09-26 21:27:36 edwards Exp $
+// $Id: t_formfac.cc,v 1.3 2002-10-09 15:33:26 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -16,12 +16,21 @@ int main(int argc, char **argv)
   nrow = foo;
   geom.Init(nrow);
 
+  NmlWriter nml("formfac.nml");
+
   //! Test out propagators
   multi1d<LatticeGauge> u(Nd);
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
-  WRITE_NAMELIST(cerr,u);
+  push(nml,"lattice");
+  Write(nml,Nd);
+  Write(nml,Nc);
+  Write(nml,Ns);
+  Write(nml,nrow);
+  pop(nml);
+
+//  Write(nml,u);
 
   LatticePropagator quark_prop_1, quark_prop_2;
   gaussian(quark_prop_1);
@@ -34,5 +43,5 @@ int main(int argc, char **argv)
 
   int t_sink = length-1;
 
-  FormFac(u, quark_prop_1, quark_prop_2, t_source, t_sink);
+  FormFac(u, quark_prop_1, quark_prop_2, t_source, t_sink, nml);
 }

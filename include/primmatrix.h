@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primmatrix.h,v 1.5 2002-10-06 02:48:43 edwards Exp $
+// $Id: primmatrix.h,v 1.6 2002-10-09 15:33:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -99,24 +99,30 @@ private:
 
 //! Ascii output
 template<class T, int N, template<class,int> class C>  
-ostream& operator<<(ostream& s, const PMatrix<T,N,C>& d)
+NmlWriter& operator<<(NmlWriter& nml, const PMatrix<T,N,C>& d)
 {
-  s << "  [MATRIX]\n";
+  nml.get() << "  [MATRIX]\n";
   for(int j=0; j < N-1; ++j)
     for(int i=0; i < N; ++i)
     {
-      s << "\tRow = " << i << ", Column = " << j << " = " << d.elem(i,j) << ",\n";
+      nml.get() << "\tRow = " << i << ", Column = " << j << " = ";
+      nml << d.elem(i,j);
+      nml.get() << ",\n";
     }
     
   int j=N-1;
   for(int i=0; i < N-1; ++i)
   {
-    s << "\tRow = " << i << ", Column = " << j << " = " << d.elem(i,j) << ",\n";
+    nml.get() << "\tRow = " << i << ", Column = " << j << " = ";
+    nml << d.elem(i,j);
+    nml.get() << ",\n";
   }
     
-  s << "\tRow = " << j << ", Column = " << j << " = " << d.elem(j,j);
+  int i = j;
+  nml.get() << "\tRow = " << i << ", Column = " << j << " = ";
+  nml << d.elem(i,j);
 
-  return s;
+  return nml;
 }
 
 

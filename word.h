@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: word.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: word.h,v 1.2 2002-10-09 15:33:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -118,13 +118,13 @@ private:
 };
 
 //! Ascii output
-template<class T>  ostream& operator<<(ostream& s, const Word<T>& d)
+template<class T>  NmlWriter& operator<<(NmlWriter& s, const Word<T>& d)
 {
   return s << d.elem();
 }
 
 //! Ascii output
-inline ostream& operator<<(ostream& s, const Logical& d)
+inline NmlWriter& operator<<(NmlWriter& s, const Logical& d)
 {
   return s << d.elem();
 }

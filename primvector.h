@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primvector.h,v 1.5 2002-10-06 02:48:43 edwards Exp $
+// $Id: primvector.h,v 1.6 2002-10-09 15:33:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -104,16 +104,21 @@ private:
 
 //! Ascii output
 template<class T, int N, template<class,int> class C> 
-ostream& operator<<(ostream& s, const PVector<T,N,C>& d)
+NmlWriter& operator<<(NmlWriter& nml, const PVector<T,N,C>& d)
 {
-  s << "  [VECTOR]\n";
+  nml.get() << "  [VECTOR]\n";
   for(int i=0; i < N-1; ++i)
-    s << "\tRow = " << i << " = " << d.elem(i) << ",\n";
+  {
+    nml.get() << "\tRow = " << i << " = ";
+    nml << d.elem(i);
+    nml.get() << " ,\n";
+  }
     
-  int i=N-1;
-  s << "\tRow = " << i << " = " << d.elem(i);
-
-  return s;
+  int i = N-1;
+  nml.get() << "\tRow = " << i << " = ";
+  nml << d.elem(i);
+    
+  return nml;
 }
 
 

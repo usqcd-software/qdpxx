@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.1 2002-10-01 16:24:41 edwards Exp $
+// $Id: t_io.cc,v 1.2 2002-10-09 15:33:26 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -25,8 +25,8 @@ int main(int argc, char **argv)
   totext.close();
 
   BinaryWriter tobinary("dog");
-  tobinary << a;
-  tobinary << d;
+  write(tobinary, a);
+  write(tobinary, d);
   tobinary.close();
 
   float x;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.7 2002-10-06 02:48:43 edwards Exp $
+// $Id: outer.h,v 1.8 2002-10-09 15:33:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -116,8 +116,16 @@ void evaluate(OScalar<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& r
 //! Ascii output
 template<class T>  ostream& operator<<(ostream& s, const OScalar<T>& d)
 {
-  s << d.elem() << ",";
+  s << d.elem();
   return s;
+}
+
+//! namelist output
+template<class T>  NmlWriter& operator<<(NmlWriter& nml, const OScalar<T>& d)
+{
+  nml << d.elem();
+  nml.get() << ",\n";
+  return nml;
 }
 
 
