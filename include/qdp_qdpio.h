@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.7 2003-11-01 21:45:12 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.8 2004-01-30 22:14:48 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -172,23 +172,8 @@ template<class T> void QDPFactoryPut(char *buf, size_t linear, size_t count, voi
   /* Translate arg */
   T *field = (T *)arg;
 
-#if 0
-  /* We expect the data belongs to our node */
-  multi1d<int> coord(Nd);
-  coord = crd;
-  if (Layout::nodeNumber(coord) != Layout::nodeNumber())
-  {
-    buf = '\0';
-    return;
-  }
-#endif
-
-  void *dest = (void*)&(field->elem(linear));
-#if 0
-  int size = sizeof(field->elem(Layout::linearSiteIndex(coord)));
-#endif
-
-  memcpy(dest,buf,count);
+  void *dest = (void*)(field+linear);
+  memcpy(dest,(const void*)buf,count*sizeof(T));
 }
 
 
@@ -197,67 +182,41 @@ template<class T> void QDPFactoryPut(char *buf, size_t linear, size_t count, voi
 template<class T>
 void QDPSerialFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 {
-  QIO_RecordInfo* info;
+  QIO_RecordInfo* info = QIO_create_record_info("Lattice", "F", Nc, Ns, 
+						sizeof(T), 1);
 
   // Initialize string objects 
   XML_String *xml_c  = XML_string_create(0);
 
   int status = QIO_read(get(), info, xml_c,
-			&(QDPFactoryPut<OLattice<T> >),
-                        sizeof(T), sizeof(typename WordType<T>::Type_t), (void *)&s1);
+			&(QDPFactoryPut<T>),
+                        sizeof(T), sizeof(typename WordType<T>::Type_t), (void *)s1.getF());
 
   // Use string to initialize XMLReader
   istringstream ss((const string)(XML_string_ptr(xml_c)));
   rec_xml.open(ss);
 
   XML_string_destroy(xml_c);
+  QIO_destroy_record_info(info);
 }
 
 
 //! Function for extracting datum at specified site 
-template< class T> void QDPFactoryGet(char *buf, size_t linear, size_t count, void *arg)
+template<class T> void QDPFactoryGet(char *buf, size_t linear, size_t count, void *arg)
 {
   /* Translate arg */
   T *field = (T *)arg;
 
-#if 0
-  /* We expect the data belongs to our node */
-  multi1d<int> coord(Nd);
-  coord = crd;
-  if (Layout::nodeNumber(coord) != Layout::nodeNumber())
-  {
-    buf = '\0';
-    return;
-  }
-#endif
-
-  void *src = (void*)&(field->elem(linear));
-#if 0
-  size_t size = sizeof(field->elem(Layout::linearSiteIndex(coord))); 
-#endif
-  // cout << "Size = " << size << endl;
-
-  memcpy(buf,(const void *)src,count);
+  void *src = (void*)(field+linear);
+  memcpy(buf,(const void*)src,count*sizeof(T));
 }
 
-/* template < class T > void QDPFactoryGet(char *buf, const int crd[], void *arg)
-{
-  QDP_abort(1);
-}
-*/
-/*
-template < class T > void QDPFactoryGet(char *buf, const int crd[], void *arg) {
-  QDPFactoryGet< OLattice<T>, T >(buf, crd, arg);
-}
-*/
 
 //! Write an OLattice object
 /*! This implementation is only correct for scalar ILattice */
 template<class T>
 void QDPSerialFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 {
-  //  cout << "QDPSerialFileWriter::write" << endl;
-
   QIO_RecordInfo* info = QIO_create_record_info("Lattice", "F", Nc, Ns, 
 						sizeof(T), 1);
 
@@ -265,15 +224,10 @@ void QDPSerialFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
   XML_String* xml_c  = XML_string_create(rec_xml.str().length()+1);  // check if +1 is needed
   XML_string_set(xml_c, rec_xml.str().c_str());
 
-//  cout << "len=" << (rec_xml.str().length()+1) << endl;
-//  cout << "rec_c= XXX" << xml_c << "XXX" << endl;
-
   // Big call to qio
   int status = QIO_write(get(), info, xml_c,
-			 &(QDPFactoryGet<OLattice<T> >),
-                         sizeof(T), sizeof(typename WordType<T>::Type_t), (void *)&s1);
-
-//  cout << "cleanup in serialfile" << endl;
+			 &(QDPFactoryGet<T>),
+                         sizeof(T), sizeof(typename WordType<T>::Type_t), (void *)s1.getF());
 
   // Cleanup
   XML_string_destroy(xml_c);
