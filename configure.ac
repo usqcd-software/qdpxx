@@ -187,6 +187,12 @@ AC_CHECK_PROG(DOXYGEN, doxygen, doxygen, true)
 #######################
 
 #
+# Configure subdir packages
+#
+AC_CONFIG_SUBDIRS(other_libs/nml)  # need to make one of these...
+#AC_CONFIG_SUBDIRS(other_libs/qio)
+
+#
 # Set up the doxygen file
 # Substitute the right directories
 #
@@ -198,6 +204,7 @@ AC_CONFIG_FILES(docs/qdpdoc)
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(qdp++-config)
 AC_CONFIG_FILES(lib/Makefile)
+AC_CONFIG_FILES(other_libs/Makefile)
 AC_CONFIG_FILES(include/Makefile)
 AC_CONFIG_FILES(include/PETE/Makefile)
 AC_CONFIG_FILES(include/qdp_config.h)
