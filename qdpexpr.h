@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdpexpr.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
+// $Id: qdpexpr.h,v 1.3 2002-10-01 01:52:51 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -128,6 +128,86 @@ struct Combine2<A, Reference<B>, Op, OpCombine>
     return op(a, b.reference());
   }
 };
+
+
+template<class A,class B,class C,class Op>
+struct Combine3<Reference<A>, B, C, Op, OpCombine>
+{
+  typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
+  inline static
+  Type_t combine(Reference<A> a, B b, C c, Op op, OpCombine)
+  {
+    return op(a.reference(), b, c);
+  }
+};
+
+template<class A,class B,class C,class Op>
+struct Combine3<A, Reference<B>, C, Op, OpCombine>
+{
+  typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
+  inline static
+  Type_t combine(A a, Reference<B> b, C c, Op op, OpCombine)
+  {
+    return op(a, b.reference(), c);
+  }
+};
+
+template<class A,class B,class C,class Op>
+struct Combine3<A, B, Reference<C>, Op, OpCombine>
+{
+  typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
+  inline static
+  Type_t combine(A a, B b, Reference<C> c, Op op, OpCombine)
+  {
+    return op(a, b, c.reference());
+  }
+};
+
+
+template<class A,class B,class C,class Op>
+struct Combine3<Reference<A>, Reference<B>, C, Op, OpCombine>
+{
+  typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
+  inline static
+  Type_t combine(Reference<A> a, Reference<B> b, C c, Op op, OpCombine)
+  {
+    return op(a.reference(), b.reference(), c);
+  }
+};
+
+template<class A,class B,class C,class Op>
+struct Combine3<A, Reference<B>, Reference<C>, Op, OpCombine>
+{
+  typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
+  inline static
+  Type_t combine(A a, Reference<B> b, Reference<C> c, Op op, OpCombine)
+  {
+    return op(a, b.reference(), c.reference());
+  }
+};
+
+template<class A,class B,class C,class Op>
+struct Combine3<Reference<A>, B, Reference<C>, Op, OpCombine>
+{
+  typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
+  inline static
+  Type_t combine(Reference<A> a, B b, Reference<C> c, Op op, OpCombine)
+  {
+    return op(a.reference(), b, c.reference());
+  }
+};
+
+template<class A,class B,class C,class Op>
+struct Combine3<Reference<A>, Reference<B>, Reference<C>, Op, OpCombine>
+{
+  typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
+  inline static
+  Type_t combine(Reference<A> a, Reference<B> b, Reference<C> c, Op op, OpCombine)
+  {
+    return op(a.reference(), b.reference(), c.reference());
+  }
+};
+
 
 
 QDP_END_NAMESPACE();

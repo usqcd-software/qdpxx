@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primmatrix.h,v 1.3 2002-09-15 03:21:16 edwards Exp $
+// $Id: primmatrix.h,v 1.4 2002-10-01 01:52:51 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -331,7 +331,6 @@ operator*(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 
 //-----------------------------------------------------------------------------
 // Functions
-
 
 // Conjugate
 template<class T1, int N, template<class,int> class C>
@@ -709,6 +708,26 @@ localInnerproductReal(const PMatrix<T1,N,C>& s1, const PMatrix<T2,N,C>& s2)
   for(int j=1; j < N; ++j)
     for(int k=0; k < N; ++k)
       d.elem() += localInnerproductReal(s1.elem(k,j), s2.elem(k,j));
+
+  return d;
+}
+
+
+//! PMatrix<T> = where(PScalar, PMatrix, PMatrix)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3, int N, template<class,int> class C>
+inline typename BinaryReturn<PMatrix<T2,N,C>, PMatrix<T3,N,C>, FnWhere>::Type_t
+where(const PScalar<T1>& a, const PMatrix<T2,N,C>& b, const PMatrix<T3,N,C>& c)
+{
+  typename BinaryReturn<PMatrix<T2,N,C>, PMatrix<T3,N,C>, FnWhere>::Type_t  d;
+
+  // Not optimal - want to have where outside assignment
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = where(a.elem(), b.elem(i,j), c.elem(i,j));
 
   return d;
 }

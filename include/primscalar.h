@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primscalar.h,v 1.3 2002-09-15 03:21:16 edwards Exp $
+// $Id: primscalar.h,v 1.4 2002-10-01 01:52:51 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -913,6 +913,22 @@ localInnerproductReal(const PScalar<T1>& s1, const PScalar<T2>& s2)
   typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnLocalInnerproductReal>::Type_t  d;
 
   d.elem() = localInnerproductReal(s1.elem(), s2.elem());
+  return d;
+}
+
+
+//! PScalar<T> = where(PScalar, PScalar, PScalar)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3>
+inline typename BinaryReturn<PScalar<T2>, PScalar<T3>, FnWhere>::Type_t
+where(const PScalar<T1>& a, const PScalar<T2>& b, const PScalar<T3>& c)
+{
+  typename BinaryReturn<PScalar<T2>, PScalar<T3>, FnWhere>::Type_t  d;
+
+  d.elem() = where(a.elem(), b.elem(), c.elem());
   return d;
 }
 

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.2 2002-09-23 19:29:15 edwards Exp $
+// $Id: foo.cc,v 1.3 2002-10-01 01:52:51 edwards Exp $
 //
 // Silly little internal test code
 
@@ -34,10 +34,10 @@ int main()
 //  typedef QDPType<OLattice<int> > LatticeInteger;
 //  LatticeComplexInteger a, b, c;
 //  LatticeReal a, b, c;
-  LatticeGauge a, b, c;
+  LatticeComplex a, b, c, e;
   Complex d;
   float ccc = 2.0;
-//  float x;
+  float x;
   
 #if 1
 //  b = 3;
@@ -65,7 +65,14 @@ int main()
   cerr << b << endl;
   cerr << "here a\n";
   cerr << a << endl;
-//  cerr << "here c\n";
+
+  cerr << "here e\n";
+  LatticeReal rr;
+  random(rr);
+  e = where(rr < 0.5, a, c);
+  cerr << e << endl;
+
+
 
 #if 0
 
@@ -74,6 +81,20 @@ int main()
 
   cerr << "here c\n";
   cerr << a << endl;
+#endif
+
+#if 0
+  BinaryWriter to("fred");
+  to << a;
+  to.close();
+
+  cerr << "enter some data\n";
+  TextReader from("input");
+  from >> x;
+  from.close();
+
+  cerr << "you entered :" << x << ":\n";
+  
 #endif
 
 

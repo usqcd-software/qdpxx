@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primvector.h,v 1.3 2002-09-14 19:48:26 edwards Exp $
+// $Id: primvector.h,v 1.4 2002-10-01 01:52:51 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -497,6 +497,25 @@ localInnerproductReal(const PVector<T1,N,C>& s1, const PVector<T1,N,C>& s2)
   d.elem() = localInnerproductReal(s1.elem(0), s2.elem(0));
   for(int i=1; i < N; ++i)
     d.elem() += localInnerproductReal(s1.elem(i), s2.elem(i));
+
+  return d;
+}
+
+
+//! PVector<T> = where(PScalar, PVector, PVector)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3, int N, template<class,int> class C>
+inline typename BinaryReturn<PVector<T2,N,C>, PVector<T3,N,C>, FnWhere>::Type_t
+where(const PScalar<T1>& a, const PVector<T2,N,C>& b, const PVector<T3,N,C>& c)
+{
+  typename BinaryReturn<PVector<T2,N,C>, PVector<T3,N,C>, FnWhere>::Type_t  d;
+
+  // Not optimal - want to have where outside assignment
+  for(int i=0; i < N; ++i)
+    d.elem(i) = where(a.elem(), b.elem(i), c.elem(i));
 
   return d;
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.3 2002-09-26 21:28:54 edwards Exp $
+// $Id: simpleword.h,v 1.4 2002-10-01 01:52:51 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -171,6 +171,27 @@ int trace(const int& s1)
 {
   return s1;
 }
+
+
+// Where is the ? operator
+inline 
+int where(const bool& a, const int& b, const int& c)
+{
+  if (a) return b; else return c;
+}
+
+inline 
+float where(const bool& a, const float& b, const float& c)
+{
+  if (a) return b; else return c;
+}
+
+inline 
+double where(const bool& a, const double& b, const double& c)
+{
+  if (a) return b; else return c;
+}
+
 
 
 // Global sum over site indices only

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
+// $Id: reality.h,v 1.3 2002-10-01 01:52:51 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -379,6 +379,8 @@ template<class T1, class T2, class Op>
 struct BinaryReturn<RComplex<T1>, RScalar<T2>, Op> {
   typedef RComplex<typename BinaryReturn<T1, T2, Op>::Type_t>  Type_t;
 };
+
+
 
 
 // RScalar
@@ -1128,6 +1130,23 @@ localinnerproductReal(const RScalar<T1>& s1, const RScalar<T2>& s2)
 }
 
 
+//! RScalar<T> = where(RScalar, RScalar, RScalar)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3>
+inline typename BinaryReturn<RScalar<T2>, RScalar<T3>, FnWhere>::Type_t
+where(const RScalar<T1>& a, const RScalar<T2>& b, const RScalar<T3>& c)
+{
+  typename BinaryReturn<RScalar<T2>, RScalar<T3>, FnWhere>::Type_t  d;
+
+  d.elem() = where(a.elem(), b.elem(), c.elem());
+  return d;
+}
+
+
+
 //-----------------------------------------------------------------------------
 // Broadcast operations
 //! dest = 0
@@ -1591,6 +1610,24 @@ localInnerproductReal(const RComplex<T1>& l, const RComplex<T2>& r)
   typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerproductReal>::Type_t  d;
 
   d.elem() = localInnerproduct(l.real(),r.real()) + localInnerproduct(l.imag(),r.imag());
+  return d;
+}
+
+
+//! RComplex<T> = where(RScalar, RComplex, RComplex)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3>
+inline typename BinaryReturn<RComplex<T2>, RComplex<T3>, FnWhere>::Type_t
+where(const RScalar<T1>& a, const RComplex<T2>& b, const RComplex<T3>& c)
+{
+  typename BinaryReturn<RComplex<T2>, RComplex<T3>, FnWhere>::Type_t  d;
+
+  // Not optimal - want to have where outside assignment
+  d.real() = where(a.elem(), b.real(), c.real());
+  d.imag() = where(a.elem(), b.imag(), c.imag());
   return d;
 }
 

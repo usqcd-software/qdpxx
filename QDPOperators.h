@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: QDPOperators.h,v 1.6 2002-09-23 19:27:39 edwards Exp $
+// $Id: QDPOperators.h,v 1.7 2002-10-01 01:52:51 edwards Exp $
 
 #ifndef QDPOPS_H
 #define QDPOPS_H
@@ -444,7 +444,7 @@ conj(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnConj,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnConj >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnConj >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -457,7 +457,7 @@ trace(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnTrace,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -470,7 +470,7 @@ traceReal(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnTraceReal,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnTraceReal >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnTraceReal >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -483,7 +483,7 @@ traceImag(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnTraceImag,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnTraceImag >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnTraceImag >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -496,7 +496,7 @@ colorTrace(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnColorTrace,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnColorTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnColorTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -509,7 +509,7 @@ spinTrace(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinTrace,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -522,7 +522,7 @@ noColorTrace(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnNoColorTrace,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnNoColorTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnNoColorTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -535,7 +535,7 @@ noSpinTrace(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnNoSpinTrace,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnNoSpinTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnNoSpinTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -548,7 +548,7 @@ real(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnReal,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnReal >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnReal >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -561,7 +561,7 @@ imag(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnImag,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnImag >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnImag >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -574,7 +574,7 @@ localNorm2(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnLocalNorm2,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnLocalNorm2 >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnLocalNorm2 >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -587,7 +587,7 @@ multiplyI(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnMultiplyI,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnMultiplyI >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnMultiplyI >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -600,7 +600,7 @@ multiplyMinusI(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnMultiplyMinusI,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnMultiplyMinusI >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnMultiplyMinusI >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -613,7 +613,7 @@ spinProjectDir0Plus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir0Plus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir0Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir0Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -626,7 +626,7 @@ spinProjectDir1Plus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir1Plus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir1Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir1Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -639,7 +639,7 @@ spinProjectDir2Plus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir2Plus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir2Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir2Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -652,7 +652,7 @@ spinProjectDir3Plus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir3Plus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir3Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir3Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -665,7 +665,7 @@ spinProjectDir0Minus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir0Minus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir0Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir0Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -678,7 +678,7 @@ spinProjectDir1Minus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir1Minus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir1Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir1Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -691,7 +691,7 @@ spinProjectDir2Minus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir2Minus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir2Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir2Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -704,7 +704,7 @@ spinProjectDir3Minus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir3Minus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir3Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir3Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -717,7 +717,7 @@ spinReconstructDir0Plus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir0Plus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir0Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir0Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -730,7 +730,7 @@ spinReconstructDir1Plus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir1Plus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir1Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir1Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -743,7 +743,7 @@ spinReconstructDir2Plus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir2Plus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir2Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir2Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -756,7 +756,7 @@ spinReconstructDir3Plus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir3Plus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir3Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir3Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -769,7 +769,7 @@ spinReconstructDir0Minus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir0Minus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir0Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir0Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -782,7 +782,7 @@ spinReconstructDir1Minus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir1Minus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir1Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir1Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -795,7 +795,7 @@ spinReconstructDir2Minus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir2Minus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir2Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir2Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -808,7 +808,7 @@ spinReconstructDir3Minus(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir3Minus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir3Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir3Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -821,7 +821,7 @@ acos(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnArcCos,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnArcCos >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnArcCos >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -834,7 +834,7 @@ asin(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnArcSin,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnArcSin >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnArcSin >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -847,7 +847,7 @@ atan(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnArcTan,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnArcTan >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnArcTan >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -860,7 +860,7 @@ ceil(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnCeil,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnCeil >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnCeil >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -873,7 +873,7 @@ cos(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnCos,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnCos >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnCos >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -886,7 +886,7 @@ cosh(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnHypCos,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnHypCos >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnHypCos >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -899,7 +899,7 @@ exp(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnExp,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnExp >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnExp >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -912,7 +912,7 @@ fabs(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnFabs,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnFabs >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnFabs >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -925,7 +925,7 @@ floor(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnFloor,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnFloor >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnFloor >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -938,7 +938,7 @@ log(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnLog,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnLog >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnLog >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -951,7 +951,7 @@ log10(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnLog10,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnLog10 >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnLog10 >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -964,7 +964,7 @@ sin(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSin,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSin >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSin >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -977,7 +977,7 @@ sinh(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnHypSin,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnHypSin >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnHypSin >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -990,7 +990,7 @@ sqrt(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSqrt,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSqrt >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSqrt >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -1003,7 +1003,7 @@ tan(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnTan,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnTan >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnTan >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -1016,7 +1016,7 @@ tanh(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnHypTan,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnHypTan >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnHypTan >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -1029,7 +1029,7 @@ operator-(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<OpUnaryMinus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,OpUnaryMinus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,OpUnaryMinus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -1042,7 +1042,7 @@ operator+(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<OpUnaryPlus,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,OpUnaryPlus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,OpUnaryPlus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -1055,7 +1055,7 @@ operator~(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<OpBitwiseNot,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,OpBitwiseNot >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,OpBitwiseNot >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -1068,7 +1068,7 @@ PETE_identity(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<OpIdentity,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,OpIdentity >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,OpIdentity >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -1081,7 +1081,7 @@ operator!(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<OpNot,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,OpNot >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,OpNot >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -3533,6 +3533,101 @@ operator||(const typename WordType<C2>::Type_t & l,const QDPType<T2,C2> & r)
     CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(l)),
     CreateLeaf<QDPType<T2,C2> >::make(r)));
 }
+
+template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnWhere>::Type_t >::Expression_t
+where(const QDPType<T1,C1> & a,const QDPType<T2,C2> & b,const typename WordType<C1>::Type_t & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
+}
+
+template<class T1,class C1,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,C3,FnWhere>::Type_t >::Expression_t
+where(const QDPType<T1,C1> & a,const typename WordType<C1>::Type_t & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(b)),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnWhere>::Type_t >::Expression_t
+where(const QDPType<T1,C1> & a,const typename WordType<C1>::Type_t & b,const typename WordType<C1>::Type_t & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(b)),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
+}
+
+template<class T2,class C2>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,FnWhere>::Type_t >::Expression_t
+where(const typename WordType<C2>::Type_t & a,const QDPType<T2,C2> & b,const typename WordType<C2>::Type_t & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(c))));
+}
+
+template<class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,C3,FnWhere>::Type_t >::Expression_t
+where(const typename WordType<C3>::Type_t & a,const typename WordType<C3>::Type_t & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t(a)),
+    CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t(b)),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
+}
 #ifdef PETE_ALLOW_SCALAR_SHIFT
 
 template<class T2,class C2>
@@ -3567,6 +3662,25 @@ operator>>(const typename WordType<C2>::Type_t & l,const QDPType<T2,C2> & r)
     CreateLeaf<QDPType<T2,C2> >::make(r)));
 }
 #endif // PETE_ALLOW_SCALAR_SHIFT
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t >::Expression_t
+where(const QDPType<T1,C1> & a,const QDPType<T2,C2> & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
+}
 #ifndef PETE_EXPRESSION_OPERATORS
 #define PETE_EXPRESSION_OPERATORS
 
@@ -3578,7 +3692,7 @@ conj(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnConj,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnConj >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnConj >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3591,7 +3705,7 @@ trace(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnTrace,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3604,7 +3718,7 @@ traceReal(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnTraceReal,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnTraceReal >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnTraceReal >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3617,7 +3731,7 @@ traceImag(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnTraceImag,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnTraceImag >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnTraceImag >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3630,7 +3744,7 @@ colorTrace(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnColorTrace,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnColorTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnColorTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3643,7 +3757,7 @@ spinTrace(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinTrace,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3656,7 +3770,7 @@ noColorTrace(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnNoColorTrace,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnNoColorTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnNoColorTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3669,7 +3783,7 @@ noSpinTrace(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnNoSpinTrace,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnNoSpinTrace >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnNoSpinTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3682,7 +3796,7 @@ real(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnReal,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnReal >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnReal >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3695,7 +3809,7 @@ imag(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnImag,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnImag >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnImag >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3708,7 +3822,7 @@ localNorm2(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnLocalNorm2,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnLocalNorm2 >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnLocalNorm2 >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3721,7 +3835,7 @@ multiplyI(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnMultiplyI,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnMultiplyI >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnMultiplyI >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3734,7 +3848,7 @@ multiplyMinusI(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnMultiplyMinusI,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnMultiplyMinusI >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnMultiplyMinusI >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3747,7 +3861,7 @@ spinProjectDir0Plus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir0Plus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir0Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir0Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3760,7 +3874,7 @@ spinProjectDir1Plus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir1Plus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir1Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir1Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3773,7 +3887,7 @@ spinProjectDir2Plus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir2Plus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir2Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir2Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3786,7 +3900,7 @@ spinProjectDir3Plus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir3Plus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir3Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir3Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3799,7 +3913,7 @@ spinProjectDir0Minus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir0Minus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir0Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir0Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3812,7 +3926,7 @@ spinProjectDir1Minus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir1Minus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir1Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir1Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3825,7 +3939,7 @@ spinProjectDir2Minus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir2Minus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir2Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir2Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3838,7 +3952,7 @@ spinProjectDir3Minus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinProjectDir3Minus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinProjectDir3Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinProjectDir3Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3851,7 +3965,7 @@ spinReconstructDir0Plus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir0Plus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir0Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir0Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3864,7 +3978,7 @@ spinReconstructDir1Plus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir1Plus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir1Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir1Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3877,7 +3991,7 @@ spinReconstructDir2Plus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir2Plus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir2Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir2Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3890,7 +4004,7 @@ spinReconstructDir3Plus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir3Plus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir3Plus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir3Plus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3903,7 +4017,7 @@ spinReconstructDir0Minus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir0Minus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir0Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir0Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3916,7 +4030,7 @@ spinReconstructDir1Minus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir1Minus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir1Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir1Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3929,7 +4043,7 @@ spinReconstructDir2Minus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir2Minus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir2Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir2Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3942,7 +4056,7 @@ spinReconstructDir3Minus(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinReconstructDir3Minus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSpinReconstructDir3Minus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSpinReconstructDir3Minus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3955,7 +4069,7 @@ acos(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnArcCos,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnArcCos >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnArcCos >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3968,7 +4082,7 @@ asin(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnArcSin,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnArcSin >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnArcSin >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3981,7 +4095,7 @@ atan(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnArcTan,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnArcTan >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnArcTan >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -3994,7 +4108,7 @@ ceil(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnCeil,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnCeil >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnCeil >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4007,7 +4121,7 @@ cos(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnCos,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnCos >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnCos >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4020,7 +4134,7 @@ cosh(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnHypCos,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnHypCos >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnHypCos >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4033,7 +4147,7 @@ exp(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnExp,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnExp >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnExp >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4046,7 +4160,7 @@ fabs(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnFabs,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnFabs >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnFabs >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4059,7 +4173,7 @@ floor(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnFloor,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnFloor >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnFloor >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4072,7 +4186,7 @@ log(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnLog,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnLog >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnLog >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4085,7 +4199,7 @@ log10(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnLog10,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnLog10 >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnLog10 >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4098,7 +4212,7 @@ sin(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSin,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSin >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSin >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4111,7 +4225,7 @@ sinh(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnHypSin,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnHypSin >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnHypSin >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4124,7 +4238,7 @@ sqrt(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSqrt,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnSqrt >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnSqrt >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4137,7 +4251,7 @@ tan(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnTan,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnTan >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnTan >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4150,7 +4264,7 @@ tanh(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnHypTan,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,FnHypTan >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,FnHypTan >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4163,7 +4277,7 @@ operator-(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<OpUnaryMinus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,OpUnaryMinus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,OpUnaryMinus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4176,7 +4290,7 @@ operator+(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<OpUnaryPlus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,OpUnaryPlus >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,OpUnaryPlus >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4189,7 +4303,7 @@ operator~(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<OpBitwiseNot,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,OpBitwiseNot >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,OpBitwiseNot >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4202,7 +4316,7 @@ PETE_identity(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<OpIdentity,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,OpIdentity >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,OpIdentity >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4215,7 +4329,7 @@ operator!(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<OpNot,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-    typedef typename UnaryReturn<C1,OpNot >::Type_t Container_t;
+  typedef typename UnaryReturn<C1,OpNot >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
@@ -4714,6 +4828,25 @@ operator>>(const QDPExpr<T1,C1> & l,const QDPExpr<T2,C2> & r)
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l),
     CreateLeaf<QDPExpr<T2,C2> >::make(r)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t >::Expression_t
+where(const QDPExpr<T1,C1> & a,const QDPExpr<T2,C2> & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
 }
 
 template<class T1,class C1>
@@ -5675,6 +5808,196 @@ operator||(const typename WordType<C2>::Type_t & l,const QDPExpr<T2,C2> & r)
     CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(l)),
     CreateLeaf<QDPExpr<T2,C2> >::make(r)));
 }
+
+template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnWhere>::Type_t >::Expression_t
+where(const QDPExpr<T1,C1> & a,const QDPType<T2,C2> & b,const typename WordType<C1>::Type_t & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
+}
+
+template<class T1,class C1,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,C3,FnWhere>::Type_t >::Expression_t
+where(const QDPExpr<T1,C1> & a,const typename WordType<C1>::Type_t & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(b)),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnWhere>::Type_t >::Expression_t
+where(const QDPExpr<T1,C1> & a,const typename WordType<C1>::Type_t & b,const typename WordType<C1>::Type_t & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(b)),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
+}
+
+template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnWhere>::Type_t >::Expression_t
+where(const QDPType<T1,C1> & a,const QDPExpr<T2,C2> & b,const typename WordType<C1>::Type_t & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(c))));
+}
+
+template<class T1,class C1,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,C3,FnWhere>::Type_t >::Expression_t
+where(const QDPType<T1,C1> & a,const typename WordType<C1>::Type_t & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(b)),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,C3,FnWhere>::Type_t >::Expression_t
+where(const typename WordType<C2>::Type_t & a,const QDPExpr<T2,C2> & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
+}
+
+template<class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,C3,FnWhere>::Type_t >::Expression_t
+where(const typename WordType<C2>::Type_t & a,const QDPType<T2,C2> & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,C3,FnWhere>::Type_t >::Expression_t
+where(const typename WordType<C2>::Type_t & a,const QDPExpr<T2,C2> & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T2,class C2>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,FnWhere>::Type_t >::Expression_t
+where(const typename WordType<C2>::Type_t & a,const QDPExpr<T2,C2> & b,const typename WordType<C2>::Type_t & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(a)),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(c))));
+}
+
+template<class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,C3,FnWhere>::Type_t >::Expression_t
+where(const typename WordType<C3>::Type_t & a,const typename WordType<C3>::Type_t & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t(a)),
+    CreateLeaf<typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C3>::Type_t>::Type_t(b)),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
 #ifdef PETE_ALLOW_SCALAR_SHIFT
 
 template<class T2,class C2>
@@ -5709,6 +6032,120 @@ operator>>(const typename WordType<C2>::Type_t & l,const QDPExpr<T2,C2> & r)
     CreateLeaf<QDPExpr<T2,C2> >::make(r)));
 }
 #endif // PETE_ALLOW_SCALAR_SHIFT
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t >::Expression_t
+where(const QDPExpr<T1,C1> & a,const QDPType<T2,C2> & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t >::Expression_t
+where(const QDPType<T1,C1> & a,const QDPExpr<T2,C2> & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t >::Expression_t
+where(const QDPType<T1,C1> & a,const QDPType<T2,C2> & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPType<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t >::Expression_t
+where(const QDPExpr<T1,C1> & a,const QDPExpr<T2,C2> & b,const QDPType<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPType<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<QDPType<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t >::Expression_t
+where(const QDPType<T1,C1> & a,const QDPExpr<T2,C2> & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(a),
+    CreateLeaf<QDPExpr<T2,C2> >::make(b),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
+
+template<class T1,class C1,class T2,class C2,class T3,class C3>
+inline typename MakeReturn<TrinaryNode<FnWhere,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t>,
+  typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t >::Expression_t
+where(const QDPExpr<T1,C1> & a,const QDPType<T2,C2> & b,const QDPExpr<T3,C3> & c)
+{
+  typedef TrinaryNode<FnWhere,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T3,C3> >::Leaf_t> Tree_t;
+  typedef typename TrinaryReturn<C1,C2,C3,FnWhere>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(a),
+    CreateLeaf<QDPType<T2,C2> >::make(b),
+    CreateLeaf<QDPExpr<T3,C3> >::make(c)));
+}
 #endif  // PETE_EXPRESSION_OPERATORS
 
 #endif // QDPOPS_H
