@@ -8,7 +8,8 @@ to build the "scalar" version (single node workstation) of QDP++:
 % cd qdp++
 % mkdir scalar-build
 % cd scalar-build
-% ../configure --prefix=<path to your favorite installation directory>
+% ../configure --prefix=<path to your favorite installation directory>  \
+               --enable-parallel-arch=scalar
 % make
 
 The include files, libraries and docs are installed in the path
