@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.15 2004-03-21 21:22:42 bjoo Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.16 2004-03-27 04:02:04 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -398,6 +398,10 @@ void writeOLattice(BinaryWriter& bin,
   int node   = Layout::nodeNumber(coord);
   int linear = Layout::linearSiteIndex(coord);
 
+  // Send nodes must wait for a ready signal from the master node
+  // to prevent message pileups on the master node
+  Internal::clearToSend(recv_buf,sizeof(int),node);
+  
   // Copy to buffer: be really careful since max(linear) could vary among nodes
   if (Layout::nodeNumber() == node)
     memcpy(recv_buf, output+linear*tot_size, tot_size);
@@ -406,8 +410,8 @@ void writeOLattice(BinaryWriter& bin,
   if (node != 0)
   {
 #if 1
-      // All nodes participate
-      Internal::route((void *)recv_buf, node, 0, tot_size);
+    // All nodes participate
+    Internal::route((void *)recv_buf, node, 0, tot_size);
 #else
     if (Layout::primaryNode())
       Internal::recvFromWait((void *)recv_buf, node, tot_size);
