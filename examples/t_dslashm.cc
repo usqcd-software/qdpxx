@@ -1,4 +1,4 @@
-// $Id: t_dslashm.cc,v 1.9 2002-12-18 21:33:24 edwards Exp $
+// $Id: t_dslashm.cc,v 1.10 2003-01-14 04:43:29 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -18,7 +18,8 @@ int main(int argc, char **argv)
   const int foo[] = {2,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
-  Layout::create(nrow);
+  Layout::setLattSize(nrow);
+  Layout::create();
 
   //! Test out propagators
   multi1d<LatticeColorMatrix> u(Nd);
@@ -42,4 +43,6 @@ int main(int argc, char **argv)
 
   // Time to bolt
   QDP_finalize();
+
+  return 0;
 }

@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.9 2002-12-26 23:01:11 edwards Exp $
+// $Id: formfac_w.cc,v 1.10 2003-01-14 04:43:29 edwards Exp $
 
 #include "examples.h"
 #include "proto.h"
@@ -61,7 +61,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
    */
   multi1d<LatticeInteger> my_coord(Nd);
   for(int mu = 0; mu < Nd; ++mu)
-    my_coord[mu] = latticeCoordinate(mu);
+    my_coord[mu] = Layout::latticeCoordinate(mu);
 
   
   /*

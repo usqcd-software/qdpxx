@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.2 2003-01-04 03:33:19 edwards Exp $
+// $Id: t_foo.cc,v 1.3 2003-01-14 04:43:29 edwards Exp $
 //
 // Silly little internal test code
 
@@ -20,7 +20,7 @@ struct Nearest : public MapFunc
       multi1d<int> lc = coord;
 
       const multi1d<int>& nrow = Layout::lattSize();
-      int m = 1;
+      int m = 0;
       lc[m] = (coord[m] + sgnum(sign) + nrow[m]) % nrow[m];
 
       return lc;
@@ -43,7 +43,8 @@ int main(int argc, char *argv[])
   const int foo[] = {4,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
-  Layout::create(nrow);
+  Layout::setLattSize(nrow);
+  Layout::create();
 
 //  NmlWriter nml("foo.nml");
   nml.open("foo.nml");
@@ -301,4 +302,6 @@ int main(int argc, char *argv[])
 
   // Time to bolt
   QDP_finalize();
+
+  return 0;
 }

@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.5 2002-12-26 23:01:11 edwards Exp $
+ *  $Id: t_spectrum.cc,v 1.6 2003-01-14 04:43:29 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -44,7 +44,8 @@ int main(int argc, char **argv)
   const int foo[] = {4, 4, 4, 8};
   nsize = foo;
   // Initialise the layout
-  Layout::create(nsize);
+  Layout::setLattSize(nsize);
+  Layout::create();
 
   int j_decay = Nd-1;
   int length = Layout::lattSize()[j_decay]; // Define the temporal direction
@@ -173,4 +174,6 @@ int main(int argc, char **argv)
 
   // Time to bolt
   QDP_finalize();
+
+  return 0;
 }

@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.11 2002-12-18 21:33:24 edwards Exp $
+// $Id: t_mesplq.cc,v 1.12 2003-01-14 04:43:29 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -7,8 +7,6 @@
 #include "examples.h"
 
 using namespace QDP;
-
-NmlWriter nml;
 
 int main(int argc, char *argv[])
 {
@@ -19,9 +17,10 @@ int main(int argc, char *argv[])
   const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
-  Layout::create(nrow);
+  Layout::setLattSize(nrow);
+  Layout::create();
 
-  nml.open("t_mesplq.nml");
+  NmlWriter nml("t_mesplq.nml");
 
   push(nml,"lattis");
   Write(nml,Nd);
@@ -55,4 +54,6 @@ int main(int argc, char *argv[])
 
   // Time to bolt
   QDP_finalize();
+
+  return 0;
 }

@@ -1,4 +1,4 @@
-// $Id: t_formfac.cc,v 1.11 2002-12-26 23:01:11 edwards Exp $
+// $Id: t_formfac.cc,v 1.12 2003-01-14 04:43:29 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -18,7 +18,8 @@ int main(int argc, char **argv)
   const int foo[] = {2,2,2,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
-  Layout::create(nrow);
+  Layout::setLattSize(nrow);
+  Layout::create();
 
   NmlWriter nml("t_formfac.nml");
 
@@ -51,4 +52,6 @@ int main(int argc, char **argv)
 
   // Time to bolt
   QDP_finalize();
+
+  return 0;
 }
