@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.31 2004-04-07 09:34:49 bjoo Exp $
+// $Id: qdp_outer.h,v 1.32 2004-07-27 05:30:19 edwards Exp $
 
 #include "qdp_config.h"
 
@@ -245,7 +245,8 @@ void read(XMLReader& xml, const string& path, OScalar<T>& d)
  */
 template<class T, class T1, class Op, class RHS>
 inline
-void evaluate(OScalar<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs)
+void evaluate(OScalar<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
+	      const OrderedSubset& s)
 {
   // Subset is not used at this level. It may be needed, though, within an inner operation
   op(dest.elem(), forEach(rhs, ElemLeaf(), OpCombine()));
@@ -454,12 +455,14 @@ private:
 // OLattice Op Scalar(Expression(source))
 /* Implementation in relevant specific files */
 template<class T, class T1, class Op, class RHS>
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs);
+void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
+	      const OrderedSubset& s);
 
 // OLattice Op OLattice(Expression(source))
 /* Implementation in relevant specific files */
 template<class T, class T1, class Op, class RHS>
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs);
+void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
+	      const OrderedSubset& s);
 
 
 
