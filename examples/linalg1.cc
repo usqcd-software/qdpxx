@@ -1,4 +1,4 @@
-// $Id: linalg1.cc,v 1.5 2003-08-04 18:59:41 edwards Exp $
+// $Id: linalg1.cc,v 1.6 2003-08-05 03:27:59 edwards Exp $
 
 #include <time.h>
 
@@ -6,17 +6,6 @@
 #include "linalg.h"
 
 namespace QDP {
-
-typedef struct
-{
-   unsigned int c1,c2,c3,c4;
-} sse_mask __attribute__ ((aligned (16)));
-
-static sse_mask _sse_sgn13 __attribute__ ((unused)) ={0x80000000, 0x00000000, 0x80000000, 0x00000000};
-static sse_mask _sse_sgn24 __attribute__ ((unused)) ={0x00000000, 0x80000000, 0x00000000, 0x80000000};
-static sse_mask _sse_sgn3 __attribute__  ((unused)) ={0x00000000, 0x00000000, 0x80000000, 0x00000000};
-static sse_mask _sse_sgn4 __attribute__  ((unused)) ={0x00000000, 0x00000000, 0x00000000, 0x80000000};
-
 
 
 #if 0
@@ -122,6 +111,17 @@ adjMultiplyAdj<>(const PMatrix<RComplex<float>,3,PColorMatrix>& l,
 
 
 #if 0
+typedef struct
+{
+   unsigned int c1,c2,c3,c4;
+} sse_mask __attribute__ ((aligned (16)));
+
+static sse_mask _sse_sgn13 __attribute__ ((unused)) ={0x80000000, 0x00000000, 0x80000000, 0x00000000};
+static sse_mask _sse_sgn24 __attribute__ ((unused)) ={0x00000000, 0x80000000, 0x00000000, 0x80000000};
+static sse_mask _sse_sgn3 __attribute__  ((unused)) ={0x00000000, 0x00000000, 0x80000000, 0x00000000};
+static sse_mask _sse_sgn4 __attribute__  ((unused)) ={0x00000000, 0x00000000, 0x00000000, 0x80000000};
+
+
 template<>
 inline BinaryReturn<PMatrix<RComplex<float>,3,PColorMatrix>, 
   PMatrix<RComplex<float>,3,PColorMatrix>, OpMultiply>::Type_t
@@ -372,6 +372,16 @@ operator*<>(const PMatrix<RComplex<float>,3,PColorMatrix>& l,
 
 
 #if 0
+typedef struct
+{
+   unsigned int c1,c2,c3,c4;
+} sse_mask __attribute__ ((aligned (16)));
+
+static sse_mask _sse_sgn13 __attribute__ ((unused)) ={0x80000000, 0x00000000, 0x80000000, 0x00000000};
+static sse_mask _sse_sgn24 __attribute__ ((unused)) ={0x00000000, 0x80000000, 0x00000000, 0x80000000};
+static sse_mask _sse_sgn3 __attribute__  ((unused)) ={0x00000000, 0x00000000, 0x80000000, 0x00000000};
+static sse_mask _sse_sgn4 __attribute__  ((unused)) ={0x00000000, 0x00000000, 0x00000000, 0x80000000};
+
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
 template<>
@@ -630,6 +640,91 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d,
   }
 }
 #endif
+
+
+
+
+#if 0
+#include "jlab_sse.h"
+
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
+template<>
+void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiply, 
+	      Reference<QDPType<PScalar<PColorMatrix<RComplex<float>, 3> >, 
+	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > > >, 
+	      Reference<QDPType<PScalar<PColorMatrix<RComplex<float>, 3> >, 
+	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > > > >,
+	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > >& rhs)
+{
+//  cout << "call QDP_M_eq_M_times_M" << endl;
+
+  const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
+  const LatticeColorMatrix& r = static_cast<const LatticeColorMatrix&>(rhs.expression().right());
+  su3* u3_base = (su3*)((void *)(&(d.elem(0))));
+  su3* u1_base = (su3*)((void *)(&(l.elem(0))));
+  su3* u2_base = (su3*)((void *)(&(r.elem(0))));
+
+#define PREFDIST 2  
+#define __REP_ADD_SUB_NEG__0_rep(ttt) _sse_pair_store_up_c1_c2((*(u5)));	
+#define __REP_ADD_SUB_NEG__1_rep(ttt) _sse_pair_store_up_c3_c1((*(u5)),(*(u8))); 
+#define __REP_ADD_SUB_NEG__2_rep(ttt) _sse_pair_store_up_c2_c3((*(u8)));
+
+  su3 *u0;
+  su3 *u1;
+  su3 *u2;
+  su3 *u3;
+  su3 *u4;
+  su3 *u5;
+  su3 *u6;
+  su3 *u7;
+  su3 *u8;
+  sse_float _sse_sgn12 ALIGN ={-1.0f,-1.0f,1.0f,1.0f};
+  sse_float _sse_sgn13 ALIGN ={-1.0f,1.0f,-1.0f,1.0f};
+  sse_float _sse_sgn14 ALIGN ={-1.0f,1.0f,1.0f,-1.0f};
+  sse_float _sse_sgn23 ALIGN ={1.0f,-1.0f,-1.0f,1.0f};
+  sse_float _sse_sgn24 ALIGN ={1.0f,-1.0f,1.0f,-1.0f};
+  sse_float _sse_sgn34 ALIGN ={1.0f,1.0f,-1.0f,-1.0f};
+  sse_float _sse_sgn1234 ALIGN ={-1.0f,-1.0f,-1.0f,-1.0f};
+
+  const int vvol = Layout::vol();
+  for(int ix=0; ix < vvol; ix+=2) 
+  {
+    {
+      _prefetch_single(u1_base + (ix+PREFDIST));
+      _prefetch_single(u2_base + (ix+PREFDIST));
+      _prefetch_single(u3_base + (ix+PREFDIST));
+    }
+    u4 = u2_base + (ix);
+    _sse_pair_load_c1_c2((*(u4)));   /*load 3 colors, first two rows*/
+    u3 = u1_base + (ix);
+    u5 = u3_base + (ix);
+
+    _sse_su3_multiply(*(u3));
+    __REP_ADD_SUB_NEG__0_rep();
+    {
+      _prefetch_single(u1_base + (ix+1+PREFDIST));
+      _prefetch_single(u2_base + (ix+1+PREFDIST));
+      _prefetch_single(u3_base + (ix+1+PREFDIST));
+    }
+    u7 = u2_base + (ix+1);
+    _sse_pair_load_c3_c1((*(u4)),(*(u7)));
+    u6 = u1_base + (ix+1);
+    u8 = u3_base + (ix+1);
+
+    _sse_su3_multiply_3x1_2sites(*(u3),*(u6));
+    __REP_ADD_SUB_NEG__1_rep();
+    _sse_pair_load_c2_c3((*(u7)));
+    
+    _sse_su3_multiply(*(u6));
+    __REP_ADD_SUB_NEG__2_rep();
+  }
+}
+#endif
+
 } // end namespace QDP
 
 
