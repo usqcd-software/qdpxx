@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.23 2005-03-21 05:31:07 edwards Exp $
+// $Id: t_mesplq.cc,v 1.24 2005-03-21 17:28:15 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -28,18 +28,6 @@ int main(int argc, char *argv[])
   write(xml,"Nc",Nc);
   write(xml,"nrow",nrow);
   pop(xml);
-
-  multi1d<Real> fred(5);
-  fred = 0;
-
-  write(xml,"fred",fred);
-
-  multi1d< multi1d<Real> > soo(2);
-  soo[0].resize(3);
-  soo[1].resize(4);
-  soo = 0;
-
-  write(xml,"soo",soo);
 
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
