@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.9 2003-09-03 01:29:24 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.10 2003-09-03 03:35:23 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -684,19 +684,20 @@ pokeSite(OLattice<T1>& l, const OScalar<T2>& r, const multi1d<int>& coord)
   @relates QDPType */
 template<class T>
 inline void 
-QDP_extract(multi1d<OScalar<T> >& dest, const OLattice<T>& src, const Subset& s)
+QDP_extract(multi1d<OScalar<typename UnaryReturn<T, FnGetSite>::Type_t> >& dest, 
+	    const OLattice<T>& src, const Subset& s)
 {
-#if ! defined(QDP_NOT_IMPLEMENTED)
   const int *tab = s.siteTable().slice();
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
-    dest[i].elem() = src.elem(i);
+    int iouter = i >> INNER_LOG;
+    int iinner = i & ((1 << INNER_LOG)-1);
+
+    dest[i].elem() = getSite(src.elem(iouter),iinner);
   }
-#else
-  QDP_error_exit("QDP_extract_UnorderedSubset not implemented");
-#endif
 }
+
 
 //! Inserts data values from site array src.
 /*! @ingroup group1
@@ -707,18 +708,18 @@ QDP_extract(multi1d<OScalar<T> >& dest, const OLattice<T>& src, const Subset& s)
   @relates QDPType */
 template<class T>
 inline void 
-QDP_insert(OLattice<T>& dest, const multi1d<OScalar<T> >& src, const Subset& s)
+QDP_insert(OLattice<T>& dest, 
+	   const multi1d<OScalar<typename UnaryReturn<T, FnGetSite>::Type_t> >& src, 
+	   const Subset& s)
 {
-#if ! defined(QDP_NOT_IMPLEMENTED)
   const int *tab = s.siteTable().slice();
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
-    dest.elem(i) = src[i].elem();
+    int iouter = i >> INNER_LOG;
+    int iinner = i & ((1 << INNER_LOG)-1);
+    copy_site(dest.elem(iouter), iinner, src[i].elem());
   }
-#else
-  QDP_error_exit("QDP_insert_UnorderedSubset not implemented");
-#endif
 }
 
 
