@@ -1,8 +1,13 @@
 // -*- C++ -*-
-// $Id: qdp_filebuf.h,v 1.1 2003-06-06 02:39:30 edwards Exp $
+// $Id: qdp_filebuf.h,v 1.2 2003-06-07 04:17:29 edwards Exp $
 
 /*! @file
- * @brief IO support
+ * @brief Remote file support
+ *
+ * The routines here are only used in support of remote file IO
+ * If the compile time flag USE_REMOTE_QIO is not defined, these
+ * classes function as conventional streams writing/reading from
+ * local (on node) files.
  */
 
 #include <ostream>
@@ -20,6 +25,18 @@ namespace QDPUtil
  */
 
 //--------------------------------------------------------------------------------
+//! Initialize remote file system (QIO)
+void RemoteFileInit(const char *remote_node, bool useP);
+
+//! Shutdown remote file system (QIO)
+void RemoteFileShutdown();
+
+//! Open a remote file (via QIO)
+FILE* RemoteFileOpen(const char *path, const char *mode);
+
+
+
+//--------------------------------------------------------------------------------
 //! RemoteOutputFileBuf class
 /*! Use the qdaemon/qio facility for remote opening of files
  *  The returned file descriptor is wrapped inside the streambuf
@@ -31,7 +48,7 @@ public:
   RemoteOutputFileBuf();
 
   //! open a remote file
-  void open(const char *filename);
+  void open(const char *filename, std::ios_base::openmode mode);
   
   //! close a remote file
   void close();
@@ -68,7 +85,7 @@ public:
   RemoteInputFileBuf();
 
   //! open a file
-  void open(const char *p);
+  void open(const char *p, std::ios_base::openmode mode);
   
   //! close a file
   void close();
@@ -80,9 +97,6 @@ public:
   ~RemoteInputFileBuf();
 
 protected:
-  //! initialize internally
-  void init ();
-
   //! insert new characters into the buffer
   virtual int_type underflow ();
 
@@ -91,8 +105,8 @@ private:
    * - at most, four characters in putback area plus
    * - at most, six characters in ordinary read buffer
    */
-  static const int bufferSize = 256;   // size of the data buffer
-  char buffer[bufferSize];             // data buffer
+  static const int bufferSize = 50;   // size of the data buffer
+  char buffer[bufferSize];            // data buffer
 
 private:
   //! Use C-stdio
@@ -119,11 +133,11 @@ public:
     std::ostream(ib = new RemoteOutputFileBuf()) {}
 
   //! Construct from a file
-  RemoteOutputFileStream(const char* p) :
-    std::ostream(ib = new RemoteOutputFileBuf()) {open(p);}
+  RemoteOutputFileStream(const char* p, std::ios_base::openmode mode) :
+    std::ostream(ib = new RemoteOutputFileBuf()) {open(p,mode);}
 
   //! open a file
-  void open(const char *p);
+  void open(const char *p, std::ios_base::openmode mode);
   
   //! close a file
   void close();
@@ -154,11 +168,11 @@ public:
     std::istream(ib = new RemoteInputFileBuf()) {}
 
   //! Construct from a file
-  RemoteInputFileStream(const char* p) :
-    std::istream(ib = new RemoteInputFileBuf()) {open(p);}
+  RemoteInputFileStream(const char* p, std::ios_base::openmode mode) :
+    std::istream(ib = new RemoteInputFileBuf()) {open(p,mode);}
 
   //! open a file
-  void open(const char *p);
+  void open(const char *p, std::ios_base::openmode mode);
   
   //! close a file
   void close();
