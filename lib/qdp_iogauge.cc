@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.12 2003-10-15 21:37:37 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.13 2004-03-24 16:43:52 mcneile Exp $
 //
 // QDP data parallel interface
 /*!
@@ -123,8 +123,6 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
   if (Nd != 4)
     QDP_error_exit("Expecting Nd == 4");
 
-  if (Nc != 3)
-    QDP_error_exit("Expecting Nc == 3");
 
   archivGaugeInit(header);
 
@@ -144,9 +142,9 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
   if (line != string("BEGIN_HEADER"))
     QDP_error_exit("Missing BEGIN_HEADER");
 
-  /* assume matrix size is 12 (matrix is compressed) 
+  /* assume matrix size is 2*Nc*Nc (matrix is UNcompressed) 
      and change if we find out otherwise */
-  header.mat_size=12;
+  header.mat_size=2*Nc*Nc ;
 
   /* Begin loop on lines */
   int  lat_size_cnt = 0;
@@ -166,6 +164,19 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
       if (strcmp(linetype, "4D_SU3_GAUGE_3x3") == 0) 
       {
 	header.mat_size=18;   /* Uncompressed matrix */
+	if (Nc != 3)
+	  QDP_error_exit("Expecting Nc == 3");
+      }
+      else if (strcmp(linetype, "4D_SU3_GAUGE") == 0) 
+      {
+	header.mat_size=12;   /* Compressed matrix */
+	if (Nc != 3)
+	  QDP_error_exit("Expecting Nc == 3");
+      }
+      else if (strcmp(linetype, "4D_SU4_GAUGE") == 0) 
+      {
+	if (Nc != 4)
+	  QDP_error_exit("Expecting Nc == 4");
       }
     }
 
