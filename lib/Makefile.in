@@ -37,7 +37,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 
-VPATH = @top_srcdir@ @top_srcdir@/lib @top_srcdir@/include
+VPATH = @top_srcdir@ @top_srcdir@/lib @top_srcdir@/include @top_srcdir@/other_libs/qio/include
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -124,7 +124,10 @@ subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
-INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include
+INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
+           -I@top_srcdir@/other_libs/qio/include \
+           -I@top_srcdir@/other_libs/qio/lib/lrl/c-dime/include
+
 
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QMP_CFLAGS@
 
@@ -136,11 +139,11 @@ HDRS = defs.h forward.h globalfuncs.h inner.h io.h layout.h multi.h \
        primscalar.h primseed.h primspinmat.h primspinvec.h primvector.h \
        qdp_util.h qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdpsubtype.h \
        qdptype.h random.h reality.h simpleword.h map.h \
-       specializations.h subset.h traits.h word.h
+       specializations.h subset.h traits.h word.h qdpio.h   qio.h
 
 
 GENERIC_SRCS = map.cc subset.cc random.cc qdp.cc layout.cc io.cc iogauge.cc \
-               byteorder.cc util.cc readszin.cc
+               byteorder.cc util.cc readszin.cc  qdpio.cc
 
 
 SCALAR_SRCS = scalar_init.cc scalar_layout.cc scalar_specific.cc \
@@ -167,13 +170,14 @@ LIBRARIES = $(lib_LIBRARIES)
 libqdp_a_AR = $(AR) cru
 libqdp_a_LIBADD =
 am__libqdp_a_SOURCES_DIST = map.cc subset.cc random.cc qdp.cc layout.cc \
-	io.cc iogauge.cc byteorder.cc util.cc readszin.cc \
+	io.cc iogauge.cc byteorder.cc util.cc readszin.cc qdpio.cc \
 	parscalar_init.cc parscalar_layout.cc parscalar_specific.cc \
 	../include/parscalar_specific.h scalar_init.cc scalar_layout.cc \
 	scalar_specific.cc ../include/scalar_specific.h
 am__objects_1 = map.$(OBJEXT) subset.$(OBJEXT) random.$(OBJEXT) \
 	qdp.$(OBJEXT) layout.$(OBJEXT) io.$(OBJEXT) iogauge.$(OBJEXT) \
-	byteorder.$(OBJEXT) util.$(OBJEXT) readszin.$(OBJEXT)
+	byteorder.$(OBJEXT) util.$(OBJEXT) readszin.$(OBJEXT) \
+	qdpio.$(OBJEXT)
 am__objects_2 = parscalar_init.$(OBJEXT) parscalar_layout.$(OBJEXT) \
 	parscalar_specific.$(OBJEXT)
 am__objects_3 = scalar_init.$(OBJEXT) scalar_layout.$(OBJEXT) \
@@ -198,8 +202,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/map.Po ./$(DEPDIR)/parscalar_init.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/parscalar_layout.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/parscalar_specific.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/qdp.Po ./$(DEPDIR)/random.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/readszin.Po ./$(DEPDIR)/scalar_init.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp.Po ./$(DEPDIR)/qdpio.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/random.Po ./$(DEPDIR)/readszin.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/scalar_init.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/scalar_layout.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/scalar_specific.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/subset.Po ./$(DEPDIR)/util.Po
@@ -278,6 +283,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parscalar_layout.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parscalar_specific.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdpio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_init.Po@am__quote@

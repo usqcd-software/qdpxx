@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.14 2003-04-10 18:35:17 edwards Exp $
+// $Id: t_foo.cc,v 1.15 2003-04-15 21:12:01 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -330,7 +330,7 @@ int main(int argc, char *argv[])
   Write(nml,a);
 #endif
 
-#if 1
+#if 0
 //  std::ofstream f;
 //  f.open("foobar",std::ios_base::out|std::ios_base::binary);
 //  float aa[3] = {0.0,0.0,0.0};
@@ -379,6 +379,18 @@ int main(int argc, char *argv[])
   nml << "Reset and reread a";
   Write(nml,a);
 
+#endif
+
+#if 1
+ {
+   cerr << "create xml" << endl;
+   XMLMetaWriter xml;
+   cerr << "create serialwriter" << endl;
+   QDPSerialWriter to(xml,"fred.dime");
+   cerr << "write to" << endl;
+   to.write(xml,a);
+   cerr << "end write" << endl;
+ }
 #endif
 
 #if 0
