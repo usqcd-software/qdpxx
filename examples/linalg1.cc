@@ -1,4 +1,4 @@
-// $Id: linalg1.cc,v 1.15 2003-08-16 02:42:07 edwards Exp $
+// $Id: linalg1.cc,v 1.16 2003-08-23 21:10:20 edwards Exp $
 
 #include <stdlib.h>
 #include <sys/time.h>
@@ -134,6 +134,21 @@ double QDP_D_eq_M_times_D(LatticeDiracFermion& dest,
   clock_t t1 = clock();
   for (; cnt-- > 0; )
     dest = s1 * s2;
+  clock_t t2 = clock();
+
+  return double(t2-t1)/double(CLOCKS_PER_SEC);
+//    return 2.0;
+}
+
+
+double QDP_D_eq_Ma_times_D(LatticeDiracFermion& dest, 
+			   const LatticeColorMatrix& s1, 
+			   const LatticeDiracFermion& s2,
+			   int cnt)
+{
+  clock_t t1 = clock();
+  for (; cnt-- > 0; )
+    dest = adj(s1) * s2;
   clock_t t2 = clock();
 
   return double(t2-t1)/double(CLOCKS_PER_SEC);

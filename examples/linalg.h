@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linalg.h,v 1.5 2003-08-12 04:38:45 edwards Exp $
+// $Id: linalg.h,v 1.6 2003-08-23 21:10:20 edwards Exp $
 //
 // Include file for test suite
 
@@ -51,6 +51,11 @@ double QDP_D_eq_M_times_D(LatticeDiracFermion& dest,
 			  const LatticeColorMatrix& s1, 
 			  const LatticeDiracFermion& s2,
 			  int cnt);
+
+double QDP_D_eq_Ma_times_D(LatticeDiracFermion& dest, 
+			   const LatticeColorMatrix& s1, 
+			   const LatticeDiracFermion& s2,
+			   int cnt);
 
 double QDP_H_eq_M_times_H(LatticeHalfFermion& dest, 
 			  const LatticeColorMatrix& s1, 

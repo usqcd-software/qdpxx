@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.9 2003-08-15 18:27:14 edwards Exp $
+// $Id: t_linalg.cc,v 1.10 2003-08-23 21:10:20 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -252,6 +252,22 @@ int main(int argc, char *argv[])
   cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_D_eq_M_times_D(lf2, a, lf1, icnt);
   cout << "time(D=M*D) = " << tt
+       << " micro-secs/site/iteration" 
+       << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
+
+
+#if defined(TEST_OPS)
+  // Test LatticeDiracFermion = adj(LatticeColorMatrix) + LatticeDiracFermion
+  tt = QDP_D_eq_Ma_times_D(lf2, a, lf1, 1);
+  push(nml,"QDP_D_eq_Ma_times_D");
+  Write(nml,lf2);
+  pop(nml);
+#endif
+
+  // Test LatticeDiracFermion = adj(LatticeColorMatrix) * LatticeDiracFermion
+  cout << "calling " << icnt << " times" << endl;
+  tt = rescale * QDP_D_eq_Ma_times_D(lf2, a, lf1, icnt);
+  cout << "time(D=adj(M)*D) = " << tt
        << " micro-secs/site/iteration" 
        << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
 
