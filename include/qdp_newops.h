@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_newops.h,v 1.7 2003-08-21 02:42:57 edwards Exp $
+// $Id: qdp_newops.h,v 1.8 2003-08-23 20:33:58 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -861,7 +861,7 @@ struct OpAdjMultiplyAdj
   }
 };
 
-// adj(l)*r
+// adjMultiply(l,r)  <-  adj(l)*r
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpAdjMultiply,
   typename CreateLeaf<QDPExpr<UnaryNode<OpIdentity,T1>,C1> >::Leaf_t,
@@ -881,7 +881,27 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
     CreateLeaf<QDPType<T2,C2> >::make(r)));
 }
 
-// l*adj(r)
+// adjMultiply<l,Expr>  <-  adj(l)*Expr
+template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<BinaryNode<OpAdjMultiply,
+  typename CreateLeaf<QDPExpr<UnaryNode<OpIdentity,T1>,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t>,
+  typename BinaryReturn<C1,C2,OpAdjMultiply>::Type_t >::Expression_t
+operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
+	  const QDPExpr<T2,C2> & r)
+{
+  typedef UnaryNode<OpIdentity,T1> NewExpr1_t; // The adj does not change container type
+
+  typedef BinaryNode<OpAdjMultiply,
+    typename CreateLeaf<QDPExpr<UnaryNode<OpIdentity,T1>,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t> Tree_t;
+  typedef typename BinaryReturn<C1,C2,OpAdjMultiply>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<NewExpr1_t,C1> >::make(NewExpr1_t(l.expression().child())),
+    CreateLeaf<QDPExpr<T2,C2> >::make(r)));
+}
+
+// multplyAdj(l,r)  <-  l*adj(r)
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpMultiplyAdj,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -901,7 +921,27 @@ operator*(const QDPType<T1,C1> & l,
     CreateLeaf<QDPExpr<NewExpr2_t,C2> >::make(NewExpr2_t(r.expression().child()))));
 }
 
-// adj(l)*adj(r)
+// multiplyAdj(Expr,r)  <-  Expr*adj(r)
+template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<BinaryNode<OpMultiplyAdj,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<UnaryNode<OpIdentity,T2>,C2> >::Leaf_t>,
+  typename BinaryReturn<C1,C2,OpMultiplyAdj>::Type_t >::Expression_t
+operator*(const QDPExpr<T1,C1> & l,
+	  const QDPExpr<UnaryNode<FnAdjoint,T2>,C2> & r)
+{
+  typedef UnaryNode<OpIdentity,T2> NewExpr2_t; // The adj does not change container type
+
+  typedef BinaryNode<OpMultiplyAdj,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<UnaryNode<OpIdentity,T2>,C2> >::Leaf_t> Tree_t;
+  typedef typename BinaryReturn<C1,C2,OpMultiplyAdj>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(l),
+    CreateLeaf<QDPExpr<NewExpr2_t,C2> >::make(NewExpr2_t(r.expression().child()))));
+}
+
+// adjMultiplyAdj(l,r)  <-  adj(l)*adj(r)
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpAdjMultiplyAdj,
   typename CreateLeaf<QDPExpr<UnaryNode<OpIdentity,T1>,C1> >::Leaf_t,
