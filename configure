@@ -1741,12 +1741,12 @@ else
 fi;
 
 
-if test "X${ac_sse}X" == "X1X" ; then
+if test "X${ac_sse}X" = "X1X" ; then
   { echo "$as_me:$LINENO: Configuring QDP++ to use Streaming SIMD Extensions (SSE)" >&5
 echo "$as_me: Configuring QDP++ to use Streaming SIMD Extensions (SSE)" >&6;}
 fi
 
-if test "X${ac_sse2}X" == "X1X" ; then
+if test "X${ac_sse2}X" = "X1X" ; then
   { echo "$as_me:$LINENO: Configuring QDP++ to use Streaming SIMD Extensions (SSE2)" >&5
 echo "$as_me: Configuring QDP++ to use Streaming SIMD Extensions (SSE2)" >&6;}
 fi
