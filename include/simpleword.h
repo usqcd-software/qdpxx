@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.12 2002-12-18 21:30:59 edwards Exp $
+// $Id: simpleword.h,v 1.13 2002-12-26 22:59:51 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -319,7 +319,7 @@ int localNorm2(const int& s1)
 }
 
 inline
-int localInnerproduct(const int& s1, const int& s2)
+int localInnerProduct(const int& s1, const int& s2)
 {
   return s1*s2;
 }
@@ -337,7 +337,7 @@ double localNorm2(const float& s1)
 }
 
 inline
-double localInnerproduct(const float& s1, const float& s2)
+double localInnerProduct(const float& s1, const float& s2)
 {
   return double(s1*s2);
 }
@@ -355,7 +355,7 @@ double localNorm2(const double& s1)
 }
 
 inline
-double localInnerproduct(const double& s1, const double& s2)
+double localInnerProduct(const double& s1, const double& s2)
 {
   return s1*s2;
 }
@@ -403,12 +403,12 @@ struct UnaryReturn<int, FnNorm2 > {
 };
 
 template<>
-struct BinaryReturn<int, int, FnInnerproduct > {
+struct BinaryReturn<int, int, FnInnerProduct > {
   typedef int  Type_t;
 };
 
 template<>
-struct BinaryReturn<int, int, FnInnerproductReal > {
+struct BinaryReturn<int, int, FnInnerProductReal > {
   typedef int  Type_t;
 };
 
@@ -418,12 +418,12 @@ struct UnaryReturn<int, FnLocalNorm2 > {
 };
 
 template<>
-struct BinaryReturn<int, int, FnLocalInnerproduct > {
+struct BinaryReturn<int, int, FnLocalInnerProduct > {
   typedef int  Type_t;
 };
 
 template<>
-struct BinaryReturn<int, int, FnLocalInnerproductReal > {
+struct BinaryReturn<int, int, FnLocalInnerProductReal > {
   typedef int  Type_t;
 };
 
@@ -445,12 +445,12 @@ struct UnaryReturn<float, FnNorm2 > {
 };
 
 template<>
-struct BinaryReturn<float, float, FnInnerproduct > {
+struct BinaryReturn<float, float, FnInnerProduct > {
   typedef double  Type_t;
 };
 
 template<>
-struct BinaryReturn<float, float, FnInnerproductReal > {
+struct BinaryReturn<float, float, FnInnerProductReal > {
   typedef double  Type_t;
 };
 
@@ -460,12 +460,12 @@ struct UnaryReturn<float, FnLocalNorm2 > {
 };
 
 template<>
-struct BinaryReturn<float, float, FnLocalInnerproduct > {
+struct BinaryReturn<float, float, FnLocalInnerProduct > {
   typedef float  Type_t;
 };
 
 template<>
-struct BinaryReturn<float, float, FnLocalInnerproductReal > {
+struct BinaryReturn<float, float, FnLocalInnerProductReal > {
   typedef float  Type_t;
 };
 
@@ -486,12 +486,12 @@ struct UnaryReturn<double, FnNorm2 > {
 };
 
 template<>
-struct BinaryReturn<double, double, FnInnerproduct > {
+struct BinaryReturn<double, double, FnInnerProduct > {
   typedef double  Type_t;
 };
 
 template<>
-struct BinaryReturn<double, double, FnInnerproductReal > {
+struct BinaryReturn<double, double, FnInnerProductReal > {
   typedef double  Type_t;
 };
 
@@ -501,12 +501,12 @@ struct UnaryReturn<double, FnLocalNorm2 > {
 };
 
 template<>
-struct BinaryReturn<double, double, FnLocalInnerproduct > {
+struct BinaryReturn<double, double, FnLocalInnerProduct > {
   typedef double  Type_t;
 };
 
 template<>
-struct BinaryReturn<double, double, FnLocalInnerproductReal > {
+struct BinaryReturn<double, double, FnLocalInnerProductReal > {
   typedef double  Type_t;
 };
 

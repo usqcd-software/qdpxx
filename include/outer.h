@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.15 2002-11-23 03:42:30 edwards Exp $
+// $Id: outer.h,v 1.16 2002-12-26 22:59:51 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -579,13 +579,13 @@ struct UnaryReturn<OScalar<T>, FnNorm2 > {
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerproduct > {
-  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProduct > {
+  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerproductReal > {
-  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProductReal > {
+  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T>
@@ -594,13 +594,13 @@ struct UnaryReturn<OScalar<T>, FnLocalNorm2 > {
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnLocalInnerproduct > {
-  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnLocalInnerProduct > {
+  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnLocalInnerproductReal > {
-  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnLocalInnerProductReal > {
+  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
 
@@ -762,13 +762,13 @@ struct UnaryReturn<OLattice<T>, FnNorm2 > {
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerproduct > {
-  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct > {
+  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerproductReal > {
-  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProductReal > {
+  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T>
@@ -777,13 +777,13 @@ struct UnaryReturn<OLattice<T>, FnLocalNorm2 > {
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OLattice<T1>, OLattice<T2>, FnLocalInnerproduct > {
-  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<OLattice<T1>, OLattice<T2>, FnLocalInnerProduct > {
+  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OLattice<T1>, OLattice<T2>, FnLocalInnerproductReal > {
-  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<OLattice<T1>, OLattice<T2>, FnLocalInnerProductReal > {
+  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
 
@@ -930,44 +930,44 @@ struct BinaryReturn<OLattice<T1>, OLattice<T2>, OpRightShiftAssign > {
 // Mixed OLattice & OScalar cases
 // Global operations
 template<class T1, class T2>
-struct BinaryReturn<OLattice<T1>, OScalar<T2>, FnInnerproduct > {
-  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<OLattice<T1>, OScalar<T2>, FnInnerProduct > {
+  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OLattice<T1>, OScalar<T2>, FnInnerproductReal > {
-  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<OLattice<T1>, OScalar<T2>, FnInnerProductReal > {
+  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnInnerproduct > {
-  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnInnerProduct > {
+  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnInnerproductReal > {
-  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnInnerProductReal > {
+  typedef OScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
 };
 
 
 template<class T1, class T2>
-struct BinaryReturn<OLattice<T1>, OScalar<T2>, FnLocalInnerproduct > {
-  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<OLattice<T1>, OScalar<T2>, FnLocalInnerProduct > {
+  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OLattice<T1>, OScalar<T2>, FnLocalInnerproductReal > {
-  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<OLattice<T1>, OScalar<T2>, FnLocalInnerProductReal > {
+  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnLocalInnerproduct > {
-  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnLocalInnerProduct > {
+  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnLocalInnerproductReal > {
-  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnLocalInnerProductReal > {
+  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
 

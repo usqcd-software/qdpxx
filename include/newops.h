@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: newops.h,v 1.6 2002-10-25 03:33:26 edwards Exp $
+// $Id: newops.h,v 1.7 2002-12-26 22:59:51 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -37,14 +37,14 @@ struct FnNorm2
   PETE_EMPTY_CONSTRUCTORS(FnNorm2)
 };
 
-struct FnInnerproduct
+struct FnInnerProduct
 {
-  PETE_EMPTY_CONSTRUCTORS(FnInnerproduct)
+  PETE_EMPTY_CONSTRUCTORS(FnInnerProduct)
 };
 
-struct FnInnerproductReal
+struct FnInnerProductReal
 {
-  PETE_EMPTY_CONSTRUCTORS(FnInnerproductReal)
+  PETE_EMPTY_CONSTRUCTORS(FnInnerProductReal)
 };
 
 struct FnSliceSum
@@ -62,14 +62,14 @@ struct FnNorm2Multi
   PETE_EMPTY_CONSTRUCTORS(FnNorm2Multi)
 };
 
-struct FnInnerproductMulti
+struct FnInnerProductMulti
 {
-  PETE_EMPTY_CONSTRUCTORS(FnInnerproduct)
+  PETE_EMPTY_CONSTRUCTORS(FnInnerProduct)
 };
 
-struct FnInnerproductRealMulti
+struct FnInnerProductRealMulti
 {
-  PETE_EMPTY_CONSTRUCTORS(FnInnerproductReal)
+  PETE_EMPTY_CONSTRUCTORS(FnInnerProductRealMulti)
 };
 
 

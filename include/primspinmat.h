@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primspinmat.h,v 1.8 2002-12-18 21:30:26 edwards Exp $
+// $Id: primspinmat.h,v 1.9 2002-12-26 22:59:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -195,23 +195,23 @@ struct UnaryReturn<PSpinMatrix<T,N>, FnLocalNorm2 > {
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnInnerproduct> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnLocalInnerproduct> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnLocalInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnInnerproductReal> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnInnerProductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnLocalInnerproductReal> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnLocalInnerProductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
 
@@ -345,10 +345,10 @@ operator*(const GammaConst<4,1>&, const PSpinMatrix<T2,4>& r)
   
   for(int i=0; i < 4; ++i)
   {
-    d.elem(0,i) = multiplyI(r.elem(3,i));
-    d.elem(1,i) = multiplyI(r.elem(2,i));
-    d.elem(2,i) = multiplyMinusI(r.elem(1,i));
-    d.elem(3,i) = multiplyMinusI(r.elem(0,i));
+    d.elem(0,i) = timesI(r.elem(3,i));
+    d.elem(1,i) = timesI(r.elem(2,i));
+    d.elem(2,i) = timesMinusI(r.elem(1,i));
+    d.elem(3,i) = timesMinusI(r.elem(0,i));
   }
 
   return d;
@@ -379,10 +379,10 @@ operator*(const GammaConst<4,3>&, const PSpinMatrix<T2,4>& r)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(0,i) = multiplyMinusI(r.elem(0,i));
-    d.elem(1,i) = multiplyI(r.elem(1,i));
-    d.elem(2,i) = multiplyMinusI(r.elem(2,i));
-    d.elem(3,i) = multiplyI(r.elem(3,i));
+    d.elem(0,i) = timesMinusI(r.elem(0,i));
+    d.elem(1,i) = timesI(r.elem(1,i));
+    d.elem(2,i) = timesMinusI(r.elem(2,i));
+    d.elem(3,i) = timesI(r.elem(3,i));
   }
   
   return d;
@@ -396,10 +396,10 @@ operator*(const GammaConst<4,4>&, const PSpinMatrix<T2,4>& r)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(0,i) = multiplyI(r.elem(2,i));
-    d.elem(1,i) = multiplyMinusI(r.elem(3,i));
-    d.elem(2,i) = multiplyMinusI(r.elem(0,i));
-    d.elem(3,i) = multiplyI(r.elem(1,i));
+    d.elem(0,i) = timesI(r.elem(2,i));
+    d.elem(1,i) = timesMinusI(r.elem(3,i));
+    d.elem(2,i) = timesMinusI(r.elem(0,i));
+    d.elem(3,i) = timesI(r.elem(1,i));
   }
   
   return d;
@@ -430,10 +430,10 @@ operator*(const GammaConst<4,6>&, const PSpinMatrix<T2,4>& r)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(0,i) = multiplyMinusI(r.elem(1,i));
-    d.elem(1,i) = multiplyMinusI(r.elem(0,i));
-    d.elem(2,i) = multiplyMinusI(r.elem(3,i));
-    d.elem(3,i) = multiplyMinusI(r.elem(2,i));
+    d.elem(0,i) = timesMinusI(r.elem(1,i));
+    d.elem(1,i) = timesMinusI(r.elem(0,i));
+    d.elem(2,i) = timesMinusI(r.elem(3,i));
+    d.elem(3,i) = timesMinusI(r.elem(2,i));
   }
   
   return d;
@@ -481,10 +481,10 @@ operator*(const GammaConst<4,9>&, const PSpinMatrix<T2,4>& r)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(0,i) = multiplyI(r.elem(1,i));
-    d.elem(1,i) = multiplyI(r.elem(0,i));
-    d.elem(2,i) = multiplyMinusI(r.elem(3,i));
-    d.elem(3,i) = multiplyMinusI(r.elem(2,i));
+    d.elem(0,i) = timesI(r.elem(1,i));
+    d.elem(1,i) = timesI(r.elem(0,i));
+    d.elem(2,i) = timesMinusI(r.elem(3,i));
+    d.elem(3,i) = timesMinusI(r.elem(2,i));
   }
   
   return d;
@@ -515,10 +515,10 @@ operator*(const GammaConst<4,11>&, const PSpinMatrix<T2,4>& r)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(0,i) = multiplyMinusI(r.elem(2,i));
-    d.elem(1,i) = multiplyI(r.elem(3,i));
-    d.elem(2,i) = multiplyMinusI(r.elem(0,i));
-    d.elem(3,i) = multiplyI(r.elem(1,i));
+    d.elem(0,i) = timesMinusI(r.elem(2,i));
+    d.elem(1,i) = timesI(r.elem(3,i));
+    d.elem(2,i) = timesMinusI(r.elem(0,i));
+    d.elem(3,i) = timesI(r.elem(1,i));
   }
   
   return d;
@@ -532,10 +532,10 @@ operator*(const GammaConst<4,12>&, const PSpinMatrix<T2,4>& r)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(0,i) = multiplyI(r.elem(0,i));
-    d.elem(1,i) = multiplyMinusI(r.elem(1,i));
-    d.elem(2,i) = multiplyMinusI(r.elem(2,i));
-    d.elem(3,i) = multiplyI(r.elem(3,i));
+    d.elem(0,i) = timesI(r.elem(0,i));
+    d.elem(1,i) = timesMinusI(r.elem(1,i));
+    d.elem(2,i) = timesMinusI(r.elem(2,i));
+    d.elem(3,i) = timesI(r.elem(3,i));
   }
   
   return d;
@@ -566,10 +566,10 @@ operator*(const GammaConst<4,14>&, const PSpinMatrix<T2,4>& r)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(0,i) = multiplyMinusI(r.elem(3,i));
-    d.elem(1,i) = multiplyMinusI(r.elem(2,i));
-    d.elem(2,i) = multiplyMinusI(r.elem(1,i));
-    d.elem(3,i) = multiplyMinusI(r.elem(0,i));
+    d.elem(0,i) = timesMinusI(r.elem(3,i));
+    d.elem(1,i) = timesMinusI(r.elem(2,i));
+    d.elem(2,i) = timesMinusI(r.elem(1,i));
+    d.elem(3,i) = timesMinusI(r.elem(0,i));
   }
   
   return d;
@@ -620,10 +620,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConst<4,1>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) = multiplyMinusI(l.elem(i,3));
-    d.elem(i,1) = multiplyMinusI(l.elem(i,2));
-    d.elem(i,2) = multiplyI(l.elem(i,1));
-    d.elem(i,3) = multiplyI(l.elem(i,0));
+    d.elem(i,0) = timesMinusI(l.elem(i,3));
+    d.elem(i,1) = timesMinusI(l.elem(i,2));
+    d.elem(i,2) = timesI(l.elem(i,1));
+    d.elem(i,3) = timesI(l.elem(i,0));
   }
   
   return d;
@@ -654,10 +654,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConst<4,3>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) = multiplyMinusI(l.elem(i,0));
-    d.elem(i,1) = multiplyI(l.elem(i,1));
-    d.elem(i,2) = multiplyMinusI(l.elem(i,2));
-    d.elem(i,3) = multiplyI(l.elem(i,3));
+    d.elem(i,0) = timesMinusI(l.elem(i,0));
+    d.elem(i,1) = timesI(l.elem(i,1));
+    d.elem(i,2) = timesMinusI(l.elem(i,2));
+    d.elem(i,3) = timesI(l.elem(i,3));
   }
   
   return d;
@@ -671,10 +671,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConst<4,4>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) = multiplyMinusI(l.elem(i,2));
-    d.elem(i,1) = multiplyI(l.elem(i,3));
-    d.elem(i,2) = multiplyI(l.elem(i,0));
-    d.elem(i,3) = multiplyMinusI(l.elem(i,1));
+    d.elem(i,0) = timesMinusI(l.elem(i,2));
+    d.elem(i,1) = timesI(l.elem(i,3));
+    d.elem(i,2) = timesI(l.elem(i,0));
+    d.elem(i,3) = timesMinusI(l.elem(i,1));
   }
   
   return d;
@@ -705,10 +705,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConst<4,6>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) = multiplyMinusI(l.elem(i,1));
-    d.elem(i,1) = multiplyMinusI(l.elem(i,0));
-    d.elem(i,2) = multiplyMinusI(l.elem(i,3));
-    d.elem(i,3) = multiplyMinusI(l.elem(i,2));
+    d.elem(i,0) = timesMinusI(l.elem(i,1));
+    d.elem(i,1) = timesMinusI(l.elem(i,0));
+    d.elem(i,2) = timesMinusI(l.elem(i,3));
+    d.elem(i,3) = timesMinusI(l.elem(i,2));
   }
   
   return d;
@@ -756,10 +756,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConst<4,9>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) = multiplyI(l.elem(i,1));
-    d.elem(i,1) = multiplyI(l.elem(i,0));
-    d.elem(i,2) = multiplyMinusI(l.elem(i,3));
-    d.elem(i,3) = multiplyMinusI(l.elem(i,2));
+    d.elem(i,0) = timesI(l.elem(i,1));
+    d.elem(i,1) = timesI(l.elem(i,0));
+    d.elem(i,2) = timesMinusI(l.elem(i,3));
+    d.elem(i,3) = timesMinusI(l.elem(i,2));
   }
   
   return d;
@@ -790,10 +790,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConst<4,11>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) = multiplyMinusI(l.elem(i,2));
-    d.elem(i,1) = multiplyI(l.elem(i,3));
-    d.elem(i,2) = multiplyMinusI(l.elem(i,0));
-    d.elem(i,3) = multiplyI(l.elem(i,1));
+    d.elem(i,0) = timesMinusI(l.elem(i,2));
+    d.elem(i,1) = timesI(l.elem(i,3));
+    d.elem(i,2) = timesMinusI(l.elem(i,0));
+    d.elem(i,3) = timesI(l.elem(i,1));
   }
   
   return d;
@@ -807,10 +807,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConst<4,12>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) = multiplyI(l.elem(i,0));
-    d.elem(i,1) = multiplyMinusI(l.elem(i,1));
-    d.elem(i,2) = multiplyMinusI(l.elem(i,2));
-    d.elem(i,3) = multiplyI(l.elem(i,3));
+    d.elem(i,0) = timesI(l.elem(i,0));
+    d.elem(i,1) = timesMinusI(l.elem(i,1));
+    d.elem(i,2) = timesMinusI(l.elem(i,2));
+    d.elem(i,3) = timesI(l.elem(i,3));
   }
   
   return d;
@@ -841,10 +841,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConst<4,14>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) = multiplyMinusI(l.elem(i,3));
-    d.elem(i,1) = multiplyMinusI(l.elem(i,2));
-    d.elem(i,2) = multiplyMinusI(l.elem(i,1));
-    d.elem(i,3) = multiplyMinusI(l.elem(i,0));
+    d.elem(i,0) = timesMinusI(l.elem(i,3));
+    d.elem(i,1) = timesMinusI(l.elem(i,2));
+    d.elem(i,2) = timesMinusI(l.elem(i,1));
+    d.elem(i,3) = timesMinusI(l.elem(i,0));
   }
   
   return d;

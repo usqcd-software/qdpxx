@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.15 2002-12-06 04:36:26 edwards Exp $
+// $Id: reality.h,v 1.16 2002-12-26 22:59:51 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -873,14 +873,26 @@ operator!=(const RScalar<T1>& l, const RScalar<T2>& r)
 //-----------------------------------------------------------------------------
 // Functions
 
+// Adjoint
+template<class T1>
+inline typename UnaryReturn<RScalar<T1>, FnAdjoint>::Type_t
+adj(const RScalar<T1>& s1)
+{
+  typename UnaryReturn<RScalar<T1>, FnAdjoint>::Type_t  d;
+
+  d.elem() = transpose(s1.elem()); // The complex nature has been eaten here
+  return d;
+}
+
+
 // Conjugate
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnConj>::Type_t
+inline typename UnaryReturn<RScalar<T1>, FnConjugate>::Type_t
 conj(const RScalar<T1>& s1)
 {
-  typename UnaryReturn<RScalar<T1>, FnConj>::Type_t  d;
+  typename UnaryReturn<RScalar<T1>, FnConjugate>::Type_t  d;
 
-  d.elem() = conj(s1.elem());
+  d.elem() = s1.elem();  // The complex nature has been eaten here
   return d;
 }
 
@@ -1230,7 +1242,7 @@ void recast_rep(RScalar<T>& d, const RScalar<T1>& s1)
 
 
 //------------------------------------------
-// Innerproduct (norm-seq) global sum = sum(tr(conj(s1)*s1))
+// InnerProduct (norm-seq) global sum = sum(tr(adj(s1)*s1))
 template<class T>
 struct UnaryReturn<RScalar<T>, FnNorm2 > {
   typedef RScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
@@ -1253,46 +1265,46 @@ localNorm2(const RScalar<T>& s1)
 
 
 
-//! RScalar<T> = Innerproduct(Conj(RScalar<T1>)*RScalar<T2>)
+//! RScalar<T> = InnerProduct(adj(RScalar<T1>)*RScalar<T2>)
 template<class T1, class T2>
-struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnInnerproduct > {
-  typedef RScalar<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnInnerProduct > {
+  typedef RScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerproduct > {
-  typedef RScalar<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProduct > {
+  typedef RScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerproduct>::Type_t
-localInnerproduct(const RScalar<T1>& s1, const RScalar<T2>& s2)
+inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProduct>::Type_t
+localInnerProduct(const RScalar<T1>& s1, const RScalar<T2>& s2)
 {
-  typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerproduct>::Type_t  d;
+  typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProduct>::Type_t  d;
 
-  d.elem() = localInnerproduct(s1.elem(), s2.elem());
+  d.elem() = localInnerProduct(s1.elem(), s2.elem());
   return d;
 }
 
 
-//! RScalar<T> = InnerproductReal(Conj(PMatrix<T1>)*PMatrix<T1>)
+//! RScalar<T> = InnerProductReal(adj(PMatrix<T1>)*PMatrix<T1>)
 template<class T1, class T2>
-struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnInnerproductReal > {
-  typedef RScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnInnerProductReal > {
+  typedef RScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerproductReal > {
-  typedef RScalar<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProductReal > {
+  typedef RScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerproductReal>::Type_t
-localinnerproductReal(const RScalar<T1>& s1, const RScalar<T2>& s2)
+inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProductReal>::Type_t
+localInnerProductReal(const RScalar<T1>& s1, const RScalar<T2>& s2)
 {
-  typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerproductReal>::Type_t  d;
+  typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProductReal>::Type_t  d;
 
-  d.elem() = localInnerproductReal(s1.elem(), s2.elem());
+  d.elem() = localInnerProductReal(s1.elem(), s2.elem());
   return d;
 }
 
@@ -1498,12 +1510,25 @@ operator/(const RScalar<T1>& l, const RComplex<T2>& r)
 //-----------------------------------------------------------------------------
 // Functions
 
+// Adjoint
+template<class T1>
+inline typename UnaryReturn<RComplex<T1>, FnAdjoint>::Type_t
+adj(const RComplex<T1>& l)
+{
+  typename UnaryReturn<RComplex<T1>, FnAdjoint>::Type_t  d;
+
+  // The complex conjugate nature has been eaten here leaving transpose
+  d.real() = transpose(l.real());
+  d.imag() = -transpose(l.imag());
+  return d;
+}
+
 // Conjugate
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, FnConj>::Type_t
+inline typename UnaryReturn<RComplex<T1>, FnConjugate>::Type_t
 conj(const RComplex<T1>& l)
 {
-  typename UnaryReturn<RComplex<T1>, FnConj>::Type_t  d;
+  typename UnaryReturn<RComplex<T1>, FnConjugate>::Type_t  d;
 
   d.real() = l.real();
   d.imag() = -l.imag();
@@ -1517,8 +1542,8 @@ transpose(const RComplex<T1>& l)
 {
   typename UnaryReturn<RComplex<T1>, FnTranspose>::Type_t  d;
 
-  d.real() = l.real();
-  d.imag() = l.imag();
+  d.real() = transpose(l.real());
+  d.imag() = transpose(l.imag());
   return d;
 }
 
@@ -1629,15 +1654,15 @@ cmplx(const RScalar<T1>& s1, const RScalar<T2>& s2)
 
 // RComplex = i * RScalar
 template<class T>
-struct UnaryReturn<RScalar<T>, FnMultiplyI > {
-  typedef RComplex<typename UnaryReturn<T, FnMultiplyI>::Type_t>  Type_t;
+struct UnaryReturn<RScalar<T>, FnTimesI > {
+  typedef RComplex<typename UnaryReturn<T, FnTimesI>::Type_t>  Type_t;
 };
 
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnMultiplyI>::Type_t
-multiplyI(const RScalar<T>& s1)
+inline typename UnaryReturn<RScalar<T>, FnTimesI>::Type_t
+timesI(const RScalar<T>& s1)
 {
-  typename UnaryReturn<RScalar<T>, FnMultiplyI>::Type_t  d;
+  typename UnaryReturn<RScalar<T>, FnTimesI>::Type_t  d;
 
   zero_rep(d.real());
   d.imag() = s1.elem();
@@ -1646,10 +1671,10 @@ multiplyI(const RScalar<T>& s1)
 
 // RComplex = i * RComplex
 template<class T>
-inline typename UnaryReturn<RComplex<T>, FnMultiplyI>::Type_t
-multiplyI(const RComplex<T>& s1)
+inline typename UnaryReturn<RComplex<T>, FnTimesI>::Type_t
+timesI(const RComplex<T>& s1)
 {
-  typename UnaryReturn<RComplex<T>, FnMultiplyI>::Type_t  d;
+  typename UnaryReturn<RComplex<T>, FnTimesI>::Type_t  d;
 
   d.real() = -s1.imag();
   d.imag() =  s1.real();
@@ -1659,15 +1684,15 @@ multiplyI(const RComplex<T>& s1)
 
 // RComplex = -i * RScalar
 template<class T>
-struct UnaryReturn<RScalar<T>, FnMultiplyMinusI > {
-  typedef RComplex<typename UnaryReturn<T, FnMultiplyMinusI>::Type_t>  Type_t;
+struct UnaryReturn<RScalar<T>, FnTimesMinusI > {
+  typedef RComplex<typename UnaryReturn<T, FnTimesMinusI>::Type_t>  Type_t;
 };
 
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnMultiplyMinusI>::Type_t
-multiplyMinusI(const RScalar<T>& s1)
+inline typename UnaryReturn<RScalar<T>, FnTimesMinusI>::Type_t
+timesMinusI(const RScalar<T>& s1)
 {
-  typename UnaryReturn<RScalar<T>, FnMultiplyMinusI>::Type_t  d;
+  typename UnaryReturn<RScalar<T>, FnTimesMinusI>::Type_t  d;
 
   zero_rep(d.real());
   d.imag() = -s1.elem();
@@ -1677,10 +1702,10 @@ multiplyMinusI(const RScalar<T>& s1)
 
 // RComplex = -i * RComplex
 template<class T>
-inline typename UnaryReturn<RComplex<T>, FnMultiplyMinusI>::Type_t
-multiplyMinusI(const RComplex<T>& s1)
+inline typename UnaryReturn<RComplex<T>, FnTimesMinusI>::Type_t
+timesMinusI(const RComplex<T>& s1)
 {
-  typename UnaryReturn<RComplex<T>, FnMultiplyMinusI>::Type_t  d;
+  typename UnaryReturn<RComplex<T>, FnTimesMinusI>::Type_t  d;
 
   d.real() =  s1.imag();
   d.imag() = -s1.real();
@@ -1699,6 +1724,7 @@ void copymask(RComplex<T>& d, const RScalar<T1>& mask, const RComplex<T>& s1)
 }
 
 
+#if 0
 // Global sum over site indices only
 template<class T>
 struct UnaryReturn<RComplex<T>, FnSum > {
@@ -1715,14 +1741,16 @@ sum(const RComplex<T>& s1)
   d.imag() = sum(s1.imag());
   return d;
 }
+#endif
 
 
-// Innerproduct (norm-seq) global sum = sum(tr(conj(s1)*s1))
+// InnerProduct (norm-seq) global sum = sum(tr(adj(s1)*s1))
 template<class T>
 struct UnaryReturn<RComplex<T>, FnNorm2 > {
   typedef RScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
 };
 
+#if 0
 template<class T>
 inline typename UnaryReturn<RComplex<T>, FnNorm2>::Type_t
 norm2(const RComplex<T>& s1)
@@ -1732,6 +1760,7 @@ norm2(const RComplex<T>& s1)
   d.elem() = norm2(s1.real()) + norm2(s1.imag());
   return d;
 }
+#endif
 
 
 template<class T>
@@ -1751,47 +1780,47 @@ localNorm2(const RComplex<T>& s1)
 
 
 
-//! RComplex<T> = Innerproduct(Conj(RComplex<T1>)*RComplex<T2>)
+//! RComplex<T> = InnerProduct(adj(RComplex<T1>)*RComplex<T2>)
 template<class T1, class T2>
-struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnInnerproduct > {
-  typedef RComplex<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnInnerProduct > {
+  typedef RComplex<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerproduct > {
-  typedef RComplex<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProduct > {
+  typedef RComplex<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerproduct>::Type_t
-localInnerproduct(const RComplex<T1>& l, const RComplex<T2>& r)
+inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProduct>::Type_t
+localInnerProduct(const RComplex<T1>& l, const RComplex<T2>& r)
 {
-  typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerproduct>::Type_t  d;
+  typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProduct>::Type_t  d;
 
-  d.real() = localInnerproduct(l.real(),r.real()) + localInnerproduct(l.imag(),r.imag());
-  d.imag() = localInnerproduct(l.real(),r.imag()) - localInnerproduct(l.imag(),r.real());
+  d.real() = localInnerProduct(l.real(),r.real()) + localInnerProduct(l.imag(),r.imag());
+  d.imag() = localInnerProduct(l.real(),r.imag()) - localInnerProduct(l.imag(),r.real());
   return d;
 }
 
 
-//! RScalar<T> = InnerproductReal(Conj(RComplex<T1>)*RComplex<T1>)
+//! RScalar<T> = InnerProductReal(adj(RComplex<T1>)*RComplex<T1>)
 template<class T1, class T2>
-struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnInnerproductReal > {
-  typedef RScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnInnerProductReal > {
+  typedef RScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerproductReal > {
-  typedef RScalar<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProductReal > {
+  typedef RScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerproductReal>::Type_t
-localInnerproductReal(const RComplex<T1>& l, const RComplex<T2>& r)
+inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProductReal>::Type_t
+localInnerProductReal(const RComplex<T1>& l, const RComplex<T2>& r)
 {
-  typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerproductReal>::Type_t  d;
+  typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProductReal>::Type_t  d;
 
-  d.elem() = localInnerproduct(l.real(),r.real()) + localInnerproduct(l.imag(),r.imag());
+  d.elem() = localInnerProduct(l.real(),r.real()) + localInnerProduct(l.imag(),r.imag());
   return d;
 }
 

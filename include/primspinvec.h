@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primspinvec.h,v 1.5 2002-12-18 21:30:26 edwards Exp $
+// $Id: primspinvec.h,v 1.6 2002-12-26 22:59:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Vector
@@ -163,23 +163,23 @@ struct UnaryReturn<PSpinVector<T,N>, FnLocalNorm2 > {
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnInnerproduct> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnLocalInnerproduct> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnLocalInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnInnerproductReal> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnInnerProductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnLocalInnerproductReal> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnLocalInnerProductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
 
@@ -365,10 +365,10 @@ operator*(const GammaConst<4,1>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,1>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
   
-  d.elem(0) = multiplyI(r.elem(3));
-  d.elem(1) = multiplyI(r.elem(2));
-  d.elem(2) = multiplyMinusI(r.elem(1));
-  d.elem(3) = multiplyMinusI(r.elem(0));
+  d.elem(0) = timesI(r.elem(3));
+  d.elem(1) = timesI(r.elem(2));
+  d.elem(2) = timesMinusI(r.elem(1));
+  d.elem(3) = timesMinusI(r.elem(0));
 
   return d;
 }
@@ -393,10 +393,10 @@ operator*(const GammaConst<4,3>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,3>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
 
-  d.elem(0) = multiplyMinusI(r.elem(0));
-  d.elem(1) = multiplyI(r.elem(1));
-  d.elem(2) = multiplyMinusI(r.elem(2));
-  d.elem(3) = multiplyI(r.elem(3));
+  d.elem(0) = timesMinusI(r.elem(0));
+  d.elem(1) = timesI(r.elem(1));
+  d.elem(2) = timesMinusI(r.elem(2));
+  d.elem(3) = timesI(r.elem(3));
   
   return d;
 }
@@ -407,10 +407,10 @@ operator*(const GammaConst<4,4>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,4>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
 
-  d.elem(0) = multiplyI(r.elem(2));
-  d.elem(1) = multiplyMinusI(r.elem(3));
-  d.elem(2) = multiplyMinusI(r.elem(0));
-  d.elem(3) = multiplyI(r.elem(1));
+  d.elem(0) = timesI(r.elem(2));
+  d.elem(1) = timesMinusI(r.elem(3));
+  d.elem(2) = timesMinusI(r.elem(0));
+  d.elem(3) = timesI(r.elem(1));
   
   return d;
 }
@@ -435,10 +435,10 @@ operator*(const GammaConst<4,6>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,6>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
 
-  d.elem(0) = multiplyMinusI(r.elem(1));
-  d.elem(1) = multiplyMinusI(r.elem(0));
-  d.elem(2) = multiplyMinusI(r.elem(3));
-  d.elem(3) = multiplyMinusI(r.elem(2));
+  d.elem(0) = timesMinusI(r.elem(1));
+  d.elem(1) = timesMinusI(r.elem(0));
+  d.elem(2) = timesMinusI(r.elem(3));
+  d.elem(3) = timesMinusI(r.elem(2));
   
   return d;
 }
@@ -477,10 +477,10 @@ operator*(const GammaConst<4,9>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,9>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
 
-  d.elem(0) = multiplyI(r.elem(1));
-  d.elem(1) = multiplyI(r.elem(0));
-  d.elem(2) = multiplyMinusI(r.elem(3));
-  d.elem(3) = multiplyMinusI(r.elem(2));
+  d.elem(0) = timesI(r.elem(1));
+  d.elem(1) = timesI(r.elem(0));
+  d.elem(2) = timesMinusI(r.elem(3));
+  d.elem(3) = timesMinusI(r.elem(2));
   
   return d;
 }
@@ -505,10 +505,10 @@ operator*(const GammaConst<4,11>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,11>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
 
-  d.elem(0) = multiplyMinusI(r.elem(2));
-  d.elem(1) = multiplyI(r.elem(3));
-  d.elem(2) = multiplyMinusI(r.elem(0));
-  d.elem(3) = multiplyI(r.elem(1));
+  d.elem(0) = timesMinusI(r.elem(2));
+  d.elem(1) = timesI(r.elem(3));
+  d.elem(2) = timesMinusI(r.elem(0));
+  d.elem(3) = timesI(r.elem(1));
   
   return d;
 }
@@ -519,10 +519,10 @@ operator*(const GammaConst<4,12>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,12>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
 
-  d.elem(0) = multiplyI(r.elem(0));
-  d.elem(1) = multiplyMinusI(r.elem(1));
-  d.elem(2) = multiplyMinusI(r.elem(2));
-  d.elem(3) = multiplyI(r.elem(3));
+  d.elem(0) = timesI(r.elem(0));
+  d.elem(1) = timesMinusI(r.elem(1));
+  d.elem(2) = timesMinusI(r.elem(2));
+  d.elem(3) = timesI(r.elem(3));
   
   return d;
 }
@@ -547,10 +547,10 @@ operator*(const GammaConst<4,14>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,14>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
 
-  d.elem(0) = multiplyMinusI(r.elem(3));
-  d.elem(1) = multiplyMinusI(r.elem(2));
-  d.elem(2) = multiplyMinusI(r.elem(1));
-  d.elem(3) = multiplyMinusI(r.elem(0));
+  d.elem(0) = timesMinusI(r.elem(3));
+  d.elem(1) = timesMinusI(r.elem(2));
+  d.elem(2) = timesMinusI(r.elem(1));
+  d.elem(3) = timesMinusI(r.elem(0));
   
   return d;
 }
@@ -593,8 +593,8 @@ spinProjectDir0Minus(const PSpinVector<T,4>& s1)
    *      ( b2r + i b2i )  =  ( {a2r - a1i} + i{a2i + a1r} )  =  ( - b1i + i b1r )
    *      ( b3r + i b3i )     ( {a3r - a0i} + i{a3i + a0r} )     ( - b0i + i b0r ) 
    */
-  d.elem(0) = s1.elem(0) - multiplyI(s1.elem(3));
-  d.elem(1) = s1.elem(1) - multiplyI(s1.elem(2));
+  d.elem(0) = s1.elem(0) - timesI(s1.elem(3));
+  d.elem(1) = s1.elem(1) - timesI(s1.elem(2));
 
   return d;
 }
@@ -647,8 +647,8 @@ spinProjectDir2Minus(const PSpinVector<T,4>& s1)
    *      ( b2r + i b2i )  =  ( {a2r - a0i} + i{a2i + a0r} )  =  ( - b0i + i b0r )
    *      ( b3r + i b3i )     ( {a3r + a1i} + i{a3i - a1r} )     (   b1i - i b1r )
    */
-  d.elem(0) = s1.elem(0) - multiplyI(s1.elem(2));
-  d.elem(1) = s1.elem(1) + multiplyI(s1.elem(3));
+  d.elem(0) = s1.elem(0) - timesI(s1.elem(2));
+  d.elem(1) = s1.elem(1) + timesI(s1.elem(3));
 
   return d;
 }
@@ -701,8 +701,8 @@ spinProjectDir0Plus(const PSpinVector<T,4>& s1)
    *      ( b2r + i b2i )  =  ( {a2r + a1i} + i{a2i - a1r} )  =  ( b1i - i b1r )
    *      ( b3r + i b3i )     ( {a3r + a0i} + i{a3i - a0r} )     ( b0i - i b0r ) 
    */
-  d.elem(0) = s1.elem(0) + multiplyI(s1.elem(3));
-  d.elem(1) = s1.elem(1) + multiplyI(s1.elem(2));
+  d.elem(0) = s1.elem(0) + timesI(s1.elem(3));
+  d.elem(1) = s1.elem(1) + timesI(s1.elem(2));
 
   return d;
 }
@@ -755,8 +755,8 @@ spinProjectDir2Plus(const PSpinVector<T,4>& s1)
    *      ( b2r + i b2i )  =  ( {a2r + a0i} + i{a2i - a0r} )  =  (   b0i - i b0r )
    *      ( b3r + i b3i )     ( {a3r - a1i} + i{a3i + a1r} )     ( - b1i + i b1r ) 
    */
-  d.elem(0) = s1.elem(0) + multiplyI(s1.elem(2));
-  d.elem(1) = s1.elem(1) - multiplyI(s1.elem(3));
+  d.elem(0) = s1.elem(0) + timesI(s1.elem(2));
+  d.elem(1) = s1.elem(1) - timesI(s1.elem(3));
 
   return d;
 }
@@ -799,8 +799,8 @@ spinReconstructDir0Minus(const PSpinVector<T,2>& s1)
 
   d.elem(0) = s1.elem(0);
   d.elem(1) = s1.elem(1);
-  d.elem(2) = multiplyI(s1.elem(1));
-  d.elem(3) = multiplyI(s1.elem(0));
+  d.elem(2) = timesI(s1.elem(1));
+  d.elem(3) = timesI(s1.elem(0));
 
   return d;
 }
@@ -828,8 +828,8 @@ spinReconstructDir2Minus(const PSpinVector<T,2>& s1)
 
   d.elem(0) = s1.elem(0);
   d.elem(1) = s1.elem(1);
-  d.elem(2) = multiplyI(s1.elem(0));
-  d.elem(3) = multiplyMinusI(s1.elem(1));
+  d.elem(2) = timesI(s1.elem(0));
+  d.elem(3) = timesMinusI(s1.elem(1));
 
   return d;
 }
@@ -856,8 +856,8 @@ spinReconstructDir0Plus(const PSpinVector<T,2>& s1)
 
   d.elem(0) = s1.elem(0);
   d.elem(1) = s1.elem(1);
-  d.elem(2) = multiplyMinusI(s1.elem(1));
-  d.elem(3) = multiplyMinusI(s1.elem(0));
+  d.elem(2) = timesMinusI(s1.elem(1));
+  d.elem(3) = timesMinusI(s1.elem(0));
 
   return d;
 }
@@ -884,8 +884,8 @@ spinReconstructDir2Plus(const PSpinVector<T,2>& s1)
 
   d.elem(0) = s1.elem(0);
   d.elem(1) = s1.elem(1);
-  d.elem(2) = multiplyMinusI(s1.elem(0));
-  d.elem(3) = multiplyI(s1.elem(1));
+  d.elem(2) = timesMinusI(s1.elem(0));
+  d.elem(3) = timesI(s1.elem(1));
 
   return d;
 }

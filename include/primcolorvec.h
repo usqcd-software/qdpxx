@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primcolorvec.h,v 1.5 2002-12-18 21:30:26 edwards Exp $
+// $Id: primcolorvec.h,v 1.6 2002-12-26 22:59:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Vector
@@ -133,23 +133,23 @@ struct UnaryReturn<PColorVector<T,N>, FnLocalNorm2 > {
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnInnerproduct> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnLocalInnerproduct> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnLocalInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnInnerproductReal> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnInnerProductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
-struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnLocalInnerproductReal> {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnLocalInnerProductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
 

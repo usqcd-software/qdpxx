@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primvector.h,v 1.12 2002-11-23 03:45:22 edwards Exp $
+// $Id: primvector.h,v 1.13 2002-12-26 22:59:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -368,26 +368,26 @@ cmplx(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
 // Functions
 //! PVector = i * PVector
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PVector<T,N,C>, FnMultiplyI>::Type_t
-multiplyI(const PVector<T,N,C>& s1)
+inline typename UnaryReturn<PVector<T,N,C>, FnTimesI>::Type_t
+timesI(const PVector<T,N,C>& s1)
 {
-  typename UnaryReturn<PVector<T,N,C>, FnMultiplyI>::Type_t  d;
+  typename UnaryReturn<PVector<T,N,C>, FnTimesI>::Type_t  d;
 
   for(int i=0; i < N; ++i)
-    d.elem(i) = multiplyI(s1.elem(i));
+    d.elem(i) = timesI(s1.elem(i));
 
   return d;
 }
 
 //! PVector = -i * PVector
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PVector<T,N,C>, FnMultiplyMinusI>::Type_t
-multiplyMinusI(const PVector<T,N,C>& s1)
+inline typename UnaryReturn<PVector<T,N,C>, FnTimesMinusI>::Type_t
+timesMinusI(const PVector<T,N,C>& s1)
 {
-  typename UnaryReturn<PVector<T,N,C>, FnMultiplyMinusI>::Type_t  d;
+  typename UnaryReturn<PVector<T,N,C>, FnTimesMinusI>::Type_t  d;
 
   for(int i=0; i < N; ++i)
-    d.elem(i) = multiplyMinusI(s1.elem(i));
+    d.elem(i) = timesMinusI(s1.elem(i));
 
   return d;
 }
@@ -553,7 +553,7 @@ sum(const PVector<T,N,C>& s1)
 #endif
 
 
-// Innerproduct (norm-seq) global sum = sum(tr(conj(s1)*s1))
+// InnerProduct (norm-seq) global sum = sum(tr(adj(s1)*s1))
 template<class T, int N, template<class,int> class C>
 struct UnaryReturn<PVector<T,N,C>, FnNorm2 > {
   typedef PScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
@@ -578,54 +578,54 @@ localNorm2(const PVector<T,N,C>& s1)
 }
 
 
-//! PScalar<T> = Innerproduct(Conj(PVector<T1>)*PVector<T1>)
+//! PScalar<T> = InnerProduct(adj(PVector<T1>)*PVector<T1>)
 template<class T1, class T2, int N, template<class,int> class C>
-struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnInnerproduct > {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnInnerProduct > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproduct > {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproduct>::Type_t>  Type_t;
+struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerProduct > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproduct>::Type_t
-localInnerproduct(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
+inline typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerProduct>::Type_t
+localInnerProduct(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
 {
-  typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproduct>::Type_t  d;
+  typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerProduct>::Type_t  d;
 
-  d.elem() = localInnerproduct(s1.elem(0), s2.elem(0));
+  d.elem() = localInnerProduct(s1.elem(0), s2.elem(0));
   for(int i=1; i < N; ++i)
-    d.elem() += localInnerproduct(s1.elem(i), s2.elem(i));
+    d.elem() += localInnerProduct(s1.elem(i), s2.elem(i));
 
   return d;
 }
 
 
-//! PScalar<T> = InnerproductReal(Conj(PVector<T1>)*PVector<T1>)
+//! PScalar<T> = InnerProductReal(adj(PVector<T1>)*PVector<T1>)
 /*!
- * return  realpart of Innerproduct(Conj(s1)*s2)
+ * return  realpart of InnerProduct(adj(s1)*s2)
  */
 template<class T1, class T2, int N, template<class,int> class C>
-struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnInnerproductReal > {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnInnerProductReal > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproductReal > {
-  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerproductReal>::Type_t>  Type_t;
+struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerProductReal > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproductReal>::Type_t
-localInnerproductReal(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
+inline typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerProductReal>::Type_t
+localInnerProductReal(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
 {
-  typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerproductReal>::Type_t  d;
+  typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerProductReal>::Type_t  d;
 
-  d.elem() = localInnerproductReal(s1.elem(0), s2.elem(0));
+  d.elem() = localInnerProductReal(s1.elem(0), s2.elem(0));
   for(int i=1; i < N; ++i)
-    d.elem() += localInnerproductReal(s1.elem(i), s2.elem(i));
+    d.elem() += localInnerProductReal(s1.elem(i), s2.elem(i));
 
   return d;
 }
