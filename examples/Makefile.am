@@ -33,12 +33,13 @@ VPATH+=@top_srcdir@/examples
 # The programs to build
 # 
 check_PROGRAMS = t_skeleton t_io t_mesplq \
-      t_nml t_xml t_qio t_remote t_entry t_nersc t_shift t_exotic \
-	t_qio_factory
+      t_nml t_xml t_remote t_entry t_nersc t_shift t_exotic
+
+EXTRA_PROGRAMS  = t_qio t_qio_factory
 
 
 if BUILD_WILSON_EXAMPLES
-check_PROGRAMS += t_dslashm t_formfac t_spectrum t_qdp t_foo t_linalg
+check_PROGRAMS += t_dslashm t_formfac t_spectrum t_qdp t_foo t_linalg t_dslash5
 endif
 
 
@@ -64,6 +65,7 @@ t_io_SOURCES = t_io.cc $(HDRS)
 t_entry_SOURCES = t_entry.cc $(HDRS)
 t_nersc_SOURCES = t_nersc.cc mesplq.cc reunit.cc $(HDRS)
 t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)
+t_dslash5_SOURCES = t_dslash5.cc $(HDRS)
 t_mesplq_SOURCES = t_mesplq.cc mesplq.cc reunit.cc $(HDRS)
 t_exotic_SOURCES = t_exotic.cc rgauge.cc taproj.cc expm12.cc reunit.cc $(HDRS)
 t_formfac_SOURCES = t_formfac.cc formfac_w.cc $(HDRS)
