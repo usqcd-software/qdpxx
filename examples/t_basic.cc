@@ -1,4 +1,4 @@
-// $Id: t_basic.cc,v 1.2 2004-08-10 01:11:12 edwards Exp $
+// $Id: t_basic.cc,v 1.3 2004-08-10 02:01:42 edwards Exp $
 /*! \file
  *  \brief Test some simple basic routines
  */
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
   QDP_PUSH_PROFILE(QDP::getProfileLevel());
 
   // Setup the layout
-  const int foo[] = {2,2,2,2};
+  const int foo[] = {2,2,2,1};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
