@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.10 2003-01-20 16:22:51 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.11 2003-01-22 16:49:14 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -156,7 +156,7 @@ void Map::make(const MapFunc& func)
     dstnode[linear]  = bnode;
   }
 
-#if 1
+#if 0
 //  extern NmlWriter nml;
 
 //  Write(nml,srcnode);
@@ -188,7 +188,7 @@ void Map::make(const MapFunc& func)
     if (destnodes_tmp[i] != my_node)
       ++cnt_destnodes;
 
-#if 1
+#if 0
   // Debugging
   for(int i=0; i < srcenodes_tmp.size(); ++i)
     QDP_info("srcenodes_tmp(%d) = %d",i,srcenodes_tmp[i]);
@@ -282,7 +282,7 @@ void Map::make(const MapFunc& func)
 //  Write(nml,destnodes_num);
 
 
-#if 1
+#if 0
   for(int i=0; i < destnodes.size(); ++i)
   {
     QDP_info("srcenodes(%d) = %d",i,srcenodes(i));
