@@ -41,6 +41,7 @@ include_HEADERS = qdp_defs.h \
 		qdp_traits.h \
 		qdp_word.h \
 	        qdp_scalar_specific.h \
-	        qdp_parscalar_specific.h
+	        qdp_parscalar_specific.h \
+                qdp_filebuf.h
 
 nodist_include_HEADERS = qdp_config.h
