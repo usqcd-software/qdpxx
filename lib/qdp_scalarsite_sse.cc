@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.7 2004-03-23 22:43:29 edwards Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.8 2004-03-24 03:40:27 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -171,7 +171,7 @@ void vscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec)
   }
 }  
 
-void local_sumsq(DOUBLE *Out, REAL *In, int n_3vec)
+void local_sumsq(REAL *Out, REAL *In, int n_3vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: local_sumsq" << endl;
@@ -180,31 +180,32 @@ void local_sumsq(DOUBLE *Out, REAL *In, int n_3vec)
 //  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
   int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
 
-  REAL my_lazy_zero = 0.0;
-  register v4sf vsum = __builtin_ia32_loadss(&my_lazy_zero);
+  *Out = 0.0;
+  register v4sf vsum = __builtin_ia32_loadss(Out);
   asm("shufps\t$0,%0,%0" : "+x" (vsum));
-
-  REAL fsum[4];
 
   for (; n_loops-- > 0; )
   {
-    register v4sf vtmp1 = __builtin_ia32_loadaps(In+0);
-    vsum  = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp1, vtmp1));
-    register v4sf vtmp2 = __builtin_ia32_loadaps(In+4);
-    vsum  = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp2, vtmp2));
-    register v4sf vtmp3 = __builtin_ia32_loadaps(In+8);
-    vsum  = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp3, vtmp3));
-    register v4sf vtmp4 = __builtin_ia32_loadaps(In+12);
-    vsum  = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp4, vtmp4));
-    register v4sf vtmp5 = __builtin_ia32_loadaps(In+16);
-    vsum  = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp5, vtmp5));
-    register v4sf vtmp6 = __builtin_ia32_loadaps(In+20);
-    vsum  = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp6, vtmp6));
+    register v4sf vtmp;
+
+    vtmp = __builtin_ia32_loadaps(In+0);
+    vsum = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp, vtmp));
+    vtmp = __builtin_ia32_loadaps(In+4);
+    vsum = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp, vtmp));
+    vtmp = __builtin_ia32_loadaps(In+8);
+    vsum = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp, vtmp));
+    vtmp = __builtin_ia32_loadaps(In+12);
+    vsum = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp, vtmp));
+    vtmp = __builtin_ia32_loadaps(In+16);
+    vsum = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp, vtmp));
+    vtmp = __builtin_ia32_loadaps(In+20);
+    vsum = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp, vtmp));
 
     In += 24;
   }
 
-  __builtin_ia32_storess(fsum, vsum);
+  REAL fsum[4];
+  __builtin_ia32_storeaps(fsum, vsum);
   *Out = fsum[0] + fsum[1] + fsum[2] + fsum[3];
 }
 
