@@ -1,4 +1,4 @@
-// $Id: dslashm_w.cc,v 1.1 2002-09-12 18:22:17 edwards Exp $
+// $Id: dslashm_w.cc,v 1.2 2002-09-14 17:08:02 edwards Exp $
 
 /*! 
  * DSLASH
@@ -78,7 +78,7 @@ void dslash(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFe
      *     mu          mu         mu            mu                       mu 
      */
 
-    a2[B_SWAP][mu] = shift(LatticeHalfFermion(u[mu]*a1[B_SWAP][mu]), BACKWARD, mu);
+    a2[B_SWAP][mu] = shift(u[mu]*a1[B_SWAP][mu], BACKWARD, mu);
   
     /*     F                    F
      *   a 2  (x)  :=  U  (x) a1  (x+mu)
@@ -90,6 +90,14 @@ void dslash(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFe
   
 
   /*  Recontruct the bottom two spinor components from the top two */
+#if 1
+  zero(chi);
+  for(int mu = 0; mu < Nd; ++mu)
+  {
+    chi += spinReconstruct(a2[F_SWAP][mu],mu,-isign);
+    chi += spinReconstruct(a2[B_SWAP][mu],mu,+isign);
+  }
+#else
   chi  = spinReconstruct(a2[F_SWAP][0],0,-isign);
   chi += spinReconstruct(a2[B_SWAP][0],0,+isign);
 
@@ -98,4 +106,5 @@ void dslash(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFe
     chi += spinReconstruct(a2[F_SWAP][mu],mu,-isign);
     chi += spinReconstruct(a2[B_SWAP][mu],mu,+isign);
   }
+#endif
 }
