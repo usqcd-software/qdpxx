@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.36 2003-09-26 16:12:32 edwards Exp $
+// $Id: qdp.h,v 1.37 2003-10-02 20:33:43 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -178,6 +178,8 @@ QDP_END_NAMESPACE();
 // Include SSE code here if applicable
 #if QDP_USE_SSE == 1
 #include "qdp_scalarsite_sse.h"
+#else
+#include "qdp_scalarsite_generic.h"
 #endif
 
 #elif defined(ARCH_PARSCALAR)
@@ -185,9 +187,11 @@ QDP_END_NAMESPACE();
 #warning "Using parallel scalar architecture"
 #include "qdp_parscalar_specific.h"
 
-// Include SSE code here if applicable
+// Include optimized code here if applicable
 #if QDP_USE_SSE == 1
 #include "qdp_scalarsite_sse.h"
+#else
+#include "qdp_scalarsite_generic.h"
 #endif
 
 #elif defined(ARCH_SCALARVEC)
@@ -196,7 +200,7 @@ QDP_END_NAMESPACE();
 #warning "Using scalar architecture with vector extensions"
 #include "qdp_scalarvec_specific.h"
 
-// Include SSE code here if applicable
+// Include optimized code here if applicable
 #if QDP_USE_SSE == 1
 #include "qdp_scalarvecsite_sse.h"
 #endif
@@ -207,7 +211,7 @@ QDP_END_NAMESPACE();
 #warning "Using parallel scalar architecture with vector extensions"
 #include "qdp_parscalarvec_specific.h"
 
-// Include SSE code here if applicable
+// Include optimized code here if applicable
 #if QDP_USE_SSE == 1
 #include "qdp_scalarvecsite_sse.h"
 #endif
