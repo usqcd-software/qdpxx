@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.8 2003-08-23 21:10:07 edwards Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.9 2003-08-26 02:15:09 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -296,7 +296,12 @@ operator*(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 
 //  cout << "M*H" << endl;
 
+#if 0
   _inline_sse_mult_su3_mat_hwvec(l,r,d);
+#else
+  _inline_sse_mult_su3_mat_vec(l.elem(),r.elem(0),d.elem(0));
+  _inline_sse_mult_su3_mat_vec(l.elem(),r.elem(1),d.elem(1));
+#endif
 
   return d;
 }
@@ -403,7 +408,7 @@ operator+(const PScalar<PColorVector<RComplexFloat,3> >& l,
 }
 
 
-#if 0
+#if 1
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
 // NOTE: let this be a subroutine to save space
@@ -417,6 +422,47 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
 	      const OrderedSubset& s);
+
+#endif
+
+#if 1
+// Specialization to optimize the case   
+//    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
+// NOTE: let this be a subroutine to save space
+template<>
+inline 
+void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiply, 
+	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
+	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > >, 
+	      Reference<QDPType<PSpinVector<PColorVector<RComplexFloat, 3>, 2>, 
+	      OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> > > > >,
+	      OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> > >& rhs,
+	      const OrderedSubset& s)
+{
+//  cout << "specialized QDP_H_M_times_H" << endl;
+
+  const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
+  const LatticeHalfFermion& r = static_cast<const LatticeHalfFermion&>(rhs.expression().right());
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+  {
+#if 0
+    // This form appears significantly slower than below
+    _inline_sse_mult_su3_mat_hwvec(l.elem(i),
+				   r.elem(i),
+				   d.elem(i));
+#else
+    _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
+				 r.elem(i).elem(0),
+				 d.elem(i).elem(0));
+    _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
+				 r.elem(i).elem(1),
+				 d.elem(i).elem(1));
+#endif
+  }
+}
 
 #endif
 
