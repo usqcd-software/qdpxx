@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.21 2003-09-09 14:07:32 uid3790 Exp $
+// $Id: qdp_xmlio.h,v 1.22 2003-09-09 14:39:24 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -172,9 +172,6 @@ void read(XMLReader& xml, const std::string& s, multi1d<unsigned long int>& inpu
 void read(XMLReader& xml, const std::string& s, multi1d<float>& input);
 void read(XMLReader& xml, const std::string& s, multi1d<double>& input);
 void read(XMLReader& xml, const std::string& s, multi1d<bool>& input);
-
-
-#define ReadPath(xml,path,a) read(xml,path+"/"+#a,a)
 
 
 //--------------------------------------------------------------------------------
