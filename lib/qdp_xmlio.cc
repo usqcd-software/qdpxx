@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.20 2003-07-06 19:04:26 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.21 2003-08-26 21:37:22 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -60,7 +60,10 @@ void XMLReader::open(std::istream& is)
 void XMLReader::open(const XMLBufferWriter& mw)
 {
   if (Layout::primaryNode())
-    BasicXPathReader::open(const_cast<XMLBufferWriter&>(mw).str());
+  {  
+    std::istringstream is(const_cast<XMLBufferWriter&>(mw).str()+"\n");
+    BasicXPathReader::open(is);
+  }
 
   iop = true;
 }
@@ -672,7 +675,7 @@ string XMLBufferWriter::str()
   if (Layout::primaryNode()) 
   {
     writePrologue(s);
-    s << output_stream.str();
+    s << output_stream.str() << "\n";
   }
     
   return s.str();
