@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_specific.cc,v 1.5 2004-02-11 10:33:10 bjoo Exp $
+// $Id: qdp_parscalarvec_specific.cc,v 1.6 2004-03-15 21:18:38 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec specific routines
@@ -263,7 +263,8 @@ namespace Internal
 	     count,srce_node,dest_node);
 #endif
 
-    QMP_route(buffer, count, srce_node, dest_node);
+//    QMP_route(buffer, count, srce_node, dest_node);
+    DML_route_bytes((char*)buffer, count, srce_node, dest_node);
 
 #if QDP_DEBUG >= 2
     QDP_info("finished a route");
