@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.6 2003-10-09 19:59:39 edwards Exp $
+// $Id: t_qio.cc,v 1.7 2003-11-01 21:45:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -25,18 +25,19 @@ int main(int argc, char **argv)
   {
     LatticePropagator quark_propagator = zero;
     string source_filename = "t_qio.test";
-    string file_string = "file.xml";
 
-    XMLReader tmp_file_xml(file_string);
     XMLBufferWriter file_xml;
-    file_xml << tmp_file_xml;
-
+    push(file_xml, "MyFileXML");
+    write(file_xml, "foobar", 1);
+    pop(file_xml);
 
     QDPSerialFileWriter to(file_xml,source_filename);
     QDPIO::cout << "QDPSerialFile Writer opened" << endl << flush;
-    XMLReader tmp_record_xml("record.xml");
+
     XMLBufferWriter record_xml;
-    record_xml << tmp_record_xml;
+    push(record_xml, "MyRecordXML");
+    write(record_xml, "muchies", 17);
+    pop(record_xml);
 
     to.write(record_xml,quark_propagator);  // can keep repeating writes for more records
     to.close();
