@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.24 2004-08-07 01:49:21 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.25 2004-08-09 21:57:17 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -501,7 +501,7 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpSubtract> {
 
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpSubtract>::Type_t
-operator+(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
+operator-(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpSubtract>::Type_t  d;
 
@@ -520,7 +520,7 @@ struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpSubtract> {
 
 template<class T1, class T2, int N, template<class,int> class C>
 inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpSubtract>::Type_t
-operator+(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
+operator-(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpSubtract>::Type_t  d;
 
