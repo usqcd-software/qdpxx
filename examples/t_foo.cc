@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.22 2003-04-21 11:30:24 edwards Exp $
+// $Id: t_foo.cc,v 1.23 2003-04-30 21:08:50 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -86,6 +86,18 @@ int main(int argc, char *argv[])
     Write(nml,x);
   }
   nml_in.close();
+#endif
+
+#if 0
+  {
+    LatticeFermion a,b;
+    random(a); random(b);
+    Double   rfoo;
+    DComplex foo;
+    rfoo = norm2(a);
+    foo = innerProduct(a,b);
+    Write(nml,rfoo);
+  }
 #endif
 
 #if 0
