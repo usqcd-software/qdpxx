@@ -21,8 +21,16 @@ unaryOps
   EXPR = "return (colorTrace(a));"
 -----
   TAG = "FnSpinTrace"
-  FUNCTION = "SpinTrace"
+  FUNCTION = "spinTrace"
   EXPR = "return (spinTrace(a));"
+-----
+  TAG = "FnNoColorTrace"
+  FUNCTION = "noColorTrace"
+  EXPR = "return (noColorTrace(a));"
+-----
+  TAG = "FnNoSpinTrace"
+  FUNCTION = "noSpinTrace"
+  EXPR = "return (noSpinTrace(a));"
 -----
   TAG = "FnReal"
   FUNCTION = "real"
