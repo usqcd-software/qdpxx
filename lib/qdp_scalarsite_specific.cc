@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_specific.cc,v 1.9 2003-09-23 16:21:14 edwards Exp $
+// $Id: qdp_scalarsite_specific.cc,v 1.10 2003-11-05 17:50:45 edwards Exp $
 
 /*! @file
  * @brief Scalar-like architecture specific routines
@@ -76,7 +76,7 @@ void UnorderedSet::make(const SetFunc& func)
     int icolor = func(coord);
 
 #if QDP_DEBUG >= 3
-    cerr << "site="<<site<<" coord="<<coord<<" node="<<node<<" linear="<<linear<<" col="<<icolor << endl;
+    cerr<<"linear="<<linear<<" coord="<<coord<<" node="<<node<<" col="<<icolor << endl;
 #endif
 
     // Sanity checks
@@ -195,7 +195,7 @@ void OrderedSet::make(const SetFunc& func)
     int icolor = func(coord);
 
 #if QDP_DEBUG >= 3
-    cerr << "site="<<site<<" coord="<<coord<<" node="<<node<<" linear="<<linear<<" col="<<icolor << endl;
+    cerr << "linear="<<linear<<" coord="<<coord<<" node="<<node<<" col="<<icolor << endl;
 #endif
 
     // Sanity checks
