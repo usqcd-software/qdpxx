@@ -1,4 +1,4 @@
-// $Id: blas1.cc,v 1.2 2004-03-22 11:08:33 bjoo Exp $
+// $Id: blas1.cc,v 1.3 2004-03-23 22:42:26 edwards Exp $
 
 #include <stdlib.h>
 #include <sys/time.h>
@@ -11,9 +11,9 @@ using namespace QDP;
 
 
 double QDP_SCALE(LatticeFermion& dest, 
-			  const Real& a, 
-			  const LatticeFermion& s,
-			  int cnt)
+		 const Real& a, 
+		 const LatticeFermion& s,
+		 int cnt)
 {
   StopWatch swatch;
 
@@ -26,10 +26,10 @@ double QDP_SCALE(LatticeFermion& dest,
 }
 
 double QDP_AXPY(LatticeFermion& dest, 
-		          const Real& a,
-			  const LatticeFermion& s1, 
-			  const LatticeFermion& s2,
-			  int cnt)
+		const Real& a,
+		const LatticeFermion& s1, 
+		const LatticeFermion& s2,
+		int cnt)
 {
   StopWatch swatch;
  
@@ -42,10 +42,10 @@ double QDP_AXPY(LatticeFermion& dest,
 }
 
 double QDP_AXMY(LatticeFermion& dest, 
-	                   const Real& a,
-			   const LatticeFermion& s1, 
-			   const LatticeFermion& s2,
-			   int cnt)
+		const Real& a,
+		const LatticeFermion& s1, 
+		const LatticeFermion& s2,
+		int cnt)
 {
   StopWatch swatch;
                                                                                 
@@ -59,9 +59,9 @@ double QDP_AXMY(LatticeFermion& dest,
 }
 
 double QDP_VADD(LatticeFermion& dest, 
-			    const LatticeFermion& s1, 
-			    const LatticeFermion& s2,
-			    int cnt)
+		const LatticeFermion& s1, 
+		const LatticeFermion& s2,
+		int cnt)
 {
 
   StopWatch swatch;
@@ -77,9 +77,9 @@ double QDP_VADD(LatticeFermion& dest,
 }
 
 double QDP_VSUB(LatticeFermion& dest, 
-			  const LatticeFermion& s1, 
-			  const LatticeFermion& s2,
-			  int cnt)
+		const LatticeFermion& s1, 
+		const LatticeFermion& s2,
+		int cnt)
 {
   StopWatch swatch;
 
