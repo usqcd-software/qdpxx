@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.1 2003-05-22 20:06:29 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.2 2003-06-04 16:50:42 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -45,7 +45,9 @@ void QDPSerialFileReader::open(XMLReader& file_xml, const std::string& path)
     QDP_error_exit("QDPSerialFile::Reader: failed to open file %s",path.c_str());
 
   // Use string to initialize XMLReader
-  istringstream ss((const string)(XML_string_ptr(xml_c)));
+  istringstream ss;
+  if (Layout::primaryNode())
+    ss.str((const string)(XML_string_ptr(xml_c)));
   file_xml.open(ss);
 
   XML_string_destroy(xml_c);
