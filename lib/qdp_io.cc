@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.19 2004-11-22 19:31:32 edwards Exp $
+// $Id: qdp_io.cc,v 1.20 2005-01-29 21:35:50 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -42,12 +42,16 @@ void TextReader::close()
 // Propagate status to all nodes
 bool TextReader::is_open()
 {
-  bool s;
+  bool s = QDP_isInitialized();
 
-  if (Layout::primaryNode()) 
-    s = f.is_open();
+  if (s)
+  {
+    if (Layout::primaryNode())
+      s = f.is_open();
 
-  Internal::broadcast(s);
+    Internal::broadcast(s);
+  }
+
   return s;
 }
 
@@ -238,12 +242,16 @@ void TextWriter::close()
 // Propagate status to all nodes
 bool TextWriter::is_open()
 {
-  bool s;
+  bool s = QDP_isInitialized();
 
-  if (Layout::primaryNode()) 
-    s = f.is_open();
+  if (s)
+  {
+    if (Layout::primaryNode())
+      s = f.is_open();
 
-  Internal::broadcast(s);
+    Internal::broadcast(s);
+  }
+
   return s;
 }
 
@@ -437,12 +445,16 @@ void BinaryReader::close()
 // Propagate status to all nodes
 bool BinaryReader::is_open()
 {
-  bool s;
+  bool s = QDP_isInitialized();
 
-  if (Layout::primaryNode()) 
-    s = f.is_open();
+  if (s)
+  {
+    if (Layout::primaryNode())
+      s = f.is_open();
 
-  Internal::broadcast(s);
+    Internal::broadcast(s);
+  }
+
   return s;
 }
 
@@ -710,12 +722,16 @@ void BinaryWriter::close()
 // Propagate status to all nodes
 bool BinaryWriter::is_open()
 {
-  bool s;
+  bool s = QDP_isInitialized();
 
-  if (Layout::primaryNode()) 
-    s = f.is_open();
+  if (s)
+  {
+    if (Layout::primaryNode())
+      s = f.is_open();
 
-  Internal::broadcast(s);
+    Internal::broadcast(s);
+  }
+
   return s;
 }
 
