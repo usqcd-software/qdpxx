@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_defs.h,v 1.6 2003-09-23 16:54:12 edwards Exp $
+// $Id: qdp_scalarvecsite_defs.h,v 1.7 2003-09-23 16:59:50 edwards Exp $
 
 /*! \file
  * \brief Type definitions for scalar/vector extensions-like architectures
@@ -35,11 +35,13 @@ QDP_BEGIN_NAMESPACE(QDP);
 // Use single precision for base precision
 #define REAL      REAL32
 #define DOUBLE    REAL64
+#define INNER_LOG 2
 
 #elif BASE_PRECISION == 64
 // Use double precision for base precision
 #define REAL      REAL64
 #define DOUBLE    REAL64
+#define INNER_LOG 1
 
 #else
 #error "Unknown BASE_PRECISION"
