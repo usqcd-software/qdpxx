@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_traits.h,v 1.6 2004-07-02 21:54:04 edwards Exp $
+// $Id: qdp_traits.h,v 1.7 2004-07-07 20:11:51 edwards Exp $
 
 /*! @file
  * @brief Traits classes
@@ -8,57 +8,6 @@
  */
 
 QDP_BEGIN_NAMESPACE(QDP);
-
-
-//-----------------------------------------------------------------------------
-// Traits class for returning the QDP container class
-//-----------------------------------------------------------------------------
-
-template<class T>
-struct QDPContainer
-{
-  typedef T Type_t;
-};
-
-template<class T,class C>
-struct QDPContainer<QDPType<T,C> >
-{
-  typedef C Type_t;
-};
-
-template<class T,class C>
-struct QDPContainer<QDPExpr<T,C> >
-{
-  typedef C Type_t;
-};
-
-template<class T>
-struct QDPContainer<Reference<T> >
-{
-  typedef typename QDPContainer<T>::Type_t Type_t;
-};
-
-
-template<class T1,class Op>
-struct QDPContainer<UnaryNode<Op,T1> >
-{
-  typedef typename UnaryReturn<T1,Op>::Type_t     Return_t;
-  typedef typename QDPContainer<Return_t>::Type_t Type_t;
-};
-
-template<class T1,class T2,class Op>
-struct QDPContainer<BinaryNode<Op,T1,T2> >
-{
-  typedef typename BinaryReturn<T1,T2,Op>::Type_t Return_t;
-  typedef typename QDPContainer<Return_t>::Type_t Type_t;
-};
-
-template<class T1,class T2,class T3,class Op>
-struct QDPContainer<TrinaryNode<Op,T1,T2,T3> >
-{
-  typedef typename TrinaryReturn<T1,T2,T3,Op>::Type_t Return_t;
-  typedef typename QDPContainer<Return_t>::Type_t Type_t;
-};
 
 
 //-----------------------------------------------------------------------------
