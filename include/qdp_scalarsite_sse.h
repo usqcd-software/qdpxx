@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.10 2003-08-27 05:28:37 edwards Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.11 2003-09-12 18:26:51 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -443,8 +443,11 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
 {
 //  cout << "specialized QDP_H_M_times_H" << endl;
 
-  const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
-  const LatticeHalfFermion& r = static_cast<const LatticeHalfFermion&>(rhs.expression().right());
+  typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
+  typedef OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> > H;
+
+  const C& l = static_cast<const C&>(rhs.expression().left());
+  const H& r = static_cast<const H&>(rhs.expression().right());
 
   for(int i=s.start(); i <= s.end(); ++i) 
   {
