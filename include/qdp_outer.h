@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.11 2003-08-20 21:03:14 edwards Exp $
+// $Id: qdp_outer.h,v 1.12 2003-08-21 02:39:59 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -613,6 +613,11 @@ struct TrinaryReturn<OLattice<T1>, OScalar<T2>, OScalar<T3>, Op> {
 
 // Specific OScalar cases
 // Global operations
+template<class T>
+struct UnaryReturn<OScalar<T>, FnGetSite> {
+  typedef OScalar<typename UnaryReturn<T, FnGetSite>::Type_t>  Type_t;
+};
+
 template<class T1, class T2 >
 struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnPeekSite> {
   typedef OScalar<typename BinaryReturn<T1, T2, FnPeekSite>::Type_t>  Type_t;
@@ -805,6 +810,11 @@ struct TrinaryReturn<OScalar<T1>, OScalar<T2>, OScalar<T3>, FnColorContract> {
 
 // Specific OLattice cases
 // Global operations
+template<class T>
+struct UnaryReturn<OLattice<T>, FnGetSite> {
+  typedef OScalar<typename UnaryReturn<T, FnGetSite>::Type_t>  Type_t;
+};
+
 template<class T1, class T2 >
 struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnPeekSite> {
   typedef OScalar<typename BinaryReturn<T1, T2, FnPeekSite>::Type_t>  Type_t;
