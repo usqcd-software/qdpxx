@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: layout.h,v 1.8 2003-01-14 04:45:37 edwards Exp $
+// $Id: layout.h,v 1.9 2003-01-15 21:49:03 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -27,6 +27,9 @@ namespace Layout
 {
   //! Main creation routine
   void create();
+
+  //! Main destruction routine
+  void destroy();
 
   //! Set lattice size -- problem size
   void setLattSize(const multi1d<int>& nrows);
