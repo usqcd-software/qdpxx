@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_newops.h,v 1.3 2003-07-31 01:03:31 edwards Exp $
+// $Id: qdp_newops.h,v 1.4 2003-08-01 19:52:43 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -801,6 +801,40 @@ peteCast(const T1&, const QDPType<T2,C2>& l)
     CreateLeaf<QDPType<T2,C2> >::make(l)));
 }
 
+
+//-----------------------------------------------------------------------------
+// Optimization hooks
+//-----------------------------------------------------------------------------
+
+struct OpAdjMultiply
+{
+  PETE_EMPTY_CONSTRUCTORS(OpAdjMultiply)
+  template<class T1, class T2>
+  inline typename BinaryReturn<T1, T2, OpAdjMultiply >::Type_t
+  operator()(const T1 &a, const T2 &b) const
+  {
+    return adjMultiply(a,b);
+  }
+};
+
+#if 0
+template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<BinaryNode<OpAdjMultiply,
+  typename CreateLeaf<QDPExpr<UnaryNode<FnAdjoint,T1>,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t>,
+  typename BinaryReturn<C1,C2,OpAdjMultiply>::Type_t >::Expression_t
+operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
+	  const QDPType<T2,C2> & r)
+{
+  typedef BinaryNode<OpAdjMultiply,
+    typename CreateLeaf<QDPExpr<UnaryNode<FnAdjoint,T1>,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t> Tree_t;
+  typedef typename BinaryReturn<C1,C2,OpAdjMultiply>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<UnaryNode<FnAdjoint,T1>,C1> >::make(l),
+    CreateLeaf<QDPType<T2,C2> >::make(r)));
+}
+#endif
 
 QDP_END_NAMESPACE();
 
