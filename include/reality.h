@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.16 2002-12-26 22:59:51 edwards Exp $
+// $Id: reality.h,v 1.17 2003-01-20 16:14:48 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -609,8 +609,9 @@ struct BinaryReturn<RComplex<T1>, RComplex<T2>, OpRightShiftAssign > {
 // Operators
 //-----------------------------------------------------------------------------
 
-/*! \addtogroup rscalar */
-/*! @{ */
+/*! \addtogroup rscalar
+ * @{ 
+ */
 
 // Scalar Reality
 template<class T>
@@ -1378,8 +1379,9 @@ fill_gaussian(RScalar<T>& d, RScalar<T>& r1, RScalar<T>& r2)
 // Complex Reality
 //-----------------------------------------------------------------------------
 
-/*! \addtogroup rcomplex */
-/*! @{ */
+/*! \addtogroup rcomplex 
+ * @{ 
+ */
 
 template<class T1>
 inline typename UnaryReturn<RComplex<T1>, OpUnaryPlus>::Type_t

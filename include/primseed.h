@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primseed.h,v 1.8 2002-11-23 02:23:24 edwards Exp $
+// $Id: primseed.h,v 1.9 2003-01-20 16:14:20 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -164,8 +164,9 @@ struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpAssign > {
 // Operators
 //-----------------------------------------------------------------------------
 
-/*! \addtogroup primseed */
-/*! @{ */
+/*! \addtogroup primseed
+ * @{ 
+ */
 
 // Primitive Seeds
 
