@@ -84,6 +84,15 @@ AC_ARG_ENABLE(sse2,
   [ac_sse2=0]
 )
 
+dnl --disable-qio -- does nothing here, but put it in to get the help string
+AC_ARG_ENABLE(--enable-qio, 
+  AC_HELP_STRING([--disable-qio],
+    [ Disable full QIO as it is not yet portable ]
+  ),
+  [],
+  []
+)
+
 if test ${ac_sse} -eq 1; then
   AC_DEFINE_UNQUOTED(QDP_USE_SSE, ${ac_sse}, [Enable SSE instructions])
   AC_SUBST(CONFIG_SSE,[${ac_sse}])
