@@ -1,4 +1,4 @@
-// $Id: reunit.cc,v 1.1 2002-11-13 19:35:13 edwards Exp $
+// $Id: reunit.cc,v 1.2 2002-11-13 22:23:45 edwards Exp $
 
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
@@ -87,7 +87,7 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
     {
     case REUNITARIZE_ERROR:
       /* Gripe and stop if unitarity is violated. */
-      numbad = sum(where(sigmasq > fuzz, LatticeInteger(1), LatticeInteger(0)));
+      numbad = toInt(sum(where(sigmasq > fuzz, LatticeInteger(1), LatticeInteger(0))));
       if ( numbad > 0 )
 	QDP_error_exit("Unitarity violated", numbad);
       break;
@@ -95,7 +95,7 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
     case REUNITARIZE_LABEL:
       /* Label the bad guys if unitarity is violated. */
       bad = sigmasq > fuzz;
-      numbad = sum(where(bad, LatticeInteger(1), LatticeInteger(0)));
+      numbad = toInt(sum(where(bad, LatticeInteger(1), LatticeInteger(0))));
       break;
     default:
       break;
@@ -154,7 +154,7 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
     {
     case REUNITARIZE_ERROR:
       /* Gripe and stop if unitarity is violated. */
-      numbad = sum(where(sigmasq > fuzz, LatticeInteger(1), LatticeInteger(0)));
+      numbad = toInt(sum(where(sigmasq > fuzz, LatticeInteger(1), LatticeInteger(0))));
       if ( numbad > 0 )
 	QDP_error_exit("Unitarity violated", numbad);
       break;
@@ -162,7 +162,7 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
     case REUNITARIZE_LABEL:
       /* Label the bad guys if unitarity is violated. */
       bad = sigmasq > fuzz;
-      numbad = sum(where(bad, LatticeInteger(1), LatticeInteger(0)));
+      numbad = toInt(sum(where(bad, LatticeInteger(1), LatticeInteger(0))));
       break;
      
     default:
@@ -254,14 +254,14 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
     {
     case REUNITARIZE_ERROR:
       /* Gripe and stop if unitarity is violated. */
-      numbad = sum(where(sigmasq > fuzz, LatticeInteger(1), LatticeInteger(0)));
+      numbad = toInt(sum(where(sigmasq > fuzz, LatticeInteger(1), LatticeInteger(0))));
       if ( numbad > 0 )
 	QDP_error_exit("Unitarity violated", numbad);
       break;
     case REUNITARIZE_LABEL:
       /* Label the bad guys if unitarity is violated. */
       bad = sigmasq > fuzz;
-      numbad = sum(where(bad,LatticeInteger(1), LatticeInteger(0)));
+      numbad = toInt(sum(where(bad,LatticeInteger(1), LatticeInteger(0))));
 
     default:
       break;
@@ -399,19 +399,22 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
 	sigmasq = sqrt(sigmasq);
       }
 
+      numbad = toInt(sum(where(sigmasq > fuzz, LatticeInteger(1), LatticeInteger(0))));
+      cerr << "numbad = " << numbad << endl;
+
       /* Do things depending on the mean squared deviation */
       switch (ruflag)
       {
       case REUNITARIZE_ERROR:
 	/* Gripe and stop if unitarity is violated. */
-	numbad = sum(where(sigmasq > fuzz, LatticeInteger(1), LatticeInteger(0)));
+	numbad = toInt(sum(where(sigmasq > fuzz, LatticeInteger(1), LatticeInteger(0))));
 	if ( numbad > 0 )
 	  QDP_error_exit("Unitarity violated", numbad);
 	break;
       case REUNITARIZE_LABEL:
 	/* Label the bad guys if unitarity is violated. */
 	bad = sigmasq > fuzz;
-	numbad = sum(where(bad, LatticeInteger(1), LatticeInteger(0)));
+	numbad = toInt(sum(where(bad, LatticeInteger(1), LatticeInteger(0))));
       default:
 	break;
       }
