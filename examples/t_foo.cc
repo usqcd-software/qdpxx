@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.15 2003-04-15 21:12:01 edwards Exp $
+// $Id: t_foo.cc,v 1.16 2003-04-16 04:50:06 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -384,11 +384,17 @@ int main(int argc, char *argv[])
 #if 1
  {
    cerr << "create xml" << endl;
-   XMLMetaWriter xml;
+
+   XMLMetaWriter file_xml;
+   XML_set(file_xml.get(),"Dummy file xml");
+
+   XMLMetaWriter rec_xml;
+   XML_set(rec_xml.get(),"Dummy record xml");
+
    cerr << "create serialwriter" << endl;
-   QDPSerialWriter to(xml,"fred.dime");
+   QDPSerialWriter to(file_xml,"fred.dime");
    cerr << "write to" << endl;
-   to.write(xml,a);
+   to.write(rec_xml,a);
    cerr << "end write" << endl;
  }
 #endif
