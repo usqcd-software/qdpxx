@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_layout.cc,v 1.6 2004-08-10 14:02:37 edwards Exp $
+// $Id: qdp_parscalarvec_layout.cc,v 1.7 2005-03-21 05:30:12 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec layout routines
@@ -125,16 +125,7 @@ namespace Layout
   /*! This is not meant to be speedy */
   int getNodeNumberFrom(const multi1d<int>& node_coord) 
   {
-    // To make QMP happy, cast to unsigned ints
-    unsigned int node_crd[Nd];
-    if (node_coord.size() != Nd)
-      QDP_error_exit("getNodeNumberFrom: unexpected coordinate size");
-
-    for(int i=0; i < Nd; ++i)
-      node_crd[i] = node_coord[i];
-
-    int node = QMP_get_node_number_from(node_crd);
-    return node;
+    return QMP_get_node_number_from(node_coord.slice());
   }
 
   //! Returns the logical node coordinates given some node number
@@ -142,14 +133,15 @@ namespace Layout
   multi1d<int> getLogicalCoordFrom(int node) 
   {
     multi1d<int> node_coord(Nd);
-
-    unsigned int unode = node;
-    unsigned int* node_crd = QMP_get_logical_coordinates_from(unode);  // QMP mallocs here
+    const int* node_crd = QMP_get_logical_coordinates_from(node);  // QMP mallocs here
 
     for(int i=0; i < Nd; ++i)
       node_coord[i] = node_crd[i];
 
-    free(node_crd);   // free up QMP's memory
+    // Hackery as free cannot take a const void*, so grab
+    // node_crd with a non const pointer
+    int* non_const_node_crd = const_cast<int*>(node_crd);
+    free(non_const_node_crd);   // free up QMP's memory
     return node_coord;
   }
 
@@ -239,17 +231,17 @@ namespace Layout
 
     // Now, layout the machine. Note, if the logical_machine size was set previously
     // it will be used
-    /* Crap to make the compiler happy with the C prototype */
-    unsigned int unsigned_nrow[Nd];
+    multi1d<int> nrow(Nd);
     for(int i=0; i < Nd; ++i)
-      unsigned_nrow[i] = _layout.nrow[i] / min_dim[i];
+      nrow[i] = _layout.nrow[i] / min_dim[i];
 
-    QMP_layout_grid(unsigned_nrow, Nd);
+    int* nrow_slice=const_cast<int*>(nrow.slice());
+    QMP_layout_grid(nrow_slice, Nd);
 
 
     // Pull out useful stuff
-    const unsigned int* phys_size = QMP_get_logical_dimensions();
-    const unsigned int* phys_coord = QMP_get_logical_coordinates();
+    const int* phys_size = QMP_get_logical_dimensions();
+    const int* phys_coord = QMP_get_logical_coordinates();
 
     _layout.subgrid_nrow.resize(Nd);
     _layout.logical_coord.resize(Nd);

@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_init.cc,v 1.7 2005-01-24 04:01:53 edwards Exp $
+// $Id: qdp_parscalarvec_init.cc,v 1.8 2005-03-21 05:30:12 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec init routines
@@ -36,7 +36,7 @@ void QDP_initialize(int *argc, char ***argv)
   }
 
   bool setGeomP = false;
-  multi1d<QMP_u32_t> logical_geom(Nd);   // apriori logical geometry of the machine
+  multi1d<int> logical_geom(Nd);   // apriori logical geometry of the machine
   logical_geom = 0;
 
   int rtiP = 0;
