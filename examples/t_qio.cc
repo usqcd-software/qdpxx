@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.3 2003-06-07 19:09:32 edwards Exp $
+// $Id: t_qio.cc,v 1.4 2003-08-28 18:31:04 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -14,12 +14,35 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {2,2,2,2};
+  const int foo[] = {4,4,4,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
   Layout::create();
 
+#if 1
+  // SciDAC output format - move up into switch statement or a subroutine
+  {
+    LatticePropagator quark_propagator = zero;
+    string source_filename = "t_qio.test";
+    string file_string = "file.xml";
+
+    XMLReader tmp_file_xml(file_string);
+    XMLBufferWriter file_xml;
+    file_xml << tmp_file_xml;
+
+    QDPSerialFileWriter to(file_xml,source_filename);
+
+    XMLReader tmp_record_xml("record.xml");
+    XMLBufferWriter record_xml;
+    record_xml << tmp_record_xml;
+
+    to.write(record_xml,quark_propagator);  // can keep repeating writes for more records
+    to.close();
+  }
+#endif
+
+#if 0
   {
     XMLBufferWriter file_xml;
 
@@ -73,6 +96,7 @@ int main(int argc, char **argv)
     cout << "Here is the contents of second  record_xml" << endl;
     record_xml.print(cout);
   }
+#endif
 
   // Time to bolt
   QDP_finalize();
