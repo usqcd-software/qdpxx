@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: proto.h,v 1.2 2002-10-25 03:33:26 edwards Exp $
+// $Id: proto.h,v 1.3 2002-10-26 01:54:30 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -61,6 +61,16 @@ sunFill(const multi1d<LatticeReal> r,
 	int su2_index,
 	const Subset& s);
 
+
+//! fread on a binary file written in big-endian order
+size_t bfread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+
+//! fwrite to a binary file in big-endian order
+size_t bfwrite(void *ptr, size_t size, size_t nmemb, FILE *stream);
+
+
+//! Read a QCD (NERSC) Archive format gauge field
+void readArchiv(multi1d<LatticeGauge>& u, char file[]);
 
 QDP_END_NAMESPACE();
 

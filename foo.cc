@@ -1,10 +1,11 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.8 2002-10-25 03:33:26 edwards Exp $
+// $Id: foo.cc,v 1.9 2002-10-26 01:54:30 edwards Exp $
 //
 // Silly little internal test code
 
 #include "qdp.h"
+#include "proto.h"
 
 //using namespace std;
 
@@ -13,7 +14,7 @@
 int main()
 {
   // Setup the geometry
-  const int foo[Nd] = {LX0,LX1};
+  const int foo[Nd] = {LX0,LX1,LX2,LX3};
   multi1d<int> nrow(Nd);
   nrow = foo;
   layout.Init(nrow);
@@ -37,7 +38,7 @@ int main()
   LatticeReal a, b, c, e;
   Complex d;
 //  float ccc = 2.0;
-  float x;
+//  float x;
   
 #if 0
   LatticeComplex  foob(zero);
@@ -134,7 +135,7 @@ int main()
   Write(nml,a);
 #endif
 
-#if 1
+#if 0
 //  std::ofstream f;
 //  f.open("foobar",std::ios_base::out|std::ios_base::binary);
 //  float aa[3] = {0.0,0.0,0.0};
@@ -172,6 +173,14 @@ int main()
   nml << "Reset and reread a";
   Write(nml,a);
 
+#endif
+
+#if 1
+  // Read a nersc file
+  multi1d<LatticeGauge> u(Nd);
+  readArchiv(u, "archiv.cfg");
+  nml << "Here is the nersc archive u field";
+  Write(nml,u);
 #endif
 
 
