@@ -1,4 +1,4 @@
-// $Id: t_nersc.cc,v 1.1 2003-08-23 02:13:40 edwards Exp $
+// $Id: t_nersc.cc,v 1.2 2003-08-26 21:38:38 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -32,12 +32,12 @@ int main(int argc, char *argv[])
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
   multi1d<LatticeColorMatrix> u(Nd);
-
   Double w_plaq, s_plaq, t_plaq, link;
 
   cout << "Trying to read NERSC Archive  t_nersc.cfg\n"
        << "  make sure it is in your current directory" << endl;
-  readArchiv(u, "t_nersc.cfg");
+  XMLReader xml;
+  readArchiv(xml, u, "t_nersc.cfg");
  
   // Try out the plaquette routine
   cout << "Start mesplq\n";
