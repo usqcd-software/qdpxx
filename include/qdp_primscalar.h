@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.7 2003-08-14 03:49:20 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.8 2003-08-20 21:03:56 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -946,7 +946,7 @@ fill_gaussian(PScalar<T>& d, PScalar<T>& r1, PScalar<T>& r2)
 }
 
 
-#if 0
+#if 1
 // Global sum over site indices only
 template<class T>
 struct UnaryReturn<PScalar<T>, FnSum > {
@@ -1091,6 +1091,14 @@ inline void
 cast_rep(PScalar<T>& d, const PScalar<T1>& s1)
 {
   cast_rep(d.elem(), s1.elem());
+}
+
+//! dest [some type] = source [some type]
+template<class T, class T1>
+inline void 
+copy_site(PScalar<T>& d, int isite, const PScalar<T1>& s1)
+{
+  copy_site(d.elem(), isite, s1.elem());
 }
 
 /*! @} */  // end of group primscalar
