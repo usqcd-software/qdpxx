@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.13 2003-04-23 04:41:52 edwards Exp $
+// $Id: scalar_specific.cc,v 1.14 2003-04-24 05:32:49 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -178,6 +178,29 @@ NmlReader& read(NmlReader& nml, const string& s, double& d)
   param_double_array(&d, get_current_nml_section(), s.c_str(), 0);
   return nml;
 }
+
+
+//! Function overload read of  int  into element position n
+NmlReader& read(NmlReader& nml, const string& s, int& d, int n)
+{
+  param_int_array(&d, get_current_nml_section(), s.c_str(), 1, n);
+  return nml;
+}
+
+//! Function overload read of  float  into element position n
+NmlReader& read(NmlReader& nml, const string& s, float& d, int n)
+{
+  param_float_array(&d, get_current_nml_section(), s.c_str(), 1, n);
+  return nml;
+}
+
+//! Function overload read of  double  into element position n
+NmlReader& read(NmlReader& nml, const string& s, double& d, int n)
+{
+  param_double_array(&d, get_current_nml_section(), s.c_str(), 1, n);
+  return nml;
+}
+
 
 //! Function overload read of  Complex
 NmlReader& read(NmlReader& nml, const string& s, Complex& d)

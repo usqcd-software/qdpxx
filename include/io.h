@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.14 2003-04-23 04:46:02 edwards Exp $
+// $Id: io.h,v 1.15 2003-04-24 05:32:49 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -135,28 +135,23 @@ NmlReader& read(NmlReader& nml, const string& s, float& d);
 //! Function overload read of  double
 NmlReader& read(NmlReader& nml, const string& s, double& d);
 
-//! Read a namelist multi1d element
-template<class T>
-inline
-NmlReader& read(NmlReader& nml, const string& s, multi1d<T>& s1)
-{
-  for(int i=0; i < s1.size(); ++i)
-    read(nml, s, s1[i]);
+//! Function overload read of  int  into element position n
+NmlReader& read(NmlReader& nml, const string& s, int& d, int n);
 
-  return nml;
-}
+//! Function overload read of  float  into element position n
+NmlReader& read(NmlReader& nml, const string& s, float& d, int n);
 
-//! Read a namelist multi2d element
-template<class T> 
-inline
-NmlReader& read(NmlReader& nml, const string& s, multi2d<T>& s1)
-{
-  for(int j=0; j < s1.size1(); ++j)
-    for(int i=0; i < s1.size2(); ++i)
-      read(nml, s, s1[i][j]);
+//! Function overload read of  double  into element position n
+NmlReader& read(NmlReader& nml, const string& s, double& d, int n);
 
-  return nml;
-}
+//! Function overload read of  multi1d<int>
+NmlReader& read(NmlReader& nml, const string& s, multi1d<int>& d);
+
+//! Function overload read of  multi1d<float>
+NmlReader& read(NmlReader& nml, const string& s, multi1d<float>& d);
+
+//! Function overload read of  multi1d<double>
+NmlReader& read(NmlReader& nml, const string& s, multi1d<double>& d);
 
 #define READ_NAMELIST(nml,a) read(nml,#a,a)
 #define Read(nml,a) read(nml,#a,a)

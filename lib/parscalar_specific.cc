@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.17 2003-04-20 04:03:34 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.18 2003-04-24 05:32:49 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -393,6 +393,41 @@ NmlReader& read(NmlReader& nml, const string& s, double& d)
 
   return nml;
 }
+
+
+//! Function overload read of  int  into element position n
+NmlReader& read(NmlReader& nml, const string& s, int& d, int n)
+{
+  param_int_array(&d, get_current_nml_section(), s.c_str(), 1, n);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+
+  return nml;
+}
+
+//! Function overload read of  float  into element position n
+NmlReader& read(NmlReader& nml, const string& s, float& d, int n)
+{
+  param_float_array(&d, get_current_nml_section(), s.c_str(), 1, n);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+
+  return nml;
+}
+
+//! Function overload read of  double  into element position n
+NmlReader& read(NmlReader& nml, const string& s, double& d, int n)
+{
+  param_double_array(&d, get_current_nml_section(), s.c_str(), 1, n);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+
+  return nml;
+}
+
 
 //! Function overload read of  Complex
 NmlReader& read(NmlReader& nml, const string& s, Complex& d)
