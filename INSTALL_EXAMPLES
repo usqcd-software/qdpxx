@@ -1,0 +1,18 @@
+Examples of QDP++ installation on various machines
+==================================================
+
+Here are some short concise examples of QDP++ installation showing
+relevant compiler flags
+
+1) g++-3.2, architecture=[scalar|parscalar]
+
+
+
+2) IBM SP systems. E.g., Oak-ridge
+
+../configure CXX=/Home/bj/scratch/mpich-1.2.4/bin/mpiCC \
+     --with-qmp-cxxflags="-I/Home/bj/scratch/qmp-1.3-mpich/include" \
+     --with-qmp-ldflags="-L/Home/bj/scratch/qmp-1.3-mpich/lib" \
+     --with-qmp-libs="-lqmp" \
+     --enable-parallel-arch=parscalar \
+     --prefix=/Home/bj/scratch/qdp-0.19-Nd4-Ns4-Nc4-parscalar
