@@ -136,15 +136,16 @@ SUBDIRS = propagator
 #
 # Local Headers
 #
-HDRS = tests.h 
+HDRS = examples.h 
 
 #
 # The programs to build
 # 
-check_PROGRAMS = t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo
+check_PROGRAMS = t_skeleton t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo
 
 #
 # The program and its dependencies
+t_skeleton_SOURCES = t_skeleton.cc
 t_foo_SOURCES = t_foo.cc $(HDRS)
 t_io_SOURCES = t_io.cc $(HDRS)
 t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)
@@ -159,9 +160,9 @@ t_qdp_SOURCES = t_qdp.cc formfac_w.cc dslashm_w.cc baryon_w.cc \
 subdir = examples
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
-check_PROGRAMS = t_dslashm$(EXEEXT) t_formfac$(EXEEXT) t_io$(EXEEXT) \
-	t_mesplq$(EXEEXT) t_qdp$(EXEEXT) t_spectrum$(EXEEXT) \
-	t_foo$(EXEEXT)
+check_PROGRAMS = t_skeleton$(EXEEXT) t_dslashm$(EXEEXT) \
+	t_formfac$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
+	t_qdp$(EXEEXT) t_spectrum$(EXEEXT) t_foo$(EXEEXT)
 am__objects_1 =
 am_t_dslashm_OBJECTS = t_dslashm.$(OBJEXT) dslashm_w.$(OBJEXT) \
 	$(am__objects_1)
@@ -198,6 +199,11 @@ t_qdp_OBJECTS = $(am_t_qdp_OBJECTS)
 t_qdp_LDADD = $(LDADD)
 t_qdp_DEPENDENCIES =
 t_qdp_LDFLAGS =
+am_t_skeleton_OBJECTS = t_skeleton.$(OBJEXT)
+t_skeleton_OBJECTS = $(am_t_skeleton_OBJECTS)
+t_skeleton_LDADD = $(LDADD)
+t_skeleton_DEPENDENCIES =
+t_skeleton_LDFLAGS =
 am_t_spectrum_OBJECTS = t_spectrum.$(OBJEXT) formfac_w.$(OBJEXT) \
 	dslashm_w.$(OBJEXT) baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 	mesplq.$(OBJEXT) reunit.$(OBJEXT) $(am__objects_1)
@@ -215,7 +221,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/t_dslashm.Po ./$(DEPDIR)/t_foo.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_mesplq.Po ./$(DEPDIR)/t_qdp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_spectrum.Po
+@AMDEP_TRUE@	./$(DEPDIR)/t_skeleton.Po ./$(DEPDIR)/t_spectrum.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -227,7 +233,7 @@ CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(t_dslashm_SOURCES) $(t_foo_SOURCES) \
 	$(t_formfac_SOURCES) $(t_io_SOURCES) $(t_mesplq_SOURCES) \
-	$(t_qdp_SOURCES) $(t_spectrum_SOURCES)
+	$(t_qdp_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES)
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	ps-recursive install-info-recursive uninstall-info-recursive \
@@ -236,7 +242,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	check-recursive installcheck-recursive
 DIST_COMMON = Makefile.am Makefile.in
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(t_dslashm_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_mesplq_SOURCES) $(t_qdp_SOURCES) $(t_spectrum_SOURCES)
+SOURCES = $(t_dslashm_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_mesplq_SOURCES) $(t_qdp_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES)
 
 all: all-recursive
 
@@ -268,6 +274,9 @@ t_mesplq$(EXEEXT): $(t_mesplq_OBJECTS) $(t_mesplq_DEPENDENCIES)
 t_qdp$(EXEEXT): $(t_qdp_OBJECTS) $(t_qdp_DEPENDENCIES) 
 	@rm -f t_qdp$(EXEEXT)
 	$(CXXLINK) $(t_qdp_LDFLAGS) $(t_qdp_OBJECTS) $(t_qdp_LDADD) $(LIBS)
+t_skeleton$(EXEEXT): $(t_skeleton_OBJECTS) $(t_skeleton_DEPENDENCIES) 
+	@rm -f t_skeleton$(EXEEXT)
+	$(CXXLINK) $(t_skeleton_LDFLAGS) $(t_skeleton_OBJECTS) $(t_skeleton_LDADD) $(LIBS)
 t_spectrum$(EXEEXT): $(t_spectrum_OBJECTS) $(t_spectrum_DEPENDENCIES) 
 	@rm -f t_spectrum$(EXEEXT)
 	$(CXXLINK) $(t_spectrum_LDFLAGS) $(t_spectrum_OBJECTS) $(t_spectrum_LDADD) $(LIBS)
@@ -290,6 +299,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_qdp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_skeleton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spectrum.Po@am__quote@
 
 distclean-depend:
