@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.12 2003-09-02 03:02:12 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.13 2003-09-02 21:47:16 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -638,10 +638,11 @@ operator*(const PColorMatrix<RComplexFloat,3>& l,
 }
 
 
-#if 0
+#if 1
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
+// NOTE: let this be a subroutine to save space
 template<>
 void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d, 
 	      const OpAssign& op, 
@@ -651,27 +652,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
-	      const OrderedSubset& s)
-{
-//  cout << "call single site QDP_M_eq_M_times_M" << endl;
-
-  const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
-  const LatticeColorMatrix& r = static_cast<const LatticeColorMatrix&>(rhs.expression().right());
-
-  const int istart = s.start() >> INNER_LOG;
-  const int iend   = s.end()   >> INNER_LOG;
-
-  for(int i=istart; i <= iend; ++i) 
-  {
-    float *dd = (float*)&(d.elem(i).elem());
-    float *ll = (float*)&(l.elem(i).elem());
-    float *rr = (float*)&(r.elem(i).elem());
-
-    _inline_ssevec_mult_su3_nn(dd,ll,rr,0);
-    _inline_ssevec_mult_su3_nn(dd,ll,rr,1);
-    _inline_ssevec_mult_su3_nn(dd,ll,rr,2);
-  }
-}
+	      const OrderedSubset& s);
 #endif
 
 
