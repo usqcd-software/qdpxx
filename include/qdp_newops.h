@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_newops.h,v 1.5 2003-08-04 19:00:44 edwards Exp $
+// $Id: qdp_newops.h,v 1.6 2003-08-20 21:02:17 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -76,6 +76,17 @@ struct FnInnerProductRealMulti
 //-----------------------------------------------------------------------------
 // Operators and tags for accessing elements of a QDP object
 //-----------------------------------------------------------------------------
+
+struct FnPeekSite
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPeekSite)
+};
+
+struct FnPokeSite
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPokeSite)
+};
+
 
 //! Structure for extracting color matrix components
 struct FnPeekColorMatrix
