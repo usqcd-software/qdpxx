@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.22 2003-08-28 18:03:51 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.23 2003-09-01 20:39:40 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -41,7 +41,7 @@ void XMLReader::open(const string& filename)
     BasicXPathReader::open(filename);
 #else
 
-#if 0
+#if 1
     QDPUtil::RemoteInputFileStream f;
     f.open(filename.c_str(),std::ifstream::in);
     BasicXPathReader::open(f);
