@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.13 2003-08-23 02:25:57 edwards Exp $
+// $Id: qdp_outer.h,v 1.14 2003-08-23 14:08:15 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -235,14 +235,14 @@ public:
       F = new T[Layout::sitesOnNode()];
 
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"create OLattice[%d]=0x%x, this=0x%x\n",
-              Layout::sitesOnNode(),(void *)F,this);
+      fprintf(stderr,"create %d bytes of OLattice[%d]=0x%x, this=0x%x\n",
+              sizeof(T), Layout::sitesOnNode(),(void *)F,this);
 #endif
     }
   ~OLattice()
     {
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"destroy OLattice=0x%x, this=0x%x\n",F,this);
+      fprintf(stderr,"destroy %d bytes of OLattice=0x%x, this=0x%x\n",sizeof(T),F,this);
 #endif
 
       delete[] F;
@@ -256,7 +256,7 @@ public:
       F = new T[Layout::sitesOnNode()];
 
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
+      fprintf(stderr,"construct %d bytes from expr OLattice[%d]=0x%x\n",sizeof(T),Layout::sitesOnNode(),F);
 #endif
 
       assign(rhs);
@@ -270,7 +270,7 @@ public:
       F = new T[Layout::sitesOnNode()];
 
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
+      fprintf(stderr,"construct %d bytes from expr OLattice[%d]=0x%x\n",sizeof(T),Layout::sitesOnNode(),F);
 #endif
 
       assign(rhs);
@@ -283,7 +283,7 @@ public:
       F = new T[Layout::sitesOnNode()];
 
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"construct from const OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
+      fprintf(stderr,"construct %d bytes from const OLattice[%d]=0x%x\n",sizeof(T),Layout::sitesOnNode(),F);
 #endif
 
       typedef OScalar<typename InternalScalar<T>::Type_t>  Scalar_t;
@@ -297,7 +297,7 @@ public:
       F = new T[Layout::sitesOnNode()];
 
 #if QDP_DEBUG >= 1
-      fprintf(stderr,"construct from zero OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
+      fprintf(stderr,"construct %d bytes from zero OLattice[%d]=0x%x\n",sizeof(T),Layout::sitesOnNode(),F);
 #endif
 
       assign(rhs);
