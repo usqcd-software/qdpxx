@@ -76,6 +76,8 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
   /* The number of dimensions in our "grid" */
   QMP_u32_t ndim;
 
+  QMP_u32_t bufsize;
+
   QMP_bool_t log_top_declP;
 
   /* Check to see if the logical topology is declared or not */
@@ -125,14 +127,21 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
   free(l_src_coords);
   free(l_dst_coords);
 
+  /* Pad the buffers so that their lengths are always divisible by 8 */
+  /* This is a funky QCDOC-ism -- maybe */
+  bufsize = count;
+  if( count % 8 != 0 ) { 
+    bufsize += (8 - (count % 8));
+  }
+
   /* Will have to free these with QMP_free_aligned_memory */
-  sendbuf = QMP_allocate_aligned_memory(count);
+  sendbuf = QMP_allocate_aligned_memory(bufsize);
   if( sendbuf == NULL ) { 
     fprintf(stderr, "Unable to allocate sendbuf in QMP_route\n");
     return QMP_NOMEM_ERR;
   }
 
-  recvbuf = QMP_allocate_aligned_memory(count);
+  recvbuf = QMP_allocate_aligned_memory(bufsize);
   if( recvbuf == NULL ) { 
     fprintf(stderr ,"Unable to allocate recvbuf in QMP_route\n");
     return QMP_NOMEM_ERR;
@@ -141,6 +150,7 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
   /* To start with -- the first thing I have to do, is to copy
      the message into my sendbuf if I am the sender. Otherwise 
      I really don't care what junk is in there. */
+
   if( me == src ) {
     memcpy( sendbuf, buffer, count);
   }
@@ -156,8 +166,8 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
   */
 
   /* Declare the message memories */
-  sendbufmm = QMP_declare_msgmem(sendbuf, count);
-  recvbufmm = QMP_declare_msgmem(recvbuf, count);
+  sendbufmm = QMP_declare_msgmem(sendbuf, bufsize);
+  recvbufmm = QMP_declare_msgmem(recvbuf, bufsize);
 
   /* For each dimension do */
   for(i=0; i < ndim; i++) { 
