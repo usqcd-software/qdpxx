@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_specific.cc,v 1.6 2003-08-30 02:22:15 edwards Exp $
+// $Id: qdp_scalarvecsite_specific.cc,v 1.7 2003-09-02 20:19:22 edwards Exp $
 
 /*! @file
  * @brief Scalarvec-like architecture specific routines
@@ -122,7 +122,27 @@ void UnorderedSet::make(const SetFunc& func)
 	sitetable[j++] = linear;
 
 
-    sub[cb].make(&(sitetables[cb]), cb);
+    // Check *if* this coloring is contiguous and find the start
+    // and ending sites
+    bool ordRep = true;
+    int start = sitetable[0];   // this is the beginning
+    int end = sitetable[sitetable.size()-1];  // the absolute last site
+
+    // Now look for a hole
+    for(int prev=sitetable[0], i=0; i < sitetable.size(); ++i)
+      if (sitetable[i] != prev++)
+      {
+#if QDP_DEBUG >= 2
+	QDP_info("UnorderedSet(%d): sitetable[%d]=%d",cb,i,sitetable[i]);
+#endif
+	
+	// Found a hold. The rep is not ordered.
+	ordRep = false;
+	start = end = -1;
+	break;
+      }
+
+    sub[cb].make(ordRep, start, end, &(sitetables[cb]), cb);
 
 #if QDP_DEBUG >= 2
     QDP_info("UnorderedSubset(%d)",cb);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_subset.h,v 1.7 2003-08-09 20:42:29 edwards Exp $
+// $Id: qdp_subset.h,v 1.8 2003-09-02 20:19:22 edwards Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -44,6 +44,10 @@ public:
   virtual int color() const = 0;
 
 public:
+  virtual bool hasOrderedRep() const = 0;
+  virtual int start() const = 0;
+  virtual int end() const = 0;
+
   virtual const multi1d<int>& siteTable() const = 0;
   virtual int numSiteTable() const = 0;
 };
@@ -89,7 +93,10 @@ public:
   UnorderedSubset() {}
 
   //! Copy constructor
-  UnorderedSubset(const UnorderedSubset& s): sitetable(s.sitetable), sub_index(s.sub_index) {}
+  UnorderedSubset(const UnorderedSubset& s):
+    ordRep(s.ordRep), startSite(s.startSite), endSite(s.endSite), 
+    sub_index(s.sub_index), sitetable(s.sitetable)
+    {}
 
   // Simple constructor
   void make(const UnorderedSubset& s);
@@ -105,15 +112,22 @@ public:
 
 protected:
   // Simple constructor
-  void make(multi1d<int>* ind, int cb);
+  void make(bool rep, int start, int end, multi1d<int>* ind, int cb);
 
 private:
+  bool ordRep;
+  int startSite;
+  int endSite;
   int sub_index;
 
   //! Site lookup table
   multi1d<int>* sitetable;
 
 public:
+  inline bool hasOrderedRep() const {return ordRep;}
+  inline int start() const {return startSite;}
+  inline int end() const {return endSite;}
+
   const multi1d<int>& siteTable() const {return *sitetable;}
   inline int numSiteTable() const {return sitetable->size();}
 
@@ -130,8 +144,9 @@ public:
   OrderedSubset() {}
 
   //! Copy constructor
-  OrderedSubset(const OrderedSubset& s): startSite(s.startSite), endSite(s.endSite),
-					 sitetable(s.sitetable), sub_index(s.sub_index)
+  OrderedSubset(const OrderedSubset& s): 
+    startSite(s.startSite), endSite(s.endSite), 
+    sub_index(s.sub_index), sitetable(s.sitetable)
     {}
 
   // Simple constructor
@@ -160,6 +175,7 @@ private:
   multi1d<int>* sitetable;
 
 public:
+  inline bool hasOrderedRep() const {return true;}
   inline int start() const {return startSite;}
   inline int end() const {return endSite;}
 

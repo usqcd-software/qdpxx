@@ -1,4 +1,4 @@
-// $Id: qdp_subset.cc,v 1.5 2003-08-09 20:42:29 edwards Exp $
+// $Id: qdp_subset.cc,v 1.6 2003-09-02 20:19:22 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -124,8 +124,11 @@ void initDefaultSets()
 	  
 
 //! Simple constructor called to produce a Subset from inside a Set
-void UnorderedSubset::make(multi1d<int>* ind, int cb)
+void UnorderedSubset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb)
 {
+  ordRep    = _rep;
+  startSite = _start;
+  endSite   = _end;
   sitetable = ind;
   sub_index = cb;
 }
@@ -133,6 +136,9 @@ void UnorderedSubset::make(multi1d<int>* ind, int cb)
 //! Simple constructor called to produce a Subset from inside a Set
 void UnorderedSubset::make(const UnorderedSubset& s)
 {
+  ordRep    = s.ordRep;
+  startSite = s.startSite;
+  endSite   = s.endSite;
   sub_index = s.sub_index;
   sitetable = s.sitetable;
 }
