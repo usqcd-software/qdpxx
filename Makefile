@@ -1,10 +1,10 @@
-# $Id: Makefile,v 1.5 2002-10-09 15:33:25 edwards Exp $
+# $Id: Makefile,v 1.6 2002-10-25 03:28:22 edwards Exp $
 #
 # Makefile for C++ QDP code
 #
 
 CXX = g++
-CXXFLAGS = -g
+CXXFLAGS = -g -Wall
 #CXXFLAGS = -O3
 #CXXFLAGS = -O4 -fomit-frame-pointer -felide-constructors
 #CXXFLAGS = -O4 -fomit-frame-pointer
