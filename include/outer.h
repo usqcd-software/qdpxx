@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.22 2003-04-09 19:32:27 edwards Exp $
+// $Id: outer.h,v 1.23 2003-04-10 18:36:09 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -134,10 +134,20 @@ inline
 ostream& operator<<(ostream& s, const OScalar<T>& d)
 {
   if (Layout::primaryNode())
-  {
     s << d.elem();
-  }
+
   return s;
+}
+
+//! text output
+template<class T>
+inline
+TextWriter& operator<<(TextWriter& txt, const OScalar<T>& d)
+{
+  if (Layout::primaryNode())
+    txt << d.elem() << endl;
+
+  return txt;
 }
 
 //! namelist output

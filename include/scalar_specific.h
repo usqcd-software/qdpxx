@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.23 2003-03-17 20:35:57 edwards Exp $
+// $Id: scalar_specific.h,v 1.24 2003-04-10 18:36:09 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -853,6 +853,33 @@ BinaryReader& read(BinaryReader& bin, OLattice<T>& d)
   }
 
   return bin;
+}
+
+// Input
+//! Ascii input
+/*! Assumes no inner grid */
+template<class T>
+istream& operator>>(istream& s, OScalar<T>& d)
+{
+  s >> d.elem();
+  return s;
+}
+
+//! Read a text element
+template<class T>
+TextReader& operator>>(TextReader& txt, T& d)
+{
+  txt.get() >> d;
+  return txt;
+}
+
+//! Text input
+/*! Assumes no inner grid */
+template<class T>
+TextReader& operator>>(TextReader& txt, OScalar<T>& d)
+{
+  txt.get() >> d.elem();
+  return txt;
 }
 
 QDP_END_NAMESPACE();

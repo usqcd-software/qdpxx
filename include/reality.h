@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.18 2003-02-28 03:43:53 edwards Exp $
+// $Id: reality.h,v 1.19 2003-04-10 18:36:09 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -160,6 +160,20 @@ private:
 };
 
  
+// Input
+//! Ascii input
+template<class T>
+inline
+istream& operator>>(istream& s, RScalar<T>& d)
+{
+   cerr << "inside rscalar" << endl;
+
+   if (Layout::primaryNode())
+    s >> d.elem();
+
+  return s;
+}
+
 //! Ascii output
 template<class T> 
 inline  

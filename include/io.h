@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.11 2003-03-17 20:35:57 edwards Exp $
+// $Id: io.h,v 1.12 2003-04-10 18:36:09 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -41,15 +41,7 @@ public:
   void close();
   bool is_open();
 
-  //! Read from stream
-  template<class T>
-  TextReader& operator>>(T& d)
-    {
-      if (Layout::primaryNode()) 
-	f >> d; 
-      return *this;
-    }
-
+  std::ifstream& get() {return f;}
 
 private:
   bool iop;
@@ -70,14 +62,7 @@ public:
   void open(const char* p);
   void close();
 
-  //! Write to stream
-  template<class T>
-  TextWriter& operator<<(const T& d)
-    {
-      if (Layout::primaryNode()) 
-	f << d; 
-      return *this;
-    }
+  std::ofstream& get() {return f;}
 
 private:
   bool iop;
@@ -121,16 +106,6 @@ public:
   void close();
   bool is_open();
 
-  //! Read from stream
-  template<class T>
-  NmlReader& operator>>(T& d)
-    {
-      if (Layout::primaryNode()) 
-	f >> d; 
-      return *this;
-    }
-
-
 private:
   bool iop;
   std::ifstream f;
@@ -149,13 +124,6 @@ public:
   bool is_open();
   void open(const char* p);
   void close();
-
-  //! Write to stream
-//  template<class T>
-//  NmlWriter& operator<<(const T& d) {f << d; return *this;}
-
-//  template<class T>
-//  friend NmlWriter& operator<<(NmlWriter& s, const T& d);
 
   std::ofstream& get() {return f;}
 
@@ -245,23 +213,6 @@ NmlWriter& write(NmlWriter& nml, const string& s, const multi2d<T>& s1)
 #define Write(nml,a) write(nml,#a,a)
 
 
-//------------------------------------------------
-#if 0
-//! Namelist style input object
-class nml_obj
-{
-private:
-  istream foo;
-};
-
-//! Read a namelist group
-template<class T>
-NmlWriter& read(NmlWriter& nml, const string& s, const QDPType<T>& s1);
-#endif
-
-
-
-
 //--------------------------------------------------------------------------------
 //! Simple output binary class
 class BinaryReader
@@ -274,9 +225,6 @@ public:
   bool is_open();
   void open(const char* p);
   void close();
-
-  //! Read End-Of-Record mark
-  BinaryReader& eor();
 
   FILE* get() {return f;}
 
@@ -331,9 +279,6 @@ public:
   bool is_open();
   void open(const char* p);
   void close();
-
-  //! Write End-Of-Record mark
-  BinaryWriter& eor();
 
   FILE* get() {return f;}
 
