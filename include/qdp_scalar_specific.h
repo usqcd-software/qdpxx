@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.23 2004-04-05 21:39:19 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.24 2004-07-27 05:31:45 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -53,6 +53,11 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 {
 //  cerr << "In evaluateUnorderedSubet(olattice,oscalar)\n";
 
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(dest, op, rhs);
+  prof.time -= getClockTime();
+#endif
+
   const int *tab = s.siteTable().slice();
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
@@ -61,6 +66,12 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 //    op(dest.elem(i), forEach(rhs, ElemLeaf(), OpCombine()));
     op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
   }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
 }
 
 //! OLattice Op Scalar(Expression(source)) under an OrderedSubset
@@ -75,25 +86,22 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 {
 //  cerr << "In evaluateOrderedSubset(olattice,oscalar)\n";
 
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(dest, op, rhs);
+  prof.time -= getClockTime();
+#endif
+
   for(int i=s.start(); i <= s.end(); ++i) 
   {
 //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
     op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
   }
-}
 
-//! OLattice Op Scalar(Expression(source)) under the ALL subset
-/*! 
- * OLattice Op Expression, where Op is some kind of binary operation 
- * involving the destination 
- */
-template<class T, class T1, class Op, class RHS>
-inline
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs)
-{
-//  cerr << "In evaluateAll(olattice,oscalar)\n";
-
-  evaluate(dest, op, rhs, all);
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
 }
 
 
@@ -109,6 +117,11 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 {
 //  cerr << "In evaluateUnorderedSubset(olattice,olattice)" << endl;
 
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(dest, op, rhs);
+  prof.time -= getClockTime();
+#endif
+
   // General form of loop structure
   const int *tab = s.siteTable().slice();
   for(int j=0; j < s.numSiteTable(); ++j) 
@@ -117,6 +130,12 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
     op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
   }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
 }
 
 
@@ -132,22 +151,22 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 {
 //  cerr << "In evaluateOrderedSubset(olattice,olattice)" << endl;
 
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(dest, op, rhs);
+  prof.time -= getClockTime();
+#endif
+
   for(int i=s.start(); i <= s.end(); ++i) 
   {
 //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
     op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
   }
-}
 
-
-//! OLattice Op OLattice(Expression(source))
-template<class T, class T1, class Op, class RHS>
-inline
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs)
-{
-//  cerr << "In evaluateAll(olattice,olattice)\n";
-
-  evaluate(dest, op, rhs, all);
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
 }
 
 
@@ -387,7 +406,25 @@ sum(const QDPExpr<RHS,OScalar<T> >& s1, const Subset& s)
 {
   typename UnaryReturn<OScalar<T>, FnSum>::Type_t  d;
 
-  evaluate(d,OpAssign(),s1);
+#if defined(QDP_USE_PROFILING)   
+  typedef OScalar<T> C1;
+  typedef UnaryNode<FnSum, typename CreateLeaf<QDPExpr<RHS,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnSum>::Type_t Container_t;
+  static QDPProfile_t prof(d, OpAssign(), 
+			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
+			     CreateLeaf<QDPExpr<RHS,C1> >::make(s1))));
+
+  prof.time -= getClockTime();
+#endif
+
+  evaluate(d,OpAssign(),s1,all);
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
   return d;
 }
 
@@ -403,7 +440,25 @@ sum(const QDPExpr<RHS,OScalar<T> >& s1)
 {
   typename UnaryReturn<OScalar<T>, FnSum>::Type_t  d;
 
-  evaluate(d,OpAssign(),s1);
+#if defined(QDP_USE_PROFILING)   
+  typedef OScalar<T> C1;
+  typedef UnaryNode<FnSum, typename CreateLeaf<QDPExpr<RHS,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnSum>::Type_t Container_t;
+  static QDPProfile_t prof(d, OpAssign(), 
+			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
+			     CreateLeaf<QDPExpr<RHS,C1> >::make(s1))));
+
+  prof.time -= getClockTime();
+#endif
+
+  evaluate(d,OpAssign(),s1,all);
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
   return d;
 }
 
@@ -420,6 +475,17 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 {
   typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
 
+#if defined(QDP_USE_PROFILING)   
+  typedef OLattice<T> C1;
+  typedef UnaryNode<FnSum, typename CreateLeaf<QDPExpr<RHS,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnSum>::Type_t Container_t;
+  static QDPProfile_t prof(d, OpAssign(), 
+			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
+			     CreateLeaf<QDPExpr<RHS,C1> >::make(s1))));
+
+  prof.time -= getClockTime();
+#endif
+
   // Must initialize to zero since we do not know if the loop will be entered
   zero_rep(d.elem());
 
@@ -429,6 +495,12 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
     int i = tab[j];
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
   }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
 
   return d;
 }
@@ -445,12 +517,29 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
 {
   typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
 
+#if defined(QDP_USE_PROFILING)   
+  typedef OLattice<T> C1;
+  typedef UnaryNode<FnSum, typename CreateLeaf<QDPExpr<RHS,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnSum>::Type_t Container_t;
+  static QDPProfile_t prof(d, OpAssign(), 
+			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
+			     CreateLeaf<QDPExpr<RHS,C1> >::make(s1))));
+
+  prof.time -= getClockTime();
+#endif
+
   // Loop always entered - could unroll
   zero_rep(d.elem());
 
   const int vvol = Layout::vol();
   for(int i=0; i < vvol; ++i) 
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
 
   return d;
 }
@@ -472,11 +561,26 @@ sumMulti(const QDPExpr<RHS,OScalar<T> >& s1, const Set& ss)
 {
   typename UnaryReturn<OScalar<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
 
+#if defined(QDP_USE_PROFILING)   
+  typedef OScalar<T> C;
+  typedef UnaryNode<FnSum, typename CreateLeaf<QDPExpr<RHS,C> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C,FnSum>::Type_t Container_t;
+  static QDPProfile_t prof(dest[0], OpAssign(), 
+			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
+			     CreateLeaf<QDPExpr<RHS,C> >::make(s1))));
+
+  prof.time -= getClockTime();
+#endif
+
   // lazy - evaluate repeatedly
   for(int i=0; i < ss.numSubsets(); ++i)
-  {
-    evaluate(dest[i],OpAssign(),s1);
-  }
+    evaluate(dest[i],OpAssign(),s1,all);
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
 
   return dest;
 }
@@ -497,6 +601,17 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 {
   typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
 
+#if defined(QDP_USE_PROFILING)   
+  typedef OLattice<T> C;
+  typedef UnaryNode<FnSum, typename CreateLeaf<QDPExpr<RHS,C> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C,FnSum>::Type_t Container_t;
+  static QDPProfile_t prof(dest[0], OpAssign(), 
+			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
+			     CreateLeaf<QDPExpr<RHS,C> >::make(s1))));
+
+  prof.time -= getClockTime();
+#endif
+
   // Initialize result with zero
   for(int k=0; k < ss.numSubsets(); ++k)
     zero_rep(dest[k]);
@@ -510,6 +625,12 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
     int j = lat_color[i];
     dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
   }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
 
   return dest;
 }
@@ -529,6 +650,17 @@ norm2(const multi1d< OScalar<T> >& s1)
 {
   typename UnaryReturn<OScalar<T>, FnNorm2>::Type_t  d;
 
+#if defined(QDP_USE_PROFILING)   
+  typedef OScalar<T> C;
+  typedef UnaryNode<FnNorm2, typename CreateLeaf<QDPType<T,C> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C,FnNorm2>::Type_t Container_t;
+  static QDPProfile_t prof(d, OpAssign(), 
+			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
+			     CreateLeaf<QDPType<T,C> >::make(s1[0]))));
+
+  prof.time -= getClockTime();
+#endif
+
   // Possibly loop entered
   zero_rep(d.elem());
 
@@ -537,6 +669,12 @@ norm2(const multi1d< OScalar<T> >& s1)
     OScalar<T>& ss1 = s1[n];
     d.elem() += localNorm2(ss1.elem());
   }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
 
   return d;
 }
@@ -573,6 +711,17 @@ norm2(const multi1d< OLattice<T> >& s1, const UnorderedSubset& s)
 {
   typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
 
+#if defined(QDP_USE_PROFILING)   
+  typedef OLattice<T> C;
+  typedef UnaryNode<FnNorm2, typename CreateLeaf<QDPType<T,C> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C,FnNorm2>::Type_t Container_t;
+  static QDPProfile_t prof(d, OpAssign(), 
+			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
+			     CreateLeaf<QDPType<T,C> >::make(s1[0]))));
+
+  prof.time -= getClockTime();
+#endif
+
   // Possibly loop entered
   zero_rep(d.elem());
 
@@ -586,6 +735,12 @@ norm2(const multi1d< OLattice<T> >& s1, const UnorderedSubset& s)
       d.elem() += localNorm2(ss1.elem(i));
     }
   }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
 
   return d;
 }
@@ -603,6 +758,17 @@ norm2(const multi1d< OLattice<T> >& s1, const OrderedSubset& s)
 {
   typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
 
+#if defined(QDP_USE_PROFILING)   
+  typedef OLattice<T> C;
+  typedef UnaryNode<FnNorm2, typename CreateLeaf<QDPType<T,C> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C,FnNorm2>::Type_t Container_t;
+  static QDPProfile_t prof(d, OpAssign(), 
+			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
+			     CreateLeaf<QDPType<T,C> >::make(s1[0]))));
+
+  prof.time -= getClockTime();
+#endif
+
   // Possibly loop entered
   zero_rep(d.elem());
 
@@ -612,6 +778,12 @@ norm2(const multi1d< OLattice<T> >& s1, const OrderedSubset& s)
     for(int i=s.start(); i <= s.end(); ++i) 
       d.elem() += localNorm2(ss1.elem(i));
   }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
 
   return d;
 }
@@ -851,6 +1023,16 @@ struct FnMap
     return (a);
   }
 };
+
+
+#if defined(QDP_USE_PROFILING)   
+template <>
+struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
+{ 
+  static void visit(FnMap op, PrintTag t) 
+    { t.os_m << "shift"; }
+};
+#endif
 
 
 // Specialization of ForEach deals with maps. 
