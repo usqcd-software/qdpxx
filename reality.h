@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.8 2002-10-25 03:33:26 edwards Exp $
+// $Id: reality.h,v 1.9 2002-11-04 04:35:54 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -876,6 +876,18 @@ conj(const RScalar<T1>& s1)
 }
 
 
+// Transpose
+template<class T1>
+inline typename UnaryReturn<RScalar<T1>, FnTranspose>::Type_t
+transpose(const RScalar<T1>& s1)
+{
+  typename UnaryReturn<RScalar<T1>, FnTranspose>::Type_t  d;
+
+  d.elem() = transpose(s1.elem());
+  return d;
+}
+
+
 
 // TRACE
 // trace = Trace(source1)
@@ -1447,6 +1459,18 @@ conj(const RComplex<T1>& l)
 
   d.real() = l.real();
   d.imag() = -l.imag();
+  return d;
+}
+
+// Transpose
+template<class T1>
+inline typename UnaryReturn<RComplex<T1>, FnTranspose>::Type_t
+transpose(const RComplex<T1>& l)
+{
+  typename UnaryReturn<RComplex<T1>, FnTranspose>::Type_t  d;
+
+  d.real() = l.real();
+  d.imag() = l.imag();
   return d;
 }
 

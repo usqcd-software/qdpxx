@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.8 2002-10-12 04:10:15 edwards Exp $
+// $Id: simpleword.h,v 1.9 2002-11-04 04:35:54 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -199,6 +199,28 @@ double conj(const double& l)
 // Conjugate
 inline 
 int conj(const int& l)
+{
+  return l;
+}
+
+
+// Transpose
+inline 
+float transpose(const float& l)
+{
+  return l;
+}
+
+// Transpose
+inline 
+double transpose(const double& l)
+{
+  return l;
+}
+
+// Transpose
+inline 
+int transpose(const int& l)
 {
   return l;
 }
