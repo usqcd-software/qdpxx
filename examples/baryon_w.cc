@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.9 2002-12-26 23:01:11 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.10 2003-07-31 01:07:41 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -85,7 +85,7 @@ void baryon(LatticePropagator& quark_propagator,
 	    const multi1d<int>& t_source, int j_decay, int bc_spec)
 {
   // Create the time-slice set
-  Set timeslice;
+  UnorderedSet timeslice;
   timeslice.make(TimeSliceFunc(j_decay));
 
   // Length of lattice in j_decay direction

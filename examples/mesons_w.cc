@@ -1,4 +1,4 @@
-//  $Id: mesons_w.cc,v 1.7 2003-01-15 21:46:51 edwards Exp $
+//  $Id: mesons_w.cc,v 1.8 2003-07-31 01:07:41 edwards Exp $
 /*! \file
  *  \brief Meson 2-pt functions
  */
@@ -48,7 +48,7 @@ void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quar
 	    const multi1d<int>& t_source, int j_decay)
 {
   // Create the time-slice set
-  Set timeslice;
+  UnorderedSet timeslice;
   timeslice.make(TimeSliceFunc(j_decay));
 
   // Length of lattice in j_decay direction

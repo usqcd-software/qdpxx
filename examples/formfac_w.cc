@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.12 2003-04-08 21:18:54 edwards Exp $
+// $Id: formfac_w.cc,v 1.13 2003-07-31 01:07:41 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -48,7 +48,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 	     NmlWriter& nml)
 {
   // Create the time-slice set
-  Set timeslice;
+  UnorderedSet timeslice;
   timeslice.make(TimeSliceFunc(j_decay));
 
   // Length of lattice in j_decay direction and 3pt correlations fcns
