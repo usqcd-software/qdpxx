@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.39 2003-10-03 02:19:09 edwards Exp $
+// $Id: qdp.h,v 1.40 2003-10-09 17:07:45 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -123,7 +123,7 @@ QDP_END_NAMESPACE();
 #include "qdp_layout.h"
 #include "qdp_filebuf.h"
 #include "qdp_io.h"
-//#include "qdp_stdio.h"
+#include "qdp_stdio.h"
 #include "qdp_xmlio.h"
 #include "qdp_qdpio.h"
 #include "qdp_subset.h"
