@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.1 2003-05-22 20:06:29 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.2 2003-06-05 02:19:38 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -359,43 +359,37 @@ namespace Internal
 
 //-----------------------------------------------------------------------------
 //! Function overload read of  int
-NmlReader& read(NmlReader& nml, const string& s, int& d)
+void read(NmlReader& nml, const string& s, int& d)
 {
   if (Layout::primaryNode()) 
     param_int_array(&d, get_current_nml_section(), s.c_str(), 0);
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
-
-  return nml;
 }
 
 //! Function overload read of  float
-NmlReader& read(NmlReader& nml, const string& s, float& d)
+void read(NmlReader& nml, const string& s, float& d)
 {
   if (Layout::primaryNode()) 
     param_float_array(&d, get_current_nml_section(), s.c_str(), 0);
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
-
-  return nml;
 }
 
 //! Function overload read of  double
-NmlReader& read(NmlReader& nml, const string& s, double& d)
+void read(NmlReader& nml, const string& s, double& d)
 {
   if (Layout::primaryNode()) 
     param_double_array(&d, get_current_nml_section(), s.c_str(), 0);
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
-
-  return nml;
 }
 
 //! Function overload read of  bool
-NmlReader& read(NmlReader& nml, const string& s, bool& d)
+void read(NmlReader& nml, const string& s, bool& d)
 {
   if (Layout::primaryNode()) 
   {
@@ -406,12 +400,10 @@ NmlReader& read(NmlReader& nml, const string& s, bool& d)
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
-
-  return nml;
 }
 
 //! Function overload read of  string
-NmlReader& read(NmlReader& nml, const string& s, string& d)
+void read(NmlReader& nml, const string& s, string& d)
 {
   char *dd_tmp;
   int lleng;
@@ -439,50 +431,42 @@ NmlReader& read(NmlReader& nml, const string& s, string& d)
   // Clean-up and boogie
   if (! Layout::primaryNode()) 
     delete[] dd_tmp;
-
-  return nml;
 }
 
 
 
 //! Function overload read of  int  into element position n
-NmlReader& read(NmlReader& nml, const string& s, int& d, int n)
+void read(NmlReader& nml, const string& s, int& d, int n)
 {
   if (Layout::primaryNode()) 
     param_int_array(&d, get_current_nml_section(), s.c_str(), 1, n);
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
-
-  return nml;
 }
 
 //! Function overload read of  float  into element position n
-NmlReader& read(NmlReader& nml, const string& s, float& d, int n)
+void read(NmlReader& nml, const string& s, float& d, int n)
 {
   if (Layout::primaryNode()) 
     param_float_array(&d, get_current_nml_section(), s.c_str(), 1, n);
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
-
-  return nml;
 }
 
 //! Function overload read of  double  into element position n
-NmlReader& read(NmlReader& nml, const string& s, double& d, int n)
+void read(NmlReader& nml, const string& s, double& d, int n)
 {
   if (Layout::primaryNode()) 
     param_double_array(&d, get_current_nml_section(), s.c_str(), 1, n);
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
-
-  return nml;
 }
 
 //! Function overload read of  bool  into element position n
-NmlReader& read(NmlReader& nml, const string& s, bool& d, int n)
+void read(NmlReader& nml, const string& s, bool& d, int n)
 {
   if (Layout::primaryNode()) 
   {
@@ -493,13 +477,11 @@ NmlReader& read(NmlReader& nml, const string& s, bool& d, int n)
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
-
-  return nml;
 }
 
 
 //! Function overload read of  Complex
-NmlReader& read(NmlReader& nml, const string& s, Complex& d)
+void read(NmlReader& nml, const string& s, Complex& d)
 {
   if (Layout::primaryNode()) 
   {
@@ -513,13 +495,11 @@ NmlReader& read(NmlReader& nml, const string& s, Complex& d)
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
-
-  return nml;
 }
 
 
 //! Function overload read of  Seed
-NmlReader& read(NmlReader& nml, const string& s, Seed& d)
+void read(NmlReader& nml, const string& s, Seed& d)
 {
   if (Layout::primaryNode()) 
   {
@@ -545,8 +525,6 @@ NmlReader& read(NmlReader& nml, const string& s, Seed& d)
 
   // Now broadcast back out to all nodes
   Internal::broadcast(d);
-
-  return nml;
 }
 
 

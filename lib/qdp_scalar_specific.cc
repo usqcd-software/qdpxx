@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_specific.cc,v 1.1 2003-05-22 20:06:29 edwards Exp $
+// $Id: qdp_scalar_specific.cc,v 1.2 2003-06-05 02:19:38 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -159,76 +159,67 @@ void Map::make(const MapFunc& func)
 
 //-----------------------------------------------------------------------------
 //! Function overload read of  int
-NmlReader& read(NmlReader& nml, const string& s, int& d)
+void read(NmlReader& nml, const string& s, int& d)
 {
   param_int_array(&d, get_current_nml_section(), s.c_str(), 0);
-  return nml;
 }
 
 //! Function overload read of  float
-NmlReader& read(NmlReader& nml, const string& s, float& d)
+void read(NmlReader& nml, const string& s, float& d)
 {
   param_float_array(&d, get_current_nml_section(), s.c_str(), 0);
-  return nml;
 }
 
 //! Function overload read of  double
-NmlReader& read(NmlReader& nml, const string& s, double& d)
+void read(NmlReader& nml, const string& s, double& d)
 {
   param_double_array(&d, get_current_nml_section(), s.c_str(), 0);
-  return nml;
 }
 
 //! Function overload read of  bool
-NmlReader& read(NmlReader& nml, const string& s, bool& d)
+void read(NmlReader& nml, const string& s, bool& d)
 {
   int dd;
   param_bool_array(&dd, get_current_nml_section(), s.c_str(), 0);
   d = (dd == 0) ? false : true;
-  return nml;
 }
 
 //! Function overload read of  string
-NmlReader& read(NmlReader& nml, const string& s, string& d)
+void read(NmlReader& nml, const string& s, string& d)
 {
   d = param_string_array(get_current_nml_section(), s.c_str(), 0);
-  return nml;
 }
 
 
 //! Function overload read of  int  into element position n
-NmlReader& read(NmlReader& nml, const string& s, int& d, int n)
+void read(NmlReader& nml, const string& s, int& d, int n)
 {
   param_int_array(&d, get_current_nml_section(), s.c_str(), 1, n);
-  return nml;
 }
 
 //! Function overload read of  float  into element position n
-NmlReader& read(NmlReader& nml, const string& s, float& d, int n)
+void read(NmlReader& nml, const string& s, float& d, int n)
 {
   param_float_array(&d, get_current_nml_section(), s.c_str(), 1, n);
-  return nml;
 }
 
 //! Function overload read of  double  into element position n
-NmlReader& read(NmlReader& nml, const string& s, double& d, int n)
+void read(NmlReader& nml, const string& s, double& d, int n)
 {
   param_double_array(&d, get_current_nml_section(), s.c_str(), 1, n);
-  return nml;
 }
 
 //! Function overload read of  bool  into element position n
-NmlReader& read(NmlReader& nml, const string& s, bool& d, int n)
+void read(NmlReader& nml, const string& s, bool& d, int n)
 {
   int dd;
   param_bool_array(&dd, get_current_nml_section(), s.c_str(), 1, n);
   d = (dd == 0) ? false : true;
-  return nml;
 }
 
 
 //! Function overload read of  Complex
-NmlReader& read(NmlReader& nml, const string& s, Complex& d)
+void read(NmlReader& nml, const string& s, Complex& d)
 {
   WordType<Complex>::Type_t  dre, dim;
   param_complex_float_array(&dre, &dim, get_current_nml_section(), s.c_str(), 0);
@@ -236,12 +227,10 @@ NmlReader& read(NmlReader& nml, const string& s, Complex& d)
   Real Dre(dre);
   Real Dim(dim);
   d = cmplx(Dre,Dim);
-
-  return nml;
 }
 
 //! Function overload read of  Seed
-NmlReader& read(NmlReader& nml, const string& s, Seed& d)
+void read(NmlReader& nml, const string& s, Seed& d)
 {
   int ss[4];
 
@@ -261,8 +250,6 @@ NmlReader& read(NmlReader& nml, const string& s, Seed& d)
   seed_tmp0 = (seed_tmp1 << 12) | ss[0];
 
   d = seed_tmp0;
-
-  return nml;
 }
 
 
