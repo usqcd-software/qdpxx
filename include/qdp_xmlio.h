@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.23 2003-09-09 16:57:08 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.24 2003-09-10 13:19:27 bjoo Exp $
 
 /*! @file
  * @brief XML IO support
@@ -77,7 +77,7 @@ public:
         
   //! Count the number of occurances from the xpath query
   int count(const std::string& xpath);
-
+  void registerNamespace(const std::string& prefix, const std::string& uri);
 
 private:
   //! Hide the = operator
@@ -86,7 +86,7 @@ private:
   //! Hide the copy constructor
   XMLReader(const XMLReader&) {}
   
-
+  void open(XMLReader& old, const string& xpath);
 protected:
   // The universal data-reader. All the read functions call this
   template<typename T>

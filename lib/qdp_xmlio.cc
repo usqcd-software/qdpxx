@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.24 2003-09-08 15:59:38 bjoo Exp $
+// $Id: qdp_xmlio.cc,v 1.25 2003-09-10 13:19:27 bjoo Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -33,9 +33,10 @@ XMLReader::XMLReader(const XMLBufferWriter& mw)
   open(mw);
 }
 
-XMLReader::XMLReader(XMLReader& old, const string& xpath) : BasicXPathReader((BasicXPathReader&)old, xpath) 
+XMLReader::XMLReader(XMLReader& old, const string& xpath) : BasicXPathReader() 
 {
-  iop=true;
+  iop=false;
+  open(old, xpath);
 }
 
 
@@ -80,6 +81,16 @@ void XMLReader::open(const XMLBufferWriter& mw)
   }
 
   iop = true;
+}
+
+void XMLReader::open(XMLReader& old, const string& xpath)
+{
+   if( Layout::primaryNode()) 
+   {
+	BasicXPathReader::open((BasicXPathReader&)old, xpath);
+   }
+
+   iop=true;
 }
 
 void XMLReader::close()
@@ -171,8 +182,9 @@ void XMLReader::get(const std::string& xpath, bool& result)
 template<typename T>
 void XMLReader::readPrimitive(const std::string& xpath, T& result)
 {
-  if (Layout::primaryNode())
+  if (Layout::primaryNode()) {
     BasicXPathReader::get(xpath, result);
+  }
 
   // Now broadcast back out to all nodes
   Internal::broadcast(result);
@@ -201,6 +213,13 @@ int XMLReader::count(const string& xpath)
   return n;
 }
    
+// Namespace Registration?
+void XMLReader::registerNamespace(const std::string& prefix, const string& uri)
+{
+  if (Layout::primaryNode())
+    BasicXPathReader::registerNamespace(prefix, uri);
+}
+
 
 // Overloaded Reader Functions
 void read(XMLReader& xml, const std::string& xpath, string& result)
