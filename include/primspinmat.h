@@ -1,14 +1,23 @@
 // -*- C++ -*-
-//
-// $Id: primspinmat.h,v 1.3 2002-09-15 03:21:16 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: primspinmat.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Primitive Spin Matrix
+ */
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 //-------------------------------------------------------------------------------------
-//! Primitive spin Matrix class
+/*! \addtogroup primspinmatrix Spin matrix primitive
+ * \ingroup primmatrix
+ *
+ * Primitive type that transforms like a Spin Matrix
+ *
+ * @{
+ */
+
+
+//! Primitive Spin Matrix class
 /*! 
    * Spin matrix class support gamma matrix algebra 
    *
@@ -40,6 +49,7 @@ public:
 
 };
 
+/*! @} */   // end of group primspinmatrix
 
 #if 0
 //! Specialization of primitive spin Matrix class for 4 spin components
@@ -233,6 +243,8 @@ struct BinaryReturn<PSpinMatrix<T2,N>, GammaType<N>, OpMultiplyGammaType> {
 //-----------------------------------------------------------------------------
 // Operators
 //-----------------------------------------------------------------------------
+/*! \addtogroup primspinmatrix */
+/*! @{ */
 
 // SpinMatrix class primitive operations
 
@@ -951,7 +963,7 @@ quarkContract34(const PSpinMatrix<T1,4>& s1, const PSpinMatrix<T2,4>& s2)
   return d;
 }
 
-
+/*! @} */   // end of group primspinmatrix
 
 QDP_END_NAMESPACE();
 

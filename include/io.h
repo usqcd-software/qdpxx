@@ -1,9 +1,9 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.4 2002-10-12 00:58:32 edwards Exp $
-//
-// QDP data parallel interface
-//
-// IO support
+// $Id: io.h,v 1.5 2002-10-12 04:10:15 edwards Exp $
+
+/*! @file
+ * @brief IO support
+ */
 
 #include <string>
 #include <fstream>

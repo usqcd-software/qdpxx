@@ -1,13 +1,24 @@
 // -*- C++ -*-
-//
-// $Id: primseed.h,v 1.4 2002-10-09 15:33:26 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: primseed.h,v 1.5 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Primitive Seed
+ */
+
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 //-------------------------------------------------------------------------------------
+/*! \addtogroup primseed Seed primitive
+ * \ingroup fiber
+ *
+ * Primitive type for supporting random numbers. This is really a 
+ * big integer class.
+ *
+ * @{
+ */
+
+
 //! Primitive Seed class
 /*!
    * Seed primitives exist to facilitate seed multiplication - namely
@@ -86,6 +97,7 @@ template<class T>  NmlWriter& operator<<(NmlWriter& s, const PSeed<T>& d)
 	   << d.elem(2).elem() << " , " << d.elem(3).elem() << " )";
 }
 
+/*! @} */   // end of group primseed
 
 //-----------------------------------------------------------------------------
 // Traits classes 
@@ -139,6 +151,9 @@ struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpAssign > {
 //-----------------------------------------------------------------------------
 // Operators
 //-----------------------------------------------------------------------------
+
+/*! \addtogroup primseed */
+/*! @{ */
 
 // Primitive Seeds
 
@@ -347,6 +362,7 @@ void copymask(PSeed<T>& d, const PScalar<T1>& mask, const PSeed<T>& s1)
     copymask(d.elem(i),mask.elem(),s1.elem(i));
 }
 
+/*! @} */
 
 QDP_END_NAMESPACE();
 

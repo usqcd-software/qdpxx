@@ -1,13 +1,22 @@
 // -*- C++ -*-
-//
-// $Id: primcolorvec.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: primcolorvec.h,v 1.3 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Primitive Color Vector
+ */
+
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 //-------------------------------------------------------------------------------------
+/*! \addtogroup primcolorvector Color vector primitive
+ * \ingroup primvector
+ *
+ * Primitive type that transforms like a Color vector
+ *
+ * @{
+ */
+
 //! Primitive color Vector class
 template <class T, int N> class PColorVector : public PVector<T, N, PColorVector>
 {
@@ -23,6 +32,7 @@ public:
 
 };
 
+/*! @} */  // end of group primcolorvec
 
 //-----------------------------------------------------------------------------
 // Traits classes 

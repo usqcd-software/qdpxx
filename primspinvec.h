@@ -1,13 +1,22 @@
 // -*- C++ -*-
-//
-// $Id: primspinvec.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: primspinvec.h,v 1.3 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Primitive Spin Vector
+ */
+
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 //-------------------------------------------------------------------------------------
+/*! \addtogroup primspinvector Spin vector primitive
+ * \ingroup primvector
+ *
+ * Primitive type that transforms like a Spin vector
+ *
+ * @{
+ */
+
 //! Primitive spin Vector class
 /*! 
  * Spin vector class supports gamma matrix algebra 
@@ -52,6 +61,7 @@ public:
 };
 
 
+/*! @} */   // end of group primspinvec
 
 //-----------------------------------------------------------------------------
 // Traits classes 
@@ -281,6 +291,9 @@ struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstructDir3Minus > {
 //-----------------------------------------------------------------------------
 // Operators
 //-----------------------------------------------------------------------------
+
+/*! \addtogroup primspinvector */
+/*! @{ */
 
 #if 0
 // SpinMatrix<N> = Gamma<N,m> * SpinMatrix<N>
@@ -855,6 +868,8 @@ spinReconstructDir3Plus(const PSpinVector<T,2>& s1)
 
   return d;
 }
+
+/*! @} */   // end of group primspinvector
 
 QDP_END_NAMESPACE();
 

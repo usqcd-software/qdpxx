@@ -1,9 +1,20 @@
 // -*- C++ -*-
-// $Id: defs.h,v 1.2 2002-09-21 16:16:13 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: defs.h,v 1.3 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Type definitions
+ */
+
 QDP_BEGIN_NAMESPACE(QDP);
+
+/*! \addtogroup defs Type definitions
+ *
+ * User constructed types made from QDP type compositional nesting.
+ * The layout is suitable for a scalar-like implementation. Namely,
+ * sites are the slowest varying index.
+ *
+ * @{
+ */
 
 #define INTEGER32 int
 #define REAL32    float
@@ -56,6 +67,7 @@ typedef PScalar< PScalar< RScalar<INTEGER32> > > IntInteger;
 typedef PScalar< PScalar< RScalar<REAL64> > > IntDouble;
 typedef PScalar< PScalar< RScalar<LOGICAL> > > IntBoolean;
 
+/*! @} */   // end of group defs
 
 QDP_END_NAMESPACE();
 

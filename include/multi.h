@@ -1,15 +1,26 @@
 // -*- C++ -*-
-// $Id: multi.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
-//
-// Support for reference semantic multi-dimensional arrays
-//
+// $Id: multi.h,v 1.2 2002-10-12 04:10:15 edwards Exp $
+
+/*! @file
+ * @brief Multi-dimensional arrays
+ * 
+ * Support for reference semantic multi-dimensional arrays
+ */
 
 #ifndef MULTI_INCLUDE
 #define MULTI_INCLUDE
 
 QDP_BEGIN_NAMESPACE(QDP);
 
-  //! Container for a multi-dimensional 1D array
+/*! @defgroup multi  Multi-dimensional arrays
+ *
+ * Container classes that provide 1D, 2D, 3D and 4D multidimensional
+ * array semantics.
+ *
+ * @{
+ */
+
+//! Container for a multi-dimensional 1D array
 template<class T> class multi1d
 {
 public:
@@ -327,6 +338,8 @@ private:
   int sz;
   T *F;
 };
+
+/*! @} */  // end of group multi
 
 QDP_END_NAMESPACE();
 

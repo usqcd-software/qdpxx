@@ -1,13 +1,22 @@
 // -*- C++ -*-
-//
-// $Id: primvector.h,v 1.6 2002-10-09 15:33:26 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: primvector.h,v 1.7 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Primitive Vector
+ */
+
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 //-------------------------------------------------------------------------------------
+/*! \addtogroup primvector Vector primitive
+ * \ingroup fiber
+ *
+ * Primitive type that transforms like a vector
+ *
+ * @{
+ */
+
 //! Primitive Vector class
 /*!
  * All vector classes inherit this class
@@ -121,6 +130,7 @@ NmlWriter& operator<<(NmlWriter& nml, const PVector<T,N,C>& d)
   return nml;
 }
 
+/*! @} */  // end of group primvector
 
 
 //-----------------------------------------------------------------------------
@@ -206,6 +216,9 @@ struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, OpSubtractAssign > {
 //-----------------------------------------------------------------------------
 // Operators
 //-----------------------------------------------------------------------------
+
+/*! \addtogroup primvector */
+/*! @{ */
 
 // Primitive Vectors
 
@@ -525,7 +538,7 @@ where(const PScalar<T1>& a, const PVector<T2,N,C>& b, const PVector<T3,N,C>& c)
   return d;
 }
 
-
+/*! @} */  // end of group primvector
 
 QDP_END_NAMESPACE();
 

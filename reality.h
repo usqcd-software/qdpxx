@@ -1,12 +1,22 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.6 2002-10-09 15:33:26 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: reality.h,v 1.7 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Reality
+ */
+
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 //-------------------------------------------------------------------------------------
+/*! \addtogroup rscalar Scalar reality
+ * \ingroup fiber
+ *
+ * Reality Scalar is a type for objects that are only real - no imaginary part
+ *
+ * @{
+ */
+
 //! Scalar reality (not complex)
 template<class T> class RScalar
 {
@@ -162,9 +172,18 @@ template<class T>  NmlWriter& operator<<(NmlWriter& s, const RScalar<T>& d)
   return s << d.elem();
 }
 
+/*! @} */  // end of group rscalar
 
 
 //-------------------------------------------------------------------------------------
+/*! \addtogroup rcomplex Complex reality
+ * \ingroup fiber
+ *
+ * Reality Complex is a type for objects that hold a real and imaginary part
+ *
+ * @{
+ */
+
 //! Reality complex
 /*! All fields are either complex or scalar reality */
 template<class T> class RComplex
@@ -320,7 +339,7 @@ template<class T>  NmlWriter& operator<<(NmlWriter& nml, const RComplex<T>& d)
   return nml;
 }
 
-
+/*! @} */   // end of group rcomplex
 
 //-----------------------------------------------------------------------------
 // Traits classes 
@@ -580,6 +599,9 @@ struct BinaryReturn<RComplex<T1>, RComplex<T2>, OpRightShiftAssign > {
 //-----------------------------------------------------------------------------
 // Operators
 //-----------------------------------------------------------------------------
+
+/*! \addtogroup rscalar */
+/*! @{ */
 
 // Scalar Reality
 template<class T>
@@ -1228,13 +1250,16 @@ fill_gaussian(RScalar<T>& d, RScalar<T>& r1, RScalar<T>& r2)
   d.elem() = r1.elem() * g_r;
 }
 
-
+/*! @} */   // end of group rscalar
 
 
 
 //-----------------------------------------------------------------------------
 // Complex Reality
 //-----------------------------------------------------------------------------
+
+/*! \addtogroup rcomplex */
+/*! @{ */
 
 template<class T1>
 inline typename UnaryReturn<RComplex<T1>, OpUnaryPlus>::Type_t
@@ -1717,7 +1742,7 @@ fill_gaussian(RComplex<T>& d, RComplex<T>& r1, RComplex<T>& r2)
   d.imag() = r1.real() * g_i;
 }
 
-
+/*! @} */  // end of group rcomplex
 
 
 QDP_END_NAMESPACE();

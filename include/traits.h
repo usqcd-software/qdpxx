@@ -1,8 +1,11 @@
 // -*- C++ -*-
-// $Id: traits.h,v 1.3 2002-10-06 02:48:43 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: traits.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+
+/*! @file
+ * @brief Traits classes
+ * 
+ * Traits classes needed internally
+ */
 
 QDP_BEGIN_NAMESPACE(QDP);
 

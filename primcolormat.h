@@ -1,13 +1,23 @@
 // -*- C++ -*-
-//
-// $Id: primcolormat.h,v 1.3 2002-09-15 03:21:16 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: primcolormat.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Primitive Color Matrix
+ */
+
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 //-------------------------------------------------------------------------------------
+/*! \addtogroup primcolormatrix Color matrix primitive
+ * \ingroup primmatrix
+ *
+ * Primitive type that transforms like a Color Matrix
+ *
+ * @{
+ */
+
+
 //! Primitive color Matrix class 
 template <class T, int N> class PColorMatrix : public PMatrix<T, N, PColorMatrix>
 {
@@ -33,7 +43,7 @@ public:
 
 };
 
-
+/*! @} */   // end of group primcolormatrix
 
 //-----------------------------------------------------------------------------
 // Traits classes 
@@ -56,7 +66,6 @@ struct InternalScalar<PColorMatrix<T,N> > {
 // Traits classes to support return types
 //-----------------------------------------------------------------------------
 
-#if 1
 // Default unary(PColorMatrix) -> PColorMatrix
 template<class T1, int N, class Op>
 struct UnaryReturn<PColorMatrix<T1,N>, Op> {
@@ -81,7 +90,6 @@ struct BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, Op> {
   typedef PColorMatrix<typename BinaryReturn<T1, T2, Op>::Type_t, N>  Type_t;
 };
 
-#endif
 
 // Assignment is different
 template<class T1, class T2, int N>
@@ -185,6 +193,9 @@ struct BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnLocalInnerproductR
 //-----------------------------------------------------------------------------
 // Operators
 //-----------------------------------------------------------------------------
+
+/*! \addtogroup primcolormatrix */
+/*! @{ */
 
 // trace = colorTrace(source1)
 /*! This only acts on color indices and is diagonal in all other indices */
@@ -338,6 +349,8 @@ quarkcontractxx(const PColorMatrix<T1,3>& s1, const PColorMatrix<T2,3>& s2)
 
   return d;
 }
+
+/*! @} */   // end of group primcolormatrix
 
 QDP_END_NAMESPACE();
 

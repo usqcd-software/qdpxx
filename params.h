@@ -1,11 +1,19 @@
 // -*- C++ -*-
-// $Id: params.h,v 1.3 2002-09-26 21:29:14 edwards Exp $
-//
-// QDP data parallel interface
-//
-// Basic parameters
+// $Id: params.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+
+/*! @file
+ * @brief Fundamental parameters
+ */
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+/*! @defgroup params Fundamental parameters for QDP
+ *
+ * The user can change the compile time number of dimensions,
+ * colors and spin components
+ *
+ * @{
+ */
 
 //! Number of dimensions
 #define ND  2
@@ -38,5 +46,6 @@ const int Ns = NS;
 #error "unsupported number of dimensions"
 #endif
 
+/*! @} */  // end of group params
 
 QDP_END_NAMESPACE();

@@ -1,13 +1,33 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.8 2002-10-09 15:33:26 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: outer.h,v 1.9 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Outer grid classes
+ */
 
 #define NO_MEM
 
 QDP_BEGIN_NAMESPACE(QDP);
 
+/*! \defgroup fiberbundle Fiberbundle types and operations
+ *
+ * A fiberbundle is a base space (here a lattice or scalar) with a fiber
+ * at each site. Mathematically, we represent a fiber as a tensor product
+ * over various vector spaces that have some indices.
+ * QDP constructs types via a nested composition of lattice and fiber types.
+ */
+
+
+/*! \addtogroup oscalar Outer grid scalar
+ * \ingroup fiberbundle
+ *
+ * Outer grid scalar means sites are not the slowest varying index. There can
+ * still be an Inner grid.
+ *
+ * @{
+ */
+
+//! Outer grid Scalar class */
 /*! All outer lattices are of OScalar or OLattice type */
 template<class T>
 class OScalar: public QDPType<T, OScalar<T> >
@@ -100,19 +120,6 @@ private:
 };
 
 
-//! OScalar Op OScalar(Expression(source))
-/*! 
- * OScalar Op Expression, where Op is some kind of binary operation 
- * involving the destination 
- */
-template<class T, class T1, class Op, class RHS>
-void evaluate(OScalar<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs)
-{
-  // Subset is not used at this level. It may be needed, though, within an inner operation
-  op(dest.elem(), forEach(rhs, ElemLeaf(), OpCombine()));
-}
-
-
 //! Ascii output
 template<class T>  ostream& operator<<(ostream& s, const OScalar<T>& d)
 {
@@ -128,9 +135,34 @@ template<class T>  NmlWriter& operator<<(NmlWriter& nml, const OScalar<T>& d)
   return nml;
 }
 
+/*! @} */  // end of group oscalar
+
+
+//! OScalar Op OScalar(Expression(source))
+/*! 
+ * OScalar Op Expression, where Op is some kind of binary operation 
+ * involving the destination 
+ */
+template<class T, class T1, class Op, class RHS>
+void evaluate(OScalar<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs)
+{
+  // Subset is not used at this level. It may be needed, though, within an inner operation
+  op(dest.elem(), forEach(rhs, ElemLeaf(), OpCombine()));
+}
+
 
 //-------------------------------------------------------------------------------------
-//! OLattice type
+/*! \addtogroup olattice Lattice outer grid 
+ * \ingroup fiberbundle
+ *
+ * Outer grid lattice means sites are slowest varying index. There can
+ * still be an Inner grid.
+ *
+ * @{
+ */
+
+//! Outer grid Lattice type
+/*! All outer lattices are of OScalar or OLattice type */
 template<class T> 
 class OLattice: public QDPType<T, OLattice<T> >
 {
@@ -284,6 +316,8 @@ private:
 #endif
 };
 
+
+/*! @} */  // end of group olattice
 
 // OLattice Op Scalar(Expression(source))
 /* Implementation in relevant specific files */
@@ -1071,6 +1105,9 @@ struct BinaryReturn<OScalar<T1>, OLattice<T2>, OpRightShift > {
 // Scalar Operations
 //-----------------------------------------------------------------------------
 
+/*! \addtogroup oscalar */
+/*! @{ */
+
 //! dest = 0
 template<class T> 
 void zero_rep(OScalar<T>& dest) 
@@ -1135,5 +1172,6 @@ void gaussian(OScalar<T>& d)
   gaussian(OSubScalar<T>(d,all));
 }
 
+/*! @} */  // end of group olattice
 
 QDP_END_NAMESPACE();

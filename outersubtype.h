@@ -1,8 +1,10 @@
 // -*- C++ -*-
-// $Id: outersubtype.h,v 1.2 2002-10-06 02:48:43 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: outersubtype.h,v 1.3 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Outer grid classes after a subset
+ */
+
 
 QDP_BEGIN_NAMESPACE(QDP);
 

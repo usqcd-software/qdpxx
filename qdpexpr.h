@@ -1,8 +1,9 @@
 // -*- C++ -*-
-// $Id: qdpexpr.h,v 1.3 2002-10-01 01:52:51 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: qdpexpr.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+
+/*! @file
+ * @brief Expression class for QDP
+ */
 
 QDP_BEGIN_NAMESPACE(QDP);
 

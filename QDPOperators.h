@@ -1,8 +1,15 @@
 // -*- C++ -*-
-// $Id: QDPOperators.h,v 1.8 2002-10-02 20:29:37 edwards Exp $
+// $Id: QDPOperators.h,v 1.9 2002-10-12 04:10:14 edwards Exp $
+
+/*! @file
+ * @brief Bulk of QDP operators produced by PETE
+ */
 
 #ifndef QDPOPS_H
 #define QDPOPS_H
+
+/*! @addtogroup group1 */
+/*! @{ */
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -6184,6 +6191,8 @@ where(const QDPExpr<T1,C1> & a,const QDPType<T2,C2> & b,const QDPExpr<T3,C3> & c
     CreateLeaf<QDPExpr<T3,C3> >::make(c)));
 }
 #endif  // PETE_EXPRESSION_OPERATORS
+
+/*! @} */ // end of group1
 
 #endif // QDPOPS_H
 

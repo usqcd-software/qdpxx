@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 PROJECT_NAME           = qdp++
 PROJECT_NUMBER         = 
-OUTPUT_DIRECTORY       = ./qdp++/doc
+OUTPUT_DIRECTORY       = ./doc
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = YES
@@ -51,10 +51,10 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = ./qdp++
+INPUT                  = .
 FILE_PATTERNS          = 
 RECURSIVE              = YES
-EXCLUDE                = ./qdp++/PETE
+EXCLUDE                = ./PETE
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 
@@ -85,7 +85,8 @@ HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = 
 HTML_FOOTER            = 
 HTML_STYLESHEET        = 
-HTML_ALIGN_MEMBERS     = YES
+# HTML_ALIGN_MEMBERS     = YES
+HTML_ALIGN_MEMBERS     = NO
 GENERATE_HTMLHELP      = NO
 GENERATE_CHI           = NO
 BINARY_TOC             = NO
@@ -139,7 +140,7 @@ ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = NO
 EXPAND_ONLY_PREDEF     = NO
 SEARCH_INCLUDES        = YES
-INCLUDE_PATH           = ./qdp++
+INCLUDE_PATH           = .
 INCLUDE_FILE_PATTERNS  = 
 PREDEFINED             = 
 EXPAND_AS_DEFINED      = 

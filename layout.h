@@ -1,9 +1,11 @@
 // -*- C++ -*-
-// $Id: layout.h,v 1.2 2002-10-12 00:58:32 edwards Exp $
-//
-// QDP data parallel interface
-//
-// Layout
+// $Id: layout.h,v 1.3 2002-10-12 04:10:15 edwards Exp $
+
+/*! @file
+ * @brief Lattice layout
+ *
+ * Lattice layout class and operations
+ */
 
 QDP_BEGIN_NAMESPACE(QDP);
 

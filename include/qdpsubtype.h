@@ -1,8 +1,11 @@
 // -*- C++ -*-
-// $Id: qdpsubtype.h,v 1.2 2002-10-06 02:48:43 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: qdpsubtype.h,v 1.3 2002-10-12 04:10:15 edwards Exp $
+
+/*! @file
+ * @brief QDPType after a subset
+ *
+ * Subclass of QDPType used for subset operations
+ */
 
 QDP_BEGIN_NAMESPACE(QDP);
 

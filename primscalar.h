@@ -1,13 +1,21 @@
 // -*- C++ -*-
-//
-// $Id: primscalar.h,v 1.7 2002-10-09 15:33:26 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: primscalar.h,v 1.8 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Primitive Scalar
+ */
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 //-------------------------------------------------------------------------------------
+/*! \addtogroup primscalar Scalar primitive
+ * \ingroup fiber
+ *
+ * Primitive Scalar is a placeholder for no primitive structure
+ *
+ * @{
+ */
+
 //! Primitive Scalar
 /*! Placeholder for no primitive structure */
 template<class T> class PScalar
@@ -161,6 +169,7 @@ template<class T>  NmlWriter& operator<<(NmlWriter& nml, const PScalar<T>& d)
   return nml << d.elem();
 }
 
+/*! @} */  // end of group primscalar
 
 
 //-----------------------------------------------------------------------------
@@ -274,6 +283,9 @@ struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpRightShiftAssign > {
 //-----------------------------------------------------------------------------
 // Operators
 //-----------------------------------------------------------------------------
+
+/*! \addtogroup primscalar */
+/*! @{ */
 
 // Primitive Scalars
 template<class T>
@@ -1004,7 +1016,7 @@ void cast_rep(PScalar<T>& d, const PScalar<T1>& s1)
   cast_rep(d.elem(), s1.elem());
 }
 
-
+/*! @} */  // end of group primscalar
 
 QDP_END_NAMESPACE();
 

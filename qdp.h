@@ -1,8 +1,11 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.5 2002-10-12 00:58:32 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: qdp.h,v 1.6 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Primary include file for QDP
+ *
+ * No other file should be included by the user
+ */
 
 /*! \mainpage  QDP++: A C++ data-parallel interface for Lattice field theory
  *
@@ -21,17 +24,9 @@
  * provided.
  */
 
-/*! @namespace QDP
- *
- * Primary namespace holding all QDP types, operations and objects
+/*! \namespace QDP
+ * \brief Primary namespace holding all QDP types, operations and objects
  */
-
-/*! @defgroup group1 QDP main operations
- *
- *  Lattice site-wide operations that can be applied to QDPTypes.
- *  All operations can be used in expressions
- */
-
 
 #include <cstdio>
 #include <cstdlib>
@@ -94,12 +89,7 @@ QDP_END_NAMESPACE();
 #include "qdpexpr.h"
 #include "qdptype.h"
 #include "qdpsubtype.h"
-
-/*! @addtogroup group1 */
-/*! @{ */
 #include "QDPOperators.h"
-/*! @} */ // end of group1
-
 #include "newops.h"
 //#include "word.h"
 #include "simpleword.h"

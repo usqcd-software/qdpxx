@@ -1,14 +1,20 @@
 // -*- C++ -*-
-// $Id: qdptype.h,v 1.3 2002-10-12 00:58:32 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: qdptype.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+
+/*! @file
+ * @brief Main type class for QDP
+ */
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 
-/*! @addtogroup group1 */
-/*! @{ */
+/*! \addtogroup group1 QDP main operations
+ *
+ *  Lattice site-wide operations that can be applied to QDPTypes.
+ *  All operations can be used in expressions
+ *
+ * @{
+ */
 
 
 //! QDPType - major type class/container for all QDP objects

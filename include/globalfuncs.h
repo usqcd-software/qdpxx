@@ -1,15 +1,17 @@
 // -*- C++ -*-
-// $Id: globalfuncs.h,v 1.6 2002-10-12 00:58:32 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: globalfuncs.h,v 1.7 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Global functions on QDPType
+ */
+
 QDP_BEGIN_NAMESPACE(QDP);
 
 // NOTE: there is no inlining anywhere in this file - some
 // small effort at controlling code bloat.
 
 
-/** @defgroup group3 QDP global reductions
+/** \defgroup group3 QDP global reductions
  *  
  *  Global reductions, like sum, norm2, etc.
  *  @{
@@ -256,7 +258,7 @@ sumMulti(const QDPType<T,C>& s1, const Set& ss)
 /** @} */ // end of group3
 
 
-/** @defgroup group5 QDP auxilliary functions
+/** \defgroup group5 QDP auxilliary functions
  *  
  *  SU(N) operations, spin projections, etc.
  *  @{

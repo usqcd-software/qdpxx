@@ -1,12 +1,23 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.7 2002-10-09 15:33:26 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: simpleword.h,v 1.8 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief QDP Operations on built-in types
+ */
 
 #include <cmath>
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+/*! \addtogroup simpleword Builtin word operations
+ * \ingroup fiber
+ *
+ * Fiber operations on builtin types. These operations are in support of QDP.
+ * Namely, the builtin types are the lowest level (most deeply nested) types
+ * within the QDP type composition
+ *
+ * @{
+ */
 
 // All these are explicit to avoid any general template clashes
 
@@ -310,6 +321,7 @@ inline NmlWriter& operator<<(NmlWriter& nml, const double& d) {nml.get() << d; r
 //! Ascii output
 inline NmlWriter& operator<<(NmlWriter& nml, const bool& d) {nml.get() << d; return nml;}
 
+/*! @} */  // end of group simpleword
 
 //-----------------------------------------------------------------------------
 // Traits classes 

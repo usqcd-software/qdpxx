@@ -1,13 +1,23 @@
 // -*- C++ -*-
-//
-// $Id: primmatrix.h,v 1.6 2002-10-09 15:33:26 edwards Exp $
-//
-// QDP data parallel interface
-//
+// $Id: primmatrix.h,v 1.7 2002-10-12 04:10:15 edwards Exp $
+
+/*! \file
+ * \brief Primitive Matrix
+ */
+
 
 QDP_BEGIN_NAMESPACE(QDP);
 
 //-------------------------------------------------------------------------------------
+/*! \addtogroup primmatrix Matrix primitive
+ * \ingroup fiber
+ *
+ * Primitive type that transforms like a matrix
+ *
+ * @{
+ */
+
+
 //! Primitive Matrix class
 /*!
  * All Matrix classes inherit this class
@@ -125,7 +135,7 @@ NmlWriter& operator<<(NmlWriter& nml, const PMatrix<T,N,C>& d)
   return nml;
 }
 
-
+/*! @} */  // end of group primmatrix
 
 //-----------------------------------------------------------------------------
 // Traits classes 
@@ -232,6 +242,8 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpMultiplyAssign > {
 //-----------------------------------------------------------------------------
 // Operators
 //-----------------------------------------------------------------------------
+/*! \addtogroup primmatrix */
+/*! @{ */
 
 // Primitive Matrices
 template<class T1, int N, template<class,int> class C>
@@ -738,7 +750,7 @@ where(const PScalar<T1>& a, const PMatrix<T2,N,C>& b, const PMatrix<T3,N,C>& c)
   return d;
 }
 
-
+/*! @} */  // end of group primmatrix
 
 QDP_END_NAMESPACE();
 

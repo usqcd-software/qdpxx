@@ -1,8 +1,9 @@
 // -*- C++ -*-
-// $Id: forward.h,v 1.3 2002-10-09 15:33:25 edwards Exp $
-//
-// Forward declarations for QDP
-//
+// $Id: forward.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+
+/*! @file
+ * @brief Forward declarations for QDP
+ */
 
 QDP_BEGIN_NAMESPACE(QDP);
 
