@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.17 2003-04-30 21:09:17 edwards Exp $
+// $Id: io.h,v 1.18 2003-05-12 06:06:39 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -208,6 +208,7 @@ NmlWriter& pop(NmlWriter& nml);
 
 //! Write a comment
 NmlWriter& operator<<(NmlWriter& nml, const string& s);
+NmlWriter& operator<<(NmlWriter& nml, const char* s);
 
 //! Write a namelist element
 template<class T>
