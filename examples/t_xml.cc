@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.11 2003-06-24 02:29:03 edwards Exp $
+// $Id: t_xml.cc,v 1.12 2003-08-26 21:38:21 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -23,6 +23,25 @@ int main(int argc, char **argv)
   LatticeReal a;
   Double d = 17;
   random(a);
+
+  {
+    XMLBufferWriter toxml;
+
+    push(toxml,"godzilla");
+    int dog = -17;
+    Write(toxml,dog);
+    pop(toxml);
+
+    cout << "buffer = XXX" << toxml.str() << "XXX" << endl;
+
+//    std::istringstream list_stream(toxml.str()+"\n");
+//    XMLReader fromxml(list_stream);
+
+    XMLReader fromxml(toxml);
+    int rob;
+    read(fromxml,"/godzilla/dog",rob);
+    cout << "found dog = " << rob << endl;
+  }
 
   {
     XMLFileWriter toxml("t_xml.input1");
