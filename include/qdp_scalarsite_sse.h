@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.2 2003-08-08 18:22:49 edwards Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.3 2003-08-08 18:43:49 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -37,9 +37,9 @@ static sse_mask _sse_sgn3  __attribute__ ((unused)) ={0x00000000, 0x00000000, 0x
 static sse_mask _sse_sgn4  __attribute__ ((unused)) ={0x00000000, 0x00000000, 0x00000000, 0x80000000};
 
 
-#include "sse/sse_mult_nn.h"
-#include "sse/sse_mult_na.h"
-#include "sse/sse_mult_an.h"
+#include "scalarsite_sse/sse_mult_nn.h"
+#include "scalarsite_sse/sse_mult_na.h"
+#include "scalarsite_sse/sse_mult_an.h"
 
 // Optimized version of  
 //    PColorMatrix<RComplexFloat> <- PColorMatrix<RComplexFloat> * PColorMatrix<RComplexFloat>
