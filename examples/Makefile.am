@@ -41,7 +41,7 @@ EXTRA_PROGRAMS  = t_qio t_qio_factory
 
 if BUILD_WILSON_EXAMPLES
 check_PROGRAMS += t_dslashm t_formfac t_spectrum t_qdp t_foo t_linalg 
-EXTRA_PROGRAMS += t_dslash5
+EXTRA_PROGRAMS += t_dslash5 t_blas
 endif
 
 
@@ -76,6 +76,7 @@ t_qdp_SOURCES =  t_qdp.cc formfac_w.cc dslashm_w.cc baryon_w.cc \
 	 mesons_w.cc mesplq.cc reunit.cc $(HDRS)
 t_linalg_SOURCES =  t_linalg.cc linalg1.cc linalg.h
 
+t_blas_SOURCES = t_blas.cc blas1.cc blas1.h
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target
