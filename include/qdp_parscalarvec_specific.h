@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.8 2003-10-06 18:32:16 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.9 2003-10-15 17:15:32 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -1563,6 +1563,40 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
   }
 }
 
+//! Write a single site from coord
+/*! An inner grid is assumed */
+template<class T>
+void write(BinaryWriter& bin, const OLattice<T>& d, const multi1d<int>& coord)
+{
+  typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
+  Site_t  recv_buf;
+
+  // Find the location of each site and send to primary node
+  int node   = Layout::nodeNumber(coord);
+  int linear = Layout::linearSiteIndex(coord);
+  int outersite = linear >> INNER_LOG;
+  int innersite = linear & ((1 << INNER_LOG)-1);
+
+  // Copy to buffer: be really careful since max(linear) could vary among nodes
+  if (Layout::nodeNumber() == node)
+    recv_buf = getSite(d.elem(outersite),innersite);  // extract into conventional scalar form
+
+  // Send result to primary node. Avoid sending prim-node sending to itself
+  if (node != 0)
+  {
+    if (Layout::primaryNode())
+      Internal::recvFromWait((void *)&recv_buf, node, sizeof(Site_t));
+
+    if (Layout::nodeNumber() == node)
+      Internal::sendToWait((void *)&recv_buf, 0, sizeof(Site_t));
+  }
+
+  if (Layout::primaryNode())
+    bin.writeArray((char *)&recv_buf,
+		   sizeof(typename WordType<Site_t>::Type_t), 
+		   sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
+}
+
 
 //! Binary input
 /*! An inner grid is assumed */
@@ -1600,6 +1634,39 @@ void read(BinaryReader& bin, OLattice<T>& d)
     if (Layout::nodeNumber() == node)
       copy_site(d.elem(outersite), innersite, recv_buf);// insert into conventional scalar form
   }
+}
+
+//! Read a single lattice site worth of data
+/*! An inner grid is assumed */
+template<class T>
+void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
+{
+  typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
+  Site_t  recv_buf;
+
+  // Find the location of each site and send to primary node
+  int node   = Layout::nodeNumber(coord);
+  int linear = Layout::linearSiteIndex(coord);
+  int outersite = linear >> INNER_LOG;
+  int innersite = linear & ((1 << INNER_LOG)-1);
+
+  // Only on primary node read the data
+  bin.readArrayPrimaryNode((char *)&recv_buf,
+			   sizeof(typename WordType<Site_t>::Type_t), 
+			   sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
+
+  // Send result to destination node. Avoid sending prim-node sending to itself
+  if (node != 0)
+  {
+    if (Layout::primaryNode())
+      Internal::sendToWait((void *)&recv_buf, node, sizeof(Site_t));
+
+    if (Layout::nodeNumber() == node)
+      Internal::recvFromWait((void *)&recv_buf, 0, sizeof(Site_t));
+  }
+  
+  if (Layout::nodeNumber() == node)
+    copy_site(d.elem(outersite), innersite, recv_buf);// insert into conventional scalar form
 }
 
 

@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.8 2003-09-02 04:11:08 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.9 2003-10-15 17:16:40 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -351,6 +351,39 @@ void writeOLattice(BinaryWriter& bin,
 }
 
 
+// Write a single site of a lattice quantity
+void writeOLattice(BinaryWriter& bin, 
+		   const char* output, size_t size, size_t nmemb,
+		   const multi1d<int>& coord)
+{
+  size_t tot_size = size*nmemb;
+  char *recv_buf = new char[tot_size];
+
+  // Send site to primary node
+  int node   = Layout::nodeNumber(coord);
+  int linear = Layout::linearSiteIndex(coord);
+
+  // Copy to buffer: be really careful since max(linear) could vary among nodes
+  if (Layout::nodeNumber() == node)
+    memcpy(recv_buf, output+linear*tot_size, tot_size);
+  
+  // Send result to primary node. Avoid sending prim-node sending to itself
+  if (node != 0)
+  {
+    if (Layout::primaryNode())
+      Internal::recvFromWait((void *)recv_buf, node, tot_size);
+
+    if (Layout::nodeNumber() == node)
+      Internal::sendToWait((void *)recv_buf, 0, tot_size);
+  }
+
+  if (Layout::primaryNode())
+    bin.writeArray(recv_buf, size, nmemb);
+
+  delete[] recv_buf;
+}
+
+
 //! Read a lattice quantity
 /*! This code assumes no inner grid */
 void readOLattice(BinaryReader& bin, 
@@ -383,6 +416,38 @@ void readOLattice(BinaryReader& bin,
     if (Layout::nodeNumber() == node)
       memcpy(input+linear*tot_size, recv_buf, tot_size);
   }
+
+  delete[] recv_buf;
+}
+
+//! Read a single site worth of a lattice quantity
+/*! This code assumes no inner grid */
+void readOLattice(BinaryReader& bin, 
+		  char* input, size_t size, size_t nmemb,
+		  const multi1d<int>& coord)
+{
+  size_t tot_size = size*nmemb;
+  char *recv_buf = new char[tot_size];
+
+  // Find the location of each site and send to primary node
+  int node   = Layout::nodeNumber(coord);
+  int linear = Layout::linearSiteIndex(coord);
+
+  // Only on primary node read the data
+  bin.readArrayPrimaryNode(recv_buf, size, nmemb);
+
+  // Send result to destination node. Avoid sending prim-node sending to itself
+  if (node != 0)
+  {
+    if (Layout::primaryNode())
+      Internal::sendToWait((void *)recv_buf, node, tot_size);
+
+    if (Layout::nodeNumber() == node)
+      Internal::recvFromWait((void *)recv_buf, 0, tot_size);
+  }
+
+  if (Layout::nodeNumber() == node)
+    memcpy(input+linear*tot_size, recv_buf, tot_size);
 
   delete[] recv_buf;
 }

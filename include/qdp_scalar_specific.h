@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.16 2003-10-06 18:32:16 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.17 2003-10-15 17:15:32 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1016,6 +1016,17 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
   }
 }
 
+//! Write a single site of a lattice quantity at coord
+/*! Assumes no inner grid */
+template<class T>  
+void write(BinaryWriter& bin, const OLattice<T>& d, const multi1d<int>& coord)
+{
+  int i = Layout::linearSiteIndex(coord);
+  bin.writeArray((const char*)&(d.elem(i)), 
+		 sizeof(typename WordType<T>::Type_t), 
+		 sizeof(T) / sizeof(typename WordType<T>::Type_t));
+}
+
 //! Binary input
 /*! Assumes no inner grid */
 template<class T>
@@ -1039,6 +1050,17 @@ void read(BinaryReader& bin, OLattice<T>& d)
 		  sizeof(typename WordType<T>::Type_t), 
 		  sizeof(T) / sizeof(typename WordType<T>::Type_t));
   }
+}
+
+//! Read a single site and place it at coord
+/*! Assumes no inner grid */
+template<class T>  
+void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
+{
+  int i = Layout::linearSiteIndex(coord);
+  bin.readArray((char*)&(d.elem(i)), 
+		sizeof(typename WordType<T>::Type_t), 
+		sizeof(T) / sizeof(typename WordType<T>::Type_t));
 }
 
 

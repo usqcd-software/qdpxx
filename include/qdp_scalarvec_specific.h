@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.12 2003-10-06 18:32:16 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.13 2003-10-15 17:15:32 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -1237,6 +1237,23 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
   }
 }
 
+//! Write a single site from coord
+/*! An inner grid is assumed */
+template<class T>  
+void write(BinaryWriter& bin, const OLattice<T>& d, const multi1d<int>& coord)
+{
+  int i = Layout::linearSiteIndex(coord);
+  int outersite = i >> INNER_LOG;
+  int innersite = i & ((1 << INNER_LOG)-1);
+
+  typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
+  Site_t  this_site = getSite(d.elem(outersite),innersite);
+
+  bin.writeArray((const char*)&this_site,
+		 sizeof(typename WordType<Site_t>::Type_t), 
+		 sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
+}
+
 //! Binary input
 /*! Assumes no inner grid */
 template<class T>
@@ -1268,6 +1285,25 @@ void read(BinaryReader& bin, OLattice<T>& d)
 
     copy_site(d.elem(outersite), innersite, this_site);
   }
+}
+
+//! Read a single site and place it at coord
+/*! An inner grid is assumed */
+template<class T>  
+void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
+{
+  int i = Layout::linearSiteIndex(coord);
+  int outersite = i >> INNER_LOG;
+  int innersite = i & ((1 << INNER_LOG)-1);
+
+  typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
+  Site_t  this_site;
+
+  bin.readArray((char*)&this_site,
+		sizeof(typename WordType<Site_t>::Type_t), 
+		sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
+
+  copy_site(d.elem(outersite), innersite, this_site);
 }
 
 

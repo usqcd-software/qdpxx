@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.18 2003-10-06 18:32:16 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.19 2003-10-15 17:15:32 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -1382,6 +1382,23 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
 		sizeof(T) / sizeof(typename WordType<T>::Type_t));
 }
 
+//! Write a single site of a lattice quantity
+/*! This code assumes no inner grid */
+void writeOLattice(BinaryWriter& bin, 
+		   const char* output, size_t size, size_t nmemb,
+		   const multi1d<int>& coord);
+
+//! Write a single site of a lattice quantity
+/*! Assumes no inner grid */
+template<class T>
+void write(BinaryWriter& bin, const OLattice<T>& d, const multi1d<int>& coord)
+{
+  writeOLattice(bin, (const char *)&(d.elem(0)), 
+		sizeof(typename WordType<T>::Type_t), 
+		sizeof(T) / sizeof(typename WordType<T>::Type_t),
+		coord);
+}
+
 
 //! Read a lattice quantity
 /*! This code assumes no inner grid */
@@ -1396,6 +1413,23 @@ void read(BinaryReader& bin, OLattice<T>& d)
   readOLattice(bin, (char *)&(d.elem(0)), 
 	       sizeof(typename WordType<T>::Type_t), 
 	       sizeof(T) / sizeof(typename WordType<T>::Type_t));
+}
+
+//! Read a single site of a lattice quantity
+/*! This code assumes no inner grid */
+void readOLattice(BinaryReader& bin, 
+		  char* input, size_t size, size_t nmemb, 
+		  const multi1d<int>& coord);
+
+//! Read a single site of a lattice quantity
+/*! Assumes no inner grid */
+template<class T>
+void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
+{
+  readOLattice(bin, (char *)&(d.elem(0)), 
+	       sizeof(typename WordType<T>::Type_t), 
+	       sizeof(T) / sizeof(typename WordType<T>::Type_t),
+	       coord);
 }
 
 #else   // ! defined(USE_ROLL_AROUND)
