@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.21 2003-12-09 21:27:29 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.22 2003-12-23 17:29:04 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -32,10 +32,14 @@ namespace Layout
 // Internal ops with ties to QMP
 namespace Internal
 {
+  //! Route to another node (blocking)
+  void route(void *send_buf, int srce_node, int dest_node, int count);
+
   //! Wait on send-receive
   void wait(int dir);
 
   //! Send to another node (wait)
+  /*! All nodes participate */
   void sendToWait(void *send_buf, int dest_node, int count);
 
   //! Receive from another node (wait)
@@ -1443,11 +1447,16 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
     // Send result to primary node. Avoid sending prim-node sending to itself
     if (node != 0)
     {
+#if 1
+      // All nodes participate
+      Internal::route((void *)&recv_buf, node, 0, sizeof(T));
+#else
       if (Layout::primaryNode())
 	Internal::recvFromWait((void *)&recv_buf, node, sizeof(T));
 
       if (Layout::nodeNumber() == node)
 	Internal::sendToWait((void *)&recv_buf, 0, sizeof(T));
+#endif
     }
 
     if (Layout::primaryNode())
@@ -1485,11 +1494,16 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
     // Send result to primary node. Avoid sending prim-node sending to itself
     if (node != 0)
     {
+#if 1
+      // All nodes participate
+      Internal::route((void *)&recv_buf, node, 0, sizeof(T));
+#else
       if (Layout::primaryNode())
 	Internal::recvFromWait((void *)&recv_buf, node, sizeof(T));
 
       if (Layout::nodeNumber() == node)
 	Internal::sendToWait((void *)&recv_buf, 0, sizeof(T));
+#endif
     }
 
     if (Layout::primaryNode())
