@@ -1,10 +1,12 @@
 #
 # Boiler Plate stuff: Autoconf Substitutions etc
 #
+## Should only need @QMP_CFLAGS@, @QMP_LDFLAGS@ and @QMP_LIBS@
+## n.b. Only defined for some parallel architectures
 INCFLAGS=-I@top_srcdir@/include -I@top_builddir@/include
-AM_CXXFLAGS = $(INCFLAGS) @QMP_CXXFLAGS@ @CXXFLAGS@
-AM_LDFLAGS = -L@top_builddir@/lib @QMP_LDFLAGS@ @QMP_COMMS_LDFLAGS@ @LDFLAGS@
-LDADD = @LIBS@ -lqdp @QMP_LIBS@ @QMP_COMMS_LIBS@ @LIBS@
+AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QMP_CFLAGS@
+AM_LDFLAGS = -L@top_builddir@/lib @LDFLAGS@ @QMP_LDFLAGS@
+LDADD = -lqdp @QMP_LIBS@ @LIBS@
 
 SUBDIRS = propagator
 
@@ -43,11 +45,4 @@ t_qdp_SOURCES =  t_qdp.cc formfac_w.cc dslashm_w.cc baryon_w.cc \
 .PHONY: build_lib
 build_lib:
 	cd @top_builddir@/lib ; $(MAKE)
-
-
-
-
-
-
-
 

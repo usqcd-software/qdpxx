@@ -1,6 +1,6 @@
-# generated automatically by aclocal 1.7.2 -*- Autoconf -*-
+# aclocal.m4 generated automatically by aclocal 1.6.3 -*- Autoconf -*-
 
-# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002
+# Copyright 1996, 1997, 1998, 1999, 2000, 2001, 2002
 # Free Software Foundation, Inc.
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -11,139 +11,39 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-dnl George Fleming, 12/12/2002
-dnl
-dnl Stole this from mpich-1.2.4/mpe
-dnl
-dnl PAC_MPI_LINK_CC_FUNC( MPI_CC, MPI_CFLAGS, MPI_LIBS,
-dnl                       MPI_VARS, MPI_FUNC,
-dnl                       [action if working], [action if not working] )
-dnl - MPI_CFLAGS  is the extra CFLAGS to CC, like "-I/usr/include" for mpi.h
-dnl - MPI_LDFLAGS is the extra LDFLAGS to CC, like "-L/usr/lib" for libmpi.a
-dnl - MPI_LIBS    is the LIBS to CC, like "-lmpi" for libmpi.a
-dnl - MPI_VARS    is the the declaration of variables needed to call MPI_FUNC
-dnl - MPI_FUNC    is the body of MPI function call to be checked for existence
-dnl               e.g.  MPI_VARS="MPI_Request request; MPI_Fint a;"
-dnl                     MPI_FUNC="a = MPI_Request_c2f( request );"
-dnl               if MPI_FUNC is empty, assume linking with basic MPI program.
-dnl               i.e. check if MPI definitions are valid
-dnl
-AC_DEFUN(PAC_MPI_LINK_CC_FUNC,[
-dnl - set local parallel compiler environments
-dnl   so input variables can be CFLAGS, LDFLAGS or LIBS
-    pac_MPI_CFLAGS="$1"
-    pac_MPI_LDFLAGS="$2"
-    pac_MPI_LIBS="$3"
-    AC_LANG_SAVE
-    AC_LANG_C
-dnl - save the original environment
-    pac_saved_CFLAGS="$CFLAGS"
-    pac_saved_LDFLAGS="$LDFLAGS"
-    pac_saved_LIBS="$LIBS"
-dnl - set the parallel compiler environment
-    CFLAGS="$CFLAGS $pac_MPI_CFLAGS"
-    LDFLAGS="$LDFLAGS $pac_MPI_LDFLAGS"
-    LIBS="$LIBS $pac_MPI_LIBS"
-    AC_TRY_LINK( [#include "mpi.h"], [
-    int argc; char **argv;
-    $4 ; 
-    MPI_Init(&argc, &argv);
-    $5 ;
-    MPI_Finalize();
-                 ], pac_mpi_working=yes, pac_mpi_working=no )
-    CFLAGS="$pac_saved_CFLAGS"
-    LDFLAGS="$pac_saved_LDFLAGS"
-    LIBS="$pac_saved_LIBS"
-    AC_LANG_RESTORE
-    if test "$pac_mpi_working" = "yes" ; then
-       ifelse([$6],,:,[$6])
-    else
-       ifelse([$7],,:,[$7])
-    fi
-])
 dnl Balint Joo, 13/12/2002
+dnl George T. Fleming, 03/03/2003
 dnl
 dnl Stole this from mpich-1.2.4/mpe
 dnl
-dnl PAC_MPI_LINK_CXX_FUNC( MPI_CC, MPI_CFLAGS, MPI_LIBS,
-dnl                       MPI_VARS, MPI_FUNC,
-dnl                       [action if working], [action if not working] )
-dnl - MPI_CFLAGS  is the extra CFLAGS to CC, like "-I/usr/include" for mpi.h
-dnl - MPI_LDFLAGS is the extra LDFLAGS to CC, like "-L/usr/lib" for libmpi.a
-dnl - MPI_LIBS    is the LIBS to CC, like "-lmpi" for libmpi.a
-dnl - MPI_VARS    is the the declaration of variables needed to call MPI_FUNC
-dnl - MPI_FUNC    is the body of MPI function call to be checked for existence
-dnl               e.g.  MPI_VARS="MPI_Request request; MPI_Fint a;"
-dnl                     MPI_FUNC="a = MPI_Request_c2f( request );"
-dnl               if MPI_FUNC is empty, assume linking with basic MPI program.
-dnl               i.e. check if MPI definitions are valid
+dnl PAC_QMP_LINK_CXX_FUNC(
+dnl   QMP_CFLAGS,
+dnl   QMP_LDFLAGS,
+dnl   QMP_LIBS,
+dnl   QMP_VARS,
+dnl   QMP_FUNC,
+dnl   [action if working],
+dnl   [action if not working]
+dnl )
 dnl
-AC_DEFUN(PAC_MPI_LINK_CXX_FUNC,[
-dnl - set local parallel compiler environments
-dnl   so input variables can be CFLAGS, LDFLAGS or LIBS
-    pac_MPI_CXXFLAGS="$1"
-    pac_MPI_LDFLAGS="$2"
-    pac_MPI_LIBS="$3"
-    AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
-dnl - save the original environment
-    pac_saved_CXXFLAGS="$CXXFLAGS"
-    pac_saved_LDFLAGS="$LDFLAGS"
-    pac_saved_LIBS="$LIBS"
-dnl - set the parallel compiler environment
-    CXXFLAGS="$CXXFLAGS $pac_MPI_CXXFLAGS"
-    LDFLAGS="$LDFLAGS $pac_MPI_LDFLAGS"
-    LIBS="$LIBS $pac_MPI_LIBS"
-    AC_TRY_LINK( [#include "mpi.h"], [
-    int argc; char **argv;
-    $4 ; 
-    MPI_Init(&argc, &argv);
-    $5 ;
-    MPI_Finalize();
-                 ], pac_mpi_working=yes, pac_mpi_working=no )
-    CXXFLAGS="$pac_saved_CXXFLAGS"
-    LDFLAGS="$pac_saved_LDFLAGS"
-    LIBS="$pac_saved_LIBS"
-    AC_LANG_RESTORE
-    if test "$pac_mpi_working" = "yes" ; then
-       ifelse([$6],,:,[$6])
-    else
-       ifelse([$7],,:,[$7])
-    fi
-])
-
-
-dnl Balint Joo, 13/12/2002
-dnl
-dnl Stole this from mpich-1.2.4/mpe
-dnl
-dnl PAC_QMP_LINK_CXX_FUNC(QMP_CXXFLAGS, QMP_LDFLAGS, QMP_LIBS,
-dnl                       QMP_COMMS_CXXFLAGS, QMP_COMMS_LFLAGS, QMP_COMMS_LIBS,
-dnl                       QMP_VARS, QMP_FUNC,
-dnl                       [action if working], [action if not working] )
-dnl
-dnl  QMP_CXXFLAGS       is the include option (-I) for QMP includes
-dnl  QMP_LDFLAGS        is the link path (-L) option for QMP libraries
-dnl  QMP_LIBS           is the library (-l) option for QMP libaries
-dnl  QMP_COMMS_CXXFLAGS is the include option (-I) for QMP_COMMS includes
-dnl                     such as MPI 
-dnl  CMP_COMMS_LDFLAGS  is the link path (-L) option for the QMP_COMMS library
-dnl                     such as MPI
-dnl  QMP_COMMS_LIBS     is the library (-l) option for the QMP_COMMS libraries
-dnl                     such as MPI
-dnl - QMP_VARS    is the the declaration of variables needed to call QMP_FUNC
-dnl - QMP_FUNC    is the body of QMP function call to be checked for existence
+dnl  QMP_CFLAGS   is the include option (-I) for QMP includes
+dnl  QMP_LDFLAGS  is the link path (-L) option for QMP libraries
+dnl  QMP_LIBS     is the library (-l) option for QMP libaries
+dnl  QMP_VARS     is the the declaration of variables needed to call QMP_FUNC
+dnl  QMP_FUNC     is the body of QMP function call to be checked for existence
 dnl               e.g.  QMP_VARS="QMP_u32_t foo;"
 dnl                     QMP_FUNC="foo = QMP_get_SMP_count();"
 dnl               if QMP_FUNC is empty, assume linking with basic MPI program.
 dnl               i.e. check if QMP definitions are valid
 dnl
-AC_DEFUN(PAC_QMP_LINK_CXX_FUNC,[
+AC_DEFUN(
+  PAC_QMP_LINK_CXX_FUNC,
+  [
 dnl - set local parallel compiler environments
 dnl   so input variables can be CFLAGS, LDFLAGS or LIBS
-    pac_QMP_CXXFLAGS="$1 $4"
-    pac_QMP_LDFLAGS="$2 $5"
-    pac_QMP_LIBS="$3 $6"
+    pac_QMP_CFLAGS="$1"
+    pac_QMP_LDFLAGS="$2"
+    pac_QMP_LIBS="$3"
     AC_LANG_SAVE
     AC_LANG_CPLUSPLUS
 dnl - save the original environment
@@ -151,26 +51,32 @@ dnl - save the original environment
     pac_saved_LDFLAGS="$LDFLAGS"
     pac_saved_LIBS="$LIBS"
 dnl - set the parallel compiler environment
-    CXXFLAGS="$CXXFLAGS $pac_QMP_CXXFLAGS"
+    CXXFLAGS="$CXXFLAGS $pac_QMP_CFLAGS"
     LDFLAGS="$LDFLAGS $pac_QMP_LDFLAGS"
     LIBS="$LIBS $pac_QMP_LIBS"
-    AC_TRY_LINK( [#include "QMP.h"], [
-    int argc; char **argv;
-    $7;
-    QMP_init_msg_passing(&argc, &argv, QMP_SMP_ONE_ADDRESS);
-    $8;
-    QMP_finalize_msg_passing();
-                 ], pac_qmp_working=yes, pac_qmp_working=no )
+    AC_TRY_LINK(
+      [#include "QMP.h"],
+      [
+        int argc ; char **argv ;
+        $4 ;
+        QMP_init_msg_passing(&argc, &argv, QMP_SMP_ONE_ADDRESS) ;
+        $5 ;
+        QMP_finalize_msg_passing() ;
+      ],
+      [pac_qmp_working=yes],
+      [pac_qmp_working=no]
+    )
     CXXFLAGS="$pac_saved_CXXFLAGS"
     LDFLAGS="$pac_saved_LDFLAGS"
     LIBS="$pac_saved_LIBS"
     AC_LANG_RESTORE
-    if test "$pac_qmp_working" = "yes" ; then
-       ifelse([$9],,:,[$9])
+    if test "X${pac_qmp_working}X" = "XyesX" ; then
+       ifelse([$6],,:,[$6])
     else
-       ifelse([$10],,:,[$10])
+       ifelse([$7],,:,[$7])
     fi
-])
+  ]
+)
 
 # Do all the work for Automake.                            -*- Autoconf -*-
 
@@ -204,7 +110,7 @@ dnl - set the parallel compiler environment
 # CC etc. in the Makefile, will ask for an AC_PROG_CC use...
 
 
-AC_PREREQ([2.54])
+AC_PREREQ([2.52])
 
 # Autoconf 2.50 wants to disallow AM_ names.  We explicitly allow
 # the ones we care about.
@@ -229,16 +135,6 @@ if test "`cd $srcdir && pwd`" != "`pwd`" &&
    test -f $srcdir/config.status; then
   AC_MSG_ERROR([source directory already configured; run "make distclean" there first])
 fi
-
-# test whether we have cygpath
-if test -z "$CYGPATH_W"; then
-  if (cygpath --version) >/dev/null 2>/dev/null; then
-    CYGPATH_W='cygpath -w'
-  else
-    CYGPATH_W=echo
-  fi
-fi
-AC_SUBST([CYGPATH_W])
 
 # Define the identity of the package.
 dnl Distinguish between old-style and new-style calls.
@@ -271,28 +167,16 @@ AC_REQUIRE([AC_PROG_AWK])dnl
 AC_REQUIRE([AC_PROG_MAKE_SET])dnl
 
 _AM_IF_OPTION([no-dependencies],,
-[AC_PROVIDE_IFELSE([AC_PROG_CC],
+[AC_PROVIDE_IFELSE([AC_PROG_][CC],
                   [_AM_DEPENDENCIES(CC)],
-                  [define([AC_PROG_CC],
-                          defn([AC_PROG_CC])[_AM_DEPENDENCIES(CC)])])dnl
-AC_PROVIDE_IFELSE([AC_PROG_CXX],
+                  [define([AC_PROG_][CC],
+                          defn([AC_PROG_][CC])[_AM_DEPENDENCIES(CC)])])dnl
+AC_PROVIDE_IFELSE([AC_PROG_][CXX],
                   [_AM_DEPENDENCIES(CXX)],
-                  [define([AC_PROG_CXX],
-                          defn([AC_PROG_CXX])[_AM_DEPENDENCIES(CXX)])])dnl
+                  [define([AC_PROG_][CXX],
+                          defn([AC_PROG_][CXX])[_AM_DEPENDENCIES(CXX)])])dnl
 ])
 ])
-
-
-# When config.status generates a header, we must update the stamp-h file.
-# This file resides in the same directory as the config header
-# that is generated.  The stamp files are numbered to have different names.
-
-# Autoconf calls _AC_AM_CONFIG_HEADER_HOOK (when defined) in the
-# loop where config.status creates the headers, so we can generate
-# our stamp files there.
-AC_DEFUN([_AC_AM_CONFIG_HEADER_HOOK],
-[_am_stamp_count=`expr ${_am_stamp_count-0} + 1`
-echo "timestamp for $1" >`AS_DIRNAME([$1])`/stamp-h[]$_am_stamp_count])
 
 # Copyright 2002  Free Software Foundation, Inc.
 
@@ -314,14 +198,14 @@ echo "timestamp for $1" >`AS_DIRNAME([$1])`/stamp-h[]$_am_stamp_count])
 # ----------------------------
 # Automake X.Y traces this macro to ensure aclocal.m4 has been
 # generated from the m4 files accompanying Automake X.Y.
-AC_DEFUN([AM_AUTOMAKE_VERSION],[am__api_version="1.7"])
+AC_DEFUN([AM_AUTOMAKE_VERSION],[am__api_version="1.6"])
 
 # AM_SET_CURRENT_AUTOMAKE_VERSION
 # -------------------------------
 # Call AM_AUTOMAKE_VERSION so it can be traced.
 # This function is AC_REQUIREd by AC_INIT_AUTOMAKE.
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
-	 [AM_AUTOMAKE_VERSION([1.7.2])])
+	 [AM_AUTOMAKE_VERSION([1.6.3])])
 
 # Helper functions for option handling.                    -*- Autoconf -*-
 
@@ -701,7 +585,7 @@ AC_CACHE_CHECK([dependency style of $depcc],
     if depmode=$depmode \
        source=conftest.c object=conftest.o \
        depfile=conftest.Po tmpdepfile=conftest.TPo \
-       $SHELL ./depcomp $depcc -c -o conftest.o conftest.c >/dev/null 2>&1 &&
+       $SHELL ./depcomp $depcc -c conftest.c -o conftest.o >/dev/null 2>&1 &&
        grep conftest.h conftest.Po > /dev/null 2>&1 &&
        ${MAKE-make} -s -f confmf > /dev/null 2>&1; then
       am_cv_$1_dependencies_compiler_type=$depmode
@@ -716,9 +600,6 @@ else
 fi
 ])
 AC_SUBST([$1DEPMODE], [depmode=$am_cv_$1_dependencies_compiler_type])
-AM_CONDITIONAL([am__fastdep$1], [
-  test "x$enable_dependency_tracking" != xno \
-  && test "$am_cv_$1_dependencies_compiler_type" = gcc3])
 ])
 
 
@@ -838,9 +719,7 @@ AC_DEFUN([AM_OUTPUT_DEPENDENCY_COMMANDS],
      [AMDEP_TRUE="$AMDEP_TRUE" ac_aux_dir="$ac_aux_dir"])
 ])
 
-# Check to see how 'make' treats includes.	-*- Autoconf -*-
-
-# Copyright (C) 2001, 2002 Free Software Foundation, Inc.
+# Copyright 2001 Free Software Foundation, Inc.             -*- Autoconf -*-
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -880,7 +759,7 @@ echo "include confinc" > confmf
 # In particular we don't look at `^make:' because GNU make might
 # be invoked under some other name (usually "gmake"), in which
 # case it prints its new name instead of `make'.
-if test "`$am_make -s -f confmf 2> /dev/null | grep -v 'ing directory'`" = "done"; then
+if test "`$am_make -s -f confmf 2> /dev/null | fgrep -v 'ing directory'`" = "done"; then
    am__include=include
    am__quote=
    _am_result=GNU
@@ -940,12 +819,12 @@ else
 fi
 AC_CONFIG_COMMANDS_PRE(
 [if test -z "${$1_TRUE}" && test -z "${$1_FALSE}"; then
-  AC_MSG_ERROR([conditional "$1" was never defined.
+  AC_MSG_ERROR([conditional \"$1\" was never defined.
 Usually this means the macro was only invoked conditionally.])
 fi])])
 
 
-# Copyright 1996, 1998, 1999, 2000, 2001, 2002  Free Software Foundation, Inc.
+# Copyright 1996, 1998, 1999, 2000, 2001 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -962,7 +841,7 @@ fi])])
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 # 02111-1307, USA.
 
-# serial 2
+# serial 1
 
 AC_DEFUN([AM_WITH_DMALLOC],
 [AC_MSG_CHECKING([if malloc debugging is wanted])
@@ -979,6 +858,4 @@ else
   AC_MSG_RESULT(no)
 fi], [AC_MSG_RESULT(no)])
 ])
-
-AU_DEFUN([fp_WITH_DMALLOC], [AM_WITH_DMALLOC])
 

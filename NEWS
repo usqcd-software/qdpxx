@@ -1,3 +1,9 @@
+02/10/2003 -- George Fleming:
+
+        Totally reworked the way QDP gets information about how to compile
+        and link against QMP (if needed for parscalar).  INSTALL and README
+        now are wrong and I need to update them.
+
 01/29/2003 -- Robert Edwards:
 
         The single box (scalar) and parallel (parscalar) versions
@@ -5,7 +11,7 @@
         user can now choose at run-time the lattice size.
 
 
-13/12/2002 -- Balint Joo: 
+12/13/2002 -- Balint Joo: 
 
 	Switched to George Fleming style autoconf system (See INSTALL)
 	examples now not automatically built (make check builds them)
@@ -15,3 +21,5 @@
 
 	Added QDP::QDP_init() and QDP_finalize() to call QMP_init_msg_passing 
 	from, with command line arguments
+
+

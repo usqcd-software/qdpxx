@@ -6,10 +6,9 @@
 SUBDIRS = lib examples include
 
 #
-# The configure file
+# The end user's configuration script
 # 
-configdir=@prefix@/config
-config_SCRIPTS=qdp_build_env.sh
+bin_SCRIPTS=qdp++-config
 
 #
 # User explicitly has to make docs -- you may not want them
@@ -30,15 +29,14 @@ doc-distclean:
 	cd docs ; $(MAKE) distclean
 
 #
-# Some things that we want in the distribution tarball 
-#
-
-#
 # All the sources that are somehow arch-specific
 # All the headers get into the dist by default
 # 
-ARCH_SOURCES = lib/scalar_specific.cc \
-               lib/parscalar_specific.cc
+ARCH_SOURCES = lib/scalar_specific.cc lib/parscalar_specific.cc
 
-EXTRA_DIST= $(ARCH_SOURCES) PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools  \
-            examples/BuildingBlocks examples/propagator docs qdp_build_env.sh.in
+#
+# Some things that we want in the distribution tarball 
+#
+EXTRA_DIST  = $(ARCH_SOURCES)
+EXTRA_DIST += PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools
+EXTRA_DIST += examples/BuildingBlocks examples/propagator docs
