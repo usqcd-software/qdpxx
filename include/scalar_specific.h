@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.11 2002-10-09 15:33:26 edwards Exp $
+// $Id: scalar_specific.h,v 1.12 2002-10-25 03:33:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -411,6 +411,58 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
   return dest;
 }
 
+//-----------------------------------------------------------------------------
+// Peek and poke at individual sites. This is very architecture specific
+// NOTE: these two routines assume there is no underlying inner grid
+
+//! Extract site element
+/*! @ingroup group1
+  @param l  source to examine
+  @param coord Nd lattice coordinates to examine
+  @return single site object of the same primitive type
+  @ingroup group1
+  @relates QDPType */
+template<class T1>
+inline OScalar<T1>
+peekSite(const OScalar<T1>& l, const multi1d<int>& coord)
+{
+  return l;
+}
+
+
+//! Extract site element
+/*! @ingroup group1
+  @param l  source to examine
+  @param coord Nd lattice coordinates to examine
+  @return single site object of the same primitive type
+  @ingroup group1
+  @relates QDPType */
+template<class T1>
+inline OScalar<T1>
+peekSite(const OLattice<T1>& l, const multi1d<int>& coord)
+{
+  OScalar<T1> dest;
+
+  dest.elem() = l.elem(layout.LinearSiteIndex(coord));
+  return dest;
+}
+
+
+//! Insert site element
+/*! @ingroup group1
+  @param l  target to update
+  @param r  source to insert
+  @param coord Nd lattice coordinates where to insert
+  @return object of the same primitive type but of promoted lattice type
+  @ingroup group1
+  @relates QDPType */
+template<class T1>
+inline OLattice<T1>&
+pokeSite(OLattice<T1>& l, const OScalar<T1>& r, const multi1d<int>& coord)
+{
+  l.elem(layout.LinearSiteIndex(coord)) = r.elem();
+  return l;
+}
 
 
 //-----------------------------------------------------------------------------
@@ -504,79 +556,6 @@ shift(const QDPExpr<T1,C1> & l, int isign, int dir)
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
   return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
-}
-
-
-
-
-
-//-----------------------------------------------
-// Su2_extract  under an explicit subset
-//! (OLattice<T1>,OLattice<T1>,OLattice<T1>,OLattice<T1>,su2_index) <- OLattice<T>
-template<class T, class T1> 
-void
-su2_extract(OLattice<T1>& r_0, OLattice<T1>& r_1, 
-	    OLattice<T1>& r_2, OLattice<T1>& r_3, 
-	    const OLattice<T>& s1, 
-	    int i1, int i2, const Subset& s)
-{
-  const int *tab = s.SiteTable()->slice();
-  for(int j=0; j < s.NumSiteTable(); ++j) 
-  {
-    int i = tab[j];
-    su2_extract(r_0.elem(i), r_1.elem(i), r_2.elem(i), r_3.elem(i), 
-		i1, i2, s1.elem(i));
-  }
-}
-
-
-// Su2_extract
-//! (OLattice<T1>,OLattice<T1>,OLattice<T1>,OLattice<T1>,su2_index) <- OLattice<T>
-template<class T, class T1> 
-void
-su2_extract(OLattice<T1>& r_0, OLattice<T1>& r_1, 
-	    OLattice<T1>& r_2, OLattice<T1>& r_3, 
-	    const OLattice<T>& s1, 
-	    int i1, int i2)
-{
-  // Lazy method
-  su2_extract(r_0, r_1, r_2, r_3, s1, i1, i2, all);
-}
-
-
-//-----------------------------------------------
-// Sun_fill   under an explicit subset
-//! OLattice<T> <- (OLattice<T1>,OLattice<T1>,OLattice<T1>,OLattice<T1>,su2_index)
-template<class T, class T1>
-void
-sun_fill(OLattice<T>& d, 
-	 const OLattice<T1>& r_0, const OLattice<T1>& r_1, 
-	 const OLattice<T1>& r_2, const OLattice<T1>& r_3, 
-	 int i1, int i2, const Subset& s)
-{
-  const int *tab = s.SiteTable()->slice();
-  for(int j=0; j < s.NumSiteTable(); ++j) 
-  {
-    int i = tab[j];
-    sun_fill(d.elem(i), 
-	     i1, i2,
-	     r_0.elem(i), r_1.elem(i), r_2.elem(i), r_3.elem(i));
-  }
-}
-
-
-
-// Sun_fill
-//! OLattice<T> <- (OLattice<T1>,OLattice<T1>,OLattice<T1>,OLattice<T1>,su2_index)
-template<class T, class T1>
-void
-sun_fill(OLattice<T>& d, 
-	 const OLattice<T1>& r_0, const OLattice<T1>& r_1, 
-	 const OLattice<T1>& r_2, const OLattice<T1>& r_3, 
-	 int i1, int i2)
-{
-  // Lazy method
-  sun_fill(d, r_0, r_1, r_2, r_3, i1, i2, all);
 }
 
 

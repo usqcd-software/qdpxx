@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tests.h,v 1.4 2002-10-09 15:33:26 edwards Exp $
+// $Id: tests.h,v 1.5 2002-10-25 03:33:26 edwards Exp $
 //
 // Include file for test suite
 
@@ -8,7 +8,7 @@
 
 using namespace QDP;
 
-void junk(LatticeGauge& b3, const LatticeGauge& b1, const LatticeGauge& b2, const Subset& s);
+void junk(NmlWriter&, LatticeGauge& b3, const LatticeGauge& b1, const LatticeGauge& b2, const Subset& s);
 void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq, 
 	    Double& t_plaq, Double& link);
 void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quark_prop_2, 

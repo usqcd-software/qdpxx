@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: newops.h,v 1.5 2002-10-16 00:41:17 edwards Exp $
+// $Id: newops.h,v 1.6 2002-10-25 03:33:26 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -71,6 +71,492 @@ struct FnInnerproductRealMulti
 {
   PETE_EMPTY_CONSTRUCTORS(FnInnerproductReal)
 };
+
+
+//-----------------------------------------------------------------------------
+// Operators and tags for accessing elements of a QDP object
+//-----------------------------------------------------------------------------
+
+//! Structure for extracting color matrix components
+struct FnPeekColorMatrix
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPeekColorMatrix)
+
+  FnPeekColorMatrix(int _row, int _col): row(_row), col(_col) {}
+  
+  template<class T>
+  inline typename UnaryReturn<T, FnPeekColorMatrix>::Type_t
+  operator()(const T &a) const
+  {
+    return (peekColor(a,row,col));
+  }
+
+private:
+  int row, col;
+};
+
+
+//! Extract color matrix components
+/*! @ingroup group1
+  @relates QDPType */
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnPeekColorMatrix,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnPeekColorMatrix >::Type_t >::Expression_t
+peekColor(const QDPType<T1,C1> & l, int row, int col)
+{
+  typedef UnaryNode<FnPeekColorMatrix,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnPeekColorMatrix >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekColorMatrix(row,col),
+    CreateLeaf<QDPType<T1,C1> >::make(l)));
+}
+
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnPeekColorMatrix,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+peekColor(const QDPExpr<T1,C1> & l, int row, int col)
+{
+  typedef UnaryNode<FnPeekColorMatrix,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnPeekColorMatrix >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekColorMatrix(row,col),
+    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+}
+
+
+//! Structure for extracting color vector components
+struct FnPeekColorVector
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPeekColorVector)
+
+  FnPeekColorVector(int _row): row(_row) {}
+  
+  template<class T>
+  inline typename UnaryReturn<T, FnPeekColorVector>::Type_t
+  operator()(const T &a) const
+  {
+    return (peekColor(a,row));
+  }
+
+private:
+  int row;
+};
+
+
+//! Extract color vector components
+/*! @ingroup group1
+  @relates QDPType */
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnPeekColorVector,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnPeekColorVector >::Type_t >::Expression_t
+peekColor(const QDPType<T1,C1> & l, int row)
+{
+  typedef UnaryNode<FnPeekColorVector,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnPeekColorVector >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekColorVector(row),
+    CreateLeaf<QDPType<T1,C1> >::make(l)));
+}
+
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnPeekColorVector,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+peekColor(const QDPExpr<T1,C1> & l, int row)
+{
+  typedef UnaryNode<FnPeekColorVector,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnPeekColorVector >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekColorVector(row),
+    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+}
+
+
+//! Structure for extracting spin matrix components
+struct FnPeekSpinMatrix
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPeekSpinMatrix)
+
+  FnPeekSpinMatrix(int _row, int _col): row(_row), col(_col) {}
+  
+  template<class T>
+  inline typename UnaryReturn<T, FnPeekSpinMatrix>::Type_t
+  operator()(const T &a) const
+  {
+    return (peekSpin(a,row,col));
+  }
+
+private:
+  int row, col;
+};
+
+//! Extract spin matrix components
+/*! @ingroup group1
+  @relates QDPType */
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnPeekSpinMatrix,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnPeekSpinMatrix >::Type_t >::Expression_t
+peekSpin(const QDPType<T1,C1> & l, int row, int col)
+{
+  typedef UnaryNode<FnPeekSpinMatrix,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnPeekSpinMatrix >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekSpinMatrix(row,col),
+    CreateLeaf<QDPType<T1,C1> >::make(l)));
+}
+
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnPeekSpinMatrix,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+peekSpin(const QDPExpr<T1,C1> & l, int row, int col)
+{
+  typedef UnaryNode<FnPeekSpinMatrix,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnPeekSpinMatrix >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekSpinMatrix(row,col),
+    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+}
+
+
+//! Structure for extracting spin vector components
+struct FnPeekSpinVector
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPeekSpinVector)
+
+  FnPeekSpinVector(int _row): row(_row) {}
+  
+  template<class T>
+  inline typename UnaryReturn<T, FnPeekSpinVector>::Type_t
+  operator()(const T &a) const
+  {
+    return (peekSpin(a,row));
+  }
+
+private:
+  int row;
+};
+
+
+//! Extract spin vector components
+/*! @ingroup group1
+  @relates QDPType */
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnPeekSpinVector,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnPeekSpinVector >::Type_t >::Expression_t
+peekSpin(const QDPType<T1,C1> & l, int row)
+{
+  typedef UnaryNode<FnPeekSpinVector,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnPeekSpinVector >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekSpinVector(row),
+    CreateLeaf<QDPType<T1,C1> >::make(l)));
+}
+
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnPeekSpinVector,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+peekSpin(const QDPExpr<T1,C1> & l, int row)
+{
+  typedef UnaryNode<FnPeekSpinVector,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnPeekSpinVector >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekSpinVector(row),
+    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+}
+
+
+
+//---------------------------------------
+
+//! Structure for inserting color matrix components
+struct FnPokeColorMatrix
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPokeColorMatrix)
+
+  FnPokeColorMatrix(int _row, int _col): row(_row), col(_col) {}
+  
+  template<class T1, class T2>
+  inline typename BinaryReturn<T1, T2, FnPokeColorMatrix>::Type_t
+  operator()(const T1 &a, const T2 &b) const
+  {
+    return (pokeColor(const_cast<T1&>(a),b,row,col));
+  }
+
+private:
+  int row, col;
+};
+
+
+//! Insert color matrix components
+/*! @ingroup group1
+  @param l  target to update
+  @param r  source
+  @param row  row of color matrix
+  @param col  column of color matrix
+  @return updated target
+  @ingroup group1
+  @relates QDPType */
+template<class T1,class C1,class T2,class C2>
+inline C1& 
+pokeColor(QDPType<T1,C1> & l, const QDPType<T2,C2>& r, int row, int col)
+{
+  C1& ll = static_cast<C1&>(l);
+  evaluate(ll,FnPokeColorMatrix(row,col),PETE_identity(r));
+  return ll;
+}
+
+
+template<class T1,class C1,class T2,class C2>
+inline C1& 
+pokeColor(QDPType<T1,C1> & l, const QDPExpr<T2,C2>& r, int row, int col)
+{
+  C1& ll = static_cast<C1&>(l);
+  evaluate(ll,FnPokeColorMatrix(row,col),r);
+  return ll;
+}
+
+
+template<class T1,class C1,class T2,class C2>
+inline C1
+pokeColor(QDPSubType<T1,C1> l, const QDPType<T2,C2>& r, int row, int col)
+{
+  C1& ll = static_cast<C1&>(l.field());
+  const Subset& s = l.subset();
+
+  evaluate(ll,FnPokeColorMatrix(row,col),PETE_identity(r),s);
+  return ll;
+}
+
+
+template<class T1,class C1,class T2,class C2>
+inline C1
+pokeColor(QDPSubType<T1,C1> l, const QDPExpr<T2,C2>& r, int row, int col)
+{
+  C1& ll = static_cast<C1&>(l.field());
+  const Subset& s = l.subset();
+
+  evaluate(ll,FnPokeColorMatrix(row,col),r,s);
+  return ll;
+}
+
+
+//! Structure for inserting color vector components
+struct FnPokeColorVector
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPokeColorVector)
+
+  FnPokeColorVector(int _row): row(_row) {}
+  
+  template<class T1, class T2>
+  inline typename BinaryReturn<T1, T2, FnPokeColorVector>::Type_t
+  operator()(const T1 &a, const T2 &b) const
+  {
+    return (pokeColor(const_cast<T1&>(a),b,row));
+  }
+
+private:
+  int row;
+};
+
+
+
+//! Insert color vector components
+/*! @ingroup group1
+  @param l  target to update
+  @param r  source
+  @param row  row of color vector
+  @return updated target
+  @ingroup group1
+  @relates QDPType */
+template<class T1,class C1,class T2,class C2>
+inline C1& 
+pokeColor(QDPType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
+{
+  C1& ll = static_cast<C1&>(l);
+  evaluate(ll,FnPokeColorVector(row),PETE_identity(r));
+  return ll;
+}
+
+template<class T1,class C1,class T2,class C2>
+inline C1& 
+pokeColor(QDPType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
+{
+  C1& ll = static_cast<C1&>(l);
+  evaluate(ll,FnPokeColorVector(row),r);
+  return ll;
+}
+
+
+template<class T1,class C1,class T2,class C2>
+inline C1
+pokeColor(QDPSubType<T1,C1> l, const QDPType<T2,C2>& r, int row)
+{
+  C1& ll = static_cast<C1&>(l.field());
+  const Subset& s = l.subset();
+
+  evaluate(ll,FnPokeColorVector(row),PETE_identity(r),s);
+  return ll;
+}
+
+
+template<class T1,class C1,class T2,class C2>
+inline C1
+pokeColor(QDPSubType<T1,C1> l, const QDPExpr<T2,C2>& r, int row)
+{
+  C1& ll = static_cast<C1&>(l.field());
+  const Subset& s = l.subset();
+
+  evaluate(ll,FnPokeColorVector(row),r,s);
+  return ll;
+}
+
+
+//! Structure for inserting spin matrix components
+struct FnPokeSpinMatrix
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPokeSpinMatrix)
+
+  FnPokeSpinMatrix(int _row, int _col): row(_row), col(_col) {}
+  
+  template<class T1, class T2>
+  inline typename BinaryReturn<T1, T2, FnPokeSpinMatrix>::Type_t
+  operator()(const T1 &a, const T2 &b) const
+  {
+    return (pokeSpin(const_cast<T1&>(a),b,row,col));
+  }
+
+private:
+  int row, col;
+};
+
+//! Insert spin matrix components
+/*! @ingroup group1
+  @param l  target to update
+  @param r  source
+  @param row  row of spin matrix
+  @param col  column of spin matrix
+  @return updated target
+  @ingroup group1
+  @relates QDPType */
+template<class T1,class C1,class T2,class C2>
+inline C1& 
+pokeSpin(QDPType<T1,C1> & l, const QDPType<T2,C2>& r, int row, int col)
+{
+  C1& ll = static_cast<C1&>(l);
+  evaluate(ll,FnPokeSpinMatrix(row,col),PETE_identity(r));
+  return ll;
+}
+
+template<class T1,class C1,class T2,class C2>
+inline C1& 
+pokeSpin(QDPType<T1,C1> & l, const QDPExpr<T2,C2>& r, int row, int col)
+{
+  C1& ll = static_cast<C1&>(l);
+  evaluate(ll,FnPokeSpinMatrix(row,col),r);
+  return ll;
+}
+
+
+template<class T1,class C1,class T2,class C2>
+inline C1
+pokeSpin(QDPSubType<T1,C1> l, const QDPType<T2,C2>& r, int row, int col)
+{
+  C1& ll = static_cast<C1&>(l.field());
+  const Subset& s = l.subset();
+
+  evaluate(ll,FnPokeSpinMatrix(row,col),PETE_identity(r),s);
+  return ll;
+}
+
+
+template<class T1,class C1,class T2,class C2>
+inline C1
+pokeSpin(QDPSubType<T1,C1> l, const QDPExpr<T2,C2>& r, int row, int col)
+{
+  C1& ll = static_cast<C1&>(l.field());
+  const Subset& s = l.subset();
+
+  evaluate(ll,FnPokeSpinMatrix(row,col),r,s);
+  return ll;
+}
+
+
+
+//! Structure for inserting spin vector components
+struct FnPokeSpinVector
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPokeSpinVector)
+
+  FnPokeSpinVector(int _row): row(_row) {}
+  
+  template<class T1, class T2>
+  inline typename BinaryReturn<T1, T2, FnPokeSpinVector>::Type_t
+  operator()(const T1 &a, const T2 &b) const
+  {
+    return (pokeSpin(const_cast<T1&>(a),b,row));
+  }
+
+private:
+  int row;
+};
+
+
+//! Insert spin vector components
+/*! @ingroup group1
+  @param l  target to update
+  @param r  source
+  @param row  row of spin vector
+  @return updated target
+  @ingroup group1
+  @relates QDPType */
+template<class T1,class C1,class T2,class C2>
+inline C1& 
+pokeSpin(QDPType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
+{
+  C1& ll = static_cast<C1&>(l);
+  evaluate(ll,FnPokeSpinVector(row),PETE_identity(r));
+  return ll;
+}
+
+template<class T1,class C1,class T2,class C2>
+inline C1& 
+pokeSpin(QDPType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
+{
+  C1& ll = static_cast<C1&>(l);
+  evaluate(ll,FnPokeSpinVector(row),r);
+  return ll;
+}
+
+
+template<class T1,class C1,class T2,class C2>
+inline C1
+pokeSpin(QDPSubType<T1,C1> l, const QDPType<T2,C2>& r, int row)
+{
+  C1& ll = static_cast<C1&>(l.field());
+  const Subset& s = l.subset();
+
+  evaluate(ll,FnPokeSpinVector(row),PETE_identity(r),s);
+  return ll;
+}
+
+
+template<class T1,class C1,class T2,class C2>
+inline C1
+pokeSpin(QDPSubType<T1,C1> l, const QDPExpr<T2,C2>& r, int row)
+{
+  C1& ll = static_cast<C1&>(l.field());
+  const Subset& s = l.subset();
+
+  evaluate(ll,FnPokeSpinVector(row),r,s);
+  return ll;
+}
 
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.7 2002-10-12 04:10:15 edwards Exp $
+// $Id: reality.h,v 1.8 2002-10-25 03:33:26 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1072,6 +1072,54 @@ seedToFloat(const RScalar<T1>& s1)
   typename UnaryReturn<RScalar<T1>, FnSeedToFloat>::Type_t  d;
 
   d.elem() = seedToFloat(s1.elem());
+  return d;
+}
+
+//! Extract color vector components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T>
+inline typename UnaryReturn<RScalar<T>, FnPeekColorVector>::Type_t
+peekColor(const RScalar<T>& l, int row)
+{
+  typename UnaryReturn<RScalar<T>, FnPeekColorVector>::Type_t  d;
+
+  d.elem() = peekColor(l.elem(),row);
+  return d;
+}
+
+//! Extract color matrix components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T>
+inline typename UnaryReturn<RScalar<T>, FnPeekColorMatrix>::Type_t
+peekColor(const RScalar<T>& l, int row, int col)
+{
+  typename UnaryReturn<RScalar<T>, FnPeekColorMatrix>::Type_t  d;
+
+  d.elem() = peekColor(l.elem(),row,col);
+  return d;
+}
+
+//! Extract spin vector components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T>
+inline typename UnaryReturn<RScalar<T>, FnPeekSpinVector>::Type_t
+peekSpin(const RScalar<T>& l, int row)
+{
+  typename UnaryReturn<RScalar<T>, FnPeekSpinVector>::Type_t  d;
+
+  d.elem() = peekSpin(l.elem(),row);
+  return d;
+}
+
+//! Extract spin matrix components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T>
+inline typename UnaryReturn<RScalar<T>, FnPeekSpinMatrix>::Type_t
+peekSpin(const RScalar<T>& l, int row, int col)
+{
+  typename UnaryReturn<RScalar<T>, FnPeekSpinMatrix>::Type_t  d;
+
+  d.elem() = peekSpin(l.elem(),row,col);
   return d;
 }
 

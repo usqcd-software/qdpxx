@@ -1,9 +1,10 @@
-// $Id: t_qdp.cc,v 1.6 2002-10-09 15:33:26 edwards Exp $
+// $Id: t_qdp.cc,v 1.7 2002-10-25 03:33:26 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
 
 #include "tests.h"
+#include "proto.h"
 
 using namespace QDP;
 
@@ -112,8 +113,14 @@ int main(int argc, char **argv)
   Write(nml,b3);
   pop(nml);
   
-#if 1
-  junk(b3,b1,b2,all);
+#if 0
+  Double dsum;
+  dsum = norm2(b1);
+  cerr << "dsum = " << dsum << endl;
+  nml << "dsum = ";
+  Write(nml,dsum);
+
+  junk(nml,b3,b1,b2,all);
 #endif
 
 #if 1
@@ -182,27 +189,24 @@ int main(int argc, char **argv)
 #if 1
   //! SU(N) fiddling
   cerr << "Fiddle with SU(2) matrices\n" << endl;
-  LatticeReal r_0,r_1,r_2,r_3;
+  multi1d<LatticeReal> r(4);
 
   cerr << "u[0]" << endl;
   Write(nml,u[0]);
   cerr << "Start extract\n";
   for(int su2_index=0; su2_index < Nc*(Nc-1)/2; ++su2_index)
   {
-    su2_extract(r_0,r_1,r_2,r_3, su2_index, u[0]);
+    r = su2Extract(u[0], su2_index, all);
 
     cerr << "su2_index="<<su2_index<<"\n";
     Write(nml,su2_index);
-    Write(nml,r_0);
-    Write(nml,r_1);
-    Write(nml,r_2);
-    Write(nml,r_3);
+    Write(nml,r);
   }
   cerr << "Start filling\n";
   for(int su2_index=0; su2_index < Nc*(Nc-1)/2; ++su2_index)
   {
     cerr << "su2_index="<<su2_index<<"\n";
-    sun_fill(u[1], su2_index, r_0,r_1,r_2,r_3);
+    u[1] = sunFill(r, su2_index, all);
 
     Write(nml,u[1]);
   }

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.7 2002-10-09 15:33:25 edwards Exp $
+// $Id: foo.cc,v 1.8 2002-10-25 03:33:26 edwards Exp $
 //
 // Silly little internal test code
 
@@ -36,7 +36,7 @@ int main()
 //  LatticeReal a, b, c;
   LatticeReal a, b, c, e;
   Complex d;
-  float ccc = 2.0;
+//  float ccc = 2.0;
   float x;
   
 #if 0
@@ -94,6 +94,35 @@ int main()
   e = where(rr < 0.5, a, c);
   Write(nml,e);
 
+
+#if 1
+  nml << "test peekColor";
+  LatticeGauge barf = 1.0;
+  LatticeComplex fred = peekColor(barf,0,0);
+  Write(nml,barf);
+  Write(nml,fred);
+
+  multi1d<int> ccrd(Nd);
+  ccrd = 1;
+
+  nml << "test peeksite";
+  random(fred);
+  Complex sitefred = peekSite(fred,ccrd);
+  Write(nml,fred);
+  Write(nml,sitefred);
+
+
+  nml << "test pokeColor";
+  random(barf);
+  fred = 1.0;
+  LatticeGauge barfagain = pokeColor(barf,fred,0,0);
+  Write(nml,barfagain);
+
+  nml << "test pokeSite";
+  random(sitefred);
+  LatticeComplex fredagain = pokeSite(fred,sitefred,ccrd);
+  Write(nml,fredagain);
+#endif
 
 
 #if 0

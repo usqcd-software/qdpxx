@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primmatrix.h,v 1.7 2002-10-12 04:10:15 edwards Exp $
+// $Id: primmatrix.h,v 1.8 2002-10-25 03:33:26 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -406,7 +406,7 @@ trace_real(const PMatrix<T1,N,C>& s1)
 }
 
 
-// trace = Im(Trace(source1))
+//! trace = Im(Trace(source1))
 template<class T, int N, template<class,int> class C>
 struct UnaryReturn<PMatrix<T,N,C>, FnTraceImag > {
   typedef PScalar<typename UnaryReturn<T, FnTraceImag>::Type_t>  Type_t;
@@ -426,7 +426,7 @@ trace_imag(const PMatrix<T1,N,C>& s1)
 }
 
 
-// trace = colorTrace(source1)   [this is an identity in general]
+//! trace = colorTrace(source1)   [this is an identity in general]
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PMatrix<T,N,C>, FnColorTrace>::Type_t
 colorTrace(const PMatrix<T,N,C>& s1)
@@ -441,7 +441,7 @@ colorTrace(const PMatrix<T,N,C>& s1)
 }
 
 
-// trace = spinTrace(source1)   [this is an identity in general]
+//! trace = spinTrace(source1)   [this is an identity in general]
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PMatrix<T,N,C>, FnSpinTrace>::Type_t
 spinTrace(const PMatrix<T,N,C>& s1)
@@ -456,7 +456,7 @@ spinTrace(const PMatrix<T,N,C>& s1)
 }
 
 
-// trace = noColorTrace(source1)   [only under color is this an identity]
+//! trace = noColorTrace(source1)   [only under color is this an identity]
 template<class T, int N, template<class,int> class C>
 struct UnaryReturn<PMatrix<T,N,C>, FnNoColorTrace > {
   typedef PScalar<typename UnaryReturn<T, FnNoColorTrace>::Type_t>  Type_t;
@@ -476,7 +476,7 @@ noColorTrace(const PMatrix<T,N,C>& s1)
 }
 
 
-// trace = noSpinTrace(source1)   [only under noSpin is this is an identity]
+//! trace = noSpinTrace(source1)   [only under noSpin is this is an identity]
 template<class T, int N, template<class,int> class C>
 struct UnaryReturn<PMatrix<T,N,C>, FnNoSpinTrace > {
   typedef PScalar<typename UnaryReturn<T, FnNoSpinTrace>::Type_t>  Type_t;
@@ -496,7 +496,7 @@ noSpinTrace(const PMatrix<T,N,C>& s1)
 }
 
 
-// PMatrix = Re(PMatrix)
+//! PMatrix = Re(PMatrix)
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PMatrix<T,N,C>, FnReal>::Type_t
 real(const PMatrix<T,N,C>& s1)
@@ -511,7 +511,7 @@ real(const PMatrix<T,N,C>& s1)
 }
 
 
-// PMatrix = Im(PMatrix)
+//! PMatrix = Im(PMatrix)
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PMatrix<T,N,C>, FnImag>::Type_t
 imag(const PMatrix<T,N,C>& s1)
@@ -544,7 +544,7 @@ cmplx(const PMatrix<T1,N,C>& s1, const PMatrix<T2,N,C>& s2)
 
 
 // Functions
-// PMatrix = i * PMatrix
+//! PMatrix = i * PMatrix
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PMatrix<T,N,C>, FnMultiplyI>::Type_t
 multiplyI(const PMatrix<T,N,C>& s1)
@@ -558,7 +558,7 @@ multiplyI(const PMatrix<T,N,C>& s1)
   return d;
 }
 
-// PMatrix = -i * PMatrix
+//! PMatrix = -i * PMatrix
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PMatrix<T,N,C>, FnMultiplyMinusI>::Type_t
 multiplyMinusI(const PMatrix<T,N,C>& s1)
@@ -570,6 +570,111 @@ multiplyMinusI(const PMatrix<T,N,C>& s1)
       d.elem(i,j) = multiplyMinusI(s1.elem(i,j));
 
   return d;
+}
+
+//! Extract color vector components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekColorVector>::Type_t
+peekColor(const PMatrix<T,N,C>& l, int row)
+{
+  typename UnaryReturn<PMatrix<T,N,C>, FnPeekColorVector>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = peekColor(l.elem(i,j),row);
+  return d;
+}
+
+//! Extract color matrix components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekColorMatrix>::Type_t
+peekColor(const PMatrix<T,N,C>& l, int row, int col)
+{
+  typename UnaryReturn<PMatrix<T,N,C>, FnPeekColorMatrix>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = peekColor(l.elem(i,j),row,col);
+  return d;
+}
+
+//! Extract spin vector components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekSpinVector>::Type_t
+peekSpin(const PMatrix<T,N,C>& l, int row)
+{
+  typename UnaryReturn<PMatrix<T,N,C>, FnPeekSpinVector>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = peekSpin(l.elem(i,j),row);
+  return d;
+}
+
+//! Extract spin matrix components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekSpinMatrix>::Type_t
+peekSpin(const PMatrix<T,N,C>& l, int row, int col)
+{
+  typename UnaryReturn<PMatrix<T,N,C>, FnPeekSpinMatrix>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = peekSpin(l.elem(i,j),row,col);
+  return d;
+}
+
+
+//! Insert color vector components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T1, class T2, int N, template<class,int> class C>
+inline PMatrix<T1,N,C>&
+pokeColor(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
+{
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      l.elem(i,j) = pokeColor(l.elem(i,j),r.elem(i,j),row);
+  return l;
+}
+
+//! Insert color matrix components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T1, class T2, int N, template<class,int> class C>
+inline PMatrix<T1,N,C>&
+pokeColor(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row, int col)
+{
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      l.elem(i,j) = pokeColor(l.elem(i,j),r.elem(i,j),row,col);
+  return l;
+}
+
+//! Insert spin vector components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T1, class T2, int N, template<class,int> class C>
+inline PMatrix<T1,N,C>&
+pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
+{
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      l.elem(i,j) = pokeSpin(l.elem(i,j),r.elem(i,j),row);
+  return l;
+}
+
+//! Insert spin matrix components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T1, class T2, int N, template<class,int> class C>
+inline PMatrix<T1,N,C>&
+pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row, int col)
+{
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      l.elem(i,j) = pokeSpin(l.elem(i,j),r.elem(i,j),row,col);
+  return l;
 }
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primvector.h,v 1.7 2002-10-12 04:10:15 edwards Exp $
+// $Id: primvector.h,v 1.8 2002-10-25 03:33:26 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -312,7 +312,7 @@ operator*(const PMatrix<T1,N,C1>& l, const PVector<T2,N,C2>& r)
 
 
 
-// PVector = Re(PVector)
+//! PVector = Re(PVector)
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PVector<T,N,C>, FnReal>::Type_t
 real(const PVector<T,N,C>& s1)
@@ -326,7 +326,7 @@ real(const PVector<T,N,C>& s1)
 }
 
 
-// PVector = Im(PVector)
+//! PVector = Im(PVector)
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PVector<T,N,C>, FnImag>::Type_t
 imag(const PVector<T,N,C>& s1)
@@ -356,7 +356,7 @@ cmplx(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
 
 
 // Functions
-// PVector = i * PVector
+//! PVector = i * PVector
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PVector<T,N,C>, FnMultiplyI>::Type_t
 multiplyI(const PVector<T,N,C>& s1)
@@ -369,7 +369,7 @@ multiplyI(const PVector<T,N,C>& s1)
   return d;
 }
 
-// PVector = -i * PVector
+//! PVector = -i * PVector
 template<class T, int N, template<class,int> class C>
 inline typename UnaryReturn<PVector<T,N,C>, FnMultiplyMinusI>::Type_t
 multiplyMinusI(const PVector<T,N,C>& s1)
@@ -381,6 +381,105 @@ multiplyMinusI(const PVector<T,N,C>& s1)
 
   return d;
 }
+
+
+//! Extract color vector components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PVector<T,N,C>, FnPeekColorVector>::Type_t
+peekColor(const PVector<T,N,C>& l, int row)
+{
+  typename UnaryReturn<PVector<T,N,C>, FnPeekColorVector>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = peekColor(l.elem(i),row);
+  return d;
+}
+
+//! Extract color matrix components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PVector<T,N,C>, FnPeekColorMatrix>::Type_t
+peekColor(const PVector<T,N,C>& l, int row, int col)
+{
+  typename UnaryReturn<PVector<T,N,C>, FnPeekColorMatrix>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = peekColor(l.elem(i),row,col);
+  return d;
+}
+
+//! Extract spin vector components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PVector<T,N,C>, FnPeekSpinVector>::Type_t
+peekSpin(const PVector<T,N,C>& l, int row)
+{
+  typename UnaryReturn<PVector<T,N,C>, FnPeekSpinVector>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = peekSpin(l.elem(i),row);
+  return d;
+}
+
+//! Extract spin matrix components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PVector<T,N,C>, FnPeekSpinMatrix>::Type_t
+peekSpin(const PVector<T,N,C>& l, int row, int col)
+{
+  typename UnaryReturn<PVector<T,N,C>, FnPeekSpinMatrix>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = peekSpin(l.elem(i),row,col);
+  return d;
+}
+
+
+//! Insert color vector components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T1, class T2, int N, template<class,int> class C>
+inline PVector<T1,N,C>&
+pokeColor(PVector<T1,N,C>& l, const PVector<T2,N,C>& r, int row)
+{
+  for(int i=0; i < N; ++i)
+    l.elem(i) = pokeColor(l.elem(i),r.elem(i),row);
+  return l;
+}
+
+//! Insert color matrix components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T1, class T2, int N, template<class,int> class C>
+inline PVector<T1,N,C>&
+pokeColor(PVector<T1,N,C>& l, const PVector<T2,N,C>& r, int row, int col)
+{
+  for(int i=0; i < N; ++i)
+    l.elem(i) = pokeColor(l.elem(i),r.elem(i),row,col);
+  return l;
+}
+
+//! Insert spin vector components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T1, class T2, int N, template<class,int> class C>
+inline PVector<T1,N,C>&
+pokeSpin(PVector<T1,N,C>& l, const PVector<T2,N,C>& r, int row)
+{
+  for(int i=0; i < N; ++i)
+    l.elem(i) = pokeSpin(l.elem(i),r.elem(i),row);
+  return l;
+}
+
+//! Insert spin matrix components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T1, class T2, int N, template<class,int> class C>
+inline PVector<T1,N,C>&
+pokeSpin(PVector<T1,N,C>& l, const PVector<T2,N,C>& r, int row, int col)
+{
+  for(int i=0; i < N; ++i)
+    l.elem(i) = pokeSpin(l.elem(i),r.elem(i),row,col);
+  return l;
+}
+
 
 
 //! dest = 0

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primscalar.h,v 1.8 2002-10-12 04:10:15 edwards Exp $
+// $Id: primscalar.h,v 1.9 2002-10-25 03:33:26 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -833,6 +833,98 @@ seedToFloat(const PScalar<T>& s1)
 }
 
 
+//! Extract color vector components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnPeekColorVector>::Type_t
+peekColor(const PScalar<T>& l, int row)
+{
+  typename UnaryReturn<PScalar<T>, FnPeekColorVector>::Type_t  d;
+
+  d.elem() = peekColor(l.elem(),row);
+  return d;
+}
+
+//! Extract color matrix components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnPeekColorMatrix>::Type_t
+peekColor(const PScalar<T>& l, int row, int col)
+{
+  typename UnaryReturn<PScalar<T>, FnPeekColorMatrix>::Type_t  d;
+
+  d.elem() = peekColor(l.elem(),row,col);
+  return d;
+}
+
+//! Extract spin vector components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnPeekSpinVector>::Type_t
+peekSpin(const PScalar<T>& l, int row)
+{
+  typename UnaryReturn<PScalar<T>, FnPeekSpinVector>::Type_t  d;
+
+  d.elem() = peekSpin(l.elem(),row);
+  return d;
+}
+
+//! Extract spin matrix components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnPeekSpinMatrix>::Type_t
+peekSpin(const PScalar<T>& l, int row, int col)
+{
+  typename UnaryReturn<PScalar<T>, FnPeekSpinMatrix>::Type_t  d;
+
+  d.elem() = peekSpin(l.elem(),row,col);
+  return d;
+}
+
+
+//! Insert color vector components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T1, class T2>
+inline PScalar<T1>&
+pokeColor(PScalar<T1>& l, const PScalar<T2>& r, int row)
+{
+  l.elem() = pokeColor(l.elem(),r.elem(),row);
+  return l;
+}
+
+//! Insert color matrix components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T1, class T2>
+inline PScalar<T1>&
+pokeColor(PScalar<T1>& l, const PScalar<T2>& r, int row, int col)
+{
+  l.elem() = pokeColor(l.elem(),r.elem(),row,col);
+  return l;
+}
+
+//! Insert spin vector components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T1, class T2>
+inline PScalar<T1>&
+pokeSpin(PScalar<T1>& l, const PScalar<T2>& r, int row)
+{
+  l.elem() = pokeSpin(l.elem(),r.elem(),row);
+  return l;
+}
+
+//! Insert spin matrix components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T1, class T2>
+inline PScalar<T1>&
+pokeSpin(PScalar<T1>& l, const PScalar<T2>& r, int row, int col)
+{
+  l.elem() = pokeSpin(l.elem(),r.elem(),row,col);
+  return l;
+}
+
+
+
+
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 
@@ -959,36 +1051,6 @@ where(const PScalar<T1>& a, const PScalar<T2>& b, const PScalar<T3>& c)
   d.elem() = where(a.elem(), b.elem(), c.elem());
   return d;
 }
-
-
-//-----------------------------------------------
-// Su2_extract
-//! (PScalar<T1>,PScalar<T1>,PScalar<T1>,PScalar<T1>,su2_index) <- PScalar<T>
-template<class T, class T1> 
-inline void
-su2_extract(PScalar<T>& r_0, PScalar<T>& r_1, 
-	    PScalar<T>& r_2, PScalar<T>& r_3, 
-	    int i1, int i2,
-	    const PScalar<T1>& s1)
-{
-  su2_extract(r_0.elem(), r_1.elem(), r_2.elem(), r_3.elem(),
-	      i1, i2, s1.elem());
-}
-
-// Sun_fill
-//! PScalar<T> <- (PScalar<T1>,PScalar<T1>,PScalar<T1>,PScalar<T1>,su2_index)
-template<class T, class T1> 
-inline void
-sun_fill(PScalar<T>& d, 
-	 int i1, int i2,
-	 const PScalar<T1>& r_0, const PScalar<T1>& r_1, 
-	 const PScalar<T1>& r_2, const PScalar<T1>& r_3)
-{
-  sun_fill(d.elem(), i1, i2, 
-	   r_0.elem(), r_1.elem(), r_2.elem(), r_3.elem());
-}
-
-
 
 
 //-----------------------------------------------------------------------------

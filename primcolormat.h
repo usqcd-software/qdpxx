@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primcolormat.h,v 1.4 2002-10-12 04:10:15 edwards Exp $
+// $Id: primcolormat.h,v 1.5 2002-10-25 03:33:26 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -229,7 +229,6 @@ struct UnaryReturn<PColorMatrix<T,N>, FnNoColorTrace > {
 template<class T, int N>
 inline typename UnaryReturn<PColorMatrix<T,N>, FnNoColorTrace>::Type_t
 noColorTrace(const PColorMatrix<T,N>& s1)
-
 {
   typename UnaryReturn<PColorMatrix<T,N>, FnNoColorTrace>::Type_t  d;
 
@@ -243,40 +242,34 @@ noColorTrace(const PColorMatrix<T,N>& s1)
 }
 
 
-
-
 //-----------------------------------------------
-// Su2_extract
-//! (PScalar<T1>,PScalar<T1>,PScalar<T1>,PScalar<T1>,su2_index) <- PColorMatrix<T>
-template<class T, class T1, int N> 
-inline void
-su2_extract(PScalar<T>& r_0, PScalar<T>& r_1, 
-	    PScalar<T>& r_2, PScalar<T>& r_3, 
-	    int i1, int i2,
-	    const PColorMatrix<T1,N>& s1)
+// Peeking and poking
+//! Extract color matrix components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T, int N>
+struct UnaryReturn<PColorMatrix<T,N>, FnPeekColorMatrix > {
+  typedef PScalar<typename UnaryReturn<T, FnPeekColorMatrix>::Type_t>  Type_t;
+};
+
+template<class T, int N>
+inline typename UnaryReturn<PColorMatrix<T,N>, FnPeekColorMatrix>::Type_t
+peekColor(const PColorMatrix<T,N>& l, int row, int col)
 {
-  r_0.elem() = real(s1.elem(i1,i1)) + real(s1.elem(i2,i2));
-  r_1.elem() = imag(s1.elem(i1,i2)) + imag(s1.elem(i2,i1));
-  r_2.elem() = real(s1.elem(i1,i2)) - real(s1.elem(i2,i1));
-  r_3.elem() = imag(s1.elem(i1,i1)) - imag(s1.elem(i2,i2));
+  typename UnaryReturn<PColorMatrix<T,N>, FnPeekColorMatrix>::Type_t  d;
+
+  // Note, do not need to propagate down since the function is eaten at this level
+  d.elem() = l.elem(row,col);
+  return d;
 }
 
-// Sun_fill
-//! PColorMatrix<T> <- (PScalar<T1>,PScalar<T1>,PScalar<T1>,PScalar<T1>,su2_index)
-template<class T, int N, class T1> 
-inline void
-sun_fill(PColorMatrix<T,N>& d, 
-	 int i1, int i2,
-	 const PScalar<T1>& r_0, const PScalar<T1>& r_1, 
-	 const PScalar<T1>& r_2, const PScalar<T1>& r_3)
+//! Insert color matrix components
+template<class T1, class T2, int N>
+inline PColorMatrix<T1,N>&
+pokeColor(PColorMatrix<T1,N>& l, const PScalar<T2>& r, int row, int col)
 {
-  typedef PScalar<typename InternalScalar<T>::Type_t>  S;
-  d = S(1.0);
-
-  d.elem(i1,i1) = cmplx(r_0.elem(), r_3.elem());
-  d.elem(i1,i2) = cmplx(r_2.elem(), r_1.elem());
-  d.elem(i2,i1) = cmplx(-r_2.elem(), r_1.elem());
-  d.elem(i2,i2) = cmplx(r_0.elem(), -r_3.elem());
+  // Note, do not need to propagate down since the function is eaten at this level
+  l.elem(row,col) = r.elem();
+  return l;
 }
 
 
