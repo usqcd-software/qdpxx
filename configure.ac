@@ -75,7 +75,7 @@ AC_ARG_ENABLE(parallel-arch,
   AC_HELP_STRING([--enable-parallel-arch=<arch>],
     [Build QDP++ for parallel architecture <arch>]),
   [PARALLEL_ARCH=${enableval}],
-  AC_MSG_ERROR([Require architecture to be set]
+  AC_MSG_ERROR([Require architecture to be set])
 )
 
 dnl --enable-sse
