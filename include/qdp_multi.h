@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.5 2005-01-29 15:59:38 edwards Exp $
+// $Id: qdp_multi.h,v 1.6 2005-01-30 00:49:35 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -58,8 +58,7 @@ public:
   int size1() const {return n1;}
 
   //! Equal operator uses underlying = of T
-  template<class T1>
-  multi1d<T>& operator=(const multi1d<T1>& s1)
+  multi1d<T>& operator=(const multi1d<T>& s1)
     {
       if (size() != s1.size())   // a simple check avoids resizing always
 	resize(s1.size());
@@ -75,7 +74,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in =\n";
+	cerr << "left hand side not initialized\n";
 	exit(1);
       }
 
@@ -85,12 +84,11 @@ public:
     }
 
   //! Set equal to a old-style C 1-D array
-  template<class T1>
-  multi1d<T>& operator=(const T1 s1[])
+  multi1d<T>& operator=(const T s1[])
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in =\n";
+	cerr << "left hand side not initialized\n";
 	exit(1);
       }
 
@@ -101,12 +99,11 @@ public:
 
   //! Add-replace on each element
   /*! Uses underlying += */
-  template<class T1>
-  multi1d<T>& operator+=(const multi1d<T1>& s1)
+  multi1d<T>& operator+=(const multi1d<T>& s1)
     {
       if (size() != s1.size())
       {
-	cerr << "multi1d: Sizes incompatible in +=\n";
+	cerr << "Sizes incompatible in +=\n";
 	exit(1);
       }
 
@@ -115,46 +112,13 @@ public:
       return *this;
     }
 
-  //! Add-replace on each element
-  /*! Uses underlying += */
-  template<class T1>
-  multi1d<T>& operator+=(const T1& s1)
-    {
-      if (F == 0)
-      {
-	cerr << "multi1d: left hand side not initialized in +=\n";
-	exit(1);
-      }
-
-      for(int i=0; i < n1; ++i)
-	F[i] += s1;
-      return *this;
-    }
-
-  //! Add-replace on each element
-  /*! Uses underlying += */
-  template<class T1>
-  multi1d<T>& operator+=(const T1 s1[])
-    {
-      if (F == 0)
-      {
-	cerr << "multi1d: left hand side not initialized in +\n";
-	exit(1);
-      }
-
-      for(int i=0; i < n1; ++i)
-	F[i] += s1[i];
-      return *this;
-    }
-
   //! Subtract-replace on each element
   /*! Uses underlying -= */
-  template<class T1>
-  multi1d<T>& operator-=(const multi1d<T1>& s1)
+  multi1d<T>& operator-=(const multi1d<T>& s1)
     {
       if (size() != s1.size())
       {
-	cerr << "multi1d: Sizes incompatible in -=\n";
+	cerr << "Sizes incompatible in -=\n";
 	exit(1);
       }
 
@@ -163,46 +127,13 @@ public:
       return *this;
     }
 
-  //! Subtract-replace on each element
-  /*! Uses underlying -= */
-  template<class T1>
-  multi1d<T>& operator-=(const T1& s1)
-    {
-      if (F == 0)
-      {
-	cerr << "multi1d: left hand side not initialized in -=\n";
-	exit(1);
-      }
-
-      for(int i=0; i < n1; ++i)
-	F[i] -= s1;
-      return *this;
-    }
-
-  //! Subtract-replace on each element
-  /*! Uses underlying -= */
-  template<class T1>
-  multi1d<T>& operator-=(const T1 s1[])
-    {
-      if (F == 0)
-      {
-	cerr << "multi1d: left hand side not initialized in -=\n";
-	exit(1);
-      }
-
-      for(int i=0; i < n1; ++i)
-	F[i] -= s1[i];
-      return *this;
-    }
-
   //! Mult-replace on each element
   /*! Uses underlying *= */
-  template<class T1>
-  multi1d<T>& operator*=(const multi1d<T1>& s1)
+  multi1d<T>& operator*=(const multi1d<T>& s1)
     {
       if (size() != s1.size())
       {
-	cerr << "multi1d: Sizes incompatible in *=\n";
+	cerr << "Sizes incompatible in *=\n";
 	exit(1);
       }
 
@@ -211,83 +142,18 @@ public:
       return *this;
     }
 
-  //! Mult-replace on each element
-  /*! Uses underlying *= */
-  template<class T1>
-  multi1d<T>& operator*=(const T1& s1)
-    {
-      if (F == 0)
-      {
-	cerr << "multi1d: left hand side not initialized in *=\n";
-	exit(1);
-      }
-
-      for(int i=0; i < n1; ++i)
-	F[i] *= s1;
-      return *this;
-    }
-
-  //! Mult-replace on each element
-  /*! Uses underlying *= */
-  template<class T1>
-  multi1d<T>& operator*=(const T1 s1[])
-    {
-      if (F == 0)
-      {
-	cerr << "multi1d: left hand side not initialized in *=\n";
-	exit(1);
-      }
-
-      for(int i=0; i < n1; ++i)
-	F[i] *= s1[i];
-      return *this;
-    }
-
   //! Divide-replace on each element
   /*! Uses underlying /= */
-  template<class T1>
-  multi1d<T>& operator/=(const multi1d<T1>& s1)
+  multi1d<T>& operator/=(const multi1d<T>& s1)
     {
       if (size() != s1.size())
       {
-	cerr << "multi1d: Sizes incompatible in /=\n";
+	cerr << "Sizes incompatible in /=\n";
 	exit(1);
       }
 
       for(int i=0; i < n1; ++i)
 	F[i] /= s1.F[i];
-      return *this;
-    }
-
-  //! Divide-replace on each element
-  /*! Uses underlying /= */
-  template<class T1>
-  multi1d<T>& operator/=(const T1& s1)
-    {
-      if (F == 0)
-      {
-	cerr << "multi1d: left hand side not initialized in /=\n";
-	exit(1);
-      }
-
-      for(int i=0; i < n1; ++i)
-	F[i] /= s1;
-      return *this;
-    }
-
-  //! Divide-replace on each element
-  /*! Uses underlying /= */
-  template<class T1>
-  multi1d<T>& operator/=(const T1 s1[])
-    {
-      if (F == 0)
-      {
-	cerr << "multi1d: left hand side not initialized in /=\n";
-	exit(1);
-      }
-
-      for(int i=0; i < n1; ++i)
-	F[i] /= s1[i];
       return *this;
     }
 
