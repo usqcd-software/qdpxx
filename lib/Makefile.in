@@ -68,9 +68,6 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 VPATH = @top_srcdir@ @top_srcdir@/lib @top_srcdir@/include
 AMTAR = @AMTAR@
 ARCHDEF_SUBSTITUTION = @ARCHDEF_SUBSTITUTION@
-ARCH_HDRS = @ARCH_HDRS@
-
-ARCH_SRCS = @ARCH_SRCS@
 AWK = @AWK@
 CXX = @CXX@
 DEPDIR = @DEPDIR@
@@ -109,28 +106,46 @@ HDRS = defs.h forward.h globalfuncs.h inner.h io.h layout.h multi.h \
        qdptype.h random.h reality.h simpleword.h map.h \
        specializations.h subset.h traits.h word.h
 
-ARCH_OBJS = $(ARCH_SRCS:.cc=.o)
 
-libqdp_a_SOURCES = map.cc subset.cc random.cc qdp.cc layout.cc io.cc \
-	iogauge.cc byteorder.cc util.cc readszin.cc
+GENERIC_SRCS = map.cc subset.cc random.cc qdp.cc layout.cc io.cc iogauge.cc \
+               byteorder.cc util.cc readszin.cc
 
+
+SCALAR_SRCS = scalar_init.cc scalar_layout.cc scalar_specific.cc \
+              ../include/scalar_specific.h
+
+
+PARSCALAR_SRCS = parscalar_init.cc parscalar_layout.cc parscalar_specific.cc \
+                 ../include/parscalar_specific.h
+
+
+@ARCH_PARSCALAR_TRUE@libqdp_a_SOURCES = $(GENERIC_SRCS) $(PARSCALAR_SRCS)
+@ARCH_SCALAR_TRUE@libqdp_a_SOURCES = $(GENERIC_SRCS) $(SCALAR_SRCS)
+@ARCH_PARSCALAR_TRUE@EXTRA_libqdp_a_SOURCES = $(SCALAR_SRCS)
+@ARCH_SCALAR_TRUE@EXTRA_libqdp_a_SOURCES = $(PARSCALAR_SRCS)
 
 # Need this header as part of libqdp_a_sources
 nodist_libqdp_a_SOURCES = $(HDRS)
-
-libqdp_a_LIBADD = $(ARCH_OBJS)
-libqdp_a_DEPENDENCIES = $(ARCH_HDRS) $(ARCH_OBJS) $(ARCH_SRCS)
 subdir = lib
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 LIBRARIES = $(lib_LIBRARIES)
 
 libqdp_a_AR = $(AR) cru
-am_libqdp_a_OBJECTS = map.$(OBJEXT) subset.$(OBJEXT) random.$(OBJEXT) \
+libqdp_a_LIBADD =
+am__objects_1 = map.$(OBJEXT) subset.$(OBJEXT) random.$(OBJEXT) \
 	qdp.$(OBJEXT) layout.$(OBJEXT) io.$(OBJEXT) iogauge.$(OBJEXT) \
 	byteorder.$(OBJEXT) util.$(OBJEXT) readszin.$(OBJEXT)
-am__objects_1 =
-nodist_libqdp_a_OBJECTS = $(am__objects_1)
+am__objects_2 = parscalar_init.$(OBJEXT) parscalar_layout.$(OBJEXT) \
+	parscalar_specific.$(OBJEXT)
+am__objects_3 = scalar_init.$(OBJEXT) scalar_layout.$(OBJEXT) \
+	scalar_specific.$(OBJEXT)
+@ARCH_PARSCALAR_TRUE@am_libqdp_a_OBJECTS = $(am__objects_1) \
+@ARCH_PARSCALAR_TRUE@	$(am__objects_2)
+@ARCH_SCALAR_TRUE@am_libqdp_a_OBJECTS = $(am__objects_1) \
+@ARCH_SCALAR_TRUE@	$(am__objects_3)
+am__objects_4 =
+nodist_libqdp_a_OBJECTS = $(am__objects_4)
 libqdp_a_OBJECTS = $(am_libqdp_a_OBJECTS) $(nodist_libqdp_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -142,8 +157,13 @@ depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/byteorder.Po ./$(DEPDIR)/io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/iogauge.Po ./$(DEPDIR)/layout.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/map.Po ./$(DEPDIR)/qdp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/random.Po ./$(DEPDIR)/readszin.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/map.Po ./$(DEPDIR)/parscalar_init.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/parscalar_layout.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/parscalar_specific.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/qdp.Po ./$(DEPDIR)/random.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/readszin.Po ./$(DEPDIR)/scalar_init.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/scalar_layout.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/scalar_specific.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/subset.Po ./$(DEPDIR)/util.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -156,9 +176,9 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libqdp_a_SOURCES)
+DIST_SOURCES = $(libqdp_a_SOURCES) $(EXTRA_libqdp_a_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libqdp_a_SOURCES) $(nodist_libqdp_a_SOURCES)
+SOURCES = $(libqdp_a_SOURCES) $(EXTRA_libqdp_a_SOURCES) $(nodist_libqdp_a_SOURCES)
 
 all: all-am
 
@@ -217,9 +237,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iogauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/layout.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parscalar_init.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parscalar_layout.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parscalar_specific.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/random.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_init.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_layout.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scalar_specific.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/subset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Po@am__quote@
 

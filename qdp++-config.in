@@ -2,13 +2,17 @@
 
 # qdp++-config
 #
-# George T. Fleming, 03 March 2003
+# George T. Fleming, 12 February 2003
 #
 # Tool for retrieving configuration information about the installed version
 # of QMP.
 #
 # This script was inspired by many similar scripts available in RedHat Linux,
 # including gnome-config, gtk-config and xmms-config.
+#
+# Be on the lookout for problems with undesirable CXXFLAGS and LDFLAGS
+# propagating through this script.  Send email to flemingg@jlab.org
+# if you find such a problem.
 
 prefix="@prefix@"
 exec_prefix="@exec_prefix@"
@@ -18,6 +22,7 @@ version="@VERSION@"
 
 parallel_arch="@PARALLEL_ARCH@"
 
+qdp_cxx="@CXX@"
 qdp_cxxflags="@CXXFLAGS@ -I@includedir@ @QMP_CFLAGS@"
 qdp_ldflags="@LDFLAGS@ -L@libdir@ @QMP_LDFLAGS@"
 qdp_libs="-lqdp @QMP_LIBS@ @LIBS@"
@@ -30,6 +35,9 @@ Options:
   [--prefix[=DIR]]
   [--exec-prefix[=DIR]]
   [--version]
+  [--Nd]
+  [--Nc]
+  [--Ns]
   [--parallel-arch]
   [--cxxflags]
   [--ldflags]
@@ -74,8 +82,24 @@ while test $# -gt 0; do
       echo $version
       ;;
 
+    --Nd)
+      echo @ac_Nd@
+      ;;
+
+    --Nc)
+      echo @ac_Nc@
+      ;;
+
+    --Ns)
+      echo @ac_Ns@
+      ;;
+
     --parallel-arch)
       echo $parallel_arch
+      ;;
+
+    --cxx)
+      echo $qdp_cxx
       ;;
 
     --cxxflags)

@@ -1,4 +1,4 @@
-AC_INIT(qdp,0.32-rc0,edwards@jlab.org)
+AC_INIT(qdp,0.32-rc1,edwards@jlab.org)
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -13,8 +13,8 @@ dnl --enable-Nd
 AC_ARG_ENABLE(Nd,
   AC_HELP_STRING([--enable-Nd=N ],
     [Set No of Spacetime Dimensions, default is Nd=4 ]),
-  [ac_Nd=$enableval],
-  [ac_Nd=4]
+  AC_SUBST(ac_Nd, [$enableval]),
+  AC_SUBST(ac_Nd, 4)
 )
 
 dnl Tell the user about Nd
@@ -25,8 +25,8 @@ dnl --enable-Nc
 AC_ARG_ENABLE(Nc,
   AC_HELP_STRING([--enable-Nc=N ],
     [Set Number of Colours, ie N for SU(N) default is SU(3)]),
-  [ac_Nc=$enableval],
-  [ac_Nc=3]
+  AC_SUBST(ac_Nc, [$enableval]),
+  AC_SUBST(ac_Nc, 3)
 )
 
 dnl Tell the user about Nc
@@ -37,12 +37,12 @@ dnl --enable-Ns
 AC_ARG_ENABLE(Ns,
   AC_HELP_STRING([--enable-Ns=N],
     [Set No of Spin Components, Default is Ns=4]),
-  [ac_Ns=$enableval],
-  [ac_Ns=4]
+  AC_SUBST(ac_Ns, [$enableval]),
+  AC_SUBST(ac_Ns, 4)
 )
 
 dnl Tell the user about Ns
-AC_MSG_NOTICE([Configuring QDP for Ns = ${ac_Ns}])
+AC_MSG_NOTICE([Configuring QDP++ for Ns = ${ac_Ns}])
 
 
 dnl --enable-parallel-arch argument
@@ -74,12 +74,14 @@ AC_ARG_WITH(qmp,
 
 case ${PARALLEL_ARCH} in
   scalar)
+    AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_SCALAR)
     AC_MSG_NOTICE([ Scalar Build! Not checking for QMP ])
     AC_SUBST(QMP_CFLAGS)
     AC_SUBST(QMP_LDFLAGS)
     AC_SUBST(QMP_LIBS)
     ;;
   parscalar)
+    AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_PARSCALAR)
     AC_MSG_NOTICE([ Parscalar build! Checking for QMP ])
 
     if test "X${QMP_HOME}X" = "XX" ; then
@@ -147,36 +149,30 @@ dnl Now have all the options... Do some configuration
 dnl
 dnl
 
-
 ## Depending on what Parallel Architecture is, do some configuring
-case ${PARALLEL_ARCH} in
-  scalar) 
-    ARCHDEF_SUBSTITUTION="ARCH_SCALAR" 
-    ARCH_SRCS="scalar_init.cc scalar_layout.cc scalar_specific.cc"
-    ARCH_HDRS="scalar_specific.h"
-    AC_SUBST(ARCH_SRCS)
-    AC_SUBST(ARCH_HDRS)
-    ;;
-  parscalar)
-    ARCHDEF_SUBSTITUTION="ARCH_PARSCALAR"
-    ARCH_SRCS="parscalar_init.cc parscalar_layout.cc parscalar_specific.cc"
-    ARCH_HDRDS=" parscalar_specific.h"
-    AC_SUBST(ARCH_SRCS)
-    AC_SUBST(ARCH_HDRS)
-    ;;
-esac
+dnl GTF:
+dnl   This way of assigning sources to variables for variable substition
+dnl   in automake will totally break 'make dist' since automake won't
+dnl   know to include the sources for all possible arches.  Correct way
+dnl   is to handle it as a conditional in Makefile.am
+dnl
+dnl case ${PARALLEL_ARCH} in
+dnl   scalar) 
+dnl     ARCH_SRCS="scalar_init.cc scalar_layout.cc scalar_specific.cc"
+dnl     ARCH_HDRS="scalar_specific.h"
+dnl     AC_SUBST(ARCH_SRCS)
+dnl     AC_SUBST(ARCH_HDRS)
+dnl     ;;
+dnl   parscalar)
+dnl     ARCH_SRCS="parscalar_init.cc parscalar_layout.cc parscalar_specific.cc"
+dnl     ARCH_HDRDS=" parscalar_specific.h"
+dnl     AC_SUBST(ARCH_SRCS)
+dnl     AC_SUBST(ARCH_HDRS)
+dnl     ;;
+dnl esac
 
-AC_SUBST(ARCHDEF_SUBSTITUTION)
-
-
-#######################
-# Define Nc, Nd and Ns
-#######################
-
-AC_SUBST(ac_Nc)
-AC_SUBST(ac_Nd)
-AC_SUBST(ac_Ns)
-
+AM_CONDITIONAL(ARCH_SCALAR,    [test "X${PARALLEL_ARCH}X" = "XscalarX"])
+AM_CONDITIONAL(ARCH_PARSCALAR, [test "X${PARALLEL_ARCH}X" = "XparscalarX"])
 
 ##################################
 # Check for programs to build docs

@@ -20,15 +20,33 @@ HDRS = defs.h forward.h globalfuncs.h inner.h io.h layout.h multi.h \
        qdptype.h random.h reality.h simpleword.h map.h \
        specializations.h subset.h traits.h word.h
 
-ARCH_SRCS = @ARCH_SRCS@
-ARCH_HDRS = @ARCH_HDRS@
-ARCH_OBJS = $(ARCH_SRCS:.cc=.o)
+## GTF: Major bug fix here.  Had sources which were conditionally included
+## in the library based on variable substitution from autoconf.  Basically,
+## it meant that automake had no chance of making sure all the sources got
+## put into the distribution by 'make dist' because it only saw those sources
+## that autoconf told it about based on the chosen architecture.  Using
+## automake conditionals fixes the problem, same as was used in QMP.
+## Only tedious part will be in the future if we have many choices
+## for arch's then a conditional for each one has to be added.
 
-libqdp_a_SOURCES = map.cc subset.cc random.cc qdp.cc layout.cc io.cc \
-	iogauge.cc byteorder.cc util.cc readszin.cc
+GENERIC_SRCS = map.cc subset.cc random.cc qdp.cc layout.cc io.cc iogauge.cc \
+               byteorder.cc util.cc readszin.cc
+
+SCALAR_SRCS = scalar_init.cc scalar_layout.cc scalar_specific.cc \
+              ../include/scalar_specific.h
+
+PARSCALAR_SRCS = parscalar_init.cc parscalar_layout.cc parscalar_specific.cc \
+                 ../include/parscalar_specific.h
+
+if ARCH_SCALAR
+  libqdp_a_SOURCES = $(GENERIC_SRCS) $(SCALAR_SRCS)
+  EXTRA_libqdp_a_SOURCES = $(PARSCALAR_SRCS)
+endif
+
+if ARCH_PARSCALAR
+  libqdp_a_SOURCES = $(GENERIC_SRCS) $(PARSCALAR_SRCS)
+  EXTRA_libqdp_a_SOURCES = $(SCALAR_SRCS)
+endif
 
 # Need this header as part of libqdp_a_sources
 nodist_libqdp_a_SOURCES = $(HDRS)
-
-libqdp_a_LIBADD = $(ARCH_OBJS)
-libqdp_a_DEPENDENCIES = $(ARCH_HDRS) $(ARCH_OBJS) $(ARCH_SRCS)
