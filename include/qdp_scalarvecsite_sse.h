@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.3 2003-08-21 04:21:59 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.4 2003-08-21 04:38:26 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -369,7 +369,7 @@ private:
 
 #define _inline_ssevec_mult_su3_nn(cc,aa,bb,j) \
 { \
-          __asm__ __volatile__ (          \
+__asm__ __volatile__ (                    \
               "movlps %0, %%xmm0 \n\t"    \
               "movaps %0,%%xmm0\n\t"      \
               "movaps %%xmm0,%%xmm1\n\t"  \
@@ -384,6 +384,7 @@ private:
               "mulps  %6,%%xmm5\n\t"      \
               "mulps  %1,%%xmm0\n\t"      \
 	      :                           \
+	      :                           \
 	      : "m" ((bb).elem(0,j).real()),     \
 		"m" ((aa).elem(0,0).real()),     \
 		"m" ((aa).elem(0,0).imag()),     \
@@ -391,7 +392,7 @@ private:
 		"m" ((aa).elem(1,0).imag()),     \
 		"m" ((aa).elem(2,0).real()),     \
 		"m" ((aa).elem(2,0).imag()));    \
-          __asm__ __volatile__ (          \
+__asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
               "mulps  %2,%%xmm7\n\t"      \
@@ -410,6 +411,7 @@ private:
               "subps  %%xmm7,%%xmm4\n\t"  \
               "mulps  %5,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
+	      :                           \
 	      :                           \
 	      : "m" ((bb).elem(0,j).imag()),     \
 		"m" ((aa).elem(0,0).real()),     \
@@ -418,7 +420,7 @@ private:
 		"m" ((aa).elem(1,0).imag()),     \
 		"m" ((aa).elem(2,0).real()),     \
 		"m" ((aa).elem(2,0).imag()));    \
-          __asm__ __volatile__ (          \
+__asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
               "mulps  %1,%%xmm7\n\t"      \
@@ -437,6 +439,7 @@ private:
               "addps  %%xmm7,%%xmm4\n\t"  \
               "mulps  %6,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
+	      :                           \
 	      :                           \
 	      : "m" ((bb).elem(1,j).real()),     \
 		"m" ((aa).elem(0,1).real()),     \
@@ -445,7 +448,7 @@ private:
 		"m" ((aa).elem(1,1).imag()),     \
 		"m" ((aa).elem(2,1).real()),     \
 		"m" ((aa).elem(2,1).imag()));    \
-          __asm__ __volatile__ (          \
+__asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
               "mulps  %2,%%xmm7\n\t"      \
@@ -465,6 +468,7 @@ private:
               "mulps  %5,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
+	      :                           \
 	      : "m" ((bb).elem(1,j).imag()),     \
 		"m" ((aa).elem(0,1).real()),     \
 		"m" ((aa).elem(0,1).imag()),     \
@@ -472,7 +476,7 @@ private:
 		"m" ((aa).elem(1,1).imag()),     \
 		"m" ((aa).elem(2,1).real()),     \
 		"m" ((aa).elem(2,1).imag()));    \
-          __asm__ __volatile__ (          \
+__asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
               "mulps  %1,%%xmm7\n\t"      \
@@ -492,6 +496,7 @@ private:
               "mulps  %6,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
+	      :                           \
 	      : "m" ((bb).elem(2,j).real()),     \
 		"m" ((aa).elem(0,2).real()),     \
 		"m" ((aa).elem(0,2).imag()),     \
@@ -499,7 +504,7 @@ private:
 		"m" ((aa).elem(1,2).imag()),     \
 		"m" ((aa).elem(2,2).real()),     \
 		"m" ((aa).elem(2,2).imag()));    \
-          __asm__ __volatile__ (          \
+__asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
               "mulps  %2,%%xmm7\n\t"      \
@@ -519,6 +524,7 @@ private:
               "mulps  %5,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
+	      :                           \
 	      : "m" ((bb).elem(2,j).imag()),     \
 		"m" ((aa).elem(0,2).real()),     \
 		"m" ((aa).elem(0,2).imag()),     \
@@ -526,13 +532,14 @@ private:
 		"m" ((aa).elem(1,2).imag()),     \
 		"m" ((aa).elem(2,2).real()),     \
 		"m" ((aa).elem(2,2).imag()));    \
-          __asm__ __volatile__(           \
+__asm__ __volatile__ (                    \
               "movaps %%xmm0,%0\n\t"      \
               "movaps %%xmm1,%1\n\t"      \
               "movaps %%xmm2,%2\n\t"      \
               "movaps %%xmm3,%3\n\t"      \
               "movaps %%xmm4,%4\n\t"      \
               "movaps %%xmm5,%5\n\t"      \
+	      :                           \
 	      : "=m" ((cc).elem(0,j).real()),    \
 		"=m" ((cc).elem(0,j).imag()),    \
 		"=m" ((cc).elem(1,j).real()),    \
@@ -562,6 +569,7 @@ operator*<>(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 }
 
 
+#if 0
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
@@ -591,7 +599,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
     _inline_ssevec_mult_su3_nn(d.elem(i).elem(),l.elem(i).elem(),r.elem(i).elem(),2);
   }
 }
-
+#endif
 
 
 
