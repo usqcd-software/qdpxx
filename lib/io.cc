@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.2 2002-10-09 15:33:25 edwards Exp $
+// $Id: io.cc,v 1.3 2002-10-25 03:29:00 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -157,7 +157,7 @@ void BinaryReader::close()
 // Read End-Of-Record mark
 BinaryReader& BinaryReader::eor()
 {
-  char c = fgetc(f); 
+  fgetc(f); 
   return *this;
 }
 
