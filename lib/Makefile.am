@@ -34,7 +34,7 @@ HDRS = defs.h forward.h globalfuncs.h inner.h io.h layout.h multi.h \
 ## for arch's then a conditional for each one has to be added.
 
 GENERIC_SRCS = map.cc subset.cc random.cc qdp.cc layout.cc io.cc iogauge.cc \
-               byteorder.cc util.cc readszin.cc  qdpio.cc
+               byteorder.cc util.cc qdpio.cc
 
 SCALAR_SRCS = scalar_init.cc scalar_layout.cc scalar_specific.cc \
               ../include/scalar_specific.h
