@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_newops.h,v 1.9 2003-10-17 15:56:23 edwards Exp $
+// $Id: qdp_newops.h,v 1.10 2003-11-01 20:30:06 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -627,6 +627,24 @@ pokeSpin(const QDPSubType<T1,C1,S>& l, const QDPExpr<T2,C2>& r, int row)
 
 
 //---------------------------------------
+//! Structure for inserting domain-wall vector components
+struct FnPokeDWMatrix
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPokeDWMatrix)
+
+  FnPokeDWMatrix(int _row, int _col): row(_row), col(_col) {}
+  
+  template<class T1, class T2>
+  inline typename BinaryReturn<T1, T2, FnPokeDWMatrix>::Type_t
+  operator()(const T1 &a, const T2 &b) const
+  {
+    return (pokeDW(const_cast<T1&>(a),b,row,col));
+  }
+
+private:
+  int row, col;
+};
+
 //! Structure for inserting domain-wall vector components
 struct FnPokeDWVector
 {
