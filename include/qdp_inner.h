@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.7 2003-08-23 03:04:12 edwards Exp $
+// $Id: qdp_inner.h,v 1.8 2003-08-26 15:24:07 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -567,8 +567,17 @@ private:
 } QDP_ALIGN16;   // possibly force alignment
 
 
-#if 0
-// NOT IMPLEMENTED YET 
+
+//! Stream input
+template<class T, int N>
+inline
+istream& operator>>(istream& s, ILattice<T,N>& d)
+{
+  for(int i=0; i < N; ++i)
+    s >> d.elem(i);
+
+  return s;
+}
 
 //! Stream output
 template<class T, int N>
@@ -579,6 +588,7 @@ ostream& operator<<(ostream& s, const ILattice<T,N>& d)
     s << d.elem(i) << "\n";
   return s;
 }
+
 
 //! Text input
 template<class T, int N>
@@ -602,70 +612,19 @@ TextWriter& operator<<(TextWriter& s, const ILattice<T,N>& d)
 
 
 //! Namelist output
-template<class T, int N>
-inline
+template<class T, int N>  
 NmlWriter& operator<<(NmlWriter& nml, const ILattice<T,N>& d)
 {
-  nml.get() << "[ ";
-  nml << d.real();
-  nml.get() << " , ";
-  nml << d.imag();
-  nml.get() << " ]";
+  nml.get() << "   [INNER]" << endl;
+  for(int i=0; i < N; ++i) 
+  {
+    nml.get() << "   Site =  " << i << "   = ";
+    nml << d.elem(i);
+    nml.get() << " ," << endl;
+  }
 
   return nml;
 }
-
-//! XML output
-template<class T, int N>
-inline
-XMLWriter& operator<<(XMLWriter& xml, const ILattice<T,N>& d)
-{
-  xml.openTag("re");
-  xml << d.real();
-  xml.closeTag();
-  xml.openTag("im");
-  xml << d.imag();
-  xml.closeTag();
-
-  return xml;
-}
-
-//! XML input
-template<class T, int N>
-inline
-void read(XMLReader& xml, const string& path, ILattice<T,N>& d)
-{
-  std::ostringstream error_message;
-  
-  // XPath for the real part 
-  string path_real = xpath + "/re";
-	
-  // XPath for the imaginary part.
-  string path_imag = xpath + "/im";
-	
-  // Try and recursively get the real part
-  try { 
-    read(xml, path_real, result.real());
-  }
-  catch(const string &e) {
-    error_message << "XPath Query: " << xpath << " Error: "
-		  << "Failed to match real part of RComplex Object with self constructed path: " << path_real;
-    
-    throw error_message.str();
-  }
-	
-  // Try and recursively get the imaginary part
-  try {
-    read(xml, path_real, result.imag());
-  }
-  catch(const string &e) {
-    error_message << "XPath Query: " << xpath <<" Error:"
-		  <<"Failed to match imaginary part of RComplex Object with self constructed path: " << path_imag;
-    
-    throw error_message.str();
-  }
-}
-#endif  // NOT IMPLEMENTED
 
 
 /*! @} */   // end of group ilattice
