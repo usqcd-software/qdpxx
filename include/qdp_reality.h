@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.9 2003-08-14 03:49:20 edwards Exp $
+// $Id: qdp_reality.h,v 1.10 2003-08-20 21:05:57 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1291,6 +1291,32 @@ void recast_rep(RScalar<T>& d, const RScalar<T1>& s1)
 }
 
 
+//! dest [some type] = source [some type]
+template<class T, class T1>
+inline void 
+copy_site(RScalar<T>& d, int isite, const RScalar<T1>& s1)
+{
+  copy_site(d.elem(), isite, s1.elem());
+}
+
+
+#if 1
+// Global sum over site indices only
+template<class T>
+struct UnaryReturn<RScalar<T>, FnSum > {
+  typedef RScalar<typename UnaryReturn<T, FnSum>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<RScalar<T>, FnSum>::Type_t
+sum(const RScalar<T>& s1)
+{
+  return sum(s1.elem());
+}
+#endif
+
+
+
 //------------------------------------------
 // InnerProduct (norm-seq) global sum = sum(tr(adj(s1)*s1))
 template<class T>
@@ -1373,6 +1399,28 @@ void zero_rep(RScalar<T>& dest)
 {
   zero_rep(dest.elem());
 }
+
+
+//! dest [some type] = source [some type]
+template<class T, class T1>
+inline void 
+copy_site(RComplex<T>& d, int isite, const RComplex<T1>& s1)
+{
+  copy_site(d.real(), isite, s1.real());
+  copy_site(d.imag(), isite, s1.imag());
+}
+
+#if 0
+//! dest [some type] = source [some type]
+template<class T, class T1>
+inline void 
+copy_site(RComplex<T>& d, int isite, const RScalar<T1>& s1)
+{
+  copy_site(d.real(), isite, s1.elem());
+  zero_rep(d.imag());   // this is wrong - want zero only at a site. Fix when needed.
+}
+#endif
+
 
 //! dest  = random  
 template<class T, class T1, class T2>
@@ -1808,10 +1856,10 @@ void copymask(RComplex<T>& d, const RScalar<T1>& mask, const RComplex<T>& s1)
 }
 
 
-#if 0
+#if 1
 // Global sum over site indices only
 template<class T>
-struct UnaryReturn<RComplex<T>, FnSum > {
+struct UnaryReturn<RComplex<T>, FnSum> {
   typedef RComplex<typename UnaryReturn<T, FnSum>::Type_t>  Type_t;
 };
 
