@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_layout.h,v 1.2 2003-07-17 01:45:35 edwards Exp $
+// $Id: qdp_layout.h,v 1.3 2003-08-05 20:06:13 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -46,52 +46,52 @@ namespace Layout
 
   //! Returns the logical node number for the corresponding lattice coordinate
   /*! The API requires this function to be here */
-  int nodeNumber(const multi1d<int>& coord);
+  int nodeNumber(const multi1d<int>& coord) QDP_CONST;
 
   //! The linearized site index within a node for the corresponding lattice coordinate
   /*! The API requires this function to be here */
-  int linearSiteIndex(const multi1d<int>& coord);
+  int linearSiteIndex(const multi1d<int>& coord) QDP_CONST;
 
   //! Reconstruct the lattice coordinate from the node and site number
   /*! 
    * This is the inverse of the nodeNumber and linearSiteIndex functions.
    * The API requires this function to be here.
    */
-  multi1d<int> siteCoords(int node, int index);
+  multi1d<int> siteCoords(int node, int index) QDP_CONST;
 
   //! Returns the node number of this node
-  int nodeNumber();
+  int nodeNumber() QDP_CONST;
 
   //! Returns the number of nodes
-  int numNodes();
+  int numNodes() QDP_CONST;
 
   //! Virtual grid (problem grid) lattice size
-  const multi1d<int>& lattSize();
+  const multi1d<int>& lattSize() QDP_CONST;
 
   //! Total lattice volume
-  int vol();
+  int vol() QDP_CONST;
 
   //! Number of sites on node
-  int sitesOnNode();
+  int sitesOnNode() QDP_CONST;
 
   //! Returns whether this is the primary node
-  bool primaryNode();
+  bool primaryNode() QDP_CONST;
 
   //! The linearized site index for the corresponding lexicographic site
-  int linearSiteIndex(int lexicosite);
+  int linearSiteIndex(int lexicosite) QDP_CONST;
 
   //! Returns the logical node coordinates for this node
-  const multi1d<int>& nodeCoord();
+  const multi1d<int>& nodeCoord() QDP_CONST;
 
   //! Returns the logical node coordinates for the corresponding lattice coordinate
   /*! The API requires this function to be here */
-  multi1d<int> nodeCoord(const multi1d<int>& coord);
+  multi1d<int> nodeCoord(const multi1d<int>& coord) QDP_CONST;
 
   //! Subgrid (grid on each node) lattice size
-  const multi1d<int>& subgridLattSize();
+  const multi1d<int>& subgridLattSize() QDP_CONST;
 
   //! Returns the logical size of this machine
-  const multi1d<int>& logicalSize();
+  const multi1d<int>& logicalSize() QDP_CONST;
 }
 
 //! Declaration of shift function object
