@@ -6,13 +6,16 @@
 #define NC @ac_Nc@
 #define NS @ac_Ns@
 
-
 // Integer debug level
 #define QDP_DEBUG  0
 
 // Use one of the following site layouts
-#undef   USE_LEXICO_LAYOUT
-#define  USE_CB2_LAYOUT
-#undef   USE_CB32_LAYOUT
+#define QDP_USE_LEXICO_LAYOUT  0
+#define QDP_USE_CB2_LAYOUT     1
+#define QDP_USE_CB32_LAYOUT    0
+
+// Allow optimizations with Intel SSE operations
+#define QDP_USE_SSE  @ac_sse@
+#define QDP_USE_SSE2 @ac_sse2@
 
 #endif 
