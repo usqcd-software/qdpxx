@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_random.h,v 1.2 2003-07-31 01:04:45 edwards Exp $
+// $Id: qdp_random.h,v 1.3 2003-08-23 02:27:13 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -36,6 +36,9 @@ namespace RNG
 
   //! Internal seed multiplier
   float sranf(Seed& seed, Seed&, const Seed&);
+
+  //! Internal seed multiplier
+  void sranf(float* d, int N, Seed& seed, ILatticeSeed&, const Seed&);
 }
 
 QDP_END_NAMESPACE();
