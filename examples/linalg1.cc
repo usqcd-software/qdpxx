@@ -1,4 +1,4 @@
-// $Id: linalg1.cc,v 1.6 2003-08-05 03:27:59 edwards Exp $
+// $Id: linalg1.cc,v 1.7 2003-08-05 03:53:04 edwards Exp $
 
 #include <time.h>
 
@@ -722,6 +722,32 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d,
     _sse_su3_multiply(*(u6));
     __REP_ADD_SUB_NEG__2_rep();
   }
+}
+#endif
+
+
+#if 0
+// Specialization to optimize the case   
+//    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
+template<>
+void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiply, 
+	      Reference<QDPType<PScalar<PColorMatrix<RComplex<float>, 3> >, 
+	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > > >, 
+	      Reference<QDPType<PScalar<PColorMatrix<RComplex<float>, 3> >, 
+	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > > > >,
+	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > >& rhs)
+{
+//  cout << "call QDP_M_eq_M_times_M" << endl;
+
+  const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
+  const LatticeColorMatrix& r = static_cast<const LatticeColorMatrix&>(rhs.expression().right());
+  su3* u3_base = (su3*)((void *)(&(d.elem(0))));
+  su3* u1_base = (su3*)((void *)(&(l.elem(0))));
+  su3* u2_base = (su3*)((void *)(&(r.elem(0))));
+
+  QDP_M_eq_M_times_M_jlab(u3_base, u1_base, u2_base, Layout::vol());
 }
 #endif
 
