@@ -1,4 +1,4 @@
-// $Id: t_blas_g5.cc,v 1.2 2005-03-17 18:52:32 bjoo Exp $
+// $Id: t_blas_g5.cc,v 1.3 2005-03-18 11:55:29 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -24,8 +24,8 @@
 #include "scalarsite_sse/sse_blas_vaxpy3_g5.h"
 #include "scalarsite_sse/sse_blas_vaypx3_g5.h"
 #include "scalarsite_sse/sse_blas_vadd3_g5.h"
-#include "scalarsite_generic/generic_blas_vscal_g5.h"
-#include "scalarsite_generic/generic_blas_vaxpby3_g5.h"
+#include "scalarsite_sse/sse_blas_vscal3_g5.h"
+#include "scalarsite_sse/sse_blas_vaxpby3_g5.h"
 #else
 #warning "SSE 32bit target but not GCC. Using Generics"
 #include "scalarsite_generic/generic_blas_vaxpy3_g5.h"
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
   int n_4vec;
   Double norm_diff;
 
-  // AXPY G5 PLUS
+  // ax + Py  -- 3Nc Ns flops
   qz  = a*qx + chiralProjectPlus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
   scalep = (REAL *)&(a.elem().elem().elem().elem());
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
     time = swatch.getTimeInMicroseconds();
     Internal::broadcast(time);
     
-    double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
+    double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
   }
   {
@@ -148,12 +148,12 @@ int main(int argc, char *argv[])
     time = swatch.getTimeInMicroseconds();
     Internal::broadcast(time);
     
-    double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
+    double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
 
-  // AXPY G5 MINUS
+  // ax + P{-}y   3 Nc Ns flops
   qz  = a*qx + chiralProjectMinus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
   scalep = (REAL *)&(a.elem().elem().elem().elem());
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
     time = swatch.getTimeInMicroseconds();
     Internal::broadcast(time);
     
-    double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
+    double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
   }
   {
@@ -224,11 +224,11 @@ int main(int argc, char *argv[])
     time = swatch.getTimeInMicroseconds();
     Internal::broadcast(time);
     
-    double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
+    double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
-  // AXMY PLUS
+  // ax - P{+} y  3Nc Ns flops
   
   qz  = a*qx - chiralProjectPlus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
     time = swatch.getTimeInMicroseconds();
     Internal::broadcast(time);
     
-    double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
+    double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
   }
   {
@@ -300,12 +300,11 @@ int main(int argc, char *argv[])
     time = swatch.getTimeInMicroseconds();
     Internal::broadcast(time);
     
-    double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
+    double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
-  // AXMY_MINUS
-  // AXPY G5 MINUS
+  // ax - P{-}y   3 Nc Ns flops
   qz  = a*qx - chiralProjectMinus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
   scalep = (REAL *)&(a.elem().elem().elem().elem());
@@ -346,7 +345,7 @@ int main(int argc, char *argv[])
     time = swatch.getTimeInMicroseconds();
     Internal::broadcast(time);
     
-    double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
+    double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
   }
   {
@@ -376,12 +375,12 @@ int main(int argc, char *argv[])
     time = swatch.getTimeInMicroseconds();
     Internal::broadcast(time);
     
-    double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
+    double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
-  //  Coefficient on projected piece now
-  // AXPY G5 PLUS
+
+  // x + a P{+}y  2Nc Ns flops
   qz  = qx + a* chiralProjectPlus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
   scalep = (REAL *)&(a.elem().elem().elem().elem());
@@ -457,7 +456,7 @@ int main(int argc, char *argv[])
   }
 
 
-  // AXPY G5 MINUS
+  // x + a P{-} y,       2Nc Ns flops
   qz  = qx + a*chiralProjectMinus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
   scalep = (REAL *)&(a.elem().elem().elem().elem());
@@ -532,8 +531,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
-  // AXMY PLUS
-  
+  // x - a P{+} y, 2Nc flops
   qz  = qx - a*chiralProjectPlus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
   scalep = (REAL *)&(a.elem().elem().elem().elem());
@@ -608,8 +606,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
-  // AXMY_MINUS
-  // AXPY G5 MINUS
+  // x - a P{-}y, 2 Nc Ns flops
   qz  = qx - a*chiralProjectMinus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
   scalep = (REAL *)&(a.elem().elem().elem().elem());
@@ -685,8 +682,7 @@ int main(int argc, char *argv[])
   }
 
 
-  // Now no coefficients
-  // AXPY G5 PLUS
+  // x + P{y}  Nc Ns flops
   qz  = qx +  chiralProjectPlus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
   Add = (REAL *)&(qx.elem(0).elem(0).elem(0).real());
@@ -761,7 +757,7 @@ int main(int argc, char *argv[])
   }
 
 
-  // AXPY G5 MINUS
+  //  x + P{-} y   Nc Ns flops
   qz  = qx + chiralProjectMinus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
   InScale = (REAL *)&(qy.elem(0).elem(0).elem(0).real());
@@ -835,7 +831,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
-  // AXMY PLUS
+  // x - P{+} y    Nc Ns
   
   qz  = qx - chiralProjectPlus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
@@ -910,8 +906,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
-  // AXMY_MINUS
-  // AXPY G5 MINUS
+  //  x - P{-} y   Nc Ns flops
   qz  = qx - chiralProjectMinus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
   InScale = (REAL *)&(qy.elem(0).elem(0).elem(0).real());
@@ -985,9 +980,9 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
     
-  // a * P_{+} y
-
+  // a * P_{+} y  Nc, Ns flops
   qz  = a* chiralProjectPlus(qy);
+
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
   scalep = (REAL *)&(a.elem().elem().elem().elem());
   InScale = (REAL *)&(qy.elem(0).elem(0).elem(0).real());
@@ -1061,7 +1056,7 @@ int main(int argc, char *argv[])
   }
 
 
-  // a * P{-} y
+  // a * P{-} y  Nc Ns flops
   qz  = a* chiralProjectMinus(qy);
   Out = (REAL *)&(qz2.elem(0).elem(0).elem(0).real());
   scalep = (REAL *)&(a.elem().elem().elem().elem());
@@ -1135,7 +1130,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
-  // AX + B P+ y
+  // AX + B P+ y,   4Nc Ns flops
 
   REAL* scalep2;
   Real b=Real(-3);
@@ -1218,7 +1213,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
-  // AX + B P{-} y
+  // AX + B P{-} y,  4Nc Ns flops
   gaussian(qx);
   gaussian(qy);
 
@@ -1298,7 +1293,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
-  // AX - B P+Y
+  // AX - B P+Y,  4 Nc Ns flops
   gaussian(qx);
   gaussian(qy);
 
@@ -1378,7 +1373,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
-  // AX + B P{-} Y
+  // AX + B P{-} Y, 4Nc Ns flops
   gaussian(qx);
   gaussian(qy);
 

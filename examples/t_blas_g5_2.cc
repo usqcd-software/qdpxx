@@ -1,4 +1,4 @@
-// $Id: t_blas_g5_2.cc,v 1.1 2005-03-17 18:53:08 bjoo Exp $
+// $Id: t_blas_g5_2.cc,v 1.2 2005-03-18 11:55:29 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
-  //  x += a*P{-}y
+  //  x -= a*P{-}y
   gaussian(qz);;
   qz2 = qz;
 
@@ -563,7 +563,7 @@ int main(int argc, char *argv[])
     time = swatch.getTimeInMicroseconds();
     Internal::broadcast(time);
     
-    double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
+    double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
@@ -604,7 +604,7 @@ int main(int argc, char *argv[])
     time = swatch.getTimeInMicroseconds();
     Internal::broadcast(time);
     
-    double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
+    double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
@@ -645,7 +645,7 @@ int main(int argc, char *argv[])
     time = swatch.getTimeInMicroseconds();
     Internal::broadcast(time);
     
-    double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
+    double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 
@@ -686,7 +686,7 @@ int main(int argc, char *argv[])
     time = swatch.getTimeInMicroseconds();
     Internal::broadcast(time);
     
-    double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
+    double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 

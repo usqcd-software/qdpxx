@@ -17,8 +17,8 @@
 #include "scalarsite_sse/sse_blas_vaxpy3_g5.h"
 #include "scalarsite_sse/sse_blas_vaypx3_g5.h"
 #include "scalarsite_sse/sse_blas_vadd3_g5.h"
-#include "scalarsite_generic/generic_blas_vscal_g5.h"
-#include "scalarsite_generic/generic_blas_vaxpby3_g5.h"
+#include "scalarsite_sse/sse_blas_vscal3_g5.h"
+#include "scalarsite_sse/sse_blas_vaxpby3_g5.h"
 #else
 #include "scalarsite_generic/generic_blas_vaxpy3_g5.h"
 #include "scalarsite_generic/generic_blas_vaypx3_g5.h"
