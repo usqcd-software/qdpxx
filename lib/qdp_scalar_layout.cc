@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_layout.cc,v 1.1 2003-05-22 20:06:29 edwards Exp $
+// $Id: qdp_scalar_layout.cc,v 1.2 2003-07-17 01:48:36 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -32,9 +32,7 @@ namespace Layout
   /*! 
    * NOTE: the disadvantage to using a struct to keep things together is
    * that subsequent groupings of namespaces can not just add onto the
-   * current namespace. This would be useful if say in a cb=2 implementation
-   * the cb_nrow stuff is needed, but does not need to be there for the 
-   * lexicographic implementation
+   * current namespace. 
    */
   struct
   {
@@ -44,17 +42,15 @@ namespace Layout
     //! Lattice size
     multi1d<int> nrow;
 
-    //! Number of checkboards
-    int nsubl;
-
-    //! Total lattice checkerboarded volume
-    int vol_cb;
-
-    //! Checkboard lattice size
-    multi1d<int> cb_nrow;
-
     //! Subgrid lattice volume
     int subgrid_vol;
+
+    //! Logical node coordinates
+    multi1d<int> logical_coord;
+
+    //! Logical system size
+    multi1d<int> logical_size;
+
   } _layout;
 
 
@@ -88,6 +84,9 @@ namespace Layout
   /*! Always true on a scalar platform */
   bool primaryNode() {return true;}
 
+  //! Subgrid (grid on each node) lattice size
+  const multi1d<int>& subgridLattSize() {return _layout.nrow;}
+
   //! Returns the node number of this node
   int nodeNumber() {return 0;}
 
@@ -96,6 +95,12 @@ namespace Layout
 
   //! Returns the number of nodes
   int numNodes() {return 1;}
+
+  //! Returns the logical node coordinates for this node
+  const multi1d<int>& nodeCoord() {return _layout.logical_coord;}
+
+  //! Returns the logical size of this machine
+  const multi1d<int>& logicalSize() {return _layout.logical_size;}
 
   //! Initializer for layout
   void init() {}
@@ -106,36 +111,6 @@ namespace Layout
     multi1d<int> coord = crtesn(site, lattSize());
     
     return linearSiteIndex(coord);
-  }
-
-  //! The lexicographic site index for the corresponding coordinate
-  int lexicoSiteIndex(const multi1d<int>& coord)
-  {
-    return local_site(coord, lattSize());
-  }
-
-
-  //! coord[mu]  <- mu  : fill with lattice coord in mu direction
-  LatticeInteger latticeCoordinate(int mu)
-  {
-    LatticeInteger d;
-
-    if (mu < 0 || mu >= Nd)
-      QDP_error_exit("dimension out of bounds");
-
-    const multi1d<int> &nrow = Layout::lattSize();
-
-    for(int i=0; i < Layout::vol(); ++i) 
-    {
-      int site = Layout::lexicoSiteIndex(i);
-      for(int k=0; k <= mu; ++k)
-      {
-	d.elem(i) = Integer(site % nrow[k]).elem();
-	site /= nrow[k];
-      } 
-    }
-
-    return d;
   }
 
   //! Initializer for all the layout defaults
@@ -151,6 +126,35 @@ namespace Layout
     RNG::InitDefaultRNG();
   }
 
+  //! Initializer for layout
+  void create()
+  {
+    if ( ! QDP_isInitialized() )
+      QDP_error_exit("QDP is not initialized");
+
+    if (_layout.nrow.size() != Nd)
+      QDP_error_exit("dimension of lattice size not the same as the default");
+
+    _layout.vol=1;
+    for(int i=0; i < Nd; ++i) 
+      _layout.vol *= _layout.nrow[i];
+    _layout.subgrid_vol = _layout.vol;
+  
+    _layout.logical_coord.resize(Nd);
+    _layout.logical_size.resize(Nd);
+
+    _layout.logical_coord = 0;
+    _layout.logical_size = 1;
+
+#if defined(DEBUG)
+    fprintf(stderr,"vol=%d\n",_layout.vol);
+#endif
+
+    // Initialize various defaults
+    InitDefaults();
+
+    cerr << "Finished lattice layout\n";
+  }
 };
 
 
@@ -166,7 +170,7 @@ namespace Layout
    * This is the inverse of the nodeNumber and linearSiteIndex functions.
    * The API requires this function to be here.
    */
-  multi1d<int> siteCoords(int node, int linearsite)
+  multi1d<int> siteCoords(int node, int linearsite) // ignore node
   {
     return crtesn(linearsite, lattSize());
   }
@@ -177,46 +181,10 @@ namespace Layout
   {
     return local_site(coord, lattSize());
   }
-
-
-  //! The lexicographic site index from the corresponding linearized site
-  /*! This layout is a simple lexicographic lattice ordering */
-  int lexicoSiteIndex(int linearsite)
-  {
-    return linearsite;
-  }
-
-  //! Initializer for layout
-  /*! This layout is a simple lexicographic lattice ordering */
-  void create()
-  {
-    if ( ! QDP_isInitialized() )
-      QDP_error_exit("QDP is not initialized");
-
-    if (_layout.nrow.size() != Nd)
-      QDP_error_exit("dimension of lattice size not the same as the default");
-
-    _layout.vol=1;
-    _layout.cb_nrow = _layout.nrow;
-    for(int i=0; i < Nd; ++i) 
-      _layout.vol *= _layout.nrow[i];
-    _layout.subgrid_vol = _layout.vol;
-  
-    /* volume of checkerboard. Make sure global variable is set */
-    _layout.nsubl = 1;
-    _layout.vol_cb = _layout.vol / _layout.nsubl;
-
-#if defined(DEBUG)
-    fprintf(stderr,"vol=%d, nsubl=%d\n",_layout.vol,_layout.nsubl);
-#endif
-
-    // Initialize various defaults
-    InitDefaults();
-
-    cerr << "Finished lattice layout\n";
-  }
 };
 
+
+//-----------------------------------------------------------------------------
 
 #elif defined(USE_CB2_LAYOUT)
 
@@ -229,10 +197,14 @@ namespace Layout
    * This is the inverse of the nodeNumber and linearSiteIndex functions.
    * The API requires this function to be here.
    */
-  multi1d<int> siteCoords(int node, int linearsite)
+  multi1d<int> siteCoords(int node, int linearsite) // ignore node
   {
+    int vol_cb = vol() >> 1;
+    multi1d<int> cb_nrow = lattSize();
+    cb_nrow[0] >>= 1;
+
     int cb = linearsite / vol_cb;
-    multi1d<int> coord = crtesn(linearsite % _layout.vol_cb, _layout.cb_nrow);
+    multi1d<int> coord = crtesn(linearsite % vol_cb, cb_nrow);
 
     int cbb = cb;
     for(int m=1; m<coord.size(); ++m)
@@ -248,6 +220,10 @@ namespace Layout
   /*! This layout is appropriate for a 2 checkerboard (red/black) lattice */
   int linearSiteIndex(const multi1d<int>& coord)
   {
+    int vol_cb = vol() >> 1;
+    multi1d<int> cb_nrow = lattSize();
+    cb_nrow[0] >>= 1;
+
     multi1d<int> cb_coord = coord;
 
     cb_coord[0] >>= 1;    // Number of checkerboards
@@ -257,50 +233,11 @@ namespace Layout
       cb += coord[m];
     cb = cb & 1;
 
-    return local_site(cb_coord, _layout.cb_nrow) + cb*_layout.vol_cb;
-  }
-
-
-  //! The lexicographic site index from the corresponding linearized site
-  /*! This layout is appropriate for a 2 checkerboard (red/black) lattice */
-  int lexicoSiteIndex(int linearsite)
-  {
-    return local_site(siteCoords(0,linearsite), lattSize());
-  }
-
-  //! Initializer for layout
-  /*! This layout is appropriate for a 2 checkerboard (red/black) lattice */
-  void create()
-  {
-    if ( ! QDP_isInitialized() )
-      QDP_error_exit("QDP is not initialized");
-
-    if (_layout::nrow.size() != Nd)
-      QDP_error_exit("dimension of lattice size not the same as the default");
-
-    _layout.vol=1;
-    _layout.cb_nrow = _layout::nrow;
-    for(int i=0; i < Nd; ++i) 
-      vol *= _layout::nrow[i];
-    _layout.subgrid_vol = _layout.vol;
-  
-    /* volume of checkerboard. Make sure global variable is set */
-    _layout.nsubl = 2;
-    _layout.vol_cb = _layout.vol / _layout.nsubl;
-
-    // Lattice checkerboard size
-    _layout.cb_nrow[0] = _layout.nrow[0] / 2;
-
-#if defined(DEBUG)
-    fprintf(stderr,"vol=%d, nsubl=%d\n",_layout.vol,_layout.nsubl);
-#endif
-
-    // Initialize various defaults
-    InitDefaults();
-
-    cerr << "Finished lattice layout\n";
+    return local_site(cb_coord, cb_nrow) + cb*vol_cb;
   }
 };
+
+//-----------------------------------------------------------------------------
 
 #elif defined(USE_CB32_LAYOUT)
 
@@ -315,7 +252,13 @@ namespace Layout
    */
   multi1d<int> siteCoords(int node, int linearsite) // ignore node
   {
-    int subl = linearsite / _layout.vol_cb;
+    int vol_cb = vol() >> (Nd+1);
+    multi1d<int> cb_nrow(Nd);
+    cb_nrow[0] = lattSize()[0] >> 2;
+    for(int i=1; i < Nd; ++i) 
+      cb_nrow[i] = lattSize()[i] >> 1;
+
+    int subl = linearsite / vol_cb;
     multi1d<int> coord = crtesn(linearsite % vol_cb, cb_nrow);
 
     int cb = 0;
@@ -339,6 +282,12 @@ namespace Layout
   /*! This layout is appropriate for a 32-style checkerboard lattice */
   int linearSiteIndex(const multi1d<int>& coord)
   {
+    int vol_cb = vol() >> (Nd+1);
+    multi1d<int> cb_nrow(Nd);
+    cb_nrow[0] = lattSize()[0] >> 2;
+    for(int i=1; i < Nd; ++i) 
+      cb_nrow[i] = lattSize()[i] >> 1;
+
     int NN = coord.size();
     int subl = coord[NN-1] & 1;
     for(int m=NN-2; m >= 0; --m)
@@ -357,51 +306,7 @@ namespace Layout
     for(int m=1; m < NN; ++m)
       cb_coord[m] = coord[m] >> 1;
 
-    return local_site(cb_coord, _layout.cb_nrow) + subl*_layout.vol_cb;
-  }
-
-
-  //! The lexicographic site index from the corresponding linearized site
-  /*! This layout is appropriate for a 32-style checkerboard lattice */
-  int lexicoSiteIndex(int linearsite)
-  {
-    return local_site(siteCoords(0,linearsite), lattSize());
-  }
-
-
-  //! Initializer for layout
-  /*! This layout is appropriate for a 32-style checkerboard lattice */
-  void create()
-  {
-    if ( ! QDP_isInitialized() )
-      QDP_error_exit("QDP is not initialized");
-
-    if (_layout::nrow.size() != Nd)
-      QDP_error_exit("dimension of lattice size not the same as the default");
-
-    _layout.vol=1;
-    _layout.cb_nrow = _layout::nrow;
-    for(int i=0; i < Nd; ++i) 
-      vol *= _layout::nrow[i];
-    _layout.subgrid_vol = _layout.vol;
-  
-    /* volume of checkerboard. Make sure global variable is set */
-    _layout.nsubl = 1 << (Nd+1);
-    _layout.vol_cb = _layout.vol / _layout.nsubl;
-
-    // Lattice checkerboard size
-    _layout.cb_nrow[0] = _layout.nrow[0] >> 2;
-    for(int i=1; i < Nd; ++i) 
-      _layout.cb_nrow[i] = _layout.nrow[i] >> 1;
-  
-#if defined(DEBUG)
-    fprintf(stderr,"vol=%d, nsubl=%d\n",vol,nsubl);
-#endif
-
-    // Initialize various defaults
-    InitDefaults();
-
-    cerr << "Finished lattice layout\n";
+    return local_site(cb_coord, cb_nrow) + subl*vol_cb;
   }
 };
 

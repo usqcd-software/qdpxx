@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.1 2003-05-22 20:06:29 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.2 2003-07-17 01:48:36 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -32,9 +32,7 @@ namespace Layout
   /*! 
    * NOTE: the disadvantage to using a struct to keep things together is
    * that subsequent groupings of namespaces can not just add onto the
-   * current namespace. This would be useful if say in a cb=2 implementation
-   * the cb_nrow stuff is needed, but does not need to be there for the 
-   * lexicographic implementation
+   * current namespace.
    */
   struct
   {
@@ -43,15 +41,6 @@ namespace Layout
 
     //! Lattice size
     multi1d<int> nrow;
-
-    //! Number of checkboards
-    int nsubl;
-
-    //! Total lattice checkerboarded volume
-    int vol_cb;
-
-    //! Checkboard lattice size
-    multi1d<int> cb_nrow;
 
     //! Subgrid lattice volume
     int subgrid_vol;
@@ -136,38 +125,6 @@ namespace Layout
   }
 
 
-  //! The lexicographic site index for the corresponding coordinate
-  int lexicoSiteIndex(const multi1d<int>& coord)
-  {
-    return local_site(coord, lattSize());
-  }
-
-
-  //! coord[mu]  <- mu  : fill with lattice coord in mu direction
-  LatticeInteger latticeCoordinate(int mu)
-  {
-    LatticeInteger d;
-
-    if (mu < 0 || mu >= Nd)
-      QDP_error_exit("dimension out of bounds");
-
-    const multi1d<int>& subgrid = Layout::subgridLattSize();
-    const multi1d<int>& node_coord = Layout::nodeCoord();
-
-    for(int i=0; i < Layout::sitesOnNode(); ++i) 
-    {
-      int site = Layout::lexicoSiteIndex(i);
-      for(int k=0; k <= mu; ++k)
-      {
-	d.elem(i) = Integer(subgrid[k]*node_coord[k] + site % subgrid[k]).elem();
-	site /= subgrid[k];
-      } 
-    }
-
-    return d;
-  }
-
-
   //! Initializer for all the layout defaults
   void InitDefaults()
   {
@@ -184,69 +141,8 @@ namespace Layout
     RNG::InitDefaultRNG();
   }
 
-};
-
-
-//-----------------------------------------------------------------------------
-#if defined(USE_LEXICO_LAYOUT)
-
-#warning "Using a lexicographic layout"
-
-namespace Layout
-{
-  //! The linearized site index for the corresponding coordinate
-  /*! This layout is a simple lexicographic lattice ordering */
-  int linearSiteIndex(const multi1d<int>& coord)
-  {
-    multi1d<int> tmp_coord(Nd);
-
-    for(int i=0; i < coord.size(); ++i)
-      tmp_coord[i] = coord[i] % Layout::subgridLattSize()[i];
-    
-    return local_site(tmp_coord, Layout::subgridLattSize());
-  }
-
-
-  //! The lexicographic site index from the corresponding linearized site
-  /*! This layout is a simple lexicographic lattice ordering */
-  int lexicoSiteIndex(int linearsite)
-  {
-    return linearsite;
-  }
-
-
-  //! The node number for the corresponding lattice coordinate
-  /*! This layout is a simple lexicographic lattice ordering */
-  int nodeNumber(const multi1d<int>& coord)
-  {
-    multi1d<int> tmp_coord(Nd);
-
-    for(int i=0; i < coord.size(); ++i)
-      tmp_coord[i] = coord[i] / Layout::subgridLattSize()[i];
-    
-    return local_site(tmp_coord, Layout::logicalSize());
-  }
-
-
-  //! Returns the lattice site for some input node and linear index
-  /*! This layout is a simple lexicographic lattice ordering */
-  multi1d<int> siteCoords(int node, int linear)
-  {
-    multi1d<int> coord = crtesn(node, Layout::logicalSize());
-
-    // Get the base (origins) of the absolute lattice coord
-    coord *= Layout::subgridLattSize();
-    
-    // Find the coordinate within a node and accumulate
-    // This is a lexicographic ordering
-    coord += crtesn(linear, Layout::subgridLattSize());
-
-    return coord;
-  }
-
 
   //! Main lattice creation routine
-  /*! This layout is a simple lexicographic lattice ordering */
   void create()
   {
     if ( ! QDP_isInitialized() )
@@ -256,16 +152,11 @@ namespace Layout
       QDP_error_exit("dimension of lattice size not the same as the default");
 
     _layout.vol=1;
-    _layout.cb_nrow = _layout.nrow;
     for(int i=0; i < Nd; ++i) 
       _layout.vol *= _layout.nrow[i];
   
-    /* volume of checkerboard. Make sure global variable is set */
-    _layout.nsubl = 1;
-    _layout.vol_cb = _layout.vol / _layout.nsubl;
-
 #if defined(DEBUG)
-    QDP_info("vol=%d, nsubl=%d",_layout.vol,_layout.nsubl);
+    QDP_info("vol=%d",_layout.vol);
 #endif
 
 #if defined(DEBUG)
@@ -330,6 +221,57 @@ namespace Layout
 
     if (Layout::primaryNode())
       cerr << "Finished lattice layout\n";
+  }
+};
+
+
+//-----------------------------------------------------------------------------
+#if defined(USE_LEXICO_LAYOUT)
+
+#warning "Using a lexicographic layout"
+
+namespace Layout
+{
+  //! The linearized site index for the corresponding coordinate
+  /*! This layout is a simple lexicographic lattice ordering */
+  int linearSiteIndex(const multi1d<int>& coord)
+  {
+    multi1d<int> tmp_coord(Nd);
+
+    for(int i=0; i < coord.size(); ++i)
+      tmp_coord[i] = coord[i] % Layout::subgridLattSize()[i];
+    
+    return local_site(tmp_coord, Layout::subgridLattSize());
+  }
+
+
+  //! The node number for the corresponding lattice coordinate
+  /*! This layout is a simple lexicographic lattice ordering */
+  int nodeNumber(const multi1d<int>& coord)
+  {
+    multi1d<int> tmp_coord(Nd);
+
+    for(int i=0; i < coord.size(); ++i)
+      tmp_coord[i] = coord[i] / Layout::subgridLattSize()[i];
+    
+    return local_site(tmp_coord, Layout::logicalSize());
+  }
+
+
+  //! Returns the lattice site for some input node and linear index
+  /*! This layout is a simple lexicographic lattice ordering */
+  multi1d<int> siteCoords(int node, int linear)
+  {
+    multi1d<int> coord = crtesn(node, Layout::logicalSize());
+
+    // Get the base (origins) of the absolute lattice coord
+    coord *= Layout::subgridLattSize();
+    
+    // Find the coordinate within a node and accumulate
+    // This is a lexicographic ordering
+    coord += crtesn(linear, Layout::subgridLattSize());
+
+    return coord;
   }
 };
 
