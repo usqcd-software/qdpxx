@@ -1,4 +1,4 @@
-// $Id: scalar_layout.cc,v 1.7 2003-04-09 19:32:27 edwards Exp $
+// $Id: scalar_layout.cc,v 1.8 2003-04-15 19:18:36 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -90,6 +90,9 @@ namespace Layout
 
   //! Returns the node number of this node
   int nodeNumber() {return 0;}
+
+  //! Returns the logical node number for the corresponding lattice coordinate
+  int nodeNumber(const multi1d<int>& coord) {return 0;}
 
   //! Returns the number of nodes
   int numNodes() {return 1;}
