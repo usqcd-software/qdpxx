@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.11 2002-11-02 04:05:23 edwards Exp $
+// $Id: foo.cc,v 1.12 2002-11-04 04:43:16 edwards Exp $
 //
 // Silly little internal test code
 
@@ -14,7 +14,15 @@
 int main()
 {
   // Setup the geometry
+#if ND == 2
+  const int foo[Nd] = {LX0,LX1};
+#elif ND == 3
+  const int foo[Nd] = {LX0,LX1,LX2};
+#elif ND == 4
   const int foo[Nd] = {LX0,LX1,LX2,LX3};
+#else
+#error "unsupported number of dimensions"
+#endif
   multi1d<int> nrow(Nd);
   nrow = foo;
   Layout::initialize(nrow);
@@ -60,7 +68,7 @@ int main()
   LatticeReal a, b, c, e;
   Complex d;
 //  float ccc = 2.0;
-//  float x;
+  float x;
   
 #if 0
   LatticeComplex  foob(zero);
@@ -212,6 +220,20 @@ int main()
 #if 1
   if (Nd == 4)
   {
+    // Read a szin gauge file
+    multi1d<LatticeGauge> u(Nd);
+    Seed seed_old;
+    cerr << "Calling szin reader" << endl;
+    readSzin(u, 0, "szin.cfg", seed_old);
+    nml << "Here is the SZIN u field";
+    Write(nml,u);
+  }
+#endif
+
+
+#if 0
+  if (Nd == 4)
+  {
     // Read a szin quark prop file
     LatticePropagator qprop;
     cerr << "Read a szin qprop" << endl;
@@ -248,4 +270,8 @@ int main()
   num = forEach(expr3, CountLeaf(), SumCombine());
   nml << num << endl;
 #endif
+
+  // Time to bolt
+  Layout::finalize();
+
 }
