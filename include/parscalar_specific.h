@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.16 2003-01-23 03:58:35 edwards Exp $
+// $Id: parscalar_specific.h,v 1.17 2003-01-23 05:22:52 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -707,8 +707,6 @@ public:
 //	  QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
 	  d.elem(i) = *(dest[i]);
 	}
-
-	QDP_info("finished scatter");
 
 	// Cleanup
 	QMP_free_aligned_memory(recv_buf);

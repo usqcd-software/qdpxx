@@ -1,4 +1,4 @@
-// $Id: parscalar_layout.cc,v 1.4 2003-01-23 05:06:04 edwards Exp $
+// $Id: parscalar_layout.cc,v 1.5 2003-01-23 05:22:52 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -165,7 +165,7 @@ namespace Layout
   void InitDefaults()
   {
 #if defined(DEBUG)
-    cerr << "Create default subsets\n";
+    QDP_info("Create default subsets");
 #endif
     // Default set and subsets
     InitDefaultSets();
@@ -302,7 +302,7 @@ namespace Layout
     // Diagnostics
     if (Layout::primaryNode())
     {
-      QDP_info("Lattice initialized:");
+      cerr << "Lattice initialized:\n";
       cerr << "  problem size =";
       for(int i=0; i < Nd; ++i)
 	cerr << " " << _layout.nrow[i];

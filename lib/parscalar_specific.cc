@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.11 2003-01-22 16:49:14 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.12 2003-01-23 05:22:52 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -31,8 +31,8 @@ void Set::make(const SetFunc& func)
 {
   int nsubset_indices = func.numSubsets();
 
-#if 1
-  fprintf(stderr,"Set a subset: nsubset = %d\n",nsubset_indices);
+#if defined(DEBUG)
+  QDP_info("Set a subset: nsubset = %d",nsubset_indices);
 #endif
 
   // This actually allocates the subsets
@@ -60,8 +60,8 @@ void Set::make(const SetFunc& func)
     int linear = Layout::linearSiteIndex(coord);
     int icolor = func(coord);
 
-    cerr << "site="<<site<<" coord="<<coord<<" node="<<node<<" linear="<<linear<<" col="<<icolor;
-    cerr << endl;
+//  cerr << "site="<<site<<" coord="<<coord<<" node="<<node<<" linear="<<linear<<" col="<<icolor;
+//  cerr << endl;
 
     if (node != Layout::nodeNumber())
       QDP_error_exit("Set: found site with node outside current node!");
@@ -111,8 +111,8 @@ void Set::make(const SetFunc& func)
 
     sub[cb].make(start, end, indexrep, &(sitetables[cb]), cb);
 
-#if 1
-    fprintf(stderr,"Subset(%d): indexrep=%d start=%d end=%d\n",cb,indexrep,start,end);
+#if defined(DEBUG)
+    QDP_info("Subset(%d): indexrep=%d start=%d end=%d",cb,indexrep,start,end);
 #endif
   }
 }
@@ -233,13 +233,13 @@ void Map::make(const MapFunc& func)
     if (destnodes_tmp[i] != my_node)
       destnodes[j++] = destnodes_tmp[i];
 
-#if 1
+#if 0
   // Debugging
   for(int i=0; i < srcenodes.size(); ++i)
-    fprintf(stderr,"srcenodes(%d) = %d\n",i,srcenodes(i));
+    QDP_info("srcenodes(%d) = %d",i,srcenodes(i));
 
   for(int i=0; i < destnodes.size(); ++i)
-    fprintf(stderr,"destnodes(%d) = %d\n",i,destnodes(i));
+    QDP_info("destnodes(%d) = %d",i,destnodes(i));
 #endif
 
 
@@ -310,7 +310,7 @@ namespace Internal
   void 
   sendToWait(void *send_buf, int dest_node, int count)
   {
-#ifdef DEBUG
+#if defined(DEBUG)
     QDP_info("starting a sendToWait, count=%d, destnode=%d", count,dest_node);
 #endif
 
@@ -325,7 +325,7 @@ namespace Internal
     QMP_free_msghandle(request_mh);
     QMP_free_msgmem(request_msg);
 
-#ifdef DEBUG
+#if defined(DEBUG)
     QDP_info("finished a sendToWait");
 #endif
   }
@@ -334,7 +334,7 @@ namespace Internal
   void 
   recvFromWait(void *recv_buf, int srce_node, int count)
   {
-#ifdef DEBUG
+#if defined(DEBUG)
     QDP_info("starting a recvFromWait, count=%d, srcenode=%d", count, srce_node);
 #endif
 
@@ -349,7 +349,7 @@ namespace Internal
     QMP_free_msghandle(request_mh);
     QMP_free_msgmem(request_msg);
 
-#ifdef DEBUG
+#if defined(DEBUG)
     QDP_info("finished a recvFromWait");
 #endif
   }
