@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.1 2003-08-08 15:51:16 edwards Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.2 2003-08-08 18:22:49 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -92,6 +92,9 @@ multiplyAdj<>(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 }
 
 
+#if 0
+// Ooops, this macro does not exist!!
+
 // Optimized version of  
 //   PColorMatrix<RComplexFloat> <- adj(PColorMatrix<RComplexFloat>) * adj(PColorMatrix<RComplexFloat>)
 template<>
@@ -107,6 +110,7 @@ adjMultiplyAdj<>(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 
   return d;
 }
+#endif
 
 
 // Specialization to optimize the case   
