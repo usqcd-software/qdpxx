@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.3 2003-08-08 18:43:49 edwards Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.4 2003-08-08 18:58:53 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -124,7 +124,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > >, 
 	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs);
+	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
+	      const OrderedSubset& s);
 
 
 /*! @} */   // end of group optimizations
