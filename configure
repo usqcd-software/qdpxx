@@ -2519,10 +2519,11 @@ fi;
 # Check whether --enable-pab-asm or --disable-pab-asm was given.
 if test "${enable_pab_asm+set}" = set; then
   enableval="$enable_pab_asm"
-   ac_pab_asm_enabled=1
-       ac_pab_asm_targ=${enableval}
+  ac_pab_asm_enabled=1
+      ac_pab_asm_targ=${enableval}
 else
-  ac_pab_asm=0
+  ac_pab_asm_enabled=0
+      ac_pab_asm_targ=0
 
 fi;
 
