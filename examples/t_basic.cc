@@ -1,4 +1,4 @@
-// $Id: t_basic.cc,v 1.1 2004-08-09 22:09:21 edwards Exp $
+// $Id: t_basic.cc,v 1.2 2004-08-10 01:11:12 edwards Exp $
 /*! \file
  *  \brief Test some simple basic routines
  */
@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
   LatticePropagator qtmp3;
   LatticeFermion    lftmp1;
   LatticeFermion    lftmp2;
+  LatticeFermion    lftmp3;
   LatticeReal r;
   LatticeReal rtmp;
   LatticeComplex c;
@@ -121,8 +122,6 @@ int main(int argc, char *argv[])
 
   pop(xml_out);
 
-#if 0
-
   // Ferm mult
   random(lctmp1); random(lftmp1);
   push(xml_out,"Lattice_Ferm_ops");
@@ -134,6 +133,17 @@ int main(int argc, char *argv[])
   write(xml_out, "D_meq_C_x_D",lftmp2);
   write(xml_out, "D_eq_aC_x_D",adj(lctmp1)*lftmp1);
   pop(xml_out);
+
+  // Various site ops
+  random(lftmp1); random(lftmp2);
+  push(xml_out,"Site_functions");
+  write(xml_out, "outerProduct",outerProduct(lftmp1,lftmp2));
+  lctmp1 = traceSpin(outerProduct(lftmp1,lftmp2));
+  write(xml_out, "C_eq_traceSpin_outerProduct",lctmp1);
+  pop(xml_out);
+
+
+#if 0
 
   mu = 0;
   nu = 1;
