@@ -1,7 +1,11 @@
-// $Id: readszin.cc,v 1.2 2002-12-26 23:02:38 edwards Exp $
+// $Id: readszin.cc,v 1.3 2003-03-20 22:19:30 dgr Exp $
 
 /*! @file
  *  @brief Read in a configuration written by SZIN up to configuration version 7.
+ *
+ *   Gauge field layout is (fortran ordering)
+ *     u(real/imag,color_row,color_col,site,cb,Nd)
+ *         = u(2,Nc,Nc,VOL_CB,2,4)
  */
 
 #include "qdp.h"
@@ -28,7 +32,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 void readSzin(multi1d<LatticeColorMatrix>& u, int cfg_io_location,
               char cfg_file[], Seed& seed_old)
 {
-  multi1d<LatticeColorMatrixF> u_old(Nd);
+  ColorMatrixF u_old;
   multi1d<int> nrow_old(Nd); /* Lattice size (from CFGIN) */
   int Nd_old; /* Number of spacetime dimensions (from CFGIN) */
   int Nc_old; /* Number of colours (from CFGIN) */
@@ -326,11 +330,42 @@ void readSzin(multi1d<LatticeColorMatrix>& u, int cfg_io_location,
 
   read(cfg_in,seed_old);
   read(cfg_in,wstat_old);
-  read(cfg_in,u_old); /* read in the gauge fields */
 
-  for(j = 0; j < Nd; ++j)
-    u[j] = LatticeColorMatrix(transpose(u_old[j])); // change precision and transpose to col. major
 
+  /*
+   *  Szin stores data "checkerboarded".  We must therefore "undo" the checkerboarding
+   *  We use as a model the propagator routines
+   */
+
+  ColorMatrix u_tmp;
+  
+  multi1d<int> lattsize_cb = Layout::lattSize();
+  lattsize_cb[0] /= 2;		// Evaluate the coords on the checkerboard lattice
+
+
+  // The slowest moving index is the direction
+
+  for(j = 0; j < Nd; j++){
+
+    for(int cb=0; cb < 2; ++cb)
+      for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb){
+
+	multi1d<int> coord = crtesn(sitecb, lattsize_cb); // The coordinate
+      
+	// construct the checkerboard offset
+	int sum = 0;
+	for(int m=1; m<Nd; m++)
+	  sum += coord[m];
+
+      // The true lattice x-coord
+	coord[0] = 2*coord[0] + ((sum + cb) & 1);
+
+	read(cfg_in,u_old); 	// Read in an SU(3) matrix
+
+	u_tmp = transpose(u_old); // Take the transpost
+	pokeSite(u[j], u_tmp, coord); // Put it into the correct place
+      }
+  }
 
 #if 0
   /* reunitarize if the precision of u and u_old do not agree */
