@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.16 2003-12-11 16:19:20 edwards Exp $
+// $Id: qdp_inner.h,v 1.17 2003-12-16 02:32:52 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -263,6 +263,14 @@ public:
     {
       for(int i=0; i < N; ++i)
 	elem(i) = rhs;
+    }
+
+  //! construct dest = rhs
+  template<class T1>
+  ILattice(const IScalar<T1>& rhs)
+    {
+      for(int i=0; i < N; ++i)
+	elem(i) = rhs.elem();
     }
 
   //! construct dest = rhs
