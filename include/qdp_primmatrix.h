@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.25 2004-08-09 21:57:17 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.26 2004-08-10 02:02:32 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -278,37 +278,10 @@ struct LatticeScalar<PMatrix<T,N,C> > {
 // Traits classes to support return types
 //-----------------------------------------------------------------------------
 
-#if 0
 /*
- ****NOTE***: these global defs cause conflicts with specialized versions.
+ * NOTE***: no Op defaults - they cause conflicts with specialized versions.
  * Avoid them.
  */
-
-// Default unary(PMatrix) -> PMatrix
-template<class T, int N, template<class,int> class C, class Op>
-struct UnaryReturn<PMatrix<T,N,C>, Op> {
-  typedef C<typename UnaryReturn<T, Op>::Type_t, N>  Type_t;
-};
-
-// Default binary(PScalar,PMatrix) -> PMatrix
-template<class T1, class T2, int N, template<class,int> class C, class Op>
-struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, Op> {
-  typedef C<typename BinaryReturn<T1, T2, Op>::Type_t, N>  Type_t;
-};
-
-// Default binary(PMatrix,PMatrix) -> PMatrix
-template<class T1, class T2, int N, template<class,int> class C, class Op>
-struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, Op> {
-  typedef C<typename BinaryReturn<T1, T2, Op>::Type_t, N>  Type_t;
-};
-
-// Default binary(PMatrix,PScalar) -> PMatrix
-template<class T1, int N, class T2, template<class,int> class C, class Op>
-struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, Op> {
-  typedef C<typename BinaryReturn<T1, T2, Op>::Type_t, N>  Type_t;
-};
-#endif
-
 
 
 #if 0
