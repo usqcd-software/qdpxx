@@ -1,4 +1,4 @@
-// $Id: qdpio.cc,v 1.9 2003-05-12 06:08:41 edwards Exp $
+// $Id: qdpio.cc,v 1.10 2003-05-13 05:13:42 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -97,8 +97,9 @@ void QDPSerialWriter::open(const XMLMetaWriter& file_xml, const std::string& pat
   layout->this_node = Layout::nodeNumber(); 
 
   // Copy metadata string into simple qio string container
-  XML_string* xml_c = XML_string_create(file_xml.str().length()+1);  // check if +1 is needed
-  XML_string_set(xml_c, file_xml.str().c_str());
+  XMLMetaWriter& foo_xml = const_cast<XMLMetaWriter&>(file_xml);
+  XML_string* xml_c = XML_string_create(foo_xml.str().length()+1);  // check if +1 is needed
+  XML_string_set(xml_c, foo_xml.str().c_str());
 
   // Big call to qio
   if ((qio_out = QIO_open_write(xml_c, path.c_str(), QIO_SERIAL, QIO_LEX_ORDER, QIO_CREATE, 

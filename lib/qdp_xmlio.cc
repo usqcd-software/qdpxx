@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.2 2003-05-12 06:08:41 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.3 2003-05-13 05:13:42 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -111,13 +111,13 @@ void XMLReader::get(const std::string& xpath, bool& result)
     BasicXPathReader::get(xpath, result);
 }
    
-void XMLReader::print(ostream& os) const
+void XMLReader::print(ostream& os)
 {
   if (Layout::primaryNode())
     BasicXPathReader::print(os);
 }
    
-void XMLReader::printRoot(ostream& os) const
+void XMLReader::printRoot(ostream& os)
 {
   if (Layout::primaryNode())
     BasicXPathReader::printRoot(os);
@@ -350,7 +350,7 @@ XMLWriter& operator<<(XMLWriter& xml, const bool& d) {xml.write(d);return xml;}
 // Metadata writer class
 XMLMetaWriter::XMLMetaWriter() {indent_level=0;}
 
-string XMLMetaWriter::str() const
+string XMLMetaWriter::str()
 {
   ostringstream s;
   
@@ -363,7 +363,7 @@ string XMLMetaWriter::str() const
   return s.str();
 }
 
-string XMLMetaWriter::printRoot() const {return output_stream.str();}
+string XMLMetaWriter::printRoot() {return output_stream.str();}
 
 XMLMetaWriter::~XMLMetaWriter() {}
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdpio.h,v 1.6 2003-05-12 06:07:45 edwards Exp $
+// $Id: qdpio.h,v 1.7 2003-05-13 05:13:42 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -200,8 +200,9 @@ template<class T>
 void write_t(QDPSerialWriter& qsw, const XMLMetaWriter& rec_xml, const OLattice<T>& s1)
 {
   // Copy metadata string into simple qio string container
-  XML_string* xml_c  = XML_string_create(rec_xml.str().length()+1);  // check if +1 is needed
-  XML_string_set(xml_c, rec_xml.str().c_str());
+  XMLMetaWriter& foo_xml = const_cast<XMLMetaWriter&>(rec_xml);
+  XML_string* xml_c  = XML_string_create(foo_xml.str().length()+1);  // check if +1 is needed
+  XML_string_set(xml_c, foo_xml.str().c_str());
 
   // For now, create an empty binX field
   string binx = "Empty binX entry";

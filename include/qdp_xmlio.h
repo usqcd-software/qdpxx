@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.2 2003-05-12 06:07:45 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.3 2003-05-13 05:13:42 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -54,10 +54,10 @@ public:
   void get(const std::string& xpath, bool& result);
 
   //! Return the entire contents of the Reader as a stream
-  void print(ostream& is) const;
+  void print(ostream& is);
         
   //! Return the root element of the Reader as a stream
-  void printRoot(ostream& is) const;
+  void printRoot(ostream& is);
         
 private:
   bool  iop;  //file open or closed?
@@ -255,10 +255,10 @@ public:
   ~XMLMetaWriter();
 
   // Return entire stream as a string
-  std::string str() const;
+  std::string str();
         
   // Return root element as a string
-  std::string printRoot() const;
+  std::string printRoot();
         
 private:
   // The output stream...
