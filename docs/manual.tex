@@ -1,0 +1,279 @@
+\documentclass[12pt,letterpaper]{article}
+
+
+% Somewhat wider and taller page than in art12.sty
+\topmargin -0.4in  \headsep 0.4in  \textheight 9.0in
+\oddsidemargin 0.25in  \evensidemargin 0.25in  \textwidth 6in
+
+\footnotesep 14pt
+\floatsep 28pt plus 2pt minus 4pt      % Nominal is double what is in art12.sty
+\textfloatsep 40pt plus 2pt minus 4pt
+\intextsep 28pt plus 4pt minus 4pt
+
+\begin{document}
+\pagestyle{empty} 
+\begin{center}
+{\bfseries\large QDP++}
+\end{center}
+\bigskip
+
+\date{Sept. 25, 2002}
+
+\noindent
+{\bf\large Description:}
+
+QDP++ is a C++ data-parallel interface for Lattice field theory
+applications. Many of the issues have been discussed in the
+corresponding C interface description which can be found at
+{\tt http://www.jlab.org/\~edwards/qcdapi/Level2API\_latest.pdf}. The
+motivation for this development comes from the U.S. Dept. of Energy
+SciDAC program.
+
+The QDP interface provides an environment somewhat similar to 
+Fortran 90 - namely data-parallel operations (operator/infix form)
+which can be applied on lattice wide objects. The interface provides a
+level of abstraction such that high-level user code written using the
+API can be run unchanged on a single processor workstation or a
+collection of multiprocessor nodes with parallel communications.
+Architectural dependencies are hidden below the interface. A variety
+of types for the site elements are provided. To achieve good
+performance, overlapping communication and computation primitives are
+provided.
+
+\medskip
+
+\noindent
+{\em Supported operations:}
+
+All QDP types are of type QDPType. Operations that are supported are below.
+Convention: protoyypes are basically of the form:
+
+\begin{verbatim}
+QDPType<T1>  unary_function(const QDPType<T>&)
+QDPType<T1>  binary_function(const QDPType<T>&, const QDPType<T>&)
+\end{verbatim}
+
+\medskip
+
+
+\noindent
+{\bf\large Infix operators:}
+
+\noindent
+{\em Unary infix (e.g., "operator-"):}
+
+\begin{verbatim}
+- : negation
++ : unaryplus
+~ : bitwise not
+! : boolean not
+\end{verbatim}
+
+\noindent
+{\em Binary infix (e.g., "operator+"):}
+
+\begin{verbatim}
++  : addition
+-  : subtraction
+*  : multiplication
+/  : division
+%  : mod
+&  : bitwise and
+|  : bitwise or
+^  : bitwise exclusive or
+<< : left-shift
+>> : right-shift
+\end{verbatim}
+
+\noindent
+{\em Comparisons (returning booleans, e.g., "operator<"):}
+
+\begin{verbatim}
+<, <=, >, >=, ==, !=
+&& : and of 2 booleans
+|| : or of 2 boolean
+\end{verbatim}
+
+
+\noindent
+{\em Assignments (e.g., "operator+="):}
+
+\begin{verbatim}
+=, +=, -=, *=, /=, %=, |=, &=, ^=, <<=, >>=
+\end{verbatim}
+
+\noindent
+{\em Trinary:}
+
+\begin{verbatim}
+where : the C trinary "?" operator
+\end{verbatim}
+
+\medskip
+
+
+\noindent
+{\bf\large Functions (standard C math lib):}
+
+\noindent
+{\em Unary:}
+
+\begin{verbatim}
+cos, sin, tan, acos, asin, atan, cosh, sinh, tanh,
+exp, log, log10, sqrt,
+ceil, floor, fabs
+\end{verbatim}
+
+\noindent
+{\em Binary:}
+
+\begin{verbatim}
+ldexp, pow, fmod, atan2
+\end{verbatim}
+
+\medskip
+
+
+\noindent
+{\bf\large Additional functions (specific to QDP):}
+
+\noindent
+{\em Unary:}
+
+\begin{verbatim}
+conj             : hermitian conjugate (adjoint)
+trace            : matrix trace
+real             : real part
+imag             : imaginary part
+colorTrace       : trace over color indices
+spinTrace        : trace over spin indices
+noColorTrace     : trace over all but color indices
+noSpinTrace      : trace over all but spin indices
+multiplyI        : multiplies argument by imag "i"
+multiplyMinusI   : multiplies argument by imag "-i"
+localNorm2       : on fibers computes trace(conj(source)*source)
+\end{verbatim}
+
+
+\noindent
+{\em Binary:}
+
+\begin{verbatim}
+cmplx              : returns complex object   arg1 + i*arg2
+localInnerproduct  : at each site computes trace(conj(arg1)*arg2)
+\end{verbatim}
+
+\medskip
+
+
+\noindent
+{\bf\large Global reductions:}
+
+\begin{verbatim}
+sum(arg1)               : sum over lattice indices returning 
+                          object of same fiber type
+norm2(arg1)             : sum(localNorm2(arg1))
+innerproduct(arg1,arg2) : sum(localInnerproduct(arg1,arg2))
+\end{verbatim}
+
+
+\medskip
+
+\noindent
+{\bf\large Other functions:}
+
+\begin{verbatim}
+spinProject(QDPType psi, int dir, int isign)
+		    : applies spin projection  (1 + isign*gamma_\mu)*psi
+		      returning a half spin vector or matrix
+
+spinReconstruct(QDPType psi, int dir, int isign)
+		    : applies spin reconstruction from  (1 + isign*gamma_\mu)*psi
+		      returning a full spin vector or matrix
+
+su2_extract(QDPType r_0, r_1, r_2, r_3, int index, QDPType source)
+		    : Extract components r_k proportional to SU(2) submatrix su2_index
+		      from the "SU(Nc)" matrix V. The SU(2) matrix is parametrized in the
+		      sigma matrix basis. su2_index = 0, ..., Nc*(Nc-1)/2
+		      r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]
+
+sun_fill(QDPType dest, int index, QDPType r_0, r_1, r_2, r_3)
+		    : Fill an SU(Nc) matrix V with the SU(2) submatrix su2_index
+		      paramtrized by r_k in the sigma matrix basis.
+		      dest(su2_index) <- r_0,r_1,r_2,r_3
+\end{verbatim}
+
+\bigskip
+
+
+\noindent
+{\bf\large Types:}
+
+Mathematically, QDP types follow a fiber-bundle terminology.  There is
+a base space (a Nd dimensional lattice) with fibers at each site.  The
+fiber type describes data primitives on each site.  Lattice fields are
+defined and always allocated over the entire lattice; however, the
+operations can be narrowed to only a subset of sites.  The primitive
+types at each site are represented as the (tensor) product space of,
+for example, a vector space over color components with a vector space
+over spin components and complex valued elements.
+
+Generically objects transform under different spaces with a tensor
+product structure like
+
+\begin{verbatim}
+                         Color      Spin
+Gauge fields:   Product(Matrix(Nc),Scalar)
+Fermions:       Product(Vector(Nc),Vector(Ns))
+Scalars:        Product(Scalar,    Scalar)
+Propagators:    Product(Matrix(Nc),Matrix(Ns))
+Gamma:          Product(Scalar,    Matrix(Ns))
+\end{verbatim}
+
+\noindent
+Nd is the number of space-time dimensions
+\noindent
+Nc is the dimension of the color vector space
+\noindent
+Ns is the dimension of the spin vector space
+\noindent
+NOTE: these parameters are compile time defined in  qdp++/params.h
+
+E.g., gauge fields can left-multiply fermions via color matrix by color
+vector but is diagonal in spin space (spin scalar times spin vector).
+A gamma matrix can right-multiply a propagator (spin matrix times
+spin matrix) but is diagonal in color space (color matrix times color
+scalar).
+
+Types in the QDP interface are parameterized by a variety of types including:
+\begin{itemize}
+\item {\em Word type}: 
+  int, float, double, Boolean . Basic machine types.
+\item {\em Reality type}: 
+  complex or scalar. This is where the idea of a complex number
+  lives.
+\item {\em Primitive type}: 
+  scalar, vector, matrix, etc. This where the concept of a gauge or
+  spin field lives. There can be many more types here.
+\item {\em Inner grid type}: 
+  scalar or lattice. Supports vector style architectures.
+\item {\em Outer grid type}:
+  OScalar or OLattice. Supports super-scalar style architectures. In
+  combination with Inner grid can support a mixed mode like a
+  super-scalar architecture with short length vector instructions.
+\end{itemize}
+
+There are templates classes for each of the type variants listed
+above. The interface relies heavily on templates for
+composition. There is very little inheritance. The basic objects are
+constructed (at the users choice) by compositions like the following:
+
+\begin{verbatim}
+typedef OLattice<Pscalar<ColorMatrix<Complex<Real>, Nc> > > LatticeGauge
+typedef OLattice<SpinVector<ColorVector<Complex<Real>, Nc> > > LatticeFermion
+\end{verbatim}
+
+The ordering of types here is suitable for a microprocessor architecture.
+
+\end{document}
+
