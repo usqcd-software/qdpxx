@@ -1,4 +1,4 @@
-// $Id: qdpio.cc,v 1.1 2003-04-15 21:08:23 edwards Exp $
+// $Id: qdpio.cc,v 1.2 2003-04-16 04:49:41 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -9,14 +9,32 @@
 QDP_BEGIN_NAMESPACE(QDP);
 
 //--------------------------------------------------------------------------------
+// XML classes
+#define MAX_XML 100
+
 //! XML reader class
-XMLMetaReader::XMLMetaReader() {}
-XMLMetaReader::~XMLMetaReader() {}
+XMLMetaReader::XMLMetaReader()
+{
+  // HACK - set string to something trivial
+  xml = XML_create(MAX_XML);
+}
+
+XMLMetaReader::~XMLMetaReader()
+{
+  XML_destroy(xml);
+}
 
 //! XML writer class
-XMLMetaWriter::XMLMetaWriter() {}
-XMLMetaWriter::~XMLMetaWriter() {}
+XMLMetaWriter::XMLMetaWriter()
+{
+  // HACK - set string to something trivial
+  xml = XML_create(MAX_XML);
+}
 
+XMLMetaWriter::~XMLMetaWriter()
+{
+  XML_destroy(xml);
+}
 
 
 
