@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.12 2004-03-07 20:23:14 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.13 2004-03-07 21:39:14 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -225,7 +225,7 @@ template<class T> void QDPFactoryPut(char *buf, size_t linear, int count, void *
 template<class T>
 void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 {
-  QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, "Lattice", "F", Nc, Ns, 
+  QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, "Lattice", "F", Nc, Ns, 
 						sizeof(T), 1);
 
   // Initialize string objects 
@@ -271,7 +271,7 @@ template<class T> void QDPFactoryGet(char *buf, size_t linear, int count, void *
 template<class T>
 void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 {
-  QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, "Lattice", "F", Nc, Ns, 
+  QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, "Lattice", "F", Nc, Ns, 
 						sizeof(T), 1);
 
   // Copy metadata string into simple qio string container
