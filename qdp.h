@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: qdp.h,v 1.2 2002-09-26 20:03:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -7,7 +7,7 @@
 #include <iostream.h>
 #include <cstdlib>
 
-#define DEBUG
+#undef DEBUG
 
 #ifndef QDP_INCLUDE
 #define QDP_INCLUDE
