@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.12 2004-04-01 14:49:50 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.13 2004-04-01 16:45:20 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1305,7 +1305,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
     // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
     BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
     // Inner product is accumulated internally in DOUBLE
-    multi1d<DOUBLE> ip(2);
+    DOUBLE ip[2];
     ip[0]=0;
     ip[1]=0;
 
@@ -1320,7 +1320,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 
 
     // Global sum -- still on a vector of doubles
-    Internal::globalSum(ip);
+    Internal::globalSumArray(ip,2);
 
     // Downcast (and possibly lose precision) here 
     lprod.elem().elem().elem().real().elem() = (REAL)ip[0];
@@ -1350,7 +1350,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
     // This BinaryReturn has Type_t
     // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
     BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
-    multi1d<DOUBLE> ip(2);
+    DOUBLE ip[2];
     ip[0] = 0;
     ip[1] = 0;
 
@@ -1360,7 +1360,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 		(REAL *)&(v2.elem(s.start()).elem(0).elem(0).real().elem()),
 		n_3vec);
 
-    Internal::globalSum(ip);
+    Internal::globalSumArray(ip,2);
 
     lprod.elem().elem().elem().real().elem() = (REAL)ip[0];
     lprod.elem().elem().elem().imag().elem() = (REAL)ip[1];
