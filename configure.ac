@@ -21,7 +21,7 @@ AC_ARG_ENABLE(Nd,
   [ ac_Nd=4 ]
 )
     
-AC_DEFINE_UNQUOTED(ND, ${ac_Nd})        dnl config.h file
+AC_DEFINE_UNQUOTED(ND, ${ac_Nd}, [Number of dimensions])        dnl config.h file
 AC_SUBST(CONFIG_ND, [${ac_Nd}] )  dnl qdp++_config
 
 dnl Tell the user about Nd
@@ -36,7 +36,7 @@ AC_ARG_ENABLE(Nc,
   [ac_Nc=3]
 )
 
-AC_DEFINE_UNQUOTED(NC, ${ac_Nc})
+AC_DEFINE_UNQUOTED(NC, ${ac_Nc}, [Number of color components])
 AC_SUBST(CONFIG_NC, [${ac_Nc}] )
 
 dnl Tell the user about Nc
@@ -52,7 +52,7 @@ AC_ARG_ENABLE(Ns,
   [ac_Ns=4]
 )
 
-AC_DEFINE_UNQUOTED(NS, ${ac_Ns})
+AC_DEFINE_UNQUOTED(NS, ${ac_Ns}, [Number of spin components])
 AC_SUBST(CONFIG_NS, [${ac_Ns}] )
 dnl Tell the user about Ns
 AC_MSG_NOTICE([Configuring QDP++ for Ns = ${ac_Ns}])
@@ -85,13 +85,13 @@ AC_ARG_ENABLE(sse2,
 )
 
 if test ${ac_sse} -eq 1; then
-  AC_DEFINE(QDP_USE_SSE)
+  AC_DEFINE_UNQUOTED(QDP_USE_SSE, ${ac_sse}, [Enable SSE instructions])
   AC_SUBST(CONFIG_SSE,[${ac_sse}])
   AC_MSG_NOTICE([Configuring QDP++ with SSE extentions enabled]);
 fi
 
 if test ${ac_sse2} -eq 1; then
-  AC_DEFINE(QDP_USE_SSE2)
+  AC_DEFINE_UNQUOTED(QDP_USE_SSE2, ${ac_sse2}, [Enable SSE2 instructions])
   AC_SUBST(CONFIG_SSE2,[${ac_sse2}])
   AC_MSG_NOTICE([Configuring QDP++ with SSE2 extentions enabled]);
 fi
@@ -105,12 +105,12 @@ AC_ARG_ENABLE(precision,
 case ${ac_precision} in 
 single)
 	AC_MSG_NOTICE( [Configuring QDP++ for single precision ] )
-	AC_DEFINE(BASE_PRECISION,[32])
+	AC_DEFINE(BASE_PRECISION,[32], [Single precision])
 	AC_SUBST(CONFIG_PRECISION, [32])
 	;;
 double)
 	AC_MSG_NOTICE( [Configuring for double precision ] )
-	AC_DEFINE(BASE_PRECISION, [64] )
+	AC_DEFINE(BASE_PRECISION, [64], [Double precision] )
 	AC_SUBST(CONFIG_PRECISION, [64])
 	;;
 *)
@@ -128,15 +128,15 @@ AC_ARG_ENABLE(layout,
 case "${ac_layout}" in
 lexico|lexicographic)
 	AC_SUBST(CONFIG_LAYOUT,[lexicographic])
-	AC_DEFINE(QDP_USE_LEXICO_LAYOUT)
+	AC_DEFINE(QDP_USE_LEXICO_LAYOUT, [1], [Use lexicographic layout])
 	;;
 cb2|checkerboard)
 	AC_SUBST(CONFIG_LAYOUT,[cb2])
-	AC_DEFINE(QDP_USE_CB2_LAYOUT)
+	AC_DEFINE(QDP_USE_CB2_LAYOUT, [1], [Use checkerboarded layout])
 	;;
 cb32|hyper|hypercube)
 	AC_SUBST(CONFIG_LAYOUT,[cb32])
-	AC_DEFINE(QDP_USE_CB32_LAYOUT)
+	AC_DEFINE(QDP_USE_CB32_LAYOUT, [1], [Use hypercube checkerboard layout])
 	;;
 *)
 	AC_MSG_ERROR([Unsupported Layout. Check --enable-layout])
@@ -164,7 +164,7 @@ AC_ARG_WITH(qmp,
 
 case ${PARALLEL_ARCH} in
   scalar)
-    AC_DEFINE(ARCH_SCALAR)
+    AC_DEFINE(ARCH_SCALAR, [1], [Scalar architecture])
     AC_SUBST(ARCH_SITE, "scalarsite")
     AC_MSG_NOTICE([ Scalar Build! Not checking for QMP ])
     AC_SUBST(QMP_CFLAGS)
@@ -172,7 +172,7 @@ case ${PARALLEL_ARCH} in
     AC_SUBST(QMP_LIBS)
     ;;
   scalarvec)
-    AC_DEFINE(ARCH_SCALARVEC)
+    AC_DEFINE(ARCH_SCALARVEC, [1], [Scalar with vector extensions architecture])
     AC_SUBST(ARCH_SITE, "scalarvecsite")
     AC_MSG_NOTICE([ Scalar with Vector extensions Build! Not checking for QMP ])
     AC_SUBST(QMP_CFLAGS)
@@ -180,7 +180,7 @@ case ${PARALLEL_ARCH} in
     AC_SUBST(QMP_LIBS)
     ;;
   parscalar)
-    AC_DEFINE(ARCH_PARSCALAR)
+    AC_DEFINE(ARCH_PARSCALAR, [1], [Parallel-scalar architecture])
     AC_SUBST(ARCH_SITE, "scalarsite")
     AC_MSG_NOTICE([ Parscalar build! Checking for QMP ])
 
@@ -205,7 +205,7 @@ case ${PARALLEL_ARCH} in
     fi
     ;;
   parscalarvec)
-    AC_DEFINE(ARCH_PARSCALARVEC)
+    AC_DEFINE(ARCH_PARSCALARVEC, [1], [Parallel-scalar with vector extensions layout])
     AC_SUBST(ARCH_SITE, "scalarvecsite")
     AC_MSG_NOTICE([ Parscalar with Vector extensions build! Checking for QMP ])
 
