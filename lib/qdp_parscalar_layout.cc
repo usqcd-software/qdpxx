@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.11 2003-08-31 20:59:16 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.12 2003-09-03 01:14:47 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -178,10 +178,8 @@ namespace Layout
     // by the number of processors. Will also insist that the problem
     // size is regular on each node
     if (_layout.vol % numNodes() != 0)
-    {
-      if (Layout::primaryNode())
 	QDP_error_exit("Layout::create - problem size not divisible by number of processors");
-    }
+
     
     // Return the smallest lattice size per node allowed
     multi1d<int> min_dim = minimalLayoutMapping();
