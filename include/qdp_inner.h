@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.23 2004-08-11 18:52:32 edwards Exp $
+// $Id: qdp_inner.h,v 1.24 2004-08-12 02:25:04 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -823,11 +823,6 @@ struct TrinaryReturn<ILattice<T1,N>, IScalar<T2>, IScalar<T3>, Op> {
 template<class T>
 struct UnaryReturn<IScalar<T>, FnPeekSite> {
   typedef IScalar<typename UnaryReturn<T, FnPeekSite>::Type_t>  Type_t;
-};
-
-template<class T>
-struct UnaryReturn<IScalar<T>, FnSum> {
-  typedef IScalar<typename UnaryReturn<T, FnSum>::Type_t>  Type_t;
 };
 
 template<class T>
@@ -1680,6 +1675,21 @@ gather_sites(IScalar<T>& d,
 
 
 //------------------------------------------
+// Global sum over site indices only
+template<class T>
+struct UnaryReturn<IScalar<T>, FnSum > {
+  typedef IScalar<typename UnaryReturn<T, FnSum>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<IScalar<T>, FnSum>::Type_t
+sum(const IScalar<T>& s1)
+{
+//  return sum(s1.elem());
+  return s1.elem();
+}
+
+
 // InnerProduct (norm-seq) global sum = sum(tr(adj(s1)*s1))
 template<class T>
 struct UnaryReturn<IScalar<T>, FnNorm2> {
