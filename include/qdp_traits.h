@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_traits.h,v 1.4 2003-08-27 01:25:35 edwards Exp $
+// $Id: qdp_traits.h,v 1.5 2004-07-02 19:19:58 edwards Exp $
 
 /*! @file
  * @brief Traits classes
@@ -8,6 +8,35 @@
  */
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+
+//-----------------------------------------------------------------------------
+// Traits class for returning the QDP container class
+//-----------------------------------------------------------------------------
+
+template<class T>
+struct QDPContainer
+{
+  typedef T Type_t;
+};
+
+template<class T,class C>
+struct QDPContainer<QDPType<T,C> >
+{
+  typedef C Type_t;
+};
+
+template<class T,class C>
+struct QDPContainer<QDPExpr<T,C> >
+{
+  typedef C Type_t;
+};
+
+template<class T>
+struct QDPContainer<Reference<T> >
+{
+  typedef typename QDPContainer<T>::Type_t Type_t;
+};
 
 
 //-----------------------------------------------------------------------------
