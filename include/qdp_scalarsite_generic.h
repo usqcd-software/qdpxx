@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_generic.h,v 1.1 2003-10-02 20:33:43 edwards Exp $
+// $Id: qdp_scalarsite_generic.h,v 1.2 2003-10-02 21:27:09 edwards Exp $
 
 /*! @file
  * @brief Generic optimizations
@@ -141,6 +141,10 @@ multiplyAdj(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
 }
 
 
+#if 0
+// Do not use this routine - for some unknown reason on P4 it is slowly than
+// the default code!!
+
 // Optimized version of  
 //   PColorMatrix<RComplexFloat,3> <- adj(PColorMatrix<RComplexFloat,3>) * adj(PColorMatrix<RComplexFloat,3>)
 inline BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
@@ -155,6 +159,7 @@ adjMultiplyAdj(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 
   return d;
 }
+#endif
 
 
 // Optimized version of  
