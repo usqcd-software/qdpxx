@@ -39,7 +39,8 @@ EXTRA_PROGRAMS  = t_qio t_qio_factory
 
 
 if BUILD_WILSON_EXAMPLES
-check_PROGRAMS += t_dslashm t_formfac t_spectrum t_qdp t_foo t_linalg t_dslash5
+check_PROGRAMS += t_dslashm t_formfac t_spectrum t_qdp t_foo t_linalg 
+EXTRA_PROGRAMS += t_dslash5
 endif
 
 
