@@ -467,7 +467,7 @@ namespace has entry points that allow a user to inquire about the
 lattice layout to facilitate accessing single site data from a QDP
 lattice field. For code written entirely with other QDP calls, these
 routines may be ignored by the user, with the exception of the useful
-routine \verb|latticeCoordinates|.  However, if a user removes data
+routine \verb|latticeCoordinate|.  However, if a user removes data
 from a QDP lattice object (see \verb|expose| or \verb|extract|) and
 wishes to manipulate the data on a site-by-site basis, the global
 entry points provided here are needed to locate the site data.
@@ -579,18 +579,32 @@ They provide generic user information.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Prototype      & {\tt \tLatticeInt} \verb|latticeCoordinate(int i)|\\
+  Prototype      & {\tt \tLatticeInt} \verb|Layout::latticeCoordinate(int d)|\\
   \hline
-  Purpose        & The {\tt i}th spacetime coordinate. \\
+  Purpose        & The {\tt d}th spacetime coordinate. \\
   \hline
-  Example        & {\tt \tLatticeInt{} coord = latticeCoordinate(2);} \\
+  Example        & {\tt \tLatticeInt{} coord = Layout::latticeCoordinate(2);} \\
   \hline
  \end{tabular}
 \end{flushleft}
 %
-The call \verb|latticeCoordinate(i)| returns an integer lattice field with a
-value on each site equal to the integer value of the \verb|i|th
+The call \verb|Layout::latticeCoordinate(d)| returns an integer lattice field with a
+value on each site equal to the integer value of the \verb|d|th
 space-time coordinate on that site.
+
+\paragraph{Lattice volume}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Prototype      & {\tt int} \verb|vol()|\\
+  \hline
+  Purpose        & Return the total lattice volume\\
+  \hline
+  Example        & {\tt int vol = Layout::vol();} \\
+  \hline
+ \end{tabular}
+\end{flushleft}
 
 \subsubsection{Entry points specific to the layout}
         
@@ -2509,14 +2523,18 @@ the left hand side of the assignment.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt \tLatticeInt} \verb|latticeCoordinate|({\tt int d})\\
+  Syntax      & {\tt \tLatticeInt} \verb|Layout::latticeCoordinate|({\tt int d})\\
   \hline
   Meaning     & $r = f(d)$ for direction \verb|d|.\\
   \hline
-  Purpose     & Return the lattice coordinates in direction d\\
+  Purpose     & Return the lattice coordinates in direction \verb|d|\\
   \hline
   \end{tabular}
 \end{flushleft}
+%
+The call \verb|Layout::latticeCoordinate(d)| returns an integer lattice field with a
+value on each site equal to the integer value of the \verb|d|th
+space-time coordinate on that site.
 
 \paragraph{Constant fills}
 
