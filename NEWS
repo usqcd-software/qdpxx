@@ -1,6 +1,11 @@
+10/29/2004 -- Robert Edwards
+
+	Version 1.10.4. Bug fix. Fix free'ing of msghandles in parscalar
+        and parscalarvec per the new QMP-2 specification.
+
 10/22/2004 -- Robert Edwards
 
-	Version 1.10.4. Added staggered propagator typedefs.
+	Version 1.10.3. Added staggered propagator typedefs.
 
 10/18/2004 -- Robert Edwards
 
