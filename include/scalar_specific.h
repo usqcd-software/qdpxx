@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.25 2003-04-17 03:47:02 edwards Exp $
+// $Id: scalar_specific.h,v 1.26 2003-04-17 18:48:13 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -901,8 +901,8 @@ template<class T> void QDPFactoryPut(char *buf, const int crd[], void *arg)
     return;
   }
 
-  void *src = (void *)&(field->elem(Layout::linearSiteIndex(coord)));
-  memcpy(buf,src,sizeof(T));
+  void *dest = (void *)&(field->elem(Layout::linearSiteIndex(coord)));
+  memcpy(dest,buf,sizeof(T));
 }
 
 
@@ -931,8 +931,8 @@ template<class T> void QDPFactoryGet(char *buf, const int crd[], void *arg)
     return;
   }
 
-  void *dest = (void *)&(field->elem(Layout::linearSiteIndex(coord)));
-  memcpy(dest,buf,sizeof(T));
+  void *src = (void *)&(field->elem(Layout::linearSiteIndex(coord)));
+  memcpy(buf,src,sizeof(T));
 }
 
 
