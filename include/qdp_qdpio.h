@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.13 2004-03-07 21:39:14 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.14 2004-03-09 02:14:46 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -95,6 +95,7 @@ protected:
   QIO_Reader *get() const {return qio_in;}
 
 private:
+  bool bad_state;
   bool iop;
   QIO_Reader *qio_in;
 };
@@ -176,6 +177,7 @@ protected:
   QIO_Writer *get() const {return qio_out;}
 
 private:
+  bool bad_state;
   bool iop;
   QIO_Writer *qio_out;
 };
