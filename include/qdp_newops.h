@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_newops.h,v 1.12 2004-06-30 21:49:20 edwards Exp $
+// $Id: qdp_newops.h,v 1.13 2004-07-27 05:28:16 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -45,11 +45,6 @@ struct FnInnerProduct
 struct FnInnerProductReal
 {
   PETE_EMPTY_CONSTRUCTORS(FnInnerProductReal)
-};
-
-struct FnSliceSum
-{
-  PETE_EMPTY_CONSTRUCTORS(FnSliceSum)
 };
 
 struct FnSumMulti
@@ -290,57 +285,6 @@ peekSpin(const QDPExpr<T1,C1> & l, int row)
 
 
 //---------------------------------------
-//! Structure for extracting domain-wall vector components
-struct FnPeekDWVector
-{
-  PETE_EMPTY_CONSTRUCTORS(FnPeekDWVector)
-
-  FnPeekDWVector(int _row): row(_row) {}
-  
-  template<class T>
-  inline typename UnaryReturn<T, FnPeekDWVector>::Type_t
-  operator()(const T &a) const
-  {
-    return (peekDW(a,row));
-  }
-
-private:
-  int row;
-};
-
-
-//! Extract color vector components
-/*! @ingroup group1
-  @relates QDPType */
-template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnPeekDWVector,
-  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
-  typename UnaryReturn<C1,FnPeekDWVector >::Type_t >::Expression_t
-peekDW(const QDPType<T1,C1> & l, int row)
-{
-  typedef UnaryNode<FnPeekDWVector,
-    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnPeekDWVector >::Type_t Container_t;
-  return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekDWVector(row),
-    CreateLeaf<QDPType<T1,C1> >::make(l)));
-}
-
-
-template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnPeekDWVector,
-  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
-peekDW(const QDPExpr<T1,C1> & l, int row)
-{
-  typedef UnaryNode<FnPeekDWVector,
-    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnPeekDWVector >::Type_t Container_t;
-  return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekDWVector(row),
-    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
-}
-
-
-
-//---------------------------------------
 //! Structure for inserting color matrix components
 struct FnPokeColorMatrix
 {
@@ -375,7 +319,7 @@ inline C1&
 pokeColor(QDPType<T1,C1> & l, const QDPType<T2,C2>& r, int row, int col)
 {
   C1& ll = static_cast<C1&>(l);
-  evaluate(ll,FnPokeColorMatrix(row,col),PETE_identity(r));
+  evaluate(ll,FnPokeColorMatrix(row,col),PETE_identity(r),all);
   return ll;
 }
 
@@ -385,7 +329,7 @@ inline C1&
 pokeColor(QDPType<T1,C1> & l, const QDPExpr<T2,C2>& r, int row, int col)
 {
   C1& ll = static_cast<C1&>(l);
-  evaluate(ll,FnPokeColorMatrix(row,col),r);
+  evaluate(ll,FnPokeColorMatrix(row,col),r,all);
   return ll;
 }
 
@@ -448,7 +392,7 @@ inline C1&
 pokeColor(QDPType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
 {
   C1& ll = static_cast<C1&>(l);
-  evaluate(ll,FnPokeColorVector(row),PETE_identity(r));
+  evaluate(ll,FnPokeColorVector(row),PETE_identity(r),all);
   return ll;
 }
 
@@ -457,7 +401,7 @@ inline C1&
 pokeColor(QDPType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
 {
   C1& ll = static_cast<C1&>(l);
-  evaluate(ll,FnPokeColorVector(row),r);
+  evaluate(ll,FnPokeColorVector(row),r,all);
   return ll;
 }
 
@@ -519,7 +463,7 @@ inline C1&
 pokeSpin(QDPType<T1,C1> & l, const QDPType<T2,C2>& r, int row, int col)
 {
   C1& ll = static_cast<C1&>(l);
-  evaluate(ll,FnPokeSpinMatrix(row,col),PETE_identity(r));
+  evaluate(ll,FnPokeSpinMatrix(row,col),PETE_identity(r),all);
   return ll;
 }
 
@@ -528,7 +472,7 @@ inline C1&
 pokeSpin(QDPType<T1,C1> & l, const QDPExpr<T2,C2>& r, int row, int col)
 {
   C1& ll = static_cast<C1&>(l);
-  evaluate(ll,FnPokeSpinMatrix(row,col),r);
+  evaluate(ll,FnPokeSpinMatrix(row,col),r,all);
   return ll;
 }
 
@@ -591,7 +535,7 @@ inline C1&
 pokeSpin(QDPType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
 {
   C1& ll = static_cast<C1&>(l);
-  evaluate(ll,FnPokeSpinVector(row),PETE_identity(r));
+  evaluate(ll,FnPokeSpinVector(row),PETE_identity(r),all);
   return ll;
 }
 
@@ -600,7 +544,7 @@ inline C1&
 pokeSpin(QDPType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
 {
   C1& ll = static_cast<C1&>(l);
-  evaluate(ll,FnPokeSpinVector(row),r);
+  evaluate(ll,FnPokeSpinVector(row),r,all);
   return ll;
 }
 
@@ -627,101 +571,6 @@ pokeSpin(const QDPSubType<T1,C1,S>& l, const QDPExpr<T2,C2>& r, int row)
   evaluate(ll,FnPokeSpinVector(row),r,s);
   return ll;
 }
-
-
-
-//---------------------------------------
-//! Structure for inserting domain-wall vector components
-struct FnPokeDWMatrix
-{
-  PETE_EMPTY_CONSTRUCTORS(FnPokeDWMatrix)
-
-  FnPokeDWMatrix(int _row, int _col): row(_row), col(_col) {}
-  
-  template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, FnPokeDWMatrix>::Type_t
-  operator()(const T1 &a, const T2 &b) const
-  {
-    pokeDW(const_cast<T1&>(a),b,row,col);
-    return const_cast<T1&>(a);
-  }
-
-private:
-  int row, col;
-};
-
-//! Structure for inserting domain-wall vector components
-struct FnPokeDWVector
-{
-  PETE_EMPTY_CONSTRUCTORS(FnPokeDWVector)
-
-  FnPokeDWVector(int _row): row(_row) {}
-  
-  template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, FnPokeDWVector>::Type_t
-  operator()(const T1 &a, const T2 &b) const
-  {
-    pokeDW(const_cast<T1&>(a),b,row);
-    return const_cast<T1&>(a);
-  }
-
-private:
-  int row;
-};
-
-
-
-//! Insert color vector components
-/*! @ingroup group1
-  @param l  target to update
-  @param r  source
-  @param row  row of color vector
-  @return updated target
-  @ingroup group1
-  @relates QDPType */
-template<class T1,class C1,class T2,class C2>
-inline C1& 
-pokeDW(QDPType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
-{
-  C1& ll = static_cast<C1&>(l);
-  evaluate(ll,FnPokeDWVector(row),PETE_identity(r));
-  return ll;
-}
-
-template<class T1,class C1,class T2,class C2>
-inline C1& 
-pokeDW(QDPType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
-{
-  C1& ll = static_cast<C1&>(l);
-  evaluate(ll,FnPokeDWVector(row),r);
-  return ll;
-}
-
-
-template<class T1,class C1,class T2,class C2,class S>
-inline C1
-pokeDW(const QDPSubType<T1,C1,S>& l, const QDPType<T2,C2>& r, int row)
-{
-  C1& ll = const_cast<QDPSubType<T1,C1,S>&>(l).field();
-  const S& s = l.subset();
-
-  evaluate(ll,FnPokeDWVector(row),PETE_identity(r),s);
-  return ll;
-}
-
-
-template<class T1,class C1,class T2,class C2,class S>
-inline C1
-pokeDW(const QDPSubType<T1,C1,S>& l, const QDPExpr<T2,C2>& r, int row)
-{
-  C1& ll = const_cast<QDPSubType<T1,C1,S>&>(l).field();
-  const S& s = l.subset();
-
-  evaluate(ll,FnPokeDWVector(row),r,s);
-  return ll;
-}
-
-
 
 
 
@@ -776,7 +625,7 @@ struct OpMultiplyGammaType
 //-----------------------------------------------------------------------------
 // Leaf stuff
 //-----------------------------------------------------------------------------
-#if 1
+
 template<int N>
 struct CreateLeaf<GammaType<N> >
 {
@@ -804,7 +653,33 @@ struct LeafFunctor<GammaType<N>, EvalLeaf1>
     {return a;}
 };
 
-#endif
+
+template<int N, int m>
+struct CreateLeaf<GammaConst<N,m> >
+{
+  typedef GammaConst<N,m> Input_t;
+  typedef Input_t Leaf_t;
+
+  inline static
+  Leaf_t make(const Input_t& a) { return Leaf_t(a); }
+};
+
+template<int N, int m>
+struct LeafFunctor<GammaConst<N,m>, ElemLeaf>
+{
+  typedef GammaConst<N,m> Type_t;
+  inline static Type_t apply(const GammaConst<N,m> &a, const ElemLeaf &f)
+    {return a;}
+};
+
+template<int N, int m>
+struct LeafFunctor<GammaConst<N,m>, EvalLeaf1>
+{
+  typedef GammaConst<N,m> Type_t;
+  inline static Type_t apply(const GammaConst<N,m> &a, const EvalLeaf1 &f)
+    {return a;}
+};
+
 
 
 //-----------------------------------------------------------------------------
