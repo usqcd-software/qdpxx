@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_shift.cc,v 1.3 2004-11-22 19:31:31 edwards Exp $
+// $Id: t_shift.cc,v 1.4 2004-12-10 12:02:08 bjoo Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
+  QDPIO::cout << "DONE STARTUP" << endl << flush;
 #if 1
   {
     XMLFileWriter xml("t_shift.xml");
@@ -41,10 +42,12 @@ int main(int argc, char *argv[])
       QDP_info("Newdir: mu= %d",mu);
       push(xml,"newdir");
       write(xml,"mu", mu);
+
       b = shift(a,FORWARD,mu);
       write(xml,"b", b);
+      pop(xml);
     }
-    pop(xml);
+      pop(xml);
   }
 #endif
   

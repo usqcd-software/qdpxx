@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.17 2004-11-22 19:31:31 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.18 2004-12-10 12:02:08 bjoo Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -1196,8 +1196,8 @@ public:
 
 	int dstnum = destnodes_num[0]*sizeof(Site_t);
 	int srcnum = srcenodes_num[0]*sizeof(Site_t);
-	Site_t *send_buf = (Site_t *)(QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE,0)); // packed data to send
-	Site_t *recv_buf = (Site_t *)(QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE,0)); // packed receive data
+	Site_t *send_buf = (Site_t *)(QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE,QMP_COMMS_DEFAULT)); // packed data to send
+	Site_t *recv_buf = (Site_t *)(QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE,QMP_COMMS_DEFAULT)); // packed receive data
 
 	const int my_node = Layout::nodeNumber();
 

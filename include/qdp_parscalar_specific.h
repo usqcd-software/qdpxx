@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.33 2004-11-22 19:31:31 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.34 2004-12-10 12:02:08 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -1057,8 +1057,12 @@ public:
 
 	int dstnum = destnodes_num[0]*sizeof(T1);
 	int srcnum = srcenodes_num[0]*sizeof(T1);
-	QMP_mem_t *send_buf_mem = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE,0); // packed data to send
-	QMP_mem_t *recv_buf_mem = QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE,0); // packed receive data
+
+	// Try getting fast and communicable memory
+	QMP_mem_t *send_buf_mem = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE, QMP_MEM_DEFAULT ); // packed data to send
+	QMP_mem_t *recv_buf_mem = QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE, QMP_MEM_DEFAULT); // packed receive data
+
+
 	T1 *send_buf = (T1 *)QMP_get_memory_pointer(send_buf_mem);
 	T1 *recv_buf = (T1 *)QMP_get_memory_pointer(recv_buf_mem);
 
