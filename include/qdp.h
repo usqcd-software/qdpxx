@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.22 2003-08-05 20:05:50 edwards Exp $
+// $Id: qdp.h,v 1.23 2003-08-05 21:14:34 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -42,8 +42,9 @@
 #if defined(__GNUC__)
 #define QDP_ALIGN8   __attribute__ ((aligned (8)))
 #define QDP_ALIGN16  __attribute__ ((aligned (16)))
-#define QDP_INLINE   __attribute__ ((always_inline,const))
+#define QDP_INLINE   __attribute__ ((always_inline))
 #define QDP_CONST    __attribute__ ((const))
+#define QDP_CINLINE  __attribute__ ((always_inline,const))
 #endif
 
 
