@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primvector.h,v 1.11 2002-11-23 02:23:24 edwards Exp $
+// $Id: primvector.h,v 1.12 2002-11-23 03:45:22 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -100,7 +100,16 @@ public:
 
 
   //! Deep copy constructor
+#if defined(QDP_USE_ARRAY_INITIALIZER)
   PVector(const PVector& a) : F(a.F) {}
+#else
+  /*! This is a copy form - legal but not necessarily efficient */
+  PVector(const PVector& a)
+    {
+      for(int i=0; i < N; ++i)
+	F[i] = a.F[i];
+    }
+#endif
 
 public:
   T& elem(int i) {return F[i];}
