@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.12 2003-01-21 03:37:38 edwards Exp $
+// $Id: parscalar_specific.h,v 1.13 2003-01-21 04:29:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -61,11 +61,33 @@ namespace Internal
     }
   }
 
+  //! Low level hook to QMP_global_sum
+  inline void globalSumArray(int *dest, unsigned int len)
+  {
+    for(unsigned int i=0; i < len; i++, dest++)
+      QMP_sum_int(dest);
+  }
+
+  //! Low level hook to QMP_global_sum
+  inline void globalSumArray(float *dest, unsigned int len)
+  {
+    QMP_sum_float_array(dest, len);
+  }
+
+  //! Low level hook to QMP_global_sum
+  inline void globalSumArray(double *dest, unsigned int len)
+  {
+    QMP_sum_double_array(dest, len);
+  }
+
   //! Sum across all nodes
   template<class T>
   void globalSum(T& dest)
   {
-//    QMP_global_sum((void *)&dest, sizeof(T));
+    // The implementation here is relying on the structure being packed
+    // tightly in memory - no padding
+    typedef typename WordType<T>::Type_t  W;   // find the machine word type
+    globalSumArray((W *)&dest, sizeof(T)/sizeof(W)); // call appropriate hook
   }
 
   //! Broadcast from primary node to all other nodes
