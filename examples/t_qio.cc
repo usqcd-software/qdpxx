@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.20 2005-02-24 17:02:49 bjoo Exp $
+// $Id: t_qio.cc,v 1.21 2005-02-25 12:31:34 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -14,7 +14,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {8,8,8,8};
+  const int foo[] = {16,16,8,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -74,7 +74,15 @@ int main(int argc, char **argv)
 	pop(record_xml);
       }
 
-      QDPFileWriter to(file_xml,"t_qio.lime",volfmt,serpar,QDPIO_OPEN);
+      QDPFileWriter *to_ptr;
+      if (volfmt == QDPIO_SINGLEFILE) { 
+	to_ptr = new QDPFileWriter(file_xml,"t_qio.lime",volfmt,serpar,QDPIO_OPEN);
+      }
+      else { 
+	to_ptr = new QDPFileWriter(file_xml,"t_qio_multi.lime",volfmt, serpar, QDPIO_OPEN);
+      }
+      QDPFileWriter& to = *to_ptr;
+
       write(xml_out, "file_xml", file_xml);
       write(xml_out, "open_to.bad", to.bad());
 
@@ -165,6 +173,7 @@ int main(int argc, char **argv)
       }
 
       close(to);
+      delete to_ptr;
 
       pop(xml_out);   // writing
     }
@@ -175,7 +184,14 @@ int main(int argc, char **argv)
       push(xml_out, "Reading");
 
       XMLReader file_xml, record_xml;
-      QDPFileReader from(file_xml,"t_qio.lime",serpar);
+      QDPFileReader* from_ptr;
+      if( volfmt == QDPIO_SINGLEFILE ) { 
+	from_ptr = new QDPFileReader(file_xml,"t_qio.lime",serpar);
+      }
+      else { 
+	from_ptr = new QDPFileReader(file_xml, "t_qio_multi.lime", serpar);
+      }
+      QDPFileReader& from = *from_ptr;
 
       QDPIO::cout << "Here is the contents of  file_xml" << endl;
       file_xml.print(cout);
