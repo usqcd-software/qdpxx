@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_nml.cc,v 1.1 2003-04-24 05:31:27 edwards Exp $
+// $Id: t_nml.cc,v 1.2 2003-04-25 18:52:21 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -51,15 +51,36 @@ main(int argc, char *argv[])
   Read(nml_in,Seq_src);
   Write(nml_out,Seq_src);
 
-  int numGamma;
-  Read(nml_in,numGamma);
-  Write(nml_out,numGamma);
+#if 0
+  bool my_bool;
+  Read(nml_in,my_bool);
+  Write(nml_out,my_bool);
 
-  multi1d<int> Gamma_list(numGamma);
-  Read(nml_in,Gamma_list);
-  Write(nml_out,Gamma_list);
+  Boolean my_bool2;
+  Read(nml_in,my_bool2);
+  Write(nml_out,my_bool2);
+
+  Seed seed;
+  Read(nml_in,seed);
+  Write(nml_out,seed);
+
+  Complex my_complex;
+  Read(nml_in,my_complex);
+  Write(nml_out,my_complex);
+#endif
 
   pop(nml_in);
+
+#if 0
+  push(nml_in, "Cfg");
+
+  string my_string;
+  Read(nml_in,my_string);
+  Write(nml_out,my_string);
+
+  pop(nml_in);
+#endif
+
   pop(nml_out);
 
   nml_in.close();
