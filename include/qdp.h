@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.13 2003-01-14 04:45:08 edwards Exp $
+// $Id: qdp.h,v 1.14 2003-01-20 15:46:17 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -40,8 +40,6 @@ using namespace std;   // I do not like this
 
 using std::iostream;
 using std::ostream;
-
-#undef DEBUG
 
 #ifndef QDP_INCLUDE
 #define QDP_INCLUDE

@@ -8,4 +8,6 @@
 
 #define VOLUME @ac_max_volume@
 
+#undef DEBUG
+
 #endif 
