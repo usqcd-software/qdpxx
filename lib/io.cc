@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.9 2003-04-10 21:08:04 edwards Exp $
+// $Id: io.cc,v 1.10 2003-04-20 04:03:34 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -72,26 +72,51 @@ TextWriter::~TextWriter() {close();}
 
 //-----------------------------------------
 //! text reader support
-NmlReader::NmlReader() {iop=false;}
+NmlReader::NmlReader() {abs = NULL;iop=false;}
 
 NmlReader::NmlReader(const char* p) {open(p);}
 
 void NmlReader::open(const char* p)
 {
+  abs = NULL;
+
+  // Make a barrier call ?
+
   if (Layout::primaryNode()) 
-    f.open(p,std::ios_base::in);
+  {
+    FILE *f;
+
+    if ((f = fopen(p,"rb")) == NULL)
+      QDP_error_exit("NmlReader: error opening file %s",p);
+    
+    if ((abs = new_abstract("abstract")) == NULL)   // create a parse tree
+      QDP_error_exit("NmlReader: Error initializing file - %s - for reading",p);
+    
+    // Parse from file
+    if (param_scan_file(abs, f) != 0)
+      QDP_error_exit("NmlReader: Error scaning namelist file - %s - for reading",p);
+
+    fclose(f);
+
+    init_nml_section_stack(abs);
+
+    fprintf(stderr,"Section dump\n");
+    print_section(stderr, abs);
+  }
+
+  // Make a barrier call ?
 
   iop=true;
 }
 
 void NmlReader::close()
 {
-  if (is_open()) 
+  if (iop)
   {
     if (Layout::primaryNode()) 
-      f.close();
+      rm_abstract(abs);
 
-    iop=true;
+    iop = false;
   }
 }
 
@@ -100,8 +125,58 @@ bool NmlReader::is_open() {return iop;}
 NmlReader::~NmlReader() {close();}
 
 
+//! Push a namelist group 
+NmlReader& push(NmlReader& nml, const string& s)
+{
+  if (Layout::primaryNode()) 
+    push_nml_section_stack(s.c_str());
+
+  return nml;
+}
+
+//! Pop a namelist group
+NmlReader& pop(NmlReader& nml)
+{
+  if (Layout::primaryNode()) 
+    pop_nml_section_stack();
+
+  return nml;
+}
+
+
+//! Function overload read of  Integer
+NmlReader& read(NmlReader& nml, const string& s, Integer& d)
+{
+  WordType<Integer>::Type_t  dd;
+  read(nml,s,dd);
+  d = dd;
+
+  return nml;
+}
+
+//! Function overload read of  Real
+NmlReader& read(NmlReader& nml, const string& s, Real& d)
+{
+  WordType<Real>::Type_t  dd;
+  read(nml,s,dd);
+  d = dd;
+
+  return nml;
+}
+
+//! Function overload read of  Double
+NmlReader& read(NmlReader& nml, const string& s, Double& d)
+{
+  WordType<Double>::Type_t  dd;
+  read(nml,s,dd);
+  d = dd;
+
+  return nml;
+}
+
+
 //-----------------------------------------
-//! text writer support
+//! namelist writer support
 NmlWriter::NmlWriter() {iop=false;}
 
 NmlWriter::NmlWriter(const char* p) {open(p);}

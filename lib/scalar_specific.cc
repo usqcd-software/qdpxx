@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.11 2003-04-02 21:27:43 edwards Exp $
+// $Id: scalar_specific.cc,v 1.12 2003-04-20 04:03:34 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -154,6 +154,42 @@ void Map::make(const MapFunc& func)
   for(int ipos=0; ipos < Layout::vol(); ++ipos)
     fprintf(stderr,"soffsets(%d,%d,%d) = %d\n",ipos,soffsets(ipos));
 #endif
+}
+
+
+//-----------------------------------------------------------------------------
+//! Function overload read of  int
+NmlReader& read(NmlReader& nml, const string& s, int& d)
+{
+  param_int_array(&d, get_current_nml_section(), s.c_str(), 0);
+  return nml;
+}
+
+//! Function overload read of  float
+NmlReader& read(NmlReader& nml, const string& s, float& d)
+{
+  param_float_array(&d, get_current_nml_section(), s.c_str(), 0);
+  return nml;
+}
+
+//! Function overload read of  double
+NmlReader& read(NmlReader& nml, const string& s, double& d)
+{
+  param_double_array(&d, get_current_nml_section(), s.c_str(), 0);
+  return nml;
+}
+
+//! Function overload read of  Complex
+NmlReader& read(NmlReader& nml, const string& s, Complex& d)
+{
+  WordType<Complex>::Type_t  dre, dim;
+  param_complex_float_array(&dre, &dim, get_current_nml_section(), s.c_str(), 0);
+
+  Real Dre(dre);
+  Real Dim(dim);
+  d = cmplx(Dre,Dim);
+
+  return nml;
 }
 
 

@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.16 2003-04-09 19:32:27 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.17 2003-04-20 04:03:34 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -355,5 +355,63 @@ namespace Internal
   }
 
 };
+
+
+//-----------------------------------------------------------------------------
+//! Function overload read of  int
+NmlReader& read(NmlReader& nml, const string& s, int& d)
+{
+  if (Layout::primaryNode()) 
+    param_int_array(&d, get_current_nml_section(), s.c_str(), 0);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+
+  return nml;
+}
+
+//! Function overload read of  float
+NmlReader& read(NmlReader& nml, const string& s, float& d)
+{
+  if (Layout::primaryNode()) 
+    param_float_array(&d, get_current_nml_section(), s.c_str(), 0);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+
+  return nml;
+}
+
+//! Function overload read of  double
+NmlReader& read(NmlReader& nml, const string& s, double& d)
+{
+  if (Layout::primaryNode()) 
+    param_double_array(&d, get_current_nml_section(), s.c_str(), 0);
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+
+  return nml;
+}
+
+//! Function overload read of  Complex
+NmlReader& read(NmlReader& nml, const string& s, Complex& d)
+{
+  if (Layout::primaryNode()) 
+  {
+    WordType<Complex>::Type_t  dre, dim;
+    param_complex_float_array(&dre, &dim, get_current_nml_section(), s.c_str(), 0);
+
+    Real Dre(dre);
+    Real Dim(dim);
+    d = cmplx(Dre,Dim);
+  }
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(d);
+
+  return nml;
+}
+
 
 QDP_END_NAMESPACE();

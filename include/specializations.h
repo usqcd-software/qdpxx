@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: specializations.h,v 1.6 2002-12-06 04:36:26 edwards Exp $
+// $Id: specializations.h,v 1.7 2003-04-20 04:03:34 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -39,6 +39,19 @@ toBool(const Boolean& s)
 {
   return toBool(s.elem());
 }
+
+
+//! Function overload read of  Integer
+NmlReader& read(NmlReader& nml, const string& s, Integer& d);
+
+//! Function overload read of  Real
+NmlReader& read(NmlReader& nml, const string& s, Real& d);
+
+//! Function overload read of  Double
+NmlReader& read(NmlReader& nml, const string& s, Double& d);
+
+//! Function overload read of  Complex
+NmlReader& read(NmlReader& nml, const string& s, Complex& d);
 
 
 //

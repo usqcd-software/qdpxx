@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.12 2003-04-10 18:36:09 edwards Exp $
+// $Id: io.h,v 1.13 2003-04-20 04:03:34 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -8,6 +8,8 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+
+#include "qcd-nml.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -91,7 +93,7 @@ public:
 #endif
 
 
-//! Simple input namelist class
+//! Namelist reader class
 class NmlReader
 {
 public:
@@ -108,11 +110,55 @@ public:
 
 private:
   bool iop;
-  std::ifstream f;
+  section *abs;    // Abstract - holds parse tree
 };
 
+//! Push a namelist group 
+NmlReader& push(NmlReader& nml, const string& s);
+
+//! Pop a namelist group
+NmlReader& pop(NmlReader& nml);
+
+//! Function overload read of  int
+NmlReader& read(NmlReader& nml, const string& s, int& d);
+
+//! Function overload read of  float
+NmlReader& read(NmlReader& nml, const string& s, float& d);
+
+//! Function overload read of  double
+NmlReader& read(NmlReader& nml, const string& s, double& d);
+
+//! Read a namelist multi1d element
+template<class T>
+inline
+NmlReader& read(NmlReader& nml, const string& s, multi1d<T>& s1)
+{
+  for(int i=0; i < s1.size(); ++i)
+    read(nml, s, s1[i]);
+
+  return nml;
+}
+
+//! Read a namelist multi2d element
+template<class T> 
+inline
+NmlReader& read(NmlReader& nml, const string& s, multi2d<T>& s1)
+{
+  for(int j=0; j < s1.size1(); ++j)
+    for(int i=0; i < s1.size2(); ++i)
+      read(nml, s, s1[i][j]);
+
+  return nml;
+}
+
+#define READ_NAMELIST(nml,a) read(nml,#a,a)
+#define Read(nml,a) read(nml,#a,a)
 
 
+
+
+//-----------------------------------------
+// namelist writer support
 //! Simple output namelist class
 class NmlWriter
 {
