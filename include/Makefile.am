@@ -58,6 +58,7 @@ nobase_include_HEADERS = \
 		qdp_params.h \
 		qdp_primcolormat.h \
 		qdp_primcolorvec.h \
+		qdp_primdwvec.h \
 		qdp_primgamma.h \
 		qdp_primitive.h \
 		qdp_primmatrix.h \
