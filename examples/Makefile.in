@@ -13,7 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_xml_SOURCES)
+SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_xml_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -43,7 +43,7 @@ check_PROGRAMS = t_skeleton$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
 EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_binx$(EXEEXT) \
 	$(am__EXEEXT_1)
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_1 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
-@BUILD_WILSON_EXAMPLES_TRUE@am__append_2 = t_foo t_blas t_cblas t_blas_g5
+@BUILD_WILSON_EXAMPLES_TRUE@am__append_2 = t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2
 @BUILD_STAGGERED_EXAMPLES_TRUE@am__append_3 = 
 subdir = examples
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
@@ -57,7 +57,8 @@ CONFIG_HEADER = $(top_builddir)/include/qdp_config_internal.h
 CONFIG_CLEAN_FILES =
 @BUILD_WILSON_EXAMPLES_TRUE@am__EXEEXT_1 = t_foo$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_blas$(EXEEXT) t_cblas$(EXEEXT) \
-@BUILD_WILSON_EXAMPLES_TRUE@	t_blas_g5$(EXEEXT)
+@BUILD_WILSON_EXAMPLES_TRUE@	t_blas_g5$(EXEEXT) \
+@BUILD_WILSON_EXAMPLES_TRUE@	t_blas_g5_2$(EXEEXT)
 @BUILD_WILSON_EXAMPLES_TRUE@am__EXEEXT_2 = t_dslashm$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_formfac$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_spectrum$(EXEEXT) t_qdp$(EXEEXT) \
@@ -80,6 +81,10 @@ am_t_blas_g5_OBJECTS = t_blas_g5.$(OBJEXT) $(am__objects_1)
 t_blas_g5_OBJECTS = $(am_t_blas_g5_OBJECTS)
 t_blas_g5_LDADD = $(LDADD)
 t_blas_g5_DEPENDENCIES =
+am_t_blas_g5_2_OBJECTS = t_blas_g5_2.$(OBJEXT) $(am__objects_1)
+t_blas_g5_2_OBJECTS = $(am_t_blas_g5_2_OBJECTS)
+t_blas_g5_2_LDADD = $(LDADD)
+t_blas_g5_2_DEPENDENCIES =
 am_t_cblas_OBJECTS = t_cblas.$(OBJEXT) cblas1.$(OBJEXT)
 t_cblas_OBJECTS = $(am_t_cblas_OBJECTS)
 t_cblas_LDADD = $(LDADD)
@@ -177,21 +182,23 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
-	$(t_blas_g5_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
-	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
-	$(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) \
-	$(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) \
-	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
-	$(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) \
-	$(t_spectrum_SOURCES) $(t_xml_SOURCES)
+	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) $(t_cblas_SOURCES) \
+	$(t_cugauge_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) \
+	$(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) \
+	$(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) \
+	$(t_nersc_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) \
+	$(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
+	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
+	$(t_xml_SOURCES)
 DIST_SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
-	$(t_blas_g5_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
-	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
-	$(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) \
-	$(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) \
-	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
-	$(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) \
-	$(t_spectrum_SOURCES) $(t_xml_SOURCES)
+	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) $(t_cblas_SOURCES) \
+	$(t_cugauge_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) \
+	$(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) \
+	$(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) \
+	$(t_nersc_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) \
+	$(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
+	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
+	$(t_xml_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -362,6 +369,7 @@ t_linalg_SOURCES = t_linalg.cc linalg1.cc linalg.h
 t_blas_SOURCES = t_blas.cc blas1.cc blas1.h
 t_cblas_SOURCES = t_cblas.cc cblas1.cc cblas1.h 
 t_blas_g5_SOURCES = t_blas_g5.cc $(HDRS)
+t_blas_g5_2_SOURCES = t_blas_g5_2.cc $(HDRS)
 t_cugauge_SOURCES = t_cugauge.cc mesplq.cc $(HDRS) 
 all: all-am
 
@@ -411,6 +419,9 @@ t_blas$(EXEEXT): $(t_blas_OBJECTS) $(t_blas_DEPENDENCIES)
 t_blas_g5$(EXEEXT): $(t_blas_g5_OBJECTS) $(t_blas_g5_DEPENDENCIES) 
 	@rm -f t_blas_g5$(EXEEXT)
 	$(CXXLINK) $(t_blas_g5_LDFLAGS) $(t_blas_g5_OBJECTS) $(t_blas_g5_LDADD) $(LIBS)
+t_blas_g5_2$(EXEEXT): $(t_blas_g5_2_OBJECTS) $(t_blas_g5_2_DEPENDENCIES) 
+	@rm -f t_blas_g5_2$(EXEEXT)
+	$(CXXLINK) $(t_blas_g5_2_LDFLAGS) $(t_blas_g5_2_OBJECTS) $(t_blas_g5_2_LDADD) $(LIBS)
 t_cblas$(EXEEXT): $(t_cblas_OBJECTS) $(t_cblas_DEPENDENCIES) 
 	@rm -f t_cblas$(EXEEXT)
 	$(CXXLINK) $(t_cblas_LDFLAGS) $(t_cblas_OBJECTS) $(t_cblas_LDADD) $(LIBS)
@@ -490,6 +501,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_binx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_blas.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_blas_g5.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_blas_g5_2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_cblas.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_cugauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_dslashm.Po@am__quote@
