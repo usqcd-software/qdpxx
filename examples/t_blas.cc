@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.7 2004-04-01 13:17:44 bjoo Exp $
+// $Id: t_blas.cc,v 1.8 2004-08-02 14:53:51 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -40,10 +40,10 @@ int main(int argc, char *argv[])
   for(int site=all.start(); site <= all.end(); site++) { 
 	for(int spin=0; spin < Ns; spin++) { 
 	   for(int col =0; col < Nc; col++) { 
-	     rc += qx.elem(site).elem(spin).elem(col).real().elem()
-		 * qx.elem(site).elem(spin).elem(col).real().elem();
-	     rc += qx.elem(site).elem(spin).elem(col).imag().elem()
-	         * qx.elem(site).elem(spin).elem(col).imag().elem();
+	     rc += qx.elem(site).elem(spin).elem(col).real()
+		 * qx.elem(site).elem(spin).elem(col).real();
+	     rc += qx.elem(site).elem(spin).elem(col).imag()
+	         * qx.elem(site).elem(spin).elem(col).imag();
            }
         }
   } 
@@ -524,11 +524,11 @@ int main(int argc, char *argv[])
   for(int site=all.start(); site <= all.end(); site++) { 
     for(int spin = 0; spin < Ns; spin++) { 
       for(int col = 0; col < Nc; col++) {
-	RComplex<PScalar<REAL> > rca= conj(qy.elem(site).elem(spin).elem(col));
-	RComplex<PScalar<REAL> > rcb= qx.elem(site).elem(spin).elem(col);
+	RComplex<REAL> rca= conj(qy.elem(site).elem(spin).elem(col));
+	RComplex<REAL> rcb= qx.elem(site).elem(spin).elem(col);
 
-	DComplex ca=cmplx(Double(rca.real().elem()), Double(rca.imag().elem()));
-	DComplex cb=cmplx(Double(rcb.real().elem()), Double(rcb.imag().elem()));
+	DComplex ca=cmplx(Double(rca.real()), Double(rca.imag()));
+	DComplex cb=cmplx(Double(rcb.real()), Double(rcb.imag()));
 
 	accum += ca*cb;
       }
@@ -536,8 +536,8 @@ int main(int argc, char *argv[])
   }
   Internal::globalSum(accum); 
   Complex fred = innerProduct(qy, qx);
-  DComplex dfred = cmplx(Double(fred.elem().elem().elem().real().elem()),
-			 Double(fred.elem().elem().elem().imag().elem()));
+  DComplex dfred = cmplx(Double(fred.elem().elem().elem().real()),
+			 Double(fred.elem().elem().elem().imag()));
 
   DComplex diff = accum - dfred;
   QDPIO::cout << "Diff innerProduct = " << diff << endl;
@@ -546,11 +546,11 @@ int main(int argc, char *argv[])
   for(int site=(rb[1]).start(); site <= (rb[1]).end(); site++) { 
     for(int spin = 0; spin < Ns; spin++) { 
       for(int col = 0; col < Nc; col++) {
-	RComplex<PScalar<REAL> > rca= conj(qy.elem(site).elem(spin).elem(col));
-	RComplex<PScalar<REAL> > rcb= qx.elem(site).elem(spin).elem(col);
+	RComplex<REAL> rca= conj(qy.elem(site).elem(spin).elem(col));
+	RComplex<REAL> rcb= qx.elem(site).elem(spin).elem(col);
 
-	DComplex ca=cmplx(Double(rca.real().elem()), Double(rca.imag().elem()));
-	DComplex cb=cmplx(Double(rcb.real().elem()), Double(rcb.imag().elem()));
+	DComplex ca=cmplx(Double(rca.real()), Double(rca.imag()));
+	DComplex cb=cmplx(Double(rcb.real()), Double(rcb.imag()));
 
 	accum += ca*cb;
       }
@@ -558,8 +558,8 @@ int main(int argc, char *argv[])
   }
   Internal::globalSum(accum); 
   fred = innerProduct(qy, qx, rb[1]);
-  dfred = cmplx(Double(fred.elem().elem().elem().real().elem()),
-			 Double(fred.elem().elem().elem().imag().elem()));
+  dfred = cmplx(Double(fred.elem().elem().elem().real()),
+			 Double(fred.elem().elem().elem().imag()));
 
   diff = accum - dfred;
   QDPIO::cout << "Diff innerProduct Subset = " << diff << endl;
@@ -568,14 +568,14 @@ int main(int argc, char *argv[])
   for(int site=all.start(); site <= all.end(); site++) { 
     for(int spin = 0; spin < Ns; spin++) { 
       for(int col = 0; col < Nc; col++) {
-	RComplex<PScalar<REAL> > rca= conj(qy.elem(site).elem(spin).elem(col));
-	RComplex<PScalar<REAL> > rcb= qx.elem(site).elem(spin).elem(col);
+	RComplex<REAL> rca= conj(qy.elem(site).elem(spin).elem(col));
+	RComplex<REAL> rcb= qx.elem(site).elem(spin).elem(col);
 
-	DComplex ca=cmplx(Double(rca.real().elem()), Double(rca.imag().elem()));
-	DComplex cb=cmplx(Double(rcb.real().elem()), Double(rcb.imag().elem()));
+	DComplex ca=cmplx(Double(rca.real()), Double(rca.imag()));
+	DComplex cb=cmplx(Double(rcb.real()), Double(rcb.imag()));
 
 	DComplex dctmp = ca*cb;
-	daccum += Double(dctmp.elem().elem().elem().real().elem());
+	daccum += Double(dctmp.elem().elem().elem().real());
       }
     }
   }
@@ -589,14 +589,14 @@ int main(int argc, char *argv[])
   for(int site=(rb[1]).start(); site <= (rb[1]).end(); site++) { 
     for(int spin = 0; spin < Ns; spin++) { 
       for(int col = 0; col < Nc; col++) {
-	RComplex<PScalar<REAL> > rca= conj(qy.elem(site).elem(spin).elem(col));
-	RComplex<PScalar<REAL> > rcb= qx.elem(site).elem(spin).elem(col);
+	RComplex<REAL> rca= conj(qy.elem(site).elem(spin).elem(col));
+	RComplex<REAL> rcb= qx.elem(site).elem(spin).elem(col);
 
-	DComplex ca=cmplx(Double(rca.real().elem()), Double(rca.imag().elem()));
-	DComplex cb=cmplx(Double(rcb.real().elem()), Double(rcb.imag().elem()));
+	DComplex ca=cmplx(Double(rca.real()), Double(rca.imag()));
+	DComplex cb=cmplx(Double(rcb.real()), Double(rcb.imag()));
 
 	DComplex dctmp = ca*cb;
-	daccum += Double(dctmp.elem().elem().elem().real().elem());
+	daccum += Double(dctmp.elem().elem().elem().real());
       }
     }
   }
