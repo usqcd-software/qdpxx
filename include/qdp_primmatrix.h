@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.21 2004-07-07 01:58:19 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.22 2004-07-07 20:10:46 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -1504,12 +1504,13 @@ localNorm2(const PMatrix<T,N,C>& s1)
 }
 
 
-//! PScalar<T> = InnerProduct(adj(PMatrix<T1>)*PMatrix<T1>)
+//! PScalar = innerProduct(PMatrix,PMatrix)
 template<class T1, class T2, int N, template<class,int> class C>
 struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnInnerProduct> {
   typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
+//! PScalar = localInnerProduct(PMatrix,PMatrix)
 template<class T1, class T2, int N, template<class,int> class C>
 struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnLocalInnerProduct> {
   typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
@@ -1532,8 +1533,46 @@ localInnerProduct(const PMatrix<T1,N,C>& s1, const PMatrix<T2,N,C>& s2)
   return d;
 }
 
+//! PScalar = localInnerProduct(PMatrix,PScalar)
+template<class T1, class T2, int N, template<class,int> class C>
+struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
+};
 
-//! PScalar<T> = InnerProductReal(adj(PMatrix<T1>)*PMatrix<T1>)
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProduct>::Type_t
+localInnerProduct(const PMatrix<T1,N,C>& s1, const PScalar<T2>& s2)
+{
+  typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProduct>::Type_t  d;
+
+  d.elem() = localInnerProduct(s1.elem(0,0), s2.elem());
+  for(int k=1; k < N; ++k)
+    d.elem() += localInnerProduct(s1.elem(k,k), s2.elem());
+
+  return d;
+}
+
+//! PScalar = localInnerProduct(PScalar,PMatrix)
+template<class T1, class T2, int N, template<class,int> class C>
+struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProduct>::Type_t
+localInnerProduct(const PScalar<T1>& s1, const PMatrix<T2,N,C>& s2)
+{
+  typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProduct>::Type_t  d;
+
+  d.elem() = localInnerProduct(s1.elem(), s2.elem(0,0));
+  for(int k=1; k < N; ++k)
+    d.elem() += localInnerProduct(s1.elem(), s2.elem(k,k));
+
+  return d;
+}
+
+
+//! PScalar = innerProductReal(PMatrix,PMatrix)
 /*!
  * return  realpart of InnerProduct(adj(s1)*s2)
  */
@@ -1542,6 +1581,7 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnInnerProductReal > {
   typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
 };
 
+//! PScalar = innerProductReal(PMatrix,PMatrix)
 template<class T1, class T2, int N, template<class,int> class C>
 struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnLocalInnerProductReal > {
   typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
@@ -1560,6 +1600,44 @@ localInnerProductReal(const PMatrix<T1,N,C>& s1, const PMatrix<T2,N,C>& s2)
   for(int j=1; j < N; ++j)
     for(int k=0; k < N; ++k)
       d.elem() += localInnerProductReal(s1.elem(k,j), s2.elem(k,j));
+
+  return d;
+}
+
+//! PScalar = localInnerProductReal(PMatrix,PScalar)
+template<class T1, class T2, int N, template<class,int> class C>
+struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProductReal > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProductReal>::Type_t
+localInnerProductReal(const PMatrix<T1,N,C>& s1, const PScalar<T2>& s2)
+{
+  typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProductReal>::Type_t  d;
+
+  d.elem() = localInnerProductReal(s1.elem(0,0), s2.elem());
+  for(int k=1; k < N; ++k)
+    d.elem() += localInnerProductReal(s1.elem(k,0), s2.elem(k,k));
+
+  return d;
+}
+
+//! PScalar = localInnerProductReal(PScalar,PMatrix)
+template<class T1, class T2, int N, template<class,int> class C>
+struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProductReal > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProductReal>::Type_t
+localInnerProductReal(const PScalar<T1>& s1, const PMatrix<T2,N,C>& s2)
+{
+  typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProductReal>::Type_t  d;
+
+  d.elem() = localInnerProductReal(s1.elem(), s2.elem(0,0));
+  for(int k=1; k < N; ++k)
+    d.elem() += localInnerProductReal(s1.elem(), s2.elem(k,k));
 
   return d;
 }
