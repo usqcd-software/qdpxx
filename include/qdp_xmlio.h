@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.4 2003-05-22 18:24:36 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.5 2003-05-22 19:02:02 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -17,8 +17,8 @@ QDP_BEGIN_NAMESPACE(QDP);
 // Forward declarations
 class XMLReader;
 class XMLWriter;
-class XMLMetaWriter;
-class XMLDataWriter;
+class XMLBufferWriter;
+class XMLFileWriter;
 
 
 /*! @addtogroup io
@@ -42,15 +42,15 @@ public:
   //! Construct from contents of stream
   XMLReader(std::istream& is);
 
-  //! Construct from contents of a XMLMetaWriter
-  XMLReader(const XMLMetaWriter& mw);
+  //! Construct from contents of a XMLBufferWriter
+  XMLReader(const XMLBufferWriter& mw);
 
   ~XMLReader();
 
   /* The meaning of these should be clear to you */
   void open(const std::string& filename);
   void open(std::istream& is);
-  void open(const XMLMetaWriter& mw);
+  void open(const XMLBufferWriter& mw);
   bool is_open();
   void close();
     
@@ -141,9 +141,9 @@ void pop(XMLWriter& xml);
 void write(XMLWriter& xml, const std::string& s, const XMLReader& d);
 XMLWriter& operator<<(XMLWriter& xml, const XMLReader& d);
 
-//! Write something from a XMLMetaWriter
-void write(XMLWriter& xml, const std::string& s, const XMLMetaWriter& d);
-XMLWriter& operator<<(XMLWriter& xml, const XMLMetaWriter& d);
+//! Write something from a XMLBufferWriter
+void write(XMLWriter& xml, const std::string& s, const XMLBufferWriter& d);
+XMLWriter& operator<<(XMLWriter& xml, const XMLBufferWriter& d);
 
 // Time to build a telephone book of basic primitives
 void write(XMLWriter& xml, const std::string& s, const std::string& d);
@@ -265,15 +265,15 @@ void write(XMLWriter& xml, const std::string& s, const multi2d<T>& s1)
 
 //--------------------------------------------------------------------------------
 //! Write metadata to a buffer
-class XMLMetaWriter : public XMLWriter
+class XMLBufferWriter : public XMLWriter
 {
 public:
   //! Constructor
   /*! No prologue written */
-  XMLMetaWriter();
+  XMLBufferWriter();
   
   //! Destructor
-  ~XMLMetaWriter();
+  ~XMLBufferWriter();
 
   // Return entire stream as a string
   std::string str();
@@ -292,20 +292,20 @@ private:
 
 //--------------------------------------------------------------------------------
 //! Write data to a file
-class XMLDataWriter : public XMLWriter
+class XMLFileWriter : public XMLWriter
 {
 public:
   //! Empty constructor
-  XMLDataWriter();
+  XMLFileWriter();
 
   //! Constructor from a filename
-  explicit XMLDataWriter(const std::string& filename, bool write_prologue=true)
+  explicit XMLFileWriter(const std::string& filename, bool write_prologue=true)
     {
       open(filename, write_prologue);
     }
 
   //! Destructor
-  ~XMLDataWriter();
+  ~XMLFileWriter();
 
   bool is_open();
   void open(const std::string& filename, bool write_prologue=true)

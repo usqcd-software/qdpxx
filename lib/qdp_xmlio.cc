@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.4 2003-05-22 18:24:36 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.5 2003-05-22 19:02:03 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -27,7 +27,7 @@ XMLReader::XMLReader(std::istream& is)
   open(is);
 }
 
-XMLReader::XMLReader(const XMLMetaWriter& mw)
+XMLReader::XMLReader(const XMLBufferWriter& mw)
 {
   iop=false;
   open(mw);
@@ -49,10 +49,10 @@ void XMLReader::open(std::istream& is)
   iop = true;
 }
 
-void XMLReader::open(const XMLMetaWriter& mw)
+void XMLReader::open(const XMLBufferWriter& mw)
 {
   if (Layout::primaryNode())
-    BasicXPathReader::open(const_cast<XMLMetaWriter&>(mw).str());
+    BasicXPathReader::open(const_cast<XMLBufferWriter&>(mw).str());
 
   iop = true;
 }
@@ -325,17 +325,17 @@ XMLWriter& operator<<(XMLWriter& xml, const XMLReader& d)
   xml.writeXML(os.str());
 }
 
-// Write something from a XMLMetaWriter
-void write(XMLWriter& xml, const std::string& s, const XMLMetaWriter& d)
+// Write something from a XMLBufferWriter
+void write(XMLWriter& xml, const std::string& s, const XMLBufferWriter& d)
 {
   xml.openTag(s);
   xml << d;
   xml.closeTag();
 }
 
-XMLWriter& operator<<(XMLWriter& xml, const XMLMetaWriter& d)
+XMLWriter& operator<<(XMLWriter& xml, const XMLBufferWriter& d)
 {
-  xml.writeXML(const_cast<XMLMetaWriter&>(d).printRoot());
+  xml.writeXML(const_cast<XMLBufferWriter&>(d).printRoot());
 }
 
 // Time to build a telephone book of basic primitives
@@ -390,9 +390,9 @@ XMLWriter& operator<<(XMLWriter& xml, const bool& d) {xml.write(d);return xml;}
 
 //--------------------------------------------------------------------------------
 // Metadata writer class
-XMLMetaWriter::XMLMetaWriter() {indent_level=0;}
+XMLBufferWriter::XMLBufferWriter() {indent_level=0;}
 
-string XMLMetaWriter::str()
+string XMLBufferWriter::str()
 {
   ostringstream s;
   
@@ -405,16 +405,16 @@ string XMLMetaWriter::str()
   return s.str();
 }
 
-string XMLMetaWriter::printRoot() {return output_stream.str();}
+string XMLBufferWriter::printRoot() {return output_stream.str();}
 
-XMLMetaWriter::~XMLMetaWriter() {}
+XMLBufferWriter::~XMLBufferWriter() {}
 
 
 //--------------------------------------------------------------------------------
 // Metadata writer class
-XMLDataWriter::XMLDataWriter() {indent_level=0;iop=false;}
+XMLFileWriter::XMLFileWriter() {indent_level=0;iop=false;}
 
-void XMLDataWriter::close()
+void XMLFileWriter::close()
 {
   if (is_open()) 
   {
@@ -425,9 +425,9 @@ void XMLDataWriter::close()
   }
 }
 
-bool XMLDataWriter::is_open() {return iop;}
+bool XMLFileWriter::is_open() {return iop;}
 
-XMLDataWriter::~XMLDataWriter() {close();}
+XMLFileWriter::~XMLFileWriter() {close();}
 
 
 QDP_END_NAMESPACE();

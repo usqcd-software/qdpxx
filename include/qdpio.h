@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdpio.h,v 1.7 2003-05-13 05:13:42 edwards Exp $
+// $Id: qdpio.h,v 1.8 2003-05-22 19:02:02 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -17,20 +17,20 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 
 // Forward declarations
-class QDPSerialReader;
-class QDPSerialWriter;
+class QDPSerialFileReader;
+class QDPSerialFileWriter;
 
 
 //--------------------------------------------------------------------------------
 //! QIO class
-class QDPSerialReader
+class QDPSerialFileReader
 {
 public:
-  QDPSerialReader();
-  ~QDPSerialReader();
+  QDPSerialFileReader();
+  ~QDPSerialFileReader();
 
   //! Open file
-  explicit QDPSerialReader(XMLReader& xml, const std::string& p);
+  explicit QDPSerialFileReader(XMLReader& xml, const std::string& p);
 
   //! Open file
   void open(XMLReader& xml, const std::string& p);
@@ -77,17 +77,17 @@ private:
 
 
 //! QIO Writer class
-class QDPSerialWriter
+class QDPSerialFileWriter
 {
 public:
-  QDPSerialWriter();
-  ~QDPSerialWriter();
+  QDPSerialFileWriter();
+  ~QDPSerialFileWriter();
 
   //! Open file
-  explicit QDPSerialWriter(const XMLMetaWriter& xml, const std::string& p);
+  explicit QDPSerialFileWriter(const XMLBufferWriter& xml, const std::string& p);
 
   //! Open file
-  void open(const XMLMetaWriter& xml, const std::string& p);
+  void open(const XMLBufferWriter& xml, const std::string& p);
 
   //! Close file
   void close();
@@ -97,13 +97,13 @@ public:
 
   //! Write a QDP object
   template<class T, class C>
-  void write(const XMLMetaWriter& xml, const QDPType<T,C>& s1)
+  void write(const XMLBufferWriter& xml, const QDPType<T,C>& s1)
     {write_t(*this,xml,static_cast<const C&>(s1));}
 
 
   //! Write an array of objects each in a seperate record
   template<class T>
-  void write(const XMLMetaWriter& xml, const multi1d<T>& s1)
+  void write(const XMLBufferWriter& xml, const multi1d<T>& s1)
     {
       for(int i=0; i < s1.size(); ++i)
 	write(xml,s1[i]);
@@ -111,7 +111,7 @@ public:
 
   //! Write an array of objects all in a single record
   template<class T>
-  void vwrite(const XMLMetaWriter& xml, const multi1d<T>& s1) {}
+  void vwrite(const XMLBufferWriter& xml, const multi1d<T>& s1) {}
 
   //!  Check if an unrecoverable error has occurred
   bool bad() const;
@@ -153,7 +153,7 @@ template<class T> void QDPFactoryPut(char *buf, const int crd[], void *arg)
 //! Read an OLattice object
 /*! This implementation is only correct for scalar ILattice */
 template<class T>
-void read_t(QDPSerialReader& qsw, XMLReader& rec_xml, OLattice<T>& s1)
+void read_t(QDPSerialFileReader& qsw, XMLReader& rec_xml, OLattice<T>& s1)
 {
   // Initialize string objects 
   XML_string *xml_c  = XML_string_create(0);
@@ -197,10 +197,10 @@ template<class T> void QDPFactoryGet(char *buf, const int crd[], void *arg)
 //! Write an OLattice object
 /*! This implementation is only correct for scalar ILattice */
 template<class T>
-void write_t(QDPSerialWriter& qsw, const XMLMetaWriter& rec_xml, const OLattice<T>& s1)
+void write_t(QDPSerialFileWriter& qsw, const XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 {
   // Copy metadata string into simple qio string container
-  XMLMetaWriter& foo_xml = const_cast<XMLMetaWriter&>(rec_xml);
+  XMLBufferWriter& foo_xml = const_cast<XMLBufferWriter&>(rec_xml);
   XML_string* xml_c  = XML_string_create(foo_xml.str().length()+1);  // check if +1 is needed
   XML_string_set(xml_c, foo_xml.str().c_str());
 

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.26 2003-05-20 04:47:55 edwards Exp $
+// $Id: t_foo.cc,v 1.27 2003-05-22 19:02:02 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -410,7 +410,7 @@ int main(int argc, char *argv[])
  {
    cerr << "create metadata xml" << endl;
 
-   XMLMetaWriter xml;
+   XMLBufferWriter xml;
 
    push(xml,"fred");
    float yy = 42.1;
@@ -433,7 +433,7 @@ int main(int argc, char *argv[])
 
    cout << "Here is the metadata" << endl << xml.str() << endl;
 
-   XMLDataWriter file_xml("t_foo.xml_output");
+   XMLFileWriter file_xml("t_foo.xml_output");
    file_xml.writeXML(xml.printRoot());
  }
 #endif
@@ -461,14 +461,14 @@ int main(int argc, char *argv[])
  {
    cerr << "create xml" << endl;
 
-   XMLMetaWriter file_xml;
+   XMLBufferWriter file_xml;
    string file_string = "Here is the file xml";
 //   int file_string = -1;
    push(file_xml,"foo");
    write(file_xml,"file_string",file_string);
    pop(file_xml);
 
-   XMLMetaWriter rec_xml;
+   XMLBufferWriter rec_xml;
    string rec_string = "Here is the record xml";
 //   int rec_string = -3;
    push(rec_xml,"boo");
@@ -477,13 +477,13 @@ int main(int argc, char *argv[])
 
    gaussian(a);
    gaussian(b);
-   nml << "Test of QDPSerialWriter - here first is a";
+   nml << "Test of QDPSerialFileWriter - here first is a";
    Write(nml,a);
-   nml << "Test of QDPSerialWriter - here first is a";
+   nml << "Test of QDPSerialFileWriter - here first is a";
    Write(nml,b);
 
    cerr << "create serialwriter" << endl;
-   QDPSerialWriter to(file_xml,"fred.dime");
+   QDPSerialFileWriter to(file_xml,"fred.dime");
    cerr << "write to" << endl;
    to.write(rec_xml,a);
    cerr << "end write" << endl;
@@ -491,7 +491,7 @@ int main(int argc, char *argv[])
    cerr << "end write" << endl;
    to.close();
 
-   nml << "Test of QDPSerialWriter";
+   nml << "Test of QDPSerialFileWriter";
    Write(nml,a);
    Write(nml,b);
  }
@@ -508,14 +508,14 @@ int main(int argc, char *argv[])
    b = 0;
 
    cerr << "open serialreader" << endl;
-   QDPSerialReader from(file_xml,"fred.dime");
+   QDPSerialFileReader from(file_xml,"fred.dime");
    cerr << "read from file" << endl;
    from.read(rec_xml,a);
    cerr << "end read 1" << endl;
    from.read(rec_xml,b);
    cerr << "end read 2" << endl;
 
-   nml << "Read a and b from QDPSerialReader";
+   nml << "Read a and b from QDPSerialFileReader";
    Write(nml,a);
    Write(nml,b);
  }

@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.1 2003-05-20 04:04:09 edwards Exp $
+// $Id: t_qio.cc,v 1.2 2003-05-22 19:02:02 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -21,7 +21,7 @@ int main(int argc, char **argv)
   Layout::create();
 
   {
-    XMLMetaWriter file_xml;
+    XMLBufferWriter file_xml;
 
     push(file_xml,"file_fred");
     Double d = 17;
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     pop(file_xml);
     pop(file_xml);
 
-    XMLMetaWriter record_xml;
+    XMLBufferWriter record_xml;
     push(record_xml,"record_fred");
     Write(record_xml,d);
     push(record_xml,"record_sally");
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     pop(record_xml);
     pop(record_xml);
 
-    QDPSerialWriter to(file_xml,"t_qio.dime");
+    QDPSerialFileWriter to(file_xml,"t_qio.dime");
 
     LatticeComplex a;
     random(a);
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 
   {
     XMLReader file_xml;
-    QDPSerialReader from(file_xml,"t_qio.dime");
+    QDPSerialFileReader from(file_xml,"t_qio.dime");
 
     cout << "Here is the contents of  file_xml" << endl;
     file_xml.print(cout);

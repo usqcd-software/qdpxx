@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.3 2003-05-22 18:24:36 edwards Exp $
+// $Id: t_xml.cc,v 1.4 2003-05-22 19:02:02 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   random(a);
 
   {
-    XMLDataWriter toxml("cat.xml");
+    XMLFileWriter toxml("cat.xml");
 
     push(toxml,"fred");
     Write(toxml,d);
@@ -55,18 +55,18 @@ int main(int argc, char **argv)
     XMLReader fromxml;
     fromxml.open("cat.xml");
 
-    XMLMetaWriter toxml_1;
+    XMLBufferWriter toxml_1;
     toxml_1 << fromxml;
 
-    XMLMetaWriter toxml_2;
+    XMLBufferWriter toxml_2;
     push(toxml_2,"imbed_some_xml");
     write(toxml_2,"this_is_my_xml",fromxml);
     pop(toxml_2);
 
-    XMLDataWriter toxml_3("dog1.xml");
+    XMLFileWriter toxml_3("dog1.xml");
     toxml_3 << toxml_1;
 
-    XMLDataWriter toxml_4("dog2.xml");
+    XMLFileWriter toxml_4("dog2.xml");
     write(toxml_4,"imbed_some_more",toxml_2);
   }
 

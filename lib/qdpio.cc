@@ -1,4 +1,4 @@
-// $Id: qdpio.cc,v 1.10 2003-05-13 05:13:42 edwards Exp $
+// $Id: qdpio.cc,v 1.11 2003-05-22 19:02:03 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -20,11 +20,11 @@ static int get_node_number(const int coord[])
 
 //-----------------------------------------
 // QDP QIO support
-QDPSerialReader::QDPSerialReader() {iop=false;}
+QDPSerialFileReader::QDPSerialFileReader() {iop=false;}
 
-QDPSerialReader::QDPSerialReader(XMLReader& xml, const std::string& p) {open(xml,p);}
+QDPSerialFileReader::QDPSerialFileReader(XMLReader& xml, const std::string& p) {open(xml,p);}
 
-void QDPSerialReader::open(XMLReader& file_xml, const std::string& path) 
+void QDPSerialFileReader::open(XMLReader& file_xml, const std::string& path) 
 {
   QIO_Layout *layout = new QIO_Layout;
   int latsize[Nd];
@@ -42,7 +42,7 @@ void QDPSerialReader::open(XMLReader& file_xml, const std::string& path)
   XML_string *xml_c  = XML_string_create(0);
 
   if ((qio_in = QIO_open_read(xml_c, path.c_str(), QIO_SERIAL, layout)) == NULL)
-    QDP_error_exit("QDPSerial::Reader: failed to open file %s",path.c_str());
+    QDP_error_exit("QDPSerialFile::Reader: failed to open file %s",path.c_str());
 
   // Use string to initialize XMLReader
   istringstream ss((const string)(XML_string_ptr(xml_c)));
@@ -54,7 +54,7 @@ void QDPSerialReader::open(XMLReader& file_xml, const std::string& path)
   iop=true;
 }
 
-void QDPSerialReader::close()
+void QDPSerialFileReader::close()
 {
   if (is_open()) 
   {
@@ -64,25 +64,25 @@ void QDPSerialReader::close()
   iop = false;
 }
 
-bool QDPSerialReader::is_open() {return iop;}
+bool QDPSerialFileReader::is_open() {return iop;}
 
-bool QDPSerialReader::eof() const {return false;}
+bool QDPSerialFileReader::eof() const {return false;}
 
-bool QDPSerialReader::bad() const {return false;}
+bool QDPSerialFileReader::bad() const {return false;}
 
-QDPSerialReader::~QDPSerialReader() {close();}
+QDPSerialFileReader::~QDPSerialFileReader() {close();}
 
 
 //-----------------------------------------
 //! text writer support
-QDPSerialWriter::QDPSerialWriter() {iop=false;}
+QDPSerialFileWriter::QDPSerialFileWriter() {iop=false;}
 
-QDPSerialWriter::QDPSerialWriter(const XMLMetaWriter& xml, const std::string& p) 
+QDPSerialFileWriter::QDPSerialFileWriter(const XMLBufferWriter& xml, const std::string& p) 
 {
   open(xml,p);
 }
 
-void QDPSerialWriter::open(const XMLMetaWriter& file_xml, const std::string& path) 
+void QDPSerialFileWriter::open(const XMLBufferWriter& file_xml, const std::string& path) 
 {
   QIO_Layout *layout = new QIO_Layout;
   int latsize[Nd];
@@ -97,14 +97,14 @@ void QDPSerialWriter::open(const XMLMetaWriter& file_xml, const std::string& pat
   layout->this_node = Layout::nodeNumber(); 
 
   // Copy metadata string into simple qio string container
-  XMLMetaWriter& foo_xml = const_cast<XMLMetaWriter&>(file_xml);
+  XMLBufferWriter& foo_xml = const_cast<XMLBufferWriter&>(file_xml);
   XML_string* xml_c = XML_string_create(foo_xml.str().length()+1);  // check if +1 is needed
   XML_string_set(xml_c, foo_xml.str().c_str());
 
   // Big call to qio
   if ((qio_out = QIO_open_write(xml_c, path.c_str(), QIO_SERIAL, QIO_LEX_ORDER, QIO_CREATE, 
 				layout)) == NULL)
-    QDP_error_exit("QDPSerial::Writer: failed to open file %s",path.c_str());
+    QDP_error_exit("QDPSerialFile::Writer: failed to open file %s",path.c_str());
 
   // Cleanup
   XML_string_destroy(xml_c);
@@ -113,7 +113,7 @@ void QDPSerialWriter::open(const XMLMetaWriter& file_xml, const std::string& pat
   iop=true;
 }
 
-void QDPSerialWriter::close()
+void QDPSerialFileWriter::close()
 {
   if (is_open()) 
   {
@@ -123,11 +123,11 @@ void QDPSerialWriter::close()
   iop = false;
 }
 
-bool QDPSerialWriter::is_open() {return iop;}
+bool QDPSerialFileWriter::is_open() {return iop;}
 
-bool QDPSerialWriter::bad() const {return false;}
+bool QDPSerialFileWriter::bad() const {return false;}
 
-QDPSerialWriter::~QDPSerialWriter() {close();}
+QDPSerialFileWriter::~QDPSerialFileWriter() {close();}
 
 
 QDP_END_NAMESPACE();
