@@ -1358,17 +1358,20 @@ XML is intended as the standard format for user produced human
 readable data as well as metadata. The XML format is always a tree of
 key/value pairs with arbitrarily deep nesting. Here, the keys are
 variable names. The semantics imposed by QDP is that no key can be
-repeated twice at the same nesting level. Also, the values are one of
-the types -- a simple type, a structure, or an array of one of these
+repeated twice at the same nesting level. Also, the values are considered
+one of three types -- a simple type, a structure, or an array of one of these
 three types including array.
 
 The path specification for the XML reader functions is XPath. Namely,
-QDP only {\em requires} a simple unix like path is used to reference a
+QDP only {\em requires} a simple unix like path to reference a
 tag. With a simple path and nested reading, all data can be read from
 a document.  However, more complicated queries are possible
 allowing the user to read individual pieces of a document - e.g., a
 single array element. See the XPath language specification for
 additional information: http://www.w3.org/TR/xpath.html .
+
+Further details on the document format of various types is given in
+Section~\ref{sec:xmldoc}.
 
 \paragraph{XMLReader member functions and global functions}
 
@@ -1403,17 +1406,17 @@ int a;
 Complex b;
 multi1d<Real> c;
 multi1d<Complex> d;
-read(xml_in, "/fred/a", a);  // primitive type reader
-read(xml_in, "/fred/b", b);  // QDP defined struct reader
-read(xml_in, "/fred/c", d);  // array of primitive type reader
-read(xml_in, "/fred/d", d);  // calls read(XMLReader, string, Complex) 
+read(xml_in, "/bar/a", a);  // primitive type reader
+read(xml_in, "/bar/b", b);  // QDP defined struct reader
+read(xml_in, "/bar/c", d);  // array of primitive type reader
+read(xml_in, "/bar/d", d);  // calls read(XMLReader, string, Complex) 
 \end{verbatim}
 %
 The file ``foo'' might look like the following:
 %
 \begin{verbatim}
 <?xml version="1.0"?>
-<fred>
+<bar>
  <!-- A simple primitive type -->
  <a>17</d>
 
@@ -1437,7 +1440,7 @@ The file ``foo'' might look like the following:
      <im>4.0</im>
    </elem>
  </d>
-</fred>
+</bar>
 \end{verbatim}
 %
 
@@ -1466,7 +1469,7 @@ XPath query. For example, the user can read only one array element in the file
 \begin{verbatim}
 XMLReader xml_in("foo");
 Complex dd;
-read(xml_in, "/fred/d/elem[2]", dd);  // read second array elem of d, e.g. d[1]
+read(xml_in, "/bar/d/elem[2]", dd);  // read second array elem of d, e.g. d[1]
 \end{verbatim}
 
 
@@ -1531,16 +1534,16 @@ writers.
 %
 \begin{verbatim}
 XMLBufferWriter xml_buf;
-push(xml_buf, "fred");
-write(xml_buf, "a", 1);  // write /fred/a = 1
+push(xml_buf, "bar");
+write(xml_buf, "a", 1);  // write /bar/a = 1
 pop(xml_buf);
 
 XMLReader xml_in(xml_buf);  // re-parse the xml_buf
 int a;
-read(xml_in, "/fred/a", a); // now have 1 in a
+read(xml_in, "/bar/a", a); // now have 1 in a
 
 XMLFileWriter xml_out("foo");
-xml_out << xml_in;     // will have ``fred'' as the root tag
+xml_out << xml_in;     // will have ``bar'' as the root tag
 xml_out.close();
 \end{verbatim}
 
@@ -1577,6 +1580,243 @@ for(int i=0; i < xml_array.size(); ++i)
   pop(xml_array);   // finish this array element
 }
 \end{verbatim}
+
+
+\subsection{XML document structure}
+\label{sec:xmldoc}
+
+QDP regards the structure of a document as composed of structures,
+simple types, or arrays of structures or simple types. Simple types
+are the usual builtin type of C and C++, namely \verb|int|,
+\verb|float|, \verb|double|, \verb|bool|, etc. In addition, the QDP
+scalar equivalents \verb|Integer|, \verb|Real|, \verb|Double|,
+\verb|Boolean|, etc.  are also consider simple types. For instance, the
+code snippet
+%
+\begin{verbatim}
+int a = 3;
+write(xml_out, "a", a);
+\end{verbatim}
+%
+would produce
+\begin{verbatim}
+<a>3</a>
+\end{verbatim}
+%
+indentities the name of a variable of a type with some values.
+Following the XML Schema specifications, arrays of these simple types
+have a simple form
+\begin{verbatim}
+<!-- produced from writing a multid<int> -->
+<a>3 3 4 5</a>
+\end{verbatim}
+
+Again, following the XML Schema specifications all other objects are
+considered complex (e.g., complicated) types. Hence, the document snippet
+%
+\begin{verbatim}
+<?xml version="1.0"?>
+<!-- Considered a structure of simple types, arrays and other structures -->
+<bar>
+ <!-- A simple primitive type -->
+ <a>17</d>
+
+ <!-- Considered a structure -->
+ <b>
+   <re>1.0</re>
+   <im>2.0</im>
+ </b>
+
+ <!-- A length 3 array of primitive types -->
+ <c>1 5.6 7.2</c>
+\end{verbatim}
+%
+is viewed as a structure of other types:
+\begin{verbatim}
+struct bar_t
+{
+  int a;
+  Complex b;
+  multi1d<Real> c;
+} bar;
+\end{verbatim}
+%
+Hence, one views the \verb|push|/\verb|pop| semantics as a way of
+dynamically constructing structures. 
+
+\newpage
+\paragraph{XML document format}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  \tInt,\tReal,\tRealD    & 
+\mbox{\tt 
+<a>3</a>
+}
+\\
+\hline
+  \tBoolean    & 
+\mbox{\tt 
+<a>yes</a>
+}
+\\
+\hline
+  string    & 
+\mbox{\tt 
+<a>hello world</a>
+}
+\\
+\hline
+  multi1d$<$int$>$    & 
+\mbox{\tt 
+<a>1 2 3</a>
+}
+\\
+\hline
+  \tComplex    & 
+\mbox{\tt 
+<a>
+  <re>1.2</re>
+  <im>2.0</im>
+</a>
+}
+\\
+\hline
+  multi1d$<${\em Type}$>$    & 
+\parbox{5in}{\tt 
+<a>
+  <elem>{\em Type}
+  </elem>
+  <elem>{\em Type}
+  </elem>
+</a>
+}
+\\
+\hline
+  multi1d$<$\tComplex$>$    & 
+\parbox{5in}{\tt 
+<a>
+  <elem>
+    <re>1.2</re>
+    <im>2.0</im>
+  </elem>
+  <elem>
+    <re>3</re>
+    <im>5.0</im>
+  </elem>
+</a>
+}
+\\
+\hline
+  \tColorVector    & 
+\parbox{5in}{\tt 
+<a>
+  <ColorVector>
+    <elem row="0">
+      <re>0</re>
+      <im>1</im>
+    </elem>
+    <elem row="1">
+      <re>2</re>
+      <im>3</im>
+    </elem>
+  ...
+  </ColorVector>
+</a>
+}
+\\
+\hline
+  \tColorMatrix    & 
+\parbox{5in}{\tt 
+<a>
+  <ColorMatrix>
+    <elem row="0" col="0">
+      <re>0</re>
+      <im>1</im>
+    </elem>
+    <elem row="1" col="0">
+      <re>2</re>
+      <im>3</im>
+    </elem>
+  ...
+  </ColorMatrix>
+</a>
+}
+\\
+\hline
+  \tDiracPropagator    & 
+\parbox{5in}{\tt 
+<a>
+  <SpinMatrix>
+    <elem row="0" col="0">
+      <ColorMatrix>
+        <elem row="0" col="0">
+          <re>0</re>
+          <im>1</im>
+        </elem>
+  ...
+      </ColorMatrix>
+    </elem>
+  </SpinMatrix>
+</a>
+}
+\\
+\hline
+  Lattice{\em Type}    & 
+\parbox{5in}{\tt 
+<a>
+  <OLattice>
+    <elem site="0">{\em Type}
+    </elem>
+    <elem site="1">{\em Type}
+    </elem>
+  ...
+  </OLattice>
+</a>
+}
+\\
+\hline
+  \tLatticeReal    & 
+\parbox{5in}{\tt 
+<a>
+  <OLattice>
+    <elem site="0">1
+    </elem>
+    <elem site="1">2
+    </elem>
+  ...
+  </OLattice>
+</a>
+}
+\\
+\hline
+  \tLatticeColorVector    & 
+\parbox{5in}{\tt 
+<a>
+  <OLattice>
+    <elem site="0">
+      <ColorVector>
+        <elem row="0">
+           <re>1</re>
+           <im>2</im>
+        </elem>
+  ...
+      </ColorVector>
+    </elem>
+  </OLattice>
+</a>
+}
+\\
+
+  \hline
+ \end{tabular}
+\end{flushleft}
+%
+A table of the document format for a variable ``a'' of various
+types.
+
+\newpage
 
 
 \subsection{Binary Reading and Writing}
