@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.2 2003-06-10 16:00:47 edwards Exp $
+// $Id: qdp_primseed.h,v 1.3 2003-08-20 21:04:33 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -70,8 +70,9 @@ public:
 
   //! PSeed = PSeed
   /*! Set equal to another PSeed */
+  template<class T1>
   inline
-  PSeed& operator=(const PSeed& rhs) 
+  PSeed& operator=(const PSeed<T1>& rhs) 
     {
       for(int i=0; i < 4; ++i)
 	elem(i) = rhs.elem(i);
