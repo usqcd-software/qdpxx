@@ -18,6 +18,7 @@
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
+VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -51,8 +52,6 @@ POST_UNINSTALL = :
 @ARCH_PARSCALARVEC_TRUE@	qdp_parscalarvec_specific.cc qdp_scalarvecsite_specific.cc
 
 @QDP_USE_SCALARVEC_SSE_TRUE@am__append_6 = qdp_scalarvecsite_sse.cc
-
-VPATH = @top_srcdir@ @top_srcdir@/lib @top_srcdir@/include @top_srcdir@/other_libs/qio/include
 ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
@@ -166,7 +165,6 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
-           -I@top_srcdir@/other_libs/nml \
            -I@top_srcdir@/other_libs/qio/include \
            -I@top_builddir@/other_libs/qio/include \
            -I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
