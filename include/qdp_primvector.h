@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.13 2003-08-27 01:25:35 edwards Exp $
+// $Id: qdp_primvector.h,v 1.14 2003-08-29 02:42:07 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -705,6 +705,24 @@ copy_site(PVector<T,N,C>& d, int isite, const PScalar<T1>& s1)
 {
   for(int i=0; i < N; ++i)
     copy_site(d.elem(i), isite, s1.elem());
+}
+
+
+//! gather several inner sites together
+template<class T, class T1, int N, template<class,int> class C>
+inline void 
+gather_sites(PVector<T,N,C>& d, 
+	     const PVector<T1,N,C>& s0, int i0, 
+	     const PVector<T1,N,C>& s1, int i1,
+	     const PVector<T1,N,C>& s2, int i2,
+	     const PVector<T1,N,C>& s3, int i3)
+{
+  for(int i=0; i < N; ++i)
+    gather_sites(d.elem(i), 
+		 s0.elem(i), i0, 
+		 s1.elem(i), i1, 
+		 s2.elem(i), i2, 
+		 s3.elem(i), i3);
 }
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.12 2003-08-27 01:25:35 edwards Exp $
+// $Id: qdp_reality.h,v 1.13 2003-08-29 02:42:07 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1332,6 +1332,23 @@ copy_site(RScalar<T>& d, int isite, const RScalar<T1>& s1)
 }
 
 
+//! gather several inner sites together
+template<class T, class T1>
+inline void 
+gather_sites(RScalar<T>& d, 
+	     const RScalar<T1>& s0, int i0, 
+	     const RScalar<T1>& s1, int i1,
+	     const RScalar<T1>& s2, int i2,
+	     const RScalar<T1>& s3, int i3)
+{
+  gather_sites(d.elem(), 
+	       s0.elem(), i0, 
+	       s1.elem(), i1, 
+	       s2.elem(), i2, 
+	       s3.elem(), i3);
+}
+
+
 #if 1
 // Global sum over site indices only
 template<class T>
@@ -1452,6 +1469,29 @@ copy_site(RComplex<T>& d, int isite, const RScalar<T1>& s1)
   zero_rep(d.imag());   // this is wrong - want zero only at a site. Fix when needed.
 }
 #endif
+
+
+//! gather several inner sites together
+template<class T, class T1>
+inline void 
+gather_sites(RComplex<T>& d, 
+	     const RComplex<T1>& s0, int i0, 
+	     const RComplex<T1>& s1, int i1,
+	     const RComplex<T1>& s2, int i2,
+	     const RComplex<T1>& s3, int i3)
+{
+  gather_sites(d.real(), 
+	       s0.real(), i0, 
+	       s1.real(), i1, 
+	       s2.real(), i2, 
+	       s3.real(), i3);
+
+  gather_sites(d.imag(), 
+	       s0.imag(), i0, 
+	       s1.imag(), i1, 
+	       s2.imag(), i2, 
+	       s3.imag(), i3);
+}
 
 
 //! dest  = random  

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.10 2003-08-27 01:25:35 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.11 2003-08-29 02:42:07 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -1120,6 +1120,18 @@ inline void
 copy_site(PScalar<T>& d, int isite, const PScalar<T1>& s1)
 {
   copy_site(d.elem(), isite, s1.elem());
+}
+
+//! gather several inner sites together
+template<class T, class T1>
+inline void 
+gather_sites(PScalar<T>& d, 
+	     const PScalar<T1>& s0, int i0, 
+	     const PScalar<T1>& s1, int i1,
+	     const PScalar<T1>& s2, int i2,
+	     const PScalar<T1>& s3, int i3)
+{
+  gather_sites(d.elem(), s0.elem(), i0, s1.elem(), i1, s2.elem(), i2, s3.elem(), i3);
 }
 
 /*! @} */  // end of group primscalar
