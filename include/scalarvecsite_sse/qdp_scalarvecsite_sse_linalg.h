@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.4 2004-08-11 18:51:55 edwards Exp $
+// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.5 2004-08-19 01:56:19 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -14,6 +14,12 @@
 #if defined(__GNUC__) && __GNUC_MINOR__ >= 2
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+// #define QDP_SCALARVECSITE_DEBUG
+
+#define QDP_SCALARVECSITE_USE_EVALUATE
+
+
 
 /*! @defgroup optimizations  Optimizations
  *
@@ -290,6 +296,7 @@ operator*(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 
 
 
+#if defined(QDP_SCALARVECSITE_USE_EVALUATE)
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
 // NOTE: let this be a subroutine to save space
@@ -303,9 +310,20 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
 	      const OrderedSubset& s);
+#endif
+
 
 
 /*! @} */   // end of group optimizations
+
+#if defined(QDP_SCALARVECSITE_DEBUG)
+#undef QDP_SCALARVECSITE_DEBUG
+#endif
+
+#if defined(QDP_SCALARVECSITE_USE_EVALUATE)
+#undef QDP_SCALARVECSITE_USE_EVALUATE
+#endif
+
 
 QDP_END_NAMESPACE();
 

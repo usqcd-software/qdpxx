@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_sse_blas.h,v 1.2 2004-08-11 18:51:55 edwards Exp $
+// $Id: qdp_scalarvecsite_sse_blas.h,v 1.3 2004-08-19 01:56:19 edwards Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -11,12 +11,15 @@
 
 QDP_BEGIN_NAMESPACE(QDP);
 
-#define QDP_SCALARVECSITE_BLAS_DEBUG
+// #define QDP_SCALARVECSITE_BLAS_DEBUG
+
+#define QDP_SCALARVECSITE_USE_EVALUATE
+
 
 typedef PScalar<PColorMatrix<RComplex<ILattice<REAL32,4> >, 3> >       TCMat;
 typedef PScalar<PColorVector<RComplex<ILattice<REAL32,4> >, 3> >       TCVec;
 typedef PSpinVector<PColorVector<RComplex<ILattice<REAL32,4> >, 3>, 4> TDirac;
-typedef PScalar<PScalar<RScalar<IScalar<REAL32> > > >                TScal;
+typedef PScalar<PScalar<RScalar<IScalar<REAL32> > > >                  TScal;
 
 
 // d = Scalar*ColorMatrix
@@ -53,6 +56,15 @@ operator*(const TScal& l, const TCMat& r)
 
   return d;
 }
+
+
+#if defined(QDP_SCALARVECSITE_BLAS_DEBUG)
+#undef QDP_SCALARVECSITE_BLAS_DEBUG
+#endif
+
+#if defined(QDP_SCALARVECSITE_USE_EVALUATE)
+#undef QDP_SCALARVECSITE_USE_EVALUATE
+#endif
 
 
 QDP_END_NAMESPACE();
