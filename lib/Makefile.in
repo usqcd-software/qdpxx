@@ -197,17 +197,17 @@ PARSCALARVEC_SRCS = qdp_parscalarvec_init.cc qdp_parscalarvec_layout.cc qdp_pars
 @QDP_USE_SSE_FALSE@SSE_EXTRA_LIB_SRCS = $(SCALARSITE_SSE_SRCS)
 @QDP_USE_SSE_TRUE@SSE_EXTRA_LIB_SRCS = 
 
+@ARCH_PARSCALARVEC_TRUE@libqdp_a_SOURCES = $(GENERIC_SRCS) $(PARSCALARVEC_SRCS) $(SSE_LIB_SRCS)
+
 @ARCH_PARSCALAR_TRUE@libqdp_a_SOURCES = $(GENERIC_SRCS) $(PARSCALAR_SRCS) $(SSE_LIB_SRCS)
 
 @ARCH_SCALARVEC_TRUE@libqdp_a_SOURCES = $(GENERIC_SRCS) $(SCALARVEC_SRCS)
 
 @ARCH_SCALAR_TRUE@libqdp_a_SOURCES = $(GENERIC_SRCS) $(SCALAR_SRCS) $(SSE_LIB_SRCS)
-
-@ARCH_PARSCALARVEC_TRUE@libqdp_a_SOURCES = $(GENERIC_SRCS) $(PARSCALARVEC_SRCS) $(SSE_LIB_SRCS)
+@ARCH_PARSCALARVEC_TRUE@EXTRA_libqdp_a_SOURCES = $(SCALAR_SRCS) $(SCALARVEC_SRCS) $(PARSCALAR_SRCS) $(SSE_EXTRA_LIB_SRCS)
 @ARCH_PARSCALAR_TRUE@EXTRA_libqdp_a_SOURCES = $(SCALAR_SRCS) $(SCALARVEC_SRCS) $(PARSCALARVEC_SRCS) $(SSE_EXTRA_LIB_SRCS)
 @ARCH_SCALARVEC_TRUE@EXTRA_libqdp_a_SOURCES = $(PARSCALAR_SRCS) $(SCALAR_SRCS) $(PARSCALARVEC_SRCS) $(SSE_EXTRA_LIB_SRCS)
 @ARCH_SCALAR_TRUE@EXTRA_libqdp_a_SOURCES = $(PARSCALAR_SRCS) $(SCALARVEC_SRCS) $(PARSCALARVEC_SRCS) $(SSE_EXTRA_LIB_SRCS)
-@ARCH_PARSCALARVEC_TRUE@EXTRA_libqdp_a_SOURCES = $(SCALAR_SRCS) $(SCALARVEC_SRCS) $(PARSCALAR_SRCS) $(SSE_EXTRA_LIB_SRCS)
 
 # Need this header as part of libqdp_a_sources
 nodist_libqdp_a_SOURCES = $(HDRS)
@@ -221,15 +221,15 @@ libqdp_a_LIBADD =
 am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	qdp.cc qdp_layout.cc qdp_io.cc qdp_iogauge.cc qdp_byteorder.cc \
 	qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc qdp_filebuf.cc \
+	qdp_parscalarvec_init.cc qdp_parscalarvec_layout.cc \
+	qdp_parscalarvec_specific.cc qdp_scalarvecsite_specific.cc \
+	qdp_scalarsite_sse.cc ../include/qdp_scalarsite_sse.h \
 	qdp_parscalar_init.cc qdp_parscalar_layout.cc \
 	qdp_parscalar_specific.cc qdp_scalarsite_specific.cc \
-	../include/qdp_parscalar_specific.h qdp_scalarsite_sse.cc \
-	../include/qdp_scalarsite_sse.h qdp_scalarvec_init.cc \
+	../include/qdp_parscalar_specific.h qdp_scalarvec_init.cc \
 	qdp_scalarvec_layout.cc qdp_scalarvec_specific.cc \
-	qdp_scalarvecsite_specific.cc qdp_scalar_init.cc \
-	qdp_scalar_layout.cc qdp_scalar_specific.cc \
-	../include/qdp_scalar_specific.h qdp_parscalarvec_init.cc \
-	qdp_parscalarvec_layout.cc qdp_parscalarvec_specific.cc
+	qdp_scalar_init.cc qdp_scalar_layout.cc qdp_scalar_specific.cc \
+	../include/qdp_scalar_specific.h
 am__objects_1 = qdp_map.$(OBJEXT) qdp_subset.$(OBJEXT) \
 	qdp_random.$(OBJEXT) qdp.$(OBJEXT) qdp_layout.$(OBJEXT) \
 	qdp_io.$(OBJEXT) qdp_iogauge.$(OBJEXT) qdp_byteorder.$(OBJEXT) \
@@ -263,11 +263,11 @@ am__EXTRA_libqdp_a_SOURCES_DIST = qdp_scalar_init.cc \
 	qdp_scalarsite_specific.cc ../include/qdp_scalar_specific.h \
 	qdp_scalarvec_init.cc qdp_scalarvec_layout.cc \
 	qdp_scalarvec_specific.cc qdp_scalarvecsite_specific.cc \
+	qdp_parscalar_init.cc qdp_parscalar_layout.cc \
+	qdp_parscalar_specific.cc ../include/qdp_parscalar_specific.h \
+	qdp_scalarsite_sse.cc ../include/qdp_scalarsite_sse.h \
 	qdp_parscalarvec_init.cc qdp_parscalarvec_layout.cc \
-	qdp_parscalarvec_specific.cc qdp_scalarsite_sse.cc \
-	../include/qdp_scalarsite_sse.h qdp_parscalar_init.cc \
-	qdp_parscalar_layout.cc qdp_parscalar_specific.cc \
-	../include/qdp_parscalar_specific.h
+	qdp_parscalarvec_specific.cc
 am__objects_9 =
 nodist_libqdp_a_OBJECTS = $(am__objects_9)
 libqdp_a_OBJECTS = $(am_libqdp_a_OBJECTS) $(nodist_libqdp_a_OBJECTS)

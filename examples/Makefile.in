@@ -166,7 +166,7 @@ HDRS = examples.h
 #
 # The programs to build
 # 
-check_PROGRAMS = t_skeleton t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo \
+check_PROGRAMS = t_skeleton t_dslashm t_formfac t_io t_mesplq t_mesplq2 t_qdp t_spectrum t_foo \
       t_nml t_xml t_qio t_remote t_entry t_linalg
 
 
@@ -182,6 +182,7 @@ t_io_SOURCES = t_io.cc $(HDRS)
 t_entry_SOURCES = t_entry.cc $(HDRS)
 t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)
 t_mesplq_SOURCES = t_mesplq.cc mesplq.cc reunit.cc $(HDRS)
+t_mesplq2_SOURCES = t_mesplq2.cc mesplq.cc reunit.cc $(HDRS)
 t_formfac_SOURCES = t_formfac.cc formfac_w.cc $(HDRS)
 t_spectrum_SOURCES = t_spectrum.cc formfac_w.cc dslashm_w.cc \
           baryon_w.cc mesons_w.cc mesplq.cc reunit.cc $(HDRS)
@@ -195,9 +196,9 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = t_skeleton$(EXEEXT) t_dslashm$(EXEEXT) \
 	t_formfac$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
-	t_qdp$(EXEEXT) t_spectrum$(EXEEXT) t_foo$(EXEEXT) \
-	t_nml$(EXEEXT) t_xml$(EXEEXT) t_qio$(EXEEXT) t_remote$(EXEEXT) \
-	t_entry$(EXEEXT) t_linalg$(EXEEXT)
+	t_mesplq2$(EXEEXT) t_qdp$(EXEEXT) t_spectrum$(EXEEXT) \
+	t_foo$(EXEEXT) t_nml$(EXEEXT) t_xml$(EXEEXT) t_qio$(EXEEXT) \
+	t_remote$(EXEEXT) t_entry$(EXEEXT) t_linalg$(EXEEXT)
 am__objects_1 =
 am_t_dslashm_OBJECTS = t_dslashm.$(OBJEXT) dslashm_w.$(OBJEXT) \
 	$(am__objects_1)
@@ -237,6 +238,12 @@ t_mesplq_OBJECTS = $(am_t_mesplq_OBJECTS)
 t_mesplq_LDADD = $(LDADD)
 t_mesplq_DEPENDENCIES =
 t_mesplq_LDFLAGS =
+am_t_mesplq2_OBJECTS = t_mesplq2.$(OBJEXT) mesplq.$(OBJEXT) \
+	reunit.$(OBJEXT) $(am__objects_1)
+t_mesplq2_OBJECTS = $(am_t_mesplq2_OBJECTS)
+t_mesplq2_LDADD = $(LDADD)
+t_mesplq2_DEPENDENCIES =
+t_mesplq2_LDFLAGS =
 am_t_nml_OBJECTS = t_nml.$(OBJEXT) $(am__objects_1)
 t_nml_OBJECTS = $(am_t_nml_OBJECTS)
 t_nml_LDADD = $(LDADD)
@@ -287,10 +294,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/t_entry.Po ./$(DEPDIR)/t_foo.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_io.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_linalg.Po ./$(DEPDIR)/t_mesplq.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_nml.Po ./$(DEPDIR)/t_qdp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_qio.Po ./$(DEPDIR)/t_remote.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_skeleton.Po ./$(DEPDIR)/t_spectrum.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_xml.Po
+@AMDEP_TRUE@	./$(DEPDIR)/t_mesplq2.Po ./$(DEPDIR)/t_nml.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_qdp.Po ./$(DEPDIR)/t_qio.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_remote.Po ./$(DEPDIR)/t_skeleton.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_spectrum.Po ./$(DEPDIR)/t_xml.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -302,11 +309,11 @@ CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_foo_SOURCES) \
 	$(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) \
-	$(t_mesplq_SOURCES) $(t_nml_SOURCES) $(t_qdp_SOURCES) \
-	$(t_qio_SOURCES) $(t_remote_SOURCES) $(t_skeleton_SOURCES) \
-	$(t_spectrum_SOURCES) $(t_xml_SOURCES)
+	$(t_mesplq_SOURCES) $(t_mesplq2_SOURCES) $(t_nml_SOURCES) \
+	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_remote_SOURCES) \
+	$(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_xml_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nml_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_remote_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_xml_SOURCES)
+SOURCES = $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_mesplq2_SOURCES) $(t_nml_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_remote_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_xml_SOURCES)
 
 all: all-am
 
@@ -341,6 +348,9 @@ t_linalg$(EXEEXT): $(t_linalg_OBJECTS) $(t_linalg_DEPENDENCIES)
 t_mesplq$(EXEEXT): $(t_mesplq_OBJECTS) $(t_mesplq_DEPENDENCIES) 
 	@rm -f t_mesplq$(EXEEXT)
 	$(CXXLINK) $(t_mesplq_LDFLAGS) $(t_mesplq_OBJECTS) $(t_mesplq_LDADD) $(LIBS)
+t_mesplq2$(EXEEXT): $(t_mesplq2_OBJECTS) $(t_mesplq2_DEPENDENCIES) 
+	@rm -f t_mesplq2$(EXEEXT)
+	$(CXXLINK) $(t_mesplq2_LDFLAGS) $(t_mesplq2_OBJECTS) $(t_mesplq2_LDADD) $(LIBS)
 t_nml$(EXEEXT): $(t_nml_OBJECTS) $(t_nml_DEPENDENCIES) 
 	@rm -f t_nml$(EXEEXT)
 	$(CXXLINK) $(t_nml_LDFLAGS) $(t_nml_OBJECTS) $(t_nml_LDADD) $(LIBS)
@@ -383,6 +393,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_linalg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_nml.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_qdp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_qio.Po@am__quote@
