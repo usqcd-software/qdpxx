@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.25 2003-05-12 06:09:07 edwards Exp $
+// $Id: t_foo.cc,v 1.26 2003-05-20 04:47:55 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -464,12 +464,16 @@ int main(int argc, char *argv[])
    XMLMetaWriter file_xml;
    string file_string = "Here is the file xml";
 //   int file_string = -1;
+   push(file_xml,"foo");
    write(file_xml,"file_string",file_string);
+   pop(file_xml);
 
    XMLMetaWriter rec_xml;
    string rec_string = "Here is the record xml";
 //   int rec_string = -3;
+   push(rec_xml,"boo");
    write(rec_xml,"rec_string",rec_string);
+   pop(rec_xml);
 
    gaussian(a);
    gaussian(b);
@@ -485,6 +489,7 @@ int main(int argc, char *argv[])
    cerr << "end write" << endl;
    to.write(rec_xml,b);
    cerr << "end write" << endl;
+   to.close();
 
    nml << "Test of QDPSerialWriter";
    Write(nml,a);
