@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.4 2002-12-14 01:13:56 edwards Exp $
+// $Id: parscalar_specific.h,v 1.5 2003-01-04 03:32:16 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -590,14 +590,13 @@ public:
     {
       QMP_TRACE("Map()");
 
-      C1 d;
+      C1 d = zero;  // For the moment, zero it out to help debugging
 
 //      if (srcenodes_num.size() != 2)
 
       int dstnum = destnodes_num;
       int srcnum = srcenodes_num;
-      int dstcnt = sizeof(T1)*dstnum;
-      T1 *send_buf = new T1[dstnum];
+      T1 *send_buf = new T1[dstnum];  // QMP_allocate_aligned_memory(count)
       T1 *recv_buf = new T1[srcnum];
 
       QMP_msgmem_t msg[2];
@@ -606,15 +605,20 @@ public:
 
       QMP_info("QMP_sendrecv_wait: send = 0x%x  recv = 0x%x\n",send_buf,recv_buf);
 
-      msg[0]  = QMP_declare_msgmem(QMP_allocate_aligned_memory(count));
-      msg[1]  = QMP_declare_msgmem(recv_buf, count);
-      mh_a[0] = QMP_declare_send_to(msg[0], dir, isign, 0);
-      mh_a[1] = QMP_declare_receive_from(msg[1], dir, -isign, 0);
-      mh = QMP_declare_multiple(mh_a, 2);
+      msg[0]  = QMP_declare_msgmem(send_buf, dstnum*sizeof(T1));
+      msg[1]  = QMP_declare_msgmem(recv_buf, srcnum*sizeof(T1));
+      mh_a[0] = QMP_declare_send_to(msg[0], 0);
+      mh_a[1] = QMP_declare_receive_from(msg[1], 0);
+      mh      = QMP_declare_multiple(mh_a, 2);
 
+      // Launch the faces
       if ((err = QMP_start(mh)) != QMP_SUCCESS)
 	QMP_error_exit(QMP_error_string(err));
 
+      // Do an internal copy
+      
+
+      // Wait on the faces
       if ((err = QMP_wait(mh)) != QMP_SUCCESS)
 	QMP_error_exit(QMP_error_string(err));
 
@@ -632,7 +636,7 @@ public:
 
 
   template<class T1,class C1>
-  C1
+  QDPType<T1,C1>
   operator()(const QDPExpr<T1,C1> & l)
     {
       // Implementation for now just evaluates expression and then does map
