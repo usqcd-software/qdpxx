@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.32 2003-09-09 16:49:43 edwards Exp $
+// $Id: qdp.h,v 1.33 2003-09-17 15:16:22 bjoo Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -70,17 +70,22 @@
 #define QDP_USE_SSE2  0
 #endif
 
+// Commented this out and set QDP_ALIGNMENT_SIZE to be 16 all the time
+// This is a minimal waste of space and should allow an SSE dslash
+// to be used even if the QDP itself is not compiled with SSE.
+#if 0
 // Alignment size: SSE requires a larger alignment
 // This should probably move under more compiler specific info
 #if QDP_USE_SSE == 1
 #define QDP_ALIGNMENT_SIZE  16
-
 #else
-
 #define QDP_ALIGNMENT_SIZE  8
 #endif
 
-
+#else
+#warning "Hardwiring QDP_ALIGNMENT_SIZE=16"
+#define QDP_ALIGNMENT_SIZE 16
+#endif
 // YUKKY - Eventually get rid of these includes
 #include <cstdio>
 #include <cstdlib>

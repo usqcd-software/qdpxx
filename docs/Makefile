@@ -64,7 +64,7 @@ BUILD_WILSON_EXAMPLES_TRUE =
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2
+CXXFLAGS = -O2 -finline-limit=50000 -malign-double
 CYGPATH_W = echo
 DEFS = -DPACKAGE_NAME=\"qdp\" -DPACKAGE_TARNAME=\"qdp\" -DPACKAGE_VERSION=\"1.5\" -DPACKAGE_STRING=\"qdp\ 1.5\" -DPACKAGE_BUGREPORT=\"edwards@jlab.org\" -DPACKAGE=\"qdp\" -DVERSION=\"1.5\" 
 DEPDIR = .deps
@@ -112,7 +112,7 @@ QDP_USE_SCALAR_SSE_TRUE = #
 QMP_CFLAGS = -I/home/bj/Devel/SciDAC/install/qmp/include
 QMP_CONFIG = /home/bj/Devel/SciDAC/install/qmp/bin/qmp-config
 QMP_LDFLAGS = -L/home/bj/Devel/SciDAC/install/qmp/lib -L/usr/local/mpich-1.2.5/lib
-QMP_LIBS = -lqmp -lmpich
+QMP_LIBS = -lqmp -lpmpich -lmpich -lpmpich
 RANLIB = ranlib
 SET_MAKE = 
 SHELL = /bin/sh
@@ -144,7 +144,7 @@ libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
 mandir = ${prefix}/man
 oldincludedir = /usr/include
-prefix = /usr/local
+prefix = /home/bj/Devel/SciDAC/install/qdp_parscalar_double
 program_transform_name = s,x,x,
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
@@ -160,7 +160,7 @@ SUFFIXES = .tex .dvi .ps .pdf
 #
 # Install time docdir
 #
-docdir = /usr/local/docs
+docdir = /home/bj/Devel/SciDAC/install/qdp_parscalar_double/docs
 
 #
 # Documentation targets -- apart from doxygen, the rules above should be able
