@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.38 2004-07-07 01:58:53 edwards Exp $
+// $Id: t_foo.cc,v 1.39 2004-07-12 16:33:28 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -78,7 +78,10 @@ int main(int argc, char *argv[])
 //    LatticeComplex ps_rho = trace(adj(gamma_5 * q * gamma_5) * gamma_1 * q * gamma_1);
 //    LatticeComplex ps_rho = trace(adj(gamma_5 * q * gamma_5) * q * gamma_1);
     LatticeComplex ps_rho = trace(adj(gamma_5 * q) * gamma_1);
+//    LatticeComplex ps_rho = localInnerProduct(gamma_5 * q, gamma_1);
 //    Complex ps_rho = trace(adj(gamma_5 * q) * gamma_1);
+//    LatticeComplex ps_rho = trace(adj(q) * gamma_1);
+//    LatticeComplex ps_rho = localInnerProduct(q, gamma_1);
 
     cerr << "Here 1" << endl;
     LatticeComplex b = trace(S * traceColor(q * di_quark));
