@@ -1094,10 +1094,6 @@ The construction of a \verb|Map| object allocates all the necessary
 memory needed for a shift. Similarly, a destructor call on a \verb|Map|
 object frees memory.
 
-\subsection{I/O utilities}
-
-{\bf [Under development.]}
-
 \subsection{Temporary entry and exit from QDP}
 
 For a variety of reasons it may be necessary to remove data from QDP
@@ -1252,6 +1248,69 @@ Example  & \verb|QDP_resume();| \\
 \end{flushleft}
 
 \newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{I/O utilities}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Basic structure}
+
+There are three main types of user accessible classes for {\em simple}
+file I/O - Text, XML and Binary. For each of these classes there is a
+Reader and a Writer version. Each support I/O for both scalar and
+lattice quantities.
+
+\subsection{Text Reading and Writing}
+
+\paragraph{TextReader member functions and global functions}
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Open           & \verb|TextReader::TextReader(const std::string& filename)|\\
+                 & \verb|TextReader::open(const std::string& filename)|\\
+  \hline
+  Close          & \verb|TextReader::~TextReader()|\\
+                 & \verb|TextReader::close()|\\
+  \hline
+  Open?          & \verb|TextReader::is_open()| \\
+  \hline
+  Any IO errors? & \verb|TextReader::fail()| \\
+  \hline
+  Input a type \verb|T| & \verb|operator>>(TextReader&, T&)| \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Prototype      & \verb|TextWriter::TextWriter(const std::string& filename)|\\
+                 & \verb|TextWriter::open(const std::string& filename)|\\
+    \hline
+  Purpose        & Open the file \verb|filename| for writing \\
+\hline
+  Example        & \verb|TextWriter my_file(\"a_file_on_disk\");| \\
+   \hline
+ \end{tabular}
+\end{flushleft}
+%
+To read and write ascii text from the file, use the standard operators
+familiar in the \cpp\ Standard Library. E.g.,
+%
+\begin{small}
+\begin{verbatim}
+TextWriter out("output");
+Real a = 1.0;
+Complex b = cmplx(Real(1), Real(2));
+out << a << endl << b << endl;
+out.close();
+\end{verbatim}
+\end{small}
+
+
+\subsection{XML Reading and Writing}
+
+\subsubsection{}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Compilation with QDP}
