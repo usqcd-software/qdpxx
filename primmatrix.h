@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primmatrix.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
+// $Id: primmatrix.h,v 1.3 2002-09-15 03:21:16 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -434,6 +434,46 @@ spinTrace(const PMatrix<T,N,C>& s1)
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       d.elem(i,j) = spinTrace(s1.elem(i,j));
+
+  return d;
+}
+
+
+// trace = noColorTrace(source1)   [only under color is this an identity]
+template<class T, int N, template<class,int> class C>
+struct UnaryReturn<PMatrix<T,N,C>, FnNoColorTrace > {
+  typedef PScalar<typename UnaryReturn<T, FnNoColorTrace>::Type_t>  Type_t;
+};
+
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PMatrix<T,N,C>, FnNoColorTrace>::Type_t
+noColorTrace(const PMatrix<T,N,C>& s1)
+{
+  typename UnaryReturn<PMatrix<T,N,C>, FnNoColorTrace>::Type_t  d;
+
+  d.elem() = noColorTrace(s1.elem(0,0));
+  for(int i=1; i < N; ++i)
+    d.elem() += noColorTrace(s1.elem(i,i));
+
+  return d;
+}
+
+
+// trace = noSpinTrace(source1)   [only under noSpin is this is an identity]
+template<class T, int N, template<class,int> class C>
+struct UnaryReturn<PMatrix<T,N,C>, FnNoSpinTrace > {
+  typedef PScalar<typename UnaryReturn<T, FnNoSpinTrace>::Type_t>  Type_t;
+};
+
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PMatrix<T,N,C>, FnNoSpinTrace>::Type_t
+noSpinTrace(const PMatrix<T,N,C>& s1)
+{
+  typename UnaryReturn<PMatrix<T,N,C>, FnNoSpinTrace>::Type_t  d;
+
+  d.elem() = noSpinTrace(s1.elem(0,0));
+  for(int i=1; i < N; ++i)
+    d.elem() += noSpinTrace(s1.elem(i,i));
 
   return d;
 }

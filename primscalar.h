@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primscalar.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
+// $Id: primscalar.h,v 1.3 2002-09-15 03:21:16 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -590,6 +590,30 @@ spinTrace(const PScalar<T1>& s1)
   typename UnaryReturn<PScalar<T1>, FnSpinTrace>::Type_t  d;
 
   d.elem() = spinTrace(s1.elem());
+  return d;
+}
+
+
+// trace = noColorTrace(source1)
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnNoColorTrace>::Type_t
+noColorTrace(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnNoColorTrace>::Type_t  d;
+
+  d.elem() = noColorTrace(s1.elem());
+  return d;
+}
+
+
+// trace = noSpinTrace(source1)
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnNoSpinTrace>::Type_t
+noSpinTrace(const PScalar<T1>& s1)
+{
+  typename UnaryReturn<PScalar<T1>, FnNoSpinTrace>::Type_t  d;
+
+  d.elem() = noSpinTrace(s1.elem());
   return d;
 }
 

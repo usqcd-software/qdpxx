@@ -1,5 +1,3 @@
-// $Id: QDPOperators.h,v 1.4 2002-09-14 19:50:14 edwards Exp $
-
 #ifndef QDPOPS_H
 #define QDPOPS_H
 
@@ -80,6 +78,28 @@ struct FnSpinTrace
   operator()(const T &a) const
   {
     return (spinTrace(a));
+  }
+};
+
+struct FnNoColorTrace
+{
+  PETE_EMPTY_CONSTRUCTORS(FnNoColorTrace)
+  template<class T>
+  inline typename UnaryReturn<T, FnNoColorTrace >::Type_t
+  operator()(const T &a) const
+  {
+    return (noColorTrace(a));
+  }
+};
+
+struct FnNoSpinTrace
+{
+  PETE_EMPTY_CONSTRUCTORS(FnNoSpinTrace)
+  template<class T>
+  inline typename UnaryReturn<T, FnNoSpinTrace >::Type_t
+  operator()(const T &a) const
+  {
+    return (noSpinTrace(a));
   }
 };
 
@@ -482,11 +502,37 @@ template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnSpinTrace,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
   typename UnaryReturn<C1,FnSpinTrace >::Type_t >::Expression_t
-SpinTrace(const QDPType<T1,C1> & l)
+spinTrace(const QDPType<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinTrace,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
     typedef typename UnaryReturn<C1,FnSpinTrace >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(l)));
+}
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnNoColorTrace,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnNoColorTrace >::Type_t >::Expression_t
+noColorTrace(const QDPType<T1,C1> & l)
+{
+  typedef UnaryNode<FnNoColorTrace,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+    typedef typename UnaryReturn<C1,FnNoColorTrace >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(l)));
+}
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnNoSpinTrace,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnNoSpinTrace >::Type_t >::Expression_t
+noSpinTrace(const QDPType<T1,C1> & l)
+{
+  typedef UnaryNode<FnNoSpinTrace,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+    typedef typename UnaryReturn<C1,FnNoSpinTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -3590,11 +3636,37 @@ template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnSpinTrace,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
   typename UnaryReturn<C1,FnSpinTrace >::Type_t >::Expression_t
-SpinTrace(const QDPExpr<T1,C1> & l)
+spinTrace(const QDPExpr<T1,C1> & l)
 {
   typedef UnaryNode<FnSpinTrace,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
     typedef typename UnaryReturn<C1,FnSpinTrace >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+}
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnNoColorTrace,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnNoColorTrace >::Type_t >::Expression_t
+noColorTrace(const QDPExpr<T1,C1> & l)
+{
+  typedef UnaryNode<FnNoColorTrace,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+    typedef typename UnaryReturn<C1,FnNoColorTrace >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+}
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnNoSpinTrace,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnNoSpinTrace >::Type_t >::Expression_t
+noSpinTrace(const QDPExpr<T1,C1> & l)
+{
+  typedef UnaryNode<FnNoSpinTrace,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+    typedef typename UnaryReturn<C1,FnNoSpinTrace >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }

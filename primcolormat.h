@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primcolormat.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
+// $Id: primcolormat.h,v 1.3 2002-09-15 03:21:16 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -144,6 +144,11 @@ struct UnaryReturn<PColorMatrix<T,N>, FnTraceImag > {
 };
 
 template<class T, int N>
+struct UnaryReturn<PColorMatrix<T,N>, FnNoSpinTrace > {
+  typedef PScalar<typename UnaryReturn<T, FnNoSpinTrace>::Type_t>  Type_t;
+};
+
+template<class T, int N>
 struct UnaryReturn<PColorMatrix<T,N>, FnNorm2 > {
   typedef PScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
 };
@@ -202,6 +207,30 @@ colorTrace(const PColorMatrix<T,N>& s1)
 
   return d;
 }
+
+
+// trace = noColorTrace(source1)   [only under color is this an identity]
+template<class T, int N>
+struct UnaryReturn<PColorMatrix<T,N>, FnNoColorTrace > {
+  typedef PColorMatrix<typename UnaryReturn<T, FnNoColorTrace>::Type_t, N>  Type_t;
+};
+
+template<class T, int N>
+inline typename UnaryReturn<PColorMatrix<T,N>, FnNoColorTrace>::Type_t
+noColorTrace(const PColorMatrix<T,N>& s1)
+
+{
+  typename UnaryReturn<PColorMatrix<T,N>, FnNoColorTrace>::Type_t  d;
+
+  // Since the color index is eaten, do not need to pass on function by
+  // calling trace(...) again
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = trace(s1.elem(i,j));
+
+  return d;
+}
+
 
 
 

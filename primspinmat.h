@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primspinmat.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
+// $Id: primspinmat.h,v 1.3 2002-09-15 03:21:16 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -170,6 +170,11 @@ struct UnaryReturn<PSpinMatrix<T,N>, FnTraceImag > {
 };
 
 template<class T, int N>
+struct UnaryReturn<PSpinMatrix<T,N>, FnNoColorTrace > {
+  typedef PScalar<typename UnaryReturn<T, FnNoColorTrace>::Type_t>  Type_t;
+};
+
+template<class T, int N>
 struct UnaryReturn<PSpinMatrix<T,N>, FnNorm2 > {
   typedef PScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
 };
@@ -249,6 +254,29 @@ spinTrace(const PSpinMatrix<T,N>& s1)
   d.elem() = s1.elem(0,0);
   for(int i=1; i < N; ++i)
     d.elem() += s1.elem(i,i);
+
+  return d;
+}
+
+
+// trace = noSpinTrace(source1)   [this is an identity for spin]
+/*! This acts on all indices except spin */
+template<class T, int N>
+struct UnaryReturn<PSpinMatrix<T,N>, FnNoSpinTrace > {
+  typedef PSpinMatrix<typename UnaryReturn<T, FnNoSpinTrace>::Type_t, N>  Type_t;
+};
+
+template<class T, int N>
+inline typename UnaryReturn<PSpinMatrix<T,N>, FnNoSpinTrace>::Type_t
+noSpinTrace(const PSpinMatrix<T,N>& s1)
+{
+  typename UnaryReturn<PSpinMatrix<T,N>, FnNoSpinTrace>::Type_t  d;
+
+  // Since the spin index is eaten, do not need to pass on function by
+  // calling trace(...) again
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = trace(s1.elem(i,j));
 
   return d;
 }
