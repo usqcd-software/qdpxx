@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.3 2002-09-14 02:59:21 edwards Exp $
+// $Id: scalar_specific.h,v 1.4 2002-09-14 03:07:34 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -31,7 +31,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
   if (! s.IndexRep())
     for(int i=s.Start(); i <= s.End(); ++i) 
     {
-      fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
+//      fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
 //      op(dest.elem(i), forEach(rhs, ElemLeaf(), OpCombine()));
       op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
     }
@@ -52,7 +52,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   if (! s.IndexRep())
     for(int i=s.Start(); i <= s.End(); ++i) 
     {
-      fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+//    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
       op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
     }
   else
@@ -430,7 +430,7 @@ OLattice<T> shift(const OLattice<T>& s1, int isign, int dir)
   if (! s.IndexRep())
     for(int i=s.Start(); i <= s.End(); ++i) 
     {
-      fprintf(stderr,"Shift site %d\n",i);
+//    fprintf(stderr,"Shift site %d\n",i);
       d.elem(i) = s1.elem(soff[i]);  // SINGLE NODE VERSION FOR NOW
     }
   else
@@ -458,7 +458,7 @@ OLattice<T> shift(const QDPExpr<RHS,OLattice<T> >& s1, int isign, int dir)
   if (! s.IndexRep())
     for(int i=s.Start(); i <= s.End(); ++i)
     {
-      fprintf(stderr,"Shift expr site %d\n",i);
+//    fprintf(stderr,"Shift expr site %d\n",i);
       d.elem(i) = forEach(s1, EvalLeaf1(soff[i]), OpCombine());   // SINGLE NODE VERSION FOR NOW
     }
   else
@@ -483,7 +483,6 @@ su2_extract(OLattice<T1>& r_0, OLattice<T1>& r_1,
 
   if (! s.IndexRep())
   {
-//      fprintf(stderr,"i1 = %d  i2 = %d\n",i1,i2);
     for(int i=s.Start(); i <= s.End(); ++i) 
       su2_extract(r_0.elem(i), r_1.elem(i), r_2.elem(i), r_3.elem(i), 
 		  i1, i2, s1.elem(i));
@@ -507,7 +506,6 @@ sun_fill(OLattice<T>& d,
 
   if (! s.IndexRep())
   {
-//      fprintf(stderr,"i1 = %d  i2 = %d\n",i1,i2);
     for(int i=s.Start(); i <= s.End(); ++i) 
       sun_fill(d.elem(i), 
 	       i1, i2,
