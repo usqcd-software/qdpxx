@@ -3,10 +3,14 @@
 #
 ## Should only need @QMP_CFLAGS@, @QMP_LDFLAGS@ and @QMP_LIBS@
 ## n.b. Only defined for some parallel architectures
-INCFLAGS=-I@top_srcdir@/include -I@top_builddir@/include
+INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
+           -I@top_srcdir@/other_libs/qio/include \
+           -I@top_srcdir@/other_libs/qio/lib/lrl/c-dime/include
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QMP_CFLAGS@
-AM_LDFLAGS = -L@top_builddir@/lib @LDFLAGS@ @QMP_LDFLAGS@
-LDADD = -lqdp @QMP_LIBS@ @LIBS@
+AM_LDFLAGS = -L@top_builddir@/lib -L@top_builddir@/other_libs/nml \
+             -L@top_builddir@/other_libs/qio/lib \
+             @LDFLAGS@ @QMP_LDFLAGS@
+LDADD = -lqdp -lnml -lqio @QMP_LIBS@ @LIBS@
 
 #
 # Local Headers
