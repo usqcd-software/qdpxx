@@ -1,4 +1,4 @@
-// $Id: t_entry.cc,v 1.1 2003-06-20 02:19:34 edwards Exp $
+// $Id: t_entry.cc,v 1.2 2003-06-20 02:38:54 edwards Exp $
 
 /*! \file
  *  \brief Test entry/exit routines
@@ -26,7 +26,6 @@ int main(int argc, char **argv)
   Layout::create();
 
   LatticeFermion la;
-  multi1d<Fermion> sa(Layout::sitesOnNode());
   random(la);
 
   // Suspend communications
@@ -48,6 +47,12 @@ int main(int argc, char **argv)
   // Pull out the data
 //  Subset& even = rb[0];
 
+  // WARNING: the variable "sa" will be node dependent, e.g. on each node
+  // there will be different values. So, the write statement below of 
+  // sa will only print that from the **primary** node. However, that
+  // is the point of extract/insert - it allows the user to manipulate their
+  // data into a QDP field on each node, from their own private data format.
+  multi1d<Fermion> sa(Layout::sitesOnNode());
   sa = zero;
   QDP_extract(sa, la, even);
 
