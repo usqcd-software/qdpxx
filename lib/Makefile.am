@@ -36,8 +36,9 @@ HDRS = qdp_defs.h qdp_forward.h qdp_globalfuncs.h qdp_inner.h qdp_io.h qdp_layou
 ## for arch's then a conditional for each one has to be added.
 
 libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc qdp_layout.cc qdp_io.cc \
-               qdp_stdio.cc qdp_iogauge.cc qdp_byteorder.cc qdp_util.cc \
+               qdp_iogauge.cc qdp_byteorder.cc qdp_util.cc \
                qdp_qdpio.cc qdp_xmlio.cc   qdp_filebuf.cc
+# qdp_stdio.cc
 
 # Scalar
 if ARCH_SCALAR
