@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reality.h,v 1.10 2002-11-07 19:25:50 edwards Exp $
+// $Id: reality.h,v 1.11 2002-11-13 19:40:05 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -24,6 +24,25 @@ public:
   RScalar() {}
   ~RScalar() {}
 
+  //---------------------------------------------------------
+  // Conversion routines for turning things like Integer into an int
+  //! convert to int
+  /*! Convert wrapper of a primitive type to a primitive type */
+  operator int() {return int(elem());}
+
+  //! convert to float
+  /*! Convert wrapper of a primitive type to a primitive type */
+  operator float() {return float(elem());}
+
+  //! convert to double
+  /*! Convert wrapper of a primitive type to a primitive type */
+  operator double() {return double(elem());}
+
+  //! convert to bool
+  /*! Convert wrapper of a primitive type to a primitive type */
+  operator bool() {return bool(elem());}
+
+  //---------------------------------------------------------
   //! construct dest = const
   RScalar(const typename WordType<T>::Type_t& rhs) : F(rhs) {}
 
@@ -968,33 +987,33 @@ imag(const RScalar<T>& s1)
 // ArcCos
 template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnArcCos>::Type_t
-arccos(const RScalar<T1>& s1)
+acos(const RScalar<T1>& s1)
 {
   typename UnaryReturn<RScalar<T1>, FnArcCos>::Type_t  d;
 
-  d.elem() = arccos(s1.elem());
+  d.elem() = acos(s1.elem());
   return d;
 }
 
 // ArcSin
 template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnArcSin>::Type_t
-arcsin(const RScalar<T1>& s1)
+asin(const RScalar<T1>& s1)
 {
   typename UnaryReturn<RScalar<T1>, FnArcSin>::Type_t  d;
 
-  d.elem() = arcsin(s1.elem());
+  d.elem() = asin(s1.elem());
   return d;
 }
 
 // ArcTan
 template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnArcTan>::Type_t
-arctan(const RScalar<T1>& s1)
+atan(const RScalar<T1>& s1)
 {
   typename UnaryReturn<RScalar<T1>, FnArcTan>::Type_t  d;
 
-  d.elem() = arctan(s1.elem());
+  d.elem() = atan(s1.elem());
   return d;
 }
 
@@ -1074,6 +1093,29 @@ tan(const RScalar<T1>& s1)
   d.elem() = tan(s1.elem());
   return d;
 }
+
+//! RScalar<T> = pow(RScalar<T> , RScalar<T>)
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnPow>::Type_t
+pow(const RScalar<T1>& s1, const RScalar<T2>& s2)
+{
+  typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnPow>::Type_t  d;
+
+  d.elem() = pow(s1.elem(), s2.elem());
+  return d;
+}
+
+//! RScalar<T> = atan2(RScalar<T> , RScalar<T>)
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnArcTan2>::Type_t
+atan2(const RScalar<T1>& s1, const RScalar<T2>& s2)
+{
+  typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnArcTan2>::Type_t  d;
+
+  d.elem() = atan2(s1.elem(), s2.elem());
+  return d;
+}
+
 
 
 //! dest [float type] = source [seed type]
