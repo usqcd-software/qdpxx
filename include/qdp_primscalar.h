@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.6 2003-08-10 02:27:11 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.7 2003-08-14 03:49:20 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -561,6 +561,32 @@ inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpNE>::Type_t
 operator!=(const PScalar<T1>& l, const PScalar<T2>& r)
 {
   return l.elem() != r.elem();
+}
+
+
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpAnd > {
+  typedef PScalar<typename BinaryReturn<T1, T2, OpAnd>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpAnd>::Type_t
+operator&&(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  return l.elem() && r.elem();
+}
+
+
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, OpOr > {
+  typedef PScalar<typename BinaryReturn<T1, T2, OpOr>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, OpOr>::Type_t
+operator||(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  return l.elem() || r.elem();
 }
 
 

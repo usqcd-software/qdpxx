@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.8 2003-08-10 02:27:11 edwards Exp $
+// $Id: qdp_reality.h,v 1.9 2003-08-14 03:49:20 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -965,6 +965,32 @@ inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpNE>::Type_t
 operator!=(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() != r.elem();
+}
+
+
+template<class T1, class T2>
+struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpAnd > {
+  typedef RScalar<typename BinaryReturn<T1, T2, OpAnd>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAnd>::Type_t
+operator&&(const RScalar<T1>& l, const RScalar<T2>& r)
+{
+  return l.elem() && r.elem();
+}
+
+
+template<class T1, class T2>
+struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpOr > {
+  typedef RScalar<typename BinaryReturn<T1, T2, OpOr>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpOr>::Type_t
+operator||(const RScalar<T1>& l, const RScalar<T2>& r)
+{
+  return l.elem() || r.elem();
 }
 
 
