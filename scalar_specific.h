@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.5 2002-09-14 19:48:26 edwards Exp $
+// $Id: scalar_specific.h,v 1.6 2002-09-23 19:29:03 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -52,7 +52,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   if (! s.IndexRep())
     for(int i=s.Start(); i <= s.End(); ++i) 
     {
-//    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+//      fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
       op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
     }
   else
@@ -64,6 +64,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 //-----------------------------------------------------------------------------
 //! dest = (mask) ? s1 : dest
 template<class T1, class T2> 
+//inline
 void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
   Subset s = global_context->Sub();
@@ -338,8 +339,59 @@ sumMulti(const OLattice<T>& s1, const Set& ss)
 
 
 
+//-----------------------------------------------------------------------------
+//
+// This is the PETE version of a shift, namely return an expression
+//
+// This class looks like those in OperatorTags, but has a specific constructor
+// for a given direction
+// This mechanism needs to be more general - this implementation is a prototype.
+//
+// NOTE: the use of "all" is not desired. The offsets is not suppose to
+// be subset dependent, but is general to the class. E.g., all shifts should be
+// static classes
+struct FnShift
+{
+  PETE_EMPTY_CONSTRUCTORS(FnShift)
+
+  const int *soff;
+  FnShift(int isign, int dir): soff(all.Offsets()->slice(dir,(isign+1)>>1))
+    {
+//      fprintf(stderr,"FnShift(%d,%d): soff=0x%x\n",isign,dir,soff);
+    }
+  
+  template<class T>
+  inline typename UnaryReturn<T, FnShift>::Type_t
+  operator()(const T &a) const
+  {
+    return (a);
+  }
+};
+
+
+// Specialization of ForEach deals with shifts. 
+// This mechanism needs to be more general - this implementation is a prototype.
+template<class A, class CTag>
+struct ForEach<UnaryNode<FnShift, A>, EvalLeaf1, CTag>
+{
+  typedef typename ForEach<A, EvalLeaf1, CTag>::Type_t TypeA_t;
+  typedef typename Combine1<TypeA_t, FnShift, CTag>::Type_t Type_t;
+  inline static
+  Type_t apply(const UnaryNode<FnShift, A> &expr, const EvalLeaf1 &f, 
+    const CTag &c) 
+  {
+    EvalLeaf1 ff(expr.operation().soff[f.val1()]);
+//    fprintf(stderr,"ForEach<Unary<FnShift>>: site = %d, new = %d\n",f.val1(),ff.val1());
+
+    return Combine1<TypeA_t, FnShift, CTag>::
+      combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),
+              expr.operation(), c);
+  }
+};
+
+
 //-----------------------------------------------
-//! OLattice<T> = Shift(OLattice<T1>, int isign, int dir)
+//! OLattice<T> = shift(OLattice<T1>, int isign, int dir)
 /*! 
  * shift(source,isign,dir)
  * isign = parity of direction (+1 or -1)
@@ -353,52 +405,34 @@ sumMulti(const OLattice<T>& s1, const Set& ss)
  * Notice, there may be an ILattice underneath which requires shift args.
  * This routine is very architecture dependent.
  */
-template<class T> 
-OLattice<T> shift(const OLattice<T>& s1, int isign, int dir)
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnShift,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+shift(const QDPType<T1,C1> & l, int isign, int dir)
 {
-  OLattice<T> d;
-  Subset s = global_context->Sub();
-  const int *soff = s.Offsets()->slice(dir,(isign+1)>>1);
+//  fprintf(stderr,"shift(QDPType,%d,%d)\n",isign,dir);
 
-  if (! s.IndexRep())
-    for(int i=s.Start(); i <= s.End(); ++i) 
-    {
-//    fprintf(stderr,"Shift site %d\n",i);
-      d.elem(i) = s1.elem(soff[i]);  // SINGLE NODE VERSION FOR NOW
-    }
-  else
-    diefunc();
-
-  return d;
+  typedef UnaryNode<FnShift,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+  return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
+    CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
 
 
-
-//-----------------------------------------------
-//! OLattice<T> = Shift(OLattice<T1>, int isign, int dir)
-/*!
-   * Shifts on a OLattice are non-trivial.
-   * Notice, there may be an ILattice underneath which requires shift args.
-   * This routine is very architecture dependent.
-   */
-template<class T, class RHS>
-OLattice<T> shift(const QDPExpr<RHS,OLattice<T> >& s1, int isign, int dir)
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnShift,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+shift(const QDPExpr<T1,C1> & l, int isign, int dir)
 {
-  OLattice<T> d;
-  Subset s = global_context->Sub();
-  const int *soff = s.Offsets()->slice(dir,(isign+1)>>1);
+//  fprintf(stderr,"shift(QDPExpr,%d,%d)\n",isign,dir);
 
-  if (! s.IndexRep())
-    for(int i=s.Start(); i <= s.End(); ++i)
-    {
-//    fprintf(stderr,"Shift expr site %d\n",i);
-      d.elem(i) = forEach(s1, EvalLeaf1(soff[i]), OpCombine());   // SINGLE NODE VERSION FOR NOW
-    }
-  else
-    diefunc();
-
-  return d;
+  typedef UnaryNode<FnShift,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+  return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
+    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
+
+
 
 
 
