@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvec_layout.cc,v 1.10 2004-08-12 01:12:07 edwards Exp $
+// $Id: qdp_scalarvec_layout.cc,v 1.11 2004-09-07 23:33:29 edwards Exp $
 
 /*! @file
  * @brief Scalarvec layout routines
@@ -103,6 +103,19 @@ namespace Layout
 
   //! Returns the logical size of this machine
   const multi1d<int>& logicalSize() {return _layout.logical_size;}
+
+  //! Returns the node number given some logical node coordinate
+  /*! This is not meant to be speedy */
+  int getNodeNumberFrom(const multi1d<int>& node_coord) {return 0;}
+
+  //! Returns the logical node coordinates given some node number
+  /*! This is not meant to be speedy */
+  multi1d<int> getLogicalCoordFrom(int node) 
+  {
+    multi1d<int> node_coord(Nd);
+    node_coord = 0;
+    return node_coord;
+  }
 
   //! Initializer for layout
   void init() {}

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.30 2004-09-02 16:35:32 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.31 2004-09-07 23:33:29 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -17,14 +17,6 @@ namespace Layout
 {
   //! coord[mu]  <- mu  : fill with lattice coord in mu direction
   LatticeInteger latticeCoordinate(int mu);
-
-  //! Returns the node number given some logical node coordinate
-  /*! This is not meant to be speedy */
-  int getNodeNumberFrom(const multi1d<int>& node_coord);
-
-  //! Returns the logical node coordinates given some node number
-  /*! This is not meant to be speedy */
-  multi1d<int> getLogicalCoordFrom(int node);
 }
 
 

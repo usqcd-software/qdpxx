@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_layout.h,v 1.3 2003-08-05 20:06:13 edwards Exp $
+// $Id: qdp_layout.h,v 1.4 2004-09-07 23:33:29 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -92,6 +92,14 @@ namespace Layout
 
   //! Returns the logical size of this machine
   const multi1d<int>& logicalSize() QDP_CONST;
+
+  //! Returns the node number given some logical node coordinate
+  /*! This is not meant to be speedy */
+  int getNodeNumberFrom(const multi1d<int>& node_coord);
+
+  //! Returns the logical node coordinates given some node number
+  /*! This is not meant to be speedy */
+  multi1d<int> getLogicalCoordFrom(int node);
 }
 
 //! Declaration of shift function object
