@@ -42,7 +42,7 @@ dnl - set the parallel compiler environment
     LDFLAGS="$LDFLAGS $pac_QMP_LDFLAGS"
     LIBS="$LIBS $pac_QMP_LIBS"
     AC_TRY_LINK(
-      [#include "QMP.h"],
+      [#include "qmp.h"],
       [
         int argc ; char **argv ;
         $4 ;
