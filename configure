@@ -815,13 +815,15 @@ Optional Features:
   --enable-Nc=N           Set Number of Colours, ie N for SU(N) default is
                           SU(3)
   --enable-Ns=N           Set No of Spin Components, Default is Ns=4
+  --enable-print-expression-tree
+                          Prints QDP expression tree. Diagnostic use only.
   --enable-parallel-arch=<arch>
                           Build QDP++ for parallel architecture <arch>
   --enable-sse            Optimize code with Intel SSE instructions
   --enable-sse2           Optimize code with Intel SSE2 instructions
   --enable-qcdoc          Enable QCDOC Optimisations
   --enable-qcdoc-edram    Make QDP Outer allocate in EDRAM
-   --enable-precision=single|double
+  --enable-precision=single|double
                           Sets the base precision to be single or double
                           precision (default is single)
   --enable-layout=lexico|cb2|cb32
@@ -2483,6 +2485,15 @@ CONFIG_NS=${ac_Ns}
 echo "$as_me: Configuring QDP++ for Ns = ${ac_Ns}" >&6;}
 
 
+# Check whether --enable-print-expression-tree or --disable-print-expression-tree was given.
+if test "${enable_print_expression_tree+set}" = set; then
+  enableval="$enable_print_expression_tree"
+  ac_print_tree=1
+else
+  ac_print_tree=0
+
+fi;
+
 # Check whether --enable-parallel-arch or --disable-parallel-arch was given.
 if test "${enable_parallel_arch+set}" = set; then
   enableval="$enable_parallel_arch"
@@ -2500,7 +2511,6 @@ else
   ac_sse=0
 
 fi;
-
 
 # Check whether --enable-sse2 or --disable-sse2 was given.
 if test "${enable_sse2+set}" = set; then
@@ -2548,8 +2558,8 @@ _ACEOF
     { echo "$as_me:$LINENO: Configuring QDP++ with SSE extentions enabled" >&5
 echo "$as_me: Configuring QDP++ with SSE extentions enabled" >&6;};
   else
-    { echo "$as_me:$LINENO:  WARNING: Non GNU Compiler. SSE Only supported for GCC-3.2.2 or greater due to feature creep. Sorry " >&5
-echo "$as_me:  WARNING: Non GNU Compiler. SSE Only supported for GCC-3.2.2 or greater due to feature creep. Sorry " >&6;}
+    { echo "$as_me:$LINENO: WARNING: Non GNU Compiler. SSE Only supported for GCC-3.2.2 or greater due to feature creep. Sorry" >&5
+echo "$as_me: WARNING: Non GNU Compiler. SSE Only supported for GCC-3.2.2 or greater due to feature creep. Sorry" >&6;}
   fi
 fi
 
@@ -2570,8 +2580,8 @@ _ACEOF
     { echo "$as_me:$LINENO: Configuring QDP++ with SSE2 extentions enabled" >&5
 echo "$as_me: Configuring QDP++ with SSE2 extentions enabled" >&6;};
   else
-    { echo "$as_me:$LINENO:  WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry " >&5
-echo "$as_me:  WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry " >&6;}
+    { echo "$as_me:$LINENO: WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry" >&5
+echo "$as_me: WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry" >&6;}
   fi
 fi
 
@@ -2592,13 +2602,22 @@ echo "$as_me: Enabling allocation in EDRAM in QDP Outer" >&6;}
    fi
 fi
 
+if test ${ac_print_tree} -eq 1; then
+
+cat >>confdefs.h <<_ACEOF
+#define QDP_PRINT_EXPR_TREE ${ac_print_tree}
+_ACEOF
+
+   { echo "$as_me:$LINENO: Enabling printing of QDP expressions" >&5
+echo "$as_me: Enabling printing of QDP expressions" >&6;}
+fi
 
 # Check whether --enable-precision or --disable-precision was given.
 if test "${enable_precision+set}" = set; then
   enableval="$enable_precision"
-   ac_precision=${enableval}
+  ac_precision=${enableval}
 else
-   ac_precision="single"
+  ac_precision="single"
 fi;
 
 case ${ac_precision} in
