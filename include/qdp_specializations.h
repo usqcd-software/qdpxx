@@ -1,10 +1,49 @@
 // -*- C++ -*-
-// $Id: qdp_specializations.h,v 1.8 2004-11-22 19:31:32 edwards Exp $
+// $Id: qdp_specializations.h,v 1.9 2005-01-22 21:58:02 edwards Exp $
 //
 // QDP data parallel interface
 //
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+
+//! dest  = random
+template<class T1, class T2>
+inline void
+fill_random(float& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
+{
+  d = float(RNG::sranf(seed, skewed_seed, seed_mult));
+}
+
+//! dest  = random
+template<class T1, class T2>
+inline void
+fill_random(double& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
+{
+  d = double(RNG::sranf(seed, skewed_seed, seed_mult));
+}
+
+
+//! dest  = random
+template<class T1, class T2, int N>
+inline void
+fill_random(float* d, T1& seed, T2& skewed_seed, const T1& seed_mult)
+{
+  RNG::sranf(d, N, seed, skewed_seed, seed_mult);
+}
+
+
+//! dest  = random
+template<class T1, class T2, int N>
+inline void
+fill_random(double* d, T1& seed, T2& skewed_seed, const T1& seed_mult)
+{
+  float dd[N];
+  RNG::sranf(dd, N, seed, skewed_seed, seed_mult);
+  for(int i=0; i < N; ++i)
+    d[i] = float(dd[i]);
+}
+
 
 //
 // Conversion routines. These cannot be implicit conversion functions
