@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.10 2002-11-23 04:32:13 edwards Exp $
+// $Id: simpleword.h,v 1.11 2002-12-05 18:57:01 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -350,260 +350,322 @@ inline NmlWriter& operator<<(NmlWriter& nml, const bool& d) {nml.get() << d; ret
 //-----------------------------------------------------------------------------
 
 // Return types
+template<>
 struct UnaryReturn<int, FnSeedToFloat > {
   typedef float  Type_t;
 };
 
+template<>
 struct UnaryReturn<int, FnSum > {
   typedef int  Type_t;
 };
 
+template<>
 struct UnaryReturn<int, FnSumMulti > {
   typedef int  Type_t;
 };
 
+template<>
 struct UnaryReturn<int, FnNorm2 > {
   typedef int  Type_t;
 };
 
+template<>
 struct BinaryReturn<int, int, FnInnerproduct > {
   typedef int  Type_t;
 };
 
+template<>
 struct BinaryReturn<int, int, FnInnerproductReal > {
   typedef int  Type_t;
 };
 
+template<>
 struct UnaryReturn<int, FnLocalNorm2 > {
   typedef int  Type_t;
 };
 
+template<>
 struct BinaryReturn<int, int, FnLocalInnerproduct > {
   typedef int  Type_t;
 };
 
+template<>
 struct BinaryReturn<int, int, FnLocalInnerproductReal > {
   typedef int  Type_t;
 };
 
 
 
+template<>
 struct UnaryReturn<float, FnSum > {
   typedef double  Type_t;
 };
 
+template<>
 struct UnaryReturn<float, FnSumMulti > {
   typedef double  Type_t;
 };
 
+template<>
 struct UnaryReturn<float, FnNorm2 > {
   typedef double  Type_t;
 };
 
+template<>
 struct BinaryReturn<float, float, FnInnerproduct > {
   typedef double  Type_t;
 };
 
+template<>
 struct BinaryReturn<float, float, FnInnerproductReal > {
   typedef double  Type_t;
 };
 
+template<>
 struct UnaryReturn<float, FnLocalNorm2 > {
   typedef float  Type_t;
 };
 
+template<>
 struct BinaryReturn<float, float, FnLocalInnerproduct > {
   typedef float  Type_t;
 };
 
+template<>
 struct BinaryReturn<float, float, FnLocalInnerproductReal > {
   typedef float  Type_t;
 };
 
 
+template<>
 struct UnaryReturn<double, FnSum > {
   typedef double  Type_t;
 };
 
+template<>
 struct UnaryReturn<double, FnSumMulti > {
   typedef double  Type_t;
 };
 
+template<>
 struct UnaryReturn<double, FnNorm2 > {
   typedef double  Type_t;
 };
 
+template<>
 struct BinaryReturn<double, double, FnInnerproduct > {
   typedef double  Type_t;
 };
 
+template<>
 struct BinaryReturn<double, double, FnInnerproductReal > {
   typedef double  Type_t;
 };
 
+template<>
 struct UnaryReturn<double, FnLocalNorm2 > {
   typedef double  Type_t;
 };
 
+template<>
 struct BinaryReturn<double, double, FnLocalInnerproduct > {
   typedef double  Type_t;
 };
 
+template<>
 struct BinaryReturn<double, double, FnLocalInnerproductReal > {
   typedef double  Type_t;
 };
 
 
 
+template<>
 struct UnaryReturn<int, FnSliceSum > {
   typedef int  Type_t;
 };
 
+template<>
 struct UnaryReturn<float, FnSliceSum > {
   typedef double  Type_t;
 };
 
+template<>
 struct UnaryReturn<double, FnSliceSum > {
   typedef double  Type_t;
 };
 
 
 
+template<>
 struct BinaryReturn<int, int, OpAssign > {
   typedef int  Type_t;
 };
  
+template<>
 struct BinaryReturn<int, int, OpAddAssign > {
   typedef int  Type_t;
 };
  
+template<>
 struct BinaryReturn<int, int, OpSubtractAssign > {
   typedef int  Type_t;
 };
  
+template<>
 struct BinaryReturn<int, int, OpMultiplyAssign > {
   typedef int  Type_t;
 };
  
+template<>
 struct BinaryReturn<int, int, OpDivideAssign > {
   typedef int  Type_t;
 };
  
+template<>
 struct BinaryReturn<int, int, OpModAssign > {
   typedef int  Type_t;
 };
  
+template<>
 struct BinaryReturn<int, int, OpBitwiseOrAssign > {
   typedef int  Type_t;
 };
  
+template<>
 struct BinaryReturn<int, int, OpBitwiseAndAssign > {
   typedef int  Type_t;
 };
  
+template<>
 struct BinaryReturn<int, int, OpBitwiseXorAssign > {
   typedef int  Type_t;
 };
  
+template<>
 struct BinaryReturn<int, int, OpLeftShiftAssign > {
   typedef int  Type_t;
 };
  
+template<>
 struct BinaryReturn<int, int, OpRightShiftAssign > {
   typedef int  Type_t;
 };
  
 
+template<>
 struct BinaryReturn<float, float, OpAssign > {
   typedef float  Type_t;
 };
  
+template<>
 struct BinaryReturn<float, float, OpAddAssign > {
   typedef float  Type_t;
 };
  
+template<>
 struct BinaryReturn<float, float, OpSubtractAssign > {
   typedef float  Type_t;
 };
  
+template<>
 struct BinaryReturn<float, float, OpMultiplyAssign > {
   typedef float  Type_t;
 };
  
+template<>
 struct BinaryReturn<float, float, OpDivideAssign > {
   typedef float  Type_t;
 };
  
+template<>
 struct BinaryReturn<float, float, OpModAssign > {
   typedef float  Type_t;
 };
  
+template<>
 struct BinaryReturn<float, float, OpBitwiseOrAssign > {
   typedef float  Type_t;
 };
  
+template<>
 struct BinaryReturn<float, float, OpBitwiseAndAssign > {
   typedef float  Type_t;
 };
  
+template<>
 struct BinaryReturn<float, float, OpBitwiseXorAssign > {
   typedef float  Type_t;
 };
  
+template<>
 struct BinaryReturn<float, float, OpLeftShiftAssign > {
   typedef float  Type_t;
 };
  
+template<>
 struct BinaryReturn<float, float, OpRightShiftAssign > {
   typedef float  Type_t;
 };
  
 
+template<>
 struct BinaryReturn<double, double, OpAssign > {
   typedef double  Type_t;
 };
  
+template<>
 struct BinaryReturn<double, double, OpAddAssign > {
   typedef double  Type_t;
 };
  
+template<>
 struct BinaryReturn<double, double, OpSubtractAssign > {
   typedef double  Type_t;
 };
  
+template<>
 struct BinaryReturn<double, double, OpMultiplyAssign > {
   typedef double  Type_t;
 };
  
+template<>
 struct BinaryReturn<double, double, OpDivideAssign > {
   typedef double  Type_t;
 };
  
+template<>
 struct BinaryReturn<double, double, OpModAssign > {
   typedef double  Type_t;
 };
  
+template<>
 struct BinaryReturn<double, double, OpBitwiseOrAssign > {
   typedef double  Type_t;
 };
  
+template<>
 struct BinaryReturn<double, double, OpBitwiseAndAssign > {
   typedef double  Type_t;
 };
  
+template<>
 struct BinaryReturn<double, double, OpBitwiseXorAssign > {
   typedef double  Type_t;
 };
  
+template<>
 struct BinaryReturn<double, double, OpLeftShiftAssign > {
   typedef double  Type_t;
 };
  
+template<>
 struct BinaryReturn<double, double, OpRightShiftAssign > {
   typedef double  Type_t;
 };
  
 
+template<>
 struct BinaryReturn<bool, bool, OpAssign > {
   typedef bool  Type_t;
 };
