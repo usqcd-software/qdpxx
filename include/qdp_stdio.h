@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.h,v 1.4 2003-10-09 18:28:35 edwards Exp $
+// $Id: qdp_stdio.h,v 1.5 2003-10-09 20:13:16 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -82,6 +82,17 @@ private:
 };
 
 
+//! Read an array
+template<class T>
+inline
+StandardInputStream& operator>>(StandardInputStream& s, multi1d<T>& d)
+{
+  for(int i=0; i < d.size(); ++i)
+    s >> d[i];
+
+  return s;
+}
+
 
 
 //--------------------------------------------------------------------------------
@@ -147,6 +158,13 @@ private:
   std::ostream* os;
   bool open;
 };
+
+
+// NOTE: A write of an array is *NOT* provided since these are usual special purpose
+//template<class T>
+//inline
+//StandardOutputStream& operator<<(StandardOutputStream& s, const multi1d<T>& d);
+
 
 
 // Make global (parallel) versions of stdin, stdout, stderr
