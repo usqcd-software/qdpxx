@@ -221,6 +221,7 @@ int main(int argc, char *argv[])
   vector<ClassDescriptor> extraClasses;
   vector<ClassDescriptor> scalars1;
   vector<ClassDescriptor> scalars2;
+  vector<ClassDescriptor> scalars3;
   vector<ClassDescriptor> generalT;
   vector<ClassDescriptor> userClasses;
   vector<ClassDescriptor> expressionClass;
@@ -254,6 +255,7 @@ int main(int argc, char *argv[])
     extraClasses = mClasses["extraClasses"];
     scalars1 = mClasses["scalars"];
     scalars2 = mClasses["scalars"];
+    scalars3 = mClasses["scalars"];
 
     userClasses = classes;
 
@@ -267,9 +269,10 @@ int main(int argc, char *argv[])
 
     if (!justScalars)
       {
-	scalars1.push_back(ClassDescriptor("","typename WordType<C2>::Type_t",true));
-	scalars2.push_back(ClassDescriptor("","typename WordType<C1>::Type_t",true));
-      }
+	scalars1.push_back(ClassDescriptor("","typename WordType<C1>::Type_t",true));
+	scalars2.push_back(ClassDescriptor("","typename WordType<C2>::Type_t",true));
+	scalars3.push_back(ClassDescriptor("","typename WordType<C3>::Type_t",true));
+     }
   }
 
   generalT.push_back(ClassDescriptor("","typename WordType<C1>::Type_t",true));
@@ -375,15 +378,27 @@ int main(int argc, char *argv[])
 #if defined(USE_SCALARS)
     if (!justExtraClasses)
     {
-      printList(*ofl,BinaryFunction(),binaryOps,userClasses,scalars2);
-      printList(*ofl,BinaryFunction(),binaryLeftOps,userClasses,scalars2);
-      printList(*ofl,BinaryFunction(),binaryOps,scalars1,userClasses);
+      printList(*ofl,BinaryFunction(),binaryOps,userClasses,scalars1);
+      printList(*ofl,BinaryFunction(),binaryLeftOps,userClasses,scalars1);
+      printList(*ofl,BinaryFunction(),binaryOps,scalars2,userClasses);
+
+      printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
+		userClasses,scalars1);
+      printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
+		scalars1,userClasses);
+      printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
+		scalars1,scalars1);
+
+      printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,
+		userClasses,scalars2);
+      printList(*ofl,TrinaryFunction(),trinaryOps,scalars3,
+		scalars3,userClasses);
     }
     else
     {
-      printList(*ofl,BinaryFunction(),binaryOps,extraClasses,scalars2);
-      printList(*ofl,BinaryFunction(),binaryLeftOps,extraClasses,scalars2);
-      printList(*ofl,BinaryFunction(),binaryOps,scalars1,extraClasses);
+      printList(*ofl,BinaryFunction(),binaryOps,extraClasses,scalars1);
+      printList(*ofl,BinaryFunction(),binaryLeftOps,extraClasses,scalars1);
+      printList(*ofl,BinaryFunction(),binaryOps,scalars2,extraClasses);
     }
 #endif
 
@@ -403,11 +418,11 @@ int main(int argc, char *argv[])
 #if defined(USE_SCALARS)
     if (!justExtraClasses)
     {
-      printList(*ofl,BinaryFunction(),binaryLeftOps,scalars1,userClasses);
+      printList(*ofl,BinaryFunction(),binaryLeftOps,scalars2,userClasses);
     }
     else
     {
-      printList(*ofl,BinaryFunction(),binaryLeftOps,scalars1,extraClasses);
+      printList(*ofl,BinaryFunction(),binaryLeftOps,scalars2,extraClasses);
     }
 #endif
     if (shiftGuard)
@@ -415,18 +430,36 @@ int main(int argc, char *argv[])
       *ofl << "#endif // PETE_ALLOW_SCALAR_SHIFT" << endl;
     }
 
-#if 0
+#if 1
     if (!justScalars)
     {
       if (!justExtraClasses)
       {
 	printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
-		  generalT,generalT);
+		  userClasses,userClasses);
       }
       else
       {
-	printList(*ofl,TrinaryFunction(),trinaryOps,extraClasses,generalT,
-		  generalT);
+	cerr << "do not execute this stuff\n";
+
+#if 0
+	printList(*ofl,TrinaryFunction(),trinaryOps,extraClasses,userClasses,
+		  userClasses);
+	printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,extraClasses,
+		  userClasses);
+	printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,userClasses,
+		  extraClasses);
+
+	printList(*ofl,TrinaryFunction(),trinaryOps,extraClasses,extraClasses,
+		  userClasses);
+	printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,extraClasses,
+		  extraClasses);
+	printList(*ofl,TrinaryFunction(),trinaryOps,extraClasses,userClasses,
+		  extraClasses);
+
+	printList(*ofl,TrinaryFunction(),trinaryOps,extraClasses,extraClasses,
+		  extraClasses);
+#endif
       }
     }
 #endif
@@ -454,16 +487,43 @@ int main(int argc, char *argv[])
 		      expressionClass, expressionClass);
 	    printList(*ofl,BinaryFunction(),binaryLeftOps,
 		      expressionClass, expressionClass);
+
+	    printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,
+		      expressionClass,expressionClass);
 	  }
 	}
 	
 #if defined(USE_SCALARS)
 	if (!justExtraClasses)
 	{
-	  printList(*ofl,BinaryFunction(),binaryOps,expressionClass,scalars2);
+	  printList(*ofl,BinaryFunction(),binaryOps,expressionClass,scalars1);
 	  printList(*ofl,BinaryFunction(),binaryLeftOps,
-		    expressionClass, scalars2);
-	  printList(*ofl,BinaryFunction(),binaryOps,scalars1,expressionClass);
+		    expressionClass, scalars1);
+	  printList(*ofl,BinaryFunction(),binaryOps,scalars2,expressionClass);
+
+	  printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,
+		    userClasses,scalars1);
+	  printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,
+		    scalars1,userClasses);
+	  printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,
+		    scalars1,scalars1);
+
+	  printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
+		    expressionClass,scalars1);
+	  printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
+		    scalars1,expressionClass);
+
+	  printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,
+		    expressionClass,userClasses);
+	  printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,
+		    userClasses,expressionClass);
+	  printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,
+		    expressionClass,expressionClass);
+
+	  printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,
+		    expressionClass,scalars2);
+	  printList(*ofl,TrinaryFunction(),trinaryOps,scalars3,
+		    scalars3,expressionClass);
 	}
 #endif
 	
@@ -474,7 +534,7 @@ int main(int argc, char *argv[])
 #if defined(USE_SCALARS)
 	if (!justExtraClasses)
 	{
-	  printList(*ofl,BinaryFunction(),binaryLeftOps,scalars1,
+	  printList(*ofl,BinaryFunction(),binaryLeftOps,scalars2,
 		    expressionClass);
 	}
 #endif
@@ -483,13 +543,24 @@ int main(int argc, char *argv[])
 	  *ofl << "#endif // PETE_ALLOW_SCALAR_SHIFT" << endl;
 	}
 
-#if 0
+#if 1
 	if (!justScalars)
 	{
 	  if (!justExtraClasses)
 	  {
 	    printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,
-		      generalT,generalT);
+		      userClasses,userClasses);
+	    printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
+		      expressionClass,userClasses);
+	    printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
+		      userClasses,expressionClass);
+
+	    printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,
+		      expressionClass,userClasses);
+	    printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
+		      expressionClass,expressionClass);
+	    printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,
+		      userClasses,expressionClass);
 	  }
 	}
 #endif
@@ -525,6 +596,6 @@ int main(int argc, char *argv[])
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: MakeOperators.cpp,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2002-09-12 18:22:17 $
+// $Revision: 1.2 $   $Date: 2002-10-01 01:29:57 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

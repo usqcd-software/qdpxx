@@ -119,7 +119,7 @@ public:
 	 << "  typedef UnaryNode<" << opdef.tag() << "," << endl
 	 << "    " << typenameString << "CreateLeaf<"
 	 << class1.inputClass(1) << " >::Leaf_t> Tree_t;" << endl
-         << "    typedef typename UnaryReturn<C1," << opdef.tag()
+         << "  typedef typename UnaryReturn<C1," << opdef.tag()
          << " >::Type_t Container_t;" << endl
 	 << "  return MakeReturn<Tree_t,Container_t>::make(Tree_t(" << endl
 	 << "    CreateLeaf<"
@@ -153,7 +153,7 @@ public:
 	 << "  typedef UnaryNode<" << opdef.tag() << "<T1>," << endl
 	 << "    typename CreateLeaf<" << class1.inputClass(2)
 	 << " >::Leaf_t> Tree_t;" << endl
-         << "    typedef typename UnaryReturn<C2," << opdef.tag()
+         << "  typedef typename UnaryReturn<C2," << opdef.tag()
          << " >::Type_t Container_t;" << endl
 	 << "  return MakeReturn<Tree_t,Container_t>::make(Tree_t(" << endl
 	 << "    CreateLeaf<"
@@ -245,9 +245,29 @@ public:
 	     const ClassDescriptor& class3) const
   {
     string args = joinWithComma(class1.argDef(1),
-				class2.argDef(2),class3.argDef(3));
+				class2.argDef(2),
+				class3.argDef(3));
     bool temp = (args.size() > 0);
     string typenameString = temp ? "typename " : "";
+
+    string inp1 = (class1.scalarClass()) ? 
+      "typename SimpleScalar<"+class1.inputClass(1)+">::Type_t" : 
+      class1.inputClass(1);
+    string inp2 = (class2.scalarClass()) ? 
+      "typename SimpleScalar<"+class2.inputClass(2)+">::Type_t" : 
+      class2.inputClass(2);
+    string inp3 = (class3.scalarClass()) ? 
+      "typename SimpleScalar<"+class3.inputClass(3)+">::Type_t" : 
+      class3.inputClass(3);
+
+    string C1 = (class1.scalarClass()) ? inp1 : "C1";
+    string C2 = (class2.scalarClass()) ? inp2 : "C2";
+    string C3 = (class3.scalarClass()) ? inp3 : "C3";
+    string ret = "typename TrinaryReturn<"+C1+","+C2+","+C3+","+opdef.tag()+">::Type_t";
+
+    string arg1 = (class1.scalarClass()) ? inp1+"(a)" : "a";
+    string arg2 = (class2.scalarClass()) ? inp2+"(b)" : "b";
+    string arg3 = (class3.scalarClass()) ? inp3+"(c)" : "c";
 
     ostr << endl;
     if (temp)
@@ -257,39 +277,32 @@ public:
     ostr << "inline " << typenameString << "MakeReturn<TrinaryNode<"
 	 << opdef.tag() << "," << endl
 	 << "  " << typenameString << "CreateLeaf<"
-	 << class1.inputClass(1)
-	 << " >::Leaf_t," << endl
+         << inp1 << " >::Leaf_t," << endl
 	 << "  " << typenameString << "CreateLeaf<"
-	 << class2.inputClass(2)
-	 << " >::Leaf_t," << endl
+         << inp2 << " >::Leaf_t," << endl
 	 << "  " << typenameString << "CreateLeaf<"
-	 << class3.inputClass(3)
-	 << " >::Leaf_t>," << endl
-         << "  typename TrinaryReturn<C1,C2,C3," << opdef.tag()
-         << " >::Type_t >::Expression_t" << endl
-	 << opdef.function() << "(const " << class1.inputClass(1)
-	 << " & c,const " << class2.inputClass(2) << " & t,const "
-	 << class3.inputClass(3) << " & f)"
+         << inp3 << " >::Leaf_t>," << endl
+         << "  " << ret << " >::Expression_t" << endl
+	 << "" << opdef.function() << "(const " << class1.inputClass(1)
+	 << " & a,const " << class2.inputClass(2) << " & b,const "
+	 << class3.inputClass(3) << " & c)"
 	 << endl
-	 << "{" << endl
-	 << "  typedef TrinaryNode<" << opdef.tag() << "," << endl
+	 << "{" << endl;
+
+    ostr << "  typedef TrinaryNode<" << opdef.tag() << "," << endl
 	 << "    " << typenameString << "CreateLeaf<"
-	 << class1.inputClass(1)
-	 << " >::Leaf_t," << endl
+	 << inp1 << " >::Leaf_t," << endl
 	 << "    " << typenameString << "CreateLeaf<"
-	 << class2.inputClass(2)
-	 << " >::Leaf_t," << endl
+	 << inp2 << " >::Leaf_t," << endl
 	 << "    " << typenameString << "CreateLeaf<"
-	 << class3.inputClass(3)
-	 << " >::Leaf_t> Tree_t;" << endl
-         << "    typedef typename TrinaryReturn<C1,C2,C3," << opdef.tag() 
-         << " >::Type_t Container_t;" << endl
+	 << inp3 << " >::Leaf_t> Tree_t;" << endl
+         << "  typedef " << ret << " Container_t;" << endl
 	 << "  return MakeReturn<Tree_t,Container_t>::make(Tree_t(" << endl
-	 << "    CreateLeaf<" << class1.inputClass(1) << " >::make(c),"
+	 << "    CreateLeaf<" << inp1 << " >::make(" << arg1 << "),"
 	 << endl
-	 << "    CreateLeaf<" << class2.inputClass(2) << " >::make(t),"
+	 << "    CreateLeaf<" << inp2 << " >::make(" << arg2 << "),"
 	 << endl
-	 << "    CreateLeaf<" << class3.inputClass(3) << " >::make(f)));"
+	 << "    CreateLeaf<" << inp3 << " >::make(" << arg3 << ")));"
 	 << endl
 	 << "}" << endl;
   }
@@ -362,6 +375,6 @@ public:
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: PrintFunctions.h,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2002-09-12 18:22:17 $
+// $Revision: 1.2 $   $Date: 2002-10-01 01:29:57 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

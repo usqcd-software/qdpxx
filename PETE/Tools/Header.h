@@ -48,14 +48,22 @@ void printHeader(OSTR& ostr,const string& includeGuard,
     {
       fileList += "// " + (*i) + "\n";
     }
+
   if (lanlBoilerplate)
-    {
-      ostr
-	<< "// -*- C++ -*-" << endl
-	<< "// ACL:license" << endl
-	<< "// ACL:license" << endl
-	<< endl;
-    }
+  {
+    ostr
+      << "// ACL:license" << endl
+      << "// ACL:license" << endl
+      << endl;
+  }
+  else
+  {
+    ostr
+      << "// -*- C++ -*-" << endl
+      << "// $Id: Header.h,v 1.2 2002-10-01 01:29:57 edwards Exp $" << endl
+      << endl;
+  }
+
   if (includeGuard != string(""))
     {
       ostr
@@ -102,7 +110,7 @@ void printFooter(OSTR& ostr,const string& includeGuard,
 	<< "// ----------------------------------------------------------------------"
 	<< endl
 	<< "// $RCSfile: Header.h,v $   $Author: edwards $" << endl
-	<< "// $Revision: 1.1 $   $Date: 2002-09-12 18:22:17 $" << endl
+	<< "// $Revision: 1.2 $   $Date: 2002-10-01 01:29:57 $" << endl
 	<< "// ----------------------------------------------------------------------"
 	<< endl
 	<< "// ACL:rcsinfo" << endl;
@@ -117,6 +125,6 @@ void printFooter(OSTR& ostr,const string& includeGuard,
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
 // $RCSfile: Header.h,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2002-09-12 18:22:17 $
+// $Revision: 1.2 $   $Date: 2002-10-01 01:29:57 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo
