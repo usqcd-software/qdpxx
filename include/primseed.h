@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primseed.h,v 1.10 2003-01-27 05:47:22 edwards Exp $
+// $Id: primseed.h,v 1.11 2003-04-25 18:53:28 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -103,10 +103,19 @@ private:
 //! Ascii output
 template<class T>
 inline
-NmlWriter& operator<<(NmlWriter& s, const PSeed<T>& d)
+NmlWriter& operator<<(NmlWriter& nml, const PSeed<T>& d)
 {
-  return s << "  [SEED]\n\t( " << d.elem(0).elem() << " , " << d.elem(1).elem() << " , "
-	   << d.elem(2).elem() << " , " << d.elem(3).elem() << " )";
+  nml.get() << " ( "; 
+  nml << d.elem(0);
+  nml.get() << " , ";
+  nml << d.elem(1);
+  nml.get() << " , ";
+  nml << d.elem(2);
+  nml.get() << " , ";
+  nml << d.elem(3);
+  nml.get() << " )";
+
+  return nml;
 }
 
 /*! @} */   // end of group primseed
