@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.13 2003-06-23 20:52:05 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.14 2003-06-24 02:29:03 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -470,6 +470,12 @@ private:
   XMLWriter& output_xml;
   ostream& getOstream(void) {return output_xml.getOstream();}
 };
+
+//! Push a group name
+void push(XMLArrayWriter& xml);
+
+//! Pop a group name
+void pop(XMLArrayWriter& xml);
 
 
 /*! @} */   // end of group io

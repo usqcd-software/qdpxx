@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.14 2003-06-23 20:52:06 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.15 2003-06-24 02:29:03 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -852,6 +852,12 @@ void XMLArrayWriter::closeStruct()
     QDP_info("finished writing element %d",elements_written);
   }
 }
+
+// Push a group name
+void push(XMLArrayWriter& xml) {xml.openStruct("");}
+
+// Pop a group name
+void pop(XMLArrayWriter& xml) {xml.closeStruct();}
 
 
 QDP_END_NAMESPACE();

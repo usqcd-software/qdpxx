@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.10 2003-06-23 20:52:05 edwards Exp $
+// $Id: t_xml.cc,v 1.11 2003-06-24 02:29:03 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -152,7 +152,8 @@ int main(int argc, char **argv)
       {
 	int x = -42;
 #if 1
-	push(xml_out,"some_ignored_name");
+//	push(xml_out,"some_ignored_name");
+	push(xml_out);    // note, can use name or unnamed version here - name ignored
 	write(xml_out,"x",x);
 	pop(xml_out);
 #else
