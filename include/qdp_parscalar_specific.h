@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.6 2003-06-09 19:34:07 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.7 2003-06-15 03:11:27 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -103,6 +103,9 @@ namespace Internal
     QMP_broadcast(dest, nbytes);
   }
 
+  //! A really stupid way to do broadcast
+  /*! Use this to get around current MPICH problems for broadcast */
+  void stupidBroadcast(void* dest, unsigned int nbytes);
 }
 
 
@@ -1143,6 +1146,58 @@ void write(BinaryWriter& bin, const OScalar<T>& d)
 		   sizeof(T) / sizeof(typename WordType<T>::Type_t));
 }
 
+//! Binary input
+/*! Assumes no inner grid */
+template<class T>
+void read(BinaryReader& bin, OScalar<T>& d)
+{
+  bin.readArray((char*)&(d.elem()), 
+		sizeof(typename WordType<T>::Type_t), 
+		sizeof(T) / sizeof(typename WordType<T>::Type_t)); 
+}
+
+#if ! defined(USE_ROLL_AROUND)
+// There are 2 main classes of binary reader/writer methods.
+// The first is a simple/portable but inefficient method of send/recv
+// to/from the destination node.
+// The second method (the else) is a more efficient roll-around method.
+// However, this method more constrains the data layout - it must be
+// close to the original lexicographic order.
+// For now, use the direct send method
+
+//! Write a lattice quantity
+/*! This code assumes no inner grid */
+void writeOLattice(BinaryWriter& bin, 
+		   const char* output, size_t size, size_t nmemb);
+
+//! Binary output
+/*! Assumes no inner grid */
+template<class T>
+void write(BinaryWriter& bin, const OLattice<T>& d)
+{
+  writeOLattice(bin, (const char *)&(d.elem(0)), 
+		sizeof(typename WordType<T>::Type_t), 
+		sizeof(T) / sizeof(typename WordType<T>::Type_t));
+}
+
+
+//! Read a lattice quantity
+/*! This code assumes no inner grid */
+void readOLattice(BinaryReader& bin, 
+		  char* input, size_t size, size_t nmemb);
+
+//! Binary input
+/*! Assumes no inner grid */
+template<class T>
+void read(BinaryReader& bin, OLattice<T>& d)
+{
+  readOLattice(bin, (char *)&(d.elem(0)), 
+	       sizeof(typename WordType<T>::Type_t), 
+	       sizeof(T) / sizeof(typename WordType<T>::Type_t));
+}
+
+#else   // ! defined(USE_ROLL_AROUND)
+
 //! Binary output
 /*! Assumes no inner grid */
 template<class T>
@@ -1173,16 +1228,6 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
 //! Binary input
 /*! Assumes no inner grid */
 template<class T>
-void read(BinaryReader& bin, OScalar<T>& d)
-{
-  bin.readArray((char*)&(d.elem()), 
-		sizeof(typename WordType<T>::Type_t), 
-		sizeof(T) / sizeof(typename WordType<T>::Type_t)); 
-}
-
-//! Binary input
-/*! Assumes no inner grid */
-template<class T>
 void read(BinaryReader& bin, OLattice<T>& d)
 {
   // Twice the subgrid vol - intermediate array we flip-flop reading data
@@ -1206,6 +1251,9 @@ void read(BinaryReader& bin, OLattice<T>& d)
     d.elem(site) = data[site];
   }
 }
+
+#endif
+
 
 // Text input
 //! Ascii input
