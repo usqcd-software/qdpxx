@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_dwdefs.h,v 1.13 2004-05-23 21:35:21 edwards Exp $
+// $Id: qdp_dwdefs.h,v 1.14 2004-07-07 20:09:48 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -79,7 +79,9 @@ typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL> >, Nc>, Ns> 
 
 // Level below outer for internal convenience
 typedef PScalar< PScalar< RScalar< PScalar<REAL> > > > IntReal;
+typedef PScalar< PScalar< RScalar< PScalar<REAL32> > > > IntReal32;
 typedef PScalar< PScalar< RScalar< PScalar<INTEGER32> > > > IntInteger;
+typedef PScalar< PScalar< RScalar< PScalar<REAL64> > > > IntReal64;
 typedef PScalar< PScalar< RScalar< PScalar<DOUBLE> > > > IntDouble;
 typedef PScalar< PScalar< RScalar< PScalar<LOGICAL> > > > IntBoolean;
 
