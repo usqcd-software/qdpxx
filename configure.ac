@@ -4,6 +4,10 @@ AC_CONFIG_AUX_DIR(config)
 
 dnl Initialise automake
 AM_INIT_AUTOMAKE
+
+dnl defines...
+AC_CONFIG_HEADERS([include/qdp_config.h])
+
 dnl
 dnl
 dnl --with-xxxx and --enable-xxxx switches 
@@ -13,9 +17,12 @@ dnl --enable-Nd
 AC_ARG_ENABLE(Nd,
   AC_HELP_STRING([--enable-Nd=N ],
     [Set No of Spacetime Dimensions, default is Nd=4 ]),
-  AC_SUBST(ac_Nd, [$enableval]),
-  AC_SUBST(ac_Nd, 4)
+  [ ac_Nd=${enableval} ],
+  [ ac_Nd=4 ]
 )
+    
+AC_DEFINE_UNQUOTED(ND, ${ac_Nd})        dnl config.h file
+AC_SUBST(CONFIG_ND, [${ac_Nd}] )  dnl qdp++_config
 
 dnl Tell the user about Nd
 AC_MSG_NOTICE([Configuring QDP++ for Nd = ${ac_Nd}])
@@ -25,9 +32,12 @@ dnl --enable-Nc
 AC_ARG_ENABLE(Nc,
   AC_HELP_STRING([--enable-Nc=N ],
     [Set Number of Colours, ie N for SU(N) default is SU(3)]),
-  AC_SUBST(ac_Nc, [$enableval]),
-  AC_SUBST(ac_Nc, 3)
+  [ac_Nc=${enableval}],
+  [ac_Nc=3]
 )
+
+AC_DEFINE_UNQUOTED(NC, ${ac_Nc})
+AC_SUBST(CONFIG_NC, [${ac_Nc}] )
 
 dnl Tell the user about Nc
 AC_MSG_NOTICE([Configuring QDP++ for Nc = ${ac_Nc}])
@@ -37,10 +47,13 @@ dnl --enable-Ns
 AC_ARG_ENABLE(Ns,
   AC_HELP_STRING([--enable-Ns=N],
     [Set No of Spin Components, Default is Ns=4]),
-  AC_SUBST(ac_Ns, [$enableval]),
-  AC_SUBST(ac_Ns, 4)
+
+  [ac_Ns=${enableval}],
+  [ac_Ns=4]
 )
 
+AC_DEFINE_UNQUOTED(NS, ${ac_Ns})
+AC_SUBST(CONFIG_NS, [${ac_Ns}] )
 dnl Tell the user about Ns
 AC_MSG_NOTICE([Configuring QDP++ for Ns = ${ac_Ns}])
 
@@ -49,47 +62,87 @@ dnl --enable-parallel-arch argument
 AC_ARG_ENABLE(parallel-arch,
   AC_HELP_STRING([--enable-parallel-arch=<arch>],
     [Build QDP++ for parallel architecture <arch>]),
-  AC_SUBST(PARALLEL_ARCH, [$enableval]),
-  AC_SUBST(PARALLEL_ARCH, [scalar])
+  [PARALLEL_ARCH=${enableval}],
+  [PARALLEL_ARCH="scalar"]
 )
 
 dnl --enable-sse
 AC_ARG_ENABLE(sse,
   AC_HELP_STRING([--enable-sse],
     [Optimize code with Intel SSE instructions]),
-  AC_SUBST(ac_sse,1),
-  AC_SUBST(ac_sse,0)
+  [ac_sse=1],
+  [ac_sse=0]
 )
+
 
 dnl --enable-sse2
 AC_ARG_ENABLE(sse2,
   AC_HELP_STRING([--enable-sse2],
     [Optimize code with Intel SSE2 instructions]),
-  [AC_SUBST(ac_sse,1)
-   AC_SUBST(ac_sse2,1)],
-  AC_SUBST(ac_sse2,0)
+  [ac_sse=1
+   ac_sse2=1],
+  [ac_sse2=0]
 )
 
+if test ${ac_sse} -eq 1; then
+  AC_DEFINE(QDP_USE_SSE)
+  AC_SUBST(CONFIG_SSE,[${ac_sse}])
+  AC_MSG_NOTICE([Configuring QDP++ with SSE extentions enabled]);
+fi
+
+if test ${ac_sse2} -eq 1; then
+  AC_DEFINE(QDP_USE_SSE2)
+  AC_SUBST(CONFIG_SSE2,[${ac_sse2}])
+  AC_MSG_NOTICE([Configuring QDP++ with SSE2 extentions enabled]);
+fi
 
 AC_ARG_ENABLE(precision, 
-  AC_HELP_STRING( [ --enable precision=single|double ],
+  AC_HELP_STRING( [ --enable-precision=single|double ],
                   [ Sets the base precision to be single or double precision (default is single) ] ),
   [ ac_precision=${enableval} ],
   [ ac_precision="single" ] )
 
 case ${ac_precision} in 
 single)
-	AC_MSG_NOTICE( [Configuring for single precision ] )
-	AC_SUBST(ac_header_precision, [32] )
+	AC_MSG_NOTICE( [Configuring QDP++ for single precision ] )
+	AC_DEFINE(BASE_PRECISION,[32])
+	AC_SUBST(CONFIG_PRECISION, [32])
 	;;
 double)
 	AC_MSG_NOTICE( [Configuring for double precision ] )
-	AC_SUBST(ac_header_precision, [64] )
+	AC_DEFINE(BASE_PRECISION, [64] )
+	AC_SUBST(CONFIG_PRECISION, [64])
 	;;
 *)
 	AC_MSG_ERROR( [Unsupported value of precision. Check --enable-precision ] )
 	;;
 esac
+
+AC_ARG_ENABLE(layout,
+  AC_HELP_STRING([--enable-layout=lexico|cb2|cb32],
+                 [Sets the layout. lexico=lexicographic, cb2=even odd checkerboard, cb32=hypercubic checkerboard. (default is cb2)]),
+  [ ac_layout=${enableval} ],
+  [ ac_layout="cb2" ]
+)
+
+case "${ac_layout}" in
+lexico|lexicographic)
+	AC_SUBST(CONFIG_LAYOUT,[lexicographic])
+	AC_DEFINE(QDP_USE_LEXICO_LAYOUT)
+	;;
+cb2|checkerboard)
+	AC_SUBST(CONFIG_LAYOUT,[cb2])
+	AC_DEFINE(QDP_USE_CB2_LAYOUT)
+	;;
+cb32|hyper|hypercube)
+	AC_SUBST(CONFIG_LAYOUT,[cb32])
+	AC_DEFINE(QDP_USE_CB32_LAYOUT)
+	;;
+*)
+	AC_MSG_ERROR([Unsupported Layout. Check --enable-layout])
+	;;
+esac
+AC_MSG_NOTICE([Configuring QDP++ with ${CONFIG_LAYOUT} layout])
 
 dnl George T. Fleming 03/03/2003
 dnl This is a total reworking of Balint Joo's implementation
@@ -111,7 +164,7 @@ AC_ARG_WITH(qmp,
 
 case ${PARALLEL_ARCH} in
   scalar)
-    AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_SCALAR)
+    AC_DEFINE(ARCH_SCALAR)
     AC_SUBST(ARCH_SITE, "scalarsite")
     AC_MSG_NOTICE([ Scalar Build! Not checking for QMP ])
     AC_SUBST(QMP_CFLAGS)
@@ -119,7 +172,7 @@ case ${PARALLEL_ARCH} in
     AC_SUBST(QMP_LIBS)
     ;;
   scalarvec)
-    AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_SCALARVEC)
+    AC_DEFINE(ARCH_SCALARVEC)
     AC_SUBST(ARCH_SITE, "scalarvecsite")
     AC_MSG_NOTICE([ Scalar with Vector extensions Build! Not checking for QMP ])
     AC_SUBST(QMP_CFLAGS)
@@ -127,7 +180,7 @@ case ${PARALLEL_ARCH} in
     AC_SUBST(QMP_LIBS)
     ;;
   parscalar)
-    AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_PARSCALAR)
+    AC_DEFINE(ARCH_PARSCALAR)
     AC_SUBST(ARCH_SITE, "scalarsite")
     AC_MSG_NOTICE([ Parscalar build! Checking for QMP ])
 
@@ -152,7 +205,7 @@ case ${PARALLEL_ARCH} in
     fi
     ;;
   parscalarvec)
-    AC_SUBST(ARCHDEF_SUBSTITUTION, ARCH_PARSCALARVEC)
+    AC_DEFINE(ARCH_PARSCALARVEC)
     AC_SUBST(ARCH_SITE, "scalarvecsite")
     AC_MSG_NOTICE([ Parscalar with Vector extensions build! Checking for QMP ])
 
@@ -180,7 +233,7 @@ case ${PARALLEL_ARCH} in
     AC_MSG_ERROR([ Unknown value for --enable-parallel-arch ])
     ;;
 esac
-
+AC_SUBST(CONFIG_PARALLEL_ARCH, [${PARALLEL_ARCH}])
 
 dnl verify we can compile and link against QMP, if needed
 PAC_QMP_LINK_CXX_FUNC(
@@ -339,7 +392,7 @@ AC_CONFIG_FILES(qdp++-config)
 AC_CONFIG_FILES(lib/Makefile)
 AC_CONFIG_FILES(other_libs/Makefile)
 AC_CONFIG_FILES(include/Makefile)
-AC_CONFIG_FILES(include/qdp_config.h)
+#AC_CONFIG_FILES(include/qdp_config.h)
 AC_CONFIG_FILES(docs/Makefile)
 AC_CONFIG_FILES(examples/Makefile)
 #

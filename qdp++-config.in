@@ -20,14 +20,15 @@ exec_prefix_set=no
 
 version="@VERSION@"
 
-parallel_arch="@PARALLEL_ARCH@"
+parallel_arch="@CONFIG_PARALLEL_ARCH@"
 
 qdp_cxx="@CXX@"
 qdp_cxxflags="@CXXFLAGS@ -I@includedir@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@"
 qdp_ldflags="@LDFLAGS@ -L@libdir@ @QMP_LDFLAGS@"
 qdp_libs="-lqdp -lnml -lXPathReader -lxmlWriter -lqio -ldime @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@"
 
-precision="@ac_header_precision@"
+precision="@CONFIG_PRECISION@"
+layout="@CONFIG_LAYOUT@"
 
 usage()
 {
@@ -42,6 +43,7 @@ Options:
   [--Ns]
   [--parallel-arch]
   [--precision ]
+  [--layout ]
   [--cxx]
   [--cxxflags]
   [--ldflags]
@@ -87,15 +89,15 @@ while test $# -gt 0; do
       ;;
 
     --Nd)
-      echo @ac_Nd@
+      echo @CONFIG_ND@
       ;;
 
     --Nc)
-      echo @ac_Nc@
+      echo @CONFIG_NC@
       ;;
 
     --Ns)
-      echo @ac_Ns@
+      echo @CONFIG_NS@
       ;;
 
     --parallel-arch)
@@ -131,6 +133,9 @@ while test $# -gt 0; do
 		;;
       esac
       ;;
+    --layout)
+       echo ${layout}
+       ;;
     *)
       usage 1 1>&2
       ;;

@@ -39,7 +39,6 @@ ACLOCAL = @ACLOCAL@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
-ARCHDEF_SUBSTITUTION = @ARCHDEF_SUBSTITUTION@
 ARCH_PARSCALARVEC_FALSE = @ARCH_PARSCALARVEC_FALSE@
 ARCH_PARSCALARVEC_TRUE = @ARCH_PARSCALARVEC_TRUE@
 ARCH_PARSCALAR_FALSE = @ARCH_PARSCALAR_FALSE@
@@ -57,6 +56,14 @@ BUILD_STAGGERED_EXAMPLES_FALSE = @BUILD_STAGGERED_EXAMPLES_FALSE@
 BUILD_STAGGERED_EXAMPLES_TRUE = @BUILD_STAGGERED_EXAMPLES_TRUE@
 BUILD_WILSON_EXAMPLES_FALSE = @BUILD_WILSON_EXAMPLES_FALSE@
 BUILD_WILSON_EXAMPLES_TRUE = @BUILD_WILSON_EXAMPLES_TRUE@
+CONFIG_LAYOUT = @CONFIG_LAYOUT@
+CONFIG_NC = @CONFIG_NC@
+CONFIG_ND = @CONFIG_ND@
+CONFIG_NS = @CONFIG_NS@
+CONFIG_PARALLEL_ARCH = @CONFIG_PARALLEL_ARCH@
+CONFIG_PRECISION = @CONFIG_PRECISION@
+CONFIG_SSE = @CONFIG_SSE@
+CONFIG_SSE2 = @CONFIG_SSE2@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
@@ -91,7 +98,6 @@ PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
-PARALLEL_ARCH = @PARALLEL_ARCH@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 QDP_USE_SCALARVEC_SSE2_FALSE = @QDP_USE_SCALARVEC_SSE2_FALSE@
 QDP_USE_SCALARVEC_SSE2_TRUE = @QDP_USE_SCALARVEC_SSE2_TRUE@
@@ -110,15 +116,9 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 VERSION = @VERSION@
-ac_Nc = @ac_Nc@
-ac_Nd = @ac_Nd@
-ac_Ns = @ac_Ns@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_RANLIB = @ac_ct_RANLIB@
 ac_ct_STRIP = @ac_ct_STRIP@
-ac_header_precision = @ac_header_precision@
-ac_sse = @ac_sse@
-ac_sse2 = @ac_sse2@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
 am__fastdepCXX_TRUE = @am__fastdepCXX_TRUE@
 am__include = @am__include@
@@ -226,13 +226,15 @@ nobase_include_HEADERS = \
 nodist_include_HEADERS = qdp_config.h
 subdir = include
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_CLEAN_FILES = qdp_config.h
+CONFIG_HEADER = qdp_config.h
+CONFIG_CLEAN_FILES =
 DIST_SOURCES =
 HEADERS = $(nobase_include_HEADERS) $(nodist_include_HEADERS)
 
 DIST_COMMON = $(nobase_include_HEADERS) Makefile.am Makefile.in \
 	qdp_config.h.in
-all: all-am
+all: qdp_config.h
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
@@ -240,8 +242,23 @@ $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	  $(AUTOMAKE) --gnu  include/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-qdp_config.h: $(top_builddir)/config.status qdp_config.h.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+
+qdp_config.h: stamp-h1
+	@if test ! -f $@; then \
+	  rm -f stamp-h1; \
+	  $(MAKE) stamp-h1; \
+	else :; fi
+
+stamp-h1: $(srcdir)/qdp_config.h.in $(top_builddir)/config.status
+	@rm -f stamp-h1
+	cd $(top_builddir) && $(SHELL) ./config.status include/qdp_config.h
+
+$(srcdir)/qdp_config.h.in:  $(top_srcdir)/configure.ac $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOHEADER)
+	touch $(srcdir)/qdp_config.h.in
+
+distclean-hdr:
+	-rm -f qdp_config.h stamp-h1
 uninstall-info-am:
 nobase_includeHEADERS_INSTALL = $(install_sh_DATA)
 install-nobase_includeHEADERS: $(nobase_include_HEADERS)
@@ -297,11 +314,11 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES) qdp_config.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
+	list='$(SOURCES) $(HEADERS) qdp_config.h.in $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
 	  done | \
@@ -312,11 +329,11 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	     $$tags $$unique
 
 ctags: CTAGS
-CTAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+CTAGS:  $(HEADERS) $(SOURCES) qdp_config.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
+	list='$(SOURCES) $(HEADERS) qdp_config.h.in $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
 	  done | \
@@ -368,7 +385,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(HEADERS)
+all-am: Makefile $(HEADERS) qdp_config.h
 
 installdirs:
 	$(mkinstalldirs) $(DESTDIR)$(includedir) $(DESTDIR)$(includedir)
@@ -403,7 +420,7 @@ clean-am: clean-generic mostlyclean-am
 
 distclean: distclean-am
 
-distclean-am: clean-am distclean-generic distclean-tags
+distclean-am: clean-am distclean-generic distclean-hdr distclean-tags
 
 dvi: dvi-am
 
@@ -444,10 +461,10 @@ uninstall-am: uninstall-info-am uninstall-nobase_includeHEADERS \
 	uninstall-nodist_includeHEADERS
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic ctags \
-	distclean distclean-generic distclean-tags distdir dvi dvi-am \
-	info info-am install install-am install-data install-data-am \
-	install-exec install-exec-am install-info install-info-am \
-	install-man install-nobase_includeHEADERS \
+	distclean distclean-generic distclean-hdr distclean-tags \
+	distdir dvi dvi-am info info-am install install-am install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-man install-nobase_includeHEADERS \
 	install-nodist_includeHEADERS install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \

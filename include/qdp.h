@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.33 2003-09-17 15:16:22 bjoo Exp $
+// $Id: qdp.h,v 1.34 2003-09-22 20:53:14 bjoo Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -83,7 +83,6 @@
 #endif
 
 #else
-#warning "Hardwiring QDP_ALIGNMENT_SIZE=16"
 #define QDP_ALIGNMENT_SIZE 16
 #endif
 // YUKKY - Eventually get rid of these includes

@@ -275,7 +275,7 @@ PACKAGE_BUGREPORT='edwards@jlab.org'
 ac_subdirs_all="$ac_subdirs_all other_libs/nml"
 ac_subdirs_all="$ac_subdirs_all other_libs/qio"
 ac_subdirs_all="$ac_subdirs_all other_libs/xpath_reader"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE ac_Nd ac_Nc ac_Ns PARALLEL_ARCH ac_sse ac_sse2 ac_header_precision ARCHDEF_SUBSTITUTION ARCH_SITE QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LIBXML2_CONFIG LIBXML2_CXXFLAGS LIBXML2_LIBS RANLIB ac_ct_RANLIB ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE ARCH_SCALARVEC_TRUE ARCH_SCALARVEC_FALSE ARCH_PARSCALARVEC_TRUE ARCH_PARSCALARVEC_FALSE QDP_USE_SCALAR_SSE_TRUE QDP_USE_SCALAR_SSE_FALSE QDP_USE_SCALAR_SSE2_TRUE QDP_USE_SCALAR_SSE2_FALSE QDP_USE_SCALARVEC_SSE_TRUE QDP_USE_SCALARVEC_SSE_FALSE QDP_USE_SCALARVEC_SSE2_TRUE QDP_USE_SCALARVEC_SSE2_FALSE BUILD_STAGGERED_EXAMPLES_TRUE BUILD_STAGGERED_EXAMPLES_FALSE BUILD_WILSON_EXAMPLES_TRUE BUILD_WILSON_EXAMPLES_FALSE LATEX DVIPS DVIPDF DOXYGEN subdirs LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO AMTAR install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM AWK SET_MAKE CONFIG_ND CONFIG_NC CONFIG_NS CONFIG_SSE CONFIG_SSE2 CONFIG_PRECISION CONFIG_LAYOUT ARCH_SITE QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CONFIG_PARALLEL_ARCH CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE LIBXML2_CONFIG LIBXML2_CXXFLAGS LIBXML2_LIBS RANLIB ac_ct_RANLIB ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE ARCH_SCALARVEC_TRUE ARCH_SCALARVEC_FALSE ARCH_PARSCALARVEC_TRUE ARCH_PARSCALARVEC_FALSE QDP_USE_SCALAR_SSE_TRUE QDP_USE_SCALAR_SSE_FALSE QDP_USE_SCALAR_SSE2_TRUE QDP_USE_SCALAR_SSE2_FALSE QDP_USE_SCALARVEC_SSE_TRUE QDP_USE_SCALARVEC_SSE_FALSE QDP_USE_SCALARVEC_SSE2_TRUE QDP_USE_SCALARVEC_SSE2_FALSE BUILD_STAGGERED_EXAMPLES_TRUE BUILD_STAGGERED_EXAMPLES_FALSE BUILD_WILSON_EXAMPLES_TRUE BUILD_WILSON_EXAMPLES_FALSE LATEX DVIPS DVIPDF DOXYGEN subdirs LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -817,9 +817,13 @@ Optional Features:
                           Build QDP++ for parallel architecture <arch>
   --enable-sse            Optimize code with Intel SSE instructions
   --enable-sse2           Optimize code with Intel SSE2 instructions
-   --enable precision=single|double
+   --enable-precision=single|double
                           Sets the base precision to be single or double
                           precision (default is single)
+  --enable-layout=lexico|cb2|cb32
+                          Sets the layout. lexico=lexicographic, cb2=even odd
+                          checkerboard, cb32=hypercubic checkerboard. (default
+                          is cb2)
   --disable-dependency-tracking Speeds up one-time builds
   --enable-dependency-tracking  Do not reject slow dependency extractors
 
@@ -1651,16 +1655,23 @@ INSTALL_STRIP_PROGRAM="\${SHELL} \$(install_sh) -c -s"
 
 
 
+          ac_config_headers="$ac_config_headers include/qdp_config.h"
+
+
+
 # Check whether --enable-Nd or --disable-Nd was given.
 if test "${enable_Nd+set}" = set; then
   enableval="$enable_Nd"
-  ac_Nd=$enableval
-
+   ac_Nd=${enableval}
 else
-  ac_Nd=4
-
+   ac_Nd=4
 
 fi;
+
+cat >>confdefs.h <<_ACEOF
+#define ND ${ac_Nd}
+_ACEOF
+        CONFIG_ND=${ac_Nd}
 
 { echo "$as_me:$LINENO: Configuring QDP++ for Nd = ${ac_Nd}" >&5
 echo "$as_me: Configuring QDP++ for Nd = ${ac_Nd}" >&6;}
@@ -1669,13 +1680,18 @@ echo "$as_me: Configuring QDP++ for Nd = ${ac_Nd}" >&6;}
 # Check whether --enable-Nc or --disable-Nc was given.
 if test "${enable_Nc+set}" = set; then
   enableval="$enable_Nc"
-  ac_Nc=$enableval
-
+  ac_Nc=${enableval}
 else
   ac_Nc=3
 
-
 fi;
+
+cat >>confdefs.h <<_ACEOF
+#define NC ${ac_Nc}
+_ACEOF
+
+CONFIG_NC=${ac_Nc}
+
 
 { echo "$as_me:$LINENO: Configuring QDP++ for Nc = ${ac_Nc}" >&5
 echo "$as_me: Configuring QDP++ for Nc = ${ac_Nc}" >&6;}
@@ -1684,13 +1700,17 @@ echo "$as_me: Configuring QDP++ for Nc = ${ac_Nc}" >&6;}
 # Check whether --enable-Ns or --disable-Ns was given.
 if test "${enable_Ns+set}" = set; then
   enableval="$enable_Ns"
-  ac_Ns=$enableval
-
+  ac_Ns=${enableval}
 else
   ac_Ns=4
 
-
 fi;
+
+cat >>confdefs.h <<_ACEOF
+#define NS ${ac_Ns}
+_ACEOF
+
+CONFIG_NS=${ac_Ns}
 
 { echo "$as_me:$LINENO: Configuring QDP++ for Ns = ${ac_Ns}" >&5
 echo "$as_me: Configuring QDP++ for Ns = ${ac_Ns}" >&6;}
@@ -1699,11 +1719,9 @@ echo "$as_me: Configuring QDP++ for Ns = ${ac_Ns}" >&6;}
 # Check whether --enable-parallel-arch or --disable-parallel-arch was given.
 if test "${enable_parallel_arch+set}" = set; then
   enableval="$enable_parallel_arch"
-  PARALLEL_ARCH=$enableval
-
+  PARALLEL_ARCH=${enableval}
 else
-  PARALLEL_ARCH=scalar
-
+  PARALLEL_ARCH="scalar"
 
 fi;
 
@@ -1711,26 +1729,43 @@ fi;
 if test "${enable_sse+set}" = set; then
   enableval="$enable_sse"
   ac_sse=1
-
 else
   ac_sse=0
 
-
 fi;
+
 
 # Check whether --enable-sse2 or --disable-sse2 was given.
 if test "${enable_sse2+set}" = set; then
   enableval="$enable_sse2"
   ac_sse=1
-
    ac_sse2=1
-
 else
   ac_sse2=0
 
-
 fi;
 
+if test ${ac_sse} -eq 1; then
+  cat >>confdefs.h <<\_ACEOF
+#define QDP_USE_SSE 1
+_ACEOF
+
+  CONFIG_SSE=${ac_sse}
+
+  { echo "$as_me:$LINENO: Configuring QDP++ with SSE extentions enabled" >&5
+echo "$as_me: Configuring QDP++ with SSE extentions enabled" >&6;};
+fi
+
+if test ${ac_sse2} -eq 1; then
+  cat >>confdefs.h <<\_ACEOF
+#define QDP_USE_SSE2 1
+_ACEOF
+
+  CONFIG_SSE2=${ac_sse2}
+
+  { echo "$as_me:$LINENO: Configuring QDP++ with SSE2 extentions enabled" >&5
+echo "$as_me: Configuring QDP++ with SSE2 extentions enabled" >&6;};
+fi
 
 # Check whether --enable-precision or --disable-precision was given.
 if test "${enable_precision+set}" = set; then
@@ -1742,15 +1777,23 @@ fi;
 
 case ${ac_precision} in
 single)
-	{ echo "$as_me:$LINENO: Configuring for single precision  " >&5
-echo "$as_me: Configuring for single precision  " >&6;}
-	ac_header_precision=32
+	{ echo "$as_me:$LINENO: Configuring QDP++ for single precision  " >&5
+echo "$as_me: Configuring QDP++ for single precision  " >&6;}
+	cat >>confdefs.h <<\_ACEOF
+#define BASE_PRECISION 32
+_ACEOF
+
+	CONFIG_PRECISION=32
 
 	;;
 double)
 	{ echo "$as_me:$LINENO: Configuring for double precision  " >&5
 echo "$as_me: Configuring for double precision  " >&6;}
-	ac_header_precision=64
+	cat >>confdefs.h <<\_ACEOF
+#define BASE_PRECISION 64
+_ACEOF
+
+	CONFIG_PRECISION=64
 
 	;;
 *)
@@ -1759,6 +1802,49 @@ echo "$as_me: error: Unsupported value of precision. Check --enable-precision  "
    { (exit 1); exit 1; }; }
 	;;
 esac
+
+# Check whether --enable-layout or --disable-layout was given.
+if test "${enable_layout+set}" = set; then
+  enableval="$enable_layout"
+   ac_layout=${enableval}
+else
+   ac_layout="cb2"
+
+fi;
+
+case "${ac_layout}" in
+lexico|lexicographic)
+	CONFIG_LAYOUT=lexicographic
+
+	cat >>confdefs.h <<\_ACEOF
+#define QDP_USE_LEXICO_LAYOUT 1
+_ACEOF
+
+	;;
+cb2|checkerboard)
+	CONFIG_LAYOUT=cb2
+
+	cat >>confdefs.h <<\_ACEOF
+#define QDP_USE_CB2_LAYOUT 1
+_ACEOF
+
+	;;
+cb32|hyper|hypercube)
+	CONFIG_LAYOUT=cb32
+
+	cat >>confdefs.h <<\_ACEOF
+#define QDP_USE_CB32_LAYOUT 1
+_ACEOF
+
+	;;
+*)
+	{ { echo "$as_me:$LINENO: error: Unsupported Layout. Check --enable-layout" >&5
+echo "$as_me: error: Unsupported Layout. Check --enable-layout" >&2;}
+   { (exit 1); exit 1; }; }
+	;;
+esac
+{ echo "$as_me:$LINENO: Configuring QDP++ with ${CONFIG_LAYOUT} layout" >&5
+echo "$as_me: Configuring QDP++ with ${CONFIG_LAYOUT} layout" >&6;}
 
 
 # Check whether --with-qmp or --without-qmp was given.
@@ -1770,7 +1856,9 @@ fi;
 
 case ${PARALLEL_ARCH} in
   scalar)
-    ARCHDEF_SUBSTITUTION=ARCH_SCALAR
+    cat >>confdefs.h <<\_ACEOF
+#define ARCH_SCALAR 1
+_ACEOF
 
     ARCH_SITE="scalarsite"
 
@@ -1781,7 +1869,9 @@ echo "$as_me:  Scalar Build! Not checking for QMP " >&6;}
 
     ;;
   scalarvec)
-    ARCHDEF_SUBSTITUTION=ARCH_SCALARVEC
+    cat >>confdefs.h <<\_ACEOF
+#define ARCH_SCALARVEC 1
+_ACEOF
 
     ARCH_SITE="scalarvecsite"
 
@@ -1792,7 +1882,9 @@ echo "$as_me:  Scalar with Vector extensions Build! Not checking for QMP " >&6;}
 
     ;;
   parscalar)
-    ARCHDEF_SUBSTITUTION=ARCH_PARSCALAR
+    cat >>confdefs.h <<\_ACEOF
+#define ARCH_PARSCALAR 1
+_ACEOF
 
     ARCH_SITE="scalarsite"
 
@@ -1907,7 +1999,9 @@ echo "$as_me: WARNING: Set environment variables QMP_CFLAGS QMP_LDFAGS QMP_LIBS
     fi
     ;;
   parscalarvec)
-    ARCHDEF_SUBSTITUTION=ARCH_PARSCALARVEC
+    cat >>confdefs.h <<\_ACEOF
+#define ARCH_PARSCALARVEC 1
+_ACEOF
 
     ARCH_SITE="scalarvecsite"
 
@@ -2027,6 +2121,7 @@ echo "$as_me: error:  Unknown value for --enable-parallel-arch " >&2;}
    { (exit 1); exit 1; }; }
     ;;
 esac
+CONFIG_PARALLEL_ARCH=${PARALLEL_ARCH}
 
 
 rm -f .deps 2>/dev/null
@@ -3845,8 +3940,7 @@ subdirs="$subdirs other_libs/xpath_reader"
 
           ac_config_files="$ac_config_files include/Makefile"
 
-          ac_config_files="$ac_config_files include/qdp_config.h"
-
+#AC_CONFIG_FILES(include/qdp_config.h)
           ac_config_files="$ac_config_files docs/Makefile"
 
           ac_config_files="$ac_config_files examples/Makefile"
@@ -3928,38 +4022,7 @@ s/^[^=]*=[ 	]*$//;
 }'
 fi
 
-# Transform confdefs.h into DEFS.
-# Protect against shell expansion while executing Makefile rules.
-# Protect against Makefile macro expansion.
-#
-# If the first sed substitution is executed (which looks for macros that
-# take arguments), then we branch to the quote section.  Otherwise,
-# look for a macro that doesn't take arguments.
-cat >confdef2opt.sed <<\_ACEOF
-t clear
-: clear
-s,^[ 	]*#[ 	]*define[ 	][ 	]*\([^ 	(][^ 	(]*([^)]*)\)[ 	]*\(.*\),-D\1=\2,g
-t quote
-s,^[ 	]*#[ 	]*define[ 	][ 	]*\([^ 	][^ 	]*\)[ 	]*\(.*\),-D\1=\2,g
-t quote
-d
-: quote
-s,[ 	`~#$^&*(){}\\|;'"<>?],\\&,g
-s,\[,\\&,g
-s,\],\\&,g
-s,\$,$$,g
-p
-_ACEOF
-# We use echo to avoid assuming a particular line-breaking character.
-# The extra dot is to prevent the shell from consuming trailing
-# line-breaks from the sub-command output.  A line-break within
-# single-quotes doesn't work because, if this script is created in a
-# platform that uses two characters for line-breaks (e.g., DOS), tr
-# would break.
-ac_LF_and_DOT=`echo; echo .`
-DEFS=`sed -n -f confdef2opt.sed confdefs.h | tr "$ac_LF_and_DOT" ' .'`
-rm -f confdef2opt.sed
-
+DEFS=-DHAVE_CONFIG_H
 
 ac_libobjs=
 ac_ltlibobjs=
@@ -4382,9 +4445,14 @@ Usage: $0 [OPTIONS] [FILE]...
       --recheck    update $as_me by reconfiguring in the same conditions
   --file=FILE[:TEMPLATE]
                    instantiate the configuration file FILE
+  --header=FILE[:TEMPLATE]
+                   instantiate the configuration header FILE
 
 Configuration files:
 $config_files
+
+Configuration headers:
+$config_headers
 
 Configuration commands:
 $config_commands
@@ -4511,10 +4579,10 @@ do
   "lib/Makefile" ) CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;
   "other_libs/Makefile" ) CONFIG_FILES="$CONFIG_FILES other_libs/Makefile" ;;
   "include/Makefile" ) CONFIG_FILES="$CONFIG_FILES include/Makefile" ;;
-  "include/qdp_config.h" ) CONFIG_FILES="$CONFIG_FILES include/qdp_config.h" ;;
   "docs/Makefile" ) CONFIG_FILES="$CONFIG_FILES docs/Makefile" ;;
   "examples/Makefile" ) CONFIG_FILES="$CONFIG_FILES examples/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
+  "include/qdp_config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS include/qdp_config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
@@ -4527,6 +4595,7 @@ done
 # bizarre bug on SunOS 4.1.3.
 if $ac_need_defaults; then
   test "${CONFIG_FILES+set}" = set || CONFIG_FILES=$config_files
+  test "${CONFIG_HEADERS+set}" = set || CONFIG_HEADERS=$config_headers
   test "${CONFIG_COMMANDS+set}" = set || CONFIG_COMMANDS=$config_commands
 fi
 
@@ -4617,19 +4686,19 @@ s,@ac_ct_STRIP@,$ac_ct_STRIP,;t t
 s,@INSTALL_STRIP_PROGRAM@,$INSTALL_STRIP_PROGRAM,;t t
 s,@AWK@,$AWK,;t t
 s,@SET_MAKE@,$SET_MAKE,;t t
-s,@ac_Nd@,$ac_Nd,;t t
-s,@ac_Nc@,$ac_Nc,;t t
-s,@ac_Ns@,$ac_Ns,;t t
-s,@PARALLEL_ARCH@,$PARALLEL_ARCH,;t t
-s,@ac_sse@,$ac_sse,;t t
-s,@ac_sse2@,$ac_sse2,;t t
-s,@ac_header_precision@,$ac_header_precision,;t t
-s,@ARCHDEF_SUBSTITUTION@,$ARCHDEF_SUBSTITUTION,;t t
+s,@CONFIG_ND@,$CONFIG_ND,;t t
+s,@CONFIG_NC@,$CONFIG_NC,;t t
+s,@CONFIG_NS@,$CONFIG_NS,;t t
+s,@CONFIG_SSE@,$CONFIG_SSE,;t t
+s,@CONFIG_SSE2@,$CONFIG_SSE2,;t t
+s,@CONFIG_PRECISION@,$CONFIG_PRECISION,;t t
+s,@CONFIG_LAYOUT@,$CONFIG_LAYOUT,;t t
 s,@ARCH_SITE@,$ARCH_SITE,;t t
 s,@QMP_CFLAGS@,$QMP_CFLAGS,;t t
 s,@QMP_LDFLAGS@,$QMP_LDFLAGS,;t t
 s,@QMP_LIBS@,$QMP_LIBS,;t t
 s,@QMP_CONFIG@,$QMP_CONFIG,;t t
+s,@CONFIG_PARALLEL_ARCH@,$CONFIG_PARALLEL_ARCH,;t t
 s,@CXX@,$CXX,;t t
 s,@CXXFLAGS@,$CXXFLAGS,;t t
 s,@LDFLAGS@,$LDFLAGS,;t t
@@ -4881,6 +4950,241 @@ s,@INSTALL@,$ac_INSTALL,;t t
     rm -f $tmp/out
   fi
 
+done
+_ACEOF
+cat >>$CONFIG_STATUS <<\_ACEOF
+
+#
+# CONFIG_HEADER section.
+#
+
+# These sed commands are passed to sed as "A NAME B NAME C VALUE D", where
+# NAME is the cpp macro being defined and VALUE is the value it is being given.
+#
+# ac_d sets the value in "#define NAME VALUE" lines.
+ac_dA='s,^\([ 	]*\)#\([ 	]*define[ 	][ 	]*\)'
+ac_dB='[ 	].*$,\1#\2'
+ac_dC=' '
+ac_dD=',;t'
+# ac_u turns "#undef NAME" without trailing blanks into "#define NAME VALUE".
+ac_uA='s,^\([ 	]*\)#\([ 	]*\)undef\([ 	][ 	]*\)'
+ac_uB='$,\1#\2define\3'
+ac_uC=' '
+ac_uD=',;t'
+
+for ac_file in : $CONFIG_HEADERS; do test "x$ac_file" = x: && continue
+  # Support "outfile[:infile[:infile...]]", defaulting infile="outfile.in".
+  case $ac_file in
+  - | *:- | *:-:* ) # input from stdin
+        cat >$tmp/stdin
+        ac_file_in=`echo "$ac_file" | sed 's,[^:]*:,,'`
+        ac_file=`echo "$ac_file" | sed 's,:.*,,'` ;;
+  *:* ) ac_file_in=`echo "$ac_file" | sed 's,[^:]*:,,'`
+        ac_file=`echo "$ac_file" | sed 's,:.*,,'` ;;
+  * )   ac_file_in=$ac_file.in ;;
+  esac
+
+  test x"$ac_file" != x- && { echo "$as_me:$LINENO: creating $ac_file" >&5
+echo "$as_me: creating $ac_file" >&6;}
+
+  # First look for the input files in the build tree, otherwise in the
+  # src tree.
+  ac_file_inputs=`IFS=:
+    for f in $ac_file_in; do
+      case $f in
+      -) echo $tmp/stdin ;;
+      [\\/$]*)
+         # Absolute (can't be DOS-style, as IFS=:)
+         test -f "$f" || { { echo "$as_me:$LINENO: error: cannot find input file: $f" >&5
+echo "$as_me: error: cannot find input file: $f" >&2;}
+   { (exit 1); exit 1; }; }
+         echo $f;;
+      *) # Relative
+         if test -f "$f"; then
+           # Build tree
+           echo $f
+         elif test -f "$srcdir/$f"; then
+           # Source tree
+           echo $srcdir/$f
+         else
+           # /dev/null tree
+           { { echo "$as_me:$LINENO: error: cannot find input file: $f" >&5
+echo "$as_me: error: cannot find input file: $f" >&2;}
+   { (exit 1); exit 1; }; }
+         fi;;
+      esac
+    done` || { (exit 1); exit 1; }
+  # Remove the trailing spaces.
+  sed 's/[ 	]*$//' $ac_file_inputs >$tmp/in
+
+_ACEOF
+
+# Transform confdefs.h into two sed scripts, `conftest.defines' and
+# `conftest.undefs', that substitutes the proper values into
+# config.h.in to produce config.h.  The first handles `#define'
+# templates, and the second `#undef' templates.
+# And first: Protect against being on the right side of a sed subst in
+# config.status.  Protect against being in an unquoted here document
+# in config.status.
+rm -f conftest.defines conftest.undefs
+# Using a here document instead of a string reduces the quoting nightmare.
+# Putting comments in sed scripts is not portable.
+#
+# `end' is used to avoid that the second main sed command (meant for
+# 0-ary CPP macros) applies to n-ary macro definitions.
+# See the Autoconf documentation for `clear'.
+cat >confdef2sed.sed <<\_ACEOF
+s/[\\&,]/\\&/g
+s,[\\$`],\\&,g
+t clear
+: clear
+s,^[ 	]*#[ 	]*define[ 	][ 	]*\([^ 	(][^ 	(]*\)\(([^)]*)\)[ 	]*\(.*\)$,${ac_dA}\1${ac_dB}\1\2${ac_dC}\3${ac_dD},gp
+t end
+s,^[ 	]*#[ 	]*define[ 	][ 	]*\([^ 	][^ 	]*\)[ 	]*\(.*\)$,${ac_dA}\1${ac_dB}\1${ac_dC}\2${ac_dD},gp
+: end
+_ACEOF
+# If some macros were called several times there might be several times
+# the same #defines, which is useless.  Nevertheless, we may not want to
+# sort them, since we want the *last* AC-DEFINE to be honored.
+uniq confdefs.h | sed -n -f confdef2sed.sed >conftest.defines
+sed 's/ac_d/ac_u/g' conftest.defines >conftest.undefs
+rm -f confdef2sed.sed
+
+# This sed command replaces #undef with comments.  This is necessary, for
+# example, in the case of _POSIX_SOURCE, which is predefined and required
+# on some systems where configure will not decide to define it.
+cat >>conftest.undefs <<\_ACEOF
+s,^[ 	]*#[ 	]*undef[ 	][ 	]*[a-zA-Z_][a-zA-Z_0-9]*,/* & */,
+_ACEOF
+
+# Break up conftest.defines because some shells have a limit on the size
+# of here documents, and old seds have small limits too (100 cmds).
+echo '  # Handle all the #define templates only if necessary.' >>$CONFIG_STATUS
+echo '  if grep "^[ 	]*#[ 	]*define" $tmp/in >/dev/null; then' >>$CONFIG_STATUS
+echo '  # If there are no defines, we may have an empty if/fi' >>$CONFIG_STATUS
+echo '  :' >>$CONFIG_STATUS
+rm -f conftest.tail
+while grep . conftest.defines >/dev/null
+do
+  # Write a limited-size here document to $tmp/defines.sed.
+  echo '  cat >$tmp/defines.sed <<CEOF' >>$CONFIG_STATUS
+  # Speed up: don't consider the non `#define' lines.
+  echo '/^[ 	]*#[ 	]*define/!b' >>$CONFIG_STATUS
+  # Work around the forget-to-reset-the-flag bug.
+  echo 't clr' >>$CONFIG_STATUS
+  echo ': clr' >>$CONFIG_STATUS
+  sed ${ac_max_here_lines}q conftest.defines >>$CONFIG_STATUS
+  echo 'CEOF
+  sed -f $tmp/defines.sed $tmp/in >$tmp/out
+  rm -f $tmp/in
+  mv $tmp/out $tmp/in
+' >>$CONFIG_STATUS
+  sed 1,${ac_max_here_lines}d conftest.defines >conftest.tail
+  rm -f conftest.defines
+  mv conftest.tail conftest.defines
+done
+rm -f conftest.defines
+echo '  fi # grep' >>$CONFIG_STATUS
+echo >>$CONFIG_STATUS
+
+# Break up conftest.undefs because some shells have a limit on the size
+# of here documents, and old seds have small limits too (100 cmds).
+echo '  # Handle all the #undef templates' >>$CONFIG_STATUS
+rm -f conftest.tail
+while grep . conftest.undefs >/dev/null
+do
+  # Write a limited-size here document to $tmp/undefs.sed.
+  echo '  cat >$tmp/undefs.sed <<CEOF' >>$CONFIG_STATUS
+  # Speed up: don't consider the non `#undef'
+  echo '/^[ 	]*#[ 	]*undef/!b' >>$CONFIG_STATUS
+  # Work around the forget-to-reset-the-flag bug.
+  echo 't clr' >>$CONFIG_STATUS
+  echo ': clr' >>$CONFIG_STATUS
+  sed ${ac_max_here_lines}q conftest.undefs >>$CONFIG_STATUS
+  echo 'CEOF
+  sed -f $tmp/undefs.sed $tmp/in >$tmp/out
+  rm -f $tmp/in
+  mv $tmp/out $tmp/in
+' >>$CONFIG_STATUS
+  sed 1,${ac_max_here_lines}d conftest.undefs >conftest.tail
+  rm -f conftest.undefs
+  mv conftest.tail conftest.undefs
+done
+rm -f conftest.undefs
+
+cat >>$CONFIG_STATUS <<\_ACEOF
+  # Let's still pretend it is `configure' which instantiates (i.e., don't
+  # use $as_me), people would be surprised to read:
+  #    /* config.h.  Generated by config.status.  */
+  if test x"$ac_file" = x-; then
+    echo "/* Generated by configure.  */" >$tmp/config.h
+  else
+    echo "/* $ac_file.  Generated by configure.  */" >$tmp/config.h
+  fi
+  cat $tmp/in >>$tmp/config.h
+  rm -f $tmp/in
+  if test x"$ac_file" != x-; then
+    if diff $ac_file $tmp/config.h >/dev/null 2>&1; then
+      { echo "$as_me:$LINENO: $ac_file is unchanged" >&5
+echo "$as_me: $ac_file is unchanged" >&6;}
+    else
+      ac_dir=`(dirname "$ac_file") 2>/dev/null ||
+$as_expr X"$ac_file" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+         X"$ac_file" : 'X\(//\)[^/]' \| \
+         X"$ac_file" : 'X\(//\)$' \| \
+         X"$ac_file" : 'X\(/\)' \| \
+         .     : '\(.\)' 2>/dev/null ||
+echo X"$ac_file" |
+    sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
+  	  /^X\(\/\/\)[^/].*/{ s//\1/; q; }
+  	  /^X\(\/\/\)$/{ s//\1/; q; }
+  	  /^X\(\/\).*/{ s//\1/; q; }
+  	  s/.*/./; q'`
+      { if $as_mkdir_p; then
+    mkdir -p "$ac_dir"
+  else
+    as_dir="$ac_dir"
+    as_dirs=
+    while test ! -d "$as_dir"; do
+      as_dirs="$as_dir $as_dirs"
+      as_dir=`(dirname "$as_dir") 2>/dev/null ||
+$as_expr X"$as_dir" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+         X"$as_dir" : 'X\(//\)[^/]' \| \
+         X"$as_dir" : 'X\(//\)$' \| \
+         X"$as_dir" : 'X\(/\)' \| \
+         .     : '\(.\)' 2>/dev/null ||
+echo X"$as_dir" |
+    sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
+  	  /^X\(\/\/\)[^/].*/{ s//\1/; q; }
+  	  /^X\(\/\/\)$/{ s//\1/; q; }
+  	  /^X\(\/\).*/{ s//\1/; q; }
+  	  s/.*/./; q'`
+    done
+    test ! -n "$as_dirs" || mkdir $as_dirs
+  fi || { { echo "$as_me:$LINENO: error: cannot create directory \"$ac_dir\"" >&5
+echo "$as_me: error: cannot create directory \"$ac_dir\"" >&2;}
+   { (exit 1); exit 1; }; }; }
+
+      rm -f $ac_file
+      mv $tmp/config.h $ac_file
+    fi
+  else
+    cat $tmp/config.h
+    rm -f $tmp/config.h
+  fi
+_am_stamp_count=`expr ${_am_stamp_count-0} + 1`
+echo "timestamp for $ac_file" >`(dirname $ac_file) 2>/dev/null ||
+$as_expr X$ac_file : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+         X$ac_file : 'X\(//\)[^/]' \| \
+         X$ac_file : 'X\(//\)$' \| \
+         X$ac_file : 'X\(/\)' \| \
+         .     : '\(.\)' 2>/dev/null ||
+echo X$ac_file |
+    sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
+  	  /^X\(\/\/\)[^/].*/{ s//\1/; q; }
+  	  /^X\(\/\/\)$/{ s//\1/; q; }
+  	  /^X\(\/\).*/{ s//\1/; q; }
+  	  s/.*/./; q'`/stamp-h$_am_stamp_count
 done
 _ACEOF
 cat >>$CONFIG_STATUS <<\_ACEOF

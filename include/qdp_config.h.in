@@ -1,23 +1,32 @@
 #ifndef QDP_CONFIG_INCLUDED
 #define QDP_CONFIG_INCLUDED
 
-#define @ARCHDEF_SUBSTITUTION@
-#define ND @ac_Nd@
-#define NC @ac_Nc@
-#define NS @ac_Ns@
+// One of these will be defined by the --enable-parallel-arch
+#undef ARCH_SCALAR
+#undef ARCH_SCALARVEC
+#undef ARCH_PARSCALAR
+#undef ARCH_PARSCALARVEC
+
+// Fundamental constants
+#undef ND    
+#undef NC 
+#undef NS
+
 
 // Integer debug level
-#define QDP_DEBUG  0
+#undef QDP_DEBUG
 
-// Use one of the following site layouts
-#define QDP_USE_LEXICO_LAYOUT  0
-#define QDP_USE_CB2_LAYOUT     1
-#define QDP_USE_CB32_LAYOUT    0
 
-// Allow optimizations with Intel SSE operations
-#define QDP_USE_SSE  @ac_sse@
-#define QDP_USE_SSE2 @ac_sse2@
+// Underlying layout definitions
+#undef QDP_USE_LEXICO_LAYOUT
+#undef QDP_USE_CB2_LAYOUT
+#undef QDP_USE_CB32_LAYOUT
 
-#define BASE_PRECISION @ac_header_precision@
+// SSE Optimisations
+#undef QDP_USE_SSE
+#undef QDP_USE_SSE2
+
+// Base Precision
+#undef BASE_PRECISION
 
 #endif 
