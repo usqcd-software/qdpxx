@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.5 2003-08-21 04:45:50 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.6 2003-08-21 06:07:05 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -384,13 +384,13 @@ __asm__ __volatile__ (                    \
               "mulps  %6,%%xmm5\n\t"      \
               "mulps  %1,%%xmm0\n\t"      \
 	      :                           \
-	      : "m" ((bb).elem(0,j).real()),     \
-		"m" ((aa).elem(0,0).real()),     \
-		"m" ((aa).elem(0,0).imag()),     \
-		"m" ((aa).elem(1,0).real()),     \
-		"m" ((aa).elem(1,0).imag()),     \
-		"m" ((aa).elem(2,0).real()),     \
-		"m" ((aa).elem(2,0).imag()));    \
+	      : "m" (*((float*)&bb+0+8*j)),     \
+		"m" (*((float*)&aa+0)),     \
+		"m" (*((float*)&aa+4)),     \
+		"m" (*((float*)&aa+24)),     \
+		"m" (*((float*)&aa+28)),     \
+		"m" (*((float*)&aa+48)),     \
+		"m" (*((float*)&aa+52)));    \
 __asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
@@ -411,13 +411,13 @@ __asm__ __volatile__ (                    \
               "mulps  %5,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      : "m" ((bb).elem(0,j).imag()),     \
-		"m" ((aa).elem(0,0).real()),     \
-		"m" ((aa).elem(0,0).imag()),     \
-		"m" ((aa).elem(1,0).real()),     \
-		"m" ((aa).elem(1,0).imag()),     \
-		"m" ((aa).elem(2,0).real()),     \
-		"m" ((aa).elem(2,0).imag()));    \
+	      : "m" (*((float*)&bb+4+8*j)),     \
+		"m" (*((float*)&aa+0)),     \
+		"m" (*((float*)&aa+4)),     \
+		"m" (*((float*)&aa+24)),     \
+		"m" (*((float*)&aa+28)),     \
+		"m" (*((float*)&aa+48)),     \
+		"m" (*((float*)&aa+52)));    \
 __asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
@@ -438,13 +438,13 @@ __asm__ __volatile__ (                    \
               "mulps  %6,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      : "m" ((bb).elem(1,j).real()),     \
-		"m" ((aa).elem(0,1).real()),     \
-		"m" ((aa).elem(0,1).imag()),     \
-		"m" ((aa).elem(1,1).real()),     \
-		"m" ((aa).elem(1,1).imag()),     \
-		"m" ((aa).elem(2,1).real()),     \
-		"m" ((aa).elem(2,1).imag()));    \
+	      : "m" (*((float*)&bb+24+8*j)),     \
+		"m" (*((float*)&aa+8)),     \
+		"m" (*((float*)&aa+12)),     \
+		"m" (*((float*)&aa+32)),     \
+		"m" (*((float*)&aa+36)),     \
+		"m" (*((float*)&aa+56)),     \
+		"m" (*((float*)&aa+60)));    \
 __asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
@@ -465,13 +465,13 @@ __asm__ __volatile__ (                    \
               "mulps  %5,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      : "m" ((bb).elem(1,j).imag()),     \
-		"m" ((aa).elem(0,1).real()),     \
-		"m" ((aa).elem(0,1).imag()),     \
-		"m" ((aa).elem(1,1).real()),     \
-		"m" ((aa).elem(1,1).imag()),     \
-		"m" ((aa).elem(2,1).real()),     \
-		"m" ((aa).elem(2,1).imag()));    \
+	      : "m" (*((float*)&bb+28+8*j)),     \
+		"m" (*((float*)&aa+8)),     \
+		"m" (*((float*)&aa+12)),     \
+		"m" (*((float*)&aa+32)),     \
+		"m" (*((float*)&aa+36)),     \
+		"m" (*((float*)&aa+56)),     \
+		"m" (*((float*)&aa+60)));    \
 __asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
@@ -492,13 +492,13 @@ __asm__ __volatile__ (                    \
               "mulps  %6,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      : "m" ((bb).elem(2,j).real()),     \
-		"m" ((aa).elem(0,2).real()),     \
-		"m" ((aa).elem(0,2).imag()),     \
-		"m" ((aa).elem(1,2).real()),     \
-		"m" ((aa).elem(1,2).imag()),     \
-		"m" ((aa).elem(2,2).real()),     \
-		"m" ((aa).elem(2,2).imag()));    \
+	      : "m" (*((float*)&bb+48+8*j)),     \
+		"m" (*((float*)&aa+16)),     \
+		"m" (*((float*)&aa+20)),     \
+		"m" (*((float*)&aa+40)),     \
+		"m" (*((float*)&aa+44)),     \
+		"m" (*((float*)&aa+64)),     \
+		"m" (*((float*)&aa+68)));    \
 __asm__ __volatile__ (                    \
               "movaps %0,%%xmm6\n\t"      \
               "movaps %%xmm6,%%xmm7\n\t"  \
@@ -519,13 +519,13 @@ __asm__ __volatile__ (                    \
               "mulps  %5,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      : "m" ((bb).elem(2,j).imag()),     \
-		"m" ((aa).elem(0,2).real()),     \
-		"m" ((aa).elem(0,2).imag()),     \
-		"m" ((aa).elem(1,2).real()),     \
-		"m" ((aa).elem(1,2).imag()),     \
-		"m" ((aa).elem(2,2).real()),     \
-		"m" ((aa).elem(2,2).imag()));    \
+	      : "m" (*((float*)&bb+52+8*j)),     \
+		"m" (*((float*)&aa+16)),     \
+		"m" (*((float*)&aa+20)),     \
+		"m" (*((float*)&aa+40)),     \
+		"m" (*((float*)&aa+44)),     \
+		"m" (*((float*)&aa+64)),     \
+		"m" (*((float*)&aa+68)));    \
 __asm__ __volatile__ (                    \
               "movaps %%xmm0,%0\n\t"      \
               "movaps %%xmm1,%1\n\t"      \
@@ -533,12 +533,12 @@ __asm__ __volatile__ (                    \
               "movaps %%xmm3,%3\n\t"      \
               "movaps %%xmm4,%4\n\t"      \
               "movaps %%xmm5,%5\n\t"      \
-	      : "=m" ((cc).elem(0,j).real()),    \
-		"=m" ((cc).elem(0,j).imag()),    \
-		"=m" ((cc).elem(1,j).real()),    \
-		"=m" ((cc).elem(1,j).imag()),    \
-		"=m" ((cc).elem(2,j).real()),    \
-		"=m" ((cc).elem(2,j).imag()));   \
+	      : "=m" (*((float*)&cc+0+8*j)),    \
+		"=m" (*((float*)&cc+4+8*j)),    \
+		"=m" (*((float*)&cc+24+8*j)),    \
+		"=m" (*((float*)&cc+28+8*j)),    \
+		"=m" (*((float*)&cc+48+8*j)),    \
+		"=m" (*((float*)&cc+52+8*j)));   \
 }
 
 
