@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.14 2004-03-11 17:09:06 edwards Exp $
+// $Id: t_qio.cc,v 1.15 2004-03-21 19:27:45 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -20,6 +20,9 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
+  XMLFileWriter xml_out("t_qio.xml");
+  push(xml_out, "t_qio");
+
   QDP_serialparallel_t serpar = QDPIO_SERIAL;
 
   for(int i=0; i < 2; ++i)
@@ -31,18 +34,24 @@ int main(int argc, char **argv)
       volfmt = QDPIO_SINGLEFILE;
 
       QDPIO::cout << "\n\n\n\n***************SINGLEFILE tests*************\n" << endl;
+
+      push(xml_out, "Singlefile");
     }
     else
     {
       volfmt = QDPIO_MULTIFILE; 
 
       QDPIO::cout << "\n\n***************MULTIFILE tests*************\n" << endl;
+
+      push(xml_out, "Multifile");
     }
 
 
     QDPIO::cout << "\n\n***************TEST WRITING*************\n" << endl;
 
     {
+      push(xml_out, "Writing");
+
       XMLBufferWriter file_xml;
 
       push(file_xml,"file_fred");
@@ -63,54 +72,126 @@ int main(int argc, char **argv)
       pop(record_xml);
 
       QDPFileWriter to(file_xml,"t_qio.lime",volfmt,serpar,QDPIO_OPEN);
+      write(xml_out, "file_xml", file_xml);
+
+      multi1d<Complex> ff(5);
+      Double fsum = 0;
+      for(int i=0; i < ff.size(); ++i)
+      {
+	random(ff[i]);
+	fsum += norm2(ff[i]);
+      }
+      write(to,record_xml,ff);
+
+      QDPIO::cout << "First record test: fsum=" << fsum << endl;
+      push(xml_out, "Record1");
+      write(xml_out, "record_xml", record_xml);
+      write(xml_out, "fsum", fsum);
+      write(xml_out, "ff", ff);
+      pop(xml_out);
 
       LatticeComplex a;
       random(a);
       write(to,record_xml,a);
 
-      QDPIO::cout << "First record test: innerProduct(a,shift(a,0))=" 
-		  << Real(innerProductReal(a,shift(a,FORWARD,0))) << endl;
+      Real atest = Real(innerProductReal(a,shift(a,FORWARD,0)));
+      QDPIO::cout << "Second record test: innerProduct(a,shift(a,0))=" 
+		  << atest << endl;
+      push(xml_out, "Record2");
+      write(xml_out, "record_xml", record_xml);
+      write(xml_out, "atest", atest);
+      pop(xml_out);
 
+#if 1
       LatticeColorMatrix b;
       random(b);
       write(to,record_xml,b);
 
-      QDPIO::cout << "Second record test: innerProduct(b,shift(b,0))=" 
-		  << Real(innerProductReal(b,shift(b,FORWARD,0))) << endl;
+      Real btest = Real(innerProductReal(b,shift(b,FORWARD,0)));
+      QDPIO::cout << "Third record test: innerProduct(b,shift(b,0))=" 
+		  << btest << endl;
+      push(xml_out, "Record3");
+      write(xml_out, "record_xml", record_xml);
+      write(xml_out, "btest", btest);
+      pop(xml_out);
+#endif
 
       close(to);
+
+      pop(xml_out);   // writing
     }
 
     QDPIO::cout << "\n\n***************TEST READING*******************\n" << endl;
 
     {
+      push(xml_out, "Reading");
+
       XMLReader file_xml;
       QDPFileReader from(file_xml,"t_qio.lime",serpar);
 
       QDPIO::cout << "Here is the contents of  file_xml" << endl;
       file_xml.print(cout);
+      write(xml_out, "file_xml", file_xml);
 
       XMLReader record_xml;
-      LatticeComplex a;
-      read(from,record_xml,a);
+
+      multi1d<Complex> ff(5);   // needs to be free
+      read(from,record_xml,ff);
 
       QDPIO::cout << "Here is the contents of first  record_xml" << endl;
       record_xml.print(cout);
 
-      QDPIO::cout << "First record check: innerProduct(a,shift(a,0))=" 
-		  << Real(innerProductReal(a,shift(a,FORWARD,0))) << endl;
+      Double fsum = 0;
+      for(int i=0; i < ff.size(); ++i)
+	fsum += norm2(ff[i]);
+      QDPIO::cout << "First record test: fsum=" << fsum << endl;
+      push(xml_out, "Record1");
+      write(xml_out, "record_xml", record_xml);
+      write(xml_out, "fsum", fsum);
+      write(xml_out, "ff", ff);
+      pop(xml_out);
 
-      LatticeColorMatrix b;
-      read(from,record_xml,b);
+      LatticeComplex a;
+      read(from,record_xml,a);
 
       QDPIO::cout << "Here is the contents of second  record_xml" << endl;
       record_xml.print(cout);
 
-      QDPIO::cout << "Second record check: innerProduct(b,shift(b,0))=" 
-		  << Real(innerProductReal(b,shift(b,FORWARD,0))) << endl;
+      Real atest = Real(innerProductReal(a,shift(a,FORWARD,0)));
+      QDPIO::cout << "Second record check: innerProduct(a,shift(a,0))=" 
+		  << atest << endl;
+      push(xml_out, "Record2");
+      write(xml_out, "record_xml", record_xml);
+      write(xml_out, "atest", atest);
+      pop(xml_out);
+
+#if 1
+      LatticeColorMatrix b;
+      read(from,record_xml,b);
+
+      QDPIO::cout << "Here is the contents of third  record_xml" << endl;
+      record_xml.print(cout);
+
+      Real btest = Real(innerProductReal(b,shift(b,FORWARD,0)));
+      QDPIO::cout << "Third record check: innerProduct(b,shift(b,0))=" 
+		  << btest << endl;
+      push(xml_out, "Record3");
+      write(xml_out, "record_xml", record_xml);
+      write(xml_out, "btest", btest);
+      pop(xml_out);
+
+#endif
+
+      close(from);   // reading
+
+      pop(xml_out);
     }
+
+    pop(xml_out);  // single or multifile
   }
 
+
+  pop(xml_out);   // t_qio
 
   // Time to bolt
   QDP_finalize();
