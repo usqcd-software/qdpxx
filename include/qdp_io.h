@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.5 2003-06-05 02:22:50 edwards Exp $
+// $Id: qdp_io.h,v 1.6 2003-06-05 04:15:55 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -45,7 +45,20 @@ private:
 };
 
 
+// Different bindings for same operators
+TextReader& operator>>(TextReader& bin, char& input);
+TextReader& operator>>(TextReader& bin, int& input);
+TextReader& operator>>(TextReader& bin, unsigned int& input);
+TextReader& operator>>(TextReader& bin, short int& input);
+TextReader& operator>>(TextReader& bin, unsigned short int& input);
+TextReader& operator>>(TextReader& bin, long int& input);
+TextReader& operator>>(TextReader& bin, unsigned long int& input);
+TextReader& operator>>(TextReader& bin, float& input);
+TextReader& operator>>(TextReader& bin, double& input);
+TextReader& operator>>(TextReader& bin, bool& input);
 
+
+//-----------------------------------------
 //! Simple output text class
 class TextWriter
 {
@@ -64,6 +77,20 @@ private:
   bool iop;
   std::ofstream f;
 };
+
+
+// Different bindings for same operators
+TextWriter& operator<<(TextWriter& bin, const std::string& output);
+TextWriter& operator<<(TextWriter& bin, const char& output);
+TextWriter& operator<<(TextWriter& bin, const int& output);
+TextWriter& operator<<(TextWriter& bin, const unsigned int& output);
+TextWriter& operator<<(TextWriter& bin, const short int& output);
+TextWriter& operator<<(TextWriter& bin, const unsigned short int& output);
+TextWriter& operator<<(TextWriter& bin, const long int& output);
+TextWriter& operator<<(TextWriter& bin, const unsigned long int& output);
+TextWriter& operator<<(TextWriter& bin, const float& output);
+TextWriter& operator<<(TextWriter& bin, const double& output);
+TextWriter& operator<<(TextWriter& bin, const bool& output);
 
 
 

@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.4 2003-06-05 02:20:17 edwards Exp $
+// $Id: qdp_io.cc,v 1.5 2003-06-05 04:15:55 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -48,6 +48,111 @@ bool TextReader::is_open() {return iop;}
 TextReader::~TextReader() {close();}
 
 
+// Readers
+template<typename T>
+void readPrimitive(TextReader& txt, T& input)
+{
+  if (Layout::primaryNode())
+    txt.get() >> input;
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast(input);
+}
+
+
+TextReader& operator>>(TextReader& txt, std::string& input)
+{
+  char *dd_tmp;
+  int lleng;
+
+  // Only primary node can grab string
+  if (Layout::primaryNode()) 
+  {
+    txt.get() >> input;
+    lleng = input.length() + 1;
+  }
+
+  // First must broadcast size of string
+  Internal::broadcast(lleng);
+
+  // Now every node can alloc space for string
+  dd_tmp = new char[lleng];
+  if (Layout::primaryNode())
+    input.copy(dd_tmp, lleng);
+  
+  // Now broadcast char array out to all nodes
+  Internal::broadcast((void *)dd_tmp, lleng);
+
+  // All nodes can now grab char array and make a string
+  input = dd_tmp;
+
+  // Clean-up and boogie
+  delete[] dd_tmp;
+
+  return txt;
+}
+
+TextReader& operator>>(TextReader& txt, char& input)
+{
+  readPrimitive<char>(txt, input);
+  return txt;
+}
+
+TextReader& operator>>(TextReader& txt, int& input)
+{
+  readPrimitive<int>(txt, input);
+  return txt;
+}
+
+TextReader& operator>>(TextReader& txt, unsigned int& input)
+{
+  readPrimitive<unsigned int>(txt, input);
+  return txt;
+}
+
+TextReader& operator>>(TextReader& txt, short int& input)
+{
+  readPrimitive<short int>(txt, input);
+  return txt;
+}
+
+TextReader& operator>>(TextReader& txt, unsigned short int& input)
+{
+  readPrimitive<unsigned short int>(txt, input);
+  return txt;
+}
+
+TextReader& operator>>(TextReader& txt, long int& input)
+{
+  readPrimitive<long int>(txt, input);
+  return txt;
+}
+
+TextReader& operator>>(TextReader& txt, unsigned long int& input)
+{
+  readPrimitive<unsigned long int>(txt, input);
+  return txt;
+}
+
+TextReader& operator>>(TextReader& txt, float& input)
+{
+  readPrimitive<float>(txt, input);
+  return txt;
+}
+
+TextReader& operator>>(TextReader& txt, double& input)
+{
+  readPrimitive<double>(txt, input);
+  return txt;
+}
+
+TextReader& operator>>(TextReader& txt, bool& input)
+{
+  readPrimitive<bool>(txt, input);
+  return txt;
+}
+
+
 //-----------------------------------------
 //! text writer support
 TextWriter::TextWriter() {iop=false;}
@@ -79,6 +184,83 @@ void TextWriter::close()
 bool TextWriter::is_open() {return iop;}
 
 TextWriter::~TextWriter() {close();}
+
+
+// Primitive writers
+template<typename T>
+void writePrimitive(TextWriter& txt, const T& input)
+{
+  if (Layout::primaryNode())
+    txt.get() << input;
+}
+
+
+TextWriter& operator<<(TextWriter& txt, const std::string& output)
+{
+  writePrimitive<std::string>(txt, output);
+  return txt;
+}
+
+TextWriter& operator<<(TextWriter& txt, const char& output)
+{
+  writePrimitive<char>(txt, output);
+  return txt;
+}
+
+TextWriter& operator<<(TextWriter& txt, const int& output)
+{
+  writePrimitive<int>(txt, output);
+  return txt;
+}
+
+TextWriter& operator<<(TextWriter& txt, const unsigned int& output)
+{
+  writePrimitive<unsigned int>(txt, output);
+  return txt;
+}
+
+TextWriter& operator<<(TextWriter& txt, const short int& output)
+{
+  writePrimitive<short int>(txt, output);
+  return txt;
+}
+
+TextWriter& operator<<(TextWriter& txt, const unsigned short int& output)
+{
+  writePrimitive<unsigned short int>(txt, output);
+  return txt;
+}
+
+TextWriter& operator<<(TextWriter& txt, const long int& output)
+{
+  writePrimitive<long int>(txt, output);
+  return txt;
+}
+
+TextWriter& operator<<(TextWriter& txt, const unsigned long int& output)
+{
+  writePrimitive<unsigned long int>(txt, output);
+  return txt;
+}
+
+TextWriter& operator<<(TextWriter& txt, const float& output)
+{
+  writePrimitive<float>(txt, output);
+  return txt;
+}
+
+TextWriter& operator<<(TextWriter& txt, const double& output)
+{
+  writePrimitive<double>(txt, output);
+  return txt;
+}
+
+TextWriter& operator<<(TextWriter& txt, const bool& output)
+{
+  writePrimitive<bool>(txt, output);
+  return txt;
+}
+
 
 
 //-----------------------------------------

@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.2 2003-06-05 02:19:38 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.3 2003-06-05 04:15:55 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -423,7 +423,7 @@ void read(NmlReader& nml, const string& s, string& d)
     dd_tmp = new char[lleng];
   
   // Now broadcast char array out to all nodes
-  QMP_broadcast((void *)dd_tmp, lleng);
+  Internal::broadcast((void *)dd_tmp, lleng);
 
   // All nodes can now grab char array and make a string
   d = dd_tmp;
