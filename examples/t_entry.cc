@@ -1,4 +1,4 @@
-// $Id: t_entry.cc,v 1.2 2003-06-20 02:38:54 edwards Exp $
+// $Id: t_entry.cc,v 1.3 2003-06-20 03:04:55 edwards Exp $
 
 /*! \file
  *  \brief Test entry/exit routines
@@ -56,6 +56,25 @@ int main(int argc, char **argv)
   sa = zero;
   QDP_extract(sa, la, even);
 
+
+  // Fiddle with the innards of this new field sa . This is for demonstration.
+  // Pull out some goodies
+  int color_index = 0, spin_index = 0;
+  ColorVector colorVec = peekSpin(sa[0],spin_index);   // use a temporary - not needed
+  Complex sitecomp = peekColor(colorVec,color_index);
+  Real re = real(sitecomp) + 1.0;
+  Real im = imag(sitecomp) + 2.0;
+  sitecomp = cmplx(re,im);
+
+  ColorVector sitecolor = zero;
+
+  // Shove the modified goodies back into the local temp variable
+  pokeSpin(sa[0],
+	   pokeColor(sitecolor,sitecomp,color_index),
+	   spin_index);
+
+
+  // Stuff sa back into the QDP field. Zero out QDP field for testing
   la = zero;
   QDP_insert(la, sa, even);
 
