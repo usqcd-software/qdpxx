@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_defs.h,v 1.2 2003-08-21 03:01:58 edwards Exp $
+// $Id: qdp_scalarsite_defs.h,v 1.3 2003-08-23 02:29:31 edwards Exp $
 
 /*! \file
  * \brief Type definitions for scalar-site like architectures
@@ -110,6 +110,7 @@ typedef PScalar< PScalar< RScalar< IScalar<DOUBLE> > > > IntDouble;
 typedef PScalar< PScalar< RScalar< IScalar<LOGICAL> > > > IntBoolean;
 
 // Odd-ball to support random numbers
+typedef Real ILatticeReal;
 typedef Seed ILatticeSeed;
 
 // Fixed precision
