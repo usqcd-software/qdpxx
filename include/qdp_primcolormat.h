@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.6 2004-07-02 19:24:04 edwards Exp $
+// $Id: qdp_primcolormat.h,v 1.7 2004-07-02 21:53:03 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -185,7 +185,27 @@ struct BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnTraceMultiply> {
 };
 
 template<class T1, class T2, int N>
+struct BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnTraceMultiply> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnTraceMultiply>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnTraceMultiply> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnTraceMultiply>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
 struct BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnInnerProduct> {
   typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
 };
 
@@ -195,12 +215,42 @@ struct BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnLocalInnerProduct>
 };
 
 template<class T1, class T2, int N>
+struct BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnLocalInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnLocalInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
 struct BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnInnerProductReal> {
   typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
+struct BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnInnerProductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnInnerProductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnInnerProductReal>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
 struct BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnLocalInnerProductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnLocalInnerProductReal> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+struct BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnLocalInnerProductReal> {
   typedef PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
@@ -236,6 +286,72 @@ traceColor(const PColorMatrix<T,N>& s1)
 
   return d;
 }
+
+
+//! PScalar = traceColorMultiply(PColorMatrix,PColorMatrix)
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnTraceColorMultiply> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnTraceColorMultiply>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnTraceColorMultiply>::Type_t
+traceColorMultiply(const PColorMatrix<T1,N>& l, const PColorMatrix<T2,N>& r)
+{
+  typename BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnTraceColorMultiply>::Type_t  d;
+
+  // The traceColor is eaten here
+  d.elem() = s1.elem(0,0) * s2.elem(0,0);
+  for(int k=1; k < N; ++k)
+    d.elem() += s1.elem(0,k) * s2.elem(k,0);
+
+  for(int j=1; j < N; ++j)
+    for(int k=0; k < N; ++k)
+      d.elem() += s1.elem(j,k) * s2.elem(k,j);
+
+  return d;
+}
+
+//! PScalar = traceColorMultiply(PColorMatrix,PScalar)
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnTraceColorMultiply> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnTraceColorMultiply>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnTraceColorMultiply>::Type_t
+traceColorMultiply(const PColorMatrix<T1,N>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnTraceColorMultiply>::Type_t  d;
+
+  // The traceColor is eaten here
+  d.elem() = s1.elem(0,0) * s2.elem();
+  for(int k=1; k < N; ++k)
+    d.elem() += s1.elem(k,k) * s2.elem();
+
+  return d;
+}
+
+// PScalar = traceColorMultiply(PScalar,PColorMatrix)
+template<class T1, class T2, int N>
+struct BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnTraceColorMultiply> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnTraceColorMultiply>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnTraceColorMultiply>::Type_t
+traceColorMultiply(const PScalar<T1>& l, const PColorMatrix<T2,N>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnTraceColorMultiply>::Type_t  d;
+
+  // The traceColor is eaten here
+  d.elem() = s1.elem() * s2.elem(0,0);
+  for(int k=1; k < N; ++k)
+    d.elem() += s1.elem() * s2.elem(k,k);
+
+  return d;
+}
+
 
 
 //-----------------------------------------------
