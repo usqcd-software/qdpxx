@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.14 2002-11-23 02:23:24 edwards Exp $
+// $Id: outer.h,v 1.15 2002-11-23 03:42:30 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -149,6 +149,7 @@ NmlWriter& operator<<(NmlWriter& nml, const OScalar<T>& d)
 //! Binary output
 /*! Assumes no inner grid */
 template<class T>
+inline
 BinaryWriter& write(BinaryWriter& bin, const OScalar<T>& d)
 {
   if (Layout::primaryNode()) 

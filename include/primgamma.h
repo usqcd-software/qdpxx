@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: primgamma.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: primgamma.h,v 1.2 2002-11-23 03:42:30 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -23,7 +23,7 @@ public:
 
 public:
   //! The integer representation for which product of gamma matrices
-  const int elem() const {return m;}  
+  int elem() const {return m;}  
 
 private:
   //! Representation

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: subset.h,v 1.8 2002-11-04 04:41:26 edwards Exp $
+// $Id: subset.h,v 1.9 2002-11-23 03:42:30 edwards Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -44,7 +44,7 @@ public:
   ~Subset() {}
 
   //! Access the coloring for this subset
-  const int Index() const {return sub_index;}
+  int Index() const {return sub_index;}
 
 protected:
   // Simple constructor
@@ -63,12 +63,12 @@ private:
 public:
   // These should be a no-no. Must fix the friend syntax
   /*! Is the representation a boolean mask? */
-  const bool IndexRep() const {return indexrep;}
+  bool IndexRep() const {return indexrep;}
 
-  const int Start() const {return startSite;}
-  const int End() const {return endSite;}
+  int Start() const {return startSite;}
+  int End() const {return endSite;}
   const multi1d<int>* SiteTable() const {return sitetable;}
-  const int NumSiteTable() const {return sitetable->size();}
+  int NumSiteTable() const {return sitetable->size();}
 
   friend class Set;
 };
@@ -92,7 +92,7 @@ public:
   const Subset& operator[](int subset_index) const {return sub[subset_index];}
 
   //! Return number of subsets
-  const int NumSubsets() const {return sub.size();}
+  int NumSubsets() const {return sub.size();}
 
   //! Destructor for a set
   ~Set() {}

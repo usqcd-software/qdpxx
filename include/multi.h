@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multi.h,v 1.2 2002-10-12 04:10:15 edwards Exp $
+// $Id: multi.h,v 1.3 2002-11-23 03:42:30 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -43,8 +43,8 @@ public:
     {if(copymem) {cerr<<"invalid resize in 1d\n";exit(1);}; delete[] F; n1=ns1; F = new T[n1];}
 
   //! Size of array
-  const int size() const {return n1;}
-  const int size1() const {return n1;}
+  int size() const {return n1;}
+  int size1() const {return n1;}
 
   //! Equal operator uses underlying = of T
   multi1d<T>& operator=(const multi1d<T>& s1)
@@ -131,8 +131,8 @@ public:
     n1=ns1; n2=ns2; sz=n1*n2; F = new T[sz];}
 
   //! Size of array
-  const int size1() const {return n1;}
-  const int size2() const {return n2;}
+  int size1() const {return n1;}
+  int size2() const {return n2;}
 
   //! Equal operator uses underlying = of T
   multi2d<T>& operator=(const multi2d<T>& s1)
@@ -207,9 +207,9 @@ public:
     n1=ns1; n2=ns2; n3=ns3; sz=n1*n2*n3; F = new T[sz];}
 
   //! Size of array
-  const int size1() const {return n1;}
-  const int size2() const {return n2;}
-  const int size3() const {return n3;}
+  int size1() const {return n1;}
+  int size2() const {return n2;}
+  int size3() const {return n3;}
 
   //! Equal operator uses underlying = of T
   multi3d<T>& operator=(const multi3d<T>& s1)
@@ -284,10 +284,10 @@ public:
     {delete[] F; n1=ns1; n2=ns2; n3=ns3; n4=ns4; sz=n1*n2*n3*n4; F = new T[sz];}
 
   //! Size of array
-  const int size1() const {return n1;}
-  const int size2() const {return n2;}
-  const int size3() const {return n3;}
-  const int size4() const {return n4;}
+  int size1() const {return n1;}
+  int size2() const {return n2;}
+  int size3() const {return n3;}
+  int size4() const {return n4;}
 
   //! Equal operator uses underlying = of T
   multi4d<T>& operator=(const multi4d<T>& s1)
