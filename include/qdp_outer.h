@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.18 2003-08-31 20:25:11 edwards Exp $
+// $Id: qdp_outer.h,v 1.19 2003-09-01 22:30:10 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -236,13 +236,22 @@ class OLattice: public QDPType<T, OLattice<T> >
 public:
   OLattice() 
     {
-#if ! defined(QDP_USE_FIXED_MEMORY)
+#if ! defined(QDP_FIX_ALIGNMENT)
       F = new T[Layout::sitesOnNode()];
-#endif
 
 #if QDP_DEBUG >= 1
       QDP_info("create %d bytes of OLattice[%d]=0x%x, this=0x%x",
 	       sizeof(T), Layout::sitesOnNode(),(void *)F,this);
+#endif
+#else
+      // ANNOYANCE of GNUC++, need extra space for proper alignment
+      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
+      F = (T*)((F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
+
+#if QDP_DEBUG >= 1
+      QDP_info("create %d bytes of OLattice[%d]=0x%x, this=0x%x",
+	       sizeof(T), Layout::sitesOnNode(),(void *)F,this);
+#endif
 #endif
     }
   ~OLattice()
@@ -251,9 +260,11 @@ public:
       QDP_info("destroy %d bytes of OLattice=0x%x, this=0x%x",sizeof(T),F,this);
 #endif
 
-#if ! defined(QDP_USE_FIXED_MEMORY)
-      delete[] F;
+#if defined(QDP_FIX_ALIGNMENT)
+      F = (T*)F_orig;
 #endif
+
+      delete[] F;
     }
 
 
@@ -261,8 +272,12 @@ public:
   template<class T1>
   OLattice(const OLattice<T1>& rhs)
     {
-#if ! defined(QDP_USE_FIXED_MEMORY)
+#if ! defined(QDP_FIX_ALIGNMENT)
       F = new T[Layout::sitesOnNode()];
+#else
+      // ANNOYANCE of GNUC++, need extra space for proper alignment
+      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
+      F = (T*)((F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
 #endif
 
 #if QDP_DEBUG >= 1
@@ -278,8 +293,12 @@ public:
   template<class RHS, class T1>
   OLattice(const QDPExpr<RHS, OLattice<T1> >& rhs)
     {
-#if ! defined(QDP_USE_FIXED_MEMORY)
+#if ! defined(QDP_FIX_ALIGNMENT)
       F = new T[Layout::sitesOnNode()];
+#else
+      // ANNOYANCE of GNUC++, need extra space for proper alignment
+      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
+      F = (T*)((F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
 #endif
 
 #if QDP_DEBUG >= 1
@@ -294,8 +313,12 @@ public:
   //! construct OLattice = const
   OLattice(const typename WordType<T>::Type_t& rhs)
     {
-#if ! defined(QDP_USE_FIXED_MEMORY)
+#if ! defined(QDP_FIX_ALIGNMENT)
       F = new T[Layout::sitesOnNode()];
+#else
+      // ANNOYANCE of GNUC++, need extra space for proper alignment
+      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
+      F = (T*)((F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
 #endif
 
 #if QDP_DEBUG >= 1
@@ -311,8 +334,12 @@ public:
   //! construct OLattice = 0
   OLattice(const Zero& rhs)
     {
-#if ! defined(QDP_USE_FIXED_MEMORY)
+#if ! defined(QDP_FIX_ALIGNMENT)
       F = new T[Layout::sitesOnNode()];
+#else
+      // ANNOYANCE of GNUC++, need extra space for proper alignment
+      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
+      F = (T*)((F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
 #endif
 
 #if QDP_DEBUG >= 1
@@ -375,8 +402,12 @@ public:
   /*! For now, a deep copy */
   OLattice(const OLattice& rhs)
     {
-#if ! defined(QDP_USE_FIXED_MEMORY)
+#if ! defined(QDP_FIX_ALIGNMENT)
       F = new T[Layout::sitesOnNode()];
+#else
+      // ANNOYANCE of GNUC++, need extra space for proper alignment
+      F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
+      F = (T*)((F_orig + (QDP_ALIGNMENT_SIZE-1)) & QDP_ALIGNMENT_SIZE);
 #endif
 
 #if QDP_DEBUG >= 1
@@ -410,10 +441,9 @@ public:
   inline const T& elem(int i) const {return F[i];}
 
 private:
-#if ! defined(QDP_USE_FIXED_MEMORY)
   T *F;
-#else
-  T F[QDP_MAX_MEMORY]  QDP_ALIGN16;
+#if defined(QDP_FIX_ALIGNMENT)
+  char *F_orig;   // also have original F from  operator-new
 #endif
 };
 
