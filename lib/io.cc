@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.14 2003-04-27 02:51:39 edwards Exp $
+// $Id: io.cc,v 1.15 2003-04-30 21:04:04 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -11,13 +11,13 @@ QDP_BEGIN_NAMESPACE(QDP);
 //! text reader support
 TextReader::TextReader() {iop=false;}
 
-TextReader::TextReader(const char* p) {open(p);}
+TextReader::TextReader(const std::string& p) {open(p);}
 
-void TextReader::open(const char* p) 
+void TextReader::open(const std::string& p) 
 {
   if (Layout::primaryNode())
   {
-    f.open(p);
+    f.open(p.c_str());
 
     if (! f.is_open())
       QDP_error_exit("failed to open file %s",p);
@@ -45,12 +45,12 @@ TextReader::~TextReader() {close();}
 //! text writer support
 TextWriter::TextWriter() {iop=false;}
 
-TextWriter::TextWriter(const char* p) {open(p);}
+TextWriter::TextWriter(const std::string& p) {open(p);}
 
-void TextWriter::open(const char* p)
+void TextWriter::open(const std::string& p)
 {
   if (Layout::primaryNode()) 
-    f.open(p,std::ofstream::out);
+    f.open(p.c_str(),std::ofstream::out);
 
   iop=true;
 }
@@ -74,9 +74,9 @@ TextWriter::~TextWriter() {close();}
 //! text reader support
 NmlReader::NmlReader() {abs = NULL; iop = false; stack_cnt = 0;}
 
-NmlReader::NmlReader(const char* p) {abs = NULL; iop = false; stack_cnt = 0; open(p);}
+NmlReader::NmlReader(const std::string& p) {abs = NULL; iop = false; stack_cnt = 0; open(p);}
 
-void NmlReader::open(const char* p)
+void NmlReader::open(const std::string& p)
 {
   abs = NULL;
 
@@ -86,7 +86,7 @@ void NmlReader::open(const char* p)
   {
     FILE *f;
 
-    if ((f = fopen(p,"rb")) == NULL)
+    if ((f = fopen(p.c_str(),"rb")) == NULL)
       QDP_error_exit("NmlReader: error opening file %s",p);
     
     if ((abs = new_abstract("abstract")) == NULL)   // create a parse tree
@@ -268,12 +268,12 @@ NmlReader& read(NmlReader& nml, const string& s, multi1d<Double>& d)
 //! namelist writer support
 NmlWriter::NmlWriter() {iop=false; stack_cnt = 0;}
 
-NmlWriter::NmlWriter(const char* p) {stack_cnt = 0; open(p);}
+NmlWriter::NmlWriter(const std::string& p) {stack_cnt = 0; open(p);}
 
-void NmlWriter::open(const char* p)
+void NmlWriter::open(const std::string& p)
 {
   if (Layout::primaryNode()) 
-    f.open(p,std::ios_base::out);
+    f.open(p.c_str(),std::ios_base::out);
   iop=true;
 
 //  push(*this,"FILE");  // Always start a file with this group
@@ -330,7 +330,7 @@ NmlWriter& push(NmlWriter& nml, const string& s) {return nml.push(s);}
 NmlWriter& pop(NmlWriter& nml) {return nml.pop();}
 
 //! Write a comment
-NmlWriter& operator<<(NmlWriter& nml, const char* s)
+NmlWriter& operator<<(NmlWriter& nml, const std::string& s)
 {
   if (Layout::primaryNode()) 
     nml.get() << "! " << s << endl; 
@@ -344,13 +344,13 @@ NmlWriter& operator<<(NmlWriter& nml, const char* s)
 //! Binary reader support
 BinaryReader::BinaryReader() {iop=false; f = NULL;}
 
-BinaryReader::BinaryReader(const char* p) {open(p);}
+BinaryReader::BinaryReader(const std::string& p) {open(p);}
 
-void BinaryReader::open(const char* p) 
+void BinaryReader::open(const std::string& p) 
 {
   if (Layout::primaryNode()) 
   {
-    if ((f = fopen(p,"rb")) == NULL)
+    if ((f = fopen(p.c_str(),"rb")) == NULL)
       QDP_error_exit("BinaryReader: error opening file %s",p);
   }
 
@@ -379,13 +379,13 @@ BinaryReader::~BinaryReader() {close();}
 //! Binary writer support
 BinaryWriter::BinaryWriter() {iop=false; f = NULL;}
 
-BinaryWriter::BinaryWriter(const char* p) {open(p);}
+BinaryWriter::BinaryWriter(const std::string& p) {open(p);}
 
-void BinaryWriter::open(const char* p) 
+void BinaryWriter::open(const std::string& p) 
 {
   if (Layout::primaryNode()) 
   {
-    if ((f = fopen(p,"wb")) == NULL)
+    if ((f = fopen(p.c_str(),"wb")) == NULL)
     {
       cerr << "BinaryWriter: error opening file: " << p << endl;
       QDP_error_exit("BinaryWriter: error opening file %s",p);
