@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: defs.h,v 1.6 2002-12-18 21:30:40 edwards Exp $
+// $Id: defs.h,v 1.7 2003-03-20 22:19:04 dgr Exp $
 
 /*! \file
  * \brief Type definitions
@@ -75,6 +75,9 @@ typedef PScalar< PScalar< RScalar<LOGICAL> > > IntBoolean;
 
 // Fixed precision
 typedef OLattice< PScalar< PColorMatrix< RComplex<REAL32>, Nc> > > LatticeColorMatrixF;
+typedef OScalar< PScalar< PColorMatrix< RComplex<REAL32>, Nc> > > ColorMatrixF;
+
+
 typedef OScalar< PScalar< PScalar< RScalar<REAL32> > > > Real32;
 
 /*! @} */   // end of group defs
