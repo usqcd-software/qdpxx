@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_defs.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_defs.h,v 1.2 2003-08-11 16:57:57 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -55,7 +55,15 @@ QDP_BEGIN_NAMESPACE(QDP);
 //! Gamma matrices are conveniently defined for this Ns
 typedef GammaType<Ns> Gamma;
 
+
 // Aliases for a scalar architecture
+
+// Fixed fermion type
+typedef OLattice< PSpinVector< PColorVector< RComplex<REAL>, 3>, 4> > LatticeDiracFermion;
+typedef OLattice< PSpinVector< PColorVector< RComplex<REAL>, 3>, 1> > LatticeStaggeredFermion;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex<REAL>, 3>, 4> > LatticeDiracPropagator;
+
+// Floating aliases
 typedef OLattice< PScalar< PColorVector< RComplex<REAL>, Nc> > > LatticeColorVector;
 typedef OLattice< PSpinVector< PScalar< RComplex<REAL> >, Ns> > LatticeSpinVector;
 typedef OLattice< PScalar< PColorMatrix< RComplex<REAL>, Nc> > > LatticeColorMatrix;
