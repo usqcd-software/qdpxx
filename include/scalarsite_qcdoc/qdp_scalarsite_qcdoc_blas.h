@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.9 2004-04-01 09:25:11 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.10 2004-04-01 16:02:20 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -22,11 +22,12 @@ void vaxpy3_norm (REAL *out, REAL *scalep, REAL *InScale, REAL *Add,int len,
 
 #include "scalarsite_generic/generic_blas_vaxpby3.h"
 #include "scalarsite_generic/generic_blas vaxmby3.h"
-#include "scalarsite_generic/generic_blax_vaxmby3_norm.h"
-#include "scalarsite_generic/generic_blas_vadd.h"
-#include "scalarsite_generic/generic_blas_vsub.h"
 #include "scalarsite_generic/generic_blas_vscal.h"
 #include "scalarsite_generic/generic_blas_local_sumsq.h"
+#include "scalarsite_generic/generic_blax_vaxmby3_norm.h"
+#include "scalarsite_generic/generic_blas_local_vcdot.h"
+#include "scalarsite_generic/generic_blas_local_vcdot_real.h"
+
 
 
 typedef PSpinVector<PColorVector<RComplex<PScalar<REAL> >, 3>, Ns> TVec;
@@ -1258,17 +1259,13 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     int n_3vec = (s.end() - s.start() + 1)*Ns;
     const REAL *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real().elem());
     
-    // I am relying on this being a Double here 
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
-    lsum = Double(0);
-    local_sumsq((DOUBLE *)&(lsum.elem().elem().elem().elem().elem()),
-		(REAL *)s1ptr, 
-	       n_3vec); 
-   
-    // Internal globalSum expects reference 
+    // Has Type OScalar< PScalar < PScalar < RScalar < PScalar < REAL > > > > >
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  ret_val;
+    DOUBLE lsum = 0;
+    local_sumsq(&lsum,(REAL *)s1ptr, n_3vec); 
     Internal::globalSum(lsum);
-    
-    return lsum;
+    ret_val.elem().elem().elem().elem().elem() = lsum;
+    return ret_val;
   }
   else {
    return sum(localNorm2(s1),s);
@@ -1293,20 +1290,177 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
     const REAL *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real().elem());
     
     // I am relying on this being a Double here 
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
-    lsum = Double(0);
- 
-    local_sumsq((DOUBLE *)&(lsum.elem().elem().elem().elem().elem()),
-		(REAL *)s1ptr, 
-	       n_3vec); 
-   
-    // Internal globalSum expects reference 
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  ret_val;
+    DOUBLE lsum=0;
+    local_sumsq(&lsum,(REAL *)s1ptr, n_3vec); 
     Internal::globalSum(lsum);
-    
-    return lsum;
+    ret_val.elem().elem().elem().elem().elem() = lsum;
+    return ret_val;
   }
   else {
    return sum(localNorm2(s1),all);
+  }
+}
+
+template<>
+inline  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t
+innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
+	     const QDPType< TVec, OLattice<TVec> > &v2)
+{
+  if( all.hasOrderedRep() ) {
+#ifdef DEBUG_BLAS
+    QDPIO::cout << "BJ: innerProduct all" << endl;
+#endif
+
+    // This BinaryReturn has Type_t
+    // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
+    BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
+    // Inner product is accumulated internally in DOUBLE
+    multi1d<DOUBLE> ip(2);
+    ip[0]=0;
+    ip[1]=0;
+
+    // Length of subset 
+    unsigned long n_3vec = (all.end() - all.start() + 1)*Ns;
+    
+    // Call My CDOT
+    local_vcdot(&(ip[0]), &(ip[1]),
+		(REAL *)&(v1.elem(all.start()).elem(0).elem(0).real().elem()),
+		(REAL *)&(v2.elem(all.start()).elem(0).elem(0).real().elem()),
+		n_3vec);
+
+
+    // Global sum -- still on a vector of doubles
+    Internal::globalSum(ip);
+
+    // Downcast (and possibly lose precision) here 
+    lprod.elem().elem().elem().real().elem() = (REAL)ip[0];
+    lprod.elem().elem().elem().imag().elem() = (REAL)ip[1];
+
+    // Return
+    return lprod;
+  }
+  else {
+    // Do localInnerProduct
+    // then sum
+    return sum(localInnerProduct(v1, v2),all);
+  }
+}
+
+template<>
+inline  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t
+innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
+	     const QDPType< TVec, OLattice<TVec> > &v2, 
+	     const Subset& s)
+{
+  if( s.hasOrderedRep() ) {
+#ifdef DEBUG_BLAS
+    QDPIO::cout << "BJ: innerProduct s" << endl;
+#endif
+
+    // This BinaryReturn has Type_t
+    // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
+    BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
+    multi1d<DOUBLE> ip(2);
+    ip[0] = 0;
+    ip[1] = 0;
+
+    unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
+    local_vcdot(&(ip[0]), &(ip[1]),
+		(REAL *)&(v1.elem(s.start()).elem(0).elem(0).real().elem()),
+		(REAL *)&(v2.elem(s.start()).elem(0).elem(0).real().elem()),
+		n_3vec);
+
+    Internal::globalSum(ip);
+
+    lprod.elem().elem().elem().real().elem() = (REAL)ip[0];
+    lprod.elem().elem().elem().imag().elem() = (REAL)ip[1];
+    
+
+    return lprod;
+  }
+  else {
+    return sum(localInnerProduct(v1, v2),s);
+  }
+}
+
+
+// Inner Product Real
+template<>
+inline  
+BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t
+innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
+		 const QDPType< TVec, OLattice<TVec> > &v2)
+{
+  if( all.hasOrderedRep() ) {
+#ifdef DEBUG_BLAS
+    QDPIO::cout << "BJ: innerProductReal all" << endl;
+#endif
+
+    // This BinaryReturn has Type_t
+    // OScalar<OScalar<OScalar<RScalar<PScalar<REAL> > > > >
+    BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
+    // Inner product is accumulated internally in DOUBLE
+    DOUBLE ip_re=0;
+
+    // Length of subset 
+    unsigned long n_3vec = (all.end() - all.start() + 1)*Ns;
+
+    // Call My CDOT
+    local_vcdot_real(&ip_re,
+		(REAL *)&(v1.elem(all.start()).elem(0).elem(0).real().elem()),
+		(REAL *)&(v2.elem(all.start()).elem(0).elem(0).real().elem()),
+		n_3vec);
+
+    // Global sum
+    Internal::globalSum(ip_re);
+
+    // Whether CDOT did anything or not ip_re and ip_im should 
+    // now be right. Assign them to the ReturnType
+    lprod.elem().elem().elem().elem().elem() = (REAL)ip_re;
+
+
+    // Return
+    return lprod;
+  }
+  else {
+    // Do localInnerProduct
+    // then sum
+    return sum(localInnerProductReal(v1, v2),all);
+  }
+}
+
+template<>
+inline  
+BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t
+innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
+		 const QDPType< TVec, OLattice<TVec> > &v2, 
+		 const Subset& s)
+{
+  if( s.hasOrderedRep() ) {
+#ifdef DEBUG_BLAS
+    QDPIO::cout << "BJ: innerProductReal s" << endl;
+#endif
+
+    // This BinaryReturn has Type_t
+    // OScalar<OScalar<OScalar<RScalar<PScalar<REAL> > > > >
+    BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
+    DOUBLE ip_re=0;
+
+    unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
+    local_vcdot_real(&ip_re,
+		     (REAL *)&(v1.elem(s.start()).elem(0).elem(0).real().elem()),
+		     (REAL *)&(v2.elem(s.start()).elem(0).elem(0).real().elem()),
+		     n_3vec);
+
+    Internal::globalSum(ip_re);
+    lprod.elem().elem().elem().elem().elem() = (REAL)ip_re;
+
+
+    return lprod;
+  }
+  else {
+    return sum(localInnerProductReal(v1, v2),s);
   }
 }
 
