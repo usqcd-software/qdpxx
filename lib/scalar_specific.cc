@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.3 2002-11-13 18:24:40 edwards Exp $
+// $Id: scalar_specific.cc,v 1.4 2002-11-23 02:02:30 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -414,7 +414,7 @@ void Set::make(int (&func)(const multi1d<int>& coordinate), int nsubset_indices)
     int start = 0;
     int end = -1;
     int ntotal = 0;
-    int prev;
+    int prev = -1;
     bool found_gap = false;
 
     for(int linear=0; linear < Layout::vol(); ++linear)
