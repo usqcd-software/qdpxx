@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.28 2003-08-23 02:35:56 edwards Exp $
+// $Id: qdp.h,v 1.29 2003-08-23 14:06:58 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -163,11 +163,21 @@ QDP_END_NAMESPACE();
 #warning "Using scalar architecture with vector extensions"
 #include "qdp_scalarvec_specific.h"
 
+// Include SSE code here if applicable
+#if QDP_USE_SSE == 1
+#include "qdp_scalarvecsite_sse.h"
+#endif
+
 #elif defined(ARCH_PARSCALARVEC)
 // Architectural specific code to a parallel/single proc box
 // with vector extension
 #warning "Using parallel scalar architecture with vector extensions"
 #include "qdp_parscalarvec_specific.h"
+
+// Include SSE code here if applicable
+#if QDP_USE_SSE == 1
+#include "qdp_scalarvecsite_sse.h"
+#endif
 
 #else
 #error "Unknown architecture ARCH"
