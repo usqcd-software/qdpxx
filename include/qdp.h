@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.52 2005-01-21 02:51:03 edwards Exp $
+// $Id: qdp.h,v 1.53 2005-01-22 21:58:02 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -145,6 +145,7 @@ QDP_END_NAMESPACE();
 #include "qdp_optops.h"
 #include "qdp_profile.h"
 //#include "qdp_word.h"
+#include "qdp_simpleword.h"
 #include "qdp_reality.h"
 #include "qdp_inner.h"
 #include "qdp_primitive.h"
@@ -167,7 +168,6 @@ QDP_END_NAMESPACE();
 
 //#include "qdp_special.h"
 #include "qdp_random.h"
-#include "qdp_simpleword.h"
 
 #if defined(ARCH_SCALAR)
 // Architectural specific code to a single node/single proc box
