@@ -3,6 +3,9 @@ It is known (for simple reasons) not to compile under
 gcc-2.X . The problem parts could easily be changed,
 but I can't be bothered at the moment.
 
+It has also been compiled under IBM xlC (version 5 I believe)
+and under Intel icc (70) compiler.
+
 However, gcc-2.X is not compliant with the final
 version of C++-3 standard on I/O. In particular, stream
 support is not all in the correct place with correct
