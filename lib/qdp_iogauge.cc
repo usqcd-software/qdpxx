@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.16 2005-02-28 16:46:37 bjoo Exp $
+// $Id: qdp_iogauge.cc,v 1.17 2005-03-14 19:14:22 bjoo Exp $
 //
 // QDP data parallel interface
 /*!
@@ -246,11 +246,12 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 
     char fpstring[12];
     if( sscanf(line.c_str(), "FLOATING_POINT = %s", fpstring) == 1 ) {
-      if( strcmp(fpstring, "IEEE32BIG") == 0 ) { 
+      if( (strcmp(fpstring, "IEEE32BIG") == 0)
+         || (strcmp(fpstring, "IEEE32") == 0)  ) { 
 	QDPIO::cout << "Floating type: IEEE32BIG" << endl; 
 	header.float_size=4;
       }
-      else if (strcmp(fpstring, "IEEE64BIG") == 0 ) { 
+      else if ( strcmp(fpstring, "IEEE64BIG") == 0 ) { 
 	header.float_size=8;
       }
       else { 
