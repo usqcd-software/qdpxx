@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primmatrix.h,v 1.11 2002-11-07 19:25:50 edwards Exp $
+// $Id: primmatrix.h,v 1.12 2002-11-12 00:21:52 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -96,7 +96,18 @@ public:
     }
 
   //! Deep copy here
+#if 0
+  /*! This is an array initializer form - may not be strictly legal */
   PMatrix(const PMatrix& a) : F(a.F) {}
+#else
+  /*! This is a copy form - legal but not necessarily efficient */
+  PMatrix(const PMatrix& a)
+    {
+      for(int i=0; i < N; ++i)
+	for(int j=0; j < N; ++j)
+	  F[i][j] = a.F[i][j];
+    }
+#endif
 
 public:
   T& elem(int i, int j) {return F[i][j];}
