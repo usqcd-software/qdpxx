@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.17 2003-09-09 14:09:11 uid3790 Exp $
+// $Id: t_xml.cc,v 1.18 2003-09-10 16:55:45 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -24,6 +24,7 @@ int main(int argc, char **argv)
   Double d = 17;
   random(a);
 
+  try
   {
     XMLBufferWriter toxml;
 
@@ -42,7 +43,13 @@ int main(int argc, char **argv)
     read(fromxml,"/godzilla/dog",rob);
     cout << "found dog = " << rob << endl;
   }
+  catch(const string& e)
+  {
+    QDP_error_exit("Error XMLBufferWriter into a XMLReader test: %s",e.c_str());
+  }
 
+
+  try
   {
     XMLFileWriter toxml("t_xml.input1");
 
@@ -56,7 +63,13 @@ int main(int argc, char **argv)
 
     pop(toxml);
   }
+  catch(const string& e)
+  {
+    QDP_error_exit("Error with basic xml write tests: %s",e.c_str());
+  }
 
+
+  try
   {
     XMLReader fromxml;
     fromxml.open("t_xml.input1");
@@ -68,7 +81,13 @@ int main(int argc, char **argv)
     read(fromxml,"/fred/my_life/rob",rob);
     cout << "found rob = " << rob << endl;
   }
+  catch(const string& e)
+  {
+    QDP_error_exit("Error reading some xml snippets: %s",e.c_str());
+  }
 
+
+  try
   {
     // Test reading some xml snippet and dumping it back out
     XMLReader fromxml;
@@ -88,9 +107,15 @@ int main(int argc, char **argv)
     XMLFileWriter toxml_4("t_xml.output2");
     write(toxml_4,"imbed_some_more",toxml_2);
   }
-
+  catch(const string& e)
   {
-    // Test writing some more complex snippets
+    QDP_error_exit("Error reading some xml snippets: %s",e.c_str());
+  }
+
+
+  // Test writing some more complex snippets
+  try
+  {
     XMLBufferWriter toxml;
     push(toxml,"complex_xml");
 
@@ -147,7 +172,13 @@ int main(int argc, char **argv)
     XMLFileWriter filexml("t_xml.input2");
     filexml << toxml;
   }
+  catch(const string& e)
+  {
+    QDP_error_exit("Test writing some more complex snippets",e.c_str());
+  }
 
+
+  try 
   {
     // Test reading some more complex snippets
     XMLReader fromxml;
@@ -155,53 +186,62 @@ int main(int argc, char **argv)
 
     Seed seed;
     read(fromxml,"/complex_xml/seedThingy",seed);
-    cout << "seed = " << seed << endl;
+    cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << endl;
 
     multi1d<int> arrayInt;
     read(fromxml,"/complex_xml/arrayInt",arrayInt);
     for(int i=0; i < arrayInt.size(); ++i)
-      cout << "arrayInt[" << i << "] = " << arrayInt[i] << endl;
+      cout << "arrayInt[" << i << "] = " << arrayInt[i]  << "  node=" << Layout::nodeNumber() << endl;
 
     multi1d<Real> arrayReal;
     read(fromxml,"/complex_xml/arrayReal",arrayReal);
     for(int i=0; i < arrayReal.size(); ++i)
-      cout << "arrayReal[" << i << "] = " << arrayReal[i] << endl;
+      cout << "arrayReal[" << i << "] = " << arrayReal[i] << "  node=" << Layout::nodeNumber() << endl;
 
     multi1d<Complex> arrayComplex;
+    read(fromxml,"/complex_xml/arrayComplex",arrayComplex);
     for(int i=0; i < arrayComplex.size(); ++i)
       cout << "arrayComplex[" << i << "] = (" 
 	   << Real(real(arrayComplex[i])) << ","            // The Real() shouldn't be necesary - 
 	   << Real(imag(arrayComplex[i])) << ")" << endl;   // it converts a QDPExpr to a QDPType
+
+    QDP_info("done with array snippet tests");
+  }
+  catch(const string& e)
+  {
+    QDP_error_exit("Error reading array snippets: %s",e.c_str());
   }
 
-  {
-    // Try out an array context
-    try
-    { 
-      XMLFileWriter  xml_file_out("t_xml.output3");
-      push(xml_file_out,"root_for_output3");
-      XMLArrayWriter  xml_out(xml_file_out, 3);
-      push(xml_out,"this_is_an_array");
 
-      for(int i=0; i < xml_out.size(); ++i)
-      {
-	int x = -42;
+  // Try out an array context
+  try
+  { 
+    XMLFileWriter  xml_file_out("t_xml.output3");
+    push(xml_file_out,"root_for_output3");
+    XMLArrayWriter  xml_out(xml_file_out, 3);
+    push(xml_out,"this_is_an_array");
+
+    for(int i=0; i < xml_out.size(); ++i)
+    {
+      int x = -42;
 #if 1
-//	push(xml_out,"some_ignored_name");
-	push(xml_out);    // note, can use name or unnamed version here - name ignored
-	write(xml_out,"x",x);
-	pop(xml_out);
-#else
-	write(xml_out,"some_ignored_name",x);  // will instead use "elem"
-#endif
-      }
-    
+//    push(xml_out,"some_ignored_name");
+      push(xml_out);    // note, can use name or unnamed version here - name ignored
+      write(xml_out,"x",x);
       pop(xml_out);
-      pop(xml_file_out);
+#else
+      write(xml_out,"some_ignored_name",x);  // will instead use "elem"
+#endif
     }
-    catch( const string& error) { 
-      cout << "Error: " << error << endl;
-    }
+    
+    pop(xml_out);
+    pop(xml_file_out);
+
+    QDP_info("done with XMLArrayWrtiter tests");
+  }
+  catch (const string& e)
+  {
+    QDP_error_exit("Error in array writing: %s",e.c_str());
   }
 
   // Time to bolt
