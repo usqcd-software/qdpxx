@@ -63,6 +63,27 @@ dnl Balint Joo 13/12/2002
 dnl Options for finding out where MPI/GM/QMP is
 dnl folowing George Flemings QMP mods
 
+dnl Balint Joo 3/1/2003
+dnl Option for trying to get the config info from QMP compilation
+AC_ARG_WITH(qmp-home,
+  AC_HELP_STRING([--with-qmp-home=DIR],
+    [Build QDP++ on top of QMP, where QMP is installed in DIR]),
+    [ QMP_HOME="$with_qmp_home"
+      AC_MSG_CHECKING([if $QMP_HOME/config/qmp_build_env.sh exists])
+      if test -f $QMP_HOME/config/qmp_build_env.sh ;
+      then
+	AC_MSG_RESULT([yes])
+	AC_MSG_NOTICE([ Sourcing qmp_build_env.sh in $QMP_HOME/config ])
+	source $QMP_HOME/config/qmp_build_env.sh
+      else 
+	AC_MSG_RESULT([no])
+	AC_MSG_NOTICE([ configuration may still work if you set the relevant ])
+	AC_MSG_NOTICE([ environment variables elsewhere ])
+      fi
+      AC_SUBST(QMP_HOME)
+    ]
+)
+
 AC_ARG_WITH(qmp-comms-type,
   AC_HELP_STRING([--with-qmp-comms-type=TYPE],
     [Build QMP on top of MPI or GM.  If MPI over GM is desired, choose MPI.
@@ -137,30 +158,34 @@ case ${ac_parallel_arch} in
   parscalar)
     AC_MSG_NOTICE([ Parscalar build! Checking for QMP ])
 
-    dnl check comms harness and qmp builds depending on with_qmp_comms_type
-    case ${with_qmp_comms_type} in 
-      MPI) 
-        dnl check MPI
-	AC_MSG_NOTICE([ QMP Comms harness is MPI ])
-        PAC_MPI_LINK_CXX_FUNC( ${QMP_COMMS_CXXFLAGS}, ${QMP_COMMS_LDFLAGS}, dnl
-          ${QMP_COMMS_LIBS}, , , [mpi_link_ok=yes], [mpi_link_ok=no])
-        AC_MSG_CHECKING([if we can compile/link of a simple MPI program])
-        if test "X${mpi_link_ok}X" = "XyesX" ; then
-          AC_MSG_RESULT(yes)
-        else
-          AC_MSG_RESULT(no)
-          AC_MSG_ERROR([Cannot compile/link a basic MPI C++ program!
-          Check QMP_COMMS_CXXFLAGS, QMP_COMMS_LDFLAGS, QMP_COMMS_LIBS.])
-        fi
-     	;;
-      GM)
-	AC_MSG_NOTICE([ QMP Comms harness is GM ])
-        ;;
-      *)
-        AC_MSG_ERROR([ Unsupported QMP Comms harness ])
-        ;;
-    esac
-    dnl now check QMP works
+#   This check is redundant, the QMP_LINK_CHECK Below is sufficient
+#   Balint Joo, 03/01/2003
+#
+#    dnl check comms harness and qmp builds depending on with_qmp_comms_type
+#    case ${with_qmp_comms_type} in 
+#      MPI) 
+#        dnl check MPI
+#	AC_MSG_NOTICE([ QMP Comms harness is MPI ])
+#        PAC_MPI_LINK_CXX_FUNC( ${QMP_COMMS_CXXFLAGS}, ${QMP_COMMS_LDFLAGS}, dnl
+#          ${QMP_COMMS_LIBS}, , , [mpi_link_ok=yes], [mpi_link_ok=no])
+#        AC_MSG_CHECKING([if we can compile/link of a simple MPI program])
+#        if test "X${mpi_link_ok}X" = "XyesX" ; then
+#          AC_MSG_RESULT(yes)
+#        else
+#          AC_MSG_RESULT(no)
+#          AC_MSG_ERROR([Cannot compile/link a basic MPI C++ program!
+#          Check QMP_COMMS_CXXFLAGS, QMP_COMMS_LDFLAGS, QMP_COMMS_LIBS.])
+#        fi
+#     	;;
+#      GM)
+#	AC_MSG_NOTICE([ QMP Comms harness is GM ])
+#        ;;
+#      *)
+#        AC_MSG_ERROR([ Unsupported QMP Comms harness ])
+#        ;;
+#    esac
+ 
+   dnl now check QMP works
     PAC_QMP_LINK_CXX_FUNC( ${QMP_CXXFLAGS}, ${QMP_LDFLAGS}, ${QMP_LIBS}, dnl
                        ${QMP_COMMS_CXXFLAGS}, ${QMP_COMMS_LDFLAGS}, dnl
                        ${QMP_COMMS_LIBS}, , , [qmp_link_ok=yes], dnl
@@ -239,6 +264,7 @@ AC_CONFIG_FILES(docs/qdpdoc)
 # Generate makefiles
 #
 AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES(qdp_build_env.sh)
 AC_CONFIG_FILES(lib/Makefile)
 AC_CONFIG_FILES(include/Makefile)
 AC_CONFIG_FILES(include/PETE/Makefile)

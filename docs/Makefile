@@ -14,8 +14,8 @@
 
 
 
-srcdir = ../../docs
-top_srcdir = ../..
+srcdir = .
+top_srcdir = ..
 pkgdatadir = $(datadir)/qdp
 pkglibdir = $(libdir)/qdp
 pkgincludedir = $(includedir)/qdp
@@ -38,24 +38,24 @@ POST_UNINSTALL = :
 #
 # VPATH to the documentation sources and the topdirectory
 #
-VPATH = ../.. ../../docs
-ACLOCAL = ${SHELL} /Home/bj/Devel/szin++-playpen/qdp-0.19/config/missing --run aclocal-1.7
+VPATH = .. ../docs
+ACLOCAL = ${SHELL} /Home/bj/Devel/qdp++/config/missing --run aclocal-1.7
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /Home/bj/Devel/szin++-playpen/qdp-0.19/config/missing --run tar
+AMTAR = ${SHELL} /Home/bj/Devel/qdp++/config/missing --run tar
 ARCHDEF_SUBSTITUTION = ARCH_PARSCALAR
 ARCH_HDRS = 
-ARCH_SRCS = parscalar_specific.cc qdp_init_parscalar.cc
-AUTOCONF = ${SHELL} /Home/bj/Devel/szin++-playpen/qdp-0.19/config/missing --run autoconf
-AUTOHEADER = ${SHELL} /Home/bj/Devel/szin++-playpen/qdp-0.19/config/missing --run autoheader
-AUTOMAKE = ${SHELL} /Home/bj/Devel/szin++-playpen/qdp-0.19/config/missing --run automake-1.7
+ARCH_SRCS = parscalar_specific.cc
+AUTOCONF = ${SHELL} /Home/bj/Devel/qdp++/config/missing --run autoconf
+AUTOHEADER = ${SHELL} /Home/bj/Devel/qdp++/config/missing --run autoheader
+AUTOMAKE = ${SHELL} /Home/bj/Devel/qdp++/config/missing --run automake-1.7
 AWK = gawk
 CPPFLAGS = 
-CXX = /Home/bj/scratch/mpich-1.2.4/bin/mpiCC
+CXX = g++
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -O4
+CXXFLAGS = -g -O2
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"qdp\" -DPACKAGE_TARNAME=\"qdp\" -DPACKAGE_VERSION=\"0.19\" -DPACKAGE_STRING=\"qdp\ 0.19\" -DPACKAGE_BUGREPORT=\"edwards@jlab.org\" -DPACKAGE=\"qdp\" -DVERSION=\"0.19\" 
+DEFS = -DPACKAGE_NAME=\"qdp\" -DPACKAGE_TARNAME=\"qdp\" -DPACKAGE_VERSION=\"0.25\" -DPACKAGE_STRING=\"qdp\ 0.25\" -DPACKAGE_BUGREPORT=\"edwards@jlab.org\" -DPACKAGE=\"qdp\" -DVERSION=\"0.25\" 
 DEPDIR = .deps
 DOXYGEN = doxygen
 DVIPDF = dvipdf
@@ -74,36 +74,35 @@ INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
 ###########################################################
 LATEX = latex
 LDFLAGS = 
-LIBOBJS = 
-LIBS = -lm
+LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /Home/bj/Devel/szin++-playpen/qdp-0.19/config/missing --run makeinfo
+MAKEINFO = ${SHELL} /Home/bj/Devel/qdp++/config/missing --run makeinfo
 OBJEXT = o
 PACKAGE = qdp
 PACKAGE_BUGREPORT = edwards@jlab.org
 PACKAGE_NAME = qdp
-PACKAGE_STRING = qdp 0.19
+PACKAGE_STRING = qdp 0.25
 PACKAGE_TARNAME = qdp
-PACKAGE_VERSION = 0.19
+PACKAGE_VERSION = 0.25
 PATH_SEPARATOR = :
-QMP_COMMS_CXXFLAGS = 
-QMP_COMMS_LDFLAGS = 
-QMP_COMMS_LIBS = 
-QMP_CXXFLAGS = -I/Home/bj/scratch/qmp-1.3-mpich/include
-QMP_LDFLAGS = -L/Home/bj/scratch/qmp-1.3-mpich/lib
+QMP_COMMS_CXXFLAGS = -I /Home/bj/scratch/mpich-1.2.4/include
+QMP_COMMS_LDFLAGS = -L/Home/bj/scratch/mpich-1.2.4/lib
+QMP_COMMS_LIBS = -lpmpich -lmpich -lpmpich
+QMP_CXXFLAGS = -I/Home/bj/scratch/qmpfoo/include
+QMP_LDFLAGS = -L/Home/bj/scratch/qmpfoo/lib
 QMP_LIBS = -lqmp
 RANLIB = ranlib
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = 
-VERSION = 0.19
+VERSION = 0.25
 ac_Nc = 3
 ac_Nd = 4
 ac_Ns = 4
-ac_ct_CXX = 
+ac_ct_CXX = g++
 ac_ct_RANLIB = ranlib
 ac_ct_STRIP = 
-ac_max_volume = 2048
+ac_max_volume = 512
 am__fastdepCXX_FALSE = #
 am__fastdepCXX_TRUE = 
 am__include = include
@@ -115,13 +114,13 @@ exec_prefix = ${prefix}
 host_alias = 
 includedir = ${prefix}/include
 infodir = ${prefix}/info
-install_sh = /Home/bj/Devel/szin++-playpen/qdp-0.19/config/install-sh
+install_sh = /Home/bj/Devel/qdp++/config/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
 mandir = ${prefix}/man
 oldincludedir = /usr/include
-prefix = /Home/bj/scratch/qdp-0.19-Nd4-Ns4-Nc4-vol2048-parscalar
+prefix = /Home/bj/scratch/qdpfoo
 program_transform_name = s,x,x,
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
@@ -136,7 +135,7 @@ SUFFIXES = .tex .dvi .ps .pdf
 #
 # Install time docdir
 #
-docdir = /Home/bj/scratch/qdp-0.19-Nd4-Ns4-Nc4-vol2048-parscalar/docs
+docdir = /Home/bj/scratch/qdpfoo/docs
 
 #
 # Documentation targets -- apart from doxygen, the rules above should be able

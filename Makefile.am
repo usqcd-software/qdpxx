@@ -6,6 +6,12 @@
 SUBDIRS = lib examples include
 
 #
+# The configure file
+# 
+configdir=@prefix@/config
+config_SCRIPTS=qdp_build_env.sh
+
+#
 # User explicitly has to make docs -- you may not want them
 #
 doc:

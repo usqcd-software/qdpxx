@@ -66,6 +66,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LATEX = @LATEX@
 LDFLAGS = @LDFLAGS@
+LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
@@ -81,6 +82,7 @@ QMP_COMMS_CXXFLAGS = @QMP_COMMS_CXXFLAGS@
 QMP_COMMS_LDFLAGS = @QMP_COMMS_LDFLAGS@
 QMP_COMMS_LIBS = @QMP_COMMS_LIBS@
 QMP_CXXFLAGS = @QMP_CXXFLAGS@
+QMP_HOME = @QMP_HOME@
 QMP_LDFLAGS = @QMP_LDFLAGS@
 QMP_LIBS = @QMP_LIBS@
 RANLIB = @RANLIB@
@@ -127,6 +129,12 @@ target_alias = @target_alias@
 SUBDIRS = lib examples include
 
 #
+# The configure file
+# 
+configdir = @prefix@/config
+config_SCRIPTS = qdp_build_env.sh
+
+#
 # Some things that we want in the distribution tarball 
 #
 
@@ -144,7 +152,9 @@ EXTRA_DIST = $(ARCH_SOURCES) PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools  \
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_CLEAN_FILES = examples/BuildingBlocks/Makefile
+CONFIG_CLEAN_FILES = qdp_build_env.sh examples/BuildingBlocks/Makefile
+SCRIPTS = $(config_SCRIPTS)
+
 DIST_SOURCES =
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
@@ -155,7 +165,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 DIST_COMMON = README AUTHORS COPYING ChangeLog INSTALL Makefile.am \
 	Makefile.in NEWS acinclude.m4 aclocal.m4 config/depcomp \
 	config/install-sh config/missing config/mkinstalldirs configure \
-	configure.ac
+	configure.ac qdp_build_env.sh.in
 DIST_SUBDIRS = $(SUBDIRS)
 all: all-recursive
 
@@ -176,8 +186,30 @@ $(srcdir)/configure:  $(srcdir)/configure.ac $(ACLOCAL_M4) $(CONFIGURE_DEPENDENC
 
 $(ACLOCAL_M4):  configure.ac acinclude.m4
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
+qdp_build_env.sh: $(top_builddir)/config.status qdp_build_env.sh.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 examples/BuildingBlocks/Makefile: $(top_builddir)/config.status $(top_srcdir)/examples/BuildingBlocks/Makefile.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
+configSCRIPT_INSTALL = $(INSTALL_SCRIPT)
+install-configSCRIPTS: $(config_SCRIPTS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(configdir)
+	@list='$(config_SCRIPTS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  if test -f $$d$$p; then \
+	    f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
+	    echo " $(configSCRIPT_INSTALL) $$d$$p $(DESTDIR)$(configdir)/$$f"; \
+	    $(configSCRIPT_INSTALL) $$d$$p $(DESTDIR)$(configdir)/$$f; \
+	  else :; fi; \
+	done
+
+uninstall-configSCRIPTS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(config_SCRIPTS)'; for p in $$list; do \
+	  f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
+	  echo " rm -f $(DESTDIR)$(configdir)/$$f"; \
+	  rm -f $(DESTDIR)$(configdir)/$$f; \
+	done
 uninstall-info-am:
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -314,7 +346,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/PETE $(distdir)/config $(distdir)/docs $(distdir)/examples $(distdir)/examples/BuildingBlocks $(distdir)/include $(distdir)/lib
+	$(mkinstalldirs) $(distdir)/. $(distdir)/PETE $(distdir)/config $(distdir)/docs $(distdir)/examples $(distdir)/examples/BuildingBlocks $(distdir)/include $(distdir)/lib
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -425,9 +457,10 @@ distcleancheck: distclean
 	       exit 1; } >&2
 check-am: all-am
 check: check-recursive
-all-am: Makefile
+all-am: Makefile $(SCRIPTS)
 installdirs: installdirs-recursive
 installdirs-am:
+	$(mkinstalldirs) $(DESTDIR)$(configdir)
 
 install: install-recursive
 install-exec: install-exec-recursive
@@ -469,7 +502,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am:
+install-data-am: install-configSCRIPTS
 
 install-exec-am:
 
@@ -496,7 +529,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-info-am
+uninstall-am: uninstall-configSCRIPTS uninstall-info-am
 
 uninstall-info: uninstall-info-recursive
 
@@ -505,16 +538,17 @@ uninstall-info: uninstall-info-recursive
 	dist-all dist-gzip distcheck distclean distclean-generic \
 	distclean-recursive distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am dvi-recursive info info-am \
-	info-recursive install install-am install-data install-data-am \
-	install-data-recursive install-exec install-exec-am \
-	install-exec-recursive install-info install-info-am \
-	install-info-recursive install-man install-recursive \
-	install-strip installcheck installcheck-am installdirs \
-	installdirs-am installdirs-recursive maintainer-clean \
-	maintainer-clean-generic maintainer-clean-recursive mostlyclean \
-	mostlyclean-generic mostlyclean-recursive pdf pdf-am \
-	pdf-recursive ps ps-am ps-recursive tags tags-recursive \
-	uninstall uninstall-am uninstall-info-am \
+	info-recursive install install-am install-configSCRIPTS \
+	install-data install-data-am install-data-recursive \
+	install-exec install-exec-am install-exec-recursive \
+	install-info install-info-am install-info-recursive install-man \
+	install-recursive install-strip installcheck installcheck-am \
+	installdirs installdirs-am installdirs-recursive \
+	maintainer-clean maintainer-clean-generic \
+	maintainer-clean-recursive mostlyclean mostlyclean-generic \
+	mostlyclean-recursive pdf pdf-am pdf-recursive ps ps-am \
+	ps-recursive tags tags-recursive uninstall uninstall-am \
+	uninstall-configSCRIPTS uninstall-info-am \
 	uninstall-info-recursive uninstall-recursive
 
 
