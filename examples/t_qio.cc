@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.10 2004-02-03 02:44:04 edwards Exp $
+// $Id: t_qio.cc,v 1.11 2004-02-07 20:35:01 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -24,31 +24,6 @@ int main(int argc, char **argv)
   QDP_volfmt_t         volfmt = QDPIO_SINGLEFILE;
 //  QDP_volfmt_t         volfmt = QDPIO_MULTIFILE;
 
-#if 1
-  // SciDAC output format - move up into switch statement or a subroutine
-  {
-    LatticePropagator quark_propagator = zero;
-    string source_filename = "t_qio.test";
-
-    XMLBufferWriter file_xml;
-    push(file_xml, "MyFileXML");
-    write(file_xml, "foobar", 1);
-    pop(file_xml);
-
-    QDPFileWriter to(file_xml,source_filename,volfmt,serpar,QDPIO_OPEN);
-    QDPIO::cout << "QDPFile Writer opened" << endl << flush;
-
-    XMLBufferWriter record_xml;
-    push(record_xml, "MyRecordXML");
-    write(record_xml, "muchies", 17);
-    pop(record_xml);
-
-    write(to,record_xml,quark_propagator);  // can keep repeating writes for more records
-    close(to);
-  }
-#endif
-
-#if 1
   QDPIO::cout << "\n\n\n\n***************TEST WRITING*************\n" << endl;
 
   {
@@ -77,9 +52,15 @@ int main(int argc, char **argv)
     random(a);
     write(to,record_xml,a);
 
+    QDPIO::cout << "First record test: innerProduct(a,shift(a,0))=" 
+                << Real(innerProductReal(a,shift(a,FORWARD,0))) << endl;
+
     LatticeColorMatrix b;
     random(b);
     write(to,record_xml,b);
+
+    QDPIO::cout << "Second record test: innerProduct(b,shift(b,0))=" 
+                << Real(innerProductReal(b,shift(b,FORWARD,0))) << endl;
 
     close(to);
   }
@@ -100,13 +81,18 @@ int main(int argc, char **argv)
     QDPIO::cout << "Here is the contents of first  record_xml" << endl;
     record_xml.print(cout);
 
+    QDPIO::cout << "First record check: innerProduct(a,shift(a,0))=" 
+                << Real(innerProductReal(a,shift(a,FORWARD,0))) << endl;
+
     LatticeColorMatrix b;
     read(from,record_xml,b);
 
     QDPIO::cout << "Here is the contents of second  record_xml" << endl;
     record_xml.print(cout);
+
+    QDPIO::cout << "Second record check: innerProduct(b,shift(b,0))=" 
+                << Real(innerProductReal(b,shift(b,FORWARD,0))) << endl;
   }
-#endif
 
   // Time to bolt
   QDP_finalize();
