@@ -1,4 +1,9 @@
-// $Id: t_qdp.cc,v 1.15 2003-01-14 04:43:29 edwards Exp $
+// $Id: t_qdp.cc,v 1.16 2003-01-20 16:24:02 edwards Exp $
+//
+/*! \file
+ *  \brief Silly little internal test code
+ *
+ */
 
 #include <iostream>
 #include <cstdio>
