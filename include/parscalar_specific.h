@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.10 2003-01-17 05:42:44 edwards Exp $
+// $Id: parscalar_specific.h,v 1.11 2003-01-20 16:17:48 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -37,14 +37,6 @@ namespace Layout
 // Internal ops with ties to QMP
 namespace Internal
 {
-  //! Slow send-receive (blocking)
-  void sendRecvWait(void *send_buf, void *recv_buf, 
-		    int count, int isign0, int dir);
-
-  //! Send-receive routine
-  void sendRecv(void *send_buf, void *recv_buf, 
-		int count, int isign0, int dir);
-
   //! Wait on send-receive
   void wait(int dir);
 
@@ -552,6 +544,7 @@ pokeSite(OLattice<T1>& l, const OScalar<T1>& r, const multi1d<int>& coord)
 
 //-----------------------------------------------------------------------------
 // Map
+//
 //! General permutation map class for communications
 class Map
 {
@@ -566,7 +559,7 @@ public:
   Map(const MapFunc& fn) {make(fn);}
 
   //! Actual constructor from a function object
-  /*! The semantics are   source_site = func(dest_site) */
+  /*! The semantics are   source_site = func(dest_site,isign) */
   void make(const MapFunc& func);
 
   //! Function call operator for a shift
@@ -583,15 +576,19 @@ public:
   QDPType<T1,C1>
   operator()(const QDPType<T1,C1> & l)
     {
-      QMP_info("Map()");
+      QDP_info("Map()");
 
       QDPType<T1,C1> dd;
+      fprintf(stderr,"Here a\n");
       C1& d = static_cast<C1&>(const_cast<QDPType<T1,C1>&>(dd));
+      fprintf(stderr,"Here b\n");
+
+      fprintf(stderr,"Here c: offnodeP = %d\n",offnodeP);
 
       if (offnodeP)
       {
 	// Off-node communications required
-	QMP_info("Map: off-node communications required");
+	QDP_info("Map: off-node communications required");
 
 	// Eventually these declarations should move into d - the return object
 	typedef T1 * T1ptr;
@@ -622,13 +619,13 @@ public:
 
 	  if (srcnode[i] != my_node)
 	  {
-	    QMP_info("Map_gather_send(olattice[%d],olattice[%d])",i,ri);
+	    QDP_info("Map_gather_send(olattice[%d],olattice[%d])",i,ri);
 
 	    dest[i] = &(recv_buf[ri++]);
 	  }
 	  else
 	  {
-	    QMP_info("Map_gather_onnode(olattice[%d],olattice[%d])",i,soffsets[i]);
+	    QDP_info("Map_gather_onnode(olattice[%d],olattice[%d])",i,soffsets[i]);
 
 	    dest[i] = &(const_cast<T1&>(l.elem(soffsets[i])));
 	  }
@@ -636,7 +633,7 @@ public:
 
 	QMP_status_t err;
 
-	QMP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
+	QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
 
 	msg[0]  = QMP_declare_msgmem(recv_buf, srcnum);
 	msg[1]  = QMP_declare_msgmem(send_buf, dstnum);
@@ -644,13 +641,19 @@ public:
 	mh_a[1] = QMP_declare_send_to(msg[1], destnodes[0], 0);
 	mh      = QMP_declare_multiple(mh_a, 2);
 
+	QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
+
 	// Launch the faces
 	if ((err = QMP_start(mh)) != QMP_SUCCESS)
 	  QMP_error_exit(QMP_error_string(err));
 
+	QDP_info("Map: calling wait");
+
 	// Wait on the faces
 	if ((err = QMP_wait(mh)) != QMP_SUCCESS)
 	  QMP_error_exit(QMP_error_string(err));
+
+	QDP_info("Map: calling free msgs");
 
 	QMP_free_msghandle(mh_a[1]);
 	QMP_free_msghandle(mh_a[0]);
@@ -663,34 +666,43 @@ public:
 	// For now, use the all subset
 	for(int i=0; i < Layout::subgridVol(); ++i) 
 	{
-	  QMP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
+	  QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
 	  d.elem(i) = *(dest[i]);
 	}
 
-	QMP_info("finished scatter");
+	QDP_info("finished scatter");
 
 	// Cleanup
 	QMP_free_aligned_memory(recv_buf);
 	QMP_free_aligned_memory(send_buf);
 	delete dest;
 
-	QMP_info("finished cleanup");
+	QDP_info("finished cleanup");
       }
       else 
       {
 	// No off-node communications - copy on node
-	QMP_info("Map: copy on node - no communications");
+	QDP_info("Map: copy on node - no communications");
 
 	// For now, use the all subset
 	for(int i=0; i < Layout::subgridVol(); ++i) 
 	{
-	  QMP_info("Map(olattice[%d],olattice[%d])",i,soffsets[i]);
+	  QDP_info("Map(olattice[%d],olattice[%d])",i,soffsets[i]);
+//	  cerr << "olat[" << soffsets[i] << "]=" << l.elem(soffsets[i]) << endl;
 	  d.elem(i) = l.elem(soffsets[i]);
 	}
       }
 
 
-      QMP_info("exiting Map()");
+#if 0
+      // Result
+      for(int i=0; i < Layout::subgridVol(); ++i) 
+      {
+	cerr << "d["<<i<<"] = "<< d.elem(i) << endl;
+      }
+#endif
+
+      QDP_info("exiting Map()");
 
       return dd;
     }
@@ -768,7 +780,7 @@ public:
   ArrayMap(const ArrayMapFunc& fn) {make(fn);}
 
   //! Actual constructor from a function object
-  /*! The semantics are   source_site = func(dest_site,dir) */
+  /*! The semantics are   source_site = func(dest_site,isign,dir) */
   void make(const ArrayMapFunc& func);
 
   //! Function call operator for a shift
@@ -785,7 +797,7 @@ public:
   QDPType<T1,C1>
   operator()(const QDPType<T1,C1> & l, int dir)
     {
-      QMP_info("ArrayMap(QDPType,%d)",dir);
+      QDP_info("ArrayMap(QDPType,%d)",dir);
 
       return mapsa[dir](l);
     }
@@ -824,35 +836,105 @@ private:
   
 };
 
-
 //-----------------------------------------------------------------------------
-//
-// This is the PETE version of a shift, namely return an expression
-//
-// This class looks like those in OperatorTags, but has a specific constructor
-// for a given direction
-// This mechanism needs to be more general - this implementation is a prototype.
-//
-// NOTE: the use of "all" is not desired. The offsets is not suppose to
-// be subset dependent, but is general to the class. E.g., all shifts should be
-// static classes
-class NearestNeighborMap
+//! BiDirectional of general permutation map class for communications
+class BiDirectionalMap
 {
 public:
   //! Constructor - does nothing really
-  NearestNeighborMap() {}
+  BiDirectionalMap() {}
 
   //! Destructor
-  ~NearestNeighborMap() {}
+  ~BiDirectionalMap() {}
 
-  //! Actual constructor
-  void make();
+  //! Constructor from a function object
+  BiDirectionalMap(const MapFunc& fn) {make(fn);}
+
+  //! Actual constructor from a function object
+  /*! The semantics are   source_site = func(dest_site,isign) */
+  void make(const MapFunc& func);
 
   //! Function call operator for a shift
   /*! 
-   * shift(source,isign,dir)
+   * map(source,isign)
+   *
+   * Implements:  dest(x) = source(map(x,isign))
+   *
+   * Shifts on a OLattice are non-trivial.
+   * Notice, there may be an ILattice underneath which requires shift args.
+   * This routine is very architecture dependent.
+   */
+  template<class T1,class C1>
+  QDPType<T1,C1>
+  operator()(const QDPType<T1,C1> & l, int isign)
+    {
+      QDP_info("BiDirectionalMap(QDPType,%d)",isign);
+
+      return bimaps[(isign+1)>>1](l);
+    }
+
+
+  template<class RHS, class T1>
+  QDPType<T1,OScalar<T1> >
+  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign)
+    {
+      fprintf(stderr,"BiDirectionalMap(QDPExpr<OScalar>,%d)\n",isign);
+
+      // For now, simply evaluate the expression and then do the map
+      return bimaps[(isign+1)>>1](l);
+    }
+
+  template<class RHS, class T1>
+  QDPType<T1,OLattice<T1> >
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign)
+    {
+      fprintf(stderr,"BiDirectionalMap(QDPExpr<OLattice>,%d)\n",isign);
+
+      // For now, simply evaluate the expression and then do the map
+      return bimaps[(isign+1)>>1](l);
+    }
+
+
+private:
+  //! Hide copy constructor
+  BiDirectionalMap(const BiDirectionalMap&) {}
+
+  //! Hide operator=
+  void operator=(const BiDirectionalMap&) {}
+
+private:
+  multi1d<Map> bimaps;
+  
+};
+
+
+//-----------------------------------------------------------------------------
+//! ArrayBiDirectional of general permutation map class for communications
+class ArrayBiDirectionalMap
+{
+public:
+  //! Constructor - does nothing really
+  ArrayBiDirectionalMap() {}
+
+  //! Destructor
+  ~ArrayBiDirectionalMap() {}
+
+  //! Constructor from a function object
+  ArrayBiDirectionalMap(const ArrayMapFunc& fn) {make(fn);}
+
+  //! Actual constructor from a function object
+  /*! The semantics are   source_site = func(dest_site,isign,dir) */
+  void make(const ArrayMapFunc& func);
+
+  //! Function call operator for a shift
+  /*! 
+   * Implements:  dest(x) = source(map(x,isign,dir))
+   *
+   * Syntax:
+   * map(source,isign,dir)
+   *
    * isign = parity of direction (+1 or -1)
-   * dir   = direction ([0,...,Nd-1])
+   * dir   = array index (could be direction in range [0,...,Nd-1])
    *
    * Implements:  dest(x) = s1(x+isign*dir)
    * There are cpp macros called  FORWARD and BACKWARD that are +1,-1 resp.
@@ -863,63 +945,47 @@ public:
    * This routine is very architecture dependent.
    */
   template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<OpIdentity,
-    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
-    typename UnaryReturn<C1,OpIdentity >::Type_t >::Expression_t
+  QDPType<T1,C1>
   operator()(const QDPType<T1,C1> & l, int isign, int dir)
     {
-      fprintf(stderr,"shift(QDPType,%d,%d)\n",isign,dir);
+      QDP_info("ArrayBiDirectionalMap(QDPType,%d,%d)",isign,dir);
 
-      typedef UnaryNode<OpIdentity,
-	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-      typedef typename UnaryReturn<C1,OpIdentity >::Type_t Container_t;
-      return MakeReturn<Tree_t,Container_t>::make(Tree_t(
-	CreateLeaf<QDPType<T1,C1> >::make(l)));
+      return bimapsa((isign+1)>>1,dir)(l);
     }
 
 
-  template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<OpIdentity,
-    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
-    typename UnaryReturn<C1,OpIdentity >::Type_t >::Expression_t
-  operator()(const QDPExpr<T1,C1> & l, int isign, int dir)
+  template<class RHS, class T1>
+  QDPType<T1,OScalar<T1> >
+  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign, int dir)
     {
-      fprintf(stderr,"shift(QDPExpr,%d,%d)\n",isign,dir);
+      fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OScalar>,%d,%d)\n",isign,dir);
 
-      typedef UnaryNode<OpIdentity,
-	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-      typedef typename UnaryReturn<C1,OpIdentity >::Type_t Container_t;
-      return MakeReturn<Tree_t,Container_t>::make(Tree_t(
-	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+      // For now, simply evaluate the expression and then do the map
+      return bimapsa((isign+1)>>1,dir)(l);
     }
 
+  template<class RHS, class T1>
+  QDPType<T1,OLattice<T1> >
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign, int dir)
+    {
+      fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OLattice>,%d,%d)\n",isign,dir);
 
-public:
-  //! Accessor to offsets
-  const multi3d<int>& Offsets() const {return soffsets;}
+      // For now, simply evaluate the expression and then do the map
+      return bimapsa((isign+1)>>1,dir)(l);
+    }
+
 
 private:
   //! Hide copy constructor
-  NearestNeighborMap(const NearestNeighborMap&) {}
+  ArrayBiDirectionalMap(const ArrayBiDirectionalMap&) {}
 
   //! Hide operator=
-  void operator=(const NearestNeighborMap&) {}
+  void operator=(const ArrayBiDirectionalMap&) {}
 
 private:
-  //! Offset table used for communications. 
-  /*! 
-   * The direction is in the sense of the Map or Shift functions from QDP.
-   * soffsets(direction,isign,position) 
-   */ 
-  multi3d<int> soffsets;
-  multi3d<int> srcnode;
-  multi3d<int> dstnode;
-
-  multi2d<int> srcenodes_num;
-  multi2d<int> dstenodes_num;
+  multi2d<Map> bimapsa;
+  
 };
-
-
 
 
 //-----------------------------------------------------------------------------

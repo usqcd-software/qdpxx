@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.19 2003-01-17 05:42:44 edwards Exp $
+// $Id: scalar_specific.h,v 1.20 2003-01-20 16:17:48 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -551,7 +551,6 @@ struct FnMap
 
 
 // Specialization of ForEach deals with maps. 
-// This mechanism needs to be more general - this implementation is a prototype.
 template<class A, class CTag>
 struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
 {
@@ -572,9 +571,6 @@ struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
 
 
 //-----------------------------------------------------------------------------
-// Forward declaration
-struct FnArrayMap;
-
 //! Array of general permutation map class for communications
 class ArrayMap
 {
@@ -589,7 +585,7 @@ public:
   ArrayMap(const ArrayMapFunc& fn) {make(fn);}
 
   //! Actual constructor from a function object
-  /*! The semantics are   source_site = func(dest_site,dir) */
+  /*! The semantics are   source_site = func(dest_site,sign) */
   void make(const ArrayMapFunc& func);
 
   //! Function call operator for a shift
@@ -603,25 +599,25 @@ public:
    * This routine is very architecture dependent.
    */
   template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<FnArrayMap,
+  inline typename MakeReturn<UnaryNode<FnMap,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
   operator()(const QDPType<T1,C1> & l, int dir)
     {
-      typedef UnaryNode<FnArrayMap,
+      typedef UnaryNode<FnMap,
 	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnArrayMap(mapsa[dir].Offsets().slice()),
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(mapsa[dir].Offsets().slice()),
 	CreateLeaf<QDPType<T1,C1> >::make(l)));
     }
 
 
   template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<FnArrayMap,
+  inline typename MakeReturn<UnaryNode<FnMap,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
   operator()(const QDPExpr<T1,C1> & l, int dir)
     {
-      typedef UnaryNode<FnArrayMap,
+      typedef UnaryNode<FnMap,
 	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnArrayMap(mapsa[dir].Offsets().slice()),
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(mapsa[dir].Offsets().slice()),
 	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
 
@@ -639,163 +635,133 @@ private:
 };
 
 
-// This is the PETE version of an ArrayMap, namely return an expression
-struct FnArrayMap
-{
-  PETE_EMPTY_CONSTRUCTORS(FnArrayMap)
-
-  const int *soff;
-  FnArrayMap(const int *soffsets): soff(soffsets)
-    {
-//      fprintf(stderr,"FnArrayMap(): soff=0x%x\n",soff);
-    }
-  
-  template<class T>
-  inline typename UnaryReturn<T, FnArrayMap>::Type_t
-  operator()(const T &a) const
-  {
-    return (a);
-  }
-};
-
-
-// Specialization of ForEach deals with maps. 
-// This mechanism needs to be more general - this implementation is a prototype.
-template<class A, class CTag>
-struct ForEach<UnaryNode<FnArrayMap, A>, EvalLeaf1, CTag>
-{
-  typedef typename ForEach<A, EvalLeaf1, CTag>::Type_t TypeA_t;
-  typedef typename Combine1<TypeA_t, FnArrayMap, CTag>::Type_t Type_t;
-  inline static
-  Type_t apply(const UnaryNode<FnArrayMap, A> &expr, const EvalLeaf1 &f, 
-    const CTag &c) 
-  {
-    EvalLeaf1 ff(expr.operation().soff[f.val1()]);
-//  fprintf(stderr,"ForEach<Unary<FnArrayMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
-
-    return Combine1<TypeA_t, FnArrayMap, CTag>::
-      combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),
-              expr.operation(), c);
-  }
-};
-
-
 //-----------------------------------------------------------------------------
-// Forward declaration
-struct FnShift;
-
-//! Nearest neighbor shift function class
-class NearestNeighborMap
+//! Bi-directional version of general permutation map class for communications
+class BiDirectionalMap
 {
 public:
   //! Constructor - does nothing really
-  NearestNeighborMap() {}
+  BiDirectionalMap() {}
 
   //! Destructor
-  ~NearestNeighborMap() {}
+  ~BiDirectionalMap() {}
 
-  //! Actual constructor
-  void make();
+  //! Constructor from a function object
+  BiDirectionalMap(const MapFunc& fn) {make(fn);}
+
+  //! Actual constructor from a function object
+  /*! The semantics are   source_site = func(dest_site,sign) */
+  void make(const MapFunc& func);
 
   //! Function call operator for a shift
   /*! 
-   * shift(source,isign,dir)
-   * isign = parity of direction (+1 or -1)
-   * dir   = direction ([0,...,Nd-1])
+   * map(source,isign)
    *
-   * Implements:  dest(x) = s1(x+isign*dir)
-   * There are cpp macros called  FORWARD and BACKWARD that are +1,-1 resp.
-   * that are often used as arguments
+   * Implements:  dest(x) = source(map(x,isign))
    *
    * Shifts on a OLattice are non-trivial.
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
   template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<FnShift,
+  inline typename MakeReturn<UnaryNode<FnMap,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
-  operator()(const QDPType<T1,C1> & l, int isign, int dir)
+  operator()(const QDPType<T1,C1> & l, int isign)
     {
-      typedef UnaryNode<FnShift,
+      typedef UnaryNode<FnMap,
 	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimaps[(isign+1)>>1].Offsets().slice()),
 	CreateLeaf<QDPType<T1,C1> >::make(l)));
     }
 
 
   template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<FnShift,
+  inline typename MakeReturn<UnaryNode<FnMap,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
-  operator()(const QDPExpr<T1,C1> & l, int isign, int dir)
+  operator()(const QDPExpr<T1,C1> & l, int isign)
     {
-      typedef UnaryNode<FnShift,
+      typedef UnaryNode<FnMap,
 	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnShift(isign,dir),
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimaps[(isign+1)>>1].Offsets().slice()),
 	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
 
 
+private:
+  //! Hide copy constructor
+  BiDirectionalMap(const BiDirectionalMap&) {}
+
+  //! Hide operator=
+  void operator=(const BiDirectionalMap&) {}
+
+private:
+  multi1d<Map> bimaps;
+  
+};
+
+
+//-----------------------------------------------------------------------------
+//! Bi-directional version of general permutation map class for communications
+class ArrayBiDirectionalMap
+{
 public:
-  //! Accessor to offsets
-  const multi3d<int>& Offsets() const {return soffsets;}
+  //! Constructor - does nothing really
+  ArrayBiDirectionalMap() {}
+
+  //! Destructor
+  ~ArrayBiDirectionalMap() {}
+
+  //! Constructor from a function object
+  ArrayBiDirectionalMap(const ArrayMapFunc& fn) {make(fn);}
+
+  //! Actual constructor from a function object
+  /*! The semantics are   source_site = func(dest_site,sign) */
+  void make(const ArrayMapFunc& func);
+
+  //! Function call operator for a shift
+  /*! 
+   * map(source,isign,dir)
+   *
+   * Implements:  dest(x) = source(map(x,isign,dir))
+   *
+   * Shifts on a OLattice are non-trivial.
+   * Notice, there may be an ILattice underneath which requires shift args.
+   * This routine is very architecture dependent.
+   */
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int isign, int dir)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimapsa((isign+1)>>1,dir).Offsets().slice()),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
+    }
+
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l, int isign, int dir)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimapsa((isign+1)>>1,dir).Offsets().slice()),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+    }
+
 
 private:
   //! Hide copy constructor
-  NearestNeighborMap(const NearestNeighborMap&) {}
+  ArrayBiDirectionalMap(const ArrayBiDirectionalMap&) {}
+
+  //! Hide operator=
+  void operator=(const ArrayBiDirectionalMap&) {}
 
 private:
-  //! Offset table used for communications. 
-  /*! 
-   * The direction is in the sense of the Map or Shift functions from QDP.
-   * soffsets(direction,isign,position) 
-   */ 
-  multi3d<int> soffsets;
-};
-
-
-
-// This is the PETE version of a shift, namely return an expression
-//
-// This class looks like those in OperatorTags, but has a specific constructor
-// for a given direction
-// This mechanism needs to be more general - this implementation is a prototype.
-struct FnShift
-{
-  PETE_EMPTY_CONSTRUCTORS(FnShift)
-
-  const int *soff;
-  FnShift(int isign, int dir): soff(shift.Offsets().slice(dir,(isign+1)>>1))
-    {
-//      fprintf(stderr,"FnShift(%d,%d): soff=0x%x\n",isign,dir,soff);
-    }
+  multi2d<Map> bimapsa;
   
-  template<class T>
-  inline typename UnaryReturn<T, FnShift>::Type_t
-  operator()(const T &a) const
-  {
-    return (a);
-  }
-};
-
-
-// Specialization of ForEach deals with shifts. 
-// This mechanism needs to be more general - this implementation is a prototype.
-template<class A, class CTag>
-struct ForEach<UnaryNode<FnShift, A>, EvalLeaf1, CTag>
-{
-  typedef typename ForEach<A, EvalLeaf1, CTag>::Type_t TypeA_t;
-  typedef typename Combine1<TypeA_t, FnShift, CTag>::Type_t Type_t;
-  inline static
-  Type_t apply(const UnaryNode<FnShift, A> &expr, const EvalLeaf1 &f, 
-    const CTag &c) 
-  {
-    EvalLeaf1 ff(expr.operation().soff[f.val1()]);
-//    fprintf(stderr,"ForEach<Unary<FnShift>>: site = %d, new = %d\n",f.val1(),ff.val1());
-
-    return Combine1<TypeA_t, FnShift, CTag>::
-      combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),
-              expr.operation(), c);
-  }
 };
 
 
