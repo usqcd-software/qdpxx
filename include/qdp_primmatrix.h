@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.2 2003-06-09 19:34:07 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.3 2003-07-30 22:09:05 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -417,6 +417,19 @@ operator*(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 	d.elem(i,j) += l.elem(i,k) * r.elem(k,j);
     }
 
+  return d;
+}
+
+
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpDivide>::Type_t
+operator/(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpDivide>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = l.elem(i,j) / r.elem();
   return d;
 }
 

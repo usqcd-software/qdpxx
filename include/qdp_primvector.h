@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.3 2003-06-09 19:34:07 edwards Exp $
+// $Id: qdp_primvector.h,v 1.4 2003-07-30 22:09:05 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -94,6 +94,17 @@ public:
     {
       for(int i=0; i < N; ++i)
 	elem(i) *= rhs.elem();
+
+      return static_cast<CC&>(*this);
+    }
+
+  //! PVector /= PScalar
+  template<class T1>
+  inline
+  CC& operator/=(const PScalar<T1>& rhs) 
+    {
+      for(int i=0; i < N; ++i)
+	elem(i) /= rhs.elem();
 
       return static_cast<CC&>(*this);
     }
@@ -244,6 +255,16 @@ struct BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, OpSubtractAssign > {
   typedef C<T1,N> &Type_t;
 };
  
+template<class T1, class T2, int N, template<class,int> class C>
+struct BinaryReturn<PVector<T1,N,C>, PScalar<T2>, OpMultiplyAssign > {
+  typedef C<T1,N> &Type_t;
+};
+ 
+template<class T1, class T2, int N, template<class,int> class C>
+struct BinaryReturn<PVector<T1,N,C>, PScalar<T2>, OpDivideAssign > {
+  typedef C<T1,N> &Type_t;
+};
+ 
 
 
 
@@ -341,6 +362,18 @@ operator*(const PMatrix<T1,N,C1>& l, const PVector<T2,N,C2>& r)
       d.elem(i) += l.elem(i,j) * r.elem(j);
   }
 
+  return d;
+}
+
+
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PVector<T1,N,C>, PScalar<T2>, OpDivide>::Type_t
+operator/(const PVector<T1,N,C>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PVector<T1,N,C>, PScalar<T2>, OpDivide>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) / r.elem();
   return d;
 }
 
