@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.6.1
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.6.6
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -106,7 +106,7 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.6.1}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.6.6}
 }
 \author{Robert G. Edwards\\
 SciDAC Software Coordinating Committee}
@@ -245,6 +245,7 @@ name                       & description \\
 {\tt \tLatticeComplex            } & complex \\
 {\tt \tLatticeInt                } & integer \\
 {\tt \tLatticeColorMatrix              } & $N_c \times N_c$ complex matrix \\
+{\tt \tLatticeFermion            } & $N_s$ spin, $N_c$ color spinor \\
 {\tt \tLatticeHalfFermion        } & two-spin, $N_c$ color spinor \\
 {\tt \tLatticeDiracFermion       } & four-spin, $N_c$ color spinor \\
 {\tt \tLatticeStaggeredFermion   } & one-spin,  $N_c$ color spinor \\
@@ -257,7 +258,7 @@ name                       & description \\
 %
 Single site (lattice wide constant fields) versions of types exist
 without the {\tt Lattice} preprended.  All types and operations
-defined for QDP live within a \cpp{} namespace called QDP thus
+defined for QDP live within a \cpp{} namespace called \verb|QDP| thus
 ensuring no type conflicts with other namespaces.
 
 \subsection{Specific Types for Color and Precision}
@@ -694,7 +695,7 @@ The operator style provided by the API thus allows operations like
 the following:
 %
 \begin{verbatim}
-  Lattice A, B;
+  LatticeFermion A, B;
   LatticeColorMatrix U;
   B = U * A;
 \end{verbatim}
@@ -832,8 +833,9 @@ Thus
   c[s] = shift(b,sign,dir)
 \end{verbatim}
 %
-shifts an object along the direction specified by {\tt dir} and 
-{\tt sign} for all sites {\tt x} in destination subset {\tt s}.
+shifts an object along the direction specified by \verb|dir| and 
+\verb|sign| for all sites \verb|x| in destination subset \verb|s|.
+Here ${\tt sign} = \pm 1$ and ${\tt dir} = 0,\ldots, Nd-1$.
 
 
 \subsection{Creating and destroying lattice fields}
