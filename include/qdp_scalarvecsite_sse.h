@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.14 2003-09-03 04:06:50 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.15 2003-10-28 03:17:12 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -248,6 +248,7 @@ private:
 //--------------------------------------------------------------------------------------
 // Optimized version of  
 //    ILatticeFloat <- ILatticeFloat + ILatticeFloat
+template<>
 inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpAdd>::Type_t
 operator+(const ILatticeFloat& l, const ILatticeFloat& r)
 {
@@ -263,6 +264,7 @@ operator+(const ILatticeFloat& l, const ILatticeFloat& r)
 
 // Optimized version of  
 //    ILatticeFloat <- ILatticeFloat - ILatticeFloat
+template<>
 inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpSubtract>::Type_t
 operator-(const ILatticeFloat& l, const ILatticeFloat& r)
 {
@@ -278,6 +280,7 @@ operator-(const ILatticeFloat& l, const ILatticeFloat& r)
 
 // Optimized version of  
 //    ILatticeFloat <- ILatticeFloat * ILatticeFloat
+template<>
 inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpMultiply>::Type_t
 operator*(const ILatticeFloat& l, const ILatticeFloat& r)
 {
@@ -293,6 +296,7 @@ operator*(const ILatticeFloat& l, const ILatticeFloat& r)
 
 // Optimized version of  
 //    ILatticeFloat <- ILatticeFloat / ILatticeFloat
+template<>
 inline BinaryReturn<ILatticeFloat, ILatticeFloat, OpDivide>::Type_t
 operator/(const ILatticeFloat& l, const ILatticeFloat& r)
 {
@@ -311,6 +315,7 @@ operator/(const ILatticeFloat& l, const ILatticeFloat& r)
 //--------------------------------------------------------------------------------------
 // Optimized version of  
 //    RComplexFloat <- RComplexFloat + RComplexFloat
+template<>
 inline BinaryReturn<RComplexFloat, RComplexFloat, OpAdd>::Type_t
 operator+(const RComplexFloat& l, const RComplexFloat& r)
 {
@@ -327,6 +332,7 @@ operator+(const RComplexFloat& l, const RComplexFloat& r)
 
 // Optimized version of  
 //    RComplexFloat <- RComplexFloat - RComplexFloat
+template<>
 inline BinaryReturn<RComplexFloat, RComplexFloat, OpSubtract>::Type_t
 operator-(const RComplexFloat& l, const RComplexFloat& r)
 {
@@ -343,6 +349,7 @@ operator-(const RComplexFloat& l, const RComplexFloat& r)
 
 // Optimized version of  
 //    RComplexFloat <- RComplexFloat * RComplexFloat
+template<>
 inline BinaryReturn<RComplexFloat, RComplexFloat, OpMultiply>::Type_t
 operator*(const RComplexFloat& l, const RComplexFloat& r)
 {
@@ -363,6 +370,7 @@ operator*(const RComplexFloat& l, const RComplexFloat& r)
 
 // Optimized version of  
 //    RComplexFloat <- adj(RComplexFloat) * RComplexFloat
+template<>
 inline BinaryReturn<RComplexFloat, RComplexFloat, OpAdjMultiply>::Type_t
 adjMultiply(const RComplexFloat& l, const RComplexFloat& r)
 {
@@ -382,6 +390,7 @@ adjMultiply(const RComplexFloat& l, const RComplexFloat& r)
 }
 
 // Optimized  RComplex*adj(RComplex)
+template<>
 inline BinaryReturn<RComplexFloat, RComplexFloat, OpMultiplyAdj>::Type_t
 multiplyAdj(const RComplexFloat& l, const RComplexFloat& r)
 {
@@ -399,6 +408,7 @@ multiplyAdj(const RComplexFloat& l, const RComplexFloat& r)
 }
 
 // Optimized  adj(RComplex)*adj(RComplex)
+template<>
 inline BinaryReturn<RComplexFloat, RComplexFloat, OpAdjMultiplyAdj>::Type_t
 adjMultiplyAdj(const RComplexFloat& l, const RComplexFloat& r)
 {
@@ -431,10 +441,8 @@ adjMultiplyAdj(const RComplexFloat& l, const RComplexFloat& r)
 
 
 
-#if 1
-
 //--------------------------------------------------------------------------------------
-#if 0
+#if 1
 #define PREFETCH(addr)  __asm__ __volatile__("prefetcht0 %0"::"m"(*(addr)))
 #else
 #define PREFETCH(addr)
@@ -617,13 +625,16 @@ __asm__ __volatile__ (                    \
 
 // Optimized version of  
 //    PColorMatrix<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorMatrix<RComplexFloat,3>
-inline BinaryReturn<PColorMatrix<RComplexFloat,3>, 
-  PColorMatrix<RComplexFloat,3>, OpMultiply>::Type_t
-operator*(const PColorMatrix<RComplexFloat,3>& l, 
-	  const PColorMatrix<RComplexFloat,3>& r)
+template<>
+inline BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
+  PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiply>::Type_t
+operator*(const PMatrix<RComplexFloat,3,PColorMatrix>& l, 
+	  const PMatrix<RComplexFloat,3,PColorMatrix>& r)
 {
-  BinaryReturn<PColorMatrix<RComplexFloat,3>, 
-    PColorMatrix<RComplexFloat,3>, OpMultiply>::Type_t  d;
+//  cout << "M*M" << endl;
+
+  BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
+    PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiply>::Type_t  d;
 
   float *dd = (float*)&d;
   float *ll = (float*)&l;
@@ -637,7 +648,6 @@ operator*(const PColorMatrix<RComplexFloat,3>& l,
 }
 
 
-#if 1
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
@@ -652,11 +662,6 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
 	      const OrderedSubset& s);
-#endif
-
-
-#endif
-
 
 
 /*! @} */   // end of group optimizations
