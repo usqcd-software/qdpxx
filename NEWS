@@ -1,3 +1,8 @@
+03/21/2005 -- Robert Edwards
+
+	Version 1.12.0. New/improved generic and SSE opts for chiralProject.
+        Improved sumMulti and added a sumMulti(multi1d<>) variant.
+
 02/10/2005 -- Robert Edwards
 
 	Version 1.11.8. Bug fix again in qdp_multi1d.h . Now have moved 
