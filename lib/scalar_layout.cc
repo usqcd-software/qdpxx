@@ -1,4 +1,4 @@
-// $Id: scalar_layout.cc,v 1.3 2003-01-17 05:45:19 edwards Exp $
+// $Id: scalar_layout.cc,v 1.4 2003-01-20 16:19:42 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -132,6 +132,19 @@ namespace Layout
     return d;
   }
 
+  //! Initializer for all the layout defaults
+  void InitDefaults()
+  {
+    // Default set and subsets
+    InitDefaultSets();
+
+    // Default maps
+    InitDefaultMaps();
+
+    // Initialize RNG
+    RNG::InitDefaultRNG();
+  }
+
 };
 
 
@@ -197,14 +210,8 @@ namespace Layout
     fprintf(stderr,"vol=%d, nsubl=%d\n",_layout.vol,_layout.nsubl);
 #endif
 
-    // Default set and subsets
-    InitDefaultSets();
-
-    // Make the nearest neighbor shift function available
-    shift.make();
-
-    // Initialize RNG
-    RNG::InitDefaultRNG();
+    // Initialize various defaults
+    InitDefaults();
   }
 };
 
@@ -292,10 +299,8 @@ namespace Layout
     fprintf(stderr,"vol=%d, nsubl=%d\n",_layout.vol,_layout.nsubl);
 #endif
 
-    InitDefaultSets();
-
-    // Initialize RNG
-    RNG::InitDefaultRNG();
+    // Initialize various defaults
+    InitDefaults();
   }
 };
 
@@ -401,10 +406,8 @@ namespace Layout
     fprintf(stderr,"vol=%d, nsubl=%d\n",vol,nsubl);
 #endif
 
-    InitDefaultSets();
-
-    // Initialize RNG
-    RNG::InitDefaultRNG();
+    // Initialize various defaults
+    InitDefaults();
   }
 };
 

@@ -1,4 +1,4 @@
-// $Id: parscalar_layout.cc,v 1.2 2003-01-15 21:48:36 edwards Exp $
+// $Id: parscalar_layout.cc,v 1.3 2003-01-20 16:19:42 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -159,6 +159,24 @@ namespace Layout
 
     return d;
   }
+
+
+  //! Initializer for all the layout defaults
+  void InitDefaults()
+  {
+#if defined(DEBUG)
+    cerr << "Create default subsets\n";
+#endif
+    // Default set and subsets
+    InitDefaultSets();
+
+    // Default maps
+    InitDefaultMaps();
+
+    // Initialize RNG
+    RNG::InitDefaultRNG();
+  }
+
 };
 
 
@@ -309,14 +327,8 @@ namespace Layout
       cerr << "  subgrid volume = " << _layout.subgrid_vol << endl;
     }
 
-
-#if defined(DEBUG)
-    cerr << "Create default subsets\n";
-#endif
-    InitDefaultSets();
-
-    // Initialize RNG
-    RNG::InitDefaultRNG();
+    // Initialize various defaults
+    InitDefaults();
   }
 };
 
