@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.13 2003-07-06 19:08:00 edwards Exp $
+// $Id: t_io.cc,v 1.14 2003-07-16 21:32:40 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -59,8 +59,6 @@ int main(int argc, char **argv)
 
   cerr << "you entered :" << x << ":" << endl;
   
-  sleep(20);
-
   // Time to bolt
   QDP_finalize();
 
