@@ -12,9 +12,9 @@ __asm__ __volatile__ ("movlps %0, %%xmm0 \n\t" \
                       "movss %5, %%xmm4" \
                       : \
                       : \
-                      "m" ((bb)->c[0]), \
-                      "m" ((bb)->c[1]), \
-                      "m" ((bb)->c[2]), \
+                      "m" ((bb).elem(0)), \
+                      "m" ((bb).elem(1)), \
+                      "m" ((bb).elem(2)), \
                       "m" ((aa).elem(0,0).real()), \
                       "m" ((aa).elem(0,1).real()), \
                       "m" ((aa).elem(1,0).real())); \
@@ -77,7 +77,7 @@ __asm__ __volatile__ ("shufps $0x00, %%xmm7, %%xmm5 \n\t" \
 __asm__ __volatile__ ("movups %%xmm3, %0 \n\t" \
                       "shufps $0x44, %%xmm0, %%xmm1 \n\t" \
                       : \
-                      "=m" ((cc)->c[0])); \
+                      "=m" ((cc).elem(0))); \
 __asm__ __volatile__ ("movss %0, %%xmm7 \n\t" \
                       "movss %1, %%xmm5 \n\t" \
                       "shufps $0x00, %%xmm7, %%xmm5 \n\t" \
@@ -100,5 +100,5 @@ __asm__ __volatile__ ("movss %0, %%xmm7 \n\t" \
                       "m" ((aa).elem(2,2))); \
 __asm__ __volatile__ ("movlps %%xmm6, %0 \n\t" \
                       : \
-                      "=m" ((cc)->c[2])); \
+                      "=m" ((cc).elem(2))); \
 }

@@ -10,13 +10,13 @@ __asm__ __volatile__ ("movups %0, %%xmm0 \n\t" \
                       "addps %%xmm3, %%xmm1 \n\t" \
                       : \
                       : \
-                      "m" ((aa)->c[0]), \
-                      "m" ((aa)->c[2]), \
-                      "m" ((bb)->c[0]), \
-                      "m" ((bb)->c[2])); \
+                      "m" ((aa).elem(0)), \
+                      "m" ((aa).elem(2)), \
+                      "m" ((bb).elem(0)), \
+                      "m" ((bb).elem(2))); \
 __asm__ __volatile__ ("movups %%xmm0, %0 \n\t" \
                       "movlps %%xmm1, %1 \n\t" \
                       : \
-                      "=m" ((cc)->c[0]), \
-                      "=m" ((cc)->c[2])); \
+                      "=m" ((cc).elem(0)), \
+                      "=m" ((cc).elem(2))); \
 }
