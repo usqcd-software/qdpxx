@@ -81,6 +81,7 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
   QMP_bool_t log_top_declP;
 
   /* Check to see if the logical topology is declared or not */
+  /*
   log_top_declP = QMP_logical_topology_is_declared();
   
   if ( log_top_declP == QMP_FALSE ) { 
@@ -88,7 +89,7 @@ QMP_status_t QMP_route(void* buffer, QMP_u32_t count,
     fprintf(stderr, "It appears not to be\n");
     return QMP_TOPOLOGY_EXISTS;
   }
-
+  */
   /* Topology is declared */
   /* Get its details */
   ndim = QMP_get_logical_number_of_dimensions();
