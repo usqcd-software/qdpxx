@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.12 2002-11-04 04:43:16 edwards Exp $
+// $Id: foo.cc,v 1.13 2002-11-13 02:33:53 edwards Exp $
 //
 // Silly little internal test code
 
@@ -14,15 +14,7 @@
 int main()
 {
   // Setup the geometry
-#if ND == 2
-  const int foo[Nd] = {LX0,LX1};
-#elif ND == 3
-  const int foo[Nd] = {LX0,LX1,LX2};
-#elif ND == 4
-  const int foo[Nd] = {LX0,LX1,LX2,LX3};
-#else
-#error "unsupported number of dimensions"
-#endif
+  const int foo[] = {LX0,LX1,LX2,LX3};
   multi1d<int> nrow(Nd);
   nrow = foo;
   Layout::initialize(nrow);
