@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_dwdefs.h,v 1.11 2004-05-23 19:59:12 edwards Exp $
+// $Id: qdp_dwdefs.h,v 1.12 2004-05-23 20:43:05 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -100,17 +100,17 @@ typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL> >, 3>, 4> >
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL> >, 2>, 4> > LatticeDiracPropagator2;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL> >, 1>, 4> > LatticeDiracPropagator1;
 
-typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, 3>, Ns> > LatticeFermionF3;
-typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, 2>, Ns> > LatticeFermionF2;
-typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, 1>, Ns> > LatticeFermionF1;
+typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, 3>, Ns> > LatticeFermion3;
+typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, 2>, Ns> > LatticeFermion2;
+typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, 1>, Ns> > LatticeFermion1;
 
-typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, 3>, Ns>>1 > > LatticeHalfFermionF3;
-typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, 2>, Ns>>1 > > LatticeHalfFermionF2;
-typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, 1>, Ns>>1 > > LatticeHalfFermionF1;
+typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, 3>, Ns>>1 > > LatticeHalfFermion3;
+typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, 2>, Ns>>1 > > LatticeHalfFermion2;
+typedef OLattice< PSpinVector< PColorVector< RComplex< PScalar<REAL> >, 1>, Ns>>1 > > LatticeHalfFermion1;
 
-typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL> >, 3>, Ns> > LatticePropagatorF3;
-typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL> >, 2>, Ns> > LatticePropagatorF2;
-typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL> >, 1>, Ns> > LatticePropagatorF1;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL> >, 3>, Ns> > LatticePropagator3;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL> >, 2>, Ns> > LatticePropagator2;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< PScalar<REAL> >, 1>, Ns> > LatticePropagator1;
 
 typedef OLattice< PScalar< PColorMatrix< RComplex< PScalar<REAL> >, 3> > > LatticeColorMatrix3;
 typedef OLattice< PScalar< PColorMatrix< RComplex< PScalar<REAL> >, 2> > > LatticeColorMatrix2;
