@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.14 2003-08-27 18:46:49 edwards Exp $
+// $Id: t_xml.cc,v 1.15 2003-08-27 18:56:34 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 
   {
     // Test writing some more complex snippets
-    XMLFileWriter toxml("t_xml.input2");
+    XMLBufferWriter toxml;
     push(toxml,"complex_xml");
 
     write(toxml,"charStarThingy","whether tis nobler to suffer the slings and arrows");
@@ -131,12 +131,21 @@ int main(int argc, char **argv)
     random(d);
     write(toxml,"spinMatrixThingy",d);
 
+    // Warning: this is going into a buffer writer and can be big
     LatticeColorMatrix u;
     random(u);
     write(toxml,"latticeColorMatrixThingy",u);
     toxml.flush();
 
     pop(toxml);
+
+    // Play around - read this buffer back in
+    XMLReader fromxml;
+    fromxml.open(toxml);
+
+    // Now dump it out to disk
+    XMLFileWriter filexml("t_xml.input2");
+    filexml << toxml;
   }
 
   {
