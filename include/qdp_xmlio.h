@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.27 2004-05-05 14:37:04 bjoo Exp $
+// $Id: qdp_xmlio.h,v 1.28 2004-08-09 21:59:00 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -331,6 +331,12 @@ void write(XMLWriter& xml, const std::string& s, const multi1d<double>& output);
 template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<bool>& output);
 
+//! Write an expression
+template<class RHS, class C>
+void write(XMLWriter& xml, const std::string& s, const QDPExpr<RHS,C>& d)
+{
+  return write(xml, s, C(d));
+}
 
 //! XML OScalar output
 template<class T>
