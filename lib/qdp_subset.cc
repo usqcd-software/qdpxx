@@ -1,4 +1,4 @@
-// $Id: qdp_subset.cc,v 1.4 2003-07-31 01:23:40 edwards Exp $
+// $Id: qdp_subset.cc,v 1.5 2003-08-09 20:42:29 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -15,17 +15,41 @@ OrderedSet set_all;
 //! Default all subset
 OrderedSubset all;
 
+
+#if QDP_USE_CB2_LAYOUT == 1
+//! Default 2-checkerboard (red/black) set
+OrderedSet rb;
+#else
 //! Default 2-checkerboard (red/black) set
 UnorderedSet rb;
+#endif
 
+
+#if QDP_USE_CB32_LAYOUT == 1
+//! Default 2^{Nd+1}-checkerboard set. Useful for pure gauge updating.
+OrderedSet mcb;
+#else
 //! Default 2^{Nd+1}-checkerboard set. Useful for pure gauge updating.
 UnorderedSet mcb;
+#endif
 
+
+#if QDP_USE_CB2_LAYOUT == 1
+//! Even subset
+OrderedSubset even;
+#else
 //! Even subset
 UnorderedSubset even;
+#endif
 
+
+#if QDP_USE_CB2_LAYOUT == 1
+//! Odd subset
+OrderedSubset odd;
+#else
 //! Odd subset
 UnorderedSubset odd;
+#endif
 
 //! Function object used for constructing the all subset
 class SetAllFunc : public SetFunc

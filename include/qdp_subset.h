@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_subset.h,v 1.6 2003-08-04 19:06:48 edwards Exp $
+// $Id: qdp_subset.h,v 1.7 2003-08-09 20:42:29 edwards Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -259,17 +259,42 @@ public:
 //! Default all subset
 extern OrderedSubset all;
 
+
+#if QDP_USE_CB2_LAYOUT == 1
+//! Default 2-checkerboard (red/black) subset
+extern OrderedSet rb;
+#else
 //! Default 2-checkerboard (red/black) subset
 extern UnorderedSet rb;
+#endif
 
+
+#if QDP_USE_CB32_LAYOUT == 1
+//! Default 2^{Nd+1}-checkerboard subset. Useful for pure gauge updating.
+extern OrderedSet mcb;
+#else
 //! Default 2^{Nd+1}-checkerboard subset. Useful for pure gauge updating.
 extern UnorderedSet mcb;
+#endif
     
+
+#if QDP_USE_CB2_LAYOUT == 1
+//! Default even subset
+extern OrderedSubset even;
+#else
 //! Default even subset
 extern UnorderedSubset even;
+#endif
 
+
+
+#if QDP_USE_CB2_LAYOUT == 1
+//! Default odd subset
+extern OrderedSubset odd;
+#else
 //! Default odd subset
 extern UnorderedSubset odd;
+#endif
 
 /** @} */ // end of group subsetss
 
