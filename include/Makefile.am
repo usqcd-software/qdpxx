@@ -66,6 +66,7 @@ nobase_include_HEADERS = \
 		qdp_primspinmat.h \
 		qdp_primspinvec.h \
 		qdp_primvector.h \
+		qdp_iogauge.h \
 		qdp_util.h \
 		qdp_xmlio.h \
 		qdp_qdpexpr.h \
