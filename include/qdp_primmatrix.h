@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.3 2003-07-30 22:09:05 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.4 2003-07-31 19:29:09 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -462,7 +462,7 @@ conj(const PMatrix<T1,N,C>& l)
 
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
-      d.elem(i,j) = conj(l.elem(j,i));
+      d.elem(i,j) = conj(l.elem(i,j));
 
   return d;
 }
