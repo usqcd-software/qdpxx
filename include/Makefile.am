@@ -70,6 +70,8 @@ nobase_include_HEADERS = \
 		qdp_word.h \
 	        qdp_scalar_specific.h \
 	        qdp_parscalar_specific.h \
+	        qdp_scalarvec_specific.h \
+	        qdp_parscalarvec_specific.h \
                 qdp_filebuf.h \
                 $(PETE_HDRS) \
 		$(SSE_HDRS)
