@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.6 2002-11-04 04:39:30 edwards Exp $
+// $Id: io.cc,v 1.7 2003-04-10 18:35:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -15,8 +15,14 @@ TextReader::TextReader(const char* p) {open(p);}
 
 void TextReader::open(const char* p) 
 {
-  if (Layout::primaryNode()) 
-    f.open(p,std::ios_base::in);
+  if (Layout::primaryNode())
+  {
+    f.open(p,std::ifstream::in);
+
+    cerr << "test open again" << endl;
+    if (! f.is_open())
+      QDP_error_exit("failed to open file %s",p);
+  }
 
   iop=true;
 }
@@ -45,7 +51,7 @@ TextWriter::TextWriter(const char* p) {open(p);}
 void TextWriter::open(const char* p)
 {
   if (Layout::primaryNode()) 
-    f.open(p,std::ios_base::out);
+    f.open(p,std::ofstream::out);
 
   iop=true;
 }
@@ -187,15 +193,6 @@ void BinaryReader::close()
 }
 
 
-// Read End-Of-Record mark
-BinaryReader& BinaryReader::eor()
-{
-  if (Layout::primaryNode()) 
-    fgetc(f); 
-  return *this;
-}
-
-
 bool BinaryReader::is_open() {return iop;}
 
 BinaryReader::~BinaryReader() {close();}
@@ -231,16 +228,6 @@ void BinaryWriter::close()
 
     iop = false;
   }
-}
-
-
-// Write End-Of-Record mark
-BinaryWriter& BinaryWriter::eor()
-{
-  if (Layout::primaryNode()) 
-    fprintf(f,"\005"); 
-
-  return *this;
 }
 
 
