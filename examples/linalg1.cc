@@ -1,4 +1,4 @@
-// $Id: linalg1.cc,v 1.14 2003-08-15 18:26:39 edwards Exp $
+// $Id: linalg1.cc,v 1.15 2003-08-16 02:42:07 edwards Exp $
 
 #include <stdlib.h>
 #include <sys/time.h>
@@ -15,24 +15,12 @@ double QDP_M_eq_M_times_M(LatticeColorMatrix& dest,
 			  const LatticeColorMatrix& s2,
 			  int cnt)
 {
-  struct timeval t1,t2;
-  gettimeofday(&t1, NULL);
-//  clock_t t1 = clock();
+  clock_t t1 = clock();
   for (; cnt-- > 0; )
     dest = s1 * s2;
-//  clock_t t2 = clock();
-  gettimeofday(&t2, NULL);
+  clock_t t2 = clock();
 
-  double tt = (t2.tv_sec - t1.tv_sec) * 1000000.0 + (t2.tv_usec - t1.tv_usec);
-
-//  fprintf(stdout,"t1= %f  t2= %f  t2-t1= %f\n", 
-//      (t1.tv_sec*1000000.0+t1.tv_usec),
-//      (t2.tv_sec*1000000.0+t2.tv_usec),
-//      tt);
-//  return (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC);
-
-  return tt / 1000000.0;
-
+  return (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC);
 //  return 2;
 }
 
