@@ -462,7 +462,7 @@ AC_CONFIG_SUBDIRS(other_libs/xpath_reader)
 # Set up the doxygen file
 # Substitute the right directories
 #
-AC_CONFIG_FILES(docs/qdpdoc)
+# AC_CONFIG_FILES(docs/qdpdoc)
 
 #
 # Generate makefiles
@@ -473,7 +473,7 @@ AC_CONFIG_FILES(lib/Makefile)
 AC_CONFIG_FILES(other_libs/Makefile)
 AC_CONFIG_FILES(include/Makefile)
 #AC_CONFIG_FILES(include/qdp_config.h)
-AC_CONFIG_FILES(docs/Makefile)
+#AC_CONFIG_FILES(docs/Makefile)
 AC_CONFIG_FILES(examples/Makefile)
 #
 # Finish

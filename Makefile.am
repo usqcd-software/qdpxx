@@ -11,34 +11,16 @@ SUBDIRS = lib examples include other_libs
 bin_SCRIPTS=qdp++-config
 
 #
-# User explicitly has to make docs -- you may not want them
-#
-doc:
-	cd docs ; $(MAKE)
-
-doc-install: 
-	cd docs ; $(MAKE) install
-
-doc-uninstall:
-	cd docs ; $(MAKE) uninstall
-
-doc-clean:
-	cd docs ; $(MAKE) clean
-
-doc-distclean:
-	cd docs ; $(MAKE) distclean
-
-#
 # All the sources that are somehow arch-specific
 # All the headers get into the dist by default
 # 
-ARCH_SOURCES = lib/qdp_scalar_specific.cc lib/qdp_parscalar_specific.cc \
-               lib/qdp_scalarsite_specific.cc \
-               lib/qdp_scalarvec_specific.cc lib/qdp_parscalarvec_specific.cc \
-               lib/qdp_scalarvecsite_specific.cc
+#ARCH_SOURCES = lib/qdp_scalar_specific.cc lib/qdp_parscalar_specific.cc \
+#               lib/qdp_scalarsite_specific.cc \
+#               lib/qdp_scalarvec_specific.cc lib/qdp_parscalarvec_specific.cc \
+#               lib/qdp_scalarvecsite_specific.cc
 
 #
 # Some things that we want in the distribution tarball 
 #
-EXTRA_DIST  = $(ARCH_SOURCES)
-EXTRA_DIST += PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools docs
+#EXTRA_DIST  = $(ARCH_SOURCES)
+EXTRA_DIST = PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools docs
