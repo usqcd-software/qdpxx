@@ -1,3 +1,6 @@
+#ifndef QDP_CONFIG_H
+#define QDP_CONFIG_H
+
 /* include/qdp_config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Parallel-scalar architecture */
@@ -14,6 +17,41 @@
 
 /* Double precision */
 #undef BASE_PRECISION
+
+/* Name of package */
+#ifndef PACKAGE
+#undef PACKAGE
+#endif
+
+/* Define to the address where bug reports for this package should be sent. */
+#ifndef PACKAGE_BUGREPORT
+#undef PACKAGE_BUGREPORT
+#endif
+
+/* Define to the full name of this package. */
+#ifndef PACKAGE_NAME
+#undef PACKAGE_NAME
+#endif
+
+/* Define to the full name and version of this package. */
+#ifndef PACKAGE_STRING
+#undef PACKAGE_STRING
+#endif
+
+/* Define to the one symbol short name of this package. */
+#ifndef PACKAGE_TARNAME
+#undef PACKAGE_TARNAME
+#endif
+
+/* Define to the version of this package. */
+#ifndef PACKAGE_VERSION
+#undef PACKAGE_VERSION
+#endif
+
+/* Version number of package */
+#ifndef VERSION
+#undef VERSION
+#endif
 
 /* Number of color components */
 #undef QDP_NC
@@ -38,3 +76,8 @@
 
 /* Enable SSE2 instructions */
 #undef QDP_USE_SSE2
+
+/* Define if using the dmalloc debugging malloc package */
+#undef WITH_DMALLOC
+
+#endif
