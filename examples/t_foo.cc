@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.9 2003-01-24 19:42:21 edwards Exp $
+// $Id: t_foo.cc,v 1.10 2003-01-31 20:48:45 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code

@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.6 2003-01-14 04:43:29 edwards Exp $
+ *  $Id: t_spectrum.cc,v 1.7 2003-01-31 20:48:45 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
