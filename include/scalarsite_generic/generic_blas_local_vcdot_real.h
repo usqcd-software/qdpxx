@@ -1,4 +1,4 @@
-// $Id: generic_blas_local_vcdot_real.h,v 1.1 2004-04-01 12:56:39 bjoo Exp $
+// $Id: generic_blas_local_vcdot_real.h,v 1.2 2004-04-04 19:18:44 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar, CDOT  routine
@@ -33,7 +33,7 @@ void local_vcdot_real(DOUBLE *Out, REAL *V1, REAL *V2, int n_3vec)
   register double v2_2r;
   register double v2_2i;
 
-  register unsigned long counter=0;
+  register int counter=0;
   register unsigned long vecptr1=0;
   register unsigned long vecptr2=0;
   result= 0;
