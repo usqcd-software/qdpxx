@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.22 2003-01-23 03:58:35 edwards Exp $
+// $Id: scalar_specific.h,v 1.23 2003-03-17 20:35:57 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -794,7 +794,7 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
     int i = Layout::linearSiteIndex(site);
     nml.get() << "   Site =  " << site << "   = ";
     nml << d.elem(i);
-    nml.get() << "," << endl;
+    nml.get() << " ," << endl;
   }
 
 //  int site = Layout::vol()-1;

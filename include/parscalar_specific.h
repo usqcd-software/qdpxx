@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.19 2003-02-13 23:48:53 flemingg Exp $
+// $Id: parscalar_specific.h,v 1.20 2003-03-17 20:35:57 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1081,7 +1081,7 @@ NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
       {
 	nml.get() << "   Site =  " << xsite1 << "   = ";
 	nml << data[xsite2];
-	nml.get() << "," << endl;
+	nml.get() << " ," << endl;
       }
   }
 

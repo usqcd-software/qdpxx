@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.10 2002-11-23 02:29:40 edwards Exp $
+// $Id: io.h,v 1.11 2003-03-17 20:35:57 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -180,7 +180,7 @@ inline
 NmlWriter& write(NmlWriter& nml, const string& s, const T& d)
 {
   if (Layout::primaryNode()) 
-    nml.get() << " " << s << " = " << d << ",\n";
+    nml.get() << " " << s << " = " << d << " ,\n";
   return nml;
 }
 
@@ -219,7 +219,7 @@ NmlWriter& write(NmlWriter& nml, const string& s, const multi1d<T>& s1)
   {
     std::ostringstream ost;
     if (Layout::primaryNode()) 
-      ost << s << "[" << i << "]";
+      ost << s << "[ " << i << " ]";
     write(nml, ost.str(), s1[i]);
   }
   return nml;
@@ -235,7 +235,7 @@ NmlWriter& write(NmlWriter& nml, const string& s, const multi2d<T>& s1)
     {
       std::ostringstream ost;
       if (Layout::primaryNode()) 
-	ost << s << "[" << i << "][" << j << "]";
+	ost << s << "[ " << i << " ][ " << j << " ]";
       write(nml, ost.str(), s1[i][j]);
     }
   return nml;

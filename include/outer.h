@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.20 2003-02-28 03:43:53 edwards Exp $
+// $Id: outer.h,v 1.21 2003-03-17 20:35:57 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -148,7 +148,7 @@ NmlWriter& operator<<(NmlWriter& nml, const OScalar<T>& d)
   if (Layout::primaryNode())
   {
     nml << d.elem();
-    nml.get() << "," << endl;
+    nml.get() << " ," << endl;
   }
   return nml;
 }
