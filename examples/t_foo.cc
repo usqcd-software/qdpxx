@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.24 2003-05-10 23:31:08 edwards Exp $
+// $Id: t_foo.cc,v 1.25 2003-05-12 06:09:07 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -429,37 +429,14 @@ int main(int argc, char *argv[])
    write(xml,"ff",ff);
 #endif
 
-   string blech;
-   blech = "my number";
-   cerr << "test writing string into meta" << endl;
-   xml << blech;
-//   write(xml,"foo",blech);
-   cerr << "done with foo" << endl;
-
    pop(xml);
 
    cout << "Here is the metadata" << endl << xml.str() << endl;
 
    XMLDataWriter file_xml("t_foo.xml_output");
-//   push(file_xml,"fred");
-//   write(file_xml,"yy",yy);
-//   pop(file_xml);
-
-//   file_xml << xml.str();
-
-   string ffo;
-   ffo = "hello friend";
-   cerr << "start of string: " << ffo << endl;
-//   file_xml << ffo;
-//   write(file_xml,"foo",ffo);
-//   push(file_xml,"ladies_and_gents");
-   file_xml.write(ffo);
-//   pop(file_xml);
-//   file_xml.close();
+   file_xml.writeXML(xml.printRoot());
  }
 #endif
-
- return 0;
 
 #if 1
  {
@@ -471,6 +448,8 @@ int main(int argc, char *argv[])
    float yy;
    read(xml,"/fred/yy",yy);
    Write(nml,yy);
+
+   cerr << "Found reading metadata xml that  yy = " << yy << endl;
 
 //   Complex zz;
 //   read(xml,"zz",zz);
@@ -484,10 +463,12 @@ int main(int argc, char *argv[])
 
    XMLMetaWriter file_xml;
    string file_string = "Here is the file xml";
+//   int file_string = -1;
    write(file_xml,"file_string",file_string);
 
    XMLMetaWriter rec_xml;
    string rec_string = "Here is the record xml";
+//   int rec_string = -3;
    write(rec_xml,"rec_string",rec_string);
 
    gaussian(a);
@@ -523,11 +504,11 @@ int main(int argc, char *argv[])
 
    cerr << "open serialreader" << endl;
    QDPSerialReader from(file_xml,"fred.dime");
-   cerr << "read from" << endl;
+   cerr << "read from file" << endl;
    from.read(rec_xml,a);
-   cerr << "end read" << endl;
+   cerr << "end read 1" << endl;
    from.read(rec_xml,b);
-   cerr << "end read" << endl;
+   cerr << "end read 2" << endl;
 
    nml << "Read a and b from QDPSerialReader";
    Write(nml,a);
