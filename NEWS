@@ -1,5 +1,9 @@
 07/28/2004 -- Robert Edwards
 
+	Version 1.9.2. Added switch to qdp++-config to tell about QMP_HOME.
+
+07/28/2004 -- Robert Edwards
+
 	Version 1.9.1. Changed RNG generation so that a lattice wide
         fill of rngs will also throw away an additional rng. This
         dirty trick helps to avoid correlations induced from generating
