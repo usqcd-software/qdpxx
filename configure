@@ -2604,7 +2604,7 @@ fi
 if test ${ac_profile} -eq 1; then
 
 cat >>confdefs.h <<_ACEOF
-#define QDP_PRINT_EXPR_TREE ${ac_profile}
+#define QDP_USE_PROFILING ${ac_profile}
 _ACEOF
 
    { echo "$as_me:$LINENO: Enable profiling" >&5
