@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.6.6
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.7.2
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -108,10 +108,12 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.6.6}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.7.2}
 }
 \author{Robert G. Edwards\\
 SciDAC Software Coordinating Committee}
+
+\date{Feb. 28, 2004}
 
 \maketitle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -497,7 +499,7 @@ specifying even, odd, and global subsets of the lattice. The \verb|rb|
 set can be dereferenced to produce the \verb|even| and \verb|odd| subsets:
 %
 \begin{verbatim}
-Subset even, odd, all,  rb[0], rb[1]
+Subset even, odd, all,  rb[0], rb[1],  mcb[0], ..., mcb[1 << (Nd+1)]
 \end{verbatim}
 %
 It also creates the nearest-neighbor shifts for each coordinate
@@ -918,6 +920,16 @@ be called more than once, and sites may be assigned to more than one
 subset.  Thus, for example an even site may also be assigned to a time
 slice subset and one of the subsets in a 32-level checkerboard scheme.
 A subset definition remains valid until is destructor is called.
+
+The layout creation routine \verb|Layout::create()| defined in
+Section~\ref{sec:init_qdp} generates predefined lattice subsets for
+specifying even, odd, and global subsets of the lattice. The \verb|rb|
+set can be dereferenced to produce the \verb|even| and \verb|odd| subsets:
+%
+\begin{verbatim}
+Subset even, odd, all,  rb[0], rb[1],  mcb[0], ..., mcb[1 << (Nd+1)]
+\end{verbatim}
+%
 
 \paragraph{Defining a set}
 
@@ -1377,13 +1389,13 @@ TextWriter out("foo");
 Real a = 1.2;
 Complex b = cmplx(Real(-1.1), Real(2.2));
 out << a << endl << b << endl;
-out.close();
+close(out);
 
 TextReader in("foo");
 Real a;
 Complex b;
 in >> a >> b;
-in.close();
+close(in);
 \end{verbatim}
 \end{small}
 %
@@ -1944,14 +1956,14 @@ Real a;
 LatticeColorMatrix b
 write(out, a);  // can write this way
 out << b;       // or can write this way - have choice of style
-out.close();
+close(out);
 
 BinaryReader in("foo");
 Real a;
 LatticeColorMatrix b;
 read(in, a);
 in >> b;
-in.close();
+close(in);
 \end{verbatim}
 \end{small}
 
@@ -1976,14 +1988,14 @@ BinaryWriter out("foo");
 multi1d<Real> a(17);
 write(out, a);     // will write an int=a.size() along with a.size() Real elements
 write(out, a, 4);  // only writes 4  Real  elements 
-out.close();
+close(out);
 
 BinaryReader in("foo");
 multi1d<Real> a;
 read(in, a);  // reads an int=a.size(), a is resized, and reads a.size() elements
 read(in, a, 4);  // reads precisely 4 elements, no resizing.
 in >> b;
-in.close();
+close(in);
 \end{verbatim}
 \end{small}
 
@@ -2007,19 +2019,24 @@ The binary file format has been designed with flexibility in mind. For
 archiving purposes, the allowable file organization may be further
 restricted.  Here we described the unrestricted format.
 
-Binary QDP files are composed of a series of one or more application
-records.  A single application record encodes a single QDP field or an
-array of QDP fields of the same data type.  Physics metadata, managed
-at the convenience of the applications programmer, is associated with
-the file itself and with each application record as well. Above the
-API the QDP file is viewed as follows:
+Two classes of file volumes are supported: single-file volumes and
+multiple-file volumes.  In the latter case lattice data is scattered
+among several files for distributed reading and writing.  In the
+former case all the lattice data is contained in a single file.
+
+\paragraph{Single file format}
+
+Single binary QDP files are composed of a series of one or more
+application records.  A single application record encodes a single QDP
+field or an array of QDP fields of the same data type.  Physics
+metadata, managed at the convenience of the applications programmer,
+is associated with the file itself and with each application record as
+well. Above the API the QDP file is viewed as follows:
 %
 \begin{itemize}
   \item File physics metadata
-  \item Record 1 physics metadata
-  \item Record 1 data
-  \item Record 2 physics metadata
-  \item Record 2 data
+  \item Record 1 physics metadata and data
+  \item Record 2 physics metadata and data
   \item etc.
 \end{itemize}
 %
@@ -2049,39 +2066,50 @@ record consists of five logical records.  Within QIO the file is
 viewed as a series of logical records as follows:
 %
 \begin{itemize}
-  \item File QIO metadata
-  \item File physics metadata
-  \item Record 1 QIO metadata
-  \item Record 1 physics metadata
-  \item Record 1 BinX description
+  \item Private file QIO metadata
+  \item User file physics metadata
+  \item Record 1 private QIO metadata
+  \item Record 1 user physics metadata
   \item Record 1 binary data
-  \item Record 1 checksum
-  \item Record 2 QIO metadata
-  \item Record 2 physics metadata
-  \item Record 2 BinX description
+  \item Record 1 private checksum
+  \item Record 2 private QIO metadata
+  \item Record 2 user physics metadata
   \item Record 2 binary data
-  \item Record 2 checksum
+  \item Record 2 private checksum
   \item etc.
 \end{itemize}
 %
+The site order of the binary data is lexicographic according to the
+site coordinate $r_i$ with the first coordinate $r_0$ varying most
+rapidly.
 
-We have adopted the DIME standard (a generalization of the MIME
-standard) for packaging the logical records.  File system limitations
-may require splitting data into multiple physical files.  The
-management of physical files is handled internally and is hidden from
-the applications programmer.
+A new format called LIME (Lattice-QCD Interchange Message Encapsulation)
+is used for packaging the logical records. A feature of this format is
+the maximum record size is quite - $2^{64}-1$ bytes. However,
+file system limitations may require splitting a single file into 
+multiple physical files. No provision is provided for such splitting.
+It is expected that in time file systems will evolve to allow much
+larger file sizes. In the interim, facilities like \verb|cpio| and
+\verb|tar| can be used for file splitting.
 
-\subsubsection{Multidump Files}
+\paragraph{Multifile format}
 
 The API provides for rapid temporary writing of data to scratch disks
-and reading from scratch disks.  In this case it is assumed that the
-files are not intended for longer term storage.  Thus the file format
-in this case is implementation-dependent and not standardized.  A
-specific choice of format is described in the Appendix.
+and reading from scratch disks.  This same format may be used for
+staging files for access by many compute nodes.  In this case it is
+assumed that the files are not intended for longer term storage.  Thus
+the file format in this case is implementation-dependent and not
+standardized.  A specific choice of format is described in the
+Appendix.
 
-\subsubsection{Metadata Standard and Manipulation}
+\subsubsection{ASCII Metadata Files}
 
-Metadata is required by a number of components in the I/O system. 
+The API also provides for reading and writing global values in a
+standard metadata format from or to a file or a stream buffer.
+Startup parameters for controlling a simulation could be read in this
+way.  Results of a computation could be written in this way for post
+processing and analysis.
+
 The XML I/O facilities described in Section~\ref{sec:xmlio} are used
 for manipulating the metadata.
 
@@ -2101,124 +2129,122 @@ either mode.  However, the request may be overridden if the system
 permits only one mode.  Upon writing, we allow appending to an
 existing file.
 
-\paragraph{QDPRecordFileReader base class member functions and global functions}
+\paragraph{QDPFileWriter class member functions and global functions}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Open           & \verb|QDPRecordFileReader::QDPRecordFileReader(XMLReader& file_xml, |\\
-                 & \qquad\verb|const string& path)|\\
-                 & \verb|void QDPRecordFileReader::open(XMLReader& file_xml, |\\
-                 & \qquad\verb|const string& path)|\\
-  \hline
-  Close          & \verb|QDPRecordFileReader::~QDPRecordFileReader()|\\
-                 & \verb|void QDPRecordFileReader::close()|\\
-  \hline
-  Open?          & \verb|bool QDPRecordFileReader::is_open()| \\
-  \hline
-  EOF?           & \verb|bool QDPRecordFileReader::eof()| \\
-  \hline
-  Errors?        & \verb|bool QDPRecordFileReader::bad()| \\
-  \hline
-  Read a \verb|T| & \verb|void read(QDPRecordFileReader&, XMLReader& rec_xml, T&)| \\
-  Array of \verb|T| & \verb|void vread(QDPRecordFileReader&, XMLReader& rec_xml, multi1d<T>&)| \\
-  \hline
-  Only xml & \verb|void peek(QDPRecordFileReader&, XMLReader& rec_xml)| \\
-  \hline
-  Next record & \verb|void skip(QDPRecordFileReader&)| \\
-  \hline
- \end{tabular}
-\end{flushleft}
-%
-Base class for the various derived classes. Here, \verb|vread| expects
-the sites to be the slowest varying index and the array indices
-(muli1d) inside of them. \verb|peek| returns only the metadata and
-repositions back to the beginning of the record.  \verb|skip| skips to
-the next logical record - it may read the data and discard
-it. \verb|bad| states if any fatal errors have occurred. There are no
-user functions that position within a logical record.
+  Open           & \verb|QDPFileWriter::QDPFileWriter(|\\
+                 & \qquad\verb|const XMLBufferWriter& file_xml, const string& path,)|\\
+                 & \qquad\verb|QDP_volfmt_t volfmt, QDPIO_serialparallel_t serpar,|\\
+		 & \qquad\verb|QDP_filemode_t mode)|\\
 
-\paragraph{QDP record reader implementation classes}
-
-\begin{flushleft}
-  \begin{tabular}{|l|l|}
+                 & \verb|void QDPFileWriter::open(const XMLBufferWriter& file_xml, |\\
+                 & \qquad\verb|const string& path,|\\
+                 & \qquad\verb|QDP_volfmt_t volfmt, QDPIO_serialparallel_t serpar,|\\
+		 & \qquad\verb|QDP_filemode_t mode)|\\
   \hline
-  Single file read serially & \verb|QDPSingleFileSerialReader| \\
-  Single file read in parallel & \verb|QDPSingleFileParallelReader| \\
+  Close          & \verb|QDPFileWriter::~QDPFileWriter()|\\
+                 & \verb|void QDPFileWriter::close()|\\
   \hline
-  Multi-dump file read serially & \verb|QDPMultiDumpSerialReader| \\
-  Multi-dump file read in parallel & \verb|QDPMultiDumpParallelReader| \\
+  Open?          & \verb|bool QDPFileWriter::is_open()| \\
   \hline
- \end{tabular}
-\end{flushleft}
-
-{\bf Implementation note: QDP++ currently has only QDPSerialFileReader in place
-of QDPSingleFileSerialReader}
-
-\paragraph{QDPRecordFileWriter base class member functions and global functions}
-
-
-\begin{flushleft}
-  \begin{tabular}{|l|l|}
+  Errors?        & \verb|bool QDPFileReader::bad()| \\
   \hline
-  Open           & \verb|QDPRecordFileWriter::QDPRecordFileWriter(|\\
-                 & \qquad\verb|const XMLBufferWriter& file_xml, const string& path)|\\
-                 & \verb|void QDPRecordFileWriter::open(const XMLBufferWriter& file_xml, |\\
-                 & \qquad\verb|const string& path)|\\
-  \hline
-  Close          & \verb|QDPRecordFileWriter::~QDPRecordFileWriter()|\\
-                 & \verb|void QDPRecordFileWriter::close()|\\
-  \hline
-  Open?          & \verb|bool QDPRecordFileWriter::is_open()| \\
-  \hline
-  Errors?        & \verb|bool QDPRecordFileReader::bad()| \\
-  \hline
-  Write a \verb|T| & \verb|void write(QDPRecordFileWriter&, XMLBufferWriter& rec_xml, const T&)| \\
-  Array of \verb|T| & \verb|void vwrite(QDPRecordFileWriter&, XMLBufferWriter& rec_xml, |\\
+  Write a \verb|T| & \verb|void write(QDPFileWriter&, XMLBufferWriter& rec_xml, const T&)| \\
+  Array of \verb|T| & \verb|void write(QDPFileWriter&, XMLBufferWriter& rec_xml, |\\
                  & \qquad\verb|const multi1d<T>&)| \\
   \hline
  \end{tabular}
 \end{flushleft}
 %
-Base class for the various derived classes. Here, \verb|vwrites|
+Concrete class for all QDPIO write operations. Here, \verb|write|
 writes the sites as the slowest varying index and the array indices
 (muli1d) inside of them. \verb|bad| states if any fatal errors have
-occurred.
+occurred. The \verb|volfmt| argument is one of
+%
+\begin{verbatim}
+  QDIO_SINGLEFILE, QDPIO_MULTIFILE
+\end{verbatim}
+%
+The \verb|serpar| argument is one of
+%
+\begin{verbatim}
+  QDPIO_SERIAL, QDPIO_PARALLEL
+\end{verbatim}
+%
+and the \verb|mode| argument is one of
+%
+\begin{verbatim}
+  QDPIO_CREATE, QDPIO_OPEN, QDPIO_APPEND
+\end{verbatim}
+%
+where \verb|QDPIO_CREATE| fails if the file already exists,
+\verb|QDPIO_OPEN| overwrites the file if it already exists and creates
+it if not, and \verb|QDPIO_APPEND| fails if the file does not exist and
+otherwise appends at the end of the file.  When appending, the file
+metadata argument is ignored, since it should already exist.
 
-\paragraph{QDP record writer implementation classes}
+
+\paragraph{QDPFileReader class member functions and global functions}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Single file written serially & \verb|QDPSingleFileSerialWriter| \\
-  Single file written in parallel & \verb|QDPSingleFileParallelWriter| \\
+  Open           & \verb|QDPFileReader::QDPFileReader(XMLReader& file_xml, |\\
+                 & \qquad\verb|const string& path, QDP_serialparallel_t serpar)|\\
+                 & \verb|void QDPFileReader::open(XMLReader& file_xml, |\\
+                 & \qquad\verb|const string& path, QDP_serialparallel_t serpar)|\\
   \hline
-  Multi-dump file written serially & \verb|QDPMultiDumpSerialWriter| \\
-  Multi-dump file written in parallel & \verb|QDPMultiDumpParallelWriter| \\
+  Close          & \verb|QDPFileReader::~QDPFileReader()|\\
+                 & \verb|void QDPFileReader::close()|\\
+  \hline
+  Open?          & \verb|bool QDPFileReader::is_open()| \\
+  \hline
+  EOF?           & \verb|bool QDPFileReader::eof()| \\
+  \hline
+  Errors?        & \verb|bool QDPFileReader::bad()| \\
+  \hline
+  Read a \verb|T| & \verb|void read(QDPFileReader&, XMLReader& rec_xml, T&)| \\
+  Array of \verb|T| & \verb|void read(QDPFileReader&, XMLReader& rec_xml, multi1d<T>&)| \\
+  \hline
+  Only xml & \verb|void peek(QDPFileReader&, XMLReader& rec_xml)| \\
+  \hline
+  Next record & \verb|void skip(QDPFileReader&)| \\
   \hline
  \end{tabular}
 \end{flushleft}
-
-{\bf Implementation note: QDP++ currently has only QDPSerialFileWriter in place
-of QDPSingleFileSerialWriter}
-
 %
+Concrete class for all QDPIO read operations.  Here,
+\verb|read(\ldots,multi1d<T>)| expects in the binary file that the
+sites are the slowest varying index and the array indices (muli1d)
+inside of them. The \verb|QDP_volfmt_t volfmt| argument is not needed -
+a file in either \verb|QDPIO_SINGLEFILE| or \verb|QDPIO_MULTIFILE|
+format will be automatically detected and read appropriately.
+\verb|peek| returns only the metadata and repositions
+back to the beginning of the record.  \verb|skip| skips to the next
+logical record - it may read the data and discard it. \verb|bad|
+states if any fatal errors have occurred. There are no user functions
+that position within a logical record.
+
+
 Here is an example of how to use the record I/O facility.
 %
 \begin{small}
 \begin{verbatim}
 XMLBufferWriter file_xml;
-QDPSingleFileSerialWriter out(file_xml, "foo");
+QDPFileWriter out(file_xml, "foo", QDPIO_SINGLEFILE, 
+                  QDPIO_SERIAL, QDPIO_OPEN);
 XMLBufferWriter rec_xml;
 LatticeColorMatrix a;
-out.write(rec_xml, a);
+write(out, rec_xml, a);
 write(out, rec_xml, a);  // for fun, write field twice
-out.close();
+close(out);
 
-QDPSingleFileSerialReader in(file_xml, "foo");
-read(in, rec_xml, a);  // have choice of style
-in.skip();
-in.close();
+QDPFileReader in(file_xml, "foo", QDPIO_SERIAL);
+read(in, rec_xml, a);
+skip(in);
+close(in);
 \end{verbatim}
 \end{small}
 
