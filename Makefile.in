@@ -138,11 +138,13 @@ ARCH_SOURCES = lib/scalar_specific.cc \
                lib/parscalar_specific.cc
 
 
-EXTRA_DIST = $(ARCH_SOURCES) PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools  examples/BuildingBlocks docs
+EXTRA_DIST = $(ARCH_SOURCES) PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools  \
+            examples/BuildingBlocks examples/propagator docs
+
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_CLEAN_FILES =
+CONFIG_CLEAN_FILES = examples/BuildingBlocks/Makefile
 DIST_SOURCES =
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
@@ -174,6 +176,8 @@ $(srcdir)/configure:  $(srcdir)/configure.ac $(ACLOCAL_M4) $(CONFIGURE_DEPENDENC
 
 $(ACLOCAL_M4):  configure.ac acinclude.m4
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
+examples/BuildingBlocks/Makefile: $(top_builddir)/config.status $(top_srcdir)/examples/BuildingBlocks/Makefile.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 uninstall-info-am:
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -310,7 +314,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/PETE $(distdir)/config $(distdir)/docs $(distdir)/examples $(distdir)/include $(distdir)/lib
+	$(mkinstalldirs) $(distdir)/PETE $(distdir)/config $(distdir)/docs $(distdir)/examples $(distdir)/examples/BuildingBlocks $(distdir)/include $(distdir)/lib
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
