@@ -36,7 +36,7 @@ HDRS = qdp_defs.h qdp_forward.h qdp_globalfuncs.h qdp_inner.h qdp_io.h qdp_layou
 ## for arch's then a conditional for each one has to be added.
 
 GENERIC_SRCS = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc qdp_layout.cc qdp_io.cc qdp_iogauge.cc \
-               qdp_byteorder.cc qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc
+               qdp_byteorder.cc qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc   qdp_filebuf.cc
 
 SCALAR_SRCS = qdp_scalar_init.cc qdp_scalar_layout.cc qdp_scalar_specific.cc \
               ../include/qdp_scalar_specific.h
