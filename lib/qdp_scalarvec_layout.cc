@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvec_layout.cc,v 1.8 2003-08-31 20:59:16 edwards Exp $
+// $Id: qdp_scalarvec_layout.cc,v 1.9 2003-09-03 01:25:16 edwards Exp $
 
 /*! @file
  * @brief Scalarvec layout routines
@@ -151,15 +151,13 @@ namespace Layout
     fprintf(stderr,"vol=%d\n",_layout.vol);
 #endif
 
-
-#if defined(QDP_USE_FIXED_MEMORY)
-    if (_layout.vol > QDP_MAX_MEMORY)
-      QDP_error_exit("The CPP var QDP_MAX_MEMORY is not large enough");
-#endif
+    // This implementation requires there be a multiple of INNER_LEN sites 
+    if (_layout.vol % INNER_LEN != 0)
+      QDP_error_exit("Layout::create() - this scalarvec implementation requires there be a multiple of %d sites", INNER_LEN);
 
 
     // Sanity check - check the layout functions make sense
-    for(int i=0; i < sitesOnNode(); ++i) 
+    for(int i=0; i < vol(); ++i) 
     {
       int ii = Layout::linearSiteIndex(Layout::siteCoords(Layout::nodeNumber(),i));
       if (i != ii)
