@@ -1,5 +1,10 @@
 05/23/2003 -- Robert Edwards
 
+	Version 1.3.3 turned on QDP namespace. Moved bfread/bfwrite off to their
+        own namespace.
+
+05/23/2003 -- Robert Edwards
+
 	Version 1.3.2 changed read_t/write_t to read/write in qdp_qdpio.h . Global
         function variants wrap over member functions.
 
