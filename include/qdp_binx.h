@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_binx.h,v 1.2 2004-03-25 15:13:35 mcneile Exp $
+// $Id: qdp_binx.h,v 1.3 2004-03-26 12:26:36 mcneile Exp $
 
 /*! @file
  * @brief IO support
@@ -11,8 +11,6 @@
 #include <fstream>
 #include <sstream>
 
-//#include"qdp_xmlio.h"
-//#include"qdp_io.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -62,13 +60,11 @@ public:
 protected:
 
   // Get the internal ostream
-  std::ostream& getOstream() {return f;}
+  //  std::ostream& getOstream() {return f;}
 
 private:
-  QDPUtil::RemoteOutputFileStream f;
   XMLFileWriter *toxml;
   BinaryWriter *tobinary ;
-// ofstream f;
 };
 
 
