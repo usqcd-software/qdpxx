@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.9 2003-01-20 16:22:51 edwards Exp $
+// $Id: scalar_specific.cc,v 1.10 2003-01-23 15:16:00 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -17,7 +17,7 @@ void Set::make(const SetFunc& func)
 {
   int nsubset_indices = func.numSubsets();
 
-#if 1
+#if 0
   fprintf(stderr,"Set a subset: nsubset = %d\n",nsubset_indices);
 #endif
 
@@ -113,7 +113,7 @@ void Set::make(const SetFunc& func)
 
     sub[cb].make(start, end, indexrep, &(sitetables[cb]), cb);
 
-#if 1
+#if 0
     fprintf(stderr,"Subset(%d): indexrep=%d start=%d end=%d\n",cb,indexrep,start,end);
 #endif
   }
