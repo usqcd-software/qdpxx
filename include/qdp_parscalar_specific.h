@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.10 2003-07-06 19:10:27 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.11 2003-07-17 01:46:03 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -15,19 +15,6 @@ QDP_BEGIN_NAMESPACE(QDP);
 // Layout stuff specific to a parallel architecture
 namespace Layout
 {
-  //! Returns the logical node coordinates for this node
-  const multi1d<int>& nodeCoord();
-
-  //! Returns the logical size of this machine
-  const multi1d<int>& logicalSize();
-
-  //! Returns the logical node coordinates for the corresponding lattice coordinate
-  /*! The API requires this function to be here */
-  multi1d<int> nodeCoord(const multi1d<int>& coord);
-
-  //! Subgrid (grid on each node) lattice size
-  const multi1d<int>& subgridLattSize();
-
   //! coord[mu]  <- mu  : fill with lattice coord in mu direction
   LatticeInteger latticeCoordinate(int mu);
 }
