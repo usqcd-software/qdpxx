@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.3 2003-08-20 21:04:33 edwards Exp $
+// $Id: qdp_primseed.h,v 1.4 2003-08-23 02:26:33 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -386,6 +386,20 @@ seedToFloat(const PSeed<T>& s1)
   return d;
 }
 
+
+//! dest [some type] = source [some type]
+/*! Portable (internal) way of returning a single site */
+template<class T>
+inline typename UnaryReturn<PSeed<T>, FnGetSite>::Type_t
+getSite(const PSeed<T>& s1, int innersite)
+{ 
+  typename UnaryReturn<PSeed<T>, FnGetSite>::Type_t  d;
+
+  for(int i=0; i < 4; ++i)
+    d.elem(i) = getSite(s1.elem(i), innersite);
+
+  return d;
+}
 
 
 // Functions
