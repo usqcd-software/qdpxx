@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: foo.cc,v 1.10 2002-10-28 03:08:44 edwards Exp $
+// $Id: foo.cc,v 1.11 2002-11-02 04:05:23 edwards Exp $
 //
 // Silly little internal test code
 
@@ -14,7 +14,7 @@
 int main()
 {
   // Setup the geometry
-  const int foo[Nd] = {LX0,LX1};
+  const int foo[Nd] = {LX0,LX1,LX2,LX3};
   multi1d<int> nrow(Nd);
   nrow = foo;
   Layout::initialize(nrow);
@@ -36,8 +36,8 @@ int main()
   LatticeReal bar = 17.0;
   random(bar);
 
-  for(int i=0; i < Layout::subgridVol(); ++i)
-    cerr << "bar[" << i << "]=" << bar.elem(i) << endl;
+//  for(int i=0; i < Layout::subgridVol(); ++i)
+//    cerr << "bar[" << i << "]=" << bar.elem(i) << endl;
 
   cerr << "write\n";
   Write(nml,bar);
@@ -197,7 +197,7 @@ int main()
 
 #endif
 
-#if 1
+#if 0
   if (Nd == 4)
   {
     // Read a nersc file
@@ -205,6 +205,19 @@ int main()
     readArchiv(u, "archiv.cfg");
     nml << "Here is the nersc archive u field";
     Write(nml,u);
+  }
+#endif
+
+
+#if 1
+  if (Nd == 4)
+  {
+    // Read a szin quark prop file
+    LatticePropagator qprop;
+    cerr << "Read a szin qprop" << endl;
+    readSzinQprop(qprop, "propagator_0");
+    nml << "Here is the szin quark prop";
+    Write(nml,qprop);
   }
 #endif
 

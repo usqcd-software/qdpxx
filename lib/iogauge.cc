@@ -1,7 +1,10 @@
-// $Id: iogauge.cc,v 1.3 2002-10-28 03:08:44 edwards Exp $
+// $Id: iogauge.cc,v 1.4 2002-11-02 04:05:22 edwards Exp $
 //
 // QDP data parallel interface
-//
+/*!
+ * @file
+ * @brief  Various gauge readers/writers and propagator readers/writers.
+ */
 
 #include "qdp.h"
 #include "proto.h"
@@ -178,6 +181,70 @@ void readArchiv(multi1d<LatticeGauge>& u, char file[])
         }
 
   printf("Computed checksum = %x\n", chksum);
+
+  cfg_in.close();
+}
+
+
+//-----------------------------------------------------------------------
+// Read a SZIN propagator file
+//! Read a SZIN propagator file. This is a simple memory dump reader.
+void readSzinQprop(LatticePropagator& q, char file[])
+{
+  BinaryReader cfg_in(file);
+
+  //
+  // Read propagator field
+  //
+  multi1d<int> lattsize_cb = Layout::lattSize();
+  ColorMatrix  siteColorField;
+  Propagator   siteField;
+  float prop[Ns][Ns][Nc][Nc][2];
+  size_t prop_size = Ns*Ns*Nc*Nc*2;
+  float kappa;
+
+  lattsize_cb[0] /= 2;  // checkerboard in the x-direction in szin
+
+  // Read kappa
+  if (bfread((void *)&kappa,sizeof(float),1,cfg_in.get()) != 1)
+    SZ_ERROR("Error kappa from reading propagator");
+
+  // Read prop
+  for(int cb=0; cb < 2; ++cb)
+  {
+    for(int sitecb=0; sitecb < Layout::vol()/2; ++sitecb)
+    {
+      multi1d<int> coord = crtesn(sitecb, lattsize_cb);
+
+      // construct the checkerboard offset
+      int sum = 0;
+      for(int m=1; m<Nd; m++)
+	sum += coord[m];
+
+      // The true lattice x-coord
+      coord[0] = 2*coord[0] + ((sum + cb) & 1);
+
+      /* Read an fe variable */
+      if (bfread((void *) &(prop[0][0][0][0][0]),sizeof(float),prop_size,cfg_in.get()) != prop_size)
+	SZ_ERROR("Error reading propagator");
+
+      /* Copy into the big array */
+      for(int s2=0; s2<Ns; s2++)    /* spin */
+	for(int s1=0; s1<Ns; s1++)    /* spin */
+	  for(int c2=0; c2<Nc; c2++)    /* color */
+	    for(int c1=0; c1<Nc; c1++)    /* color */
+	    {
+	      Real re = prop[s2][s1][c2][c1][0];
+	      Real im = prop[s2][s1][c2][c1][1];
+	      Complex siteComp = cmplx(re,im);
+	      
+	      pokeColor(siteColorField,siteComp,c1,c2);  // insert complex into colormatrix
+	      pokeSpin(siteField,siteColorField,s1,s2);  // insert color mat into prop
+	    }
+
+      pokeSite(q, siteField, coord);
+    }
+  }
 
   cfg_in.close();
 }
