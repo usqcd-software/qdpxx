@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 0.5
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 0.6
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -32,9 +32,10 @@
 
 \newcommand{\tLatticeReal}{LatticeReal}
 \newcommand{\tLatticeComplex}{LatticeComplex}
-\newcommand{\tLatticeInt}{LatticeInteger}
+\newcommand{\tLatticeInt}{LatticeInt}
 \newcommand{\tLatticeBoolean}{LatticeBoolean}
 \newcommand{\tLatticeColorMatrix}{LatticeColorMatrix}
+\newcommand{\tLatticeSpinMatrix}{LatticeSpinMatrix}
 \newcommand{\tLatticeHalfFermion}{LatticeHalfFermion}
 \newcommand{\tLatticeDiracFermion}{LatticeDiracFermion}
 \newcommand{\tLatticeStaggeredFermion}{LatticeStaggeredFermion}
@@ -59,6 +60,7 @@
 \newcommand{\tSpinVector}{SpinVector}
 \newcommand{\tColorVector}{ColorVector}
 \newcommand{\tLatticeColorVector}{LatticeColorVector}
+\newcommand{\tLatticeSpinVector}{LatticeSpinVector}
 
 % Fixed precision
 \newcommand{\tRealD}{RealD}
@@ -84,13 +86,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Patterns for prototypes
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\protoUnary}{{\it Type }{\it func}{\tt (const }{\it Type}{\tt \& a)}}
-\newcommand{\protoUnaryShift}{{\it Type }{\tt shift(const }{\it Type}{\tt \& a, int sign, int dir)}}
-\newcommand{\protoUnaryQual}[1]{{\it Type }{\tt #1}{\tt (const }{\it Type}{\tt \& a)}}
-\newcommand{\protoBinaryQual}[1]{{\it Type }{\tt #1}{\tt (const }{\it Type1}{\tt \& a,}{\tt const }{\it Type2}{\tt \& b)}}
-\newcommand{\protoBBinaryQual}[1]{{\it Type }{\tt #1}{\tt (const }{\it Type}{\tt \& a,}{\tt const }{\it Type}{\tt \& b)}}
-\newcommand{\protoBoolBinaryQual}[1]{{\it Type2 }{\tt #1}{\tt (const }{\it Type}{\tt \& a,}{\tt const }{\it Type1}{\tt \& b)}}
-\newcommand{\protoAssignmentQual}[1]{{\it Type }{\tt #1}{\tt (const }{\it Type}{\tt \& r,}{\tt const }{\it Type}{\tt \& a)}}
+\newcommand{\protoUnary}{{\tt {\it Type func}(const {\it Type}\& a)}}
+\newcommand{\protoUnaryShift}{{\tt {\it Type} shift(const {\it Type}\& a, int sign, int dir)}}
+\newcommand{\protoUnaryQual}[1]{{\tt {\it Type} #1(const {\it Type}\& a)}}
+\newcommand{\protoBinaryQual}[1]{{\tt {\it Type} #1(const {\it Type1}\& a, const {\it Type2}\& b)}}
+\newcommand{\protoBBinaryQual}[1]{{\tt {\it Type} #1(const {\it Type}\& a, const {\it Type}\& b)}}
+\newcommand{\protoBoolBinaryQual}[1]{{\tt {\it Type2} #1(const {\it Type}\& a, const {\it Type1}\& b)}}
+\newcommand{\protoAssignmentQual}[1]{{\tt {\it Type} #1(const {\it Type}\& r, const {\it Type}\& a)}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,7 +106,7 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 0.5}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 0.6}
 }
 \author{SciDAC Software Coordinating Committee}
 
@@ -178,9 +180,6 @@ product structure as shown below:
 \verb|Nc| is the dimension of the color vector space\\
 \noindent
 \verb|Ns| is the dimension of the spin vector space\\
-\noindent
-{\em Implementation note}: these compile-time parameters are defined 
-in  {\tt qdp++/params.h}
 
 Gauge fields can left-multiply fermions via color matrix times color
 vector but is diagonal in spin space (spin scalar times spin vector).
@@ -225,8 +224,6 @@ that spin is used as the second index (second level of type
 composition) and color is the third. The ordering of types can be
 changed. From looking at the types one can immediately decide what
 operations among objects makes sense.
-
-{\em Implementation note}: these typedefs are defined in  {\tt qdp++/defs.h}
 
 
 \subsection{Generic Names}
@@ -309,8 +306,6 @@ the use of $N_c$ in the construction of user defined types is simply a
 convenience for the user, and as such a user can use any integer that is
 reasonable. The API merely requires that the types used in operations are conforming.
 
-{\em Implementation note}: these typedefs are defined in  {\tt qdp++/defs.h}
-
 However, in standard coding practice it is assumed that a user keeps
 one of the precision, color, and spin options in force throughout the
 compilation.  So as a rule all functions in the interface take
@@ -353,73 +348,61 @@ The QDP functions are grouped into the following categories:
 \end{enumerate}
 
 \subsection{Entry and exit from QDP}
+\label{sec:init_qdp}
 
-Before QDP can be started it may be necessary to initialize the
-physical layer of the message passing system, read layout parameters
-from standard input, and broadcast them to the nodes.  Otherwise the
-layout parameters have to be set from the environment or fixed in the
-compilation.  Once all the nodes know the layout parameters, the
-following call is possible.
-
-{\bf [The startup procedure needs more thought - CD and RGE]}
-
-\paragraph{Entry to QDP}
+QDP must be initialized before any other routine can be used.
+The initialization is broken into two steps -- initializing
+the underlying hardware and initializing the layout.
+%
+\paragraph{Initialization of QDP}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Prototype      & \verb|void Layout::initialize()|\\
+  Prototype      & \verb|void QDP_initialize(int *argc, char ***argv)|\\
     \hline
-  Purpose        & Starts QDP with layout parameters in \verb|Layout|. \\
+  Purpose        & Places the hardware into a known state. \\
 \hline
-  Example  & \verb|Layout::initialize();| \\
+  Example  & \verb|QDP_initialize();| \\
    \hline
  \end{tabular}
 \end{flushleft}
 %
-The routine \verb|Layout::initialize()| is called once by all nodes and
-starts QDP operations.  It calls the layout routine with the
-parameters set in the namespace \verb|Layout| specifying the layout. 
-It initializes message
-passing in QDP and generates predefined lattice subsets for specifying
-even, odd, and global subsets of the lattice:
+This routine will be responsible for initializing any hardware
+like the physical layer of the message passing system. 
+For compatibility with QMP, the addresses of the main programs \verb|argc|
+and \verb|argv| must be passed. They may be modified.
 
-\begin{verbatim}
-Subset even, odd, all
-\end{verbatim}
-%
-It also creates the nearest-neighbor shifts for each coordinate
-direction.
 
-\paragraph{Exit from QDP}
+\paragraph{Shutdown of QDP}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Prototype      & \verb|void Layout::finalize()|\\
+  Prototype      & \verb|void QDP_finalize()|\\
     \hline
-  Purpose        & Exits QDP. \\
+  Purpose        & Shutdown QDP. \\
 \hline
-  Example  & \verb|Layout::finalize();| \\
+  Example  & \verb|QDP_finalize();| \\
    \hline
  \end{tabular}
 \end{flushleft}
 %
-This call provides for an orderly shutdown.  It is called by all
-nodes. It concludes all communications, does housekeeping, if needed
-and performs a barrier wait for all nodes.  Then it returns control to
-the calling process.
+This call provides for an orderly shutdown of QDP.  It is called by
+all nodes. It concludes all communications, does housekeeping, if
+needed and performs a barrier wait for all nodes.  Then it returns
+control to the calling process.
 
 \paragraph{Panic exit from QDP}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Prototype      & \verb|void Layout::abort(int status)|\\
+  Prototype      & \verb|void QDP_abort(int status)|\\
     \hline
   Purpose        & Panic shutdown of the process. \\
 \hline
-  Example  & \verb|Layout::abort(1);| \\
+  Example  & \verb|QDP_abort(1);| \\
    \hline
  \end{tabular}
 \end{flushleft}
@@ -427,17 +410,65 @@ the calling process.
 This routine may be called by one or more nodes.  It sends kill
 signals to all nodes and exits with exit status \verb|status|.
 
-\subsection{Layout utilities}
+\paragraph{Entry into QDP}
 
-The layout routine determines which nodes get which lattice sites and
-in what linear order the sites are stored.  It has entry points that
-allow a user to access single site data extracted from a QDP lattice
-field.  For code written entirely with other QDP calls, this routine
-and its global entry points may be ignored by the user, with the
-exception of the useful routine \verb|coordinate|.  Since this
-procedure is called from \verb|Layout::initialize|, the user is not
-required to call it separately.  However, if a user removes data from
-a QDP lattice object (see \verb|expose| or \verb|extract|) and
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Prototype      & \verb|void Layout::create()|\\
+    \hline
+  Purpose        & Starts QDP with layout parameters in \verb|Layout|. \\
+\hline
+  Example  & \verb|QDP_initialize();| \\
+   \hline
+ \end{tabular}
+\end{flushleft}
+%
+The routine \verb|Layout::create()| is called once by all nodes and
+starts QDP operations. It calls the layout routine with the
+parameters set in the namespace \verb|Layout| specifying the layout.
+The layout is discussed in Section~\ref{sec:layout}.
+
+This step is separated from the \verb|QDP_initialize()| above so
+layout parameters can be read and broadcasted to the nodes.  Otherwise
+the layout parameters have to be set from the environment or fixed in
+the compilation.
+
+
+\paragraph{Exit from QDP}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Prototype      & \verb|void Layout::destroy()|\\
+    \hline
+  Purpose        & Exits QDP. \\
+\hline
+  Example  & \verb|Layout::destroy();| \\
+   \hline
+ \end{tabular}
+\end{flushleft}
+%
+This call provides for an orderly exit from QDP.  It is called by all
+nodes. It concludes all communications, does housekeeping, if needed
+and performs a barrier wait for all nodes. The communication layer is
+not finalized.
+
+\subsection{Layout utilities}
+\label{sec:layout}
+
+Routines for constructing the layout are collected in the namespace
+\verb|Layout|. The {\it set}ter and {\it get}ter routines provide
+a way to set parameters like the lattice size.
+
+The layout creation function determines which nodes get which lattice
+sites and in what linear order the sites are stored. The \verb|Layout|
+namespace has entry points that allow a user to inquire about the
+lattice layout to facilitate accessing single site data from a QDP
+lattice field. For code written entirely with other QDP calls, these
+routines may be ignored by the user, with the exception of the useful
+routine \verb|latticeCoordinates|.  However, if a user removes data
+from a QDP lattice object (see \verb|expose| or \verb|extract|) and
 wishes to manipulate the data on a site-by-site basis, the global
 entry points provided here are needed to locate the site data.
 
@@ -450,10 +481,29 @@ layouts.  As long as the custom layout procedure provides the entry
 points and functionality described here, compatibility with the
 remainder of the QDP library is assured.
 
-\paragraph{Defining the layout}
+\subsubsection{QDP setup}
 
-There are set/accessor functions to specify the layout.
-Generically, the accessors have the form:
+\paragraph{Layout creation}
+\mbox{}
+
+\noindent
+The layout creation routine \verb|Layout::create()| defined in
+Section~\ref{sec:init_qdp} generates predefined lattice subsets for
+specifying even, odd, and global subsets of the lattice:
+%
+\begin{verbatim}
+Subset even, odd, all
+\end{verbatim}
+%
+It also creates the nearest-neighbor shifts for each coordinate
+direction.
+
+\paragraph{Defining the layout}
+\mbox{}
+
+\noindent
+There are set/accessor functions to specify the lattice geometry used
+in the layout. Generically, the accessors have the form:
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
@@ -467,9 +517,9 @@ Generically, the accessors have the form:
  \end{tabular}
 \end{flushleft}
 
-The type of input information needed in the data structure \verb|QDP_Layout| is
+The type of input information needed by the layout is as follows:
 \begin{enumerate}
-\item	Number of dimensions $N_d$. Must be the compile time dimensions
+\item	Number of dimensions $N_d$. Must be the compile time dimensions.
 \item	Lattice size  (e.g., $L_0$, $L_1$, ..., $L_{N_d-1}$)
 \item	SMP flag
 %\item	Number of nodes and processors per node
@@ -510,7 +560,7 @@ These parameters are accessed and set with the following functions:
   \hline
   Generic      & \verb|void Layout::setNumProc(int N)|\\
   \hline
-  Purpose      & In a multi-threaded implementation, use N processors. \\
+  Purpose      & In a multi-threaded implementation, use \verb|N| processors. \\
   \hline
   Default      & Default value is 1 - single thread of execution. \\
   \hline
@@ -519,8 +569,33 @@ These parameters are accessed and set with the following functions:
  \end{tabular}
 \end{flushleft}
 
+\subsubsection{Generic layout information}
         
-The following global entry points are provided by the \verb|Layout| class:
+The following global entry points are provided in the \verb|Layout| namespace.
+They provide generic user information.
+
+\paragraph{Returning the spacetime coordinates}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Prototype      & {\tt \tLatticeInt} \verb|latticeCoordinate(int i)|\\
+  \hline
+  Purpose        & The {\tt i}th spacetime coordinate. \\
+  \hline
+  Example        & {\tt \tLatticeInt{} coord = latticeCoordinate(2);} \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+%
+The call \verb|latticeCoordinate(i)| returns an integer lattice field with a
+value on each site equal to the integer value of the \verb|i|th
+space-time coordinate on that site.
+
+\subsubsection{Entry points specific to the layout}
+        
+The additional global entry points are provided in the \verb|Layout| namespace.
+They reveal some information specific to the implementation.
 
 \paragraph{Node number of site}
 
@@ -582,29 +657,13 @@ The following global entry points are provided by the \verb|Layout| class:
 The linear index returned by \verb|Layout::linearIndex()| 
 ranges from 0 to \verb|Layout:sitesOnNode()|$ - 1$.
 
-\paragraph{Defining the spacetime coordinate}
-
-\begin{flushleft}
-  \begin{tabular}{|l|l|}
-  \hline
-  Prototype      & {\tt \tLatticeInt}\verb|latticeCoordinates(int i)|\\
-  \hline
-  Purpose        & The {\tt i}th spacetime coordinate. \\
-  \hline
-  Example        & \verb|LatticeInt coord = latticeCoordinates(2);| \\
-  \hline
- \end{tabular}
-\end{flushleft}
-%
-The call \verb|latticeCoordinates(i)| creates an integer lattice field with a
-value on each site equal to the integer value of the \verb|i|th
-space-time coordinate on that site and returns a pointer to the field.
+\newpage
 
 \subsection{Data Parallel Functions}
 
 Data parallel functions are described in detail in
 Sec.~\ref{sec:supported}.  
-In the cpp{} API, there are overloaded functions that can be applied
+In the \cpp{} API, there are overloaded functions that can be applied
 to site or lattice wide objects. Arbitrarily complicated expressions
 can be built from these functions.  The design of the API describes
 that all operations are to be performed site-wise. The only connection
@@ -1006,7 +1065,7 @@ object frees memory.
 
 For a variety of reasons it may be necessary to remove data from QDP
 structures.  Conversely, it may be necessary to reinsert data into QDP
-structures.  For example, a highly optimized lineare solver may
+structures.  For example, a highly optimized linear solver may
 operate outside QDP.  The operands would need to be extracted from QDP
 fields and the eventual solution reinserted.  It may also be useful to
 suspend QDP communications temporarily to gain separate access to the
@@ -1014,61 +1073,64 @@ communications layer.  For this purpose function calls are provided to
 put the QDP implementation and/or QDP objects into a known state,
 extract values, and reinsert them.
 
-% \paragraph{Exposing QDP data}
-% 
-% \begin{flushleft}
-% \begin{tabular}{|l|l|}
-%   \hline
-%   Prototype    & {\tt {\it QLA}\ttdash{\it Type *} QDP}\ttdash{\tt expose}\ttdash\itt{\tt (}{\it Type *}{\tt src)}\\
-% \hline
-% Purpose        & Deliver data values from field {\tt src}. \\
-% \hline
-%   \itt     & \allNumericTypes \\
-% \hline
-% Example  & \verb|r = QDP_expose_G(a);| \\
-% \hline
-%   \end{tabular}
-% \end{flushleft}
-% %
-% This function grants direct access to the data values contained in the
-% QDP field {\tt src}.  The return value is a pointer to an array of QLA
-% data {\tt dest} of type {\it T}.  The order of the data is given by
-% \verb|QDP_linear_index|.  No QDP operations except \verb|QDP_insert| are
-% permitted on exposed data until \verb|QDP_reset| is called. (See
-% below.)
-% 
-% \paragraph{Returning control of QDP data}
-% 
-% \begin{flushleft}
-% \begin{tabular}{|l|l|}
-%   \hline
-%   Prototype      & {\tt void QDP}\ttdash{\tt reset}\ttdash\itt{\tt (}{\it Type *}{\tt field)}\\
-% \hline
-% Purpose        & Returns control of data values to QDP. \\
-% \hline
-%   \itt     & \allNumericTypes \\
-% \hline
-% Example  & \verb|QDP_restore_G(r);| \\
-% \hline
-%   \end{tabular}
-% \end{flushleft}
-% %
-% This call signals to QDP that the user is ready to resume QDP
-% operations with the data in the specified field.
+\paragraph{Exposing QDP data}
+
+\begin{flushleft}
+\begin{tabular}{|l|l|}
+\hline
+Prototype    & {\tt {\it QLA\_Type *} QDP\_expose}({\tt {\it Type}\& src})\\
+\hline
+Purpose        & Deliver data values from field {\tt src}. \\
+\hline
+\itt     & \allNumericTypes \\
+\hline
+Example  & \verb|r = QDP_expose(a);| \\
+\hline
+\end{tabular}
+\end{flushleft}
+%
+This function grants direct access to the data values contained in the
+QDP field {\tt src}.  The return value is a pointer to an array of QLA
+data {\tt dest} of type {\it QLA\_Type}.  The order of the data is given by
+\verb|Layout::linearIndex|.  No QDP operations except \verb|QDP_insert| are
+permitted on exposed data until \verb|QDP_reset| is called. (See
+below.)
+
+\paragraph{Returning control of QDP data}
+
+\begin{flushleft}
+\begin{tabular}{|l|l|}
+\hline
+Prototype      & \verb|void QDP_reset|({\tt {\it Type}\& field})\\
+\hline
+Purpose        & Returns control of data values to QDP. \\
+\hline
+\itt     & \allNumericTypes \\
+\hline
+Example  & \verb|QDP_reset(r);| \\
+\hline
+\end{tabular}
+\end{flushleft}
+%
+This call signals to QDP that the user is ready to resume QDP
+operations with the data in the specified field.
 
 \paragraph{Extracting QDP data}
 
 \begin{flushleft}
 \begin{tabular}{|l|l|}
   \hline
-  Prototype      & {\tt void QDP}\ttdash{\tt extract(multi1d<}{\it QLA}\ttdash{\it Type}{\tt >\& dest}, {\it Type}{\tt \& src, Subset s}\\
+  Prototype    & \verb|void QDP_extract|({\tt multi1d<{\it QLA\_Type}>\& dest}, 
+                   {\tt const {\it Type}\& src}, \\
+               & \qquad{\tt const Subset\& s})\\
 \hline
 Purpose        & Copy data values from field {\tt src} to array {\tt dest}. \\
 \hline
   \itt     & \allNumericTypes \\
 \hline
 Example  & \verb|LatticeReal a;| \\
-         & \verb|multi1d<Real> r = QDP::extract(a,even);| \\
+         & \verb|multi1d<Real> r(Layout::sitesOnNode());| \\
+         & \verb|QDP_extract(r,a,even);| \\
 \hline
   \end{tabular}
 \end{flushleft}
@@ -1076,6 +1138,7 @@ Example  & \verb|LatticeReal a;| \\
 The user must allocate the space of size \verb|Layout::sitesOnNode()| for the 
 destination array before calling this function, regardless of the size of
 the subset.
+
 This function copies the data values contained in the QDP field {\tt
 src} to the destination field.  Only values belonging to the specified
 subset are copied.  Any values in the destination array not associated
@@ -1087,8 +1150,10 @@ involving the source field may proceed without disruption.
 
 \begin{flushleft}
 \begin{tabular}{|l|l|}
-  \hline
-  Prototype      & {\tt void QDP}\ttdash{\tt insert(}{\it Type}{\tt \& dest}, {\it QLA}\ttdash{\it Type}{\tt \& src}\\
+\hline
+Prototype      & \verb|void QDP_insert|({\tt {\it Type}\& dest}, 
+                 {\tt const {\it QLA\_Type}\& src},\\
+               & \qquad{\tt const Subset\& s})\\
 \hline
 Purpose        & Inserts data values from QLA array {\tt src}. \\
 \hline
@@ -1096,7 +1161,7 @@ Purpose        & Inserts data values from QLA array {\tt src}. \\
 \hline
 Example  & \verb|multi1d<Fermion> a(Layout::sitesOnNode());|\\
          & \verb|LatticeFermion r;| \\
-         & \verb|QDP::insert(r,a,odd);| \\
+         & \verb|QDP_insert(r,a,odd);| \\
 \hline
   \end{tabular}
 \end{flushleft}
@@ -1115,11 +1180,11 @@ on communications by other means, it is first necessary to call
 \begin{flushleft}
 \begin{tabular}{|l|l|}
   \hline
-  Prototype      & \verb|void QDP::suspend(void)| \\
+  Prototype      & \verb|void QDP_suspend(void)| \\
 \hline
 Purpose        & Suspends QDP communications. \\
 \hline
-Example  & \verb|QDP::suspend();| \\
+Example  & \verb|QDP_suspend();| \\
 \hline
   \end{tabular}
 \end{flushleft}
@@ -1133,11 +1198,11 @@ To resume QDP communications one uses
 \begin{flushleft}
 \begin{tabular}{|l|l|}
   \hline
-  Prototype      & \verb|void QDP::resume(void)| \\
+  Prototype      & \verb|void QDP_resume(void)| \\
 \hline
 Purpose        & Restores QDP communications. \\
 \hline
-Example  & \verb|QDP::resume();| \\
+Example  & \verb|QDP_resume();| \\
 \hline
   \end{tabular}
 \end{flushleft}
@@ -1150,7 +1215,7 @@ Example  & \verb|QDP::resume();| \\
 
 \subsection{Generic header and macros}
 
-The compilation parameters:
+The compilation parameters:\\
 \noindent
 $Nd$ -- the number of space-time dimensions\\
 \noindent
@@ -1158,25 +1223,25 @@ $Nc$ -- the dimension of the color vector space\\
 \noindent
 $Ns$ -- the dimension of the spin vector space\\
 \noindent
-are defined in {\tt qdp++/params.h} . There are macros {\tt ND}, {\tt NC},
-{\tt NS} that are also available the above parameters are int's
-defined as follows:
+are defined in {\tt qdp++/include/params.h} . 
+There are macros {\tt ND}, {\tt NC},
+{\tt NS} that are used to set the above parameters via
 \begin{verbatim}
-#define ND 4
-#define NC 3
-#define NS 4
-
 const int Nd = ND;
 const int Nc = NC;
 const int Ns = NS;
 \end{verbatim}
+%
+\noindent
+They are set in the file {\tt qdp++/include/qdp\_config.h} 
+during configuration.
 
 \subsection{Nonuniform color and precision}
 
 Users wishing to vary color and precision within a single calculation
 must use specific type names whenever these types
 and names differ from the prevailing precision and color. 
-Type declarations can be found in {\tt qdp++/defs.h} . A convenient
+Type declarations can be found in {\tt qdp++/include/defs.h} . A convenient
 definition of a \tLatticeColorMatrix and \tLatticeDiracFermion is as follows:
 
 \begin{verbatim}
@@ -1196,7 +1261,7 @@ typedef OLattice<PScalar<ColorMatrix<Complex<float>, NN> > > LatticeColorMatrix1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{sec:implementation}
 
-The following table lists all the QDP headers.
+The following table lists some of the QDP headers.
 \begin{center}
 \begin{tabular}{|l|l|}
 \hline
@@ -1409,11 +1474,11 @@ ldexp, pow, fmod, atan2
 \begin{flushleft}
 \begin{tabular}{lcp{4.0in}}
 \verb|sum(arg1)|              &:& sum over lattice indices returning 
-                               object of same fiber type\\
+                                  object of same fiber type\\
 \verb|norm2(arg1)|            &:& sum(localNorm2(arg1))\\
 \verb|innerProduct(arg1,arg2)|&:& sum(localInnerProduct(arg1,arg2))\\
 \verb|sumMulti(arg1,Set)|     &:& sum over each subset of Set returning \#subset
-                          objects of same fiber type\\
+                                  objects of same fiber type\\
 \end{tabular}
 \end{flushleft}
 
@@ -1567,7 +1632,7 @@ All operations listed in Sections~\ref{sec:infix}--\ref{sec:otherfuncs}
   \begin{tabular}{lp{5.0in}}
   {\em Unary}:& {\tt colorTrace}\\
   {\em Binary}:& {\tt *(PColorMatrix,Gamma)}, {\tt *(Gamma,PColorMatrix)}\\
-  {\em Exotic}:& {\tt peekColor}, {\tt pokeColor},\\
+  {\em Exotic}:& {\tt peekColor}, {\tt pokeColor}\\
   \end{tabular}
 \end{flushleft}
 
@@ -1577,7 +1642,7 @@ All operations listed in Sections~\ref{sec:infix}--\ref{sec:otherfuncs}
 \begin{flushleft}
   \begin{tabular}{lp{5.0in}}
   {\em Binary}:& {\tt *(Gamma,PColorVector)}\\
-  {\em Exotic}:& {\tt peekColor}, {\tt pokeColor},\\
+  {\em Exotic}:& {\tt peekColor}, {\tt pokeColor}\\
   \end{tabular}
 \end{flushleft}
 
@@ -1724,10 +1789,10 @@ class.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type2 Type2}{\tt (const }{\it Type1}{\tt \& a)} \\
+  Syntax      & {\it Type2 Type2}({\tt const {\it Type1}\& a}) \\
   \hline
-  Example     & \verb|LatticeReal a; LatticeRealD r = LatticeRealD(a)| \\
-              & \verb|LatticeColorMatrix a; LatticeColorMatrix r = LatticeColorMatrixD(a)| \\
+  Example     & {\tt \tLatticeReal{} a; \tLatticeRealD{} r = \tLatticeRealD(a)} \\
+              & {\tt \tLatticeColorMatrix{} a; \tLatticeColorMatrixD{} r = \tLatticeColorMatrixD(a)} \\
   \hline
   {\it Type1} & All single precision numeric types \\
   {\it Type2} & All conforming double precision numeric types \\
@@ -1739,10 +1804,10 @@ class.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type2 Type2}{\tt (const }{\it Type1}{\tt \& a)}\\
+  Syntax      & {\it Type2 Type2}({\tt const {\it Type1}\& a})\\
   \hline
-  Example     & \verb|LatticeRealD a; \tLatticeReal r = \tLatticeReal(a)| \\
-              & \verb|LatticeColorMatrixD a; LatticeColorMatrix r = LatticeColorMatrix(a)| \\
+  Example     & {\tt \tLatticeRealD{} a; \tLatticeReal{} r = \tLatticeReal(a)} \\
+              & {\tt \tLatticeColorMatrixD{} a; \tLatticeColorMatrix{} r = \tLatticeColorMatrix(a)} \\
   \hline
   {\it Type1} & All double precision numeric types \\
   {\it Type2} & All conforming single precision numeric types \\
@@ -1755,9 +1820,9 @@ class.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type2 Type2}{\tt (const }{\it Type1}{\tt \& a)}\\
+  Syntax      & {\it Type2 Type2}({\tt const {\it Type1}\& a})\\
   \hline
-  Example     & \verb|LatticeInt a; LatticeReal r = LatticeReal(a)| \\
+  Example     & {\tt \tLatticeInt{} a; \tLatticeReal{} r = \tLatticeReal(a)} \\
   \hline
   {\it Type1} & All integer precision numeric types \\
   {\it Type2} & All conforming real precision numeric types \\
@@ -1770,9 +1835,9 @@ class.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type2 Type2}{\tt (const }{\it Type1}{\tt \& a)}\\
+  Syntax      & {\it Type2 Type2}({\tt const {\it Type1}\& a})\\
   \hline
-  Example     & \verb|LatticeReal a; LatticeInt r = LatticeInt(a)| \\
+  Example     & {\tt \tLatticeReal{} a; \tLatticeInt{} r = \tLatticeInt(a)} \\
   \hline
   \end{tabular}
 \end{flushleft}
@@ -1782,48 +1847,48 @@ class.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt float toFloat(const Real\& a)} \\
+  Syntax      & {\tt float toFloat(const \tReal\& a)} \\
   \hline
   Meaning     & \verb|r = float(a);|\\
   \hline
-  Example     & \verb|Real a; float r = toFloat(a);| \\
+  Example     & {\tt \tReal{} a; float r = toFloat(a);} \\
   \hline
   \end{tabular}
 \end{flushleft}
 
-The QDP type \tReal is not a primitive type, so an explicit conversion is provided.
+The QDP type \tReal{} is not a primitive type, so an explicit conversion is provided.
 
 \paragraph{Double to double} 
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt double toDouble(const Double\& a)} \\
+  Syntax      & {\tt double toDouble(const \tRealD\& a)} \\
   \hline
   Meaning     & \verb|r = double(a);|\\
   \hline
-  Example     & \verb|Double a; double r = toDouble(a);| \\
+  Example     & {\tt \tRealD{} a; double r = toDouble(a);} \\
   \hline
   \end{tabular}
 \end{flushleft}
 
-The QDP type \tRealD is not a primitive type, so an explicit conversion is provided.
+The QDP type \tRealD{} is not a primitive type, so an explicit conversion is provided.
 
 \paragraph{Bool to bool} 
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt bool toBool(const Boolean\& a)} \\
+  Syntax      & {\tt bool toBool(const \tBoolean\& a)} \\
   \hline
   Meaning     & \verb|r = bool(a);|\\
   \hline
-  Example     & \verb|Boolean a; bool r = toBool(a);| \\
+  Example     & {\tt \tBoolean{} a; bool r = toBool(a);} \\
   \hline
   \end{tabular}
 \end{flushleft}
 
-The QDP type \tBoolean is not a primitive type, so an explicit conversion is provided.
+The QDP type \tBoolean{} is not a primitive type, so an explicit conversion is provided.
 
 \subsection{Operations on complex arguments}
 
@@ -1841,8 +1906,8 @@ The QDP type \tBoolean is not a primitive type, so an explicit conversion is pro
   \hline
   {\it Type}  & \tComplex, \simLatticeVariants\\
   \hline
-  Example     & \verb|Real a;|\\
-              & \verb|Complex = cmplx(a, 0);|\\
+  Example     & {\tt \tReal a;}\\
+              & {\tt \tComplex{} = cmplx(a, 0);}\\
   \hline
   \end{tabular}
 \end{flushleft}
@@ -1877,7 +1942,7 @@ The QDP type \tBoolean is not a primitive type, so an explicit conversion is pro
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type }{\tt peekSite(const Lattice}{\it Type}{\tt \& a, multi1d<int>\& c)}\\
+  Syntax      & {\it Type} \verb|peekSite|({\tt const Lattice{\it Type}\& a, const multi1d<int>\& c})\\
   \hline
   Meaning     & $r = a[x]$\\
   \hline
@@ -1889,10 +1954,10 @@ The QDP type \tBoolean is not a primitive type, so an explicit conversion is pro
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt LatticeComplex }{\tt peekColor(const LatticeColorMatrix}{\tt \& a, }\\
-              &\quad         {\tt int i, int j)}\\
-              & {\tt LatticeSpinMatrix }{\tt peekColor(const LatticePropagator}{\tt \& a, }\\
-              &\quad         {\tt int i, int j)}\\
+  Syntax      & {\tt \tLatticeComplex} \verb|peekColor|({\tt const \tLatticeColorMatrix\& a},\\
+              &\quad         {\tt int i, int j})\\
+              & {\tt \tLatticeSpinMatrix} \verb|peekColor|({\tt const \tLatticeDiracPropagator\& a},\\
+              &\quad         {\tt int i, int j})\\
   \hline
   Meaning     & $r = a_{i,j}$\\
   \hline
@@ -1904,8 +1969,8 @@ The QDP type \tBoolean is not a primitive type, so an explicit conversion is pro
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt LatticeColorMatrix\& pokeColor(LatticeColorMatrix\& r, }\\
-              &   \quad{\tt const LatticeComplex\& a, int i, int j)}\\
+  Syntax      & {\tt LatticeColorMatrix\&} \verb|pokeColor|({\tt \tLatticeColorMatrix\& r,}\\
+              &   \quad{\tt const \tLatticeComplex\& a, int i, int j})\\
   \hline
   Meaning     & $r_{i,j} = a$\\
   \hline
@@ -1917,10 +1982,10 @@ The QDP type \tBoolean is not a primitive type, so an explicit conversion is pro
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt LatticeComplex }{\tt peekColor(const LatticeColorVector}{\tt \& a, }\\
-              &\quad         {\tt int i)}\\
-              & {\tt LatticeSpinVector }{\tt peekColor(const LatticeDiracFermion}{\tt \& a, }\\
-              &\quad         {\tt int i)}\\
+  Syntax      & {\tt \tLatticeComplex} \verb|peekColor|({\tt const \tLatticeColorVector\& a},\\
+              &\quad         {\tt int i})\\
+              & {\tt \tLatticeSpinVector} \verb|peekColor|({\tt const \tLatticeDiracFermion\& a},\\
+              &\quad         {\tt int i})\\
   \hline
   Meaning     & $r = a_{i}$\\
   \hline
@@ -1940,8 +2005,8 @@ can build a \tLatticeDiracFermion.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt LatticeColorVector\& pokeColor(LatticeColorVector\& r, }\\
-              &   \quad{\tt const LatticeComplex\& a, int i)}\\
+  Syntax      & {\tt \tLatticeColorVector\&} \verb|pokeColor|({\tt \tLatticeColorVector\& r},\\
+              &   \qquad{\tt const \tLatticeComplex\& a, int i})\\
   \hline
   Meaning     & $r_{i} = a$\\
   \hline
@@ -1954,17 +2019,17 @@ other indices unchanged.
 A lattice color vector is another name (typedef) for a
 \tLatticeStaggeredFermion. Namely, an object that is vector in color
 spin and a scalar in spin space.  Together with spin accessors, one
-can build a \tLatticeDiracFermion or a \tLatticeDiracPropagator.
+can build a \tLatticeDiracFermion{} or a \tLatticeDiracPropagator.
 
 \paragraph{Accessing a spin matrix element}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt LatticeComplex }{\tt peekSpin(const LatticeSpinMatrix}{\tt \& a, }\\
-              &\quad         {\tt int i, int j)}\\
-              & {\tt LatticeColorMatrix }{\tt peekSpin(const LatticePropagator}{\tt \& a, }\\
-              &\quad         {\tt int i, int j)}\\
+  Syntax      & {\tt \tLatticeComplex} \verb|peekSpin|({\tt const \tLatticeSpinMatrix\& a},\\
+              &\quad         {\tt int i, int j})\\
+              & {\tt \tLatticeColorMatrix} \verb|peekSpin|({\tt const \tLatticeDiracPropagator\& a},\\
+              &\quad         {\tt int i, int j})\\
   \hline
   Meaning     & $r = a_{i,j}$\\
   \hline
@@ -1976,8 +2041,8 @@ can build a \tLatticeDiracFermion or a \tLatticeDiracPropagator.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt LatticeSpinMatrix\& pokeSpin(LatticeSpinMatrix\& r, }\\
-              &   \quad{\tt const LatticeComplex\& a, int i, int j)}\\
+  Syntax      & {\tt \tLatticeSpinMatrix\&} \verb|pokeSpin|({\tt \tLatticeSpinMatrix\& r},\\
+              &   \quad{\tt const \tLatticeComplex\& a, int i, int j})\\
   \hline
   Meaning     & $r_{i,j} = a$\\
   \hline
@@ -1989,10 +2054,10 @@ can build a \tLatticeDiracFermion or a \tLatticeDiracPropagator.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt LatticeComplex }{\tt peekSpin(const LatticeSpinVector}{\tt \& a, }\\
-              &\quad         {\tt int i)}\\
-              & {\tt LatticeColorVector }{\tt peekSpin(const LatticeDiracFermion}{\tt \& a, }\\
-              &\quad         {\tt int i)}\\
+  Syntax      & {\tt \tLatticeComplex} \verb|peekSpin|({\tt const \tLatticeSpinVector\& a},\\
+              &\quad         {\tt int i})\\
+              & {\tt \tLatticeColorVector} \verb|peekSpin|({\tt const \tLatticeDiracFermion\& a},\\
+              &\quad         {\tt int i})\\
   \hline
   Meaning     & $r = a_{i}$\\
   \hline
@@ -2004,15 +2069,15 @@ other indices unchanged.
 
 A lattice spin vector is an object that is a vector in spin space and
 a scalar in color space.  Together with color accessors, one can build
-a \tLatticeDiracFermion or a \tLatticeDiracPropagator.
+a \tLatticeDiracFermion{} or a \tLatticeDiracPropagator.
 
 \paragraph{Inserting a spin vector element}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt LatticeSpinVector\& pokeSpin(LatticeSpinVector\& r, }\\
-              &   \quad{\tt const LatticeComplex\& a, int i)}\\
+  Syntax      & {\tt \tLatticeSpinVector\&} \verb|pokeSpin|({\tt \tLatticeSpinVector\& r},\\
+              &   \quad{\tt const \tLatticeComplex\& a, int i})\\
   \hline
   Meaning     & $r_{i} = a$\\
   \hline
@@ -2024,21 +2089,22 @@ other indices unchanged.
 
 A lattice spin vector is an object that is a vector in spin space and
 a scalar in color space.  Together with color accessors, one can build
-a \tLatticeDiracFermion or a \tLatticeDiracPropagator.
+a \tLatticeDiracFermion{} or a \tLatticeDiracPropagator.
 
 \paragraph{Trace of matrix}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type2 }{\tt trace(const }{\it Type1}{\tt \& a)}\\
+  Syntax      & {\it Type2} \verb|trace|({\tt const {\it Type1}\& a})\\
   \hline
   Meaning     & $r = \Tr a$ \\
   \hline
   {\it Type1} & \tColorMatrix, \tDiracPropagator, \simLatticeVariants\\
   {\it Type2} & \tComplex, \tComplex, \simLatticeVariants\\
   \hline
-  Example     & {\it LatticeComplex }{\tt trace(const }{\it LatticeColorMatrix}{\tt \& a)}\\
+  Example     & {\tt \tLatticeColorMatrix{} a;}\\
+              & {\tt \tLatticeComplex{} r = trace(a);} \\
   \hline
   \end{tabular}
 \end{flushleft}
@@ -2051,14 +2117,16 @@ It will trivially trace a scalar variable.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type2 }{\tt traceColor(const }{\it Type1}{\tt \& a)}\\
+  Syntax      & {\it Type2} \verb|traceColor|({\tt const {\it Type1}\& a})\\
   \hline
   Meaning     & $r = \Tr a$ \\
   \hline
   {\it Type1} & \tSpinMatrix, \simLatticeVariants\\
   {\it Type2} & \tComplex, \simLatticeVariants\\
   \hline
-  Example     & {\it LatticeComplex }{\tt trace(const }{\it LatticeColorMatrix}{\tt \& a)}\\
+  \hline
+  Example     & {\tt \tLatticeDiracPropagator{} a;}\\
+              & {\tt \tLatticeSpinMatrix{} r = traceColor(a);} \\
   \hline
   \end{tabular}
 \end{flushleft}
@@ -2072,28 +2140,30 @@ It will trivially trace a scalar variable.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type2 }{\tt traceSpin(const }{\it Type1}{\tt \& a)}\\
+  Syntax      & {\it Type2} \verb|traceSpin|({\tt const {\it Type1}\& a})\\
   \hline
   Meaning     & $r = \Tr a$ \\
   \hline
   {\it Type1} & \tDiracPropagator, \simLatticeVariants\\
   {\it Type2} & \tColorMatrix, \simLatticeVariants\\
   \hline
-  Example     & {\it LatticeColorMatrix }{\tt trace(const }{\it LatticeDiracPropagator}{\tt \& a)}\\
+  \hline
+  Example     & {\tt \tLatticeDiracPropagator{} a;}\\
+              & {\tt \tLatticeColorMatrix{} r = traceSpin(a);} \\
   \hline
   \end{tabular}
 \end{flushleft}
 
-Traces only over spin matrix indices. It is an error to trace over a spin vector index.
-All other indices are left untouched.
-It will trivially trace a scalar variable.
+Traces only over spin matrix indices. It is an error to trace over a
+spin vector index.  All other indices are left untouched.  It will
+trivially trace a scalar variable.
 
 \paragraph{Dirac spin projection}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline 
-  Syntax      & {\it Type2 }{\tt spinProject(const }{\it Type1}{\tt \& a, int d, int p)}\\
+  Syntax      & {\it Type2} \verb|spinProject|({\tt const {\it Type1}\& a, int d, int p})\\
   \hline
   Meaning     & $r = (1 + p\gamma_d)a$\\
   \hline
@@ -2108,7 +2178,7 @@ It will trivially trace a scalar variable.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type2 }{\tt spinProject(const }{\it Type1}{\tt \& a, int d, int p)}\\
+  Syntax      & {\it Type2} \verb|spinReconstruct|({\tt const {\it Type1}\& a, int d, int p})\\
   \hline
   Meaning     & $r = {\rm recon\,}(p,d,a)$\\
   \hline
@@ -2126,8 +2196,8 @@ It will trivially trace a scalar variable.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type }{\tt operator*(const Real\& a, const }{\it Type}{\tt \& b)}\\
-              & {\it Type }{\tt operator*(const }{\it Type}{\tt \& b, const Real\& a)}\\
+  Syntax      & {\it Type} \verb|operator*|({\tt const \tReal\& a, const {\it Type}\& b})\\
+              & {\it Type} \verb|operator*|({\tt const {\it Type}\& b, const \tReal\& a})\\
   \hline
   Meaning     & $r = a*b$ ($a$ real, constant)\\
   \hline
@@ -2141,8 +2211,8 @@ It will trivially trace a scalar variable.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type }{\tt operator*(const Real\& a, const }{\it Type}{\tt \& b)}\\
-              & {\it Type }{\tt operator*(const }{\it Type}{\tt \& b, const Real\& a)}\\
+  Syntax      & {\it Type} \verb|operator*|({\tt const \tReal\& a, const {\it Type}\& b})\\
+              & {\it Type} \verb|operator*|({\tt const {\it Type}\& b, const \tReal\& a})\\
   \hline
   Meaning     & $r = a*b$ ($a$ complex, constant)\\
   \hline
@@ -2156,9 +2226,9 @@ It will trivially trace a scalar variable.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type }{\tt operator*(const }{\it Gamma}{\tt \& a, const }{\it Type}{\tt \& b)}\\
+  Syntax      & {\it Type} \verb|operator*|({\tt const {\it Gamma}\& a, const {\it Type}\& b})\\
   \hline
-  Meaning     & $r = \gamma_d a$ \\
+  Meaning     & $r = \gamma_d * a$ \\
   \hline
   {\it Gamma} & Gamma constructed from an explicit integer in $[0,N_s^2-1]$\\
   \itt        & \tSpinVector, \tSpinMatrix, \tHalfFermion, \tDiracFermion, \tDiracPropagator, \\
@@ -2173,9 +2243,9 @@ It will trivially trace a scalar variable.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type }{\tt operator*(const }{\it Type}{\tt \& a, const }{\it Gamma}{\tt \& b)}\\
+  Syntax      & {\it Type} \verb|operator*|({\tt const {\it Type}\& a, const {\it Gamma}\& b})\\
   \hline
-  Meaning     & $r = a \gamma_d$ \\
+  Meaning     & $r = a * \gamma_d$ \\
   \hline
   {\it Gamma} & Gamma constructed from an explicit integer in $[0,N_s^2-1]$\\
   \itt        & \tSpinMatrix, \tDiracPropagator, and similar lattice variants \\
@@ -2261,7 +2331,7 @@ It will trivially trace a scalar variable.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type }{\tt operator*(const }{\it Type1}{\tt \& a, const }{\it Type}{\tt \& b)}\\
+  Syntax      & {\it Type} \verb|operator*|({\tt const {\it Type1}\& a, const {\it Type}\& b})\\
   \hline
   Meaning     & $r = a * b$ \\
   \hline
@@ -2279,7 +2349,7 @@ It will trivially trace a scalar variable.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type }{\tt operator*(const }{\it Type}{\tt \& a, const }{\it Type1}{\tt \& b)}\\
+  Syntax      & {\it Type} \verb|operator*|({\tt const {\it Type}\& a, const {\it Type1}\& b})\\
   \hline
   Meaning     & $r = a * b$ \\
   \hline
@@ -2374,8 +2444,7 @@ It will trivially trace a scalar variable.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt void copymask(const }{\it Type2\& }{\tt r, const }{\it Type1}
-{\tt \& a, const }{\it Type1}{\tt \& b)}\\
+  Syntax      & {\tt void} \verb|copymask|({\tt const {\it Type2}\&  r, const {\it Type1}\& a, const {\it Type1}\& b})\\
   \hline
   Meaning     & $r = b$ if $a$ is true\\
   \hline
@@ -2394,7 +2463,7 @@ the left hand side of the assignment.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt Real norm2(}{\it Type}{\tt \& a)}\\
+  Syntax      & {\tt \tReal} \verb|norm2|({\tt {\it Type}\& a})\\
   \hline
   Meaning     & $r = \sum |a|^2$ \\
   \hline
@@ -2408,7 +2477,7 @@ the left hand side of the assignment.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt Complex innerProduct(}{\it Type}{\tt \& a, const }{\it Type }{\tt \& b)}\\
+  Syntax      & {\tt \tComplex} \verb|innerProduct|({\tt {\it Type}\& a, const {\it Type}\& b})\\
   \hline
   Meaning     & $r = \sum a \cdot b$ \\
   \hline
@@ -2423,7 +2492,7 @@ the left hand side of the assignment.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type}{\tt \ sum(}{\tt const Lattice}{\it Type}{\tt \& a)}\\
+  Syntax      & {\it Type} \verb|sum|({\tt const Lattice{\it Type}\& a})\\
   \hline
   Meaning     & $r = \sum a$\\
   \hline
@@ -2440,9 +2509,9 @@ the left hand side of the assignment.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt LatticeInteger latticeCoordinate(int d)}\\
+  Syntax      & {\tt \tLatticeInt} \verb|latticeCoordinate|({\tt int d})\\
   \hline
-  Meaning     & $r = f(d)$ for direction $d$.\\
+  Meaning     & $r = f(d)$ for direction \verb|d|.\\
   \hline
   Purpose     & Return the lattice coordinates in direction d\\
   \hline
@@ -2454,15 +2523,14 @@ the left hand side of the assignment.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt Lattice}{\it Type} {\tt operator=(}{\tt Lattice}{\it Type}{\tt \& r, const }
-{\it Type}{\tt \& a)}\\
+  Syntax      & {\tt Lattice{\it Type}} \verb|operator=|({\tt Lattice{\it Type}\& r, const {\it Type}\& a})\\
   \hline
   Meaning     & $r = a$ for all sites\\
   \hline
   \itt        & All non-lattice objects \\
   \hline
-  Example     & \verb|Real a = 2.0;|\\
-              & \verb|LatticeReal r = a;|\\
+  Example     & {\tt \tReal{} a = 2.0;}\\
+              & {\tt \tLatticeReal{} r = a;}\\
   \hline
   \end{tabular}
 \end{flushleft}
@@ -2470,20 +2538,19 @@ the left hand side of the assignment.
 Constant (or lattice global) fills are always defined for lattice scalar objects broadcasting to
 all lattice sites. These are broadcasts of a lattice scalar type to a conforming lattice type.
 
-NOTE, one can not fill a \tLatticeColorMatrix with a \tReal.
+NOTE, one can not fill a \tLatticeColorVector{} with a \tReal.
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt Lattice}{\it Type} {\tt operator=(}{\tt Lattice}{\it Type}{\tt \& r, const }
-{\it Type}{\tt \& a)}\\
+  Syntax      & {\tt Lattice{\it Type}} \verb|operator=|({\tt Lattice{\it Type}\& r, const {\it Type}\& a})\\
   \hline
   Meaning     & $r = \diag(a,a,\ldots{})$ (constant $a$)\\
   \hline
   \itt        & \tComplex, \tColorMatrix, \tSpinMatrix \\
   \hline
-  Example     & \verb|Real a = 2.0;|\\
-              & \verb|LatticeColorMatrix r = a;|\\
+  Example     & {\tt \tReal{} a = 2.0;}\\
+              & {\tt \tLatticeColorMatrix{} r = a;}\\
   \hline
   \end{tabular}
 \end{flushleft}
@@ -2502,13 +2569,13 @@ must be used.
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\it Type} {\tt operator=(}{\it Type}{\tt \& r, const Zero\& zero)}\\
+  Syntax      & {\it Type} \verb|operator=|({\tt {\it Type}\& r, const Zero\& zero})\\
   \hline
   Meaning     & $r = 0$\\
   \hline
   \itt        & \allNumericTypes \\
   \hline
-  Example     & \verb|LatticeFermion = zero;|\\
+  Example     & {\tt \tLatticeDiracFermion{} r = zero;}\\
   \hline
   \end{tabular}
 \end{flushleft}
@@ -2520,7 +2587,7 @@ This is the only way to fill a vector field with a constant (like zero).
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt void random}{\tt (const }{\it Type }{\tt \&r)} \\
+  Syntax      & {\tt void} \verb|random|({\tt {\it Type}\& r}) \\
   \hline
   Meaning     & $r$ random, uniform on $[0,1]$ \\
   \hline
@@ -2534,7 +2601,7 @@ This is the only way to fill a vector field with a constant (like zero).
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt void gaussian}{\tt (const }{\it Type }{\tt \&r)} \\
+  Syntax      & {\tt void} \verb|gaussian|({\tt {\it Type}\& r}) \\
   \hline
   Meaning     & $r$ normal Gaussian \\
   \hline
@@ -2548,9 +2615,9 @@ This is the only way to fill a vector field with a constant (like zero).
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt void RNG}\ttdash{\tt setrn(}{const \tt Seed\& a)} \\
+  Syntax      & {\tt void} \verb|RNG::setrn|({\tt const \tRandomState\& a}) \\
   \hline
-  Meaning     & Initialize the random number generator with seed state {\tt a}\\
+  Meaning     & Initialize the random number generator with seed state \verb|a|\\
   \hline
   \end{tabular}
 \end{flushleft}
@@ -2563,9 +2630,9 @@ For details see the discussion of the corresponding scalar function
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Syntax      & {\tt void RNG}\ttdash{\tt savern(}{\tt Seed\& r)} \\
+  Syntax      & {\tt void} \verb|RNG::savern|({\tt \tRandomState\& r}) \\
   \hline
-  Meaning     & Extract the random number generator into seed state {\tt r}\\
+  Meaning     & Extract the random number generator into seed state \verb|r|\\
   \hline
   \end{tabular}
 \end{flushleft}
