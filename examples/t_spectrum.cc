@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.8 2003-02-11 22:16:09 flemingg Exp $
+ *  $Id: t_spectrum.cc,v 1.9 2003-04-08 21:18:54 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -11,7 +11,7 @@
 
 #include "qdp.h"
 #include "examples.h"
-#include "proto.h"
+#include "qdp_util.h"
 
 using namespace QDP;
 

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.12 2003-02-28 04:16:36 edwards Exp $
+// $Id: t_foo.cc,v 1.13 2003-04-08 21:18:54 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -8,7 +8,7 @@
 
 
 #include "qdp.h"
-#include "proto.h"
+#include "qdp_util.h"
 
 //using namespace std;
 

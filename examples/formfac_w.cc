@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.11 2003-01-15 21:46:51 edwards Exp $
+// $Id: formfac_w.cc,v 1.12 2003-04-08 21:18:54 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -6,7 +6,7 @@
  */
 
 #include "examples.h"
-#include "proto.h"
+#include "qdp_util.h"
 
 using namespace QDP;
 
