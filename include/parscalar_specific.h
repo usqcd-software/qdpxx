@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.5 2003-01-04 03:32:16 edwards Exp $
+// $Id: parscalar_specific.h,v 1.6 2003-01-04 10:55:12 bjoo Exp $
 //
 // QDP data parallel interface
 //
@@ -478,7 +478,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 
   // Do a global sum on the result
   for(int k=0; k < ss.numSubsets(); ++k)
-    Internal::global_sum(d[k]);
+    Internal::global_sum(dest[k]);
   
   return dest;
 }
