@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: globalfuncs.h,v 1.10 2002-12-26 22:59:51 edwards Exp $
+// $Id: globalfuncs.h,v 1.11 2003-04-08 21:19:47 edwards Exp $
 
 /*! \file
  * \brief Global functions on QDPType
@@ -84,7 +84,7 @@ norm2(const QDPExpr<T,C>& s1, const Subset& s)
 }
 
 
-//! OScalar = innerproduct(adj(source1)*source2)
+//! OScalar = innerProduct(adj(source1)*source2)
 /*!
  * return  sum(trace(adj(source1)*source2))
  *
@@ -92,34 +92,34 @@ norm2(const QDPExpr<T,C>& s1, const Subset& s)
  */
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProduct>::Type_t
-innerproduct(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2)
+innerProduct(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2)
 {
   return sum(localInnerProduct(s1,s2));
 }
 
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProduct>::Type_t
-innerproduct(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
+innerProduct(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
 {
   return sum(localInnerProduct(s1,s2));
 }
 
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProduct>::Type_t
-innerproduct(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2)
+innerProduct(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2)
 {
   return sum(localInnerProduct(s1,s2));
 }
 
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProduct>::Type_t
-innerproduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
+innerProduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
 {
   return sum(localInnerProduct(s1,s2));
 }
 
 
-//! OScalar = innerproduct(adj(source1)*source2) under an explicit subset
+//! OScalar = innerProduct(adj(source1)*source2) under an explicit subset
 /*!
  * return  sum(trace(adj(source1)*source2))
  *
@@ -127,7 +127,7 @@ innerproduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
  */
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProduct>::Type_t
-innerproduct(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2,
+innerProduct(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2,
 	     const Subset& s)
 {
   return sum(localInnerProduct(s1,s2),s);
@@ -135,7 +135,7 @@ innerproduct(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2,
 
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProduct>::Type_t
-innerproduct(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
+innerProduct(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
   	     const Subset& s)
 {
   return sum(localInnerProduct(s1,s2),s);
@@ -143,7 +143,7 @@ innerproduct(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
 
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProduct>::Type_t
-innerproduct(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2,
+innerProduct(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2,
   	     const Subset& s)
 {
   return sum(localInnerProduct(s1,s2),s);
@@ -151,14 +151,14 @@ innerproduct(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2,
 
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProduct>::Type_t
-innerproduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
+innerProduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
   	     const Subset& s)
 {
   return sum(localInnerProduct(s1,s2),s);
 }
 
 
-//! OScalar = innerproductReal(adj(source1)*source2)
+//! OScalar = innerProductReal(adj(source1)*source2)
 /*!
  * return  sum(trace(adj(source1)*source2))
  *
@@ -166,34 +166,34 @@ innerproduct(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
  */
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProductReal>::Type_t
-innerproductReal(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2)
+innerProductReal(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2)
 {
   return sum(localInnerProductReal(s1,s2));
 }
 
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProductReal>::Type_t
-innerproductReal(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
+innerProductReal(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
 {
   return sum(localInnerProductReal(s1,s2));
 }
 
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProductReal>::Type_t
-innerproductReal(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2)
+innerProductReal(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2)
 {
   return sum(localInnerProductReal(s1,s2));
 }
 
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProductReal>::Type_t
-innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
+innerProductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
 {
   return sum(localInnerProductReal(s1,s2));
 }
 
 
-//! OScalar = innerproductReal(adj(source1)*source2) under an explicit subset
+//! OScalar = innerProductReal(adj(source1)*source2) under an explicit subset
 /*!
  * return  sum(trace(adj(source1)*source2))
  *
@@ -201,7 +201,7 @@ innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2)
  */
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProductReal>::Type_t
-innerproductReal(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2,
+innerProductReal(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2,
 		 const Subset& s)
 {
   return sum(localInnerProductReal(s1,s2),s);
@@ -209,7 +209,7 @@ innerproductReal(const QDPType<T1,C1>& s1, const QDPType<T2,C2>& s2,
 
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProductReal>::Type_t
-innerproductReal(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
+innerProductReal(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
 		 const Subset& s)
 {
   return sum(localInnerProductReal(s1,s2),s);
@@ -217,7 +217,7 @@ innerproductReal(const QDPType<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
 
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProductReal>::Type_t
-innerproductReal(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2,
+innerProductReal(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2,
 		 const Subset& s)
 {
   return sum(localInnerProductReal(s1,s2),s);
@@ -225,7 +225,7 @@ innerproductReal(const QDPExpr<T1,C1>& s1, const QDPType<T2,C2>& s2,
 
 template<class T1, class C1, class T2, class C2>
 inline typename BinaryReturn<C1, C2, FnInnerProductReal>::Type_t
-innerproductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
+innerProductReal(const QDPExpr<T1,C1>& s1, const QDPExpr<T2,C2>& s2,
 		 const Subset& s)
 {
   return sum(localInnerProductReal(s1,s2),s);
