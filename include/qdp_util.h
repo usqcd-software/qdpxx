@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: qdp_util.h,v 1.5 2003-08-26 21:38:00 edwards Exp $
+// $Id: qdp_util.h,v 1.6 2003-10-09 16:20:42 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -48,6 +48,9 @@ QDP_END_NAMESPACE();
 
 namespace QDPUtil
 {
+  //! Byte-swap an array of data each of size nmemb
+  void byte_swap(void *ptr, size_t size, size_t nmemb);
+
   //! fread on a binary file written in big-endian order
   size_t bfread(void *ptr, size_t size, size_t nmemb, FILE *stream);
 
