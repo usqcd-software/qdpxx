@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.17 2003-07-05 16:31:51 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.18 2003-07-05 17:02:35 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -82,14 +82,36 @@ XMLReader::~XMLReader() {close();}
 
 
 // Overloaded Reader Functions
-void XMLReader::get(const std::string& xpath, string& result)
+void XMLReader::get(const std::string& xpath, string& input)
 {
-  if (Layout::primaryNode())
-    BasicXPathReader::get(xpath, result);
+  char *dd_tmp;
+  int lleng;
 
-  // Now broadcast back out to all nodes
-  Internal::broadcast(result);
+  // Only primary node can grab string
+  if (Layout::primaryNode())
+  {
+    BasicXPathReader::get(xpath, input);
+    lleng = input.length() + 1;
+  }
+
+  // First must broadcast size of string
+  Internal::broadcast(lleng);
+
+  // Now every node can alloc space for string
+  dd_tmp = new char[lleng];
+  if (Layout::primaryNode())
+    input.copy(dd_tmp, lleng);
+  
+  // Now broadcast char array out to all nodes
+  Internal::broadcast((void *)dd_tmp, lleng);
+
+  // All nodes can now grab char array and make a string
+  input = dd_tmp;
+
+  // Clean-up and boogie
+  delete[] dd_tmp;
 }
+
 void XMLReader::get(const std::string& xpath, int& result)
 {
   if (Layout::primaryNode())
