@@ -60,13 +60,13 @@ class StopWatch {
 	else {
 	  usecs += t_end.tv_usec - t_start.tv_usec;
 	}
-
-	return (double)usecs;
       }
     }
     else {
       QDP_error_exit("Either stopwatch not started, or not stopped\n");
     }
+
+    return (double)usecs;
   }
     
   double getTimeInSeconds(void)  {
