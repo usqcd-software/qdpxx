@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvec_layout.cc,v 1.9 2003-09-03 01:25:16 edwards Exp $
+// $Id: qdp_scalarvec_layout.cc,v 1.10 2004-08-12 01:12:07 edwards Exp $
 
 /*! @file
  * @brief Scalarvec layout routines
@@ -124,6 +124,9 @@ namespace Layout
 
     // Initialize RNG
     RNG::initDefaultRNG();
+
+    // Set default profile level
+    setProfileLevel(getProgramProfileLevel());
   }
 
   //! Initializer for layout
