@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.8 2003-01-14 04:43:29 edwards Exp $
+// $Id: t_io.cc,v 1.9 2003-06-05 04:15:22 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -25,20 +25,35 @@ int main(int argc, char **argv)
   Double d = 17;
   random(a);
 
-  NmlWriter tonml("cat");
-  Write(tonml,a);
-  tonml.close();
-
   BinaryWriter tobinary("dog");
   write(tobinary, a);
   write(tobinary, d);
   tobinary.close();
 
-  float x;
+  LatticeReal aa;
+  Double dd = 0.0;
+  random(aa);
+
+  BinaryReader frombinary("dog");
+  read(frombinary, aa);
+  read(frombinary, dd);
+  frombinary.close();
+
+  NmlWriter tonml("cat");
+  Write(tonml,a);
+  Write(tonml,aa);
+  tonml.close();
+
+  float x = 42.1;
+  cerr << "Write some data to file input\n";
+  TextWriter totext("input");
+  totext << x;
+  totext.close();
+
   cerr << "Read some data from file input\n";
-  TextReader from("input");
-  from >> x;
-  from.close();
+  TextReader fromtext("input");
+  fromtext >> x;
+  fromtext.close();
 
   cerr << "you entered :" << x << ":\n";
   
