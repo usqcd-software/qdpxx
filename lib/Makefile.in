@@ -125,6 +125,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
+           -I@top_srcdir@/other_libs/nml \
            -I@top_srcdir@/other_libs/qio/include \
            -I@top_srcdir@/other_libs/qio/other_libs/c-dime/include
 
