@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.20 2003-10-09 19:59:39 edwards Exp $
+// $Id: t_xml.cc,v 1.21 2004-02-11 10:33:10 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 
     push(toxml,"godzilla");
     int dog = -17;
-    Write(toxml,dog);
+    write(toxml,"dog", dog);
     pop(toxml);
 
     QDPIO::cout << "buffer = XXX" << toxml.str() << "XXX" << endl;
@@ -54,11 +54,11 @@ int main(int argc, char **argv)
     XMLFileWriter toxml("t_xml.input1");
 
     push(toxml,"fred");
-    Write(toxml,d);
+    write(toxml,"d", d);
 
     push(toxml,"my_life");
     int rob = -5;
-    Write(toxml,rob);
+    write(toxml,"rob", rob);
     pop(toxml);
 
     pop(toxml);
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
     write(toxml,"charStarThingy","whether tis nobler to suffer the slings and arrows");
 
     string stringThingy = "Sat Jun 16 00:35:57 2001";
-    Write(toxml, stringThingy);
+    write(toxml, "stringThingy", stringThingy);
 
     Real a = 0.2;
     write(toxml,"realThingy",a);

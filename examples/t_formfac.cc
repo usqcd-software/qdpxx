@@ -1,4 +1,4 @@
-// $Id: t_formfac.cc,v 1.14 2003-06-07 19:09:32 edwards Exp $
+// $Id: t_formfac.cc,v 1.15 2004-02-11 10:33:09 bjoo Exp $
 /*! \file
  *  \brief Test the form-factor routine
  */
@@ -32,13 +32,13 @@ int main(int argc, char **argv)
     gaussian(u[m]);
 
   push(nml,"lattice");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,Ns);
-  Write(nml,nrow);
+  write(nml,"Nd", Nd);
+  write(nml,"Nc", Nc);
+  write(nml,"Ns", Ns);
+  write(nml,"nrow", nrow);
   pop(nml);
 
-//  Write(nml,u);
+//  write(nml,"u", u);
 
   LatticePropagator quark_prop_1, quark_prop_2;
   gaussian(quark_prop_1);

@@ -1,4 +1,4 @@
-// $Id: t_exotic.cc,v 1.5 2003-12-09 21:26:50 edwards Exp $
+// $Id: t_exotic.cc,v 1.6 2004-02-11 10:33:09 bjoo Exp $
 /*! \file
  *  \brief Test various exotic qdp routines
  */
@@ -26,9 +26,9 @@ int main(int argc, char *argv[])
   NmlWriter nml("t_exotic.nml");
 
   push(nml,"lattis");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,nrow);
+  write(nml,"Nd", Nd);
+  write(nml,"Nc", Nc);
+  write(nml,"nrow", nrow);
   pop(nml);
 
 
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     LatticeComplex lc1 = colorContract(a,b,c);
 
     push(nml,"color_contract_orig");
-    Write(nml,lc1);
+    write(nml,"lc1",lc1);
     pop(nml);
    
     // Do a random gauge transformation
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     // Try colorcontract again
     LatticeComplex lc2 = colorContract(a,b,c);
     push(nml,"color_contract_gauge_transf");
-    Write(nml,lc2);
+    write(nml,"lc2", lc2);
     pop(nml);
   }
 #endif

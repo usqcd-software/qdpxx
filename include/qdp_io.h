@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.14 2003-10-24 17:54:34 edwards Exp $
+// $Id: qdp_io.h,v 1.15 2004-02-11 10:33:10 bjoo Exp $
 
 /*! @file
  * @brief IO support
@@ -220,10 +220,6 @@ void read(NmlReader& nml, const std::string& s, multi1d<float>& d);
 void read(NmlReader& nml, const std::string& s, multi1d<double>& d);
 
 #define READ_NAMELIST(nml,a) read(nml,#a,a)
-#define Read(nml,a) read(nml,#a,a)
-
-
-
 
 //-----------------------------------------
 // namelist writer support
@@ -350,7 +346,6 @@ NmlWriter& operator<<(NmlWriter& nml, bool d);
 
 
 #define WRITE_NAMELIST(nml,a) write(nml,#a,a)
-#define Write(nml,a) write(nml,#a,a)
 
 
 //--------------------------------------------------------------------------------

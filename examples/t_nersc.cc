@@ -1,4 +1,4 @@
-// $Id: t_nersc.cc,v 1.5 2003-10-15 21:38:10 edwards Exp $
+// $Id: t_nersc.cc,v 1.6 2004-02-11 10:33:09 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -25,9 +25,9 @@ int main(int argc, char *argv[])
   push(xml, "t_nersc");
 
   push(xml,"lattis");
-  Write(xml,Nd);
-  Write(xml,Nc);
-  Write(xml,nrow);
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"nrow", nrow);
   pop(xml);
 
   {
@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
 
     // Write out the results
     push(xml,"Initial_observables");
-    Write(xml,w_plaq);
-    Write(xml,link);
+    write(xml,"w_plaq", w_plaq);
+    write(xml,"link", link);
     pop(xml);
 
     // Now write the gauge field in NERSC format
@@ -79,8 +79,8 @@ int main(int argc, char *argv[])
 
     // Write out the results
     push(xml,"Final_observables");
-    Write(xml,w_plaq);
-    Write(xml,link);
+    write(xml,"w_plaq", w_plaq);
+    write(xml,"link", link);
     pop(xml);
   }
 

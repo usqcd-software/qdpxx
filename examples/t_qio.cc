@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.11 2004-02-07 20:35:01 edwards Exp $
+// $Id: t_qio.cc,v 1.12 2004-02-11 10:33:10 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -31,18 +31,18 @@ int main(int argc, char **argv)
 
     push(file_xml,"file_fred");
     Double d = 17;
-    Write(file_xml,d);
+    write(file_xml,"d", d);
     push(file_xml,"file_sally");
     int rob = -5;
-    Write(file_xml,rob);
+    write(file_xml,"rob", rob);
     pop(file_xml);
     pop(file_xml);
 
     XMLBufferWriter record_xml;
     push(record_xml,"record_fred");
-    Write(record_xml,d);
+    write(record_xml,"d", d);
     push(record_xml,"record_sally");
-    Write(record_xml,rob);
+    write(record_xml,"rob", rob);
     pop(record_xml);
     pop(record_xml);
 

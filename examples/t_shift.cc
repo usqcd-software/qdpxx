@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_shift.cc,v 1.1 2003-09-04 02:07:58 edwards Exp $
+// $Id: t_shift.cc,v 1.2 2004-02-11 10:33:10 bjoo Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -35,14 +35,14 @@ int main(int argc, char *argv[])
     LatticeReal a,b;
     random(a);
 
-    Write(nml,a);
+    write(nml,"a", a);
     for(int mu=0; mu < Nd; ++mu)
     {
       QDP_info("Newdir: mu= %d",mu);
       push(nml,"newdir");
-      Write(nml,mu);
+      write(nml,"mu", mu);
       b = shift(a,FORWARD,mu);
-      Write(nml,b);
+      write(nml,"b", b);
     }
     pop(nml);
   }

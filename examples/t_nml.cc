@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_nml.cc,v 1.7 2003-06-20 18:12:24 edwards Exp $
+// $Id: t_nml.cc,v 1.8 2004-02-11 10:33:09 bjoo Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -26,53 +26,53 @@ main(int argc, char *argv[])
   push(nml_in, "IO_version");
 
   int version;
-  Read(nml_in, version);
-  Write(nml_out, version);
+  read(nml_in,"version", version);
+  write(nml_out, "version", version);
   pop(nml_in);
 
   push(nml_in, "param");
   int FermTypeP;
-  Read(nml_in,FermTypeP);
-  Write(nml_out,FermTypeP);
+  read(nml_in,"FermTypeP", FermTypeP);
+  write(nml_out,"FermTypeP", FermTypeP);
 
   int numKappa;
-  Read(nml_in,numKappa);
-  Write(nml_out,numKappa);
+  read(nml_in,"numKappa", numKappa);
+  write(nml_out,"numKappa", numKappa);
 
   multi1d<Real> Kappa(numKappa);
-  Read(nml_in,Kappa);
-  Write(nml_out,Kappa);
+  read(nml_in,"Kappa",Kappa);
+  write(nml_out,"Kappa", Kappa);
 
   int numSeq_src;
-  Read(nml_in,numSeq_src);
-  Write(nml_out,numSeq_src);
+  read(nml_in,"numSeq_src",numSeq_src);
+  write(nml_out,"numSeq_src", numSeq_src);
 
   multi1d<int> Seq_src(numSeq_src);
-  Read(nml_in,Seq_src);
-  Write(nml_out,Seq_src);
+  read(nml_in,"Seq_src",Seq_src);
+  write(nml_out,"Seq_src", Seq_src);
 
   bool my_bool;
-  Read(nml_in,my_bool);
-  Write(nml_out,my_bool);
+  read(nml_in,"my_bool", my_bool);
+  write(nml_out,"my_bool", my_bool);
 
   Boolean my_bool2;
-  Read(nml_in,my_bool2);
-  Write(nml_out,my_bool2);
+  read(nml_in,"my_bool2",my_bool2);
+  write(nml_out,"mu_bool2", my_bool2);
 
   Seed seed;
-  Read(nml_in,seed);
-  Write(nml_out,seed);
+  read(nml_in,"seed",seed);
+  write(nml_out,"seed", seed);
 
   Complex my_complex;
-  Read(nml_in,my_complex);
-  Write(nml_out,my_complex);
+  read(nml_in,"my_complex", my_complex);
+  write(nml_out,"my_complex",my_complex);
 
   pop(nml_in);
 
   push(nml_in, "Cfg");
 
   string cfg_file;
-  Read(nml_in,cfg_file);
+  read(nml_in,"cfg_file", cfg_file);
   write(nml_out,"cfg_file",cfg_file);
 
   write(nml_out,"my_string","hello world");

@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.14 2003-10-09 19:59:39 edwards Exp $
+ *  $Id: t_spectrum.cc,v 1.15 2004-02-11 10:33:10 bjoo Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -80,8 +80,8 @@ int main(int argc, char **argv)
 
     QDPIO::cout << "Gauge field is ";
     for(int mu = 0; mu < Nd; mu++){
-      Write(nml, mu);
-      Write(nml, u[mu]);
+      write(nml, "mu", mu);
+      write(nml, "u_mu", u[mu]);
     }
   }
 #endif
@@ -136,8 +136,8 @@ int main(int argc, char **argv)
      */
 
     push(nml,"Point_Point_Wilson_Mesons");
-    Write(nml, j_decay);
-    Write(nml, meson_prop);
+    write(nml, "j_decay", j_decay);
+    write(nml, "meson_prop", meson_prop);
     pop(nml);
   }
 
@@ -156,8 +156,8 @@ int main(int argc, char **argv)
      */
 
     push(nml,"Point_Point_Wilson_Baryons");
-    Write(nml, j_decay);
-    Write(nml, baryon_prop);
+    write(nml, "j_decay", j_decay);
+    write(nml, "baryon_prop", baryon_prop);
     pop(nml);
   }
 

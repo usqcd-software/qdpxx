@@ -1,4 +1,4 @@
-// $Id: t_dslash5.cc,v 1.1 2003-11-02 02:05:24 edwards Exp $
+// $Id: t_dslash5.cc,v 1.2 2004-02-11 10:33:09 bjoo Exp $
 /*! \file
  *  \brief Test the Wilson-Dirac operator (dslash)
  */
@@ -167,12 +167,12 @@ int main(int argc, char **argv)
 
 #if 0
   XMLFileWriter xml("t_dslash5.xml");
-  Write(xml,Nd);
-  Write(xml,Nc);
-  Write(xml,Ns);
-  Write(xml,nrow);
-  Write(xml,psi);
-  Write(xml,chi);
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"Ns", Ns);
+  write(xml,"nrow", nrow);
+  write(xml,"psi", psi);
+  write(xml,"chi", chi);
 #endif
 
   // Time to bolt

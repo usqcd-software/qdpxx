@@ -1,4 +1,4 @@
-// $Id: junk.cc,v 1.6 2003-10-09 19:59:39 edwards Exp $
+// $Id: junk.cc,v 1.7 2004-02-11 10:33:09 bjoo Exp $
 
 #include "tests.h"
 
@@ -16,27 +16,27 @@ void junk(NmlWriter& nml,
   Double sum;
 
   nml << "b1 before shift";
-  Write(nml,b1);
+  write(nml, "b1", b1);
   
   sum = norm2(b1);
   QDPIO::cerr << "Norm2 before shift = " << sum << endl;
   nml << "Norm2 before shift";
-  Write(nml,sum);
+  write(nml,"sum", sum);
 
   b3 = shift(b1,FORWARD,0);
 
   nml << "b3 after shift of b1";
-  Write(nml,b3);
+  write(nml,"b3", b3);
 
   sum = norm2(b3);
   nml << "Norm2 after shift";
-  Write(nml,sum);
+  write(nml, "sum", sum);
   QDPIO::cerr << "Norm2 after shift = " << sum << endl;
 
   sum = innerproductReal(b3,b3);
   QDPIO::cerr << "Inner product = " << sum << endl;
   nml << "Inner product";
-  Write(nml,sum);
+  write(nml,"sum", sum);
 
   DComplex dcsum;
   dcsum = innerproduct(b3,b3);

@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.21 2003-10-09 19:59:39 edwards Exp $
+// $Id: t_qdp.cc,v 1.22 2004-02-11 10:33:09 bjoo Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -109,18 +109,18 @@ int main(int argc, char **argv)
 
   b1 = 1.0;
   QDPIO::cout << "b1 after fill\n" << endl;
-  Write(nml,b1);
+  write(nml,"b1", b1);
 
   random(b1);
   QDPIO::cout << "b1 after random\n" << endl;
-  Write(nml,b1);
+  write(nml,"b1", b1);
 
   random(b2);
   gaussian(b3);
   QDPIO::cout << "b3 after gaussian\n";
   push(nml,"test_stuff");
   write(nml,"b3",b3);
-  Write(nml,b3);
+  write(nml,"b3",b3);
   pop(nml);
   
 #if 0
@@ -128,7 +128,7 @@ int main(int argc, char **argv)
   dsum = norm2(b1);
   QDPIO::cout << "dsum = " << dsum << endl;
   nml << "dsum = ";
-  Write(nml,dsum);
+  write(nml,"dsum", dsum);
 
   junk(nml,b3,b1,b2,all);
 #endif
@@ -172,15 +172,15 @@ int main(int argc, char **argv)
   t_source = 0;
 
   mesons(quark_prop_1, quark_prop_2, meson_prop, t_source, j_decay);
-  Write(nml,meson_prop);
+  write(nml,"meson_prop",meson_prop);
 
 #if 1
   multi2d<Complex> baryon_prop;
-  Write(nml,quark_prop_1);
+  write(nml,"quark_prop_1", quark_prop_1);
   baryon(quark_prop_1, baryon_prop, t_source, j_decay, 1);
-  Write(nml,t_source);
-  Write(nml,j_decay);
-  Write(nml,baryon_prop);
+  write(nml,"t_source", t_source);
+  write(nml,"j_decay", j_decay);
+  write(nml,"baryon_prop", baryon_prop);
 #endif
 
 #endif
@@ -191,8 +191,8 @@ int main(int argc, char **argv)
   chi = zero;
   dslash(chi, u, psi, +1, 0);
 
-  Write(nml,psi);
-  Write(nml,chi);
+  write(nml,"psi", psi);
+  write(nml,"chi", chi);
 
   // Time to bolt
   QDP_finalize();

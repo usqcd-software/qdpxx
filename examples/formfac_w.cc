@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.13 2003-07-31 01:07:41 edwards Exp $
+// $Id: formfac_w.cc,v 1.14 2004-02-11 10:33:09 bjoo Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -177,11 +177,11 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 
       // Print out the results
       push(nml,"Wilson_Current_3Pt_fn");
-      Write(nml,mu);
-      Write(nml,j_decay);
-      Write(nml,inser_mom);
-      Write(nml,local_cur3ptfn);
-      Write(nml,nonlocal_cur3ptfn);
+      write(nml,"mu", mu);
+      write(nml,"j_decay", j_decay);
+      write(nml,"inser_mom", inser_mom);
+      write(nml,"local_cur3ptfn", local_cur3ptfn);
+      write(nml,"nonlocal_cur3ptfn", nonlocal_cur3ptfn);
       pop(nml);
     }
   }

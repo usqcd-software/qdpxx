@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_specific.cc,v 1.4 2003-12-23 18:06:13 edwards Exp $
+// $Id: qdp_parscalarvec_specific.cc,v 1.5 2004-02-11 10:33:10 bjoo Exp $
 
 /*! @file
  * @brief Parscalarvec specific routines
@@ -75,13 +75,6 @@ void Map::make(const MapFunc& func)
 
 #if QDP_DEBUG >= 3
  {
-   ostringstream foon;
-   foon << "map." << Layout::nodeNumber();
-   NmlWriter nml(foon.str());
-
-   Write(nml,srcnode);
-   Write(nml,dstnode);
-
    for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
    {
      QDP_info("goffsets(%d) = %d",linear,goffsets(linear));

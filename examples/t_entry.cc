@@ -1,4 +1,4 @@
-// $Id: t_entry.cc,v 1.3 2003-06-20 03:04:55 edwards Exp $
+// $Id: t_entry.cc,v 1.4 2004-02-11 10:33:09 bjoo Exp $
 
 /*! \file
  *  \brief Test entry/exit routines
@@ -79,11 +79,11 @@ int main(int argc, char **argv)
   QDP_insert(la, sa, even);
 
   push(tonml, "Site_field");
-  Write(tonml,sa);
+  write(tonml,"sa", sa);
   pop(tonml);
 
   push(tonml, "Lattice_field");
-  Write(tonml,la);
+  write(tonml,"la", la);
   pop(tonml);
 
   tonml.close();

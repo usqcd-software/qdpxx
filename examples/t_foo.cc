@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.31 2003-10-17 15:30:17 edwards Exp $
+// $Id: t_foo.cc,v 1.32 2004-02-11 10:33:09 bjoo Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
   NmlWriter nml("foo.nml");
 //  nml.open("foo.nml");
 
-  Write(nml,nrow);
+  write(nml,"nrow", nrow);
 #if defined(ARCH_PARSCALAR)
   write(nml,"logicalSize",Layout::logicalSize());
 #endif
@@ -83,8 +83,8 @@ int main(int argc, char *argv[])
   {
     int x;
     push(nml_in,"stuff");
-    Read(nml_in,x);  
-    Write(nml,x);
+    read(nml_in,"x", x);  
+    write(nml,"x", x);
   }
   nml_in.close();
 #endif
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
     DComplex foo;
     rfoo = norm2(a);
     foo = innerProduct(a,b);
-    Write(nml,rfoo);
+    write(nml,"rfoo", rfoo);
   }
 #endif
 
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
     LatticeComplex e;
     e = colorContract(a,b,c);
 
-    Write(nml,e);
+    write(nml,"e",e);
   }
 #endif
   
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
     LatticeComplex f;
     f = colorContract(a,b,c);
 
-    Write(nml,f);
+    write(nml,"f", f);
 
     // Setting a,b,c = 1 for just 1 set of components should not cancel
     a = b = c = zero;
@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
     LatticeComplex g;
     g = colorContract(a,b,c);
 
-    Write(nml,g);
+    write(nml,"g", g);
   }
 #endif
   
@@ -154,8 +154,8 @@ int main(int argc, char *argv[])
 
     sue = near(fred);
 
-    Write(nml,fred);
-    Write(nml,sue);
+    write(nml,"fred", fred);
+    write(nml,"sue", sue);
   }
 #endif
 
@@ -171,9 +171,9 @@ int main(int argc, char *argv[])
     sue = near(fred,+1);
     sam = near(fred,-1);
 
-    Write(nml,fred);
-    Write(nml,sue);
-    Write(nml,sam);
+    write(nml,"fred", fred);
+    write(nml,"sue", sue);
+    write(nml,"sam", sam);
   }
 #endif
 
@@ -186,12 +186,12 @@ int main(int argc, char *argv[])
     LatticeReal fred,sue;
     random(fred);
 
-    Write(nml,fred);
+    write(nml,"fred", fred);
     for(int m=0; m < Nd; ++m)
     {
       sue = nearneigh(fred,m);
-      Write(nml,m);
-      Write(nml,sue);
+      write(nml,"m", m);
+      write(nml,"sue", sue);
     }
   }
 #endif
@@ -206,16 +206,16 @@ int main(int argc, char *argv[])
     LatticeColorMatrix fred;
     random(fred);
 
-    Write(nml,fred);
+    write(nml,"fred", fred);
     for(int m=0; m < Nd; ++m)
     {
       LatticeColorMatrix sue = nearneigh(fred,+1,m);
       LatticeColorMatrix sam;
       sam = nearneigh(fred,-1,m);
 
-      Write(nml,m);
-      Write(nml,sue);
-      Write(nml,sam);
+      write(nml,"m", m);
+      write(nml,"sue", sue);
+      write(nml,"sam", sam);
     }
   }
 #endif
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
 //    QDPIO::cerr << "bar[" << i << "]=" << bar.elem(i) << endl;
 
   QDPIO::cerr << "write\n";
-  Write(nml,bar);
+  write(nml,"bar", bar);
   QDPIO::cerr << "done write\n";
 
 #if 0
@@ -264,7 +264,7 @@ int main(int argc, char *argv[])
 #if 1
   LatticeComplex  foob(zero);
   nml << "Here is foob";
-  Write(nml,foob);
+  write(nml,"foob", foob);
 #endif
 
 
@@ -276,17 +276,17 @@ int main(int argc, char *argv[])
   b[rb[1]] = zero;
 
   nml << "First set of b";
-  Write(nml,b);
+  write(nml,"b", b);
 
   random(b);
 
   nml << "Second set of b";
-  Write(nml,b);
+  write(nml,"b", b);
 
   b[rb[0]] = -17;
 
   nml << "Third set of b";
-  Write(nml,b);
+  write(nml,"b", b);
 
 //  b.elem(1).elem() = -1;
 //  b.elem().elem(1).elem() = -1;
@@ -305,24 +305,24 @@ int main(int argc, char *argv[])
 //  x = ccc*c;
 
   nml << "here b";
-  Write(nml,b);
+  write(nml,"b", b);
   nml << "here a";
-  Write(nml,a);
+  write(nml,"a",a);
 
   nml << "here e";
   LatticeReal rr;
 //  random(rr);
   rr = 0.2;
   e = where(rr < 0.5, a, c);
-  Write(nml,e);
+  write(nml,"e",e);
 
 
 #if 1
   nml << "test peekColor";
   LatticeColorMatrix barf = 1.0;
   LatticeComplex fred = peekColor(barf,0,0);
-  Write(nml,barf);
-  Write(nml,fred);
+  write(nml,"barf", barf);
+  write(nml,"fred", fred);
 
   multi1d<int> ccrd(Nd);
   ccrd = 1;
@@ -330,20 +330,20 @@ int main(int argc, char *argv[])
   nml << "test peeksite";
   random(fred);
   Complex sitefred = peekSite(fred,ccrd);
-  Write(nml,fred);
-  Write(nml,sitefred);
+  write(nml,"fred", fred);
+  write(nml,"sitefred", sitefred);
 
 
   nml << "test pokeColor";
   random(barf);
   fred = 1.0;
   LatticeColorMatrix barfagain = pokeColor(barf,fred,0,0);
-  Write(nml,barfagain);
+  write(nml,"barfagain", barfagain);
 
   nml << "test pokeSite";
   random(sitefred);
   LatticeComplex fredagain = pokeSite(fred,sitefred,ccrd);
-  Write(nml,fredagain);
+  write(nml,"fredagain", fredagain);
 #endif
 
 
@@ -353,7 +353,7 @@ int main(int argc, char *argv[])
 //  a = ccc*c;
 
   nml << "here a";
-  Write(nml,a);
+  write(nml,"a", a);
 #endif
 
 #if 0
@@ -403,7 +403,7 @@ int main(int argc, char *argv[])
   }
 
   nml << "Reset and reread a";
-  Write(nml,a);
+  write(nml,"a",a);
 
 #endif
 
@@ -448,13 +448,13 @@ int main(int argc, char *argv[])
 
    float yy;
    read(xml,"/fred/yy",yy);
-   Write(nml,yy);
+   write(nml,"yy", yy);
 
    QDPIO::cerr << "Found reading metadata xml that  yy = " << yy << endl;
 
 //   Complex zz;
 //   read(xml,"zz",zz);
-//   Write(nml,zz);
+//   write(nml,"zz",zz);
  }
 #endif
 
@@ -479,9 +479,9 @@ int main(int argc, char *argv[])
    gaussian(a);
    gaussian(b);
    nml << "Test of QDPSerialFileWriter - here first is a";
-   Write(nml,a);
+   write(nml,"a",a);
    nml << "Test of QDPSerialFileWriter - here first is a";
-   Write(nml,b);
+   write(nml,"b", b);
 
    QDPIO::cerr << "create serialwriter" << endl;
    QDPSerialFileWriter to(file_xml,"fred.dime");
@@ -493,8 +493,8 @@ int main(int argc, char *argv[])
    to.close();
 
    nml << "Test of QDPSerialFileWriter";
-   Write(nml,a);
-   Write(nml,b);
+   write(nml,"a",a);
+   write(nml,"b",b);
  }
 #endif
 
@@ -517,8 +517,8 @@ int main(int argc, char *argv[])
    QDPIO::cerr << "end read 2" << endl;
 
    nml << "Read a and b from QDPSerialFileReader";
-   Write(nml,a);
-   Write(nml,b);
+   write(nml,"a", a);
+   write(nml,"b", b);
  }
 #endif
 
@@ -529,7 +529,7 @@ int main(int argc, char *argv[])
     multi1d<LatticeColorMatrix> u(Nd);
     readArchiv(u, "archiv.cfg");
     nml << "Here is the nersc archive u field";
-    Write(nml,u);
+    write(nml,"u",u);
   }
 #endif
 
@@ -543,7 +543,7 @@ int main(int argc, char *argv[])
     QDPIO::cerr << "Calling szin reader" << endl;
     readSzin(u, 0, "szin.cfg", seed_old);
     nml << "Here is the SZIN u field";
-    Write(nml,u);
+    write(nml,"u", u);
   }
 #endif
 
@@ -556,7 +556,7 @@ int main(int argc, char *argv[])
     QDPIO::cerr << "Read a szin qprop" << endl;
     readSzinQprop(qprop, "propagator_0");
     nml << "Here is the szin quark prop";
-    Write(nml,qprop);
+    write(nml,"qprop", qprop);
   }
 #endif
 
