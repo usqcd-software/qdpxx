@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.19 2004-02-19 02:25:04 edwards Exp $
+// $Id: t_mesplq.cc,v 1.20 2004-02-19 23:16:04 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
   NmlWriter nml("t_mesplq.nml");
 
   push(nml,"lattis");
-  Write(nml,Nd);
-  Write(nml,Nc);
-  Write(nml,nrow);
+  write(nml,"Nd",Nd);
+  write(nml,"Nc",Nc);
+  write(nml,"nrow",nrow);
   pop(nml);
 
   //! Example of calling a plaquette routine
@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
 
   // Write out the results
   push(nml,"observables");
-  Write(nml,w_plaq);
-  Write(nml,link);
+  write(nml,"w_plaq",w_plaq);
+  write(nml,"link",link);
   pop(nml);
 
   nml.flush();
