@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: specializations.h,v 1.4 2002-11-13 22:25:00 edwards Exp $
+// $Id: specializations.h,v 1.5 2002-12-05 18:58:31 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -108,6 +108,7 @@ struct RealScalar<double> {
 // references which do not help much (primitive objects are word size!), 
 // but get in the way of type computations.
 //
+template<>
 struct CreateLeaf<int>
 {
   typedef int Inp_t;
@@ -116,6 +117,7 @@ struct CreateLeaf<int>
   Leaf_t make(const Inp_t &a) { return Leaf_t(a); }
 };
 
+template<>
 struct CreateLeaf<float>
 {
   typedef float Inp_t;
@@ -124,6 +126,7 @@ struct CreateLeaf<float>
   Leaf_t make(const Inp_t &a) { return Leaf_t(a); }
 };
 
+template<>
 struct CreateLeaf<double>
 {
   typedef double Inp_t;
@@ -132,6 +135,7 @@ struct CreateLeaf<double>
   Leaf_t make(const Inp_t &a) { return Leaf_t(a); }
 };
 
+template<>
 struct CreateLeaf<bool>
 {
   typedef bool Inp_t;
