@@ -1,0 +1,118 @@
+Installation instructions for QDP++
+=================================
+
+1) Configuration.
+---------------- 
+
+QDP++ has been modified to use the GNU autoconf build system.
+To configure you have to execute the command:
+
+./configure <configuration options>
+
+Some important options for QDP++ are
+
+        --enable-parallel-arch=<arch>
+        --prefix=INSTALLATION_DIRECTORY
+        --with-qmp-home=QMP_DIRECTORY
+        --with-qmp-comms-type=<type of communications for QMP>
+
+Depending on the type of parallel architecture, QMP maybe required.
+Other options maybe needed in this case. See the QMP installation or
+you can query ./configure .
+
+Configure options:
+
+By default, --enable-parallel-arch is `scalar' suitable for a single
+processor workstation. Other options are needed for parallel architectures.
+
+The individual switches:
+
+ --enable-parallel-arch=ARCH      Specifies the type of architecture. Allowed
+                                  values for ARCH are:
+                                     scalar    -- single processor implementation
+                                     parscalar -- parallel collection of single 
+                                                  processor nodes using QMP for
+                                                  communications.
+
+ --prefix=INSTALLATION_DIRECTORY  specifies where the QDP headers 
+                                  and libraries should be installed 
+                                  when you type: make install. 
+	                          By default it is set to /usr/local.
+
+
+  --with-qmp-comms-type=COMMS_TYPE    This specifies what comms harness QMP
+                                  is to be built over. Allowed values for
+	                          COMMS_TYPE are:
+				     mpich  -- Build over standard MPICH
+                                               This option REQUIRES you 
+                                               to also specify the location of
+                                               the MPICH distribution with 
+					       --with-mpich-home
+
+				     mpich-gm -- Build over MPICH-GM. This 
+					       option REQUIRES you to also
+                                               specify the locations for 
+					       MPICH-GM and GM using the 
+					       --with-mpich-home and 
+                                               --with-gm-home switches
+	
+				     gm      -- Build over GM. This option
+				             REQUIRES you to also specify 
+					     the location of the GM
+					     installation using the 
+					     --with-gm-home switch
+
+                                  NOTE: Using the --with-comms-type switch
+	                                is COMPULSORY
+
+   --with-qmp-home=QMP_HOME       This switch specifies the location of your
+				  QMP installation.
+
+
+Specifying a compiler:
+
+You can specify a compiler by using the CC environment variable on the 
+configure command line eg:
+
+./configure CC=cc 
+
+or 
+
+./configure CC=powerpc-gnu-elf-gcc 
+
+This currently takes care of the cross compiling issues, as there is currently
+no need to distinguish between host and target compilers.
+
+
+2) Building
+-----------
+
+You build the library by typing:
+
+	gmake 
+
+3) Installing
+-------------
+
+You install the library by typing 
+
+	gmake install
+
+
+4) Cleaning up. 
+--------------
+
+   You can clean up the source files, by typing: make clean
+   You can remove the files from their installation location, by 
+   typing: make distclean. Note this will not remove the installation 
+   directory or its subdirectories
+
+5) Reporting Bugs etc.
+---------------------
+
+YOU MUST BE JOKING (if not send email to bj@ph.ed.ac.uk for build 
+problems -- which I will probably ignore)
+ 
+	                                       
+
+ 
