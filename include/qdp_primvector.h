@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.20 2004-07-27 05:33:35 edwards Exp $
+// $Id: qdp_primvector.h,v 1.21 2004-08-11 18:52:32 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -883,10 +883,15 @@ localInnerProductReal(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
  * returns  (a) ? b : c;
  */
 template<class T1, class T2, class T3, int N, template<class,int> class C>
-inline typename BinaryReturn<PVector<T2,N,C>, PVector<T3,N,C>, FnWhere>::Type_t
+struct TrinaryReturn<PScalar<T1>, PVector<T2,N,C>, PVector<T3,N,C>, FnWhere> {
+  typedef C<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, class T3, int N, template<class,int> class C>
+inline typename TrinaryReturn<PScalar<T1>, PVector<T2,N,C>, PVector<T3,N,C>, FnWhere>::Type_t
 where(const PScalar<T1>& a, const PVector<T2,N,C>& b, const PVector<T3,N,C>& c)
 {
-  typename BinaryReturn<PVector<T2,N,C>, PVector<T3,N,C>, FnWhere>::Type_t  d;
+  typename TrinaryReturn<PScalar<T1>, PVector<T2,N,C>, PVector<T3,N,C>, FnWhere>::Type_t  d;
 
   // Not optimal - want to have where outside assignment
   for(int i=0; i < N; ++i)

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.22 2004-08-11 04:20:15 edwards Exp $
+// $Id: qdp_inner.h,v 1.23 2004-08-11 18:52:32 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -1725,7 +1725,12 @@ localInnerProduct(const IScalar<T1>& s1, const IScalar<T2>& s2)
  * returns  (a) ? b : c;
  */
 template<class T1, class T2, class T3>
-inline typename BinaryReturn<IScalar<T2>, IScalar<T3>, FnWhere>::Type_t
+struct TrinaryReturn<IScalar<T1>, IScalar<T2>, IScalar<T3>, FnWhere> {
+  typedef IScalar<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<IScalar<T1>, IScalar<T2>, IScalar<T3>, FnWhere>::Type_t
 where(const IScalar<T1>& a, const IScalar<T2>& b, const IScalar<T3>& c)
 {
   return where(a.elem(), b.elem(), c.elem());
@@ -3370,14 +3375,84 @@ localInnerProduct(const IScalar<T1>& s1, const ILattice<T2,N>& s2)
  * returns  (a) ? b : c;
  */
 template<class T1, class T2, class T3, int N>
-inline typename BinaryReturn<ILattice<T2,N>, ILattice<T3,N>, FnWhere>::Type_t
+struct TrinaryReturn<ILattice<T1,N>, ILattice<T2,N>, ILattice<T3,N>, FnWhere> {
+  typedef ILattice<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, class T3, int N>
+inline typename TrinaryReturn<ILattice<T1,N>, ILattice<T2,N>, ILattice<T3,N>, FnWhere>::Type_t
 where(const ILattice<T1,N>& a, const ILattice<T2,N>& b, const ILattice<T3,N>& c)
 {
-  typename BinaryReturn<ILattice<T2,N>, ILattice<T3,N>, FnWhere>::Type_t  d;
+  typename TrinaryReturn<ILattice<T1,N>, ILattice<T2,N>, ILattice<T3,N>, FnWhere>::Type_t  d;
 
-  // Not optimal - want to have where outside assignment
   for(int i=0; i < N; ++i)
     d.elem(i) = where(a.elem(i), b.elem(i), c.elem(i));
+
+  return d;
+}
+
+//! ILattice = where(ILattice, ILattice, IScalar)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3, int N>
+struct TrinaryReturn<ILattice<T1,N>, ILattice<T2,N>, IScalar<T3>, FnWhere> {
+  typedef ILattice<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, class T3, int N>
+inline typename TrinaryReturn<ILattice<T1,N>, ILattice<T2,N>, IScalar<T3>, FnWhere>::Type_t
+where(const ILattice<T1,N>& a, const ILattice<T2,N>& b, const IScalar<T3>& c)
+{
+  typename TrinaryReturn<ILattice<T1,N>, ILattice<T2,N>, IScalar<T3>, FnWhere>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = where(a.elem(i), b.elem(i), c.elem());
+
+  return d;
+}
+
+//! ILattice = where(ILattice, IScalar, ILattice)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3, int N>
+struct TrinaryReturn<ILattice<T1,N>, IScalar<T2>, ILattice<T3,N>, FnWhere> {
+  typedef ILattice<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, class T3, int N>
+inline typename TrinaryReturn<ILattice<T1,N>, IScalar<T2>, ILattice<T3,N>, FnWhere>::Type_t
+where(const ILattice<T1,N>& a, const IScalar<T2>& b, const ILattice<T3,N>& c)
+{
+  typename TrinaryReturn<ILattice<T1,N>, IScalar<T2>, ILattice<T3,N>, FnWhere>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = where(a.elem(i), b.elem(), c.elem(i));
+
+  return d;
+}
+
+//! ILattice = where(ILattice, IScalar, IScalar)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3, int N>
+struct TrinaryReturn<ILattice<T1,N>, IScalar<T2>, IScalar<T3>, FnWhere> {
+  typedef ILattice<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, class T3, int N>
+inline typename TrinaryReturn<ILattice<T1,N>, IScalar<T2>, IScalar<T3>, FnWhere>::Type_t
+where(const ILattice<T1,N>& a, const IScalar<T2>& b, const IScalar<T3>& c)
+{
+  typename TrinaryReturn<ILattice<T1,N>, IScalar<T2>, IScalar<T3>, FnWhere>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = where(a.elem(i), b.elem(), c.elem());
 
   return d;
 }
@@ -3388,14 +3463,62 @@ where(const ILattice<T1,N>& a, const ILattice<T2,N>& b, const ILattice<T3,N>& c)
  * returns  (a) ? b : c;
  */
 template<class T1, class T2, class T3, int N>
-inline typename BinaryReturn<IScalar<T2>, ILattice<T3,N>, FnWhere>::Type_t
+struct TrinaryReturn<IScalar<T1>, ILattice<T2,N>, ILattice<T3,N>, FnWhere> {
+  typedef ILattice<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, class T3, int N>
+inline typename TrinaryReturn<IScalar<T1>, ILattice<T2,N>, ILattice<T3,N>, FnWhere>::Type_t
 where(const IScalar<T1>& a, const ILattice<T2,N>& b, const ILattice<T3,N>& c)
 {
-  typename BinaryReturn<ILattice<T2,N>, ILattice<T3,N>, FnWhere>::Type_t  d;
+  typename TrinaryReturn<IScalar<T1>, ILattice<T2,N>, ILattice<T3,N>, FnWhere>::Type_t  d;
 
-  // Not optimal - want to have where outside assignment
   for(int i=0; i < N; ++i)
     d.elem(i) = where(a.elem(), b.elem(i), c.elem(i));
+
+  return d;
+}
+
+//! ILattice = where(IScalar, ILattice, IScalar)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3, int N>
+struct TrinaryReturn<IScalar<T1>, ILattice<T2,N>, IScalar<T3>, FnWhere> {
+  typedef ILattice<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, class T3, int N>
+inline typename TrinaryReturn<IScalar<T1>, ILattice<T2,N>, IScalar<T3>, FnWhere>::Type_t
+where(const IScalar<T1>& a, const ILattice<T2,N>& b, const IScalar<T3>& c)
+{
+  typename TrinaryReturn<IScalar<T1>, ILattice<T2,N>, IScalar<T3>, FnWhere>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = where(a.elem(), b.elem(i), c.elem());
+
+  return d;
+}
+
+//! ILattice = where(IScalar, IScalar, ILattice)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3, int N>
+struct TrinaryReturn<IScalar<T1>, IScalar<T2>, ILattice<T3,N>, FnWhere> {
+  typedef ILattice<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, class T3, int N>
+inline typename TrinaryReturn<IScalar<T1>, IScalar<T2>, ILattice<T3,N>, FnWhere>::Type_t
+where(const IScalar<T1>& a, const IScalar<T2>& b, const ILattice<T3,N>& c)
+{
+  typename TrinaryReturn<IScalar<T1>, IScalar<T2>, ILattice<T3,N>, FnWhere>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = where(a.elem(), b.elem(), c.elem(i));
 
   return d;
 }

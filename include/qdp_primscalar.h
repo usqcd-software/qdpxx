@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.18 2004-08-10 00:48:58 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.19 2004-08-11 18:52:32 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -1310,7 +1310,12 @@ localInnerProductReal(const PScalar<T1>& s1, const PScalar<T2>& s2)
  * returns  (a) ? b : c;
  */
 template<class T1, class T2, class T3>
-inline typename BinaryReturn<PScalar<T2>, PScalar<T3>, FnWhere>::Type_t
+struct TrinaryReturn<PScalar<T1>, PScalar<T2>, PScalar<T3>, FnWhere> {
+  typedef PScalar<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<PScalar<T1>, PScalar<T2>, PScalar<T3>, FnWhere>::Type_t
 where(const PScalar<T1>& a, const PScalar<T2>& b, const PScalar<T3>& c)
 {
   return where(a.elem(), b.elem(), c.elem());

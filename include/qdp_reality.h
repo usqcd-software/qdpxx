@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.23 2004-08-10 00:48:58 edwards Exp $
+// $Id: qdp_reality.h,v 1.24 2004-08-11 18:52:32 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1165,7 +1165,8 @@ template<class T>
 inline typename UnaryReturn<RScalar<T>, FnImag>::Type_t
 imag(const RScalar<T>& s1)
 {
-  zero_rep(d.elem());
+  typedef typename InternalScalar<T>::Type_t  S;
+  return S(0);
 }
 
 
@@ -1498,7 +1499,12 @@ localInnerProductReal(const RScalar<T1>& s1, const RScalar<T2>& s2)
  * returns  (a) ? b : c;
  */
 template<class T1, class T2, class T3>
-inline typename BinaryReturn<RScalar<T2>, RScalar<T3>, FnWhere>::Type_t
+struct TrinaryReturn<RScalar<T1>, RScalar<T2>, RScalar<T3>, FnWhere> {
+  typedef RScalar<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<RScalar<T1>, RScalar<T2>, RScalar<T3>, FnWhere>::Type_t
 where(const RScalar<T1>& a, const RScalar<T2>& b, const RScalar<T3>& c)
 {
   return where(a.elem(), b.elem(), c.elem());
@@ -2191,14 +2197,63 @@ localInnerProductReal(const RComplex<T1>& l, const RComplex<T2>& r)
  * returns  (a) ? b : c;
  */
 template<class T1, class T2, class T3>
-inline typename BinaryReturn<RComplex<T2>, RComplex<T3>, FnWhere>::Type_t
+struct TrinaryReturn<RScalar<T1>, RComplex<T2>, RComplex<T3>, FnWhere> {
+  typedef RComplex<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<RScalar<T1>, RComplex<T2>, RComplex<T3>, FnWhere>::Type_t
 where(const RScalar<T1>& a, const RComplex<T2>& b, const RComplex<T3>& c)
 {
-  typedef typename BinaryReturn<RComplex<T2>, RComplex<T3>, FnWhere>::Type_t  Ret_t;
+  typedef typename TrinaryReturn<RScalar<T1>, RComplex<T2>, RComplex<T3>, FnWhere>::Type_t  Ret_t;
 
   // Not optimal - want to have where outside assignment
   return Ret_t(where(a.elem(), b.real(), c.real()),
 	       where(a.elem(), b.imag(), c.imag()));
+}
+
+//! RComplex<T> = where(RScalar, RComplex, RScalar)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3>
+struct TrinaryReturn<RScalar<T1>, RComplex<T2>, RScalar<T3>, FnWhere> {
+  typedef RComplex<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<RScalar<T1>, RComplex<T2>, RComplex<T3>, FnWhere>::Type_t
+where(const RScalar<T1>& a, const RComplex<T2>& b, const RScalar<T3>& c)
+{
+  typedef typename TrinaryReturn<RScalar<T1>, RComplex<T2>, RScalar<T3>, FnWhere>::Type_t  Ret_t;
+  typedef typename InternalScalar<T3>::Type_t  S;
+
+  // Not optimal - want to have where outside assignment
+  return Ret_t(where(a.elem(), b.real(), c.real()),
+	       where(a.elem(), b.imag(), S(0)));
+}
+
+//! RComplex<T> = where(RScalar, RScalar, RComplex)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3>
+struct TrinaryReturn<RScalar<T1>, RScalar<T2>, RComplex<T3>, FnWhere> {
+  typedef RComplex<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<RScalar<T1>, RScalar<T2>, RComplex<T3>, FnWhere>::Type_t
+where(const RScalar<T1>& a, const RScalar<T2>& b, const RComplex<T3>& c)
+{
+  typedef typename TrinaryReturn<RScalar<T1>, RScalar<T2>, RComplex<T3>, FnWhere>::Type_t  Ret_t;
+  typedef typename InternalScalar<T2>::Type_t  S;
+
+  // Not optimal - want to have where outside assignment
+  return Ret_t(where(a.elem(), b.real(), c.real()),
+	       where(a.elem(), S(0), c.imag()));
 }
 
 

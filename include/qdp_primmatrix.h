@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.26 2004-08-10 02:02:32 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.27 2004-08-11 18:52:32 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -1656,16 +1656,16 @@ localInnerProductReal(const PScalar<T1>& s1, const PMatrix<T2,N,C>& s2)
  * Where is the ? operation
  * returns  (a) ? b : c;
  */
-template<class T1, class T2, int N, template<class,int> class C>
-struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnWhere> {
-  typedef C<typename BinaryReturn<T1, T2, FnWhere>::Type_t, N>  Type_t;
+template<class T1, class T2, class T3, int N, template<class,int> class C>
+struct TrinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, PMatrix<T3,N,C>, FnWhere> {
+  typedef C<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t, N>  Type_t;
 };
 
 template<class T1, class T2, class T3, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T2,N,C>, PMatrix<T3,N,C>, FnWhere>::Type_t
+inline typename TrinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, PMatrix<T3,N,C>, FnWhere>::Type_t
 where(const PScalar<T1>& a, const PMatrix<T2,N,C>& b, const PMatrix<T3,N,C>& c)
 {
-  typename BinaryReturn<PMatrix<T2,N,C>, PMatrix<T3,N,C>, FnWhere>::Type_t  d;
+  typename TrinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, PMatrix<T3,N,C>, FnWhere>::Type_t  d;
 
   // Not optimal - want to have where outside assignment
   for(int i=0; i < N; ++i)
