@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.4 2003-08-21 04:38:26 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.5 2003-08-21 04:45:50 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -384,7 +384,6 @@ __asm__ __volatile__ (                    \
               "mulps  %6,%%xmm5\n\t"      \
               "mulps  %1,%%xmm0\n\t"      \
 	      :                           \
-	      :                           \
 	      : "m" ((bb).elem(0,j).real()),     \
 		"m" ((aa).elem(0,0).real()),     \
 		"m" ((aa).elem(0,0).imag()),     \
@@ -411,7 +410,6 @@ __asm__ __volatile__ (                    \
               "subps  %%xmm7,%%xmm4\n\t"  \
               "mulps  %5,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
-	      :                           \
 	      :                           \
 	      : "m" ((bb).elem(0,j).imag()),     \
 		"m" ((aa).elem(0,0).real()),     \
@@ -440,7 +438,6 @@ __asm__ __volatile__ (                    \
               "mulps  %6,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      :                           \
 	      : "m" ((bb).elem(1,j).real()),     \
 		"m" ((aa).elem(0,1).real()),     \
 		"m" ((aa).elem(0,1).imag()),     \
@@ -467,7 +464,6 @@ __asm__ __volatile__ (                    \
               "subps  %%xmm7,%%xmm4\n\t"  \
               "mulps  %5,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
-	      :                           \
 	      :                           \
 	      : "m" ((bb).elem(1,j).imag()),     \
 		"m" ((aa).elem(0,1).real()),     \
@@ -496,7 +492,6 @@ __asm__ __volatile__ (                    \
               "mulps  %6,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      :                           \
 	      : "m" ((bb).elem(2,j).real()),     \
 		"m" ((aa).elem(0,2).real()),     \
 		"m" ((aa).elem(0,2).imag()),     \
@@ -524,7 +519,6 @@ __asm__ __volatile__ (                    \
               "mulps  %5,%%xmm6\n\t"      \
               "addps  %%xmm6,%%xmm5\n\t"  \
 	      :                           \
-	      :                           \
 	      : "m" ((bb).elem(2,j).imag()),     \
 		"m" ((aa).elem(0,2).real()),     \
 		"m" ((aa).elem(0,2).imag()),     \
@@ -539,7 +533,6 @@ __asm__ __volatile__ (                    \
               "movaps %%xmm3,%3\n\t"      \
               "movaps %%xmm4,%4\n\t"      \
               "movaps %%xmm5,%5\n\t"      \
-	      :                           \
 	      : "=m" ((cc).elem(0,j).real()),    \
 		"=m" ((cc).elem(0,j).imag()),    \
 		"=m" ((cc).elem(1,j).real()),    \
