@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.12 2003-08-21 02:39:59 edwards Exp $
+// $Id: qdp_outer.h,v 1.13 2003-08-23 02:25:57 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -613,11 +613,6 @@ struct TrinaryReturn<OLattice<T1>, OScalar<T2>, OScalar<T3>, Op> {
 
 // Specific OScalar cases
 // Global operations
-template<class T>
-struct UnaryReturn<OScalar<T>, FnGetSite> {
-  typedef OScalar<typename UnaryReturn<T, FnGetSite>::Type_t>  Type_t;
-};
-
 template<class T1, class T2 >
 struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnPeekSite> {
   typedef OScalar<typename BinaryReturn<T1, T2, FnPeekSite>::Type_t>  Type_t;
@@ -1214,6 +1209,24 @@ struct BinaryReturn<OScalar<T1>, OLattice<T2>, OpRightShift > {
 /*! \addtogroup oscalar */
 /*! @{ */
 
+//! dest [some type] = source [some type]
+/*! Portable (internal) way of returning a single site */
+template<class T>
+struct UnaryReturn<OScalar<T>, FnGetSite> {
+  typedef OScalar<typename UnaryReturn<T, FnGetSite>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<OScalar<T>, FnGetSite>::Type_t
+getSite(const OScalar<T>& s1, int innersite)
+{
+  typename UnaryReturn<OScalar<T>, FnGetSite>::Type_t  d;
+
+  d.elem() = getSite(s1.elem(), innersite);
+  return d;
+}
+
+
 //! dest = 0
 template<class T> 
 void zero_rep(OScalar<T>& dest) 
@@ -1271,6 +1284,7 @@ void gaussian(OScalar<T>& d)
   gaussian(OSubScalar<T,OrderedSubset>(d,all));
 }
 
-/*! @} */  // end of group olattice
+/*! @} */  // end of group oscalar
+
 
 QDP_END_NAMESPACE();
