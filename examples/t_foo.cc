@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.16 2003-04-16 04:50:06 edwards Exp $
+// $Id: t_foo.cc,v 1.17 2003-04-16 15:29:25 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -396,6 +396,21 @@ int main(int argc, char *argv[])
    cerr << "write to" << endl;
    to.write(rec_xml,a);
    cerr << "end write" << endl;
+ }
+#endif
+
+#if 1
+ {
+   cerr << "create xml" << endl;
+
+   XMLMetaReader file_xml;
+   XMLMetaReader rec_xml;
+
+   cerr << "open serialreader" << endl;
+   QDPSerialReader from(file_xml,"fred.dime");
+   cerr << "read from" << endl;
+   from.read(rec_xml,a);
+   cerr << "end read" << endl;
  }
 #endif
 
