@@ -1,9 +1,36 @@
-SUBDIRS=PETE
-
 VPATH=@top_srcdir@
 VPATH+=@top_srcdir@/include
+VPATH+=@top_srcdir@/include/PETE
 
-include_HEADERS = qdp_defs.h \
+PETE_HDRS =  PETE/Combiners.h \
+             PETE/Functors.h \
+             PETE/PETE.h \
+             PETE/TreeNodes.h \
+             PETE/CreateLeaf.h \
+             PETE/ForEach.h \
+             PETE/OperatorTags.h \
+             PETE/Scalar.h \
+             PETE/TypeComputations.h
+
+# If using SSE, make sure those files are installed
+ssedir = scalarsite_sse
+
+SSE_HDRS = qdp_scalarsite_sse.h \
+	$(ssedir)/sse_addvec.h \
+	$(ssedir)/sse_adj_mat_hwvec.h \
+	$(ssedir)/sse_adj_mat_vec.h \
+	$(ssedir)/sse_mat_hwvec.h \
+	$(ssedir)/sse_mat_vec.h \
+	$(ssedir)/sse_mult_an.h \
+	$(ssedir)/sse_mult_na.h \
+	$(ssedir)/sse_mult_nn.h \
+	$(ssedir)/sse_s_m_a_mat.h \
+	$(ssedir)/sse_s_m_a_vec.h
+
+
+# All the include files - avoid flattening of dirs by using nobase
+nobase_include_HEADERS = \
+		qdp_defs.h \
 		qdp_forward.h \
 		qdp_globalfuncs.h \
 		qdp_inner.h \
@@ -44,6 +71,9 @@ include_HEADERS = qdp_defs.h \
 	        qdp_scalar_specific.h \
 	        qdp_parscalar_specific.h \
                 qdp_filebuf.h \
-	        qdp_scalarsite_sse.h
+                $(PETE_HDRS) \
+		$(SSE_HDRS)
 
 nodist_include_HEADERS = qdp_config.h
+
+
