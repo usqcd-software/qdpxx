@@ -226,6 +226,7 @@ case ${PARALLEL_ARCH} in
     AC_DEFINE(ARCH_SCALAR, [1], [Scalar architecture])
     AC_SUBST(ARCH_SITE, "scalarsite")
     AC_MSG_NOTICE([ Scalar Build! Not checking for QMP ])
+    AC_SUBST(QMP_HOME)
     AC_SUBST(QMP_CFLAGS)
     AC_SUBST(QMP_LDFLAGS)
     AC_SUBST(QMP_LIBS)
@@ -234,6 +235,7 @@ case ${PARALLEL_ARCH} in
     AC_DEFINE(ARCH_SCALARVEC, [1], [Scalar with vector extensions architecture])
     AC_SUBST(ARCH_SITE, "scalarvecsite")
     AC_MSG_NOTICE([ Scalar with Vector extensions Build! Not checking for QMP ])
+    AC_SUBST(QMP_HOME)
     AC_SUBST(QMP_CFLAGS)
     AC_SUBST(QMP_LDFLAGS)
     AC_SUBST(QMP_LIBS)
@@ -251,6 +253,7 @@ case ${PARALLEL_ARCH} in
 
     if test "X${QMP_CONFIG}X" != "XX" ; then
       AC_MSG_NOTICE([Found QMP configuration program ${QMP_CONFIG}])
+      AC_SUBST(QMP_HOME,    "${QMP_HOME}")
       AC_SUBST(QMP_CFLAGS,  "`${QMP_CONFIG} --cflags`")
       AC_MSG_NOTICE([QMP compile flags: ${QMP_CFLAGS}])
       AC_SUBST(QMP_LDFLAGS, "`${QMP_CONFIG} --ldflags`")
@@ -276,6 +279,7 @@ case ${PARALLEL_ARCH} in
 
     if test "X${QMP_CONFIG}X" != "XX" ; then
       AC_MSG_NOTICE([Found QMP configuration program ${QMP_CONFIG}])
+      AC_SUBST(QMP_HOME,    "${QMP_HOME}")
       AC_SUBST(QMP_CFLAGS,  "`${QMP_CONFIG} --cflags`")
       AC_MSG_NOTICE([QMP compile flags: ${QMP_CFLAGS}])
       AC_SUBST(QMP_LDFLAGS, "`${QMP_CONFIG} --ldflags`")
