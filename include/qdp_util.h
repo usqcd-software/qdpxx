@@ -1,10 +1,13 @@
 // -*- C++ -*-
 //
-// $Id: qdp_util.h,v 1.8 2003-10-15 17:14:39 edwards Exp $
+// $Id: qdp_util.h,v 1.9 2004-08-03 16:00:19 edwards Exp $
 //
 // QDP data parallel interface
 //
 // prototypes used throughout the QDP code
+
+#ifndef QDP_UTIL_INCLUDE
+#define QDP_UTIL_INCLUDE
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -41,3 +44,4 @@ namespace QDPUtil
   size_t bfwrite(void *ptr, size_t size, size_t nmemb, FILE *stream);
 }
 
+#endif
