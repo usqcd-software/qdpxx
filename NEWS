@@ -1,3 +1,9 @@
+07/26/2004 -- Robert Edwards
+
+	Version 1.9.0. Added profiling capability at configure with  --enable-profiling.
+        Changed/broke old memory layout by removing the PScalar level for PDWVector
+	which has been removed.
+
 07/12/2004 -- Robert Edwards
 
 	Version 1.8.6. Small tweaks before next minor release.
