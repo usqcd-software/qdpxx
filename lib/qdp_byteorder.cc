@@ -1,5 +1,5 @@
 //
-//  $Id: qdp_byteorder.cc,v 1.1 2003-05-22 20:06:29 edwards Exp $
+//  $Id: qdp_byteorder.cc,v 1.2 2003-05-23 04:45:26 edwards Exp $
 //
 //  Determine the byte order of a platform
 //
@@ -10,6 +10,9 @@
 
 #include <cstdio>
 #include <cstdlib>
+
+namespace QDPUtil
+{
 
 using namespace std;
 
@@ -161,3 +164,5 @@ size_t bfwrite(void *ptr, size_t size, size_t nmemb, FILE *stream)
 
   return n;
 }
+
+} // namespace QDPUtil

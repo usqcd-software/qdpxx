@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.1 2003-05-22 20:06:29 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.2 2003-05-23 04:45:26 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -124,7 +124,7 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
           for(int dd=0; dd<Nd; dd++)        /* dir */
           {
             /* Read an fe variable and write it to the BE */
-            if (bfread((void *) &(su3[0][0][0]),sizeof(float),mat_size,cfg_in.get()) != mat_size)
+            if (QDPUtil::bfread((void *) &(su3[0][0][0]),sizeof(float),mat_size,cfg_in.get()) != mat_size)
               QDP_error_exit("Error reading configuration");
 
             /* Reconstruct the third column  if necessary */

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: qdp_util.h,v 1.2 2003-04-30 21:09:17 edwards Exp $
+// $Id: qdp_util.h,v 1.3 2003-05-23 04:45:26 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -23,15 +23,18 @@ void InitDefaultSets();
 //! Initializer for maps
 void InitDefaultMaps();
 
-//! fread on a binary file written in big-endian order
-size_t bfread(void *ptr, size_t size, size_t nmemb, FILE *stream);
-
-//! fwrite to a binary file in big-endian order
-size_t bfwrite(void *ptr, size_t size, size_t nmemb, FILE *stream);
-
-
 //! Read a QCD (NERSC) Archive format gauge field
 void readArchiv(multi1d<LatticeColorMatrix>& u, const std::string& file);
 
 QDP_END_NAMESPACE();
+
+
+namespace QDPUtil
+{
+  //! fread on a binary file written in big-endian order
+  size_t bfread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+
+  //! fwrite to a binary file in big-endian order
+  size_t bfwrite(void *ptr, size_t size, size_t nmemb, FILE *stream);
+}
 
