@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: blas1.h,v 1.2 2004-03-22 11:08:33 bjoo Exp $
+// $Id: blas1.h,v 1.3 2004-03-26 14:53:49 bjoo Exp $
 //
 // Include file for test suite
 
@@ -27,6 +27,20 @@ double QDP_AXMY(LatticeFermion& dest,
 		const LatticeFermion& s1, 
 		const LatticeFermion& s2,
 		int cnt);
+
+double QDP_AXPBY(LatticeFermion& dest, 
+		 const Real& a,
+		 const Real& b,
+		 const LatticeFermion& s1, 
+		 const LatticeFermion& s2,
+		 int cnt);
+
+double QDP_AXMBY(LatticeFermion& dest, 
+		 const Real& a,
+		 const Real& b,
+		 const LatticeFermion& s1, 
+		 const LatticeFermion& s2,
+		 int cnt);
 
 double QDP_VADD(LatticeFermion& dest, 
 		const LatticeFermion& s1, 

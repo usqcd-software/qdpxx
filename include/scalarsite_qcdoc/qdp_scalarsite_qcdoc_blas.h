@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.6 2004-03-25 10:37:30 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.7 2004-03-26 14:53:49 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -648,6 +648,110 @@ void evaluate( OLattice< TVec > &d,
   vscal(zptr, aptr, xptr, n_3vec);
   /* REAL *yptr = (REAL *) &(internal_zero.elem(s.start()).elem(0).elem(0).real().elem());
      vaxpy3(zptr, aptr, xptr, yptr, n_3vec); */
+}
+
+// v *= a
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpMultiplyAssign &op,
+	       const QDPExpr< 
+	       UnaryNode<OpIdentity,
+	       Reference< QDPType< TScal, OScalar< TScal > > > >,
+	       OScalar< TScal > > &rhs,
+	       const OrderedSubset& s)
+{
+  const OScalar< TScal >& a = static_cast< const OScalar<TScal >&>(rhs.expression().child());
+
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "BJ: v *= a, a = " << a << endl;
+#endif
+  
+  REAL ar = a.elem().elem().elem().elem().elem();
+  REAL* xptr = &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* zptr = xptr;
+  int n_3vec = (s.end()-s.start()+1)*Ns;
+  vscal(zptr,&ar, xptr, n_3vec);
+}
+
+// v /= a
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpDivideAssign &op,
+	       const QDPExpr< 
+	       UnaryNode<OpIdentity,
+	       Reference< QDPType< TScal, OScalar< TScal > > > >,
+	       OScalar< TScal > > &rhs,
+	       const OrderedSubset& s)
+{
+  const OScalar< TScal >& a = static_cast< const OScalar<TScal >&>(rhs.expression().child());
+
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "BJ: v /= a, a = " << a << endl;
+#endif
+  
+  REAL ar = (REAL)1/a.elem().elem().elem().elem().elem();
+  REAL* xptr = &(d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL* zptr = xptr;
+  int n_3vec = (s.end()-s.start()+1)*Ns;
+  vscal(zptr,&ar, xptr, n_3vec);
+}
+
+// v += v
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAddAssign &op,
+	       const QDPExpr< 
+	       UnaryNode<OpIdentity,
+	       Reference< QDPType< TVec, OLattice< TVec > > > >,
+	       OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+  const OLattice< TVec >& x = static_cast< const OLattice<TVec >&>(rhs.expression().child());
+
+ 
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "BJ: v += v" << endl;
+#endif
+
+  int n_3vec = (s.end() - s.start()+1)*Ns;
+  REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *yptr = (REAL *)(&d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL one = 1;
+  vaxpy3(yptr, &one, yptr, xptr,n_3vec);
+
+}
+
+// v -= v
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpSubtractAssign &op,
+	       const QDPExpr< 
+	       UnaryNode<OpIdentity,
+	       Reference< QDPType< TVec, OLattice< TVec > > > >,
+	       OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+  const OLattice< TVec >& x = static_cast< const OLattice<TVec >&>(rhs.expression().child());
+
+ 
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "BJ: v -= v" << endl;
+#endif
+
+  int n_3vec = (s.end() - s.start()+1)*Ns;
+  REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL *yptr = (REAL *)(&d.elem(s.start()).elem(0).elem(0).real().elem());
+  REAL one = 1;
+  vaxmy3(yptr, &one, yptr, xptr, n_3vec);
+
 }
 
 

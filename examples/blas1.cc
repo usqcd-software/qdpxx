@@ -1,4 +1,4 @@
-// $Id: blas1.cc,v 1.3 2004-03-23 22:42:26 edwards Exp $
+// $Id: blas1.cc,v 1.4 2004-03-26 14:53:49 bjoo Exp $
 
 #include <stdlib.h>
 #include <sys/time.h>
@@ -52,6 +52,42 @@ double QDP_AXMY(LatticeFermion& dest,
   swatch.start();
   for (; cnt-- > 0; )
     dest = a*s1 - s2;
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
+//  return 2.0;
+}
+
+double QDP_AXPBY(LatticeFermion& dest, 
+		 const Real& a,
+		 const Real& b,
+		 const LatticeFermion& s1, 
+		 const LatticeFermion& s2,
+		 int cnt)
+{
+  StopWatch swatch;
+                                                                                
+  swatch.start();
+  for (; cnt-- > 0; )
+    dest = a*s1 + b*s2;
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
+//  return 2.0;
+}
+
+double QDP_AXMBY(LatticeFermion& dest, 
+		 const Real& a,
+		 const Real &b,
+		 const LatticeFermion& s1, 
+		 const LatticeFermion& s2,
+		 int cnt)
+{
+  StopWatch swatch;
+                                                                                
+  swatch.start();
+  for (; cnt-- > 0; )
+    dest = a*s1 - b*s2;
   swatch.stop();
 
   return swatch.getTimeInSeconds();

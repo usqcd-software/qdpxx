@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.4 2004-03-24 03:45:34 edwards Exp $
+// $Id: t_blas.cc,v 1.5 2004-03-26 14:53:49 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -324,6 +324,198 @@ int main(int argc, char *argv[])
   dnorm = norm2(d);
   QDPIO::cout << "z=x - y: diff = " << dnorm << endl;
 
+  LatticeFermion qtmp2,qtmp3;
+  // Do AX + BY
+  Real b = -3.2;
+  gaussian(qx);
+  gaussian(qy);
+
+  qtmp = a*qx;
+  qtmp += b*qy;
+  qtmp2 = a*qx + b*qy;
+  d = qtmp - qtmp2;
+  dnorm = norm2(d);
+  QDPIO::cout << "z=ax+by: diff = " << dnorm << endl;
+
+  qtmp2 = qx*a + b*qy;
+  d = qtmp - qtmp2;
+  dnorm = norm2(d);
+  QDPIO::cout << "z=xa+by: diff = " << dnorm << endl;
+
+  qtmp2 = a*qx + qy*b;
+  d = qtmp - qtmp2;
+  dnorm = norm2(d);
+  QDPIO::cout << "z=ax+yb: diff = " << dnorm << endl;
+
+  qtmp2 = qx*a+ qy*b;
+  d = qtmp - qtmp2;
+  dnorm = norm2(d);
+  QDPIO::cout << "z=xa+yb: diff = " << dnorm << endl;
+
+  
+  gaussian(qx);
+  gaussian(qy);
+
+  qtmp = a*qx;
+  qtmp -= b*qy;
+  qtmp2 = a*qx - b*qy;
+  d = qtmp - qtmp2;
+  dnorm = norm2(d);
+  QDPIO::cout << "z=ax-by: diff = " << dnorm << endl;
+
+  qtmp2 = qx*a - b*qy;
+  d = qtmp - qtmp2;
+  dnorm = norm2(d);
+  QDPIO::cout << "z=xa-by: diff = " << dnorm << endl;
+
+  qtmp2 = a*qx - qy*b;
+  d = qtmp - qtmp2;
+  dnorm = norm2(d);
+  QDPIO::cout << "z=ax-yb: diff = " << dnorm << endl;
+
+  qtmp2 = qx*a - qy*b;
+  d = qtmp - qtmp2;
+  dnorm = norm2(d);
+  QDPIO::cout << "z=xa-yb: diff = " << dnorm << endl;
+
+
+  gaussian(qx);
+  gaussian(qy);
+  qtmp = a*qx;
+  qtmp += b*qy;
+  qx = a*qx + b*qy;
+  d = qtmp - qx;
+  dnorm = norm2(d);
+  QDPIO::cout << "x=ax+by: diff = " << dnorm << endl;
+
+  gaussian(qx);
+  qtmp = a*qx;
+  qtmp += b*qy;
+  qx = qx*a + b*qy;
+  d = qtmp - qx;
+  dnorm = norm2(d);
+  QDPIO::cout << "x=xa+by: diff = " << dnorm << endl;
+
+  gaussian(qx);
+  qtmp = a*qx;
+  qtmp += b*qy;
+  qx = a*qx + qy*b;
+  d = qtmp - qx;
+  dnorm = norm2(d);
+  QDPIO::cout << "x=ax+yb: diff = " << dnorm << endl;
+
+  gaussian(qx);
+  qtmp = a*qx;
+  qtmp += b*qy;;
+  qx = qx*a+ qy*b;
+  d = qtmp - qx;
+  dnorm = norm2(d);
+  QDPIO::cout << "x=xa+yb: diff = " << dnorm << endl;
+
+  
+  gaussian(qx);
+  gaussian(qy);
+  qtmp = a*qx;
+  qtmp -= b*qy;
+  qx = a*qx - b*qy;
+  d = qtmp - qx;
+  dnorm = norm2(d);
+  QDPIO::cout << "x=ax-by: diff = " << dnorm << endl;
+
+  gaussian(qx);
+  qtmp = a*qx;
+  qtmp -= b*qy;
+  qx = qx*a - b*qy;
+  d = qtmp - qx;
+  dnorm = norm2(d);
+  QDPIO::cout << "x=xa-by: diff = " << dnorm << endl;
+
+  gaussian(qx);
+  qtmp = a*qx;
+  qtmp -= b*qy;
+ 
+  qx = a*qx - qy*b;
+  d = qtmp - qx;
+  dnorm = norm2(d);
+  QDPIO::cout << "x=ax-yb: diff = " << dnorm << endl;
+
+  gaussian(qx);
+  qtmp = a*qx;
+  qtmp -= b*qy;
+  qx = qx*a - qy*b;
+  d = qtmp - qx;
+  dnorm = norm2(d);
+  QDPIO::cout << "x=xa-yb: diff = " << dnorm << endl;
+
+
+  gaussian(qx);
+  gaussian(qy);
+  qtmp = a*qx;
+  qtmp += b*qy;
+  qy = a*qx + b*qy;
+  d = qtmp - qy;
+  dnorm = norm2(d);
+  QDPIO::cout << "y=ax+by: diff = " << dnorm << endl;
+
+  gaussian(qy);
+  qtmp = a*qx;
+  qtmp += b*qy;
+  qy = qx*a + b*qy;
+  d = qtmp - qy;
+  dnorm = norm2(d);
+  QDPIO::cout << "y=xa+by: diff = " << dnorm << endl;
+
+  gaussian(qy);
+  qtmp = a*qx;
+  qtmp += b*qy;
+  qy = a*qx + qy*b;
+  d = qtmp - qy;
+  dnorm = norm2(d);
+  QDPIO::cout << "y=ax+yb: diff = " << dnorm << endl;
+
+  gaussian(qy);
+  qtmp = a*qx;
+  qtmp += b*qy;;
+  qy = qx*a+ qy*b;
+  d = qtmp - qy;
+  dnorm = norm2(d);
+  QDPIO::cout << "y=xa+yb: diff = " << dnorm << endl;
+
+  
+  gaussian(qx);
+  gaussian(qy);
+  qtmp = a*qx;
+  qtmp -= b*qy;
+  qy = a*qx - b*qy;
+  d = qtmp - qy;
+  dnorm = norm2(d);
+  QDPIO::cout << "y=ax-by: diff = " << dnorm << endl;
+
+  gaussian(qy);
+  qtmp = a*qx;
+  qtmp -= b*qy;
+  qy = qx*a - b*qy;
+  d = qtmp - qy;
+  dnorm = norm2(d);
+  QDPIO::cout << "y=xa-by: diff = " << dnorm << endl;
+
+  gaussian(qy);
+  qtmp = a*qx;
+  qtmp -= b*qy;
+ 
+  qy = a*qx - qy*b;
+  d = qtmp - qy;
+  dnorm = norm2(d);
+  QDPIO::cout << "y=ax-yb: diff = " << dnorm << endl;
+
+  gaussian(qy);
+  qtmp = a*qx;
+  qtmp -= b*qy;
+  qy = qx*a - qy*b;
+  d = qtmp - qy;
+  dnorm = norm2(d);
+  QDPIO::cout << "y=xa-yb: diff = " << dnorm << endl;
+
 
   // Timings
    // Test VSCAL
@@ -387,6 +579,48 @@ int main(int argc, char *argv[])
     tt *= rescale;
     int Nflops = 4*Ns*Nc;
     QDPIO::cout << "time(V=aV-V) = " << tt
+		<< " micro-secs/site/iteration" 
+		<< " , " << Nflops / tt << " Mflops" << endl;
+  }
+
+   // Test VAXPBY
+  gaussian(qx);
+  gaussian(qy);
+
+  for(icnt=1; ; icnt <<= 1)
+  {
+    QDPIO::cout << "calling V=aV+bV " << icnt << " times" << endl;
+    tt = QDP_AXPBY(qz, a, b, qx, qy, icnt);
+    if (tt > 1)
+      break;
+  }
+  {
+    double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+    tt *= rescale;
+    int Nflops = 3*2*Ns*Nc;
+    QDPIO::cout << "time(V=aV+bV) = " << tt
+		<< " micro-secs/site/iteration" 
+		<< " , " << Nflops / tt << " Mflops" << endl;
+  }
+
+
+   // Test VAXMBY
+  gaussian(qx);
+  gaussian(qy);
+
+  for(icnt=1; ; icnt <<= 1)
+  {
+    QDPIO::cout << "calling V=aV-bV " << icnt << " times" << endl;
+    tt = QDP_AXMBY(qz, a, b, qx, qy, icnt);
+    if (tt > 1)
+      break;
+  }
+
+  {
+    double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+    tt *= rescale;
+    int Nflops = 3*2*Ns*Nc;
+    QDPIO::cout << "time(V=aV-bV) = " << tt
 		<< " micro-secs/site/iteration" 
 		<< " , " << Nflops / tt << " Mflops" << endl;
   }
