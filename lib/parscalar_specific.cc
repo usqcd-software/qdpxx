@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.5 2002-12-16 06:13:49 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.6 2003-01-04 03:24:15 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -481,8 +481,6 @@ void NearestNeighborMap::make()
    * soffsets(direction,isign,position)
    *  where  isign    = +1 : plus direction
    *                  =  0 : negative direction
-   *         cb       =  0 : even lattice (includes origin)
-   *                  = +1 : odd lattice (does not include origin)
    * the offsets cotain the current site, i.e the neighbour for site i
    * is  soffsets(i,dir,mu) and NOT  i + soffset(..) 
    */
