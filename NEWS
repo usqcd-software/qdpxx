@@ -1,3 +1,10 @@
+01/29/2003 -- Robert Edwards:
+
+        The single box (scalar) and parallel (parscalar) versions
+        work. The old compile-time volume configuration removed. The
+        user can now choose at run-time the lattice size.
+
+
 13/12/2002 -- Balint Joo: 
 
 	Switched to George Fleming style autoconf system (See INSTALL)

@@ -1,9 +1,7 @@
 STATUS
 ======
 
-Scalar library compiles, scalar examples compile and link and run.
-Parscalar library compiles, parscalar examples mostly fail to compile 
-and those that do tend to give segfaults.
+Scalar and Parscalar library compiles, examples compile and link and run.
 
 G++ Stuff
 =========
@@ -31,17 +29,35 @@ INSTALLATION
 
 See the ./INSTALL file.
 
-DIFFERENCES FROM THE MANUAL
+COMPILE TIME PARAMETERS
 ===========================
 
-NC, ND and NS are no longer defined in params.h, but in qdp_config.h.
+The macros NC, ND and NS are defined in params.h, but in qdp_config.h.
 params.h includes qdp_config.h and sets Nc=NC, ND=Nd and NS=Ns
 from the defined values NC, ND and NS which are defined in qdp_config.h
 
-qdp_config.h is created by the configure script from the template
-qdp_config.h.in. Apart from defining NC, ND and NS it also defines
-the relevant ARCH_[PAR]SCALAR which defines the type of parallel
-architecture. Hence qdp.h also includes qdp_config.h. 
+The file qdp_config.h is created by the configure script from the
+template qdp_config.h.in and the resulting file is placed in the build
+directory  include/qdp_config.h .  Apart from defining NC, ND and NS it
+also defines the relevant ARCH_[PAR]SCALAR which defines the type of
+parallel architecture. Hence qdp.h also includes qdp_config.h.
+
+
+USAGE
+=====
+
+The installation creates and installs a library - depending on the
+environment it is called libqdp.a . In the installation directory
+there is an  include   and a   lib  subdirectory where the relevant
+files are found. The user uses compiles their code with the
+appropriate  include and link flags pointing to the installation
+directories. E.g., assuming configuration with  --prefix=/usr/local/qdp++/scalar
+
+% g++ -I/usr/local/qdp++/scalar/include -L/usr/local/qdp++/scalar/lib  \
+  myfile.cc  -lqdp
+
+If QMP is used there also needs to be links to its installation
+directories as well.
 
 
 AUTOCONF & AUTOMAKE
