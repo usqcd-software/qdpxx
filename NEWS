@@ -1,0 +1,10 @@
+13/12/2002 -- Balint Joo: 
+
+	Switched to George Fleming style autoconf system (See INSTALL)
+	examples now not automatically built (make check builds them)
+
+	Added Robert's parscalar_specific.h of 12/12/2002
+	Parscalar targets now compile
+
+	Added QDP::QDP_init() and QDP_finalize() to call QMP_init_msg_passing 
+	from, with command line arguments
