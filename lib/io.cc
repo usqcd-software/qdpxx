@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.7 2003-04-10 18:35:43 edwards Exp $
+// $Id: io.cc,v 1.8 2003-04-10 18:55:37 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -17,9 +17,9 @@ void TextReader::open(const char* p)
 {
   if (Layout::primaryNode())
   {
-    f.open(p,std::ifstream::in);
+    f.open(p);
 
-    cerr << "test open again" << endl;
+    cerr << "test open thrice" << endl;
     if (! f.is_open())
       QDP_error_exit("failed to open file %s",p);
   }
