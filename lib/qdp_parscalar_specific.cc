@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.5 2003-07-17 01:47:42 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.6 2003-07-21 20:36:00 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -286,7 +286,7 @@ void writeOLattice(BinaryWriter& bin,
 		   const char* output, size_t size, size_t nmemb)
 {
   size_t tot_size = size*nmemb;
-  char recv_buf[tot_size];
+  char *recv_buf = new char[tot_size];
 
   // Find the location of each site and send to primary node
   for(int site=0; site < Layout::vol(); ++site)
@@ -313,6 +313,8 @@ void writeOLattice(BinaryWriter& bin,
     if (Layout::primaryNode())
       bin.writeArray(recv_buf, size, nmemb);
   }
+
+  delete[] recv_buf;
 }
 
 
@@ -322,7 +324,7 @@ void readOLattice(BinaryReader& bin,
 		  char* input, size_t size, size_t nmemb)
 {
   size_t tot_size = size*nmemb;
-  char recv_buf[tot_size];
+  char *recv_buf = new char[tot_size];
 
   // Find the location of each site and send to primary node
   for(int site=0; site < Layout::vol(); ++site)
@@ -348,6 +350,8 @@ void readOLattice(BinaryReader& bin,
     if (Layout::nodeNumber() == node)
       memcpy(input+linear*tot_size, recv_buf, tot_size);
   }
+
+  delete[] recv_buf;
 }
 
 
