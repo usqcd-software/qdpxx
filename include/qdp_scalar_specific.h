@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.20 2004-03-18 18:50:02 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.21 2004-03-19 15:13:43 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -128,7 +128,6 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 {
 //  cerr << "In evaluateOrderedSubset(olattice,olattice)" << endl;
 
-    foo;
   for(int i=s.start(); i <= s.end(); ++i) 
   {
 //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
