@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.20 2003-04-18 20:05:06 edwards Exp $
+// $Id: t_foo.cc,v 1.21 2003-04-20 03:33:33 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -55,9 +55,6 @@ private:
 }; 
 
 
-NmlWriter nml;
-
-
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
@@ -70,12 +67,25 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-//  NmlWriter nml("foo.nml");
-  nml.open("foo.nml");
+  NmlWriter nml("foo.nml");
+//  nml.open("foo.nml");
 
   Write(nml,nrow);
 #if defined(ARCH_PARSCALAR)
   write(nml,"logicalSize",Layout::logicalSize());
+#endif
+
+#if 1
+  cerr << "Open foo.input" << endl;
+
+  NmlReader nml_in("foo.input");
+  {
+    int x;
+    push(nml_in,"stuff");
+    Read(nml_in,x);  
+    Write(nml,x);
+  }
+  nml_in.close();
 #endif
 
 #if 0
