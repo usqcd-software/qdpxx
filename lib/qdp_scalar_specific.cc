@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_specific.cc,v 1.4 2003-07-26 04:02:23 edwards Exp $
+// $Id: qdp_scalar_specific.cc,v 1.5 2003-09-03 01:24:44 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -15,7 +15,9 @@ QDP_BEGIN_NAMESPACE(QDP);
 //! Initializer for generic map constructor
 void Map::make(const MapFunc& func)
 {
-//  QDP_info("Map::make");
+#if QDP_DEBUG >= 3
+  QDP_info("Map::make");
+#endif
 
   //--------------------------------------
   // Setup the communication index arrays
