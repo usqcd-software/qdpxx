@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: forward.h,v 1.6 2002-11-23 02:29:40 edwards Exp $
+// $Id: forward.h,v 1.7 2003-01-20 16:13:38 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -68,8 +68,9 @@ template<class T> struct WordType;
 // Empty leaf functor tag
 struct ElemLeaf;
 
-// Map (shifts) class
-class NearestNeighborMap;
+// Used for nearest neighbor shift (a map)
+class ArrayBiDirectionalMap;
+
 
 QDP_END_NAMESPACE();
 
