@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.1 2002-11-03 02:46:21 edwards Exp $
+// $Id: readszin.cc,v 1.2 2002-12-26 23:02:38 edwards Exp $
 
 /*! @file
  *  @brief Read in a configuration written by SZIN up to configuration version 7.
@@ -28,7 +28,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 void readSzin(multi1d<LatticeColorMatrix>& u, int cfg_io_location,
               char cfg_file[], Seed& seed_old)
 {
-  multi1d<LatticeColorMatrix32> u_old(Nd);
+  multi1d<LatticeColorMatrixF> u_old(Nd);
   multi1d<int> nrow_old(Nd); /* Lattice size (from CFGIN) */
   int Nd_old; /* Number of spacetime dimensions (from CFGIN) */
   int Nc_old; /* Number of colours (from CFGIN) */
@@ -334,7 +334,7 @@ void readSzin(multi1d<LatticeColorMatrix>& u, int cfg_io_location,
 
 #if 0
   /* reunitarize if the precision of u and u_old do not agree */
-  if (sizeof(WordType<LatticeColorMatrix>) != sizeof(WordType<LatticeColorMatrix32>))
+  if (sizeof(WordType<LatticeColorMatrix>) != sizeof(WordType<LatticeColorMatrixF>))
   {
     int numbad; /* reunit only called if different word size */
     LatticeBoolean lbad; /* not used */
