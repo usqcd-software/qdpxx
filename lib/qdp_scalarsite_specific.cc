@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_specific.cc,v 1.2 2003-07-18 03:23:30 edwards Exp $
+// $Id: qdp_scalarsite_specific.cc,v 1.3 2003-07-26 04:02:43 edwards Exp $
 
 /*! @file
  * @brief Scalar-like architecture specific routines
@@ -53,7 +53,7 @@ void Set::make(const SetFunc& func)
 {
   int nsubset_indices = func.numSubsets();
 
-#if defined(DEBUG)
+#if QDP_DEBUG >= 2
   QDP_info("Set a subset: nsubset = %d",nsubset_indices);
 #endif
 
@@ -133,7 +133,7 @@ void Set::make(const SetFunc& func)
 
     sub[cb].make(start, end, indexrep, &(sitetables[cb]), cb);
 
-#if defined(DEBUG)
+#if QDP_DEBUG >= 2
     QDP_info("Subset(%d): indexrep=%d start=%d end=%d",cb,indexrep,start,end);
 #endif
   }

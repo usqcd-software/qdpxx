@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.4 2003-07-06 19:10:27 edwards Exp $
+// $Id: qdp_outer.h,v 1.5 2003-07-26 04:03:06 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -230,14 +230,14 @@ public:
     {
       F = new T[Layout::sitesOnNode()];
 
-#if defined(DEBUG)
+#if QDP_DEBUG >= 1
       fprintf(stderr,"create OLattice[%d]=0x%x, this=0x%x\n",
               Layout::sitesOnNode(),(void *)F,this);
 #endif
     }
   ~OLattice()
     {
-#if defined(DEBUG)
+#if QDP_DEBUG >= 1
       fprintf(stderr,"destroy OLattice=0x%x, this=0x%x\n",F,this);
 #endif
 
@@ -251,7 +251,7 @@ public:
     {
       F = new T[Layout::sitesOnNode()];
 
-#if defined(DEBUG)
+#if QDP_DEBUG >= 1
       fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
 #endif
 
@@ -265,7 +265,7 @@ public:
     {
       F = new T[Layout::sitesOnNode()];
 
-#if defined(DEBUG)
+#if QDP_DEBUG >= 1
       fprintf(stderr,"construct from expr OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
 #endif
 
@@ -278,7 +278,7 @@ public:
     {
       F = new T[Layout::sitesOnNode()];
 
-#if defined(DEBUG)
+#if QDP_DEBUG >= 1
       fprintf(stderr,"construct from const OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
 #endif
 
@@ -292,7 +292,7 @@ public:
     {
       F = new T[Layout::sitesOnNode()];
 
-#if defined(DEBUG)
+#if QDP_DEBUG >= 1
       fprintf(stderr,"construct from zero OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
 #endif
 
@@ -349,7 +349,7 @@ public:
     {
       F = new T[Layout::sitesOnNode()];
 
-#if defined(DEBUG)
+#if QDP_DEBUG >= 1
       fprintf(stderr,"copy OLattice[%d]=0x%x\n",Layout::sitesOnNode(),F);
 #endif
       
