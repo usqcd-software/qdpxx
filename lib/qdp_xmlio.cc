@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.8 2003-06-04 18:22:29 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.9 2003-06-09 04:17:26 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -444,7 +444,7 @@ XMLBufferWriter::~XMLBufferWriter() {}
 
 //--------------------------------------------------------------------------------
 // Metadata writer class
-XMLFileWriter::XMLFileWriter() {indent_level=0;iop=false;}
+XMLFileWriter::XMLFileWriter() {indent_level=0;}
 
 void XMLFileWriter::close()
 {
@@ -452,12 +452,43 @@ void XMLFileWriter::close()
   {
     if (Layout::primaryNode()) 
       output_stream.close();
-
-    iop = false;
   }
 }
 
-bool XMLFileWriter::is_open() {return iop;}
+// Propagate status to all nodes
+bool XMLFileWriter::is_open()
+{
+  bool s;
+
+  if (Layout::primaryNode()) 
+    s = output_stream.is_open();
+
+  Internal::broadcast(s);
+  return s;
+}
+
+
+// Flush the buffer
+void XMLFileWriter::flush()
+{
+  if (is_open()) 
+  {
+    if (Layout::primaryNode()) 
+      output_stream.flush();
+  }
+}
+
+// Propagate status to all nodes
+bool XMLFileWriter::fail()
+{
+  bool s;
+
+  if (Layout::primaryNode()) 
+    s = output_stream.fail();
+
+  Internal::broadcast(s);
+  return s;
+}
 
 XMLFileWriter::~XMLFileWriter() {close();}
 

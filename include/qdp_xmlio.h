@@ -1,12 +1,11 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.6 2003-05-23 05:20:27 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.7 2003-06-09 04:17:26 edwards Exp $
 
 /*! @file
  * @brief XML IO support
  */
 
 #include <string>
-#include <fstream>
 #include <sstream>
 
 #include "xml_simplewriter.h"
@@ -318,14 +317,20 @@ public:
       }
 
       indent_level=0;
-      iop=true;
     }
 
+  //! Flush the buffer
+  void flush();
+
+  //! Return true if some failure occurred in previous IO operation
+  bool fail();
+
+  //! Close the file
   void close();
         
 private:
-  bool iop;
-  ofstream output_stream;
+  QDPUtil::RemoteOutputFileStream output_stream;
+//  ofstream output_stream;
   ostream& getOstream(void) {return output_stream;}
 };
 
