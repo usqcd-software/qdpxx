@@ -190,9 +190,7 @@ t_nersc_SOURCES = t_nersc.cc mesplq.cc $(HDRS)
 t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)
 t_mesplq_SOURCES = t_mesplq.cc mesplq.cc reunit.cc $(HDRS)
 t_formfac_SOURCES = t_formfac.cc formfac_w.cc $(HDRS)
-t_spectrum_SOURCES = t_spectrum.cc formfac_w.cc dslashm_w.cc \
-          baryon_w.cc mesons_w.cc mesplq.cc reunit.cc $(HDRS)
-
+t_spectrum_SOURCES = t_spectrum.cc baryon_w.cc mesons_w.cc mesplq.cc $(HDRS)
 t_qdp_SOURCES = t_qdp.cc formfac_w.cc dslashm_w.cc baryon_w.cc \
 	 mesons_w.cc mesplq.cc reunit.cc $(HDRS)
 
@@ -276,9 +274,8 @@ t_skeleton_OBJECTS = $(am_t_skeleton_OBJECTS)
 t_skeleton_LDADD = $(LDADD)
 t_skeleton_DEPENDENCIES =
 t_skeleton_LDFLAGS =
-am_t_spectrum_OBJECTS = t_spectrum.$(OBJEXT) formfac_w.$(OBJEXT) \
-	dslashm_w.$(OBJEXT) baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
-	mesplq.$(OBJEXT) reunit.$(OBJEXT) $(am__objects_1)
+am_t_spectrum_OBJECTS = t_spectrum.$(OBJEXT) baryon_w.$(OBJEXT) \
+	mesons_w.$(OBJEXT) mesplq.$(OBJEXT) $(am__objects_1)
 t_spectrum_OBJECTS = $(am_t_spectrum_OBJECTS)
 t_spectrum_LDADD = $(LDADD)
 t_spectrum_DEPENDENCIES =
