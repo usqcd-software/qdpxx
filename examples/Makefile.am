@@ -33,7 +33,7 @@ VPATH+=@top_srcdir@/examples
 # The programs to build
 # 
 check_PROGRAMS= t_skeleton t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo \
-      t_nml t_xml t_qio t_remote t_entry
+      t_nml t_xml t_qio t_remote t_entry t_linalg
 
 #
 # The program and its dependencies
@@ -52,6 +52,7 @@ t_spectrum_SOURCES = t_spectrum.cc formfac_w.cc dslashm_w.cc \
           baryon_w.cc mesons_w.cc mesplq.cc reunit.cc $(HDRS)
 t_qdp_SOURCES =  t_qdp.cc formfac_w.cc dslashm_w.cc baryon_w.cc \
 	 mesons_w.cc mesplq.cc reunit.cc $(HDRS)
+t_linalg_SOURCES =  t_linalg.cc linalg1.cc linalg.h
 
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
