@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.14 2003-08-29 02:42:07 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.15 2003-10-17 15:56:23 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -905,6 +905,20 @@ peekSpin(const PMatrix<T,N,C>& l, int row, int col)
   return d;
 }
 
+//! Extract domain-wall vector components 
+/*! Generically, this is an identity operation. Defined differently under domain-wall index */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekDWVector>::Type_t
+peekDW(const PMatrix<T,N,C>& l, int row)
+{
+  typename UnaryReturn<PMatrix<T,N,C>, FnPeekDWVector>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = peekDW(l.elem(i,j),row);
+  return d;
+}
+
 
 //! Insert color vector components 
 /*! Generically, this is an identity operation. Defined differently under color */
@@ -951,6 +965,18 @@ pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row, int col)
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       pokeSpin(l.elem(i,j),r.elem(i,j),row,col);
+  return l;
+}
+
+//! Insert domain-wall vector components 
+/*! Generically, this is an identity operation. Defined differently under domain-wall */
+template<class T1, class T2, int N, template<class,int> class C>
+inline PMatrix<T1,N,C>&
+pokeDW(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
+{
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      pokeDW(l.elem(i,j),r.elem(i,j),row);
   return l;
 }
 

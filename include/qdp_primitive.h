@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primitive.h,v 1.2 2003-05-23 04:45:53 edwards Exp $
+// $Id: qdp_primitive.h,v 1.3 2003-10-17 15:56:23 edwards Exp $
 
 /*! \file
  * \brief Primitive classes
@@ -30,6 +30,8 @@
 #include "qdp_primgamma.h"
 #include "qdp_primspinmat.h"
 #include "qdp_primspinvec.h"
+
+#include "qdp_primdwvec.h"
 
 // QDP_END_NAMESPACE();
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_newops.h,v 1.8 2003-08-23 20:33:58 edwards Exp $
+// $Id: qdp_newops.h,v 1.9 2003-10-17 15:56:23 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -290,7 +290,57 @@ peekSpin(const QDPExpr<T1,C1> & l, int row)
 
 
 //---------------------------------------
+//! Structure for extracting domain-wall vector components
+struct FnPeekDWVector
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPeekDWVector)
 
+  FnPeekDWVector(int _row): row(_row) {}
+  
+  template<class T>
+  inline typename UnaryReturn<T, FnPeekDWVector>::Type_t
+  operator()(const T &a) const
+  {
+    return (peekDW(a,row));
+  }
+
+private:
+  int row;
+};
+
+
+//! Extract color vector components
+/*! @ingroup group1
+  @relates QDPType */
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnPeekDWVector,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnPeekDWVector >::Type_t >::Expression_t
+peekDW(const QDPType<T1,C1> & l, int row)
+{
+  typedef UnaryNode<FnPeekDWVector,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnPeekDWVector >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekDWVector(row),
+    CreateLeaf<QDPType<T1,C1> >::make(l)));
+}
+
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnPeekDWVector,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+peekDW(const QDPExpr<T1,C1> & l, int row)
+{
+  typedef UnaryNode<FnPeekDWVector,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnPeekDWVector >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekDWVector(row),
+    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+}
+
+
+
+//---------------------------------------
 //! Structure for inserting color matrix components
 struct FnPokeColorMatrix
 {
@@ -573,6 +623,82 @@ pokeSpin(const QDPSubType<T1,C1,S>& l, const QDPExpr<T2,C2>& r, int row)
   evaluate(ll,FnPokeSpinVector(row),r,s);
   return ll;
 }
+
+
+
+//---------------------------------------
+//! Structure for inserting domain-wall vector components
+struct FnPokeDWVector
+{
+  PETE_EMPTY_CONSTRUCTORS(FnPokeDWVector)
+
+  FnPokeDWVector(int _row): row(_row) {}
+  
+  template<class T1, class T2>
+  inline typename BinaryReturn<T1, T2, FnPokeDWVector>::Type_t
+  operator()(const T1 &a, const T2 &b) const
+  {
+    return (pokeDW(const_cast<T1&>(a),b,row));
+  }
+
+private:
+  int row;
+};
+
+
+
+//! Insert color vector components
+/*! @ingroup group1
+  @param l  target to update
+  @param r  source
+  @param row  row of color vector
+  @return updated target
+  @ingroup group1
+  @relates QDPType */
+template<class T1,class C1,class T2,class C2>
+inline C1& 
+pokeDW(QDPType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
+{
+  C1& ll = static_cast<C1&>(l);
+  evaluate(ll,FnPokeDWVector(row),PETE_identity(r));
+  return ll;
+}
+
+template<class T1,class C1,class T2,class C2>
+inline C1& 
+pokeDW(QDPType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
+{
+  C1& ll = static_cast<C1&>(l);
+  evaluate(ll,FnPokeDWVector(row),r);
+  return ll;
+}
+
+
+template<class T1,class C1,class T2,class C2,class S>
+inline C1
+pokeDW(const QDPSubType<T1,C1,S>& l, const QDPType<T2,C2>& r, int row)
+{
+  C1& ll = const_cast<QDPSubType<T1,C1,S>&>(l).field();
+  const S& s = l.subset();
+
+  evaluate(ll,FnPokeDWVector(row),PETE_identity(r),s);
+  return ll;
+}
+
+
+template<class T1,class C1,class T2,class C2,class S>
+inline C1
+pokeDW(const QDPSubType<T1,C1,S>& l, const QDPExpr<T2,C2>& r, int row)
+{
+  C1& ll = const_cast<QDPSubType<T1,C1,S>&>(l).field();
+  const S& s = l.subset();
+
+  evaluate(ll,FnPokeDWVector(row),r,s);
+  return ll;
+}
+
+
+
 
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.15 2003-10-09 18:28:55 edwards Exp $
+// $Id: qdp_reality.h,v 1.16 2003-10-17 15:56:23 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1283,6 +1283,15 @@ inline typename UnaryReturn<RScalar<T>, FnPeekSpinMatrix>::Type_t
 peekSpin(const RScalar<T>& l, int row, int col)
 {
   return peekSpin(l.elem(),row,col);
+}
+
+//! Extract domain-wall vector components 
+/*! Generically, this is an identity operation. Defined differently under domain-wall index */
+template<class T>
+inline typename UnaryReturn<RScalar<T>, FnPeekDWVector>::Type_t
+peekDW(const RScalar<T>& l, int row)
+{
+  return peekDW(l.elem(),row);
 }
 
 

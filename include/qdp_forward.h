@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_forward.h,v 1.4 2003-08-27 01:25:34 edwards Exp $
+// $Id: qdp_forward.h,v 1.5 2003-10-17 15:56:23 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -39,6 +39,7 @@ template <class T, int N> class PColorVector;
 template <class T, int N> class PSpinVector;
 template <class T, int N> class PColorMatrix;
 template <class T, int N> class PSpinMatrix;
+template <class T, int N> class PDWVector;
 template <class T> class PSeed;
 
 template<int N> class GammaType;
