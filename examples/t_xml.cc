@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.13 2003-08-27 01:27:26 edwards Exp $
+// $Id: t_xml.cc,v 1.14 2003-08-27 18:46:49 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 
     write(toxml,"charStarThingy","whether tis nobler to suffer the slings and arrows");
 
-    string stringThingy = "To be or not to be";
+    string stringThingy = "Sat Jun 16 00:35:57 2001";
     Write(toxml, stringThingy);
 
     Real a = 0.2;
