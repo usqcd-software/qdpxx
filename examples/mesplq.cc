@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.7 2002-10-09 17:03:30 edwards Exp $
+// $Id: mesplq.cc,v 1.8 2002-10-09 17:05:37 edwards Exp $
 //
 #include "tests.h"
 
@@ -10,6 +10,7 @@ using namespace QDP;
  * \param w_plaq -- plaquette average (Write)
  * \param s_plaq -- space-like plaquette average (Write)
  * \param t_plaq -- time-like plaquette average (Write)
+ * \param link   -- space-time average link (Write)
  */
 
 void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq, 
