@@ -1,5 +1,10 @@
 09/02/2003 -- Robert Edwards
 
+	Version 1.5.9. scalarvec now seems to pass major tests. Overhauled
+        configure.ac, lib/Makefile.am to handle new build structure.
+
+09/02/2003 -- Robert Edwards
+
 	Version 1.5.8. More tweaks to scalarvec. Small cleanups.
 
 09/01/2003 -- Balint Joo
