@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.9 2003-08-10 02:27:10 edwards Exp $
+// $Id: qdp_outer.h,v 1.10 2003-08-14 03:52:04 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -640,17 +640,17 @@ struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProductReal > {
 
 template<class T>
 struct UnaryReturn<OScalar<T>, FnLocalNorm2 > {
-  typedef OLattice<typename UnaryReturn<T, FnLocalNorm2>::Type_t>  Type_t;
+  typedef OScalar<typename UnaryReturn<T, FnLocalNorm2>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
 struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnLocalInnerProduct > {
-  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
+  typedef OScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
 
 template<class T1, class T2>
 struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnLocalInnerProductReal > {
-  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
+  typedef OScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
 
