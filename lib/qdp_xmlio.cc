@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.25 2003-09-10 13:19:27 bjoo Exp $
+// $Id: qdp_xmlio.cc,v 1.26 2003-09-10 16:58:45 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -309,55 +309,67 @@ void readArrayPrimitive(XMLReader& xml, const std::string& s, multi1d<T>& result
   }
 }
 
-
+template<>
 void read(XMLReader& xml, const std::string& xpath, multi1d<int>& result)
 {
   readArrayPrimitive<int>(xml, xpath, result);
 }
+template<>
 void read(XMLReader& xml, const std::string& xpath, multi1d<unsigned int>& result)
 {
   readArrayPrimitive<unsigned int>(xml, xpath, result);
 }
+template<>
 void read(XMLReader& xml, const std::string& xpath, multi1d<short int>& result)
 {
   readArrayPrimitive<short int>(xml, xpath, result);
 }
+template<>
 void read(XMLReader& xml, const std::string& xpath, multi1d<unsigned short int>& result)
 {
   readArrayPrimitive<unsigned short int>(xml, xpath, result);
 }
+template<>
 void read(XMLReader& xml, const std::string& xpath, multi1d<long int>& result)
 {
   readArrayPrimitive<long int>(xml, xpath, result);
 }
+template<>
 void read(XMLReader& xml, const std::string& xpath, multi1d<unsigned long int>& result)
 {
   readArrayPrimitive<unsigned long int>(xml, xpath, result);
 }
+template<>
 void read(XMLReader& xml, const std::string& xpath, multi1d<float>& result)
 {
   readArrayPrimitive<float>(xml, xpath, result);
 }
+template<>
 void read(XMLReader& xml, const std::string& xpath, multi1d<double>& result)
 {
   readArrayPrimitive<double>(xml, xpath, result);
 }
+template<>
 void read(XMLReader& xml, const std::string& xpath, multi1d<bool>& result)
 {
   readArrayPrimitive<bool>(xml, xpath, result);
 }
+template<>
 void read(XMLReader& xml, const std::string& xpath, multi1d<Integer>& result)
 {
   readArrayPrimitive<Integer>(xml, xpath, result);
 }
-void read(XMLReader& xml, const std::string& xpath, multi1d<Real>& result)
+template<>
+void read(XMLReader& xml, const std::string& xpath, multi1d<Real32>& result)
 {
-  readArrayPrimitive<Real>(xml, xpath, result);
+  readArrayPrimitive<Real32>(xml, xpath, result);
 }
-void read(XMLReader& xml, const std::string& xpath, multi1d<Double>& result)
+template<>
+void read(XMLReader& xml, const std::string& xpath, multi1d<Real64>& result)
 {
-  readArrayPrimitive<Double>(xml, xpath, result);
+  readArrayPrimitive<Real64>(xml, xpath, result);
 }
+template<>
 void read(XMLReader& xml, const std::string& xpath, multi1d<Boolean>& result)
 {
   readArrayPrimitive<Boolean>(xml, xpath, result);
@@ -643,54 +655,67 @@ void writeArrayPrimitive(XMLWriter& xml, const std::string& s, const multi1d<T>&
 }
 
 
+template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<int>& output)
 {
   writeArrayPrimitive<int>(xml, xpath, output);
 }
+template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<unsigned int>& output)
 {
   writeArrayPrimitive<unsigned int>(xml, xpath, output);
 }
+template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<short int>& output)
 {
   writeArrayPrimitive<short int>(xml, xpath, output);
 }
+template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<unsigned short int>& output)
 {
   writeArrayPrimitive<unsigned short int>(xml, xpath, output);
 }
+template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<long int>& output)
 {
   writeArrayPrimitive<long int>(xml, xpath, output);
 }
+template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<unsigned long int>& output)
 {
   writeArrayPrimitive<unsigned long int>(xml, xpath, output);
 }
+template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<float>& output)
 {
   writeArrayPrimitive<float>(xml, xpath, output);
 }
+template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<double>& output)
 {
   writeArrayPrimitive<double>(xml, xpath, output);
 }
+template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<bool>& output)
 {
   writeArrayPrimitive<bool>(xml, xpath, output);
 }
+template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<Integer>& output)
 {
   writeArrayPrimitive<Integer>(xml, xpath, output);
 }
-void write(XMLWriter& xml, const std::string& xpath, const multi1d<Real>& output)
+template<>
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<Real32>& output)
 {
-  writeArrayPrimitive<Real>(xml, xpath, output);
+  writeArrayPrimitive<Real32>(xml, xpath, output);
 }
-void write(XMLWriter& xml, const std::string& xpath, const multi1d<Double>& output)
+template<>
+void write(XMLWriter& xml, const std::string& xpath, const multi1d<Real64>& output)
 {
-  writeArrayPrimitive<Double>(xml, xpath, output);
+  writeArrayPrimitive<Real64>(xml, xpath, output);
 }
+template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<Boolean>& output)
 {
   writeArrayPrimitive<Boolean>(xml, xpath, output);

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_specializations.h,v 1.4 2003-08-27 01:25:35 edwards Exp $
+// $Id: qdp_specializations.h,v 1.5 2003-09-10 16:58:45 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -19,16 +19,16 @@ toInt(const Integer& s)
   return toInt(s.elem());
 }
 
-//! Make a float from a Real
+//! Make a float from a Real32
 inline float
-toFloat(const Real& s) 
+toFloat(const Real32& s) 
 {
   return toFloat(s.elem());
 }
 
-//! Make a double from a Double
+//! Make a double from a Real64
 inline double
-toDouble(const Double& s) 
+toDouble(const Real64& s) 
 {
   return toDouble(s.elem());
 }
@@ -43,26 +43,34 @@ toBool(const Boolean& s)
 
 // Nml readers
 void read(NmlReader& nml, const string& s, Integer& d);
-void read(NmlReader& nml, const string& s, Real& d);
-void read(NmlReader& nml, const string& s, Double& d);
+void read(NmlReader& nml, const string& s, Real32& d);
+void read(NmlReader& nml, const string& s, Real64& d);
 void read(NmlReader& nml, const string& s, Boolean& d);
 void read(NmlReader& nml, const string& s, Complex& d);
 void read(NmlReader& nml, const string& s, Seed& d);
 void read(NmlReader& nml, const string& s, multi1d<Integer>& d);
-void read(NmlReader& nml, const string& s, multi1d<Real>& d);
-void read(NmlReader& nml, const string& s, multi1d<Double>& d);
+void read(NmlReader& nml, const string& s, multi1d<Real32>& d);
+void read(NmlReader& nml, const string& s, multi1d<Real64>& d);
 
 
 // XML readers
+template<>
 void read(XMLReader& xml, const string& s, multi1d<Integer>& d);
-void read(XMLReader& xml, const string& s, multi1d<Real>& d);
-void read(XMLReader& xml, const string& s, multi1d<Double>& d);
+template<>
+void read(XMLReader& xml, const string& s, multi1d<Real32>& d);
+template<>
+void read(XMLReader& xml, const string& s, multi1d<Real64>& d);
+template<>
 void read(XMLReader& xml, const string& s, multi1d<Boolean>& d);
 
 // XML writers
+template<>
 void write(XMLWriter& xml, const string& s, const multi1d<Integer>& d);
-void write(XMLWriter& xml, const string& s, const multi1d<Real>& d);
-void write(XMLWriter& xml, const string& s, const multi1d<Double>& d);
+template<>
+void write(XMLWriter& xml, const string& s, const multi1d<Real32>& d);
+template<>
+void write(XMLWriter& xml, const string& s, const multi1d<Real64>& d);
+template<>
 void write(XMLWriter& xml, const string& s, const multi1d<Boolean>& d);
 
 
@@ -72,7 +80,7 @@ void write(XMLWriter& xml, const string& s, const multi1d<Boolean>& d);
 template<>
 struct SimpleScalar<float>
 {
-  typedef Real   Type_t;
+  typedef Real32   Type_t;
 };
 
 // Construct simple float word
@@ -86,7 +94,7 @@ struct SimpleScalar<int>
 template<>
 struct SimpleScalar<double>
 {
-  typedef Double   Type_t;
+  typedef Real64   Type_t;
 };
 
 // Construct simple boolean word
@@ -219,7 +227,7 @@ template<>
 struct CreateLeaf<float>
 {
   typedef float Inp_t;
-  typedef Real  Leaf_t;
+  typedef Real32  Leaf_t;
   inline static
   Leaf_t make(const Inp_t &a) { return Leaf_t(a); }
 };
@@ -228,7 +236,7 @@ template<>
 struct CreateLeaf<double>
 {
   typedef double Inp_t;
-  typedef Double  Leaf_t;
+  typedef Real64  Leaf_t;
   inline static
   Leaf_t make(const Inp_t &a) { return Leaf_t(a); }
 };

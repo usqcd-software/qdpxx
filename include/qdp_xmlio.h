@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.24 2003-09-10 13:19:27 bjoo Exp $
+// $Id: qdp_xmlio.h,v 1.25 2003-09-10 16:58:45 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -116,7 +116,6 @@ template<class T>
 inline
 void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
 {
-
   XMLReader arraytop(xml, s);
 
   std::ostringstream error_message;
@@ -158,19 +157,27 @@ void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
       throw error_message.str();
     }
   }
-
 }
 
 
 // Specialized versions for basic types
+template<>
 void read(XMLReader& xml, const std::string& s, multi1d<int>& input);
+template<>
 void read(XMLReader& xml, const std::string& s, multi1d<unsigned int>& input);
+template<>
 void read(XMLReader& xml, const std::string& s, multi1d<short int>& input);
+template<>
 void read(XMLReader& xml, const std::string& s, multi1d<unsigned short int>& input);
+template<>
 void read(XMLReader& xml, const std::string& s, multi1d<long int>& input);
+template<>
 void read(XMLReader& xml, const std::string& s, multi1d<unsigned long int>& input);
+template<>
 void read(XMLReader& xml, const std::string& s, multi1d<float>& input);
+template<>
 void read(XMLReader& xml, const std::string& s, multi1d<double>& input);
+template<>
 void read(XMLReader& xml, const std::string& s, multi1d<bool>& input);
 
 
@@ -301,14 +308,23 @@ void write(XMLWriter& xml, const std::string& s, const multi1d<T>& s1)
 
 
 // Writers for arrays of basic types
+template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<int>& output);
+template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<unsigned int>& output);
+template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<short int>& output);
+template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<unsigned short int>& output);
+template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<long int>& output);
+template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<unsigned long int>& output);
+template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<float>& output);
+template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<double>& output);
+template<>
 void write(XMLWriter& xml, const std::string& s, const multi1d<bool>& output);
 
 
