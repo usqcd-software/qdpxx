@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.18 2003-12-09 21:27:29 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.19 2003-12-10 20:04:28 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -26,10 +26,6 @@ namespace Internal
   //! Dummy broadcast from primary node to all other nodes
   template<class T>
   void broadcast(T& dest) {}
-
-  //! Dummy sum across all nodes
-  inline template<class T>
-  void globalSum(T& dest) {}
 
   //! Dummy broadcast from primary node to all other nodes
   inline void broadcast(void* dest, unsigned int nbytes) {}
