@@ -1,10 +1,10 @@
-// $Id: dslashm_w.cc,v 1.8 2002-10-09 16:54:08 edwards Exp $
+// $Id: dslashm_w.cc,v 1.9 2002-10-09 17:03:30 edwards Exp $
 
 #include "tests.h"
 
 using namespace QDP;
 
-//! Wilson-Dirac operator
+//! Wilson-Dirac operator - specific to 2-D
 /*!
  * DSLASH
  *
@@ -32,11 +32,10 @@ using namespace QDP;
  *
  * Arguments:
  *
- *  \param Chi	      Pseudofermion field				(Write)
- *  \param U	      Gauge field					(Read)
- *  \param Psi	      Pseudofermion field				(Read)
- *  \param ISign      D'^dag or D'  ( +1 | -1 ) respectively		(Read)
- *  \param CB	      Checkerboard of output vector			(Read) 
+ *  \param chi	      Pseudofermion field				(Write)
+ *  \param u	      Gauge field					(Read)
+ *  \param psi	      Pseudofermion field				(Read)
+ *  \param cb	      Checkerboard of output vector			(Read) 
  */
 
 void dslash_2d_plus(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFermion& psi,
@@ -67,7 +66,41 @@ void dslash_2d_plus(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const L
 
 
 
-//! General dslash call
+//! General Wilson-Dirac dslash
+/*!
+ * DSLASH
+ *
+ * This routine is specific to Wilson fermions!
+ *
+ * Description:
+ *
+ * This routine applies the operator D' to Psi, putting the result in Chi.
+ *
+ *	       Nd-1
+ *	       ---
+ *	       \
+ *   chi(x)  :=  >  U  (x) (1 - isign gamma  ) psi(x+mu)
+ *	       /    mu			  mu
+ *	       ---
+ *	       mu=0
+ *
+ *	             Nd-1
+ *	             ---
+ *	             \    +
+ *                +    >  U  (x-mu) (1 + isign gamma  ) psi(x-mu)
+ *	             /    mu			   mu
+ *	             ---
+ *	             mu=0
+ *
+ * Arguments:
+ *
+ *  \param chi	      Pseudofermion field				(Write)
+ *  \param u	      Gauge field					(Read)
+ *  \param psi	      Pseudofermion field				(Read)
+ *  \param isign      D'^dag or D'  ( +1 | -1 ) respectively		(Read)
+ *  \param cb	      Checkerboard of output vector			(Read) 
+ */
+
 void dslash(LatticeFermion& chi, const multi1d<LatticeGauge>& u, const LatticeFermion& psi,
 	    int isign, int cb)
 {

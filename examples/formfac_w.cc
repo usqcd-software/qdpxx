@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.5 2002-10-09 16:54:08 edwards Exp $
+// $Id: formfac_w.cc,v 1.6 2002-10-09 17:03:30 edwards Exp $
 
 #include "tests.h"
 #include "proto.h"
@@ -19,7 +19,8 @@ static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate
  * \param seq_quark_prop -- sequential quark propagator ( Read )
  * \param t_source -- cartesian coordinates of the source ( Read )
  * \param t_sink -- time coordinate of the sink ( Read )
- * \param j_decay -- direction of the exponential decay ( Read ) 
+ * \param nml   -- namelist file object ( Read )
+ *  j_decay -- direction of the exponential decay ( Global ) 
  */
 
 void FormFac(const multi1d<LatticeColorMatrix>& u, 
