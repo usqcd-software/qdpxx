@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.2 2002-09-12 18:47:53 edwards Exp $
+// $Id: scalar_specific.h,v 1.3 2002-09-14 02:59:21 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -12,6 +12,53 @@ QDP_BEGIN_NAMESPACE(QDP);
 
 //! Hack a-rooney - for now barf on boolean subset representation - need better method 
 void diefunc();
+
+
+//-----------------------------------------------------------------------------
+//! OLattice Op Scalar(Expression(source))
+/*! 
+ * OLattice Op Expression, where Op is some kind of binary operation 
+ * involving the destination 
+ */
+template<class T, class T1, class Op, class RHS>
+//inline
+void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs)
+{
+  Subset s = global_context->Sub();
+
+//  cerr << "In evaluate(olattice,oscalar)\n";
+
+  if (! s.IndexRep())
+    for(int i=s.Start(); i <= s.End(); ++i) 
+    {
+      fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
+//      op(dest.elem(i), forEach(rhs, ElemLeaf(), OpCombine()));
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+    }
+  else
+    diefunc();
+}
+
+
+//! OLattice Op OLattice(Expression(source))
+template<class T, class T1, class Op, class RHS>
+//inline
+void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs)
+{
+  Subset s = global_context->Sub();
+
+//  cerr << "In evaluate(olattice,olattice)\n";
+
+  if (! s.IndexRep())
+    for(int i=s.Start(); i <= s.End(); ++i) 
+    {
+      fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+    }
+  else
+    diefunc();
+}
+
 
 
 //-----------------------------------------------------------------------------
@@ -382,7 +429,38 @@ OLattice<T> shift(const OLattice<T>& s1, int isign, int dir)
 
   if (! s.IndexRep())
     for(int i=s.Start(); i <= s.End(); ++i) 
+    {
+      fprintf(stderr,"Shift site %d\n",i);
       d.elem(i) = s1.elem(soff[i]);  // SINGLE NODE VERSION FOR NOW
+    }
+  else
+    diefunc();
+
+  return d;
+}
+
+
+
+//-----------------------------------------------
+//! OLattice<T> = Shift(OLattice<T1>, int isign, int dir)
+/*!
+   * Shifts on a OLattice are non-trivial.
+   * Notice, there may be an ILattice underneath which requires shift args.
+   * This routine is very architecture dependent.
+   */
+template<class T, class RHS>
+OLattice<T> shift(const QDPExpr<RHS,OLattice<T> >& s1, int isign, int dir)
+{
+  OLattice<T> d;
+  Subset s = global_context->Sub();
+  const int *soff = s.Offsets()->slice(dir,(isign+1)>>1);
+
+  if (! s.IndexRep())
+    for(int i=s.Start(); i <= s.End(); ++i)
+    {
+      fprintf(stderr,"Shift expr site %d\n",i);
+      d.elem(i) = forEach(s1, EvalLeaf1(soff[i]), OpCombine());   // SINGLE NODE VERSION FOR NOW
+    }
   else
     diefunc();
 

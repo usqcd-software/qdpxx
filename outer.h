@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: outer.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: outer.h,v 1.2 2002-09-14 02:59:21 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -242,44 +242,15 @@ private:
 };
 
 
-//! OLattice Op Scalar(Expression(source))
-/*! 
- * OLattice Op Expression, where Op is some kind of binary operation 
- * involving the destination 
- */
+// OLattice Op Scalar(Expression(source))
+/* Implementation in relevant specific files */
 template<class T, class T1, class Op, class RHS>
-//inline
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs)
-{
-  Subset s = global_context->Sub();
+void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs);
 
-//  cerr << "In evaluate(olattice,oscalar)\n";
-
-  if (! s.IndexRep())
-    for(int i=s.Start(); i <= s.End(); ++i) 
-//      op(dest.elem(i), forEach(rhs, ElemLeaf(), OpCombine()));
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
-  else
-    diefunc();
-}
-
-
-//! OLattice Op OLattice(Expression(source))
+// OLattice Op OLattice(Expression(source))
+/* Implementation in relevant specific files */
 template<class T, class T1, class Op, class RHS>
-//inline
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs)
-{
-  Subset s = global_context->Sub();
-
-//  cerr << "In evaluate(olattice,olattice)\n";
-
-  if (! s.IndexRep())
-    for(int i=s.Start(); i <= s.End(); ++i) 
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
-  else
-    diefunc();
-}
-
+void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs);
 
 
 
