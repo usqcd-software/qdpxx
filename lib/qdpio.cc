@@ -1,4 +1,4 @@
-// $Id: qdpio.cc,v 1.4 2003-04-16 15:29:09 edwards Exp $
+// $Id: qdpio.cc,v 1.5 2003-04-17 18:39:54 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -61,7 +61,7 @@ void QDPSerialReader::open(XMLMetaReader& xml, const char* p)
     latsize[m] = Layout::lattSize()[m];
 
   layout->node_number = &get_node_number;
-  layout->latsize = latsize; 
+  layout->latsize = latsize; // local copy
   layout->latdim = Nd; 
   layout->volume = Layout::vol(); 
   layout->this_node = Layout::nodeNumber(); 
@@ -79,7 +79,6 @@ void QDPSerialReader::close()
   if (is_open()) 
   {
     int status = QIO_close_read(qio_in);
-    delete qio_in;
   }
 
   iop = false;
@@ -109,7 +108,7 @@ void QDPSerialWriter::open(const XMLMetaWriter& xml, const char* p)
     latsize[m] = Layout::lattSize()[m];
 
   layout->node_number = &get_node_number;
-  layout->latsize = latsize; 
+  layout->latsize = latsize; // local copy
   layout->latdim = Nd; 
   layout->volume = Layout::vol(); 
   layout->this_node = Layout::nodeNumber(); 
@@ -128,7 +127,6 @@ void QDPSerialWriter::close()
   if (is_open()) 
   {
     int status = QIO_close_write(qio_out);
-    delete qio_out;
   }
 
   iop = false;
