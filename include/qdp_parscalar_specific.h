@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.25 2004-03-23 12:56:11 bjoo Exp $
+// $Id: qdp_parscalar_specific.h,v 1.26 2004-03-26 10:38:42 mcneile Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -1403,6 +1403,18 @@ void write(BinaryWriter& bin, const OScalar<T>& d)
 		 sizeof(typename WordType<T>::Type_t), 
 		 sizeof(T) / sizeof(typename WordType<T>::Type_t));
 }
+
+//! Binary output
+/*! Assumes no inner grid */
+template<class T>
+inline
+void write(BinxWriter& bin, const OScalar<T>& d)
+{
+  bin.writeArray((const char *)&(d.elem()), 
+		 sizeof(typename WordType<T>::Type_t), 
+		 sizeof(T) / sizeof(typename WordType<T>::Type_t));
+}
+
 
 //! Binary input
 /*! Assumes no inner grid */
