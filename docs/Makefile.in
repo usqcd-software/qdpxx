@@ -1,0 +1,16 @@
+all: manual.pdf
+
+manual.ps: manual.dvi
+	dvips $< -o $@ 
+
+manual.pdf: manual.ps
+	ps2pdf $< $@
+	
+
+manual.dvi: manual.tex
+	latex $< 
+	latex $<
+
+clean:
+	rm -rf *.toc *.lof *.dvi *.aux *~ *.pdf *.ps *.log
+	rm -rf doxygen	

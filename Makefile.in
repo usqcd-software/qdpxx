@@ -1,0 +1,26 @@
+#
+# Toplevel Makefile
+#
+INSTALLDIR = @prefix@
+TOPDIR 	   = @top_srcdir@
+
+
+all: library
+
+library: 
+	${MAKE} -C $(TOPDIR)/include all
+	${MAKE} -C $(TOPDIR)/lib all
+
+
+doxygen: qdpdoc
+	doxygen qdpdoc
+
+manual:	
+	${MAKE} -C $(TOPDIR)/docs
+
+
+clean:
+	rm -rf ./*~ config.* *.cache
+	${MAKE} -C$(TOPDIR)/docs clean
+	${MAKE} -C$(TOPDIR)/lib clean
+	${MAKE} -C$(TOPDIR)/tests clean
