@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.2 2003-08-27 01:25:35 edwards Exp $
+// $Id: qdp_primcolormat.h,v 1.3 2003-09-09 21:06:34 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -316,7 +316,16 @@ colorContract(const PColorMatrix<T1,3>& s1, const PColorMatrix<T2,3>& s2, const 
            + (s1.elem(2,1)*s2.elem(0,2)
            -  s1.elem(0,1)*s2.elem(2,2)
            -  s1.elem(2,2)*s2.elem(0,1)
-           +  s1.elem(0,2)*s2.elem(2,1))*s3.elem(1,0);
+           +  s1.elem(0,2)*s2.elem(2,1))*s3.elem(1,0)
+
+           + (s1.elem(0,1)*s2.elem(1,2)
+           -  s1.elem(1,1)*s2.elem(0,2)
+           -  s1.elem(0,2)*s2.elem(1,1)
+           +  s1.elem(1,2)*s2.elem(0,1))*s3.elem(2,0)
+           + (s1.elem(0,2)*s2.elem(1,0)
+           -  s1.elem(1,2)*s2.elem(0,0)
+           -  s1.elem(0,0)*s2.elem(1,2)
+           +  s1.elem(1,0)*s2.elem(0,2))*s3.elem(2,1);
 
   return d;
 }
