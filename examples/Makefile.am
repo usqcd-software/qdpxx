@@ -22,10 +22,11 @@ VPATH+=@top_srcdir@/examples
 #
 # The programs to build
 # 
-check_PROGRAMS=t_config t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum
+check_PROGRAMS=t_config t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo
 
 #
 # The program and its dependencies
+t_foo_SOURCES = t_foo.cc $(HDRS)
 t_config_SOURCES=t_config.cc $(HDRS)
 t_io_SOURCES = t_io.cc $(HDRS)
 t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)

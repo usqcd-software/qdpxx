@@ -141,10 +141,11 @@ HDRS = tests.h
 #
 # The programs to build
 # 
-check_PROGRAMS = t_config t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum
+check_PROGRAMS = t_config t_dslashm t_formfac t_io t_mesplq t_qdp t_spectrum t_foo
 
 #
 # The program and its dependencies
+t_foo_SOURCES = t_foo.cc $(HDRS)
 t_config_SOURCES = t_config.cc $(HDRS)
 t_io_SOURCES = t_io.cc $(HDRS)
 t_dslashm_SOURCES = t_dslashm.cc dslashm_w.cc $(HDRS)
@@ -161,7 +162,7 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_CLEAN_FILES =
 check_PROGRAMS = t_config$(EXEEXT) t_dslashm$(EXEEXT) t_formfac$(EXEEXT) \
 	t_io$(EXEEXT) t_mesplq$(EXEEXT) t_qdp$(EXEEXT) \
-	t_spectrum$(EXEEXT)
+	t_spectrum$(EXEEXT) t_foo$(EXEEXT)
 am__objects_1 =
 am_t_config_OBJECTS = t_config.$(OBJEXT) $(am__objects_1)
 t_config_OBJECTS = $(am_t_config_OBJECTS)
@@ -174,6 +175,11 @@ t_dslashm_OBJECTS = $(am_t_dslashm_OBJECTS)
 t_dslashm_LDADD = $(LDADD)
 t_dslashm_DEPENDENCIES =
 t_dslashm_LDFLAGS =
+am_t_foo_OBJECTS = t_foo.$(OBJEXT) $(am__objects_1)
+t_foo_OBJECTS = $(am_t_foo_OBJECTS)
+t_foo_LDADD = $(LDADD)
+t_foo_DEPENDENCIES =
+t_foo_LDFLAGS =
 am_t_formfac_OBJECTS = t_formfac.$(OBJEXT) formfac_w.$(OBJEXT) \
 	$(am__objects_1)
 t_formfac_OBJECTS = $(am_t_formfac_OBJECTS)
@@ -213,9 +219,9 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/formfac_w.Po ./$(DEPDIR)/mesons_w.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/mesplq.Po ./$(DEPDIR)/reunit.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/t_config.Po ./$(DEPDIR)/t_dslashm.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_formfac.Po ./$(DEPDIR)/t_io.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_mesplq.Po ./$(DEPDIR)/t_qdp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/t_spectrum.Po
+@AMDEP_TRUE@	./$(DEPDIR)/t_foo.Po ./$(DEPDIR)/t_formfac.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_io.Po ./$(DEPDIR)/t_mesplq.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/t_qdp.Po ./$(DEPDIR)/t_spectrum.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -225,7 +231,7 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(t_config_SOURCES) $(t_dslashm_SOURCES) \
+DIST_SOURCES = $(t_config_SOURCES) $(t_dslashm_SOURCES) $(t_foo_SOURCES) \
 	$(t_formfac_SOURCES) $(t_io_SOURCES) $(t_mesplq_SOURCES) \
 	$(t_qdp_SOURCES) $(t_spectrum_SOURCES)
 
@@ -236,7 +242,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	check-recursive installcheck-recursive
 DIST_COMMON = Makefile.am Makefile.in
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(t_config_SOURCES) $(t_dslashm_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_mesplq_SOURCES) $(t_qdp_SOURCES) $(t_spectrum_SOURCES)
+SOURCES = $(t_config_SOURCES) $(t_dslashm_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_mesplq_SOURCES) $(t_qdp_SOURCES) $(t_spectrum_SOURCES)
 
 all: all-recursive
 
@@ -256,6 +262,9 @@ t_config$(EXEEXT): $(t_config_OBJECTS) $(t_config_DEPENDENCIES)
 t_dslashm$(EXEEXT): $(t_dslashm_OBJECTS) $(t_dslashm_DEPENDENCIES) 
 	@rm -f t_dslashm$(EXEEXT)
 	$(CXXLINK) $(t_dslashm_LDFLAGS) $(t_dslashm_OBJECTS) $(t_dslashm_LDADD) $(LIBS)
+t_foo$(EXEEXT): $(t_foo_OBJECTS) $(t_foo_DEPENDENCIES) 
+	@rm -f t_foo$(EXEEXT)
+	$(CXXLINK) $(t_foo_LDFLAGS) $(t_foo_OBJECTS) $(t_foo_LDADD) $(LIBS)
 t_formfac$(EXEEXT): $(t_formfac_OBJECTS) $(t_formfac_DEPENDENCIES) 
 	@rm -f t_formfac$(EXEEXT)
 	$(CXXLINK) $(t_formfac_LDFLAGS) $(t_formfac_OBJECTS) $(t_formfac_LDADD) $(LIBS)
@@ -286,6 +295,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_dslashm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_foo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_formfac.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
