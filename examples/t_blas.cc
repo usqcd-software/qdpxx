@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.1 2004-03-20 11:53:37 bjoo Exp $
+// $Id: t_blas.cc,v 1.2 2004-03-22 11:08:33 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -298,6 +298,15 @@ int main(int argc, char *argv[])
   QDPIO::cout << "z=x - y: diff = " << dnorm << endl;
 
 
+  // Test norm2(x)
+  gaussian(qx);
+  DComplex rc = innerProduct(qx,qx, rb[0]);
+  Double rcr = real(rc);
+
+  Double bjs = norm2(qx, rb[0]);
+  
+  QDPIO::cout << "norm2 diff = " << rcr - bjs << endl;
+
   // Timings
    // Test VSCAL
   int icnt;
@@ -406,6 +415,28 @@ int main(int argc, char *argv[])
 		<< " , " << Nflops / tt << " Mflops" << endl;
     
   }
+
+   // Test SUMSQ
+  gaussian(qx);
+
+  for(icnt=1; ; icnt <<= 1)
+  {
+    QDPIO::cout << "calling norm2(v) " << icnt << " times" << endl;
+    tt = QDP_NORM2(qx, icnt);
+    if (tt > 1)
+      break;
+  }
+  {
+    
+    double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+    tt *= rescale;
+    int Nflops = 4*Ns*Nc; // Mult an Add for each complex component
+    QDPIO::cout << "time(norm2(V)) = " << tt
+		<< " micro-secs/site/iteration" 
+		<< " , " << Nflops / tt << " Mflops" << endl;
+    
+  }
+
   // Time to bolt
   QDP_finalize();
 

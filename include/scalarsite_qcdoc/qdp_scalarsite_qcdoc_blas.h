@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.2 2004-03-22 07:52:43 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.3 2004-03-22 11:08:34 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -649,6 +649,76 @@ void evaluate( OLattice< TVec > &d,
   /* REAL *yptr = (REAL *) &(internal_zero.elem(s.start()).elem(0).elem(0).real().elem());
      vaxpy3(zptr, aptr, xptr, yptr, n_3vec); */
 }
+
+
+// Global norm squared of a vector...
+template<>
+inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
+norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
+{
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "Using BJ sumsq" << endl;
+#endif
+  if ( s.hasOrderedRep() ) {
+
+#ifdef DEBUG_BLAS
+    QDPIO::cout << "BJ sumsq " << endl;
+#endif
+    int n_3vec = (s.end() - s.start() + 1)*Ns;
+    const REAL *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real().elem());
+    
+    // I am relying on this being a Double here 
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
+    zero_rep(lsum.elem());
+    
+    local_sumsq((DOUBLE *)&lsum.elem().elem().elem().elem().elem(),
+		(REAL *)s1ptr, 
+	       n_3vec); 
+    
+    Internal::globalSum(lsum.elem());
+    
+    return lsum;
+  }
+  else {
+   return sum(localNorm2(s1),s);
+  }
+}
+
+template<>
+inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
+norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
+{
+
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "Using BJ sumsq all" << endl;
+#endif
+
+  if ( all.hasOrderedRep() ) {
+
+#ifdef DEBUG_BLAS
+    QDPIO::cout << "BJ sumsq all" << endl;
+#endif
+    int n_3vec = (all.end() - all.start() + 1)*Ns;
+    const REAL *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real().elem());
+    
+    // I am relying on this being a Double here 
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
+    zero_rep(lsum.elem());
+    
+    local_sumsq((DOUBLE *)&lsum.elem().elem().elem().elem().elem(),
+		(REAL *)s1ptr, 
+	       n_3vec); 
+    
+    Internal::globalSum(lsum.elem());
+    
+    return lsum;
+  }
+  else {
+   return sum(localNorm2(s1),all);
+  }
+}
+
 // AXPY and AXMY routines
 // Similar calling interface to assembler
 // But with REAL instead of float

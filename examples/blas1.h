@@ -1,7 +1,10 @@
 // -*- C++ -*-
-// $Id: blas1.h,v 1.1 2004-03-20 11:53:37 bjoo Exp $
+// $Id: blas1.h,v 1.2 2004-03-22 11:08:33 bjoo Exp $
 //
 // Include file for test suite
+
+#ifndef BLAS1_H
+#define BLAS1_H
 
 #include "qdp.h"
 
@@ -35,3 +38,6 @@ double QDP_VSUB(LatticeFermion& dest,
 		const LatticeFermion& s2,
 		int cnt);
 
+double QDP_NORM2(const LatticeFermion& s1, int cnt);
+
+#endif

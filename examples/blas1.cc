@@ -1,4 +1,4 @@
-// $Id: blas1.cc,v 1.1 2004-03-20 11:53:37 bjoo Exp $
+// $Id: blas1.cc,v 1.2 2004-03-22 11:08:33 bjoo Exp $
 
 #include <stdlib.h>
 #include <sys/time.h>
@@ -87,6 +87,21 @@ double QDP_VSUB(LatticeFermion& dest,
 
   for (; cnt-- > 0; )
     dest = s1 - s2;
+
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
+//    return 2;
+}
+
+double QDP_NORM2(const LatticeFermion& s1, int cnt)			
+{
+  StopWatch swatch;
+
+  swatch.start();
+
+  for (; cnt-- > 0; )
+    norm2(s1);
 
   swatch.stop();
 

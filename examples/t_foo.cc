@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.32 2004-02-11 10:33:09 bjoo Exp $
+// $Id: t_foo.cc,v 1.33 2004-03-22 11:08:33 bjoo Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -76,6 +76,8 @@ int main(int argc, char *argv[])
   write(nml,"logicalSize",Layout::logicalSize());
 #endif
 
+#if 1
+  LatticeFermion foo
 #if 0
   QDPIO::cerr << "Open t_foo.input" << endl;
 
@@ -89,7 +91,7 @@ int main(int argc, char *argv[])
   nml_in.close();
 #endif
 
-#if 1
+#if 0
   {
     LatticeFermion a,b;
     random(a); random(b);
@@ -113,7 +115,7 @@ int main(int argc, char *argv[])
   }
 #endif
   
-#if 1
+#if 0
   {
     LatticeColorVector a,b,c;
     LatticeReal one = 1;
@@ -261,14 +263,14 @@ int main(int argc, char *argv[])
 //  float ccc = 2.0;
 //  float x;
   
-#if 1
+#if 0
   LatticeComplex  foob(zero);
   nml << "Here is foob";
   write(nml,"foob", foob);
 #endif
 
 
-#if 1
+#if 0
   b = 3;
   c = 4;
   d = 5;
@@ -317,7 +319,7 @@ int main(int argc, char *argv[])
   write(nml,"e",e);
 
 
-#if 1
+#if 0
   nml << "test peekColor";
   LatticeColorMatrix barf = 1.0;
   LatticeComplex fred = peekColor(barf,0,0);
@@ -407,7 +409,7 @@ int main(int argc, char *argv[])
 
 #endif
 
-#if 1
+#if 0
  {
    QDPIO::cerr << "create metadata xml" << endl;
 
@@ -439,7 +441,7 @@ int main(int argc, char *argv[])
  }
 #endif
 
-#if 1
+#if 0
  {
    QDPIO::cerr << "read metadata xml" << endl;
 
