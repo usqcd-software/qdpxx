@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_sse.cc,v 1.1 2003-09-02 21:44:58 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.cc,v 1.2 2003-10-22 00:58:20 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -29,8 +29,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 {
 //  cout << "call single site QDP_M_eq_M_times_M" << endl;
 
-  const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
-  const LatticeColorMatrix& r = static_cast<const LatticeColorMatrix&>(rhs.expression().right());
+  typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
+
+  const C& l = static_cast<const C&>(rhs.expression().left());
+  const C& r = static_cast<const C&>(rhs.expression().right());
 
   const int istart = s.start() >> INNER_LOG;
   const int iend   = s.end()   >> INNER_LOG;
