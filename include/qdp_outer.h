@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.35 2005-01-20 03:02:38 edwards Exp $
+// $Id: qdp_outer.h,v 1.36 2005-02-21 11:14:35 bjoo Exp $
 
 #include "qdp_config.h"
 
@@ -393,9 +393,18 @@ private:
   inline void alloc_mem(const char* const p) 
     {
 #ifdef QDP_USE_QCDOC_EDRAM
-      F_orig = (char *)qalloc(QFAST, sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE);
+      // Let us try and allocate in the EDRAM first. The QCOMMS apparently
+      // improves streaming performance later by locating things in transient
+      // cache areas (even if we don't want to communicate the thing later 
+      F_orig = (char *)qalloc((QFAST|QCOMMS), sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE);
       if(F_orig == (char *)NULL) {
-        QDP_error_exit("Unable to qalloc in alloc mem");
+	// If allocation in EDRAM failed, try allocating in DDR. 
+	// According to Peter, it is still worth keeping the QCOMMS flag
+	// on for better caching in the transient cache area 
+	F_orig = (char *)qalloc(QCOMMS, sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE);
+	if( F_orig == (char *)NULL ) { 
+          QDP_error_exit("Unable to qalloc in alloc mem");
+        }
       }
 #else 
       F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
