@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.h,v 1.3 2003-10-09 17:07:58 edwards Exp $
+// $Id: qdp_stdio.h,v 1.4 2003-10-09 18:28:35 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -10,7 +10,7 @@
 
 #include <istream>
 #include <ostream>
-#include <streambuf>
+//#include <streambuf>
 #include <string>
 
 QDP_BEGIN_NAMESPACE(QDP);
@@ -56,21 +56,21 @@ public:
   StandardInputStream& operator>>(unsigned long int& input);
   StandardInputStream& operator>>(float& input);
   StandardInputStream& operator>>(double& input);
+  StandardInputStream& operator>>(long double& input);
   StandardInputStream& operator>>(bool& input);
 
 
 private:
   //! Hide copy constructor and =
-//  StandardInputStream(const StandardInputStream&) {}
+  StandardInputStream(const StandardInputStream&) {}
   void operator=(const StandardInputStream&) {}
-
 
 protected:
   // The universal data-reader. All the read functions call this
   template<typename T>
   StandardInputStream& readPrimitive(T& output);
 
-  // Get the internal ostream
+  // Get the internal istream
   std::istream& getIstream() {return *is;}
 
   //! Is the stream open?
@@ -108,6 +108,9 @@ public:
   //! Return true if some failure occurred in previous IO operation
   bool fail();
 
+  //! Hook for manipulators
+  StandardOutputStream& operator<<(std::ostream& (*op)(std::ostream&));
+
   // Overloaded output functions
   StandardOutputStream& operator<<(const std::string& output);
   StandardOutputStream& operator<<(const char* output);
@@ -120,14 +123,14 @@ public:
   StandardOutputStream& operator<<(unsigned long int output);
   StandardOutputStream& operator<<(float output);
   StandardOutputStream& operator<<(double output);
+  StandardOutputStream& operator<<(long double output);
   StandardOutputStream& operator<<(bool output);
 
 
 private:
   //! Hide copy constructor and =
-//  StandardOutputStream(const StandardOutputStream&) {}
+  StandardOutputStream(const StandardOutputStream&) {}
   void operator=(const StandardOutputStream&) {}
-
 
 protected:
   // The universal data-writer. All the write functions call this
@@ -144,6 +147,16 @@ private:
   std::ostream* os;
   bool open;
 };
+
+
+// Make global (parallel) versions of stdin, stdout, stderr
+// Put this in a different namespace to avoid collisions
+namespace QDPIO
+{
+  extern StandardInputStream  cin;
+  extern StandardOutputStream cout;
+  extern StandardOutputStream cerr;
+}
 
 
 /*! @} */   // end of group stdio
