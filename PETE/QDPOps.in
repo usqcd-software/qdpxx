@@ -343,6 +343,9 @@ binaryOps
    this to construct an anti-quark from a di-quark contraction. In
    explicit index form, the operation  QuarkContract14 does
    
+  \f$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\alpha}*source2^{j j'}_{\beta\rho}\f$
+
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
   @relates QDPType */"
@@ -362,6 +365,9 @@ binaryOps
    this to construct an anti-quark from a di-quark contraction. In
    explicit index form, the operation  QuarkContract23 does
    
+  \f$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\alpha\rho}*source2^{j j'}_{\rho\beta}\f$
+
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
   @relates QDPType */"
@@ -381,6 +387,9 @@ binaryOps
    this to construct an anti-quark from a di-quark contraction. In
    explicit index form, the operation  QuarkContract24 does
    
+  \f$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\alpha}*source2^{j j'}_{\beta\rho}\f$
+
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
   @relates QDPType */"
@@ -400,6 +409,9 @@ binaryOps
    this to construct an anti-quark from a di-quark contraction. In
    explicit index form, the operation  QuarkContract12 does
    
+  \f$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\rho}*source2^{j j'}_{\alpha\beta}\f$
+
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
   @relates QDPType */"
@@ -419,6 +431,9 @@ binaryOps
    this to construct an anti-quark from a di-quark contraction. In
    explicit index form, the operation  QuarkContract34 does
    
+  \f$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\alpha\beta}*source2^{j j'}_{\rho\rho}\f$
+
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
   @relates QDPType */"

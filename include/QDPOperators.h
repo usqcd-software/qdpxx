@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: QDPOperators.h,v 1.11 2002-10-14 02:25:25 edwards Exp $
+// $Id: QDPOperators.h,v 1.12 2002-10-14 02:36:15 edwards Exp $
 
 /*! @file
  * @brief Bulk of QDP operators produced by PETE
@@ -1453,6 +1453,9 @@ quarkContract13(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
    this to construct an anti-quark from a di-quark contraction. In
    explicit index form, the operation  QuarkContract14 does
    
+  \f$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\alpha}*source2^{j j'}_{\beta\rho}\f$
+
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
   @relates QDPType */
@@ -1484,6 +1487,9 @@ quarkContract14(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
    this to construct an anti-quark from a di-quark contraction. In
    explicit index form, the operation  QuarkContract23 does
    
+  \f$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\alpha\rho}*source2^{j j'}_{\rho\beta}\f$
+
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
   @relates QDPType */
@@ -1515,6 +1521,9 @@ quarkContract23(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
    this to construct an anti-quark from a di-quark contraction. In
    explicit index form, the operation  QuarkContract24 does
    
+  \f$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\alpha}*source2^{j j'}_{\beta\rho}\f$
+
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
   @relates QDPType */
@@ -1546,6 +1555,9 @@ quarkContract24(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
    this to construct an anti-quark from a di-quark contraction. In
    explicit index form, the operation  QuarkContract12 does
    
+  \f$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\rho\rho}*source2^{j j'}_{\alpha\beta}\f$
+
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
   @relates QDPType */
@@ -1577,6 +1589,9 @@ quarkContract12(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
    this to construct an anti-quark from a di-quark contraction. In
    explicit index form, the operation  QuarkContract34 does
    
+  \f$target^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*source1^{i i'}_{\alpha\beta}*source2^{j j'}_{\rho\rho}\f$
+
    and is (currently) only appropriate for Nc=3  (or SU(3)).
   @ingroup group1
   @relates QDPType */
