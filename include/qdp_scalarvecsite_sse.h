@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.13 2003-09-02 21:47:16 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.14 2003-09-03 04:06:50 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -443,7 +443,6 @@ adjMultiplyAdj(const RComplexFloat& l, const RComplexFloat& r)
 #define _inline_ssevec_mult_su3_nn(cc,aa,bb,j) \
 { \
 __asm__ __volatile__ (                    \
-              "movlps %0, %%xmm0 \n\t"    \
               "movaps %0,%%xmm0\n\t"      \
               "movaps %%xmm0,%%xmm1\n\t"  \
               "mulps  %2,%%xmm1\n\t"      \
