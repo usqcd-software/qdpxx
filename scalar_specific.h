@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: scalar_specific.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: scalar_specific.h,v 1.2 2002-09-12 18:47:53 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -82,7 +82,7 @@ template<class T>
 void random(OScalar<T>& d)
 {
   Seed seed = RNG::ran_seed;
-  OScalar<T> skewed_seed = RNG::ran_seed * ran_mult;
+  Seed skewed_seed = RNG::ran_seed * RNG::ran_mult;
 
   fill_random(d.elem(), seed, skewed_seed, RNG::ran_mult);
 

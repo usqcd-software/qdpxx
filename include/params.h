@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: params.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: params.h,v 1.2 2002-09-12 18:47:53 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -11,7 +11,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 #define ND  2
 
 //! Number of colors
-#define NC  1
+#define NC  3
 
 //! Number of spin components
 #define NS  4
