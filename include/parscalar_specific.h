@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: parscalar_specific.h,v 1.8 2003-01-15 21:49:25 edwards Exp $
+// $Id: parscalar_specific.h,v 1.9 2003-01-16 03:35:57 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -580,12 +580,13 @@ public:
    * This routine is very architecture dependent.
    */
   template<class T1,class C1>
-  C1
+  QDPType<T1,C1>
   operator()(const QDPType<T1,C1> & l)
     {
       QMP_info("Map()");
 
-      C1 d;
+      QDPType<T1,C1> dd;
+      C1& d = static_cast<C1&>(const_cast<QDPType<T1,C1>&>(dd));
 
       if (offnodeP)
       {
@@ -691,17 +692,29 @@ public:
 
       QMP_info("exiting Map()");
 
-      return d;
+      return dd;
     }
 
 
-  template<class T1,class C1>
-  C1
-  operator()(const QDPExpr<T1,C1> & l)
+  template<class RHS, class T1>
+  QDPType<T1,OScalar<T1> >
+  operator()(const QDPExpr<RHS,OScalar<T1> > & l)
     {
-      // Implementation for now just evaluates expression and then does map
-      C1 ll = l;
-      C1 d = this->operator()(ll);
+      // For now, simply evalute the expression and then do the map
+      typedef OScalar<T1> C1;
+      QDPType<T1,C1> d = this->operator()(C1(l));
+
+      fprintf(stderr,"map(QDPExpr)\n");
+      return d;
+    }
+
+  template<class RHS, class T1>
+  QDPType<T1,OLattice<T1> >
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l)
+    {
+      // For now, simply evalute the expression and then do the map
+      typedef OLattice<T1> C1;
+      QDPType<T1,C1> d = this->operator()(C1(l));
 
       fprintf(stderr,"map(QDPExpr)\n");
       return d;
