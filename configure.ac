@@ -396,6 +396,23 @@ AC_CHECK_PROG(DOXYGEN, doxygen, doxygen, true)
 ##################################
 AC_CHECK_FUNCS(gethostname)
 
+case ${PARALLEL_ARCH} in 
+parscalar|parscalarvec)
+        QMP_BKUP_CXXFLAGS="${CXXFLAGS}"
+        QMP_BKUP_LDFLAGS="${LDFLAGS}"
+ 	QMP_BKUP_LIBS="${LIBS}"
+        AC_LANG_SAVE
+        CXXFLAGS="${CXXFLAGS} ${QMP_CFLAGS}"
+	LDFLAGS="${LDFLAGS} ${QMP_LDFLAGS}"
+	LIBS="${LIBS} ${QMP_LIBS}"
+	AC_CHECK_FUNCS(QMP_abort QMP_error_exit QMP_route QMP_verbose)
+	CXXFLAGS="${QMP_BKUP_CXXFLAGS}"
+	LDFLAGS="${QMP_BKUP_LDFLAGS}"
+	LIBS="${LIBS}"
+	AC_LANG_RESTORE
+	;;
+esac
+
 #######################
 # Produce output
 #######################

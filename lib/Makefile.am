@@ -48,9 +48,11 @@ endif
 
 # Parallel-scalar
 if ARCH_PARSCALAR
-libqdp_a_SOURCES += qdp_parscalar_init.cc qdp_parscalar_layout.cc qdp_parscalar_specific.cc \
-                 qdp_scalarsite_specific.cc \
-                 ../include/qdp_parscalar_specific.h
+libqdp_a_SOURCES += qdp_parscalar_init.cc qdp_parscalar_layout.cc \
+	qdp_parscalar_specific.cc qdp_qmp_extensions.cc \
+	qdp_scalarsite_specific.cc \
+	../include/qdp_parscalar_specific.h \
+	../include/qdp_qmp_extensions.h
 endif
 
 # Optimized code using sse extensions
