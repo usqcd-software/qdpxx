@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.22 2003-09-09 14:39:24 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.23 2003-09-09 16:57:08 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -81,7 +81,7 @@ public:
 
 private:
   //! Hide the = operator
-  XMLReader& operator=(const XMLReader&) {}
+  void operator=(const XMLReader&) {}
   
   //! Hide the copy constructor
   XMLReader(const XMLReader&) {}
