@@ -1,4 +1,4 @@
-// $Id: t_binx.cc,v 1.2 2004-03-26 12:25:23 mcneile Exp $
+// $Id: t_binx.cc,v 1.3 2004-06-05 15:43:31 edwards Exp $
 //
 // Write out binary with some XML markup
 // in the binx format.
@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   Layout::create();
 
   LatticeReal a;
-  Double d = 17;
+  double d = 17;
   int bb = 4 ;
   random(a);
 
