@@ -39,23 +39,29 @@ POST_UNINSTALL = :
 # VPATH to the documentation sources and the topdirectory
 #
 VPATH = .. ../docs
-ACLOCAL = ${SHELL} /home/bj/Devel/qdp++/config/missing --run aclocal-1.7
+ACLOCAL = ${SHELL} /home/bj/Devel/SciDAC/packages/qdp++/config/missing --run aclocal-1.7
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /home/bj/Devel/qdp++/config/missing --run tar
-ARCHDEF_SUBSTITUTION = ARCH_PARSCALAR
-ARCH_HDRS = 
-ARCH_SRCS = parscalar_specific.cc
-AUTOCONF = ${SHELL} /home/bj/Devel/qdp++/config/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/bj/Devel/qdp++/config/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/bj/Devel/qdp++/config/missing --run automake-1.7
+AMTAR = ${SHELL} /home/bj/Devel/SciDAC/packages/qdp++/config/missing --run tar
+ARCHDEF_SUBSTITUTION = ARCH_SCALAR
+ARCH_PARSCALARVEC_FALSE = 
+ARCH_PARSCALARVEC_TRUE = #
+ARCH_PARSCALAR_FALSE = 
+ARCH_PARSCALAR_TRUE = #
+ARCH_SCALARVEC_FALSE = 
+ARCH_SCALARVEC_TRUE = #
+ARCH_SCALAR_FALSE = #
+ARCH_SCALAR_TRUE = 
+AUTOCONF = ${SHELL} /home/bj/Devel/SciDAC/packages/qdp++/config/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/bj/Devel/SciDAC/packages/qdp++/config/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/bj/Devel/SciDAC/packages/qdp++/config/missing --run automake-1.7
 AWK = gawk
 CPPFLAGS = 
 CXX = g++
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -g -O2
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"qdp\" -DPACKAGE_TARNAME=\"qdp\" -DPACKAGE_VERSION=\"0.26\" -DPACKAGE_STRING=\"qdp\ 0.26\" -DPACKAGE_BUGREPORT=\"edwards@jlab.org\" -DPACKAGE=\"qdp\" -DVERSION=\"0.26\" 
+DEFS = -DPACKAGE_NAME=\"qdp\" -DPACKAGE_TARNAME=\"qdp\" -DPACKAGE_VERSION=\"1.5\" -DPACKAGE_STRING=\"qdp\ 1.5\" -DPACKAGE_BUGREPORT=\"edwards@jlab.org\" -DPACKAGE=\"qdp\" -DVERSION=\"1.5\" 
 DEPDIR = .deps
 DOXYGEN = doxygen
 DVIPDF = dvipdf
@@ -76,34 +82,41 @@ LATEX = latex
 LDFLAGS = 
 LIBOBJS = 
 LIBS = 
+LIBXML2_CONFIG = /usr/bin/xml2-config
+LIBXML2_CXXFLAGS = -I/usr/include/libxml2
+LIBXML2_LIBS = -L/usr/lib -lxml2 -lz -lm
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/bj/Devel/qdp++/config/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/bj/Devel/SciDAC/packages/qdp++/config/missing --run makeinfo
 OBJEXT = o
 PACKAGE = qdp
 PACKAGE_BUGREPORT = edwards@jlab.org
 PACKAGE_NAME = qdp
-PACKAGE_STRING = qdp 0.26
+PACKAGE_STRING = qdp 1.5
 PACKAGE_TARNAME = qdp
-PACKAGE_VERSION = 0.26
+PACKAGE_VERSION = 1.5
+PARALLEL_ARCH = scalar
 PATH_SEPARATOR = :
-QMP_COMMS_CXXFLAGS = -I/usr/local/mpich-1.2.4/include
-QMP_COMMS_LDFLAGS = -L/usr/local/mpich-1.2.4/lib
-QMP_COMMS_LIBS = -lpmpich -lmpich -lpmpich
-QMP_CXXFLAGS = -I/home/bj/Devel/qmp-install/include
-QMP_LDFLAGS = -L/home/bj/Devel/qmp-install/lib
-QMP_LIBS = -lqmp
+QDP_USE_SSE2_FALSE = 
+QDP_USE_SSE2_TRUE = #
+QDP_USE_SSE_FALSE = 
+QDP_USE_SSE_TRUE = #
+QMP_CFLAGS = 
+QMP_CONFIG = 
+QMP_LDFLAGS = 
+QMP_LIBS = 
 RANLIB = ranlib
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = 
-VERSION = 0.26
+VERSION = 1.5
 ac_Nc = 3
 ac_Nd = 4
 ac_Ns = 4
 ac_ct_CXX = g++
 ac_ct_RANLIB = ranlib
 ac_ct_STRIP = 
-ac_max_volume = 512
+ac_sse = 0
+ac_sse2 = 0
 am__fastdepCXX_FALSE = #
 am__fastdepCXX_TRUE = 
 am__include = include
@@ -115,16 +128,17 @@ exec_prefix = ${prefix}
 host_alias = 
 includedir = ${prefix}/include
 infodir = ${prefix}/info
-install_sh = /home/bj/Devel/qdp++/config/install-sh
+install_sh = /home/bj/Devel/SciDAC/packages/qdp++/config/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localstatedir = ${prefix}/var
 mandir = ${prefix}/man
 oldincludedir = /usr/include
-prefix = /home/bj/Devel/qdp-install
+prefix = /usr/local
 program_transform_name = s,x,x,
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
+subdirs =  other_libs/nml other_libs/qio other_libs/xpath_reader
 sysconfdir = ${prefix}/etc
 target_alias = 
 
@@ -136,7 +150,7 @@ SUFFIXES = .tex .dvi .ps .pdf
 #
 # Install time docdir
 #
-docdir = /home/bj/Devel/qdp-install/docs
+docdir = /usr/local/docs
 
 #
 # Documentation targets -- apart from doxygen, the rules above should be able
