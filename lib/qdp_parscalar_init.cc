@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.10 2004-09-02 16:35:33 edwards Exp $
+// $Id: qdp_parscalar_init.cc,v 1.11 2005-01-24 04:00:55 edwards Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -148,9 +148,12 @@ void QDP_initialize(int *argc, char ***argv)
   QDP_info("Now initialize QMP");
 #endif
 
-  QMP_thread_level_t prv;
-  if (QMP_init_msg_passing(argc, argv, QMP_THREAD_SINGLE, &prv) != QMP_SUCCESS)
-    QDP_error_exit("QDP_initialize failed");
+  if (QMP_is_initialized() == QMP_FALSE)
+  {
+    QMP_thread_level_t prv;
+    if (QMP_init_msg_passing(argc, argv, QMP_THREAD_SINGLE, &prv) != QMP_SUCCESS)
+      QDP_error_exit("QDP_initialize failed");
+  }
 
 #if QDP_DEBUG >= 1
   QDP_info("QMP inititalized");
