@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: layout.h,v 1.12 2003-04-09 19:32:27 edwards Exp $
+// $Id: layout.h,v 1.13 2003-04-27 02:05:46 edwards Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -25,7 +25,11 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 namespace Layout
 {
-  //! Main creation routine
+  //! Initialize some fundamental pieces of the layout
+  /*! This routine is used to boostrap the   create   function below */
+  void init();
+
+  //! Main lattice creation routine
   void create();
 
   //! Main destruction routine

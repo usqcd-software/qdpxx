@@ -1,4 +1,4 @@
-// $Id: parscalar_init.cc,v 1.2 2003-02-14 02:34:12 flemingg Exp $
+// $Id: parscalar_init.cc,v 1.3 2003-04-27 02:05:46 edwards Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -26,6 +26,8 @@ void QDP_initialize(int *argc, char ***argv)
   if (QMP_init_msg_passing(argc, argv, QMP_SMP_ONE_ADDRESS) != QMP_SUCCESS)
     QDP_error_exit("QDP_initialize failed");
 
+  Layout::init();   // setup extremely basic functionality in Layout
+
   isInit = true;
 }
 
@@ -39,6 +41,7 @@ void QDP_finalize()
     QDP_error_exit("QDP is not inited");
 
   QMP_finalize_msg_passing();
+
   isInit = false;
 }
 

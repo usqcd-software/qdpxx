@@ -1,4 +1,4 @@
-// $Id: scalar_layout.cc,v 1.8 2003-04-15 19:18:36 edwards Exp $
+// $Id: scalar_layout.cc,v 1.9 2003-04-27 02:05:46 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -96,6 +96,9 @@ namespace Layout
 
   //! Returns the number of nodes
   int numNodes() {return 1;}
+
+  //! Initializer for layout
+  void init() {}
 
   //! The linearized site index for the corresponding lexicographic site
   int linearSiteIndex(int site)

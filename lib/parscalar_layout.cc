@@ -1,4 +1,4 @@
-// $Id: parscalar_layout.cc,v 1.9 2003-04-09 19:32:27 edwards Exp $
+// $Id: parscalar_layout.cc,v 1.10 2003-04-27 02:05:46 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -117,6 +117,13 @@ namespace Layout
   //! Returns the logical size of this machine
   const multi1d<int>& logicalSize() {return _layout.logical_size;}
 
+
+  //! Initializer for layout
+  void init()
+  {
+    _layout.num_nodes = QMP_get_number_of_nodes();
+    _layout.node_rank = QMP_get_node_number();
+  }
 
 
 
@@ -238,8 +245,7 @@ namespace Layout
   }
 
 
-
-  //! Initializer for layout
+  //! Main lattice creation routine
   /*! This layout is a simple lexicographic lattice ordering */
   void create()
   {
@@ -279,8 +285,6 @@ namespace Layout
     const unsigned int* subgrid_size = QMP_get_subgrid_dimensions();
 
     _layout.subgrid_vol = QMP_get_number_of_subgrid_sites();
-    _layout.num_nodes = QMP_get_number_of_nodes();
-    _layout.node_rank = QMP_get_node_number();
 
     _layout.subgrid_nrow.resize(Nd);
     _layout.logical_coord.resize(Nd);

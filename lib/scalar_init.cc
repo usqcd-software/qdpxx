@@ -1,4 +1,4 @@
-// $Id: scalar_init.cc,v 1.1 2003-01-14 04:46:26 edwards Exp $
+// $Id: scalar_init.cc,v 1.2 2003-04-27 02:05:46 edwards Exp $
 
 /*! @file
  * @brief Scalar init routines
@@ -16,7 +16,11 @@ QDP_BEGIN_NAMESPACE(QDP);
 static bool isInit = false;
 
 //! Turn on the machine
-void QDP_initialize(int *argc, char ***argv) {isInit = true;}
+void QDP_initialize(int *argc, char ***argv) 
+{
+  Layout::init();   // setup extremely basic functionality in Layout
+  isInit = true;
+}
 
 //! Is the machine initialized?
 bool QDP_isInitialized() {return isInit;}
