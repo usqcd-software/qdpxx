@@ -1,4 +1,4 @@
-// $Id: t_dslashm.cc,v 1.15 2004-02-11 10:33:09 bjoo Exp $
+// $Id: t_dslashm.cc,v 1.16 2004-02-11 10:49:41 bjoo Exp $
 /*! \file
  *  \brief Test the Wilson-Dirac operator (dslash)
  */
@@ -57,12 +57,12 @@ int main(int argc, char **argv)
 
 #if 0
   NmlWriter nml("t_dslashm.nml");
-  Write(nml,"Nd", Nd);
-  Write(nml,"Nc", Nc);
-  Write(nml,"Ns", Ns);
-  Write(nml,"nrow", nrow);
-  Write(nml,"psi", psi);
-  Write(nml,"chi", chi);
+  write(nml,"Nd", Nd);
+  write(nml,"Nc", Nc);
+  write(nml,"Ns", Ns);
+  write(nml,"nrow", nrow);
+  write(nml,"psi", psi);
+  write(nml,"chi", chi);
 #endif
 
   // Time to bolt
