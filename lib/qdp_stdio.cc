@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.cc,v 1.2 2003-10-03 02:56:17 edwards Exp $
+// $Id: qdp_stdio.cc,v 1.3 2003-10-09 17:07:20 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -16,13 +16,12 @@ QDP_BEGIN_NAMESPACE(QDP);
 
 //-----------------------------------------
 //! stdin support
-StandardInputStream::StandardInputStream() {}
+StandardInputStream::StandardInputStream() {open=false; is=0;}
 
-StandardInputStream::StandardInputStream(std::streambuf* b) : is(b) {}
-
-void StandardInputStream::rdbuf(std::streambuf* b)
+void StandardInputStream::init(std::istream* b)
 {
-  getIstream().rdbuf(b);
+  is = b;
+  open = true;
 }
 
 // Propagate status to all nodes
@@ -74,43 +73,43 @@ StandardInputStream& StandardInputStream::operator>>(std::string& input)
 }
 
 // Readers
-StandardInputStream& StandardInputStream::read(char& input) 
+StandardInputStream& StandardInputStream::operator>>(char& input) 
 {
   return readPrimitive<char>(input);
 }
-StandardInputStream& StandardInputStream::read(int& input) 
+StandardInputStream& StandardInputStream::operator>>(int& input) 
 {
   return readPrimitive<int>(input);
 }
-StandardInputStream& StandardInputStream::read(unsigned int& input)
+StandardInputStream& StandardInputStream::operator>>(unsigned int& input)
 {
   return readPrimitive<unsigned int>(input);
 }
-StandardInputStream& StandardInputStream::read(short int& input)
+StandardInputStream& StandardInputStream::operator>>(short int& input)
 {
   return readPrimitive<short int>(input);
 }
-StandardInputStream& StandardInputStream::read(unsigned short int& input)
+StandardInputStream& StandardInputStream::operator>>(unsigned short int& input)
 {
   return readPrimitive<unsigned short int>(input);
 }
-StandardInputStream& StandardInputStream::read(long int& input)
+StandardInputStream& StandardInputStream::operator>>(long int& input)
 {
   return readPrimitive<long int>(input);
 }
-StandardInputStream& StandardInputStream::read(unsigned long int& input)
+StandardInputStream& StandardInputStream::operator>>(unsigned long int& input)
 {
   return readPrimitive<unsigned long int>(input);
 }
-StandardInputStream& StandardInputStream::read(float& input)
+StandardInputStream& StandardInputStream::operator>>(float& input)
 {
   return readPrimitive<float>(input);
 }
-StandardInputStream& StandardInputStream::read(double& input)
+StandardInputStream& StandardInputStream::operator>>(double& input)
 {
   return readPrimitive<double>(input);
 }
-StandardInputStream& StandardInputStream::read(bool& input)
+StandardInputStream& StandardInputStream::operator>>(bool& input)
 {
   return readPrimitive<bool>(input);
 }
@@ -130,16 +129,12 @@ StandardInputStream& StandardInputStream::readPrimitive(T& input)
 
 //-----------------------------------------
 //! stdout support
-StandardOutputStream::StandardOutputStream() {}
+StandardOutputStream::StandardOutputStream() {open=false; os=0;}
 
-StandardOutputStream::StandardOutputStream(std::streambuf* b)
+void StandardOutputStream::init(std::ostream* b)
 {
-  getOstream().rdbuf(b);
-}
-
-void StandardOutputStream::rdbuf(std::streambuf* b)
-{
-  getOstream().rdbuf(b);
+  os = b;
+  open = true;
 }
 
 void StandardOutputStream::flush()
@@ -163,7 +158,7 @@ bool StandardOutputStream::fail()
   return s;
 }
 
-StandardOutputStream::~StandardOutputStream() {close();}
+StandardOutputStream::~StandardOutputStream() {}
 
 
 StandardOutputStream& StandardOutputStream::operator<<(const string& output)
@@ -174,7 +169,7 @@ StandardOutputStream& StandardOutputStream::operator<<(const string& output)
   return *this;
 }
 
-StandardOutputStream& StandardOutputStream::operator<<(char* output)
+StandardOutputStream& StandardOutputStream::operator<<(const char* output)
 {
   if (Layout::primaryNode())
     getOstream() << output;
