@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_precision.h,v 1.1 2004-04-02 11:57:21 bjoo Exp $
+// $Id: qdp_precision.h,v 1.2 2004-04-02 13:54:31 bjoo Exp $
 
 /*! \file
  * \brief PRECISION ISSUES
@@ -38,5 +38,4 @@
 #error "Unknown BASE_PRECISION"
 #endif
 
-QDP_END_NAMESPACE();
 #endif
