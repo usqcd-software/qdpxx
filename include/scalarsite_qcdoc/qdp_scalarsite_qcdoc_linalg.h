@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.5 2004-07-27 05:34:29 edwards Exp $
+// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.6 2004-12-10 18:31:20 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -482,8 +482,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
   const C& l = static_cast<const C&>(rhs.expression().left());
   const C& r = static_cast<const C&>(rhs.expression().right());
-
-  /* 
+#if 1
+  
    double fp_regs[32];
    _save_fp_regs(fp_regs);
 
@@ -495,12 +495,16 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 				d.elem(i).elem());
   }
   _restore_fp_regs(fp_regs);
-  */
+#else
+
+  /* This was a test hackup. Until Peter provides these routines
+    publicly it MUSTN'T be used  */
   int len = s.end()-s.start()+1;
   qcdoc_mult_su3_nn_subset(&len,
-	(REAL *)&(l.elem(s.start()).elem().elem(0,0).real().elem()),
-	(REAL *)&(r.elem(s.start()).elem().elem(0,0).real().elem()),
-	(REAL *)&(d.elem(s.start()).elem().elem(0,0).real().elem()));
+	(REAL *)&(l.elem(s.start()).elem().elem(0,0).real()),
+	(REAL *)&(r.elem(s.start()).elem().elem(0,0).real()),
+	(REAL *)&(d.elem(s.start()).elem().elem(0,0).real()));
+#endif
   
 }
 

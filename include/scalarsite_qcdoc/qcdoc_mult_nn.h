@@ -13,9 +13,9 @@
 
 #define _inline_qcdoc_mult_su3_nn(aa,bb,cc) \
 { \
-  float *aptr =(float *)&(aa.elem(0,0).real().elem());  \
-  float *bptr =(float *)&(bb.elem(0,0).real().elem());  \
-  float *cptr =(float *)&(cc.elem(0,0).real().elem());  \
+  float *aptr =(float *)&(aa.elem(0,0).real());  \
+  float *bptr =(float *)&(bb.elem(0,0).real());  \
+  float *cptr =(float *)&(cc.elem(0,0).real());  \
 \
   __asm__ __volatile__( \
 	"or    11 , %0 , %0 ;" \
