@@ -2,6 +2,10 @@ AC_INIT([qdp],[1.6],[edwards@jlab.org])
 
 AC_CONFIG_AUX_DIR(config)
 
+AC_LANG([C++])
+AC_PROG_CXX(g++ cxx CC)
+AC_PROG_RANLIB
+
 dnl Initialise automake
 AM_INIT_AUTOMAKE
 
@@ -93,15 +97,29 @@ AC_ARG_ENABLE(--enable-qio,
 )
 
 if test ${ac_sse} -eq 1; then
-  AC_DEFINE_UNQUOTED(QDP_USE_SSE, ${ac_sse}, [Enable SSE instructions])
-  AC_SUBST(CONFIG_SSE,[${ac_sse}])
-  AC_MSG_NOTICE([Configuring QDP++ with SSE extentions enabled]);
+  if test "X${GXX}X" = "XyesX"; then 
+    AC_MSG_NOTICE([Enabling -msse flag for g++])
+    CXXFLAGS="-msse "$CXXFLAGS
+  
+    AC_DEFINE_UNQUOTED(QDP_USE_SSE, ${ac_sse}, [Enable SSE instructions])
+    AC_SUBST(CONFIG_SSE,[${ac_sse}])
+    AC_MSG_NOTICE([Configuring QDP++ with SSE extentions enabled]);
+  else 
+    AC_MSG_NOTICE([ WARNING: Non GNU Compiler. SSE Only supported for GCC-3.2.2 or greater due to feature creep. Sorry ])
+  fi
 fi
 
 if test ${ac_sse2} -eq 1; then
-  AC_DEFINE_UNQUOTED(QDP_USE_SSE2, ${ac_sse2}, [Enable SSE2 instructions])
-  AC_SUBST(CONFIG_SSE2,[${ac_sse2}])
-  AC_MSG_NOTICE([Configuring QDP++ with SSE2 extentions enabled]);
+  if test "X${GXX}X" = "XyesX"; then 
+    AC_MSG_NOTICE([Enabling -msse2 flag for g++])
+    CXXFLAGS="-msse2 "$CXXFLAGS
+
+    AC_DEFINE_UNQUOTED(QDP_USE_SSE2, ${ac_sse2}, [Enable SSE2 instructions])
+    AC_SUBST(CONFIG_SSE2,[${ac_sse2}])
+    AC_MSG_NOTICE([Configuring QDP++ with SSE2 extentions enabled]);
+  else 
+    AC_MSG_NOTICE([ WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry ])
+  fi
 fi
 
 AC_ARG_ENABLE(precision, 
@@ -336,9 +354,7 @@ fi
 dnl Support for memory debugging with DMALLOC
 AM_WITH_DMALLOC
 
-AC_LANG([C++])
-AC_PROG_CXX(g++ cxx CC)
-AC_PROG_RANLIB
+
 
 dnl
 dnl
