@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdpio.h,v 1.2 2003-04-16 15:29:09 edwards Exp $
+// $Id: qdpio.h,v 1.3 2003-04-17 03:47:02 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -74,21 +74,31 @@ public:
 
   //! Read a QDP object
   template<class T, class C>
-  void read(XMLMetaReader& xml, QDPType<T,C>& f) {}
+  void read(XMLMetaReader& xml, QDPType<T,C>& s1)
+    {read_t(*this,xml,static_cast<C&>(s1));}
 
   //! Read an array of objects each in a seperate record
+  /*! OOPS, what about xml? Is it repeatedly read but tossed out?? */
   template<class T>
-  void read(XMLMetaReader& xml, multi1d<T>& f) {}
+  void read(XMLMetaReader& xml, multi1d<T>& s1)
+    {
+      for(int i=0; i < s1.size(); ++i)
+	read(xml,s1[i]);
+    }
+
 
   //! Read an array of objects all in a single record
   template<class T>
-  void vread(XMLMetaReader& xml, multi1d<T>& f) {}
+  void vread(XMLMetaReader& xml, multi1d<T>& s1) {}
 
   //! Check if end-of-file has been reached
   bool eof() const;
 
   //!  Check if an unrecoverable error has occurred
   bool bad() const;
+
+
+  QIO_Reader *get() const {return qio_in;}
 
 private:
   bool iop;
@@ -118,18 +128,27 @@ public:
 
   //! Write a QDP object
   template<class T, class C>
-  void write(const XMLMetaWriter& xml, const QDPType<T,C>& f) {}
+  void write(const XMLMetaWriter& xml, const QDPType<T,C>& s1)
+    {write_t(*this,xml,static_cast<const C&>(s1));}
+
 
   //! Write an array of objects each in a seperate record
   template<class T>
-  void write(const XMLMetaWriter& xml, const multi1d<T>& f) {}
+  void write(const XMLMetaWriter& xml, const multi1d<T>& s1)
+    {
+      for(int i=0; i < s1.size(); ++i)
+	write(xml,s1[i]);
+    }
 
   //! Write an array of objects all in a single record
   template<class T>
-  void vwrite(const XMLMetaWriter& xml, const multi1d<T>& f) {}
+  void vwrite(const XMLMetaWriter& xml, const multi1d<T>& s1) {}
 
   //!  Check if an unrecoverable error has occurred
   bool bad() const;
+
+
+  QIO_Writer *get() const {return qio_out;}
 
 private:
   bool iop;
