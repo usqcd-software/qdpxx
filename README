@@ -1,27 +1,35 @@
+Quick installations instructions for QDP
+========================================
+
+To build QDP, it is recommended you make a subdirectory for the
+build and keep the build tree separate from the source tree. E.g., say
+to build the "scalar" version (single node workstation) of QDP++:
+
+% cd qdp++
+% mkdir scalar-build
+% cd scalar-build
+% ../configure --prefix=<path to your favorite installation directory>
+% make
+
+The include files, libraries and docs are installed in the path
+specified by ``prefix''.
+
+
+
+============================================================================
+
 STATUS
 ======
 
 Scalar and Parscalar library compiles, examples compile and link and run.
 
-G++ Stuff
-=========
-
-This implementation has been developed under gcc-3.2.
-It is known (for simple reasons) not to compile under
-gcc-2.X . The problem parts could easily be changed,
-but I can't be bothered at the moment.
-
-However, gcc-2.X is not compliant with the final
-version of C++-3 standard on I/O. In particular, stream
-support is not all in the correct place with correct
-names. That is more annoying to try and backward support
-so it won't be supported.
-
 SOFTWARE PREREQUISITES
 ======================
 
-To compile this code you will need gcc-3.x, and gmake
-To be able to play with the build system you'll also need
+This implementation has been developed under gcc-3.2, and Intel C++
+(32bit) V7.0. To compile this code you will need a compiler that
+supports the C++ 3.0 standard - e.g., gcc-3.x.  Also needed: gmake and
+libxml2.  To be able to play with the build system you'll also need
 autoconf-2.5x and automake-1.7.x and gm4.
 
 INSTALLATION
