@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.17 2003-12-21 19:22:51 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.18 2004-07-02 19:24:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -756,6 +756,30 @@ traceSpin(const PMatrix<T,N,C>& s1)
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       d.elem(i,j) = traceSpin(s1.elem(i,j));
+
+  return d;
+}
+
+
+// trace = traceMultiply(source1,source2)
+template<class T1, class T2, int N, template<class,int> class C>
+struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceMultiply> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnTraceMultiply>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N, template<class,int> class C>
+inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdjMultiplyAdj>::Type_t
+traceMultiply(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
+{
+  typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceMultiply>::Type_t  d;
+
+  d.elem() = traceMultiply(s1.elem(0,0), s2.elem(0,0));
+  for(int k=1; k < N; ++k)
+    d.elem() += traceMultiply(s1.elem(0,k), s2.elem(k,0));
+
+  for(int j=1; j < N; ++j)
+    for(int k=0; k < N; ++k)
+      d.elem() += traceMultiply(s1.elem(j,k), s2.elem(k,j));
 
   return d;
 }
