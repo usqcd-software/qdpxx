@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.16 2003-07-06 19:04:26 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.17 2003-08-25 10:58:25 bjoo Exp $
 
 /*! @file
  * @brief XML IO support
@@ -105,11 +105,24 @@ template<class T>
 inline
 void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
 {
+
+  // Preserve the context pointer
+  xmlNodePtr context_node_before_read = xml.getCurrentContextNode();
+
+
+  // Change context to the top of the array as a speed optimisation
+  try { 
+    xml.setCurrentXPath(s);
+  }
+  catch ( const string& e) { 
+    throw;
+  }
+
   std::ostringstream error_message;
   std::string elemName = "elem";
   
   // Count the number of elements
-  std::string elem_base_query = s + "/" + elemName;
+  std::string elem_base_query = elemName;
 	
   int array_size;
   try {
@@ -134,7 +147,12 @@ void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
     // recursively try and read the element.
     try 
     {
+      // Preserve context pointer just in case the recursive read moves 
+      // it
+      xmlNodePtr context_node_before_elem_read = xml.getCurrentContextNode();
       read(xml, element_xpath.str(), input[i]);
+      xml.setCurrentContextNode(context_node_before_elem_read);
+
     } 
     catch (const std::string& e) 
     {
@@ -145,6 +163,9 @@ void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
       throw error_message.str();
     }
   }
+
+  // Restore previous context pointer
+  xml.setCurrentContextNode(context_node_before_read);
 }
 
 
