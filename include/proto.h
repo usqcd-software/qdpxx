@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: proto.h,v 1.6 2002-12-05 21:27:10 edwards Exp $
+// $Id: proto.h,v 1.7 2002-12-14 01:12:35 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -13,6 +13,9 @@ multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
 
 //! Calculates the lexicographic site index from the coordinate of a site
 int local_site(const multi1d<int>& coord, const multi1d<int>& latt_size);
+
+//! Unique-ify a list
+multi1d<int> uniquify_list(const multi1d<int>& ll);
 
 //! Initializer for subsets
 void InitDefaultSets();
