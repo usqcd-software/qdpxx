@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.17 2004-04-07 09:34:33 bjoo Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.18 2004-05-03 16:48:57 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -440,23 +440,23 @@ void writeOLattice(BinaryWriter& bin,
 void readOLattice(BinaryReader& bin, 
 		  char* input, size_t size, size_t nmemb)
 {
-  size_t tot_size = size*nmemb;
+  const int xinc = Layout::subgridLattSize()[0];
+
+  size_t sizemem = size*nmemb;
+  size_t tot_size = sizemem*xinc;
   char *recv_buf = new char[tot_size];
   if( recv_buf == 0x0 ) { 
     QDP_error_exit("Unable to allocate recvbuf\n");
   }
 
-
   // Find the location of each site and send to primary node
-  for(int site=0; site < Layout::vol(); ++site)
+  for(int site=0; site < Layout::vol(); site += xinc)
   {
-    multi1d<int> coord = crtesn(site, Layout::lattSize());
-
-    int node   = Layout::nodeNumber(coord);
-    int linear = Layout::linearSiteIndex(coord);
+    // first site in each segment uniquely identifies the node
+    int node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
 
     // Only on primary node read the data
-    bin.readArrayPrimaryNode(recv_buf, size, nmemb);
+    bin.readArrayPrimaryNode(recv_buf, size, nmemb*xinc);
 
     // Send result to destination node. Avoid sending prim-node sending to itself
     if (node != 0)
@@ -474,7 +474,14 @@ void readOLattice(BinaryReader& bin,
     }
 
     if (Layout::nodeNumber() == node)
-      memcpy(input+linear*tot_size, recv_buf, tot_size);
+    {
+      for(int i=0; i < xinc; ++i)
+      {
+	int linear = Layout::linearSiteIndex(crtesn(site+i, Layout::lattSize()));
+
+	memcpy(input+linear*sizemem, recv_buf+i*sizemem, sizemem);
+      }
+    }
   }
 
   delete[] recv_buf;
@@ -504,8 +511,8 @@ void readOLattice(BinaryReader& bin,
   if (node != 0)
   {
 #if 1
-      // All nodes participate
-      Internal::route((void *)recv_buf, 0, node, tot_size);
+    // All nodes participate
+    Internal::route((void *)recv_buf, 0, node, tot_size);
 #else
     if (Layout::primaryNode())
       Internal::sendToWait((void *)recv_buf, node, tot_size);
