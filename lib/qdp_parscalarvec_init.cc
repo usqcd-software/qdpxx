@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_init.cc,v 1.2 2003-09-03 01:24:19 edwards Exp $
+// $Id: qdp_parscalarvec_init.cc,v 1.3 2003-10-09 18:27:40 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec init routines
@@ -63,11 +63,8 @@ void QDP_initialize(int *argc, char ***argv)
 
   for (int i=1; i<*argc; i++) 
   {
-    cerr << "arg = " << (*argv)[i] << endl;
-
     if (strcmp((*argv)[i], "-V")==0) 
     {
-      cerr << "Use verbose mode" << endl;
       QMP_verboseP = 1;
     }
 #ifdef USE_REMOTE_QIO
@@ -120,6 +117,11 @@ void QDP_initialize(int *argc, char ***argv)
   // initialize remote file service (QIO)
   bool use_qio = (rtiP != 0) ? true : false;
   QDPUtil::RemoteFileInit(rtinode, use_qio);
+
+  // initialize the global streams
+  QDPIO::cin.init(&std::cin);
+  QDPIO::cout.init(&std::cout);
+  QDPIO::cerr.init(&std::cerr);
 
   QDP_info("Initialize done");
 }

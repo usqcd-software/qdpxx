@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_init.cc,v 1.4 2003-06-20 02:41:28 edwards Exp $
+// $Id: qdp_scalar_init.cc,v 1.5 2003-10-09 18:27:40 edwards Exp $
 
 /*! @file
  * @brief Scalar init routines
@@ -20,10 +20,15 @@ void QDP_initialize(int *argc, char ***argv)
 {
   Layout::init();   // setup extremely basic functionality in Layout
 
+  isInit = true;
+
   // initialize remote file service (QIO)
   QDPUtil::RemoteFileInit("qcdi01", false);
 
-  isInit = true;
+  // initialize the global streams
+  QDPIO::cin.init(&std::cin);
+  QDPIO::cout.init(&std::cout);
+  QDPIO::cerr.init(&std::cerr);
 }
 
 //! Is the machine initialized?

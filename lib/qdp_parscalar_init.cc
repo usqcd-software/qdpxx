@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.5 2003-06-20 02:41:28 edwards Exp $
+// $Id: qdp_parscalar_init.cc,v 1.6 2003-10-09 18:27:40 edwards Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -63,11 +63,8 @@ void QDP_initialize(int *argc, char ***argv)
 
   for (int i=1; i<*argc; i++) 
   {
-    cerr << "arg = " << (*argv)[i] << endl;
-
     if (strcmp((*argv)[i], "-V")==0) 
     {
-      cerr << "Use verbose mode" << endl;
       QMP_verboseP = 1;
     }
 #ifdef USE_REMOTE_QIO
@@ -104,24 +101,29 @@ void QDP_initialize(int *argc, char ***argv)
 
   QMP_verbose (QMP_verboseP);
 
-  QDP_info("Now initialize QMP");
+//  QDP_info("Now initialize QMP");
 
   if (QMP_init_msg_passing(argc, argv, QMP_SMP_ONE_ADDRESS) != QMP_SUCCESS)
     QDP_error_exit("QDP_initialize failed");
 
-  QDP_info("Some layout init");
+//  QDP_info("Some layout init");
 
   Layout::init();   // setup extremely basic functionality in Layout
 
   isInit = true;
 
-  QDP_info("Init qio");
+//  QDP_info("Init qio");
 
   // initialize remote file service (QIO)
   bool use_qio = (rtiP != 0) ? true : false;
   QDPUtil::RemoteFileInit(rtinode, use_qio);
 
-  QDP_info("Initialize done");
+  // initialize the global streams
+  QDPIO::cin.init(&std::cin);
+  QDPIO::cout.init(&std::cout);
+  QDPIO::cerr.init(&std::cerr);
+
+  QDPIO::cout << "Initialize done" << std::endl;
 }
 
 //! Is the machine initialized?
@@ -131,7 +133,10 @@ bool QDP_isInitialized() {return isInit;}
 void QDP_finalize()
 {
   if ( ! QDP_isInitialized() )
-    QDP_error_exit("QDP is not inited");
+  {
+    QDPIO::cerr << "QDP is not inited" << std::endl;
+    QDP_abort(1);
+  }
 
   // shutdown remote file service (QIO)
   QDPUtil::RemoteFileShutdown();
