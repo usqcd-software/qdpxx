@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.18 2004-08-09 22:01:29 edwards Exp $
+// $Id: qdp_inner.h,v 1.19 2004-08-10 00:48:58 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -1561,6 +1561,15 @@ seedToFloat(const IScalar<T1>& s1)
 }
 
 
+//! IScalar = outerProduct(IScalar, IScalar)
+template<class T1, class T2>
+inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, FnOuterProduct>::Type_t
+outerProduct(const IScalar<T1>& l, const IScalar<T2>& r)
+{
+  return outerProduct(l.elem(),r.elem());
+}
+
+
 //! dest [some type] = source [some type]
 /*! Portable (internal) way of returning a single site */
 template<class T>
@@ -2754,6 +2763,43 @@ seedToFloat(const ILattice<T1,N>& s1)
 
   for(int i=0; i < N; ++i)
     d.elem(i) = seedToFloat(s1.elem(i));
+  return d;
+}
+
+
+//! ILattice = outerProduct(ILattice, ILattice)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnOuterProduct>::Type_t
+outerProduct(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnOuterProduct>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = outerProduct(l.elem(i), r.elem(i));
+  return d;
+}
+
+//! ILattice = outerProduct(ILattice, IScalar)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnOuterProduct>::Type_t
+outerProduct(const ILattice<T1,N>& l, const IScalar<T2>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnOuterProduct>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = outerProduct(l.elem(i), r.elem());
+  return d;
+}
+
+//! ILattice = outerProduct(IScalar, ILattice)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnOuterProduct>::Type_t
+outerProduct(const IScalar<T1>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnOuterProduct>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = outerProduct(l.elem(), r.elem(i));
   return d;
 }
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinmat.h,v 1.7 2004-07-06 01:55:27 edwards Exp $
+// $Id: qdp_primspinmat.h,v 1.8 2004-08-10 00:48:58 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -403,6 +403,32 @@ traceSpinMultiply(const PScalar<T1>& l, const PSpinMatrix<T2,N>& r)
   return d;
 }
 
+
+
+//-----------------------------------------------
+// OuterProduct must be handled specially for each color and spin
+// The problem is the traits class - I have no way to say to PVector's
+//  transform into a PMatrix but downcast the trait to a PColorMatrix or
+//  PSpinMatrix
+
+//! PSpinMatrix = outerProduct(PSpinVector, PSpinVector)
+template<class T1, class T2, int N>
+struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnOuterProduct> {
+  typedef PSpinMatrix<typename BinaryReturn<T1, T2, FnOuterProduct>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnOuterProduct>::Type_t
+outerProduct(const PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r)
+{
+  typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnOuterProduct>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=1; j < N; ++j)
+      d.elem(i,j) = outerProduct(l.elem(i),r.elem(j));
+
+  return d;
+}
 
 
 //-----------------------------------------------

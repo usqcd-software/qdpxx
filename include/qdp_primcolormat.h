@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.8 2004-07-06 01:53:29 edwards Exp $
+// $Id: qdp_primcolormat.h,v 1.9 2004-08-10 00:48:58 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -352,6 +352,31 @@ traceColorMultiply(const PScalar<T1>& l, const PColorMatrix<T2,N>& r)
   return d;
 }
 
+
+
+//-----------------------------------------------
+// OuterProduct must be handled specially for each color and spin
+// The problem is the traits class - I have no way to say to PVector's
+//  transform into a PMatrix but downcast the trait to a PColorMatrix or PSpinMatrix
+
+//! PColorMatrix = outerProduct(PColorVector, PColorVector)
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnOuterProduct> {
+  typedef PColorMatrix<typename BinaryReturn<T1, T2, FnOuterProduct>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnOuterProduct>::Type_t
+outerProduct(const PColorVector<T1,N>& l, const PColorVector<T2,N>& r)
+{
+  typename BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnOuterProduct>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=1; j < N; ++j)
+      d.elem(i,j) = outerProduct(l.elem(i),r.elem(j));
+
+  return d;
+}
 
 
 //-----------------------------------------------

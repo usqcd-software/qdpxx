@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.22 2004-08-09 21:56:35 edwards Exp $
+// $Id: qdp_reality.h,v 1.23 2004-08-10 00:48:58 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1266,6 +1266,14 @@ atan2(const RScalar<T1>& s1, const RScalar<T2>& s2)
 }
 
 
+//! RScalar = outerProduct(RScalar, RScalar)
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnOuterProduct>::Type_t
+outerProduct(const RScalar<T1>& l, const RScalar<T2>& r)
+{
+  return l.elem() * r.elem();
+}
+
 
 //! dest [float type] = source [seed type]
 template<class T1>
@@ -2033,6 +2041,43 @@ timesMinusI(const RComplex<T>& s1)
 
   return Ret_t(s1.imag(),
 	       -s1.real());
+}
+
+
+//! RComplex = outerProduct(RComplex, RComplex)
+template<class T1, class T2>
+inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnOuterProduct>::Type_t
+outerProduct(const RComplex<T1>& l, const RComplex<T2>& r)
+{
+  typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnOuterProduct>::Type_t  Ret_t;
+
+  // Return   l*conj(r)
+  return Ret_t(l.real()*r.real() + l.imag()*r.imag(),
+	       l.imag()*r.real() - l.real()*r.imag());
+}
+
+//! RComplex = outerProduct(RComplex, RScalar)
+template<class T1, class T2>
+inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, FnOuterProduct>::Type_t
+outerProduct(const RComplex<T1>& l, const RScalar<T2>& r)
+{
+  typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, FnOuterProduct>::Type_t  Ret_t;
+
+  // Return   l*conj(r)
+  return Ret_t(l.real()*r.elem(),
+	       l.imag()*r.elem());
+}
+
+//! RComplex = outerProduct(RScalar, RComplex)
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, FnOuterProduct>::Type_t
+outerProduct(const RScalar<T1>& l, const RComplex<T2>& r)
+{
+  typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, FnOuterProduct>::Type_t  Ret_t;
+
+  // Return   l*conj(r)
+  return Ret_t( l.elem()*r.real(),
+	       -l.elem()*r.imag());
 }
 
 
