@@ -1,5 +1,10 @@
 01/24/2004 -- Robert Edwards
 
+	Version 1.11.4. Zbigniew has changed all qdp, qio, c-lime config.h 
+        to use char* for package names so they actually are useable.
+
+01/24/2004 -- Robert Edwards
+
 	Version 1.11.3. Changed XMLFileWriter support. Now, explicitly
         use ofstream in case of not USE_REMOTE_QIO. Make 
         XMLFileWriter::is_open() check if QDP is (still) initialized
