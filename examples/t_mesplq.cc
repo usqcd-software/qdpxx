@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.16 2003-08-29 02:38:24 edwards Exp $
+// $Id: t_mesplq.cc,v 1.17 2003-10-09 19:59:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -33,20 +33,20 @@ int main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u(Nd);
   Double w_plaq, s_plaq, t_plaq, link;
 
-  cout << "Start gaussian\n";
+  QDPIO::cout << "Start gaussian\n";
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
   // Reunitarize the gauge field
-  cout << "Start reunit\n";
+  QDPIO::cout << "Start reunit\n";
   for(int m=0; m < u.size(); ++m)
     reunit(u[m]);
 
   // Try out the plaquette routine
-  cout << "Start mesplq\n";
+  QDPIO::cout << "Start mesplq\n";
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  cout << "w_plaq = " << w_plaq << endl;
-  cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << endl;
+  QDPIO::cout << "link = " << link << endl;
 
   // Write out the results
   push(nml,"observables");

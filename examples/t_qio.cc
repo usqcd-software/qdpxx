@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.5 2003-09-24 15:49:43 bjoo Exp $
+// $Id: t_qio.cc,v 1.6 2003-10-09 19:59:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 
 
     QDPSerialFileWriter to(file_xml,source_filename);
-    cout << "QDPSerialFile Writer opened" << endl << flush;
+    QDPIO::cout << "QDPSerialFile Writer opened" << endl << flush;
     XMLReader tmp_record_xml("record.xml");
     XMLBufferWriter record_xml;
     record_xml << tmp_record_xml;
@@ -81,20 +81,20 @@ int main(int argc, char **argv)
     XMLReader file_xml;
     QDPSerialFileReader from(file_xml,"t_qio.dime");
 
-    cout << "Here is the contents of  file_xml" << endl;
+    QDPIO::cout << "Here is the contents of  file_xml" << endl;
     file_xml.print(cout);
 
     XMLReader record_xml;
     LatticeComplex a;
     from.read(record_xml,a);
 
-    cout << "Here is the contents of first  record_xml" << endl;
+    QDPIO::cout << "Here is the contents of first  record_xml" << endl;
     record_xml.print(cout);
 
     LatticeColorMatrix b;
     from.read(record_xml,b);
 
-    cout << "Here is the contents of second  record_xml" << endl;
+    QDPIO::cout << "Here is the contents of second  record_xml" << endl;
     record_xml.print(cout);
   }
 #endif

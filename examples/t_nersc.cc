@@ -1,4 +1,4 @@
-// $Id: t_nersc.cc,v 1.2 2003-08-26 21:38:38 edwards Exp $
+// $Id: t_nersc.cc,v 1.3 2003-10-09 19:59:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -34,16 +34,16 @@ int main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u(Nd);
   Double w_plaq, s_plaq, t_plaq, link;
 
-  cout << "Trying to read NERSC Archive  t_nersc.cfg\n"
-       << "  make sure it is in your current directory" << endl;
+  QDPIO::cout << "Trying to read NERSC Archive  t_nersc.cfg\n"
+	      << "  make sure it is in your current directory" << endl;
   XMLReader xml;
   readArchiv(xml, u, "t_nersc.cfg");
  
   // Try out the plaquette routine
-  cout << "Start mesplq\n";
+  QDPIO::cout << "Start mesplq\n";
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  cout << "w_plaq = " << w_plaq << endl;
-  cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << endl;
+  QDPIO::cout << "link = " << link << endl;
 
   // Write out the results
   push(nml,"observables");

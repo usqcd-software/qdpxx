@@ -1,4 +1,4 @@
-// $Id: t_qio_factory.cc,v 1.2 2003-09-26 13:24:24 bjoo Exp $
+// $Id: t_qio_factory.cc,v 1.3 2003-10-09 19:59:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -27,12 +27,12 @@ int main(int argc, char **argv)
   int site_size;
   site_size = sizeof(MyProp);
 
-  cout << "Site Data Size = " << site_size << endl << flush ;
+  QDPIO::cout << "Site Data Size = " << site_size << endl << flush ;
 
   // Get a buffer for a site-s worth of data 
   char *buf = new char [ site_size ];
   if( buf == 0x0 ) { 
-    cerr << "Unable to allocate buf" << endl;
+    QDPIO::cerr << "Unable to allocate buf" << endl;
     QDP_abort(1);
   }
 

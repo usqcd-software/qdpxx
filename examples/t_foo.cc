@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.29 2003-06-07 19:09:31 edwards Exp $
+// $Id: t_foo.cc,v 1.30 2003-10-09 19:59:39 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 #endif
 
 #if 0
-  cerr << "Open t_foo.input" << endl;
+  QDPIO::cerr << "Open t_foo.input" << endl;
 
   NmlReader nml_in("t_foo.input");
   {
@@ -222,25 +222,25 @@ int main(int argc, char *argv[])
 
 //  exit(0);
 
-  cerr << "try a string\n";
+  QDPIO::cerr << "try a string\n";
   nml << "write a string";
 
   Real one = 1.0;
-  cerr << "try a scalar\n";
+  QDPIO::cerr << "try a scalar\n";
   nml << "write a scalar";
   write(nml,"test this",one);
 //  exit(0);
 
-  cerr << "latticereal\n";
+  QDPIO::cerr << "latticereal\n";
   LatticeReal bar = 17.0;
   random(bar);
 
 //  for(int i=0; i < Layout::subgridVol(); ++i)
-//    cerr << "bar[" << i << "]=" << bar.elem(i) << endl;
+//    QDPIO::cerr << "bar[" << i << "]=" << bar.elem(i) << endl;
 
-  cerr << "write\n";
+  QDPIO::cerr << "write\n";
   Write(nml,bar);
-  cerr << "done write\n";
+  QDPIO::cerr << "done write\n";
 
 #if 0
   // Initialize the random number generator
@@ -370,27 +370,27 @@ int main(int argc, char *argv[])
   }
 
   {
-    cerr << "open fred.bin\n";
+    QDPIO::cerr << "open fred.bin\n";
     BinaryWriter to("fred.bin");
     write(to,a);
   }
 
   {
     float x;
-    cerr << "enter some data" << endl;
+    QDPIO::cerr << "enter some data" << endl;
     TextReader from("input");
     from >> x;
 
-    cerr << "float: you entered :" << x << ":" << endl;
+    QDPIO::cerr << "float: you entered :" << x << ":" << endl;
   }
 
   {
     Real x;
-    cerr << "enter some data" << endl;
+    QDPIO::cerr << "enter some data" << endl;
     TextReader from("input");
     from >> x;
 
-    cerr << "Real: you entered :" << x << ":" << endl;
+    QDPIO::cerr << "Real: you entered :" << x << ":" << endl;
   }
 
   
@@ -409,7 +409,7 @@ int main(int argc, char *argv[])
 
 #if 1
  {
-   cerr << "create metadata xml" << endl;
+   QDPIO::cerr << "create metadata xml" << endl;
 
    XMLBufferWriter xml;
 
@@ -432,7 +432,7 @@ int main(int argc, char *argv[])
 
    pop(xml);
 
-   cout << "Here is the metadata" << endl << xml.str() << endl;
+   QDPIO::cout << "Here is the metadata" << endl << xml.str() << endl;
 
    XMLFileWriter file_xml("t_foo.xml_output");
    file_xml.writeXML(xml.printRoot());
@@ -441,7 +441,7 @@ int main(int argc, char *argv[])
 
 #if 1
  {
-   cerr << "read metadata xml" << endl;
+   QDPIO::cerr << "read metadata xml" << endl;
 
    XMLReader xml;
    xml.open("t_foo.xml_output");
@@ -450,7 +450,7 @@ int main(int argc, char *argv[])
    read(xml,"/fred/yy",yy);
    Write(nml,yy);
 
-   cerr << "Found reading metadata xml that  yy = " << yy << endl;
+   QDPIO::cerr << "Found reading metadata xml that  yy = " << yy << endl;
 
 //   Complex zz;
 //   read(xml,"zz",zz);
@@ -460,7 +460,7 @@ int main(int argc, char *argv[])
 
 #if 0
  {
-   cerr << "create xml" << endl;
+   QDPIO::cerr << "create xml" << endl;
 
    XMLBufferWriter file_xml;
    string file_string = "Here is the file xml";
@@ -483,13 +483,13 @@ int main(int argc, char *argv[])
    nml << "Test of QDPSerialFileWriter - here first is a";
    Write(nml,b);
 
-   cerr << "create serialwriter" << endl;
+   QDPIO::cerr << "create serialwriter" << endl;
    QDPSerialFileWriter to(file_xml,"fred.dime");
-   cerr << "write to" << endl;
+   QDPIO::cerr << "write to" << endl;
    to.write(rec_xml,a);
-   cerr << "end write" << endl;
+   QDPIO::cerr << "end write" << endl;
    to.write(rec_xml,b);
-   cerr << "end write" << endl;
+   QDPIO::cerr << "end write" << endl;
    to.close();
 
    nml << "Test of QDPSerialFileWriter";
@@ -500,7 +500,7 @@ int main(int argc, char *argv[])
 
 #if 0
  {
-   cerr << "create xml" << endl;
+   QDPIO::cerr << "create xml" << endl;
 
    XMLReader file_xml;
    XMLReader rec_xml;
@@ -508,13 +508,13 @@ int main(int argc, char *argv[])
    a = 0;
    b = 0;
 
-   cerr << "open serialreader" << endl;
+   QDPIO::cerr << "open serialreader" << endl;
    QDPSerialFileReader from(file_xml,"fred.dime");
-   cerr << "read from file" << endl;
+   QDPIO::cerr << "read from file" << endl;
    from.read(rec_xml,a);
-   cerr << "end read 1" << endl;
+   QDPIO::cerr << "end read 1" << endl;
    from.read(rec_xml,b);
-   cerr << "end read 2" << endl;
+   QDPIO::cerr << "end read 2" << endl;
 
    nml << "Read a and b from QDPSerialFileReader";
    Write(nml,a);
@@ -540,7 +540,7 @@ int main(int argc, char *argv[])
     // Read a szin gauge file
     multi1d<LatticeColorMatrix> u(Nd);
     Seed seed_old;
-    cerr << "Calling szin reader" << endl;
+    QDPIO::cerr << "Calling szin reader" << endl;
     readSzin(u, 0, "szin.cfg", seed_old);
     nml << "Here is the SZIN u field";
     Write(nml,u);
@@ -553,7 +553,7 @@ int main(int argc, char *argv[])
   {
     // Read a szin quark prop file
     LatticePropagator qprop;
-    cerr << "Read a szin qprop" << endl;
+    QDPIO::cerr << "Read a szin qprop" << endl;
     readSzinQprop(qprop, "propagator_0");
     nml << "Here is the szin quark prop";
     Write(nml,qprop);

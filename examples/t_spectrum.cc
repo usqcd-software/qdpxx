@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.13 2003-09-03 19:52:22 edwards Exp $
+ *  $Id: t_spectrum.cc,v 1.14 2003-10-09 19:59:39 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -72,13 +72,13 @@ int main(int argc, char **argv)
   {
     char filename[100];
 
-    cerr << "Reading in NERSC file...";
+    QDPIO::cout << "Reading in NERSC file...";
     printf("Gauge file name? ");
     scanf("%s",filename);
     readArchiv(u, filename);
-    cerr << "...done\n";
+    QDPIO::cout << "...done\n";
 
-    cerr << "Gauge field is ";
+    QDPIO::cout << "Gauge field is ";
     for(int mu = 0; mu < Nd; mu++){
       Write(nml, mu);
       Write(nml, u[mu]);
@@ -91,12 +91,12 @@ int main(int argc, char **argv)
    */
  {
    Double w_plaq, s_plaq, t_plaq, link;
-   cerr << "Evaluating the plaquette...";
+   QDPIO::cout << "Evaluating the plaquette...";
    MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-   cerr << "...done\n";
+   QDPIO::cout << "...done\n";
 
-   cerr << "w_plaq = " << w_plaq << endl;
-   cerr << "link = " << link << endl;
+   QDPIO::cout << "w_plaq = " << w_plaq << endl;
+   QDPIO::cout << "link = " << link << endl;
  }
 
 
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
   multi1d<int> t_source(Nd);	// Source coordinate of propagators
   t_source = 0;
 
-  cerr << "Computing simple meson spectroscopy..." << endl;
+  QDPIO::cout << "Computing simple meson spectroscopy..." << endl;
 
   {
 
@@ -141,9 +141,9 @@ int main(int argc, char **argv)
     pop(nml);
   }
 
-  cerr << "...done" << endl;
+  QDPIO::cout << "...done" << endl;
 
-  cerr << "Computing simple baryon spectroscopy..." << endl;
+  QDPIO::cout << "Computing simple baryon spectroscopy..." << endl;
 
   {
 
@@ -161,7 +161,7 @@ int main(int argc, char **argv)
     pop(nml);
   }
 
-  cerr << "...done" << endl;
+  QDPIO::cout << "...done" << endl;
 
   // Time to bolt
   QDP_finalize();

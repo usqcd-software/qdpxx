@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.12 2003-10-02 21:18:50 edwards Exp $
+// $Id: t_linalg.cc,v 1.13 2003-10-09 19:59:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
   Write(nml,nrow);
   pop(nml);
 
-  cout << "CLOCKS_PER_SEC = " << CLOCKS_PER_SEC << endl;
+  QDPIO::cout << "CLOCKS_PER_SEC = " << CLOCKS_PER_SEC << endl;
 
   LatticeColorMatrix a, b, c;
   gaussian(a);
@@ -45,14 +45,14 @@ int main(int argc, char *argv[])
   // Test M=M*M
   for(icnt=1; ; icnt <<= 1)
   {
-    cout << "calling " << icnt << " times" << endl;
+    QDPIO::cout << "calling " << icnt << " times" << endl;
     tt = QDP_M_eq_M_times_M(c, a, b, icnt);
 #if defined(TIME_OPS)
     if (tt > 1)
       break;
 #else
     // turn off timings for some testing
-    cout << "***WARNING*** : debug mode - timings are bogus" << endl;
+    QDPIO::cout << "***WARNING*** : debug mode - timings are bogus" << endl;
     break;
 #endif
   }
@@ -61,9 +61,9 @@ int main(int argc, char *argv[])
 
   tt *= rescale;
 #if defined(TIME_OPS)
-  cout << "time(M=M*M) = " << tt
-       << " micro-secs/site/iteration" 
-       << " , " << 198 / tt << " Mflops" << endl;
+  QDPIO::cout << "time(M=M*M) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << 198 / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_eq_M_times_M");
   Write(nml,c);
@@ -71,12 +71,12 @@ int main(int argc, char *argv[])
 #endif
   
   // Test  M=adj(M)*M
-  cout << "calling " << icnt << " times" << endl;
+  QDPIO::cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_M_eq_Ma_times_M(c, a, b, icnt);
 #if defined(TIME_OPS)
-  cout << "time(M=adj(M)*M) = " << tt
-       << " micro-secs/site/iteration" 
-       << " , " << 198 / tt << " Mflops" << endl;
+  QDPIO::cout << "time(M=adj(M)*M) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << 198 / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_eq_Ma_times_M");
   Write(nml,a);
@@ -86,12 +86,12 @@ int main(int argc, char *argv[])
 #endif
   
   // Test  M=M*adj(M)
-  cout << "calling " << icnt << " times" << endl;
+  QDPIO::cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_M_eq_M_times_Ma(c, a, b, icnt);
 #if defined(TIME_OPS)
-  cout << "time(M=M*adj(M)) = " << tt
-       << " micro-secs/site/iteration" 
-       << " , " << 198 / tt << " Mflops" << endl;
+  QDPIO::cout << "time(M=M*adj(M)) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << 198 / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_eq_M_times_Ma");
   Write(nml,a);
@@ -102,12 +102,12 @@ int main(int argc, char *argv[])
 
  
   // Test  M=adj(M)*adj(M)
-  cout << "calling " << icnt << " times" << endl;
+  QDPIO::cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_M_eq_Ma_times_Ma(c, a, b, icnt);
 #if defined(TIME_OPS)
-  cout << "time(M=adj(M)*adj(M)) = " << tt
-       << " micro-secs/site/iteration" 
-       << " , " << 198 / tt << " Mflops" << endl;
+  QDPIO::cout << "time(M=adj(M)*adj(M)) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << 198 / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_eq_Ma_times_Ma");
   Write(nml,a);
@@ -118,12 +118,12 @@ int main(int argc, char *argv[])
 
   
   // Test  M+= M*M
-  cout << "calling " << icnt << " times" << endl;
+  QDPIO::cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_M_peq_M_times_M(c, a, b, icnt);
 #if defined(TIME_OPS)
-  cout << "time(M+=M*M) = " << tt
-       << " micro-secs/site/iteration" 
-       << " , " << 216 / tt << " Mflops" << endl;
+  QDPIO::cout << "time(M+=M*M) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << 216 / tt << " Mflops" << endl;
 #else
   push(nml,"QDP_M_peq_M_times_M");
   Write(nml,c);
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
   // Test LatticeColorVector = LatticeColorMatrix * LatticeColorVector
   for(icnt=1; ; icnt <<= 1)
   {
-    cout << "calling " << icnt << " times" << endl;
+    QDPIO::cout << "calling " << icnt << " times" << endl;
     tt = QDP_V_eq_M_times_V(lv2, a, lv1, icnt);
 #if defined(TIME_OPS)
     if (tt > 1)
@@ -156,9 +156,9 @@ int main(int argc, char *argv[])
 
   tt *= rescale;
 #if defined(TIME_OPS)
-  cout << "time(V=M*V) = " << tt
-       << " micro-secs/site/iteration" 
-       << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
+  QDPIO::cout << "time(V=M*V) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_V_eq_M_times_V");
   Write(nml,lv2);
@@ -167,12 +167,12 @@ int main(int argc, char *argv[])
 
 
   // Test LatticeColorVector = LatticeColorMatrix * LatticeColorVector
-  cout << "calling " << icnt << " times" << endl;
+  QDPIO::cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_V_eq_Ma_times_V(lv2, a, lv1, icnt);
 #if defined(TIME_OPS)
-  cout << "time(V=adj(M)*V) = " << tt
-       << " micro-secs/site/iteration" 
-       << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
+  QDPIO::cout << "time(V=adj(M)*V) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_V_eq_Ma_times_V");
   Write(nml,lv2);
@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
   // Test LatticeColorVector = LatticeColorVector + LatticeColorVector
   for(icnt=1; ; icnt <<= 1)
   {
-    cout << "calling " << icnt << " times" << endl;
+    QDPIO::cout << "calling " << icnt << " times" << endl;
     tt = QDP_V_eq_V_plus_V(lv3, lv1, lv2, icnt);
 #if defined(TIME_OPS)
     if (tt > 1)
@@ -199,9 +199,9 @@ int main(int argc, char *argv[])
 
   tt *= rescale;
 #if defined(TIME_OPS)
-  cout << "time(V=V+V) = " << tt
-       << " micro-secs/site/iteration" 
-       << " , " << 6 / tt << " Mflops" << endl;   // check the flop count
+  QDPIO::cout << "time(V=V+V) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << 6 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_V_eq_V_plus_V");
   Write(nml,lv3);
@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
   // Test LatticeDiracFermion = LatticeColorMatrix * LatticeDiracFermion
   for(icnt=1; ; icnt <<= 1)
   {
-    cout << "calling " << icnt << " times" << endl;
+    QDPIO::cout << "calling " << icnt << " times" << endl;
     tt = QDP_D_eq_M_times_D(lf2, a, lf1, icnt);
 #if defined(TIME_OPS)
     if (tt > 1)
@@ -234,9 +234,9 @@ int main(int argc, char *argv[])
 
   tt *= rescale;
 #if defined(TIME_OPS)
-  cout << "time(D=M*D) = " << tt
-       << " micro-secs/site/iteration" 
-       << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
+  QDPIO::cout << "time(D=M*D) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_D_eq_M_times_D");
   Write(nml,lf2);
@@ -244,12 +244,12 @@ int main(int argc, char *argv[])
 #endif
 
   // Test LatticeDiracFermion = adj(LatticeColorMatrix) * LatticeDiracFermion
-  cout << "calling " << icnt << " times" << endl;
+  QDPIO::cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_D_eq_Ma_times_D(lf2, a, lf1, icnt);
 #if defined(TIME_OPS)
-  cout << "time(D=adj(M)*D) = " << tt
-       << " micro-secs/site/iteration" 
-       << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
+  QDPIO::cout << "time(D=adj(M)*D) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_D_eq_Ma_times_D");
   Write(nml,lf2);
@@ -266,7 +266,7 @@ int main(int argc, char *argv[])
   // Test LatticeHalfFermion = LatticeColorMatrix * LatticeHalfFermion
   for(icnt=1; ; icnt <<= 1)
   {
-    cout << "calling " << icnt << " times" << endl;
+    QDPIO::cout << "calling " << icnt << " times" << endl;
     tt = QDP_H_eq_M_times_H(lh2, a, lh1, icnt);
 #if defined(TIME_OPS)
     if (tt > 1)
@@ -281,9 +281,9 @@ int main(int argc, char *argv[])
 
   tt *= rescale;
 #if defined(TIME_OPS)
-  cout << "time(H=M*H) = " << tt
-       << " micro-secs/site/iteration" 
-       << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
+  QDPIO::cout << "time(H=M*H) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_H_eq_M_times_H");
   Write(nml,lh2);
@@ -292,12 +292,12 @@ int main(int argc, char *argv[])
 
 
   // Test LatticeHalfFermion = adj(LatticeColorMatrix) * LatticeHalfFermion
-  cout << "calling " << icnt << " times" << endl;
+  QDPIO::cout << "calling " << icnt << " times" << endl;
   tt = rescale * QDP_H_eq_Ma_times_H(lh2, a, lh1, icnt);
 #if defined(TIME_OPS)
-  cout << "time(H=adj(M)*H) = " << tt
-       << " micro-secs/site/iteration" 
-       << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
+  QDPIO::cout << "time(H=adj(M)*H) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 #else
   push(nml,"QDP_H_eq_Ma_times_H");
   Write(nml,lh2);

@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.16 2003-08-10 02:27:10 edwards Exp $
+// $Id: t_io.cc,v 1.17 2003-10-09 19:59:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -45,19 +45,19 @@ int main(int argc, char **argv)
   tonml.close();
 
   Real x = 42.1;
-  cerr << "Write some data to file t_io.txt\n";
+  QDPIO::cout << "Write some data to file t_io.txt\n";
   TextWriter totext("t_io.txt");
   totext << x;
   totext.flush();
   totext.close();
 
   x = -1;
-  cerr << "Read some data from file t_io.txt\n";
+  QDPIO::cout << "Read some data from file t_io.txt\n";
   TextReader fromtext("t_io.txt");
   fromtext >> x;
   fromtext.close();
 
-  cerr << "you entered :" << x << ":" << endl;
+  QDPIO::cout << "you entered :" << x << ":" << endl;
   
   // Time to bolt
   QDP_finalize();

@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.19 2003-09-10 17:10:04 edwards Exp $
+// $Id: t_xml.cc,v 1.20 2003-10-09 19:59:39 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     Write(toxml,dog);
     pop(toxml);
 
-    cout << "buffer = XXX" << toxml.str() << "XXX" << endl;
+    QDPIO::cout << "buffer = XXX" << toxml.str() << "XXX" << endl;
 
 //    std::istringstream list_stream(toxml.str()+"\n");
 //    XMLReader fromxml(list_stream);
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     XMLReader fromxml(toxml);
     int rob;
     read(fromxml,"/godzilla/dog",rob);
-    cout << "found dog = " << rob << endl;
+    QDPIO::cout << "found dog = " << rob << endl;
   }
   catch(const string& e)
   {
@@ -74,12 +74,12 @@ int main(int argc, char **argv)
     XMLReader fromxml;
     fromxml.open("t_xml.input1");
 
-    cout << "Here is the contents of  t_xml.input1" << endl;
+    QDPIO::cout << "Here is the contents of  t_xml.input1" << endl;
     fromxml.print(cout);
 
     int rob;
     read(fromxml,"/fred/my_life/rob",rob);
-    cout << "found rob = " << rob << endl;
+    QDPIO::cout << "found rob = " << rob << endl;
   }
   catch(const string& e)
   {
@@ -188,24 +188,24 @@ int main(int argc, char **argv)
 
     Seed seed;
     read(fromxml,"seedThingy",seed);
-    cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << endl;
+    QDPIO::cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << endl;
 
     multi1d<int> arrayInt;
     read(fromxml,"arrayInt",arrayInt);
     for(int i=0; i < arrayInt.size(); ++i)
-      cout << "arrayInt[" << i << "] = " << arrayInt[i]  << "  node=" << Layout::nodeNumber() << endl;
+      QDPIO::cout << "arrayInt[" << i << "] = " << arrayInt[i]  << "  node=" << Layout::nodeNumber() << endl;
 
     multi1d<Real> arrayReal;
     read(fromxml,"arrayReal",arrayReal);
     for(int i=0; i < arrayReal.size(); ++i)
-      cout << "arrayReal[" << i << "] = " << arrayReal[i] << "  node=" << Layout::nodeNumber() << endl;
+      QDPIO::cout << "arrayReal[" << i << "] = " << arrayReal[i] << "  node=" << Layout::nodeNumber() << endl;
 
     multi1d<Complex> arrayComplex;
     read(fromxml,"arrayComplex",arrayComplex);
     for(int i=0; i < arrayComplex.size(); ++i)
-      cout << "arrayComplex[" << i << "] = (" 
-	   << Real(real(arrayComplex[i])) << ","            // The Real() shouldn't be necesary - 
-	   << Real(imag(arrayComplex[i])) << ")" << endl;   // it converts a QDPExpr to a QDPType
+      QDPIO::cout << "arrayComplex[" << i << "] = ("
+		  << real(arrayComplex[i]) << "," 
+		  << imag(arrayComplex[i]) << ")" << endl;
 
     QDP_info("done with array snippet tests");
   }

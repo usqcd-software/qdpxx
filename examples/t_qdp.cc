@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.20 2003-09-03 19:50:42 edwards Exp $
+// $Id: t_qdp.cc,v 1.21 2003-10-09 19:59:39 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -34,90 +34,90 @@ int main(int argc, char **argv)
   Seed seed;
   seed = 11;
   RNG::setrn(seed);
-  cout << "After setrn" << endl;
+  QDPIO::cout << "After setrn" << endl;
 
   // Time to play...
   Real r1;
   r1 = 17.0;
-  cout << "r1 after fill\n" << r1 << endl;
+  QDPIO::cout << "r1 after fill\n" << r1 << endl;
 
   for(int i=0; i < 10; ++i)
   {
     random(r1);
-    cout << "r1 after random\n" << r1 << endl;
+    QDPIO::cout << "r1 after random\n" << r1 << endl;
   }
 
   // Check the multi-dim arrays
   multi2d<Real> boo(2,3);
   boo = 0.0;
-  cout << "Fill boo with 0\n";
+  QDPIO::cout << "Fill boo with 0\n";
   for(int j=0; j < 2; ++j)
     for(int i=0; i < 3; ++i)
-      cout << boo(j,i) << endl;
+      QDPIO::cout << boo(j,i) << endl;
 
-  cout << "Fill boo with random\n";
+  QDPIO::cout << "Fill boo with random\n";
   for(int j=0; j < 2; ++j)
     for(int i=0; i < 3; ++i)
       random(boo(j,i));
 
-  cout << "Check boo filled with random\n";
+  QDPIO::cout << "Check boo filled with random\n";
   for(int j=0; j < 2; ++j)
     for(int i=0; i < 3; ++i)
-      cout << boo(j,i) << endl;
+      QDPIO::cout << boo(j,i) << endl;
 
-  cout << "Test indexing of boo\n";
+  QDPIO::cout << "Test indexing of boo\n";
   for(int j=0; j < 2; ++j)
     for(int i=0; i < 3; ++i)
-      cout << boo[j][i] << endl;
+      QDPIO::cout << boo[j][i] << endl;
 
   // Check the multi-dim arrays
   multi3d<Real> goo(2,3,2);
   goo = 0.0;
-  cout << "Fill goo with 0\n";
+  QDPIO::cout << "Fill goo with 0\n";
   for(int k=0; k < 2; ++k)
     for(int j=0; j < 3; ++j)
       for(int i=0; i < 2; ++i)
-	cout << goo(k,j,i) << endl;
+	QDPIO::cout << goo(k,j,i) << endl;
 
-  cout << "Fill goo with random\n";
+  QDPIO::cout << "Fill goo with random\n";
   for(int k=0; k < 2; ++k)
     for(int j=0; j < 3; ++j)
       for(int i=0; i < 2; ++i)
       {
 	random(goo(k,j,i));
-	cout << goo(k,j,i) << endl;
+	QDPIO::cout << goo(k,j,i) << endl;
       }
 
 
-  cout << "Check goo filled with random\n";
+  QDPIO::cout << "Check goo filled with random\n";
   for(int k=0; k < 2; ++k)
     for(int j=0; j < 3; ++j)
       for(int i=0; i < 2; ++i)
       {
 	goo[k][j][i] = goo(k,j,i);
-	cout << goo(k,j,i) << endl; 
+	QDPIO::cout << goo(k,j,i) << endl; 
       }
   
-  cout << "Test indexing of goo\n";
+  QDPIO::cout << "Test indexing of goo\n";
   for(int k=0; k < 2; ++k)
     for(int j=0; j < 3; ++j)
       for(int i=0; i < 2; ++i)
-	cout << goo[k][j][i] << endl;
+	QDPIO::cout << goo[k][j][i] << endl;
 
   // Test out lattice fields
   LatticeColorMatrix b1,b2,b3;
 
   b1 = 1.0;
-  cout << "b1 after fill\n" << endl;
+  QDPIO::cout << "b1 after fill\n" << endl;
   Write(nml,b1);
 
   random(b1);
-  cout << "b1 after random\n" << endl;
+  QDPIO::cout << "b1 after random\n" << endl;
   Write(nml,b1);
 
   random(b2);
   gaussian(b3);
-  cout << "b3 after gaussian\n";
+  QDPIO::cout << "b3 after gaussian\n";
   push(nml,"test_stuff");
   write(nml,"b3",b3);
   Write(nml,b3);
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
 #if 0
   Double dsum;
   dsum = norm2(b1);
-  cout << "dsum = " << dsum << endl;
+  QDPIO::cout << "dsum = " << dsum << endl;
   nml << "dsum = ";
   Write(nml,dsum);
 
@@ -145,18 +145,18 @@ int main(int argc, char **argv)
 
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
-  cout << "Initialize vector of latticegauge\n";
+  QDPIO::cout << "Initialize vector of latticegauge\n";
   multi1d<LatticeColorMatrix> u(Nd);
-  cout << "After initialize vector of latticegauge\n";
+  QDPIO::cout << "After initialize vector of latticegauge\n";
   Double w_plaq, s_plaq, t_plaq, link;
 
-  cout << "Start gaussian\n";
+  QDPIO::cout << "Start gaussian\n";
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  cout << "w_plaq = " << w_plaq << endl;
-  cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << endl;
+  QDPIO::cout << "link = " << link << endl;
 
 #if 1
   // Play with gamma matrices - they should be implemented...
