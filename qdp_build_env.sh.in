@@ -1,0 +1,11 @@
+QDP_CXXFLAGS="-I@prefix@/include"
+QDP_LDFLAGS="-L@prefix@/lib"
+QDP_LIBS="-lqdp"
+
+if test "x@QMP_HOME@" != "x";
+then
+   if test -f @QMP_HOME@/config/qmp_build_env.sh;
+   then 
+	source @QMP_HOME@/config/qmp_build_env.sh
+   fi
+fi 
