@@ -1,4 +1,4 @@
-// $Id: io.cc,v 1.5 2002-10-28 03:08:44 edwards Exp $
+// $Id: io.cc,v 1.6 2002-11-04 04:39:30 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -168,7 +168,7 @@ void BinaryReader::open(const char* p)
     if ((f = fopen(p,"rb")) == NULL)
     {
       cerr << "BinaryReader: error opening file: " << p << endl;
-      SZ_ERROR("BinaryReader: error opening file");
+      QDP_error_exit("BinaryReader: error opening file %s",p);
     }
   }
 
@@ -215,7 +215,7 @@ void BinaryWriter::open(const char* p)
     if ((f = fopen(p,"wb")) == NULL)
     {
       cerr << "BinaryWriter: error opening file: " << p << endl;
-      SZ_ERROR("BinaryWriter: error opening file");
+      QDP_error_exit("BinaryWriter: error opening file %s",p);
     }
   }
 

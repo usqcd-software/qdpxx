@@ -1,4 +1,4 @@
-// $Id: qdp.cc,v 1.4 2002-11-02 16:30:02 edwards Exp $
+// $Id: qdp.cc,v 1.5 2002-11-04 04:39:30 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -7,9 +7,6 @@
 
 QDP_BEGIN_NAMESPACE(QDP);
 
-//! General death routine
-void SZ_ERROR(const char *s, ...) {fprintf(stderr,"%s\n",s);exit(1);}
-  
 //-----------------------------------------------------------------------------
 //! Su2_extract: r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]  under a subset
 /*! 
@@ -51,7 +48,7 @@ su2Extract(const LatticeGauge& source,
   i2 = i1 + del_i;
 
   if ( found == 0 )
-    SZ_ERROR("Trouble with SU2 subgroup index");
+    QDP_error_exit("Trouble with SU2 subgroup index");
 
   /* Compute the b(k) of A_SU(2) = b0 + i sum_k bk sigma_k */ 
   r[0](s) = real(peekColor(source,i1,i1)) + real(peekColor(source,i2,i2));
@@ -105,7 +102,7 @@ sunFill(const multi1d<LatticeReal> r,
   i2 = i1 + del_i;
 
   if ( found == 0 )
-    SZ_ERROR("Trouble with SU2 subgroup index");
+    QDP_error_exit("Trouble with SU2 subgroup index");
 
   /* 
    * Insert the b(k) of A_SU(2) = b0 + i sum_k bk sigma_k 
