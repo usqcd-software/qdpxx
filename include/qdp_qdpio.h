@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.19 2004-09-02 16:35:32 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.20 2004-09-10 21:23:41 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -34,6 +34,14 @@ enum QDP_volfmt_t
   QDPIO_PARTFILE
 };
 
+//! File open mode
+enum QDP_filemode_t
+{
+  QDPIO_CREATE,
+  QDPIO_OPEN,
+  QDPIO_APPEND,
+};
+
 //! QDPIO state
 enum QDP_iostate_t
 {
@@ -61,6 +69,16 @@ public:
   //! Open file
   void open(XMLReader& xml, const std::string& path,
 	    int iflag);
+
+  //! Open file
+  /*! OBSOLETE */
+  QDPFileReader(XMLReader& xml, const std::string& path,
+		QDP_serialparallel_t qdp_serpar);
+
+  //! Open file
+  /*! OBSOLETE */
+  void open(XMLReader& xml, const std::string& path,
+	    QDP_serialparallel_t qdp_serpar);
 
   //! Close file
   void close();
@@ -164,6 +182,20 @@ public:
   void open(XMLBufferWriter& xml, const std::string& path,
 	    QDP_volfmt_t qdp_volfmt,
 	    int oflag);
+
+  //! Open file
+  /*! THIS IS OBSOLETE */
+  QDPFileWriter(XMLBufferWriter& xml, const std::string& path,
+		QDP_volfmt_t qdp_volfmt,
+		QDP_serialparallel_t qdp_serpar,
+		QDP_filemode_t qdp_mode);
+  
+  //! Open file
+  /*! THIS IS OBSOLETE */
+  void open(XMLBufferWriter& xml, const std::string& path,
+	    QDP_volfmt_t qdp_volfmt,
+	    QDP_serialparallel_t qdp_serpar,
+	    QDP_filemode_t qdp_mode);
 
   //! Close file
   void close();
@@ -270,7 +302,7 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
 						sizeof(T), 1);
 
   // Initialize string objects 
-  QIO_String *xml_c  = QIO_string_create(0);
+  QIO_String *xml_c  = QIO_string_create();
 
   if (QIO_read(get(), info, xml_c,
    	       &(QDPOScalarFactoryPut<T>),
@@ -305,7 +337,7 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OScalar<T> >& s1)
 						sizeof(T), s1.size()); // need size for now
 
   // Initialize string objects 
-  QIO_String *xml_c  = QIO_string_create(0);
+  QIO_String *xml_c  = QIO_string_create();
 
   if (QIO_read(get(), info, xml_c,
    	       &(QDPOScalarFactoryPut<T>),
@@ -351,11 +383,9 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OScalar<T>& s1)
 						sizeof(T), 1);
 
   // Copy metadata string into simple qio string container
-  QIO_String* xml_c;
+  QIO_String* xml_c = QIO_string_create();
   if (Layout::primaryNode())
-    xml_c = QIO_string_set(rec_xml.str().c_str());
-  else
-    xml_c = QIO_string_create(0);
+    QIO_string_set(xml_c, rec_xml.str().c_str());
 
   if (xml_c == NULL)
   {
@@ -389,11 +419,9 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OScalar<T> >&
 						sizeof(T), s1.size());
 
   // Copy metadata string into simple qio string container
-  QIO_String* xml_c;
+  QIO_String* xml_c = QIO_string_create();
   if (Layout::primaryNode())
-    xml_c = QIO_string_set(rec_xml.str().c_str());
-  else
-    xml_c = QIO_string_create(0);
+    QIO_string_set(xml_c, rec_xml.str().c_str());
 
   if (xml_c == NULL)
   {
@@ -459,7 +487,7 @@ void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 						sizeof(T), 1);
 
   // Initialize string objects 
-  QIO_String *xml_c  = QIO_string_create(0);
+  QIO_String *xml_c  = QIO_string_create();
 
   if (QIO_read(get(), info, xml_c,
    	       &(QDPOLatticeFactoryPut<T>),
@@ -494,7 +522,7 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
 						sizeof(T), s1.size());
 
   // Initialize string objects 
-  QIO_String *xml_c  = QIO_string_create(0);
+  QIO_String *xml_c  = QIO_string_create();
 
   if (QIO_read(get(), info, xml_c,
    	       &(QDPOLatticeFactoryPutArray<T>),
@@ -554,11 +582,9 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 						sizeof(T), 1);
 
   // Copy metadata string into simple qio string container
-  QIO_String* xml_c;
+  QIO_String* xml_c = QIO_string_create();
   if (Layout::primaryNode())
-    xml_c = QIO_string_set(rec_xml.str().c_str());
-  else
-    xml_c = QIO_string_create(0);
+    QIO_string_set(xml_c, rec_xml.str().c_str());
 
   if (xml_c == NULL)
   {
@@ -592,11 +618,9 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >
 						sizeof(T), s1.size());
 
   // Copy metadata string into simple qio string container
-  QIO_String* xml_c;
+  QIO_String* xml_c = QIO_string_create();
   if (Layout::primaryNode())
-    xml_c = QIO_string_set(rec_xml.str().c_str());
-  else
-    xml_c = QIO_string_create(0);
+    QIO_string_set(xml_c, rec_xml.str().c_str());
 
   if (xml_c == NULL)
   {

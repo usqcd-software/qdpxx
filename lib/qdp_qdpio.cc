@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.13 2004-09-02 16:35:33 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.14 2004-09-10 21:23:41 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -89,6 +89,20 @@ void QDPFileReader::open(XMLReader& file_xml,
 
   iop=true;
 }
+
+// OBSOLETE
+QDPFileReader::QDPFileReader(XMLReader& xml, 
+			     const std::string& path,
+			     QDP_serialparallel_t qdp_serpar)
+  {open(xml,path,0);}
+
+// OBSOLETE
+void QDPFileReader::open(XMLReader& file_xml, 
+			 const std::string& path, 
+			 QDP_serialparallel_t qdp_serpar)
+  {open(file_xml,path,0);}
+
+
 
 void QDPFileReader::close()
 {
@@ -214,6 +228,27 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
 
   iop=true;
 }
+
+// OBSOLETE
+QDPFileWriter::QDPFileWriter(XMLBufferWriter& xml, 
+			     const std::string& path,
+			     QDP_volfmt_t qdp_volfmt,
+			     QDP_serialparallel_t qdp_serpar,
+			     QDP_filemode_t qdp_mode) 
+{
+  open(xml,path,qdp_volfmt,0);
+}
+
+// OBSOLETE
+void QDPFileWriter::open(XMLBufferWriter& file_xml, 
+			 const std::string& path,
+			 QDP_volfmt_t qdp_volfmt,
+			 QDP_serialparallel_t qdp_serpar,
+			 QDP_filemode_t qdp_mode) 
+{
+  open(file_xml,path,qdp_volfmt,0);
+}
+
 
 void QDPFileWriter::close()
 {
