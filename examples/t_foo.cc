@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.35 2004-07-02 19:25:56 edwards Exp $
+// $Id: t_foo.cc,v 1.36 2004-07-02 21:51:49 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
     LatticeColorMatrix a,b,c;
     LatticeComplex cc, dd;
     random(a); random(b); random(c);
+
     c = a*b;
     cc = trace(c);
     cerr << "Here 1" << endl;
@@ -47,6 +48,13 @@ int main(int argc, char *argv[])
     cerr << "Here 2" << endl;
     dd = trace(a*(b*1));
     cerr << "Here 3" << endl;
+    write(xml,"diff", Real(norm2(cc-dd)));
+
+    c = adj(a)*b;
+    cc = trace(c);
+    cerr << "Here 4" << endl;
+    dd = trace(adj(a)*b*1);
+    cerr << "Here 5" << endl;
     write(xml,"diff", Real(norm2(cc-dd)));
   }
 #endif
