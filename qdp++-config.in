@@ -18,9 +18,9 @@ version="@VERSION@"
 
 parallel_arch="@PARALLEL_ARCH@"
 
-qdp_cxxflags="-I@includedir@ @CXXFLAGS@ @QMP_CFLAGS@"
-qdp_ldflags="-L@libdir@ @LDFLAGS@ @QMP_LDFLAGS@"
-qdp_libs="-lqmp @QMP_LIBS@ @LIBS@"
+qdp_cxxflags="@CXXFLAGS@ -I@includedir@ @QMP_CFLAGS@"
+qdp_ldflags="@LDFLAGS@ -L@libdir@ @QMP_LDFLAGS@"
+qdp_libs="-lqdp @QMP_LIBS@ @LIBS@"
 
 usage()
 {
@@ -108,20 +108,25 @@ fi
 
 if test "X${echo_cxxflags}X" = "XyesX" ; then
   output_cxxflags=
-  for i in $qmp_cxxflags ; do
-    if test "X${i}X" != "X-I/usr/includeX" ; then
-      case " $output_cxxflags " in
-        *\ $i\ *) ;;                               # already there, skip it
-        *) output_cxxflags="$output_cxxflags $i"   # add it to output
-      esac
-    fi
+  for i in $qdp_cxxflags ; do
+    case $i in
+      -I/usr/include) ;;
+      -g) ;;
+      -O*) ;;
+      -W*) ;;
+      *)
+        case " $output_cxxflags " in
+          *\ $i\ *) ;;                             # already there, skip it
+          *) output_cxxflags="$output_cxxflags $i" # add it to output
+        esac
+    esac
   done
   echo $output_cxxflags
 fi
 
 if test "X${echo_ldflags}X" = "XyesX" ; then
   output_ldflags=
-  for i in $qmp_ldflags ; do
+  for i in $qdp_ldflags ; do
     if test "X${i}X" != "X-I/usr/libX" ; then
       case " $output_ldflags " in
         *\ $i\ *) ;;                               # already there, skip it
@@ -137,7 +142,7 @@ fi
 
 if test "X${echo_libs}X" = "XyesX" ; then
   rev_libs=
-  for i in $qmp_libs ; do
+  for i in $qdp_libs ; do
     rev_libs="$i $rev_libs"
   done
   output_libs=

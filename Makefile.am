@@ -38,5 +38,4 @@ ARCH_SOURCES = lib/scalar_specific.cc lib/parscalar_specific.cc
 # Some things that we want in the distribution tarball 
 #
 EXTRA_DIST  = $(ARCH_SOURCES)
-EXTRA_DIST += PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools
-EXTRA_DIST += examples/BuildingBlocks examples/propagator docs
+EXTRA_DIST += PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools docs

@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.7 2003-01-31 20:48:45 edwards Exp $
+ *  $Id: t_spectrum.cc,v 1.8 2003-02-11 22:16:09 flemingg Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -26,8 +26,6 @@ int main(int argc, char **argv)
   //  Begin by specifying the lattice sizes, of dimension Nd, defined in QDP
 
   multi1d<int> nsize(Nd);	// Note that the number of dimensions
-
-  char filename[100];
 
   // defined in params.h
 
@@ -68,20 +66,24 @@ int main(int argc, char **argv)
 #if 0
   /*
    *  Read in a gauge field in the usual NERSC format
+   *  GTF: moved filename decl into scope to avoid compiler warning when #if 0
    */
 
-  cerr << "Reading in NERSC file...";
-  printf("Gauge file name? ");
-  scanf("%s",filename);
-  readArchiv(u, filename);
-  cerr << "...done\n";
+  {
+    char filename[100];
 
-  cerr << "Gauge field is ";
-  for(int mu = 0; mu < Nd; mu++){
-    Write(nml, mu);
-    Write(nml, u[mu]);
+    cerr << "Reading in NERSC file...";
+    printf("Gauge file name? ");
+    scanf("%s",filename);
+    readArchiv(u, filename);
+    cerr << "...done\n";
+
+    cerr << "Gauge field is ";
+    for(int mu = 0; mu < Nd; mu++){
+      Write(nml, mu);
+      Write(nml, u[mu]);
+    }
   }
-
 #endif
 
   /*
