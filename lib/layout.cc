@@ -1,4 +1,4 @@
-// $Id: layout.cc,v 1.3 2002-09-23 19:26:51 edwards Exp $
+// $Id: layout.cc,v 1.4 2002-09-26 20:05:34 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -6,15 +6,15 @@
 //
 // This routine provides various layouts, including
 //    lexicographic
-//    2-checkerboard
-//    32-style checkerboard (hypercube even/odd-checkerboarding)
+//    2-checkerboard  (even/odd-checkerboarding of sites)
+//    32-style checkerboard (even/odd-checkerboarding of hypercubes)
 
 #include "qdp.h"
 #include "proto.h"
 
-#undef  USE_LEXICO_LAYOUT
-#define USE_CB2_LAYOUT
-#undef  USE_CB32_LAYOUT
+#define  USE_LEXICO_LAYOUT
+#undef   USE_CB2_LAYOUT
+#undef   USE_CB32_LAYOUT
 
 QDP_BEGIN_NAMESPACE(QDP);
 
