@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: globalfuncs.h,v 1.5 2002-10-02 20:29:37 edwards Exp $
+// $Id: globalfuncs.h,v 1.6 2002-10-12 00:58:32 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -9,7 +9,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 // small effort at controlling code bloat.
 
 
-/** @defgroup group2 QDP global reductions
+/** @defgroup group3 QDP global reductions
  *  
  *  Global reductions, like sum, norm2, etc.
  *  @{
@@ -253,7 +253,7 @@ sumMulti(const QDPType<T,C>& s1, const Set& ss)
 }
 
 
-/** @} */ // end of group2
+/** @} */ // end of group3
 
 
 /** @defgroup group5 QDP auxilliary functions

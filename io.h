@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io.h,v 1.3 2002-10-09 15:33:26 edwards Exp $
+// $Id: io.h,v 1.4 2002-10-12 00:58:32 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -12,6 +12,13 @@
 QDP_BEGIN_NAMESPACE(QDP);
 
 using std::string;
+
+/*! @defgroup io IO
+ *
+ * File input and output operations on QDP types
+ *
+ * @{
+ */
 
 //--------------------------------------------------------------------------------
 //! Simple input text class
@@ -300,4 +307,5 @@ BinaryWriter& write(BinaryWriter& bin, const T& d)
   return bin;
 }
 
+/*! @} */   // end of group io
 QDP_END_NAMESPACE();

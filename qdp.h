@@ -1,8 +1,38 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.4 2002-10-09 15:33:26 edwards Exp $
+// $Id: qdp.h,v 1.5 2002-10-12 00:58:32 edwards Exp $
 //
 // QDP data parallel interface
 //
+
+/*! \mainpage  QDP++: A C++ data-parallel interface for Lattice field theory
+ *
+ * \section Description
+ *
+ * QDP++ is a C++ data-parallel interface for Lattice field theory.
+ * The QDP interface provides an environment somewhat similar to 
+ * Fortran 90 - namely data-parallel operations (operator/infix form)
+ * which can be applied on lattice wide objects. The interface provides a
+ * level of abstraction such that high-level user code written using the
+ * API can be run unchanged on a single processor workstation or a
+ * collection of multiprocessor nodes with parallel communications.
+ * Architectural dependencies are hidden below the interface. A variety
+ * of types for the site elements are provided. To achieve good
+ * performance, overlapping communication and computation primitives are
+ * provided.
+ */
+
+/*! @namespace QDP
+ *
+ * Primary namespace holding all QDP types, operations and objects
+ */
+
+/*! @defgroup group1 QDP main operations
+ *
+ *  Lattice site-wide operations that can be applied to QDPTypes.
+ *  All operations can be used in expressions
+ */
+
+
 #include <cstdio>
 #include <cstdlib>
 #include <ostream>
@@ -64,7 +94,12 @@ QDP_END_NAMESPACE();
 #include "qdpexpr.h"
 #include "qdptype.h"
 #include "qdpsubtype.h"
+
+/*! @addtogroup group1 */
+/*! @{ */
 #include "QDPOperators.h"
+/*! @} */ // end of group1
+
 #include "newops.h"
 //#include "word.h"
 #include "simpleword.h"

@@ -1,9 +1,20 @@
 // -*- C++ -*-
-// $Id: subset.h,v 1.4 2002-10-02 20:29:37 edwards Exp $
+// $Id: subset.h,v 1.5 2002-10-12 00:58:32 edwards Exp $
 //
 // QDP data parallel interface
 //
+
 QDP_BEGIN_NAMESPACE(QDP);
+
+/*! @defgroup subsets Sets and Subsets
+ *
+ * Sets are the objects that facilitate colorings of the lattice.
+ * Subsets are groups of sites that are all of one color.
+ * Subsets (and in a few cases Sets) can be used to restrict operations
+ * to only a particular coloring of the lattice.
+ *
+ * @{
+ */
 
 // Forward declaration
 class Set;
@@ -137,6 +148,6 @@ extern Set rb;
 //! Default 2^{Nd+1}-checkerboard subset. Useful for pure gauge updating.
 extern Set mcb;
     
-/** @} */ // end of group3
+/** @} */ // end of group subsetss
 
 QDP_END_NAMESPACE();

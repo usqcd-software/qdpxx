@@ -1,10 +1,14 @@
 // -*- C++ -*-
-// $Id: qdptype.h,v 1.2 2002-10-06 02:48:43 edwards Exp $
+// $Id: qdptype.h,v 1.3 2002-10-12 00:58:32 edwards Exp $
 //
 // QDP data parallel interface
 //
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+
+/*! @addtogroup group1 */
+/*! @{ */
 
 
 //! QDPType - major type class/container for all QDP objects
@@ -351,6 +355,7 @@ public:
   const T& elem() const {return static_cast<const C*>(this)->elem();}
 };
 
+/*! @} */ // end of group1
 
 //-----------------------------------------------------------------------------
 // We need to specialize CreateLeaf<T> for our class, so that operators

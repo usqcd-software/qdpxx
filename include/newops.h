@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: newops.h,v 1.2 2002-09-14 19:48:26 edwards Exp $
+// $Id: newops.h,v 1.3 2002-10-12 00:58:32 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -158,6 +158,9 @@ struct LeafFunctor<GammaType<N>, EvalLeaf1>
 // Additional operators
 //-----------------------------------------------------------------------------
 
+/*! @addtogroup group1 */
+/*! @{ */
+ 
 // GammaConst * QDPType
 template<int N,int m,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpGammaConstMultiply,
@@ -294,6 +297,7 @@ operator*(const QDPExpr<T1,C1> & l,const GammaType<N> & r)
     CreateLeaf<QDPExpr<T1,C1> >::make(l),
     CreateLeaf<GammaType<N> >::make(r)));
 }
+/*! @} */ // end of group1
 
 
 // Explicit casts

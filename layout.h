@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: layout.h,v 1.1 2002-09-12 18:22:16 edwards Exp $
+// $Id: layout.h,v 1.2 2002-10-12 00:58:32 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -7,7 +7,14 @@
 
 QDP_BEGIN_NAMESPACE(QDP);
 
-  //! Layout class holding info on problem size and machine info
+/*! @defgroup layout  Layout 
+ *
+ * Class holding info on problem size and machine info
+ *
+ * @{
+ */
+
+//! Layout class holding info on problem size and machine info
 class Layout
 {
 public:
@@ -53,5 +60,7 @@ private:
 
 /*! Main layout object */
 extern Layout layout;
+
+/*! @} */   // end of group layout
 
 QDP_END_NAMESPACE();
