@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primscalar.h,v 1.12 2002-11-07 19:25:50 edwards Exp $
+// $Id: primscalar.h,v 1.13 2002-11-13 19:39:35 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -24,6 +24,25 @@ public:
   PScalar() {}
   ~PScalar() {}
 
+  //---------------------------------------------------------
+  // Conversion routines for turning things like Integer into an int
+  //! convert to int
+  /*! Convert wrapper of a primitive type to a primitive type */
+  operator int() {return int(elem());}
+
+  //! convert to float
+  /*! Convert wrapper of a primitive type to a primitive type */
+  operator float() {return float(elem());}
+
+  //! convert to double
+  /*! Convert wrapper of a primitive type to a primitive type */
+  operator double() {return double(elem());}
+
+  //! convert to bool
+  /*! Convert wrapper of a primitive type to a primitive type */
+  operator bool() {return bool(elem());}
+
+  //---------------------------------------------------------
   //! construct dest = const
   PScalar(const typename WordType<T>::Type_t rhs) : F(rhs) {}
 
@@ -32,7 +51,7 @@ public:
   template<class T1>
   PScalar(const PScalar<T1> rhs) : F(rhs) {}
 
-
+  //---------------------------------------------------------
 #if 0
   //! dest = const
   /*! Fill with an integer constant. Will be promoted to underlying word type */
@@ -657,33 +676,33 @@ imag(const PScalar<T>& s1)
 // ArcCos
 template<class T1>
 inline typename UnaryReturn<PScalar<T1>, FnArcCos>::Type_t
-arccos(const PScalar<T1>& s1)
+acos(const PScalar<T1>& s1)
 {
   typename UnaryReturn<PScalar<T1>, FnArcCos>::Type_t  d;
 
-  d.elem() = arccos(s1.elem());
+  d.elem() = acos(s1.elem());
   return d;
 }
 
 // ArcSin
 template<class T1>
 inline typename UnaryReturn<PScalar<T1>, FnArcSin>::Type_t
-arcsin(const PScalar<T1>& s1)
+asin(const PScalar<T1>& s1)
 {
   typename UnaryReturn<PScalar<T1>, FnArcSin>::Type_t  d;
 
-  d.elem() = arcsin(s1.elem());
+  d.elem() = asin(s1.elem());
   return d;
 }
 
 // ArcTan
 template<class T1>
 inline typename UnaryReturn<PScalar<T1>, FnArcTan>::Type_t
-arctan(const PScalar<T1>& s1)
+atan(const PScalar<T1>& s1)
 {
   typename UnaryReturn<PScalar<T1>, FnArcTan>::Type_t  d;
 
-  d.elem() = arctan(s1.elem());
+  d.elem() = atan(s1.elem());
   return d;
 }
 
@@ -766,10 +785,27 @@ tan(const PScalar<T1>& s1)
 
 
 
+//! PScalar<T> = pow(PScalar<T> , PScalar<T>)
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnPow>::Type_t
+pow(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnPow>::Type_t  d;
 
+  d.elem() = pow(s1.elem(), s2.elem());
+  return d;
+}
 
+//! PScalar<T> = atan2(PScalar<T> , PScalar<T>)
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnArcTan2>::Type_t
+atan2(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnArcTan2>::Type_t  d;
 
-
+  d.elem() = atan2(s1.elem(), s2.elem());
+  return d;
+}
 
 
 //! PScalar<T> = (PScalar<T> , PScalar<T>)
