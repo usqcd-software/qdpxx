@@ -1,7 +1,3 @@
-VPATH=@top_srcdir@
-VPATH+=@top_srcdir@/include
-VPATH+=@top_srcdir@/include/PETE
-
 PETE_HDRS =  PETE/Combiners.h \
              PETE/Functors.h \
              PETE/PETE.h \

@@ -1,18 +1,12 @@
 # Have to add top_builddir/include to pick up made qdp_config_internal.h
 
 INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
-           -I@top_srcdir@/other_libs/nml \
            -I@top_srcdir@/other_libs/qio/include \
            -I@top_builddir@/other_libs/qio/include \
            -I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
            -I@top_srcdir@/other_libs/xpath_reader/include
 
 AM_CXXFLAGS = $(INCFLAGS) @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
-
-VPATH = @top_srcdir@
-VPATH += @top_srcdir@/lib
-VPATH += @top_srcdir@/include
-VPATH += @top_srcdir@/other_libs/qio/include
 
 lib_LIBRARIES = libqdp.a
 

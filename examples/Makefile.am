@@ -4,7 +4,6 @@
 ## Should only need @QMP_CFLAGS@, @QMP_LDFLAGS@ and @QMP_LIBS@
 ## n.b. Only defined for some parallel architectures
 INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
-           -I@top_srcdir@/other_libs/nml \
            -I@top_srcdir@/other_libs/qio/include \
 	   -I@top_builddir@/other_libs/qio/include \
            -I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
@@ -12,12 +11,11 @@ INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
 
 AM_CXXFLAGS = $(INCFLAGS)  @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
 AM_LDFLAGS = -L@top_builddir@/lib \
-             -L@top_builddir@/other_libs/nml \
              -L@top_builddir@/other_libs/qio/lib \
              -L@top_builddir@/other_libs/qio/other_libs/c-lime/lib \
              -L@top_builddir@/other_libs/xpath_reader/lib \
              @LDFLAGS@ @QMP_LDFLAGS@
-LDADD = -lqdp -lnml -lXPathReader -lxmlWriter -lqio -llime @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@
+LDADD = -lqdp -lXPathReader -lxmlWriter -lqio -llime @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@
 
 #
 # Local Headers
@@ -25,16 +23,10 @@ LDADD = -lqdp -lnml -lXPathReader -lxmlWriter -lqio -llime @LIBXML2_LIBS@ @QMP_L
 HDRS=examples.h 
 
 #
-# VPATH
-#
-VPATH=@top_srcdir@
-VPATH+=@top_srcdir@/examples
-
-#
 # The programs to build
 # 
 check_PROGRAMS = t_skeleton t_io t_mesplq \
-      t_nml t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio 
+      t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio 
 
 EXTRA_PROGRAMS  = t_qio_factory t_binx
 
@@ -55,7 +47,6 @@ endif
 t_skeleton_SOURCES = t_skeleton.cc
 t_remote_SOURCES = t_remote.cc $(HDRS)
 t_foo_SOURCES = t_foo.cc $(HDRS)
-t_nml_SOURCES = t_nml.cc $(HDRS)
 t_xml_SOURCES = t_xml.cc $(HDRS)
 t_binx_SOURCES = t_binx.cc $(HDRS)
 t_qio_SOURCES = t_qio.cc $(HDRS)

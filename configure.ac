@@ -1,4 +1,4 @@
-AC_INIT([qdp],[1.10.6],[edwards@jlab.org])
+AC_INIT([qdp],[1.11.0],[edwards@jlab.org])
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -455,7 +455,6 @@ esac
 #
 # Configure subdir packages
 #
-AC_CONFIG_SUBDIRS(other_libs/nml)
 AC_CONFIG_SUBDIRS(other_libs/qio)
 AC_CONFIG_SUBDIRS(other_libs/xpath_reader)
 
