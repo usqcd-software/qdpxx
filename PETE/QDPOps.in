@@ -1,9 +1,16 @@
 unaryOps
 -----
-  TAG = "FnConj"
+  TAG = "FnAdjoint"
+  FUNCTION = "adj"
+  EXPR = "return (adj(a));"
+  COMMENTA = "//! Hermitian adjoint"
+  COMMENTB = "/*! @ingroup group1
+  @relates QDPType */"
+-----
+  TAG = "FnConjugate"
   FUNCTION = "conj"
   EXPR = "return (conj(a));"
-  COMMENTA = "//! Hermitian adjoint"
+  COMMENTA = "//! Complex conjugate"
   COMMENTB = "/*! @ingroup group1
   @relates QDPType */"
 -----
@@ -70,25 +77,25 @@ unaryOps
   TAG = "FnLocalNorm2"
   FUNCTION = "localNorm2"
   EXPR = "return (localNorm2(a));"
-  COMMENTA = "//! Innerproduct on only fiber indices"
+  COMMENTA = "//! InnerProduct on only fiber indices"
   COMMENTB = "/*! L2 norm only fiber indices
-  @sa conj(), trace()
-  @return (trace(conj(l)*l)
+  @sa adj(), trace()
+  @return (trace(adj(l)*l)
   @ingroup group1
   @relates QDPType */"
 -----
-  TAG = "FnMultiplyI"
-  FUNCTION = "multiplyI"
-  EXPR = "return (multiplyI(a));"
+  TAG = "FnTimesI"
+  FUNCTION = "timesI"
+  EXPR = "return (timesI(a));"
   COMMENTA = "//! Multiply by imaginary i"
   COMMENTB = "/*! @sa operator*()
   @return (i * a)
   @ingroup group1
   @relates QDPType */"
 -----
-  TAG = "FnMultiplyMinusI"
-  FUNCTION = "multiplyMinusI"
-  EXPR = "return (multiplyMinusI(a));"
+  TAG = "FnTimesMinusI"
+  FUNCTION = "timesMinusI"
+  EXPR = "return (timesMinusI(a));"
   COMMENTA = "//! Multiply by minus imaginary i"
   COMMENTB = "/*! @sa operator*()
   @return (-i * a)
@@ -277,23 +284,35 @@ binaryOps
   @ingroup group1
   @relates QDPType */"
 -----
-  TAG = "FnLocalInnerproduct"
-  FUNCTION = "localInnerproduct"
-  EXPR = "return (localInnerproduct(a,b));"
-  COMMENTA = "//! Innerproduct on only fiber indices"
-  COMMENTB = "/*! L2 norm only fiber indices
-  @sa conj(), trace()
-  @return (trace(conj(l)*r)
+  TAG = "FnOuterProduct"
+  FUNCTION = "outerProduct"
+  EXPR = "return (outerProduct(a,b));"
+  COMMENTA = "//! Construct the outer product of two vectors"
+  COMMENTB = "/*! 
+  Constructs the outer product of two vectors within the same vector space
+  @param l  vector
+  @param r  vector
+  @return \f$(l_i * r_j^*)_{ij}\f$
   @ingroup group1
   @relates QDPType */"
 -----
-  TAG = "FnLocalInnerproductReal"
-  FUNCTION = "localInnerproductReal"
-  EXPR = "return (localInnerproductReal(a,b));"
+  TAG = "FnLocalInnerProduct"
+  FUNCTION = "localInnerProduct"
+  EXPR = "return (localInnerProduct(a,b));"
+  COMMENTA = "//! InnerProduct on only fiber indices"
+  COMMENTB = "/*! L2 norm only fiber indices
+  @sa adj(), trace()
+  @return (trace(adj(l)*r)
+  @ingroup group1
+  @relates QDPType */"
+-----
+  TAG = "FnLocalInnerProductReal"
+  FUNCTION = "localInnerProductReal"
+  EXPR = "return (localInnerProductReal(a,b));"
   COMMENTA = "//! Real part of innerproduct on only fiber indices"
   COMMENTB = "/*! L2 norm only fiber indices
-  @sa conj(), trace(), real()
-  @return (real(trace(conj(l)*r))
+  @sa adj(), trace(), real()
+  @return (real(trace(adj(l)*r))
   @ingroup group1
   @relates QDPType */"
 -----
