@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simpleword.h,v 1.9 2002-11-04 04:35:54 edwards Exp $
+// $Id: simpleword.h,v 1.10 2002-11-23 04:32:13 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -366,11 +366,11 @@ struct UnaryReturn<int, FnNorm2 > {
   typedef int  Type_t;
 };
 
-struct UnaryReturn<int, FnInnerproduct > {
+struct BinaryReturn<int, int, FnInnerproduct > {
   typedef int  Type_t;
 };
 
-struct UnaryReturn<int, FnInnerproductReal > {
+struct BinaryReturn<int, int, FnInnerproductReal > {
   typedef int  Type_t;
 };
 
@@ -378,11 +378,11 @@ struct UnaryReturn<int, FnLocalNorm2 > {
   typedef int  Type_t;
 };
 
-struct UnaryReturn<int, FnLocalInnerproduct > {
+struct BinaryReturn<int, int, FnLocalInnerproduct > {
   typedef int  Type_t;
 };
 
-struct UnaryReturn<int, FnLocalInnerproductReal > {
+struct BinaryReturn<int, int, FnLocalInnerproductReal > {
   typedef int  Type_t;
 };
 
@@ -400,11 +400,11 @@ struct UnaryReturn<float, FnNorm2 > {
   typedef double  Type_t;
 };
 
-struct UnaryReturn<float, FnInnerproduct > {
+struct BinaryReturn<float, float, FnInnerproduct > {
   typedef double  Type_t;
 };
 
-struct UnaryReturn<float, FnInnerproductReal > {
+struct BinaryReturn<float, float, FnInnerproductReal > {
   typedef double  Type_t;
 };
 
@@ -412,11 +412,11 @@ struct UnaryReturn<float, FnLocalNorm2 > {
   typedef float  Type_t;
 };
 
-struct UnaryReturn<float, FnLocalInnerproduct > {
+struct BinaryReturn<float, float, FnLocalInnerproduct > {
   typedef float  Type_t;
 };
 
-struct UnaryReturn<float, FnLocalInnerproductReal > {
+struct BinaryReturn<float, float, FnLocalInnerproductReal > {
   typedef float  Type_t;
 };
 
@@ -433,11 +433,11 @@ struct UnaryReturn<double, FnNorm2 > {
   typedef double  Type_t;
 };
 
-struct UnaryReturn<double, FnInnerproduct > {
+struct BinaryReturn<double, double, FnInnerproduct > {
   typedef double  Type_t;
 };
 
-struct UnaryReturn<double, FnInnerproductReal > {
+struct BinaryReturn<double, double, FnInnerproductReal > {
   typedef double  Type_t;
 };
 
@@ -445,11 +445,11 @@ struct UnaryReturn<double, FnLocalNorm2 > {
   typedef double  Type_t;
 };
 
-struct UnaryReturn<double, FnLocalInnerproduct > {
+struct BinaryReturn<double, double, FnLocalInnerproduct > {
   typedef double  Type_t;
 };
 
-struct UnaryReturn<double, FnLocalInnerproductReal > {
+struct BinaryReturn<double, double, FnLocalInnerproductReal > {
   typedef double  Type_t;
 };
 
