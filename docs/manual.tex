@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.0.1
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.0.2
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -106,7 +106,7 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.0.1}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.0.2}
 }
 \author{SciDAC Software Coordinating Committee}
 
@@ -803,7 +803,6 @@ Multiplication of spin vectors and matrices by $\gamma$-matrices is provided.
   LatticeDiracFermion c, b;
   int n;
   c = Gamma(n) * b;
-\nonumber
 \end{verbatim}
 %
 Where the multiplciation is spin matrix times a spin vector. Right multiplication
@@ -812,7 +811,6 @@ is also supported.
   LatticePropagator q, r;
   int n;
   q = r * Gamma(n);
-\nonumber
 \end{verbatim}
 
 The \verb|Gamma(n)| provides an enumeration of all possible
@@ -2362,6 +2360,9 @@ trivially trace a scalar variable.
   \end{tabular}
 \end{flushleft}
 
+See Section~\ref{sec:spin} for details on $\gamma$-matrix conventions.
+
+
 \paragraph{Right multiplication by gamma matrix}
 \begin{flushleft}
   \begin{tabular}{|l|l|}
@@ -2377,6 +2378,8 @@ trivially trace a scalar variable.
   \hline
   \end{tabular}
 \end{flushleft}
+
+See Section~\ref{sec:spin} for details on $\gamma$-matrix conventions.
 
 \subsection{Binary Operations with Fields}
 
