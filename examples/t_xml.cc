@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.6 2003-06-09 19:33:52 edwards Exp $
+// $Id: t_xml.cc,v 1.7 2003-06-20 02:47:31 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -105,6 +105,23 @@ int main(int argc, char **argv)
     toxml.flush();
 
     pop(toxml);
+  }
+
+  {
+    // Test writing some more complex snippets
+    XMLReader fromxml;
+    fromxml.open("dog3.xml");
+
+    multi1d<int> arrayInt;
+    read(fromxml,"/complex_xml/arrayInt",arrayInt);
+    for(int i=0; i < arrayInt.size(); ++i)
+      cout << "arrayInt[" << i << "] = " << arrayInt[i] << endl;
+
+    multi1d<Complex> arrayComplex;
+    for(int i=0; i < arrayComplex.size(); ++i)
+      cout << "arrayComplex[" << i << "] = (" 
+	   << Real(real(arrayComplex[i])) << ","            // The Real() shouldn't be necesary - 
+	   << Real(imag(arrayComplex[i])) << ")" << endl;   // it converts a QDPExpr to a QDPType
   }
 
   // Time to bolt
