@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_precision.h,v 1.2 2004-04-02 13:54:31 bjoo Exp $
+// $Id: qdp_precision.h,v 1.3 2004-07-27 05:25:18 edwards Exp $
 
 /*! \file
  * \brief PRECISION ISSUES
@@ -29,10 +29,14 @@
 #define REAL      REAL32
 #define DOUBLE    REAL64
 
+#define INNER_LOG 4
+
 #elif BASE_PRECISION == 64
 // Use double precision for base precision
 #define REAL      REAL64
 #define DOUBLE    REAL64
+
+#define INNER_LOG 2
 
 #else
 #error "Unknown BASE_PRECISION"
