@@ -1,0 +1,12 @@
+&lattis
+ Nd = 4 ,
+ Nc = 3 ,
+ nrow[ 0 ] = 4 ,
+ nrow[ 1 ] = 4 ,
+ nrow[ 2 ] = 4 ,
+ nrow[ 3 ] = 4 ,
+&END
+&observables
+ w_plaq = -0.00497119 ,
+ link = 0.00661708 ,
+&END
