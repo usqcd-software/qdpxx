@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tests.h,v 1.7 2002-12-05 21:27:10 edwards Exp $
+// $Id: tests.h,v 1.8 2002-12-14 01:09:55 edwards Exp $
 //
 // Include file for test suite
 
@@ -23,10 +23,10 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
 	    Double& t_plaq, Double& link);
 void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quark_prop_2, 
 	    multi2d<Real>& meson_propagator, 
-	    const multi1d<int>& t_source);
+	    const multi1d<int>& t_source, int j_decay);
 void baryon(LatticePropagator& quark_propagator, 
 	    multi2d<Complex>& barprop, 
-	    const multi1d<int>& t_source, int bc_spec);
+	    const multi1d<int>& t_source, int j_decay, int bc_spec);
 void dslash_2d_plus(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const LatticeFermion& psi,
 	    int cb);
 void dslash(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const LatticeFermion& psi,
@@ -34,4 +34,4 @@ void dslash(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const Lat
 
 void FormFac(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& quark_propagator,
 	     const LatticePropagator& seq_quark_prop, const multi1d<int>& t_source, 
-	     int t_sink, NmlWriter& nml);
+	     int t_sink, int j_decay, NmlWriter& nml);

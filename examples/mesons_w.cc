@@ -1,12 +1,24 @@
-//  $Id: mesons_w.cc,v 1.4 2002-10-28 03:08:44 edwards Exp $
+//  $Id: mesons_w.cc,v 1.5 2002-12-14 01:09:55 edwards Exp $
 
 #include "tests.h"
 
 using namespace QDP;
 
-//! Function used for constructing the time-slice set
-static const int j_decay = Nd-1;
-static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate[j_decay];}
+//! Function object used for constructing the time-slice set
+class TimeSliceFunc : public SetFunc
+{
+public:
+  TimeSliceFunc(int dir): dir_decay(dir) {}
+
+  int operator() (const multi1d<int>& coordinate) const {return coordinate[dir_decay];}
+  int numSubsets() const {return Layout::lattSize()[dir_decay];}
+
+  int dir_decay;
+
+private:
+  TimeSliceFunc() {}  // hide default constructor
+};
+
  
 //! Meson 2-pt functions
 /* This routine is specific to Wilson fermions!
@@ -14,11 +26,11 @@ static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate
  * Construct meson propagators
  * The two propagators can be identical or different.
  *
- * quark_prop_1 -- first quark propagator ( Read )
- * quark_prop_2 -- second (anti-) quark propagator ( Read )
- * meson_propagator -- Ns^2 mesons ( Modify )
- * t_source -- cartesian coordinates of the source ( Read )
- * j_decay -- direction of the exponential decay ( Read )
+ * \param quark_prop_1 -- first quark propagator ( Read )
+ * \param quark_prop_2 -- second (anti-) quark propagator ( Read )
+ * \param meson_propagator -- Ns^2 mesons ( Modify )
+ * \param t_source -- cartesian coordinates of the source ( Read )
+ * \param j_decay -- direction of the exponential decay ( Read )
  *
  *        ____
  *        \
@@ -30,15 +42,18 @@ static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate
 
 void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quark_prop_2, 
 	    multi2d<Real>& meson_propagator, 
-	    const multi1d<int>& t_source)
+	    const multi1d<int>& t_source, int j_decay)
 {
-  int length = Layout::lattSize()[j_decay];
+  // Create the time-slice set
+  Set timeslice;
+  timeslice.make(TimeSliceFunc(j_decay));
+
+  // Length of lattice in j_decay direction
+  int length = timeslice.numSubsets();
+
   int t0 = t_source[j_decay];
   int G5 = Ns*Ns-1;
   multi1d<Double> hsum(length);
-
-  // Create the time-slice set
-  Set timeslice(set_timeslice_func, length);
 
   // Initialize the propagator so that we just add to it below
   meson_propagator = 0.0;

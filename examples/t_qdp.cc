@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.11 2002-12-05 21:27:10 edwards Exp $
+// $Id: t_qdp.cc,v 1.12 2002-12-14 01:09:55 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -161,7 +161,7 @@ int main(int argc, char **argv)
   multi1d<int> t_source(Nd);
   t_source = 0;
 
-  mesons(quark_prop_1, quark_prop_2, meson_prop, t_source);
+  mesons(quark_prop_1, quark_prop_2, meson_prop, t_source, j_decay);
 //  for(int n=0; n < Ns*Ns; ++n)
   for(int n=Ns*Ns-1; n < Ns*Ns; ++n)
     for(int t=0; t < length; ++t)
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
 
 #if 1
   multi2d<Complex> baryon_prop(9, length);
-  baryon(quark_prop_1, baryon_prop, t_source, 1);
+  baryon(quark_prop_1, baryon_prop, t_source, j_decay, 1);
   for(int n=0; n < 9; ++n)
     for(int t=0; t < length; ++t)
       Write(nml,baryon_prop);

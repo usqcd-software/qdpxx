@@ -1,13 +1,25 @@
-// $Id: formfac_w.cc,v 1.7 2002-10-28 03:08:44 edwards Exp $
+// $Id: formfac_w.cc,v 1.8 2002-12-14 01:09:55 edwards Exp $
 
 #include "tests.h"
 #include "proto.h"
 
 using namespace QDP;
 
-//! Function used for constructing the time-slice set
-static const int j_decay = Nd-1;
-static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate[j_decay];}
+//! Function object used for constructing the time-slice set
+class TimeSliceFunc : public SetFunc
+{
+public:
+  TimeSliceFunc(int dir): dir_decay(dir) {}
+
+  int operator() (const multi1d<int>& coordinate) const {return coordinate[dir_decay];}
+  int numSubsets() const {return Layout::lattSize()[dir_decay];}
+
+  int dir_decay;
+
+private:
+  TimeSliceFunc() {}  // hide default constructor
+};
+
  
 //! Compute contractions for current insertion 3-point functions.
 /*!
@@ -19,19 +31,23 @@ static int set_timeslice_func(const multi1d<int>& coordinate) {return coordinate
  * \param seq_quark_prop -- sequential quark propagator ( Read )
  * \param t_source -- cartesian coordinates of the source ( Read )
  * \param t_sink -- time coordinate of the sink ( Read )
+ * \param j_decay -- direction of the exponential decay ( Read ) 
  * \param nml   -- namelist file object ( Read )
- *  j_decay -- direction of the exponential decay ( Global ) 
  */
 
 void FormFac(const multi1d<LatticeColorMatrix>& u, 
 	     const LatticePropagator& quark_propagator,
 	     const LatticePropagator& seq_quark_prop, 
 	     const multi1d<int>& t_source, 
-	     int t_sink,
+	     int t_sink, int j_decay,
 	     NmlWriter& nml)
 {
+  // Create the time-slice set
+  Set timeslice;
+  timeslice.make(TimeSliceFunc(j_decay));
+
   // Length of lattice in j_decay direction and 3pt correlations fcns
-  int length = Layout::lattSize()[j_decay];
+  int length = timeslice.numSubsets();
   multi1d<Complex> local_cur3ptfn(length);
   multi1d<Complex> nonlocal_cur3ptfn(length);
   
@@ -40,9 +56,6 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
   int t0 = t_source[j_decay];
   int G5 = Ns*Ns-1;
   
-  // Create the time-slice set
-  Set timeslice(set_timeslice_func, length);
-
   /*
    * Coordinates for insertion momenta
    */

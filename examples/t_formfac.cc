@@ -1,4 +1,4 @@
-// $Id: t_formfac.cc,v 1.7 2002-12-05 21:27:10 edwards Exp $
+// $Id: t_formfac.cc,v 1.8 2002-12-14 01:09:55 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -16,7 +16,7 @@ int main(int argc, char **argv)
   nrow = foo;  // Use only Nd elements
   geom.init(nrow);
 
-  NmlWriter nml("formfac.nml");
+  NmlWriter nml("t_formfac.nml");
 
   //! Test out propagators
   multi1d<LatticeColorMatrix> u(Nd);
@@ -43,5 +43,5 @@ int main(int argc, char **argv)
 
   int t_sink = length-1;
 
-  FormFac(u, quark_prop_1, quark_prop_2, t_source, t_sink, nml);
+  FormFac(u, quark_prop_1, quark_prop_2, t_source, t_sink, j_decay, nml);
 }
