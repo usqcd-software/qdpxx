@@ -1,6 +1,4 @@
-// $Id: layout.cc,v 1.7 2002-11-02 16:30:02 edwards Exp $
-//
-// QDP data parallel interface
+// $Id: layout.cc,v 1.8 2003-01-20 16:18:32 edwards Exp $
 
 /*! @file
  * @brief Layout support routines
