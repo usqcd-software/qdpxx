@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdptype.h,v 1.1 2003-05-22 20:06:28 edwards Exp $
+// $Id: qdp_qdptype.h,v 1.2 2004-07-02 19:20:25 edwards Exp $
 
 /*! @file
  * @brief Main type class for QDP
@@ -26,6 +26,12 @@ template<class T, class C>
 class QDPType
 {
 public:
+  //! Type of the first argument
+  typedef T Subtype_t;
+
+  //! Type of the container class
+  typedef C Container_t;
+
   //! Main constructor 
   QDPType(){}
 

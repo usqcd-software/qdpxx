@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpexpr.h,v 1.1 2003-05-22 20:06:28 edwards Exp $
+// $Id: qdp_qdpexpr.h,v 1.2 2004-07-02 19:20:25 edwards Exp $
 
 /*! @file
  * @brief Expression class for QDP
@@ -12,6 +12,9 @@ template<class T, class C>
 class QDPExpr
 {
 public:
+  //! Type of the first argument.
+  typedef T Subtype_t;
+
   //! Type of the expression.
   typedef T Expression_t;
 
