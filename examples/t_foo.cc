@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.11 2003-02-28 03:44:50 edwards Exp $
+// $Id: t_foo.cc,v 1.12 2003-02-28 04:16:36 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
   Write(nml,nrow);
 
-#if 1
+#if 0
   {
     LatticeColorMatrix a,b,c;
     a = b = c = 1;
@@ -87,7 +87,36 @@ int main(int argc, char *argv[])
   }
 #endif
   
+#if 1
+  {
+    LatticeColorVector a,b,c;
+    LatticeReal one = 1;
+    LatticeComplex comp = cmplx(one,0);
 
+    // Setting a,b,c = 1 for all components should cancel after contraction
+    c = zero;
+    for(int m=0; m < Nc; ++m)
+      pokeColor(c,comp,m);
+
+    a = b = c;
+    LatticeComplex f;
+    f = colorContract(a,b,c);
+
+    Write(nml,f);
+
+    // Setting a,b,c = 1 for just 1 set of components should not cancel
+    a = b = c = zero;
+    pokeColor(a,comp,0);
+    pokeColor(b,comp,2);
+    pokeColor(c,comp,1);
+
+    LatticeComplex g;
+    g = colorContract(a,b,c);
+
+    Write(nml,g);
+  }
+#endif
+  
 #if 0
   {
     Map near;
