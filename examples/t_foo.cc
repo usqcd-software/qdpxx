@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.10 2003-01-31 20:48:45 edwards Exp $
+// $Id: t_foo.cc,v 1.11 2003-02-28 03:44:50 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -77,6 +77,19 @@ int main(int argc, char *argv[])
 
 #if 1
   {
+    LatticeColorMatrix a,b,c;
+    a = b = c = 1;
+
+    LatticeComplex e;
+    e = colorContract(a,b,c);
+
+    Write(nml,e);
+  }
+#endif
+  
+
+#if 0
+  {
     Map near;
     Nearest bbb;
     near.make(bbb);
@@ -91,7 +104,7 @@ int main(int argc, char *argv[])
   }
 #endif
 
-#if 1
+#if 0
   {
     BiDirectionalMap near;
     Nearest bbb;
@@ -109,7 +122,7 @@ int main(int argc, char *argv[])
   }
 #endif
 
-#if 1
+#if 0
   {
     ArrayMap nearneigh;
     NearestNeighborMapFunc bbb;
@@ -128,7 +141,7 @@ int main(int argc, char *argv[])
   }
 #endif
 
-#if 1
+#if 0
   {
     ArrayBiDirectionalMap nearneigh;
     NearestNeighborMapFunc bbb;
