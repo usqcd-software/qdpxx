@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.9 2003-01-17 05:45:43 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.10 2003-01-20 16:22:51 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -12,10 +12,6 @@
 #include "QMP.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
-
-//! Definition of shift function object
-NearestNeighborMap  shift;
-
 
 //-----------------------------------------------------------------------------
 // IO routine solely for debugging. Only defined here
@@ -233,7 +229,7 @@ void Map::make(const MapFunc& func)
     if (srcenodes_tmp[i] != my_node)
       srcenodes[j++] = srcenodes_tmp[i];
 
-  for(int i=0, j=0; i < destnodes.size(); ++i)
+  for(int i=0, j=0; i < destnodes_tmp.size(); ++i)
     if (destnodes_tmp[i] != my_node)
       destnodes[j++] = destnodes_tmp[i];
 
@@ -304,195 +300,12 @@ void Map::make(const MapFunc& func)
 }
 
 
-//-----------------------------------------------------------------------------
-//! Initializer for nearest neighbor shift
-void NearestNeighborMap::make()
-{
-  //--------------------------------------
-  // Setup the communication index arrays
-  soffsets.resize(Nd, 2, Layout::subgridVol());
-
-  /* Get the offsets needed for neighbour comm.
-   * soffsets(direction,isign,position)
-   *  where  isign    = +1 : plus direction
-   *                  =  0 : negative direction
-   * the offsets cotain the current site, i.e the neighbour for site i
-   * is  soffsets(i,dir,mu) and NOT  i + soffset(..) 
-   */
-  const multi1d<int>& nrow = Layout::lattSize();
-  const multi1d<int>& subgrid = Layout::subgridLattSize();
-  const multi1d<int>& node_coord = Layout::nodeCoord();
-  multi1d<int> node_offset(Nd);
-
-  for(int m=0; m<Nd; ++m)
-    node_offset[m] = node_coord[m]*subgrid[m];
-
-  for(int site=0; site < Layout::vol(); ++site)
-  {
-    // Get the true grid of this site
-    multi1d<int> coord = crtesn(site, nrow);
-
-    // Site and node for this lattice site within the machine
-    int ipos = Layout::linearSiteIndex(coord);
-    int node = Layout::nodeNumber(coord);
-
-    // If this is my node, then add it to my list
-    if (Layout::nodeNumber() == node)
-    {
-//      <must get a new ipos within a node>
-
-      for(int m=0; m<Nd; ++m)
-      {
-	multi1d<int> tmpcoord = coord;
-
-	/* Neighbor in backward direction */
-	tmpcoord[m] = (coord[m] - 1 + nrow[m]) % nrow[m];
-	soffsets(m,0,ipos) = Layout::linearSiteIndex(tmpcoord);
-
-	/* Neighbor in forward direction */
-	tmpcoord[m] = (coord[m] + 1) % nrow[m];
-	soffsets(m,1,ipos) = Layout::linearSiteIndex(tmpcoord);
-      }
-    }
-  }
-
-#if 0
-  for(int m=0; m < Nd; ++m)
-    for(int s=0; s < 2; ++s)
-      for(int ipos=0; ipos < Layout::subgridVol(); ++ipos)
-	fprintf(stderr,"soffsets(%d,%d,%d) = %d\n",ipos,s,m,soffsets(m,s,ipos));
-#endif
-}
-
-
-//----------------------------------------------------------------------------
-// ArrayMap
-
-// This class is is used for binding the direction index of an ArrayMapFunc
-// so as to construct a MapFunc
-struct PackageArrayMapFunc : public MapFunc
-{
-  PackageArrayMapFunc(const ArrayMapFunc& mm, int ddir): pmap(mm), dir(ddir) {}
-
-  virtual multi1d<int> operator() (const multi1d<int>& coord, int sign) const
-    {
-      return pmap(coord, sign, dir);
-    }
-
-private:
-  const ArrayMapFunc& pmap;
-  int dir;
-}; 
-
-
-//! Initializer for generic map constructor
-void ArrayMap::make(const ArrayMapFunc& func)
-{
-  // We are allowed to declare a mapsa, but not allocate one.
-  // There is an empty constructor for Map. Hence, the resize will
-  // actually allocate the space.
-  mapsa.resize(func.numArray());
-
-  // Loop over each direction making the Map
-  for(int dir=0; dir < func.numArray(); ++dir)
-  {
-    PackageArrayMapFunc  my_local_map(func,dir);
-
-    mapsa[dir].make(my_local_map);
-  }
-}
-
-
-
 //------------------------------------------------------------------------
 // Message passing convenience routines
 //------------------------------------------------------------------------
 
 namespace Internal
 {
-  // Nearest neighbor communication channels
-  static QMP_msgmem_t request_msg[Nd][2];
-  static QMP_msghandle_t request_mh[Nd][2];
-  static QMP_msghandle_t mh_both[Nd];
-
-  //! Slow send-receive (blocking)
-  void
-  sendRecvWait(void *send_buf, void *recv_buf, 
-	       int count, int isign, int dir)
-  {
-#ifdef DEBUG
-    QDP_info("starting a sendRecvWait, count=%d",count);
-#endif
-
-    QMP_msgmem_t msg[2] = {QMP_declare_msgmem(send_buf, count),
-			   QMP_declare_msgmem(recv_buf, count)};
-    QMP_msghandle_t mh_a[2] = {QMP_declare_send_relative(msg[0], dir, isign, 0),
-			       QMP_declare_receive_relative(msg[1], dir, -isign, 0)};
-    QMP_msghandle_t mh = QMP_declare_multiple(mh_a, 2);
-
-    QMP_start(mh);
-    QMP_wait(mh);
-
-    QMP_free_msghandle(mh_a[1]);
-    QMP_free_msghandle(mh_a[0]);
-    QMP_free_msghandle(mh);
-    QMP_free_msgmem(msg[1]);
-    QMP_free_msgmem(msg[0]);
-
-#ifdef DEBUG
-    QDP_info("finished a sendRecvWait");
-#endif
-  }
-
-
-  //! Fast send-receive (non-blocking)
-  void
-  sendRecv(void *send_buf, void *recv_buf, 
-	   int count, int isign0, int dir)
-  {
-#ifdef DEBUG
-    QDP_info("starting a sendRecv, count=%d, isign=%d dir=%d",
-	     count,isign,dir);
-#endif
-
-    int isign = (isign0 > 0) ? 1 : -1;
-
-    request_msg[dir][0] = QMP_declare_msgmem(send_buf, count);
-    request_msg[dir][1] = QMP_declare_msgmem(recv_buf, count);
-    request_mh[dir][1] = QMP_declare_send_relative(request_msg[dir][0], dir, isign, 0);
-    request_mh[dir][0] = QMP_declare_receive_relative(request_msg[dir][1], dir, -isign, 0);
-    mh_both[dir] = QMP_declare_multiple(request_mh[dir], 2);
-
-    if (QMP_start(mh_both[dir]) != QMP_SUCCESS)
-      QMP_error_exit("QMP_create_physical_topology failed\n");
-
-#ifdef DEBUG
-    QDP_info("finished a sendRecv");
-#endif
-  }
-
-  //! Wait on send-receive (now blocks)
-  void
-  wait(int dir)
-  {
-#ifdef DEBUG
-    QDP_info("starting a wait");
-#endif
-    
-    QMP_wait(mh_both[dir]);
-
-    QMP_free_msghandle(request_mh[dir][1]);
-    QMP_free_msghandle(request_mh[dir][0]);
-    QMP_free_msghandle(mh_both[dir]);
-    QMP_free_msgmem(request_msg[dir][1]);
-    QMP_free_msgmem(request_msg[dir][0]);
-
-#ifdef DEBUG
-    QDP_info("finished a wait");
-#endif
-  }
-
-
   //! Send to another node (wait)
   void 
   sendToWait(void *send_buf, int dest_node, int count)

@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.8 2003-01-17 05:45:43 edwards Exp $
+// $Id: scalar_specific.cc,v 1.9 2003-01-20 16:22:51 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -10,9 +10,6 @@
 #include "proto.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
-
-//! Definition of shift function object
-NearestNeighborMap  shift;
 
 //-----------------------------------------------------------------------------
 //! Constructor from a function object
@@ -156,90 +153,6 @@ void Map::make(const MapFunc& func)
 #if 0
   for(int ipos=0; ipos < Layout::vol(); ++ipos)
     fprintf(stderr,"soffsets(%d,%d,%d) = %d\n",ipos,soffsets(ipos));
-#endif
-}
-
-
-//----------------------------------------------------------------------------
-// ArrayMap
-
-// This class is is used for binding the direction index of an ArrayMapFunc
-// so as to construct a MapFunc
-struct PackageArrayMapFunc : public MapFunc
-{
-  PackageArrayMapFunc(const ArrayMapFunc& mm, int ddir): pmap(mm), dir(ddir) {}
-
-  virtual multi1d<int> operator() (const multi1d<int>& coord, int sign) const
-    {
-      return pmap(coord, sign, dir);
-    }
-
-private:
-  const ArrayMapFunc& pmap;
-  int dir;
-}; 
-
-
-//! Initializer for generic map constructor
-void ArrayMap::make(const ArrayMapFunc& func)
-{
-  // We are allowed to declare a mapsa, but not allocate one.
-  // There is an empty constructor for Map. Hence, the resize will
-  // actually allocate the space.
-  mapsa.resize(func.numArray());
-
-  // Loop over each direction making the Map
-  for(int dir=0; dir < func.numArray(); ++dir)
-  {
-    PackageArrayMapFunc  my_local_map(func,dir);
-
-    mapsa[dir].make(my_local_map);
-  }
-}
-
-
-//-----------------------------------------------------------------------------
-//! Initializer for nearest neighbor shift
-void NearestNeighborMap::make()
-{
-  //--------------------------------------
-  // Setup the communication index arrays
-  soffsets.resize(Nd, 2, Layout::vol());
-
-  /* Get the offsets needed for neighbour comm.
-     * soffsets(direction,isign,position)
-     *  where  isign    = +1 : plus direction
-     *                  =  0 : negative direction
-     *         dir      =  0, ..., Nd-1
-     * the offsets contain the current site, i.e the neighbour for site i
-     * is  soffsets(i,dir,mu) and NOT  i + soffset(..) 
-     */
-  const multi1d<int>& nrow = Layout::lattSize();
-
-  for(int site=0; site < Layout::vol(); ++site)
-  {
-    multi1d<int> coord = crtesn(site, nrow);
-    int ipos = Layout::linearSiteIndex(coord);
-
-    for(int m=0; m<Nd; ++m)
-    {
-      multi1d<int> tmpcoord = coord;
-
-      /* Neighbor in backward direction */
-      tmpcoord[m] = (coord[m] - 1 + nrow[m]) % nrow[m];
-      soffsets(m,0,ipos) = Layout::linearSiteIndex(tmpcoord);
-
-      /* Neighbor in forward direction */
-      tmpcoord[m] = (coord[m] + 1) % nrow[m];
-      soffsets(m,1,ipos) = Layout::linearSiteIndex(tmpcoord);
-    }
-  }
-
-#if 0
-  for(int m=0; m < Nd; ++m)
-    for(int s=0; s < 2; ++s)
-      for(int ipos=0; ipos < Layout::vol(); ++ipos)
-	fprintf(stderr,"soffsets(%d,%d,%d) = %d\n",ipos,s,m,soffsets(m,s,ipos));
 #endif
 }
 
