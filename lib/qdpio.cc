@@ -1,4 +1,4 @@
-// $Id: qdpio.cc,v 1.8 2003-05-10 23:17:04 edwards Exp $
+// $Id: qdpio.cc,v 1.9 2003-05-12 06:08:41 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -24,7 +24,7 @@ QDPSerialReader::QDPSerialReader() {iop=false;}
 
 QDPSerialReader::QDPSerialReader(XMLReader& xml, const std::string& p) {open(xml,p);}
 
-void QDPSerialReader::open(XMLReader& xml, const std::string& p) 
+void QDPSerialReader::open(XMLReader& file_xml, const std::string& path) 
 {
   QIO_Layout *layout = new QIO_Layout;
   int latsize[Nd];
@@ -38,17 +38,17 @@ void QDPSerialReader::open(XMLReader& xml, const std::string& p)
   layout->volume = Layout::vol(); 
   layout->this_node = Layout::nodeNumber(); 
 
-  // Grab metadata
-  ostringstream  xmlstr;
-  xml.print(xmlstr);
+  // Initialize string objects 
+  XML_string *xml_c  = XML_string_create(0);
 
-  // Copy metadata string into simple qio string container
-  XML_MetaData* xml_c = XML_create(xmlstr.str().length()+1);  // check if +1 is needed
-  XML_set(xml_c, xmlstr.str().c_str());
+  if ((qio_in = QIO_open_read(xml_c, path.c_str(), QIO_SERIAL, layout)) == NULL)
+    QDP_error_exit("QDPSerial::Reader: failed to open file %s",path.c_str());
 
-  if ((qio_in = QIO_open_read(xml_c, p.c_str(), QIO_SERIAL, layout)) == NULL)
-    QDP_error_exit("QDPSerial::Reader: failed to open file %s",p.c_str());
+  // Use string to initialize XMLReader
+  istringstream ss((const string)(XML_string_ptr(xml_c)));
+  file_xml.open(ss);
 
+  XML_string_destroy(xml_c);
   delete layout;
 
   iop=true;
@@ -82,7 +82,7 @@ QDPSerialWriter::QDPSerialWriter(const XMLMetaWriter& xml, const std::string& p)
   open(xml,p);
 }
 
-void QDPSerialWriter::open(const XMLMetaWriter& xml, const std::string& p) 
+void QDPSerialWriter::open(const XMLMetaWriter& file_xml, const std::string& path) 
 {
   QIO_Layout *layout = new QIO_Layout;
   int latsize[Nd];
@@ -97,16 +97,16 @@ void QDPSerialWriter::open(const XMLMetaWriter& xml, const std::string& p)
   layout->this_node = Layout::nodeNumber(); 
 
   // Copy metadata string into simple qio string container
-  XML_MetaData* xml_c = XML_create(xml.str().length()+1);  // check if +1 is needed
-  XML_set(xml_c, xml.str().c_str());
+  XML_string* xml_c = XML_string_create(file_xml.str().length()+1);  // check if +1 is needed
+  XML_string_set(xml_c, file_xml.str().c_str());
 
   // Big call to qio
-  if ((qio_out = QIO_open_write(xml_c, p.c_str(), QIO_SERIAL, QIO_LEX_ORDER, QIO_CREATE, 
+  if ((qio_out = QIO_open_write(xml_c, path.c_str(), QIO_SERIAL, QIO_LEX_ORDER, QIO_CREATE, 
 				layout)) == NULL)
-    QDP_error_exit("QDPSerial::Writer: failed to open file %s",p.c_str());
+    QDP_error_exit("QDPSerial::Writer: failed to open file %s",path.c_str());
 
   // Cleanup
-  XML_destroy(xml_c);
+  XML_string_destroy(xml_c);
   delete layout;
 
   iop=true;

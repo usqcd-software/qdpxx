@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.1 2003-05-10 23:15:19 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.2 2003-05-12 06:08:41 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -14,6 +14,18 @@ using std::string;
 // XML classes
 // XML reader class
 XMLReader::XMLReader() {iop=false;}
+
+XMLReader::XMLReader(const std::string& filename)
+{
+  iop=false;
+  open(filename);
+}
+
+XMLReader::XMLReader(std::istream& is)
+{
+  iop=false;
+  open(is);
+}
 
 void XMLReader::open(const string& filename)
 {
@@ -100,6 +112,12 @@ void XMLReader::get(const std::string& xpath, bool& result)
 }
    
 void XMLReader::print(ostream& os) const
+{
+  if (Layout::primaryNode())
+    BasicXPathReader::print(os);
+}
+   
+void XMLReader::printRoot(ostream& os) const
 {
   if (Layout::primaryNode())
     BasicXPathReader::printRoot(os);
@@ -331,6 +349,21 @@ XMLWriter& operator<<(XMLWriter& xml, const bool& d) {xml.write(d);return xml;}
 //--------------------------------------------------------------------------------
 // Metadata writer class
 XMLMetaWriter::XMLMetaWriter() {indent_level=0;}
+
+string XMLMetaWriter::str() const
+{
+  ostringstream s;
+  
+  if (Layout::primaryNode()) 
+  {
+    writePrologue(s);
+    s << output_stream.str();
+  }
+    
+  return s.str();
+}
+
+string XMLMetaWriter::printRoot() const {return output_stream.str();}
 
 XMLMetaWriter::~XMLMetaWriter() {}
 
