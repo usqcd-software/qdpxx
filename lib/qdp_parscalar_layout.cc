@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.5 2003-07-18 21:14:00 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.6 2003-07-26 04:01:01 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -18,10 +18,6 @@
 #include "qdp_util.h"
 
 #include "qmp.h"
-
-#define  USE_LEXICO_LAYOUT
-#undef   USE_CB2_LAYOUT
-#undef   USE_CB32_LAYOUT
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -143,7 +139,7 @@ namespace Layout
   //! Initializer for all the layout defaults
   void InitDefaults()
   {
-#if defined(DEBUG)
+#if QDP_DEBUG >= 2
     QDP_info("Create default subsets");
 #endif
     // Default set and subsets
@@ -170,11 +166,11 @@ namespace Layout
     for(int i=0; i < Nd; ++i) 
       _layout.vol *= _layout.nrow[i];
   
-#if defined(DEBUG)
+#if QDP_DEBUG >= 2
     QDP_info("vol=%d",_layout.vol);
 #endif
 
-#if defined(DEBUG)
+#if QDP_DEBUG >= 2
     QDP_info("Initialize layout");
 #endif
 
@@ -259,14 +255,25 @@ namespace Layout
     ofstream foo(fooname.str().c_str());
 
     // Sanity check - check the layout functions make sense
-    for(int i=0; i < _layout.subgrid_vol; ++i) 
+    for(int site=0; site < vol(); ++site) 
     {
-      multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(),i);
-      int j = Layout::linearSiteIndex(coord);
+      multi1d<int> coord1 = crtesn(site, lattSize());
+
+      int linear = linearSiteIndex(coord1);
+      int node   = nodeNumber(coord1);
+
+      multi1d<int> coord2 = siteCoords(node,linear);
+      int j = local_site(coord2, lattSize());
       
-      foo << "i= "<< i << "  coord= " << coord << "  j= " << j << endl;
-//      if (i != j)
-//	QDP_error_exit("Layout::create - Layout problems, the layout functions do not work correctly with this lattice size");
+#if QDP_DEBUG >= 2
+      QDP_info("site= %d   coord= %d %d %d %d   linear= %d node=%d   crd= %d %d  j= %d",
+	       site,coord1[0],coord1[1],coord1[2],coord1[3],
+	       linear,node,
+	       coord2[0],coord2[1],
+	       j);
+#endif
+      if (site != j)
+	QDP_error_exit("Layout::create - Layout problems, the layout functions do not work correctly with this lattice size");
     }
     foo.close();
 
@@ -405,15 +412,17 @@ namespace Layout
     int cb = linearsite / subgrid_vol_cb;
     multi1d<int> tmp_coord = crtesn(linearsite % subgrid_vol_cb, subgrid_cb_nrow);
 
-    int cbb = cb;
-    for(int m=1; m < Nd; ++m)
-      cbb += tmp_coord[m];
-    cbb &= 1;
-
     // Add on position within the node
-    coord[0] += 2*tmp_coord[0] + cbb;
+    // NOTE: the cb for the x-coord is not yet determined
+    coord[0] += 2*tmp_coord[0];
     for(int m=1; m < Nd; ++m)
       coord[m] += tmp_coord[m];
+
+    // Determine cb including global node cb
+    int cbb = cb;
+    for(int m=1; m < Nd; ++m)
+      cbb += coord[m];
+    coord[0] += (cbb & 1);
 
     return coord;
   }
