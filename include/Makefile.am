@@ -9,6 +9,7 @@ include_HEADERS = defs.h \
 		inner.h \
 		io.h \
 		layout.h \
+		map.h \
 		multi.h \
 		newops.h \
 		outer.h \
