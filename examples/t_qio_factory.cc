@@ -1,4 +1,4 @@
-// $Id: t_qio_factory.cc,v 1.3 2003-10-09 19:59:39 edwards Exp $
+// $Id: t_qio_factory.cc,v 1.4 2004-03-29 21:29:31 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.21 2004-02-11 10:33:10 bjoo Exp $
+// $Id: t_xml.cc,v 1.22 2004-03-29 21:29:31 edwards Exp $
 
 #include <iostream>
 #include <cstdio>

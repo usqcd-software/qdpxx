@@ -1,4 +1,4 @@
-// $Id: t_remote.cc,v 1.4 2003-10-09 19:49:07 edwards Exp $
+// $Id: t_remote.cc,v 1.5 2004-03-29 21:29:31 edwards Exp $
 
 #include <iostream>
 #include <fstream>
