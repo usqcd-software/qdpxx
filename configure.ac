@@ -53,6 +53,34 @@ AC_ARG_ENABLE(parallel-arch,
   AC_SUBST(PARALLEL_ARCH, [scalar])
 )
 
+dnl --enable-sse
+AC_ARG_ENABLE(sse,
+  AC_HELP_STRING([--enable-sse],
+    [Optimize code with Intel SSE instructions]),
+  AC_SUBST(ac_sse,1),
+  AC_SUBST(ac_sse,0)
+)
+
+dnl --enable-sse2
+AC_ARG_ENABLE(sse2,
+  AC_HELP_STRING([--enable-sse2],
+    [Optimize code with Intel SSE2 instructions]),
+  [AC_SUBST(ac_sse,1)
+   AC_SUBST(ac_sse2,1)],
+  AC_SUBST(ac_sse2,0)
+)
+
+dnl Tell the user about SSE
+if test "X${ac_sse}X" == "X1X" ; then
+  AC_MSG_NOTICE([Configuring QDP++ to use Streaming SIMD Extensions (SSE)])
+fi
+
+dnl Tell the user about SSE2
+if test "X${ac_sse2}X" == "X1X" ; then
+  AC_MSG_NOTICE([Configuring QDP++ to use Streaming SIMD Extensions (SSE2)])
+fi
+
+
 
 dnl George T. Fleming 03/03/2003
 dnl This is a total reworking of Balint Joo's implementation
