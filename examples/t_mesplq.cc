@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.14 2003-06-07 19:09:32 edwards Exp $
+// $Id: t_mesplq.cc,v 1.15 2003-06-08 04:50:57 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -53,6 +53,8 @@ int main(int argc, char *argv[])
   Write(nml,w_plaq);
   Write(nml,link);
   pop(nml);
+
+  nml.flush();
 
   // Time to bolt
   QDP_finalize();

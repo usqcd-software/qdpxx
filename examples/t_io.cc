@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.10 2003-06-07 19:09:32 edwards Exp $
+// $Id: t_io.cc,v 1.11 2003-06-08 04:50:57 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -44,14 +44,17 @@ int main(int argc, char **argv)
   NmlWriter tonml("cat");
   Write(tonml,a);
   Write(tonml,aa);
+  tonml.flush();
   tonml.close();
 
   float x = 42.1;
   cerr << "Write some data to file input\n";
   TextWriter totext("input");
   totext << x;
+  totext.flush();
   totext.close();
 
+  x = -1;
   cerr << "Read some data from file input\n";
   TextReader fromtext("input");
   fromtext >> x;
