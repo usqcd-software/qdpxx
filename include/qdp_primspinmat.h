@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinmat.h,v 1.3 2003-12-08 21:41:52 edwards Exp $
+// $Id: qdp_primspinmat.h,v 1.4 2003-12-21 19:22:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -40,8 +40,9 @@ public:
 
   //! PSpinMatrix = PSpinMatrix
   /*! Set equal to another PSpinMatrix */
+  template<class T1>
   inline
-  PSpinMatrix& operator=(const PSpinMatrix& rhs) 
+  PSpinMatrix& operator=(const PSpinMatrix<T1,N>& rhs) 
     {
       assign(rhs);
       return *this;

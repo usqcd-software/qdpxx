@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinvec.h,v 1.3 2003-12-08 21:41:52 edwards Exp $
+// $Id: qdp_primspinvec.h,v 1.4 2003-12-21 19:22:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Vector
@@ -30,8 +30,9 @@ template <class T, int N> class PSpinVector : public PVector<T, N, PSpinVector>
 public:
   //! PVector = PVector
   /*! Set equal to another PVector */
+  template<class T1>
   inline
-  PSpinVector& operator=(const PSpinVector& rhs) 
+  PSpinVector& operator=(const PSpinVector<T1,N>& rhs) 
     {
       assign(rhs);
       return *this;

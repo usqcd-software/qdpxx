@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.16 2003-11-01 20:30:54 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.17 2003-12-21 19:22:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -50,8 +50,9 @@ public:
 
   //! PMatrix = PMatrix
   /*! Set equal to another PMatrix */
+  template<class T1>
   inline
-  CC& assign(const CC& rhs) 
+  CC& assign(const C<T1,N>& rhs) 
     {
       for(int i=0; i < N; ++i)
 	for(int j=0; j < N; ++j)
@@ -61,8 +62,9 @@ public:
     }
 
   //! PMatrix += PMatrix
+  template<class T1>
   inline
-  CC& operator+=(const CC& rhs) 
+  CC& operator+=(const C<T1,N>& rhs) 
     {
       for(int i=0; i < N; ++i)
 	for(int j=0; j < N; ++j)
@@ -72,8 +74,9 @@ public:
     }
 
   //! PMatrix -= PMatrix
+  template<class T1>
   inline
-  CC& operator-=(const CC& rhs) 
+  CC& operator-=(const C<T1,N>& rhs) 
     {
       for(int i=0; i < N; ++i)
 	for(int j=0; j < N; ++j)

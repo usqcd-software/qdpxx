@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.18 2003-11-10 03:42:09 edwards Exp $
+// $Id: qdp_primvector.h,v 1.19 2003-12-21 19:22:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -34,8 +34,9 @@ public:
 
   //! PVector = PVector
   /*! Set equal to another PVector */
+  template<class T1>
   inline
-  CC& assign(const CC& rhs) 
+  CC& assign(const C<T1,N>& rhs) 
     {
       for(int i=0; i < N; ++i)
 	elem(i) = rhs.elem(i);
@@ -45,15 +46,17 @@ public:
 
   //! PVector = PVector
   /*! Set equal to another PVector */
+  template<class T1>
   inline
-  CC& operator=(const CC& rhs) 
+  CC& operator=(const C<T1,N>& rhs) 
     {
       return assign(rhs);
     }
 
   //! PVector += PVector
+  template<class T1>
   inline
-  CC& operator+=(const CC& rhs) 
+  CC& operator+=(const C<T1,N>& rhs) 
     {
       for(int i=0; i < N; ++i)
 	elem(i) += rhs.elem(i);
@@ -62,8 +65,9 @@ public:
     }
 
   //! PVector -= PVector
+  template<class T1>
   inline
-  CC& operator-=(const CC& rhs) 
+  CC& operator-=(const C<T1,N>& rhs) 
     {
       for(int i=0; i < N; ++i)
 	elem(i) -= rhs.elem(i);

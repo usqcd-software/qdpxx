@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.3 2003-09-09 21:06:34 edwards Exp $
+// $Id: qdp_primcolormat.h,v 1.4 2003-12-21 19:22:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -34,8 +34,9 @@ public:
 
   //! PColorMatrix = PColorMatrix
   /*! Set equal to another PMatrix */
+  template<class T1>
   inline
-  PColorMatrix& operator=(const PColorMatrix& rhs) 
+  PColorMatrix& operator=(const PColorMatrix<T1,N>& rhs) 
     {
       assign(rhs);
       return *this;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolorvec.h,v 1.3 2003-10-17 15:31:59 edwards Exp $
+// $Id: qdp_primcolorvec.h,v 1.4 2003-12-21 19:22:51 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Vector
@@ -23,8 +23,9 @@ template <class T, int N> class PColorVector : public PVector<T, N, PColorVector
 public:
   //! PColorVector = PColorVector
   /*! Set equal to another PColorVector */
+  template<class T1>
   inline
-  PColorVector& operator=(const PColorVector& rhs) 
+  PColorVector& operator=(const PColorVector<T1,N>& rhs) 
     {
       assign(rhs);
       return *this;
