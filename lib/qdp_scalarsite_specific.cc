@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_specific.cc,v 1.1 2003-07-17 01:46:46 edwards Exp $
+// $Id: qdp_scalarsite_specific.cc,v 1.2 2003-07-18 03:23:30 edwards Exp $
 
 /*! @file
  * @brief Scalar-like architecture specific routines
@@ -82,8 +82,8 @@ void Set::make(const SetFunc& func)
     int linear = Layout::linearSiteIndex(coord);
     int icolor = func(coord);
 
-  cerr << "site="<<site<<" coord="<<coord<<" node="<<node<<" linear="<<linear<<" col="<<icolor;
-  cerr << endl;
+//  cerr << "site="<<site<<" coord="<<coord<<" node="<<node<<" linear="<<linear<<" col="<<icolor;
+//  cerr << endl;
 
     if (node != Layout::nodeNumber())
       QDP_error_exit("Set: found site with node outside current node!");
