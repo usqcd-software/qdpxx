@@ -1,4 +1,4 @@
-// $Id: parscalar_specific.cc,v 1.2 2002-11-04 04:47:16 edwards Exp $
+// $Id: parscalar_specific.cc,v 1.3 2002-11-13 18:24:40 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -193,6 +193,12 @@ namespace Layout
     for(int i=0; i < Nd; ++i) 
       _layout.vol *= nrows[i];
   
+#if defined(NO_MEM)
+    if (_layout.vol > VOLUME)
+      QDP_error_exit("Allocating a lattice size greater than compile time size: vol=%d",
+		     _layout.vol);
+#endif
+
     /* volume of checkerboard. Make sure global variable is set */
     _layout.nsubl = 1;
     _layout.vol_cb = _layout.vol / _layout.nsubl;

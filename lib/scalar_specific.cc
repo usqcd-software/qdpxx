@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.2 2002-11-04 04:47:16 edwards Exp $
+// $Id: scalar_specific.cc,v 1.3 2002-11-13 18:24:40 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -139,6 +139,12 @@ namespace Layout
       _layout.vol *= nrows[i];
     _layout.subgrid_vol = _layout.vol;
   
+#if defined(NO_MEM)
+    if (_layout.vol > VOLUME)
+      QDP_error_exit("Allocating a lattice size greater than compile time size: vol=%d",
+		     _layout.vol);
+#endif
+
     /* volume of checkerboard. Make sure global variable is set */
     _layout.nsubl = 1;
     _layout.vol_cb = _layout.vol / _layout.nsubl;
@@ -213,6 +219,12 @@ namespace Layout
       vol *= nrows[i];
     _layout.subgrid_vol = _layout.vol;
   
+#if defined(NO_MEM)
+    if (_layout.vol > VOLUME)
+      QDP_error_exit("Allocating a lattice size greater than compile time size: vol=%d",
+		     _layout.vol);
+#endif
+
     /* volume of checkerboard. Make sure global variable is set */
     _layout.nsubl = 2;
     _layout.vol_cb = _layout.vol / _layout.nsubl;
@@ -302,6 +314,12 @@ namespace Layout
       vol *= nrows[i];
     _layout.subgrid_vol = _layout.vol;
   
+#if defined(NO_MEM)
+    if (_layout.vol > VOLUME)
+      QDP_error_exit("Allocating a lattice size greater than compile time size: vol=%d",
+		     _layout.vol);
+#endif
+
     /* volume of checkerboard. Make sure global variable is set */
     _layout.nsubl = 1 << (Nd+1);
     _layout.vol_cb = _layout.vol / _layout.nsubl;
