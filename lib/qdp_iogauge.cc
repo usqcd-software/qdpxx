@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.8 2003-10-09 18:28:04 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.9 2003-10-10 04:43:56 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -217,5 +217,209 @@ void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& fi
   xml.open(xml_buf);
 }
 
+
+#if 0
+// THIS STUFF NOT FUNCTIONAL YET
+
+
+//-----------------------------------------------------------------------
+// Write a QCD archive file
+//! Write a QCD (NERSC) Archive format gauge field
+/*!
+ * \ingroup io
+ *
+ * \param u          gauge configuration ( Read )
+ * \param file       path ( Read )
+ */    
+void writeArchiv(multi1d<LatticeColorMatrix>& u, const string& file)
+{
+  XMLBufferWriter xml;
+  writeArchiv(xml, u, file); // bogus header
+}
+
+
+//-----------------------------------------------------------------------
+// Write a QCD archive file
+//! Write a QCD (NERSC) Archive format gauge field
+/*!
+ * \ingroup io
+ *
+ * \param xml        xml writer holding config info ( Modify )
+ * \param u          gauge configuration ( Modify )
+ * \param file       path ( Read )
+ */    
+void writeArchiv(XMLBufferWriter& xml, multi1d<LatticeColorMatrix>& u, const string& file)
+{
+  const size_t max_line_length = 128;
+
+  if (Nd != 4)
+  {
+    QDPIO::cerr << "Expecting Nd == 4" << endl;
+    QDP_abort(1);
+  }
+
+  if (Nc != 3)
+  {
+    QDPIO::cerr << "Expecting Nc == 3" << endl;
+    QDP_abort(1);
+  }
+
+  unsigned int chksum = 0;
+
+  BinaryWriter cfg_in(file);
+
+  /* assume matrix size is 12 (matrix is compressed) 
+     and change if we find out otherwise */
+  size_t mat_size=12;
+
+  // The expected lattice size of the gauge field
+  multi1d<int> lat_size(Nd);
+
+  /* For now, write and throw away the header */
+  string line;
+
+  QDPIO::cout << "Start of header" << endl;
+
+  cfg_in.write(line, max_line_length);
+  QDPIO::cout << line << endl;
+  
+  if (line != string("BEGIN_HEADER"))
+    QDP_error_exit("Missing BEGIN_HEADER");
+
+  /* Begin loop on lines */
+  int  lat_size_cnt = 0;
+
+  while (1)
+  {
+    cfg_in.read(line, max_line_length);
+    QDPIO::cout << line << endl;
+
+    // Scan for the datatype then scan for it
+    char datatype[64];    /* We try to grab the datatype */
+    if ( sscanf(line.c_str(), "DATATYPE = %s", datatype) == 1 ) 
+    {
+      /* Check if it is uncompressed */
+      if (strcmp(datatype, "4D_SU3_GAUGE_3x3") == 0) 
+      {
+	mat_size=18;   /* Uncompressed matrix */
+      }
+    }
+
+    // Find the lattice size of the gauge field
+    int itmp, dd;
+    if ( sscanf(line.c_str(), "DIMENSION_%d = %d", &dd, &itmp) == 2 ) 
+    {
+      /* Found a lat size */
+      if (dd < 1 || dd > Nd)
+	QDP_error_exit("oops, dimension number out of bounds");
+
+      lat_size[dd-1] = itmp;
+      ++lat_size_cnt;
+      }
+    
+    if (line == string("END_HEADER")) break;
+  }
+
+  QDPIO::cout << "End of header" << endl;
+
+  // Sanity check
+  if (lat_size_cnt != Nd)
+    QDP_error_exit("did not find all the lattice sizes");
+
+  for(int dd=0; dd < Nd; ++dd)
+    if (lat_size[dd] != Layout::lattSize()[dd])
+      QDP_error_exit("writeArchiv: archive lattice size does not agree with current size");
+
+  //
+  // Write gauge field
+  //
+  multi1d<int> coord(Nd);
+  ColorMatrix  sitefield;
+  float su3[3][3][2];
+
+  for(int t=0; t < Layout::lattSize()[3]; t++)  /* t */
+    for(int z=0; z < Layout::lattSize()[2]; z++)  /* t */
+      for(int y=0; y < Layout::lattSize()[1]; y++)  /* y */
+        for(int x=0; x < Layout::lattSize()[0]; x++)  /* x */
+        {
+	  coord[0] = x; coord[1] = y; coord[2] = z; coord[3] = t;
+
+          for(int dd=0; dd<Nd; dd++)        /* dir */
+          {
+            /* Write an fe variable and write it to the BE */
+            cfg_in.writeArray((char *)&(su3[0][0][0]),sizeof(float),mat_size);
+            if (cfg_in.fail())
+              QDP_error_exit("Error writeing configuration");
+
+            /* Reconstruct the third column  if necessary */
+            if( mat_size == 12) 
+            {
+	      su3[2][0][0] = su3[0][1][0]*su3[1][2][0] - su3[0][1][1]*su3[1][2][1]
+		- su3[0][2][0]*su3[1][1][0] + su3[0][2][1]*su3[1][1][1];
+	      su3[2][0][1] = su3[0][2][0]*su3[1][1][1] + su3[0][2][1]*su3[1][1][0]
+		- su3[0][1][0]*su3[1][2][1] - su3[0][1][1]*su3[1][2][0];
+
+	      su3[2][1][0] = su3[0][2][0]*su3[1][0][0] - su3[0][2][1]*su3[1][0][1]
+		- su3[0][0][0]*su3[1][2][0] + su3[0][0][1]*su3[1][2][1];
+	      su3[2][1][1] = su3[0][0][0]*su3[1][2][1] + su3[0][0][1]*su3[1][2][0]
+		- su3[0][2][0]*su3[1][0][1] - su3[0][2][1]*su3[1][0][0];
+          
+	      su3[2][2][0] = su3[0][0][0]*su3[1][1][0] - su3[0][0][1]*su3[1][1][1]
+		- su3[0][1][0]*su3[1][0][0] + su3[0][1][1]*su3[1][0][1];
+	      su3[2][2][1] = su3[0][1][0]*su3[1][0][1] + su3[0][1][1]*su3[1][0][0]
+		- su3[0][0][0]*su3[1][1][1] - su3[0][0][1]*su3[1][1][0];
+            }
+
+            /* Copy into the big array */
+            for(int kk=0; kk<Nc; kk++)      /* color */
+	    {
+              for(int ii=0; ii<Nc; ii++)    /* color */
+	      {
+		Real re = su3[ii][kk][0];
+		Real im = su3[ii][kk][1];
+		Complex sitecomp = cmplx(re,im);
+		pokeColor(sitefield,sitecomp,ii,kk);
+
+		if ( mat_size == 12 ) 
+		{
+		  /* If compressed ignore 3rd row for checksum */
+		  if (ii < 2) 
+		  {
+		    chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+0));
+		    chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+1));
+		  }
+		}
+		else 
+		{
+		  /* If uncompressed take everything for checksum */
+		  chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+0));
+		  chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+1));
+		}
+	      }
+	    }
+
+	    pokeSite(u[dd], sitefield, coord);
+          }
+        }
+
+  QDPIO::cout << "Computed (in this endian-ness, maybe not Big) checksum = " << chksum << "d\n";
+
+  cfg_in.close();
+
+
+  // Now, set up the XML header. Do this by first making a buffer
+  // writer that is then used to make the writer.
+  // NOTE: for now, this is a pretty useless header
+  XMLBufferWriter  xml_buf;
+
+  push(xml_buf, "NERSC");
+  write(xml_buf,"nrow",lat_size);
+  pop(xml_buf);
+
+  QDPIO::cout << "now open xmlwriter" << endl;
+  xml.open(xml_buf);
+}
+
+#endif
 
 QDP_END_NAMESPACE();
