@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.1 2003-05-10 23:24:03 edwards Exp $
+// $Id: t_xml.cc,v 1.2 2003-05-20 03:32:33 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     fromxml.print(cout);
 
     int rob;
-    read(fromxml,"/fred/rob",rob);
+    read(fromxml,"/fred/my_life/rob",rob);
     cout << "found rob = " << rob << endl;
   }
 
