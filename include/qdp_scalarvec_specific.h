@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.17 2004-09-02 16:35:32 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.18 2004-11-22 19:31:32 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -1429,26 +1429,6 @@ private:
 
 //-----------------------------------------------------------------------------
 // Input and output of various flavors that are architecture specific
-
-//! Namelist output
-template<class T>  
-NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
-{
-  nml.get() << "   [OUTER]" << endl;
-  const int vvol = Layout::vol();
-  for(int site=0; site < vvol; ++site) 
-  {
-    int i = Layout::linearSiteIndex(site);
-    int outersite = i >> INNER_LOG;
-    int innersite = i & ((1 << INNER_LOG)-1);
-
-    nml.get() << "   Site =  " << site << "   = ";
-    nml << getSite(d.elem(outersite),innersite);  // write in conventional scalar form
-    nml.get() << " ," << endl;
-  }
-
-  return nml;
-}
 
 //! XML output
 template<class T>  

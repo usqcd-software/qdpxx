@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_forward.h,v 1.7 2004-07-27 05:27:33 edwards Exp $
+// $Id: qdp_forward.h,v 1.8 2004-11-22 19:31:31 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -10,8 +10,6 @@ QDP_BEGIN_NAMESPACE(QDP);
 // IO
 class TextReader;
 class TextWriter;
-class NmlReader;
-class NmlWriter;
 class BinaryReader;
 class BinaryWriter;
 

@@ -1,4 +1,4 @@
-// $Id: t_exotic.cc,v 1.6 2004-02-11 10:33:09 bjoo Exp $
+// $Id: t_exotic.cc,v 1.7 2004-11-22 19:31:30 edwards Exp $
 /*! \file
  *  \brief Test various exotic qdp routines
  */
@@ -23,13 +23,14 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_exotic.nml");
+  XMLFileWriter xml("t_exotic.xml");
+  push(xml,"t_exotic");
 
-  push(nml,"lattis");
-  write(nml,"Nd", Nd);
-  write(nml,"Nc", Nc);
-  write(nml,"nrow", nrow);
-  pop(nml);
+  push(xml,"lattis");
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"nrow", nrow);
+  pop(xml);
 
 
   // Construct a random gauge transformation
@@ -50,9 +51,9 @@ int main(int argc, char *argv[])
 
     LatticeComplex lc1 = colorContract(a,b,c);
 
-    push(nml,"color_contract_orig");
-    write(nml,"lc1",lc1);
-    pop(nml);
+    push(xml,"color_contract_orig");
+    write(xml,"lc1",lc1);
+    pop(xml);
    
     // Do a random gauge transformation
     LatticeColorMatrix tmp;
@@ -62,9 +63,9 @@ int main(int argc, char *argv[])
 
     // Try colorcontract again
     LatticeComplex lc2 = colorContract(a,b,c);
-    push(nml,"color_contract_gauge_transf");
-    write(nml,"lc2", lc2);
-    pop(nml);
+    push(xml,"color_contract_gauge_transf");
+    write(xml,"lc2", lc2);
+    pop(xml);
   }
 #endif
 
@@ -105,7 +106,8 @@ int main(int argc, char *argv[])
 		<< "|dnorm2|^2 = " << dnorm2 << endl;
   }
 
-  nml.flush();
+  pop(xml);
+  xml.flush();
 
   // Time to bolt
   QDP_finalize();

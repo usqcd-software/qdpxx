@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.15 2004-07-27 05:38:37 edwards Exp $
+// $Id: formfac_w.cc,v 1.16 2004-11-22 19:31:30 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -37,7 +37,7 @@ private:
  * \param t_source -- cartesian coordinates of the source ( Read )
  * \param t_sink -- time coordinate of the sink ( Read )
  * \param j_decay -- direction of the exponential decay ( Read ) 
- * \param nml   -- namelist file object ( Read )
+ * \param xml   -- namelist file object ( Read )
  */
 
 void FormFac(const multi1d<LatticeColorMatrix>& u, 
@@ -45,9 +45,11 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 	     const LatticePropagator& seq_quark_prop, 
 	     const multi1d<int>& t_source, 
 	     int t_sink, int j_decay,
-	     NmlWriter& nml)
+	     XMLWriter& xml)
 {
   START_CODE();
+
+  push(xml,"FormFac");
 
   // Create the time-slice set
   UnorderedSet timeslice;
@@ -176,15 +178,17 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
       }
 
       // Print out the results
-      push(nml,"Wilson_Current_3Pt_fn");
-      write(nml,"mu", mu);
-      write(nml,"j_decay", j_decay);
-      write(nml,"inser_mom", inser_mom);
-      write(nml,"local_cur3ptfn", local_cur3ptfn);
-      write(nml,"nonlocal_cur3ptfn", nonlocal_cur3ptfn);
-      pop(nml);
+      push(xml,"Wilson_Current_3Pt_fn");
+      write(xml,"mu", mu);
+      write(xml,"j_decay", j_decay);
+      write(xml,"inser_mom", inser_mom);
+      write(xml,"local_cur3ptfn", local_cur3ptfn);
+      write(xml,"nonlocal_cur3ptfn", nonlocal_cur3ptfn);
+      pop(xml);
     }
   }
                             
+  pop(xml);
+
   END_CODE();
 }

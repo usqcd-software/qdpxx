@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.24 2004-08-12 02:25:04 edwards Exp $
+// $Id: qdp_inner.h,v 1.25 2004-11-22 19:31:31 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -212,14 +212,6 @@ TextWriter& operator<<(TextWriter& s, const IScalar<T>& d)
   return s << d.elem();
 }
 
-
-//! Namelist output
-template<class T>
-inline
-NmlWriter& operator<<(NmlWriter& s, const IScalar<T>& d)
-{
-  return s << d.elem();
-}
 
 //! XML output
 template<class T>
@@ -630,22 +622,6 @@ TextWriter& operator<<(TextWriter& s, const ILattice<T,N>& d)
   for(int i=0; i < N; ++i)
     s << d.elem(i) << "\n";
   return s;
-}
-
-
-//! Namelist output
-template<class T, int N>  
-NmlWriter& operator<<(NmlWriter& nml, const ILattice<T,N>& d)
-{
-  nml.get() << "   [INNER]" << endl;
-  for(int i=0; i < N; ++i) 
-  {
-    nml.get() << "   Site =  " << i << "   = ";
-    nml << d.elem(i);
-    nml.get() << " ," << endl;
-  }
-
-  return nml;
 }
 
 

@@ -1,4 +1,4 @@
-//  $Id: mesons_w.cc,v 1.10 2004-07-27 05:38:37 edwards Exp $
+//  $Id: mesons_w.cc,v 1.11 2004-11-22 19:31:30 edwards Exp $
 /*! \file
  *  \brief Meson 2-pt functions
  */
@@ -44,7 +44,7 @@ private:
  */
 
 void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quark_prop_2, 
-	    multi2d<Real>& meson_propagator, 
+	    multi1d< multi1d<Real> >& meson_propagator, 
 	    const multi1d<int>& t_source, int j_decay)
 {
   START_CODE();
@@ -56,21 +56,21 @@ void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quar
   // Length of lattice in j_decay direction
   int length = timeslice.numSubsets();
 
-  // Setup the return stuff
-  meson_propagator.resize(Ns*Ns, length);
-
   int t0 = t_source[j_decay];
   int G5 = Ns*Ns-1;
   multi1d<Double> hsum(length);
 
-  // Initialize the propagator so that we just add to it below
-  meson_propagator = 0.0;
+  meson_propagator.resize(Ns*Ns);  
 
   // Contruct the antiquark prop
   LatticePropagator anti_quark_prop =  Gamma(G5) * quark_prop_2 * Gamma(G5);
 
   for(int n = 0; n < (Ns*Ns); ++n)
   {
+    // Initialize the propagator so that we just add to it below
+    meson_propagator[n].resize(length);
+    meson_propagator[n] = zero;
+
     LatticeReal psi_sq = real(trace(adj(anti_quark_prop) * Gamma(n) * quark_prop_1 * Gamma(n)));
 
     // Do a slice-wise sum.

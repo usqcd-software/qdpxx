@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.21 2004-08-11 18:52:32 edwards Exp $
+// $Id: qdp_primvector.h,v 1.22 2004-11-22 19:31:31 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -193,26 +193,6 @@ TextWriter& operator<<(TextWriter& txt, const PVector<T,N,C>& d)
   return txt;
 }
 
-
-//! Nml output
-template<class T, int N, template<class,int> class C> 
-inline
-NmlWriter& operator<<(NmlWriter& nml, const PVector<T,N,C>& d)
-{
-  nml.get() << "  [VECTOR]\n";
-  for(int i=0; i < N-1; ++i)
-  {
-    nml.get() << "\tRow = " << i << " = ";
-    nml << d.elem(i);
-    nml.get() << " ,\n";
-  }
-    
-  int i = N-1;
-  nml.get() << "\tRow = " << i << " = ";
-  nml << d.elem(i);
-    
-  return nml;
-}
 
 //! XML output
 template<class T, int N, template<class,int> class C> 

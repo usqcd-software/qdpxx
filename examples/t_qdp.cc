@@ -1,4 +1,4 @@
-// $Id: t_qdp.cc,v 1.22 2004-02-11 10:33:09 bjoo Exp $
+// $Id: t_qdp.cc,v 1.23 2004-11-22 19:31:31 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -28,7 +28,8 @@ int main(int argc, char **argv)
   Layout::create();
 
   // Open a file for some sample output
-  NmlWriter nml("t_qdp.nml");
+  XMLFileWriter xml("t_qdp.xml");
+  push(xml,"t_qdp.xml");
 
   // Initialize the random number generator
   Seed seed;
@@ -109,28 +110,28 @@ int main(int argc, char **argv)
 
   b1 = 1.0;
   QDPIO::cout << "b1 after fill\n" << endl;
-  write(nml,"b1", b1);
+  write(xml,"b1", b1);
 
   random(b1);
   QDPIO::cout << "b1 after random\n" << endl;
-  write(nml,"b1", b1);
+  write(xml,"b1", b1);
 
   random(b2);
   gaussian(b3);
   QDPIO::cout << "b3 after gaussian\n";
-  push(nml,"test_stuff");
-  write(nml,"b3",b3);
-  write(nml,"b3",b3);
-  pop(nml);
+  push(xml,"test_stuff");
+  write(xml,"b3",b3);
+  write(xml,"b3",b3);
+  pop(xml);
   
 #if 0
   Double dsum;
   dsum = norm2(b1);
   QDPIO::cout << "dsum = " << dsum << endl;
-  nml << "dsum = ";
-  write(nml,"dsum", dsum);
+  xml << "dsum = ";
+  write(xml,"dsum", dsum);
 
-  junk(nml,b3,b1,b2,all);
+  junk(xml,b3,b1,b2,all);
 #endif
 
 #if 1
@@ -167,20 +168,20 @@ int main(int argc, char **argv)
 
   int j_decay = Nd-1;
   int length = Layout::lattSize()[j_decay];
-  multi2d<Real> meson_prop;
+  multi1d< multi1d<Real> > meson_prop;
   multi1d<int> t_source(Nd);
   t_source = 0;
 
   mesons(quark_prop_1, quark_prop_2, meson_prop, t_source, j_decay);
-  write(nml,"meson_prop",meson_prop);
+  write(xml,"meson_prop",meson_prop);
 
 #if 1
-  multi2d<Complex> baryon_prop;
-  write(nml,"quark_prop_1", quark_prop_1);
+  multi1d< multi1d<Complex> > baryon_prop;
+  write(xml,"quark_prop_1", quark_prop_1);
   baryon(quark_prop_1, baryon_prop, t_source, j_decay, 1);
-  write(nml,"t_source", t_source);
-  write(nml,"j_decay", j_decay);
-  write(nml,"baryon_prop", baryon_prop);
+  write(xml,"t_source", t_source);
+  write(xml,"j_decay", j_decay);
+  write(xml,"baryon_prop", baryon_prop);
 #endif
 
 #endif
@@ -191,8 +192,10 @@ int main(int argc, char **argv)
   chi = zero;
   dslash(chi, u, psi, +1, 0);
 
-  write(nml,"psi", psi);
-  write(nml,"chi", chi);
+  write(xml,"psi", psi);
+  write(xml,"chi", chi);
+
+  pop(xml);
 
   // Time to bolt
   QDP_finalize();

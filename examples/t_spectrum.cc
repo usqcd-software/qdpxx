@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.15 2004-02-11 10:33:10 bjoo Exp $
+ *  $Id: t_spectrum.cc,v 1.16 2004-11-22 19:31:31 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -48,7 +48,8 @@ int main(int argc, char **argv)
   int j_decay = Nd-1;
   int length = Layout::lattSize()[j_decay]; // Define the temporal direction
 
-  NmlWriter nml("t_spectrum.nml"); // Open file for sample output
+  XMLFileWriter xml("t_spectrum.xml"); // Open file for sample output
+  push(xml,"t_spectrum");
 
 
   multi1d<LatticeColorMatrix> u(Nd);
@@ -80,8 +81,8 @@ int main(int argc, char **argv)
 
     QDPIO::cout << "Gauge field is ";
     for(int mu = 0; mu < Nd; mu++){
-      write(nml, "mu", mu);
-      write(nml, "u_mu", u[mu]);
+      write(xml, "mu", mu);
+      write(xml, "u_mu", u[mu]);
     }
   }
 #endif
@@ -126,19 +127,17 @@ int main(int argc, char **argv)
   QDPIO::cout << "Computing simple meson spectroscopy..." << endl;
 
   {
-
-    multi2d<Real> meson_prop;
-  
+    multi1d< multi1d<Real> > meson_prop;
     mesons(quark_prop_1, quark_prop_1, meson_prop, t_source, j_decay);
 
     /*
      *  Print the results
      */
 
-    push(nml,"Point_Point_Wilson_Mesons");
-    write(nml, "j_decay", j_decay);
-    write(nml, "meson_prop", meson_prop);
-    pop(nml);
+    push(xml,"Point_Point_Wilson_Mesons");
+    write(xml, "j_decay", j_decay);
+    write(xml, "meson_prop", meson_prop);
+    pop(xml);
   }
 
   QDPIO::cout << "...done" << endl;
@@ -146,8 +145,7 @@ int main(int argc, char **argv)
   QDPIO::cout << "Computing simple baryon spectroscopy..." << endl;
 
   {
-
-    multi2d<Complex> baryon_prop;
+    multi1d< multi1d<Complex> > baryon_prop;
   
     baryon(quark_prop_1, baryon_prop, t_source, j_decay, 1);
 
@@ -155,12 +153,13 @@ int main(int argc, char **argv)
      *  Print the results
      */
 
-    push(nml,"Point_Point_Wilson_Baryons");
-    write(nml, "j_decay", j_decay);
-    write(nml, "baryon_prop", baryon_prop);
-    pop(nml);
+    push(xml,"Point_Point_Wilson_Baryons");
+    write(xml, "j_decay", j_decay);
+    write(xml, "baryon_prop", baryon_prop);
+    pop(xml);
   }
 
+  pop(xml);
   QDPIO::cout << "...done" << endl;
 
   // Time to bolt

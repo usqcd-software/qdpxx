@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.27 2004-08-11 18:52:32 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.28 2004-11-22 19:31:31 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -182,36 +182,6 @@ TextWriter& operator<<(TextWriter& txt, const PMatrix<T,N,C>& d)
       txt << d.elem(i,j);
 
   return txt;
-}
-
-
-//! Nml output
-template<class T, int N, template<class,int> class C>  
-inline
-NmlWriter& operator<<(NmlWriter& nml, const PMatrix<T,N,C>& d)
-{
-  nml.get() << "  [MATRIX]\n";
-  for(int j=0; j < N-1; ++j)
-    for(int i=0; i < N; ++i)
-    {
-      nml.get() << "\tRow = " << i << ", Column = " << j << " = ";
-      nml << d.elem(i,j);
-      nml.get() << ",\n";
-    }
-    
-  int j=N-1;
-  for(int i=0; i < N-1; ++i)
-  {
-    nml.get() << "\tRow = " << i << ", Column = " << j << " = ";
-    nml << d.elem(i,j);
-    nml.get() << ",\n";
-  }
-    
-  int i = j;
-  nml.get() << "\tRow = " << i << ", Column = " << j << " = ";
-  nml << d.elem(i,j);
-
-  return nml;
 }
 
 

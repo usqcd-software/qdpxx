@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.26 2004-09-02 16:35:32 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.27 2004-11-22 19:31:32 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1198,23 +1198,6 @@ private:
 
 //-----------------------------------------------------------------------------
 // Input and output of various flavors that are architecture specific
-
-//! Namelist output
-template<class T>  
-NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
-{
-  nml.get() << "   [OUTER]" << endl;
-  const int vvol = Layout::vol();
-  for(int site=0; site < vvol; ++site) 
-  {
-    int i = Layout::linearSiteIndex(site);
-    nml.get() << "   Site =  " << site << "   = ";
-    nml << d.elem(i);
-    nml.get() << " ," << endl;
-  }
-
-  return nml;
-}
 
 //! XML output
 template<class T>  

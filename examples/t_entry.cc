@@ -1,4 +1,4 @@
-// $Id: t_entry.cc,v 1.4 2004-02-11 10:33:09 bjoo Exp $
+// $Id: t_entry.cc,v 1.5 2004-11-22 19:31:30 edwards Exp $
 
 /*! \file
  *  \brief Test entry/exit routines
@@ -42,7 +42,8 @@ int main(int argc, char **argv)
   QDP_resume();
 
   // Must make sure all communications are allowed
-  NmlWriter tonml("t_entry.nml");
+  XMLFileWriter toxml("t_entry.xml");
+  push(toxml,"t_entry");
 
   // Pull out the data
 //  Subset& even = rb[0];
@@ -78,15 +79,16 @@ int main(int argc, char **argv)
   la = zero;
   QDP_insert(la, sa, even);
 
-  push(tonml, "Site_field");
-  write(tonml,"sa", sa);
-  pop(tonml);
+  push(toxml, "Site_field");
+  write(toxml,"sa", sa);
+  pop(toxml);
 
-  push(tonml, "Lattice_field");
-  write(tonml,"la", la);
-  pop(tonml);
+  push(toxml, "Lattice_field");
+  write(toxml,"la", la);
+  pop(toxml);
 
-  tonml.close();
+  pop(toxml);
+  toxml.close();
 
   // Time to bolt
   QDP_finalize();

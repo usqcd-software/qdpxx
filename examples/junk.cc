@@ -1,10 +1,10 @@
-// $Id: junk.cc,v 1.7 2004-02-11 10:33:09 bjoo Exp $
+// $Id: junk.cc,v 1.8 2004-11-22 19:31:30 edwards Exp $
 
 #include "tests.h"
 
 using namespace QDP;
 
-void junk(NmlWriter& nml, 
+void junk(XMLWriter& nml, 
 	  LatticeColorMatrix& b3, const LatticeColorMatrix& b1, const LatticeColorMatrix& b2, 
 	  const Subset& s)
 {
@@ -15,28 +15,30 @@ void junk(NmlWriter& nml,
 //  b3 = b1 * b2;
   Double sum;
 
-  nml << "b1 before shift";
-  write(nml, "b1", b1);
+  push(xml,"junk");
+  
+  xml << "b1 before shift";
+  write(xml, "b1", b1);
   
   sum = norm2(b1);
   QDPIO::cerr << "Norm2 before shift = " << sum << endl;
-  nml << "Norm2 before shift";
-  write(nml,"sum", sum);
+  xml << "Norm2 before shift";
+  write(xml,"sum", sum);
 
   b3 = shift(b1,FORWARD,0);
 
-  nml << "b3 after shift of b1";
-  write(nml,"b3", b3);
+  xml << "b3 after shift of b1";
+  write(xml,"b3", b3);
 
   sum = norm2(b3);
-  nml << "Norm2 after shift";
-  write(nml, "sum", sum);
+  xml << "Norm2 after shift";
+  write(xml, "sum", sum);
   QDPIO::cerr << "Norm2 after shift = " << sum << endl;
 
   sum = innerproductReal(b3,b3);
   QDPIO::cerr << "Inner product = " << sum << endl;
-  nml << "Inner product";
-  write(nml,"sum", sum);
+  xml << "Inner product";
+  write(xml,"sum", sum);
 
   DComplex dcsum;
   dcsum = innerproduct(b3,b3);
@@ -50,4 +52,6 @@ void junk(NmlWriter& nml,
 
 //  fprintf(stderr,"Test 5\n");
 //  b3 = b1*b1*b2;
+
+  pop(xml);
 }

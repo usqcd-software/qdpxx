@@ -1,4 +1,4 @@
-// $Id: t_formfac.cc,v 1.15 2004-02-11 10:33:09 bjoo Exp $
+// $Id: t_formfac.cc,v 1.16 2004-11-22 19:31:30 edwards Exp $
 /*! \file
  *  \brief Test the form-factor routine
  */
@@ -24,21 +24,22 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  NmlWriter nml("t_formfac.nml");
+  XMLFileWriter xml("t_formfac.xml");
+  push(xml,"t_formfac");
 
   //! Test out propagators
   multi1d<LatticeColorMatrix> u(Nd);
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
-  push(nml,"lattice");
-  write(nml,"Nd", Nd);
-  write(nml,"Nc", Nc);
-  write(nml,"Ns", Ns);
-  write(nml,"nrow", nrow);
-  pop(nml);
+  push(xml,"lattice");
+  write(xml,"Nd", Nd);
+  write(xml,"Nc", Nc);
+  write(xml,"Ns", Ns);
+  write(xml,"nrow", nrow);
+  pop(xml);
 
-//  write(nml,"u", u);
+//  write(xml,"u", u);
 
   LatticePropagator quark_prop_1, quark_prop_2;
   gaussian(quark_prop_1);
@@ -51,7 +52,9 @@ int main(int argc, char **argv)
 
   int t_sink = length-1;
 
-  FormFac(u, quark_prop_1, quark_prop_2, t_source, t_sink, j_decay, nml);
+  FormFac(u, quark_prop_1, quark_prop_2, t_source, t_sink, j_decay, xml);
+
+  pop(xml);
 
   // Time to bolt
   QDP_finalize();

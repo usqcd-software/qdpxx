@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.16 2004-10-29 15:03:21 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.17 2004-11-22 19:31:31 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -1706,67 +1706,13 @@ void read(BinaryReader& bin, OScalar<T>& d)
 
 
 
-// There are 2 main classes of binary/nml/xml reader/writer methods.
+// There are 2 main classes of binary/xml reader/writer methods.
 // The first is a simple/portable but inefficient method of send/recv
 // to/from the destination node.
 // The second method (the else) is a more efficient roll-around method.
 // However, this method more constrains the data layout - it must be
 // close to the original lexicographic order.
 // For now, use the direct send method
-
-//! Decompose a lexicographic site into coordinates
-multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
-
-//! Ascii output
-/*! An inner grid is assumed */
-template<class T>  
-NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
-{
-  typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
-  Site_t  recv_buf;
-
-  if (Layout::primaryNode())
-    nml.get() << "   [OUTER]" << endl;
-
-  // Find the location of each site and send to primary node
-  for(int site=0; site < Layout::vol(); ++site)
-  {
-    multi1d<int> coord = crtesn(site, Layout::lattSize());
-
-    int node   = Layout::nodeNumber(coord);
-    int linear = Layout::linearSiteIndex(coord);
-    int outersite = linear >> INNER_LOG;
-    int innersite = linear & ((1 << INNER_LOG)-1);
-
-    // Copy to buffer: be really careful since max(linear) could vary among nodes
-    if (Layout::nodeNumber() == node)
-      recv_buf = getSite(d.elem(outersite),innersite);  // extract into conventional scalar form
-
-    // Send result to primary node. Avoid sending prim-node sending to itself
-    if (node != 0)
-    {
-#if 1
-      // All nodes participate
-      Internal::route((void *)&recv_buf, node, 0, sizeof(Site_t));
-#else
-      if (Layout::primaryNode())
-	Internal::recvFromWait((void *)&recv_buf, node, sizeof(Site_t));
-
-      if (Layout::nodeNumber() == node)
-	Internal::sendToWait((void *)&recv_buf, 0, sizeof(Site_t));
-#endif
-    }
-
-    if (Layout::primaryNode())
-    {
-      nml.get() << "   Site =  " << site << "   = ";
-      nml << recv_buf;
-      nml.get() << " ," << endl;
-    }
-  }
-
-  return nml;
-}
 
 //! XML output
 /*! An inner grid is assumed */

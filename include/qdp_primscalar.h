@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.19 2004-08-11 18:52:32 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.20 2004-11-22 19:31:31 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -208,14 +208,6 @@ inline
 TextWriter& operator<<(TextWriter& txt, const PScalar<T>& d)
 {
   return txt << d.elem();
-}
-
-//! Namelist output
-template<class T>
-inline
-NmlWriter& operator<<(NmlWriter& nml, const PScalar<T>& d)
-{
-  return nml << d.elem();
 }
 
 //! XML output

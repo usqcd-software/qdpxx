@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.32 2004-10-29 15:03:21 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.33 2004-11-22 19:31:31 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -1558,7 +1558,7 @@ void read(BinaryReader& bin, OScalar<T>& d)
 
 
 
-// There are 2 main classes of binary/nml/xml reader/writer methods.
+// There are 2 main classes of binary/xml reader/writer methods.
 // The first is a simple/portable but inefficient method of send/recv
 // to/from the destination node.
 // The second method (the else) is a more efficient roll-around method.
@@ -1568,54 +1568,6 @@ void read(BinaryReader& bin, OScalar<T>& d)
 
 //! Decompose a lexicographic site into coordinates
 multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
-
-//! Ascii output
-/*! Assumes no inner grid */
-template<class T>  
-NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
-{
-  T recv_buf;
-
-  if (Layout::primaryNode())
-    nml.get() << "   [OUTER]" << endl;
-
-  // Find the location of each site and send to primary node
-  for(int site=0; site < Layout::vol(); ++site)
-  {
-    multi1d<int> coord = crtesn(site, Layout::lattSize());
-
-    int node   = Layout::nodeNumber(coord);
-    int linear = Layout::linearSiteIndex(coord);
-
-    // Copy to buffer: be really careful since max(linear) could vary among nodes
-    if (Layout::nodeNumber() == node)
-      recv_buf = d.elem(linear);
-
-    // Send result to primary node. Avoid sending prim-node sending to itself
-    if (node != 0)
-    {
-#if 1
-      // All nodes participate
-      Internal::route((void *)&recv_buf, node, 0, sizeof(T));
-#else
-      if (Layout::primaryNode())
-	Internal::recvFromWait((void *)&recv_buf, node, sizeof(T));
-
-      if (Layout::nodeNumber() == node)
-	Internal::sendToWait((void *)&recv_buf, 0, sizeof(T));
-#endif
-    }
-
-    if (Layout::primaryNode())
-    {
-      nml.get() << "   Site =  " << site << "   = ";
-      nml << recv_buf;
-      nml.get() << " ," << endl;
-    }
-  }
-
-  return nml;
-}
 
 //! XML output
 template<class T>  

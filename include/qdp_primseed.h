@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.7 2003-10-09 19:58:48 edwards Exp $
+// $Id: qdp_primseed.h,v 1.8 2004-11-22 19:31:31 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -162,24 +162,6 @@ TextWriter& operator<<(TextWriter& txt, const PSeed<T>& d)
     txt << d.elem(i) << "\n";
 
   return txt;
-}
-
-//! Ascii output
-template<class T>
-inline
-NmlWriter& operator<<(NmlWriter& nml, const PSeed<T>& d)
-{
-  nml.get() << " ( "; 
-  nml << d.elem(0);
-  nml.get() << " , ";
-  nml << d.elem(1);
-  nml.get() << " , ";
-  nml << d.elem(2);
-  nml.get() << " , ";
-  nml << d.elem(3);
-  nml.get() << " )";
-
-  return nml;
 }
 
 //! XML output

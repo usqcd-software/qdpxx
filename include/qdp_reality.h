@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.24 2004-08-11 18:52:32 edwards Exp $
+// $Id: qdp_reality.h,v 1.25 2004-11-22 19:31:32 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -214,14 +214,6 @@ TextWriter& operator<<(TextWriter& s, const RScalar<T>& d)
 }
 
 
-//! Namelist output
-template<class T>
-inline
-NmlWriter& operator<<(NmlWriter& s, const RScalar<T>& d)
-{
-  return s << d.elem();
-}
-
 //! XML output
 template<class T>
 inline
@@ -427,20 +419,6 @@ TextWriter& operator<<(TextWriter& s, const RComplex<T>& d)
   return s << d.real() << d.imag();
 }
 
-
-//! Namelist output
-template<class T>
-inline
-NmlWriter& operator<<(NmlWriter& nml, const RComplex<T>& d)
-{
-  nml.get() << "[ ";
-  nml << d.real();
-  nml.get() << " , ";
-  nml << d.imag();
-  nml.get() << " ]";
-
-  return nml;
-}
 
 //! XML output
 template<class T>

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_specializations.h,v 1.7 2004-07-07 20:11:38 edwards Exp $
+// $Id: qdp_specializations.h,v 1.8 2004-11-22 19:31:32 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -39,18 +39,6 @@ toBool(const Boolean& s)
 {
   return toBool(s.elem());
 }
-
-
-// Nml readers
-void read(NmlReader& nml, const string& s, Integer& d);
-void read(NmlReader& nml, const string& s, Real32& d);
-void read(NmlReader& nml, const string& s, Real64& d);
-void read(NmlReader& nml, const string& s, Boolean& d);
-void read(NmlReader& nml, const string& s, Complex& d);
-void read(NmlReader& nml, const string& s, Seed& d);
-void read(NmlReader& nml, const string& s, multi1d<Integer>& d);
-void read(NmlReader& nml, const string& s, multi1d<Real32>& d);
-void read(NmlReader& nml, const string& s, multi1d<Real64>& d);
 
 
 // XML readers

@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.19 2004-02-11 10:33:09 bjoo Exp $
+// $Id: t_io.cc,v 1.20 2004-11-22 19:31:31 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -38,11 +38,13 @@ int main(int argc, char **argv)
   read(frombinary, dd);
   frombinary.close();
 
-  NmlWriter tonml("t_io.nml");
-  write(tonml,"a",a);
-  write(tonml,"aa",aa);
-  tonml.flush();
-  tonml.close();
+  XMLFileWriter toxml("t_io.xml");
+  push(toxml,"t_io");
+  write(toxml,"a",a);
+  write(toxml,"aa",aa);
+  pop(toxml);
+  toxml.flush();
+  toxml.close();
 
   Real x = 42.1;
   QDPIO::cout << "Write some data to file t_io.txt\n";

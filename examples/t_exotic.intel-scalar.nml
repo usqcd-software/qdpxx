@@ -1,8 +1,0 @@
-&lattis
- Nd = 4 ,
- Nc = 3 ,
- nrow[ 0 ] = 2 ,
- nrow[ 1 ] = 2 ,
- nrow[ 2 ] = 2 ,
- nrow[ 3 ] = 2 ,
-&END

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_shift.cc,v 1.2 2004-02-11 10:33:10 bjoo Exp $
+// $Id: t_shift.cc,v 1.3 2004-11-22 19:31:31 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -29,22 +29,22 @@ int main(int argc, char *argv[])
 
 #if 1
   {
-    NmlWriter nml("t_shift.nml");
-    push(nml,"test1");
+    XMLFileWriter xml("t_shift.xml");
+    push(xml,"test1");
 
     LatticeReal a,b;
     random(a);
 
-    write(nml,"a", a);
+    write(xml,"a", a);
     for(int mu=0; mu < Nd; ++mu)
     {
       QDP_info("Newdir: mu= %d",mu);
-      push(nml,"newdir");
-      write(nml,"mu", mu);
+      push(xml,"newdir");
+      write(xml,"mu", mu);
       b = shift(a,FORWARD,mu);
-      write(nml,"b", b);
+      write(xml,"b", b);
     }
-    pop(nml);
+    pop(xml);
   }
 #endif
   

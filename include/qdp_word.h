@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_word.h,v 1.1 2003-05-22 20:06:28 edwards Exp $
+// $Id: qdp_word.h,v 1.2 2004-11-22 19:31:32 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -116,18 +116,6 @@ public:
 private:
   bool d;
 };
-
-//! Ascii output
-template<class T>  NmlWriter& operator<<(NmlWriter& s, const Word<T>& d)
-{
-  return s << d.elem();
-}
-
-//! Ascii output
-inline NmlWriter& operator<<(NmlWriter& s, const Logical& d)
-{
-  return s << d.elem();
-}
 
 
 //-----------------------------------------------------------------------------

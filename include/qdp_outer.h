@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.33 2004-08-12 04:05:50 edwards Exp $
+// $Id: qdp_outer.h,v 1.34 2004-11-22 19:31:31 edwards Exp $
 
 #include "qdp_config.h"
 
@@ -201,19 +201,6 @@ StandardOutputStream& operator<<(StandardOutputStream& s, const QDPExpr<RHS, OSc
 {
   typedef OScalar<T1> C1;
   return s << C1(l);
-}
-
-//! Namelist output
-template<class T>
-inline
-NmlWriter& operator<<(NmlWriter& nml, const OScalar<T>& d)
-{
-  if (Layout::primaryNode())
-  {
-    nml << d.elem();
-    nml.get() << " ," << endl;
-  }
-  return nml;
 }
 
 //! XML output
