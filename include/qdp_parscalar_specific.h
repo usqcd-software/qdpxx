@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.34 2004-12-10 12:02:08 bjoo Exp $
+// $Id: qdp_parscalar_specific.h,v 1.35 2005-01-22 20:20:19 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -93,6 +93,9 @@ namespace Internal
   {
     QMP_broadcast((void *)&dest, sizeof(T));
   }
+
+  //! Broadcast a string from primary node to all other nodes
+  void broadcast_str(std::string& dest);
 
   //! Broadcast from primary node to all other nodes
   inline void broadcast(void* dest, size_t nbytes)

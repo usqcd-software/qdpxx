@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.cc,v 1.6 2004-04-07 09:34:33 bjoo Exp $
+// $Id: qdp_stdio.cc,v 1.7 2005-01-22 20:20:19 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -52,38 +52,14 @@ StandardInputStream::~StandardInputStream() {}
 // String reader
 StandardInputStream& StandardInputStream::operator>>(std::string& input)
 {
-  char *dd_tmp;
-  int lleng;
-
   // Only primary node can grab string
   if (Layout::primaryNode()) 
   {
     getIstream() >> input;
-    lleng = input.length() + 1;
   }
 
-  // First must broadcast size of string
-  Internal::broadcast(lleng);
-
-  // Now every node can alloc space for string
-  dd_tmp = new char[lleng];
-  if( dd_tmp == 0x0 ) { 
-    QDP_error_exit("Failed to allocate dd_tmp\n");
-  }
-
-  if (Layout::primaryNode())
-    memcpy(dd_tmp, input.c_str(), lleng);
-  
-  // Now broadcast char array out to all nodes
-  Internal::broadcast((void *)dd_tmp, lleng);
-
-  // All nodes can now grab char array and make a string
-  input = dd_tmp;
-
-  // Clean-up and boogie
-  delete[] dd_tmp;
-
-  return *this;
+  // broadcast string
+  Internal::broadcast_str(input);
 }
 
 // Readers

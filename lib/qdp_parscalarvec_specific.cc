@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_specific.cc,v 1.7 2004-09-02 16:35:33 edwards Exp $
+// $Id: qdp_parscalarvec_specific.cc,v 1.8 2005-01-22 20:20:19 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec specific routines
@@ -255,6 +255,41 @@ void Map::make(const MapFunc& func)
 
 namespace Internal
 {
+  //! Broadcast a string from primary node to all other nodes
+  void broadcast_str(std::string& result)
+  {
+    char *dd_tmp;
+    int lleng;
+
+    // Only primary node can grab string
+    if (Layout::primaryNode()) 
+    {
+      lleng = result.length() + 1;
+    }
+
+    // First must broadcast size of string
+    Internal::broadcast(lleng);
+
+    // Now every node can alloc space for string
+    dd_tmp = new char[lleng];
+    if( dd_tmp == 0x0 ) { 
+      QDP_error_exit("Unable to allocate dd_tmp\n");
+    }
+
+    if (Layout::primaryNode())
+      memcpy(dd_tmp, result.c_str(), lleng);
+  
+    // Now broadcast char array out to all nodes
+    Internal::broadcast((void *)dd_tmp, lleng);
+
+    // All nodes can now grab char array and make a string
+    result = dd_tmp;
+
+    // Clean-up and boogie
+    delete[] dd_tmp;
+  }
+
+
   //! Route to another node (blocking)
   void route(void *buffer, int srce_node, int dest_node, int count)
   { 

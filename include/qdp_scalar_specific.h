@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.27 2004-11-22 19:31:32 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.28 2005-01-22 20:20:19 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -34,6 +34,9 @@ namespace Internal
   //! Dummy broadcast from primary node to all other nodes
   template<class T>
   inline void broadcast(T& dest) {}
+
+  //! Dummy broadcast a string from primary node to all other nodes
+  void broadcast_str(std::string& dest) {}
 
   //! Dummy broadcast from primary node to all other nodes
   inline void broadcast(void* dest, size_t nbytes) {}

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.18 2004-11-22 19:31:32 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.19 2005-01-22 20:20:19 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -27,6 +27,9 @@ namespace Internal
   //! Dummy broadcast from primary node to all other nodes
   template<class T>
   void broadcast(T& dest) {}
+
+  //! Dummy broadcast a string from primary node to all other nodes
+  void broadcast_str(std::string& dest) {}
 
   //! Dummy broadcast from primary node to all other nodes
   inline void broadcast(void* dest, size_t nbytes) {}

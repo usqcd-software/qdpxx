@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.29 2004-05-05 14:37:04 bjoo Exp $
+// $Id: qdp_xmlio.cc,v 1.30 2005-01-22 20:20:19 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -122,36 +122,12 @@ XMLReader::~XMLReader() {close();}
 // Overloaded Reader Functions
 void XMLReader::get(const std::string& xpath, string& result)
 {
-  char *dd_tmp;
-  int lleng;
-
   // Only primary node can grab string
   if (Layout::primaryNode()) 
-  {
     BasicXPathReader::get(xpath, result);
-    lleng = result.length() + 1;
-  }
 
-  // First must broadcast size of string
-  Internal::broadcast(lleng);
-
-  // Now every node can alloc space for string
-  dd_tmp = new char[lleng];
-  if( dd_tmp == 0x0 ) { 
-    QDP_error_exit("Unable to allocate dd_tmp\n");
-  }
-
-  if (Layout::primaryNode())
-    memcpy(dd_tmp, result.c_str(), lleng);
-  
-  // Now broadcast char array out to all nodes
-  Internal::broadcast((void *)dd_tmp, lleng);
-
-  // All nodes can now grab char array and make a string
-  result = dd_tmp;
-
-  // Clean-up and boogie
-  delete[] dd_tmp;
+  // broadcast string
+  Internal::broadcast_str(result);
 }
 
 void XMLReader::get(const std::string& xpath, int& result)
@@ -204,19 +180,38 @@ void XMLReader::readPrimitive(const std::string& xpath, T& result)
 
 void XMLReader::print(ostream& os)
 {
+  ostringstream newos;
+  std::string s;
+
   if (Layout::primaryNode())
-    BasicXPathReader::print(os);
+  {
+    BasicXPathReader::print(newos);
+    s = newos.str();
+  }
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast_str(s);
+  os << s;
 }
    
 void XMLReader::printCurrentContext(ostream& os)
 {
+  ostringstream newos;
+  std::string s;
+
   if (Layout::primaryNode())
   {
     if (is_derived())
-      BasicXPathReader::printChildren(os);
+      BasicXPathReader::printChildren(newos);
     else
-      BasicXPathReader::printRoot(os);
+      BasicXPathReader::printRoot(newos);
+
+    s = newos.str();
   }
+
+  // Now broadcast back out to all nodes
+  Internal::broadcast_str(s);
+  os << s;
 }
    
 int XMLReader::count(const string& xpath)

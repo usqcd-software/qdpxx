@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.18 2004-12-10 12:02:08 bjoo Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.19 2005-01-22 20:20:19 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -87,6 +87,9 @@ namespace Internal
   {
     QMP_broadcast((void *)&dest, sizeof(T));
   }
+
+  //! Dummy broadcast a string from primary node to all other nodes
+  void broadcast_str(std::string& dest);
 
   //! Broadcast from primary node to all other nodes
   inline void broadcast(void* dest, size_t nbytes)
