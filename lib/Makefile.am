@@ -46,14 +46,25 @@ PARSCALAR_SRCS = qdp_parscalar_init.cc qdp_parscalar_layout.cc qdp_parscalar_spe
                  qdp_scalarsite_specific.cc \
                  ../include/qdp_parscalar_specific.h
 
+# Optimized code for scalar-like architectures
+SCALARSITE_SSE_SRCS = qdp_scalarsite_sse.cc ../include/qdp_scalarsite_sse.h
+
+if QDP_USE_SSE
+  SSE_LIB_SRCS = $(SCALARSITE_SSE_SRCS)
+  SSE_EXTRA_LIB_SRCS = 
+else
+  SSE_LIB_SRCS =
+  SSE_EXTRA_LIB_SRCS = $(SCALARSITE_SSE_SRCS)
+endif
+
 if ARCH_SCALAR
-  libqdp_a_SOURCES = $(GENERIC_SRCS) $(SCALAR_SRCS)
-  EXTRA_libqdp_a_SOURCES = $(PARSCALAR_SRCS)
+  libqdp_a_SOURCES = $(GENERIC_SRCS) $(SCALAR_SRCS) $(SSE_LIB_SRCS)
+  EXTRA_libqdp_a_SOURCES = $(PARSCALAR_SRCS) $(SSE_EXTRA_LIB_SRCS)
 endif
 
 if ARCH_PARSCALAR
-  libqdp_a_SOURCES = $(GENERIC_SRCS) $(PARSCALAR_SRCS)
-  EXTRA_libqdp_a_SOURCES = $(SCALAR_SRCS)
+  libqdp_a_SOURCES = $(GENERIC_SRCS) $(PARSCALAR_SRCS) $(SSE_LIB_SRCS)
+  EXTRA_libqdp_a_SOURCES = $(SCALAR_SRCS) $(SSE_EXTRA_LIB_SRCS)
 endif
 
 # Need this header as part of libqdp_a_sources

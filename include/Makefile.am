@@ -43,6 +43,7 @@ include_HEADERS = qdp_defs.h \
 		qdp_word.h \
 	        qdp_scalar_specific.h \
 	        qdp_parscalar_specific.h \
-                qdp_filebuf.h
+                qdp_filebuf.h \
+	        qdp_scalarsite_sse.h
 
 nodist_include_HEADERS = qdp_config.h
