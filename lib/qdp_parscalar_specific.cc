@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.7 2003-07-26 04:01:54 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.8 2003-09-02 04:11:08 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -308,22 +308,6 @@ namespace Internal
 #if QDP_DEBUG >= 2
     QDP_info("finished a recvFromWait");
 #endif
-  }
-
-
-  // A really stupid way to do broadcast
-  void 
-  stupidBroadcast(void* dest, unsigned int nbytes)
-  {
-    // Send to each node
-    for(int node=1; node < Layout::numNodes(); ++node)
-    {
-      if (Layout::nodeNumber() == node)
-	Internal::recvFromWait(dest, 0, nbytes);
-
-      if (Layout::primaryNode())
-	Internal::sendToWait(dest, node, nbytes);
-    }
   }
 
 };
