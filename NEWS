@@ -1,3 +1,7 @@
+10/09/2003 -- Robert Edwards
+
+	Version 1.5.15. Added support for parallel versions of stdout,stdin, stderr.
+
 10/06/2003 -- Robert Edwards
 
 	Version 1.5.14. Small tweaks in peekSite.
