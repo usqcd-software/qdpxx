@@ -45,12 +45,22 @@ provided.
 
 \section{Supported operations}
 
-All QDP types are of type QDPType. Operations that are supported are below.
+All QDP objects are of type QDPType. Supported operations are listed below.
 Convention: protoyypes are basically of the form:
 
 \begin{verbatim}
-QDPType<T1>  unary_function(const QDPType<T>&)
-QDPType<T1>  binary_function(const QDPType<T>&, const QDPType<T>&)
+QDPType  unary_function(const QDPType&)
+QDPType  binary_function(const QDPType&, const QDPType&)
+\end{verbatim}
+
+\medskip
+
+\subsection{Subsets}
+\label{sec:subsets}
+
+\begin{verbatim}
+Set::Make(int func(),int num) : Set construction of ordinality num subsets.
+                                func maps coordinates to a coloring in [0,num)
 \end{verbatim}
 
 \medskip
@@ -105,7 +115,7 @@ QDPType<T1>  binary_function(const QDPType<T>&, const QDPType<T>&)
 {\em Trinary:}
 
 \begin{verbatim}
-where : the C trinary "?" operator
+where(bool,arg1,arg2) : the C trinary "?" operator -> (bool) ? arg1 : arg2
 \end{verbatim}
 
 \medskip
@@ -174,7 +184,6 @@ copymask(dest,mask,src) : copy src to dest under boolean mask
 
 \medskip
 
-
 \subsection{Global reductions}
 \label{sec:reductions}
 
@@ -183,27 +192,29 @@ sum(arg1)               : sum over lattice indices returning
                           object of same fiber type
 norm2(arg1)             : sum(localNorm2(arg1))
 innerproduct(arg1,arg2) : sum(localInnerproduct(arg1,arg2))
+sumMulti(arg1,Set)      : sum over each subset of Set returning #subset
+                          objects of same fiber type
 \end{verbatim}
 
 \medskip
 
-\subsection{Component extraction and insertion}
+\subsection{Accessors}
 \label{sec:peek}
 
-Peeking and poking into various component indices of objects.
+Peeking and poking (accessors) into various component indices of objects.
 
 \begin{verbatim}
-peekSite(arg1,multi1d<int> coords): return site object of primitive type of arg11
-peekColor(arg1,int row,int col)   : return object from color matrix elements row and col
-peekColor(arg1,int row)           : return object from color vector elements row
-peekSpin(arg1,int row,int col )   : return object from spin matrix elements row and col
-peekSpin(arg1,int row)            : return object from spin vector elements row
+peekSite(arg1,multi1d<int> coords): return site object of primitive type of arg1
+peekColor(arg1,int row,int col)   : return object from color matrix elem row and col
+peekColor(arg1,int row)           : return object from color vector elem row
+peekSpin(arg1,int row,int col )   : return object from spin matrix elem row and col
+peekSpin(arg1,int row)            : return object from spin vector elem row
 
-pokeSite(dest,src,multi1d<int> coords): insert site object of primitive type from src
-pokeColor(dest,src,int row,int col)   : insert object into color matrix elements row and col
-pokeColor(dest,src,int row)           : insert object into color vector elements row
-pokeSpin(dest,src,int row,int col )   : insert object into spin matrix elements row and col
-pokeSpin(dest,src,int row)            : insert object into spin vector elements row
+pokeSite(dest,src,multi1d<int> coords): insert src at site given by coords
+pokeColor(dest,src,int row,int col)   : insert src into color matrix elem row and col
+pokeColor(dest,src,int row)           : insert src into color vector elem row
+pokeSpin(dest,src,int row,int col )   : insert src into spin matrix elem row and col
+pokeSpin(dest,src,int row)            : insert src into spin vector elem row
 \end{verbatim}
 
 
@@ -230,14 +241,14 @@ spinReconstruct(QDPType psi, int dir, int isign)
 \newpage
 \section{Types}
 
-Mathematically, QDP types follow a fiber-bundle terminology.  There is
-a base space (a {\em Nd} dimensional lattice) with fibers at each site.  The
-fiber type describes data primitives on each site.  Lattice fields are
-defined and always allocated over the entire lattice; however, the
-operations can be narrowed to only a subset of sites.  The primitive
-types at each site are represented as the (tensor) product space of,
-for example, a vector space over color components with a vector space
-over spin components and complex valued elements.
+Mathematically, QDP types are the product of a {\em Nd} dimensional
+lattice type and a type at each site (the fiber). The fiber type
+describes data primitives on each site.  Lattice fields are defined
+and always allocated over the entire lattice; however, the operations
+can be narrowed to only a subset of sites.  The primitive types at
+each site are represented as the (tensor) product space of, for
+example, a vector space over color components with a vector space over
+spin components and complex valued elements.
 
 Generically objects transform under different spaces with a tensor
 product structure like
@@ -284,9 +295,9 @@ Types in the QDP interface are parameterized by a variety of types including:
   super-scalar architecture with short length vector instructions.
 \end{itemize}
 
-There are templates classes for each of the type variants listed
+There are template classes for each of the type variants listed
 above. The interface relies heavily on templates for
-composition. There is very little inheritance. The basic objects are
+composition - there is very little inheritance. The basic objects are
 constructed (at the users choice) by compositions like the following:
 
 \begin{verbatim}
@@ -302,6 +313,7 @@ that spin is used as the second index (second level of type
 composition) and color is the third. The ordering of types can be
 changes. From looking at the types one can immediately decide what
 operations among objects makes sense.
+NOTE: these typdefs are defined in  {\tt qdp++/defs.h}
 
 Operations on each level are listed below. The meaning (and validity)
 of an operation on the complete type (a LatticeFermion) is deduced
@@ -324,12 +336,13 @@ All operations listed in Sections~\ref{sec:infix}--\ref{sec:otherfuncs}
 
 \item
 {\bf\em PMatrix$<$N$>$}\\
-  {\em Unary}: operator-(PMatrix), +(PMatrix)\\
-  {\em Binary}: operator-(PMatrix,PMatrix), +(PMatrix,PMatrix), *(PMatrix,PScalar), 
-       *(PScalar,PMatrix), *(PMatrix,PMatrix)\\
+  {\em Unary}: {\tt -(PMatrix)}, {\tt +(PMatrix)}\\
+  {\em Binary}: {\tt -(PMatrix,PMatrix)}, {\tt +(PMatrix,PMatrix)}, 
+       {\tt *(PMatrix,PScalar)}, {\tt *(PScalar,PMatrix)}, {\tt *(PMatrix,PMatrix)}\\
   {\em Comparisons}: none\\
-  {\em Assignments}: =(PMatrix), =(PScalar), -=(PMatrix), +=(PMatrix), *=(PScalar)\\
-  {\em Trinary}: where\\
+  {\em Assignments}: {\tt =(PMatrix)}, {\tt =(PScalar)}, {\tt -=(PMatrix)}, 
+       {\tt +=(PMatrix)}, {\tt *=(PScalar)}\\
+  {\em Trinary}: {\tt where}\\
   {\em C-lib funcs}: none\\
   {\em QDP funcs}: all\\
   {\em In place funcs}: all\\
@@ -337,40 +350,46 @@ All operations listed in Sections~\ref{sec:infix}--\ref{sec:otherfuncs}
 
 \item
 {\bf\em PVector$<$N$>$}\\
-  {\em Unary}: operator-(PVector), +(PVector)\\
-  {\em Binary}: operator-(PVector,PVector), +(PVector,PVector), *(PVector,PScalar), 
-       *(PScalar,PVector), *(PMatrix,PVector)\\
+  {\em Unary}: {\tt -(PVector)}, {\tt +(PVector)}\\
+  {\em Binary}: {\tt -(PVector,PVector)}, {\tt +(PVector,PVector)}, 
+       {\tt *(PVector,PScalar)}, {\tt *(PScalar,PVector)}, {\tt *(PMatrix,PVector)}\\
   {\em Comparisons}: none\\
-  {\em Assignments}: =(PVector), -=(PVector), +=(PVector), *=(PScalar)\\
-  {\em Trinary}: where\\
+  {\em Assignments}: {\tt =(PVector)}, {\tt -=(PVector)}, {\tt +=(PVector)}, 
+       {\tt *=(PScalar)}\\
+  {\em Trinary}: {\tt where}\\
   {\em C-lib funcs}: none\\
-  {\em QDP funcs}: real, imag, multiplyI, multiplyMinusI, localNorm2, cmplx, 
-	localInnerproduct\\
+  {\em QDP funcs}: {\tt real}, {\tt imag}, {\tt multiplyI}, {\tt multiplyMinusI}, 
+        {\tt localNorm2}, {\tt cmplx}, {\tt localInnerproduct}\\
   {\em In place funcs}: all\\
   {\em Reductions}: all\\
 
 \item
 {\bf\em PSpinMatrix$<$N$>$}\\
   Inherits same operations as PMatrix\\
-  {\em Binary}: operator*(PSpinMatrix,Gamma), *(Gamma,PSpinMatrix)\\
-  {\em Exotic}: spinProjection, spinReconstruction
+  {\em Unary}: {\tt spinTrace}\\
+  {\em Binary}: {\tt *(PSpinMatrix,Gamma)}, {\tt *(Gamma,PSpinMatrix)}\\
+  {\em Exotic}: {\tt peekSpin}, {\tt pokeSpin}, {\tt spinProjection}, 
+      {\tt spinReconstruction}
 
 \item
 {\bf\em PSpinVector$<$N$>$}\\
   Inherits same operations as PVector\\
-  {\em Binary}: operator*(Gamma,PSpinVector)\\
-  {\em Exotic}: spinProjection, spinReconstruction
+  {\em Binary}: {\tt *(Gamma,PSpinVector)}\\
+  {\em Exotic}: {\tt peekSpin}, {\tt pokeSpin}, {\tt spinProjection}, 
+      {\tt spinReconstruction}
 
 \item
 {\bf\em PColorMatrix$<$N$>$}\\
   Inherits same operations as PMatrix\\
-  {\em Binary}: operator*(PColorMatrix,Gamma), *(Gamma,PColorMatrix)\\
-  {\em Exotic}: su2\_extract, sun\_fill
+  {\em Unary}: {\tt colorTrace}\\
+  {\em Binary}: {\tt *(PColorMatrix,Gamma)}, {\tt *(Gamma,PColorMatrix)}\\
+  {\em Exotic}: {\tt peekColor}, {\tt pokeColor}, 
 
 \item
 {\bf\em PColorVector$<$N$>$}\\
   Inherits same operations as PVector\\
-  {\em Binary}: operator*(Gamma,PColorVector)
+  {\em Binary}: {\tt *(Gamma,PColorVector)}\\
+  {\em Exotic}: {\tt peekColor}, {\tt pokeColor}, 
 
 \end{itemize}  % end primitive
 
@@ -391,6 +410,7 @@ Note, some operations are conspicuously absent:
 \begin{verbatim}
 LatticeFermion foo = 1.0;     // illegal, operator=(PVector,PScalar) missing
 trace(foo);                   // trace on a vector is not allowed
+conj(foo);                    // illegal, there is no row vector type
 \end{verbatim}
 
 \subsection{Some known types}
