@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.19 2004-08-10 00:48:58 edwards Exp $
+// $Id: qdp_inner.h,v 1.20 2004-08-11 03:38:47 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -1771,7 +1771,20 @@ fill_gaussian(IScalar<T>& d, IScalar<T>& r1, IScalar<T>& r2)
 
 // Ilattice operations
 
-// +ILattice
+//! ILattice = ! ILattice
+template<class T1, int N>
+inline typename UnaryReturn<ILattice<T1,N>, OpNot>::Type_t
+operator!(const ILattice<T1,N>& l)
+{
+  typename UnaryReturn<ILattice<T1,N>, OpNot>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = ! l.elem(i);
+  return d;
+}
+
+
+//! ILattice = +ILattice
 template<class T1, int N>
 inline typename UnaryReturn<ILattice<T1,N>, OpUnaryPlus>::Type_t
 operator+(const ILattice<T1,N>& l)
@@ -1784,7 +1797,7 @@ operator+(const ILattice<T1,N>& l)
 }
 
 
-// -ILattice
+//! ILattice = -ILattice
 template<class T1, int N>
 inline typename UnaryReturn<ILattice<T1,N>, OpUnaryMinus>::Type_t
 operator-(const ILattice<T1,N>& l)
@@ -1904,6 +1917,126 @@ operator*(const IScalar<T1>& l, const ILattice<T2,N>& r)
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() * r.elem(i);
+  return d;
+}
+
+
+// Optimized  adj(ILattice)*ILattice
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpAdjMultiply>::Type_t
+adjMultiply(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpAdjMultiply>::Type_t  d;
+
+  // Do not pass on the transpose or the conj
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) * r.elem(i);
+  return d;
+}
+
+// Optimized  adj(ILattice)*IScalar
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpAdjMultiply>::Type_t
+adjMultiply(const ILattice<T1,N>& l, const IScalar<T2>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpAdjMultiply>::Type_t  d;
+
+  // Do not pass on the transpose or the conj
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) * r.elem();
+  return d;
+}
+
+// Optimized  adj(IScalar)*ILattice
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpAdjMultiply>::Type_t
+adjMultiply(const IScalar<T1>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpAdjMultiply>::Type_t  d;
+
+  // Do not pass on the transpose or the conj
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem() * r.elem(i);
+  return d;
+}
+
+
+// Optimized  ILattice*adj(ILattice)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpMultiplyAdj>::Type_t
+multiplyAdj(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpMultiplyAdj>::Type_t  d;
+
+  // Do not pass on the transpose or the conj
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) * r.elem(i);
+  return d;
+}
+
+// Optimized  ILattice*adj(IScalar)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpMultiplyAdj>::Type_t
+multiplyAdj(const ILattice<T1,N>& l, const IScalar<T2>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpMultiplyAdj>::Type_t  d;
+
+  // Do not pass on the transpose or the conj
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) * r.elem();
+  return d;
+}
+
+// Optimized  IScalar*adj(ILattice)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpMultiplyAdj>::Type_t
+multiplyAdj(const IScalar<T1>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpMultiplyAdj>::Type_t  d;
+
+  // Do not pass on the transpose or the conj
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem() * r.elem(i);
+  return d;
+}
+
+
+// Optimized  adj(ILattice)*adj(ILattice)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpAdjMultiplyAdj>::Type_t
+adjMultiplyAdj(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpAdjMultiplyAdj>::Type_t  d;
+
+  // Do not pass on the transpose or the conj
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) * r.elem(i);
+  return d;
+}
+
+// Optimized  adj(ILattice)*adj(IScalar)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpAdjMultiplyAdj>::Type_t
+adjMultiplyAdj(const ILattice<T1,N>& l, const IScalar<T2>& r)
+{
+  typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpAdjMultiplyAdj>::Type_t  d;
+
+  // Do not pass on the transpose or the conj
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) * r.elem(i);
+  return d;
+}
+
+// Optimized  adj(IScalar)*adj(ILattice)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpAdjMultiplyAdj>::Type_t
+adjMultiplyAdj(const IScalar<T1>& l, const ILattice<T2,N>& r)
+{
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpAdjMultiplyAdj>::Type_t  d;
+
+  // Do not pass on the transpose or the conj
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) * r.elem(i);
   return d;
 }
 
