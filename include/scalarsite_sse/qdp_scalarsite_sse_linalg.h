@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.4 2004-07-27 05:34:29 edwards Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.5 2004-08-19 01:53:09 edwards Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -14,6 +14,12 @@
 #if defined(__GNUC__)
 
 QDP_BEGIN_NAMESPACE(QDP);
+
+// #define QDP_SCALARSITE_DEBUG
+
+#define QDP_SCALARSITE_USE_EVALUATE
+
+
 
 /*! @defgroup optimizations  Optimizations
  *
@@ -47,7 +53,6 @@ static sse_mask _sse_sgn4  __attribute__ ((unused)) ={0x00000000, 0x00000000, 0x
 #include "scalarsite_sse/sse_mat_hwvec.h"
 #include "scalarsite_sse/sse_adj_mat_hwvec.h"
 
-// #define QDP_SCALARSITE_DEBUG
 
 // Optimized version of  
 //    PColorMatrix<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorMatrix<RComplexFloat,3>
@@ -720,7 +725,7 @@ operator+(const PScalar<PColorVector<RComplexFloat,3> >& l,
 }
 
 
-#if 1
+#if defined(QDP_SCALARSITE_USE_EVALUATE)
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
 // NOTE: let this be a subroutine to save space
@@ -737,7 +742,7 @@ void evaluate(OLattice<PScalar<PScalar<PColorMatrix<RComplexFloat, 3> > > >& d,
 
 #endif
 
-#if 1
+#if defined(QDP_SCALARSITE_USE_EVALUATE)
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
 // NOTE: let this be a subroutine to save space
@@ -754,7 +759,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
 #endif
 
-#if 1
+#if defined(QDP_SCALARSITE_USE_EVALUATE)
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
 // NOTE: let this be a subroutine to save space
@@ -805,6 +810,10 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
 
 #if defined(QDP_SCALARSITE_DEBUG)
 #undef QDP_SCALARSITE_DEBUG
+#endif
+
+#if defined(QDP_SCALARSITE_USE_EVALUATE)
+#undef QDP_SCALARSITE_USE_EVALUATE
 #endif
 
 QDP_END_NAMESPACE();

@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.5 2004-07-27 05:34:29 edwards Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.6 2004-08-19 01:53:09 edwards Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -22,7 +22,10 @@ void local_sumsq(REAL32 *Out, REAL32 *In, int n_3vec);
 typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> TVec;
 typedef PScalar<PScalar<RScalar<REAL32> > >  TScal;
 
-//#define DEBUG_BLAS
+// #define DEBUG_BLAS
+
+#define QDP_SCALARSITE_USE_EVALUATE
+
 
 // TVec is the LatticeFermion from qdp_dwdefs.h with the OLattice<> stripped
 // from around it
@@ -31,6 +34,9 @@ typedef PScalar<PScalar<RScalar<REAL32> > >  TScal;
 //
 // THis is simply to make the code more readable, and reduces < < s and > >s
 // in the template arguments
+
+
+#if defined(QDP_SCALARSITE_USE_EVALUATE)
 
 // d += Scalar*Vec
 template<>
@@ -634,6 +640,9 @@ void evaluate( OLattice< TVec > &d,
 
   vscal(zptr, aptr, xptr, n_3vec);
 }
+#endif     // if defined(QDP_SCALARSITE_USE_EVALUATE)
+
+
 
 #if 1
 // Global norm squared of a vector...
@@ -695,6 +704,15 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
     return sum(localNorm2(s1),all);
   }
 }
+#endif
+
+
+#if defined(QDP_SCALARSITE_DEBUG)
+#undef QDP_SCALARSITE_DEBUG
+#endif
+
+#if defined(QDP_SCALARSITE_USE_EVALUATE)
+#undef QDP_SCALARSITE_USE_EVALUATE
 #endif
 
   
