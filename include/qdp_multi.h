@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.4 2005-01-29 15:58:29 edwards Exp $
+// $Id: qdp_multi.h,v 1.5 2005-01-29 15:59:38 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -134,7 +134,7 @@ public:
   //! Add-replace on each element
   /*! Uses underlying += */
   template<class T1>
-  multi1d<T>& operator+=(const T1& s1[])
+  multi1d<T>& operator+=(const T1 s1[])
     {
       if (F == 0)
       {
@@ -182,7 +182,7 @@ public:
   //! Subtract-replace on each element
   /*! Uses underlying -= */
   template<class T1>
-  multi1d<T>& operator-=(const T1& s1[])
+  multi1d<T>& operator-=(const T1 s1[])
     {
       if (F == 0)
       {
@@ -230,7 +230,7 @@ public:
   //! Mult-replace on each element
   /*! Uses underlying *= */
   template<class T1>
-  multi1d<T>& operator*=(const T1& s1[])
+  multi1d<T>& operator*=(const T1 s1[])
     {
       if (F == 0)
       {
@@ -278,7 +278,7 @@ public:
   //! Divide-replace on each element
   /*! Uses underlying /= */
   template<class T1>
-  multi1d<T>& operator/=(const T1& s1[])
+  multi1d<T>& operator/=(const T1 s1[])
     {
       if (F == 0)
       {
