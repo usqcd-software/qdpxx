@@ -1,6 +1,7 @@
-// $Id: linalg1.cc,v 1.9 2003-08-05 03:58:22 edwards Exp $
+// $Id: linalg1.cc,v 1.10 2003-08-05 21:15:38 edwards Exp $
 
-#include <time.h>
+#include <stdlib.h>
+#include <sys/time.h>
 
 #include "qdp.h"
 #include "linalg.h"
@@ -382,6 +383,18 @@ static sse_mask _sse_sgn24 __attribute__ ((unused)) ={0x00000000, 0x80000000, 0x
 static sse_mask _sse_sgn3 __attribute__  ((unused)) ={0x00000000, 0x00000000, 0x80000000, 0x00000000};
 static sse_mask _sse_sgn4 __attribute__  ((unused)) ={0x00000000, 0x00000000, 0x00000000, 0x80000000};
 
+template<>
+inline
+void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiply, 
+	      Reference<QDPType<PScalar<PColorMatrix<RComplex<float>, 3> >, 
+	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > > >, 
+	      Reference<QDPType<PScalar<PColorMatrix<RComplex<float>, 3> >, 
+	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > > > >,
+	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > >& rhs)
+  QDP_INLINE;
+
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
 template<>
@@ -394,7 +407,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d,
 	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > > > >,
 	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > >& rhs)
 {
-//  cout << "call QDP_M_eq_M_times_M" << endl;
+// cout << "call single site QDP_M_eq_M_times_M" << endl;
 
   const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
   const LatticeColorMatrix& r = static_cast<const LatticeColorMatrix&>(rhs.expression().right());
@@ -647,10 +660,23 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d,
 #if 0
 #include "jlab_sse.h"
 
-
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
 template<>
+inline
+void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiply, 
+	      Reference<QDPType<PScalar<PColorMatrix<RComplex<float>, 3> >, 
+	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > > >, 
+	      Reference<QDPType<PScalar<PColorMatrix<RComplex<float>, 3> >, 
+	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > > > >,
+	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > >& rhs)
+  QDP_INLINE;
+
+
+template<>
+inline
 void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d, 
 	      const OpAssign& op, 
 	      const QDPExpr<BinaryNode<OpMultiply, 
@@ -664,63 +690,53 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d,
 
   const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
   const LatticeColorMatrix& r = static_cast<const LatticeColorMatrix&>(rhs.expression().right());
-  su3* u3_base = (su3*)((void *)(&(d.elem(0))));
-  su3* u1_base = (su3*)((void *)(&(l.elem(0))));
-  su3* u2_base = (su3*)((void *)(&(r.elem(0))));
+  su3* __restrict__ u3_base = (su3*)((void *)((d.getF())));
+  su3* __restrict__ u1_base = (su3*)((void *)((l.getF())));
+  su3* __restrict__ u2_base = (su3*)((void *)((r.getF())));
 
 #define PREFDIST 2  
-#define __REP_ADD_SUB_NEG__0_rep(ttt) _sse_pair_store_up_c1_c2((*(u5)));	
-#define __REP_ADD_SUB_NEG__1_rep(ttt) _sse_pair_store_up_c3_c1((*(u5)),(*(u8))); 
-#define __REP_ADD_SUB_NEG__2_rep(ttt) _sse_pair_store_up_c2_c3((*(u8)));
+//#define __PREFETCH(x)   _prefetch_single(x)
+#define __PREFETCH(x)
 
-  su3 *u0;
-  su3 *u1;
-  su3 *u2;
-  su3 *u3;
-  su3 *u4;
-  su3 *u5;
-  su3 *u6;
-  su3 *u7;
-  su3 *u8;
-  sse_float _sse_sgn12 ALIGN ={-1.0f,-1.0f,1.0f,1.0f};
-  sse_float _sse_sgn13 ALIGN ={-1.0f,1.0f,-1.0f,1.0f};
-  sse_float _sse_sgn14 ALIGN ={-1.0f,1.0f,1.0f,-1.0f};
-  sse_float _sse_sgn23 ALIGN ={1.0f,-1.0f,-1.0f,1.0f};
-  sse_float _sse_sgn24 ALIGN ={1.0f,-1.0f,1.0f,-1.0f};
-  sse_float _sse_sgn34 ALIGN ={1.0f,1.0f,-1.0f,-1.0f};
-  sse_float _sse_sgn1234 ALIGN ={-1.0f,-1.0f,-1.0f,-1.0f};
+  const sse_float _sse_sgn12 ALIGN ={-1.0f,-1.0f,1.0f,1.0f};
+  const sse_float _sse_sgn13 ALIGN ={-1.0f,1.0f,-1.0f,1.0f};
+  const sse_float _sse_sgn14 ALIGN ={-1.0f,1.0f,1.0f,-1.0f};
+  const sse_float _sse_sgn23 ALIGN ={1.0f,-1.0f,-1.0f,1.0f};
+  const sse_float _sse_sgn24 ALIGN ={1.0f,-1.0f,1.0f,-1.0f};
+  const sse_float _sse_sgn34 ALIGN ={1.0f,1.0f,-1.0f,-1.0f};
+  const sse_float _sse_sgn1234 ALIGN ={-1.0f,-1.0f,-1.0f,-1.0f};
 
   const int vvol = Layout::vol();
   for(int ix=0; ix < vvol; ix+=2) 
   {
     {
-      _prefetch_single(u1_base + (ix+PREFDIST));
-      _prefetch_single(u2_base + (ix+PREFDIST));
-      _prefetch_single(u3_base + (ix+PREFDIST));
+      __PREFETCH(u1_base + (ix+PREFDIST));
+      __PREFETCH(u2_base + (ix+PREFDIST));
+      __PREFETCH(u3_base + (ix+PREFDIST));
     }
-    u4 = u2_base + (ix);
+    su3* u4 = u2_base + (ix);
     _sse_pair_load_c1_c2((*(u4)));   /*load 3 colors, first two rows*/
-    u3 = u1_base + (ix);
-    u5 = u3_base + (ix);
+    su3* u3 = u1_base + (ix);
+    su3* u5 = u3_base + (ix);
 
     _sse_su3_multiply(*(u3));
-    __REP_ADD_SUB_NEG__0_rep();
+    _sse_pair_store_up_c1_c2((*(u5)));
     {
-      _prefetch_single(u1_base + (ix+1+PREFDIST));
-      _prefetch_single(u2_base + (ix+1+PREFDIST));
-      _prefetch_single(u3_base + (ix+1+PREFDIST));
+      __PREFETCH(u1_base + (ix+1+PREFDIST));
+      __PREFETCH(u2_base + (ix+1+PREFDIST));
+      __PREFETCH(u3_base + (ix+1+PREFDIST));
     }
-    u7 = u2_base + (ix+1);
+    su3* u7 = u2_base + (ix+1);
     _sse_pair_load_c3_c1((*(u4)),(*(u7)));
-    u6 = u1_base + (ix+1);
-    u8 = u3_base + (ix+1);
+    su3* u6 = u1_base + (ix+1);
+    su3* u8 = u3_base + (ix+1);
 
     _sse_su3_multiply_3x1_2sites(*(u3),*(u6));
-    __REP_ADD_SUB_NEG__1_rep();
+    _sse_pair_store_up_c3_c1((*(u5)),(*(u8))); 
     _sse_pair_load_c2_c3((*(u7)));
     
     _sse_su3_multiply(*(u6));
-    __REP_ADD_SUB_NEG__2_rep();
+    _sse_pair_store_up_c2_c3((*(u8)));
   }
 }
 #endif
@@ -730,7 +746,13 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d,
 #include "jlab_sse.h"
 
 extern "C" {
-void QDP_M_eq_M_times_M_jlab(su3* u3_base, su3* u1_base, su3* u2_base, int size);
+void su3_F_3_mul_3_normal_normal_rep(su3 *u1_base,
+                                     su3 *u2_base,
+                                     su3 *u3_base, 
+                                     const int size, 
+                                     const int myskip1, 
+                                     const int myskip2, 
+                                     const int myskip3);
 }
 
 // Specialization to optimize the case   
@@ -745,15 +767,15 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > >& d,
 	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > > > >,
 	      OLattice<PScalar<PColorMatrix<RComplex<float>, 3> > > >& rhs)
 {
-//  cout << "call QDP_M_eq_M_times_M-jlab" << endl;
+//  cout << "call su3_F_3_mul_3_normal_normal_rep" << endl;
 
   const LatticeColorMatrix& l = static_cast<const LatticeColorMatrix&>(rhs.expression().left());
   const LatticeColorMatrix& r = static_cast<const LatticeColorMatrix&>(rhs.expression().right());
-  su3* u3_base = (su3*)((void *)(&(d.elem(0))));
-  su3* u1_base = (su3*)((void *)(&(l.elem(0))));
-  su3* u2_base = (su3*)((void *)(&(r.elem(0))));
 
-  QDP_M_eq_M_times_M_jlab(u3_base, u1_base, u2_base, Layout::vol());
+  su3_F_3_mul_3_normal_normal_rep((su3*)((void *)((l.getF()))), 
+				  (su3*)((void *)((r.getF()))), 
+				  (su3*)((void *)((d.getF()))), 
+				  Layout::vol(),1,1,1);
 }
 #endif
 
@@ -768,13 +790,25 @@ double QDP_M_eq_M_times_M(LatticeColorMatrix& dest,
 			  const LatticeColorMatrix& s2,
 			  int cnt)
 {
-  clock_t t1 = clock();
+  struct timeval t1,t2;
+  gettimeofday(&t1, NULL);
+//  clock_t t1 = clock();
   for (; cnt-- > 0; )
     dest = s1 * s2;
-  clock_t t2 = clock();
+//  clock_t t2 = clock();
+  gettimeofday(&t2, NULL);
 
-  return double(t2-t1)/CLOCKS_PER_SEC;
-//    return 2.0;
+  double tt = (t2.tv_sec - t1.tv_sec) * 1000000.0 + (t2.tv_usec - t1.tv_usec);
+
+//  fprintf(stdout,"t1= %f  t2= %f  t2-t1= %f\n", 
+//      (t1.tv_sec*1000000.0+t1.tv_usec),
+//      (t2.tv_sec*1000000.0+t2.tv_usec),
+//      tt);
+//  return (double)((int)(t2)-(int)(t1))/(double)(CLOCKS_PER_SEC);
+
+  return tt / 1000000.0;
+
+//  return 2;
 }
 
 double QDP_M_eq_Ma_times_M(LatticeColorMatrix& dest, 
@@ -787,7 +821,7 @@ double QDP_M_eq_Ma_times_M(LatticeColorMatrix& dest,
     dest = adj(s1) * s2;
   clock_t t2 = clock();
 
-  return double(t2-t1)/CLOCKS_PER_SEC;
+  return double(t2-t1)/double(CLOCKS_PER_SEC);
 //    return 2.0;
 }
 
@@ -801,7 +835,7 @@ double QDP_M_eq_M_times_Ma(LatticeColorMatrix& dest,
     dest = s1 * adj(s2);
   clock_t t2 = clock();
 
-  return double(t2-t1)/CLOCKS_PER_SEC;
+  return double(t2-t1)/double(CLOCKS_PER_SEC);
 //  return 2.0;
 }
 
@@ -815,7 +849,7 @@ double QDP_M_eq_Ma_times_Ma(LatticeColorMatrix& dest,
     dest = adj(s1) * adj(s2);
   clock_t t2 = clock();
 
-  return double(t2-t1)/CLOCKS_PER_SEC;
+  return double(t2-t1)/double(CLOCKS_PER_SEC);
 //    return 2.0;
 }
 
@@ -829,7 +863,7 @@ double QDP_M_peq_M_times_M(LatticeColorMatrix& dest,
     dest += s1 * s2;
   clock_t t2 = clock();
 
-  return double(t2-t1)/CLOCKS_PER_SEC;
+  return double(t2-t1)/double(CLOCKS_PER_SEC);
 //    return 2;
 }
 
