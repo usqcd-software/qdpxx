@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 1.12 2004-11-22 19:31:30 edwards Exp $ 
+// $Id: baryon_w.cc,v 1.13 2005-03-21 05:30:44 edwards Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -117,9 +117,10 @@ void baryon(const LatticePropagator& quark_propagator,
     0.5*((g_one + Gamma(8) * g_one) - timesI(Gamma(3) * g_one  +  Gamma(11) * g_one));
 
   LatticeComplex b_prop;
+  multi1d<LatticeComplex> b_prop_a(9);
 
   /* Loop over baryons */
-  for(int baryons = 0; baryons < 9; ++baryons)
+  for(int baryons = 0; baryons < b_prop_a.size(); ++baryons)
   {
     barprop[baryons].resize(length);
     
@@ -206,19 +207,26 @@ void baryon(const LatticePropagator& quark_propagator,
       QDP_error_exit("Unknown baryon: baryons=%d",baryons);
     }
 
-    /* Project on zero momentum: Do a slice-wise sum. */
-    multi1d<DComplex> hsum(length);
-    hsum = sumMulti(b_prop, timeslice);
+    b_prop_a[baryons] = b_prop;
+  }
 
+
+  /* Project on zero momentum: Do a slice-wise sum. */
+  multi2d<DComplex> hsum_a = sumMulti(b_prop_a, timeslice);
+
+
+  /* Loop over baryons */
+  for(int baryons = 0; baryons < b_prop_a.size(); ++baryons)
+  {
     /* forward */
     for(int t = 0; t < length; ++t)
     {
       int t_eff = (t - t0 + length) % length;
 	
       if ( bc_spec < 0 && (t_eff+t0) >= length)
-	barprop[baryons][t_eff] = -0.5 * Complex(hsum[t]);
+	barprop[baryons][t_eff] = -0.5 * Complex(hsum_a(baryons,t));
       else
-	barprop[baryons][t_eff] =  0.5 * Complex(hsum[t]);
+	barprop[baryons][t_eff] =  0.5 * Complex(hsum_a(baryons,t));
     }
   }
 }
