@@ -1,4 +1,4 @@
-// $Id: util.cc,v 1.4 2003-01-15 06:13:07 edwards Exp $
+// $Id: util.cc,v 1.5 2003-01-17 05:43:20 edwards Exp $
 //
 /*! 
  * @file
@@ -84,19 +84,18 @@ QDP_error_exit (const char* format, ...)
 
   fprintf (stderr, "%s %s\n", info, buffer);
 
-  QDP_abort(1);  // Layout abort knows how to shutdown the machine
+  QDP_abort(1);  // Abort knows how to shutdown the machine
 }
 
-#if 0
 /**
  * Enable or Disable verbose mode.
  */
 void
 QDP_verbose (bool verbose)
 {
-  QDP_global_m.verbose = verbose;
+  // Currently a NOP
 }
-#endif
+
 
 //-----------------------------------------------------------------------------
 //! Unique-ify a list
