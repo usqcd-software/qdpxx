@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.40 2004-07-27 05:38:10 edwards Exp $
+// $Id: t_foo.cc,v 1.41 2004-08-12 02:28:03 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -39,6 +39,26 @@ int main(int argc, char *argv[])
 
 #if 1
   {
+    LatticeBoolean lbit = true;
+    LatticeInt  la;
+    Int one = 1;
+    Int zero = 0;
+
+    la = where(lbit,1,0);
+//    Int cnt;
+//    cnt = sum(where(lbit,one,zero));
+    LatticeInt cnt;
+    cnt = where(lbit,one,zero);
+    Int icnt = sum(cnt);
+  }
+#endif
+
+  QDP_POP_PROFILE();
+
+  QDP_PUSH_PROFILE(QDP::getProfileLevel());
+
+#if 0
+  {
     Real a, b, c;
     random(a); random(b); random(c);
 
@@ -62,7 +82,7 @@ int main(int argc, char *argv[])
 
   QDP_PUSH_PROFILE(QDP::getProfileLevel());
 
-#if 1
+#if 0
   {
     LatticeColorMatrix a,b,c;
     LatticeComplex cc, dd;
@@ -100,7 +120,7 @@ int main(int argc, char *argv[])
 
   QDP_PUSH_PROFILE(QDP::getProfileLevel());
 
-#if 1
+#if 0
   {
     SpinMatrix S;
     random(S);
