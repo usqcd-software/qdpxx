@@ -1,4 +1,4 @@
-AC_INIT(qdp,1.4,edwards@jlab.org)
+AC_INIT(qdp,1.5,edwards@jlab.org)
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -233,6 +233,9 @@ dnl
 
 AM_CONDITIONAL(ARCH_SCALAR,    [test "X${PARALLEL_ARCH}X" = "XscalarX"])
 AM_CONDITIONAL(ARCH_PARSCALAR, [test "X${PARALLEL_ARCH}X" = "XparscalarX"])
+
+AM_CONDITIONAL(QDP_USE_SSE, [test "X${ac_sse}X" = "X1X"])
+AM_CONDITIONAL(QDP_USE_SSE2, [test "X${ac_sse2}X" = "X1X"])
 
 ##################################
 # Check for programs to build docs
