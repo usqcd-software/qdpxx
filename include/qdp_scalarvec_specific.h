@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.2 2003-08-20 21:06:31 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.3 2003-08-21 02:43:54 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -76,7 +76,10 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 {
   cerr << "In evaluateOrderedSubset(olattice,oscalar)\n";
 
-  for(int i=s.start(); i <= s.end(); ++i) 
+  const int istart = s.start() >> INNER_LEN;
+  const int iend   = s.end()   >> INNER_LEN;
+
+  for(int i=istart; i <= iend; ++i) 
   {
 //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
     op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
@@ -137,7 +140,10 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 {
   cerr << "In evaluateOrderedSubset(olattice,olattice)" << endl;
 
-  for(int i=s.start(); i <= s.end(); ++i) 
+  const int istart = s.start() >> INNER_LEN;
+  const int iend   = s.end()   >> INNER_LEN;
+
+  for(int i=istart; i <= iend; ++i) 
   {
 //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
     op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
@@ -186,7 +192,10 @@ copymask(OSubLattice<T2,OrderedSubset> d, const OLattice<T1>& mask, const OLatti
   OLattice<T2>& dest = d.field();
   const OrderedSubset& s = d.subset();
 
-  for(int i=s.start(); i <= s.end(); ++i) 
+  const int istart = s.start() >> INNER_LEN;
+  const int iend   = s.end()   >> INNER_LEN;
+
+  for(int i=istart; i <= iend; ++i) 
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
 
@@ -195,8 +204,8 @@ template<class T1, class T2>
 void 
 copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
-  const int vvol = Layout::outerSitesOnNode();
-  for(int i=0; i < vvol; ++i) 
+  const int iend = Layout::outerSitesOnNode();
+  for(int i=0; i < iend; ++i) 
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
 
@@ -237,6 +246,7 @@ random(OLattice<T>& d, const UnorderedSubset& s)
   Seed skewed_seed;
 
 #if ! defined(QDP_NOT_IMPLEMENTED)
+#error "random(unorderedsubset) broken"
   const int *tab = s.siteTable().slice();
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
@@ -254,14 +264,18 @@ random(OLattice<T>& d, const UnorderedSubset& s)
 
 
 //! dest  = random    under a subset
+/*! This version uses an inner-grid */
 template<class T>
 void 
 random(OLattice<T>& d, const OrderedSubset& s)
 {
   Seed seed;
-  Seed skewed_seed;
+  ILatticeSeed skewed_seed;
 
-  for(int i=s.start(); i <= s.end(); ++i) 
+  const int istart = s.start() >> INNER_LEN;
+  const int iend   = s.end()   >> INNER_LEN;
+
+  for(int i=istart; i <= iend; ++i) 
   {
     seed = RNG::ran_seed;
     skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
@@ -321,7 +335,10 @@ void gaussian(OLattice<T>& d, const OrderedSubset& s)
   random(r1,s);
   random(r2,s);
 
-  for(int i=s.start(); i <= s.end(); ++i) 
+  const int istart = s.start() >> INNER_LEN;
+  const int iend   = s.end()   >> INNER_LEN;
+
+  for(int i=istart; i <= iend; ++i) 
     fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
 }
 
@@ -368,7 +385,10 @@ void zero_rep(OLattice<T>& dest, const UnorderedSubset& s)
 template<class T> 
 void zero_rep(OLattice<T>& dest, const OrderedSubset& s) 
 {
-  for(int i=s.start(); i <= s.end(); ++i) 
+  const int istart = s.start() >> INNER_LEN;
+  const int iend   = s.end()   >> INNER_LEN;
+
+  for(int i=istart; i <= iend; ++i) 
     zero_rep(dest.elem(i));
 }
 
@@ -388,8 +408,8 @@ void zero_rep(OSubLattice<T,S> dd)
 template<class T> 
 void zero_rep(OLattice<T>& dest) 
 {
-  const int vvol = Layout::outerSitesOnNode();
-  for(int i=0; i < vvol; ++i) 
+  const int iend = Layout::outerSitesOnNode();
+  for(int i=0; i < iend; ++i) 
     zero_rep(dest.elem(i));
 }
 
@@ -474,8 +494,8 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
   // Loop always entered - could unroll
   zero_rep(d.elem());
 
-  const int vvol = Layout::outerSitesOnNode();
-  for(int i=0; i < vvol; ++i) 
+  const int iend = Layout::outerSitesOnNode();
+  for(int i=0; i < iend; ++i) 
   {
     tmp.elem() = forEach(s1, EvalLeaf1(i), OpCombine()); // Evaluate to ILattice part
     d.elem() += sum(tmp.elem());    // sum as well the ILattice part
@@ -533,8 +553,8 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
   // Loop over all sites and accumulate based on the coloring 
   const multi1d<int>& lat_color =  ss.latticeColoring();
 
-  const int vvol = Layout::outerSitesOnNode();
-  for(int i=0; i < vvol; ++i) 
+  const int iend = Layout::outerSitesOnNode();
+  for(int i=0; i < iend; ++i) 
   {
     int j = lat_color[i];
     dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
@@ -577,7 +597,7 @@ peekSite(const OLattice<T1>& l, const multi1d<int>& coord)
 
   int i      = Layout::linearSiteIndex(coord);
   int iouter = i / INNER_LEN;
-  int iinner = i & INNER_LEN;
+  int iinner = i % INNER_LEN;
   copy_site(dest.elem(), iinner, l.elem(iouter));
   return dest;
 }
@@ -597,7 +617,7 @@ pokeSite(OLattice<T1>& l, const OScalar<T2>& r, const multi1d<int>& coord)
 {
   int i      = Layout::linearSiteIndex(coord);
   int iouter = i / INNER_LEN;
-  int iinner = i & INNER_LEN;
+  int iinner = i % INNER_LEN;
   copy_site(l.elem(iouter), iinner, r.elem());
   return l;
 }
@@ -651,9 +671,8 @@ QDP_insert(OLattice<T>& dest, const multi1d<OScalar<T> >& src, const Subset& s)
 
 
 //-----------------------------------------------------------------------------
-// Forward declaration
-struct FnMap;
-
+// Map
+//
 //! General permutation map class for communications
 class Map
 {
@@ -668,7 +687,7 @@ public:
   Map(const MapFunc& fn) {make(fn);}
 
   //! Actual constructor from a function object
-  /*! The semantics are   source_site = func(dest_site) */
+  /*! The semantics are   source_site = func(dest_site,isign) */
   void make(const MapFunc& func);
 
   //! Function call operator for a shift
@@ -678,36 +697,84 @@ public:
    * Implements:  dest(x) = s1(x+offsets)
    *
    * Shifts on a OLattice are non-trivial.
-   * Notice, there may be an ILattice underneath which requires shift args.
-   * This routine is very architecture dependent.
+   *
+   * Notice, this implementation supports an Inner grid
    */
-  template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<FnMap,
-    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
-  operator()(const QDPType<T1,C1> & l)
+  template<class T1>
+  OLattice<T1>
+  operator()(const OLattice<T1> & l)
     {
-      typedef UnaryNode<FnMap,
-	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(goffsets.slice()),
-	CreateLeaf<QDPType<T1,C1> >::make(l)));
+#if QDP_DEBUG >= 3
+      QDP_info("Map()");
+#endif
+
+      OLattice<T1> d;
+      int igather[1 << INNER_LEN];
+
+      // *** THIS IS A TERRIBLE IMPLEMENTATION - I JUST WANT IT TO WORK FIRST!!!
+      // For now, use the all subset
+      // *** THIS IS WRONG ***
+      for(int outersite=0; outersite < Layout::outerSitesOnNode(); ++outersite) 
+      {
+	for(int innersite=0; innersite < (1 << INNER_LEN); ++innersite) 
+	{
+	  int i = (outersite << INNER_LEN) + innersite;
+
+#if QDP_DEBUG >= 3
+	  QDP_info("Map(olattice[%d],olattice[%d])",i,goffsets[i]);
+#endif
+//	  d.elem(iouter) = l.elem(gouter,ginner);
+	  zero_rep(d.elem(outersite));
+
+#warning "Map is broken"
+	}
+      }
+
+#if QDP_DEBUG >= 3
+      QDP_info("exiting Map()");
+#endif
+
+      return d;
     }
 
 
-  template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<FnMap,
-    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
-  operator()(const QDPExpr<T1,C1> & l)
+  template<class T1>
+  OScalar<T1>
+  operator()(const OScalar<T1> & l)
     {
-      typedef UnaryNode<FnMap,
-	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(goffsets.slice()),
-	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+      return l;
+    }
+
+  template<class RHS, class T1>
+  OScalar<T1>
+  operator()(const QDPExpr<RHS,OScalar<T1> > & l)
+    {
+      // For now, simply evaluate the expression and then do the map
+      typedef OScalar<T1> C1;
+
+//    fprintf(stderr,"map(QDPExpr<OScalar>)\n");
+      OScalar<T1> d = this->operator()(C1(l));
+
+      return d;
+    }
+
+  template<class RHS, class T1>
+  OLattice<T1>
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l)
+    {
+      // For now, simply evaluate the expression and then do the map
+      typedef OLattice<T1> C1;
+
+//    fprintf(stderr,"map(QDPExpr<OLattice>)\n");
+      OLattice<T1> d = this->operator()(C1(l));
+
+      return d;
     }
 
 
 public:
   //! Accessor to offsets
-  const multi1d<int>& Offsets() const {return goffsets;}
+  const multi1d<int>& goffset() const {return goffsets;}
 
 private:
   //! Hide copy constructor
@@ -717,49 +784,11 @@ private:
   void operator=(const Map&) {}
 
 private:
-  //! Offset table used for communications. 
+  /*! 
+   * The direction is in the sense of the Map or Shift functions from QDP.
+   * goffsets(position) 
+   */ 
   multi1d<int> goffsets;
-};
-
-
-
-// This is the PETE version of a map, namely return an expression
-struct FnMap
-{
-  PETE_EMPTY_CONSTRUCTORS(FnMap)
-
-  const int *goff;
-  FnMap(const int *goffsets): goff(goffsets)
-    {
-//    fprintf(stderr,"FnMap(): goff=0x%x\n",goff);
-    }
-  
-  template<class T>
-  inline typename UnaryReturn<T, FnMap>::Type_t
-  operator()(const T &a) const
-  {
-    return (a);
-  }
-};
-
-
-// Specialization of ForEach deals with maps. 
-template<class A, class CTag>
-struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
-{
-  typedef typename ForEach<A, EvalLeaf1, CTag>::Type_t TypeA_t;
-  typedef typename Combine1<TypeA_t, FnMap, CTag>::Type_t Type_t;
-  inline static
-  Type_t apply(const UnaryNode<FnMap, A> &expr, const EvalLeaf1 &f, 
-    const CTag &c) 
-  {
-    EvalLeaf1 ff(expr.operation().goff[f.val1()]);
-//  fprintf(stderr,"ForEach<Unary<FnMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
-
-    return Combine1<TypeA_t, FnMap, CTag>::
-      combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),
-              expr.operation(), c);
-  }
 };
 
 
@@ -778,7 +807,7 @@ public:
   ArrayMap(const ArrayMapFunc& fn) {make(fn);}
 
   //! Actual constructor from a function object
-  /*! The semantics are   source_site = func(dest_site,sign) */
+  /*! The semantics are   source_site = func(dest_site,isign,dir) */
   void make(const ArrayMapFunc& func);
 
   //! Function call operator for a shift
@@ -791,27 +820,47 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
-  template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<FnMap,
-    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
-  operator()(const QDPType<T1,C1> & l, int dir)
+  template<class T1>
+  OLattice<T1>
+  operator()(const OLattice<T1> & l, int dir)
     {
-      typedef UnaryNode<FnMap,
-	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(mapsa[dir].Offsets().slice()),
-	CreateLeaf<QDPType<T1,C1> >::make(l)));
+#if QDP_DEBUG >= 3
+      QDP_info("ArrayMap(OLattice,%d)",dir);
+#endif
+
+      return mapsa[dir](l);
+    }
+
+  template<class T1>
+  OScalar<T1>
+  operator()(const OScalar<T1> & l, int dir)
+    {
+#if QDP_DEBUG >= 3
+      QDP_info("ArrayMap(OScalar,%d)",dir);
+#endif
+
+      return mapsa[dir](l);
     }
 
 
-  template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<FnMap,
-    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
-  operator()(const QDPExpr<T1,C1> & l, int dir)
+  template<class RHS, class T1>
+  OScalar<T1>
+  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int dir)
     {
-      typedef UnaryNode<FnMap,
-	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(mapsa[dir].Offsets().slice()),
-	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+//    fprintf(stderr,"ArrayMap(QDPExpr<OScalar>,%d)\n",dir);
+
+      // For now, simply evaluate the expression and then do the map
+      return mapsa[dir](l);
+    }
+
+  template<class RHS, class T1>
+  OLattice<T1>
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int dir)
+    {
+//    fprintf(stderr,"ArrayMap(QDPExpr<OLattice>,%d)\n",dir);
+
+      // For now, simply evaluate the expression and then do the map
+      return mapsa[dir](l);
     }
 
 
@@ -827,9 +876,8 @@ private:
   
 };
 
-
 //-----------------------------------------------------------------------------
-//! Bi-directional version of general permutation map class for communications
+//! BiDirectional of general permutation map class for communications
 class BiDirectionalMap
 {
 public:
@@ -843,7 +891,7 @@ public:
   BiDirectionalMap(const MapFunc& fn) {make(fn);}
 
   //! Actual constructor from a function object
-  /*! The semantics are   source_site = func(dest_site,sign) */
+  /*! The semantics are   source_site = func(dest_site,isign) */
   void make(const MapFunc& func);
 
   //! Function call operator for a shift
@@ -856,27 +904,48 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
-  template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<FnMap,
-    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
-  operator()(const QDPType<T1,C1> & l, int isign)
+  template<class T1>
+  OLattice<T1>
+  operator()(const OLattice<T1> & l, int isign)
     {
-      typedef UnaryNode<FnMap,
-	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimaps[(isign+1)>>1].Offsets().slice()),
-	CreateLeaf<QDPType<T1,C1> >::make(l)));
+#if QDP_DEBUG >= 3
+      QDP_info("BiDirectionalMap(OLattice,%d)",isign);
+#endif
+
+      return bimaps[(isign+1)>>1](l);
     }
 
 
-  template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<FnMap,
-    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
-  operator()(const QDPExpr<T1,C1> & l, int isign)
+  template<class T1>
+  OScalar<T1>
+  operator()(const OScalar<T1> & l, int isign)
     {
-      typedef UnaryNode<FnMap,
-	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimaps[(isign+1)>>1].Offsets().slice()),
-	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+#if QDP_DEBUG >= 3
+      QDP_info("BiDirectionalMap(OScalar,%d)",isign);
+#endif
+
+      return bimaps[(isign+1)>>1](l);
+    }
+
+
+  template<class RHS, class T1>
+  OScalar<T1>
+  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign)
+    {
+//    fprintf(stderr,"BiDirectionalMap(QDPExpr<OScalar>,%d)\n",isign);
+
+      // For now, simply evaluate the expression and then do the map
+      return bimaps[(isign+1)>>1](l);
+    }
+
+  template<class RHS, class T1>
+  OLattice<T1>
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign)
+    {
+//    fprintf(stderr,"BiDirectionalMap(QDPExpr<OLattice>,%d)\n",isign);
+
+      // For now, simply evaluate the expression and then do the map
+      return bimaps[(isign+1)>>1](l);
     }
 
 
@@ -894,7 +963,7 @@ private:
 
 
 //-----------------------------------------------------------------------------
-//! Bi-directional version of general permutation map class for communications
+//! ArrayBiDirectional of general permutation map class for communications
 class ArrayBiDirectionalMap
 {
 public:
@@ -908,40 +977,68 @@ public:
   ArrayBiDirectionalMap(const ArrayMapFunc& fn) {make(fn);}
 
   //! Actual constructor from a function object
-  /*! The semantics are   source_site = func(dest_site,sign) */
+  /*! The semantics are   source_site = func(dest_site,isign,dir) */
   void make(const ArrayMapFunc& func);
 
   //! Function call operator for a shift
   /*! 
+   * Implements:  dest(x) = source(map(x,isign,dir))
+   *
+   * Syntax:
    * map(source,isign,dir)
    *
-   * Implements:  dest(x) = source(map(x,isign,dir))
+   * isign = parity of direction (+1 or -1)
+   * dir   = array index (could be direction in range [0,...,Nd-1])
+   *
+   * Implements:  dest(x) = s1(x+isign*dir)
+   * There are cpp macros called  FORWARD and BACKWARD that are +1,-1 resp.
+   * that are often used as arguments
    *
    * Shifts on a OLattice are non-trivial.
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
-  template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<FnMap,
-    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
-  operator()(const QDPType<T1,C1> & l, int isign, int dir)
+  template<class T1>
+  OLattice<T1>
+  operator()(const OLattice<T1> & l, int isign, int dir)
     {
-      typedef UnaryNode<FnMap,
-	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimapsa((isign+1)>>1,dir).Offsets().slice()),
-	CreateLeaf<QDPType<T1,C1> >::make(l)));
+#if QDP_DEBUG >= 3
+      QDP_info("ArrayBiDirectionalMap(OLattice,%d,%d)",isign,dir);
+#endif
+
+      return bimapsa((isign+1)>>1,dir)(l);
+    }
+
+  template<class T1>
+  OScalar<T1>
+  operator()(const OScalar<T1> & l, int isign, int dir)
+    {
+#if QDP_DEBUG >= 3
+      QDP_info("ArrayBiDirectionalMap(OScalar,%d,%d)",isign,dir);
+#endif
+
+      return bimapsa((isign+1)>>1,dir)(l);
     }
 
 
-  template<class T1,class C1>
-  inline typename MakeReturn<UnaryNode<FnMap,
-    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
-  operator()(const QDPExpr<T1,C1> & l, int isign, int dir)
+  template<class RHS, class T1>
+  OScalar<T1>
+  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign, int dir)
     {
-      typedef UnaryNode<FnMap,
-	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
-      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimapsa((isign+1)>>1,dir).Offsets().slice()),
-	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+//    fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OScalar>,%d,%d)\n",isign,dir);
+
+      // For now, simply evaluate the expression and then do the map
+      return bimapsa((isign+1)>>1,dir)(l);
+    }
+
+  template<class RHS, class T1>
+  OLattice<T1>
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign, int dir)
+    {
+//    fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OLattice>,%d,%d)\n",isign,dir);
+
+      // For now, simply evaluate the expression and then do the map
+      return bimapsa((isign+1)>>1,dir)(l);
     }
 
 
@@ -966,8 +1063,8 @@ template<class T>
 NmlWriter& operator<<(NmlWriter& nml, const OLattice<T>& d)
 {
   nml.get() << "   [OUTER]" << endl;
-  const int vvol = Layout::outerSitesOnNode();
-  for(int site=0; site < vvol; ++site) 
+  const int iend = Layout::outerSitesOnNode();
+  for(int site=0; site < iend; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
     nml.get() << "   Site =  " << site << "   = ";
@@ -990,8 +1087,8 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
 
   XMLWriterAPI::AttributeList alist;
 
-  const int vvol = Layout::outerSitesOnNode();
-  for(int site=0; site < vvol; ++site) 
+  const int iend = Layout::outerSitesOnNode();
+  for(int site=0; site < iend; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
 
@@ -1027,8 +1124,8 @@ void write(BinaryWriter& bin, const OScalar<T>& d)
 template<class T>  
 void write(BinaryWriter& bin, const OLattice<T>& d)
 {
-  const int vvol = Layout::outerSitesOnNode();
-  for(int site=0; site < vvol; ++site) 
+  const int iend = Layout::outerSitesOnNode();
+  for(int site=0; site < iend; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
     bin.writeArray((const char*)&(d.elem(i)), 
@@ -1052,8 +1149,8 @@ void read(BinaryReader& bin, OScalar<T>& d)
 template<class T>  
 void read(BinaryReader& bin, OLattice<T>& d)
 {
-  const int vvol = Layout::outerSitesOnNode();
-  for(int site=0; site < vvol; ++site) 
+  const int iend = Layout::outerSitesOnNode();
+  for(int site=0; site < iend; ++site) 
   {
     int i = Layout::linearSiteIndex(site);
     bin.readArray((char*)&(d.elem(i)), 
