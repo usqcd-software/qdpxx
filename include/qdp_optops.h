@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_optops.h,v 1.4 2004-07-02 19:25:16 edwards Exp $
+// $Id: qdp_optops.h,v 1.5 2004-07-02 21:52:21 edwards Exp $
 
 /*! @file
  * @brief PETE optimized operations on QDPTypes
@@ -155,8 +155,6 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 }
 
 
-#if 0
-
 struct FnTraceMultiply
 {
   PETE_EMPTY_CONSTRUCTORS(FnTraceMultiply)
@@ -170,6 +168,34 @@ struct FnTraceMultiply
   }
 };
 
+struct FnTraceColorMultiply
+{
+  PETE_EMPTY_CONSTRUCTORS(FnTraceColorMultiply)
+  template<class T1, class T2>
+  inline typename BinaryReturn<T1, T2, FnTraceColorMultiply >::Type_t
+  operator()(const T1 &a, const T2 &b) const
+  {
+    cerr << "FnTraceColorMultiply()" << endl;
+    return traceColor(a*b);
+//    return traceColorMultiply(a,b);
+  }
+};
+
+struct FnTraceSpinMultiply
+{
+  PETE_EMPTY_CONSTRUCTORS(FnTraceSpinMultiply)
+  template<class T1, class T2>
+  inline typename BinaryReturn<T1, T2, FnTraceSpinMultiply >::Type_t
+  operator()(const T1 &a, const T2 &b) const
+  {
+    cerr << "FnTraceSpinMultiply()" << endl;
+    return traceSpin(a*b);
+//    return traceSpinMultiply(a,b);
+  }
+};
+
+
+#if 0
 
 // traceMultiply(l,r)  <-  trace(l*r)
 template<class T1,class T2,class CC>
@@ -186,6 +212,66 @@ trace(const QDPExpr<BinaryNode<OpMultiply,T1,T2>,CC> & ll)
   typedef typename QDPContainer<T2>::Type_t  C2;
   typedef BinaryNode<FnTraceMultiply,T1,T2> Tree_t;
   typedef typename BinaryReturn<C1,C2,FnTraceMultiply>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    ll.expression().left(), 
+    ll.expression().right()));
+}
+
+// traceColorMultiply(l,r)  <-  traceColor(l*r)
+template<class T1,class T2,class CC>
+inline typename MakeReturn<BinaryNode<FnTraceColorMultiply,T1,T2>,
+  typename BinaryReturn<
+    typename QDPContainer<T1>::Type_t,
+    typename QDPContainer<T2>::Type_t,
+    FnTraceColorMultiply>::Type_t >::Expression_t
+traceColor(const QDPExpr<BinaryNode<OpMultiply,T1,T2>,CC> & ll)
+{
+  cerr << "traceColor(ll) -> traceColorMultiply(l,r)" << endl;
+
+  typedef typename QDPContainer<T1>::Type_t  C1;
+  typedef typename QDPContainer<T2>::Type_t  C2;
+  typedef BinaryNode<FnTraceColorMultiply,T1,T2> Tree_t;
+  typedef typename BinaryReturn<C1,C2,FnTraceColorMultiply>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    ll.expression().left(), 
+    ll.expression().right()));
+}
+
+// traceSpinMultiply(l,r)  <-  traceSpin(l*r)
+template<class T1,class T2,class CC>
+inline typename MakeReturn<BinaryNode<FnTraceSpinMultiply,T1,T2>,
+  typename BinaryReturn<
+    typename QDPContainer<T1>::Type_t,
+    typename QDPContainer<T2>::Type_t,
+    FnTraceSpinMultiply>::Type_t >::Expression_t
+traceSpin(const QDPExpr<BinaryNode<OpMultiply,T1,T2>,CC> & ll)
+{
+  cerr << "traceSpin(ll) -> traceSpinMultiply(l,r)" << endl;
+
+  typedef typename QDPContainer<T1>::Type_t  C1;
+  typedef typename QDPContainer<T2>::Type_t  C2;
+  typedef BinaryNode<FnTraceSpinMultiply,T1,T2> Tree_t;
+  typedef typename BinaryReturn<C1,C2,FnTraceSpinMultiply>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    ll.expression().left(), 
+    ll.expression().right()));
+}
+
+// localInnerProduct(l,r)  <-  trace(adj(l)*r)
+template<class T1,class T2,class CC>
+inline typename MakeReturn<BinaryNode<FnLocalInnerProduct,T1,T2>,
+  typename BinaryReturn<
+    typename QDPContainer<T1>::Type_t,
+    typename QDPContainer<T2>::Type_t,
+    FnTraceMultiply>::Type_t >::Expression_t
+trace(const QDPExpr<BinaryNode<OpAdjMultiply,T1,T2>,CC> & ll)
+{
+  cerr << "trace(ll) -> localInnerProduct(l,r)" << endl;
+
+  typedef typename QDPContainer<T1>::Type_t  C1;
+  typedef typename QDPContainer<T2>::Type_t  C2;
+  typedef BinaryNode<FnLocalInnerProduct,T1,T2> Tree_t;
+  typedef typename BinaryReturn<C1,C2,FnLocalInnerProduct>::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     ll.expression().left(), 
     ll.expression().right()));
