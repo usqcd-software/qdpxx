@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.3 2003-08-21 02:43:54 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.4 2003-08-21 02:47:11 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -48,7 +48,7 @@ template<class T, class T1, class Op, class RHS>
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
 	      const UnorderedSubset& s)
 {
-  cerr << "In evaluateUnorderedSubet(olattice,oscalar)\n";
+//  cerr << "In evaluateUnorderedSubet(olattice,oscalar)\n";
 
 #if ! defined(QDP_NOT_IMPLEMENTED)
   const int *tab = s.siteTable().slice();
@@ -74,7 +74,7 @@ template<class T, class T1, class Op, class RHS>
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
 	      const OrderedSubset& s)
 {
-  cerr << "In evaluateOrderedSubset(olattice,oscalar)\n";
+//  cerr << "In evaluateOrderedSubset(olattice,oscalar)\n";
 
   const int istart = s.start() >> INNER_LEN;
   const int iend   = s.end()   >> INNER_LEN;
@@ -111,7 +111,7 @@ template<class T, class T1, class Op, class RHS>
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
 	      const UnorderedSubset& s)
 {
-  cerr << "In evaluateUnorderedSubset(olattice,olattice)" << endl;
+//  cerr << "In evaluateUnorderedSubset(olattice,olattice)" << endl;
 
 #if ! defined(QDP_NOT_IMPLEMENTED)
   // General form of loop structure
@@ -138,7 +138,7 @@ template<class T, class T1, class Op, class RHS>
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
 	      const OrderedSubset& s)
 {
-  cerr << "In evaluateOrderedSubset(olattice,olattice)" << endl;
+//  cerr << "In evaluateOrderedSubset(olattice,olattice)" << endl;
 
   const int istart = s.start() >> INNER_LEN;
   const int iend   = s.end()   >> INNER_LEN;
