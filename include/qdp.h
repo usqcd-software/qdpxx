@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.23 2003-08-05 21:14:34 edwards Exp $
+// $Id: qdp.h,v 1.24 2003-08-08 15:51:55 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -125,10 +125,20 @@ QDP_END_NAMESPACE();
 #warning "Using scalar architecture"
 #include "qdp_scalar_specific.h"
 
+// Include SSE code here if applicable
+#if QDP_USE_SSE == 1
+#include "qdp_scalarsite_sse.h"
+#endif
+
 #elif defined(ARCH_PARSCALAR)
 // Architectural specific code to a parallel/single proc box
 #warning "Using parallel scalar architecture"
 #include "qdp_parscalar_specific.h"
+
+// Include SSE code here if applicable
+#if QDP_USE_SSE == 1
+#include "qdp_scalarsite_sse.h"
+#endif
 
 #else
 #error "Unknown architecture ARCH"
