@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tests.h,v 1.5 2002-10-25 03:33:26 edwards Exp $
+// $Id: tests.h,v 1.6 2002-11-13 19:36:41 edwards Exp $
 //
 // Include file for test suite
 
@@ -7,6 +7,16 @@
 #include "geom.h"
 
 using namespace QDP;
+
+#define START_CODE(a)
+#define END_CODE(a)
+
+enum Reunitarize {REUNITARIZE, REUNITARIZE_ERROR, REUNITARIZE_LABEL};
+
+
+void reunit(LatticeColorMatrix& xa);
+void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad, int& numbad, enum Reunitarize ruflag);
+
 
 void junk(NmlWriter&, LatticeGauge& b3, const LatticeGauge& b1, const LatticeGauge& b2, const Subset& s);
 void MesPlq(const multi1d<LatticeGauge>& u, Double& w_plaq, Double& s_plaq, 

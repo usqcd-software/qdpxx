@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.6 2002-11-13 02:33:53 edwards Exp $
+// $Id: t_mesplq.cc,v 1.7 2002-11-13 19:36:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -7,6 +7,7 @@
 
 using namespace QDP;
 
+NmlWriter nml;
 
 int main(int argc, char **argv)
 {
@@ -16,7 +17,7 @@ int main(int argc, char **argv)
   nrow = foo;  // Use only Nd elements
   geom.init(nrow);
 
-  NmlWriter nml("t_mesplq.nml");
+  nml.open("t_mesplq.nml");
 
   push(nml,"lattis");
   Write(nml,Nd);
@@ -33,6 +34,11 @@ int main(int argc, char **argv)
   for(int m=0; m < u.size(); ++m)
     gaussian(u[m]);
 
+  // Reunitarize the gauge field
+  for(int m=0; m < u.size(); ++m)
+    reunit(u[m]);
+
+  // Try out the plaquette routine
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
   cerr << "w_plaq = " << w_plaq << endl;
   cerr << "link = " << link << endl;
