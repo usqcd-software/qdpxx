@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.7 2003-08-26 21:37:34 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.8 2003-10-09 18:28:04 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -75,12 +75,10 @@ void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& fi
   /* For now, read and throw away the header */
   string line;
 
-  if (Layout::primaryNode())
-    cout << "Start of header" << endl;
+  QDPIO::cout << "Start of header" << endl;
 
   cfg_in.read(line, max_line_length);
-  if (Layout::primaryNode())
-    cout << line << endl;
+  QDPIO::cout << line << endl;
   
   if (line != string("BEGIN_HEADER"))
     QDP_error_exit("Missing BEGIN_HEADER");
@@ -91,8 +89,7 @@ void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& fi
   while (1)
   {
     cfg_in.read(line, max_line_length);
-    if (Layout::primaryNode())
-      cout << line << endl;
+    QDPIO::cout << line << endl;
 
     // Scan for the datatype then scan for it
     char datatype[64];    /* We try to grab the datatype */
@@ -120,8 +117,7 @@ void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& fi
     if (line == string("END_HEADER")) break;
   }
 
-  if (Layout::primaryNode())
-    cout << "End of header" << endl;
+  QDPIO::cout << "End of header" << endl;
 
   // Sanity check
   if (lat_size_cnt != Nd)
@@ -203,8 +199,7 @@ void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& fi
           }
         }
 
-  if (Layout::primaryNode())
-    printf("Computed (in this endian-ness, maybe not Big) checksum = %x\n", chksum);
+  QDPIO::cout << "Computed (in this endian-ness, maybe not Big) checksum = " << chksum << "d\n";
 
   cfg_in.close();
 
@@ -218,7 +213,7 @@ void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& fi
   write(xml_buf,"nrow",lat_size);
   pop(xml_buf);
 
-  cout << "now open xmlreader" << endl;
+  QDPIO::cout << "now open xmlreader" << endl;
   xml.open(xml_buf);
 }
 

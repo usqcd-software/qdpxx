@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_layout.cc,v 1.3 2003-09-03 02:28:28 edwards Exp $
+// $Id: qdp_parscalarvec_layout.cc,v 1.4 2003-10-09 18:28:04 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec layout routines
@@ -235,32 +235,29 @@ namespace Layout
 
 
     // Diagnostics
-    if (Layout::primaryNode())
-    {
-      cout << "Lattice initialized:\n";
-      cout << "  problem size =";
-      for(int i=0; i < Nd; ++i)
-	cout << " " << _layout.nrow[i];
-      cout << endl;
+    QDPIO::cout << "Lattice initialized:\n";
+    QDPIO::cout << "  problem size =";
+    for(int i=0; i < Nd; ++i)
+      QDPIO::cout << " " << _layout.nrow[i];
+    QDPIO::cout << endl;
 
-      cout << "  logical machine size =";
-      for(int i=0; i < Nd; ++i)
-	cout << " " << _layout.logical_size[i];
-      cout << endl;
+    QDPIO::cout << "  logical machine size =";
+    for(int i=0; i < Nd; ++i)
+      QDPIO::cout << " " << _layout.logical_size[i];
+    QDPIO::cout << endl;
 
-      cout << "  logical node coord =";
-      for(int i=0; i < Nd; ++i)
-	cout << " " << _layout.logical_coord[i];
-      cout << endl;
+    QDPIO::cout << "  logical node coord =";
+    for(int i=0; i < Nd; ++i)
+      QDPIO::cout << " " << _layout.logical_coord[i];
+    QDPIO::cout << endl;
 
-      cout << "  subgrid size =";
-      for(int i=0; i < Nd; ++i)
-	cout << " " << _layout.subgrid_nrow[i];
-      cout << endl;
+    QDPIO::cout << "  subgrid size =";
+    for(int i=0; i < Nd; ++i)
+      QDPIO::cout << " " << _layout.subgrid_nrow[i];
+    QDPIO::cout << endl;
 
-      cout << "  total volume = " << _layout.vol << endl;
-      cout << "  subgrid volume = " << _layout.subgrid_vol << endl;
-    }
+    QDPIO::cout << "  total volume = " << _layout.vol << endl;
+    QDPIO::cout << "  subgrid volume = " << _layout.subgrid_vol << endl;
 
     // This implementation requires there be a multiple of INNER_LEN sites 
     // on a node
@@ -293,8 +290,7 @@ namespace Layout
     // Initialize various defaults
     initDefaults();
 
-    if (Layout::primaryNode())
-      QDP_info("Finished lattice layout");
+    QDPIO::cout << "Finished lattice layout" << endl;
   }
 };
 

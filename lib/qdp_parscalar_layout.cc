@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.12 2003-09-03 01:14:47 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.13 2003-10-09 18:28:04 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -221,32 +221,29 @@ namespace Layout
     }
 
     // Diagnostics
-    if (Layout::primaryNode())
-    {
-      cerr << "Lattice initialized:\n";
-      cerr << "  problem size =";
-      for(int i=0; i < Nd; ++i)
-	cerr << " " << _layout.nrow[i];
-      cerr << endl;
+    QDPIO::cout << "Lattice initialized:\n";
+    QDPIO::cout << "  problem size =";
+    for(int i=0; i < Nd; ++i)
+      QDPIO::cout << " " << _layout.nrow[i];
+    QDPIO::cout << endl;
 
-      cerr << "  logical machine size =";
-      for(int i=0; i < Nd; ++i)
-	cerr << " " << _layout.logical_size[i];
-      cerr << endl;
+    QDPIO::cout << "  logical machine size =";
+    for(int i=0; i < Nd; ++i)
+      QDPIO::cout << " " << _layout.logical_size[i];
+    QDPIO::cout << endl;
 
-      cerr << "  logical node coord =";
-      for(int i=0; i < Nd; ++i)
-	cerr << " " << _layout.logical_coord[i];
-      cerr << endl;
+    QDPIO::cout << "  logical node coord =";
+    for(int i=0; i < Nd; ++i)
+      QDPIO::cout << " " << _layout.logical_coord[i];
+    QDPIO::cout << endl;
 
-      cerr << "  subgrid size =";
-      for(int i=0; i < Nd; ++i)
-	cerr << " " << _layout.subgrid_nrow[i];
-      cerr << endl;
+    QDPIO::cout << "  subgrid size =";
+    for(int i=0; i < Nd; ++i)
+      QDPIO::cout << " " << _layout.subgrid_nrow[i];
+    QDPIO::cout << endl;
 
-      cerr << "  total volume = " << _layout.vol << endl;
-      cerr << "  subgrid volume = " << _layout.subgrid_vol << endl;
-    }
+    QDPIO::cout << "  total volume = " << _layout.vol << endl;
+    QDPIO::cout << "  subgrid volume = " << _layout.subgrid_vol << endl;
 
     // Sanity check - check the layout functions make sense
     for(int site=0; site < vol(); ++site) 
@@ -273,8 +270,7 @@ namespace Layout
     // Initialize various defaults
     initDefaults();
 
-    if (Layout::primaryNode())
-      QDP_info("Finished lattice layout");
+    QDPIO::cout << "Finished lattice layout" << endl;
   }
 };
 

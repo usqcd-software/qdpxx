@@ -1,4 +1,4 @@
-// $Id: qdp_random.cc,v 1.6 2003-09-01 21:15:48 edwards Exp $
+// $Id: qdp_random.cc,v 1.7 2003-10-09 18:28:04 edwards Exp $
 //
 // Random number generator support
 
@@ -145,13 +145,10 @@ namespace RNG
       aa = aamult;
     }
 
-//    cout << "Make space for lattice_ran_mult" << endl;
     lattice_ran_mult = new LatticeSeed;
-//    cout << "Space made" << endl;
 
     *lattice_ran_mult = lattice_ran_mult_tmp;
-    if (Layout::primaryNode())
-      cout << "Finished init of RNG" << endl;
+    QDPIO::cout << "Finished init of RNG" << endl;
   }
 
 
