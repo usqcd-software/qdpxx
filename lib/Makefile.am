@@ -38,6 +38,7 @@ HDRS = qdp_defs.h qdp_forward.h qdp_globalfuncs.h qdp_inner.h qdp_io.h qdp_layou
 GENERIC_SRCS = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc qdp_layout.cc qdp_io.cc qdp_iogauge.cc \
                qdp_byteorder.cc qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc   qdp_filebuf.cc
 
+# Scalar only
 SCALAR_SRCS = qdp_scalar_init.cc qdp_scalar_layout.cc qdp_scalar_specific.cc \
               qdp_scalarsite_specific.cc \
               ../include/qdp_scalar_specific.h
@@ -49,6 +50,20 @@ PARSCALAR_SRCS = qdp_parscalar_init.cc qdp_parscalar_layout.cc qdp_parscalar_spe
 # Optimized code for scalar-like architectures
 SCALARSITE_SSE_SRCS = qdp_scalarsite_sse.cc ../include/qdp_scalarsite_sse.h
 
+# Scalar with Vector extensions
+SCALARVEC_SRCS = qdp_scalarvec_init.cc qdp_scalarvec_layout.cc qdp_scalarvec_specific.cc \
+                 qdp_scalarvecsite_specific.cc
+
+#                 ../include/qdp_scalarvec_specific.h
+
+PARSCALARVEC_SRCS = qdp_parscalarvec_init.cc qdp_parscalarvec_layout.cc qdp_parscalarvec_specific.cc \
+                    qdp_scalarvecsite_specific.cc
+
+#                    ../include/qdp_parscalarvec_specific.h
+
+# Optimized code for scalarvec-like architectures
+# SCALARVECSITE_SSE_SRCS = qdp_scalarvecsite_sse.cc ../include/qdp_scalarvecsite_sse.h
+
 if QDP_USE_SSE
   SSE_LIB_SRCS = $(SCALARSITE_SSE_SRCS)
   SSE_EXTRA_LIB_SRCS = 
@@ -59,12 +74,22 @@ endif
 
 if ARCH_SCALAR
   libqdp_a_SOURCES = $(GENERIC_SRCS) $(SCALAR_SRCS) $(SSE_LIB_SRCS)
-  EXTRA_libqdp_a_SOURCES = $(PARSCALAR_SRCS) $(SSE_EXTRA_LIB_SRCS)
+  EXTRA_libqdp_a_SOURCES = $(PARSCALAR_SRCS) $(SCALARVEC_SRCS) $(PARSCALARVEC_SRCS) $(SSE_EXTRA_LIB_SRCS)
 endif
 
 if ARCH_PARSCALAR
   libqdp_a_SOURCES = $(GENERIC_SRCS) $(PARSCALAR_SRCS) $(SSE_LIB_SRCS)
-  EXTRA_libqdp_a_SOURCES = $(SCALAR_SRCS) $(SSE_EXTRA_LIB_SRCS)
+  EXTRA_libqdp_a_SOURCES = $(SCALAR_SRCS) $(SCALARVEC_SRCS) $(PARSCALARVEC_SRCS) $(SSE_EXTRA_LIB_SRCS)
+endif
+
+if ARCH_SCALARVEC
+  libqdp_a_SOURCES = $(GENERIC_SRCS) $(SCALARVEC_SRCS)
+  EXTRA_libqdp_a_SOURCES = $(PARSCALAR_SRCS) $(SCALAR_SRCS) $(PARSCALARVEC_SRCS) $(SSE_EXTRA_LIB_SRCS)
+endif
+
+if ARCH_PARSCALARVEC
+  libqdp_a_SOURCES = $(GENERIC_SRCS) $(PARSCALARVEC_SRCS) $(SSE_LIB_SRCS)
+  EXTRA_libqdp_a_SOURCES = $(SCALAR_SRCS) $(SCALARVEC_SRCS) $(PARSCALAR_SRCS) $(SSE_EXTRA_LIB_SRCS)
 endif
 
 # Need this header as part of libqdp_a_sources
