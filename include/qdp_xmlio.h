@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.9 2003-06-10 16:01:23 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.10 2003-06-20 03:04:33 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -80,16 +80,64 @@ private:
 
 
 // Time to build a telephone book of basic primitives
-void read(XMLReader& xml, const std::string& s, std::string& output);
-void read(XMLReader& xml, const std::string& s, int& output);
-void read(XMLReader& xml, const std::string& s, unsigned int& output);
-void read(XMLReader& xml, const std::string& s, short int& output);
-void read(XMLReader& xml, const std::string& s, unsigned short int& output);
-void read(XMLReader& xml, const std::string& s, long int& output);
-void read(XMLReader& xml, const std::string& s, unsigned long int& output);
-void read(XMLReader& xml, const std::string& s, float& output);
-void read(XMLReader& xml, const std::string& s, double& output);
-void read(XMLReader& xml, const std::string& s, bool& output);
+void read(XMLReader& xml, const std::string& s, std::string& input);
+void read(XMLReader& xml, const std::string& s, int& input);
+void read(XMLReader& xml, const std::string& s, unsigned int& input);
+void read(XMLReader& xml, const std::string& s, short int& input);
+void read(XMLReader& xml, const std::string& s, unsigned short int& input);
+void read(XMLReader& xml, const std::string& s, long int& input);
+void read(XMLReader& xml, const std::string& s, unsigned long int& input);
+void read(XMLReader& xml, const std::string& s, float& input);
+void read(XMLReader& xml, const std::string& s, double& input);
+void read(XMLReader& xml, const std::string& s, bool& input);
+
+
+//! Read a XML multi1d element
+template<class T>
+inline
+void read(XMLReader& xml, const std::string& s, multi1d<T>& input)
+{
+  std::ostringstream error_message;
+  string elemName = "elem";
+  
+  // Count the number of elements
+  string elem_base_query = s + "/" + elemName;
+	
+  int array_size;
+  try {
+    array_size = xml.count(elem_base_query);
+  }
+  catch( const string& e) { 
+    error_message << "Exception occurred while counting " << elem_base_query 
+		  << " during array read " << endl;
+  }
+      
+  // Now resize the array to hold the no of elements.
+  input.resize(array_size);
+
+  // Get the elements one by one
+  for(int i=0; i < input.size(); i++) 
+  {
+    std::ostringstream element_xpath;
+
+    // Create the query for the element 
+    element_xpath << elem_base_query << "[" << (i+1) << "]";
+
+    // recursively try and read the element.
+    try 
+    {
+      read(xml, element_xpath.str(), input[i]);
+    } 
+    catch (const string& e) 
+    {
+      error_message << "Failed to match element " << i
+		    << " of array with query " << element_xpath.str()
+		    << endl
+		    << "Query returned error: " << e;
+      throw error_message.str();
+    }
+  }
+}
 
 
 #define ReadPath(xml,path,a) read(xml,path+"/"+#a,a)
