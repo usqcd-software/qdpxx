@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.17 2003-11-01 20:30:54 edwards Exp $
+// $Id: qdp_primvector.h,v 1.18 2003-11-10 03:42:09 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -720,6 +720,9 @@ pokeDW(PVector<T1,N,C>& l, const PVector<T2,N,C>& r, int row)
 
   for(int i=0; i < N; ++i)
     pokeDW(l.elem(i),r.elem(i),row);
+
+//  cout << "Vector: pokeDW: l.elem() = " << l << endl;
+
   return static_cast<Return_t&>(l);
 }
 
