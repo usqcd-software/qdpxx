@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.12 2003-06-20 02:19:52 edwards Exp $
+// $Id: t_io.cc,v 1.13 2003-07-06 19:08:00 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -24,7 +24,7 @@ int main(int argc, char **argv)
   Double d = 17;
   random(a);
 
-  BinaryWriter tobinary("dog");
+  BinaryWriter tobinary("t_io.bin");
   write(tobinary, a);
   write(tobinary, d);
   tobinary.close();
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
   Double dd = 0.0;
   random(aa);
 
-  BinaryReader frombinary("dog");
+  BinaryReader frombinary("t_io.bin");
   read(frombinary, aa);
   read(frombinary, dd);
   frombinary.close();
@@ -45,20 +45,22 @@ int main(int argc, char **argv)
   tonml.close();
 
   float x = 42.1;
-  cerr << "Write some data to file input\n";
-  TextWriter totext("input");
+  cerr << "Write some data to file t_io.txt\n";
+  TextWriter totext("t_io.txt");
   totext << x;
   totext.flush();
   totext.close();
 
   x = -1;
-  cerr << "Read some data from file input\n";
-  TextReader fromtext("input");
+  cerr << "Read some data from file t_io.txt\n";
+  TextReader fromtext("t_io.txt");
   fromtext >> x;
   fromtext.close();
 
   cerr << "you entered :" << x << ":" << endl;
   
+  sleep(20);
+
   // Time to bolt
   QDP_finalize();
 
