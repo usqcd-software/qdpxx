@@ -1,4 +1,4 @@
-// $Id: map.cc,v 1.1 2003-01-20 16:10:42 edwards Exp $
+// $Id: map.cc,v 1.2 2003-01-26 05:35:45 edwards Exp $
 
 /*! @file
  * @brief Support routines for Maps
@@ -146,8 +146,6 @@ private:
 //! Initializer for an array of bi-directional maps
 void ArrayBiDirectionalMap::make(const ArrayMapFunc& func)
 {
-  QDP_info("ArrayBiDirectionalMap::make");
-
   // We are allowed to declare a mapsa, but not allocate one.
   // There is an empty constructor for Map. Hence, the resize will
   // actually allocate the space.
@@ -156,14 +154,10 @@ void ArrayBiDirectionalMap::make(const ArrayMapFunc& func)
   // Loop over each direction making the Map
   for(int dir=0; dir < func.numArray(); ++dir)
   {
-    QDP_info("ArrayBiDirectionalMap::make(); dir=%d",dir);
-    QDP_info("make neg");
-
     // Construct maps for each sign
     PackageArrayBiDirectionalMapFunc  my_neg_map(func,-1,dir);
     bimapsa(0,dir).make(my_neg_map);
 
-    QDP_info("make pos");
     PackageArrayBiDirectionalMapFunc  my_pos_map(func,+1,dir);
     bimapsa(1,dir).make(my_pos_map);
   }
