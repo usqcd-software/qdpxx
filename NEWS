@@ -1,4 +1,8 @@
-11/09/2003 -- Robert Edwards
+12/21/2003 -- Robert Edwards
+
+	Version 1.6.11. Generalized +=, -= and = in qdp_prim{matrix,vector,spinmat,spinvec,color stuff}
+
+12/09/2003 -- Robert Edwards
 
 	Version 1.6.10. Added chiralProject{Plus,Minus} and norm2(multi1d<>).
 
