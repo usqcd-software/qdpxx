@@ -24,7 +24,7 @@ HDRS = qdp_defs.h qdp_forward.h qdp_globalfuncs.h qdp_inner.h qdp_io.h qdp_layou
        qdp_util.h qdp_qdpexpr.h qdp.h qdp_config.h QDPOperators.h qdp_qdpsubtype.h \
        qdp_qdptype.h qdp_random.h qdp_reality.h qdp_simpleword.h qdp_map.h \
        qdp_specializations.h qdp_subset.h qdp_traits.h qdp_word.h qdp_qdpio.h \
-       qio.h qdp_xmlio.h xml_simplewriter.h 
+       qio.h qdp_xmlio.h xml_simplewriter.h qdp_init.h
 
 ## GTF: Major bug fix here.  Had sources which were conditionally included
 ## in the library based on variable substitution from autoconf.  Basically,
