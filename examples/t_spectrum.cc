@@ -1,5 +1,5 @@
 /*
- *  $Id: t_spectrum.cc,v 1.12 2003-09-03 19:50:42 edwards Exp $
+ *  $Id: t_spectrum.cc,v 1.13 2003-09-03 19:52:22 edwards Exp $
  *
  *  This is a test program for spectroscopy using qdp++
  *
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
       }
   */
 
-  const int foo[] = {2, 2, 2, 2};
+  const int foo[] = {4, 4, 4, 8};
   nsize = foo;
   // Initialise the layout
   Layout::setLattSize(nsize);
