@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.8 2005-02-03 22:47:44 edwards Exp $
+// $Id: qdp_multi.h,v 1.9 2005-02-10 03:54:34 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -70,7 +70,8 @@ public:
     }
 
   //! Equal operator uses underlying = of T
-  multi1d<T>& operator=(const T& s1)
+  template<class T1>
+  multi1d<T>& operator=(const T1& s1)
     {
       if (F == 0)
       {
@@ -287,7 +288,8 @@ public:
     }
 
   //! Equal operator uses underlying = of T
-  multi2d<T>& operator=(const T& s1)
+  template<class T1>
+  multi2d<T>& operator=(const T1& s1)
     {
       if (F == 0)
       {
@@ -366,7 +368,8 @@ public:
     }
 
   //! Equal operator uses underlying = of T
-  multi3d<T>& operator=(const T& s1)
+  template<class T1>
+  multi3d<T>& operator=(const T1& s1)
     {
       if (F == 0)
       {
@@ -454,7 +457,8 @@ public:
     }
 
   //! Equal operator uses underlying = of T
-  multiNd<T>& operator=(const T& s1)
+  template<class T1>
+  multiNd<T>& operator=(const T1& s1)
     {
       if (F == 0)
       {
