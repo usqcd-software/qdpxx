@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.2 2003-06-04 16:50:42 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.3 2003-08-28 18:03:20 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -79,12 +79,12 @@ QDPSerialFileReader::~QDPSerialFileReader() {close();}
 //! text writer support
 QDPSerialFileWriter::QDPSerialFileWriter() {iop=false;}
 
-QDPSerialFileWriter::QDPSerialFileWriter(const XMLBufferWriter& xml, const std::string& p) 
+QDPSerialFileWriter::QDPSerialFileWriter(XMLBufferWriter& xml, const std::string& p) 
 {
   open(xml,p);
 }
 
-void QDPSerialFileWriter::open(const XMLBufferWriter& file_xml, const std::string& path) 
+void QDPSerialFileWriter::open(XMLBufferWriter& file_xml, const std::string& path) 
 {
   QIO_Layout *layout = new QIO_Layout;
   int latsize[Nd];
