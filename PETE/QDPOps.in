@@ -1,0 +1,135 @@
+unaryOps
+-----
+  TAG = "FnConj"
+  FUNCTION = "conj"
+  EXPR = "return (conj(a));"
+-----
+  TAG = "FnTrace"
+  FUNCTION = "trace"
+  EXPR = "return (trace(a));"
+-----
+  TAG = "FnTraceReal"
+  FUNCTION = "traceReal"
+  EXPR = "return (traceReal(a));"
+-----
+  TAG = "FnTraceImag"
+  FUNCTION = "traceImag"
+  EXPR = "return (traceImag(a));"
+-----
+  TAG = "FnColorTrace"
+  FUNCTION = "colorTrace"
+  EXPR = "return (colorTrace(a));"
+-----
+  TAG = "FnSpinTrace"
+  FUNCTION = "SpinTrace"
+  EXPR = "return (spinTrace(a));"
+-----
+  TAG = "FnReal"
+  FUNCTION = "real"
+  EXPR = "return (real(a));"
+-----
+  TAG = "FnImag"
+  FUNCTION = "imag"
+  EXPR = "return (imag(a));"
+-----
+  TAG = "FnMultiplyI"
+  FUNCTION = "multiplyI"
+  EXPR = "return (multiplyI(a));"
+-----
+  TAG = "FnMultiplyMinusI"
+  FUNCTION = "multiplyMinusI"
+  EXPR = "return (multiplyMinusI(a));"
+-----
+  TAG = "FnSpinProjectDir0Plus"
+  FUNCTION = "spinProjectDir0Plus"
+  EXPR = "return (spinProjectDir0Plus(a));"
+-----
+  TAG = "FnSpinProjectDir1Plus"
+  FUNCTION = "spinProjectDir1Plus"
+  EXPR = "return (spinProjectDir1Plus(a));"
+-----
+  TAG = "FnSpinProjectDir2Plus"
+  FUNCTION = "spinProjectDir2Plus"
+  EXPR = "return (spinProjectDir2Plus(a));"
+-----
+  TAG = "FnSpinProjectDir3Plus"
+  FUNCTION = "spinProjectDir3Plus"
+  EXPR = "return (spinProjectDir3Plus(a));"
+-----
+  TAG = "FnSpinProjectDir0Minus"
+  FUNCTION = "spinProjectDir0Minus"
+  EXPR = "return (spinProjectDir0Minus(a));"
+-----
+  TAG = "FnSpinProjectDir1Minus"
+  FUNCTION = "spinProjectDir1Minus"
+  EXPR = "return (spinProjectDir1Minus(a));"
+-----
+  TAG = "FnSpinProjectDir2Minus"
+  FUNCTION = "spinProjectDir2Minus"
+  EXPR = "return (spinProjectDir2Minus(a));"
+-----
+  TAG = "FnSpinProjectDir3Minus"
+  FUNCTION = "spinProjectDir3Minus"
+  EXPR = "return (spinProjectDir3Minus(a));"
+-----
+  TAG = "FnSpinReconstructDir0Plus"
+  FUNCTION = "spinReconstructDir0Plus"
+  EXPR = "return (spinReconstructDir0Plus(a));"
+-----
+  TAG = "FnSpinReconstructDir1Plus"
+  FUNCTION = "spinReconstructDir1Plus"
+  EXPR = "return (spinReconstructDir1Plus(a));"
+-----
+  TAG = "FnSpinReconstructDir2Plus"
+  FUNCTION = "spinReconstructDir2Plus"
+  EXPR = "return (spinReconstructDir2Plus(a));"
+-----
+  TAG = "FnSpinReconstructDir3Plus"
+  FUNCTION = "spinReconstructDir3Plus"
+  EXPR = "return (spinReconstructDir3Plus(a));"
+-----
+  TAG = "FnSpinReconstructDir0Minus"
+  FUNCTION = "spinReconstructDir0Minus"
+  EXPR = "return (spinReconstructDir0Minus(a));"
+-----
+  TAG = "FnSpinReconstructDir1Minus"
+  FUNCTION = "spinReconstructDir1Minus"
+  EXPR = "return (spinReconstructDir1Minus(a));"
+-----
+  TAG = "FnSpinReconstructDir2Minus"
+  FUNCTION = "spinReconstructDir2Minus"
+  EXPR = "return (spinReconstructDir2Minus(a));"
+-----
+  TAG = "FnSpinReconstructDir3Minus"
+  FUNCTION = "spinReconstructDir3Minus"
+  EXPR = "return (spinReconstructDir3Minus(a));"
+
+binaryOps
+-----
+  TAG = "FnCmplx"
+  FUNCTION = "cmplx"
+  EXPR = "return (cmplx(a,b));"
+-----
+  TAG = "FnQuarkContract13"
+  FUNCTION = "quarkContract13"
+  EXPR = "return (quarkContract13(a,b));"
+-----
+  TAG = "FnQuarkContract14"
+  FUNCTION = "quarkContract14"
+  EXPR = "return (quarkContract14(a,b));"
+-----
+  TAG = "FnQuarkContract23"
+  FUNCTION = "quarkContract23"
+  EXPR = "return (quarkContract23(a,b));"
+-----
+  TAG = "FnQuarkContract24"
+  FUNCTION = "quarkContract24"
+  EXPR = "return (quarkContract24(a,b));"
+-----
+  TAG = "FnQuarkContract12"
+  FUNCTION = "quarkContract12"
+  EXPR = "return (quarkContract12(a,b));"
+-----
+  TAG = "FnQuarkContract34"
+  FUNCTION = "quarkContract34"
+  EXPR = "return (quarkContract34(a,b));"
