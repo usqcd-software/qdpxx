@@ -1,3 +1,8 @@
+08/10/2004 -- Robert Edwards
+
+	Version 1.9.3. Lots of cleanups. The "vec" versions work again. Some
+        bug fixes. Fleshed out missing outerProduct.
+
 07/28/2004 -- Robert Edwards
 
 	Version 1.9.2. Added switch to qdp++-config to tell about QMP_HOME.
