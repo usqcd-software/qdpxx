@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.28 2004-07-27 05:31:45 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.29 2004-08-09 22:05:46 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -476,13 +476,7 @@ sum(const QDPExpr<RHS,OScalar<T> >& s1, const Subset& s)
   typename UnaryReturn<OScalar<T>, FnSum>::Type_t  d;
 
 #if defined(QDP_USE_PROFILING)   
-  typedef OScalar<T> C1;
-  typedef UnaryNode<FnSum, typename CreateLeaf<QDPExpr<RHS,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnSum>::Type_t Container_t;
-  static QDPProfile_t prof(d, OpAssign(), 
-			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
-			     CreateLeaf<QDPExpr<RHS,C1> >::make(s1))));
-
+  static QDPProfile_t prof(d, OpAssign(), FnSum(), s1);
   prof.time -= getClockTime();
 #endif
 
@@ -510,13 +504,7 @@ sum(const QDPExpr<RHS,OScalar<T> >& s1)
   typename UnaryReturn<OScalar<T>, FnSum>::Type_t  d;
 
 #if defined(QDP_USE_PROFILING)   
-  typedef OScalar<T> C1;
-  typedef UnaryNode<FnSum, typename CreateLeaf<QDPExpr<RHS,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnSum>::Type_t Container_t;
-  static QDPProfile_t prof(d, OpAssign(), 
-			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
-			     CreateLeaf<QDPExpr<RHS,C1> >::make(s1))));
-
+  static QDPProfile_t prof(d, OpAssign(), FnSum(), s1);
   prof.time -= getClockTime();
 #endif
 
@@ -544,15 +532,8 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 {
   typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
 
-
 #if defined(QDP_USE_PROFILING)   
-  typedef OLattice<T> C1;
-  typedef UnaryNode<FnSum, typename CreateLeaf<QDPExpr<RHS,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnSum>::Type_t Container_t;
-  static QDPProfile_t prof(d, OpAssign(), 
-			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
-			     CreateLeaf<QDPExpr<RHS,C1> >::make(s1))));
-
+  static QDPProfile_t prof(d, OpAssign(), FnSum(), s1);
   prof.time -= getClockTime();
 #endif
 
@@ -590,15 +571,8 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
 {
   typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
 
-
 #if defined(QDP_USE_PROFILING)   
-  typedef OLattice<T> C1;
-  typedef UnaryNode<FnSum, typename CreateLeaf<QDPExpr<RHS,C1> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C1,FnSum>::Type_t Container_t;
-  static QDPProfile_t prof(d, OpAssign(), 
-			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
-			     CreateLeaf<QDPExpr<RHS,C1> >::make(s1))));
-
+  static QDPProfile_t prof(d, OpAssign(), FnSum(), s1);
   prof.time -= getClockTime();
 #endif
 
@@ -637,15 +611,8 @@ sumMulti(const QDPExpr<RHS,OScalar<T> >& s1, const Set& ss)
 {
   typename UnaryReturn<OScalar<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
 
-
 #if defined(QDP_USE_PROFILING)   
-  typedef OScalar<T> C;
-  typedef UnaryNode<FnSum, typename CreateLeaf<QDPExpr<RHS,C> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C,FnSum>::Type_t Container_t;
-  static QDPProfile_t prof(dest[0], OpAssign(), 
-			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
-			     CreateLeaf<QDPExpr<RHS,C> >::make(s1))));
-
+  static QDPProfile_t prof(dest[0], OpAssign(), FnSum(), s1);
   prof.time -= getClockTime();
 #endif
 
@@ -679,15 +646,8 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 {
   typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
 
-
 #if defined(QDP_USE_PROFILING)   
-  typedef OLattice<T> C;
-  typedef UnaryNode<FnSum, typename CreateLeaf<QDPExpr<RHS,C> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C,FnSum>::Type_t Container_t;
-  static QDPProfile_t prof(dest[0], OpAssign(), 
-			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
-			     CreateLeaf<QDPExpr<RHS,C> >::make(s1))));
-
+  static QDPProfile_t prof(dest[0], OpAssign(), FnSum(), s1);
   prof.time -= getClockTime();
 #endif
 
@@ -733,13 +693,7 @@ norm2(const multi1d< OScalar<T> >& s1)
   typename UnaryReturn<OScalar<T>, FnNorm2>::Type_t  d;
 
 #if defined(QDP_USE_PROFILING)   
-  typedef OScalar<T> C;
-  typedef UnaryNode<FnNorm2, typename CreateLeaf<QDPType<T,C> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C,FnNorm2>::Type_t Container_t;
-  static QDPProfile_t prof(d, OpAssign(), 
-			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
-			     CreateLeaf<QDPType<T,C> >::make(s1[0]))));
-
+  static QDPProfile_t prof(d, OpAssign(), FnNorm2(), s1[0]);
   prof.time -= getClockTime();
 #endif
 
@@ -793,15 +747,8 @@ norm2(const multi1d< OLattice<T> >& s1, const UnorderedSubset& s)
 {
   typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
 
-
 #if defined(QDP_USE_PROFILING)   
-  typedef OLattice<T> C;
-  typedef UnaryNode<FnNorm2, typename CreateLeaf<QDPType<T,C> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C,FnNorm2>::Type_t Container_t;
-  static QDPProfile_t prof(d, OpAssign(), 
-			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
-			     CreateLeaf<QDPType<T,C> >::make(s1[0]))));
-
+  static QDPProfile_t prof(d, OpAssign(), FnNorm2(), s1[0]);
   prof.time -= getClockTime();
 #endif
 
@@ -845,13 +792,7 @@ norm2(const multi1d< OLattice<T> >& s1, const OrderedSubset& s)
   typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
 
 #if defined(QDP_USE_PROFILING)   
-  typedef OLattice<T> C;
-  typedef UnaryNode<FnNorm2, typename CreateLeaf<QDPType<T,C> >::Leaf_t> Tree_t;
-  typedef typename UnaryReturn<C,FnNorm2>::Type_t Container_t;
-  static QDPProfile_t prof(d, OpAssign(), 
-			   MakeReturn<Tree_t,Container_t>::make(Tree_t(
-			     CreateLeaf<QDPType<T,C> >::make(s1[0]))));
-
+  static QDPProfile_t prof(d, OpAssign(), FnNorm2(), s1[0]);
   prof.time -= getClockTime();
 #endif
 
