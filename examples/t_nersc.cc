@@ -1,4 +1,4 @@
-// $Id: t_nersc.cc,v 1.4 2003-10-15 17:20:08 edwards Exp $
+// $Id: t_nersc.cc,v 1.5 2003-10-15 21:38:10 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -68,6 +68,9 @@ int main(int argc, char *argv[])
     XMLReader gauge_xml;
     readArchiv(gauge_xml, u, "t_nersc.cfg");
  
+    QDPIO::cout << "Dump the gauge xml" << endl;
+    xml << gauge_xml;
+
     // Try out the plaquette routine
     QDPIO::cout << "Start mesplq\n";
     MesPlq(u, w_plaq, s_plaq, t_plaq, link);
