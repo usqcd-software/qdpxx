@@ -1,6 +1,7 @@
-03/26/2004 -- Robert Edwards
+03/29/2004 -- Robert Edwards
 
-	Version 1.7.10. Binx supported added by McNeile. Added SSE blas support.
+	Version 1.8.0. Binx supported added by McNeile. 
+        RGE added SSE blas support.
 
 03/21/2004 -- Robert Edwards
 
