@@ -1,3 +1,8 @@
+04/30/2003 -- Robert Edwards
+
+	Version 1.2.4 removed readSzin and readSzinQprop. Changed all occurances
+        of char* to using string - except for C-like error exit routines.
+
 04/26/2003 -- Robert Edwards
 
 	Version 1.2.3 fixed some small problems in parallel version of NmlReader.
