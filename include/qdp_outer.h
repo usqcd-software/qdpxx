@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.24 2003-09-10 16:56:48 edwards Exp $
+// $Id: qdp_outer.h,v 1.25 2003-10-09 18:28:55 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes
@@ -158,12 +158,26 @@ TextReader& operator>>(TextReader& txt, OScalar<T>& d)
   return txt >> d.elem();
 }
 
+//! Text input
+template<class T>
+StandardInputStream& operator>>(StandardInputStream& is, OScalar<T>& d)
+{
+  return is >> d.elem();
+}
+
 //! Text output
 template<class T>
 inline
 TextWriter& operator<<(TextWriter& txt, const OScalar<T>& d)
 {
   return txt << d.elem();
+}
+
+//! Text output
+template<class T>
+StandardOutputStream& operator<<(StandardOutputStream& os, OScalar<T>& d)
+{
+  return os << d.elem();
 }
 
 //! Namelist output

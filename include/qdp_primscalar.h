@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.11 2003-08-29 02:42:07 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.12 2003-10-09 18:28:55 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -170,11 +170,28 @@ istream& operator>>(istream& s, PScalar<T>& d)
   return s;
 }
 
+//! Ascii input
+template<class T>
+inline
+StandardInputStream& operator>>(StandardInputStream& s, PScalar<T>& d)
+{
+  s >> d.elem();
+  return s;
+}
+
 // Output
 //! Ascii output
 template<class T>
 inline
 ostream& operator<<(ostream& s, const PScalar<T>& d)
+{
+  return s << d.elem();
+}
+
+//! Ascii output
+template<class T>
+inline
+StandardOutputStream& operator<<(StandardOutputStream& s, const PScalar<T>& d)
 {
   return s << d.elem();
 }

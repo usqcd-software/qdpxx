@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.14 2003-09-10 16:34:27 edwards Exp $
+// $Id: qdp_reality.h,v 1.15 2003-10-09 18:28:55 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -169,14 +169,29 @@ template<class T>
 inline
 istream& operator>>(istream& s, RScalar<T>& d)
 {
-  s >> d.elem();
-  return s;
+  return s >> d.elem();
+}
+
+//! Ascii input
+template<class T>
+inline
+StandardInputStream& operator>>(StandardInputStream& s, RScalar<T>& d)
+{
+  return s >> d.elem();
 }
 
 //! Ascii output
 template<class T> 
 inline  
 ostream& operator<<(ostream& s, const RScalar<T>& d)
+{
+  return s << d.elem();
+}
+
+//! Ascii output
+template<class T> 
+inline  
+StandardOutputStream& operator<<(StandardOutputStream& s, const RScalar<T>& d)
 {
   return s << d.elem();
 }
@@ -382,6 +397,15 @@ private:
 template<class T>
 inline
 ostream& operator<<(ostream& s, const RComplex<T>& d)
+{
+  s << "( " << d.real() << " , " << d.imag() << " )";
+  return s;
+}
+
+//! Stream output
+template<class T>
+inline
+StandardOutputStream& operator<<(StandardOutputStream& s, const RComplex<T>& d)
 {
   s << "( " << d.real() << " , " << d.imag() << " )";
   return s;
