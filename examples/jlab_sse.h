@@ -1,4 +1,4 @@
-// $Id: jlab_sse.h,v 1.1 2003-08-05 03:26:08 edwards Exp $
+// $Id: jlab_sse.h,v 1.2 2003-08-05 20:37:17 edwards Exp $
 
 #ifndef JLAB_SSE_H
 #define JLAB_SSE_H
