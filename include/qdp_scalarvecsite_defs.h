@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_defs.h,v 1.1 2003-08-20 21:06:51 edwards Exp $
+// $Id: qdp_scalarvecsite_defs.h,v 1.2 2003-08-21 02:44:34 edwards Exp $
 
 /*! \file
  * \brief Type definitions for scalar/vector extensions-like architectures
@@ -41,13 +41,13 @@ QDP_BEGIN_NAMESPACE(QDP);
 // Use single precision for base precision
 #define REAL      REAL32
 #define DOUBLE    REAL64
-#define INNER_LEN 4
+#define INNER_LEN 2
 
 #elif BASE_PRECISION == DOUBLE_PRECISION
 // Use double precision for base precision
 #define REAL      REAL64
 #define DOUBLE    REAL64
-#define INNER_LEN 2
+#define INNER_LEN 1
 
 #else
 #error "Unknown BASE_PRECISION"
@@ -60,7 +60,8 @@ typedef GammaType<Ns> Gamma;
 
 // For now, fix this inner-grid length to 4 or 2 depending on base precision. 
 // This causes problems for doubles which I eventually must work out.
-#define INNER INNER_LEN
+// Here, INNER_LEN is the log_2(INNER)
+#define INNER (1 << INNER_LEN)
 
 // Aliases for a scalarvec-like architecture
 
@@ -114,6 +115,9 @@ typedef PScalar< PScalar< RScalar< IScalar<REAL> > > > IntReal;
 typedef PScalar< PScalar< RScalar< IScalar<INTEGER32> > > > IntInteger;
 typedef PScalar< PScalar< RScalar< IScalar<DOUBLE> > > > IntDouble;
 typedef PScalar< PScalar< RScalar< IScalar<LOGICAL> > > > IntBoolean;
+
+// Odd-ball to support random numbers
+typedef OScalar< PScalar< PSeed < RScalar< ILattice<INTEGER32,INNER> > > > > ILatticeSeed;
 
 // Fixed precision
 typedef OLattice< PScalar< PColorMatrix< RComplex< ILattice<REAL32,INNER> >, Nc> > > LatticeColorMatrixF;
