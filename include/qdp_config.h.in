@@ -38,6 +38,3 @@
 
 /* Enable SSE2 instructions */
 #undef QDP_USE_SSE2
-
-/* Define if using the dmalloc debugging malloc package */
-#undef WITH_DMALLOC
