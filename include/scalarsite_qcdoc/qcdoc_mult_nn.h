@@ -1,3 +1,16 @@
+/* This is a derivative product. Original Product copyright 
+   notice below. Derivation was made by: Balint Joo, 2004 */
+/*
+ * BAGEL machine generated output.
+ * Copyright UKQCD Collaboration
+ * This software is provided for NON-COMMERCIAL use only,
+ * and may not be redistributed without permission.
+ * It is provided as is, and is not guaranteed fit for any purpose.
+ * Written by Peter Boyle
+ */
+
+
+
 #define _inline_qcdoc_mult_su3_nn(aa,bb,cc) \
 { \
   float *aptr =(float *)&(aa.elem(0,0).real().elem());  \
