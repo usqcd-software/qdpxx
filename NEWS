@@ -1,3 +1,8 @@
+05/02/2004 -- Robert Edwards
+
+	Version 1.8.3. Improved BinaryWriter/Reader for parscalar case
+	to gang bigger (and fewer) messages for a lattice write/read.
+
 04/06/2004 -- Robert Edwards
 
 	Version 1.8.2. Fixed XMLReader to print the derived portion of a
