@@ -1,4 +1,4 @@
-// $Id: readszin.cc,v 1.3 2003-03-20 22:19:30 dgr Exp $
+// $Id: readszin.cc,v 1.4 2003-04-02 21:27:43 edwards Exp $
 
 /*! @file
  *  @brief Read in a configuration written by SZIN up to configuration version 7.
@@ -9,7 +9,7 @@
  */
 
 #include "qdp.h"
-#include "proto.h"
+#include "qdp_util.h"
 
 #include <string>
 using std::string;

@@ -1,4 +1,4 @@
-// $Id: parscalar_layout.cc,v 1.7 2003-02-14 02:38:44 flemingg Exp $
+// $Id: parscalar_layout.cc,v 1.8 2003-04-02 21:27:43 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -15,7 +15,7 @@
  */
 
 #include "qdp.h"
-#include "proto.h"
+#include "qdp_util.h"
 
 #include "qmp.h"
 

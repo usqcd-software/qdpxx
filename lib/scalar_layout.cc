@@ -1,4 +1,4 @@
-// $Id: scalar_layout.cc,v 1.5 2003-01-24 21:07:16 edwards Exp $
+// $Id: scalar_layout.cc,v 1.6 2003-04-02 21:27:43 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -15,7 +15,7 @@
  */
 
 #include "qdp.h"
-#include "proto.h"
+#include "qdp_util.h"
 
 #define  USE_LEXICO_LAYOUT
 #undef   USE_CB2_LAYOUT

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: proto.h,v 1.9 2003-03-28 05:17:10 edwards Exp $
+// $Id: qdp_util.h,v 1.1 2003-04-02 21:27:43 edwards Exp $
 //
 // QDP data parallel interface
 //

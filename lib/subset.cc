@@ -1,11 +1,11 @@
-// $Id: subset.cc,v 1.7 2002-12-14 01:13:56 edwards Exp $
+// $Id: subset.cc,v 1.8 2003-04-02 21:27:43 edwards Exp $
 //
 // QDP data parallel interface
 //
 // Sets and subsets
 
 #include "qdp.h"
-#include "proto.h"
+#include "qdp_util.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 

@@ -1,4 +1,4 @@
-// $Id: scalar_specific.cc,v 1.10 2003-01-23 15:16:00 edwards Exp $
+// $Id: scalar_specific.cc,v 1.11 2003-04-02 21:27:43 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -7,7 +7,7 @@
  */
 
 #include "qdp.h"
-#include "proto.h"
+#include "qdp_util.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 

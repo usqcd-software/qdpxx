@@ -1,4 +1,4 @@
-// $Id: iogauge.cc,v 1.6 2002-12-05 21:27:10 edwards Exp $
+// $Id: iogauge.cc,v 1.7 2003-04-02 21:27:43 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -7,7 +7,7 @@
  */
 
 #include "qdp.h"
-#include "proto.h"
+#include "qdp_util.h"
 
 #include <string>
 using std::string;

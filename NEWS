@@ -1,5 +1,9 @@
 04/02/2003 -- Robert Edwards
 
+	Version 1.1.4 moved proto.h to qdp_util.h .
+
+04/02/2003 -- Robert Edwards
+
 	Version 1.1.3 fixed usage of QDPSubType (e.g.,subsets) in poke routines
 
 02/27/2003 -- Robert Edwards

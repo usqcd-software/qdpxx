@@ -1,4 +1,4 @@
-// $Id: layout.cc,v 1.8 2003-01-20 16:18:32 edwards Exp $
+// $Id: layout.cc,v 1.9 2003-04-02 21:27:43 edwards Exp $
 
 /*! @file
  * @brief Layout support routines
@@ -9,7 +9,7 @@
  */
 
 #include "qdp.h"
-#include "proto.h"
+#include "qdp_util.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
