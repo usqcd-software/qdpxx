@@ -1,3 +1,7 @@
+12/23/2003 -- Robert Edwards
+
+	Version 1.6.12. Changed IO from using sendRecv/sendTo like primitives to using QMP_route.
+
 12/21/2003 -- Robert Edwards
 
 	Version 1.6.11. Generalized +=, -= and = in qdp_prim{matrix,vector,spinmat,spinvec,color stuff}
