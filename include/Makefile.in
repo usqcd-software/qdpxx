@@ -178,10 +178,16 @@ GENERIC_HDRS = qdp_scalarsite_generic.h \
 	$(genericdir)/generic_blas_vaxpy3_norm.h \
 	$(genericdir)/generic_blas_vscal.h \
 	$(genericdir)/generic_blas_vsub.h \
+	$(genericdir)/generic_blas_vcscal.h \
+	$(genericdir)/generic_blas_vcaxpy3.h \
+	$(genericdir)/generic_blas_vcaxmy3.h \
+	$(genericdir)/generic_blas_vcaxpby3.h \
+	$(genericdir)/generic_blas_vcaxmby3.h \
 	$(genericdir)/generic_blas_local_vcdot.h \
 	$(genericdir)/generic_blas_local_vcdot_real.h \
 	$(genericdir)/qdp_scalarsite_generic_linalg.h \
-	$(genericdir)/qdp_scalarsite_generic_blas.h
+	$(genericdir)/qdp_scalarsite_generic_blas.h \
+	$(genericdir)/qdp_scalarsite_generic_cblas.h
 
 # If using SSE, make sure those files are installed
 ssedir = scalarsite_sse
