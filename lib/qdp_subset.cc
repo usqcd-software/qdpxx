@@ -1,4 +1,4 @@
-// $Id: qdp_subset.cc,v 1.1 2003-05-22 20:06:30 edwards Exp $
+// $Id: qdp_subset.cc,v 1.2 2003-06-20 02:42:32 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -20,6 +20,12 @@ Set rb;
 
 //! Default 2^{Nd+1}-checkerboard set. Useful for pure gauge updating.
 Set mcb;
+
+//! Even subset
+Subset even;
+
+//! Odd subset
+Subset odd;
 
 //! Function object used for constructing the all subset
 class SetAllFunc : public SetFunc
@@ -83,6 +89,12 @@ void InitDefaultSets()
 
   // The all subset
   all.make(set_all[0]);
+
+  // COPY the rb[0] to the even subset
+  even = rb[0];
+
+  // COPY the rb[1] to the odd subset
+  odd = rb[1];
 }
 
 
