@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.23 2005-02-21 15:25:48 bjoo Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.24 2005-02-28 16:46:37 bjoo Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -262,7 +262,7 @@ namespace Internal
     Internal::broadcast(lleng);
 
     // Now every node can alloc space for string
-    dd_tmp = new char[lleng];
+    dd_tmp = new(nothrow) char[lleng];
     if( dd_tmp == 0x0 ) { 
       QDP_error_exit("Unable to allocate dd_tmp\n");
     }
@@ -375,7 +375,7 @@ void writeOLattice(BinaryWriter& bin,
 
   size_t sizemem = size*nmemb;
   size_t tot_size = sizemem*xinc;
-  char *recv_buf = new char[tot_size];
+  char *recv_buf = new(nothrow) char[tot_size];
   if( recv_buf == 0x0 ) { 
     QDP_error_exit("Unable to allocate recv_buf\n");
   }
@@ -436,7 +436,7 @@ void writeOLattice(BinaryWriter& bin,
 		   const multi1d<int>& coord)
 {
   size_t tot_size = size*nmemb;
-  char *recv_buf = new char[tot_size];
+  char *recv_buf = new(nothrow) char[tot_size];
   if( recv_buf == 0x0 ) { 
     QDP_error_exit("Unable to allocate recvbuf\n");
   }
@@ -485,7 +485,7 @@ void readOLattice(BinaryReader& bin,
 
   size_t sizemem = size*nmemb;
   size_t tot_size = sizemem*xinc;
-  char *recv_buf = new char[tot_size];
+  char *recv_buf = new(nothrow) char[tot_size];
   if( recv_buf == 0x0 ) { 
     QDP_error_exit("Unable to allocate recvbuf\n");
   }
@@ -535,7 +535,7 @@ void readOLattice(BinaryReader& bin,
 		  const multi1d<int>& coord)
 {
   size_t tot_size = size*nmemb;
-  char *recv_buf = new char[tot_size];
+  char *recv_buf = new(nothrow) char[tot_size];
   if( recv_buf == 0x0 ) {
     QDP_error_exit("Unable to allocate recv_buf\n");
   }
@@ -588,13 +588,13 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
   size_t size = float_size;
   size_t su3_size = size*mat_size;
   size_t tot_size = su3_size*Nd;
-  char  *input = new char[tot_size*Layout::sitesOnNode()];  // keep another copy in input buffers
+  char  *input = new(nothrow) char[tot_size*Layout::sitesOnNode()];  // keep another copy in input buffers
   if( input == 0x0 ) { 
     QDP_error_exit("Unable to allocate input\n");
   }
 
 
-  char  *recv_buf = new char[tot_size];
+  char  *recv_buf = new(nothrow) char[tot_size];
   if( recv_buf == 0x0 ) { 
     QDP_error_exit("Unable to allocate recv_buf\n");
   }
@@ -719,7 +719,7 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
   size_t size = sizeof(float);
   size_t su3_size = size*mat_size;
   size_t tot_size = su3_size*Nd;
-  char *recv_buf = new char[tot_size];
+  char *recv_buf = new(nothrow) char[tot_size];
   if( recv_buf == 0x0 ) { 
     QDP_error_exit("Unable to allocate recv_buf\n");
   }

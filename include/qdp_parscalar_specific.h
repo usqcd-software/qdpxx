@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.36 2005-02-22 16:36:55 bjoo Exp $
+// $Id: qdp_parscalar_specific.h,v 1.37 2005-02-28 16:46:37 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -1040,7 +1040,7 @@ public:
 
 	// Eventually these declarations should move into d - the return object
 	typedef T1 * T1ptr;
-	T1 **dest = new T1ptr[Layout::sitesOnNode()];
+	T1 **dest = new(nothrow) T1ptr[Layout::sitesOnNode()];
         if( dest == 0x0 ) { 
 	   QDP_error_exit("Unable to new T1ptr in OLattice<T1>::operator()\n");
         }
@@ -1049,7 +1049,7 @@ public:
 
 #if 0
 // This test has been moved into Map::create.
-	// For now, will assume there is only 1 destination node 
+	// For now, will assume there is only 1 destination nod e 
 	// and receive from only 1 node
 	if (srcenodes.size() != 1)
 	  QDP_error_exit("Map: for now only allow 1 destination node");

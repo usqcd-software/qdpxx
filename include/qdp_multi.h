@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.9 2005-02-10 03:54:34 edwards Exp $
+// $Id: qdp_multi.h,v 1.10 2005-02-28 16:46:37 bjoo Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -47,7 +47,7 @@ public:
      }
      delete[] F; 
      n1=ns1;      
-     F = new T[n1];
+     F = new(nothrow) T[n1];
      if ( F == 0x0 ) { 
 	QDP_error_exit("Unable to allocate memory in multi1d::resize()\n");
      }
@@ -267,7 +267,7 @@ public:
     n1=ns1; 
     n2=ns2;  
     sz=n1*n2; 
-    F = new T[sz];
+    F = new(nothrow) T[sz];
     if( F == 0x0 ) { 
 	QDP_error_exit("Unable to new memory in multi2d::resize()\n");
     }
@@ -346,7 +346,7 @@ public:
   //! Allocate mem for the array
   void resize(int ns3, int ns2, int ns1) 
     {if(copymem) {cerr<<"invalid resize in 2d\n";exit(1);}; delete[] F; 
-    n1=ns1; n2=ns2; n3=ns3; sz=n1*n2*n3; F = new T[sz];
+    n1=ns1; n2=ns2; n3=ns3; sz=n1*n2*n3; F = new(nothrow) T[sz];
     if( F == 0x0 ) { 
 	QDP_error_exit("Unable to new memory in multi3d::resize() \n");
     }
@@ -432,7 +432,7 @@ public:
       sz = nz[0];
       for(int i=1; i < nz.size(); ++i)
 	sz *= nz[i];
-      F = new T[sz];
+      F = new(nothrow) T[sz];
       if ( F==0x0 ) { 
 	QDP_error_exit("Unable to new memory in multiNd::resize()\n");
       }

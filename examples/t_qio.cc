@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.21 2005-02-25 12:31:34 bjoo Exp $
+// $Id: t_qio.cc,v 1.22 2005-02-28 16:46:37 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -7,14 +7,13 @@
 
 using namespace QDP;
 
-
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {16,16,8,8};
+  const int foo[] = {24,24,24,32};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -129,7 +128,7 @@ int main(int argc, char **argv)
 	random(b);
 	write(to,record_xml,b);
 	write(xml_out, "third_to.bad", to.bad());
-
+	
 	Real btest = Real(innerProductReal(b,shift(b,FORWARD,0)));
 	QDPIO::cout << "Third record test: innerProduct(b,shift(b,0))=" 
 		    << btest << endl;
@@ -160,7 +159,7 @@ int main(int argc, char **argv)
 	double Mbytes = bytes/(double)(1024*1024);
 	QDPIO::cout << "Wrote " << Mbytes << " Mbytes in " << secs << " seconds " << endl;
 	QDPIO::cout << "Transfer Rate: " << Mbytes/secs << " Mbytes/s" << endl;
-
+	QDPIO::cout << flush;
 
 	write(xml_out, "fourth_to.bad", to.bad());
 
@@ -240,6 +239,9 @@ int main(int argc, char **argv)
 #if 1
       {
 	LatticeColorMatrix b;
+	QDPIO::cout << "LatticeColorMatrix created " << endl << flush;
+	QDPIO::cout << "About to read from it " << endl << flush;
+
 	read(from,record_xml,b);
 	write(xml_out, "third_from.bad", from.bad());
 
@@ -258,6 +260,9 @@ int main(int argc, char **argv)
 
       {
 	multi1d<LatticeColorMatrix> c(Nd);   // array size should be free
+
+	QDPIO::cout << "Multi1d LatticeColorMatrix created " << endl << flush;
+	QDPIO::cout << "About to try treading into it" << endl << flush;
 	StopWatch swatch;
 	swatch.reset();
 	swatch.start();

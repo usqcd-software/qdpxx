@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_filebuf.cc,v 1.6 2004-04-07 09:34:33 bjoo Exp $
+// $Id: qdp_filebuf.cc,v 1.7 2005-02-28 16:46:37 bjoo Exp $
 
 /*! @file
  * @brief Remote file support
@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <new>
 
 #include "qdp_filebuf.h"
 
@@ -154,7 +155,7 @@ RemoteInputFileBuf::RemoteInputFileBuf()
   iop = false;        // set file status
 
   bufferSize = 50;    // size of the data buffer
-  buffer = new char[bufferSize];  // data buffer
+  buffer = new(std::nothrow) char[bufferSize];  // data buffer
   if( buffer == 0x0 ){
     QDP::QDP_error_exit("Unable to new buffer in qdp_filebuf\n");
   }

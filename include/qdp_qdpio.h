@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.20 2004-09-10 21:23:41 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.21 2005-02-28 16:46:37 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -298,11 +298,19 @@ template<class T> void QDPOScalarFactoryPut(char *buf, size_t linear, int count,
 template<class T>
 void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
 {
+
+  try { 
+
   QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, "Scalar", "F", Nc, Ns, 
 						sizeof(T), 1);
 
   // Initialize string objects 
   QIO_String *xml_c  = QIO_string_create();
+
+
+  QDPIO::cout << "xml_string->string = " << xml_c->string << endl;
+  QDPIO::cout << "xml_string->length=" << xml_c->length << endl;
+  QDPIO::cout << flush;
 
   if (QIO_read(get(), info, xml_c,
    	       &(QDPOScalarFactoryPut<T>),
@@ -313,6 +321,11 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
     QDPIO::cerr << "QDPFileReader: error reading file" << endl;
     clear(QDPIO_badbit);
   }
+
+  QDPIO::cout << "xml_string->string = " << xml_c->string << endl;
+  QDPIO::cout << "xml_string->length=" << xml_c->length << endl;
+  QDPIO::cout << flush;
+
 
   // Use string to initialize XMLReader
   istringstream ss;
@@ -325,6 +338,13 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
 
   QIO_string_destroy(xml_c);
   QIO_destroy_record_info(info);
+
+  }
+  catch(std::bad_alloc) { 
+    QDPIO::cout << "Caught BAD ALLOC Exception" << endl;
+    QDP_abort(1);
+  }
+
 }
 
 
@@ -384,6 +404,7 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OScalar<T>& s1)
 
   // Copy metadata string into simple qio string container
   QIO_String* xml_c = QIO_string_create();
+  
   if (Layout::primaryNode())
     QIO_string_set(xml_c, rec_xml.str().c_str());
 
@@ -403,6 +424,7 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OScalar<T>& s1)
     QDPIO::cerr << "QDPFileWriter: error in write" << endl;
     clear(QDPIO_badbit);
   }
+
 
   // Cleanup
   QIO_string_destroy(xml_c);
@@ -483,33 +505,45 @@ template<class T> void QDPOLatticeFactoryPutArray(char *buf, size_t linear, int 
 template<class T>
 void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 {
-  QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, "Lattice", "F", Nc, Ns, 
-						sizeof(T), 1);
 
-  // Initialize string objects 
-  QIO_String *xml_c  = QIO_string_create();
+  try { 
+    QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, "Lattice", "F", Nc, Ns, 
+						  sizeof(T), 1);
+    
+    // Initialize string objects 
+    QIO_String *xml_c  = QIO_string_create();
+    try { 
+    if (QIO_read(get(), info, xml_c,
+		 &(QDPOLatticeFactoryPut<T>),
+		 sizeof(T), 
+		 sizeof(typename WordType<T>::Type_t), 
+		 (void *)s1.getF()) != QIO_SUCCESS)
+      {
+	QDPIO::cerr << "QDPFileReader: error reading file" << endl;
+	clear(QDPIO_badbit);
+      }
+    }
+    catch(std::bad_alloc) { 
+      QDPIO::cerr << "Bad Alloc Exception caught in QIO_read(OLattice) " <<endl << flush;
+      QDP_abort(-1);
+    }
 
-  if (QIO_read(get(), info, xml_c,
-   	       &(QDPOLatticeFactoryPut<T>),
-               sizeof(T), 
-	       sizeof(typename WordType<T>::Type_t), 
-	       (void *)s1.getF()) != QIO_SUCCESS)
-  {
-    QDPIO::cerr << "QDPFileReader: error reading file" << endl;
-    clear(QDPIO_badbit);
+    // Use string to initialize XMLReader
+    istringstream ss;
+    if (Layout::primaryNode())
+      {
+	string foo = QIO_string_ptr(xml_c);
+	ss.str(foo);
+      }
+    rec_xml.open(ss);
+    
+    QIO_string_destroy(xml_c);
+    QIO_destroy_record_info(info);
   }
-
-  // Use string to initialize XMLReader
-  istringstream ss;
-  if (Layout::primaryNode())
-  {
-    string foo = QIO_string_ptr(xml_c);
-    ss.str(foo);
+  catch(std::bad_alloc) { 
+    QDPIO::cout << "Bad ALLOC exception caught " << endl;
+    QDP_abort(-1);
   }
-  rec_xml.open(ss);
-
-  QIO_string_destroy(xml_c);
-  QIO_destroy_record_info(info);
 }
 
 
@@ -533,6 +567,7 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
     QDPIO::cerr << "QDPFileReader: error reading file" << endl;
     clear(QDPIO_badbit);
   }
+  QDPIO::cout << "QIO_read finished " << endl  << flush ;
 
   // Use string to initialize XMLReader
   istringstream ss;
