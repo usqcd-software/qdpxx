@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_generic.h,v 1.3 2003-10-03 02:19:09 edwards Exp $
+// $Id: qdp_scalarsite_generic.h,v 1.4 2003-10-17 20:28:50 edwards Exp $
 
 /*! @file
  * @brief Generic optimizations
@@ -32,6 +32,8 @@ QDP_BEGIN_NAMESPACE(QDP);
 #include "scalarsite_generic/generic_addvec.h"
 
 
+// #define QDP_SCALARSITE_DEBUG
+
 // Optimized version of  
 //    PColorMatrix<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorMatrix<RComplexFloat,3>
 template<>
@@ -43,7 +45,9 @@ operator*(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
     PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiply>::Type_t  d;
 
-//  cout << "M*M" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "M*M" << endl;
+#endif
 
   _inline_generic_mult_su3_nn(l,r,d);
 
@@ -63,7 +67,9 @@ operator*(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
   BinaryReturn<PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, 
     PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, OpMultiply>::Type_t  d;
 
-//  cout << "PSc<M>*PSc<M>" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "PSc<M>*PSc<M>" << endl;
+#endif
 
   _inline_generic_mult_su3_nn(l.elem(),r.elem(),d.elem());
 
@@ -82,7 +88,9 @@ adjMultiply(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
     PMatrix<RComplexFloat,3,PColorMatrix>, OpAdjMultiply>::Type_t  d;
 
-//  cout << "adj(M)*M" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "adj(M)*M" << endl;
+#endif
 
   _inline_generic_mult_su3_an(l,r,d);
 
@@ -101,7 +109,9 @@ adjMultiply(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
   BinaryReturn<PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, 
     PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, OpAdjMultiply>::Type_t  d;
 
-//  cout << "adj(PSc<M>)*PSc<M>" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "adj(PSc<M>)*PSc<M>" << endl;
+#endif
 
   _inline_generic_mult_su3_an(l.elem(),r.elem(),d.elem());
 
@@ -120,7 +130,9 @@ multiplyAdj(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
     PMatrix<RComplexFloat,3,PColorMatrix>, OpMultiplyAdj>::Type_t  d;
 
-//  cout << "M*adj(M)" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "M*adj(M)" << endl;
+#endif
 
   _inline_generic_mult_su3_na(l,r,d);
 
@@ -139,7 +151,9 @@ multiplyAdj(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
   BinaryReturn<PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, 
     PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, OpMultiplyAdj>::Type_t  d;
 
-//  cout << "PS<M>*adj(PSc<M>)" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "PS<M>*adj(PSc<M>)" << endl;
+#endif
 
   _inline_generic_mult_su3_na(l.elem(),r.elem(),d.elem());
 
@@ -148,7 +162,7 @@ multiplyAdj(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
 
 
 #if 0
-// Do not use this routine - for some unknown reason on P4 it is slowly than
+// Do not use this routine - for some unknown reason on P4 it is slower than
 // the default code!!
 
 // Optimized version of  
@@ -180,7 +194,9 @@ operator*(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
     PVector<RComplexFloat,3,PColorVector>, OpMultiply>::Type_t  d;
 
-//  cout << "M*V" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "M*V" << endl;
+#endif
 
   _inline_generic_mult_su3_mat_vec(l,r,d);
 
@@ -199,7 +215,9 @@ operator*(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
   BinaryReturn<PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, 
     PScalar<PVector<RComplexFloat,3,PColorVector> >, OpMultiply>::Type_t  d;
 
-//  cout << "PSc<M>*PSc<V>" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "PSc<M>*PSc<V>" << endl;
+#endif
 
   _inline_generic_mult_su3_mat_vec(l.elem(),r.elem(),d.elem());
 
@@ -218,7 +236,9 @@ adjMultiply(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
     PVector<RComplexFloat,3,PColorVector>, OpAdjMultiply>::Type_t  d;
 
-//  cout << "adj(M)*V" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "adj(M)*V" << endl;
+#endif
 
   _inline_generic_mult_adj_su3_mat_vec(l,r,d);
   
@@ -237,7 +257,9 @@ operator*(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
   BinaryReturn<PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, 
     PVector<PVector<RComplexFloat,3,PColorVector>,1,PSpinVector>, OpMultiply>::Type_t  d;
 
-//  cout << "M*S" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "M*S" << endl;
+#endif
 
   _inline_generic_mult_su3_mat_vec(l.elem(),r.elem(0),d.elem(0));
 
@@ -256,7 +278,9 @@ adjMultiply(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
   BinaryReturn<PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, 
     PScalar<PVector<RComplexFloat,3,PColorVector> >, OpAdjMultiply>::Type_t  d;
 
-//  cout << "adj(PSc<M>)*PSc<V>" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "adj(PSc<M>)*PSc<V>" << endl;
+#endif
 
   _inline_generic_mult_adj_su3_mat_vec(l.elem(),r.elem(),d.elem());
 
@@ -275,7 +299,9 @@ adjMultiply(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
   BinaryReturn<PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, 
     PVector<PVector<RComplexFloat,3,PColorVector>,1,PSpinVector>, OpAdjMultiply>::Type_t  d;
 
-//  cout << "adj(S)*S" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "adj(S)*S" << endl;
+#endif
 
   _inline_generic_mult_adj_su3_mat_vec(l.elem(),r.elem(0),d.elem(0));
 
@@ -295,7 +321,9 @@ operator*(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
   BinaryReturn<PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, 
     PVector<PVector<RComplexFloat,3,PColorVector>,2,PSpinVector>, OpMultiply>::Type_t  d;
 
-//  cout << "M*H" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "M*H" << endl;
+#endif
 
   _inline_generic_mult_su3_mat_vec(l.elem(),r.elem(0),d.elem(0));
   _inline_generic_mult_su3_mat_vec(l.elem(),r.elem(1),d.elem(1));
@@ -316,7 +344,9 @@ adjMultiply(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
   BinaryReturn<PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, 
     PVector<PVector<RComplexFloat,3,PColorVector>,2,PSpinVector>, OpAdjMultiply>::Type_t  d;
 
-//  cout << "adj(M)*H" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "adj(M)*H" << endl;
+#endif
 
   _inline_generic_mult_adj_su3_mat_vec(l.elem(),r.elem(0),d.elem(0));
   _inline_generic_mult_adj_su3_mat_vec(l.elem(),r.elem(1),d.elem(1));
@@ -336,7 +366,9 @@ operator+(const PVector<RComplexFloat,3,PColorVector>& l,
   BinaryReturn<PVector<RComplexFloat,3,PColorVector>, 
     PVector<RComplexFloat,3,PColorVector>, OpAdd>::Type_t  d;
 
-//  cout << "V+V" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "V+V" << endl;
+#endif
 
   _inline_generic_add_su3_vector(l,r,d);
 
@@ -356,7 +388,9 @@ operator*(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
   BinaryReturn<PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, 
     PVector<PVector<RComplexFloat,3,PColorVector>,4,PSpinVector>, OpMultiply>::Type_t  d;
 
-//  cout << "M*D" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "M*D" << endl;
+#endif
 
   _inline_generic_mult_su3_mat_vec(l.elem(),r.elem(0),d.elem(0));
   _inline_generic_mult_su3_mat_vec(l.elem(),r.elem(1),d.elem(1));
@@ -379,7 +413,9 @@ adjMultiply(const PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >& l,
   BinaryReturn<PScalar<PMatrix<RComplexFloat,3,PColorMatrix> >, 
     PVector<PVector<RComplexFloat,3,PColorVector>,4,PSpinVector>, OpAdjMultiply>::Type_t  d;
 
-//  cout << "adj(M)*D" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "adj(M)*D" << endl;
+#endif
 
   _inline_generic_mult_adj_su3_mat_vec(l.elem(),r.elem(0),d.elem(0));
   _inline_generic_mult_adj_su3_mat_vec(l.elem(),r.elem(1),d.elem(1));
@@ -403,7 +439,9 @@ operator+(const PScalar<PVector<RComplexFloat,3,PColorVector> >& l,
   BinaryReturn<PScalar<PVector<RComplexFloat,3,PColorVector> >, 
     PScalar<PVector<RComplexFloat,3,PColorVector> >, OpAdd>::Type_t  d;
 
-//  cout << "PSc<V>+PSc<V>" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "PSc<V>+PSc<V>" << endl;
+#endif
 
   _inline_generic_add_su3_vector(l.elem(),r.elem(),d.elem());
 
@@ -444,7 +482,9 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
 	      OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> > >& rhs,
 	      const OrderedSubset& s)
 {
-//  cout << "specialized QDP_H_M_times_H" << endl;
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "specialized QDP_H_M_times_H" << endl;
+#endif
 
   typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
   typedef OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> > H;
@@ -466,6 +506,10 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
 #endif
 
 /*! @} */   // end of group optimizations
+
+#if defined(QDP_SCALARSITE_DEBUG)
+#undef QDP_SCALARSITE_DEBUG
+#endif
 
 QDP_END_NAMESPACE();
 
