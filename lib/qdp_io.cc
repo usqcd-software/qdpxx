@@ -1,4 +1,4 @@
-// $Id: qdp_io.cc,v 1.10 2003-06-13 01:57:06 edwards Exp $
+// $Id: qdp_io.cc,v 1.11 2003-06-16 01:54:30 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -24,11 +24,10 @@ TextReader::TextReader(const std::string& p) {open(p);}
 void TextReader::open(const std::string& p) 
 {
   if (Layout::primaryNode())
-  {
     f.open(p.c_str(),std::ifstream::in);
-    if (! f.is_open())
-      QDP_error_exit("failed to open file %s",p.c_str());
-  }
+
+  if (! is_open())
+    QDP_error_exit("failed to open file %s",p.c_str());
 }
 
 void TextReader::close()
@@ -181,11 +180,10 @@ TextWriter::TextWriter(const std::string& p) {open(p);}
 void TextWriter::open(const std::string& p)
 {
   if (Layout::primaryNode())
-  {
     f.open(p.c_str(),std::ofstream::out | std::ofstream::trunc);
-    if (! f.is_open())
-      QDP_error_exit("failed to open file %s",p.c_str());
-  }
+
+  if (! is_open())
+    QDP_error_exit("failed to open file %s",p.c_str());
 }
 
 void TextWriter::close()
@@ -323,11 +321,13 @@ void NmlReader::open(const std::string& p)
   // Make a barrier call ?
 
   if (Layout::primaryNode()) 
-  {
     f.open(p.c_str(),std::ifstream::in);
-    if (! f.is_open())
-      QDP_error_exit("NmlReader: error opening file %s",p.c_str());
 
+  if (! is_open())
+    QDP_error_exit("NmlReader: error opening file %s",p.c_str());
+
+  if (Layout::primaryNode()) 
+  {
     if ((abs = new_abstract("abstract")) == NULL)   // create a parse tree
       QDP_error_exit("NmlReader: Error initializing file - %s - for reading",p.c_str());
     
@@ -493,11 +493,11 @@ NmlWriter::NmlWriter(const std::string& p) {stack_cnt = 0; open(p);}
 void NmlWriter::open(const std::string& p)
 {
   if (Layout::primaryNode())
-  {
     f.open(p.c_str(),std::ofstream::out | std::ofstream::trunc);
-    if (! f.is_open())
-      QDP_error_exit("failed to open file %s",p.c_str());
-  }
+
+  if (! is_open())
+    QDP_error_exit("failed to open file %s",p.c_str());
+
 //  push(*this,"FILE");  // Always start a file with this group
 }
 
@@ -688,11 +688,10 @@ BinaryReader::BinaryReader(const std::string& p) {open(p);}
 void BinaryReader::open(const std::string& p) 
 {
   if (Layout::primaryNode()) 
-  {
     f.open(p.c_str(),std::ifstream::in | std::ifstream::binary);
-    if (! f.is_open())
-      QDP_error_exit("BinaryReader: error opening file %s",p.c_str());
-  }
+
+  if (! is_open())
+    QDP_error_exit("BinaryReader: error opening file %s",p.c_str());
 }
 
 void BinaryReader::close()
@@ -958,11 +957,10 @@ BinaryWriter::BinaryWriter(const std::string& p) {open(p);}
 void BinaryWriter::open(const std::string& p) 
 {
   if (Layout::primaryNode()) 
-  {
     f.open(p.c_str(),std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
-    if (! f.is_open())
-      QDP_error_exit("BinaryWriter: error opening file %s",p.c_str());
-  }
+
+  if (! is_open())
+    QDP_error_exit("BinaryWriter: error opening file %s",p.c_str());
 }
 
 void BinaryWriter::close()
