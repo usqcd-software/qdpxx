@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.9 2004-03-07 20:23:14 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.10 2004-03-09 02:15:01 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -85,7 +85,11 @@ void QDPFileReader::open(XMLReader& file_xml,
   if ((qio_in = QIO_open_read(xml_c, path.c_str(), serpar, &layout)) == NULL)
   {
     QDPIO::cerr << "QDPFileReader: failed to open file " << path << endl;
-    throw;
+    bad_state = true;
+  }
+  else
+  {
+    bad_state = false;
   }
 
   // Use string to initialize XMLReader
@@ -110,13 +114,14 @@ void QDPFileReader::close()
   }
 
   iop = false;
+  bad_state = false;
 }
 
 bool QDPFileReader::is_open() {return iop;}
 
 bool QDPFileReader::eof() const {return false;}
 
-bool QDPFileReader::bad() const {return false;}
+bool QDPFileReader::bad() const {return bad_state;}
 
 QDPFileReader::~QDPFileReader() {close();}
 
@@ -178,7 +183,11 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   if (xml_c == NULL)
   {
     QDPIO::cerr << "QDPFileWriter - error in creating QIO string" << endl;
-    throw;
+    bad_state = true;
+  }
+  else
+  {
+    bad_state = false;
   }
 
   // Wrappers over simple ints
@@ -230,7 +239,11 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
 				&layout)) == NULL)
   {
     QDPIO::cerr << "QDPFileWriter: failed to open file " << path << endl;
-    throw;
+    bad_state = true;
+  }
+  else
+  {
+    bad_state = false;
   }
 
   // Cleanup
@@ -247,11 +260,12 @@ void QDPFileWriter::close()
   }
 
   iop = false;
+  bad_state = false;
 }
 
 bool QDPFileWriter::is_open() {return iop;}
 
-bool QDPFileWriter::bad() const {return false;}
+bool QDPFileWriter::bad() const {return bad_state;}
 
 QDPFileWriter::~QDPFileWriter() {close();}
 
