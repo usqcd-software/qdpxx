@@ -185,6 +185,27 @@ norm2(arg1)             : sum(localNorm2(arg1))
 innerproduct(arg1,arg2) : sum(localInnerproduct(arg1,arg2))
 \end{verbatim}
 
+\medskip
+
+\subsection{Component extraction and insertion}
+\label{sec:peek}
+
+Peeking and poking into various component indices of objects.
+
+\begin{verbatim}
+peekSite(arg1,multi1d<int> coords): return site object of primitive type of arg11
+peekColor(arg1,int row,int col)   : return object from color matrix elements row and col
+peekColor(arg1,int row)           : return object from color vector elements row
+peekSpin(arg1,int row,int col )   : return object from spin matrix elements row and col
+peekSpin(arg1,int row)            : return object from spin vector elements row
+
+pokeSite(dest,src,multi1d<int> coords): insert site object of primitive type from src
+pokeColor(dest,src,int row,int col)   : insert object into color matrix elements row and col
+pokeColor(dest,src,int row)           : insert object into color vector elements row
+pokeSpin(dest,src,int row,int col )   : insert object into spin matrix elements row and col
+pokeSpin(dest,src,int row)            : insert object into spin vector elements row
+\end{verbatim}
+
 
 \medskip
 
@@ -201,16 +222,6 @@ spinProject(QDPType psi, int dir, int isign)
 spinReconstruct(QDPType psi, int dir, int isign)
 		    : applies spin reconstruction from  (1 + isign*gamma_\mu)*psi
 		      returning a full spin vector or matrix
-su2_extract(QDPType r_0, r_1, r_2, r_3, int index, QDPType source)
-		    : Extract components r_k proportional to SU(2) submatrix su2_index
-		      from the "SU(Nc)" matrix V. The SU(2) matrix is parametrized in the
-		      sigma matrix basis. su2_index = 0, ..., Nc*(Nc-1)/2
-		      r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]
-
-sun_fill(QDPType dest, int index, QDPType r_0, r_1, r_2, r_3)
-		    : Fill an SU(Nc) matrix V with the SU(2) submatrix su2_index
-		      paramtrized by r_k in the sigma matrix basis.
-		      dest(su2_index) <- r_0,r_1,r_2,r_3
 \end{verbatim}
 
 \bigskip
