@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_newops.h,v 1.10 2003-11-01 20:30:06 edwards Exp $
+// $Id: qdp_newops.h,v 1.11 2004-03-04 21:42:36 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -352,7 +352,8 @@ struct FnPokeColorMatrix
   inline typename BinaryReturn<T1, T2, FnPokeColorMatrix>::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
-    return (pokeColor(const_cast<T1&>(a),b,row,col));
+    pokeColor(const_cast<T1&>(a),b,row,col);
+    return const_cast<T1&>(a);
   }
 
 private:
@@ -424,7 +425,8 @@ struct FnPokeColorVector
   inline typename BinaryReturn<T1, T2, FnPokeColorVector>::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
-    return (pokeColor(const_cast<T1&>(a),b,row));
+    pokeColor(const_cast<T1&>(a),b,row);
+    return const_cast<T1&>(a);
   }
 
 private:
@@ -495,7 +497,8 @@ struct FnPokeSpinMatrix
   inline typename BinaryReturn<T1, T2, FnPokeSpinMatrix>::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
-    return (pokeSpin(const_cast<T1&>(a),b,row,col));
+    pokeSpin(const_cast<T1&>(a),b,row,col);
+    return const_cast<T1&>(a);
   }
 
 private:
@@ -566,7 +569,8 @@ struct FnPokeSpinVector
   inline typename BinaryReturn<T1, T2, FnPokeSpinVector>::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
-    return (pokeSpin(const_cast<T1&>(a),b,row));
+    pokeSpin(const_cast<T1&>(a),b,row);
+    return const_cast<T1&>(a);
   }
 
 private:
@@ -638,7 +642,8 @@ struct FnPokeDWMatrix
   inline typename BinaryReturn<T1, T2, FnPokeDWMatrix>::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
-    return (pokeDW(const_cast<T1&>(a),b,row,col));
+    pokeDW(const_cast<T1&>(a),b,row,col);
+    return const_cast<T1&>(a);
   }
 
 private:
@@ -656,7 +661,8 @@ struct FnPokeDWVector
   inline typename BinaryReturn<T1, T2, FnPokeDWVector>::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
-    return (pokeDW(const_cast<T1&>(a),b,row));
+    pokeDW(const_cast<T1&>(a),b,row);
+    return const_cast<T1&>(a);
   }
 
 private:
