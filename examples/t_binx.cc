@@ -1,4 +1,4 @@
-// $Id: t_binx.cc,v 1.4 2004-06-05 19:57:13 edwards Exp $
+// $Id: t_binx.cc,v 1.5 2004-06-05 20:16:14 edwards Exp $
 //
 // Write out binary with some XML markup
 // in the binx format.
@@ -38,9 +38,12 @@ int main(int argc, char **argv)
   float cc = 3.2 ;
   write(tobinary, cc);
 
+#if 0
   multi1d<int> dd(2);
   dd[0] = dd[1] = 7;
   write(tobinary,dd);
+#endif
+
   tobinary.close();
   // Time to bolt
   QDP_finalize();
