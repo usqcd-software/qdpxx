@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: primspinmat.h,v 1.6 2002-11-07 19:25:50 edwards Exp $
+// $Id: primspinmat.h,v 1.7 2002-11-28 01:47:11 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -874,9 +874,9 @@ quarkContract13(const PSpinMatrix<T1,4>& s1, const PSpinMatrix<T2,4>& s2)
   for(int j=0; j < 4; ++j)
     for(int i=0; i < 4; ++i)
     {
-      d.elem(i,j) = quarkcontractxx(s1.elem(0,i), s2.elem(0,j));
+      d.elem(i,j) = quarkContractXX(s1.elem(0,i), s2.elem(0,j));
       for(int k=1; k < 4; ++k)
-	d.elem(i,j) += quarkcontractxx(s1.elem(k,i), s2.elem(k,j));
+	d.elem(i,j) += quarkContractXX(s1.elem(k,i), s2.elem(k,j));
     }
 
   return d;
@@ -891,9 +891,9 @@ quarkContract14(const PSpinMatrix<T1,4>& s1, const PSpinMatrix<T2,4>& s2)
   for(int j=0; j < 4; ++j)
     for(int i=0; i < 4; ++i)
     {
-      d.elem(i,j) = quarkcontractxx(s1.elem(0,i), s2.elem(j,0));
+      d.elem(i,j) = quarkContractXX(s1.elem(0,i), s2.elem(j,0));
       for(int k=1; k < 4; ++k)
-	d.elem(i,j) += quarkcontractxx(s1.elem(k,i), s2.elem(j,k));
+	d.elem(i,j) += quarkContractXX(s1.elem(k,i), s2.elem(j,k));
     }
 
   return d;
@@ -908,9 +908,9 @@ quarkContract23(const PSpinMatrix<T1,4>& s1, const PSpinMatrix<T2,4>& s2)
   for(int j=0; j < 4; ++j)
     for(int i=0; i < 4; ++i)
     {
-      d.elem(i,j) = quarkcontractxx(s1.elem(i,0), s2.elem(0,j));
+      d.elem(i,j) = quarkContractXX(s1.elem(i,0), s2.elem(0,j));
       for(int k=1; k < 4; ++k)
-	d.elem(i,j) += quarkcontractxx(s1.elem(i,k), s2.elem(k,j));
+	d.elem(i,j) += quarkContractXX(s1.elem(i,k), s2.elem(k,j));
     }
 
   return d;
@@ -925,9 +925,9 @@ quarkContract24(const PSpinMatrix<T1,4>& s1, const PSpinMatrix<T2,4>& s2)
   for(int j=0; j < 4; ++j)
     for(int i=0; i < 4; ++i)
     {
-      d.elem(i,j) = quarkcontractxx(s1.elem(i,0), s2.elem(j,0));
+      d.elem(i,j) = quarkContractXX(s1.elem(i,0), s2.elem(j,0));
       for(int k=1; k < 4; ++k)
-	d.elem(i,j) += quarkcontractxx(s1.elem(i,k), s2.elem(j,k));
+	d.elem(i,j) += quarkContractXX(s1.elem(i,k), s2.elem(j,k));
     }
 
   return d;
@@ -942,9 +942,9 @@ quarkContract12(const PSpinMatrix<T1,4>& s1, const PSpinMatrix<T2,4>& s2)
   for(int j=0; j < 4; ++j)
     for(int i=0; i < 4; ++i)
     {
-      d.elem(i,j) = quarkcontractxx(s1.elem(0,0), s2.elem(i,j));
+      d.elem(i,j) = quarkContractXX(s1.elem(0,0), s2.elem(i,j));
       for(int k=1; k < 4; ++k)
-	d.elem(i,j) += quarkcontractxx(s1.elem(k,k), s2.elem(i,j));
+	d.elem(i,j) += quarkContractXX(s1.elem(k,k), s2.elem(i,j));
     }
 
   return d;
@@ -959,9 +959,9 @@ quarkContract34(const PSpinMatrix<T1,4>& s1, const PSpinMatrix<T2,4>& s2)
   for(int j=0; j < 4; ++j)
     for(int i=0; i < 4; ++i)
     {
-      d.elem(i,j) = quarkcontractxx(s1.elem(i,j), s2.elem(0,0));
+      d.elem(i,j) = quarkContractXX(s1.elem(i,j), s2.elem(0,0));
       for(int k=1; k < 4; ++k)
-	d.elem(i,j) += quarkcontractxx(s1.elem(i,j), s2.elem(k,k));
+	d.elem(i,j) += quarkContractXX(s1.elem(i,j), s2.elem(k,k));
     }
 
   return d;
