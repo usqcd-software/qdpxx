@@ -1,0 +1,3 @@
+This implementation has been developed under gcc-3.X.
+It is known (for simple reasons) not to compiled under
+gcc-2.X .
