@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.4 2003-06-08 02:44:20 edwards Exp $
+// $Id: qdp_parscalar_init.cc,v 1.5 2003-06-20 02:41:28 edwards Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -146,5 +146,12 @@ void QDP_abort(int status)
 {
   QMP_abort(status); 
 }
+
+//! Resumes QDP communications
+void QDP_resume() {}
+
+//! Suspends QDP communications
+void QDP_suspend() {}
+
 
 QDP_END_NAMESPACE();

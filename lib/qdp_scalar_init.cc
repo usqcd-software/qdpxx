@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_init.cc,v 1.3 2003-06-09 16:36:36 edwards Exp $
+// $Id: qdp_scalar_init.cc,v 1.4 2003-06-20 02:41:28 edwards Exp $
 
 /*! @file
  * @brief Scalar init routines
@@ -39,8 +39,17 @@ void QDP_finalize()
 }
 
 //! Panic button
-void QDP_abort(int status) {QDP_finalize(); exit(status);}
+void QDP_abort(int status)
+{
+  QDP_finalize(); 
+  exit(status);
+}
 
+//! Resumes QDP communications
+void QDP_resume() {}
+
+//! Suspends QDP communications
+void QDP_suspend() {}
 
 
 QDP_END_NAMESPACE();
