@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.4 2003-07-18 20:12:45 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.5 2003-07-18 21:14:00 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -25,6 +25,19 @@
 
 QDP_BEGIN_NAMESPACE(QDP);
 
+//-----------------------------------------------------------------------------
+// IO routine solely for debugging. Only defined here
+template<class T>
+ostream& operator<<(ostream& s, const multi1d<T>& s1)
+{
+  for(int i=0; i < s1.size(); ++i)
+    s << " " << s1[i];
+
+  return s;
+}
+
+
+//-----------------------------------------------------------------------------
 namespace Layout
 {
   //-----------------------------------------------------
@@ -106,6 +119,8 @@ namespace Layout
   //! Returns the logical size of this machine
   const multi1d<int>& logicalSize() {return _layout.logical_size;}
 
+  //! Return the smallest lattice size per node allowed
+  multi1d<int> minimalLayoutMapping();
 
   //! Initializer for layout
   void init()
@@ -172,10 +187,22 @@ namespace Layout
 	QDP_error_exit("Layout::create - problem size not divisible by number of processors");
     }
     
-    // Crap to make the compiler happy with the C prototype
+    // Return the smallest lattice size per node allowed
+    multi1d<int> min_dim = minimalLayoutMapping();
+
+    // Another sanity check - if the specified lattice size is not a multiple
+    // of the minimal size, then barf
+    for(int i=0; i < Nd; ++i)
+      if (_layout.nrow[i] % min_dim[i] != 0)
+	QDP_error_exit("Layout::create - Error: problem size not multiple of smallest size allowed for this type of layout");
+
+
+    // Now, layout the machine. Note, if the logical_machine size was set previously
+    // it will be used
+    /* Crap to make the compiler happy with the C prototype */
     unsigned int unsigned_nrow[Nd];
     for(int i=0; i < Nd; ++i)
-      unsigned_nrow[i] = _layout.nrow[i];
+      unsigned_nrow[i] = _layout.nrow[i] / min_dim[i];
 
     QMP_layout_grid(unsigned_nrow, Nd);
 
@@ -183,19 +210,20 @@ namespace Layout
     // Pull out useful stuff
     const unsigned int* phys_size = QMP_get_logical_dimensions();
     const unsigned int* phys_coord = QMP_get_logical_coordinates();
-    const unsigned int* subgrid_size = QMP_get_subgrid_dimensions();
-
-    _layout.subgrid_vol = QMP_get_number_of_subgrid_sites();
 
     _layout.subgrid_nrow.resize(Nd);
     _layout.logical_coord.resize(Nd);
     _layout.logical_size.resize(Nd);
 
+    _layout.subgrid_vol = 1;
+
     for(int i=0; i < Nd; ++i)
     {
-      _layout.subgrid_nrow[i] = subgrid_size[i];
       _layout.logical_coord[i] = phys_coord[i];
       _layout.logical_size[i] = phys_size[i];
+      _layout.subgrid_nrow[i] = _layout.nrow[i] / _layout.logical_size[i];
+
+      _layout.subgrid_vol *= _layout.subgrid_nrow[i];
     }
 
     // Diagnostics
@@ -226,13 +254,21 @@ namespace Layout
       cerr << "  subgrid volume = " << _layout.subgrid_vol << endl;
     }
 
+    ostringstream fooname;
+    fooname << "layout." << Layout::nodeNumber();
+    ofstream foo(fooname.str().c_str());
+
     // Sanity check - check the layout functions make sense
     for(int i=0; i < _layout.subgrid_vol; ++i) 
     {
-      int j = Layout::linearSiteIndex(Layout::siteCoords(Layout::nodeNumber(),i));
-      if (i != j)
-	QDP_error_exit("Layout::create - Layout problems, the layout functions do not work correctly with this lattice size");
+      multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(),i);
+      int j = Layout::linearSiteIndex(coord);
+      
+      foo << "i= "<< i << "  coord= " << coord << "  j= " << j << endl;
+//      if (i != j)
+//	QDP_error_exit("Layout::create - Layout problems, the layout functions do not work correctly with this lattice size");
     }
+    foo.close();
 
     // Initialize various defaults
     InitDefaults();
@@ -291,6 +327,17 @@ namespace Layout
 
     return coord;
   }
+
+
+  //! Return the smallest lattice size per node allowed
+  /*! This layout is a simple lexicographic lattice ordering */
+  multi1d<int> minimalLayoutMapping()
+  {
+    multi1d<int> dim(Nd);
+    dim = 1;
+
+    return dim;
+  }
 };
 
 //-----------------------------------------------------------------------------
@@ -315,7 +362,8 @@ namespace Layout
     cb &= 1;
 
     multi1d<int> subgrid_cb_coord(Nd);
-    for(int i=0; i < Nd; ++i)
+    subgrid_cb_coord[0] = (coord[0] >> 1) % subgrid_cb_nrow[0];
+    for(int i=1; i < Nd; ++i)
       subgrid_cb_coord[i] = coord[i] % subgrid_cb_nrow[i];
     
     return local_site(subgrid_cb_coord, subgrid_cb_nrow) + cb*subgrid_vol_cb;
@@ -323,23 +371,19 @@ namespace Layout
 
 
   //! The node number for the corresponding lattice coordinate
-  /*! This layout is a simple lexicographic lattice ordering */
+  /*! 
+   * This layout is appropriate for a 2 checkerboard (red/black) lattice,
+   * but to find the nodeNumber this function resembles a simple lexicographic 
+   * layout
+   */
   int nodeNumber(const multi1d<int>& coord)
   {
-    int subgrid_vol_cb = Layout::sitesOnNode() >> 1;
-    multi1d<int> subgrid_cb_nrow = Layout::subgridLattSize();
-    subgrid_cb_nrow[0] >>= 1;
+    multi1d<int> tmp_coord(Nd);
 
-    int cb = 0;
-    for(int m=0; m < Nd; ++m)
-      cb += coord[m];
-    cb &= 1;
-
-    multi1d<int> logical_cb_coord(Nd);
-    for(int i=0; i < Nd; ++i)
-      logical_cb_coord[i] = coord[i] / subgrid_cb_nrow[i];
+    for(int i=0; i < coord.size(); ++i)
+      tmp_coord[i] = coord[i] / Layout::subgridLattSize()[i];
     
-    return local_site(logical_cb_coord, Layout::logicalSize());
+    return local_site(tmp_coord, Layout::logicalSize());
   }
 
 
@@ -354,31 +398,145 @@ namespace Layout
     multi1d<int> subgrid_cb_nrow = Layout::subgridLattSize();
     subgrid_cb_nrow[0] >>= 1;
 
-    multi1d<int> coord = crtesn(node, Layout::logicalSize());
-
     // Get the base (origins) of the absolute lattice coord
+    multi1d<int> coord = crtesn(node, Layout::logicalSize());
     coord *= Layout::subgridLattSize();
     
     int cb = linearsite / subgrid_vol_cb;
-    coord += crtesn(linearsite % subgrid_vol_cb, subgrid_cb_nrow);
+    multi1d<int> tmp_coord = crtesn(linearsite % subgrid_vol_cb, subgrid_cb_nrow);
 
     int cbb = cb;
     for(int m=1; m < Nd; ++m)
-      cbb += coord[m];
+      cbb += tmp_coord[m];
     cbb &= 1;
 
-    coord[0] = 2*coord[0] + cbb;
+    // Add on position within the node
+    coord[0] += 2*tmp_coord[0] + cbb;
+    for(int m=1; m < Nd; ++m)
+      coord[m] += tmp_coord[m];
 
     return coord;
   }
+
+
+  //! Return the smallest lattice size per node allowed
+  /*! This layout is appropriate for a 2 checkerboard (red/black) lattice */
+  multi1d<int> minimalLayoutMapping()
+  {
+    multi1d<int> dim(Nd);
+    dim = 1;
+    dim[0] = 2;       // must have multiple length 2 for cb
+
+    return dim;
+  }
 };
+
 
 //-----------------------------------------------------------------------------
 
 #elif defined(USE_CB32_LAYOUT)
 
-#error "Using a 32 checkerboard layout"
+#warning "Using a 32 checkerboard layout"
 
+#error "THIS BIT STILL UNDER CONSTRUCTION"
+
+namespace Layout
+{
+  //! The linearized site index for the corresponding coordinate
+  /*! This layout is appropriate for a 32-style checkerboard lattice */
+  int linearSiteIndex(const multi1d<int>& coord)
+  {
+    int vol_cb = vol() >> (Nd+1);
+    multi1d<int> cb_nrow(Nd);
+    cb_nrow[0] = lattSize()[0] >> 2;
+    for(int i=1; i < Nd; ++i) 
+      cb_nrow[i] = lattSize()[i] >> 1;
+
+    int subl = coord[Nd-1] & 1;
+    for(int m=Nd-2; m >= 0; --m)
+      subl = (subl << 1) + (coord[m] & 1);
+
+    int cb = 0;
+    for(int m=0; m < Nd; ++m)
+      cb += coord[m] >> 1;
+
+    subl += (cb & 1) << Nd;   // Final color or checkerboard
+
+    // Construct the checkerboard lattice coord
+    multi1d<int> cb_coord(Nd);
+
+    cb_coord[0] = coord[0] >> 2;
+    for(int m=1; m < Nd; ++m)
+      cb_coord[m] = coord[m] >> 1;
+
+    return local_site(cb_coord, cb_nrow) + subl*vol_cb;
+  }
+
+
+  //! The node number for the corresponding lattice coordinate
+  /*! 
+   * This layout is appropriate for a 2 checkerboard (red/black) lattice,
+   * but to find the nodeNumber this function resembles a simple lexicographic 
+   * layout
+   */
+  int nodeNumber(const multi1d<int>& coord)
+  {
+    multi1d<int> tmp_coord(Nd);
+
+    for(int i=0; i < coord.size(); ++i)
+      tmp_coord[i] = coord[i] / Layout::subgridLattSize()[i];
+    
+    return local_site(tmp_coord, Layout::logicalSize());
+  }
+
+
+  //! Reconstruct the lattice coordinate from the node and site number
+  /*! 
+   * This is the inverse of the nodeNumber and linearSiteIndex functions.
+   * The API requires this function to be here.
+   */
+  multi1d<int> siteCoords(int node, int linearsite) // ignore node
+  {
+    int vol_cb = vol() >> (Nd+1);
+    multi1d<int> cb_nrow(Nd);
+    cb_nrow[0] = lattSize()[0] >> 2;
+    for(int i=1; i < Nd; ++i) 
+      cb_nrow[i] = lattSize()[i] >> 1;
+
+    int subl = linearsite / vol_cb;
+    multi1d<int> coord = crtesn(linearsite % vol_cb, cb_nrow);
+
+    int cb = 0;
+    for(int m=1; m<Nd; ++m)
+      cb += coord[m];
+    cb &= 1;
+
+    coord[0] <<= 2;
+    for(int m=1; m<Nd; ++m)
+      coord[m] <<= 1;
+
+    subl ^= (cb << Nd);
+    for(int m=0; m<Nd; ++m)
+      coord[m] ^= (subl & (1 << m)) >> m;
+    coord[0] ^= (subl & (1 << Nd)) >> (Nd-1);   // this gets the hypercube cb
+
+    return coord;
+  }
+
+
+  //! Return the smallest lattice size per node allowed
+  /*! This layout is appropriate for a 32-style checkerboard lattice */
+  multi1d<int> minimalLayoutMapping()
+  {
+    multi1d<int> dim(Nd);
+
+    dim[0] = 4;       // must have multiple length 2 for cb and hypercube
+    for(int m=1; m < Nd; ++m)
+      dim[m] = 2;     //  must have multiple length 2 for hypercube
+
+    return dim;
+  }
+};
 
 #else
 
