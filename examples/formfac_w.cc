@@ -1,4 +1,4 @@
-// $Id: formfac_w.cc,v 1.14 2004-02-11 10:33:09 bjoo Exp $
+// $Id: formfac_w.cc,v 1.15 2004-07-27 05:38:37 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -47,6 +47,8 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 	     int t_sink, int j_decay,
 	     NmlWriter& nml)
 {
+  START_CODE();
+
   // Create the time-slice set
   UnorderedSet timeslice;
   timeslice.make(TimeSliceFunc(j_decay));
@@ -56,8 +58,6 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
   multi1d<Complex> local_cur3ptfn(length);
   multi1d<Complex> nonlocal_cur3ptfn(length);
   
-//  START_CODE("formfac");
-
   int t0 = t_source[j_decay];
   int G5 = Ns*Ns-1;
   
@@ -186,5 +186,5 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
     }
   }
                             
-//  END_CODE();
+  END_CODE();
 }

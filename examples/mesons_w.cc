@@ -1,4 +1,4 @@
-//  $Id: mesons_w.cc,v 1.9 2003-09-03 19:50:42 edwards Exp $
+//  $Id: mesons_w.cc,v 1.10 2004-07-27 05:38:37 edwards Exp $
 /*! \file
  *  \brief Meson 2-pt functions
  */
@@ -47,6 +47,8 @@ void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quar
 	    multi2d<Real>& meson_propagator, 
 	    const multi1d<int>& t_source, int j_decay)
 {
+  START_CODE();
+
   // Create the time-slice set
   UnorderedSet timeslice;
   timeslice.make(TimeSliceFunc(j_decay));
@@ -81,4 +83,6 @@ void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quar
       meson_propagator[n][t_eff] += Real(hsum[t]);
     }
   }
+
+  END_CODE();
 }

@@ -1,4 +1,4 @@
-// $Id: taproj.cc,v 1.1 2003-09-10 02:10:11 edwards Exp $
+// $Id: taproj.cc,v 1.2 2004-07-27 05:38:37 edwards Exp $
 // TAPROJ
 
 /*! \file
@@ -25,7 +25,7 @@ using namespace QDP;
 
 void taproj(LatticeColorMatrix& a)
 {
-  START_CODE("taproj");
+  START_CODE();
 
   // a = a - a_dagger  --- a -> antihermitian matrix
   LatticeColorMatrix aux_1 = a;
@@ -43,5 +43,5 @@ void taproj(LatticeColorMatrix& a)
   // Normalisation to make taproj idempotent
   a *= 0.5;
   
-  END_CODE("taproj");
+  END_CODE();
 }

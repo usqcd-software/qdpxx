@@ -1,4 +1,4 @@
-// $Id: reunit.cc,v 1.4 2003-10-09 19:59:39 edwards Exp $
+// $Id: reunit.cc,v 1.5 2004-07-27 05:38:37 edwards Exp $
 
 /*! \file
  *  \brief Reunitarize (to a SU(N)) inplace the matrix A under some option
@@ -39,6 +39,8 @@ void reunit(LatticeColorMatrix& xa)
 void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad, 
 	    int& numbad, enum Reunitarize ruflag)
 {
+  START_CODE();
+  
   multi2d<LatticeComplex> a(Nc, Nc);
   multi2d<LatticeComplex> b(Nc, Nc);
   LatticeReal t1;
@@ -47,8 +49,6 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
   LatticeReal t4;
   LatticeReal sigmasq;
   multi1d<LatticeComplex> row(Nc);
-  
-  START_CODE("reunit");;
   
   // The initial number of matrices violating unitarity.
   numbad = 0;
@@ -262,7 +262,6 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
       /* Label the bad guys if unitarity is violated. */
       bad = sigmasq > fuzz;
       numbad = toInt(sum(where(bad,LatticeInteger(1), LatticeInteger(0))));
-
     default:
       break;
     }
@@ -399,7 +398,6 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
 	sigmasq = sqrt(sigmasq);
       }
 
-      numbad = toInt(sum(where(sigmasq > fuzz, LatticeInteger(1), LatticeInteger(0))));
 
       /* Do things depending on the mean squared deviation */
       switch (ruflag)
@@ -413,7 +411,7 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
       case REUNITARIZE_LABEL:
 	/* Label the bad guys if unitarity is violated. */
 	bad = sigmasq > fuzz;
-	numbad = toInt(sum(where(bad, LatticeInteger(1), LatticeInteger(0))));
+	numbad = toInt(sum(where(bad,LatticeInteger(1), LatticeInteger(0))));
       default:
 	break;
       }
@@ -427,5 +425,5 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
     for(int j=0; j < Nc; ++j)
       pokeColor(xa, a[i][j], i, j);
 
-  END_CODE("reunit");
+  END_CODE();
 }

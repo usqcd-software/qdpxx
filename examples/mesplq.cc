@@ -1,4 +1,4 @@
-// $Id: mesplq.cc,v 1.15 2003-08-20 10:17:11 bjoo Exp $
+// $Id: mesplq.cc,v 1.16 2004-07-27 05:38:37 edwards Exp $
 /*! \file
  *  \brief Plaquette measurement
  */
@@ -22,6 +22,8 @@ static int tDir() {return Nd-1;}
 void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq, 
 	    Double& t_plaq, Double& link)
 {
+  START_CODE();
+
   s_plaq = t_plaq = w_plaq = link = 0.0;
 
   // Compute the average plaquettes
@@ -29,7 +31,7 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
   {
     for(int nu=0; nu < mu; ++nu)
     {
-#if 0
+#if 1
       /* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
       LatticeColorMatrix tmp_0 = shift(u[nu],FORWARD,mu) * adj(shift(u[mu],FORWARD,nu));
 
@@ -41,6 +43,7 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
 
 #else
       /* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
+
       /* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
       /* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
       Double tmp = 
@@ -69,4 +72,6 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
     link += sum(real(trace(u[mu])));
 
   link /= double(12*Layout::vol()*Nd);
+
+  END_CODE();
 }

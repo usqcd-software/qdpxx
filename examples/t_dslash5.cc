@@ -1,4 +1,4 @@
-// $Id: t_dslash5.cc,v 1.2 2004-02-11 10:33:09 bjoo Exp $
+// $Id: t_dslash5.cc,v 1.3 2004-07-27 05:38:37 edwards Exp $
 /*! \file
  *  \brief Test the Wilson-Dirac operator (dslash)
  */
@@ -46,7 +46,7 @@ void dslash(LatticeDWFermion& chi,
 	    const LatticeDWFermion& psi,
 	    int isign, int cb)
 {
-  START_CODE("lDWDslash");
+  START_CODE();
 
   /*     F 
    *   a2  (x)  :=  U  (x) (1 - isign gamma  ) psi(x)
@@ -115,7 +115,7 @@ void dslash(LatticeDWFermion& chi,
     break;
   }
 
-  END_CODE("lDWDslash");
+  END_CODE();
 
 }
 

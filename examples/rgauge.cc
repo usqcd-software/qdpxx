@@ -1,4 +1,4 @@
-// $Id: rgauge.cc,v 1.1 2003-09-10 02:10:11 edwards Exp $
+// $Id: rgauge.cc,v 1.2 2004-07-27 05:38:37 edwards Exp $
 /*! \file
  *  \brief Do a random gauge transformation on the u fields
  */
@@ -20,7 +20,7 @@ using namespace QDP;
 
 void rgauge(multi1d<LatticeColorMatrix>& u, LatticeColorMatrix& g)
 {
-  START_CODE("rgauge");
+  START_CODE();
   
   // g = exp(A), where A = random traceless antihermitian matrix.
   
@@ -42,5 +42,5 @@ void rgauge(multi1d<LatticeColorMatrix>& u, LatticeColorMatrix& g)
     u[mu] = u_tmp * shift(adj(g), FORWARD, mu);
   }
     
-  END_CODE("rgauge");
+  END_CODE();
 }
