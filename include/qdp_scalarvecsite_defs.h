@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_defs.h,v 1.12 2004-10-22 15:26:59 edwards Exp $
+// $Id: qdp_scalarvecsite_defs.h,v 1.13 2005-01-14 19:33:17 dgr Exp $
 
 /*! \file
  * \brief Type definitions
@@ -160,10 +160,10 @@ typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, 2>, 4> > LatticeDiracPropagatorF2;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, 1>, 4> > LatticeDiracPropagatorF1;
 
-typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc>, 1> > LatticeStaggerdPropagatorF;
-typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, 3>, 1> > LatticeStaggerdPropagatorF3;
-typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, 2>, 1> > LatticeStaggerdPropagatorF2;
-typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, 1>, 1> > LatticeStaggerdPropagatorF1;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc>, 1> > LatticeStaggeredPropagatorF;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, 3>, 1> > LatticeStaggeredPropagatorF3;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, 2>, 1> > LatticeStaggeredPropagatorF2;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, 1>, 1> > LatticeStaggeredPropagatorF1;
 
 typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL32,INNER_LEN> >, Nc>, Ns> > LatticeFermionF;
 typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL32,INNER_LEN> >, 3>, Ns> > LatticeFermionF3;
