@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_layout.cc,v 1.2 2003-07-17 01:48:36 edwards Exp $
+// $Id: qdp_scalar_layout.cc,v 1.3 2003-07-18 03:22:45 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -106,11 +106,9 @@ namespace Layout
   void init() {}
 
   //! The linearized site index for the corresponding lexicographic site
-  int linearSiteIndex(int site)
+  int linearSiteIndex(int lexicosite)
   {
-    multi1d<int> coord = crtesn(site, lattSize());
-    
-    return linearSiteIndex(coord);
+    return linearSiteIndex(crtesn(lexicosite, lattSize()));
   }
 
   //! Initializer for all the layout defaults
@@ -262,18 +260,18 @@ namespace Layout
     multi1d<int> coord = crtesn(linearsite % vol_cb, cb_nrow);
 
     int cb = 0;
-    for(int m=1; m<coord.size(); ++m)
+    for(int m=1; m<Nd; ++m)
       cb += coord[m];
     cb &= 1;
 
     coord[0] <<= 2;
-    for(int m=1; m<coord.size(); ++m)
+    for(int m=1; m<Nd; ++m)
       coord[m] <<= 1;
 
-    coord[0] ^= cb << 1;
-    for(int m=0; m<coord.size(); ++m)
+    subl ^= (cb << Nd);
+    for(int m=0; m<Nd; ++m)
       coord[m] ^= (subl & (1 << m)) >> m;
-    coord[0] ^= (subl & (1 << Nd)) >> 1;
+    coord[0] ^= (subl & (1 << Nd)) >> (Nd-1);   // this gets the hypercube cb
 
     return coord;
   }
@@ -288,22 +286,21 @@ namespace Layout
     for(int i=1; i < Nd; ++i) 
       cb_nrow[i] = lattSize()[i] >> 1;
 
-    int NN = coord.size();
-    int subl = coord[NN-1] & 1;
-    for(int m=NN-2; m >= 0; --m)
+    int subl = coord[Nd-1] & 1;
+    for(int m=Nd-2; m >= 0; --m)
       subl = (subl << 1) + (coord[m] & 1);
 
     int cb = 0;
-    for(int m=0; m < NN; ++m)
+    for(int m=0; m < Nd; ++m)
       cb += coord[m] >> 1;
 
-    subl += (cb & 1) << NN;   // Final color or checkerboard
+    subl += (cb & 1) << Nd;   // Final color or checkerboard
 
     // Construct the checkerboard lattice coord
-    multi1d<int> cb_coord(NN);
+    multi1d<int> cb_coord(Nd);
 
     cb_coord[0] = coord[0] >> 2;
-    for(int m=1; m < NN; ++m)
+    for(int m=1; m < Nd; ++m)
       cb_coord[m] = coord[m] >> 1;
 
     return local_site(cb_coord, cb_nrow) + subl*vol_cb;
