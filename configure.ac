@@ -62,6 +62,14 @@ dnl Tell the user about Ns
 AC_MSG_NOTICE([Configuring QDP++ for Ns = ${ac_Ns}])
 
 
+dnl --enable-print-expression-tree
+AC_ARG_ENABLE(print-expression-tree,
+  AC_HELP_STRING([--enable-print-expression-tree],
+    [Prints QDP expression tree. Diagnostic use only.]),
+  [ac_print_tree=1],
+  [ac_print_tree=0]
+)
+
 dnl --enable-parallel-arch argument
 AC_ARG_ENABLE(parallel-arch,
   AC_HELP_STRING([--enable-parallel-arch=<arch>],
@@ -77,7 +85,6 @@ AC_ARG_ENABLE(sse,
   [ac_sse=1],
   [ac_sse=0]
 )
-
 
 dnl --enable-sse2
 AC_ARG_ENABLE(sse2,
@@ -114,7 +121,7 @@ if test ${ac_sse} -eq 1; then
     AC_SUBST(CONFIG_SSE,[${ac_sse}])
     AC_MSG_NOTICE([Configuring QDP++ with SSE extentions enabled]);
   else 
-    AC_MSG_NOTICE([ WARNING: Non GNU Compiler. SSE Only supported for GCC-3.2.2 or greater due to feature creep. Sorry ])
+    AC_MSG_NOTICE([WARNING: Non GNU Compiler. SSE Only supported for GCC-3.2.2 or greater due to feature creep. Sorry])
   fi
 fi
 
@@ -128,7 +135,7 @@ if test ${ac_sse2} -eq 1; then
     AC_SUBST(CONFIG_SSE2,[${ac_sse2}])
     AC_MSG_NOTICE([Configuring QDP++ with SSE2 extentions enabled]);
   else 
-    AC_MSG_NOTICE([ WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry ])
+    AC_MSG_NOTICE([WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry])
   fi
 fi
 
@@ -141,12 +148,18 @@ if test ${ac_qcdoc_enabled} -eq 1; then
    fi
 fi
 
+dnl Check if print-tree is enabled
+if test ${ac_print_tree} -eq 1; then 
+   AC_DEFINE_UNQUOTED(QDP_PRINT_EXPR_TREE, ${ac_print_tree}, [Print QDP expressions])
+   AC_MSG_NOTICE([Enabling printing of QDP expressions])
+fi
 
-AC_ARG_ENABLE(precision, 
-  AC_HELP_STRING( [ --enable-precision=single|double ],
-                  [ Sets the base precision to be single or double precision (default is single) ] ),
-  [ ac_precision=${enableval} ],
-  [ ac_precision="single" ] )
+dnl Precision munging
+AC_ARG_ENABLE(precision,
+  AC_HELP_STRING([--enable-precision=single|double],
+                 [Sets the base precision to be single or double precision (default is single) ]),
+  [ac_precision=${enableval}],
+  [ac_precision="single"])
 
 case ${ac_precision} in 
 single)
