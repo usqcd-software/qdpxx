@@ -34,9 +34,9 @@ VPATH+=@top_srcdir@/examples
 # The programs to build
 # 
 check_PROGRAMS = t_skeleton t_io t_mesplq \
-      t_nml t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic
+      t_nml t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio 
 
-EXTRA_PROGRAMS  = t_qio t_qio_factory t_binx
+EXTRA_PROGRAMS  = t_qio_factory t_binx
 
 
 if BUILD_WILSON_EXAMPLES
