@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.16 2003-10-17 15:56:23 edwards Exp $
+// $Id: qdp_reality.h,v 1.17 2003-11-01 20:34:47 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1294,6 +1294,15 @@ peekDW(const RScalar<T>& l, int row)
   return peekDW(l.elem(),row);
 }
 
+//! Insert domain-wall vector components 
+/*! Generically, this is an identity operation. Defined differently under domain-wall */
+template<class T1, class T2>
+inline RScalar<T1>&
+pokeDW(RScalar<T1>& l, const RScalar<T2>& r, int row)
+{
+  pokeDW(l.elem(),r.elem(),row);
+  return l;
+}
 
 //-----------------------------------------------------------------------------
 //! QDP Int to int primitive in conversion routine
@@ -1960,6 +1969,30 @@ getSite(const RComplex<T>& s1, int innersite)
 
   return Return_t(getSite(s1.real(), innersite), 
 		  getSite(s1.imag(), innersite));
+}
+
+
+//! Extract domain-wall vector components 
+/*! Generically, this is an identity operation. Defined differently under domain-wall index */
+template<class T>
+inline typename UnaryReturn<RComplex<T>, FnPeekDWVector>::Type_t
+peekDW(const RComplex<T>& l, int row)
+{
+  typedef typename UnaryReturn<RComplex<T>, FnPeekDWVector>::Type_t  Return_t;
+
+  return Return_t(peekDW(l.real(),row), peekDW(l.imag(),row));
+}
+
+
+//! Insert domain-wall vector components 
+/*! Generically, this is an identity operation. Defined differently under domain-wall */
+template<class T1, class T2>
+inline RComplex<T1>&
+pokeDW(RComplex<T1>& l, const RComplex<T2>& r, int row)
+{
+  pokeDW(l.real(),r.real(),row);
+  pokeDW(l.imag(),r.imag(),row);
+  return l;
 }
 
 
