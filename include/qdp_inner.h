@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.12 2003-09-01 21:14:11 edwards Exp $
+// $Id: qdp_inner.h,v 1.13 2003-09-02 20:16:46 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -798,9 +798,9 @@ struct TrinaryReturn<ILattice<T1,N>, IScalar<T2>, IScalar<T3>, Op> {
 
 // Specific IScalar cases
 // Global operations
-template<class T1, class T2 >
-struct BinaryReturn<IScalar<T1>, IScalar<T2>, FnPeekSite> {
-  typedef IScalar<typename BinaryReturn<T1, T2, FnPeekSite>::Type_t>  Type_t;
+template<class T>
+struct UnaryReturn<IScalar<T>, FnPeekSite> {
+  typedef IScalar<typename UnaryReturn<T, FnPeekSite>::Type_t>  Type_t;
 };
 
 template<class T>
@@ -906,7 +906,7 @@ struct TrinaryReturn<IScalar<T1>, IScalar<T2>, IScalar<T3>, FnColorContract> {
 // Global operations
 template<class T, int N>
 struct UnaryReturn<ILattice<T,N>, FnSumMulti> {
-  typedef multi1d<IScalar<typename UnaryReturn<T, FnSumMulti>::Type_t> >  Type_t;
+  typedef IScalar<typename UnaryReturn<T, FnSumMulti>::Type_t>  Type_t;
 };
 
 
@@ -1006,9 +1006,9 @@ struct TrinaryReturn<ILattice<T1,N>, ILattice<T2,N>, ILattice<T3,N>, FnColorCont
 
 // Mixed ILattice & IScalar cases
 // Global operations
-template<class T1, class T2, int N>
-struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnPeekSite> {
-  typedef IScalar<typename BinaryReturn<T1, T2, FnPeekSite>::Type_t>  Type_t;
+template<class T, int N>
+struct UnaryReturn<ILattice<T,N>, FnPeekSite> {
+  typedef IScalar<typename UnaryReturn<T, FnPeekSite>::Type_t>  Type_t;
 };
 
 template<class T1, class T2, int N>
@@ -2939,10 +2939,10 @@ struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnLocalInnerProduct> {
 };
 
 template<class T1, class T2, int N>
-inline IScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnLocalInnerProduct>::Type_t
 localInnerProduct(const ILattice<T1,N>& s1, const ILattice<T2,N>& s2)
 {
-  IScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  d;
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnLocalInnerProduct>::Type_t  d;
 
   for(int i=0; i < N; ++i)
     d.elem(i) = localInnerProduct(s1.elem(i), s2.elem(i));
@@ -2966,10 +2966,10 @@ struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnLocalInnerProductReal> {
 };
 
 template<class T1, class T2, int N>
-inline IScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>
+inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnLocalInnerProductReal>::Type_t
 localInnerProductReal(const ILattice<T1,N>& s1, const ILattice<T2,N>& s2)
 {
-  IScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  d;
+  typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnLocalInnerProductReal>::Type_t  d;
 
   for(int i=0; i < N; ++i)
     d.elem(i) = localInnerProductReal(s1.elem(i), s2.elem(i));
