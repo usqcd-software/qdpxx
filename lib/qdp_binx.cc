@@ -1,6 +1,9 @@
-// $Id: qdp_binx.cc,v 1.1 2004-03-25 13:58:57 mcneile Exp $
+// $Id: qdp_binx.cc,v 1.2 2004-03-25 15:12:09 mcneile Exp $
 //
 // QDP data parallel interface to binx writers
+//
+// I assume that the primary node business is dealt
+// with by the lower obects.
 //
 
 #include "qdp.h"
@@ -18,8 +21,11 @@ BinxWriter::BinxWriter(const std::string& p) {open(p);}
 
 void BinxWriter::open(const std::string& p) 
 {
-  if (Layout::primaryNode()) 
-    f.open(p.c_str(),std::ofstream::out | std::ofstream::trunc | std::ofstream::binary);
+
+  std::string p_xml = p + "_binx.xml" ; 
+  tobinary = new BinaryWriter(p); 
+  toxml =  new XMLFileWriter(p_xml) ;
+
 
   if (! is_open())
     QDP_error_exit("BinxWriter: error opening file %s",p.c_str());
@@ -29,8 +35,8 @@ void BinxWriter::close()
 {
   if (is_open())
   {
-    if (Layout::primaryNode()) 
-      f.close();
+    tobinary->close(); 
+    toxml->close(); 
   }
 }
 
@@ -40,8 +46,8 @@ bool BinxWriter::is_open()
 {
   bool s;
 
-  if (Layout::primaryNode()) 
-    s = f.is_open();
+  // more thought
+    s = tobinary->is_open(); 
 
   Internal::broadcast(s);
   return s;
@@ -51,8 +57,8 @@ void BinxWriter::flush()
 {
   if (is_open()) 
   {
-    if (Layout::primaryNode()) 
-      f.flush();
+    tobinary->flush();
+    toxml->flush();
   }
 }
 
@@ -61,14 +67,23 @@ bool BinxWriter::fail()
 {
   bool s;
 
-  if (Layout::primaryNode()) 
-    s = f.fail();
+  //  if (Layout::primaryNode()) 
+  //  s = f.fail();
 
+  s = tobinary->fail(); 
+
+  // probably not needed
   Internal::broadcast(s);
   return s;
 }
 
-BinxWriter::~BinxWriter() {close();}
+BinxWriter::~BinxWriter() {
+  close();
+
+  delete toxml ;
+  delete tobinary ; 
+}
+
 
 // Wrappers for write functions
 void write(BinxWriter& bin, const std::string& output)
@@ -198,11 +213,14 @@ BinxWriter& operator<<(BinxWriter& bin, bool output)
   return bin;
 }
 
+//
+//  write based methods for binx
+//
+
+
 void BinxWriter::write(const string& output)
 {
-  size_t n = output.length();
-  writeArray(output.c_str(), sizeof(char), n);
-  write('\n');   // Convention is to write a line terminator
+  tobinary->write(output);
 }
 
 void BinxWriter::write(const char* output)
@@ -212,58 +230,62 @@ void BinxWriter::write(const char* output)
 
 void BinxWriter::write(const char& output) 
 {
-  writePrimitive<char>(output);
+  //  writePrimitive<char>(output);
+  tobinary->write(output);
 }
 
 void BinxWriter::write(const int& output) 
 {
-  writePrimitive<int>(output);
+  //  writePrimitive<int>(output);
+  tobinary->write(output);
 }
 
 void BinxWriter::write(const unsigned int& output)
 {
-  writePrimitive<unsigned int>(output);
+  // writePrimitive<unsigned int>(output);
+
 }
 
 void BinxWriter::write(const short int& output)
 {
-  writePrimitive<short int>(output);
+  // writePrimitive<short int>(output);
+  tobinary->write(output);
 }
 
 void BinxWriter::write(const unsigned short int& output)
 {
-  writePrimitive<unsigned short int>(output);
+  // writePrimitive<unsigned short int>(output);
+  tobinary->write(output);
 }
 
 void BinxWriter::write(const long int& output)
 {
-  writePrimitive<long int>(output);
+  // writePrimitive<long int>(output);
+  tobinary->write(output);
 }
 
 void BinxWriter::write(const unsigned long int& output)
 {
-  writePrimitive<unsigned long int>(output);
+  // writePrimitive<unsigned long int>(output);
+  tobinary->write(output);
 }
 
 void BinxWriter::write(const float& output)
 {
-  writePrimitive<float>(output);
+  // writePrimitive<float>(output);
+  tobinary->write(output);
 }
 
 void BinxWriter::write(const double& output)
 {
-  writePrimitive<double>(output);
+  // writePrimitive<double>(output);
+  tobinary->write(output);
 }
 
 void BinxWriter::write(const bool& output)
 {
-  writePrimitive<bool>(output);
-}
-
-template< typename T>
-void BinxWriter::writePrimitive(const T& output)
-{
-  writeArray((const char*)&output, sizeof(T), 1);
+  // writePrimitive<bool>(output);
+  tobinary->write(output);
 }
 
 void BinxWriter::writeArray(const char* output, size_t size, size_t nmemb)
