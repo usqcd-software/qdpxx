@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_nml.cc,v 1.2 2003-04-25 18:52:21 edwards Exp $
+// $Id: t_nml.cc,v 1.3 2003-04-26 01:54:25 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -51,7 +51,6 @@ main(int argc, char *argv[])
   Read(nml_in,Seq_src);
   Write(nml_out,Seq_src);
 
-#if 0
   bool my_bool;
   Read(nml_in,my_bool);
   Write(nml_out,my_bool);
@@ -67,19 +66,16 @@ main(int argc, char *argv[])
   Complex my_complex;
   Read(nml_in,my_complex);
   Write(nml_out,my_complex);
-#endif
 
   pop(nml_in);
 
-#if 0
   push(nml_in, "Cfg");
 
-  string my_string;
-  Read(nml_in,my_string);
-  Write(nml_out,my_string);
+  string cfg_file;
+  Read(nml_in,cfg_file);
+  Write(nml_out,cfg_file);
 
   pop(nml_in);
-#endif
 
   pop(nml_out);
 
