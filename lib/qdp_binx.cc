@@ -1,4 +1,4 @@
-// $Id: qdp_binx.cc,v 1.2 2004-03-25 15:12:09 mcneile Exp $
+// $Id: qdp_binx.cc,v 1.3 2004-03-26 12:24:39 mcneile Exp $
 //
 // QDP data parallel interface to binx writers
 //
@@ -21,11 +21,29 @@ BinxWriter::BinxWriter(const std::string& p) {open(p);}
 
 void BinxWriter::open(const std::string& p) 
 {
-
   std::string p_xml = p + "_binx.xml" ; 
   tobinary = new BinaryWriter(p); 
   toxml =  new XMLFileWriter(p_xml) ;
 
+  // write some binx stuff
+  XMLWriterAPI::AttributeList alist;
+  string xmlns = "http://www.edikt.org/binx/2003/06/databinx" ;
+  alist.clear();
+  alist.push_back(XMLWriterAPI::Attribute("xmlns", xmlns));
+  toxml->openTag("databinx", alist);
+
+  alist.clear();
+  alist.push_back(XMLWriterAPI::Attribute("src", p));
+  toxml->openTag("binx", alist);
+
+
+  //xml << d.elem(i);
+  //toxml.closeTag();
+
+
+
+  string dataset = "dataset" ; 
+  push(*toxml,dataset);
 
   if (! is_open())
     QDP_error_exit("BinxWriter: error opening file %s",p.c_str());
@@ -35,6 +53,10 @@ void BinxWriter::close()
 {
   if (is_open())
   {
+    pop(*toxml);  // push(toxml,"dataset");
+    toxml->closeTag();
+    toxml->closeTag();
+
     tobinary->close(); 
     toxml->close(); 
   }
@@ -220,95 +242,91 @@ BinxWriter& operator<<(BinxWriter& bin, bool output)
 
 void BinxWriter::write(const string& output)
 {
+  string nn = "<character-8 />" ;
+  push(*toxml,nn);
+  pop(*toxml); 
+
   tobinary->write(output);
 }
 
 void BinxWriter::write(const char* output)
 {
+  string nn = "<character-8 />" ;
+  push(*toxml,nn);
+  pop(*toxml); 
+
   write(string(output));
 }
 
 void BinxWriter::write(const char& output) 
 {
-  //  writePrimitive<char>(output);
   tobinary->write(output);
+  string nn = "<character-8 />" ;
+  push(*toxml,nn);
+  pop(*toxml); 
+
 }
 
 void BinxWriter::write(const int& output) 
 {
-  //  writePrimitive<int>(output);
+  string nn = "integer-32";
+  push(*toxml,nn);
+  pop(*toxml); 
+
   tobinary->write(output);
 }
 
 void BinxWriter::write(const unsigned int& output)
 {
-  // writePrimitive<unsigned int>(output);
-
+  tobinary->write(output);
 }
 
 void BinxWriter::write(const short int& output)
 {
-  // writePrimitive<short int>(output);
   tobinary->write(output);
 }
 
 void BinxWriter::write(const unsigned short int& output)
 {
-  // writePrimitive<unsigned short int>(output);
   tobinary->write(output);
 }
 
 void BinxWriter::write(const long int& output)
 {
-  // writePrimitive<long int>(output);
   tobinary->write(output);
 }
 
 void BinxWriter::write(const unsigned long int& output)
 {
-  // writePrimitive<unsigned long int>(output);
   tobinary->write(output);
 }
 
 void BinxWriter::write(const float& output)
 {
-  // writePrimitive<float>(output);
+  string nn = "float-32";
+  push(*toxml,nn);
+  pop(*toxml); 
+
   tobinary->write(output);
 }
 
 void BinxWriter::write(const double& output)
 {
-  // writePrimitive<double>(output);
+  string nn = "float-64";
+  push(*toxml,nn);
+  pop(*toxml); 
+
   tobinary->write(output);
 }
 
 void BinxWriter::write(const bool& output)
 {
-  // writePrimitive<bool>(output);
   tobinary->write(output);
 }
 
 void BinxWriter::writeArray(const char* output, size_t size, size_t nmemb)
 {
-  if (Layout::primaryNode())
-  {
-    //    if (QDPUtil::big_endian())
-
-    if (true)
-    {
-      /* big-endian */
-      /* Write */
-      getOstream().write(output, size*nmemb);
-    }
-    else
-    {
-      /* little-endian */
-      /* Swap and write and swap */
-      //      QDPUtil::byte_swap(const_cast<char *>(output), size, nmemb);
-      getOstream().write(output, size*nmemb);
-      //QDPUtil::byte_swap(const_cast<char *>(output), size, nmemb);
-    }
-  }
+  tobinary->writeArray(output, size, nmemb) ;
 }
 
 
