@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.9 2004-04-01 09:12:56 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.10 2004-04-01 09:14:44 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -21,26 +21,10 @@
 
 
 QDP_BEGIN_NAMESPACE(QDP);
-// Forward declarations of BLAS routines
 
-// Level 1 BLAS like operations. Vector operations all work 
-// on 3 component vector -- reasonable prefetching on QCDOC on 
-// whose assembler the C code is based.
-// Hence typical value for n_3vec = ( s.end() - s.start() + 1 )*Ns
-// where s is the subset under which the operation takes place.
-// Scalars are always passed by address -- again for compatibility
-// with assembler -- of course the QCDOC assembler is completely
-// independent so this could be different.
-
-
-// VAXPY with local norm accumulated in *norm
-void vaxpy3_norm(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec, 
-		 REAL *norm);
-
-// (Double) (*out) = || (Vector) In ||^2
-void local_sumsq(DOUBLE *Out, REAL *In, int n_3vec);
-
-typedef PSpinVector<PColorVector<RComplex<PScalar<REAL> >, 3>, 4> TVec;
+// Types needed for the expression templates. 
+// TVec has outer Ns template so it ought to work for staggered as well
+typedef PSpinVector<PColorVector<RComplex<PScalar<REAL> >, 3>, Ns> TVec;
 typedef PScalar<PScalar<RScalar<PScalar<REAL> > > >  TScal;
 
 // #define DEBUG_BLAS
