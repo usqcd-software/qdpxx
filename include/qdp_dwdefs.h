@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_dwdefs.h,v 1.5 2003-12-21 19:21:03 edwards Exp $
+// $Id: qdp_dwdefs.h,v 1.6 2004-01-28 02:44:55 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -97,6 +97,7 @@ typedef OScalar< PSpinVector< PColorVector< RComplex< PScalar<DOUBLE> >, Nc>, 1>
 typedef OScalar< PSpinVector< PColorVector< RComplex< PScalar<DOUBLE> >, Nc>, Ns> > DFermion;
 typedef OScalar< PSpinVector< PColorVector< RComplex< PScalar<DOUBLE> >, Nc>, Ns>>1 > > DHalfFermion;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< PScalar<DOUBLE> >, Nc>, Ns> > DPropagator;
+typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< PScalar<DOUBLE> >, Nc>, Ns> > PropagatorD;
 typedef OScalar< PScalar< PScalar< RComplex< PScalar<DOUBLE> > > > > DComplex;
 
 // Other useful names
@@ -113,9 +114,20 @@ typedef PScalar< PScalar< RScalar< PScalar<LOGICAL> > > > IntBoolean;
 typedef Real ILatticeReal;
 typedef Seed ILatticeSeed;
 
+// Floating precision, but specific to a fixed color or spin
+typedef OLattice< PScalar< PColorMatrix< RComplex< PScalar<REAL> >, 3> > > LatticeColorMatrix3;
+typedef OScalar< PScalar< PColorMatrix< RComplex< PScalar<REAL> >, 3> > > ColorMatrix3;
+
 // Fixed precision
 typedef OLattice< PScalar< PColorMatrix< RComplex< PScalar<REAL32> >, Nc> > > LatticeColorMatrixF;
+typedef OLattice< PScalar< PColorMatrix< RComplex< PScalar<REAL32> >, 3> > > LatticeColorMatrixF3;
 typedef OScalar< PScalar< PColorMatrix< RComplex< PScalar<REAL32> >, Nc> > > ColorMatrixF;
+typedef OScalar< PScalar< PColorMatrix< RComplex< PScalar<REAL32> >, 3> > > ColorMatrixF3;
+
+typedef OLattice< PScalar< PColorMatrix< RComplex< PScalar<REAL64> >, Nc> > > LatticeColorMatrixD;
+typedef OLattice< PScalar< PColorMatrix< RComplex< PScalar<REAL64> >, 3> > > LatticeColorMatrixD3;
+typedef OScalar< PScalar< PColorMatrix< RComplex< PScalar<REAL64> >, Nc> > > ColorMatrixD;
+typedef OScalar< PScalar< PColorMatrix< RComplex< PScalar<REAL64> >, 3> > > ColorMatrixD3;
 
 
 typedef OScalar< PScalar< PScalar< RScalar< PScalar<REAL32> > > > > Real32;
