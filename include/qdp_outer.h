@@ -1,9 +1,16 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.28 2004-03-03 22:32:48 edwards Exp $
+// $Id: qdp_outer.h,v 1.29 2004-03-21 23:10:18 bjoo Exp $
+
+#include "qdp_config.h"
+
+#ifdef QDP_USE_QCDOC_EDRAM
+#include<qalloc.h>
+#endif
 
 /*! \file
  * \brief Outer grid classes
  */
+
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -397,7 +404,15 @@ private:
    */
   inline void alloc_mem(const char* const p) 
     {
+#ifdef QDP_USE_QCDOC_EDRAM
+#warning Allocating in EDRAM
+      F_orig = (char *)qalloc(QFAST, sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE);
+      if(F_orig == (char *)NULL) {
+        QDP_error_exit("Unable to malloc in alloc mem");
+      }
+#else 
       F_orig = new char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
+#endif
       F = (T*)(((unsigned int)F_orig + (QDP_ALIGNMENT_SIZE-1)) & ~(QDP_ALIGNMENT_SIZE-1));
 
 #if QDP_DEBUG >= 1
