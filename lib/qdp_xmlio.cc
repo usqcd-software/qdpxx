@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.30 2005-01-22 20:20:19 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.31 2005-01-24 04:03:33 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -49,7 +49,7 @@ void XMLReader::open(const string& filename)
     BasicXPathReader::open(filename);
 #else
 
-#if 1
+#if defined(USE_REMOTE_QIO)
     QDPUtil::RemoteInputFileStream f;
     f.open(filename.c_str(),std::ifstream::in);
     BasicXPathReader::open(f);
@@ -774,12 +774,16 @@ void XMLFileWriter::close()
 // Propagate status to all nodes
 bool XMLFileWriter::is_open()
 {
-  bool s;
+  bool s = QDP_isInitialized();
 
-  if (Layout::primaryNode()) 
-    s = output_stream.is_open();
+  if (s)
+  {
+    if (Layout::primaryNode()) 
+      s = output_stream.is_open();
 
-  Internal::broadcast(s);
+    Internal::broadcast(s);
+  }
+
   return s;
 }
 
@@ -797,12 +801,16 @@ void XMLFileWriter::flush()
 // Propagate status to all nodes
 bool XMLFileWriter::fail() const
 {
-  bool s;
+  bool s = QDP_isInitialized();
 
-  if (Layout::primaryNode()) 
-    s = output_stream.fail();
+  if (s)
+  {
+    if (Layout::primaryNode()) 
+      s = output_stream.fail();
 
-  Internal::broadcast(s);
+    Internal::broadcast(s);
+  }
+
   return s;
 }
 

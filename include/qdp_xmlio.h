@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.29 2005-01-10 16:14:01 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.30 2005-01-24 04:03:33 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -453,8 +453,11 @@ public:
   void close();
         
 private:
+#if defined(USE_REMOTE_QIO)
   QDPUtil::RemoteOutputFileStream output_stream;
-//  ofstream output_stream;
+#else
+  ofstream output_stream;
+#endif
   ostream& getOstream(void) {return output_stream;}
 };
 
