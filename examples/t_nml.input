@@ -1,0 +1,51 @@
+; $Id: t_nml.input,v 1.1 2003-04-24 05:31:27 edwards Exp $
+;
+; t_nml  test input file.
+;
+&IO_version
+ version = 3,
+&END
+&param
+ FermTypeP = 1,
+ Nd = 4,
+ Nc = 3,
+ numKappa = 1,
+ Kappa = (0.11),
+ numSeq_src = 5,
+ Seq_src = (0, 1, 2, 3, 10),
+ numGamma = 8,
+ Gamma_list = (1, 2, 4, 8, 14, 13, 11, 7),	
+ OverMass = 0.0,
+ multi_qpropP = 0,
+ RatPolyDeg = 0,
+ PolyArgResc = 1.0,
+ NWilsVec = 0,
+ cfg_type = 1,
+ j_decay = 3,
+ Z3_src = 0,
+ Pt_src = 0,
+ Sl_src = 1,
+ InvType = 21,
+ FermAct = 0,
+ H_parity = 0.0,
+ ClovCoeff = 0.0,
+ u0 = 1.0,
+ MRover = 1.0,
+ MaxCG = 500,
+ RsdCG = (1.e-8),
+ numZ3hits = 0,
+ Wvf_kind = 3,
+ wvf_param = (1.5),
+ WvfIntPar = (5),
+ nrow = (4, 4, 4, 8),
+ boundary = (1, 1, 1, 1),
+ t_srce = (0, 0, 0, 0),
+
+ Pt_snk = 0,
+ Sl_snk = 1,
+ t_sink = 5,
+ sink_mom = (0,0,0),
+&END
+&Cfg
+ cfg_file = "../test_purgaug.cfg1",
+&END
