@@ -1,4 +1,4 @@
-// $Id: qdp_util.cc,v 1.1 2003-05-22 20:06:30 edwards Exp $
+// $Id: qdp_util.cc,v 1.2 2003-08-30 02:22:02 edwards Exp $
 //
 /*! 
  * @file
@@ -33,7 +33,7 @@ QDP_info (const char* format, ...)
   int status = vsprintf (buffer, format, argp);
   va_end (argp);
 
-  fprintf (stderr, "%s %s\n", info, buffer);
+  fprintf (stdout, "%s %s\n", info, buffer);
   return status;
 }
 
