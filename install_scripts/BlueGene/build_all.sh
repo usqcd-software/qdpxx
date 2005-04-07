@@ -54,16 +54,15 @@ fi
 ##
 ##
 ## Build QMP
-# build_qmp ${QMP_SRCDIR} ${QMP_INSTALLDIR}
+build_qmp ${QMP_SRCDIR} ${QMP_INSTALLDIR}
 
 ## Build LIBXML
-# build_libxml ${LIBXML_SRCDIR} ${LIBXML} ${HOST_SYS} ${BUILD_SYS}
+build_libxml ${LIBXML_SRCDIR} ${LIBXML} ${HOST_SYS} ${BUILD_SYS}
 
 ## Build BAGEL
-# build_bagel ${HERE}/bagel ${BAGEL_INSTALL_DIR}
+build_bagel ${HERE}/bagel ${BAGEL_INSTALL_DIR}
 
 ## Build Wilson Dslash
-
 build_bagel_wilson_dslash ${HERE}/bagel_wilson_dslash \
                           ${BAGEL_WILSON_DIR} \
  		          ${BAGEL_INSTALL_DIR} \
