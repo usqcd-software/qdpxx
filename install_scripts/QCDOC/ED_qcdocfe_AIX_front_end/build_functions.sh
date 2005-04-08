@@ -148,6 +148,7 @@ function build_chroma {
 	host_sys=$4
 	build_sys=$5
 	do_pab_dslash=$6
+	do_gmp=$7
 
 	echo Chromadir: ${chromadir}
 	echo Chroma_Install_dir: ${chroma_install_dir}
@@ -155,6 +156,7 @@ function build_chroma {
 	echo HOST: ${host_sys}
 	echo BUILD: ${build_sys}
 	echo DO Dslash: ${do_pab_dslash}
+	echo DO GMP: ${do_gmp}
 	if test "X${do_pab_dslash}X" == "XyesX";
 	then
 	   pab_dslash="--enable-pab-wilson-dslash=noarch";
@@ -162,23 +164,38 @@ function build_chroma {
 	   pab_dslash="";
 	fi
 
+	if test "X${do_gmp}X" == "XyesX";
+	then 
+	   gmp="--enable-gmp";
+	   gmpdir=$8;
+	   echo GMPDIR is ${gmpdir}
+	   gmpincdir="-I${gmpdir}/include";
+	   gmplibdir="-L${gmpdir}/lib";
+	   gmplib="-lgmp";
+        else 
+	   gmp="";
+	   gmpdir="";
+	   gmpincdir="";
+	   gmplibdir="";
+	   gmplib="";
+        fi
 	rm -rf ${chroma_install_dir}
 	install_base_name=`basename ${chroma_install_dir}`
 	builddir=./build_${install_base_name}
-	mm -rf ${builddir}
+	rm -rf ${builddir}
 
 	mkdir -p ${chroma_install_dir}
 	mkdir -p ${builddir}
 	pushd ${builddir}
-
 	export PATH=/home/ed/bj/bin:$PATH
-	command="${chromadir}/configure CXXFLAGS=\"\" LDFLAGS=\"\" "
-	command=${command}" LIBS=\" \" "
+	command="${chromadir}/configure CXXFLAGS=\"${gmpincdir}\" LDFLAGS=\"${gmplibdir}\" "
+	command=${command}" LIBS=\"${gmplib}\" "
 	command=${command}" --with-qdp=${qdp_dir} "
 	command=${command}" --prefix=${chroma_install_dir}"
 	command=${command}" --host=${host_sys}"
 	command=${command}" --build=${build_sys}"
-	command=${command}" ${pab_dslash} "	
+	command=${command}" ${gmp}"
+	command=${command}" ${pab_dslash} "
 	echo Configure command is:
 	echo ${command}
 	echo ${command} > ./configure_chroma.sh

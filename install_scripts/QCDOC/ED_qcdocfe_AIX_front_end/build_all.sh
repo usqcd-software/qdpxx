@@ -4,9 +4,9 @@
 . ./build_functions.sh
 
 HERE=`/usr/bin/pwd`
-INSTALL_ROOT=/qcdoc/sfw/chroma/install/v2.5.9
-QOS=/qcdoc/sfw/qos/v2.5.9/aix5.2
-PRECISION=single
+INSTALL_ROOT=/qcdoc/sfw/chroma/install/v2.5.9a
+QOS=/qcdoc/sfw/qos/v2.5.9/aix5.2a
+PRECISION=double
 HOST_SYS=powerpc-gnu-elf
 BUILD_SYS=none
 BAGEL_INSTALL_DIR=${INSTALL_ROOT}/bagel
@@ -20,7 +20,8 @@ QDP_PARALLEL_ARCH=parscalar
 QDP_DO_EDRAM=yes
 QDP_DO_BLAS=yes
 CHROMA_DO_PAB_DSLASH=yes
-
+CHROMA_DO_GMP=yes
+CHROMA_GMPDIR=/qcdoc/sfw/packages/gmp/qos-2.5.9a
 # Munge directory names
 QDP_INSTALLDIR=${INSTALL_ROOT}/qdp_${PRECISION}
 if test "X${QDP_DO_EDRAM}X" == "XyesX";
@@ -54,25 +55,25 @@ fi
 ##
 
 ## Build BAGEL
-build_bagel ${HERE}/bagel ${BAGEL_INSTALL_DIR}
+#build_bagel ${HERE}/bagel ${BAGEL_INSTALL_DIR}
 
 source ${QOS}/scripts/setup.sh
 export PATH=/home/ed/bj/gnu/bin:$PATH
 ## Build Wilson Dslash
 
-build_bagel_wilson_dslash ${HERE}/bagel_wilson_dslash \
+#build_bagel_wilson_dslash ${HERE}/bagel_wilson_dslash \
                           ${BAGEL_WILSON_DIR} \
 		          ${BAGEL_INSTALL_DIR} \
 	                  ${PRECISION} ${BAGEL_COMM} ${BAGEL_ALLOC} \
 	                  ${BAGEL_CPU} ${HOST_SYS} ${BUILD_SYS} ${QOS}
 
-build_libxml ${LIBXML_SRCDIR} ${LIBXML} ${HOST_SYS} ${BUILD_SYS}
+# build_libxml ${LIBXML_SRCDIR} ${LIBXML} ${HOST_SYS} ${BUILD_SYS}
 
 ## Build QDP++
-build_qdp  "${HERE}/qdp++" ${QDP_INSTALLDIR} ${QOS} ${LIBXML} ${PRECISION} ${QDP_DO_EDRAM} ${QDP_DO_BLAS} ${HOST_SYS} ${BUILD_SYS} ${BAGEL_WILSON_DIR}
+# build_qdp  "${HERE}/qdp++" ${QDP_INSTALLDIR} ${QOS} ${LIBXML} ${PRECISION} ${QDP_DO_EDRAM} ${QDP_DO_BLAS} ${HOST_SYS} ${BUILD_SYS} ${BAGEL_WILSON_DIR}
 
 ## Build Chroma
-build_chroma ${HERE}/chroma ${CHROMA_INSTALLDIR} ${QDP_INSTALLDIR} ${HOST_SYS} ${BUILD_SYS} ${CHROMA_DO_PAB_DSLASH}
+build_chroma ${HERE}/chroma ${CHROMA_INSTALLDIR} ${QDP_INSTALLDIR} ${HOST_SYS} ${BUILD_SYS} ${CHROMA_DO_PAB_DSLASH} ${CHROMA_DO_GMP} ${CHROMA_GMPDIR}
 
 pushd ${INSTALL_ROOT}
 find . -name "*" -type d -exec chmod ugo+rx {} \; -print
