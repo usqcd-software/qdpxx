@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.26 2005-03-18 13:56:23 zbigniew Exp $
+// $Id: qdp_inner.h,v 1.27 2005-04-20 02:28:04 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -2168,10 +2168,10 @@ struct BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpRightShift> {
 };
  
 template<class T1, class T2, int N>
-inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, OpRightShift>::Type_t
-operator>>(const IScalar<T1>& l, const IScalar<T2>& r)
+inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpRightShift>::Type_t
+operator>>(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
-  typename BinaryReturn<IScalar<T1>, IScalar<T2>, OpRightShift>::Type_t  d;
+  typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpRightShift>::Type_t  d;
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() >> r.elem(i);
@@ -2330,7 +2330,7 @@ operator&(const IScalar<T1>& l, const ILattice<T2,N>& r)
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseAnd>::Type_t  d;
 
   for(int i=0; i < N; ++i)
-    d.elem(i) = l.elem(i) & r.elem(i);
+    d.elem(i) = l.elem() & r.elem(i);
   return d;
 }
 
