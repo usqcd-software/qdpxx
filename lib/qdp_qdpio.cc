@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.15 2005-03-18 13:56:23 zbigniew Exp $
+// $Id: qdp_qdpio.cc,v 1.16 2005-04-28 19:26:46 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -39,12 +39,12 @@ QDPFileReader::QDPFileReader() {iop=false;}
 
 QDPFileReader::QDPFileReader(XMLReader& xml, 
 			     const std::string& path,
-			     int iflag)
-  {open(xml,path,iflag);}
+			     QDP_serialparallel_t serpar)
+  {open(xml,path,serpar);}
 
 void QDPFileReader::open(XMLReader& file_xml, 
 			 const std::string& path, 
-			 int iflag)
+			 QDP_serialparallel_t serpar)
 {
   QIO_Layout layout;
   int latsize[Nd];
@@ -66,7 +66,8 @@ void QDPFileReader::open(XMLReader& file_xml,
   QIO_String *xml_c  = QIO_string_create();
 
   // Call QIO read
-  if ((qio_in = QIO_open_read(xml_c, path.c_str(), &layout, iflag)) == NULL)
+  // At this moment, serpar (which is an enum in QDP++) is ignored here.
+  if ((qio_in = QIO_open_read(xml_c, path.c_str(), &layout, NULL)) == NULL)
   {
     QDPIO::cerr << "QDPFileReader: failed to open file " << path << endl;
     iostate = QDPIO_badbit;
@@ -89,19 +90,6 @@ void QDPFileReader::open(XMLReader& file_xml,
 
   iop=true;
 }
-
-// OBSOLETE
-QDPFileReader::QDPFileReader(XMLReader& xml, 
-			     const std::string& path,
-			     QDP_serialparallel_t qdp_serpar)
-  {open(xml,path,0);}
-
-// OBSOLETE
-void QDPFileReader::open(XMLReader& file_xml, 
-			 const std::string& path, 
-			 QDP_serialparallel_t qdp_serpar)
-  {open(file_xml,path,0);}
-
 
 
 void QDPFileReader::close()
@@ -149,15 +137,36 @@ QDPFileWriter::QDPFileWriter() {iop=false;}
 QDPFileWriter::QDPFileWriter(XMLBufferWriter& xml, 
 			     const std::string& path,
 			     QDP_volfmt_t qdp_volfmt,
-			     int oflag) 
+			     QDP_serialparallel_t qdp_serpar,
+			     QDP_filemode_t qdp_mode) 
 {
-  open(xml,path,qdp_volfmt,oflag);
+  open(xml,path,qdp_volfmt,qdp_serpar,qdp_mode);
+}
+
+// filemode not specified
+void QDPFileWriter::open(XMLBufferWriter& file_xml, 
+			 const std::string& path,
+			 QDP_volfmt_t qdp_volfmt,
+			 QDP_serialparallel_t qdp_serpar)
+{
+  open(file_xml,path,qdp_volfmt,qdp_serpar,QDPIO_OPEN);
+}
+
+
+// filemode not specified
+QDPFileWriter::QDPFileWriter(XMLBufferWriter& xml, 
+			     const std::string& path,
+			     QDP_volfmt_t qdp_volfmt,
+			     QDP_serialparallel_t qdp_serpar) 
+{
+  open(xml,path,qdp_volfmt,qdp_serpar,QDPIO_OPEN);
 }
 
 void QDPFileWriter::open(XMLBufferWriter& file_xml, 
 			 const std::string& path,
 			 QDP_volfmt_t qdp_volfmt,
-			 int oflag) 
+			 QDP_serialparallel_t qdp_serpar,
+			 QDP_filemode_t qdp_mode) 
 {
   QIO_Layout layout;
   int latsize[Nd];
@@ -211,9 +220,36 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
     return;
   }
   
+   // Wrappers over simple ints
+  int mode;
+  switch(qdp_mode)
+  {
+  case QDPIO_CREATE:
+    mode = QIO_CREAT;
+    break;
+    
+  case QDPIO_OPEN:
+    mode = QIO_TRUNC;
+    break;
+
+  case QDPIO_APPEND:
+    mode = QIO_APPEND;
+    break;
+
+  default: 
+    QDPIO::cerr << "Unknown value for qdp_mode " << qdp_mode << endl;
+    QDP_abort(1);
+    return;
+  }
+  
   // QIO write
+  // For now, serpar (which is an enum in QDP) is ignored here
+  QIO_Oflag oflag;
+  oflag.serpar = QIO_SERIAL;
+  oflag.mode   = mode;
+
   if ((qio_out = QIO_open_write(xml_c, path.c_str(), 
-				volfmt, &layout, oflag)) == NULL)
+				volfmt, &layout, &oflag)) == NULL)
   {
     QDPIO::cerr << "QDPFileWriter: failed to open file " << path << endl;
     iostate = QDPIO_badbit;
@@ -228,27 +264,6 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
 
   iop=true;
 }
-
-// OBSOLETE
-QDPFileWriter::QDPFileWriter(XMLBufferWriter& xml, 
-			     const std::string& path,
-			     QDP_volfmt_t qdp_volfmt,
-			     QDP_serialparallel_t qdp_serpar,
-			     QDP_filemode_t qdp_mode) 
-{
-  open(xml,path,qdp_volfmt,0);
-}
-
-// OBSOLETE
-void QDPFileWriter::open(XMLBufferWriter& file_xml, 
-			 const std::string& path,
-			 QDP_volfmt_t qdp_volfmt,
-			 QDP_serialparallel_t qdp_serpar,
-			 QDP_filemode_t qdp_mode) 
-{
-  open(file_xml,path,qdp_volfmt,0);
-}
-
 
 void QDPFileWriter::close()
 {

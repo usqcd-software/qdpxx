@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.22 2005-03-18 13:56:23 zbigniew Exp $
+// $Id: qdp_qdpio.h,v 1.23 2005-04-28 19:26:46 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -87,7 +87,7 @@ public:
       \param iflag Not used.
     */
   QDPFileReader(XMLReader& xml, const std::string& path,
-		int iflag);
+		QDP_serialparallel_t qdp_serpar);
   
     //! Opens a file for reading
     /*!
@@ -96,16 +96,6 @@ public:
       \param path The name of the file
       \param iflag Not used.
     */
-  void open(XMLReader& xml, const std::string& path,
-	    int iflag);
-
-  //! Open file
-  /*! \deprecated OBSOLETE  */
-  QDPFileReader(XMLReader& xml, const std::string& path,
-		QDP_serialparallel_t qdp_serpar);
-
-  //! Open file
-  /*! \deprecated  OBSOLETE */
   void open(XMLReader& xml, const std::string& path,
 	    QDP_serialparallel_t qdp_serpar);
 
@@ -262,7 +252,7 @@ public:
     */
   QDPFileWriter(XMLBufferWriter& xml, const std::string& path,
 		QDP_volfmt_t qdp_volfmt,
-		int oflag);
+		QDP_serialparallel_t qdp_serpar);
   
   //! Opens a file for writing and writes the file metadata
     /*!
@@ -274,17 +264,15 @@ public:
     */
   void open(XMLBufferWriter& xml, const std::string& path,
 	    QDP_volfmt_t qdp_volfmt,
-	    int oflag);
-
+	    QDP_serialparallel_t qdp_serpar);
+  
   //! Open file
-  /*! \deprecated THIS IS OBSOLETE */
   QDPFileWriter(XMLBufferWriter& xml, const std::string& path,
 		QDP_volfmt_t qdp_volfmt,
 		QDP_serialparallel_t qdp_serpar,
 		QDP_filemode_t qdp_mode);
   
   //! Open file
-  /*! \deprecated THIS IS OBSOLETE */
   void open(XMLBufferWriter& xml, const std::string& path,
 	    QDP_volfmt_t qdp_volfmt,
 	    QDP_serialparallel_t qdp_serpar,
