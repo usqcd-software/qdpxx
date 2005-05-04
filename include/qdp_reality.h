@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.26 2004-12-27 01:25:04 edwards Exp $
+// $Id: qdp_reality.h,v 1.27 2005-05-04 14:55:46 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1634,7 +1634,7 @@ operator+(const RComplex<T1>& l, const RScalar<T2>& r)
   typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpAdd>::Type_t  Ret_t;
 
   return Ret_t(l.real()+r.elem(),
-	       l.imag()+r.elem());
+	       l.imag());
 }
 
 //! RComplex = RScalar + RComplex
@@ -1645,7 +1645,7 @@ operator+(const RScalar<T1>& l, const RComplex<T2>& r)
   typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpAdd>::Type_t  Ret_t;
 
   return Ret_t(l.elem()+r.real(),
-	       l.elem()+r.imag());
+	       r.imag());
 }
 
 
@@ -1668,7 +1668,7 @@ operator-(const RComplex<T1>& l, const RScalar<T2>& r)
   typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpSubtract>::Type_t  Ret_t;
 
   return Ret_t(l.real() - r.elem(),
-	       l.imag() - r.elem());
+	       l.imag());
 }
 
 //! RComplex = RScalar - RComplex
@@ -1679,7 +1679,7 @@ operator-(const RScalar<T1>& l, const RComplex<T2>& r)
   typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpSubtract>::Type_t  Ret_t;
 
   return Ret_t(l.elem() - r.real(),
-	       l.elem() - r.imag());
+	       - r.imag());
 }
 
 
