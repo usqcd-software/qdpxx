@@ -3,13 +3,12 @@
 #
 ## Should only need @QMP_CFLAGS@, @QMP_LDFLAGS@ and @QMP_LIBS@
 ## n.b. Only defined for some parallel architectures
-INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
-           -I@top_srcdir@/other_libs/qio/include \
-	   -I@top_builddir@/other_libs/qio/include \
-           -I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
-           -I@top_srcdir@/other_libs/xpath_reader/include
-
-AM_CXXFLAGS = $(INCFLAGS)  @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
+AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
+              -I@top_srcdir@/other_libs/qio/include \
+	      -I@top_builddir@/other_libs/qio/include \
+              -I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
+              -I@top_srcdir@/other_libs/xpath_reader/include \
+              @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
 AM_LDFLAGS = -L@top_builddir@/lib \
              -L@top_builddir@/other_libs/qio/lib \
              -L@top_builddir@/other_libs/qio/other_libs/c-lime/lib \
