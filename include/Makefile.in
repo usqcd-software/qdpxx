@@ -222,7 +222,8 @@ GENERIC_HDRS = qdp_scalarsite_generic.h \
 	$(genericdir)/generic_blas_vscal_g5.h \
 	$(genericdir)/generic_blas_vaxpy3_g5.h \
 	$(genericdir)/generic_blas_vaypx3_g5.h \
-	$(genericdir)/generic_blas_vaxpby3_g5.h
+	$(genericdir)/generic_blas_vaxpby3_g5.h \
+	$(genericdir)/generic_blas_g5.h
 
 
 # If using SSE, make sure those files are installed

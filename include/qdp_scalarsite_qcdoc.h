@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_qcdoc.h,v 1.9 2005-03-17 18:52:32 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc.h,v 1.10 2005-05-18 13:42:51 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -22,4 +22,5 @@
 // Use GENERIC Chiral Projector BLAS for now, BAGEL should generate
 // this eventually
 #include "scalarsite_generic/qdp_scalarsite_generic_blas_g5.h"
+
 #endif

@@ -34,7 +34,7 @@ EXTRA_PROGRAMS  = t_qio_factory t_binx
 
 if BUILD_WILSON_EXAMPLES
 check_PROGRAMS += t_dslashm t_formfac t_spectrum t_qdp t_linalg 
-EXTRA_PROGRAMS += t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2
+EXTRA_PROGRAMS += t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3
 endif
 
 
@@ -74,6 +74,8 @@ t_cblas_SOURCES= t_cblas.cc cblas1.cc cblas1.h
 
 t_blas_g5_SOURCES = t_blas_g5.cc $(HDRS)
 t_blas_g5_2_SOURCES = t_blas_g5_2.cc $(HDRS)
+t_blas_g5_3_SOURCES = t_blas_g5_3.cc $(HDRS)
+
 t_cugauge_SOURCES = t_cugauge.cc mesplq.cc $(HDRS) 
 
 # build lib is a target that goes tot he build dir of the library and 
