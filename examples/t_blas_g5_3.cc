@@ -1,4 +1,4 @@
-// $Id: t_blas_g5_3.cc,v 1.1 2005-05-18 13:42:51 bjoo Exp $
+// $Id: t_blas_g5_3.cc,v 1.2 2005-05-19 11:22:42 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -276,6 +276,82 @@ int main(int argc, char *argv[])
     Internal::broadcast(time);
     
     double Nflops = (double)(4*Nc*Ns*Layout::sitesOnNode()*iter);
+    QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
+  }
+
+
+
+  // g5(ax - by)
+
+  gaussian(x);
+  gaussian(y);
+  tmp=a*x-b*y;
+  z1 = GammaConst<Ns,Ns*Ns-1>()*tmp;
+  z2 = GammaConst<Ns,Ns*Ns-1>()*(a*x-b*y);
+  norm_diff=norm2(z1-z2);
+ 
+  {
+    QDPIO::cout << "g5( ax - by) diff=" << sqrt(norm_diff) << endl;
+    StopWatch swatch;
+    double time=0;
+    int iter=1;
+    while( time < 1.0 ) { 
+      iter *=2;
+      QDPIO::cout << "Calling " << iter << " times " << endl;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	tmp=a*x-b*y;
+	z1 = GammaConst<Ns,Ns*Ns-1>()*tmp;
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+    }
+    
+    QDPIO::cout << "Timing with " << iter << " iters" << endl;
+    swatch.reset();
+    swatch.start();
+    for(int i=0; i < iter; i++) {
+	tmp=a*x-b*y;
+	z1 = GammaConst<Ns,Ns*Ns-1>()*tmp;
+    }
+    swatch.stop();
+    time = swatch.getTimeInMicroseconds();
+    Internal::broadcast(time);
+    
+    double Nflops = (double)(6*Nc*Ns*Layout::sitesOnNode()*iter);
+    QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
+  }
+
+  {
+    StopWatch swatch;
+    double time=0;
+    int iter=1;
+    while( time < 1.0 ) { 
+      iter *=2;
+      QDPIO::cout << "Calling " << iter << " times " << endl;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z2 = GammaConst<Ns,Ns*Ns-1>()*(a*x-b*y);
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+    }
+    
+    QDPIO::cout << "Timing with " << iter << " iters" << endl;
+    swatch.reset();
+    swatch.start();
+    for(int i=0; i < iter; i++) {
+      z2 = GammaConst<Ns,Ns*Ns-1>()*(a*x-b*y);
+    }
+    swatch.stop();
+    time = swatch.getTimeInMicroseconds();
+    Internal::broadcast(time);
+    
+    double Nflops = (double)(6*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
   }
 

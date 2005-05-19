@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas_g5.h,v 1.2 2005-05-18 13:42:51 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas_g5.h,v 1.3 2005-05-19 11:22:42 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1153,6 +1153,75 @@ void evaluate( OLattice< TVec > &d,
   
 }
 
+// Vec = Gamma_5 *( a*Vec - b*Vec )
+//
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	         BinaryNode<OpGammaConstMultiply,
+	                    GammaConst<Ns,Ns*Ns-1>, 
+	                    BinaryNode<OpSubtract,
+	                      BinaryNode<OpMultiply,
+	                        Reference< QDPType<TScal, OScalar< TScal > > >,  
+	                        Reference< QDPType<TVec, OLattice< TVec > > >
+	                      >, 
+ 	                      BinaryNode<OpMultiply,
+	                        Reference< QDPType< TScal, OScalar< TScal > > >,
+	                        Reference< QDPType< TVec, OLattice< TVec > > >
+                              >	        
+                            >
+                 >,
+	         OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS_G5
+  QDPIO::cout << "z = GammaConst<Ns,Ns*Ns-1>()*(ax - by)" << endl;
+#endif
+
+  typedef BinaryNode<OpSubtract,
+	             BinaryNode<OpMultiply,
+	               Reference< QDPType<TScal, OScalar< TScal > > >,  
+	               Reference< QDPType<TVec, OLattice< TVec > > >
+	             >, 
+ 	             BinaryNode<OpMultiply,
+	               Reference< QDPType< TScal, OScalar< TScal > > >,
+	               Reference< QDPType< TVec, OLattice< TVec > > >
+                     >	        
+    > AXMBY;
+
+  const AXMBY& axmby_node = static_cast<const AXMBY&>(rhs.expression().right());
+
+
+  typedef BinaryNode<OpMultiply,
+            Reference< QDPType<TScal, OScalar< TScal > > >,  
+            Reference< QDPType<TVec, OLattice< TVec > > >
+    > MN;
+
+  const MN& mulNode1 = static_cast<const MN& >( axmby_node.left());
+  const MN& mulNode2 = static_cast<const MN& >( axmby_node.right());
+
+  const OScalar<TScal>& a = static_cast<const OScalar<TScal>&>(mulNode1.left());
+  const OLattice<TVec>& x = static_cast<const OLattice<TVec>&>(mulNode1.right());
+
+  const OScalar<TScal>& b = static_cast<const OScalar<TScal>&>(mulNode2.left());
+  const OLattice<TVec>& y = static_cast<const OLattice<TVec>&>(mulNode2.right());
+
+
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_4vec = (s.end()-s.start()+1);
+  g5_axmbyz(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  
+}
 
 QDP_END_NAMESPACE();
 
