@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.30 2005-03-21 05:29:48 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.31 2005-05-25 04:21:01 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -846,6 +846,319 @@ norm2(const multi1d< OLattice<T> >& s1)
   return norm2(s1,all);
 }
 
+
+
+//-----------------------------------------------------------------------------
+//! OScalar = innerProduct(multi1d<source1>,multi1d<source2>))
+/*!
+ * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T1, class T2>
+inline typename BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProduct>::Type_t
+innerProduct(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2)
+{
+  typename BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProduct>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnInnerProduct(), s1[0]);
+  prof.time -= getClockTime();
+#endif
+
+  // Possibly loop entered
+  zero_rep(d.elem());
+
+  for(int n=0; n < s1.size(); ++n)
+  {
+    OScalar<T1>& ss1 = s1[n];
+    OScalar<T2>& ss2 = s2[n];
+    d.elem() += localInnerProduct(ss1.elem(),ss2.elem());
+  }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+//! OScalar = sum(OScalar)  under an explicit subset
+/*! Discards subset */
+template<class T1, class T2>
+inline typename BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProduct>::Type_t
+innerProduct(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2,
+	     const UnorderedSubset& s)
+{
+  return innerProduct(s1,s2);
+}
+
+//! OScalar = sum(OScalar)  under an explicit subset
+/*! Discards subset */
+template<class T1, class T2>
+inline typename BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProduct>::Type_t
+innerProduct(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2, 
+	     const OrderedSubset& s)
+{
+  return innerProduct(s1,s2);
+}
+
+
+//! OScalar = innerProduct(multi1d<OLattice>,multi1d<OLattice>) under an explicit subset
+/*!
+ * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T1, class T2>
+inline typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct>::Type_t
+innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s2,
+	     const UnorderedSubset& s)
+{
+  typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnInnerProduct(), s1[0]);
+  prof.time -= getClockTime();
+#endif
+
+  // Possibly loop entered
+  zero_rep(d.elem());
+
+  const int *tab = s.siteTable().slice();
+  for(int n=0; n < s1.size(); ++n)
+  {
+    const OLattice<T1>& ss1 = s1[n];
+    const OLattice<T2>& ss2 = s2[n];
+    for(int j=0; j < s.numSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      d.elem() += localInnerProduct(ss1.elem(i),ss2.elem(i));
+    }
+  }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+//! OScalar = innerProduct(multi1d<OLattice>,multi1d<OLattice>) under an explicit subset
+/*!
+ * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T1, class T2>
+inline typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct>::Type_t
+innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s2,
+	     const OrderedSubset& s)
+{
+  typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnInnerProduct(), s1[0]);
+  prof.time -= getClockTime();
+#endif
+
+  // Possibly loop entered
+  zero_rep(d.elem());
+
+  for(int n=0; n < s1.size(); ++n)
+  {
+    const OLattice<T1>& ss1 = s1[n];
+    const OLattice<T2>& ss2 = s2[n];
+    for(int i=s.start(); i <= s.end(); ++i) 
+      d.elem() += localInnerProduct(ss1.elem(i),ss2.elem(i));
+  }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+//! OScalar = innerProduct(multi1d<OLattice>,multi1d<OLattice>)
+/*!
+ * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T1, class T2>
+inline typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct>::Type_t
+innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s2)
+{
+  return innerProduct(s1,s2,all);
+}
+
+
+
+//-----------------------------------------------------------------------------
+//! OScalar = innerProductReal(multi1d<source1>,multi1d<source2>))
+/*!
+ * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T1, class T2>
+inline typename BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProductReal>::Type_t
+innerProductReal(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2)
+{
+  typename BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProductReal>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnInnerProductReal(), s1[0]);
+  prof.time -= getClockTime();
+#endif
+
+  // Possibly loop entered
+  zero_rep(d.elem());
+
+  for(int n=0; n < s1.size(); ++n)
+  {
+    OScalar<T1>& ss1 = s1[n];
+    OScalar<T2>& ss2 = s2[n];
+    d.elem() += localInnerProductReal(ss1.elem(),ss2.elem());
+  }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+//! OScalar = sum(OScalar)  under an explicit subset
+/*! Discards subset */
+template<class T1, class T2>
+inline typename BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProductReal>::Type_t
+innerProductReal(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2,
+		 const UnorderedSubset& s)
+{
+  return innerProductReal(s1,s2);
+}
+
+//! OScalar = sum(OScalar)  under an explicit subset
+/*! Discards subset */
+template<class T1, class T2>
+inline typename BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProductReal>::Type_t
+innerProductReal(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2, 
+		 const OrderedSubset& s)
+{
+  return innerProductReal(s1,s2);
+}
+
+
+//! OScalar = innerProductReal(multi1d<OLattice>,multi1d<OLattice>) under an explicit subset
+/*!
+ * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T1, class T2>
+inline typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProductReal>::Type_t
+innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s2,
+		 const UnorderedSubset& s)
+{
+  typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProductReal>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnInnerProductReal(), s1[0]);
+  prof.time -= getClockTime();
+#endif
+
+  // Possibly loop entered
+  zero_rep(d.elem());
+
+  const int *tab = s.siteTable().slice();
+  for(int n=0; n < s1.size(); ++n)
+  {
+    const OLattice<T1>& ss1 = s1[n];
+    const OLattice<T2>& ss2 = s2[n];
+    for(int j=0; j < s.numSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      d.elem() += localInnerProductReal(ss1.elem(i),ss2.elem(i));
+    }
+  }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+//! OScalar = innerProductReal(multi1d<OLattice>,multi1d<OLattice>) under an explicit subset
+/*!
+ * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T1, class T2>
+inline typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProductReal>::Type_t
+innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s2,
+		 const OrderedSubset& s)
+{
+  typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProductReal>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnInnerProductReal(), s1[0]);
+  prof.time -= getClockTime();
+#endif
+
+  // Possibly loop entered
+  zero_rep(d.elem());
+
+  for(int n=0; n < s1.size(); ++n)
+  {
+    const OLattice<T1>& ss1 = s1[n];
+    const OLattice<T2>& ss2 = s2[n];
+    for(int i=s.start(); i <= s.end(); ++i) 
+      d.elem() += localInnerProductReal(ss1.elem(i),ss2.elem(i));
+  }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+//! OScalar = innerProductReal(multi1d<OLattice>,multi1d<OLattice>)
+/*!
+ * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
+ *
+ * Sum over the lattice
+ * Allow a global sum that sums over all indices
+ */
+template<class T1, class T2>
+inline typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProductReal>::Type_t
+innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s2)
+{
+  return innerProductReal(s1,s2,all);
+}
 
 
 //-----------------------------------------------------------------------------
