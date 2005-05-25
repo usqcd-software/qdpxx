@@ -1,5 +1,10 @@
 05/24/2005 -- Robert Edwards
 
+	Version 1.13.0. New norm2, innerProduct, innerProductReal support
+        for multi1d.
+
+05/24/2005 -- Robert Edwards
+
 	Version 1.12.5. New install scripts.
 
 05/19/2005 -- Robert Edwards
