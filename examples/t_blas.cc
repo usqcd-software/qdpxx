@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.10 2004-12-13 22:53:48 bjoo Exp $
+// $Id: t_blas.cc,v 1.11 2005-05-25 04:20:33 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -8,7 +8,7 @@
 #include "qdp.h"
 #include <blas1.h>
 
- 
+
 using namespace QDP;
 
 int main(int argc, char *argv[])
@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {8,8,8,8};
+  const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -664,6 +664,31 @@ int main(int argc, char *argv[])
   drdiff = daccum - djim;
   QDPIO::cout << "Diff innerProductReal Subset = " << drdiff << endl;
 
+  // Test array innerProduct
+  int NN = 8;
+  multi1d<LatticeFermion> lqx(NN);
+  multi1d<LatticeFermion> lqy(NN);
+
+  accum = zero;
+  for(int i=0; i < NN; ++i)
+  {
+    gaussian(lqx[i]);
+    gaussian(lqy[i]);
+
+    accum += innerProduct(lqx[i],lqy[i]);
+  }
+  fred = innerProduct(lqx,lqy);
+  QDPIO::cout << "Diff innerProduct(multi1d) all = " << Complex(fred-accum) << endl;
+
+
+  Double daccr = zero;
+  for(int i=0; i < NN; ++i)
+    daccr += innerProductReal(lqx[i],lqy[i]);
+
+  Double dreal = innerProductReal(lqx,lqy);
+  QDPIO::cout << "Diff innerProductReal(multi1d) all = " << Real(daccr-dreal) << endl;
+
+
   // Timings
    // Test VSCAL
   int icnt;
@@ -812,10 +837,9 @@ int main(int argc, char *argv[])
     QDPIO::cout << "time(V=V-V) = " << tt
 		<< " micro-secs/site/iteration" 
 		<< " , " << Nflops / tt << " Mflops" << endl;
-    
   }
 
-   // Test SUMSQ
+  // Test SUMSQ
   gaussian(qx);
 
   for(icnt=1; ; icnt <<= 1)
@@ -833,7 +857,6 @@ int main(int argc, char *argv[])
     QDPIO::cout << "time(norm2(V)) = " << tt
 		<< " micro-secs/site/iteration" 
 		<< " , " << Nflops / tt << " Mflops" << endl;
-    
   }
 
    // Test INNER_PRODUCT
@@ -855,10 +878,9 @@ int main(int argc, char *argv[])
     QDPIO::cout << "time(innerProduct(V,V)) = " << tt
 		<< " micro-secs/site/iteration" 
 		<< " , " << Nflops / tt << " Mflops" << endl;
-    
   }
 
-   // Test INNER_PRODUCT_REAL
+  // Test INNER_PRODUCT_REAL
   gaussian(qx);
   gaussian(qy);
   for(icnt=1; ; icnt <<= 1)
@@ -876,7 +898,62 @@ int main(int argc, char *argv[])
     QDPIO::cout << "time(innerProductReal(V,V)) = " << tt
 		<< " micro-secs/site/iteration" 
 		<< " , " << Nflops / tt << " Mflops" << endl;
+  }
+
+
+  // Test SUMSQ array
+  for(icnt=1; ; icnt <<= 1)
+  {
+    QDPIO::cout << "calling norm2(multi1d<V>) " << icnt << " times" << endl;
+    tt = QDP_NORM2(lqx, icnt);
+    if (tt > 1)
+      break;
+  }
+  {
     
+    double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+    tt *= rescale;
+    int Nflops = lqx.size()*4*Ns*Nc; // Mult an Add for each complex component
+    QDPIO::cout << "time(norm2(multi1d<V>)) = " << tt
+		<< " micro-secs/site/iteration" 
+		<< " , " << Nflops / tt << " Mflops" << endl;
+    
+  }
+
+   // Test INNER_PRODUCT array
+  for(icnt=1; ; icnt <<= 1)
+  {
+    QDPIO::cout << "calling innerProduct(multi1d<V>,multi1d<V>)) " << icnt << " times" << endl;
+    tt = QDP_INNER_PROD(lqx, lqy, icnt);
+    if (tt > 1)
+      break;
+  }
+  {
+    
+    double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+    tt *= rescale;
+    int Nflops = lqx.size()*8*Ns*Nc; // 2Mults and 2Adds for each complex component
+    QDPIO::cout << "time(innerProduct(multi1d<V>,multi1d<V>)) = " << tt
+		<< " micro-secs/site/iteration" 
+		<< " , " << Nflops / tt << " Mflops" << endl;
+  }
+
+  // Test INNER_PRODUCT_REAL array
+  for(icnt=1; ; icnt <<= 1)
+  {
+    QDPIO::cout << "calling innerProductReal(multi1d<V>,multi1d<V>) " << icnt << " times" << endl;
+    tt = QDP_INNER_PROD_REAL(lqx,lqy, icnt);
+    if (tt > 1)
+      break;
+  }
+  {
+    
+    double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+    tt *= rescale;
+    int Nflops = lqx.size()*4*Ns*Nc; // Mult an Add for each complex component
+    QDPIO::cout << "time(innerProductReal(multi1d<V>,multi1d<V>)) = " << tt
+		<< " micro-secs/site/iteration" 
+		<< " , " << Nflops / tt << " Mflops" << endl;
   }
 
 

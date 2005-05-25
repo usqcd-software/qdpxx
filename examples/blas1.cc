@@ -1,4 +1,4 @@
-// $Id: blas1.cc,v 1.5 2004-04-01 13:17:44 bjoo Exp $
+// $Id: blas1.cc,v 1.6 2005-05-25 04:20:32 edwards Exp $
 
 #include <stdlib.h>
 #include <sys/time.h>
@@ -162,6 +162,54 @@ double QDP_INNER_PROD(const LatticeFermion& s1, const LatticeFermion& s2,
 }
 
 double QDP_INNER_PROD_REAL(const LatticeFermion& s1, const LatticeFermion& s2,
+			   int cnt)			
+{
+  StopWatch swatch;
+
+  swatch.start();
+
+  for (; cnt-- > 0; )
+    innerProductReal(s1,s2);
+
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
+//    return 2;
+}
+
+
+double QDP_NORM2(const multi1d<LatticeFermion>& s1, int cnt)			
+{
+  StopWatch swatch;
+
+  swatch.start();
+
+  for (; cnt-- > 0; )
+    norm2(s1);
+
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
+//    return 2;
+}
+
+double QDP_INNER_PROD(const multi1d<LatticeFermion>& s1, const multi1d<LatticeFermion>& s2, 
+		      int cnt)			
+{
+  StopWatch swatch;
+
+  swatch.start();
+
+  for (; cnt-- > 0; )
+    innerProduct(s1,s2);
+
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
+//    return 2;
+}
+
+double QDP_INNER_PROD_REAL(const multi1d<LatticeFermion>& s1, const multi1d<LatticeFermion>& s2,
 			   int cnt)			
 {
   StopWatch swatch;
