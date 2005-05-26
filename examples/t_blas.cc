@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.12 2005-05-26 03:40:23 edwards Exp $
+// $Id: t_blas.cc,v 1.13 2005-05-26 03:55:52 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -684,7 +684,6 @@ int main(int argc, char *argv[])
     daccr += norm2(lqx[i],rb[1]);
   }
   dreal = norm2(lqx,rb[1]);
-  QDPIO::cout << "norm2(multi1d) Subset = " << Real(dreal) << endl;
   QDPIO::cout << "Diff norm2(multi1d) Subset = " << Real(daccr-dreal) << endl;
 
 
@@ -700,8 +699,6 @@ int main(int argc, char *argv[])
     accum += innerProduct(lqx[i],lqy[i],rb[1]);
   }
   fred = innerProduct(lqx,lqy,rb[1]);
-  QDPIO::cout << "sum innerProduct() Subset = " << Complex(accum) << endl;
-  QDPIO::cout << "innerProduct(multi1d) Subset = " << Complex(fred) << endl;
   QDPIO::cout << "Diff innerProduct(multi1d) Subset = " << Complex(fred-accum) << endl;
 
 
