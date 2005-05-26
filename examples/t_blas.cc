@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.11 2005-05-25 04:20:33 edwards Exp $
+// $Id: t_blas.cc,v 1.12 2005-05-26 03:40:23 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -664,29 +664,60 @@ int main(int argc, char *argv[])
   drdiff = daccum - djim;
   QDPIO::cout << "Diff innerProductReal Subset = " << drdiff << endl;
 
-  // Test array innerProduct
+  // Test norms of arrays
   int NN = 8;
   multi1d<LatticeFermion> lqx(NN);
   multi1d<LatticeFermion> lqy(NN);
 
-  accum = zero;
-  for(int i=0; i < NN; ++i)
-  {
+  Double daccr = zero;
+  for(int i=0; i < lqx.size(); ++i) {
     gaussian(lqx[i]);
     gaussian(lqy[i]);
 
+    daccr += norm2(lqx[i]);
+  }
+  Double dreal = norm2(lqx);
+  QDPIO::cout << "Diff norm2(multi1d) all = " << Real(daccr-dreal) << endl;
+
+  daccr = zero;
+  for(int i=0; i < lqx.size(); ++i) {
+    daccr += norm2(lqx[i],rb[1]);
+  }
+  dreal = norm2(lqx,rb[1]);
+  QDPIO::cout << "norm2(multi1d) Subset = " << Real(dreal) << endl;
+  QDPIO::cout << "Diff norm2(multi1d) Subset = " << Real(daccr-dreal) << endl;
+
+
+  accum = zero;
+  for(int i=0; i < lqx.size(); ++i) {
     accum += innerProduct(lqx[i],lqy[i]);
   }
   fred = innerProduct(lqx,lqy);
   QDPIO::cout << "Diff innerProduct(multi1d) all = " << Complex(fred-accum) << endl;
 
+  accum = zero;
+  for(int i=0; i < lqx.size(); ++i) {
+    accum += innerProduct(lqx[i],lqy[i],rb[1]);
+  }
+  fred = innerProduct(lqx,lqy,rb[1]);
+  QDPIO::cout << "sum innerProduct() Subset = " << Complex(accum) << endl;
+  QDPIO::cout << "innerProduct(multi1d) Subset = " << Complex(fred) << endl;
+  QDPIO::cout << "Diff innerProduct(multi1d) Subset = " << Complex(fred-accum) << endl;
 
-  Double daccr = zero;
-  for(int i=0; i < NN; ++i)
+
+  daccr = zero;
+  for(int i=0; i < lqx.size(); ++i) {
     daccr += innerProductReal(lqx[i],lqy[i]);
-
-  Double dreal = innerProductReal(lqx,lqy);
+  }
+  dreal = innerProductReal(lqx,lqy);
   QDPIO::cout << "Diff innerProductReal(multi1d) all = " << Real(daccr-dreal) << endl;
+
+  daccr = zero;
+  for(int i=0; i < lqx.size(); ++i) {
+    daccr += innerProductReal(lqx[i],lqy[i],rb[1]);
+  }
+  dreal = innerProductReal(lqx,lqy,rb[1]);
+  QDPIO::cout << "Diff innerProductReal(multi1d) Subset = " << Real(daccr-dreal) << endl;
 
 
   // Timings
