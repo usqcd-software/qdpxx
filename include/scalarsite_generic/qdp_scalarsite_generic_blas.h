@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.16 2005-05-26 03:42:16 edwards Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.17 2005-05-26 13:46:53 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1248,18 +1248,19 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     const REAL *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real());
     
     // Has Type OScalar< PScalar < PScalar < RScalar < REAL > > > >
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  ret_val;
-    DOUBLE lsum = 0;
+
+    DOUBLE lsum =(double)0;
     
     local_sumsq(&lsum,(REAL *)s1ptr, n_3vec); 
-    Internal::globalSum(lsum);
-    ret_val.elem().elem().elem().elem() = lsum;
-    return ret_val;
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  gsum(lsum);
+    Internal::globalSum(gsum);
+    return gsum;
   }
   else {
    return sum(localNorm2(s1),s);
   }
 }
+
 
 template<>
 inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
@@ -1273,13 +1274,12 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
   const REAL *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real());
     
 
-  UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  ret_val;
+
   DOUBLE lsum = 0;
- 
   local_sumsq(&lsum, (REAL *)s1ptr, n_3vec); 
-  Internal::globalSum(lsum);
-  ret_val.elem().elem().elem().elem() = lsum;
-  return ret_val;
+  UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  gsum(lsum);
+  Internal::globalSum(gsum);
+  return gsum;
 }
 
 
@@ -1448,15 +1448,15 @@ norm2(const multi1d< OLattice< TVec > >& s1, const OrderedSubset& s)
   QDPIO::cout << "Using SSE multi1d sumsq" << endl;
 #endif
 
-  int n_3vec = (s.end() - s.start() + 1)*24;
-  REAL32 ltmp = 0.0;
+  int n_3vec = (s.end() - s.start() + 1)*Ns;
+  DOUBLE ltmp = 0;
   for(int n=0; n < s1.size(); ++n)
   {
-    const REAL32 *s1ptr =  &(s1[n].elem(s.start()).elem(0).elem(0).real());
+    const REAL* s1ptr =  &(s1[n].elem(s.start()).elem(0).elem(0).real());
     
     // I am relying on this being a Double here 
-    REAL32 lltmp;
-    local_sumsq(&lltmp, (REAL32 *)s1ptr, n_3vec); 
+    DOUBLE lltmp;
+    local_sumsq(&lltmp, (REAL*)s1ptr, n_3vec); 
 
     ltmp += lltmp;
   }
@@ -1474,15 +1474,15 @@ norm2(const multi1d< OLattice< TVec > >& s1)
   QDPIO::cout << "Using SSE multi1d sumsq all" << endl;
 #endif
 
-  int n_3vec = (all.end() - all.start() + 1)*24;
-  REAL32 ltmp = 0.0;
+  int n_3vec = (all.end() - all.start() + 1)*Ns;
+  DOUBLE ltmp = 0.0;
   for(int n=0; n < s1.size(); ++n)
   {
-    const REAL32 *s1ptr =  &(s1[n].elem(all.start()).elem(0).elem(0).real());
+    const REAL* s1ptr =  &(s1[n].elem(all.start()).elem(0).elem(0).real());
     
     // I am relying on this being a Double here 
-    REAL32 lltmp;
-    local_sumsq(&lltmp, (REAL32 *)s1ptr, n_3vec); 
+    DOUBLE lltmp;
+    local_sumsq(&lltmp, (REAL*)s1ptr, n_3vec); 
 
     ltmp += lltmp;
   }

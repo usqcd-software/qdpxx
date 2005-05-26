@@ -1,6 +1,7 @@
-// $Id: t_blas.cc,v 1.13 2005-05-26 03:55:52 edwards Exp $
+// $Id: t_blas.cc,v 1.14 2005-05-26 13:46:53 bjoo Exp $
 
 #include <iostream>
+#include <iomanip>
 #include <cstdio>
 
 #include <time.h>
@@ -8,7 +9,7 @@
 #include "qdp.h"
 #include <blas1.h>
 
-
+using namespace std;
 using namespace QDP;
 
 int main(int argc, char *argv[])
@@ -23,7 +24,6 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  
   Real a=Real(1.5);
   LatticeFermion qx;
   LatticeFermion qy;
@@ -36,8 +36,8 @@ int main(int argc, char *argv[])
   // Test norm2(x)
   gaussian(qx);
 
-  // sum it by hand.
-  Double rc = Double(0);
+  // sum it by hand.-- 1 way
+  DOUBLE rc = (DOUBLE)0;
   for(int site=all.start(); site <= all.end(); site++) { 
 	for(int spin=0; spin < Ns; spin++) { 
 	   for(int col =0; col < Nc; col++) { 
@@ -48,16 +48,50 @@ int main(int argc, char *argv[])
            }
         }
   } 
-  Internal::globalSum(rc);
+  UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(rc);
+  Internal::globalSum(lsum);
 
+  // sum it by hand other way
+  Double lsum2 = Double(0);
+  Double lsum3 = Double(0);
+  for(int site=all.start(); site <= all.end(); site++) { 
+	for(int spin=0; spin < Ns; spin++) { 
+	   for(int col =0; col < Nc; col++) { 
+	     DOUBLE fred;
+	     fred  = (qx.elem(site).elem(spin).elem(col).real()
+	                *qx.elem(site).elem(spin).elem(col).real());
+
+	     fred  += (qx.elem(site).elem(spin).elem(col).imag()
+	              *qx.elem(site).elem(spin).elem(col).imag());
+
+	     lsum2 += fred;
+
+
+	     lsum3.elem().elem().elem().elem() += qx.elem(site).elem(spin).elem(col).real()
+	       * qx.elem(site).elem(spin).elem(col).real();
+	     lsum3.elem().elem().elem().elem() += qx.elem(site).elem(spin).elem(col).imag()
+	       * qx.elem(site).elem(spin).elem(col).imag();
+
+           }
+        }
+  } 
+  Internal::globalSum(lsum2);
+  Internal::globalSum(lsum3);
+
+  QDPIO::cout << "lsum  = " << lsum << endl;
+  QDPIO::cout << "lsum2 = " << lsum2 << endl;
+  QDPIO::cout << "lsum3 = " << lsum3 << endl;
   
+  QDPIO::cout << "lsum2 - lsum= " << (lsum2 - lsum) << endl;
+  QDPIO::cout << "lsum2 - lsum3 = " << (lsum2 - lsum3) << endl;
+
   Double bjs = norm2(qx);
 //  QDPIO::cout << "lattice volume = " << Layout::vol() << " Ns = " << Ns << " Nc = " << Nc << " Ncompx = 2.  Total Sum should be = " << Layout::vol()*Ns*Nc*2 << endl;
 
-  QDPIO::cout << "Hand sumsq-ed qx = " << rc << endl;
-  QDPIO::cout << "norm2(qx) = " << bjs << endl;
-  QDPIO::cout << "norm2 diff = " << rc - bjs << endl;
-
+ 
+  QDPIO::cout << "lsum - norm2(qx) = " << lsum - bjs << endl;
+  QDPIO::cout << "lsum2 - norm2(qx) = " << lsum2 - bjs << endl;
+  QDPIO::cout << "lsum3 - norm2(qx) = " << lsum3 - bjs << endl;
 
 
   // Test y += a*x
