@@ -5,6 +5,7 @@ AC_CONFIG_AUX_DIR(config)
 AC_LANG([C++])
 AC_PROG_CXX(g++ cxx CC)
 AC_PROG_RANLIB
+AC_CHECK_TOOL(AR, ar, [ar])
 
 dnl Initialise automake
 AM_INIT_AUTOMAKE
