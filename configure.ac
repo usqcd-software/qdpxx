@@ -105,6 +105,7 @@ AC_ARG_ENABLE(qcdoc,
      [ac_qcdoc_enabled=0]
 )
 
+
 dnl --enable-qcdoc-edram
 AC_ARG_ENABLE(qcdoc-edram,
    AC_HELP_STRING([--enable-qcdoc-edram],
@@ -388,7 +389,66 @@ else
 fi 
 
 
+AC_ARG_WITH(bagel-qdp,
+  AC_HELP_STRING(
+    [--with-bagel-qdp=DIR],
+    [Build QDP++ using bagel_qdp where bagel_qdp is in DIR.]
+  ),
+  [BAGEL_QDP_DIR=${with_bagel_qdp}
+   BAGEL_QDP_ENABLED="yes"],
+  [BAGEL_QDP_DIR=""
+   BAGEL_QDP_ENABLED="no" ]
+)
 
+if test "X${BAGEL_QDP_ENABLED}X" = "XyesX";
+then 
+     AC_MSG_NOTICE([Using BAGEL QDP])
+     AC_DEFINE(QDP_USE_BAGEL_QDP, [1], [Use Bagel QDP library for BLAS])
+     dnl get flags
+     if test "X${BAGEL_QDP_DIR}X" = "XX" ; 
+     then
+       AC_PATH_PROG([BAGEL_QDP_CONFIG], [bagel-qdp-config], [])
+     else
+       AC_PATH_PROG([BAGEL_QDP_CONFIG], [bagel-qdp-config], [], [${BAGEL_QDP_DIR}/bin:${PATH}])
+     fi     	
+
+     if test "X${BAGEL_QDP_CONFIG}X" = "XX"; 
+     then
+       AC_MSG_ERROR([bagel-qdp-config not found])
+     fi
+     AC_MSG_NOTICE([Found bagel_qdp configuration program ${BAGEL_QDP_CONFIG}])
+     AC_SUBST(BAGEL_QDP_CXXFLAGS, "`${BAGEL_QDP_CONFIG} --cxxflags`")
+     AC_MSG_NOTICE([bagel_qdp compile flags: ${BAGEL_QDP_CXXFLAGS}])
+     AC_SUBST(BAGEL_QDP_LDFLAGS, "`${BAGEL_QDP_CONFIG} --ldflags`")
+     AC_MSG_NOTICE([bagel_qdp link flags : ${BAGEL_QDP_LDFLAGS}])
+     AC_SUBST(BAGEL_QDP_LIBS,     "`${BAGEL_QDP_CONFIG} --libs`")
+     AC_MSG_NOTICE([bagel_qdp libraries flags: ${BAGEL_QDP_LIBS}])
+
+     AC_MSG_CHECKING([if we can compile/link a simple bagel_qdp program])
+     PAC_BAGEL_QDP_LINK_CXX_FUNC(
+       ${BAGEL_QDP_CXXFLAGS},
+       ${BAGEL_QDP_LDFLAGS},
+       ${BAGEL_QDP_LIBS},
+       ,
+       ,
+       [bagelqdp_link_ok=yes],
+       [bagelqdp_link_ok=no]
+     )
+
+     if test "X${bagelqdp_link_ok}X" = "XyesX" ; then 
+        AC_MSG_RESULT(yes)
+     else 
+         AC_MSG_RESULT(no)
+         AC_MSG_ERROR([Cannot compile/link a program with bagel_qdp. Use --with-bagel-qdp=<dir> to select a working version.])
+     fi 
+else
+     AC_MSG_NOTICE([not using bagel_qdp])
+     AC_DEFINE(QDP_USE_BAGEL_QDP, [0], [Donot use Bagel QDP library for BLAS])
+     AC_SUBST(BAGEL_QDP_CXXFLAGS, "")
+     AC_SUBST(BAGEL_QDP_LDFLAGS, "")
+     AC_SUBST(BAGEL_QDP_LIBS,     "")
+fi
+      
 dnl
 dnl
 dnl Now have all the options... Do some configuration 

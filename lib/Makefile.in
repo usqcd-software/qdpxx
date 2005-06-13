@@ -159,6 +159,10 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BAGEL_QDP_CONFIG = @BAGEL_QDP_CONFIG@
+BAGEL_QDP_CXXFLAGS = @BAGEL_QDP_CXXFLAGS@
+BAGEL_QDP_LDFLAGS = @BAGEL_QDP_LDFLAGS@
+BAGEL_QDP_LIBS = @BAGEL_QDP_LIBS@
 BUILD_STAGGERED_EXAMPLES_FALSE = @BUILD_STAGGERED_EXAMPLES_FALSE@
 BUILD_STAGGERED_EXAMPLES_TRUE = @BUILD_STAGGERED_EXAMPLES_TRUE@
 BUILD_WILSON_EXAMPLES_FALSE = @BUILD_WILSON_EXAMPLES_FALSE@
@@ -264,7 +268,7 @@ INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
            -I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
            -I@top_srcdir@/other_libs/xpath_reader/include
 
-AM_CXXFLAGS = $(INCFLAGS) @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
+AM_CXXFLAGS = $(INCFLAGS) @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
 lib_LIBRARIES = libqdp.a
 libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc \
 	qdp_layout.cc qdp_io.cc qdp_iogauge.cc qdp_byteorder.cc \

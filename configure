@@ -275,7 +275,7 @@ PACKAGE_BUGREPORT='edwards@jlab.org'
 
 ac_subdirs_all="$ac_subdirs_all other_libs/qio"
 ac_subdirs_all="$ac_subdirs_all other_libs/xpath_reader"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT RANLIB ac_ct_RANLIB AR ac_ct_AR INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CONFIG_ND CONFIG_NC CONFIG_NS CONFIG_SSE CONFIG_SSE2 CONFIG_PRECISION CONFIG_LAYOUT ARCH_SITE QMP_HOME QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CONFIG_PARALLEL_ARCH LIBXML2_CONFIG LIBXML2_CXXFLAGS LIBXML2_LIBS ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE ARCH_SCALARVEC_TRUE ARCH_SCALARVEC_FALSE ARCH_PARSCALARVEC_TRUE ARCH_PARSCALARVEC_FALSE QDP_USE_SCALAR_SSE_TRUE QDP_USE_SCALAR_SSE_FALSE QDP_USE_SCALAR_SSE2_TRUE QDP_USE_SCALAR_SSE2_FALSE QDP_USE_QCDOC_TRUE QDP_USE_QCDOC_FALSE QDP_USE_SCALARVEC_SSE_TRUE QDP_USE_SCALARVEC_SSE_FALSE QDP_USE_SCALARVEC_SSE2_TRUE QDP_USE_SCALARVEC_SSE2_FALSE BUILD_STAGGERED_EXAMPLES_TRUE BUILD_STAGGERED_EXAMPLES_FALSE BUILD_WILSON_EXAMPLES_TRUE BUILD_WILSON_EXAMPLES_FALSE LATEX DVIPS DVIPDF DOXYGEN subdirs LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT RANLIB ac_ct_RANLIB AR ac_ct_AR INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CONFIG_ND CONFIG_NC CONFIG_NS CONFIG_SSE CONFIG_SSE2 CONFIG_PRECISION CONFIG_LAYOUT ARCH_SITE QMP_HOME QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CONFIG_PARALLEL_ARCH LIBXML2_CONFIG LIBXML2_CXXFLAGS LIBXML2_LIBS BAGEL_QDP_CONFIG BAGEL_QDP_CXXFLAGS BAGEL_QDP_LDFLAGS BAGEL_QDP_LIBS ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE ARCH_SCALARVEC_TRUE ARCH_SCALARVEC_FALSE ARCH_PARSCALARVEC_TRUE ARCH_PARSCALARVEC_FALSE QDP_USE_SCALAR_SSE_TRUE QDP_USE_SCALAR_SSE_FALSE QDP_USE_SCALAR_SSE2_TRUE QDP_USE_SCALAR_SSE2_FALSE QDP_USE_QCDOC_TRUE QDP_USE_QCDOC_FALSE QDP_USE_SCALARVEC_SSE_TRUE QDP_USE_SCALARVEC_SSE_FALSE QDP_USE_SCALARVEC_SSE2_TRUE QDP_USE_SCALARVEC_SSE2_FALSE BUILD_STAGGERED_EXAMPLES_TRUE BUILD_STAGGERED_EXAMPLES_FALSE BUILD_WILSON_EXAMPLES_TRUE BUILD_WILSON_EXAMPLES_FALSE LATEX DVIPS DVIPDF DOXYGEN subdirs LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -837,6 +837,8 @@ Optional Packages:
                           DIR.
   --with-libxml2=DIR      Build on top of libxml2 where libxml2 is installed
                           in DIR
+  --with-bagel-qdp=DIR    Build QDP++ using bagel_qdp where bagel_qdp is in
+                          DIR.
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -2746,6 +2748,7 @@ else
 
 fi;
 
+
 # Check whether --enable-qcdoc-edram or --disable-qcdoc-edram was given.
 if test "${enable_qcdoc_edram+set}" = set; then
   enableval="$enable_qcdoc_edram"
@@ -3544,6 +3547,252 @@ echo "$as_me: error: Cannot compile/link a program with libxml2.
 fi
 
 
+
+# Check whether --with-bagel-qdp or --without-bagel-qdp was given.
+if test "${with_bagel_qdp+set}" = set; then
+  withval="$with_bagel_qdp"
+  BAGEL_QDP_DIR=${with_bagel_qdp}
+   BAGEL_QDP_ENABLED="yes"
+else
+  BAGEL_QDP_DIR=""
+   BAGEL_QDP_ENABLED="no"
+
+fi;
+
+if test "X${BAGEL_QDP_ENABLED}X" = "XyesX";
+then
+     { echo "$as_me:$LINENO: Using BAGEL QDP" >&5
+echo "$as_me: Using BAGEL QDP" >&6;}
+
+cat >>confdefs.h <<\_ACEOF
+#define QDP_USE_BAGEL_QDP 1
+_ACEOF
+
+          if test "X${BAGEL_QDP_DIR}X" = "XX" ;
+     then
+       # Extract the first word of "bagel-qdp-config", so it can be a program name with args.
+set dummy bagel-qdp-config; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_BAGEL_QDP_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $BAGEL_QDP_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_BAGEL_QDP_CONFIG="$BAGEL_QDP_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_BAGEL_QDP_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  ;;
+esac
+fi
+BAGEL_QDP_CONFIG=$ac_cv_path_BAGEL_QDP_CONFIG
+
+if test -n "$BAGEL_QDP_CONFIG"; then
+  echo "$as_me:$LINENO: result: $BAGEL_QDP_CONFIG" >&5
+echo "${ECHO_T}$BAGEL_QDP_CONFIG" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+     else
+       # Extract the first word of "bagel-qdp-config", so it can be a program name with args.
+set dummy bagel-qdp-config; ac_word=$2
+echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
+if test "${ac_cv_path_BAGEL_QDP_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $BAGEL_QDP_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_BAGEL_QDP_CONFIG="$BAGEL_QDP_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+as_dummy="${BAGEL_QDP_DIR}/bin:${PATH}"
+for as_dir in $as_dummy
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_BAGEL_QDP_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+
+  ;;
+esac
+fi
+BAGEL_QDP_CONFIG=$ac_cv_path_BAGEL_QDP_CONFIG
+
+if test -n "$BAGEL_QDP_CONFIG"; then
+  echo "$as_me:$LINENO: result: $BAGEL_QDP_CONFIG" >&5
+echo "${ECHO_T}$BAGEL_QDP_CONFIG" >&6
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+     fi
+
+     if test "X${BAGEL_QDP_CONFIG}X" = "XX";
+     then
+       { { echo "$as_me:$LINENO: error: bagel-qdp-config not found" >&5
+echo "$as_me: error: bagel-qdp-config not found" >&2;}
+   { (exit 1); exit 1; }; }
+     fi
+     { echo "$as_me:$LINENO: Found bagel_qdp configuration program ${BAGEL_QDP_CONFIG}" >&5
+echo "$as_me: Found bagel_qdp configuration program ${BAGEL_QDP_CONFIG}" >&6;}
+     BAGEL_QDP_CXXFLAGS="`${BAGEL_QDP_CONFIG} --cxxflags`"
+
+     { echo "$as_me:$LINENO: bagel_qdp compile flags: ${BAGEL_QDP_CXXFLAGS}" >&5
+echo "$as_me: bagel_qdp compile flags: ${BAGEL_QDP_CXXFLAGS}" >&6;}
+     BAGEL_QDP_LDFLAGS="`${BAGEL_QDP_CONFIG} --ldflags`"
+
+     { echo "$as_me:$LINENO: bagel_qdp link flags : ${BAGEL_QDP_LDFLAGS}" >&5
+echo "$as_me: bagel_qdp link flags : ${BAGEL_QDP_LDFLAGS}" >&6;}
+     BAGEL_QDP_LIBS="`${BAGEL_QDP_CONFIG} --libs`"
+
+     { echo "$as_me:$LINENO: bagel_qdp libraries flags: ${BAGEL_QDP_LIBS}" >&5
+echo "$as_me: bagel_qdp libraries flags: ${BAGEL_QDP_LIBS}" >&6;}
+
+     echo "$as_me:$LINENO: checking if we can compile/link a simple bagel_qdp program" >&5
+echo $ECHO_N "checking if we can compile/link a simple bagel_qdp program... $ECHO_C" >&6
+
+    pac_BAGEL_QDP_CFLAGS="${BAGEL_QDP_CXXFLAGS}"
+    pac_BAGEL_QDP_LDFLAGS="${BAGEL_QDP_LDFLAGS}"
+    pac_BAGEL_QDP_LIBS="${BAGEL_QDP_LIBS}"
+
+
+    ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+    pac_saved_CXXFLAGS="$CXXFLAGS"
+    pac_saved_LDFLAGS="$LDFLAGS"
+    pac_saved_LIBS="$LIBS"
+    CXXFLAGS="$CXXFLAGS $pac_BAGEL_QDP_CFLAGS"
+    LDFLAGS="$LDFLAGS $pac_BAGEL_QDP_LDFLAGS"
+    LIBS="$LIBS $pac_BAGEL_QDP_LIBS"
+    cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+        #include "bagel_qdp.h"
+
+int
+main ()
+{
+
+        int argc ; char **argv ;
+	Float *xptr;
+	Float *aptr;
+	Float *zptr;
+	Float *yptr;
+	int n3vec;
+	qdp_vaxpy3(zptr,aptr,xptr,yptr,n3vec);
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_cxx_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  pac_bagel_qdp_working=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+pac_bagel_qdp_working=no
+
+fi
+rm -f conftest.err conftest.$ac_objext \
+      conftest$ac_exeext conftest.$ac_ext
+    CXXFLAGS="$pac_saved_CXXFLAGS"
+    LDFLAGS="$pac_saved_LDFLAGS"
+    LIBS="$pac_saved_LIBS"
+    ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+    if test "X${pac_bagel_qdp_working}X" = "XyesX" ; then
+       bagelqdp_link_ok=yes
+    else
+       bagelqdp_link_ok=no
+
+    fi
+
+
+
+     if test "X${bagelqdp_link_ok}X" = "XyesX" ; then
+        echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+     else
+         echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+         { { echo "$as_me:$LINENO: error: Cannot compile/link a program with bagel_qdp. Use --with-bagel-qdp=<dir> to select a working version." >&5
+echo "$as_me: error: Cannot compile/link a program with bagel_qdp. Use --with-bagel-qdp=<dir> to select a working version." >&2;}
+   { (exit 1); exit 1; }; }
+     fi
+else
+     { echo "$as_me:$LINENO: not using bagel_qdp" >&5
+echo "$as_me: not using bagel_qdp" >&6;}
+
+cat >>confdefs.h <<\_ACEOF
+#define QDP_USE_BAGEL_QDP 0
+_ACEOF
+
+     BAGEL_QDP_CXXFLAGS=""
+
+     BAGEL_QDP_LDFLAGS=""
+
+     BAGEL_QDP_LIBS=""
+
+fi
 
 
 
@@ -4967,6 +5216,10 @@ s,@CONFIG_PARALLEL_ARCH@,$CONFIG_PARALLEL_ARCH,;t t
 s,@LIBXML2_CONFIG@,$LIBXML2_CONFIG,;t t
 s,@LIBXML2_CXXFLAGS@,$LIBXML2_CXXFLAGS,;t t
 s,@LIBXML2_LIBS@,$LIBXML2_LIBS,;t t
+s,@BAGEL_QDP_CONFIG@,$BAGEL_QDP_CONFIG,;t t
+s,@BAGEL_QDP_CXXFLAGS@,$BAGEL_QDP_CXXFLAGS,;t t
+s,@BAGEL_QDP_LDFLAGS@,$BAGEL_QDP_LDFLAGS,;t t
+s,@BAGEL_QDP_LIBS@,$BAGEL_QDP_LIBS,;t t
 s,@ARCH_SCALAR_TRUE@,$ARCH_SCALAR_TRUE,;t t
 s,@ARCH_SCALAR_FALSE@,$ARCH_SCALAR_FALSE,;t t
 s,@ARCH_PARSCALAR_TRUE@,$ARCH_PARSCALAR_TRUE,;t t

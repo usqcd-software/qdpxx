@@ -128,3 +128,75 @@ dnl - set the parallel compiler environment
     fi
   ]
 )
+
+dnl Balint Joo, 13/12/2002
+dnl George T. Fleming, 03/03/2003
+dnl
+dnl Stole this from mpich-1.2.4/mpe
+dnl
+dnl PAC_BAGEL_QDP_LINK_CXX_FUNC(
+dnl   BAGEL_QDP_CFLAGS,
+dnl   BAGEL_QDP_LDFLAGS,
+dnl   BAGEL_QDP_LIBS,
+dnl   BAGEL_QDP_VARS,
+dnl   BAGEL_QDP_FUNC,
+dnl   [action if working],
+dnl   [action if not working]
+dnl )
+dnl
+dnl  BAGEL_QDP_CFLAGS   is the include option (-I) for BAGEL_QDP includes
+dnl  BAGEL_QDP_LDFLAGS  is the link path (-L) option for BAGEL_QDP libraries
+dnl  BAGEL_QDP_LIBS     is the library (-l) option for BAGEL_QDP libaries
+dnl  BAGEL_QDP_VARS     is the the declaration of variables needed to call BAGEL_QDP_FUNC
+dnl  BAGEL_QDP_FUNC     is the body of BAGEL_QDP function call to be checked for existence
+dnl               e.g.  BAGEL_QDP_VARS="BAGEL_QDP_u32_t foo;"
+dnl                     BAGEL_QDP_FUNC="foo = BAGEL_QDP_get_SMP_count();"
+dnl               if BAGEL_QDP_FUNC is empty, assume linking with basic MPI program.
+dnl               i.e. check if BAGEL_QDP definitions are valid
+dnl
+AC_DEFUN(
+  PAC_BAGEL_QDP_LINK_CXX_FUNC,
+  [
+dnl - set local parallel compiler environments
+dnl   so input variables can be CFLAGS, LDFLAGS or LIBS
+    pac_BAGEL_QDP_CFLAGS="$1"
+    pac_BAGEL_QDP_LDFLAGS="$2"
+    pac_BAGEL_QDP_LIBS="$3"
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+dnl - save the original environment
+    pac_saved_CXXFLAGS="$CXXFLAGS"
+    pac_saved_LDFLAGS="$LDFLAGS"
+    pac_saved_LIBS="$LIBS"
+dnl - set the parallel compiler environment
+    CXXFLAGS="$CXXFLAGS $pac_BAGEL_QDP_CFLAGS"
+    LDFLAGS="$LDFLAGS $pac_BAGEL_QDP_LDFLAGS"
+    LIBS="$LIBS $pac_BAGEL_QDP_LIBS"
+    AC_TRY_LINK(
+      [
+        #include "bagel_qdp.h"
+      ],
+      [
+        int argc ; char **argv ;
+	Float *xptr;
+	Float *aptr;
+	Float *zptr;
+	Float *yptr;
+	int n3vec;
+	qdp_vaxpy3(zptr,aptr,xptr,yptr,n3vec);
+      ],
+      [pac_bagel_qdp_working=yes],
+      [pac_bagel_qdp_working=no]
+    )
+    CXXFLAGS="$pac_saved_CXXFLAGS"
+    LDFLAGS="$pac_saved_LDFLAGS"
+    LIBS="$pac_saved_LIBS"
+    AC_LANG_RESTORE
+    if test "X${pac_bagel_qdp_working}X" = "XyesX" ; then
+       ifelse([$6],,:,[$6])
+    else
+       ifelse([$7],,:,[$7])
+    fi
+  ]
+)
+

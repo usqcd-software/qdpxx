@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.53 2005-01-22 21:58:02 edwards Exp $
+// $Id: qdp.h,v 1.54 2005-06-13 12:58:27 bjoo Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -177,9 +177,23 @@ QDP_END_NAMESPACE();
 // Include SSE code here if applicable
 #if QDP_USE_SSE == 1
 #include "qdp_scalarsite_sse.h"
-#elif QDP_USE_QCDOC == 1
-#include "qdp_scalarsite_qcdoc.h"
+#elif ( QDP_USE_QCDOC == 1 )
+
+// QDP_USE_QCDOC AND QDP USE BAGEL_QDP may be both defined
+#if QDP_USE_BAGEL_QDP == 1
+// USE BAGEL_QDP but use QCDPC header file for linalg (using
+// defs in qdp_scalarsite_bagel_qdp.h"
+#include "qdp_scalarsite_bagel_qdp.h"
 #else
+// USE Old QCDOC code without BAGEL will eventually be obsoleted
+#include "qdp_scalarsite_qcdoc.h"
+#endif
+
+#elif QDP_USE_BAGEL_QDP == 1
+// USE_BAGEL_QDP
+#include "qdp_scalarsite_bagel_qdp.h"
+#else
+// Use Generics only
 #include "qdp_scalarsite_generic.h"
 #endif
 
@@ -192,8 +206,21 @@ QDP_END_NAMESPACE();
 #if QDP_USE_SSE == 1
 #include "qdp_scalarsite_sse.h"
 #elif QDP_USE_QCDOC == 1
-#include "qdp_scalarsite_qcdoc.h"
+// QDP_USE_QCDOC AND QDP USE BAGEL_QDP may be both defined
+#if QDP_USE_BAGEL_QDP == 1
+// USE BAGEL_QDP but use QCDPC header file for linalg (using
+// defs in qdp_scalarsite_bagel_qdp.h"
+#include "qdp_scalarsite_bagel_qdp.h"
 #else
+// USE Old QCDOC code without BAGEL stuff. Will eventually be obsoleted
+#include "qdp_scalarsite_qcdoc.h"
+#endif
+
+#elif QDP_USE_BAGEL_QDP == 1
+// Use BAGEL_QDP 
+#include "qdp_scalarsite_bagel_qdp.h"
+#else
+// Use generics
 #include "qdp_scalarsite_generic.h"
 #endif
 

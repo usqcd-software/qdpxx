@@ -57,6 +57,9 @@
 /* Number of spin components */
 #undef QDP_NS
 
+/* Donot use Bagel QDP library for BLAS */
+#undef QDP_USE_BAGEL_QDP
+
 /* Use checkerboarded layout */
 #undef QDP_USE_CB2_LAYOUT
 

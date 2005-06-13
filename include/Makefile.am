@@ -93,6 +93,12 @@ QCDOC_HDRS = qdp_scalarsite_qcdoc.h \
 	$(qcdocdir)/save_fp_regs.h
 
 
+# QCDOC NONSPECIFIC BAGEL stuff
+bageldir = scalarsite_bagel_qdp
+BAGEL_HDRS = qdp_scalarsite_bagel_qdp.h \
+	$(bageldir)/qdp_scalarsite_bagel_qdp_blas.h \
+	$(bageldir)/qdp_scalarsite_bagel_qdp_blas_g5.h
+
 # All the include files - avoid flattening of dirs by using nobase
 nobase_include_HEADERS = \
 		qdp_config.h \
