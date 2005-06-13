@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_bagel_qdp_blas_g5.h,v 1.1 2005-06-13 12:58:27 bjoo Exp $
+// $Id: qdp_scalarsite_bagel_qdp_blas_g5.h,v 1.2 2005-06-13 13:48:30 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1214,12 +1214,7 @@ void evaluate( OLattice< TVec > &d,
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
   int n_4vec = (s.end()-s.start()+1);
-  //  g5_axmbyz(zptr, aptr, xptr, bptr, yptr, n_4vec);
-  // Two step until I fix it
-  int n_3vec = n_4vec*Ns;
-  qdp_vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
-  REAL one=1;
-  qdp_vscal_g5(zptr,&one,zptr,n_4vec);
+  qdp_vg5axmby(zptr, aptr, xptr, bptr, yptr, n_4vec);
   
 }
 

@@ -158,7 +158,8 @@ nobase_include_HEADERS = \
                 $(GENERIC_HDRS) \
 		$(QCDOC_HDRS) \
 		$(SSESITE_HDRS) \
-		$(SSEVEC_HDRS)
+		$(SSEVEC_HDRS) \
+	        $(BAGEL_HDRS)
 
 nodist_include_HEADERS = qdp_config_internal.h
 

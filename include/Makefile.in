@@ -340,7 +340,8 @@ nobase_include_HEADERS = \
                 $(GENERIC_HDRS) \
 		$(QCDOC_HDRS) \
 		$(SSESITE_HDRS) \
-		$(SSEVEC_HDRS)
+		$(SSEVEC_HDRS) \
+	        $(BAGEL_HDRS)
 
 nodist_include_HEADERS = qdp_config_internal.h
 all: qdp_config_internal.h
@@ -480,7 +481,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/$(genericdir) $(distdir)/$(qcdocdir) $(distdir)/$(ssesitedir) $(distdir)/$(ssevecdir) $(distdir)/PETE
+	$(mkdir_p) $(distdir)/$(bageldir) $(distdir)/$(genericdir) $(distdir)/$(qcdocdir) $(distdir)/$(ssesitedir) $(distdir)/$(ssevecdir) $(distdir)/PETE
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
