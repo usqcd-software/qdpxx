@@ -1,3 +1,12 @@
+
+News 13/Jun/2005
+
+  If we have the bagel_qdp library, we can now use it.
+  Substitute the build_all.sh and build_functions.sh scripts
+  with build_all_bagel_qdp.sh and build_functions_bagel_qdp.sh 
+
+###
+
 To compile on the QCDOC front end:
 
 i) Compile Libxml (this is not quite turnkey since the getcwd 
