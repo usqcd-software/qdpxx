@@ -17,6 +17,42 @@ function build_bagel {
 	popd
 }
 
+function build_bagel_qdp {
+  bagelqdpdir=$1
+  bagel_install_dir=$2
+  bagelqdp_installdir=$3
+  bagelqdp_prec=$4
+  bagelqdp_proc=$5
+  bagelqdp_hostsys=$6
+  bagelqdp_buildsys=$7
+    
+  bagelqdp_builddir=build_bagel_qdp_${bagel_prec}
+
+  echo Building BAGEL QDP for installing in ${bagelqdp_installdir}
+  rm -rf ${bagelqdp_builddir}
+  rm -rf ${bagelqdp_installdir}
+  mkdir -p ${bagelqdp_builddir}
+  pushd ${bagelqdp_builddir}
+  command="${bagelqdpdir}/configure"
+  command=${command}" --prefix=${bagelqdp_installdir}"
+  command=${command}" --with-bagel=${bagel_install_dir}"
+  command=${command}" --enable-precision=${bagel_prec}"
+  command=${command}" --enable-target-cpu=${bagel_proc}"
+  command=${command}" --host=${host_sys}"
+  command=${command}" --build=${build_sys}"
+  command=${command}" CXXFLAGS=\"-O2 \" "
+  command=${command}" CFLAGS=\" -O2 \" "
+  command=${command}" ASFLAGS=\" \" "
+  command=${command}" LDFLAGS=\" \" "
+  command=${command}" LIBS=\"  \" "
+  echo ${command} > ./configure_bagel_qdp.sh
+  chmod u+x ./configure_bagel_qdp.sh
+  ./configure_bagel_qdp.sh
+  gmake
+  gmake install
+  popd
+}
+
 function build_bagel_wilson_dslash {
 	wilsondir=$1
 	wilson_install_dir=$2
@@ -81,6 +117,7 @@ function build_qdp {
 	do_blas=$7
 	host_sys=$8
 	build_sys=$9
+	bagel_qdp_dir=${10}
 
         qdp_base=`basename ${qdp_install_dir}`
         qdp_builddir="./build_"${qdp_base}
@@ -96,15 +133,15 @@ function build_qdp {
 	if test "X${do_blas}X" == "XyesX";
 	then 
 	     qcdoc="--enable-qcdoc";
-	     wilsondir=${10};
-	     WILSON_CXXFLAGS=`${wilsondir}/bin/wfm-config --cxxflags`;
-	     WILSON_LDFLAGS=`${wilsondir}/bin/wfm-config --ldflags`;
-	     WILSON_LIBS=`${wilsondir}/bin/wfm-config --libs`;
         else
 	     qcdoc="";
-	     WILSON_CXXFLAGS="";
-	     WILSON_LDFLAGS="";
-	     WILSON_LIBS="";
+        fi
+
+	if test "X${bagel_qdp_dir}X" != "XX";
+        then 
+	     bagelqdp="--with-bagel-qdp=${bagel_qdp_dir}"
+        else
+	     bagelqdp=""
         fi
 
 	rm -rf ${qdp_install_dir}
@@ -117,23 +154,19 @@ function build_qdp {
 	command="${qdpdir}/configure --enable-parallel-arch=parscalar "
 	command=${command}"  QMP_CFLAGS=\"-I$qos/quser/include\" "
 	command=${command}"  QMP_LDFLAGS=\"-L$qos/quser/lib\" QMP_LIBS=\"-lqmp\" "
-	command=${command}"  CXXFLAGS=\"-O2 -finline-limit=50000 ${WILSON_CXXFLAGS}\" "
+	command=${command}"  CXXFLAGS=\"-O2 -finline-limit=50000\" "
 	command=${command}" CFLAGS=\"-O2 \" "
-	command=${command}" LDFLAGS=\"${WILSON_LDFLAGS}\" "
-	command=${command}" LIBS=\"${WILSON_LIBS}\" " 
 	command=${command}" --enable-precision=${precision}"
 	command=${command}" --disable-qmp-route"
 	command=${command}" --enable-slow-route"
 	command=${command}" --with-libxml2=${libxml}"
 	command=${command}" --host=powerpc-gnu-elf "
-	command=${command}" "${qcdoc_edram}" "${qcdoc}
+	command=${command}" "${qcdoc_edram}" "${qcdoc}" "${bagelqdp}
 	command=${command}" --build=none --prefix=${qdp_install_dir}"
 	echo Configuring QDP++ with command:
 	echo    ${command}
  	echo ${command} > configure_qdp.sh
 
-	## Pick up right ar
-	export PATH=/home/ed/bj/bin:$PATH
 	chmod u+x configure_qdp.sh
 	./configure_qdp.sh
 	gmake 
@@ -148,7 +181,8 @@ function build_chroma {
 	host_sys=$4
 	build_sys=$5
 	do_pab_dslash=$6
-	do_gmp=$7
+	pab_dslashdir=$7
+	do_gmp=$8
 
 	echo Chromadir: ${chromadir}
 	echo Chroma_Install_dir: ${chroma_install_dir}
@@ -159,26 +193,19 @@ function build_chroma {
 	echo DO GMP: ${do_gmp}
 	if test "X${do_pab_dslash}X" == "XyesX";
 	then
-	   pab_dslash="--enable-pab-wilson-dslash=noarch";
+	   pab_dslash="--with-bagel-wilson-dslash=${pab_dslashdir}";
 	else
 	   pab_dslash="";
 	fi
 
 	if test "X${do_gmp}X" == "XyesX";
 	then 
-	   gmp="--enable-gmp";
-	   gmpdir=$8;
-	   echo GMPDIR is ${gmpdir}
-	   gmpincdir="-I${gmpdir}/include";
-	   gmplibdir="-L${gmpdir}/lib";
-	   gmplib="-lgmp";
+	   gmpdir=${9}
+	   gmp="--with-gmp=${gmpdir}";
         else 
-	   gmp="";
-	   gmpdir="";
-	   gmpincdir="";
-	   gmplibdir="";
-	   gmplib="";
+	   gmp=""
         fi
+
 	rm -rf ${chroma_install_dir}
 	install_base_name=`basename ${chroma_install_dir}`
 	builddir=./build_${install_base_name}
@@ -188,8 +215,7 @@ function build_chroma {
 	mkdir -p ${builddir}
 	pushd ${builddir}
 	export PATH=/home/ed/bj/bin:$PATH
-	command="${chromadir}/configure CXXFLAGS=\"${gmpincdir}\" LDFLAGS=\"${gmplibdir}\" "
-	command=${command}" LIBS=\"${gmplib}\" "
+	command="${chromadir}/configure CXXFLAGS=\"\" "
 	command=${command}" --with-qdp=${qdp_dir} "
 	command=${command}" --prefix=${chroma_install_dir}"
 	command=${command}" --host=${host_sys}"
