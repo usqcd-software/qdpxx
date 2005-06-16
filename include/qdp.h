@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.54 2005-06-13 12:58:27 bjoo Exp $
+// $Id: qdp.h,v 1.55 2005-06-16 12:01:10 bjoo Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -250,5 +250,6 @@ QDP_END_NAMESPACE();
 #error "Unknown architecture ARCH"
 #endif
 
+#include "qdp_flopcount.h"
 
 #endif  // QDP_INCLUDE
