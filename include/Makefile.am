@@ -130,6 +130,7 @@ nobase_include_HEADERS = \
 		qdp_primvector.h \
 		qdp_profile.h \
                 qdp_stopwatch.h \
+		qdp_flopcount.h \
 		qdp_iogauge.h \
 		qdp_util.h \
 		qdp_xmlio.h \
