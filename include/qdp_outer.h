@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.39 2005-06-15 14:33:18 bjoo Exp $
+// $Id: qdp_outer.h,v 1.40 2005-06-17 13:35:34 bjoo Exp $
 
 #include "qdp_config.h"
 
@@ -396,24 +396,31 @@ private:
       // Let us try and allocate in the EDRAM first. The QCOMMS apparently
       // improves streaming performance later by locating things in transient
       // cache areas (even if we don't want to communicate the thing later 
-      F_orig = (char *)qalloc((QFAST|QCOMMS), sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE);
+      // Note also that qalloc allocates optimally aligned memory so
+      // we don't need to mess with the QDP_ALIGNMENT, in fact doing
+      // so may slow us down.
+      F_orig = (char *)qalloc((QFAST|QCOMMS), sizeof(T)*Layout::sitesOnNode());
       if(F_orig == (char *)NULL) {
 	// If allocation in EDRAM failed, try allocating in DDR. 
 	// According to Peter, it is still worth keeping the QCOMMS flag
 	// on for better caching in the transient cache area 
-	F_orig = (char *)qalloc(QCOMMS, sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE);
+	F_orig = (char *)qalloc(QCOMMS, sizeof(T)*Layout::sitesOnNode());
 	if( F_orig == (char *)NULL ) { 
           QDP_error_exit("Unable to qalloc in alloc mem");
         }
       }
+      F=(T*)F_orig;
 #else 
+      // We don't have qalloc and we rely on new. We have to worry about
+      // alignment etc. Ah for a nice centralised customisable memory
+      // allocator...
       F_orig = new(nothrow) char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
       if (F_orig == 0x0) { 
 	QDP_error_exit("Unable to new memory in alloc mem in qdp_outer.h");
       }
-#endif
       F = (T*)(((unsigned long)F_orig + (QDP_ALIGNMENT_SIZE-1)) & ~(QDP_ALIGNMENT_SIZE-1));
 
+#endif
 #if QDP_DEBUG >= 1
       QDP_info("%s OLattice_orig=0x%x, OLattice[%d]=0x%x, this=0x%x, bytes/site=%d",
 	       p,F_orig,Layout::sitesOnNode(),F,this,sizeof(T));
