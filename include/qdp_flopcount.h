@@ -36,40 +36,40 @@ QDP_BEGIN_NAMESPACE(QDP);
 
     //! Method to add raw number of flops (eg from Level 3 operators)
     inline void addFlops(unsigned long flops) { 
-      count += flops;
+      count += (double)flops;
     }
 
     //! Method to add per site flop count. Count is multiplied by sitesOnNode()
     inline void addSiteFlops(unsigned long flops) { 
-      count += (flops * (unsigned long)Layout::sitesOnNode());
+      count += (double)(flops * (unsigned long)Layout::sitesOnNode());
     }
 
     //! Method to add per site flop count for a subset of sites. Count is multiplied by the site table size of the subset (ie number of sites in a subset)
     inline void addSiteFlops(unsigned long flops, const Subset& s) {
-      count += (flops * (unsigned long)(s.numSiteTable()));
+      count += (double)(flops * (unsigned long)(s.numSiteTable()));
     }
 
     //! Method to retrieve accumulated flopcount
-    inline const unsigned long getFlops(void) const { 
+    inline const double getFlops(void) const { 
       return count;
     }
 
     //! Report floppage
     inline const void report(const std::string& name, 
-			     const Real& time_in_seconds) {
+			     const double& time_in_seconds) {
 
-      Real mflops_per_cpu = Real(count)/(Real(1000*1000)*time_in_seconds);
-      Real mflops_overall = mflops_per_cpu;
+      double mflops_per_cpu = count/((double)(1000*1000)*time_in_seconds);
+      double mflops_overall = mflops_per_cpu;
       Internal::globalSum(mflops_overall);
-      Real gflops_overall = mflops_overall/Real(1000);
-      Real tflops_overall = gflops_overall/Real(1000);
+      double gflops_overall = mflops_overall/(double)(1000);
+      double tflops_overall = gflops_overall/(double)(1000);
 
       QDPIO::cout <<"QDP:FlopCount:" << name << " Performance/CPU: t=" << time_in_seconds << "(s) Flops=" << count << " => " << mflops_per_cpu << " Mflops/cpu." << endl;
       QDPIO::cout << "QDP:FlopCount:"  << name <<" Total performance:  " << mflops_overall << " Mflops = " << gflops_overall << " Gflops = " << tflops_overall << " Tflops" << endl;
     }
 
   private:
-    unsigned long count;
+    double count;
   };
 
   /*! @} */  // end of group 
