@@ -1,9 +1,9 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.40 2005-06-17 13:35:34 bjoo Exp $
+// $Id: qdp_outer.h,v 1.41 2005-06-23 13:20:40 bjoo Exp $
 
 #include "qdp_config.h"
 
-#ifdef QDP_USE_QCDOC_EDRAM
+#if ( defined QDP_USE_QCDOC_EDRAM || defined QDP_USE_QCDOC )
 #include<qalloc.h>
 #endif
 
@@ -392,6 +392,17 @@ private:
    */
   inline void alloc_mem(const char* const p) 
     {
+#ifdef QDP_USE_QCDOC
+      // ON QCDOC WE HAVE 2 OPTIONS
+      // i) If we use EDRAM, we first try to allocate in EDRAM.
+      //    If we fail we fall back to DDR
+      //
+      // ii) If we don't use EDRAM, just allocate in DDR.
+      //     We could do this with just new() which allocates in DDR
+      //     But we want to distinguish between QCDOC allocation and 
+      //     other, because qalloc() even in the DDR allocates with 
+      //     the correct alignment
+
 #ifdef QDP_USE_QCDOC_EDRAM
       // Let us try and allocate in the EDRAM first. The QCOMMS apparently
       // improves streaming performance later by locating things in transient
@@ -411,6 +422,18 @@ private:
       }
       F=(T*)F_orig;
 #else 
+      // Still QCDOC, but no EDRAM, special case: use QALLOC but 
+      // don't try to post align.
+      F_orig = (char *)qalloc(QCOMMS, sizeof(T)*Layout::sitesOnNode());
+      if(F_orig == (char *)NULL ) {
+	QDP_error_exit("Unable to qalloc in alloc_mem");
+      }
+    
+      // No alignment games
+      F=(T*)F_orig;
+#endif
+#else
+      // Non QCDOC allocation.
       // We don't have qalloc and we rely on new. We have to worry about
       // alignment etc. Ah for a nice centralised customisable memory
       // allocator...
@@ -418,9 +441,10 @@ private:
       if (F_orig == 0x0) { 
 	QDP_error_exit("Unable to new memory in alloc mem in qdp_outer.h");
       }
+      // Alignment games
       F = (T*)(((unsigned long)F_orig + (QDP_ALIGNMENT_SIZE-1)) & ~(QDP_ALIGNMENT_SIZE-1));
-
 #endif
+
 #if QDP_DEBUG >= 1
       QDP_info("%s OLattice_orig=0x%x, OLattice[%d]=0x%x, this=0x%x, bytes/site=%d",
 	       p,F_orig,Layout::sitesOnNode(),F,this,sizeof(T));

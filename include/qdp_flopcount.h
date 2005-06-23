@@ -35,22 +35,22 @@ QDP_BEGIN_NAMESPACE(QDP);
     }
 
     //! Method to add raw number of flops (eg from Level 3 operators)
-    inline void addFlops(unsigned long flops) { 
-      count += (double)flops;
+    inline void addFlops(unsigned long long flops) { 
+      count += flops;
     }
 
     //! Method to add per site flop count. Count is multiplied by sitesOnNode()
-    inline void addSiteFlops(unsigned long flops) { 
-      count += (double)(flops * (unsigned long)Layout::sitesOnNode());
+    inline void addSiteFlops(unsigned long  long flops) { 
+      count += (flops * (unsigned long long)Layout::sitesOnNode());
     }
 
     //! Method to add per site flop count for a subset of sites. Count is multiplied by the site table size of the subset (ie number of sites in a subset)
     inline void addSiteFlops(unsigned long flops, const Subset& s) {
-      count += (double)(flops * (unsigned long)(s.numSiteTable()));
+      count += (flops * (unsigned long long)(s.numSiteTable()));
     }
 
     //! Method to retrieve accumulated flopcount
-    inline const double getFlops(void) const { 
+    inline const unsigned long long getFlops(void) const { 
       return count;
     }
 
@@ -58,18 +58,18 @@ QDP_BEGIN_NAMESPACE(QDP);
     inline const void report(const std::string& name, 
 			     const double& time_in_seconds) {
 
-      double mflops_per_cpu = count/((double)(1000*1000)*time_in_seconds);
+      double mflops_per_cpu = (double)count/((double)(1000*1000)*time_in_seconds);
       double mflops_overall = mflops_per_cpu;
       Internal::globalSum(mflops_overall);
       double gflops_overall = mflops_overall/(double)(1000);
       double tflops_overall = gflops_overall/(double)(1000);
 
-      QDPIO::cout <<"QDP:FlopCount:" << name << " Performance/CPU: t=" << time_in_seconds << "(s) Flops=" << count << " => " << mflops_per_cpu << " Mflops/cpu." << endl;
+      QDPIO::cout <<"QDP:FlopCount:" << name << " Performance/CPU: t=" << time_in_seconds << "(s) Flops=" << (double)count << " => " << mflops_per_cpu << " Mflops/cpu." << endl;
       QDPIO::cout << "QDP:FlopCount:"  << name <<" Total performance:  " << mflops_overall << " Mflops = " << gflops_overall << " Gflops = " << tflops_overall << " Tflops" << endl;
     }
 
   private:
-    double count;
+    unsigned long long count;
   };
 
   /*! @} */  // end of group 
