@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: qdp_singleton.h,v 1.1 2005-06-27 14:13:26 bjoo Exp $
+// $Id: qdp_singleton.h,v 1.2 2005-06-27 16:01:22 bjoo Exp $
 /*! @file
  * @brief Singleton support
  */
 
-#ifndef __singleton_h__
-#define __singleton_h__
+#ifndef __qdp_singleton_h__
+#define __qdp_singleton_h__
 
 #include <algorithm>
 #include <stdexcept>
