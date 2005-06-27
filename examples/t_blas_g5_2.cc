@@ -1,4 +1,4 @@
-// $Id: t_blas_g5_2.cc,v 1.2 2005-03-18 11:55:29 bjoo Exp $
+// $Id: t_blas_g5_2.cc,v 1.3 2005-06-27 14:13:24 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {8,8,8,8};
+  const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -21,10 +21,10 @@ int main(int argc, char *argv[])
 
   
   Real a=Real(1.5);
-  LatticeFermion qx;
-  LatticeFermion qy;
-  LatticeFermion qz;
-  LatticeFermion qz2;
+  LatticeFermion qx;  qx.moveToFastMemoryHint();
+  LatticeFermion qy;  qy.moveToFastMemoryHint();
+  LatticeFermion qz;  qz.moveToFastMemoryHint();
+  LatticeFermion qz2; qz2.moveToFastMemoryHint();
  
   gaussian(qx);
   qy=qx;

@@ -1,11 +1,9 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.41 2005-06-23 13:20:40 bjoo Exp $
+// $Id: qdp_outer.h,v 1.42 2005-06-27 14:13:24 bjoo Exp $
 
 #include "qdp_config.h"
 
-#if ( defined QDP_USE_QCDOC_EDRAM || defined QDP_USE_QCDOC )
-#include<qalloc.h>
-#endif
+#include "qdp_allocator.h"
 
 /*! \file
  * \brief Outer grid classes
@@ -376,7 +374,42 @@ public:
    */
   inline T* getF() const {return F;}
 
+  inline
+  void moveToFastMemoryHint(bool copy=false) {
+#ifdef QDP_USE_QCDOC
+    if( fast == 0x0 ) {
+      fast = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::FAST);
+      if( copy ) { 
+	for(int i=0; i < sizeof(T)*Layout::sitesOnNode(); i++) {
+	  *(( unsigned char *)fast + i) = *((unsigned char *)slow + i);
+	}
+      }
+      F=fast;
+    }
 
+#else 
+      // Nop on non QCDOC architectures
+#endif     
+  }
+
+  inline
+  void revertFromFastMemoryHint(bool copy=false) {
+#ifdef QDP_USE_QCDOC
+    if ( fast != 0x0 ) { 
+      if(copy) { 
+	for(int i=0; i < sizeof(T)*Layout::sitesOnNode(); i++) { 
+	  *(( unsigned char *)slow + i) = *((unsigned char *)fast + i);
+	}
+      }
+      QDP::Allocator::theQDPAllocator::Instance().free(fast);
+      fast = 0x0;
+      F = slow;
+    }
+#else
+    // Nop on non QCDOC architectures
+#endif 
+  }
+  
 public:
   inline T& elem(int i) {return F[i];}
   inline const T& elem(int i) const {return F[i];}
@@ -392,79 +425,22 @@ private:
    */
   inline void alloc_mem(const char* const p) 
     {
-#ifdef QDP_USE_QCDOC
-      // ON QCDOC WE HAVE 2 OPTIONS
-      // i) If we use EDRAM, we first try to allocate in EDRAM.
-      //    If we fail we fall back to DDR
-      //
-      // ii) If we don't use EDRAM, just allocate in DDR.
-      //     We could do this with just new() which allocates in DDR
-      //     But we want to distinguish between QCDOC allocation and 
-      //     other, because qalloc() even in the DDR allocates with 
-      //     the correct alignment
 
-#ifdef QDP_USE_QCDOC_EDRAM
-      // Let us try and allocate in the EDRAM first. The QCOMMS apparently
-      // improves streaming performance later by locating things in transient
-      // cache areas (even if we don't want to communicate the thing later 
-      // Note also that qalloc allocates optimally aligned memory so
-      // we don't need to mess with the QDP_ALIGNMENT, in fact doing
-      // so may slow us down.
-      F_orig = (char *)qalloc((QFAST|QCOMMS), sizeof(T)*Layout::sitesOnNode());
-      if(F_orig == (char *)NULL) {
-	// If allocation in EDRAM failed, try allocating in DDR. 
-	// According to Peter, it is still worth keeping the QCOMMS flag
-	// on for better caching in the transient cache area 
-	F_orig = (char *)qalloc(QCOMMS, sizeof(T)*Layout::sitesOnNode());
-	if( F_orig == (char *)NULL ) { 
-          QDP_error_exit("Unable to qalloc in alloc mem");
-        }
-      }
-      F=(T*)F_orig;
-#else 
-      // Still QCDOC, but no EDRAM, special case: use QALLOC but 
-      // don't try to post align.
-      F_orig = (char *)qalloc(QCOMMS, sizeof(T)*Layout::sitesOnNode());
-      if(F_orig == (char *)NULL ) {
-	QDP_error_exit("Unable to qalloc in alloc_mem");
-      }
-    
-      // No alignment games
-      F=(T*)F_orig;
-#endif
-#else
-      // Non QCDOC allocation.
-      // We don't have qalloc and we rely on new. We have to worry about
-      // alignment etc. Ah for a nice centralised customisable memory
-      // allocator...
-      F_orig = new(nothrow) char[sizeof(T)*Layout::sitesOnNode()+QDP_ALIGNMENT_SIZE];
-      if (F_orig == 0x0) { 
-	QDP_error_exit("Unable to new memory in alloc mem in qdp_outer.h");
-      }
-      // Alignment games
-      F = (T*)(((unsigned long)F_orig + (QDP_ALIGNMENT_SIZE-1)) & ~(QDP_ALIGNMENT_SIZE-1));
-#endif
-
-#if QDP_DEBUG >= 1
-      QDP_info("%s OLattice_orig=0x%x, OLattice[%d]=0x%x, this=0x%x, bytes/site=%d",
-	       p,F_orig,Layout::sitesOnNode(),F,this,sizeof(T));
-#endif
+      slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+      fast=0x0;
+      F=slow;
     }
 
   //! Internal memory free
   inline void free_mem()
     {
-#if QDP_DEBUG >= 1
-      QDP_info("destroy OLattice_orig=0x%x, OLattice=0x%x, this=0x%x, bytes/site=%d",
-	       F_orig,F,this,sizeof(T));
-#endif
+      if( fast != 0x0 ) { 
+	QDP::Allocator::theQDPAllocator::Instance().free(fast);      
+      }
+      if( slow != 0x0 ) { 
+	QDP::Allocator::theQDPAllocator::Instance().free(slow);
+      }
 
-#ifdef QDP_USE_QCDOC_EDRAM
-      // We used Qalloc so we must free with qfree
-      qfree(F_orig);
-#else
-      delete[] F_orig;
-#endif
     }
 
 
@@ -478,8 +454,9 @@ public:
 
 
 private:
-  T *F;
-  char *F_orig;   // also have original F from  operator-new
+  T *slow; // Pointer to default slow memory space
+  T *fast; // Pointer to fast memory space
+  T *F; // Alias to current memory space
 };
 
 

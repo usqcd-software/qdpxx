@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.10 2005-02-28 16:46:37 bjoo Exp $
+// $Id: qdp_multi.h,v 1.11 2005-06-27 14:13:24 bjoo Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -24,13 +24,13 @@ QDP_BEGIN_NAMESPACE(QDP);
 template<class T> class multi1d
 {
 public:
-  multi1d() {F=0;n1=0;copymem=false;}
-  multi1d(T *f, int ns1) {F=f; n1=ns1;copymem=true;}
-  explicit multi1d(int ns1) {copymem=false;F=0;resize(ns1);}
+  multi1d() {F=0;n1=0;copymem=false;fast_mem_hint=false;}
+  multi1d(T *f, int ns1) {F=f; n1=ns1;copymem=true; fast_mem_hint=false;}
+  explicit multi1d(int ns1) {copymem=false;F=0;fast_mem_hint=false;resize(ns1);}
   ~multi1d() {if (! copymem) {delete[] F;}}
 
   //! Copy constructor
-  multi1d(const multi1d& s): copymem(false), n1(s.n1), F(0)
+  multi1d(const multi1d& s): copymem(false), n1(s.n1), F(0), fast_mem_hint(false)
     {
       resize(n1);
 
@@ -38,20 +38,8 @@ public:
 	F[i] = s.F[i];
     }
 
-  //! Allocate mem for the array
-  void resize(int ns1) 
-  {
-     if(copymem) {
-	cerr<<"invalid resize in 1d\n";
-        exit(1);
-     }
-     delete[] F; 
-     n1=ns1;      
-     F = new(nothrow) T[n1];
-     if ( F == 0x0 ) { 
-	QDP_error_exit("Unable to allocate memory in multi1d::resize()\n");
-     }
-  }
+  void resize(int ns1) { resize(*this, ns1); }
+
 
   //! Size of array
   int size() const {return n1;}
@@ -233,8 +221,91 @@ public:
   //! Return const ref to an element
   const T& operator[](int i) const {return F[i];}
 
+  //! moveToFastMemoryHint for the whole multi1d if the 
+  //! internal type T supports it
+  inline void moveToFastMemoryHint(bool copy=false) {
+    moveToFastMemoryHint(*this, copy);
+  }
+
+  //! revertFromFastMemoryHint for the whole multi1d if the 
+  //! internal type T supports it
+  inline void revertFromFastMemoryHint(bool copy=false) { 
+    revertFromFastMemoryHint(*this, copy);
+  }
+
 private:
+  //! Resize for most types
+  template<typename I>
+  void resize(multi1d<I>& disambiguator, int ns1)
+  {
+    if(copymem) {
+      cerr <<"invalid resize in 1d" << endl;
+      exit(1);
+    }
+    delete [] F;
+    n1=ns1;
+    F = new(nothrow) T[n1];
+    if ( F == 0x0 ) { 
+      QDP_error_exit("Unable to allocate memory in multi1d::resize()\n");
+    }
+  }
+
+  //! Special resize for multi1d<OLattice> which may have a resize hint
+  //! in effect
+  template<typename I>
+  void resize(multi1d<OLattice<I> >& disambiguator, int ns1)
+  {
+     if(copymem) {
+	cerr<<"invalid resize in 1d\n";
+        exit(1);
+     }
+     delete[] F; 
+     n1=ns1;      
+     F = new(nothrow) T[n1];
+     if ( F == 0x0 ) { 
+	QDP_error_exit("Unable to allocate memory in multi1d::resize()\n");
+     }
+     if( fast_mem_hint ) { 
+       for(int i=0; i < ns1; i++) { 
+	 F[i].moveToFastMemoryHint(false);
+       }
+     }
+  }
+
+  //! Catchall case for things that dont support Fast Memory Hints
+  //! does nothing and should be inlined away.
+  template<typename I>
+  inline void moveToFastMemoryHint(multi1d<I>& disambiguator, bool copy=false) {}
+
+  //! Catchall case for things that dont support Fast Memory Hints
+  //! does nothing and should be inlined away
+  template<typename I>
+  inline void revertFromFastMemoryHint(multi1d<I>& disambiguator, bool copy=false) {}
+
+  //! Specialised case for multi1d<OLattice> Objects, convenience function to 
+  //! revert from fastMemory for the whole array.
+  template<typename I>
+  inline void revertFromFastMemoryHint(multi1d<OLattice<I> >& disambiguator, bool copy=false ) { 
+    for(int i=0; i < n1; i++) { 
+      F[i].revertFromFastMemoryHint(copy);
+    }
+    fast_mem_hint=false;
+  }
+
+  //! Specialised case for multi1d<OLattice> Objects, convenience function 
+  //! to moveToFastMemoryHint for the whole array. Enables fast_mem_hint
+  //! so that subsequent resizes will repeat the hint (useful in some 
+  //! places where there is an indiscriminate resize on the object.
+  template<typename I>
+  inline void moveToFastMemoryHint(multi1d< OLattice<I> >& disambiguator, bool copy=false) {
+    for(int i=0; i < n1; i++) { 
+      F[i].moveToFastMemoryHint(copy);
+    }
+    fast_mem_hint=true;
+  }
+
   bool copymem;
+  bool fast_mem_hint;
   int n1;
   T *F;
 };

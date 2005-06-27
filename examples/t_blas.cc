@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.14 2005-05-26 13:46:53 bjoo Exp $
+// $Id: t_blas.cc,v 1.15 2005-06-27 14:13:24 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -25,11 +25,11 @@ int main(int argc, char *argv[])
   Layout::create();
 
   Real a=Real(1.5);
-  LatticeFermion qx;
-  LatticeFermion qy;
-  LatticeFermion qz;
-  LatticeFermion qtmp;
-  LatticeFermion d;
+  LatticeFermion qx; qx.moveToFastMemoryHint();
+  LatticeFermion qy; qy.moveToFastMemoryHint();
+  LatticeFermion qz; qz.moveToFastMemoryHint();
+  LatticeFermion qtmp; qtmp.moveToFastMemoryHint();
+  LatticeFermion d;    d.moveToFastMemoryHint();
   Double dnorm;
   Double dnorm2;
 
@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << "norm(qy) = " << dnorm << endl;
   QDPIO::cout << "norm(qz) = " << dnorm2 << endl;
 
-  LatticeFermion diff_q;
+  LatticeFermion diff_q; diff_q.moveToFastMemoryHint();
   /*
     for(int site=all.start(); site <= all.end(); site++) {
     for(int spin=0; spin < 4; spin++) { 
@@ -416,7 +416,8 @@ int main(int argc, char *argv[])
   dnorm = norm2(d);
   QDPIO::cout << "z=x - y: diff = " << dnorm << endl;
 
-  LatticeFermion qtmp2,qtmp3;
+  LatticeFermion qtmp2,qtmp3;  qtmp2.moveToFastMemoryHint(); qtmp3.moveToFastMemoryHint();
+
   // Do AX + BY
   Real b = -3.2;
   gaussian(qx);
@@ -700,8 +701,8 @@ int main(int argc, char *argv[])
 
   // Test norms of arrays
   int NN = 8;
-  multi1d<LatticeFermion> lqx(NN);
-  multi1d<LatticeFermion> lqy(NN);
+  multi1d<LatticeFermion> lqx(NN); lqx.moveToFastMemoryHint();
+  multi1d<LatticeFermion> lqy(NN); lqy.moveToFastMemoryHint();
 
   Double daccr = zero;
   for(int i=0; i < lqx.size(); ++i) {
@@ -749,8 +750,7 @@ int main(int argc, char *argv[])
   }
   dreal = innerProductReal(lqx,lqy,rb[1]);
   QDPIO::cout << "Diff innerProductReal(multi1d) Subset = " << Real(daccr-dreal) << endl;
-
-
+  
   // Timings
    // Test VSCAL
   int icnt;

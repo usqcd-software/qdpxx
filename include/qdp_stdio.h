@@ -1,5 +1,8 @@
+#ifndef QDP_STDIO_H
+#define QDP_STDIO_H
+
 // -*- C++ -*-
-// $Id: qdp_stdio.h,v 1.5 2003-10-09 20:13:16 edwards Exp $
+// $Id: qdp_stdio.h,v 1.6 2005-06-27 14:13:26 bjoo Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -180,3 +183,5 @@ namespace QDPIO
 /*! @} */   // end of group stdio
 
 QDP_END_NAMESPACE();
+
+#endif

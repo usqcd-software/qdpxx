@@ -1,4 +1,4 @@
-// $Id: t_blas_g5_3.cc,v 1.3 2005-06-16 12:01:10 bjoo Exp $
+// $Id: t_blas_g5_3.cc,v 1.4 2005-06-27 14:13:24 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -10,6 +10,7 @@
 #include "scalarsite_generic/generic_blas_g5.h"
  
 using namespace QDP;
+using namespace std;
 
 int main(int argc, char *argv[])
 {
@@ -17,7 +18,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {8,8,8,8};
+  const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -27,11 +28,11 @@ int main(int argc, char *argv[])
   Real a=Real(1.5);
   Real b=Real(2.0);
   
-  LatticeFermion x;
-  LatticeFermion y;
-  LatticeFermion z1;
-  LatticeFermion z2;
-  LatticeFermion tmp;
+  LatticeFermion x;  x.moveToFastMemoryHint();
+  LatticeFermion y;  y.moveToFastMemoryHint();
+  LatticeFermion z1; z1.moveToFastMemoryHint();
+  LatticeFermion z2; z2.moveToFastMemoryHint();
+  LatticeFermion tmp; tmp.moveToFastMemoryHint();
   int G5=Ns*Ns-1;
 
   gaussian(x);
@@ -93,7 +94,7 @@ int main(int argc, char *argv[])
       swatch.stop();
       time = swatch.getTimeInSeconds();
       Internal::broadcast(time);
-      fc.report("ag5x", Real(time));
+      fc.report("ag5x", time);
 
       //double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
       //QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -128,7 +129,7 @@ int main(int argc, char *argv[])
       swatch.stop();
       time = swatch.getTimeInSeconds();
       Internal::broadcast(time);
-      fc.report("new ag5x", Real(time));
+      fc.report("new ag5x", time);
     }
   }
 
@@ -170,7 +171,7 @@ int main(int argc, char *argv[])
       swatch.stop();
       time = swatch.getTimeInSeconds();
       Internal::broadcast(time);
-      fc.report(std::string("old axpbg5y"), Real(time));
+      fc.report(std::string("old axpbg5y"), time);
     }
   }
 
@@ -204,7 +205,7 @@ int main(int argc, char *argv[])
       swatch.stop();
       time = swatch.getTimeInSeconds();
       Internal::broadcast(time);
-      fc.report(std::string("axpbg5y"), Real(time));
+      fc.report(std::string("axpbg5y"), time);
     }
     
   }
@@ -251,7 +252,7 @@ int main(int argc, char *argv[])
       swatch.stop();
       time = swatch.getTimeInSeconds();
       Internal::broadcast(time);
-      fc.report(std::string("old xmag5y"), Real(time));
+      fc.report(std::string("old xmag5y"), time);
     }
   }
 
@@ -284,7 +285,7 @@ int main(int argc, char *argv[])
       swatch.stop();
       time = swatch.getTimeInSeconds();
       Internal::broadcast(time);
-      fc.report(std::string("new xmag5y"), Real(time));
+      fc.report(std::string("new xmag5y"), time);
     }
   }
 
@@ -330,7 +331,7 @@ int main(int argc, char *argv[])
       swatch.stop();
       time = swatch.getTimeInSeconds();
       Internal::broadcast(time);
-      fc.report(std::string("old g5_axmby"), Real(time));
+      fc.report(std::string("old g5_axmby"), time);
       //      double Nflops = (double)(6*Nc*Ns*Layout::sitesOnNode()*iter);
       //QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
     }
@@ -364,7 +365,7 @@ int main(int argc, char *argv[])
       swatch.stop();
       time = swatch.getTimeInSeconds();
       Internal::broadcast(time);
-      fc.report(std::string("new g5_axmby"), Real(time));
+      fc.report(std::string("new g5_axmby"), time);
 		//      double Nflops = (double)(6*Nc*Ns*Layout::sitesOnNode()*iter);
 		//QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
     }

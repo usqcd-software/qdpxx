@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.55 2005-06-16 12:01:10 bjoo Exp $
+// $Id: qdp.h,v 1.56 2005-06-27 14:13:24 bjoo Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -140,6 +140,9 @@ QDP_END_NAMESPACE();
 QDP_BEGIN_NAMESPACE(QDP);
 #include "QDPOperators.h"
 QDP_END_NAMESPACE();
+
+// Include the allocator stuff here, before QDP_outer
+#include "qdp_allocator.h"
 
 #include "qdp_newops.h"
 #include "qdp_optops.h"
