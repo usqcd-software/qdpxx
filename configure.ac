@@ -1,4 +1,4 @@
-AC_INIT([qdp++],[1.13.0],[edwards@jlab.org])
+AC_INIT([qdp++],[1.14.0],[edwards@jlab.org])
 
 AC_CONFIG_AUX_DIR(config)
 
