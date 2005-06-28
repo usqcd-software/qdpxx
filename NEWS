@@ -1,3 +1,8 @@
+06/28/2005 -- Balint Joo
+
+	Version 1.14.0. New memory placement hints for OLattice. New container for memory
+        allocation. New flopcount module.
+
 05/24/2005 -- Robert Edwards
 
 	Version 1.13.0. New norm2, innerProduct, innerProductReal support
