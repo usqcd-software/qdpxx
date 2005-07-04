@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.24 2005-03-21 05:31:08 edwards Exp $
+// $Id: t_xml.cc,v 1.25 2005-07-04 21:18:53 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
     Complex b = cmplx(a,-1.2);
     write(toxml,"complexThingy",b);
 
-    Seed seed = 1;
+    QDP::Seed seed = 1;
     write(toxml,"seedThingy",seed);
 
     multi1d<int> arrayInt(3);
@@ -192,7 +192,7 @@ int main(int argc, char **argv)
     fromxml_tmp.printCurrentContext(os);
     QDPIO::cout << "Current context = XX" << os.str() << "XX" << endl;
 
-    Seed seed;
+    QDP::Seed seed;
     read(fromxml,"seedThingy",seed);
     QDPIO::cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << endl;
 
@@ -261,7 +261,7 @@ int main(int argc, char **argv)
 
     XMLReader fromxml(fromxml_orig, "/complex_xml");
 
-    Seed seed;
+    QDP::Seed seed;
     read(fromxml,"seedThingy",seed);
     QDPIO::cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << endl;
 
