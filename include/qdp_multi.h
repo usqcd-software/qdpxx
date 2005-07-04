@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.11 2005-06-27 14:13:24 bjoo Exp $
+// $Id: qdp_multi.h,v 1.12 2005-07-04 11:59:37 bjoo Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -10,6 +10,7 @@
 #ifndef MULTI_INCLUDE
 #define MULTI_INCLUDE
 
+#include "qdp_config.h"
 QDP_BEGIN_NAMESPACE(QDP);
 
 /*! @defgroup multi  Multi-dimensional arrays
@@ -24,12 +25,25 @@ QDP_BEGIN_NAMESPACE(QDP);
 template<class T> class multi1d
 {
 public:
+  // Basic cosntructor. Null (0x0) array_pointer, no copymem, no fast memory
   multi1d() {F=0;n1=0;copymem=false;fast_mem_hint=false;}
+
+  // Placement constructor. Copy pointer, copymem=true, fast_mem_hint is false
   multi1d(T *f, int ns1) {F=f; n1=ns1;copymem=true; fast_mem_hint=false;}
+
+  // Explicit constructor, copymem is false, fast_mem is false, call resize
   explicit multi1d(int ns1) {copymem=false;F=0;fast_mem_hint=false;resize(ns1);}
-  ~multi1d() {if (! copymem) {delete[] F;}}
+  // Destructor
+  ~multi1d() {
+    // If not created with placement, delete array
+    if (! copymem) {
+      delete[] F;
+    }
+  }
+
 
   //! Copy constructor
+  // Copy from s, into slow memory
   multi1d(const multi1d& s): copymem(false), n1(s.n1), F(0), fast_mem_hint(false)
     {
       resize(n1);
@@ -38,6 +52,8 @@ public:
 	F[i] = s.F[i];
     }
 
+  //! Resize routine, call a templated resize, using *this to disambiguate
+  // template type
   void resize(int ns1) { resize(*this, ns1); }
 
 
@@ -222,13 +238,15 @@ public:
   const T& operator[](int i) const {return F[i];}
 
   //! moveToFastMemoryHint for the whole multi1d if the 
-  //! internal type T supports it
+  //! internal type T supports it. Calls templated
+  //! moveToFastMemoryHint, using *this to disambiguate type
   inline void moveToFastMemoryHint(bool copy=false) {
     moveToFastMemoryHint(*this, copy);
   }
 
   //! revertFromFastMemoryHint for the whole multi1d if the 
-  //! internal type T supports it
+  //! internal type T supports it. Calls templated revertFrom
+  //! fast memory hint, using *this to disambiguate template type.
   inline void revertFromFastMemoryHint(bool copy=false) { 
     revertFromFastMemoryHint(*this, copy);
   }
@@ -250,6 +268,17 @@ private:
     }
   }
 
+  //! Catchall case for things that dont support Fast Memory Hints
+  //! does nothing and should be inlined away.
+  template<typename I>
+  inline void moveToFastMemoryHint(multi1d<I>& disambiguator, bool copy=false) {}
+
+  //! Catchall case for things that dont support Fast Memory Hints
+  //! does nothing and should be inlined away
+  template<typename I>
+  inline void revertFromFastMemoryHint(multi1d<I>& disambiguator, bool copy=false) {}
+
+#ifdef QDP_USE_QCDOC
   //! Special resize for multi1d<OLattice> which may have a resize hint
   //! in effect
   template<typename I>
@@ -265,44 +294,47 @@ private:
      if ( F == 0x0 ) { 
 	QDP_error_exit("Unable to allocate memory in multi1d::resize()\n");
      }
+     // If fast mem hint is in effect, call moveToFastMemoryHint
+     // On elements
      if( fast_mem_hint ) { 
        for(int i=0; i < ns1; i++) { 
 	 F[i].moveToFastMemoryHint(false);
        }
      }
   }
+#endif
 
-  //! Catchall case for things that dont support Fast Memory Hints
-  //! does nothing and should be inlined away.
-  template<typename I>
-  inline void moveToFastMemoryHint(multi1d<I>& disambiguator, bool copy=false) {}
-
-  //! Catchall case for things that dont support Fast Memory Hints
-  //! does nothing and should be inlined away
-  template<typename I>
-  inline void revertFromFastMemoryHint(multi1d<I>& disambiguator, bool copy=false) {}
-
+#ifdef QDP_USE_QCDOC
   //! Specialised case for multi1d<OLattice> Objects, convenience function to 
   //! revert from fastMemory for the whole array.
   template<typename I>
   inline void revertFromFastMemoryHint(multi1d<OLattice<I> >& disambiguator, bool copy=false ) { 
-    for(int i=0; i < n1; i++) { 
-      F[i].revertFromFastMemoryHint(copy);
+    if( fast_mem_hint ) { 
+      for(int i=0; i < n1; i++) { 
+	F[i].revertFromFastMemoryHint(copy);
+      }
+      fast_mem_hint=false;
     }
-    fast_mem_hint=false;
+    else {}
   }
+#endif
 
+#ifdef QDP_USE_QCDOC
   //! Specialised case for multi1d<OLattice> Objects, convenience function 
   //! to moveToFastMemoryHint for the whole array. Enables fast_mem_hint
   //! so that subsequent resizes will repeat the hint (useful in some 
   //! places where there is an indiscriminate resize on the object.
   template<typename I>
   inline void moveToFastMemoryHint(multi1d< OLattice<I> >& disambiguator, bool copy=false) {
-    for(int i=0; i < n1; i++) { 
-      F[i].moveToFastMemoryHint(copy);
+    if( ! fast_mem_hint ) { 
+      for(int i=0; i < n1; i++) { 
+	F[i].moveToFastMemoryHint(copy);
+      }
+      fast_mem_hint=true;
     }
-    fast_mem_hint=true;
+    else {}
   }
+#endif
 
   bool copymem;
   bool fast_mem_hint;

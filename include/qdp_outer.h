@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.42 2005-06-27 14:13:24 bjoo Exp $
+// $Id: qdp_outer.h,v 1.43 2005-07-04 11:59:37 bjoo Exp $
 
 #include "qdp_config.h"
 
@@ -374,9 +374,14 @@ public:
    */
   inline T* getF() const {return F;}
 
+#ifndef QDP_USE_QCDOC
+  // Nop if not on QCDOC
+  inline void moveToFastMemoryHint(bool copy=false) {}
+#else
+  // Special for QCDOC
   inline
   void moveToFastMemoryHint(bool copy=false) {
-#ifdef QDP_USE_QCDOC
+
     if( fast == 0x0 ) {
       fast = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::FAST);
       if( copy ) { 
@@ -386,29 +391,38 @@ public:
       }
       F=fast;
     }
-
-#else 
-      // Nop on non QCDOC architectures
-#endif     
   }
+#endif
 
+#ifndef QDP_USE_QCDOC
+  // Nop if not on QCDOC
+  inline void revertFromFastMemoryHint(bool copy=false) {}
+#else
+  // Special for QCDOC
   inline
   void revertFromFastMemoryHint(bool copy=false) {
-#ifdef QDP_USE_QCDOC
+
+    // If the memory is fast
     if ( fast != 0x0 ) { 
+
+      // Copy if necessary
       if(copy) { 
 	for(int i=0; i < sizeof(T)*Layout::sitesOnNode(); i++) { 
 	  *(( unsigned char *)slow + i) = *((unsigned char *)fast + i);
 	}
       }
+      // Free the fast memory
       QDP::Allocator::theQDPAllocator::Instance().free(fast);
+
+      // Set the fast memory pointer to 0
       fast = 0x0;
+
+      // Make slow memory active
       F = slow;
     }
-#else
-    // Nop on non QCDOC architectures
-#endif 
   }
+#endif 
+  
   
 public:
   inline T& elem(int i) {return F[i];}
@@ -425,23 +439,32 @@ private:
    */
   inline void alloc_mem(const char* const p) 
     {
-
+      // Barfs if allocator fails
       slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
-      fast=0x0;
+      // slow is active 
       F=slow;
+
+#ifdef QDP_USE_QCDOC
+      // Make sure fast is set to 0x0
+      fast=0x0;
+#endif
     }
 
   //! Internal memory free
-  inline void free_mem()
-    {
-      if( fast != 0x0 ) { 
-	QDP::Allocator::theQDPAllocator::Instance().free(fast);      
-      }
-      if( slow != 0x0 ) { 
-	QDP::Allocator::theQDPAllocator::Instance().free(slow);
-      }
+  inline void free_mem() {
 
+    if( slow != 0x0 ) { 
+      QDP::Allocator::theQDPAllocator::Instance().free(slow);
+      slow = 0x0;
     }
+    F = slow;
+#ifdef QDP_USE_QCDOC 
+    if( fast != 0x0 ) { 
+      QDP::Allocator::theQDPAllocator::Instance().free(fast);      
+      fast = 0x0;
+    }
+#endif
+  }
 
 
 public:
@@ -454,9 +477,12 @@ public:
 
 
 private:
-  T *slow; // Pointer to default slow memory space
-  T *fast; // Pointer to fast memory space
   T *F; // Alias to current memory space
+  T *slow; // Pointer to default slow memory space
+#ifdef QDP_USE_QCDOC
+  T *fast; // Pointer to fast memory space
+#endif
+
 };
 
 
