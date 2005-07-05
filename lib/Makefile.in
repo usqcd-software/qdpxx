@@ -65,6 +65,7 @@ POST_UNINSTALL = :
 
 # Optimized code using sse extensions
 @QDP_USE_SCALARVEC_SSE_TRUE@am__append_6 = qdp_scalarvecsite_sse.cc
+@BUILD_DEFAULT_ALLOCATOR_TRUE@am__append_7 = qdp_default_allocator.cc
 subdir = lib
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -98,7 +99,7 @@ am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	qdp_scalarvec_layout.cc qdp_scalarvec_specific.cc \
 	qdp_scalarvecsite_specific.cc qdp_parscalarvec_init.cc \
 	qdp_parscalarvec_layout.cc qdp_parscalarvec_specific.cc \
-	qdp_scalarvecsite_sse.cc
+	qdp_scalarvecsite_sse.cc qdp_default_allocator.cc
 @ARCH_SCALAR_TRUE@am__objects_1 = qdp_scalar_init.$(OBJEXT) \
 @ARCH_SCALAR_TRUE@	qdp_scalar_layout.$(OBJEXT) \
 @ARCH_SCALAR_TRUE@	qdp_scalar_specific.$(OBJEXT) \
@@ -119,6 +120,8 @@ am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 @ARCH_PARSCALARVEC_TRUE@	qdp_scalarvecsite_specific.$(OBJEXT)
 @QDP_USE_SCALARVEC_SSE_TRUE@am__objects_6 =  \
 @QDP_USE_SCALARVEC_SSE_TRUE@	qdp_scalarvecsite_sse.$(OBJEXT)
+@BUILD_DEFAULT_ALLOCATOR_TRUE@am__objects_7 =  \
+@BUILD_DEFAULT_ALLOCATOR_TRUE@	qdp_default_allocator.$(OBJEXT)
 am_libqdp_a_OBJECTS = qdp_map.$(OBJEXT) qdp_subset.$(OBJEXT) \
 	qdp_random.$(OBJEXT) qdp.$(OBJEXT) qdp_layout.$(OBJEXT) \
 	qdp_io.$(OBJEXT) qdp_iogauge.$(OBJEXT) qdp_byteorder.$(OBJEXT) \
@@ -126,7 +129,7 @@ am_libqdp_a_OBJECTS = qdp_map.$(OBJEXT) qdp_subset.$(OBJEXT) \
 	qdp_filebuf.$(OBJEXT) qdp_stdio.$(OBJEXT) qdp_binx.$(OBJEXT) \
 	qdp_profile.$(OBJEXT) qdp_strnlen.$(OBJEXT) $(am__objects_1) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
-	$(am__objects_5) $(am__objects_6)
+	$(am__objects_5) $(am__objects_6) $(am__objects_7)
 libqdp_a_OBJECTS = $(am_libqdp_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/include
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -163,6 +166,8 @@ BAGEL_QDP_CONFIG = @BAGEL_QDP_CONFIG@
 BAGEL_QDP_CXXFLAGS = @BAGEL_QDP_CXXFLAGS@
 BAGEL_QDP_LDFLAGS = @BAGEL_QDP_LDFLAGS@
 BAGEL_QDP_LIBS = @BAGEL_QDP_LIBS@
+BUILD_DEFAULT_ALLOCATOR_FALSE = @BUILD_DEFAULT_ALLOCATOR_FALSE@
+BUILD_DEFAULT_ALLOCATOR_TRUE = @BUILD_DEFAULT_ALLOCATOR_TRUE@
 BUILD_STAGGERED_EXAMPLES_FALSE = @BUILD_STAGGERED_EXAMPLES_FALSE@
 BUILD_STAGGERED_EXAMPLES_TRUE = @BUILD_STAGGERED_EXAMPLES_TRUE@
 BUILD_WILSON_EXAMPLES_FALSE = @BUILD_WILSON_EXAMPLES_FALSE@
@@ -275,7 +280,8 @@ libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc \
 	qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc qdp_filebuf.cc \
 	qdp_stdio.cc qdp_binx.cc qdp_profile.cc qdp_strnlen.cc \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) $(am__append_6)
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7)
 all: all-am
 
 .SUFFIXES:
@@ -352,6 +358,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_binx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_byteorder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_default_allocator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_filebuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_iogauge.Po@am__quote@
