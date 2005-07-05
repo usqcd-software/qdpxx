@@ -478,6 +478,8 @@ AM_CONDITIONAL(BUILD_STAGGERED_EXAMPLES,
 AM_CONDITIONAL(BUILD_WILSON_EXAMPLES,
   [test "X${ac_Ns}X" != "X1X"])
 
+AM_CONDITIONAL(BUILD_DEFAULT_ALLOCATOR,
+  [test "X${ac_qcdoc_enabled}X" = "X0X"])
 
 ##################################
 # Check for programs to build docs
