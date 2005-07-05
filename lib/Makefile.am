@@ -51,3 +51,7 @@ endif
 if QDP_USE_SCALARVEC_SSE
 libqdp_a_SOURCES += qdp_scalarvecsite_sse.cc
 endif
+ 
+if BUILD_DEFAULT_ALLOCATOR
+libqdp_a_SOURCES += qdp_default_allocator.cc
+endif 
