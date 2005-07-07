@@ -1,8 +1,23 @@
-//$Id: implementation.dox,v 1.1 2005-04-22 16:08:20 zbigniew Exp $
+//$Id: implementation.dox,v 1.2 2005-07-07 16:02:47 zbigniew Exp $
 /*!
 \page impldetail Implementation Details
 
 \section secimplementation Implementation Details
+
+  -# \ref headerfiles
+  -# \ref secsupported
+  -# \ref secsubsets
+  -# \ref secinfix
+  -# \ref seccfuncs
+  -# \ref secfuncs
+  -# \ref secinplace
+  -# \ref secbroadcasts 
+  -# \ref secreductions 
+  -# \ref secpeek
+  -# \ref secotherfuncs	
+  -# \ref subtypeops 
+
+\subsection headerfiles Header Files
 
 The following table lists some of the QDP headers.
  - qdp.h        

@@ -1,6 +1,12 @@
-//$Id: datatypes.dox,v 1.1 2005-04-22 16:08:20 zbigniew Exp $
+//$Id: datatypes.dox,v 1.2 2005-07-07 16:02:47 zbigniew Exp $
 /*!
 \page datatypespage Data Types
+
+ -# \ref typestructure
+ -# \ref genericnames
+ -# \ref colorprecisiontypes
+ -# \ref colorprecisionuniform
+ -# \ref colorprecbreak
 
 \section datatypes Datatypes in QDP
 

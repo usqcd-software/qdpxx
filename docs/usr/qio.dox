@@ -1,4 +1,4 @@
-//$Id: qio.dox,v 1.1 2005-04-22 16:08:20 zbigniew Exp $
+//$Id: qio.dox,v 1.2 2005-07-07 16:02:47 zbigniew Exp $
 /*!
 \page qiopage  QDP Record I/O utilities}
 
@@ -6,6 +6,9 @@
 
 The IO code described in this section is documented inthe \ref qio
 section of the %Reference Manual.
+
+  -# \ref  secfileformat
+  -# \ref qioapi 
 
 \subsection secfileformat Overview of File Format
 
