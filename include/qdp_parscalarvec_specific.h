@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.21 2005-03-21 05:29:48 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.22 2005-07-07 13:11:18 bjoo Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -1306,10 +1306,29 @@ public:
 #endif
 
 	msg[0]  = QMP_declare_msgmem(recv_buf, srcnum);
+	if( msg[0] == (QMP_msgmem_t)NULL ) { 
+	  QDP_error_exit("QMP_declare_msgmem for msg[0] failed in Map::operator()\n");
+	}
 	msg[1]  = QMP_declare_msgmem(send_buf, dstnum);
+	if( msg[1] == (QMP_msgmem_t)NULL ) {
+	  QDP_error_exit("QMP_declare_msgmem for msg[1] failed in Map::operator()\n");
+	}
+
 	mh_a[0] = QMP_declare_receive_from(msg[0], srcenodes[0], 0);
+	if( mh_a[0] == (QMP_msghandle_t)NULL ) { 
+	  QDP_error_exit("QMP_declare_receive_from for mh_a[0] failed in Map::operator()\n");
+	}
+
 	mh_a[1] = QMP_declare_send_to(msg[1], destnodes[0], 0);
+	if( mh_a[1] == (QMP_msghandle_t)NULL ) {
+	  QDP_error_exit("QMP_declare_send_to for mh_a[1] failed in Map::operator()\n");
+	}
+
 	mh      = QMP_declare_multiple(mh_a, 2);
+	if( mh == (QMP_msghandle_t)NULL ) { 
+	  QDP_error_exit("QMP_declare_multiple for mh failed in Map::operator()\n");
+	}
+
 
 #if QDP_DEBUG >= 3
 	QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
