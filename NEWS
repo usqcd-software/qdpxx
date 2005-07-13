@@ -1,3 +1,9 @@
+07/12/2005 -- Robert Edwards
+
+	Version 1.14.2. Bug fix in qdp_primmatrix. Fixed  "PScalar - PMatrix". 
+        Thanks to Patrick Varilly for finding this.
+        Incorporated new changes for file reading/writing support within QIO.
+
 06/28/2005 -- Robert Edwards
 
 	Version 1.14.1. Allocator pushed to a cc file instead of inlined. Saves on
