@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.28 2004-11-22 19:31:31 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.29 2005-07-13 03:11:15 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -469,7 +469,7 @@ operator-(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
-      d.elem(i,j) = (i == j) ? l.elem() - r.elem(i,i) : r.elem(i,j);
+      d.elem(i,j) = (i == j) ? l.elem() - r.elem(i,i) : -r.elem(i,j);
 
   return d;
 }
