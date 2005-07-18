@@ -1,3 +1,9 @@
+07/18/2005 -- Robert Edwards
+
+	Version 1.14.3. Updated lib/Makefile.am to include new paths
+        down inside c-lime. This sub-release reflects new changes in
+        QIO and C-LIME.
+
 07/12/2005 -- Robert Edwards
 
 	Version 1.14.2. Bug fix in qdp_primmatrix. Fixed  "PScalar - PMatrix". 
