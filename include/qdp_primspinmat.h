@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinmat.h,v 1.9 2004-08-10 02:02:58 edwards Exp $
+// $Id: qdp_primspinmat.h,v 1.10 2005-07-20 11:06:53 bjoo Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -338,6 +338,29 @@ traceSpin(const PSpinMatrix<T,N>& s1)
   return d;
 }
 
+//! t = transposeSpin(source1) - SpimMatrix specialisation -- where the work is actually done
+
+/*! Specialise the return type */
+template <class T, int N>
+struct UnaryReturn<PSpinMatrix<T,N>, FnTransposeSpin > {
+  typedef PSpinMatrix<typename UnaryReturn<T, FnTransposeSpin>::Type_t, N> Type_t;
+};
+
+//! t= transposeSpin(source) 
+template<class T, int N>
+inline typename UnaryReturn<PSpinMatrix<T,N>, FnTransposeSpin >::Type_t
+transposeSpin(const PSpinMatrix<T,N>& s1)
+{
+  typename UnaryReturn<PSpinMatrix<T,N>, FnTransposeSpin>::Type_t d;
+ 
+  for(int i=0; i < N; i++) { 
+    for(int j=0; j < N; j++) { 
+      // Transpose, so flip indices
+      d.elem(i,j) = s1.elem(j,i);
+    }
+  }
+  return d;
+}
 
 //! traceSpinMultiply(source1,source2)
 template<class T1, class T2, int N>

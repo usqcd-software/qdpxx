@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.29 2005-07-13 03:11:15 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.30 2005-07-20 11:06:53 bjoo Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -894,6 +894,29 @@ traceSpin(const PMatrix<T,N,C>& s1)
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       d.elem(i,j) = traceSpin(s1.elem(i,j));
+
+  return d;
+}
+
+//! PMatrix = transposeSpin(PMatrix) [ this is an identity in general]
+/*! define the return type */
+template<class T, int N, template<class,int> class C>
+struct UnaryReturn<PMatrix<T,N,C>, FnTransposeSpin> {
+  typedef C<typename UnaryReturn<T, FnTransposeSpin>::Type_t, N> Type_t;
+};
+
+/*! define the function itself.Recurse down elements of the primmatrix
+ *  and call transposeSpin on each one */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PMatrix<T,N,C>, FnTransposeSpin>::Type_t
+transposeSpin(const PMatrix<T,N,C>& s1)
+{ 
+  typename UnaryReturn<PMatrix<T,N,C>, FnTransposeSpin>::Type_t d;
+  for(int i=0; i < N; ++i) {
+    for(int j=0; j < N; ++j) {
+      d.elem(i,j) = transposeSpin(s1.elem(i,j));
+    }
+  }
 
   return d;
 }

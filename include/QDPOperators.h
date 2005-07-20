@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: QDPOperators.h,v 1.18 2003-12-08 21:20:30 edwards Exp $
+// $Id: QDPOperators.h,v 1.19 2005-07-20 11:06:53 bjoo Exp $
 
 /*! @file
  * @brief Bulk of QDP operators produced by PETE
@@ -52,6 +52,17 @@ struct FnTranspose
   operator()(const T &a) const
   {
     return (transpose(a));
+  }
+};
+
+struct FnTransposeSpin
+{
+  PETE_EMPTY_CONSTRUCTORS(FnTransposeSpin)
+  template<class T>
+  inline typename UnaryReturn<T, FnTransposeSpin >::Type_t
+  operator()(const T &a) const
+  {
+    return (transposeSpin(a));
   }
 };
 
@@ -540,6 +551,22 @@ transpose(const QDPType<T1,C1> & l)
   typedef UnaryNode<FnTranspose,
     typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
   typedef typename UnaryReturn<C1,FnTranspose >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(l)));
+}
+
+//! Transpose in Spin Space Only
+/*! @ingroup group1
+  @relates QDPType */
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnTransposeSpin,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnTransposeSpin >::Type_t >::Expression_t
+transposeSpin(const QDPType<T1,C1> & l)
+{
+  typedef UnaryNode<FnTransposeSpin,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnTransposeSpin >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
@@ -1077,7 +1104,7 @@ chiralProjectMinus(const QDPType<T1,C1> & l)
 
 //! Arc cos
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnArcCos,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1093,7 +1120,7 @@ acos(const QDPType<T1,C1> & l)
 
 //! Arc sin
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnArcSin,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1109,7 +1136,7 @@ asin(const QDPType<T1,C1> & l)
 
 //! Arc tangent
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnArcTan,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1125,7 +1152,7 @@ atan(const QDPType<T1,C1> & l)
 
 //! Floating point ceiling of source
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnCeil,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1141,7 +1168,7 @@ ceil(const QDPType<T1,C1> & l)
 
 //! Cosine
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnCos,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1157,7 +1184,7 @@ cos(const QDPType<T1,C1> & l)
 
 //! Hyperbolic cosine
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnHypCos,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1173,7 +1200,7 @@ cosh(const QDPType<T1,C1> & l)
 
 //! Exponential
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnExp,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1189,7 +1216,7 @@ exp(const QDPType<T1,C1> & l)
 
 //! Floating point absolute value
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnFabs,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1205,7 +1232,7 @@ fabs(const QDPType<T1,C1> & l)
 
 //! floating point floor of source
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnFloor,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1221,7 +1248,7 @@ floor(const QDPType<T1,C1> & l)
 
 //! Log
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnLog,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1237,7 +1264,7 @@ log(const QDPType<T1,C1> & l)
 
 //! Log base 10
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnLog10,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1253,7 +1280,7 @@ log10(const QDPType<T1,C1> & l)
 
 //! Sine
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnSin,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1269,7 +1296,7 @@ sin(const QDPType<T1,C1> & l)
 
 //! Hyperbolic sine
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnHypSin,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1285,7 +1312,7 @@ sinh(const QDPType<T1,C1> & l)
 
 //! Square root
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnSqrt,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1301,7 +1328,7 @@ sqrt(const QDPType<T1,C1> & l)
 
 //! Tangent
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnTan,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1317,7 +1344,7 @@ tan(const QDPType<T1,C1> & l)
 
 //! Hyperbolic tangent
 /*! @ingroup group1
-  @relates QDPType */
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnHypTan,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1333,9 +1360,9 @@ tanh(const QDPType<T1,C1> & l)
 
 //! Unary minus
 /*! 
-  @return -a
-  @ingroup group1
-  @relates QDPType */
+@return -a
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<OpUnaryMinus,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1349,11 +1376,11 @@ operator-(const QDPType<T1,C1> & l)
     CreateLeaf<QDPType<T1,C1> >::make(l)));
 }
 
-//! Unary minus
+//! Unary plus
 /*!
-  @return +a
-  @ingroup group1
-  @relates QDPType */
+@return +a
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<OpUnaryPlus,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1369,9 +1396,9 @@ operator+(const QDPType<T1,C1> & l)
 
 //! Bitwise not
 /*!
-  @return (~a)
-  @ingroup group1
-  @relates QDPType */
+@return (~a)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<OpBitwiseNot,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1387,9 +1414,9 @@ operator~(const QDPType<T1,C1> & l)
 
 //! Identity operator
 /*! Constructs expression form of a source
-  @return (a)
-  @ingroup group1
-  @relates QDPType */
+@return (a)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<OpIdentity,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1405,9 +1432,9 @@ PETE_identity(const QDPType<T1,C1> & l)
 
 //! Boolean not operator
 /*! 
-  @return (!a)
-  @ingroup group1
-  @relates QDPType */
+@return (!a)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<OpNot,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
@@ -1718,9 +1745,9 @@ quarkContract34(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Binary addition
 /*! 
-  @return (a+b)
-  @ingroup group1
-  @relates QDPType */
+@return (a+b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpAdd,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1739,9 +1766,9 @@ operator+(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Binary subtract
 /*! 
-  @return (a-b)
-  @ingroup group1
-  @relates QDPType */
+@return (a-b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpSubtract,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1759,10 +1786,10 @@ operator-(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 }
 
 //! Binary multiply
-/*! 
-  @return (a * b)
-  @ingroup group1
-  @relates QDPType */
+/*!
+ @return (a * b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpMultiply,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1780,10 +1807,10 @@ operator*(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 }
 
 //! Binary division
-/*! 
-  @return (a / b)
-  @ingroup group1
-  @relates QDPType */
+/*!
+ @return (a / b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpDivide,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1802,9 +1829,9 @@ operator/(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Binary mod
 /*! Also call mod(a,b)
-  @return (a % b)
-  @ingroup group1
-  @relates QDPType */
+@return (a % b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpMod,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1822,10 +1849,10 @@ operator%(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 }
 
 //! Bitwise and
-/*! 
-  @return (a & b)
-  @ingroup group1
-  @relates QDPType */
+/*!
+ @return (a & b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpBitwiseAnd,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1844,9 +1871,9 @@ operator&(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Bitwise or
 /*! 
-  @return (a | b)
-  @ingroup group1
-  @relates QDPType */
+@return (a | b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpBitwiseOr,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1865,9 +1892,9 @@ operator|(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Bitwise exclusive or
 /*! 
-  @return (a ^ b)
-  @ingroup group1
-  @relates QDPType */
+@return (a ^ b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpBitwiseXor,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1886,10 +1913,10 @@ operator^(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Load exponent
 /*! Calculates the value a times 2 to the power b.
-  Based on the C-math lib function.
-  @return ldexp(a,b)
-  @ingroup group1
-  @relates QDPType */
+Based on the C-math lib function.
+@return ldexp(a,b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<FnLdexp,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1908,9 +1935,9 @@ ldexp(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! a to the power b
 /*! Based on the C-math lib function.
-  @return pow(a,b)
-  @ingroup group1
-  @relates QDPType */
+@return pow(a,b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<FnPow,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1929,10 +1956,10 @@ pow(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Floating point remainder
 /*! Computes a modulo b.
-  Based on the C-math lib function.
-  @return fmod(a,b)
-  @ingroup group1
-  @relates QDPType */
+Based on the C-math lib function.
+@return fmod(a,b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<FnFmod,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1951,10 +1978,10 @@ fmod(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Arctan of a/b
 /*! Produces correct angles near +-pi/2 (or a near 0).
-  Based on the C-math lib function.
-  @return atan2(a,b)
-  @ingroup group1
-  @relates QDPType */
+Based on the C-math lib function.
+@return atan2(a,b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<FnArcTan2,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1973,9 +2000,9 @@ atan2(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Less than
 /*! Boolean result 
-  @return (a < b)
-  @ingroup group1
-  @relates QDPType */
+@return (a < b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpLT,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -1994,9 +2021,9 @@ operator<(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Less than equal
 /*! Boolean result 
-  @return (a <= b)
-  @ingroup group1
-  @relates QDPType */
+@return (a <= b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpLE,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -2015,9 +2042,9 @@ operator<=(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Great than
 /*! Boolean result 
-  @return (a > b)
-  @ingroup group1
-  @relates QDPType */
+@return (a > b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpGT,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -2036,9 +2063,9 @@ operator>(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Great than equal
 /*! Boolean result 
-  @return (a >= b)
-  @ingroup group1
-  @relates QDPType */
+@return (a >= b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpGE,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -2057,9 +2084,9 @@ operator>=(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Equality
 /*! Boolean result 
-  @return (a == b)
-  @ingroup group1
-  @relates QDPType */
+@return (a == b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpEQ,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -2078,9 +2105,9 @@ operator==(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Not equal
 /*! Boolean result 
-  @return (a != b)
-  @ingroup group1
-  @relates QDPType */
+@return (a != b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpNE,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -2099,9 +2126,9 @@ operator!=(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Logical and
 /*! Boolean result 
-  @return (a && b)
-  @ingroup group1
-  @relates QDPType */
+@return (a && b)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpAnd,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -2120,9 +2147,10 @@ operator&&(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Logical or
 /*! Boolean result 
-  @return (a | b)
-  @ingroup group1
-  @relates QDPType */
+@return (a | b)
+@ingroup group1
+@relates QDPType */
+
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpOr,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -2141,9 +2169,9 @@ operator||(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Left shift
 /*! Not cyclic
-  @return (a left shifted by b bits)
-  @ingroup group1
-  @relates QDPType */
+@return (a left shifted by b bits)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpLeftShift,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -2162,9 +2190,9 @@ operator<<(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
 
 //! Right shift
 /*! Not cyclic
-  @return (a right shifted by b bits)
-  @ingroup group1
-  @relates QDPType */
+@return (a right shifted by b bits)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<OpRightShift,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -4460,9 +4488,9 @@ colorContract(const QDPType<T1,C1> & a,const QDPType<T2,C2> & b,const QDPType<T3
 
 //! The C ? operator
 /*! The where statement is similar to the C ? operator.
-  @return (if (a) return b; else return c;)
-  @ingroup group1
-  @relates QDPType */
+@return (if (a) return b; else return c;)
+@ingroup group1
+@relates QDPType */
 template<class T1,class C1,class T2,class C2,class T3,class C3>
 inline typename MakeReturn<TrinaryNode<FnWhere,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
@@ -4519,6 +4547,19 @@ transpose(const QDPExpr<T1,C1> & l)
   typedef UnaryNode<FnTranspose,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
   typedef typename UnaryReturn<C1,FnTranspose >::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+}
+
+template<class T1,class C1>
+inline typename MakeReturn<UnaryNode<FnTransposeSpin,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnTransposeSpin >::Type_t >::Expression_t
+transposeSpin(const QDPExpr<T1,C1> & l)
+{
+  typedef UnaryNode<FnTransposeSpin,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+  typedef typename UnaryReturn<C1,FnTransposeSpin >::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }

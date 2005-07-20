@@ -13,7 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_xml_SOURCES)
+SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_transpose_spin_SOURCES) $(t_xml_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -39,7 +39,7 @@ check_PROGRAMS = t_skeleton$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
 	t_xml$(EXEEXT) t_remote$(EXEEXT) t_entry$(EXEEXT) \
 	t_nersc$(EXEEXT) t_shift$(EXEEXT) t_exotic$(EXEEXT) \
 	t_basic$(EXEEXT) t_qio$(EXEEXT) t_cugauge$(EXEEXT) \
-	$(am__EXEEXT_2) $(am__EXEEXT_3)
+	t_transpose_spin$(EXEEXT) $(am__EXEEXT_2) $(am__EXEEXT_3)
 EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_binx$(EXEEXT) \
 	$(am__EXEEXT_1)
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_1 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
@@ -170,6 +170,11 @@ am_t_spectrum_OBJECTS = t_spectrum.$(OBJEXT) baryon_w.$(OBJEXT) \
 t_spectrum_OBJECTS = $(am_t_spectrum_OBJECTS)
 t_spectrum_LDADD = $(LDADD)
 t_spectrum_DEPENDENCIES =
+am_t_transpose_spin_OBJECTS = t_transpose_spin.$(OBJEXT) \
+	$(am__objects_1)
+t_transpose_spin_OBJECTS = $(am_t_transpose_spin_OBJECTS)
+t_transpose_spin_LDADD = $(LDADD)
+t_transpose_spin_DEPENDENCIES =
 am_t_xml_OBJECTS = t_xml.$(OBJEXT) $(am__objects_1)
 t_xml_OBJECTS = $(am_t_xml_OBJECTS)
 t_xml_LDADD = $(LDADD)
@@ -194,7 +199,8 @@ SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
 	$(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) \
 	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
 	$(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) \
-	$(t_spectrum_SOURCES) $(t_xml_SOURCES)
+	$(t_spectrum_SOURCES) $(t_transpose_spin_SOURCES) \
+	$(t_xml_SOURCES)
 DIST_SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
 	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
 	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
@@ -203,7 +209,8 @@ DIST_SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
 	$(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) \
 	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
 	$(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) \
-	$(t_spectrum_SOURCES) $(t_xml_SOURCES)
+	$(t_spectrum_SOURCES) $(t_transpose_spin_SOURCES) \
+	$(t_xml_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -386,6 +393,7 @@ t_blas_g5_SOURCES = t_blas_g5.cc $(HDRS)
 t_blas_g5_2_SOURCES = t_blas_g5_2.cc $(HDRS)
 t_blas_g5_3_SOURCES = t_blas_g5_3.cc $(HDRS)
 t_cugauge_SOURCES = t_cugauge.cc mesplq.cc $(HDRS) 
+t_transpose_spin_SOURCES = t_transpose_spin.cc $(HDRS)
 all: all-am
 
 .SUFFIXES:
@@ -494,6 +502,9 @@ t_skeleton$(EXEEXT): $(t_skeleton_OBJECTS) $(t_skeleton_DEPENDENCIES)
 t_spectrum$(EXEEXT): $(t_spectrum_OBJECTS) $(t_spectrum_DEPENDENCIES) 
 	@rm -f t_spectrum$(EXEEXT)
 	$(CXXLINK) $(t_spectrum_LDFLAGS) $(t_spectrum_OBJECTS) $(t_spectrum_LDADD) $(LIBS)
+t_transpose_spin$(EXEEXT): $(t_transpose_spin_OBJECTS) $(t_transpose_spin_DEPENDENCIES) 
+	@rm -f t_transpose_spin$(EXEEXT)
+	$(CXXLINK) $(t_transpose_spin_LDFLAGS) $(t_transpose_spin_OBJECTS) $(t_transpose_spin_LDADD) $(LIBS)
 t_xml$(EXEEXT): $(t_xml_OBJECTS) $(t_xml_DEPENDENCIES) 
 	@rm -f t_xml$(EXEEXT)
 	$(CXXLINK) $(t_xml_LDFLAGS) $(t_xml_OBJECTS) $(t_xml_LDADD) $(LIBS)
@@ -539,6 +550,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_shift.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_skeleton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spectrum.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_transpose_spin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_xml.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 

@@ -20,8 +20,17 @@ private:
   // Disallow assignments (copies by another name)
   QDPQCDOCAllocator& operator=(const QDPQCDOCAllocator& c) {};
 
- public:
+  // Disallow construction for everyone except friends
   QDPQCDOCAllocator() {};
+  
+  // Disallow destruction for everyone except Friends
+  ~QDPQCDOCAllocator() {};
+
+  // The only friend is the singleton creation policy 
+  friend class QDP::CreateUsingNew<QDP::Allocator::QDPQCDOCAllocator>;
+
+ public:
+
   //! Allocator function. Allocates n_bytes, into a memory pool
   //! This is a default implementation, with only 1 memory pool
   //! So we simply ignore the memory pool hint.
@@ -65,8 +74,18 @@ private:
   }
 };
 
-// Turn into a Singleton, CreateUsingNew, DefaultLifetime, SingleThreaded
-typedef SingletonHolder<QDPQCDOCAllocator> theQDPAllocator;
+// Turn into a Singleton. Create with CreateUsingNew
+// Has NoDestroy lifetime, as it may be needed for 
+// the destruction policy is No Destroy, so the 
+// Singleton is not cleaned up on exit. This is so 
+// that static objects can refer to it with confidence
+// in their own destruction, not having to worry that
+// atexit() may have destroyed the allocator before
+// the static objects need to feed memory. 
+typedef SingletonHolder<QDPQCDOCAllocator,
+			QDP::CreateUsingNew,
+			QDP::NoDestroy,
+			QDP::SingleThreaded> theQDPAllocator;
 
 QDP_END_NAMESPACE();
 

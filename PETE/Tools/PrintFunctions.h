@@ -395,7 +395,8 @@ class AssignFunction
 {
 public:
   template<class OSTR>
-  void print(OSTR& ostr,const OperatorDescriptor& opdef) const
+  void print(OSTR& ostr,const OperatorDescriptor& opdef,
+	     const ClassDescriptor& class1) const
   {
     ostr << endl;
 
@@ -428,7 +429,7 @@ public:
 
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
-// $RCSfile: PrintFunctions.h,v $   $Author: edwards $
-// $Revision: 1.3 $   $Date: 2002-10-14 02:06:56 $
+// $RCSfile: PrintFunctions.h,v $   $Author: bjoo $
+// $Revision: 1.4 $   $Date: 2005-07-20 11:06:53 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

@@ -29,8 +29,16 @@ private:
   // Disallow assignments (copies by another name)
   QDPDefaultAllocator& operator=(const QDPDefaultAllocator& c) {};
 
- public:
+  // Disallow creation / destruction by anyone except 
+  // the singleton CreateUsingNew policy which is a "friend"
+  // I don't like friends but this follows Alexandrescu's advice
+  // on p154 of Modern C++ Design (A. Alexandrescu)
   QDPDefaultAllocator() {};
+  ~QDPDefaultAllocator() {};
+
+  friend class QDP::CreateUsingNew<QDP::Allocator::QDPDefaultAllocator>;
+ public:
+
   //! Allocator function. Allocates n_bytes, into a memory pool
   //! This is a default implementation, with only 1 memory pool
   //! So we simply ignore the memory pool hint.
@@ -45,8 +53,18 @@ private:
   MapT the_alignment_map;
 };
 
-// Turn into a Singleton, CreateUsingNew, DefaultLifetime, SingleThreaded
-typedef SingletonHolder<QDPDefaultAllocator> theQDPAllocator;
+// Turn into a Singleton. Create with CreateUsingNew
+// Has NoDestroy lifetime, as it may be needed for 
+// the destruction policy is No Destroy, so the 
+// Singleton is not cleaned up on exit. This is so 
+// that static objects can refer to it with confidence
+// in their own destruction, not having to worry that
+// atexit() may have destroyed the allocator before
+// the static objects need to feed memory. 
+typedef SingletonHolder<QDP::Allocator::QDPDefaultAllocator,
+			QDP::CreateUsingNew,
+			QDP::NoDestroy,
+			QDP::SingleThreaded> theQDPAllocator;
 
 QDP_END_NAMESPACE();
 QDP_END_NAMESPACE();

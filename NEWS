@@ -1,3 +1,27 @@
+07/20/2005 -- Balint Joo
+
+	Version 1.14.4
+	Various fixes:
+	   -- memory manager singletons are now created with no destroy
+	      policy. This fixes bug reported by CraigMcNeile in staggered
+	      code where the static phases containing memory allocated by the
+	      memory manager were destroyed after the memory manager causing
+	      a dead reference exception
+
+	   -- Fixed the PETE/Tools code so that it compiles. diff of 
+	      QDPOperators.h before and after fix differs only in 
+	      indentation. Rock on PETE!
+
+	   -- Added transposeSpin function to QDPOperators.h 
+	      and defined in qdp_primscalar.h qdp_primmatrix.h and 
+	      most importantly in qdp_primspinmat.h. Incorrect
+	      invocations eg transposeSpin(ColorMatrix) fail to compile.
+	      Correct invocations work. transposeSpin(SpinMatrix) and 
+	      transposeSpin(Propagator) were tested. Simple test code
+	      t_transpose_spin added to examples directory -- now
+	      need to move transpose spin functionality to appropriate
+	      places in chroma.
+
 07/18/2005 -- Robert Edwards
 
 	Version 1.14.3. Updated lib/Makefile.am to include new paths

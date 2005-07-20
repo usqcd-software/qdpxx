@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_profile.h,v 1.4 2005-03-03 18:25:48 edwards Exp $
+// $Id: qdp_profile.h,v 1.5 2005-07-20 11:06:53 bjoo Exp $
 
 /*! @file
  * @brief Print profiling info
@@ -1016,6 +1016,15 @@ struct TagVisitor<FnTraceSpin, PrintTag> : public ParenPrinter<FnTraceSpin>
 { 
   static void visit(FnTraceSpin op, PrintTag t) 
     { t.os_m << "traceSpin"; }
+};
+
+// FnTransposeSpin
+template <>
+struct TagVisitor<FnTransposeSpin, PrintTag> : public ParenPrinter<FnTransposeSpin>
+{
+  static void visit(FnTransposeSpin op, PrintTag t)
+  {
+    t.os_m << "transposeSpin"; }
 };
 
 // FnReal

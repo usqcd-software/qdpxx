@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.20 2004-11-22 19:31:31 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.21 2005-07-20 11:06:53 bjoo Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -682,6 +682,14 @@ inline typename UnaryReturn<PScalar<T1>, FnTraceSpin>::Type_t
 traceSpin(const PScalar<T1>& s1)
 {
   return traceSpin(s1.elem());
+}
+
+//! PScalar = transposeSpin(PScalar)
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnTransposeSpin>::Type_t
+transposeSpin(const PScalar<T1>& s1)
+{
+  return transposeSpin(s1.elem());
 }
 
 //! PScalar = trace(PScalar * PScalar)

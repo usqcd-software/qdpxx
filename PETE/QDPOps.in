@@ -21,6 +21,13 @@ unaryOps
   COMMENTB = "/*! @ingroup group1
   @relates QDPType */"
 -----
+  TAG = "FnTransposeSpin"
+  FUNCTION = "transposeSpin"
+  EXPR = "return (transposeSpin(a));"
+  COMMENTA = "//! Transpose in Spin Space Only"
+  COMMENTB = "/*! @ingroup group1
+  @relates QDPType */"
+-----
   TAG = "FnTrace"
   FUNCTION = "trace"
   EXPR = "return (trace(a));"
