@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.10 2004-08-10 02:02:58 edwards Exp $
+// $Id: qdp_primcolormat.h,v 1.11 2005-07-20 17:06:52 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -352,6 +352,29 @@ traceColorMultiply(const PScalar<T1>& l, const PColorMatrix<T2,N>& r)
   return d;
 }
 
+
+/*! Specialise the return type */
+template <class T, int N>
+struct UnaryReturn<PColorMatrix<T,N>, FnTransposeColor > {
+  typedef PColorMatrix<typename UnaryReturn<T, FnTransposeColor>::Type_t, N> Type_t;
+};
+
+//! PColorMatrix = transposeColor(PColorMatrix) 
+/*! t = transposeColor(source1) - ColorMatrix specialization -- where the work is actually done */
+template<class T, int N>
+inline typename UnaryReturn<PColorMatrix<T,N>, FnTransposeColor >::Type_t
+transposeColor(const PColorMatrix<T,N>& s1)
+{
+  typename UnaryReturn<PColorMatrix<T,N>, FnTransposeColor>::Type_t d;
+ 
+  for(int i=0; i < N; i++) { 
+    for(int j=0; j < N; j++) { 
+      // Transpose, so flip indices
+      d.elem(i,j) = s1.elem(j,i);
+    }
+  }
+  return d;
+}
 
 
 //-----------------------------------------------

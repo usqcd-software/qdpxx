@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.30 2005-07-20 11:06:53 bjoo Exp $
+// $Id: qdp_primmatrix.h,v 1.31 2005-07-20 17:06:52 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -897,6 +897,31 @@ traceSpin(const PMatrix<T,N,C>& s1)
 
   return d;
 }
+
+
+//! PMatrix = transposeColor(PMatrix) [ this is an identity in general]
+/*! define the return type */
+template<class T, int N, template<class,int> class C>
+struct UnaryReturn<PMatrix<T,N,C>, FnTransposeColor> {
+  typedef C<typename UnaryReturn<T, FnTransposeColor>::Type_t, N> Type_t;
+};
+
+/*! define the function itself.Recurse down elements of the primmatrix
+ *  and call transposeColor on each one */
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PMatrix<T,N,C>, FnTransposeColor>::Type_t
+transposeColor(const PMatrix<T,N,C>& s1)
+{ 
+  typename UnaryReturn<PMatrix<T,N,C>, FnTransposeColor>::Type_t d;
+  for(int i=0; i < N; ++i) {
+    for(int j=0; j < N; ++j) {
+      d.elem(i,j) = transposeColor(s1.elem(i,j));
+    }
+  }
+
+  return d;
+}
+
 
 //! PMatrix = transposeSpin(PMatrix) [ this is an identity in general]
 /*! define the return type */
