@@ -21,6 +21,13 @@ unaryOps
   COMMENTB = "/*! @ingroup group1
   @relates QDPType */"
 -----
+  TAG = "FnTransposeColor"
+  FUNCTION = "transposeColor"
+  EXPR = "return (transposeColor(a));"
+  COMMENTA = "//! Transpose in Color Space Only"
+  COMMENTB = "/*! @ingroup group1
+  @relates QDPType */"
+-----
   TAG = "FnTransposeSpin"
   FUNCTION = "transposeSpin"
   EXPR = "return (transposeSpin(a));"
