@@ -1,3 +1,7 @@
+07/26/2005 -- Robert Edwards
+
+	Version 1.15.0: Checksums added to binary reader and writer.
+
 07/20/2005 -- Robert Edwards
 
 	Version 1.14.5: Added transposeColor
