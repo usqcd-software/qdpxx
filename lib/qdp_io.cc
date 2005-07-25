@@ -1,16 +1,10 @@
-// $Id: qdp_io.cc,v 1.21 2005-02-28 16:46:37 bjoo Exp $
+// $Id: qdp_io.cc,v 1.22 2005-07-25 17:06:38 edwards Exp $
 //
 // QDP data parallel interface
 //
 
 #include "qdp.h"
-
-namespace QDPUtil
-{
-  // Useful prototypes
-  bool big_endian();
-  void byte_swap(void *ptr, size_t size, size_t nmemb);
-}
+#include "qdp_byteorder.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -419,9 +413,9 @@ void TextWriter::writePrimitive(const T& output)
 
 //-----------------------------------------
 //! Binary reader support
-BinaryReader::BinaryReader() {}
+BinaryReader::BinaryReader() {checksum = 0;}
 
-BinaryReader::BinaryReader(const std::string& p) {open(p);}
+BinaryReader::BinaryReader(const std::string& p) {checksum = 0; open(p);}
 
 void BinaryReader::open(const std::string& p) 
 {
@@ -601,7 +595,10 @@ void BinaryReader::read(string& input, size_t maxBytes)
   if (Layout::primaryNode())
   {
     getIstream().getline(str, maxBytes);
-    n = strlen(str)+1;
+    n = strlen(str);
+    checksum = QDPUtil::crc32(checksum, str, n);   // no string terminator
+    ++n;
+    checksum = QDPUtil::crc32(checksum, "\n", 1);   // account for newline written
   }
 
   Internal::broadcast(n);
@@ -683,6 +680,7 @@ void BinaryReader::readArrayPrimaryNode(char* input, size_t size, size_t nmemb)
     // Read
     // By default, we expect all data to be in big-endian
     getIstream().read(input, size*nmemb);
+    checksum = QDPUtil::crc32(checksum, input, size*nmemb);
 
     if (! QDPUtil::big_endian())
     {
@@ -693,12 +691,20 @@ void BinaryReader::readArrayPrimaryNode(char* input, size_t size, size_t nmemb)
   }
 }
 
+//! Get the current checksum
+QDPUtil::n_uint32_t BinaryReader::getChecksum() const
+{
+  QDPUtil::n_uint32_t c = checksum;
+  Internal::broadcast(c);   // picks up only node 0
+  return c;
+}
+
 
 //-----------------------------------------
 //! Binary writer support
-BinaryWriter::BinaryWriter() {}
+BinaryWriter::BinaryWriter() {checksum = 0;}
 
-BinaryWriter::BinaryWriter(const std::string& p) {open(p);}
+BinaryWriter::BinaryWriter(const std::string& p) {checksum = 0; open(p);}
 
 void BinaryWriter::open(const std::string& p) 
 {
@@ -888,6 +894,7 @@ BinaryWriter& operator<<(BinaryWriter& bin, bool output)
 
 void BinaryWriter::write(const string& output)
 {
+  // WARNING: CHECK ON NEWLINE IN CHECKSUM
   size_t n = output.length();
   writeArray(output.c_str(), sizeof(char), n);
   write('\n');   // Convention is to write a line terminator
@@ -962,6 +969,7 @@ void BinaryWriter::writeArray(const char* output, size_t size, size_t nmemb)
     {
       /* big-endian */
       /* Write */
+      checksum = QDPUtil::crc32(checksum, output, size*nmemb);
       getOstream().write(output, size*nmemb);
     }
     else
@@ -969,11 +977,20 @@ void BinaryWriter::writeArray(const char* output, size_t size, size_t nmemb)
       /* little-endian */
       /* Swap and write and swap */
       QDPUtil::byte_swap(const_cast<char *>(output), size, nmemb);
+      checksum = QDPUtil::crc32(checksum, output, size*nmemb);
       getOstream().write(output, size*nmemb);
       QDPUtil::byte_swap(const_cast<char *>(output), size, nmemb);
     }
   }
 }
 
+
+//! Get the current checksum
+QDPUtil::n_uint32_t BinaryWriter::getChecksum() const
+{
+  QDPUtil::n_uint32_t c = checksum;
+  Internal::broadcast(c);   // picks up only node 0
+  return c;
+}
 
 QDP_END_NAMESPACE();
