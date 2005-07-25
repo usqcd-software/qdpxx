@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.20 2004-11-22 19:31:31 edwards Exp $
+// $Id: t_io.cc,v 1.21 2005-07-25 17:04:15 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -22,11 +22,14 @@ int main(int argc, char **argv)
 
   LatticeReal a;
   Double d = 17;
+  string astring = "hello world";
   random(a);
 
   BinaryWriter tobinary("t_io.bin");
   write(tobinary, a);
   write(tobinary, d);
+  write(tobinary, astring);
+  QDPIO::cout <<  "WriteBinary: t_io.bin:checksum = " << tobinary.getChecksum() << endl;
   tobinary.close();
 
   LatticeReal aa;
@@ -36,6 +39,8 @@ int main(int argc, char **argv)
   BinaryReader frombinary("t_io.bin");
   read(frombinary, aa);
   read(frombinary, dd);
+  read(frombinary, astring, 100);
+  QDPIO::cout <<  "ReadBinary: t_io.bin:checksum = " << frombinary.getChecksum() << endl;
   frombinary.close();
 
   XMLFileWriter toxml("t_io.xml");
