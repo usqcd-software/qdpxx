@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: qdp_util.h,v 1.9 2004-08-03 16:00:19 edwards Exp $
+// $Id: qdp_util.h,v 1.10 2005-07-25 17:07:14 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -27,21 +27,5 @@ void initDefaultSets();
 void initDefaultMaps();
 
 QDP_END_NAMESPACE();
-
-
-namespace QDPUtil
-{
-  //! Is the native byte order big endian?
-  bool big_endian();
-
-  //! Byte-swap an array of data each of size nmemb
-  void byte_swap(void *ptr, size_t size, size_t nmemb);
-
-  //! fread on a binary file written in big-endian order
-  size_t bfread(void *ptr, size_t size, size_t nmemb, FILE *stream);
-
-  //! fwrite to a binary file in big-endian order
-  size_t bfwrite(void *ptr, size_t size, size_t nmemb, FILE *stream);
-}
 
 #endif

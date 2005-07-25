@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.19 2005-03-18 13:56:23 zbigniew Exp $
+// $Id: qdp_io.h,v 1.20 2005-07-25 17:07:14 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -8,6 +8,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include "qdp_byteorder.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -31,65 +32,65 @@ QDP_BEGIN_NAMESPACE(QDP);
 class TextReader
 {
 public:
-    TextReader();
-    /*!
-      Closes the last file opened
-    */
-    ~TextReader(); 
+  TextReader();
+  /*!
+    Closes the last file opened
+  */
+  ~TextReader(); 
 
-    /*!
-      Opens a file for reading.
-      \param p The name of the file
-    */
-    explicit TextReader(const std::string& p);
+  /*!
+    Opens a file for reading.
+    \param p The name of the file
+  */
+  explicit TextReader(const std::string& p);
 
-    //! Opens a file for reading.
-    /*!
-      \param p The name of the file
-    */
-    void open(const std::string& p);
+  //! Opens a file for reading.
+  /*!
+    \param p The name of the file
+  */
+  void open(const std::string& p);
 
-    //! Closes the last file opened
-    void close();
+  //! Closes the last file opened
+  void close();
 
-    //! Queries whether the file is open
-    /*!
-      \return true if the file is open; false otherwise.
-    */
-    bool is_open();
+  //! Queries whether the file is open
+  /*!
+    \return true if the file is open; false otherwise.
+  */
+  bool is_open();
 
-    //!Checks status of the previous IO operation.
-    /*!
-      \return true if some failure occurred in the previous IO operation
-    */
-    bool fail();
+  //!Checks status of the previous IO operation.
+  /*!
+    \return true if some failure occurred in the previous IO operation
+  */
+  bool fail();
 
-    // Readers for builtin types
-    void read(std::string& result);
-    void read(char& result);
-    void read(int& result);
-    void read(unsigned int& result);
-    void read(short int& result);
-    void read(unsigned short int& result);
-    void read(long int& result);
-    void read(unsigned long int& result);
-    void read(float& result);
-    void read(double& result);
-    void read(bool& result);
+  // Readers for builtin types
+  void read(std::string& result);
+  void read(char& result);
+  void read(int& result);
+  void read(unsigned int& result);
+  void read(short int& result);
+  void read(unsigned short int& result);
+  void read(long int& result);
+  void read(unsigned long int& result);
+  void read(float& result);
+  void read(double& result);
+  void read(bool& result);
 
 protected:
 
-    //! The universal data-reader.
-    /*!
-      All the read functions call this.
-      \param output The location to which the datum is read.
-    */
-    template< typename T>
-    void
-    readPrimitive(T& output);
+  //! The universal data-reader.
+  /*!
+    All the read functions call this.
+    \param output The location to which the datum is read.
+  */
+  template< typename T>
+  void
+  readPrimitive(T& output);
 
-    //! Get the internal input stream
-    std::istream& getIstream() {return f;}
+  //! Get the internal input stream
+  std::istream& getIstream() {return f;}
 
 private:
 #if defined(USE_REMOTE_QIO)
@@ -126,69 +127,69 @@ TextReader& operator>>(TextReader& txt, bool& input);
 class TextWriter
 {
 public:
-    TextWriter();
+  TextWriter();
 
-    /*!
-      Closes the last file opened
-    */
-    ~TextWriter();
+  /*!
+    Closes the last file opened
+  */
+  ~TextWriter();
 
-    /*!
-      Opens a file for writing.
-      \param p The name of the file
-    */
-    explicit TextWriter(const std::string& p);
+  /*!
+    Opens a file for writing.
+    \param p The name of the file
+  */
+  explicit TextWriter(const std::string& p);
 
-    //! Queries whether the file is open
-    /*!
-      \return true if the file is open; false otherwise.
-    */
-    bool is_open();
+  //! Queries whether the file is open
+  /*!
+    \return true if the file is open; false otherwise.
+  */
+  bool is_open();
 
-    /*!
-      Opens a file for writing.
-      \param p The name of the file
-    */
-    void open(const std::string& p);
+  /*!
+    Opens a file for writing.
+    \param p The name of the file
+  */
+  void open(const std::string& p);
 
-    //! Closes the last file opened
-    void close();
+  //! Closes the last file opened
+  void close();
 
-    //! Flushes the buffer
-    void flush();
+  //! Flushes the buffer
+  void flush();
 
-    //!Checks status of the previous IO operation.
-    /*!
-      \return true if some failure occurred in previous IO operation
-    */
-    bool fail();
+  //!Checks status of the previous IO operation.
+  /*!
+    \return true if some failure occurred in previous IO operation
+  */
+  bool fail();
 
-    // Overloaded Writer Functions
-    void write(const std::string& output);
-    void write(const char* output);
-    void write(const char& output);
-    void write(const int& output);
-    void write(const unsigned int& output);
-    void write(const short int& output);
-    void write(const unsigned short int& output);
-    void write(const long int& output);
-    void write(const unsigned long int& output);
-    void write(const float& output);
-    void write(const double& output);
-    void write(const bool& output);
+  // Overloaded Writer Functions
+  void write(const std::string& output);
+  void write(const char* output);
+  void write(const char& output);
+  void write(const int& output);
+  void write(const unsigned int& output);
+  void write(const short int& output);
+  void write(const unsigned short int& output);
+  void write(const long int& output);
+  void write(const unsigned long int& output);
+  void write(const float& output);
+  void write(const double& output);
+  void write(const bool& output);
 
 protected:
-    //! The universal data-writer.
-    /*!
-      All the write functions call this.
-      \param output The location of the datum to be written.
-    */
-    template< typename T>
-    void
-    writePrimitive(const T& output);
+  //! The universal data-writer.
+  /*!
+    All the write functions call this.
+    \param output The location of the datum to be written.
+  */
+  template< typename T>
+  void
+  writePrimitive(const T& output);
 
-    //! Get the internal output stream
-    std::ostream& getOstream() {return f;}
+  //! Get the internal output stream
+  std::ostream& getOstream() {return f;}
 
 private:
 #if defined(USE_REMOTE_QIO)
@@ -223,92 +224,98 @@ TextWriter& operator<<(TextWriter& txt, bool output);
   
   The read methods are also wrapped by externally defined functions
   and >> operators,   
- */
+*/
 class BinaryReader
 {
 public:
-    BinaryReader();
+  BinaryReader();
 
-    /*!
-      Closes the last file opened
-    */
-    ~BinaryReader();
+  /*!
+    Closes the last file opened
+  */
+  ~BinaryReader();
 
-    /*!
-      Opens a file for reading.
-      \param p The name of the file
-    */
-    explicit BinaryReader(const std::string& p);
+  /*!
+    Opens a file for reading.
+    \param p The name of the file
+  */
+  explicit BinaryReader(const std::string& p);
 
-    //! Queries whether the file is open
-    /*!
-      \return true if the file is open; false otherwise.
-    */
-    bool is_open();
+  //! Queries whether the file is open
+  /*!
+    \return true if the file is open; false otherwise.
+  */
+  bool is_open();
 
-    //! Opens a file for reading.
-    /*!
-      \param p The name of the file
-    */
-    void open(const std::string& p);
+  //! Opens a file for reading.
+  /*!
+    \param p The name of the file
+  */
+  void open(const std::string& p);
 
-    //! Closes the last file opened
-    void close();
+  //! Closes the last file opened
+  void close();
 
-    //!Checks status of the previous IO operation.
-    /*!
-      \return true if some failure occurred in the previous IO operation
-    */
-    bool fail();
+  //!Checks status of the previous IO operation.
+  /*!
+    \return true if some failure occurred in the previous IO operation
+  */
+  bool fail();
 
-    //! Read data on the primary node only
-    /*!
-      \param output The location to which data is read
-      \param nbytes The size in bytes of each datum
-      \param The number of data.
-    */
-    void readArrayPrimaryNode(char* output, size_t nbytes, size_t nmemb);
+  //! Read data on the primary node only
+  /*!
+    \param output The location to which data is read
+    \param nbytes The size in bytes of each datum
+    \param The number of data.
+  */
+  void readArrayPrimaryNode(char* output, size_t nbytes, size_t nmemb);
 
-    //! Read data on the primary node and broadcast to all nodes.
-    /*!
-      \param output The location to which data is read
-      \param nbytes The size in bytes of each datum
-      \param The number of data.
-    */
-    void readArray(char* output, size_t nbytes, size_t nmemb);
+  //! Read data on the primary node and broadcast to all nodes.
+  /*!
+    \param output The location to which data is read
+    \param nbytes The size in bytes of each datum
+    \param The number of data.
+  */
+  void readArray(char* output, size_t nbytes, size_t nmemb);
 
-    // Overloaded reader functions
+  // Overloaded reader functions
 
-    //! Read some max number of characters - 1 upto and excluding a newline
-    /*! This is the getline function for the underlying stream */
-    void read(std::string& result, size_t nbytes);
+  //! Read some max number of characters - 1 upto and excluding a newline
+  /*! This is the getline function for the underlying stream */
+  void read(std::string& result, size_t nbytes);
 
-    void read(char& result);
-    void read(int& result);
-    void read(unsigned int& result);
-    void read(short int& result);
-    void read(unsigned short int& result);
-    void read(long int& result);
-    void read(unsigned long int& result);
-    void read(float& result);
-    void read(double& result);
-    void read(bool& result);
+  void read(char& result);
+  void read(int& result);
+  void read(unsigned int& result);
+  void read(short int& result);
+  void read(unsigned short int& result);
+  void read(long int& result);
+  void read(unsigned long int& result);
+  void read(float& result);
+  void read(double& result);
+  void read(bool& result);
 
+  //! Get the current checksum
+  QDPUtil::n_uint32_t getChecksum() const;
+  
 protected:
 
-    //! The universal data-reader.
-    /*!
-      All the read functions call this.
-      \param output The location to which the datum is read.
-    */
-    template< typename T>
-    void
-    readPrimitive(T& output);
+  //! The universal data-reader.
+  /*!
+    All the read functions call this.
+    \param output The location to which the datum is read.
+  */
+  template< typename T>
+  void
+  readPrimitive(T& output);
 
-    //! Get the internal input stream
-    std::istream& getIstream() {return f;}
+  //! Get the internal input stream
+  std::istream& getIstream() {return f;}
 
 private:
+  //! Checksum
+  QDPUtil::n_uint32_t checksum;
+
 #if defined(USE_REMOTE_QIO)
   QDPUtil::RemoteInputFileStream f;
 #else
@@ -429,13 +436,13 @@ void read(BinaryReader& bin, multi2d<T>& d)
   int n2;
   read(bin, n1);    // the size is always written, even if 0
   read(bin, n2);    // the size is always written, even if 0
-   d.resize(n1,n2);
+  d.resize(n1,n2);
   
   for(int i=0; i < d.size1(); ++i)
     for(int j=0; j < d.size2(); ++j)
-      {
-	read(bin, d[j][i]);
-      }
+    {
+      read(bin, d[j][i]);
+    }
 
 }
 
@@ -482,91 +489,97 @@ void read(BinaryReader& bin, multi3d<T>& d)
   
   The write methods are also wrapped by externally defined functions
   and << operators,   
- */
+*/
 class BinaryWriter
 {
 public:
-    BinaryWriter();
+  BinaryWriter();
 
-    /*!
-      Closes the last file opened
-    */
-    ~BinaryWriter();
+  /*!
+    Closes the last file opened
+  */
+  ~BinaryWriter();
 
-    /*!
-      Opens a file for writing.
-      \param p The name of the file
-    */
-    explicit BinaryWriter(const std::string& p);
+  /*!
+    Opens a file for writing.
+    \param p The name of the file
+  */
+  explicit BinaryWriter(const std::string& p);
 
-    //! Queries whether the file is open
-    /*!
-      \return true if the file is open; false otherwise.
-    */
-    bool is_open();
+  //! Queries whether the file is open
+  /*!
+    \return true if the file is open; false otherwise.
+  */
+  bool is_open();
     
-    /*!
-      Opens a file for writing.
-      \param p The name of the file
-    */
-    void open(const std::string& p);
+  /*!
+    Opens a file for writing.
+    \param p The name of the file
+  */
+  void open(const std::string& p);
 
-    //! Closes the last file opened   
-    void close();
+  //! Closes the last file opened   
+  void close();
 
-    //! Flushes the buffer
-    void flush();
+  //! Flushes the buffer
+  void flush();
 
-    //!Checks status of the previous IO operation.
-    /*!
-      \return true if some failure occurred in previous IO operation
-    */
-    bool fail();
+  //!Checks status of the previous IO operation.
+  /*!
+    \return true if some failure occurred in previous IO operation
+  */
+  bool fail();
 
-    //! Write data from the primary node.
-    /*!
-      \param output The data to write
-      \param nbytes The size in bytes of each datum
-      \param The number of data.
-    */
-    void writeArray(const char* output, size_t nbytes, size_t nmemb);
+  //! Write data from the primary node.
+  /*!
+    \param output The data to write
+    \param nbytes The size in bytes of each datum
+    \param The number of data.
+  */
+  void writeArray(const char* output, size_t nbytes, size_t nmemb);
 
-    // Overloaded Writer Functions
+  // Overloaded Writer Functions
 
-    /*!
-      A newline is appended to the written string.
-    */
-    void write(const std::string& output);
-    /*!
-      A newline is appended to the written string.
-    */
-    void write(const char* output);
-    void write(const char& output);
-    void write(const int& output);
-    void write(const unsigned int& output);
-    void write(const short int& output);
-    void write(const unsigned short int& output);
-    void write(const long int& output);
-    void write(const unsigned long int& output);
-    void write(const float& output);
-    void write(const double& output);
-    void write(const bool& output);
+  /*!
+    A newline is appended to the written string.
+  */
+  void write(const std::string& output);
+  /*!
+    A newline is appended to the written string.
+  */
+  void write(const char* output);
+  void write(const char& output);
+  void write(const int& output);
+  void write(const unsigned int& output);
+  void write(const short int& output);
+  void write(const unsigned short int& output);
+  void write(const long int& output);
+  void write(const unsigned long int& output);
+  void write(const float& output);
+  void write(const double& output);
+  void write(const bool& output);
 
+  //! Get the current checksum
+  QDPUtil::n_uint32_t getChecksum() const;
+  
 protected:
 
-    //! The universal data-writer.
-    /*!
-      All the write functions call this.
-      \param output The location of the datum to be written.
-    */
-    template< typename T>
-    void
-    writePrimitive(const T& output);
+  //! The universal data-writer.
+  /*!
+    All the write functions call this.
+    \param output The location of the datum to be written.
+  */
+  template< typename T>
+  void
+  writePrimitive(const T& output);
 
-    //! Get the internal output stream
-    std::ostream& getOstream() {return f;}
+  //! Get the internal output stream
+  std::ostream& getOstream() {return f;}
 
 private:
+  //! Checksum
+  QDPUtil::n_uint32_t checksum;
+
 #if defined(USE_REMOTE_QIO)
   QDPUtil::RemoteOutputFileStream f;
 #else
@@ -649,9 +662,9 @@ void write(BinaryWriter& bin, const multi2d<T>& d)
 
   for(int i=0; i < d.size1(); ++i)
     for(int j=0; j < d.size2(); ++j)
-      {
-	write(bin, d[j][i]);
-      }
+    {
+      write(bin, d[j][i]);
+    }
 
 }
 
@@ -662,7 +675,7 @@ void write(BinaryWriter& bin, const multi2d<T>& d, int num1, int num2)
 {
   for(int i=0; i < num2; ++i)
     for(int j=0; j < num1; ++j)
-    write(bin, d[j][i]);
+      write(bin, d[j][i]);
 }
 
 
@@ -689,7 +702,6 @@ inline
 void write(BinaryWriter& bin, const multi3d<T>& d, 
 	   int num1, int num2, int num3)
 {
-
   for(int k=0; k < num3 ; ++k)
     for(int j=0; j < num2; ++j)
       for(int i=0; i < num1; ++i)
