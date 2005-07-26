@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_profile.h,v 1.5 2005-07-20 11:06:53 bjoo Exp $
+// $Id: qdp_profile.h,v 1.6 2005-07-26 12:47:41 zbigniew Exp $
 
 /*! @file
  * @brief Print profiling info
@@ -14,6 +14,10 @@ QDP_BEGIN_NAMESPACE(QDP);
 
 typedef unsigned long  QDPTime_t;
 
+//! Get the wallclock time
+/*!
+  \return The wallclock time (since Epoch) in seconds.
+*/
 QDPTime_t getClockTime();
 void initProfile(const std::string& file, const std::string& caller, int line);
 void closeProfile();
