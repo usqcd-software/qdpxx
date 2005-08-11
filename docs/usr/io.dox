@@ -1,4 +1,4 @@
-//$Id: io.dox,v 1.2 2005-07-07 16:02:47 zbigniew Exp $
+//$Id: io.dox,v 1.3 2005-08-11 00:29:54 zbigniew Exp $
 /*!
 \page simpleiopage  I/O utilities
 
@@ -64,7 +64,7 @@ Also provided are C++ Standard Library-like IO manipulators that can
 be used to change this behavior. Namely, IO can be directed from any
 node which can aid debugging.
 \note 
-The IO manipulators for changing node output are not yet implemented.
+IO manipulators for changing node output are not yet implemented.
 
 \par TextReader member functions and global functions
 
