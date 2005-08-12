@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.11.8
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.15.0
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -108,12 +108,12 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.8.11}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.15.0}
 }
 \author{Robert G. Edwards\\
 SciDAC Software Coordinating Committee}
 
-\date{March 4, 2005}
+\date{August 12, 2005}
 
 \maketitle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2559,11 +2559,13 @@ ldexp, pow, fmod, atan2
 \verb|adj|              &:& hermitian conjugate (adjoint)\\
 \verb|conj|             &:& complex conjugate\\
 \verb|transpose|        &:& matrix tranpose, on a scalar it is a nop\\
+\verb|transposeColor|   &:& color matrix tranpose, on a scalar it is a nop\\
+\verb|transposeSpin|    &:& spin matrix tranpose, on a scalar it is a nop\\
 \verb|trace|            &:& matrix trace\\
 \verb|real|             &:& real part\\
 \verb|imag|             &:& imaginary part\\
-\verb|colorTrace|       &:& trace over color indices\\
-\verb|spinTrace|        &:& trace over spin indices\\
+\verb|traceColor|       &:& trace over color indices\\
+\verb|traceSpin|        &:& trace over spin indices\\
 \verb|timesI|           &:& multiplies argument by imag "i"\\
 \verb|localNorm2|       &:& on fibers computes trace(adj(source)*source)\\
 \end{tabular}
@@ -2814,7 +2816,7 @@ All operations listed in Sections~\ref{sec:infix}--\ref{sec:otherfuncs}
   Inherits same operations as PMatrix
 \begin{flushleft}
   \begin{tabular}{lp{5.0in}}
-  {\em Unary}:& {\tt spinTrace}\\
+  {\em Unary}:& {\tt traceSpin}, {\tt transposeSpin}\\
   {\em Binary}:& {\tt *(PSpinMatrix,Gamma)}, {\tt *(Gamma,PSpinMatrix)}\\
   {\em Exotic}:& {\tt peekSpin}, {\tt pokeSpin}, {\tt spinProjection}, 
       {\tt spinReconstruction}\\
@@ -2837,7 +2839,7 @@ All operations listed in Sections~\ref{sec:infix}--\ref{sec:otherfuncs}
   Inherits same operations as PMatrix
 \begin{flushleft}
   \begin{tabular}{lp{5.0in}}
-  {\em Unary}:& {\tt colorTrace}\\
+  {\em Unary}:& {\tt traceColor}, {\tt transposeColor}\\
   {\em Binary}:& {\tt *(PColorMatrix,Gamma)}, {\tt *(Gamma,PColorMatrix)}\\
   {\em Exotic}:& {\tt peekColor}, {\tt pokeColor}\\
   \end{tabular}
@@ -2967,6 +2969,36 @@ namely show all the functions and what are some (selected) usages.
   Meaning     & $r = {\rm transpose}(a)$ \\
   \hline
   \itt        & \tReal, \tComplex, \tColorMatrix, \tDiracPropagator \\
+              & \simLatticeVariants \\
+  \hline
+  \end{tabular}
+\end{flushleft}
+
+\paragraph{Transpose of a color matrix}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Syntax      & \protoUnaryQual{\tt transposeColor}  \\
+  \hline
+  Meaning     & $r^{ij} = a^{ji}$ \\
+  \hline
+  \itt        & \tReal, \tComplex, \tColorMatrix, \tDiracPropagator \\
+              & \simLatticeVariants \\
+  \hline
+  \end{tabular}
+\end{flushleft}
+
+\paragraph{Transpose of a spin matrix}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Syntax      & \protoUnaryQual{\tt transposeSpin}  \\
+  \hline
+  Meaning     & $r_{\alpha\beta} = a_{\beta\alpha}$ \\
+  \hline
+  \itt        & \tReal, \tComplex, \tSpinMatrix, \tDiracPropagator \\
               & \simLatticeVariants \\
   \hline
   \end{tabular}
