@@ -1,4 +1,6 @@
-# $Id: mkdocs.sh,v 1.1 2005-04-22 16:08:19 zbigniew Exp $
+#!/bin/sh
+
+# $Id: mkdocs.sh,v 1.2 2005-08-12 22:41:38 edwards Exp $
 # Script to build the documentation
 
 # Allow this script to be run from its own directory or its parent directory.
