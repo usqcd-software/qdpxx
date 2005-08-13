@@ -1,4 +1,4 @@
-//$Id: implementation.dox,v 1.2 2005-07-07 16:02:47 zbigniew Exp $
+//$Id: implementation.dox,v 1.3 2005-08-13 20:52:21 edwards Exp $
 /*!
 \page impldetail Implementation Details
 
@@ -195,8 +195,16 @@ As in the standard C mathematics library.
   - complex conjugate
 - QDP::transpose        
   - matrix tranpose, on a scalar it is a nop
+- QDP::transposeColor
+  - matrix tranpose of color indices, on a scalar it is a nop
+- QDP::transposeSpin
+  - matrix tranpose of spin indices, on a scalar it is a nop
 - QDP::trace            
   - matrix trace
+- QDP::traceColor
+  - matrix trace of color indices
+- QDP::traceSpin
+  - matrix trace of spin indices
 - QDP::real             
   - real part of complex
 - QDP::imag             
@@ -606,6 +614,32 @@ namely show all the functions and what are some (selected) usages.
   - QDP::DiracPropagatorF, QDP::DiracPropagatorD \e etc.
   - Also corresponding lattice variants
 
+\par Transpose of color indices
+
+-  Syntax
+   - Type QDP::transposeColor (const Type a)
+-  Meaning     
+   - <em>r = transposeColor(a)</em>
+- Type
+  - QDP::Real
+  - QDP::Complex
+  - QDP::ColorMatrix 
+  - QDP::DiracPropagatorF, QDP::DiracPropagatorD \e etc.
+  - Also corresponding lattice variants
+
+\par Transpose of spin indices
+
+-  Syntax
+   - Type QDP::transposeSpin (const Type a)
+-  Meaning     
+   - <em>r = transposeSpin(a)</em>
+- Type
+  - QDP::Real
+  - QDP::Complex
+  - QDP::SpinMatrix 
+  - QDP::DiracPropagatorF, QDP::DiracPropagatorD \e etc.
+  - Also corresponding lattice variants
+
 \par Complex conjugate
 
 -  Syntax
@@ -866,7 +900,7 @@ It will trivially trace a scalar variable.
 -  Meaning
    - <em> r = Tr a</em>
 - Type1
-  - QDP::SpinMatrix
+  - QDP::ColorMatrix
   - Also corresponding lattice variants
 - Type2
   - QDP::Complex
