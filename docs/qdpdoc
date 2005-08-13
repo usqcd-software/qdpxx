@@ -3,8 +3,8 @@
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
-PROJECT_NAME           = QDP
-PROJECT_NUMBER         = 1.11.8
+PROJECT_NAME           = QDP++
+PROJECT_NUMBER         = 1.15.0
 OUTPUT_DIRECTORY       = ./doxygen
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
