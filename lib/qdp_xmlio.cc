@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.31 2005-01-24 04:03:33 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.32 2005-08-20 16:48:31 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -56,6 +56,11 @@ void XMLReader::open(const string& filename)
 #else
     ifstream f;
     f.open(filename.c_str(), ios::binary);
+    if (f.fail())
+    {
+      QDPIO::cerr << "Error opening read file = " << filename << endl;
+      exit(1);
+    }
     BasicXPathReader::open(f);
 #endif
 
@@ -761,6 +766,24 @@ XMLBufferWriter::~XMLBufferWriter() {}
 //--------------------------------------------------------------------------------
 // XML Writer to a file
 XMLFileWriter::XMLFileWriter() {indent_level=0;}
+
+void XMLFileWriter::open(const std::string& filename, bool write_prologue)
+{
+  if (Layout::primaryNode())
+  {
+    output_stream.open(filename.c_str(), ofstream::out);
+    if (output_stream.fail())
+    {
+      QDPIO::cerr << "Error opening write file = " << filename << endl;
+      exit(1);
+    }
+    if (write_prologue)
+      writePrologue(output_stream);
+  }
+
+  indent_level=0;
+}
+
 
 void XMLFileWriter::close()
 {

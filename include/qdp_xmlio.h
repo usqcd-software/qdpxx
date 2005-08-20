@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.31 2005-03-18 13:56:23 zbigniew Exp $
+// $Id: qdp_xmlio.h,v 1.32 2005-08-20 16:48:31 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -59,35 +59,35 @@ public:
 
   /* The meaning of these should be clear to you */
 
-    //! Opens and reads an XML file.
-    /*!
-      \param filename The name of the file
-      \post Any previously opened file is closed.
-    */
+  //! Opens and reads an XML file.
+  /*!
+    \param filename The name of the file
+    \post Any previously opened file is closed.
+  */
   void open(const std::string& filename);
 
-    //! Opens and reads an XML file.
-    /*!
-      \param id The input stream of the file
-      \post Any previously opened file is closed      
-    */
-    void open(std::istream& is);
+  //! Opens and reads an XML file.
+  /*!
+    \param id The input stream of the file
+    \post Any previously opened file is closed      
+  */
+  void open(std::istream& is);
 
-    //! Reads content of a  XMLBufferWriter
+  //! Reads content of a  XMLBufferWriter
   void open(const XMLBufferWriter& mw);
 
-    //! Queries whether the binary file is open
-    /*!
-      \return true if the binary file is open; false otherwise.
-    */
-    bool is_open();
+  //! Queries whether the binary file is open
+  /*!
+    \return true if the binary file is open; false otherwise.
+  */
+  bool is_open();
 
-    //! Queries whether the XML data has been obtained from another XMLReader
-    /*!
-      A private method allows this XMLReader to be copy the contents of
-      another.
-     */
-    bool is_derived() const;
+  //! Queries whether the XML data has been obtained from another XMLReader
+  /*!
+    A private method allows this XMLReader to be copy the contents of
+    another.
+  */
+  bool is_derived() const;
 
     //! Closes the last file opened
   void close();
@@ -698,12 +698,12 @@ public:
 
   XMLFileWriter();
 
-    //! Constructor from a filename
-    /*!
-      \param filename The name of the file
-      \param write_prologue Whether to write the standard opening line of
-      XML files. Defaults to true.
-    */
+  //! Constructor from a filename
+  /*!
+    \param filename The name of the file
+    \param write_prologue Whether to write the standard opening line of
+    XML files. Defaults to true.
+  */
   explicit XMLFileWriter(const std::string& filename, bool write_prologue=true)
     {
       open(filename, write_prologue);
@@ -711,25 +711,19 @@ public:
 
   ~XMLFileWriter();
 
-    bool is_open();
+  //! Queries whether the binary file is open
+  /*!
+    \return true if the binary file is open; false otherwise.
+  */
+  bool is_open();
 
-    //!Opens a file
-    /*!
-      \param filename The name of the file
-      \param write_prologue Whether to write the standard opening line of
-      XML files. Defaults to true.
-    */
-  void open(const std::string& filename, bool write_prologue=true)
-    {
-      if (Layout::primaryNode())
-      {
-	output_stream.open(filename.c_str(), ofstream::out);
-	if (write_prologue)
-	  writePrologue(output_stream);
-      }
-
-      indent_level=0;
-    }
+  //!Opens a file
+  /*!
+    \param filename The name of the file
+    \param write_prologue Whether to write the standard opening line of
+    XML files. Defaults to true.
+  */
+  void open(const std::string& filename, bool write_prologue=true);
 
   //! Flush the buffer
   void flush();
