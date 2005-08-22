@@ -1,10 +1,18 @@
-//$Id: qio.dox,v 1.2 2005-07-07 16:02:47 zbigniew Exp $
+//$Id: qio.dox,v 1.3 2005-08-22 16:09:05 zbigniew Exp $
 /*!
 \page qiopage  QDP Record I/O utilities}
 
 \section secqio QDP Record I/O utilities
 
-The IO code described in this section is documented inthe \ref qio
+The record IO code in %QDP is a C++ wrapper of QIO, QIO is a C library
+independent of %QDP. It is designed to write SciDAC   
+format data files, which means a mixture of binary data and XML
+metadata bundled together in the same file according to a scheme
+called Lime. QIO itself is discussed in more detail in the \ref
+qiodetailpage section.
+
+
+The %QDP code described in this section is documented in the \ref qio
 section of the %Reference Manual.
 
   -# \ref  secfileformat
@@ -79,9 +87,9 @@ site coordinate <em>r<sub>i</sub></em> with the first coordinate
 <em>r<sub>0</sub></em> varying most
 rapidly.
 
-A new format called LIME (Lattice-QCD Interchange Message Encapsulation)
+A format called LIME (Lattice-QCD Interchange Message Encapsulation)
 is used for packaging the logical records. A feature of this format is
-the maximum record size is quite - <em>2<sup>64</sup>-1</em> bytes. However,
+the maximum record size is quite large - <em>2<sup>64</sup>-1</em> bytes. However,
 file system limitations may require splitting a single file into 
 multiple physical files. No provision is provided for such splitting.
 It is expected that in time file systems will evolve to allow much
@@ -152,7 +160,7 @@ writes the sites as the slowest varying index and the array
 occurred. The \a volfmt argument is one of
 
 \verbatim
-  QDPIO_SINGLEFILE, QDPIO_MULTIFILE
+  QDPIO_SINGLEFILE, QDPIO_MULTIFILE, QDPIO_PARTFILE
 \endverbatim
 
 The serpar argument is one of
@@ -203,10 +211,7 @@ inside of them. The QDP::QDP_volfmt_t \a volfmt argument is not needed -
 a file in either QDP::QDPIO_SINGLEFILE or 
 QDP::QDPIO_MULTIFILE
 format will be automatically detected and read appropriately.
-peek returns only the metadata and repositions
-back to the beginning of the record.  skip skips to the next
-logical record - it may read the data and discard it. bad
-states if any fatal errors have occurred. There are no user functions
+There are no user functions
 that position within a logical record.
 
 Here is an example of how to use the record I/O facility.
@@ -226,6 +231,7 @@ read(in, rec_xml, a);
 skip(in);
 close(in);
 \endverbatim
+
 
 
 */

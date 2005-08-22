@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: mkdocs.sh,v 1.2 2005-08-12 22:41:38 edwards Exp $
+# $Id: mkdocs.sh,v 1.3 2005-08-22 16:09:05 zbigniew Exp $
 # Script to build the documentation
 
 # Allow this script to be run from its own directory or its parent directory.
@@ -13,6 +13,13 @@ else
     topdir=`pwd -P` 
     docdir=$topdir/docs
 fi
+
+# Run doxygen for QIO 
+
+qiodir=$topdir/other_libs/qio/doc
+cd $qiodir
+doxygen qiodoc
+cd -
 
 # The version number
 # I assume that the tag is of the form <something>1-2-3<something>

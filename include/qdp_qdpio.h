@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.23 2005-04-28 19:26:46 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.24 2005-08-22 16:09:05 zbigniew Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -82,9 +82,9 @@ public:
   //! Opens a file for reading
     /*!
       Also reads the file user metadata record.
-      \param xml Container for the file metadata
-      \param path The name of the file
-      \param iflag Not used.
+      \param xml Container for the file metadata.
+      \param path The name of the file.
+      \param qdp_serpar Serial or parallel IO.
     */
   QDPFileReader(XMLReader& xml, const std::string& path,
 		QDP_serialparallel_t qdp_serpar);
@@ -92,9 +92,9 @@ public:
     //! Opens a file for reading
     /*!
       Also reads the file user metadata record.
-      \param xml Container for the file metadata
-      \param path The name of the file
-      \param iflag Not used.
+      \param xml Container for the file metadata.
+      \param path The name of the file.
+      \param qdp_serpar Serial or parallel IO.
     */
   void open(XMLReader& xml, const std::string& path,
 	    QDP_serialparallel_t qdp_serpar);
@@ -247,8 +247,8 @@ public:
       Also reads the file user metadata record.
       \param xml Container for the file metadata
       \param path The name of the file
-      \param volfmt The type of IO to perform
-      \param oflag Not used.
+      \param qdp_volfmt The type of file to write.
+      \param qdp_serpar Serial or parallel IO
     */
   QDPFileWriter(XMLBufferWriter& xml, const std::string& path,
 		QDP_volfmt_t qdp_volfmt,
@@ -259,20 +259,38 @@ public:
       Also reads the file user metadata record.
       \param xml Container for the file metadata
       \param path The name of the file
-      \param volfmt The type of IO to perform
-      \param oflag Not used.
+      \param qdp_volfmt The type of file to write.
+      \param qdp_serpar Serial or parallel IO
     */
   void open(XMLBufferWriter& xml, const std::string& path,
 	    QDP_volfmt_t qdp_volfmt,
 	    QDP_serialparallel_t qdp_serpar);
   
-  //! Open file
+  //! Opens a file for writing and writes the file metadata
+    /*!
+      Also reads the file user metadata record.
+      \param xml Container for the file metadata
+      \param path The name of the file
+      \param qdp_volfmt The type of file to write.
+      \param qdp_serpar Serial or parallel IO
+      \param qdp_mode The file  opening mode		
+    */
+
   QDPFileWriter(XMLBufferWriter& xml, const std::string& path,
 		QDP_volfmt_t qdp_volfmt,
 		QDP_serialparallel_t qdp_serpar,
 		QDP_filemode_t qdp_mode);
   
-  //! Open file
+  //! Opens a file for writing and writes the file metadata
+    /*!
+      Also reads the file user metadata record.
+      \param xml Container for the file metadata
+      \param path The name of the file
+      \param qdp_volfmt The type of file to write.
+      \param qdp_serpar Serial or parallel IO.
+      \param qdp_mode The file opening mode		
+    */
+
   void open(XMLBufferWriter& xml, const std::string& path,
 	    QDP_volfmt_t qdp_volfmt,
 	    QDP_serialparallel_t qdp_serpar,
@@ -576,7 +594,8 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OScalar<T>& s1)
     QDP_abort(1);
   }
 
-  // Big call to qio
+  // Big call to QIO
+  
   if (QIO_write(get(), info, xml_c,
 	        &(QDPOScalarFactoryGet<T>),
                 sizeof(T), 
