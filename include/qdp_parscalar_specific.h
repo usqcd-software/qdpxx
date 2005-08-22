@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.40 2005-07-07 13:11:18 bjoo Exp $
+// $Id: qdp_parscalar_specific.h,v 1.41 2005-08-22 21:19:28 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -50,6 +50,19 @@ namespace Internal
       if (Layout::nodeNumber() == srcnode)
 	sendToWait((void *)&dest, 0, sizeof(T));
     }
+  }
+
+  //! Unsigned accumulate
+  inline void sumAnUnsigned(void* inout, void* in)
+  {
+    *(unsigned int*)inout += *(unsigned int*)in;
+  }
+
+  //! Wrapper to get a functional unsigned global sum
+  inline void globalSumArray(unsigned int *dest, int len)
+  {
+    for(int i=0; i < len; i++, dest++)
+      QMP_binary_reduction(dest, sizeof(unsigned int), sumAnUnsigned);
   }
 
   //! Low level hook to QMP_global_sum
@@ -106,7 +119,7 @@ namespace Internal
 
   //! Sum across all nodes
   template<class T>
-  void globalSum(T& dest)
+  inline void globalSum(T& dest)
   {
     // The implementation here is relying on the structure being packed
     // tightly in memory - no padding
@@ -117,8 +130,39 @@ namespace Internal
     QDPIO::cout << "sizeof(W) = " << sizeof(W) << endl;
     QDPIO::cout << "Calling global sum array with length " << sizeof(T)/sizeof(W) << endl;
 #endif
-    globalSumArray((W *)&dest, sizeof(T)/sizeof(W)); // call appropriate hook
+    globalSumArray((W *)&dest, int(sizeof(T)/sizeof(W))); // call appropriate hook
   }
+
+#if 0
+  //! Sum across all nodes
+  template<>
+  inline void globalSum(unsigned int& dest)
+  {
+    QMP_binary_reduction(&dest, sizeof(unsigned int), sumAnUnsigned);
+  }
+
+  //! Low level hook to QMP_global_sum
+  template<>
+  inline void globalSum(int& dest)
+  {
+    QMP_sum_int(&dest);
+  }
+
+  //! Low level hook to QMP_global_sum
+  template<>
+  inline void globalSum(float& dest)
+  {
+    QMP_sum_float(&dest);
+  }
+
+  //! Low level hook to QMP_global_sum
+  template<>
+  inline void globalSum(double& dest)
+  {
+    QMP_sum_double(&dest);
+  }
+#endif
+
 
   //! Broadcast from primary node to all other nodes
   template<class T>
