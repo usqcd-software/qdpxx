@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_word.h,v 1.2 2004-11-22 19:31:32 edwards Exp $
+// $Id: qdp_word.h,v 1.3 2005-08-22 21:19:10 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -138,6 +138,18 @@ struct WordType<Real64>
 struct WordType<Integer32> 
 {
   typedef int  Type_t;
+};
+
+// Underlying word type
+struct WordType<unsigned int> 
+{
+  typedef unsigned int  Type_t;
+};
+
+// Underlying word type
+struct WordType<unsigned long> 
+{
+  typedef unsigned long  Type_t;
 };
 
 
