@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.26 2005-08-22 21:20:47 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.27 2005-08-22 21:42:51 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -644,10 +644,7 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
 	exit(1);
       }
 
-      // Compute checksum in big endian
-      if (! QDPUtil::big_endian())
-	QDPUtil::byte_swap(chk_buf, size, mat_size);
-
+      // Compute checksum
       n_uint32_t* chk_ptr = (n_uint32_t*)chk_buf;
       for(int i=0; i < mat_size*size/sizeof(n_uint32_t); ++i)
 	checksum += chk_ptr[i];
