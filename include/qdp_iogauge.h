@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_iogauge.h,v 1.4 2005-03-18 13:56:23 zbigniew Exp $
+// $Id: qdp_iogauge.h,v 1.5 2005-08-22 21:18:42 edwards Exp $
 
 /*! @file
  * @brief NERSC Gauge Connection Archive gauge support
@@ -25,56 +25,55 @@ QDP_BEGIN_NAMESPACE(QDP);
  */
 struct ArchivGauge_t
 {
-    multi1d<int> nrow;            /*!< Lattice size */
-    multi1d<int> boundary;        /*!< Boundary conditions */
 
-    Real  w_plaq;                 /*!< Mean normalised plaquette */
-    Real  link;                   /*!< Mean link trace */
+  //! Initializes a NERSC Archive header with default values
+  /*!
+   * \ingroup io
+ 
+   The defaults are:
+   - Two-row matrix storage
+   - Floating-point precision is 32 bits
+   - Periodic boundary conditions
+   - Sequence number 1
+   - Ensemble label is "NERSC archive"
+   - Creator is "QDP++"
+   - Creator hardware is "QDP++"
+   -  The creation date is obtained from the system clock as the time when this
+   function is called.
+   - The archival date is the creation date.
+   - The average plaquette and link are 0.
+   - The ensemble ID is "X" followed by the creation date.
+   .
+   */    
+  ArchivGauge_t();
+
+  multi1d<int> nrow;            /*!< Lattice size */
+  multi1d<int> boundary;        /*!< Boundary conditions */
+
+  Real  w_plaq;                 /*!< Mean normalised plaquette */
+  Real  link;                   /*!< Mean link trace */
 
   /* assume matrix size is 12 (matrix is compressed) 
      and change if we find out otherwise */
-    size_t      mat_size;         /*!< Number of floating point numbers stored
-				    per link matrix. This effectively specifies
-				    whether the matrix is stored in two or
-				    three-row format.
-				  */
+  size_t      mat_size;         /*!< Number of floating point numbers stored
+				  per link matrix. This effectively specifies
+				  whether the matrix is stored in two or
+				  three-row format.
+				*/
 
-    /* Our Columbia friends have sneakily defined IEEE64BIG  */
-    size_t      float_size;       /*!< Floating-point precision */
+  /* Our Columbia friends have sneakily defined IEEE64BIG  */
+  size_t      float_size;       /*!< Floating-point precision */
 
-    int         sequence_number;  /*!< Sequence number */
-    std::string ensemble_id;      /*!< Ensemble ID */
-    std::string ensemble_label;   /*!< Ensemble label */
-    std::string creator;          /*!< Creator */		
-    std::string creator_hardware; /*!< Creator hardware */
-    std::string creation_date;	  /*!< Creation date */
-    std::string archive_date;     /*!< Archive date */     
+  n_uint32_t  checksum;         /*!< Checksum */
+  int         sequence_number;  /*!< Sequence number */
+  std::string ensemble_id;      /*!< Ensemble ID */
+  std::string ensemble_label;   /*!< Ensemble label */
+  std::string creator;          /*!< Creator */		
+  std::string creator_hardware; /*!< Creator hardware */
+  std::string creation_date;	  /*!< Creation date */
+  std::string archive_date;     /*!< Archive date */     
 };
 
-
-//! Initializes a NERSC Archive header with default values
-/*!
- * \ingroup io
-
- 
- The defaults are:
- - Two-row matrix storage
- - Floating-point precision is 32 bits
- - Periodic boundary conditions
- - Sequence number 1
- - Ensemble label is "NERSC archive"
- - Creator is "QDP++"
- - Creator hardware is "QDP++"
- -  The creation date is obtained from the system clock as the time when this
-    function is called.
- - The archival date is the creation date.
- - The average plaquette and link are 0.
- - The ensemble ID is "X" followed by the creation date.
- .
- *
- * \param header     structure holding config info ( Modify )
- */    
-void archivGaugeInit(ArchivGauge_t& header);
 
 //! Reads a Gauge Connection header from XML into a header container
 /*!
@@ -121,6 +120,17 @@ void read(XMLReader& xml, const string& path, ArchivGauge_t& header);
   \endverbatim
 */
 void write(XMLWriter& xml, const string& path, const ArchivGauge_t& header);
+
+
+//! Compute simple NERSC-like checksum of a gauge field
+/*
+  \ingroup io
+ Compute the checksum of a gauge field
+
+  \param u          gauge configuration ( Read )
+  \return checksum
+*/    
+n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u, int mat_size);
 
 
 //! Reads a NERSC Gauge Connection Archive format gauge field
