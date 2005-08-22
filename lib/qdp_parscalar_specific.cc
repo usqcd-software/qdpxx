@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.25 2005-03-18 13:56:23 zbigniew Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.26 2005-08-22 21:20:47 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -571,6 +571,97 @@ void readOLattice(BinaryReader& bin,
 
 
 
+//-----------------------------------------------------------------------
+// Compute simple NERSC-like checksum of a gauge field
+/*
+ * \ingroup io
+ *
+ * \param u          gauge configuration ( Read )
+ *
+ * \return checksum
+ */    
+
+n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
+			   int mat_size)
+{
+  size_t size = sizeof(REAL32);
+  size_t su3_size = size*mat_size;
+  n_uint32_t checksum = 0;   // checksum
+
+  multi1d<multi1d<ColorMatrix> > sa(Nd);   // extract gauge fields
+
+  for(int dd=0; dd<Nd; dd++)        /* dir */
+  {
+    sa[dd].resize(Layout::sitesOnNode());
+    QDP_extract(sa[dd], u[dd], all);
+  }
+
+  char  *chk_buf = new(nothrow) char[su3_size];
+  if( chk_buf == 0x0 ) { 
+    QDP_error_exit("Unable to allocate chk_buf\n");
+  }
+
+  for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
+  {
+    for(int dd=0; dd<Nd; dd++)        /* dir */
+    {
+      switch (mat_size)
+      {
+      case 12:
+      {
+	REAL32 su3[2][3][2];
+
+	for(int kk=0; kk<Nc; kk++)      /* color */
+	  for(int ii=0; ii<2; ii++)    /* color */
+	  {
+	    Complex sitecomp = peekColor(sa[dd][linear],ii,kk);
+	    su3[ii][kk][0] = toFloat(Real(real(sitecomp)));
+	    su3[ii][kk][1] = toFloat(Real(imag(sitecomp)));
+	  }
+
+	memcpy(chk_buf, &(su3[0][0][0]), su3_size);
+      }
+      break;
+
+      case 18:
+      {
+	REAL32 su3[3][3][2];
+
+	for(int kk=0; kk<Nc; kk++)      /* color */
+	  for(int ii=0; ii<Nc; ii++)    /* color */
+	  {
+	    Complex sitecomp = peekColor(sa[dd][linear],ii,kk);
+	    su3[ii][kk][0] = toFloat(Real(real(sitecomp)));
+	    su3[ii][kk][1] = toFloat(Real(imag(sitecomp)));
+	  }
+
+	memcpy(chk_buf, &(su3[0][0][0]), su3_size);
+      }
+      break;
+
+      default:
+	QDPIO::cerr << __func__ << ": unexpected size" << endl;
+	exit(1);
+      }
+
+      // Compute checksum in big endian
+      if (! QDPUtil::big_endian())
+	QDPUtil::byte_swap(chk_buf, size, mat_size);
+
+      n_uint32_t* chk_ptr = (n_uint32_t*)chk_buf;
+      for(int i=0; i < mat_size*size/sizeof(n_uint32_t); ++i)
+	checksum += chk_ptr[i];
+    }
+  }
+
+  delete[] chk_buf;
+
+  // Get all nodes to contribute
+  Internal::globalSumArray((unsigned int*)&checksum, 1);   // g++ requires me to narrow the type to unsigned int
+
+  return checksum;
+}
+
 
 //-----------------------------------------------------------------------
 // Read a QCD archive file
@@ -582,7 +673,7 @@ void readOLattice(BinaryReader& bin,
  * \param u          gauge configuration ( Modify )
  */    
 
-void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
+void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u, n_uint32_t& checksum,
 		int mat_size, int float_size)
 {
   size_t size = float_size;
@@ -593,12 +684,12 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
     QDP_error_exit("Unable to allocate input\n");
   }
 
-
   char  *recv_buf = new(nothrow) char[tot_size];
   if( recv_buf == 0x0 ) { 
     QDP_error_exit("Unable to allocate recv_buf\n");
   }
 
+  checksum = 0;
 
   // Find the location of each site and send to primary node
   for(int site=0; site < Layout::vol(); ++site)
@@ -610,6 +701,14 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
 
     // Only on primary node read the data
     cfg_in.readArrayPrimaryNode(recv_buf, size, mat_size*Nd);
+
+    if (node == 0)
+    {
+      // Compute checksum
+      n_uint32_t* chk_ptr = (n_uint32_t*)recv_buf;
+      for(int i=0; i < mat_size*Nd*size/sizeof(n_uint32_t); ++i)
+	checksum += chk_ptr[i];
+    }
 
     // Send result to destination node. Avoid sending prim-node sending to itself
     if (node != 0)
@@ -632,11 +731,7 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
 
   delete[] recv_buf;
 
-  // First compute the checksum - not sure this is what they want...
-  //junsigned int chksum = 0;
-//  for(int i=0; i < tot_size*Layout::sitesOnNode(); ++i)
-//    chksum += input;
-
+  Internal::broadcast(checksum);
 
   // Reconstruct the gauge field
   ColorMatrix  sitefield;
@@ -646,16 +741,17 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
   {
     for(int dd=0; dd<Nd; dd++)        /* dir */
     {
-
       // Transfer the data from input into SU3
-      if (float_size == 4) {
+      if (float_size == 4) 
+      {
 	REAL* su3_p = (REAL *)su3;
 	REAL32* input_p = (REAL32 *)( input+su3_size*(dd+Nd*linear) );
 	for(int cp_index=0; cp_index < mat_size; cp_index++) {
 	  su3_p[cp_index] = (REAL)(input_p[cp_index]);
 	}
       }
-      else if (float_size == 8) {
+      else if (float_size == 8) 
+      {
 	// IEEE64BIT case
 	REAL *su3_p = (REAL *)su3;
 	REAL64 *input_p = (REAL64 *)( input+su3_size*(dd+Nd*linear) );
@@ -716,7 +812,7 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
 void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
 		 int mat_size)
 {
-  size_t size = sizeof(float);
+  size_t size = sizeof(REAL32);
   size_t su3_size = size*mat_size;
   size_t tot_size = su3_size*Nd;
   char *recv_buf = new(nothrow) char[tot_size];
@@ -750,7 +846,7 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
       {
 	if ( mat_size == 12 ) 
 	{
-	  float su3[2][3][2];
+	  REAL32 su3[2][3][2];
 
 	  for(int kk=0; kk<Nc; kk++)      /* color */
 	    for(int ii=0; ii<2; ii++)    /* color */
@@ -764,7 +860,7 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
 	}
 	else
 	{
-	  float su3[3][3][2];
+	  REAL32 su3[3][3][2];
 
 	  for(int kk=0; kk<Nc; kk++)      /* color */
 	    for(int ii=0; ii<Nc; ii++)    /* color */

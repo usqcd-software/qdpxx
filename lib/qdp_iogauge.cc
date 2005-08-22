@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.18 2005-03-18 13:56:23 zbigniew Exp $
+// $Id: qdp_iogauge.cc,v 1.19 2005-08-22 21:20:47 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -13,6 +13,50 @@
 
 #include <string>
 using std::string;
+
+
+// Anonymous namespace
+namespace
+{
+  // Float tolerance
+  const Double tol = 0.0000001;  /* tolerance for floating point checks */
+
+  // Grrh, I do not want to expose the plaquette code.
+  void mesplq(Double& w_plaq, Double& link, const multi1d<LatticeColorMatrix>& u)
+  {
+    w_plaq = link = 0.0;
+
+    // Compute the average plaquettes
+    for(int mu=1; mu < Nd; ++mu)
+    {
+      for(int nu=0; nu < mu; ++nu)
+      {
+	/* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
+	LatticeColorMatrix tmp_0 = shift(u[nu],FORWARD,mu) * adj(shift(u[mu],FORWARD,nu));
+
+	/* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
+	LatticeColorMatrix tmp_1 = tmp_0 * adj(u[nu]);
+
+	/* tmp = sum(tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu))) */
+	Double tmp = sum(real(trace(u[mu]*tmp_1)));
+
+	w_plaq += tmp;
+      }
+    }
+  
+    // NERSC normalization
+    w_plaq *= 2.0 / double(Layout::vol()*Nd*(Nd-1)*Nc);
+  
+    // Compute the average link
+    for(int mu=0; mu < Nd; ++mu)
+      link += sum(real(trace(u[mu])));
+
+    link /= double(Layout::vol()*Nd*Nc);
+  }
+
+} // end anonymous namespace
+
+
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -29,17 +73,24 @@ ostream& operator<<(ostream& s, const multi1d<T>& d)
 }
 
 
-void archivGaugeInit(ArchivGauge_t& header)
+ArchivGauge_t::ArchivGauge_t()
 {
-  header.mat_size = 12;
-  header.float_size = 4; // 32 bits
-  header.nrow = Layout::lattSize();
-  header.boundary.resize(Nd);
-  header.boundary = 1;   // periodic
-  header.sequence_number = 0;
-  header.ensemble_label = "NERSC archive";
-  header.creator = "QDP++";
-  header.creator_hardware = "QDP++";
+  mat_size = 2*Nc*(Nc-1);
+  float_size = 4; // 32 bits
+  nrow = Layout::lattSize();
+  boundary.resize(Nd);
+  boundary = 1;   // periodic
+  sequence_number = 0;
+  ensemble_label = "NERSC archive";
+  creator = "QDP++";
+  {
+    const int namelen = 128;
+    char name[namelen];
+    gethostname(name, namelen);
+    name[namelen-1] = '\0';
+    creator_hardware = name;
+  }
+  checksum = 0;
 
   time_t now = time(NULL);
   {
@@ -60,19 +111,19 @@ void archivGaugeInit(ArchivGauge_t& header)
 	break;
      }   
 
-    header.creation_date = datetime;
+    creation_date = datetime;
     delete[] datetime;
   }
-  header.archive_date  = header.creation_date;
+  archive_date  = creation_date;
 
   {
     ostringstream s;
     s << "X" << now;
-    header.ensemble_id = s.str();
+    ensemble_id = s.str();
   }
 
-  header.w_plaq = 0;   // WARNING: bogus
-  header.link = 0;     // WARNING: bogus
+  w_plaq = 0;   // WARNING: bogus
+  link = 0;     // WARNING: bogus
 }
 
 
@@ -85,12 +136,23 @@ void read(XMLReader& xml, const string& path, ArchivGauge_t& header)
   read(paramtop, "float_size", header.float_size);
   read(paramtop, "nrow", header.nrow);
   read(paramtop, "boundary", header.boundary);
+  read(paramtop, "w_plaq", header.w_plaq);
+  read(paramtop, "link", header.link);
   read(paramtop, "ensemble_id", header.ensemble_id);
   read(paramtop, "ensemble_label", header.ensemble_label);
   read(paramtop, "creator", header.creator);
   read(paramtop, "creator_hardware", header.creator_hardware);
   read(paramtop, "creation_date", header.creation_date);
   read(paramtop, "archive_date", header.archive_date);
+  read(paramtop, "sequence_number", header.sequence_number);
+
+  // read a hex as a string and then convert
+  {
+    string chk;
+    read(paramtop, "checksum", chk);
+    istringstream s(chk);
+    s >> header.checksum;
+  }
 }
 
 
@@ -103,16 +165,26 @@ void write(XMLWriter& xml, const string& path, const ArchivGauge_t& header)
   write(xml, "float_size", header.float_size);
   write(xml, "nrow", header.nrow);
   write(xml, "boundary", header.boundary);
+  write(xml, "w_plaq", header.w_plaq);
+  write(xml, "link", header.link);
   write(xml, "ensemble_id", header.ensemble_id);
   write(xml, "ensemble_label", header.ensemble_label);
   write(xml, "creator", header.creator);
   write(xml, "creator_hardware", header.creator_hardware);
   write(xml, "creation_date", header.creation_date);
   write(xml, "archive_date", header.archive_date);
+  write(xml, "sequence_number", header.sequence_number);
+
+  // write as a hex 
+  {
+    ostringstream s;
+    s.setf(std::ios_base::hex, std::ios_base::basefield);
+    s << header.checksum;
+    write(xml, "checksum", s.str());
+  }
 
   pop(xml);
 }
-
 
 
 //-----------------------------------------------------------------------
@@ -128,16 +200,14 @@ void write(XMLWriter& xml, const string& path, const ArchivGauge_t& header)
  \c DATATYPE key has the value \c 4D_SU3_GAUGE_3x3
  or two-row format matrices if it has the value \c 4D_SU3_GAUGE
 
- The plaquette, link and checksum values are ignored.
+ The plaquette, link value, and checksum are read and compared against 
+ computed values.
 */    
 
 static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 {
   if (Nd != 4)
     QDP_error_exit("Expecting Nd == 4");
-
-
-  archivGaugeInit(header);
 
   const size_t max_line_length = 128;
 
@@ -157,7 +227,7 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 
   /* assume matrix size is 2*Nc*Nc (matrix is UNcompressed) 
      and change if we find out otherwise */
-  header.mat_size=2*Nc*Nc ;
+  header.mat_size=2*Nc*Nc;
 
   /* Begin loop on lines */
   int  lat_size_cnt = 0;
@@ -167,30 +237,91 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
     cfg_in.read(line, max_line_length);
     QDPIO::cout << line << endl;
 
-    char linetype[max_line_length];
+    if (line == string("END_HEADER")) break;
+
     int itmp, dd;
+    string::size_type off;
+
+    // Snarf the first token
+    char tokenn[max_line_length];
+    if ( sscanf(line.c_str(), "%s", tokenn) != 1 ) 
+    {
+      QDPIO::cerr << __func__ 
+		  << ": incorrectly parsed header line=XX" << line << "XX" << endl;
+      exit(1);
+    }
+    string token = tokenn;
+
+    // Scan for first non-space char after "="
+    off = line.find('=');
+    if ( off == string::npos )
+    {
+      QDPIO::cerr << __func__ 
+		  << ": incorrectly parsed header line=XX" << line << "XX" << endl;
+      exit(1);
+    }
+    off = line.find_first_not_of(' ', off+1);
+    if ( off == string::npos )
+    {
+      QDPIO::cerr << __func__ 
+		  << ": incorrectly parsed header line=XX" << line << "XX" << endl;
+      exit(1);
+    }
+    string value = line.substr(off, line.length()-off+1);
+//    QDPIO::cout << "value = XX" << value << "XX" << endl;
+
 
     // Scan for the datatype then scan for it
-    if ( sscanf(line.c_str(), "DATATYPE = %s", linetype) == 1 ) 
+    if ( token == string("DATATYPE") )
     {
       /* Check if it is uncompressed */
-      if (strcmp(linetype, "4D_SU3_GAUGE_3x3") == 0) 
+      if ( value == string("4D_SU3_GAUGE_3x3") )
       {
 	header.mat_size=18;   /* Uncompressed matrix */
 	if (Nc != 3)
-	  QDP_error_exit("Expecting Nc == 3");
+	{
+	  QDPIO::cerr << __func__ << ": expecting Nc == 3" << endl;
+	  exit(1);
+	}
       }
-      else if (strcmp(linetype, "4D_SU3_GAUGE") == 0) 
+      else if ( value == string("4D_SU3_GAUGE") )
       {
 	header.mat_size=12;   /* Compressed matrix */
 	if (Nc != 3)
-	  QDP_error_exit("Expecting Nc == 3");
+	{
+	  QDPIO::cerr << __func__ << ": expecting Nc == 3" << endl;
+	  exit(1);
+	}
       }
-      else if (strcmp(linetype, "4D_SU4_GAUGE") == 0) 
+      else if ( value == string("4D_SU4_GAUGE") )
       {
 	if (Nc != 4)
-	  QDP_error_exit("Expecting Nc == 4");
+	{
+	  QDPIO::cerr << __func__ << ": expecting Nc == 4" << endl;
+	  exit(1);
+	}
       }
+    }
+
+
+    // Scan for the plaq
+    double dtmp;
+    if ( sscanf(line.c_str(), "PLAQUETTE = %lf", &dtmp) == 1 ) 
+    {
+      header.w_plaq = dtmp;
+    }
+
+    // Scan for the link
+    if ( sscanf(line.c_str(), "LINK_TRACE = %lf", &dtmp) == 1 ) 
+    {
+      header.link = dtmp;
+    }
+
+    // Scan for the checksum
+    unsigned long chk;
+    if ( sscanf(line.c_str(), "CHECKSUM = %lx", &chk) == 1 ) 
+    {
+      header.checksum = chk;
     }
 
     // Scan for the sequence number
@@ -200,33 +331,45 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
     }
 
     // Scan for the ensemble label
-    if ( sscanf(line.c_str(), "ENSEMBLE_LABEL = %s", linetype) == 1 ) 
+    if ( token == string("ENSEMBLE_LABEL") )
     {
-      header.ensemble_label = linetype;
+      header.ensemble_label = value;
+    }
+
+    // Scan for the ensemble id
+    if ( token == string("ENSEMBLE_ID") )
+    {
+      header.ensemble_id = value;
     }
 
     // Scan for the creator
-    if ( sscanf(line.c_str(), "CREATOR = %s", linetype) == 1 ) 
+    if ( token == string("CREATOR") )
     {
-      header.creator = linetype;
+      header.creator = value;
     }
 
-    // Scan for the creator
-    if ( sscanf(line.c_str(), "CREATOR_HARDWARE = %s", linetype) == 1 ) 
+    // Scan for the creator machine
+    if ( token == string("CREATOR_MACHINE") )
     {
-      header.creator_hardware = linetype;
+      header.creator_hardware = value;
+    }
+
+    // Scan for the creator hardware
+    if ( token == string("CREATOR_HARDWARE") )
+    {
+      header.creator_hardware = value;
     }
 
     // Scan for the creation date
-    if ( sscanf(line.c_str(), "CREATION_DATE = %s", linetype) == 1 ) 
+    if ( token == string("CREATION_DATE") )
     {
-      header.creation_date = linetype;
+      header.creation_date = value;
     }
 
     // Scan for the archive date
-    if ( sscanf(line.c_str(), "ARCHIVE_DATE = %s", linetype) == 1 ) 
+    if ( token == string("ARCHIVE_DATE") )
     {
-      header.archive_date = linetype;
+      header.archive_date = value;
     }
 
     // Find the lattice size of the gauge field
@@ -238,7 +381,7 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 
       header.nrow[dd-1] = itmp;
       ++lat_size_cnt;
-      }
+    }
     
     // Find the boundary conditions
     if ( sscanf(line.c_str(), "BOUNDARY_%d = %d", &dd, &itmp) == 2 ) 
@@ -250,22 +393,23 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
       header.boundary[dd-1] = itmp;
     }
 
-    char fpstring[12];
-    if( sscanf(line.c_str(), "FLOATING_POINT = %s", fpstring) == 1 ) {
-      if( (strcmp(fpstring, "IEEE32BIG") == 0)
-         || (strcmp(fpstring, "IEEE32") == 0)  ) { 
-	QDPIO::cout << "Floating type: IEEE32BIG" << endl; 
+    if( token == string("FLOATING_POINT") )
+    {
+      if( value == string("IEEE32BIG") || value == string("IEEE32") ) 
+      {
 	header.float_size=4;
       }
-      else if ( strcmp(fpstring, "IEEE64BIG") == 0 ) { 
+      else if( value == string("IEEE64BIG") )
+      {
 	header.float_size=8;
       }
-      else { 
-	QDP_error_exit("oops unknown floating point type\n");
+      else 
+      {
+	QDPIO::cerr << __func__ 
+		    << ": unknown floating point type = XX" << value << "XX" << endl;
+	exit(1);
       }
     }
- 
-    if (line == string("END_HEADER")) break;
   }
 
   QDPIO::cout << "End of header" << endl;
@@ -299,11 +443,13 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
   the file. This should be 12 to write two-row format or 18 for three-row
   format. 
   \param float_size
+  \param checksum   The 32bit parity checksum
   
   \pre The binary writer should have already opened the file, and should be
   pointing to the beginning of the binary data.
 */
-void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u, int mat_size, int float_size);
+void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u, 
+		n_uint32_t& checksum, int mat_size, int float_size);
 
 
 
@@ -320,7 +466,32 @@ void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const str
   BinaryReader cfg_in(file);
 
   readArchivHeader(cfg_in, header);   // read header
-  readArchiv(cfg_in, u, header.mat_size, header.float_size);  // expects to be positioned at the beginning of the binary payload
+  n_uint32_t checksum;
+  // expects to be positioned at the beginning of the binary payload
+  readArchiv(cfg_in, u, checksum, header.mat_size, header.float_size);
+
+  if (checksum != header.checksum)
+  {
+    QDPIO::cerr << __func__ << ": checksum mismatch: new=" << checksum 
+		<< "  header value= " << header.checksum << endl;
+    exit(1);
+  }
+
+  Double w_plaq, link;
+  mesplq(w_plaq, link, u);
+  if (toBool(fabs(header.w_plaq - w_plaq) > tol))
+  {
+    QDPIO::cerr << __func__ << ": plaquette out of bounds: new=" << w_plaq 
+		<< "  header value= " << header.w_plaq << endl;
+    exit(1);
+  }
+
+  if (toBool(fabs(header.link - link) > tol))
+  {
+    QDPIO::cerr << __func__ << ": link out of bounds: new=" << link 
+		<< "  header value= " << header.link << endl;
+    exit(1);
+  }
 
   cfg_in.close();
 }
@@ -383,8 +554,8 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
 /*!
  * \ingroup io
  *
- * \param header     structure holding config info ( Modify )
- * \param cfg_out     binary writer object ( Modify )
+ * \param header     structure holding config info ( Read )
+ * \param cfg_out    binary writer object ( Modify )
 
  \pre The information in the header should be filled in.
  
@@ -409,9 +580,12 @@ static void writeArchivHeader(BinaryWriter& cfg_out, const ArchivGauge_t& header
 
   head << "BEGIN_HEADER\n";
 
-  head << "CHECKSUM = 0\n";     // WARNING BOGUS!!!
-  head << "LINK_TRACE = " << header.link << "\n";
-  head << "PLAQUETTE = " << header.w_plaq << "\n";
+  head << "CHECKSUM = ";
+  head.setf(std::ios_base::hex, std::ios_base::basefield);
+  head << header.checksum << endl;
+  head.setf(std::ios_base::dec, std::ios_base::basefield);
+  head << "LINK_TRACE = " << header.link << "\n"
+       << "PLAQUETTE = " << header.w_plaq << "\n";
 
   head << "DATATYPE = 4D_SU3_GAUGE\n"
        << "HDR_VERSION = 1.0\n"
@@ -482,6 +656,12 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
  */    
 void writeArchiv(ArchivGauge_t& header, const multi1d<LatticeColorMatrix>& u, const string& file)
 {
+  Double w_plaq, link;
+  mesplq(w_plaq, link, u);
+  header.w_plaq = w_plaq;
+  header.link = link;
+  header.checksum = computeChecksum(u, header.mat_size);
+
   BinaryWriter cfg_out(file);
 
   writeArchivHeader(cfg_out, header);   // write header
@@ -504,6 +684,12 @@ void writeArchiv(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u,
 		 const string& cfg_file)
 {
   ArchivGauge_t header;
+  Double w_plaq, link;
+  mesplq(w_plaq, link, u);
+  header.w_plaq = w_plaq;
+  header.link = link;
+  header.checksum = computeChecksum(u, header.mat_size);
+
   XMLReader  xml_in(xml);   // use the buffer writer to instantiate a reader
   read(xml_in, "/NERSC", header);
 
@@ -523,8 +709,6 @@ void writeArchiv(const multi1d<LatticeColorMatrix>& u,
 		 const string& cfg_file)
 {
   ArchivGauge_t header;
-  archivGaugeInit(header);   // default header
-
   writeArchiv(header, u, cfg_file);
 }
 
