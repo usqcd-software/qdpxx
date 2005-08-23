@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.27 2005-08-22 21:42:51 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.28 2005-08-23 04:20:33 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -699,7 +699,7 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u, n_uint32_t
     // Only on primary node read the data
     cfg_in.readArrayPrimaryNode(recv_buf, size, mat_size*Nd);
 
-    if (node == 0)
+    if (Layout::primaryNode()) 
     {
       // Compute checksum
       n_uint32_t* chk_ptr = (n_uint32_t*)recv_buf;
