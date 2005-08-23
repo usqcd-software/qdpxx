@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.28 2005-08-23 04:20:33 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.29 2005-08-23 19:09:30 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -670,8 +670,8 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
  * \param u          gauge configuration ( Modify )
  */    
 
-void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u, n_uint32_t& checksum,
-		int mat_size, int float_size)
+void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u, 
+		n_uint32_t& checksum, int mat_size, int float_size)
 {
   size_t size = float_size;
   size_t su3_size = size*mat_size;
