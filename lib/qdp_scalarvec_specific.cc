@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvec_specific.cc,v 1.6 2005-03-21 05:30:12 edwards Exp $
+// $Id: qdp_scalarvec_specific.cc,v 1.7 2005-08-23 19:09:59 edwards Exp $
 
 /*! @file
  * @brief Scalarvec specific routines
@@ -52,6 +52,94 @@ void Map::make(const MapFunc& func)
 
 
 
+
+
+//-----------------------------------------------------------------------
+// Compute simple NERSC-like checksum of a gauge field
+/*
+ * \ingroup io
+ *
+ * \param u          gauge configuration ( Read )
+ *
+ * \return checksum
+ */    
+
+n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
+			   int mat_size)
+{
+  size_t size = sizeof(REAL32);
+  size_t su3_size = size*mat_size;
+  n_uint32_t checksum = 0;   // checksum
+
+  multi1d<multi1d<ColorMatrix> > sa(Nd);   // extract gauge fields
+
+  for(int dd=0; dd<Nd; dd++)        /* dir */
+  {
+    sa[dd].resize(Layout::sitesOnNode());
+    QDP_extract(sa[dd], u[dd], all);
+  }
+
+  char  *chk_buf = new(nothrow) char[su3_size];
+  if( chk_buf == 0x0 ) { 
+    QDP_error_exit("Unable to allocate chk_buf\n");
+  }
+
+  for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
+  {
+    for(int dd=0; dd<Nd; dd++)        /* dir */
+    {
+      switch (mat_size)
+      {
+      case 12:
+      {
+	REAL32 su3[2][3][2];
+
+	for(int kk=0; kk<Nc; kk++)      /* color */
+	  for(int ii=0; ii<2; ii++)    /* color */
+	  {
+	    Complex sitecomp = peekColor(sa[dd][linear],ii,kk);
+	    su3[ii][kk][0] = toFloat(Real(real(sitecomp)));
+	    su3[ii][kk][1] = toFloat(Real(imag(sitecomp)));
+	  }
+
+	memcpy(chk_buf, &(su3[0][0][0]), su3_size);
+      }
+      break;
+
+      case 18:
+      {
+	REAL32 su3[3][3][2];
+
+	for(int kk=0; kk<Nc; kk++)      /* color */
+	  for(int ii=0; ii<Nc; ii++)    /* color */
+	  {
+	    Complex sitecomp = peekColor(sa[dd][linear],ii,kk);
+	    su3[ii][kk][0] = toFloat(Real(real(sitecomp)));
+	    su3[ii][kk][1] = toFloat(Real(imag(sitecomp)));
+	  }
+
+	memcpy(chk_buf, &(su3[0][0][0]), su3_size);
+      }
+      break;
+
+      default:
+	QDPIO::cerr << __func__ << ": unexpected size" << endl;
+	exit(1);
+      }
+
+      // Compute checksum
+      n_uint32_t* chk_ptr = (n_uint32_t*)chk_buf;
+      for(int i=0; i < mat_size*size/sizeof(n_uint32_t); ++i)
+	checksum += chk_ptr[i];
+    }
+  }
+
+  delete[] chk_buf;
+
+  return checksum;
+}
+
+
 //-----------------------------------------------------------------------
 // Read a QCD archive file
 // Read a QCD (NERSC) Archive format gauge field
@@ -63,13 +151,13 @@ void Map::make(const MapFunc& func)
  */    
 
 void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
-		int mat_size, int float_size)
+		n_uint32_t& checksum, int mat_size, int float_size)
 {
   ColorMatrix  sitefield;
   char *su3_buffer;
 
   REAL su3[Nc][Nc][2];
-  unsigned int chksum = 0;
+  checksum = 0;
 
   su3_buffer = new char[ Nc*Nc*2*float_size ];
   if( su3_buffer == 0x0 ) { 
@@ -89,6 +177,13 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
       if (cfg_in.fail()) {
 	QDP_error_exit("Error reading configuration");
       }
+
+
+      // Compute checksum
+      n_uint32_t* chk_ptr = (n_uint32_t*)su3_buffer;
+      for(int i=0; i < mat_size*float_size/sizeof(n_uint32_t); ++i)
+	checksum += chk_ptr[i];
+
 
       /* Transfer from input buffer to the actual su3 buffer, 
 	 downcasting it to float if necessary */
@@ -138,22 +233,6 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
 	  Real im = su3[ii][kk][1];
 	  Complex sitecomp = cmplx(re,im);
 	  pokeColor(sitefield,sitecomp,ii,kk);
-
-	  if (mat_size == 12) 
-	  {
-	    /* If compressed ignore 3rd row for checksum */
-	    if (ii < 2) 
-	    {
-	      chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+0));
-	      chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+1));
-	    }
-	  }
-	  else 
-	  {
-	    /* If uncompressed take everything for checksum */
-	    chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+0));
-	    chksum += *(unsigned int*)(su3+(((ii)*3+kk)*2+1));
-	  }
 	}
       }
 
