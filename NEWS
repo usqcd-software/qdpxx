@@ -1,3 +1,7 @@
+08/23/2005 -- Robert Edwards
+
+	Version 1.15.2: Checksums, plaq and link checks in NERSC gauge reader/writer.
+
 08/20/2005 -- Robert Edwards
 
 	Version 1.15.1: Added checks in XML open routines. Changes in
