@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.19 2005-08-22 21:20:47 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.20 2005-08-23 12:43:45 bjoo Exp $
 //
 // QDP data parallel interface
 /*!
@@ -14,6 +14,11 @@
 #include <string>
 using std::string;
 
+// QCDOC HACK. QCDOC Does not have gethostname
+// provided in qdp_util.cc
+#ifndef HAVE_GETHOSTNAME
+extern int gethostname(char *, size_t);
+#endif
 
 // Anonymous namespace
 namespace
