@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.21 2005-03-21 05:29:48 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.22 2005-08-23 19:10:45 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -24,6 +24,22 @@ namespace Layout
 // These dummy routines exist just to make code more portable
 namespace Internal
 {
+  //! Dummy array sum accross all nodes
+  template<class T>
+  inline void globalSumArray(T* dest, int n) {}
+
+  //! Dummy global sum on a multi1d
+  template<class T>
+  inline void globalSumArray(multi1d<T>& dest) {}
+
+  //! Dummy global sum on a multi2d
+  template<class T>
+  inline void globalSumArray(multi2d<T>& dest) {}
+
+  //! Dummy sum across all nodes
+  template<class T>
+  inline void globalSum(T& dest) {}
+
   //! Dummy broadcast from primary node to all other nodes
   template<class T>
   void broadcast(T& dest) {}

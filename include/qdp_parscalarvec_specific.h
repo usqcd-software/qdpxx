@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.22 2005-07-07 13:11:18 bjoo Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.23 2005-08-23 19:10:45 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -50,6 +50,19 @@ namespace Internal
       if (Layout::nodeNumber() == srcnode)
 	sendToWait((void *)&dest, 0, sizeof(T));
     }
+  }
+
+  //! Unsigned accumulate
+  inline void sumAnUnsigned(void* inout, void* in)
+  {
+    *(unsigned int*)inout += *(unsigned int*)in;
+  }
+
+  //! Wrapper to get a functional unsigned global sum
+  inline void globalSumArray(unsigned int *dest, int len)
+  {
+    for(int i=0; i < len; i++, dest++)
+      QMP_binary_reduction(dest, sizeof(unsigned int), sumAnUnsigned);
   }
 
   //! Low level hook to QMP_global_sum
