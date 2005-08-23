@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.20 2005-08-23 12:43:45 bjoo Exp $
+// $Id: qdp_iogauge.cc,v 1.21 2005-08-23 19:09:46 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -11,6 +11,7 @@
 
 #include "time.h"
 
+#include <unistd.h>
 #include <string>
 using std::string;
 
@@ -19,6 +20,9 @@ using std::string;
 #ifndef HAVE_GETHOSTNAME
 extern int gethostname(char *, size_t);
 #endif
+
+QDP_BEGIN_NAMESPACE(QDP);
+
 
 // Anonymous namespace
 namespace
@@ -61,9 +65,6 @@ namespace
 
 } // end anonymous namespace
 
-
-
-QDP_BEGIN_NAMESPACE(QDP);
 
 
 //! Write a multi1d array
