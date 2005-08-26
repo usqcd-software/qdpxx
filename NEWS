@@ -1,3 +1,7 @@
+08/26/2005 -- Robert Edwards
+
+	Version 1.15.3: Updated NERSC header parsing to accomodate funky headers.
+
 08/23/2005 -- Robert Edwards
 
 	Version 1.15.2: Checksums, plaq and link checks in NERSC gauge reader/writer.
