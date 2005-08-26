@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.32 2005-08-20 16:48:31 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.33 2005-08-26 20:44:55 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -59,7 +59,7 @@ void XMLReader::open(const string& filename)
     if (f.fail())
     {
       QDPIO::cerr << "Error opening read file = " << filename << endl;
-      exit(1);
+      QDP_abort(1);
     }
     BasicXPathReader::open(f);
 #endif
@@ -775,7 +775,7 @@ void XMLFileWriter::open(const std::string& filename, bool write_prologue)
     if (output_stream.fail())
     {
       QDPIO::cerr << "Error opening write file = " << filename << endl;
-      exit(1);
+      QDP_abort(1);
     }
     if (write_prologue)
       writePrologue(output_stream);

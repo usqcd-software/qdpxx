@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.21 2005-08-23 19:09:46 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.22 2005-08-26 20:44:55 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -254,7 +254,7 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
     {
       QDPIO::cerr << __func__ 
 		  << ": incorrectly parsed header line=XX" << line << "XX" << endl;
-      exit(1);
+      QDP_abort(1);
     }
     string token = tokenn;
 
@@ -264,14 +264,14 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
     {
       QDPIO::cerr << __func__ 
 		  << ": incorrectly parsed header line=XX" << line << "XX" << endl;
-      exit(1);
+      QDP_abort(1);
     }
     off = line.find_first_not_of(' ', off+1);
     if ( off == string::npos )
     {
       QDPIO::cerr << __func__ 
 		  << ": incorrectly parsed header line=XX" << line << "XX" << endl;
-      exit(1);
+      QDP_abort(1);
     }
     string value = line.substr(off, line.length()-off+1);
 //    QDPIO::cout << "value = XX" << value << "XX" << endl;
@@ -287,7 +287,7 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 	if (Nc != 3)
 	{
 	  QDPIO::cerr << __func__ << ": expecting Nc == 3" << endl;
-	  exit(1);
+	  QDP_abort(1);
 	}
       }
       else if ( value == string("4D_SU3_GAUGE") )
@@ -296,7 +296,7 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 	if (Nc != 3)
 	{
 	  QDPIO::cerr << __func__ << ": expecting Nc == 3" << endl;
-	  exit(1);
+	  QDP_abort(1);
 	}
       }
       else if ( value == string("4D_SU4_GAUGE") )
@@ -304,7 +304,7 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 	if (Nc != 4)
 	{
 	  QDPIO::cerr << __func__ << ": expecting Nc == 4" << endl;
-	  exit(1);
+	  QDP_abort(1);
 	}
       }
     }
@@ -413,7 +413,7 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
       {
 	QDPIO::cerr << __func__ 
 		    << ": unknown floating point type = XX" << value << "XX" << endl;
-	exit(1);
+	QDP_abort(1);
       }
     }
   }
