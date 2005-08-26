@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_specific.cc,v 1.12 2005-08-22 21:53:40 edwards Exp $
+// $Id: qdp_scalar_specific.cc,v 1.13 2005-08-26 21:05:06 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -123,7 +123,7 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
 
       default:
 	QDPIO::cerr << __func__ << ": unexpected size" << endl;
-	exit(1);
+	QDP_abort(1);
       }
 
       // Compute checksum
