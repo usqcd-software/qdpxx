@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.22 2005-08-26 20:44:55 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.23 2005-08-26 20:49:54 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -267,14 +267,19 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
       QDP_abort(1);
     }
     off = line.find_first_not_of(' ', off+1);
+    string value;
     if ( off == string::npos )
     {
-      QDPIO::cerr << __func__ 
-		  << ": incorrectly parsed header line=XX" << line << "XX" << endl;
-      QDP_abort(1);
+//      QDPIO::cerr << __func__ 
+//		  << ": incorrectly parsed header line=XX" << line << "XX" << endl;
+//      QDP_abort(1);
+      value = "";
     }
-    string value = line.substr(off, line.length()-off+1);
+    else
+    {
+      value = line.substr(off, line.length()-off+1);
 //    QDPIO::cout << "value = XX" << value << "XX" << endl;
+    }
 
 
     // Scan for the datatype then scan for it
@@ -306,6 +311,12 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 	  QDPIO::cerr << __func__ << ": expecting Nc == 4" << endl;
 	  QDP_abort(1);
 	}
+      }
+      else
+      {
+	QDPIO::cerr << __func__ 
+		    << ": unknown gauge type = XX" << value << "XX" << endl;
+	QDP_abort(1);
       }
     }
 
