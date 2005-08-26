@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.23 2005-08-26 20:49:54 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.24 2005-08-26 20:59:57 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -213,7 +213,10 @@ void write(XMLWriter& xml, const string& path, const ArchivGauge_t& header)
 static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 {
   if (Nd != 4)
-    QDP_error_exit("Expecting Nd == 4");
+  {
+    QDPIO::cerr << "Expecting Nd == 4" << endl;
+    QDP_abort(1);
+  }
 
   const size_t max_line_length = 128;
 
@@ -229,7 +232,10 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
   QDPIO::cout << line << endl;
   
   if (line != string("BEGIN_HEADER"))
-    QDP_error_exit("Missing BEGIN_HEADER");
+  {
+    QDPIO::cerr << "Missing BEGIN_HEADER" << endl;
+    QDP_abort(1);
+  }
 
   /* assume matrix size is 2*Nc*Nc (matrix is UNcompressed) 
      and change if we find out otherwise */
@@ -394,7 +400,10 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
     {
       /* Found a lat size */
       if (dd < 1 || dd > Nd)
-	QDP_error_exit("oops, dimension number out of bounds");
+      {
+	QDPIO::cerr << __func__ << ": dimension number out of bounds" << endl;
+	QDP_abort(1);
+      }
 
       header.nrow[dd-1] = itmp;
       ++lat_size_cnt;
@@ -405,7 +414,10 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
     {
       /* Found a lat size */
       if (dd < 1 || dd > Nd)
-	QDP_error_exit("oops, dimension number out of bounds");
+      {
+	QDPIO::cerr << __func__ << ": dimension number out of bounds" << endl;
+	QDP_abort(1);
+      }
       
       header.boundary[dd-1] = itmp;
     }
@@ -433,12 +445,17 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 
   // Sanity check
   if (lat_size_cnt != Nd)
-    QDP_error_exit("did not find all the lattice sizes");
+  {
+    QDPIO::cerr << __func__ << ": did not find all the lattice sizes" << endl;
+    QDP_abort(1);
+  }
 
   for(int dd=0; dd < Nd; ++dd)
     if (header.nrow[dd] != Layout::lattSize()[dd])
-      QDP_error_exit("readArchiv: archive lattice size does not agree with current size");
-
+    {
+      QDPIO::cerr << __func__ << ": archive lattice size does not agree with current size" << endl;
+      QDP_abort(1);
+    }
 }
 
 
@@ -491,7 +508,7 @@ void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const str
   {
     QDPIO::cerr << __func__ << ": checksum mismatch: new=" << checksum 
 		<< "  header value= " << header.checksum << endl;
-    exit(1);
+    QDP_abort(1);
   }
 
   Double w_plaq, link;
@@ -500,14 +517,14 @@ void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const str
   {
     QDPIO::cerr << __func__ << ": plaquette out of bounds: new=" << w_plaq 
 		<< "  header value= " << header.w_plaq << endl;
-    exit(1);
+    QDP_abort(1);
   }
 
   if (toBool(fabs(header.link - link) > tol))
   {
     QDPIO::cerr << __func__ << ": link out of bounds: new=" << link 
 		<< "  header value= " << header.link << endl;
-    exit(1);
+    QDP_abort(1);
   }
 
   cfg_in.close();
@@ -542,7 +559,8 @@ void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cf
   }
   catch(const string& e)
   { 
-    QDP_error_exit("Error in readArchiv: %s",e.c_str());
+    QDPIO:: cerr << "Error in readArchiv: " << e << endl;
+    QDP_abort(1);
   }
 }
 
