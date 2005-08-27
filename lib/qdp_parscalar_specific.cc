@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.29 2005-08-23 19:09:30 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.30 2005-08-27 17:58:23 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -641,7 +641,7 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
 
       default:
 	QDPIO::cerr << __func__ << ": unexpected size" << endl;
-	exit(1);
+	QDP_abort(1);
       }
 
       // Compute checksum
@@ -757,7 +757,8 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
 	}
       }
       else { 
-	QDP_error_exit("Unknown mat size\n");
+	QDPIO::cerr << __func__ << ": Unknown mat size" << endl;
+	QDP_abort(1);
       }
 
       /* Reconstruct the third column  if necessary */
@@ -896,7 +897,10 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
   delete[] recv_buf;
 
   if (cfg_out.fail())
-    QDP_error_exit("writeArchiv: error writing configuration");
+  {
+    QDPIO::cerr << __func__ << ": error writing configuration" << endl;
+    QDP_abort(1);
+  }
 }
 
 QDP_END_NAMESPACE();

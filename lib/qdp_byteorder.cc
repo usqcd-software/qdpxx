@@ -1,5 +1,5 @@
 //
-//  $Id: qdp_byteorder.cc,v 1.3 2005-07-25 17:06:38 edwards Exp $
+//  $Id: qdp_byteorder.cc,v 1.4 2005-08-27 17:58:23 edwards Exp $
 //
 //  Determine the byte order of a platform
 //
@@ -112,7 +112,7 @@ namespace QDPUtil
     break;
 
     default:
-      fprintf(stderr,"byte_swap: unsupported word size = %d\n",size);
+      fprintf(stderr,"%s: unsupported word size = %d\n",__func__,size);
       exit(1);
     }
   }

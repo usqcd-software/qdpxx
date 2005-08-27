@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_init.cc,v 1.8 2005-03-21 05:30:12 edwards Exp $
+// $Id: qdp_parscalarvec_init.cc,v 1.9 2005-08-27 17:58:23 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec init routines
@@ -21,7 +21,10 @@ static bool isInit = false;
 void QDP_initialize(int *argc, char ***argv)
 {
   if (isInit)
-    QDP_error_exit("QDP already inited");
+  {
+    QDPIO::cerr << "QDP already inited" << endl;
+    QDP_abort(1);
+  }
 
   //
   // Process command line
@@ -77,7 +80,7 @@ void QDP_initialize(int *argc, char ***argv)
 	      rtinode);
 #endif
       
-      exit(1);
+      QDP_abort(1);
     }
 
   for (int i=1; i<*argc; i++) 
@@ -118,20 +121,25 @@ void QDP_initialize(int *argc, char ***argv)
     {
       int n = strlen((*argv)[++i]);
       if (n >= maxlen)
-	QDP_error_exit("rtinode name too long");
+      {
+	QDPIO::cerr << "rtinode name too long" << endl;
+	QDP_abort(1);
+      }
       sscanf((*argv)[i], "%s", rtinode);
     }
 #endif
 #if 0
     else 
     {
-      QDP_error_exit("Unknown argument %s\n", (*argv)[i]);
+      QDPIO::cerr << __func__ << ": Unknown argument = " << (*argv)[i] << endl;
+      QDP_abort(1);
     }
 #endif
  
     if (i >= *argc) 
     {
-      QDP_error_exit("missing argument at the end");
+      QDPIO::cerr << __func__ << ": missing argument at the end" << endl;
+      QDP_abort(1);
     }
   }
 
@@ -152,7 +160,10 @@ void QDP_initialize(int *argc, char ***argv)
   {
     QMP_thread_level_t prv;
     if (QMP_init_msg_passing(argc, argv, QMP_THREAD_SINGLE, &prv) != QMP_SUCCESS)
-      QDP_error_exit("QDP_initialize failed");
+    {
+      QDPIO::cerr << "QMP_init_msg_passing failed" << endl;
+      QDP_abort(1);
+    }
   }
 
 #if QDP_DEBUG >= 1
@@ -161,7 +172,10 @@ void QDP_initialize(int *argc, char ***argv)
 
   if (setGeomP)
     if (QMP_declare_logical_topology(logical_geom.slice(), Nd) != QMP_SUCCESS)
-      QDP_error_exit("QMP_declare_logical_topology failed");
+    {
+      QDPIO::cerr << "QMP_declare_logical_topology failed" << endl;
+      QDP_abort(1);
+    }
 
 #if QDP_DEBUG >= 1
   QDP_info("Some layout init");
