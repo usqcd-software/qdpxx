@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.24 2005-08-26 20:59:57 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.25 2005-08-27 14:45:48 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -28,7 +28,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 namespace
 {
   // Float tolerance
-  const Double tol = 0.0000001;  /* tolerance for floating point checks */
+  const Double tol = 1.e-5;  /* tolerance for floating point checks */
 
   // Grrh, I do not want to expose the plaquette code.
   void mesplq(Double& w_plaq, Double& link, const multi1d<LatticeColorMatrix>& u)
