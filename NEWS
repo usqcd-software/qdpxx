@@ -1,3 +1,7 @@
+09/03/2005 -- Robert Edwards
+
+	Version 1.15.4: Added mem map to QCDOC allocator. Moved code to lib file.
+
 08/26/2005 -- Robert Edwards
 
 	Version 1.15.3: Updated NERSC header parsing to accomodate funky headers.
