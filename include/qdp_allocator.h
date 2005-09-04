@@ -1,3 +1,10 @@
+// -*- C++ -*-
+// $Id: qdp_allocator.h,v 1.4 2005-09-04 03:31:48 edwards Exp $
+
+/*! \file
+ * \brief Catch-alls for all memory allocators
+ */
+
 #ifndef QDP_ALLOCATOR
 #define QDP_ALLOCATOR
 

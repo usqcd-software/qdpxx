@@ -1,3 +1,11 @@
+// -*- C++ -*-
+// $Id: qdp_default_allocator.h,v 1.4 2005-09-04 03:31:48 edwards Exp $
+
+/*! \file
+ * \brief Default memory allocator for QDP
+ *
+ */
+
 #ifndef QDP_DEFAULT_ALLOCATOR
 #define QDP_DEFAULT_ALLOCATOR
 
@@ -45,10 +53,10 @@ private:
   void*
   allocate(size_t n_bytes,const MemoryPoolHint& mem_pool_hint);
 
-
   //! Free an aligned pointer, which was allocated by us.
   void 
   free(void *mem);
+
 private:
   MapT the_alignment_map;
 };
