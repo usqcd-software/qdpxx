@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.24 2005-03-21 17:28:15 edwards Exp $
+// $Id: t_mesplq.cc,v 1.25 2005-09-15 17:34:23 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -10,6 +10,8 @@ using namespace QDP;
 
 int main(int argc, char *argv[])
 {
+  START_CODE();
+
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
@@ -61,5 +63,6 @@ int main(int argc, char *argv[])
   // Time to bolt
   QDP_finalize();
 
+  END_CODE();
   exit(0);
 }
