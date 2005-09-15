@@ -15,14 +15,6 @@ QDP_BEGIN_NAMESPACE(Allocator);
 
 class QDPQCDOCAllocator {
 private:
-  // Convenience typedefs to save typing
-
-  // The type of the map to hold the aligned size values
-  typedef map<unsigned char*, size_t> MapT;
-
-  // The type returned on map insertion, allows me to check
-  // the insertion was successful.
-  typedef pair<MapT::iterator, bool> InsertRetVal;
 
   // Disallow Copies
   QDPQCDOCAllocator(const QDPQCDOCAllocator& c) {};
@@ -31,7 +23,7 @@ private:
   QDPQCDOCAllocator& operator=(const QDPQCDOCAllocator& c) {};
 
   // Disallow construction for everyone except friends
-  QDPQCDOCAllocator() {};
+  QDPQCDOCAllocator() {init();};
   
   // Disallow destruction for everyone except Friends
   ~QDPQCDOCAllocator() {};
@@ -41,6 +33,12 @@ private:
 
  public:
 
+  // Pusher
+  void pushFunc(const char* func, int line);
+  
+  // Popper
+  void popFunc();
+  
   //! Allocator function. Allocates n_bytes, into a memory pool
   //! This is a default implementation, with only 1 memory pool
   //! So we simply ignore the memory pool hint.
@@ -55,8 +53,8 @@ private:
   void
   dump();
 
-private:
-  MapT the_alignment_map;
+protected:
+  void init();
 };
 
 // Turn into a Singleton. Create with CreateUsingNew

@@ -1,4 +1,4 @@
-AC_INIT([qdp++],[1.15.4],[edwards@jlab.org])
+AC_INIT([qdp++],[1.16.0],[edwards@jlab.org])
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -106,6 +106,16 @@ AC_ARG_ENABLE(qcdoc,
 )
 
 
+dnl --enable-memory-debugging
+AC_ARG_ENABLE(memory-debugging,
+   AC_HELP_STRING([--enable-qcdoc], 
+     [Enable memory debugging code]),
+     [ac_memdebug_enabled=1
+      AC_MSG_NOTICE([Enabling memory debugging code])],
+     [ac_memdebug_enabled=0]
+)
+
+
 dnl --enable-qcdoc-edram
 AC_ARG_ENABLE(qcdoc-edram,
    AC_HELP_STRING([--enable-qcdoc-edram],
@@ -154,6 +164,12 @@ dnl Check if profiling is enabled
 if test ${ac_profile} -eq 1; then 
    AC_DEFINE_UNQUOTED(QDP_USE_PROFILING, ${ac_profile}, [Enable profiling])
    AC_MSG_NOTICE([Enable profiling])
+fi
+
+dnl Check if memory debugging is enabled
+if test ${ac_memdebug_enabled} -eq 1; then 
+   AC_DEFINE_UNQUOTED(QDP_DEBUG_MEMORY, ${ac_memdebug_1}, [Enable memory debugging])
+   AC_MSG_NOTICE([Enable memory debugging])
 fi
 
 dnl Precision munging
