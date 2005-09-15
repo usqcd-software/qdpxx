@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: examples.h,v 1.5 2004-11-22 19:31:30 edwards Exp $
+// $Id: examples.h,v 1.6 2005-09-15 18:08:33 edwards Exp $
 //
 // Include file for test suite
 
@@ -7,8 +7,15 @@
 
 using namespace QDP;
 
+#if defined(QDP_DEBUG_MEMORY)
+#define START_CODE() {QDP::Allocator::theQDPAllocator::Instance().pushFunc(__func__, __LINE__);}
+#define END_CODE()   {QDP::Allocator::theQDPAllocator::Instance().popFunc();}
+
+#else
 #define START_CODE() QDP_PUSH_PROFILE(QDP::getProfileLevel())
 #define END_CODE()   QDP_POP_PROFILE()
+
+#endif
 
 
 enum Reunitarize {REUNITARIZE, REUNITARIZE_ERROR, REUNITARIZE_LABEL};
