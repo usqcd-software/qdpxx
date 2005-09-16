@@ -40,8 +40,10 @@ QDP_BEGIN_NAMESPACE(Allocator);
 
 #endif
 
-  // The map holding pointers
-  MapT the_alignment_map;
+  // Anonymous namespace
+  namespace {
+    MapT the_alignment_map;
+  }
 
   // The type returned on map insertion, allows me to check
   // the insertion was successful.
