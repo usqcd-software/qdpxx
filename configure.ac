@@ -79,6 +79,16 @@ AC_ARG_ENABLE(parallel-arch,
   AC_MSG_ERROR([Require architecture to be set])
 )
 
+dnl --enable-memory-debugging
+AC_ARG_ENABLE(memory-debugging,
+   AC_HELP_STRING([--enable-memory-debugging], 
+     [Enable memory debugging code]),
+     [ac_memdebug_enabled=1
+      AC_MSG_NOTICE([Enabling memory debugging code])],
+     [ac_memdebug_enabled=0]
+)
+
+
 dnl --enable-sse
 AC_ARG_ENABLE(sse,
   AC_HELP_STRING([--enable-sse],
@@ -103,16 +113,6 @@ AC_ARG_ENABLE(qcdoc,
      [ac_qcdoc_enabled=1
       AC_MSG_NOTICE([Enabling QCDOC Specific Optimisations])],
      [ac_qcdoc_enabled=0]
-)
-
-
-dnl --enable-memory-debugging
-AC_ARG_ENABLE(memory-debugging,
-   AC_HELP_STRING([--enable-qcdoc], 
-     [Enable memory debugging code]),
-     [ac_memdebug_enabled=1
-      AC_MSG_NOTICE([Enabling memory debugging code])],
-     [ac_memdebug_enabled=0]
 )
 
 
