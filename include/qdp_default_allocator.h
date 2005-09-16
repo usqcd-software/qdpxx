@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_default_allocator.h,v 1.4 2005-09-04 03:31:48 edwards Exp $
+// $Id: qdp_default_allocator.h,v 1.5 2005-09-16 02:54:25 edwards Exp $
 
 /*! \file
  * \brief Default memory allocator for QDP
@@ -15,22 +15,12 @@
 #include <string>
 #include <map>
 
-using namespace std;
 QDP_BEGIN_NAMESPACE(QDP);
 QDP_BEGIN_NAMESPACE(Allocator);
 
 // Specialise allocator to the default case
 class QDPDefaultAllocator {
 private:
-  // Convenience typedefs to save typing
-
-  // The type of the map to hold the aligned unaligned values
-  typedef map<unsigned char*, unsigned char *> MapT;
-
-  // The type returned on map insertion, allows me to check
-  // the insertion was successful.
-  typedef pair<MapT::iterator, bool> InsertRetVal;
-
   // Disallow Copies
   QDPDefaultAllocator(const QDPDefaultAllocator& c) {};
 
@@ -41,12 +31,18 @@ private:
   // the singleton CreateUsingNew policy which is a "friend"
   // I don't like friends but this follows Alexandrescu's advice
   // on p154 of Modern C++ Design (A. Alexandrescu)
-  QDPDefaultAllocator() {};
+  QDPDefaultAllocator() {init();};
   ~QDPDefaultAllocator() {};
 
   friend class QDP::CreateUsingNew<QDP::Allocator::QDPDefaultAllocator>;
  public:
 
+  // Pusher
+  void pushFunc(const char* func, int line);
+  
+  // Popper
+  void popFunc();
+  
   //! Allocator function. Allocates n_bytes, into a memory pool
   //! This is a default implementation, with only 1 memory pool
   //! So we simply ignore the memory pool hint.
@@ -57,8 +53,12 @@ private:
   void 
   free(void *mem);
 
-private:
-  MapT the_alignment_map;
+  //! Dump the map
+  void
+  dump();
+
+protected:
+  void init();
 };
 
 // Turn into a Singleton. Create with CreateUsingNew

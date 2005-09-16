@@ -1,7 +1,52 @@
 #include "qdp.h"
 
+#if defined(QDP_DEBUG_MEMORY)
+#include "stack"
+#endif
+
+
 QDP_BEGIN_NAMESPACE(QDP);
 QDP_BEGIN_NAMESPACE(Allocator);
+ 
+#if defined(QDP_DEBUG_MEMORY)
+  // Struct to hold in map
+  struct MapVal {
+    MapVal(unsigned char* u, const std::string& f, int l, size_t b) : 
+      unaligned(u), func(f), line(l), bytes(b) {}
+
+    unsigned char* unaligned;
+    std::string    func;
+    int            line;
+    size_t         bytes;
+  };
+
+  // Convenience typedefs to save typing
+
+  // The type of the map to hold the aligned unaligned values
+  typedef map<unsigned char*, MapVal> MapT;
+
+  // Func info
+  struct FuncInfo_t {
+    FuncInfo_t(const char* f, int l) : func(f), line(l) {}
+
+    std::string  func;
+    int          line;
+  };
+
+  // A stack to hold fun info
+  std::stack<FuncInfo_t> infostack;
+#else
+  typedef map<unsigned char*, unsigned char *> MapT;
+
+#endif
+
+  // The map holding pointers
+  MapT the_alignment_map;
+
+  // The type returned on map insertion, allows me to check
+  // the insertion was successful.
+  typedef pair<MapT::iterator, bool> InsertRetVal;
+
 
   //! Allocator function. Allocates n_bytes, into a memory pool
   //! This is a default implementation, with only 1 memory pool
@@ -27,9 +72,17 @@ QDP_BEGIN_NAMESPACE(Allocator);
     // Work out the aligned pointer
     aligned = (unsigned char *)( ( (unsigned long)unaligned + (QDP_ALIGNMENT_SIZE-1) ) & ~(QDP_ALIGNMENT_SIZE - 1));
 
-    
+#if defined(QDP_DEBUG_MEMORY)
+    // Current location
+    FuncInfo_t& info = infostack.top();
+
+    // Insert into the map
+    InsertRetVal r = the_alignment_map.insert(
+      make_pair(aligned, MapVal(unaligned, info.func, info.line, n_bytes)));
+#else
     // Insert into the map
     InsertRetVal r = the_alignment_map.insert(make_pair(aligned, unaligned));
+#endif
 
     // Check success of insertion.
     if( ! r.second ) { 
@@ -49,9 +102,15 @@ QDP_BEGIN_NAMESPACE(Allocator);
 
     // Look up the original unaligned pointer in the memory. 
     MapT::iterator iter = the_alignment_map.find((unsigned char*)mem);
-    if( iter != the_alignment_map.end() ) { 
+    if( iter != the_alignment_map.end() ) 
+    { 
+#if defined(QDP_DEBUG_MEMORY)
+      // Find the original unaligned pointer
+      unaligned = iter->second.unaligned;
+#else
       // Find the original unaligned pointer
       unaligned = iter->second;
+#endif
       
       // Remove its entry from the map
       the_alignment_map.erase(iter);
@@ -64,6 +123,90 @@ QDP_BEGIN_NAMESPACE(Allocator);
       QDP_abort(1);
     }
   }
+
+
+#if defined(QDP_DEBUG_MEMORY)
+  //! Dump the map
+  void
+  QDPDefaultAllocator::dump()
+  {
+     if ( Layout::primaryNode() )
+     {
+       size_t sum = 0;
+       typedef MapT::const_iterator CI;
+       QDPIO::cout << "Dumping memory map" << endl;
+       for( CI j = the_alignment_map.begin();
+             j != the_alignment_map.end(); j++)
+       {
+	 sum += j->second.bytes;
+         printf("mem= 0x%x  bytes= %d  bytes/site= %d  line= %d  func= %s\n", j->first, 
+                j->second.bytes, j->second.bytes/Layout::sitesOnNode(), j->second.line, j->second.func.c_str());
+       }
+       printf("total bytes= %d\n", sum);
+     }
+  }
+
+  // Setter
+  void
+  QDPDefaultAllocator::pushFunc(const char* func, int line)
+  {
+    infostack.push(FuncInfo_t(func,line));
+  }
+
+  // Nuker
+  void
+  QDPDefaultAllocator::popFunc()
+  {
+    if (infostack.empty())
+    {
+      QDPIO::cerr << __func__ << ": invalid pop" << endl;
+      QDP_abort(1);
+    }
+  
+    infostack.pop();
+  }
+
+
+  static const char* nowhere = "nowhere";
+
+  // Init
+  void
+  QDPDefaultAllocator::init()
+  {
+    infostack.push(FuncInfo_t(nowhere,0));
+  }
+
+#else
+
+  //! Dump the map
+  void
+  QDPDefaultAllocator::dump()
+  {
+     if ( Layout::primaryNode() )
+     {
+       typedef MapT::const_iterator CI;
+       QDPIO::cout << "Dumping memory map" << endl;
+       for( CI j = the_alignment_map.begin();
+             j != the_alignment_map.end(); j++)
+       {
+         printf("mem= 0x%x  unaligned= 0x%x\n", j->first, j->second);
+       }
+     }
+  }
+
+  // Setter
+  void
+  QDPDefaultAllocator::pushFunc(const char* func, int line) {}
+
+  // Nuker
+  void
+  QDPDefaultAllocator::popFunc() {}
+
+  // Init
+  void
+  QDPDefaultAllocator::init() {}
+
+#endif
 
 QDP_END_NAMESPACE();
 QDP_END_NAMESPACE();
