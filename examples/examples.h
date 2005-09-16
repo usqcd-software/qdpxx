@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: examples.h,v 1.6 2005-09-15 18:08:33 edwards Exp $
+// $Id: examples.h,v 1.7 2005-09-16 02:58:18 edwards Exp $
 //
 // Include file for test suite
 
@@ -8,8 +8,8 @@
 using namespace QDP;
 
 #if defined(QDP_DEBUG_MEMORY)
-#define START_CODE() {QDP::Allocator::theQDPAllocator::Instance().pushFunc(__func__, __LINE__);}
-#define END_CODE()   {QDP::Allocator::theQDPAllocator::Instance().popFunc();}
+#define START_CODE() QDP::Allocator::theQDPAllocator::Instance().pushFunc(__func__, __LINE__)
+#define END_CODE()   QDP::Allocator::theQDPAllocator::Instance().popFunc()
 
 #else
 #define START_CODE() QDP_PUSH_PROFILE(QDP::getProfileLevel())
