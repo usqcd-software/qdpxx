@@ -96,6 +96,7 @@ QDP_BEGIN_NAMESPACE(Allocator);
     if( ! r.second ) {
       QDPIO::cerr << "Failed to insert (aligned,n_bytes) pair into map" << endl;
       QDP_abort(1);
+    }
 
     // Return the aligned pointer
     return (void *)aligned;
