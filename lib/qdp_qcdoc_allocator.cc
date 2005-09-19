@@ -35,7 +35,7 @@ QDP_BEGIN_NAMESPACE(Allocator);
 #else
 
   // The type of the map to hold the aligned size values
-  typedef map<unsigned char*, unsigned char*> MapT;
+  typedef map<unsigned char*, size_t> MapT;
 #endif
 
 
