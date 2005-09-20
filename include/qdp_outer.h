@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.43 2005-07-04 11:59:37 bjoo Exp $
+// $Id: qdp_outer.h,v 1.44 2005-09-20 04:40:53 bjoo Exp $
 
 #include "qdp_config.h"
 
@@ -383,13 +383,20 @@ public:
   void moveToFastMemoryHint(bool copy=false) {
 
     if( fast == 0x0 ) {
-      fast = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::FAST);
-      if( copy ) { 
-	for(int i=0; i < sizeof(T)*Layout::sitesOnNode(); i++) {
-	  *(( unsigned char *)fast + i) = *((unsigned char *)slow + i);
+      try { 
+	fast = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::FAST);
+	if( copy ) { 
+	  for(int i=0; i < sizeof(T)*Layout::sitesOnNode(); i++) {
+	    *(( unsigned char *)fast + i) = *((unsigned char *)slow + i);
+	  }
 	}
+	F=fast;
       }
-      F=fast;
+      catch(std::bad_alloc) {
+	// Failed to get Fast Memory
+	fast = 0x0;
+	F=slow;
+      }
     }
   }
 #endif
@@ -440,9 +447,15 @@ private:
   inline void alloc_mem(const char* const p) 
     {
       // Barfs if allocator fails
-      slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+      try {
+	slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
       // slow is active 
-      F=slow;
+	F=slow;
+      }
+      catch(std::bad_alloc) { 
+	QDPIO::cerr << "Allocation failed in OLattice alloc_mem" << endl;
+	QDP_abort(1);
+      }
 
 #ifdef QDP_USE_QCDOC
       // Make sure fast is set to 0x0

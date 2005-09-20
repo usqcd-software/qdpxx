@@ -40,8 +40,6 @@ private:
   void popFunc();
   
   //! Allocator function. Allocates n_bytes, into a memory pool
-  //! This is a default implementation, with only 1 memory pool
-  //! So we simply ignore the memory pool hint.
   void*
   allocate(size_t n_bytes,const MemoryPoolHint& mem_pool_hint);
 
