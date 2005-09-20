@@ -72,13 +72,13 @@ QDP_BEGIN_NAMESPACE(Allocator);
     }
 
     aligned=(unsigned char *)qalloc(qalloc_flags, n_bytes);
-    if( aligned == (unsigned char *)NULL ) {
-      aligned = (unsigned char *)qalloc(QCOMMS, n_bytes);
-      if( aligned == (unsigned char *)NULL ) {
-        dump();
-        QDPIO::cerr << "Unable to allocate memory with qalloc: n_bytes= " << n_bytes << endl;
-        QDP_abort(1);
-     }
+
+    // If we cannot get the memory we want, we throw an exception
+    // in the standard 'new' way.
+
+    // Interface is therefore changed tho
+    if( aligned == (unsigned char *)NULL ) { 
+      throw std::bad_alloc();
     }
 
 #if defined(QDP_DEBUG_MEMORY)

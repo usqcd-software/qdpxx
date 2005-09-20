@@ -68,7 +68,8 @@ QDP_BEGIN_NAMESPACE(Allocator);
     }
     catch( std::bad_alloc ) { 
       QDPIO::cerr << "Unable to allocate memory in allocate()" << endl;
-      QDP_abort(1);
+      throw;  // Re throw the bad alloc is the correct behaviour
+
     }
 
     // Work out the aligned pointer
