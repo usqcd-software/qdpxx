@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.16 2005-04-28 19:26:46 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.17 2005-10-13 02:45:42 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -69,8 +69,10 @@ void QDPFileReader::open(XMLReader& file_xml,
   // At this moment, serpar (which is an enum in QDP++) is ignored here.
   if ((qio_in = QIO_open_read(xml_c, path.c_str(), &layout, NULL)) == NULL)
   {
+    iostate = QDPIO_badbit;  // not helpful
+
     QDPIO::cerr << "QDPFileReader: failed to open file " << path << endl;
-    iostate = QDPIO_badbit;
+    QDP_abort(1);  // just bail, otherwise xml stuff below fails.
   }
   else
   {
@@ -251,8 +253,10 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   if ((qio_out = QIO_open_write(xml_c, path.c_str(), 
 				volfmt, &layout, &oflag)) == NULL)
   {
+    iostate = QDPIO_badbit;  // not helpful
+
     QDPIO::cerr << "QDPFileWriter: failed to open file " << path << endl;
-    iostate = QDPIO_badbit;
+    QDP_abort(1);  // just bail. Not sure I want this. This is not stream semantics
   }
   else
   {
