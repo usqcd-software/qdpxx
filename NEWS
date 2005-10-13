@@ -1,3 +1,8 @@
+10/12/2005 -- Robert Edwards
+
+	Version 1.16.1: Changed QDPFileReader/Writer to shutdown if errors
+        upon opening file for reading/writing.
+
 09/16/2005 -- Robert Edwards
 
 	Version 1.16.0: Added QDP_DEBUG_MEMORY control.
