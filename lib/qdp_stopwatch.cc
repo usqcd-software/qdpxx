@@ -1,0 +1,100 @@
+// $Id: qdp_stopwatch.cc,v 1.1 2005-10-17 04:28:07 edwards Exp $
+/*! @file
+ * @brief Timer support
+ *
+ * A stopwatch like timer.
+ */
+
+
+#include "qdp.h"
+#include<sys/time.h>
+
+QDP_BEGIN_NAMESPACE(QDP);
+
+StopWatch::StopWatch() 
+{
+  stoppedP=false;
+  startedP=false;
+}
+
+StopWatch::~StopWatch() {}
+
+void StopWatch::reset() 
+{
+  startedP = false;
+  stoppedP = false;
+}
+
+void StopWatch::start() 
+{
+  int ret_val;
+  ret_val = gettimeofday(&t_start, NULL);
+  if( ret_val != 0 ) 
+  {
+    QDPIO::cerr << "Gettimeofday failed in StopWatch::start()" << endl;
+    QDP_abort(1);
+  }
+  startedP = true;
+  stoppedP = false;
+}
+
+void StopWatch::stop() 
+{
+  if( !startedP ) 
+  { 
+    QDPIO::cerr << "Attempting to stop a non running stopwatch in StopWatch::stop()" << endl;
+    QDP_abort(1);
+  }
+
+  int ret_val;
+  ret_val = gettimeofday(&t_end, NULL);
+  if( ret_val != 0 ) 
+  {
+    QDPIO::cerr << "Gettimeofday failed in StopWatch::end()" << endl;
+    QDP_abort(1);
+  }
+  stoppedP = true;
+}
+
+double StopWatch::getTimeInMicroseconds() 
+{
+  long usecs=0;
+  if( startedP && stoppedP ) 
+  { 
+    if( t_end.tv_sec < t_start.tv_sec ) 
+    { 
+      QDPIO::cerr << "Critical timer rollover" << endl;
+      QDP_abort(1);
+    }
+    else 
+    { 
+      usecs = (t_end.tv_sec - t_start.tv_sec)*1000000;
+
+      if( t_end.tv_usec < t_start.tv_usec ) 
+      {
+	usecs -= 1000000;
+	usecs += 1000000+t_end.tv_usec - t_start.tv_usec;
+      }
+      else 
+      {
+	usecs += t_end.tv_usec - t_start.tv_usec;
+      }
+    }
+  }
+  else 
+  {
+    QDPIO::cerr << "Either stopwatch not started, or not stopped" << endl;
+    QDP_abort(1);
+  }
+
+  return (double)usecs;
+}
+    
+double StopWatch::getTimeInSeconds()  
+{
+  double t_sec = getTimeInMicroseconds() / 1e6;   
+  return t_sec;
+}
+
+
+QDP_END_NAMESPACE();
