@@ -1,3 +1,9 @@
+10/16/2005 -- Robert Edwards
+
+	Version 1.16.2: Moved StopWatch inline functions to new lib file. 
+        Moved inline functions in xpath_reader/basic_xpath_reader down into
+        lib file.
+
 10/12/2005 -- Robert Edwards
 
 	Version 1.16.1: Changed QDPFileReader/Writer to shutdown if errors
