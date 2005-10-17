@@ -1,4 +1,4 @@
-// $Id: qdp_stopwatch.cc,v 1.1 2005-10-17 04:28:07 edwards Exp $
+// $Id: qdp_stopwatch.cc,v 1.2 2005-10-17 05:13:55 edwards Exp $
 /*! @file
  * @brief Timer support
  *
@@ -92,8 +92,37 @@ double StopWatch::getTimeInMicroseconds()
     
 double StopWatch::getTimeInSeconds()  
 {
-  double t_sec = getTimeInMicroseconds() / 1e6;   
-  return t_sec;
+  long secs=0;
+  long usecs=0;
+  if( startedP && stoppedP ) 
+  { 
+    if( t_end.tv_sec < t_start.tv_sec ) 
+    { 
+      QDPIO::cerr << "Critical timer rollover" << endl;
+      QDP_abort(1);
+    }
+    else 
+    { 
+      secs = t_end.tv_sec - t_start.tv_sec;
+
+      if( t_end.tv_usec < t_start.tv_usec ) 
+      {
+	usecs -= 1000000;
+	usecs += 1000000+t_end.tv_usec - t_start.tv_usec;
+      }
+      else 
+      {
+	usecs += t_end.tv_usec - t_start.tv_usec;
+      }
+    }
+  }
+  else 
+  {
+    QDPIO::cerr << "Either stopwatch not started, or not stopped" << endl;
+    QDP_abort(1);
+  }
+
+  return (double)sec + ((double)usecs / 1e6);
 }
 
 
