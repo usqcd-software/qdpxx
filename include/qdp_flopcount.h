@@ -1,11 +1,20 @@
 // -*- C++ -*-
+// $Id: qdp_flopcount.h,v 1.4 2005-10-17 04:27:20 edwards Exp $
+/*! @file
+ * @brief Flop counters
+ *
+ * Flop counters
+ */
 
 #ifndef QDP_FLOPCOUNT_H
 #define QDP_FLOPCOUNT_H
 
 QDP_BEGIN_NAMESPACE(QDP);
 
-  /*! @defgroup Flop Counting Mechanism
+  //---------------------------------------------------------------------
+  /*! @defgroup qdpflops Flop Counting Mechanism
+   *
+   * \ingroup qdp
    *
    * This is a basic flop counter class. It is cleared on instantiation
    * but can be cleared at any time by the user. It has functions
@@ -14,7 +23,6 @@ QDP_BEGIN_NAMESPACE(QDP);
    * @{
    */
 
-  //---------------------------------------------------------------------
   //! Basic Flop Counter Clas
   class FlopCounter {
   public:
