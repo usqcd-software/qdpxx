@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.44 2005-09-20 04:40:53 bjoo Exp $
+// $Id: qdp_outer.h,v 1.45 2005-10-18 19:38:10 edwards Exp $
 
 #include "qdp_config.h"
 
@@ -447,13 +447,16 @@ private:
   inline void alloc_mem(const char* const p) 
     {
       // Barfs if allocator fails
-      try {
+      try 
+      {
 	slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
       // slow is active 
 	F=slow;
       }
-      catch(std::bad_alloc) { 
+      catch(std::bad_alloc) 
+      {
 	QDPIO::cerr << "Allocation failed in OLattice alloc_mem" << endl;
+	QDP::Allocator::theQDPAllocator::Instance().dump();
 	QDP_abort(1);
       }
 
@@ -464,9 +467,10 @@ private:
     }
 
   //! Internal memory free
-  inline void free_mem() {
-
-    if( slow != 0x0 ) { 
+  inline void free_mem() 
+  {
+    if( slow != 0x0 ) 
+    { 
       QDP::Allocator::theQDPAllocator::Instance().free(slow);
       slow = 0x0;
     }
