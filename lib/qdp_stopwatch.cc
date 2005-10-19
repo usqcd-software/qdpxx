@@ -1,4 +1,4 @@
-// $Id: qdp_stopwatch.cc,v 1.2 2005-10-17 05:13:55 edwards Exp $
+// $Id: qdp_stopwatch.cc,v 1.3 2005-10-19 02:23:53 edwards Exp $
 /*! @file
  * @brief Timer support
  *
@@ -107,13 +107,10 @@ double StopWatch::getTimeInSeconds()
 
       if( t_end.tv_usec < t_start.tv_usec ) 
       {
-	usecs -= 1000000;
-	usecs += 1000000+t_end.tv_usec - t_start.tv_usec;
+	secs -= 1;
+	usecs = 1000000;
       }
-      else 
-      {
-	usecs += t_end.tv_usec - t_start.tv_usec;
-      }
+      usecs += t_end.tv_usec - t_start.tv_usec;
     }
   }
   else 
@@ -122,7 +119,7 @@ double StopWatch::getTimeInSeconds()
     QDP_abort(1);
   }
 
-  return (double)sec + ((double)usecs / 1e6);
+  return (double)secs + ((double)usecs / 1e6);
 }
 
 
