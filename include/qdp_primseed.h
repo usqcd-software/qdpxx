@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.8 2004-11-22 19:31:31 edwards Exp $
+// $Id: qdp_primseed.h,v 1.9 2005-10-26 15:57:01 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -196,8 +196,6 @@ void read(XMLReader& xml, const string& path, PSeed<T>& d)
   
   for(int i=0; i < 4; ++i)
   {
-    typedef typename PrimitiveScalar<T>::Type_t  S;
-
     d.elem(i) = S(ff[i]);
   }
 }
