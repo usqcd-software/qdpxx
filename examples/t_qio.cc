@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.23 2005-03-21 05:31:08 edwards Exp $
+// $Id: t_qio.cc,v 1.24 2005-10-27 03:49:55 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -13,7 +13,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {24,24,24,32};
+  const int foo[] = {4,4,4,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -23,28 +23,39 @@ int main(int argc, char **argv)
   push(xml_out, "t_qio");
 
   QDP_serialparallel_t serpar = QDPIO_SERIAL;
+  string test_file;
 
-  for(int i=0; i < 2; ++i)
+  for(int i=0; i < 3; ++i)
   {
     QDP_volfmt_t volfmt;
 
-    if (i == 0)
+    switch (i)
     {
+    case 0:
       volfmt = QDPIO_SINGLEFILE;
-
+      test_file = "t_qio_single.lime";
       QDPIO::cout << "\n\n\n\n***************SINGLEFILE tests*************\n" << endl;
-
       push(xml_out, "Singlefile");
-    }
-    else
-    {
+      break;
+
+    case 1:
       volfmt = QDPIO_MULTIFILE; 
-
+      test_file = "t_qio_multi.lime";
       QDPIO::cout << "\n\n***************MULTIFILE tests*************\n" << endl;
-
       push(xml_out, "Multifile");
-    }
+      break;
 
+    case 2:
+      volfmt = QDPIO_PARTFILE; 
+      test_file = "t_qio_part.lime";
+      QDPIO::cout << "\n\n***************PARTFILE tests*************\n" << endl;
+      push(xml_out, "Partfile");
+      break;
+
+    default:
+      QDPIO::cerr << "something wrong here" << endl;
+      QDP_abort(1);
+    }
 
     QDPIO::cout << "\n\n***************TEST WRITING*************\n" << endl;
 
@@ -74,12 +85,7 @@ int main(int argc, char **argv)
       }
 
       QDPFileWriter *to_ptr;
-      if (volfmt == QDPIO_SINGLEFILE) { 
-	to_ptr = new QDPFileWriter(file_xml,"t_qio.lime",volfmt,serpar,QDPIO_OPEN);
-      }
-      else { 
-	to_ptr = new QDPFileWriter(file_xml,"t_qio_multi.lime",volfmt, serpar, QDPIO_OPEN);
-      }
+      to_ptr = new QDPFileWriter(file_xml,test_file,volfmt,serpar,QDPIO_OPEN);
       QDPFileWriter& to = *to_ptr;
 
       write(xml_out, "file_xml", file_xml);
@@ -184,12 +190,7 @@ int main(int argc, char **argv)
 
       XMLReader file_xml, record_xml;
       QDPFileReader* from_ptr;
-      if( volfmt == QDPIO_SINGLEFILE ) { 
-	from_ptr = new QDPFileReader(file_xml,"t_qio.lime",serpar);
-      }
-      else { 
-	from_ptr = new QDPFileReader(file_xml, "t_qio_multi.lime", serpar);
-      }
+      from_ptr = new QDPFileReader(file_xml,test_file,serpar);
       QDPFileReader& from = *from_ptr;
 
       QDPIO::cout << "Here is the contents of  file_xml" << endl;
