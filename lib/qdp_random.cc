@@ -1,4 +1,4 @@
-// $Id: qdp_random.cc,v 1.10 2004-07-29 01:08:19 edwards Exp $
+// $Id: qdp_random.cc,v 1.11 2005-11-03 22:17:30 bjoo Exp $
 //
 // Random number generator support
 
@@ -54,7 +54,7 @@ namespace RNG
   //! Initialize the internals of the random number generator
   void initRNG()
   {
-    int old_profile_level = QDP::setProfileLevel(0);
+    int old_profile_level = setProfileLevel(0);
 
     /* Multiplier used. Use big integer arithmetic */
     Seed seed_tmp3;
@@ -158,7 +158,7 @@ namespace RNG
     *lattice_ran_mult = lattice_ran_mult_tmp;
     QDPIO::cout << "Finished init of RNG" << endl; 
 
-    QDP::setProfileLevel(old_profile_level);
+    setProfileLevel(old_profile_level);
   }
 
 

@@ -1,4 +1,4 @@
-// $Id: t_blas_g5_3.cc,v 1.4 2005-06-27 14:13:24 bjoo Exp $
+// $Id: t_blas_g5_3.cc,v 1.5 2005-11-03 22:17:30 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -369,6 +369,347 @@ int main(int argc, char *argv[])
 		//      double Nflops = (double)(6*Nc*Ns*Layout::sitesOnNode()*iter);
 		//QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
     }
+  }
+
+
+
+  // ax + b ig5 y
+  gaussian(x);
+  gaussian(y);
+  z1=a*x;
+  tmp = b*(GammaConst<Ns,Ns*Ns-1>()*timesI(y));
+  z1 += tmp;
+
+  z2=a*x+b*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+
+  norm_diff=norm2(z1-z2);
+  {
+    QDPIO::cout << "ax + i b g5 y diff=" << sqrt(norm_diff) << endl;
+    StopWatch swatch;
+    double time=0;
+    int iter=1;
+    while( time < 1.0 ) { 
+      iter *=2;
+      QDPIO::cout << "Calling " << iter << " times " << endl;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z1=a*x;
+	tmp = b*(GammaConst<Ns,Ns*Ns-1>()*timesI(y));
+	z1 += tmp;
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+    }
+    {
+      QDPIO::cout << "Timing with " << iter << " iters" << endl;
+      FlopCounter fc;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z1=a*x;
+	tmp = b*(GammaConst<Ns,Ns*Ns-1>()*timesI(y));
+	z1 += tmp;
+	fc.addSiteFlops(6*Nc*Ns, all);
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+      fc.report(std::string("old axpbyz_ig5"), time);
+     }
+  }
+  {
+    StopWatch swatch;
+    double time=0;
+    int iter=1;
+    while( time < 1.0 ) { 
+      iter *=2;
+      QDPIO::cout << "Calling " << iter << " times " << endl;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z2=a*x+b*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+    }
+    {
+      QDPIO::cout << "Timing with " << iter << " iters" << endl;
+      FlopCounter fc;
+      fc.reset();
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z2=a*x+b*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+	fc.addSiteFlops(6*Nc*Ns,all);
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+      fc.report(std::string("new axpbyz_ig5"), time);
+    }
+  }
+
+  // ax + b ig5 y
+  gaussian(x);
+  gaussian(y);
+  z1=a*x;
+  tmp = b*(GammaConst<Ns,Ns*Ns-1>()*timesI(y));
+  z1 -= tmp;
+
+  z2=a*x-b*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+
+  norm_diff=norm2(z1-z2);
+  {
+    QDPIO::cout << "ax - i b g5 y diff=" << sqrt(norm_diff) << endl;
+    StopWatch swatch;
+    double time=0;
+    int iter=1;
+    while( time < 1.0 ) { 
+      iter *=2;
+      QDPIO::cout << "Calling " << iter << " times " << endl;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z1=a*x;
+	tmp = b*(GammaConst<Ns,Ns*Ns-1>()*timesI(y));
+	z1 -= tmp;
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+    }
+    {
+      QDPIO::cout << "Timing with " << iter << " iters" << endl;
+      FlopCounter fc;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z1=a*x;
+	tmp = b*(GammaConst<Ns,Ns*Ns-1>()*timesI(y));
+	z1 -= tmp;
+	fc.addSiteFlops(6*Nc*Ns, all);
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+      fc.report(std::string("old axmbyz_ig5"), time);
+     }
+  }
+  {
+    StopWatch swatch;
+    double time=0;
+    int iter=1;
+    while( time < 1.0 ) { 
+      iter *=2;
+      QDPIO::cout << "Calling " << iter << " times " << endl;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z2=a*x-b*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+    }
+    {
+      QDPIO::cout << "Timing with " << iter << " iters" << endl;
+      FlopCounter fc;
+      fc.reset();
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z2=a*x+b*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+	fc.addSiteFlops(6*Nc*Ns,all);
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+      fc.report(std::string("new axmbyz_ig5"), time);
+    }
+  }
+
+  gaussian(x);
+  gaussian(y);
+  
+  tmp = a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+  z1 = x + tmp;
+  z2 = x + a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+
+  norm_diff=norm2(z1-z2);
+  {
+    QDPIO::cout << "x + i a g5 y diff=" << sqrt(norm_diff) << endl;
+    StopWatch swatch;
+    double time=0;
+    int iter=1;
+    while( time < 1.0 ) { 
+      iter *=2;
+      QDPIO::cout << "Calling " << iter << " times " << endl;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	tmp = a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+	z1 = x + tmp;
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+    }
+    {
+      QDPIO::cout << "Timing with " << iter << " iters" << endl;
+      FlopCounter fc;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	tmp = a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+	z1 = x + tmp;
+	fc.addSiteFlops(4*Nc*Ns, all);
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+      fc.report(std::string("old xpayz_ig5"), time);
+     }
+  }
+  {
+    StopWatch swatch;
+    double time=0;
+    int iter=1;
+    while( time < 1.0 ) { 
+      iter *=2;
+      QDPIO::cout << "Calling " << iter << " times " << endl;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z2 = x + a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+    }
+    {
+      QDPIO::cout << "Timing with " << iter << " iters" << endl;
+      FlopCounter fc;
+      fc.reset();
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z2 = x + a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+	fc.addSiteFlops(4*Nc*Ns,all);
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+      fc.report(std::string("new xpayz_ig5"), time);
+    }
+  }
+
+  gaussian(x);
+  gaussian(y);
+  
+  tmp = a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+  z1 = x - tmp;
+  z2 = x - a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+
+  norm_diff=norm2(z1-z2);
+  {
+    QDPIO::cout << "x - i a g5 y diff=" << sqrt(norm_diff) << endl;
+    StopWatch swatch;
+    double time=0;
+    int iter=1;
+    while( time < 1.0 ) { 
+      iter *=2;
+      QDPIO::cout << "Calling " << iter << " times " << endl;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	tmp = a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+	z1 = x - tmp;
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+    }
+    {
+      QDPIO::cout << "Timing with " << iter << " iters" << endl;
+      FlopCounter fc;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	tmp = a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+	z1 = x - tmp;
+	fc.addSiteFlops(4*Nc*Ns, all);
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+      fc.report(std::string("old xmayz_ig5"), time);
+     }
+  }
+  {
+    StopWatch swatch;
+    double time=0;
+    int iter=1;
+    while( time < 1.0 ) { 
+      iter *=2;
+      QDPIO::cout << "Calling " << iter << " times " << endl;
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z2 = x - a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+    }
+    {
+      QDPIO::cout << "Timing with " << iter << " iters" << endl;
+      FlopCounter fc;
+      fc.reset();
+      swatch.reset();
+      swatch.start();
+      for(int i=0; i < iter; i++) {
+	z2 = x - a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+	fc.addSiteFlops(4*Nc*Ns,all);
+      }
+      swatch.stop();
+      time = swatch.getTimeInSeconds();
+      Internal::broadcast(time);
+      fc.report(std::string("new xmayz_ig5"), time);
+    }
+  }
+
+
+  gaussian(x);
+  gaussian(y);
+  
+
+  z1 = z1;
+  z2 = z1;
+
+  z1 = z1 + a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y))); 
+  z2 += a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+
+  norm_diff=norm2(z1-z2);
+  {
+    QDPIO::cout << "z += i a g5 y diff=" << sqrt(norm_diff) << endl;
+  }
+
+  gaussian(x);
+  gaussian(y);
+  
+
+  z1 = z1;
+  z2 = z1;
+
+  z1 = z1 - a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y))); 
+  z2 -= a*(GammaConst<Ns,Ns*Ns-1>()*(timesI(y)));
+
+  norm_diff=norm2(z1-z2);
+  {
+    QDPIO::cout << "z -= i a g5 y diff=" << sqrt(norm_diff) << endl;
   }
 
 

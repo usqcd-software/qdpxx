@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas_g5.h,v 1.3 2005-05-19 11:22:42 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas_g5.h,v 1.4 2005-11-03 22:17:30 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1217,6 +1217,468 @@ void evaluate( OLattice< TVec > &d,
   g5_axmbyz(zptr, aptr, xptr, bptr, yptr, n_4vec);
   
 }
+
+
+// Vec = a*Vec + b*Gamma5*i*Vec
+//
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	         BinaryNode<OpAdd,
+	           BinaryNode<OpMultiply,
+	             Reference< QDPType<TScal, OScalar< TScal > > >,  
+	             Reference< QDPType<TVec, OLattice< TVec > > >
+	           >, 
+ 	           BinaryNode<OpMultiply,
+	             Reference< QDPType< TScal, OScalar< TScal > > >,
+	             BinaryNode< 
+	                OpGammaConstMultiply,
+ 	                GammaConst<Ns,Ns*Ns-1>,
+	                UnaryNode<FnTimesI,
+	                          Reference< QDPType<TVec, OLattice< TVec > > >
+	                >
+                     >	        
+                   >
+                 >,
+	         OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS_G5
+  QDPIO::cout << "z = a*x + b*GammaConst<Ns,Ns*Ns-1>()*timesI(y)" << endl;
+#endif
+
+  typedef BinaryNode<OpMultiply,
+            Reference< QDPType<TScal, OScalar< TScal > > >,  
+            Reference< QDPType<TVec, OLattice< TVec > > >
+    > MN1;
+
+  typedef BinaryNode<OpMultiply,
+            Reference< QDPType< TScal, OScalar< TScal > > >,
+	      BinaryNode< 
+                OpGammaConstMultiply,
+ 	        GammaConst<Ns,Ns*Ns-1>,
+	        UnaryNode< FnTimesI, 
+                           Reference< QDPType< TVec, OLattice< TVec > > >
+                >
+            >	        
+    > MN2;
+
+  typedef BinaryNode< 
+            OpGammaConstMultiply,
+            GammaConst<Ns,Ns*Ns-1>,
+            UnaryNode< FnTimesI,
+                       Reference< QDPType< TVec, OLattice< TVec > > >
+            >
+    > GN;
+
+  typedef UnaryNode< FnTimesI, 
+                     Reference< QDPType< TVec, OLattice< TVec > > > 
+    > IN;
+
+  const MN1& mulNode1 = static_cast< const MN1& >(rhs.expression().left());
+  const MN2& mulNode2 = static_cast< const MN2& >(rhs.expression().right());
+  const GN& gammaNode = static_cast< const GN& >(mulNode2.right());
+  const IN& mulINode = static_cast< const IN& >(gammaNode.right());
+
+  const OScalar<TScal>& a = static_cast<const OScalar<TScal>&>(mulNode1.left());
+  const OLattice<TVec>& x = static_cast<const OLattice<TVec>&>(mulNode1.right());
+
+  const OScalar<TScal>& b = static_cast<const OScalar<TScal>&>(mulNode2.left());
+  const OLattice<TVec>& y = static_cast<const OLattice<TVec>&>(mulINode.child());
+
+
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_4vec = (s.end()-s.start()+1);
+  axpbyz_ig5(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  
+}
+
+// Vec = a*Vec - b*Gamma5*i*Vec
+//
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	         BinaryNode<OpSubtract,
+	           BinaryNode<OpMultiply,
+	             Reference< QDPType<TScal, OScalar< TScal > > >,  
+	             Reference< QDPType<TVec, OLattice< TVec > > >
+	           >, 
+ 	           BinaryNode<OpMultiply,
+	             Reference< QDPType< TScal, OScalar< TScal > > >,
+	             BinaryNode< 
+	                OpGammaConstMultiply,
+ 	                GammaConst<Ns,Ns*Ns-1>,
+	                UnaryNode<FnTimesI,
+	                          Reference< QDPType<TVec, OLattice< TVec > > >
+	                >
+                     >	        
+                   >
+                 >,
+	         OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS_G5
+  QDPIO::cout << "z = a*x + b*GammaConst<Ns,Ns*Ns-1>()*timesI(y)" << endl;
+#endif
+
+  typedef BinaryNode<OpMultiply,
+            Reference< QDPType<TScal, OScalar< TScal > > >,  
+            Reference< QDPType<TVec, OLattice< TVec > > >
+    > MN1;
+
+  typedef BinaryNode<OpMultiply,
+            Reference< QDPType< TScal, OScalar< TScal > > >,
+	      BinaryNode< 
+                OpGammaConstMultiply,
+ 	        GammaConst<Ns,Ns*Ns-1>,
+	        UnaryNode< FnTimesI, 
+                           Reference< QDPType< TVec, OLattice< TVec > > >
+                >
+            >	        
+    > MN2;
+
+  typedef BinaryNode< 
+            OpGammaConstMultiply,
+            GammaConst<Ns,Ns*Ns-1>,
+            UnaryNode< FnTimesI,
+                       Reference< QDPType< TVec, OLattice< TVec > > >
+            >
+    > GN;
+
+  typedef UnaryNode< FnTimesI, 
+                     Reference< QDPType< TVec, OLattice< TVec > > > 
+    > IN;
+
+  const MN1& mulNode1 = static_cast< const MN1& >(rhs.expression().left());
+  const MN2& mulNode2 = static_cast< const MN2& >(rhs.expression().right());
+  const GN& gammaNode = static_cast< const GN& >(mulNode2.right());
+  const IN& mulINode = static_cast< const IN& >(gammaNode.right());
+
+  const OScalar<TScal>& a = static_cast<const OScalar<TScal>&>(mulNode1.left());
+  const OLattice<TVec>& x = static_cast<const OLattice<TVec>&>(mulNode1.right());
+
+  const OScalar<TScal>& b = static_cast<const OScalar<TScal>&>(mulNode2.left());
+  const OLattice<TVec>& y = static_cast<const OLattice<TVec>&>(mulINode.child());
+
+
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  
+  
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_4vec = (s.end()-s.start()+1);
+  axmbyz_ig5(zptr, aptr, xptr, bptr, yptr, n_4vec);
+}
+
+// Vec = Vec + a*Gamma5*i*Vec
+//
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	         BinaryNode<OpAdd,
+	           Reference< QDPType< TVec, OLattice< TVec > > >, 
+ 	           BinaryNode<OpMultiply,
+	             Reference< QDPType< TScal, OScalar< TScal > > >,
+	             BinaryNode< 
+	                OpGammaConstMultiply,
+ 	                GammaConst<Ns,Ns*Ns-1>,
+	                UnaryNode<FnTimesI,
+	                          Reference< QDPType< TVec, OLattice< TVec > > >
+	                >
+                     >	        
+                   >
+                 >,
+	        OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS_G5
+  QDPIO::cout << "z = x + a GammaConst<Ns,Ns*Ns-1>()*i*y" << endl;
+#endif
+  const OLattice<TVec>& x = static_cast<const OLattice<TVec>&>(rhs.expression().left());
+
+  typedef BinaryNode<OpMultiply,
+	             Reference< QDPType< TScal, OScalar< TScal > > >,
+	             BinaryNode< 
+	                OpGammaConstMultiply,
+ 	                GammaConst<Ns,Ns*Ns-1>,
+    	                UnaryNode<FnTimesI,
+	                          Reference< QDPType< TVec, OLattice< TVec > > >
+	                >
+                     >	        
+    > MN;
+  const MN& mul_node = static_cast<const MN&>(rhs.expression().right());
+
+  const OScalar<TScal>& a = static_cast<const OScalar<TScal>& >(mul_node.left());
+
+  typedef BinaryNode< 
+    OpGammaConstMultiply,
+    GammaConst<Ns,Ns*Ns-1>,
+    UnaryNode<FnTimesI, 
+              Reference< QDPType< TVec, OLattice< TVec > > >
+    >
+   > GN;
+
+  typedef UnaryNode<FnTimesI,
+              Reference< QDPType< TVec, OLattice< TVec > > >
+    > IN;
+
+  const GN& gamma_node = static_cast<const GN&>(mul_node.right());
+  const IN& timesI_node = static_cast<const IN&>(gamma_node.right());
+
+  const OLattice<TVec>& y = static_cast<const OLattice<TVec>&>(timesI_node.child());
+
+  REAL ar =  a.elem().elem().elem().elem();
+  REAL *aptr = (REAL *)&ar;
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_4vec = (s.end()-s.start()+1);
+  xpayz_ig5(zptr, aptr, xptr, yptr, n_4vec);
+
+}
+
+// Vec = Vec - a*Gamma5*i*Vec
+//
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	         BinaryNode<OpSubtract,
+	           Reference< QDPType< TVec, OLattice< TVec > > >, 
+ 	           BinaryNode<OpMultiply,
+	             Reference< QDPType< TScal, OScalar< TScal > > >,
+	             BinaryNode< 
+	                OpGammaConstMultiply,
+ 	                GammaConst<Ns,Ns*Ns-1>,
+	                UnaryNode<FnTimesI,
+	                          Reference< QDPType< TVec, OLattice< TVec > > >
+	                >
+                     >	        
+                   >
+                 >,
+	        OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS_G5
+  QDPIO::cout << "z = x - a GammaConst<Ns,Ns*Ns-1>()*i*y" << endl;
+#endif
+  const OLattice<TVec>& x = static_cast<const OLattice<TVec>&>(rhs.expression().left());
+
+  typedef BinaryNode<OpMultiply,
+	             Reference< QDPType< TScal, OScalar< TScal > > >,
+	             BinaryNode< 
+	                OpGammaConstMultiply,
+ 	                GammaConst<Ns,Ns*Ns-1>,
+	                UnaryNode<FnTimesI,
+	                          Reference< QDPType< TVec, OLattice< TVec > > >
+	                >
+                     >	        
+    > MN;
+  const MN& mul_node = static_cast<const MN&>(rhs.expression().right());
+
+  const OScalar<TScal>& a = static_cast<const OScalar<TScal>& >(mul_node.left());
+
+  typedef BinaryNode< 
+    OpGammaConstMultiply,
+    GammaConst<Ns,Ns*Ns-1>,
+    UnaryNode<FnTimesI, 
+              Reference< QDPType< TVec, OLattice< TVec > > >
+    >
+   > GN;
+
+  typedef UnaryNode<FnTimesI,
+              Reference< QDPType< TVec, OLattice< TVec > > >
+    > IN;
+
+  const GN& gamma_node = static_cast<const GN&>(mul_node.right());
+  const IN& timesI_node = static_cast<const IN&>(gamma_node.right());
+
+  const OLattice<TVec>& y = static_cast<const OLattice<TVec>&>(timesI_node.child());
+
+  REAL ar =  a.elem().elem().elem().elem();
+  REAL *aptr = (REAL *)&ar;
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_4vec = (s.end()-s.start()+1);
+  xmayz_ig5(zptr, aptr, xptr, yptr, n_4vec);
+
+}
+
+
+
+// Vec += a*Gamma5*i*Vec
+//
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAddAssign &op,
+	       const QDPExpr< 
+ 	           BinaryNode<OpMultiply,
+	             Reference< QDPType< TScal, OScalar< TScal > > >,
+	             BinaryNode< 
+	                OpGammaConstMultiply,
+ 	                GammaConst<Ns,Ns*Ns-1>,
+	                UnaryNode<FnTimesI,
+	                          Reference< QDPType< TVec, OLattice< TVec > > >
+	                >
+                     >	        
+	           >,
+	           OLattice< TVec > 
+               > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS_G5
+  QDPIO::cout << "z += a GammaConst<Ns,Ns*Ns-1>()*i*y" << endl;
+#endif
+
+#if 0
+  typedef BinaryNode<OpMultiply,
+	             Reference< QDPType< TScal, OScalar< TScal > > >,
+	             BinaryNode< 
+	                OpGammaConstMultiply,
+ 	                GammaConst<Ns,Ns*Ns-1>,
+    	                UnaryNode<FnTimesI,
+	                          Reference< QDPType< TVec, OLattice< TVec > > >
+	                >
+                     >	        
+    > MN;
+
+  const MN& mul_node = static_cast<const MN&>(rhs.expression().right());
+#endif
+
+  const OScalar<TScal>& a = static_cast<const OScalar<TScal>& >(rhs.expression().left());
+
+  typedef BinaryNode< 
+    OpGammaConstMultiply,
+    GammaConst<Ns,Ns*Ns-1>,
+    UnaryNode<FnTimesI, 
+              Reference< QDPType< TVec, OLattice< TVec > > >
+    >
+   > GN;
+
+  typedef UnaryNode<FnTimesI,
+              Reference< QDPType< TVec, OLattice< TVec > > >
+    > IN;
+
+  const GN& gamma_node = static_cast<const GN&>(rhs.expression().right());
+  const IN& timesI_node = static_cast<const IN&>(gamma_node.right());
+
+  const OLattice<TVec>& x = static_cast<const OLattice<TVec>&>(timesI_node.child());
+
+  REAL ar =  a.elem().elem().elem().elem();
+  REAL *aptr = (REAL *)&ar;
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_4vec = (s.end()-s.start()+1);
+  xpayz_ig5(zptr, aptr, zptr, xptr, n_4vec);
+
+}
+
+
+// Vec -= a*Gamma5*i*Vec
+//
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpSubtractAssign &op,
+	       const QDPExpr< 
+ 	           BinaryNode<OpMultiply,
+	             Reference< QDPType< TScal, OScalar< TScal > > >,
+	             BinaryNode< 
+	                OpGammaConstMultiply,
+ 	                GammaConst<Ns,Ns*Ns-1>,
+	                UnaryNode<FnTimesI,
+	                          Reference< QDPType< TVec, OLattice< TVec > > >
+	                >
+                     >	        
+	           >,
+	           OLattice< TVec > 
+               > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS_G5
+  QDPIO::cout << "z -= a GammaConst<Ns,Ns*Ns-1>()*i*y" << endl;
+#endif
+
+#if 0 
+  typedef BinaryNode<OpMultiply,
+	             Reference< QDPType< TScal, OScalar< TScal > > >,
+	             BinaryNode< 
+	                OpGammaConstMultiply,
+ 	                GammaConst<Ns,Ns*Ns-1>,
+    	                UnaryNode<FnTimesI,
+	                          Reference< QDPType< TVec, OLattice< TVec > > >
+	                >
+                     >	        
+    > MN;
+
+  const MN& mul_node = static_cast<const MN&>(rhs.expression().right());
+#endif
+
+  const OScalar<TScal>& a = static_cast<const OScalar<TScal>& >(rhs.expression().left());
+
+  typedef BinaryNode< 
+    OpGammaConstMultiply,
+    GammaConst<Ns,Ns*Ns-1>,
+    UnaryNode<FnTimesI, 
+              Reference< QDPType< TVec, OLattice< TVec > > >
+    >
+   > GN;
+
+  typedef UnaryNode<FnTimesI,
+              Reference< QDPType< TVec, OLattice< TVec > > >
+    > IN;
+
+  const GN& gamma_node = static_cast<const GN&>(rhs.expression().right());
+  const IN& timesI_node = static_cast<const IN&>(gamma_node.right());
+
+  const OLattice<TVec>& x = static_cast<const OLattice<TVec>&>(timesI_node.child());
+
+  REAL ar =  a.elem().elem().elem().elem();
+  REAL *aptr = (REAL *)&ar;
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_4vec = (s.end()-s.start()+1);
+  xmayz_ig5(zptr, aptr, zptr, xptr, n_4vec);
+}
+
 
 QDP_END_NAMESPACE();
 
