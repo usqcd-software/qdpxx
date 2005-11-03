@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_bagel_qdp_blas_g5.h,v 1.3 2005-11-03 22:17:30 bjoo Exp $
+// $Id: qdp_scalarsite_bagel_qdp_blas_g5.h,v 1.4 2005-11-03 23:40:50 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1299,7 +1299,7 @@ void evaluate( OLattice< TVec > &d,
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
   int n_4vec = (s.end()-s.start()+1);
-  QDP::axpbyz_ig5(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  qdp_vaxpbg5iy(zptr, aptr, xptr, bptr, yptr, n_4vec);
   
 }
 
@@ -1384,7 +1384,7 @@ void evaluate( OLattice< TVec > &d,
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
   int n_4vec = (s.end()-s.start()+1);
-  QDP::axmbyz_ig5(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  qdp_vaxmbg5iy(zptr, aptr, xptr, bptr, yptr, n_4vec);
 }
 
 // Vec = Vec + a*Gamma5*i*Vec
@@ -1456,7 +1456,7 @@ void evaluate( OLattice< TVec > &d,
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
   int n_4vec = (s.end()-s.start()+1);
-  QDP::xpayz_ig5(zptr, aptr, xptr, yptr, n_4vec);
+  qdp_vxpag5iy(zptr, aptr, xptr, yptr, n_4vec);
 
 }
 
@@ -1529,7 +1529,7 @@ void evaluate( OLattice< TVec > &d,
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
   int n_4vec = (s.end()-s.start()+1);
-  QDP::xmayz_ig5(zptr, aptr, xptr, yptr, n_4vec);
+  qdp_vxmag5iy(zptr, aptr, xptr, yptr, n_4vec);
 
 }
 
@@ -1603,7 +1603,7 @@ void evaluate( OLattice< TVec > &d,
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
   int n_4vec = (s.end()-s.start()+1);
-  QDP::xpayz_ig5(zptr, aptr, zptr, xptr, n_4vec);
+  qdp_vxpag5iy(zptr, aptr, zptr, xptr, n_4vec);
 
 }
 
@@ -1676,7 +1676,7 @@ void evaluate( OLattice< TVec > &d,
 
   // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
   int n_4vec = (s.end()-s.start()+1);
-  QDP::xmayz_ig5(zptr, aptr, zptr, xptr, n_4vec);
+  qdp_vxmag5iy(zptr, aptr, zptr, xptr, n_4vec);
 }
 
 QDP_END_NAMESPACE();
