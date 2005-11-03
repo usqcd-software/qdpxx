@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_bagel_qdp_blas_g5.h,v 1.4 2005-11-03 23:40:50 bjoo Exp $
+// $Id: qdp_scalarsite_bagel_qdp_blas_g5.h,v 1.5 2005-11-03 23:51:07 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1218,7 +1218,6 @@ void evaluate( OLattice< TVec > &d,
 }
 
 // --------------- These here come from generics ----------------------
-#include "scalarsite_generic/generic_blas_g5.h"
 // Vec = a*Vec + b*Gamma5*i*Vec
 //
 template<>
