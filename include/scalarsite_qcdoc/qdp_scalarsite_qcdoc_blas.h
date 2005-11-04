@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.16 2005-05-26 03:43:09 edwards Exp $
+// $Id: qdp_scalarsite_qcdoc_blas.h,v 1.17 2005-11-04 16:01:47 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -535,6 +535,7 @@ void evaluate( OLattice< TVec > &d,
 }
 
 
+// Vec = Vec + Vec
 template<>
 inline
 void evaluate( OLattice< TVec > &d,
@@ -566,6 +567,7 @@ void evaluate( OLattice< TVec > &d,
 }
 
 
+// Vec = Vec - Vec
 template<>
 inline
 void evaluate( OLattice< TVec > &d,
@@ -628,6 +630,7 @@ void evaluate( OLattice< TVec > &d,
   vaxpy3(zptr, aptr, xptr, yptr, n_3vec); */
 }
 
+// Vec = Vec * Scalar
 template<>
 inline
 void evaluate( OLattice< TVec > &d,
@@ -657,7 +660,7 @@ void evaluate( OLattice< TVec > &d,
      vaxpy3(zptr, aptr, xptr, yptr, n_3vec); */
 }
 
-// v *= a
+// Vec *= Scalar
 template<>
 inline
 void evaluate( OLattice< TVec > &d,
@@ -682,7 +685,7 @@ void evaluate( OLattice< TVec > &d,
   vscal(zptr,&ar, xptr, n_3vec);
 }
 
-// v /= a
+// Vec /= Scalar
 template<>
 inline
 void evaluate( OLattice< TVec > &d,
@@ -707,7 +710,7 @@ void evaluate( OLattice< TVec > &d,
   vscal(zptr,&ar, xptr, n_3vec);
 }
 
-// v += v
+// Vec += Vec
 template<>
 inline
 void evaluate( OLattice< TVec > &d,
@@ -734,7 +737,7 @@ void evaluate( OLattice< TVec > &d,
 
 }
 
-// v -= v
+// Vec -= Vec
 template<>
 inline
 void evaluate( OLattice< TVec > &d,
