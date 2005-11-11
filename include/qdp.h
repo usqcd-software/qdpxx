@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.56 2005-06-27 14:13:24 bjoo Exp $
+// $Id: qdp.h,v 1.57 2005-11-11 21:18:54 bjoo Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -155,17 +155,8 @@ QDP_END_NAMESPACE();
 #include "qdp_outer.h"
 #include "qdp_outersubtype.h"
 
-#if defined(ARCH_SCALAR) || defined(ARCH_PARSCALAR)
-#include "qdp_scalarsite_defs.h"
-
-#elif defined(ARCH_SCALARVEC) || defined(ARCH_PARSCALARVEC)
-#include "qdp_scalarvecsite_defs.h"
-
-#else
-#error "Unknown architecture ARCH"
-#endif
-
-
+// Replaces previous ifdef structure. Structure moved into the header file
+#include "qdp_defs.h"
 #include "qdp_globalfuncs.h"
 #include "qdp_specializations.h"
 

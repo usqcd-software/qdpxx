@@ -78,9 +78,6 @@
 /* Enable QCDOC opts */
 #undef QDP_USE_QCDOC
 
-/* Enable QCDOC Edram */
-#undef QDP_USE_QCDOC_EDRAM
-
 /* Enable SSE instructions */
 #undef QDP_USE_SSE
 

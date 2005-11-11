@@ -13,7 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_transpose_spin_SOURCES) $(t_xml_SOURCES)
+SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_transpose_spin_SOURCES) $(t_xml_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -41,7 +41,7 @@ check_PROGRAMS = t_skeleton$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
 	t_basic$(EXEEXT) t_qio$(EXEEXT) t_cugauge$(EXEEXT) \
 	t_transpose_spin$(EXEEXT) $(am__EXEEXT_2) $(am__EXEEXT_3)
 EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_binx$(EXEEXT) \
-	$(am__EXEEXT_1)
+	$(am__EXEEXT_1) nersc2ildg$(EXEEXT)
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_1 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_2 = t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3
 @BUILD_STAGGERED_EXAMPLES_TRUE@am__append_3 = 
@@ -65,11 +65,15 @@ CONFIG_CLEAN_FILES =
 @BUILD_WILSON_EXAMPLES_TRUE@	t_spectrum$(EXEEXT) t_qdp$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_linalg$(EXEEXT)
 am__EXEEXT_3 =
+am__objects_1 =
+am_nersc2ildg_OBJECTS = nersc2ildg.$(OBJEXT) $(am__objects_1)
+nersc2ildg_OBJECTS = $(am_nersc2ildg_OBJECTS)
+nersc2ildg_LDADD = $(LDADD)
+nersc2ildg_DEPENDENCIES =
 am_t_basic_OBJECTS = t_basic.$(OBJEXT)
 t_basic_OBJECTS = $(am_t_basic_OBJECTS)
 t_basic_LDADD = $(LDADD)
 t_basic_DEPENDENCIES =
-am__objects_1 =
 am_t_binx_OBJECTS = t_binx.$(OBJEXT) $(am__objects_1)
 t_binx_OBJECTS = $(am_t_binx_OBJECTS)
 t_binx_LDADD = $(LDADD)
@@ -191,8 +195,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
-	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
+SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) $(t_binx_SOURCES) \
+	$(t_blas_SOURCES) $(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
 	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
 	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
 	$(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) \
@@ -201,16 +205,16 @@ SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
 	$(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) \
 	$(t_spectrum_SOURCES) $(t_transpose_spin_SOURCES) \
 	$(t_xml_SOURCES)
-DIST_SOURCES = $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
-	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
-	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
-	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
-	$(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) \
-	$(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) \
-	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
-	$(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) \
-	$(t_spectrum_SOURCES) $(t_transpose_spin_SOURCES) \
-	$(t_xml_SOURCES)
+DIST_SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) \
+	$(t_binx_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) \
+	$(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) \
+	$(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_dslashm_SOURCES) \
+	$(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) \
+	$(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) \
+	$(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_qdp_SOURCES) \
+	$(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
+	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
+	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -394,6 +398,7 @@ t_blas_g5_2_SOURCES = t_blas_g5_2.cc $(HDRS)
 t_blas_g5_3_SOURCES = t_blas_g5_3.cc $(HDRS)
 t_cugauge_SOURCES = t_cugauge.cc mesplq.cc $(HDRS) 
 t_transpose_spin_SOURCES = t_transpose_spin.cc $(HDRS)
+nersc2ildg_SOURCES = nersc2ildg.cc $(HDRS)
 all: all-am
 
 .SUFFIXES:
@@ -430,6 +435,9 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 
 clean-checkPROGRAMS:
 	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+nersc2ildg$(EXEEXT): $(nersc2ildg_OBJECTS) $(nersc2ildg_DEPENDENCIES) 
+	@rm -f nersc2ildg$(EXEEXT)
+	$(CXXLINK) $(nersc2ildg_LDFLAGS) $(nersc2ildg_OBJECTS) $(nersc2ildg_LDADD) $(LIBS)
 t_basic$(EXEEXT): $(t_basic_OBJECTS) $(t_basic_DEPENDENCIES) 
 	@rm -f t_basic$(EXEEXT)
 	$(CXXLINK) $(t_basic_LDFLAGS) $(t_basic_OBJECTS) $(t_basic_LDADD) $(LIBS)
@@ -524,6 +532,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linalg1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nersc2ildg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_basic.Po@am__quote@
@@ -732,7 +741,6 @@ uninstall-am: uninstall-info-am
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am
-
 
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

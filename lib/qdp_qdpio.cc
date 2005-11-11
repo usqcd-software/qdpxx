@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.17 2005-10-13 02:45:42 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.18 2005-11-11 21:18:54 bjoo Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -142,7 +142,17 @@ QDPFileWriter::QDPFileWriter(XMLBufferWriter& xml,
 			     QDP_serialparallel_t qdp_serpar,
 			     QDP_filemode_t qdp_mode) 
 {
-  open(xml,path,qdp_volfmt,qdp_serpar,qdp_mode);
+  open(xml,path,qdp_volfmt,qdp_serpar,qdp_mode, std::string());
+}
+
+QDPFileWriter::QDPFileWriter(XMLBufferWriter& xml, 
+			     const std::string& path,
+			     QDP_volfmt_t qdp_volfmt,
+			     QDP_serialparallel_t qdp_serpar,
+			     QDP_filemode_t qdp_mode,
+			     const std::string& data_LFN) 
+{
+  open(xml,path,qdp_volfmt,qdp_serpar,qdp_mode, data_LFN);
 }
 
 // filemode not specified
@@ -151,7 +161,16 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
 			 QDP_volfmt_t qdp_volfmt,
 			 QDP_serialparallel_t qdp_serpar)
 {
-  open(file_xml,path,qdp_volfmt,qdp_serpar,QDPIO_OPEN);
+  open(file_xml,path,qdp_volfmt,qdp_serpar,QDPIO_OPEN, std::string());
+}
+
+void QDPFileWriter::open(XMLBufferWriter& file_xml, 
+			 const std::string& path,
+			 QDP_volfmt_t qdp_volfmt,
+			 QDP_serialparallel_t qdp_serpar,
+			 const std::string& data_LFN) 
+{
+  open(file_xml,path,qdp_volfmt,qdp_serpar,QDPIO_OPEN, data_LFN);
 }
 
 
@@ -161,14 +180,25 @@ QDPFileWriter::QDPFileWriter(XMLBufferWriter& xml,
 			     QDP_volfmt_t qdp_volfmt,
 			     QDP_serialparallel_t qdp_serpar) 
 {
-  open(xml,path,qdp_volfmt,qdp_serpar,QDPIO_OPEN);
+  open(xml,path,qdp_volfmt,qdp_serpar,QDPIO_OPEN, std::string());
+}
+
+// filemode not specified
+QDPFileWriter::QDPFileWriter(XMLBufferWriter& xml, 
+			     const std::string& path,
+			     QDP_volfmt_t qdp_volfmt,
+			     QDP_serialparallel_t qdp_serpar,
+			     const std::string& data_LFN) 
+{
+  open(xml,path,qdp_volfmt,qdp_serpar,QDPIO_OPEN, data_LFN);
 }
 
 void QDPFileWriter::open(XMLBufferWriter& file_xml, 
 			 const std::string& path,
 			 QDP_volfmt_t qdp_volfmt,
 			 QDP_serialparallel_t qdp_serpar,
-			 QDP_filemode_t qdp_mode) 
+			 QDP_filemode_t qdp_mode, 
+			 const std::string& data_LFN) 
 {
   QIO_Layout layout;
   int latsize[Nd];
@@ -249,6 +279,15 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   QIO_Oflag oflag;
   oflag.serpar = QIO_SERIAL;
   oflag.mode   = mode;
+  oflag.ildgstyle = QIO_ILDGLAT;
+  if( data_LFN.length() == 0 ) { 
+    oflag.ildgLFN = NULL;
+  }
+  else {
+    oflag.ildgLFN = QIO_string_create();
+    QIO_string_set(oflag.ildgLFN, data_LFN.c_str());
+  }
+
 
   if ((qio_out = QIO_open_write(xml_c, path.c_str(), 
 				volfmt, &layout, &oflag)) == NULL)
@@ -263,6 +302,8 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
     iostate = QDPIO_goodbit;
   }
 
+  // Free memory -- this is OK< as it should'of been copied
+  QIO_string_destroy(oflag.ildgLFN);
   // Cleanup
   QIO_string_destroy(xml_c);
 

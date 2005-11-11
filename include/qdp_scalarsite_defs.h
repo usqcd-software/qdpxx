@@ -1,9 +1,12 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_defs.h,v 1.9 2004-10-22 15:26:59 edwards Exp $
+// $Id: qdp_scalarsite_defs.h,v 1.10 2005-11-11 21:18:54 bjoo Exp $
 
 /*! \file
  * \brief Type definitions
  */
+
+#ifndef QDP_SCALARSITE_DEFS_H
+#define QDP_SCALARSITE_DEFS_H
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -360,3 +363,4 @@ typedef LatticeInteger  LatticeInt;
 
 QDP_END_NAMESPACE();
 
+#endif

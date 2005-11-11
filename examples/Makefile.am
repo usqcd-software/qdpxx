@@ -29,7 +29,7 @@ check_PROGRAMS = t_skeleton t_io t_mesplq \
       t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
       t_cugauge t_transpose_spin
 
-EXTRA_PROGRAMS  = t_qio_factory t_binx
+EXTRA_PROGRAMS  = t_qio_factory t_binx 
 
 
 if BUILD_WILSON_EXAMPLES
@@ -37,6 +37,7 @@ check_PROGRAMS += t_dslashm t_formfac t_spectrum t_qdp t_linalg
 EXTRA_PROGRAMS += t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3
 endif
 
+EXTRA_PROGRAMS += nersc2ildg
 
 if BUILD_STAGGERED_EXAMPLES
 check_PROGRAMS += 
@@ -79,6 +80,7 @@ t_blas_g5_3_SOURCES = t_blas_g5_3.cc $(HDRS)
 t_cugauge_SOURCES = t_cugauge.cc mesplq.cc $(HDRS) 
 t_transpose_spin_SOURCES = t_transpose_spin.cc $(HDRS)
 
+nersc2ildg_SOURCES = nersc2ildg.cc $(HDRS)
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target
