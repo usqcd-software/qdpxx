@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.25 2005-11-11 21:18:54 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.26 2005-11-16 04:25:32 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -57,36 +57,62 @@ enum QDP_iostate_t
 
 //! A little namespace to map the QDP types to the right strings
 namespace QIOStrings { 
-  
+
   // Catch all base (Hopefully never called)
   template<typename T> 
-  void QIOTypeStringFromType(std::string& tname, std::string prec, const T& t); 
+  void QIOTypeStringFromType(std::string& tname, const T& t) 
+  {    
+    tname = "QDP_GenericType";
+  }
   
   // Backward compatibility
   template<typename T>
-  void QIOTypeStringFromType(std::string& tname , const OScalar<T>& t);
+  void QIOTypeStringFromType(std::string& tname, 
+			     const OScalar<T>& t) 
+  { 
+    tname  = "Scalar";
+  }
+  
+  template<typename T>
+  void QIOTypeStringFromType(std::string& tname, 
+			     const OLattice<T>& t) 
+  {
+    tname  = "Lattice";
+  }
   
   // Backward compatibility
   template<typename T>
-  void QIOTypeStringFromType(std::string& tname , const multi1d< OScalar<T> >& t);
+  void QIOTypeStringFromType(std::string& tname , 
+			     const multi1d< OScalar<T> >& t) 
+  { 
+    tname  = "Scalar";
+  }
+  
   
   // Backward Compatibility
   template<typename T>
-  void QIOTypeStringFromType(std::string& tname , const OLattice<T>& t);
-  
-  // Backward Compatibility
-  template<typename T>
-  void QIOTypeStringFromType(std::string& tname , const multi1d< OLattice<T> >& t);  
+  void QIOTypeStringFromType(std::string& tname , 
+			     const multi1d< OLattice<T> >& t) 
+  {
+    tname  = "Lattice";
+  }
+    
   
   // Specialisation
   // Gauge Field Type: multi1d<LatticeColorMatrix> 
   // Need specific type string to output in ILDG format with QIO
+  // However I cannot inline these. They have to go into qdp_qio_strings.cc
+  // If I try to inline them here, I get linkage errors with multiple
+  // definitions. I wonder why?
   template<>
-  void QIOTypeStringFromType(std::string& tname , const multi1d< LatticeColorMatrixF3 >& t );
-  
+  void QIOTypeStringFromType(std::string& tname , 
+			     const multi1d< LatticeColorMatrixF3 >& t );
+
   template<> 
-  void QIOTypeStringFromType(std::string& tname , const multi1d< LatticeColorMatrixD3 >& t);
+  void QIOTypeStringFromType(std::string& tname , 
+			     const multi1d< LatticeColorMatrixD3 >& t);
   
+    
   char QIOSizeToStr(size_t size);
   
   
