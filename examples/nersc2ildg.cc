@@ -1,4 +1,4 @@
-// $Id: nersc2ildg.cc,v 1.1 2005-11-11 21:18:54 bjoo Exp $
+// $Id: nersc2ildg.cc,v 1.2 2005-11-16 20:33:41 bjoo Exp $
 /*! \file
  *  \brief Skeleton of a QDP main program
  */
@@ -61,6 +61,12 @@ int main(int argc, char *argv[])
   write(file_metadata, "annotation", "NERSC Config Converted by QDP++ NERS2ILDG");
   pop(file_metadata);
 
+  // OK. Chroma conventions are that the output file is always single 
+  // prec. So I will enforce these her.
+  multi1d<LatticeColorMatrixF> u_single(Nd);
+  for(int mu = 0; mu < Nd; mu++) { 
+    u_single[mu] = u[mu]; // This does the downcast
+  }
 
   QDPFileWriter ildg_out(file_metadata,  
 			 p.ILDG_file_name,
@@ -73,7 +79,7 @@ int main(int argc, char *argv[])
   write(record_metadata, "annotation", "NERSC Config Record Converted by QDP++ NERSC2ILDG");
   pop(record_metadata);
 
-  ildg_out.write(record_metadata, u);
+  ildg_out.write(record_metadata, u_single);
   ildg_out.close();
 			 		      
 

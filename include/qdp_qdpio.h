@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.26 2005-11-16 04:25:32 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.27 2005-11-16 20:33:42 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -602,14 +602,14 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
   try { 
 
     std::string tname;
-    char tprec;
+    char tprec[2]={0,'\n'};
 
     QIOStrings::QIOTypeStringFromType(tname, s1);
-    tprec = QIOStrings::QIOPrecisionStringFromType(s1);
+    tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
 
     QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
 						  const_cast<char *>(tname.c_str()),
-						  &tprec,
+						  tprec,
 						  Nc, Ns, 
 						  sizeof(T), 1);
 
@@ -666,14 +666,15 @@ template<class T>
 void QDPFileReader::read(XMLReader& rec_xml, multi1d< OScalar<T> >& s1)
 {
     std::string tname;
-    char tprec;
+    //    char tprec;
+    char tprec[2]={0,'\n'};
 
     QIOStrings::QIOTypeStringFromType(tname, s1);
-    tprec = QIOStrings::QIOPrecisionStringFromType(s1);
+    tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
 
     QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
 						  const_cast<char *>(tname.c_str()),
-						  &tprec,
+						  tprec,
 						  Nc, Ns, 
 						  sizeof(T), s1.size()); // need size for now
 
@@ -735,14 +736,15 @@ template<class T>
 void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OScalar<T>& s1)
 {
   std::string tname;
-  char tprec;
+  //  char tprec;
+  char tprec[2]={0,'\n'};
   
   QIOStrings::QIOTypeStringFromType(tname, s1);
-  tprec = QIOStrings::QIOPrecisionStringFromType(s1);
+  tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
   
   QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
 						const_cast<char *>(tname.c_str()),
-						&tprec, 
+						tprec, 
 						Nc, Ns, 
 						sizeof(T), 1);
 
@@ -789,14 +791,15 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OScalar<T> >&
 {
 
   std::string tname;
-  char tprec;
+  //  char tprec;
+  char tprec[2]={0,'\n'};
   
   QIOStrings::QIOTypeStringFromType(tname, s1);
-  tprec = QIOStrings::QIOPrecisionStringFromType(s1);
+  tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
   
   QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
 						const_cast<char *>(tname.c_str()),
-						&tprec, 
+						tprec, 
 						Nc, Ns, 
 						sizeof(T), s1.size());
 
@@ -894,13 +897,14 @@ void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 
 
     std::string tname;
-    char tprec;
+    //    char tprec;
+    char tprec[2]={0,'\n'};
     
     QIOStrings::QIOTypeStringFromType(tname, s1);
-    tprec = QIOStrings::QIOPrecisionStringFromType(s1);
+    tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
     
     QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
-						  const_cast<char *>(tname.c_str()), &tprec,
+						  const_cast<char *>(tname.c_str()), tprec,
 						  Nc, Ns, 
 						  sizeof(T),1);
 
@@ -955,13 +959,14 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
 {
 
   std::string tname;
-  char tprec;
+  //  char tprec;
+  char tprec[2]={0,'\n'};
   
   QIOStrings::QIOTypeStringFromType(tname, s1);
-  tprec = QIOStrings::QIOPrecisionStringFromType(s1);
+  tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
   
   QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
-						const_cast<char *>(tname.c_str()), &tprec, 
+						const_cast<char *>(tname.c_str()), tprec, 
 						Nc, Ns, 
 						sizeof(T),s1.size());
   
@@ -1050,14 +1055,15 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 {
 
   std::string tname;
-  char tprec;
+  //  char tprec;
+  char tprec[2]={0,'\n'};
   
   QIOStrings::QIOTypeStringFromType(tname, s1);
-  tprec = QIOStrings::QIOPrecisionStringFromType(s1);
+  tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
   
   QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
 						const_cast<char *>(tname.c_str()),
-						&tprec,
+						tprec,
 						Nc, Ns, 
 						sizeof(T),1 );
   
@@ -1101,16 +1107,16 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >
 {
 
   std::string tname;
-  char tprec;
+  char tprec[2] = {0,'\n'};
   
   QIOStrings::QIOTypeStringFromType(tname, s1);
-  tprec = QIOStrings::QIOPrecisionStringFromType(s1);
+  tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
 
   
   
   QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
 						const_cast<char *>(tname.c_str()),
-						&tprec,
+						tprec,
 						Nc, Ns, 
 						sizeof(T), s1.size() );
 
