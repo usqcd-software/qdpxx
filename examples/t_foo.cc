@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.41 2004-08-12 02:28:03 edwards Exp $
+// $Id: t_foo.cc,v 1.42 2005-11-18 04:43:03 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -38,6 +38,21 @@ int main(int argc, char *argv[])
   QDP_PUSH_PROFILE(QDP::getProfileLevel());
 
 #if 1
+  Seed ran1 = 11;
+  Seed ran2 = 13;
+  Seed ran3 = 11;
+
+  Boolean silly = (ran1 != ran1);
+
+  if ( toBool(ran1 != ran2) )
+    QDPIO::cout << "The seeds are different as they should be" << endl;
+
+  if ( toBool(ran1 == ran3) )
+    QDPIO::cout << "The seeds are the same as they should be" << endl;
+#endif
+
+
+#if 0
   {
     LatticeBoolean lbit = true;
     LatticeInt  la;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.9 2005-10-26 15:57:01 edwards Exp $
+// $Id: qdp_primseed.h,v 1.10 2005-11-18 04:43:03 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -237,25 +237,6 @@ struct LatticeScalar<PSeed<T> > {
 // Traits classes to support return types
 //-----------------------------------------------------------------------------
 
-// Default unary(PSeed) -> PSeed
-template<class T1, class Op>
-struct UnaryReturn<PSeed<T1>, Op> {
-  typedef PSeed<typename UnaryReturn<T1, Op>::Type_t>  Type_t;
-};
-
-// Default binary(PSeed,PSeed) -> PSeed
-template<class T1, class T2, class Op>
-struct BinaryReturn<PSeed<T1>, PSeed<T2>, Op> {
-  typedef PSeed<typename BinaryReturn<T1, T2, Op>::Type_t>  Type_t;
-};
-
-// Default binary(PSeed,PScalar) -> PSeed
-template<class T1, class T2, class Op>
-struct BinaryReturn<PSeed<T1>, PScalar<T2>, Op> {
-  typedef PSeed<typename BinaryReturn<T1, T2, Op>::Type_t>  Type_t;
-};
-
-
 // Assignment is different
 template<class T1, class T2 >
 struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpAssign > {
@@ -267,6 +248,42 @@ struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpAssign > {
 //-----------------------------------------------------------------------------
 // Operators
 //-----------------------------------------------------------------------------
+
+// PScalar = (PSeed == PSeed)
+template<class T1, class T2>
+struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpEQ> {
+  typedef PScalar<typename BinaryReturn<T1, T2, OpEQ>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpEQ>::Type_t
+operator==(const PSeed<T1>& l, const PSeed<T2>& r)
+{
+  return 
+    (l.elem(0) == r.elem(0)) && 
+    (l.elem(1) == r.elem(1)) && 
+    (l.elem(2) == r.elem(2)) && 
+    (l.elem(3) == r.elem(3));
+}
+
+
+// PScalar = (Seed != Seed)
+template<class T1, class T2>
+struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpNE> {
+  typedef PScalar<typename BinaryReturn<T1, T2, OpNE>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpNE>::Type_t
+operator!=(const PSeed<T1>& l, const PSeed<T2>& r)
+{
+  return 
+    (l.elem(0) != r.elem(0)) ||
+    (l.elem(1) != r.elem(1)) || 
+    (l.elem(2) != r.elem(2)) || 
+    (l.elem(3) != r.elem(3));
+}
+
 
 /*! \addtogroup primseed
  * @{ 
@@ -294,6 +311,11 @@ struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpAssign > {
  * i3      = i3 + i2/4096
  * dest(3) = mod(i3, 2048);
  */
+template<class T1, class T2>
+struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpMultiply> {
+  typedef PSeed<typename BinaryReturn<T1, T2, OpMultiply>::Type_t>  Type_t;
+};
+
 template<class T1, class T2>
 inline typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpMultiply>::Type_t
 operator*(const PSeed<T1>& s1, const PSeed<T2>& s2)
@@ -346,6 +368,11 @@ operator*(const PSeed<T1>& s1, const PSeed<T2>& s2)
 
 
 template<class T1, class T2>
+struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpBitwiseOr> {
+  typedef PSeed<typename BinaryReturn<T1, T2, OpBitwiseOr>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
 inline typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpBitwiseOr>::Type_t
 operator|(const PSeed<T1>& l, const PSeed<T2>& r)
 {
@@ -363,7 +390,7 @@ operator|(const PSeed<T1>& l, const PSeed<T2>& r)
 
 // Mixed versions
 template<class T1, class T2>
-struct BinaryReturn<PSeed<T1>, PScalar<T2>, OpBitwiseOr > {
+struct BinaryReturn<PSeed<T1>, PScalar<T2>, OpBitwiseOr> {
   typedef PSeed<typename BinaryReturn<T1, T2, OpBitwiseOr>::Type_t>  Type_t;
 };
  
@@ -381,16 +408,15 @@ operator|(const PSeed<T1>& l, const PScalar<T2>& r)
 
 
 
-template<class T1, class T2 >
-struct BinaryReturn<PSeed<T1>, PScalar<T2>, OpLeftShift > {
-  typedef PSeed<typename BinaryReturn<T1, T2, OpLeftShift>::Type_t>  Type_t;
-};
- 
-
 /*! 
  * This left shift implementation will not work properly for shifts
  * greater than 12
  */
+template<class T1, class T2>
+struct BinaryReturn<PSeed<T1>, PScalar<T2>, OpLeftShift> {
+  typedef PSeed<typename BinaryReturn<T1, T2, OpLeftShift>::Type_t>  Type_t;
+};
+
 template<class T1, class T2>
 inline typename BinaryReturn<PSeed<T1>, PScalar<T2>, OpLeftShift>::Type_t
 operator<<(const PSeed<T1>& s1, const PScalar<T2>& s2)
@@ -462,6 +488,11 @@ seedToFloat(const PSeed<T>& s1)
 
 //! dest [some type] = source [some type]
 /*! Portable (internal) way of returning a single site */
+template<class T>
+struct UnaryReturn<PSeed<T>, FnGetSite> {
+  typedef PSeed<typename UnaryReturn<T, FnGetSite>::Type_t>  Type_t;
+};
+
 template<class T>
 inline typename UnaryReturn<PSeed<T>, FnGetSite>::Type_t
 getSite(const PSeed<T>& s1, int innersite)
