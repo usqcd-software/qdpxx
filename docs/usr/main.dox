@@ -1,4 +1,4 @@
-//$Id: main.dox,v 1.2 2005-07-07 16:02:47 zbigniew Exp $
+//$Id: main.dox,v 1.3 2005-11-19 15:00:29 edwards Exp $
 
 /*!
   \mainpage 
@@ -49,7 +49,8 @@ This is the User Guide for the QDP++ data parallel interface for QCD.
 - \ref secspin
 
 - \ref secimplementation
-  - \ref secsupported
+
+- \ref secsupported
   - \ref secsubsets
   - \ref secinfix
   - \ref seccfuncs
