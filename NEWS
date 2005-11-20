@@ -1,3 +1,8 @@
+11/17/2005 -- Robert Edwards
+
+	Version 1.18.0: New seed operatations. Eliminated default PSeed traits.
+        Added some missing functions  floor, ceil, cosh, tanh, sinh.
+
 11/16/2005 -- Balint Joo
 
 	Version 1.17.2: New QIO and QDP++ support for ILDG.
