@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.42 2005-11-18 04:43:03 edwards Exp $
+// $Id: t_foo.cc,v 1.43 2005-11-20 15:58:28 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -22,10 +22,12 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {8,8,4,4};
-  multi1d<int> nrow(Nd);
-  nrow = foo;  // Use only Nd elements
-  Layout::setLattSize(nrow);
+  {
+    const int foo[] = {2,2,2,4};
+    multi1d<int> nrow(Nd);
+    nrow = foo;  // Use only Nd elements
+    Layout::setLattSize(nrow);
+  }
   Layout::create();
 
   XMLFileWriter xml("t_foo.xml");
@@ -38,19 +40,44 @@ int main(int argc, char *argv[])
   QDP_PUSH_PROFILE(QDP::getProfileLevel());
 
 #if 1
-  Seed ran1 = 11;
-  Seed ran2 = 13;
-  Seed ran3 = 11;
+  {
+    Seed ran1 = 11;
+    Seed ran2 = 13;
+    Seed ran3 = 11;
 
-  Boolean silly = (ran1 != ran1);
+    Boolean silly = (ran1 != ran1);
 
-  if ( toBool(ran1 != ran2) )
-    QDPIO::cout << "The seeds are different as they should be" << endl;
+    if ( toBool(ran1 != ran2) )
+      QDPIO::cout << "The seeds are different as they should be" << endl;
 
-  if ( toBool(ran1 == ran3) )
-    QDPIO::cout << "The seeds are the same as they should be" << endl;
+    if ( toBool(ran1 == ran3) )
+      QDPIO::cout << "The seeds are the same as they should be" << endl;
+  }
 #endif
 
+#if 0
+  {
+    LatticeReal rnd1;
+    random(rnd1);
+    const int N = 3;
+    LatticeReal rnd2 = floor(N*rnd1);
+    const Real twopi = 6.283185307179586476925286;
+    Real twopiN = twopi / N;
+    LatticeReal theta = rnd2;
+
+    push(xml, "floortest");
+    write(xml, "theta", theta);
+    pop(xml);
+  }
+#endif
+
+#if 1
+  {
+    LatticeReal rnd1;
+    random(rnd1);
+    LatticeReal rnd2 = cosh(rnd1);
+  }
+#endif
 
 #if 0
   {
