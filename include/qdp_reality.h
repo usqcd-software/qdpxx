@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.27 2005-05-04 14:55:46 edwards Exp $
+// $Id: qdp_reality.h,v 1.28 2005-11-20 15:58:13 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1172,12 +1172,28 @@ atan(const RScalar<T1>& s1)
   return atan(s1.elem());
 }
 
+// Ceil(ing)
+template<class T1>
+inline typename UnaryReturn<RScalar<T1>, FnCeil>::Type_t
+ceil(const RScalar<T1>& s1)
+{
+  return ceil(s1.elem());
+}
+
 // Cos
 template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnCos>::Type_t
 cos(const RScalar<T1>& s1)
 {
   return cos(s1.elem());
+}
+
+// Cosh
+template<class T1>
+inline typename UnaryReturn<RScalar<T1>, FnHypCos>::Type_t
+cosh(const RScalar<T1>& s1)
+{
+  return cosh(s1.elem());
 }
 
 // Exp
@@ -1196,6 +1212,14 @@ fabs(const RScalar<T1>& s1)
   return fabs(s1.elem());
 }
 
+// Floor
+template<class T1>
+inline typename UnaryReturn<RScalar<T1>, FnFloor>::Type_t
+floor(const RScalar<T1>& s1)
+{
+  return floor(s1.elem());
+}
+
 // Log
 template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnLog>::Type_t
@@ -1204,12 +1228,28 @@ log(const RScalar<T1>& s1)
   return log(s1.elem());
 }
 
+// Log10
+template<class T1>
+inline typename UnaryReturn<RScalar<T1>, FnLog10>::Type_t
+log10(const RScalar<T1>& s1)
+{
+  return log10(s1.elem());
+}
+
 // Sin
 template<class T1>
 inline typename UnaryReturn<RScalar<T1>, FnSin>::Type_t
 sin(const RScalar<T1>& s1)
 {
   return sin(s1.elem());
+}
+
+// Sinh
+template<class T1>
+inline typename UnaryReturn<RScalar<T1>, FnHypSin>::Type_t
+sinh(const RScalar<T1>& s1)
+{
+  return sinh(s1.elem());
 }
 
 // Sqrt
@@ -1227,6 +1267,15 @@ tan(const RScalar<T1>& s1)
 {
   return tan(s1.elem());
 }
+
+// Tanh
+template<class T1>
+inline typename UnaryReturn<RScalar<T1>, FnHypTan>::Type_t
+tanh(const RScalar<T1>& s1)
+{
+  return tanh(s1.elem());
+}
+
 
 //! RScalar<T> = pow(RScalar<T> , RScalar<T>)
 template<class T1, class T2>

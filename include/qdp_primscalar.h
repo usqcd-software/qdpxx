@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.21 2005-07-20 11:06:53 bjoo Exp $
+// $Id: qdp_primscalar.h,v 1.22 2005-11-20 15:58:13 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -767,12 +767,28 @@ atan(const PScalar<T1>& s1)
   return atan(s1.elem());
 }
 
+// Ceil(ing)
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnCeil>::Type_t
+ceil(const PScalar<T1>& s1)
+{
+  return ceil(s1.elem());
+}
+
 // Cos
 template<class T1>
 inline typename UnaryReturn<PScalar<T1>, FnCos>::Type_t
 cos(const PScalar<T1>& s1)
 {
   return cos(s1.elem());
+}
+
+// Cosh
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnHypCos>::Type_t
+cosh(const PScalar<T1>& s1)
+{
+  return cosh(s1.elem());
 }
 
 // Exp
@@ -791,6 +807,14 @@ fabs(const PScalar<T1>& s1)
   return fabs(s1.elem());
 }
 
+// Floor
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnFloor>::Type_t
+floor(const PScalar<T1>& s1)
+{
+  return floor(s1.elem());
+}
+
 // Log
 template<class T1>
 inline typename UnaryReturn<PScalar<T1>, FnLog>::Type_t
@@ -799,12 +823,28 @@ log(const PScalar<T1>& s1)
   return log(s1.elem());
 }
 
+// Log10
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnLog10>::Type_t
+log10(const PScalar<T1>& s1)
+{
+  return log10(s1.elem());
+}
+
 // Sin
 template<class T1>
 inline typename UnaryReturn<PScalar<T1>, FnSin>::Type_t
 sin(const PScalar<T1>& s1)
 {
   return sin(s1.elem());
+}
+
+// Sinh
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnHypSin>::Type_t
+sinh(const PScalar<T1>& s1)
+{
+  return sinh(s1.elem());
 }
 
 // Sqrt
@@ -821,6 +861,14 @@ inline typename UnaryReturn<PScalar<T1>, FnTan>::Type_t
 tan(const PScalar<T1>& s1)
 {
   return tan(s1.elem());
+}
+
+// Tanh
+template<class T1>
+inline typename UnaryReturn<PScalar<T1>, FnHypTan>::Type_t
+tanh(const PScalar<T1>& s1)
+{
+  return tanh(s1.elem());
 }
 
 
