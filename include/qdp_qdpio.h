@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.27 2005-11-16 20:33:42 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.28 2005-11-29 19:34:22 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -60,6 +60,7 @@ namespace QIOStrings {
 
   // Catch all base (Hopefully never called)
   template<typename T> 
+  inline
   void QIOTypeStringFromType(std::string& tname, const T& t) 
   {    
     tname = "QDP_GenericType";
@@ -67,6 +68,7 @@ namespace QIOStrings {
   
   // Backward compatibility
   template<typename T>
+  inline
   void QIOTypeStringFromType(std::string& tname, 
 			     const OScalar<T>& t) 
   { 
@@ -74,6 +76,7 @@ namespace QIOStrings {
   }
   
   template<typename T>
+  inline
   void QIOTypeStringFromType(std::string& tname, 
 			     const OLattice<T>& t) 
   {
@@ -82,6 +85,7 @@ namespace QIOStrings {
   
   // Backward compatibility
   template<typename T>
+  inline
   void QIOTypeStringFromType(std::string& tname , 
 			     const multi1d< OScalar<T> >& t) 
   { 
@@ -91,6 +95,7 @@ namespace QIOStrings {
   
   // Backward Compatibility
   template<typename T>
+  inline
   void QIOTypeStringFromType(std::string& tname , 
 			     const multi1d< OLattice<T> >& t) 
   {
@@ -117,26 +122,31 @@ namespace QIOStrings {
   
   
   template<typename T>
+  inline
   char QIOPrecisionStringFromType(const T& t) {
     return QIOSizeToStr(sizeof(typename WordType<T>::Type_t));
   }
   
   template<typename T>
+  inline
   char QIOPrecisionStringFromType(const OScalar<T>& t) {
     return QIOSizeToStr(sizeof(typename WordType<T>::Type_t));
   }
   
   template<typename T>
+  inline
   char QIOPrecisionStringFromType(const multi1d<OScalar<T> >& t) {
     return QIOSizeToStr(sizeof(typename WordType<T>::Type_t));
   }
   
   template<typename T>
+  inline
   char QIOPrecisionStringFromType(const OLattice<T>& t) {
     return QIOSizeToStr(sizeof(typename WordType<T>::Type_t));
   }
   
   template<typename T>
+  inline
   char QIOPrecisionStringFromType(const multi1d<OLattice<T> >& t) {
     return QIOSizeToStr(sizeof(typename WordType<T>::Type_t));
   }
@@ -602,7 +612,7 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
   try { 
 
     std::string tname;
-    char tprec[2]={0,'\n'};
+    char tprec[2]={0,'\0'};
 
     QIOStrings::QIOTypeStringFromType(tname, s1);
     tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
@@ -667,7 +677,7 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OScalar<T> >& s1)
 {
     std::string tname;
     //    char tprec;
-    char tprec[2]={0,'\n'};
+    char tprec[2]={0,'\0'};
 
     QIOStrings::QIOTypeStringFromType(tname, s1);
     tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
@@ -737,7 +747,7 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OScalar<T>& s1)
 {
   std::string tname;
   //  char tprec;
-  char tprec[2]={0,'\n'};
+  char tprec[2]={0,'\0'};
   
   QIOStrings::QIOTypeStringFromType(tname, s1);
   tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
@@ -792,7 +802,7 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OScalar<T> >&
 
   std::string tname;
   //  char tprec;
-  char tprec[2]={0,'\n'};
+  char tprec[2]={0,'\0'};
   
   QIOStrings::QIOTypeStringFromType(tname, s1);
   tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
@@ -898,7 +908,7 @@ void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 
     std::string tname;
     //    char tprec;
-    char tprec[2]={0,'\n'};
+    char tprec[2]={0,'\0'};
     
     QIOStrings::QIOTypeStringFromType(tname, s1);
     tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
@@ -960,7 +970,7 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
 
   std::string tname;
   //  char tprec;
-  char tprec[2]={0,'\n'};
+  char tprec[2]={0,'\0'};
   
   QIOStrings::QIOTypeStringFromType(tname, s1);
   tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
@@ -1056,7 +1066,7 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 
   std::string tname;
   //  char tprec;
-  char tprec[2]={0,'\n'};
+  char tprec[2]={0,'\0'};
   
   QIOStrings::QIOTypeStringFromType(tname, s1);
   tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
@@ -1107,7 +1117,7 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >
 {
 
   std::string tname;
-  char tprec[2] = {0,'\n'};
+  char tprec[2] = {0,'\0'};
   
   QIOStrings::QIOTypeStringFromType(tname, s1);
   tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);

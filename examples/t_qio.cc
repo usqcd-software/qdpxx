@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.24 2005-10-27 03:49:55 edwards Exp $
+// $Id: t_qio.cc,v 1.25 2005-11-29 19:34:22 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -196,7 +196,7 @@ int main(int argc, char **argv)
       QDPIO::cout << "Here is the contents of  file_xml" << endl;
       file_xml.print(cout);
       write(xml_out, "file_xml", file_xml);
-      write(xml_out, "open_from.bad", from.bad());
+      write(xml_out, "open_frombad", from.bad());
 
 #if 0
       if (volfmt == QDPIO_SINGLEFILE)
@@ -291,7 +291,7 @@ int main(int argc, char **argv)
       }
 
       close(from);   // reading
-
+      delete from_ptr; // delete it to keep valgrind happy.
       pop(xml_out);
     }
 
