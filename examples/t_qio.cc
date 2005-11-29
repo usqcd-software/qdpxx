@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.25 2005-11-29 19:34:22 bjoo Exp $
+// $Id: t_qio.cc,v 1.26 2005-11-29 21:07:14 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -13,7 +13,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,8};
+  const int foo[] = {4,4,8,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   QDP_serialparallel_t serpar = QDPIO_SERIAL;
   string test_file;
 
-  for(int i=0; i < 3; ++i)
+  for(int i=0; i < 2; ++i)
   {
     QDP_volfmt_t volfmt;
 
@@ -194,7 +194,11 @@ int main(int argc, char **argv)
       QDPFileReader& from = *from_ptr;
 
       QDPIO::cout << "Here is the contents of  file_xml" << endl;
-      file_xml.print(cout);
+      std::ostringstream outbuf;
+      file_xml.print(outbuf);
+      QDPIO::cout << outbuf.str() << endl << flush;
+      
+
       write(xml_out, "file_xml", file_xml);
       write(xml_out, "open_frombad", from.bad());
 
@@ -206,7 +210,10 @@ int main(int argc, char **argv)
 	write(xml_out, "first_from.bad", from.bad());
 
         QDPIO::cout << "Here is the contents of first  record_xml" << endl;
-        record_xml.print(cout);
+	//        record_xml.print(cout);
+	std::ostringstream ost;
+	record_xml.print(ost);
+	QDPIO::cout << ost.str() << endl << flush;
 
         Double fsum = 0;
         for(int i=0; i < ff.size(); ++i)
@@ -226,7 +233,10 @@ int main(int argc, char **argv)
 	write(xml_out, "second_from.bad", from.bad());
 
 	QDPIO::cout << "Here is the contents of second  record_xml" << endl;
-	record_xml.print(cout);
+	std::ostringstream ost;
+	record_xml.print(ost);
+	QDPIO::cout << ost.str() << endl << flush;
+
 
 	Real atest = Real(innerProductReal(a,shift(a,FORWARD,0)));
 	QDPIO::cout << "Second record check: innerProduct(a,shift(a,0))=" 
@@ -247,7 +257,10 @@ int main(int argc, char **argv)
 	write(xml_out, "third_from.bad", from.bad());
 
 	QDPIO::cout << "Here is the contents of third  record_xml" << endl;
-	record_xml.print(cout);
+	std::ostringstream ost;
+	record_xml.print(ost);
+	QDPIO::cout << ost.str() << endl << flush;
+
 
 	Real btest = Real(innerProductReal(b,shift(b,FORWARD,0)));
 	QDPIO::cout << "Third record check: innerProduct(b,shift(b,0))=" 
@@ -291,7 +304,7 @@ int main(int argc, char **argv)
       }
 
       close(from);   // reading
-      delete from_ptr; // delete it to keep valgrind happy.
+      //      delete from_ptr; // delete it to keep valgrind happy.
       pop(xml_out);
     }
 
