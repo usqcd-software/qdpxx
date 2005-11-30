@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.12 2005-07-04 11:59:37 bjoo Exp $
+// $Id: qdp_multi.h,v 1.13 2005-11-30 20:53:51 bjoo Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -463,7 +463,7 @@ public:
   //! Equal operator uses underlying = of T
   multi3d<T>& operator=(const multi3d<T>& s1)
     {
-      resize(s1.size3(), s1.size2(), s1.size());
+      resize(s1.size3(), s1.size2(), s1.size1());
 
       for(int i=0; i < sz; ++i)
 	F[i] = s1.F[i];
