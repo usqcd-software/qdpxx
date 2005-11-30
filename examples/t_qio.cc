@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.26 2005-11-29 21:07:14 bjoo Exp $
+// $Id: t_qio.cc,v 1.27 2005-11-30 22:16:46 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   QDP_serialparallel_t serpar = QDPIO_SERIAL;
   string test_file;
 
-  for(int i=0; i < 2; ++i)
+  for(int i=0; i < 3; ++i)
   {
     QDP_volfmt_t volfmt;
 

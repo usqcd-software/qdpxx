@@ -1,7 +1,10 @@
 #ifndef UNITTEST_H
 #define UNITTEST_H
 
+#include "qdp.h"
 #include <vector>
+
+using namespace QDP;
 
 namespace Assertions { 
   template<typename T>
