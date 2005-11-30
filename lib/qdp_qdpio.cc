@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.18 2005-11-11 21:18:54 bjoo Exp $
+// $Id: qdp_qdpio.cc,v 1.19 2005-11-30 20:50:39 bjoo Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -32,7 +32,10 @@ static void get_coords(int coord[], int node, int linear)
     coord[i] = crd[i];
 }
 
-
+static int get_sites_on_node(int node) 
+{
+  return Layout::sitesOnNode();
+}
 //-----------------------------------------------------------------------------
 // QDP QIO support
 QDPFileReader::QDPFileReader() {iop=false;}
@@ -55,6 +58,7 @@ void QDPFileReader::open(XMLReader& file_xml,
   layout.node_number = &get_node_number;
   layout.node_index  = &get_node_index;
   layout.get_coords  = &get_coords;
+  layout.num_sites = &get_sites_on_node;
   layout.latsize = latsize;
   layout.latdim = Nd; 
   layout.volume = Layout::vol(); 
@@ -209,6 +213,7 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   layout.node_number = &get_node_number;
   layout.node_index  = &get_node_index;
   layout.get_coords  = &get_coords;
+  layout.num_sites = &get_sites_on_node;
   layout.latsize = latsize;
   layout.latdim = Nd; 
   layout.volume = Layout::vol(); 
