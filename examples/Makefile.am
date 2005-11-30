@@ -27,7 +27,7 @@ HDRS=examples.h
 # 
 check_PROGRAMS = t_skeleton t_io t_mesplq \
       t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
-      t_cugauge t_transpose_spin
+      t_cugauge t_transpose_spin t_partfile
 
 EXTRA_PROGRAMS  = t_qio_factory t_binx 
 
@@ -55,6 +55,9 @@ t_qio_SOURCES = t_qio.cc $(HDRS)
 t_qio_DEPENDENCIES = build_lib rebuild_other_libs
 t_qio_factory_SOURCES = t_qio_factory.cc $(HDRS)
 t_qio_factory_DEPENDENCIES = build_lib rebuild_other_libs
+t_partfile_SOURCES = t_partfile.cc $(HDRS) \
+	unittest.h testOpenPartFile.h
+t_partfile_DEPENDENCIES = build_lib rebuild_other_libs
 
 t_basic_SOURCES = t_basic.cc
 t_shift_SOURCES = t_shift.cc $(HDRS)
@@ -81,6 +84,7 @@ t_cugauge_SOURCES = t_cugauge.cc mesplq.cc $(HDRS)
 t_transpose_spin_SOURCES = t_transpose_spin.cc $(HDRS)
 
 nersc2ildg_SOURCES = nersc2ildg.cc $(HDRS)
+
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target

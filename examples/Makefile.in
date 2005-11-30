@@ -13,7 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_transpose_spin_SOURCES) $(t_xml_SOURCES)
+SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_partfile_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) $(t_transpose_spin_SOURCES) $(t_xml_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -39,7 +39,8 @@ check_PROGRAMS = t_skeleton$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
 	t_xml$(EXEEXT) t_remote$(EXEEXT) t_entry$(EXEEXT) \
 	t_nersc$(EXEEXT) t_shift$(EXEEXT) t_exotic$(EXEEXT) \
 	t_basic$(EXEEXT) t_qio$(EXEEXT) t_cugauge$(EXEEXT) \
-	t_transpose_spin$(EXEEXT) $(am__EXEEXT_2) $(am__EXEEXT_3)
+	t_transpose_spin$(EXEEXT) t_partfile$(EXEEXT) $(am__EXEEXT_2) \
+	$(am__EXEEXT_3)
 EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_binx$(EXEEXT) \
 	$(am__EXEEXT_1) nersc2ildg$(EXEEXT)
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_1 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
@@ -145,6 +146,9 @@ am_t_nersc_OBJECTS = t_nersc.$(OBJEXT) mesplq.$(OBJEXT) \
 t_nersc_OBJECTS = $(am_t_nersc_OBJECTS)
 t_nersc_LDADD = $(LDADD)
 t_nersc_DEPENDENCIES =
+am_t_partfile_OBJECTS = t_partfile.$(OBJEXT) $(am__objects_1)
+t_partfile_OBJECTS = $(am_t_partfile_OBJECTS)
+t_partfile_LDADD = $(LDADD)
 am_t_qdp_OBJECTS = t_qdp.$(OBJEXT) formfac_w.$(OBJEXT) \
 	dslashm_w.$(OBJEXT) baryon_w.$(OBJEXT) mesons_w.$(OBJEXT) \
 	mesplq.$(OBJEXT) reunit.$(OBJEXT) $(am__objects_1)
@@ -201,20 +205,21 @@ SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) $(t_binx_SOURCES) \
 	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
 	$(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_io_SOURCES) \
 	$(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) \
-	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
-	$(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) \
-	$(t_spectrum_SOURCES) $(t_transpose_spin_SOURCES) \
-	$(t_xml_SOURCES)
+	$(t_partfile_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) \
+	$(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
+	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
+	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES)
 DIST_SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) \
 	$(t_binx_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) \
 	$(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) \
 	$(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_dslashm_SOURCES) \
 	$(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) \
 	$(t_formfac_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) \
-	$(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_qdp_SOURCES) \
-	$(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
-	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
-	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES)
+	$(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_partfile_SOURCES) \
+	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
+	$(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) \
+	$(t_spectrum_SOURCES) $(t_transpose_spin_SOURCES) \
+	$(t_xml_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -377,6 +382,10 @@ t_qio_SOURCES = t_qio.cc $(HDRS)
 t_qio_DEPENDENCIES = build_lib rebuild_other_libs
 t_qio_factory_SOURCES = t_qio_factory.cc $(HDRS)
 t_qio_factory_DEPENDENCIES = build_lib rebuild_other_libs
+t_partfile_SOURCES = t_partfile.cc $(HDRS) \
+	unittest.h testOpenPartFile.h
+
+t_partfile_DEPENDENCIES = build_lib rebuild_other_libs
 t_basic_SOURCES = t_basic.cc
 t_shift_SOURCES = t_shift.cc $(HDRS)
 t_io_SOURCES = t_io.cc $(HDRS)
@@ -489,6 +498,9 @@ t_mesplq$(EXEEXT): $(t_mesplq_OBJECTS) $(t_mesplq_DEPENDENCIES)
 t_nersc$(EXEEXT): $(t_nersc_OBJECTS) $(t_nersc_DEPENDENCIES) 
 	@rm -f t_nersc$(EXEEXT)
 	$(CXXLINK) $(t_nersc_LDFLAGS) $(t_nersc_OBJECTS) $(t_nersc_LDADD) $(LIBS)
+t_partfile$(EXEEXT): $(t_partfile_OBJECTS) $(t_partfile_DEPENDENCIES) 
+	@rm -f t_partfile$(EXEEXT)
+	$(CXXLINK) $(t_partfile_LDFLAGS) $(t_partfile_OBJECTS) $(t_partfile_LDADD) $(LIBS)
 t_qdp$(EXEEXT): $(t_qdp_OBJECTS) $(t_qdp_DEPENDENCIES) 
 	@rm -f t_qdp$(EXEEXT)
 	$(CXXLINK) $(t_qdp_LDFLAGS) $(t_qdp_OBJECTS) $(t_qdp_LDADD) $(LIBS)
@@ -552,6 +564,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_linalg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_nersc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_partfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_qdp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_qio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_qio_factory.Po@am__quote@
@@ -741,6 +754,7 @@ uninstall-am: uninstall-info-am
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am
+
 
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
