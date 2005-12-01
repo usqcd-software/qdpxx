@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.28 2005-11-29 19:34:22 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.29 2005-12-01 02:21:28 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -54,6 +54,21 @@ enum QDP_iostate_t
   QDPIO_badbit   = 0x0100,
 };
 
+//! A little namespace to mark I/O nodes
+namespace SingleFileIONode { 
+  int IONode(int node);
+  int masterIONode(void);
+}
+
+namespace MultiFileIONode {
+  int IONode(int node);
+  int masterIONode(void);
+}
+
+namespace PartFileIONode { 
+  int IONode(int node);
+  int masterIONode(void);
+}
 
 //! A little namespace to map the QDP types to the right strings
 namespace QIOStrings { 

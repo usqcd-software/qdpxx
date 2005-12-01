@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.19 2005-11-30 20:50:39 bjoo Exp $
+// $Id: qdp_qdpio.cc,v 1.20 2005-12-01 02:21:28 bjoo Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -35,6 +35,36 @@ static void get_coords(int coord[], int node, int linear)
 static int get_sites_on_node(int node) 
 {
   return Layout::sitesOnNode();
+}
+
+//! A little namespace to mark I/O nodes
+namespace SingleFileIONode { 
+  int IONode(int node) {
+    return 0;
+  }
+
+  int masterIONode(void) {
+    return 0;
+  }
+}
+
+namespace MultiFileIONode {
+  int IONode(int node) { 
+    return 0; 
+  }
+
+  int masterIONode(void) { 
+    return 0;
+  }
+}
+
+namespace PartFileIONode { 
+  int IONode(int node) {
+    return 0;
+  }
+  int masterIONode(void) { 
+    return 0;
+  }
 }
 //-----------------------------------------------------------------------------
 // QDP QIO support

@@ -1,10 +1,7 @@
 #ifndef UNITTEST_H
 #define UNITTEST_H
 
-#include "qdp.h"
 #include <vector>
-
-using namespace QDP;
 
 namespace Assertions { 
   template<typename T>
@@ -32,7 +29,6 @@ class TestCase {
 private:
 public:
   virtual void run(void) = 0;
-  virtual const std::string getName(void) const = 0;
 };
 
 // A test fixture - that does extra set up before and after the test
@@ -41,7 +37,6 @@ public:
   virtual void setUp() {} ;
   virtual void tearDown() {};
   virtual void runTest() {};
-  virtual const std::string getName() const = 0; 
   
   void run(void) { 
       setUp();
@@ -61,9 +56,18 @@ private:
   int num_unexpected_failed;
   int num_tried;
 
-  std::vector<TestCase*> tests;
-  
+  enum Success { SUCCESS, FAIL, ERROR };
 
+  struct TestItem { 
+    TestItem(TestCase *t, const std::string& n) : test(t), name(n) {};
+    ~TestItem() { delete test; }
+    TestCase* test;
+    const std::string name;
+    Success success;
+  };
+
+  std::vector<TestItem*> tests;
+  
  public: 
   TestRunner(int* argc, char ***argv, const int latdims[]) : 
     num_success(0),
@@ -78,57 +82,84 @@ private:
     Layout::create();
   }
 
-  const std::string getName() const { return string("TestRunner"); }
-
   void run(void) {    
      for( int i=0; i != tests.size(); i++) {
-      // Run ith test. We have a vector of pointer so must dereference tests[i]
       run(*(tests[i]));
     }
   }  
-
+  
   
   // Extra Features: Add a test
-  void addTest(TestCase* t) { 
+  void addTest(TestCase* t, const std::string& name) { 
     if( t != 0x0 ) { 
-      tests.push_back(t);
+      TestItem* ti = new TestItem(t, name);
+
+      tests.push_back(ti);
     }
   }
-
+  
   // Run a particular test
-  void run(TestCase& t) { 
-
+  void run(TestItem& t) { 
+    
     try {
-      QDPIO::cout << "Running Test: " << t.getName();
+      QDPIO::cout << "Running Test: " << t.name;
       num_tried++;
-      t.run();
+      t.test->run();
       QDPIO::cout << " OK" << endl;
-      num_success++;
+      t.success = SUCCESS;
     }
     catch( std::exception ) { 
-      QDPIO::cout << " FAILED" << endl;
-      num_failed++;
+      QDP_info("FAILED\n");
+      t.success = FAIL;
     }
     catch(...) { 
-      QDPIO::cout << " UNEXPECTED FAILURE" << endl;
-      num_failed++;
-      num_unexpected_failed++;
-
+      QDP_info("UNEXPECTED FAILURE\n");
+      t.success = ERROR;
     } 
   }
-
+  
+  // Compute the number of nodes on which condition is true
+  int trueOnNodes( bool condition ) {
+    int summand;
+    if ( condition == true ) {
+      summand = 1;
+    }
+    else { 
+      summand = 0;
+    }
+    Internal::globalSum(summand);
+    return summand;
+  }
+  
+  bool trueEverywhere( bool condition ) {
+    return ( trueOnNodes(condition) == Layout::numNodes() );
+  }
 
   void summary() { 
     QDPIO::cout << "Summary: " << num_tried <<   " Tests Tried" << endl;
-    QDPIO::cout << "         " << num_success << " Tests Succeeded " << endl;
-    QDPIO::cout << "         " << num_failed  << " Tests Failed " << endl;
-    QDPIO::cout << "of which " << num_unexpected_failed << " Tests Failed in Unexpected Ways" << endl;
+    int success = 0;
+    int failure = 0;
+    int odd = 0;
+    for(int i=0; i < tests.size(); i++) { 
+      if( trueEverywhere(tests[i]->success == SUCCESS) ) {
+	success++;
+      }
+      else {
+	failure++;
+	if( trueOnNodes(tests[i]->success == ERROR) > 0) { 
+	  odd++;
+	}
+      }
+    }
+    QDPIO::cout << "         " << success << " Tests Succeeded " << endl;
+    QDPIO::cout << "         " << failure  << " Tests Failed on some nodes" <<  endl;
+    QDPIO::cout << "of which " << odd << " Tests Failed in Unexpected Ways on some nodes" << endl;
   }
 
 
   ~TestRunner() { 
     
-    for( std::vector<TestCase*>::iterator i=tests.begin(); 
+    for( std::vector<TestItem*>::iterator i=tests.begin(); 
 	 i != tests.end(); i++) {
       delete(*i);
     }

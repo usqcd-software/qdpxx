@@ -15,11 +15,6 @@ private:
   XMLBufferWriter file_xml;
 
 public:
-
-  const std::string getName() const {
-    return string("TestOpenPartFile");
-  }
-
   TestOpenPartFile(void) :
     file_name(string("t_pf_open.lime")),
     serpar(QDPIO_SERIAL),

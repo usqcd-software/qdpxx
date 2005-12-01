@@ -1,4 +1,4 @@
-// $Id: t_partfile.cc,v 1.1 2005-11-30 00:56:10 bjoo Exp $
+// $Id: t_partfile.cc,v 1.2 2005-12-01 02:21:28 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -8,6 +8,7 @@
 
 // The Unit Tests Themselves
 #include "testOpenPartFile.h"
+#include "testIONode.h"
 
 using namespace QDP;
 
@@ -20,8 +21,14 @@ int main(int argc, char **argv)
   TestRunner  testjig(&argc, &argv, latdims);
   
   // Add a test -- to open a partfile
-  testjig.addTest(new TestOpenPartFile());
+  testjig.addTest(new TestOpenPartFile(), string("TestOpenPartFile"));
 
+  testjig.addTest(new TestSingleFileIONode(), string("TestSingleFileIONode"));
+  testjig.addTest(new TestMultiFileIONode(), string("TestMultiFileIONode"));
+  testjig.addTest(new TestPartFileIONode1(), string("TestPartFileIONode1"));
+  testjig.addTest(new TestPartFileIONode2(), string("TestPartFileIONode2"));
+  testjig.addTest(new TestPartFileIONode3(), string("TestPartFileIONode3"));
+  
   // Run all tests
   testjig.run();
 
