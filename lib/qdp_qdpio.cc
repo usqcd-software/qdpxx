@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.22 2005-12-01 03:08:54 bjoo Exp $
+// $Id: qdp_qdpio.cc,v 1.23 2005-12-01 17:48:32 bjoo Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -37,7 +37,10 @@ static int get_sites_on_node(int node)
   return Layout::sitesOnNode();
 }
 
+
 //! A little namespace to mark I/O nodes
+// This was originally so that we could use part file better
+// but now is probably unused.
 namespace SingleFileIONode { 
   int IONode(int node) {
     return 0;
@@ -71,6 +74,8 @@ namespace PartFileIONode {
     return DML_master_io_node();
   }
 }
+
+
 //-----------------------------------------------------------------------------
 // QDP QIO support
 QDPFileReader::QDPFileReader() {iop=false;}
@@ -103,6 +108,7 @@ void QDPFileReader::open(XMLReader& file_xml,
 
   // Initialize string objects 
   QIO_String *xml_c  = QIO_string_create();
+
 
   // Call QIO read
   // At this moment, serpar (which is an enum in QDP++) is ignored here.
@@ -340,7 +346,28 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
     QIO_string_set(oflag.ildgLFN, data_LFN.c_str());
   }
 
+#if 1
+  // This is the QIO Way - older way 
+  if ((qio_out = QIO_open_write(xml_c, path.c_str(), 
+					volfmt, 
+					&layout, 
+					&oflag)) == NULL )
+  {
+    iostate = QDPIO_badbit;  // not helpful
 
+    QDPIO::cerr << "QDPFileWriter: failed to open file " << path << endl;
+    QDP_abort(1);  // just bail. Not sure I want this. This is not stream semantics
+  }
+  else
+  {
+    iostate = QDPIO_goodbit;
+  }
+
+#else 
+  /*! This was an attempt to control the choking to I/O nodes
+   *  I have deactivated it because I am not sure how to choke
+   *  the readers to do the same thing
+   */
   if ((qio_out = QIO_generic_open_write(path.c_str(), 
 					volfmt, 
 					&layout, 
@@ -369,6 +396,7 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   else {
     iostate = QDPIO_goodbit;
   }
+#endif 
 
   // Free memory -- this is OK< as it should'of been copied
   QIO_string_destroy(oflag.ildgLFN);
