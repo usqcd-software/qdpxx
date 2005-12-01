@@ -1,7 +1,10 @@
 #ifndef UNITTEST_H
 #define UNITTEST_H
 
+#include "qdp.h"
 #include <vector>
+
+using namespace QDP; 
 
 namespace Assertions { 
   template<typename T>
@@ -105,17 +108,28 @@ private:
       QDPIO::cout << "Running Test: " << t.name;
       num_tried++;
       t.test->run();
-      QDPIO::cout << " OK" << endl;
       t.success = SUCCESS;
     }
     catch( std::exception ) { 
-      QDP_info("FAILED\n");
       t.success = FAIL;
     }
     catch(...) { 
-      QDP_info("UNEXPECTED FAILURE\n");
       t.success = ERROR;
     } 
+
+    bool test_success = trueEverywhere( t.success == SUCCESS );
+    if( test_success == true ) { 
+      QDPIO::cout << "  OK" << endl;
+    }
+    else { 
+       
+      if( trueOnNodes( t.success == ERROR )  > 0 ) { 
+	QDPIO::cout << "  ERROR" << endl;
+      }
+      else { 
+	QDPIO::cout << "  FAIL" << endl;
+      }
+    }
   }
   
   // Compute the number of nodes on which condition is true

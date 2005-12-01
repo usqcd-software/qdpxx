@@ -1,4 +1,4 @@
-// $Id: t_partfile.cc,v 1.2 2005-12-01 02:21:28 bjoo Exp $
+// $Id: t_partfile.cc,v 1.3 2005-12-01 02:47:52 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -22,7 +22,6 @@ int main(int argc, char **argv)
   
   // Add a test -- to open a partfile
   testjig.addTest(new TestOpenPartFile(), string("TestOpenPartFile"));
-
   testjig.addTest(new TestSingleFileIONode(), string("TestSingleFileIONode"));
   testjig.addTest(new TestMultiFileIONode(), string("TestMultiFileIONode"));
   testjig.addTest(new TestPartFileIONode1(), string("TestPartFileIONode1"));

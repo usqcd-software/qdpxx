@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.20 2005-12-01 02:21:28 bjoo Exp $
+// $Id: qdp_qdpio.cc,v 1.21 2005-12-01 02:47:52 bjoo Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -50,20 +50,25 @@ namespace SingleFileIONode {
 
 namespace MultiFileIONode {
   int IONode(int node) { 
-    return 0; 
+    return node; 
   }
 
   int masterIONode(void) { 
-    return 0;
+    return DML_master_io_node();
   }
 }
 
 namespace PartFileIONode { 
   int IONode(int node) {
-    return 0;
+    multi1d<int> my_coords = Layout::getLogicalCoordFrom(node);
+    multi1d<int> io_node_coords(my_coords.size());
+    for(int i=0; i < my_coords.size(); i++) { 
+      io_node_coords[i] = 2*(my_coords[i]/2);
+    }
+    return Layout::getNodeNumberFrom(io_node_coords);
   }
   int masterIONode(void) { 
-    return 0;
+    return DML_master_io_node();
   }
 }
 //-----------------------------------------------------------------------------
