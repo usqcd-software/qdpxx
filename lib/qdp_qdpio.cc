@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.21 2005-12-01 02:47:52 bjoo Exp $
+// $Id: qdp_qdpio.cc,v 1.22 2005-12-01 03:08:54 bjoo Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -239,6 +239,11 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
 			 QDP_filemode_t qdp_mode, 
 			 const std::string& data_LFN) 
 {
+
+  // Yucky C style callback functions
+  int (*ionodefunc)(int);
+  int (*master_io_nodefunc)(void);
+
   QIO_Layout layout;
   int latsize[Nd];
 
@@ -276,13 +281,20 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   {
   case QDPIO_SINGLEFILE:
     volfmt = QIO_SINGLEFILE;
+    ionodefunc = &(SingleFileIONode::IONode);
+    master_io_nodefunc = &(SingleFileIONode::masterIONode);
     break;
     
   case QDPIO_MULTIFILE:
     volfmt = QIO_MULTIFILE;
+    ionodefunc = &(MultiFileIONode::IONode);
+    master_io_nodefunc = &(MultiFileIONode::masterIONode);
+
     break;
 
   case QDPIO_PARTFILE:
+    ionodefunc = &(PartFileIONode::IONode);
+    master_io_nodefunc = &(PartFileIONode::masterIONode);
     volfmt = QIO_PARTFILE;
     break;
 
@@ -329,8 +341,12 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   }
 
 
-  if ((qio_out = QIO_open_write(xml_c, path.c_str(), 
-				volfmt, &layout, &oflag)) == NULL)
+  if ((qio_out = QIO_generic_open_write(path.c_str(), 
+					volfmt, 
+					&layout, 
+					&oflag,
+					ionodefunc,
+					master_io_nodefunc)) == NULL)
   {
     iostate = QDPIO_badbit;  // not helpful
 
@@ -339,6 +355,18 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   }
   else
   {
+    iostate = QDPIO_goodbit;
+  }
+
+  DML_sync();
+
+  int status = QIO_write_file_header(qio_out, xml_c);
+  if( status != QIO_SUCCESS ) { 
+    iostate = QDPIO_badbit;
+    QDPIO::cerr << "QDPFileWriter: failed to write File XML " << endl;
+    QDP_abort(1);  // just bail. Not sure I want this. This is not stream semantics
+  }
+  else {
     iostate = QDPIO_goodbit;
   }
 
