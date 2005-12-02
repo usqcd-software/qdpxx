@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.23 2005-12-01 17:48:32 bjoo Exp $
+// $Id: qdp_qdpio.cc,v 1.24 2005-12-02 14:14:36 bjoo Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -38,6 +38,18 @@ static int get_sites_on_node(int node)
 }
 
 
+#if 0
+// This code was to support better partfile IO on the QCDOC 
+// However I have commented it out because it is not clear
+// at this time in the API how to pass this information 
+// town to the QIO. A straightforward hack is to modify 
+// the QIO_Layout structure, but we have not actually agreed
+// with Carleton that that is what I should do. The placement
+// of the choice for a particular kind of partitioning scheme
+// is not yet present -- will it be in QIO, will it be in QMP?
+// will it be here? WIll it be configure/runtime? We just don't
+// know.
+
 //! A little namespace to mark I/O nodes
 // This was originally so that we could use part file better
 // but now is probably unused.
@@ -63,18 +75,20 @@ namespace MultiFileIONode {
 
 namespace PartFileIONode { 
   int IONode(int node) {
+    // This code supports
     multi1d<int> my_coords = Layout::getLogicalCoordFrom(node);
     multi1d<int> io_node_coords(my_coords.size());
     for(int i=0; i < my_coords.size(); i++) { 
       io_node_coords[i] = 2*(my_coords[i]/2);
     }
-    return Layout::getNodeNumberFrom(io_node_coords);
+    return Layout::getNodeNumberFrom(io_node_coords); 
+    return DML_io_node(node);
   }
   int masterIONode(void) { 
     return DML_master_io_node();
   }
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 // QDP QIO support
@@ -287,21 +301,22 @@ void QDPFileWriter::open(XMLBufferWriter& file_xml,
   {
   case QDPIO_SINGLEFILE:
     volfmt = QIO_SINGLEFILE;
-    ionodefunc = &(SingleFileIONode::IONode);
-    master_io_nodefunc = &(SingleFileIONode::masterIONode);
+    //    ionodefunc = &(SingleFileIONode::IONode);
+    //    master_io_nodefunc = &(SingleFileIONode::masterIONode);
     break;
     
   case QDPIO_MULTIFILE:
     volfmt = QIO_MULTIFILE;
-    ionodefunc = &(MultiFileIONode::IONode);
-    master_io_nodefunc = &(MultiFileIONode::masterIONode);
+    // ionodefunc = &(MultiFileIONode::IONode);
+    // master_io_nodefunc = &(MultiFileIONode::masterIONode);
 
     break;
 
   case QDPIO_PARTFILE:
-    ionodefunc = &(PartFileIONode::IONode);
-    master_io_nodefunc = &(PartFileIONode::masterIONode);
     volfmt = QIO_PARTFILE;
+    //ionodefunc = &(PartFileIONode::IONode);
+    // master_io_nodefunc = &(PartFileIONode::masterIONode);
+    
     break;
 
   default: 

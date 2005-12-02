@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.29 2005-12-01 02:21:28 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.30 2005-12-02 14:14:36 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -54,118 +54,118 @@ enum QDP_iostate_t
   QDPIO_badbit   = 0x0100,
 };
 
-//! A little namespace to mark I/O nodes
+#if 0
+// This code was to support better partfile IO on the QCDOC 
+// However I have commented it out because it is not clear
+// at this time in the API how to pass this information 
+// town to the QIO. A straightforward hack is to modify 
+// the QIO_Layout structure, but we have not actually agreed
+// with Carleton that that is what I should do. The placement
+// of the choice for a particular kind of partitioning scheme
+// is not yet present -- will it be in QIO, will it be in QMP?
+// will it be here? WIll it be configure/runtime? We just don't
+// know.
 namespace SingleFileIONode { 
   int IONode(int node);
   int masterIONode(void);
-}
+};
 
 namespace MultiFileIONode {
   int IONode(int node);
   int masterIONode(void);
-}
+};
 
 namespace PartFileIONode { 
   int IONode(int node);
   int masterIONode(void);
-}
+};
+#endif
 
-//! A little namespace to map the QDP types to the right strings
-namespace QIOStrings { 
+//! QIO Type and precision strings. 
+//  Using the magic of C++ I can define the right type and precision
+//  strings i Need to pass to QIO using templates. To do this I need
+//  templated structures with static members.
 
-  // Catch all base (Hopefully never called)
-  template<typename T> 
-  inline
-  void QIOTypeStringFromType(std::string& tname, const T& t) 
-  {    
-    tname = "QDP_GenericType";
-  }
-  
-  // Backward compatibility
-  template<typename T>
-  inline
-  void QIOTypeStringFromType(std::string& tname, 
-			     const OScalar<T>& t) 
-  { 
-    tname  = "Scalar";
-  }
-  
-  template<typename T>
-  inline
-  void QIOTypeStringFromType(std::string& tname, 
-			     const OLattice<T>& t) 
-  {
-    tname  = "Lattice";
-  }
-  
-  // Backward compatibility
-  template<typename T>
-  inline
-  void QIOTypeStringFromType(std::string& tname , 
-			     const multi1d< OScalar<T> >& t) 
-  { 
-    tname  = "Scalar";
-  }
-  
-  
-  // Backward Compatibility
-  template<typename T>
-  inline
-  void QIOTypeStringFromType(std::string& tname , 
-			     const multi1d< OLattice<T> >& t) 
-  {
-    tname  = "Lattice";
-  }
-    
-  
-  // Specialisation
-  // Gauge Field Type: multi1d<LatticeColorMatrix> 
-  // Need specific type string to output in ILDG format with QIO
-  // However I cannot inline these. They have to go into qdp_qio_strings.cc
-  // If I try to inline them here, I get linkage errors with multiple
-  // definitions. I wonder why?
-  template<>
-  void QIOTypeStringFromType(std::string& tname , 
-			     const multi1d< LatticeColorMatrixF3 >& t );
+//! Catch all case
+template<typename T>
+struct QIOStringTraits 
+{
+  static char* tname;
+  static char* tprec;
+};
 
-  template<> 
-  void QIOTypeStringFromType(std::string& tname , 
-			     const multi1d< LatticeColorMatrixD3 >& t);
+//! Partial(?) Specialisation for OLattice Objects
+template<typename T>
+struct QIOStringTraits<OLattice<T> >
+{
+  static char* tname;
+  static char* tprec;
+};
+
+//! Partial(?) Specialisation for OScalar Objects
+template<typename T>
+struct QIOStringTraits<OScalar<T> >
+{
+  static char* tname;
+  static char* tprec;
+};
+
+//! Partial(?) Specialisation for OLattice Objects
+template<typename T>
+struct QIOStringTraits<multi1d< OLattice<T> > >
+{
+  static char* tname;
+  static char* tprec;
+};
+
+//! Partial(?) Specialisation for OScalar Objects
+template<typename T>
+struct QIOStringTraits<multi1d< OScalar<T> > >
+{
+  static char* tname;
+  static char* tprec;
+};
+
+//! Generic type
+template<typename T>
+char* QIOStringTraits<T>::tname = "QDP_GenericType";
+
+//! Lattice Type
+template<typename T> 
+char* QIOStringTraits< OLattice<T> >::tname = "Lattice";
+
+//! Scalar Type
+template<typename T> 
+char* QIOStringTraits< OScalar<T> >::tname = "Scalar";
+
+//! multi1d<LatticeType>
+template<typename T> 
+char* QIOStringTraits< multi1d<OLattice<T> > >::tname = "Lattice";
+
+//! multi1d<ScalarType>
+template<typename T> 
+char* QIOStringTraits< multi1d<OScalar<T> > >::tname = "Scalar";
+
+//! Unknown precision string
+template<typename T>
+char*  QIOStringTraits<T>::tprec = "U"; 
+
+// Full specialisations deferred to the qdp_qio_strings.cc file
+template<>
+char* QIOStringTraits<float>::tprec;
+
+template<>
+char* QIOStringTraits<double>::tprec;
+
+template<>
+char* QIOStringTraits<int>::tprec;
   
-    
-  char QIOSizeToStr(size_t size);
+template<>
+char* QIOStringTraits< multi1d<LatticeColorMatrixF3> >::tname;
   
-  
-  template<typename T>
-  inline
-  char QIOPrecisionStringFromType(const T& t) {
-    return QIOSizeToStr(sizeof(typename WordType<T>::Type_t));
-  }
-  
-  template<typename T>
-  inline
-  char QIOPrecisionStringFromType(const OScalar<T>& t) {
-    return QIOSizeToStr(sizeof(typename WordType<T>::Type_t));
-  }
-  
-  template<typename T>
-  inline
-  char QIOPrecisionStringFromType(const multi1d<OScalar<T> >& t) {
-    return QIOSizeToStr(sizeof(typename WordType<T>::Type_t));
-  }
-  
-  template<typename T>
-  inline
-  char QIOPrecisionStringFromType(const OLattice<T>& t) {
-    return QIOSizeToStr(sizeof(typename WordType<T>::Type_t));
-  }
-  
-  template<typename T>
-  inline
-  char QIOPrecisionStringFromType(const multi1d<OLattice<T> >& t) {
-    return QIOSizeToStr(sizeof(typename WordType<T>::Type_t));
-  }
-}
+template<>
+  char* QIOStringTraits< multi1d<LatticeColorMatrixD3> >::tname;
+
 
 //--------------------------------------------------------------------------------
 //! QIO class
@@ -626,15 +626,9 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
 
   try { 
 
-    std::string tname;
-    char tprec[2]={0,'\0'};
-
-    QIOStrings::QIOTypeStringFromType(tname, s1);
-    tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
-
     QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
-						  const_cast<char *>(tname.c_str()),
-						  tprec,
+						  QIOStringTraits<OScalar<T> >::tname,
+						  QIOStringTraits<typename WordType<T>::Type_t >::tprec,
 						  Nc, Ns, 
 						  sizeof(T), 1);
 
@@ -690,18 +684,14 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
 template<class T>
 void QDPFileReader::read(XMLReader& rec_xml, multi1d< OScalar<T> >& s1)
 {
-    std::string tname;
-    //    char tprec;
-    char tprec[2]={0,'\0'};
-
-    QIOStrings::QIOTypeStringFromType(tname, s1);
-    tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
 
     QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
-						  const_cast<char *>(tname.c_str()),
-						  tprec,
+						  QIOStringTraits<multi1d<OScalar<T> > >::tname,
+						  QIOStringTraits<typename WordType<T>::Type_t >::tprec,
 						  Nc, Ns, 
 						  sizeof(T), s1.size()); // need size for now
+
+
 
   // Initialize string objects 
   QIO_String *xml_c  = QIO_string_create();
@@ -760,16 +750,9 @@ template<class T> void QDPOScalarFactoryGet(char *buf, size_t linear, int count,
 template<class T>
 void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OScalar<T>& s1)
 {
-  std::string tname;
-  //  char tprec;
-  char tprec[2]={0,'\0'};
-  
-  QIOStrings::QIOTypeStringFromType(tname, s1);
-  tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
-  
   QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
-						const_cast<char *>(tname.c_str()),
-						tprec, 
+						QIOStringTraits< OScalar<T> >::tname,
+						QIOStringTraits< typename WordType<T>::Type_t >::tprec,
 						Nc, Ns, 
 						sizeof(T), 1);
 
@@ -815,16 +798,10 @@ template<class T>
 void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OScalar<T> >& s1)
 {
 
-  std::string tname;
-  //  char tprec;
-  char tprec[2]={0,'\0'};
-  
-  QIOStrings::QIOTypeStringFromType(tname, s1);
-  tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
   
   QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
-						const_cast<char *>(tname.c_str()),
-						tprec, 
+						QIOStringTraits<multi1d< OScalar<T> > >::tname,
+						QIOStringTraits<typename WordType<T>::Type_t>::tprec, 
 						Nc, Ns, 
 						sizeof(T), s1.size());
 
@@ -921,15 +898,9 @@ void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
   try { 
 
 
-    std::string tname;
-    //    char tprec;
-    char tprec[2]={0,'\0'};
-    
-    QIOStrings::QIOTypeStringFromType(tname, s1);
-    tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
-    
     QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
-						  const_cast<char *>(tname.c_str()), tprec,
+						  QIOStringTraits<OLattice<T> >::tname, 
+						  QIOStringTraits<typename WordType<T>::Type_t>::tprec,
 						  Nc, Ns, 
 						  sizeof(T),1);
 
@@ -982,16 +953,9 @@ void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 template<class T>
 void QDPFileReader::read(XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
 {
-
-  std::string tname;
-  //  char tprec;
-  char tprec[2]={0,'\0'};
-  
-  QIOStrings::QIOTypeStringFromType(tname, s1);
-  tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
-  
   QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
-						const_cast<char *>(tname.c_str()), tprec, 
+						QIOStringTraits< multi1d< OLattice<T> > >::tname,
+						QIOStringTraits<typename WordType<T>::Type_t>::tprec,
 						Nc, Ns, 
 						sizeof(T),s1.size());
   
@@ -1078,17 +1042,9 @@ template<class T> void QDPOLatticeFactoryGetArray(char *buf, size_t linear, int 
 template<class T>
 void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 {
-
-  std::string tname;
-  //  char tprec;
-  char tprec[2]={0,'\0'};
-  
-  QIOStrings::QIOTypeStringFromType(tname, s1);
-  tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
-  
   QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
-						const_cast<char *>(tname.c_str()),
-						tprec,
+						QIOStringTraits< OLattice<T> >::tname,
+						QIOStringTraits<typename WordType<T>::Type_t >::tprec,
 						Nc, Ns, 
 						sizeof(T),1 );
   
@@ -1130,18 +1086,9 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
 template<class T>
 void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >& s1)
 {
-
-  std::string tname;
-  char tprec[2] = {0,'\0'};
-  
-  QIOStrings::QIOTypeStringFromType(tname, s1);
-  tprec[0] = QIOStrings::QIOPrecisionStringFromType(s1);
-
-  
-  
   QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
-						const_cast<char *>(tname.c_str()),
-						tprec,
+						QIOStringTraits<multi1d< OLattice<T> > >::tname,
+						QIOStringTraits<typename WordType<T>::Type_t>::tprec,
 						Nc, Ns, 
 						sizeof(T), s1.size() );
 

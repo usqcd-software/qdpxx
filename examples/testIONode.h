@@ -1,11 +1,17 @@
 #ifndef TEST_IO_NODE_H
 #define TEST_IO_NODE_H
 
+// These tests are disabled -- pending what we do with the 
+// QIO
+
+#if 0 
+
 #include <qdp.h>
 #include <qio.h>
 #include "unittest.h"
 
 using namespace Assertions;
+
 
 //! Single File IONode TestCases
 class TestSingleFileIONode : public TestCase {
@@ -66,4 +72,5 @@ class TestPartFileIONode3 : public TestCase {
   }
 };
 
+#endif 
 #endif
