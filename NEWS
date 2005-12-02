@@ -1,5 +1,9 @@
 11/17/2005 -- Robert Edwards
 
+	Version 1.18.1: Typos fixed in multi3d. Fixed QIO isms.
+
+11/17/2005 -- Robert Edwards
+
 	Version 1.18.0: New seed operatations. Eliminated default PSeed traits.
         Added some missing functions  floor, ceil, cosh, tanh, sinh.
 
