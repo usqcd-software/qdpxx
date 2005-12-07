@@ -17,16 +17,16 @@ class QDPQCDOCAllocator {
 private:
 
   // Disallow Copies
-  QDPQCDOCAllocator(const QDPQCDOCAllocator& c) {};
+  QDPQCDOCAllocator(const QDPQCDOCAllocator& c) {}
 
   // Disallow assignments (copies by another name)
-  QDPQCDOCAllocator& operator=(const QDPQCDOCAllocator& c) {};
+  void operator=(const QDPQCDOCAllocator& c) {}
 
   // Disallow construction for everyone except friends
-  QDPQCDOCAllocator() {init();};
+  QDPQCDOCAllocator() {init();}
   
   // Disallow destruction for everyone except Friends
-  ~QDPQCDOCAllocator() {};
+  ~QDPQCDOCAllocator() {}
 
   // The only friend is the singleton creation policy 
   friend class QDP::CreateUsingNew<QDP::Allocator::QDPQCDOCAllocator>;
