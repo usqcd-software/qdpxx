@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_default_allocator.h,v 1.5 2005-09-16 02:54:25 edwards Exp $
+// $Id: qdp_default_allocator.h,v 1.6 2005-12-07 03:08:31 edwards Exp $
 
 /*! \file
  * \brief Default memory allocator for QDP
@@ -22,17 +22,17 @@ QDP_BEGIN_NAMESPACE(Allocator);
 class QDPDefaultAllocator {
 private:
   // Disallow Copies
-  QDPDefaultAllocator(const QDPDefaultAllocator& c) {};
+  QDPDefaultAllocator(const QDPDefaultAllocator& c) {}
 
   // Disallow assignments (copies by another name)
-  QDPDefaultAllocator& operator=(const QDPDefaultAllocator& c) {};
+  void operator=(const QDPDefaultAllocator& c) {}
 
   // Disallow creation / destruction by anyone except 
   // the singleton CreateUsingNew policy which is a "friend"
   // I don't like friends but this follows Alexandrescu's advice
   // on p154 of Modern C++ Design (A. Alexandrescu)
-  QDPDefaultAllocator() {init();};
-  ~QDPDefaultAllocator() {};
+  QDPDefaultAllocator() {init();}
+  ~QDPDefaultAllocator() {}
 
   friend class QDP::CreateUsingNew<QDP::Allocator::QDPDefaultAllocator>;
  public:

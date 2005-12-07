@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_flopcount.h,v 1.4 2005-10-17 04:27:20 edwards Exp $
+// $Id: qdp_flopcount.h,v 1.5 2005-12-07 03:08:31 edwards Exp $
 /*! @file
  * @brief Flop counters
  *
@@ -58,13 +58,13 @@ QDP_BEGIN_NAMESPACE(QDP);
     }
 
     //! Method to retrieve accumulated flopcount
-    inline const unsigned long long getFlops(void) const { 
+    inline unsigned long long getFlops(void) const { 
       return count;
     }
 
     //! Report floppage
-    inline const void report(const std::string& name, 
-			     const double& time_in_seconds) {
+    inline void report(const std::string& name, 
+		       const double& time_in_seconds) {
 
       double mflops_per_cpu = (double)count/((double)(1000*1000)*time_in_seconds);
       double mflops_overall = mflops_per_cpu;
