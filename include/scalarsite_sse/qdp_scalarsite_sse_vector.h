@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_vector.h,v 1.2 2004-03-29 21:28:15 edwards Exp $
+// $Id: qdp_scalarsite_sse_vector.h,v 1.3 2005-12-21 16:04:25 bjoo Exp $
 
 /*! @file
  * @brief Vector optimizations
@@ -16,6 +16,8 @@
 
 // These SSE asm instructions are only supported under GCC/G++
 #if defined(__GNUC__)
+
+#include "qdp_sse_intrin.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -41,9 +43,6 @@ typedef RComplex<PDWVectorFloat4>  RComplexFloat4;
 //#define RComplexFloat  RComplex<ILattice<float,4> >
 
 
-typedef float v4sf __attribute__ ((aligned (16),mode(V4SF)));
-
-
 #if 0
 // NOTE: the   operator+(v4sf,v4sf) first exists in gcc 3.3.X, not 3.2.X
 
@@ -51,7 +50,7 @@ typedef float v4sf __attribute__ ((aligned (16),mode(V4SF)));
 inline v4sf
 operator+(v4sf l, v4sf r)
 {
-  v4sf tmp = __builtin_ia32_addps(l, r);
+  v4sf tmp = _mm_add_ps(l, r);
   return tmp;
 }
 
@@ -60,7 +59,7 @@ operator+(v4sf l, v4sf r)
 inline v4sf
 operator-(v4sf l, v4sf r)
 {
-  return __builtin_ia32_subps(l, r);
+  return _mm_sub_ps(l, r);
 }
 
 
@@ -68,7 +67,7 @@ operator-(v4sf l, v4sf r)
 inline v4sf
 operator*(v4sf l, v4sf r)
 {
-  return __builtin_ia32_mulps(l, r);
+  return _mm_mul_ps(l, r);
 }
 
 
@@ -76,7 +75,7 @@ operator*(v4sf l, v4sf r)
 inline v4sf
 operator/(v4sf l, v4sf r)
 {
-  return __builtin_ia32_divps(l, r);
+  return _mm_div_ps(l, r);
 }
 #endif
 
@@ -202,7 +201,7 @@ public:
   inline
   PDWVector& operator+=(const PDWVector& rhs) 
     {
-      F.v = __builtin_ia32_addps(F.v, rhs.F.v);
+      F.v = _mm_add_ps(F.v, rhs.F.v);
       return *this;
     }
 
@@ -210,7 +209,7 @@ public:
   inline
   PDWVector& operator-=(const PDWVector& rhs) 
     {
-      F.v = __builtin_ia32_subps(F.v, rhs.F.v);
+      F.v = _mm_sub_ps(F.v, rhs.F.v);
       return *this;
     }
 
@@ -218,7 +217,7 @@ public:
   inline
   PDWVector& operator*=(const PDWVector& rhs) 
     {
-      F.v = __builtin_ia32_mulps(F.v, rhs.F.v);
+      F.v = _mm_mul_ps(F.v, rhs.F.v);
       return *this;
     }
 
@@ -226,7 +225,7 @@ public:
   inline
   PDWVector& operator/=(const PDWVector& rhs) 
     {
-      F.v = __builtin_ia32_divps(F.v, rhs.F.v);
+      F.v = _mm_div_ps(F.v, rhs.F.v);
       return *this;
     }
 
@@ -279,7 +278,7 @@ operator+(const PDWVectorFloat4& l, const PDWVectorFloat4& r)
   cout << "DWV+DWV" << endl;
 #endif
 
-  return __builtin_ia32_addps(l.elem_v(), r.elem_v());
+  return _mm_add_ps(l.elem_v(), r.elem_v());
 }
 
 
@@ -293,7 +292,7 @@ operator-(const PDWVectorFloat4& l, const PDWVectorFloat4& r)
   cout << "DWV-DWV" << endl;
 #endif
 
-  return __builtin_ia32_subps(l.elem_v(), r.elem_v());
+  return _mm_sub_ps(l.elem_v(), r.elem_v());
 }
 
 
@@ -307,7 +306,7 @@ operator*(const PDWVectorFloat4& l, const PDWVectorFloat4& r)
   cout << "DWV * DWV" << endl;
 #endif
 
-  return __builtin_ia32_mulps(l.elem_v(), r.elem_v());
+  return _mm_mul_ps(l.elem_v(), r.elem_v());
 }
 
 // Optimized version of  
@@ -319,12 +318,12 @@ operator*(const PScalar<float>& l, const PDWVectorFloat4& r)
   cout << "P * DWV" << endl;
 #endif
 
-  register v4sf x = __builtin_ia32_loadss((float*)&(l.elem()));
+  register v4sf x = _mm_load_ss((float*)&(l.elem()));
 
   asm("shufps\t$0,%0,%0"
       : "+x" (x));
 
-  return __builtin_ia32_mulps(x, r.elem_v());
+  return _mm_mul_ps(x, r.elem_v());
 }
 
 // Optimized version of  
@@ -336,12 +335,12 @@ operator*(const PDWVectorFloat4& l, const PScalar<float>& r)
   cout << "DWV * P" << endl;
 #endif
 
-  register v4sf x = __builtin_ia32_loadss((float*)&(r.elem()));
+  register v4sf x = _mm_load_ss((float*)&(r.elem()));
 
   asm("shufps\t$0,%0,%0"
       : "+x" (x));
 
-  return __builtin_ia32_mulps(l.elem_v(), x);
+  return _mm_mul_ps(l.elem_v(), x);
 }
 
 
@@ -356,7 +355,7 @@ operator/(const PDWVectorFloat4& l, const PDWVectorFloat4& r)
   cout << "DWV / DWV" << endl;
 #endif
 
-  return __builtin_ia32_mulps(l.elem_v(), r.elem_v());
+  return _mm_mul_ps(l.elem_v(), r.elem_v());
 }
 
 
@@ -371,8 +370,8 @@ operator+(const RComplexFloat4& l, const RComplexFloat4& r)
   cout << "C<DWV> + C<DWV>" << endl;
 #endif
 
-  return RComplexFloat4(__builtin_ia32_addps(l.real().elem_v(), r.real().elem_v()),
-			__builtin_ia32_addps(l.imag().elem_v(), r.imag().elem_v()));
+  return RComplexFloat4(_mm_add_ps(l.real().elem_v(), r.real().elem_v()),
+			_mm_add_ps(l.imag().elem_v(), r.imag().elem_v()));
 }
 
 
@@ -386,8 +385,8 @@ operator-(const RComplexFloat4& l, const RComplexFloat4& r)
   cout << "C<DWV> - C<DWV" << endl;
 #endif
 
-  return RComplexFloat4(__builtin_ia32_subps(l.real().elem_v(), r.real().elem_v()),
-			__builtin_ia32_subps(l.imag().elem_v(), r.imag().elem_v()));
+  return RComplexFloat4(_mm_sub_ps(l.real().elem_v(), r.real().elem_v()),
+			_mm_sub_ps(l.imag().elem_v(), r.imag().elem_v()));
 }
 
 
@@ -403,13 +402,13 @@ operator*(const RComplexFloat4& l, const RComplexFloat4& r)
   cout << "C<DWV> * C<DWV>" << endl;
 #endif
 
-  v4sf tmp1 = __builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v());
-  v4sf tmp2 = __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v());
-  d.real().elem_v() = __builtin_ia32_subps(tmp1, tmp2);
+  v4sf tmp1 = _mm_mul_ps(l.real().elem_v(), r.real().elem_v());
+  v4sf tmp2 = _mm_mul_ps(l.imag().elem_v(), r.imag().elem_v());
+  d.real().elem_v() = _mm_sub_ps(tmp1, tmp2);
 
-  v4sf tmp3 = __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v());
-  v4sf tmp4 = __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v());
-  d.imag().elem_v() = __builtin_ia32_addps(tmp3, tmp4);
+  v4sf tmp3 = _mm_mul_ps(l.real().elem_v(), r.imag().elem_v());
+  v4sf tmp4 = _mm_mul_ps(l.imag().elem_v(), r.real().elem_v());
+  d.imag().elem_v() = _mm_add_ps(tmp3, tmp4);
 
   return d;
 }
@@ -426,13 +425,13 @@ adjMultiply(const RComplexFloat4& l, const RComplexFloat4& r)
 
   BinaryReturn<RComplexFloat4, RComplexFloat4, OpAdjMultiply>::Type_t  d;
 
-  v4sf tmp1 = __builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v());
-  v4sf tmp2 = __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v());
-  d.real().elem_v() = __builtin_ia32_addps(tmp1, tmp2);
+  v4sf tmp1 = _mm_mul_ps(l.real().elem_v(), r.real().elem_v());
+  v4sf tmp2 = _mm_mul_ps(l.imag().elem_v(), r.imag().elem_v());
+  d.real().elem_v() = _mm_add_ps(tmp1, tmp2);
 
-  v4sf tmp3 = __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v());
-  v4sf tmp4 = __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v());
-  d.imag().elem_v() = __builtin_ia32_subps(tmp3, tmp4);
+  v4sf tmp3 = _mm_mul_ps(l.real().elem_v(), r.imag().elem_v());
+  v4sf tmp4 = _mm_mul_ps(l.imag().elem_v(), r.real().elem_v());
+  d.imag().elem_v() = _mm_sub_ps(tmp3, tmp4);
 
   return d;
 }
@@ -444,13 +443,13 @@ multiplyAdj(const RComplexFloat4& l, const RComplexFloat4& r)
 {
   BinaryReturn<RComplexFloat4, RComplexFloat4, OpMultiplyAdj>::Type_t  d;
 
-  v4sf tmp1 = __builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v());
-  v4sf tmp2 = __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v());
-  d.real().elem_v() = __builtin_ia32_addps(tmp1, tmp2);
+  v4sf tmp1 = _mm_mul_ps(l.real().elem_v(), r.real().elem_v());
+  v4sf tmp2 = _mm_mul_ps(l.imag().elem_v(), r.imag().elem_v());
+  d.real().elem_v() = _mm_add_ps(tmp1, tmp2);
 
-  v4sf tmp3 = __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v());
-  v4sf tmp4 = __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v());
-  d.imag().elem_v() = __builtin_ia32_subps(tmp3, tmp4);
+  v4sf tmp3 = _mm_mul_ps(l.imag().elem_v(), r.real().elem_v());
+  v4sf tmp4 = _mm_mul_ps(l.real().elem_v(), r.imag().elem_v());
+  d.imag().elem_v() = _mm_sub_ps(tmp3, tmp4);
 
   return d;
 }
@@ -469,16 +468,16 @@ adjMultiplyAdj(const RComplexFloat4& l, const RComplexFloat4& r)
   
   static sse_mask _sse_sgn __attribute__ ((unused)) ={0x80000000, 0x80000000, 0x80000000, 0x80000000};
 
-  v4sf tmp1 = __builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v());
-  v4sf tmp2 = __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v());
-  d.real().elem_v() = __builtin_ia32_subps(tmp1, tmp2);
+  v4sf tmp1 = _mm_mul_ps(l.real().elem_v(), r.real().elem_v());
+  v4sf tmp2 = _mm_mul_ps(l.imag().elem_v(), r.imag().elem_v());
+  d.real().elem_v() = _mm_sub_ps(tmp1, tmp2);
 
-  v4sf tmp3 = __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v());
-  v4sf tmp4 = __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v());
-  v4sf tmp5 = __builtin_ia32_addps(tmp3, tmp4);
-//  d.imag().elem_v() = __builtin_ia32_xorps(tmp5, _sse_sgn.v);
-  v4sf tmp6 = __builtin_ia32_loadaps((float*)&_sse_sgn);
-  d.imag().elem_v() = __builtin_ia32_xorps(tmp5, tmp6);
+  v4sf tmp3 = _mm_mul_ps(l.real().elem_v(), r.imag().elem_v());
+  v4sf tmp4 = _mm_mul_ps(l.imag().elem_v(), r.real().elem_v());
+  v4sf tmp5 = _mm_add_ps(tmp3, tmp4);
+//  d.imag().elem_v() = _mm_xor_ps(tmp5, _sse_sgn.v);
+  v4sf tmp6 = _mm_load_ps((float*)&_sse_sgn);
+  d.imag().elem_v() = _mm_xor_ps(tmp5, tmp6);
 
   return d;
 }

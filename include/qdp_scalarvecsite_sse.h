@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.18 2004-08-11 18:51:43 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.19 2005-12-21 16:04:25 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -22,7 +22,7 @@ typedef REAL32 vReal32 __attribute__ ((aligned (16),mode(V4SF)));
 
 static inline vReal32 vmk1(REAL32 a) 
 {
-  vReal32 v = __builtin_ia32_loadss((float *)&a);
+  vReal32 v = _mm_load_ss((float *)&a);
   asm("shufps\t$0,%0,%0" : "+x" (v));
   return v;
 }
@@ -95,7 +95,7 @@ public:
   inline
   ILattice& operator+=(const IScalar<T1>& rhs) 
     {
-      v = __builtin_ia32_addps(v, vmk1(REAL32(rhs.elem())));
+      v = _mm_add_ps(v, vmk1(REAL32(rhs.elem())));
       return *this;
     }
 
@@ -104,7 +104,7 @@ public:
   inline
   ILattice& operator-=(const IScalar<T1>& rhs) 
     {
-      v = __builtin_ia32_subps(v, vmk1(REAL32(rhs.elem())));
+      v = _mm_sub_ps(v, vmk1(REAL32(rhs.elem())));
       return *this;
     }
 
@@ -113,7 +113,7 @@ public:
   inline
   ILattice& operator*=(const IScalar<T1>& rhs) 
     {
-      v = __builtin_ia32_mulps(v, vmk1(REAL32(rhs.elem())));
+      v = _mm_mul_ps(v, vmk1(REAL32(rhs.elem())));
       return *this;
     }
 
@@ -122,7 +122,7 @@ public:
   inline
   ILattice& operator/=(const IScalar<T1>& rhs) 
     {
-      v = __builtin_ia32_divps(v, vmk1(REAL32(rhs.elem())));
+      v = _mm_div_ps(v, vmk1(REAL32(rhs.elem())));
       return *this;
     }
 
@@ -141,7 +141,7 @@ public:
   inline
   ILattice& operator+=(const ILattice& rhs) 
     {
-      v = __builtin_ia32_addps(v, rhs.v);
+      v = _mm_add_ps(v, rhs.v);
       return *this;
     }
 
@@ -149,7 +149,7 @@ public:
   inline
   ILattice& operator-=(const ILattice& rhs) 
     {
-      v = __builtin_ia32_subps(v, rhs.v);
+      v = _mm_sub_ps(v, rhs.v);
       return *this;
     }
 
@@ -157,7 +157,7 @@ public:
   inline
   ILattice& operator*=(const ILattice& rhs) 
     {
-      v = __builtin_ia32_mulps(v, rhs.v);
+      v = _mm_mul_ps(v, rhs.v);
       return *this;
     }
 
@@ -165,7 +165,7 @@ public:
   inline
   ILattice& operator/=(const ILattice& rhs) 
     {
-      v = __builtin_ia32_divps(v, rhs.v);
+      v = _mm_div_ps(v, rhs.v);
       return *this;
     }
 

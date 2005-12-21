@@ -1,4 +1,4 @@
-// $Id: sse_blas_vaxpy3_g5.h,v 1.1 2005-03-17 14:42:55 bjoo Exp $
+// $Id: sse_blas_vaxpy3_g5.h,v 1.2 2005-12-21 16:04:25 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -11,6 +11,7 @@
 #if defined(__GNUC__)
 
 #include "qdp_config.h"
+#include "qdp_sse_intrin.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -23,31 +24,31 @@ inline
 void axpyz_g5ProjPlus(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_4vec)
 {
   // GNUC vector type
-  typedef float v4sf __attribute__((mode(V4SF),aligned(16)));
+  
 
   // Load Vscalep
-  v4sf vscalep = __builtin_ia32_loadss(scalep);
+  v4sf vscalep = _mm_load_ss(scalep);
   asm("shufps\t$0,%0,%0" : "+x" (vscalep));
 
   for(int i=0; i < n_4vec; i++) {
 
     // Spin Component 0: z0r, z0i, z1r, z1i
-    __builtin_ia32_storeaps(Out+ 0, __builtin_ia32_addps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 0)), __builtin_ia32_loadaps(Add+ 0)));
+    _mm_store_ps(Out+ 0, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 0)), _mm_load_ps(Add+ 0)));
      
     // Spin Component 0: z2r, z2i, SpinComponent 1: z0r, z0i
-    __builtin_ia32_storeaps(Out+ 4, __builtin_ia32_addps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 4)), __builtin_ia32_loadaps(Add+ 4)));
+    _mm_store_ps(Out+ 4, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 4)), _mm_load_ps(Add+ 4)));
 
     // Spin Component 1: z1r, z1i, z2r, z2i
-    __builtin_ia32_storeaps(Out+ 8, __builtin_ia32_addps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 8)), __builtin_ia32_loadaps(Add+ 8)));
+    _mm_store_ps(Out+ 8, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 8)), _mm_load_ps(Add+ 8)));
 
     // Spin Component 2: z0r, z0i, z1r, z1i
-    __builtin_ia32_storeaps(Out+12, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 12)));
+    _mm_store_ps(Out+12, _mm_mul_ps(vscalep, _mm_load_ps(InScale+ 12)));
 
     // Spin Component 2: z2r, z2i, z0r, z0r
-    __builtin_ia32_storeaps(Out+16, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 16)));
+    _mm_store_ps(Out+16, _mm_mul_ps(vscalep, _mm_load_ps(InScale+ 16)));
 
     // Spin Component 3: z1r, z1i, z2r, z2i
-    __builtin_ia32_storeaps(Out+20, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 20)));
+    _mm_store_ps(Out+20, _mm_mul_ps(vscalep, _mm_load_ps(InScale+ 20)));
 
     // Update offsets
     Out += 24; InScale += 24; Add += 24;
@@ -60,31 +61,31 @@ inline
 void axpyz_g5ProjMinus(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_4vec)
 {
   // GNUC vector type
-  typedef float v4sf __attribute__((mode(V4SF),aligned(16)));
+  
 
   // Load Vscalep
-  v4sf vscalep = __builtin_ia32_loadss(scalep);
+  v4sf vscalep = _mm_load_ss(scalep);
   asm("shufps\t$0,%0,%0" : "+x" (vscalep));
 
   for(int i=0; i < n_4vec; i++) {
     // Spin Component 0: z0r, z0i, z1r, z1i
-    __builtin_ia32_storeaps(Out+0, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 0)));
+    _mm_store_ps(Out+0, _mm_mul_ps(vscalep, _mm_load_ps(InScale+ 0)));
 
     // Spin Component 0: z2r, z2i, Spin Component 1: z0r, z0r
-    __builtin_ia32_storeaps(Out+4, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 4)));
+    _mm_store_ps(Out+4, _mm_mul_ps(vscalep, _mm_load_ps(InScale+ 4)));
 
     // Spin Component 1: z1r, z1i, z2r, z2i
-    __builtin_ia32_storeaps(Out+8, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 8)));
+    _mm_store_ps(Out+8, _mm_mul_ps(vscalep, _mm_load_ps(InScale+ 8)));
 
 
     // Spin Component 2: z0r, z0i, z1r, z1i
-    __builtin_ia32_storeaps(Out+12, __builtin_ia32_addps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 12)), __builtin_ia32_loadaps(Add+ 12)));
+    _mm_store_ps(Out+12, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 12)), _mm_load_ps(Add+ 12)));
      
     // Spin Component 2: z2r, z2i, SpinComponent 3: z0r, z0i
-    __builtin_ia32_storeaps(Out+ 16, __builtin_ia32_addps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 16)), __builtin_ia32_loadaps(Add+ 16)));
+    _mm_store_ps(Out+ 16, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 16)), _mm_load_ps(Add+ 16)));
 
     // Spin Component 3: z1r, z1i, z2r, z2i
-    __builtin_ia32_storeaps(Out+ 20, __builtin_ia32_addps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 20)), __builtin_ia32_loadaps(Add+ 20)));
+    _mm_store_ps(Out+ 20, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 20)), _mm_load_ps(Add+ 20)));
     // Update offsets
     Out += 24; InScale += 24; Add += 24;
   }
@@ -99,35 +100,35 @@ inline
 void axmyz_g5ProjPlus(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_4vec)
 {
   // GNUC vector type
-  typedef float v4sf __attribute__((mode(V4SF),aligned(16)));
+  
 
   // Load Vscalep
 
-  v4sf vscalep = __builtin_ia32_loadss(scalep);
+  v4sf vscalep = _mm_load_ss(scalep);
   asm("shufps\t$0,%0,%0" : "+x" (vscalep));  
 
   for(int i=0; i < n_4vec; i++) {
     
     // Spin Component 0: z0r, z0i, z1r, z1i
-    __builtin_ia32_storeaps(Out+ 0, __builtin_ia32_subps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 0)), __builtin_ia32_loadaps(Add+ 0)));
+    _mm_store_ps(Out+ 0, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 0)), _mm_load_ps(Add+ 0)));
     
      
     // Spin Component 0: z2r, z2i, SpinComponent 1: z0r, z0i
-    __builtin_ia32_storeaps(Out+ 4, __builtin_ia32_subps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 4)), __builtin_ia32_loadaps(Add+ 4)));
+    _mm_store_ps(Out+ 4, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 4)), _mm_load_ps(Add+ 4)));
     
      // Spin Component 1: z1r, z1i, z2r, z2i
-    __builtin_ia32_storeaps(Out+ 8, __builtin_ia32_subps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 8)), __builtin_ia32_loadaps(Add+ 8)));
+    _mm_store_ps(Out+ 8, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 8)), _mm_load_ps(Add+ 8)));
   
     // Spin Component 2: z0r, z0i, z1r, z1i
-    __builtin_ia32_storeaps(Out+12, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 12)));
+    _mm_store_ps(Out+12, _mm_mul_ps(vscalep, _mm_load_ps(InScale+ 12)));
     
     
     
     // Spin Component 2: z2r, z2i, z0r, z0r
-    __builtin_ia32_storeaps(Out+16, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 16)));
+    _mm_store_ps(Out+16, _mm_mul_ps(vscalep, _mm_load_ps(InScale+ 16)));
 
     // Spin Component 3: z1r, z1i, z2r, z2i
-    __builtin_ia32_storeaps(Out+20, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 20)));
+    _mm_store_ps(Out+20, _mm_mul_ps(vscalep, _mm_load_ps(InScale+ 20)));
 
     // Update offsets
     Out += 24; InScale += 24; Add += 24;
@@ -141,31 +142,31 @@ inline
 void axmyz_g5ProjMinus(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_4vec)
 {
   // GNUC vector type
-  typedef float v4sf __attribute__((mode(V4SF),aligned(16)));
+  
 
   // Load Vscalep
-  v4sf vscalep = __builtin_ia32_loadss(scalep);
+  v4sf vscalep = _mm_load_ss(scalep);
   asm("shufps\t$0,%0,%0" : "+x" (vscalep));
 
   for(int i=0; i < n_4vec; i++) {
     // Spin Component 0: z0r, z0i, z1r, z1i
-    __builtin_ia32_storeaps(Out+0, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 0)));
+    _mm_store_ps(Out+0, _mm_mul_ps(vscalep, _mm_load_ps(InScale+ 0)));
 
     // Spin Component 0: z2r, z2i, Spin Component 1: z0r, z0r
-    __builtin_ia32_storeaps(Out+4, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 4)));
+    _mm_store_ps(Out+4, _mm_mul_ps(vscalep, _mm_load_ps(InScale+ 4)));
 
     // Spin Component 1: z1r, z1i, z2r, z2i
-    __builtin_ia32_storeaps(Out+8, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 8)));
+    _mm_store_ps(Out+8, _mm_mul_ps(vscalep, _mm_load_ps(InScale+ 8)));
 
 
     // Spin Component 2: z0r, z0i, z1r, z1i
-    __builtin_ia32_storeaps(Out+12, __builtin_ia32_subps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 12)), __builtin_ia32_loadaps(Add+ 12)));
+    _mm_store_ps(Out+12, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 12)), _mm_load_ps(Add+ 12)));
      
     // Spin Component 2: z2r, z2i, SpinComponent 3: z0r, z0i
-    __builtin_ia32_storeaps(Out+ 16, __builtin_ia32_subps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 16)), __builtin_ia32_loadaps(Add+ 16)));
+    _mm_store_ps(Out+ 16, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 16)), _mm_load_ps(Add+ 16)));
 
     // Spin Component 3: z1r, z1i, z2r, z2i
-    __builtin_ia32_storeaps(Out+ 20, __builtin_ia32_subps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 20)), __builtin_ia32_loadaps(Add+ 20)));
+    _mm_store_ps(Out+ 20, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 20)), _mm_load_ps(Add+ 20)));
     // Update offsets
     Out += 24; InScale += 24; Add += 24;
   }

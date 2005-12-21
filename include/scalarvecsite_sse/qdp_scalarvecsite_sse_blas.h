@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_sse_blas.h,v 1.3 2004-08-19 01:56:19 edwards Exp $
+// $Id: qdp_scalarvecsite_sse_blas.h,v 1.4 2005-12-21 16:04:25 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -14,7 +14,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 // #define QDP_SCALARVECSITE_BLAS_DEBUG
 
 #define QDP_SCALARVECSITE_USE_EVALUATE
-
+#include "qdp_sse_intrin.h"
 
 typedef PScalar<PColorMatrix<RComplex<ILattice<REAL32,4> >, 3> >       TCMat;
 typedef PScalar<PColorVector<RComplex<ILattice<REAL32,4> >, 3> >       TCVec;
@@ -35,24 +35,24 @@ operator*(const TScal& l, const TCMat& r)
 
   vReal32 vscale = vmk1(l.elem().elem().elem().elem());
 
-  d.elem().elem(0,0).real().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(0,0).real().elem_v());
-  d.elem().elem(0,0).imag().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(0,0).imag().elem_v());
-  d.elem().elem(0,1).real().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(0,1).real().elem_v());
-  d.elem().elem(0,1).imag().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(0,1).imag().elem_v());
-  d.elem().elem(0,2).real().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(0,2).real().elem_v());
-  d.elem().elem(0,2).imag().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(0,2).imag().elem_v());
-  d.elem().elem(1,0).real().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(1,0).real().elem_v());
-  d.elem().elem(1,0).imag().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(1,0).imag().elem_v());
-  d.elem().elem(1,1).real().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(1,1).real().elem_v());
-  d.elem().elem(1,1).imag().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(1,1).imag().elem_v());
-  d.elem().elem(1,2).real().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(1,2).real().elem_v());
-  d.elem().elem(1,2).imag().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(1,2).imag().elem_v());
-  d.elem().elem(2,0).real().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(2,0).real().elem_v());
-  d.elem().elem(2,0).imag().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(2,0).imag().elem_v());
-  d.elem().elem(2,1).real().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(2,1).real().elem_v());
-  d.elem().elem(2,1).imag().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(2,1).imag().elem_v());
-  d.elem().elem(2,2).real().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(2,2).real().elem_v());
-  d.elem().elem(2,2).imag().elem_v() = __builtin_ia32_mulps(vscale, r.elem().elem(2,2).imag().elem_v());
+  d.elem().elem(0,0).real().elem_v() = _mm_mul_ps(vscale, r.elem().elem(0,0).real().elem_v());
+  d.elem().elem(0,0).imag().elem_v() = _mm_mul_ps(vscale, r.elem().elem(0,0).imag().elem_v());
+  d.elem().elem(0,1).real().elem_v() = _mm_mul_ps(vscale, r.elem().elem(0,1).real().elem_v());
+  d.elem().elem(0,1).imag().elem_v() = _mm_mul_ps(vscale, r.elem().elem(0,1).imag().elem_v());
+  d.elem().elem(0,2).real().elem_v() = _mm_mul_ps(vscale, r.elem().elem(0,2).real().elem_v());
+  d.elem().elem(0,2).imag().elem_v() = _mm_mul_ps(vscale, r.elem().elem(0,2).imag().elem_v());
+  d.elem().elem(1,0).real().elem_v() = _mm_mul_ps(vscale, r.elem().elem(1,0).real().elem_v());
+  d.elem().elem(1,0).imag().elem_v() = _mm_mul_ps(vscale, r.elem().elem(1,0).imag().elem_v());
+  d.elem().elem(1,1).real().elem_v() = _mm_mul_ps(vscale, r.elem().elem(1,1).real().elem_v());
+  d.elem().elem(1,1).imag().elem_v() = _mm_mul_ps(vscale, r.elem().elem(1,1).imag().elem_v());
+  d.elem().elem(1,2).real().elem_v() = _mm_mul_ps(vscale, r.elem().elem(1,2).real().elem_v());
+  d.elem().elem(1,2).imag().elem_v() = _mm_mul_ps(vscale, r.elem().elem(1,2).imag().elem_v());
+  d.elem().elem(2,0).real().elem_v() = _mm_mul_ps(vscale, r.elem().elem(2,0).real().elem_v());
+  d.elem().elem(2,0).imag().elem_v() = _mm_mul_ps(vscale, r.elem().elem(2,0).imag().elem_v());
+  d.elem().elem(2,1).real().elem_v() = _mm_mul_ps(vscale, r.elem().elem(2,1).real().elem_v());
+  d.elem().elem(2,1).imag().elem_v() = _mm_mul_ps(vscale, r.elem().elem(2,1).imag().elem_v());
+  d.elem().elem(2,2).real().elem_v() = _mm_mul_ps(vscale, r.elem().elem(2,2).real().elem_v());
+  d.elem().elem(2,2).imag().elem_v() = _mm_mul_ps(vscale, r.elem().elem(2,2).imag().elem_v());
 
   return d;
 }

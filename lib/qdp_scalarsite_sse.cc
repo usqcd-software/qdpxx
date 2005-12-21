@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.10 2004-05-09 11:54:44 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.11 2005-12-21 16:04:25 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -9,9 +9,10 @@
 
 #include "qdp.h"
 
+
 // These SSE asm instructions are only supported under GCC/G++
 #if defined(__GNUC__)
-
+#include "qdp_sse_intrin.h"
 QDP_BEGIN_NAMESPACE(QDP);
 
 #if BASE_PRECISION==32
@@ -44,7 +45,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
 
 // GNUC vector type
-typedef float v4sf __attribute__((mode(V4SF),aligned(16)));
+
 
 
 // AXPY and AXMY routines
@@ -58,17 +59,17 @@ void vaxpy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_3vec)
   int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
 
 //  register v4sf va = load_v4sf((float *)&a);
-  v4sf vscalep = __builtin_ia32_loadss(scalep);
+  v4sf vscalep = _mm_load_ss(scalep);
   asm("shufps\t$0,%0,%0" : "+x" (vscalep));
 
   for (; n_loops-- > 0; )
   {
-    __builtin_ia32_storeaps(Out+ 0, __builtin_ia32_addps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 0)), __builtin_ia32_loadaps(Add+ 0)));
-    __builtin_ia32_storeaps(Out+ 4, __builtin_ia32_addps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 4)), __builtin_ia32_loadaps(Add+ 4)));
-    __builtin_ia32_storeaps(Out+ 8, __builtin_ia32_addps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 8)), __builtin_ia32_loadaps(Add+ 8)));
-    __builtin_ia32_storeaps(Out+12, __builtin_ia32_addps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+12)), __builtin_ia32_loadaps(Add+12)));
-    __builtin_ia32_storeaps(Out+16, __builtin_ia32_addps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+16)), __builtin_ia32_loadaps(Add+16)));
-    __builtin_ia32_storeaps(Out+20, __builtin_ia32_addps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+20)), __builtin_ia32_loadaps(Add+20)));
+    _mm_store_ps(Out+ 0, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 0)), _mm_load_ps(Add+ 0)));
+    _mm_store_ps(Out+ 4, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 4)), _mm_load_ps(Add+ 4)));
+    _mm_store_ps(Out+ 8, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 8)), _mm_load_ps(Add+ 8)));
+    _mm_store_ps(Out+12, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+12)), _mm_load_ps(Add+12)));
+    _mm_store_ps(Out+16, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+16)), _mm_load_ps(Add+16)));
+    _mm_store_ps(Out+20, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+20)), _mm_load_ps(Add+20)));
 
     Out += 24; InScale += 24; Add += 24;
   }
@@ -85,17 +86,17 @@ void vaxmy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Sub,int n_3vec)
   int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
 
 //  register v4sf va = load_v4sf((float *)&a);
-  v4sf vscalep = __builtin_ia32_loadss(scalep);
+  v4sf vscalep = _mm_load_ss(scalep);
   asm("shufps\t$0,%0,%0" : "+x" (vscalep));
 
   for (; n_loops-- > 0; )
   {
-    __builtin_ia32_storeaps(Out+ 0, __builtin_ia32_subps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 0)), __builtin_ia32_loadaps(Sub+ 0)));
-    __builtin_ia32_storeaps(Out+ 4, __builtin_ia32_subps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 4)), __builtin_ia32_loadaps(Sub+ 4)));
-    __builtin_ia32_storeaps(Out+ 8, __builtin_ia32_subps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+ 8)), __builtin_ia32_loadaps(Sub+ 8)));
-    __builtin_ia32_storeaps(Out+12, __builtin_ia32_subps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+12)), __builtin_ia32_loadaps(Sub+12)));
-    __builtin_ia32_storeaps(Out+16, __builtin_ia32_subps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+16)), __builtin_ia32_loadaps(Sub+16)));
-    __builtin_ia32_storeaps(Out+20, __builtin_ia32_subps(__builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(InScale+20)), __builtin_ia32_loadaps(Sub+20)));
+    _mm_store_ps(Out+ 0, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 0)), _mm_load_ps(Sub+ 0)));
+    _mm_store_ps(Out+ 4, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 4)), _mm_load_ps(Sub+ 4)));
+    _mm_store_ps(Out+ 8, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 8)), _mm_load_ps(Sub+ 8)));
+    _mm_store_ps(Out+12, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+12)), _mm_load_ps(Sub+12)));
+    _mm_store_ps(Out+16, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+16)), _mm_load_ps(Sub+16)));
+    _mm_store_ps(Out+20, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+20)), _mm_load_ps(Sub+20)));
 
     Out += 24; InScale += 24; Sub += 24;
   }
@@ -113,12 +114,12 @@ void vadd(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec)
 
   for (; n_loops-- > 0; )
   {
-    __builtin_ia32_storeaps(Out+ 0, __builtin_ia32_addps(__builtin_ia32_loadaps(In1+ 0), __builtin_ia32_loadaps(In2+ 0)));
-    __builtin_ia32_storeaps(Out+ 4, __builtin_ia32_addps(__builtin_ia32_loadaps(In1+ 4), __builtin_ia32_loadaps(In2+ 4)));
-    __builtin_ia32_storeaps(Out+ 8, __builtin_ia32_addps(__builtin_ia32_loadaps(In1+ 8), __builtin_ia32_loadaps(In2+ 8)));
-    __builtin_ia32_storeaps(Out+12, __builtin_ia32_addps(__builtin_ia32_loadaps(In1+12), __builtin_ia32_loadaps(In2+12)));
-    __builtin_ia32_storeaps(Out+16, __builtin_ia32_addps(__builtin_ia32_loadaps(In1+16), __builtin_ia32_loadaps(In2+16)));
-    __builtin_ia32_storeaps(Out+20, __builtin_ia32_addps(__builtin_ia32_loadaps(In1+20), __builtin_ia32_loadaps(In2+20)));
+    _mm_store_ps(Out+ 0, _mm_add_ps(_mm_load_ps(In1+ 0), _mm_load_ps(In2+ 0)));
+    _mm_store_ps(Out+ 4, _mm_add_ps(_mm_load_ps(In1+ 4), _mm_load_ps(In2+ 4)));
+    _mm_store_ps(Out+ 8, _mm_add_ps(_mm_load_ps(In1+ 8), _mm_load_ps(In2+ 8)));
+    _mm_store_ps(Out+12, _mm_add_ps(_mm_load_ps(In1+12), _mm_load_ps(In2+12)));
+    _mm_store_ps(Out+16, _mm_add_ps(_mm_load_ps(In1+16), _mm_load_ps(In2+16)));
+    _mm_store_ps(Out+20, _mm_add_ps(_mm_load_ps(In1+20), _mm_load_ps(In2+20)));
 
     Out += 24; In1 += 24; In2 += 24;
   }
@@ -136,12 +137,12 @@ void vsub(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec)
 
   for (; n_loops-- > 0; )
   {
-    __builtin_ia32_storeaps(Out+ 0, __builtin_ia32_subps(__builtin_ia32_loadaps(In1+ 0), __builtin_ia32_loadaps(In2+ 0)));
-    __builtin_ia32_storeaps(Out+ 4, __builtin_ia32_subps(__builtin_ia32_loadaps(In1+ 4), __builtin_ia32_loadaps(In2+ 4)));
-    __builtin_ia32_storeaps(Out+ 8, __builtin_ia32_subps(__builtin_ia32_loadaps(In1+ 8), __builtin_ia32_loadaps(In2+ 8)));
-    __builtin_ia32_storeaps(Out+12, __builtin_ia32_subps(__builtin_ia32_loadaps(In1+12), __builtin_ia32_loadaps(In2+12)));
-    __builtin_ia32_storeaps(Out+16, __builtin_ia32_subps(__builtin_ia32_loadaps(In1+16), __builtin_ia32_loadaps(In2+16)));
-    __builtin_ia32_storeaps(Out+20, __builtin_ia32_subps(__builtin_ia32_loadaps(In1+20), __builtin_ia32_loadaps(In2+20)));
+    _mm_store_ps(Out+ 0, _mm_sub_ps(_mm_load_ps(In1+ 0), _mm_load_ps(In2+ 0)));
+    _mm_store_ps(Out+ 4, _mm_sub_ps(_mm_load_ps(In1+ 4), _mm_load_ps(In2+ 4)));
+    _mm_store_ps(Out+ 8, _mm_sub_ps(_mm_load_ps(In1+ 8), _mm_load_ps(In2+ 8)));
+    _mm_store_ps(Out+12, _mm_sub_ps(_mm_load_ps(In1+12), _mm_load_ps(In2+12)));
+    _mm_store_ps(Out+16, _mm_sub_ps(_mm_load_ps(In1+16), _mm_load_ps(In2+16)));
+    _mm_store_ps(Out+20, _mm_sub_ps(_mm_load_ps(In1+20), _mm_load_ps(In2+20)));
 
     Out += 24; In1 += 24; In2 += 24;
   }
@@ -157,17 +158,17 @@ void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec)
   int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
 
 //  register v4sf va = load_v4sf((float *)&a);
-  v4sf vscalep = __builtin_ia32_loadss(scalep);
+  v4sf vscalep = _mm_load_ss(scalep);
   asm("shufps\t$0,%0,%0" : "+x" (vscalep));
 
   for (; n_loops-- > 0; )
   {
-    __builtin_ia32_storeaps(Out+ 0, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(In+ 0)));
-    __builtin_ia32_storeaps(Out+ 4, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(In+ 4)));
-    __builtin_ia32_storeaps(Out+ 8, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(In+ 8)));
-    __builtin_ia32_storeaps(Out+12, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(In+12)));
-    __builtin_ia32_storeaps(Out+16, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(In+16)));
-    __builtin_ia32_storeaps(Out+20, __builtin_ia32_mulps(vscalep, __builtin_ia32_loadaps(In+20)));
+    _mm_store_ps(Out+ 0, _mm_mul_ps(vscalep, _mm_load_ps(In+ 0)));
+    _mm_store_ps(Out+ 4, _mm_mul_ps(vscalep, _mm_load_ps(In+ 4)));
+    _mm_store_ps(Out+ 8, _mm_mul_ps(vscalep, _mm_load_ps(In+ 8)));
+    _mm_store_ps(Out+12, _mm_mul_ps(vscalep, _mm_load_ps(In+12)));
+    _mm_store_ps(Out+16, _mm_mul_ps(vscalep, _mm_load_ps(In+16)));
+    _mm_store_ps(Out+20, _mm_mul_ps(vscalep, _mm_load_ps(In+20)));
 
     Out += 24; In += 24;
   }
@@ -183,31 +184,31 @@ void local_sumsq(REAL32 *Out, REAL32 *In, int n_3vec)
   int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
 
   *Out = 0.0;
-  register v4sf vsum = __builtin_ia32_loadss(Out);
+  register v4sf vsum = _mm_load_ss(Out);
   asm("shufps\t$0,%0,%0" : "+x" (vsum));
 
   for (; n_loops-- > 0; )
   {
     register v4sf vtmp;
 
-    vtmp = __builtin_ia32_loadaps(In+0);
-    vsum = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp, vtmp));
-    vtmp = __builtin_ia32_loadaps(In+4);
-    vsum = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp, vtmp));
-    vtmp = __builtin_ia32_loadaps(In+8);
-    vsum = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp, vtmp));
-    vtmp = __builtin_ia32_loadaps(In+12);
-    vsum = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp, vtmp));
-    vtmp = __builtin_ia32_loadaps(In+16);
-    vsum = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp, vtmp));
-    vtmp = __builtin_ia32_loadaps(In+20);
-    vsum = __builtin_ia32_addps(vsum, __builtin_ia32_mulps(vtmp, vtmp));
+    vtmp = _mm_load_ps(In+0);
+    vsum = _mm_add_ps(vsum, _mm_mul_ps(vtmp, vtmp));
+    vtmp = _mm_load_ps(In+4);
+    vsum = _mm_add_ps(vsum, _mm_mul_ps(vtmp, vtmp));
+    vtmp = _mm_load_ps(In+8);
+    vsum = _mm_add_ps(vsum, _mm_mul_ps(vtmp, vtmp));
+    vtmp = _mm_load_ps(In+12);
+    vsum = _mm_add_ps(vsum, _mm_mul_ps(vtmp, vtmp));
+    vtmp = _mm_load_ps(In+16);
+    vsum = _mm_add_ps(vsum, _mm_mul_ps(vtmp, vtmp));
+    vtmp = _mm_load_ps(In+20);
+    vsum = _mm_add_ps(vsum, _mm_mul_ps(vtmp, vtmp));
 
     In += 24;
   }
 
   REAL32 fsum[4];
-  __builtin_ia32_storeaps(fsum, vsum);
+  _mm_store_ps(fsum, vsum);
   *Out = fsum[0] + fsum[1] + fsum[2] + fsum[3];
 }
 

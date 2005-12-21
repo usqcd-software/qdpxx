@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.5 2004-08-19 01:56:19 edwards Exp $
+// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.6 2005-12-21 16:04:25 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -12,6 +12,8 @@
 
 // These SSE asm instructions are only supported under GCC/G++ 3.2 or greater
 #if defined(__GNUC__) && __GNUC_MINOR__ >= 2
+
+#include "qdp_sse_intrin.h"
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -45,7 +47,7 @@ operator+(const ILatticeFloat& l, const ILatticeFloat& r)
   typedef BinaryReturn<ILatticeFloat, ILatticeFloat, OpAdd>::Type_t  Ret_t;
 
 //  cout << "I+I" << endl; 
-  return Ret_t(__builtin_ia32_addps(l.elem_v(), r.elem_v()));
+  return Ret_t(_mm_add_ps(l.elem_v(), r.elem_v()));
 }
 
 // ILatticeFloat <- ILatticeFloat + IScalarFloat
@@ -56,7 +58,7 @@ operator+(const ILatticeFloat& l, const IScalarFloat& r)
   typedef BinaryReturn<ILatticeFloat, IScalarFloat, OpAdd>::Type_t  Ret_t;
 
 //  cout << "I+I" << endl; 
-  return Ret_t(__builtin_ia32_addps(l.elem_v(), vmk1(r.elem())));
+  return Ret_t(_mm_add_ps(l.elem_v(), vmk1(r.elem())));
 }
 
 // ILatticeFloat <- IScalarFloat + ILatticeFloat
@@ -67,7 +69,7 @@ operator+(const IScalarFloat& l, const ILatticeFloat& r)
   typedef BinaryReturn<IScalarFloat, ILatticeFloat, OpAdd>::Type_t  Ret_t;
 
 //  cout << "I+I" << endl; 
-  return Ret_t(__builtin_ia32_addps(vmk1(l.elem()), r.elem_v()));
+  return Ret_t(_mm_add_ps(vmk1(l.elem()), r.elem_v()));
 }
 
 
@@ -80,7 +82,7 @@ operator-(const ILatticeFloat& l, const ILatticeFloat& r)
   typedef BinaryReturn<ILatticeFloat, ILatticeFloat, OpSubtract>::Type_t  Ret_t;
 
 //  cout << "I-I" << endl;
-  return Ret_t(__builtin_ia32_subps(l.elem_v(), r.elem_v()));
+  return Ret_t(_mm_sub_ps(l.elem_v(), r.elem_v()));
 }
 
 // ILatticeFloat <- ILatticeFloat - IScalarFloat
@@ -91,7 +93,7 @@ operator-(const ILatticeFloat& l, const IScalarFloat& r)
   typedef BinaryReturn<ILatticeFloat, IScalarFloat, OpSubtract>::Type_t  Ret_t;
 
 //  cout << "I-I" << endl;
-  return Ret_t(__builtin_ia32_subps(l.elem_v(), vmk1(r.elem())));
+  return Ret_t(_mm_sub_ps(l.elem_v(), vmk1(r.elem())));
 }
 
 // ILatticeFloat <- IScalarFloat - ILatticeFloat
@@ -102,7 +104,7 @@ operator-(const IScalarFloat& l, const ILatticeFloat& r)
   typedef BinaryReturn<IScalarFloat, ILatticeFloat, OpSubtract>::Type_t  Ret_t;
 
 //  cout << "I-I" << endl;
-  return Ret_t(__builtin_ia32_subps(vmk1(l.elem()), r.elem_v()));
+  return Ret_t(_mm_sub_ps(vmk1(l.elem()), r.elem_v()));
 }
 
 
@@ -115,7 +117,7 @@ operator*(const ILatticeFloat& l, const ILatticeFloat& r)
   typedef BinaryReturn<ILatticeFloat, ILatticeFloat, OpMultiply>::Type_t  Ret_t;
 
 //  cout << "I*I" << endl;
-  return Ret_t(__builtin_ia32_mulps(l.elem_v(), r.elem_v()));
+  return Ret_t(_mm_mul_ps(l.elem_v(), r.elem_v()));
 }
 
 // ILatticeFloat <- ILatticeFloat * IScalarFloat
@@ -126,7 +128,7 @@ operator*(const ILatticeFloat& l, const IScalarFloat& r)
   typedef BinaryReturn<ILatticeFloat, IScalarFloat, OpMultiply>::Type_t  Ret_t;
 
 //  cout << "I*I" << endl;
-  return Ret_t(__builtin_ia32_mulps(l.elem_v(), vmk1(r.elem())));
+  return Ret_t(_mm_mul_ps(l.elem_v(), vmk1(r.elem())));
 }
 
 // ILatticeFloat <- IScalarFloat * ILatticeFloat
@@ -137,7 +139,7 @@ operator*(const IScalarFloat& l, const ILatticeFloat& r)
   typedef BinaryReturn<IScalarFloat, ILatticeFloat, OpMultiply>::Type_t  Ret_t;
 
 //  cout << "I*I" << endl;
-  return Ret_t(__builtin_ia32_mulps(vmk1(l.elem()), r.elem_v()));
+  return Ret_t(_mm_mul_ps(vmk1(l.elem()), r.elem_v()));
 }
 
 
@@ -150,7 +152,7 @@ operator/(const ILatticeFloat& l, const ILatticeFloat& r)
   typedef BinaryReturn<ILatticeFloat, ILatticeFloat, OpDivide>::Type_t  Ret_t;
 
 //  cout << "I/I" << endl;
-  return Ret_t(__builtin_ia32_divps(l.elem_v(), r.elem_v()));
+  return Ret_t(_mm_div_ps(l.elem_v(), r.elem_v()));
 }
 
 // ILatticeFloat <- ILatticeFloat / IScalarFloat
@@ -161,7 +163,7 @@ operator/(const ILatticeFloat& l, const IScalarFloat& r)
   typedef BinaryReturn<ILatticeFloat, IScalarFloat, OpDivide>::Type_t  Ret_t;
 
 //  cout << "I/I" << endl;
-  return Ret_t(__builtin_ia32_divps(l.elem_v(), vmk1(r.elem())));
+  return Ret_t(_mm_div_ps(l.elem_v(), vmk1(r.elem())));
 }
 
 // ILatticeFloat <- IScalarFloat / ILatticeFloat
@@ -172,7 +174,7 @@ operator/(const IScalarFloat& l, const ILatticeFloat& r)
   typedef BinaryReturn<IScalarFloat, ILatticeFloat, OpDivide>::Type_t  Ret_t;
 
 //  cout << "I/I" << endl;
-  return Ret_t(__builtin_ia32_divps(vmk1(l.elem()), r.elem_v()));
+  return Ret_t(_mm_div_ps(vmk1(l.elem()), r.elem_v()));
 }
 
 
@@ -187,8 +189,8 @@ operator+(const RComplexFloat& l, const RComplexFloat& r)
   typedef BinaryReturn<RComplexFloat, RComplexFloat, OpAdd>::Type_t  Ret_t;
 
 //  cout << "C+C" << endl;
-  return Ret_t(__builtin_ia32_addps(l.real().elem_v(), r.real().elem_v()),
-	       __builtin_ia32_addps(l.imag().elem_v(), r.imag().elem_v()));
+  return Ret_t(_mm_add_ps(l.real().elem_v(), r.real().elem_v()),
+	       _mm_add_ps(l.imag().elem_v(), r.imag().elem_v()));
 }
 
 
@@ -201,8 +203,8 @@ operator-(const RComplexFloat& l, const RComplexFloat& r)
   typedef BinaryReturn<RComplexFloat, RComplexFloat, OpSubtract>::Type_t  Ret_t;
 
 //  cout << "C-C" << endl;
-  return Ret_t(__builtin_ia32_subps(l.real().elem_v(), r.real().elem_v()),
-	       __builtin_ia32_subps(l.imag().elem_v(), r.imag().elem_v()));
+  return Ret_t(_mm_sub_ps(l.real().elem_v(), r.real().elem_v()),
+	       _mm_sub_ps(l.imag().elem_v(), r.imag().elem_v()));
 }
 
 
@@ -215,10 +217,10 @@ operator*(const RComplexFloat& l, const RComplexFloat& r)
   typedef BinaryReturn<RComplexFloat, RComplexFloat, OpMultiply>::Type_t  Ret_t;
 
 //  cout << "C*C" << endl;
-  return Ret_t(__builtin_ia32_subps(__builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v()),
-				    __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v())),
-	       __builtin_ia32_addps(__builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v()),
-				    __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v())));
+  return Ret_t(_mm_sub_ps(_mm_mul_ps(l.real().elem_v(), r.real().elem_v()),
+				    _mm_mul_ps(l.imag().elem_v(), r.imag().elem_v())),
+	       _mm_add_ps(_mm_mul_ps(l.real().elem_v(), r.imag().elem_v()),
+				    _mm_mul_ps(l.imag().elem_v(), r.real().elem_v())));
 }
 
 // Optimized version of  
@@ -230,10 +232,10 @@ adjMultiply(const RComplexFloat& l, const RComplexFloat& r)
   typedef BinaryReturn<RComplexFloat, RComplexFloat, OpAdjMultiply>::Type_t  Ret_t;
 
 //  cout << "adj(C)*C" << endl;
-  return Ret_t(__builtin_ia32_addps(__builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v()),
-				    __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v())),
-	       __builtin_ia32_subps(__builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v()),
-				    __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v())));
+  return Ret_t(_mm_add_ps(_mm_mul_ps(l.real().elem_v(), r.real().elem_v()),
+				    _mm_mul_ps(l.imag().elem_v(), r.imag().elem_v())),
+	       _mm_sub_ps(_mm_mul_ps(l.real().elem_v(), r.imag().elem_v()),
+				    _mm_mul_ps(l.imag().elem_v(), r.real().elem_v())));
 }
 
 // Optimized  RComplex*adj(RComplex)
@@ -244,10 +246,10 @@ multiplyAdj(const RComplexFloat& l, const RComplexFloat& r)
   typedef BinaryReturn<RComplexFloat, RComplexFloat, OpMultiplyAdj>::Type_t  Ret_t;
 
 //  cout << "C*adj(C)" << endl;
-  return Ret_t(__builtin_ia32_addps(__builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v()),
-				    __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v())),
-	       __builtin_ia32_subps(__builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v()),
-				    __builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v())));
+  return Ret_t(_mm_add_ps(_mm_mul_ps(l.real().elem_v(), r.real().elem_v()),
+				    _mm_mul_ps(l.imag().elem_v(), r.imag().elem_v())),
+	       _mm_sub_ps(_mm_mul_ps(l.imag().elem_v(), r.real().elem_v()),
+				    _mm_mul_ps(l.real().elem_v(), r.imag().elem_v())));
 }
 
 // Optimized  adj(RComplex)*adj(RComplex)
@@ -259,11 +261,11 @@ adjMultiplyAdj(const RComplexFloat& l, const RComplexFloat& r)
   REAL32 zero = 0.0;
 
 //  cout << "adj(C)*adj(C)" << endl;
-  return Ret_t(__builtin_ia32_subps(__builtin_ia32_mulps(l.real().elem_v(), r.real().elem_v()),
-				    __builtin_ia32_mulps(l.imag().elem_v(), r.imag().elem_v())),
-	       __builtin_ia32_subps(vmk1(zero),
-				    __builtin_ia32_addps(__builtin_ia32_mulps(l.real().elem_v(), r.imag().elem_v()),
-							 __builtin_ia32_mulps(l.imag().elem_v(), r.real().elem_v()))));
+  return Ret_t(_mm_sub_ps(_mm_mul_ps(l.real().elem_v(), r.real().elem_v()),
+				    _mm_mul_ps(l.imag().elem_v(), r.imag().elem_v())),
+	       _mm_sub_ps(vmk1(zero),
+				    _mm_add_ps(_mm_mul_ps(l.real().elem_v(), r.imag().elem_v()),
+							 _mm_mul_ps(l.imag().elem_v(), r.real().elem_v()))));
 }
 
 
