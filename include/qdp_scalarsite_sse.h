@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.22 2005-12-21 16:29:45 bjoo Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.23 2005-12-21 16:55:38 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -30,11 +30,8 @@
 #warning "This version of gcc does not support vector types - not using SSE blas code"
 #endif
 
-#elif __GNUC_MAJOR__ == 4 
+#else 
 #include "scalarsite_sse/qdp_scalarsite_sse_blas.h"
-
-#else
-#warning "This version of gcc does not support vector types - not using SSE blas code"
 #endif
 
 // Use Complex BLAS from Generics. It is better than nothing
