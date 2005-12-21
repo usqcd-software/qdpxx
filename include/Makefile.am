@@ -53,6 +53,7 @@ GENERIC_HDRS = qdp_scalarsite_generic.h \
 ssesitedir = scalarsite_sse
 
 SSESITE_HDRS = qdp_scalarsite_sse.h \
+	qdp_sse_intrin.h \
 	$(ssesitedir)/sse_addvec.h \
 	$(ssesitedir)/sse_adj_mat_hwvec.h \
 	$(ssesitedir)/sse_adj_mat_vec.h \
