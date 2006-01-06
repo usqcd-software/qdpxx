@@ -1,3 +1,7 @@
+01/05/2006 -- Robert Edwards
+
+	Version 1.18.3: Patches in QIO to support reading ancient propagators.
+
 12/22/2005 -- Robert Edwards
 
 	Version 1.18.2: Changes to support gcc4 and intel compiler.
