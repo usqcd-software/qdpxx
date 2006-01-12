@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.30 2005-12-02 14:14:36 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.31 2006-01-12 02:17:40 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -620,59 +620,89 @@ template<class T> void QDPOScalarFactoryPut(char *buf, size_t linear, int count,
   \param rec_xml The (user) record metadata.
   \param sl The data
 */
-template<class T>
+
+template<typename T>
 void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
 {
-
-  try { 
-
-    QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
-						  QIOStringTraits<OScalar<T> >::tname,
-						  QIOStringTraits<typename WordType<T>::Type_t >::tprec,
-						  Nc, Ns, 
-						  sizeof(T), 1);
-
-    // Initialize string objects 
-    QIO_String *xml_c  = QIO_string_create();
-    
-    
-    QDPIO::cout << "xml_string->string = " << xml_c->string << endl;
-    QDPIO::cout << "xml_string->length=" << xml_c->length << endl;
-    QDPIO::cout << flush;
-    
-    if (QIO_read(get(), info, xml_c,
-		 &(QDPOScalarFactoryPut<T>),
-		 sizeof(T), 
-		 sizeof(typename WordType<T>::Type_t), 
-		 (void *)s1.elem()) != QIO_SUCCESS) {
-	QDPIO::cerr << "QDPFileReader: error reading file" << endl;
-	clear(QDPIO_badbit);
-    }
-    
-    QDPIO::cout << "xml_string->string = " << xml_c->string << endl;
-    QDPIO::cout << "xml_string->length=" << xml_c->length << endl;
-    QDPIO::cout << flush;
-    
-    
-    // Use string to initialize XMLReader
-    istringstream ss;
-    if (Layout::primaryNode()) {
-      string foo = QIO_string_ptr(xml_c);
-      ss.str(foo);
-    }
-    rec_xml.open(ss);
-    
-    QIO_string_destroy(xml_c);
-    QIO_destroy_record_info(info);
-    
-  }
-  catch(std::bad_alloc) { 
-    QDPIO::cout << "Caught BAD ALLOC Exception" << endl;
+  /* For now I may not be able to read Dirk's stuff, but I should
+   * be able to read what I wrote */
+  QIO_RecordInfo rec_info;
+  QIO_String* xml_c = QIO_string_create();
+  int status;
+  
+  
+  status=QIO_read_record_info(qio_in, &rec_info, xml_c);
+  if( status != QIO_SUCCESS) { 
+    QDPIO::cerr << "Failed to read the Record Info" << endl;
     QDP_abort(1);
   }
   
+  switch( (QIO_get_precision(&rec_info))[0] ) { 
+  case 'F' :
+    {
+      QDPIO::cout << "Single Precision Read" << endl;
+      OScalar< typename SinglePrecType<T>::Type_t > from_disk;
+      status = QIO_read_record_data(qio_in,
+				    &(QDPOScalarFactoryPut<typename SinglePrecType<T>::Type_t> ),
+				    sizeof(typename SinglePrecType<T>::Type_t),
+				    sizeof(typename WordType< typename SinglePrecType<T>::Type_t >::Type_t),
+				    (void *)from_disk.elem());
+      if (status != QIO_SUCCESS) { 
+	QDPIO::cerr << "Failed to read data" << endl;
+	clear(QDPIO_badbit);
+	QDP_abort(1);
+      }
+      QDPIO::cout << "QIO_read_finished" << endl;
+      s1 = from_disk;
+    }
+    break;
+  case 'D' :
+    {
+      QDPIO::cout << "Reading Double Precision" << endl;
+      OScalar< typename DoublePrecType<T>::Type_t > from_disk;
+      status = QIO_read_record_data(qio_in,
+				    &(QDPOScalarFactoryPut< typename DoublePrecType<T>::Type_t > ),
+				    sizeof(typename DoublePrecType<T>::Type_t),
+				    sizeof(typename WordType< typename DoublePrecType<T>::Type_t >::Type_t),
+				    (void *)from_disk.elem());
+      if (status != QIO_SUCCESS) { 
+	QDPIO::cerr << "Failed to read data" << endl;
+	clear(QDPIO_badbit);
+	QDP_abort(1);
+      }
+      QDPIO::cout << "QIO_read_finished" << endl;
+      
+      s1 = from_disk;
+    }
+    break;
+  default:
+    {
+      QDPIO::cout << "Reading I or U Precision" << endl;
+      status = QIO_read_record_data(qio_in,
+				    &(QDPOScalarFactoryPut<T> ),
+				    s1.size()*sizeof(T),
+				    sizeof(typename WordType<T>::Type_t),
+				    (void *)s1.elem());
+      if (status != QIO_SUCCESS) { 
+	QDPIO::cerr << "Failed to read data" << endl;
+	clear(QDPIO_badbit);
+	QDP_abort(1);
+      }
+      QDPIO::cout << "QIO_read_finished" << endl;
+    }
+    break;
+  }
+  
+  istringstream ss;
+  if (Layout::primaryNode()) {
+    string foo = QIO_string_ptr(xml_c);
+    ss.str(foo);
+  }
+  rec_xml.open(ss);
+  
+  QIO_string_destroy(xml_c);
 }
-
+  
 
 //! Reads an array of OScalar objects
 /*!
@@ -681,42 +711,95 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
   \param rec_xml The (user) record metadata.
   \param sl The data
 */
-template<class T>
+
+template<typename T>
 void QDPFileReader::read(XMLReader& rec_xml, multi1d< OScalar<T> >& s1)
 {
-
-    QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
-						  QIOStringTraits<multi1d<OScalar<T> > >::tname,
-						  QIOStringTraits<typename WordType<T>::Type_t >::tprec,
-						  Nc, Ns, 
-						  sizeof(T), s1.size()); // need size for now
-
-
-
-  // Initialize string objects 
-  QIO_String *xml_c  = QIO_string_create();
-
-  if (QIO_read(get(), info, xml_c,
-   	       &(QDPOScalarFactoryPut<T>),
-               s1.size()*sizeof(T), 
-	       sizeof(typename WordType<T>::Type_t), 
-	       (void *)s1.slice()) != QIO_SUCCESS)
-  {
-    QDPIO::cerr << "QDPFileReader: error reading file" << endl;
-    clear(QDPIO_badbit);
+  /* For now I may not be able to read Dirk's stuff, but I should
+   * be able to read what I wrote */
+  QIO_RecordInfo rec_info;
+  QIO_String* xml_c = QIO_string_create();
+  int status;
+  
+  
+  status=QIO_read_record_info(qio_in, &rec_info, xml_c);
+  if( status != QIO_SUCCESS) { 
+    QDPIO::cerr << "Failed to read the Record Info" << endl;
+    QDP_abort(1);
   }
-
-  // Use string to initialize XMLReader
+  
+  switch( (QIO_get_precision(&rec_info))[0] ) { 
+  case 'F' :
+    {
+      QDPIO::cout << "Single Precision Read" << endl;
+      multi1d< OScalar< typename SinglePrecType<T>::Type_t > > from_disk(s1.size());
+      status = QIO_read_record_data(qio_in,
+				    &(QDPOScalarFactoryPut<typename SinglePrecType<T>::Type_t> ),
+				    s1.size()*sizeof(typename SinglePrecType<T>::Type_t),
+				    sizeof(typename WordType< typename SinglePrecType<T>::Type_t >::Type_t),
+				    (void *)from_disk.slice());
+      if (status != QIO_SUCCESS) { 
+	QDPIO::cerr << "Failed to read data" << endl;
+	clear(QDPIO_badbit);
+	QDP_abort(1);
+      }
+      QDPIO::cout << "QIO_read_finished" << endl;
+      
+      // Cast appropriately
+      for(int i=0; i < from_disk.size(); i++) { 
+	s1[i] = from_disk[i];
+      }
+      
+    }
+    break;
+  case 'D' :
+    {
+      QDPIO::cout << "Reading Double Precision" << endl;
+      multi1d< typename DoublePrecType< OScalar<T> >::Type_t > from_disk(s1.size());
+      status = QIO_read_record_data(qio_in,
+				    &(QDPOScalarFactoryPut< typename DoublePrecType<T>::Type_t > ),
+				    s1.size()*sizeof(typename DoublePrecType<T>::Type_t),
+				    sizeof(typename WordType< typename DoublePrecType<T>::Type_t >::Type_t),
+				    (void *)from_disk.slice());
+      if (status != QIO_SUCCESS) { 
+	QDPIO::cerr << "Failed to read data" << endl;
+	clear(QDPIO_badbit);
+	QDP_abort(1);
+      }
+      QDPIO::cout << "QIO_read_finished" << endl;
+      
+      // Cast appropriately
+      for(int i=0; i < from_disk.size(); i++) { 
+	s1[i] = from_disk[i];
+      }
+    }
+    break;
+  default:
+    {
+      QDPIO::cout << "Reading I or U Precision" << endl;
+      status = QIO_read_record_data(qio_in,
+				    &(QDPOScalarFactoryPut<T> ),
+				    s1.size()*sizeof(T),
+				    sizeof(typename WordType<T>::Type_t),
+				    (void *)s1.slice());
+      if (status != QIO_SUCCESS) { 
+	QDPIO::cerr << "Failed to read data" << endl;
+	clear(QDPIO_badbit);
+	QDP_abort(1);
+      }
+      QDPIO::cout << "QIO_read_finished" << endl;
+    }
+    break;
+  }
+  
   istringstream ss;
-  if (Layout::primaryNode())
-  {
+  if (Layout::primaryNode()) {
     string foo = QIO_string_ptr(xml_c);
     ss.str(foo);
   }
   rec_xml.open(ss);
-
+  
   QIO_string_destroy(xml_c);
-  QIO_destroy_record_info(info);
 }
 
 
@@ -794,6 +877,15 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OScalar<T>& s1)
   \param rec_xml The (user) record metadata.
   \param sl The data
 */
+
+//! Reads an array of OLattice objects
+/*!
+  This implementation is only correct for scalar ILattice.
+
+  \param rec_xml The (user) record metadata.
+  \param sl The data
+*/
+
 template<class T>
 void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OScalar<T> >& s1)
 {
@@ -832,8 +924,6 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OScalar<T> >&
   QIO_string_destroy(xml_c);
   QIO_destroy_record_info(info);
 }
-
-
 
 
 //-------------------------------------------------
@@ -894,54 +984,88 @@ template<class T> void QDPOLatticeFactoryPutArray(char *buf, size_t linear, int 
 template<class T>
 void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
 {
-
-  try { 
-
-
-    QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
-						  QIOStringTraits<OLattice<T> >::tname, 
-						  QIOStringTraits<typename WordType<T>::Type_t>::tprec,
-						  Nc, Ns, 
-						  sizeof(T),1);
-
-
-    
-    // Initialize string objects 
-    QIO_String *xml_c  = QIO_string_create();
-    try { 
-    if (QIO_read(get(), info, xml_c,
-		 &(QDPOLatticeFactoryPut<T>),
-		 sizeof(T), 
-		 sizeof(typename WordType<T>::Type_t), 
-		 (void *)s1.getF()) != QIO_SUCCESS)
-      {
-	QDPIO::cerr << "QDPFileReader: error reading file" << endl;
+  /* For now I may not be able to read Dirk's stuff, but I should
+   * be able to read what I wrote */
+  QIO_RecordInfo rec_info;
+  QIO_String* xml_c = QIO_string_create();
+  int status;
+  
+  status=QIO_read_record_info(qio_in, &rec_info, xml_c);
+  if( status != QIO_SUCCESS) { 
+    QDPIO::cerr << "Failed to read the Record Info" << endl;
+    QDP_abort(1);
+  }
+      
+  switch( (QIO_get_precision(&rec_info))[0] ) { 
+  case 'F' :
+    {
+      QDPIO::cout << "Single Precision Read" << endl;
+      OLattice< typename SinglePrecType<T>::Type_t > from_disk;
+      status = QIO_read_record_data(qio_in,
+				    &(QDPOLatticeFactoryPut<typename SinglePrecType<T>::Type_t> ),
+				    sizeof(typename SinglePrecType<T>::Type_t),
+				    sizeof(typename WordType< typename SinglePrecType<T>::Type_t >::Type_t),
+				    (void *)from_disk.getF());
+      
+      if (status != QIO_SUCCESS) { 
+	QDPIO::cerr << "Failed to read data" << endl;
 	clear(QDPIO_badbit);
+	QDP_abort(1);
       }
+      QDPIO::cout << "QIO_read_finished" << endl;
+      s1 = from_disk; // Cast
     }
-    catch(std::bad_alloc) { 
-      QDPIO::cerr << "Bad Alloc Exception caught in QIO_read(OLattice) " <<endl << flush;
-      QDP_abort(-1);
-    }
-
-    // Use string to initialize XMLReader
-    istringstream ss;
-    if (Layout::primaryNode())
-      {
-	string foo = QIO_string_ptr(xml_c);
-	ss.str(foo);
+    break;
+  case 'D' :
+    {
+      QDPIO::cout << "Reading Double Precision" << endl;
+      OLattice< typename DoublePrecType<T>::Type_t > from_disk;
+      status = QIO_read_record_data(qio_in,
+				    &(QDPOLatticeFactoryPut< typename DoublePrecType<T>::Type_t>),
+				    sizeof(typename DoublePrecType<T>::Type_t),
+				    sizeof(typename WordType< typename DoublePrecType<T>::Type_t >::Type_t),
+				    (void *)from_disk.getF());
+      
+      if (status != QIO_SUCCESS) { 
+	QDPIO::cerr << "Failed to read data" << endl;
+	clear(QDPIO_badbit);
+	QDP_abort(1);
       }
-    rec_xml.open(ss);
-    
-    QIO_string_destroy(xml_c);
-    QIO_destroy_record_info(info);
+      QDPIO::cout << "QIO_read_finished" << endl;
+      
+      // Cast appropriately
+      s1= from_disk;
+	
+    }
+    break;
+ default:
+   {
+     QDPIO::cout << "Reading I or U precisions" << endl;
+     status = QIO_read_record_data(qio_in,
+				   &(QDPOLatticeFactoryPut<T>),
+				   sizeof(T),
+				   sizeof(typename WordType<T>::Type_t),
+				   (void *)s1.getF());
+     
+     if (status != QIO_SUCCESS) { 
+       QDPIO::cerr << "Failed to read data" << endl;
+       clear(QDPIO_badbit);
+       QDP_abort(1);
+     }
+     QDPIO::cout << "QIO_read_finished" << endl;
+   }
+   break;
+  };
+        
+  istringstream ss;
+  if (Layout::primaryNode()) {
+    string foo = QIO_string_ptr(xml_c);
+    ss.str(foo);
   }
-  catch(std::bad_alloc) { 
-    QDPIO::cout << "Bad ALLOC exception caught " << endl;
-    QDP_abort(-1);
-  }
+  rec_xml.open(ss);
+  
+  QIO_string_destroy(xml_c);
 }
-
 
 //! Reads an array of OLattice objects
 /*!
@@ -950,43 +1074,95 @@ void QDPFileReader::read(XMLReader& rec_xml, OLattice<T>& s1)
   \param rec_xml The (user) record metadata.
   \param sl The data
 */
-template<class T>
+template<typename T>
 void QDPFileReader::read(XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
 {
-  QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
-						QIOStringTraits< multi1d< OLattice<T> > >::tname,
-						QIOStringTraits<typename WordType<T>::Type_t>::tprec,
-						Nc, Ns, 
-						sizeof(T),s1.size());
+  /* For now I may not be able to read Dirk's stuff, but I should
+   * be able to read what I wrote */
+  QIO_RecordInfo rec_info;
+  QIO_String* xml_c = QIO_string_create();
+  int status;
   
-
-  // Initialize string objects 
-  QIO_String *xml_c  = QIO_string_create();
-
-  if (QIO_read(get(), info, xml_c,
-   	       &(QDPOLatticeFactoryPutArray<T>),
-               s1.size()*sizeof(T), 
-	       sizeof(typename WordType<T>::Type_t), 
-	       (void*)&s1) != QIO_SUCCESS)
-  {
-    QDPIO::cerr << "QDPFileReader: error reading file" << endl;
-    clear(QDPIO_badbit);
+  
+  status=QIO_read_record_info(qio_in, &rec_info, xml_c);
+  if( status != QIO_SUCCESS) { 
+    QDPIO::cerr << "Failed to read the Record Info" << endl;
+    QDP_abort(1);
   }
-  QDPIO::cout << "QIO_read finished " << endl  << flush ;
-
-  // Use string to initialize XMLReader
+  
+  switch( (QIO_get_precision(&rec_info))[0] ) { 
+  case 'F' :
+    {
+      QDPIO::cout << "Single Precision Read" << endl;
+      multi1d< OLattice< typename SinglePrecType<T>::Type_t > > from_disk(s1.size());
+      status = QIO_read_record_data(qio_in,
+				    &(QDPOLatticeFactoryPutArray<typename SinglePrecType<T>::Type_t> ),
+				    s1.size()*sizeof(typename SinglePrecType<T>::Type_t),
+				    sizeof(typename WordType< typename SinglePrecType<T>::Type_t >::Type_t),
+				    (void *)&from_disk);
+      if (status != QIO_SUCCESS) { 
+	QDPIO::cerr << "Failed to read data" << endl;
+	clear(QDPIO_badbit);
+	QDP_abort(1);
+      }
+      QDPIO::cout << "QIO_read_finished" << endl;
+      
+      // Cast appropriately
+      for(int i=0; i < from_disk.size(); i++) { 
+	s1[i] = from_disk[i];
+      }
+      
+    }
+    break;
+  case 'D' :
+    {
+      QDPIO::cout << "Reading Double Precision" << endl;
+      multi1d< typename DoublePrecType< OLattice<T> >::Type_t > from_disk(s1.size());
+      status = QIO_read_record_data(qio_in,
+				    &(QDPOLatticeFactoryPutArray< typename DoublePrecType<T>::Type_t > ),
+				    s1.size()*sizeof(typename DoublePrecType<T>::Type_t),
+				    sizeof(typename WordType< typename DoublePrecType<T>::Type_t >::Type_t),
+				    (void *)&from_disk);
+      if (status != QIO_SUCCESS) { 
+	QDPIO::cerr << "Failed to read data" << endl;
+	clear(QDPIO_badbit);
+	QDP_abort(1);
+      }
+      QDPIO::cout << "QIO_read_finished" << endl;
+      
+      // Cast appropriately
+      for(int i=0; i < from_disk.size(); i++) { 
+	s1[i] = from_disk[i];
+      }
+    }
+    break;
+  default:
+    {
+      QDPIO::cout << "Reading I or U Precision" << endl;
+      status = QIO_read_record_data(qio_in,
+				    &(QDPOLatticeFactoryPutArray<T> ),
+				    s1.size()*sizeof(T),
+				    sizeof(typename WordType<T>::Type_t),
+				    (void *)&s1);
+      if (status != QIO_SUCCESS) { 
+	QDPIO::cerr << "Failed to read data" << endl;
+	clear(QDPIO_badbit);
+	QDP_abort(1);
+      }
+      QDPIO::cout << "QIO_read_finished" << endl;
+    }
+    break;
+  }
+  
   istringstream ss;
-  if (Layout::primaryNode())
-  {
+  if (Layout::primaryNode()) {
     string foo = QIO_string_ptr(xml_c);
     ss.str(foo);
   }
   rec_xml.open(ss);
-
+  
   QIO_string_destroy(xml_c);
-  QIO_destroy_record_info(info);
 }
-
 
 //! Function for moving data
 /*!

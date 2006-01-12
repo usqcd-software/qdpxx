@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.45 2005-10-18 19:38:10 edwards Exp $
+// $Id: qdp_outer.h,v 1.46 2006-01-12 02:17:39 bjoo Exp $
 
 #include "qdp_config.h"
 
@@ -599,6 +599,29 @@ struct WordType<OLattice<T> >
   typedef typename WordType<T>::Type_t  Type_t;
 };
 
+template<class T> 
+struct SinglePrecType<OScalar<T> >
+{
+  typedef OScalar<typename SinglePrecType<T>::Type_t> Type_t;
+};
+
+template<class T>
+struct DoublePrecType<OScalar<T> >
+{
+  typedef OScalar<typename DoublePrecType<T>::Type_t> Type_t;
+};
+
+template<class T> 
+struct SinglePrecType<OLattice<T> >
+{
+  typedef OLattice<typename SinglePrecType<T>::Type_t> Type_t;
+};
+
+template<class T>
+struct DoublePrecType<OLattice<T> >
+{
+  typedef OLattice<typename DoublePrecType<T>::Type_t> Type_t;
+};
 
 // Internally used scalars
 template<class T>

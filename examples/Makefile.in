@@ -67,7 +67,8 @@ CONFIG_CLEAN_FILES =
 @BUILD_WILSON_EXAMPLES_TRUE@	t_linalg$(EXEEXT)
 am__EXEEXT_3 =
 am__objects_1 =
-am_nersc2ildg_OBJECTS = nersc2ildg.$(OBJEXT) $(am__objects_1)
+am_nersc2ildg_OBJECTS = nersc2ildg.$(OBJEXT) $(am__objects_1) \
+	mesplq.$(OBJEXT)
 nersc2ildg_OBJECTS = $(am_nersc2ildg_OBJECTS)
 nersc2ildg_LDADD = $(LDADD)
 nersc2ildg_DEPENDENCIES =
@@ -407,7 +408,7 @@ t_blas_g5_2_SOURCES = t_blas_g5_2.cc $(HDRS)
 t_blas_g5_3_SOURCES = t_blas_g5_3.cc $(HDRS)
 t_cugauge_SOURCES = t_cugauge.cc mesplq.cc $(HDRS) 
 t_transpose_spin_SOURCES = t_transpose_spin.cc $(HDRS)
-nersc2ildg_SOURCES = nersc2ildg.cc $(HDRS)
+nersc2ildg_SOURCES = nersc2ildg.cc $(HDRS) mesplq.cc
 all: all-am
 
 .SUFFIXES:

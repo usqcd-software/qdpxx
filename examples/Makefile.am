@@ -83,7 +83,7 @@ t_blas_g5_3_SOURCES = t_blas_g5_3.cc $(HDRS)
 t_cugauge_SOURCES = t_cugauge.cc mesplq.cc $(HDRS) 
 t_transpose_spin_SOURCES = t_transpose_spin.cc $(HDRS)
 
-nersc2ildg_SOURCES = nersc2ildg.cc $(HDRS)
+nersc2ildg_SOURCES = nersc2ildg.cc $(HDRS) mesplq.cc
 
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

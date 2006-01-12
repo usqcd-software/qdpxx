@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.27 2005-11-30 22:16:46 bjoo Exp $
+// $Id: t_qio.cc,v 1.28 2006-01-12 02:17:39 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -13,7 +13,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,8,8};
+  const int foo[] = {4,4,4,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);

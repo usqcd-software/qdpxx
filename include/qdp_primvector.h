@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.22 2004-11-22 19:31:31 edwards Exp $
+// $Id: qdp_primvector.h,v 1.23 2006-01-12 02:17:40 bjoo Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -230,6 +230,18 @@ template<class T1, int N, template<class,int> class C>
 struct WordType<PVector<T1,N,C> > 
 {
   typedef typename WordType<T1>::Type_t  Type_t;
+};
+
+template<class T1, int N, template<class, int> class C> 
+struct SinglePrecType< PVector<T1,N,C> >
+{
+  typedef PVector< typename SinglePrecType<T1>::Type_t, N, C> Type_t;
+};
+
+template<class T1, int N, template<class, int> class C> 
+struct DoublePrecType< PVector<T1,N,C> >
+{
+  typedef PVector< typename DoublePrecType<T1>::Type_t, N, C> Type_t;
 };
 
 // Internally used scalars

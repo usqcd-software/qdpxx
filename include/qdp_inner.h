@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.27 2005-04-20 02:28:04 edwards Exp $
+// $Id: qdp_inner.h,v 1.28 2006-01-12 02:17:39 bjoo Exp $
 
 /*! \file
  * \brief Inner grid
@@ -641,10 +641,39 @@ struct WordType<IScalar<T> >
   typedef typename WordType<T>::Type_t  Type_t;
 };
 
+
 template<class T, int N>
 struct WordType<ILattice<T,N> > 
 {
   typedef typename WordType<T>::Type_t  Type_t;
+};
+
+// Get the fixed single precision version of this Type (recursively)
+template<class T>
+struct SinglePrecType< IScalar<T> >
+{
+  typedef IScalar< typename SinglePrecType<T>::Type_t > Type_t;
+};
+
+// Get the fixed single precision version of this Type (recursively)
+template<class T, int N>
+struct SinglePrecType<ILattice<T,N> >
+{
+  typedef ILattice< typename SinglePrecType<T>::Type_t, N> Type_t;
+};
+
+// Get the fixed double precision version of this Type (recursively)
+template<class T>
+struct DoublePrecType< IScalar<T> >
+{
+  typedef IScalar< typename DoublePrecType<T>::Type_t> Type_t;
+};
+
+// Get the fixed double precision version of this Type (recursively)
+template<class T, int N>
+struct DoublePrecType<ILattice<T,N> >
+{
+  typedef ILattice< typename DoublePrecType<T>::Type_t, N> Type_t;
 };
 
 

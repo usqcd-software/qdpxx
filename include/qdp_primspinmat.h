@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinmat.h,v 1.11 2005-07-20 17:06:52 edwards Exp $
+// $Id: qdp_primspinmat.h,v 1.12 2006-01-12 02:17:40 bjoo Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -73,6 +73,18 @@ template<class T1, int N>
 struct WordType<PSpinMatrix<T1,N> > 
 {
   typedef typename WordType<T1>::Type_t  Type_t;
+};
+
+template<class T1, int N>
+struct SinglePrecType<PSpinMatrix<T1, N> >
+{
+  typedef PSpinMatrix< typename SinglePrecType<T1>::Type_t , N > Type_t;
+};
+
+template<class T1, int N>
+struct DoublePrecType<PSpinMatrix<T1, N> >
+{
+  typedef PSpinMatrix< typename DoublePrecType<T1>::Type_t , N > Type_t;
 };
 
 // Internally used scalars

@@ -1,4 +1,4 @@
-// $Id: nersc2ildg.cc,v 1.2 2005-11-16 20:33:41 bjoo Exp $
+// $Id: nersc2ildg.cc,v 1.3 2006-01-12 02:17:39 bjoo Exp $
 /*! \file
  *  \brief Skeleton of a QDP main program
  */
@@ -7,6 +7,8 @@
 #include "qdp_iogauge.h"
 #include <iostream>
 #include <string>
+#include "examples.h"
+
 
 using namespace QDP;
 
@@ -14,6 +16,7 @@ typedef struct {
   std::string NERSC_file_name;
   std::string ILDG_file_name;
   std::string dataLFN;
+  int output_size;
 } UserInput;
 
 int main(int argc, char *argv[])
@@ -36,9 +39,15 @@ int main(int argc, char *argv[])
     read(paramtop, "ILDG_file", p.ILDG_file_name);
     read(paramtop, "dataLFN", p.dataLFN);
     read(paramtop, "nrow", nrow);
+    read(paramtop, "output_size", p.output_size);
 
   } catch(const std::string& e) { 
     QDPIO::cout << "Caught exception while reading XML: " << e << endl;
+    QDP_abort(1);
+  }
+
+  if(! ( p.output_size == 32 || p.output_size == 64 )  ) {
+    QDPIO::cerr << "Output Size must be either 32 or 64 (bits)" << endl;
     QDP_abort(1);
   }
 
@@ -61,12 +70,8 @@ int main(int argc, char *argv[])
   write(file_metadata, "annotation", "NERSC Config Converted by QDP++ NERS2ILDG");
   pop(file_metadata);
 
-  // OK. Chroma conventions are that the output file is always single 
-  // prec. So I will enforce these her.
-  multi1d<LatticeColorMatrixF> u_single(Nd);
-  for(int mu = 0; mu < Nd; mu++) { 
-    u_single[mu] = u[mu]; // This does the downcast
-  }
+  Double w_plaq, s_plaq, t_plaq, link;
+  MesPlq(u, w_plaq, s_plaq, t_plaq, link);
 
   QDPFileWriter ildg_out(file_metadata,  
 			 p.ILDG_file_name,
@@ -79,11 +84,49 @@ int main(int argc, char *argv[])
   write(record_metadata, "annotation", "NERSC Config Record Converted by QDP++ NERSC2ILDG");
   pop(record_metadata);
 
-  ildg_out.write(record_metadata, u_single);
+  switch( p.output_size ) { 
+  case 32:
+    {
+      multi1d<LatticeColorMatrixF> u_single_out(Nd);
+      for(int mu=0; mu < Nd; mu++) {
+	u_single_out[mu] = u[mu];
+      }
+      ildg_out.write(record_metadata, u_single_out);
+    }
+    break;
+  case 64:
+    {
+      multi1d<LatticeColorMatrixD> u_double_out(Nd);
+      for(int mu=0; mu < Nd; mu++) {
+	u_double_out[mu] = u[mu];
+      }
+      ildg_out.write(record_metadata, u_double_out);
+    }
+    break;
+  default: 
+    {
+      QDPIO::cerr << "Output precision must be either 32 or 64. You entered " << p.output_size << endl;
+      QDP_abort(1);
+      break;
+    }
+  }
   ildg_out.close();
-			 		      
 
-  // Possibly shutdown the machine
+  // Reread the ILDG File
+  XMLReader record_in_xml;
+  XMLReader file_in_xml;
+  QDPFileReader ildg_back_in(file_in_xml, p.ILDG_file_name, QDPIO_SERIAL);
+
+  multi1d<LatticeColorMatrix> u_back_in(Nd);
+  ildg_back_in.read(record_in_xml, u_back_in);
+
+  record_in_xml.print(cout);
+  cout.flush();
+
+  MesPlq(u_back_in, w_plaq, s_plaq, t_plaq, link);
+  QDPIO::cout << "Read Back Plaquette " << w_plaq << endl;
+
+    // Possibly shutdown the machine
   QDP_finalize();
 
   exit(0);

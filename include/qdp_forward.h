@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_forward.h,v 1.9 2005-03-21 05:28:30 edwards Exp $
+// $Id: qdp_forward.h,v 1.10 2006-01-12 02:17:39 bjoo Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -88,6 +88,8 @@ template<class T> struct LatticeScalar;
 template<class T> struct PrimitiveScalar;
 template<class T> struct RealScalar;
 template<class T> struct WordType;
+template<class T> struct SinglePrecType;
+template<class T> struct DoublePrecType;
 
 // Empty leaf functor tag
 struct ElemLeaf;

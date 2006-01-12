@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_traits.h,v 1.7 2004-07-07 20:11:51 edwards Exp $
+// $Id: qdp_traits.h,v 1.8 2006-01-12 02:17:40 bjoo Exp $
 
 /*! @file
  * @brief Traits classes
@@ -28,6 +28,52 @@ struct WordType
 {
   typedef T  Type_t;
 };
+
+
+//-----------------------------------------------------------------------------
+// Traits Classes to support getting fixed precision versions of floating 
+// precision classes
+// ----------------------------------------------------------------------------
+template<class T>
+struct SinglePrecType
+{
+  typedef T Type_t; // This should never be instantiated as such
+};
+
+template<class T>
+struct DoublePrecType
+{
+  typedef T Type_t; // This should never be instantiated as such
+};
+
+// Now we need to specialise to the bit whose precisions float
+// The single prec types for both REAL32 and REAL64 are REAL32
+template<>
+struct SinglePrecType<REAL32>
+{
+  typedef REAL32 Type_t;
+};
+
+template<>
+struct SinglePrecType<REAL64>
+{
+  typedef REAL32 Type_t;
+};
+
+// The Double prec types for both REAL32 and REAL64 are REAL64
+template<>
+struct DoublePrecType<REAL32>
+{
+  typedef REAL64 Type_t;
+};
+
+template<>
+struct DoublePrecType<REAL64>
+{
+  typedef REAL64 Type_t;
+};
+
+
 
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.22 2005-11-20 15:58:13 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.23 2006-01-12 02:17:39 bjoo Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -239,6 +239,19 @@ template<class T>
 struct WordType<PScalar<T> > 
 {
   typedef typename WordType<T>::Type_t  Type_t;
+};
+
+// Fixed Precision Types 
+template<class T>
+struct SinglePrecType<PScalar<T> >
+{
+  typedef PScalar< typename SinglePrecType<T>::Type_t > Type_t;
+};
+
+template<class T>
+struct DoublePrecType<PScalar<T> >
+{
+  typedef PScalar< typename DoublePrecType<T>::Type_t > Type_t;
 };
 
 // Internally used scalars

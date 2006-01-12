@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_word.h,v 1.3 2005-08-22 21:19:10 edwards Exp $
+// $Id: qdp_word.h,v 1.4 2006-01-12 02:17:40 bjoo Exp $
 //
 // QDP data parallel interface
 //
@@ -151,6 +151,53 @@ struct WordType<unsigned long>
 {
   typedef unsigned long  Type_t;
 };
+
+// -------------------------------------------------------
+// Single precision types
+// -------------------------------------------------------
+struct SinglePrecType<Real32> 
+{
+  typedef Real32  Type_t;
+};
+
+struct SinglePrecType<Real64> 
+{
+  typedef Real32  Type_t;
+};
+
+struct SinglePrecType<float>
+{
+  typedef float Type_t;
+};
+
+struct SinglePrecType<double>
+{
+  typedef float Type_t;
+};
+
+// --------------------------------------------------------
+// Double Precision Types
+// ---------------------------------------------------------
+struct DoublePrecType<Real32> 
+{
+  typedef Real64  Type_t;
+};
+
+struct DoublePrecType<Real64> 
+{
+  typedef Real64  Type_t;
+};
+
+struct DoublePrecType<float>
+{
+  typedef double Type_t;
+};
+
+struct DoublePrecType<double>
+{
+  typedef double Type_t;
+};
+
 
 
 template<class Op>

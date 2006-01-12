@@ -359,6 +359,7 @@ echo ${LIBXML2_HOME}
 if test "X${LIBXML2_HOME}X" = "XX" ; then
   AC_PATH_PROG(LIBXML2_CONFIG, [xml2-config], [])
 else
+  echo Freddie
   AC_PATH_PROG(LIBXML2_CONFIG, [xml2-config], [], [${LIBXML2_HOME}/bin:${PATH}])
 fi
 

@@ -3385,6 +3385,7 @@ echo "${ECHO_T}no" >&6
 fi
 
 else
+  echo Freddie
   # Extract the first word of "xml2-config", so it can be a program name with args.
 set dummy xml2-config; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5

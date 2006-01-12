@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.28 2005-11-20 15:58:13 edwards Exp $
+// $Id: qdp_reality.h,v 1.29 2006-01-12 02:17:40 bjoo Exp $
 
 /*! \file
  * \brief Reality
@@ -489,6 +489,31 @@ template<class T>
 struct WordType<RComplex<T> > 
 {
   typedef typename WordType<T>::Type_t  Type_t;
+};
+
+// Fixed types
+template<class T> 
+struct SinglePrecType<RScalar<T> >
+{
+  typedef RScalar<typename SinglePrecType<T>::Type_t>  Type_t;
+};
+
+template<class T> 
+struct SinglePrecType<RComplex<T> >
+{
+  typedef RComplex<typename SinglePrecType<T>::Type_t>  Type_t;
+};
+
+template<class T> 
+struct DoublePrecType<RScalar<T> >
+{
+  typedef RScalar<typename DoublePrecType<T>::Type_t>  Type_t;
+};
+
+template<class T> 
+struct DoublePrecType<RComplex<T> >
+{
+  typedef RComplex<typename DoublePrecType<T>::Type_t>  Type_t;
 };
 
 

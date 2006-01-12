@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.11 2005-07-20 17:06:52 edwards Exp $
+// $Id: qdp_primcolormat.h,v 1.12 2006-01-12 02:17:39 bjoo Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -56,6 +56,21 @@ struct WordType<PColorMatrix<T1,N> >
 {
   typedef typename WordType<T1>::Type_t  Type_t;
 };
+
+// Fixed Precisions
+template<class T1, int N>
+struct SinglePrecType<PColorMatrix<T1,N> >
+{
+  typedef PColorMatrix<typename SinglePrecType<T1>::Type_t, N> Type_t;
+};
+
+template<class T1, int N>
+struct DoublePrecType<PColorMatrix<T1,N> >
+{
+  typedef PColorMatrix<typename DoublePrecType<T1>::Type_t, N> Type_t;
+};
+
+
 
 // Internally used scalars
 template<class T, int N>

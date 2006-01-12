@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.10 2005-11-18 04:43:03 edwards Exp $
+// $Id: qdp_primseed.h,v 1.11 2006-01-12 02:17:40 bjoo Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -213,6 +213,21 @@ struct WordType<PSeed<T1> >
 {
   typedef typename WordType<T1>::Type_t  Type_t;
 };
+
+// Fixed Precision versions (do these even make sense? )
+
+template<class T1>
+struct SinglePrecType<PSeed<T1> >
+{
+  typedef PSeed< typename SinglePrecType<T1>::Type_t > Type_t;
+};
+
+template<class T1>
+struct DoublePrecType<PSeed<T1> >
+{
+  typedef PSeed< typename DoublePrecType<T1>::Type_t > Type_t;
+};
+
 
 // Internally used scalars
 template<class T>

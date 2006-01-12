@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.31 2005-07-20 17:06:52 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.32 2006-01-12 02:17:39 bjoo Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -223,6 +223,21 @@ template<class T1, int N, template<class,int> class C>
 struct WordType<PMatrix<T1,N,C> > 
 {
   typedef typename WordType<T1>::Type_t  Type_t;
+};
+
+// Fixed Precision
+template<class T1, int N, template<class,int> class C>
+struct SinglePrecType< PMatrix<T1, N, C> >
+{
+  typedef PMatrix< typename SinglePrecType<T1>::Type_t, N, C > Type_t;
+};
+
+
+// Fixed Precision
+template<class T1, int N, template<class,int> class C>
+struct DoublePrecType< PMatrix<T1, N, C> >
+{
+  typedef PMatrix< typename DoublePrecType<T1>::Type_t, N, C > Type_t;
 };
 
 // Internally used scalars

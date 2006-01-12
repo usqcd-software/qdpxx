@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outersubtype.h,v 1.3 2005-01-20 03:02:38 edwards Exp $
+// $Id: qdp_outersubtype.h,v 1.4 2006-01-12 02:17:39 bjoo Exp $
 
 /*! \file
  * \brief Outer grid classes after a subset
@@ -224,6 +224,84 @@ template<class T>
 struct WordType<OSubLattice<T,OrderedSubset> > 
 {
   typedef typename WordType<T>::Type_t  Type_t;
+};
+
+// ------------------------------------------------------------
+// Get Single Precision Types of OuterSubType templates
+// ------------------------------------------------------------
+template<class T>
+struct SinglePrecType<OSubScalar<T,Subset> > 
+{
+  typedef OSubScalar<typename SinglePrecType<T>::Type_t, Subset>  Type_t;
+};
+
+template<class T>
+struct SinglePrecType<OSubScalar<T,UnorderedSubset> > 
+{
+  typedef OSubScalar<typename SinglePrecType<T>::Type_t, UnorderedSubset>  Type_t;
+};
+
+template<class T>
+struct SinglePrecType<OSubScalar<T,OrderedSubset> > 
+{
+  typedef OSubScalar<typename SinglePrecType<T>::Type_t, OrderedSubset>  Type_t;
+};
+
+template<class T>
+struct SinglePrecType<OSubLattice<T,Subset> > 
+{
+  typedef OSubLattice<typename SinglePrecType<T>::Type_t, Subset>  Type_t;
+};
+
+template<class T>
+struct SinglePrecType<OSubLattice<T,UnorderedSubset> > 
+{
+  typedef OSubLattice<typename SinglePrecType<T>::Type_t, UnorderedSubset>  Type_t;
+};
+
+template<class T>
+struct SinglePrecType<OSubLattice<T,OrderedSubset> > 
+{
+  typedef OSubLattice<typename SinglePrecType<T>::Type_t, OrderedSubset>  Type_t;
+};
+
+// ------------------------------------------------------------
+// Get Single Precision Types of OuterSubType templates
+// ------------------------------------------------------------
+template<class T>
+struct DoublePrecType<OSubScalar<T,Subset> > 
+{
+  typedef OSubScalar<typename DoublePrecType<T>::Type_t, Subset>  Type_t;
+};
+
+template<class T>
+struct DoublePrecType<OSubScalar<T,UnorderedSubset> > 
+{
+  typedef OSubScalar<typename DoublePrecType<T>::Type_t, UnorderedSubset>  Type_t;
+};
+
+template<class T>
+struct DoublePrecType<OSubScalar<T,OrderedSubset> > 
+{
+  typedef OSubScalar<typename DoublePrecType<T>::Type_t, OrderedSubset>  Type_t;
+};
+
+template<class T>
+struct DoublePrecType<OSubLattice<T,Subset> > 
+{
+  typedef OSubLattice<typename DoublePrecType<T>::Type_t, Subset>  Type_t;
+};
+
+template<class T>
+struct DoublePrecType<OSubLattice<T,UnorderedSubset> > 
+{
+  typedef OSubLattice<typename DoublePrecType<T>::Type_t, UnorderedSubset>  Type_t;
+};
+
+template<class T>
+struct DoublePrecType<OSubLattice<T,OrderedSubset> > 
+{
+  typedef OSubLattice<typename DoublePrecType<T>::Type_t, OrderedSubset>  Type_t;
 };
 
 
