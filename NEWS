@@ -1,6 +1,7 @@
 01/05/2006 -- Robert Edwards
 
 	Version 1.18.3: Patches in QIO to support reading ancient propagators.
+        Added flexible precision reading of QIO files. Some more ILDG support.
 
 12/22/2005 -- Robert Edwards
 
