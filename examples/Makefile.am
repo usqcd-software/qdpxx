@@ -37,7 +37,7 @@ check_PROGRAMS += t_dslashm t_formfac t_spectrum t_qdp t_linalg
 EXTRA_PROGRAMS += t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3
 endif
 
-EXTRA_PROGRAMS += nersc2ildg
+EXTRA_PROGRAMS += nersc2ildg test_ildglat
 
 if BUILD_STAGGERED_EXAMPLES
 check_PROGRAMS += 
@@ -84,6 +84,8 @@ t_cugauge_SOURCES = t_cugauge.cc mesplq.cc $(HDRS)
 t_transpose_spin_SOURCES = t_transpose_spin.cc $(HDRS)
 
 nersc2ildg_SOURCES = nersc2ildg.cc $(HDRS) mesplq.cc
+test_ildglat_SOURCES = test_ildglat.cc $(HDRS) mesplq.cc
+test_ildglat_DEPENDENCIES = build_lib
 
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.31 2006-01-12 02:17:40 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.32 2006-01-13 16:41:10 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -1159,7 +1159,13 @@ void QDPFileReader::read(XMLReader& rec_xml, multi1d< OLattice<T> >& s1)
     string foo = QIO_string_ptr(xml_c);
     ss.str(foo);
   }
-  rec_xml.open(ss);
+
+  try { 
+    rec_xml.open(ss);
+  }
+  catch(const std::string& e) { 
+    QDPIO::cout << "Handling exception" << endl;
+  }
   
   QIO_string_destroy(xml_c);
 }
