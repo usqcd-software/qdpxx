@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.15.0
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.18.4
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -108,7 +108,7 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.15.0}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.18.3}
 }
 \author{Robert G. Edwards\\
 SciDAC Software Coordinating Committee}
@@ -3080,6 +3080,32 @@ class.
   \hline
   \end{tabular}
 \end{flushleft}
+
+\paragraph{QDP Type to underlying wordtype} 
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Syntax      & {\it Type2 Type2}({\tt const {\it Type1}\& a})\\
+  \hline
+  Meaning     & \verb|r = bool(a);|\\
+  \hline
+  Example     & {\tt \tInt{} a; int r = toWordType(a);} \\
+              & {\tt \tBoolean{} a; bool r = toWordType(a);} \\
+              & {\tt \tReal32{} a; float r = toWordType(a);} \\
+              & {\tt \tReal64{} a; double r = toWordType(a);} \\
+              & {\tt \tReal{} a; float r = toWordType(a);} {\em for single precision build} \\
+              & {\tt \tReal{} a; double r = toWordType(a);} {\em for double precision build} \\
+  \hline
+  {\it Type1} & All QDP simple scalar types, like \tReal \\
+  {\it Type2} & The underlying word type.  \\
+              & In the case of floating point types, the underlying base precision. \\
+  \hline
+  \end{tabular}
+\end{flushleft}
+
+QDP types like \tReal{}, \tDouble{}, \tInt, \tBoolean{} are not primitive types, 
+so an explicit conversion is provided.
 
 \paragraph{Real to float} 
 
