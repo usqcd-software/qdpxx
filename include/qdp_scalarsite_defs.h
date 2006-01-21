@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_defs.h,v 1.10 2005-11-11 21:18:54 bjoo Exp $
+// $Id: qdp_scalarsite_defs.h,v 1.11 2006-01-21 17:37:51 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -35,6 +35,11 @@ typedef OLattice< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 1> > LatticeSt
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, 4> > LatticeDiracPropagator;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, 1> > LatticeStaggeredPropagator;
 
+typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 4> > DiracFermion;
+typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 1> > StaggeredFermion;
+typedef OScalar< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, 4> > DiracPropagator;
+typedef OScalar< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, 1> > StaggeredPropagator;
+
 // Floating aliases
 typedef OLattice< PScalar< PColorVector< RComplex<REAL>, Nc> > > LatticeColorVector;
 typedef OLattice< PSpinVector< PScalar< RComplex<REAL> >, Ns> > LatticeSpinVector;
@@ -55,11 +60,9 @@ typedef OScalar< PScalar< PColorVector< RComplex<REAL>, Nc> > > ColorVector;
 typedef OScalar< PScalar< PColorMatrix< RComplex<REAL>, Nc> > > ColorMatrix;
 typedef OScalar< PSpinVector< PScalar< RComplex<REAL> >, Ns> > SpinVector;
 typedef OScalar< PSpinMatrix< PScalar< RComplex<REAL> >, Ns> > SpinMatrix;
-typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 1> > StaggeredFermion;
 typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns> > Fermion;
 typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns>>1 > > HalfFermion;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, Ns> > Propagator;
-typedef OScalar< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, 1> > StaggeredPropagator;
 typedef OScalar< PScalar< PScalar< RComplex<REAL> > > > Complex;
 
 typedef OScalar< PScalar< PSeed< RScalar<INTEGER32> > > > Seed;
@@ -67,16 +70,6 @@ typedef OScalar< PScalar< PScalar< RScalar<INTEGER32> > > > Integer;
 typedef OScalar< PScalar< PScalar< RScalar<REAL> > > > Real;
 typedef OScalar< PScalar< PScalar< RScalar<DOUBLE> > > > Double;
 typedef OScalar< PScalar< PScalar< RScalar<LOGICAL> > > > Boolean;
-
-typedef OScalar< PScalar< PColorVector< RComplex<DOUBLE>, Nc> > > DColorVector;
-typedef OScalar< PScalar< PColorMatrix< RComplex<DOUBLE>, Nc> > > DColorMatrix;
-typedef OScalar< PSpinVector< PScalar< RComplex<DOUBLE> >, Ns> > DSpinVector;
-typedef OScalar< PSpinMatrix< PScalar< RComplex<DOUBLE> >, Ns> > DSpinMatrix;
-typedef OScalar< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, 1> > DStaggeredFermion;
-typedef OScalar< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, Ns> > DFermion;
-typedef OScalar< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, Ns>>1 > > DHalfFermion;
-typedef OScalar< PSpinMatrix< PColorMatrix< RComplex<DOUBLE>, Nc>, Ns> > DPropagator;
-typedef OScalar< PScalar< PScalar< RComplex<DOUBLE> > > > DComplex;
 
 // Other useful names
 typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns> > ColorVectorSpinVector;
@@ -93,6 +86,39 @@ typedef PScalar< PScalar< RScalar<LOGICAL> > > IntBoolean;
 // Odd-ball to support random numbers
 typedef Real ILatticeReal;
 typedef Seed ILatticeSeed;
+
+// Floating aliases but (possibly) in a higher precision. 
+// The SINGLE might in fact be the same as DOUBLE
+// Fixed fermion type
+typedef OLattice< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, 4> > LatticeDDiracFermion;
+typedef OLattice< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, 1> > LatticeDStaggeredFermion;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex<DOUBLE>, Nc>, 4> > LatticeDDiracPropagator;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex<DOUBLE>, Nc>, 1> > LatticeDStaggeredPropagator;
+
+typedef OScalar< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, 4> > DDiracFermion;
+typedef OScalar< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, 1> > DStaggeredFermion;
+typedef OScalar< PSpinMatrix< PColorMatrix< RComplex<DOUBLE>, Nc>, 4> > DDiracPropagator;
+typedef OScalar< PSpinMatrix< PColorMatrix< RComplex<DOUBLE>, Nc>, 1> > DStaggeredPropagator;
+
+// Floating aliases
+typedef OLattice< PScalar< PColorVector< RComplex<DOUBLE>, Nc> > > LatticeDColorVector;
+typedef OLattice< PSpinVector< PScalar< RComplex<DOUBLE> >, Ns> > LatticeDSpinVector;
+typedef OLattice< PScalar< PColorMatrix< RComplex<DOUBLE>, Nc> > > LatticeDColorMatrix;
+typedef OLattice< PSpinMatrix< PScalar< RComplex<DOUBLE> >, Ns> > LatticeDSpinMatrix;
+typedef OLattice< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, Ns> > LatticeDFermion;
+typedef OLattice< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, Ns>>1 > > LatticeDHalfFermion;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex<DOUBLE>, Nc>, Ns> > LatticeDPropagator;
+typedef OLattice< PScalar< PScalar< RComplex<DOUBLE> > > > LatticeDComplex;
+
+typedef OScalar< PScalar< PColorVector< RComplex<DOUBLE>, Nc> > > DColorVector;
+typedef OScalar< PScalar< PColorMatrix< RComplex<DOUBLE>, Nc> > > DColorMatrix;
+typedef OScalar< PSpinVector< PScalar< RComplex<DOUBLE> >, Ns> > DSpinVector;
+typedef OScalar< PSpinMatrix< PScalar< RComplex<DOUBLE> >, Ns> > DSpinMatrix;
+typedef OScalar< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, Ns> > DFermion;
+typedef OScalar< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, Ns>>1 > > DHalfFermion;
+typedef OScalar< PSpinMatrix< PColorMatrix< RComplex<DOUBLE>, Nc>, Ns> > DPropagator;
+typedef OScalar< PScalar< PScalar< RComplex<DOUBLE> > > > DComplex;
+
 
 // Floating precision, but specific to a fixed color or spin
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL>, 3>, 4> > LatticeDiracFermion3;
