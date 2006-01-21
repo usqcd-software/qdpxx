@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.23 2006-01-12 02:17:39 bjoo Exp $
+// $Id: qdp_primscalar.h,v 1.24 2006-01-21 17:38:20 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -1414,6 +1414,14 @@ inline bool
 toBool(const PScalar<T>& s) 
 {
   return toBool(s.elem());
+}
+
+//! QDP Wordtype to primitive wordtype
+template<class T> 
+inline typename WordType< PScalar<T> >::Type_t
+toWordType(const PScalar<T>& s) 
+{
+  return toWordType(s.elem());
 }
 
 

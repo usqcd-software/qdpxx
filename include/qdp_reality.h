@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.29 2006-01-12 02:17:40 bjoo Exp $
+// $Id: qdp_reality.h,v 1.30 2006-01-21 17:38:20 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1413,6 +1413,15 @@ toBool(const RScalar<T>& s)
 {
   return toBool(s.elem());
 }
+
+//! QDP Wordtype to primitive wordtype
+template<class T> 
+inline typename WordType< RScalar<T> >::Type_t
+toWordType(const RScalar<T>& s) 
+{
+  return toWordType(s.elem());
+}
+
 
 
 //------------------------------------------

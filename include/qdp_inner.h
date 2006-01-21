@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.28 2006-01-12 02:17:39 bjoo Exp $
+// $Id: qdp_inner.h,v 1.29 2006-01-21 17:38:20 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -1623,6 +1623,13 @@ toBool(const IScalar<T>& s)
   return toBool(s.elem());
 }
 
+//! QDP Wordtype to primitive wordtype
+template<class T> 
+inline WordType<IScalar<T> > 
+toWordType(const IScalar<T>& s) 
+{
+  return toWordType(s.elem());
+}
 
 //------------------------------------------
 //! dest = (mask) ? s1 : dest

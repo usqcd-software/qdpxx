@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.46 2006-01-12 02:17:39 bjoo Exp $
+// $Id: qdp_outer.h,v 1.47 2006-01-21 17:38:20 edwards Exp $
 
 #include "qdp_config.h"
 
@@ -1365,6 +1365,14 @@ struct BinaryReturn<OScalar<T1>, OLattice<T2>, OpRightShift > {
 
 /*! \addtogroup oscalar */
 /*! @{ */
+
+//! QDP Wordtype to primitive wordtype
+template<class T> 
+inline typename WordType< OScalar<T> >::Type_t
+toWordType(const OScalar<T>& s) 
+{
+  return toWordType(s.elem());
+}
 
 //! dest [some type] = source [some type]
 /*! Portable (internal) way of returning a single site */

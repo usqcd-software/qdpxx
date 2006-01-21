@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_simpleword.h,v 1.10 2005-01-22 21:58:02 edwards Exp $
+// $Id: qdp_simpleword.h,v 1.11 2006-01-21 17:38:20 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -298,6 +298,34 @@ bool toBool(bool s1)
   return s1;
 }
 
+
+// int = toWordType(<int>)
+inline 
+int toWordType(int s1)
+{
+  return s1;
+}
+
+// float = toWordType(<float>)
+inline 
+float toWordType(float s1)
+{
+  return s1;
+}
+
+// double = toWordType(<double>)
+inline 
+double toWordType(double s1)
+{
+  return s1;
+}
+
+// bool = toWordType(<bool>)
+inline 
+bool toWordType(bool s1)
+{
+  return s1;
+}
 
 
 
