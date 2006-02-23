@@ -1,7 +1,10 @@
-01/21/2006 -- Robert Edwards
+01/21/2006 -- Balint Joo
 
-	Version 1.19.0: Added some missing typedefs for declarations. Added
-        toWordType.
+	Version 1.20.1: Added missing xpath_reader test code.
+
+01/21/2006 -- Balint Joo
+
+	Version 1.20.0: Added set primitives to xpath_reader
 
 01/05/2006 -- Robert Edwards
 
