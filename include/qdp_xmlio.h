@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.32 2005-08-20 16:48:31 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.33 2006-02-23 15:41:07 bjoo Exp $
 
 /*! @file
  * @brief XML IO support
@@ -113,6 +113,13 @@ public:
   void get(const std::string& xpath, double& result);
     //! Xpath query
   void get(const std::string& xpath, bool& result);
+
+  //! Set a replacement of a primitive
+  template<typename T>
+  void set(const std::string& xpath, const T& to_set) {
+    BasicXPathReader::set<T>(xpath, to_set);
+  }
+
 
   //! Return the entire contents of the Reader as a stream
   void print(ostream& is);

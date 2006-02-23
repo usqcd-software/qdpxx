@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.33 2005-08-26 20:44:55 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.34 2006-02-23 15:41:08 bjoo Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -236,7 +236,6 @@ void XMLReader::registerNamespace(const std::string& prefix, const string& uri)
   if (Layout::primaryNode())
     BasicXPathReader::registerNamespace(prefix, uri);
 }
-
 
 // Overloaded Reader Functions
 void read(XMLReader& xml, const std::string& xpath, string& result)
