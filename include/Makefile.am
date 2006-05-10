@@ -86,9 +86,7 @@ SSEVEC_HDRS = qdp_scalarvecsite_sse.h \
 # QCDOC stuff
 qcdocdir = scalarsite_qcdoc
 
-QCDOC_HDRS = qdp_scalarsite_qcdoc.h \
-	$(qcdocdir)/qdp_scalarsite_qcdoc_linalg.h \
-	$(qcdocdir)/qdp_scalarsite_qcdoc_blas.h \
+QCDOC_HDRS = $(qcdocdir)/qdp_scalarsite_qcdoc_linalg.h \
 	$(qcdocdir)/qcdoc_mult_nn.h \
 	$(qcdocdir)/qcdoc_mult_an.h \
 	$(qcdocdir)/save_fp_regs.h
