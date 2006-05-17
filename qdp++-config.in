@@ -31,6 +31,9 @@ qdp_libs="-lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ @LIBXML2
 precision="@CONFIG_PRECISION@"
 layout="@CONFIG_LAYOUT@"
 
+qdp_ranlib="@RANLIB@"
+qdp_ar="@AR@"
+
 usage()
 {
   cat <<EOF
@@ -50,6 +53,8 @@ Options:
   [--cxxflags]
   [--ldflags]
   [--libs]
+  {--ranlib]
+  [--ar]
 
 EOF
   exit $1
@@ -142,6 +147,12 @@ while test $# -gt 0; do
     --layout)
        echo ${layout}
        ;;
+
+    --ranlib)
+      echo ${qdp_ranlib}
+      ;;
+    --ar
+      echo ${qdp_ar}
     *)
       usage 1 1>&2
       ;;
