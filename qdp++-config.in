@@ -151,8 +151,9 @@ while test $# -gt 0; do
     --ranlib)
       echo ${qdp_ranlib}
       ;;
-    --ar
+    --ar)
       echo ${qdp_ar}
+      ;;
     *)
       usage 1 1>&2
       ;;
