@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.25 2005-07-04 21:18:53 edwards Exp $
+// $Id: t_xml.cc,v 1.26 2006-05-18 22:32:27 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -287,6 +287,40 @@ int main(int argc, char **argv)
   catch(const string& e)
   {
     QDP_error_exit("Error reading array snippets: %s",e.c_str());
+  }
+
+
+  try 
+  {
+    // Try modifying a reader
+    // First write something to modify
+    XMLFileWriter  toxml("t_xml.input3");
+    push(toxml, "root_for_input3");
+    write(toxml, "Mass", Real(17.3));
+    pop(toxml);
+    toxml.close();
+
+    // Try modifying a reader
+    XMLReader fromxml;
+    fromxml.open("t_xml.input3");
+
+    fromxml.set<QDP::Real>("/root_for_input3/Mass", Real(0.5));
+
+    // turn back into a string
+    XMLBufferWriter new_writer;
+    new_writer << fromxml;
+
+    std::string new_writer_string = new_writer.printCurrentContext();
+
+    XMLFileWriter toxml_again("t_xml.compare_to_input3");
+    push(toxml_again, "compare_to_input3");
+    write(toxml_again, "content_of_writer", new_writer_string);
+    pop(toxml_again);
+    toxml_again.close();
+  }
+  catch(const string& e)
+  {
+    QDP_error_exit("Error modifying a reader: %s",e.c_str());
   }
 
   // Time to bolt
