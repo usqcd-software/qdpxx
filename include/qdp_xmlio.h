@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.33 2006-02-23 15:41:07 bjoo Exp $
+// $Id: qdp_xmlio.h,v 1.34 2006-05-18 22:48:22 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -116,8 +116,12 @@ public:
 
   //! Set a replacement of a primitive
   template<typename T>
-  void set(const std::string& xpath, const T& to_set) {
-    BasicXPathReader::set<T>(xpath, to_set);
+  void set(const std::string& xpath, const T& to_set) 
+  {
+    if (Layout::primaryNode())
+    {  
+      BasicXPathReader::set<T>(xpath, to_set);
+    }
   }
 
 
