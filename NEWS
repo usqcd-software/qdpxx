@@ -1,3 +1,7 @@
+05/21/2006 -- Robert Edwards
+
+	Version 1.20.6: Updated to match update of qio - a trivial compilation fix.
+
 05/18/2006 -- Robert Edwards
 
 	Version 1.20.5: Bug fix in the XMLReader "set" function. This fix is
