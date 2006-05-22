@@ -1,3 +1,9 @@
+2006-05-22 13:24  detar
+
+	* other_libs/qio/examples/: qio-host-test.c, qio-test-util.c,
+	  qio-test.c, qio-test.h: C++ compiler complained about clash
+	  between static and global "sites_on_node".  Fix.
+
 2006-05-22 12:03  tag qdp1-20-6
 
 2006-05-22 12:03  edwards
