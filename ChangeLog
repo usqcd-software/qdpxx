@@ -1,3 +1,34 @@
+2006-05-22 11:59  edwards
+
+	* NEWS: Info on 1.20.6
+
+2006-05-22 11:58  edwards
+
+	* aclocal.m4, configure: Induced changes.
+
+2006-05-22 11:57  edwards
+
+	* configure.ac: Changed to 1.20.6
+
+2006-05-22 11:52  tag qio2-1-6
+
+2006-05-22 11:52  edwards
+
+	* other_libs/qio/NEWS: Info on 2.1.6
+
+2006-05-22 11:50  edwards
+
+	* other_libs/qio/: aclocal.m4, configure: Induced changes.
+
+2006-05-22 11:49  edwards
+
+	* other_libs/qio/configure.ac: Changed to 2.1.6.
+
+2006-05-22 11:49  edwards
+
+	* other_libs/qio/examples/layout_hyper.c: Fix - commented out
+	  redecl of sites_on_node.
+
 2006-05-18 18:51  tag qdp1-20-5
 
 2006-05-18 18:51  edwards
@@ -11251,7 +11282,7 @@
 
 2002-12-05 14:11  edwards
 
-	* include/PETE/TreeNodes.h, PETE/PETE/TreeNodes.h: ifdef'ed out
+	* PETE/PETE/TreeNodes.h, include/PETE/TreeNodes.h: ifdef'ed out
 	  some constructor calls that makes xlC (IBM) barf.
 
 2002-12-05 13:58  edwards
@@ -11344,7 +11375,7 @@
 
 2002-11-22 21:09  edwards
 
-	* include/PETE/PETE.h, PETE/PETE/PETE.h: Nit-picky CPP cleanup to
+	* PETE/PETE/PETE.h, include/PETE/PETE.h: Nit-picky CPP cleanup to
 	  avoid compiler gripes from ICC.
 
 2002-11-22 21:02  edwards
@@ -11905,7 +11936,7 @@
 
 2002-09-30 21:28  edwards
 
-	* include/PETE/OperatorTags.h, PETE/PETE/OperatorTags.h: Changed
+	* PETE/PETE/OperatorTags.h, include/PETE/OperatorTags.h: Changed
 	  how where applies the func. Since where is not a real overloading
 	  of the ? operator (since you can't overload ?), I must go through
 	  another where.
@@ -12148,7 +12179,11 @@
 	  primspinmat.h, primspinvec.h, primvector.h, proto.h, qdp.cc,
 	  qdp.h, qdpexpr.h, qdptype.h, random.cc, random.h, reality.h,
 	  scalar_specific.h, simpleword.h, specializations.h, subset.cc,
-	  subset.h, traits.h, word.h, include/QDPOperators.h,
+	  subset.h, traits.h, word.h, PETE/PETE/Combiners.h,
+	  PETE/PETE/CreateLeaf.h, PETE/PETE/ForEach.h,
+	  PETE/PETE/Functors.h, PETE/PETE/OperatorTags.h, PETE/PETE/PETE.h,
+	  PETE/PETE/Scalar.h, PETE/PETE/TreeNodes.h,
+	  PETE/PETE/TypeComputations.h, include/QDPOperators.h,
 	  include/defs.h, include/forward.h, include/globalfuncs.h,
 	  include/inner.h, include/io.h, include/layout.h, include/multi.h,
 	  include/newops.h, include/outer.h, include/params.h,
@@ -12165,11 +12200,7 @@
 	  include/PETE/OperatorTags.h, include/PETE/PETE.h,
 	  include/PETE/Scalar.h, include/PETE/TreeNodes.h,
 	  include/PETE/TypeComputations.h, lib/layout.cc, lib/qdp.cc,
-	  lib/random.cc, lib/subset.cc, PETE/PETE/Combiners.h,
-	  PETE/PETE/CreateLeaf.h, PETE/PETE/ForEach.h,
-	  PETE/PETE/Functors.h, PETE/PETE/OperatorTags.h, PETE/PETE/PETE.h,
-	  PETE/PETE/Scalar.h, PETE/PETE/TreeNodes.h,
-	  PETE/PETE/TypeComputations.h, PETE/Tools/ClassDescriptor.h,
+	  lib/random.cc, lib/subset.cc, PETE/Tools/ClassDescriptor.h,
 	  PETE/Tools/DescriptorBase.h, PETE/Tools/Header.h,
 	  PETE/Tools/Join.cpp, PETE/Tools/Join.h,
 	  PETE/Tools/MakeOperators.cpp, PETE/Tools/OperatorDescriptor.h,
