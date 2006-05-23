@@ -1,3 +1,11 @@
+2006-05-23 00:18  tag qdp1-20-6
+
+2006-05-23 00:18  tag qio2-1-6
+
+2006-05-23 00:18  edwards
+
+	* other_libs/qio/NEWS: More new info on 2.1.6
+
 2006-05-22 22:20  edwards
 
 	* other_libs/qio/examples/layout_hyper.c: Reinstated sites_on_node.
@@ -8,8 +16,6 @@
 	* other_libs/qio/examples/: qio-host-test.c, qio-test-util.c,
 	  qio-test.c, qio-test.h: C++ compiler complained about clash
 	  between static and global "sites_on_node".  Fix.
-
-2006-05-22 12:03  tag qdp1-20-6
 
 2006-05-22 12:03  edwards
 
@@ -27,8 +33,6 @@
 2006-05-22 11:57  edwards
 
 	* configure.ac: Changed to 1.20.6
-
-2006-05-22 11:52  tag qio2-1-6
 
 2006-05-22 11:52  edwards
 
