@@ -1,3 +1,9 @@
+2006-06-11 22:46  edwards
+
+	* include/qdp_xmlio.h, lib/qdp_xmlio.cc: Slight change in interface
+	  and implementation of XMLBufferWriter. The "str" and
+	  "printCurrentContext" should now appropriately broadcast.
+
 2006-05-23 00:18  tag qdp1-20-6
 
 2006-05-23 00:18  tag qio2-1-6
