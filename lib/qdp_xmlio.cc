@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.34 2006-02-23 15:41:08 bjoo Exp $
+// $Id: qdp_xmlio.cc,v 1.35 2006-06-12 02:46:10 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -84,7 +84,7 @@ void XMLReader::open(const XMLBufferWriter& mw)
 {
   if (Layout::primaryNode())
   {  
-    std::istringstream is(const_cast<XMLBufferWriter&>(mw).str()+"\n");
+    std::istringstream is(mw.localStr()+"\n");
     BasicXPathReader::open(is);
   }
 
@@ -566,13 +566,13 @@ void write(XMLWriter& xml, const std::string& s, const XMLBufferWriter& d)
 
 XMLWriter& operator<<(XMLWriter& xml, const XMLBufferWriter& d)
 {
-  xml.writeXML(const_cast<XMLBufferWriter&>(d).printCurrentContext());
+  xml.writeXML(d.printCurrentContext());
   return xml;
 }
 
 // Time to build a telephone book of basic primitives
 template<typename T>
-void writePrimitive(XMLWriter& xml, const string& s, const T& d)
+void writePrimitive(XMLWriter& xml, const std::string& s, const T& d)
 {
   xml.openTag(s);
   xml.write(d);
@@ -744,20 +744,54 @@ void write(XMLWriter& xml, const std::string& xpath, const multi1d<Boolean>& out
 // XML writer to a buffer
 XMLBufferWriter::XMLBufferWriter() {indent_level=0;}
 
-string XMLBufferWriter::str()
+string XMLBufferWriter::str() const
 {
-  ostringstream s;
-  
+  string ss;
+
   if (Layout::primaryNode()) 
   {
+    ostringstream s;
     writePrologue(s);
     s << output_stream.str() << "\n";
+    ss = s.str();
   }
     
-  return s.str();
+  Internal::broadcast_str(ss);
+  return ss;
 }
 
-string XMLBufferWriter::printCurrentContext() {return output_stream.str();}
+string XMLBufferWriter::printCurrentContext() const
+{
+  string ss;
+
+  if (Layout::primaryNode()) 
+  { 
+    ss = output_stream.str();
+  }
+
+  Internal::broadcast_str(ss);
+  return ss;
+}
+
+string XMLBufferWriter::localStr() const
+{
+  string ss;
+
+  if (Layout::primaryNode()) 
+  {
+    ostringstream s;
+    writePrologue(s);
+    s << output_stream.str() << "\n";
+    ss = s.str();
+  }
+    
+  return ss;
+}
+
+string XMLBufferWriter::localPrintCurrentContext() const
+{
+  return output_stream.str();
+}
 
 XMLBufferWriter::~XMLBufferWriter() {}
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.34 2006-05-18 22:48:22 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.35 2006-06-12 02:46:10 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -669,24 +669,32 @@ void write(XMLWriter& xml, const std::string& s, const multi2d<T>& s1)
 class XMLBufferWriter : public XMLWriter
 {
 public:
-
-  /*! No prologue written */
+  //! No prologue written
   XMLBufferWriter();
   
-
+  //! Destructor
   ~XMLBufferWriter();
 
   //! Return entire buffer as a string
-  std::string str();
+  std::string str() const;
         
   // Return root element as a string
-  std::string printCurrentContext();
+  std::string printCurrentContext() const;
         
   //! Flush the buffer
   void flush() {}
 
   //! Return true if some failure occurred in previous IO operation
   bool fail() const {return false;}
+
+protected:
+  //! Return entire buffer as a string
+  std::string localStr() const;
+        
+  // Return root element as a string
+  std::string localPrintCurrentContext() const;
+        
+  friend class XMLReader;
 
 private:
   // The output stream...
