@@ -1,3 +1,8 @@
+2006-06-12 11:17  edwards
+
+	* include/qdp_xmlio.h, lib/qdp_xmlio.cc: Put this older version
+	  back in front.
+
 2006-06-11 22:46  edwards
 
 	* include/qdp_xmlio.h, lib/qdp_xmlio.cc: Slight change in interface
