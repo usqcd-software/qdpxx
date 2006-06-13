@@ -1101,7 +1101,7 @@ inline
 void xpayz_ig5(REAL *Out,REAL *scalep, REAL *InScale, REAL *Add,int n_4vec)
 {
   register double a;
-  register double b;
+  // register double b;
 
   register double x0r;
   register double x0i;
@@ -1271,7 +1271,7 @@ inline
 void xmayz_ig5(REAL *Out,REAL *scalep, REAL *InScale, REAL *Add,int n_4vec)
 {
   register double a;
-  register double b;
+  // register double b;
 
   register double x0r;
   register double x0i;
