@@ -1,3 +1,18 @@
+2006-06-13 13:52  bjoo
+
+	* other_libs/qio/lib/dml/DML_parscalar.c: Replaced Cplusplus style
+	  comment
+
+2006-06-13 13:48  bjoo
+
+	* other_libs/qio/examples/layout_hyper_mesh.c: Changed some
+	  Cplusplus style comments to C comments. Removed a gnuism
+
+2006-06-13 13:47  bjoo
+
+	* include/scalarsite_generic/generic_blas_g5.h: Removed unused
+	  variable to quieten compiler
+
 2006-06-12 11:17  edwards
 
 	* include/qdp_xmlio.h, lib/qdp_xmlio.cc: Put this older version
