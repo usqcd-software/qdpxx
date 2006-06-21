@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.14 2006-06-21 13:00:02 bjoo Exp $
+// $Id: qdp_multi.h,v 1.15 2006-06-21 13:11:43 bjoo Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -451,7 +451,7 @@ public:
   {
     
     if(copymem) {
-      cerr<<"invalid resize in 2d\n";
+      cerr<<"invalid resize in 3d\n";
       exit(1);
     }
 
