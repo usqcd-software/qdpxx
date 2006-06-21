@@ -1,3 +1,18 @@
+2006-06-21 09:02  tag qdp1-20-7
+
+2006-06-21 09:02  bjoo
+
+	* aclocal.m4, configure: Induced Changes
+
+2006-06-21 09:01  bjoo
+
+	* configure.ac: Bumped up version number
+
+2006-06-21 09:00  bjoo
+
+	* include/: qdp_io.h, qdp_multi.h: Patch resizing in multi3d and
+	  resize on read of multi3d
+
 2006-06-13 13:52  bjoo
 
 	* other_libs/qio/lib/dml/DML_parscalar.c: Replaced Cplusplus style
