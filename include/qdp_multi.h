@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.13 2005-11-30 20:53:51 bjoo Exp $
+// $Id: qdp_multi.h,v 1.14 2006-06-21 13:00:02 bjoo Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -446,9 +446,21 @@ public:
 	F[i] = s.F[i];
     }
 
-  //! Allocate mem for the array
+  //! Allocate mem for the array 
   void resize(int ns3, int ns2, int ns1) 
-    {if(copymem) {cerr<<"invalid resize in 2d\n";exit(1);}; delete[] F; 
+  {
+    
+    if(copymem) {
+      cerr<<"invalid resize in 2d\n";
+      exit(1);
+    }
+
+    // Only delete if the array is not NULL. If it is NULL
+    // deleting may be bad
+    if ( F != 0x0 ) {
+      delete[] F; 
+    }
+
     n1=ns1; n2=ns2; n3=ns3; sz=n1*n2*n3; F = new(nothrow) T[sz];
     if( F == 0x0 ) { 
 	QDP_error_exit("Unable to new memory in multi3d::resize() \n");

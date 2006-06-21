@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.20 2005-07-25 17:07:14 edwards Exp $
+// $Id: qdp_io.h,v 1.21 2006-06-21 13:00:02 bjoo Exp $
 
 /*! @file
  * @brief IO support
@@ -469,7 +469,10 @@ void read(BinaryReader& bin, multi3d<T>& d)
   read(bin, n1);    // the size is always written, even if 0
   read(bin, n2);    // the size is always written, even if 0
   read(bin, n3);    // the size is always written, even if 0
-  
+
+  // Destructively resize the array
+  d.resize(n3,n2,n1);
+
   for(int i=0; i < d.size1(); ++i)
     for(int j=0; j < d.size2(); ++j)
       for(int k=0; k < d.size3(); ++k)
