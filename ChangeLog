@@ -1,4 +1,8 @@
-2006-06-21 09:02  tag qdp1-20-7
+2006-06-21 09:11  tag qdp1-20-7
+
+2006-06-21 09:11  bjoo
+
+	* include/qdp_multi.h: Corrected error message inmulti3d
 
 2006-06-21 09:02  bjoo
 
