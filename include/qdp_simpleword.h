@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_simpleword.h,v 1.11 2006-01-21 17:38:20 edwards Exp $
+// $Id: qdp_simpleword.h,v 1.12 2006-06-22 20:17:53 bjoo Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
@@ -495,12 +495,12 @@ struct BinaryReturn<float, float, FnInnerProduct > {
 
 template<>
 struct UnaryReturn<float, FnLocalNorm2 > {
-  typedef float  Type_t;
+  typedef double  Type_t;
 };
 
 template<>
 struct BinaryReturn<float, float, FnLocalInnerProduct > {
-  typedef float  Type_t;
+  typedef double  Type_t;
 };
 
 template<>

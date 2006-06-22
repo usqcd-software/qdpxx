@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.17 2005-05-26 13:46:53 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.18 2006-06-22 20:17:53 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1315,8 +1315,8 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
   Internal::globalSumArray(ip,2);
 
   // Downcast (and possibly lose precision) here 
-  lprod.elem().elem().elem().real() = (REAL)ip[0];
-  lprod.elem().elem().elem().imag() = (REAL)ip[1];
+  lprod.elem().elem().elem().real() = ip[0];
+  lprod.elem().elem().elem().imag() = ip[1];
 
   // Return
   return lprod;
@@ -1349,8 +1349,8 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 
     Internal::globalSumArray(ip,2);
 
-    lprod.elem().elem().elem().real() = (REAL)ip[0];
-    lprod.elem().elem().elem().imag() = (REAL)ip[1];
+    lprod.elem().elem().elem().real() = ip[0];
+    lprod.elem().elem().elem().imag() = ip[1];
     
 
     return lprod;
@@ -1393,7 +1393,7 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 
   // Whether CDOT did anything or not ip_re and ip_im should 
   // now be right. Assign them to the ReturnType
-  lprod.elem().elem().elem().elem() = (REAL)ip_re;
+  lprod.elem().elem().elem().elem() = ip_re;
 
 
   // Return
@@ -1425,7 +1425,7 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 		     n_3vec);
 
     Internal::globalSum(ip_re);
-    lprod.elem().elem().elem().elem() = (REAL)ip_re;
+    lprod.elem().elem().elem().elem() = ip_re;
 
 
     return lprod;
@@ -1475,7 +1475,7 @@ norm2(const multi1d< OLattice< TVec > >& s1)
 #endif
 
   int n_3vec = (all.end() - all.start() + 1)*Ns;
-  DOUBLE ltmp = 0.0;
+  DOUBLE ltmp = 0;
   for(int n=0; n < s1.size(); ++n)
   {
     const REAL* s1ptr =  &(s1[n].elem(all.start()).elem(0).elem(0).real());
@@ -1533,8 +1533,8 @@ innerProduct(const multi1d< OLattice<TVec> > &v1,
   Internal::globalSumArray(ip,2);
 
   // Downcast (and possibly lose precision) here 
-  lprod.elem().elem().elem().real() = (REAL)ip[0];
-  lprod.elem().elem().elem().imag() = (REAL)ip[1];
+  lprod.elem().elem().elem().real() = ip[0];
+  lprod.elem().elem().elem().imag() = ip[1];
 
   // Return
   return lprod;
@@ -1575,8 +1575,8 @@ innerProduct(const multi1d< OLattice<TVec> > &v1,
   Internal::globalSumArray(ip,2);
 
   // Downcast (and possibly lose precision) here 
-  lprod.elem().elem().elem().real() = (REAL)ip[0];
-  lprod.elem().elem().elem().imag() = (REAL)ip[1];
+  lprod.elem().elem().elem().real() = ip[0];
+  lprod.elem().elem().elem().imag() = ip[1];
 
   return lprod;
 }
@@ -1620,7 +1620,7 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
 
   // Whether CDOT did anything or not ip_re and ip_im should 
   // now be right. Assign them to the ReturnType
-  lprod.elem().elem().elem().elem() = (REAL)ip_re;
+  lprod.elem().elem().elem().elem() = ip_re;
 
 
   // Return
@@ -1659,7 +1659,7 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
   }
 
   Internal::globalSum(ip_re);
-  lprod.elem().elem().elem().elem() = (REAL)ip_re;
+  lprod.elem().elem().elem().elem() = ip_re;
   
   return lprod;
 }

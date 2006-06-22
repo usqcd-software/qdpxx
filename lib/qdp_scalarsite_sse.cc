@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.11 2005-12-21 16:04:25 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.12 2006-06-22 20:17:53 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -174,42 +174,28 @@ void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec)
   }
 }  
 
-void local_sumsq(REAL32 *Out, REAL32 *In, int n_3vec)
+void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: local_sumsq" << endl;
 #endif
 
 //  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
-  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
+  int n_loops = n_3vec / 6;   // only works on multiple of length 24 vectors
 
-  *Out = 0.0;
-  register v4sf vsum = _mm_load_ss(Out);
-  asm("shufps\t$0,%0,%0" : "+x" (vsum));
+
+  *Out = 0;
 
   for (; n_loops-- > 0; )
   {
-    register v4sf vtmp;
-
-    vtmp = _mm_load_ps(In+0);
-    vsum = _mm_add_ps(vsum, _mm_mul_ps(vtmp, vtmp));
-    vtmp = _mm_load_ps(In+4);
-    vsum = _mm_add_ps(vsum, _mm_mul_ps(vtmp, vtmp));
-    vtmp = _mm_load_ps(In+8);
-    vsum = _mm_add_ps(vsum, _mm_mul_ps(vtmp, vtmp));
-    vtmp = _mm_load_ps(In+12);
-    vsum = _mm_add_ps(vsum, _mm_mul_ps(vtmp, vtmp));
-    vtmp = _mm_load_ps(In+16);
-    vsum = _mm_add_ps(vsum, _mm_mul_ps(vtmp, vtmp));
-    vtmp = _mm_load_ps(In+20);
-    vsum = _mm_add_ps(vsum, _mm_mul_ps(vtmp, vtmp));
-
-    In += 24;
+    for(int i=0; i < 3; i++) {
+      double load[2];
+      load[0] = (REAL64)*In;              // Color 0: re
+      load[1] = (REAL64)*(In + 1);        // Color 0: im;
+      *Out += load[0]*load[0] + load[1]*load[1];
+      In +=2;
+    }
   }
-
-  REAL32 fsum[4];
-  _mm_store_ps(fsum, vsum);
-  *Out = fsum[0] + fsum[1] + fsum[2] + fsum[3];
 }
 
 #endif // BASE PRECISION==32

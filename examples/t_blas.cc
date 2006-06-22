@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.15 2005-06-27 14:13:24 bjoo Exp $
+// $Id: t_blas.cc,v 1.16 2006-06-22 20:17:53 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -628,11 +628,9 @@ int main(int argc, char *argv[])
     }
   }
   Internal::globalSum(accum); 
-  Complex fred = innerProduct(qy, qx);
-  DComplex dfred = cmplx(Double(fred.elem().elem().elem().real()),
-			 Double(fred.elem().elem().elem().imag()));
-
-  DComplex diff = accum - dfred;
+  DComplex fred = innerProduct(qy, qx);
+  
+  DComplex diff = accum - fred;
   QDPIO::cout << "Diff innerProduct = " << diff << endl;
 
   accum = cmplx(Double(0), Double(0));
@@ -651,10 +649,8 @@ int main(int argc, char *argv[])
   }
   Internal::globalSum(accum); 
   fred = innerProduct(qy, qx, rb[1]);
-  dfred = cmplx(Double(fred.elem().elem().elem().real()),
-			 Double(fred.elem().elem().elem().imag()));
-
-  diff = accum - dfred;
+  
+  diff = accum - fred;
   QDPIO::cout << "Diff innerProduct Subset = " << diff << endl;
 
   Double daccum = Double(0);

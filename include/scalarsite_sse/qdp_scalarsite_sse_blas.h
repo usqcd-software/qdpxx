@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.8 2005-05-26 03:42:02 edwards Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.9 2006-06-22 20:17:53 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -19,7 +19,7 @@ void vaxmy3(REAL32 *Out, REAL32 *scalep,REAL32 *InScale, REAL32 *Sub,int n_3vec)
 void vadd(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec);
 void vsub(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec);
 void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec);
-void local_sumsq(REAL32 *Out, REAL32 *In, int n_3vec);
+void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec);
 
 typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> TVec;
 typedef PScalar<PScalar<RScalar<REAL32> > >  TScal;
@@ -665,7 +665,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     const REAL32 *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real());
     
     // I am relying on this being a Double here 
-    REAL32 ltmp;
+    REAL64 ltmp;
     local_sumsq(&ltmp, (REAL32 *)s1ptr, n_3vec); 
 
     UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
@@ -689,7 +689,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
   const REAL32 *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real());
     
   // I am relying on this being a Double here 
-  REAL32 ltmp;
+  REAL64 ltmp;
   local_sumsq(&ltmp, (REAL32 *)s1ptr, n_3vec); 
 
   UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
@@ -730,8 +730,8 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
   Internal::globalSumArray(ip,2);
 
   // Downcast (and possibly lose precision) here 
-  lprod.elem().elem().elem().real() = (REAL)ip[0];
-  lprod.elem().elem().elem().imag() = (REAL)ip[1];
+  lprod.elem().elem().elem().real() = ip[0];
+  lprod.elem().elem().elem().imag() = ip[1];
 
   // Return
   return lprod;
@@ -764,8 +764,8 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 
     Internal::globalSumArray(ip,2);
 
-    lprod.elem().elem().elem().real() = (REAL)ip[0];
-    lprod.elem().elem().elem().imag() = (REAL)ip[1];
+    lprod.elem().elem().elem().real() = ip[0];
+    lprod.elem().elem().elem().imag() = ip[1];
     
 
     return lprod;
@@ -808,7 +808,7 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 
   // Whether CDOT did anything or not ip_re and ip_im should 
   // now be right. Assign them to the ReturnType
-  lprod.elem().elem().elem().elem() = (REAL)ip_re;
+  lprod.elem().elem().elem().elem() = ip_re;
 
 
   // Return
@@ -840,7 +840,7 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 		     n_3vec);
 
     Internal::globalSum(ip_re);
-    lprod.elem().elem().elem().elem() = (REAL)ip_re;
+    lprod.elem().elem().elem().elem() = ip_re;
 
 
     return lprod;
@@ -864,13 +864,13 @@ norm2(const multi1d< OLattice< TVec > >& s1, const OrderedSubset& s)
 #endif
 
   int n_3vec = (s.end() - s.start() + 1)*24;
-  REAL32 ltmp = 0.0;
+  REAL64 ltmp = 0;
   for(int n=0; n < s1.size(); ++n)
   {
     const REAL32 *s1ptr =  &(s1[n].elem(s.start()).elem(0).elem(0).real());
     
     // I am relying on this being a Double here 
-    REAL32 lltmp;
+    REAL64 lltmp;
     local_sumsq(&lltmp, (REAL32 *)s1ptr, n_3vec); 
 
     ltmp += lltmp;
@@ -890,13 +890,13 @@ norm2(const multi1d< OLattice< TVec > >& s1)
 #endif
 
   int n_3vec = (all.end() - all.start() + 1)*24;
-  REAL32 ltmp = 0.0;
+  REAL64 ltmp = 0;
   for(int n=0; n < s1.size(); ++n)
   {
     const REAL32 *s1ptr =  &(s1[n].elem(all.start()).elem(0).elem(0).real());
     
     // I am relying on this being a Double here 
-    REAL32 lltmp;
+    REAL64 lltmp;
     local_sumsq(&lltmp, (REAL32 *)s1ptr, n_3vec); 
 
     ltmp += lltmp;
@@ -948,8 +948,8 @@ innerProduct(const multi1d< OLattice<TVec> > &v1,
   Internal::globalSumArray(ip,2);
 
   // Downcast (and possibly lose precision) here 
-  lprod.elem().elem().elem().real() = (REAL)ip[0];
-  lprod.elem().elem().elem().imag() = (REAL)ip[1];
+  lprod.elem().elem().elem().real() = ip[0];
+  lprod.elem().elem().elem().imag() = ip[1];
 
   // Return
   return lprod;
@@ -990,8 +990,8 @@ innerProduct(const multi1d< OLattice<TVec> > &v1,
   Internal::globalSumArray(ip,2);
 
   // Downcast (and possibly lose precision) here 
-  lprod.elem().elem().elem().real() = (REAL)ip[0];
-  lprod.elem().elem().elem().imag() = (REAL)ip[1];
+  lprod.elem().elem().elem().real() = ip[0];
+  lprod.elem().elem().elem().imag() = ip[1];
 
   return lprod;
 }
@@ -1035,7 +1035,7 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
 
   // Whether CDOT did anything or not ip_re and ip_im should 
   // now be right. Assign them to the ReturnType
-  lprod.elem().elem().elem().elem() = (REAL)ip_re;
+  lprod.elem().elem().elem().elem() = ip_re;
 
 
   // Return
@@ -1074,7 +1074,7 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
   }
 
   Internal::globalSum(ip_re);
-  lprod.elem().elem().elem().elem() = (REAL)ip_re;
+  lprod.elem().elem().elem().elem() = ip_re;
   
   return lprod;
 }
