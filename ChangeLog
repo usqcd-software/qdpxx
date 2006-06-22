@@ -1,3 +1,21 @@
+2006-06-22 16:31  bjoo
+
+	* include/qdp_sse_intrin.h: Had to reenable the xmmintrin here to
+	  allow this to work.
+
+2006-06-22 16:17  bjoo
+
+	* examples/t_blas.cc, include/qdp_simpleword.h,
+	  include/qdp_sse_intrin.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  lib/qdp_scalarsite_sse.cc: Touched up some issues to do with
+	  precision. I disabled for example the SSE local sumsq because it
+	  accumulated in SINGLE precision which is lousy - we really need
+	  DP there. Blas tests are now much better on the laptop. I have
+	  lost speed because of this change -- essentially the SSE sum is
+	  not now like the generic one
+
 2006-06-21 09:11  tag qdp1-20-7
 
 2006-06-21 09:11  bjoo
