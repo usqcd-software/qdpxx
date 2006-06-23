@@ -1,3 +1,11 @@
+2006-06-23 16:15  tag qdp1-20-8-pre1
+
+2006-06-23 16:15  bjoo
+
+	* other_libs/xpath_reader/: include/xml_simplewriter.h,
+	  lib/xml_simplewriter.cc: Patched xm_simplewriter to write longer
+	  floats and even longer doubles
+
 2006-06-22 16:31  bjoo
 
 	* include/qdp_sse_intrin.h: Had to reenable the xmmintrin here to
