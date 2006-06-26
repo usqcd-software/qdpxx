@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.9 2006-06-22 20:17:53 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.10 2006-06-26 22:07:08 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -665,7 +665,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     const REAL32 *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real());
     
     // I am relying on this being a Double here 
-    REAL64 ltmp;
+    REAL64 ltmp=0;
     local_sumsq(&ltmp, (REAL32 *)s1ptr, n_3vec); 
 
     UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
@@ -689,9 +689,8 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
   const REAL32 *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real());
     
   // I am relying on this being a Double here 
-  REAL64 ltmp;
+  REAL64 ltmp=0;
   local_sumsq(&ltmp, (REAL32 *)s1ptr, n_3vec); 
-
   UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
   Internal::globalSum(lsum);
   return lsum;
