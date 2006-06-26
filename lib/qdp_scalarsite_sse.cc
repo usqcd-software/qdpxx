@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.12 2006-06-22 20:17:53 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.13 2006-06-26 22:03:36 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -184,14 +184,14 @@ void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec)
   int n_loops = n_3vec / 6;   // only works on multiple of length 24 vectors
 
 
-  *Out = 0;
+  (*Out) = (REAL64)0;
 
   for (; n_loops-- > 0; )
   {
     for(int i=0; i < 3; i++) {
-      double load[2];
-      load[0] = (REAL64)*In;              // Color 0: re
-      load[1] = (REAL64)*(In + 1);        // Color 0: im;
+      REAL64 load[2];
+      load[0] = (REAL64)(*In);              // Color 0: re
+      load[1] = (REAL64)(*(In + 1));        // Color 0: im;
       *Out += load[0]*load[0] + load[1]*load[1];
       In +=2;
     }
