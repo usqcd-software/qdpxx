@@ -1,3 +1,5 @@
+2006-06-26 18:07  tag qdp1-20-8-pre2
+
 2006-06-26 18:07  bjoo
 
 	* include/scalarsite_sse/qdp_scalarsite_sse_blas.h: Added some
