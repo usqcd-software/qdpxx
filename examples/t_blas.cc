@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.16 2006-06-22 20:17:53 bjoo Exp $
+// $Id: t_blas.cc,v 1.17 2006-06-26 22:00:17 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -37,19 +37,26 @@ int main(int argc, char *argv[])
   gaussian(qx);
 
   // sum it by hand.-- 1 way
-  DOUBLE rc = (DOUBLE)0;
+  REAL64 rc = (REAL64)0;
   for(int site=all.start(); site <= all.end(); site++) { 
 	for(int spin=0; spin < Ns; spin++) { 
 	   for(int col =0; col < Nc; col++) { 
-	     rc += qx.elem(site).elem(spin).elem(col).real()
-		 * qx.elem(site).elem(spin).elem(col).real();
-	     rc += qx.elem(site).elem(spin).elem(col).imag()
-	         * qx.elem(site).elem(spin).elem(col).imag();
+	     rc += (REAL64)qx.elem(site).elem(spin).elem(col).real()
+		 * (REAL64)qx.elem(site).elem(spin).elem(col).real();
+	     rc += (REAL64)qx.elem(site).elem(spin).elem(col).imag()
+	         * (REAL64)qx.elem(site).elem(spin).elem(col).imag();
            }
         }
   } 
   UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(rc);
   Internal::globalSum(lsum);
+
+
+  REAL64 rc2;
+  int n_3vec = (all.end() - all.start() + 1)*24;
+  local_sumsq(&rc2, &(qx.elem(all.start()).elem(0).elem(0).real()), n_3vec);
+  QDPIO::cout << "rc -rc2 = " << rc-rc2 << endl;
+  
 
   // sum it by hand other way
   Double lsum2 = Double(0);
@@ -58,25 +65,30 @@ int main(int argc, char *argv[])
 	for(int spin=0; spin < Ns; spin++) { 
 	   for(int col =0; col < Nc; col++) { 
 	     DOUBLE fred;
-	     fred  = (qx.elem(site).elem(spin).elem(col).real()
-	                *qx.elem(site).elem(spin).elem(col).real());
+	     fred  = ((REAL64)qx.elem(site).elem(spin).elem(col).real()
+	                *(REAL64)qx.elem(site).elem(spin).elem(col).real());
 
-	     fred  += (qx.elem(site).elem(spin).elem(col).imag()
-	              *qx.elem(site).elem(spin).elem(col).imag());
+	     fred  += ((REAL64)qx.elem(site).elem(spin).elem(col).imag()
+	              *(REAL64)qx.elem(site).elem(spin).elem(col).imag());
 
 	     lsum2 += fred;
 
 
-	     lsum3.elem().elem().elem().elem() += qx.elem(site).elem(spin).elem(col).real()
-	       * qx.elem(site).elem(spin).elem(col).real();
-	     lsum3.elem().elem().elem().elem() += qx.elem(site).elem(spin).elem(col).imag()
-	       * qx.elem(site).elem(spin).elem(col).imag();
+	     lsum3.elem().elem().elem().elem() += (REAL64)qx.elem(site).elem(spin).elem(col).real()
+	       * (REAL64)qx.elem(site).elem(spin).elem(col).real();
+	     lsum3.elem().elem().elem().elem() += (REAL64)qx.elem(site).elem(spin).elem(col).imag()
+	       * (REAL64)qx.elem(site).elem(spin).elem(col).imag();
 
            }
         }
   } 
+
+  QDPIO::cout << "Local lsum2-llsum " << lsum2 - Double(rc2) << endl;
+	      
+
   Internal::globalSum(lsum2);
   Internal::globalSum(lsum3);
+  Internal::globalSum(rc2);
 
   QDPIO::cout << "lsum  = " << lsum << endl;
   QDPIO::cout << "lsum2 = " << lsum2 << endl;
@@ -84,6 +96,8 @@ int main(int argc, char *argv[])
   
   QDPIO::cout << "lsum2 - lsum= " << (lsum2 - lsum) << endl;
   QDPIO::cout << "lsum2 - lsum3 = " << (lsum2 - lsum3) << endl;
+  QDPIO::cout << "lsum2 - rc2 =" << lsum2 - Double(rc2) << endl;
+  QDPIO::cout << "lsum3 - rc2 =" << lsum3 - Double(rc2) << endl;
 
   Double bjs = norm2(qx);
 //  QDPIO::cout << "lattice volume = " << Layout::vol() << " Ns = " << Ns << " Nc = " << Nc << " Ncompx = 2.  Total Sum should be = " << Layout::vol()*Ns*Nc*2 << endl;
@@ -92,6 +106,10 @@ int main(int argc, char *argv[])
   QDPIO::cout << "lsum - norm2(qx) = " << lsum - bjs << endl;
   QDPIO::cout << "lsum2 - norm2(qx) = " << lsum2 - bjs << endl;
   QDPIO::cout << "lsum3 - norm2(qx) = " << lsum3 - bjs << endl;
+
+  QDPIO::cout << "lsum - norm2(qx) = " << lsum - norm2(qx) << endl;
+  QDPIO::cout << "lsum2 - norm2(qx) = " << lsum2 - norm2(qx) << endl;
+  QDPIO::cout << "lsum3 - norm2(qx) = " << lsum3 - norm2(qx) << endl;
 
 
   // Test y += a*x
