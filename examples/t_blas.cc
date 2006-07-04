@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.17 2006-06-26 22:00:17 bjoo Exp $
+// $Id: t_blas.cc,v 1.18 2006-07-04 00:16:59 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -38,16 +38,191 @@ int main(int argc, char *argv[])
 
   // sum it by hand.-- 1 way
   REAL64 rc = (REAL64)0;
-  for(int site=all.start(); site <= all.end(); site++) { 
-	for(int spin=0; spin < Ns; spin++) { 
-	   for(int col =0; col < Nc; col++) { 
-	     rc += (REAL64)qx.elem(site).elem(spin).elem(col).real()
-		 * (REAL64)qx.elem(site).elem(spin).elem(col).real();
-	     rc += (REAL64)qx.elem(site).elem(spin).elem(col).imag()
-	         * (REAL64)qx.elem(site).elem(spin).elem(col).imag();
-           }
-        }
-  } 
+
+  REAL32 partial_sum0=0;
+  REAL32 partial_sum1=0;
+  REAL32 partial_sum2=0;
+  REAL32 partial_sum3=0;
+
+  partial_sum0 += qx.elem(all.start()).elem(0).elem(0).real()
+    * qx.elem(all.start()).elem(0).elem(0).real();
+  partial_sum1 += qx.elem(all.start()).elem(0).elem(0).imag()
+    * qx.elem(all.start()).elem(0).elem(0).imag();
+  
+  partial_sum2 += qx.elem(all.start()).elem(0).elem(1).real()
+    * qx.elem(all.start()).elem(0).elem(1).real();
+  partial_sum3 += qx.elem(all.start()).elem(0).elem(1).imag()
+    * qx.elem(all.start()).elem(0).elem(1).imag();
+  
+  partial_sum0 += qx.elem(all.start()).elem(0).elem(2).real()
+    * qx.elem(all.start()).elem(0).elem(2).real();
+  partial_sum1 += qx.elem(all.start()).elem(0).elem(2).imag()
+    * qx.elem(all.start()).elem(0).elem(2).imag();
+  
+  
+  partial_sum2 += qx.elem(all.start()).elem(1).elem(0).real()
+    * qx.elem(all.start()).elem(1).elem(0).real();
+  partial_sum3 += qx.elem(all.start()).elem(1).elem(0).imag()
+    * qx.elem(all.start()).elem(1).elem(0).imag();
+
+  rc += (REAL64)partial_sum0
+    + (REAL64)partial_sum1
+    + (REAL64)partial_sum2
+    + (REAL64)partial_sum3;
+  
+  for(int site=all.start(); site < all.end(); site++) { 
+    
+    partial_sum0=0;
+    partial_sum1=0;
+    partial_sum2=0;
+    partial_sum3=0;
+
+
+    partial_sum0 += qx.elem(site).elem(1).elem(1).real()
+      * qx.elem(site).elem(1).elem(1).real();
+    
+    partial_sum1 += qx.elem(site).elem(1).elem(1).imag()
+      * qx.elem(site).elem(1).elem(1).imag();
+    
+
+    partial_sum2 += qx.elem(site).elem(1).elem(2).real()
+      * qx.elem(site).elem(1).elem(2).real();
+
+    partial_sum3 += qx.elem(site).elem(1).elem(2).imag()
+      * qx.elem(site).elem(1).elem(2).imag();
+    
+    
+    partial_sum0 += qx.elem(site).elem(2).elem(0).real()
+      * qx.elem(site).elem(2).elem(0).real();
+
+    partial_sum1 += qx.elem(site).elem(2).elem(0).imag()
+      * qx.elem(site).elem(2).elem(0).imag();
+    
+    partial_sum2 += qx.elem(site).elem(2).elem(1).real()
+      * qx.elem(site).elem(2).elem(1).real();
+
+    partial_sum3 += qx.elem(site).elem(2).elem(1).imag()
+      * qx.elem(site).elem(2).elem(1).imag();
+    
+    partial_sum0 += qx.elem(site).elem(2).elem(2).real()
+      * qx.elem(site).elem(2).elem(2).real();
+ 
+    partial_sum1 += qx.elem(site).elem(2).elem(2).imag()
+      * qx.elem(site).elem(2).elem(2).imag();
+    
+    partial_sum2 += qx.elem(site).elem(3).elem(0).real()
+      * qx.elem(site).elem(3).elem(0).real();
+
+    partial_sum3 += qx.elem(site).elem(3).elem(0).imag()
+      * qx.elem(site).elem(3).elem(0).imag();
+    
+    partial_sum0 += qx.elem(site).elem(3).elem(1).real()
+      * qx.elem(site).elem(3).elem(1).real();
+
+    partial_sum1 += qx.elem(site).elem(3).elem(1).imag()
+      * qx.elem(site).elem(3).elem(1).imag();
+   
+    partial_sum2 += qx.elem(site).elem(3).elem(2).real()
+      * qx.elem(site).elem(3).elem(2).real();
+
+    partial_sum3 += qx.elem(site).elem(3).elem(2).imag()
+      * qx.elem(site).elem(3).elem(2).imag();
+    
+
+    partial_sum0 += qx.elem(site+1).elem(0).elem(0).real()
+    * qx.elem(site+1).elem(0).elem(0).real();
+
+    partial_sum1 += qx.elem(site+1).elem(0).elem(0).imag()
+      * qx.elem(site+1).elem(0).elem(0).imag();
+  
+    partial_sum2 += qx.elem(site+1).elem(0).elem(1).real()
+      * qx.elem(site+1).elem(0).elem(1).real();
+
+    partial_sum3 += qx.elem(site+1).elem(0).elem(1).imag()
+      * qx.elem(site+1).elem(0).elem(1).imag();
+  
+    partial_sum0 += qx.elem(site+1).elem(0).elem(2).real()
+      * qx.elem(site+1).elem(0).elem(2).real();
+
+    partial_sum1 += qx.elem(site+1).elem(0).elem(2).imag()
+      * qx.elem(site+1).elem(0).elem(2).imag();
+    
+    partial_sum2 += qx.elem(site+1).elem(1).elem(0).real()
+      * qx.elem(site+1).elem(1).elem(0).real();
+ 
+    partial_sum3 += qx.elem(site+1).elem(1).elem(0).imag()
+      * qx.elem(site+1).elem(1).elem(0).imag();
+    
+    rc += (REAL64)partial_sum0
+      + (REAL64)partial_sum1
+      + (REAL64)partial_sum2
+      + (REAL64)partial_sum3;
+      
+      
+  }
+    
+  partial_sum0=0;
+  partial_sum1=0;
+  partial_sum2=0;
+  partial_sum3=0;
+  
+
+  partial_sum0 += qx.elem(all.end()).elem(1).elem(1).real()
+      * qx.elem(all.end()).elem(1).elem(1).real();
+    
+  partial_sum1 += qx.elem(all.end()).elem(1).elem(1).imag()
+    * qx.elem(all.end()).elem(1).elem(1).imag();
+    
+
+  partial_sum2 += qx.elem(all.end()).elem(1).elem(2).real()
+    * qx.elem(all.end()).elem(1).elem(2).real();
+
+  partial_sum3 += qx.elem(all.end()).elem(1).elem(2).imag()
+    * qx.elem(all.end()).elem(1).elem(2).imag();
+  
+    
+  partial_sum0 += qx.elem(all.end()).elem(2).elem(0).real()
+    * qx.elem(all.end()).elem(2).elem(0).real();
+ 
+  partial_sum1 += qx.elem(all.end()).elem(2).elem(0).imag()
+    * qx.elem(all.end()).elem(2).elem(0).imag();
+    
+  partial_sum2 += qx.elem(all.end()).elem(2).elem(1).real()
+    * qx.elem(all.end()).elem(2).elem(1).real();
+
+  partial_sum3 += qx.elem(all.end()).elem(2).elem(1).imag()
+    * qx.elem(all.end()).elem(2).elem(1).imag();
+    
+  partial_sum0 += qx.elem(all.end()).elem(2).elem(2).real()
+    * qx.elem(all.end()).elem(2).elem(2).real();
+
+  partial_sum1 += qx.elem(all.end()).elem(2).elem(2).imag()
+    * qx.elem(all.end()).elem(2).elem(2).imag();
+  
+  partial_sum2 += qx.elem(all.end()).elem(3).elem(0).real()
+    * qx.elem(all.end()).elem(3).elem(0).real();
+  
+  partial_sum3 += qx.elem(all.end()).elem(3).elem(0).imag()
+    * qx.elem(all.end()).elem(3).elem(0).imag();
+  
+  partial_sum0 += qx.elem(all.end()).elem(3).elem(1).real()
+    * qx.elem(all.end()).elem(3).elem(1).real();
+
+  partial_sum1 += qx.elem(all.end()).elem(3).elem(1).imag()
+    * qx.elem(all.end()).elem(3).elem(1).imag();
+    
+  partial_sum2 += qx.elem(all.end()).elem(3).elem(2).real()
+    * qx.elem(all.end()).elem(3).elem(2).real();
+
+  partial_sum3 += qx.elem(all.end()).elem(3).elem(2).imag()
+    * qx.elem(all.end()).elem(3).elem(2).imag();
+    
+  rc += (REAL64)partial_sum0
+    + (REAL64)partial_sum1
+    + (REAL64)partial_sum2
+    + (REAL64)partial_sum3;
+  
+ 
   UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(rc);
   Internal::globalSum(lsum);
 
@@ -58,60 +233,11 @@ int main(int argc, char *argv[])
   QDPIO::cout << "rc -rc2 = " << rc-rc2 << endl;
   
 
-  // sum it by hand other way
-  Double lsum2 = Double(0);
-  Double lsum3 = Double(0);
-  for(int site=all.start(); site <= all.end(); site++) { 
-	for(int spin=0; spin < Ns; spin++) { 
-	   for(int col =0; col < Nc; col++) { 
-	     DOUBLE fred;
-	     fred  = ((REAL64)qx.elem(site).elem(spin).elem(col).real()
-	                *(REAL64)qx.elem(site).elem(spin).elem(col).real());
-
-	     fred  += ((REAL64)qx.elem(site).elem(spin).elem(col).imag()
-	              *(REAL64)qx.elem(site).elem(spin).elem(col).imag());
-
-	     lsum2 += fred;
-
-
-	     lsum3.elem().elem().elem().elem() += (REAL64)qx.elem(site).elem(spin).elem(col).real()
-	       * (REAL64)qx.elem(site).elem(spin).elem(col).real();
-	     lsum3.elem().elem().elem().elem() += (REAL64)qx.elem(site).elem(spin).elem(col).imag()
-	       * (REAL64)qx.elem(site).elem(spin).elem(col).imag();
-
-           }
-        }
-  } 
-
-  QDPIO::cout << "Local lsum2-llsum " << lsum2 - Double(rc2) << endl;
-	      
-
-  Internal::globalSum(lsum2);
-  Internal::globalSum(lsum3);
-  Internal::globalSum(rc2);
-
-  QDPIO::cout << "lsum  = " << lsum << endl;
-  QDPIO::cout << "lsum2 = " << lsum2 << endl;
-  QDPIO::cout << "lsum3 = " << lsum3 << endl;
-  
-  QDPIO::cout << "lsum2 - lsum= " << (lsum2 - lsum) << endl;
-  QDPIO::cout << "lsum2 - lsum3 = " << (lsum2 - lsum3) << endl;
-  QDPIO::cout << "lsum2 - rc2 =" << lsum2 - Double(rc2) << endl;
-  QDPIO::cout << "lsum3 - rc2 =" << lsum3 - Double(rc2) << endl;
-
   Double bjs = norm2(qx);
 //  QDPIO::cout << "lattice volume = " << Layout::vol() << " Ns = " << Ns << " Nc = " << Nc << " Ncompx = 2.  Total Sum should be = " << Layout::vol()*Ns*Nc*2 << endl;
 
  
-  QDPIO::cout << "lsum - norm2(qx) = " << lsum - bjs << endl;
-  QDPIO::cout << "lsum2 - norm2(qx) = " << lsum2 - bjs << endl;
-  QDPIO::cout << "lsum3 - norm2(qx) = " << lsum3 - bjs << endl;
-
-  QDPIO::cout << "lsum - norm2(qx) = " << lsum - norm2(qx) << endl;
-  QDPIO::cout << "lsum2 - norm2(qx) = " << lsum2 - norm2(qx) << endl;
-  QDPIO::cout << "lsum3 - norm2(qx) = " << lsum3 - norm2(qx) << endl;
-
-
+ 
   // Test y += a*x
   gaussian(qx);
   gaussian(qy);

@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.13 2006-06-26 22:03:36 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.14 2006-07-04 00:16:59 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -181,21 +181,100 @@ void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec)
 #endif
 
 //  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
-  int n_loops = n_3vec / 6;   // only works on multiple of length 24 vectors
+  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
 
 
   (*Out) = (REAL64)0;
 
-  for (; n_loops-- > 0; )
-  {
-    for(int i=0; i < 3; i++) {
-      REAL64 load[2];
-      load[0] = (REAL64)(*In);              // Color 0: re
-      load[1] = (REAL64)(*(In + 1));        // Color 0: im;
-      *Out += load[0]*load[0] + load[1]*load[1];
-      In +=2;
-    }
+  register SSEVec in0;
+  register SSEVec in1;
+  register SSEVec in2;
+  register SSEVec in3;
+  register SSEVec sq;
+  register SSEVec sum;
+
+  n_loops--;  // We pull out the first 4
+
+  sum.floats[0] = sum.floats[1] = sum.floats[2] = sum.floats[3] = 0;
+
+  in0.vector = _mm_load_ps(In);
+   sq.vector = _mm_mul_ps(in0.vector,in0.vector);
+  sum.vector = _mm_add_ps(sum.vector, sq.vector);
+  
+  in1.vector = _mm_load_ps(In+4);
+  sq.vector = _mm_mul_ps(in1.vector,in1.vector);
+  sum.vector = _mm_add_ps(sum.vector, sq.vector);
+  
+  in2.vector = _mm_load_ps(In+8);
+  sq.vector = _mm_mul_ps(in2.vector,in2.vector);
+  sum.vector = _mm_add_ps(sum.vector, sq.vector);
+
+  in3.vector = _mm_load_ps(In+12);
+  sq.vector = _mm_mul_ps(in3.vector,in3.vector);
+  sum.vector = _mm_add_ps(sum.vector, sq.vector);
+
+  *Out += (double)sum.floats[0] 
+    + (double)sum.floats[1] 
+    + (double)sum.floats[2]
+    + (double)sum.floats[3];
+  
+  In += 16;
+
+  for (; n_loops-- > 0; ) {
+    
+    // Initialise the sum
+    sum.floats[0] = sum.floats[1] = sum.floats[2] = sum.floats[3] = 0;
+
+    // Do 24
+    
+    in0.vector = _mm_load_ps(In);
+    sq.vector = _mm_mul_ps(in0.vector,in0.vector);
+    sum.vector = _mm_add_ps(sum.vector, sq.vector);
+
+    in1.vector = _mm_load_ps(In+4);
+    sq.vector = _mm_mul_ps(in1.vector,in1.vector);
+    sum.vector = _mm_add_ps(sum.vector, sq.vector);
+      
+    in2.vector = _mm_load_ps(In+8);
+    sq.vector = _mm_mul_ps(in2.vector,in2.vector);
+    sum.vector = _mm_add_ps(sum.vector, sq.vector);
+    
+    in3.vector = _mm_load_ps(In+12);
+    sq.vector = _mm_mul_ps(in3.vector,in3.vector);
+    sum.vector = _mm_add_ps(sum.vector, sq.vector);
+    
+    in0.vector = _mm_load_ps(In+16);
+    sq.vector = _mm_mul_ps(in0.vector,in0.vector);
+    sum.vector = _mm_add_ps(sum.vector, sq.vector);
+    
+    in1.vector = _mm_load_ps(In+20);
+    sq.vector = _mm_mul_ps(in1.vector,in1.vector);
+    sum.vector = _mm_add_ps(sum.vector, sq.vector);
+
+  *Out += (double)sum.floats[0] 
+    + (double)sum.floats[1] 
+    + (double)sum.floats[2]
+    + (double)sum.floats[3];
+
+    In +=24;
+
   }
+
+  sum.floats[0] = sum.floats[1] = sum.floats[2] = sum.floats[3] = 0;
+
+  in2.vector = _mm_load_ps(In);
+  sq.vector = _mm_mul_ps(in2.vector,in2.vector);
+  sum.vector = _mm_add_ps(sum.vector, sq.vector);
+
+  in3.vector = _mm_load_ps(In+4);
+  sq.vector = _mm_mul_ps(in3.vector,in3.vector);
+  sum.vector = _mm_add_ps(sum.vector, sq.vector);
+
+  *Out += (double)sum.floats[0] 
+    + (double)sum.floats[1] 
+    + (double)sum.floats[2]
+    + (double)sum.floats[3];
+
 }
 
 #endif // BASE PRECISION==32

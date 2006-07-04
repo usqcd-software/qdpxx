@@ -5,4 +5,9 @@
 #include <xmmintrin.h>
 typedef __m128 v4sf;
 
+typedef union { 
+  __m128 vector;
+  float floats[4];
+} SSEVec;
+
 #endif 
