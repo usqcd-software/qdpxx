@@ -1,3 +1,10 @@
+2006-07-03 20:16  bjoo
+
+	* examples/t_blas.cc, include/qdp_sse_intrin.h,
+	  lib/qdp_scalarsite_sse.cc: Modified the SSE local normsq. Now it
+	  sums a site's worth in single and then adds that to a double
+	  accumulator, for LatticeFermions only
+
 2006-06-26 18:07  tag qdp1-20-8-pre2
 
 2006-06-26 18:07  bjoo
