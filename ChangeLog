@@ -1,3 +1,9 @@
+2006-07-11 09:13  bjoo
+
+	* examples/Makefile.am, examples/t_gsum.cc,
+	  include/PETE/OperatorTags.h, lib/qdp_scalarsite_sse.cc: Added
+	  gsum test
+
 2006-07-03 20:16  bjoo
 
 	* examples/t_blas.cc, include/qdp_sse_intrin.h,
