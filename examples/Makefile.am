@@ -27,7 +27,7 @@ HDRS=examples.h
 # 
 check_PROGRAMS = t_skeleton t_io t_mesplq \
       t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
-      t_cugauge t_transpose_spin t_partfile
+      t_cugauge t_transpose_spin t_partfile t_gsum
 
 EXTRA_PROGRAMS  = t_qio_factory t_binx 
 
@@ -74,6 +74,11 @@ t_qdp_SOURCES =  t_qdp.cc formfac_w.cc dslashm_w.cc baryon_w.cc \
 t_linalg_SOURCES =  t_linalg.cc linalg1.cc linalg.h
 
 t_blas_SOURCES = t_blas.cc blas1.cc blas1.h
+t_blas_DEPENDENCIES = build_lib
+
+t_gsum_SOURCES = t_gsum.cc
+t_gsum_DEPENDENCIES = build_lib
+
 t_cblas_SOURCES= t_cblas.cc cblas1.cc cblas1.h 
 
 t_blas_g5_SOURCES = t_blas_g5.cc $(HDRS)

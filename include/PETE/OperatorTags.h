@@ -754,7 +754,7 @@ struct OpAssign
   inline typename BinaryReturn<T1, T2, OpAssign >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
-    return (const_cast<T1 &>(a) = b);
+    return (const_cast<T1 &>(a) = b );
   }
 };
 
@@ -779,7 +779,7 @@ struct FnWhere
 
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
-// $RCSfile: OperatorTags.h,v $   $Author: edwards $
-// $Revision: 1.4 $   $Date: 2004-08-12 00:38:07 $
+// $RCSfile: OperatorTags.h,v $   $Author: bjoo $
+// $Revision: 1.5 $   $Date: 2006-07-11 13:13:22 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

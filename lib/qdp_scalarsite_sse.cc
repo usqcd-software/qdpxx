@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.14 2006-07-04 00:16:59 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.15 2006-07-11 13:13:22 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -269,6 +269,64 @@ void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec)
   in3.vector = _mm_load_ps(In+4);
   sq.vector = _mm_mul_ps(in3.vector,in3.vector);
   sum.vector = _mm_add_ps(sum.vector, sq.vector);
+
+  *Out += (double)sum.floats[0] 
+    + (double)sum.floats[1] 
+    + (double)sum.floats[2]
+    + (double)sum.floats[3];
+
+}
+
+void local_sumsq2(REAL64 *Out, REAL32 *In, int n_3vec)
+{
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "SSE_TEST: local_sumsq" << endl;
+#endif
+
+//  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
+  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
+
+
+  (*Out) = (REAL64)0;
+
+  register SSEVec in;
+  register SSEVec sq;
+  register SSEVec sum;
+
+
+  sum.floats[0] = sum.floats[1] = sum.floats[2] = sum.floats[3] = 0;
+  for (; n_loops-- > 0; ) {
+    
+
+    // Do 24
+    
+    in.vector = _mm_load_ps(In);
+    sq.vector = _mm_mul_ps(in.vector,in.vector);
+    sum.vector = _mm_add_ps(sum.vector, sq.vector);
+
+    in.vector = _mm_load_ps(In+4);
+    sq.vector = _mm_mul_ps(in.vector,in.vector);
+    sum.vector = _mm_add_ps(sum.vector, sq.vector);
+      
+    in.vector = _mm_load_ps(In+8);
+    sq.vector = _mm_mul_ps(in.vector,in.vector);
+    sum.vector = _mm_add_ps(sum.vector, sq.vector);
+    
+    in.vector = _mm_load_ps(In+12);
+    sq.vector = _mm_mul_ps(in.vector,in.vector);
+    sum.vector = _mm_add_ps(sum.vector, sq.vector);
+    
+    in.vector = _mm_load_ps(In+16);
+    sq.vector = _mm_mul_ps(in.vector,in.vector);
+    sum.vector = _mm_add_ps(sum.vector, sq.vector);
+    
+    in.vector = _mm_load_ps(In+20);
+    sq.vector = _mm_mul_ps(in.vector,in.vector);
+    sum.vector = _mm_add_ps(sum.vector, sq.vector);
+
+    In +=24;
+
+  }
 
   *Out += (double)sum.floats[0] 
     + (double)sum.floats[1] 
