@@ -1,4 +1,4 @@
-// $Id: t_gsum.cc,v 1.1 2006-07-11 13:13:22 bjoo Exp $
+// $Id: t_gsum.cc,v 1.2 2006-07-12 02:07:55 edwards Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -31,7 +31,8 @@ int main(int argc, char *argv[])
   gaussian(x);      // Fill it with noise.
   Real xr=10.5;
 
-  QDPIO::cout << setw(15) << xr << endl;
+//  QDPIO::cout << setw(15) << xr << endl;
+  QDPIO::cout << xr << endl;
 
   LatticeFermionD x_dble = zero;  // Cast it to double
 
