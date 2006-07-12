@@ -1,3 +1,21 @@
+2006-07-11 22:07  tag qdp1-20-8
+
+2006-07-11 22:07  edwards
+
+	* examples/t_gsum.cc: Removed use of setw
+
+2006-07-11 21:25  edwards
+
+	* NEWS: Info on 1.20.8
+
+2006-07-11 21:22  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2006-07-11 21:22  edwards
+
+	* configure.ac: Changed to 1.20.8
+
 2006-07-11 09:13  bjoo
 
 	* examples/Makefile.am, examples/t_gsum.cc,
