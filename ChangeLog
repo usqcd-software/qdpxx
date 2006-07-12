@@ -1,4 +1,9 @@
-2006-07-11 22:07  tag qdp1-20-8
+2006-07-11 23:57  tag qdp1-20-8
+
+2006-07-11 23:57  edwards
+
+	* examples/Makefile.am: Moved t_gsum down to EXTRA_PROGRAMS till
+	  Balint fixes it. It fails to compile in double-prec
 
 2006-07-11 22:07  edwards
 
