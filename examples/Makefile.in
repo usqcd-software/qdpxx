@@ -39,10 +39,11 @@ check_PROGRAMS = t_skeleton$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
 	t_xml$(EXEEXT) t_remote$(EXEEXT) t_entry$(EXEEXT) \
 	t_nersc$(EXEEXT) t_shift$(EXEEXT) t_exotic$(EXEEXT) \
 	t_basic$(EXEEXT) t_qio$(EXEEXT) t_cugauge$(EXEEXT) \
-	t_transpose_spin$(EXEEXT) t_partfile$(EXEEXT) t_gsum$(EXEEXT) \
-	$(am__EXEEXT_2) $(am__EXEEXT_3)
+	t_transpose_spin$(EXEEXT) t_partfile$(EXEEXT) $(am__EXEEXT_2) \
+	$(am__EXEEXT_3)
 EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_binx$(EXEEXT) \
-	$(am__EXEEXT_1) nersc2ildg$(EXEEXT) test_ildglat$(EXEEXT)
+	t_gsum$(EXEEXT) $(am__EXEEXT_1) nersc2ildg$(EXEEXT) \
+	test_ildglat$(EXEEXT)
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_1 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_2 = t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3
 @BUILD_STAGGERED_EXAMPLES_TRUE@am__append_3 = 
