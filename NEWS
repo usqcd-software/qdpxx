@@ -1,3 +1,12 @@
+07/11/2006 -- Robert Edwards
+
+	Version 1.20.8: Changes/fixes to SSE version of norm2(). Now do local on
+        node sum in double prec. instead of single.
+
+06/21/2006 -- Balint Joo
+
+	Version 1.20.7: Compilation fixes for new platforms. Fixes in multi3d.
+
 05/21/2006 -- Robert Edwards
 
 	Version 1.20.6: Updated to match update of qio - a trivial compilation fix.
