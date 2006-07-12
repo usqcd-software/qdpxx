@@ -27,9 +27,9 @@ HDRS=examples.h
 # 
 check_PROGRAMS = t_skeleton t_io t_mesplq \
       t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
-      t_cugauge t_transpose_spin t_partfile t_gsum
+      t_cugauge t_transpose_spin t_partfile 
 
-EXTRA_PROGRAMS  = t_qio_factory t_binx 
+EXTRA_PROGRAMS  = t_qio_factory t_binx t_gsum
 
 
 if BUILD_WILSON_EXAMPLES
