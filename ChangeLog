@@ -1,3 +1,13 @@
+2006-07-16 15:20  edwards
+
+	* other_libs/xpath_reader/lib/xml_simplewriter.cc: Changed
+	  precision format of single.
+
+2006-07-16 15:18  edwards
+
+	* other_libs/xpath_reader/lib/xml_simplewriter.cc: Changed
+	  precision format of single and doubles.
+
 2006-07-11 23:57  tag qdp1-20-8
 
 2006-07-11 23:57  edwards
