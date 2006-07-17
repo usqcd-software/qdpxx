@@ -3,6 +3,8 @@
 	* lib/qdp_xmlio.cc: Changed precision of real to 7 digits and
 	  double to 15 digits.
 
+2006-07-16 23:21  tag adat1-26-0
+
 2006-07-16 23:21  edwards
 
 	* other_libs/xpath_reader/lib/xml_simplewriter.cc: Changed
