@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.36 2006-06-12 15:18:41 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.37 2006-07-17 03:21:20 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -702,14 +702,34 @@ void write(XMLWriter& xml, const std::string& xpath, const multi1d<unsigned long
   writeArrayPrimitive<unsigned long int>(xml, xpath, output);
 }
 template<>
-void write(XMLWriter& xml, const std::string& xpath, const multi1d<float>& output)
+void write(XMLWriter& xml, const std::string& s, const multi1d<float>& s1)
 {
-  writeArrayPrimitive<float>(xml, xpath, output);
+  std::ostringstream output;
+  output.precision(7);
+
+  output << s1[0];
+  for(int index=1; index < s1.size(); index++) 
+    output << " " << s1[index];
+    
+  // Write the array - do not use a normal string write
+  xml.openTag(s);
+  xml << output.str();
+  xml.closeTag();
 }
 template<>
-void write(XMLWriter& xml, const std::string& xpath, const multi1d<double>& output)
+void write(XMLWriter& xml, const std::string& s, const multi1d<double>& s1)
 {
-  writeArrayPrimitive<double>(xml, xpath, output);
+  std::ostringstream output;
+  output.precision(15);
+
+  output << s1[0];
+  for(int index=1; index < s1.size(); index++) 
+    output << " " << s1[index];
+    
+  // Write the array - do not use a normal string write
+  xml.openTag(s);
+  xml << output.str();
+  xml.closeTag();
 }
 template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<bool>& output)
@@ -722,14 +742,34 @@ void write(XMLWriter& xml, const std::string& xpath, const multi1d<Integer>& out
   writeArrayPrimitive<Integer>(xml, xpath, output);
 }
 template<>
-void write(XMLWriter& xml, const std::string& xpath, const multi1d<Real32>& output)
+void write(XMLWriter& xml, const std::string& s, const multi1d<Real32>& s1)
 {
-  writeArrayPrimitive<Real32>(xml, xpath, output);
+  std::ostringstream output;
+  output.precision(7);
+
+  output << s1[0];
+  for(int index=1; index < s1.size(); index++) 
+    output << " " << s1[index];
+    
+  // Write the array - do not use a normal string write
+  xml.openTag(s);
+  xml << output.str();
+  xml.closeTag();
 }
 template<>
-void write(XMLWriter& xml, const std::string& xpath, const multi1d<Real64>& output)
+void write(XMLWriter& xml, const std::string& s, const multi1d<Real64>& s1)
 {
-  writeArrayPrimitive<Real64>(xml, xpath, output);
+  std::ostringstream output;
+  output.precision(15);
+
+  output << s1[0];
+  for(int index=1; index < s1.size(); index++) 
+    output << " " << s1[index];
+    
+  // Write the array - do not use a normal string write
+  xml.openTag(s);
+  xml << output.str();
+  xml.closeTag();
 }
 template<>
 void write(XMLWriter& xml, const std::string& xpath, const multi1d<Boolean>& output)
