@@ -1,3 +1,13 @@
+2006-07-16 23:21  edwards
+
+	* lib/qdp_xmlio.cc: Changed precision of real to 7 digits and
+	  double to 15 digits.
+
+2006-07-16 23:21  edwards
+
+	* other_libs/xpath_reader/lib/xml_simplewriter.cc: Changed
+	  precision of float to 7 digits and double to 15 digits.
+
 2006-07-16 15:20  edwards
 
 	* other_libs/xpath_reader/lib/xml_simplewriter.cc: Changed
