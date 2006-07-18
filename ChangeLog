@@ -1,3 +1,15 @@
+2006-07-17 21:36  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2006-07-17 21:35  edwards
+
+	* configure.ac: Changed to 1.20.9
+
+2006-07-17 21:35  edwards
+
+	* NEWS: Info on 1.20.9
+
 2006-07-16 23:21  edwards
 
 	* lib/qdp_xmlio.cc: Changed precision of real to 7 digits and
