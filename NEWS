@@ -1,7 +1,7 @@
 07/17/2006 -- Robert Edwards
 
-	Version 1.20.9: Changed precision output in xml. Now, singles get 7 digits
-        and doubles get 15 digits.
+	Version 1.20.9: Changed precision output in xml and stdio. 
+        Now, singles get 7 digits and doubles get 15 digits.
 
 07/11/2006 -- Robert Edwards
 
