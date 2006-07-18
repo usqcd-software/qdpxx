@@ -1,3 +1,8 @@
+07/17/2006 -- Robert Edwards
+
+	Version 1.20.9: Changed precision output in xml. Now, singles get 7 digits
+        and doubles get 15 digits.
+
 07/11/2006 -- Robert Edwards
 
 	Version 1.20.8: Changes/fixes to SSE version of norm2(). Now do local on
