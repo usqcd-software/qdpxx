@@ -1,3 +1,14 @@
+2006-07-17 22:22  tag qdp1-20-9
+
+2006-07-17 22:22  edwards
+
+	* NEWS: Info on 1.20.9
+
+2006-07-17 22:21  edwards
+
+	* lib/qdp_stdio.cc: Changed float and double to have 7 and 15
+	  digits, resp.
+
 2006-07-17 21:36  edwards
 
 	* aclocal.m4, configure: Induced changes
