@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.cc,v 1.8 2005-02-01 02:15:24 edwards Exp $
+// $Id: qdp_stdio.cc,v 1.9 2006-07-18 02:21:52 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -224,12 +224,28 @@ StandardOutputStream& StandardOutputStream::operator<<(unsigned long int output)
 
 StandardOutputStream& StandardOutputStream::operator<<(float output)
 {
-  return writePrimitive<float>(output);
+  if (Layout::primaryNode())
+  {
+    streamsize initPrec = getOstream().precision();
+    getOstream().precision(7);
+    getOstream() << output;
+    getOstream().precision(initPrec);
+  }
+
+  return *this;
 }
 
 StandardOutputStream& StandardOutputStream::operator<<(double output)
 {
-  return writePrimitive<double>(output);
+  if (Layout::primaryNode())
+  {
+    streamsize initPrec = getOstream().precision();
+    getOstream().precision(15);
+    getOstream() << output;
+    getOstream().precision(initPrec);
+  }
+
+  return *this;
 }
 
 StandardOutputStream& StandardOutputStream::operator<<(long double output)
