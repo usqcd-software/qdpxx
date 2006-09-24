@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.7 2006-09-24 20:36:39 edwards Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.8 2006-09-24 21:39:18 edwards Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -252,7 +252,6 @@ multiplyAdj(const PScalar<PScalar<PColorMatrix<RComplexFloat,3> > >& l,
 }
 
 
-#if 0
 // Ooops, this macro does not exist!!
 
 // Optimized version of  
@@ -266,11 +265,36 @@ adjMultiplyAdj(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
     PMatrix<RComplexFloat,3,PColorMatrix>, OpAdjMultiplyAdj>::Type_t  d;
 
-  _inline_sse_mult_su3_aa(l,r,d);
+//  _inline_sse_mult_su3_aa(l,r,d);     // oops, this macro does not exist
+
+  // Do the adj*adj the hard way
+  PColorMatrix<RComplexFloat,3> tmp;
+  _inline_sse_mult_su3_nn(r,l,tmp);
+
+  // Take the adj(r*l) = adj(l)*adj(r)
+  d.elem(0,0).real() =  tmp.elem(0,0).real();
+  d.elem(0,0).imag() = -tmp.elem(0,0).imag();
+  d.elem(0,1).real() =  tmp.elem(1,0).real();
+  d.elem(0,1).imag() = -tmp.elem(1,0).imag();
+  d.elem(0,2).real() =  tmp.elem(2,0).real();
+  d.elem(0,2).imag() = -tmp.elem(2,0).imag();
+
+  d.elem(1,0).real() =  tmp.elem(0,1).real();
+  d.elem(1,0).imag() = -tmp.elem(0,1).imag();
+  d.elem(1,1).real() =  tmp.elem(1,1).real();
+  d.elem(1,1).imag() = -tmp.elem(1,1).imag();
+  d.elem(1,2).real() =  tmp.elem(2,1).real();
+  d.elem(1,2).imag() = -tmp.elem(2,1).imag();
+
+  d.elem(2,0).real() =  tmp.elem(0,2).real();
+  d.elem(2,0).imag() = -tmp.elem(0,2).imag();
+  d.elem(2,1).real() =  tmp.elem(1,2).real();
+  d.elem(2,1).imag() = -tmp.elem(1,2).imag();
+  d.elem(2,2).real() =  tmp.elem(2,2).real();
+  d.elem(2,2).imag() = -tmp.elem(2,2).imag();
 
   return d;
 }
-#endif
 
 
 // Optimized version of  
@@ -579,6 +603,18 @@ void evaluate(OLattice< TCol >& d,
 
 
 // Specialization to optimize the case   
+//    LatticeColorMatrix = adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpAdjMultiplyAdj, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >,
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s);
+
+
+// Specialization to optimize the case   
 //    LatticeColorMatrix += LatticeColorMatrix * LatticeColorMatrix
 template<>
 void evaluate(OLattice< TCol >& d, 
@@ -607,6 +643,18 @@ void evaluate(OLattice< TCol >& d,
 	      const OpAddAssign& op, 
 	      const QDPExpr<BinaryNode<OpMultiplyAdj, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s);
+
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix += adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAddAssign& op, 
+	      const QDPExpr<BinaryNode<OpAdjMultiplyAdj, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
 	      const OrderedSubset& s);

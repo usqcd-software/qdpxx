@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.18 2006-09-24 20:36:39 edwards Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.19 2006-09-24 21:39:18 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -94,6 +94,55 @@ void evaluate(OLattice< TCol >& d,
 }
 
 
+// Specialization to optimize the case   
+//    LatticeColorMatrix[OrderedSubset] = adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpAdjMultiplyAdj, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >,
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s)
+{
+//  cout << "call single site QDP_M_eq_Ma_times_Ma" << endl;
+
+  typedef OLattice< TCol >    C;
+
+  const C& l = static_cast<const C&>(rhs.expression().left().child());
+  const C& r = static_cast<const C&>(rhs.expression().right().child());
+
+  PColorMatrix<RComplexFloat,3> tmp;
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+  {
+    _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+
+    // Take the adj(r*l) = adj(l)*adj(r)
+    d.elem(i).elem().elem(0,0).real() =  tmp.elem(0,0).real();
+    d.elem(i).elem().elem(0,0).imag() = -tmp.elem(0,0).imag();
+    d.elem(i).elem().elem(0,1).real() =  tmp.elem(1,0).real();
+    d.elem(i).elem().elem(0,1).imag() = -tmp.elem(1,0).imag();
+    d.elem(i).elem().elem(0,2).real() =  tmp.elem(2,0).real();
+    d.elem(i).elem().elem(0,2).imag() = -tmp.elem(2,0).imag();
+
+    d.elem(i).elem().elem(1,0).real() =  tmp.elem(0,1).real();
+    d.elem(i).elem().elem(1,0).imag() = -tmp.elem(0,1).imag();
+    d.elem(i).elem().elem(1,1).real() =  tmp.elem(1,1).real();
+    d.elem(i).elem().elem(1,1).imag() = -tmp.elem(1,1).imag();
+    d.elem(i).elem().elem(1,2).real() =  tmp.elem(2,1).real();
+    d.elem(i).elem().elem(1,2).imag() = -tmp.elem(2,1).imag();
+
+    d.elem(i).elem().elem(2,0).real() =  tmp.elem(0,2).real();
+    d.elem(i).elem().elem(2,0).imag() = -tmp.elem(0,2).imag();
+    d.elem(i).elem().elem(2,1).real() =  tmp.elem(1,2).real();
+    d.elem(i).elem().elem(2,1).imag() = -tmp.elem(1,2).imag();
+    d.elem(i).elem().elem(2,2).real() =  tmp.elem(2,2).real();
+    d.elem(i).elem().elem(2,2).imag() = -tmp.elem(2,2).imag();
+  }
+}
+
+
 
 
 // Specialization to optimize the case   
@@ -176,6 +225,55 @@ void evaluate(OLattice< TCol >& d,
   {
     _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
     d.elem(i).elem() += tmp;
+  }
+}
+
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix[OrderedSubset] = adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAddAssign& op, 
+	      const QDPExpr<BinaryNode<OpAdjMultiplyAdj, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >,
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s)
+{
+//  cout << "call single site QDP_M_eq_Ma_times_Ma" << endl;
+
+  typedef OLattice< TCol >    C;
+
+  const C& l = static_cast<const C&>(rhs.expression().left().child());
+  const C& r = static_cast<const C&>(rhs.expression().right().child());
+
+  PColorMatrix<RComplexFloat,3> tmp;
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+  {
+    _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+
+    // Take the adj(r*l) = adj(l)*adj(r)
+    d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
+    d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
+    d.elem(i).elem().elem(0,1).real() += tmp.elem(1,0).real();
+    d.elem(i).elem().elem(0,1).imag() -= tmp.elem(1,0).imag();
+    d.elem(i).elem().elem(0,2).real() += tmp.elem(2,0).real();
+    d.elem(i).elem().elem(0,2).imag() -= tmp.elem(2,0).imag();
+
+    d.elem(i).elem().elem(1,0).real() += tmp.elem(0,1).real();
+    d.elem(i).elem().elem(1,0).imag() -= tmp.elem(0,1).imag();
+    d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
+    d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
+    d.elem(i).elem().elem(1,2).real() += tmp.elem(2,1).real();
+    d.elem(i).elem().elem(1,2).imag() -= tmp.elem(2,1).imag();
+
+    d.elem(i).elem().elem(2,0).real() += tmp.elem(0,2).real();
+    d.elem(i).elem().elem(2,0).imag() -= tmp.elem(0,2).imag();
+    d.elem(i).elem().elem(2,1).real() += tmp.elem(1,2).real();
+    d.elem(i).elem().elem(2,1).imag() -= tmp.elem(1,2).imag();
+    d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
+    d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
   }
 }
 
