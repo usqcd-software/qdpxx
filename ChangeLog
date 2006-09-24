@@ -1,3 +1,10 @@
+2006-09-23 23:11  edwards
+
+	* include/qdp_scalar_specific.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_linalg.h,
+	  lib/qdp_scalarsite_sse.cc: Added evaluate specializations for
+	  LCM=adj(LCM)*LCM and LCM*adj(LCM).
+
 2006-09-10 18:10  edwards
 
 	* other_libs/xpath_reader/include/xml_array2d.h: 2d array class.
