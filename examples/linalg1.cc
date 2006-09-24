@@ -1,4 +1,4 @@
-// $Id: linalg1.cc,v 1.17 2004-02-09 15:21:04 bjoo Exp $
+// $Id: linalg1.cc,v 1.18 2006-09-24 21:37:41 edwards Exp $
 
 #include <stdlib.h>
 #include <sys/time.h>
@@ -85,6 +85,63 @@ double QDP_M_peq_M_times_M(LatticeColorMatrix& dest,
 
   for (; cnt-- > 0; )
     dest += s1 * s2;
+
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
+//    return 2;
+}
+
+
+double QDP_M_peq_M_times_Ma(LatticeColorMatrix& dest, 
+			    const LatticeColorMatrix& s1, 
+			    const LatticeColorMatrix& s2,
+			    int cnt)
+{
+  StopWatch swatch;
+
+  swatch.start();
+
+  for (; cnt-- > 0; )
+    dest += s1 * adj(s2);
+
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
+//    return 2;
+}
+
+
+double QDP_M_peq_Ma_times_M(LatticeColorMatrix& dest, 
+			    const LatticeColorMatrix& s1, 
+			    const LatticeColorMatrix& s2,
+			    int cnt)
+{
+  StopWatch swatch;
+
+  swatch.start();
+
+  for (; cnt-- > 0; )
+    dest += adj(s1) * s2;
+
+  swatch.stop();
+
+  return swatch.getTimeInSeconds();
+//    return 2;
+}
+
+
+double QDP_M_peq_Ma_times_Ma(LatticeColorMatrix& dest, 
+			     const LatticeColorMatrix& s1, 
+			     const LatticeColorMatrix& s2,
+			     int cnt)
+{
+  StopWatch swatch;
+
+  swatch.start();
+
+  for (; cnt-- > 0; )
+    dest += adj(s1) * adj(s2);
 
   swatch.stop();
 

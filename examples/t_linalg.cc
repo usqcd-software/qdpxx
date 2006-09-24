@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.17 2005-03-21 05:31:07 edwards Exp $
+// $Id: t_linalg.cc,v 1.18 2006-09-24 21:37:41 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -129,6 +129,48 @@ int main(int argc, char *argv[])
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
   push(xml,"QDP_M_peq_M_times_M");
+  write(xml,"c",c);
+  pop(xml);
+#endif
+
+
+  // Test  M+= adj(M)*M
+  QDPIO::cout << "calling M+=adj(M)*M " << icnt << " times" << endl;
+  tt = rescale * QDP_M_peq_Ma_times_M(c, a, b, icnt);
+#if defined(TIME_OPS)
+  QDPIO::cout << "time(M+=adj(M)*M) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << Nflops / tt << " Mflops" << endl;
+#else
+  push(xml,"QDP_M_peq_Ma_times_M");
+  write(xml,"c",c);
+  pop(xml);
+#endif
+
+
+  // Test  M+= M*adj(M)
+  QDPIO::cout << "calling M+=M*adj(M) " << icnt << " times" << endl;
+  tt = rescale * QDP_M_peq_M_times_Ma(c, a, b, icnt);
+#if defined(TIME_OPS)
+  QDPIO::cout << "time(M+=M*adj(M)) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << Nflops / tt << " Mflops" << endl;
+#else
+  push(xml,"QDP_M_peq_M_times_Ma");
+  write(xml,"c",c);
+  pop(xml);
+#endif
+
+
+  // Test  M+= adj(M)*adj(M)
+  QDPIO::cout << "calling M+=adj(M)*adj(M) " << icnt << " times" << endl;
+  tt = rescale * QDP_M_peq_Ma_times_Ma(c, a, b, icnt);
+#if defined(TIME_OPS)
+  QDPIO::cout << "time(M+=adj(M)*adj(M)) = " << tt
+	      << " micro-secs/site/iteration" 
+	      << " , " << Nflops / tt << " Mflops" << endl;
+#else
+  push(xml,"QDP_M_peq_Ma_times_Ma");
   write(xml,"c",c);
   pop(xml);
 #endif

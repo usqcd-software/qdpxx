@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linalg.h,v 1.7 2004-07-27 05:42:28 edwards Exp $
+// $Id: linalg.h,v 1.8 2006-09-24 21:37:41 edwards Exp $
 //
 // Include file for test suite
 
@@ -23,6 +23,26 @@ double QDP_M_eq_M_times_Ma(LatticeColorMatrix& dest,
 			   int cnt);
 
 double QDP_M_eq_Ma_times_Ma(LatticeColorMatrix& dest, 
+			    const LatticeColorMatrix& s1, 
+			    const LatticeColorMatrix& s2,
+			    int cnt);
+
+double QDP_M_peq_M_times_M(LatticeColorMatrix& dest, 
+			  const LatticeColorMatrix& s1, 
+			  const LatticeColorMatrix& s2,
+			  int cnt);
+
+double QDP_M_peq_Ma_times_M(LatticeColorMatrix& dest, 
+			  const LatticeColorMatrix& s1, 
+			  const LatticeColorMatrix& s2,
+			  int cnt);
+
+double QDP_M_peq_M_times_Ma(LatticeColorMatrix& dest, 
+			   const LatticeColorMatrix& s1, 
+			   const LatticeColorMatrix& s2,
+			   int cnt);
+
+double QDP_M_peq_Ma_times_Ma(LatticeColorMatrix& dest, 
 			    const LatticeColorMatrix& s1, 
 			    const LatticeColorMatrix& s2,
 			    int cnt);
