@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.16 2006-09-24 03:11:03 edwards Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.17 2006-09-24 16:04:31 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -53,7 +53,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const OrderedSubset& s)
 {
-  cout << "call single site QDP_M_eq_aM_times_M" << endl;
+//  cout << "call single site QDP_M_eq_aM_times_M" << endl;
 
   typedef OLattice< TCol >    C;
 
@@ -78,7 +78,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const OrderedSubset& s)
 {
-  cout << "call single site QDP_M_eq_M_times_aM" << endl;
+//  cout << "call single site QDP_M_eq_M_times_aM" << endl;
 
   typedef OLattice< TCol >    C;
 
