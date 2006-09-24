@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.15 2006-07-11 13:13:22 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.16 2006-09-24 03:11:03 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -20,19 +20,17 @@ QDP_BEGIN_NAMESPACE(QDP);
 // Specialization to optimize the case   
 //    LatticeColorMatrix[OrderedSubset] = LatticeColorMatrix * LatticeColorMatrix
 template<>
-void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d, 
+void evaluate(OLattice< TCol >& d, 
 	      const OpAssign& op, 
 	      const QDPExpr<BinaryNode<OpMultiply, 
-	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > >, 
-	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
+	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
+	                    OLattice< TCol > >& rhs,
 	      const OrderedSubset& s)
 {
 //  cout << "call single site QDP_M_eq_M_times_M" << endl;
 
-  typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >    C;
+  typedef OLattice< TCol >    C;
 
   const C& l = static_cast<const C&>(rhs.expression().left());
   const C& r = static_cast<const C&>(rhs.expression().right());
@@ -42,6 +40,57 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
     _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
   }
 }
+
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix[OrderedSubset] = adj(LatticeColorMatrix) * LatticeColorMatrix
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpAdjMultiply, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s)
+{
+  cout << "call single site QDP_M_eq_aM_times_M" << endl;
+
+  typedef OLattice< TCol >    C;
+
+  const C& l = static_cast<const C&>(rhs.expression().left().child());
+  const C& r = static_cast<const C&>(rhs.expression().right());
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+  {
+    _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+  }
+}
+
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix[OrderedSubset] = LatticeColorMatrix * adj(LatticeColorMatrix)
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiplyAdj, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s)
+{
+  cout << "call single site QDP_M_eq_M_times_aM" << endl;
+
+  typedef OLattice< TCol >    C;
+
+  const C& l = static_cast<const C&>(rhs.expression().left());
+  const C& r = static_cast<const C&>(rhs.expression().right().child());
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+  {
+    _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+  }
+}
+
 
 
 // GNUC vector type

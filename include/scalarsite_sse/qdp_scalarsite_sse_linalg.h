@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.5 2004-08-19 01:53:09 edwards Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.6 2006-09-24 03:11:03 edwards Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -743,25 +743,49 @@ void evaluate(OLattice<PScalar<PScalar<PColorMatrix<RComplexFloat, 3> > > >& d,
 #endif
 
 #if defined(QDP_SCALARSITE_USE_EVALUATE)
+// Types needed for the expression templates. 
+typedef PScalar<PColorMatrix<RComplexFloat, 3> > TCol;
+
+// NOTE: let these be subroutines to save space
+
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
-// NOTE: let this be a subroutine to save space
 template<>
-void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d, 
+void evaluate(OLattice< TCol >& d, 
 	      const OpAssign& op, 
 	      const QDPExpr<BinaryNode<OpMultiply, 
-	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > >, 
-	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
+	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s);
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix = adj(LatticeColorMatrix) * LatticeColorMatrix
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpAdjMultiply, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s);
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix = LatticeColorMatrix * adj(LatticeColorMatrix)
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiplyAdj, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
+	                    OLattice< TCol > >& rhs,
 	      const OrderedSubset& s);
 
 #endif
 
 #if defined(QDP_SCALARSITE_USE_EVALUATE)
 // Specialization to optimize the case   
-//    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
+//    LatticeHalffermion = LatticeColorMatrix * LatticeHalfFermion
 // NOTE: let this be a subroutine to save space
 template<>
 inline 

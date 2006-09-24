@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.31 2005-05-25 04:21:01 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.32 2006-09-24 03:11:03 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -166,6 +166,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   static QDPProfile_t prof(dest, op, rhs);
   prof.time -= getClockTime();
 #endif
+
+//  1/0;
 
   for(int i=s.start(); i <= s.end(); ++i) 
   {
