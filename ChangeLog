@@ -1,3 +1,9 @@
+2006-09-24 16:36  edwards
+
+	* include/scalarsite_sse/qdp_scalarsite_sse_linalg.h,
+	  lib/qdp_scalarsite_sse.cc: Added specializations of evaluates for
+	  M+=M*M and all its adj variants.
+
 2006-09-24 12:04  edwards
 
 	* lib/qdp_scalarsite_sse.cc: Turned off debugging output.
