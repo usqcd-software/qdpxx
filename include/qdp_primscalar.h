@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.24 2006-01-21 17:38:20 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.25 2006-09-24 15:56:02 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -727,6 +727,14 @@ inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnTraceSpinMultiply>::Typ
 traceSpinMultiply(const PScalar<T1>& l, const PScalar<T2>& r)
 {
   return traceMultiply(l.elem(), r.elem());
+}
+
+//! PScalar = traceSpin(outerProduct(PScalar, PScalar))
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnTraceSpinOuterProduct>::Type_t
+traceSpinOuterProduct(const PScalar<T1>& l, const PScalar<T2>& r)
+{
+  return traceSpinOuterProduct(l.elem(), r.elem());
 }
 
 //! PScalar = outerProduct(PScalar, PScalar)

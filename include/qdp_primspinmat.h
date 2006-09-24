@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinmat.h,v 1.12 2006-01-12 02:17:40 bjoo Exp $
+// $Id: qdp_primspinmat.h,v 1.13 2006-09-24 15:56:02 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
@@ -461,6 +461,29 @@ outerProduct(const PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r)
   for(int i=0; i < N; ++i)
     for(int j=0; j < N; ++j)
       d.elem(i,j) = outerProduct(l.elem(i),r.elem(j));
+
+  return d;
+}
+
+
+//-----------------------------------------------
+// Optimization of traceSpin(outerProduct(PSpinVector, PSpinVector))
+
+//! PScalar = traceSpinOuterProduct(PSpinVector, PSpinVector)
+template<class T1, class T2, int N>
+struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnTraceSpinOuterProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnOuterProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnTraceSpinOuterProduct>::Type_t
+traceSpinOuterProduct(const PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r)
+{
+  typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnTraceSpinOuterProduct>::Type_t  d;
+
+  d.elem() = outerProduct(l.elem(0),r.elem(0));
+  for(int i=1; i < N; ++i)
+    d.elem() += outerProduct(l.elem(i),r.elem(i));
 
   return d;
 }

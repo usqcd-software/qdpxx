@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_optops.h,v 1.8 2004-07-27 05:29:17 edwards Exp $
+// $Id: qdp_optops.h,v 1.9 2006-09-24 15:56:02 edwards Exp $
 
 /*! @file
  * @brief PETE optimized operations on QDPTypes
@@ -204,6 +204,19 @@ struct FnTraceSpinMultiply
   }
 };
 
+struct FnTraceSpinOuterProduct
+{
+  PETE_EMPTY_CONSTRUCTORS(FnTraceSpinOuterProduct)
+  template<class T1, class T2>
+  inline typename BinaryReturn<T1, T2, FnTraceSpinOuterProduct >::Type_t
+  operator()(const T1 &a, const T2 &b) const
+  {
+//    cerr << "FnTraceSpinOuterProduct()" << endl;
+//    return traceSpin(outerProduct(a,b));
+    return traceSpinOuterProduct(a,b);
+  }
+};
+
 struct FnTraceSpinQuarkContract13
 {
   PETE_EMPTY_CONSTRUCTORS(FnTraceSpinQuarkContract13)
@@ -259,6 +272,21 @@ traceSpin(const QDPExpr<BinaryNode<OpMultiply,T1,T2>,CC> & ll)
 //  cerr << "traceSpinMultiply(l,r) <- traceSpin(l*r)" << endl;
 
   typedef BinaryNode<FnTraceSpinMultiply,T1,T2> Tree_t;
+  typedef typename UnaryReturn<CC,FnTrace>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    ll.expression().left(), 
+    ll.expression().right()));
+}
+
+//! traceOuterProduct(l,r)  <-  traceSpin(outerProduct(l,r))
+template<class T1,class T2,class CC>
+inline typename MakeReturn<BinaryNode<FnTraceSpinOuterProduct,T1,T2>,
+  typename UnaryReturn<CC,FnTrace>::Type_t>::Expression_t
+traceSpin(const QDPExpr<BinaryNode<FnOuterProduct,T1,T2>,CC> & ll)
+{
+//  cerr << "traceSpinOuterProduct(l,r) <- traceSpin(outerProduct(l,r))" << endl;
+
+  typedef BinaryNode<FnTraceSpinOuterProduct,T1,T2> Tree_t;
   typedef typename UnaryReturn<CC,FnTrace>::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     ll.expression().left(), 
