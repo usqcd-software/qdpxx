@@ -1,3 +1,8 @@
+09/24/2006 -- Robert Edwards
+
+	Version 1.21.0: New SSE optimizations for traceSpin(outerProduct()), LatColMat=M*M
+        and adj variants including  adjMultiplyAdj().
+
 07/17/2006 -- Robert Edwards
 
 	Version 1.20.9: Changed precision output in xml and stdio. 
