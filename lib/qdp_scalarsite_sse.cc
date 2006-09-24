@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.17 2006-09-24 16:04:31 edwards Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.18 2006-09-24 20:36:39 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -17,6 +17,8 @@ QDP_BEGIN_NAMESPACE(QDP);
 
 #if BASE_PRECISION==32
 
+
+#if 1
 // Specialization to optimize the case   
 //    LatticeColorMatrix[OrderedSubset] = LatticeColorMatrix * LatticeColorMatrix
 template<>
@@ -91,6 +93,133 @@ void evaluate(OLattice< TCol >& d,
   }
 }
 
+
+
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix[OrderedSubset] += LatticeColorMatrix * LatticeColorMatrix
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAddAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiply, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s)
+{
+//  cout << "call single site QDP_M_peq_M_times_M" << endl;
+
+  typedef OLattice< TCol >    C;
+
+  const C& l = static_cast<const C&>(rhs.expression().left());
+  const C& r = static_cast<const C&>(rhs.expression().right());
+
+  PColorMatrix<RComplexFloat,3> tmp;
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+  {
+    _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
+    d.elem(i).elem() += tmp;
+  }
+}
+
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix[OrderedSubset] += adj(LatticeColorMatrix) * LatticeColorMatrix
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAddAssign& op, 
+	      const QDPExpr<BinaryNode<OpAdjMultiply, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s)
+{
+//  cout << "call single site QDP_M_peq_aM_times_M" << endl;
+
+  typedef OLattice< TCol >    C;
+
+  const C& l = static_cast<const C&>(rhs.expression().left().child());
+  const C& r = static_cast<const C&>(rhs.expression().right());
+
+  PColorMatrix<RComplexFloat,3> tmp;
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+  {
+    _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
+    d.elem(i).elem() += tmp;
+  }
+}
+
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix[OrderedSubset] += LatticeColorMatrix * adj(LatticeColorMatrix)
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAddAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiplyAdj, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s)
+{
+//  cout << "call single site QDP_M_peq_M_times_aM" << endl;
+
+  typedef OLattice< TCol >    C;
+
+  const C& l = static_cast<const C&>(rhs.expression().left());
+  const C& r = static_cast<const C&>(rhs.expression().right().child());
+
+  PColorMatrix<RComplexFloat,3> tmp;
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+  {
+    _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
+    d.elem(i).elem() += tmp;
+  }
+}
+
+
+// Specialization to optimize the case   
+//    LatticeHalfFermion = LatticeColorMatrix * LatticeHalfFermion
+// NOTE: let this be a subroutine to save space
+template<>
+void evaluate(OLattice< TVec2 >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiply, 
+	      Reference<QDPType< TCol, OLattice< TCol > > >, 
+	      Reference<QDPType< TVec2, OLattice< TVec2 > > > >,
+	      OLattice< TVec2 > >& rhs,
+	      const OrderedSubset& s)
+{
+#if defined(QDP_SCALARSITE_DEBUG)
+  cout << "specialized QDP_H_M_times_H" << endl;
+#endif
+
+  typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
+  typedef OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> > H;
+
+  const C& l = static_cast<const C&>(rhs.expression().left());
+  const H& r = static_cast<const H&>(rhs.expression().right());
+
+  for(int i=s.start(); i <= s.end(); ++i) 
+  {
+#if 0
+    // This form appears significantly slower than below
+    _inline_sse_mult_su3_mat_hwvec(l.elem(i),
+				   r.elem(i),
+				   d.elem(i));
+#else
+    _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
+				 r.elem(i).elem(0),
+				 d.elem(i).elem(0));
+    _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
+				 r.elem(i).elem(1),
+				 d.elem(i).elem(1));
+#endif
+  }
+}
+#endif
 
 
 // GNUC vector type
