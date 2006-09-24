@@ -1,3 +1,12 @@
+2006-09-24 12:04  edwards
+
+	* lib/qdp_scalarsite_sse.cc: Turned off debugging output.
+
+2006-09-24 11:56  edwards
+
+	* include/: qdp_optops.h, qdp_primscalar.h, qdp_primspinmat.h:
+	  Added optimization of traceSpin(outerProduct())
+
 2006-09-23 23:11  edwards
 
 	* include/qdp_scalar_specific.h,
