@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.21 2006-09-26 15:16:15 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.22 2006-09-26 15:20:39 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -580,6 +580,7 @@ void evaluate(OLattice< TVec2 >& d,
 //-------------------------------------------------------------------
 // GNUC vector type
 
+//#define DEBUG_BLAS
 
 // AXPY and AXMY routines
 void vaxpy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_3vec)
@@ -706,6 +707,66 @@ void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec)
     Out += 24; In += 24;
   }
 }  
+
+
+void vaxpby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_3vec)
+{
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "SSE_TEST: vaxpby3: a*x+b*y" << endl;
+#endif
+
+//  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
+  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
+
+//  register v4sf va = load_v4sf((float *)&a);
+  v4sf va = _mm_load_ss(a);
+  v4sf vb = _mm_load_ss(b);
+  asm("shufps\t$0,%0,%0" : "+x" (va));
+  asm("shufps\t$0,%0,%0" : "+x" (vb));
+
+  for (; n_loops-- > 0; )
+  {
+    _mm_store_ps(Out+ 0, _mm_add_ps(_mm_mul_ps(va, _mm_load_ps(x+ 0)), _mm_mul_ps(vb, _mm_load_ps(y+ 0))));
+    _mm_store_ps(Out+ 4, _mm_add_ps(_mm_mul_ps(va, _mm_load_ps(x+ 4)), _mm_mul_ps(vb, _mm_load_ps(y+ 4))));
+    _mm_store_ps(Out+ 8, _mm_add_ps(_mm_mul_ps(va, _mm_load_ps(x+ 8)), _mm_mul_ps(vb, _mm_load_ps(y+ 8))));
+    _mm_store_ps(Out+12, _mm_add_ps(_mm_mul_ps(va, _mm_load_ps(x+12)), _mm_mul_ps(vb, _mm_load_ps(y+12))));
+    _mm_store_ps(Out+16, _mm_add_ps(_mm_mul_ps(va, _mm_load_ps(x+16)), _mm_mul_ps(vb, _mm_load_ps(y+16))));
+    _mm_store_ps(Out+20, _mm_add_ps(_mm_mul_ps(va, _mm_load_ps(x+20)), _mm_mul_ps(vb, _mm_load_ps(y+20))));
+
+    Out += 24; x += 24; y += 24;
+  }
+}
+
+
+void vaxmby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_3vec)
+{
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "SSE_TEST: vaxmby3: a*x-b*y" << endl;
+#endif
+
+//  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
+  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
+
+//  register v4sf va = load_v4sf((float *)&a);
+  v4sf va = _mm_load_ss(a);
+  v4sf vb = _mm_load_ss(b);
+  asm("shufps\t$0,%0,%0" : "+x" (va));
+  asm("shufps\t$0,%0,%0" : "+x" (vb));
+
+  for (; n_loops-- > 0; )
+  {
+    _mm_store_ps(Out+ 0, _mm_sub_ps(_mm_mul_ps(va, _mm_load_ps(x+ 0)), _mm_mul_ps(vb, _mm_load_ps(y+ 0))));
+    _mm_store_ps(Out+ 4, _mm_sub_ps(_mm_mul_ps(va, _mm_load_ps(x+ 4)), _mm_mul_ps(vb, _mm_load_ps(y+ 4))));
+    _mm_store_ps(Out+ 8, _mm_sub_ps(_mm_mul_ps(va, _mm_load_ps(x+ 8)), _mm_mul_ps(vb, _mm_load_ps(y+ 8))));
+    _mm_store_ps(Out+12, _mm_sub_ps(_mm_mul_ps(va, _mm_load_ps(x+12)), _mm_mul_ps(vb, _mm_load_ps(y+12))));
+    _mm_store_ps(Out+16, _mm_sub_ps(_mm_mul_ps(va, _mm_load_ps(x+16)), _mm_mul_ps(vb, _mm_load_ps(y+16))));
+    _mm_store_ps(Out+20, _mm_sub_ps(_mm_mul_ps(va, _mm_load_ps(x+20)), _mm_mul_ps(vb, _mm_load_ps(y+20))));
+
+    Out += 24; x += 24; y += 24;
+  }
+}
+
+
 
 void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec)
 {
