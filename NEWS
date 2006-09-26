@@ -1,3 +1,7 @@
+09/26/2006 -- Robert Edwards
+
+	Version 1.21.1: New SSE optimizations  a*x+b*y  like ops (vaxpby3).
+
 09/24/2006 -- Robert Edwards
 
 	Version 1.21.0: New SSE optimizations for traceSpin(outerProduct()), LatColMat=M*M
