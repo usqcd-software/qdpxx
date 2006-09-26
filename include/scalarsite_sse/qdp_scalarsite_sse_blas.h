@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.10 2006-06-26 22:07:08 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.11 2006-09-26 15:16:31 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -20,11 +20,14 @@ void vadd(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec);
 void vsub(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec);
 void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec);
 void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec);
+void axpbyz(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *scalep2, REAL32 *Add,int n_4vec);
+void axmbyz(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *scalep2, REAL32 *Add,int n_4vec);
 
 typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> TVec;
 typedef PScalar<PScalar<RScalar<REAL32> > >  TScal;
 
-// #define DEBUG_BLAS
+/* #define DEBUG_BLAS_VAXMBY */
+/* #define DEBUG_BLAS_VAXPBY */
 
 #define QDP_SCALARSITE_USE_EVALUATE
 
@@ -1078,6 +1081,123 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
   return lprod;
 }
 
+// AX + BY 
+
+// z = ax + b y
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	       BinaryNode<OpAdd,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TScal, OScalar< TScal > > >,
+	         Reference< QDPType< TVec, OLattice< TVec > > > 
+                >,
+	        BinaryNode<OpMultiply, 
+	         Reference< QDPType< TScal, OScalar< TScal > > >,
+	         Reference< QDPType< TVec, OLattice< TVec > > > 
+                > 
+               >,
+	       OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS_VAXPBY
+  QDPIO::cout << "SSE_TEST: vaxpby" << endl;
+#endif
+
+  // Peel the stuff out of the expression
+  // y is the right side of rhs
+
+  // ax is the left side of rhs and is in a binary node
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TScal, OScalar< TScal > > >,
+    Reference< QDPType< TVec, OLattice< TVec > > > > BN1;
+
+  // get the binary node
+  const BN1 &mulNode1 = static_cast<const BN1&> (rhs.expression().left());
+  const BN1 &mulNode2 = static_cast<const BN1&> (rhs.expression().right());
+
+  // get a and x out of the binary node
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.left());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.right());
+  
+  // get b and y out of the binary node
+  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.left());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.right());
+
+  
+  // Set pointers 
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_4vec = (s.end()-s.start()+1);
+  axpbyz(zptr, aptr, xptr, bptr, yptr, n_4vec);
+}
+
+// z = ax - b y
+template<>
+inline
+void evaluate( OLattice< TVec > &d,
+	       const OpAssign &op,
+	       const QDPExpr< 
+	       BinaryNode<OpSubtract,
+	         BinaryNode<OpMultiply, 
+	           Reference< QDPType< TScal, OScalar< TScal > > >,
+	           Reference< QDPType< TVec, OLattice< TVec > > > 
+	         >,
+	         BinaryNode<OpMultiply, 
+	           Reference< QDPType< TScal, OScalar< TScal > > >,
+	           Reference< QDPType< TVec, OLattice< TVec > > > 
+                 > 
+               >,
+	       OLattice< TVec > > &rhs,
+	       const OrderedSubset& s)
+{
+
+#ifdef DEBUG_BLAS_VAXMBY
+  QDPIO::cout << "SSE_TEST: vaxmby" << endl;
+#endif
+
+  // Peel the stuff out of the expression
+  // y is the right side of rhs
+
+  // ax is the left side of rhs and is in a binary node
+  typedef BinaryNode<OpMultiply, 
+    Reference< QDPType< TScal, OScalar< TScal > > >,
+    Reference< QDPType< TVec, OLattice< TVec > > > > BN1;
+
+  // get the binary node
+  const BN1 &mulNode1 = static_cast<const BN1&> (rhs.expression().left());
+  const BN1 &mulNode2 = static_cast<const BN1&> (rhs.expression().right());
+
+  // get a and x out of the binary node
+  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.left());
+  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.right());
+  
+  // get b and y out of the binary node
+  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.left());
+  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.right());
+
+  
+  // Set pointers 
+  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
+  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+
+
+  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+  int n_4vec = (s.end()-s.start()+1);
+  axmbyz(zptr, aptr, xptr, bptr, yptr, n_4vec);
+}
 
 #if defined(QDP_SCALARSITE_DEBUG)
 #undef QDP_SCALARSITE_DEBUG
