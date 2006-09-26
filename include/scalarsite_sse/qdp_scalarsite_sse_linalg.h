@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.8 2006-09-24 21:39:18 edwards Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.9 2006-09-26 01:58:10 edwards Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -568,6 +568,7 @@ operator+(const PScalar<PColorVector<RComplexFloat,3> >& l,
 #if defined(QDP_SCALARSITE_USE_EVALUATE)
 // NOTE: let these be subroutines to save space
 
+//-------------------------------------------------------------------
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
 template<>
@@ -601,7 +602,6 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const OrderedSubset& s);
 
-
 // Specialization to optimize the case   
 //    LatticeColorMatrix = adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
 template<>
@@ -613,7 +613,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const OrderedSubset& s);
 
-
+//-------------------------------------------------------------------
 // Specialization to optimize the case   
 //    LatticeColorMatrix += LatticeColorMatrix * LatticeColorMatrix
 template<>
@@ -647,7 +647,6 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const OrderedSubset& s);
 
-
 // Specialization to optimize the case   
 //    LatticeColorMatrix += adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
 template<>
@@ -659,6 +658,52 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const OrderedSubset& s);
 
+//-------------------------------------------------------------------
+// Specialization to optimize the case   
+//    LatticeColorMatrix -= LatticeColorMatrix * LatticeColorMatrix
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpSubtractAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiply, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s);
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix -= adj(LatticeColorMatrix) * LatticeColorMatrix
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpSubtractAssign& op, 
+	      const QDPExpr<BinaryNode<OpAdjMultiply, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s);
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix -= LatticeColorMatrix * adj(LatticeColorMatrix)
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpSubtractAssign& op, 
+	      const QDPExpr<BinaryNode<OpMultiplyAdj, 
+	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s);
+
+// Specialization to optimize the case   
+//    LatticeColorMatrix -= adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpSubtractAssign& op, 
+	      const QDPExpr<BinaryNode<OpAdjMultiplyAdj, 
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >,
+	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
+	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s);
+
+//-------------------------------------------------------------------
 
 // Specialization to optimize the case   
 //    LatticeHalfFermion = LatticeColorMatrix * LatticeHalfFermion
@@ -667,9 +712,9 @@ template<>
 void evaluate(OLattice< TVec2 >& d, 
 	      const OpAssign& op, 
 	      const QDPExpr<BinaryNode<OpMultiply, 
-	      Reference<QDPType< TCol, OLattice< TCol > > >, 
-	      Reference<QDPType< TVec2, OLattice< TVec2 > > > >,
-	      OLattice< TVec2 > >& rhs,
+	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
+	                    Reference<QDPType< TVec2, OLattice< TVec2 > > > >,
+	                    OLattice< TVec2 > >& rhs,
 	      const OrderedSubset& s);
 
 #endif
