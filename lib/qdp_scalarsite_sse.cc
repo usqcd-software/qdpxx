@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.22 2006-09-26 15:20:39 edwards Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.23 2006-09-26 15:51:23 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -928,84 +928,6 @@ void local_sumsq2(REAL64 *Out, REAL32 *In, int n_3vec)
     + (double)sum.floats[3];
 
 }
-
-
-// (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (*scalep2)*(Vector) P{+} Add
-void axpbyz(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *scalep2, REAL32 *Add,int n_4vec)
-{
-  // GNUC vector type
-  
-
-  // Load Vscalep
-  v4sf vscalep = _mm_load_ss(scalep);
-  v4sf vscalep2 = _mm_load_ss(scalep2);
-
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep));
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep2));
-
-  for(int i=0; i < n_4vec; i++) {
-
-    // Spin Component 0: z0r, z0i, z1r, z1i
-    _mm_store_ps(Out+ 0, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 0)), _mm_mul_ps(vscalep2,_mm_load_ps(Add+ 0))));
-     
-    // Spin Component 0: z2r, z2i, SpinComponent 1: z0r, z0i
-    _mm_store_ps(Out+ 4, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 4)), _mm_mul_ps(vscalep2,_mm_load_ps(Add+ 4))));
-
-    // Spin Component 1: z1r, z1i, z2r, z2i
-    _mm_store_ps(Out+ 8, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 8)), _mm_mul_ps(vscalep2,_mm_load_ps(Add+ 8))));
-
-    // Spin Component 2: z0r, z0i, z1r, z1i
-    _mm_store_ps(Out+ 12, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 12)), _mm_mul_ps(vscalep2,_mm_load_ps(Add+ 12))));
-
-    // Spin Component 2: z2r, z2i, z0r, z0
-    _mm_store_ps(Out+ 16, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 16)), _mm_mul_ps(vscalep2,_mm_load_ps(Add+ 16))));
-
-
-    // Spin Component 3: z1r, z1i, z2r, z2
-    _mm_store_ps(Out+ 20, _mm_add_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 20)), _mm_mul_ps(vscalep2,_mm_load_ps(Add+ 20))));
-
-    // Update offsets
-    Out += 24; InScale += 24; Add += 24;
-  }
-
-}
-
-
-// (Vector) out = (Scalar) (*scalep) * (Vector) InScale - (*scalep2)*(Vector) P{+} Add
-void axmbyz(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *scalep2, REAL32 *Add,int n_4vec)
-{
-  // GNUC vector type
-  
-
-  // Load Vscalep
-  v4sf vscalep = _mm_load_ss(scalep);
-  v4sf vscalep2 = _mm_load_ss(scalep2);
-
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep));
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep2));
-
-  for(int i=0; i < n_4vec; i++) {
-
-    // Spin Component 0: z0r, z0i, z1r, z1i
-    _mm_store_ps(Out+ 0, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 0)), _mm_mul_ps(vscalep2,_mm_load_ps(Add+ 0))));
-     
-    _mm_store_ps(Out+ 4, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 4)), _mm_mul_ps(vscalep2,_mm_load_ps(Add+ 4))));
-
-    _mm_store_ps(Out+ 8, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 8)), _mm_mul_ps(vscalep2,_mm_load_ps(Add+ 8))));
-
-    _mm_store_ps(Out+ 12, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 12)), _mm_mul_ps(vscalep2,_mm_load_ps(Add+ 12))));
-
-    _mm_store_ps(Out+ 16, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 16)), _mm_mul_ps(vscalep2,_mm_load_ps(Add+ 16))));
-
-    _mm_store_ps(Out+ 20, _mm_sub_ps(_mm_mul_ps(vscalep, _mm_load_ps(InScale+ 20)), _mm_mul_ps(vscalep2,_mm_load_ps(Add+ 20))));
-
-
-    // Update offsets
-    Out += 24; InScale += 24; Add += 24;
-  }
-
-}
-
 
 
 #endif // BASE PRECISION==32
