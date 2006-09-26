@@ -1,3 +1,53 @@
+2006-09-26 11:52  tag qdp1-21-2
+
+2006-09-26 11:52  edwards
+
+	* NEWS: Info on 1.21.2.
+
+2006-09-26 11:51  edwards
+
+	* include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  lib/qdp_scalarsite_sse.cc: Removed Balint's insertion of the
+	  identical routines for vaxpbyz and vaxmbyz.
+
+2006-09-26 11:43  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2006-09-26 11:42  edwards
+
+	* configure.ac: Changed to 1.21.2
+
+2006-09-26 11:27  tag qdp1-21-1
+
+2006-09-26 11:27  edwards
+
+	* examples/t_linalg.cc: Added new M+=M*M and M-=M*M variants.
+
+2006-09-26 11:26  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2006-09-26 11:25  edwards
+
+	* NEWS: Info on 1.21.1
+
+2006-09-26 11:25  edwards
+
+	* configure.ac: Changed to 1.21.1
+
+2006-09-26 11:20  edwards
+
+	* include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  lib/qdp_scalarsite_sse.cc: Added vaxpby3 and vaxmby3 routines for
+	  a*x+b*y  like routines.
+
+2006-09-26 11:16  bjoo
+
+	* lib/qdp_scalarsite_sse.cc,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h: Added SSE AXMBY
+	  and AXPBY
+
 2006-09-25 21:58  edwards
 
 	* include/scalarsite_sse/qdp_scalarsite_sse_linalg.h,
@@ -5,8 +55,6 @@
 	  examples/linalg1.cc: Added M-=M*M variants.
 
 2006-09-24 17:46  tag qdp1-21-0
-
-2006-09-24 17:46  tag qdp1-21-1
 
 2006-09-24 17:46  edwards
 
