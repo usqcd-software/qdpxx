@@ -1,3 +1,9 @@
+2006-09-25 21:58  edwards
+
+	* include/scalarsite_sse/qdp_scalarsite_sse_linalg.h,
+	  lib/qdp_scalarsite_sse.cc, examples/linalg.h,
+	  examples/linalg1.cc: Added M-=M*M variants.
+
 2006-09-24 17:46  tag qdp1-21-0
 
 2006-09-24 17:46  tag qdp1-21-1
