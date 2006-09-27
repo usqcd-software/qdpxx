@@ -1,3 +1,9 @@
+2006-09-27 13:26  bjoo
+
+	* examples/t_linalg.cc,
+	  include/scalarsite_sse/qdp_scalarsite_sse_linalg.h,
+	  lib/qdp_scalarsite_sse.cc: Added better M=M M+=M M-=M routines
+
 2006-09-26 11:52  tag qdp1-21-2
 
 2006-09-26 11:52  edwards
