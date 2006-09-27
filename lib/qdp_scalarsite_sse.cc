@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.23 2006-09-26 15:51:23 edwards Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.24 2006-09-27 17:26:43 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -339,6 +339,123 @@ void evaluate(OLattice< TCol >& d,
 }
 
 //-------------------------------------------------------------------
+// Specialization to optimize the case
+//   LatticeColorMatrix = LatticeColorMatrix
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<
+	         UnaryNode<OpIdentity, Reference< QDPType< TCol, OLattice< TCol > > > >,
+                 OLattice< TCol > >& rhs, 
+	      const OrderedSubset& s) 
+{
+  typedef OLattice<TCol> C;
+  const C& l = static_cast<const C&>(rhs.expression().child());
+  const int start = s.start();
+  const int end = s.end();
+
+  REAL* d_ptr =&(d.elem(start).elem().elem(0,0).real());
+  const REAL* r_ptr =&(l.elem(start).elem().elem(0,0).real());
+  
+  const unsigned int total_reals = (end-start+1)*3*3*2;
+  const unsigned int total_v4sf = total_reals/4;
+  const unsigned int remainder = total_reals%4;
+  
+  float* d_ptr_v4sf = (float *)d_ptr;
+  float* r_ptr_v4sf = (float *)r_ptr;
+
+  
+  for(unsigned int i = 0 ; i < total_v4sf; i++, d_ptr_v4sf +=4, r_ptr_v4sf+=4 ) { 
+    _mm_store_ps( d_ptr_v4sf, _mm_load_ps(r_ptr_v4sf));
+  }
+  
+
+   r_ptr = (REAL *)r_ptr_v4sf;
+   d_ptr = (REAL *)d_ptr_v4sf;
+  for(unsigned int i=0; i < remainder; i++, r_ptr++, d_ptr++) { 
+    *d_ptr = *r_ptr;
+  }
+}
+
+//-------------------------------------------------------------------
+// Specialization to optimize the case
+//   LatticeColorMatrix += LatticeColorMatrix
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAddAssign& op, 
+	      const QDPExpr<
+	         UnaryNode<OpIdentity, Reference< QDPType< TCol, OLattice< TCol > > > >,
+                 OLattice< TCol > >& rhs, 
+	      const OrderedSubset& s) 
+{
+  typedef OLattice<TCol> C;
+  const C& l = static_cast<const C&>(rhs.expression().child());
+  const int start = s.start();
+  const int end = s.end();
+
+  REAL* d_ptr =&(d.elem(start).elem().elem(0,0).real());
+  const REAL* r_ptr =&(l.elem(start).elem().elem(0,0).real());
+  
+  const unsigned int total_reals = (end-start+1)*3*3*2;
+  const unsigned int total_v4sf = total_reals/4;
+  const unsigned int remainder = total_reals%4;
+  
+  float* d_ptr_v4sf = (float *)d_ptr;
+  float* r_ptr_v4sf = (float *)r_ptr;
+
+  
+  for(unsigned int i = 0 ; i < total_v4sf; i++, d_ptr_v4sf +=4, r_ptr_v4sf+=4 ) { 
+    _mm_store_ps( d_ptr_v4sf, _mm_add_ps( _mm_load_ps(d_ptr_v4sf), 
+					  _mm_load_ps(r_ptr_v4sf) ) );
+  }
+  
+
+   r_ptr = (REAL *)r_ptr_v4sf;
+   d_ptr = (REAL *)d_ptr_v4sf;
+  for(unsigned int i=0; i < remainder; i++, r_ptr++, d_ptr++) { 
+    *d_ptr += *r_ptr;
+  }
+}
+
+//-------------------------------------------------------------------
+// Specialization to optimize the case
+//   LatticeColorMatrix -= LatticeColorMatrix
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpSubtractAssign& op, 
+	      const QDPExpr<
+	         UnaryNode<OpIdentity, Reference< QDPType< TCol, OLattice< TCol > > > >,
+                 OLattice< TCol > >& rhs, 
+	      const OrderedSubset& s) 
+{
+  typedef OLattice<TCol> C;
+  const C& l = static_cast<const C&>(rhs.expression().child());
+  const int start = s.start();
+  const int end = s.end();
+
+  REAL* d_ptr =&(d.elem(start).elem().elem(0,0).real());
+  const REAL* r_ptr =&(l.elem(start).elem().elem(0,0).real());
+  
+  const unsigned int total_reals = (end-start+1)*3*3*2;
+  const unsigned int total_v4sf = total_reals/4;
+  const unsigned int remainder = total_reals%4;
+  
+  float* d_ptr_v4sf = (float *)d_ptr;
+  float* r_ptr_v4sf = (float *)r_ptr;
+
+  
+  for(unsigned int i = 0 ; i < total_v4sf; i++, d_ptr_v4sf +=4, r_ptr_v4sf+=4 ) { 
+    _mm_store_ps( d_ptr_v4sf, _mm_sub_ps( _mm_load_ps( d_ptr_v4sf), 
+					  _mm_load_ps( r_ptr_v4sf) ) );
+  }
+  
+
+   r_ptr = (REAL *)r_ptr_v4sf;
+   d_ptr = (REAL *)d_ptr_v4sf;
+  for(unsigned int i=0; i < remainder; i++, r_ptr++, d_ptr++) { 
+    *d_ptr -= *r_ptr;
+  }
+}
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix[OrderedSubset] -= LatticeColorMatrix * LatticeColorMatrix

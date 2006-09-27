@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.9 2006-09-26 01:58:10 edwards Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.10 2006-09-27 17:26:43 bjoo Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -701,6 +701,41 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
+	      const OrderedSubset& s);
+
+
+
+// Specialization to optimize the case
+//   LatticeColorMatrix = LatticeColorMatrix
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAssign& op, 
+	      const QDPExpr<
+	         UnaryNode<OpIdentity, Reference< QDPType< TCol, OLattice< TCol > > > >,
+                 OLattice< TCol > >& rhs, 
+	      const OrderedSubset& s);
+
+
+//-------------------------------------------------------------------
+// Specialization to optimize the case
+//   LatticeColorMatrix += LatticeColorMatrix
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpAddAssign& op, 
+	      const QDPExpr<
+	         UnaryNode<OpIdentity, Reference< QDPType< TCol, OLattice< TCol > > > >,
+                 OLattice< TCol > >& rhs, 
+	      const OrderedSubset& s);
+
+//-------------------------------------------------------------------
+// Specialization to optimize the case
+//   LatticeColorMatrix -= LatticeColorMatrix
+template<>
+void evaluate(OLattice< TCol >& d, 
+	      const OpSubtractAssign& op, 
+	      const QDPExpr<
+	         UnaryNode<OpIdentity, Reference< QDPType< TCol, OLattice< TCol > > > >,
+                 OLattice< TCol > >& rhs, 
 	      const OrderedSubset& s);
 
 //-------------------------------------------------------------------

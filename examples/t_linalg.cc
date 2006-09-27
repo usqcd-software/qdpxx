@@ -1,4 +1,4 @@
-// $Id: t_linalg.cc,v 1.19 2006-09-26 15:27:56 edwards Exp $
+// $Id: t_linalg.cc,v 1.20 2006-09-27 17:26:43 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,4};
+  const int foo[] = {2,3,3,3};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -42,6 +42,55 @@ int main(int argc, char *argv[])
   double tt;
 
 #define TIME_OPS 
+  // Test M = M
+  LatticeColorMatrix m1, m2;
+  m1 = zero;
+  gaussian(m2);
+
+  for(int i=all.start(); i <= all.end(); i++) { 
+    m1.elem(i) -= m2.elem(i);
+  }
+
+  LatticeColorMatrix m3=zero;
+  m3 -= m2;
+  LatticeColorMatrix diff_m;
+  diff_m = m3 - m1;
+  QDPIO::cout << "Diff M=M = " << norm2(diff_m) << endl;
+  QDP::StopWatch swatch;
+  swatch.reset();
+  double time = 0;
+  icnt = 1;
+  while(time <= 1000000) { 
+    swatch.start();
+    for(int j=0; j < icnt; j++) {
+      for(int i=all.start(); i <= all.end(); i++) { 
+	m1.elem(i) -= m2.elem(i);
+      }
+    }
+    swatch.stop();
+    time = swatch.getTimeInMicroseconds();
+    swatch.reset();
+    icnt*=2;
+  }
+  QDPIO::cout << "Call time (old M=M) = " << time / icnt << " us per call" << endl;
+  
+  swatch.reset();
+  time = 0;
+  icnt = 1;
+  while(time <= 1000000) { 
+    swatch.start();
+    for(int j=0; j < icnt; j++) {
+      m1-=m2;
+    }
+    swatch.stop();
+    time = swatch.getTimeInMicroseconds();
+    swatch.reset();
+    icnt*=2;
+  }
+  
+  QDPIO::cout << "Call time (New M=M)= " << time / icnt << " us per call" << endl;
+
+
 
   // Test M=M*M
   for(icnt=1; ; icnt <<= 1)
