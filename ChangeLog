@@ -1,3 +1,11 @@
+2006-10-18 17:48  edwards
+
+	* other_libs/xpath_reader/: aclocal.m4, configure: Induced changes
+
+2006-10-18 17:37  edwards
+
+	* other_libs/xpath_reader/include/Makefile.am: Added xml_array2d.h
+
 2006-10-15 12:26  tag qdp1-21-3
 
 2006-10-15 12:26  edwards
