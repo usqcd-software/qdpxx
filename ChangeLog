@@ -11481,12 +11481,6 @@
 
 	* include/: QDPClasses.in, QDPOps.in: Moved to PETE dir.
 
-2002-12-13 22:58  edwards
-
-	* PETE/PETE/: Combiners.h, CreateLeaf.h, ForEach.h, Functors.h,
-	  OperatorTags.h, PETE.h, Scalar.h, TreeNodes.h,
-	  TypeComputations.h: Moved to include/PETE
-
 2002-12-13 22:47  edwards
 
 	* NEWS: Version with automake support.
@@ -11610,8 +11604,8 @@
 
 2002-12-05 14:11  edwards
 
-	* include/PETE/TreeNodes.h, PETE/PETE/TreeNodes.h: ifdef'ed out
-	  some constructor calls that makes xlC (IBM) barf.
+	* include/PETE/TreeNodes.h: ifdef'ed out some constructor calls
+	  that makes xlC (IBM) barf.
 
 2002-12-05 13:58  edwards
 
@@ -11703,8 +11697,8 @@
 
 2002-11-22 21:09  edwards
 
-	* include/PETE/PETE.h, PETE/PETE/PETE.h: Nit-picky CPP cleanup to
-	  avoid compiler gripes from ICC.
+	* include/PETE/PETE.h: Nit-picky CPP cleanup to avoid compiler
+	  gripes from ICC.
 
 2002-11-22 21:02  edwards
 
@@ -12264,10 +12258,9 @@
 
 2002-09-30 21:28  edwards
 
-	* include/PETE/OperatorTags.h, PETE/PETE/OperatorTags.h: Changed
-	  how where applies the func. Since where is not a real overloading
-	  of the ? operator (since you can't overload ?), I must go through
-	  another where.
+	* include/PETE/OperatorTags.h: Changed how where applies the func.
+	  Since where is not a real overloading of the ? operator (since
+	  you can't overload ?), I must go through another where.
 
 2002-09-30 11:48  edwards
 
@@ -12524,11 +12517,7 @@
 	  include/PETE/OperatorTags.h, include/PETE/PETE.h,
 	  include/PETE/Scalar.h, include/PETE/TreeNodes.h,
 	  include/PETE/TypeComputations.h, lib/layout.cc, lib/qdp.cc,
-	  lib/random.cc, lib/subset.cc, PETE/PETE/Combiners.h,
-	  PETE/PETE/CreateLeaf.h, PETE/PETE/ForEach.h,
-	  PETE/PETE/Functors.h, PETE/PETE/OperatorTags.h, PETE/PETE/PETE.h,
-	  PETE/PETE/Scalar.h, PETE/PETE/TreeNodes.h,
-	  PETE/PETE/TypeComputations.h, PETE/Tools/ClassDescriptor.h,
+	  lib/random.cc, lib/subset.cc, PETE/Tools/ClassDescriptor.h,
 	  PETE/Tools/DescriptorBase.h, PETE/Tools/Header.h,
 	  PETE/Tools/Join.cpp, PETE/Tools/Join.h,
 	  PETE/Tools/MakeOperators.cpp, PETE/Tools/OperatorDescriptor.h,
