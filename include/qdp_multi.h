@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.15 2006-06-21 13:11:43 bjoo Exp $
+// $Id: qdp_multi.h,v 1.16 2006-11-01 05:55:28 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -342,6 +342,361 @@ private:
   T *F;
 };
 
+
+
+//---------------------------------------------------------------
+// Comparisons/recombinations
+
+//! Concatenate two Array's
+template<typename T>
+inline multi1d<T> concat(const multi1d<T>& l, const multi1d<T>& r)
+{
+  multi1d<int> nz(l.size() + r.size());
+  int j = 0;
+  for(int i=0; i < l.size(); ++i)
+    nz[j++] = l[i];
+  
+  for(int i=0; i < r.size(); ++i)
+    nz[j++] = r[i];
+
+  return nz;
+}
+
+//! Check if two Array's are the same
+template<typename T>
+inline bool operator==(const multi1d<T>& n1, const multi1d<T>& n2)
+{
+  if (n1.size() == 0 || n1.size() != n2.size())
+    return false;
+    
+  for(int i=0; i < n1.size(); ++i)
+    if (n2[i] != n1[i])
+      return false;
+
+  return true;
+}
+  
+//! Check if two Array's are no the same
+template<typename T>
+inline bool operator!=(const multi1d<T>& n1, const multi1d<T>& n2)
+{
+  return ! (n1 == n2);
+}
+
+//! a < b
+/*! This definition follows that of string comparison */
+template<typename T>
+inline bool operator<(const multi1d<T>& a, const multi1d<T>& b)
+{
+  bool ret = false;
+  int  len = (a.size() < b.size()) ? a.size() : b.size();
+
+  for(int i=0; i < len; ++i)
+  {
+    if (a[i] != b[i])
+      return (a[i] < b[i]) ? true : false;
+  }
+    
+  return (a.size() == b.size()) ? false : (a.size() < b.size()) ? true : false;
+}
+
+//! a > b
+/*! This definition follows that of string comparison */
+template<typename T>
+inline bool operator>(const multi1d<T>& a, const multi1d<T>& b)
+{
+  bool ret = false;
+  int  len = (a.size() < b.size()) ? a.size() : b.size();
+
+  for(int i=0; i < len; ++i)
+  {
+    if (a[i] != b[i])
+      return (a[i] > b[i]) ? true : false;
+  }
+    
+  return (a.size() == b.size()) ? false : (a.size() > b.size()) ? true : false;
+}
+
+//! a <= b
+/*! This definition follows that of string comparison */
+template<typename T>
+inline bool operator<=(const multi1d<T>& a, const multi1d<T>& b)
+{
+  return (a < b) || (a == b);
+}
+
+//! a >= b
+/*! This definition follows that of string comparison */
+template<typename T>
+inline bool operator>=(const multi1d<T>& a, const multi1d<T>& b)
+{
+  return (a > b) || (a == b);
+}
+
+
+//---------------------------------------------------------------
+// Basic math support
+//
+//! add Arrays
+template< typename T> 
+inline
+multi1d<T> operator+(const multi1d<T>& a, const multi1d<T>& b)
+{
+  multi1d<T> c(a); 
+  c+=b;
+  return c;
+}
+  
+//! subtract Arrays
+template< typename T> 
+inline
+multi1d<T> operator-(const multi1d<T>& a, const multi1d<T>& b)
+{
+  multi1d<T> c(a); 
+  c-=b;
+  return c;
+}
+  
+//! multiply Arrays
+template< typename T> 
+inline
+multi1d<T> operator*(const multi1d<T>& a, const multi1d<T>& b)
+{
+  multi1d<T> c(a); 
+  c*=b;
+  return c;
+}
+  
+//!divide Arrays
+template< typename T> 
+inline
+multi1d<T> operator/(const multi1d<T>& a, const multi1d<T>& b)
+{
+  multi1d<T> c(a); 
+  c/=b;
+  return c;
+}
+
+//! scalar + Array
+template< typename T> 
+inline
+multi1d<T> operator+(const T& s, const multi1d<T>& a)
+{
+  multi1d<T> c(a); 
+  c+=s;
+  return c;
+}
+
+//! Array + scalar
+template< typename T> 
+inline
+multi1d<T> operator+(const multi1d<T>& a, const T& s)
+{
+  multi1d<T> c(a); 
+  c+=s;
+  return c;
+}
+  
+//! scalar - Array
+template< typename T> 
+inline
+multi1d<T> operator-(const T& s, const multi1d<T>& a)
+{
+  multi1d<T> c(-a); 
+  c+=s;
+  return c;
+}
+//! Array - scalar
+template< typename T> 
+inline
+multi1d<T> operator-(const multi1d<T>& a, const T& s)
+{
+  multi1d<T> c(a); 
+  c-=s;
+  return c;
+}
+
+//! scalar * Array
+template< typename T> 
+inline
+multi1d<T> operator*(const T& s, const multi1d<T>& a)
+{
+  multi1d<T> c(a); 
+  c*=s;
+  return c;
+}
+
+//! Array * scalar
+template< typename T> 
+inline
+multi1d<T> operator*(const multi1d<T>& a, const T& s)
+{
+  multi1d<T> c(a); 
+  c*=s;
+  return c;
+}
+
+//! scalar / Array
+template< typename T> 
+inline
+multi1d<T> operator/(const T& s, const multi1d<T>& a)
+{
+  multi1d<T> c(a.size());
+  c = s;
+  c/= a;
+  return c;
+}
+
+//! Array / scalar
+template< typename T> 
+inline
+multi1d<T> operator/(const multi1d<T>& a, const T& s)
+{
+  multi1d<T> c(a); 
+  c/=s;
+  return c;
+}
+
+//! sqrt
+template< typename T> 
+inline
+multi1d<T> sqrt(const multi1d<T>& a)
+{
+  multi1d<T> c(a.size()); 
+  for(int i(0);i<a.size();i++)
+  {
+    T tt;
+    tt = a[i];
+    c[i] = sqrt(a[i]);
+  }
+  return c;
+}
+
+//! log
+template< typename T> 
+inline
+multi1d<T> log(const multi1d<T>& a)
+{
+  multi1d<T> c(a.size()); 
+  for(int i(0);i<a.size();i++)
+  {
+    T tt;
+    tt = a[i];
+    c[i] = log(a[i]);
+  }
+  return c;
+}
+
+//! sin
+template< typename T> 
+inline
+multi1d<T> sin(const multi1d<T>& a)
+{
+  multi1d<T> c(a.size()); 
+  for(int i(0);i<a.size();i++)
+  {
+    T tt;
+    tt = a[i];
+    c[i] = sin(a[i]);
+  }
+  return c;
+}
+
+
+//! cos
+template< typename T> 
+inline
+multi1d<T> cos(const multi1d<T>& a)
+{
+  multi1d<T> c(a.size()); 
+  for(int i(0);i<a.size();i++)
+  {
+    T tt;
+    tt = a[i];
+    c[i] = cos(a[i]);
+  }
+  return c;
+}
+
+//! tan
+template< typename T> 
+inline
+multi1d<T> tan(const multi1d<T>& a)
+{
+  multi1d<T> c(a.size()); 
+  for(int i(0);i<a.size();i++)
+  {
+    T tt;
+    tt = a[i];
+    c[i] = tan(a[i]);
+  }
+  return c;
+}
+
+//! asin
+template< typename T> 
+inline
+multi1d<T> asin(const multi1d<T>& a)
+{
+  multi1d<T> c(a.size()); 
+  for(int i(0);i<a.size();i++)
+  {
+    T tt;
+    tt = a[i];
+    c[i] = asin(a[i]);
+  }
+  return c;
+}
+
+
+//! acos
+template< typename T> 
+inline
+multi1d<T> acos(const multi1d<T>& a)
+{
+  multi1d<T> c(a.size()); 
+  for(int i(0);i<a.size();i++)
+  {
+    T tt;
+    tt = a[i];
+    c[i] = acos(a[i]);
+  }
+  return c;
+}
+
+//! atan
+template< typename T> 
+inline
+multi1d<T> atan(const multi1d<T>& a)
+{
+  multi1d<T> c(a.size()); 
+  for(int i(0);i<a.size();i++)
+  {
+    T tt;
+    tt = a[i];
+    c[i] = atan(a[i]);
+  }
+  return c;
+}
+
+
+
+//! norm2 of an array
+template< typename T> 
+inline
+T norm2(const multi1d<T>& a)
+{
+  T nn = a[0]*a[0];  // assumes at least 1 element
+  for(int i=1; i < a.size(); ++i)
+    nn += a[i]*a[i];
+
+  return nn;
+}
+
+
+
+
+//------------------------------------------------------------------------------------------
 //! Container for a multi-dimensional 2D array
 template<class T> class multi2d
 {
@@ -428,6 +783,9 @@ private:
   T *F;
 };
 
+
+
+//------------------------------------------------------------------------------------------
 //! Container for a multi-dimensional 3D array
 template<class T> class multi3d
 {
