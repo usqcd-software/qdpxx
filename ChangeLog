@@ -1,3 +1,7 @@
+2006-11-01 00:55  edwards
+
+	* include/qdp_multi.h: Added some new multi1d functions.
+
 2006-10-31 16:08  bjoo
 
 	* install_scripts/RPM/qdp++-1.21.3.spec: Added SPEC file for RPM
