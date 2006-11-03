@@ -1,3 +1,18 @@
+2006-11-03 16:50  tag qdp1-21-4
+
+2006-11-03 16:50  edwards
+
+	* NEWS: Info on 1.21.4
+
+2006-11-03 16:48  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2006-11-03 16:48  edwards
+
+	* configure.ac: New multi1d functions. Added some support for rpms.
+	  A simple fix in xpath_reader/Makefile.am.
+
 2006-11-01 00:55  edwards
 
 	* include/qdp_multi.h: Added some new multi1d functions.
