@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.33 2006-11-04 04:19:06 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.34 2006-11-04 04:23:20 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -646,7 +646,7 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
 				    &(QDPOScalarFactoryPut<typename SinglePrecType<T>::Type_t> ),
 				    sizeof(typename SinglePrecType<T>::Type_t),
 				    sizeof(typename WordType< typename SinglePrecType<T>::Type_t >::Type_t),
-				    (void *)from_disk.elem());
+				    (void *)(&(from_disk.elem())));
       if (status != QIO_SUCCESS) { 
 	QDPIO::cerr << "Failed to read data" << endl;
 	clear(QDPIO_badbit);
@@ -664,7 +664,7 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
 				    &(QDPOScalarFactoryPut< typename DoublePrecType<T>::Type_t > ),
 				    sizeof(typename DoublePrecType<T>::Type_t),
 				    sizeof(typename WordType< typename DoublePrecType<T>::Type_t >::Type_t),
-				    (void *)from_disk.elem());
+				    (void *)(&(from_disk.elem())));
       if (status != QIO_SUCCESS) { 
 	QDPIO::cerr << "Failed to read data" << endl;
 	clear(QDPIO_badbit);
@@ -682,7 +682,7 @@ void QDPFileReader::read(XMLReader& rec_xml, OScalar<T>& s1)
 				    &(QDPOScalarFactoryPut<T> ),
 				    s1.size()*sizeof(T),
 				    sizeof(typename WordType<T>::Type_t),
-				    (void *)s1.elem());
+				    (void *)(&(s1.elem())));
       if (status != QIO_SUCCESS) { 
 	QDPIO::cerr << "Failed to read data" << endl;
 	clear(QDPIO_badbit);
