@@ -1,3 +1,29 @@
+2006-11-03 23:29  tag qdp1-21-5
+
+2006-11-03 23:29  edwards
+
+	* NEWS: Info on 1.21.5
+
+2006-11-03 23:28  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2006-11-03 23:23  edwards
+
+	* include/qdp_qdpio.h: More fixes on scalars in qdp_qdpio.
+
+2006-11-03 23:20  edwards
+
+	* NEWS: Info on 1.21.5
+
+2006-11-03 23:19  edwards
+
+	* configure.ac: Changed to 1.21.5
+
+2006-11-03 23:19  edwards
+
+	* include/qdp_qdpio.h: Fix to support QIO writing of a scalar.
+
 2006-11-03 16:50  tag qdp1-21-4
 
 2006-11-03 16:50  edwards
