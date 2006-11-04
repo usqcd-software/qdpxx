@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.32 2006-01-13 16:41:10 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.33 2006-11-04 04:19:06 edwards Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -857,7 +857,7 @@ void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OScalar<T>& s1)
 	        &(QDPOScalarFactoryGet<T>),
                 sizeof(T), 
  	        sizeof(typename WordType<T>::Type_t), 
-	        (void *)s1.elem()) != QIO_SUCCESS)
+	        (void *)(&(s1.elem()))) != QIO_SUCCESS)
   {
     QDPIO::cerr << "QDPFileWriter: error in write" << endl;
     clear(QDPIO_badbit);
