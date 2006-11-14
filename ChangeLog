@@ -1,3 +1,8 @@
+2006-11-14 14:53  edwards
+
+	* lib/qdp_xmlio.cc: Allow zero-length arrays. Fix support for the
+	  case an error is zero-length.
+
 2006-11-03 23:29  tag qdp1-21-5
 
 2006-11-03 23:29  edwards
