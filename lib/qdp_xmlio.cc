@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.37 2006-07-17 03:21:20 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.38 2006-11-14 19:53:44 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -304,11 +304,12 @@ void readArrayPrimitive(XMLReader& xml, const std::string& s, multi1d<T>& result
     throw error_message.str();
   }
 
-  if (array_size == 0)
-  {
-    error_message << "Something wrong with reading array " << list_string << endl;
-    throw error_message.str();
-  }
+  // It is not an error to have a zero-length array
+//  if (array_size == 0)
+//  {
+//    error_message << "Something wrong with reading array " << list_string << endl;
+//    throw error_message.str();
+//  }
       
   // Now resize the array to hold the no of elements.
   result.resize(array_size);
@@ -660,9 +661,12 @@ void writeArrayPrimitive(XMLWriter& xml, const std::string& s, const multi1d<T>&
 {
   std::ostringstream output;
 
-  output << s1[0];
-  for(int index=1; index < s1.size(); index++) 
-    output << " " << s1[index];
+  if (s1.size() > 0)
+  {
+    output << s1[0];
+    for(int index=1; index < s1.size(); index++) 
+      output << " " << s1[index];
+  }
     
   // Write the array - do not use a normal string write
   xml.openTag(s);
@@ -707,9 +711,12 @@ void write(XMLWriter& xml, const std::string& s, const multi1d<float>& s1)
   std::ostringstream output;
   output.precision(7);
 
-  output << s1[0];
-  for(int index=1; index < s1.size(); index++) 
-    output << " " << s1[index];
+  if (s1.size() > 0)
+  {
+    output << s1[0];
+    for(int index=1; index < s1.size(); index++) 
+      output << " " << s1[index];
+  }
     
   // Write the array - do not use a normal string write
   xml.openTag(s);
@@ -722,9 +729,12 @@ void write(XMLWriter& xml, const std::string& s, const multi1d<double>& s1)
   std::ostringstream output;
   output.precision(15);
 
-  output << s1[0];
-  for(int index=1; index < s1.size(); index++) 
-    output << " " << s1[index];
+  if (s1.size() > 0)
+  {
+    output << s1[0];
+    for(int index=1; index < s1.size(); index++) 
+      output << " " << s1[index];
+  }
     
   // Write the array - do not use a normal string write
   xml.openTag(s);
@@ -747,9 +757,12 @@ void write(XMLWriter& xml, const std::string& s, const multi1d<Real32>& s1)
   std::ostringstream output;
   output.precision(7);
 
-  output << s1[0];
-  for(int index=1; index < s1.size(); index++) 
-    output << " " << s1[index];
+  if (s1.size() > 0)
+  {
+    output << s1[0];
+    for(int index=1; index < s1.size(); index++) 
+      output << " " << s1[index];
+  }
     
   // Write the array - do not use a normal string write
   xml.openTag(s);
@@ -762,9 +775,12 @@ void write(XMLWriter& xml, const std::string& s, const multi1d<Real64>& s1)
   std::ostringstream output;
   output.precision(15);
 
-  output << s1[0];
-  for(int index=1; index < s1.size(); index++) 
-    output << " " << s1[index];
+  if (s1.size() > 0)
+  {
+    output << s1[0];
+    for(int index=1; index < s1.size(); index++) 
+      output << " " << s1[index];
+  }
     
   // Write the array - do not use a normal string write
   xml.openTag(s);
