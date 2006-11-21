@@ -1,3 +1,17 @@
+2006-11-21 13:22  tag qdp1-21-6
+
+2006-11-21 13:22  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2006-11-21 13:21  edwards
+
+	* configure.ac: Changed to 1.21.6
+
+2006-11-21 13:21  edwards
+
+	* NEWS: Info on 1.21.6
+
 2006-11-14 14:53  edwards
 
 	* lib/qdp_xmlio.cc: Allow zero-length arrays. Fix support for the
