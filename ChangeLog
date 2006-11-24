@@ -1,3 +1,9 @@
+2006-11-24 17:22  tag qio2-1-7
+
+2006-11-24 17:22  detar
+
+	* other_libs/qio/NEWS: New version comment
+
 2006-11-24 16:44  detar
 
 	* other_libs/qio/: aclocal.m4, configure: New version number
