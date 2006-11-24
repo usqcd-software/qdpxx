@@ -1,7 +1,21 @@
+2006-11-24 13:15  detar
+
+	* other_libs/qio/examples/: Makefile.am, binary_host_test,
+	  layout_hyper.c, layout_test, qio-host-test.c, qio-host-test.sh,
+	  qio-host-test1.c, qio-host-test2.c, qio-test.c, qio-test.h:
+	  Remove nonworking qio-host-test? tests and replace with a script
+	  that exercises file splitting through the actual utilities,
+	  qio-convert-mesh-*
+
+2006-11-24 13:12  detar
+
+	* other_libs/qio/lib/dml/DML_utils.c: Buffer message passing during
+	  serial output.
+
 2006-11-24 13:10  detar
 
 	* other_libs/qio/lib/qio/: QIO_open_read.c, QIO_read_record_info.c,
-	  QIO_utils.c: Trivia
+	  QIO_utils.c, QIO_host_file_conversion.c: Trivia
 
 2006-11-21 13:22  tag qdp1-21-6
 
