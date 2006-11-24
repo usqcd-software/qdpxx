@@ -1,3 +1,8 @@
+2006-11-24 13:10  detar
+
+	* other_libs/qio/lib/qio/: QIO_open_read.c, QIO_read_record_info.c,
+	  QIO_utils.c: Trivia
+
 2006-11-21 13:22  tag qdp1-21-6
 
 2006-11-21 13:22  edwards
