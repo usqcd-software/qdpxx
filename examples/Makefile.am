@@ -34,7 +34,7 @@ EXTRA_PROGRAMS  = t_qio_factory t_binx t_gsum
 
 if BUILD_WILSON_EXAMPLES
 check_PROGRAMS += t_dslashm t_formfac t_spectrum t_qdp t_linalg 
-EXTRA_PROGRAMS += t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3
+EXTRA_PROGRAMS += t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3 t_spinproj
 endif
 
 EXTRA_PROGRAMS += nersc2ildg test_ildglat
@@ -84,6 +84,7 @@ t_cblas_SOURCES= t_cblas.cc cblas1.cc cblas1.h
 t_blas_g5_SOURCES = t_blas_g5.cc $(HDRS)
 t_blas_g5_2_SOURCES = t_blas_g5_2.cc $(HDRS)
 t_blas_g5_3_SOURCES = t_blas_g5_3.cc $(HDRS)
+t_spinproj_SOURCES = t_spinproj.cc 
 
 t_cugauge_SOURCES = t_cugauge.cc mesplq.cc $(HDRS) 
 t_transpose_spin_SOURCES = t_transpose_spin.cc $(HDRS)

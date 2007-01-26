@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_bagel_qdp.h,v 1.1 2005-06-13 12:58:27 bjoo Exp $
+// $Id: qdp_scalarsite_bagel_qdp.h,v 1.2 2007-01-26 19:32:11 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -29,6 +29,6 @@
 
 // Use GENERIC Complex BLAS for now as there is no other yet
 #include "scalarsite_generic/qdp_scalarsite_generic_cblas.h"
-
+#include "scalarsite_generic/qdp_scalarsite_spin_project.h"
 
 #endif

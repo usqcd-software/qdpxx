@@ -41,6 +41,7 @@ GENERIC_HDRS = qdp_scalarsite_generic.h \
 	$(genericdir)/qdp_scalarsite_generic_blas.h \
 	$(genericdir)/qdp_scalarsite_generic_cblas.h \
 	$(genericdir)/qdp_scalarsite_generic_blas_g5.h \
+	$(genericdir)/qdp_scalarsite_spin_project.h \
 	$(genericdir)/generic_blas_vadd3_g5.h \
 	$(genericdir)/generic_blas_vscal_g5.h \
 	$(genericdir)/generic_blas_vaxpy3_g5.h \
