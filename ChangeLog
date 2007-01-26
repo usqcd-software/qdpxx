@@ -1,3 +1,13 @@
+2007-01-26 14:32  bjoo
+
+	* aclocal.m4, configure, examples/Makefile.am,
+	  examples/t_spinproj.cc, include/Makefile.am,
+	  include/qdp_scalarsite_bagel_qdp.h,
+	  include/qdp_scalarsite_generic.h, include/qdp_scalarsite_sse.h,
+	  include/scalarsite_generic/qdp_scalarsite_spin_project.h,
+	  other_libs/qio/configure: Added spin projections over ordered
+	  subsets as C generics
+
 2006-11-24 17:22  tag qio2-1-7
 
 2006-11-24 17:22  detar
