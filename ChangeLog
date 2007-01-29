@@ -1,3 +1,8 @@
+2007-01-29 17:22  bjoo
+
+	* include/scalarsite_generic/generic_spin_proj.h: Site by site spin
+	  projection unrolling
+
 2007-01-26 14:32  bjoo
 
 	* aclocal.m4, configure, examples/Makefile.am,
