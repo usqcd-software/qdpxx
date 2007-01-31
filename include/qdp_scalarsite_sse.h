@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.24 2007-01-26 19:32:11 bjoo Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.25 2007-01-31 00:32:12 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -37,6 +37,8 @@
 // Use Complex BLAS from Generics. It is better than nothing
 #include "scalarsite_generic/qdp_scalarsite_generic_cblas.h"
 #include "scalarsite_generic/qdp_scalarsite_spin_project.h"
+#include "scalarsite_generic/generic_spin_proj.h"
+#include "scalarsite_generic/qdp_generic_fused_spin_proj.h"
 
 // Use chiralProject BLAS from Generics. There seems little difference
 // between it and the SSE... Memory Bandwidth limits?
@@ -55,6 +57,8 @@
 #include "scalarsite_generic/qdp_scalarsite_generic_blas.h"
 #include "scalarsite_generic/qdp_scalarsite_generic_cblas.h"
 #include "scalarsite_generic/qdp_scalarsite_spin_project.h"
+#include "scalarsite_generic/generic_spin_proj.h"
+#include "scalarsite_generic/qdp_generic_fused_spin_proj.h"
 #endif  // BASE PRECISION
 
 // This dude takes care of the GNUC and PRECISION and stuff internally

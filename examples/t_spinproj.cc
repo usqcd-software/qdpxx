@@ -1,4 +1,4 @@
-// $Id: t_spinproj.cc,v 1.1 2007-01-26 19:32:11 bjoo Exp $
+// $Id: t_spinproj.cc,v 1.2 2007-01-31 00:32:12 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -7,8 +7,6 @@
 #include <time.h>
 
 #include "qdp.h"
-
-
 
 using namespace std;
 using namespace QDP;
@@ -29,7 +27,7 @@ int main(int argc, char *argv[])
   HalfFermion h;
   Fermion v;
 
-  LatticeHalfFermion H2;
+  LatticeHalfFermion H2,H3;
   LatticeFermion V;
   LatticeFermion V2;
   LatticeFermion V3;
@@ -470,11 +468,241 @@ int main(int argc, char *argv[])
   diff_v = V2 - V3;
   QDPIO::cout << "AddRecon3-: || old - new || / || old || = " << sqrt(norm2(diff_v)) << endl;
 
+  LatticeColorMatrix u;
+  gaussian(u);
+  gaussian(V);
+
+  ColorMatrix colmat;
+  colmat.elem() = u.elem(0).elem();
+  Fermion ferm;
+  ferm.elem() = V.elem(0);
+
+  Fermion res = adj(colmat)*ferm;
+  
+  Fermion res2;
+ 
+  _inline_mult_adj_su3_mat_vec( colmat.elem().elem(),
+				ferm.elem().elem(0),
+				res2.elem().elem(0));
+  
+  _inline_mult_adj_su3_mat_vec( colmat.elem().elem(),
+				ferm.elem().elem(1),
+				res2.elem().elem(1));
+
+  _inline_mult_adj_su3_mat_vec( colmat.elem().elem(),
+				ferm.elem().elem(2),
+				res2.elem().elem(2));
+
+  _inline_mult_adj_su3_mat_vec( colmat.elem().elem(),
+				ferm.elem().elem(3),
+				res2.elem().elem(3));
+ 
+   Fermion diff_ferm = res - res2;
+   QDPIO::cout << "Diff Ferm = " << diff_ferm << endl;
 
   
+  H = adj(u)*spinProjectDir0Plus(V);
+  H2= spinProjectDir0Plus(V);
+  H3= adj(u)*H2;
+
+  diff = H3 - H;
+  QDPIO::cout << "AdjProj0+: || old - new || / || old || = " << sqrt(norm2(diff)/norm2(H)) << endl;
+  
+  H = adj(u)*spinProjectDir0Minus(V);
+  H2= spinProjectDir0Minus(V);
+  H3= adj(u)*H2;
+
+  diff = H3 - H;
+  QDPIO::cout << "AdjProj0-: || old - new || / || old || = " << sqrt(norm2(diff)/norm2(H)) << endl;
+
+  H = adj(u)*spinProjectDir1Plus(V);
+  H2= spinProjectDir1Plus(V);
+  H3= adj(u)*H2;
+
+  diff = H3 - H;
+  QDPIO::cout << "AdjProj1+: || old - new || / || old || = " << sqrt(norm2(diff)/norm2(H)) << endl;
+  
+  H = adj(u)*spinProjectDir1Minus(V);
+  H2= spinProjectDir1Minus(V);
+  H3= adj(u)*H2;
+
+  diff = H3 - H;
+  QDPIO::cout << "AdjProj1-: || old - new || / || old || = " << sqrt(norm2(diff)/norm2(H)) << endl;
+
+  H = adj(u)*spinProjectDir2Plus(V);
+  H2= spinProjectDir2Plus(V);
+  H3= adj(u)*H2;
+
+  diff = H3 - H;
+  QDPIO::cout << "AdjProj2+: || old - new || / || old || = " << sqrt(norm2(diff)/norm2(H)) << endl;
+  
+  H = adj(u)*spinProjectDir2Minus(V);
+  H2= spinProjectDir2Minus(V);
+  H3= adj(u)*H2;
+
+  diff = H3 - H;
+  QDPIO::cout << "AdjProj2-: || old - new || / || old || = " << sqrt(norm2(diff)/norm2(H)) << endl;
+
+  H = adj(u)*spinProjectDir3Plus(V);
+  H2= spinProjectDir3Plus(V);
+  H3= adj(u)*H2;
+
+  diff = H3 - H;
+  QDPIO::cout << "AdjProj2+: || old - new || / || old || = " << sqrt(norm2(diff)/norm2(H)) << endl;
+  
+  H = adj(u)*spinProjectDir3Minus(V);
+  H2= spinProjectDir3Minus(V);
+  H3= adj(u)*H2;
+
+  diff = H3 - H;
+  QDPIO::cout << "AdjProj2-: || old - new || / || old || = " << sqrt(norm2(diff)/norm2(H)) << endl;
+
+
+  gaussian(H);
+  V = spinReconstructDir0Plus( u*H );
+  H2 = u*H;
+  V2 = spinReconstructDir0Plus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir0+: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  V = spinReconstructDir0Minus( u*H );
+  H2 = u*H;
+  V2 = spinReconstructDir0Minus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir0-: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  V = spinReconstructDir1Plus( u*H );
+  H2 = u*H;
+  V2 = spinReconstructDir1Plus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir1+: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  V = spinReconstructDir1Minus( u*H );
+  H2 = u*H;
+  V2 = spinReconstructDir1Minus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir1-: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  V = spinReconstructDir2Plus( u*H );
+  H2 = u*H;
+  V2 = spinReconstructDir2Plus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir2+: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  V = spinReconstructDir2Minus( u*H );
+  H2 = u*H;
+  V2 = spinReconstructDir2Minus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir2-: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  V = spinReconstructDir3Plus( u*H );
+  H2 = u*H;
+  V2 = spinReconstructDir3Plus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir3+: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  V = spinReconstructDir3Minus( u*H );
+  H2 = u*H;
+  V2 = spinReconstructDir3Minus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir3-: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+
+
+
+  gaussian(H);
+  gaussian(V);
+  V2 = V;
+
+  V += spinReconstructDir0Plus( u*H );
+  H2 = u*H;
+  V2 += spinReconstructDir0Plus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir0+=: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  gaussian(V);
+  V2=V;
+
+  V += spinReconstructDir0Minus( u*H );
+  H2 = u*H;
+  V2 += spinReconstructDir0Minus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir0-=: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  gaussian(V);
+  V2 = V;
+
+  V += spinReconstructDir1Plus( u*H );
+  H2 = u*H;
+  V2 += spinReconstructDir1Plus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir1+=: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  gaussian(V);
+  V2=V;
+
+  V += spinReconstructDir1Minus( u*H );
+  H2 = u*H;
+  V2 += spinReconstructDir1Minus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir1-=: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  gaussian(V);
+  V2 = V;
+
+  V += spinReconstructDir2Plus( u*H );
+  H2 = u*H;
+  V2 += spinReconstructDir2Plus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir2+=: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  gaussian(V);
+  V2=V;
+
+  V += spinReconstructDir2Minus( u*H );
+  H2 = u*H;
+  V2 += spinReconstructDir2Minus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir2-=: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  gaussian(V);
+  V2=V;
+
+  V += spinReconstructDir3Plus( u*H );
+  H2 = u*H;
+  V2 += spinReconstructDir3Plus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir3+=: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+  gaussian(H);
+  gaussian(V);
+  V2=V;
+
+  V += spinReconstructDir3Minus( u*H );
+  H2 = u*H;
+  V2 += spinReconstructDir3Minus( H2 );
+  diff_v = V2 - V;
+  QDPIO::cout << "ReconUPsiDir3-=: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
+
+
+
   // Time to bolt
   QDP_finalize();
 
   exit(0);
 }
   
+   
