@@ -1,3 +1,16 @@
+2007-01-30 19:32  bjoo
+
+	* examples/t_spinproj.cc, include/Makefile.am,
+	  include/qdp_scalarsite_bagel_qdp.h,
+	  include/qdp_scalarsite_generic.h, include/qdp_scalarsite_sse.h,
+	  include/scalarsite_generic/generic_fused_spin_proj.h,
+	  include/scalarsite_generic/generic_mat_vec.h,
+	  include/scalarsite_generic/generic_mv_switchbox.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_proj.h,
+	  include/scalarsite_sse/sse_mv_switchbox.h: Added fused spin
+	  proj/recon and su3 hsu3 multiplies with evaluate. Dslash now runs
+	  about 700 Mflops on my laptop
+
 2007-01-29 17:22  bjoo
 
 	* include/scalarsite_generic/generic_spin_proj.h: Site by site spin
