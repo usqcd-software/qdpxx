@@ -43,7 +43,7 @@ EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_binx$(EXEEXT) \
 	t_gsum$(EXEEXT) $(am__EXEEXT_1) nersc2ildg$(EXEEXT) \
 	test_ildglat$(EXEEXT)
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_1 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
-@BUILD_WILSON_EXAMPLES_TRUE@am__append_2 = t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3 t_spinproj
+@BUILD_WILSON_EXAMPLES_TRUE@am__append_2 = t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3 t_spinproj t_spinproj2
 @BUILD_STAGGERED_EXAMPLES_TRUE@am__append_3 = 
 subdir = examples
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
@@ -60,7 +60,8 @@ CONFIG_CLEAN_FILES =
 @BUILD_WILSON_EXAMPLES_TRUE@	t_blas_g5$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_blas_g5_2$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_blas_g5_3$(EXEEXT) \
-@BUILD_WILSON_EXAMPLES_TRUE@	t_spinproj$(EXEEXT)
+@BUILD_WILSON_EXAMPLES_TRUE@	t_spinproj$(EXEEXT) \
+@BUILD_WILSON_EXAMPLES_TRUE@	t_spinproj2$(EXEEXT)
 @BUILD_WILSON_EXAMPLES_TRUE@am__EXEEXT_2 = t_dslashm$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_formfac$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_spectrum$(EXEEXT) t_qdp$(EXEEXT) \
@@ -185,6 +186,10 @@ am_t_spinproj_OBJECTS = t_spinproj.$(OBJEXT)
 t_spinproj_OBJECTS = $(am_t_spinproj_OBJECTS)
 t_spinproj_LDADD = $(LDADD)
 t_spinproj_DEPENDENCIES =
+am_t_spinproj2_OBJECTS = t_spinproj2.$(OBJEXT)
+t_spinproj2_OBJECTS = $(am_t_spinproj2_OBJECTS)
+t_spinproj2_LDADD = $(LDADD)
+t_spinproj2_DEPENDENCIES =
 am_t_transpose_spin_OBJECTS = t_transpose_spin.$(OBJEXT) \
 	$(am__objects_1)
 t_transpose_spin_OBJECTS = $(am_t_transpose_spin_OBJECTS)
@@ -219,8 +224,9 @@ SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) $(t_binx_SOURCES) \
 	$(t_nersc_SOURCES) $(t_partfile_SOURCES) $(t_qdp_SOURCES) \
 	$(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
 	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
-	$(t_spinproj_SOURCES) $(t_transpose_spin_SOURCES) \
-	$(t_xml_SOURCES) $(test_ildglat_SOURCES)
+	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) \
+	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
+	$(test_ildglat_SOURCES)
 DIST_SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) \
 	$(t_binx_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) \
 	$(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) \
@@ -231,8 +237,9 @@ DIST_SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) \
 	$(t_partfile_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) \
 	$(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
 	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
-	$(t_spinproj_SOURCES) $(t_transpose_spin_SOURCES) \
-	$(t_xml_SOURCES) $(test_ildglat_SOURCES)
+	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) \
+	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
+	$(test_ildglat_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -422,6 +429,7 @@ t_blas_g5_SOURCES = t_blas_g5.cc $(HDRS)
 t_blas_g5_2_SOURCES = t_blas_g5_2.cc $(HDRS)
 t_blas_g5_3_SOURCES = t_blas_g5_3.cc $(HDRS)
 t_spinproj_SOURCES = t_spinproj.cc 
+t_spinproj2_SOURCES = t_spinproj2.cc 
 t_cugauge_SOURCES = t_cugauge.cc mesplq.cc $(HDRS) 
 t_transpose_spin_SOURCES = t_transpose_spin.cc $(HDRS)
 nersc2ildg_SOURCES = nersc2ildg.cc $(HDRS) mesplq.cc
@@ -547,6 +555,9 @@ t_spectrum$(EXEEXT): $(t_spectrum_OBJECTS) $(t_spectrum_DEPENDENCIES)
 t_spinproj$(EXEEXT): $(t_spinproj_OBJECTS) $(t_spinproj_DEPENDENCIES) 
 	@rm -f t_spinproj$(EXEEXT)
 	$(CXXLINK) $(t_spinproj_LDFLAGS) $(t_spinproj_OBJECTS) $(t_spinproj_LDADD) $(LIBS)
+t_spinproj2$(EXEEXT): $(t_spinproj2_OBJECTS) $(t_spinproj2_DEPENDENCIES) 
+	@rm -f t_spinproj2$(EXEEXT)
+	$(CXXLINK) $(t_spinproj2_LDFLAGS) $(t_spinproj2_OBJECTS) $(t_spinproj2_LDADD) $(LIBS)
 t_transpose_spin$(EXEEXT): $(t_transpose_spin_OBJECTS) $(t_transpose_spin_DEPENDENCIES) 
 	@rm -f t_transpose_spin$(EXEEXT)
 	$(CXXLINK) $(t_transpose_spin_LDFLAGS) $(t_transpose_spin_OBJECTS) $(t_transpose_spin_LDADD) $(LIBS)
@@ -602,6 +613,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_skeleton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spectrum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spinproj.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spinproj2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_transpose_spin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_xml.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@

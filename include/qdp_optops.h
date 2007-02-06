@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_optops.h,v 1.9 2006-09-24 15:56:02 edwards Exp $
+// $Id: qdp_optops.h,v 1.10 2007-02-06 15:01:57 bjoo Exp $
 
 /*! @file
  * @brief PETE optimized operations on QDPTypes
@@ -62,7 +62,7 @@ inline typename MakeReturn<BinaryNode<OpAdjMultiply,
 operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 	  const QDPType<T2,C2> & r)
 {
-// cerr << "adjMultiply(l,r) <- adj(l)*r" << endl;
+  //  cerr << "adjMultiply(l,r) <- adj(l)*r" << endl;
 
   typedef UnaryNode<OpIdentity,T1> NewExpr1_t; // The adj does not change container type
 
@@ -84,7 +84,7 @@ inline typename MakeReturn<BinaryNode<OpAdjMultiply,
 operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 	  const QDPExpr<T2,C2> & r)
 {
-// cerr << "adjMultiply(l,Expr) <- adj(l)*Expr" << endl;
+  //cerr << "adjMultiply(l,Expr) <- adj(l)*Expr" << endl;
 
   typedef UnaryNode<OpIdentity,T1> NewExpr1_t; // The adj does not change container type
 

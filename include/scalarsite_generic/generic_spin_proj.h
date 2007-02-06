@@ -1,4 +1,5 @@
-
+#ifndef GENERIC_SPIN_PROJ_H
+#define GENERIC_SPIN_PROJ_H
 
 QDP_BEGIN_NAMESPACE(QDP);
 typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 4> Spin4;
@@ -12,41 +13,11 @@ inline UnaryReturn<Spin4, FnSpinProjectDir0Minus>::Type_t
 spinProjectDir0Minus(const Spin4& s1)
 {
   UnaryReturn<Spin4, FnSpinProjectDir0Minus>::Type_t  d;
-
-  /*                              ( 1  0  0 -i)  ( a0 )    ( a0 - i a3 )
-   *  B  :=  ( 1 - Gamma  ) A  =  ( 0  1 -i  0)  ( a1 )  = ( a1 - i a2 )
-   *                    0         ( 0  i  1  0)  ( a2 )    ( a2 + i a1 )
-   *                              ( i  0  0  1)  ( a3 )    ( a3 + i a0 )
-
-   * Therefore the top components are
-
-   *      ( b0r + i b0i )  =  ( {a0r + a3i} + i{a0i - a3r} )
-   *      ( b1r + i b1i )     ( {a1r + a2i} + i{a1i - a2r} )
-
-   * The bottom components of be may be reconstructed using the formula
-
-   *      ( b2r + i b2i )  =  ( {a2r - a1i} + i{a2i + a1r} )  =  ( - b1i + i b1r )
-   *      ( b3r + i b3i )     ( {a3r - a0i} + i{a3i + a0r} )     ( - b0i + i b0r ) 
-   */
-  for(int col=0; col < 3; col++) { 
-    d.elem(0).elem(col).real() 
-      = s1.elem(0).elem(col).real() 
-      + s1.elem(3).elem(col).imag();
-  
-    d.elem(0).elem(col).imag()  
-      = s1.elem(0).elem(col).imag() 
-      - s1.elem(3).elem(col).real();
-  }
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(1).elem(col).real() 
-      = s1.elem(1).elem(col).real() 
-      + s1.elem(2).elem(col).imag();
-  
-    d.elem(1).elem(col).imag()  
-      = s1.elem(1).elem(col).imag() 
-      - s1.elem(2).elem(col).real();
-  }
+ 
+  inlineSpinProjDir0Minus(&(s1.elem(0).elem(0).real()),
+			  &(d.elem(0).elem(0).real()),
+			  1);
+			   
   
   return d;
 }
@@ -59,34 +30,13 @@ inline UnaryReturn<Spin4, FnSpinProjectDir0Plus>::Type_t
 spinProjectDir0Plus(const Spin4& s1)
 {
   UnaryReturn<Spin4, FnSpinProjectDir0Plus>::Type_t  d;
-  /* 1 + \gamma_0 =  1  0  0  i 
-                     0  1  i  0
-                     0 -i  1  0
-                    -i  0  0  1 
+
+
+  inlineSpinProjDir0Plus(&(s1.elem(0).elem(0).real()),
+			  &(d.elem(0).elem(0).real()),
+			  1);
+			   
  
-   *      ( d0r + i d0i )  =  ( {x0r - x3i} + i{x0i + x3r} )
-   *      ( d1r + i d1i )     ( {x1r - x2i} + i{x1i + x2r} )
-   */
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(0).elem(col).real() 
-      = s1.elem(0).elem(col).real() 
-      - s1.elem(3).elem(col).imag();
-  
-    d.elem(0).elem(col).imag()  
-      = s1.elem(0).elem(col).imag() 
-      + s1.elem(3).elem(col).real();
-  }
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(1).elem(col).real() 
-      = s1.elem(1).elem(col).real() 
-      - s1.elem(2).elem(col).imag();
-  
-    d.elem(1).elem(col).imag()  
-      = s1.elem(1).elem(col).imag() 
-      + s1.elem(2).elem(col).real();
-  }
   
   return d;
 }
@@ -100,33 +50,10 @@ spinProjectDir1Minus(const Spin4& s1)
 {
   UnaryReturn<Spin4, FnSpinProjectDir1Minus>::Type_t  d;
 
-  /* 1 - \gamma_1 =  1  0  0 +1 
-                     0  1 -1  0
-                     0 -1  1  0
-                    +1  0  0  1 
- 
-   *      ( b0r + i b0i )  =  ( {a0r + a3r} + i{a0i + a3i} )
-   *      ( b1r + i b1i )     ( {a1r - a2r} + i{a1i - a2i} )
-   */
-  for(int col=0; col < 3; col++) { 
-    d.elem(0).elem(col).real() 
-      = s1.elem(0).elem(col).real() 
-      + s1.elem(3).elem(col).real();
-  
-    d.elem(0).elem(col).imag()  
-      = s1.elem(0).elem(col).imag() 
-      + s1.elem(3).elem(col).imag();
-  }
+  inlineSpinProjDir1Minus(&(s1.elem(0).elem(0).real()),
+			 &(d.elem(0).elem(0).real()),
+			 1);
 
-  for(int col=0; col < 3; col++) { 
-    d.elem(1).elem(col).real() 
-      = s1.elem(1).elem(col).real() 
-      - s1.elem(2).elem(col).real();
-  
-    d.elem(1).elem(col).imag()  
-      = s1.elem(1).elem(col).imag() 
-      - s1.elem(2).elem(col).imag();
-  }
   
   return d;
 }
@@ -140,36 +67,10 @@ inline UnaryReturn<Spin4, FnSpinProjectDir1Plus>::Type_t
 spinProjectDir1Plus(const Spin4& s1)
 {
   UnaryReturn<Spin4, FnSpinProjectDir1Plus>::Type_t  d;
-  /* 1 + \gamma_1 =  1  0  0 -1 
-                     0  1  1  0
-                     0  1  1  0
-                    -1  0  0  1 
- 
-   *      ( b0r + i b0i )  =  ( {a0r - a3r} + i{a0i - a3i} )
-   *      ( b1r + i b1i )     ( {a1r + a2r} + i{a1i + a2i} )
-   */
 
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(0).elem(col).real() 
-      = s1.elem(0).elem(col).real() 
-      - s1.elem(3).elem(col).real();
-  
-    d.elem(0).elem(col).imag()  
-      = s1.elem(0).elem(col).imag() 
-      - s1.elem(3).elem(col).imag();
-  }
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(1).elem(col).real() 
-      = s1.elem(1).elem(col).real() 
-      + s1.elem(2).elem(col).real();
-  
-    d.elem(1).elem(col).imag()  
-      = s1.elem(1).elem(col).imag() 
-      + s1.elem(2).elem(col).imag();
-  }
-  
+  inlineSpinProjDir1Plus(&(s1.elem(0).elem(0).real()),
+			 &(d.elem(0).elem(0).real()),
+			 1);
   return d;
 }
 
@@ -192,26 +93,10 @@ spinProjectDir2Minus(const Spin4& s1)
    *      ( b0r + i b0i )  =  ( {a0r + a2i} + i{a0i - a2r} )
    *      ( b1r + i b1i )     ( {a1r - a3i} + i{a1i + a3r} )
    */
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(0).elem(col).real() 
-      = s1.elem(0).elem(col).real() 
-      + s1.elem(2).elem(col).imag();
-  
-    d.elem(0).elem(col).imag()  
-      = s1.elem(0).elem(col).imag() 
-      - s1.elem(2).elem(col).real();
-  }
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(1).elem(col).real() 
-      = s1.elem(1).elem(col).real() 
-      - s1.elem(3).elem(col).imag();
-  
-    d.elem(1).elem(col).imag()  
-      = s1.elem(1).elem(col).imag() 
-      + s1.elem(3).elem(col).real();
-  }
+  inlineSpinProjDir2Minus(&(s1.elem(0).elem(0).real()),
+			  &(d.elem(0).elem(0).real()),
+			  1);
+			  
   
   return d;
 }
@@ -226,36 +111,11 @@ spinProjectDir2Plus(const Spin4& s1)
 {
   UnaryReturn<Spin4, FnSpinProjectDir2Plus>::Type_t  d;
 
-  /* 1 + \gamma_2 =  1  0  i  0 
-                     0  1  0 -i
-                    -i  0  1  0
-                     0  i  0  1 
 
+  inlineSpinProjDir2Plus(&(s1.elem(0).elem(0).real()),
+			  &(d.elem(0).elem(0).real()),
+			  1);
 
-   *      ( b0r + i b0i )  =  ( {a0r - a2i} + i{a0i + a2r} )
-   *      ( b1r + i b1i )     ( {a1r + a3i} + i{a1i - a3r} )
-   */
-
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(0).elem(col).real() 
-      = s1.elem(0).elem(col).real() 
-      - s1.elem(2).elem(col).imag();
-  
-    d.elem(0).elem(col).imag()  
-      = s1.elem(0).elem(col).imag() 
-      + s1.elem(2).elem(col).real();
-  }
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(1).elem(col).real() 
-      = s1.elem(1).elem(col).real() 
-      + s1.elem(3).elem(col).imag();
-  
-    d.elem(1).elem(col).imag()  
-      = s1.elem(1).elem(col).imag() 
-      - s1.elem(3).elem(col).real();
-  }
   
   return d;
 }
@@ -269,34 +129,9 @@ spinProjectDir3Minus(const Spin4& s1)
 {
   UnaryReturn<Spin4, FnSpinProjectDir3Minus>::Type_t  d;
 
-  /* 1 - \gamma_3 =  1  0  -1  0 
-                     0  1  0  -1
-                    -1  0  1  0
-                     0 -1  0  1 
-
-   *      ( b0r + i b0i )  =  ( {a0r - a2r} + i{a0i - a2i} )
-   *      ( b1r + i b1i )     ( {a1r - a3r} + i{a1i - a3i} )
-   */
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(0).elem(col).real() 
-      = s1.elem(0).elem(col).real() 
-      - s1.elem(2).elem(col).real();
-  
-    d.elem(0).elem(col).imag()  
-      = s1.elem(0).elem(col).imag() 
-      - s1.elem(2).elem(col).imag();
-  }
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(1).elem(col).real() 
-      = s1.elem(1).elem(col).real() 
-      - s1.elem(3).elem(col).real();
-  
-    d.elem(1).elem(col).imag()  
-      = s1.elem(1).elem(col).imag() 
-      - s1.elem(3).elem(col).imag();
-  }
+  inlineSpinProjDir3Minus(&(s1.elem(0).elem(0).real()),
+			  &(d.elem(0).elem(0).real()),
+			  1);
   
   return d;
 }
@@ -311,38 +146,14 @@ spinProjectDir3Plus(const Spin4& s1)
 {
   UnaryReturn<Spin4, FnSpinProjectDir3Plus>::Type_t  d;
 
-  /* 1 + \gamma_3 =  1  0  1  0 
-                     0  1  0  1
-                     1  0  1  0
-                     0  1  0  1 
-
-   *      ( b0r + i b0i )  =  ( {a0r + a2r} + i{a0i + a2i} )
-   *      ( b1r + i b1i )     ( {a1r + a3r} + i{a1i + a3i} )
-   */
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(0).elem(col).real() 
-      = s1.elem(0).elem(col).real() 
-      + s1.elem(2).elem(col).real();
-  
-    d.elem(0).elem(col).imag()  
-      = s1.elem(0).elem(col).imag() 
-      + s1.elem(2).elem(col).imag();
-  }
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(1).elem(col).real() 
-      = s1.elem(1).elem(col).real() 
-      + s1.elem(3).elem(col).real();
-  
-    d.elem(1).elem(col).imag()  
-      = s1.elem(1).elem(col).imag() 
-      + s1.elem(3).elem(col).imag();
-  }
+  inlineSpinProjDir3Plus(&(s1.elem(0).elem(0).real()),
+			  &(d.elem(0).elem(0).real()),
+			  1);
   
   return d;
 }
 
+#if 0
 template<>
 inline UnaryReturn<Spin2, FnSpinReconstructDir0Minus>::Type_t
 spinReconstructDir0Minus(const Spin2& s1)
@@ -390,35 +201,10 @@ spinReconstructDir0Plus(const Spin2& s1)
 {
   UnaryReturn<Spin2, FnSpinReconstructDir0Plus>::Type_t  d;
 
-  for(int col=0; col < 3; col++) { 
-    d.elem(0).elem(col).real() = s1.elem(0).elem(col).real();
-    d.elem(0).elem(col).imag() = s1.elem(0).elem(col).imag();
-  }
+  inlineSpinReconDir0Plus(&(s1.elem(0).elem(0).real()),
+			  &(d.elem(0).elem(0).real()),
+			  1);
 
-  for(int col=0; col < 3; col++) { 
-    d.elem(1).elem(col).real() = s1.elem(1).elem(col).real();
-    d.elem(1).elem(col).imag() = s1.elem(1).elem(col).imag();
-  }
-
-   /* 1 + \gamma_0 =  1  0  0  i 
-                     0  1  i  0
-                     0 -i  1  0
-                    -i  0  0  1 
- 
-    *  ( b2r + i b2i )  =  ( {a2r + a1i} + i{a2i - a1r} )  =  ( b1i - i b1r )
-    *  ( b3r + i b3i )     ( {a3r + a0i} + i{a3i - a0r} )     ( b0i - i b0r ) 
-   */
-  
-  for(int col=0; col < 3; col++) { 
-    d.elem(2).elem(col).real() =  s1.elem(1).elem(col).imag();
-    d.elem(2).elem(col).imag() = -s1.elem(1).elem(col).real();
-  }
-
-  for(int col=0; col < 3; col++) { 
-    d.elem(3).elem(col).real() =  s1.elem(0).elem(col).imag();
-    d.elem(3).elem(col).imag() = -s1.elem(0).elem(col).real();
-  }
- 
 
   return d;
 }
@@ -670,6 +456,8 @@ spinReconstructDir3Plus(const Spin2& s1)
   return d;
 }
 
+#endif
 
 QDP_END_NAMESPACE();
 
+#endif

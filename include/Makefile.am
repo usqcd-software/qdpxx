@@ -48,9 +48,17 @@ GENERIC_HDRS = qdp_scalarsite_generic.h \
 	$(genericdir)/generic_blas_vaypx3_g5.h \
 	$(genericdir)/generic_blas_vaxpby3_g5.h \
 	$(genericdir)/generic_blas_g5.h \
-	$(genericdir)/generic_spin_proj.h \
 	$(genericdir)/generic_mv_switchbox.h \
-	$(genericdir)/qdp_generic_fused_spin_proj.h
+	$(genericdir)/generic_spin_proj_inlines.h \
+	$(genericdir)/generic_spin_recon_inlines.h \
+	$(genericdir)/generic_spin_proj.h \
+	$(genericdir)/generic_spin_recon.h \
+	$(genericdir)/generic_fused_spin_proj.h \
+	$(genericdir)/generic_fused_spin_recon.h \
+	$(genericdir)/qdp_scalarsite_spin_project.h \
+	$(genericdir)/qdp_generic_fused_spin_proj.h \
+	$(genericdir)/qdp_generic_fused_spin_recon.h \
+	$(genericdir)/generic_spin_aggregate.h
 
 
 # If using SSE, make sure those files are installed
@@ -77,6 +85,7 @@ SSESITE_HDRS = qdp_scalarsite_sse.h \
 	$(ssesitedir)/sse_blas_vaxpy3_g5.h \
 	$(ssesitedir)/sse_blas_vaypx3_g5.h \
 	$(ssesitedir)/sse_blas_vaxpby3_g5.h \
+	$(ssesitedir)/sse_spin_aggregate.h \
 	$(ssesitedir)/sse_mv_switchbox.h
 
 # Scalarvectsite SSE extensions

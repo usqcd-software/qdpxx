@@ -1,9 +1,11 @@
+#ifndef SSE_MV_SWITCHBOX_H
+#define SSE_MV_SWITCHBOX_H
 // Switchbox for Matrix vector routines for SSE Builds
 // 
 // If we have single precision and suitable GNU Compiler then 
 // use the SSE otherwise fall back to generics
 //
-// Author: $Id: sse_mv_switchbox.h,v 1.1 2007-01-31 00:32:12 bjoo Exp $
+// Author: $Id: sse_mv_switchbox.h,v 1.2 2007-02-06 15:01:58 bjoo Exp $
 
 
 #if (BASE_PRECISION == 32) && defined(__GNUC__) 
@@ -24,5 +26,7 @@
 
 // We are either not in single precision or don't have a suitable compiler
 #include "scalarsite_generic/generic_mv_switchbox.h"
+
+#endif
 
 #endif

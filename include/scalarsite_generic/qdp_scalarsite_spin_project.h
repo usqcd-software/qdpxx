@@ -1,7 +1,6 @@
 #ifndef QDP_SCALARSITE_SPIN_PROJECT_H
 #define QDP_SCALARSITE_SPIN_PROJECT_H
 
-
 using namespace QDP;
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -31,43 +30,11 @@ void evaluate(OLattice< HVec >& b,
 
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
+  unsigned int n_vec=s.end() - s.start()+1;
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  /* 1 + \gamma_0 =  1  0  0  i 
-                     0  1  i  0
-                     0 -i  1  0
-                    -i  0  0  1 
- 
-   *      ( d0r + i d0i )  =  ( {x0r - x3i} + i{x0i + x3r} )
-   *      ( d1r + i d1i )     ( {x1r - x2i} + i{x1i + x2r} )
-   */
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColFull a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 4; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
+  inlineSpinProjDir0Plus(aptr, bptr, n_vec);
 
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re] - a_tmp[3][col][im];
-      bptr[ boffset++ ] = a_tmp[0][col][im] + a_tmp[3][col][re];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re] - a_tmp[2][col][im];
-      bptr[ boffset++ ] = a_tmp[1][col][im] + a_tmp[2][col][re];
-    }
-  }  
+
 }
 
 // d = SpinProjectDir1Plus(Vec);
@@ -88,45 +55,8 @@ void evaluate(OLattice< HVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  /* 1 + \gamma_1 =  1  0  0 -1 
-                     0  1  1  0
-                     0  1  1  0
-                    -1  0  0  1 
- 
-   *      ( b0r + i b0i )  =  ( {a0r - a3r} + i{a0i - a3i} )
-   *      ( b1r + i b1i )     ( {a1r + a2r} + i{a1i + a2i} )
-   */
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColFull a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 4; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re] - a_tmp[3][col][re];
-      bptr[ boffset++ ] = a_tmp[0][col][im] - a_tmp[3][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re] + a_tmp[2][col][re];
-      bptr[ boffset++ ] = a_tmp[1][col][im] + a_tmp[2][col][im];
-    }
-  }  
- 
-
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinProjDir1Plus(aptr, bptr, n_vec);
 
 }
 
@@ -147,44 +77,9 @@ void evaluate(OLattice< HVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  /* 1 + \gamma_2 =  1  0  i  0 
-                     0  1  0 -i
-                    -i  0  1  0
-                     0  i  0  1 
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinProjDir2Plus(aptr, bptr, n_vec);
 
-
-   *      ( b0r + i b0i )  =  ( {a0r - a2i} + i{a0i + a2r} )
-   *      ( b1r + i b1i )     ( {a1r + a3i} + i{a1i - a3r} )
-   */
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColFull a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 4; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re] - a_tmp[2][col][im];
-      bptr[ boffset++ ] = a_tmp[0][col][im] + a_tmp[2][col][re];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re] + a_tmp[3][col][im];
-      bptr[ boffset++ ] = a_tmp[1][col][im] - a_tmp[3][col][re];
-    }
-  }  
 }
 
 // d = SpinProjectDir3Plus(Vec);
@@ -203,43 +98,8 @@ void evaluate(OLattice< HVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  /* 1 + \gamma_3 =  1  0  1  0 
-                     0  1  0  1
-                     1  0  1  0
-                     0  1  0  1 
-
-   *      ( b0r + i b0i )  =  ( {a0r + a2r} + i{a0i + a2i} )
-   *      ( b1r + i b1i )     ( {a1r + a3r} + i{a1i + a3i} )
-   */
-  
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColFull a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 4; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re] + a_tmp[2][col][re];
-      bptr[ boffset++ ] = a_tmp[0][col][im] + a_tmp[2][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re] + a_tmp[3][col][re];
-      bptr[ boffset++ ] = a_tmp[1][col][im] + a_tmp[3][col][im];
-    }
-  }  
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinProjDir3Plus(aptr, bptr, n_vec);
 }
 
 // d = SpinProjectDir0Minus(Vec);
@@ -260,43 +120,8 @@ void evaluate(OLattice< HVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  /* 1 + \gamma_0 =  1  0  0 -i 
-                     0  1 -i  0
-                     0 +i  1  0
-                    +i  0  0  1 
-
-   *      ( b0r + i b0i )  =  ( {a0r + a3i} + i{a0i - a3r} )
-   *      ( b1r + i b1i )     ( {a1r + a2i} + i{a1i - a2r} )
-		    
-  */
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColFull a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 4; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re] + a_tmp[3][col][im];
-      bptr[ boffset++ ] = a_tmp[0][col][im] - a_tmp[3][col][re];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re] + a_tmp[2][col][im];
-      bptr[ boffset++ ] = a_tmp[1][col][im] - a_tmp[2][col][re];
-    }
-  }  
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinProjDir0Minus(aptr, bptr, n_vec);
 }
 
 // d = SpinProjectDir1Minus(Vec);
@@ -316,44 +141,8 @@ void evaluate(OLattice< HVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  /* 1 - \gamma_1 =  1  0  0 +1 
-                     0  1 -1  0
-                     0 -1  1  0
-                    +1  0  0  1 
- 
-   *      ( b0r + i b0i )  =  ( {a0r + a3r} + i{a0i + a3i} )
-   *      ( b1r + i b1i )     ( {a1r - a2r} + i{a1i - a2i} )
-   */
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColFull a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 4; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re] + a_tmp[3][col][re];
-      bptr[ boffset++ ] = a_tmp[0][col][im] + a_tmp[3][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re] - a_tmp[2][col][re];
-      bptr[ boffset++ ] = a_tmp[1][col][im] - a_tmp[2][col][im];
-    }
-  }  
- 
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinProjDir1Minus(aptr, bptr, n_vec);
 
 }
 
@@ -375,44 +164,10 @@ void evaluate(OLattice< HVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  /* 1 - \gamma_2 =  1  0  -i  0 
-                     0  1  0  +i
-                    +i  0  1   0
-                     0 -i  0   1 
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinProjDir2Minus(aptr, bptr, n_vec);
 
 
-   *      ( b0r + i b0i )  =  ( {a0r + a2i} + i{a0i - a2r} )
-   *      ( b1r + i b1i )     ( {a1r - a3i} + i{a1i + a3r} )
-   */
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColFull a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 4; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re] + a_tmp[2][col][im];
-      bptr[ boffset++ ] = a_tmp[0][col][im] - a_tmp[2][col][re];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re] - a_tmp[3][col][im];
-      bptr[ boffset++ ] = a_tmp[1][col][im] + a_tmp[3][col][re];
-    }
-  }  
 }
 
 // d = SpinProjectDir3Minus(Vec);
@@ -431,45 +186,8 @@ void evaluate(OLattice< HVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  /* 1 - \gamma_3 =  1  0  -1  0 
-                     0  1  0  -1
-                    -1  0  1  0
-                     0 -1  0  1 
-
-   *      ( b0r + i b0i )  =  ( {a0r - a2r} + i{a0i - a2i} )
-   *      ( b1r + i b1i )     ( {a1r - a3r} + i{a1i - a3i} )
-   */
-  
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColFull a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 4; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re] - a_tmp[2][col][re];
-      bptr[ boffset++ ] = a_tmp[0][col][im] - a_tmp[2][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re] - a_tmp[3][col][re];
-      bptr[ boffset++ ] = a_tmp[1][col][im] - a_tmp[3][col][im];
-    }
-  }  
- 
-
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinProjDir3Minus(aptr, bptr, n_vec);
 }
 
 
@@ -492,57 +210,10 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-
-  /* 1 + \gamma_0 =  1  0  0  i 
-                     0  1  i  0
-                     0 -i  1  0
-                    -i  0  0  1 
- 
-    *  ( b2r + i b2i )  =  ( {a2r + a1i} + i{a2i - a1r} )  =  ( b1i - i b1r )
-    *  ( b3r + i b3i )     ( {a3r + a0i} + i{a3i - a0r} )     ( b0i - i b0r ) 
-   */
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re];
-      bptr[ boffset++ ] = a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re];
-      bptr[ boffset++ ] = a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] =  a_tmp[1][col][im];
-      bptr[ boffset++ ] = -a_tmp[1][col][re];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] =  a_tmp[0][col][im];
-      bptr[ boffset++ ] = -a_tmp[0][col][re];
-    }
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinReconDir0Plus(aptr, bptr, n_vec);
 
 
-  }  
   
 }
 
@@ -563,58 +234,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-
-  /* 1 + \gamma_1 =  1  0  0 -1 
-                     0  1  1  0
-                     0  1  1  0
-                    -1  0  0  1 
- 
-
-   *   ( b2r + i b2i )  =  ( {a2r + a1r} + i{a2i + a1i} )  =  (   b1r + i b1i )
-   *   ( b3r + i b3i )     ( {a3r - a0r} + i{a3i - a0i} )     ( - b0r - i b0i ) 
-  
-  */
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re];
-      bptr[ boffset++ ] = a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re];
-      bptr[ boffset++ ] = a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] =  a_tmp[1][col][re];
-      bptr[ boffset++ ] =  a_tmp[1][col][im];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = -a_tmp[0][col][re];
-      bptr[ boffset++ ] = -a_tmp[0][col][im];
-    }
-
-  }  
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinReconDir1Plus(aptr, bptr, n_vec);
 
 }
 
@@ -636,56 +257,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-
-  /* 1 + \gamma_2 =  1  0  i  0 
-                     0  1  0 -i
-                    -i  0  1  0
-                     0  i  0  1 
-		     
-   *  ( b2r + i b2i )  =  ( {a2r + a0i} + i{a2i - a0r} )  =  (   b0i - i b0r )
-   *  ( b3r + i b3i )     ( {a3r - a1i} + i{a3i + a1r} )     ( - b1i + i b1r ) 
-  */
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re];
-      bptr[ boffset++ ] = a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re];
-      bptr[ boffset++ ] = a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] =   a_tmp[0][col][im];
-      bptr[ boffset++ ] =  -a_tmp[0][col][re];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = -a_tmp[1][col][im];
-      bptr[ boffset++ ] =  a_tmp[1][col][re];
-    }
-
-  }  
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinReconDir2Plus(aptr, bptr, n_vec);
 
 }
 
@@ -706,60 +279,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-
-  /*                              ( 1  0  1  0)  ( a0 )    ( a0 + a2 )
-   *  B  :=  ( 1 + Gamma  ) A  =  ( 0  1  0  1)  ( a1 )  = ( a1 + a3 )
-   *                    3         ( 1  0  1  0)  ( a2 )    ( a2 + a0 )
-   *                              ( 0  1  0  1)  ( a3 )    ( a3 + a1 )
-   
-   * The bottom components of be may be reconstructed using the formula
-   
-   *   ( b2r + i b2i )  =  ( {a2r + a0r} + i{a2i + a0i} )  =  ( b0r + i b0i )
-   *   ( b3r + i b3i )     ( {a3r + a1r} + i{a3i + a1i} )     ( b1r + i b1i ) 
-   */
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re];
-      bptr[ boffset++ ] = a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re];
-      bptr[ boffset++ ] = a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] =   a_tmp[0][col][re];
-      bptr[ boffset++ ] =   a_tmp[0][col][im];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] =  a_tmp[1][col][re];
-      bptr[ boffset++ ] =  a_tmp[1][col][im];
-    }
-
-  }  
-
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinReconDir3Plus(aptr, bptr, n_vec);
 
 }
 
@@ -780,60 +301,10 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  /*                              ( 1  0  0 -i)  ( a0 )    ( a0 - i a3 )
-   *  B  :=  ( 1 - Gamma  ) A  =  ( 0  1 -i  0)  ( a1 )  = ( a1 - i a2 )
-   *                    0         ( 0  i  1  0)  ( a2 )    ( a2 + i a1 )
-   *                              ( i  0  0  1)  ( a3 )    ( a3 + i a0 )
 
-   * The bottom components of be may be reconstructed using the formula
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinReconDir0Minus(aptr, bptr, n_vec);
 
-   *   ( b2r + i b2i )  =  ( {a2r - a1i} + i{a2i + a1r} )  =  ( - b1i + i b1r )
-   *   ( b3r + i b3i )     ( {a3r - a0i} + i{a3i + a0r} )     ( - b0i + i b0r ) 
-   */
-
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re];
-      bptr[ boffset++ ] = a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re];
-      bptr[ boffset++ ] = a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = -a_tmp[1][col][im];
-      bptr[ boffset++ ] =  a_tmp[1][col][re];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = -a_tmp[0][col][im];
-      bptr[ boffset++ ] =  a_tmp[0][col][re];
-    }
-
-
-  }  
   
 }
 
@@ -854,60 +325,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-
-  /*                              ( 1  0  0  1)  ( a0 )    ( a0 + a3 )
-   *  B  :=  ( 1 - Gamma  ) A  =  ( 0  1 -1  0)  ( a1 )  = ( a1 - a2 )
-   *                    1         ( 0 -1  1  0)  ( a2 )    ( a2 - a1 )
-   *                              ( 1  0  0  1)  ( a3 )    ( a3 + a0 )
-	 
-   * The bottom components of be may be reconstructed using the formula
-
-   *  ( b2r + i b2i )  =  ( {a2r - a1r} + i{a2i - a1i} )  =  ( - b1r - i b1i )
-   *  ( b3r + i b3i )     ( {a3r + a0r} + i{a3i + a0i} )     (   b0r + i b0i ) 
-   */
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re];
-      bptr[ boffset++ ] = a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re];
-      bptr[ boffset++ ] = a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] =  -a_tmp[1][col][re];
-      bptr[ boffset++ ] =  -a_tmp[1][col][im];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] =  a_tmp[0][col][re];
-      bptr[ boffset++ ] =  a_tmp[0][col][im];
-    }
-
-  }  
-
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinReconDir1Minus(aptr, bptr, n_vec);
 }
 
 // d = SpinReconstructDir2Minus(Vec);
@@ -928,59 +347,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-
-  /*                              ( 1  0 -i  0)  ( a0 )    ( a0 - i a2 )
-   *  B  :=  ( 1 - Gamma  ) A  =  ( 0  1  0  i)  ( a1 )  = ( a1 + i a3 )
-   *                    2         ( i  0  1  0)  ( a2 )    ( a2 + i a0 )
-   *                              ( 0 -i  0  1)  ( a3 )    ( a3 - i a1 )
-
-   * The bottom components of be may be reconstructed using the formula
-   *  ( b2r + i b2i )  =  ( {a2r - a0i} + i{a2i + a0r} )  =  ( - b0i + i b0r )
-   *  ( b3r + i b3i )     ( {a3r + a1i} + i{a3i - a1r} )     (   b1i - i b1r )
-   */
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re];
-      bptr[ boffset++ ] = a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re];
-      bptr[ boffset++ ] = a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] =  -a_tmp[0][col][im];
-      bptr[ boffset++ ] =   a_tmp[0][col][re];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] =  a_tmp[1][col][im];
-      bptr[ boffset++ ] = -a_tmp[1][col][re];
-    }
-
-  }  
-
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinReconDir2Minus(aptr, bptr, n_vec);
 }
 
 // d = SpinReconstructDir3Minus(Vec);
@@ -1000,59 +368,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  /*                              ( 1  0 -1  0)  ( a0 )    ( a0 - a2 )
-   *  B  :=  ( 1 - Gamma  ) A  =  ( 0  1  0 -1)  ( a1 )  = ( a1 - a3 )
-   *                    3         (-1  0  1  0)  ( a2 )    ( a2 - a0 )
-   *                              ( 0 -1  0  1)  ( a3 )    ( a3 - a1 )
-      
-   * The bottom components of be may be reconstructed using the formula
-   *  ( b2r + i b2i )  =  ( {a2r - a0r} + i{a2i - a0i} )  =  ( - b0r - i b0i )
-   *  ( b3r + i b3i )     ( {a3r - a1r} + i{a3i - a1i} )     ( - b1r - i b1i ) 
-   */
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[0][col][re];
-      bptr[ boffset++ ] = a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] = a_tmp[1][col][re];
-      bptr[ boffset++ ] = a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] =  -a_tmp[0][col][re];
-      bptr[ boffset++ ] =  -a_tmp[0][col][im];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] =  -a_tmp[1][col][re];
-      bptr[ boffset++ ] =  -a_tmp[1][col][im];
-    }
-
-  }  
-
-
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineSpinReconDir3Minus(aptr, bptr, n_vec);
 }
 
 
@@ -1075,57 +392,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-
-  /* 1 + \gamma_0 =  1  0  0  i 
-                     0  1  i  0
-                     0 -i  1  0
-                    -i  0  0  1 
- 
-    *  ( b2r + i b2i )  =  ( {a2r + a1i} + i{a2i - a1r} )  =  ( b1i - i b1r )
-    *  ( b3r + i b3i )     ( {a3r + a0i} + i{a3i - a0r} )     ( b0i - i b0r ) 
-   */
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[0][col][re];
-      bptr[ boffset++ ] += a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[1][col][re];
-      bptr[ boffset++ ] += a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] +=  a_tmp[1][col][im];
-      bptr[ boffset++ ] -=  a_tmp[1][col][re];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] +=  a_tmp[0][col][im];
-      bptr[ boffset++ ] -=  a_tmp[0][col][re];
-    }
-
-
-  }  
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineAddSpinReconDir0Plus(aptr, bptr, n_vec);
 
 }
 
@@ -1146,58 +414,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-
-  /* 1 + \gamma_1 =  1  0  0 -1 
-                     0  1  1  0
-                     0  1  1  0
-                    -1  0  0  1 
- 
-
-   *   ( b2r + i b2i )  =  ( {a2r + a1r} + i{a2i + a1i} )  =  (   b1r + i b1i )
-   *   ( b3r + i b3i )     ( {a3r - a0r} + i{a3i - a0i} )     ( - b0r - i b0i ) 
-  
-  */
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[0][col][re];
-      bptr[ boffset++ ] += a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[1][col][re];
-      bptr[ boffset++ ] += a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] +=  a_tmp[1][col][re];
-      bptr[ boffset++ ] +=  a_tmp[1][col][im];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] -= a_tmp[0][col][re];
-      bptr[ boffset++ ] -= a_tmp[0][col][im];
-    }
-
-  }  
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineAddSpinReconDir1Plus(aptr, bptr, n_vec);
 
 }
 
@@ -1218,56 +436,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  
-  /* 1 + \gamma_2 =  1  0  i  0 
-                     0  1  0 -i
-                    -i  0  1  0
-                     0  i  0  1 
-		     
-   *  ( b2r + i b2i )  =  ( {a2r + a0i} + i{a2i - a0r} )  =  (   b0i - i b0r )
-   *  ( b3r + i b3i )     ( {a3r - a1i} + i{a3i + a1r} )     ( - b1i + i b1r ) 
-  */
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[0][col][re];
-      bptr[ boffset++ ] += a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[1][col][re];
-      bptr[ boffset++ ] += a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] +=   a_tmp[0][col][im];
-      bptr[ boffset++ ] -=   a_tmp[0][col][re];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] -= a_tmp[1][col][im];
-      bptr[ boffset++ ] +=  a_tmp[1][col][re];
-    }
-
-  }  
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineAddSpinReconDir2Plus(aptr, bptr, n_vec);
 
 }
 
@@ -1288,59 +458,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-
-  /*                              ( 1  0  1  0)  ( a0 )    ( a0 + a2 )
-   *  B  :=  ( 1 + Gamma  ) A  =  ( 0  1  0  1)  ( a1 )  = ( a1 + a3 )
-   *                    3         ( 1  0  1  0)  ( a2 )    ( a2 + a0 )
-   *                              ( 0  1  0  1)  ( a3 )    ( a3 + a1 )
-   
-   * The bottom components of be may be reconstructed using the formula
-   
-   *   ( b2r + i b2i )  =  ( {a2r + a0r} + i{a2i + a0i} )  =  ( b0r + i b0i )
-   *   ( b3r + i b3i )     ( {a3r + a1r} + i{a3i + a1i} )     ( b1r + i b1i ) 
-   */
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[0][col][re];
-      bptr[ boffset++ ] += a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[1][col][re];
-      bptr[ boffset++ ] += a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] +=   a_tmp[0][col][re];
-      bptr[ boffset++ ] +=   a_tmp[0][col][im];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] +=  a_tmp[1][col][re];
-      bptr[ boffset++ ] +=  a_tmp[1][col][im];
-    }
-
-  }  
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineAddSpinReconDir3Plus(aptr, bptr, n_vec);
 
 }
 
@@ -1362,59 +481,10 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  /*                              ( 1  0  0 -i)  ( a0 )    ( a0 - i a3 )
-   *  B  :=  ( 1 - Gamma  ) A  =  ( 0  1 -i  0)  ( a1 )  = ( a1 - i a2 )
-   *                    0         ( 0  i  1  0)  ( a2 )    ( a2 + i a1 )
-   *                              ( i  0  0  1)  ( a3 )    ( a3 + i a0 )
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineAddSpinReconDir0Minus(aptr, bptr, n_vec);
 
-   * The bottom components of be may be reconstructed using the formula
-
-   *   ( b2r + i b2i )  =  ( {a2r - a1i} + i{a2i + a1r} )  =  ( - b1i + i b1r )
-   *   ( b3r + i b3i )     ( {a3r - a0i} + i{a3i + a0r} )     ( - b0i + i b0r ) 
-   */
-
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[0][col][re];
-      bptr[ boffset++ ] += a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[1][col][re];
-      bptr[ boffset++ ] += a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] -= a_tmp[1][col][im];
-      bptr[ boffset++ ] +=  a_tmp[1][col][re];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] -= a_tmp[0][col][im];
-      bptr[ boffset++ ] +=  a_tmp[0][col][re];
-    }
-
-  }  
+  
 }
 
 // d += SpinReconstructDir1Minus(Vec);
@@ -1434,59 +504,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-
-  /*                              ( 1  0  0  1)  ( a0 )    ( a0 + a3 )
-   *  B  :=  ( 1 - Gamma  ) A  =  ( 0  1 -1  0)  ( a1 )  = ( a1 - a2 )
-   *                    1         ( 0 -1  1  0)  ( a2 )    ( a2 - a1 )
-   *                              ( 1  0  0  1)  ( a3 )    ( a3 + a0 )
-	 
-   * The bottom components of be may be reconstructed using the formula
-
-   *  ( b2r + i b2i )  =  ( {a2r - a1r} + i{a2i - a1i} )  =  ( - b1r - i b1i )
-   *  ( b3r + i b3i )     ( {a3r + a0r} + i{a3i + a0i} )     (   b0r + i b0i ) 
-   */
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[0][col][re];
-      bptr[ boffset++ ] += a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[1][col][re];
-      bptr[ boffset++ ] += a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] -=  a_tmp[1][col][re];
-      bptr[ boffset++ ] -=  a_tmp[1][col][im];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] +=  a_tmp[0][col][re];
-      bptr[ boffset++ ] +=  a_tmp[0][col][im];
-    }
-
-  }  
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineAddSpinReconDir1Minus(aptr, bptr, n_vec);
 
 }
 
@@ -1508,59 +527,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-
-  /*                              ( 1  0 -i  0)  ( a0 )    ( a0 - i a2 )
-   *  B  :=  ( 1 - Gamma  ) A  =  ( 0  1  0  i)  ( a1 )  = ( a1 + i a3 )
-   *                    2         ( i  0  1  0)  ( a2 )    ( a2 + i a0 )
-   *                              ( 0 -i  0  1)  ( a3 )    ( a3 - i a1 )
-
-   * The bottom components of be may be reconstructed using the formula
-   *  ( b2r + i b2i )  =  ( {a2r - a0i} + i{a2i + a0r} )  =  ( - b0i + i b0r )
-   *  ( b3r + i b3i )     ( {a3r + a1i} + i{a3i - a1r} )     (   b1i - i b1r )
-   */
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[0][col][re];
-      bptr[ boffset++ ] += a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[1][col][re];
-      bptr[ boffset++ ] += a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] -=  a_tmp[0][col][im];
-      bptr[ boffset++ ] +=   a_tmp[0][col][re];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] +=  a_tmp[1][col][im];
-      bptr[ boffset++ ] -= a_tmp[1][col][re];
-    }
-
-  }  
-
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineAddSpinReconDir2Minus(aptr, bptr, n_vec);
 }
 
 // d += SpinReconstructDir3Minus(Vec);
@@ -1581,58 +549,8 @@ void evaluate(OLattice< FVec >& b,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL *bptr =(REAL *)&(b.elem(s.start()).elem(0).elem(0).real());
 
-  unsigned long aoffset=0;
-  unsigned long boffset=0;
-  const int re=0;
-  const int im=1;
-  /*                              ( 1  0 -1  0)  ( a0 )    ( a0 - a2 )
-   *  B  :=  ( 1 - Gamma  ) A  =  ( 0  1  0 -1)  ( a1 )  = ( a1 - a3 )
-   *                    3         (-1  0  1  0)  ( a2 )    ( a2 - a0 )
-   *                              ( 0 -1  0  1)  ( a3 )    ( a3 - a1 )
-      
-   * The bottom components of be may be reconstructed using the formula
-   *  ( b2r + i b2i )  =  ( {a2r - a0r} + i{a2i - a0i} )  =  ( - b0r - i b0i )
-   *  ( b3r + i b3i )     ( {a3r - a1r} + i{a3i - a1i} )     ( - b1r - i b1i ) 
-   */
-
-  for(int site=s.start(); site <= s.end(); ++site) {
-    // Temporary to hold all of a
-    SpinColHalf a_tmp; 
-    
-    // Stream in a 
-    for(int spin=0; spin < 2; spin++) { 
-      for(int col=0; col < 3; col++) { 
-	a_tmp[spin][col][re] = aptr[(aoffset++)];
-	a_tmp[spin][col][im] = aptr[(aoffset++)];
-      }
-    }
-
-    // Output Component 0
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[0][col][re];
-      bptr[ boffset++ ] += a_tmp[0][col][im];
-    }
-    
-    // Output Component 1
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] += a_tmp[1][col][re];
-      bptr[ boffset++ ] += a_tmp[1][col][im];
-    }
-
-    // Output Component 2
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] -=  a_tmp[0][col][re];
-      bptr[ boffset++ ] -=  a_tmp[0][col][im];
-    }
-    
-    // Output Component 3
-    for(int col=0; col < 3; col++) {
-      bptr[ boffset++ ] -=  a_tmp[1][col][re];
-      bptr[ boffset++ ] -=  a_tmp[1][col][im];
-    }
-
-  }  
-
+  unsigned int n_vec=s.end() - s.start()+1;
+  inlineAddSpinReconDir3Minus(aptr, bptr, n_vec);
 }
 
 QDP_END_NAMESPACE();

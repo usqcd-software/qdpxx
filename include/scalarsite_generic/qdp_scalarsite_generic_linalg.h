@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_generic_linalg.h,v 1.4 2004-07-27 05:34:29 edwards Exp $
+// $Id: qdp_scalarsite_generic_linalg.h,v 1.5 2007-02-06 15:01:58 bjoo Exp $
 
 /*! @file
  * @brief Generic optimizations
@@ -28,7 +28,7 @@ typedef RComplex<REAL>  RComplexFloat;
 #include "scalarsite_generic/generic_mult_an.h"
 #include "scalarsite_generic/generic_mult_aa.h"
 #include "scalarsite_generic/generic_mat_vec.h"
-#include "scalarsite_generic/generic_adj_mat_vec.h"
+// #include "scalarsite_generic/generic_adj_mat_vec.h" -- No longer used."
 #include "scalarsite_generic/generic_addvec.h"
 
 

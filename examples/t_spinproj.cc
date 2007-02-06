@@ -1,4 +1,4 @@
-// $Id: t_spinproj.cc,v 1.2 2007-01-31 00:32:12 bjoo Exp $
+// $Id: t_spinproj.cc,v 1.3 2007-02-06 15:01:57 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -548,14 +548,14 @@ int main(int argc, char *argv[])
   H3= adj(u)*H2;
 
   diff = H3 - H;
-  QDPIO::cout << "AdjProj2+: || old - new || / || old || = " << sqrt(norm2(diff)/norm2(H)) << endl;
+  QDPIO::cout << "AdjProj3+: || old - new || / || old || = " << sqrt(norm2(diff)/norm2(H)) << endl;
   
   H = adj(u)*spinProjectDir3Minus(V);
   H2= spinProjectDir3Minus(V);
   H3= adj(u)*H2;
 
   diff = H3 - H;
-  QDPIO::cout << "AdjProj2-: || old - new || / || old || = " << sqrt(norm2(diff)/norm2(H)) << endl;
+  QDPIO::cout << "AdjProj3-: || old - new || / || old || = " << sqrt(norm2(diff)/norm2(H)) << endl;
 
 
   gaussian(H);
