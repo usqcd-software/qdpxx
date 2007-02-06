@@ -1,3 +1,8 @@
+02/06/2006 -- Balint Joo
+	Version 1.21.7: Added various generic spin projection and recon 
+        optimizations and hooks, which hopefully will be useful for
+	temporal preconditioning in chroma
+
 11/21/2006 -- Robert Edwards
 
 	Version 1.21.6: Fix zero-length arrays in read/write xml.
