@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.26 2007-02-06 15:01:57 bjoo Exp $
+// $Id: qdp_primscalar.h,v 1.27 2007-02-06 15:07:11 bjoo Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -446,7 +446,6 @@ template<class T1, class T2>
 inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, OpMultiplyAdj>::Type_t
 multiplyAdj(const PScalar<T1>& l, const PSpinVector<T2,4>& r)
 {
-  QDPIO::cout << "Foo" << endl << flush ;
   return multiplyAdj(l.elem(), r.elem());
 }
 

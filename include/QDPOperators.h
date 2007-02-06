@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: QDPOperators.h,v 1.21 2007-02-06 15:01:57 bjoo Exp $
+// $Id: QDPOperators.h,v 1.22 2007-02-06 15:07:11 bjoo Exp $
 
 /*! @file
  * @brief Bulk of QDP operators produced by PETE
@@ -4912,8 +4912,6 @@ spinReconstructDir0Minus(const QDPExpr<T1,C1> & l)
   typedef UnaryNode<FnSpinReconstructDir0Minus,
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
   typedef typename UnaryReturn<C1,FnSpinReconstructDir0Minus >::Type_t Container_t;
-
-  QDPIO::cout << "Got Here 1" << endl << flush;
 
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
