@@ -1,3 +1,42 @@
+2007-02-06 10:13  bjoo
+
+	* examples/t_spinproj2.cc: t_spinproj2 test program
+
+2007-02-06 10:09  bjoo
+
+	* aclocal.m4, configure: Updated autofiles on qcdi02
+
+2007-02-06 10:07  bjoo
+
+	* include/: QDPOperators.h, qdp_primscalar.h: Cleaned out some
+	  unwanted diag messages
+
+2007-02-06 10:01  bjoo
+
+	* examples/Makefile.am, examples/t_spinproj.cc,
+	  include/Makefile.am, include/QDPOperators.h,
+	  include/qdp_optops.h, include/qdp_primscalar.h,
+	  include/qdp_scalarsite_bagel_qdp.h,
+	  include/qdp_scalarsite_generic.h, include/qdp_scalarsite_sse.h,
+	  include/scalarsite_generic/generic_adj_mat_vec.h,
+	  include/scalarsite_generic/generic_fused_spin_proj.h,
+	  include/scalarsite_generic/generic_fused_spin_recon.h,
+	  include/scalarsite_generic/generic_mat_vec.h,
+	  include/scalarsite_generic/generic_mv_switchbox.h,
+	  include/scalarsite_generic/generic_spin_aggregate.h,
+	  include/scalarsite_generic/generic_spin_proj.h,
+	  include/scalarsite_generic/generic_spin_proj_inlines.h,
+	  include/scalarsite_generic/generic_spin_recon.h,
+	  include/scalarsite_generic/generic_spin_recon_inlines.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_proj.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_recon.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_linalg.h,
+	  include/scalarsite_generic/qdp_scalarsite_spin_project.h,
+	  include/scalarsite_sse/sse_mv_switchbox.h,
+	  include/scalarsite_sse/sse_spin_aggregate.h,
+	  other_libs/qio/include/qio_config_internal.h.in: Added more spin
+	  ops and hooks. Next step to do the projections in SSE
+
 2007-01-30 19:32  bjoo
 
 	* examples/t_spinproj.cc, include/Makefile.am,
