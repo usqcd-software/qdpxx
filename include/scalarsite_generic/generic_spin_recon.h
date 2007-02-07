@@ -6,6 +6,10 @@ QDP_BEGIN_NAMESPACE(QDP)
 typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 4> Spin4;
 typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 2> Spin2;
 
+template<>
+struct UnaryReturn<Spin2, FnSpinReconstructDir0Minus> {
+  typedef Spin4 QDP_ALIGN16 Type_t;
+};
 
 template<>
 inline UnaryReturn<Spin2, FnSpinReconstructDir0Minus>::Type_t
@@ -22,6 +26,11 @@ spinReconstructDir0Minus(const Spin2& s1)
 }
 
 template<>
+struct UnaryReturn<Spin2, FnSpinReconstructDir0Plus> {
+  typedef Spin4 QDP_ALIGN16 Type_t;
+};
+
+template<>
 inline UnaryReturn<Spin2, FnSpinReconstructDir0Plus>::Type_t
 spinReconstructDir0Plus(const Spin2& s1)
 {
@@ -34,6 +43,12 @@ spinReconstructDir0Plus(const Spin2& s1)
 
   return d;
 }
+
+
+template<>
+struct UnaryReturn<Spin2, FnSpinReconstructDir1Minus> {
+  typedef Spin4 QDP_ALIGN16 Type_t;
+};
 
 
 template<>
@@ -52,6 +67,11 @@ spinReconstructDir1Minus(const Spin2& s1)
 }
 
 template<>
+struct UnaryReturn<Spin2, FnSpinReconstructDir1Plus> {
+  typedef Spin4 QDP_ALIGN16 Type_t;
+};
+
+template<>
 inline UnaryReturn<Spin2, FnSpinReconstructDir1Plus>::Type_t
 spinReconstructDir1Plus(const Spin2& s1)
 {
@@ -67,6 +87,12 @@ spinReconstructDir1Plus(const Spin2& s1)
 
 
 template<>
+struct UnaryReturn<Spin2, FnSpinReconstructDir2Minus> {
+  typedef Spin4 QDP_ALIGN16 Type_t;
+};
+
+
+template<>
 inline UnaryReturn<Spin2, FnSpinReconstructDir2Minus>::Type_t
 spinReconstructDir2Minus(const Spin2& s1)
 {
@@ -78,6 +104,12 @@ spinReconstructDir2Minus(const Spin2& s1)
 
   return d;
 }
+
+
+template<>
+struct UnaryReturn<Spin2, FnSpinReconstructDir2Plus> {
+  typedef Spin4 QDP_ALIGN16 Type_t;
+};
 
 template<>
 inline UnaryReturn<Spin2, FnSpinReconstructDir2Plus>::Type_t
@@ -95,6 +127,11 @@ spinReconstructDir2Plus(const Spin2& s1)
 
 
 template<>
+struct UnaryReturn<Spin2, FnSpinReconstructDir3Minus> {
+  typedef Spin4 QDP_ALIGN16 Type_t;
+};
+
+template<>
 inline UnaryReturn<Spin2, FnSpinReconstructDir3Minus>::Type_t
 spinReconstructDir3Minus(const Spin2& s1)
 {
@@ -106,6 +143,11 @@ spinReconstructDir3Minus(const Spin2& s1)
 
   return d;
 }
+
+template<>
+struct UnaryReturn<Spin2, FnSpinReconstructDir3Plus> {
+  typedef Spin4 QDP_ALIGN16 Type_t;
+};
 
 template<>
 inline UnaryReturn<Spin2, FnSpinReconstructDir3Plus>::Type_t

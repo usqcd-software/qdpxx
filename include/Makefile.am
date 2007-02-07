@@ -55,9 +55,9 @@ GENERIC_HDRS = qdp_scalarsite_generic.h \
 	$(genericdir)/generic_spin_recon.h \
 	$(genericdir)/generic_fused_spin_proj.h \
 	$(genericdir)/generic_fused_spin_recon.h \
-	$(genericdir)/qdp_scalarsite_spin_project.h \
-	$(genericdir)/qdp_generic_fused_spin_proj.h \
-	$(genericdir)/qdp_generic_fused_spin_recon.h \
+	$(genericdir)/qdp_generic_spin_project_evaluates.h \
+	$(genericdir)/qdp_generic_fused_spin_proj_evaluates.h \
+	$(genericdir)/qdp_generic_fused_spin_recon_evaluates.h \
 	$(genericdir)/generic_spin_aggregate.h
 
 
@@ -86,7 +86,16 @@ SSESITE_HDRS = qdp_scalarsite_sse.h \
 	$(ssesitedir)/sse_blas_vaypx3_g5.h \
 	$(ssesitedir)/sse_blas_vaxpby3_g5.h \
 	$(ssesitedir)/sse_spin_aggregate.h \
-	$(ssesitedir)/sse_mv_switchbox.h
+	$(ssesitedir)/sse_mv_switchbox.h \
+	$(ssesitedir)/sse_spin_proj_inlines.h \
+	$(ssesitedir)/sse_spin_recon_inlines.h \
+	$(ssesitedir)/sse_spin_proj.h \
+	$(ssesitedir)/sse_spin_recon.h \
+	$(ssesitedir)/sse_fused_spin_proj.h \
+	$(ssesitedir)/sse_fused_spin_recon.h \
+	$(ssesitedir)/qdp_sse_spin_evaluates.h \
+	$(ssesitedir)/qdp_sse_spin_proj_evaluates.h \
+	$(ssesitedir)/qdp_sse_spin_recon_evaluates.h
 
 # Scalarvectsite SSE extensions
 ssevecdir = scalarvecsite_sse

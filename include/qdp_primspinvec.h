@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinvec.h,v 1.6 2006-01-12 02:17:40 bjoo Exp $
+// $Id: qdp_primspinvec.h,v 1.7 2007-02-07 20:45:45 bjoo Exp $
 
 /*! \file
  * \brief Primitive Spin Vector
@@ -250,7 +250,7 @@ struct UnaryReturn<PSpinVector<T,N>, FnSpinProjectDir3Plus > {
 
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinProjectDir0Minus > {
-  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir0Minus>::Type_t, (N>>1) >  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSpinProjectDir0Minus>::Type_t, (N>>1) > Type_t;
 };
 
 template<class T, int N>

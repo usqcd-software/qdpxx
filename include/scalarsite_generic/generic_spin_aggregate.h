@@ -15,8 +15,8 @@
 #include "scalarsite_generic/generic_fused_spin_recon.h"
 
 // These are the 'evaluates'
-#include "scalarsite_generic/qdp_scalarsite_spin_project.h"
-#include "scalarsite_generic/qdp_generic_fused_spin_proj.h"
-#include "scalarsite_generic/qdp_generic_fused_spin_recon.h"
+#include "scalarsite_generic/qdp_generic_spin_project_evaluates.h"
+#include "scalarsite_generic/qdp_generic_fused_spin_proj_evaluates.h"
+#include "scalarsite_generic/qdp_generic_fused_spin_recon_evaluates.h"
 
 #endif

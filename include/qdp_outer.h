@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.47 2006-01-21 17:38:20 edwards Exp $
+// $Id: qdp_outer.h,v 1.48 2007-02-07 20:45:45 bjoo Exp $
 
 #include "qdp_config.h"
 
@@ -133,7 +133,7 @@ public:
   inline const T& elem(int i) const {return F;}  // The indexing is a nop
 
 private:
-  T F;
+  T F QDP_ALIGN16;
 };
 
 

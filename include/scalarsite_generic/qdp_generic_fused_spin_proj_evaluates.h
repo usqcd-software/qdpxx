@@ -1,5 +1,5 @@
-#ifndef QDP_SCALARSITE_FUSED_SPIN_PROJ_H
-#define QDP_SCALARSITE_FUSED_SPIN_PROJ_H
+#ifndef QDP_GENERIC_FUSED_SPIN_PROJ_EVALUATES_H
+#define QDP_GENERIC_FUSED_SPIN_PROJ_EVALUATES_H
 
 
 /* Evaluates for things like adj(u)*spinProjectDir0Plus(y) */

@@ -1,4 +1,4 @@
-// $Id: t_spinproj2.cc,v 1.1 2007-02-06 15:13:31 bjoo Exp $
+// $Id: t_spinproj2.cc,v 1.2 2007-02-07 20:45:45 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
   OScalar<PScalar<PColorMatrix< RComplex<REAL>, 3 > > > u, u2, u3;
 
   // Fermion
-  OScalar<PSpinVector<PColorVector< RComplex<REAL>, 3>, 4> > v,v2,v3,diff_v;
+  OScalar<PSpinVector<PColorVector< RComplex<REAL>, 3>, 4> >  v,v2,v3,diff_v;
 
   // HalfFermion
   OScalar<PSpinVector<PColorVector< RComplex<REAL>, 3>, 2> > hv,hv2,hv3,diff_hv;

@@ -1,6 +1,8 @@
 #ifndef GENERIC_SPIN_PROJ_H
 #define GENERIC_SPIN_PROJ_H
 
+#include <stdio.h>
+
 QDP_BEGIN_NAMESPACE(QDP);
 typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 4> Spin4;
 typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 2> Spin2;
@@ -9,11 +11,16 @@ typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 2> Spin2;
 // Proj Dir=0 Minus
 //-------------------------
 template<>
+struct  UnaryReturn<Spin4, FnSpinProjectDir0Minus> {
+ typedef Spin2 QDP_ALIGN16 Type_t;
+};
+
+template<>
 inline UnaryReturn<Spin4, FnSpinProjectDir0Minus>::Type_t
 spinProjectDir0Minus(const Spin4& s1)
 {
   UnaryReturn<Spin4, FnSpinProjectDir0Minus>::Type_t  d;
- 
+
   inlineSpinProjDir0Minus(&(s1.elem(0).elem(0).real()),
 			  &(d.elem(0).elem(0).real()),
 			  1);
@@ -26,12 +33,17 @@ spinProjectDir0Minus(const Spin4& s1)
 // Proj Dir=0 Plus
 //-------------------------
 template<>
+struct  UnaryReturn<Spin4, FnSpinProjectDir0Plus> {
+ typedef Spin2 QDP_ALIGN16 Type_t;
+};
+
+template<>
 inline UnaryReturn<Spin4, FnSpinProjectDir0Plus>::Type_t
 spinProjectDir0Plus(const Spin4& s1)
 {
   UnaryReturn<Spin4, FnSpinProjectDir0Plus>::Type_t  d;
 
-
+ 
   inlineSpinProjDir0Plus(&(s1.elem(0).elem(0).real()),
 			  &(d.elem(0).elem(0).real()),
 			  1);
@@ -44,6 +56,11 @@ spinProjectDir0Plus(const Spin4& s1)
 //-------------------------
 // Proj Dir=1 Minus
 //-------------------------
+template<>
+struct  UnaryReturn<Spin4, FnSpinProjectDir1Minus> {
+ typedef Spin2 QDP_ALIGN16 Type_t;
+};
+
 template<>
 inline UnaryReturn<Spin4, FnSpinProjectDir1Minus>::Type_t
 spinProjectDir1Minus(const Spin4& s1)
@@ -63,6 +80,11 @@ spinProjectDir1Minus(const Spin4& s1)
 // Proj Dir=1 Plus
 //-------------------------
 template<>
+struct  UnaryReturn<Spin4, FnSpinProjectDir1Plus> {
+ typedef Spin2 QDP_ALIGN16 Type_t;
+};
+
+template<>
 inline UnaryReturn<Spin4, FnSpinProjectDir1Plus>::Type_t
 spinProjectDir1Plus(const Spin4& s1)
 {
@@ -78,6 +100,11 @@ spinProjectDir1Plus(const Spin4& s1)
 //-------------------------
 // Proj Dir=2 Minus
 //-------------------------
+template<>
+struct  UnaryReturn<Spin4, FnSpinProjectDir2Minus> {
+ typedef Spin2 QDP_ALIGN16 Type_t;
+};
+
 template<>
 inline UnaryReturn<Spin4, FnSpinProjectDir2Minus>::Type_t
 spinProjectDir2Minus(const Spin4& s1)
@@ -106,6 +133,11 @@ spinProjectDir2Minus(const Spin4& s1)
 // Proj Dir=2 Plus
 //-------------------------
 template<>
+struct  UnaryReturn<Spin4, FnSpinProjectDir2Plus> {
+ typedef Spin2 QDP_ALIGN16 Type_t;
+};
+
+template<>
 inline UnaryReturn<Spin4, FnSpinProjectDir2Plus>::Type_t
 spinProjectDir2Plus(const Spin4& s1)
 {
@@ -124,6 +156,12 @@ spinProjectDir2Plus(const Spin4& s1)
 // Proj Dir=3 Minus
 //-------------------------
 template<>
+struct  UnaryReturn<Spin4, FnSpinProjectDir3Minus> {
+ typedef Spin2 QDP_ALIGN16 Type_t;
+};
+
+
+template<>
 inline UnaryReturn<Spin4, FnSpinProjectDir3Minus>::Type_t
 spinProjectDir3Minus(const Spin4& s1)
 {
@@ -140,6 +178,11 @@ spinProjectDir3Minus(const Spin4& s1)
 //-------------------------
 // Proj Dir=3 Plus
 //-------------------------
+template<>
+struct  UnaryReturn<Spin4, FnSpinProjectDir3Plus> {
+ typedef Spin2 QDP_ALIGN16 Type_t;
+};
+
 template<>
 inline UnaryReturn<Spin4, FnSpinProjectDir3Plus>::Type_t
 spinProjectDir3Plus(const Spin4& s1)
