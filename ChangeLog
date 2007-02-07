@@ -1,3 +1,33 @@
+2007-02-07 15:50  bjoo
+
+	* include/Makefile.am: Oopsie
+
+2007-02-07 15:45  bjoo
+
+	* aclocal.m4, configure, examples/t_spinproj.cc,
+	  examples/t_spinproj2.cc, include/Makefile.am,
+	  include/qdp_outer.h, include/qdp_primspinvec.h,
+	  include/scalarsite_generic/generic_spin_aggregate.h,
+	  include/scalarsite_generic/generic_spin_proj.h,
+	  include/scalarsite_generic/generic_spin_recon.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_proj.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_proj_evaluates.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_recon.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_recon_evaluates.h,
+	  include/scalarsite_generic/qdp_generic_spin_project_evaluates.h,
+	  include/scalarsite_generic/qdp_scalarsite_spin_project.h: Added
+	  SSE Stuff. Moved proj names around for non_sse
+
+2007-02-07 15:35  bjoo
+
+	* include/scalarsite_sse/: qdp_sse_fused_spin_proj_evaluates.h,
+	  qdp_sse_fused_spin_recon_evaluates.h, qdp_sse_spin_evaluates.h,
+	  sse_fused_spin_proj.h, sse_fused_spin_recon.h,
+	  sse_spin_aggregate.h, sse_spin_proj.h, sse_spin_proj_inlines.h,
+	  sse_spin_recon.h, sse_spin_recon_inlines.h: Added SSE versions of
+	  the projection stuff with compiler intrinsics. Duplicated hooks
+	  from generic and changed REAL to REAL 32
+
 2007-02-06 10:31  tag qdp1-21-7
 
 2007-02-06 10:31  bjoo
