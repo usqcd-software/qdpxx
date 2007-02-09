@@ -1,6 +1,11 @@
 #ifndef SSE_FUSED_SPIN_RECON_H
 #define SSE_FUSED_SPIN_RECON_H
 
+#ifdef _inline_sse_mult_su3_mat_hwvec
+#undef _inline_sse_mult_su3_mat_hwvec
+#endif
+#include "scalarsite_sse/sse_mat_hwvec.h"
+
 QDP_BEGIN_NAMESPACE(QDP);
  
 // Convenience Types
@@ -52,7 +57,7 @@ struct FnSReconDir0MinusProd
 template<class T1, class T2, int N>
 struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir0MinusProd>
 {
-  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir0Minus >::Type_t Type_t;
+  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir0Minus >::Type_t  Type_t;
 };
 
 // For Generic Subtypes of OLattice<> and OScalar<>
@@ -60,7 +65,7 @@ struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir0MinusProd>
 template<class T1, class T2, int N>
 inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N> , FnSReconDir0MinusProd>::Type_t
 sreconDir0Minus(const PScalar<T1>& a, const PSpinVector<T2,N>& b) {
-  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp ;
   tmp=a*b;
   typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, FnSReconDir0MinusProd>::Type_t ret;
   ret = spinReconstructDir0Minus(tmp);
@@ -121,7 +126,7 @@ struct FnSReconDir0PlusProd
 template<class T1, class T2, int N>
 struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir0PlusProd>
 {
-  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir0Plus >::Type_t Type_t;
+  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir0Plus >::Type_t  Type_t;
 };
 
 // For Generic Subtypes of OLattice<> and OScalar<>
@@ -129,7 +134,7 @@ struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir0PlusProd>
 template<class T1, class T2, int N>
 inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N> , FnSReconDir0PlusProd>::Type_t
 sreconDir0Plus(const PScalar<T1>& a, const PSpinVector<T2,N>& b) {
-  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp ;
   tmp=a*b;
   typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, FnSReconDir0PlusProd>::Type_t ret;
   ret = spinReconstructDir0Plus(tmp);
@@ -190,7 +195,7 @@ struct FnSReconDir1MinusProd
 template<class T1, class T2, int N>
 struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir1MinusProd>
 {
-  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir1Minus >::Type_t Type_t;
+  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir1Minus >::Type_t  Type_t;
 };
 
 // For Generic Subtypes of OLattice<> and OScalar<>
@@ -198,7 +203,7 @@ struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir1MinusProd>
 template<class T1, class T2, int N>
 inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N> , FnSReconDir1MinusProd>::Type_t
 sreconDir1Minus(const PScalar<T1>& a, const PSpinVector<T2,N>& b) {
-  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp ;
   tmp=a*b;
   typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, FnSReconDir1MinusProd>::Type_t ret;
   ret = spinReconstructDir1Minus(tmp);
@@ -259,7 +264,7 @@ struct FnSReconDir1PlusProd
 template<class T1, class T2, int N>
 struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir1PlusProd>
 {
-  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir1Plus >::Type_t Type_t;
+  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir1Plus >::Type_t  Type_t;
 };
 
 // For Generic Subtypes of OLattice<> and OScalar<>
@@ -267,7 +272,7 @@ struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir1PlusProd>
 template<class T1, class T2, int N>
 inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N> , FnSReconDir1PlusProd>::Type_t
 sreconDir1Plus(const PScalar<T1>& a, const PSpinVector<T2,N>& b) {
-  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp ;
   tmp=a*b;
   typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, FnSReconDir1PlusProd>::Type_t ret;
   ret = spinReconstructDir1Plus(tmp);
@@ -329,7 +334,7 @@ struct FnSReconDir2MinusProd
 template<class T1, class T2, int N>
 struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir2MinusProd>
 {
-  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir2Minus >::Type_t Type_t;
+  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir2Minus >::Type_t  Type_t;
 };
 
 // For Generic Subtypes of OLattice<> and OScalar<>
@@ -337,7 +342,7 @@ struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir2MinusProd>
 template<class T1, class T2, int N>
 inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N> , FnSReconDir2MinusProd>::Type_t
 sreconDir2Minus(const PScalar<T1>& a, const PSpinVector<T2,N>& b) {
-  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp ;
   tmp=a*b;
   typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, FnSReconDir2MinusProd>::Type_t ret;
   ret = spinReconstructDir2Minus(tmp);
@@ -398,7 +403,7 @@ struct FnSReconDir2PlusProd
 template<class T1, class T2, int N>
 struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir2PlusProd>
 {
-  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir2Plus >::Type_t Type_t;
+  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir2Plus >::Type_t  Type_t;
 };
 
 // For Generic Subtypes of OLattice<> and OScalar<>
@@ -406,7 +411,7 @@ struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir2PlusProd>
 template<class T1, class T2, int N>
 inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N> , FnSReconDir2PlusProd>::Type_t
 sreconDir2Plus(const PScalar<T1>& a, const PSpinVector<T2,N>& b) {
-  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp ;
   tmp=a*b;
   typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, FnSReconDir2PlusProd>::Type_t ret;
   ret = spinReconstructDir2Plus(tmp);
@@ -468,7 +473,7 @@ struct FnSReconDir3MinusProd
 template<class T1, class T2, int N>
 struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir3MinusProd>
 {
-  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir3Minus >::Type_t Type_t;
+  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir3Minus >::Type_t  Type_t;
 };
 
 // For Generic Subtypes of OLattice<> and OScalar<>
@@ -476,7 +481,7 @@ struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir3MinusProd>
 template<class T1, class T2, int N>
 inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N> , FnSReconDir3MinusProd>::Type_t
 sreconDir3Minus(const PScalar<T1>& a, const PSpinVector<T2,N>& b) {
-  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp ;
   tmp=a*b;
   typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, FnSReconDir3MinusProd>::Type_t ret;
   ret = spinReconstructDir3Minus(tmp);
@@ -536,7 +541,7 @@ struct FnSReconDir3PlusProd
 template<class T1, class T2, int N>
 struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir3PlusProd>
 {
-  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir3Plus >::Type_t Type_t;
+  typedef typename UnaryReturn< PSpinVector<T2,N>, FnSpinReconstructDir3Plus >::Type_t  Type_t;
 };
 
 // For Generic Subtypes of OLattice<> and OScalar<>
@@ -544,7 +549,7 @@ struct BinaryReturn< PScalar<T1>, PSpinVector<T2, N>, FnSReconDir3PlusProd>
 template<class T1, class T2, int N>
 inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N> , FnSReconDir3PlusProd>::Type_t
 sreconDir3Plus(const PScalar<T1>& a, const PSpinVector<T2,N>& b) {
-  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t tmp ;
   tmp=a*b;
   typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, FnSReconDir3PlusProd>::Type_t ret;
   ret = spinReconstructDir3Plus(tmp);
@@ -594,9 +599,9 @@ template<>
 inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t
 sreconDir0Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
 {
-  PSpinVector<ColVec,2> d;
+  PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
-
+#if 0
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(0),
 			   d.elem(0));
@@ -604,6 +609,9 @@ sreconDir0Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(1),
 			   d.elem(1));
+#else
+  _inline_sse_mult_su3_mat_hwvec(a,b,d);
+#endif
 
   inlineSpinReconDir0Minus(&(d.elem(0).elem(0).real()),
 			  &(ret.elem(0).elem(0).real()),
@@ -618,9 +626,10 @@ template<>
 inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0PlusProd>::Type_t
 sreconDir0Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
 {
-  PSpinVector<ColVec,2> d;
+  PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
+#if 0
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(0),
 			   d.elem(0));
@@ -628,6 +637,9 @@ sreconDir0Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(1),
 			   d.elem(1));
+#else
+  _inline_sse_mult_su3_mat_hwvec(a, b, d);
+#endif
 
   inlineSpinReconDir0Plus(&(d.elem(0).elem(0).real()),
 			 &(ret.elem(0).elem(0).real()),
@@ -642,9 +654,10 @@ template<>
 inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir1MinusProd>::Type_t
 sreconDir1Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
 {
-  PSpinVector<ColVec,2> d;
+  PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
+#if 0
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(0),
 			   d.elem(0));
@@ -652,6 +665,9 @@ sreconDir1Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(1),
 			   d.elem(1));
+#else
+  _inline_sse_mult_su3_mat_hwvec(a, b, d);
+#endif
 
   inlineSpinReconDir1Minus(&(d.elem(0).elem(0).real()),
 			 &(ret.elem(0).elem(0).real()),
@@ -665,9 +681,10 @@ template<>
 inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir1PlusProd>::Type_t
 sreconDir1Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
 {
-  PSpinVector<ColVec,2> d;
+  PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
+#if 0
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(0),
 			   d.elem(0));
@@ -675,6 +692,10 @@ sreconDir1Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(1),
 			   d.elem(1));
+#else
+  _inline_sse_mult_su3_mat_hwvec(a, b, d);
+#endif
+
 
   inlineSpinReconDir1Plus(&(d.elem(0).elem(0).real()),
 			 &(ret.elem(0).elem(0).real()),
@@ -688,9 +709,10 @@ template<>
 inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir2MinusProd>::Type_t
 sreconDir2Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
 {
-  PSpinVector<ColVec,2> d;
+  PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
+#if 0
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(0),
 			   d.elem(0));
@@ -698,6 +720,9 @@ sreconDir2Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(1),
 			   d.elem(1));
+#else
+  _inline_sse_mult_su3_mat_hwvec(a, b, d);
+#endif
 
   inlineSpinReconDir2Minus(&(d.elem(0).elem(0).real()),
 			  &(ret.elem(0).elem(0).real()),
@@ -711,9 +736,10 @@ template<>
 inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir2PlusProd>::Type_t
 sreconDir2Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
 {
-  PSpinVector<ColVec,2> d;
+  PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
+#if 0
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(0),
 			   d.elem(0));
@@ -721,6 +747,9 @@ sreconDir2Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(1),
 			   d.elem(1));
+#else
+  _inline_sse_mult_su3_mat_hwvec(a, b, d);
+#endif
 
   inlineSpinReconDir2Plus(&(d.elem(0).elem(0).real()),
 			 &(ret.elem(0).elem(0).real()),
@@ -735,9 +764,10 @@ template<>
 inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir3MinusProd>::Type_t
 sreconDir3Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
 {
-  PSpinVector<ColVec,2> d;
+  PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
+#if 0
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(0),
 			   d.elem(0));
@@ -745,6 +775,9 @@ sreconDir3Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(1),
 			   d.elem(1));
+#else
+  _inline_sse_mult_su3_mat_hwvec(a, b, d);
+#endif
 
   inlineSpinReconDir3Minus(&(d.elem(0).elem(0).real()),
 			 &(ret.elem(0).elem(0).real()),
@@ -759,9 +792,10 @@ template<>
 inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir3PlusProd>::Type_t
 sreconDir3Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
 {
-  PSpinVector<ColVec,2> d;
+  PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0PlusProd>::Type_t  ret;
 
+#if 0
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(0),
 			   d.elem(0));
@@ -769,6 +803,9 @@ sreconDir3Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   _inline_mult_su3_mat_vec(a.elem(),
 			   b.elem(1),
 			   d.elem(1));
+#else
+  _inline_sse_mult_su3_mat_hwvec(a, b, d);
+#endif
 
   inlineSpinReconDir3Plus(&(d.elem(0).elem(0).real()),
 			 &(ret.elem(0).elem(0).real()),

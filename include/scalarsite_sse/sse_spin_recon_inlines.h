@@ -4,7 +4,7 @@
 #include "qdp_sse_intrin.h"
 /* File: generic_spin_recon_inlines.h
    Purpose: Supply inline functions to do spin reconstruction
-   Author: $Id: sse_spin_recon_inlines.h,v 1.1 2007-02-07 20:35:28 bjoo Exp $
+   Author: $Id: sse_spin_recon_inlines.h,v 1.2 2007-02-09 20:35:46 bjoo Exp $
 */
 QDP_BEGIN_NAMESPACE(QDP)
 
@@ -57,7 +57,7 @@ void inlineSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   for(int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -76,10 +76,10 @@ void inlineSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
     // v2.floats[3] = tmp[1][col=2][im]
     
     // These are the top 2 components of the result
-    // so I can stream them out already.
-    _mm_stream_ps(dst_shadow, v0.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    // so I can store them out already.
+    _mm_store_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     // I want to set up 
     //
@@ -124,9 +124,9 @@ void inlineSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
     v5.vector = _mm_mul_ps(v5.vector, v6.vector);
 
     // so I can  them out already - bypass cache.
-    _mm_stream_ps(dst_shadow+12, v3.vector);
-    _mm_stream_ps(dst_shadow+16, v4.vector);
-    _mm_stream_ps(dst_shadow+20, v5.vector);
+    _mm_store_ps(dst_shadow+12, v3.vector);
+    _mm_store_ps(dst_shadow+16, v4.vector);
+    _mm_store_ps(dst_shadow+20, v5.vector);
 
     dst_shadow+=24;
 
@@ -153,10 +153,10 @@ void inlineSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   // v2.floats[3] = tmp[1][col=2][im]
   
   // These are the top 2 components of the result
-  // so I can stream them out already.
-  _mm_stream_ps(dst_shadow, v0.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  // so I can store them out already.
+  _mm_store_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
 
   // I want to set up 
   //
@@ -201,9 +201,9 @@ void inlineSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   v5.vector = _mm_mul_ps(v5.vector, v6.vector);
   
   // so I can  them out already - bypass cache.
-  _mm_stream_ps(dst_shadow+12, v3.vector);
-  _mm_stream_ps(dst_shadow+16, v4.vector);
-  _mm_stream_ps(dst_shadow+20, v5.vector);
+  _mm_store_ps(dst_shadow+12, v3.vector);
+  _mm_store_ps(dst_shadow+16, v4.vector);
+  _mm_store_ps(dst_shadow+20, v5.vector);
 
 }
 
@@ -254,7 +254,7 @@ void inlineSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   
   for(int site=0; site < n_vec-1; site++) { 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -273,10 +273,10 @@ void inlineSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
     // v2.floats[3] = tmp[1][col=2][im]
     
     // These are the top 2 components of the result
-    // so I can stream them out already.
-    _mm_stream_ps(dst_shadow, v0.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    // so I can store them out already.
+    _mm_store_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     // I want to set up 
     //
@@ -321,9 +321,9 @@ void inlineSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
     v5.vector = _mm_mul_ps(v5.vector, v6.vector);
 
     // so I can  them out already - bypass cache.
-    _mm_stream_ps(dst_shadow+12, v3.vector);
-    _mm_stream_ps(dst_shadow+16, v4.vector);
-    _mm_stream_ps(dst_shadow+20, v5.vector);
+    _mm_store_ps(dst_shadow+12, v3.vector);
+    _mm_store_ps(dst_shadow+16, v4.vector);
+    _mm_store_ps(dst_shadow+20, v5.vector);
 
     dst_shadow+=24;
 
@@ -350,10 +350,10 @@ void inlineSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   // v2.floats[3] = tmp[1][col=2][im]
   
   // These are the top 2 components of the result
-  // so I can stream them out already.
-  _mm_stream_ps(dst_shadow, v0.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  // so I can store them out already.
+  _mm_store_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
 
   // I want to set up 
   //
@@ -398,9 +398,9 @@ void inlineSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   v5.vector = _mm_mul_ps(v5.vector, v6.vector);
   
   // so I can  them out already - bypass cache.
-  _mm_stream_ps(dst_shadow+12, v3.vector);
-  _mm_stream_ps(dst_shadow+16, v4.vector);
-  _mm_stream_ps(dst_shadow+20, v5.vector);
+  _mm_store_ps(dst_shadow+12, v3.vector);
+  _mm_store_ps(dst_shadow+16, v4.vector);
+  _mm_store_ps(dst_shadow+20, v5.vector);
 
 }
 
@@ -458,7 +458,7 @@ void inlineSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   for(int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -477,10 +477,10 @@ void inlineSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
     // v2.floats[3] = tmp[1][col=2][im]
     
     // These are the top 2 components of the result
-    // so I can stream them out already.
-    _mm_stream_ps(dst_shadow, v0.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    // so I can store them out already.
+    _mm_store_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     // I want to set up 
     //
@@ -522,9 +522,9 @@ void inlineSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
     v5.vector = _mm_mul_ps(v5.vector, v7.vector);
 
     // so I can  them out already - bypass cache.
-    _mm_stream_ps(dst_shadow+12, v3.vector);
-    _mm_stream_ps(dst_shadow+16, v4.vector);
-    _mm_stream_ps(dst_shadow+20, v5.vector);
+    _mm_store_ps(dst_shadow+12, v3.vector);
+    _mm_store_ps(dst_shadow+16, v4.vector);
+    _mm_store_ps(dst_shadow+20, v5.vector);
 
     dst_shadow+=24;
 
@@ -551,10 +551,10 @@ void inlineSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   // v2.floats[3] = tmp[1][col=2][im]
   
   // These are the top 2 components of the result
-  // so I can stream them out already.
-  _mm_stream_ps(dst_shadow, v0.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  // so I can store them out already.
+  _mm_store_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
   
   // I want to set up 
   //
@@ -596,9 +596,9 @@ void inlineSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   v5.vector = _mm_mul_ps(v5.vector, v7.vector);
   
   // so I can  them out already - bypass cache.
-  _mm_stream_ps(dst_shadow+12, v3.vector);
-  _mm_stream_ps(dst_shadow+16, v4.vector);
-  _mm_stream_ps(dst_shadow+20, v5.vector);
+  _mm_store_ps(dst_shadow+12, v3.vector);
+  _mm_store_ps(dst_shadow+16, v4.vector);
+  _mm_store_ps(dst_shadow+20, v5.vector);
   
 }
 
@@ -645,7 +645,7 @@ void inlineSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   for(int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -664,10 +664,10 @@ void inlineSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
     // v2.floats[3] = tmp[1][col=2][im]
     
     // These are the top 2 components of the result
-    // so I can stream them out already.
-    _mm_stream_ps(dst_shadow, v0.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    // so I can store them out already.
+    _mm_store_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     // I want to set up 
     //
@@ -709,9 +709,9 @@ void inlineSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
     v5.vector = _mm_shuffle_ps(v5.vector, v1.vector, 0x4E);
     
     // so I can  them out already - bypass cache.
-    _mm_stream_ps(dst_shadow+12, v3.vector);
-    _mm_stream_ps(dst_shadow+16, v4.vector);
-    _mm_stream_ps(dst_shadow+20, v5.vector);
+    _mm_store_ps(dst_shadow+12, v3.vector);
+    _mm_store_ps(dst_shadow+16, v4.vector);
+    _mm_store_ps(dst_shadow+20, v5.vector);
 
     dst_shadow+=24;
 
@@ -739,10 +739,10 @@ void inlineSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   // v2.floats[3] = tmp[1][col=2][im]
   
   // These are the top 2 components of the result
-  // so I can stream them out already.
-  _mm_stream_ps(dst_shadow, v0.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  // so I can store them out already.
+  _mm_store_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
   
   // I want to set up 
   //
@@ -784,9 +784,9 @@ void inlineSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   v5.vector = _mm_shuffle_ps(v5.vector, v1.vector, 0x4E);
   
   // so I can  them out already - bypass cache.
-  _mm_stream_ps(dst_shadow+12, v3.vector);
-  _mm_stream_ps(dst_shadow+16, v4.vector);
-  _mm_stream_ps(dst_shadow+20, v5.vector);
+  _mm_store_ps(dst_shadow+12, v3.vector);
+  _mm_store_ps(dst_shadow+16, v4.vector);
+  _mm_store_ps(dst_shadow+20, v5.vector);
 
 }
 
@@ -847,7 +847,7 @@ void inlineSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   for(int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -866,10 +866,10 @@ void inlineSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
     // v2.floats[3] = tmp[1][col=2][im]
     
     // These are the top 2 components of the result
-    // so I can stream them out already.
-    _mm_stream_ps(dst_shadow, v0.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    // so I can store them out already.
+    _mm_store_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     // I want to set up 
     //
@@ -911,9 +911,9 @@ void inlineSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
     v2.vector = _mm_mul_ps(v2.vector, v7.vector);
 
     // so I can  them out already - bypass cache.
-    _mm_stream_ps(dst_shadow+12, v0.vector);
-    _mm_stream_ps(dst_shadow+16, v1.vector);
-    _mm_stream_ps(dst_shadow+20, v2.vector);
+    _mm_store_ps(dst_shadow+12, v0.vector);
+    _mm_store_ps(dst_shadow+16, v1.vector);
+    _mm_store_ps(dst_shadow+20, v2.vector);
 
     dst_shadow+=24;
 
@@ -941,10 +941,10 @@ void inlineSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   // v2.floats[3] = tmp[1][col=2][im]
   
   // These are the top 2 components of the result
-  // so I can stream them out already.
-  _mm_stream_ps(dst_shadow, v0.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  // so I can store them out already.
+  _mm_store_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
   
   // I want to set up 
   //
@@ -986,9 +986,9 @@ void inlineSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   v2.vector = _mm_mul_ps(v2.vector, v7.vector);
   
   // so I can  them out already - bypass cache.
-  _mm_stream_ps(dst_shadow+12, v0.vector);
-  _mm_stream_ps(dst_shadow+16, v1.vector);
-  _mm_stream_ps(dst_shadow+20, v2.vector);
+  _mm_store_ps(dst_shadow+12, v0.vector);
+  _mm_store_ps(dst_shadow+16, v1.vector);
+  _mm_store_ps(dst_shadow+20, v2.vector);
 
 
 }
@@ -1039,7 +1039,7 @@ void inlineSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   for(int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -1058,10 +1058,10 @@ void inlineSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
     // v2.floats[3] = tmp[1][col=2][im]
     
     // These are the top 2 components of the result
-    // so I can stream them out already.
-    _mm_stream_ps(dst_shadow, v0.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    // so I can store them out already.
+    _mm_store_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     // I want to set up 
     //
@@ -1103,9 +1103,9 @@ void inlineSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
     v2.vector = _mm_mul_ps(v2.vector, v7.vector);
 
     // so I can  them out already - bypass cache.
-    _mm_stream_ps(dst_shadow+12, v0.vector);
-    _mm_stream_ps(dst_shadow+16, v1.vector);
-    _mm_stream_ps(dst_shadow+20, v2.vector);
+    _mm_store_ps(dst_shadow+12, v0.vector);
+    _mm_store_ps(dst_shadow+16, v1.vector);
+    _mm_store_ps(dst_shadow+20, v2.vector);
 
     dst_shadow+=24;
 
@@ -1133,10 +1133,10 @@ void inlineSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   // v2.floats[3] = tmp[1][col=2][im]
   
   // These are the top 2 components of the result
-  // so I can stream them out already.
-  _mm_stream_ps(dst_shadow, v0.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  // so I can store them out already.
+  _mm_store_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
   
   // I want to set up 
   //
@@ -1178,9 +1178,9 @@ void inlineSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   v2.vector = _mm_mul_ps(v2.vector, v7.vector);
   
   // so I can  them out already - bypass cache.
-  _mm_stream_ps(dst_shadow+12, v0.vector);
-  _mm_stream_ps(dst_shadow+16, v1.vector);
-  _mm_stream_ps(dst_shadow+20, v2.vector);
+  _mm_store_ps(dst_shadow+12, v0.vector);
+  _mm_store_ps(dst_shadow+16, v1.vector);
+  _mm_store_ps(dst_shadow+20, v2.vector);
 
 }
 
@@ -1227,7 +1227,7 @@ void inlineSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   for(int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -1246,13 +1246,13 @@ void inlineSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
     // v2.floats[3] = tmp[1][col=2][im]
     
     // This one is easy no shufs needed
-    _mm_stream_ps(dst_shadow, v0.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    _mm_store_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
-    _mm_stream_ps(dst_shadow+12, v0.vector);
-    _mm_stream_ps(dst_shadow+16, v1.vector);
-    _mm_stream_ps(dst_shadow+20, v2.vector);
+    _mm_store_ps(dst_shadow+12, v0.vector);
+    _mm_store_ps(dst_shadow+16, v1.vector);
+    _mm_store_ps(dst_shadow+20, v2.vector);
 
     dst_shadow+=24;
 
@@ -1280,16 +1280,16 @@ void inlineSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   // v2.floats[3] = tmp[1][col=2][im]
   
   // These are the top 2 components of the result
-  // so I can stream them out already.
+  // so I can store them out already.
   // Again no shufs needed
-  _mm_stream_ps(dst_shadow, v0.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  _mm_store_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
     
   // so I can  them out already - bypass cache.
-  _mm_stream_ps(dst_shadow+12, v0.vector);
-  _mm_stream_ps(dst_shadow+16, v1.vector);
-  _mm_stream_ps(dst_shadow+20, v2.vector);
+  _mm_store_ps(dst_shadow+12, v0.vector);
+  _mm_store_ps(dst_shadow+16, v1.vector);
+  _mm_store_ps(dst_shadow+20, v2.vector);
 }
 
 /** \brief Spin recon (1/2)(1-\gamma3)
@@ -1338,7 +1338,7 @@ void inlineSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   for(int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -1355,9 +1355,9 @@ void inlineSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
     // v2.floats[1] = tmp[1][col=1][im]
     // v2.floats[2] = tmp[1][col=2][re]
     // v2.floats[3] = tmp[1][col=2][im]
-    _mm_stream_ps(dst_shadow, v0.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    _mm_store_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
     
     // This one is easy no shufs needed
     // multiply by -1,-1,-1,-1
@@ -1365,9 +1365,9 @@ void inlineSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
     v1.vector = _mm_mul_ps(v1.vector, v7.vector);
     v2.vector = _mm_mul_ps(v2.vector, v7.vector);
 
-    _mm_stream_ps(dst_shadow+12, v0.vector);
-    _mm_stream_ps(dst_shadow+16, v1.vector);
-    _mm_stream_ps(dst_shadow+20, v2.vector);
+    _mm_store_ps(dst_shadow+12, v0.vector);
+    _mm_store_ps(dst_shadow+16, v1.vector);
+    _mm_store_ps(dst_shadow+20, v2.vector);
 
     dst_shadow+=24;
 
@@ -1392,9 +1392,9 @@ void inlineSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   // v2.floats[1] = tmp[1][col=1][im]
   // v2.floats[2] = tmp[1][col=2][re]
   // v2.floats[3] = tmp[1][col=2][im]
-  _mm_stream_ps(dst_shadow, v0.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  _mm_store_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
   
   // This one is easy no shufs needed
   // multiply by -1,-1,-1,-1
@@ -1402,9 +1402,9 @@ void inlineSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   v1.vector = _mm_mul_ps(v1.vector, v7.vector);
   v2.vector = _mm_mul_ps(v2.vector, v7.vector);
   
-  _mm_stream_ps(dst_shadow+12, v0.vector);
-  _mm_stream_ps(dst_shadow+16, v1.vector);
-  _mm_stream_ps(dst_shadow+20, v2.vector);
+  _mm_store_ps(dst_shadow+12, v0.vector);
+  _mm_store_ps(dst_shadow+16, v1.vector);
+  _mm_store_ps(dst_shadow+20, v2.vector);
   
 }
 
@@ -1468,16 +1468,16 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   v4.vector = _mm_add_ps(v4.vector, v1.vector);
   v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-  // Stream out result
-  _mm_stream_ps(dst_shadow, v3.vector);
-  _mm_stream_ps(dst_shadow+4, v4.vector);
-  _mm_stream_ps(dst_shadow+8, v5.vector);
+  // Store out result
+  _mm_store_ps(dst_shadow, v3.vector);
+  _mm_store_ps(dst_shadow+4, v4.vector);
+  _mm_store_ps(dst_shadow+8, v5.vector);
 
   for(int site=0; site < n_vec-1; site++) { 
 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v4.vector = _mm_load_ps(dst_shadow+12);
@@ -1502,9 +1502,9 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
 
     // v3 now free reuse it with the last element of the destination
     v3.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_NTA);
+    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
     // Store result
-    _mm_stream_ps(dst_shadow+12, v4.vector);
+    _mm_store_ps(dst_shadow+12, v4.vector);
  
 
     // V4 is now free?
@@ -1522,7 +1522,7 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     // Now I need to do multiply the mask (+1, -1, +1, -1)
     v4.vector = _mm_mul_ps(v4.vector, v6.vector);
     v5.vector = _mm_add_ps(v5.vector, v4.vector);
-    _mm_stream_ps(dst_shadow+16, v5.vector);
+    _mm_store_ps(dst_shadow+16, v5.vector);
 
     // I want to set up 
     //
@@ -1538,7 +1538,7 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     // Now I need to do multiply the mask (+1, -1, +1, -1)
     v5.vector = _mm_mul_ps(v5.vector, v6.vector);
     v3.vector = _mm_add_ps(v3.vector, v5.vector);
-    _mm_stream_ps(dst_shadow+20, v3.vector);
+    _mm_store_ps(dst_shadow+20, v3.vector);
 
     dst_shadow+=24;
 
@@ -1557,10 +1557,10 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     v4.vector = _mm_add_ps(v4.vector, v1.vector);
     v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-    // Stream out result
-    _mm_stream_ps(dst_shadow, v3.vector);
-    _mm_stream_ps(dst_shadow+4, v4.vector);
-    _mm_stream_ps(dst_shadow+8, v5.vector);
+    // Store out result
+    _mm_store_ps(dst_shadow, v3.vector);
+    _mm_store_ps(dst_shadow+4, v4.vector);
+    _mm_store_ps(dst_shadow+8, v5.vector);
     
   }
 
@@ -1587,10 +1587,10 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   
   // v3 now free reuse it with the last element of the destination
   v3.vector = _mm_load_ps(dst_shadow+20);
-  _mm_prefetch( dst_shadow+20, _MM_HINT_NTA);
+  _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
   
   // Store result
-  _mm_stream_ps(dst_shadow+12, v4.vector);
+  _mm_store_ps(dst_shadow+12, v4.vector);
   
   
   // V4 is now free?
@@ -1608,7 +1608,7 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   // Now I need to do multiply the mask (+1, -1, +1, -1)
   v4.vector = _mm_mul_ps(v4.vector, v6.vector);
   v5.vector = _mm_add_ps(v5.vector, v4.vector);
-  _mm_stream_ps(dst_shadow+16, v5.vector);
+  _mm_store_ps(dst_shadow+16, v5.vector);
   
   // I want to set up 
   //
@@ -1624,7 +1624,7 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   // Now I need to do multiply the mask (+1, -1, +1, -1)
   v5.vector = _mm_mul_ps(v5.vector, v6.vector);
   v3.vector = _mm_add_ps(v3.vector, v5.vector);
-  _mm_stream_ps(dst_shadow+20, v3.vector);
+  _mm_store_ps(dst_shadow+20, v3.vector);
 
 }
 
@@ -1685,16 +1685,16 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   v4.vector = _mm_add_ps(v4.vector, v1.vector);
   v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-  // Stream out result
-  _mm_stream_ps(dst_shadow, v3.vector);
-  _mm_stream_ps(dst_shadow+4, v4.vector);
-  _mm_stream_ps(dst_shadow+8, v5.vector);
+  // Store out result
+  _mm_store_ps(dst_shadow, v3.vector);
+  _mm_store_ps(dst_shadow+4, v4.vector);
+  _mm_store_ps(dst_shadow+8, v5.vector);
 
   for(int site=0; site < n_vec-1; site++) { 
 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v4.vector = _mm_load_ps(dst_shadow+12);
@@ -1719,10 +1719,10 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
 
     // v3 now free reuse it with the last element of the destination
     v3.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_NTA);
+    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
 
     // Store result
-    _mm_stream_ps(dst_shadow+12, v4.vector);
+    _mm_store_ps(dst_shadow+12, v4.vector);
  
 
     // V4 is now free?
@@ -1740,7 +1740,7 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     // Now I need to do multiply the mask (+1, -1, +1, -1)
     v4.vector = _mm_mul_ps(v4.vector, v6.vector);
     v5.vector = _mm_add_ps(v5.vector, v4.vector);
-    _mm_stream_ps(dst_shadow+16, v5.vector);
+    _mm_store_ps(dst_shadow+16, v5.vector);
 
     // I want to set up 
     //
@@ -1756,7 +1756,7 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     // Now I need to do multiply the mask (+1, -1, +1, -1)
     v5.vector = _mm_mul_ps(v5.vector, v6.vector);
     v3.vector = _mm_add_ps(v3.vector, v5.vector);
-    _mm_stream_ps(dst_shadow+20, v3.vector);
+    _mm_store_ps(dst_shadow+20, v3.vector);
 
     dst_shadow+=24;
 
@@ -1775,10 +1775,10 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     v4.vector = _mm_add_ps(v4.vector, v1.vector);
     v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-    // Stream out result
-    _mm_stream_ps(dst_shadow, v3.vector);
-    _mm_stream_ps(dst_shadow+4, v4.vector);
-    _mm_stream_ps(dst_shadow+8, v5.vector);
+    // Store out result
+    _mm_store_ps(dst_shadow, v3.vector);
+    _mm_store_ps(dst_shadow+4, v4.vector);
+    _mm_store_ps(dst_shadow+8, v5.vector);
     
   }
 
@@ -1805,10 +1805,10 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   
   // v3 now free reuse it with the last element of the destination
   v3.vector = _mm_load_ps(dst_shadow+20);
-  _mm_prefetch( dst_shadow+20, _MM_HINT_NTA);
+  _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
   
   // Store result
-  _mm_stream_ps(dst_shadow+12, v4.vector);
+  _mm_store_ps(dst_shadow+12, v4.vector);
   
   
   // V4 is now free?
@@ -1826,7 +1826,7 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   // Now I need to do multiply the mask (+1, -1, +1, -1)
   v4.vector = _mm_mul_ps(v4.vector, v6.vector);
   v5.vector = _mm_add_ps(v5.vector, v4.vector);
-  _mm_stream_ps(dst_shadow+16, v5.vector);
+  _mm_store_ps(dst_shadow+16, v5.vector);
   
   // I want to set up 
   //
@@ -1842,7 +1842,7 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   // Now I need to do multiply the mask (+1, -1, +1, -1)
   v5.vector = _mm_mul_ps(v5.vector, v6.vector);
   v3.vector = _mm_add_ps(v3.vector, v5.vector);
-  _mm_stream_ps(dst_shadow+20, v3.vector);
+  _mm_store_ps(dst_shadow+20, v3.vector);
 
   
   
@@ -1904,16 +1904,16 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   v4.vector = _mm_add_ps(v4.vector, v1.vector);
   v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-  // Stream out result
-  _mm_stream_ps(dst_shadow, v3.vector);
-  _mm_stream_ps(dst_shadow+4, v4.vector);
-  _mm_stream_ps(dst_shadow+8, v5.vector);
+  // Store out result
+  _mm_store_ps(dst_shadow, v3.vector);
+  _mm_store_ps(dst_shadow+4, v4.vector);
+  _mm_store_ps(dst_shadow+8, v5.vector);
 
   for(int site=0; site < n_vec-1; site++) { 
 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v4.vector = _mm_load_ps(dst_shadow+12);
@@ -1932,10 +1932,10 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     
     // Add to result
     v4.vector = _mm_add_ps(v4.vector, v3.vector);
-    _mm_stream_ps( dst_shadow+12, v4.vector);
+    _mm_store_ps( dst_shadow+12, v4.vector);
 
     v3.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_NTA);
+    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
 
     // I want to set up 
     //
@@ -1953,7 +1953,7 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
    
     // Add to result 
     v5.vector = _mm_add_ps(v5.vector, v4.vector);
-    _mm_stream_ps( dst_shadow+16, v5.vector);
+    _mm_store_ps( dst_shadow+16, v5.vector);
 
     // I want to set up 
     //
@@ -1970,7 +1970,7 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     v3.vector = _mm_sub_ps(v3.vector, v5.vector);
 
     // so I can  them out already - bypass cache.
-    _mm_stream_ps(dst_shadow+20, v3.vector);
+    _mm_store_ps(dst_shadow+20, v3.vector);
  
     dst_shadow+=24;
 
@@ -1989,10 +1989,10 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     v4.vector = _mm_add_ps(v4.vector, v1.vector);
     v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-    // Stream out result
-    _mm_stream_ps(dst_shadow, v3.vector);
-    _mm_stream_ps(dst_shadow+4, v4.vector);
-    _mm_stream_ps(dst_shadow+8, v5.vector);
+    // Store out result
+    _mm_store_ps(dst_shadow, v3.vector);
+    _mm_store_ps(dst_shadow+4, v4.vector);
+    _mm_store_ps(dst_shadow+8, v5.vector);
     
   }
 
@@ -2013,10 +2013,10 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     
     // Add to result
     v4.vector = _mm_add_ps(v4.vector, v3.vector);
-    _mm_stream_ps( dst_shadow+12, v4.vector);
+    _mm_store_ps( dst_shadow+12, v4.vector);
 
     v3.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_NTA);
+    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
     // I want to set up 
     //
     //     v4[0] = v2[2] = tmp[1][col=2][re]
@@ -2033,7 +2033,7 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
    
     // Add to result 
     v5.vector = _mm_add_ps(v5.vector, v4.vector);
-    _mm_stream_ps( dst_shadow+16, v5.vector);
+    _mm_store_ps( dst_shadow+16, v5.vector);
 
     // I want to set up 
     //
@@ -2050,7 +2050,7 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     v3.vector = _mm_sub_ps(v3.vector, v5.vector);
 
     // so I can  them out already - bypass cache.
-    _mm_stream_ps(dst_shadow+20, v3.vector);
+    _mm_store_ps(dst_shadow+20, v3.vector);
 
 #if 0
 
@@ -2067,8 +2067,8 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   for(int site=0; site < n_vec; site++) {
     REAL32* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
-    // Stream in the half spinor - write out the first two components
-    for(int stream=0; stream < Nsby2*Nc*Ncmpx; stream++) {
+    // Store in the half spinor - write out the first two components
+    for(int store=0; store < Nsby2*Nc*Ncmpx; store++) {
       REAL32 tmp = *(src_shadow++);
       *(tmp_shadow++) = tmp;
       *(dst_shadow++) += tmp;
@@ -2147,15 +2147,15 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   v4.vector = _mm_add_ps(v4.vector, v1.vector);
   v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-  // Stream out result
-  _mm_stream_ps(dst_shadow, v3.vector);
-  _mm_stream_ps(dst_shadow+4, v4.vector);
-  _mm_stream_ps(dst_shadow+8, v5.vector);
+  // Store out result
+  _mm_store_ps(dst_shadow, v3.vector);
+  _mm_store_ps(dst_shadow+4, v4.vector);
+  _mm_store_ps(dst_shadow+8, v5.vector);
 
   for(int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v4.vector = _mm_load_ps(dst_shadow+12);
@@ -2174,10 +2174,10 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     
     // Add to result
     v4.vector = _mm_sub_ps(v4.vector, v3.vector);
-    _mm_stream_ps( dst_shadow+12, v4.vector);
+    _mm_store_ps( dst_shadow+12, v4.vector);
 
     v3.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_NTA);
+    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
     // I want to set up 
     //
     //     v4[0] = v2[2] = tmp[1][col=2][re]
@@ -2194,7 +2194,7 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
    
     // Add to result 
     v5.vector = _mm_add_ps(v5.vector, v4.vector);
-    _mm_stream_ps( dst_shadow+16, v5.vector);
+    _mm_store_ps( dst_shadow+16, v5.vector);
 
     // I want to set up 
     //
@@ -2211,7 +2211,7 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     v3.vector = _mm_add_ps(v3.vector, v5.vector);
 
     // so I can  them out already - bypass cache.
-    _mm_stream_ps(dst_shadow+20, v3.vector);
+    _mm_store_ps(dst_shadow+20, v3.vector);
  
     dst_shadow+=24;
 
@@ -2230,10 +2230,10 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     v4.vector = _mm_add_ps(v4.vector, v1.vector);
     v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-    // Stream out result
-    _mm_stream_ps(dst_shadow, v3.vector);
-    _mm_stream_ps(dst_shadow+4, v4.vector);
-    _mm_stream_ps(dst_shadow+8, v5.vector);
+    // Store out result
+    _mm_store_ps(dst_shadow, v3.vector);
+    _mm_store_ps(dst_shadow+4, v4.vector);
+    _mm_store_ps(dst_shadow+8, v5.vector);
     
   }
 
@@ -2254,10 +2254,10 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   
   // Add to result
   v4.vector = _mm_sub_ps(v4.vector, v3.vector);
-  _mm_stream_ps( dst_shadow+12, v4.vector);
+  _mm_store_ps( dst_shadow+12, v4.vector);
   
   v3.vector = _mm_load_ps(dst_shadow+20);
-  _mm_prefetch( dst_shadow+20, _MM_HINT_NTA);
+  _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
   // I want to set up 
   //
   //     v4[0] = v2[2] = tmp[1][col=2][re]
@@ -2274,7 +2274,7 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   
   // Add to result 
   v5.vector = _mm_add_ps(v5.vector, v4.vector);
-  _mm_stream_ps( dst_shadow+16, v5.vector);
+  _mm_store_ps( dst_shadow+16, v5.vector);
   
   // I want to set up 
   //
@@ -2291,7 +2291,7 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   v3.vector = _mm_add_ps(v3.vector, v5.vector);
   
   // so I can  them out already - bypass cache.
-  _mm_stream_ps(dst_shadow+20, v3.vector);
+  _mm_store_ps(dst_shadow+20, v3.vector);
 
 }
 
@@ -2355,21 +2355,21 @@ void inlineAddSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   v4.vector = _mm_add_ps(v4.vector, v1.vector);
   v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-  // Stream out result
-  _mm_stream_ps(dst_shadow, v3.vector);
-  _mm_stream_ps(dst_shadow+4, v4.vector);
-  _mm_stream_ps(dst_shadow+8, v5.vector);
+  // Store out result
+  _mm_store_ps(dst_shadow, v3.vector);
+  _mm_store_ps(dst_shadow+4, v4.vector);
+  _mm_store_ps(dst_shadow+8, v5.vector);
 
   for(int site=0; site < n_vec-1; site++) { 
     
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v3.vector = _mm_load_ps(dst_shadow+12);
     v4.vector = _mm_load_ps(dst_shadow+16);
     v5.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_NTA);
+    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
 
     // I want to set up 
     //
@@ -2384,7 +2384,7 @@ void inlineAddSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     // Mask (+1,-1,+1,-1)
     v0.vector = _mm_mul_ps(v0.vector, v6.vector);
     v3.vector = _mm_add_ps(v3.vector, v0.vector);
-    _mm_stream_ps(dst_shadow+12, v3.vector);
+    _mm_store_ps(dst_shadow+12, v3.vector);
     
 
     // I want to set up 
@@ -2400,7 +2400,7 @@ void inlineAddSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     // Need to multiply in mask (+1,-1,-1,+1) 
     v1.vector = _mm_mul_ps(v1.vector, v7.vector);
     v4.vector = _mm_add_ps(v4.vector, v1.vector);
-    _mm_stream_ps(dst_shadow+16, v4.vector);
+    _mm_store_ps(dst_shadow+16, v4.vector);
 
     // I want to set up 
     //
@@ -2415,7 +2415,7 @@ void inlineAddSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     // Mask in -1, +1, -1, +1 from v7
     v2.vector = _mm_mul_ps(v2.vector, v6.vector);
     v5.vector = _mm_sub_ps(v5.vector, v2.vector);
-    _mm_stream_ps(dst_shadow+20, v5.vector);
+    _mm_store_ps(dst_shadow+20, v5.vector);
 
     dst_shadow+=24;
 
@@ -2434,10 +2434,10 @@ void inlineAddSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     v4.vector = _mm_add_ps(v4.vector, v1.vector);
     v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-    // Stream out result
-    _mm_stream_ps(dst_shadow, v3.vector);
-    _mm_stream_ps(dst_shadow+4, v4.vector);
-    _mm_stream_ps(dst_shadow+8, v5.vector);
+    // Store out result
+    _mm_store_ps(dst_shadow, v3.vector);
+    _mm_store_ps(dst_shadow+4, v4.vector);
+    _mm_store_ps(dst_shadow+8, v5.vector);
     
   }
 
@@ -2446,7 +2446,7 @@ void inlineAddSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   v3.vector = _mm_load_ps(dst_shadow+12);
   v4.vector = _mm_load_ps(dst_shadow+16);
   v5.vector = _mm_load_ps(dst_shadow+20);
-  _mm_prefetch( dst_shadow+20, _MM_HINT_NTA);
+  _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
   
   // I want to set up 
   //
@@ -2461,7 +2461,7 @@ void inlineAddSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   // Mask (+1,-1,+1,-1)
   v0.vector = _mm_mul_ps(v0.vector, v6.vector);
   v3.vector = _mm_add_ps(v3.vector, v0.vector);
-  _mm_stream_ps(dst_shadow+12,v3.vector);
+  _mm_store_ps(dst_shadow+12,v3.vector);
   
   
   // I want to set up 
@@ -2477,7 +2477,7 @@ void inlineAddSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   // Need to multiply in mask (+1,-1,-1,+1) 
   v1.vector = _mm_mul_ps(v1.vector, v7.vector);
   v4.vector = _mm_add_ps(v4.vector, v1.vector);
-  _mm_stream_ps(dst_shadow+16, v4.vector);
+  _mm_store_ps(dst_shadow+16, v4.vector);
 
   // I want to set up 
   //
@@ -2492,7 +2492,7 @@ void inlineAddSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   // Mask in -1, +1, -1, +1 from v7
   v2.vector = _mm_mul_ps(v2.vector, v6.vector);
   v5.vector = _mm_sub_ps(v5.vector, v2.vector);
-  _mm_stream_ps(dst_shadow+20, v5.vector);
+  _mm_store_ps(dst_shadow+20, v5.vector);
 
 }
 
@@ -2555,21 +2555,21 @@ void inlineAddSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   v4.vector = _mm_add_ps(v4.vector, v1.vector);
   v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-  // Stream out result
-  _mm_stream_ps(dst_shadow, v3.vector);
-  _mm_stream_ps(dst_shadow+4, v4.vector);
-  _mm_stream_ps(dst_shadow+8, v5.vector);
+  // Store out result
+  _mm_store_ps(dst_shadow, v3.vector);
+  _mm_store_ps(dst_shadow+4, v4.vector);
+  _mm_store_ps(dst_shadow+8, v5.vector);
 
   for(int site=0; site < n_vec-1; site++) { 
     
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v3.vector = _mm_load_ps(dst_shadow+12);
     v4.vector = _mm_load_ps(dst_shadow+16);
     v5.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_NTA);
+    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
 
     // I want to set up 
     //
@@ -2584,7 +2584,7 @@ void inlineAddSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     // Mask (+1,-1,+1,-1)
     v0.vector = _mm_mul_ps(v0.vector, v6.vector);
     v3.vector = _mm_add_ps(v3.vector, v0.vector);
-    _mm_stream_ps(dst_shadow+12, v3.vector);
+    _mm_store_ps(dst_shadow+12, v3.vector);
     
 
     // I want to set up 
@@ -2600,7 +2600,7 @@ void inlineAddSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     // Need to multiply in mask (+1,-1,-1,+1) 
     v1.vector = _mm_mul_ps(v1.vector, v7.vector);
     v4.vector = _mm_add_ps(v4.vector, v1.vector);
-    _mm_stream_ps(dst_shadow+16, v4.vector);
+    _mm_store_ps(dst_shadow+16, v4.vector);
 
     // I want to set up 
     //
@@ -2615,7 +2615,7 @@ void inlineAddSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     // Mask in -1, +1, -1, +1 from v7
     v2.vector = _mm_mul_ps(v2.vector, v6.vector);
     v5.vector = _mm_sub_ps(v5.vector, v2.vector);
-    _mm_stream_ps(dst_shadow+20, v5.vector);
+    _mm_store_ps(dst_shadow+20, v5.vector);
 
     dst_shadow+=24;
 
@@ -2634,10 +2634,10 @@ void inlineAddSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     v4.vector = _mm_add_ps(v4.vector, v1.vector);
     v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-    // Stream out result
-    _mm_stream_ps(dst_shadow, v3.vector);
-    _mm_stream_ps(dst_shadow+4, v4.vector);
-    _mm_stream_ps(dst_shadow+8, v5.vector);
+    // Store out result
+    _mm_store_ps(dst_shadow, v3.vector);
+    _mm_store_ps(dst_shadow+4, v4.vector);
+    _mm_store_ps(dst_shadow+8, v5.vector);
     
   }
 
@@ -2646,7 +2646,7 @@ void inlineAddSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   v3.vector = _mm_load_ps(dst_shadow+12);
   v4.vector = _mm_load_ps(dst_shadow+16);
   v5.vector = _mm_load_ps(dst_shadow+20);
-  _mm_prefetch( dst_shadow+20, _MM_HINT_NTA);
+  _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
 
   // I want to set up 
   //
@@ -2661,7 +2661,7 @@ void inlineAddSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   // Mask (+1,-1,+1,-1)
   v0.vector = _mm_mul_ps(v0.vector, v6.vector);
   v3.vector = _mm_add_ps(v3.vector, v0.vector);
-  _mm_stream_ps(dst_shadow+12, v3.vector);
+  _mm_store_ps(dst_shadow+12, v3.vector);
   
   
   // I want to set up 
@@ -2677,7 +2677,7 @@ void inlineAddSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   // Need to multiply in mask (+1,-1,-1,+1) 
   v1.vector = _mm_mul_ps(v1.vector, v7.vector);
   v4.vector = _mm_add_ps(v4.vector, v1.vector);
-  _mm_stream_ps(dst_shadow+16, v4.vector);
+  _mm_store_ps(dst_shadow+16, v4.vector);
 
   // I want to set up 
   //
@@ -2692,7 +2692,7 @@ void inlineAddSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   // Mask in -1, +1, -1, +1 from v7
   v2.vector = _mm_mul_ps(v2.vector, v6.vector);
   v5.vector = _mm_sub_ps(v5.vector, v2.vector);
-  _mm_stream_ps(dst_shadow+20, v5.vector);
+  _mm_store_ps(dst_shadow+20, v5.vector);
 
     
 
@@ -2751,15 +2751,15 @@ void inlineAddSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   v4.vector = _mm_add_ps(v4.vector, v1.vector);
   v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-  // Stream out result
-  _mm_stream_ps(dst_shadow, v3.vector);
-  _mm_stream_ps(dst_shadow+4, v4.vector);
-  _mm_stream_ps(dst_shadow+8, v5.vector);
+  // Store out result
+  _mm_store_ps(dst_shadow, v3.vector);
+  _mm_store_ps(dst_shadow+4, v4.vector);
+  _mm_store_ps(dst_shadow+8, v5.vector);
 
   for(int site=0; site < n_vec-1; site++) { 
     
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
 
     // Now the bottom half.  -- preload v4 and v5 
@@ -2771,9 +2771,9 @@ void inlineAddSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     v4.vector = _mm_add_ps(v4.vector, v1.vector);
     v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-    _mm_stream_ps(dst_shadow+12, v3.vector);
-    _mm_stream_ps(dst_shadow+16, v4.vector);
-    _mm_stream_ps(dst_shadow+20, v5.vector);
+    _mm_store_ps(dst_shadow+12, v3.vector);
+    _mm_store_ps(dst_shadow+16, v4.vector);
+    _mm_store_ps(dst_shadow+20, v5.vector);
 
     dst_shadow+=24;
 
@@ -2792,10 +2792,10 @@ void inlineAddSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     v4.vector = _mm_add_ps(v4.vector, v1.vector);
     v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-    // Stream out result
-    _mm_stream_ps(dst_shadow, v3.vector);
-    _mm_stream_ps(dst_shadow+4, v4.vector);
-    _mm_stream_ps(dst_shadow+8, v5.vector);
+    // Store out result
+    _mm_store_ps(dst_shadow, v3.vector);
+    _mm_store_ps(dst_shadow+4, v4.vector);
+    _mm_store_ps(dst_shadow+8, v5.vector);
     
   }
 
@@ -2809,9 +2809,9 @@ void inlineAddSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   v4.vector = _mm_add_ps(v4.vector, v1.vector);
   v5.vector = _mm_add_ps(v5.vector, v2.vector);
   
-  _mm_stream_ps(dst_shadow+12, v3.vector);
-  _mm_stream_ps(dst_shadow+16, v4.vector);
-  _mm_stream_ps(dst_shadow+20, v5.vector);
+  _mm_store_ps(dst_shadow+12, v3.vector);
+  _mm_store_ps(dst_shadow+16, v4.vector);
+  _mm_store_ps(dst_shadow+20, v5.vector);
 
 }
 
@@ -2865,15 +2865,15 @@ void inlineAddSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   v4.vector = _mm_add_ps(v4.vector, v1.vector);
   v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-  // Stream out result
-  _mm_stream_ps(dst_shadow, v3.vector);
-  _mm_stream_ps(dst_shadow+4, v4.vector);
-  _mm_stream_ps(dst_shadow+8, v5.vector);
+  // Store out result
+  _mm_store_ps(dst_shadow, v3.vector);
+  _mm_store_ps(dst_shadow+4, v4.vector);
+  _mm_store_ps(dst_shadow+8, v5.vector);
 
   for(int site=0; site < n_vec-1; site++) { 
     
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v3.vector = _mm_load_ps(dst_shadow+12);
@@ -2884,9 +2884,9 @@ void inlineAddSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     v4.vector = _mm_sub_ps(v4.vector, v1.vector);
     v5.vector = _mm_sub_ps(v5.vector, v2.vector);
 
-    _mm_stream_ps(dst_shadow+12, v3.vector);
-    _mm_stream_ps(dst_shadow+16, v4.vector);
-    _mm_stream_ps(dst_shadow+20, v5.vector);
+    _mm_store_ps(dst_shadow+12, v3.vector);
+    _mm_store_ps(dst_shadow+16, v4.vector);
+    _mm_store_ps(dst_shadow+20, v5.vector);
 
     dst_shadow+=24;
 
@@ -2905,10 +2905,10 @@ void inlineAddSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     v4.vector = _mm_add_ps(v4.vector, v1.vector);
     v5.vector = _mm_add_ps(v5.vector, v2.vector);
 
-    // Stream out result
-    _mm_stream_ps(dst_shadow, v3.vector);
-    _mm_stream_ps(dst_shadow+4, v4.vector);
-    _mm_stream_ps(dst_shadow+8, v5.vector);
+    // Store out result
+    _mm_store_ps(dst_shadow, v3.vector);
+    _mm_store_ps(dst_shadow+4, v4.vector);
+    _mm_store_ps(dst_shadow+8, v5.vector);
     
   }
 
@@ -2922,9 +2922,9 @@ void inlineAddSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   v4.vector = _mm_sub_ps(v4.vector, v1.vector);
   v5.vector = _mm_sub_ps(v5.vector, v2.vector);
   
-  _mm_stream_ps(dst_shadow+12, v3.vector);
-  _mm_stream_ps(dst_shadow+16, v4.vector);
-  _mm_stream_ps(dst_shadow+20, v5.vector);
+  _mm_store_ps(dst_shadow+12, v3.vector);
+  _mm_store_ps(dst_shadow+16, v4.vector);
+  _mm_store_ps(dst_shadow+20, v5.vector);
   
 }
 

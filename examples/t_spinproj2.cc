@@ -1,4 +1,4 @@
-// $Id: t_spinproj2.cc,v 1.2 2007-02-07 20:45:45 bjoo Exp $
+// $Id: t_spinproj2.cc,v 1.3 2007-02-09 20:35:46 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
   OScalar<PSpinVector<PColorVector< RComplex<REAL>, 3>, 4> >  v,v2,v3,diff_v;
 
   // HalfFermion
-  OScalar<PSpinVector<PColorVector< RComplex<REAL>, 3>, 2> > hv,hv2,hv3,diff_hv;
+  OScalar<PSpinVector<PColorVector< RComplex<REAL>, 3>, 2> > hv,hv2,hv3,diff_hv QDP_ALIGN16;
 
   u.elem() = u_lat.elem(0);
   u2.elem() = u_lat.elem(1);

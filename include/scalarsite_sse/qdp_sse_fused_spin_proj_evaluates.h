@@ -35,7 +35,7 @@ void evaluate(OLattice< HVec >& d,
 
 
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ; 
     inlineSpinProjDir0Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			    1);
@@ -72,9 +72,8 @@ void evaluate(OLattice< HVec >& d,
 
   REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     inlineSpinProjDir0Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			    1);
@@ -111,9 +110,8 @@ void evaluate(OLattice< HVec >& d,
 
   REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     inlineSpinProjDir1Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			    1);
@@ -152,7 +150,7 @@ void evaluate(OLattice< HVec >& d,
 
 
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     inlineSpinProjDir1Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			    1);
@@ -190,9 +188,8 @@ void evaluate(OLattice< HVec >& d,
 
   REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     inlineSpinProjDir2Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			    1);
@@ -229,9 +226,8 @@ void evaluate(OLattice< HVec >& d,
 
   REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     inlineSpinProjDir2Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			    1);
@@ -267,9 +263,8 @@ void evaluate(OLattice< HVec >& d,
 
   REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     inlineSpinProjDir3Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			    1);
@@ -306,9 +301,8 @@ void evaluate(OLattice< HVec >& d,
 
   REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     inlineSpinProjDir3Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			    1);

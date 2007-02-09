@@ -1,6 +1,13 @@
 #ifndef SSE_FUSED_SPIN_PROJ_H
 #define SSE_FUSED_SPIN_PROJ_H
 
+#ifdef  _inline_sse_mult_adj_su3_mat_hwvec
+#undef   _inline_sse_mult_adj_su3_mat_hwvec
+#endif
+#include "scalarsite_sse/sse_adj_mat_hwvec.h"
+
+#include <iostream>
+using namespace std;
 
 QDP_BEGIN_NAMESPACE(QDP);
 
@@ -82,7 +89,7 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 // Return types Fused su3*spinProj(Spin4)->Spin2
 template<>
 struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir0Plus > {
-  typedef Spin2 Type_t;
+  typedef Spin2  Type_t;
 };
 
 // This is what you need to specialise now. It'll get called by 
@@ -105,15 +112,20 @@ inline
 BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir0Plus >::Type_t
 adjMultSprojDir0Plus(const PScalar<ColMat>& a, const Spin4& b)
 {
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir0Plus >::Type_t ret;
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir0Plus >::Type_t d;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir0Plus >::Type_t ret ;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir0Plus >::Type_t d ;
+
 
   inlineSpinProjDir0Plus(&(b.elem(0).elem(0).real()),
 			 &(d.elem(0).elem(0).real()),
 			 1);
 
+#if 0
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
+#else
+  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
+#endif
 
   return ret;
 }
@@ -189,7 +201,7 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 // Return types Fused su3*spinProj(Spin4)->Spin2
 template<>
 struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir0Minus > {
-  typedef Spin2 Type_t;
+  typedef Spin2  Type_t;
 };
 
 // This is what you need to specialise now. It'll get called by 
@@ -212,15 +224,19 @@ inline
 BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir0Minus >::Type_t
 adjMultSprojDir0Minus(const PScalar<ColMat>& a, const Spin4& b)
 {
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir0Minus >::Type_t ret;
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir0Minus >::Type_t d;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir0Minus >::Type_t ret ;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir0Minus >::Type_t d ;
 
   inlineSpinProjDir0Minus(&(b.elem(0).elem(0).real()),
 			  &(d.elem(0).elem(0).real()),
 			  1);
 
+#if 0
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
+#else
+  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
+#endif
 
   return ret;
 }
@@ -296,7 +312,7 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 // Return types Fused su3*spinProj(Spin4)->Spin2
 template<>
 struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir1Plus > {
-  typedef Spin2 Type_t;
+  typedef Spin2  Type_t;
 };
 
 // This is what you need to specialise now. It'll get called by 
@@ -319,15 +335,19 @@ inline
 BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir1Plus >::Type_t
 adjMultSprojDir1Plus(const PScalar<ColMat>& a, const Spin4& b)
 {
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir1Plus >::Type_t ret;
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir1Plus >::Type_t d;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir1Plus >::Type_t ret ;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir1Plus >::Type_t d  ;
 
   inlineSpinProjDir1Plus(&(b.elem(0).elem(0).real()),
 			 &(d.elem(0).elem(0).real()),
 			 1);
 
+#if 0
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
+#else 
+  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
+#endif 
 
   return ret;
 }
@@ -404,7 +424,7 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 // Return types Fused su3*spinProj(Spin4)->Spin2
 template<>
 struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir1Minus > {
-  typedef Spin2 Type_t;
+  typedef Spin2  Type_t;
 };
 
 // This is what you need to specialise now. It'll get called by 
@@ -427,16 +447,19 @@ inline
 BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir1Minus >::Type_t
 adjMultSprojDir1Minus(const PScalar<ColMat>& a, const Spin4& b)
 {
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir1Minus >::Type_t ret;
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir1Minus >::Type_t d;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir1Minus >::Type_t ret  ;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir1Minus >::Type_t d  ;
 
   inlineSpinProjDir1Minus(&(b.elem(0).elem(0).real()),
 			 &(d.elem(0).elem(0).real()),
 			 1);
 
+#if 0
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
-    
+#else 
+  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
+#endif
     return ret;
 }
 
@@ -511,7 +534,7 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 // Return types Fused su3*spinProj(Spin4)->Spin2
 template<>
 struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir2Plus > {
-  typedef Spin2 Type_t;
+  typedef Spin2  Type_t;
 };
 
 // This is what you need to specialise now. It'll get called by 
@@ -534,15 +557,19 @@ inline
 BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir2Plus >::Type_t
 adjMultSprojDir2Plus(const PScalar<ColMat>& a, const Spin4& b)
 {
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir2Plus >::Type_t ret;
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir2Plus >::Type_t d;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir2Plus >::Type_t ret  ;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir2Plus >::Type_t d  ;
 
   inlineSpinProjDir2Plus(&(b.elem(0).elem(0).real()),
 			 &(d.elem(0).elem(0).real()),
 			 1);
 
+#if 0
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
+#else
+  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
+#endif
 
   return ret;
 }
@@ -617,7 +644,7 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 // Return types Fused su3*spinProj(Spin4)->Spin2
 template<>
 struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir2Minus > {
-  typedef Spin2 Type_t;
+  typedef Spin2  Type_t;
 };
 
 // This is what you need to specialise now. It'll get called by 
@@ -640,15 +667,19 @@ inline
 BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir2Minus >::Type_t
 adjMultSprojDir2Minus(const PScalar<ColMat>& a, const Spin4& b)
 {
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir2Minus >::Type_t ret;
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir2Minus >::Type_t d;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir2Minus >::Type_t ret  ;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir2Minus >::Type_t d  ;
 
   inlineSpinProjDir2Minus(&(b.elem(0).elem(0).real()),
 			  &(d.elem(0).elem(0).real()),
 			  1);
 
+#if 0
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
+#else
+  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
+#endif
     return ret;
 }
 
@@ -721,7 +752,7 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 // Return types Fused su3*spinProj(Spin4)->Spin2
 template<>
 struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir3Plus > {
-  typedef Spin2 Type_t;
+  typedef Spin2  Type_t;
 };
 
 // This is what you need to specialise now. It'll get called by 
@@ -744,16 +775,21 @@ inline
 BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir3Plus >::Type_t
 adjMultSprojDir3Plus(const PScalar<ColMat>& a, const Spin4& b)
 {
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir3Plus >::Type_t ret;
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir3Plus >::Type_t d;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir3Plus >::Type_t ret ;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir3Plus >::Type_t d ;
 
   inlineSpinProjDir3Plus(&(b.elem(0).elem(0).real()),
 			 &(d.elem(0).elem(0).real()),
 			 1);
 
     
+
+#if 0
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
+#else
+  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
+#endif
 
   return ret;
 }
@@ -829,7 +865,7 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 // Return types Fused su3*spinProj(Spin4)->Spin2
 template<>
 struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir3Minus > {
-  typedef Spin2 Type_t;
+  typedef Spin2  Type_t;
 };
 
 // This is what you need to specialise now. It'll get called by 
@@ -852,18 +888,21 @@ inline
 BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir3Minus >::Type_t
 adjMultSprojDir3Minus(const PScalar<ColMat>& a, const Spin4& b)
 {
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir3Minus >::Type_t ret;
-  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir3Minus >::Type_t d;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir3Minus >::Type_t ret ;
+  BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir3Minus >::Type_t d ;
 
   inlineSpinProjDir3Minus(&(b.elem(0).elem(0).real()),
 			  &(d.elem(0).elem(0).real()),
 			  1);
   
-  
+#if 0
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0));
   _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1));
-    
-    return ret;
+#else
+  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
+#endif
+
+  return ret;
 }
 
 

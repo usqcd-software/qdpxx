@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinvec.h,v 1.7 2007-02-07 20:45:45 bjoo Exp $
+// $Id: qdp_primspinvec.h,v 1.8 2007-02-09 20:35:46 bjoo Exp $
 
 /*! \file
  * \brief Primitive Spin Vector
@@ -25,29 +25,672 @@ QDP_BEGIN_NAMESPACE(QDP);
  * that know for a fixed size how gamma matrices (constants) should act
  * on the spin vectors.
  */
-template <class T, int N> class PSpinVector : public PVector<T, N, PSpinVector>
+
+template <class T, int N> class PSpinVector
 {
 public:
-  //! PVector = PVector
-  /*! Set equal to another PVector */
+  PSpinVector() { }
+  ~PSpinVector() {} 
+
   template<class T1>
   inline
-  PSpinVector& operator=(const PSpinVector<T1,N>& rhs) 
+  PSpinVector& assign(const PSpinVector<T1, N>& rhs)
+  {
+    for(int i=0; i < N; i++) 
+      elem(i) = rhs.elem(i);
+
+    return *this;
+  }
+
+  template<class T1> 
+  inline 
+  PSpinVector& operator=(const PSpinVector<T1,N>& rhs)
+  {
+    return assign(rhs);
+  }
+
+  //! PSpinVector += PSpinVector
+  template<class T1>
+  inline
+  PSpinVector& operator+=(const PSpinVector<T1,N>& rhs) 
     {
-      assign(rhs);
+      for(int i=0; i < N; ++i)
+	elem(i) += rhs.elem(i);
+
       return *this;
     }
 
+
+  template<class T1>
+  inline
+  PSpinVector& operator*=(const PScalar<T1>& rhs) 
+    {
+      for(int i=0; i < N; ++i)
+	elem(i) *= rhs.elem();
+
+      return *this;
+    }
+
+  template<class T1>
+  inline
+  PSpinVector& operator-=(const PSpinVector<T1,N>& rhs) 
+    {
+      for(int i=0; i < N; ++i)
+	elem(i) -= rhs.elem(i);
+
+      return *this;
+    }
+
+  //! PSpinVector /= PScalar
+  template<class T1>
+  inline
+  PSpinVector& operator/=(const PScalar<T1>& rhs) 
+    {
+      for(int i=0; i < N; ++i)
+	elem(i) /= rhs.elem();
+
+      return *this;
+    }
+
+  T& elem(int i) {return F[i];}
+  const T& elem(int i) const {return F[i];}
+private:
+  T F[N] QDP_ALIGN16; 
 };
+
+//! Stream input
+template<class T, int N>  
+inline
+istream& operator>>(istream& s, PSpinVector<T,N>& d)
+{
+  for(int i=0; i < N; ++i)
+    s >> d.elem(i);
+
+  return s;
+}
+
+template<class T, int N>  
+inline
+StandardInputStream& operator>>(StandardInputStream& s, PSpinVector<T,N>& d)
+{
+  for(int i=0; i < N; ++i)
+    s >> d.elem(i);
+
+  return s;
+}
+//! Stream output
+template<class T, int N>
+inline
+ostream& operator<<(ostream& s, const PSpinVector<T,N>& d)
+{
+  for(int i=0; i < N; ++i)
+    s << d.elem(i);
+
+  return s;
+}
+
+//! Stream output
+template<class T, int N>
+inline
+StandardOutputStream& operator<<(StandardOutputStream& s, const PSpinVector<T,N>& d)
+{
+  for(int i=0; i < N; ++i)
+    s << d.elem(i);
+
+  return s;
+}
+
+
+//! Text input
+template<class T, int N>
+inline
+TextReader& operator>>(TextReader& txt, PSpinVector<T,N>& d)
+{
+  for(int i=0; i < N; ++i)
+    txt >> d.elem(i);
+
+  return txt;
+}
+
+//! Text output
+template<class T, int N>  
+inline
+TextWriter& operator<<(TextWriter& txt, const PSpinVector<T,N>& d)
+{
+  for(int i=0; i < N; ++i)
+    txt << d.elem(i);
+
+  return txt;
+}
+
+
+//! XML output
+template<class T, int N>
+inline
+XMLWriter& operator<<(XMLWriter& xml, const PSpinVector<T,N>& d)
+{
+  xml.openTag("SpinVector");
+
+  XMLWriterAPI::AttributeList alist;
+
+  // Copy into another array first
+  for(int i=0; i < N; ++i)
+  {
+    alist.clear();
+    alist.push_back(XMLWriterAPI::Attribute("row", i));
+
+    xml.openTag("elem", alist);
+    xml << d.elem(i);
+    xml.closeTag();
+  }
+
+  xml.closeTag();  // Vector
+  return xml;
+}
+
+
+
+
+ 
+
+
+// Primitive Vectors
+
+template<class T1, int N>
+inline typename UnaryReturn<PSpinVector<T1,N>, OpUnaryPlus>::Type_t
+operator+(const PSpinVector<T1,N>& l)
+{
+  typename UnaryReturn<PSpinVector<T1,N>, OpUnaryPlus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = +l.elem(i);
+  return d;
+}
+
+
+template<class T1, int N>
+inline typename UnaryReturn<PSpinVector<T1,N>, OpUnaryMinus>::Type_t
+operator-(const PSpinVector<T1,N>& l)
+{
+  typename UnaryReturn<PSpinVector<T1,N>, OpUnaryMinus>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = -l.elem(i);
+  return d;
+}
+
+
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, OpAdd>::Type_t
+operator+(const PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r)
+{
+  typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, OpAdd>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) + r.elem(i);
+  return d;
+}
+
+
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, OpSubtract>::Type_t
+operator-(const PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r)
+{
+  typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, OpSubtract>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) - r.elem(i);
+  return d;
+}
+
+
+// PSpinVector * PScalar
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpMultiply>::Type_t
+operator*(const PSpinVector<T1,N>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) * r.elem();
+  return d;
+}
+
+// Optimized  PSpinVector * adj(PScalar)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpMultiplyAdj>::Type_t
+multiplyAdj(const PSpinVector<T1,N>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpMultiplyAdj>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = multiplyAdj(l.elem(i), r.elem());
+  return d;
+}
+
+
+// PScalar * PSpinVector
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t
+operator*(const PScalar<T1>& l, const PSpinVector<T2,N>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem() * r.elem(i);
+  return d;
+}
+
+// Optimized  adj(PScalar) * PSpinVector
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t
+adjMultiply(const PScalar<T1>& l, const PSpinVector<T2,N>& r)
+{
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = adjMultiply(l.elem(), r.elem(i));
+  return d;
+}
+
+
+// PMatrix * PSpinVector
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, OpMultiply>::Type_t
+operator*(const PSpinMatrix<T1,N>& l, const PSpinVector<T2,N>& r)
+{
+  typename BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, OpMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+  {
+    d.elem(i) = l.elem(i,0) * r.elem(0);
+    for(int j=1; j < N; ++j)
+      d.elem(i) += l.elem(i,j) * r.elem(j);
+  }
+
+  return d;
+}
+
+
+// PMatrix * PSpinVector
+template<class T1, class T2,  template<class,int> class C, int N>
+inline typename BinaryReturn<PMatrix<T1,N,C>, PSpinVector<T2,N>, OpMultiply>::Type_t
+operator*(const PSpinMatrix<T1,N>& l, const PSpinVector<T2,N>& r)
+{
+  typename BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, OpMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+  {
+    d.elem(i) = l.elem(i,0) * r.elem(0);
+    for(int j=1; j < N; ++j)
+      d.elem(i) += l.elem(i,j) * r.elem(j);
+  }
+
+  return d;
+}
+
+// Optimized  adj(PMatrix)*PSpinVector
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t
+adjMultiply(const PSpinMatrix<T1,N>& l, const PSpinVector<T2,N>& r)
+{
+  typename BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+  {
+    d.elem(i) = adjMultiply(l.elem(0,i), r.elem(0));
+    for(int j=1; j < N; ++j)
+      d.elem(i) += adjMultiply(l.elem(j,i), r.elem(j));
+  }
+
+  return d;
+}
+
+// Optimized  adj(PMatrix)*PVector
+template<class T1, class T2, int N, template<class,int> class C1>
+inline typename BinaryReturn<PMatrix<T1,N,C1>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t
+adjMultiply(const PMatrix<T1,N,C1>& l, const PSpinVector<T2,N>& r)
+{
+  typename BinaryReturn<PMatrix<T1,N,C1>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+  {
+    d.elem(i) = adjMultiply(l.elem(0,i), r.elem(0));
+    for(int j=1; j < N; ++j)
+      d.elem(i) += adjMultiply(l.elem(j,i), r.elem(j));
+  }
+
+  return d;
+}
+
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpDivide>::Type_t
+operator/(const PSpinVector<T1,N>& l, const PScalar<T2>& r)
+{
+  typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpDivide>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = l.elem(i) / r.elem();
+  return d;
+}
+
+
+
+//! PSpinVector = Re(PSpinVector)
+template<class T, int N>
+inline typename UnaryReturn<PSpinVector<T,N>, FnReal>::Type_t
+real(const PSpinVector<T,N>& s1)
+{
+  typename UnaryReturn<PSpinVector<T,N>, FnReal>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = real(s1.elem(i));
+
+  return d;
+}
+
+
+//! PSpinVector = Im(PSpinVector)
+template<class T, int N>
+inline typename UnaryReturn<PSpinVector<T,N>, FnImag>::Type_t
+imag(const PSpinVector<T,N>& s1)
+{
+  typename UnaryReturn<PSpinVector<T,N>, FnImag>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = imag(s1.elem(i));
+
+  return d;
+}
+
+
+//! PSpinVector<T> = (PSpinVector<T> , PSpinVector<T>)
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnCmplx>::Type_t
+cmplx(const PSpinVector<T1,N>& s1, const PSpinVector<T2,N>& s2)
+{
+  typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnCmplx>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = cmplx(s1.elem(i), s2.elem(i));
+
+  return d;
+}
+
+
+//-----------------------------------------------------------------------------
+// Functions
+// Conjugate
+template<class T1, int N>
+inline typename UnaryReturn<PSpinVector<T1,N>, FnConjugate>::Type_t
+conj(const PSpinVector<T1,N>& l)
+{
+  typename UnaryReturn<PSpinVector<T1,N>, FnConjugate>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = conj(l.elem(i));
+
+  return d;
+}
+
+//! PSpinVector = i * PSpinVector
+template<class T, int N>
+inline typename UnaryReturn<PSpinVector<T,N>, FnTimesI>::Type_t
+timesI(const PSpinVector<T,N>& s1)
+{
+  typename UnaryReturn<PSpinVector<T,N>, FnTimesI>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = timesI(s1.elem(i));
+
+  return d;
+}
+
+//! PSpinVector = -i * PSpinVector
+template<class T, int N>
+inline typename UnaryReturn<PSpinVector<T,N>, FnTimesMinusI>::Type_t
+timesMinusI(const PSpinVector<T,N>& s1)
+{
+  typename UnaryReturn<PSpinVector<T,N>, FnTimesMinusI>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = timesMinusI(s1.elem(i));
+
+  return d;
+}
+
+
+//! dest [some type] = source [some type]
+/*! Portable (internal) way of returning a single site */
+template<class T, int N>
+inline typename UnaryReturn<PSpinVector<T,N>, FnGetSite>::Type_t
+getSite(const PSpinVector<T,N>& s1, int innersite)
+{ 
+  typename UnaryReturn<PSpinVector<T,N>, FnGetSite>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = getSite(s1.elem(i), innersite);
+
+  return d;
+}
+
+//! Extract color vector components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T, int N>
+inline typename UnaryReturn<PSpinVector<T,N>, FnPeekColorVector>::Type_t
+peekColor(const PSpinVector<T,N>& l, int row)
+{
+  typename UnaryReturn<PSpinVector<T,N>, FnPeekColorVector>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = peekColor(l.elem(i),row);
+  return d;
+}
+
+//! Extract color matrix components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T, int N>
+inline typename UnaryReturn<PSpinVector<T,N>, FnPeekColorMatrix>::Type_t
+peekColor(const PSpinVector<T,N>& l, int row, int col)
+{
+  typename UnaryReturn<PSpinVector<T,N>, FnPeekColorMatrix>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = peekColor(l.elem(i),row,col);
+  return d;
+}
+
+
+//! Extract spin matrix components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T, int N>
+inline typename UnaryReturn<PSpinVector<T,N>, FnPeekSpinMatrix>::Type_t
+peekSpin(const PSpinVector<T,N>& l, int row, int col)
+{
+  typename UnaryReturn<PSpinVector<T,N>, FnPeekSpinMatrix>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = peekSpin(l.elem(i),row,col);
+  return d;
+}
+
+//! Insert color vector components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T1, class T2, int N>
+inline typename UnaryReturn<PSpinVector<T1,N>, FnPokeColorVector>::Type_t&
+pokeColor(PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r, int row)
+{
+  typedef typename UnaryReturn<PSpinVector<T1,N>, FnPokeColorVector>::Type_t  Return_t;
+
+  for(int i=0; i < N; ++i)
+    pokeColor(l.elem(i),r.elem(i),row);
+  return static_cast<Return_t&>(l);
+}
+
+//! Insert color matrix components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T1, class T2, int N>
+inline typename UnaryReturn<PSpinVector<T1,N>, FnPokeColorVector>::Type_t&
+pokeColor(PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r, int row, int col)
+{
+  typedef typename UnaryReturn<PSpinVector<T1,N>, FnPokeColorVector>::Type_t  Return_t;
+
+  for(int i=0; i < N; ++i)
+    pokeColor(l.elem(i),r.elem(i),row,col);
+  return static_cast<Return_t&>(l);
+}
+
+//! Insert spin vector components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T1, class T2, int N>
+inline typename UnaryReturn<PSpinVector<T1,N>, FnPokeSpinVector>::Type_t&
+pokeSpin(PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r, int row)
+{
+  typedef typename UnaryReturn<PSpinVector<T1,N>, FnPokeSpinVector>::Type_t  Return_t;
+
+  for(int i=0; i < N; ++i)
+    pokeSpin(l.elem(i),r.elem(i),row);
+  return static_cast<Return_t&>(l);
+}
+
+//! Insert spin matrix components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T1, class T2, int N>
+inline typename UnaryReturn<PSpinVector<T1,N>, FnPokeSpinVector>::Type_t&
+pokeSpin(PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r, int row, int col)
+{
+  typedef typename UnaryReturn<PSpinVector<T1,N>, FnPokeSpinVector>::Type_t  Return_t;
+
+  for(int i=0; i < N; ++i)
+    pokeSpin(l.elem(i),r.elem(i),row,col);
+  return static_cast<Return_t&>(l);
+}
+
+
+//! dest = 0
+template<class T, int N> 
+inline void 
+zero_rep(PSpinVector<T,N>& dest) 
+{
+  for(int i=0; i < N; ++i)
+    zero_rep(dest.elem(i));
+}
+
+//! dest = (mask) ? s1 : dest
+template<class T, class T1, int N> 
+inline void 
+copymask(PSpinVector<T,N>& d, const PScalar<T1>& mask, const PSpinVector<T,N>& s1) 
+{
+  for(int i=0; i < N; ++i)
+    copymask(d.elem(i),mask.elem(),s1.elem(i));
+}
+
+
+//! dest [some type] = source [some type]
+template<class T, class T1, int N>
+inline void 
+copy_site(PSpinVector<T,N>& d, int isite, const PSpinVector<T1,N>& s1)
+{
+  for(int i=0; i < N; ++i)
+    copy_site(d.elem(i), isite, s1.elem(i));
+}
+
+//! dest [some type] = source [some type]
+template<class T, class T1, int N>
+inline void 
+copy_site(PSpinVector<T,N>& d, int isite, const PScalar<T1>& s1)
+{
+  for(int i=0; i < N; ++i)
+    copy_site(d.elem(i), isite, s1.elem());
+}
+
+
+//! gather several inner sites together
+template<class T, class T1, int N>
+inline void 
+gather_sites(PSpinVector<T,N>& d, 
+	     const PSpinVector<T1,N>& s0, int i0, 
+	     const PSpinVector<T1,N>& s1, int i1,
+	     const PSpinVector<T1,N>& s2, int i2,
+	     const PSpinVector<T1,N>& s3, int i3)
+{
+  for(int i=0; i < N; ++i)
+    gather_sites(d.elem(i), 
+		 s0.elem(i), i0, 
+		 s1.elem(i), i1, 
+		 s2.elem(i), i2, 
+		 s3.elem(i), i3);
+}
+
+
+
+#if 0
+// Global sum over site indices only
+template<class T, int N>
+struct UnaryReturn<PSpinVector<T,N>, FnSum > {
+  typedef PSpinVectortypename UnaryReturn<T, FnSum>::Type_t, N>  Type_t;
+};
+
+template<class T, int N>
+inline typename UnaryReturn<PSpinVector<T,N>, FnSum>::Type_t
+sum(const PSpinVector<T,N>& s1)
+{
+  typename UnaryReturn<PSpinVector<T,N>, FnSum>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = sum(s1.elem(i));
+
+  return d;
+}
+#endif
+
+
+
+
+template<class T, int N>
+inline typename UnaryReturn<PSpinVector<T,N>, FnLocalNorm2>::Type_t
+localNorm2(const PSpinVector<T,N>& s1)
+{
+  typename UnaryReturn<PSpinVector<T,N>, FnLocalNorm2>::Type_t  d;
+
+  d.elem() = localNorm2(s1.elem(0));
+  for(int i=1; i < N; ++i)
+    d.elem() += localNorm2(s1.elem(i));
+
+  return d;
+}
+
+
+
+
+//! PSpinVector<T> = where(PScalar, PSpinVector, PSpinVector)
+/*!
+ * Where is the ? operation
+ * returns  (a) ? b : c;
+ */
+template<class T1, class T2, class T3, int N>
+struct TrinaryReturn<PScalar<T1>, PSpinVector<T2,N>, PSpinVector<T3,N>, FnWhere> {
+  typedef PSpinVector<typename TrinaryReturn<T1, T2, T3, FnWhere>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, class T3, int N>
+inline typename TrinaryReturn<PScalar<T1>, PSpinVector<T2,N>, PSpinVector<T3,N>, FnWhere>::Type_t
+where(const PScalar<T1>& a, const PSpinVector<T2,N>& b, const PSpinVector<T3,N>& c)
+{
+  typename TrinaryReturn<PScalar<T1>, PSpinVector<T2,N>, PSpinVector<T3,N>, FnWhere>::Type_t  d;
+
+  // Not optimal - want to have where outside assignment
+  for(int i=0; i < N; ++i)
+    d.elem(i) = where(a.elem(), b.elem(i), c.elem(i));
+
+  return d;
+}
 
 
 //! Specialization of primitive spin Vector class for 4 spin components
 /*! 
  * Spin vector class supports gamma matrix algebra for 4 spin components
  */
-template<class T> class PSpinVector<T,4> : public PVector<T, 4, PSpinVector>
-{
-};
 
 
 //! Specialization of primitive spin Vector class for 2 spin components
@@ -56,10 +699,6 @@ template<class T> class PSpinVector<T,4> : public PVector<T, 4, PSpinVector>
  * NOTE: this can be used for spin projection tricks of a 4 component spinor
  * to 2 spin components, or a 2 spin component Dirac fermion in 2 dimensions
  */
-template<class T> class PSpinVector<T,2> : public PVector<T, 2, PSpinVector>
-{
-public:
-};
 
 
 /*! @} */   // end of group primspinvec
@@ -123,9 +762,17 @@ struct BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, Op> {
 
 // Default binary(PSpinMatrix,PSpinVector) -> PSpinVector
 template<class T1, class T2, int N, class Op>
-struct BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, Op> {
+struct BinaryReturn< PSpinMatrix<T1,N>, PSpinVector<T2,N>, Op> {
   typedef PSpinVector<typename BinaryReturn<T1, T2, Op>::Type_t, N>  Type_t;
 };
+
+
+// Default binary(PMatrix,PSpinVector) -> PSpinVector
+template<class T1, class T2, int N, template <class,int> class C1, class Op>
+struct BinaryReturn< PMatrix<T1,N,C1>, PSpinVector<T2,N>, Op> {
+  typedef PSpinVector<typename BinaryReturn<T1, T2, Op>::Type_t, N>  Type_t;
+};
+
 
 // Default binary(PSpinVector,PScalar) -> PSpinVector
 template<class T1, class T2, int N, class Op>
@@ -209,6 +856,31 @@ struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnLocalInnerProductRea
 };
 
 
+template<class T1, class T2, int N>
+inline PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>
+localInnerProduct(const PSpinVector<T1,N>& s1, const PSpinVector<T2,N>& s2)
+{
+  PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  d;
+
+  d.elem() = localInnerProduct(s1.elem(0), s2.elem(0));
+  for(int i=1; i < N; ++i)
+    d.elem() += localInnerProduct(s1.elem(i), s2.elem(i));
+
+  return d;
+}
+
+template<class T1, class T2, int N>
+inline PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>
+localInnerProductReal(const PSpinVector<T1,N>& s1, const PSpinVector<T2,N>& s2)
+{
+  PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  d;
+
+  d.elem() = localInnerProductReal(s1.elem(0), s2.elem(0));
+  for(int i=1; i < N; ++i)
+    d.elem() += localInnerProductReal(s1.elem(i), s2.elem(i));
+
+  return d;
+}
 
 // Gamma algebra
 template<int m, class T2, int N>
@@ -319,6 +991,26 @@ struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstructDir3Minus > {
 
 
 
+//! dest  = random  
+template<class T, int N,  class T1, class T2>
+inline void
+fill_random(PSpinVector<T,N>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
+{
+  // Loop over rows the slowest
+  for(int i=0; i < N; ++i)
+    fill_random(d.elem(i), seed, skewed_seed, seed_mult);
+}
+
+
+//! dest  = gaussian
+template<class T, int N>
+inline void
+fill_gaussian(PSpinVector<T,N>& d, PSpinVector<T,N>& r1, PSpinVector<T,N>& r2)
+{
+  for(int i=0; i < N; ++i)
+    fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
+}
+
 //-----------------------------------------------------------------------------
 // Operators
 //-----------------------------------------------------------------------------
@@ -353,19 +1045,6 @@ pokeSpin(PSpinVector<T1,N>& l, const PScalar<T2>& r, int row)
   l.elem(row) = r.elem();
   return l;
 }
-
-
-//-----------------------------------------------
-#if 0
-// SpinMatrix<N> = Gamma<N,m> * SpinMatrix<N>
-// Default case 
-template<class T2, int N, int m>
-inline typename BinaryReturn<GammaConst<N,m>, PSpinMatrix<T2,N>, OpGammaConstMultiply>::Type_t
-operator*(const GammaConst<N,m>&, const PSpinMatrix<T2,N>& r)
-{
-  // Not implemented
-}
-#endif
 
 
 

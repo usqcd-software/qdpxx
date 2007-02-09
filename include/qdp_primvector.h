@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.23 2006-01-12 02:17:40 bjoo Exp $
+// $Id: qdp_primvector.h,v 1.24 2007-02-09 20:35:46 bjoo Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -27,8 +27,8 @@ QDP_BEGIN_NAMESPACE(QDP);
 template <class T, int N, template<class,int> class C> class PVector
 {
 public:
-  PVector() {}
-  ~PVector() {}
+  PVector() { }
+  ~PVector() { }
 
   typedef C<T,N>  CC;
 
@@ -111,6 +111,7 @@ public:
   /*! This is a copy form - legal but not necessarily efficient */
   PVector(const PVector& a)
     {
+     
       for(int i=0; i < N; ++i)
 	F[i] = a.F[i];
     }
@@ -124,6 +125,7 @@ public:
 
 private:
   T F[N];
+ 
 };
 
 

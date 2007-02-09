@@ -18,4 +18,5 @@
 #include "scalarsite_sse/qdp_sse_spin_evaluates.h"
 #include "scalarsite_sse/qdp_sse_fused_spin_proj_evaluates.h"
 #include "scalarsite_sse/qdp_sse_fused_spin_recon_evaluates.h"
+
 #endif

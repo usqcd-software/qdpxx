@@ -5,7 +5,7 @@
 
 /* File: generic_spin_proj_inlines.h
    Purpose: Supply inline functions to do spin projection
-   Author: $Id: sse_spin_proj_inlines.h,v 1.1 2007-02-07 20:35:28 bjoo Exp $
+   Author: $Id: sse_spin_proj_inlines.h,v 1.2 2007-02-09 20:35:46 bjoo Exp $
 */
 QDP_BEGIN_NAMESPACE(QDP);
 #include <stdio.h>
@@ -30,6 +30,7 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   QDPIO::cout << "inlineSpinProjDir0Plus" << endl;
 #endif
 
+
   SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
 
   /* 1 + \gamma_0 =  1  0  0  i 
@@ -44,7 +45,7 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   REAL* dst_shadow = dst;
 
 
-  // Stream in the spinor - top half
+  // Store in the spinor - top half
   v0.vector = _mm_load_ps(src_shadow);
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
@@ -60,7 +61,7 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
 
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     v6.vector = v4.vector;         // V6 is dest so we can move its 
     // I want to shuffle so that:
@@ -78,7 +79,7 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v0[3] <- v0[3] + v6[3]*v7[3] =  tmp[0][col=1][im] + tmp[3][col=1][re]
     v6.vector = _mm_mul_ps(v6.vector, v7.vector);
     v0.vector = _mm_add_ps(v0.vector, v6.vector);
-    _mm_stream_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow, v0.vector);
 
     v6.vector = v5.vector;
     // Now setup v7 so that 
@@ -96,7 +97,7 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v1[3] <- v1[3] + v6[3]*v7[3] =  tmp[1][col=0][im] + tmp[2][col=0][re]
     v6.vector  = _mm_mul_ps(v6.vector, v7.vector);
     v1.vector  = _mm_add_ps(v1.vector, v6.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
 
     v6.vector = v3.vector;
     //  v6[0] <- v6[3]=v3[3]  [1:0]=3 = x11 <- tmp[2][col=1][im]
@@ -113,12 +114,12 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v2[3] <- v2[3] + v6[3]*v7[3] =  tmp[1][col=2][im] + tmp[2][col=2][re]
     v6.vector = _mm_mul_ps(v6.vector, v7.vector);
     v2.vector = _mm_add_ps(v2.vector, v6.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     // Push the next one
     dst_shadow+=12;
 
-    // Stream in the next spinor -- should be prefetched if all has gone well
+    // Store in the next spinor -- should be prefetched if all has gone well
     v0.vector = _mm_load_ps(src_shadow);
     v1.vector = _mm_load_ps(src_shadow+4);
     v2.vector = _mm_load_ps(src_shadow+8);
@@ -146,7 +147,7 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v0[3] <- v0[3] + v6[3]*v7[3] =  tmp[0][col=1][im] + tmp[3][col=1][re]
   v6.vector = _mm_mul_ps(v6.vector, v7.vector);
   v0.vector = _mm_add_ps(v0.vector, v6.vector);
-  _mm_stream_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow, v0.vector);
   
   v6.vector = v5.vector;
   // Now setup v7 so that 
@@ -164,7 +165,7 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v1[3] <- v1[3] + v6[3]*v7[3] =  tmp[1][col=0][im] + tmp[2][col=0][re]
   v6.vector  = _mm_mul_ps(v6.vector, v7.vector);
   v1.vector  = _mm_add_ps(v1.vector, v6.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
   
   v6.vector = v3.vector;
   //  v6[0] <- v6[3]=v3[3]  [1:0]=3 = x11 <- tmp[2][col=1][im]
@@ -181,7 +182,7 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v2[3] <- v2[3] + v6[3]*v7[3] =  tmp[1][col=2][im] + tmp[2][col=2][re]
   v6.vector = _mm_mul_ps(v6.vector, v7.vector);
   v2.vector = _mm_add_ps(v2.vector, v6.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
   
 }
 
@@ -226,7 +227,7 @@ void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   v7.floats[2] = -1;
   v7.floats[3] = +1;
   
-  // Stream in the spinor 
+  // Store in the spinor 
   v0.vector = _mm_load_ps(src_shadow);
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
@@ -237,7 +238,7 @@ void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
 
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
     
     v6.vector = v4.vector;         // V6 is dest so we can move its 
     // I want to shuffle so that:
@@ -255,7 +256,7 @@ void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v0[3] <- v0[3] - v6[3]*v7[3] =  tmp[0][col=1][im] - tmp[3][col=1][re]    
     v6.vector = _mm_mul_ps(v6.vector, v7.vector);
     v0.vector = _mm_sub_ps(v0.vector, v6.vector);
-    _mm_stream_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow, v0.vector);
 
     v6.vector = v5.vector;
     // I want to shuffle so that:
@@ -273,7 +274,7 @@ void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v1[3] <- v1[3] - v6[3]*v7[3] =  tmp[1][col=0][im] - tmp[2][col=0][re]
     v6.vector  = _mm_mul_ps(v6.vector, v7.vector);
     v1.vector  = _mm_sub_ps(v1.vector, v6.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
 
     v6.vector = v3.vector;
     //  v6[0] <- v6[3]=v3[3]  [1:0]=3 = x11 <- tmp[2][col=1][im]
@@ -290,11 +291,11 @@ void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v2[3] <- v2[3] - v6[3]*v7[3] =  tmp[1][col=2][im] - tmp[2][col=2][re]
     v6.vector = _mm_mul_ps(v6.vector, v7.vector);
     v2.vector = _mm_sub_ps(v2.vector, v6.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     dst_shadow+=12;
 
-    // Stream in the next spinor -- should be prefetched if all has gone well
+    // Store in the next spinor -- should be prefetched if all has gone well
     v0.vector = _mm_load_ps(src_shadow);
     v1.vector = _mm_load_ps(src_shadow+4);
     v2.vector = _mm_load_ps(src_shadow+8);
@@ -321,7 +322,7 @@ void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v0[3] <- v0[3] - v6[3]*v7[3] =  tmp[0][col=1][im] - tmp[3][col=1][re]    
   v6.vector = _mm_mul_ps(v6.vector, v7.vector);
   v0.vector = _mm_sub_ps(v0.vector, v6.vector);
-  _mm_stream_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow, v0.vector);
   
   v6.vector = v5.vector;
   // I want to shuffle so that:
@@ -339,7 +340,7 @@ void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v1[3] <- v1[3] - v6[3]*v7[3] =  tmp[1][col=0][im] - tmp[2][col=0][re]
   v6.vector  = _mm_mul_ps(v6.vector, v7.vector);
   v1.vector  = _mm_sub_ps(v1.vector, v6.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
   
   v6.vector = v3.vector;
   //  v6[0] <- v6[3]=v3[3]  [1:0]=3 = x11 <- tmp[2][col=1][im]
@@ -356,7 +357,7 @@ void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v2[3] <- v2[3] - v6[3]*v7[3] =  tmp[1][col=2][im] - tmp[2][col=2][re]
   v6.vector = _mm_mul_ps(v6.vector, v7.vector);
   v2.vector = _mm_sub_ps(v2.vector, v6.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
 
 }
 
@@ -400,7 +401,7 @@ void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   v7.floats[2] = +1;
   v7.floats[3] = +1;
   
-  // Stream in the spinor - top half
+  // Store in the spinor - top half
   v0.vector = _mm_load_ps(src_shadow);
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
@@ -411,7 +412,7 @@ void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
     
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
     
     v6.vector = v4.vector;         // V6 is dest so we can move its 
     // I want to shuffle so that:
@@ -428,7 +429,7 @@ void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v0[2] <- v0[2] - v6[2] =  tmp[0][col=1][re] - tmp[3][col=1][re]
     //  v0[3] <- v0[3] - v6[3] =  tmp[0][col=1][im] - tmp[3][col=1][im]
     v0.vector = _mm_sub_ps(v0.vector, v6.vector);
-    _mm_stream_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow, v0.vector);
 
     v6.vector = v5.vector;
     // Now setup v6 so that 
@@ -446,7 +447,7 @@ void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v1[3] <- v1[3] + v7[3]*v6[3] =  tmp[1][col=0][im] + tmp[2][col=0][im]
     v6.vector  = _mm_mul_ps(v6.vector, v7.vector);
     v1.vector  = _mm_add_ps(v1.vector, v6.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
 
     v6.vector = v3.vector;
     //  v6[0] <- v6[2]=v3[2]  [1:0]=2 = x10 <- tmp[2][col=1][re]
@@ -463,11 +464,11 @@ void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v2[2] <- v2[2] + v6[2] =  tmp[1][col=2][re] + tmp[2][col=2][re]
     //  v2[3] <- v2[3] + v6[3] =  tmp[1][col=2][im] + tmp[2][col=2][im]
     v2.vector = _mm_add_ps(v2.vector, v6.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     dst_shadow+=12;
 
-    // Stream in the next spinor -- should be prefetched if all has gone well
+    // Store in the next spinor -- should be prefetched if all has gone well
     v0.vector = _mm_load_ps(src_shadow);
     v1.vector = _mm_load_ps(src_shadow+4);
     v2.vector = _mm_load_ps(src_shadow+8);
@@ -492,7 +493,7 @@ void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v0[2] <- v0[2] - v6[2] =  tmp[0][col=1][re] - tmp[3][col=1][re]
   //  v0[3] <- v0[3] - v6[3] =  tmp[0][col=1][im] - tmp[3][col=1][im]
   v0.vector = _mm_sub_ps(v0.vector, v6.vector);
-  _mm_stream_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow, v0.vector);
   
   v6.vector = v5.vector;
   // Now setup v6 so that 
@@ -510,7 +511,7 @@ void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v1[3] <- v1[3] + v7[3]*v6[3] =  tmp[1][col=0][im] + tmp[2][col=0][im]
   v6.vector  = _mm_mul_ps(v6.vector, v7.vector);
   v1.vector  = _mm_add_ps(v1.vector, v6.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
   
   v6.vector = v3.vector;
   //  v6[0] <- v6[2]=v3[2]  [1:0]=2 = x10 <- tmp[2][col=1][re]
@@ -527,7 +528,7 @@ void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v2[2] <- v2[2] + v6[2] =  tmp[1][col=2][re] + tmp[2][col=2][re]
   //  v2[3] <- v2[3] + v6[3] =  tmp[1][col=2][im] + tmp[2][col=2][im]
   v2.vector = _mm_add_ps(v2.vector, v6.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
 
 }
 
@@ -567,7 +568,7 @@ void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   v7.floats[2] = +1;
   v7.floats[3] = +1;
 
-  // Stream in the spinor - top half
+  // Store in the spinor - top half
   v0.vector = _mm_load_ps(src_shadow);
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
@@ -577,7 +578,7 @@ void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
     
     v6.vector = v4.vector;         // V6 is dest so we can move its 
     // I want to shuffle so that:
@@ -594,7 +595,7 @@ void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v0[2] <- v0[2] + v6[2] =  tmp[0][col=1][re] + tmp[3][col=1][re]
     //  v0[3] <- v0[3] + v6[3] =  tmp[0][col=1][im] + tmp[3][col=1][im]
     v0.vector = _mm_add_ps(v0.vector, v6.vector);
-    _mm_stream_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow, v0.vector);
 
     v6.vector = v5.vector;
     // Now setup v6 so that 
@@ -613,7 +614,7 @@ void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v1[3] <- v1[3] - v7[3]*v6[3] =  tmp[1][col=0][im] - tmp[2][col=0][im]
     v6.vector  = _mm_mul_ps(v6.vector, v7.vector);
     v1.vector  = _mm_sub_ps(v1.vector, v6.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
 
     v6.vector = v3.vector;
     //  v6[0] <- v6[2]=v3[2]  [1:0]=2 = x10 <- tmp[2][col=1][re]
@@ -630,7 +631,7 @@ void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v2[2] <- v2[2] - v6[2] =  tmp[1][col=2][re] - tmp[2][col=2][re]
     //  v2[3] <- v2[3] - v6[3] =  tmp[1][col=2][im] - tmp[2][col=2][im]
     v2.vector = _mm_sub_ps(v2.vector, v6.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     dst_shadow+=12;
 
@@ -659,7 +660,7 @@ void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v0[2] <- v0[2] + v6[2] =  tmp[0][col=1][re] + tmp[3][col=1][re]
   //  v0[3] <- v0[3] + v6[3] =  tmp[0][col=1][im] + tmp[3][col=1][im]
   v0.vector = _mm_add_ps(v0.vector, v6.vector);
-  _mm_stream_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow, v0.vector);
   
   v6.vector = v5.vector;
   // Now setup v6 so that 
@@ -678,7 +679,7 @@ void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v1[3] <- v1[3] - v7[3]*v6[3] =  tmp[1][col=0][im] - tmp[2][col=0][im]
   v6.vector  = _mm_mul_ps(v6.vector, v7.vector);
   v1.vector  = _mm_sub_ps(v1.vector, v6.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
   
   v6.vector = v3.vector;
   //  v6[0] <- v6[2]=v3[2]  [1:0]=2 = x10 <- tmp[2][col=1][re]
@@ -695,7 +696,7 @@ void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v2[2] <- v2[2] - v6[2] =  tmp[1][col=2][re] - tmp[2][col=2][re]
   //  v2[3] <- v2[3] - v6[3] =  tmp[1][col=2][im] - tmp[2][col=2][im]
   v2.vector = _mm_sub_ps(v2.vector, v6.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
   
 }
 
@@ -745,7 +746,7 @@ void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   v6.floats[2] = +1;
   v6.floats[3] = -1;
   
-  // Stream in the spinor - top half
+  // Store in the spinor - top half
   v0.vector = _mm_load_ps(src_shadow);
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
@@ -755,7 +756,7 @@ void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
 
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
     
     // I want to shuffle so that
     //  v3[0] <- v3[1]  [1:0]=1 = x01 <- tmp[2][col=0][im]
@@ -776,7 +777,7 @@ void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v0[3] <- v0[3] + v7[3]*v3[3] =  tmp[0][col=1][im] + tmp[2][col=1][re]
     v3.vector = _mm_mul_ps(v3.vector, v7.vector);
     v0.vector = _mm_add_ps(v0.vector, v3.vector);
-    _mm_stream_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow, v0.vector);
 
     // Now setup v5 so that 
     //  v4[0] <- v4[1]  [1:0]=1 = x01 <- tmp[2][col=2][im]
@@ -793,7 +794,7 @@ void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v1[3] <- v1[3] + v6[3]*v4[3] =  tmp[1][col=0][im] - tmp[3][col=0][re]
     v4.vector  = _mm_mul_ps(v4.vector, v6.vector);
     v1.vector  = _mm_add_ps(v1.vector, v4.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
 
     //  v5[0] <- v5[1]  [1:0]=1 = x01 <- tmp[3][col=1][im]
     //  v5[1] <- v5[0]  [3:2]=0 = x00 <- tmp[3][col=1][re]
@@ -809,11 +810,11 @@ void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v2[3] <- v2[3] - v7[3]*v5[3] =  tmp[1][col=2][im] - tmp[2][col=2][re]
     v5.vector = _mm_mul_ps(v5.vector, v7.vector );
     v2.vector = _mm_sub_ps(v2.vector, v5.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     dst_shadow+=12;
 
-    // Stream in the next spinor - top half
+    // Store in the next spinor - top half
     v0.vector = _mm_load_ps(src_shadow);
     v1.vector = _mm_load_ps(src_shadow+4);
     v2.vector = _mm_load_ps(src_shadow+8);
@@ -842,7 +843,7 @@ void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v0[3] <- v0[3] + v7[3]*v3[3] =  tmp[0][col=1][im] + tmp[2][col=1][re]
   v3.vector = _mm_mul_ps(v3.vector, v7.vector);
   v0.vector = _mm_add_ps(v0.vector, v3.vector);
-  _mm_stream_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow, v0.vector);
   
   // Now setup v5 so that 
   //  v4[0] <- v4[1]  [1:0]=1 = x01 <- tmp[2][col=2][im]
@@ -859,7 +860,7 @@ void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v1[3] <- v1[3] + v6[3]*v4[3] =  tmp[1][col=0][im] - tmp[3][col=0][re]
   v4.vector  = _mm_mul_ps(v4.vector, v6.vector);
   v1.vector  = _mm_add_ps(v1.vector, v4.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
   
   //  v5[0] <- v5[1]  [1:0]=1 = x01 <- tmp[3][col=1][im]
   //  v5[1] <- v5[0]  [3:2]=0 = x00 <- tmp[3][col=1][re]
@@ -875,7 +876,7 @@ void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v2[3] <- v2[3] - v7[3]*v5[3] =  tmp[1][col=2][im] - tmp[2][col=2][re]
   v5.vector = _mm_mul_ps(v5.vector, v7.vector );
   v2.vector = _mm_sub_ps(v2.vector, v5.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
   
 }
 
@@ -924,7 +925,7 @@ void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   v6.floats[2] = +1;
   v6.floats[3] = -1;
 
-  // Stream in the spinor - top half
+  // Store in the spinor - top half
   v0.vector = _mm_load_ps(src_shadow);
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
@@ -934,7 +935,7 @@ void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
 
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
     
     // I want to shuffle so that
     //  v3[0] <- v3[1]  [1:0]=1 = x01 <- tmp[2][col=0][im]
@@ -955,7 +956,7 @@ void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v0[3] <- v0[3] - v7[3]*v3[3] =  tmp[0][col=1][im] - tmp[2][col=1][re]
     v3.vector = _mm_mul_ps(v3.vector, v7.vector);
     v0.vector = _mm_sub_ps(v0.vector, v3.vector);
-    _mm_stream_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow, v0.vector);
 
     // Now setup v4 so that 
     //  v4[0] <- v4[1]  [1:0]=1 = x01 <- tmp[2][col=2][im]
@@ -972,7 +973,7 @@ void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v1[3] <- v1[3] + v6[3]*v4[3] =  tmp[1][col=0][im] + tmp[3][col=0][re]
     v4.vector  = _mm_mul_ps(v4.vector, v6.vector);
     v1.vector  = _mm_sub_ps(v1.vector, v4.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
 
     //  v5[0] <- v5[1]  [1:0]=1 = x01 <- tmp[3][col=1][im]
     //  v5[1] <- v5[0]  [3:2]=0 = x00 <- tmp[3][col=1][re]
@@ -988,11 +989,11 @@ void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
     //  v2[3] <- v2[3] + v7[3]*v5[3] =  tmp[1][col=2][im] + tmp[2][col=2][re]
     v5.vector = _mm_mul_ps(v5.vector, v7.vector );
     v2.vector = _mm_add_ps(v2.vector, v5.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     dst_shadow+=12;
 
-    // Stream in the spinor - top half
+    // Store in the spinor - top half
     v0.vector = _mm_load_ps(src_shadow);
     v1.vector = _mm_load_ps(src_shadow+4);
     v2.vector = _mm_load_ps(src_shadow+8);
@@ -1021,7 +1022,7 @@ void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v0[3] <- v0[3] - v7[3]*v3[3] =  tmp[0][col=1][im] - tmp[2][col=1][re]
   v3.vector = _mm_mul_ps(v3.vector, v7.vector);
   v0.vector = _mm_sub_ps(v0.vector, v3.vector);
-  _mm_stream_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow, v0.vector);
   
   // Now setup v4 so that 
   //  v4[0] <- v4[1]  [1:0]=1 = x01 <- tmp[2][col=2][im]
@@ -1038,7 +1039,7 @@ void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v1[3] <- v1[3] + v6[3]*v4[3] =  tmp[1][col=0][im] + tmp[3][col=0][re]
   v4.vector  = _mm_mul_ps(v4.vector, v6.vector);
   v1.vector  = _mm_sub_ps(v1.vector, v4.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
   
   //  v5[0] <- v5[1]  [1:0]=1 = x01 <- tmp[3][col=1][im]
   //  v5[1] <- v5[0]  [3:2]=0 = x00 <- tmp[3][col=1][re]
@@ -1054,7 +1055,7 @@ void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   //  v2[3] <- v2[3] + v7[3]*v5[3] =  tmp[1][col=2][im] + tmp[2][col=2][re]
   v5.vector = _mm_mul_ps(v5.vector, v7.vector );
   v2.vector = _mm_add_ps(v2.vector, v5.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
  
 }
 
@@ -1089,7 +1090,7 @@ void inlineSpinProjDir3Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   REAL* dst_shadow = dst;
   SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
 
-  // Stream in the spinor - top half
+  // Store in the spinor - top half
   v0.vector = _mm_load_ps(src_shadow);
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
@@ -1099,16 +1100,16 @@ void inlineSpinProjDir3Plus(const REAL* src, REAL *dst, unsigned int n_vec)
 
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // This is easy - I don't need any shuffling
     v0.vector = _mm_add_ps(v0.vector, v3.vector);
     v1.vector = _mm_add_ps(v1.vector, v4.vector);
     v2.vector = _mm_add_ps(v2.vector, v5.vector);
 
-    _mm_stream_ps(dst_shadow, v0.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    _mm_store_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     dst_shadow+=12;
 
@@ -1127,9 +1128,9 @@ void inlineSpinProjDir3Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   v1.vector = _mm_add_ps(v1.vector, v4.vector);
   v2.vector = _mm_add_ps(v2.vector, v5.vector);
   
-  _mm_stream_ps(dst_shadow, v0.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  _mm_store_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
   
 }
 
@@ -1165,7 +1166,7 @@ void inlineSpinProjDir3Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   REAL* dst_shadow = dst;
   SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
 
-  // Stream in the spinor - top half
+  // Store in the spinor - top half
   v0.vector = _mm_load_ps(src_shadow);
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
@@ -1175,16 +1176,16 @@ void inlineSpinProjDir3Minus(const REAL* src, REAL *dst, unsigned int n_vec)
 
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
-    _mm_prefetch(src_shadow, _MM_HINT_NTA);
+    _mm_prefetch(src_shadow, _MM_HINT_T0);
 
     // This is easy - I don't need any shuffling
     v0.vector = _mm_sub_ps(v0.vector, v3.vector);
     v1.vector = _mm_sub_ps(v1.vector, v4.vector);
     v2.vector = _mm_sub_ps(v2.vector, v5.vector);
 
-    _mm_stream_ps(dst_shadow, v0.vector);
-    _mm_stream_ps(dst_shadow+4, v1.vector);
-    _mm_stream_ps(dst_shadow+8, v2.vector);
+    _mm_store_ps(dst_shadow, v0.vector);
+    _mm_store_ps(dst_shadow+4, v1.vector);
+    _mm_store_ps(dst_shadow+8, v2.vector);
 
     dst_shadow+=12;
 
@@ -1202,9 +1203,9 @@ void inlineSpinProjDir3Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   v1.vector = _mm_sub_ps(v1.vector, v4.vector);
   v2.vector = _mm_sub_ps(v2.vector, v5.vector);
   
-  _mm_stream_ps(dst_shadow, v0.vector);
-  _mm_stream_ps(dst_shadow+4, v1.vector);
-  _mm_stream_ps(dst_shadow+8, v2.vector);
+  _mm_store_ps(dst_shadow, v0.vector);
+  _mm_store_ps(dst_shadow+4, v1.vector);
+  _mm_store_ps(dst_shadow+8, v2.vector);
   
 }
 

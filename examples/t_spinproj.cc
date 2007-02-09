@@ -1,4 +1,4 @@
-// $Id: t_spinproj.cc,v 1.4 2007-02-07 20:45:45 bjoo Exp $
+// $Id: t_spinproj.cc,v 1.5 2007-02-09 20:35:46 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -64,7 +64,6 @@ int main(int argc, char *argv[])
   /*
    *  Proj 0 Plus
    */
-
   // Old Way
   checkSpinProjDir0Plus(&(V.elem(0).elem(0).elem(0).real()),
 			&(H2.elem(0).elem(0).elem(0).real()),
@@ -72,6 +71,7 @@ int main(int argc, char *argv[])
 
   // New Way
   H = spinProjectDir0Plus(V);
+
   diff = H2 - H;
 
 
@@ -461,7 +461,7 @@ int main(int argc, char *argv[])
   res = adj(colmat)*ferm;
   
   Fermion res2 QDP_ALIGN16;
- 
+ #if 0
   _inline_mult_adj_su3_mat_vec( colmat.elem().elem(),
 				ferm.elem().elem(0),
 				res2.elem().elem(0));
@@ -477,7 +477,7 @@ int main(int argc, char *argv[])
   _inline_mult_adj_su3_mat_vec( colmat.elem().elem(),
 				ferm.elem().elem(3),
 				res2.elem().elem(3));
- 
+ #endif
    Fermion diff_ferm QDP_ALIGN16;
    diff_ferm= res - res2;
    QDPIO::cout << "Diff Ferm = " << diff_ferm << endl;
@@ -678,7 +678,6 @@ int main(int argc, char *argv[])
   V2 += spinReconstructDir3Minus( H2 );
   diff_v = V2 - V;
   QDPIO::cout << "ReconUPsiDir3-=: || old - new || / || old || = " << sqrt(norm2(diff_v)/norm2(V2)) << endl;
-
 
 
   // Time to bolt

@@ -12,7 +12,7 @@ typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 2> Spin2;
 //-------------------------
 template<>
 struct  UnaryReturn<Spin4, FnSpinProjectDir0Minus> {
- typedef Spin2 QDP_ALIGN16 Type_t;
+ typedef Spin2  Type_t;
 };
 
 template<>
@@ -34,7 +34,7 @@ spinProjectDir0Minus(const Spin4& s1)
 //-------------------------
 template<>
 struct  UnaryReturn<Spin4, FnSpinProjectDir0Plus> {
- typedef Spin2 QDP_ALIGN16 Type_t;
+ typedef Spin2  Type_t;
 };
 
 template<>
@@ -58,7 +58,7 @@ spinProjectDir0Plus(const Spin4& s1)
 //-------------------------
 template<>
 struct  UnaryReturn<Spin4, FnSpinProjectDir1Minus> {
- typedef Spin2 QDP_ALIGN16 Type_t;
+ typedef Spin2  Type_t;
 };
 
 template<>
@@ -81,7 +81,7 @@ spinProjectDir1Minus(const Spin4& s1)
 //-------------------------
 template<>
 struct  UnaryReturn<Spin4, FnSpinProjectDir1Plus> {
- typedef Spin2 QDP_ALIGN16 Type_t;
+ typedef Spin2  Type_t;
 };
 
 template<>
@@ -102,7 +102,7 @@ spinProjectDir1Plus(const Spin4& s1)
 //-------------------------
 template<>
 struct  UnaryReturn<Spin4, FnSpinProjectDir2Minus> {
- typedef Spin2 QDP_ALIGN16 Type_t;
+ typedef Spin2  Type_t;
 };
 
 template<>
@@ -134,7 +134,7 @@ spinProjectDir2Minus(const Spin4& s1)
 //-------------------------
 template<>
 struct  UnaryReturn<Spin4, FnSpinProjectDir2Plus> {
- typedef Spin2 QDP_ALIGN16 Type_t;
+ typedef Spin2  Type_t;
 };
 
 template<>
@@ -157,7 +157,7 @@ spinProjectDir2Plus(const Spin4& s1)
 //-------------------------
 template<>
 struct  UnaryReturn<Spin4, FnSpinProjectDir3Minus> {
- typedef Spin2 QDP_ALIGN16 Type_t;
+ typedef Spin2  Type_t;
 };
 
 
@@ -180,7 +180,7 @@ spinProjectDir3Minus(const Spin4& s1)
 //-------------------------
 template<>
 struct  UnaryReturn<Spin4, FnSpinProjectDir3Plus> {
- typedef Spin2 QDP_ALIGN16 Type_t;
+ typedef Spin2  Type_t;
 };
 
 template<>

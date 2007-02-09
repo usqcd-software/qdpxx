@@ -25,7 +25,7 @@ void evaluate(OLattice< FVec >& d,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
 
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -61,7 +61,7 @@ void evaluate(OLattice< FVec >& d,
 
 
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -98,7 +98,7 @@ void evaluate(OLattice< FVec >& d,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -134,7 +134,7 @@ void evaluate(OLattice< FVec >& d,
 
 
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -171,7 +171,7 @@ void evaluate(OLattice< FVec >& d,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -207,7 +207,7 @@ void evaluate(OLattice< FVec >& d,
 
 
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -244,7 +244,7 @@ void evaluate(OLattice< FVec >& d,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -280,7 +280,7 @@ void evaluate(OLattice< FVec >& d,
 
 
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -317,7 +317,7 @@ void evaluate(OLattice< FVec >& d,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -353,7 +353,7 @@ void evaluate(OLattice< FVec >& d,
 
 
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -390,7 +390,7 @@ void evaluate(OLattice< FVec >& d,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -426,7 +426,7 @@ void evaluate(OLattice< FVec >& d,
 
 
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -463,7 +463,7 @@ void evaluate(OLattice< FVec >& d,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -499,7 +499,7 @@ void evaluate(OLattice< FVec >& d,
 
 
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -536,7 +536,7 @@ void evaluate(OLattice< FVec >& d,
   REAL *aptr =(REAL *)&(a.elem(s.start()).elem(0).elem(0).real());
   
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 
@@ -572,7 +572,7 @@ void evaluate(OLattice< FVec >& d,
 
 
   for(int site=s.start(); site <= s.end(); ++site) {
-    HVec tmp;
+    HVec tmp ;
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
     _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
 

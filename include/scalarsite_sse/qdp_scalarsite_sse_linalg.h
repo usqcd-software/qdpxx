@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.10 2006-09-27 17:26:43 bjoo Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.11 2007-02-09 20:35:46 bjoo Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -364,12 +364,12 @@ adjMultiply(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 //    PSpinVector<PColorVector<RComplexFloat,3>,1> <- PScalar<PColorMatrix<RComplexFloat,3>> * PSpinVector<PColorVector<RComplexFloat,3>,1>
 template<>
 inline BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
-  PVector<PColorVector<RComplexFloat,3>,1,PSpinVector>, OpMultiply>::Type_t
+  PSpinVector<PColorVector<RComplexFloat,3>,1>, OpMultiply>::Type_t
 operator*(const PScalar<PColorMatrix<RComplexFloat,3> >& l, 
-	  const PVector<PColorVector<RComplexFloat,3>,1,PSpinVector>& r)
+	  const PSpinVector<PColorVector<RComplexFloat,3>,1>& r)
 {
   BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
-    PVector<PColorVector<RComplexFloat,3>,1,PSpinVector>, OpMultiply>::Type_t  d;
+    PSpinVector<PColorVector<RComplexFloat,3>,1>, OpMultiply>::Type_t  d;
 
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "M*S" << endl;
@@ -406,12 +406,12 @@ adjMultiply(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 //    PSpinVector<PColorVector<RComplexFloat,3>,1> <- adj(PScalar<PColorMatrix<RComplexFloat,3>>) * PSpinVector<PColorVector<RComplexFloat,3>,1>
 template<>
 inline BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
-  PVector<PColorVector<RComplexFloat,3>,1,PSpinVector>, OpAdjMultiply>::Type_t
+  PSpinVector<PColorVector<RComplexFloat,3>,1>, OpAdjMultiply>::Type_t
 adjMultiply(const PScalar<PColorMatrix<RComplexFloat,3> >& l, 
-	    const PVector<PColorVector<RComplexFloat,3>,1,PSpinVector>& r)
+	    const PSpinVector<PColorVector<RComplexFloat,3>,1>& r)
 {
   BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
-    PVector<PColorVector<RComplexFloat,3>,1,PSpinVector>, OpAdjMultiply>::Type_t  d;
+    PSpinVector<PColorVector<RComplexFloat,3>,1>, OpAdjMultiply>::Type_t  d;
 
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "adj(PSc<M>)*S" << endl;
@@ -428,12 +428,12 @@ adjMultiply(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 //                     PSpinVector<ColorVector<RComplexFloat,3>,2>
 template<>
 inline BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
-  PVector<PColorVector<RComplexFloat,3>,2,PSpinVector>, OpMultiply>::Type_t
+  PSpinVector<PColorVector<RComplexFloat,3>,2>, OpMultiply>::Type_t
 operator*(const PScalar<PColorMatrix<RComplexFloat,3> >& l, 
-          const PVector<PColorVector<RComplexFloat,3>,2,PSpinVector>& r)
+          const PSpinVector<PColorVector<RComplexFloat,3>,2>& r)
 {
   BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
-    PVector<PColorVector<RComplexFloat,3>,2,PSpinVector>, OpMultiply>::Type_t  d;
+    PSpinVector<PColorVector<RComplexFloat,3>,2>, OpMultiply>::Type_t  d;
 
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "PSc<M>*H" << endl;
@@ -455,12 +455,12 @@ operator*(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 //                     PSpinVector<ColorVector<RComplexFloat,3>,2>
 template<>
 inline BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
-  PVector<PColorVector<RComplexFloat,3>,2,PSpinVector>, OpAdjMultiply>::Type_t
+  PSpinVector<PColorVector<RComplexFloat,3>,2>, OpAdjMultiply>::Type_t
 adjMultiply(const PScalar<PColorMatrix<RComplexFloat,3> >& l, 
-            const PVector<PColorVector<RComplexFloat,3>,2,PSpinVector>& r)
+            const PSpinVector<PColorVector<RComplexFloat,3>,2>& r)
 {
   BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
-    PVector<PColorVector<RComplexFloat,3>,2,PSpinVector>, OpAdjMultiply>::Type_t  d;
+    PSpinVector<PColorVector<RComplexFloat,3>,2>, OpAdjMultiply>::Type_t  d;
 
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "adj(PSc<M>)*H" << endl;
@@ -498,12 +498,12 @@ operator+(const PVector<RComplexFloat,3,PColorVector>& l,
 //                           * PSpinVector<PColorVector<RComplexFloat,3>,4>
 template<>
 inline BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
-  PVector<PColorVector<RComplexFloat,3>,4,PSpinVector>, OpMultiply>::Type_t
+  PSpinVector<PColorVector<RComplexFloat,3>,4>, OpMultiply>::Type_t
 operator*(const PScalar<PColorMatrix<RComplexFloat,3> >& l, 
-	  const PVector<PColorVector<RComplexFloat,3>,4,PSpinVector>& r)
+	  const PSpinVector<PColorVector<RComplexFloat,3>,4>& r)
 {
   BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
-    PVector<PColorVector<RComplexFloat,3>,4,PSpinVector>, OpMultiply>::Type_t  d;
+    PSpinVector<PColorVector<RComplexFloat,3>,4>, OpMultiply>::Type_t  d;
 
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "PSc<M>*D" << endl;
@@ -523,12 +523,12 @@ operator*(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 //                           * PSpinVector<PColorVector<RComplexFloat,3>,4>
 template<>
 inline BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
-  PVector<PColorVector<RComplexFloat,3>,4,PSpinVector>, OpAdjMultiply>::Type_t
+  PSpinVector<PColorVector<RComplexFloat,3>,4>, OpAdjMultiply>::Type_t
 adjMultiply(const PScalar<PColorMatrix<RComplexFloat,3> >& l, 
-	    const PVector<PColorVector<RComplexFloat,3>,4,PSpinVector>& r)
+	    const PSpinVector<PColorVector<RComplexFloat,3>,4>& r)
 {
   BinaryReturn<PScalar<PColorMatrix<RComplexFloat,3> >, 
-    PVector<PColorVector<RComplexFloat,3>,4,PSpinVector>, OpAdjMultiply>::Type_t  d;
+    PSpinVector<PColorVector<RComplexFloat,3>,4>, OpAdjMultiply>::Type_t  d;
 
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "adj(PSc<M>)*D" << endl;

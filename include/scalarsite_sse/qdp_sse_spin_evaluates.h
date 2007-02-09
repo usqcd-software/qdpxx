@@ -5,8 +5,8 @@ using namespace QDP;
 QDP_BEGIN_NAMESPACE(QDP);
 
 // Typedefs
-typedef PSpinVector< PColorVector< RComplex<REAL32>, Nc>, Ns>>1 > HVec;
-typedef PSpinVector< PColorVector< RComplex<REAL32>, Nc>, 4> FVec;
+typedef PSpinVector< PColorVector< RComplex<REAL32>, Nc>, Ns>>1 >  HVec;
+typedef PSpinVector< PColorVector< RComplex<REAL32>, Nc>, 4>  FVec;
 
 // Four spinor (Ns * Nc * Ncomplex ) Ncomplex fastest
 typedef REAL32 SpinColFull[4][3][2];
@@ -32,6 +32,7 @@ void evaluate(OLattice< HVec >& b,
   REAL32 *bptr =(REAL32 *)&(b.elem(s.start()).elem(0).elem(0).real());
   unsigned int n_vec=s.end() - s.start()+1;
 
+
   inlineSpinProjDir0Plus(aptr, bptr, n_vec);
 
 
@@ -54,6 +55,7 @@ void evaluate(OLattice< HVec >& b,
 
   REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL32 *bptr =(REAL32 *)&(b.elem(s.start()).elem(0).elem(0).real());
+
 
   unsigned int n_vec=s.end() - s.start()+1;
   inlineSpinProjDir1Plus(aptr, bptr, n_vec);
@@ -435,6 +437,7 @@ void evaluate(OLattice< FVec >& b,
 
   REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
   REAL32 *bptr =(REAL32 *)&(b.elem(s.start()).elem(0).elem(0).real());
+
 
   unsigned int n_vec=s.end() - s.start()+1;
   inlineAddSpinReconDir2Plus(aptr, bptr, n_vec);
