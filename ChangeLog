@@ -1,3 +1,55 @@
+2007-02-12 20:32  tag qio2-1-8
+
+2007-02-12 20:32  osborn
+
+	* other_libs/qio/: configure, configure.ac,
+	  examples/layout_hyper.c,
+	  other_libs/c-lime/examples/lime_writer_test1.c: fixed
+	  --enable-dml-bufsize option and more warning eliminations
+
+2007-02-12 19:49  osborn
+
+	* other_libs/qio/: NEWS, configure, configure.ac,
+	  bin/qio-config.in, lib/dml/DML_crc32.c, lib/dml/DML_utils.c,
+	  lib/lrl/LRL_main.c, lib/qio/QIO_open_read.c,
+	  lib/qio/QIO_open_write.c, lib/qio/QIO_utils.c,
+	  other_libs/c-lime/configure,
+	  other_libs/c-lime/examples/lime_contents.c,
+	  other_libs/c-lime/examples/lime_extract_type.c,
+	  other_libs/c-lime/examples/lime_pack.c,
+	  other_libs/c-lime/examples/lime_unpack.c,
+	  other_libs/c-lime/include/lime_config_internal.h.in: Eliminated
+	  compiler warnings and now save configure options in qio-config.
+
+2007-02-09 16:27  tag qdp1-21-8
+
+2007-02-09 16:27  bjoo
+
+	* aclocal.m4, configure: Version 1.21.8 - SSE Spin Proj and recon
+	  ops
+
+2007-02-09 15:35  bjoo
+
+	* NEWS, configure, configure.ac, examples/t_spinproj.cc,
+	  examples/t_spinproj2.cc, include/qdp_inner.h,
+	  include/qdp_outer.h, include/qdp_primspinvec.h,
+	  include/qdp_primvector.h,
+	  include/scalarsite_generic/generic_spin_proj.h,
+	  include/scalarsite_generic/generic_spin_recon.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_linalg.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_proj_evaluates.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_recon_evaluates.h,
+	  include/scalarsite_sse/qdp_sse_spin_evaluates.h,
+	  include/scalarsite_sse/sse_fused_spin_proj.h,
+	  include/scalarsite_sse/sse_fused_spin_recon.h,
+	  include/scalarsite_sse/sse_spin_aggregate.h,
+	  include/scalarsite_sse/sse_spin_proj.h,
+	  include/scalarsite_sse/sse_spin_proj_inlines.h,
+	  include/scalarsite_sse/sse_spin_recon.h,
+	  include/scalarsite_sse/sse_spin_recon_inlines.h: SSE SPin
+	  Projectors. Dont seem to win me much... More work needed. But at
+	  least the hooks are there.
+
 2007-02-07 15:50  bjoo
 
 	* include/Makefile.am: Oopsie
