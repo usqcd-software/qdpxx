@@ -1,4 +1,4 @@
-// $Id: qdp_subset.cc,v 1.6 2003-09-02 20:19:22 edwards Exp $
+// $Id: qdp_subset.cc,v 1.7 2007-02-16 22:22:21 bjoo Exp $
 //
 // QDP data parallel interface
 //
@@ -15,6 +15,8 @@ OrderedSet set_all;
 //! Default all subset
 OrderedSubset all;
 
+//! Default rb3 subset -- Always unordered
+UnorderedSet rb3;
 
 #if QDP_USE_CB2_LAYOUT == 1
 //! Default 2-checkerboard (red/black) set
@@ -76,6 +78,26 @@ public:
   int numSubsets() const {return 2;}
 };
 
+//! Function object used for constructing red-black (2) checkerboard in 3d
+class SetRB3Func : public SetFunc
+{
+public:
+  int operator() (const multi1d<int>& coordinate) const
+    {
+      if (coordinate.size() < 3) { 
+	QDPIO::cerr << "Need at least 3d for 3d checkerboarding" << endl;
+	QDP_abort(1);
+      }
+      int sum = 0;
+      for(int m=0; m < 3; ++m)
+	sum += coordinate[m];
+
+      return sum & 1;
+    }
+
+  int numSubsets() const {return 2;}
+};
+
   
 //! Function object used for constructing 32 checkerboard. */
 class Set32CBFunc : public SetFunc
@@ -104,6 +126,9 @@ void initDefaultSets()
 {
   // Initialize the red/black checkerboard
   rb.make(SetRBFunc());
+
+  // Initialize the 3d red/black checkerboard.
+  rb3.make(SetRB3Func());
 
     // Initialize the 32-style checkerboard
   mcb.make(Set32CBFunc());

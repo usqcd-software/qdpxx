@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_subset.h,v 1.9 2004-05-05 14:37:04 bjoo Exp $
+// $Id: qdp_subset.h,v 1.10 2007-02-16 22:22:21 bjoo Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -275,6 +275,9 @@ public:
 //! Default all subset
 extern OrderedSubset all;
 
+
+//! Experimental 3d checkerboarding for temp_precond
+extern UnorderedSet rb3;
 
 #if QDP_USE_CB2_LAYOUT == 1
 //! Default 2-checkerboard (red/black) subset

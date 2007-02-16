@@ -1,3 +1,9 @@
+02/16/2007 -- Balint Joo
+        Version 1.21.9
+	
+	Added an Unordered subset (rb3) for 3d checkerboarding - This subset is currently
+	unordered in all builds
+ 
 02/09/2006 -- Balint Joo
 	Version 1.21.8
 	Propagated spin/projection and reconstruction hooks to the SSE Single Prec branch.
@@ -8,7 +14,7 @@
 	only runs at about 900Mflops on a scalar version of my laptop. Should probably
 	rewrite with inline assembler so I have better control of registers than the compiler
 
-02/06/2006 -- Balint Joo
+02/06/2007 -- Balint Joo
 	Version 1.21.7: Added various generic spin projection and recon 
         optimizations and hooks, which hopefully will be useful for
 	temporal preconditioning in chroma
