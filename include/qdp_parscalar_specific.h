@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.41 2005-08-22 21:19:28 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.42 2007-02-21 22:17:19 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -184,7 +184,7 @@ namespace Internal
 
 
 //-----------------------------------------------------------------------------
-//! OLattice Op Scalar(Expression(source)) under an UnorderedSubset
+//! OLattice Op Scalar(Expression(source)) under an Subset
 /*! 
  * OLattice Op Expression, where Op is some kind of binary operation 
  * involving the destination 
@@ -192,9 +192,9 @@ namespace Internal
 template<class T, class T1, class Op, class RHS>
 //inline
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
-	      const UnorderedSubset& s)
+	      const Subset& s)
 {
-// cerr << "In evaluateUnorderedSubset(olattice,oscalar)\n";
+// cerr << "In evaluateSubset(olattice,oscalar)\n";
 
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(dest, op, rhs);
@@ -217,38 +217,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 #endif
 }
 
-//! OLattice Op Scalar(Expression(source)) under an OrderedSubset
-/*! 
- * OLattice Op Expression, where Op is some kind of binary operation 
- * involving the destination 
- */
-template<class T, class T1, class Op, class RHS>
-//inline
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
-	      const OrderedSubset& s)
-{
-//cerr << "In evaluateOrderedSubset(olattice,oscalar)\n";
 
-#if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(dest, op, rhs);
-  prof.time -= getClockTime();
-#endif
-
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
-//    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
-    op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
-  }
-
-#if defined(QDP_USE_PROFILING)   
-  prof.time += getClockTime();
-  prof.count++;
-  prof.print();
-#endif
-}
-
-
-//! OLattice Op OLattice(Expression(source)) under an UnorderedSubset
+//! OLattice Op OLattice(Expression(source)) under an Subset
 /*! 
  * OLattice Op Expression, where Op is some kind of binary operation 
  * involving the destination 
@@ -256,9 +226,9 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 template<class T, class T1, class Op, class RHS>
 //inline
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
-	      const UnorderedSubset& s)
+	      const Subset& s)
 {
-//  cerr << "In evaluateUnorderedSubset(olattice,olattice)" << endl;
+//  cerr << "In evaluateSubset(olattice,olattice)" << endl;
 
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(dest, op, rhs);
@@ -281,45 +251,14 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 #endif
 }
 
-//! OLattice Op OLattice(Expression(source)) under an OrderedSubset
-/*! 
- * OLattice Op Expression, where Op is some kind of binary operation 
- * involving the destination 
- */
-template<class T, class T1, class Op, class RHS>
-//inline
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
-	      const OrderedSubset& s)
-{
-//  cerr << "In evaluateOrderedSubset(olattice,olattice)" << endl;
-
-#if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(dest, op, rhs);
-  prof.time -= getClockTime();
-#endif
-
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
-//    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
-    op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
-  }
-
-#if defined(QDP_USE_PROFILING)   
-  prof.time += getClockTime();
-  prof.count++;
-  prof.print();
-#endif
-}
-
-
 
 //-----------------------------------------------------------------------------
 //! dest = (mask) ? s1 : dest
 template<class T1, class T2>
-void copymask(OSubLattice<T2,UnorderedSubset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
+void copymask(OSubLattice<T2,Subset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
   OLattice<T2>& dest = d.field();
-  const UnorderedSubset& s = d.subset();
+  const Subset& s = d.subset();
 
   const int *tab = s.siteTable().slice();
   for(int j=0; j < s.numSiteTable(); ++j) 
@@ -327,17 +266,6 @@ void copymask(OSubLattice<T2,UnorderedSubset> d, const OLattice<T1>& mask, const
     int i = tab[j];
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
   }
-}
-
-//! dest = (mask) ? s1 : dest
-template<class T1, class T2>
-void copymask(OSubLattice<T2,OrderedSubset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
-{
-  OLattice<T2>& dest = d.field();
-  const OrderedSubset& s = d.subset();
-
-  for(int i=s.start(); i <= s.end(); ++i) 
-    copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
 
 //! dest = (mask) ? s1 : dest
@@ -378,7 +306,7 @@ random(OScalar<T>& d)
 //! dest  = random    under a subset
 template<class T>
 void 
-random(OLattice<T>& d, const UnorderedSubset& s)
+random(OLattice<T>& d, const Subset& s)
 {
   Seed seed;
   Seed skewed_seed;
@@ -395,24 +323,6 @@ random(OLattice<T>& d, const UnorderedSubset& s)
   RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
 }
 
-
-//! dest  = random    under a subset
-template<class T>
-void 
-random(OLattice<T>& d, const OrderedSubset& s)
-{
-  Seed seed;
-  Seed skewed_seed;
-
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
-    seed = RNG::ran_seed;
-    skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
-    fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
-  }
-
-  RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
-}
 
 
 //! dest  = random   under a subset
@@ -436,7 +346,7 @@ void random(OLattice<T>& d)
 
 //! dest  = gaussian   under a subset
 template<class T>
-void gaussian(OLattice<T>& d, const UnorderedSubset& s)
+void gaussian(OLattice<T>& d, const Subset& s)
 {
   OLattice<T>  r1, r2;
 
@@ -451,21 +361,6 @@ void gaussian(OLattice<T>& d, const UnorderedSubset& s)
   }
 }
 
-
-//! dest  = gaussian   under a subset
-template<class T>
-void gaussian(OLattice<T>& d, const OrderedSubset& s)
-{
-  OLattice<T>  r1, r2;
-
-  random(r1,s);
-  random(r2,s);
-
-  for(int i=s.start(); i <= s.end(); ++i)
-  {
-    fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
-  }
-}
 
 
 //! dest  = gaussian   under a subset
@@ -493,7 +388,7 @@ void gaussian(OLattice<T>& d)
 //! dest  = 0 
 template<class T> 
 inline
-void zero_rep(OLattice<T>& dest, const UnorderedSubset& s) 
+void zero_rep(OLattice<T>& dest, const Subset& s) 
 {
   const int *tab = s.siteTable().slice();
   for(int j=0; j < s.numSiteTable(); ++j) 
@@ -501,15 +396,6 @@ void zero_rep(OLattice<T>& dest, const UnorderedSubset& s)
     int i = tab[j];
     zero_rep(dest.elem(i));
   }
-}
-
-//! dest  = 0 
-template<class T> 
-inline
-void zero_rep(OLattice<T>& dest, const OrderedSubset& s) 
-{
-  for(int i=s.start(); i <= s.end(); ++i)
-    zero_rep(dest.elem(i));
 }
 
 
@@ -878,16 +764,7 @@ norm2(const multi1d< OScalar<T> >& s1)
 /*! Discards subset */
 template<class T>
 inline typename UnaryReturn<OScalar<T>, FnNorm2>::Type_t
-norm2(const multi1d< OScalar<T> >& s1, const UnorderedSubset& s)
-{
-  return norm2(s1);
-}
-
-//! OScalar = sum(OScalar)  under an explicit subset
-/*! Discards subset */
-template<class T>
-inline typename UnaryReturn<OScalar<T>, FnNorm2>::Type_t
-norm2(const multi1d< OScalar<T> >& s1, const OrderedSubset& s)
+norm2(const multi1d< OScalar<T> >& s1, const Subset& s)
 {
   return norm2(s1);
 }
@@ -902,7 +779,7 @@ norm2(const multi1d< OScalar<T> >& s1, const OrderedSubset& s)
  */
 template<class T>
 inline typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t
-norm2(const multi1d< OLattice<T> >& s1, const UnorderedSubset& s)
+norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
 {
   typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
 
@@ -928,46 +805,6 @@ norm2(const multi1d< OLattice<T> >& s1, const UnorderedSubset& s)
   // Do a global sum on the result
   Internal::globalSum(d);
 
-#if defined(QDP_USE_PROFILING)   
-  prof.time += getClockTime();
-  prof.count++;
-  prof.print();
-#endif
-
-  return d;
-}
-
-//! OScalar = norm2(multi1d<OLattice>) under an explicit subset
-/*!
- * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
- *
- * Sum over the lattice
- * Allow a global sum that sums over all indices
- */
-template<class T>
-inline typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t
-norm2(const multi1d< OLattice<T> >& s1, const OrderedSubset& s)
-{
-  typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
-
-#if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(d, OpAssign(), FnNorm2(), s1[0]);
-  prof.time -= getClockTime();
-#endif
-
-  // Possibly loop entered
-  zero_rep(d.elem());
-
-  for(int n=0; n < s1.size(); ++n)
-  {
-    const OLattice<T>& ss1 = s1[n];
-    for(int i=s.start(); i <= s.end(); ++i) 
-      d.elem() += localNorm2(ss1.elem(i));
-  }
-
-  // Do a global sum on the result
-  Internal::globalSum(d);
-  
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
   prof.count++;
@@ -1037,20 +874,11 @@ innerProduct(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2)
 template<class T1, class T2>
 inline typename BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProduct>::Type_t
 innerProduct(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2,
-	     const UnorderedSubset& s)
+	     const Subset& s)
 {
   return innerProduct(s1,s2);
 }
 
-//! OScalar = sum(OScalar)  under an explicit subset
-/*! Discards subset */
-template<class T1, class T2>
-inline typename BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProduct>::Type_t
-innerProduct(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2, 
-	     const OrderedSubset& s)
-{
-  return innerProduct(s1,s2);
-}
 
 
 //! OScalar = innerProduct(multi1d<OLattice>,multi1d<OLattice>) under an explicit subset
@@ -1063,7 +891,7 @@ innerProduct(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2,
 template<class T1, class T2>
 inline typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct>::Type_t
 innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s2,
-	     const UnorderedSubset& s)
+	     const Subset& s)
 {
   typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct>::Type_t  d;
 
@@ -1099,47 +927,6 @@ innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s
   return d;
 }
 
-//! OScalar = innerProduct(multi1d<OLattice>,multi1d<OLattice>) under an explicit subset
-/*!
- * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
- *
- * Sum over the lattice
- * Allow a global sum that sums over all indices
- */
-template<class T1, class T2>
-inline typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct>::Type_t
-innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s2,
-	     const OrderedSubset& s)
-{
-  typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct>::Type_t  d;
-
-#if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(d, OpAssign(), FnInnerProduct(), s1[0]);
-  prof.time -= getClockTime();
-#endif
-
-  // Possibly loop entered
-  zero_rep(d.elem());
-
-  for(int n=0; n < s1.size(); ++n)
-  {
-    const OLattice<T1>& ss1 = s1[n];
-    const OLattice<T2>& ss2 = s2[n];
-    for(int i=s.start(); i <= s.end(); ++i) 
-      d.elem() += localInnerProduct(ss1.elem(i),ss2.elem(i));
-  }
-
-  // Do a global sum on the result
-  Internal::globalSum(d);
-  
-#if defined(QDP_USE_PROFILING)   
-  prof.time += getClockTime();
-  prof.count++;
-  prof.print();
-#endif
-
-  return d;
-}
 
 //! OScalar = innerProduct(multi1d<OLattice>,multi1d<OLattice>)
 /*!
@@ -1200,20 +987,11 @@ innerProductReal(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >&
 template<class T1, class T2>
 inline typename BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProductReal>::Type_t
 innerProductReal(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2,
-		 const UnorderedSubset& s)
+		 const Subset& s)
 {
   return innerProductReal(s1,s2);
 }
 
-//! OScalar = sum(OScalar)  under an explicit subset
-/*! Discards subset */
-template<class T1, class T2>
-inline typename BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProductReal>::Type_t
-innerProductReal(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2, 
-		 const OrderedSubset& s)
-{
-  return innerProductReal(s1,s2);
-}
 
 
 //! OScalar = innerProductReal(multi1d<OLattice>,multi1d<OLattice>) under an explicit subset
@@ -1226,7 +1004,7 @@ innerProductReal(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >&
 template<class T1, class T2>
 inline typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProductReal>::Type_t
 innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s2,
-		 const UnorderedSubset& s)
+		 const Subset& s)
 {
   typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProductReal>::Type_t  d;
 
@@ -1262,47 +1040,6 @@ innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> 
   return d;
 }
 
-//! OScalar = innerProductReal(multi1d<OLattice>,multi1d<OLattice>) under an explicit subset
-/*!
- * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
- *
- * Sum over the lattice
- * Allow a global sum that sums over all indices
- */
-template<class T1, class T2>
-inline typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProductReal>::Type_t
-innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s2,
-		 const OrderedSubset& s)
-{
-  typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProductReal>::Type_t  d;
-
-#if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(d, OpAssign(), FnInnerProductReal(), s1[0]);
-  prof.time -= getClockTime();
-#endif
-
-  // Possibly loop entered
-  zero_rep(d.elem());
-
-  for(int n=0; n < s1.size(); ++n)
-  {
-    const OLattice<T1>& ss1 = s1[n];
-    const OLattice<T2>& ss2 = s2[n];
-    for(int i=s.start(); i <= s.end(); ++i) 
-      d.elem() += localInnerProductReal(ss1.elem(i),ss2.elem(i));
-  }
-
-  // Do a global sum on the result
-  Internal::globalSum(d);
-  
-#if defined(QDP_USE_PROFILING)   
-  prof.time += getClockTime();
-  prof.count++;
-  prof.print();
-#endif
-
-  return d;
-}
 
 //! OScalar = innerProductReal(multi1d<OLattice>,multi1d<OLattice>)
 /*!

@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_sse.cc,v 1.3 2004-08-09 22:06:32 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.cc,v 1.4 2007-02-21 22:17:20 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -15,7 +15,7 @@
 QDP_BEGIN_NAMESPACE(QDP);
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] = LatticeColorMatrix * LatticeColorMatrix
+//    LatticeColorMatrix[Subset] = LatticeColorMatrix * LatticeColorMatrix
 template<>
 void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d, 
 	      const OpAssign& op, 
@@ -25,7 +25,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_eq_M_times_M" << endl;
 
@@ -34,19 +34,30 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   const C& l = static_cast<const C&>(rhs.expression().left());
   const C& r = static_cast<const C&>(rhs.expression().right());
 
-  const int istart = s.start() >> INNER_LOG;
-  const int iend   = s.end()   >> INNER_LOG;
+  if( s.hasOrderedRep()) { 
+    const int istart = s.start() >> INNER_LOG;
+    const int iend   = s.end()   >> INNER_LOG;
 
-  for(int i=istart; i <= iend; ++i) 
-  {
-    float *dd = (float*)&(d.elem(i).elem());
-    float *ll = (float*)&(l.elem(i).elem());
-    float *rr = (float*)&(r.elem(i).elem());
-
-    _inline_ssevec_mult_su3_nn(dd,ll,rr,0);
-    _inline_ssevec_mult_su3_nn(dd,ll,rr,1);
-    _inline_ssevec_mult_su3_nn(dd,ll,rr,2);
+    for(int i=istart; i <= iend; ++i) 
+      {
+	float *dd = (float*)&(d.elem(i).elem());
+	float *ll = (float*)&(l.elem(i).elem());
+	float *rr = (float*)&(r.elem(i).elem());
+	
+	_inline_ssevec_mult_su3_nn(dd,ll,rr,0);
+	_inline_ssevec_mult_su3_nn(dd,ll,rr,1);
+	_inline_ssevec_mult_su3_nn(dd,ll,rr,2);
+      }
   }
+  else { 
+    // Do unoptimised - hope this still workl
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      i = tab[j]; 
+      d.elem(i).elem() = l.elem(i).elem() * r.elem(i).elem();
+    }
+  }
+
 }
 
 QDP_END_NAMESPACE();

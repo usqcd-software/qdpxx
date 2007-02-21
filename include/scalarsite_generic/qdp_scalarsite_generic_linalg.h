@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_generic_linalg.h,v 1.5 2007-02-06 15:01:58 bjoo Exp $
+// $Id: qdp_scalarsite_generic_linalg.h,v 1.6 2007-02-21 22:17:20 bjoo Exp $
 
 /*! @file
  * @brief Generic optimizations
@@ -453,23 +453,6 @@ operator+(const PScalar<PColorVector<RComplexFloat,3> >& l,
 }
 
 
-#if 0
-// Specialization to optimize the case   
-//    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
-// NOTE: let this be a subroutine to save space
-template<>
-void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d, 
-	      const OpAssign& op, 
-	      const QDPExpr<BinaryNode<OpMultiply, 
-	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > >, 
-	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
-	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
-	      const OrderedSubset& s);
-
-#endif
-
 #if 1
 // Specialization to optimize the case   
 //    LatticeHalfFermion = LatticeColorMatrix * LatticeHalfFermion
@@ -484,7 +467,7 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
 	      Reference<QDPType<PSpinVector<PColorVector<RComplexFloat, 3>, 2>, 
 	      OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> > > > >,
 	      OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "specialized QDP_H_M_times_H" << endl;
@@ -496,8 +479,11 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
   const C& l = static_cast<const C&>(rhs.expression().left());
   const H& r = static_cast<const H&>(rhs.expression().right());
 
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
+
+  const int *tab = s.siteTable().slice(); 
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int i = tab[j];
+
     _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
 				     r.elem(i).elem(0),
 				     d.elem(i).elem(0));

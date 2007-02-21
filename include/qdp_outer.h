@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.49 2007-02-09 20:35:46 bjoo Exp $
+// $Id: qdp_outer.h,v 1.50 2007-02-21 22:17:19 bjoo Exp $
 
 #include "qdp_config.h"
 
@@ -113,12 +113,8 @@ public:
 
   //---------------------------------------------------------
   // Subsets
-  OSubScalar<T,UnorderedSubset> operator[](const UnorderedSubset& s) 
-    {return OSubScalar<T,UnorderedSubset>(*this,s);}
-
-  OSubScalar<T,OrderedSubset> operator[](const OrderedSubset& s) 
-    {return OSubScalar<T,OrderedSubset>(*this,s);}
-
+  OSubScalar<T,Subset> operator[](const Subset& s) 
+    {return OSubScalar<T,Subset>(*this,s);}
 
   //---------------------------------------------------------
   //! Deep copy constructor
@@ -231,7 +227,7 @@ void read(XMLReader& xml, const string& path, OScalar<T>& d)
 template<class T, class T1, class Op, class RHS>
 inline
 void evaluate(OScalar<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
   // Subset is not used at this level. It may be needed, though, within an inner operation
   op(dest.elem(), forEach(rhs, ElemLeaf(), OpCombine()));
@@ -349,12 +345,8 @@ public:
 
   //---------------------------------------------------------
   // Subsets
-  OSubLattice<T,UnorderedSubset> operator[](const UnorderedSubset& s) 
-    {return OSubLattice<T,UnorderedSubset>(*this,s);}
-
-  OSubLattice<T,OrderedSubset> operator[](const OrderedSubset& s) 
-    {return OSubLattice<T,OrderedSubset>(*this,s);}
-
+  OSubLattice<T,Subset> operator[](const Subset& s) 
+    {return OSubLattice<T,Subset>(*this,s);}
 
   //---------------------------------------------------------
   //! Copy constructor
@@ -505,17 +497,7 @@ private:
 
 /*! @} */  // end of group olattice
 
-// OLattice Op Scalar(Expression(source))
-/* Implementation in relevant specific files */
-template<class T, class T1, class Op, class RHS>
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
-	      const OrderedSubset& s);
 
-// OLattice Op OLattice(Expression(source))
-/* Implementation in relevant specific files */
-template<class T, class T1, class Op, class RHS>
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
-	      const OrderedSubset& s);
 
 
 
@@ -1442,12 +1424,6 @@ void gaussian(OSubScalar<T,S>& d)
 }
 
 
-//! dest  = gaussian
-template<class T>
-void gaussian(OScalar<T>& d)
-{
-  gaussian(OSubScalar<T,OrderedSubset>(d,all));
-}
 
 /*! @} */  // end of group oscalar
 

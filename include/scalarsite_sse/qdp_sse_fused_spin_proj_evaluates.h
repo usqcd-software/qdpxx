@@ -6,7 +6,7 @@
 using namespace QDP;
 QDP_BEGIN_NAMESPACE(QDP);
 
-typedef PScalar< PColorMatrix< RComplex<REAL32>, Nc> > SU3Mat;
+typedef PScalar< PColorMatrix< RComplex<REAL32>, 3> > SU3Mat;
 
 
 // HalfVec = adj(u)*SpinProjectDir0Plus(Vec);
@@ -26,24 +26,24 @@ void evaluate(OLattice< HVec >& d,
                       >,
 	              OLattice< HVec > 
                     >&rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-  REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-
-  for(int site=s.start(); site <= s.end(); ++site) {
+  const int* tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int site=tab[j];
     HVec tmp ; 
     inlineSpinProjDir0Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			    1);
-
-
+    
+    
     _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
     _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
- 
+    
   }
 
 }
@@ -65,14 +65,16 @@ void evaluate(OLattice< HVec >& d,
                       >,
 	              OLattice< HVec > 
                     >&rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-  REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-  for(int site=s.start(); site <= s.end(); ++site) {
+  const int* tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int site=tab[j];
+
     HVec tmp ;
     inlineSpinProjDir0Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
@@ -103,14 +105,19 @@ void evaluate(OLattice< HVec >& d,
                       >,
 	              OLattice< HVec > 
                     >&rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
   REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-  for(int site=s.start(); site <= s.end(); ++site) {
+
+  const int* tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int site=tab[j];
+
+
     HVec tmp ;
     inlineSpinProjDir1Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
@@ -141,15 +148,16 @@ void evaluate(OLattice< HVec >& d,
                       >,
 	              OLattice< HVec > 
                     >&rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-  REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
+  const int* tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int site=tab[j];
 
-  for(int site=s.start(); site <= s.end(); ++site) {
     HVec tmp ;
     inlineSpinProjDir1Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
@@ -181,14 +189,15 @@ void evaluate(OLattice< HVec >& d,
                       >,
 	              OLattice< HVec > 
                     >&rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-  REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
+  const int* tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int site=tab[j];
 
-  for(int site=s.start(); site <= s.end(); ++site) {
     HVec tmp ;
     inlineSpinProjDir2Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
@@ -219,14 +228,17 @@ void evaluate(OLattice< HVec >& d,
                       >,
 	              OLattice< HVec > 
                     >&rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-  REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-  for(int site=s.start(); site <= s.end(); ++site) {
+
+  const int* tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int site=tab[j];
+
     HVec tmp ;
     inlineSpinProjDir2Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
@@ -256,14 +268,16 @@ void evaluate(OLattice< HVec >& d,
                       >,
 	              OLattice< HVec > 
                     >&rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-  REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-  for(int site=s.start(); site <= s.end(); ++site) {
+
+  const int* tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int site=tab[j];
     HVec tmp ;
     inlineSpinProjDir3Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
@@ -294,14 +308,16 @@ void evaluate(OLattice< HVec >& d,
                       >,
 	              OLattice< HVec > 
                     >&rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-  REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-  for(int site=s.start(); site <= s.end(); ++site) {
+  const int* tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int site=tab[j];
+
     HVec tmp ;
     inlineSpinProjDir3Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			    (REAL32 *)&(tmp.elem(0).elem(0).real()),

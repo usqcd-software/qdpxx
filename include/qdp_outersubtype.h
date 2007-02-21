@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outersubtype.h,v 1.4 2006-01-12 02:17:39 bjoo Exp $
+// $Id: qdp_outersubtype.h,v 1.5 2007-02-21 22:17:19 bjoo Exp $
 
 /*! \file
  * \brief Outer grid classes after a subset
@@ -155,16 +155,11 @@ struct QDPSubTypeTrait<OScalar<T>, Subset>
 };
 
 template<class T>
-struct QDPSubTypeTrait<OScalar<T>, UnorderedSubset> 
+struct QDPSubTypeTrait<OScalar<T>, Subset> 
 {
-  typedef OSubScalar<T,UnorderedSubset>  Type_t;
+  typedef OSubScalar<T,Subset>  Type_t;
 };
 
-template<class T>
-struct QDPSubTypeTrait<OScalar<T>, OrderedSubset> 
-{
-  typedef OSubScalar<T,OrderedSubset>  Type_t;
-};
 
 template<class T>
 struct QDPSubTypeTrait<OLattice<T>, Subset> 
@@ -173,15 +168,9 @@ struct QDPSubTypeTrait<OLattice<T>, Subset>
 };
 
 template<class T>
-struct QDPSubTypeTrait<OLattice<T>, UnorderedSubset> 
+struct QDPSubTypeTrait<OLattice<T>, Subset> 
 {
-  typedef OSubLattice<T,UnorderedSubset>  Type_t;
-};
-
-template<class T>
-struct QDPSubTypeTrait<OLattice<T>, OrderedSubset> 
-{
-  typedef OSubLattice<T,OrderedSubset>  Type_t;
+  typedef OSubLattice<T,Subset>  Type_t;
 };
 
 
@@ -197,13 +186,14 @@ struct WordType<OSubScalar<T,Subset> >
 };
 
 template<class T>
-struct WordType<OSubScalar<T,UnorderedSubset> > 
+struct WordType<OSubScalar<T,Subset> > 
 {
   typedef typename WordType<T>::Type_t  Type_t;
 };
 
+
 template<class T>
-struct WordType<OSubScalar<T,OrderedSubset> > 
+struct WordType<OSubLattice<T,Subset> > 
 {
   typedef typename WordType<T>::Type_t  Type_t;
 };
@@ -214,17 +204,6 @@ struct WordType<OSubLattice<T,Subset> >
   typedef typename WordType<T>::Type_t  Type_t;
 };
 
-template<class T>
-struct WordType<OSubLattice<T,UnorderedSubset> > 
-{
-  typedef typename WordType<T>::Type_t  Type_t;
-};
-
-template<class T>
-struct WordType<OSubLattice<T,OrderedSubset> > 
-{
-  typedef typename WordType<T>::Type_t  Type_t;
-};
 
 // ------------------------------------------------------------
 // Get Single Precision Types of OuterSubType templates
@@ -236,16 +215,11 @@ struct SinglePrecType<OSubScalar<T,Subset> >
 };
 
 template<class T>
-struct SinglePrecType<OSubScalar<T,UnorderedSubset> > 
+struct SinglePrecType<OSubScalar<T,Subset> > 
 {
-  typedef OSubScalar<typename SinglePrecType<T>::Type_t, UnorderedSubset>  Type_t;
+  typedef OSubScalar<typename SinglePrecType<T>::Type_t, Subset>  Type_t;
 };
 
-template<class T>
-struct SinglePrecType<OSubScalar<T,OrderedSubset> > 
-{
-  typedef OSubScalar<typename SinglePrecType<T>::Type_t, OrderedSubset>  Type_t;
-};
 
 template<class T>
 struct SinglePrecType<OSubLattice<T,Subset> > 
@@ -254,15 +228,9 @@ struct SinglePrecType<OSubLattice<T,Subset> >
 };
 
 template<class T>
-struct SinglePrecType<OSubLattice<T,UnorderedSubset> > 
+struct SinglePrecType<OSubLattice<T,Subset> > 
 {
-  typedef OSubLattice<typename SinglePrecType<T>::Type_t, UnorderedSubset>  Type_t;
-};
-
-template<class T>
-struct SinglePrecType<OSubLattice<T,OrderedSubset> > 
-{
-  typedef OSubLattice<typename SinglePrecType<T>::Type_t, OrderedSubset>  Type_t;
+  typedef OSubLattice<typename SinglePrecType<T>::Type_t, Subset>  Type_t;
 };
 
 // ------------------------------------------------------------
@@ -275,15 +243,9 @@ struct DoublePrecType<OSubScalar<T,Subset> >
 };
 
 template<class T>
-struct DoublePrecType<OSubScalar<T,UnorderedSubset> > 
+struct DoublePrecType<OSubScalar<T,Subset> > 
 {
-  typedef OSubScalar<typename DoublePrecType<T>::Type_t, UnorderedSubset>  Type_t;
-};
-
-template<class T>
-struct DoublePrecType<OSubScalar<T,OrderedSubset> > 
-{
-  typedef OSubScalar<typename DoublePrecType<T>::Type_t, OrderedSubset>  Type_t;
+  typedef OSubScalar<typename DoublePrecType<T>::Type_t, Subset>  Type_t;
 };
 
 template<class T>
@@ -293,17 +255,10 @@ struct DoublePrecType<OSubLattice<T,Subset> >
 };
 
 template<class T>
-struct DoublePrecType<OSubLattice<T,UnorderedSubset> > 
+struct DoublePrecType<OSubLattice<T,Subset> > 
 {
-  typedef OSubLattice<typename DoublePrecType<T>::Type_t, UnorderedSubset>  Type_t;
+  typedef OSubLattice<typename DoublePrecType<T>::Type_t, Subset>  Type_t;
 };
-
-template<class T>
-struct DoublePrecType<OSubLattice<T,OrderedSubset> > 
-{
-  typedef OSubLattice<typename DoublePrecType<T>::Type_t, OrderedSubset>  Type_t;
-};
-
 
 //-----------------------------------------------------------------------------
 // Scalar Operations
@@ -337,13 +292,7 @@ void copymask(OSubScalar<T2,S> dest, const OScalar<T1>& mask,
 //! dest  = random  
 /*! Implementation is in the specific files */
 template<class T>
-void random(OSubScalar<T,UnorderedSubset> d);
-
-//! dest  = random  
-/*! Implementation is in the specific files */
-template<class T>
-void random(OSubScalar<T,OrderedSubset> d);
-
+void random(OSubScalar<T,Subset> d);
 
 //! dest  = gaussian
 template<class T, class S>

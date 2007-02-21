@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.6 2004-12-10 18:31:20 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.7 2007-02-21 22:17:20 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -477,34 +477,26 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
-	      const OrderedSubset& s) {
+	      const Subset& s) {
 
   typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
   const C& l = static_cast<const C&>(rhs.expression().left());
   const C& r = static_cast<const C&>(rhs.expression().right());
-#if 1
+
   
    double fp_regs[32];
    _save_fp_regs(fp_regs);
 
-//  cout << "Bj Evaluate" << endl;
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
-    _inline_qcdoc_mult_su3_nn(l.elem(i).elem(),
-				r.elem(i).elem(),
-				d.elem(i).elem());
-  }
-  _restore_fp_regs(fp_regs);
-#else
-
-  /* This was a test hackup. Until Peter provides these routines
-    publicly it MUSTN'T be used  */
-  int len = s.end()-s.start()+1;
-  qcdoc_mult_su3_nn_subset(&len,
-	(REAL *)&(l.elem(s.start()).elem().elem(0,0).real()),
-	(REAL *)&(r.elem(s.start()).elem().elem(0,0).real()),
-	(REAL *)&(d.elem(s.start()).elem().elem(0,0).real()));
-#endif
+   //  cout << "Bj Evaluate" << endl;
+   const int* tab = s.siteTable().slice();
+     
+   for(int j=0; j < s.numSiteTable(); j++) {
+     i = tab[j];
+     _inline_qcdoc_mult_su3_nn(l.elem(i).elem(),
+			       r.elem(i).elem(),
+			       d.elem(i).elem());
+   }
+   _restore_fp_regs(fp_regs);
   
 }
 
@@ -524,7 +516,7 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
 	      Reference<QDPType<PSpinVector<PColorVector<RComplexFloat, 3>, 2>, 
 	      OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> > > > >,
 	      OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "specialized QDP_H_M_times_H" << endl;
@@ -536,8 +528,10 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
   const C& l = static_cast<const C&>(rhs.expression().left());
   const H& r = static_cast<const H&>(rhs.expression().right());
 
-  for(int i=s.start(); i <= s.end(); ++i) 
+  const int* tab=s.siteTable().slice();
+  for(int j=0; j <= s.numSitetable(); ++j) 
   {
+    int i=tab[j];
     _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
 				     r.elem(i).elem(0),
 				     d.elem(i).elem(0));

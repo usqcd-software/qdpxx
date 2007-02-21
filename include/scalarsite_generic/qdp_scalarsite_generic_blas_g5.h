@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas_g5.h,v 1.4 2005-11-03 22:17:30 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas_g5.h,v 1.5 2007-02-21 22:17:19 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -45,7 +45,7 @@ void evaluate(OLattice< TVec >& d,
 	                     UnaryNode< FnChiralProjectPlus, Reference< QDPType<TVec,OLattice<TVec> > > >
 >, 
 	                     OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -58,12 +58,25 @@ void evaluate(OLattice< TVec >& d,
   
   REAL ar = a.elem().elem().elem().elem();
   REAL* aptr = &ar;
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
+
+  if ( s.hasSubset() ) { 
+    REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
   
-  
-  int n_4vec = (s.end()-s.start()+1);
-  xpayz_g5ProjPlus(yptr, aptr,yptr, xptr, n_4vec);
+    int n_4vec = (s.end()-s.start()+1);
+    xpayz_g5ProjPlus(yptr, aptr,yptr, xptr, n_4vec);
+
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
+      xpayz_g5ProjPlus(yptr, aptr,yptr, xptr, 1);
+    }
+  }
+
   
 }
 
@@ -77,7 +90,7 @@ void evaluate(OLattice< TVec >& d,
 	                     UnaryNode< FnChiralProjectMinus, Reference< QDPType<TVec,OLattice<TVec> > > >
 >, 
 	                     OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -90,13 +103,25 @@ void evaluate(OLattice< TVec >& d,
   
   REAL ar = a.elem().elem().elem().elem();
   REAL* aptr = &ar;
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
+
+  if( s.hasOrderedRep() ) { 
+    REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
+    
   
-  
-  int n_4vec = (s.end()-s.start()+1);
-  xpayz_g5ProjMinus(yptr, aptr,yptr, xptr, n_4vec);
-  
+    int n_4vec = (s.end()-s.start()+1);
+    xpayz_g5ProjMinus(yptr, aptr,yptr, xptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
+      xpayz_g5ProjMinus(yptr, aptr,yptr, xptr, 1);
+    }
+  }
+
 }
 
 
@@ -110,7 +135,7 @@ void evaluate(OLattice< TVec >& d,
 	                     UnaryNode< FnChiralProjectPlus, Reference< QDPType<TVec,OLattice<TVec> > > >
 >, 
 	                     OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -123,12 +148,23 @@ void evaluate(OLattice< TVec >& d,
   
   REAL ar = a.elem().elem().elem().elem();
   REAL* aptr = &ar;
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
-  
-  
-  int n_4vec = (s.end()-s.start()+1);
-  xmayz_g5ProjPlus(yptr, aptr,yptr, xptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int n_4vec = (s.end()-s.start()+1);
+    xmayz_g5ProjPlus(yptr, aptr,yptr, xptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
+      xmayz_g5ProjPlus(yptr, aptr,yptr, xptr, 1);
+    }
+  }
+
 }
 
 // d -= Scalar*ChiralProjMinus(Vec);
@@ -141,7 +177,7 @@ void evaluate(OLattice< TVec >& d,
 	                     UnaryNode< FnChiralProjectMinus, Reference< QDPType<TVec,OLattice<TVec> > > >
 >, 
 	                     OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -154,12 +190,24 @@ void evaluate(OLattice< TVec >& d,
   
   REAL ar = a.elem().elem().elem().elem();
   REAL* aptr = &ar;
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
-  
-  
-  int n_4vec = (s.end()-s.start()+1);
-  xmayz_g5ProjMinus(yptr, aptr,yptr, xptr, n_4vec);
+
+  if( s.hasOrderedRep() ) { 
+    REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    int n_4vec = (s.end()-s.start()+1);
+    xmayz_g5ProjMinus(yptr, aptr,yptr, xptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
+      xmayz_g5ProjMinus(yptr, aptr,yptr, xptr, 1);
+    }
+  }
   
 }
 
@@ -172,7 +220,7 @@ void evaluate(OLattice< TVec >& d,
 	      const QDPExpr<
 	                    UnaryNode< FnChiralProjectPlus, Reference< QDPType<TVec,OLattice<TVec> > > >, 
 	                    OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -182,12 +230,23 @@ void evaluate(OLattice< TVec >& d,
   const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().child());
 
   
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasOrderedRep() ) { 
+    REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
   
   
-  int n_4vec = (s.end()-s.start()+1);
-  add_g5ProjPlus(yptr, yptr, xptr, n_4vec);
+    int n_4vec = (s.end()-s.start()+1);
+    add_g5ProjPlus(yptr, yptr, xptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
+      add_g5ProjPlus(yptr, yptr, xptr, 1);
+    }
+  }
   
 }
 
@@ -200,7 +259,7 @@ void evaluate(OLattice< TVec >& d,
 	      const QDPExpr<
 	                    UnaryNode< FnChiralProjectMinus, Reference< QDPType<TVec,OLattice<TVec> > > >, 
 	                    OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -209,14 +268,25 @@ void evaluate(OLattice< TVec >& d,
 
   const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().child());
 
+
+  if( s.hasOrderedRep() ) { 
+    REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
   
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
   
-  
-  int n_4vec = (s.end()-s.start()+1);
-  add_g5ProjMinus(yptr, yptr, xptr, n_4vec);
-  
+    int n_4vec = (s.end()-s.start()+1);
+    add_g5ProjMinus(yptr, yptr, xptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
+      add_g5ProjMinus(yptr, yptr, xptr, 1);
+    }
+  }
+
 }
 
 
@@ -228,7 +298,7 @@ void evaluate(OLattice< TVec >& d,
 	      const QDPExpr<
 	                    UnaryNode< FnChiralProjectPlus, Reference< QDPType<TVec,OLattice<TVec> > > >, 
 	                    OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -237,13 +307,22 @@ void evaluate(OLattice< TVec >& d,
 
   const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().child());
 
-  
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
-  
-  
-  int n_4vec = (s.end()-s.start()+1);
-  sub_g5ProjPlus(yptr, yptr, xptr, n_4vec);
+  if( s.hasOrderedRep() ) {
+    REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int n_4vec = (s.end()-s.start()+1);
+    sub_g5ProjPlus(yptr, yptr, xptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
+      sub_g5ProjPlus(yptr, yptr, xptr, 1);
+    }
+  }
   
 }
 
@@ -256,7 +335,7 @@ void evaluate(OLattice< TVec >& d,
 	      const QDPExpr<
 	                    UnaryNode< FnChiralProjectMinus, Reference< QDPType<TVec,OLattice<TVec> > > >, 
 	                    OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -265,13 +344,22 @@ void evaluate(OLattice< TVec >& d,
 
   const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().child());
 
-  
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
-  
-  
-  int n_4vec = (s.end()-s.start()+1);
-  sub_g5ProjMinus(yptr, yptr, xptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int n_4vec = (s.end()-s.start()+1);
+    sub_g5ProjMinus(yptr, yptr, xptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
+      sub_g5ProjMinus(yptr, yptr, xptr, 1);
+    }
+  }
   
 }
 
@@ -290,7 +378,7 @@ void evaluate( OLattice< TVec > &d,
                           >,
 	                  OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = x + a*P{+} y" << endl;
@@ -316,13 +404,28 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  xpayz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
+  if (s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    xpayz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      xpayz_g5ProjPlus(zptr, aptr, xptr, yptr, 1);
+    }
+  }
 
 }
 
@@ -341,7 +444,7 @@ void evaluate( OLattice< TVec > &d,
                           >,
 	                  OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = x + a*P{-} y" << endl;
@@ -367,13 +470,28 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  xpayz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    xpayz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      xpayz_g5ProjMinus(zptr, aptr, xptr, yptr, 1);
+    }
+  }
 
 }
 
@@ -392,7 +510,7 @@ void evaluate( OLattice< TVec > &d,
                           >,
 	                  OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = x - a*P{+} y" << endl;
@@ -418,13 +536,28 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  xmayz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    xmayz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      xmayz_g5ProjPlus(zptr, aptr, xptr, yptr, 1);
+    }
+  }
 
 }
 
@@ -443,7 +576,7 @@ void evaluate( OLattice< TVec > &d,
                           >,
 	                  OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = x - a*P{-} y" << endl;
@@ -469,13 +602,27 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  xmayz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    xmayz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      xmayz_g5ProjMinus(zptr, aptr, xptr, yptr, 1);
+    }
+  }
 
 }
 
@@ -493,7 +640,7 @@ void evaluate( OLattice< TVec > &d,
 	           UnaryNode<FnChiralProjectPlus, Reference< QDPType<TVec, OLattice<TVec> > > >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = a*x + P{+} y" << endl;
@@ -516,14 +663,29 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    axpyz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      axpyz_g5ProjPlus(zptr, aptr, xptr, yptr, 1);
+    }
+  }
 
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  axpyz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
 }
 
 // d = ax + P- y
@@ -540,7 +702,7 @@ void evaluate( OLattice< TVec > &d,
 	           UnaryNode<FnChiralProjectMinus, Reference< QDPType<TVec, OLattice<TVec> > > >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = a*x + P{-} y" << endl;
@@ -563,14 +725,30 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    axpyz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      axpyz_g5ProjMinus(zptr, aptr, xptr, yptr, 1);
 
+    }
+  }
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  axpyz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
 }
 
 
@@ -588,7 +766,7 @@ void evaluate( OLattice< TVec > &d,
 	           UnaryNode<FnChiralProjectPlus, Reference< QDPType<TVec, OLattice<TVec> > > >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = a*x + P{+} y" << endl;
@@ -611,14 +789,31 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
+  if( s.hasOrderedRep() ) { 
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  axmyz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    axmyz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      axmyz_g5ProjPlus(zptr, aptr, xptr, yptr, 1);
+
+    }
+  }
+
 }
 
 // d = ax - P- y
@@ -635,7 +830,7 @@ void evaluate( OLattice< TVec > &d,
 	           UnaryNode<FnChiralProjectMinus, Reference< QDPType<TVec, OLattice<TVec> > > >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = a*x + P{-} y" << endl;
@@ -658,14 +853,28 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    axmyz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      axmyz_g5ProjMinus(zptr, aptr, xptr, yptr, 1);
+    
+    }
+  }
 
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  axmyz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
 }
 
 // Vec = Scal * P_{+} Vec
@@ -679,7 +888,7 @@ void evaluate( OLattice< TVec > &d,
 	       UnaryNode< FnChiralProjectPlus, Reference< QDPType< TVec, OLattice< TVec > > > >
                >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -691,11 +900,25 @@ void evaluate( OLattice< TVec > &d,
 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = &ar;  
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-  int n_4vec = (s.end()-s.start()+1);
 
-  scal_g5ProjPlus(zptr, aptr, xptr, n_4vec);
+  if( s.hasOrderedRep() ) {
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    int n_4vec = (s.end()-s.start()+1);
+   
+    scal_g5ProjPlus(zptr, aptr, xptr, n_4vec)
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      scal_g5ProjPlus(zptr, aptr, xptr, 1);
+    }
+  }
+
 }
 
 // Vec = Scal * P_{-} Vec
@@ -709,7 +932,7 @@ void evaluate( OLattice< TVec > &d,
 	       UnaryNode< FnChiralProjectMinus, Reference< QDPType< TVec, OLattice< TVec > > > >
                >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -721,11 +944,24 @@ void evaluate( OLattice< TVec > &d,
 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = &ar;  
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-  int n_4vec = (s.end()-s.start()+1);
 
-  scal_g5ProjMinus(zptr, aptr, xptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    int n_4vec = (s.end()-s.start()+1);
+    
+    scal_g5ProjMinus(zptr, aptr, xptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      scal_g5ProjMinus(zptr, aptr, xptr, 1);
+    }
+  }
 }
 
 // z = ax + bP+ y
@@ -744,7 +980,7 @@ void evaluate( OLattice< TVec > &d,
                 > 
                >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -779,14 +1015,31 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  axpbyz_g5ProjPlus(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    axpbyz_g5ProjPlus(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+    
+      
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      axpbyz_g5ProjPlus(zptr, aptr, xptr, bptr, yptr, 1);
+   
+    }
+  }
 }
 
 // z = ax + bP- y
@@ -805,7 +1058,7 @@ void evaluate( OLattice< TVec > &d,
                 > 
                >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -840,14 +1093,29 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  axpbyz_g5ProjMinus(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    axpbyz_g5ProjMinus(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+    
+      axpbyz_g5ProjMinus(zptr, aptr, xptr, bptr, yptr, 1);
+      
+    }
+  }
 }
 
 // z = ax - bP+ y
@@ -866,7 +1134,7 @@ void evaluate( OLattice< TVec > &d,
                 > 
                >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -901,14 +1169,28 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  axmbyz_g5ProjPlus(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    axmbyz_g5ProjPlus(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+    
+      axmbyz_g5ProjPlus(zptr, aptr, xptr, bptr, yptr, 1);
+    }
+  }
 }
 
 // z = ax - bP- y
@@ -927,7 +1209,7 @@ void evaluate( OLattice< TVec > &d,
                 > 
                >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -962,14 +1244,27 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  axmbyz_g5ProjMinus(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    axmbyz_g5ProjMinus(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+    
+      axmbyz_g5ProjMinus(zptr, aptr, xptr, bptr, yptr, 1);
+    }
+  }
 }
 
 // Vec = Scal * GammaConst<Ns,Ns-1>* Vec
@@ -988,7 +1283,7 @@ void evaluate( OLattice< TVec > &d,
                   >,
 	          OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1009,12 +1304,24 @@ void evaluate( OLattice< TVec > &d,
 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = &ar;  
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-  int n_4vec = (s.end()-s.start()+1);
 
-  scal_g5(zptr, aptr, xptr, n_4vec);
- 
+  if( s.hasOdreredRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    int n_4vec = (s.end()-s.start()+1);
+    
+    scal_g5(zptr, aptr, xptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      scal_g5(zptr, aptr, xptr, 1);
+    }
+  } 
 }
 
 
@@ -1037,7 +1344,7 @@ void evaluate( OLattice< TVec > &d,
                    >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1068,14 +1375,27 @@ void evaluate( OLattice< TVec > &d,
 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  xmayz_g5(zptr, aptr, xptr, yptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    xmayz_g5(zptr, aptr, xptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      xmayz_g5(zptr, aptr, xptr, yptr,1);
+    }
+  }
 
 }
 
@@ -1102,7 +1422,7 @@ void evaluate( OLattice< TVec > &d,
                    >
                  >,
 	         OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1142,15 +1462,27 @@ void evaluate( OLattice< TVec > &d,
 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  axpbyz_g5(zptr, aptr, xptr, bptr, yptr, n_4vec);
-  
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    axpbyz_g5(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      axpbyz_g5(zptr, aptr, xptr, bptr, yptr, 1);
+    }
+  }  
 }
 
 // Vec = Gamma_5 *( a*Vec - b*Vec )
@@ -1174,7 +1506,7 @@ void evaluate( OLattice< TVec > &d,
                             >
                  >,
 	         OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1212,15 +1544,27 @@ void evaluate( OLattice< TVec > &d,
 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  g5_axmbyz(zptr, aptr, xptr, bptr, yptr, n_4vec);
-  
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    g5_axmbyz(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      g5_axmbyz(zptr, aptr, xptr, bptr, yptr, 1);
+    }
+  }  
 }
 
 
@@ -1249,7 +1593,7 @@ void evaluate( OLattice< TVec > &d,
                    >
                  >,
 	         OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1298,15 +1642,28 @@ void evaluate( OLattice< TVec > &d,
 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  axpbyz_ig5(zptr, aptr, xptr, bptr, yptr, n_4vec);
-  
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    axpbyz_ig5(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      axpbyz_ig5(zptr, aptr, xptr, bptr, yptr, 1);
+    }
+  }  
 }
 
 // Vec = a*Vec - b*Gamma5*i*Vec
@@ -1333,7 +1690,7 @@ void evaluate( OLattice< TVec > &d,
                    >
                  >,
 	         OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1382,15 +1739,26 @@ void evaluate( OLattice< TVec > &d,
 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-  
-  
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  axmbyz_ig5(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    axmbyz_ig5(zptr, aptr, xptr, bptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      axmbyz_ig5(zptr, aptr, xptr, bptr, yptr, 1);
+    }
+  }  
 }
 
 // Vec = Vec + a*Gamma5*i*Vec
@@ -1414,7 +1782,7 @@ void evaluate( OLattice< TVec > &d,
                    >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1455,14 +1823,27 @@ void evaluate( OLattice< TVec > &d,
 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  xpayz_ig5(zptr, aptr, xptr, yptr, n_4vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    xpayz_ig5(zptr, aptr, xptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      xpayz_ig5(zptr, aptr, xptr, yptr, 1);
+    }
+  }
 
 }
 
@@ -1487,7 +1868,7 @@ void evaluate( OLattice< TVec > &d,
                    >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1528,14 +1909,28 @@ void evaluate( OLattice< TVec > &d,
 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    xmayz_ig5(zptr, aptr, xptr, yptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      xmayz_ig5(zptr, aptr, xptr, yptr, 1);
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  xmayz_ig5(zptr, aptr, xptr, yptr, n_4vec);
+    }
+  }
 
 }
 
@@ -1560,7 +1955,7 @@ void evaluate( OLattice< TVec > &d,
 	           >,
 	           OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1603,13 +1998,25 @@ void evaluate( OLattice< TVec > &d,
 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  xpayz_ig5(zptr, aptr, zptr, xptr, n_4vec);
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    xpayz_ig5(zptr, aptr, zptr, xptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      xpayz_ig5(zptr, aptr, zptr, xptr, 1);
+    }
+  }
 
 }
 
@@ -1633,7 +2040,7 @@ void evaluate( OLattice< TVec > &d,
 	           >,
 	           OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1676,13 +2083,27 @@ void evaluate( OLattice< TVec > &d,
 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_4vec = (s.end()-s.start()+1);
+    xmayz_ig5(zptr, aptr, zptr, xptr, n_4vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      xmayz_ig5(zptr, aptr, zptr, xptr, 1);
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_4vec = (s.end()-s.start()+1);
-  xmayz_ig5(zptr, aptr, zptr, xptr, n_4vec);
+    }
+  }
+
 }
 
 

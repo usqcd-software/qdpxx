@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.13 2006-09-26 15:51:23 edwards Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.14 2007-02-21 22:17:20 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -52,7 +52,7 @@ void evaluate(OLattice< TVec >& d,
 	      Reference< QDPType< TScal, OScalar < TScal > > >,
 	      Reference< QDPType< TVec, OLattice< TVec > > > >,
 	      OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -64,12 +64,27 @@ void evaluate(OLattice< TVec >& d,
   
   REAL32 ar = a.elem().elem().elem().elem();
   REAL32* aptr = &ar;
-  REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
-  // cout << "Specialised axpy a ="<< ar << endl;
+  if( s.hasOrderedRep() ) { 
+    REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
+    // cout << "Specialised axpy a ="<< ar << endl;
   
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+
+      REAL32* xptr = (REAL32 *)&(x.elem(i).elem(0).elem(0).real());
+      REAL32* yptr = &(d.elem(i).elem(0).elem(0).real());
+    
+      vaxpy3(yptr, aptr, xptr, yptr, 1);
+    }
+  }
+
+
 }
 
 // d -= Scalar*Vec
@@ -81,7 +96,7 @@ void evaluate(OLattice< TVec >& d,
 	      Reference< QDPType< TScal, OScalar < TScal > > >,
 	      Reference< QDPType< TVec, OLattice< TVec > > > >,
 	      OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -94,11 +109,24 @@ void evaluate(OLattice< TVec >& d,
   // - sign as y -= ax <=> y = y-ax = -ax + y = axpy with -a 
   REAL32 ar = -( a.elem().elem().elem().elem());
   REAL32* aptr = &ar;
-  REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
-  
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
+  if( s.hasSubset() ) { 
+    REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+
+      REAL32* xptr = (REAL32 *)&(x.elem(i).elem(0).elem(0).real());
+      REAL32* yptr = &(d.elem(i).elem(0).elem(0).real());
+      vaxpy3(yptr, aptr, xptr, yptr, 1);
+   
+    }
+  }
 	
 }
 
@@ -114,7 +142,7 @@ void evaluate( OLattice< TVec > &d,
 	       Reference< QDPType< TVec, OLattice< TVec > > > >,
 	       Reference< QDPType< TVec, OLattice< TVec > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -139,14 +167,30 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL32 ar =  a.elem().elem().elem().elem();
   REAL32 *aptr = (REAL32 *)&ar;
-  REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasOrderedRep() ) { 
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
+
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      vaxpy3(zptr, aptr, xptr, yptr, 1);
+   
+    }
+  }
+
 }
 
 // Vec = Vec + Scal*Vec
@@ -161,7 +205,7 @@ void evaluate( OLattice< TVec > &d,
 	       Reference< QDPType< TScal, OScalar< TScal > > >,
 	       Reference< QDPType< TVec, OLattice< TVec > > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE: z = y + a*x" << endl;
@@ -187,14 +231,29 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL32 ar =  a.elem().elem().elem().elem();
   REAL32 *aptr = (REAL32 *)&ar;
-  REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasOrderedRep() ) { 
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+    REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+    REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
 
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    vaxpy3(zptr, aptr, xptr, yptr, 1);
+
+   
+    }
+  }
 }
 
 // Vec = Scalar*Vec - Vec
@@ -209,7 +268,7 @@ void evaluate( OLattice< TVec > &d,
 	       Reference< QDPType< TVec, OLattice< TVec > > > >,
 	       Reference< QDPType< TVec, OLattice< TVec > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE: z = a*x - y" << endl;
@@ -232,14 +291,31 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL32 ar =  a.elem().elem().elem().elem();
   REAL32 *aptr = (REAL32 *)&ar;
-  REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxmy3(zptr, aptr, xptr, yptr, n_3vec);
+  if( s.hasOrderedRep() ) { 
+    
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxmy3(zptr, aptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      
+      vaxmy3(zptr, aptr, xptr, yptr,1);
+    }
+  }
 }
 
 template<>
@@ -253,7 +329,7 @@ void evaluate( OLattice< TVec > &d,
 	       Reference< QDPType< TScal, OScalar< TScal > > >,
 	       Reference< QDPType< TVec, OLattice< TVec > > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE: z = y - a*x" << endl;
@@ -277,14 +353,26 @@ void evaluate( OLattice< TVec > &d,
   // -ve sign as y - ax = -ax + y  = axpy with -a.
   REAL32 ar =  -a.elem().elem().elem().elem();
   REAL32 *aptr = (REAL32 *)&ar;
-  REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+  if( s.hasOrderedRep()) { 
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      vaxpy3(zptr, aptr, xptr, yptr, 1);
+    }
+  }
 }
 
 // Vec += Vec * Scalar (AXPY)
@@ -296,7 +384,7 @@ void evaluate(OLattice< TVec >& d,
 	      Reference< QDPType< TVec, OLattice< TVec > > >,
 	      Reference< QDPType< TScal, OScalar < TScal > > > >,
 	      OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -308,12 +396,25 @@ void evaluate(OLattice< TVec >& d,
   
   REAL32 ar = a.elem().elem().elem().elem();
   REAL32* aptr = &ar;
-  REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
-  // cout << "Specialised axpy a ="<< ar << endl;
+  if( s.hasOrderedRep() ) { 
+
+    REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
+
   
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      vaxpy3(yptr, aptr, xptr, yptr,1);   
+    }
+  }
+
 }
 
 
@@ -326,7 +427,7 @@ void evaluate(OLattice< TVec >& d,
 	      Reference< QDPType< TVec, OLattice< TVec > > >,
 	      Reference< QDPType< TScal, OScalar < TScal > > > >,
 	      OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -339,11 +440,24 @@ void evaluate(OLattice< TVec >& d,
   // - sign as y -= ax <=> y = y-ax = -ax + y = axpy with -a 
   REAL32 ar = -( a.elem().elem().elem().elem());
   REAL32* aptr = &ar;
-  REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
-  
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
+  if( s.hasOrderedRep() ) {
+
+    REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+   
+      vaxpy3(yptr, aptr, xptr, yptr, 1);
+    }
+  }
 	
 }
 
@@ -360,7 +474,7 @@ void evaluate( OLattice< TVec > &d,
 	       Reference< QDPType< TScal, OScalar< TScal > > > >,
 	       Reference< QDPType< TVec, OLattice< TVec > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -385,14 +499,26 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL32 ar =  a.elem().elem().elem().elem();
   REAL32 *aptr = (REAL32 *)&ar;
-  REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasOrderedRep() ) { 
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
 
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      vaxpy3(zptr, aptr, xptr, yptr, 1);
+    }
+  }
 }
 
 
@@ -408,7 +534,7 @@ void evaluate( OLattice< TVec > &d,
 	       Reference< QDPType< TVec, OLattice< TVec > > >,
 	       Reference< QDPType< TScal, OScalar< TScal > > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE: z = y + x*a" << endl;
@@ -434,14 +560,27 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL32 ar =  a.elem().elem().elem().elem();
   REAL32 *aptr = (REAL32 *)&ar;
-  REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasSubset() ) {
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+    REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+    REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
 
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    vaxpy3(zptr, aptr, xptr, yptr, 1);
+    }
+  }
 }
 
 
@@ -457,7 +596,7 @@ void evaluate( OLattice< TVec > &d,
 	       Reference< QDPType< TScal, OScalar< TScal > > > >,
 	       Reference< QDPType< TVec, OLattice< TVec > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE: z = x*a - y" << endl;
@@ -479,14 +618,29 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL32 ar =  a.elem().elem().elem().elem();
   REAL32 *aptr = (REAL32 *)&ar;
-  REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxmy3(zptr, aptr, xptr, yptr, n_3vec);
+  if ( s.hasOrderedRep() ) {
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxmy3(zptr, aptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
+    
+    
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      vaxmy3(zptr, aptr, xptr, yptr, 1);
+    }
+  }
 }
 
 
@@ -502,7 +656,7 @@ void evaluate( OLattice< TVec > &d,
 	       Reference< QDPType< TVec, OLattice< TVec > > >,
 	       Reference< QDPType< TScal, OScalar< TScal > > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE: z = y - x*a" << endl;
@@ -525,14 +679,27 @@ void evaluate( OLattice< TVec > &d,
   // -ve sign as y - ax = -ax + y  = axpy with -a.
   REAL32 ar =  -a.elem().elem().elem().elem();
   REAL32 *aptr = (REAL32 *)&ar;
-  REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasSubset() ) { 
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      vaxpy3(zptr, aptr, xptr, yptr, 1);
+    }
+  }
 }
 
 
@@ -545,7 +712,7 @@ void evaluate( OLattice< TVec > &d,
 	       Reference< QDPType< TVec, OLattice< TVec > > >,
 	       Reference< QDPType< TVec, OLattice< TVec > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   cout << "SSE: v+v " << endl;
@@ -554,14 +721,29 @@ void evaluate( OLattice< TVec > &d,
   const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(rhs.expression().left());
   const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(rhs.expression().right());
 
-  REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vadd(zptr, xptr, yptr, n_3vec);
+  if( s.hasOrderedRep() ) { 
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vadd(zptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      vadd(zptr, xptr, yptr, 1);
+    }
+  }
 }
 
 template<>
@@ -573,7 +755,7 @@ void evaluate( OLattice< TVec > &d,
 	       Reference< QDPType< TVec, OLattice< TVec > > >,
 	       Reference< QDPType< TVec, OLattice< TVec > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   cout << "SSE: v-v " << endl;
@@ -582,14 +764,29 @@ void evaluate( OLattice< TVec > &d,
   const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(rhs.expression().left());
   const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(rhs.expression().right());
 
-  REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasOrderedRep() ) { 
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
   
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vsub(zptr, xptr, yptr, n_3vec);
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vsub(zptr, xptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      vsub(zptr, xptr, yptr, 1);
+    }
+  }
 }
 
 // Vec = Scal * Vec
@@ -602,7 +799,7 @@ void evaluate( OLattice< TVec > &d,
 	       Reference< QDPType< TScal, OScalar< TScal > > >,
 	       Reference< QDPType< TVec, OLattice< TVec > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   cout << "SSE: v = a*v " << endl;
@@ -612,11 +809,23 @@ void evaluate( OLattice< TVec > &d,
 
   REAL32 ar =  a.elem().elem().elem().elem();
   REAL32 *aptr = &ar;  
-  REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-  int n_3vec = (s.end()-s.start()+1)*24;
-
-  vscal(zptr, aptr, xptr, n_3vec);
+  if( s.hasOrderedRep() ) { 
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    int n_3vec = (s.end()-s.start()+1)*24;
+    
+    vscal(zptr, aptr, xptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      vscal(zptr, aptr, xptr, 1);
+    }
+  }
 }
 
 template<>
@@ -628,7 +837,7 @@ void evaluate( OLattice< TVec > &d,
 	       Reference< QDPType< TVec, OLattice< TVec > > >,
 	       Reference< QDPType< TScal, OScalar< TScal > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   cout << "SSE: v = v*a " << endl;
@@ -639,11 +848,23 @@ void evaluate( OLattice< TVec > &d,
 
   REAL32 ar =  a.elem().elem().elem().elem();
   REAL32 *aptr = &ar;  
-  REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-  int n_3vec = (s.end()-s.start()+1)*24;
+  if( s.hasOrderedRep() ) {
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    int n_3vec = (s.end()-s.start()+1)*24;
 
-  vscal(zptr, aptr, xptr, n_3vec);
+    vscal(zptr, aptr, xptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      vscal(zptr, aptr, xptr, 1);
+    }
+  }
 }
 
 
@@ -657,7 +878,7 @@ void evaluate( OLattice< TVec > &d,
 	       UnaryNode<OpIdentity,
 	       Reference< QDPType< TScal, OScalar< TScal > > > >,
 	       OScalar< TScal > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
   const OScalar< TScal >& a = static_cast< const OScalar<TScal >&>(rhs.expression().child());
 
@@ -667,10 +888,22 @@ void evaluate( OLattice< TVec > &d,
 #endif
   
   REAL ar = a.elem().elem().elem().elem();
-  REAL* xptr = &(d.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr = xptr;
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vscal(zptr,&ar, xptr, n_3vec);
+  if( s.hasOrderedRep() ) { 
+    REAL* xptr = &(d.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr = xptr;
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vscal(zptr,&ar, xptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL* xptr = &(d.elem(i).elem(0).elem(0).real());
+      REAL* zptr = xptr;
+      
+      vscal(zptr, aptr, xptr, 1);
+    }
+  }
 }
 
 // v /= a
@@ -682,7 +915,7 @@ void evaluate( OLattice< TVec > &d,
 	       UnaryNode<OpIdentity,
 	       Reference< QDPType< TScal, OScalar< TScal > > > >,
 	       OScalar< TScal > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
   const OScalar< TScal >& a = static_cast< const OScalar<TScal >&>(rhs.expression().child());
 
@@ -692,10 +925,22 @@ void evaluate( OLattice< TVec > &d,
 #endif
   
   REAL ar = (REAL)1/a.elem().elem().elem().elem();
-  REAL* xptr = &(d.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr = xptr;
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vscal(zptr,&ar, xptr, n_3vec);
+  if( s.hasOrderedRep() ) {
+    REAL* xptr = &(d.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr = xptr;
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vscal(zptr,&ar, xptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL* xptr = &(d.elem(i).elem(0).elem(0).real());
+      REAL* zptr = xptr;
+      
+      vscal(zptr,&ar, xptr, 1);
+    }
+  }
 }
 
 // v += v
@@ -707,7 +952,7 @@ void evaluate( OLattice< TVec > &d,
 	       UnaryNode<OpIdentity,
 	       Reference< QDPType< TVec, OLattice< TVec > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
   const OLattice< TVec >& x = static_cast< const OLattice<TVec >&>(rhs.expression().child());
 
@@ -716,13 +961,22 @@ void evaluate( OLattice< TVec > &d,
 #ifdef DEBUG_BLAS
   QDPIO::cout << "BJ: v += v" << endl;
 #endif
-
-  int n_3vec = (s.end() - s.start()+1)*24;
-  REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *)(&d.elem(s.start()).elem(0).elem(0).real());
-  REAL one = 1;
-  vadd(yptr, yptr, xptr,n_3vec);
-
+  if(s.hasOrderedRep() ) { 
+    int n_3vec = (s.end() - s.start()+1)*24;
+    REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *)(&d.elem(s.start()).elem(0).elem(0).real());
+    REAL one = 1;
+    vadd(yptr, yptr, xptr,n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL *xptr = (REAL *)(&x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *)(&d.elem(i).elem(0).elem(0).real());
+      vadd(yptr, yptr, xptr,1);
+    }
+  }
 }
 
 // v -= v
@@ -734,7 +988,7 @@ void evaluate( OLattice< TVec > &d,
 	       UnaryNode<OpIdentity,
 	       Reference< QDPType< TVec, OLattice< TVec > > > >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
   const OLattice< TVec >& x = static_cast< const OLattice<TVec >&>(rhs.expression().child());
 
@@ -743,13 +997,23 @@ void evaluate( OLattice< TVec > &d,
 #ifdef DEBUG_BLAS
   QDPIO::cout << "BJ: v -= v" << endl;
 #endif
-
-  int n_3vec = (s.end() - s.start()+1)*24;
-  REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *)(&d.elem(s.start()).elem(0).elem(0).real());
-  REAL one = 1;
-  vsub(yptr, yptr, xptr, n_3vec);
-
+  if( s.hasOrderedRep() ) { 
+    int n_3vec = (s.end() - s.start()+1)*24;
+    REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *)(&d.elem(s.start()).elem(0).elem(0).real());
+    
+    vsub(yptr, yptr, xptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL *xptr = (REAL *)(&x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *)(&d.elem(i).elem(0).elem(0).real());
+      
+      vsub(yptr, yptr, xptr, 1);
+    }
+  }
 }
 
 
@@ -767,7 +1031,7 @@ void evaluate( OLattice< TVec > &d,
 	         Reference< QDPType< TScal, OScalar< TScal > > >,
 	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -798,14 +1062,27 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
 
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      vaxpby3(zptr, aptr, xptr, bptr, yptr, 1);
+    }
+  }
 }
 
 
@@ -823,7 +1100,7 @@ void evaluate( OLattice< TVec > &d,
 	         Reference< QDPType< TScal, OScalar< TScal > > >,
 	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -861,14 +1138,28 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+    
+    
+      vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    }
+  }
 }
 
 // z = ax + yb
@@ -885,7 +1176,7 @@ void evaluate( OLattice< TVec > &d,
 	         Reference< QDPType< TVec, OLattice< TVec > > >,
 	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -929,14 +1220,29 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasOrderedRep() ) {
+
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+
+
+      vaxpby3(zptr, aptr, xptr, bptr, yptr, 1);
+    }
+  }
 }
 
 // z = xa + yb
@@ -953,7 +1259,7 @@ void evaluate( OLattice< TVec > &d,
 	         Reference< QDPType< TVec, OLattice< TVec > > >,
 	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -984,14 +1290,29 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      
+      // Get the no of 3vecs. i and s.end() are inclusive so add +1
+      vaxpby3(zptr, aptr, xptr, bptr, yptr, 1);
+    }
+  }
 }
 
 // z = ax - by
@@ -1008,7 +1329,7 @@ void evaluate( OLattice< TVec > &d,
 	         Reference< QDPType< TScal, OScalar< TScal > > >,
 	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -1039,14 +1360,30 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      vaxmby3(zptr, aptr, xptr, bptr, yptr, 1);
 
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    }
+  }
 }
 
 
@@ -1064,7 +1401,7 @@ void evaluate( OLattice< TVec > &d,
 	         Reference< QDPType< TScal, OScalar< TScal > > >,
 	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -1102,14 +1439,29 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      vaxmby3(zptr, aptr, xptr, bptr, yptr, 1);
+    }
+  }
 }
 
 // z = ax - yb
@@ -1126,7 +1478,7 @@ void evaluate( OLattice< TVec > &d,
 	         Reference< QDPType< TVec, OLattice< TVec > > >,
 	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -1170,14 +1522,29 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-
-
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      vaxmby3(zptr, aptr, xptr, bptr, yptr, 1);
+    }
+  }
 }
 
 // z = xa - yb
@@ -1194,7 +1561,7 @@ void evaluate( OLattice< TVec > &d,
 	         Reference< QDPType< TVec, OLattice< TVec > > >,
 	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS
@@ -1225,14 +1592,29 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
-  REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-  REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-  REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+  if( s.hasOrderedRep() ) { 
+    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
-  // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-  int n_3vec = (s.end()-s.start()+1)*24;
-  vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+    int n_3vec = (s.end()-s.start()+1)*24;
+    vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
+      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      
+      
+      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
+      vaxmby3(zptr, aptr, xptr, bptr, yptr, 1);
+    }
+  }
 }
 
 
@@ -1449,34 +1831,6 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 }
 
 
-// Norms of arrays
-// Global norm squared of an array
-template<>
-inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
-norm2(const multi1d< OLattice< TVec > >& s1, const OrderedSubset& s)
-{
-#ifdef DEBUG_BLAS
-  QDPIO::cout << "Using SSE multi1d sumsq" << endl;
-#endif
-
-  int n_3vec = (s.end() - s.start() + 1)*24;
-  REAL64 ltmp = 0;
-  for(int n=0; n < s1.size(); ++n)
-  {
-    const REAL32 *s1ptr =  &(s1[n].elem(s.start()).elem(0).elem(0).real());
-    
-    // I am relying on this being a Double here 
-    REAL64 lltmp;
-    local_sumsq(&lltmp, (REAL32 *)s1ptr, n_3vec); 
-
-    ltmp += lltmp;
-  }
-
-  UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
-  Internal::globalSum(lsum);
-  return lsum;
-}
-
 template<>
 inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
 norm2(const multi1d< OLattice< TVec > >& s1)
@@ -1551,48 +1905,6 @@ innerProduct(const multi1d< OLattice<TVec> > &v1,
   return lprod;
 }
 
-template<>
-inline  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t
-innerProduct(const multi1d< OLattice<TVec> > &v1,
-	     const multi1d< OLattice<TVec> > &v2, 
-	     const OrderedSubset& s)
-{
-#ifdef DEBUG_BLAS
-  QDPIO::cout << "BJ: multi1d innerProduct s" << endl;
-#endif
-
-  // This BinaryReturn has Type_t
-  // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
-  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
-  DOUBLE ip[2];
-  ip[0] = 0;
-  ip[1] = 0;
-
-  unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
-  DOUBLE iip[2];
-  for(int n=0; n < v1.size(); ++n)
-  {
-    // Call My CDOT
-    local_vcdot(&(iip[0]), &(iip[1]),
-		(REAL *)&(v1[n].elem(s.start()).elem(0).elem(0).real()),
-		(REAL *)&(v2[n].elem(s.start()).elem(0).elem(0).real()),
-		n_3vec);
-
-    ip[0] += iip[0];
-    ip[1] += iip[1];
-  }
-
-  // Global sum -- still on a vector of doubles
-  Internal::globalSumArray(ip,2);
-
-  // Downcast (and possibly lose precision) here 
-  lprod.elem().elem().elem().real() = ip[0];
-  lprod.elem().elem().elem().imag() = ip[1];
-
-  return lprod;
-}
-
-
 // Inner Product Real
 template<>
 inline  
@@ -1639,41 +1951,6 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
 }
 
 
-template<>
-inline  
-BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t
-innerProductReal(const multi1d< OLattice<TVec> > &v1,
-		 const multi1d< OLattice<TVec> > &v2, 
-		 const OrderedSubset& s)
-{
-#ifdef DEBUG_BLAS
-  QDPIO::cout << "BJ: multi1d innerProductReal s" << endl;
-#endif
-
-  // This BinaryReturn has Type_t
-  // OScalar<OScalar<OScalar<RScalar<PScalar<REAL> > > > >
-  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
-  DOUBLE ip_re=0;
-
-  unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
-
-  for(int n=0; n < v1.size(); ++n)
-  {
-    DOUBLE iip_re=0;
-
-    local_vcdot_real(&iip_re,
-		     (REAL *)&(v1[n].elem(s.start()).elem(0).elem(0).real()),
-		     (REAL *)&(v2[n].elem(s.start()).elem(0).elem(0).real()),
-		     n_3vec);
-
-    ip_re += iip_re;
-  }
-
-  Internal::globalSum(ip_re);
-  lprod.elem().elem().elem().elem() = ip_re;
-  
-  return lprod;
-}
 
 
 #if defined(QDP_SCALARSITE_DEBUG)

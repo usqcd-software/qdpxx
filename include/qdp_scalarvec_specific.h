@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.22 2005-08-23 19:10:45 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.23 2007-02-21 22:17:19 bjoo Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -54,7 +54,7 @@ namespace Internal
 #define QDP_NOT_IMPLEMENTED
 
 //-----------------------------------------------------------------------------
-//! OLattice Op Scalar(Expression(source)) under an UnorderedSubset
+//! OLattice Op Scalar(Expression(source)) under an Subset
 /*! 
  * OLattice Op Expression, where Op is some kind of binary operation 
  * involving the destination 
@@ -62,7 +62,7 @@ namespace Internal
 template<class T, class T1, class Op, class RHS>
 //inline
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
-	      const UnorderedSubset& s)
+	      const Subset& s)
 {
 //  cerr << "In evaluateUnorderedSubet(olattice,oscalar)\n";
 
@@ -81,7 +81,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
     op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
   }
 #else
-  QDP_error_exit("evaluateUnorderedSubset not implemented");
+  QDP_error_exit("evaluateSubset not implemented");
 #endif
 
 #if defined(QDP_USE_PROFILING)   
@@ -91,40 +91,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 #endif
 }
 
-//! OLattice Op Scalar(Expression(source)) under an OrderedSubset
-/*! 
- * OLattice Op Expression, where Op is some kind of binary operation 
- * involving the destination 
- */
-template<class T, class T1, class Op, class RHS>
-//inline
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
-	      const OrderedSubset& s)
-{
-//  cerr << "In evaluateOrderedSubset(olattice,oscalar)\n";
-
-#if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(dest, op, rhs);
-  prof.time -= getClockTime();
-#endif
-
-  const int istart = s.start() >> INNER_LOG;
-  const int iend   = s.end()   >> INNER_LOG;
-
-  for(int i=istart; i <= iend; ++i) 
-  {
-//    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
-    op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
-  }
-
-#if defined(QDP_USE_PROFILING)   
-  prof.time += getClockTime();
-  prof.count++;
-  prof.print();
-#endif
-}
-
-//! OLattice Op OLattice(Expression(source)) under an UnorderedSubset
+//! OLattice Op OLattice(Expression(source)) under an Subset
 /*! 
  * OLattice Op Expression, where Op is some kind of binary operation 
  * involving the destination 
@@ -132,9 +99,9 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 template<class T, class T1, class Op, class RHS>
 //inline
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
-	      const UnorderedSubset& s)
+	      const Subset& s)
 {
-//  cerr << "In evaluateUnorderedSubset(olattice,olattice)" << endl;
+//  cerr << "In evaluateSubset(olattice,olattice)" << endl;
 
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(dest, op, rhs);
@@ -151,7 +118,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
   }
 #else
-  QDP_error_exit("evaluateUnorderedSubset not implemented");
+  QDP_error_exit("evaluateSubset not implemented");
 #endif
 
 #if defined(QDP_USE_PROFILING)   
@@ -161,39 +128,6 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 #endif
 }
 
-
-//! OLattice Op OLattice(Expression(source)) under an OrderedSubset
-/*! 
- * OLattice Op Expression, where Op is some kind of binary operation 
- * involving the destination 
- */
-template<class T, class T1, class Op, class RHS>
-//inline
-void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
-	      const OrderedSubset& s)
-{
-//  cerr << "In evaluateOrderedSubset(olattice,olattice)" << endl;
-
-#if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(dest, op, rhs);
-  prof.time -= getClockTime();
-#endif
-
-  const int istart = s.start() >> INNER_LOG;
-  const int iend   = s.end()   >> INNER_LOG;
-
-  for(int i=istart; i <= iend; ++i) 
-  {
-//    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
-    op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
-  }
-
-#if defined(QDP_USE_PROFILING)   
-  prof.time += getClockTime();
-  prof.count++;
-  prof.print();
-#endif
-}
 
 
 
@@ -201,10 +135,10 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 //! dest = (mask) ? s1 : dest
 template<class T1, class T2> 
 void 
-copymask(OSubLattice<T2,UnorderedSubset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
+copymask(OSubLattice<T2,Subset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
   OLattice<T2>& dest = d.field();
-  const UnorderedSubset& s = d.subset();
+  const Subset& s = d.subset();
 
 #if ! defined(QDP_NOT_IMPLEMENTED)
   const int *tab = s.siteTable().slice();
@@ -214,24 +148,10 @@ copymask(OSubLattice<T2,UnorderedSubset> d, const OLattice<T1>& mask, const OLat
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
   }
 #else
-  QDP_error_exit("copymask_UnorderedSubset not implemented");
+  QDP_error_exit("copymask_Subset not implemented");
 #endif
 }
 
-//! dest = (mask) ? s1 : dest
-template<class T1, class T2> 
-void 
-copymask(OSubLattice<T2,OrderedSubset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
-{
-  OLattice<T2>& dest = d.field();
-  const OrderedSubset& s = d.subset();
-
-  const int istart = s.start() >> INNER_LOG;
-  const int iend   = s.end()   >> INNER_LOG;
-
-  for(int i=istart; i <= iend; ++i) 
-    copymask(dest.elem(i), mask.elem(i), s1.elem(i));
-}
 
 //! dest = (mask) ? s1 : dest
 template<class T1, class T2> 
@@ -274,7 +194,7 @@ random(OScalar<T>& d)
 //! dest  = random    under a subset
 template<class T>
 void 
-random(OLattice<T>& d, const UnorderedSubset& s)
+random(OLattice<T>& d, const Subset& s)
 {
   Seed seed;
   Seed skewed_seed;
@@ -292,32 +212,11 @@ random(OLattice<T>& d, const UnorderedSubset& s)
 
   RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
 #else
-  QDP_error_exit("random_UnorderedSubset not implemented");
+  QDP_error_exit("random_Subset not implemented");
 #endif
 }
 
 
-//! dest  = random    under a subset
-/*! This version uses an inner-grid */
-template<class T>
-void 
-random(OLattice<T>& d, const OrderedSubset& s)
-{
-  Seed seed;
-  ILatticeSeed skewed_seed;
-
-  const int istart = s.start() >> INNER_LOG;
-  const int iend   = s.end()   >> INNER_LOG;
-
-  for(int i=istart; i <= iend; ++i) 
-  {
-    seed = RNG::ran_seed;
-    skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
-    fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
-  }
-   
-  RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
-}
 
 
 //! dest  = random   under a subset
@@ -341,7 +240,7 @@ void random(OLattice<T>& d)
 
 //! dest  = gaussian   under a subset
 template<class T>
-void gaussian(OLattice<T>& d, const UnorderedSubset& s)
+void gaussian(OLattice<T>& d, const Subset& s)
 {
   OLattice<T>  r1, r2;
 
@@ -356,24 +255,8 @@ void gaussian(OLattice<T>& d, const UnorderedSubset& s)
     fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
   }
 #else
-  QDP_error_exit("gaussianUnorderedSubset not implemented");
+  QDP_error_exit("gaussianSubset not implemented");
 #endif
-}
-
-//! dest  = gaussian   under a subset
-template<class T>
-void gaussian(OLattice<T>& d, const OrderedSubset& s)
-{
-  OLattice<T>  r1, r2;
-
-  random(r1,s);
-  random(r2,s);
-
-  const int istart = s.start() >> INNER_LOG;
-  const int iend   = s.end()   >> INNER_LOG;
-
-  for(int i=istart; i <= iend; ++i) 
-    fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
 }
 
 
@@ -401,7 +284,7 @@ void gaussian(OLattice<T>& d)
 // Broadcast operations
 //! dest  = 0 
 template<class T> 
-void zero_rep(OLattice<T>& dest, const UnorderedSubset& s) 
+void zero_rep(OLattice<T>& dest, const Subset& s) 
 {
 #if ! defined(QDP_NOT_IMPLEMENTED)
   const int *tab = s.siteTable().slice();
@@ -411,20 +294,10 @@ void zero_rep(OLattice<T>& dest, const UnorderedSubset& s)
     zero_rep(dest.elem(i));
   }
 #else
-  QDP_error_exit("zero_rep_UnorderedSubset not implemented");
+  QDP_error_exit("zero_rep_Subset not implemented");
 #endif
 }
 
-//! dest  = 0 
-template<class T> 
-void zero_rep(OLattice<T>& dest, const OrderedSubset& s) 
-{
-  const int istart = s.start() >> INNER_LOG;
-  const int iend   = s.end()   >> INNER_LOG;
-
-  for(int i=istart; i <= iend; ++i) 
-    zero_rep(dest.elem(i));
-}
 
 
 //! dest  = 0 
@@ -513,7 +386,7 @@ sum(const QDPExpr<RHS,OScalar<T> >& s1)
  * Allow a global sum that sums over the lattice, but returns an object
  * of the same primitive type. E.g., contract only over lattice indices
  *
- * This will include a parent Subset and an UnorderedSubset.
+ * This will include a parent Subset and an Subset.
  *
  * NOTE: if this implementation does not have  hasOrderedRep() == true,
  * then the implementation can be quite slow
@@ -569,43 +442,6 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 
 
 
-//! OScalar = sum(OLattice) under an explicit OrderedSubset
-/*!
- * Allow a global sum that sums over the lattice, but returns an object
- * of the same primitive type. E.g., contract only over lattice indices
- */
-template<class RHS, class T>
-typename UnaryReturn<OLattice<T>, FnSum>::Type_t
-sum(const QDPExpr<RHS,OLattice<T> >& s1, const OrderedSubset& s)
-{
-  typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
-  OScalar<T> tmp;   // Note, expect to have ILattice inner grid
-
-#if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(d, OpAssign(), FnSum(), s1);
-  prof.time -= getClockTime();
-#endif
-
-  // Loop always entered - could unroll
-  zero_rep(d.elem());
-
-  const int istart = s.start() >> INNER_LOG;
-  const int iend   = s.end()   >> INNER_LOG;
-
-  for(int i=istart; i <= iend; ++i) 
-  {
-    tmp.elem() = forEach(s1, EvalLeaf1(i), OpCombine()); // Evaluate to ILattice part
-    d.elem() += sum(tmp.elem());    // sum as well the ILattice part
-  }
-
-#if defined(QDP_USE_PROFILING)   
-  prof.time += getClockTime();
-  prof.count++;
-  prof.print();
-#endif
-
-  return d;
-}
 
 
 //! OScalar = sum(OLattice)
@@ -802,19 +638,11 @@ norm2(const multi1d< OScalar<T> >& s1)
 /*! Discards subset */
 template<class T>
 inline typename UnaryReturn<OScalar<T>, FnNorm2>::Type_t
-norm2(const multi1d< OScalar<T> >& s1, const UnorderedSubset& s)
+norm2(const multi1d< OScalar<T> >& s1, const Subset& s)
 {
   return norm2(s1);
 }
 
-//! OScalar = sum(OScalar)  under an explicit subset
-/*! Discards subset */
-template<class T>
-inline typename UnaryReturn<OScalar<T>, FnNorm2>::Type_t
-norm2(const multi1d< OScalar<T> >& s1, const OrderedSubset& s)
-{
-  return norm2(s1);
-}
 
 
 //! OScalar = norm2(multi1d<OLattice>) under an explicit subset
@@ -826,7 +654,7 @@ norm2(const multi1d< OScalar<T> >& s1, const OrderedSubset& s)
  */
 template<class T>
 inline typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t
-norm2(const multi1d< OLattice<T> >& s1, const UnorderedSubset& s)
+norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
 {
   typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
 
@@ -850,52 +678,8 @@ norm2(const multi1d< OLattice<T> >& s1, const UnorderedSubset& s)
     }
   }
 #else
-  QDP_error_exit("norm2-UnorderedSubset not implemented");
+  QDP_error_exit("norm2-Subset not implemented");
 #endif
-
-#if defined(QDP_USE_PROFILING)   
-  prof.time += getClockTime();
-  prof.count++;
-  prof.print();
-#endif
-
-  return d;
-}
-
-//! OScalar = norm2(multi1d<OLattice>) under an explicit subset
-/*!
- * return  \sum_{multi1d} \sum_x(trace(adj(multi1d<source>)*multi1d<source>))
- *
- * Sum over the lattice
- * Allow a global sum that sums over all indices
- */
-template<class T>
-inline typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t
-norm2(const multi1d< OLattice<T> >& s1, const OrderedSubset& s)
-{
-  typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t  d;
-  typename UnaryReturn<OScalar<T>, FnLocalNorm2>::Type_t  tmp;
-
-#if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(d, OpAssign(), FnNorm2(), s1[0]);
-  prof.time -= getClockTime();
-#endif
-
-  // Possibly loop entered
-  zero_rep(d.elem());
-
-  const int istart = s.start() >> INNER_LOG;
-  const int iend   = s.end()   >> INNER_LOG;
-
-  for(int n=0; n < s1.size(); ++n)
-  {
-    const OLattice<T>& ss1 = s1[n];
-    for(int i=istart; i <= iend; ++i) 
-    {
-      tmp.elem() = localNorm2(ss1.elem(i)); // Evaluate to ILattice part
-      d.elem() += sum(tmp.elem());    // sum as well the ILattice part
-    }
-  }
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();

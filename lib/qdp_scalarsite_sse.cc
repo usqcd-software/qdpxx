@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.24 2006-09-27 17:26:43 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.25 2007-02-21 22:17:20 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -21,7 +21,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 #if 1
 //-------------------------------------------------------------------
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] = LatticeColorMatrix * LatticeColorMatrix
+//    LatticeColorMatrix[ Subset] = LatticeColorMatrix * LatticeColorMatrix
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpAssign& op, 
@@ -29,7 +29,7 @@ void evaluate(OLattice< TCol >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_eq_M_times_M" << endl;
 
@@ -38,15 +38,17 @@ void evaluate(OLattice< TCol >& d,
   const C& l = static_cast<const C&>(rhs.expression().left());
   const C& r = static_cast<const C&>(rhs.expression().right());
 
-  for(int i=s.start(); i <= s.end(); ++i) 
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j <= s.numSiteTable(); ++j) 
   {
+    int i = tab[j];
     _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
   }
 }
 
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] = adj(LatticeColorMatrix) * LatticeColorMatrix
+//    LatticeColorMatrix[Subset] = adj(LatticeColorMatrix) * LatticeColorMatrix
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpAssign& op, 
@@ -54,7 +56,7 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_eq_aM_times_M" << endl;
 
@@ -63,15 +65,18 @@ void evaluate(OLattice< TCol >& d,
   const C& l = static_cast<const C&>(rhs.expression().left().child());
   const C& r = static_cast<const C&>(rhs.expression().right());
 
-  for(int i=s.start(); i <= s.end(); ++i) 
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j <= s.numSiteTable(); ++j) 
   {
-    _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+    int i = tab[j];
+    _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());   
   }
+
 }
 
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] = LatticeColorMatrix * adj(LatticeColorMatrix)
+//    LatticeColorMatrix[Subset] = LatticeColorMatrix * adj(LatticeColorMatrix)
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpAssign& op, 
@@ -79,7 +84,7 @@ void evaluate(OLattice< TCol >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_eq_M_times_aM" << endl;
 
@@ -87,16 +92,21 @@ void evaluate(OLattice< TCol >& d,
 
   const C& l = static_cast<const C&>(rhs.expression().left());
   const C& r = static_cast<const C&>(rhs.expression().right().child());
-
-  for(int i=s.start(); i <= s.end(); ++i) 
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j <= s.numSiteTable(); ++j) 
   {
+    int i = tab[j];
     _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
   }
+
+
+
+
 }
 
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] = adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
+//    LatticeColorMatrix[Subset] = adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpAssign& op, 
@@ -104,7 +114,7 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_eq_Ma_times_Ma" << endl;
 
@@ -115,8 +125,11 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
+
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j <= s.numSiteTable(); ++j) {
+    int i = tab[j];
+
     _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
 
     // Take the adj(r*l) = adj(l)*adj(r)
@@ -147,7 +160,7 @@ void evaluate(OLattice< TCol >& d,
 //-------------------------------------------------------------------
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] += LatticeColorMatrix * LatticeColorMatrix
+//    LatticeColorMatrix[Subset] += LatticeColorMatrix * LatticeColorMatrix
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpAddAssign& op, 
@@ -155,7 +168,7 @@ void evaluate(OLattice< TCol >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_peq_M_times_M" << endl;
 
@@ -166,8 +179,11 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j <= s.numSiteTable(); ++j) {
+    int i = tab[j];
+
+
     _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
 
     d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
@@ -195,7 +211,7 @@ void evaluate(OLattice< TCol >& d,
 
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] += adj(LatticeColorMatrix) * LatticeColorMatrix
+//    LatticeColorMatrix[Subset] += adj(LatticeColorMatrix) * LatticeColorMatrix
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpAddAssign& op, 
@@ -203,7 +219,7 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_peq_aM_times_M" << endl;
 
@@ -214,8 +230,10 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j <= s.numSiteTable(); ++j) {
+    int i = tab[j];
+
     _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
 
     d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
@@ -243,7 +261,7 @@ void evaluate(OLattice< TCol >& d,
 
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] += LatticeColorMatrix * adj(LatticeColorMatrix)
+//    LatticeColorMatrix[Subset] += LatticeColorMatrix * adj(LatticeColorMatrix)
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpAddAssign& op, 
@@ -251,7 +269,7 @@ void evaluate(OLattice< TCol >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_peq_M_times_aM" << endl;
 
@@ -262,8 +280,10 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j <= s.numSiteTable(); ++j) {
+    int i = tab[j];
+
     _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
 
     d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
@@ -291,7 +311,7 @@ void evaluate(OLattice< TCol >& d,
 
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] += adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
+//    LatticeColorMatrix[Subset] += adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpAddAssign& op, 
@@ -299,7 +319,7 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_peq_Ma_times_Ma" << endl;
 
@@ -310,8 +330,11 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j <= s.numSiteTable(); ++j) {
+    int i = tab[j];
+
+
     _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
 
     // Take the adj(r*l) = adj(l)*adj(r)
@@ -347,33 +370,53 @@ void evaluate(OLattice< TCol >& d,
 	      const QDPExpr<
 	         UnaryNode<OpIdentity, Reference< QDPType< TCol, OLattice< TCol > > > >,
                  OLattice< TCol > >& rhs, 
-	      const OrderedSubset& s) 
+	      const Subset& s) 
 {
   typedef OLattice<TCol> C;
   const C& l = static_cast<const C&>(rhs.expression().child());
-  const int start = s.start();
-  const int end = s.end();
 
-  REAL* d_ptr =&(d.elem(start).elem().elem(0,0).real());
-  const REAL* r_ptr =&(l.elem(start).elem().elem(0,0).real());
+
+  if( s.hasOrderedRep() ) {
+
+    const int start = s.start();
+    const int end = s.end();
+
+    REAL* d_ptr =&(d.elem(start).elem().elem(0,0).real());
+    const REAL* r_ptr =&(l.elem(start).elem().elem(0,0).real());
   
-  const unsigned int total_reals = (end-start+1)*3*3*2;
-  const unsigned int total_v4sf = total_reals/4;
-  const unsigned int remainder = total_reals%4;
+    const unsigned int total_reals = (end-start+1)*3*3*2;
+    const unsigned int total_v4sf = total_reals/4;
+    const unsigned int remainder = total_reals%4;
   
-  float* d_ptr_v4sf = (float *)d_ptr;
-  float* r_ptr_v4sf = (float *)r_ptr;
+    float* d_ptr_v4sf = (float *)d_ptr;
+    float* r_ptr_v4sf = (float *)r_ptr;
 
   
-  for(unsigned int i = 0 ; i < total_v4sf; i++, d_ptr_v4sf +=4, r_ptr_v4sf+=4 ) { 
-    _mm_store_ps( d_ptr_v4sf, _mm_load_ps(r_ptr_v4sf));
+    for(unsigned int i = 0 ; i < total_v4sf; i++, d_ptr_v4sf +=4, r_ptr_v4sf+=4 ) { 
+      _mm_store_ps( d_ptr_v4sf, _mm_load_ps(r_ptr_v4sf));
+    }
+  
+    
+    r_ptr = (REAL *)r_ptr_v4sf;
+    d_ptr = (REAL *)d_ptr_v4sf;
+    for(unsigned int i=0; i < remainder; i++, r_ptr++, d_ptr++) { 
+      *d_ptr = *r_ptr;
+    }
   }
-  
+  else {
+    // Unordered case 
+    const int* tab = s.siteTable().slice();
+    
+    // Loop through the sites
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
 
-   r_ptr = (REAL *)r_ptr_v4sf;
-   d_ptr = (REAL *)d_ptr_v4sf;
-  for(unsigned int i=0; i < remainder; i++, r_ptr++, d_ptr++) { 
-    *d_ptr = *r_ptr;
+      // Do the copy in the dumb way -- this could become quite complex
+      // Depending on whether the individual matrices are aligned or not.
+      d.site(i).elem() = l.site(i).elem();
+
+    }
+
   }
 }
 
@@ -386,34 +429,52 @@ void evaluate(OLattice< TCol >& d,
 	      const QDPExpr<
 	         UnaryNode<OpIdentity, Reference< QDPType< TCol, OLattice< TCol > > > >,
                  OLattice< TCol > >& rhs, 
-	      const OrderedSubset& s) 
+	      const Subset& s) 
 {
   typedef OLattice<TCol> C;
   const C& l = static_cast<const C&>(rhs.expression().child());
-  const int start = s.start();
-  const int end = s.end();
 
-  REAL* d_ptr =&(d.elem(start).elem().elem(0,0).real());
-  const REAL* r_ptr =&(l.elem(start).elem().elem(0,0).real());
-  
-  const unsigned int total_reals = (end-start+1)*3*3*2;
-  const unsigned int total_v4sf = total_reals/4;
-  const unsigned int remainder = total_reals%4;
-  
-  float* d_ptr_v4sf = (float *)d_ptr;
-  float* r_ptr_v4sf = (float *)r_ptr;
+  if( s.hasOrderedRep() ) { 
+    const int start = s.start();
+    const int end = s.end();
 
-  
-  for(unsigned int i = 0 ; i < total_v4sf; i++, d_ptr_v4sf +=4, r_ptr_v4sf+=4 ) { 
-    _mm_store_ps( d_ptr_v4sf, _mm_add_ps( _mm_load_ps(d_ptr_v4sf), 
-					  _mm_load_ps(r_ptr_v4sf) ) );
+    REAL* d_ptr =&(d.elem(start).elem().elem(0,0).real());
+    const REAL* r_ptr =&(l.elem(start).elem().elem(0,0).real());
+    
+    const unsigned int total_reals = (end-start+1)*3*3*2;
+    const unsigned int total_v4sf = total_reals/4;
+    const unsigned int remainder = total_reals%4;
+    
+    float* d_ptr_v4sf = (float *)d_ptr;
+    float* r_ptr_v4sf = (float *)r_ptr;
+    
+    
+    for(unsigned int i = 0 ; i < total_v4sf; i++, d_ptr_v4sf +=4, r_ptr_v4sf+=4 ) { 
+      _mm_store_ps( d_ptr_v4sf, _mm_add_ps( _mm_load_ps(d_ptr_v4sf), 
+					    _mm_load_ps(r_ptr_v4sf) ) );
+    }
+    
+    
+    r_ptr = (REAL *)r_ptr_v4sf;
+    d_ptr = (REAL *)d_ptr_v4sf;
+    for(unsigned int i=0; i < remainder; i++, r_ptr++, d_ptr++) { 
+      *d_ptr += *r_ptr;
+    }
   }
-  
+  else {
+    // Unordered case 
+    const int* tab = s.siteTable().slice();
+    
+    // Loop through the sites
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
 
-   r_ptr = (REAL *)r_ptr_v4sf;
-   d_ptr = (REAL *)d_ptr_v4sf;
-  for(unsigned int i=0; i < remainder; i++, r_ptr++, d_ptr++) { 
-    *d_ptr += *r_ptr;
+      // Do the copy in the dumb way -- this could become quite complex
+      // Depending on whether the individual matrices are aligned or not.
+      d.site(i).elem() += l.site(i).elem();
+
+    }
+
   }
 }
 
@@ -426,39 +487,56 @@ void evaluate(OLattice< TCol >& d,
 	      const QDPExpr<
 	         UnaryNode<OpIdentity, Reference< QDPType< TCol, OLattice< TCol > > > >,
                  OLattice< TCol > >& rhs, 
-	      const OrderedSubset& s) 
+	      const Subset& s) 
 {
   typedef OLattice<TCol> C;
   const C& l = static_cast<const C&>(rhs.expression().child());
-  const int start = s.start();
-  const int end = s.end();
-
-  REAL* d_ptr =&(d.elem(start).elem().elem(0,0).real());
-  const REAL* r_ptr =&(l.elem(start).elem().elem(0,0).real());
-  
-  const unsigned int total_reals = (end-start+1)*3*3*2;
-  const unsigned int total_v4sf = total_reals/4;
-  const unsigned int remainder = total_reals%4;
-  
-  float* d_ptr_v4sf = (float *)d_ptr;
-  float* r_ptr_v4sf = (float *)r_ptr;
-
-  
-  for(unsigned int i = 0 ; i < total_v4sf; i++, d_ptr_v4sf +=4, r_ptr_v4sf+=4 ) { 
-    _mm_store_ps( d_ptr_v4sf, _mm_sub_ps( _mm_load_ps( d_ptr_v4sf), 
-					  _mm_load_ps( r_ptr_v4sf) ) );
+  if (s.hasOrderedRep()) { 
+    const int start = s.start();
+    const int end = s.end();
+    
+    REAL* d_ptr =&(d.elem(start).elem().elem(0,0).real());
+    const REAL* r_ptr =&(l.elem(start).elem().elem(0,0).real());
+    
+    const unsigned int total_reals = (end-start+1)*3*3*2;
+    const unsigned int total_v4sf = total_reals/4;
+    const unsigned int remainder = total_reals%4;
+    
+    float* d_ptr_v4sf = (float *)d_ptr;
+    float* r_ptr_v4sf = (float *)r_ptr;
+    
+    
+    for(unsigned int i = 0 ; i < total_v4sf; i++, d_ptr_v4sf +=4, r_ptr_v4sf+=4 ) { 
+      _mm_store_ps( d_ptr_v4sf, _mm_sub_ps( _mm_load_ps( d_ptr_v4sf), 
+					    _mm_load_ps( r_ptr_v4sf) ) );
+    }
+    
+    
+    r_ptr = (REAL *)r_ptr_v4sf;
+    d_ptr = (REAL *)d_ptr_v4sf;
+    for(unsigned int i=0; i < remainder; i++, r_ptr++, d_ptr++) { 
+      *d_ptr -= *r_ptr;
+    }
   }
-  
+  else {   
+    // Unordered case 
+    const int* tab = s.siteTable().slice();
+    
+    // Loop through the sites
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
 
-   r_ptr = (REAL *)r_ptr_v4sf;
-   d_ptr = (REAL *)d_ptr_v4sf;
-  for(unsigned int i=0; i < remainder; i++, r_ptr++, d_ptr++) { 
-    *d_ptr -= *r_ptr;
+      // Do the copy in the dumb way -- this could become quite complex
+      // Depending on whether the individual matrices are aligned or not.
+      d.site(i).elem() -= l.site(i).elem();
+
+    }
+
   }
 }
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] -= LatticeColorMatrix * LatticeColorMatrix
+//    LatticeColorMatrix[Subset] -= LatticeColorMatrix * LatticeColorMatrix
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpSubtractAssign& op, 
@@ -466,7 +544,7 @@ void evaluate(OLattice< TCol >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_meq_M_times_M" << endl;
 
@@ -477,8 +555,10 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int i=tab[j];
+
     _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
 
     d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
@@ -506,7 +586,7 @@ void evaluate(OLattice< TCol >& d,
 
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] -= adj(LatticeColorMatrix) * LatticeColorMatrix
+//    LatticeColorMatrix[Subset] -= adj(LatticeColorMatrix) * LatticeColorMatrix
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpSubtractAssign& op, 
@@ -514,7 +594,7 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_meq_aM_times_M" << endl;
 
@@ -525,8 +605,10 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int i=tab[j];
+
     _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
 
     d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
@@ -554,7 +636,7 @@ void evaluate(OLattice< TCol >& d,
 
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] -= LatticeColorMatrix * adj(LatticeColorMatrix)
+//    LatticeColorMatrix[Subset] -= LatticeColorMatrix * adj(LatticeColorMatrix)
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpSubtractAssign& op, 
@@ -562,7 +644,7 @@ void evaluate(OLattice< TCol >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_meq_M_times_aM" << endl;
 
@@ -573,8 +655,11 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int i=tab[j];
+
+
     _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
 
     d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
@@ -602,7 +687,7 @@ void evaluate(OLattice< TCol >& d,
 
 
 // Specialization to optimize the case   
-//    LatticeColorMatrix[OrderedSubset] -= adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
+//    LatticeColorMatrix[Subset] -= adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpSubtractAssign& op, 
@@ -610,7 +695,7 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 //  cout << "call single site QDP_M_meq_Ma_times_Ma" << endl;
 
@@ -621,8 +706,10 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int i=tab[j];
+
     _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
 
     // Take the adj(r*l) = adj(l)*adj(r)
@@ -662,7 +749,7 @@ void evaluate(OLattice< TVec2 >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    Reference<QDPType< TVec2, OLattice< TVec2 > > > >,
 	                    OLattice< TVec2 > >& rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "specialized QDP_H_M_times_H" << endl;
@@ -674,8 +761,10 @@ void evaluate(OLattice< TVec2 >& d,
   const C& l = static_cast<const C&>(rhs.expression().left());
   const H& r = static_cast<const H&>(rhs.expression().right());
 
-  for(int i=s.start(); i <= s.end(); ++i) 
-  {
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); j++) { 
+    int i=tab[j];
+
 #if 0
     // This form appears significantly slower than below
     _inline_sse_mult_su3_mat_hwvec(l.elem(i),

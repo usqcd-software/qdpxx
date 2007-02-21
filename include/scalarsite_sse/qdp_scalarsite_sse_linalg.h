@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.11 2007-02-09 20:35:46 bjoo Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.12 2007-02-21 22:17:20 bjoo Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -578,7 +578,7 @@ void evaluate(OLattice< TCol >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix = adj(LatticeColorMatrix) * LatticeColorMatrix
@@ -589,7 +589,7 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix = LatticeColorMatrix * adj(LatticeColorMatrix)
@@ -600,7 +600,7 @@ void evaluate(OLattice< TCol >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix = adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
@@ -611,7 +611,7 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 //-------------------------------------------------------------------
 // Specialization to optimize the case   
@@ -623,7 +623,7 @@ void evaluate(OLattice< TCol >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix += adj(LatticeColorMatrix) * LatticeColorMatrix
@@ -634,7 +634,7 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix += LatticeColorMatrix * adj(LatticeColorMatrix)
@@ -645,7 +645,7 @@ void evaluate(OLattice< TCol >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix += adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
@@ -656,7 +656,7 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 //-------------------------------------------------------------------
 // Specialization to optimize the case   
@@ -668,7 +668,7 @@ void evaluate(OLattice< TCol >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix -= adj(LatticeColorMatrix) * LatticeColorMatrix
@@ -679,7 +679,7 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >, 
 	                    Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix -= LatticeColorMatrix * adj(LatticeColorMatrix)
@@ -690,7 +690,7 @@ void evaluate(OLattice< TCol >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix -= adj(LatticeColorMatrix) * adj(LatticeColorMatrix)
@@ -701,7 +701,7 @@ void evaluate(OLattice< TCol >& d,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > >,
 	                    UnaryNode<OpIdentity, Reference<QDPType< TCol, OLattice< TCol > > > > >,
 	                    OLattice< TCol > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 
 
@@ -713,7 +713,7 @@ void evaluate(OLattice< TCol >& d,
 	      const QDPExpr<
 	         UnaryNode<OpIdentity, Reference< QDPType< TCol, OLattice< TCol > > > >,
                  OLattice< TCol > >& rhs, 
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 
 //-------------------------------------------------------------------
@@ -725,7 +725,7 @@ void evaluate(OLattice< TCol >& d,
 	      const QDPExpr<
 	         UnaryNode<OpIdentity, Reference< QDPType< TCol, OLattice< TCol > > > >,
                  OLattice< TCol > >& rhs, 
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 //-------------------------------------------------------------------
 // Specialization to optimize the case
@@ -736,7 +736,7 @@ void evaluate(OLattice< TCol >& d,
 	      const QDPExpr<
 	         UnaryNode<OpIdentity, Reference< QDPType< TCol, OLattice< TCol > > > >,
                  OLattice< TCol > >& rhs, 
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 //-------------------------------------------------------------------
 
@@ -750,7 +750,7 @@ void evaluate(OLattice< TVec2 >& d,
 	                    Reference<QDPType< TCol, OLattice< TCol > > >, 
 	                    Reference<QDPType< TVec2, OLattice< TVec2 > > > >,
 	                    OLattice< TVec2 > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 
 #endif
 

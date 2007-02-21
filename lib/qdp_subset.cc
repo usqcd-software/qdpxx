@@ -1,4 +1,4 @@
-// $Id: qdp_subset.cc,v 1.7 2007-02-16 22:22:21 bjoo Exp $
+// $Id: qdp_subset.cc,v 1.8 2007-02-21 22:17:20 bjoo Exp $
 //
 // QDP data parallel interface
 //
@@ -10,48 +10,26 @@
 QDP_BEGIN_NAMESPACE(QDP);
 
 //! Default all set
-OrderedSet set_all;
+Set set_all;
 
 //! Default all subset
-OrderedSubset all;
+Subset all;
 
 //! Default rb3 subset -- Always unordered
-UnorderedSet rb3;
+Set rb3;
 
-#if QDP_USE_CB2_LAYOUT == 1
 //! Default 2-checkerboard (red/black) set
-OrderedSet rb;
-#else
-//! Default 2-checkerboard (red/black) set
-UnorderedSet rb;
-#endif
+Set rb;
 
-
-#if QDP_USE_CB32_LAYOUT == 1
 //! Default 2^{Nd+1}-checkerboard set. Useful for pure gauge updating.
-OrderedSet mcb;
-#else
-//! Default 2^{Nd+1}-checkerboard set. Useful for pure gauge updating.
-UnorderedSet mcb;
-#endif
+Set mcb;
 
-
-#if QDP_USE_CB2_LAYOUT == 1
 //! Even subset
-OrderedSubset even;
-#else
-//! Even subset
-UnorderedSubset even;
-#endif
+Subset even;
 
+//! Odd subset
+Subset odd;
 
-#if QDP_USE_CB2_LAYOUT == 1
-//! Odd subset
-OrderedSubset odd;
-#else
-//! Odd subset
-UnorderedSubset odd;
-#endif
 
 //! Function object used for constructing the all subset
 class SetAllFunc : public SetFunc
@@ -149,7 +127,7 @@ void initDefaultSets()
 	  
 
 //! Simple constructor called to produce a Subset from inside a Set
-void UnorderedSubset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb)
+void Subset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb)
 {
   ordRep    = _rep;
   startSite = _start;
@@ -159,7 +137,7 @@ void UnorderedSubset::make(bool _rep, int _start, int _end, multi1d<int>* ind, i
 }
 
 //! Simple constructor called to produce a Subset from inside a Set
-void UnorderedSubset::make(const UnorderedSubset& s)
+void Subset::make(const Subset& s)
 {
   ordRep    = s.ordRep;
   startSite = s.startSite;
@@ -169,49 +147,16 @@ void UnorderedSubset::make(const UnorderedSubset& s)
 }
 
 //! Simple constructor called to produce a Subset from inside a Set
-UnorderedSubset& UnorderedSubset::operator=(const UnorderedSubset& s)
-{
-  make(s);
-  return *this;
-}
-
-//! Simple constructor called to produce a Subset from inside a Set
-void OrderedSubset::make(int _start, int _end, multi1d<int>* _ind, int _cb)
-{
-  startSite = _start;
-  endSite   = _end;
-  sitetable = _ind;
-  sub_index = _cb;
-}
-
-//! Simple constructor called to produce a Subset from inside a Set
-void OrderedSubset::make(const OrderedSubset& s)
-{
-  sub_index = s.sub_index;
-  startSite = s.startSite;
-  endSite   = s.endSite;
-  sitetable = s.sitetable;
-}
-
-// = operator
-OrderedSubset& OrderedSubset::operator=(const OrderedSubset& s)
+Subset& Subset::operator=(const Subset& s)
 {
   make(s);
   return *this;
 }
 
 
-// = operator
-UnorderedSet& UnorderedSet::operator=(const UnorderedSet& s)
-{
-  sub = s.sub;
-  lat_color = s.lat_color;
-  sitetables = s.sitetables;
-  return *this;
-}
 
 // = operator
-OrderedSet& OrderedSet::operator=(const OrderedSet& s)
+Set& Set::operator=(const Set& s)
 {
   sub = s.sub;
   lat_color = s.lat_color;

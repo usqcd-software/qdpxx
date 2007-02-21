@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.6 2005-12-21 16:04:25 bjoo Exp $
+// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.7 2007-02-21 22:17:20 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -311,7 +311,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	      Reference<QDPType<PScalar<PColorMatrix<RComplexFloat, 3> >, 
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > > > >,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
-	      const OrderedSubset& s);
+	      const Subset& s);
 #endif
 
 
