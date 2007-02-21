@@ -1,3 +1,5 @@
+2007-02-16 17:22  tag qdp_pre_subset_cleanup
+
 2007-02-16 17:22  bjoo
 
 	* NEWS, aclocal.m4, configure, configure.ac, include/qdp_subset.h,
