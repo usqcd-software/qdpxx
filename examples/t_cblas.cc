@@ -1,4 +1,4 @@
-// $Id: t_cblas.cc,v 1.3 2007-02-22 03:30:27 bjoo Exp $
+// $Id: t_cblas.cc,v 1.4 2007-02-22 15:58:30 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
   Complex alpha=cmplx(Real(1), Real(-2));
   Complex beta =cmplx(Real(-2), Real(-2.1));
 
-  
+  gaussian(x);
   // Do z1 = alpha x with an axpy
   z2 = zero;
   z1 = alpha*x + z2;

@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.20 2007-02-22 03:30:27 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.21 2007-02-22 15:58:30 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1675,7 +1675,22 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     return gsum;
   }
   else {
-   return sum(localNorm2(s1),s);
+
+    // Has Type OScalar< PScalar < PScalar < RScalar < REAL > > > >
+    DOUBLE lsum =(DOUBLE)0;
+    DOUBLE ltmp =(DOUBLE)0;
+
+    const int* tab=s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL* s1ptr = (REAL *)&(s1.elem(i).elem(0).elem(0).real());
+      local_sumsq(&ltmp,s1ptr,Ns); 
+      lsum +=ltmp;
+    }
+
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  gsum(lsum);
+    Internal::globalSum(gsum);
+    return gsum;
   }
 }
 
@@ -1746,6 +1761,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 	     const QDPType< TVec, OLattice<TVec> > &v2, 
 	     const Subset& s)
 {
+  
   if( s.hasOrderedRep() ) {
 #ifdef DEBUG_BLAS
     QDPIO::cout << "BJ: innerProduct s" << endl;
@@ -1774,7 +1790,34 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
     return lprod;
   }
   else {
-    return sum(localInnerProduct(v1, v2),s);
+
+    BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
+    DOUBLE ip[2], ip_tmp[2];
+    ip[0] = 0;
+    ip[1] = 0;
+
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+
+      int i=tab[j];
+      
+      local_vcdot(&(ip_tmp[0]), &(ip_tmp[1]),
+		  (REAL *)&(v1.elem(i).elem(0).elem(0).real()),
+		  (REAL *)&(v2.elem(i).elem(0).elem(0).real()),
+		  Ns);
+      
+      ip[0] += ip_tmp[0];
+      ip[1] += ip_tmp[1];
+    }
+
+    Internal::globalSumArray(ip,2);
+
+    lprod.elem().elem().elem().real() = ip[0];
+    lprod.elem().elem().elem().imag() = ip[1];
+    
+
+    return lprod;
+
   }
 }
 
@@ -1849,9 +1892,27 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
     return lprod;
   }
   else {
-    // Do localInnerProduct
-    // then sum
-    return sum(localInnerProductReal(v1, v2),s);
+
+
+    BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
+    DOUBLE ip_re=0, ip_re_tmp;
+
+
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+
+      int i=tab[j];
+      
+      local_vcdot_real(&ip_re_tmp,
+		  (REAL *)&(v1.elem(i).elem(0).elem(0).real()),
+		  (REAL *)&(v2.elem(i).elem(0).elem(0).real()),
+		  Ns);
+      
+      ip_re += ip_re_tmp;
+    }
+    Internal::globalSum(ip_re);
+    lprod.elem().elem().elem().elem() = ip_re;
+    return lprod;
   }
 }
 

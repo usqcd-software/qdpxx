@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.14 2007-02-21 22:17:20 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.15 2007-02-22 15:58:31 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -80,7 +80,7 @@ void evaluate(OLattice< TVec >& d,
       REAL32* xptr = (REAL32 *)&(x.elem(i).elem(0).elem(0).real());
       REAL32* yptr = &(d.elem(i).elem(0).elem(0).real());
     
-      vaxpy3(yptr, aptr, xptr, yptr, 1);
+      vaxpy3(yptr, aptr, xptr, yptr, 24);
     }
   }
 
@@ -123,7 +123,7 @@ void evaluate(OLattice< TVec >& d,
 
       REAL32* xptr = (REAL32 *)&(x.elem(i).elem(0).elem(0).real());
       REAL32* yptr = &(d.elem(i).elem(0).elem(0).real());
-      vaxpy3(yptr, aptr, xptr, yptr, 1);
+      vaxpy3(yptr, aptr, xptr, yptr, 24);
    
     }
   }
@@ -186,7 +186,7 @@ void evaluate( OLattice< TVec > &d,
       REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
 
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-      vaxpy3(zptr, aptr, xptr, yptr, 1);
+      vaxpy3(zptr, aptr, xptr, yptr, 24);
    
     }
   }
@@ -249,7 +249,7 @@ void evaluate( OLattice< TVec > &d,
     REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    vaxpy3(zptr, aptr, xptr, yptr, 1);
+    vaxpy3(zptr, aptr, xptr, yptr, 24);
 
    
     }
@@ -313,7 +313,7 @@ void evaluate( OLattice< TVec > &d,
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       
-      vaxmy3(zptr, aptr, xptr, yptr,1);
+      vaxmy3(zptr, aptr, xptr, yptr,24);
     }
   }
 }
@@ -370,7 +370,7 @@ void evaluate( OLattice< TVec > &d,
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
       REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      vaxpy3(zptr, aptr, xptr, yptr, 1);
+      vaxpy3(zptr, aptr, xptr, yptr, 24);
     }
   }
 }
@@ -411,7 +411,7 @@ void evaluate(OLattice< TVec >& d,
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
-      vaxpy3(yptr, aptr, xptr, yptr,1);   
+      vaxpy3(yptr, aptr, xptr, yptr,24);   
     }
   }
 
@@ -455,7 +455,7 @@ void evaluate(OLattice< TVec >& d,
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
    
-      vaxpy3(yptr, aptr, xptr, yptr, 1);
+      vaxpy3(yptr, aptr, xptr, yptr, 24);
     }
   }
 	
@@ -516,7 +516,7 @@ void evaluate( OLattice< TVec > &d,
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
       REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      vaxpy3(zptr, aptr, xptr, yptr, 1);
+      vaxpy3(zptr, aptr, xptr, yptr, 24);
     }
   }
 }
@@ -578,7 +578,7 @@ void evaluate( OLattice< TVec > &d,
     REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    vaxpy3(zptr, aptr, xptr, yptr, 1);
+    vaxpy3(zptr, aptr, xptr, yptr, 24);
     }
   }
 }
@@ -638,7 +638,7 @@ void evaluate( OLattice< TVec > &d,
     
     
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-      vaxmy3(zptr, aptr, xptr, yptr, 1);
+      vaxmy3(zptr, aptr, xptr, yptr, 24);
     }
   }
 }
@@ -697,7 +697,7 @@ void evaluate( OLattice< TVec > &d,
       REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-      vaxpy3(zptr, aptr, xptr, yptr, 1);
+      vaxpy3(zptr, aptr, xptr, yptr, 24);
     }
   }
 }
@@ -741,7 +741,7 @@ void evaluate( OLattice< TVec > &d,
       
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-      vadd(zptr, xptr, yptr, 1);
+      vadd(zptr, xptr, yptr, 24);
     }
   }
 }
@@ -784,7 +784,7 @@ void evaluate( OLattice< TVec > &d,
       
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-      vsub(zptr, xptr, yptr, 1);
+      vsub(zptr, xptr, yptr, 24);
     }
   }
 }
@@ -823,7 +823,7 @@ void evaluate( OLattice< TVec > &d,
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *zptr =  &(d.elem(i).elem(0).elem(0).real());
       
-      vscal(zptr, aptr, xptr, 1);
+      vscal(zptr, aptr, xptr, 24);
     }
   }
 }
@@ -862,7 +862,7 @@ void evaluate( OLattice< TVec > &d,
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *zptr =  &(d.elem(i).elem(0).elem(0).real());
       
-      vscal(zptr, aptr, xptr, 1);
+      vscal(zptr, aptr, xptr, 24);
     }
   }
 }
@@ -901,7 +901,7 @@ void evaluate( OLattice< TVec > &d,
       REAL* xptr = &(d.elem(i).elem(0).elem(0).real());
       REAL* zptr = xptr;
       
-      vscal(zptr, aptr, xptr, 1);
+      vscal(zptr, aptr, xptr, 24);
     }
   }
 }
@@ -938,7 +938,7 @@ void evaluate( OLattice< TVec > &d,
       REAL* xptr = &(d.elem(i).elem(0).elem(0).real());
       REAL* zptr = xptr;
       
-      vscal(zptr,&ar, xptr, 1);
+      vscal(zptr,&ar, xptr, 24);
     }
   }
 }
@@ -974,7 +974,7 @@ void evaluate( OLattice< TVec > &d,
       int i = tab[j];
       REAL *xptr = (REAL *)(&x.elem(i).elem(0).elem(0).real());
       REAL *yptr = (REAL *)(&d.elem(i).elem(0).elem(0).real());
-      vadd(yptr, yptr, xptr,1);
+      vadd(yptr, yptr, xptr,24);
     }
   }
 }
@@ -1011,7 +1011,7 @@ void evaluate( OLattice< TVec > &d,
       REAL *xptr = (REAL *)(&x.elem(i).elem(0).elem(0).real());
       REAL *yptr = (REAL *)(&d.elem(i).elem(0).elem(0).real());
       
-      vsub(yptr, yptr, xptr, 1);
+      vsub(yptr, yptr, xptr, 24);
     }
   }
 }
@@ -1080,7 +1080,7 @@ void evaluate( OLattice< TVec > &d,
       REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       
-      vaxpby3(zptr, aptr, xptr, bptr, yptr, 1);
+      vaxpby3(zptr, aptr, xptr, bptr, yptr, 24);
     }
   }
 }
@@ -1157,7 +1157,7 @@ void evaluate( OLattice< TVec > &d,
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
     
     
-      vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+      vaxpby3(zptr, aptr, xptr, bptr, yptr, 24);
     }
   }
 }
@@ -1240,7 +1240,7 @@ void evaluate( OLattice< TVec > &d,
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
 
 
-      vaxpby3(zptr, aptr, xptr, bptr, yptr, 1);
+      vaxpby3(zptr, aptr, xptr, bptr, yptr, 24);
     }
   }
 }
@@ -1310,7 +1310,7 @@ void evaluate( OLattice< TVec > &d,
       
       
       // Get the no of 3vecs. i and s.end() are inclusive so add +1
-      vaxpby3(zptr, aptr, xptr, bptr, yptr, 1);
+      vaxpby3(zptr, aptr, xptr, bptr, yptr, 24);
     }
   }
 }
@@ -1380,7 +1380,7 @@ void evaluate( OLattice< TVec > &d,
       
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-      vaxmby3(zptr, aptr, xptr, bptr, yptr, 1);
+      vaxmby3(zptr, aptr, xptr, bptr, yptr, 24);
 
     }
   }
@@ -1459,7 +1459,7 @@ void evaluate( OLattice< TVec > &d,
       
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-      vaxmby3(zptr, aptr, xptr, bptr, yptr, 1);
+      vaxmby3(zptr, aptr, xptr, bptr, yptr, 24);
     }
   }
 }
@@ -1542,7 +1542,7 @@ void evaluate( OLattice< TVec > &d,
       
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-      vaxmby3(zptr, aptr, xptr, bptr, yptr, 1);
+      vaxmby3(zptr, aptr, xptr, bptr, yptr, 24);
     }
   }
 }
@@ -1612,7 +1612,7 @@ void evaluate( OLattice< TVec > &d,
       
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-      vaxmby3(zptr, aptr, xptr, bptr, yptr, 1);
+      vaxmby3(zptr, aptr, xptr, bptr, yptr, 24);
     }
   }
 }
@@ -1652,7 +1652,21 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     return lsum;
   }
   else {
-   return sum(localNorm2(s1),s);
+    REAL64 ltmp1=0;
+    REAL64 ltmp2=0;
+
+    const int* tab=s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      REAL32* s1ptr = (REAL32 *)&(s1.elem(i).elem(0).elem(0).real()); 
+      local_sumsq(&ltmp2, s1ptr, 24);
+      ltmp1 += ltmp2;
+    }
+
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp1);
+    Internal::globalSum(lsum);
+    return lsum;
+    
   }
 }
 
@@ -1721,6 +1735,9 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 	     const QDPType< TVec, OLattice<TVec> > &v2, 
 	     const Subset& s)
 {
+
+  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
+
   if( s.hasOrderedRep() ) {
 #ifdef DEBUG_BLAS
     QDPIO::cout << "BJ: innerProduct s" << endl;
@@ -1728,7 +1745,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 
     // This BinaryReturn has Type_t
     // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
-    BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
+
     DOUBLE ip[2];
     ip[0] = 0;
     ip[1] = 0;
@@ -1739,18 +1756,36 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 		(REAL *)&(v2.elem(s.start()).elem(0).elem(0).real()),
 		n_3vec);
 
-
-    Internal::globalSumArray(ip,2);
-
-    lprod.elem().elem().elem().real() = ip[0];
-    lprod.elem().elem().elem().imag() = ip[1];
     
-
-    return lprod;
   }
   else {
-    return sum(localInnerProduct(v1, v2),s);
+    // This BinaryReturn has Type_t
+    // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
+
+    DOUBLE ip[2],ip_tmp[2];
+    ip[0] = 0;
+    ip[1] = 0;
+
+    const int* tab = s.siteTable();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+
+      local_vcdot(&(ip_tmp[0]), &(ip_tmp[1]),
+		  (REAL *)&(v1.elem(i).elem(0).elem(0).real()),
+		  (REAL *)&(v2.elem(i).elem(0).elem(0).real()),
+		  Ns);
+      
+      ip[0] += ip_tmp[0];
+      ip[1] += ip_tmp[1];
+    }
   }
+
+  Internal::globalSumArray(ip,2);
+  
+  lprod.elem().elem().elem().real() = ip[0];
+  lprod.elem().elem().elem().imag() = ip[1];
+
+  return lprod;
 }
 
 
@@ -1801,6 +1836,9 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 		 const QDPType< TVec, OLattice<TVec> > &v2, 
 		 const Subset& s)
 {
+  
+  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
+
   if( s.hasOrderedRep() ) {
 #ifdef DEBUG_BLAS
     QDPIO::cout << "BJ: innerProductReal s" << endl;
@@ -1808,7 +1846,7 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 
     // This BinaryReturn has Type_t
     // OScalar<OScalar<OScalar<RScalar<PScalar<REAL> > > > >
-    BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
+
     DOUBLE ip_re=0;
 
     unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
@@ -1817,17 +1855,32 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 		     (REAL *)&(v2.elem(s.start()).elem(0).elem(0).real()),
 		     n_3vec);
 
-    Internal::globalSum(ip_re);
-    lprod.elem().elem().elem().elem() = ip_re;
 
 
-    return lprod;
+
   }
   else {
-    // Do localInnerProduct
-    // then sum
-    return sum(localInnerProductReal(v1, v2),s);
+    DOUBLE ip_re=0;
+    DOUBLE ip_re_tmp=0;
+    const int* tab = s.siteTable();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+
+      local_vcdot_real(&ip_re_tmp,
+		       (REAL *)&(v1.elem(i).elem(0).elem(0).real()),
+		       (REAL *)&(v2.elem(i).elem(0).elem(0).real()),
+		       Ns);
+
+      ip_re += ip_re_tmp;
+
+    }
+
+
   }
+
+  Internal::globalSum(ip_re);
+  lprod.elem().elem().elem().elem() = ip_re;
+  return lprod;
 }
 
 

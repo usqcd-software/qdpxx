@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.19 2007-02-22 03:30:27 bjoo Exp $
+// $Id: t_blas.cc,v 1.20 2007-02-22 15:58:30 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -778,16 +778,22 @@ int main(int argc, char *argv[])
   QDPIO::cout << "Diff innerProduct = " << diff << endl;
 
   accum = cmplx(Double(0), Double(0));
-  for(int site=(rb[1]).start(); site <= (rb[1]).end(); site++) { 
-    for(int spin = 0; spin < Ns; spin++) { 
-      for(int col = 0; col < Nc; col++) {
-	RComplex<REAL> rca= conj(qy.elem(site).elem(spin).elem(col));
-	RComplex<REAL> rcb= qx.elem(site).elem(spin).elem(col);
 
-	DComplex ca=cmplx(Double(rca.real()), Double(rca.imag()));
-	DComplex cb=cmplx(Double(rcb.real()), Double(rcb.imag()));
-
-	accum += ca*cb;
+  {
+    const int* tab=rb[1].siteTable().slice();
+    for(int j=0; j < rb[1].numSiteTable(); j++) { 
+      int site = tab[j];
+      
+      for(int spin = 0; spin < Ns; spin++) { 
+	for(int col = 0; col < Nc; col++) {
+	  RComplex<REAL> rca= conj(qy.elem(site).elem(spin).elem(col));
+	  RComplex<REAL> rcb= qx.elem(site).elem(spin).elem(col);
+	  
+	  DComplex ca=cmplx(Double(rca.real()), Double(rca.imag()));
+	  DComplex cb=cmplx(Double(rcb.real()), Double(rcb.imag()));
+	  
+	  accum += ca*cb;
+	}
       }
     }
   }
@@ -819,17 +825,22 @@ int main(int argc, char *argv[])
   QDPIO::cout << "Diff innerProductReal all = " << drdiff << endl;
 
   daccum = Double(0);
-  for(int site=(rb[1]).start(); site <= (rb[1]).end(); site++) { 
-    for(int spin = 0; spin < Ns; spin++) { 
-      for(int col = 0; col < Nc; col++) {
-	RComplex<REAL> rca= conj(qy.elem(site).elem(spin).elem(col));
-	RComplex<REAL> rcb= qx.elem(site).elem(spin).elem(col);
-
-	DComplex ca=cmplx(Double(rca.real()), Double(rca.imag()));
-	DComplex cb=cmplx(Double(rcb.real()), Double(rcb.imag()));
-
-	DComplex dctmp = ca*cb;
-	daccum += Double(dctmp.elem().elem().elem().real());
+  {
+    const int* tab=rb[1].siteTable().slice();
+    for(int j=0; j < rb[1].numSiteTable(); j++) { 
+      int site = tab[j];
+      
+      for(int spin = 0; spin < Ns; spin++) { 
+	for(int col = 0; col < Nc; col++) {
+	  RComplex<REAL> rca= conj(qy.elem(site).elem(spin).elem(col));
+	  RComplex<REAL> rcb= qx.elem(site).elem(spin).elem(col);
+	  
+	  DComplex ca=cmplx(Double(rca.real()), Double(rca.imag()));
+	  DComplex cb=cmplx(Double(rcb.real()), Double(rcb.imag()));
+	  
+	  DComplex dctmp = ca*cb;
+	  daccum += Double(dctmp.elem().elem().elem().real());
+	}
       }
     }
   }
