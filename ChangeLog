@@ -1,3 +1,14 @@
+2007-02-21 22:30  bjoo
+
+	* examples/t_blas.cc, examples/t_blas_g5_3.cc, examples/t_cblas.cc,
+	  examples/t_spinproj.cc, include/qdp_outersubtype.h,
+	  include/scalarsite_generic/qdp_generic_spin_project_evaluates.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas_g5.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_cblas.h,
+	  lib/qdp_scalarsite_sse.cc: Added changes to make the scalar
+	  normal and scalar sse targets compile
+
 2007-02-21 17:17  bjoo
 
 	* include/qdp_outer.h, include/qdp_outersubtype.h,
