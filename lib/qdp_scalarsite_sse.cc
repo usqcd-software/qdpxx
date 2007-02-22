@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.26 2007-02-22 03:30:27 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.27 2007-02-22 21:45:54 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -39,7 +39,7 @@ void evaluate(OLattice< TCol >& d,
   const C& r = static_cast<const C&>(rhs.expression().right());
 
   const int *tab = s.siteTable().slice();
-  for(int j=0; j <= s.numSiteTable(); ++j) 
+  for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
     _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
@@ -66,7 +66,7 @@ void evaluate(OLattice< TCol >& d,
   const C& r = static_cast<const C&>(rhs.expression().right());
 
   const int *tab = s.siteTable().slice();
-  for(int j=0; j <= s.numSiteTable(); ++j) 
+  for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
     _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());   
@@ -93,7 +93,7 @@ void evaluate(OLattice< TCol >& d,
   const C& l = static_cast<const C&>(rhs.expression().left());
   const C& r = static_cast<const C&>(rhs.expression().right().child());
   const int *tab = s.siteTable().slice();
-  for(int j=0; j <= s.numSiteTable(); ++j) 
+  for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
     _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
@@ -127,7 +127,7 @@ void evaluate(OLattice< TCol >& d,
 
 
   const int *tab = s.siteTable().slice();
-  for(int j=0; j <= s.numSiteTable(); ++j) {
+  for(int j=0; j < s.numSiteTable(); ++j) {
     int i = tab[j];
 
     _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
@@ -180,7 +180,7 @@ void evaluate(OLattice< TCol >& d,
   PColorMatrix<RComplexFloat,3> tmp;
 
   const int *tab = s.siteTable().slice();
-  for(int j=0; j <= s.numSiteTable(); ++j) {
+  for(int j=0; j < s.numSiteTable(); ++j) {
     int i = tab[j];
 
 
@@ -231,7 +231,7 @@ void evaluate(OLattice< TCol >& d,
   PColorMatrix<RComplexFloat,3> tmp;
 
   const int *tab = s.siteTable().slice();
-  for(int j=0; j <= s.numSiteTable(); ++j) {
+  for(int j=0; j < s.numSiteTable(); ++j) {
     int i = tab[j];
 
     _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
@@ -281,7 +281,7 @@ void evaluate(OLattice< TCol >& d,
   PColorMatrix<RComplexFloat,3> tmp;
 
   const int *tab = s.siteTable().slice();
-  for(int j=0; j <= s.numSiteTable(); ++j) {
+  for(int j=0; j < s.numSiteTable(); ++j) {
     int i = tab[j];
 
     _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
@@ -331,7 +331,7 @@ void evaluate(OLattice< TCol >& d,
   PColorMatrix<RComplexFloat,3> tmp;
 
   const int *tab = s.siteTable().slice();
-  for(int j=0; j <= s.numSiteTable(); ++j) {
+  for(int j=0; j < s.numSiteTable(); ++j) {
     int i = tab[j];
 
 
