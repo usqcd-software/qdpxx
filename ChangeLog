@@ -1,3 +1,13 @@
+2007-02-22 10:58  bjoo
+
+	* examples/baryon_w.cc, examples/formfac_w.cc,
+	  examples/mesons_w.cc, examples/t_blas.cc, examples/t_cblas.cc,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h: OK make check
+	  now works too. Also tests seem to pass in cb2 and lexico mode for
+	  generics and sse. But I dont trust it so I need to do the chroma
+	  build. Still commit this
+
 2007-02-21 22:30  bjoo
 
 	* examples/t_blas.cc, examples/t_blas_g5_3.cc, examples/t_cblas.cc,
