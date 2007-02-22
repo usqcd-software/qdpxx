@@ -136,7 +136,7 @@ void evaluate( OLattice< TVec > &d,
       REAL *d_start = &(d.elem(i).elem(0).elem(0).real());
       REAL *x_start = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       
-      vcscal(d_start, a_start, x_start, n_3vec);
+      vcscal(d_start, a_start, x_start, 4);
     }
   }
 }
@@ -768,7 +768,7 @@ void evaluate( OLattice< TVec > &d,
       
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-      vcaxpy3(zptr, ar, xptr, yptr, n_3vec); 
+      vcaxpy3(zptr, ar, xptr, yptr, 4); 
             
     }
   }

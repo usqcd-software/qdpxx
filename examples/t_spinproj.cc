@@ -1,4 +1,4 @@
-// $Id: t_spinproj.cc,v 1.5 2007-02-09 20:35:46 bjoo Exp $
+// $Id: t_spinproj.cc,v 1.6 2007-02-22 03:30:27 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -477,11 +477,11 @@ int main(int argc, char *argv[])
   _inline_mult_adj_su3_mat_vec( colmat.elem().elem(),
 				ferm.elem().elem(3),
 				res2.elem().elem(3));
- #endif
+
    Fermion diff_ferm QDP_ALIGN16;
    diff_ferm= res - res2;
    QDPIO::cout << "Diff Ferm = " << diff_ferm << endl;
-
+ #endif
   
   H = adj(u)*spinProjectDir0Plus(V);
   H2= spinProjectDir0Plus(V);

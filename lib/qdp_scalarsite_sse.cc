@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.25 2007-02-21 22:17:20 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.26 2007-02-22 03:30:27 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -413,7 +413,7 @@ void evaluate(OLattice< TCol >& d,
 
       // Do the copy in the dumb way -- this could become quite complex
       // Depending on whether the individual matrices are aligned or not.
-      d.site(i).elem() = l.site(i).elem();
+      d.elem(i).elem() = l.elem(i).elem();
 
     }
 
@@ -471,7 +471,7 @@ void evaluate(OLattice< TCol >& d,
 
       // Do the copy in the dumb way -- this could become quite complex
       // Depending on whether the individual matrices are aligned or not.
-      d.site(i).elem() += l.site(i).elem();
+      d.elem(i).elem() += l.elem(i).elem();
 
     }
 
@@ -528,7 +528,7 @@ void evaluate(OLattice< TCol >& d,
 
       // Do the copy in the dumb way -- this could become quite complex
       // Depending on whether the individual matrices are aligned or not.
-      d.site(i).elem() -= l.site(i).elem();
+      d.elem(i).elem() -= l.elem(i).elem();
 
     }
 

@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.19 2007-02-21 22:17:19 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.20 2007-02-22 03:30:27 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -501,8 +501,8 @@ void evaluate( OLattice< TVec > &d,
       int i=tab[j];
 
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
-      REAL* yptr = &(y.elem(i).elem(0).elem(0).real());
-      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr = (REAL *)  &(d.elem(i).elem(0).elem(0).real());
       vaxpy3(zptr, aptr, xptr, yptr, Ns);
     }
   }
@@ -564,8 +564,8 @@ void evaluate( OLattice< TVec > &d,
       int i=tab[j];
       
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
-      REAL* yptr = &(y.elem(i).elem(0).elem(0).real());
-      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(y.elem(i).elem(0).elem(0).real());
+      REAL* zptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
       vaxpy3(zptr, aptr, xptr, yptr, Ns);
     }
   }
@@ -624,7 +624,7 @@ void evaluate( OLattice< TVec > &d,
       int i=tab[j];
       
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
-      REAL* yptr = &(y.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       vaxmy3(zptr, aptr, xptr, yptr, Ns);
     }
@@ -686,7 +686,7 @@ void evaluate( OLattice< TVec > &d,
       int i=tab[j];
       
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
-      REAL* yptr = &(y.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       vaxpy3(zptr, aptr, xptr, yptr, Ns);
     }
@@ -731,7 +731,7 @@ void evaluate( OLattice< TVec > &d,
       int i=tab[j];
       
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
-      REAL* yptr = &(y.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       vaxpy3(zptr,&one, xptr, yptr, Ns);
     }
@@ -965,7 +965,7 @@ void evaluate( OLattice< TVec > &d,
 #endif
   REAL one = 1;
 
-  if( s.hasOrderdRep() ) {
+  if( s.hasOrderedRep() ) {
     int n_3vec = (s.end() - s.start()+1)*Ns;
     
     REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real());
@@ -1464,7 +1464,7 @@ void evaluate( OLattice< TVec > &d,
   REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
   REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
   
-  if( hasOrderedRep() ) { 
+  if( s.hasOrderedRep() ) { 
     REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());

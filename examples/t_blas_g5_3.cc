@@ -1,4 +1,4 @@
-// $Id: t_blas_g5_3.cc,v 1.5 2005-11-03 22:17:30 bjoo Exp $
+// $Id: t_blas_g5_3.cc,v 1.6 2007-02-22 03:30:27 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
   norm_diff=norm2(z1-z2);
  
   {
-    QDPIO::cout << "ag5x diff=" << sqrt(norm_diff) << endl;
+    QDPIO::cout << "ag5x diff=" << sqrt(norm_diff)/sqrt(norm2(z1)) << endl;
     StopWatch swatch;
     double time=0;
     int iter=1;
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
   z2=b*y + a*(GammaConst<Ns,Ns*Ns-1>()*x);  
   norm_diff=norm2(z1-z2); 
   {
-    QDPIO::cout << "ax + bg5y diff=" << sqrt(norm_diff) << endl;
+    QDPIO::cout << "ax + bg5y diff=" << sqrt(norm_diff)/sqrt(norm2(z1)) << endl;
     StopWatch swatch;
     double time=0;
     int iter=1;
@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
   norm_diff=norm2(z1-z2);
  
   {
-    QDPIO::cout << "x - a g5 y diff=" << sqrt(norm_diff) << endl;
+    QDPIO::cout << "x - a g5 y diff=" << sqrt(norm_diff)/sqrt(norm2(z1)) << endl;
     StopWatch swatch;
     double time=0;
     int iter=1;
@@ -301,7 +301,7 @@ int main(int argc, char *argv[])
   norm_diff=norm2(z1-z2);
  
   {
-    QDPIO::cout << "g5( ax - by) diff=" << sqrt(norm_diff) << endl;
+    QDPIO::cout << "g5( ax - by) diff=" << sqrt(norm_diff)/sqrt(norm2(z1)) << endl;
     StopWatch swatch;
     double time=0;
     int iter=1;
@@ -384,7 +384,7 @@ int main(int argc, char *argv[])
 
   norm_diff=norm2(z1-z2);
   {
-    QDPIO::cout << "ax + i b g5 y diff=" << sqrt(norm_diff) << endl;
+    QDPIO::cout << "ax + i b g5 y diff=" << sqrt(norm_diff)/sqrt(norm2(z1)) << endl;
     StopWatch swatch;
     double time=0;
     int iter=1;
@@ -463,7 +463,7 @@ int main(int argc, char *argv[])
 
   norm_diff=norm2(z1-z2);
   {
-    QDPIO::cout << "ax - i b g5 y diff=" << sqrt(norm_diff) << endl;
+    QDPIO::cout << "ax - i b g5 y diff=" << sqrt(norm_diff)/sqrt(norm2(z1)) << endl;
     StopWatch swatch;
     double time=0;
     int iter=1;
@@ -540,7 +540,7 @@ int main(int argc, char *argv[])
 
   norm_diff=norm2(z1-z2);
   {
-    QDPIO::cout << "x + i a g5 y diff=" << sqrt(norm_diff) << endl;
+    QDPIO::cout << "x + i a g5 y diff=" << sqrt(norm_diff)/sqrt(norm2(z1)) << endl;
     StopWatch swatch;
     double time=0;
     int iter=1;
@@ -615,7 +615,7 @@ int main(int argc, char *argv[])
 
   norm_diff=norm2(z1-z2);
   {
-    QDPIO::cout << "x - i a g5 y diff=" << sqrt(norm_diff) << endl;
+    QDPIO::cout << "x - i a g5 y diff=" << sqrt(norm_diff)/sqrt(norm2(z1)) << endl;
     StopWatch swatch;
     double time=0;
     int iter=1;
@@ -694,7 +694,7 @@ int main(int argc, char *argv[])
 
   norm_diff=norm2(z1-z2);
   {
-    QDPIO::cout << "z += i a g5 y diff=" << sqrt(norm_diff) << endl;
+    QDPIO::cout << "z += i a g5 y diff=" << sqrt(norm_diff)/sqrt(norm2(z1)) << endl;
   }
 
   gaussian(x);
@@ -709,7 +709,7 @@ int main(int argc, char *argv[])
 
   norm_diff=norm2(z1-z2);
   {
-    QDPIO::cout << "z -= i a g5 y diff=" << sqrt(norm_diff) << endl;
+    QDPIO::cout << "z -= i a g5 y diff=" << sqrt(norm_diff)/sqrt(norm2(z1)) << endl;
   }
 
 

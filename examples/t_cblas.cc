@@ -1,4 +1,4 @@
-// $Id: t_cblas.cc,v 1.2 2004-05-09 11:54:43 bjoo Exp $
+// $Id: t_cblas.cc,v 1.3 2007-02-22 03:30:27 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -39,26 +39,26 @@ int main(int argc, char *argv[])
 
   r = z1 - z2;
   Double diff = norm2(r);
-  QDPIO::cout << " z2 *= a diff = " << sqrt(diff) << endl;
+  QDPIO::cout << " z2 *= a diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   // Do z2 = alpha * x using = 
   z2 = alpha*x;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << " z2 = a * x  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << " z2 = a * x  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   // Do z2 = x * alpha using = 
   z2 = x*alpha;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << " z2 = x * a diff = " << sqrt(diff) << endl;
+  QDPIO::cout << " z2 = x * a diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
   
   // Do z2 = x, z2 = a*z2
   z2 = x;
   z2 = alpha*z2;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z2=x, z2 = a * z2 diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z2=x, z2 = a * z2 diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
 
   gaussian(x);
@@ -72,14 +72,14 @@ int main(int argc, char *argv[])
 
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z += alpha*x  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z += alpha*x  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   z2 = y;
   z2 += x*alpha;
 
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z += x*alpha  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z += x*alpha  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
 
   z1 = alpha*x;
@@ -90,13 +90,13 @@ int main(int argc, char *argv[])
   z2 -= alpha*x;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z -= x*alpha  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z -= x*alpha  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   z2 = y;
   z2 -= x*alpha;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z -= x*alpha  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z -= x*alpha  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   
   z1 = alpha*x;
@@ -105,22 +105,22 @@ int main(int argc, char *argv[])
   z2 = alpha*x + y;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z = alpha * x + y  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = alpha * x + y  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   z2 = x * alpha + y;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z = x * alpha + y  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = x * alpha + y  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   z2 = y + alpha*x;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z = y + alpha * x  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = y + alpha * x  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   z2 = y + x*alpha;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z = y + x * alpha  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = y + x * alpha  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
 
   z1 = alpha*x;
@@ -128,12 +128,12 @@ int main(int argc, char *argv[])
   z2 = alpha*x - y;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z = alpha * x - y  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = alpha * x - y  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   z2 = x * alpha - y;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z = x * alpha - y  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = x * alpha - y  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   z1 = y;
   z1 -= alpha*x;
@@ -141,12 +141,12 @@ int main(int argc, char *argv[])
   z2 = y - alpha*x;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z = y - alpha*x  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = y - alpha*x  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   z2 = y - x*alpha;
   r = z1 - z2;
   diff = norm2(r);
-  QDPIO::cout << "z = y - x*alpha  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = y - x*alpha  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
 
 
@@ -163,22 +163,22 @@ int main(int argc, char *argv[])
   z2 = alpha*x + beta*y;
   r=z2-z1;
   diff = norm2(r);
-  QDPIO::cout << "z = ax + by  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = ax + by  diff = " << sqrt(diff)/sqrt(norm2(z1)) << endl;
 
   z2 = x*alpha + beta*y;
   r=z2-z1;  
   diff = norm2(r);
-  QDPIO::cout << "z = xa + by  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = xa + by  diff = " << sqrt(diff)/sqrt(norm2(z1)) << endl;
 
   z2 = alpha*x + y*beta;
   r=z2-z1;
   diff = norm2(r);
-  QDPIO::cout << "z = ax + yb  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = ax + yb  diff = " << sqrt(diff)/sqrt(norm2(z1)) << endl;
 
   z2 = x*alpha + y*beta;
   r=z2-z1;
   diff = norm2(r);
-  QDPIO::cout << "z = xa + yb  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = xa + yb  diff = " << sqrt(diff)/sqrt(norm2(z1)) << endl;
 
   // Make z1 = alpha x + beta y
   z1 = alpha*x;
@@ -189,22 +189,22 @@ int main(int argc, char *argv[])
   z2 = alpha*x - beta*y;
   r=z2-z1;
   diff = norm2(r);
-  QDPIO::cout << "z = ax - by  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = ax - by  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   z2 = x*alpha - beta*y;
   r=z2-z1;  
   diff = norm2(r);
-  QDPIO::cout << "z = xa - by  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = xa - by  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   z2 = alpha*x - y*beta;
   r=z2-z1;
   diff = norm2(r);
-  QDPIO::cout << "z = ax - yb  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = ax - yb  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
   z2 = x*alpha - y*beta;
   r=z2-z1;
   diff = norm2(r);
-  QDPIO::cout << "z = xa - yb  diff = " << sqrt(diff) << endl;
+  QDPIO::cout << "z = xa - yb  diff = " << sqrt(diff)/sqrt(norm2(z2)) << endl;
 
 
   // Timings

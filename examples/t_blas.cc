@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.18 2006-07-04 00:16:59 bjoo Exp $
+// $Id: t_blas.cc,v 1.19 2007-02-22 03:30:27 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -226,18 +226,18 @@ int main(int argc, char *argv[])
   UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(rc);
   Internal::globalSum(lsum);
 
-
+/*
   REAL64 rc2;
   int n_3vec = (all.end() - all.start() + 1)*24;
-  local_sumsq(&rc2, &(qx.elem(all.start()).elem(0).elem(0).real()), n_3vec);
+  ::local_sumsq(&rc2, &(qx.elem(all.start()).elem(0).elem(0).real()), n_3vec);
   QDPIO::cout << "rc -rc2 = " << rc-rc2 << endl;
-  
+ 
 
   Double bjs = norm2(qx);
 //  QDPIO::cout << "lattice volume = " << Layout::vol() << " Ns = " << Ns << " Nc = " << Nc << " Ncompx = 2.  Total Sum should be = " << Layout::vol()*Ns*Nc*2 << endl;
 
  
- 
+*/ 
   // Test y += a*x
   gaussian(qx);
   gaussian(qy);

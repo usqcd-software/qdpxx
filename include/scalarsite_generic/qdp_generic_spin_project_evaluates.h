@@ -848,6 +848,7 @@ void evaluate(OLattice< FVec >& b,
     
     unsigned int n_vec=s.end() - s.start()+1;
     inlineAddSpinReconDir3Minus(aptr, bptr, n_vec);
+  }
   else { 
     
     const int* tab = s.siteTable().slice();
