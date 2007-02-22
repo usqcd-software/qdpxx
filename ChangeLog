@@ -1,3 +1,7 @@
+2007-02-22 16:45  bjoo
+
+	* lib/qdp_scalarsite_sse.cc: Stupid bug
+
 2007-02-22 10:58  bjoo
 
 	* examples/baryon_w.cc, examples/formfac_w.cc,
