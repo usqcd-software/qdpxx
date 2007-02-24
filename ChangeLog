@@ -1,3 +1,18 @@
+2007-02-23 20:00  bjoo
+
+	* examples/dslashm_w.cc, examples/examples.h,
+	  examples/t_dslashm.cc,
+	  include/scalarsite_generic/qdp_generic_fused_spin_proj_evaluates.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_recon_evaluates.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_linalg.h,
+	  include/scalarsite_qcdoc/qdp_scalarsite_qcdoc_linalg.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_g5.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_proj_evaluates.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_recon_evaluates.h,
+	  lib/qdp_scalarsite_sse.cc: Generics now work on lexico layout
+
 2007-02-22 16:45  bjoo
 
 	* lib/qdp_scalarsite_sse.cc: Stupid bug
