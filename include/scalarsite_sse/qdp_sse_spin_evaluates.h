@@ -163,12 +163,23 @@ void evaluate(OLattice< HVec >& b,
 
   //  Get at pointer for 4 vec
   const OLattice< FVec >& a = static_cast<const OLattice< FVec > &>(rhs.expression().child());
-
-  REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
-  REAL32 *bptr =(REAL32 *)&(b.elem(s.start()).elem(0).elem(0).real());
-
-  unsigned int n_vec=s.end() - s.start()+1;
-  inlineSpinProjDir0Minus(aptr, bptr, n_vec);
+  if( s.hasOrderedRep() ) { 
+    REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *bptr =(REAL32 *)&(b.elem(s.start()).elem(0).elem(0).real());
+    
+    unsigned int n_vec=s.end() - s.start()+1;
+    inlineSpinProjDir0Minus(aptr, bptr, n_vec);
+  }
+  else {
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      REAL32 *aptr =(REAL32 *)&(a.elem(i).elem(0).elem(0).real());
+      REAL32 *bptr =(REAL32 *)&(b.elem(i).elem(0).elem(0).real());
+    
+      inlineSpinProjDir0Minus(aptr, bptr, 1);
+    }
+  }
 }
 
 // d = SpinProjectDir1Minus(Vec);
