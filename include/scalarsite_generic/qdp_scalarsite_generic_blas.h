@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.21 2007-02-22 15:58:30 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.22 2007-02-24 01:00:30 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -172,7 +172,7 @@ void evaluate( OLattice< TVec > &d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
-      REAL* yptr = &(d.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       vaxpy3(zptr, aptr, xptr, yptr, Ns);
     }
@@ -233,7 +233,7 @@ void evaluate( OLattice< TVec > &d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
-      REAL* yptr = &(d.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       vaxpy3(zptr, aptr, xptr, yptr, Ns);
     }
@@ -291,7 +291,7 @@ void evaluate( OLattice< TVec > &d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
-      REAL* yptr = &(d.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       vaxmy3(zptr, aptr, xptr, yptr, Ns);
     }
@@ -350,7 +350,7 @@ void evaluate( OLattice< TVec > &d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
-      REAL* yptr = &(d.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       vaxpy3(zptr, aptr, xptr, yptr, Ns);
     }

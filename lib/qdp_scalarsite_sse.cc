@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.27 2007-02-22 21:45:54 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.28 2007-02-24 01:00:30 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -38,11 +38,17 @@ void evaluate(OLattice< TCol >& d,
   const C& l = static_cast<const C&>(rhs.expression().left());
   const C& r = static_cast<const C&>(rhs.expression().right());
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
-    _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+    }
+  }
+  else { 
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) {
+      int i = tab[j];
+      _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+    }
   }
 }
 
@@ -65,11 +71,18 @@ void evaluate(OLattice< TCol >& d,
   const C& l = static_cast<const C&>(rhs.expression().left().child());
   const C& r = static_cast<const C&>(rhs.expression().right());
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
-    _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());   
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());   
+    }
+  }
+  else { 
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) {
+
+      int i = tab[j];
+      _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());   
+    }
   }
 
 }
@@ -92,16 +105,20 @@ void evaluate(OLattice< TCol >& d,
 
   const C& l = static_cast<const C&>(rhs.expression().left());
   const C& r = static_cast<const C&>(rhs.expression().right().child());
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
-    _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+    }
   }
+  else { 
 
-
-
-
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) {
+      int i = tab[j];
+      _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+    }
+  }
 }
 
 
@@ -125,37 +142,64 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+      
+      // Take the adj(r*l) = adj(l)*adj(r)
+      d.elem(i).elem().elem(0,0).real() =  tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() = -tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() =  tmp.elem(1,0).real();
+      d.elem(i).elem().elem(0,1).imag() = -tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(0,2).real() =  tmp.elem(2,0).real();
+      d.elem(i).elem().elem(0,2).imag() = -tmp.elem(2,0).imag();
+      
+      d.elem(i).elem().elem(1,0).real() =  tmp.elem(0,1).real();
+      d.elem(i).elem().elem(1,0).imag() = -tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(1,1).real() =  tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() = -tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() =  tmp.elem(2,1).real();
+      d.elem(i).elem().elem(1,2).imag() = -tmp.elem(2,1).imag();
+      
+      d.elem(i).elem().elem(2,0).real() =  tmp.elem(0,2).real();
+      d.elem(i).elem().elem(2,0).imag() = -tmp.elem(0,2).imag();
+      d.elem(i).elem().elem(2,1).real() =  tmp.elem(1,2).real();
+      d.elem(i).elem().elem(2,1).imag() = -tmp.elem(1,2).imag();
+      d.elem(i).elem().elem(2,2).real() =  tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() = -tmp.elem(2,2).imag();
+    }
+  }
+  else { 
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) {
+      int i = tab[j];
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) {
-    int i = tab[j];
-
-    _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
-
-    // Take the adj(r*l) = adj(l)*adj(r)
-    d.elem(i).elem().elem(0,0).real() =  tmp.elem(0,0).real();
-    d.elem(i).elem().elem(0,0).imag() = -tmp.elem(0,0).imag();
-    d.elem(i).elem().elem(0,1).real() =  tmp.elem(1,0).real();
-    d.elem(i).elem().elem(0,1).imag() = -tmp.elem(1,0).imag();
-    d.elem(i).elem().elem(0,2).real() =  tmp.elem(2,0).real();
-    d.elem(i).elem().elem(0,2).imag() = -tmp.elem(2,0).imag();
-
-    d.elem(i).elem().elem(1,0).real() =  tmp.elem(0,1).real();
-    d.elem(i).elem().elem(1,0).imag() = -tmp.elem(0,1).imag();
-    d.elem(i).elem().elem(1,1).real() =  tmp.elem(1,1).real();
-    d.elem(i).elem().elem(1,1).imag() = -tmp.elem(1,1).imag();
-    d.elem(i).elem().elem(1,2).real() =  tmp.elem(2,1).real();
-    d.elem(i).elem().elem(1,2).imag() = -tmp.elem(2,1).imag();
-
-    d.elem(i).elem().elem(2,0).real() =  tmp.elem(0,2).real();
-    d.elem(i).elem().elem(2,0).imag() = -tmp.elem(0,2).imag();
-    d.elem(i).elem().elem(2,1).real() =  tmp.elem(1,2).real();
-    d.elem(i).elem().elem(2,1).imag() = -tmp.elem(1,2).imag();
-    d.elem(i).elem().elem(2,2).real() =  tmp.elem(2,2).real();
-    d.elem(i).elem().elem(2,2).imag() = -tmp.elem(2,2).imag();
+      _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+      
+      // Take the adj(r*l) = adj(l)*adj(r)
+      d.elem(i).elem().elem(0,0).real() =  tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() = -tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() =  tmp.elem(1,0).real();
+      d.elem(i).elem().elem(0,1).imag() = -tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(0,2).real() =  tmp.elem(2,0).real();
+      d.elem(i).elem().elem(0,2).imag() = -tmp.elem(2,0).imag();
+      
+      d.elem(i).elem().elem(1,0).real() =  tmp.elem(0,1).real();
+      d.elem(i).elem().elem(1,0).imag() = -tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(1,1).real() =  tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() = -tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() =  tmp.elem(2,1).real();
+      d.elem(i).elem().elem(1,2).imag() = -tmp.elem(2,1).imag();
+      
+      d.elem(i).elem().elem(2,0).real() =  tmp.elem(0,2).real();
+      d.elem(i).elem().elem(2,0).imag() = -tmp.elem(0,2).imag();
+      d.elem(i).elem().elem(2,1).real() =  tmp.elem(1,2).real();
+      d.elem(i).elem().elem(2,1).imag() = -tmp.elem(1,2).imag();
+      d.elem(i).elem().elem(2,2).real() =  tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() = -tmp.elem(2,2).imag();
+    }
   }
 }
-
 
 //-------------------------------------------------------------------
 
@@ -179,33 +223,59 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) {
-    int i = tab[j];
-
-
-    _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
-
-    d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
-    d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
-    d.elem(i).elem().elem(0,1).real() += tmp.elem(0,1).real();
-    d.elem(i).elem().elem(0,1).imag() += tmp.elem(0,1).imag();
-    d.elem(i).elem().elem(0,2).real() += tmp.elem(0,2).real();
-    d.elem(i).elem().elem(0,2).imag() += tmp.elem(0,2).imag();
-
-    d.elem(i).elem().elem(1,0).real() += tmp.elem(1,0).real();
-    d.elem(i).elem().elem(1,0).imag() += tmp.elem(1,0).imag();
-    d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
-    d.elem(i).elem().elem(1,1).imag() += tmp.elem(1,1).imag();
-    d.elem(i).elem().elem(1,2).real() += tmp.elem(1,2).real();
-    d.elem(i).elem().elem(1,2).imag() += tmp.elem(1,2).imag();
-
-    d.elem(i).elem().elem(2,0).real() += tmp.elem(2,0).real();
-    d.elem(i).elem().elem(2,0).imag() += tmp.elem(2,0).imag();
-    d.elem(i).elem().elem(2,1).real() += tmp.elem(2,1).real();
-    d.elem(i).elem().elem(2,1).imag() += tmp.elem(2,1).imag();
-    d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
-    d.elem(i).elem().elem(2,2).imag() += tmp.elem(2,2).imag();
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      
+      d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() += tmp.elem(0,1).real();
+      d.elem(i).elem().elem(0,1).imag() += tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(0,2).real() += tmp.elem(0,2).real();
+      d.elem(i).elem().elem(0,2).imag() += tmp.elem(0,2).imag();
+      
+      d.elem(i).elem().elem(1,0).real() += tmp.elem(1,0).real();
+      d.elem(i).elem().elem(1,0).imag() += tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() += tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() += tmp.elem(1,2).real();
+      d.elem(i).elem().elem(1,2).imag() += tmp.elem(1,2).imag();
+      
+      d.elem(i).elem().elem(2,0).real() += tmp.elem(2,0).real();
+      d.elem(i).elem().elem(2,0).imag() += tmp.elem(2,0).imag();
+      d.elem(i).elem().elem(2,1).real() += tmp.elem(2,1).real();
+      d.elem(i).elem().elem(2,1).imag() += tmp.elem(2,1).imag();
+      d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() += tmp.elem(2,2).imag();
+    }
+  }
+  else { 
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) {
+      int i = tab[j];
+      _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      
+      d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() += tmp.elem(0,1).real();
+      d.elem(i).elem().elem(0,1).imag() += tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(0,2).real() += tmp.elem(0,2).real();
+      d.elem(i).elem().elem(0,2).imag() += tmp.elem(0,2).imag();
+      
+      d.elem(i).elem().elem(1,0).real() += tmp.elem(1,0).real();
+      d.elem(i).elem().elem(1,0).imag() += tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() += tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() += tmp.elem(1,2).real();
+      d.elem(i).elem().elem(1,2).imag() += tmp.elem(1,2).imag();
+      
+      d.elem(i).elem().elem(2,0).real() += tmp.elem(2,0).real();
+      d.elem(i).elem().elem(2,0).imag() += tmp.elem(2,0).imag();
+      d.elem(i).elem().elem(2,1).real() += tmp.elem(2,1).real();
+      d.elem(i).elem().elem(2,1).imag() += tmp.elem(2,1).imag();
+      d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() += tmp.elem(2,2).imag();
+    }
   }
 }
 
@@ -230,32 +300,60 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) {
-    int i = tab[j];
-
-    _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
-
-    d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
-    d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
-    d.elem(i).elem().elem(0,1).real() += tmp.elem(0,1).real();
-    d.elem(i).elem().elem(0,1).imag() += tmp.elem(0,1).imag();
-    d.elem(i).elem().elem(0,2).real() += tmp.elem(0,2).real();
-    d.elem(i).elem().elem(0,2).imag() += tmp.elem(0,2).imag();
-
-    d.elem(i).elem().elem(1,0).real() += tmp.elem(1,0).real();
-    d.elem(i).elem().elem(1,0).imag() += tmp.elem(1,0).imag();
-    d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
-    d.elem(i).elem().elem(1,1).imag() += tmp.elem(1,1).imag();
-    d.elem(i).elem().elem(1,2).real() += tmp.elem(1,2).real();
-    d.elem(i).elem().elem(1,2).imag() += tmp.elem(1,2).imag();
-
-    d.elem(i).elem().elem(2,0).real() += tmp.elem(2,0).real();
-    d.elem(i).elem().elem(2,0).imag() += tmp.elem(2,0).imag();
-    d.elem(i).elem().elem(2,1).real() += tmp.elem(2,1).real();
-    d.elem(i).elem().elem(2,1).imag() += tmp.elem(2,1).imag();
-    d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
-    d.elem(i).elem().elem(2,2).imag() += tmp.elem(2,2).imag();
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      
+      d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() += tmp.elem(0,1).real();
+      d.elem(i).elem().elem(0,1).imag() += tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(0,2).real() += tmp.elem(0,2).real();
+      d.elem(i).elem().elem(0,2).imag() += tmp.elem(0,2).imag();
+      
+      d.elem(i).elem().elem(1,0).real() += tmp.elem(1,0).real();
+      d.elem(i).elem().elem(1,0).imag() += tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() += tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() += tmp.elem(1,2).real();
+      d.elem(i).elem().elem(1,2).imag() += tmp.elem(1,2).imag();
+      
+      d.elem(i).elem().elem(2,0).real() += tmp.elem(2,0).real();
+      d.elem(i).elem().elem(2,0).imag() += tmp.elem(2,0).imag();
+      d.elem(i).elem().elem(2,1).real() += tmp.elem(2,1).real();
+      d.elem(i).elem().elem(2,1).imag() += tmp.elem(2,1).imag();
+      d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() += tmp.elem(2,2).imag();
+    }
+  }
+  else { 
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) {
+      int i = tab[j];
+      
+      _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      
+      d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() += tmp.elem(0,1).real();
+      d.elem(i).elem().elem(0,1).imag() += tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(0,2).real() += tmp.elem(0,2).real();
+      d.elem(i).elem().elem(0,2).imag() += tmp.elem(0,2).imag();
+      
+      d.elem(i).elem().elem(1,0).real() += tmp.elem(1,0).real();
+      d.elem(i).elem().elem(1,0).imag() += tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() += tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() += tmp.elem(1,2).real();
+      d.elem(i).elem().elem(1,2).imag() += tmp.elem(1,2).imag();
+      
+      d.elem(i).elem().elem(2,0).real() += tmp.elem(2,0).real();
+      d.elem(i).elem().elem(2,0).imag() += tmp.elem(2,0).imag();
+      d.elem(i).elem().elem(2,1).real() += tmp.elem(2,1).real();
+      d.elem(i).elem().elem(2,1).imag() += tmp.elem(2,1).imag();
+      d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() += tmp.elem(2,2).imag();
+    }
   }
 }
 
@@ -280,32 +378,61 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) {
-    int i = tab[j];
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      
+      d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() += tmp.elem(0,1).real();
+      d.elem(i).elem().elem(0,1).imag() += tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(0,2).real() += tmp.elem(0,2).real();
+      d.elem(i).elem().elem(0,2).imag() += tmp.elem(0,2).imag();
+      
+      d.elem(i).elem().elem(1,0).real() += tmp.elem(1,0).real();
+      d.elem(i).elem().elem(1,0).imag() += tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() += tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() += tmp.elem(1,2).real();
+      d.elem(i).elem().elem(1,2).imag() += tmp.elem(1,2).imag();
+      
+      d.elem(i).elem().elem(2,0).real() += tmp.elem(2,0).real();
+      d.elem(i).elem().elem(2,0).imag() += tmp.elem(2,0).imag();
+      d.elem(i).elem().elem(2,1).real() += tmp.elem(2,1).real();
+      d.elem(i).elem().elem(2,1).imag() += tmp.elem(2,1).imag();
+      d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() += tmp.elem(2,2).imag();
+    }
+  }
+  else { 
 
-    _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
-
-    d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
-    d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
-    d.elem(i).elem().elem(0,1).real() += tmp.elem(0,1).real();
-    d.elem(i).elem().elem(0,1).imag() += tmp.elem(0,1).imag();
-    d.elem(i).elem().elem(0,2).real() += tmp.elem(0,2).real();
-    d.elem(i).elem().elem(0,2).imag() += tmp.elem(0,2).imag();
-
-    d.elem(i).elem().elem(1,0).real() += tmp.elem(1,0).real();
-    d.elem(i).elem().elem(1,0).imag() += tmp.elem(1,0).imag();
-    d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
-    d.elem(i).elem().elem(1,1).imag() += tmp.elem(1,1).imag();
-    d.elem(i).elem().elem(1,2).real() += tmp.elem(1,2).real();
-    d.elem(i).elem().elem(1,2).imag() += tmp.elem(1,2).imag();
-
-    d.elem(i).elem().elem(2,0).real() += tmp.elem(2,0).real();
-    d.elem(i).elem().elem(2,0).imag() += tmp.elem(2,0).imag();
-    d.elem(i).elem().elem(2,1).real() += tmp.elem(2,1).real();
-    d.elem(i).elem().elem(2,1).imag() += tmp.elem(2,1).imag();
-    d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
-    d.elem(i).elem().elem(2,2).imag() += tmp.elem(2,2).imag();
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) {
+      int i = tab[j];
+      
+      _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      
+      d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() += tmp.elem(0,1).real();
+      d.elem(i).elem().elem(0,1).imag() += tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(0,2).real() += tmp.elem(0,2).real();
+      d.elem(i).elem().elem(0,2).imag() += tmp.elem(0,2).imag();
+      
+      d.elem(i).elem().elem(1,0).real() += tmp.elem(1,0).real();
+      d.elem(i).elem().elem(1,0).imag() += tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() += tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() += tmp.elem(1,2).real();
+      d.elem(i).elem().elem(1,2).imag() += tmp.elem(1,2).imag();
+      
+      d.elem(i).elem().elem(2,0).real() += tmp.elem(2,0).real();
+      d.elem(i).elem().elem(2,0).imag() += tmp.elem(2,0).imag();
+      d.elem(i).elem().elem(2,1).real() += tmp.elem(2,1).real();
+      d.elem(i).elem().elem(2,1).imag() += tmp.elem(2,1).imag();
+      d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() += tmp.elem(2,2).imag();
+    }
   }
 }
 
@@ -330,34 +457,63 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) {
-    int i = tab[j];
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+      
+      // Take the adj(r*l) = adj(l)*adj(r)
+      d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() += tmp.elem(1,0).real();
+      d.elem(i).elem().elem(0,1).imag() -= tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(0,2).real() += tmp.elem(2,0).real();
+      d.elem(i).elem().elem(0,2).imag() -= tmp.elem(2,0).imag();
+      
+      d.elem(i).elem().elem(1,0).real() += tmp.elem(0,1).real();
+      d.elem(i).elem().elem(1,0).imag() -= tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() += tmp.elem(2,1).real();
+      d.elem(i).elem().elem(1,2).imag() -= tmp.elem(2,1).imag();
+      
+      d.elem(i).elem().elem(2,0).real() += tmp.elem(0,2).real();
+      d.elem(i).elem().elem(2,0).imag() -= tmp.elem(0,2).imag();
+      d.elem(i).elem().elem(2,1).real() += tmp.elem(1,2).real();
+      d.elem(i).elem().elem(2,1).imag() -= tmp.elem(1,2).imag();
+      d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
 
+    }
+  }
+  else { 
 
-    _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
-
-    // Take the adj(r*l) = adj(l)*adj(r)
-    d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
-    d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
-    d.elem(i).elem().elem(0,1).real() += tmp.elem(1,0).real();
-    d.elem(i).elem().elem(0,1).imag() -= tmp.elem(1,0).imag();
-    d.elem(i).elem().elem(0,2).real() += tmp.elem(2,0).real();
-    d.elem(i).elem().elem(0,2).imag() -= tmp.elem(2,0).imag();
-
-    d.elem(i).elem().elem(1,0).real() += tmp.elem(0,1).real();
-    d.elem(i).elem().elem(1,0).imag() -= tmp.elem(0,1).imag();
-    d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
-    d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
-    d.elem(i).elem().elem(1,2).real() += tmp.elem(2,1).real();
-    d.elem(i).elem().elem(1,2).imag() -= tmp.elem(2,1).imag();
-
-    d.elem(i).elem().elem(2,0).real() += tmp.elem(0,2).real();
-    d.elem(i).elem().elem(2,0).imag() -= tmp.elem(0,2).imag();
-    d.elem(i).elem().elem(2,1).real() += tmp.elem(1,2).real();
-    d.elem(i).elem().elem(2,1).imag() -= tmp.elem(1,2).imag();
-    d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
-    d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) {
+      int i = tab[j];
+      _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+      
+      // Take the adj(r*l) = adj(l)*adj(r)
+      d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() += tmp.elem(1,0).real();
+      d.elem(i).elem().elem(0,1).imag() -= tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(0,2).real() += tmp.elem(2,0).real();
+      d.elem(i).elem().elem(0,2).imag() -= tmp.elem(2,0).imag();
+      
+      d.elem(i).elem().elem(1,0).real() += tmp.elem(0,1).real();
+      d.elem(i).elem().elem(1,0).imag() -= tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(1,1).real() += tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() += tmp.elem(2,1).real();
+      d.elem(i).elem().elem(1,2).imag() -= tmp.elem(2,1).imag();
+      
+      d.elem(i).elem().elem(2,0).real() += tmp.elem(0,2).real();
+      d.elem(i).elem().elem(2,0).imag() -= tmp.elem(0,2).imag();
+      d.elem(i).elem().elem(2,1).real() += tmp.elem(1,2).real();
+      d.elem(i).elem().elem(2,1).imag() -= tmp.elem(1,2).imag();
+      d.elem(i).elem().elem(2,2).real() += tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
+    }
   }
 }
 
@@ -555,32 +711,62 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int i=tab[j];
 
-    _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      
+      d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() -= tmp.elem(0,1).real();
+      d.elem(i).elem().elem(0,1).imag() -= tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(0,2).real() -= tmp.elem(0,2).real();
+      d.elem(i).elem().elem(0,2).imag() -= tmp.elem(0,2).imag();
+      
+      d.elem(i).elem().elem(1,0).real() -= tmp.elem(1,0).real();
+      d.elem(i).elem().elem(1,0).imag() -= tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(1,1).real() -= tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() -= tmp.elem(1,2).real();
+      d.elem(i).elem().elem(1,2).imag() -= tmp.elem(1,2).imag();
+      
+      d.elem(i).elem().elem(2,0).real() -= tmp.elem(2,0).real();
+      d.elem(i).elem().elem(2,0).imag() -= tmp.elem(2,0).imag();
+      d.elem(i).elem().elem(2,1).real() -= tmp.elem(2,1).real();
+      d.elem(i).elem().elem(2,1).imag() -= tmp.elem(2,1).imag();
+      d.elem(i).elem().elem(2,2).real() -= tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
+    }
+  }
+  else { 
 
-    d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
-    d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
-    d.elem(i).elem().elem(0,1).real() -= tmp.elem(0,1).real();
-    d.elem(i).elem().elem(0,1).imag() -= tmp.elem(0,1).imag();
-    d.elem(i).elem().elem(0,2).real() -= tmp.elem(0,2).real();
-    d.elem(i).elem().elem(0,2).imag() -= tmp.elem(0,2).imag();
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
 
-    d.elem(i).elem().elem(1,0).real() -= tmp.elem(1,0).real();
-    d.elem(i).elem().elem(1,0).imag() -= tmp.elem(1,0).imag();
-    d.elem(i).elem().elem(1,1).real() -= tmp.elem(1,1).real();
-    d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
-    d.elem(i).elem().elem(1,2).real() -= tmp.elem(1,2).real();
-    d.elem(i).elem().elem(1,2).imag() -= tmp.elem(1,2).imag();
-
-    d.elem(i).elem().elem(2,0).real() -= tmp.elem(2,0).real();
-    d.elem(i).elem().elem(2,0).imag() -= tmp.elem(2,0).imag();
-    d.elem(i).elem().elem(2,1).real() -= tmp.elem(2,1).real();
-    d.elem(i).elem().elem(2,1).imag() -= tmp.elem(2,1).imag();
-    d.elem(i).elem().elem(2,2).real() -= tmp.elem(2,2).real();
-    d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
+      _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      
+      d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() -= tmp.elem(0,1).real();
+      d.elem(i).elem().elem(0,1).imag() -= tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(0,2).real() -= tmp.elem(0,2).real();
+      d.elem(i).elem().elem(0,2).imag() -= tmp.elem(0,2).imag();
+      
+      d.elem(i).elem().elem(1,0).real() -= tmp.elem(1,0).real();
+      d.elem(i).elem().elem(1,0).imag() -= tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(1,1).real() -= tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() -= tmp.elem(1,2).real();
+      d.elem(i).elem().elem(1,2).imag() -= tmp.elem(1,2).imag();
+      
+      d.elem(i).elem().elem(2,0).real() -= tmp.elem(2,0).real();
+      d.elem(i).elem().elem(2,0).imag() -= tmp.elem(2,0).imag();
+      d.elem(i).elem().elem(2,1).real() -= tmp.elem(2,1).real();
+      d.elem(i).elem().elem(2,1).imag() -= tmp.elem(2,1).imag();
+      d.elem(i).elem().elem(2,2).real() -= tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
+    }
   }
 }
 
@@ -604,33 +790,61 @@ void evaluate(OLattice< TCol >& d,
   const C& r = static_cast<const C&>(rhs.expression().right());
 
   PColorMatrix<RComplexFloat,3> tmp;
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      
+      d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() -= tmp.elem(0,1).real();
+      d.elem(i).elem().elem(0,1).imag() -= tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(0,2).real() -= tmp.elem(0,2).real();
+      d.elem(i).elem().elem(0,2).imag() -= tmp.elem(0,2).imag();
+      
+      d.elem(i).elem().elem(1,0).real() -= tmp.elem(1,0).real();
+      d.elem(i).elem().elem(1,0).imag() -= tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(1,1).real() -= tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() -= tmp.elem(1,2).real();
+      d.elem(i).elem().elem(1,2).imag() -= tmp.elem(1,2).imag();
+      
+      d.elem(i).elem().elem(2,0).real() -= tmp.elem(2,0).real();
+      d.elem(i).elem().elem(2,0).imag() -= tmp.elem(2,0).imag();
+      d.elem(i).elem().elem(2,1).real() -= tmp.elem(2,1).real();
+      d.elem(i).elem().elem(2,1).imag() -= tmp.elem(2,1).imag();
+      d.elem(i).elem().elem(2,2).real() -= tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
+    }
+  }
+  else { 
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int i=tab[j];
-
-    _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
-
-    d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
-    d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
-    d.elem(i).elem().elem(0,1).real() -= tmp.elem(0,1).real();
-    d.elem(i).elem().elem(0,1).imag() -= tmp.elem(0,1).imag();
-    d.elem(i).elem().elem(0,2).real() -= tmp.elem(0,2).real();
-    d.elem(i).elem().elem(0,2).imag() -= tmp.elem(0,2).imag();
-
-    d.elem(i).elem().elem(1,0).real() -= tmp.elem(1,0).real();
-    d.elem(i).elem().elem(1,0).imag() -= tmp.elem(1,0).imag();
-    d.elem(i).elem().elem(1,1).real() -= tmp.elem(1,1).real();
-    d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
-    d.elem(i).elem().elem(1,2).real() -= tmp.elem(1,2).real();
-    d.elem(i).elem().elem(1,2).imag() -= tmp.elem(1,2).imag();
-
-    d.elem(i).elem().elem(2,0).real() -= tmp.elem(2,0).real();
-    d.elem(i).elem().elem(2,0).imag() -= tmp.elem(2,0).imag();
-    d.elem(i).elem().elem(2,1).real() -= tmp.elem(2,1).real();
-    d.elem(i).elem().elem(2,1).imag() -= tmp.elem(2,1).imag();
-    d.elem(i).elem().elem(2,2).real() -= tmp.elem(2,2).real();
-    d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      
+      _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      
+      d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() -= tmp.elem(0,1).real();
+      d.elem(i).elem().elem(0,1).imag() -= tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(0,2).real() -= tmp.elem(0,2).real();
+      d.elem(i).elem().elem(0,2).imag() -= tmp.elem(0,2).imag();
+      
+      d.elem(i).elem().elem(1,0).real() -= tmp.elem(1,0).real();
+      d.elem(i).elem().elem(1,0).imag() -= tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(1,1).real() -= tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() -= tmp.elem(1,2).real();
+      d.elem(i).elem().elem(1,2).imag() -= tmp.elem(1,2).imag();
+      
+      d.elem(i).elem().elem(2,0).real() -= tmp.elem(2,0).real();
+      d.elem(i).elem().elem(2,0).imag() -= tmp.elem(2,0).imag();
+      d.elem(i).elem().elem(2,1).real() -= tmp.elem(2,1).real();
+      d.elem(i).elem().elem(2,1).imag() -= tmp.elem(2,1).imag();
+      d.elem(i).elem().elem(2,2).real() -= tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
+    }
   }
 }
 
@@ -655,33 +869,60 @@ void evaluate(OLattice< TCol >& d,
 
   PColorMatrix<RComplexFloat,3> tmp;
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int i=tab[j];
-
-
-    _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
-
-    d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
-    d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
-    d.elem(i).elem().elem(0,1).real() -= tmp.elem(0,1).real();
-    d.elem(i).elem().elem(0,1).imag() -= tmp.elem(0,1).imag();
-    d.elem(i).elem().elem(0,2).real() -= tmp.elem(0,2).real();
-    d.elem(i).elem().elem(0,2).imag() -= tmp.elem(0,2).imag();
-
-    d.elem(i).elem().elem(1,0).real() -= tmp.elem(1,0).real();
-    d.elem(i).elem().elem(1,0).imag() -= tmp.elem(1,0).imag();
-    d.elem(i).elem().elem(1,1).real() -= tmp.elem(1,1).real();
-    d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
-    d.elem(i).elem().elem(1,2).real() -= tmp.elem(1,2).real();
-    d.elem(i).elem().elem(1,2).imag() -= tmp.elem(1,2).imag();
-
-    d.elem(i).elem().elem(2,0).real() -= tmp.elem(2,0).real();
-    d.elem(i).elem().elem(2,0).imag() -= tmp.elem(2,0).imag();
-    d.elem(i).elem().elem(2,1).real() -= tmp.elem(2,1).real();
-    d.elem(i).elem().elem(2,1).imag() -= tmp.elem(2,1).imag();
-    d.elem(i).elem().elem(2,2).real() -= tmp.elem(2,2).real();
-    d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      
+      d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() -= tmp.elem(0,1).real();
+      d.elem(i).elem().elem(0,1).imag() -= tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(0,2).real() -= tmp.elem(0,2).real();
+      d.elem(i).elem().elem(0,2).imag() -= tmp.elem(0,2).imag();
+      
+      d.elem(i).elem().elem(1,0).real() -= tmp.elem(1,0).real();
+      d.elem(i).elem().elem(1,0).imag() -= tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(1,1).real() -= tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() -= tmp.elem(1,2).real();
+      d.elem(i).elem().elem(1,2).imag() -= tmp.elem(1,2).imag();
+      
+      d.elem(i).elem().elem(2,0).real() -= tmp.elem(2,0).real();
+      d.elem(i).elem().elem(2,0).imag() -= tmp.elem(2,0).imag();
+      d.elem(i).elem().elem(2,1).real() -= tmp.elem(2,1).real();
+      d.elem(i).elem().elem(2,1).imag() -= tmp.elem(2,1).imag();
+      d.elem(i).elem().elem(2,2).real() -= tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
+    }
+  }
+  else { 
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      
+      _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      
+      d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() -= tmp.elem(0,1).real();
+      d.elem(i).elem().elem(0,1).imag() -= tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(0,2).real() -= tmp.elem(0,2).real();
+      d.elem(i).elem().elem(0,2).imag() -= tmp.elem(0,2).imag();
+      
+      d.elem(i).elem().elem(1,0).real() -= tmp.elem(1,0).real();
+      d.elem(i).elem().elem(1,0).imag() -= tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(1,1).real() -= tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() -= tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() -= tmp.elem(1,2).real();
+      d.elem(i).elem().elem(1,2).imag() -= tmp.elem(1,2).imag();
+      
+      d.elem(i).elem().elem(2,0).real() -= tmp.elem(2,0).real();
+      d.elem(i).elem().elem(2,0).imag() -= tmp.elem(2,0).imag();
+      d.elem(i).elem().elem(2,1).real() -= tmp.elem(2,1).real();
+      d.elem(i).elem().elem(2,1).imag() -= tmp.elem(2,1).imag();
+      d.elem(i).elem().elem(2,2).real() -= tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() -= tmp.elem(2,2).imag();
+    }
   }
 }
 
@@ -705,34 +946,62 @@ void evaluate(OLattice< TCol >& d,
   const C& r = static_cast<const C&>(rhs.expression().right().child());
 
   PColorMatrix<RComplexFloat,3> tmp;
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+      // Take the adj(r*l) = adj(l)*adj(r)
+      d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() -= tmp.elem(1,0).real();
+      d.elem(i).elem().elem(0,1).imag() += tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(0,2).real() -= tmp.elem(2,0).real();
+      d.elem(i).elem().elem(0,2).imag() += tmp.elem(2,0).imag();
+      
+      d.elem(i).elem().elem(1,0).real() -= tmp.elem(0,1).real();
+      d.elem(i).elem().elem(1,0).imag() += tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(1,1).real() -= tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() += tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() -= tmp.elem(2,1).real();
+      d.elem(i).elem().elem(1,2).imag() += tmp.elem(2,1).imag();
+      
+      d.elem(i).elem().elem(2,0).real() -= tmp.elem(0,2).real();
+      d.elem(i).elem().elem(2,0).imag() += tmp.elem(0,2).imag();
+      d.elem(i).elem().elem(2,1).real() -= tmp.elem(1,2).real();
+      d.elem(i).elem().elem(2,1).imag() += tmp.elem(1,2).imag();
+      d.elem(i).elem().elem(2,2).real() -= tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() += tmp.elem(2,2).imag();
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int i=tab[j];
-
-    _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
-
-    // Take the adj(r*l) = adj(l)*adj(r)
-    d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
-    d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
-    d.elem(i).elem().elem(0,1).real() -= tmp.elem(1,0).real();
-    d.elem(i).elem().elem(0,1).imag() += tmp.elem(1,0).imag();
-    d.elem(i).elem().elem(0,2).real() -= tmp.elem(2,0).real();
-    d.elem(i).elem().elem(0,2).imag() += tmp.elem(2,0).imag();
-
-    d.elem(i).elem().elem(1,0).real() -= tmp.elem(0,1).real();
-    d.elem(i).elem().elem(1,0).imag() += tmp.elem(0,1).imag();
-    d.elem(i).elem().elem(1,1).real() -= tmp.elem(1,1).real();
-    d.elem(i).elem().elem(1,1).imag() += tmp.elem(1,1).imag();
-    d.elem(i).elem().elem(1,2).real() -= tmp.elem(2,1).real();
-    d.elem(i).elem().elem(1,2).imag() += tmp.elem(2,1).imag();
-
-    d.elem(i).elem().elem(2,0).real() -= tmp.elem(0,2).real();
-    d.elem(i).elem().elem(2,0).imag() += tmp.elem(0,2).imag();
-    d.elem(i).elem().elem(2,1).real() -= tmp.elem(1,2).real();
-    d.elem(i).elem().elem(2,1).imag() += tmp.elem(1,2).imag();
-    d.elem(i).elem().elem(2,2).real() -= tmp.elem(2,2).real();
-    d.elem(i).elem().elem(2,2).imag() += tmp.elem(2,2).imag();
+    }
+  }
+  else { 
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      
+      _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+      
+      // Take the adj(r*l) = adj(l)*adj(r)
+      d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
+      d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
+      d.elem(i).elem().elem(0,1).real() -= tmp.elem(1,0).real();
+      d.elem(i).elem().elem(0,1).imag() += tmp.elem(1,0).imag();
+      d.elem(i).elem().elem(0,2).real() -= tmp.elem(2,0).real();
+      d.elem(i).elem().elem(0,2).imag() += tmp.elem(2,0).imag();
+      
+      d.elem(i).elem().elem(1,0).real() -= tmp.elem(0,1).real();
+      d.elem(i).elem().elem(1,0).imag() += tmp.elem(0,1).imag();
+      d.elem(i).elem().elem(1,1).real() -= tmp.elem(1,1).real();
+      d.elem(i).elem().elem(1,1).imag() += tmp.elem(1,1).imag();
+      d.elem(i).elem().elem(1,2).real() -= tmp.elem(2,1).real();
+      d.elem(i).elem().elem(1,2).imag() += tmp.elem(2,1).imag();
+      
+      d.elem(i).elem().elem(2,0).real() -= tmp.elem(0,2).real();
+      d.elem(i).elem().elem(2,0).imag() += tmp.elem(0,2).imag();
+      d.elem(i).elem().elem(2,1).real() -= tmp.elem(1,2).real();
+      d.elem(i).elem().elem(2,1).imag() += tmp.elem(1,2).imag();
+      d.elem(i).elem().elem(2,2).real() -= tmp.elem(2,2).real();
+      d.elem(i).elem().elem(2,2).imag() += tmp.elem(2,2).imag();
+    }
   }
 }
 
@@ -761,23 +1030,46 @@ void evaluate(OLattice< TVec2 >& d,
   const C& l = static_cast<const C&>(rhs.expression().left());
   const H& r = static_cast<const H&>(rhs.expression().right());
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int i=tab[j];
 
+
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
 #if 0
-    // This form appears significantly slower than below
-    _inline_sse_mult_su3_mat_hwvec(l.elem(i),
-				   r.elem(i),
-				   d.elem(i));
+      // This form appears significantly slower than below
+      _inline_sse_mult_su3_mat_hwvec(l.elem(i),
+				     r.elem(i),
+				     d.elem(i));
 #else
-    _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
-				 r.elem(i).elem(0),
-				 d.elem(i).elem(0));
-    _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
-				 r.elem(i).elem(1),
-				 d.elem(i).elem(1));
+      _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
+				   r.elem(i).elem(0),
+				   d.elem(i).elem(0));
+      _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
+				   r.elem(i).elem(1),
+				   d.elem(i).elem(1));
 #endif
+
+    }
+  }
+  else { 
+
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i=tab[j];
+      
+#if 0
+      // This form appears significantly slower than below
+      _inline_sse_mult_su3_mat_hwvec(l.elem(i),
+				     r.elem(i),
+				     d.elem(i));
+#else
+      _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
+				   r.elem(i).elem(0),
+				   d.elem(i).elem(0));
+      _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
+				   r.elem(i).elem(1),
+				   d.elem(i).elem(1));
+#endif
+    }
   }
 }
 #endif

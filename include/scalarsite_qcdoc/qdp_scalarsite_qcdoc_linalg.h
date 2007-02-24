@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.7 2007-02-21 22:17:20 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.8 2007-02-24 01:00:30 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -487,17 +487,24 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
    double fp_regs[32];
    _save_fp_regs(fp_regs);
 
-   //  cout << "Bj Evaluate" << endl;
-   const int* tab = s.siteTable().slice();
-     
-   for(int j=0; j < s.numSiteTable(); j++) {
-     i = tab[j];
-     _inline_qcdoc_mult_su3_nn(l.elem(i).elem(),
-			       r.elem(i).elem(),
-			       d.elem(i).elem());
+   if( s.hasOrderedRep() ) { 
+     for(int i = s.start(); i <= s.end(); i++) { 
+       _inline_qcdoc_mult_su3_nn(l.elem(i).elem(),
+				 r.elem(i).elem(),
+				 d.elem(i).elem());
+     }
+   }
+   else { 
+
+     const int* tab = s.siteTable().slice();
+     for(int j=0; j < s.numSiteTable(); j++) {
+       int i = tab[j];
+       _inline_qcdoc_mult_su3_nn(l.elem(i).elem(),
+				 r.elem(i).elem(),
+				 d.elem(i).elem());
+     }
    }
    _restore_fp_regs(fp_regs);
-  
 }
 
 #endif
@@ -528,16 +535,29 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
   const C& l = static_cast<const C&>(rhs.expression().left());
   const H& r = static_cast<const H&>(rhs.expression().right());
 
-  const int* tab=s.siteTable().slice();
-  for(int j=0; j <= s.numSitetable(); ++j) 
-  {
-    int i=tab[j];
-    _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
-				     r.elem(i).elem(0),
-				     d.elem(i).elem(0));
-    _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
-				     r.elem(i).elem(1),
-				     d.elem(i).elem(1));
+
+  if( s.hasOrderedRep() ) { 
+    for(int i=s.start(); i <= s.end(); i++) { 
+      _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
+				       r.elem(i).elem(0),
+				       d.elem(i).elem(0));
+      _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
+				       r.elem(i).elem(1),
+				       d.elem(i).elem(1));
+    }
+  }
+  else { 
+    const int* tab=s.siteTable().slice();
+    for(int j=0; j <= s.numSitetable(); ++j) {
+      
+      int i=tab[j];
+      _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
+				       r.elem(i).elem(0),
+				       d.elem(i).elem(0));
+      _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
+				       r.elem(i).elem(1),
+				       d.elem(i).elem(1));
+    }
   }
 }
 

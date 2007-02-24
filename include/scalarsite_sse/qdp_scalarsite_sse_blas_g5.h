@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas_g5.h,v 1.5 2007-02-21 22:17:20 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas_g5.h,v 1.6 2007-02-24 01:00:30 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1958,7 +1958,7 @@ void evaluate( OLattice< TVec > &d,
 
   REAL ar =  a.elem().elem().elem().elem();
   REAL *aptr = (REAL *)&ar;
-  if( s.hasSubset()) {
+  if( s.hasOrderedRep()) {
 
     REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());

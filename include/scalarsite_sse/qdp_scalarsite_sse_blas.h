@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.15 2007-02-22 15:58:31 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.16 2007-02-24 01:00:30 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -109,7 +109,7 @@ void evaluate(OLattice< TVec >& d,
   // - sign as y -= ax <=> y = y-ax = -ax + y = axpy with -a 
   REAL32 ar = -( a.elem().elem().elem().elem());
   REAL32* aptr = &ar;
-  if( s.hasSubset() ) { 
+  if( s.hasOrderedRep() ) { 
     REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
     
@@ -410,7 +410,7 @@ void evaluate(OLattice< TVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
-      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(d.elem(i).elem(0).elem(0).real());
       vaxpy3(yptr, aptr, xptr, yptr,24);   
     }
   }
@@ -453,7 +453,7 @@ void evaluate(OLattice< TVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
-      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(d.elem(i).elem(0).elem(0).real());
    
       vaxpy3(yptr, aptr, xptr, yptr, 24);
     }
@@ -560,7 +560,7 @@ void evaluate( OLattice< TVec > &d,
   // Set pointers 
   REAL32 ar =  a.elem().elem().elem().elem();
   REAL32 *aptr = (REAL32 *)&ar;
-  if( s.hasSubset() ) {
+  if( s.hasOrderedRep() ) {
     REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
@@ -679,7 +679,7 @@ void evaluate( OLattice< TVec > &d,
   // -ve sign as y - ax = -ax + y  = axpy with -a.
   REAL32 ar =  -a.elem().elem().elem().elem();
   REAL32 *aptr = (REAL32 *)&ar;
-  if( s.hasSubset() ) { 
+  if( s.hasOrderedRep() ) { 
     REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
@@ -1969,7 +1969,7 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
   QDPIO::cout << "BJ: innerProductReal(multi1d) all" << endl;
 #endif
 
-  // This BinaryReturn has Type_t
+  // This BinaryReturn hasType_t
   // OScalar<OScalar<OScalar<RScalar<PScalar<REAL> > > > >
   BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
   // Inner product is accumulated internally in DOUBLE

@@ -31,19 +31,32 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-
-  const int* tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int site=tab[j];
-    HVec tmp ; 
-    inlineSpinProjDir0Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
-			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
-			    1);
+  if( s.hasOrderedRep() ) {
+    for(int site = s.start() ; site <= s.end(); site++) { 
+      HVec tmp ; 
+      inlineSpinProjDir0Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			      1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+    }
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int site=tab[j];
+      HVec tmp ; 
+      inlineSpinProjDir0Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			      1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
     
-    
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
-    
+    }
   }
 
 }
@@ -70,20 +83,34 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-
-  const int* tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int site=tab[j];
-
-    HVec tmp ;
-    inlineSpinProjDir0Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
-			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
-			    1);
-
-
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
- 
+  if( s.hasOrderedRep() ) {
+    for(int site = s.start() ; site <= s.end(); site++) { 
+      HVec tmp ;
+      inlineSpinProjDir0Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			       1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+   
+    }
+  }
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int site=tab[j];
+      
+      HVec tmp ;
+      inlineSpinProjDir0Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			       1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      
+    }
   }
 
 }
@@ -112,23 +139,36 @@ void evaluate(OLattice< HVec >& d,
 
   REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
 
-
-  const int* tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int site=tab[j];
-
-
-    HVec tmp ;
-    inlineSpinProjDir1Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
-			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
-			    1);
-
-
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
- 
+  if( s.hasOrderedRep() ) {
+    for(int site = s.start() ; site <= s.end(); site++) { 
+      HVec tmp ;
+      inlineSpinProjDir1Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			      1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      
+    }
   }
-
+  else { 
+    
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int site=tab[j];
+      
+      HVec tmp ;
+      inlineSpinProjDir1Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			      1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      
+    }
+  }
 }
 
 // HalfVec = adj(u)*SpinProjectDir1Minus(Vec);
@@ -153,22 +193,36 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-
-  const int* tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int site=tab[j];
-
-    HVec tmp ;
-    inlineSpinProjDir1Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
-			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
-			    1);
-
-
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
- 
+  if( s.hasOrderedRep() ) {
+    for(int site = s.start() ; site <= s.end(); site++) { 
+      HVec tmp ;
+      inlineSpinProjDir1Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			       1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+   
+    }
   }
+  else { 
 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int site=tab[j];
+      
+      HVec tmp ;
+      inlineSpinProjDir1Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			       1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      
+    }
+  }
 }
 
 
@@ -194,21 +248,31 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-  const int* tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int site=tab[j];
-
-    HVec tmp ;
-    inlineSpinProjDir2Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
-			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
-			    1);
-
-
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
- 
+  if( s.hasOrderedRep() ) {
+    for(int site = s.start() ; site <= s.end(); site++) { 
+      HVec tmp ;
+      inlineSpinProjDir2Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			      1);
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      
+    }
   }
-
+  else { 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int site=tab[j];
+      HVec tmp ;
+      inlineSpinProjDir2Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			      1);
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+    }
+  }
 }
 
 // HalfVec = adj(u)*SpinProjectDir2Minus(Vec);
@@ -233,24 +297,38 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-
-
-  const int* tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int site=tab[j];
-
-    HVec tmp ;
-    inlineSpinProjDir2Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
-			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
-			    1);
-
-
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
- 
+  if( s.hasOrderedRep() ) {
+    for(int site = s.start() ; site <= s.end(); site++) { 
+      HVec tmp ;
+      inlineSpinProjDir2Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			       1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      
+    }
   }
-
+  else { 
+    
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int site=tab[j];
+      
+      HVec tmp ;
+      inlineSpinProjDir2Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			       1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      
+    }
+  }
 }
+
 // HalfVec = adj(u)*SpinProjectDir3Plus(Vec);
 template<>
 inline
@@ -273,22 +351,34 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-
-
-  const int* tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int site=tab[j];
-    HVec tmp ;
-    inlineSpinProjDir3Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
-			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
-			    1);
-
-
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
- 
+  if( s.hasOrderedRep() ) {
+    for(int site = s.start() ; site <= s.end(); site++) { 
+      HVec tmp ;
+      inlineSpinProjDir3Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			      1);
+           
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      
+    }
   }
+  else { 
 
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int site=tab[j];
+      HVec tmp ;
+      inlineSpinProjDir3Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			      1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      
+    }
+  }
 }
 
 // HalfVec = adj(u)*SpinProjectDir3Minus(Vec);
@@ -314,19 +404,35 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
 
-  const int* tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); j++) { 
-    int site=tab[j];
+  if( s.hasOrderedRep() ) {
+    for(int site = s.start() ; site <= s.end(); site++) { 
+      HVec tmp ;
+      inlineSpinProjDir3Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			       1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
 
-    HVec tmp ;
-    inlineSpinProjDir3Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
-			    (REAL32 *)&(tmp.elem(0).elem(0).real()),
-			    1);
-
-
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-    _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
- 
+    }
+  }
+  else { 
+    
+    const int* tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int site=tab[j];
+      
+      HVec tmp ;
+      inlineSpinProjDir3Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
+			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
+			       1);
+      
+      
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
+      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      
+    }
   }
 
 }

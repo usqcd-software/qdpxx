@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: examples.h,v 1.7 2005-09-16 02:58:18 edwards Exp $
+// $Id: examples.h,v 1.8 2007-02-24 01:00:29 bjoo Exp $
 //
 // Include file for test suite
 
@@ -37,6 +37,9 @@ void baryon(const LatticePropagator& quark_propagator,
 void dslash_2d_plus(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const LatticeFermion& psi,
 	    int cb);
 void dslash(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const LatticeFermion& psi,
+	    int isign, int cb);
+
+void dslash2(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const LatticeFermion& psi,
 	    int isign, int cb);
 
 void FormFac(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& quark_propagator,
