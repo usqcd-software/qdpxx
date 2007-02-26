@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.20 2004-12-09 13:18:37 bjoo Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.21 2007-02-26 02:26:44 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -264,16 +264,12 @@ namespace Layout
       QDPIO::cout << " " << _layout.logical_size[i];
     QDPIO::cout << endl;
 
-    QDPIO::cout << "  logical node coord =";
-    for(int i=0; i < Nd; ++i)
-      QDPIO::cout << " " << _layout.logical_coord[i];
-    QDPIO::cout << endl;
-
     QDPIO::cout << "  subgrid size =";
     for(int i=0; i < Nd; ++i)
       QDPIO::cout << " " << _layout.subgrid_nrow[i];
     QDPIO::cout << endl;
 
+    QDPIO::cout << "  total number of nodes = " << Layout::numNodes() << endl;
     QDPIO::cout << "  total volume = " << _layout.vol << endl;
     QDPIO::cout << "  subgrid volume = " << _layout.subgrid_vol << endl;
 
