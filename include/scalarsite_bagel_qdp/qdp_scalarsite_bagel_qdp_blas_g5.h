@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_bagel_qdp_blas_g5.h,v 1.6 2007-02-21 22:17:19 bjoo Exp $
+// $Id: qdp_scalarsite_bagel_qdp_blas_g5.h,v 1.7 2007-02-26 22:49:21 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -7,8 +7,8 @@
  */
 
 
-#ifndef QDP_SCALARSITE_BAGEL_BLAS_G5_H
-#define QDP_SCALARSITE_BAGEL_BLAS_G5_H
+#ifndef QDP_SCALARSITE_BAGEL_QDP_BLAS_G5_H
+#define QDP_SCALARSITE_BAGEL_QDP_BLAS_G5_H
 
 #include "bagel_qdp.h"
 
@@ -39,7 +39,7 @@ void evaluate(OLattice< TVec >& d,
 	                     UnaryNode< FnChiralProjectPlus, Reference< QDPType<TVec,OLattice<TVec> > > >
 >, 
 	                     OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -85,7 +85,7 @@ void evaluate(OLattice< TVec >& d,
 	                     UnaryNode< FnChiralProjectMinus, Reference< QDPType<TVec,OLattice<TVec> > > >
 >, 
 	                     OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -133,7 +133,7 @@ void evaluate(OLattice< TVec >& d,
 	                     UnaryNode< FnChiralProjectPlus, Reference< QDPType<TVec,OLattice<TVec> > > >
 >, 
 	                     OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -177,7 +177,7 @@ void evaluate(OLattice< TVec >& d,
 	                     UnaryNode< FnChiralProjectMinus, Reference< QDPType<TVec,OLattice<TVec> > > >
 >, 
 	                     OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -223,7 +223,7 @@ void evaluate(OLattice< TVec >& d,
 	      const QDPExpr<
 	                    UnaryNode< FnChiralProjectPlus, Reference< QDPType<TVec,OLattice<TVec> > > >, 
 	                    OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -264,7 +264,7 @@ void evaluate(OLattice< TVec >& d,
 	      const QDPExpr<
 	                    UnaryNode< FnChiralProjectMinus, Reference< QDPType<TVec,OLattice<TVec> > > >, 
 	                    OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -304,7 +304,7 @@ void evaluate(OLattice< TVec >& d,
 	      const QDPExpr<
 	                    UnaryNode< FnChiralProjectPlus, Reference< QDPType<TVec,OLattice<TVec> > > >, 
 	                    OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -313,13 +313,28 @@ void evaluate(OLattice< TVec >& d,
 
   const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().child());
 
+
+  if( s.hasOrderedRep() ) { 
+    REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
+    REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
+    
   
-  REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
-  REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
-  
-  
-  int n_4vec = (s.end()-s.start()+1);
-  qdp_vsub_chp(yptr, yptr, xptr, n_4vec);
+    int n_4vec = (s.end()-s.start()+1);
+    qdp_vsub_chp(yptr, yptr, xptr, n_4vec);
+  }
+  else {
+
+    const int* tab=s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); j++) { 
+      int i = tab[j];
+      
+      REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
+      REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
+    
+      qdp_vsub_chp(yptr, yptr, xptr, 1);
+    }
+
+  }
   
 }
 
@@ -332,7 +347,7 @@ void evaluate(OLattice< TVec >& d,
 	      const QDPExpr<
 	                    UnaryNode< FnChiralProjectMinus, Reference< QDPType<TVec,OLattice<TVec> > > >, 
 	                    OLattice< TVec > > &rhs,
-	      const OrderedSubset& s)
+	      const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -379,7 +394,7 @@ void evaluate( OLattice< TVec > &d,
                           >,
 	                  OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = x + a*P{+} y" << endl;
@@ -446,7 +461,7 @@ void evaluate( OLattice< TVec > &d,
                           >,
 	                  OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = x + a*P{-} y" << endl;
@@ -512,7 +527,7 @@ void evaluate( OLattice< TVec > &d,
                           >,
 	                  OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = x - a*P{+} y" << endl;
@@ -578,7 +593,7 @@ void evaluate( OLattice< TVec > &d,
                           >,
 	                  OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = x - a*P{-} y" << endl;
@@ -642,7 +657,7 @@ void evaluate( OLattice< TVec > &d,
 	           UnaryNode<FnChiralProjectPlus, Reference< QDPType<TVec, OLattice<TVec> > > >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = a*x + P{+} y" << endl;
@@ -705,7 +720,7 @@ void evaluate( OLattice< TVec > &d,
 	           UnaryNode<FnChiralProjectMinus, Reference< QDPType<TVec, OLattice<TVec> > > >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = a*x + P{-} y" << endl;
@@ -769,7 +784,7 @@ void evaluate( OLattice< TVec > &d,
 	           UnaryNode<FnChiralProjectPlus, Reference< QDPType<TVec, OLattice<TVec> > > >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = a*x + P{+} y" << endl;
@@ -832,7 +847,7 @@ void evaluate( OLattice< TVec > &d,
 	           UnaryNode<FnChiralProjectMinus, Reference< QDPType<TVec, OLattice<TVec> > > >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 #ifdef DEBUG_BLAS_G5
   QDPIO::cout << "z = a*x + P{-} y" << endl;
@@ -892,7 +907,7 @@ void evaluate( OLattice< TVec > &d,
 	       UnaryNode< FnChiralProjectPlus, Reference< QDPType< TVec, OLattice< TVec > > > >
                >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -937,7 +952,7 @@ void evaluate( OLattice< TVec > &d,
 	       UnaryNode< FnChiralProjectMinus, Reference< QDPType< TVec, OLattice< TVec > > > >
                >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -987,7 +1002,7 @@ void evaluate( OLattice< TVec > &d,
                 > 
                >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1065,7 +1080,7 @@ void evaluate( OLattice< TVec > &d,
                 > 
                >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1143,7 +1158,7 @@ void evaluate( OLattice< TVec > &d,
                 > 
                >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1222,7 +1237,7 @@ void evaluate( OLattice< TVec > &d,
                 > 
                >,
 	       OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1300,7 +1315,7 @@ void evaluate( OLattice< TVec > &d,
                   >,
 	          OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1363,7 +1378,7 @@ void evaluate( OLattice< TVec > &d,
                    >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1442,7 +1457,7 @@ void evaluate( OLattice< TVec > &d,
                    >
                  >,
 	         OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1501,7 +1516,7 @@ void evaluate( OLattice< TVec > &d,
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      qdp_vaxpbg5y(zptr, aptr, xptr, bptr, yptr, n_4vec);  
+      qdp_vaxpbg5y(zptr, aptr, xptr, bptr, yptr, 1);  
 
     }
   }
@@ -1529,7 +1544,7 @@ void evaluate( OLattice< TVec > &d,
                             >
                  >,
 	         OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1618,7 +1633,7 @@ void evaluate( OLattice< TVec > &d,
                    >
                  >,
 	         OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1717,7 +1732,7 @@ void evaluate( OLattice< TVec > &d,
                    >
                  >,
 	         OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1812,7 +1827,7 @@ void evaluate( OLattice< TVec > &d,
                    >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1901,7 +1916,7 @@ void evaluate( OLattice< TVec > &d,
                    >
                  >,
 	        OLattice< TVec > > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -1989,7 +2004,7 @@ void evaluate( OLattice< TVec > &d,
 	           >,
 	           OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
@@ -2077,7 +2092,7 @@ void evaluate( OLattice< TVec > &d,
 	           >,
 	           OLattice< TVec > 
                > &rhs,
-	       const OrderedSubset& s)
+	       const Subset& s)
 {
 
 #ifdef DEBUG_BLAS_G5
