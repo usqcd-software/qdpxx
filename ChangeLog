@@ -1,3 +1,11 @@
+2007-02-26 17:49  bjoo
+
+	* include/: qdp_scalarsite_bagel_qdp.h,
+	  scalarsite_bagel_qdp/qdp_scalarsite_bagel_qdp_blas.h,
+	  scalarsite_bagel_qdp/qdp_scalarsite_bagel_qdp_blas_g5.h: Now it
+	  seems that bagel_qdp target also works in both cb2 and lexico.
+	  Victory
+
 2007-02-25 21:26  edwards
 
 	* lib/qdp_parscalar_layout.cc: Now print the total number of nodes.
