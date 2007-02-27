@@ -1,3 +1,7 @@
+2007-02-27 15:27  bjoo
+
+	* NEWS, configure, configure.ac: Pre tagging commit
+
 2007-02-27 11:22  edwards
 
 	* other_libs/xpath_reader/include/xml_array2d.h: Added nrows and
