@@ -1,3 +1,15 @@
+02/27/2007 -- Balint Joo
+	Version 1.22.0
+
+	Major surgery. Unordered/Unordered Sets, Ordered/UnorderedSubsets are gone.
+	Only Sets and Subsets remain. Trawled through evaluates and recoded with
+	if( s.hasOrderedSubset() ) {   } else {  } 
+	constructs (This speeded up unordered subsets. Checked tests and chroma 
+	regressions pass with generic, sse and bagel_qdp in both cb2 and lexico layouts.
+
+        NB: scalarsite_qcdoc needs tested on an actual QCDOC (BEWARE!!!!)
+
+
 02/16/2007 -- Balint Joo
         Version 1.21.9
 	
