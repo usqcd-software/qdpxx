@@ -1,4 +1,9 @@
-02/27/2007 -- Balint Joo
+03/05/2007 -- Balint Joo
+ ---    Version 1.22.1 
+	For release.....
+
+02/27/2007
+
 	Version 1.22.0
 
 	Major surgery. Unordered/Unordered Sets, Ordered/UnorderedSubsets are gone.
