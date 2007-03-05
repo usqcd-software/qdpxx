@@ -1,3 +1,14 @@
+2007-03-05 14:41  tag qdp1-22-1
+
+2007-03-05 14:41  bjoo
+
+	* NEWS: News updated
+
+2007-03-05 14:40  bjoo
+
+	* configure.ac, other_libs/qio/aclocal.m4,
+	  other_libs/qio/configure: Configure.ac version bump
+
 2007-02-27 16:28  tag qdp1-22-0
 
 2007-02-27 16:28  bjoo
