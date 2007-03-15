@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.20.3
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.23.0
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -66,6 +66,8 @@
 \newcommand{\tLatticeSpinVector}{LatticeSpinVector}
 
 % Fixed precision
+\newcommand{\tRealF}{RealF}
+\newcommand{\tLatticeRealF}{LatticeRealF}
 \newcommand{\tRealD}{RealD}
 \newcommand{\tLatticeRealD}{LatticeRealD}
 \newcommand{\tLatticeComplexD}{LatticeComplexD}
@@ -109,12 +111,12 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.20.3}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.23.0}
 }
 \author{Robert G. Edwards\\
 SciDAC Software Coordinating Committee}
 
-\date{May 12, 2006}
+\date{March 14, 2007}
 
 \maketitle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2625,6 +2627,16 @@ ldexp, pow, fmod, atan2
 \end{tabular}
 \end{flushleft}
 
+\subsection{Global comparisons}
+\label{sec:comparisons}
+
+\begin{flushleft}
+\begin{tabular}{lcp{4.0in}}
+\verb|globalMax(arg1)|        &:& maximum across the lattice (simple scalars)\\
+\verb|globalMin(arg1)|        &:& minimum across the lattice (simple scalars)\\
+\end{tabular}
+\end{flushleft}
+
 \medskip
 
 \subsection{Accessors}
@@ -3768,6 +3780,37 @@ the left hand side of the assignment.
   Meaning     & $r = \sum a$\\
   \hline
   \itt     & All numeric non-lattice scalar types \\
+  \hline
+  \end{tabular}
+\end{flushleft}
+
+
+\subsection{Global comparisons}
+
+Find the maximum or minimum of a quantity across the lattice. These
+operations do not have subset variants.
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Syntax      & {\it Type} \verb|globalMax|({\tt const Lattice{\it Type}\& a})\\
+  \hline
+  Meaning     & $r = max_{lattice} a(x)$ \\
+  \hline
+  \itt        & \tLatticeRealF, \tLatticeRealD \\
+  \hline
+  \end{tabular}
+\end{flushleft}
+
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Syntax      & {\it Type} \verb|globalMin|({\tt const Lattice{\it Type}\& a})\\
+  \hline
+  Meaning     & $r = min_{lattice} a(x)$ \\
+  \hline
+  \itt        & \tLatticeRealF, \tLatticeRealD \\
   \hline
   \end{tabular}
 \end{flushleft}

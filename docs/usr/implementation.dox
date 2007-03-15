@@ -1,4 +1,4 @@
-//$Id: implementation.dox,v 1.4 2005-08-13 21:07:04 edwards Exp $
+//$Id: implementation.dox,v 1.5 2007-03-15 03:50:21 edwards Exp $
 /*!
 \page impldetail Implementation Details
 
@@ -13,6 +13,7 @@
   -# \ref secinplace
   -# \ref secbroadcasts 
   -# \ref secreductions 
+  -# \ref secglobalcomparisons
   -# \ref secpeek
   -# \ref secotherfuncs	
   -# \ref subtypeops 
@@ -257,6 +258,14 @@ i.e. via \c operator=
   - sum over each subset of Set returning \#subset
 
 
+\subsection secglobalcomparisons Global comparisons
+
+- QDP::globalMax
+  - maximum over lattice indices (simple quantities)
+- QDP::globalMin
+  - minimum over lattice indices (simple quantities)
+
+
 \subsection secpeek Accessors
 
 Peeking and poking (accessors) into various component indices of objects.
@@ -415,7 +424,7 @@ All operations listed in Sections \ref secinfix - \ref secotherfuncs
      - *(PMatrix,PScalar)
      - *(PScalar,PMatrix)
      - *(PMatrix,PMatrix)
-  - Comparisons}
+  - Comparisons
     -  none
   - Assignments
     - =(PMatrix)
@@ -433,6 +442,8 @@ All operations listed in Sections \ref secinfix - \ref secotherfuncs
     - all
   - Reductions
     - all
+  - Global Comparisons
+    -  none
 
 \par PVector
 
@@ -469,6 +480,8 @@ All operations listed in Sections \ref secinfix - \ref secotherfuncs
     - =(Zero)
   - Reductions 
     - all
+  - Global Comparisons
+    -  none
 
 \par PSpinMatrix
 
@@ -1237,6 +1250,30 @@ the left hand side of the assignment.
    - \f$r = \sum a\f$ 
 - Type
    - All numeric types
+
+
+\subsection globalcomparisons Global comparisons
+
+Find the maximum or minimum of a quantity across the lattice. These
+operations do not have subset variants.
+
+\par Global maximum
+
+-  Syntax
+   - Type QDP::globalMax (const LatticeType& a)
+-  Meaning
+   - \f$r = max_x a(x)\f$ 
+- Type
+   - Only reals
+
+\par Global minimum
+
+-  Syntax
+   - Type QDP::globalMin (const LatticeType& a)
+-  Meaning
+   - \f$r = min_x a(x)\f$ 
+- Type
+   - Only reals
 
 
 \subsection fills Fills
