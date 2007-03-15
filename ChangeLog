@@ -1,3 +1,10 @@
+2007-03-15 14:32  tag qdp1-23-0
+
+2007-03-15 14:32  edwards
+
+	* include/qdp_parscalar_specific.h: Bug fix in globalMax and
+	  globalMin.
+
 2007-03-14 23:50  edwards
 
 	* docs/: manual.tex, usr/implementation.dox: Changed to 1.23.0 .
