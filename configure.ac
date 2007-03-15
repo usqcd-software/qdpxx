@@ -1,4 +1,4 @@
-AC_INIT([qdp++],[1.22.1],[edwards@jlab.org])
+AC_INIT([qdp++],[1.23.0],[edwards@jlab.org])
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -36,7 +36,7 @@ AC_MSG_NOTICE([Configuring QDP++ for Nd = ${ac_Nd}])
 dnl --enable-Nc
 AC_ARG_ENABLE(Nc,
   AC_HELP_STRING([--enable-Nc=N ],
-    [Set Number of Colours, ie N for SU(N) default is SU(3)]),
+    [Set Number of Colors, ie N for SU(N) default is SU(3)]),
   [ac_Nc=${enableval}],
   [ac_Nc=3]
 )
