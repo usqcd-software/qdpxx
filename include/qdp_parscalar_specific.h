@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.43 2007-03-15 03:15:16 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.44 2007-03-15 18:32:47 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -1121,7 +1121,7 @@ globalMax(const QDPExpr<RHS,OLattice<T> >& s1)
   // Loop always entered so unroll
   d.elem() = forEach(s1, EvalLeaf1(0), OpCombine());   // SINGLE NODE VERSION FOR NOW
 
-  const int vvol = Layout::vol();
+  const int vvol = Layout::sitesOnNode();
   for(int i=1; i < vvol; ++i) 
   {
     typename UnaryReturn<T, FnGlobalMax>::Type_t  dd = 
@@ -1189,7 +1189,7 @@ globalMin(const QDPExpr<RHS,OLattice<T> >& s1)
   // Loop always entered so unroll
   d.elem() = forEach(s1, EvalLeaf1(0), OpCombine());   // SINGLE NODE VERSION FOR NOW
 
-  const int vvol = Layout::vol();
+  const int vvol = Layout::sitesOnNode();
   for(int i=1; i < vvol; ++i) 
   {
     typename UnaryReturn<T, FnGlobalMin>::Type_t  dd = 
