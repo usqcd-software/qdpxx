@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.27 2007-02-06 15:07:11 bjoo Exp $
+// $Id: qdp_primscalar.h,v 1.28 2007-03-15 03:15:16 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -1341,6 +1341,32 @@ localNorm2(const PScalar<T>& s1)
   return localNorm2(s1.elem());
 }
 
+// Global max
+template<class T>
+struct UnaryReturn<PScalar<T>, FnGlobalMax> {
+  typedef PScalar<typename UnaryReturn<T, FnGlobalMax>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnGlobalMax>::Type_t
+globalMax(const PScalar<T>& s1)
+{
+  return globalMax(s1.elem());
+}
+
+
+// Global min
+template<class T>
+struct UnaryReturn<PScalar<T>, FnGlobalMin> {
+  typedef PScalar<typename UnaryReturn<T, FnGlobalMin>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnGlobalMin>::Type_t
+globalMin(const PScalar<T>& s1)
+{
+  return globalMin(s1.elem());
+}
 
 
 //! PScalar<T> = InnerProduct(adj(PScalar<T1>)*PScalar<T2>)

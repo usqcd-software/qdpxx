@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.42 2007-02-21 22:17:19 bjoo Exp $
+// $Id: qdp_parscalar_specific.h,v 1.43 2007-03-15 03:15:16 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -133,35 +133,49 @@ namespace Internal
     globalSumArray((W *)&dest, int(sizeof(T)/sizeof(W))); // call appropriate hook
   }
 
-#if 0
-  //! Sum across all nodes
-  template<>
-  inline void globalSum(unsigned int& dest)
+
+  //! Low level hook to QMP_max_float
+  inline void globalMaxValue(float* dest)
   {
-    QMP_binary_reduction(&dest, sizeof(unsigned int), sumAnUnsigned);
+    QMP_max_float(dest);
   }
 
-  //! Low level hook to QMP_global_sum
-  template<>
-  inline void globalSum(int& dest)
+  //! Low level hook to QMP_max_double
+  inline void globalMaxValue(double* dest)
   {
-    QMP_sum_int(&dest);
+    QMP_max_double(dest);
   }
 
-  //! Low level hook to QMP_global_sum
-  template<>
-  inline void globalSum(float& dest)
+  //! Global max across all nodes
+  template<class T>
+  inline void globalMax(T& dest)
   {
-    QMP_sum_float(&dest);
+    typedef typename WordType<T>::Type_t  W;   // find the machine word type
+
+    globalMaxValue((W *)&dest);
   }
 
-  //! Low level hook to QMP_global_sum
-  template<>
-  inline void globalSum(double& dest)
+
+  //! Low level hook to QMP_min_float
+  inline void globalMinValue(float* dest)
   {
-    QMP_sum_double(&dest);
+    QMP_min_float(dest);
   }
-#endif
+
+  //! Low level hook to QMP_min_double
+  inline void globalMinValue(double* dest)
+  {
+    QMP_min_double(dest);
+  }
+
+  //! Global min across all nodes
+  template<class T>
+  inline void globalMin(T& dest)
+  {
+    typedef typename WordType<T>::Type_t  W;   // find the machine word type
+
+    globalMinValue((W *)&dest);
+  }
 
 
   //! Broadcast from primary node to all other nodes
@@ -1056,6 +1070,146 @@ innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> 
 }
 
 
+
+
+//-----------------------------------------------
+// Global max and min
+// NOTE: there are no subset version of these operations. It is very problematic
+// and QMP does not support them.
+//! OScalar = globalMax(OScalar)
+/*!
+ * Find the maximum an object has across the lattice
+ */
+template<class RHS, class T>
+typename UnaryReturn<OScalar<T>, FnGlobalMax>::Type_t
+globalMax(const QDPExpr<RHS,OScalar<T> >& s1)
+{
+  typename UnaryReturn<OScalar<T>, FnGlobalMax>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnGlobalMax(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  evaluate(d,OpAssign(),s1,all);   // since OScalar, no global max needed
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+
+//! OScalar = globalMax(OLattice)
+/*!
+ * Find the maximum an object has across the lattice
+ */
+template<class RHS, class T>
+typename UnaryReturn<OLattice<T>, FnGlobalMax>::Type_t
+globalMax(const QDPExpr<RHS,OLattice<T> >& s1)
+{
+  typename UnaryReturn<OLattice<T>, FnGlobalMax>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnGlobalMax(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  // Loop always entered so unroll
+  d.elem() = forEach(s1, EvalLeaf1(0), OpCombine());   // SINGLE NODE VERSION FOR NOW
+
+  const int vvol = Layout::vol();
+  for(int i=1; i < vvol; ++i) 
+  {
+    typename UnaryReturn<T, FnGlobalMax>::Type_t  dd = 
+      forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
+
+    if (toBool(dd > d.elem()))
+      d.elem() = dd;
+  }
+
+  // Do a global max on the result
+  Internal::globalMax(d); 
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+
+//! OScalar = globalMin(OScalar)
+/*!
+ * Find the minimum an object has across the lattice
+ */
+template<class RHS, class T>
+typename UnaryReturn<OScalar<T>, FnGlobalMin>::Type_t
+globalMin(const QDPExpr<RHS,OScalar<T> >& s1)
+{
+  typename UnaryReturn<OScalar<T>, FnGlobalMin>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnGlobalMin(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  evaluate(d,OpAssign(),s1,all);   // since OScalar, no global min needed
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+
+//! OScalar = globalMin(OLattice)
+/*!
+ * Find the minimum an object has across the lattice
+ */
+template<class RHS, class T>
+typename UnaryReturn<OLattice<T>, FnGlobalMin>::Type_t
+globalMin(const QDPExpr<RHS,OLattice<T> >& s1)
+{
+  typename UnaryReturn<OLattice<T>, FnGlobalMin>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnGlobalMin(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  // Loop always entered so unroll
+  d.elem() = forEach(s1, EvalLeaf1(0), OpCombine());   // SINGLE NODE VERSION FOR NOW
+
+  const int vvol = Layout::vol();
+  for(int i=1; i < vvol; ++i) 
+  {
+    typename UnaryReturn<T, FnGlobalMin>::Type_t  dd = 
+      forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
+
+    if (toBool(dd < d.elem()))
+      d.elem() = dd;
+  }
+
+  // Do a global min on the result
+  Internal::globalMin(d); 
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
 
 
 //-----------------------------------------------------------------------------

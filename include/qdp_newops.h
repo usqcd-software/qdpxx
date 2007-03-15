@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_newops.h,v 1.13 2004-07-27 05:28:16 edwards Exp $
+// $Id: qdp_newops.h,v 1.14 2007-03-15 03:15:16 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
@@ -30,6 +30,16 @@ struct FnQuarkContractXX
 struct FnSum
 {
   PETE_EMPTY_CONSTRUCTORS(FnSum)
+};
+
+struct FnGlobalMax
+{
+  PETE_EMPTY_CONSTRUCTORS(FnGlobalMax)
+};
+
+struct FnGlobalMin
+{
+  PETE_EMPTY_CONSTRUCTORS(FnGlobalMin)
 };
 
 struct FnNorm2

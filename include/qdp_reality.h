@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.30 2006-01-21 17:38:20 edwards Exp $
+// $Id: qdp_reality.h,v 1.31 2007-03-15 03:15:16 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -1491,6 +1491,34 @@ sum(const RScalar<T>& s1)
   return sum(s1.elem());
 }
 #endif
+
+
+// Global max
+template<class T>
+struct UnaryReturn<RScalar<T>, FnGlobalMax> {
+  typedef RScalar<typename UnaryReturn<T, FnGlobalMax>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<RScalar<T>, FnGlobalMax>::Type_t
+globalMax(const RScalar<T>& s1)
+{
+  return globalMax(s1.elem());
+}
+
+
+// Global min
+template<class T>
+struct UnaryReturn<RScalar<T>, FnGlobalMin> {
+  typedef RScalar<typename UnaryReturn<T, FnGlobalMin>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<RScalar<T>, FnGlobalMin>::Type_t
+globalMin(const RScalar<T>& s1)
+{
+  return globalMin(s1.elem());
+}
 
 
 

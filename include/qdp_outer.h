@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.50 2007-02-21 22:17:19 bjoo Exp $
+// $Id: qdp_outer.h,v 1.51 2007-03-15 03:15:16 edwards Exp $
 
 #include "qdp_config.h"
 
@@ -772,6 +772,16 @@ struct UnaryReturn<OScalar<T>, FnNorm2 > {
   typedef OScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
 };
 
+template<class T>
+struct UnaryReturn<OScalar<T>, FnGlobalMax> {
+  typedef OScalar<typename UnaryReturn<T, FnGlobalMax>::Type_t>  Type_t;
+};
+
+template<class T>
+struct UnaryReturn<OScalar<T>, FnGlobalMin> {
+  typedef OScalar<typename UnaryReturn<T, FnGlobalMin>::Type_t>  Type_t;
+};
+
 template<class T1, class T2>
 struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnInnerProduct > {
   typedef OScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;
@@ -957,6 +967,16 @@ struct UnaryReturn<OLattice<T>, FnPeekSite> {
 template<class T>
 struct UnaryReturn<OLattice<T>, FnSum > {
   typedef OScalar<typename UnaryReturn<T, FnSum>::Type_t>  Type_t;
+};
+
+template<class T>
+struct UnaryReturn<OLattice<T>, FnGlobalMax> {
+  typedef OScalar<typename UnaryReturn<T, FnGlobalMax>::Type_t>  Type_t;
+};
+
+template<class T>
+struct UnaryReturn<OLattice<T>, FnGlobalMin> {
+  typedef OScalar<typename UnaryReturn<T, FnGlobalMin>::Type_t>  Type_t;
 };
 
 template<class T>

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.30 2007-02-09 20:35:46 bjoo Exp $
+// $Id: qdp_inner.h,v 1.31 2007-03-15 03:15:15 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -1704,6 +1704,38 @@ sum(const IScalar<T>& s1)
 }
 
 
+//------------------------------------------
+// Global max
+template<class T>
+struct UnaryReturn<IScalar<T>, FnGlobalMax> {
+  typedef IScalar<typename UnaryReturn<T, FnGlobalMax>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<IScalar<T>, FnGlobalMax>::Type_t
+globalMax(const IScalar<T>& s1)
+{
+//  return globalMax(s1.elem());
+  return s1.elem();
+}
+
+
+//------------------------------------------
+// Global min
+template<class T>
+struct UnaryReturn<IScalar<T>, FnGlobalMin> {
+  typedef IScalar<typename UnaryReturn<T, FnGlobalMin>::Type_t>  Type_t;
+};
+
+template<class T>
+inline typename UnaryReturn<IScalar<T>, FnGlobalMin>::Type_t
+globalMin(const IScalar<T>& s1)
+{
+//  return globalMin(s1.elem());
+  return s1.elem();
+}
+
+
 // InnerProduct (norm-seq) global sum = sum(tr(adj(s1)*s1))
 template<class T>
 struct UnaryReturn<IScalar<T>, FnNorm2> {
@@ -3300,6 +3332,55 @@ sum(const ILattice<T,N>& s1)
 #endif
 
 
+//--------------------------------------------
+// Global max
+template<class T, int N>
+struct UnaryReturn<ILattice<T,N>, FnGlobalMax> {
+  typedef IScalar<typename UnaryReturn<T, FnGlobalMax>::Type_t>  Type_t;
+};
+
+template<class T, int N>
+inline typename UnaryReturn<ILattice<T,N>, FnGlobalMax>::Type_t
+sum(const ILattice<T,N>& s1)
+{
+  typename UnaryReturn<ILattice<T,N>, FnGlobalMax>::Type_t  d;
+
+  d.elem() = s1.elem(0);
+  for(int i=1; i < N; ++i)
+  {
+    if (toBool(s1.elem() > d.elem()))
+      d.elem() = s1.elem(i);
+  }
+
+  return d;
+}
+
+
+//--------------------------------------------
+// Global min
+template<class T, int N>
+struct UnaryReturn<ILattice<T,N>, FnGlobalMin> {
+  typedef IScalar<typename UnaryReturn<T, FnGlobalMin>::Type_t>  Type_t;
+};
+
+template<class T, int N>
+inline typename UnaryReturn<ILattice<T,N>, FnGlobalMin>::Type_t
+sum(const ILattice<T,N>& s1)
+{
+  typename UnaryReturn<ILattice<T,N>, FnGlobalMin>::Type_t  d;
+
+  d.elem() = s1.elem(0);
+  for(int i=1; i < N; ++i)
+  {
+    if (toBool(s1.elem() > d.elem()))
+      d.elem() = s1.elem(i);
+  }
+
+  return d;
+}
+
+
+//--------------------------------------------
 // InnerProduct (norm-seq) global sum = sum(tr(adj(s1)*s1))
 template<class T, int N>
 struct UnaryReturn<ILattice<T,N>, FnNorm2> {

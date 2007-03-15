@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_globalfuncs.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_globalfuncs.h,v 1.2 2007-03-15 03:15:15 edwards Exp $
 
 /*! \file
  * \brief Global functions on QDPType
@@ -248,6 +248,32 @@ inline typename UnaryReturn<C, FnSumMulti>::Type_t
 sumMulti(const QDPType<T,C>& s1, const Set& ss)
 {
   return sumMulti(PETE_identity(s1), ss);
+}
+
+
+//-----------------------------------------------
+// Global max and min
+//! OScalar = globalMax(source)
+/*!
+ * Find the maximum of an object across the lattice
+ */
+template<class T, class C>
+inline typename UnaryReturn<C, FnGlobalMax>::Type_t
+globalMax(const QDPType<T,C>& s1)
+{
+  return globalMax(PETE_identity(s1));
+}
+
+
+//! OScalar = globalMin(source)
+/*!
+ * Find the minimum of an object across the lattice
+ */
+template<class T, class C>
+inline typename UnaryReturn<C, FnGlobalMin>::Type_t
+globalMin(const QDPType<T,C>& s1)
+{
+  return globalMin(PETE_identity(s1));
 }
 
 
