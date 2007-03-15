@@ -1,3 +1,32 @@
+2007-03-14 23:50  edwards
+
+	* docs/: manual.tex, usr/implementation.dox: Changed to 1.23.0 .
+	  Added Global Comparisons sections with new globalMax and
+	  globalMin functions.
+
+2007-03-14 23:16  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2007-03-14 23:16  edwards
+
+	* configure.ac: Changed to 1.23.0
+
+2007-03-14 23:16  edwards
+
+	* NEWS: Info on 1.23.0
+
+2007-03-14 23:15  edwards
+
+	* include/: qdp_globalfuncs.h, qdp_inner.h, qdp_newops.h,
+	  qdp_outer.h, qdp_parscalar_specific.h, qdp_primscalar.h,
+	  qdp_reality.h, qdp_scalar_specific.h, qdp_simpleword.h: Added
+	  globalMax and globalMin.
+
+2007-03-14 23:14  edwards
+
+	* examples/t_foo.cc: Added tests of globalMax/Min.
+
 2007-03-05 14:41  tag qdp1-22-1
 
 2007-03-05 14:41  bjoo
