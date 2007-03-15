@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: t_foo.cc,v 1.43 2005-11-20 15:58:28 edwards Exp $
+// $Id: t_foo.cc,v 1.44 2007-03-15 03:14:55 edwards Exp $
 //
 /*! \file
  *  \brief Silly little internal test code
@@ -22,12 +22,11 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  {
-    const int foo[] = {2,2,2,4};
-    multi1d<int> nrow(Nd);
-    nrow = foo;  // Use only Nd elements
-    Layout::setLattSize(nrow);
-  }
+  const int foo[] = {2,1,1,2};
+  multi1d<int> nrow(Nd);
+  nrow = foo;  // Use only Nd elements
+
+  Layout::setLattSize(nrow);
   Layout::create();
 
   XMLFileWriter xml("t_foo.xml");
@@ -40,6 +39,22 @@ int main(int argc, char *argv[])
   QDP_PUSH_PROFILE(QDP::getProfileLevel());
 
 #if 1
+  {
+    LatticeReal a;
+    random(a);
+
+    Real b = globalMax(a);
+    Real c = globalMin(a);
+
+    push(xml, "MaxMinTest");
+    write(xml, "globalMax_a", b);
+    write(xml, "globalMin_a", c);
+    write(xml, "a", a);
+    pop(xml);
+  }
+#endif
+
+#if 0
   {
     Seed ran1 = 11;
     Seed ran2 = 13;
