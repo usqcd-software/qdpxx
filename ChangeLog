@@ -1,3 +1,8 @@
+2007-03-17 08:55  detar
+
+	* other_libs/qio/other_libs/c-lime/examples/lime_unpack.c: Correct
+	  premature use of DCAP macro
+
 2007-03-16 20:14  detar
 
 	* other_libs/qio/other_libs/c-lime/examples/lime_unpack.c: Fix
