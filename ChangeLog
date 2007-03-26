@@ -1,3 +1,11 @@
+2007-03-26 15:48  bjoo
+
+	* aclocal.m4, configure, configure.ac,
+	  include/qdp_config_internal.h.in,
+	  include/qdp_scalarsite_bagel_qdp.h: Added --enable-bgl option as
+	  placeholder for when we get bluegene assembler. Right now it
+	  activates QCDOC SU(3)xSU(3) and noarch AN type operation
+
 2007-03-18 18:08  tag qdp1-23-1
 
 2007-03-18 18:08  edwards
