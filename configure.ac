@@ -115,6 +115,14 @@ AC_ARG_ENABLE(qcdoc,
      [ac_qcdoc_enabled=0]
 )
 
+dnl --enable-bgl
+AC_ARG_ENABLE(bgl,
+   AC_HELP_STRING([--enable-bgl],
+     [Enable BlueGeneL Optimizations]),
+     [ac_bgl_enabled=1
+      AC_MSG_NOTICE([Enabling BlueGene Specific Optimizations])],
+      [ac_bgl_enabled=1]
+)
 
 if test ${ac_sse} -eq 1; then
   if test "X${GXX}X" = "XyesX"; then 
@@ -146,6 +154,11 @@ fi
 dnl if QCDOC is enabled change some settings
 if test ${ac_qcdoc_enabled} -eq 1; then 
    AC_DEFINE_UNQUOTED(QDP_USE_QCDOC, ${ac_qcdoc_enabled}, [Enable QCDOC opts])
+fi
+
+dnl if QCDOC is enabled change some settings
+if test ${ac_bgl_enabled} -eq 1; then 
+   AC_DEFINE_UNQUOTED(QDP_USE_BLUEGENEL, ${ac_bgl_enabled}, [Enable BGL opts])
 fi
 
 dnl Check if profiling is enabled
