@@ -1,3 +1,7 @@
+2007-03-27 19:01  bjoo
+
+	* aclocal.m4, configure: Remade autofiles
+
 2007-03-26 15:48  bjoo
 
 	* aclocal.m4, configure, configure.ac,
