@@ -1,3 +1,8 @@
+2007-03-28 08:59  bjoo
+
+	* include/scalarsite_qcdoc/qdp_scalarsite_qcdoc_linalg.h: Fixed an
+	  oops here
+
 2007-03-27 19:01  bjoo
 
 	* aclocal.m4, configure: Remade autofiles
