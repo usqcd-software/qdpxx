@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.8 2007-02-24 01:00:30 bjoo Exp $
+// $Id: qdp_scalarsite_qcdoc_linalg.h,v 1.9 2007-03-28 12:59:16 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -548,7 +548,7 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
   }
   else { 
     const int* tab=s.siteTable().slice();
-    for(int j=0; j <= s.numSitetable(); ++j) {
+    for(int j=0; j <= s.numSiteTable(); ++j) {
       
       int i=tab[j];
       _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
