@@ -1,3 +1,7 @@
+2007-04-05 16:54  bjoo
+
+	* examples/t_su3.cc: Added timings
+
 2007-04-05 15:57  bjoo
 
 	* aclocal.m4, configure, examples/Makefile.am, examples/t_su3.cc:
