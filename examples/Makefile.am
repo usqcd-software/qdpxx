@@ -27,7 +27,7 @@ HDRS=examples.h
 # 
 check_PROGRAMS = t_skeleton t_io t_mesplq \
       t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
-      t_cugauge t_transpose_spin t_partfile 
+      t_cugauge t_transpose_spin t_partfile t_su3
 
 EXTRA_PROGRAMS  = t_qio_factory t_binx t_gsum
 
@@ -94,6 +94,8 @@ nersc2ildg_SOURCES = nersc2ildg.cc $(HDRS) mesplq.cc
 test_ildglat_SOURCES = test_ildglat.cc $(HDRS) mesplq.cc
 test_ildglat_DEPENDENCIES = build_lib
 
+t_su3_SOURCES = t_su3.cc 
+t_su3_DEPENDENCIES = build_lib
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target
