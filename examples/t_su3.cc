@@ -1,4 +1,4 @@
-// $Id: t_su3.cc,v 1.1 2007-04-05 19:57:50 bjoo Exp $
+// $Id: t_su3.cc,v 1.2 2007-04-05 20:54:43 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -40,10 +40,31 @@ int main(int argc, char *argv[])
 
   diff = a - a2;
 
-  QDPIO::cout << "mm: || diff || = " << sqrt(norm2(diff)) << endl;
+  QDPIO::cout << "MM: || diff || = " << sqrt(norm2(diff)) << endl;
 
+  QDP::StopWatch swatch;
+  swatch.reset();
+  swatch.start();
+  for(int i=0; i < 5000; i++) { 
+    a = b*c;
+  }
+  swatch.stop();
+  double original_secs = swatch.getTimeInSeconds();
 
+  swatch.reset();
+  swatch.start();
+  for(int i=0; i < 5000; i++) {
+    qdp_su3_mm(&(a2.elem(all.start()).elem().elem(0,0).real()),
+	       &(b.elem(all.start()).elem().elem(0,0).real()),
+	       &(c.elem(all.start()).elem().elem(0,0).real()),
+	       num_sites);
+  }
+  swatch.stop();
 
+  double qdp_secs = swatch.getTimeInSeconds();
+
+  QDPIO::cout << "MM: original  seconds= " << original_secs << endl;
+  QDPIO::cout << "MM: bagel_qdp seconds= " << qdp_secs << endl;
 
 #endif
 
