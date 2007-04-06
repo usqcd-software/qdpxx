@@ -1,3 +1,8 @@
+2007-04-06 17:09  bjoo
+
+	* examples/t_su3.cc: OK Hopefully got rid of the make check build
+	  failure
+
 2007-04-06 01:02  kostas
 
 	* other_libs/xpath_reader/include/xml_array.h: removed redundant
