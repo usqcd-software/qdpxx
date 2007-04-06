@@ -1,3 +1,13 @@
+2007-04-06 01:02  kostas
+
+	* other_libs/xpath_reader/include/xml_array.h: removed redundant
+	  things..
+
+2007-04-06 01:00  kostas
+
+	* other_libs/xpath_reader/include/: xml_array.h, xml_array2d.h:
+	  fixed up the xml_array2d class
+
 2007-04-05 16:54  bjoo
 
 	* examples/t_su3.cc: Added timings
