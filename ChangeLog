@@ -1,3 +1,8 @@
+2007-04-07 00:44  kostas
+
+	* other_libs/xpath_reader/include/xml_array2d.h: further fixes of
+	  the 2d array and the statistics.h
+
 2007-04-06 17:09  bjoo
 
 	* examples/t_su3.cc: OK Hopefully got rid of the make check build
