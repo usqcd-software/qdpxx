@@ -1,3 +1,53 @@
+2007-05-13 16:47  tag qio2-1-9
+
+2007-05-13 16:47  detar
+
+	* other_libs/qio/: NEWS, aclocal.m4, configure, configure.ac,
+	  examples/Makefile.am, examples/layout_test,
+	  examples/qio-convert-mesh-pfs.c,
+	  examples/qio-convert-mesh-ppfs.c,
+	  examples/qio-convert-mesh-singlefs.c,
+	  examples/qio-convert-mesh.c, examples/qio-convert-mesh.h,
+	  examples/qio-host-test.sh, include/qio.h, lib/dml/DML_utils.c,
+	  lib/lrl/LRL_main.c, lib/qio/QIO_host_file_conversion.c: Support
+	  file splitting for I/O with fewer I/O nodes than compute nodes.
+
+2007-05-13 16:46  detar
+
+	* other_libs/qio/: include/qioxml.h, lib/qio/QIO_info.c:
+	  Convenience functions for building and parsing USQCD lattice file
+	  XML (E. Scholz)
+
+2007-05-13 16:45  detar
+
+	* other_libs/qio/include/qio_config_internal.h.in: Edit comment
+
+2007-05-13 16:43  detar
+
+	* other_libs/qio/lib/qio/QIO_utils.c: Add timing function.
+
+2007-05-13 16:42  detar
+
+	* other_libs/qio/lib/qio/QIO_read_record_data.c: Add some debug
+	  statements
+
+2007-05-13 16:41  detar
+
+	* other_libs/qio/lib/qio/QIO_open_read.c: Avoid a null malloc.	Add
+	  a debug statement.
+
+2007-05-13 16:36  detar
+
+	* other_libs/qio/other_libs/c-lime/: aclocal.m4, configure,
+	  configure.ac, examples/lime_contents.c,
+	  examples/lime_extract_record.c, examples/lime_extract_type.c,
+	  examples/lime_pack.c, examples/lime_unpack.c,
+	  examples/lime_writer_test1.c, include/Makefile.am,
+	  include/dcap-overload.h, include/lime.h,
+	  include/lime_config_internal.h.in, lib/lime_fseeko.c,
+	  lib/lime_reader.c, lib/lime_writer.c: Add support for dcache/DCAP
+	  from Jim Simone
+
 2007-04-12 00:46  tag adat1-31-0
 
 2007-04-12 00:46  tag qdp1-23-2
