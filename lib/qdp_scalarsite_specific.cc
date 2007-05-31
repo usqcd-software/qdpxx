@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_specific.cc,v 1.14 2007-02-21 22:17:20 bjoo Exp $
+// $Id: qdp_scalarsite_specific.cc,v 1.15 2007-05-31 19:42:12 bjoo Exp $
 
 /*! @file
  * @brief Scalar-like architecture specific routines
@@ -19,14 +19,16 @@ namespace Layout
   /* Assumes no inner grid */
   LatticeInteger latticeCoordinate(int mu)
   {
+    const int nodeSites = Layout::sitesOnNode();
+    const int nodeNumber = Layout::nodeNumber();
     LatticeInteger d;
 
     if (mu < 0 || mu >= Nd)
       QDP_error_exit("dimension out of bounds");
 
-    for(int i=0; i < Layout::sitesOnNode(); ++i) 
+    for(int i=0; i < nodeSites; ++i) 
     {
-      Integer cc = Layout::siteCoords(Layout::nodeNumber(),i)[mu];
+      Integer cc = Layout::siteCoords(nodeNumber,i)[mu];
       d.elem(i) = cc.elem();
     }
 
@@ -52,6 +54,8 @@ ostream& operator<<(ostream& s, const multi1d<T>& s1)
 void Set::make(const SetFunc& func)
 {
   int nsubset_indices = func.numSubsets();
+  const int nodeSites = Layout::sitesOnNode();
+  const int nodeNumber = Layout::nodeNumber();
 
 #if QDP_DEBUG >= 2
   QDP_info("Set a subset: nsubset = %d",nsubset_indices);
@@ -61,15 +65,15 @@ void Set::make(const SetFunc& func)
   sub.resize(nsubset_indices);
 
   // Create the space of the colorings of the lattice
-  lat_color.resize(Layout::sitesOnNode());
+  lat_color.resize(nodeSites);
 
   // Create the array holding the array of sitetable info
   sitetables.resize(nsubset_indices);
 
   // Loop over linear sites determining their color
-  for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
+  for(int linear=0; linear < nodeSites; ++linear)
   {
-    multi1d<int> coord = Layout::siteCoords(Layout::nodeNumber(), linear);
+    multi1d<int> coord = Layout::siteCoords(nodeNumber, linear);
 
     int node   = Layout::nodeNumber(coord);
     int lin    = Layout::linearSiteIndex(coord);
@@ -80,7 +84,7 @@ void Set::make(const SetFunc& func)
 #endif
 
     // Sanity checks
-    if (node != Layout::nodeNumber())
+    if (node != nodeNumber)
       QDP_error_exit("Set: found site with node outside current node!");
 
     if (lin != linear)
@@ -105,7 +109,7 @@ void Set::make(const SetFunc& func)
 
     // First loop and see how many sites are needed
     int num_sitetable = 0;
-    for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
+    for(int linear=0; linear < nodeSites; ++linear)
       if (lat_color[linear] == cb)
 	++num_sitetable;
 
@@ -126,7 +130,7 @@ void Set::make(const SetFunc& func)
       for(int i=0; i < num_sitetable; ++i)
 	sitetable[i] = -1;
 
-      for(int linear=0, j=0; linear < Layout::sitesOnNode(); ++linear)
+      for(int linear=0, j=0; linear < nodeSites; ++linear)
 	if (lat_color[linear] == cb)
 	  sitetable[j++] = linear;
 

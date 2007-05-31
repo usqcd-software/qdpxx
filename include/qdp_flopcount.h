@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_flopcount.h,v 1.5 2005-12-07 03:08:31 edwards Exp $
+// $Id: qdp_flopcount.h,v 1.6 2007-05-31 19:42:12 bjoo Exp $
 /*! @file
  * @brief Flop counters
  *
@@ -27,15 +27,13 @@ QDP_BEGIN_NAMESPACE(QDP);
   class FlopCounter {
   public:
     //! Constructor - zeroes flopcount
-    FlopCounter(void) {
-      count = 0;
-    }
+    FlopCounter(void) : count(0), sitesOnNode((unsigned long long)Layout::sitesOnNode()) {}
 
     //! Destructor - kills object. No cleanup needed
     ~FlopCounter() {} 
 
     //! Copy Constructor
-    FlopCounter(const FlopCounter& c) : count(c.count) {}
+    FlopCounter(const FlopCounter& c) : count(c.count), sitesOnNode(c.sitesOnNode) {}
 
     //! Explicit zero method. Clears flopcounts
     inline void reset(void) { 
@@ -49,7 +47,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 
     //! Method to add per site flop count. Count is multiplied by sitesOnNode()
     inline void addSiteFlops(unsigned long  long flops) { 
-      count += (flops * (unsigned long long)Layout::sitesOnNode());
+      count += (flops * sitesOnNode);
     }
 
     //! Method to add per site flop count for a subset of sites. Count is multiplied by the site table size of the subset (ie number of sites in a subset)
@@ -78,6 +76,7 @@ QDP_BEGIN_NAMESPACE(QDP);
 
   private:
     unsigned long long count;
+    const  unsigned long long sitesOnNode;
   };
 
   /*! @} */  // end of group 

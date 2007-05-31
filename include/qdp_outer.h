@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.51 2007-03-15 03:15:16 edwards Exp $
+// $Id: qdp_outer.h,v 1.52 2007-05-31 19:42:12 bjoo Exp $
 
 #include "qdp_config.h"
 
@@ -376,9 +376,10 @@ public:
 
     if( fast == 0x0 ) {
       try { 
-	fast = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::FAST);
+	int nodeSites = Layout::sitesOnNode();
+	fast = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*nodeSites,QDP::Allocator::FAST);
 	if( copy ) { 
-	  for(int i=0; i < sizeof(T)*Layout::sitesOnNode(); i++) {
+	  for(int i=0; i < sizeof(T)*nodeSites; i++) {
 	    *(( unsigned char *)fast + i) = *((unsigned char *)slow + i);
 	  }
 	}
@@ -406,7 +407,8 @@ public:
 
       // Copy if necessary
       if(copy) { 
-	for(int i=0; i < sizeof(T)*Layout::sitesOnNode(); i++) { 
+	nodeSites = Layout::sitesOnNode();
+	for(int i=0; i < sizeof(T)*nodeSites; i++) { 
 	  *(( unsigned char *)slow + i) = *((unsigned char *)fast + i);
 	}
       }

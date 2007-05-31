@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_specific.cc,v 1.11 2005-08-23 19:09:59 edwards Exp $
+// $Id: qdp_parscalarvec_specific.cc,v 1.12 2007-05-31 19:42:12 bjoo Exp $
 
 /*! @file
  * @brief Parscalarvec specific routines
@@ -32,17 +32,18 @@ void Map::make(const MapFunc& func)
 #if QDP_DEBUG >= 3
   QDP_info("Map::make");
 #endif
+  const int nodeSites = Layout::sitesOnNode();
 
   //--------------------------------------
   // Setup the communication index arrays
-  goffsets.resize(Layout::sitesOnNode());
-  srcnode.resize(Layout::sitesOnNode());
-  dstnode.resize(Layout::sitesOnNode());
+  goffsets.resize(nodeSites);
+  srcnode.resize(nodeSites);
+  dstnode.resize(nodeSites);
 
   const int my_node = Layout::nodeNumber();
 
   // Loop over the sites on this node
-  for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
+  for(int linear=0; linear < nodeSites; ++linear)
   {
     // Get the true lattice coord of this linear site index
     multi1d<int> coord = Layout::siteCoords(my_node, linear);
@@ -75,7 +76,7 @@ void Map::make(const MapFunc& func)
 
 #if QDP_DEBUG >= 3
  {
-   for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
+   for(int linear=0; linear < nodeSites; ++linear)
    {
      QDP_info("goffsets(%d) = %d",linear,goffsets(linear));
      QDP_info("srcnode(%d) = %d",linear,srcnode(linear));
@@ -166,7 +167,7 @@ void Map::make(const MapFunc& func)
   srcenodes_num = 0;
   destnodes_num = 0;
 
-  for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
+  for(int linear=0; linear < nodeSites; ++linear)
   {
     int this_node = srcnode[linear];
     if (this_node != my_node)
@@ -224,7 +225,7 @@ void Map::make(const MapFunc& func)
   // Loop through sites on my *destination* node - here I assume all nodes have
   // the same number of sites. Mimic the gather pattern needed on that node and
   // set my scatter array to scatter into the correct site order
-  for(int i=0, si=0; i < Layout::sitesOnNode(); ++i) 
+  for(int i=0, si=0; i < nodeSites; ++i) 
   {
     // Get the true lattice coord of this linear site index
     multi1d<int> coord = Layout::siteCoords(destnodes[0], i);
@@ -374,12 +375,13 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
   size_t size = sizeof(REAL32);
   size_t su3_size = size*mat_size;
   n_uint32_t checksum = 0;   // checksum
+  const int nodeSites = Layout::sitesOnNode();
 
   multi1d<multi1d<ColorMatrix> > sa(Nd);   // extract gauge fields
 
   for(int dd=0; dd<Nd; dd++)        /* dir */
   {
-    sa[dd].resize(Layout::sitesOnNode());
+    sa[dd].resize(nodeSites);
     QDP_extract(sa[dd], u[dd], all);
   }
 
@@ -388,7 +390,7 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
     QDP_error_exit("Unable to allocate chk_buf\n");
   }
 
-  for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
+  for(int linear=0; linear < nodeSites; ++linear)
   {
     for(int dd=0; dd<Nd; dd++)        /* dir */
     {

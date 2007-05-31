@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_specific.cc,v 1.13 2005-08-26 21:05:06 edwards Exp $
+// $Id: qdp_scalar_specific.cc,v 1.14 2007-05-31 19:42:12 bjoo Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -69,12 +69,13 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
   size_t size = sizeof(REAL32);
   size_t su3_size = size*mat_size;
   n_uint32_t checksum = 0;   // checksum
+  const int nodeSites = Layout::sitesOnNode();
 
   multi1d<multi1d<ColorMatrix> > sa(Nd);   // extract gauge fields
 
   for(int dd=0; dd<Nd; dd++)        /* dir */
   {
-    sa[dd].resize(Layout::sitesOnNode());
+    sa[dd].resize(nodeSites);
     QDP_extract(sa[dd], u[dd], all);
   }
 
@@ -83,7 +84,7 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
     QDP_error_exit("Unable to allocate chk_buf\n");
   }
 
-  for(int linear=0; linear < Layout::sitesOnNode(); ++linear)
+  for(int linear=0; linear < nodeSites; ++linear)
   {
     for(int dd=0; dd<Nd; dd++)        /* dir */
     {

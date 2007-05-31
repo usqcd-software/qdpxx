@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.24 2007-02-21 22:17:19 bjoo Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.25 2007-05-31 19:42:12 bjoo Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -985,6 +985,7 @@ public:
   operator()(const OLattice<T1> & l)
     {
       OLattice<T1> d;
+      int nodeSites = Layout::sitesOnNode();
 
 #if QDP_DEBUG >= 3
       QDP_info("Map()");
@@ -1001,7 +1002,9 @@ public:
 
 	// Eventually these declarations should move into d - the return object
 	typedef Site_t * T1ptr;
-	Site_t **dest = new T1ptr[Layout::sitesOnNode()];
+
+
+	Site_t **dest = new T1ptr[nodeSites];
 	if( dest == 0x0 ) { 
 	  QDP_error_exit("Unable to new memory in OLattice<T1>::operator()\n");
         } 
@@ -1010,11 +1013,11 @@ public:
 
 	//------------
 	// yukky hack - transform all source to packed format
-	Site_t *ll = new Site_t[Layout::sitesOnNode()]; 
+	Site_t *ll = new Site_t[nodeSites]; 
         if ( ll == 0x0 ) { 
 	   QDP_error_exit("Unable to new memory in OLattice<T1>::operator()\n");
 	}
-	for(int i=0; i < Layout::sitesOnNode(); ++i) 
+	for(int i=0; i < nodeSites; ++i) 
 	{
 	  int iouter = i >> INNER_LOG;
 	  int iinner = i & (INNER_LEN - 1);
@@ -1069,7 +1072,7 @@ public:
 
 	// Set the dest gather pointers
 	// For now, use the all subset
-	for(int i=0, ri=0; i < Layout::sitesOnNode(); ++i) 
+	for(int i=0, ri=0; i < nodeSites; ++i) 
 	{
 	  if (srcnode[i] != my_node)
 	  {
@@ -1149,7 +1152,7 @@ public:
 	// Scatter the data into the destination
 	// Some of the data maybe in receive buffers
 	// For now, use the all subset
-	for(int i=0; i < Layout::sitesOnNode(); ++i) 
+	for(int i=0; i < nodeSites; ++i) 
 	{
 #if QDP_DEBUG >= 3
 	  QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
@@ -1180,8 +1183,8 @@ public:
 	// *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
 	// For now, use the all subset
 #if INNER_LOG == 2
-	const int vvol = Layout::sitesOnNode();
-	for(int i=0; i < vvol; i+= INNER_LEN) 
+
+	for(int i=0; i < nodeSites; i+= INNER_LEN) 
 	{
 	  int ii = i >> INNER_LOG;
 	  int o0 = goffsets[i+0] >> INNER_LOG;

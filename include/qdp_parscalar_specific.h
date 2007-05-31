@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.44 2007-03-15 18:32:47 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.45 2007-05-31 19:42:12 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -286,7 +286,8 @@ void copymask(OSubLattice<T2,Subset> d, const OLattice<T1>& mask, const OLattice
 template<class T1, class T2> 
 void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
-  for(int i=0; i < Layout::sitesOnNode(); ++i) 
+  int nodeSites = Layout::sitesOnNode();
+  for(int i=0; i < nodeSites; ++i) 
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
 
@@ -427,8 +428,10 @@ void zero_rep(OSubLattice<T,S> dd)
 //! dest  = 0 
 template<class T> 
 void zero_rep(OLattice<T>& dest) 
+
 {
-  for(int i=0; i < Layout::sitesOnNode(); ++i) 
+  const int nodeSites = Layout::sitesOnNode();
+  for(int i=0; i < nodeSites; ++i) 
     zero_rep(dest.elem(i));
 }
 
@@ -550,8 +553,9 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
 
   // Loop always entered - could unroll
   zero_rep(d.elem());
+  const int nodeSites = Layout::sitesOnNode();
 
-  for(int i=0; i < Layout::sitesOnNode(); ++i) 
+  for(int i=0; i < nodeSites; ++i) 
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
 
   // Do a global sum on the result
@@ -629,8 +633,9 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 
   // Loop over all sites and accumulate based on the coloring 
   const multi1d<int>& lat_color =  ss.latticeColoring();
+  const int nodeSites = Layout::sitesOnNode();
 
-  for(int i=0; i < Layout::sitesOnNode(); ++i) 
+  for(int i=0; i < nodeSites; ++i) 
   {
     int j = lat_color[i];
     dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());
@@ -716,8 +721,8 @@ sumMulti(const multi1d< OLattice<T> >& s1, const Set& ss)
   for(int k=0; k < s1.size(); ++k)
   {
     const OLattice<T>& ss1 = s1[k];
-
-    for(int i=0; i < Layout::sitesOnNode(); ++i) 
+    const int nodeSites = Layout::sitesOnNode();
+    for(int i=0; i < nodeSites; ++i) 
     {
       int j = lat_color[i];
       dest(k,j).elem() += ss1.elem(i);
@@ -1413,6 +1418,7 @@ public:
 #endif
 
       OLattice<T1> d;
+      const int nodeSites = Layout::sitesOnNode();
 
       if (offnodeP)
       {
@@ -1423,7 +1429,7 @@ public:
 
 	// Eventually these declarations should move into d - the return object
 	typedef T1 * T1ptr;
-	T1 **dest = new(nothrow) T1ptr[Layout::sitesOnNode()];
+	T1 **dest = new(nothrow) T1ptr[nodeSites];
         if( dest == 0x0 ) { 
 	   QDP_error_exit("Unable to new T1ptr in OLattice<T1>::operator()\n");
         }
@@ -1491,7 +1497,8 @@ public:
 
 	// Set the dest gather pointers
 	// For now, use the all subset
-	for(int i=0, ri=0; i < Layout::sitesOnNode(); ++i) 
+
+	for(int i=0, ri=0; i < nodeSites; ++i) 
 	{
 	  if (srcnode[i] != my_node)
 	  {
@@ -1580,7 +1587,7 @@ public:
 	// Scatter the data into the destination
 	// Some of the data maybe in receive buffers
 	// For now, use the all subset
-	for(int i=0; i < Layout::sitesOnNode(); ++i) 
+	for(int i=0; i < nodeSites; ++i) 
 	{
 #if QDP_DEBUG >= 3
 	  QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
@@ -1605,7 +1612,7 @@ public:
 #endif
 
 	// For now, use the all subset
-	for(int i=0; i < Layout::sitesOnNode(); ++i) 
+	for(int i=0; i < nodeSites; ++i) 
 	{
 #if QDP_DEBUG >= 3
 	  QDP_info("Map(olattice[%d],olattice[%d])",i,goffsets[i]);
