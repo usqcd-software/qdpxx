@@ -1,3 +1,14 @@
+2007-05-31 15:42  bjoo
+
+	* include/qdp_flopcount.h, include/qdp_outer.h,
+	  include/qdp_parscalar_specific.h,
+	  include/qdp_parscalarvec_specific.h,
+	  lib/qdp_parscalar_specific.cc, lib/qdp_parscalarvec_specific.cc,
+	  lib/qdp_scalar_specific.cc, lib/qdp_scalarsite_specific.cc,
+	  lib/qdp_scalarvec_specific.cc, lib/qdp_scalarvecsite_specific.cc:
+	  Moved Layout::sitesOnNode out of loops. Tested scalar and
+	  parscalar single
+
 2007-05-13 16:47  tag qio2-1-9
 
 2007-05-13 16:47  detar
