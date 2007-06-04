@@ -1,3 +1,7 @@
+2007-06-04 10:39  bjoo
+
+	* include/qdp.h: Oops. Left QDP_CONST unfixed
+
 2007-05-31 15:42  bjoo
 
 	* include/qdp_flopcount.h, include/qdp_outer.h,
