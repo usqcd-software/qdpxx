@@ -1,3 +1,37 @@
+2007-06-09 18:15  edwards
+
+	* other_libs/qio/: aclocal.m4, configure: Induced changes
+
+2007-06-09 18:13  tag c-lime1-3-0
+
+2007-06-09 18:13  edwards
+
+	*
+	  other_libs/qio/other_libs/c-lime/include/lime_config_internal.h.in:
+	  Induced changes.
+
+2007-06-09 18:12  edwards
+
+	* other_libs/qio/other_libs/c-lime/: aclocal.m4, configure: Induced
+	  changes
+
+2007-06-09 18:11  edwards
+
+	* other_libs/qio/other_libs/c-lime/configure.ac: Changed to 1.3.0
+
+2007-06-09 18:08  edwards
+
+	* other_libs/qio/other_libs/c-lime/: aclocal.m4, configure: Induced
+	  changes
+
+2007-06-09 17:58  edwards
+
+	* aclocal.m4, configure.ac, configure: Induced changes
+
+2007-06-09 17:57  edwards
+
+	* configure.ac: Changed to 1.24.0
+
 2007-06-08 16:07  bjoo
 
 	* examples/t_su3.cc: t_su3.cc
