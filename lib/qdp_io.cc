@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.cc,v 1.24 2007-06-10 15:57:11 edwards Exp $
+// $Id: qdp_io.cc,v 1.25 2007-06-10 21:16:49 edwards Exp $
 /*! @file
  * @brief IO support
  */
@@ -180,7 +180,7 @@ namespace QDP
   void TextBufferReader::open(const std::string& s) 
   {
     if (Layout::primaryNode())
-      f.str() = s;
+      f.str(s);
   }
 
   // Output the stream
@@ -403,7 +403,7 @@ namespace QDP
   void TextBufferWriter::open(const std::string& s)
   {
     if (Layout::primaryNode())
-      f.str() = s;
+      f.str(s);
   }
 
   // Output the stream
@@ -475,7 +475,7 @@ namespace QDP
 
 
   //--------------------------------------------------------------------------------
-  //! Binary reader support
+  // Binary reader support
   BinaryReader::BinaryReader() {}
 
   // Propagate status to all nodes
@@ -716,7 +716,7 @@ namespace QDP
   }
 
   //--------------------------------------------------------------------------------
-  //! Binary buffer reader support
+  // Binary buffer reader support
   BinaryBufferReader::BinaryBufferReader() {checksum=0;}
 
   // Construct from a string
@@ -727,7 +727,7 @@ namespace QDP
   void BinaryBufferReader::open(const std::string& s)
   {
     if (Layout::primaryNode())
-      f.str() = s;
+      f.str(s);
   }
 
   // Output the stream
@@ -752,7 +752,7 @@ namespace QDP
 
 
   //--------------------------------------------------------------------------------
-  //! Binary reader support
+  // Binary reader support
   BinaryFileReader::BinaryFileReader() {checksum=0;}
 
   BinaryFileReader::BinaryFileReader(const std::string& p) {checksum=0;open(p);}
@@ -806,7 +806,7 @@ namespace QDP
 
 
   //--------------------------------------------------------------------------------
-  //! Binary writer support
+  // Binary writer support
   BinaryWriter::BinaryWriter() {}
 
   // Propagate status to all nodes
@@ -1043,7 +1043,7 @@ namespace QDP
 
 
   //--------------------------------------------------------------------------------
-  //! Binary writer support
+  // Binary writer support
   BinaryBufferWriter::BinaryBufferWriter() {checksum=0;}
 
   // Construct from a string
@@ -1054,7 +1054,7 @@ namespace QDP
   void BinaryBufferWriter::open(const std::string& s)
   {
     if (Layout::primaryNode())
-      f.str() = s;
+      f.str(s);
   }
 
   // Output the stream
@@ -1068,7 +1068,7 @@ namespace QDP
     return s;
   }
 
-  //! Get the current checksum
+  // Get the current checksum
   QDPUtil::n_uint32_t BinaryBufferWriter::getChecksum() const
   {
     QDPUtil::n_uint32_t c = checksum;
@@ -1078,7 +1078,7 @@ namespace QDP
 
 
   //--------------------------------------------------------------------------------
-  //! Binary writer support
+  // Binary writer support
   BinaryFileWriter::BinaryFileWriter() {checksum = 0;}
 
   BinaryFileWriter::BinaryFileWriter(const std::string& p) {checksum = 0; open(p);}
@@ -1131,7 +1131,7 @@ namespace QDP
   // Close the file
   BinaryFileWriter::~BinaryFileWriter() {close();}
 
-  //! Get the current checksum
+  // Get the current checksum
   QDPUtil::n_uint32_t BinaryFileWriter::getChecksum() const
   {
     QDPUtil::n_uint32_t c = checksum;
