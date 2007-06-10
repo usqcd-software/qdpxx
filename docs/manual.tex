@@ -111,12 +111,12 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.23.0}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.24.0}
 }
 \author{Robert G. Edwards\\
 SciDAC Software Coordinating Committee}
 
-\date{March 14, 2007}
+\date{June 10, 2007}
 
 \maketitle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1343,42 +1343,42 @@ node which can aid debugging.
 {\bf Implementation note: this IO manipulator for changing node output is not yet implemented}
 
 
-\paragraph{TextReader member functions and global functions}
+\paragraph{TextFileReader member functions and global functions}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Open to read   & \verb|TextReader::TextReader(const string& filename)|\\
-                 & \verb|void TextReader::open(const string& filename)|\\
+  Open to read   & \verb|TextFileReader::TextFileReader(const string& filename)|\\
+                 & \verb|void TextFileReader::open(const string& filename)|\\
   \hline
-  Close          & \verb|TextReader::~TextReader()|\\
-                 & \verb|void TextReader::close()|\\
+  Close          & \verb|TextFileReader::~TextFileReader()|\\
+                 & \verb|void TextFileReader::close()|\\
   \hline
-  Open?          & \verb|bool TextReader::is_open()| \\
+  Open?          & \verb|bool TextFileReader::is_open()| \\
   \hline
-  Any IO errors? & \verb|bool TextReader::fail()| \\
+  Any IO errors? & \verb|bool TextFileReader::fail()| \\
   \hline
-  Input a type \verb|T| & \verb|TextReader& operator>>(TextReader&, T&)| \\
+  Input a type \verb|T| & \verb|TextFileReader& operator>>(TextFileReader&, T&)| \\
   \hline
  \end{tabular}
 \end{flushleft}
 
-\paragraph{TextWriter member functions and global functions}
+\paragraph{TextFileWriter member functions and global functions}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Open to write  & \verb|TextWriter::TextWriter(const string& filename)|\\
-                 & \verb|void TextWriter::open(const string& filename)|\\
+  Open to write  & \verb|TextFileWriter::TextFileWriter(const string& filename)|\\
+                 & \verb|void TextFileWriter::open(const string& filename)|\\
   \hline
-  Close          & \verb|TextWriter::~TextWriter()|\\
-                 & \verb|void TextWriter::close()|\\
+  Close          & \verb|TextFileWriter::~TextFileWriter()|\\
+                 & \verb|void TextFileWriter::close()|\\
   \hline
-  Open?          & \verb|bool TextWriter::is_open()| \\
+  Open?          & \verb|bool TextFileWriter::is_open()| \\
   \hline
-  Any IO errors? & \verb|bool TextWriter::fail()| \\
+  Any IO errors? & \verb|bool TextFileWriter::fail()| \\
   \hline
-  Output a type \verb|T| & \verb|TextWriter& operator<<(TextWriter&, const T&)| \\
+  Output a type \verb|T| & \verb|TextFileWriter& operator<<(TextFileWriter&, const T&)| \\
   \hline
  \end{tabular}
 \end{flushleft}
@@ -1388,13 +1388,13 @@ familiar in the \cpp\ Standard Library. An example is as follows:
 %
 \begin{small}
 \begin{verbatim}
-TextWriter out("foo");
+TextFileWriter out("foo");
 Real a = 1.2;
 Complex b = cmplx(Real(-1.1), Real(2.2));
 out << a << endl << b << endl;
 close(out);
 
-TextReader in("foo");
+TextFileReader in("foo");
 Real a;
 Complex b;
 in >> a >> b;
@@ -1402,7 +1402,7 @@ close(in);
 \end{verbatim}
 \end{small}
 %
-The \verb|TextWriter| functions would produce a file ``foo'' that looks
+The \verb|TextFileWriter| functions would produce a file ``foo'' that looks
 like
 \begin{verbatim}
 1.2
@@ -1901,50 +1901,101 @@ types.
 \subsection{Binary Reading and Writing}
 \label{sec:binaryio}
 
-\paragraph{BinaryReader member functions and global functions}
+\paragraph{BinaryReader base class member functions and global functions}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Open to read   & \verb|BinaryReader::BinaryReader(const string& filename)|\\
-                 & \verb|void BinaryReader::open(const string& filename)|\\
-  \hline
-  Close          & \verb|BinaryReader::~BinaryReader()|\\
-                 & \verb|void BinaryReader::close()|\\
-  \hline
-  Open?          & \verb|bool BinaryReader::is_open()| \\
-  \hline
   Any IO errors? & \verb|bool BinaryReader::fail()| \\
+  \hline
+  Checksum       & \verb|BinaryReader::getChecksum()|\\
   \hline
   Input a type \verb|T| & \verb|BinaryReader& operator>>(BinaryReader&, T&)| \\
                  & \verb|void read(BinaryReader&, T&)| \\
                  & \verb|void read(BinaryReader&, multi1d<T>&)| \\
                  & \verb|void read(BinaryReader&, multi1d<T>&, int num)| \\
+                 & \verb|void read(BinaryReader&, multi2d<T>&)| \\
+                 & \verb|void read(BinaryReader&, multi2d<T>&, int num1, int num2)| \\
   \hline
  \end{tabular}
 \end{flushleft}
 
-\paragraph{BinaryWriter member functions and global functions}
+\paragraph{BinaryBufferReader member functions and global functions}
 
 \begin{flushleft}
   \begin{tabular}{|l|l|}
   \hline
-  Open to write  & \verb|BinaryWriter::BinaryWriter(const string& filename)|\\
-                 & \verb|void BinaryWriter::open(const string& filename)|\\
+  Constructors   & \verb|BinaryBufferReader::BinaryBufferReader(const string& input)|\\
+                 & \verb|void BinaryBufferReader::open(const string& input)|\\
   \hline
-  Close          & \verb|BinaryWriter::~BinaryWriter()|\\
-                 & \verb|void BinaryWriter::close()|\\
+  Contents       & \verb|string BinaryBufferReader::str()|\\
   \hline
-  Open?          & \verb|bool BinaryWriter::is_open()| \\
+ \end{tabular}
+\end{flushleft}
+
+\paragraph{BinaryFileReader member functions and global functions}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Open to read   & \verb|BinaryFileReader::BinaryFileReader(const string& filename)|\\
+                 & \verb|void BinaryFileReader::open(const string& filename)|\\
+  \hline
+  Close          & \verb|BinaryFileReader::~BinaryFileReader()|\\
+                 & \verb|void BinaryFileReader::close()|\\
+  \hline
+  Open?          & \verb|bool BinaryFileReader::is_open()| \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+
+\paragraph{BinaryWriter base class member functions and global functions}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
   \hline
   Any IO errors? & \verb|bool BinaryWriter::fail()| \\
   \hline
   Flush          & \verb|bool BinaryWriter::flush()| \\
   \hline
+  Checksum       & \verb|BinaryWriter::getChecksum()|\\
+  \hline
   Output a type \verb|T| & \verb|BinaryWriter& operator<<(BinaryWriter&, const T&)| \\
                  & \verb|void write(BinaryWriter&, const T&)| \\
                  & \verb|void write(BinaryWriter&, const multi1d<T>&)| \\
                  & \verb|void write(BinaryWriter&, const multi1d<T>&, int num)| \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+\paragraph{BinaryBufferWriter member functions and global functions}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Construct      & \verb|BinaryBufferWriter::BinaryBufferWriter(const string& input)|\\
+                 & \verb|void BinaryBufferWriter::open(const string& input)|\\
+  \hline
+  Contents       & \verb|string BinaryBufferWriter::str()| \\
+  \hline
+ \end{tabular}
+\end{flushleft}
+\paragraph{BinaryFileWriter member functions and global functions}
+
+\begin{flushleft}
+  \begin{tabular}{|l|l|}
+  \hline
+  Open to write  & \verb|BinaryFileWriter::BinaryFileWriter(const string& filename)|\\
+                 & \verb|void BinaryFileWriter::open(const string& filename)|\\
+  \hline
+  Close          & \verb|BinaryFileWriter::~BinaryFileWriter()|\\
+                 & \verb|void BinaryFileWriter::close()|\\
+  \hline
+  Open?          & \verb|bool BinaryFileWriter::is_open()| \\
+  \hline
+  Output a type \verb|T| & \verb|BinaryFileWriter& operator<<(BinaryFileWriter&, const T&)| \\
+                 & \verb|void write(BinaryFileWriter&, const T&)| \\
+                 & \verb|void write(BinaryFileWriter&, const multi1d<T>&)| \\
+                 & \verb|void write(BinaryFileWriter&, const multi1d<T>&, int num)| \\
   \hline
  \end{tabular}
 \end{flushleft}
@@ -1954,14 +2005,14 @@ familiar in the \cpp\ Standard Library. E.g.,
 %
 \begin{small}
 \begin{verbatim}
-BinaryWriter out("foo");
+BinaryFileWriter out("foo");
 Real a;
 LatticeColorMatrix b
 write(out, a);  // can write this way
 out << b;       // or can write this way - have choice of style
 close(out);
 
-BinaryReader in("foo");
+BinaryFileReader in("foo");
 Real a;
 LatticeColorMatrix b;
 read(in, a);
@@ -1978,8 +2029,8 @@ the length of the array) is read/written along with an object of type
 \verb|multi1d|. 
 
 The standard C behavior is when writing an array, only write whatever
-number of elements is desired. The problem comes when reading with the
-number of elements is no known beforehand. The default \verb|write| behavior
+number of elements is desired. The problem occurs when reading since
+number of elements is not known beforehand. The default \verb|write| behavior
 is to also write the number of elements, and the \verb|read| expects
 to find this length. The standard C behavior (reading/writing a fixed
 number of elements) is obtained through an an explicit argument to the call.
@@ -1987,13 +2038,13 @@ Specifically:
 %
 \begin{small}
 \begin{verbatim}
-BinaryWriter out("foo");
+BinaryFileWriter out("foo");
 multi1d<Real> a(17);
 write(out, a);     // will write an int=a.size() along with a.size() Real elements
 write(out, a, 4);  // only writes 4  Real  elements 
 close(out);
 
-BinaryReader in("foo");
+BinaryFileReader in("foo");
 multi1d<Real> a;
 read(in, a);  // reads an int=a.size(), a is resized, and reads a.size() elements
 read(in, a, 4);  // reads precisely 4 elements, no resizing.
