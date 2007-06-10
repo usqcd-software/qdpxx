@@ -1,4 +1,4 @@
-// $Id: generic_blas_local_sumsq.h,v 1.1 2004-04-01 09:12:56 bjoo Exp $
+// $Id: generic_blas_local_sumsq.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  *  @brief Generic Scalar, local sum squared routine
@@ -9,7 +9,7 @@
 #define QDP_GENERIC_BLAS_LOCAL_SUMSQ
 
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // (Double) (*out) = || (Vector) In ||^2 (local to node)
 inline
@@ -62,6 +62,6 @@ void local_sumsq(DOUBLE *Out, REAL *In, int n_3vec)
 }
 
 
-QDP_END_NAMESPACE(QDP);
+} // namespace QDP;
 
 #endif // guard

@@ -4,7 +4,7 @@
 
 /* Evaluates for things like adj(u)*spinProjectDir0Plus(y) */
 using namespace QDP;
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 typedef PScalar< PColorMatrix< RComplex<REAL>, 3> > SU3Mat;
 
@@ -462,6 +462,6 @@ void evaluate(OLattice< HVec >& d,
   }
 }
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif

@@ -1,11 +1,14 @@
 // -*- C++ -*-
-// $Id: qdp_subset.h,v 1.11 2007-02-21 22:17:19 bjoo Exp $
+// $Id: qdp_subset.h,v 1.12 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Sets and subsets
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_SUBSET_H
+#define QDP_SUBSET_H
+
+namespace QDP {
 
 /*! @defgroup subsets Sets and Subsets
  *
@@ -147,4 +150,6 @@ extern Subset odd;
 
 /** @} */ // end of group subsetss
 
-QDP_END_NAMESPACE();
+} // namespace QDP
+
+#endif

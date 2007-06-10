@@ -1,11 +1,14 @@
 // -*- C++ -*-
-// $Id: qdp_qdptype.h,v 1.4 2004-07-27 05:30:45 edwards Exp $
+// $Id: qdp_qdptype.h,v 1.5 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Main type class for QDP
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_QDPTYPE_H
+#define QDP_QDPTYPE_H
+
+namespace QDP {
 
 
 /*! \addtogroup group1 QDP main operations
@@ -450,6 +453,7 @@ struct LeafFunctor<QDPType<T,C>, EvalLeaf1>
     }
 };
 
+} // namespace QDP
 
-QDP_END_NAMESPACE();
+#endif
 

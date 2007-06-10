@@ -1,4 +1,4 @@
-// $Id: qdp_util.cc,v 1.5 2005-01-22 12:35:13 bjoo Exp $
+// $Id: qdp_util.cc,v 1.6 2007-06-10 14:32:12 edwards Exp $
 //
 /*! 
  * @file
@@ -35,7 +35,7 @@ int gethostname(char *hostname, size_t size)
 } 
 #endif
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 /**
  * Simple information display routine
@@ -170,4 +170,4 @@ uniquify_list(const multi1d<int>& ll)
 }
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

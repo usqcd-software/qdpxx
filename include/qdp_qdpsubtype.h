@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpsubtype.h,v 1.2 2003-07-31 01:07:11 edwards Exp $
+// $Id: qdp_qdpsubtype.h,v 1.3 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief QDPType after a subset
@@ -7,7 +7,10 @@
  * Subclass of QDPType used for subset operations
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_QDPSUBTYPE_H
+#define QDP_QDPSUBTYPE_H
+
+namespace QDP {
 
 
 //! QDPSubType - type representing a field living on a subset
@@ -295,8 +298,9 @@ public:
 };
 
 
+} // namespace QDP
 
-QDP_END_NAMESPACE();
+#endif
 
 
 

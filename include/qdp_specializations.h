@@ -1,10 +1,13 @@
 // -*- C++ -*-
-// $Id: qdp_specializations.h,v 1.10 2005-01-22 22:05:02 edwards Exp $
+// $Id: qdp_specializations.h,v 1.11 2007-06-10 14:32:09 edwards Exp $
 //
 // QDP data parallel interface
 //
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_SPECIALIZATIONS_H
+#define QDP_SPECIALIZATIONS_H
+
+namespace QDP {
 
 
 //
@@ -274,7 +277,6 @@ struct CreateLeaf<OScalar<IntBoolean> >
 };
 
 
+} // namespace QDP
 
-
-QDP_END_NAMESPACE();
-
+#endif

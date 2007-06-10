@@ -1,4 +1,4 @@
-// $Id: generic_blas_vaxmby3.h,v 1.1 2004-04-01 09:12:56 bjoo Exp $
+// $Id: generic_blas_vaxmby3.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXMBY routine
@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VAXMBY3
 #define QDP_GENERIC_BLAS_VAXMBY3
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 // (Vector) Out = (Scalar) (*ap) * (Vector)xp - (Scalar)(*bp) * (Vector)yp
 inline
 void vaxmby3(REAL *Out,REAL *ap,REAL *xp, REAL *bp, REAL *yp,int n_3vec)
@@ -91,6 +91,6 @@ void vaxmby3(REAL *Out,REAL *ap,REAL *xp, REAL *bp, REAL *yp,int n_3vec)
   }
 }
 
-QDP_END_NAMESPACE(QDP);
+} // namespace QDP;
 
 #endif // guard

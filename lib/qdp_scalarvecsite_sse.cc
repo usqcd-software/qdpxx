@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_sse.cc,v 1.4 2007-02-21 22:17:20 bjoo Exp $
+// $Id: qdp_scalarvecsite_sse.cc,v 1.5 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -12,7 +12,7 @@
 // These SSE asm instructions are only supported under GCC/G++
 #if defined(__GNUC__) && __GNUC_MINOR__ >= 2  &&  QDP_USE_SSE == 1
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix[Subset] = LatticeColorMatrix * LatticeColorMatrix
@@ -60,6 +60,6 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
 }
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif  // defined(__GNUC__)

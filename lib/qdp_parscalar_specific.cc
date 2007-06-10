@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.31 2007-05-31 19:42:12 bjoo Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.32 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -12,7 +12,7 @@
 #include "qmp.h"
 
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 // IO routine solely for debugging. Only defined here
@@ -908,4 +908,4 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
   }
 }
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

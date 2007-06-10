@@ -1,4 +1,4 @@
-// $Id: qdp_binx.cc,v 1.7 2005-02-28 16:46:37 bjoo Exp $
+// $Id: qdp_binx.cc,v 1.8 2007-06-10 14:32:11 edwards Exp $
 //
 // QDP data parallel interface to binx writers
 //
@@ -8,7 +8,7 @@
 
 #include "qdp.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 
 
@@ -22,7 +22,7 @@ BinxWriter::BinxWriter(const std::string& p) {open(p);}
 void BinxWriter::open(const std::string& p) 
 {
   std::string p_xml = p + "_binx.xml" ; 
-  tobinary = new(nothrow) BinaryWriter(p); 
+  tobinary = new(nothrow) BinaryFileWriter(p); 
   if( tobinary == 0x0 ) {
     QDP_error_exit("UNable to new tobinary in qdp_binx.cc\n");
   }
@@ -374,4 +374,4 @@ void BinxWriter::write_1D_header(const int& output,const int& dim)
 
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

@@ -1,4 +1,4 @@
-// $Id: generic_blas_vscal_g5.h,v 1.1 2005-03-17 17:26:49 bjoo Exp $
+// $Id: generic_blas_vscal_g5.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  *  @brief Generic Scalar VSCAL routine
@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VSCAL_G5
 #define QDP_GENERIC_BLAS_VSCAL_G5
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // (Vector) out = (Scalar) (*scalep) * P+ (Vector) In
 inline
@@ -214,6 +214,6 @@ void scal_g5ProjMinus(REAL *Out, REAL *scalep, REAL *In, int n_4vec)
   }
 }  
 
-QDP_END_NAMESPACE(QDP);
+} // namespace QDP;
 
 #endif // guard

@@ -1,12 +1,16 @@
 // -*- C++ -*-
-// $Id: qdp_primspinvec.h,v 1.8 2007-02-09 20:35:46 bjoo Exp $
+// $Id: qdp_primspinvec.h,v 1.9 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Vector
  */
 
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_PRIMSPINVEC_H
+#define QDP_PRIMSPINVEC_H
+
+namespace QDP {
+
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup primspinvector Spin vector primitive
@@ -1643,5 +1647,6 @@ chiralProjectMinus(const PSpinVector<T,4>& s1)
 
 /*! @} */   // end of group primspinvector
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
+#endif

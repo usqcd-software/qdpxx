@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.cc,v 1.9 2006-07-18 02:21:52 edwards Exp $
+// $Id: qdp_stdio.cc,v 1.10 2007-06-10 14:32:12 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -11,7 +11,7 @@
 
 #include "qdp.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //-----------------------------------------
 // Make global (parallel) versions of stdin, stdout, stderr
@@ -268,4 +268,4 @@ StandardOutputStream& StandardOutputStream::writePrimitive(T output)
 }
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

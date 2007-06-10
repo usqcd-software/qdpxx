@@ -1,12 +1,15 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.11 2006-01-12 02:17:40 bjoo Exp $
+// $Id: qdp_primseed.h,v 1.12 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
  */
 
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_PRIMSEED_H
+#define QDP_PRIMSEED_H
+
+namespace QDP {
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup primseed Seed primitive
@@ -543,5 +546,6 @@ copymask(PSeed<T>& d, const PScalar<T1>& mask, const PSeed<T>& s1)
 
 /*! @} */
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
+#endif

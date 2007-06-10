@@ -1,4 +1,4 @@
-// $Id: qdp_iogauge.cc,v 1.25 2005-08-27 14:45:48 edwards Exp $
+// $Id: qdp_iogauge.cc,v 1.26 2007-06-10 14:32:11 edwards Exp $
 //
 // QDP data parallel interface
 /*!
@@ -21,7 +21,7 @@ using std::string;
 extern int gethostname(char *, size_t);
 #endif
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 
 // Anonymous namespace
@@ -497,7 +497,7 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
  */    
 void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& file)
 {
-  BinaryReader cfg_in(file);
+  BinaryFileReader cfg_in(file);
 
   readArchivHeader(cfg_in, header);   // read header
   n_uint32_t checksum;
@@ -697,7 +697,7 @@ void writeArchiv(ArchivGauge_t& header, const multi1d<LatticeColorMatrix>& u, co
   header.link = link;
   header.checksum = computeChecksum(u, header.mat_size);
 
-  BinaryWriter cfg_out(file);
+  BinaryFileWriter cfg_out(file);
 
   writeArchivHeader(cfg_out, header);   // write header
   writeArchiv(cfg_out, u, header.mat_size);  // continuing writing after header
@@ -748,4 +748,4 @@ void writeArchiv(const multi1d<LatticeColorMatrix>& u,
 }
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

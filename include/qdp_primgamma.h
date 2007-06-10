@@ -1,11 +1,14 @@
 // -*- C++ -*-
 //
-// $Id: qdp_primgamma.h,v 1.1 2003-05-22 20:06:27 edwards Exp $
+// $Id: qdp_primgamma.h,v 1.2 2007-06-10 14:32:09 edwards Exp $
 //
 // QDP data parallel interface
 //
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_PRIMGAMMA_H
+#define QDP_PRIMGAMMA_H
+
+namespace QDP {
 
 //-------------------------------------------------------------------------------------
 //! Gamma matrices
@@ -167,7 +170,6 @@ inline T OpMultiplyGammaType::operator()(const T &a, const GammaType<N>& b) cons
   return s[b.elem()](a);
 }
 
+} // namespace QDP
 
-
-QDP_END_NAMESPACE();
-
+#endif

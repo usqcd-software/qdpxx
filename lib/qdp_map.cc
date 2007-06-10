@@ -1,4 +1,4 @@
-// $Id: qdp_map.cc,v 1.2 2003-07-31 00:59:48 edwards Exp $
+// $Id: qdp_map.cc,v 1.3 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Support routines for Maps
@@ -9,7 +9,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //! Definition of shift function object
 ArrayBiDirectionalMap  shift;
@@ -167,4 +167,4 @@ void ArrayBiDirectionalMap::make(const ArrayMapFunc& func)
 //-----------------------------------------------------------------------------
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

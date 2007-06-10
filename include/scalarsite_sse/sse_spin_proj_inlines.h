@@ -5,9 +5,9 @@
 
 /* File: generic_spin_proj_inlines.h
    Purpose: Supply inline functions to do spin projection
-   Author: $Id: sse_spin_proj_inlines.h,v 1.2 2007-02-09 20:35:46 bjoo Exp $
+   Author: $Id: sse_spin_proj_inlines.h,v 1.3 2007-06-10 14:32:11 edwards Exp $
 */
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 #include <stdio.h>
 
 /** \brief Spin Project (1/2)(1+\gamma_0)
@@ -1209,6 +1209,6 @@ void inlineSpinProjDir3Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   
 }
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif 

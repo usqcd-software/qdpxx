@@ -9,7 +9,7 @@
 #include "scalarsite_generic/generic_blas_vcaxpby3.h"
 #include "scalarsite_generic/generic_blas_vcaxmby3.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 typedef PScalar<PScalar<RComplex<REAL> > >  CScal;
 typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 4> TVec;
@@ -1472,5 +1472,5 @@ void evaluate( OLattice< TVec > &d,
 }
 
   
-QDP_END_NAMESPACE();
+} // namespace QDP;
 #endif

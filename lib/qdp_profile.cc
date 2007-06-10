@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_profile.cc,v 1.2 2004-07-27 05:41:44 edwards Exp $
+// $Id: qdp_profile.cc,v 1.3 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Profiling info
@@ -16,7 +16,7 @@
 #endif
 
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 static int prof_level = 0;
 static int prog_prof_level = 0;
@@ -225,4 +225,4 @@ registerProfile(QDPProfile_t* qp)
 
 #endif  // ! defined(QDP_USE_PROFILING)
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

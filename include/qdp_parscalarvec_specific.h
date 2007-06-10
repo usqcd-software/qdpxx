@@ -1,13 +1,16 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.25 2007-05-31 19:42:12 bjoo Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.26 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
  */
 
+#ifndef QDP_PARSCALARVEC_SPECIFIC_H
+#define QDP_PARSCALARVEC_SPECIFIC_H
+
 #include "qmp.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 // Layout stuff specific to a parscalarvec architecture
@@ -1815,5 +1818,6 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
     copy_site(d.elem(outersite), innersite, recv_buf);// insert into conventional scalar form
 }
 
+} // namespace QDP
 
-QDP_END_NAMESPACE();
+#endif

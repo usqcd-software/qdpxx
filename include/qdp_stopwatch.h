@@ -1,17 +1,17 @@
 // -*- C++ -*-
-// $Id: qdp_stopwatch.h,v 1.4 2005-10-17 04:27:36 edwards Exp $
+// $Id: qdp_stopwatch.h,v 1.5 2007-06-10 14:32:09 edwards Exp $
 /*! @file
  * @brief Timer support
  *
  * A stopwatch like timer.
  */
 
-#include<sys/time.h>
-
 #ifndef QDP_STOPWATCH_H
 #define QDP_STOPWATCH_H
 
-QDP_BEGIN_NAMESPACE(QDP);
+#include<sys/time.h>
+
+namespace QDP {
 
 /*! @defgroup timer Timer
  *
@@ -53,6 +53,6 @@ private:
   struct timeval t_end;
 };
 
-QDP_END_NAMESPACE();
-  
+} // namespace QDP  
+
 #endif

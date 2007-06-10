@@ -1,4 +1,4 @@
-// $Id: generic_blas_vscal.h,v 1.1 2004-04-01 09:12:56 bjoo Exp $
+// $Id: generic_blas_vscal.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  *  @brief Generic Scalar VSCAL routine
@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VSCAL
 #define QDP_GENERIC_BLAS_VSCAL
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // (Vector) out = (Scalar) (*scalep) * (Vector) In
 inline
@@ -89,6 +89,6 @@ void vscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec)
   }
 }  
 
-QDP_END_NAMESPACE(QDP);
+} // namespace QDP;
 
 #endif // guard

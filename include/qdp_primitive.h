@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primitive.h,v 1.4 2004-07-27 05:32:07 edwards Exp $
+// $Id: qdp_primitive.h,v 1.5 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Primitive classes
@@ -8,7 +8,9 @@
  */
 
 
-// QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_PRIMITIVE_H
+#define QDP_PRIMITIVE_H
+
 
 /*! \defgroup fiber Fiber only types and operations
  * \ingroup fiberbundle
@@ -31,5 +33,4 @@
 #include "qdp_primspinmat.h"
 #include "qdp_primspinvec.h"
 
-// QDP_END_NAMESPACE();
-
+#endif

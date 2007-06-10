@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_defs.h,v 1.11 2006-01-21 17:37:51 edwards Exp $
+// $Id: qdp_scalarsite_defs.h,v 1.12 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Type definitions
@@ -8,7 +8,7 @@
 #ifndef QDP_SCALARSITE_DEFS_H
 #define QDP_SCALARSITE_DEFS_H
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 /*! \addtogroup defs Type definitions
  *
@@ -387,6 +387,6 @@ typedef LatticeInteger  LatticeInt;
 
 /*! @} */   // end of group defs
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
 #endif

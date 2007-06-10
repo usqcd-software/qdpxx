@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvec_layout.cc,v 1.11 2004-09-07 23:33:29 edwards Exp $
+// $Id: qdp_scalarvec_layout.cc,v 1.12 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Scalarvec layout routines
@@ -17,7 +17,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 // Layout stuff specific to a scalarvec architecture
@@ -348,4 +348,4 @@ namespace Layout
 //-----------------------------------------------------------------------------
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_specific.cc,v 1.14 2007-05-31 19:42:12 bjoo Exp $
+// $Id: qdp_scalarvecsite_specific.cc,v 1.15 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Scalarvec-like architecture specific routines
@@ -11,7 +11,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 namespace Layout
@@ -175,4 +175,4 @@ void Set::make(const SetFunc& func)
 
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

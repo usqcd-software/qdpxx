@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.59 2007-06-04 14:39:13 bjoo Exp $
+// $Id: qdp.h,v 1.60 2007-06-10 14:32:08 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -99,22 +99,11 @@ using std::ostream;
 // END OF YUKKINESS
 
 
-#undef QDP_NO_NAMESPACE
-
-#if defined(QDP_NO_NAMESPACE)
-#define QDP_BEGIN_NAMESPACE(a)
-#define QDP_END_NAMESPACE()
-
-#else // ! defined(QDP_NO_NAMESPACE)
-#define QDP_BEGIN_NAMESPACE(a) namespace a {
-#define QDP_END_NAMESPACE(a) };
-#endif
-
 // Basic includes
-QDP_BEGIN_NAMESPACE(QDP);
 #define PETE_USER_DEFINED_EXPRESSION
+namespace QDP {
 #include <PETE/PETE.h>
-QDP_END_NAMESPACE();
+}
 
 #include "qdp_init.h"
 #include "qdp_forward.h"
@@ -137,9 +126,9 @@ QDP_END_NAMESPACE();
 #include "qdp_qdptype.h"
 #include "qdp_qdpsubtype.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 #include "QDPOperators.h"
-QDP_END_NAMESPACE();
+}
 
 // Include the allocator stuff here, before QDP_outer
 #include "qdp_allocator.h"

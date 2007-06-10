@@ -1,12 +1,16 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.12 2006-01-12 02:17:39 bjoo Exp $
+// $Id: qdp_primcolormat.h,v 1.13 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
  */
 
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_PRIMCOLORMAT_H
+#define QDP_PRIMCOLORMAT_H
+
+namespace QDP {
+
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup primcolormatrix Color matrix primitive
@@ -644,5 +648,6 @@ colorContract(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2, const 
 
 /*! @} */   // end of group primcolormatrix
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
+#endif

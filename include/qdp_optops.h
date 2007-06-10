@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_optops.h,v 1.10 2007-02-06 15:01:57 bjoo Exp $
+// $Id: qdp_optops.h,v 1.11 2007-06-10 14:32:08 edwards Exp $
 
 /*! @file
  * @brief PETE optimized operations on QDPTypes
@@ -8,7 +8,10 @@
  * one mega operation. Assembly/specialization opts do NOT go here.
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_OPTOPS_H
+#define QDP_OPTOPS_H
+
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 // Optimization hooks
@@ -357,5 +360,6 @@ real(const QDPExpr<BinaryNode<FnLocalInnerProduct,T1,T2>,CC> & ll)
 #endif
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
+#endif

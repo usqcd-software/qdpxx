@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_flopcount.h,v 1.6 2007-05-31 19:42:12 bjoo Exp $
+// $Id: qdp_flopcount.h,v 1.7 2007-06-10 14:32:08 edwards Exp $
 /*! @file
  * @brief Flop counters
  *
@@ -9,7 +9,8 @@
 #ifndef QDP_FLOPCOUNT_H
 #define QDP_FLOPCOUNT_H
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP
+{
 
   //---------------------------------------------------------------------
   /*! @defgroup qdpflops Flop Counting Mechanism
@@ -81,6 +82,6 @@ QDP_BEGIN_NAMESPACE(QDP);
 
   /*! @} */  // end of group 
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
 #endif

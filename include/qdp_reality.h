@@ -1,14 +1,18 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.31 2007-03-15 03:15:16 edwards Exp $
+// $Id: qdp_reality.h,v 1.32 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Reality
  */
 
 
+#ifndef QDP_REALITY_H
+#define QDP_REALITY_H
+
 #include <sstream>
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
+
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup rscalar Scalar reality
@@ -2396,5 +2400,6 @@ fill_gaussian(RComplex<T>& d, RComplex<T>& r1, RComplex<T>& r2)
 
 /*! @} */  // end of group rcomplex
 
+} // namespace QDP
 
-QDP_END_NAMESPACE();
+#endif

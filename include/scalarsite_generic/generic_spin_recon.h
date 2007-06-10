@@ -1,7 +1,7 @@
 #ifndef GENERIC_SPIN_RECON_H
 #define GENERIC_SPIN_RECON_H
 
-QDP_BEGIN_NAMESPACE(QDP)
+namespace QDP {
 
 typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 4> Spin4;
 typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 2> Spin2;
@@ -163,7 +163,7 @@ spinReconstructDir3Plus(const Spin2& s1)
 }
 
 
-QDP_END_NAMESPACE()
+} // namespace QDP
 
 
 #endif

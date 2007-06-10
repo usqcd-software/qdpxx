@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_layout.cc,v 1.7 2005-03-21 05:30:12 edwards Exp $
+// $Id: qdp_parscalarvec_layout.cc,v 1.8 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec layout routines
@@ -19,7 +19,7 @@
 
 #include "qmp.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 // IO routine solely for debugging. Only defined here
@@ -608,4 +608,4 @@ namespace Layout
 //-----------------------------------------------------------------------------
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

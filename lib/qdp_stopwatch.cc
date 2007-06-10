@@ -1,4 +1,4 @@
-// $Id: qdp_stopwatch.cc,v 1.3 2005-10-19 02:23:53 edwards Exp $
+// $Id: qdp_stopwatch.cc,v 1.4 2007-06-10 14:32:12 edwards Exp $
 /*! @file
  * @brief Timer support
  *
@@ -9,7 +9,7 @@
 #include "qdp.h"
 #include<sys/time.h>
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 StopWatch::StopWatch() 
 {
@@ -123,4 +123,4 @@ double StopWatch::getTimeInSeconds()
 }
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

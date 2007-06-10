@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.19 2005-12-21 16:04:25 bjoo Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.20 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -15,7 +15,7 @@
 // Only supported on gcc >= 3.2
 #if defined(__GNUC__) && __GNUC_MINOR__ >= 2
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 typedef REAL32 vReal32 __attribute__ ((aligned (16),mode(V4SF)));
 
@@ -202,7 +202,7 @@ private:
 } QDP_ALIGN16;
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
 // Use SSE specific Linalg stuff (inline assembler etc)
 #include "scalarvecsite_sse/qdp_scalarvecsite_sse_linalg.h"
@@ -211,7 +211,7 @@ QDP_END_NAMESPACE();
 #include "scalarvecsite_sse/qdp_scalarvecsite_sse_blas.h"
 
 #else
-#error "This is not a GNUC 3.3 or greater compiler, and therefore does not support the GNU specific asm directives."
+#error "This is not a GNUC 3.2 or greater compiler, and therefore does not support the GNU specific asm directives."
 #endif  // gnuc
 
 #endif  // guard

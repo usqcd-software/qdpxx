@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.13 2005-08-27 17:58:23 edwards Exp $
+// $Id: qdp_parscalar_init.cc,v 1.14 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -12,7 +12,7 @@
 #include "qdp.h"
 #include "qmp.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //! Private flag for status
 static bool isInit = false;
@@ -242,4 +242,4 @@ void QDP_resume() {}
 void QDP_suspend() {}
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

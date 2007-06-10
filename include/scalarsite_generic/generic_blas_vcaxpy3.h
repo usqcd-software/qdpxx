@@ -1,4 +1,4 @@
-// $Id: generic_blas_vcaxpy3.h,v 1.1 2004-04-01 14:49:50 bjoo Exp $
+// $Id: generic_blas_vcaxpy3.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VCAXPY3
 #define QDP_GENERIC_BLAS_VCAXPY3
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 // (Vector) out = (Complex) (*scalep) * (Vector) InScale + (Vector) Add
 inline
 void vcaxpy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec)
@@ -132,6 +132,6 @@ void vcaxpy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec)
 }
 
 
-QDP_END_NAMESPACE(QDP);
+} // namespace QDP;
 
 #endif // guard

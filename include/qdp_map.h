@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_map.h,v 1.2 2003-09-01 22:29:29 edwards Exp $
+// $Id: qdp_map.h,v 1.3 2007-06-10 14:32:08 edwards Exp $
 
 /*! @file
  * @brief Map classes
@@ -7,7 +7,10 @@
  * Support classes for maps/shifts
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_MAP_H
+#define QDP_MAP_H
+
+namespace QDP {
 
 // Helpful for communications
 #define FORWARD 1
@@ -50,4 +53,6 @@ public:
     
 /** @} */ // end of group map
 
-QDP_END_NAMESPACE();
+} // namespace QDP
+
+#endif

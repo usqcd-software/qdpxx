@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.16 2007-02-24 01:00:30 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.17 2007-06-10 14:32:10 edwards Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -11,7 +11,7 @@
 #include "scalarsite_generic/generic_blas_local_vcdot.h"
 #include "scalarsite_generic/generic_blas_local_vcdot_real.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // Forward declarations of BLAS routines
 void vaxpy3(REAL32 *Out, REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_3vec);
@@ -2015,7 +2015,7 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
 #endif
 
   
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif  // guard
  

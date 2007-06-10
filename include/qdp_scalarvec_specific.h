@@ -1,11 +1,14 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.23 2007-02-21 22:17:19 bjoo Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.24 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_SCALARVEC_SPECIFIC_H
+#define QDP_SCALARVEC_SPECIFIC_H
+
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 // Layout stuff specific to a scalarvec architecture
@@ -1401,5 +1404,6 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
   copy_site(d.elem(outersite), innersite, this_site);
 }
 
+} // namespace QDP
 
-QDP_END_NAMESPACE();
+#endif

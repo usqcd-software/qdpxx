@@ -2,7 +2,7 @@
 #define QDP_SSE_SPIN_EVALUATES_H
 
 using namespace QDP;
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // Typedefs
 typedef PSpinVector< PColorVector< RComplex<REAL32>, 3>, 2 >  HVec;
@@ -825,6 +825,6 @@ void evaluate(OLattice< FVec >& b,
 
 }
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif

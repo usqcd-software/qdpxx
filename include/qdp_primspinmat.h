@@ -1,11 +1,15 @@
 // -*- C++ -*-
-// $Id: qdp_primspinmat.h,v 1.13 2006-09-24 15:56:02 edwards Exp $
+// $Id: qdp_primspinmat.h,v 1.14 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_PRIMSPINMAT_H
+#define QDP_PRIMSPINMAT_H
+
+namespace QDP {
+
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup primspinmatrix Spin matrix primitive
@@ -1254,5 +1258,6 @@ quarkContract34(const PSpinMatrix<T1,4>& s1, const PSpinMatrix<T2,4>& s2)
 
 /*! @} */   // end of group primspinmatrix
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
+#endif

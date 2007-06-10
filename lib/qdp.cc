@@ -1,12 +1,12 @@
-// $Id: qdp.cc,v 1.8 2003-03-28 05:17:10 edwards Exp $
+// $Id: qdp.cc,v 1.9 2007-06-10 14:32:11 edwards Exp $
 //
 // QDP data parallel interface
 //
 
 #include "qdp.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // Currently empty
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.12 2007-02-21 22:17:20 bjoo Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.13 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -13,7 +13,7 @@
 // These SSE asm instructions are only supported under GCC/G++
 #if defined(__GNUC__)
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // #define QDP_SCALARSITE_DEBUG
 
@@ -765,7 +765,7 @@ void evaluate(OLattice< TVec2 >& d,
 #undef QDP_SCALARSITE_USE_EVALUATE
 #endif
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif  // defined(__GNUC__)
 

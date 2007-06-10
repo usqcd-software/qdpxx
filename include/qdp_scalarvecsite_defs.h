@@ -1,11 +1,15 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_defs.h,v 1.13 2005-01-14 19:33:17 dgr Exp $
+// $Id: qdp_scalarvecsite_defs.h,v 1.14 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Type definitions
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_SCALARVECSITE_DEFS_H
+#define QDP_SCALARVECSITE_DEFS_H
+
+namespace QDP {
+
 
 /*! \addtogroup defs Type definitions
  *
@@ -363,5 +367,6 @@ typedef LatticeInteger  LatticeInt;
 
 /*! @} */   // end of group defs
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
+#endif

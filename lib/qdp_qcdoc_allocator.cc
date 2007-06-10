@@ -1,3 +1,8 @@
+// $Id: qdp_qcdoc_allocator.cc,v 1.6 2007-06-10 14:32:11 edwards Exp $
+/*! @file
+ * @brief QCDOC memory allocator
+ */
+
 #include "qdp.h"
 
 #if defined(QDP_DEBUG_MEMORY)
@@ -5,8 +10,8 @@
 #endif
 
 
-QDP_BEGIN_NAMESPACE(QDP);
-QDP_BEGIN_NAMESPACE(Allocator);
+namespace QDP {
+namespace Allocator {
 
 #if defined(QDP_DEBUG_MEMORY)
  // Struct to hold in map
@@ -219,5 +224,5 @@ QDP_BEGIN_NAMESPACE(Allocator);
 #endif
 
 
-QDP_END_NAMESPACE();
-QDP_END_NAMESPACE();
+} // namespace Allocator
+} // namespace QDP

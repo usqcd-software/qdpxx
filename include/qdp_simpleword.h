@@ -1,13 +1,16 @@
 // -*- C++ -*-
-// $Id: qdp_simpleword.h,v 1.13 2007-03-15 03:15:16 edwards Exp $
+// $Id: qdp_simpleword.h,v 1.14 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types
  */
 
+#ifndef QDP_SIMPLEWORD_H
+#define QDP_SIMPLEWORD_H
+
 #include <cmath>
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 using std::abs;
 using std::div;
@@ -756,5 +759,6 @@ struct TrinaryReturn<float, float, float, FnColorContract> {
   typedef float Type_t;
 };
 
+} // namespace QDP
 
-QDP_END_NAMESPACE();
+#endif

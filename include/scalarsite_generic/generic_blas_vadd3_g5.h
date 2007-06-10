@@ -1,4 +1,4 @@
-// $Id: generic_blas_vadd3_g5.h,v 1.1 2005-03-17 12:58:34 bjoo Exp $
+// $Id: generic_blas_vadd3_g5.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VADD_G5
 #define QDP_GENERIC_BLAS_VADD_G5
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // (Vector) out = (Vector) X + (Vector) P{+} Y
 inline
@@ -558,6 +558,6 @@ void sub_g5ProjMinus(REAL *Out, REAL *X, REAL *Y,int n_4vec)
 
 
 
-QDP_END_NAMESPACE(QDP);
+} // namespace QDP;
 
 #endif // guard

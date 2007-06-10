@@ -1,11 +1,15 @@
 // -*- C++ -*-
-// $Id: qdp_qdpexpr.h,v 1.3 2004-07-02 21:54:42 edwards Exp $
+// $Id: qdp_qdpexpr.h,v 1.4 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Expression class for QDP
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_QDPEXPR_H
+#define QDP_QDPEXPR_H
+
+namespace QDP {
+
 
 //! Expression class for QDP
 template<class T, class C>
@@ -214,7 +218,6 @@ struct Combine3<Reference<A>, Reference<B>, Reference<C>, Op, OpCombine>
   }
 };
 
+} // namespace QDP
 
-
-QDP_END_NAMESPACE();
-
+#endif

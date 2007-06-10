@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> Spin4;
 typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 2> Spin2;
 
@@ -501,6 +501,6 @@ spinReconstructDir3Plus(const Spin2& s1)
 
 #endif
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif

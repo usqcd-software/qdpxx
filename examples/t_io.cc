@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.21 2005-07-25 17:04:15 edwards Exp $
+// $Id: t_io.cc,v 1.22 2007-06-10 14:32:08 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   string astring = "hello world";
   random(a);
 
-  BinaryWriter tobinary("t_io.bin");
+  BinaryFileWriter tobinary("t_io.bin");
   write(tobinary, a);
   write(tobinary, d);
   write(tobinary, astring);
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
   Double dd = 0.0;
   random(aa);
 
-  BinaryReader frombinary("t_io.bin");
+  BinaryFileReader frombinary("t_io.bin");
   read(frombinary, aa);
   read(frombinary, dd);
   read(frombinary, astring, 100);
@@ -53,14 +53,14 @@ int main(int argc, char **argv)
 
   Real x = 42.1;
   QDPIO::cout << "Write some data to file t_io.txt\n";
-  TextWriter totext("t_io.txt");
+  TextFileWriter totext("t_io.txt");
   totext << x;
   totext.flush();
   totext.close();
 
   x = -1;
   QDPIO::cout << "Read some data from file t_io.txt\n";
-  TextReader fromtext("t_io.txt");
+  TextFileReader fromtext("t_io.txt");
   fromtext >> x;
   fromtext.close();
 

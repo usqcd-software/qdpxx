@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.28 2007-02-24 01:00:30 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.29 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -13,7 +13,7 @@
 // These SSE asm instructions are only supported under GCC/G++
 #if defined(__GNUC__)
 #include "qdp_sse_intrin.h"
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 #if BASE_PRECISION==32
 
@@ -1430,6 +1430,6 @@ void local_sumsq2(REAL64 *Out, REAL32 *In, int n_3vec)
 
 #endif // BASE PRECISION==32
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif  // defined(__GNUC__)

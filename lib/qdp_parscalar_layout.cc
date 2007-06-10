@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.21 2007-02-26 02:26:44 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.22 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -19,7 +19,7 @@
 
 #include "qmp.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 // IO routine solely for debugging. Only defined here
@@ -594,4 +594,4 @@ namespace Layout
 //-----------------------------------------------------------------------------
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

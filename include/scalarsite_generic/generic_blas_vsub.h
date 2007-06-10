@@ -1,4 +1,4 @@
-// $Id: generic_blas_vsub.h,v 1.1 2004-04-01 09:12:56 bjoo Exp $
+// $Id: generic_blas_vsub.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  *  @brief Generic Scalar VSUB routine
@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VSUB
 #define QDP_GENERIC_BLAS_VSUB
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // (Vector) Out = (Vector) In1 - (Vector) In2
 inline
@@ -105,6 +105,6 @@ void vsub(REAL *Out, REAL *In1, REAL *In2, int n_3vec)
 }
 
 
-QDP_END_NAMESPACE(QDP);
+} // namespace QDP;
 
 #endif // guard

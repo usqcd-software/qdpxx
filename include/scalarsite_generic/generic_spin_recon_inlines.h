@@ -3,9 +3,9 @@
 
 /* File: generic_spin_recon_inlines.h
    Purpose: Supply inline functions to do spin reconstruction
-   Author: $Id: generic_spin_recon_inlines.h,v 1.1 2007-02-06 15:01:58 bjoo Exp $
+   Author: $Id: generic_spin_recon_inlines.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
 */
-QDP_BEGIN_NAMESPACE(QDP)
+namespace QDP {
 
 /** \brief Spin recon (1/2)(1+\gamma_0)
  *
@@ -1086,6 +1086,6 @@ void inlineAddSpinReconDir3Minus(const REAL* src, REAL *dst, unsigned int n_vec)
 }
 
 
-QDP_END_NAMESPACE()
+} // namespace QDP
 
 #endif 

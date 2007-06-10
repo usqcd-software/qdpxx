@@ -1,14 +1,17 @@
 // -*- C++ -*-
-// $Id: qdp_word.h,v 1.4 2006-01-12 02:17:40 bjoo Exp $
+// $Id: qdp_word.h,v 1.5 2007-06-10 14:32:09 edwards Exp $
 //
 // QDP data parallel interface
 //
 
 // NOT USING THIS CODE AT THE MOMENT
 
+#ifndef QDP_WORD_H
+#define QDP_WORD_H
+
 #include <cmath>
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //-------------------------------------------------------------------------------------
 //! Word class - builtin machine word type
@@ -257,4 +260,6 @@ operator*(const Real32 & l, const Real32 & r)
   return d;
 }
 
-QDP_END_NAMESPACE();
+} // namespace QDP
+
+#endif

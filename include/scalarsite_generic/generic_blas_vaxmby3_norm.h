@@ -1,4 +1,4 @@
-// $Id: generic_blas_vaxmby3_norm.h,v 1.1 2004-04-01 09:12:56 bjoo Exp $
+// $Id: generic_blas_vaxmby3_norm.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY NORM  routine
@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VAXMBY3_NORM
 #define QDP_GENERIC_BLAS_VAXMBY3_NORM
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // (Vector) Out = Scalar(*ap) * (Vector) xp - (Scalar)(*bp) * (Vector)yp
 // *norm = local sumsq(Out);
@@ -101,6 +101,6 @@ void vaxmby3_norm(REAL *Out,REAL *ap,REAL *xp, REAL *bp, REAL *yp,
   *norm=(REAL)norm_out;
 }
 
-QDP_END_NAMESPACE(QDP);
+} // namespace QDP;
 
 #endif // guard

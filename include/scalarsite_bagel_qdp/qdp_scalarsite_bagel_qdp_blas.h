@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_bagel_qdp_blas.h,v 1.3 2007-02-26 22:49:21 bjoo Exp $
+// $Id: qdp_scalarsite_bagel_qdp_blas.h,v 1.4 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -12,7 +12,7 @@
 
 #include "bagel_qdp.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // Types needed for the expression templates. 
 // TVec has outer Ns template so it ought to work for staggered as well
@@ -2117,7 +2117,7 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
 }
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif  // guard
  

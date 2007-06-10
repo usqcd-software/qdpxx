@@ -1,4 +1,4 @@
-// $Id: qdp_layout.cc,v 1.3 2004-09-08 00:58:46 edwards Exp $
+// $Id: qdp_layout.cc,v 1.4 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Layout support routines
@@ -11,7 +11,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 namespace Layout
 {
@@ -71,4 +71,4 @@ int local_site(const multi1d<int>& coord, const multi1d<int>& latt_size)
 }
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

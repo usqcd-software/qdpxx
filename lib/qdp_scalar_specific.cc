@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_specific.cc,v 1.14 2007-05-31 19:42:12 bjoo Exp $
+// $Id: qdp_scalar_specific.cc,v 1.15 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Scalar specific routines
@@ -9,7 +9,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 //! Initializer for generic map constructor
@@ -304,4 +304,4 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
 }
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

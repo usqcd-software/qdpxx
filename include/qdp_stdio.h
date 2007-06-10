@@ -1,8 +1,5 @@
-#ifndef QDP_STDIO_H
-#define QDP_STDIO_H
-
 // -*- C++ -*-
-// $Id: qdp_stdio.h,v 1.6 2005-06-27 14:13:26 bjoo Exp $
+// $Id: qdp_stdio.h,v 1.7 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio
@@ -11,12 +8,15 @@
  * The user can control which nodes are involved in output/input.
  */
 
+#ifndef QDP_STDIO_H
+#define QDP_STDIO_H
+
 #include <istream>
 #include <ostream>
 //#include <streambuf>
 #include <string>
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 
 /*! @defgroup stdio STD IO
@@ -182,6 +182,6 @@ namespace QDPIO
 
 /*! @} */   // end of group stdio
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
 #endif

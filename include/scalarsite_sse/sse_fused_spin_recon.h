@@ -6,7 +6,7 @@
 #endif
 #include "scalarsite_sse/sse_mat_hwvec.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
  
 // Convenience Types
 typedef PColorVector<RComplex<REAL32>, 3> ColVec;
@@ -815,6 +815,6 @@ sreconDir3Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
 }
 
 
-QDP_END_NAMESPACE()
+} // namespace QDP
 
 #endif

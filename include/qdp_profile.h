@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_profile.h,v 1.6 2005-07-26 12:47:41 zbigniew Exp $
+// $Id: qdp_profile.h,v 1.7 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Print profiling info
@@ -10,7 +10,7 @@
 #ifndef QDP_PROFILE_INCLUDE
 #define QDP_PROFILE_INCLUDE
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 typedef unsigned long  QDPTime_t;
 
@@ -1414,6 +1414,6 @@ struct TagVisitor<FnTraceSpinQuarkContract13, PrintTag> : public ParenPrinter<Fn
 
 #endif  // ! defined(QDP_USE_PROFILING)
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
-#endif  // QDP_PRINT_INCLUDE
+#endif  // QDP_PROFILE_INCLUDE

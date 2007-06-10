@@ -9,7 +9,7 @@
 #include <iostream>
 using namespace std;
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // Convenience Types
 typedef PColorVector<RComplex<REAL32>, 3> ColVec;
@@ -906,6 +906,6 @@ adjMultSprojDir3Minus(const PScalar<ColMat>& a, const Spin4& b)
 }
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif

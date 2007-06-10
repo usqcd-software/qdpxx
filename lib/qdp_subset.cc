@@ -1,4 +1,4 @@
-// $Id: qdp_subset.cc,v 1.8 2007-02-21 22:17:20 bjoo Exp $
+// $Id: qdp_subset.cc,v 1.9 2007-06-10 14:32:12 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -7,7 +7,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //! Default all set
 Set set_all;
@@ -166,4 +166,4 @@ Set& Set::operator=(const Set& s)
 
 //-----------------------------------------------------------------------------
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

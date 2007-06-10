@@ -1,3 +1,10 @@
+// -*- C++ -*-
+// $Id: qdp_qcdoc_allocator.h,v 1.8 2007-06-10 14:32:09 edwards Exp $
+
+/*! @file
+ * @brief QCDOC memory allocator
+ */
+
 #ifndef QDP_QCDOC_ALLOCATOR
 #define QDP_QCDOC_ALLOCATOR
 
@@ -9,8 +16,10 @@
 #include <map>
 
 using namespace std;
-QDP_BEGIN_NAMESPACE(QDP);
-QDP_BEGIN_NAMESPACE(Allocator);
+
+
+namespace QDP {
+namespace Allocator {
 
 
 class QDPQCDOCAllocator {
@@ -68,9 +77,10 @@ typedef SingletonHolder<QDPQCDOCAllocator,
 			QDP::NoDestroy,
 			QDP::SingleThreaded> theQDPAllocator;
 
-QDP_END_NAMESPACE();
+} // namespace Allocator
 
-QDP_BEGIN_NAMESPACE(Hints);
+namespace Hints {
+
 //! Hint to move an object of type OLattice to fast memory. 
 /*!
  * \ingroup QDP Memory management hints
@@ -143,8 +153,8 @@ inline
 void revertFromFastMemoryHint(multi1d<OLattice<T> >&x, bool copy=false) { 
   x.revertFromFastMemoryHint(copy);
 }
-QDP_END_NAMESPACE();
 
-QDP_END_NAMESPACE();
+} // namespace Hints
+} // namespace QDP
 
 #endif

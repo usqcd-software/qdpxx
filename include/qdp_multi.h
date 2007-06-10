@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.16 2006-11-01 05:55:28 edwards Exp $
+// $Id: qdp_multi.h,v 1.17 2007-06-10 14:32:08 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -11,7 +11,7 @@
 #define MULTI_INCLUDE
 
 #include "qdp_config.h"
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 /*! @defgroup multi  Multi-dimensional arrays
  *
@@ -984,6 +984,6 @@ private:
 
 /*! @} */  // end of group multi
 
-QDP_END_NAMESPACE();
+}
 
 #endif

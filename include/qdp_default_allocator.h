@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_default_allocator.h,v 1.6 2005-12-07 03:08:31 edwards Exp $
+// $Id: qdp_default_allocator.h,v 1.7 2007-06-10 14:32:08 edwards Exp $
 
 /*! \file
  * \brief Default memory allocator for QDP
@@ -15,66 +15,68 @@
 #include <string>
 #include <map>
 
-QDP_BEGIN_NAMESPACE(QDP);
-QDP_BEGIN_NAMESPACE(Allocator);
+namespace QDP
+{
+  namespace Allocator
+  {
 
-// Specialise allocator to the default case
-class QDPDefaultAllocator {
-private:
-  // Disallow Copies
-  QDPDefaultAllocator(const QDPDefaultAllocator& c) {}
+    // Specialise allocator to the default case
+    class QDPDefaultAllocator {
+    private:
+      // Disallow Copies
+      QDPDefaultAllocator(const QDPDefaultAllocator& c) {}
 
-  // Disallow assignments (copies by another name)
-  void operator=(const QDPDefaultAllocator& c) {}
+      // Disallow assignments (copies by another name)
+      void operator=(const QDPDefaultAllocator& c) {}
 
-  // Disallow creation / destruction by anyone except 
-  // the singleton CreateUsingNew policy which is a "friend"
-  // I don't like friends but this follows Alexandrescu's advice
-  // on p154 of Modern C++ Design (A. Alexandrescu)
-  QDPDefaultAllocator() {init();}
-  ~QDPDefaultAllocator() {}
+      // Disallow creation / destruction by anyone except 
+      // the singleton CreateUsingNew policy which is a "friend"
+      // I don't like friends but this follows Alexandrescu's advice
+      // on p154 of Modern C++ Design (A. Alexandrescu)
+      QDPDefaultAllocator() {init();}
+      ~QDPDefaultAllocator() {}
 
-  friend class QDP::CreateUsingNew<QDP::Allocator::QDPDefaultAllocator>;
- public:
+      friend class QDP::CreateUsingNew<QDP::Allocator::QDPDefaultAllocator>;
+    public:
 
-  // Pusher
-  void pushFunc(const char* func, int line);
+      // Pusher
+      void pushFunc(const char* func, int line);
   
-  // Popper
-  void popFunc();
+      // Popper
+      void popFunc();
   
-  //! Allocator function. Allocates n_bytes, into a memory pool
-  //! This is a default implementation, with only 1 memory pool
-  //! So we simply ignore the memory pool hint.
-  void*
-  allocate(size_t n_bytes,const MemoryPoolHint& mem_pool_hint);
+      //! Allocator function. Allocates n_bytes, into a memory pool
+      //! This is a default implementation, with only 1 memory pool
+      //! So we simply ignore the memory pool hint.
+      void*
+      allocate(size_t n_bytes,const MemoryPoolHint& mem_pool_hint);
 
-  //! Free an aligned pointer, which was allocated by us.
-  void 
-  free(void *mem);
+      //! Free an aligned pointer, which was allocated by us.
+      void 
+      free(void *mem);
 
-  //! Dump the map
-  void
-  dump();
+      //! Dump the map
+      void
+      dump();
 
-protected:
-  void init();
-};
+    protected:
+      void init();
+    };
 
-// Turn into a Singleton. Create with CreateUsingNew
-// Has NoDestroy lifetime, as it may be needed for 
-// the destruction policy is No Destroy, so the 
-// Singleton is not cleaned up on exit. This is so 
-// that static objects can refer to it with confidence
-// in their own destruction, not having to worry that
-// atexit() may have destroyed the allocator before
-// the static objects need to feed memory. 
-typedef SingletonHolder<QDP::Allocator::QDPDefaultAllocator,
-			QDP::CreateUsingNew,
-			QDP::NoDestroy,
-			QDP::SingleThreaded> theQDPAllocator;
+    // Turn into a Singleton. Create with CreateUsingNew
+    // Has NoDestroy lifetime, as it may be needed for 
+    // the destruction policy is No Destroy, so the 
+    // Singleton is not cleaned up on exit. This is so 
+    // that static objects can refer to it with confidence
+    // in their own destruction, not having to worry that
+    // atexit() may have destroyed the allocator before
+    // the static objects need to feed memory. 
+    typedef SingletonHolder<QDP::Allocator::QDPDefaultAllocator,
+			    QDP::CreateUsingNew,
+			    QDP::NoDestroy,
+			    QDP::SingleThreaded> theQDPAllocator;
 
-QDP_END_NAMESPACE();
-QDP_END_NAMESPACE();
+  } // namespace Allocator
+} // namespace QDP
 
 #endif

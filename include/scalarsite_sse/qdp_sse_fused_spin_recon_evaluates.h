@@ -1,7 +1,7 @@
 #ifndef QDP_SSE_FUSED_SPIN_RECON_EVALYATES_H
 #define QDP_SSE_FUSED_SPIN_RECON_EVALUATES_H
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 
 // Vec = SpinReconstructDir0Plus( u * psi);
@@ -809,7 +809,7 @@ void evaluate(OLattice< FVec >& d,
 
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 
 

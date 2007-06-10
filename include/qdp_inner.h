@@ -1,12 +1,14 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.31 2007-03-15 03:15:15 edwards Exp $
+// $Id: qdp_inner.h,v 1.32 2007-06-10 14:32:08 edwards Exp $
 
 /*! \file
  * \brief Inner grid
  */
 
+#ifndef QDP_INNER_H
+#define QDP_INNER_H
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup iscalar Inner grid scalar
@@ -3632,4 +3634,6 @@ where(const IScalar<T1>& a, const IScalar<T2>& b, const ILattice<T3,N>& c)
 
 /*! @} */  // end of group ilattice
 
-QDP_END_NAMESPACE();
+} // namespace QDP
+
+#endif

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_vector.h,v 1.3 2005-12-21 16:04:25 bjoo Exp $
+// $Id: qdp_scalarsite_sse_vector.h,v 1.4 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Vector optimizations
@@ -19,7 +19,7 @@
 
 #include "qdp_sse_intrin.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 /*! @defgroup optimizations  Optimizations
  *
@@ -491,7 +491,7 @@ adjMultiplyAdj(const RComplexFloat4& l, const RComplexFloat4& r)
 #undef QDP_SCALARSITE_DEBUG
 #endif
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif  // defined(__GNUC__)
 

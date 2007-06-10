@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_layout.cc,v 1.14 2005-01-21 02:57:34 edwards Exp $
+// $Id: qdp_scalar_layout.cc,v 1.15 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Scalar layout routines
@@ -17,7 +17,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 // Layout stuff specific to a scalar architecture
@@ -351,4 +351,4 @@ namespace Layout
 //-----------------------------------------------------------------------------
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

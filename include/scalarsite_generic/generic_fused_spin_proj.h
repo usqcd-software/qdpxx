@@ -2,7 +2,7 @@
 #define GENERIC_FUSED_SPIN_PROJ_H
 
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // Convenience Types
 typedef PColorVector<RComplex<REAL>, 3> ColVec;
@@ -867,6 +867,6 @@ adjMultSprojDir3Minus(const PScalar<ColMat>& a, const Spin4& b)
 }
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif

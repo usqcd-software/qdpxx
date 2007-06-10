@@ -1,4 +1,4 @@
-// $Id: sse_blas_vaxpy3_g5.h,v 1.2 2005-12-21 16:04:25 bjoo Exp $
+// $Id: sse_blas_vaxpy3_g5.h,v 1.3 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -13,7 +13,7 @@
 #include "qdp_config.h"
 #include "qdp_sse_intrin.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 #if BASE_PRECISION==32
 
@@ -176,7 +176,7 @@ void axmyz_g5ProjMinus(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,i
 
 #endif
 
-QDP_END_NAMESPACE(QDP);
+} // namespace QDP;
 
 
 #endif // GNUC

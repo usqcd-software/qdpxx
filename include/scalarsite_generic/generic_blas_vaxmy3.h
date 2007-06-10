@@ -1,4 +1,4 @@
-// $Id: generic_blas_vaxmy3.h,v 1.1 2004-04-01 09:12:56 bjoo Exp $
+// $Id: generic_blas_vaxmy3.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXMY routine
@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VAXMY3
 #define QDP_GENERIC_BLAS_VAXMY3
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // (Vector) Out = (Scalar) (*scalep) * (Vector) InScale - (Vector) Add
 inline
@@ -83,6 +83,6 @@ void vaxmy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Sub,int n_3vec)
   }
 }
 
-QDP_END_NAMESPACE(QDP);
+} // namespace QDP;
 
 #endif // guard

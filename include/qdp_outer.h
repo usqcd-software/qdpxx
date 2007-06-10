@@ -1,16 +1,17 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.52 2007-05-31 19:42:12 bjoo Exp $
+// $Id: qdp_outer.h,v 1.53 2007-06-10 14:32:08 edwards Exp $
+
+#ifndef QDP_OUTER_H
+#define QDP_OUTER_H
 
 #include "qdp_config.h"
-
 #include "qdp_allocator.h"
 
 /*! \file
  * \brief Outer grid classes
  */
 
-
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 /*! \defgroup fiberbundle Fiberbundle types and operations
  *
@@ -1449,5 +1450,6 @@ void gaussian(OSubScalar<T,S>& d)
 
 /*! @} */  // end of group oscalar
 
+} // namespace QDP
 
-QDP_END_NAMESPACE();
+#endif

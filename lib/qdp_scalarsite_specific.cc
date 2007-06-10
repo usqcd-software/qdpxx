@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_specific.cc,v 1.15 2007-05-31 19:42:12 bjoo Exp $
+// $Id: qdp_scalarsite_specific.cc,v 1.16 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Scalar-like architecture specific routines
@@ -10,7 +10,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 namespace Layout
@@ -170,4 +170,4 @@ void Set::make(const SetFunc& func)
 }
 	  
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

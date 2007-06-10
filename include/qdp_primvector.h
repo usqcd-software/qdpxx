@@ -1,12 +1,16 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.24 2007-02-09 20:35:46 bjoo Exp $
+// $Id: qdp_primvector.h,v 1.25 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
  */
 
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_PRIMVECTOR_H
+#define QDP_PRIMVECTOR_H
+
+namespace QDP {
+
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup primvector Vector primitive
@@ -896,5 +900,6 @@ where(const PScalar<T1>& a, const PVector<T2,N,C>& b, const PVector<T3,N,C>& c)
 
 /*! @} */  // end of group primvector
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
+#endif

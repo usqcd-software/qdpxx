@@ -1,11 +1,15 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.32 2006-01-12 02:17:39 bjoo Exp $
+// $Id: qdp_primmatrix.h,v 1.33 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_PRIMMATRIX_H
+#define QDP_PRIMMATRIX_H
+
+namespace QDP {
+
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup primmatrix Matrix primitive
@@ -1710,5 +1714,6 @@ where(const PScalar<T1>& a, const PMatrix<T2,N,C>& b, const PMatrix<T3,N,C>& c)
 
 /*! @} */  // end of group primmatrix
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
+#endif

@@ -1,12 +1,15 @@
 // -*- C++ -*-
-// $Id: qdp_primcolorvec.h,v 1.4 2003-12-21 19:22:51 edwards Exp $
+// $Id: qdp_primcolorvec.h,v 1.5 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Vector
  */
 
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_PRIMCOLORVEC_H
+#define QDP_PRIMCOLORVEC_H
+
+namespace QDP {
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup primcolorvector Color vector primitive
@@ -236,6 +239,7 @@ colorContract(const PColorVector<T1,3>& s1, const PColorVector<T2,3>& s2, const 
 }
 
 
+} // namespace QDP
 
-QDP_END_NAMESPACE();
+#endif
 

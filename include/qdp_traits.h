@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_traits.h,v 1.8 2006-01-12 02:17:40 bjoo Exp $
+// $Id: qdp_traits.h,v 1.9 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Traits classes
@@ -7,8 +7,10 @@
  * Traits classes needed internally
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_TRAITS_H
+#define QDP_TRAITS_H
 
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 // Traits class for returning the subset-ted class name of a outer grid class
@@ -118,5 +120,7 @@ namespace {
 Zero zero;
 }
 
-QDP_END_NAMESPACE();
+} // namespace QDP
+
+#endif
 

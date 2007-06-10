@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.7 2007-02-21 22:17:20 bjoo Exp $
+// $Id: qdp_scalarvecsite_sse_linalg.h,v 1.8 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -15,7 +15,7 @@
 
 #include "qdp_sse_intrin.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // #define QDP_SCALARVECSITE_DEBUG
 
@@ -327,7 +327,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #endif
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif  // defined(__GNUC__)
 

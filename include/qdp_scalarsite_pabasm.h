@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_pabasm.h,v 1.3 2007-02-21 22:17:19 bjoo Exp $
+// $Id: qdp_scalarsite_pabasm.h,v 1.4 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Generic optimizations
@@ -10,8 +10,9 @@
 #ifndef QDP_SCALARSITE_GENERIC_H
 #define QDP_SCALARSITE_GENERIC_H
 
-QDP_BEGIN_NAMESPACE(QDP);
 #warning "Using PABASM Scalarsite"
+
+namespace QDP {
 
 /*! @defgroup optimizations  Optimizations
  *
@@ -503,6 +504,6 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
 #undef QDP_SCALARSITE_DEBUG
 #endif
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
 #endif

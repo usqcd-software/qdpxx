@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_init.h,v 1.1 2003-06-20 02:18:39 edwards Exp $
+// $Id: qdp_init.h,v 1.2 2007-06-10 14:32:08 edwards Exp $
 
 /*! \file
  * \brief Routines for top level QDP management
@@ -9,7 +9,7 @@
  */
 
 // Info/error routines
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //! Turn on the machine
 void QDP_initialize (int *argc, char ***argv);
@@ -38,6 +38,5 @@ void QDP_resume();
 //! Suspends QDP communications
 void QDP_suspend();
 
-
-QDP_END_NAMESPACE();
+}
 

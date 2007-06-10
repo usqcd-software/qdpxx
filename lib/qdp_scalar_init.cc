@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_init.cc,v 1.6 2004-07-27 05:36:36 edwards Exp $
+// $Id: qdp_scalar_init.cc,v 1.7 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Scalar init routines
@@ -9,7 +9,7 @@
 
 #include "qdp.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 
 //! Private flag for status
@@ -106,4 +106,4 @@ void QDP_resume() {}
 void QDP_suspend() {}
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

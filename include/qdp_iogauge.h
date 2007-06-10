@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_iogauge.h,v 1.5 2005-08-22 21:18:42 edwards Exp $
+// $Id: qdp_iogauge.h,v 1.6 2007-06-10 14:32:08 edwards Exp $
 
 /*! @file
  * @brief NERSC Gauge Connection Archive gauge support
@@ -10,12 +10,11 @@
    See http://qcd.nersc.gov/ for details.
  */
 
-#ifndef QDP_IOGAUGE_INCLUDE
-#define QDP_IOGAUGE_INCLUDE
+#ifndef QDP_IOGAUGE_H
+#define QDP_IOGAUGE_H
 
 
-QDP_BEGIN_NAMESPACE(QDP);
-
+namespace QDP {
 
 //! NERSC Archive gauge field header
 /*!
@@ -245,6 +244,6 @@ void writeArchiv(const multi1d<LatticeColorMatrix>& u,
 		 const string& cfg_file);
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
 #endif

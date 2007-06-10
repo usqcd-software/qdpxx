@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_generic_linalg.h,v 1.7 2007-02-24 01:00:30 bjoo Exp $
+// $Id: qdp_scalarsite_generic_linalg.h,v 1.8 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  * @brief Generic optimizations
@@ -10,7 +10,7 @@
 #ifndef QDP_SCALARSITE_GENERIC_LINALG_H
 #define QDP_SCALARSITE_GENERIC_LINALG_H
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 /*! @defgroup optimizations  Optimizations
  *
@@ -519,6 +519,6 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
 #undef QDP_SCALARSITE_DEBUG
 #endif
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif

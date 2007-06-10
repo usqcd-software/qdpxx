@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvec_init.cc,v 1.4 2004-08-10 14:02:37 edwards Exp $
+// $Id: qdp_scalarvec_init.cc,v 1.5 2007-06-10 14:32:11 edwards Exp $
 
 /*! @file
  * @brief Scalarvec init routines
@@ -9,7 +9,7 @@
 
 #include "qdp.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 
 //! Private flag for status
@@ -106,4 +106,4 @@ void QDP_resume() {}
 void QDP_suspend() {}
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

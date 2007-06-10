@@ -1,11 +1,15 @@
 // -*- C++ -*-
-// $Id: qdp_random.h,v 1.5 2005-01-22 22:05:02 edwards Exp $
+// $Id: qdp_random.h,v 1.6 2007-06-10 14:32:09 edwards Exp $
 //
 // QDP data parallel interface
 //
 // Random number support
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_RANDOM_H
+#define QDP_RANDOM_H
+
+namespace QDP {
+
 
 //! Random number generator namespace
 /*!
@@ -81,5 +85,6 @@ fill_random(double* d, T1& seed, T2& skewed_seed, const T1& seed_mult)
     d[i] = float(dd[i]);
 }
 
+} // namespace QDP
 
-QDP_END_NAMESPACE();
+#endif

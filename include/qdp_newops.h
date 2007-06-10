@@ -1,12 +1,14 @@
 // -*- C++ -*-
-// $Id: qdp_newops.h,v 1.14 2007-03-15 03:15:16 edwards Exp $
+// $Id: qdp_newops.h,v 1.15 2007-06-10 14:32:08 edwards Exp $
 
 /*! @file
  * @brief Additional operations on QDPTypes
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_NEWOPS_H
+#define QDP_NEWOPS_H
 
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 // Operator tags that are only used for type resolution
@@ -853,5 +855,6 @@ peteCast(const T1&, const QDPType<T2,C2>& l)
 }
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
+#endif

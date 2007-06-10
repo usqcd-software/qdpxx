@@ -1,12 +1,15 @@
 // -*- C++ -*-
-// $Id: qdp_outersubtype.h,v 1.6 2007-02-22 03:30:27 bjoo Exp $
+// $Id: qdp_outersubtype.h,v 1.7 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Outer grid classes after a subset
  */
 
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_OUTERSUBTYPE_H
+#define QDP_OUTERSUBTYPE_H
+
+namespace QDP {
 
 //! OScalar class narrowed to a subset
 /*! 
@@ -263,5 +266,6 @@ void gaussian(OSubScalar<T,S> dd)
   fill_gaussian(d.elem(), r1.elem(), r2.elem());
 }
 
+} // namespace QDP
 
-QDP_END_NAMESPACE();
+#endif

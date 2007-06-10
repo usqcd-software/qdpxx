@@ -1,6 +1,6 @@
 // -*- C++ -*-
 //
-// $Id: qdp_util.h,v 1.10 2005-07-25 17:07:14 edwards Exp $
+// $Id: qdp_util.h,v 1.11 2007-06-10 14:32:09 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -9,7 +9,7 @@
 #ifndef QDP_UTIL_INCLUDE
 #define QDP_UTIL_INCLUDE
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 //! Decompose a lexicographic site into coordinates
 multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
@@ -26,6 +26,6 @@ void initDefaultSets();
 //! Initializer for maps
 void initDefaultMaps();
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
 #endif

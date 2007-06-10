@@ -1,13 +1,17 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.45 2007-05-31 19:42:12 bjoo Exp $
+// $Id: qdp_parscalar_specific.h,v 1.46 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
  */
 
+#ifndef QDP_PARSCALAR_SPECIFIC_H
+#define QDP_PARSCALAR_SPECIFIC_H
+
 #include "qmp.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
+
 
 // Use separate defs here. This will cause subroutine calls under g++
 
@@ -2125,5 +2129,4 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
 	       coord);
 }
 
-
-QDP_END_NAMESPACE();
+} // namespace QDP

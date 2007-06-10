@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_allocator.h,v 1.4 2005-09-04 03:31:48 edwards Exp $
+// $Id: qdp_allocator.h,v 1.5 2007-06-10 14:32:08 edwards Exp $
 
 /*! \file
  * \brief Catch-alls for all memory allocators
@@ -18,52 +18,54 @@
  */
 using namespace std;
 
-QDP_BEGIN_NAMESPACE(QDP);
-QDP_BEGIN_NAMESPACE(Allocator);
+namespace QDP 
+{
+  namespace Allocator 
+  {
 
-enum MemoryPoolHint { DEFAULT, FAST };
+    enum MemoryPoolHint { DEFAULT, FAST };
 
-QDP_END_NAMESPACE(); // Allocator
+  } // namespace Allocator
 
-// Memory movement hints
-QDP_BEGIN_NAMESPACE(Hints);
+  // Memory movement hints
+  namespace Hints
+  {
 
-//! Hint to move a generic object of type T to fast memory.
-/*!
- * \ingroup QDP Memory management hints
- * 
- * This is a catch all function for objects that do not support
- * memory management hints. It does nothing and had better be inlined
- * or it can be detremental to my health
- *
- * \param x   The object for which the hint is meant
- * \param copy Whether to copy the object's slow memory contents to 
- *             its new fast memory home. Default is no.
- */
-template<typename T> 
-inline
-void moveToFastMemoryHint(T& x, bool copy=false) {}
+    //! Hint to move a generic object of type T to fast memory.
+    /*!
+     * \ingroup QDP Memory management hints
+     * 
+     * This is a catch all function for objects that do not support
+     * memory management hints. It does nothing and had better be inlined
+     * or it can be detremental to my health
+     *
+     * \param x   The object for which the hint is meant
+     * \param copy Whether to copy the object's slow memory contents to 
+     *             its new fast memory home. Default is no.
+     */
+    template<typename T> 
+    inline
+    void moveToFastMemoryHint(T& x, bool copy=false) {}
 
-//! Hint to return a generic object of type T from fast memory.
-/*!
- * \ingroup QDP Memory management hints
- * 
- * This is a catch all function for objects that do not support
- * memory management hints. It does nothing and had better be inlined
- * or it can be detremental to my health
- *
- * \param x   The object for which the hint is meant
- * \param copy Whether to copy the object's fast memory contents to 
- *             back to its slow memory home. Default is no.
- */
-template<typename T>
-inline
-void revertFromFastMemoryHint(T& x, bool copy=false) {}
+    //! Hint to return a generic object of type T from fast memory.
+    /*!
+     * \ingroup QDP Memory management hints
+     * 
+     * This is a catch all function for objects that do not support
+     * memory management hints. It does nothing and had better be inlined
+     * or it can be detremental to my health
+     *
+     * \param x   The object for which the hint is meant
+     * \param copy Whether to copy the object's fast memory contents to 
+     *             back to its slow memory home. Default is no.
+     */
+    template<typename T>
+    inline
+    void revertFromFastMemoryHint(T& x, bool copy=false) {}
 
+  } // namespace Hints
 
-QDP_END_NAMESPACE(); // Hints
-
-QDP_END_NAMESPACE(); // QDP
+} // namespace QDP
 
 #ifdef QDP_USE_QCDOC
 // Include the QCDOC specialisation

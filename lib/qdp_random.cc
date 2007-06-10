@@ -1,11 +1,11 @@
-// $Id: qdp_random.cc,v 1.11 2005-11-03 22:17:30 bjoo Exp $
+// $Id: qdp_random.cc,v 1.12 2007-06-10 14:32:11 edwards Exp $
 //
 // Random number generator support
 
 
 #include "qdp.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // Random number generator namespace
 /* 
@@ -274,4 +274,4 @@ namespace RNG
 
 };
 
-QDP_END_NAMESPACE();
+} // namespace QDP;

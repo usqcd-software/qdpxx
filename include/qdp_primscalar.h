@@ -1,11 +1,15 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.28 2007-03-15 03:15:16 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.29 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_PRIMSCALAR_H
+#define QDP_PRIMSCALAR_H
+
+namespace QDP {
+
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup primscalar Scalar primitive
@@ -1515,5 +1519,6 @@ gather_sites(PScalar<T>& d,
 
 /*! @} */  // end of group primscalar
 
-QDP_END_NAMESPACE();
+} // namespace QDP
 
+#endif

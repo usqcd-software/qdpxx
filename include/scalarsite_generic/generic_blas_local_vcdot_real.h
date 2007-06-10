@@ -1,4 +1,4 @@
-// $Id: generic_blas_local_vcdot_real.h,v 1.2 2004-04-04 19:18:44 bjoo Exp $
+// $Id: generic_blas_local_vcdot_real.h,v 1.3 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  *  @brief Generic Scalar, CDOT  routine
@@ -9,7 +9,7 @@
 #define QDP_GENERIC_BLAS_LOCAL_VCDOT_REAL
 
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // Out = Re (< V1, V2 >) = Re(V1^{dagger} V2)
 // Out  REAL
@@ -102,6 +102,6 @@ void local_vcdot_real(DOUBLE *Out, REAL *V1, REAL *V2, int n_3vec)
 }
 
 
-QDP_END_NAMESPACE(QDP);
+} // namespace QDP;
 
 #endif // guard

@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas.h,v 1.22 2007-02-24 01:00:30 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas.h,v 1.23 2007-06-10 14:32:10 edwards Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -21,7 +21,7 @@
 #include "scalarsite_generic/generic_blas_local_vcdot.h"
 #include "scalarsite_generic/generic_blas_local_vcdot_real.h"
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // Types needed for the expression templates. 
 // TVec has outer Ns template so it ought to work for staggered as well
@@ -2038,7 +2038,7 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
 }
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif  // guard
  

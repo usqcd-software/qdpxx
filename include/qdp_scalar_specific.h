@@ -1,11 +1,14 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.34 2007-03-15 03:15:16 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.35 2007-06-10 14:32:09 edwards Exp $
 //
 // QDP data parallel interface
 //
 // Outer lattice routines specific to a scalar platform 
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_SCALAR_SPECIFIC_H
+#define QDP_SCALAR_SPECIFIC_H
+
+namespace QDP {
 
 // Use separate defs here. This will cause subroutine calls under g++
 
@@ -1601,5 +1604,6 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
 		sizeof(T) / sizeof(typename WordType<T>::Type_t));
 }
 
+} // namespace QDP
 
-QDP_END_NAMESPACE();
+#endif

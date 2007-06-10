@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvecsite_sse_blas.h,v 1.4 2005-12-21 16:04:25 bjoo Exp $
+// $Id: qdp_scalarvecsite_sse_blas.h,v 1.5 2007-06-10 14:32:11 edwards Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -9,7 +9,7 @@
 #ifndef QDP_SCALARVECSITE_SSE_BLAS_H
 #define QDP_SCALARVECSITE_SSE_BLAS_H
 
-QDP_BEGIN_NAMESPACE(QDP);
+namespace QDP {
 
 // #define QDP_SCALARVECSITE_BLAS_DEBUG
 
@@ -67,7 +67,7 @@ operator*(const TScal& l, const TCMat& r)
 #endif
 
 
-QDP_END_NAMESPACE();
+} // namespace QDP;
 
 #endif  // guard
  

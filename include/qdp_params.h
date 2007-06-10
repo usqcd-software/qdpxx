@@ -1,11 +1,15 @@
 // -*- C++ -*-
-// $Id: qdp_params.h,v 1.2 2003-10-17 16:06:39 edwards Exp $
+// $Id: qdp_params.h,v 1.3 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Fundamental parameters
  */
 
-QDP_BEGIN_NAMESPACE(QDP);
+#ifndef QDP_PARAMS_H
+#define QDP_PARAMS_H
+
+namespace QDP {
+
 
 /*! @defgroup params Fundamental parameters for QDP
  *
@@ -24,6 +28,8 @@ const int Ns = QDP_NS;
 
 /*! @} */  // end of group params
 
-QDP_END_NAMESPACE();
+} // namespace QDP
+
+#endif
 
 
