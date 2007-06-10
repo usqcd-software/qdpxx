@@ -1,4 +1,4 @@
-// $Id: t_qio.cc,v 1.28 2006-01-12 02:17:39 bjoo Exp $
+// $Id: t_qio.cc,v 1.29 2007-06-10 21:43:52 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -25,6 +25,70 @@ int main(int argc, char **argv)
   QDP_serialparallel_t serpar = QDPIO_SERIAL;
   string test_file;
 
+  // First test binary buffer writer in SINGLEFILE
+  {
+    test_file = "t_qio_buffer.lime";
+
+    XMLBufferWriter file_xml, record_xml;
+    Double d = 17.123456789010234567890123456;
+    int rob = -5;
+
+    {
+      push(file_xml,"file_fred");
+      write(file_xml,"d", d);
+      push(file_xml,"file_sally");
+      write(file_xml,"rob", rob);
+      pop(file_xml);
+      pop(file_xml);
+    }
+    
+    {
+      push(record_xml,"record_fred");
+      write(record_xml,"d", d);
+      push(record_xml,"record_sally");
+      write(record_xml,"rob", rob);
+      pop(record_xml);
+      pop(record_xml);
+    }
+
+    {
+      BinaryBufferWriter record_bin;
+      write(record_bin, d);
+      record_bin << rob;
+      QDPUtil::n_uint32_t check = record_bin.getChecksum();
+      record_bin << check;
+
+      QDPFileWriter to_file(file_xml,test_file,QDPIO_SINGLEFILE,serpar,QDPIO_OPEN);
+      write(to_file, record_xml, record_bin);
+
+      QDPIO::cout << "BufferWriter test: d= " << d << "  rob=" << rob << "  checkSum= " << check << endl;
+        }
+  }
+
+
+  // Read binary with a BufferReader
+  {
+    test_file = "t_qio_buffer.lime";
+
+    XMLReader file_xml, record_xml;
+    BinaryBufferReader record_bin;
+    Double d;
+    int rob;
+
+    QDPFileReader from_file(file_xml,test_file,serpar);
+    read(from_file, record_xml, record_bin);
+
+    read(record_bin, d);
+    record_bin >> rob;
+    QDPUtil::n_uint32_t check;
+    record_bin >> check;
+    QDPIO::cout << "BufferReader test: d= " << d << "  rob=" << rob << "  checkSum= " << check << endl;
+  }
+
+
+  //
+  // Loop over IO types for lattice fields
+  //
   for(int i=0; i < 3; ++i)
   {
     QDP_volfmt_t volfmt;
