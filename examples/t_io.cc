@@ -1,4 +1,4 @@
-// $Id: t_io.cc,v 1.23 2007-06-10 15:57:11 edwards Exp $
+// $Id: t_io.cc,v 1.24 2007-06-10 21:16:08 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -98,15 +98,6 @@ int main(int argc, char **argv)
     QDPIO::cout << "BinaryBufferWriter and Reader test: original float = " << x << endl;
     BinaryBufferWriter tobufbinary;
     write(tobufbinary, x);
-    string buf = tobufbinary.str();
-    for(int i=0; i < buf.size(); ++i)
-    {
-      fprintf(stdout, "buf[%d] = %c = 0x%x\n", i, buf.c_str()[i], buf.c_str()[i]);
-    }
-    {
-      BinaryFileWriter tobinary("t_io.bin");
-      write(tobinary, x);
-    }
 
     BinaryBufferReader frombufbinary(tobufbinary.str());
     read(frombufbinary, x);
