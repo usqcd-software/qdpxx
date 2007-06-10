@@ -1,3 +1,19 @@
+2007-06-10 17:43  tag qdp1-24-0
+
+2007-06-10 17:43  edwards
+
+	* examples/t_qio.cc: Added tests of BinaryWriter/Reader. NOTE: QIO
+	  annoyingly complains about byte reversal of a single byte, but
+	  doesn't fail (prints a warning). Otherwise, the code works fine.
+
+2007-06-10 17:16  edwards
+
+	* lib/qdp_io.cc: Fixes in Buffer initialization.
+
+2007-06-10 17:16  edwards
+
+	* examples/t_io.cc: Removed debugging code.
+
 2007-06-10 11:57  edwards
 
 	* examples/t_io.cc, include/qdp_io.h, lib/qdp_io.cc: Added
