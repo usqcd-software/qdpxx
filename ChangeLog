@@ -1,3 +1,8 @@
+2007-06-10 11:57  edwards
+
+	* examples/t_io.cc, include/qdp_io.h, lib/qdp_io.cc: Added
+	  TextBufferReader/Writer.
+
 2007-06-10 11:07  edwards
 
 	* docs/manual.tex: Updated to 1.24.0. New BinaryReader/Writer base
