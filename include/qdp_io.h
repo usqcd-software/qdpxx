@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.22 2007-06-10 14:32:08 edwards Exp $
+// $Id: qdp_io.h,v 1.23 2007-06-10 15:57:11 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -90,6 +90,47 @@ namespace QDP
 
 
   //--------------------------------------------------------------------------------
+  //! Text buffer input class
+  /*!
+    This class is used to read data from a text buffer. Input is done on the
+    primary node and all nodes end up with the same data.
+
+    The read methods are also wrapped by externally defined >> operators,
+  */
+
+  class TextBufferReader : public TextReader
+  {
+  public:
+    TextBufferReader();
+
+    //! Shutdown the buffer
+    ~TextBufferReader(); 
+
+    /*!
+      Initialize a buffer for reading.
+      \param p The string of input
+    */
+    explicit TextBufferReader(const std::string& p);
+
+    //! Opens a buffer for reading.
+    /*!
+      \param p The string of input
+    */
+    void open(const std::string& p);
+
+    //! Return entire buffer as a string
+    std::string str() const;
+        
+  protected:
+    //! Get the internal input stream
+    std::istream& getIstream() {return f;}
+
+  private:
+    std::istringstream f;
+  };
+
+
+  //--------------------------------------------------------------------------------
   //! Text file input class
   /*!
     This class is used to read data from a text file. Input is done on the
@@ -137,7 +178,7 @@ namespace QDP
 #if defined(USE_REMOTE_QIO)
     QDPUtil::RemoteInputFileStream f;
 #else
-    ifstream f;
+    std::ifstream f;
 #endif
   };
 
@@ -159,6 +200,9 @@ namespace QDP
       Closes the last file opened
     */
     virtual ~TextWriter() {}
+
+    //! Flushes the object
+    virtual void flush() = 0;
 
     //!Checks status of the previous IO operation.
     /*!
@@ -211,6 +255,46 @@ namespace QDP
 
 
   //--------------------------------------------------------------------------------
+  //! Text buffer output class
+  /*!
+    This class is used to write data to a text buffer.
+    Output is done from the primary node only..
+  
+    The write methods are also wrapped by externally defined >> operators,
+  */
+  class TextBufferWriter : public TextWriter
+  {
+  public:
+    TextBufferWriter();
+
+    //! Shutdown the buffer
+    ~TextBufferWriter();
+
+    /*!
+      Initialize a buffer
+      \param p The string for initialization
+    */
+    explicit TextBufferWriter(const std::string& p);
+
+    //! Construct from a string
+    void open(const std::string& s);
+
+    //! Flushes the buffer
+    void flush() {}
+
+    //! Return entire buffer as a string
+    std::string str() const;
+        
+  protected:
+    //! Get the internal output stream
+    std::ostream& getOstream() {return f;}
+
+  private:
+    std::ostringstream f;
+  };
+
+
+  //--------------------------------------------------------------------------------
   //! Text output class
   /*!
     This class is used to write data to a text file.
@@ -260,7 +344,7 @@ namespace QDP
 #if defined(USE_REMOTE_QIO)
     QDPUtil::RemoteOutputFileStream f;
 #else
-    ofstream f;
+    std::ofstream f;
 #endif
   };
 
@@ -517,7 +601,7 @@ namespace QDP
     BinaryBufferReader();
 
     //! Construct from a string
-    BinaryBufferReader(const std::string& s);
+    explicit BinaryBufferReader(const std::string& s);
 
     //! Closes the buffer
     ~BinaryBufferReader();
@@ -831,7 +915,7 @@ namespace QDP
     BinaryBufferWriter();
 
     //! Construct from a string
-    BinaryBufferWriter(const std::string& s);
+    explicit BinaryBufferWriter(const std::string& s);
 
     //! Closes the buffer
     ~BinaryBufferWriter();

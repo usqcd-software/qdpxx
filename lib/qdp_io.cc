@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.cc,v 1.23 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_io.cc,v 1.24 2007-06-10 15:57:11 edwards Exp $
 /*! @file
  * @brief IO support
  */
@@ -169,6 +169,33 @@ namespace QDP
     txt.read(input);
     return txt;
   }
+
+
+  //--------------------------------------------------------------------------------
+  // Text buffer reader support
+  TextBufferReader::TextBufferReader() {}
+
+  TextBufferReader::TextBufferReader(const std::string& s) {open(s);}
+
+  void TextBufferReader::open(const std::string& s) 
+  {
+    if (Layout::primaryNode())
+      f.str() = s;
+  }
+
+  // Output the stream
+  std::string TextBufferReader::str() const
+  {
+    std::string s;
+    
+    if (Layout::primaryNode()) 
+      s = f.str();
+    
+    return s;
+  }
+
+  // Close
+  TextBufferReader::~TextBufferReader() {}
 
 
   //--------------------------------------------------------------------------------
@@ -365,6 +392,33 @@ namespace QDP
     if (Layout::primaryNode())
       getOstream() << output;
   }
+
+
+  //--------------------------------------------------------------------------------
+  // Text buffer writer support
+  TextBufferWriter::TextBufferWriter() {}
+
+  TextBufferWriter::TextBufferWriter(const std::string& p) {open(p);}
+
+  void TextBufferWriter::open(const std::string& s)
+  {
+    if (Layout::primaryNode())
+      f.str() = s;
+  }
+
+  // Output the stream
+  std::string TextBufferWriter::str() const
+  {
+    std::string s;
+    
+    if (Layout::primaryNode()) 
+      s = f.str();
+    
+    return s;
+  }
+
+  // Close
+  TextBufferWriter::~TextBufferWriter() {}
 
 
   //--------------------------------------------------------------------------------
