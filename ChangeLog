@@ -1,4 +1,13 @@
-2007-06-10 17:43  tag qdp1-24-0
+2007-06-11 00:26  tag qdp1-24-0
+
+2007-06-11 00:26  edwards
+
+	* NEWS: Updated info on 1.24.0
+
+2007-06-11 00:24  edwards
+
+	* include/qdp_xmlio.h, lib/qdp_xmlio.cc: Added string initilization
+	  to XMLBufferWriter.
 
 2007-06-10 17:43  edwards
 
