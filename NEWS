@@ -4,6 +4,7 @@
         these classes are abstract classes (just like XMLWriter) for 
         BinaryBufferReader/Writer and BinaryFileReader/Writer . Also, removed
         the old QDP_BEGIN/END_NAMESPACE macro and now simply use "namespace QDP".
+	Added string initialization to XMLBufferWriter.
 
 03/14/2007 -- Robert Edwards
 
