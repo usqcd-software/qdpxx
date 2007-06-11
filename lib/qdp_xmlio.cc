@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.39 2007-06-10 14:32:12 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.40 2007-06-11 04:24:57 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -800,6 +800,14 @@ namespace QDP
   //--------------------------------------------------------------------------------
   // XML writer to a buffer
   XMLBufferWriter::XMLBufferWriter() {indent_level=0;}
+
+  XMLBufferWriter::XMLBufferWriter(const std::string& s) {open(s);}
+
+  void XMLBufferWriter::open(const std::string& s) 
+  {
+    if (Layout::primaryNode())
+      output_stream.str(s);
+  }
 
   string XMLBufferWriter::str()
   {

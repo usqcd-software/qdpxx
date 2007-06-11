@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.37 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.38 2007-06-11 04:24:56 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -677,8 +677,14 @@ namespace QDP
     /*! No prologue written */
     XMLBufferWriter();
   
+    //! Construct from a string
+    explicit XMLBufferWriter(const std::string& s);
 
+    //! Destroy
     ~XMLBufferWriter();
+
+    //! Construct from a string
+    void open(const std::string& s);
 
     //! Return entire buffer as a string
     std::string str();
