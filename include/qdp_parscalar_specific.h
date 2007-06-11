@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.46 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.47 2007-06-11 15:12:54 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -2130,3 +2130,4 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
 }
 
 } // namespace QDP
+#endif
