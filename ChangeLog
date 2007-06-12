@@ -1,3 +1,16 @@
+2007-06-12 00:27  edwards
+
+	* NEWS: Info on 1.24.1
+
+2007-06-12 00:25  edwards
+
+	* aclocal.m4, include/qdp_config_internal.h.in, configure: Induced
+	  changes
+
+2007-06-12 00:25  edwards
+
+	* configure.ac: Changed to 1.24.1
+
 2007-06-11 22:53  edwards
 
 	* include/qdp_xmlio.h, lib/qdp_xmlio.cc: Added const attributes to
