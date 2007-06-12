@@ -1,3 +1,8 @@
+2007-06-11 22:53  edwards
+
+	* include/qdp_xmlio.h, lib/qdp_xmlio.cc: Added const attributes to
+	  str() and printCurrentContext() within XMLBufferWriter.
+
 2007-06-11 11:12  bjoo
 
 	* include/qdp_parscalar_specific.h: added missing #endif
