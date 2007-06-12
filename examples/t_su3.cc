@@ -1,4 +1,4 @@
-// $Id: t_su3.cc,v 1.7 2007-06-12 18:10:21 bjoo Exp $
+// $Id: t_su3.cc,v 1.8 2007-06-12 18:34:31 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -368,7 +368,7 @@ int main(int argc, char *argv[])
 	     (Float *)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
-	     num_sites, (unsigned long)0);
+	     num_sites, (unsigned long)one_minus_i);
   
   diff = a - a2;
   
