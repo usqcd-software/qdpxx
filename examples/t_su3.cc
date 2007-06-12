@@ -1,4 +1,4 @@
-// $Id: t_su3.cc,v 1.6 2007-06-12 17:46:31 bjoo Exp $
+// $Id: t_su3.cc,v 1.7 2007-06-12 18:10:21 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {2,2,2,2};
+  const int foo[] = {6,6,6,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -204,7 +204,10 @@ int main(int argc, char *argv[])
   Complex two;
   two.elem().elem().elem().real() = 2;
   two.elem().elem().elem().imag() = 0;
-  double my_two[2] = {2,0};
+
+  Float my_two[2] QDP_ALIGN16;
+  my_two[0] =2;
+  my_two[1] =0;
 
   a = d + two*b*c;
 
@@ -213,7 +216,7 @@ int main(int argc, char *argv[])
   qdp_su3_mm_peq(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
 	     &(d.elem(all.start()).elem().elem(0,0).real()),
-	     (Float *)my_two,
+	     (Float*)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
 	     num_sites, (unsigned long)0);
@@ -236,7 +239,7 @@ int main(int argc, char *argv[])
   for(int i=0; i < 5000; i++) {
     qdp_su3_mm_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
 		   &(d.elem(all.start()).elem().elem(0,0).real()),
-		   &(two.elem().elem().elem().real()),
+		   (Float *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)0);
@@ -261,7 +264,7 @@ int main(int argc, char *argv[])
   qdp_su3_ma_peq(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
 	     &(d.elem(all.start()).elem().elem(0,0).real()),
-	     (Float *)my_two,
+             (Float *)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
 	     num_sites, (unsigned long)0);
@@ -284,7 +287,7 @@ int main(int argc, char *argv[])
   for(int i=0; i < 5000; i++) {
     qdp_su3_ma_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
 		   &(d.elem(all.start()).elem().elem(0,0).real()),
-		   &(two.elem().elem().elem().real()),
+		   (Float *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)0);
@@ -319,7 +322,7 @@ int main(int argc, char *argv[])
   
   diff = a - a2;
   
-  QDPIO::cout << "MA+=: || diff || = " << sqrt(norm2(diff)) << endl;
+  QDPIO::cout << "AM+=: || diff || = " << sqrt(norm2(diff)) << endl;
   
  
   swatch.reset();
@@ -335,7 +338,7 @@ int main(int argc, char *argv[])
   for(int i=0; i < 5000; i++) {
     qdp_su3_am_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
 		   &(d.elem(all.start()).elem().elem(0,0).real()),
-		   &(two.elem().elem().elem().real()),
+		   (Float *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)0);
@@ -345,8 +348,8 @@ int main(int argc, char *argv[])
   
   qdp_secs = swatch.getTimeInSeconds();
   
-  QDPIO::cout << "A: original  seconds= " << original_secs << endl;
-  QDPIO::cout << "AA: bagel_qdp seconds= " << qdp_secs << endl;
+  QDPIO::cout << "AM: original  seconds= " << original_secs << endl;
+  QDPIO::cout << "AM: bagel_qdp seconds= " << qdp_secs << endl;
 
   // -----------------------------------------------------------------
   // AA += 
@@ -369,7 +372,7 @@ int main(int argc, char *argv[])
   
   diff = a - a2;
   
-  QDPIO::cout << "MA+=: || diff || = " << sqrt(norm2(diff)) << endl;
+  QDPIO::cout << "AA+=: || diff || = " << sqrt(norm2(diff)) << endl;
   
  
   swatch.reset();
@@ -385,7 +388,7 @@ int main(int argc, char *argv[])
   for(int i=0; i < 5000; i++) {
     qdp_su3_aa_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
 		   &(d.elem(all.start()).elem().elem(0,0).real()),
-		   &(two.elem().elem().elem().real()),
+	           (Float *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)one_minus_i);
