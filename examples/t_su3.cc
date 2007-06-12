@@ -1,4 +1,4 @@
-// $Id: t_su3.cc,v 1.4 2007-06-08 20:07:38 bjoo Exp $
+// $Id: t_su3.cc,v 1.5 2007-06-12 14:04:49 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
-	     num_sites);
+	     num_sites, (unsigned long)0);
   
   diff = a - a2;
   
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     qdp_su3_mm(&(a2.elem(all.start()).elem().elem(0,0).real()),
 	       &(b.elem(all.start()).elem().elem(0,0).real()),
 	       &(c.elem(all.start()).elem().elem(0,0).real()),
-	       num_sites);
+	       num_sites, (unsigned long)0);
     
   }
   swatch.stop();
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
   qdp_su3_ma(&(a2.elem(all.start()).elem().elem(0,0).real()),
   	     &(b.elem(all.start()).elem().elem(0,0).real()),
   	     &(c.elem(all.start()).elem().elem(0,0).real()),
-  	     num_sites);
+  	     num_sites, (unsigned long)0);
 
   diff = a - a2;
 
@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
     qdp_su3_ma(&(a2.elem(all.start()).elem().elem(0,0).real()),
 	       &(b.elem(all.start()).elem().elem(0,0).real()),
 	       &(c.elem(all.start()).elem().elem(0,0).real()),
-	       num_sites);
+	       num_sites,(unsigned long)0);
   }
   swatch.stop();
 
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
   qdp_su3_am(&(a2.elem(all.start()).elem().elem(0,0).real()),
   	     &(b.elem(all.start()).elem().elem(0,0).real()),
   	     &(c.elem(all.start()).elem().elem(0,0).real()),
-  	     num_sites);
+  	     num_sites, (unsigned long)0);
 
   diff = a - a2;
 
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
     qdp_su3_am(&(a2.elem(all.start()).elem().elem(0,0).real()),
 	       &(b.elem(all.start()).elem().elem(0,0).real()),
 	       &(c.elem(all.start()).elem().elem(0,0).real()),
-	       num_sites);
+	       num_sites, (unsigned long)0);
   }
   swatch.stop();
 
@@ -156,12 +156,15 @@ int main(int argc, char *argv[])
   //-----------------------------------------------------------------
   gaussian(b);
   gaussian(c);
+  double one_minus_i[2] QDP_ALIGN16;
+  one_minus_i[0] = (double)1;
+  one_minus_i[1] = (double)(-1);
 
   a = adj(b)*adj(c);
   qdp_su3_aa(&(a2.elem(all.start()).elem().elem(0,0).real()),
   	     &(b.elem(all.start()).elem().elem(0,0).real()),
   	     &(c.elem(all.start()).elem().elem(0,0).real()),
-  	     num_sites);
+  	     num_sites, (unsigned long)one_minus_i);
 
   diff = a - a2;
 
@@ -181,7 +184,7 @@ int main(int argc, char *argv[])
     qdp_su3_aa(&(a2.elem(all.start()).elem().elem(0,0).real()),
 	       &(b.elem(all.start()).elem().elem(0,0).real()),
 	       &(c.elem(all.start()).elem().elem(0,0).real()),
-	       num_sites);
+	       num_sites, (unsigned long)one_minus_i);
   }
   swatch.stop();
 
