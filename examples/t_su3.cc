@@ -1,4 +1,4 @@
-// $Id: t_su3.cc,v 1.5 2007-06-12 14:04:49 bjoo Exp $
+// $Id: t_su3.cc,v 1.6 2007-06-12 17:46:31 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {6,6,6,4};
+  const int foo[] = {2,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 #if QDP_USE_BAGEL_QDP == 1
 
   
-  LatticeColorMatrix a, b, c;
+  LatticeColorMatrix a, b, c, d;
   LatticeColorMatrix a2;
   LatticeColorMatrix diff;
 
@@ -190,6 +190,211 @@ int main(int argc, char *argv[])
 
   qdp_secs = swatch.getTimeInSeconds();
 
+  QDPIO::cout << "AA: original  seconds= " << original_secs << endl;
+  QDPIO::cout << "AA: bagel_qdp seconds= " << qdp_secs << endl;
+
+
+  // -----------------------------------------------------------------
+  // MM += 
+  // -----------------------------------------------------------------
+  gaussian(b);
+  gaussian(c);
+  gaussian(d);
+
+  Complex two;
+  two.elem().elem().elem().real() = 2;
+  two.elem().elem().elem().imag() = 0;
+  double my_two[2] = {2,0};
+
+  a = d + two*b*c;
+
+  
+  
+  qdp_su3_mm_peq(
+	     &(a2.elem(all.start()).elem().elem(0,0).real()),
+	     &(d.elem(all.start()).elem().elem(0,0).real()),
+	     (Float *)my_two,
+	     &(b.elem(all.start()).elem().elem(0,0).real()),
+	     &(c.elem(all.start()).elem().elem(0,0).real()),
+	     num_sites, (unsigned long)0);
+  
+  diff = a - a2;
+  
+  QDPIO::cout << "MM+=: || diff || = " << sqrt(norm2(diff)) << endl;
+  
+ 
+  swatch.reset();
+  swatch.start();
+  for(int i=0; i < 5000; i++) { 
+    a = d + two*b*c;
+  }
+  swatch.stop();
+  original_secs = swatch.getTimeInSeconds();
+  
+  swatch.reset();
+  swatch.start();
+  for(int i=0; i < 5000; i++) {
+    qdp_su3_mm_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
+		   &(d.elem(all.start()).elem().elem(0,0).real()),
+		   &(two.elem().elem().elem().real()),
+		   &(b.elem(all.start()).elem().elem(0,0).real()),
+		   &(c.elem(all.start()).elem().elem(0,0).real()),
+		   num_sites, (unsigned long)0);
+    
+  }
+  swatch.stop();
+  
+  qdp_secs = swatch.getTimeInSeconds();
+  
+  QDPIO::cout << "MM: original  seconds= " << original_secs << endl;
+  QDPIO::cout << "MM: bagel_qdp seconds= " << qdp_secs << endl;
+
+  // -----------------------------------------------------------------
+  // MA += 
+  // -----------------------------------------------------------------
+  gaussian(b);
+  gaussian(c);
+  gaussian(d);
+
+  a = d + two*b*adj(c);
+
+  qdp_su3_ma_peq(
+	     &(a2.elem(all.start()).elem().elem(0,0).real()),
+	     &(d.elem(all.start()).elem().elem(0,0).real()),
+	     (Float *)my_two,
+	     &(b.elem(all.start()).elem().elem(0,0).real()),
+	     &(c.elem(all.start()).elem().elem(0,0).real()),
+	     num_sites, (unsigned long)0);
+  
+  diff = a - a2;
+  
+  QDPIO::cout << "MA+=: || diff || = " << sqrt(norm2(diff)) << endl;
+  
+ 
+  swatch.reset();
+  swatch.start();
+  for(int i=0; i < 5000; i++) { 
+    a = d + two*b*adj(c);
+  }
+  swatch.stop();
+  original_secs = swatch.getTimeInSeconds();
+  
+  swatch.reset();
+  swatch.start();
+  for(int i=0; i < 5000; i++) {
+    qdp_su3_ma_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
+		   &(d.elem(all.start()).elem().elem(0,0).real()),
+		   &(two.elem().elem().elem().real()),
+		   &(b.elem(all.start()).elem().elem(0,0).real()),
+		   &(c.elem(all.start()).elem().elem(0,0).real()),
+		   num_sites, (unsigned long)0);
+    
+  }
+  swatch.stop();
+  
+  qdp_secs = swatch.getTimeInSeconds();
+  
+  QDPIO::cout << "MA: original  seconds= " << original_secs << endl;
+  QDPIO::cout << "MA: bagel_qdp seconds= " << qdp_secs << endl;
+
+
+  // -----------------------------------------------------------------
+  // AM += 
+  // -----------------------------------------------------------------
+  gaussian(b);
+  gaussian(c);
+  gaussian(d);
+
+  a = d + two*adj(b)*c;
+
+  
+  
+  qdp_su3_am_peq(
+	     &(a2.elem(all.start()).elem().elem(0,0).real()),
+	     &(d.elem(all.start()).elem().elem(0,0).real()),
+	     (Float *)my_two,
+	     &(b.elem(all.start()).elem().elem(0,0).real()),
+	     &(c.elem(all.start()).elem().elem(0,0).real()),
+	     num_sites, (unsigned long)0);
+  
+  diff = a - a2;
+  
+  QDPIO::cout << "MA+=: || diff || = " << sqrt(norm2(diff)) << endl;
+  
+ 
+  swatch.reset();
+  swatch.start();
+  for(int i=0; i < 5000; i++) { 
+    a = d + two*adj(b)*c;
+  }
+  swatch.stop();
+  original_secs = swatch.getTimeInSeconds();
+  
+  swatch.reset();
+  swatch.start();
+  for(int i=0; i < 5000; i++) {
+    qdp_su3_am_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
+		   &(d.elem(all.start()).elem().elem(0,0).real()),
+		   &(two.elem().elem().elem().real()),
+		   &(b.elem(all.start()).elem().elem(0,0).real()),
+		   &(c.elem(all.start()).elem().elem(0,0).real()),
+		   num_sites, (unsigned long)0);
+    
+  }
+  swatch.stop();
+  
+  qdp_secs = swatch.getTimeInSeconds();
+  
+  QDPIO::cout << "A: original  seconds= " << original_secs << endl;
+  QDPIO::cout << "AA: bagel_qdp seconds= " << qdp_secs << endl;
+
+  // -----------------------------------------------------------------
+  // AA += 
+  // -----------------------------------------------------------------
+  gaussian(b);
+  gaussian(c);
+  gaussian(d);
+
+  a = d + two*adj(b)*adj(c);
+
+  
+  
+  qdp_su3_aa_peq(
+	     &(a2.elem(all.start()).elem().elem(0,0).real()),
+	     &(d.elem(all.start()).elem().elem(0,0).real()),
+	     (Float *)my_two,
+	     &(b.elem(all.start()).elem().elem(0,0).real()),
+	     &(c.elem(all.start()).elem().elem(0,0).real()),
+	     num_sites, (unsigned long)0);
+  
+  diff = a - a2;
+  
+  QDPIO::cout << "MA+=: || diff || = " << sqrt(norm2(diff)) << endl;
+  
+ 
+  swatch.reset();
+  swatch.start();
+  for(int i=0; i < 5000; i++) { 
+    a = d + two*adj(b)*adj(c);
+  }
+  swatch.stop();
+  original_secs = swatch.getTimeInSeconds();
+  
+  swatch.reset();
+  swatch.start();
+  for(int i=0; i < 5000; i++) {
+    qdp_su3_aa_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
+		   &(d.elem(all.start()).elem().elem(0,0).real()),
+		   &(two.elem().elem().elem().real()),
+		   &(b.elem(all.start()).elem().elem(0,0).real()),
+		   &(c.elem(all.start()).elem().elem(0,0).real()),
+		   num_sites, (unsigned long)one_minus_i);
+    
+  }
+  swatch.stop();
+  
+  qdp_secs = swatch.getTimeInSeconds();
+  
   QDPIO::cout << "AA: original  seconds= " << original_secs << endl;
   QDPIO::cout << "AA: bagel_qdp seconds= " << qdp_secs << endl;
 
