@@ -1,3 +1,8 @@
+2007-06-12 17:45  bjoo
+
+	* include/scalarsite_bagel_qdp/qdp_scalarsite_bagel_qdp_linalg.h:
+	  Hooked in the simplest of these
+
 2007-06-12 14:34  bjoo
 
 	* examples/t_su3.cc: This test passed on the SDSC Bluegene
