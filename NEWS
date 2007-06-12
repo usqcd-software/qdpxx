@@ -1,3 +1,8 @@
+06/12/2007 -- Robert Edwards
+
+	Version 1.24.1: Added "const" to some member funcs in XMLBufferWriter.
+        Fixed a missing #endif.
+
 06/10/2007 -- Robert Edwards
 
 	Version 1.24.0: Reorganized BinaryReader/Writer and TextReader. Now,
