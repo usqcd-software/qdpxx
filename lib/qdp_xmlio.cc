@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.40 2007-06-11 04:24:57 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.41 2007-06-12 02:53:40 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -809,7 +809,7 @@ namespace QDP
       output_stream.str(s);
   }
 
-  string XMLBufferWriter::str()
+  string XMLBufferWriter::str() const
   {
     ostringstream s;
   
@@ -822,7 +822,7 @@ namespace QDP
     return s.str();
   }
 
-  string XMLBufferWriter::printCurrentContext() {return output_stream.str();}
+  string XMLBufferWriter::printCurrentContext() const {return output_stream.str();}
 
   XMLBufferWriter::~XMLBufferWriter() {}
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.38 2007-06-11 04:24:56 edwards Exp $
+// $Id: qdp_xmlio.h,v 1.39 2007-06-12 02:53:40 edwards Exp $
 
 /*! @file
  * @brief XML IO support
@@ -687,10 +687,10 @@ namespace QDP
     void open(const std::string& s);
 
     //! Return entire buffer as a string
-    std::string str();
+    std::string str() const;
         
     // Return root element as a string
-    std::string printCurrentContext();
+    std::string printCurrentContext() const;
         
     //! Flush the buffer
     void flush() {}
