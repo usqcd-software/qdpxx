@@ -1,4 +1,4 @@
-// $Id: t_su3.cc,v 1.10 2007-06-13 20:47:58 bjoo Exp $
+// $Id: t_su3.cc,v 1.11 2007-06-13 21:49:51 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
   two.elem().elem().elem().real() = 1;
   two.elem().elem().elem().imag() = 0;
 
-  Float my_two[2] QDP_ALIGN16;
+  BAGELQDPFloat my_two[2] QDP_ALIGN16;
   my_two[0] =1;
   my_two[1] =0;
 
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
   
   qdp_su3_mm_peq(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
-	     (Float*)my_two,
+	     (BAGELQDPFloat*)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
 	     num_sites, (unsigned long)0);
@@ -246,7 +246,7 @@ int main(int argc, char *argv[])
   swatch.start();
   for(int i=0; i < 5000; i++) {
     qdp_su3_mm_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
-		   (Float *)my_two,
+		   (BAGELQDPFloat *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)0);
@@ -272,7 +272,7 @@ int main(int argc, char *argv[])
 
   qdp_su3_ma_peq(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
-             (Float *)my_two,
+             (BAGELQDPFloat *)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
 	     num_sites, (unsigned long)0);
@@ -294,7 +294,7 @@ int main(int argc, char *argv[])
   swatch.start();
   for(int i=0; i < 5000; i++) {
     qdp_su3_ma_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
-		   (Float *)my_two,
+		   (BAGELQDPFloat *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)0);
@@ -323,7 +323,7 @@ int main(int argc, char *argv[])
   
   qdp_su3_am_peq(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
-	     (Float *)my_two,
+	     (BAGELQDPFloat *)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
 	     num_sites, (unsigned long)0);
@@ -345,7 +345,7 @@ int main(int argc, char *argv[])
   swatch.start();
   for(int i=0; i < 5000; i++) {
     qdp_su3_am_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
-		   (Float *)my_two,
+		   (BAGELQDPFloat *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)0);
@@ -373,7 +373,7 @@ int main(int argc, char *argv[])
   
   qdp_su3_aa_peq(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
-	     (Float *)my_two,
+	     (BAGELQDPFloat *)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
 	     num_sites, (unsigned long)one_minus_i);
@@ -395,7 +395,7 @@ int main(int argc, char *argv[])
   swatch.start();
   for(int i=0; i < 5000; i++) {
     qdp_su3_aa_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
-	           (Float *)my_two,
+	           (BAGELQDPFloat *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)one_minus_i);
@@ -431,7 +431,7 @@ int main(int argc, char *argv[])
   
   qdp_su3_mm_peq(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
-	     (Float*)my_two,
+	     (BAGELQDPFloat*)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
 	     num_sites, (unsigned long)0);
@@ -455,7 +455,7 @@ int main(int argc, char *argv[])
   swatch.start();
   for(int i=0; i < 5000; i++) {
     qdp_su3_mm_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
-		   (Float *)my_two,
+		   (BAGELQDPFloat *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)0);
@@ -481,7 +481,7 @@ int main(int argc, char *argv[])
 
   qdp_su3_ma_peq(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
-             (Float *)my_two,
+             (BAGELQDPFloat *)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
 	     num_sites, (unsigned long)0);
@@ -503,7 +503,7 @@ int main(int argc, char *argv[])
   swatch.start();
   for(int i=0; i < 5000; i++) {
     qdp_su3_ma_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
-		   (Float *)my_two,
+		   (BAGELQDPFloat *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)0);
@@ -532,7 +532,7 @@ int main(int argc, char *argv[])
   
   qdp_su3_am_peq(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
-	     (Float *)my_two,
+	     (BAGELQDPFloat *)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
 	     num_sites, (unsigned long)0);
@@ -554,7 +554,7 @@ int main(int argc, char *argv[])
   swatch.start();
   for(int i=0; i < 5000; i++) {
     qdp_su3_am_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
-		   (Float *)my_two,
+		   (BAGELQDPFloat *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)0);
@@ -582,7 +582,7 @@ int main(int argc, char *argv[])
   
   qdp_su3_aa_peq(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
-	     (Float *)my_two,
+	     (BAGELQDPFloat *)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
 	     num_sites, (unsigned long)one_minus_i);
@@ -604,7 +604,7 @@ int main(int argc, char *argv[])
   swatch.start();
   for(int i=0; i < 5000; i++) {
     qdp_su3_aa_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
-	           (Float *)my_two,
+	           (BAGELQDPFloat *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)one_minus_i);
@@ -642,7 +642,7 @@ int main(int argc, char *argv[])
   
   qdp_su3_mm_peq(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
-	     (Float*)my_two,
+	     (BAGELQDPFloat*)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
 	     num_sites, (unsigned long)0);
@@ -665,7 +665,7 @@ int main(int argc, char *argv[])
   swatch.start();
   for(int i=0; i < 5000; i++) {
     qdp_su3_mm_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
-		   (Float *)my_two,
+		   (BAGELQDPFloat *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)0);
@@ -700,7 +700,7 @@ int main(int argc, char *argv[])
   
   qdp_su3_mm_peq(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
-	     (Float*)my_two,
+	     (BAGELQDPFloat*)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(c.elem(all.start()).elem().elem(0,0).real()),
 	     num_sites, (unsigned long)0);
@@ -723,7 +723,7 @@ int main(int argc, char *argv[])
   swatch.start();
   for(int i=0; i < 5000; i++) {
     qdp_su3_mm_peq(&(a2.elem(all.start()).elem().elem(0,0).real()),
-		   (Float *)my_two,
+		   (BAGELQDPFloat *)my_two,
 		   &(b.elem(all.start()).elem().elem(0,0).real()),
 		   &(c.elem(all.start()).elem().elem(0,0).real()),
 		   num_sites, (unsigned long)0);
@@ -754,7 +754,7 @@ int main(int argc, char *argv[])
   
   qdp_vaxpy3(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
-	     (Float *)my_two,
+	     (BAGELQDPFloat *)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
 	     3*num_sites);
@@ -777,7 +777,7 @@ int main(int argc, char *argv[])
   for(int i=0; i < 5000; i++) {
     qdp_vaxpy3(
 	       &(a2.elem(all.start()).elem().elem(0,0).real()),
-	       (Float *)my_two,
+	       (BAGELQDPFloat *)my_two,
 	       &(b.elem(all.start()).elem().elem(0,0).real()),
 	       &(a2.elem(all.start()).elem().elem(0,0).real()),
 	       3*num_sites);
@@ -808,7 +808,7 @@ int main(int argc, char *argv[])
   
   qdp_vaxpy3(
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
-	     (Float *)my_two,
+	     (BAGELQDPFloat *)my_two,
 	     &(b.elem(all.start()).elem().elem(0,0).real()),
 	     &(a2.elem(all.start()).elem().elem(0,0).real()),
 	     3*num_sites);
@@ -831,7 +831,7 @@ int main(int argc, char *argv[])
   for(int i=0; i < 5000; i++) {
     qdp_vaxpy3(
 	       &(a2.elem(all.start()).elem().elem(0,0).real()),
-	       (Float *)my_two,
+	       (BAGELQDPFloat *)my_two,
 	       &(b.elem(all.start()).elem().elem(0,0).real()),
 	       &(a2.elem(all.start()).elem().elem(0,0).real()),
 	       3*num_sites);

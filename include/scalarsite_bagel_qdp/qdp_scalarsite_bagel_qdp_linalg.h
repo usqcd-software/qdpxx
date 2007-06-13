@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_bagel_qdp_linalg.h,v 1.3 2007-06-13 20:47:58 bjoo Exp $
+// $Id: qdp_scalarsite_bagel_qdp_linalg.h,v 1.4 2007-06-13 21:49:33 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -26,7 +26,7 @@ namespace QDP {
 #include "bagel_qdp.h"
 
 #if 1
-typedef RComplex<Float>  RComplexFloat;
+typedef RComplex<BAGELQDPFloat>  RComplexFloat;
 
 
 template<>
@@ -56,9 +56,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
 
      qdp_su3_mm(resptr, lptr, rptr, num_sites, (unsigned long)0);
@@ -71,10 +71,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_mm(resptr, lptr, rptr, one_site, (unsigned long)0);
 
@@ -110,9 +110,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
 
      qdp_su3_am(resptr, lptr, rptr, num_sites, (unsigned long)0);
@@ -125,10 +125,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_am(resptr, lptr, rptr, one_site, (unsigned long)0);
 
@@ -179,9 +179,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
 
      qdp_su3_ma(resptr, lptr, rptr, num_sites, (unsigned long)0);
@@ -194,10 +194,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_ma(resptr, lptr, rptr, one_site, (unsigned long)0);
 
@@ -226,9 +226,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #ifdef DEBUG_BAGELQDP_LINALG
   QDPIO::cout << "evaluate(A*A) subset = s " << endl;
 #endif
-  Float one_minus_i[2] QDP_ALIGN16;
-  one_minus_i[0] = (Float)1;
-  one_minus_i[1] = (Float)(-1);
+  BAGELQDPFloat one_minus_i[2] QDP_ALIGN16;
+  one_minus_i[0] = (BAGELQDPFloat)1;
+  one_minus_i[1] = (BAGELQDPFloat)(-1);
 
    if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -237,9 +237,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
 
      qdp_su3_aa(resptr, lptr, rptr, num_sites, (unsigned long)one_minus_i);
@@ -252,10 +252,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_aa(resptr, lptr, rptr, one_site, (unsigned long)one_minus_i);
 
@@ -286,9 +286,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   QDPIO::cout << "evaluate(M*M) subset = s " << endl;
 #endif
 
-  Float plus_one[2] QDP_ALIGN16;
-  plus_one[0] = (Float)1;
-  plus_one[1] = (Float)0;
+  BAGELQDPFloat plus_one[2] QDP_ALIGN16;
+  plus_one[0] = (BAGELQDPFloat)1;
+  plus_one[1] = (BAGELQDPFloat)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -297,9 +297,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
      qdp_su3_mm_peq(resptr, plus_one, lptr, rptr, num_sites, (unsigned long)0);
 
@@ -311,10 +311,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_mm_peq(resptr, plus_one, lptr, rptr, one_site, (unsigned long)0);
 
@@ -343,9 +343,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   QDPIO::cout << "evaluate(A*M) subset = s " << endl;
 #endif
 
-  Float plus_one[2] QDP_ALIGN16;
-  plus_one[0] = (Float)1;
-  plus_one[1] = (Float)0;
+  BAGELQDPFloat plus_one[2] QDP_ALIGN16;
+  plus_one[0] = (BAGELQDPFloat)1;
+  plus_one[1] = (BAGELQDPFloat)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -354,9 +354,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
 
      qdp_su3_am_peq(resptr, plus_one, lptr, rptr, num_sites, (unsigned long)0);
@@ -369,10 +369,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_am_peq(resptr, plus_one, lptr, rptr, one_site, (unsigned long)0);
 
@@ -408,9 +408,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #ifdef DEBUG_BAGELQDP_LINALG
   QDPIO::cout << "evaluate(M*A) subset = s " << endl;
 #endif
-  Float plus_one[2] QDP_ALIGN16;
-  plus_one[0] = (Float)1;
-  plus_one[1] = (Float)0;
+  BAGELQDPFloat plus_one[2] QDP_ALIGN16;
+  plus_one[0] = (BAGELQDPFloat)1;
+  plus_one[1] = (BAGELQDPFloat)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -419,9 +419,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
 
      qdp_su3_ma_peq(resptr, plus_one, lptr, rptr, num_sites, (unsigned long)0);
@@ -434,10 +434,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_ma_peq(resptr, plus_one, lptr, rptr, one_site, (unsigned long)0);
 
@@ -466,13 +466,13 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #ifdef DEBUG_BAGELQDP_LINALG
   QDPIO::cout << "evaluate(A*A) subset = s " << endl;
 #endif
-  Float one_minus_i[2] QDP_ALIGN16;
-  one_minus_i[0] = (Float)1;
-  one_minus_i[1] = (Float)(-1);
+  BAGELQDPFloat one_minus_i[2] QDP_ALIGN16;
+  one_minus_i[0] = (BAGELQDPFloat)1;
+  one_minus_i[1] = (BAGELQDPFloat)(-1);
 
-  Float plus_one[2] QDP_ALIGN16;
-  plus_one[0] = (Float)1;
-  plus_one[1] = (Float)0;
+  BAGELQDPFloat plus_one[2] QDP_ALIGN16;
+  plus_one[0] = (BAGELQDPFloat)1;
+  plus_one[1] = (BAGELQDPFloat)0;
 
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -481,9 +481,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
 
      qdp_su3_aa_peq(resptr,  plus_one, lptr, rptr, num_sites, (unsigned long)one_minus_i);
@@ -496,10 +496,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_aa_peq(resptr, plus_one, lptr, rptr, one_site, (unsigned long)one_minus_i);
 
@@ -532,9 +532,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   QDPIO::cout << "evaluate(M*M) subset = s " << endl;
 #endif
 
-  Float minus_one[2] QDP_ALIGN16;
-  minus_one[0] = (Float)-1;
-  minus_one[1] = (Float)0;
+  BAGELQDPFloat minus_one[2] QDP_ALIGN16;
+  minus_one[0] = (BAGELQDPFloat)-1;
+  minus_one[1] = (BAGELQDPFloat)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -543,9 +543,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
      qdp_su3_mm_peq(resptr, minus_one, lptr, rptr, num_sites, (unsigned long)0);
 
@@ -557,10 +557,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_mm_peq(resptr, minus_one, lptr, rptr, one_site, (unsigned long)0);
 
@@ -589,9 +589,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   QDPIO::cout << "evaluate(A*M) subset = s " << endl;
 #endif
 
-  Float minus_one[2] QDP_ALIGN16;
-  minus_one[0] = (Float)-1;
-  minus_one[1] = (Float)0;
+  BAGELQDPFloat minus_one[2] QDP_ALIGN16;
+  minus_one[0] = (BAGELQDPFloat)-1;
+  minus_one[1] = (BAGELQDPFloat)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -600,9 +600,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
 
      qdp_su3_am_peq(resptr, minus_one, lptr, rptr, num_sites, (unsigned long)0);
@@ -615,10 +615,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_am_peq(resptr, minus_one, lptr, rptr, one_site, (unsigned long)0);
 
@@ -661,9 +661,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #ifdef DEBUG_BAGELQDP_LINALG
   QDPIO::cout << "evaluate(M*A) subset = s " << endl;
 #endif
-  Float minus_one[2] QDP_ALIGN16;
-  minus_one[0] = (Float)-1;
-  minus_one[1] = (Float)0;
+  BAGELQDPFloat minus_one[2] QDP_ALIGN16;
+  minus_one[0] = (BAGELQDPFloat)-1;
+  minus_one[1] = (BAGELQDPFloat)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -672,9 +672,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
 
      qdp_su3_ma_peq(resptr, minus_one, lptr, rptr, num_sites, (unsigned long)0);
@@ -687,10 +687,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_ma_peq(resptr, minus_one, lptr, rptr, one_site, (unsigned long)0);
 
@@ -719,13 +719,13 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #ifdef DEBUG_BAGELQDP_LINALG
   QDPIO::cout << "evaluate(A*A) subset = s " << endl;
 #endif
-  Float one_minus_i[2] QDP_ALIGN16;
-  one_minus_i[0] = (Float)1;
-  one_minus_i[1] = (Float)(-1);
+  BAGELQDPFloat one_minus_i[2] QDP_ALIGN16;
+  one_minus_i[0] = (BAGELQDPFloat)1;
+  one_minus_i[1] = (BAGELQDPFloat)(-1);
 
-  Float minus_one[2] QDP_ALIGN16;
-  minus_one[0] = (Float)-1;
-  minus_one[1] = (Float)0;
+  BAGELQDPFloat minus_one[2] QDP_ALIGN16;
+  minus_one[0] = (BAGELQDPFloat)-1;
+  minus_one[1] = (BAGELQDPFloat)0;
 
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -734,9 +734,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
 
      qdp_su3_aa_peq(resptr, minus_one, lptr, rptr, num_sites, (unsigned long)one_minus_i);
@@ -749,10 +749,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_aa_peq(resptr, minus_one, lptr, rptr, one_site, (unsigned long)one_minus_i);
 
@@ -775,8 +775,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	              BinaryNode<OpMultiply, 
                         Reference<
                           QDPType<
-                            PScalar<PScalar<RScalar<Float> > >,
-	                    OScalar<PScalar<PScalar<RScalar<Float> > > >
+                            PScalar<PScalar<RScalar<BAGELQDPFloat> > >,
+	                    OScalar<PScalar<PScalar<RScalar<BAGELQDPFloat> > > >
                           > 
                         >,
                         Reference<
@@ -798,15 +798,15 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
 	      const Subset& s) {
 
-  typedef OScalar<PScalar<PScalar<RScalar<Float> > > > F;
+  typedef OScalar<PScalar<PScalar<RScalar<BAGELQDPFloat> > > > F;
 
   typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
 
   typedef BinaryNode<OpMultiply, 
                         Reference<
                           QDPType<
-                            PScalar<PScalar<RScalar<Float> > >,
-	                    OScalar<PScalar<PScalar<RScalar<Float> > > >
+                            PScalar<PScalar<RScalar<BAGELQDPFloat> > >,
+	                    OScalar<PScalar<PScalar<RScalar<BAGELQDPFloat> > > >
                           > 
                         >,
                         Reference<
@@ -827,9 +827,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   QDPIO::cout << "evaluate(M += alpha*M*M 2 ) subset = s " << endl;
 #endif
 
-  Float scalar[2] QDP_ALIGN16;
-  scalar[0] = (Float)(scal.elem().elem().elem().elem());
-  scalar[1] = (Float)0;
+  BAGELQDPFloat scalar[2] QDP_ALIGN16;
+  scalar[0] = (BAGELQDPFloat)(scal.elem().elem().elem().elem());
+  scalar[1] = (BAGELQDPFloat)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -838,9 +838,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
      qdp_su3_mm_peq(resptr, scalar, lptr, rptr, num_sites, (unsigned long)0);
 
@@ -852,10 +852,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_mm_peq(resptr, scalar, lptr, rptr, one_site, (unsigned long)0);
 
@@ -875,8 +875,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	              BinaryNode<OpMultiply, 
                         Reference<
                           QDPType<
-                            PScalar<PScalar<RScalar<Float> > >,
-	                    OScalar<PScalar<PScalar<RScalar<Float> > > >
+                            PScalar<PScalar<RScalar<BAGELQDPFloat> > >,
+	                    OScalar<PScalar<PScalar<RScalar<BAGELQDPFloat> > > >
                           > 
                         >,
                         Reference<
@@ -898,15 +898,15 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
 	      const Subset& s) {
 
-  typedef OScalar<PScalar<PScalar<RScalar<Float> > > > F;
+  typedef OScalar<PScalar<PScalar<RScalar<BAGELQDPFloat> > > > F;
 
   typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
 
   typedef BinaryNode<OpMultiply, 
                         Reference<
                           QDPType<
-                            PScalar<PScalar<RScalar<Float> > >,
-	                    OScalar<PScalar<PScalar<RScalar<Float> > > >
+                            PScalar<PScalar<RScalar<BAGELQDPFloat> > >,
+	                    OScalar<PScalar<PScalar<RScalar<BAGELQDPFloat> > > >
                           > 
                         >,
                         Reference<
@@ -927,9 +927,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   QDPIO::cout << "evaluate(M -= alpha*M*M 2 ) subset = s " << endl;
 #endif
 
-  Float scalar[2] QDP_ALIGN16;
-  scalar[0] = -(Float)(scal.elem().elem().elem().elem());
-  scalar[1] = (Float)0;
+  BAGELQDPFloat scalar[2] QDP_ALIGN16;
+  scalar[0] = -(BAGELQDPFloat)(scal.elem().elem().elem().elem());
+  scalar[1] = (BAGELQDPFloat)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -938,9 +938,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
 
-     Float *resptr = &(d.elem(start).elem().elem(0,0).real());
-     Float *lptr   = const_cast<Float*>(&(l.elem(start).elem().elem(0,0).real()));
-     Float *rptr   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *resptr = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
      qdp_su3_mm_peq(resptr, scalar, lptr, rptr, num_sites, (unsigned long)0);
 
@@ -952,10 +952,10 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
-       Float *resptr = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
 
-       Float *lptr   = const_cast<Float*>(&(l.elem(i).elem().elem(0,0).real()));
-       Float *rptr   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *lptr   = const_cast<BAGELQDPFloat*>(&(l.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *rptr   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_su3_mm_peq(resptr, scalar, lptr, rptr, one_site, (unsigned long)0);
 
@@ -975,8 +975,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	              BinaryNode< OpMultiply, 
 	                Reference<
                           QDPType<
-                            PScalar<PScalar<RScalar<Float> > >,
-	                    OScalar<PScalar<PScalar<RScalar<Float> > > >
+                            PScalar<PScalar<RScalar<BAGELQDPFloat> > >,
+	                    OScalar<PScalar<PScalar<RScalar<BAGELQDPFloat> > > >
                           > 
                         >,
                         Reference<
@@ -991,7 +991,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
 	      const Subset& s) {
 
-  typedef OScalar<PScalar<PScalar<RScalar<Float> > > > F;
+  typedef OScalar<PScalar<PScalar<RScalar<BAGELQDPFloat> > > > F;
 
   typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
 
@@ -1004,7 +1004,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   QDPIO::cout << "evaluate(M += alpha*M ) subset = s " << endl;
 #endif
 
-  Float *scalar   = const_cast<Float*>(&(scal.elem().elem().elem().elem()));  
+  BAGELQDPFloat *scalar   = const_cast<BAGELQDPFloat*>(&(scal.elem().elem().elem().elem()));  
   if( s.hasOrderedRep() ) { 
      // Do whole subset
      unsigned int start = s.start();
@@ -1012,9 +1012,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
      
-     Float *y = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *y = &(d.elem(start).elem().elem(0,0).real());
 
-     Float *x   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *x   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
      qdp_vaxpy3(y, scalar, x, y, 3*num_sites);
 
@@ -1025,8 +1025,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      unsigned int num_sites = s.numSiteTable();
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
-       Float *y = &(d.elem(i).elem().elem(0,0).real());
-       Float *x   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *y = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *x   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_vaxpy3(y, scalar, x,y, 3);
 
@@ -1045,8 +1045,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	              BinaryNode< OpMultiply, 
 	                Reference<
                           QDPType<
-                            PScalar<PScalar<RScalar<Float> > >,
-	                    OScalar<PScalar<PScalar<RScalar<Float> > > >
+                            PScalar<PScalar<RScalar<BAGELQDPFloat> > >,
+	                    OScalar<PScalar<PScalar<RScalar<BAGELQDPFloat> > > >
                           > 
                         >,
                         Reference<
@@ -1061,7 +1061,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
 	      const Subset& s) {
 
-  typedef OScalar<PScalar<PScalar<RScalar<Float> > > > F;
+  typedef OScalar<PScalar<PScalar<RScalar<BAGELQDPFloat> > > > F;
 
   typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
 
@@ -1074,7 +1074,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   QDPIO::cout << "evaluate(M -= alpha*M ) subset = s " << endl;
 #endif
 
-  Float scalar = -scal.elem().elem().elem().elem();
+  BAGELQDPFloat scalar = -scal.elem().elem().elem().elem();
   if( s.hasOrderedRep() ) { 
      // Do whole subset
      unsigned int start = s.start();
@@ -1082,9 +1082,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
      
-     Float *y = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *y = &(d.elem(start).elem().elem(0,0).real());
 
-     Float *x   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *x   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
      qdp_vaxpy3(y, &scalar, x, y, 3*num_sites);
 
@@ -1095,8 +1095,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      unsigned int num_sites = s.numSiteTable();
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
-       Float *y = &(d.elem(i).elem().elem(0,0).real());
-       Float *x   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *y = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *x   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_vaxpy3(y, &scalar, x,y, 3);
 
@@ -1139,8 +1139,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
      
-     Float *y = &(d.elem(start).elem().elem(0,0).real());
-     Float *x   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *y = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *x   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
      qdp_vadd3(y, x, y, 3*num_sites);
 
@@ -1151,8 +1151,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      unsigned int num_sites = s.numSiteTable();
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
-       Float *y = &(d.elem(i).elem().elem(0,0).real());
-       Float *x   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *y = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *x   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_vadd3(y,x,y, 3);
 
@@ -1196,9 +1196,9 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
      unsigned long num_sites = end - start + 1;
      
-     Float *y = &(d.elem(start).elem().elem(0,0).real());
+     BAGELQDPFloat *y = &(d.elem(start).elem().elem(0,0).real());
 
-     Float *x   = const_cast<Float*>(&(r.elem(start).elem().elem(0,0).real()));
+     BAGELQDPFloat *x   = const_cast<BAGELQDPFloat*>(&(r.elem(start).elem().elem(0,0).real()));
 
      qdp_vsub3(y, y,x, 3*num_sites);
 
@@ -1209,8 +1209,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      unsigned int num_sites = s.numSiteTable();
      for(int j=0; j < num_sites; j++) {
        int i = tab[j];
-       Float *y = &(d.elem(i).elem().elem(0,0).real());
-       Float *x   = const_cast<Float*>(&(r.elem(i).elem().elem(0,0).real()));
+       BAGELQDPFloat *y = &(d.elem(i).elem().elem(0,0).real());
+       BAGELQDPFloat *x   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
 
        qdp_vsub3(y,y,x, 3);
 
