@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_bagel_qdp_linalg.h,v 1.2 2007-06-13 19:30:08 bjoo Exp $
+// $Id: qdp_scalarsite_bagel_qdp_linalg.h,v 1.3 2007-06-13 20:47:58 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -287,8 +287,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #endif
 
   Float plus_one[2] QDP_ALIGN16;
-  plus_one[0] = (double)1;
-  plus_one[1] = (double)0;
+  plus_one[0] = (Float)1;
+  plus_one[1] = (Float)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -344,8 +344,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #endif
 
   Float plus_one[2] QDP_ALIGN16;
-  plus_one[0] = (double)1;
-  plus_one[1] = (double)0;
+  plus_one[0] = (Float)1;
+  plus_one[1] = (Float)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -409,8 +409,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   QDPIO::cout << "evaluate(M*A) subset = s " << endl;
 #endif
   Float plus_one[2] QDP_ALIGN16;
-  plus_one[0] = (double)1;
-  plus_one[1] = (double)0;
+  plus_one[0] = (Float)1;
+  plus_one[1] = (Float)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -471,8 +471,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   one_minus_i[1] = (Float)(-1);
 
   Float plus_one[2] QDP_ALIGN16;
-  plus_one[0] = (double)1;
-  plus_one[1] = (double)0;
+  plus_one[0] = (Float)1;
+  plus_one[1] = (Float)0;
 
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -533,8 +533,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #endif
 
   Float minus_one[2] QDP_ALIGN16;
-  minus_one[0] = (double)-1;
-  minus_one[1] = (double)0;
+  minus_one[0] = (Float)-1;
+  minus_one[1] = (Float)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -590,8 +590,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #endif
 
   Float minus_one[2] QDP_ALIGN16;
-  minus_one[0] = (double)-1;
-  minus_one[1] = (double)0;
+  minus_one[0] = (Float)-1;
+  minus_one[1] = (Float)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -662,8 +662,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   QDPIO::cout << "evaluate(M*A) subset = s " << endl;
 #endif
   Float minus_one[2] QDP_ALIGN16;
-  minus_one[0] = (double)-1;
-  minus_one[1] = (double)0;
+  minus_one[0] = (Float)-1;
+  minus_one[1] = (Float)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -724,8 +724,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
   one_minus_i[1] = (Float)(-1);
 
   Float minus_one[2] QDP_ALIGN16;
-  minus_one[0] = (double)-1;
-  minus_one[1] = (double)0;
+  minus_one[0] = (Float)-1;
+  minus_one[1] = (Float)0;
 
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -828,8 +828,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #endif
 
   Float scalar[2] QDP_ALIGN16;
-  scalar[0] = (double)(scal.elem().elem().elem().elem());
-  scalar[1] = (double)0;
+  scalar[0] = (Float)(scal.elem().elem().elem().elem());
+  scalar[1] = (Float)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset
@@ -928,8 +928,8 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #endif
 
   Float scalar[2] QDP_ALIGN16;
-  scalar[0] = -(double)(scal.elem().elem().elem().elem());
-  scalar[1] = (double)0;
+  scalar[0] = -(Float)(scal.elem().elem().elem().elem());
+  scalar[1] = (Float)0;
   
   if( s.hasOrderedRep() ) { 
      // Do whole subset

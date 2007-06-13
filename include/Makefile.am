@@ -117,6 +117,7 @@ QCDOC_HDRS = $(qcdocdir)/qdp_scalarsite_qcdoc_linalg.h \
 # QCDOC NONSPECIFIC BAGEL stuff
 bageldir = scalarsite_bagel_qdp
 BAGEL_HDRS = qdp_scalarsite_bagel_qdp.h \
+	$(bageldir)/qdp_scalarsite_bagel_qdp_linalg.h \
 	$(bageldir)/qdp_scalarsite_bagel_qdp_blas.h \
 	$(bageldir)/qdp_scalarsite_bagel_qdp_blas_g5.h
 

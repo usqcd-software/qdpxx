@@ -1,4 +1,4 @@
-// $Id: t_su3.cc,v 1.9 2007-06-13 19:30:08 bjoo Exp $
+// $Id: t_su3.cc,v 1.10 2007-06-13 20:47:58 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -8,7 +8,7 @@
 #include "qdp.h"
 
 //#define DEBUG_BAGELQDP_LINALG 1
-#include "scalarsite_bagel_qdp/qdp_scalarsite_bagel_qdp_linalg.h"
+// #include "scalarsite_bagel_qdp/qdp_scalarsite_bagel_qdp_linalg.h"
 
 
 using namespace QDP;
@@ -915,7 +915,7 @@ int main(int argc, char *argv[])
   
   diff = a - a2;
   
-  QDPIO::cout << "M -= a*M: || diff || = " << sqrt(norm2(diff)) << endl;
+  QDPIO::cout << "M -= M: || diff || = " << sqrt(norm2(diff)) << endl;
   
  
   swatch.reset();
