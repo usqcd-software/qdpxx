@@ -1,3 +1,12 @@
+2007-06-13 15:30  bjoo
+
+	* aclocal.m4, configure, examples/t_su3.cc,
+	  include/qdp_scalarsite_bagel_qdp.h,
+	  include/scalarsite_bagel_qdp/qdp_scalarsite_bagel_qdp_linalg.h:
+	  Added full SU3 wonderfullness on noarch-double. Breaks the
+	  Bagel_qdp builds for now, but lets see how it does on the
+	  bluegene
+
 2007-06-12 17:45  bjoo
 
 	* include/scalarsite_bagel_qdp/qdp_scalarsite_bagel_qdp_linalg.h:
