@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_bagel_qdp.h,v 1.6 2007-03-26 19:48:15 bjoo Exp $
+// $Id: qdp_scalarsite_bagel_qdp.h,v 1.7 2007-06-13 19:30:08 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -15,7 +15,7 @@
 #if defined(QDP_USE_QCDOC) || defined(QDP_USE_BLUEGENEL)
 // Use QCDOC specific Linalg stuff (inline assembler etc)
 // This is a hack until I have the linalg stuff Bagellified
-#include "scalarsite_qcdoc/qdp_scalarsite_qcdoc_linalg.h"
+// #include "scalarsite_qcdoc/qdp_scalarsite_qcdoc_linalg.h"
 #else
 
 // Use generic SU3 linalg
