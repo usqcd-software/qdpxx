@@ -1,3 +1,10 @@
+2007-06-13 16:47  bjoo
+
+	* examples/t_su3.cc, include/Makefile.am,
+	  include/qdp_scalarsite_bagel_qdp.h,
+	  include/scalarsite_bagel_qdp/qdp_scalarsite_bagel_qdp_linalg.h:
+	  Make it live
+
 2007-06-13 15:30  bjoo
 
 	* aclocal.m4, configure, examples/t_su3.cc,
