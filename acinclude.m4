@@ -178,11 +178,11 @@ dnl - set the parallel compiler environment
       ],
       [
         int argc ; char **argv ;
-	Float *xptr;
-	Float *aptr;
-	Float *zptr;
-	Float *yptr;
-	int n3vec;
+	BAGELQDPFloat *xptr;
+	BAGELQDPFloat *aptr;
+	BAGELQDPFloat *zptr;
+	BAGELQDPFloat *yptr;
+	unsigned int n3vec;
 	qdp_vaxpy3(zptr,aptr,xptr,yptr,n3vec);
       ],
       [pac_bagel_qdp_working=yes],
