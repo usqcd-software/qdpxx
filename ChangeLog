@@ -1,3 +1,11 @@
+2007-06-14 11:39  bjoo
+
+	* acinclude.m4, configure: OK Needed a change here....
+
+2007-06-14 11:33  bjoo
+
+	* aclocal.m4, configure: Remade the autofiles witha utomake 1.9.2
+
 2007-06-13 17:49  bjoo
 
 	* include/scalarsite_bagel_qdp/qdp_scalarsite_bagel_qdp_linalg.h,
