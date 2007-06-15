@@ -846,10 +846,9 @@ Here ${\tt sign} = \pm 1$ and ${\tt dir} = 0,\ldots, Nd-1$.
 
 \subsubsection{Aliasing}
 
-As a general rule, one should avoid using the source of a
-data-parallel operation simultaneously in the left-hand side of an
-expression.  The API does not specify the behavior in this
-circumstance. An example is as follows:
+The API does not specify the behavior when a source in a data-parallel
+expression is simultaneously used in the left-hand side of that
+expression.  An example is as follows:
 %
 \begin{verbatim}
   // DO NOT DO THIS
@@ -859,7 +858,7 @@ circumstance. An example is as follows:
   b = shift(b,sign,dir);
 \end{verbatim}
 %
-This is an instance of the ``self-reference'' problem.
+This is an instance of the ``self-reference'' problem. 
 
 \subsection{Creating and destroying lattice fields}
 
