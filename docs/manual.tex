@@ -111,12 +111,12 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.24.0}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.24.1}
 }
 \author{Robert G. Edwards\\
 SciDAC Software Coordinating Committee}
 
-\date{June 10, 2007}
+\date{June 15, 2007}
 
 \maketitle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -844,6 +844,22 @@ shifts an object along the direction specified by \verb|dir| and
 \verb|sign| for all sites \verb|x| in destination subset \verb|s|.
 Here ${\tt sign} = \pm 1$ and ${\tt dir} = 0,\ldots, Nd-1$.
 
+\subsubsection{Aliasing}
+
+As a general rule, one should avoid using the source of a
+data-parallel operation simultaneously in the left-hand side of an
+expression.  The API does not specify the behavior in this
+circumstance. An example is as follows:
+%
+\begin{verbatim}
+  // DO NOT DO THIS
+  LatticeColorMatrix a;
+  a = a * a;
+  LatticeComplex b;
+  b = shift(b,sign,dir);
+\end{verbatim}
+%
+This is an instance of the ``self-reference'' problem.
 
 \subsection{Creating and destroying lattice fields}
 
