@@ -1,3 +1,27 @@
+2007-06-17 09:18  tag qio2-2-0
+
+2007-06-17 09:18  detar
+
+	* other_libs/qio/: NEWS, configure, configure.ac, doc/Makefile.am,
+	  doc/qio_2p1.tex, doc/qio_2p2.tex, examples/layout_test_ppfs,
+	  examples/qio-test-util.c, examples/qio-test.c,
+	  include/Makefile.am, include/dml.h, include/qio.h,
+	  include/qioxml.h, include/qioxml_ildg_record.h,
+	  include/qioxml_internal.h, include/qioxml_private.h,
+	  include/qioxml_usqcd_gauge.h, include/qioxml_usqcd_prop.h,
+	  lib/Makefile.am, lib/dml/DML_parscalar.c, lib/dml/DML_scalar.c,
+	  lib/dml/DML_utils.c, lib/qio/QIO_close_read.c,
+	  lib/qio/QIO_close_write.c, lib/qio/QIO_host_file_conversion.c,
+	  lib/qio/QIO_info.c, lib/qio/QIO_info_ildg_record.c,
+	  lib/qio/QIO_info_private.c, lib/qio/QIO_info_usqcd_gauge.c,
+	  lib/qio/QIO_info_usqcd_prop.c, lib/qio/QIO_open_read.c,
+	  lib/qio/QIO_open_write.c, lib/qio/QIO_read_record_data.c,
+	  lib/qio/QIO_read_record_info.c, lib/qio/QIO_utils.c,
+	  lib/qio/QIO_write.c: Support USQCD propagator formats, hypercube
+	  record type, user-defined I/O nodes. Rearrange qioxml.h and
+	  QIO_info.c for clarity. Update documentation.  Breaks previous
+	  API slightly.
+
 2007-06-15 12:26  edwards
 
 	* docs/manual.tex: Updated aliasing slightly.
