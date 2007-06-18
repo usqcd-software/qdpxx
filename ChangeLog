@@ -1,10 +1,23 @@
+2007-06-18 11:32  tag qio2-2-0
+
+2007-06-18 11:32  detar
+
+	* other_libs/qio/configure: Continuing to fix configure,
+	  Makefile.in
+
+2007-06-18 11:25  detar
+
+	* other_libs/qio/: aclocal.m4, configure,
+	  include/qio_config_internal.h.in, other_libs/c-lime/aclocal.m4,
+	  other_libs/c-lime/configure,
+	  other_libs/c-lime/include/lime_config_internal.h.in: Redo aclocal
+	  and automake to fix configure and Makefile.in
+
 2007-06-18 11:09  bjoo
 
 	* aclocal.m4, configure, include/qdp_qdpio.h, lib/qdp_qdpio.cc,
 	  other_libs/qio/aclocal.m4, other_libs/qio/configure,
 	  other_libs/qio/configure.ac: Patched for QIO version 2.2
-
-2007-06-17 09:18  tag qio2-2-0
 
 2007-06-17 09:18  detar
 
