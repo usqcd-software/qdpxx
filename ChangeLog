@@ -1,3 +1,8 @@
+2007-06-18 15:14  bjoo
+
+	* aclocal.m4, configure: Remade everything with autmake 1.9.2 on
+	  qcdi01
+
 2007-06-18 11:32  tag qio2-2-0
 
 2007-06-18 11:32  detar
