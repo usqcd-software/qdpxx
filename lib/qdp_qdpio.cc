@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.25 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_qdpio.cc,v 1.26 2007-06-18 15:09:22 bjoo Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -105,6 +105,7 @@ namespace QDP
 			   QDP_serialparallel_t serpar)
   {
     QIO_Layout layout;
+
     int latsize[Nd];
 
     for(int m=0; m < Nd; ++m)
@@ -127,7 +128,7 @@ namespace QDP
 
     // Call QIO read
     // At this moment, serpar (which is an enum in QDP++) is ignored here.
-    if ((qio_in = QIO_open_read(xml_c, path.c_str(), &layout, NULL)) == NULL)
+    if ((qio_in = QIO_open_read(xml_c, path.c_str(), &layout, NULL, NULL)) == NULL)
     {
       iostate = QDPIO_badbit;  // not helpful
 
@@ -415,7 +416,7 @@ namespace QDP
     if ((qio_out = QIO_open_write(xml_c, path.c_str(), 
 				  volfmt, 
 				  &layout, 
-				  &oflag)) == NULL )
+				  NULL, &oflag)) == NULL )
     {
       iostate = QDPIO_badbit;  // not helpful
 
@@ -514,7 +515,7 @@ namespace QDP
   void QDPFileWriter::write(XMLBufferWriter& rec_xml, BinaryBufferWriter& s1)
   {
     std::string ss = s1.str();
-    QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
+    QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, NULL, NULL, 0,
 						  "char",
 						  "U",
 						  0, 0, 

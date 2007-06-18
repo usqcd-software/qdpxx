@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.35 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_qdpio.h,v 1.36 2007-06-18 15:09:22 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -876,7 +876,7 @@ namespace QDP
   template<class T>
   void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OScalar<T>& s1)
   {
-    QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
+    QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, NULL, NULL, 0,
 						  QIOStringTraits< OScalar<T> >::tname,
 						  QIOStringTraits< typename WordType<T>::Type_t >::tprec,
 						  Nc, Ns, 
@@ -931,7 +931,7 @@ namespace QDP
   template<class T>
   void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OScalar<T> >& s1)
   {
-    QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, 
+    QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, NULL, NULL, 0,
 						  QIOStringTraits<multi1d< OScalar<T> > >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t>::tprec, 
 						  Nc, Ns, 
@@ -1272,7 +1272,7 @@ namespace QDP
   template<class T>
   void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
   {
-    QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
+    QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, NULL, NULL,0,
 						  QIOStringTraits< OLattice<T> >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t >::tprec,
 						  Nc, Ns, 
@@ -1317,6 +1317,7 @@ namespace QDP
   void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >& s1)
   {
     QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
+						  NULL, NULL, 0,
 						  QIOStringTraits<multi1d< OLattice<T> > >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t>::tprec,
 						  Nc, Ns, 
