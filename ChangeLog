@@ -1,3 +1,8 @@
+2007-06-21 14:16  edwards
+
+	* other_libs/xpath_reader/include/: Makefile.am, xml_array3d.h:
+	  Added 3d array.
+
 2007-06-18 15:14  bjoo
 
 	* aclocal.m4, configure: Remade everything with autmake 1.9.2 on
