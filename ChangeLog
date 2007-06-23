@@ -1,3 +1,9 @@
+2007-06-22 19:16  tag qio2-2-0
+
+2007-06-22 19:16  detar
+
+	* other_libs/qio/doc/qio_2p2.tex: Corrected a couple of errors.
+
 2007-06-21 14:16  edwards
 
 	* other_libs/xpath_reader/include/: Makefile.am, xml_array3d.h:
@@ -7,8 +13,6 @@
 
 	* aclocal.m4, configure: Remade everything with autmake 1.9.2 on
 	  qcdi01
-
-2007-06-18 11:32  tag qio2-2-0
 
 2007-06-18 11:32  detar
 
