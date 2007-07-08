@@ -1,3 +1,8 @@
+2007-07-08 14:17  kostas
+
+	* other_libs/qio/other_libs/c-lime/: aclocal.m4, configure,
+	  include/lime_config_internal.h.in: added staticlight stripper
+
 2007-06-22 19:16  tag qio2-2-0
 
 2007-06-22 19:16  detar
