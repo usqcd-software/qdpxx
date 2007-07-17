@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.32 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.33 2007-07-17 16:56:10 bjoo Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -648,7 +648,7 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
 
       // Compute checksum
       n_uint32_t* chk_ptr = (n_uint32_t*)chk_buf;
-      for(int i=0; i < mat_size*size/sizeof(n_uint32_t); ++i)
+      for(unsigned int i=0; i < mat_size*size/sizeof(n_uint32_t); ++i)
 	checksum += chk_ptr[i];
     }
   }
@@ -707,7 +707,7 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
     {
       // Compute checksum
       n_uint32_t* chk_ptr = (n_uint32_t*)recv_buf;
-      for(int i=0; i < mat_size*Nd*size/sizeof(n_uint32_t); ++i)
+      for(unsigned int i=0; i < mat_size*Nd*size/sizeof(n_uint32_t); ++i)
 	checksum += chk_ptr[i];
     }
 

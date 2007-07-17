@@ -5,7 +5,7 @@
 
 /* File: generic_spin_proj_inlines.h
    Purpose: Supply inline functions to do spin projection
-   Author: $Id: sse_spin_proj_inlines.h,v 1.3 2007-06-10 14:32:11 edwards Exp $
+   Author: $Id: sse_spin_proj_inlines.h,v 1.4 2007-07-17 16:56:09 bjoo Exp $
 */
 namespace QDP {
 #include <stdio.h>
@@ -1088,7 +1088,7 @@ void inlineSpinProjDir3Plus(const REAL* src, REAL *dst, unsigned int n_vec)
    */
   const REAL* src_shadow = src;
   REAL* dst_shadow = dst;
-  SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
+  SSEVec v0, v1, v2, v3, v4, v5;
 
   // Store in the spinor - top half
   v0.vector = _mm_load_ps(src_shadow);
@@ -1164,7 +1164,7 @@ void inlineSpinProjDir3Minus(const REAL* src, REAL *dst, unsigned int n_vec)
 
   const REAL* src_shadow = src;
   REAL* dst_shadow = dst;
-  SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
+  SSEVec v0, v1, v2, v3, v4, v5;
 
   // Store in the spinor - top half
   v0.vector = _mm_load_ps(src_shadow);

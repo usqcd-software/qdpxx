@@ -3,7 +3,7 @@
 
 /* File: generic_spin_proj_inlines.h
    Purpose: Supply inline functions to do spin projection
-   Author: $Id: generic_spin_proj_inlines.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
+   Author: $Id: generic_spin_proj_inlines.h,v 1.3 2007-07-17 16:56:09 bjoo Exp $
 */
 namespace QDP {
 
@@ -107,7 +107,7 @@ void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int im = 1;
   const int Ncmpx = 2;
   
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmpptr = &(tmp_spinor[0][0][0]);        
     // Stream in the spinor
     for(int stream=0; stream < Ns*Nc*Ncmpx; stream++) {
@@ -168,7 +168,7 @@ void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int im = 1;
   const int Ncmpx = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_spinor[0][0][0]);
     
     // Stream in the spinor
@@ -228,7 +228,7 @@ void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int im = 1;
   const int Ncmpx = 2;
   
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmpptr = &(tmp_spinor[0][0][0]);
     
     // Stream in the spinor
@@ -290,7 +290,7 @@ void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int im = 1;
   const int Ncmpx = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_spinor[0][0][0]);
     
     // Stream in the spinor
@@ -351,7 +351,7 @@ void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int im = 1;
   const int Ncmpx = 2;
   
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmpptr = &(tmp_spinor[0][0][0]);
     
     // Stream in the spinor
@@ -411,7 +411,7 @@ void inlineSpinProjDir3Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int im = 1;
   const int Ncmpx = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_spinor[0][0][0]);
     
     // Stream in the spinor
@@ -472,7 +472,7 @@ void inlineSpinProjDir3Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int im = 1;
   const int Ncmpx = 2;
   
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmpptr = &(tmp_spinor[0][0][0]);
     
     // Stream in the spinor

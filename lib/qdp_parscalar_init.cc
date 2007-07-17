@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.14 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_parscalar_init.cc,v 1.15 2007-07-17 16:56:10 bjoo Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -42,7 +42,10 @@ void QDP_initialize(int *argc, char ***argv)
   multi1d<int> logical_geom(Nd);   // apriori logical geometry of the machine
   logical_geom = 0;
 
+
+#ifdef USE_REMOTE_QIO
   int rtiP = 0;
+#endif
   int QMP_verboseP = 0;
   const int maxlen = 256;
   char rtinode[maxlen];

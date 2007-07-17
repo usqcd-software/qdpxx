@@ -1,3 +1,6 @@
+07/17/2007 -- Balint Joo
+	Trawled through to eliminate most compiler warnings with -Wall in the QDP++ and XPathReader libs. Still some warnings remain in QIO.
+
 06/12/2007 -- Robert Edwards
 
 	Version 1.24.1: Added "const" to some member funcs in XMLBufferWriter.

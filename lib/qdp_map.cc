@@ -1,4 +1,4 @@
-// $Id: qdp_map.cc,v 1.3 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_map.cc,v 1.4 2007-07-17 16:56:10 bjoo Exp $
 
 /*! @file
  * @brief Support routines for Maps
@@ -18,6 +18,9 @@ ArrayBiDirectionalMap  shift;
 struct NearestNeighborMapFunc : public ArrayMapFunc
 {
   NearestNeighborMapFunc() {}
+
+  // Virtual destructor - no cleanup needed
+  virtual ~NearestNeighborMapFunc() {} 
 
   virtual multi1d<int> operator() (const multi1d<int>& coord, int sign, int dir) const
     {
@@ -55,6 +58,8 @@ struct PackageArrayMapFunc : public MapFunc
 {
   PackageArrayMapFunc(const ArrayMapFunc& mm, int dd): pmap(mm), dir(dd) {}
 
+  // Virtual Destructor - no cleanup needed
+  virtual ~PackageArrayMapFunc() {}
   virtual multi1d<int> operator() (const multi1d<int>& coord, int isign) const
     {
       return pmap(coord, isign, dir);
@@ -93,6 +98,8 @@ struct PackageBiDirectionalMapFunc : public MapFunc
 {
   PackageBiDirectionalMapFunc(const MapFunc& mm, int mmult): pmap(mm), mult(mmult) {}
 
+  // Virtual destructor -- no real cleanup needed
+  virtual ~PackageBiDirectionalMapFunc() {}
   virtual multi1d<int> operator() (const multi1d<int>& coord, int isign) const
     {
       return pmap(coord, mult*isign);

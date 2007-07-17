@@ -3,7 +3,7 @@
 
 /* File: generic_spin_recon_inlines.h
    Purpose: Supply inline functions to do spin reconstruction
-   Author: $Id: generic_spin_recon_inlines.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
+   Author: $Id: generic_spin_recon_inlines.h,v 1.3 2007-07-17 16:56:09 bjoo Exp $
 */
 namespace QDP {
 
@@ -46,7 +46,7 @@ void inlineSpinReconDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -112,7 +112,7 @@ void inlineSpinReconDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -170,7 +170,7 @@ void inlineSpinReconDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -236,7 +236,7 @@ void inlineSpinReconDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -308,7 +308,7 @@ void inlineSpinReconDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -374,7 +374,7 @@ void inlineSpinReconDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -443,7 +443,7 @@ void inlineSpinReconDir3Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -510,7 +510,7 @@ void inlineSpinReconDir3Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -586,7 +586,7 @@ void inlineAddSpinReconDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -652,7 +652,7 @@ void inlineAddSpinReconDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -710,7 +710,7 @@ void inlineAddSpinReconDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -776,7 +776,7 @@ void inlineAddSpinReconDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -848,7 +848,7 @@ void inlineAddSpinReconDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -914,7 +914,7 @@ void inlineAddSpinReconDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -983,7 +983,7 @@ void inlineAddSpinReconDir3Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components
@@ -1050,7 +1050,7 @@ void inlineAddSpinReconDir3Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   const int Ncmpx = 2;
   const int Nsby2 = 2;
 
-  for(int site=0; site < n_vec; site++) {
+  for(unsigned int site=0; site < n_vec; site++) {
     REAL* tmp_shadow = &(tmp_hspinor[0][0][0]);
     
     // Stream in the half spinor - write out the first two components

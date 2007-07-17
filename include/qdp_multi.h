@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.17 2007-06-10 14:32:08 edwards Exp $
+// $Id: qdp_multi.h,v 1.18 2007-07-17 16:56:09 bjoo Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -44,7 +44,7 @@ public:
 
   //! Copy constructor
   // Copy from s, into slow memory
-  multi1d(const multi1d& s): copymem(false), n1(s.n1), F(0), fast_mem_hint(false)
+  multi1d(const multi1d& s): copymem(false), fast_mem_hint(false), n1(s.n1), F(0)
     {
       resize(n1);
 

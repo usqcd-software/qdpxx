@@ -137,8 +137,7 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
-  REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
-
+  
   if( s.hasOrderedRep() ) {
     for(int site = s.start() ; site <= s.end(); site++) { 
       HVec tmp ;

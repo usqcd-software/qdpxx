@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_profile.cc,v 1.3 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_profile.cc,v 1.4 2007-07-17 16:56:10 bjoo Exp $
 
 /*! @file
  * @brief Profiling info
@@ -20,7 +20,9 @@ namespace QDP {
 
 static int prof_level = 0;
 static int prog_prof_level = 0;
+#ifdef QDP_USE_PROFILING
 static bool prof_init = false;
+#endif
 int getProfileLevel() {return prof_level;}
 int getProgramProfileLevel() {return prog_prof_level;}
 

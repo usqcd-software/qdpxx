@@ -1,4 +1,4 @@
-// $Id: qdp_default_allocator.cc,v 1.5 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_default_allocator.cc,v 1.6 2007-07-17 16:56:10 bjoo Exp $
 /*! @file
  * @brief QCDOC memory allocator
  */
@@ -197,7 +197,8 @@ namespace Allocator {
        for( CI j = the_alignment_map.begin();
              j != the_alignment_map.end(); j++)
        {
-         printf("mem= 0x%x  unaligned= 0x%x\n", j->first, j->second);
+         printf("mem= 0x%lx  unaligned= 0x%lx\n", (unsigned long)j->first, 
+		(unsigned long)j->second);
        }
      }
   }

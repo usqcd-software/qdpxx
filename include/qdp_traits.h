@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_traits.h,v 1.9 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_traits.h,v 1.10 2007-07-17 16:56:09 bjoo Exp $
 
 /*! @file
  * @brief Traits classes
@@ -115,10 +115,10 @@ struct NoComplex {};
 //! Simple zero tag
 struct Zero {};
 
-//! Put zero in some unnamed space
-namespace {
-Zero zero;
-}
+ //! Put zero in some unnamed space
+  // namespace {
+  // Zero zero;
+  // }
 
 } // namespace QDP
 

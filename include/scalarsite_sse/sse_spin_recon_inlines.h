@@ -4,7 +4,7 @@
 #include "qdp_sse_intrin.h"
 /* File: generic_spin_recon_inlines.h
    Purpose: Supply inline functions to do spin reconstruction
-   Author: $Id: sse_spin_recon_inlines.h,v 1.3 2007-06-10 14:32:11 edwards Exp $
+   Author: $Id: sse_spin_recon_inlines.h,v 1.4 2007-07-17 16:56:10 bjoo Exp $
 */
 namespace QDP {
 
@@ -54,7 +54,7 @@ void inlineSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
   
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);
@@ -252,7 +252,7 @@ void inlineSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
   
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);
 
@@ -455,7 +455,7 @@ void inlineSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
   
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);
@@ -642,7 +642,7 @@ void inlineSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);
@@ -821,7 +821,7 @@ void inlineSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
    *  ( b3r + i b3i )     ( {a3r - a1i} + i{a3i + a1r} )     ( - b1i + i b1r ) 
   */    
   
-  SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
+  SSEVec v0, v1, v2, v5, v6, v7;
   const REAL32* src_shadow = src;
   REAL32* dst_shadow = dst;
 
@@ -844,7 +844,7 @@ void inlineSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);
@@ -1013,7 +1013,7 @@ void inlineSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   QDPIO::cout << "inlineSpinReconDir2Minus" << endl;
 #endif
 
-  SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
+  SSEVec v0, v1, v2, v5, v6, v7;
   const REAL32* src_shadow = src;
   REAL32* dst_shadow = dst;
 
@@ -1036,7 +1036,7 @@ void inlineSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);
@@ -1205,7 +1205,7 @@ void inlineSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   QDPIO::cout << "inlineSpinReconDir0Plus" << endl;
 #endif
 
-  SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
+  SSEVec v0, v1, v2;
   const REAL32* src_shadow = src;
   REAL32* dst_shadow = dst;
 
@@ -1224,7 +1224,7 @@ void inlineSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);
@@ -1312,7 +1312,7 @@ void inlineSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   QDPIO::cout << "inlineSpinReconDir0Minus" << endl;
 #endif
 
-  SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
+  SSEVec v0, v1, v2, v7;
   const REAL32* src_shadow = src;
   REAL32* dst_shadow = dst;
 
@@ -1335,7 +1335,7 @@ void inlineSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   v1.vector = _mm_load_ps(src_shadow+4);
   v2.vector = _mm_load_ps(src_shadow+8);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);
@@ -1446,7 +1446,7 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   REAL32* dst_shadow = dst;
 
   
-  SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
+  SSEVec v0, v1, v2, v3, v4, v5, v6;
   v6.floats[0] = +1;
   v6.floats[1] = -1;
   v6.floats[2] = +1;
@@ -1473,7 +1473,7 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   _mm_store_ps(dst_shadow+4, v4.vector);
   _mm_store_ps(dst_shadow+8, v5.vector);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
 
 
     src_shadow += 12;
@@ -1663,7 +1663,7 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   REAL32* dst_shadow = dst;
 
   
-  SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
+  SSEVec v0, v1, v2, v3, v4, v5, v6;
   v6.floats[0] = -1;
   v6.floats[1] = +1;
   v6.floats[2] = -1;
@@ -1690,7 +1690,7 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   _mm_store_ps(dst_shadow+4, v4.vector);
   _mm_store_ps(dst_shadow+8, v5.vector);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
 
 
     src_shadow += 12;
@@ -1882,7 +1882,7 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     */
   
   
-  SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
+  SSEVec v0, v1, v2, v3, v4, v5, v6;
   v6.floats[0] = +1;
   v6.floats[1] = +1;
   v6.floats[2] = -1;
@@ -1909,7 +1909,7 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   _mm_store_ps(dst_shadow+4, v4.vector);
   _mm_store_ps(dst_shadow+8, v5.vector);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
 
 
     src_shadow += 12;
@@ -2125,7 +2125,7 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     */
   
   
-  SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
+  SSEVec v0, v1, v2, v3, v4, v5, v6;
   v6.floats[0] = -1;
   v6.floats[1] = -1;
   v6.floats[2] = +1;
@@ -2152,7 +2152,7 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   _mm_store_ps(dst_shadow+4, v4.vector);
   _mm_store_ps(dst_shadow+8, v5.vector);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);
@@ -2360,7 +2360,7 @@ void inlineAddSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   _mm_store_ps(dst_shadow+4, v4.vector);
   _mm_store_ps(dst_shadow+8, v5.vector);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
     
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);
@@ -2560,7 +2560,7 @@ void inlineAddSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   _mm_store_ps(dst_shadow+4, v4.vector);
   _mm_store_ps(dst_shadow+8, v5.vector);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
     
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);
@@ -2734,7 +2734,7 @@ void inlineAddSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   const REAL32* src_shadow = src;
   REAL32* dst_shadow = dst;
 
-  SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
+  SSEVec v0, v1, v2, v3, v4, v5;
 
   // Load source 
   v0.vector = _mm_load_ps(src_shadow);
@@ -2756,7 +2756,7 @@ void inlineAddSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   _mm_store_ps(dst_shadow+4, v4.vector);
   _mm_store_ps(dst_shadow+8, v5.vector);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
     
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);
@@ -2848,7 +2848,7 @@ void inlineAddSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   const REAL32* src_shadow = src;
   REAL32* dst_shadow = dst;
   
-  SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
+  SSEVec v0, v1, v2, v3, v4, v5;
   
   // Load source 
   v0.vector = _mm_load_ps(src_shadow);
@@ -2870,7 +2870,7 @@ void inlineAddSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   _mm_store_ps(dst_shadow+4, v4.vector);
   _mm_store_ps(dst_shadow+8, v5.vector);
 
-  for(int site=0; site < n_vec-1; site++) { 
+  for(unsigned int site=0; site < n_vec-1; site++) { 
     
     src_shadow += 12;
     _mm_prefetch(src_shadow, _MM_HINT_T0);

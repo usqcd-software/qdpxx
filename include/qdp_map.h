@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_map.h,v 1.3 2007-06-10 14:32:08 edwards Exp $
+// $Id: qdp_map.h,v 1.4 2007-07-17 16:56:09 bjoo Exp $
 
 /*! @file
  * @brief Map classes
@@ -32,6 +32,8 @@ namespace QDP {
 class MapFunc
 {
 public:
+  //! Virtual destructor - no cleanup needed
+  virtual ~MapFunc() {}
   //! Maps a lattice coordinate under a map to a new lattice coordinate
   /*! sign > 0 for map, sign < 0 for the inverse map */
   virtual multi1d<int> operator() (const multi1d<int>& coordinate, int sign) const = 0;
@@ -43,6 +45,9 @@ public:
 class ArrayMapFunc
 {
 public:
+  //! Virtual destructor - no cleanup needed
+  virtual ~ArrayMapFunc() {}
+
   //! Maps a lattice coordinate under a map to a new lattice coordinate
   /*! sign > 0 for map, sign < 0 for the inverse map */
   virtual multi1d<int> operator() (const multi1d<int>& coordinate, int sign, int dir) const = 0;

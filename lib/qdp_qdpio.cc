@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.26 2007-06-18 15:09:22 bjoo Exp $
+// $Id: qdp_qdpio.cc,v 1.27 2007-07-17 16:56:10 bjoo Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -309,10 +309,6 @@ namespace QDP
 			   QDP_filemode_t qdp_mode, 
 			   const std::string& data_LFN) 
   {
-
-    // Yucky C style callback functions
-    int (*ionodefunc)(int);
-    int (*master_io_nodefunc)(void);
 
     QIO_Layout layout;
     int latsize[Nd];

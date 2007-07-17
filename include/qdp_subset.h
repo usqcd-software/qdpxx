@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_subset.h,v 1.12 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_subset.h,v 1.13 2007-07-17 16:56:09 bjoo Exp $
 
 /*! @file
  * @brief Sets and subsets
@@ -25,6 +25,8 @@ namespace QDP {
 class SetFunc
 {
 public:
+  // Virtual destructor to stop compiler warnings - no cleanup needed
+  virtual ~SetFunc() {}
   virtual int operator() (const multi1d<int>& coordinate) const = 0;
   virtual int numSubsets() const = 0;
 };
