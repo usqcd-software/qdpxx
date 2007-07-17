@@ -1,3 +1,27 @@
+2007-07-17 12:58  tag qdp1-24-2
+
+2007-07-17 12:58  bjoo
+
+	* configure, configure.ac: Moved version number in autoconf
+
+2007-07-17 12:56  bjoo
+
+	* NEWS, include/qdp_map.h, include/qdp_multi.h,
+	  include/qdp_subset.h, include/qdp_traits.h,
+	  include/scalarsite_generic/generic_spin_proj_inlines.h,
+	  include/scalarsite_generic/generic_spin_recon_inlines.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_proj_evaluates.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_proj_evaluates.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_recon_evaluates.h,
+	  include/scalarsite_sse/sse_spin_proj_inlines.h,
+	  include/scalarsite_sse/sse_spin_recon_inlines.h,
+	  lib/qdp_default_allocator.cc, lib/qdp_map.cc,
+	  lib/qdp_parscalar_init.cc, lib/qdp_parscalar_specific.cc,
+	  lib/qdp_profile.cc, lib/qdp_qdpio.cc,
+	  other_libs/xpath_reader/include/basic_xpath_reader.h,
+	  other_libs/xpath_reader/lib/basic_xpath_reader.cc: Made some C++
+	  warnings go away
+
 2007-07-08 14:17  kostas
 
 	* other_libs/qio/other_libs/c-lime/: aclocal.m4, configure,
