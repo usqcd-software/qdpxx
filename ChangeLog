@@ -1,3 +1,17 @@
+2007-08-13 14:42  tag qdp1-24-3
+
+2007-08-13 14:42  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2007-08-13 14:41  edwards
+
+	* NEWS: Info on 1.24.3
+
+2007-08-13 14:38  edwards
+
+	* configure.ac: Changed to 1.24.3
+
 2007-08-13 01:00  edwards
 
 	* include/qdp_io.h, lib/qdp_io.cc, lib/qdp_parscalar_specific.cc,
