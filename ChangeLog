@@ -1,3 +1,9 @@
+2007-08-13 01:00  edwards
+
+	* include/qdp_io.h, lib/qdp_io.cc, lib/qdp_parscalar_specific.cc,
+	  lib/qdp_parscalarvec_specific.cc: Fixed how the
+	  BinaryReader/Writer checksums are disseminated.
+
 2007-08-06 17:27  edwards
 
 	* NEWS: Small change in NEWS announcement.
