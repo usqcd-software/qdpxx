@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.cc,v 1.25 2007-06-10 21:16:49 edwards Exp $
+// $Id: qdp_io.cc,v 1.26 2007-08-13 05:00:09 edwards Exp $
 /*! @file
  * @brief IO support
  */
@@ -490,6 +490,133 @@ namespace QDP
     return s;
   }
 
+  // Sync the checksum from the binary node to all nodes
+  void BinaryReader::syncChecksum()
+  {
+    // Keep the checksum in sync on all nodes. This only really
+    // is needed if nodes do detailed checks on the checksums
+    QDPUtil::n_uint32_t chk = getChecksum();
+    Internal::broadcast(chk);
+    setChecksum() = chk;
+  }
+
+  void BinaryReader::read(string& input, size_t maxBytes)
+  {
+    char *str = new(nothrow) char[maxBytes];
+    if( str == 0x0 ) { 
+      QDP_error_exit("Couldnt new str in qdp_io.cc\n");
+    }
+
+    size_t n;
+
+    if (Layout::primaryNode())
+    {
+      getIstream().getline(str, maxBytes);
+      n = strlen(str);
+      setChecksum() = QDPUtil::crc32(getChecksum(), str, n);   // no string terminator
+      ++n;
+      setChecksum() = QDPUtil::crc32(getChecksum(), "\n", 1);   // account for newline written
+    }
+
+    Internal::broadcast(n);
+    Internal::broadcast((void *)str, n);
+
+    // Keep the checksum in sync on all nodes. This only really
+    // is needed if nodes do detailed checks on the checksums
+    syncChecksum();
+
+    input = str;
+    delete[] str;
+  }
+
+  void BinaryReader::read(char& input) 
+  {
+    readPrimitive<char>(input);
+  }
+
+  void BinaryReader::read(int& input) 
+  {
+    readPrimitive<int>(input);
+  }
+
+  void BinaryReader::read(unsigned int& input)
+  {
+    readPrimitive<unsigned int>(input);
+  }
+
+  void BinaryReader::read(short int& input)
+  {
+    readPrimitive<short int>(input);
+  }
+
+  void BinaryReader::read(unsigned short int& input)
+  {
+    readPrimitive<unsigned short int>(input);
+  }
+
+  void BinaryReader::read(long int& input)
+  {
+    readPrimitive<long int>(input);
+  }
+
+  void BinaryReader::read(unsigned long int& input)
+  {
+    readPrimitive<unsigned long int>(input);
+  }
+
+  void BinaryReader::read(float& input)
+  {
+    readPrimitive<float>(input);
+  }
+
+  void BinaryReader::read(double& input)
+  {
+    readPrimitive<double>(input);
+  }
+
+  void BinaryReader::read(bool& input)
+  {
+    readPrimitive<bool>(input);
+  }
+
+  template< typename T>
+  void BinaryReader::readPrimitive(T& input)
+  {
+    readArray((char*)&input, sizeof(T), 1);
+  }
+
+  void BinaryReader::readArray(char* input, size_t size, size_t nmemb)
+  {
+    readArrayPrimaryNode(input, size, nmemb);
+
+    // Now broadcast back out to all nodes
+    Internal::broadcast((void*)input, size*nmemb);
+
+    // Keep the checksum in sync on all nodes. This only really
+    // is needed if nodes do detailed checks on the checksums
+    syncChecksum();
+  }
+
+  // Read array from the primary node
+  void BinaryReader::readArrayPrimaryNode(char* input, size_t size, size_t nmemb)
+  {
+    if (Layout::primaryNode())
+    {
+      // Read
+      // By default, we expect all data to be in big-endian
+      getIstream().read(input, size*nmemb);
+      setChecksum() = QDPUtil::crc32(getChecksum(), input, size*nmemb);
+
+      if (! QDPUtil::big_endian())
+      {
+	// little-endian
+	// Swap
+	QDPUtil::byte_swap(input, size, nmemb);
+      }
+    }
+  }
+
+
   // Wrappers for read functions
   void read(BinaryReader& bin, std::string& input, size_t maxBytes)
   {
@@ -607,114 +734,6 @@ namespace QDP
     return bin;
   }
 
-  void BinaryReader::read(string& input, size_t maxBytes)
-  {
-    char *str = new(nothrow) char[maxBytes];
-    if( str == 0x0 ) { 
-      QDP_error_exit("Couldnt new str in qdp_io.cc\n");
-    }
-
-    size_t n;
-
-    if (Layout::primaryNode())
-    {
-      getIstream().getline(str, maxBytes);
-      n = strlen(str);
-      setChecksum() = QDPUtil::crc32(getChecksum(), str, n);   // no string terminator
-      ++n;
-      setChecksum() = QDPUtil::crc32(getChecksum(), "\n", 1);   // account for newline written
-    }
-
-    Internal::broadcast(n);
-    Internal::broadcast((void *)str, n);
-
-    input = str;
-    delete[] str;
-  }
-
-  void BinaryReader::read(char& input) 
-  {
-    readPrimitive<char>(input);
-  }
-
-  void BinaryReader::read(int& input) 
-  {
-    readPrimitive<int>(input);
-  }
-
-  void BinaryReader::read(unsigned int& input)
-  {
-    readPrimitive<unsigned int>(input);
-  }
-
-  void BinaryReader::read(short int& input)
-  {
-    readPrimitive<short int>(input);
-  }
-
-  void BinaryReader::read(unsigned short int& input)
-  {
-    readPrimitive<unsigned short int>(input);
-  }
-
-  void BinaryReader::read(long int& input)
-  {
-    readPrimitive<long int>(input);
-  }
-
-  void BinaryReader::read(unsigned long int& input)
-  {
-    readPrimitive<unsigned long int>(input);
-  }
-
-  void BinaryReader::read(float& input)
-  {
-    readPrimitive<float>(input);
-  }
-
-  void BinaryReader::read(double& input)
-  {
-    readPrimitive<double>(input);
-  }
-
-  void BinaryReader::read(bool& input)
-  {
-    readPrimitive<bool>(input);
-  }
-
-  template< typename T>
-  void BinaryReader::readPrimitive(T& input)
-  {
-    readArray((char*)&input, sizeof(T), 1);
-  }
-
-  void BinaryReader::readArray(char* input, size_t size, size_t nmemb)
-  {
-    readArrayPrimaryNode(input, size, nmemb);
-
-    // Now broadcast back out to all nodes
-    Internal::broadcast((void*)input, size*nmemb);
-  }
-
-  // Read array from the primary node
-  void BinaryReader::readArrayPrimaryNode(char* input, size_t size, size_t nmemb)
-  {
-    if (Layout::primaryNode())
-    {
-      // Read
-      // By default, we expect all data to be in big-endian
-      getIstream().read(input, size*nmemb);
-      setChecksum() = QDPUtil::crc32(getChecksum(), input, size*nmemb);
-
-      if (! QDPUtil::big_endian())
-      {
-	// little-endian
-	// Swap
-	QDPUtil::byte_swap(input, size, nmemb);
-      }
-    }
-  }
-
   //--------------------------------------------------------------------------------
   // Binary buffer reader support
   BinaryBufferReader::BinaryBufferReader() {checksum=0;}
@@ -739,14 +758,6 @@ namespace QDP
       s = f.str();
     
     return s;
-  }
-
-  // Get the current checksum
-  QDPUtil::n_uint32_t BinaryBufferReader::getChecksum() const
-  {
-    QDPUtil::n_uint32_t c = checksum;
-    Internal::broadcast(c);   // picks up only node 0
-    return c;
   }
 
 
@@ -796,14 +807,6 @@ namespace QDP
   // Shutdown
   BinaryFileReader::~BinaryFileReader() {close();}
 
-  // Get the current checksum
-  QDPUtil::n_uint32_t BinaryFileReader::getChecksum() const
-  {
-    QDPUtil::n_uint32_t c = checksum;
-    Internal::broadcast(c);   // picks up only node 0
-    return c;
-  }
-
 
   //--------------------------------------------------------------------------------
   // Binary writer support
@@ -820,6 +823,118 @@ namespace QDP
     Internal::broadcast(s);
     return s;
   }
+
+  void BinaryWriter::write(const string& output)
+  {
+    // WARNING: CHECK ON NEWLINE IN CHECKSUM
+    size_t n = output.length();
+    writeArray(output.c_str(), sizeof(char), n);
+    write('\n');   // Convention is to write a line terminator
+  }
+
+  void BinaryWriter::write(const char* output)
+  {
+    write(string(output));
+  }
+
+  void BinaryWriter::write(const char& output) 
+  {
+    writePrimitive<char>(output);
+  }
+
+  void BinaryWriter::write(const int& output) 
+  {
+    writePrimitive<int>(output);
+  }
+
+  void BinaryWriter::write(const unsigned int& output)
+  {
+    writePrimitive<unsigned int>(output);
+  }
+
+  void BinaryWriter::write(const short int& output)
+  {
+    writePrimitive<short int>(output);
+  }
+
+  void BinaryWriter::write(const unsigned short int& output)
+  {
+    writePrimitive<unsigned short int>(output);
+  }
+
+  void BinaryWriter::write(const long int& output)
+  {
+    writePrimitive<long int>(output);
+  }
+
+  void BinaryWriter::write(const unsigned long int& output)
+  {
+    writePrimitive<unsigned long int>(output);
+  }
+
+  void BinaryWriter::write(const float& output)
+  {
+    writePrimitive<float>(output);
+  }
+
+  void BinaryWriter::write(const double& output)
+  {
+    writePrimitive<double>(output);
+  }
+
+  void BinaryWriter::write(const bool& output)
+  {
+    writePrimitive<bool>(output);
+  }
+
+  template< typename T>
+  void BinaryWriter::writePrimitive(const T& output)
+  {
+    writeArray((const char*)&output, sizeof(T), 1);
+  }
+
+  void BinaryWriter::writeArrayPrimaryNode(const char* output, size_t size, size_t nmemb)
+  {
+    if (Layout::primaryNode())
+    {
+      if (QDPUtil::big_endian())
+      {
+	/* big-endian */
+	/* Write */
+	setChecksum() = QDPUtil::crc32(getChecksum(), output, size*nmemb);
+	getOstream().write(output, size*nmemb);
+      }
+      else
+      {
+	/* little-endian */
+	/* Swap and write and swap */
+	QDPUtil::byte_swap(const_cast<char *>(output), size, nmemb);
+	setChecksum() = QDPUtil::crc32(getChecksum(), output, size*nmemb);
+	getOstream().write(output, size*nmemb);
+	QDPUtil::byte_swap(const_cast<char *>(output), size, nmemb);
+      }
+    }
+  }
+
+  void BinaryWriter::writeArray(const char* output, size_t size, size_t nmemb)
+  {
+    writeArrayPrimaryNode(output, size, nmemb);
+
+    // Keep the checksum in sync on all nodes. This only really
+    // is needed if nodes do detailed checks on the checksums
+    syncChecksum();
+  }
+
+  // Sync the checksum from the binary node to all nodes
+  void BinaryWriter::syncChecksum()
+  {
+    // Keep the checksum in sync on all nodes. This only really
+    // is needed if nodes do detailed checks on the checksums
+    QDPUtil::n_uint32_t chk = getChecksum();
+    Internal::broadcast(chk);
+    setChecksum() = chk;
+  }
+
 
   // Wrappers for write functions
   void write(BinaryWriter& bin, const std::string& output)
@@ -949,99 +1064,6 @@ namespace QDP
     return bin;
   }
 
-  void BinaryWriter::write(const string& output)
-  {
-    // WARNING: CHECK ON NEWLINE IN CHECKSUM
-    size_t n = output.length();
-    writeArray(output.c_str(), sizeof(char), n);
-    write('\n');   // Convention is to write a line terminator
-  }
-
-  void BinaryWriter::write(const char* output)
-  {
-    write(string(output));
-  }
-
-  void BinaryWriter::write(const char& output) 
-  {
-    writePrimitive<char>(output);
-  }
-
-  void BinaryWriter::write(const int& output) 
-  {
-    writePrimitive<int>(output);
-  }
-
-  void BinaryWriter::write(const unsigned int& output)
-  {
-    writePrimitive<unsigned int>(output);
-  }
-
-  void BinaryWriter::write(const short int& output)
-  {
-    writePrimitive<short int>(output);
-  }
-
-  void BinaryWriter::write(const unsigned short int& output)
-  {
-    writePrimitive<unsigned short int>(output);
-  }
-
-  void BinaryWriter::write(const long int& output)
-  {
-    writePrimitive<long int>(output);
-  }
-
-  void BinaryWriter::write(const unsigned long int& output)
-  {
-    writePrimitive<unsigned long int>(output);
-  }
-
-  void BinaryWriter::write(const float& output)
-  {
-    writePrimitive<float>(output);
-  }
-
-  void BinaryWriter::write(const double& output)
-  {
-    writePrimitive<double>(output);
-  }
-
-  void BinaryWriter::write(const bool& output)
-  {
-    writePrimitive<bool>(output);
-  }
-
-  template< typename T>
-  void BinaryWriter::writePrimitive(const T& output)
-  {
-    writeArray((const char*)&output, sizeof(T), 1);
-  }
-
-  void BinaryWriter::writeArray(const char* output, size_t size, size_t nmemb)
-  {
-    if (Layout::primaryNode())
-    {
-      if (QDPUtil::big_endian())
-      {
-	/* big-endian */
-	/* Write */
-	setChecksum() = QDPUtil::crc32(getChecksum(), output, size*nmemb);
-	getOstream().write(output, size*nmemb);
-      }
-      else
-      {
-	/* little-endian */
-	/* Swap and write and swap */
-	QDPUtil::byte_swap(const_cast<char *>(output), size, nmemb);
-	setChecksum() = QDPUtil::crc32(getChecksum(), output, size*nmemb);
-	getOstream().write(output, size*nmemb);
-	QDPUtil::byte_swap(const_cast<char *>(output), size, nmemb);
-      }
-    }
-  }
-
-
   //--------------------------------------------------------------------------------
   // Binary writer support
   BinaryBufferWriter::BinaryBufferWriter() {checksum=0;}
@@ -1068,14 +1090,6 @@ namespace QDP
     return s;
   }
 
-  // Get the current checksum
-  QDPUtil::n_uint32_t BinaryBufferWriter::getChecksum() const
-  {
-    QDPUtil::n_uint32_t c = checksum;
-    Internal::broadcast(c);   // picks up only node 0
-    return c;
-  }
-
 
   //--------------------------------------------------------------------------------
   // Binary writer support
@@ -1098,7 +1112,9 @@ namespace QDP
     if (is_open())
     {
       if (Layout::primaryNode()) 
+      {
 	f.close();
+      }
     }
   }
 
@@ -1111,7 +1127,9 @@ namespace QDP
     if (s)
     {
       if (Layout::primaryNode())
+      {
 	s = f.is_open();
+      }
 
       Internal::broadcast(s);
     }
@@ -1130,13 +1148,5 @@ namespace QDP
 
   // Close the file
   BinaryFileWriter::~BinaryFileWriter() {close();}
-
-  // Get the current checksum
-  QDPUtil::n_uint32_t BinaryFileWriter::getChecksum() const
-  {
-    QDPUtil::n_uint32_t c = checksum;
-    Internal::broadcast(c);   // picks up only node 0
-    return c;
-  }
 
 } // namespace QDP

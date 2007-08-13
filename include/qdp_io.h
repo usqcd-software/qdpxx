@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.23 2007-06-10 15:57:11 edwards Exp $
+// $Id: qdp_io.h,v 1.24 2007-08-13 05:00:09 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -411,6 +411,9 @@ namespace QDP
     //! Get the current checksum
     virtual QDPUtil::n_uint32_t getChecksum() const = 0;
   
+    //! Sync the checksum from the primary node to all nodes
+    virtual void syncChecksum();
+
   protected:
     //! The universal data-reader.
     /*!
@@ -613,7 +616,7 @@ namespace QDP
     std::string str() const;
         
     //! Get the current checksum
-    QDPUtil::n_uint32_t getChecksum() const;
+    QDPUtil::n_uint32_t getChecksum() const {return checksum;}
   
   protected:
     //! Get the current checksum to modify
@@ -671,7 +674,7 @@ namespace QDP
     void close();
 
     //! Get the current checksum
-    QDPUtil::n_uint32_t getChecksum() const;
+    QDPUtil::n_uint32_t getChecksum() const {return checksum;}
   
   protected:
     //! Get the current checksum to modify
@@ -724,6 +727,14 @@ namespace QDP
     */
     virtual bool fail();
 
+    //! Write data on the primary node only
+    /*!
+      \param output The location to which data is read
+      \param nbytes The size in bytes of each datum
+      \param The number of data.
+    */
+    virtual void writeArrayPrimaryNode(const char* output, size_t nbytes, size_t nmemb);
+
     //! Write data from the primary node.
     /*!
       \param output The data to write
@@ -756,6 +767,9 @@ namespace QDP
     //! Get the current checksum
     virtual QDPUtil::n_uint32_t getChecksum() const = 0;
   
+    //! Sync the checksum from the primary node to all nodes
+    virtual void syncChecksum();
+
   protected:
 
     //! The universal data-writer.
@@ -930,7 +944,7 @@ namespace QDP
     void flush() {}
 
     //! Get the current checksum
-    QDPUtil::n_uint32_t getChecksum() const;
+    QDPUtil::n_uint32_t getChecksum() const {return checksum;}
   
   protected:
     //! Get the current checksum
@@ -992,7 +1006,7 @@ namespace QDP
     void flush();
 
     //! Get the current checksum
-    QDPUtil::n_uint32_t getChecksum() const;
+    QDPUtil::n_uint32_t getChecksum() const {return checksum;}
   
   protected:
     //! Get the current checksum to modify

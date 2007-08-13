@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_specific.cc,v 1.13 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_parscalarvec_specific.cc,v 1.14 2007-08-13 05:00:09 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec specific routines
@@ -582,9 +582,13 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
       }
 
       // Write a site variable
-      cfg_out.writeArray((char *)&(su3[0][0][0]),sizeof(float), mat_size);
+      cfg_out.writeArrayPrimaryNode((char *)&(su3[0][0][0]),sizeof(float), mat_size);
     }
   }
+
+  // Keep the checksum in sync on all nodes. This only really
+  // is needed if nodes do detailed checks on the checksums
+  bin.syncChecksum();
 
   if (cfg_out.fail())
     QDP_error_exit("Error writing configuration");

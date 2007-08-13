@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.33 2007-07-17 16:56:10 bjoo Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.34 2007-08-13 05:00:09 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -423,11 +423,14 @@ void writeOLattice(BinaryWriter& bin,
 #endif
     }
 
-    if (Layout::primaryNode())
-      bin.writeArray(recv_buf, size, nmemb*xinc);
+    bin.writeArrayPrimaryNode(recv_buf, size, nmemb*xinc);
   }
 
   delete[] recv_buf;
+
+  // Keep the checksum in sync on all nodes. This only really
+  // is needed if nodes do detailed checks on the checksums
+  bin.syncChecksum();
 }
 
 
@@ -470,8 +473,7 @@ void writeOLattice(BinaryWriter& bin,
 #endif
   }
 
-  if (Layout::primaryNode())
-    bin.writeArray(recv_buf, size, nmemb);
+  bin.writeArray(recv_buf, size, nmemb);
 
   delete[] recv_buf;
 }
@@ -526,6 +528,10 @@ void readOLattice(BinaryReader& bin,
     }
   }
 
+  // Keep the checksum in sync on all nodes. This only really
+  // is needed if nodes do detailed checks on the checksums
+  bin.syncChecksum();
+
   delete[] recv_buf;
 }
 
@@ -566,6 +572,10 @@ void readOLattice(BinaryReader& bin,
 
   if (Layout::nodeNumber() == node)
     memcpy(input+linear*tot_size, recv_buf, tot_size);
+
+  // Keep the checksum in sync on all nodes. This only really
+  // is needed if nodes do detailed checks on the checksums
+  bin.syncChecksum();
 
   delete[] recv_buf;
 }
@@ -895,9 +905,12 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
 #endif
     }
 
-    if (Layout::primaryNode())
-      cfg_out.writeArray(recv_buf, size, mat_size*Nd);
+    cfg_out.writeArrayPrimaryNode(recv_buf, size, mat_size*Nd);
   }
+
+  // Keep the checksum in sync on all nodes. This only really
+  // is needed if nodes do detailed checks on the checksums
+  cfg_out.syncChecksum();
 
   delete[] recv_buf;
 
