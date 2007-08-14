@@ -1,3 +1,8 @@
+2007-08-14 00:15  edwards
+
+	* other_libs/qio/lib/qio/QIO_write.c: Put in a patch to allow
+	  global data to only live on the master_io_node.
+
 2007-08-13 23:08  edwards
 
 	* lib/qdp_qdpio.cc: Rearranged where a test of xml_c == NULL is
