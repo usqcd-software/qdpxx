@@ -1,3 +1,13 @@
+2007-08-13 23:08  edwards
+
+	* lib/qdp_qdpio.cc: Rearranged where a test of xml_c == NULL is
+	  located.
+
+2007-08-13 22:42  edwards
+
+	* other_libs/qio/lib/dml/DML_utils.c: Now allow word_size=1 for
+	  DML_byterevn. This is actually a NOP.
+
 2007-08-13 14:42  tag qdp1-24-3
 
 2007-08-13 14:42  edwards
