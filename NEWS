@@ -1,3 +1,9 @@
+08/14/2007 -- Robert Edwards
+	Version 1.24.4: Changes to QIO to support BinaryBufferWriter used in QDPQIO
+        calls. Basically, the contents of BinaryBufferWriter lives only on the 
+        primary node, so QIO had to be changed to support "global data" only on
+        the primary node and only char datatypes.
+
 08/13/2007 -- Robert Edwards
 	Version 1.24.3: Bug fix. The reorganized BinaryReader/Writer were failing
         in parallel mode. This is now fixed. There are still some issues/errors
