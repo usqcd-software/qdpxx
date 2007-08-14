@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.27 2007-07-17 16:56:10 bjoo Exp $
+// $Id: qdp_qdpio.cc,v 1.28 2007-08-14 03:08:50 edwards Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -520,14 +520,14 @@ namespace QDP
 
     // Copy metadata string into simple qio string container
     QIO_String* xml_c = QIO_string_create();
-    if (Layout::primaryNode())
-      QIO_string_set(xml_c, rec_xml.str().c_str());
-
     if (xml_c == NULL)
     {
       QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << endl;
       QDP_abort(1);
     }
+
+    if (Layout::primaryNode())
+      QIO_string_set(xml_c, rec_xml.str().c_str());
 
     // Big call to qio
     if (QIO_write(get(), info, xml_c,
