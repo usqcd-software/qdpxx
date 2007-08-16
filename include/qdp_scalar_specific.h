@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.35 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.36 2007-08-16 15:44:53 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1502,6 +1502,9 @@ private:
 //-----------------------------------------------------------------------------
 // Input and output of various flavors that are architecture specific
 
+//! Decompose a lexicographic site into coordinates
+multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
+
 //! XML output
 template<class T>  
 XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
@@ -1512,14 +1515,19 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
 
   const int vvol = Layout::vol();
   for(int site=0; site < vvol; ++site) 
-  {
-    int i = Layout::linearSiteIndex(site);
+  { 
+    multi1d<int> coord = crtesn(site, Layout::lattSize());
+    std::ostringstream os;
+    os << coord[0];
+    for(int i=1; i < coord.size(); ++i)
+      os << " " << coord[i];
 
     alist.clear();
     alist.push_back(XMLWriterAPI::Attribute("site", site));
+    alist.push_back(XMLWriterAPI::Attribute("coord", os.str()));
 
     xml.openTag("elem", alist);
-    xml << d.elem(i);
+    xml << d.elem(Layout::linearSiteIndex(site));
     xml.closeTag();
   }
 

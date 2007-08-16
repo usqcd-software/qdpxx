@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.47 2007-06-11 15:12:54 bjoo Exp $
+// $Id: qdp_parscalar_specific.h,v 1.48 2007-08-16 15:44:53 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -2050,8 +2050,14 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
 
     if (Layout::primaryNode())
     {
+      std::ostringstream os;
+      os << coord[0];
+      for(int i=1; i < coord.size(); ++i)
+	os << " " << coord[i];
+
       alist.clear();
       alist.push_back(XMLWriterAPI::Attribute("site", site));
+      alist.push_back(XMLWriterAPI::Attribute("coord", os.str()));
 
       xml.openTag("elem", alist);
       xml << recv_buf;
