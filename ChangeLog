@@ -1,3 +1,13 @@
+2007-08-16 11:49  edwards
+
+	* include/: qdp_parscalarvec_specific.h, qdp_scalarvec_specific.h:
+	  Write out coord as another attribute for xml<<olattice.
+
+2007-08-16 11:44  edwards
+
+	* include/: qdp_parscalar_specific.h, qdp_scalar_specific.h: Write
+	  out the coordinate as an attribute in xml<<olattice.
+
 2007-08-14 12:08  tag qdp1-24-4
 
 2007-08-14 12:08  edwards
