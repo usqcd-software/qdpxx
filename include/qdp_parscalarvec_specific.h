@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.26 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_parscalarvec_specific.h,v 1.27 2007-08-16 15:49:58 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 
@@ -1639,8 +1639,14 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
 
     if (Layout::primaryNode())
     {
+      std::ostringstream os;
+      os << coord[0];
+      for(int i=1; i < coord.size(); ++i)
+	os << " " << coord[i];
+
       alist.clear();
       alist.push_back(XMLWriterAPI::Attribute("site", site));
+      alist.push_back(XMLWriterAPI::Attribute("coord", os.str()));
 
       xml.openTag("elem", alist);
       xml << recv_buf;

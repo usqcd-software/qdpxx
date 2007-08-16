@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.24 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.25 2007-08-16 15:49:58 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -1273,6 +1273,9 @@ private:
 //-----------------------------------------------------------------------------
 // Input and output of various flavors that are architecture specific
 
+//! Decompose a lexicographic site into coordinates
+multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
+
 //! XML output
 template<class T>  
 XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
@@ -1284,12 +1287,19 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
   const int iend = Layout::vol();
   for(int site=0; site < iend; ++site) 
   {
+    multi1d<int> coord = crtesn(site, Layout::lattSize());
+    std::ostringstream os;
+    os << coord[0];
+    for(int i=1; i < coord.size(); ++i)
+      os << " " << coord[i];
+
     int i = Layout::linearSiteIndex(site);
     int outersite = i >> INNER_LOG;
     int innersite = i & ((1 << INNER_LOG)-1);
 
     alist.clear();
     alist.push_back(XMLWriterAPI::Attribute("site", site));
+    alist.push_back(XMLWriterAPI::Attribute("coord", os.str()));
 
     xml.openTag("elem", alist);
     xml << getSite(d.elem(outersite),innersite);
