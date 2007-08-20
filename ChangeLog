@@ -1,3 +1,15 @@
+2007-08-20 13:08  uid4709
+
+	* include/qdp_scalarvecsite_sse.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_vector.h,
+	  include/scalarsite_sse/sse_blas_vaxpby3_g5.h,
+	  include/scalarsite_sse/sse_blas_vaxpy3_g5.h,
+	  include/scalarsite_sse/sse_blas_vaypx3_g5.h,
+	  include/scalarsite_sse/sse_blas_vscal3_g5.h,
+	  lib/qdp_scalarsite_sse.cc: Removed shufps inline asm and replaced
+	  with intrinsic. Now inline asm should only appear in the sources
+	  from the FNAL inline assembly headers. Clean these next
+
 2007-08-16 11:49  edwards
 
 	* include/: qdp_parscalarvec_specific.h, qdp_scalarvec_specific.h:
