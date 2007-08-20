@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.20 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_scalarvecsite_sse.h,v 1.21 2007-08-20 17:08:14 uid4709 Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -23,7 +23,8 @@ typedef REAL32 vReal32 __attribute__ ((aligned (16),mode(V4SF)));
 static inline vReal32 vmk1(REAL32 a) 
 {
   vReal32 v = _mm_load_ss((float *)&a);
-  asm("shufps\t$0,%0,%0" : "+x" (v));
+  // asm("shufps\t$0,%0,%0" : "+x" (v));
+  v = _mm_shuffle_ps(v,v,0);
   return v;
 }
 

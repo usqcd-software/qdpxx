@@ -1,4 +1,4 @@
-// $Id: sse_blas_vscal3_g5.h,v 1.3 2007-06-10 14:32:11 edwards Exp $
+// $Id: sse_blas_vscal3_g5.h,v 1.4 2007-08-20 17:08:14 uid4709 Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -23,17 +23,16 @@ namespace QDP {
 inline
 void scal_g5ProjPlus(REAL32 *Out, REAL32* scalep, REAL32 *X, int n_4vec)
 {
-  // GNUC vector type
-  
+  // GNUC vector type  
+  v4sf vscalep = _mm_load_ss(scalep); // High bytes 
+  vscalep =_mm_shuffle_ps(vscalep, vscalep, 0 );
 
-  v4sf vscalep = _mm_load_ss(scalep);
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep)); 
-  REAL32 rzero = (REAL32)0;
-  
+  REAL32 rzero=0;
+
   // A zero vector
   v4sf vzero = _mm_load_ss(&rzero);
-  asm("shufps\t$0,%0,%0" : "+x" (vzero)); 
-  
+  vzero = _mm_shuffle_ps(vzero, vzero, 0);
+
   for(int i=0; i < n_4vec; i++) {
 
     // Spin Component 0: z0r, z0i, z1r, z1i
@@ -71,12 +70,12 @@ void scal_g5ProjMinus(REAL32 *Out, REAL32* scalep, REAL32 *X, int n_4vec)
   
 
   v4sf vscalep = _mm_load_ss(scalep);
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep)); 
+  vscalep = _mm_shuffle_ps(vscalep, vscalep,0);
   REAL32 rzero = (REAL32)0;
   
   // A zero vector
   v4sf vzero = _mm_load_ss(&rzero);
-  asm("shufps\t$0,%0,%0" : "+x" (vzero)); 
+  vzero = _mm_shuffle_ps(vzero, vzero, 0);
   
   for(int i=0; i < n_4vec; i++) {
     // Spin Component 0: z0r, z0i, z1r, z1i

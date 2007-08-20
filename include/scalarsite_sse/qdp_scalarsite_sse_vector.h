@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_vector.h,v 1.4 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_scalarsite_sse_vector.h,v 1.5 2007-08-20 17:08:14 uid4709 Exp $
 
 /*! @file
  * @brief Vector optimizations
@@ -319,9 +319,7 @@ operator*(const PScalar<float>& l, const PDWVectorFloat4& r)
 #endif
 
   register v4sf x = _mm_load_ss((float*)&(l.elem()));
-
-  asm("shufps\t$0,%0,%0"
-      : "+x" (x));
+  x = _mm_shuffle_ps(x,x,0);
 
   return _mm_mul_ps(x, r.elem_v());
 }
@@ -337,9 +335,7 @@ operator*(const PDWVectorFloat4& l, const PScalar<float>& r)
 
   register v4sf x = _mm_load_ss((float*)&(r.elem()));
 
-  asm("shufps\t$0,%0,%0"
-      : "+x" (x));
-
+  x = _mm_shuffle_ps(x,x,0);
   return _mm_mul_ps(l.elem_v(), x);
 }
 

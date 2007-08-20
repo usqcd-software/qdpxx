@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.29 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.30 2007-08-20 17:08:14 uid4709 Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -1090,9 +1090,9 @@ void vaxpy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_3vec)
 //  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
   int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
 
-//  register v4sf va = load_v4sf((float *)&a);
   v4sf vscalep = _mm_load_ss(scalep);
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep));
+  vscalep = _mm_shuffle_ps(vscalep, vscalep, 0);
+
 
   for (; n_loops-- > 0; )
   {
@@ -1119,7 +1119,7 @@ void vaxmy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Sub,int n_3vec)
 
 //  register v4sf va = load_v4sf((float *)&a);
   v4sf vscalep = _mm_load_ss(scalep);
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep));
+  vscalep = _mm_shuffle_ps( vscalep, vscalep, 0);
 
   for (; n_loops-- > 0; )
   {
@@ -1191,7 +1191,7 @@ void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec)
 
 //  register v4sf va = load_v4sf((float *)&a);
   v4sf vscalep = _mm_load_ss(scalep);
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep));
+  vscalep = _mm_shuffle_ps(vscalep, vscalep, 0);
 
   for (; n_loops-- > 0; )
   {
@@ -1219,8 +1219,9 @@ void vaxpby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_3vec
 //  register v4sf va = load_v4sf((float *)&a);
   v4sf va = _mm_load_ss(a);
   v4sf vb = _mm_load_ss(b);
-  asm("shufps\t$0,%0,%0" : "+x" (va));
-  asm("shufps\t$0,%0,%0" : "+x" (vb));
+  va = _mm_shuffle_ps(va, va, 0);
+  vb = _mm_shuffle_ps(vb, vb, 0);
+
 
   for (; n_loops-- > 0; )
   {
@@ -1248,8 +1249,8 @@ void vaxmby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_3vec
 //  register v4sf va = load_v4sf((float *)&a);
   v4sf va = _mm_load_ss(a);
   v4sf vb = _mm_load_ss(b);
-  asm("shufps\t$0,%0,%0" : "+x" (va));
-  asm("shufps\t$0,%0,%0" : "+x" (vb));
+  va = _mm_shuffle_ps( va, va, 0);
+  vb = _mm_shuffle_ps( vb, vb, 0);
 
   for (; n_loops-- > 0; )
   {

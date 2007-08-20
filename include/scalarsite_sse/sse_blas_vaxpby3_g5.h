@@ -1,4 +1,4 @@
-// $Id: sse_blas_vaxpby3_g5.h,v 1.3 2007-06-10 14:32:11 edwards Exp $
+// $Id: sse_blas_vaxpby3_g5.h,v 1.4 2007-08-20 17:08:14 uid4709 Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -29,9 +29,8 @@ void axpbyz_g5ProjPlus(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *scale
   // Load Vscalep
   v4sf vscalep = _mm_load_ss(scalep);
   v4sf vscalep2 = _mm_load_ss(scalep2);
-
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep));
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep2));
+  vscalep = _mm_shuffle_ps(vscalep, vscalep, 0);
+  vscalep2 = _mm_shuffle_ps(vscalep2, vscalep2,0);
 
   for(int i=0; i < n_4vec; i++) {
 
@@ -68,10 +67,10 @@ void axpbyz_g5ProjMinus(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *scal
 
   // Load Vscalep
   v4sf vscalep = _mm_load_ss(scalep);
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep));
+  vscalep = _mm_shuffle_ps(vscalep, vscalep, 0);
 
   v4sf vscalep2 = _mm_load_ss(scalep2);
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep2));
+  vscalep2 = _mm_shuffle_ps(vscalep2, vscalep2, 0);
 
   for(int i=0; i < n_4vec; i++) {
     // Spin Component 0: z0r, z0i, z1r, z1i
@@ -111,8 +110,9 @@ void axmbyz_g5ProjPlus(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *scale
   v4sf vscalep = _mm_load_ss(scalep);
   v4sf vscalep2 = _mm_load_ss(scalep2);
 
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep));
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep2));
+  vscalep = _mm_shuffle_ps( vscalep, vscalep, 0);
+  vscalep2 = _mm_shuffle_ps( vscalep2, vscalep2, 0);
+
 
   for(int i=0; i < n_4vec; i++) {
 
@@ -149,10 +149,10 @@ void axmbyz_g5ProjMinus(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *scal
 
   // Load Vscalep
   v4sf vscalep = _mm_load_ss(scalep);
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep));
+  vscalep = _mm_shuffle_ps(vscalep, vscalep, 0);
 
   v4sf vscalep2 = _mm_load_ss(scalep2);
-  asm("shufps\t$0,%0,%0" : "+x" (vscalep2));
+  vscalep2 = _mm_shuffle_ps(vscalep2, vscalep2, 0);
 
   for(int i=0; i < n_4vec; i++) {
     // Spin Component 0: z0r, z0i, z1r, z1i
