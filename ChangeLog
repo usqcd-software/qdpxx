@@ -1,3 +1,7 @@
+2007-08-21 19:03  edwards
+
+	* other_libs/qio/: aclocal.m4, configure: Induced changes
+
 2007-08-21 15:24  edwards
 
 	* other_libs/qio/include/qio_config_internal.h.in: Now has
