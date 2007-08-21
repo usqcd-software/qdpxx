@@ -1,3 +1,25 @@
+2007-08-21 15:24  edwards
+
+	* other_libs/qio/include/qio_config_internal.h.in: Now has
+	  QIO_DML_USE_OUT_BUFFERING.
+
+2007-08-21 15:22  edwards
+
+	* other_libs/qio/lib/dml/DML_utils.c: Ooops, changed "if defined"
+	  to "#if defined"
+
+2007-08-21 15:20  edwards
+
+	* other_libs/qio/lib/dml/DML_utils.c: Added ifdef's of
+	  QIO_DML_USE_OUT_BUFFERING around  DML_partition_out.
+
+2007-08-21 15:19  edwards
+
+	* other_libs/qio/configure.ac: Added new
+	  --enable-dml-output-buffering to allow the usage of buffering of
+	  output in DML_partition_out. Otherwise, this code busts gigE and
+	  QMP/MPI in mesh mode. Changed to 2.3.0.
+
 2007-08-21 14:17  edwards
 
 	* other_libs/qio/aclocal.m4: Induced changes
