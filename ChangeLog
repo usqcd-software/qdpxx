@@ -1,3 +1,11 @@
+2007-08-21 14:17  edwards
+
+	* other_libs/qio/aclocal.m4: Induced changes
+
+2007-08-21 14:16  edwards
+
+	* other_libs/qio/configure.ac: Changed to 2.2.2
+
 2007-08-20 13:08  uid4709
 
 	* include/qdp_scalarvecsite_sse.h,
@@ -45,10 +53,6 @@
 2007-08-14 12:01  edwards
 
 	* other_libs/qio/NEWS: Info on 2.2.1
-
-2007-08-14 11:59  edwards
-
-	* other_libs/qio/configure.ac: Changed to 2.2.1
 
 2007-08-14 00:15  edwards
 
