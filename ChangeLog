@@ -1,3 +1,24 @@
+2007-08-21 22:14  edwards
+
+	* other_libs/qio/: include/qio_config_internal.h.in,
+	  lib/dml/DML_route.c: Slow route enable option changed to fast
+	  routine option.
+
+2007-08-21 22:14  edwards
+
+	* other_libs/qio/: aclocal.m4, configure: Induced changes
+
+2007-08-21 22:13  edwards
+
+	* other_libs/qio/configure.ac: Changed to version 3.3.0.  Added new
+	  option --enable-dml-output-buffering and changed
+	  --enable-slow-route to instead be  --enable-fast-route. The
+	  DML_partition_out route that allows multiple sites to be ganged
+	  together for performance improvement is problematic on some
+	  platforms, no now it must be enabled with the first option. The
+	  "fast-route" is problematic on some platforms, so now it must be
+	  enabled. The "slow-route" as fast, but apparently safe.
+
 2007-08-21 19:03  edwards
 
 	* other_libs/qio/: aclocal.m4, configure: Induced changes
