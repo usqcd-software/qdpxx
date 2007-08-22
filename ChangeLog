@@ -1,3 +1,9 @@
+2007-08-21 23:15  tag qio2-3-0
+
+2007-08-21 23:15  edwards
+
+	* other_libs/qio/NEWS: Info on 2.3.0
+
 2007-08-21 22:14  edwards
 
 	* other_libs/qio/: include/qio_config_internal.h.in,
