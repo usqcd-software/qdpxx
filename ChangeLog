@@ -1,3 +1,9 @@
+2007-08-22 00:50  edwards
+
+	* other_libs/qio/lib/dml/DML_parscalar.c: A hack in DML_route_bytes
+	  allows a Bluegene to run this part in switch mode even though QMP
+	  was forced into "mesh" mode.
+
 2007-08-21 23:15  tag qio2-3-0
 
 2007-08-21 23:15  edwards
