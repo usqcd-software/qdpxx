@@ -1,3 +1,7 @@
+08/23/2007 -- Robert Edwards
+	Version 1.24.5: Mainly this tags a working version of QIO for mesh
+        machines. Also, some cleanups by Balint in SSE asm codes.
+
 08/14/2007 -- Robert Edwards
 	Version 1.24.4: Changes to QIO to support BinaryBufferWriter used in QDPQIO
         calls. Basically, the contents of BinaryBufferWriter lives only on the 
