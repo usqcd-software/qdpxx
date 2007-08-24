@@ -1,3 +1,9 @@
+2007-08-23 21:29  edwards
+
+	* include/qdp_multi.h: Changed error messages in resize to
+	  something a little more meaningful.  Changed some "\n" to be
+	  "endl" since this flushes the buffer.
+
 2007-08-23 11:50  tag qdp1-24-5
 
 2007-08-23 11:50  edwards
