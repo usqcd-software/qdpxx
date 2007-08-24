@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.18 2007-07-17 16:56:09 bjoo Exp $
+// $Id: qdp_multi.h,v 1.19 2007-08-24 01:29:35 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -79,7 +79,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in =\n";
+	cerr << "multi1d: left hand side not initialized in =" << endl;
 	exit(1);
       }
 
@@ -93,7 +93,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in =\n";
+	cerr << "multi1d: left hand side not initialized in =" << endl;
 	exit(1);
       }
 
@@ -108,7 +108,7 @@ public:
     {
       if (size() != s1.size())
       {
-	cerr << "multi1d: Sizes incompatible in +=\n";
+	cerr << "multi1d: Sizes incompatible in +=" << endl;
 	exit(1);
       }
 
@@ -123,7 +123,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in +=\n";
+	cerr << "multi1d: left hand side not initialized in +=" << endl;
 	exit(1);
       }
 
@@ -138,7 +138,7 @@ public:
     {
       if (size() != s1.size())
       {
-	cerr << "multi1d: Sizes incompatible in -=\n";
+	cerr << "multi1d: Sizes incompatible in -=" << endl;
 	exit(1);
       }
 
@@ -153,7 +153,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in -=\n";
+	cerr << "multi1d: left hand side not initialized in -=" << endl;
 	exit(1);
       }
 
@@ -168,7 +168,7 @@ public:
     {
       if (size() != s1.size())
       {
-	cerr << "multi1d: Sizes incompatible in *=\n";
+	cerr << "multi1d: Sizes incompatible in *=" << endl;
 	exit(1);
       }
 
@@ -183,7 +183,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in *=\n";
+	cerr << "multi1d: left hand side not initialized in *=" << endl;
 	exit(1);
       }
 
@@ -198,7 +198,7 @@ public:
     {
       if (size() != s1.size())
       {
-	cerr << "multi1d: Sizes incompatible in /=\n";
+	cerr << "multi1d: Sizes incompatible in /=" << endl;
 	exit(1);
       }
 
@@ -213,7 +213,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in /=\n";
+	cerr << "multi1d: left hand side not initialized in /=" << endl;
 	exit(1);
       }
 
@@ -257,7 +257,7 @@ private:
   void resize(multi1d<I>& disambiguator, int ns1)
   {
     if(copymem) {
-      cerr <<"invalid resize in 1d" << endl;
+      cerr <<"multi1d: invalid resize of a copy of memory" << endl;
       exit(1);
     }
     delete [] F;
@@ -285,14 +285,14 @@ private:
   void resize(multi1d<OLattice<I> >& disambiguator, int ns1)
   {
      if(copymem) {
-	cerr<<"invalid resize in 1d\n";
-        exit(1);
+       cerr <<"multi1d: invalid resize of a copy of memory" << endl;
+       exit(1);
      }
      delete[] F; 
      n1=ns1;      
      F = new(nothrow) T[n1];
      if ( F == 0x0 ) { 
-	QDP_error_exit("Unable to allocate memory in multi1d::resize()\n");
+       QDP_error_exit("Unable to allocate memory in multi1d::resize()\n");
      }
      // If fast mem hint is in effect, call moveToFastMemoryHint
      // On elements
@@ -718,8 +718,8 @@ public:
   //! Allocate mem for the array
   void resize(int ns2, int ns1) {
     if(copymem) {
-       cerr<<"invalid resize in 2d\n";
-       exit(1);
+      cerr <<"multi2d: invalid resize of a copy of memory" << endl;
+      exit(1);
     }  
     delete[] F; 
     n1=ns1; 
@@ -751,7 +751,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "left hand side not initialized\n";
+	cerr << "multi2d: left hand side not initialized in =" << endl;
 	exit(1);
       }
 
@@ -807,9 +807,8 @@ public:
   //! Allocate mem for the array 
   void resize(int ns3, int ns2, int ns1) 
   {
-    
     if(copymem) {
-      cerr<<"invalid resize in 3d\n";
+      cerr <<"multi3d: invalid resize of a copy of memory" << endl;
       exit(1);
     }
 
@@ -846,7 +845,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "left hand side not initialized\n";
+	cerr << "multi3d: left hand side not initialized in =" << endl;
 	exit(1);
       }
 
@@ -935,7 +934,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "left hand side not initialized\n";
+	cerr << "multiNd: left hand side not initialized in =" << endl;
 	exit(1);
       }
 
@@ -949,7 +948,7 @@ public:
     {
       if (ind.size() != nz.size())
       {
-	cerr << "multiNd: improper rank of array indices\n";
+	cerr << "multiNd: improper rank of array indices" << endl;
 	exit(1);
       }
 
@@ -965,7 +964,7 @@ public:
     {
       if (ind.size() != nz.size())
       {
-	cerr << "multiNd: improper rank of array indices\n";
+	cerr << "multiNd: improper rank of array indices" << endl;
 	exit(1);
       }
 
