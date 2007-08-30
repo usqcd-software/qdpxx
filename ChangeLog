@@ -1,6 +1,39 @@
+2007-08-30 00:23  tag qdp1-24-6
+
+2007-08-30 00:23  edwards
+
+	* NEWS: Info on 1.24.6
+
+2007-08-30 00:21  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2007-08-30 00:21  edwards
+
+	* configure.ac: Changed to 1.24.6
+
+2007-08-30 00:20  edwards
+
+	* other_libs/qio/NEWS: Info on 2.3.2
+
+2007-08-30 00:18  edwards
+
+	* other_libs/qio/: aclocal.m4, configure: Induced changes
+
+2007-08-30 00:18  edwards
+
+	* other_libs/qio/configure.ac: Changed to 2.3.2
+
+2007-08-30 00:17  tag c-lime1-3-1
+
+2007-08-30 00:17  edwards
+
+	* other_libs/qio/other_libs/c-lime/NEWS: Info on 1.3.1
+
 2007-08-30 00:14  edwards
 
-	* other_libs/qio/other_libs/c-lime/aclocal.m4: Induced changes
+	* other_libs/qio/other_libs/c-lime/: aclocal.m4, configure: Induced
+	  changes
 
 2007-08-30 00:13  edwards
 
