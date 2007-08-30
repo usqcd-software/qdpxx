@@ -1,3 +1,23 @@
+2007-08-30 00:14  edwards
+
+	* other_libs/qio/other_libs/c-lime/aclocal.m4: Induced changes
+
+2007-08-30 00:13  edwards
+
+	* other_libs/qio/other_libs/c-lime/configure.ac: Changed to 1.3.1
+
+2007-08-29 23:44  edwards
+
+	* other_libs/qio/lib/: dml/DML_route.c, lrl/LRL_main.c,
+	  qio/QIO_host_file_conversion.c, qio/QIO_string.c: Added some
+	  function names for the print statements.
+
+2007-08-29 23:20  uid3790
+
+	* other_libs/qio/other_libs/c-lime/lib/: lime_reader.c,
+	  lime_utils.c, lime_writer.c: Changed all printf's to also write
+	  the name of the encompassing function.
+
 2007-08-23 21:29  edwards
 
 	* include/qdp_multi.h: Changed error messages in resize to
