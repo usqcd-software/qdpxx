@@ -5,7 +5,7 @@
 
 /* File: generic_spin_recon_inlines.h
    Purpose: Supply inline functions to do spin reconstruction
-   Author: $Id: sse_spin_recon_inlines.h,v 1.5 2007-08-31 01:34:15 bjoo Exp $
+   Author: $Id: sse_spin_recon_inlines.h,v 1.6 2007-08-31 14:41:18 bjoo Exp $
 */
 namespace QDP {
 
@@ -58,7 +58,7 @@ void inlineSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -255,7 +255,7 @@ void inlineSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   
   for(unsigned int site=0; site < n_vec-1; site++) { 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -459,7 +459,7 @@ void inlineSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -646,7 +646,7 @@ void inlineSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -848,7 +848,7 @@ void inlineSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -1040,7 +1040,7 @@ void inlineSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -1228,7 +1228,7 @@ void inlineSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -1339,7 +1339,7 @@ void inlineSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec
   for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now we have
     // v0.floats[0] = tmp[0][col=0][re]
@@ -1478,7 +1478,7 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v4.vector = _mm_load_ps(dst_shadow+12);
@@ -1503,7 +1503,7 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
 
     // v3 now free reuse it with the last element of the destination
     v3.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
+    _mm_prefetch((const char *) dst_shadow+20, _MM_HINT_T0);
     // Store result
     _mm_store_ps(dst_shadow+12, v4.vector);
  
@@ -1588,7 +1588,7 @@ void inlineAddSpinReconDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   
   // v3 now free reuse it with the last element of the destination
   v3.vector = _mm_load_ps(dst_shadow+20);
-  _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
+  _mm_prefetch((const char *) dst_shadow+20, _MM_HINT_T0);
   
   // Store result
   _mm_store_ps(dst_shadow+12, v4.vector);
@@ -1695,7 +1695,7 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v4.vector = _mm_load_ps(dst_shadow+12);
@@ -1720,7 +1720,7 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
 
     // v3 now free reuse it with the last element of the destination
     v3.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
+    _mm_prefetch((const char *) dst_shadow+20, _MM_HINT_T0);
 
     // Store result
     _mm_store_ps(dst_shadow+12, v4.vector);
@@ -1806,7 +1806,7 @@ void inlineAddSpinReconDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   
   // v3 now free reuse it with the last element of the destination
   v3.vector = _mm_load_ps(dst_shadow+20);
-  _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
+  _mm_prefetch((const char *) dst_shadow+20, _MM_HINT_T0);
   
   // Store result
   _mm_store_ps(dst_shadow+12, v4.vector);
@@ -1914,7 +1914,7 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v4.vector = _mm_load_ps(dst_shadow+12);
@@ -1936,7 +1936,7 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     _mm_store_ps( dst_shadow+12, v4.vector);
 
     v3.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
+    _mm_prefetch((const char *) dst_shadow+20, _MM_HINT_T0);
 
     // I want to set up 
     //
@@ -2017,7 +2017,7 @@ void inlineAddSpinReconDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
     _mm_store_ps( dst_shadow+12, v4.vector);
 
     v3.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
+    _mm_prefetch((const char *) dst_shadow+20, _MM_HINT_T0);
     // I want to set up 
     //
     //     v4[0] = v2[2] = tmp[1][col=2][re]
@@ -2156,7 +2156,7 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   for(unsigned int site=0; site < n_vec-1; site++) { 
 
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v4.vector = _mm_load_ps(dst_shadow+12);
@@ -2178,7 +2178,7 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
     _mm_store_ps( dst_shadow+12, v4.vector);
 
     v3.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
+    _mm_prefetch((const char *) dst_shadow+20, _MM_HINT_T0);
     // I want to set up 
     //
     //     v4[0] = v2[2] = tmp[1][col=2][re]
@@ -2258,7 +2258,7 @@ void inlineAddSpinReconDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   _mm_store_ps( dst_shadow+12, v4.vector);
   
   v3.vector = _mm_load_ps(dst_shadow+20);
-  _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
+  _mm_prefetch((const char *) dst_shadow+20, _MM_HINT_T0);
   // I want to set up 
   //
   //     v4[0] = v2[2] = tmp[1][col=2][re]
@@ -2364,13 +2364,13 @@ void inlineAddSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   for(unsigned int site=0; site < n_vec-1; site++) { 
     
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v3.vector = _mm_load_ps(dst_shadow+12);
     v4.vector = _mm_load_ps(dst_shadow+16);
     v5.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
+    _mm_prefetch((const char *) dst_shadow+20, _MM_HINT_T0);
 
     // I want to set up 
     //
@@ -2447,7 +2447,7 @@ void inlineAddSpinReconDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   v3.vector = _mm_load_ps(dst_shadow+12);
   v4.vector = _mm_load_ps(dst_shadow+16);
   v5.vector = _mm_load_ps(dst_shadow+20);
-  _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
+  _mm_prefetch((const char *) dst_shadow+20, _MM_HINT_T0);
   
   // I want to set up 
   //
@@ -2564,13 +2564,13 @@ void inlineAddSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   for(unsigned int site=0; site < n_vec-1; site++) { 
     
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v3.vector = _mm_load_ps(dst_shadow+12);
     v4.vector = _mm_load_ps(dst_shadow+16);
     v5.vector = _mm_load_ps(dst_shadow+20);
-    _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
+    _mm_prefetch((const char *) dst_shadow+20, _MM_HINT_T0);
 
     // I want to set up 
     //
@@ -2647,7 +2647,7 @@ void inlineAddSpinReconDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   v3.vector = _mm_load_ps(dst_shadow+12);
   v4.vector = _mm_load_ps(dst_shadow+16);
   v5.vector = _mm_load_ps(dst_shadow+20);
-  _mm_prefetch( dst_shadow+20, _MM_HINT_T0);
+  _mm_prefetch((const char *) dst_shadow+20, _MM_HINT_T0);
 
   // I want to set up 
   //
@@ -2760,7 +2760,7 @@ void inlineAddSpinReconDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_v
   for(unsigned int site=0; site < n_vec-1; site++) { 
     
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
 
     // Now the bottom half.  -- preload v4 and v5 
@@ -2874,7 +2874,7 @@ void inlineAddSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_
   for(unsigned int site=0; site < n_vec-1; site++) { 
     
     src_shadow += 12;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // Now the bottom half.  -- preload v4 and v5 
     v3.vector = _mm_load_ps(dst_shadow+12);

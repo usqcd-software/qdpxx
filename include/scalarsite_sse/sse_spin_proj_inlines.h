@@ -5,7 +5,7 @@
 
 /* File: generic_spin_proj_inlines.h
    Purpose: Supply inline functions to do spin projection
-   Author: $Id: sse_spin_proj_inlines.h,v 1.4 2007-07-17 16:56:09 bjoo Exp $
+   Author: $Id: sse_spin_proj_inlines.h,v 1.5 2007-08-31 14:41:18 bjoo Exp $
 */
 namespace QDP {
 #include <stdio.h>
@@ -61,7 +61,7 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
 
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     v6.vector = v4.vector;         // V6 is dest so we can move its 
     // I want to shuffle so that:
@@ -238,7 +238,7 @@ void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
 
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
     
     v6.vector = v4.vector;         // V6 is dest so we can move its 
     // I want to shuffle so that:
@@ -412,7 +412,7 @@ void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
     
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
     
     v6.vector = v4.vector;         // V6 is dest so we can move its 
     // I want to shuffle so that:
@@ -578,7 +578,7 @@ void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
   
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
     
     v6.vector = v4.vector;         // V6 is dest so we can move its 
     // I want to shuffle so that:
@@ -756,7 +756,7 @@ void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
 
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
     
     // I want to shuffle so that
     //  v3[0] <- v3[1]  [1:0]=1 = x01 <- tmp[2][col=0][im]
@@ -935,7 +935,7 @@ void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
 
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
     
     // I want to shuffle so that
     //  v3[0] <- v3[1]  [1:0]=1 = x01 <- tmp[2][col=0][im]
@@ -1100,7 +1100,7 @@ void inlineSpinProjDir3Plus(const REAL* src, REAL *dst, unsigned int n_vec)
 
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // This is easy - I don't need any shuffling
     v0.vector = _mm_add_ps(v0.vector, v3.vector);
@@ -1176,7 +1176,7 @@ void inlineSpinProjDir3Minus(const REAL* src, REAL *dst, unsigned int n_vec)
 
   for(unsigned int site=0; site < n_vec-1; site++) {
     src_shadow += 24;
-    _mm_prefetch(src_shadow, _MM_HINT_T0);
+    _mm_prefetch((const char *)src_shadow, _MM_HINT_T0);
 
     // This is easy - I don't need any shuffling
     v0.vector = _mm_sub_ps(v0.vector, v3.vector);
