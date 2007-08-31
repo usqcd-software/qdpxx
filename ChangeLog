@@ -1,3 +1,7 @@
+2007-08-31 06:52  bjoo
+
+	* configure, examples/Makefile.am: Removed oopsie from Makefile.am
+
 2007-08-30 23:54  bjoo
 
 	* NEWS, other_libs/libintrin/autom4te.cache/output.0,
