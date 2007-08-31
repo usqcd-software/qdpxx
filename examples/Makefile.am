@@ -24,7 +24,7 @@ AM_LDFLAGS = -L@top_builddir@/lib \
              @LDFLAGS@ @BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@
 
 if BUILD_LIBINTRIN
-AM_LDFLAGS += -L@top_builddir@/other_libs/libintrin/lib@
+AM_LDFLAGS += -L@top_builddir@/other_libs/libintrin/lib
 endif
 
 LDADD = -lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@
