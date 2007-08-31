@@ -2,9 +2,10 @@
 #define SSE_SPIN_RECON_INLINES_H
 
 #include "qdp_sse_intrin.h"
+
 /* File: generic_spin_recon_inlines.h
    Purpose: Supply inline functions to do spin reconstruction
-   Author: $Id: sse_spin_recon_inlines.h,v 1.4 2007-07-17 16:56:10 bjoo Exp $
+   Author: $Id: sse_spin_recon_inlines.h,v 1.5 2007-08-31 01:34:15 bjoo Exp $
 */
 namespace QDP {
 

@@ -1,10 +1,7 @@
 #ifndef SSE_FUSED_SPIN_RECON_H
 #define SSE_FUSED_SPIN_RECON_H
 
-#ifdef _inline_sse_mult_su3_mat_hwvec
-#undef _inline_sse_mult_su3_mat_hwvec
-#endif
-#include "scalarsite_sse/sse_mat_hwvec.h"
+#include "sse_mult_su3_mat_hwvec.h"
 
 namespace QDP {
  
@@ -601,17 +598,12 @@ sreconDir0Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
 {
   PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
-#if 0
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(0),
-			   d.elem(0));
 
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(1),
-			   d.elem(1));
-#else
-  _inline_sse_mult_su3_mat_hwvec(a,b,d);
-#endif
+  su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
+  half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(0).elem(0).real());
+
+  intrin_sse_mult_su3_mat_hwvec(am,bh,dh);
 
   inlineSpinReconDir0Minus(&(d.elem(0).elem(0).real()),
 			  &(ret.elem(0).elem(0).real()),
@@ -629,17 +621,11 @@ sreconDir0Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
-#if 0
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(0),
-			   d.elem(0));
+  su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
+  half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(0).elem(0).real());
 
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(1),
-			   d.elem(1));
-#else
-  _inline_sse_mult_su3_mat_hwvec(a, b, d);
-#endif
+  intrin_sse_mult_su3_mat_hwvec(am,bh,dh);
 
   inlineSpinReconDir0Plus(&(d.elem(0).elem(0).real()),
 			 &(ret.elem(0).elem(0).real()),
@@ -657,17 +643,11 @@ sreconDir1Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
-#if 0
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(0),
-			   d.elem(0));
+  su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
+  half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(0).elem(0).real());
 
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(1),
-			   d.elem(1));
-#else
-  _inline_sse_mult_su3_mat_hwvec(a, b, d);
-#endif
+  intrin_sse_mult_su3_mat_hwvec(am,bh,dh);
 
   inlineSpinReconDir1Minus(&(d.elem(0).elem(0).real()),
 			 &(ret.elem(0).elem(0).real()),
@@ -684,17 +664,11 @@ sreconDir1Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
-#if 0
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(0),
-			   d.elem(0));
+  su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
+  half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(0).elem(0).real());
 
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(1),
-			   d.elem(1));
-#else
-  _inline_sse_mult_su3_mat_hwvec(a, b, d);
-#endif
+  intrin_sse_mult_su3_mat_hwvec(am,bh,dh);
 
 
   inlineSpinReconDir1Plus(&(d.elem(0).elem(0).real()),
@@ -712,17 +686,11 @@ sreconDir2Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
-#if 0
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(0),
-			   d.elem(0));
+  su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
+  half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(0).elem(0).real());
 
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(1),
-			   d.elem(1));
-#else
-  _inline_sse_mult_su3_mat_hwvec(a, b, d);
-#endif
+  intrin_sse_mult_su3_mat_hwvec(am,bh,dh);
 
   inlineSpinReconDir2Minus(&(d.elem(0).elem(0).real()),
 			  &(ret.elem(0).elem(0).real()),
@@ -739,17 +707,11 @@ sreconDir2Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
-#if 0
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(0),
-			   d.elem(0));
+  su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
+  half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(0).elem(0).real());
 
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(1),
-			   d.elem(1));
-#else
-  _inline_sse_mult_su3_mat_hwvec(a, b, d);
-#endif
+  intrin_sse_mult_su3_mat_hwvec(am,bh,dh);
 
   inlineSpinReconDir2Plus(&(d.elem(0).elem(0).real()),
 			 &(ret.elem(0).elem(0).real()),
@@ -767,17 +729,11 @@ sreconDir3Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
-#if 0
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(0),
-			   d.elem(0));
+  su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
+  half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(0).elem(0).real());
 
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(1),
-			   d.elem(1));
-#else
-  _inline_sse_mult_su3_mat_hwvec(a, b, d);
-#endif
+  intrin_sse_mult_su3_mat_hwvec(am,bh,dh);
 
   inlineSpinReconDir3Minus(&(d.elem(0).elem(0).real()),
 			 &(ret.elem(0).elem(0).real()),
@@ -795,17 +751,11 @@ sreconDir3Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
   PSpinVector<ColVec,2> d ;
   BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0PlusProd>::Type_t  ret;
 
-#if 0
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(0),
-			   d.elem(0));
+  su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
+  half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(0).elem(0).real());
 
-  _inline_mult_su3_mat_vec(a.elem(),
-			   b.elem(1),
-			   d.elem(1));
-#else
-  _inline_sse_mult_su3_mat_hwvec(a, b, d);
-#endif
+  intrin_sse_mult_su3_mat_hwvec(am,bh,dh);
 
   inlineSpinReconDir3Plus(&(d.elem(0).elem(0).real()),
 			 &(ret.elem(0).elem(0).real()),

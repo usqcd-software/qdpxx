@@ -1,9 +1,6 @@
 #ifndef SSE_SPIN_AGGREGATE
 #define SSE_SPIN_AGGREGATE
 
-// Get the mat mult switchbox
-#include "scalarsite_sse/sse_mv_switchbox.h"
-
 // The inline project, recon and add recon ops.
 #include "scalarsite_sse/sse_spin_proj_inlines.h"
 #include "scalarsite_sse/sse_spin_recon_inlines.h"

@@ -1,6 +1,8 @@
 #ifndef QDP_SSE_FUSED_SPIN_RECON_EVALYATES_H
 #define QDP_SSE_FUSED_SPIN_RECON_EVALUATES_H
 
+#include "sse_mult_su3_mat_hwvec.h"
+
 namespace QDP {
 
 
@@ -25,8 +27,12 @@ void evaluate(OLattice< FVec >& d,
   if( s.hasOrderedRep() ) { 
     for( int site = s.start(); site <= s.end(); site++) { 
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineSpinReconDir0Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -40,8 +46,12 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineSpinReconDir0Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -72,9 +82,11 @@ void evaluate(OLattice< FVec >& d,
   if( s.hasOrderedRep() ) { 
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
-      
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       inlineSpinReconDir0Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
 				(REAL *)&(d.elem(site).elem(0).elem(0).real()),
@@ -87,8 +99,12 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       inlineSpinReconDir0Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
 				(REAL *)&(d.elem(site).elem(0).elem(0).real()),
@@ -123,8 +139,12 @@ void evaluate(OLattice< FVec >& d,
   if( s.hasOrderedRep() ) { 
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineSpinReconDir1Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -138,8 +158,12 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineSpinReconDir1Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -174,8 +198,11 @@ void evaluate(OLattice< FVec >& d,
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
 
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineSpinReconDir1Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -191,8 +218,12 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineSpinReconDir1Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -228,8 +259,13 @@ void evaluate(OLattice< FVec >& d,
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
 
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
+
       
       inlineSpinReconDir2Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
 			       (REAL *)&(d.elem(site).elem(0).elem(0).real()),
@@ -245,8 +281,13 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
+
       
       
       inlineSpinReconDir2Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -280,8 +321,12 @@ void evaluate(OLattice< FVec >& d,
   if( s.hasOrderedRep() ) { 
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineSpinReconDir2Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -296,9 +341,13 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
-      
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       inlineSpinReconDir2Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
 				(REAL *)&(d.elem(site).elem(0).elem(0).real()),
@@ -330,8 +379,13 @@ void evaluate(OLattice< FVec >& d,
   if( s.hasOrderedRep() ) { 
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineSpinReconDir3Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -347,8 +401,13 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineSpinReconDir3Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -379,9 +438,13 @@ void evaluate(OLattice< FVec >& d,
   if( s.hasOrderedRep() ) { 
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
       
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       inlineSpinReconDir3Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
 				(REAL *)&(d.elem(site).elem(0).elem(0).real()),
@@ -395,8 +458,14 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
+
       
       
       inlineSpinReconDir3Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -429,9 +498,13 @@ void evaluate(OLattice< FVec >& d,
   if( s.hasOrderedRep() ) { 
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
-      
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       inlineAddSpinReconDir0Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
 				  (REAL *)&(d.elem(site).elem(0).elem(0).real()),
@@ -444,8 +517,14 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
+      
       
       
       inlineAddSpinReconDir0Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -479,9 +558,13 @@ void evaluate(OLattice< FVec >& d,
   if( s.hasOrderedRep() ) { 
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
-      
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       inlineAddSpinReconDir0Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
 				   (REAL *)&(d.elem(site).elem(0).elem(0).real()),
@@ -494,8 +577,14 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
+
       
       
       inlineAddSpinReconDir0Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -531,9 +620,13 @@ void evaluate(OLattice< FVec >& d,
     for(int site=s.start(); site <= s.end(); ++site) {
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
-      
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       inlineAddSpinReconDir1Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
 				  (REAL *)&(d.elem(site).elem(0).elem(0).real()),
@@ -546,8 +639,13 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineAddSpinReconDir1Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -578,8 +676,13 @@ void evaluate(OLattice< FVec >& d,
   if( s.hasOrderedRep() ) { 
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineAddSpinReconDir1Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -594,8 +697,13 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
        HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineAddSpinReconDir1Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -628,8 +736,13 @@ void evaluate(OLattice< FVec >& d,
   if( s.hasOrderedRep() ) { 
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineAddSpinReconDir2Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -644,9 +757,13 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
-      
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       inlineAddSpinReconDir2Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
 				  (REAL *)&(d.elem(site).elem(0).elem(0).real()),
@@ -679,9 +796,12 @@ void evaluate(OLattice< FVec >& d,
     for(int site=s.start(); site <= s.end(); ++site) {
 
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
-      
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       inlineAddSpinReconDir2Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
 				   (REAL *)&(d.elem(site).elem(0).elem(0).real()),
@@ -694,8 +814,12 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineAddSpinReconDir2Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -728,8 +852,13 @@ void evaluate(OLattice< FVec >& d,
   if( s.hasOrderedRep() ) { 
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
       inlineAddSpinReconDir3Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -744,9 +873,14 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
-      
+
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       inlineAddSpinReconDir3Plus( (REAL *)&(tmp.elem(0).elem(0).real()),
 				  (REAL *)&(d.elem(site).elem(0).elem(0).real()),
@@ -777,8 +911,14 @@ void evaluate(OLattice< FVec >& d,
   if( s.hasOrderedRep() ) { 
     for(int site=s.start(); site <= s.end(); ++site) {
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
+      
       
       
       inlineAddSpinReconDir3Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
@@ -794,9 +934,13 @@ void evaluate(OLattice< FVec >& d,
       int site=tab[j];
       
       HVec tmp ;
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(0), tmp.elem(0));
-      _inline_mult_su3_mat_vec(u.elem(site).elem(), a.elem(site).elem(1), tmp.elem(1));
-      
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+
+
+      intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       inlineAddSpinReconDir3Minus( (REAL *)&(tmp.elem(0).elem(0).real()),
 				   (REAL *)&(d.elem(site).elem(0).elem(0).real()),

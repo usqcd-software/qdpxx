@@ -65,16 +65,6 @@ ssesitedir = scalarsite_sse
 
 SSESITE_HDRS = qdp_scalarsite_sse.h \
 	qdp_sse_intrin.h \
-	$(ssesitedir)/sse_addvec.h \
-	$(ssesitedir)/sse_adj_mat_hwvec.h \
-	$(ssesitedir)/sse_adj_mat_vec.h \
-	$(ssesitedir)/sse_mat_hwvec.h \
-	$(ssesitedir)/sse_mat_vec.h \
-	$(ssesitedir)/sse_mult_an.h \
-	$(ssesitedir)/sse_mult_na.h \
-	$(ssesitedir)/sse_mult_nn.h \
-	$(ssesitedir)/sse_s_m_a_mat.h \
-	$(ssesitedir)/sse_s_m_a_vec.h \
 	$(ssesitedir)/qdp_scalarsite_sse_linalg.h \
 	$(ssesitedir)/qdp_scalarsite_sse_blas.h \
 	$(ssesitedir)/qdp_scalarsite_sse_blas_g5.h \

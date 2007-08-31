@@ -1,6 +1,7 @@
 #ifndef QDP_SSE_FUSED_SPIN_PROJ_H
 #define QDP_SSE_FUSED_SPIN_PROJ_H
 
+#include "sse_mult_adj_su3_mat_hwvec.h"
 
 /* Evaluates for things like adj(u)*spinProjectDir0Plus(y) */
 using namespace QDP;
@@ -38,9 +39,11 @@ void evaluate(OLattice< HVec >& d,
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
       
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
       
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
     }
   }
   else { 
@@ -52,9 +55,11 @@ void evaluate(OLattice< HVec >& d,
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
       
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
       
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
     
     }
   }
@@ -90,9 +95,10 @@ void evaluate(OLattice< HVec >& d,
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
       
-      
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
    
     }
   }
@@ -106,9 +112,10 @@ void evaluate(OLattice< HVec >& d,
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
       
-      
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
     }
   }
@@ -145,9 +152,11 @@ void evaluate(OLattice< HVec >& d,
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
       
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
       
     }
   }
@@ -162,9 +171,10 @@ void evaluate(OLattice< HVec >& d,
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
       
-      
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
     }
   }
@@ -199,9 +209,10 @@ void evaluate(OLattice< HVec >& d,
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
       
-      
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
    
     }
   }
@@ -216,9 +227,10 @@ void evaluate(OLattice< HVec >& d,
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
       
-      
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
     }
   }
@@ -253,9 +265,10 @@ void evaluate(OLattice< HVec >& d,
       inlineSpinProjDir2Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
-      
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
     }
   }
@@ -267,9 +280,12 @@ void evaluate(OLattice< HVec >& d,
       inlineSpinProjDir2Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
+
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
     }
   }
 }
@@ -302,10 +318,11 @@ void evaluate(OLattice< HVec >& d,
       inlineSpinProjDir2Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
-      
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
       
     }
   }
@@ -321,8 +338,11 @@ void evaluate(OLattice< HVec >& d,
 			       1);
       
       
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
+      
       
     }
   }
@@ -356,9 +376,11 @@ void evaluate(OLattice< HVec >& d,
       inlineSpinProjDir3Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
-           
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
+      
       
     }
   }
@@ -372,9 +394,11 @@ void evaluate(OLattice< HVec >& d,
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
       
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
       
     }
   }
@@ -410,9 +434,11 @@ void evaluate(OLattice< HVec >& d,
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
       
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
 
     }
   }
@@ -427,9 +453,10 @@ void evaluate(OLattice< HVec >& d,
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
       
-      
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
-      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
+      su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
+      half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
+      half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
+      intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
     }
   }

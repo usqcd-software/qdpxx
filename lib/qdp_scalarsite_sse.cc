@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.30 2007-08-20 17:08:14 uid4709 Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.31 2007-08-31 01:34:15 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -40,14 +40,25 @@ void evaluate(OLattice< TCol >& d,
 
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-      _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *dm = (su3_matrixf *)&(d.elem(i).elem().elem(0,0).real());
+
+      intrin_sse_mult_su3_nn(lm, rm, dm);
+			     
     }
   }
   else { 
     const int *tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); ++j) {
       int i = tab[j];
-      _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *dm = (su3_matrixf *)&(d.elem(i).elem().elem(0,0).real());
+
+      intrin_sse_mult_su3_nn(lm, rm, dm);
+
     }
   }
 }
@@ -73,7 +84,12 @@ void evaluate(OLattice< TCol >& d,
 
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-      _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());   
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *dm = (su3_matrixf *)&(d.elem(i).elem().elem(0,0).real());
+
+      intrin_sse_mult_su3_an(lm, rm, dm);
+
     }
   }
   else { 
@@ -81,7 +97,12 @@ void evaluate(OLattice< TCol >& d,
     for(int j=0; j < s.numSiteTable(); ++j) {
 
       int i = tab[j];
-      _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());   
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *dm = (su3_matrixf *)&(d.elem(i).elem().elem(0,0).real());
+
+      intrin_sse_mult_su3_an(lm, rm, dm);
+
     }
   }
 
@@ -108,7 +129,12 @@ void evaluate(OLattice< TCol >& d,
 
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-      _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *dm = (su3_matrixf *)&(d.elem(i).elem().elem(0,0).real());
+
+      intrin_sse_mult_su3_na(lm, rm, dm);
+
     }
   }
   else { 
@@ -116,7 +142,12 @@ void evaluate(OLattice< TCol >& d,
     const int *tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); ++j) {
       int i = tab[j];
-      _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),d.elem(i).elem());
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *dm = (su3_matrixf *)&(d.elem(i).elem().elem(0,0).real());
+
+      intrin_sse_mult_su3_na(lm, rm, dm);
+
     }
   }
 }
@@ -144,7 +175,11 @@ void evaluate(OLattice< TCol >& d,
 
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-      _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_nn(lm, rm, tmpm);
       
       // Take the adj(r*l) = adj(l)*adj(r)
       d.elem(i).elem().elem(0,0).real() =  tmp.elem(0,0).real();
@@ -173,8 +208,11 @@ void evaluate(OLattice< TCol >& d,
     const int *tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); ++j) {
       int i = tab[j];
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
 
-      _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+      intrin_sse_mult_su3_nn(lm, rm, tmpm);
       
       // Take the adj(r*l) = adj(l)*adj(r)
       d.elem(i).elem().elem(0,0).real() =  tmp.elem(0,0).real();
@@ -225,7 +263,11 @@ void evaluate(OLattice< TCol >& d,
 
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-      _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_nn(lm, rm, tmpm);
       
       d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
@@ -253,8 +295,12 @@ void evaluate(OLattice< TCol >& d,
     const int *tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); ++j) {
       int i = tab[j];
-      _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
-      
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_nn(lm, rm, tmpm);
+
       d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
       d.elem(i).elem().elem(0,1).real() += tmp.elem(0,1).real();
@@ -302,7 +348,11 @@ void evaluate(OLattice< TCol >& d,
 
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-      _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_an(lm, rm, tmpm);
       
       d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
@@ -330,8 +380,11 @@ void evaluate(OLattice< TCol >& d,
     const int *tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); ++j) {
       int i = tab[j];
-      
-      _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_an(lm, rm, tmpm);
       
       d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
@@ -380,7 +433,12 @@ void evaluate(OLattice< TCol >& d,
 
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-      _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_na(lm, rm, tmpm);
+
       
       d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
@@ -409,8 +467,11 @@ void evaluate(OLattice< TCol >& d,
     const int *tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); ++j) {
       int i = tab[j];
-      
-      _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_na(lm, rm, tmpm);
       
       d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
@@ -459,7 +520,12 @@ void evaluate(OLattice< TCol >& d,
 
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-      _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+      
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_nn(rm, lm, tmpm);
       
       // Take the adj(r*l) = adj(l)*adj(r)
       d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
@@ -490,7 +556,11 @@ void evaluate(OLattice< TCol >& d,
     const int *tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); ++j) {
       int i = tab[j];
-      _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_nn(rm, lm, tmpm);
       
       // Take the adj(r*l) = adj(l)*adj(r)
       d.elem(i).elem().elem(0,0).real() += tmp.elem(0,0).real();
@@ -714,7 +784,11 @@ void evaluate(OLattice< TCol >& d,
 
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-      _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_nn(lm, rm, tmpm);
       
       d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
@@ -743,8 +817,11 @@ void evaluate(OLattice< TCol >& d,
     const int *tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
 
-      _inline_sse_mult_su3_nn(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      intrin_sse_mult_su3_nn(lm, rm, tmpm);
       
       d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
@@ -792,7 +869,12 @@ void evaluate(OLattice< TCol >& d,
   PColorMatrix<RComplexFloat,3> tmp;
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-      _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_an(lm, rm, tmpm);
+
       
       d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
@@ -821,8 +903,11 @@ void evaluate(OLattice< TCol >& d,
     const int *tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
-      
-      _inline_sse_mult_su3_an(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_an(lm, rm, tmpm);
       
       d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
@@ -871,7 +956,11 @@ void evaluate(OLattice< TCol >& d,
 
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-      _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_na(lm, rm, tmpm);
       
       d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
@@ -899,8 +988,11 @@ void evaluate(OLattice< TCol >& d,
     const int *tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
-      
-      _inline_sse_mult_su3_na(l.elem(i).elem(),r.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_na(lm, rm, tmpm);
       
       d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() -= tmp.elem(0,0).imag();
@@ -948,7 +1040,12 @@ void evaluate(OLattice< TCol >& d,
   PColorMatrix<RComplexFloat,3> tmp;
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-      _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_nn(rm, lm, tmpm);
+
       // Take the adj(r*l) = adj(l)*adj(r)
       d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
       d.elem(i).elem().elem(0,0).imag() += tmp.elem(0,0).imag();
@@ -977,8 +1074,12 @@ void evaluate(OLattice< TCol >& d,
     const int *tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
+      su3_matrixf *lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
+      su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
+
+      intrin_sse_mult_su3_nn(rm, lm, tmpm);
       
-      _inline_sse_mult_su3_nn(r.elem(i).elem(),l.elem(i).elem(),tmp);
       
       // Take the adj(r*l) = adj(l)*adj(r)
       d.elem(i).elem().elem(0,0).real() -= tmp.elem(0,0).real();
@@ -1034,19 +1135,12 @@ void evaluate(OLattice< TVec2 >& d,
 
   if( s.hasOrderedRep() ) { 
     for(int i=s.start(); i <= s.end(); i++) { 
-#if 0
-      // This form appears significantly slower than below
-      _inline_sse_mult_su3_mat_hwvec(l.elem(i),
-				     r.elem(i),
-				     d.elem(i));
-#else
-      _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
-				   r.elem(i).elem(0),
-				   d.elem(i).elem(0));
-      _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
-				   r.elem(i).elem(1),
-				   d.elem(i).elem(1));
-#endif
+
+      su3_matrixf* lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      half_wilson_vectorf* rh = (half_wilson_vectorf*)&(r.elem(i).elem(0).elem(0).real());
+      half_wilson_vectorf* dh = (half_wilson_vectorf*)&(d.elem(i).elem(0).elem(0).real());
+
+      intrin_sse_mult_su3_mat_hwvec(lm,rh,dh);
 
     }
   }
@@ -1055,20 +1149,11 @@ void evaluate(OLattice< TVec2 >& d,
     const int *tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
-      
-#if 0
-      // This form appears significantly slower than below
-      _inline_sse_mult_su3_mat_hwvec(l.elem(i),
-				     r.elem(i),
-				     d.elem(i));
-#else
-      _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
-				   r.elem(i).elem(0),
-				   d.elem(i).elem(0));
-      _inline_sse_mult_su3_mat_vec(l.elem(i).elem(),
-				   r.elem(i).elem(1),
-				   d.elem(i).elem(1));
-#endif
+      su3_matrixf* lm = (su3_matrixf *)&(l.elem(i).elem().elem(0,0).real());
+      half_wilson_vectorf* rh = (half_wilson_vectorf*)&(r.elem(i).elem(0).elem(0).real());
+      half_wilson_vectorf* dh = (half_wilson_vectorf*)&(d.elem(i).elem(0).elem(0).real());
+
+      intrin_sse_mult_su3_mat_hwvec(lm,rh,dh);
     }
   }
 }

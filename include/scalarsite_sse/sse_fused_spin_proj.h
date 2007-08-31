@@ -1,10 +1,8 @@
 #ifndef SSE_FUSED_SPIN_PROJ_H
 #define SSE_FUSED_SPIN_PROJ_H
 
-#ifdef  _inline_sse_mult_adj_su3_mat_hwvec
-#undef   _inline_sse_mult_adj_su3_mat_hwvec
-#endif
-#include "scalarsite_sse/sse_adj_mat_hwvec.h"
+
+#include "sse_mult_adj_su3_mat_hwvec.h"
 
 #include <iostream>
 using namespace std;
@@ -120,12 +118,12 @@ adjMultSprojDir0Plus(const PScalar<ColMat>& a, const Spin4& b)
 			 &(d.elem(0).elem(0).real()),
 			 1);
 
-#if 0
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
-#else
-  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
-#endif
+  su3_matrixf *am = (su3_matrixf *)&(a.elem().elem(0,0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&(d.elem(0).elem(0).real());
+  half_wilson_vectorf *reth = (half_wilson_vectorf *)&(ret.elem(0).elem(0).real());
+
+  intrin_sse_mult_adj_su3_mat_hwvec(am, dh, reth);
+
 
   return ret;
 }
@@ -231,12 +229,11 @@ adjMultSprojDir0Minus(const PScalar<ColMat>& a, const Spin4& b)
 			  &(d.elem(0).elem(0).real()),
 			  1);
 
-#if 0
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
-#else
-  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
-#endif
+  su3_matrixf *am = (su3_matrixf *)&(a.elem().elem(0,0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&(d.elem(0).elem(0).real());
+  half_wilson_vectorf *reth = (half_wilson_vectorf *)&(ret.elem(0).elem(0).real());
+
+  intrin_sse_mult_adj_su3_mat_hwvec(am, dh, reth);
 
   return ret;
 }
@@ -342,12 +339,12 @@ adjMultSprojDir1Plus(const PScalar<ColMat>& a, const Spin4& b)
 			 &(d.elem(0).elem(0).real()),
 			 1);
 
-#if 0
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
-#else 
-  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
-#endif 
+
+  su3_matrixf *am = (su3_matrixf *)&(a.elem().elem(0,0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&(d.elem(0).elem(0).real());
+  half_wilson_vectorf *reth = (half_wilson_vectorf *)&(ret.elem(0).elem(0).real());
+
+  intrin_sse_mult_adj_su3_mat_hwvec(am, dh, reth);
 
   return ret;
 }
@@ -450,17 +447,18 @@ adjMultSprojDir1Minus(const PScalar<ColMat>& a, const Spin4& b)
   BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir1Minus >::Type_t ret  ;
   BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir1Minus >::Type_t d  ;
 
+
   inlineSpinProjDir1Minus(&(b.elem(0).elem(0).real()),
 			 &(d.elem(0).elem(0).real()),
 			 1);
 
-#if 0
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
-#else 
-  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
-#endif
-    return ret;
+  su3_matrixf *am = (su3_matrixf *)&(a.elem().elem(0,0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&(d.elem(0).elem(0).real());
+  half_wilson_vectorf *reth = (half_wilson_vectorf *)&(ret.elem(0).elem(0).real());
+
+  intrin_sse_mult_adj_su3_mat_hwvec(am, dh, reth);
+  
+  return ret;
 }
 
 /* **************************************************************************
@@ -564,12 +562,12 @@ adjMultSprojDir2Plus(const PScalar<ColMat>& a, const Spin4& b)
 			 &(d.elem(0).elem(0).real()),
 			 1);
 
-#if 0
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
-#else
-  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
-#endif
+  su3_matrixf *am = (su3_matrixf *)&(a.elem().elem(0,0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&(d.elem(0).elem(0).real());
+  half_wilson_vectorf *reth = (half_wilson_vectorf *)&(ret.elem(0).elem(0).real());
+
+  intrin_sse_mult_adj_su3_mat_hwvec(am, dh, reth);
+  
 
   return ret;
 }
@@ -674,13 +672,13 @@ adjMultSprojDir2Minus(const PScalar<ColMat>& a, const Spin4& b)
 			  &(d.elem(0).elem(0).real()),
 			  1);
 
-#if 0
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
-#else
-  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
-#endif
-    return ret;
+  su3_matrixf *am = (su3_matrixf *)&(a.elem().elem(0,0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&(d.elem(0).elem(0).real());
+  half_wilson_vectorf *reth = (half_wilson_vectorf *)&(ret.elem(0).elem(0).real());
+
+  intrin_sse_mult_adj_su3_mat_hwvec(am, dh, reth);
+  
+  return ret;
 }
 
 /* **************************************************************************
@@ -783,13 +781,11 @@ adjMultSprojDir3Plus(const PScalar<ColMat>& a, const Spin4& b)
 			 1);
 
     
+  su3_matrixf *am = (su3_matrixf *)&(a.elem().elem(0,0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&(d.elem(0).elem(0).real());
+  half_wilson_vectorf *reth = (half_wilson_vectorf *)&(ret.elem(0).elem(0).real());
 
-#if 0
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0)) ;
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1)) ;
-#else
-  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
-#endif
+  intrin_sse_mult_adj_su3_mat_hwvec(am, dh, reth);
 
   return ret;
 }
@@ -895,12 +891,11 @@ adjMultSprojDir3Minus(const PScalar<ColMat>& a, const Spin4& b)
 			  &(d.elem(0).elem(0).real()),
 			  1);
   
-#if 0
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(0),ret.elem(0));
-  _inline_mult_adj_su3_mat_vec(a.elem(),d.elem(1),ret.elem(1));
-#else
-  _inline_sse_mult_adj_su3_mat_hwvec(a, d, ret);
-#endif
+  su3_matrixf *am = (su3_matrixf *)&(a.elem().elem(0,0).real());
+  half_wilson_vectorf *dh = (half_wilson_vectorf *)&(d.elem(0).elem(0).real());
+  half_wilson_vectorf *reth = (half_wilson_vectorf *)&(ret.elem(0).elem(0).real());
+
+  intrin_sse_mult_adj_su3_mat_hwvec(am, dh, reth);
 
   return ret;
 }

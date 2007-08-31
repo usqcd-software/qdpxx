@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.13 2007-06-10 14:32:10 edwards Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.14 2007-08-31 01:34:15 bjoo Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -37,25 +37,16 @@ typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 2> TVec2;
 typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> TVec4;
 
 
-typedef struct
-{
-   unsigned int c1,c2,c3,c4;
-} sse_mask __attribute__ ((aligned (16)));
 
-static sse_mask _sse_sgn13 __attribute__ ((unused)) ={0x80000000, 0x00000000, 0x80000000, 0x00000000};
-static sse_mask _sse_sgn24 __attribute__ ((unused)) ={0x00000000, 0x80000000, 0x00000000, 0x80000000};
-static sse_mask _sse_sgn3  __attribute__ ((unused)) ={0x00000000, 0x00000000, 0x80000000, 0x00000000};
-static sse_mask _sse_sgn4  __attribute__ ((unused)) ={0x00000000, 0x00000000, 0x00000000, 0x80000000};
+#include "sse_mult_su3_nn.h"
+#include "sse_mult_su3_an.h"
 
-
-#include "scalarsite_sse/sse_mult_nn.h"
-#include "scalarsite_sse/sse_mult_na.h"
-#include "scalarsite_sse/sse_mult_an.h"
-#include "scalarsite_sse/sse_mat_vec.h"
-#include "scalarsite_sse/sse_adj_mat_vec.h"
-#include "scalarsite_sse/sse_addvec.h"
-#include "scalarsite_sse/sse_mat_hwvec.h"
-#include "scalarsite_sse/sse_adj_mat_hwvec.h"
+#include "sse_mult_su3_na.h"
+#include "sse_mult_su3_mat_vec.h"
+#include "sse_mult_adj_su3_mat_vec.h"
+#include "sse_add_su3_vector.h"
+#include "sse_mult_su3_mat_hwvec.h"
+#include "sse_mult_adj_su3_mat_hwvec.h"
 
 
 // Optimized version of  
@@ -72,11 +63,16 @@ operator*(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "M*M" << endl;
 #endif
+  
+  su3_matrixf* lm = (su3_matrixf *) &(l.elem(0,0).real());
+  su3_matrixf* rm = (su3_matrixf *) &(r.elem(0,0).real());
+  su3_matrixf* dm = (su3_matrixf *) &(d.elem(0,0).real());
 
-  _inline_sse_mult_su3_nn(l,r,d);
+  intrin_sse_mult_su3_nn(lm,rm,dm);
 
   return d;
 }
+
 
 
 // Optimized version of  
@@ -94,8 +90,11 @@ operator*(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "PSc<M>*PSc<M>" << endl;
 #endif
+  su3_matrixf* lm = (su3_matrixf *)&(l.elem().elem(0,0).real());
+  su3_matrixf* rm = (su3_matrixf *)&(r.elem().elem(0,0).real());
+  su3_matrixf* dm = (su3_matrixf *)&(d.elem().elem(0,0).real());
 
-  _inline_sse_mult_su3_nn(l.elem(),r.elem(),d.elem());
+  intrin_sse_mult_su3_nn(lm, rm, dm);
 
   return d;
 }
@@ -117,7 +116,11 @@ operator*(const PScalar<PScalar<PColorMatrix<RComplexFloat,3> > >& l,
   cout << "PSc<PSc<M>>*PSc<PSc<M>>" << endl;
 #endif
 
-  _inline_sse_mult_su3_nn(l.elem().elem(),r.elem().elem(),d.elem().elem());
+  su3_matrixf* lm = (su3_matrixf *)&(l.elem().elem().elem(0,0).real());
+  su3_matrixf* rm = (su3_matrixf *)&(r.elem().elem().elem(0,0).real());
+  su3_matrixf* dm = (su3_matrixf *)&(d.elem().elem().elem(0,0).real());
+
+  intrin_sse_mult_su3_nn(lm, rm, dm);
 
   return d;
 }
@@ -137,8 +140,11 @@ adjMultiply(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "adj(M)*M" << endl;
 #endif
+  su3_matrixf* lm = (su3_matrixf *) &(l.elem(0,0).real());
+  su3_matrixf* rm = (su3_matrixf *) &(r.elem(0,0).real());
+  su3_matrixf* dm = (su3_matrixf *) &(d.elem(0,0).real());
 
-  _inline_sse_mult_su3_an(l,r,d);
+  intrin_sse_mult_su3_an(lm,rm,dm);
 
   return d;
 }
@@ -159,7 +165,12 @@ adjMultiply(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
   cout << "adj(PSc<M>)*PSc<M>" << endl;
 #endif
 
-  _inline_sse_mult_su3_an(l.elem(),r.elem(),d.elem());
+  su3_matrixf* lm = (su3_matrixf *)&(l.elem().elem(0,0).real());
+  su3_matrixf* rm = (su3_matrixf *)&(r.elem().elem(0,0).real());
+  su3_matrixf* dm = (su3_matrixf *)&(d.elem().elem(0,0).real());
+
+  intrin_sse_mult_su3_an(lm, rm, dm);
+
 
   return d;
 }
@@ -181,7 +192,11 @@ adjMultiply(const PScalar<PScalar<PColorMatrix<RComplexFloat,3> > >& l,
   cout << "adj(PSc<PSc<M>>)*PSc<PSc<M>>" << endl;
 #endif
 
-  _inline_sse_mult_su3_an(l.elem().elem(),r.elem().elem(),d.elem().elem());
+  su3_matrixf* lm = (su3_matrixf *)&(l.elem().elem().elem(0,0).real());
+  su3_matrixf* rm = (su3_matrixf *)&(r.elem().elem().elem(0,0).real());
+  su3_matrixf* dm = (su3_matrixf *)&(d.elem().elem().elem(0,0).real());
+
+  intrin_sse_mult_su3_an(lm, rm, dm);
 
   return d;
 }
@@ -201,8 +216,12 @@ multiplyAdj(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "M*adj(M)" << endl;
 #endif
+  su3_matrixf* lm = (su3_matrixf *) &(l.elem(0,0).real());
+  su3_matrixf* rm = (su3_matrixf *) &(r.elem(0,0).real());
+  su3_matrixf* dm = (su3_matrixf *) &(d.elem(0,0).real());
 
-  _inline_sse_mult_su3_na(l,r,d);
+  intrin_sse_mult_su3_na(lm,rm,dm);
+
 
   return d;
 }
@@ -223,8 +242,11 @@ multiplyAdj(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "PSc<M>*adj(PSc<M>)" << endl;
 #endif
+  su3_matrixf* lm = (su3_matrixf *)&(l.elem().elem(0,0).real());
+  su3_matrixf* rm = (su3_matrixf *)&(r.elem().elem(0,0).real());
+  su3_matrixf* dm = (su3_matrixf *)&(d.elem().elem(0,0).real());
 
-  _inline_sse_mult_su3_na(l.elem(),r.elem(),d.elem());
+  intrin_sse_mult_su3_na(lm, rm, dm);
 
   return d;
 }
@@ -245,8 +267,11 @@ multiplyAdj(const PScalar<PScalar<PColorMatrix<RComplexFloat,3> > >& l,
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "PSc<PSc<M>>*adj(PSc<PSc<M>>)" << endl;
 #endif
+  su3_matrixf* lm = (su3_matrixf *)&(l.elem().elem().elem(0,0).real());
+  su3_matrixf* rm = (su3_matrixf *)&(r.elem().elem().elem(0,0).real());
+  su3_matrixf* dm = (su3_matrixf *)&(d.elem().elem().elem(0,0).real());
 
-  _inline_sse_mult_su3_na(l.elem().elem(),r.elem().elem(),d.elem().elem());
+  intrin_sse_mult_su3_na(lm, rm, dm);
 
   return d;
 }
@@ -265,11 +290,17 @@ adjMultiplyAdj(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   BinaryReturn<PMatrix<RComplexFloat,3,PColorMatrix>, 
     PMatrix<RComplexFloat,3,PColorMatrix>, OpAdjMultiplyAdj>::Type_t  d;
 
-//  _inline_sse_mult_su3_aa(l,r,d);     // oops, this macro does not exist
+  PColorMatrix<RComplexFloat,3> tmp;
+
+//
+
+  su3_matrixf* lm = (su3_matrixf *) &(l.elem(0,0).real());
+  su3_matrixf* rm = (su3_matrixf *) &(r.elem(0,0).real());
+  su3_matrixf* tm = (su3_matrixf *) &(tmp.elem(0,0).real());
 
   // Do the adj*adj the hard way
-  PColorMatrix<RComplexFloat,3> tmp;
-  _inline_sse_mult_su3_nn(r,l,tmp);
+
+  intrin_sse_mult_su3_nn(rm,lm,tm);
 
   // Take the adj(r*l) = adj(l)*adj(r)
   d.elem(0,0).real() =  tmp.elem(0,0).real();
@@ -312,7 +343,11 @@ operator*(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   cout << "M*V" << endl;
 #endif
 
-  _inline_sse_mult_su3_mat_vec(l,r,d);
+  su3_matrixf* lm = (su3_matrixf *)&(l.elem(0,0).real());
+  su3_vectorf* rv = (su3_vectorf *)&(r.elem(0).real());
+  su3_vectorf* dv = (su3_vectorf *)&(d.elem(0).real());
+
+  intrin_sse_mult_su3_mat_vec(lm,rv,dv);
 
   return d;
 }
@@ -333,7 +368,11 @@ operator*(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
   cout << "PSc<M>*PSc<V>" << endl;
 #endif
 
-  _inline_sse_mult_su3_mat_vec(l.elem(),r.elem(),d.elem());
+  su3_matrixf* lm = (su3_matrixf *)&(l.elem().elem(0,0).real());
+  su3_vectorf* rv = (su3_vectorf *)&(r.elem().elem(0).real());
+  su3_vectorf* dv = (su3_vectorf *)&(d.elem().elem(0).real());
+
+  intrin_sse_mult_su3_mat_vec(lm,rv,dv);
 
   return d;
 }
@@ -354,7 +393,11 @@ adjMultiply(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
   cout << "adj(M)*V" << endl;
 #endif
 
-  _inline_sse_mult_adj_su3_mat_vec(l,r,d);
+  su3_matrixf* lm = (su3_matrixf *)&(l.elem(0,0).real());
+  su3_vectorf* rv = (su3_vectorf *)&(r.elem(0).real());
+  su3_vectorf* dv = (su3_vectorf *)&(d.elem(0).real());
+
+  intrin_sse_mult_adj_su3_mat_vec(lm,rv,dv);
 
   return d;
 }
@@ -374,8 +417,11 @@ operator*(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "M*S" << endl;
 #endif
+  su3_matrixf* lm = (su3_matrixf *)&(l.elem().elem(0,0).real());
+  su3_vectorf* rv = (su3_vectorf *)&(r.elem(0).elem(0).real());
+  su3_vectorf* dv = (su3_vectorf *)&(d.elem(0).elem(0).real());
 
-  _inline_sse_mult_su3_mat_vec(l.elem(),r.elem(0),d.elem(0));
+  intrin_sse_mult_su3_mat_vec(lm,rv,dv);
 
   return d;
 }
@@ -395,8 +441,11 @@ adjMultiply(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "adj(PSc<M>)*PSc<V>" << endl;
 #endif
+  su3_matrixf* lm = (su3_matrixf *)&(l.elem().elem(0,0).real());
+  su3_vectorf* rv = (su3_vectorf *)&(r.elem().elem(0).real());
+  su3_vectorf* dv = (su3_vectorf *)&(d.elem().elem(0).real());
 
-  _inline_sse_mult_adj_su3_mat_vec(l.elem(),r.elem(),d.elem());
+  intrin_sse_mult_adj_su3_mat_vec(lm,rv,dv);
 
   return d;
 }
@@ -416,8 +465,11 @@ adjMultiply(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "adj(PSc<M>)*S" << endl;
 #endif
+  su3_matrixf* lm = (su3_matrixf *)&(l.elem().elem(0,0).real());
+  su3_vectorf* rv = (su3_vectorf *)&(r.elem(0).elem(0).real());
+  su3_vectorf* dv = (su3_vectorf *)&(d.elem(0).elem(0).real());
 
-  _inline_sse_mult_adj_su3_mat_vec(l.elem(),r.elem(0),d.elem(0));
+  intrin_sse_mult_adj_su3_mat_vec(lm,rv,dv);
 
   return d;
 }
@@ -438,13 +490,11 @@ operator*(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "PSc<M>*H" << endl;
 #endif
+  su3_matrixf* lm =(su3_matrixf *)&( l.elem().elem(0,0).real() );
+  half_wilson_vectorf* rh = (half_wilson_vectorf *)&(r.elem(0).elem(0).real()  );
+  half_wilson_vectorf* dh = (half_wilson_vectorf *)&(d.elem(0).elem(0).real() );
 
-#if 0
-  _inline_sse_mult_su3_mat_hwvec(l,r,d);
-#else
-  _inline_sse_mult_su3_mat_vec(l.elem(),r.elem(0),d.elem(0));
-  _inline_sse_mult_su3_mat_vec(l.elem(),r.elem(1),d.elem(1));
-#endif
+  intrin_sse_mult_su3_mat_hwvec(lm,rh,dh);
 
   return d;
 }
@@ -466,7 +516,11 @@ adjMultiply(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
   cout << "adj(PSc<M>)*H" << endl;
 #endif
 
-  _inline_sse_mult_adj_su3_mat_hwvec(l,r,d);
+  su3_matrixf* lm =(su3_matrixf *)&( l.elem().elem(0,0).real() );
+  half_wilson_vectorf* rh = (half_wilson_vectorf *)&(r.elem(0).elem(0).real()  );
+  half_wilson_vectorf* dh = (half_wilson_vectorf *)&(d.elem(0).elem(0).real() );
+
+  intrin_sse_mult_adj_su3_mat_hwvec(lm,rh,dh);
 
   return d;
 }
@@ -487,7 +541,11 @@ operator+(const PVector<RComplexFloat,3,PColorVector>& l,
   cout << "V+V" << endl;
 #endif
 
-  _inline_sse_add_su3_vector(l,r,d);
+  su3_vectorf *lv = (su3_vectorf *)&( l.elem(0).real() );
+  su3_vectorf *rv = (su3_vectorf *)&( r.elem(0).real() );
+  su3_vectorf *dv = (su3_vectorf *)&( d.elem(0).real() );
+
+  intrin_sse_add_su3_vector(lv,rv,dv);
 
   return d;
 }
@@ -508,11 +566,21 @@ operator*(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "PSc<M>*D" << endl;
 #endif
+  su3_matrixf *lm = (su3_matrixf *)&(l.elem().elem(0,0).real());
+  su3_vectorf *rv0 = (su3_vectorf *)&(r.elem(0).elem(0).real());
+  su3_vectorf *rv1 = (su3_vectorf *)&(r.elem(1).elem(0).real());
+  su3_vectorf *rv2 = (su3_vectorf *)&(r.elem(2).elem(0).real());
+  su3_vectorf *rv3 = (su3_vectorf *)&(r.elem(3).elem(0).real());
 
-  _inline_sse_mult_su3_mat_vec(l.elem(),r.elem(0),d.elem(0));
-  _inline_sse_mult_su3_mat_vec(l.elem(),r.elem(1),d.elem(1));
-  _inline_sse_mult_su3_mat_vec(l.elem(),r.elem(2),d.elem(2));
-  _inline_sse_mult_su3_mat_vec(l.elem(),r.elem(3),d.elem(3));
+  su3_vectorf *dv0 = (su3_vectorf *)&(d.elem(0).elem(0).real());
+  su3_vectorf *dv1 = (su3_vectorf *)&(d.elem(1).elem(0).real());
+  su3_vectorf *dv2 = (su3_vectorf *)&(d.elem(2).elem(0).real());
+  su3_vectorf *dv3 = (su3_vectorf *)&(d.elem(3).elem(0).real());
+
+  intrin_sse_mult_su3_mat_vec(lm,rv0,dv0);
+  intrin_sse_mult_su3_mat_vec(lm,rv1,dv1);
+  intrin_sse_mult_su3_mat_vec(lm,rv2,dv2);
+  intrin_sse_mult_su3_mat_vec(lm,rv3,dv3);
 
   return d;
 }
@@ -533,11 +601,21 @@ adjMultiply(const PScalar<PColorMatrix<RComplexFloat,3> >& l,
 #if defined(QDP_SCALARSITE_DEBUG)
   cout << "adj(PSc<M>)*D" << endl;
 #endif
+  su3_matrixf *lm = (su3_matrixf *)&(l.elem().elem(0,0).real());
+  su3_vectorf *rv0 = (su3_vectorf *)&(r.elem(0).elem(0).real());
+  su3_vectorf *rv1 = (su3_vectorf *)&(r.elem(1).elem(0).real());
+  su3_vectorf *rv2 = (su3_vectorf *)&(r.elem(2).elem(0).real());
+  su3_vectorf *rv3 = (su3_vectorf *)&(r.elem(3).elem(0).real());
 
-  _inline_sse_mult_adj_su3_mat_vec(l.elem(),r.elem(0),d.elem(0));
-  _inline_sse_mult_adj_su3_mat_vec(l.elem(),r.elem(1),d.elem(1));
-  _inline_sse_mult_adj_su3_mat_vec(l.elem(),r.elem(2),d.elem(2));
-  _inline_sse_mult_adj_su3_mat_vec(l.elem(),r.elem(3),d.elem(3));
+  su3_vectorf *dv0 = (su3_vectorf *)&(d.elem(0).elem(0).real());
+  su3_vectorf *dv1 = (su3_vectorf *)&(d.elem(1).elem(0).real());
+  su3_vectorf *dv2 = (su3_vectorf *)&(d.elem(2).elem(0).real());
+  su3_vectorf *dv3 = (su3_vectorf *)&(d.elem(3).elem(0).real());
+
+  intrin_sse_mult_adj_su3_mat_vec(lm,rv0,dv0);
+  intrin_sse_mult_adj_su3_mat_vec(lm,rv1,dv1);
+  intrin_sse_mult_adj_su3_mat_vec(lm,rv2,dv2);
+  intrin_sse_mult_adj_su3_mat_vec(lm,rv3,dv3);
 
   return d;
 }
@@ -559,7 +637,11 @@ operator+(const PScalar<PColorVector<RComplexFloat,3> >& l,
   cout << "PSc<V>+PSc<V>" << endl;
 #endif
 
-  _inline_sse_add_su3_vector(l.elem(),r.elem(),d.elem());
+  su3_vectorf *lv = (su3_vectorf *)&(l.elem().elem(0).real());
+  su3_vectorf *rv = (su3_vectorf *)&(r.elem().elem(0).real());
+  su3_vectorf *dv = (su3_vectorf *)&(d.elem().elem(0).real());
+
+  intrin_sse_add_su3_vector(lv,rv,dv);
 
   return d;
 }
