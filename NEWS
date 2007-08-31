@@ -1,3 +1,6 @@
+08/30/2007 -- Balint Joo
+        Removed SSE Inlines from scalarsite_sse. Replaced with calls to libintrin (made from the same NASM source but with intrinsics). 3rd party track imported libintrin. It gets checked out with the qdp++ source automatically and --enable-sse2 is needed to configure it. I disabled automatic turning on of the -msse and -msse2 flags since they can break some compilers. Set these using your own CXXFLAGS and CFLAGS. 
+
 08/30/2007 -- Robert Edwards
 	Version 1.24.6: Added some diagnostic output code in c-lime & qio.
 
