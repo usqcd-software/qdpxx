@@ -75,7 +75,6 @@ SSESITE_HDRS = qdp_scalarsite_sse.h \
 	$(ssesitedir)/sse_blas_vaypx3_g5.h \
 	$(ssesitedir)/sse_blas_vaxpby3_g5.h \
 	$(ssesitedir)/sse_spin_aggregate.h \
-	$(ssesitedir)/sse_mv_switchbox.h \
 	$(ssesitedir)/sse_spin_proj_inlines.h \
 	$(ssesitedir)/sse_spin_recon_inlines.h \
 	$(ssesitedir)/sse_spin_proj.h \
