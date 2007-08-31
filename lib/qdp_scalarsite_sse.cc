@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.31 2007-08-31 01:34:15 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.32 2007-08-31 02:50:33 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -179,7 +179,7 @@ void evaluate(OLattice< TCol >& d,
       su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
       su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
 
-      intrin_sse_mult_su3_nn(lm, rm, tmpm);
+      intrin_sse_mult_su3_nn(rm, lm, tmpm);
       
       // Take the adj(r*l) = adj(l)*adj(r)
       d.elem(i).elem().elem(0,0).real() =  tmp.elem(0,0).real();
@@ -212,7 +212,7 @@ void evaluate(OLattice< TCol >& d,
       su3_matrixf *rm = (su3_matrixf *)&(r.elem(i).elem().elem(0,0).real());
       su3_matrixf *tmpm = (su3_matrixf *)&(tmp.elem(0,0).real());
 
-      intrin_sse_mult_su3_nn(lm, rm, tmpm);
+      intrin_sse_mult_su3_nn(rm, lm, tmpm);
       
       // Take the adj(r*l) = adj(l)*adj(r)
       d.elem(i).elem().elem(0,0).real() =  tmp.elem(0,0).real();

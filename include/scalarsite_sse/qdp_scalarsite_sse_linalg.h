@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.14 2007-08-31 01:34:15 bjoo Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.15 2007-08-31 02:50:33 bjoo Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -18,7 +18,6 @@ namespace QDP {
 // #define QDP_SCALARSITE_DEBUG
 
 #define QDP_SCALARSITE_USE_EVALUATE
-
 
 
 /*! @defgroup optimizations  Optimizations
