@@ -1,3 +1,31 @@
+2007-08-30 21:42  bjoo
+
+	* include/Makefile.am: Now Builds
+
+2007-08-30 21:34  bjoo
+
+	* aclocal.m4, configure, include/Makefile.am,
+	  include/qdp_sse_intrin.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_linalg.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_proj_evaluates.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_recon_evaluates.h,
+	  include/scalarsite_sse/sse_addvec.h,
+	  include/scalarsite_sse/sse_adj_mat_hwvec.h,
+	  include/scalarsite_sse/sse_adj_mat_vec.h,
+	  include/scalarsite_sse/sse_fused_spin_proj.h,
+	  include/scalarsite_sse/sse_fused_spin_recon.h,
+	  include/scalarsite_sse/sse_mat_hwvec.h,
+	  include/scalarsite_sse/sse_mat_vec.h,
+	  include/scalarsite_sse/sse_mult_an.h,
+	  include/scalarsite_sse/sse_mult_na.h,
+	  include/scalarsite_sse/sse_mult_nn.h,
+	  include/scalarsite_sse/sse_mv_switchbox.h,
+	  include/scalarsite_sse/sse_s_m_a_vec.h,
+	  include/scalarsite_sse/sse_spin_aggregate.h,
+	  include/scalarsite_sse/sse_spin_recon_inlines.h,
+	  lib/qdp_scalarsite_sse.cc: Phase 1 of stripping out inline
+	  assembler
+
 2007-08-30 00:23  tag qdp1-24-6
 
 2007-08-30 00:23  edwards
