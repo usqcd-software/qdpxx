@@ -1,13 +1,16 @@
+2007-08-31 10:41  bjoo
+
+	* include/scalarsite_sse/: sse_spin_proj_inlines.h,
+	  sse_spin_recon_inlines.h: Added some pointer casts to make Intel
+	  compiler happy
+
 2007-08-31 06:52  bjoo
 
 	* configure, examples/Makefile.am: Removed oopsie from Makefile.am
 
 2007-08-30 23:54  bjoo
 
-	* NEWS, other_libs/libintrin/autom4te.cache/output.0,
-	  other_libs/libintrin/autom4te.cache/output.1,
-	  other_libs/libintrin/autom4te.cache/traces.0,
-	  other_libs/libintrin/autom4te.cache/traces.1,
+	* NEWS,
 	  other_libs/libintrin/include/libintrin_config_internal.h.in:
 	  Initial move to intrinsics complete. Read the README. Still using
 	  inline sse for scalarvecsite
@@ -52,18 +55,16 @@
 	  include/sse_scalar_mult_add_su3_matrix.h,
 	  include/sse_scalar_mult_add_su3_vector.h,
 	  include/sse_su3_projector.h, include/sse_sub_four_su3_vecs.h,
-	  autom4te.cache/output.0, autom4te.cache/requests, config/depcomp,
-	  config/install-sh, config/missing, lib/Makefile.am,
-	  lib/sse_add_su3_vector.c, lib/sse_mult_adj_su3_mat_4vec.c,
+	  config/depcomp, config/install-sh, config/missing,
+	  lib/Makefile.am, lib/sse_add_su3_vector.c,
+	  lib/sse_mult_adj_su3_mat_4vec.c,
 	  lib/sse_mult_adj_su3_mat_hwvec.c, lib/sse_mult_adj_su3_mat_vec.c,
 	  lib/sse_mult_adj_su3_mat_vec_4dir.c, lib/sse_mult_su3_an.c,
 	  lib/sse_mult_su3_mat_hwvec.c, lib/sse_mult_su3_mat_vec.c,
 	  lib/sse_mult_su3_mat_vec_sum_4dir.c, lib/sse_mult_su3_na.c,
 	  lib/sse_mult_su3_nn.c, lib/sse_scalar_mult_add_su3_matrix.c,
 	  lib/sse_scalar_mult_add_su3_vector.c, lib/sse_su3_projector.c,
-	  lib/sse_sub_four_su3_vecs.c, autom4te.cache/output.1,
-	  autom4te.cache/traces.0, autom4te.cache/traces.1: First import of
-	  libintrin
+	  lib/sse_sub_four_su3_vecs.c: First import of libintrin
 
 2007-08-30 22:52  bjoo
 
@@ -82,18 +83,16 @@
 	  include/sse_scalar_mult_add_su3_matrix.h,
 	  include/sse_scalar_mult_add_su3_vector.h,
 	  include/sse_su3_projector.h, include/sse_sub_four_su3_vecs.h,
-	  autom4te.cache/output.0, autom4te.cache/requests, config/depcomp,
-	  config/install-sh, config/missing, lib/Makefile.am,
-	  lib/sse_add_su3_vector.c, lib/sse_mult_adj_su3_mat_4vec.c,
+	  config/depcomp, config/install-sh, config/missing,
+	  lib/Makefile.am, lib/sse_add_su3_vector.c,
+	  lib/sse_mult_adj_su3_mat_4vec.c,
 	  lib/sse_mult_adj_su3_mat_hwvec.c, lib/sse_mult_adj_su3_mat_vec.c,
 	  lib/sse_mult_adj_su3_mat_vec_4dir.c, lib/sse_mult_su3_an.c,
 	  lib/sse_mult_su3_mat_hwvec.c, lib/sse_mult_su3_mat_vec.c,
 	  lib/sse_mult_su3_mat_vec_sum_4dir.c, lib/sse_mult_su3_na.c,
 	  lib/sse_mult_su3_nn.c, lib/sse_scalar_mult_add_su3_matrix.c,
 	  lib/sse_scalar_mult_add_su3_vector.c, lib/sse_su3_projector.c,
-	  lib/sse_sub_four_su3_vecs.c, autom4te.cache/output.1,
-	  autom4te.cache/traces.0, autom4te.cache/traces.1: Initial
-	  revision
+	  lib/sse_sub_four_su3_vecs.c: Initial revision
 
 2007-08-30 22:50  bjoo
 
