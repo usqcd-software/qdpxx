@@ -273,9 +273,10 @@ PACKAGE_VERSION='1.24.6'
 PACKAGE_STRING='qdp++ 1.24.6'
 PACKAGE_BUGREPORT='edwards@jlab.org'
 
+ac_subdirs_all="$ac_subdirs_all other_libs/libintrin"
 ac_subdirs_all="$ac_subdirs_all other_libs/qio"
 ac_subdirs_all="$ac_subdirs_all other_libs/xpath_reader"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT RANLIB ac_ct_RANLIB AR ac_ct_AR INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CONFIG_ND CONFIG_NC CONFIG_NS CONFIG_SSE CONFIG_SSE2 CONFIG_PRECISION CONFIG_LAYOUT ARCH_SITE QMP_HOME QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CONFIG_PARALLEL_ARCH LIBXML2_CONFIG LIBXML2_CXXFLAGS LIBXML2_LIBS BAGEL_QDP_CONFIG BAGEL_QDP_CXXFLAGS BAGEL_QDP_LDFLAGS BAGEL_QDP_LIBS ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE ARCH_SCALARVEC_TRUE ARCH_SCALARVEC_FALSE ARCH_PARSCALARVEC_TRUE ARCH_PARSCALARVEC_FALSE QDP_USE_SCALAR_SSE_TRUE QDP_USE_SCALAR_SSE_FALSE QDP_USE_SCALAR_SSE2_TRUE QDP_USE_SCALAR_SSE2_FALSE QDP_USE_QCDOC_TRUE QDP_USE_QCDOC_FALSE QDP_USE_SCALARVEC_SSE_TRUE QDP_USE_SCALARVEC_SSE_FALSE QDP_USE_SCALARVEC_SSE2_TRUE QDP_USE_SCALARVEC_SSE2_FALSE BUILD_STAGGERED_EXAMPLES_TRUE BUILD_STAGGERED_EXAMPLES_FALSE BUILD_WILSON_EXAMPLES_TRUE BUILD_WILSON_EXAMPLES_FALSE BUILD_DEFAULT_ALLOCATOR_TRUE BUILD_DEFAULT_ALLOCATOR_FALSE LATEX DVIPS DVIPDF DOXYGEN subdirs LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT RANLIB ac_ct_RANLIB AR ac_ct_AR INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CONFIG_ND CONFIG_NC CONFIG_NS CONFIG_SSE CONFIG_SSE2 subdirs LIBINTRIN_DIR BUILD_LIBINTRIN_TRUE BUILD_LIBINTRIN_FALSE CONFIG_PRECISION CONFIG_LAYOUT ARCH_SITE QMP_HOME QMP_CFLAGS QMP_LDFLAGS QMP_LIBS QMP_CONFIG CONFIG_PARALLEL_ARCH LIBXML2_CONFIG LIBXML2_CXXFLAGS LIBXML2_LIBS BAGEL_QDP_CONFIG BAGEL_QDP_CXXFLAGS BAGEL_QDP_LDFLAGS BAGEL_QDP_LIBS ARCH_SCALAR_TRUE ARCH_SCALAR_FALSE ARCH_PARSCALAR_TRUE ARCH_PARSCALAR_FALSE ARCH_SCALARVEC_TRUE ARCH_SCALARVEC_FALSE ARCH_PARSCALARVEC_TRUE ARCH_PARSCALARVEC_FALSE QDP_USE_SCALAR_SSE_TRUE QDP_USE_SCALAR_SSE_FALSE QDP_USE_SCALAR_SSE2_TRUE QDP_USE_SCALAR_SSE2_FALSE QDP_USE_QCDOC_TRUE QDP_USE_QCDOC_FALSE QDP_USE_SCALARVEC_SSE_TRUE QDP_USE_SCALARVEC_SSE_FALSE QDP_USE_SCALARVEC_SSE2_TRUE QDP_USE_SCALARVEC_SSE2_FALSE BUILD_STAGGERED_EXAMPLES_TRUE BUILD_STAGGERED_EXAMPLES_FALSE BUILD_WILSON_EXAMPLES_TRUE BUILD_WILSON_EXAMPLES_FALSE BUILD_DEFAULT_ALLOCATOR_TRUE BUILD_DEFAULT_ALLOCATOR_FALSE LATEX DVIPS DVIPDF DOXYGEN LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -2771,10 +2772,6 @@ fi;
 
 if test ${ac_sse} -eq 1; then
   if test "X${GXX}X" = "XyesX"; then
-    { echo "$as_me:$LINENO: Enabling -msse flag for g++" >&5
-echo "$as_me: Enabling -msse flag for g++" >&6;}
-    CXXFLAGS="-msse "$CXXFLAGS
-
 
 cat >>confdefs.h <<_ACEOF
 #define QDP_USE_SSE ${ac_sse}
@@ -2794,9 +2791,8 @@ fi
 
 if test ${ac_sse2} -eq 1; then
   if test "X${GXX}X" = "XyesX"; then
-    { echo "$as_me:$LINENO: Enabling -msse2 flag for g++" >&5
-echo "$as_me: Enabling -msse2 flag for g++" >&6;}
-    CXXFLAGS="-msse2 "$CXXFLAGS
+                    { echo "$as_me:$LINENO: " >&5
+echo "$as_me: " >&6;}
 
 cat >>confdefs.h <<_ACEOF
 #define QDP_USE_SSE2 ${ac_sse2}
@@ -2806,11 +2802,30 @@ _ACEOF
 
     { echo "$as_me:$LINENO: Configuring QDP++ with SSE2 extentions enabled" >&5
 echo "$as_me: Configuring QDP++ with SSE2 extentions enabled" >&6;};
+
+
+subdirs="$subdirs other_libs/libintrin"
+
+    LIBINTRIN_DIR=libintrin
+
+    build_libintrin="yes"
   else
     { echo "$as_me:$LINENO: WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry" >&5
 echo "$as_me: WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry" >&6;}
   fi
 fi
+
+
+
+if  test "x${build_libintrin}x" = "xyesx" ; then
+  BUILD_LIBINTRIN_TRUE=
+  BUILD_LIBINTRIN_FALSE='#'
+else
+  BUILD_LIBINTRIN_TRUE='#'
+  BUILD_LIBINTRIN_FALSE=
+fi
+
+
 
 if test ${ac_qcdoc_enabled} -eq 1; then
 
@@ -4437,7 +4452,6 @@ subdirs="$subdirs other_libs/qio"
 
 subdirs="$subdirs other_libs/xpath_reader"
 
-
 #
 # Set up the doxygen file
 # Substitute the right directories
@@ -4565,6 +4579,13 @@ if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${BUILD_LIBINTRIN_TRUE}" && test -z "${BUILD_LIBINTRIN_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_LIBINTRIN\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_LIBINTRIN\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -5236,6 +5257,10 @@ s,@CONFIG_NC@,$CONFIG_NC,;t t
 s,@CONFIG_NS@,$CONFIG_NS,;t t
 s,@CONFIG_SSE@,$CONFIG_SSE,;t t
 s,@CONFIG_SSE2@,$CONFIG_SSE2,;t t
+s,@subdirs@,$subdirs,;t t
+s,@LIBINTRIN_DIR@,$LIBINTRIN_DIR,;t t
+s,@BUILD_LIBINTRIN_TRUE@,$BUILD_LIBINTRIN_TRUE,;t t
+s,@BUILD_LIBINTRIN_FALSE@,$BUILD_LIBINTRIN_FALSE,;t t
 s,@CONFIG_PRECISION@,$CONFIG_PRECISION,;t t
 s,@CONFIG_LAYOUT@,$CONFIG_LAYOUT,;t t
 s,@ARCH_SITE@,$ARCH_SITE,;t t
@@ -5280,7 +5305,6 @@ s,@LATEX@,$LATEX,;t t
 s,@DVIPS@,$DVIPS,;t t
 s,@DVIPDF@,$DVIPDF,;t t
 s,@DOXYGEN@,$DOXYGEN,;t t
-s,@subdirs@,$subdirs,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF

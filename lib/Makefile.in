@@ -36,35 +36,36 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+@BUILD_LIBINTRIN_TRUE@am__append_1 = -I@top_srcdir@/other_libs/@LIBINTRIN_DIR@/include -I@top_builddir@/other_libs/@LIBINTRIN_DIR@/include
 
 # Scalar	
-@ARCH_SCALAR_TRUE@am__append_1 = qdp_scalar_init.cc qdp_scalar_layout.cc \
+@ARCH_SCALAR_TRUE@am__append_2 = qdp_scalar_init.cc qdp_scalar_layout.cc \
 @ARCH_SCALAR_TRUE@	qdp_scalar_specific.cc qdp_scalarsite_specific.cc
 
 
 # Parallel-scalar
-@ARCH_PARSCALAR_TRUE@am__append_2 = qdp_parscalar_init.cc qdp_parscalar_layout.cc \
+@ARCH_PARSCALAR_TRUE@am__append_3 = qdp_parscalar_init.cc qdp_parscalar_layout.cc \
 @ARCH_PARSCALAR_TRUE@	qdp_parscalar_specific.cc \
 @ARCH_PARSCALAR_TRUE@	qdp_scalarsite_specific.cc
 
 
 # Optimized code using sse extensions
-@QDP_USE_SCALAR_SSE_TRUE@am__append_3 = qdp_scalarsite_sse.cc
+@QDP_USE_SCALAR_SSE_TRUE@am__append_4 = qdp_scalarsite_sse.cc
 
 # Scalar with Vector extensions
-@ARCH_SCALARVEC_TRUE@am__append_4 = qdp_scalarvec_init.cc qdp_scalarvec_layout.cc \
+@ARCH_SCALARVEC_TRUE@am__append_5 = qdp_scalarvec_init.cc qdp_scalarvec_layout.cc \
 @ARCH_SCALARVEC_TRUE@	qdp_scalarvec_specific.cc qdp_scalarvecsite_specific.cc
 
 
 # Parallel scalar with Vector extensions
-@ARCH_PARSCALARVEC_TRUE@am__append_5 = qdp_parscalarvec_init.cc qdp_parscalarvec_layout.cc \
+@ARCH_PARSCALARVEC_TRUE@am__append_6 = qdp_parscalarvec_init.cc qdp_parscalarvec_layout.cc \
 @ARCH_PARSCALARVEC_TRUE@	qdp_parscalarvec_specific.cc qdp_scalarvecsite_specific.cc
 
 
 # Optimized code using sse extensions
-@QDP_USE_SCALARVEC_SSE_TRUE@am__append_6 = qdp_scalarvecsite_sse.cc
-@BUILD_DEFAULT_ALLOCATOR_TRUE@am__append_7 = qdp_default_allocator.cc
-@QDP_USE_QCDOC_TRUE@am__append_8 = qdp_qcdoc_allocator.cc
+@QDP_USE_SCALARVEC_SSE_TRUE@am__append_7 = qdp_scalarvecsite_sse.cc
+@BUILD_DEFAULT_ALLOCATOR_TRUE@am__append_8 = qdp_default_allocator.cc
+@QDP_USE_QCDOC_TRUE@am__append_9 = qdp_qcdoc_allocator.cc
 subdir = lib
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -172,6 +173,8 @@ BAGEL_QDP_LDFLAGS = @BAGEL_QDP_LDFLAGS@
 BAGEL_QDP_LIBS = @BAGEL_QDP_LIBS@
 BUILD_DEFAULT_ALLOCATOR_FALSE = @BUILD_DEFAULT_ALLOCATOR_FALSE@
 BUILD_DEFAULT_ALLOCATOR_TRUE = @BUILD_DEFAULT_ALLOCATOR_TRUE@
+BUILD_LIBINTRIN_FALSE = @BUILD_LIBINTRIN_FALSE@
+BUILD_LIBINTRIN_TRUE = @BUILD_LIBINTRIN_TRUE@
 BUILD_STAGGERED_EXAMPLES_FALSE = @BUILD_STAGGERED_EXAMPLES_FALSE@
 BUILD_STAGGERED_EXAMPLES_TRUE = @BUILD_STAGGERED_EXAMPLES_TRUE@
 BUILD_WILSON_EXAMPLES_FALSE = @BUILD_WILSON_EXAMPLES_FALSE@
@@ -204,6 +207,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LATEX = @LATEX@
 LDFLAGS = @LDFLAGS@
+LIBINTRIN_DIR = @LIBINTRIN_DIR@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBXML2_CONFIG = @LIBXML2_CONFIG@
@@ -272,12 +276,11 @@ subdirs = @subdirs@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
-           -I@top_srcdir@/other_libs/qio/include \
-           -I@top_builddir@/other_libs/qio/include \
-           -I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
-           -I@top_builddir@/other_libs/qio/other_libs/c-lime/include \
-           -I@top_srcdir@/other_libs/xpath_reader/include
-
+	-I@top_srcdir@/other_libs/qio/include \
+	-I@top_builddir@/other_libs/qio/include \
+	-I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
+	-I@top_builddir@/other_libs/qio/other_libs/c-lime/include \
+	-I@top_srcdir@/other_libs/xpath_reader/include $(am__append_1)
 AM_CXXFLAGS = $(INCFLAGS) @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
 lib_LIBRARIES = libqdp.a
 libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc \
@@ -285,9 +288,9 @@ libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc \
 	qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc qdp_filebuf.cc \
 	qdp_stdio.cc qdp_binx.cc qdp_profile.cc qdp_strnlen.cc \
 	qdp_crc32.cc qdp_stopwatch.cc qdp_qio_strings.cc \
-	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_8)
+	$(am__append_2) $(am__append_3) $(am__append_4) \
+	$(am__append_5) $(am__append_6) $(am__append_7) \
+	$(am__append_8) $(am__append_9)
 all: all-am
 
 .SUFFIXES:

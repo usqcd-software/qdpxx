@@ -126,9 +126,10 @@ AC_ARG_ENABLE(bgl,
 
 if test ${ac_sse} -eq 1; then
   if test "X${GXX}X" = "XyesX"; then 
-    AC_MSG_NOTICE([Enabling -msse flag for g++])
-    CXXFLAGS="-msse "$CXXFLAGS
-  
+    dnl    disabling this. Set your own CFLAGS. Some
+    dnl    compilers dont actually want it
+    dnl    AC_MSG_NOTICE([Enabling -msse flag for g++])
+    dnl    CXXFLAGS="-msse "$CXXFLAGS
     AC_DEFINE_UNQUOTED(QDP_USE_SSE, ${ac_sse}, [Enable SSE instructions])
     AC_SUBST(CONFIG_SSE,[${ac_sse}])
     AC_MSG_NOTICE([Configuring QDP++ with SSE extentions enabled]);
@@ -141,15 +142,25 @@ fi
 
 if test ${ac_sse2} -eq 1; then
   if test "X${GXX}X" = "XyesX"; then 
-    AC_MSG_NOTICE([Enabling -msse2 flag for g++])
-    CXXFLAGS="-msse2 "$CXXFLAGS    
+    dnl    Disabling this - set your own CXXFLAGS. Some compilers don't like
+    dnl    it
+    dnl    AC_MSG_NOTICE([Enabling -msse2 flag for g++])
+    dnl    CXXFLAGS="-msse2 "$CXXFLAGS    
+    AC_MSG_NOTICE
     AC_DEFINE_UNQUOTED(QDP_USE_SSE2, ${ac_sse2}, [Enable SSE2 instructions])
     AC_SUBST(CONFIG_SSE2,[${ac_sse2}])
     AC_MSG_NOTICE([Configuring QDP++ with SSE2 extentions enabled]);
+    AC_CONFIG_SUBDIRS(other_libs/libintrin)
+    AC_SUBST(LIBINTRIN_DIR, [libintrin])
+    build_libintrin="yes"
   else 
     AC_MSG_NOTICE([WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry])
   fi
 fi
+
+AM_CONDITIONAL(BUILD_LIBINTRIN,
+	[ test "x${build_libintrin}x" = "xyesx"] )
+
 
 dnl if QCDOC is enabled change some settings
 if test ${ac_qcdoc_enabled} -eq 1; then 
@@ -539,7 +550,6 @@ esac
 #
 AC_CONFIG_SUBDIRS(other_libs/qio)
 AC_CONFIG_SUBDIRS(other_libs/xpath_reader)
-
 #
 # Set up the doxygen file
 # Substitute the right directories

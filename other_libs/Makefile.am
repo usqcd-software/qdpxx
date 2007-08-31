@@ -1,1 +1,1 @@
-SUBDIRS = qio xpath_reader
+SUBDIRS = qio xpath_reader @LIBINTRIN_DIR@

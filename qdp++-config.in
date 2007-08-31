@@ -28,6 +28,15 @@ qdp_cxxflags="@CXXFLAGS@ -I@includedir@ @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ 
 qdp_ldflags="@LDFLAGS@ -L@libdir@ @BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@"
 qdp_libs="-lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@"
 
+libintrin_dir=@LIBINTRIN_DIR@
+case ${libintrin_dir} in
+    libintrin)
+	qdp_libs=${qdp_libs}" -lintrin"
+	;;
+    *)
+	;;
+esac
+
 precision="@CONFIG_PRECISION@"
 layout="@CONFIG_LAYOUT@"
 

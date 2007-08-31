@@ -7,6 +7,11 @@ INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
            -I@top_builddir@/other_libs/qio/other_libs/c-lime/include \
            -I@top_srcdir@/other_libs/xpath_reader/include
 
+
+if BUILD_LIBINTRIN
+INCFLAGS += -I@top_srcdir@/other_libs/@LIBINTRIN_DIR@/include -I@top_builddir@/other_libs/@LIBINTRIN_DIR@/include
+endif
+
 AM_CXXFLAGS = $(INCFLAGS) @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
 
 lib_LIBRARIES = libqdp.a

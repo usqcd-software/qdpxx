@@ -10,12 +10,28 @@ AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
               -I@top_builddir@/other_libs/qio/other_libs/c-lime/include \
               -I@top_srcdir@/other_libs/xpath_reader/include \
               @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
+
+if BUILD_LIBINTRIN
+AM_CXXFLAGS += -I@top_srcdir@/other_libs/@LIBINTRIN_DIR@/include
+AM_CXXFLAGS += -I@top_builddir@/other_libs/@LIBINTRIN_DIR@/include
+endif
+
+
 AM_LDFLAGS = -L@top_builddir@/lib \
              -L@top_builddir@/other_libs/qio/lib \
              -L@top_builddir@/other_libs/qio/other_libs/c-lime/lib \
              -L@top_builddir@/other_libs/xpath_reader/lib \
              @LDFLAGS@ @BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@
-LDADD = -lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@ 
+
+if BUILD_LIBINTRIN
+AM_LDFLAGS += -L@top_builddir@/other_libs/libintrin/lib@
+endif
+
+LDADD = -lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@
+
+if BUILD_LIBINTRIN
+LDADD += -lintrin
+endif
 
 #
 # Local Headers
