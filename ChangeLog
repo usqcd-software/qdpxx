@@ -1,3 +1,34 @@
+2007-08-30 23:54  bjoo
+
+	* NEWS, other_libs/libintrin/autom4te.cache/output.0,
+	  other_libs/libintrin/autom4te.cache/output.1,
+	  other_libs/libintrin/autom4te.cache/traces.0,
+	  other_libs/libintrin/autom4te.cache/traces.1,
+	  other_libs/libintrin/include/libintrin_config_internal.h.in:
+	  Initial move to intrinsics complete. Read the README. Still using
+	  inline sse for scalarvecsite
+
+2007-08-30 23:48  bjoo
+
+	* configure, configure.ac, qdp++-config.in, examples/Makefile.am,
+	  lib/Makefile.am, other_libs/Makefile.am: Added Libintrin magic to
+	  build
+
+2007-08-30 23:47  bjoo
+
+	* other_libs/libintrin/include/: libintrin_config.h,
+	  libintrin_config_internal.h, libintrin_config_internal.h.in:
+	  Initial revision
+
+2007-08-30 23:47  tag update-1
+
+2007-08-30 23:47  bjoo
+
+	* other_libs/libintrin/: configure.ac, configure,
+	  include/Makefile.am, include/inline_sse.h,
+	  include/libintrin_config.h, include/libintrin_config_internal.h,
+	  include/libintrin_config_internal.h.in: Update of source
+
 2007-08-30 22:52  tag start
 
 2007-08-30 22:52  bjoo
