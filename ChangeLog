@@ -1,3 +1,19 @@
+2007-09-12 09:08  bjoo
+
+	* configure.ac, configure: Bah
+
+2007-09-12 09:00  bjoo
+
+	* other_libs/libintrin/configure: Darn It
+
+2007-09-12 08:55  bjoo
+
+	* configure.ac: Bumped version
+
+2007-09-12 08:48  bjoo
+
+	* configure: Bumped version in configure.ac
+
 2007-09-04 09:10  bjoo
 
 	* include/scalarsite_sse/sse_s_m_a_mat.h: Removed this
