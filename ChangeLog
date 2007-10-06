@@ -1,3 +1,8 @@
+2007-10-06 00:04  kostas
+
+	* other_libs/qio/other_libs/c-lime/aclocal.m4: added a jack_fit
+	  util to make ensemble files of masses.
+
 2007-09-12 09:08  tag qdp1-25-0
 
 2007-09-12 09:08  bjoo
