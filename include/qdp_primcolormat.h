@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.13 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_primcolormat.h,v 1.14 2007-10-06 14:59:10 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix
@@ -520,6 +520,78 @@ colorContract(const PColorMatrix<T1,3>& s1, const PColorMatrix<T2,3>& s2, const 
 }
 
 
+//! dest  = colorContract(Qprop1,Qprop2,Qprop3)
+/*!
+ * Performs:
+ *  \f$dest = \sum_{i1,i2,i3,j1,j2,j3} \epsilon^{i1,j1,k1}\epsilon^{i2,j2,k2} Q1^{i1,i2} Q2^{j1,j2} Q3^{k1,k2}\f$
+ *
+ *  These are some place holders for Nc = 1
+ *  These routine are actually used in the 
+ *  baryon routines. Seperate baryon routines
+ *  should be written for every number of colors.
+ */
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<PColorMatrix<T1,1>, PColorMatrix<T2,1>, PColorMatrix<T3,1>, FnColorContract>::Type_t
+colorContract(const PColorMatrix<T1,1>& s1, const PColorMatrix<T2,1>& s2, const PColorMatrix<T3,1>& s3)
+{
+  typename TrinaryReturn<PColorMatrix<T1,1>, PColorMatrix<T2,1>, PColorMatrix<T3,1>, FnColorContract>::Type_t  d;
+
+  // not written 
+  QDPIO::cerr << __func__ << ": not written for Nc=1" << endl;
+  QDP_abort(1);
+
+  return d ; 
+}
+
+
+//! dest  = colorContract(Qprop1,Qprop2,Qprop3)
+/*!
+ * Performs:
+ *  \f$dest = \sum_{i1,i2,i3,j1,j2,j3} \epsilon^{i1,j1,k1}\epsilon^{i2,j2,k2} Q1^{i1,i2} Q2^{j1,j2} Q3^{k1,k2}\f$
+ *
+ *  These are some place holders for Nc = 2
+ *  These routine are actually used in the 
+ *  baryon routines. Seperate baryon routines
+ *  should be written for every number of colors.
+ */
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<PColorMatrix<T1,2>, PColorMatrix<T2,2>, PColorMatrix<T3,2>, FnColorContract>::Type_t
+colorContract(const PColorMatrix<T1,2>& s1, const PColorMatrix<T2,2>& s2, const PColorMatrix<T3,2>& s3)
+{
+  typename TrinaryReturn<PColorMatrix<T1,2>, PColorMatrix<T2,2>, PColorMatrix<T3,2>, FnColorContract>::Type_t  d;
+
+  // not written 
+  QDPIO::cerr << __func__ << ": not written for Nc=2" << endl;
+  QDP_abort(1);
+
+  return d ; 
+}
+
+
+//! dest  = colorContract(Qprop1,Qprop2,Qprop3)
+/*!
+ * Performs:
+ *  \f$dest = \sum_{i1,i2,i3,j1,j2,j3} \epsilon^{i1,j1,k1}\epsilon^{i2,j2,k2} Q1^{i1,i2} Q2^{j1,j2} Q3^{k1,k2}\f$
+ *
+ *  These are some place holders for Nc = 4
+ *  These routine are actually used in the 
+ *  baryon routines. Seperate baryon routines
+ *  should be written for every number of colors.
+ */
+template<class T1, class T2, class T3>
+inline typename TrinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, PColorMatrix<T3,4>, FnColorContract>::Type_t
+colorContract(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2, const PColorMatrix<T3,4>& s3)
+{
+  typename TrinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, PColorMatrix<T3,4>, FnColorContract>::Type_t  d;
+
+  // not written 
+  QDPIO::cerr << __func__ << ": not written for Nc=4" << endl;
+  QDP_abort(1);
+
+  return d ; 
+}
+
+
 //-----------------------------------------------------------------------------
 // Contraction for quark propagators
 // QuarkContract 
@@ -614,12 +686,70 @@ quarkContractXX(const PColorMatrix<T1,3>& s1, const PColorMatrix<T2,3>& s2)
 }
 
 
-//
-//  These are some place holders for Nc = 4 
-//  These routine are actually used in the 
-//  baryon routines. Seperate baryon routines
-//  should be written for every number of colors.
+// Contraction for quark propagators
+// QuarkContract 
+//! dest  = QuarkContractXX(Qprop1,Qprop2)
+/*!
+ * Performs:
+ *  \f$dest^{k2,k1} = \sum_{i1,i2,j1,j2} \epsilon^{i1,j1,k1}\epsilon^{i2,j2,k2} Q1^{i1,i2} Q2^{j1,j2}\f$
+ *
+ *  These are some place holders for Nc = 2
+ *  These routine are actually used in the 
+ *  baryon routines. Seperate baryon routines
+ *  should be written for every number of colors.
+ */
+template<class T1, class T2>
+inline typename BinaryReturn<PColorMatrix<T1,1>, PColorMatrix<T2,1>, FnQuarkContractXX>::Type_t
+quarkContractXX(const PColorMatrix<T1,1>& s1, const PColorMatrix<T2,1>& s2)
+{
+  typename BinaryReturn<PColorMatrix<T1,1>, PColorMatrix<T2,1>, FnQuarkContractXX>::Type_t  d;
 
+  // not yet written 
+  QDPIO::cerr << __func__ << ": not written for Nc=1" << endl;
+  QDP_abort(1);
+
+  return d ; 
+}
+
+
+// Contraction for quark propagators
+// QuarkContract 
+//! dest  = QuarkContractXX(Qprop1,Qprop2)
+/*!
+ * Performs:
+ *  \f$dest^{k2,k1} = \sum_{i1,i2,j1,j2} \epsilon^{i1,j1,k1}\epsilon^{i2,j2,k2} Q1^{i1,i2} Q2^{j1,j2}\f$
+ *
+ *  These are some place holders for Nc = 2
+ *  These routine are actually used in the 
+ *  baryon routines. Seperate baryon routines
+ *  should be written for every number of colors.
+ */
+template<class T1, class T2>
+inline typename BinaryReturn<PColorMatrix<T1,2>, PColorMatrix<T2,2>, FnQuarkContractXX>::Type_t
+quarkContractXX(const PColorMatrix<T1,2>& s1, const PColorMatrix<T2,2>& s2)
+{
+  typename BinaryReturn<PColorMatrix<T1,2>, PColorMatrix<T2,2>, FnQuarkContractXX>::Type_t  d;
+
+  // not yet written 
+  QDPIO::cerr << __func__ << ": not written for Nc=2" << endl;
+  QDP_abort(1);
+
+  return d ; 
+}
+
+
+// Contraction for quark propagators
+// QuarkContract 
+//! dest  = QuarkContractXX(Qprop1,Qprop2)
+/*!
+ * Performs:
+ *  \f$dest^{k2,k1} = \sum_{i1,i2,j1,j2} \epsilon^{i1,j1,k1}\epsilon^{i2,j2,k2} Q1^{i1,i2} Q2^{j1,j2}\f$
+ *
+ *  These are some place holders for Nc = 4 
+ *  These routine are actually used in the 
+ *  baryon routines. Seperate baryon routines
+ *  should be written for every number of colors.
+ */
 template<class T1, class T2>
 inline typename BinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, FnQuarkContractXX>::Type_t
 quarkContractXX(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2)
@@ -627,19 +757,7 @@ quarkContractXX(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2)
   typename BinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, FnQuarkContractXX>::Type_t  d;
 
   // not yet written 
-  QDP_abort(1);
-
-  return d ; 
-}
-
-
-template<class T1, class T2, class T3>
-inline typename TrinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, PColorMatrix<T3,4>, FnColorContract>::Type_t
-colorContract(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2, const PColorMatrix<T3,4>& s3)
-{
-  typename TrinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, PColorMatrix<T3,4>, FnColorContract>::Type_t  d;
-
-  // not yet written 
+  QDPIO::cerr << __func__ << ": not written for Nc=4" << endl;
   QDP_abort(1);
 
   return d ; 
