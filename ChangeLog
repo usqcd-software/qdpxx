@@ -1,3 +1,8 @@
+2007-10-06 10:59  edwards
+
+	* include/qdp_primcolormat.h: Added placeholder quarkContractXX and
+	  colorContract for Nc=1,2,4
+
 2007-10-06 00:04  kostas
 
 	* other_libs/qio/other_libs/c-lime/aclocal.m4: added a jack_fit
