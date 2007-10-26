@@ -1,3 +1,17 @@
+2007-10-26 13:58  tag qdp1-25-1
+
+2007-10-26 13:58  bjoo
+
+	* configure: Induced
+
+2007-10-26 13:55  bjoo
+
+	* aclocal.m4: Induced change
+
+2007-10-26 13:53  bjoo
+
+	* configure.ac: Bumped version to 2-5-1 in configure.ac
+
 2007-10-06 10:59  edwards
 
 	* include/qdp_primcolormat.h: Added placeholder quarkContractXX and
