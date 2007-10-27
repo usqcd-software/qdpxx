@@ -1,3 +1,9 @@
+2007-10-27 11:45  edwards
+
+	* lib/: qdp_parscalar_layout.cc, qdp_parscalarvec_layout.cc,
+	  qdp_scalar_layout.cc, qdp_scalarvec_layout.cc: Gave a type to the
+	  struct holding the local layout data. Did some indenting.
+
 2007-10-26 13:58  tag qdp1-25-1
 
 2007-10-26 13:58  bjoo
