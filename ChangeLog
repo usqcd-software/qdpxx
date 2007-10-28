@@ -1,3 +1,31 @@
+2007-10-27 17:19  edwards
+
+	* other_libs/: qio/other_libs/c-lime/configure, qio/configure,
+	  libintrin/AUTHORS, libintrin/COPYING, libintrin/INSTALL,
+	  libintrin/Makefile.am, libintrin/NEWS, libintrin/README,
+	  libintrin/aclocal.m4, libintrin/configure: Induced changes
+
+2007-10-27 17:19  edwards
+
+	* other_libs/qio/: include/qio_config_internal.h.in,
+	  other_libs/c-lime/include/lime_config_internal.h.in: Induced
+	  changes.
+
+2007-10-27 17:15  edwards
+
+	* other_libs/: xpath_reader/AUTHORS, xpath_reader/COPYING,
+	  xpath_reader/INSTALL, xpath_reader/Makefile.am,
+	  xpath_reader/NEWS, xpath_reader/README, xpath_reader/ToDoList,
+	  xpath_reader/acinclude.m4, xpath_reader/aclocal.m4,
+	  xpath_reader/configure, xpath_reader/configure.ac,
+	  qio/other_libs/c-lime/aclocal.m4,
+	  qio/other_libs/c-lime/configure, qio/aclocal.m4, qio/configure:
+	  Induced changes
+
+2007-10-27 17:06  edwards
+
+	* aclocal.m4, configure: Induced changes
+
 2007-10-27 11:45  edwards
 
 	* lib/: qdp_parscalar_layout.cc, qdp_parscalarvec_layout.cc,
