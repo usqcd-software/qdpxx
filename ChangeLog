@@ -1,3 +1,8 @@
+2007-12-05 14:44  bjoo
+
+	* examples/: Makefile.am, lhpc2ildg.cc: Added a file to extract
+	  info from lhpc HMC generated files
+
 2007-10-27 17:19  tag adat1-35-0
 
 2007-10-27 17:19  edwards
