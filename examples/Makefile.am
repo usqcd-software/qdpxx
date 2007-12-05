@@ -53,7 +53,7 @@ check_PROGRAMS += t_dslashm t_formfac t_spectrum t_qdp t_linalg
 EXTRA_PROGRAMS += t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3 t_spinproj t_spinproj2
 endif
 
-EXTRA_PROGRAMS += nersc2ildg test_ildglat
+EXTRA_PROGRAMS += nersc2ildg test_ildglat lhpc2ildg
 
 if BUILD_STAGGERED_EXAMPLES
 check_PROGRAMS += 
@@ -112,6 +112,10 @@ test_ildglat_DEPENDENCIES = build_lib
 
 t_su3_SOURCES = t_su3.cc 
 t_su3_DEPENDENCIES = build_lib
+
+lhpc2ildg_SOURCES = lhpc2ildg.cc $(HDRS) mesplq.cc
+lhpc2ildg_DEPENDENCIES = build_lib
+
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target

@@ -41,7 +41,7 @@ check_PROGRAMS = t_skeleton$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
 	$(am__EXEEXT_2) $(am__EXEEXT_3)
 EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_binx$(EXEEXT) \
 	t_gsum$(EXEEXT) $(am__EXEEXT_1) nersc2ildg$(EXEEXT) \
-	test_ildglat$(EXEEXT)
+	test_ildglat$(EXEEXT) lhpc2ildg$(EXEEXT)
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_4 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_5 = t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3 t_spinproj t_spinproj2
 @BUILD_STAGGERED_EXAMPLES_TRUE@am__append_6 = 
@@ -68,11 +68,15 @@ CONFIG_CLEAN_FILES =
 @BUILD_WILSON_EXAMPLES_TRUE@	t_linalg$(EXEEXT)
 am__EXEEXT_3 =
 am__objects_1 =
+am_lhpc2ildg_OBJECTS = lhpc2ildg.$(OBJEXT) $(am__objects_1) \
+	mesplq.$(OBJEXT)
+lhpc2ildg_OBJECTS = $(am_lhpc2ildg_OBJECTS)
+lhpc2ildg_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
 am_nersc2ildg_OBJECTS = nersc2ildg.$(OBJEXT) $(am__objects_1) \
 	mesplq.$(OBJEXT)
 nersc2ildg_OBJECTS = $(am_nersc2ildg_OBJECTS)
 nersc2ildg_LDADD = $(LDADD)
-am__DEPENDENCIES_1 =
 nersc2ildg_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_t_basic_OBJECTS = t_basic.$(OBJEXT)
 t_basic_OBJECTS = $(am_t_basic_OBJECTS)
@@ -219,8 +223,9 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) $(t_binx_SOURCES) \
-	$(t_blas_SOURCES) $(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
+SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
+	$(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
+	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
 	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
 	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
 	$(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_gsum_SOURCES) \
@@ -231,15 +236,15 @@ SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) $(t_binx_SOURCES) \
 	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
 	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
 	$(test_ildglat_SOURCES)
-DIST_SOURCES = $(nersc2ildg_SOURCES) $(t_basic_SOURCES) \
-	$(t_binx_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) \
-	$(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) \
-	$(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_dslashm_SOURCES) \
-	$(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) \
-	$(t_formfac_SOURCES) $(t_gsum_SOURCES) $(t_io_SOURCES) \
-	$(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) \
-	$(t_partfile_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) \
-	$(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
+DIST_SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
+	$(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
+	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
+	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
+	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
+	$(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_gsum_SOURCES) \
+	$(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) \
+	$(t_nersc_SOURCES) $(t_partfile_SOURCES) $(t_qdp_SOURCES) \
+	$(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
 	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
 	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
 	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
@@ -427,6 +432,8 @@ test_ildglat_SOURCES = test_ildglat.cc $(HDRS) mesplq.cc
 test_ildglat_DEPENDENCIES = build_lib
 t_su3_SOURCES = t_su3.cc 
 t_su3_DEPENDENCIES = build_lib
+lhpc2ildg_SOURCES = lhpc2ildg.cc $(HDRS) mesplq.cc
+lhpc2ildg_DEPENDENCIES = build_lib
 all: all-am
 
 .SUFFIXES:
@@ -463,6 +470,9 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 
 clean-checkPROGRAMS:
 	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+lhpc2ildg$(EXEEXT): $(lhpc2ildg_OBJECTS) $(lhpc2ildg_DEPENDENCIES) 
+	@rm -f lhpc2ildg$(EXEEXT)
+	$(CXXLINK) $(lhpc2ildg_OBJECTS) $(lhpc2ildg_LDADD) $(LIBS)
 nersc2ildg$(EXEEXT): $(nersc2ildg_OBJECTS) $(nersc2ildg_DEPENDENCIES) 
 	@rm -f nersc2ildg$(EXEEXT)
 	$(CXXLINK) $(nersc2ildg_OBJECTS) $(nersc2ildg_LDADD) $(LIBS)
@@ -575,6 +585,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dslashm_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expm12.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formfac_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lhpc2ildg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linalg1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesplq.Po@am__quote@
@@ -803,6 +814,7 @@ uninstall-am:
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am
+
 
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
