@@ -1,3 +1,24 @@
+2008-02-05 16:58  detar
+
+	* other_libs/qio/lib/qio/: QIO_info.c, QIO_info_usqcd_ksprop.c,
+	  QIO_info_usqcd_prop.c, QIO_utils.c, QIO_write.c: Add USQCD
+	  staggered propagator support
+
+2008-02-05 16:57  detar
+
+	* other_libs/qio/lib/dml/DML_utils.c: Free outbuf on one of the
+	  error exits.
+
+2008-02-05 16:55  detar
+
+	* other_libs/qio/other_libs/c-lime/examples/lime_extract_record.c:
+	  Bug fix.
+
+2008-02-05 16:51  detar
+
+	* other_libs/qio/other_libs/c-lime/lib/lime_reader.c: Complain
+	  about premature EOF
+
 2007-12-05 14:44  bjoo
 
 	* examples/: Makefile.am, lhpc2ildg.cc: Added a file to extract
