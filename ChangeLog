@@ -1,8 +1,29 @@
+2008-02-05 17:32  detar
+
+	* other_libs/qio/doc/qio_2p3.tex: Fix typos
+
+2008-02-05 17:28  detar
+
+	* other_libs/qio/NEWS: version 2.3.3
+
+2008-02-05 17:27  detar
+
+	* other_libs/qio/doc/: Makefile.am, qio_2p2.tex, qio_2p3.tex: Add
+	  USQCD staggered format to documentation and change to version 2p3
+
+2008-02-05 17:00  detar
+
+	* other_libs/qio/: aclocal.m4, configure, configure.ac: Add USQCD
+	  staggered propagator support.  Change to 2.3.3
+
 2008-02-05 16:58  detar
 
-	* other_libs/qio/lib/qio/: QIO_info.c, QIO_info_usqcd_ksprop.c,
-	  QIO_info_usqcd_prop.c, QIO_utils.c, QIO_write.c: Add USQCD
-	  staggered propagator support
+	* other_libs/qio/: lib/qio/QIO_info.c,
+	  lib/qio/QIO_info_usqcd_ksprop.c, lib/qio/QIO_info_usqcd_prop.c,
+	  lib/qio/QIO_utils.c, lib/qio/QIO_write.c, lib/Makefile.am,
+	  include/Makefile.am, include/qioxml.h,
+	  include/qioxml_usqcd_ksprop.h, include/qioxml_usqcd_prop.h: Add
+	  USQCD staggered propagator support
 
 2008-02-05 16:57  detar
 
