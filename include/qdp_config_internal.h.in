@@ -72,6 +72,9 @@
 /* Use hypercube checkerboard layout */
 #undef QDP_USE_CB32_LAYOUT
 
+/* Use 3d checkerboarded layout */
+#undef QDP_USE_CB3D_LAYOUT
+
 /* Use lexicographic layout */
 #undef QDP_USE_LEXICO_LAYOUT
 

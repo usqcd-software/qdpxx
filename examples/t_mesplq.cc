@@ -1,4 +1,4 @@
-// $Id: t_mesplq.cc,v 1.25 2005-09-15 17:34:23 edwards Exp $
+// $Id: t_mesplq.cc,v 1.26 2008-02-20 21:27:58 bjoo Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,4};
+  const int foo[] = {4,2,2,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -60,6 +60,12 @@ int main(int argc, char *argv[])
   pop(xml);
   xml.close();
 
+  // 
+  QDPIO::cout << "rb[0] has ordered rep=" << rb[0].hasOrderedRep() << endl;
+  QDPIO::cout << "rb[1] has ordered rep=" << rb[1].hasOrderedRep() << endl;
+
+  QDPIO::cout << "rb3[0] has ordered rep=" << rb3[0].hasOrderedRep() << endl;
+  QDPIO::cout << "rb3[1] has ordered rep=" << rb3[1].hasOrderedRep() << endl;
   // Time to bolt
   QDP_finalize();
 

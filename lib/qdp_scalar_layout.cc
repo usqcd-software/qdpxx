@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_layout.cc,v 1.16 2007-10-27 15:45:24 edwards Exp $
+// $Id: qdp_scalar_layout.cc,v 1.17 2008-02-20 21:27:58 bjoo Exp $
 
 /*! @file
  * @brief Scalar layout routines
@@ -16,6 +16,7 @@
 
 #include "qdp.h"
 #include "qdp_util.h"
+
 
 namespace QDP 
 {
@@ -147,8 +148,10 @@ namespace QDP
 	QDP_error_exit("dimension of lattice size not the same as the default");
 
       _layout.vol=1;
+
       for(int i=0; i < Nd; ++i) 
 	_layout.vol *= _layout.nrow[i];
+
       _layout.subgrid_vol = _layout.vol;
   
       _layout.logical_coord.resize(Nd);
@@ -270,6 +273,72 @@ namespace QDP
       return local_site(cb_coord, cb_nrow) + cb*vol_cb;
     }
   }
+
+
+
+//-----------------------------------------------------------------------------
+
+#elif QDP_USE_CB3D_LAYOUT == 1
+
+#warning "Using a 2 checkerboard (red/black) layout but in 3D. Time running fastest"
+
+  namespace Layout
+  {
+
+   
+    //! Reconstruct the lattice coordinate from the node and site number
+    /*! 
+     * This is the inverse of the nodeNumber and linearSiteIndex functions.
+     * The API requires this function to be here.
+     *
+     * NB: Time is local and fastest running 
+     */
+
+    multi1d<int> siteCoords(int node, int linearsite) // ignore node
+    {
+      int vol_cb = vol() / 2;
+      multi1d<int> cb_nrow = lattSize();
+      cb_nrow[0] /=2;
+
+      int cb = linearsite / vol_cb;
+
+      // This now uses crtesn with the t running fastest
+      multi1d<int> coord = crtesn(linearsite % vol_cb, cb_nrow);
+
+      int cbb = cb;
+      for(int m=1; m<coord.size()-1; ++m) // Nd-1 checkerboard
+	cbb += coord[m];
+
+      cbb = cbb & 1;
+
+      coord[0] = 2*coord[0] + cbb;
+
+      return coord;
+    }
+
+    //! The linearized site index for the corresponding coordinate
+    /*! This layout is appropriate for a 2 checkerboard (red/black) lattice */
+    int linearSiteIndex(const multi1d<int>& coord)
+    {
+      int vol_cb = vol() / 2;
+      multi1d<int> cb_nrow = lattSize();
+      cb_nrow[0] /= 2;
+
+      multi1d<int> cb_coord = coord;
+
+      cb_coord[0] /= 2;    // Number of checkerboards
+    
+      int cb = 0;
+      for(int m=0; m<coord.size()-1; ++m) // 3d checkerboard
+	cb += coord[m];
+
+      cb = cb & 1;
+
+      // Use funky local site 
+      return local_site(cb_coord, cb_nrow) + cb*vol_cb;
+    }
+  }
+
 
 //-----------------------------------------------------------------------------
 

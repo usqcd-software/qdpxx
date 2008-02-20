@@ -208,8 +208,8 @@ double)
 esac
 
 AC_ARG_ENABLE(layout,
-  AC_HELP_STRING([--enable-layout=lexico|cb2|cb32],
-                 [Sets the layout. lexico=lexicographic, cb2=even odd checkerboard, cb32=hypercubic checkerboard. (default is cb2)]),
+  AC_HELP_STRING([--enable-layout=lexico|cb2|cb3d|cb32],
+                 [Sets the layout. lexico=lexicographic, cb2=even odd checkerboard, cb3d=even odd checkerboard in 3d, cb32=hypercubic checkerboard. (default is cb2)]),
   [ ac_layout=${enableval} ],
   [ ac_layout="cb2" ]
 )
@@ -222,6 +222,10 @@ lexico|lexicographic)
 cb2|checkerboard)
 	AC_SUBST(CONFIG_LAYOUT,[cb2])
 	AC_DEFINE(QDP_USE_CB2_LAYOUT, [1], [Use checkerboarded layout])
+	;;
+cb3d|checkerboard-3d)
+	AC_SUBST(CONFIG_LAYOUT,[cb3d])
+	AC_DEFINE(QDP_USE_CB3D_LAYOUT,[1], [Use 3d checkerboarded layout])
 	;;
 cb32|hyper|hypercube)
 	AC_SUBST(CONFIG_LAYOUT,[cb32])

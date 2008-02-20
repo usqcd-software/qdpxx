@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.23 2007-10-27 15:45:24 edwards Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.24 2008-02-20 21:27:58 bjoo Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -18,6 +18,8 @@
 #include "qdp_util.h"
 
 #include "qmp.h"
+
+#define QDP_DEBUG 2
 
 namespace QDP 
 {
@@ -468,6 +470,102 @@ namespace QDP
       multi1d<int> dim(Nd);
       dim = 1;
       dim[0] = 2;       // must have multiple length 2 for cb
+
+      return dim;
+    }
+  }
+
+//-----------------------------------------------------------------------------
+
+#elif QDP_USE_CB3D_LAYOUT == 1
+
+#warning "Using a 3D checkerboard (red/black) layout"
+
+  namespace Layout
+  {
+    //! The linearized site index for the corresponding coordinate
+    /*! This layout is appropriate for a 2 checkerboard (red/black) lattice */
+    int linearSiteIndex(const multi1d<int>& coord)
+    {
+      int subgrid_vol_cb = Layout::sitesOnNode() / 2;
+      multi1d<int> subgrid_cb_nrow = Layout::subgridLattSize();
+      subgrid_cb_nrow[0] /= 2;
+
+      int cb = 0;
+      for(int m=0; m < Nd-1; ++m) { // Nd-1 checkerboard
+	cb += coord[m];
+      }
+      cb &= 1;
+
+      multi1d<int> subgrid_cb_coord(Nd);
+      subgrid_cb_coord[0] = (coord[0] / 2) % subgrid_cb_nrow[0];
+      for(int i=1; i < Nd; ++i)
+	subgrid_cb_coord[i] = coord[i] % subgrid_cb_nrow[i];
+    
+      return local_site(subgrid_cb_coord, subgrid_cb_nrow) + cb*subgrid_vol_cb;
+    }
+
+
+    //! The node number for the corresponding lattice coordinate
+    /*! 
+     * This layout is appropriate for a 2 checkerboard (red/black) lattice,
+     * but to find the nodeNumber this function resembles a simple lexicographic 
+     * layout
+     */
+    int nodeNumber(const multi1d<int>& coord)
+    {
+      multi1d<int> tmp_coord(Nd);
+
+      for(int i=0; i < coord.size(); ++i)
+	tmp_coord[i] = coord[i] / Layout::subgridLattSize()[i];
+    
+      return Layout::getNodeNumberFrom(tmp_coord);
+    }
+
+
+    //! Reconstruct the lattice coordinate from the node and site number
+    /*! 
+     * This is the inverse of the nodeNumber and linearSiteIndex functions.
+     * The API requires this function to be here.
+     */
+    multi1d<int> siteCoords(int node, int linearsite) // ignore node
+    {
+      int subgrid_vol_cb = Layout::sitesOnNode() / 2;
+      multi1d<int> subgrid_cb_nrow = Layout::subgridLattSize();
+      subgrid_cb_nrow[0] /= 2;
+
+      // Get the base (origins) of the absolute lattice coord
+      multi1d<int> coord = getLogicalCoordFrom(node);
+      coord *= Layout::subgridLattSize();
+    
+      int cb = linearsite / subgrid_vol_cb;
+      multi1d<int> tmp_coord = crtesn(linearsite % subgrid_vol_cb, subgrid_cb_nrow);
+
+      // Add on position within the node
+      // NOTE: the cb for the x-coord is not yet determined
+      coord[0] += 2*tmp_coord[0];
+      for(int m=1; m < Nd; ++m)
+	coord[m] += tmp_coord[m];
+
+      // Determine cb including global node cb
+      int cbb = cb;
+      for(int m=1; m < Nd-1; ++m)
+	cbb += coord[m];
+      coord[0] += (cbb & 1);
+
+      return coord;
+    }
+
+
+    //! Return the smallest lattice size per node allowed
+    /*! This layout is appropriate for a 2 checkerboard (red/black) lattice */
+    multi1d<int> minimalLayoutMapping()
+    {
+      multi1d<int> dim(Nd);
+      multi1d<int> lsize=Layout::lattSize(); // Full lattice size;
+      dim = 1;
+      dim[0] = 2;       // must have multiple length 2 for cb
+      dim[Nd-1]=lsize[Nd-1]; // must be divisible by Nt
 
       return dim;
     }
