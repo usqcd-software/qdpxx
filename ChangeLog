@@ -1,3 +1,18 @@
+2008-02-20 16:37  bjoo
+
+	* lib/qdp_parscalar_layout.cc: Added 3D checkerboarding requiring
+	  time to be local
+
+2008-02-20 16:31  bjoo
+
+	* configure.ac: Fred
+
+2008-02-20 16:27  bjoo
+
+	* examples/t_mesplq.cc, include/qdp_config_internal.h.in,
+	  lib/qdp_layout.cc, lib/qdp_parscalar_layout.cc,
+	  lib/qdp_scalar_layout.cc: Fred
+
 2008-02-05 17:32  tag qio2-3-3
 
 2008-02-05 17:32  detar
