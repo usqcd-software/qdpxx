@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.24 2008-02-20 21:27:58 bjoo Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.25 2008-02-20 21:37:44 bjoo Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -19,7 +19,6 @@
 
 #include "qmp.h"
 
-#define QDP_DEBUG 2
 
 namespace QDP 
 {
