@@ -1,3 +1,16 @@
+2008-02-24 15:09  tag qio2-3-4
+
+2008-02-24 15:09  detar
+
+	* other_libs/qio/: NEWS, configure, configure.ac, include/dml.h,
+	  include/qio.h, lib/dml/DML_utils.c,
+	  lib/qio/QIO_host_file_conversion.c, lib/qio/QIO_open_read.c,
+	  lib/qio/QIO_open_write.c, lib/qio/QIO_read_record_data.c,
+	  lib/qio/QIO_read_record_info.c, lib/qio/QIO_utils.c,
+	  lib/qio/QIO_write.c,
+	  other_libs/c-lime/examples/lime_extract_record.c: Correct file
+	  splitting/joining for hypercube records
+
 2008-02-20 16:37  bjoo
 
 	* lib/qdp_parscalar_layout.cc: Added 3D checkerboarding requiring
