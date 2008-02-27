@@ -1,4 +1,11 @@
-2008-02-24 15:09  tag qio2-3-4
+2008-02-27 00:20  tag qio2-3-4
+
+2008-02-27 00:20  detar
+
+	* other_libs/qio/: include/dml.h, lib/dml/DML_utils.c,
+	  lib/qio/QIO_open_read.c, lib/qio/QIO_open_write.c,
+	  lib/qio/QIO_utils.c: Fix algorithm for splitting hypercube
+	  records.
 
 2008-02-24 15:09  detar
 
