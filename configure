@@ -1315,10 +1315,10 @@ Optional Features:
   --enable-precision=single|double
                           Sets the base precision to be single or double
                           precision (default is single)
-  --enable-layout=lexico|cb2|cb32
+  --enable-layout=lexico|cb2|cb3d|cb32
                           Sets the layout. lexico=lexicographic, cb2=even odd
-                          checkerboard, cb32=hypercubic checkerboard. (default
-                          is cb2)
+                          checkerboard, cb3d=even odd checkerboard in 3d,
+                          cb32=hypercubic checkerboard. (default is cb2)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -3521,6 +3521,15 @@ cb2|checkerboard)
 
 cat >>confdefs.h <<\_ACEOF
 #define QDP_USE_CB2_LAYOUT 1
+_ACEOF
+
+	;;
+cb3d|checkerboard-3d)
+	CONFIG_LAYOUT=cb3d
+
+
+cat >>confdefs.h <<\_ACEOF
+#define QDP_USE_CB3D_LAYOUT 1
 _ACEOF
 
 	;;
