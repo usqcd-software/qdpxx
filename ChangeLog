@@ -1,3 +1,12 @@
+2008-03-04 16:56  bjoo
+
+	* lib/: qdp_layout.cc, qdp_parscalar_layout.cc: DO IT
+
+2008-03-04 16:53  bjoo
+
+	* configure, other_libs/qio/configure, other_libs/qio/aclocal.m4:
+	  Induced changes
+
 2008-02-27 00:20  tag qio2-3-4
 
 2008-02-27 00:20  detar
