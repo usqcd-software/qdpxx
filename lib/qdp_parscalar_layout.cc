@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_layout.cc,v 1.25 2008-02-20 21:37:44 bjoo Exp $
+// $Id: qdp_parscalar_layout.cc,v 1.26 2008-03-04 21:56:26 bjoo Exp $
 
 /*! @file
  * @brief Parscalar layout routines
@@ -533,6 +533,7 @@ namespace QDP
       multi1d<int> subgrid_cb_nrow = Layout::subgridLattSize();
       subgrid_cb_nrow[0] /= 2;
 
+
       // Get the base (origins) of the absolute lattice coord
       multi1d<int> coord = getLogicalCoordFrom(node);
       coord *= Layout::subgridLattSize();
@@ -540,16 +541,22 @@ namespace QDP
       int cb = linearsite / subgrid_vol_cb;
       multi1d<int> tmp_coord = crtesn(linearsite % subgrid_vol_cb, subgrid_cb_nrow);
 
+      
+
       // Add on position within the node
       // NOTE: the cb for the x-coord is not yet determined
       coord[0] += 2*tmp_coord[0];
       for(int m=1; m < Nd; ++m)
 	coord[m] += tmp_coord[m];
 
+
+
       // Determine cb including global node cb
       int cbb = cb;
       for(int m=1; m < Nd-1; ++m)
 	cbb += coord[m];
+
+   
       coord[0] += (cbb & 1);
 
       return coord;
@@ -564,7 +571,6 @@ namespace QDP
       multi1d<int> lsize=Layout::lattSize(); // Full lattice size;
       dim = 1;
       dim[0] = 2;       // must have multiple length 2 for cb
-      dim[Nd-1]=lsize[Nd-1]; // must be divisible by Nt
 
       return dim;
     }

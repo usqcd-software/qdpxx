@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_layout.h,v 1.7 2007-06-10 14:32:08 edwards Exp $
+// $Id: qdp_layout.h,v 1.8 2008-03-04 21:56:25 bjoo Exp $
 
 /*! @file
  * @brief Lattice layout
@@ -61,6 +61,14 @@ namespace Layout
    * The API requires this function to be here.
    */
   multi1d<int> siteCoords(int node, int index) QDP_CONST;
+  
+  extern "C" { 
+    /* Export this to "C" */
+    void QDPXX_getSiteCoords(int coord[], int node, int linear) QDP_CONST;
+    int QDPXX_getLinearSiteIndex(const int coord[]);
+    int QDPXX_nodeNumber(const int coord[]);
+
+  };
 
   //! Returns the node number of this node
   int nodeNumber() QDP_CONST;

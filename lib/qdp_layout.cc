@@ -1,4 +1,4 @@
-// $Id: qdp_layout.cc,v 1.5 2008-02-20 21:27:58 bjoo Exp $
+// $Id: qdp_layout.cc,v 1.6 2008-03-04 21:56:26 bjoo Exp $
 
 /*! @file
  * @brief Layout support routines
@@ -25,7 +25,35 @@ namespace Layout
 
     return logical;
   }
+
+  extern "C" { 
+
+    /* Export this to "C" */
+    void QDPXX_getSiteCoords(int coord[], int node, int linear) QDP_CONST {
+      multi1d<int> wrapped_coords = siteCoords(node,linear);
+      for(int i=0; i < Nd; i++) { 
+	coord[i] = wrapped_coords[i];
+      }
+    }
+    
+    int QDPXX_getLinearSiteIndex(const int coord[]) {
+      multi1d<int> wrapped_coords(Nd);
+      for(int i=0; i < Nd; i++) { 
+	wrapped_coords[i]=coord[i];
+      }
+      return linearSiteIndex(wrapped_coords);
+    }
+
+    int QDPXX_nodeNumber(const int coord[]) {
+      multi1d<int> wrapped_coords(Nd);
+      for(int i=0; i < Nd; i++) { 
+	wrapped_coords[i]=coord[i];
+      }
+      return nodeNumber(wrapped_coords);
+    }
+  }
 }
+
 
 #if QDP_USE_CB3D_LAYOUT == 1
 
