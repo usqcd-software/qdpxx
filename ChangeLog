@@ -1,6 +1,9 @@
+2008-03-04 16:56  tag qdp1-25-2
+
 2008-03-04 16:56  bjoo
 
-	* lib/: qdp_layout.cc, qdp_parscalar_layout.cc: DO IT
+	* include/qdp_layout.h, lib/qdp_layout.cc,
+	  lib/qdp_parscalar_layout.cc: DO IT
 
 2008-03-04 16:53  bjoo
 
