@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.26 2006-05-18 22:32:27 edwards Exp $
+// $Id: t_xml.cc,v 1.26.4.1 2008-03-15 14:28:54 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -24,31 +24,47 @@ int main(int argc, char **argv)
   Double d = 17;
   random(a);
 
+  QDPIO::cout << "line= " << __LINE__ << endl;
   try
   {
     XMLBufferWriter toxml;
+  QDPIO::cout << "line= " << __LINE__ << endl;
 
     push(toxml,"godzilla");
+  QDPIO::cout << "line= " << __LINE__ << endl;
     int dog = -17;
+  QDPIO::cout << "line= " << __LINE__ << endl;
     write(toxml,"dog", dog);
+  QDPIO::cout << "line= " << __LINE__ << endl;
     pop(toxml);
+  QDPIO::cout << "line= " << __LINE__ << endl;
 
     QDPIO::cout << "buffer = XXX" << toxml.str() << "XXX" << endl;
 
 //    std::istringstream list_stream(toxml.str()+"\n");
 //    XMLReader fromxml(list_stream);
 
+  QDPIO::cout << "line= " << __LINE__ << endl;
     XMLReader fromxml(toxml);
     int rob;
+  QDPIO::cout << "line= " << __LINE__ << endl;
     read(fromxml,"/godzilla/dog",rob);
+  QDPIO::cout << "line= " << __LINE__ << endl;
     QDPIO::cout << "found dog = " << rob << endl;
+  QDPIO::cout << "line= " << __LINE__ << endl;
   }
   catch(const string& e)
   {
-    QDP_error_exit("Error XMLBufferWriter into a XMLReader test: %s",e.c_str());
+    QDPIO::cerr << "Error: XMLBufferWriter into a XMLReader test: error=" << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "Error: caught cast error here: line= " << __LINE__ << endl;
+    QDP_abort(1);
   }
 
-
+  QDPIO::cout << "line= " << __LINE__ << endl;
   try
   {
     XMLFileWriter toxml("t_xml.input1");
@@ -66,10 +82,16 @@ int main(int argc, char **argv)
   }
   catch(const string& e)
   {
-    QDP_error_exit("Error with basic xml write tests: %s",e.c_str());
+    QDPIO::cerr << "Error: basic xml write tests: error=" << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "Error: caught cast error here: line= " << __LINE__ << endl;
+    QDP_abort(1);
   }
 
-
+  QDPIO::cout << "line= " << __LINE__ << endl;
   try
   {
     XMLReader fromxml;
@@ -86,7 +108,13 @@ int main(int argc, char **argv)
   {
     QDP_error_exit("Error reading some xml snippets: %s",e.c_str());
   }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "Error: caught cast error here: line= " << __LINE__ << endl;
+    QDP_abort(1);
+  }
 
+  QDPIO::cout << "line= " << __LINE__ << endl;
 
   try
   {
@@ -97,22 +125,29 @@ int main(int argc, char **argv)
     XMLBufferWriter toxml_1;
     toxml_1 << fromxml;
 
-    XMLBufferWriter toxml_2;
-    push(toxml_2,"imbed_some_xml");
-    write(toxml_2,"this_is_my_xml",fromxml);
-    pop(toxml_2);
+//    XMLBufferWriter toxml_2;
+//    push(toxml_2,"imbed_some_xml");
+//    write(toxml_2,"this_is_my_xml",fromxml);
+//    pop(toxml_2);
 
     XMLFileWriter toxml_3("t_xml.output1");
     toxml_3 << toxml_1;
 
     XMLFileWriter toxml_4("t_xml.output2");
-    write(toxml_4,"imbed_some_more",toxml_2);
+//    write(toxml_4,"imbed_some_more",toxml_2);
   }
   catch(const string& e)
   {
-    QDP_error_exit("Error reading some xml snippets: %s",e.c_str());
+    QDPIO::cerr << "Error: writing some xml snippets: error=" << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "Error: caught cast error here: line= " << __LINE__ << endl;
+    QDP_abort(1);
   }
 
+  QDPIO::cout << "line= " << __LINE__ << endl;
 
   // Test writing some more complex snippets
   try
@@ -171,41 +206,56 @@ int main(int argc, char **argv)
 
     // Now dump it out to disk
     XMLFileWriter filexml("t_xml.input2");
-    filexml << toxml;
+    filexml << toxml; 
+
   }
   catch(const string& e)
   {
-    QDP_error_exit("Test writing some more complex snippets",e.c_str());
+    QDPIO::cerr << "Error: writing some complex snippets: error=" << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "Error: caught cast error here: line= " << __LINE__ << endl;
+    QDP_abort(1);
   }
 
+  QDPIO::cout << "line= " << __LINE__ << endl;
 
   try 
   {
+    QDPIO::cout << "line= " << __LINE__ << endl;
     // Test reading some more complex snippets
     XMLReader fromxml_orig;
     fromxml_orig.open("t_xml.input2");
 
+    QDPIO::cout << "line= " << __LINE__ << endl;
     XMLReader fromxml(fromxml_orig, "/complex_xml");
 
+    QDPIO::cout << "line= " << __LINE__ << endl;
     XMLReader fromxml_tmp(fromxml, "seedThingy");
     ostringstream os;
     fromxml_tmp.printCurrentContext(os);
     QDPIO::cout << "Current context = XX" << os.str() << "XX" << endl;
 
+    QDPIO::cout << "line= " << __LINE__ << endl;
     QDP::Seed seed;
     read(fromxml,"seedThingy",seed);
     QDPIO::cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << endl;
 
+    QDPIO::cout << "line= " << __LINE__ << endl;
     multi1d<int> arrayInt;
     read(fromxml,"arrayInt",arrayInt);
     for(int i=0; i < arrayInt.size(); ++i)
       QDPIO::cout << "arrayInt[" << i << "] = " << arrayInt[i]  << "  node=" << Layout::nodeNumber() << endl;
 
+    QDPIO::cout << "line= " << __LINE__ << endl;
     multi1d<Real> arrayReal;
     read(fromxml,"arrayReal",arrayReal);
     for(int i=0; i < arrayReal.size(); ++i)
       QDPIO::cout << "arrayReal[" << i << "] = " << arrayReal[i] << "  node=" << Layout::nodeNumber() << endl;
 
+    QDPIO::cout << "line= " << __LINE__ << endl;
     multi1d<Complex> arrayComplex;
     read(fromxml,"arrayComplex",arrayComplex);
     for(int i=0; i < arrayComplex.size(); ++i)
@@ -213,45 +263,106 @@ int main(int argc, char **argv)
 		  << real(arrayComplex[i]) << "," 
 		  << imag(arrayComplex[i]) << ")" << endl;
 
+    QDPIO::cout << "line= " << __LINE__ << endl;
     QDP_info("done with array snippet tests");
   }
   catch(const string& e)
   {
-    QDP_error_exit("Error reading array snippets: %s",e.c_str());
+    QDPIO::cerr << "Error: reading array snippets: error=" << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "Error: caught cast error here: line= " << __LINE__ << endl;
+    QDP_abort(1);
   }
 
+  QDPIO::cout << "line= " << __LINE__ << endl;
 
-  // Try out an array context
+  // Try out a simple array context
   try
   { 
+  QDPIO::cout << "line= " << __LINE__ << endl;
+
     XMLFileWriter  xml_file_out("t_xml.output3");
+  QDPIO::cout << "line= " << __LINE__ << endl;
+
     push(xml_file_out,"root_for_output3");
-    XMLArrayWriter  xml_out(xml_file_out, 3);
-    push(xml_out,"this_is_an_array");
+
+  QDPIO::cout << "line= " << __LINE__ << endl;
+
+    TreeArrayWriter  xml_out(xml_file_out, 3);
+  QDPIO::cout << "line= " << __LINE__ << endl;
+
+    push(xml_out,"this_is_an_array"); // This starts the array
+
+  QDPIO::cout << "line= " << __LINE__ << endl;
 
     for(int i=0; i < xml_out.size(); ++i)
     {
       int x = -42;
-#if 1
-//    push(xml_out,"some_ignored_name");
-      push(xml_out);    // note, can use name or unnamed version here - name ignored
-      write(xml_out,"x",x);
-      pop(xml_out);
-#else
-      write(xml_out,"some_ignored_name",x);  // will instead use "elem"
-#endif
+
+      // Cannot use a writeElem because all the overloadings will not be present
+  QDPIO::cout << "line= " << __LINE__ << endl;
+
+      write(xml_out,xml_out.nextElem(),x);
+  QDPIO::cout << "line= " << __LINE__ << endl;
+
     }
     
-    pop(xml_out);
-    pop(xml_file_out);
+  QDPIO::cout << "line= " << __LINE__ << endl;
+
+    pop(xml_out);  // This closes the array
+  QDPIO::cout << "line= " << __LINE__ << endl;
+
 
     QDP_info("done with XMLArrayWrtiter tests");
   }
   catch (const string& e)
   {
-    QDP_error_exit("Error in array writing: %s",e.c_str());
+    QDPIO::cerr << "Error: reading array: error=" << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "Error: caught cast error here: line= " << __LINE__ << endl;
+    QDP_abort(1);
   }
 
+  QDPIO::cout << "line= " << __LINE__ << endl;
+
+  // Try out a complex (complicated with structs) array context
+  try
+  { 
+    XMLFileWriter  xml_file_out("t_xml.output3");
+    push(xml_file_out,"root_for_output3");
+    TreeArrayWriter  xml_out(xml_file_out, 3);
+    push(xml_out,"this_is_an_array_of_structs"); // This starts the array
+
+    for(int i=0; i < xml_out.size(); ++i)
+    {
+      int x = -42;
+      pushElem(xml_out);  // NOTE: push element name within an array
+      write(xml_out,"x",x);
+      popElem(xml_out);
+    }
+    
+    pop(xml_out);  // This closes the array
+
+    QDP_info("done with XMLArrayWrtiter tests");
+  }
+  catch (const string& e)
+  {
+    QDPIO::cerr << "Error: writing array: error=" << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "Error: caught cast error here: line= " << __LINE__ << endl;
+    QDP_abort(1);
+  }
+
+  QDPIO::cout << "line= " << __LINE__ << endl;
 
   try 
   {
@@ -286,9 +397,16 @@ int main(int argc, char **argv)
   }
   catch(const string& e)
   {
-    QDP_error_exit("Error reading array snippets: %s",e.c_str());
+    QDPIO::cerr << "Error: reading array snippets: error=" << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "Error: caught cast error here: line= " << __LINE__ << endl;
+    QDP_abort(1);
   }
 
+  QDPIO::cout << "line= " << __LINE__ << endl;
 
   try 
   {
@@ -304,7 +422,7 @@ int main(int argc, char **argv)
     XMLReader fromxml;
     fromxml.open("t_xml.input3");
 
-    fromxml.set<QDP::Real>("/root_for_input3/Mass", Real(0.5));
+//    fromxml.set<QDP::Real>("/root_for_input3/Mass", Real(0.5));
 
     // turn back into a string
     XMLBufferWriter new_writer;
@@ -320,11 +438,19 @@ int main(int argc, char **argv)
   }
   catch(const string& e)
   {
-    QDP_error_exit("Error modifying a reader: %s",e.c_str());
+    QDPIO::cerr << "Error: modifying a reader: error=" << e << endl;
+    QDP_abort(1);
+  }
+  catch(std::bad_cast) 
+  {
+    QDPIO::cerr << "Error: caught cast error here: line= " << __LINE__ << endl;
+    QDP_abort(1);
   }
 
   // Time to bolt
   QDP_finalize();
+
+  QDPIO::cout << "exiting: line= " << __LINE__ << endl;
 
   exit(0);
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.60 2007-06-10 14:32:08 edwards Exp $
+// $Id: qdp.h,v 1.60.4.1 2008-03-15 14:28:54 edwards Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -110,13 +110,18 @@ namespace QDP {
 #include "qdp_multi.h"
 
 #include "qdp_params.h"
+#include "qdp_defs.h"
+
 #include "qdp_layout.h"
 #include "qdp_filebuf.h"
 #include "qdp_io.h"
 #include "qdp_stdio.h"
-#include "qdp_xmlio.h"
+#include "qdp_tree_rep.h"
+#include "qdp_tree_io.h"
+#include "qdp_xml_io.h"
+#include "qdp_aff_io.h"
 #include "qdp_qdpio.h"
-#include "qdp_binx.h"
+//#include "qdp_binx.h"
 #include "qdp_subset.h"
 #include "qdp_map.h"
 #include "qdp_stopwatch.h"
@@ -145,7 +150,6 @@ namespace QDP {
 #include "qdp_outersubtype.h"
 
 // Replaces previous ifdef structure. Structure moved into the header file
-#include "qdp_defs.h"
 #include "qdp_globalfuncs.h"
 #include "qdp_specializations.h"
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primspinvec.h,v 1.9 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_primspinvec.h,v 1.9.4.1 2008-03-15 14:28:55 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Vector
@@ -168,33 +168,26 @@ TextWriter& operator<<(TextWriter& txt, const PSpinVector<T,N>& d)
 }
 
 
-//! XML output
+//! Tree output
 template<class T, int N>
 inline
-XMLWriter& operator<<(XMLWriter& xml, const PSpinVector<T,N>& d)
+void write(TreeWriter& tree, const std::string& s, const PSpinVector<T,N>& d)
 {
-  xml.openTag("SpinVector");
+  push(tree, s);
+  TreeArrayWriter tree_array(tree);
+  push(tree_array, "SpinVector");
 
-  XMLWriterAPI::AttributeList alist;
-
-  // Copy into another array first
   for(int i=0; i < N; ++i)
   {
-    alist.clear();
-    alist.push_back(XMLWriterAPI::Attribute("row", i));
-
-    xml.openTag("elem", alist);
-    xml << d.elem(i);
-    xml.closeTag();
+    pushElem(tree_array);
+    write(tree_array, "row", i);
+    write(tree_array, "vec", d.elem(i));
+    popElem(tree_array);
   }
 
-  xml.closeTag();  // Vector
-  return xml;
+  pop(tree_array); // SpinVector
+  pop(tree); // s
 }
-
-
-
-
  
 
 

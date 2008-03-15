@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.53 2007-06-10 14:32:08 edwards Exp $
+// $Id: qdp_outer.h,v 1.53.4.1 2008-03-15 14:28:54 edwards Exp $
 
 #ifndef QDP_OUTER_H
 #define QDP_OUTER_H
@@ -198,23 +198,33 @@ StandardOutputStream& operator<<(StandardOutputStream& s, const QDPExpr<RHS, OSc
   return s << C1(l);
 }
 
-//! XML output
-/*! Supports also having an inner grid */
+//! Tree OScalar output
 template<class T>
 inline
-XMLWriter& operator<<(XMLWriter& xml, const OScalar<T>& d)
+void write(TreeWriter& tree, const std::string& s, const OScalar<T>& d)
 {
-  return xml << d.elem();
+  write(tree, s, d.elem());
 }
 
-//! XML input
+//! Tree input
 /*! Supports also having an inner grid */
 template<class T>
 inline
-void read(XMLReader& xml, const string& path, OScalar<T>& d)
+void read(TreeReader& tree, const std::string& s, OScalar<T>& d)
 {
-  read(xml, path, d.elem());
+  read(tree, s, d.elem());
 }
+
+
+//! Tree OLattice output
+//template<class T>
+//inline
+//void write(TreeWriter& tree, const std::string& s, const OLattice<T>& d)
+//{
+//  tree.openTag(s);
+//  tree << d;
+//  tree.closeTag();
+//}
 
 
 /*! @} */  // end of group oscalar

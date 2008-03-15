@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.25 2007-08-16 15:49:58 edwards Exp $
+// $Id: qdp_scalarvec_specific.h,v 1.25.4.1 2008-03-15 14:28:55 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 
@@ -1278,8 +1278,10 @@ multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
 
 //! XML output
 template<class T>  
-XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
+inline 
+void write(XMLWriter& xml, const std::string& s, const OLattice<T>& d)
 {
+  xml.openTag(s);
   xml.openTag("OLattice");
 
   XMLWriterAPI::AttributeList alist;
@@ -1306,9 +1308,8 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
     xml.closeTag();
   }
 
-  xml.closeTag(); // OLattice
-
-  return xml;
+  xml.closeTag(); // OLattic
+  xml.closeTag(); // s
 }
 
 

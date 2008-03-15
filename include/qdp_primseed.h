@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.12 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_primseed.h,v 1.12.4.1 2008-03-15 14:28:55 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed
@@ -167,35 +167,37 @@ TextWriter& operator<<(TextWriter& txt, const PSeed<T>& d)
   return txt;
 }
 
-//! XML output
+//! Tree output
 template<class T>
 inline
-XMLWriter& operator<<(XMLWriter& xml, const PSeed<T>& d)
+void write(TreeWriter& tree, const std::string& s, const PSeed<T>& d)
 {
-  xml.openTag("Seed");
+  push(tree, s);
+  TreeArrayWriter tree_array(tree);
+  push(tree_array, "Seed");
 
   // Copy into another array first
   for(int i=0; i < 4; ++i)
   {
-    xml.openTag("elem");
-    xml << d.elem(i);
-    xml.closeTag();
+    write(tree_array, tree_array.arrayElem(i), d.elem(i));
   }
 
-  xml.closeTag();  // Seed
-  return xml;
+  pop(tree_array);  // Seed
+  pop(tree);  // s
 }
 
 
-//! XML input
+//! Tree input
 template<class T>
 inline
-void read(XMLReader& xml, const string& path, PSeed<T>& d)
+void read(TreeReader& tree, const string& path, PSeed<T>& d)
 {
   typedef typename PrimitiveScalar<T>::Type_t  S;
   multi1d<S> ff(4);
 
-  read(xml, path + "/Seed", ff);
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+  read(tree, path + "/Seed", ff);
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
   
   for(int i=0; i < 4; ++i)
   {

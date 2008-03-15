@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.36 2007-08-16 15:44:53 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.36.4.1 2008-03-15 14:28:55 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -1505,13 +1505,14 @@ private:
 //! Decompose a lexicographic site into coordinates
 multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
 
-//! XML output
+//! Tree output
 template<class T>  
-XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
+inline 
+void write(TreeWriter& tree, const std::string& s, const OLattice<T>& d)
 {
-  xml.openTag("OLattice");
-
-  XMLWriterAPI::AttributeList alist;
+  push(tree, s);
+  TreeArrayWriter tree_array(tree);
+  push(tree_array, "OLattice");
 
   const int vvol = Layout::vol();
   for(int site=0; site < vvol; ++site) 
@@ -1522,18 +1523,15 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
     for(int i=1; i < coord.size(); ++i)
       os << " " << coord[i];
 
-    alist.clear();
-    alist.push_back(XMLWriterAPI::Attribute("site", site));
-    alist.push_back(XMLWriterAPI::Attribute("coord", os.str()));
-
-    xml.openTag("elem", alist);
-    xml << d.elem(Layout::linearSiteIndex(site));
-    xml.closeTag();
+    pushElem(tree_array);
+    write(tree_array, "site", site);
+    write(tree_array, "coord", coord);
+    write(tree_array, "lat", d.elem(Layout::linearSiteIndex(site)));
+    popElem(tree_array);
   }
 
-  xml.closeTag(); // OLattice
-
-  return xml;
+  pop(tree_array); // OLattice
+  pop(tree); // s
 }
 
 

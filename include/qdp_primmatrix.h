@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.33 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_primmatrix.h,v 1.33.4.1 2008-03-15 14:28:55 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix
@@ -189,31 +189,29 @@ TextWriter& operator<<(TextWriter& txt, const PMatrix<T,N,C>& d)
 }
 
 
-//! XML output
+//! Tree output
 template<class T, int N, template<class,int> class C>  
 inline
-XMLWriter& operator<<(XMLWriter& xml, const PMatrix<T,N,C>& d)
+void write(TreeWriter& tree, const std::string& s, const PMatrix<T,N,C>& d)
 {
-  xml.openTag("Matrix");
-
-  XMLWriterAPI::AttributeList alist;
+  push(tree, s);
+  TreeArrayWriter tree_array(tree);
+  push(tree_array, "Matrix");
 
   for(int i=0; i < N; ++i)
   {
     for(int j=0; j < N; ++j)
     {
-      alist.clear();
-      alist.push_back(XMLWriterAPI::Attribute("row", i));
-      alist.push_back(XMLWriterAPI::Attribute("col", j));
-
-      xml.openTag("elem", alist);
-      xml << d.elem(i,j);
-      xml.closeTag();
+      pushElem(tree_array);
+      write(tree_array, "row", i);
+      write(tree_array, "col", j);
+      write(tree_array, "mat", d.elem(i,j));
+      popElem(tree_array);
     }
   }
 
-  xml.closeTag(); // Matrix
-  return xml;
+  pop(tree_array); // Matrix
+  pop(tree); // s
 }
 
 /*! @} */  // end of group primmatrix

@@ -1,5 +1,5 @@
 // -*- C++ -*- 
-// $Id: qdp_defs.h,v 1.14 2005-11-11 21:18:54 bjoo Exp $
+// $Id: qdp_defs.h,v 1.14.4.1 2008-03-15 14:28:54 edwards Exp $
 /*! file 
  * \brief QDP Typedef switcharoo 
  *
@@ -18,6 +18,7 @@
 
 #include <qdp_config.h>
 #include "qdp_precision.h"
+#include "qdp_params.h"
 
 #if defined(ARCH_SCALAR) || defined(ARCH_PARSCALAR)
 #include "qdp_scalarsite_defs.h"

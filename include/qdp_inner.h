@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.32 2007-06-10 14:32:08 edwards Exp $
+// $Id: qdp_inner.h,v 1.32.4.1 2008-03-15 14:28:54 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -215,18 +215,18 @@ TextWriter& operator<<(TextWriter& s, const IScalar<T>& d)
 }
 
 
-//! XML output
+//! Tree output
 template<class T>
 inline
-XMLWriter& operator<<(XMLWriter& xml, const IScalar<T>& d)
+void write(TreeWriter& xml, const std::string& s, const IScalar<T>& d)
 {
-  return xml << d.elem();
+  write(xml, s, d.elem());
 }
 
-//! XML input
+//! Tree input
 template<class T>
 inline
-void read(XMLReader& xml, const string& path, IScalar<T>& d)
+void read(TreeReader& xml, const string& path, IScalar<T>& d)
 {
   read(xml, path, d.elem());
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.25 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_primvector.h,v 1.25.4.1 2008-03-15 14:28:55 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -200,29 +200,28 @@ TextWriter& operator<<(TextWriter& txt, const PVector<T,N,C>& d)
 }
 
 
-//! XML output
-template<class T, int N, template<class,int> class C> 
+//! Tree output
+template<class T, int N, template<class,int> class C>  
 inline
-XMLWriter& operator<<(XMLWriter& xml, const PVector<T,N,C>& d)
+void write(TreeWriter& tree, const std::string& s, const PVector<T,N,C>& d)
 {
-  xml.openTag("Vector");
+  push(tree, s);
+  TreeArrayWriter tree_array(tree);
+  push(tree_array, "Vector");
 
-  XMLWriterAPI::AttributeList alist;
-
-  // Copy into another array first
   for(int i=0; i < N; ++i)
   {
-    alist.clear();
-    alist.push_back(XMLWriterAPI::Attribute("row", i));
-
-    xml.openTag("elem", alist);
-    xml << d.elem(i);
-    xml.closeTag();
+    pushElem(tree_array);
+    write(tree_array, "row", i);
+    write(tree_array, "vec", d.elem(i));
+    popElem(tree_array);
   }
 
-  xml.closeTag();  // Vector
-  return xml;
+  pop(tree_array); // Vector
+  pop(tree); // s
 }
+ 
+
 
 /*! @} */  // end of group primvector
 

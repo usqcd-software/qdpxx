@@ -124,7 +124,6 @@ nobase_include_HEADERS = \
 		qdp_inner.h \
 		qdp_init.h \
 		qdp_io.h \
-		qdp_binx.h \
 		qdp_stdio.h \
 		qdp_layout.h \
 		qdp_map.h \
@@ -152,7 +151,13 @@ nobase_include_HEADERS = \
 		qdp_crc32.h \
 		qdp_byteorder.h \
 		qdp_util.h \
-		qdp_xmlio.h \
+		qdp_tree_rep.h \
+		qdp_tree_io.h \
+		qdp_tree_imp.h \
+		qdp_xml_io.h \
+		qdp_xml_imp.h \
+		qdp_aff_io.h \
+		qdp_aff_imp.h \
 		qdp_qdpexpr.h \
 		qdp.h \
 		qdp_qdpio.h \
@@ -182,6 +187,9 @@ nobase_include_HEADERS = \
 		$(SSESITE_HDRS) \
 		$(SSEVEC_HDRS) \
 	        $(BAGEL_HDRS)
+
+# This has been decomissioned. RGE is not aware of it being used.
+# qdp_binx.h
 
 nodist_include_HEADERS = qdp_config_internal.h
 

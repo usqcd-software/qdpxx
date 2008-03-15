@@ -34,14 +34,15 @@ POST_UNINSTALL = :
 @BUILD_LIBINTRIN_TRUE@am__append_2 = -L@top_builddir@/other_libs/libintrin/lib
 @BUILD_LIBINTRIN_TRUE@am__append_3 = -lintrin
 check_PROGRAMS = t_skeleton$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
-	t_xml$(EXEEXT) t_remote$(EXEEXT) t_entry$(EXEEXT) \
-	t_nersc$(EXEEXT) t_shift$(EXEEXT) t_exotic$(EXEEXT) \
-	t_basic$(EXEEXT) t_qio$(EXEEXT) t_cugauge$(EXEEXT) \
-	t_transpose_spin$(EXEEXT) t_partfile$(EXEEXT) t_su3$(EXEEXT) \
-	$(am__EXEEXT_2) $(am__EXEEXT_3)
-EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_binx$(EXEEXT) \
-	t_gsum$(EXEEXT) $(am__EXEEXT_1) nersc2ildg$(EXEEXT) \
-	test_ildglat$(EXEEXT) lhpc2ildg$(EXEEXT)
+	t_xml$(EXEEXT) t_aff$(EXEEXT) t_remote$(EXEEXT) \
+	t_entry$(EXEEXT) t_nersc$(EXEEXT) t_shift$(EXEEXT) \
+	t_exotic$(EXEEXT) t_basic$(EXEEXT) t_qio$(EXEEXT) \
+	t_cugauge$(EXEEXT) t_transpose_spin$(EXEEXT) \
+	t_partfile$(EXEEXT) t_su3$(EXEEXT) $(am__EXEEXT_2) \
+	$(am__EXEEXT_3)
+EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_gsum$(EXEEXT) \
+	$(am__EXEEXT_1) nersc2ildg$(EXEEXT) test_ildglat$(EXEEXT) \
+	lhpc2ildg$(EXEEXT)
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_4 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_5 = t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3 t_spinproj t_spinproj2
 @BUILD_STAGGERED_EXAMPLES_TRUE@am__append_6 = 
@@ -78,14 +79,14 @@ am_nersc2ildg_OBJECTS = nersc2ildg.$(OBJEXT) $(am__objects_1) \
 nersc2ildg_OBJECTS = $(am_nersc2ildg_OBJECTS)
 nersc2ildg_LDADD = $(LDADD)
 nersc2ildg_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am_t_aff_OBJECTS = t_aff.$(OBJEXT) $(am__objects_1)
+t_aff_OBJECTS = $(am_t_aff_OBJECTS)
+t_aff_LDADD = $(LDADD)
+t_aff_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_t_basic_OBJECTS = t_basic.$(OBJEXT)
 t_basic_OBJECTS = $(am_t_basic_OBJECTS)
 t_basic_LDADD = $(LDADD)
 t_basic_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_t_binx_OBJECTS = t_binx.$(OBJEXT) $(am__objects_1)
-t_binx_OBJECTS = $(am_t_binx_OBJECTS)
-t_binx_LDADD = $(LDADD)
-t_binx_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_t_blas_OBJECTS = t_blas.$(OBJEXT) blas1.$(OBJEXT)
 t_blas_OBJECTS = $(am_t_blas_OBJECTS)
 t_blas_LDADD = $(LDADD)
@@ -223,21 +224,21 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
-	$(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
-	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
-	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
-	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
-	$(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_gsum_SOURCES) \
-	$(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) \
-	$(t_nersc_SOURCES) $(t_partfile_SOURCES) $(t_qdp_SOURCES) \
-	$(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
+SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) $(t_aff_SOURCES) \
+	$(t_basic_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) \
+	$(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) \
+	$(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_dslashm_SOURCES) \
+	$(t_entry_SOURCES) $(t_exotic_SOURCES) $(t_foo_SOURCES) \
+	$(t_formfac_SOURCES) $(t_gsum_SOURCES) $(t_io_SOURCES) \
+	$(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) \
+	$(t_partfile_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) \
+	$(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
 	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
 	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
 	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
 	$(test_ildglat_SOURCES)
 DIST_SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
-	$(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
+	$(t_aff_SOURCES) $(t_basic_SOURCES) $(t_blas_SOURCES) \
 	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
 	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
 	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
@@ -374,12 +375,16 @@ AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
 	-I@top_srcdir@/other_libs/xpath_reader/include \
 	@BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@ \
 	$(am__append_1)
+
+# Fix this for this moment
 AM_LDFLAGS = -L@top_builddir@/lib -L@top_builddir@/other_libs/qio/lib \
 	-L@top_builddir@/other_libs/qio/other_libs/c-lime/lib \
 	-L@top_builddir@/other_libs/xpath_reader/lib @LDFLAGS@ \
-	@BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@ $(am__append_2)
-LDADD = -lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ \
-	@LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@ $(am__append_3)
+	@BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@ -L/usr/local/share/lhpc/lib \
+	$(am__append_2)
+LDADD = -lqdp -lXPathReader -lxmlWriter -lqio -llime -llhpc-aff \
+	@BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@ \
+	$(am__append_3)
 
 #
 # Local Headers
@@ -391,8 +396,8 @@ HDRS = examples.h
 t_skeleton_SOURCES = t_skeleton.cc
 t_remote_SOURCES = t_remote.cc $(HDRS)
 t_foo_SOURCES = t_foo.cc $(HDRS)
+t_aff_SOURCES = t_aff.cc $(HDRS)
 t_xml_SOURCES = t_xml.cc $(HDRS)
-t_binx_SOURCES = t_binx.cc $(HDRS)
 t_qio_SOURCES = t_qio.cc $(HDRS)
 t_qio_DEPENDENCIES = build_lib rebuild_other_libs
 t_qio_factory_SOURCES = t_qio_factory.cc $(HDRS)
@@ -476,12 +481,12 @@ lhpc2ildg$(EXEEXT): $(lhpc2ildg_OBJECTS) $(lhpc2ildg_DEPENDENCIES)
 nersc2ildg$(EXEEXT): $(nersc2ildg_OBJECTS) $(nersc2ildg_DEPENDENCIES) 
 	@rm -f nersc2ildg$(EXEEXT)
 	$(CXXLINK) $(nersc2ildg_OBJECTS) $(nersc2ildg_LDADD) $(LIBS)
+t_aff$(EXEEXT): $(t_aff_OBJECTS) $(t_aff_DEPENDENCIES) 
+	@rm -f t_aff$(EXEEXT)
+	$(CXXLINK) $(t_aff_OBJECTS) $(t_aff_LDADD) $(LIBS)
 t_basic$(EXEEXT): $(t_basic_OBJECTS) $(t_basic_DEPENDENCIES) 
 	@rm -f t_basic$(EXEEXT)
 	$(CXXLINK) $(t_basic_OBJECTS) $(t_basic_LDADD) $(LIBS)
-t_binx$(EXEEXT): $(t_binx_OBJECTS) $(t_binx_DEPENDENCIES) 
-	@rm -f t_binx$(EXEEXT)
-	$(CXXLINK) $(t_binx_OBJECTS) $(t_binx_LDADD) $(LIBS)
 t_blas$(EXEEXT): $(t_blas_OBJECTS) $(t_blas_DEPENDENCIES) 
 	@rm -f t_blas$(EXEEXT)
 	$(CXXLINK) $(t_blas_OBJECTS) $(t_blas_LDADD) $(LIBS)
@@ -592,8 +597,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nersc2ildg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rgauge.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_aff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_basic.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_binx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_blas.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_blas_g5.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_blas_g5_2.Po@am__quote@

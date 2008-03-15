@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.48 2007-08-16 15:44:53 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.48.4.1 2008-03-15 14:28:54 edwards Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -2014,10 +2014,12 @@ multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
 
 //! XML output
 template<class T>  
-XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
+inline 
+void write(XMLWriter& xml, const std::string& s, const OLattice<T>& d)
 {
   T recv_buf;
 
+  xml.openTag(s);
   xml.openTag("OLattice");
   XMLWriterAPI::AttributeList alist;
 
@@ -2066,7 +2068,7 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
   }
 
   xml.closeTag(); // OLattice
-  return xml;
+  xml.closeTag(); // s
 }
 
 

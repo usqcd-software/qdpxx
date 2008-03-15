@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.32 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_reality.h,v 1.32.4.1 2008-03-15 14:28:55 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -218,20 +218,20 @@ TextWriter& operator<<(TextWriter& s, const RScalar<T>& d)
 }
 
 
-//! XML output
+//! Tree output
 template<class T>
 inline
-XMLWriter& operator<<(XMLWriter& xml, const RScalar<T>& d)
+void write(TreeWriter& tree, const std::string& s, const RScalar<T>& d)
 {
-  return xml << d.elem();
+  write(tree, s, d.elem());
 }
 
-//! XML input
+//! Tree input
 template<class T>
 inline
-void read(XMLReader& xml, const string& path, RScalar<T>& d)
+void read(TreeReader& tree, const string& s, RScalar<T>& d)
 {
-  read(xml, path, d.elem());
+  read(tree, s, d.elem());
 }
 
 
@@ -424,55 +424,35 @@ TextWriter& operator<<(TextWriter& s, const RComplex<T>& d)
 }
 
 
-//! XML output
+//! Tree output
 template<class T>
 inline
-XMLWriter& operator<<(XMLWriter& xml, const RComplex<T>& d)
+void write(TreeWriter& tree, const std::string& s, const RComplex<T>& d)
 {
-  xml.openTag("re");
-  xml << d.real();
-  xml.closeTag();
-  xml.openTag("im");
-  xml << d.imag();
-  xml.closeTag();
-
-  return xml;
+  QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+  push(tree, s);
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+  write(tree, "re", d.real());
+  QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+  write(tree, "im", d.imag());
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+  pop(tree);
+  QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
 }
 
-//! XML input
+//! Tree input
 template<class T>
 inline
-void read(XMLReader& xml, const string& xpath, RComplex<T>& d)
+void read(TreeReader& tree, const string& xpath, RComplex<T>& d)
 {
-  std::ostringstream error_message;
-  
-  // XPath for the real part 
-  string path_real = xpath + "/re";
-	
-  // XPath for the imaginary part.
-  string path_imag = xpath + "/im";
-	
-  // Try and recursively get the real part
-  try { 
-    read(xml, path_real, d.real());
-  }
-  catch(const string &e) {
-    error_message << "XPath Query: " << xpath << " Error: "
-		  << "Failed to match real part of RComplex Object with self constructed path: " << path_real;
-    
-    throw error_message.str();
-  }
-	
-  // Try and recursively get the imaginary part
-  try {
-    read(xml, path_imag, d.imag());
-  }
-  catch(const string &e) {
-    error_message << "XPath Query: " << xpath <<" Error:"
-		  <<"Failed to match imaginary part of RComplex Object with self constructed path: " << path_imag;
-    
-    throw error_message.str();
-  }
+  QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+  TreeReader tree_sub(tree, xpath);
+  QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+
+  read(tree_sub, "re", d.real());
+  QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+  read(tree_sub, "im", d.imag());
+  QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
 }
 
 

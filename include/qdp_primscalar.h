@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.29 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.29.4.1 2008-03-15 14:28:55 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -214,20 +214,20 @@ TextWriter& operator<<(TextWriter& txt, const PScalar<T>& d)
   return txt << d.elem();
 }
 
-//! XML output
+//! Tree output
 template<class T>
 inline
-XMLWriter& operator<<(XMLWriter& xml, const PScalar<T>& d)
+void write(TreeWriter& tree, const std::string& s, const PScalar<T>& d)
 {
-  return xml << d.elem();
+  write(tree, s, d.elem());
 }
 
-//! XML input
+//! Tree input
 template<class T>
 inline
-void read(XMLReader& xml, const string& path, PScalar<T>& d)
+void read(TreeReader& tree, const string& path, PScalar<T>& d)
 {
-  read(xml, path, d.elem());
+  read(tree, path, d.elem());
 }
 
 

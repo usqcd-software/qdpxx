@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_specializations.h,v 1.11 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_specializations.h,v 1.11.4.1 2008-03-15 14:28:56 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -43,28 +43,6 @@ toBool(const Boolean& s)
 {
   return toBool(s.elem());
 }
-
-
-// XML readers
-template<>
-void read(XMLReader& xml, const string& s, multi1d<Integer>& d);
-template<>
-void read(XMLReader& xml, const string& s, multi1d<Real32>& d);
-template<>
-void read(XMLReader& xml, const string& s, multi1d<Real64>& d);
-template<>
-void read(XMLReader& xml, const string& s, multi1d<Boolean>& d);
-
-// XML writers
-template<>
-void write(XMLWriter& xml, const string& s, const multi1d<Integer>& d);
-template<>
-void write(XMLWriter& xml, const string& s, const multi1d<Real32>& d);
-template<>
-void write(XMLWriter& xml, const string& s, const multi1d<Real64>& d);
-template<>
-void write(XMLWriter& xml, const string& s, const multi1d<Boolean>& d);
-
 
 //
 // Return an equivalent QDP type given some simple machine type

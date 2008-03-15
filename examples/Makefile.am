@@ -23,11 +23,15 @@ AM_LDFLAGS = -L@top_builddir@/lib \
              -L@top_builddir@/other_libs/xpath_reader/lib \
              @LDFLAGS@ @BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@
 
+# Fix this for this moment
+AM_LDFLAGS += -L/usr/local/share/lhpc/lib
+
 if BUILD_LIBINTRIN
 AM_LDFLAGS += -L@top_builddir@/other_libs/libintrin/lib
 endif
 
-LDADD = -lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@
+LDADD = -lqdp -lXPathReader -lxmlWriter -lqio -llime -llhpc-aff \
+   @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@
 
 if BUILD_LIBINTRIN
 LDADD += -lintrin
@@ -42,10 +46,10 @@ HDRS=examples.h
 # The programs to build
 # 
 check_PROGRAMS = t_skeleton t_io t_mesplq \
-      t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
+      t_xml t_aff t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
       t_cugauge t_transpose_spin t_partfile t_su3
 
-EXTRA_PROGRAMS  = t_qio_factory t_binx t_gsum
+EXTRA_PROGRAMS  = t_qio_factory t_gsum
 
 
 if BUILD_WILSON_EXAMPLES
@@ -65,8 +69,8 @@ endif
 t_skeleton_SOURCES = t_skeleton.cc
 t_remote_SOURCES = t_remote.cc $(HDRS)
 t_foo_SOURCES = t_foo.cc $(HDRS)
+t_aff_SOURCES = t_aff.cc $(HDRS)
 t_xml_SOURCES = t_xml.cc $(HDRS)
-t_binx_SOURCES = t_binx.cc $(HDRS)
 t_qio_SOURCES = t_qio.cc $(HDRS)
 t_qio_DEPENDENCIES = build_lib rebuild_other_libs
 t_qio_factory_SOURCES = t_qio_factory.cc $(HDRS)
