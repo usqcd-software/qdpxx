@@ -1,3 +1,21 @@
+2008-03-15 10:28  edwards
+
+	* examples/Makefile.am, examples/t_aff.cc, examples/t_xml.cc,
+	  include/Makefile.am, include/qdp.h, include/qdp_aff_imp.h,
+	  include/qdp_aff_io.h, include/qdp_defs.h, include/qdp_inner.h,
+	  include/qdp_outer.h, include/qdp_parscalar_specific.h,
+	  include/qdp_parscalarvec_specific.h, include/qdp_primmatrix.h,
+	  include/qdp_primscalar.h, include/qdp_primseed.h,
+	  include/qdp_primspinvec.h, include/qdp_primvector.h,
+	  include/qdp_reality.h, include/qdp_scalar_specific.h,
+	  include/qdp_scalarvec_specific.h, include/qdp_specializations.h,
+	  include/qdp_tree_imp.h, include/qdp_tree_io.h,
+	  include/qdp_tree_rep.h, include/qdp_xml_imp.h,
+	  include/qdp_xml_io.h, lib/Makefile.am, lib/qdp_aff_imp.cc,
+	  lib/qdp_aff_io.cc, lib/qdp_tree_io.cc, lib/qdp_tree_rep.cc,
+	  lib/qdp_xml_imp.cc, lib/qdp_xml_io.cc: First versions of
+	  TreeReader/Writer class structure with XML and AFF.
+
 2008-03-04 16:56  tag qdp1-25-2
 
 2008-03-04 16:56  bjoo
