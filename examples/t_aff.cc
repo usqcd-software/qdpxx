@@ -1,4 +1,4 @@
-// $Id: t_aff.cc,v 1.1.2.1 2008-03-15 14:28:54 edwards Exp $
+// $Id: t_aff.cc,v 1.1.2.2 2008-03-16 02:40:03 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -28,18 +28,16 @@ int main(int argc, char **argv)
   QDPIO::cout << "line= " << __LINE__ << endl;
   try
   {
-    AFFFileWriterImp toaff("t_aff.input1");
+    AFFFileWriter aff("t_aff.input1");
 
-    int rob = -5;
-    toaff.openTag("rob");
-    toaff.openTag("bar");
-    toaff.write("rob", rob);
-    string fred="the life";
-    toaff.write("fred", fred);
-    toaff.closeTag();
-    toaff.closeTag();
+    int a = 0;
+    multi1d<double> bar(5);
+    bar = 2.3;
 
-    toaff.close();
+    push(aff, "root");
+    write(aff, "a", a);
+    write(aff, "bar", bar);
+    pop(aff);
   }
   catch(const string& e)
   {
@@ -55,31 +53,15 @@ int main(int argc, char **argv)
   QDPIO::cout << "line= " << __LINE__ << endl;
   try
   {
-    LAFFReaderImp orig("t_aff.input1");
-    LAFFReaderImp fromaff(orig, "rob");
+    AFFReader aff("t_aff.input1");
 
-    fromaff.exist("/rob/bar/rob");
-    fromaff.exist("/rob/fred/rob");
-    fromaff.exist("rob");
-    fromaff.exist("bar");
+    int a;
 
-    int rob;
-    fromaff.read("/rob/bar/rob", rob);
-    QDPIO::cout << "rob= " << rob << endl;
+    TreeReader tree(aff, "/root");
+    read(tree, "a", a);
 
-    fromaff.read("bar/rob", rob);
-    QDPIO::cout << "bar= " << rob << endl;
-
-    LAFFReaderImp faff(fromaff, "bar");
-
-    faff.read("rob", rob);
-    QDPIO::cout << "bar= " << rob << endl;
-
-    string fred;
-    faff.read("fred", fred);
-    QDPIO::cout << "fred= XX" << fred << "XX" << endl;
-
-    fromaff.close();
+    multi1d<double> bar;
+    read(tree, "bar", bar);
   }
   catch(const string& e)
   {

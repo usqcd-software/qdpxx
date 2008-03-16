@@ -1,4 +1,4 @@
-// $Id: qdp_aff_imp.cc,v 1.1.2.1 2008-03-15 14:28:56 edwards Exp $
+// $Id: qdp_aff_imp.cc,v 1.1.2.2 2008-03-16 02:40:04 edwards Exp $
 //
 /*! @file
  * @brief AFF IO support implementation
@@ -331,27 +331,27 @@ namespace QDP
   }
   void LAFFReaderImp::read(const std::string& xpath, unsigned int& result)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void LAFFReaderImp::read(const std::string& xpath, short int& result)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void LAFFReaderImp::read(const std::string& xpath, unsigned short int& result)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void LAFFReaderImp::read(const std::string& xpath, long int& result)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void LAFFReaderImp::read(const std::string& xpath, unsigned long int& result)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void LAFFReaderImp::read(const std::string& xpath, float& result)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void LAFFReaderImp::read(const std::string& xpath, double& result)
   {
@@ -380,7 +380,7 @@ namespace QDP
   }
   void LAFFReaderImp::read(const std::string& xpath, bool& result)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
    
   // Return the entire contents of the Reader as a TreeRep
@@ -410,7 +410,7 @@ namespace QDP
   // Count the number of occurances from the Xpath query
   int LAFFReaderImp::count(const std::string& xpath)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
     int n=0;
     
     // Now broadcast back out to all nodes
@@ -421,7 +421,7 @@ namespace QDP
   //! Count the number of occurances from the Xpath query
   int LAFFReaderImp::countArrayElem()
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
 
   void LAFFReaderImp::read(const std::string& xpath, multi1d<int>& result)
@@ -756,27 +756,27 @@ namespace QDP
   }
   void AFFFileWriterImp::write(const string& tagname, const unsigned int& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void AFFFileWriterImp::write(const string& tagname, const short int& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void AFFFileWriterImp::write(const string& tagname, const unsigned short int& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void AFFFileWriterImp::write(const string& tagname, const long int& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void AFFFileWriterImp::write(const string& tagname, const unsigned long int& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void AFFFileWriterImp::write(const string& tagname, const float& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void AFFFileWriterImp::write(const string& tagname, const double& output)
   {
@@ -796,7 +796,7 @@ namespace QDP
   }
   void AFFFileWriterImp::write(const string& tagname, const bool& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
    
 
@@ -805,7 +805,7 @@ namespace QDP
   template<typename T>
   void AFFFileWriterImp::writeArrayPrimitive(const std::string& s, const multi1d<T>& s1)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
 
     QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     std::ostringstream output;
@@ -825,56 +825,68 @@ namespace QDP
 
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<int>& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<unsigned int>& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<short int>& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<unsigned short int>& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<long int>& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<unsigned long int>& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
-  void AFFFileWriterImp::write(const std::string& tagname, const multi1d<float>& s1)
+  void AFFFileWriterImp::write(const std::string& tagname, const multi1d<float>& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
-  void AFFFileWriterImp::write(const std::string& tagname, const multi1d<double>& s1)
+  void AFFFileWriterImp::write(const std::string& tagname, const multi1d<double>& output)
   {
-    notImplemented(__func__);
+    if (Layout::primaryNode())
+    {
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+      openTag(tagname);
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+      if (aff_node_put_double(getOstream(), current_node, output.slice(), output.size()) != 0)
+      {
+	checkError();
+      }
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+      closeTag();
+      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+    }
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<bool>& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
 
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<Integer>& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
-  void AFFFileWriterImp::write(const std::string& tagname, const multi1d<Real32>& s1)
+  void AFFFileWriterImp::write(const std::string& tagname, const multi1d<Real32>& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
-  void AFFFileWriterImp::write(const std::string& tagname, const multi1d<Real64>& s1)
+  void AFFFileWriterImp::write(const std::string& tagname, const multi1d<Real64>& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<Boolean>& output)
   {
-    notImplemented(__func__);
+    notImplemented(__PRETTY_FUNCTION__);
   }
 
 

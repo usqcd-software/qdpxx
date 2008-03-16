@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_tree_io.h,v 1.1.2.1 2008-03-15 14:28:56 edwards Exp $
+// $Id: qdp_tree_io.h,v 1.1.2.2 2008-03-16 02:40:04 edwards Exp $
 /*! @file
  * @brief Tree IO support
  *
@@ -115,13 +115,13 @@ namespace QDP
     //! Return the current context as a TreeRep
     virtual void treeRepCurrentContext(TreeRep& output);
         
-    //! Count the number of occurances from the Xpath query
+    //! Does the result of this Xpath query exist
     /*! THIS IS NEEDED. PROBABLY WILL NOT SUPPORT GENERIC XPATH */
     virtual bool exist(const std::string& xpath);
 
     //! Count the number of occurances from the Xpath query
-    /*! THIS IS NEEDED. PROBABLY WILL NOT SUPPORT GENERIC XPATH */
-    virtual int count(const std::string& xpath);
+    /*! PROBABLY WILL NOT SUPPORT GENERIC XPATH */
+//    virtual int count(const std::string& xpath);
 
     //! Count the array element entries
     virtual int countArrayElem();

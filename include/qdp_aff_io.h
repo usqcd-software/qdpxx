@@ -1,8 +1,8 @@
 // -*- C++ -*-
-// $Id: qdp_aff_io.h,v 1.1.2.1 2008-03-15 14:28:54 edwards Exp $
+// $Id: qdp_aff_io.h,v 1.1.2.2 2008-03-16 02:40:04 edwards Exp $
 
 /*! @file
- * @brief XML IO support
+ * @brief AFF IO support
  */
 
 #ifndef QDP_AFF_IO_H
@@ -15,17 +15,12 @@ namespace QDP
 {
 
   // Forward declarations
-  class AFFReader;
-  class AFFWriter;
-  class AFFBufferWriter;
-  class AFFFileWriter;
-  class AFFArrayWriter;
+  class LAFFReaderImp;
+  class AFFFileWriterImp;
 
   /*! @ingroup io
    * @{
    */
-
-#if 0
 
   //--------------------------------------------------------------------------------
   //! AFF reader class
@@ -63,13 +58,6 @@ namespace QDP
     */
     void open(const std::string& filename);
 
-    //! Opens and reads an AFF file.
-    /*!
-      \param id The input stream of the file
-      \post Any previously opened file is closed      
-    */
-    void open(std::istream& is);
-
     //! Queries whether the binary file is open
     /*!
       \return true if the binary file is open; false otherwise.
@@ -86,49 +74,25 @@ namespace QDP
     //! Closes the last file opened
     void close();
     
-    /* So should these, there is just a lot of overloading */
-    //! Xpath query
-    void get(const std::string& xpath, std::string& result);
-    //! Xpath query
-    void get(const std::string& xpath, int& result);
-    //! Xpath query
-    void get(const std::string& xpath, unsigned int& result);
-    //! Xpath query
-    void get(const std::string& xpath, short int& result);
-    //! Xpath query
-    void get(const std::string& xpath, unsigned short int& result);
-    //! Xpath query
-    void get(const std::string& xpath, long int& result);
-    //! Xpath query
-    void get(const std::string& xpath, unsigned long int& result);
-    //! Xpath query
-    void get(const std::string& xpath, float& result);
-    //! Xpath query
-    void get(const std::string& xpath, double& result);
-    //! Xpath query
-    void get(const std::string& xpath, bool& result);
-
-    //! Set a replacement of a primitive
-    template<typename T>
-    void set(const std::string& xpath, const T& to_set) 
-      {
-	if (Layout::primaryNode())
-	{  
-	  BasicXPathReader::set<T>(xpath, to_set);
-	}
-      }
-
-
-    //! Return the entire contents of the Reader as a stream
-    void print(ostream& is);
+    //! Return the entire contents of the Reader as a TreeRep
+    void treeRep(TreeRep& output);
         
-    //! Print the current context
-    void printCurrentContext(ostream& is);
+    //! Return the current context as a TreeRep
+    void treeRepCurrentContext(TreeRep& output);
         
+    //! Does the result of this Xpath query exist?
+    /*! THIS IS NEEDED. PROBABLY WILL NOT SUPPORT GENERIC XPATH */
+    bool exist(const std::string& xpath);
+
     //! Count the number of occurances from the Xpath query
-    int count(const std::string& xpath);
+    /*! PROBABLY WILL NOT SUPPORT GENERIC XPATH */
+//    int count(const std::string& xpath);
 
-    void registerNamespace(const std::string& prefix, const std::string& uri);
+    //! Count the array element entries
+    int countArrayElem();
+
+    //! Return tag for array element n
+    std::string arrayElem(int n) const;
 
   private:
     //! Hide the = operator
@@ -138,173 +102,26 @@ namespace QDP
     AFFReader(const AFFReader&) {}
   
     void open(AFFReader& old, const std::string& xpath);
-  protected:
-    // The universal data-reader. All the read functions call this
-    template<typename T>
-    void
-    readPrimitive(const std::string& xpath, T& output);
 
-  private:
-    bool  iop;  //file open or closed?
-    bool  derived; // is this reader derived from another reader?
+  protected:
+    //! Internal cloning function
+    TreeReaderImp* clone(const std::string& xpath);
+
+    //! Return the implementation
+    LAFFReaderImp& getAFFReader() const;
   };
 
 
   //--------------------------------------------------------------------------------
   //! Metadata output class
   /*!
-    Use this to write AFF.When closing tags, you do not have to specify which
-    tag to close since this class will remember the order in which you opened
-    the tags and close them in reverse order to ensure well-formed AFF.
-
+    Use this to write AFF.
     Note that only the primary node writes AFF.
   */
-  class AFFWriter : public TreeWriter
+  class AFFFileWriter : public TreeWriter
   {
   public:
-    AFFWriter();
-
-    // Virtual destructor
-    virtual ~AFFWriter();
-
-    //! Writes an opening AFF tag
-    /*!
-      \param tagname The name of the tag
-    */
-    virtual void openSimple(const std::string& tagname);
-    virtual void closeSimple();
-
-    //! Writes an opening AFF tag    
-    /*!
-      \param tagname The name of the tag
-    */
-    virtual void openStruct(const std::string& tagname);
-    virtual void closeStruct();
-
-    //! Writes an opening AFF tag    
-    /*!
-      \param tagname The name of the tag
-    */
-    void openTag(const std::string& tagname);
-
-    //! Writes an opening AFF tag    
-    /*!
-      \param nsprefix A namespace prefix for the tag 
-      \param tagname The name of the tag
-    */
-    void openTag(const std::string& nsprefix, const std::string& tagname);
-
-    //! Writes an opening AFF tag    
-    /*!
-      \param tagname The name of the tag
-      \param al A list of attributes for this tag
-    */
-    void openTag(const std::string& tagname, AFFWriterAPI::AttributeList& al);
-
-    //! Writes an opening AFF tag    
-    /*!
-      \param nsprefix A namespace prefix for the tag 
-      \param tagname The name of the tag
-      \param al A list of attributes for this tag      
-    */
-    void openTag(const std::string& nsprefix,
-		 const std::string& tagname, 
-		 AFFWriterAPI::AttributeList& al);
-
-    //! Closes a tag
-    void closeTag();
-
-    //! Writes an empty tag
-    /*!
-      \param tagname The name of the tag
-    */
-    void emptyTag(const std::string& tagname);
-
-    //! Writes an empty tag
-    /*!
-      \param nsprefix A namespace prefix for the tag 
-      \param tagname The name of the tag
-    */
-    void emptyTag(const std::string& nsprefix, const std::string& tagname);
-
-    //! Writes an empty tag
-    /*!
-      \param tagname The name of the tag
-      \param al A list of attributes for this tag            
-    */
-    void emptyTag(const std::string& tagname, AFFWriterAPI::AttributeList& al);
-
-    //! Writes an empty tag
-    /*!
-      \param nsprefix A namespace prefix for the tag 
-      \param tagname The name of the tag
-      \param al A list of attributes for this tag            
-    */
-    void emptyTag(const std::string& nsprefix,
-		  const std::string& tagname, 
-		  AFFWriterAPI::AttributeList& al);
-    
-
-    // Overloaded Writer Functions
-
-    //! Write tag contents
-    void write(const std::string& output);
-    //! Write tag contents
-    void write(const int& output);
-    //! Write tag contents
-    void write(const unsigned int& output);
-    //! Write tag contents
-    void write(const short int& output);
-    //! Write tag contents
-    void write(const unsigned short int& output);
-    //! Write tag contents
-    void write(const long int& output);
-    //! Write tag contents
-    void write(const unsigned long int& output);
-    //! Write tag contents
-    void write(const float& output);
-    //! Write tag contents
-    void write(const double& output);
-    //! Write tag contents
-    void write(const bool& output);
-
-    // Write all the AFF to std::string
-    void writeAFF(const std::string& output);
-  };
-
-
-
-
-#if 0
-  // NEED TO FIX THIS
-  //! Write a AFF multi2d element
-  template<class T> 
-  inline
-  void write(AFFWriter& xml, const std::string& s, const multi2d<T>& s1)
-  {
-    for(int j=0; j < s1.size1(); ++j)
-      for(int i=0; i < s1.size2(); ++i)
-      {
-	std::ostringstream ost;
-	if (Layout::primaryNode()) 
-	  ost << s << "[ " << i << " ][ " << j << " ]";
-	write(xml, ost.str(), s1[i][j]);
-      }
-  }
-
-#endif
-
-
-  //--------------------------------------------------------------------------------
-  //! Writes AFF metadata to a file
-  /*!
-    \ingroup io
-  */
-
-  class AFFFileWriter : public AFFWriter
-  {
-  public:
-
+    //! Default constructor
     AFFFileWriter();
 
     //! Constructor from a filename
@@ -313,18 +130,29 @@ namespace QDP
       \param write_prologue Whether to write the standard opening line of
       AFF files. Defaults to true.
     */
-    explicit AFFFileWriter(const std::string& filename, bool write_prologue=true)
-      {
-	open(filename, write_prologue);
-      }
+    explicit AFFFileWriter(const std::string& filename);
 
+    //! Destructor
     ~AFFFileWriter();
 
-    //! Queries whether the binary file is open
+    //! Writes an opening Tree tag    
     /*!
-      \return true if the binary file is open; false otherwise.
+      \param tagname The name of the tag
     */
-    bool is_open();
+    void openTag(const std::string& tagname);
+
+    //! Closes a tag
+    void closeTag();
+
+    //! Writes an opening AFF tag    
+    /*!
+      \param tagname The name of the tag
+    */
+    void openStruct(const std::string& tagname);
+    void closeStruct();
+
+    //! Return tag for array element n
+    std::string arrayElem(int n) const;
 
     //!Opens a file
     /*!
@@ -332,23 +160,93 @@ namespace QDP
       \param write_prologue Whether to write the standard opening line of
       AFF files. Defaults to true.
     */
-    void open(const std::string& filename, bool write_prologue=true);
-
-    //! Flush the buffer
-    void flush();
+    void open(const std::string& filename);
 
     //! Return true if some failure occurred in previous IO operation
     bool fail() const;
 
+    //! Flush the output. Maybe a nop.
+    void flush();
+
     //! Closes the last  file  opened.
     void close();
-        
-  private:
-    ofstream output_stream;
-    ostream& getOstream(void) {return output_stream;}
-  };
+       
+    //! Queries whether the binary file is open
+    /*!
+      \return true if the binary file is open; false otherwise.
+    */
+    bool is_open();
 
-#endif
+    // Overloaded Writer Functions
+
+    // Overloaded Writer Functions
+    //! Write tag and contents
+    void write(const std::string& tagname, const std::string& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const int& output);
+    //! Write tag contents
+    void write(const std::string& tagname, const unsigned int& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const short int& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const unsigned short int& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const long int& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const unsigned long int& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const float& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const double& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const bool& output);
+
+    // Overloaded array (elemental list) Writer Functions
+    //! Write tag and contents
+    void write(const std::string& tagname, const multi1d<int>& output);
+    //! Write tag contents
+    void write(const std::string& tagname, const multi1d<unsigned int>& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const multi1d<short int>& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const multi1d<unsigned short int>& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const multi1d<long int>& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const multi1d<unsigned long int>& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const multi1d<float>& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const multi1d<double>& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const multi1d<bool>& output);
+
+    // More overloaded array (elemental list) Writer Functions
+    //! Write tag and contents
+    void write(const std::string& tagname, const multi1d<Integer>& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const multi1d<Real32>& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const multi1d<Real64>& output);
+    //! Write tag and contents
+    void write(const std::string& tagname, const multi1d<Boolean>& output);
+
+  private:
+    // Hide copy constructors
+    AFFFileWriter(const AFFFileWriter&) {}
+
+    // Hide copy constructors
+    void operator=(const AFFFileWriter&) {}
+
+  protected:
+    //! The actual implementation
+    /*! Cannot use covariant return rule since AFFFileWriterImp is not fully declared */
+    AFFFileWriterImp& getAFFFileWriter() const;
+
+  private:
+    bool              initP;       /*!< Has this buffer been initialized? */
+    AFFFileWriterImp* file_writer; /*<! The output writer */
+  };
 
   /*! @} */   // end of group io
 

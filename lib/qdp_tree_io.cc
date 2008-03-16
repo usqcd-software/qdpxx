@@ -1,4 +1,4 @@
-// $Id: qdp_tree_io.cc,v 1.1.2.1 2008-03-15 14:28:57 edwards Exp $
+// $Id: qdp_tree_io.cc,v 1.1.2.2 2008-03-16 02:40:04 edwards Exp $
 //
 /*! @file
  * @brief Tree IO support
@@ -105,10 +105,10 @@ namespace QDP
   }
 
   //! Count the number of occurances from the Xpath query
-  int TreeReader::count(const std::string& xpath)
-  {
-    return getTreeReader().count(xpath);
-  }
+//  int TreeReader::count(const std::string& xpath)
+//  {
+//    return getTreeReader().count(xpath);
+//  }
 
   //! Count the number of occurances from the Xpath query
   int TreeReader::countArrayElem()

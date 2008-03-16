@@ -1,1037 +1,364 @@
-// $Id: qdp_aff_io.cc,v 1.1.2.1 2008-03-15 14:28:56 edwards Exp $
+// $Id: qdp_aff_io.cc,v 1.1.2.2 2008-03-16 02:40:04 edwards Exp $
 /*! @file
  * @brief AFF IO support
  */
 
 #include "qdp.h"
 #include "qdp_aff_io.h"
-
-#if 0
+#include "qdp_aff_imp.h"
 
 namespace QDP 
 {
-
   using std::string;
 
   //--------------------------------------------------------------------------------
-  // XML classes
-  // XML reader class
-  XMLReader::XMLReader() {iop=derived=false;}
-
-  XMLReader::XMLReader(const std::string& filename)
+  // Just for a test to make sure a final object is complete.
+  // This is not to run, but just compile
+  // Anonymous namespace
+  namespace
   {
-    iop = derived = false;
-    open(filename);
-  }
-
-  XMLReader::XMLReader(std::istream& is)
-  {
-    iop = derived = false;
-    open(is);
-  }
-
-  XMLReader::XMLReader(const XMLBufferWriter& mw)
-  {
-    iop = derived = false;
-    open(mw);
-  }
-
-  XMLReader::XMLReader(XMLReader& old, const string& xpath) : BasicXPathReader() 
-  {
-    iop = false;
-    derived = true;
-    open(old, xpath);
-  }
-
-
-  void XMLReader::open(const string& filename)
-  {
-    if (Layout::primaryNode())
+    void test_affreader()
     {
-#if 0
-      BasicXPathReader::open(filename);
-#else
+      AFFReader aff("fred");
 
-#if defined(USE_REMOTE_QIO)
-      QDPUtil::RemoteInputFileStream f;
-      f.open(filename.c_str(),std::ifstream::in);
-      BasicXPathReader::open(f);
-#else
-      ifstream f;
-      f.open(filename.c_str(), ios::binary);
-      if (f.fail())
+      int a;
+      read(aff, "/a", a);
+
+      AFFReader aff_sub(aff, "/a");
+      read(aff, "b", a);
+
+      multi1d<Real> bar;
+      read(aff, "/bar", bar);
+    }
+
+    void test_afffilewriter()
+    {
+      AFFFileWriter aff("foo");
+
+      int a = 0;
+      multi1d<Real> bar(5);
+      bar = zero;
+
+      push(aff, "root");
+      write(aff, "a", a);
+      write(aff, "bar", bar);
+      pop(aff);
+    }
+ 
+    void test_sub_reader()
+    {
+      AFFReader aff("fred");
+
+      int a;
+
+      TreeReader tree(aff, "/a");
+      read(tree, "a", a);
+
+      multi1d<Real> bar;
+      read(tree, "/bar", bar);
+    }
+
+    void test_treearraywriter()
+    {
+      AFFFileWriter aff("foo");
+      TreeArrayWriter tree_array(aff);
+
+      int a = 0;
+      multi1d<Real> bar(5);
+      bar = zero;
+
+      push(tree_array, "root");
+      for(int i=0; i < bar.size(); ++i)
       {
-	QDPIO::cerr << "Error opening read file = " << filename << endl;
-	QDP_abort(1);
+	pushElem(tree_array);
+	write(tree_array, "bar",bar[0]);
+	popElem(tree_array);
       }
-      BasicXPathReader::open(f);
-#endif
-
-#endif
+      pop(tree_array);
     }
-
-    iop = true;
-    derived = false;
+ 
   }
-
-  void XMLReader::open(std::istream& is)
-  {
-    if (Layout::primaryNode())
-      BasicXPathReader::open(is);
-
-    iop = true;
-    derived = false;
-  }
-
-  void XMLReader::open(const XMLBufferWriter& mw)
-  {
-    if (Layout::primaryNode())
-    {  
-      std::istringstream is(const_cast<XMLBufferWriter&>(mw).str()+"\n");
-      BasicXPathReader::open(is);
-    }
-
-    iop = true;
-    derived = false;
-  }
-
-  void XMLReader::open(XMLReader& old, const string& xpath)
-  {
-    if( Layout::primaryNode()) 
-    {
-      BasicXPathReader::open((BasicXPathReader&)old, xpath);
-    }
-
-    iop = true;
-    derived = true;
-  }
-
-  void XMLReader::close()
-  {
-    if (is_open()) 
-    {
-      if (Layout::primaryNode()) 
-	BasicXPathReader::close();
-
-      iop = false;
-      derived = false;
-    }
-  }
-
-
-
-  bool XMLReader::is_open() {return iop;}
-
-  XMLReader::~XMLReader() {close();}
-
-
-  // Overloaded Reader Functions
-  void XMLReader::get(const std::string& xpath, string& result)
-  {
-    // Only primary node can grab string
-    if (Layout::primaryNode()) 
-      BasicXPathReader::get(xpath, result);
-
-    // broadcast string
-    Internal::broadcast_str(result);
-  }
-
-  void XMLReader::get(const std::string& xpath, int& result)
-  {
-    readPrimitive<int>(xpath, result);
-  }
-  void XMLReader::get(const std::string& xpath, unsigned int& result)
-  {
-    readPrimitive<unsigned int>(xpath, result);
-  }
-  void XMLReader::get(const std::string& xpath, short int& result)
-  {
-    readPrimitive<short int>(xpath, result);
-  }
-  void XMLReader::get(const std::string& xpath, unsigned short int& result)
-  {
-    readPrimitive<unsigned short int>(xpath, result);
-  }
-  void XMLReader::get(const std::string& xpath, long int& result)
-  {
-    readPrimitive<long int>(xpath, result);
-  }
-  void XMLReader::get(const std::string& xpath, unsigned long int& result)
-  {
-    readPrimitive<unsigned long int>(xpath, result);
-  }
-  void XMLReader::get(const std::string& xpath, float& result)
-  {
-    readPrimitive<float>(xpath, result);
-  }
-  void XMLReader::get(const std::string& xpath, double& result)
-  {
-    readPrimitive<double>(xpath, result);
-  }
-  void XMLReader::get(const std::string& xpath, bool& result)
-  {
-    readPrimitive<bool>(xpath, result);
-  }
-   
-  template<typename T>
-  void XMLReader::readPrimitive(const std::string& xpath, T& result)
-  {
-    if (Layout::primaryNode()) {
-      BasicXPathReader::get(xpath, result);
-    }
-
-    // Now broadcast back out to all nodes
-    Internal::broadcast(result);
-  }
-
-  void XMLReader::print(ostream& os)
-  {
-    ostringstream newos;
-    std::string s;
-
-    if (Layout::primaryNode())
-    {
-      BasicXPathReader::print(newos);
-      s = newos.str();
-    }
-
-    // Now broadcast back out to all nodes
-    Internal::broadcast_str(s);
-    os << s;
-  }
-   
-  void XMLReader::printCurrentContext(ostream& os)
-  {
-    ostringstream newos;
-    std::string s;
-
-    if (Layout::primaryNode())
-    {
-      if (is_derived())
-	BasicXPathReader::printChildren(newos);
-      else
-	BasicXPathReader::printRoot(newos);
-
-      s = newos.str();
-    }
-
-    // Now broadcast back out to all nodes
-    Internal::broadcast_str(s);
-    os << s;
-  }
-   
-  int XMLReader::count(const string& xpath)
-  {
-    int n;
-    if (Layout::primaryNode())
-      n = BasicXPathReader::count(xpath);
-
-    // Now broadcast back out to all nodes
-    Internal::broadcast(n);
-    return n;
-  }
-   
-  // Namespace Registration?
-  void XMLReader::registerNamespace(const std::string& prefix, const string& uri)
-  {
-    if (Layout::primaryNode())
-      BasicXPathReader::registerNamespace(prefix, uri);
-  }
-
-  // Overloaded Reader Functions
-  void read(XMLReader& xml, const std::string& xpath, string& result)
-  {
-    xml.get(xpath, result);
-  }
-  void read(XMLReader& xml, const std::string& xpath, int& result)
-  {
-    xml.get(xpath, result);
-  }
-  void read(XMLReader& xml, const std::string& xpath, unsigned int& result)
-  {
-    xml.get(xpath, result);
-  }
-  void read(XMLReader& xml, const std::string& xpath, short int& result)
-  {
-    xml.get(xpath, result);
-  }
-  void read(XMLReader& xml, const std::string& xpath, unsigned short int& result)
-  {
-    xml.get(xpath, result);
-  }
-  void read(XMLReader& xml, const std::string& xpath, long int& result)
-  {
-    xml.get(xpath, result);
-  }
-  void read(XMLReader& xml, const std::string& xpath, unsigned long int& result)
-  {
-    xml.get(xpath, result);
-  }
-  void read(XMLReader& xml, const std::string& xpath, float& result)
-  {
-    xml.get(xpath, result);
-  }
-  void read(XMLReader& xml, const std::string& xpath, double& result)
-  {
-    xml.get(xpath, result);
-  }
-  void read(XMLReader& xml, const std::string& xpath, bool& result)
-  {
-    xml.get(xpath, result);
-  }
-   
-
-  //! Read a XML multi1d element
-  template<typename T>
-  void readArrayPrimitive(XMLReader& xml, const std::string& s, multi1d<T>& result)
-  {
-    std::ostringstream error_message;
   
-    // Try reading the list as a string
-    string list_string;
-    read(xml, s, list_string);
 
-    // Count the number of elements
-    std::istringstream list_stream(list_string);
-	
-    int array_size = 0;
-    T dummy;
-    while(list_stream >> dummy)
-      ++array_size;
 
-    if ((! list_stream.eof()) && list_stream.fail())
-    {
-      error_message << "Error in reading array " << s << endl;
-      throw error_message.str();
-    }
-
-    // It is not an error to have a zero-length array
-    //  if (array_size == 0)
-    //  {
-    //    error_message << "Something wrong with reading array " << list_string << endl;
-    //    throw error_message.str();
-    //  }
-      
-    // Now resize the array to hold the no of elements.
-    result.resize(array_size);
-
-    // Get the elements one by one
-    // I do not understand why, but use a new stringstream
-    //  list_stream.str(list_string);
-    std::istringstream list_stream2(list_string);
-
-    for(int i=0; i < result.size(); i++) 
-    {
-      // read the element.
-      list_stream2 >> result[i];
-    }
+  //--------------------------------------------------------------------------------
+  // AFF classes
+  // AFF reader class
+  AFFReader::AFFReader()
+  {
+    registerObject(new LAFFReaderImp());
   }
 
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<int>& result)
+  AFFReader::AFFReader(const std::string& filename)
   {
-    readArrayPrimitive<int>(xml, xpath, result);
+    registerObject(new LAFFReaderImp(filename));
   }
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<unsigned int>& result)
+
+  AFFReader::AFFReader(AFFReader& old, const string& xpath)
   {
-    readArrayPrimitive<unsigned int>(xml, xpath, result);
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+    registerObject(old.clone(xpath));
   }
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<short int>& result)
+
+  AFFReader::~AFFReader() {}
+
+  // Return the implementation
+  LAFFReaderImp& AFFReader::getAFFReader() const
   {
-    readArrayPrimitive<short int>(xml, xpath, result);
+    return dynamic_cast<LAFFReaderImp&>(getTreeReader());
   }
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<unsigned short int>& result)
+
+  void AFFReader::open(const string& filename)
   {
-    readArrayPrimitive<unsigned short int>(xml, xpath, result);
+    getAFFReader().open(filename);
   }
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<long int>& result)
+
+  // Clone a reader
+  void AFFReader::open(AFFReader& old, const string& xpath)
   {
-    readArrayPrimitive<long int>(xml, xpath, result);
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+    getAFFReader().open(old.getAFFReader(), xpath);
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
   }
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<unsigned long int>& result)
+
+  void AFFReader::close()
   {
-    readArrayPrimitive<unsigned long int>(xml, xpath, result);
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+    getAFFReader().close();
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
   }
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<float>& result)
+
+  // Internal cloning function
+  TreeReaderImp* AFFReader::clone(const std::string& xpath)
   {
-    readArrayPrimitive<float>(xml, xpath, result);
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+    return new LAFFReaderImp(getAFFReader(), xpath);
   }
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<double>& result)
+
+
+  bool AFFReader::is_open()
   {
-    readArrayPrimitive<double>(xml, xpath, result);
+    return getAFFReader().is_open();
   }
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<bool>& result)
+
+  // Return the entire contents of the Reader as a TreeRep
+  void AFFReader::treeRep(TreeRep& output)
   {
-    readArrayPrimitive<bool>(xml, xpath, result);
+    QDP_error_exit("AFFReader::treeRep function not implemented in a derived class");
   }
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<Integer>& result)
+        
+  //! Return the current context as a TreeRep
+  void AFFReader::treeRepCurrentContext(TreeRep& output)
   {
-    readArrayPrimitive<Integer>(xml, xpath, result);
+    QDP_error_exit("AFFReader::treeRepCurrentContext function not implemented in a derived class");
   }
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<Real32>& result)
+        
+  //! Count the number of occurances from the Xpath query
+  bool AFFReader::exist(const std::string& xpath)
   {
-    readArrayPrimitive<Real32>(xml, xpath, result);
+    return getAFFReader().exist(xpath);
   }
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<Real64>& result)
+
+  //! Count the number of occurances from the Xpath query
+  int AFFReader::countArrayElem()
   {
-    readArrayPrimitive<Real64>(xml, xpath, result);
+    return getAFFReader().countArrayElem();
   }
-  template<>
-  void read(XMLReader& xml, const std::string& xpath, multi1d<Boolean>& result)
+
+  // Return tag for array element n
+  std::string AFFReader::arrayElem(int n) const
   {
-    readArrayPrimitive<Boolean>(xml, xpath, result);
+    return getAFFReader().arrayElem(n);
   }
 
 
   //--------------------------------------------------------------------------------
-  // XML writer base class
-  XMLWriter::XMLWriter()
+  // AFF Writer to a file
+  AFFFileWriter::AFFFileWriter()
   {
+    file_writer = new AFFFileWriterImp();
+    initP = true;
   }
 
-  XMLWriter::~XMLWriter()
+  // Constructor from a filename
+  AFFFileWriter::AFFFileWriter(const std::string& filename)
   {
+    file_writer = new AFFFileWriterImp(filename);
+    initP = true;
   }
 
-  void XMLWriter::openSimple(const string& tagname)
+  AFFFileWriter::~AFFFileWriter() 
   {
-    openTag(tagname);
+    if (initP)
+      delete file_writer;
   }
 
-  void XMLWriter::closeSimple()
+  // The actual implementation
+  AFFFileWriterImp& AFFFileWriter::getAFFFileWriter() const
   {
-    closeTag();
+    if (! initP)
+    {
+      QDPIO::cerr << "AFFFileWriter is not initialized" << endl;
+      QDP_abort(1);
+    }
+
+    return *file_writer;
   }
 
-  void XMLWriter::openStruct(const string& tagname)
+  void AFFFileWriter::open(const std::string& filename)
   {
-    openTag(tagname);
+    dynamic_cast<AFFFileWriterImp&>(getAFFFileWriter()).open(filename);
   }
 
-  void XMLWriter::closeStruct()
+  void AFFFileWriter::close()
   {
-    closeTag();
+    dynamic_cast<AFFFileWriterImp&>(getAFFFileWriter()).close();
   }
 
-  void XMLWriter::openTag(const string& tagname)
+  // Propagate status to all nodes
+  bool AFFFileWriter::is_open()
   {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::openTag(tagname);
+    return dynamic_cast<AFFFileWriterImp&>(getAFFFileWriter()).is_open();
   }
 
-  void XMLWriter::openTag(const string& nsprefix, const string& tagname)
+  // Flush the buffer
+  void AFFFileWriter::flush()
   {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::openTag(nsprefix,tagname);
+    getAFFFileWriter().flush();
   }
 
-  void XMLWriter::openTag(const string& tagname, XMLWriterAPI::AttributeList& al)
+  // Propagate status to all nodes
+  bool AFFFileWriter::fail() const
   {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::openTag(tagname,al);
+    return dynamic_cast<AFFFileWriterImp&>(getAFFFileWriter()).fail();
   }
 
-  void XMLWriter::openTag(const string& nsprefix, 
-			  const string& tagname, 
-			  XMLWriterAPI::AttributeList& al)
+  void AFFFileWriter::openStruct(const string& tagname)
   {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::openTag(nsprefix,tagname,al);
+    getAFFFileWriter().openStruct(tagname);
   }
 
-  void XMLWriter::closeTag()
+  void AFFFileWriter::closeStruct()
   {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::closeTag();
+    getAFFFileWriter().closeStruct();
   }
 
-  void XMLWriter::emptyTag(const string& tagname)
+  void AFFFileWriter::openTag(const string& tagname)
   {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::emptyTag(tagname);
-  }
-  void XMLWriter::emptyTag(const string& tagname,  XMLWriterAPI::AttributeList& al)
-  {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::emptyTag(tagname,al);
+    getAFFFileWriter().openTag(tagname);
   }
 
-  void XMLWriter::emptyTag(const string& nsprefix, 
-			   const string& tagname, 
-			   XMLWriterAPI::AttributeList& al)
+  void AFFFileWriter::closeTag()
   {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::emptyTag(nsprefix,tagname,al);
+    getAFFFileWriter().closeTag();
   }
 
-
-  // Overloaded Writer Functions
-  void XMLWriter::write(const string& output)
+  // Return tag for array element n
+  std::string AFFFileWriter::arrayElem(int n) const
   {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::write(output);
-  }
-  void XMLWriter::write(const int& output)
-  {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::write(output);
-  }
-  void XMLWriter::write(const unsigned int& output)
-  {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::write(output);
-  }
-  void XMLWriter::write(const short int& output)
-  {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::write(output);
-  }
-  void XMLWriter::write(const unsigned short int& output)
-  {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::write(output);
-  }
-  void XMLWriter::write(const long int& output)
-  {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::write(output);
-  }
-  void XMLWriter::write(const unsigned long int& output)
-  {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::write(output);
-  }
-  void XMLWriter::write(const float& output)
-  {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::write(output);
-  }
-  void XMLWriter::write(const double& output)
-  {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::write(output);
-  }
-  void XMLWriter::write(const bool& output)
-  {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::write(output);
-  }
-   
-  // Write XML string
-  void XMLWriter::writeXML(const string& output)
-  {
-    if (Layout::primaryNode())
-      XMLSimpleWriter::writeXML(output);
-  }
-
-
-  // Push a group name
-  void push(XMLWriter& xml, const string& s) {xml.openStruct(s);}
-
-  // Pop a group name
-  void pop(XMLWriter& xml) {xml.closeStruct();}
-
-  // Write something from a reader
-  void write(XMLWriter& xml, const std::string& s, const XMLReader& d)
-  {
-    xml.openTag(s);
-    xml << d;
-    xml.closeTag();
-  }
-
-  XMLWriter& operator<<(XMLWriter& xml, const XMLReader& d)
-  {
-    ostringstream os;
-    const_cast<XMLReader&>(d).printCurrentContext(os);
-    xml.writeXML(os.str());
-    return xml;
-  }
-
-  // Write something from a XMLBufferWriter
-  void write(XMLWriter& xml, const std::string& s, const XMLBufferWriter& d)
-  {
-    xml.openTag(s);
-    xml << d;
-    xml.closeTag();
-  }
-
-  XMLWriter& operator<<(XMLWriter& xml, const XMLBufferWriter& d)
-  {
-    xml.writeXML(const_cast<XMLBufferWriter&>(d).printCurrentContext());
-    return xml;
+    return getAFFFileWriter().arrayElem(n);
   }
 
   // Time to build a telephone book of basic primitives
-  template<typename T>
-  void writePrimitive(XMLWriter& xml, const string& s, const T& d)
+  // Overloaded Writer Functions
+  void AFFFileWriter::write(const std::string& tagname, const string& output)
   {
-    xml.openTag(s);
-    xml.write(d);
-    xml.closeTag();
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+    getAFFFileWriter().write(tagname,output);
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
   }
-
-  void write(XMLWriter& xml, const string& s, const string& d)
+  void AFFFileWriter::write(const string& tagname, const int& output)
   {
-    writePrimitive<string>(xml, s, d);
+    getAFFFileWriter().write(tagname,output);
   }
-
-  void write(XMLWriter& xml, const string& s, const char* d)
+  void AFFFileWriter::write(const string& tagname, const unsigned int& output)
   {
-    writePrimitive<string>(xml, s, string(d));
+    getAFFFileWriter().write(tagname,output);
   }
-
-  void write(XMLWriter& xml, const string& s, const char& d)
+  void AFFFileWriter::write(const string& tagname, const short int& output)
   {
-    writePrimitive<char>(xml, s, d);
+    getAFFFileWriter().write(tagname,output);
   }
-
-  void write(XMLWriter& xml, const string& s, const int& d)
+  void AFFFileWriter::write(const string& tagname, const unsigned short int& output)
   {
-    writePrimitive<int>(xml, s, d);
+    getAFFFileWriter().write(tagname,output);
   }
-
-  void write(XMLWriter& xml, const string& s, const unsigned int& d)
+  void AFFFileWriter::write(const string& tagname, const long int& output)
   {
-    writePrimitive<unsigned int>(xml, s, d);
+    getAFFFileWriter().write(tagname,output);
   }
-
-  void write(XMLWriter& xml, const string& s, const short int& d)
+  void AFFFileWriter::write(const string& tagname, const unsigned long int& output)
   {
-    writePrimitive<short int>(xml, s, d);
+    getAFFFileWriter().write(tagname,output);
   }
-
-  void write(XMLWriter& xml, const string& s, const unsigned short int& d)
+  void AFFFileWriter::write(const string& tagname, const float& output)
   {
-    writePrimitive<unsigned short int>(xml, s, d);
+    getAFFFileWriter().write(tagname,output);
   }
-
-  void write(XMLWriter& xml, const string& s, const long int& d)
+  void AFFFileWriter::write(const string& tagname, const double& output)
   {
-    writePrimitive<long int>(xml, s, d);
+    getAFFFileWriter().write(tagname,output);
   }
-
-  void write(XMLWriter& xml, const string& s, const unsigned long int& d)
+  void AFFFileWriter::write(const string& tagname, const bool& output)
   {
-    writePrimitive<unsigned long int>(xml, s, d);
+    getAFFFileWriter().write(tagname,output);
   }
-
-  void write(XMLWriter& xml, const string& s, const float& d)
+   
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<int>& output)
   {
-    writePrimitive<float>(xml, s, d);
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+    getAFFFileWriter().write(tagname,output);
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
   }
-
-  void write(XMLWriter& xml, const string& s, const double& d)
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<unsigned int>& output)
   {
-    writePrimitive<double>(xml, s, d);
+    getAFFFileWriter().write(tagname,output);
   }
-
-  void write(XMLWriter& xml, const string& s, const bool& d)
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<short int>& output)
   {
-    writePrimitive<bool>(xml, s, d);
+    getAFFFileWriter().write(tagname,output);
   }
-
-  // Versions that do not print a name
-  XMLWriter& operator<<(XMLWriter& xml, const string& d) {xml.write(d);return xml;}
-  XMLWriter& operator<<(XMLWriter& xml, const char* d) {xml.write(string(d));return xml;}
-  XMLWriter& operator<<(XMLWriter& xml, const char& d) {xml.write(d);return xml;}
-  XMLWriter& operator<<(XMLWriter& xml, const int& d) {xml.write(d);return xml;}
-  XMLWriter& operator<<(XMLWriter& xml, const unsigned int& d) {xml.write(d);return xml;}
-  XMLWriter& operator<<(XMLWriter& xml, const short int& d) {xml.write(d);return xml;}
-  XMLWriter& operator<<(XMLWriter& xml, const unsigned short int& d) {xml.write(d);return xml;}
-  XMLWriter& operator<<(XMLWriter& xml, const long int& d) {xml.write(d);return xml;}
-  XMLWriter& operator<<(XMLWriter& xml, const unsigned long int& d) {xml.write(d);return xml;}
-  XMLWriter& operator<<(XMLWriter& xml, const float& d) {xml.write(d);return xml;}
-  XMLWriter& operator<<(XMLWriter& xml, const double& d) {xml.write(d);return xml;}
-  XMLWriter& operator<<(XMLWriter& xml, const bool& d) {xml.write(d);return xml;}
-
-
-  // Write an array of basic types
-  template<typename T>
-  void writeArrayPrimitive(XMLWriter& xml, const std::string& s, const multi1d<T>& s1)
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<unsigned short int>& output)
   {
-    std::ostringstream output;
-
-    if (s1.size() > 0)
-    {
-      output << s1[0];
-      for(int index=1; index < s1.size(); index++) 
-	output << " " << s1[index];
-    }
-    
-    // Write the array - do not use a normal string write
-    xml.openTag(s);
-    xml << output.str();
-    xml.closeTag();
+    getAFFFileWriter().write(tagname,output);
   }
-
-
-  template<>
-  void write(XMLWriter& xml, const std::string& xpath, const multi1d<int>& output)
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<long int>& output)
   {
-    writeArrayPrimitive<int>(xml, xpath, output);
+    getAFFFileWriter().write(tagname,output);
   }
-  template<>
-  void write(XMLWriter& xml, const std::string& xpath, const multi1d<unsigned int>& output)
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<unsigned long int>& output)
   {
-    writeArrayPrimitive<unsigned int>(xml, xpath, output);
+    getAFFFileWriter().write(tagname,output);
   }
-  template<>
-  void write(XMLWriter& xml, const std::string& xpath, const multi1d<short int>& output)
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<float>& output)
   {
-    writeArrayPrimitive<short int>(xml, xpath, output);
+    getAFFFileWriter().write(tagname,output);
   }
-  template<>
-  void write(XMLWriter& xml, const std::string& xpath, const multi1d<unsigned short int>& output)
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<double>& output)
   {
-    writeArrayPrimitive<unsigned short int>(xml, xpath, output);
+    getAFFFileWriter().write(tagname,output);
   }
-  template<>
-  void write(XMLWriter& xml, const std::string& xpath, const multi1d<long int>& output)
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<bool>& output)
   {
-    writeArrayPrimitive<long int>(xml, xpath, output);
+    getAFFFileWriter().write(tagname,output);
   }
-  template<>
-  void write(XMLWriter& xml, const std::string& xpath, const multi1d<unsigned long int>& output)
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<Integer>& output)
   {
-    writeArrayPrimitive<unsigned long int>(xml, xpath, output);
+    getAFFFileWriter().write(tagname,output);
   }
-  template<>
-  void write(XMLWriter& xml, const std::string& s, const multi1d<float>& s1)
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<Real32>& output)
   {
-    std::ostringstream output;
-    output.precision(7);
-
-    if (s1.size() > 0)
-    {
-      output << s1[0];
-      for(int index=1; index < s1.size(); index++) 
-	output << " " << s1[index];
-    }
-    
-    // Write the array - do not use a normal string write
-    xml.openTag(s);
-    xml << output.str();
-    xml.closeTag();
+    getAFFFileWriter().write(tagname,output);
   }
-  template<>
-  void write(XMLWriter& xml, const std::string& s, const multi1d<double>& s1)
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<Real64>& output)
   {
-    std::ostringstream output;
-    output.precision(15);
-
-    if (s1.size() > 0)
-    {
-      output << s1[0];
-      for(int index=1; index < s1.size(); index++) 
-	output << " " << s1[index];
-    }
-    
-    // Write the array - do not use a normal string write
-    xml.openTag(s);
-    xml << output.str();
-    xml.closeTag();
+    getAFFFileWriter().write(tagname,output);
   }
-  template<>
-  void write(XMLWriter& xml, const std::string& xpath, const multi1d<bool>& output)
+  void AFFFileWriter::write(const std::string& tagname, const multi1d<Boolean>& output)
   {
-    writeArrayPrimitive<bool>(xml, xpath, output);
+    getAFFFileWriter().write(tagname,output);
   }
-  template<>
-  void write(XMLWriter& xml, const std::string& xpath, const multi1d<Integer>& output)
-  {
-    writeArrayPrimitive<Integer>(xml, xpath, output);
-  }
-  template<>
-  void write(XMLWriter& xml, const std::string& s, const multi1d<Real32>& s1)
-  {
-    std::ostringstream output;
-    output.precision(7);
-
-    if (s1.size() > 0)
-    {
-      output << s1[0];
-      for(int index=1; index < s1.size(); index++) 
-	output << " " << s1[index];
-    }
-    
-    // Write the array - do not use a normal string write
-    xml.openTag(s);
-    xml << output.str();
-    xml.closeTag();
-  }
-  template<>
-  void write(XMLWriter& xml, const std::string& s, const multi1d<Real64>& s1)
-  {
-    std::ostringstream output;
-    output.precision(15);
-
-    if (s1.size() > 0)
-    {
-      output << s1[0];
-      for(int index=1; index < s1.size(); index++) 
-	output << " " << s1[index];
-    }
-    
-    // Write the array - do not use a normal string write
-    xml.openTag(s);
-    xml << output.str();
-    xml.closeTag();
-  }
-  template<>
-  void write(XMLWriter& xml, const std::string& xpath, const multi1d<Boolean>& output)
-  {
-    writeArrayPrimitive<Boolean>(xml, xpath, output);
-  }
-
 
 
   //--------------------------------------------------------------------------------
-  // XML writer to a buffer
-  XMLBufferWriter::XMLBufferWriter() {indent_level=0;}
-
-  XMLBufferWriter::XMLBufferWriter(const std::string& s) {open(s);}
-
-  void XMLBufferWriter::open(const std::string& s) 
-  {
-    if (Layout::primaryNode())
-      output_stream.str(s);
-  }
-
-  string XMLBufferWriter::str() const
-  {
-    ostringstream s;
-  
-    if (Layout::primaryNode()) 
-    {
-      writePrologue(s);
-      s << output_stream.str() << "\n";
-    }
-    
-    return s.str();
-  }
-
-  string XMLBufferWriter::printCurrentContext() const {return output_stream.str();}
-
-  XMLBufferWriter::~XMLBufferWriter() {}
-
-
-  //--------------------------------------------------------------------------------
-  // XML Writer to a file
-  XMLFileWriter::XMLFileWriter() {indent_level=0;}
-
-  void XMLFileWriter::open(const std::string& filename, bool write_prologue)
-  {
-    if (Layout::primaryNode())
-    {
-      output_stream.open(filename.c_str(), ofstream::out);
-      if (output_stream.fail())
-      {
-	QDPIO::cerr << "Error opening write file = " << filename << endl;
-	QDP_abort(1);
-      }
-      if (write_prologue)
-	writePrologue(output_stream);
-    }
-
-    indent_level=0;
-  }
-
-
-  void XMLFileWriter::close()
-  {
-    if (is_open()) 
-    {
-      if (Layout::primaryNode()) 
-	output_stream.close();
-    }
-  }
-
-  // Propagate status to all nodes
-  bool XMLFileWriter::is_open()
-  {
-    bool s = QDP_isInitialized();
-
-    if (s)
-    {
-      if (Layout::primaryNode()) 
-	s = output_stream.is_open();
-
-      Internal::broadcast(s);
-    }
-
-    return s;
-  }
-
-
-  // Flush the buffer
-  void XMLFileWriter::flush()
-  {
-    if (is_open()) 
-    {
-      if (Layout::primaryNode()) 
-	output_stream.flush();
-    }
-  }
-
-  // Propagate status to all nodes
-  bool XMLFileWriter::fail() const
-  {
-    bool s = QDP_isInitialized();
-
-    if (s)
-    {
-      if (Layout::primaryNode()) 
-	s = output_stream.fail();
-
-      Internal::broadcast(s);
-    }
-
-    return s;
-  }
-
-  XMLFileWriter::~XMLFileWriter() {close();}
-
-
-  //--------------------------------------------------------------------------------
-  // XML handle class for arrays
-  XMLArrayWriter::~XMLArrayWriter()
-  {
-    if (initP)
-      closeArray();
-  }
-
-  void XMLArrayWriter::openArray(const string& tagname)
-  {
-    //  QDP_info("openArray: stack_empty = %d  tagname=%s",
-    //	   (contextStack.empty()) ? 1 : 0,
-    //	   tagname.c_str());
-
-    if (initP)
-      QDP_error_exit("XMLArrayWriter: calling openArray twice");
-
-    if (arrayTag)
-      QDP_error_exit("XMLArrayWriter: internal error - array tag already written");
-
-    if (! contextStack.empty())
-      QDP_error_exit("XMLArrayWriter: context stack not empty");
-
-    qname = tagname;
-    elem_qname = "elem";    // for now fix the name - maintains internal consistency
-
-    openTag(qname);   // array tagname
-
-    initP = false;          // not fully initialized yet
-    arrayTag = true;
-  }
-
-  void XMLArrayWriter::closeArray()
-  {
-    //  QDP_info("closeArray");
-
-    if (! initP)
-      QDP_error_exit("XMLArrayWriter: calling closeArray but not initialized");
-
-    if (! contextStack.empty())
-      QDP_error_exit("XMLArrayWriter: context stack not empty");
-
-    closeTag();   // array tagname
-
-    if (array_size > 0 && elements_written != array_size)
-      QDP_error_exit("XMLArrayWriter: failed to write all the %d required elements: instead = %d",
-		     array_size,elements_written);
-
-    initP = arrayTag = false;
-    elements_written = 0;
-    indent_level = 0;
-    simpleElements = false; // do not know this yet
-  }
-
-  void XMLArrayWriter::openStruct(const string& tagname)
-  {
-    //  QDP_info("openStruct: stack_empty = %d  tagname=%s",
-    //	   (contextStack.empty()) ? 1 : 0,
-    //	   tagname.c_str());
-
-    if (! arrayTag)
-    {
-      openArray(tagname);
-      return;
-    }
-
-    if (! initP)
-    {
-      if (elements_written == 0)
-      {
-	// This is the first time this is called
-	// From now on, all elements must be STRUCT
-	simpleElements = false;
-      }
-      else
-	QDP_error_exit("XMLArrayWriter: internal error - data written but state not initialized");
-
-      initP = true;
-    }
-
-    if (simpleElements)
-      QDP_error_exit("XMLArrayWriter: suppose to write simple types but asked to write a struct");
-
-
-    if (contextStack.empty())
-      openTag(elem_qname);   // ignore user provided name and use default name
-    else
-      openTag(tagname);  // use user provided name
-
-    ElementType el = STRUCT;
-    contextStack.push(el);
-  }
-
-  void XMLArrayWriter::closeStruct()
-  {
-    //  QDP_info("closeStruct: stack_empty = %d",
-    //	   (contextStack.empty()) ? 1 : 0);
-
-    if (! initP)
-      QDP_error_exit("XMLArrayWriter: calling closeStruct but not initialized");
-
-    if (contextStack.empty())
-    {
-      //    QDP_error_exit("XMLArrayWriter: context stack empty - probably no openStruct");
-      closeArray();
-      return;
-    }
-
-    ElementType topval = contextStack.top();
-    if (topval != STRUCT)
-      QDP_error_exit("XMLArrayWriter: found closeStruct without corresponding openStruct");
-
-    contextStack.pop();
-
-    closeTag();   // struct (or elem_qname)  tagname
-
-    if (contextStack.empty())
-    {
-      elements_written++;
-      //    QDP_info("finished writing element %d",elements_written);
-    }
-  }
-
-  // Push a group name
-  void push(XMLArrayWriter& xml) {xml.openStruct("");}
-
-  // Pop a group name
-  void pop(XMLArrayWriter& xml) {xml.closeStruct();}
-
-} // namespace QDP
-
-#endif
+} // namespace QDP;

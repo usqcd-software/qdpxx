@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_aff_imp.h,v 1.1.2.1 2008-03-15 14:28:54 edwards Exp $
+// $Id: qdp_aff_imp.h,v 1.1.2.2 2008-03-16 02:40:04 edwards Exp $
 /*! @file
  * @brief AFF IO support via trees
  */
@@ -90,6 +90,9 @@ namespace QDP
     */
     void open(const std::string& filename);
 
+    //! Clone a reader
+    void open(LAFFReaderImp& old, const std::string& xpath);
+
     //! Queries whether the binary file is open
     /*!
       \return true if the binary file is open; false otherwise.
@@ -172,10 +175,6 @@ namespace QDP
 
     //! Count the array element entries
     int countArrayElem();
-
-  protected:
-    //! Clone a reader
-    void open(LAFFReaderImp& old, const std::string& xpath);
 
   private:
     //! Hide the = operator
