@@ -1,3 +1,16 @@
+2008-03-16 12:16  edwards
+
+	* lib/Makefile.am: Added qdp_tree_imp.cc
+
+2008-03-16 12:07  edwards
+
+	* include/qdp_aff_imp.h, include/qdp_aff_io.h,
+	  include/qdp_tree_imp.h, include/qdp_tree_io.h,
+	  include/qdp_xml_imp.h, include/qdp_xml_io.h, lib/qdp_aff_imp.cc,
+	  lib/qdp_aff_io.cc, lib/qdp_tree_io.cc, lib/qdp_xml_imp.cc,
+	  lib/qdp_xml_io.cc: Removed read/write of OScalar objects in favor
+	  of primitive objects.
+
 2008-03-15 22:40  edwards
 
 	* examples/t_aff.cc, include/qdp_aff_imp.h, include/qdp_aff_io.h,
