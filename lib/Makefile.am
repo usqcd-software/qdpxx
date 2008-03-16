@@ -22,7 +22,7 @@ libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc \
 	qdp_qdpio.cc qdp_filebuf.cc qdp_stdio.cc \
         qdp_profile.cc qdp_strnlen.cc qdp_crc32.cc \
         qdp_stopwatch.cc qdp_qio_strings.cc \
-        qdp_tree_rep.cc qdp_tree_io.cc qdp_tree_imp.cc \
+        qdp_tree_rep.cc qdp_tree_io.cc qdp_tree_types.cc \
         qdp_xml_io.cc qdp_xml_imp.cc \
         qdp_aff_io.cc qdp_aff_imp.cc
 

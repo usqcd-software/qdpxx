@@ -154,6 +154,7 @@ nobase_include_HEADERS = \
 		qdp_tree_rep.h \
 		qdp_tree_io.h \
 		qdp_tree_imp.h \
+		qdp_tree_types.h \
 		qdp_xml_io.h \
 		qdp_xml_imp.h \
 		qdp_aff_io.h \
