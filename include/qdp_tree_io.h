@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_tree_io.h,v 1.1.2.2 2008-03-16 02:40:04 edwards Exp $
+// $Id: qdp_tree_io.h,v 1.1.2.3 2008-03-16 16:07:20 edwards Exp $
 /*! @file
  * @brief Tree IO support
  *
@@ -23,7 +23,7 @@ namespace QDP
   class TreeBufferWriter;
   class TreeArrayWriter;
 
-  template<class T> inline void write(TreeWriter& tree, const std::string& s, const multi1d<T>& s1);
+  template<class T> inline void write(TreeWriter& tree, const std::string& s, const multi1d<T>& output);
 
   class TreeReaderImp;
 
@@ -98,16 +98,6 @@ namespace QDP
     virtual void read(const std::string& xpath, multi1d<double>& result);
     //! Xpath query
     virtual void read(const std::string& xpath, multi1d<bool>& result);
-
-    /* More overloadings of primitive(elemental) array objects */
-    //! Xpath query
-    virtual void read(const std::string& xpath, multi1d<Integer>& result);
-    //! Xpath query
-    virtual void read(const std::string& xpath, multi1d<Real32>& result);
-    //! Xpath query
-    virtual void read(const std::string& xpath, multi1d<Real64>& result);
-    //! Xpath query
-    virtual void read(const std::string& xpath, multi1d<Boolean>& result);
 
     //! Return the entire contents of the Reader as a TreeRep
     virtual void treeRep(TreeRep& output);
@@ -338,16 +328,6 @@ namespace QDP
     //! Write tag and contents
     virtual void write(const std::string& tagname, const multi1d<bool>& output) = 0;
 
-    // More overloaded array (elemental list) Writer Functions
-    //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<Integer>& output) = 0;
-    //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<Real32>& output) = 0;
-    //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<Real64>& output) = 0;
-    //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<Boolean>& output) = 0;
-
     // Write all the Tree to std::string
     // NEEDS FIXING - WANT A TRUE TREE HERE AND NOT A STRING VERSION
 //    void writeTree(const std::string& output) = 0;
@@ -365,13 +345,6 @@ namespace QDP
   /*! Write an closing tag */
 
   void pop(TreeWriter& tree);
-
-  //! Write an object with the next array element name as the tag
-  /*!
-    \param tree The writer
-    \param output The  contents
-  */
-  void writeElem(TreeArrayWriter& tree, const int& output);
 
   //! Write something from a reader
 //  void write(TreeWriter& tree, const std::string& s, const TreeReader& d);
@@ -478,82 +451,82 @@ namespace QDP
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const std::string& s, const multi1d<int>& s1);
+  void write(TreeWriter& tree, const std::string& s, const multi1d<int>& output);
   //! Writes an array of data
   /*!
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const std::string& s, const multi1d<unsigned int>& s1);
+  void write(TreeWriter& tree, const std::string& s, const multi1d<unsigned int>& output);
   //! Writes an array of data
   /*!
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const std::string& s, const multi1d<short int>& s1);
+  void write(TreeWriter& tree, const std::string& s, const multi1d<short int>& output);
   //! Writes an array of data
   /*!
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const std::string& s, const multi1d<unsigned short int>& s1);
+  void write(TreeWriter& tree, const std::string& s, const multi1d<unsigned short int>& output);
   //! Writes an array of data
   /*!
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const std::string& s, const multi1d<long int>& s1);
+  void write(TreeWriter& tree, const std::string& s, const multi1d<long int>& output);
   //! Writes an array of data
   /*!
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const std::string& s, const multi1d<unsigned long int>& s1);
+  void write(TreeWriter& tree, const std::string& s, const multi1d<unsigned long int>& output);
   //! Writes an array of data
   /*!
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const std::string& s, const multi1d<float>& s1);
+  void write(TreeWriter& tree, const std::string& s, const multi1d<float>& output);
   //! Writes an array of data
   /*!
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const std::string& s, const multi1d<double>& s1);
+  void write(TreeWriter& tree, const std::string& s, const multi1d<double>& output);
   //! Writes an array of data
   /*!
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const std::string& s, const multi1d<bool>& s1);
+  void write(TreeWriter& tree, const std::string& s, const multi1d<bool>& output);
 
   //! Write an expression
   template<class RHS, class C>
@@ -567,15 +540,15 @@ namespace QDP
   //! Write a Tree multi2d element
   template<class T> 
   inline
-  void write(TreeWriter& tree, const std::string& s, const multi2d<T>& s1)
+  void write(TreeWriter& tree, const std::string& s, const multi2d<T>& output)
   {
-    for(int j=0; j < s1.size1(); ++j)
-      for(int i=0; i < s1.size2(); ++i)
+    for(int j=0; j < output.size1(); ++j)
+      for(int i=0; i < output.size2(); ++i)
       {
 	std::ostringstream ost;
 	if (Layout::primaryNode()) 
 	  ost << s << "[ " << i << " ][ " << j << " ]";
-	write(tree, ost.str(), s1[i][j]);
+	write(tree, ost.str(), output[i][j]);
       }
   }
 
@@ -587,34 +560,34 @@ namespace QDP
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const string& s, const multi1d<Integer>& s1);
+  void write(TreeWriter& tree, const string& s, const multi1d<Integer>& output);
   /*!
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const string& s, const multi1d<Real32>& s1);
+  void write(TreeWriter& tree, const string& s, const multi1d<Real32>& output);
   /*!
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const string& s, const multi1d<Real64>& s1);
+  void write(TreeWriter& tree, const string& s, const multi1d<Real64>& output);
   /*!
     All the data are written inside a single tag pair
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<>
-  void write(TreeWriter& tree, const string& s, const multi1d<Boolean>& s1);
+  void write(TreeWriter& tree, const string& s, const multi1d<Boolean>& output);
 
 
 
@@ -724,16 +697,6 @@ namespace QDP
     //! Write tag and contents
     void write(const std::string& tagname, const multi1d<bool>& output);
 
-    // More overloaded array (elemental list) Writer Functions
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Integer>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Real32>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Real64>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Boolean>& output);
-
   protected:
     //! Return the implementation
     TreeWriter& getTreeWriter() const;
@@ -841,16 +804,6 @@ namespace QDP
     //! Write tag and contents
     void write(const std::string& tagname, const multi1d<bool>& output);
 
-    // More overloaded array (elemental list) Writer Functions
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Integer>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Real32>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Real64>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Boolean>& output);
-
   private:
     bool usedP;             /*!< set if the array is ever opened */
     bool initP;             /*!< set once array tag is written */
@@ -888,11 +841,11 @@ namespace QDP
     Each element of the array is written in a "elem" tag.
     \param tree The writer
     \param s the tag name
-    \param s1 The array of contents
+    \param output The array of contents
   */
   template<class T>
   inline
-  void write(TreeWriter& tree, const std::string& s, const multi1d<T>& s1)
+  void write(TreeWriter& tree, const std::string& s, const multi1d<T>& output)
   {
     QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     // Open an array writer for this object
@@ -903,13 +856,13 @@ namespace QDP
     push(tree_array, s);
 
     QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
-    for(int index=0; index < s1.size(); ++index)
+    for(int index=0; index < output.size(); ++index)
     {
     QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       try 
       {
     QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
-	write(tree_array, tree_array.nextElem(), s1[index]);  // Possibly grab user defines here
+	write(tree_array, tree_array.nextElem(), output[index]);  // Possibly grab user defines here
     QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       } 
       catch (const std::string& e) 

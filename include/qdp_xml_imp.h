@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xml_imp.h,v 1.1.2.1 2008-03-15 14:28:56 edwards Exp $
+// $Id: qdp_xml_imp.h,v 1.1.2.2 2008-03-16 16:07:20 edwards Exp $
 /*! @file
  * @brief XML IO support via trees
  */
@@ -141,16 +141,6 @@ namespace QDP
     void read(const std::string& xpath, multi1d<double>& result);
     //! Xpath query
     void read(const std::string& xpath, multi1d<bool>& result);
-
-    /* More overloadings of primitive(elemental) array objects */
-    //! Xpath query
-    void read(const std::string& xpath, multi1d<Integer>& result);
-    //! Xpath query
-    void read(const std::string& xpath, multi1d<Real32>& result);
-    //! Xpath query
-    void read(const std::string& xpath, multi1d<Real64>& result);
-    //! Xpath query
-    void read(const std::string& xpath, multi1d<Boolean>& result);
 
     //! Set a replacement of a primitive
     template<typename T>
@@ -352,16 +342,6 @@ namespace QDP
     void write(const std::string& tagname, const multi1d<double>& output);
     //! Write tag and contents
     void write(const std::string& tagname, const multi1d<bool>& output);
-
-    // More overloaded array (elemental list) Writer Functions
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Integer>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Real32>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Real64>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Boolean>& output);
 
     // Write all the XML to std::string
     void writeXML(const std::string& output);

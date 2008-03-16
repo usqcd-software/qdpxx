@@ -1,4 +1,4 @@
-// $Id: qdp_xml_imp.cc,v 1.1.2.1 2008-03-15 14:28:57 edwards Exp $
+// $Id: qdp_xml_imp.cc,v 1.1.2.2 2008-03-16 16:07:21 edwards Exp $
 //
 /*! @file
  * @brief XML IO support implementation
@@ -345,22 +345,6 @@ namespace QDP
     readArrayPrimitive<bool>(*this, xpath, result);
   }
 
-  void XMLReaderImp::read(const std::string& xpath, multi1d<Integer>& result)
-  {
-    readArrayPrimitive<Integer>(*this, xpath, result);
-  }
-  void XMLReaderImp::read(const std::string& xpath, multi1d<Real32>& result)
-  {
-    readArrayPrimitive<Real32>(*this, xpath, result);
-  }
-  void XMLReaderImp::read(const std::string& xpath, multi1d<Real64>& result)
-  {
-    readArrayPrimitive<Real64>(*this, xpath, result);
-  }
-  void XMLReaderImp::read(const std::string& xpath, multi1d<Boolean>& result)
-  {
-    readArrayPrimitive<Boolean>(*this, xpath, result);
-  }
 
 
   //--------------------------------------------------------------------------------
@@ -606,46 +590,6 @@ namespace QDP
   {
     writeArrayPrimitive(tagname, output);
   }
-
-  void XMLWriterImp::write(const std::string& tagname, const multi1d<Integer>& output)
-  {
-    writeArrayPrimitive(tagname, output);
-  }
-  void XMLWriterImp::write(const std::string& tagname, const multi1d<Real32>& s1)
-  {
-    std::ostringstream output;
-    output.precision(7);
-
-    if (s1.size() > 0)
-    {
-      output << s1[0];
-      for(int index=1; index < s1.size(); index++) 
-	output << " " << s1[index];
-    }
-    
-    // Write the array - do not use a normal string write
-    write(tagname, output.str());
-  }
-  void XMLWriterImp::write(const std::string& tagname, const multi1d<Real64>& s1)
-  {
-    std::ostringstream output;
-    output.precision(15);
-
-    if (s1.size() > 0)
-    {
-      output << s1[0];
-      for(int index=1; index < s1.size(); index++) 
-	output << " " << s1[index];
-    }
-    
-    // Write the array - do not use a normal string write
-    write(tagname, output.str());
-  }
-  void XMLWriterImp::write(const std::string& tagname, const multi1d<Boolean>& output)
-  {
-    writeArrayPrimitive(tagname, output);
-  }
-
 
 
   //--------------------------------------------------------------------------------

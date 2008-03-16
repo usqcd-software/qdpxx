@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_tree_imp.h,v 1.1.2.1 2008-03-15 14:28:56 edwards Exp $
+// $Id: qdp_tree_imp.h,v 1.1.2.2 2008-03-16 16:07:20 edwards Exp $
 /*! @file
  * @brief Tree IO support
  *
@@ -88,16 +88,6 @@ namespace QDP
     virtual void read(const std::string& xpath, multi1d<double>& result) = 0;
     //! Xpath query
     virtual void read(const std::string& xpath, multi1d<bool>& result) = 0;
-
-    /* More overloadings of primitive(elemental) array objects */
-    //! Xpath query
-    virtual void read(const std::string& xpath, multi1d<Integer>& result) = 0;
-    //! Xpath query
-    virtual void read(const std::string& xpath, multi1d<Real32>& result) = 0;
-    //! Xpath query
-    virtual void read(const std::string& xpath, multi1d<Real64>& result) = 0;
-    //! Xpath query
-    virtual void read(const std::string& xpath, multi1d<Boolean>& result) = 0;
 
     //! Return the entire contents of the Reader as a TreeRep
     virtual void treeRep(TreeRep& output) = 0;
@@ -210,16 +200,6 @@ namespace QDP
     virtual void write(const std::string& tagname, const multi1d<double>& output) = 0;
     //! Write tag and contents
     virtual void write(const std::string& tagname, const multi1d<bool>& output) = 0;
-
-    // More overloaded array (elemental list) Writer Functions
-    //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<Integer>& output) = 0;
-    //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<Real32>& output) = 0;
-    //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<Real64>& output) = 0;
-    //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<Boolean>& output) = 0;
 
     // Write all the Tree to std::string
     // NEEDS FIXING - WANT A TRUE TREE HERE AND NOT A STRING VERSION

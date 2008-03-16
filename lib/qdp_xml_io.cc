@@ -1,4 +1,4 @@
-// $Id: qdp_xml_io.cc,v 1.1.2.1 2008-03-15 14:28:57 edwards Exp $
+// $Id: qdp_xml_io.cc,v 1.1.2.2 2008-03-16 16:07:21 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -402,22 +402,6 @@ namespace QDP
     getXMLWriter().write(tagname,output);
   }
   void XMLWriter::write(const std::string& tagname, const multi1d<bool>& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const std::string& tagname, const multi1d<Integer>& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const std::string& tagname, const multi1d<Real32>& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const std::string& tagname, const multi1d<Real64>& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const std::string& tagname, const multi1d<Boolean>& output)
   {
     getXMLWriter().write(tagname,output);
   }

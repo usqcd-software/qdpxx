@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_aff_imp.h,v 1.1.2.2 2008-03-16 02:40:04 edwards Exp $
+// $Id: qdp_aff_imp.h,v 1.1.2.3 2008-03-16 16:07:20 edwards Exp $
 /*! @file
  * @brief AFF IO support via trees
  */
@@ -151,16 +151,6 @@ namespace QDP
     //! Xpath query
     void read(const std::string& xpath, multi1d<bool>& result);
 
-    /* More overloadings of primitive(elemental) array objects */
-    //! Xpath query
-    void read(const std::string& xpath, multi1d<Integer>& result);
-    //! Xpath query
-    void read(const std::string& xpath, multi1d<Real32>& result);
-    //! Xpath query
-    void read(const std::string& xpath, multi1d<Real64>& result);
-    //! Xpath query
-    void read(const std::string& xpath, multi1d<Boolean>& result);
-
     //! Return the entire contents of the Reader as a TreeRep
     void treeRep(TreeRep& output);
         
@@ -308,16 +298,6 @@ namespace QDP
     void write(const std::string& tagname, const multi1d<double>& output);
     //! Write tag and contents
     void write(const std::string& tagname, const multi1d<bool>& output);
-
-    // More overloaded array (elemental list) Writer Functions
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Integer>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Real32>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Real64>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Boolean>& output);
 
   protected:
     //! Hide the = operator

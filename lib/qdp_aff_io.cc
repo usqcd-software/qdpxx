@@ -1,4 +1,4 @@
-// $Id: qdp_aff_io.cc,v 1.1.2.2 2008-03-16 02:40:04 edwards Exp $
+// $Id: qdp_aff_io.cc,v 1.1.2.3 2008-03-16 16:07:20 edwards Exp $
 /*! @file
  * @brief AFF IO support
  */
@@ -339,22 +339,6 @@ namespace QDP
     getAFFFileWriter().write(tagname,output);
   }
   void AFFFileWriter::write(const std::string& tagname, const multi1d<bool>& output)
-  {
-    getAFFFileWriter().write(tagname,output);
-  }
-  void AFFFileWriter::write(const std::string& tagname, const multi1d<Integer>& output)
-  {
-    getAFFFileWriter().write(tagname,output);
-  }
-  void AFFFileWriter::write(const std::string& tagname, const multi1d<Real32>& output)
-  {
-    getAFFFileWriter().write(tagname,output);
-  }
-  void AFFFileWriter::write(const std::string& tagname, const multi1d<Real64>& output)
-  {
-    getAFFFileWriter().write(tagname,output);
-  }
-  void AFFFileWriter::write(const std::string& tagname, const multi1d<Boolean>& output)
   {
     getAFFFileWriter().write(tagname,output);
   }

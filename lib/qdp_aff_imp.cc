@@ -1,4 +1,4 @@
-// $Id: qdp_aff_imp.cc,v 1.1.2.2 2008-03-16 02:40:04 edwards Exp $
+// $Id: qdp_aff_imp.cc,v 1.1.2.3 2008-03-16 16:07:20 edwards Exp $
 //
 /*! @file
  * @brief AFF IO support implementation
@@ -500,23 +500,6 @@ namespace QDP
     notImplemented(xpath);
   }
 
-  void LAFFReaderImp::read(const std::string& xpath, multi1d<Integer>& result)
-  {
-    notImplemented(xpath);
-  }
-  void LAFFReaderImp::read(const std::string& xpath, multi1d<Real32>& result)
-  {
-    notImplemented(xpath);
-  }
-  void LAFFReaderImp::read(const std::string& xpath, multi1d<Real64>& result)
-  {
-    notImplemented(xpath);
-  }
-  void LAFFReaderImp::read(const std::string& xpath, multi1d<Boolean>& result)
-  {
-    notImplemented(xpath);
-  }
-
 
 
   //--------------------------------------------------------------------------------
@@ -688,7 +671,6 @@ namespace QDP
     QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     if (Layout::primaryNode())
     {
-//      string tag_full_path = createPath(tagname);
       QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << " tagname=XX" << tagname << "XX" << endl;
       string current_tag = aff_symbol_name(aff_node_name(current_node));
       QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << " current=XX" << current_tag << "XX" << endl;
@@ -868,23 +850,6 @@ namespace QDP
     }
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<bool>& output)
-  {
-    notImplemented(__PRETTY_FUNCTION__);
-  }
-
-  void AFFFileWriterImp::write(const std::string& tagname, const multi1d<Integer>& output)
-  {
-    notImplemented(__PRETTY_FUNCTION__);
-  }
-  void AFFFileWriterImp::write(const std::string& tagname, const multi1d<Real32>& output)
-  {
-    notImplemented(__PRETTY_FUNCTION__);
-  }
-  void AFFFileWriterImp::write(const std::string& tagname, const multi1d<Real64>& output)
-  {
-    notImplemented(__PRETTY_FUNCTION__);
-  }
-  void AFFFileWriterImp::write(const std::string& tagname, const multi1d<Boolean>& output)
   {
     notImplemented(__PRETTY_FUNCTION__);
   }

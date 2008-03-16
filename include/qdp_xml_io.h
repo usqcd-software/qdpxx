@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xml_io.h,v 1.1.2.2 2008-03-16 02:40:04 edwards Exp $
+// $Id: qdp_xml_io.h,v 1.1.2.3 2008-03-16 16:07:20 edwards Exp $
 /*! @file
  * @brief XML IO support via trees
  */
@@ -286,16 +286,6 @@ namespace QDP
     void write(const std::string& tagname, const multi1d<double>& output);
     //! Write tag and contents
     void write(const std::string& tagname, const multi1d<bool>& output);
-
-    // More overloaded array (elemental list) Writer Functions
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Integer>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Real32>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Real64>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<Boolean>& output);
 
     // Write all the XML to std::string
     void writeXML(const std::string& output);

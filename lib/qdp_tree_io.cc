@@ -1,4 +1,4 @@
-// $Id: qdp_tree_io.cc,v 1.1.2.2 2008-03-16 02:40:04 edwards Exp $
+// $Id: qdp_tree_io.cc,v 1.1.2.3 2008-03-16 16:07:20 edwards Exp $
 //
 /*! @file
  * @brief Tree IO support
@@ -203,25 +203,6 @@ namespace QDP
   }
 
 
-  /* More overloadings of primitive(elemental) array objects */
-  void TreeReader::read(const std::string& xpath, multi1d<Integer>& result)
-  {
-    getTreeReader().read(xpath, result);
-  }
-  void TreeReader::read(const std::string& xpath, multi1d<Real32>& result)
-  {
-    getTreeReader().read(xpath, result);
-  }
-  void TreeReader::read(const std::string& xpath, multi1d<Real64>& result)
-  {
-    getTreeReader().read(xpath, result);
-  }
-  void TreeReader::read(const std::string& xpath, multi1d<Boolean>& result)
-  {
-    getTreeReader().read(xpath, result);
-  }
-
-   
   // Overloaded Reader Functions
   void read(TreeReader& tree, const std::string& xpath, string& result)
   {
@@ -311,25 +292,36 @@ namespace QDP
     tree.read(xpath, result);
   }
 
+
+  // Read a Tree multi1d element
+  template<typename T>
+  void readArrayPrimitive(TreeReader& tree, const std::string& xpath, multi1d<T>& result)
+  {
+    multi1d<int> res;
+    tree.read(xpath, res);
+    result.resize(res.size());
+    for(int i=0; i < res.size(); ++i)
+      result[i] = res[i];
+  }
   template<>
   void read(TreeReader& tree, const std::string& xpath, multi1d<Integer>& result)
   {
-    tree.read(xpath, result);
+    readArrayPrimitive(tree, xpath, result);
   }
   template<>
   void read(TreeReader& tree, const std::string& xpath, multi1d<Real32>& result)
   {
-    tree.read(xpath, result);
+    readArrayPrimitive(tree, xpath, result);
   }
   template<>
   void read(TreeReader& tree, const std::string& xpath, multi1d<Real64>& result)
   {
-    tree.read(xpath, result);
+    readArrayPrimitive(tree, xpath, result);
   }
   template<>
   void read(TreeReader& tree, const std::string& xpath, multi1d<Boolean>& result)
   {
-    tree.read(xpath, result);
+    readArrayPrimitive(tree, xpath, result);
   }
 
 
@@ -478,25 +470,42 @@ namespace QDP
     tree.write(s, output);
   }
 
+  // Write a Tree multi1d element
   template<>
   void write(TreeWriter& tree, const std::string& s, const multi1d<Integer>& output)
   {
-    tree.write(s, output);
+    multi1d<int> out;
+    out.resize(output.size());
+    for(int i=0; i < out.size(); ++i)
+      out[i] = toInt(output[i]);
+    tree.write(s, out);
   }
   template<>
   void write(TreeWriter& tree, const std::string& s, const multi1d<Real32>& output)
   {
-    tree.write(s, output);
+    multi1d<int> out;
+    out.resize(output.size());
+    for(int i=0; i < out.size(); ++i)
+      out[i] = toFloat(output[i]);
+    tree.write(s, out);
   }
   template<>
   void write(TreeWriter& tree, const std::string& s, const multi1d<Real64>& output)
   {
-    tree.write(s, output);
+    multi1d<int> out;
+    out.resize(output.size());
+    for(int i=0; i < out.size(); ++i)
+      out[i] = toDouble(output[i]);
+    tree.write(s, out);
   }
   template<>
   void write(TreeWriter& tree, const std::string& s, const multi1d<Boolean>& output)
   {
-    tree.write(s, output);
+    multi1d<int> out;
+    out.resize(output.size());
+    for(int i=0; i < out.size(); ++i)
+      out[i] = toBool(output[i]);
+    tree.write(s, out);
   }
 
 
@@ -641,22 +650,6 @@ namespace QDP
     return getTreeWriter().write(tagname, output);
   }
   void TreeBufferWriter::write(const std::string& tagname, const multi1d<bool>& output)
-  {
-    return getTreeWriter().write(tagname, output);
-  }
-  void TreeBufferWriter::write(const std::string& tagname, const multi1d<Integer>& output)
-  {
-    return getTreeWriter().write(tagname, output);
-  }
-  void TreeBufferWriter::write(const std::string& tagname, const multi1d<Real32>& output)
-  {
-    return getTreeWriter().write(tagname, output);
-  }
-  void TreeBufferWriter::write(const std::string& tagname, const multi1d<Real64>& output)
-  {
-    return getTreeWriter().write(tagname, output);
-  }
-  void TreeBufferWriter::write(const std::string& tagname, const multi1d<Boolean>& output)
   {
     return getTreeWriter().write(tagname, output);
   }
@@ -860,22 +853,6 @@ namespace QDP
     return getTreeWriter().write(tagname, output);
   }
   void TreeArrayWriter::write(const std::string& tagname, const multi1d<bool>& output)
-  {
-    return getTreeWriter().write(tagname, output);
-  }
-  void TreeArrayWriter::write(const std::string& tagname, const multi1d<Integer>& output)
-  {
-    return getTreeWriter().write(tagname, output);
-  }
-  void TreeArrayWriter::write(const std::string& tagname, const multi1d<Real32>& output)
-  {
-    return getTreeWriter().write(tagname, output);
-  }
-  void TreeArrayWriter::write(const std::string& tagname, const multi1d<Real64>& output)
-  {
-    return getTreeWriter().write(tagname, output);
-  }
-  void TreeArrayWriter::write(const std::string& tagname, const multi1d<Boolean>& output)
   {
     return getTreeWriter().write(tagname, output);
   }
