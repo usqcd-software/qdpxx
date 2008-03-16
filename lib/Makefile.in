@@ -92,7 +92,7 @@ am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	qdp_util.cc qdp_qdpio.cc qdp_filebuf.cc qdp_stdio.cc \
 	qdp_profile.cc qdp_strnlen.cc qdp_crc32.cc qdp_stopwatch.cc \
 	qdp_qio_strings.cc qdp_tree_rep.cc qdp_tree_io.cc \
-	qdp_tree_imp.cc qdp_xml_io.cc qdp_xml_imp.cc qdp_aff_io.cc \
+	qdp_tree_types.cc qdp_xml_io.cc qdp_xml_imp.cc qdp_aff_io.cc \
 	qdp_aff_imp.cc qdp_scalar_init.cc qdp_scalar_layout.cc \
 	qdp_scalar_specific.cc qdp_scalarsite_specific.cc \
 	qdp_parscalar_init.cc qdp_parscalar_layout.cc \
@@ -133,7 +133,7 @@ am_libqdp_a_OBJECTS = qdp_map.$(OBJEXT) qdp_subset.$(OBJEXT) \
 	qdp_strnlen.$(OBJEXT) qdp_crc32.$(OBJEXT) \
 	qdp_stopwatch.$(OBJEXT) qdp_qio_strings.$(OBJEXT) \
 	qdp_tree_rep.$(OBJEXT) qdp_tree_io.$(OBJEXT) \
-	qdp_tree_imp.$(OBJEXT) qdp_xml_io.$(OBJEXT) \
+	qdp_tree_types.$(OBJEXT) qdp_xml_io.$(OBJEXT) \
 	qdp_xml_imp.$(OBJEXT) qdp_aff_io.$(OBJEXT) \
 	qdp_aff_imp.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
@@ -275,7 +275,7 @@ libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc \
 	qdp_util.cc qdp_qdpio.cc qdp_filebuf.cc qdp_stdio.cc \
 	qdp_profile.cc qdp_strnlen.cc qdp_crc32.cc qdp_stopwatch.cc \
 	qdp_qio_strings.cc qdp_tree_rep.cc qdp_tree_io.cc \
-	qdp_tree_imp.cc qdp_xml_io.cc qdp_xml_imp.cc qdp_aff_io.cc \
+	qdp_tree_types.cc qdp_xml_io.cc qdp_xml_imp.cc qdp_aff_io.cc \
 	qdp_aff_imp.cc $(am__append_2) $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7) \
 	$(am__append_8) $(am__append_9)
@@ -388,9 +388,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_stopwatch.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_strnlen.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_subset.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_tree_imp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_tree_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_tree_rep.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_tree_types.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_xml_imp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_xml_io.Po@am__quote@
