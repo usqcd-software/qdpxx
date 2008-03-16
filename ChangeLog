@@ -1,3 +1,10 @@
+2008-03-15 22:40  edwards
+
+	* examples/t_aff.cc, include/qdp_aff_imp.h, include/qdp_aff_io.h,
+	  include/qdp_tree_io.h, include/qdp_xml_io.h, lib/qdp_aff_imp.cc,
+	  lib/qdp_aff_io.cc, lib/qdp_tree_io.cc: Further cleanups. First
+	  working version under the bridge pattern.
+
 2008-03-15 10:28  edwards
 
 	* examples/Makefile.am, examples/t_aff.cc, examples/t_xml.cc,
