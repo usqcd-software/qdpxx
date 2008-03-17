@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_tree_io.h,v 1.1.2.4 2008-03-17 03:55:36 edwards Exp $
+// $Id: qdp_tree_io.h,v 1.1.2.5 2008-03-17 04:03:47 edwards Exp $
 /*! @file
  * @brief Tree IO support
  *
@@ -663,9 +663,6 @@ namespace QDP
     //! Construct from a TreeRep
     void open(const TreeRep& s);
 
-    //! Flush the output. Maybe a nop.
-    void flush();
-
     //! Return entire buffer as a TreeRep
     /*! SEE IF WE CAN JUST WRITE IN PLACE RATHER THAN RETURNING BIG THING */
 //    std::string str() const;
@@ -766,9 +763,6 @@ namespace QDP
     //! Destructor
     ~TreeArrayWriter();
 
-    //! Flush the output. Maybe a nop.
-    void flush();
-
     //! Closes the array writer
     /*! It is an error to close before all data is written, unless unbounded */
     void close();
@@ -788,65 +782,6 @@ namespace QDP
 
     //! Get next array element name
     std::string nextElem();
-
-    // These are all forwardings to the underlying TreeWriter
-
-    //! Writes an opening Tree tag    
-    /*!
-      \param tagname The name of the tag
-    */
-    void openTag(const std::string& tagname);
-
-    //! Closes a tag
-    void closeTag();
-
-    //! Return tag for array element n
-    std::string arrayElem(int n) const;
-
-    //! Write the number of array elements written
-    void writeArraySize(int size);
-
-    // Overloaded Writer Functions
-    //! Write tag and contents
-    void write(const std::string& tagname, const std::string& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const int& output);
-    //! Write tag contents
-    void write(const std::string& tagname, const unsigned int& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const short int& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const unsigned short int& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const long int& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const unsigned long int& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const float& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const double& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const bool& output);
-
-    // Overloaded array (elemental list) Writer Functions
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<int>& output);
-    //! Write tag contents
-    void write(const std::string& tagname, const multi1d<unsigned int>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<short int>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<unsigned short int>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<long int>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<unsigned long int>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<float>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<double>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<bool>& output);
 
   private:
     bool usedP;             /*!< set if the array is ever opened */
