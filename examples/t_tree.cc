@@ -1,4 +1,4 @@
-// $Id: t_xml.cc,v 1.26.4.2 2008-03-17 03:55:36 edwards Exp $
+// $Id: t_tree.cc,v 1.1.2.1 2008-03-17 03:55:36 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -39,13 +39,11 @@ int main(int argc, char **argv)
     pop(toxml);
   QDPIO::cout << "line= " << __LINE__ << endl;
 
-    QDPIO::cout << "buffer = XXX" << toxml.str() << "XXX" << endl;
-
 //    std::istringstream list_stream(toxml.str()+"\n");
-//    XMLReader fromxml(list_stream);
+//    TreeReader fromxml(list_stream);
 
   QDPIO::cout << "line= " << __LINE__ << endl;
-    XMLReader fromxml(toxml);
+    TreeReader fromxml(toxml);
     int rob;
   QDPIO::cout << "line= " << __LINE__ << endl;
     read(fromxml,"/godzilla/dog",rob);
@@ -55,7 +53,7 @@ int main(int argc, char **argv)
   }
   catch(const string& e)
   {
-    QDPIO::cerr << "Error: XMLBufferWriter into a XMLReader test: error=" << e << endl;
+    QDPIO::cerr << "Error: TreeBufferWriter into a TreeReader test: error=" << e << endl;
     QDP_abort(1);
   }
   catch(std::bad_cast) 
@@ -67,7 +65,7 @@ int main(int argc, char **argv)
   QDPIO::cout << "line= " << __LINE__ << endl;
   try
   {
-    XMLFileWriter toxml("t_xml.input1");
+    TreeFileWriter toxml("t_xml.input1");
 
     push(toxml,"fred");
     write(toxml,"d", d);
@@ -94,7 +92,7 @@ int main(int argc, char **argv)
   QDPIO::cout << "line= " << __LINE__ << endl;
   try
   {
-    XMLReader fromxml;
+    TreeReader fromxml;
     fromxml.open("t_xml.input1");
 
     QDPIO::cout << "Here is the contents of  t_xml.input1" << endl;
@@ -119,21 +117,21 @@ int main(int argc, char **argv)
   try
   {
     // Test reading some xml snippet and dumping it back out
-    XMLReader fromxml;
+    TreeReader fromxml;
     fromxml.open("t_xml.input1");
 
-    XMLBufferWriter toxml_1;
+    TreeBufferWriter toxml_1;
     toxml_1 << fromxml;
 
-//    XMLBufferWriter toxml_2;
+//    TreeBufferWriter toxml_2;
 //    push(toxml_2,"imbed_some_xml");
 //    write(toxml_2,"this_is_my_xml",fromxml);
 //    pop(toxml_2);
 
-    XMLFileWriter toxml_3("t_xml.output1");
+    TreeFileWriter toxml_3("t_xml.output1");
     toxml_3 << toxml_1;
 
-    XMLFileWriter toxml_4("t_xml.output2");
+    TreeFileWriter toxml_4("t_xml.output2");
 //    write(toxml_4,"imbed_some_more",toxml_2);
   }
   catch(const string& e)
@@ -152,7 +150,7 @@ int main(int argc, char **argv)
   // Test writing some more complex snippets
   try
   {
-    XMLBufferWriter toxml;
+    TreeBufferWriter toxml;
     push(toxml,"complex_xml");
 
     write(toxml,"charStarThingy","whether tis nobler to suffer the slings and arrows");
@@ -160,7 +158,7 @@ int main(int argc, char **argv)
     string stringThingy = "Sat Jun 16 00:35:57 2001";
     write(toxml, "stringThingy", stringThingy);
 
-    Real a = 0.2;
+    Double a = 0.2;
     write(toxml,"realThingy",a);
 
     Complex b = cmplx(a,-1.2);
@@ -174,14 +172,14 @@ int main(int argc, char **argv)
       arrayInt[i] = i+37;
     write(toxml,"arrayInt",arrayInt);
 
-    multi1d<Real> arrayReal(3);
-    for(int i=0; i < arrayReal.size(); ++i)
-      arrayReal[i] = i+107.5;
-    write(toxml,"arrayReal",arrayReal);
+    multi1d<Double> arrayDouble(3);
+    for(int i=0; i < arrayDouble.size(); ++i)
+      arrayDouble[i] = i+107.5;
+    write(toxml,"arrayDouble",arrayDouble);
 
     multi1d<Complex> arrayComplex(2);
     for(int i=0; i < arrayComplex.size(); ++i)
-      arrayComplex[i] = cmplx(Real(1.0),Real(i+42));
+      arrayComplex[i] = cmplx(Double(1.0),Double(i+42));
     write(toxml,"arrayComplex",arrayComplex);
 
     ColorVector c;
@@ -201,11 +199,11 @@ int main(int argc, char **argv)
     pop(toxml);
 
     // Play around - read this buffer back in
-    XMLReader fromxml;
+    TreeReader fromxml;
     fromxml.open(toxml);
 
     // Now dump it out to disk
-    XMLFileWriter filexml("t_xml.input2");
+    TreeFileWriter filexml("t_xml.input2");
     filexml << toxml; 
 
   }
@@ -226,14 +224,14 @@ int main(int argc, char **argv)
   {
     QDPIO::cout << "line= " << __LINE__ << endl;
     // Test reading some more complex snippets
-    XMLReader fromxml_orig;
+    TreeReader fromxml_orig;
     fromxml_orig.open("t_xml.input2");
 
     QDPIO::cout << "line= " << __LINE__ << endl;
-    XMLReader fromxml(fromxml_orig, "/complex_xml");
+    TreeReader fromxml(fromxml_orig, "/complex_xml");
 
     QDPIO::cout << "line= " << __LINE__ << endl;
-    XMLReader fromxml_tmp(fromxml, "seedThingy");
+    TreeReader fromxml_tmp(fromxml, "seedThingy");
     ostringstream os;
     fromxml_tmp.printCurrentContext(os);
     QDPIO::cout << "Current context = XX" << os.str() << "XX" << endl;
@@ -250,10 +248,10 @@ int main(int argc, char **argv)
       QDPIO::cout << "arrayInt[" << i << "] = " << arrayInt[i]  << "  node=" << Layout::nodeNumber() << endl;
 
     QDPIO::cout << "line= " << __LINE__ << endl;
-    multi1d<Real> arrayReal;
-    read(fromxml,"arrayReal",arrayReal);
-    for(int i=0; i < arrayReal.size(); ++i)
-      QDPIO::cout << "arrayReal[" << i << "] = " << arrayReal[i] << "  node=" << Layout::nodeNumber() << endl;
+    multi1d<Double> arrayDouble;
+    read(fromxml,"arrayDouble",arrayDouble);
+    for(int i=0; i < arrayDouble.size(); ++i)
+      QDPIO::cout << "arrayDouble[" << i << "] = " << arrayDouble[i] << "  node=" << Layout::nodeNumber() << endl;
 
     QDPIO::cout << "line= " << __LINE__ << endl;
     multi1d<Complex> arrayComplex;
@@ -284,7 +282,7 @@ int main(int argc, char **argv)
   { 
   QDPIO::cout << "line= " << __LINE__ << endl;
 
-    XMLFileWriter  xml_file_out("t_xml.output3");
+    TreeFileWriter  xml_file_out("t_xml.output3");
   QDPIO::cout << "line= " << __LINE__ << endl;
 
     push(xml_file_out,"root_for_output3");
@@ -313,11 +311,10 @@ int main(int argc, char **argv)
   QDPIO::cout << "line= " << __LINE__ << endl;
 
     pop(xml_out);  // This closes the array
-    pop(xml_file_out);  // This closes the file root tag
   QDPIO::cout << "line= " << __LINE__ << endl;
 
 
-    QDP_info("done with XMLArrayWrtiter tests");
+    QDP_info("done with TreeArrayWrtiter tests");
   }
   catch (const string& e)
   {
@@ -335,7 +332,7 @@ int main(int argc, char **argv)
   // Try out a complex (complicated with structs) array context
   try
   { 
-    XMLFileWriter  xml_file_out("t_xml.output3");
+    TreeFileWriter  xml_file_out("t_xml.output3");
     push(xml_file_out,"root_for_output3");
     TreeArrayWriter  xml_out(xml_file_out, 3);
     push(xml_out,"this_is_an_array_of_structs"); // This starts the array
@@ -349,9 +346,8 @@ int main(int argc, char **argv)
     }
     
     pop(xml_out);  // This closes the array
-    pop(xml_file_out);  // This closes the file root tag
 
-    QDP_info("done with XMLArrayWrtiter tests");
+    QDP_info("done with TreeArrayWrtiter tests");
   }
   catch (const string& e)
   {
@@ -369,10 +365,10 @@ int main(int argc, char **argv)
   try 
   {
     // Test moving around with derived readers
-    XMLReader fromxml_orig;
+    TreeReader fromxml_orig;
     fromxml_orig.open("t_xml.input2");
 
-    XMLReader fromxml(fromxml_orig, "/complex_xml");
+    TreeReader fromxml(fromxml_orig, "/complex_xml");
 
     QDP::Seed seed;
     read(fromxml,"seedThingy",seed);
@@ -383,10 +379,10 @@ int main(int argc, char **argv)
     for(int i=0; i < arrayInt.size(); ++i)
       QDPIO::cout << "arrayInt[" << i << "] = " << arrayInt[i]  << "  node=" << Layout::nodeNumber() << endl;
 
-    multi1d<Real> arrayReal;
-    read(fromxml,"arrayReal",arrayReal);
-    for(int i=0; i < arrayReal.size(); ++i)
-      QDPIO::cout << "arrayReal[" << i << "] = " << arrayReal[i] << "  node=" << Layout::nodeNumber() << endl;
+    multi1d<Double> arrayDouble;
+    read(fromxml,"arrayDouble",arrayDouble);
+    for(int i=0; i < arrayDouble.size(); ++i)
+      QDPIO::cout << "arrayDouble[" << i << "] = " << arrayDouble[i] << "  node=" << Layout::nodeNumber() << endl;
 
     multi1d<Complex> arrayComplex;
     read(fromxml,"arrayComplex",arrayComplex);
@@ -414,25 +410,25 @@ int main(int argc, char **argv)
   {
     // Try modifying a reader
     // First write something to modify
-    XMLFileWriter  toxml("t_xml.input3");
+    TreeFileWriter  toxml("t_xml.input3");
     push(toxml, "root_for_input3");
-    write(toxml, "Mass", Real(17.3));
+    write(toxml, "Mass", Double(17.3));
     pop(toxml);
     toxml.close();
 
     // Try modifying a reader
-    XMLReader fromxml;
+    TreeReader fromxml;
     fromxml.open("t_xml.input3");
 
-//    fromxml.set<QDP::Real>("/root_for_input3/Mass", Real(0.5));
+//    fromxml.set<QDP::Double>("/root_for_input3/Mass", Double(0.5));
 
     // turn back into a string
-    XMLBufferWriter new_writer;
+    TreeBufferWriter new_writer;
     new_writer << fromxml;
 
     std::string new_writer_string = new_writer.printCurrentContext();
 
-    XMLFileWriter toxml_again("t_xml.compare_to_input3");
+    TreeFileWriter toxml_again("t_xml.compare_to_input3");
     push(toxml_again, "compare_to_input3");
     write(toxml_again, "content_of_writer", new_writer_string);
     pop(toxml_again);

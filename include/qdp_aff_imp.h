@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_aff_imp.h,v 1.1.2.3 2008-03-16 16:07:20 edwards Exp $
+// $Id: qdp_aff_imp.h,v 1.1.2.4 2008-03-17 03:55:36 edwards Exp $
 /*! @file
  * @brief AFF IO support via trees
  */
@@ -160,9 +160,6 @@ namespace QDP
     //! Count the number of occurances from the Xpath query
     bool exist(const std::string& xpath);
 
-    //! Count the number of occurances from the Xpath query
-    int count(const std::string& xpath);
-
     //! Count the array element entries
     int countArrayElem();
 
@@ -256,6 +253,9 @@ namespace QDP
 
     //! Return tag for array element n
     std::string arrayElem(int n) const;
+
+    //! Write the number of array elements written
+    void writeArraySize(int size);
 
     // Overloaded Writer Functions
     //! Write tag and contents

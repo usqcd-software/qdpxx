@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_tree_io.h,v 1.1.2.3 2008-03-16 16:07:20 edwards Exp $
+// $Id: qdp_tree_io.h,v 1.1.2.4 2008-03-17 03:55:36 edwards Exp $
 /*! @file
  * @brief Tree IO support
  *
@@ -13,6 +13,7 @@
 #include <sstream>
 
 #include "qdp_tree_rep.h"
+#include "qdp_tree_types.h"
 
 namespace QDP 
 {
@@ -40,8 +41,10 @@ namespace QDP
     Note that only the primary node opens and reads Tree files. Results from
     Xpath queries are broadcast to all nodes.
     
-    This object is meant to serve as a base class. It cannot be created
-    with a default constructor. However, it can be created by a constructor
+    This object is meant to serve as a base class. It can only be constructed
+    given a key which is the type of the actual implementation of the class.
+    Namely, a XMLReader, etc.
+    However, a TreeReader can also be created by a constructor
     using another (concrete) TreeReader as an argument. This is meant to
     serve like a cloning function. This new TreeReader can be a subdirectory
     of the original (derived) TreeReader.
@@ -49,6 +52,13 @@ namespace QDP
   class TreeReader
   {
   public:
+    //! Create a TreeReader according to a key
+    /*!
+      Creates a TreeReader. The param is the type of Reader
+      \param reader_type The type of the reader
+    */
+    explicit TreeReader(const std::string& reader_type);
+  
     //! Clone a reader but with a possibly different path
     explicit TreeReader(TreeReader& old, const std::string& xpath);
   
@@ -261,6 +271,13 @@ namespace QDP
   class TreeWriter
   {
   public:
+    //! Create a TreeWriter according to a key
+    /*!
+      Creates a TreeWriter. The param is the type of Writer
+      \param reader_type The type of the writer
+    */
+    explicit TreeWriter(const std::string& writer_type);
+  
     // Virtual destructor
     virtual ~TreeWriter();
 
@@ -268,69 +285,93 @@ namespace QDP
     /*!
       \param tagname The name of the tag
     */
-    virtual void openTag(const std::string& tagname) = 0;
+    virtual void openTag(const std::string& tagname);
 
     //! Closes a tag
-    virtual void closeTag() = 0;
+    virtual void closeTag();
 
     //! Writes an opening Tree tag    
     /*!
       \param tagname The name of the tag
     */
-    virtual void openStruct(const std::string& tagname) = 0;
-    virtual void closeStruct() = 0;
+    virtual void openStruct(const std::string& tagname);
+    virtual void closeStruct();
 
     //! Return tag for array element n
-    virtual std::string arrayElem(int n) const = 0;
+    virtual std::string arrayElem(int n) const;
+
+    //! Write the number of array elements written
+    virtual void writeArraySize(int size);
 
     //! Flush the output. Maybe a nop.
-    virtual void flush() = 0;
+    virtual void flush();
 
     // Overloaded Writer Functions
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const std::string& output) = 0;
+    virtual void write(const std::string& tagname, const std::string& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const int& output) = 0;
+    virtual void write(const std::string& tagname, const int& output);
     //! Write tag contents
-    virtual void write(const std::string& tagname, const unsigned int& output) = 0;
+    virtual void write(const std::string& tagname, const unsigned int& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const short int& output) = 0;
+    virtual void write(const std::string& tagname, const short int& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const unsigned short int& output) = 0;
+    virtual void write(const std::string& tagname, const unsigned short int& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const long int& output) = 0;
+    virtual void write(const std::string& tagname, const long int& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const unsigned long int& output) = 0;
+    virtual void write(const std::string& tagname, const unsigned long int& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const float& output) = 0;
+    virtual void write(const std::string& tagname, const float& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const double& output) = 0;
+    virtual void write(const std::string& tagname, const double& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const bool& output) = 0;
+    virtual void write(const std::string& tagname, const bool& output);
 
     // Overloaded array (elemental list) Writer Functions
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<int>& output) = 0;
+    virtual void write(const std::string& tagname, const multi1d<int>& output);
     //! Write tag contents
-    virtual void write(const std::string& tagname, const multi1d<unsigned int>& output) = 0;
+    virtual void write(const std::string& tagname, const multi1d<unsigned int>& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<short int>& output) = 0;
+    virtual void write(const std::string& tagname, const multi1d<short int>& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<unsigned short int>& output) = 0;
+    virtual void write(const std::string& tagname, const multi1d<unsigned short int>& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<long int>& output) = 0;
+    virtual void write(const std::string& tagname, const multi1d<long int>& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<unsigned long int>& output) = 0;
+    virtual void write(const std::string& tagname, const multi1d<unsigned long int>& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<float>& output) = 0;
+    virtual void write(const std::string& tagname, const multi1d<float>& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<double>& output) = 0;
+    virtual void write(const std::string& tagname, const multi1d<double>& output);
     //! Write tag and contents
-    virtual void write(const std::string& tagname, const multi1d<bool>& output) = 0;
+    virtual void write(const std::string& tagname, const multi1d<bool>& output);
 
     // Write all the Tree to std::string
     // NEEDS FIXING - WANT A TRUE TREE HERE AND NOT A STRING VERSION
-//    void writeTree(const std::string& output) = 0;
+//    void writeTree(const std::string& output);
+
+  protected:
+    //! Hide default constructor
+    TreeWriter();
+  
+    //! Hide copy constructor
+    TreeWriter(const TreeWriter&) {}
+  
+    //! Register object with base class
+    void registerObject(TreeWriterImp* obj);
+
+    //! Return the implementation
+    TreeWriterImp& getTreeWriter() const;
+
+  private:
+    //! Hide the = operator
+    void operator=(const TreeWriter&) {}
+  
+  private:
+    bool           initP;    /*!< Indicates whether this class has been initialized */
+    TreeWriterImp* tree_use; /*!< Pointer to TreeWriterImp used for actual implementation */
   };
 
 
@@ -760,7 +801,10 @@ namespace QDP
     void closeTag();
 
     //! Return tag for array element n
-    virtual std::string arrayElem(int n) const;
+    std::string arrayElem(int n) const;
+
+    //! Write the number of array elements written
+    void writeArraySize(int size);
 
     // Overloaded Writer Functions
     //! Write tag and contents

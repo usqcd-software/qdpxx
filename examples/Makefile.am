@@ -46,7 +46,7 @@ HDRS=examples.h
 # The programs to build
 # 
 check_PROGRAMS = t_skeleton t_io t_mesplq \
-      t_xml t_aff t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
+      t_xml t_aff t_tree t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
       t_cugauge t_transpose_spin t_partfile t_su3
 
 EXTRA_PROGRAMS  = t_qio_factory t_gsum
@@ -71,6 +71,7 @@ t_remote_SOURCES = t_remote.cc $(HDRS)
 t_foo_SOURCES = t_foo.cc $(HDRS)
 t_aff_SOURCES = t_aff.cc $(HDRS)
 t_xml_SOURCES = t_xml.cc $(HDRS)
+t_tree_SOURCES = t_tree.cc $(HDRS)
 t_qio_SOURCES = t_qio.cc $(HDRS)
 t_qio_DEPENDENCIES = build_lib rebuild_other_libs
 t_qio_factory_SOURCES = t_qio_factory.cc $(HDRS)

@@ -34,10 +34,10 @@ POST_UNINSTALL = :
 @BUILD_LIBINTRIN_TRUE@am__append_2 = -L@top_builddir@/other_libs/libintrin/lib
 @BUILD_LIBINTRIN_TRUE@am__append_3 = -lintrin
 check_PROGRAMS = t_skeleton$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
-	t_xml$(EXEEXT) t_aff$(EXEEXT) t_remote$(EXEEXT) \
-	t_entry$(EXEEXT) t_nersc$(EXEEXT) t_shift$(EXEEXT) \
-	t_exotic$(EXEEXT) t_basic$(EXEEXT) t_qio$(EXEEXT) \
-	t_cugauge$(EXEEXT) t_transpose_spin$(EXEEXT) \
+	t_xml$(EXEEXT) t_aff$(EXEEXT) t_tree$(EXEEXT) \
+	t_remote$(EXEEXT) t_entry$(EXEEXT) t_nersc$(EXEEXT) \
+	t_shift$(EXEEXT) t_exotic$(EXEEXT) t_basic$(EXEEXT) \
+	t_qio$(EXEEXT) t_cugauge$(EXEEXT) t_transpose_spin$(EXEEXT) \
 	t_partfile$(EXEEXT) t_su3$(EXEEXT) $(am__EXEEXT_2) \
 	$(am__EXEEXT_3)
 EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_gsum$(EXEEXT) \
@@ -204,6 +204,10 @@ am_t_transpose_spin_OBJECTS = t_transpose_spin.$(OBJEXT) \
 t_transpose_spin_OBJECTS = $(am_t_transpose_spin_OBJECTS)
 t_transpose_spin_LDADD = $(LDADD)
 t_transpose_spin_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am_t_tree_OBJECTS = t_tree.$(OBJEXT) $(am__objects_1)
+t_tree_OBJECTS = $(am_t_tree_OBJECTS)
+t_tree_LDADD = $(LDADD)
+t_tree_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_t_xml_OBJECTS = t_xml.$(OBJEXT) $(am__objects_1)
 t_xml_OBJECTS = $(am_t_xml_OBJECTS)
 t_xml_LDADD = $(LDADD)
@@ -235,7 +239,7 @@ SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) $(t_aff_SOURCES) \
 	$(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
 	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
 	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
-	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
+	$(t_transpose_spin_SOURCES) $(t_tree_SOURCES) $(t_xml_SOURCES) \
 	$(test_ildglat_SOURCES)
 DIST_SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
 	$(t_aff_SOURCES) $(t_basic_SOURCES) $(t_blas_SOURCES) \
@@ -248,7 +252,7 @@ DIST_SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
 	$(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
 	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
 	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
-	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
+	$(t_transpose_spin_SOURCES) $(t_tree_SOURCES) $(t_xml_SOURCES) \
 	$(test_ildglat_SOURCES)
 ETAGS = etags
 CTAGS = ctags
@@ -398,6 +402,7 @@ t_remote_SOURCES = t_remote.cc $(HDRS)
 t_foo_SOURCES = t_foo.cc $(HDRS)
 t_aff_SOURCES = t_aff.cc $(HDRS)
 t_xml_SOURCES = t_xml.cc $(HDRS)
+t_tree_SOURCES = t_tree.cc $(HDRS)
 t_qio_SOURCES = t_qio.cc $(HDRS)
 t_qio_DEPENDENCIES = build_lib rebuild_other_libs
 t_qio_factory_SOURCES = t_qio_factory.cc $(HDRS)
@@ -571,6 +576,9 @@ t_su3$(EXEEXT): $(t_su3_OBJECTS) $(t_su3_DEPENDENCIES)
 t_transpose_spin$(EXEEXT): $(t_transpose_spin_OBJECTS) $(t_transpose_spin_DEPENDENCIES) 
 	@rm -f t_transpose_spin$(EXEEXT)
 	$(CXXLINK) $(t_transpose_spin_OBJECTS) $(t_transpose_spin_LDADD) $(LIBS)
+t_tree$(EXEEXT): $(t_tree_OBJECTS) $(t_tree_DEPENDENCIES) 
+	@rm -f t_tree$(EXEEXT)
+	$(CXXLINK) $(t_tree_OBJECTS) $(t_tree_LDADD) $(LIBS)
 t_xml$(EXEEXT): $(t_xml_OBJECTS) $(t_xml_DEPENDENCIES) 
 	@rm -f t_xml$(EXEEXT)
 	$(CXXLINK) $(t_xml_OBJECTS) $(t_xml_LDADD) $(LIBS)
@@ -627,6 +635,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spinproj2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_su3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_transpose_spin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_tree.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_xml.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_ildglat.Po@am__quote@

@@ -1,4 +1,4 @@
-// $Id: qdp_xml_imp.cc,v 1.1.2.2 2008-03-16 16:07:21 edwards Exp $
+// $Id: qdp_xml_imp.cc,v 1.1.2.3 2008-03-17 03:55:36 edwards Exp $
 //
 /*! @file
  * @brief XML IO support implementation
@@ -437,6 +437,9 @@ namespace QDP
   {
     return std::string("elem");
   }
+
+  //! Write the number of array elements written
+  void XMLWriterImp::writeArraySize(int size) {}
 
 
   // Driver for telephone reads

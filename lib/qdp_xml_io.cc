@@ -1,4 +1,4 @@
-// $Id: qdp_xml_io.cc,v 1.1.2.2 2008-03-16 16:07:21 edwards Exp $
+// $Id: qdp_xml_io.cc,v 1.1.2.3 2008-03-17 03:55:36 edwards Exp $
 //
 /*! @file
  * @brief XML IO support
@@ -241,169 +241,21 @@ namespace QDP
   {
   }
 
-  void XMLWriter::openSimple(const string& tagname)
+  // Return the implementation
+  XMLWriterImp& XMLWriter::getXMLWriter() const
   {
-    getXMLWriter().openSimple(tagname);
-  }
-
-  void XMLWriter::closeSimple()
-  {
-    getXMLWriter().closeSimple();
-  }
-
-  void XMLWriter::openStruct(const string& tagname)
-  {
-    getXMLWriter().openStruct(tagname);
-  }
-
-  void XMLWriter::closeStruct()
-  {
-    getXMLWriter().closeStruct();
-  }
-
-  void XMLWriter::openTag(const string& tagname)
-  {
-    getXMLWriter().openTag(tagname);
-  }
-
-  void XMLWriter::openTag(const string& nsprefix, const string& tagname)
-  {
-    getXMLWriter().openTag(nsprefix,tagname);
-  }
-
-//  void XMLWriter::openTag(const string& tagname, XMLWriterAPI::AttributeList& al)
-//  {
-//    getXMLWriter().openTag(tagname,al);
-//  }
-
-//  void XMLWriter::openTag(const string& nsprefix, 
-//			  const string& tagname, 
-//			  XMLWriterAPI::AttributeList& al)
-//  {
-//    getXMLWriter().openTag(nsprefix,tagname,al);
-//  }
-
-  void XMLWriter::closeTag()
-  {
-    getXMLWriter().closeTag();
+    return dynamic_cast<XMLWriterImp&>(getTreeWriter());
   }
 
   void XMLWriter::emptyTag(const string& tagname)
   {
     getXMLWriter().emptyTag(tagname);
   }
-//  void XMLWriter::emptyTag(const string& tagname,  XMLWriterAPI::AttributeList& al)
-//  { 
-//    getXMLWriter().emptyTag(tagname,al);
-//  }
 
-//  void XMLWriter::emptyTag(const string& nsprefix, 
-//			   const string& tagname, 
-//			   XMLWriterAPI::AttributeList& al)
-// {
-//    getXMLWriter().emptyTag(nsprefix,tagname,al);
-//  }
-
-  // Return tag for array element n
-  std::string XMLWriter::arrayElem(int n) const
-  {
-    return getXMLWriter().arrayElem(n);
-  }
-
-  // Flush the buffer
-  void XMLWriter::flush()
-  {
-    getXMLWriter().flush();
-  }
-
-  // Time to build a telephone book of basic primitives
-  // Overloaded Writer Functions
-  void XMLWriter::write(const std::string& tagname, const string& output)
-  {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
-    getXMLWriter().write(tagname,output);
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
-  }
-  void XMLWriter::write(const string& tagname, const int& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const string& tagname, const unsigned int& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const string& tagname, const short int& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const string& tagname, const unsigned short int& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const string& tagname, const long int& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const string& tagname, const unsigned long int& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const string& tagname, const float& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const string& tagname, const double& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const string& tagname, const bool& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-   
   // Write XML string
   void XMLWriter::writeXML(const string& output)
   {
     getXMLWriter().writeXML(output);
-  }
-
-  void XMLWriter::write(const std::string& tagname, const multi1d<int>& output)
-  {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
-    getXMLWriter().write(tagname,output);
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
-  }
-  void XMLWriter::write(const std::string& tagname, const multi1d<unsigned int>& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const std::string& tagname, const multi1d<short int>& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const std::string& tagname, const multi1d<unsigned short int>& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const std::string& tagname, const multi1d<long int>& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const std::string& tagname, const multi1d<unsigned long int>& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const std::string& tagname, const multi1d<float>& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const std::string& tagname, const multi1d<double>& output)
-  {
-    getXMLWriter().write(tagname,output);
-  }
-  void XMLWriter::write(const std::string& tagname, const multi1d<bool>& output)
-  {
-    getXMLWriter().write(tagname,output);
   }
 
 
@@ -442,47 +294,29 @@ namespace QDP
   // XML writer to a buffer
   XMLBufferWriter::XMLBufferWriter() 
   {
-    buffer_writer = new XMLBufferWriterImp();
-    initP = true;
+    registerObject(new XMLBufferWriterImp());
   }
 
   XMLBufferWriter::XMLBufferWriter(const std::string& s) 
   {
-    buffer_writer = new XMLBufferWriterImp(s);
-    initP = true;
+    registerObject(new XMLBufferWriterImp(s));
   }
 
-  XMLBufferWriter::~XMLBufferWriter() 
-  {
-    if (initP)
-      delete buffer_writer;
-  }
-
-  // The actual implementation
-  XMLWriterImp& XMLBufferWriter::getXMLWriter() const
-  {
-    if (! initP)
-    {
-      QDPIO::cerr << "XMLBufferWriter is not initialized" << endl;
-      QDP_abort(1);
-    }
-
-    return *buffer_writer;
-  }
+  XMLBufferWriter::~XMLBufferWriter() {}
 
   void XMLBufferWriter::open(const std::string& s) 
   {
-    dynamic_cast<XMLBufferWriterImp&>(getXMLWriter()).open(s);
+    dynamic_cast<XMLBufferWriterImp&>(getTreeWriter()).open(s);
   }
 
   string XMLBufferWriter::str() const
   {
-    return dynamic_cast<XMLBufferWriterImp&>(getXMLWriter()).str();
+    return dynamic_cast<XMLBufferWriterImp&>(getTreeWriter()).str();
   }
 
   string XMLBufferWriter::printCurrentContext() const 
   {
-    return dynamic_cast<XMLBufferWriterImp&>(getXMLWriter()).printCurrentContext();
+    return dynamic_cast<XMLBufferWriterImp&>(getTreeWriter()).printCurrentContext();
   }
 
 
@@ -490,57 +324,32 @@ namespace QDP
   // XML Writer to a file
   XMLFileWriter::XMLFileWriter()
   {
-    file_writer = new XMLFileWriterImp();
-    initP = true;
+    registerObject(new XMLFileWriterImp());
   }
 
   // Constructor from a filename
   XMLFileWriter::XMLFileWriter(const std::string& filename, bool write_prologue)
   {
-    file_writer = new XMLFileWriterImp(filename, write_prologue);
-    initP = true;
+    registerObject(new XMLFileWriterImp(filename, write_prologue));
   }
 
-  XMLFileWriter::~XMLFileWriter() 
-  {
-    if (initP)
-      delete file_writer;
-  }
-
-  // The actual implementation
-  XMLWriterImp& XMLFileWriter::getXMLWriter() const
-  {
-    if (! initP)
-    {
-      QDPIO::cerr << "XMLFileWriter is not initialized" << endl;
-      QDP_abort(1);
-    }
-
-    return *file_writer;
-  }
+  XMLFileWriter::~XMLFileWriter() {}
 
   void XMLFileWriter::open(const std::string& filename, bool write_prologue)
   {
-    dynamic_cast<XMLFileWriterImp&>(getXMLWriter()).open(filename, write_prologue);
+    dynamic_cast<XMLFileWriterImp&>(getTreeWriter()).open(filename, write_prologue);
   }
 
 
   void XMLFileWriter::close()
   {
-    dynamic_cast<XMLFileWriterImp&>(getXMLWriter()).close();
+    dynamic_cast<XMLFileWriterImp&>(getTreeWriter()).close();
   }
 
   // Propagate status to all nodes
   bool XMLFileWriter::is_open()
   {
-    return dynamic_cast<XMLFileWriterImp&>(getXMLWriter()).is_open();
-  }
-
-
-  // Flush the buffer
-  void XMLFileWriter::flush()
-  {
-    getXMLWriter().flush();
+    return dynamic_cast<XMLFileWriterImp&>(getTreeWriter()).is_open();
   }
 
   // Propagate status to all nodes

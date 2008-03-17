@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xml_io.h,v 1.1.2.3 2008-03-16 16:07:20 edwards Exp $
+// $Id: qdp_xml_io.h,v 1.1.2.4 2008-03-17 03:55:36 edwards Exp $
 /*! @file
  * @brief XML IO support via trees
  */
@@ -156,57 +156,8 @@ namespace QDP
   class XMLWriter : public TreeWriter
   {
   public:
-    XMLWriter();
-
     // Virtual destructor
     virtual ~XMLWriter();
-
-    //! Writes an opening XML tag
-    /*!
-      \param tagname The name of the tag
-    */
-    virtual void openSimple(const std::string& tagname);
-    virtual void closeSimple();
-
-    //! Writes an opening XML tag    
-    /*!
-      \param tagname The name of the tag
-    */
-    virtual void openStruct(const std::string& tagname);
-    virtual void closeStruct();
-
-    //! Writes an opening XML tag    
-    /*!
-      \param tagname The name of the tag
-    */
-    void openTag(const std::string& tagname);
-
-    //! Writes an opening XML tag    
-    /*!
-      \param nsprefix A namespace prefix for the tag 
-      \param tagname The name of the tag
-    */
-    void openTag(const std::string& nsprefix, const std::string& tagname);
-
-    //! Writes an opening XML tag    
-    /*!
-      \param tagname The name of the tag
-      \param al A list of attributes for this tag
-    */
-//    void openTag(const std::string& tagname, XMLWriterAPI::AttributeList& al);
-
-    //! Writes an opening XML tag    
-    /*!
-      \param nsprefix A namespace prefix for the tag 
-      \param tagname The name of the tag
-      \param al A list of attributes for this tag      
-    */
-//    void openTag(const std::string& nsprefix,
-//		 const std::string& tagname, 
-//		 XMLWriterAPI::AttributeList& al);
-
-    //! Closes a tag
-    void closeTag();
 
     //! Writes an empty tag
     /*!
@@ -214,85 +165,22 @@ namespace QDP
     */
     void emptyTag(const std::string& tagname);
 
-    //! Writes an empty tag
-    /*!
-      \param nsprefix A namespace prefix for the tag 
-      \param tagname The name of the tag
-    */
-    void emptyTag(const std::string& nsprefix, const std::string& tagname);
-
-    //! Writes an empty tag
-    /*!
-      \param tagname The name of the tag
-      \param al A list of attributes for this tag            
-    */
-//    void emptyTag(const std::string& tagname, XMLWriterAPI::AttributeList& al);
-
-    //! Writes an empty tag
-    /*!
-      \param nsprefix A namespace prefix for the tag 
-      \param tagname The name of the tag
-      \param al A list of attributes for this tag            
-    */
-//    void emptyTag(const std::string& nsprefix,
-//		  const std::string& tagname, 
-//		  XMLWriterAPI::AttributeList& al);
-    
-
-    //! Return tag for array element n
-    std::string arrayElem(int n) const;
-
-    //! Flush the buffer
-    void flush();
-
-    // Overloaded Writer Functions
-    //! Write tag and contents
-    void write(const std::string& tagname, const std::string& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const int& output);
-    //! Write tag contents
-    void write(const std::string& tagname, const unsigned int& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const short int& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const unsigned short int& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const long int& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const unsigned long int& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const float& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const double& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const bool& output);
-
-    // Overloaded array (elemental list) Writer Functions
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<int>& output);
-    //! Write tag contents
-    void write(const std::string& tagname, const multi1d<unsigned int>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<short int>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<unsigned short int>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<long int>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<unsigned long int>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<float>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<double>& output);
-    //! Write tag and contents
-    void write(const std::string& tagname, const multi1d<bool>& output);
-
     // Write all the XML to std::string
     void writeXML(const std::string& output);
-
+ 
   protected:
-    //! The actual implementation
-    virtual XMLWriterImp& getXMLWriter() const = 0;
+    //! Hide the default constructor
+    XMLWriter();
+
+    //! Return the implementation
+    XMLWriterImp& getXMLWriter() const;
+
+  private:
+    //! Hide the copy constructor
+    XMLWriter(const XMLWriter&) {}
+
+    //! Hide the = operator
+    void operator=(const XMLWriter&) {}
   };
 
 
@@ -349,9 +237,6 @@ namespace QDP
     // Return root element as a string
     std::string printCurrentContext() const;
         
-    //! Flush the buffer
-    void flush() {}
-
     //! Return true if some failure occurred in previous IO operation
     bool fail() const {return false;}
 
@@ -361,15 +246,6 @@ namespace QDP
 
     // Hide copy constructors
     void operator=(const XMLBufferWriter&) {}
-
-  protected:
-    //! The actual implementation
-    /*! Cannot use covariant return rule since XMLBufferWriterImp is not fully declared */
-    XMLWriterImp& getXMLWriter() const;
-
-  private:
-    bool                initP;         /*!< Has this buffer been initialized? */
-    XMLBufferWriterImp* buffer_writer; /*<! The output writer */
   };
 
 
@@ -409,9 +285,6 @@ namespace QDP
     */
     void open(const std::string& filename, bool write_prologue=true);
 
-    //! Flush the buffer
-    void flush();
-
     //! Return true if some failure occurred in previous IO operation
     bool fail() const;
 
@@ -424,15 +297,6 @@ namespace QDP
 
     // Hide copy constructors
     void operator=(const XMLFileWriter&) {}
-
-  protected:
-    //! The actual implementation
-    /*! Cannot use covariant return rule since XMLFileWriterImp is not fully declared */
-    XMLWriterImp& getXMLWriter() const;
-
-  private:
-    bool              initP;       /*!< Has this buffer been initialized? */
-    XMLFileWriterImp* file_writer; /*<! The output writer */
   };
 
 

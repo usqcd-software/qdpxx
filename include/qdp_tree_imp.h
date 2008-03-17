@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_tree_imp.h,v 1.1.2.2 2008-03-16 16:07:20 edwards Exp $
+// $Id: qdp_tree_imp.h,v 1.1.2.3 2008-03-17 03:55:36 edwards Exp $
 /*! @file
  * @brief Tree IO support
  *
@@ -11,6 +11,7 @@
 
 #include <string>
 
+#include "qdp_tree_types.h"
 #include "qdp_tree_rep.h"
 
 namespace QDP 
@@ -27,7 +28,7 @@ namespace QDP
   //--------------------------------------------------------------------------------
   //! Tree reader class
   /*!
-    This is used to read data from an Tree file using Xpath.
+    This is used to read data from a Tree file using Xpath.
 
     Note that only the primary node opens and reads Tree files. Results from
     Xpath queries are broadcast to all nodes.
@@ -99,10 +100,6 @@ namespace QDP
     /*! THIS IS NEEDED. PROBABLY WILL NOT SUPPORT GENERIC XPATH */
     virtual bool exist(const std::string& xpath) = 0;
 
-    //! Count the number of occurances from the Xpath query
-    /*! THIS IS NEEDED. PROBABLY WILL NOT SUPPORT GENERIC XPATH */
-    virtual int count(const std::string& xpath) = 0;
-
     //! Count the array element entries
     virtual int countArrayElem() = 0;
 
@@ -155,6 +152,9 @@ namespace QDP
 
     //! Return tag for array element n
     virtual std::string arrayElem(int n) const = 0;
+
+    //! Write the number of array elements written
+    virtual void writeArraySize(int size) = 0;
 
     //! Flush the output. Maybe a nop.
     virtual void flush() = 0;

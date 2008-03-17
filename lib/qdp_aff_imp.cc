@@ -1,4 +1,4 @@
-// $Id: qdp_aff_imp.cc,v 1.1.2.3 2008-03-16 16:07:20 edwards Exp $
+// $Id: qdp_aff_imp.cc,v 1.1.2.4 2008-03-17 03:55:36 edwards Exp $
 //
 /*! @file
  * @brief AFF IO support implementation
@@ -110,7 +110,7 @@ namespace QDP
   std::string AFFReaderImp::arrayElem(int n) const
   {
     std::ostringstream os;
-    os << "elem[" << n+1 << "]";
+    os << "elem." << n+1;
     return os.str();
   }
 
@@ -135,7 +135,6 @@ namespace QDP
 
   LAFFReaderImp::LAFFReaderImp(LAFFReaderImp& old, const string& xpath)
   {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     initP = derivedP = false;
     input_stream = 0;
     current_dir  = 0;
@@ -210,10 +209,8 @@ namespace QDP
 
     if (Layout::primaryNode())
     {
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << "  xpath=" << xpath << endl;
       input_stream = old.input_stream;
       current_dir = getNodePath(input_stream, old.current_dir, xpath);
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << "  xpath=" << xpath << endl;
     }
     else
     {
@@ -283,11 +280,9 @@ namespace QDP
   {
     if (Layout::primaryNode())
     {
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << "  xpath=" << xpath << endl;
       AffNode_s* new_node = getNodePath(getIstream(), current_dir, xpath);
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+
       uint32_t num = aff_node_size(new_node);
-      checkError();
       char *new_str = new char[num+1];
       if (aff_node_get_char(getIstream(), new_node, new_str, num) != 0)
       {
@@ -295,7 +290,7 @@ namespace QDP
       }
       new_str[num] = '\0';
       result = new_str;
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+
       delete[] new_str;
     }
 
@@ -306,11 +301,9 @@ namespace QDP
   {
     if (Layout::primaryNode())
     {
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << "  xpath=" << xpath << endl;
       AffNode_s* new_node = getNodePath(getIstream(), current_dir, xpath);
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+
       uint32_t num = aff_node_size(new_node);
-      checkError();
       if (num != 1)
       {
 	QDPIO::cerr << "LAFFReaderImp: expected size 1 for tag=" << xpath << " but found size= "
@@ -323,7 +316,6 @@ namespace QDP
 	checkError();
       }
       result = res;
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     }
 
     // Now broadcast back out to all nodes
@@ -331,7 +323,25 @@ namespace QDP
   }
   void LAFFReaderImp::read(const std::string& xpath, unsigned int& result)
   {
-    notImplemented(__PRETTY_FUNCTION__);
+    if (Layout::primaryNode())
+    {
+      AffNode_s* new_node = getNodePath(getIstream(), current_dir, xpath);
+
+      uint32_t num = aff_node_size(new_node);
+      if (num != 1)
+      {
+	QDPIO::cerr << "LAFFReaderImp: expected size 1 for tag=" << xpath << " but found size= "
+		    << num << endl;
+	QDP_abort(1);
+      }
+      uint32_t res;
+      if (aff_node_get_int(getIstream(), new_node, &res, 1) != 0)
+	checkError();
+      result = res;
+    }
+
+    // Now broadcast back out to all nodes
+    Internal::broadcast(result);
   }
   void LAFFReaderImp::read(const std::string& xpath, short int& result)
   {
@@ -351,17 +361,34 @@ namespace QDP
   }
   void LAFFReaderImp::read(const std::string& xpath, float& result)
   {
-    notImplemented(__PRETTY_FUNCTION__);
+    if (Layout::primaryNode())
+    {
+      AffNode_s* new_node = getNodePath(getIstream(), current_dir, xpath);
+
+      uint32_t num = aff_node_size(new_node);
+      if (num != 1)
+      {
+	QDPIO::cerr << "LAFFReaderImp: expected size 1 for tag=" << xpath << " but found size= "
+		    << num << endl;
+	QDP_abort(1);
+      }
+      double res;
+      if (aff_node_get_double(getIstream(), new_node, &res, 1) != 0)
+	checkError();
+
+      result = res;
+    }
+
+    // Now broadcast back out to all nodes
+    Internal::broadcast(result);
   }
   void LAFFReaderImp::read(const std::string& xpath, double& result)
   {
     if (Layout::primaryNode())
     {
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << "  xpath=" << xpath << endl;
       AffNode_s* new_node = getNodePath(getIstream(), current_dir, xpath);
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+
       uint32_t num = aff_node_size(new_node);
-      checkError();
       if (num != 1)
       {
 	QDPIO::cerr << "LAFFReaderImp: expected size 1 for tag=" << xpath << " but found size= "
@@ -369,10 +396,7 @@ namespace QDP
 	QDP_abort(1);
       }
       if (aff_node_get_double(getIstream(), new_node, &result, 1) != 0)
-      {
 	checkError();
-      }
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     }
 
     // Now broadcast back out to all nodes
@@ -380,7 +404,26 @@ namespace QDP
   }
   void LAFFReaderImp::read(const std::string& xpath, bool& result)
   {
-    notImplemented(__PRETTY_FUNCTION__);
+    if (Layout::primaryNode())
+    {
+      AffNode_s* new_node = getNodePath(getIstream(), current_dir, xpath);
+
+      uint32_t num = aff_node_size(new_node);
+      if (num != 1)
+      {
+	QDPIO::cerr << "LAFFReaderImp: expected size 1 for tag=" << xpath << " but found size= "
+		    << num << endl;
+	QDP_abort(1);
+      }
+      uint32_t res;
+      if (aff_node_get_int(getIstream(), new_node, &res, 1) != 0)
+	checkError();
+
+      result = (res == 0) ? false : true;
+    }
+
+    // Now broadcast back out to all nodes
+    Internal::broadcast(result);
   }
    
   // Return the entire contents of the Reader as a TreeRep
@@ -398,50 +441,43 @@ namespace QDP
   //! Count the number of occurances from the Xpath query
   bool LAFFReaderImp::exist(const std::string& xpath)
   {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
-    AffNode_s* node = chdirPath(getIstream(), current_dir, xpath);
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
-    bool found = (node == 0) ? false : true;
-    QDPIO::cout << __func__ << ": exist(" << xpath << ") = " << found << endl;
-    return found;
+    return (0 == chdirPath(getIstream(), current_dir, xpath)) ? false : true;
   }
 
-
-  // Count the number of occurances from the Xpath query
-  int LAFFReaderImp::count(const std::string& xpath)
-  {
-    notImplemented(__PRETTY_FUNCTION__);
-    int n=0;
-    
-    // Now broadcast back out to all nodes
-    Internal::broadcast(n);
-    return n;
-  }
 
   //! Count the number of occurances from the Xpath query
   int LAFFReaderImp::countArrayElem()
   {
-    notImplemented(__PRETTY_FUNCTION__);
+    AffNode_s* new_node = getNodePath(getIstream(), current_dir, "size");
+
+    uint32_t num = aff_node_size(new_node);
+    if (num != 1)
+    {
+      QDPIO::cerr << "LAFFReaderImp::countArrayElem: expected tag size to be 1" << endl;
+      QDP_abort(1);
+    }
+    uint32_t res;
+    if (aff_node_get_int(getIstream(), new_node, &res, 1) != 0)
+      checkError();
+    int siz = res;
+    return siz;
   }
 
   void LAFFReaderImp::read(const std::string& xpath, multi1d<int>& result)
   {
     if (Layout::primaryNode())
     {
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << "  xpath=" << xpath << endl;
       AffNode_s* new_node = getNodePath(getIstream(), current_dir, xpath);
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+
       uint32_t num = aff_node_size(new_node);
-      checkError();
       uint32_t* res = new uint32_t[num];
       if (aff_node_get_int(getIstream(), new_node, res, num) != 0)
-      {
 	checkError();
-      }
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+
       result.resize(num);
       for(int i=0; i < result.size(); ++i)
 	result[i] = res[i];
+
       delete[] res;
     }
 
@@ -450,7 +486,24 @@ namespace QDP
   }
   void LAFFReaderImp::read(const std::string& xpath, multi1d<unsigned int>& result)
   {
-    notImplemented(xpath);
+    if (Layout::primaryNode())
+    {
+      AffNode_s* new_node = getNodePath(getIstream(), current_dir, xpath);
+
+      uint32_t num = aff_node_size(new_node);
+      uint32_t* res = new uint32_t[num];
+      if (aff_node_get_int(getIstream(), new_node, res, num) != 0)
+	checkError();
+
+      result.resize(num);
+      for(int i=0; i < result.size(); ++i)
+	result[i] = res[i];
+
+      delete[] res;
+    }
+
+    // Now broadcast back out to all nodes
+    Internal::broadcast(result);
   }
   void LAFFReaderImp::read(const std::string& xpath, multi1d<short int>& result)
   {
@@ -470,25 +523,39 @@ namespace QDP
   }
   void LAFFReaderImp::read(const std::string& xpath, multi1d<float>& result)
   {
-    notImplemented(xpath);
+    if (Layout::primaryNode())
+    {
+      AffNode_s* new_node = getNodePath(getIstream(), current_dir, xpath);
+
+      uint32_t num = aff_node_size(new_node);
+      double* res = new double[num];
+      if (aff_node_get_double(getIstream(), new_node, res, num) != 0)
+	checkError();
+
+      result.resize(num);
+      for(int i=0; i < result.size(); ++i)
+	result[i] = res[i];
+
+      delete[] res;
+    }
+
+    // Now broadcast back out to all nodes
+    Internal::broadcast(result);
   }
   void LAFFReaderImp::read(const std::string& xpath, multi1d<double>& result)
   {
     if (Layout::primaryNode())
     {
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << "  xpath=" << xpath << endl;
       AffNode_s* new_node = getNodePath(getIstream(), current_dir, xpath);
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+
       uint32_t num = aff_node_size(new_node);
-      checkError();
       double* res = new double[num];
       if (aff_node_get_double(getIstream(), new_node, res, num) != 0)
-      {
 	checkError();
-      }
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+
       result.resize(num);
       result = *res;
+
       delete[] res;
     }
 
@@ -497,7 +564,24 @@ namespace QDP
   }
   void LAFFReaderImp::read(const std::string& xpath, multi1d<bool>& result)
   {
-    notImplemented(xpath);
+    if (Layout::primaryNode())
+    {
+      AffNode_s* new_node = getNodePath(getIstream(), current_dir, xpath);
+
+      uint32_t num = aff_node_size(new_node);
+      uint32_t* res = new uint32_t[num];
+      if (aff_node_get_int(getIstream(), new_node, res, num) != 0)
+	checkError();
+
+      result.resize(num);
+      for(int i=0; i < result.size(); ++i)
+	result[i] = (res[i] == 0) ? false : true;
+
+      delete[] res;
+    }
+
+    // Now broadcast back out to all nodes
+    Internal::broadcast(result);
   }
 
 
@@ -668,33 +752,33 @@ namespace QDP
 
   void AFFFileWriterImp::openTag(const string& tagname)
   {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     if (Layout::primaryNode())
     {
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << " tagname=XX" << tagname << "XX" << endl;
       string current_tag = aff_symbol_name(aff_node_name(current_node));
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << " current=XX" << current_tag << "XX" << endl;
       current_node = aff_writer_mkdir(getOstream(), current_node, tagname.c_str());
     }
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
   }
 
   void AFFFileWriterImp::closeTag()
   {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     if (Layout::primaryNode())
     {
       current_node = aff_node_parent(current_node);
     }
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
   }
 
   // Return tag for array element n
   std::string AFFFileWriterImp::arrayElem(int n) const
   {
     std::ostringstream os;
-    os << "elem" << "." << n+1;
+    os << "elem." << n+1;
     return os.str();
+  }
+
+  //! Write the number of array elements written
+  void AFFFileWriterImp::writeArraySize(int size)
+  {
+    write("size", size);
   }
 
 
@@ -702,43 +786,42 @@ namespace QDP
   // Overloaded Writer Functions
   void AFFFileWriterImp::write(const std::string& tagname, const string& output)
   {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     if (Layout::primaryNode())
     {
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       openTag(tagname);
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       if (aff_node_put_char(getOstream(), current_node, 
 			    output.c_str(), output.size()) != 0)
       {
 	checkError();
       }
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       closeTag();
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     }
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
   }
   void AFFFileWriterImp::write(const string& tagname, const int& output)
   {
     if (Layout::primaryNode())
     {
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       openTag(tagname);
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       uint32_t out = output;
       if (aff_node_put_int(getOstream(), current_node, &out, 1) != 0)
       {
 	checkError();
       }
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       closeTag();
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     }
   }
   void AFFFileWriterImp::write(const string& tagname, const unsigned int& output)
   {
-    notImplemented(__PRETTY_FUNCTION__);
+    if (Layout::primaryNode())
+    {
+      openTag(tagname);
+      uint32_t out = output;
+      if (aff_node_put_int(getOstream(), current_node, &out, 1) != 0)
+      {
+	checkError();
+      }
+      closeTag();
+    }
   }
   void AFFFileWriterImp::write(const string& tagname, const short int& output)
   {
@@ -758,27 +841,41 @@ namespace QDP
   }
   void AFFFileWriterImp::write(const string& tagname, const float& output)
   {
-    notImplemented(__PRETTY_FUNCTION__);
+    if (Layout::primaryNode())
+    {
+      openTag(tagname);
+      double out = output;
+      if (aff_node_put_double(getOstream(), current_node, &out, 1) != 0) 
+      {
+	checkError();
+      }
+      closeTag();
+    }
   }
   void AFFFileWriterImp::write(const string& tagname, const double& output)
   {
     if (Layout::primaryNode())
     {
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       openTag(tagname);
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
-      if (aff_node_put_double(getOstream(), current_node, &output, 1) != 0)
+      if (aff_node_put_double(getOstream(), current_node, &output, 1) != 0) 
       {
 	checkError();
       }
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       closeTag();
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     }
   }
   void AFFFileWriterImp::write(const string& tagname, const bool& output)
   {
-    notImplemented(__PRETTY_FUNCTION__);
+    if (Layout::primaryNode())
+    {
+      openTag(tagname);
+      uint32_t out = (output) ? 1 : 0;
+      if (aff_node_put_int(getOstream(), current_node, &out, 1) != 0) 
+      {
+	checkError();
+      }
+      closeTag();
+    }
   }
    
 
@@ -807,11 +904,35 @@ namespace QDP
 
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<int>& output)
   {
-    notImplemented(__PRETTY_FUNCTION__);
+    if (Layout::primaryNode())
+    {
+      openTag(tagname);
+      multi1d<uint32_t> out(output.size());
+      for(int i=0; i < out.size(); ++i)
+	out[i] = (output[i]) ? 1 : 0;
+
+      if (aff_node_put_int(getOstream(), current_node, out.slice(), out.size()) != 0)
+      {
+	checkError();
+      }
+      closeTag();
+    }
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<unsigned int>& output)
   {
-    notImplemented(__PRETTY_FUNCTION__);
+    if (Layout::primaryNode())
+    {
+      openTag(tagname);
+      multi1d<uint32_t> out(output.size());
+      for(int i=0; i < out.size(); ++i)
+	out[i] = (output[i]) ? 1 : 0;
+
+      if (aff_node_put_int(getOstream(), current_node, out.slice(), out.size()) != 0)
+      {
+	checkError();
+      }
+      closeTag();
+    }
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<short int>& output)
   {
@@ -831,29 +952,49 @@ namespace QDP
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<float>& output)
   {
-    notImplemented(__PRETTY_FUNCTION__);
+    if (Layout::primaryNode())
+    {
+      openTag(tagname);
+      multi1d<double> out(output.size());
+      for(int i=0; i < out.size(); ++i)
+	out[i] = output[i];
+
+      if (aff_node_put_double(getOstream(), current_node, out.slice(), out.size()) != 0)
+      {
+	checkError();
+      }
+      closeTag();
+    }
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<double>& output)
   {
     if (Layout::primaryNode())
     {
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       openTag(tagname);
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       if (aff_node_put_double(getOstream(), current_node, output.slice(), output.size()) != 0)
       {
 	checkError();
       }
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
       closeTag();
-      QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     }
   }
   void AFFFileWriterImp::write(const std::string& tagname, const multi1d<bool>& output)
   {
-    notImplemented(__PRETTY_FUNCTION__);
-  }
+    if (Layout::primaryNode())
+    {
+      openTag(tagname);
 
+      multi1d<uint32_t> out(output.size());
+      for(int i=0; i < out.size(); ++i)
+	out[i] = (output[i]) ? 1 : 0;
+
+      if (aff_node_put_int(getOstream(), current_node, out.slice(), out.size()) != 0)
+      {
+	checkError();
+      }
+      closeTag();
+    }
+  }
 
 
 } // namespace QDP;

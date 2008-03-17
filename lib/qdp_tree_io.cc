@@ -1,4 +1,4 @@
-// $Id: qdp_tree_io.cc,v 1.1.2.3 2008-03-16 16:07:20 edwards Exp $
+// $Id: qdp_tree_io.cc,v 1.1.2.4 2008-03-17 03:55:36 edwards Exp $
 //
 /*! @file
  * @brief Tree IO support
@@ -16,6 +16,15 @@ namespace QDP
   //--------------------------------------------------------------------------------
   // Tree classes
 
+  // Create a TreeReader according to a certain sub-type
+  TreeReader::TreeReader(const std::string& id)
+  {
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+    tree_use = createTreeReader(id);
+    initP    = true;
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+  }
+  
   // Tree reader class
   // Default constructor
   TreeReader::TreeReader()
@@ -23,11 +32,11 @@ namespace QDP
     QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     tree_use = 0;
     initP    = false;
-    }
+  }
   
   // Clone a reader but with a possibly different path
   TreeReader::TreeReader(TreeReader& old, const std::string& xpath)
-  {
+  { 
     QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     tree_use = old.clone(xpath);
     initP    = true;
@@ -37,11 +46,8 @@ namespace QDP
   // Destructor
   TreeReader::~TreeReader() 
   {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     if (initP)
       delete tree_use;
-
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
   }
 
   // Internal cloning function
@@ -327,17 +333,174 @@ namespace QDP
 
   //--------------------------------------------------------------------------------
   // Tree writer base class
-  TreeWriter::~TreeWriter() {}
+  // Create a TreeWriter according to a certain sub-type
+  TreeWriter::TreeWriter(const std::string& id)
+  {
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+    tree_use = createTreeWriter(id);
+    initP    = true;
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+  }
+  
+  // Tree reader class
+  // Default constructor
+  TreeWriter::TreeWriter()
+  {
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+    tree_use = 0;
+    initP    = false;
+  }
+  
+  // Destructor
+  TreeWriter::~TreeWriter() 
+  {
+    if (initP)
+      delete tree_use;
+  }
 
-//  void TreeWriter::openStruct(const string& tagname)
-//  {
-//    openTag(tagname);
-//  }
+  // Register object with base class
+  void TreeWriter::registerObject(TreeWriterImp* obj)
+  {
+    if (initP)
+    {
+      QDPIO::cerr << "TreeWriter already has an object registered" << endl;
+      QDP_abort(1);
+    }
 
-//  void TreeWriter::closeStruct()
-//  {
-//    closeTag();
-//  }
+    tree_use = obj;
+    initP    = true;
+  }
+
+  // Return the implementation
+  TreeWriterImp& TreeWriter::getTreeWriter() const
+  {
+    if (! initP)
+    {
+      QDPIO::cerr << "TreeWriter is not initialized" << endl;
+      QDP_abort(1);
+    }
+
+    return *tree_use;
+  }
+
+  void TreeWriter::openStruct(const string& tagname)
+  {
+    getTreeWriter().openStruct(tagname);
+  }
+
+  void TreeWriter::closeStruct()
+  {
+    getTreeWriter().closeStruct();
+  }
+
+  void TreeWriter::openTag(const string& tagname)
+  {
+    getTreeWriter().openTag(tagname);
+  }
+
+  void TreeWriter::closeTag()
+  {
+    getTreeWriter().closeTag();
+  }
+
+  // Return tag for array element n
+  std::string TreeWriter::arrayElem(int n) const
+  {
+    return getTreeWriter().arrayElem(n);
+  }
+
+  //! Write the number of array elements written
+  void TreeWriter::writeArraySize(int size)
+  {
+    getTreeWriter().writeArraySize(size);
+  }
+
+  // Flush the buffer
+  void TreeWriter::flush()
+  {
+    getTreeWriter().flush();
+  }
+
+  // Time to build a telephone book of basic primitives
+  // Overloaded Writer Functions
+  void TreeWriter::write(const string& tagname, const string& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const string& tagname, const int& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const string& tagname, const unsigned int& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const string& tagname, const short int& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const string& tagname, const unsigned short int& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const string& tagname, const long int& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const string& tagname, const unsigned long int& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const string& tagname, const float& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const string& tagname, const double& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const string& tagname, const bool& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+   
+  void TreeWriter::write(const std::string& tagname, const multi1d<int>& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const std::string& tagname, const multi1d<unsigned int>& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const std::string& tagname, const multi1d<short int>& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const std::string& tagname, const multi1d<unsigned short int>& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const std::string& tagname, const multi1d<long int>& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const std::string& tagname, const multi1d<unsigned long int>& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const std::string& tagname, const multi1d<float>& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const std::string& tagname, const multi1d<double>& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+  void TreeWriter::write(const std::string& tagname, const multi1d<bool>& output)
+  {
+    getTreeWriter().write(tagname,output);
+  }
+
 
   // Push a group name
   void push(TreeWriter& tree, const string& s) {tree.openStruct(s);}
@@ -425,9 +588,7 @@ namespace QDP
   template<>
   void write(TreeWriter& tree, const std::string& s, const multi1d<int>& output)
   {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     tree.write(s, output);
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
   }
   template<>
   void write(TreeWriter& tree, const std::string& s, const multi1d<unsigned int>& output)
@@ -678,7 +839,6 @@ namespace QDP
   // Get next array element name
   std::string TreeArrayWriter::nextElem() 
   {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
     return arrayElem(elements_written++);
   }
 
@@ -713,6 +873,12 @@ namespace QDP
 
     for(;open_elem > 0; --open_elem)
       closeStruct();
+
+  QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
+    // Record the array size
+    writeArraySize(elements_written);
+//    write("size",elements_written);
+  QDPIO::cout << __PRETTY_FUNCTION__ << ": line= " << __LINE__ << endl;
 
     closeTag();   // array tagname
 
@@ -775,6 +941,12 @@ namespace QDP
   std::string TreeArrayWriter::arrayElem(int n) const
   {
     return getTreeWriter().arrayElem(n);
+  }
+
+  //! Write the number of array elements written
+  void TreeArrayWriter::writeArraySize(int size)
+  {
+    getTreeWriter().writeArraySize(size);
   }
 
   // Time to build a telephone book of basic primitives

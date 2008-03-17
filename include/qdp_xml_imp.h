@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_xml_imp.h,v 1.1.2.2 2008-03-16 16:07:20 edwards Exp $
+// $Id: qdp_xml_imp.h,v 1.1.2.3 2008-03-17 03:55:36 edwards Exp $
 /*! @file
  * @brief XML IO support via trees
  */
@@ -171,6 +171,9 @@ namespace QDP
     //! Return tag for array element n
     std::string arrayElem(int n) const;
 
+    //! Write the number of array elements written
+    void writeArraySize(int size);
+
     //! Return the entire contents of the Reader as a stream
     void print(ostream& is);
         
@@ -300,6 +303,9 @@ namespace QDP
 
     //! Return tag for array element n
     std::string arrayElem(int n) const;
+
+    //! Write the number of array elements written
+    void writeArraySize(int size);
 
     // Overloaded Writer Functions
     //! Write tag and contents
