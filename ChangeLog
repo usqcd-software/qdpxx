@@ -1,3 +1,19 @@
+2008-03-17 00:03  edwards
+
+	* include/qdp_tree_io.h, lib/qdp_tree_io.cc: Removed unneeded
+	  overloads of write's in TreeArrayWriter.
+
+2008-03-16 23:55  edwards
+
+	* examples/Makefile.am, examples/t_aff.cc, examples/t_tree.cc,
+	  examples/t_xml.cc, include/qdp_aff_imp.h, include/qdp_tree_imp.h,
+	  include/qdp_tree_io.h, include/qdp_tree_types.h,
+	  include/qdp_xml_imp.h, include/qdp_xml_io.h, lib/qdp_aff_imp.cc,
+	  lib/qdp_tree_io.cc, lib/qdp_tree_types.cc, lib/qdp_xml_imp.cc,
+	  lib/qdp_xml_io.cc: Overhauled TreeWriter classes. Now, but
+	  TreeReader and TreeWriter can be constructed in a factory-style
+	  construction.
+
 2008-03-16 14:21  edwards
 
 	* include/Makefile.am, lib/Makefile.am: Added qdp_types.* .
