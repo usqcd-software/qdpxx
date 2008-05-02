@@ -1,3 +1,25 @@
+2008-05-02 15:54  tag qdp1-26-0
+
+2008-05-02 15:54  bjoo
+
+	* NEWS: Oops forgot to modify NEWS
+
+2008-05-02 14:52  bjoo
+
+	* include/qdp_parscalar_specific.h, include/qdp_qdpio.h,
+	  lib/qdp_parscalar_specific.cc, lib/qdp_qio_strings.cc,
+	  other_libs/qio/configure,
+	  other_libs/qio/include/qioxml_usqcd_prop.h,
+	  other_libs/qio/lib/qio/QIO_info_usqcd_prop.c: everything else
+
+2008-05-02 14:52  bjoo
+
+	* configure: configure last
+
+2008-05-02 14:50  bjoo
+
+	* configure.ac: Configure.ac first
+
 2008-03-17 00:03  edwards
 
 	* include/qdp_tree_io.h, lib/qdp_tree_io.cc: Removed unneeded
