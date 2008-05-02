@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolorvec.h,v 1.5 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_primcolorvec.h,v 1.6 2008-05-02 23:17:29 bjoo Exp $
 
 /*! \file
  * \brief Primitive Color Vector
@@ -48,6 +48,22 @@ struct WordType<PColorVector<T1,N> >
 {
   typedef typename WordType<T1>::Type_t  Type_t;
 };
+
+
+
+template<class T1, int N>
+struct SinglePrecType< PColorVector<T1,N> >
+{
+  typedef PColorVector< typename SinglePrecType<T1>::Type_t, N> Type_t;
+};
+
+
+template<class T1, int N>
+struct DoublePrecType< PColorVector<T1,N> >
+{
+  typedef PColorVector< typename DoublePrecType<T1>::Type_t, N> Type_t;
+};
+
 
 // Internally used scalars
 template<class T, int N>

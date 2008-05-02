@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.37 2008-05-02 18:52:57 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.38 2008-05-02 23:17:29 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -1111,6 +1111,7 @@ namespace QDP
       OLattice< typename SinglePrecType<T>::Type_t > from_disk;
       zero_rep(from_disk);
 
+      
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPut<typename SinglePrecType<T>::Type_t> ),
 				    sizeof(typename SinglePrecType<T>::Type_t),
@@ -1131,6 +1132,8 @@ namespace QDP
       QDPIO::cout << "Reading Double Precision" << endl;
       OLattice< typename DoublePrecType<T>::Type_t > from_disk;
       zero_rep(from_disk);
+
+      /* Disagnostics */
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPut< typename DoublePrecType<T>::Type_t>),
 				    sizeof(typename DoublePrecType<T>::Type_t),
