@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.34 2007-08-13 05:00:09 edwards Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.35 2008-05-02 18:52:57 bjoo Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -919,6 +919,280 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
     QDPIO::cerr << __func__ << ": error writing configuration" << endl;
     QDP_abort(1);
   }
+}
+
+//-----------------------------------------------------------------------------
+//Write a lattice quantity using parallel I/O. This routine is a
+//temporary solution for writing parallel I/O on QCDOC. fwrite is
+//called directly and hence the chroma BinaryWriter mechanism
+//for I/O is bypassed. This routine takes as its first argument 
+//the filename of the file to be written (cf writeOLattice which 
+// takes the BinaryWriter object). The last argument is the ratio of nodes to 
+//  concurrent writers. The routine returns a checksum of the data.
+QDPUtil::n_uint32_t writeOLattice_parallel(const std::string& p, 
+		   const char* output, size_t size, size_t nmemb,
+					   int rw_ratio)
+{
+  const int xinc = Layout::subgridLattSize()[0];
+
+  size_t sizemem = size*nmemb;
+  size_t tot_size = sizemem*xinc;
+
+
+  //First, need to compute a checksum since we are bypassing 
+  //the BinaryWriter mechanism. This involves routing all data to 
+  //master node who will do this computation. No writing is done at this stage
+
+  QDPUtil::n_uint32_t  my_checksum = 0;
+  char *recv_buf = new(nothrow) char[tot_size];
+
+  if( recv_buf == 0x0 ) { 
+    QDP_error_exit("Unable to allocate recv_buf\n");
+  }
+
+  // Find the location of each site and send to primary node
+  int old_node = 0;
+
+  for(int site=0; site < Layout::vol(); site += xinc)
+  {
+    // first site in each segment uniquely identifies the node
+    int node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
+
+    // Send nodes must wait for a ready signal from the master node
+    // to prevent message pileups on the master node
+    if (node != old_node)
+    {
+      // On non-grid machines, use a clear-to-send like protocol
+      Internal::clearToSend(recv_buf,sizeof(int),node);
+      old_node = node;
+    }
+    
+    // Copy to buffer: be really careful since max(linear) could vary among nodes
+    if (Layout::nodeNumber() == node)
+    {
+      for(int i=0; i < xinc; ++i)
+      {
+	int linear = Layout::linearSiteIndex(crtesn(site+i, Layout::lattSize()));
+	memcpy(recv_buf+i*sizemem, output+linear*sizemem, sizemem);
+      }
+    }
+
+    // Send result to primary node. Avoid sending prim-node sending to itself
+    if (node != 0)
+    {
+#if 1
+      // All nodes participate
+      Internal::route((void *)recv_buf, node, 0, tot_size);
+#else
+      if (Layout::primaryNode())
+	Internal::recvFromWait((void *)recv_buf, node, tot_size);
+
+      if (Layout::nodeNumber() == node)
+	Internal::sendToWait((void *)recv_buf, 0, tot_size);
+#endif
+    }
+
+    if (Layout::primaryNode())
+
+      //master node computes checksum
+      my_checksum = QDPUtil::crc32(my_checksum, recv_buf, size*nmemb*xinc);
+  }
+
+  delete[] recv_buf;
+  // End of checksum section
+
+
+  //Now write data to disk in parallel
+
+
+  //File for direct writing of OLattice
+  FILE *fp;
+
+  // first primaryNode creates an empty output file by opening and closing
+  if (Layout::primaryNode())
+    {
+      if((fp=fopen(p.c_str(), "w")) == NULL) {
+   	printf("Cannot open file %s.\n",p.c_str() );
+  	exit(1);
+     }
+    fclose(fp);
+  }
+
+  // synchronise nodes
+  //QMP_barrier();
+  //dummy integer for global sum barrier
+  int dummy_sum_int = 1;
+  QMP_sum_int(&dummy_sum_int);
+
+  // All nodes open output file for updating
+  if((fp=fopen(p.c_str(), "r+")) == NULL) {
+  printf("Cannot open file %s.\n",p.c_str() );
+  exit(1);
+  }
+
+  //loop over cuncurrent writers
+  for(int i=0; i < rw_ratio; i++)
+    {
+
+      //is this node writing this time round?
+      if (Layout::nodeNumber()%rw_ratio == i)
+	{
+	  //Loop over number of sites on this node
+	  for(int site=0; site < Layout::sitesOnNode(); site ++)
+	    {
+
+	      // get global site index from node site index via global coords
+	      int global_site_index = local_site(Layout::siteCoords(Layout::nodeNumber(),site), Layout::lattSize());
+      
+
+	      // write site data to correct global place in file
+	      fseek(fp,global_site_index*sizemem,SEEK_SET);
+	      fwrite(output+sizemem*site,sizemem,1,fp);
+
+	    }
+	  //QMP_barrier();
+	  QMP_sum_int(&dummy_sum_int);
+	}
+      else
+	//wait in barrier for writing nodes to finish
+	QMP_sum_int(&dummy_sum_int);
+	//QMP_barrier();
+    }
+
+  //close output file
+  fclose(fp);
+
+  return my_checksum;
+
+}
+
+
+//-----------------------------------------------------------------------------
+//Read a lattice quantity using parallel I/O. This routine is a
+//temporary solution for reading parallel I/O on QCDOC. fread is
+//called directly and hence the chroma BinaryReader mechanism
+//for I/O is bypassed. This routine takes as its first argument 
+//the filename of the file to be read (cf readOLattice which 
+// takes the BinaryReader object). The last argument is the ratio of nodes to 
+//  concurrent writers. The routine returns a checksum of the data.
+QDPUtil::n_uint32_t readOLattice_parallel(const std::string& p, 
+			   char* input, size_t size, size_t nmemb,
+					  int rw_ratio)
+{
+  const int xinc = Layout::subgridLattSize()[0];
+
+  size_t sizemem = size*nmemb;
+  size_t tot_size = sizemem*xinc;
+
+  //dummy integer for global sum barrier
+  int dummy_sum_int = 1;
+
+  //File for direct reading of OLattice
+  FILE *fp;
+
+  // All nodes open input file for reading
+  if((fp=fopen(p.c_str(), "r")) == NULL) {
+  printf("Cannot open file %s.\n",p.c_str() );
+  exit(1);
+  }
+
+  //loop over cuncurrent readers
+  for(int i=0; i < rw_ratio; i++)
+    {
+
+      //is this node reading this time round?
+      if (Layout::nodeNumber()%rw_ratio == i)
+	{
+	  //Loop over number of sites on this node
+	  for(int site=0; site < Layout::sitesOnNode(); site ++)
+	    {
+
+	      // get global site index from node site index via global coords
+	      int global_site_index = local_site(Layout::siteCoords(Layout::nodeNumber(),site), Layout::lattSize());
+      
+
+	      // read site data from correct global place in file
+	      fseek(fp,global_site_index*sizemem,SEEK_SET);
+	      fread(input+sizemem*site,sizemem,1,fp);
+
+	    }
+	  QMP_sum_int(&dummy_sum_int);
+	  //QMP_barrier();
+	}
+      else
+	//wait in barrier for writing nodes to finish
+	QMP_sum_int(&dummy_sum_int);
+      //QMP_barrier();
+    }
+
+  //close input file
+  fclose(fp);
+   
+
+  //Now compute a checksum. This involves routing all data to 
+  //master node who will do this computation. No writing is done at this stage
+
+  QDPUtil::n_uint32_t  my_checksum = 0;
+  char *recv_buf = new(nothrow) char[tot_size];
+
+  if( recv_buf == 0x0 ) { 
+    QDP_error_exit("Unable to allocate recv_buf\n");
+  }
+
+  // Find the location of each site and send to primary node
+  int old_node = 0;
+
+  for(int site=0; site < Layout::vol(); site += xinc)
+  {
+    // first site in each segment uniquely identifies the node
+    int node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
+
+    // Send nodes must wait for a ready signal from the master node
+    // to prevent message pileups on the master node
+    if (node != old_node)
+    {
+      // On non-grid machines, use a clear-to-send like protocol
+      Internal::clearToSend(recv_buf,sizeof(int),node);
+      old_node = node;
+    }
+    
+    // Copy to buffer: be really careful since max(linear) could vary among nodes
+    if (Layout::nodeNumber() == node)
+    {
+      for(int i=0; i < xinc; ++i)
+      {
+	int linear = Layout::linearSiteIndex(crtesn(site+i, Layout::lattSize()));
+	memcpy(recv_buf+i*sizemem, input+linear*sizemem, sizemem);
+      }
+    }
+
+    // Send result to primary node. Avoid sending prim-node sending to itself
+    if (node != 0)
+    {
+#if 1
+      // All nodes participate
+      Internal::route((void *)recv_buf, node, 0, tot_size);
+#else
+      if (Layout::primaryNode())
+	Internal::recvFromWait((void *)recv_buf, node, tot_size);
+
+      if (Layout::nodeNumber() == node)
+	Internal::sendToWait((void *)recv_buf, 0, tot_size);
+#endif
+    }
+
+    if (Layout::primaryNode())
+
+      //master node computes checksum
+      my_checksum = QDPUtil::crc32(my_checksum, recv_buf, size*nmemb*xinc);
+  }
+
+  delete[] recv_buf;
+  // End of checksum section
+
+  return my_checksum;
+
+ 
 }
 
 } // namespace QDP;

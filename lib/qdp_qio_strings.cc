@@ -11,6 +11,13 @@ namespace QDP {
   template<>
   char* QIOStringTraits< multi1d<LatticeColorMatrixD3> >::tname = "QDP_D3_ColorMatrix";
 
+  template<>
+  char* QIOStringTraits< multi1d<LatticeDiracFermionF3> >::tname = "USQCD_F3_DiracFermion";
+
+  template<>
+  char* QIOStringTraits< multi1d<LatticeDiracFermionD3> >::tname = "USQCD_D3_DiracFermion";
+
+
   // This is for the QIO precision strings
   template<>
   char* QIOStringTraits<float>::tprec = "F";

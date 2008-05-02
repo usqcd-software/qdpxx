@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.36 2007-06-18 15:09:22 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.37 2008-05-02 18:52:57 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -166,6 +166,12 @@ namespace QDP
   
   template<>
   char* QIOStringTraits< multi1d<LatticeColorMatrixD3> >::tname;
+
+  template<>
+  char* QIOStringTraits< multi1d<LatticeDiracFermionF3> >::tname;
+  
+  template<>
+  char* QIOStringTraits< multi1d<LatticeDiracFermionD3> >::tname;
 
 
   //--------------------------------------------------------------------------------
@@ -510,6 +516,18 @@ namespace QDP
     template<class T>
     void write(XMLBufferWriter& xml, const OLattice<T>& s1);
 
+    //! Writes a hypercube from an OLattice object
+    /*!
+      \param xml The user record metadata.
+      \param sl The data
+      \param lower_left a multi1d<int> holding coordinates of lower left corner of the hypercube
+      \param upper_right a multi1d<int> holding coordinates of the upper right corner of the hypercube
+    */
+    template<class T>
+    void write(XMLBufferWriter& xml, const OLattice<T>& s1,
+	       const multi1d<int>& lower_left, 
+	       const multi1d<int>& upper_right);
+
     //! Writes an array of objects all to a single record
     /*!
       \param xml The user record metadata.
@@ -525,6 +543,20 @@ namespace QDP
     */
     template<class T>
     void write(XMLBufferWriter& xml, const multi1d< OLattice<T> >& s1);
+
+
+    //! Writes a hypercube of an array of objects all to a single record
+    /*!
+      \param xml The user record metadata.
+      \param sl The data
+      \param lower_left a multi1d<int> holding coordinates of lower left corner of the hypercube
+      \param upper_right a multi1d<int> holding coordinates of the upper right corner of the hypercube
+    */
+    template<class T>
+    void write(XMLBufferWriter& xml, const multi1d< OLattice<T> >& s1,
+	       const multi1d<int>& lower_left, 
+	       const multi1d<int>& upper_right);
+
 
     //! Writes an XML plus Binary writer pair
     /*!
@@ -580,6 +612,20 @@ namespace QDP
     qsw.write(rec_xml,s1);
   }
 
+  //! Writes a hypercube part of an OLattice object
+  /*!
+    \param qsw The writer
+    \param xml The user record metadata.
+    \param sl The data
+    \param lower_left A multi1d of integers containing the lower left lower left corner of the hypercube 
+    \param upper_right A multi1d of integers containing the coordinates of the upper right corner of the hypercube
+  */
+  template<class T>
+  void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const OLattice<T>& s1, const multi1d<int>& lower_left, const multi1d<int>& upper_right)
+  {
+    qsw.write(rec_xml,s1, lower_left, upper_right);
+  }
+
   //! Writes an array of OScalar objects
   /*!
     \param qsw The writer
@@ -602,6 +648,20 @@ namespace QDP
   void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >& s1)
   {
     qsw.write(rec_xml,s1);
+  }
+
+  //! Writes an array of OLattice objects
+  /*!
+    \param qsw The writer
+    \param xml The user record metadata.
+    \param sl The data
+    \param lower_left A multi1d of integers containing the lower left lower left corner of the hypercube 
+    \param upper_right A multi1d of integers containing the coordinates of the upper right corner of the hypercube
+  */
+  template<class T>
+  void write(QDPFileWriter& qsw, XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >& s1, const multi1d<int>& lower_left, const multi1d<int>& upper_right)
+  {
+    qsw.write(rec_xml,s1,lower_left, upper_right);
   }
 
   //! Writes a XML plus BinaryBufferWriter pair
@@ -1049,6 +1109,8 @@ namespace QDP
     {
       QDPIO::cout << "Single Precision Read" << endl;
       OLattice< typename SinglePrecType<T>::Type_t > from_disk;
+      zero_rep(from_disk);
+
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPut<typename SinglePrecType<T>::Type_t> ),
 				    sizeof(typename SinglePrecType<T>::Type_t),
@@ -1068,6 +1130,7 @@ namespace QDP
     {
       QDPIO::cout << "Reading Double Precision" << endl;
       OLattice< typename DoublePrecType<T>::Type_t > from_disk;
+      zero_rep(from_disk);
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPut< typename DoublePrecType<T>::Type_t>),
 				    sizeof(typename DoublePrecType<T>::Type_t),
@@ -1143,6 +1206,8 @@ namespace QDP
     {
       QDPIO::cout << "Single Precision Read" << endl;
       multi1d< OLattice< typename SinglePrecType<T>::Type_t > > from_disk(s1.size());
+      for(int i=0; i < s1.size(); i++) { zero_rep(from_disk[i]); }
+
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPutArray<typename SinglePrecType<T>::Type_t> ),
 				    s1.size()*sizeof(typename SinglePrecType<T>::Type_t),
@@ -1166,6 +1231,8 @@ namespace QDP
     {
       QDPIO::cout << "Reading Double Precision" << endl;
       multi1d< typename DoublePrecType< OLattice<T> >::Type_t > from_disk(s1.size());
+      for(int i=0; i < s1.size(); i++) { zero_rep(from_disk[i]); }
+
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPutArray< typename DoublePrecType<T>::Type_t > ),
 				    s1.size()*sizeof(typename DoublePrecType<T>::Type_t),
@@ -1306,6 +1373,62 @@ namespace QDP
   }
 
 
+  //! Writes a hypercube from an  OLattice object
+  /*!
+    This implementation is only correct for scalar ILattice.
+
+    \param rec_xml The user record metadata.
+    \param sl The data
+    \param lower_left A multi1d of integers containing the lower left lower left corner of the hypercube 
+    \param upper_right A multi1d of integers containing the coordinates of the upper right corner of the hypercube
+  */
+  template<class T>
+  void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1, const multi1d<int>& lower_left, const multi1d<int>& upper_right)
+  {
+
+    // Sanity check...
+    if( lower_left.size() != upper_right.size()) {
+	QDPIO::cerr << "QDPFileWriter: Error! Lower left and upper right corner of hypercube to write have different dimensions" << endl;
+	QDP_abort(1);
+    }
+
+    QIO_RecordInfo* info = QIO_create_record_info(QIO_HYPER, 
+						  (int *)lower_left.slice(), 
+						  (int *)upper_right.slice(),
+						  lower_left.size(),
+						  QIOStringTraits< OLattice<T> >::tname,
+						  QIOStringTraits<typename WordType<T>::Type_t >::tprec,
+						  Nc, Ns, 
+						  sizeof(T),1 );
+  
+    // Copy metadata string into simple qio string container
+    QIO_String* xml_c = QIO_string_create();
+    if (Layout::primaryNode())
+      QIO_string_set(xml_c, rec_xml.str().c_str());
+
+    if (xml_c == NULL)
+    {
+      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << endl;
+      QDP_abort(1);
+    }
+
+    // Big call to qio
+    if (QIO_write(get(), info, xml_c,
+		  &(QDPOLatticeFactoryGet<T>),
+		  sizeof(T), 
+		  sizeof(typename WordType<T>::Type_t), 
+		  (void *)s1.getF()) != QIO_SUCCESS)
+    {
+      QDPIO::cerr << "QDPFileWriter: error in write" << endl;
+      clear(QDPIO_badbit);
+    }
+
+    // Cleanup
+    QIO_string_destroy(xml_c);
+    QIO_destroy_record_info(info);
+  }
+
+
   //! Writes an array of OLattice objects
   /*!
     This implementation is only correct for scalar ILattice.
@@ -1350,6 +1473,63 @@ namespace QDP
     QIO_destroy_record_info(info);
   }
 
+
+
+  //! Writes a hypercube from an array of OLattice objects
+  /*!
+    This implementation is only correct for scalar ILattice.
+
+    \param rec_xml The (user) record metadata.
+    \param sl The data
+    \param lower_left A multi1d of integers containing the lower left lower left corner of the hypercube 
+    \param upper_right A multi1d of integers containing the coordinates of the upper right corner of the hypercube
+
+  */
+  template<class T>
+  void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >& s1, const multi1d<int>& lower_left, const multi1d<int>& upper_right)
+  {
+
+    // Sanity check...
+    if( lower_left.size() != upper_right.size()) {
+	QDPIO::cerr << "QDPFileWriter: Error! Lower left and upper right corner of hypercube to write have different dimensions" << endl;
+	QDP_abort(1);
+    }
+
+    QIO_RecordInfo* info = QIO_create_record_info(QIO_HYPER, 
+						  (int *)(lower_left.slice()),
+						  (int *)(upper_right.slice()), 
+						  lower_left.size(),
+						  QIOStringTraits<multi1d< OLattice<T> > >::tname,
+						  QIOStringTraits<typename WordType<T>::Type_t>::tprec,
+						  Nc, Ns, 
+						  sizeof(T), s1.size() );
+
+    // Copy metadata string into simple qio string container
+    QIO_String* xml_c = QIO_string_create();
+    if (Layout::primaryNode())
+      QIO_string_set(xml_c, rec_xml.str().c_str());
+
+    if (xml_c == NULL)
+    {
+      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << endl;
+      QDP_abort(1);
+    }
+
+    // Big call to qio
+    if (QIO_write(get(), info, xml_c,
+		  &(QDPOLatticeFactoryGetArray<T>),
+		  s1.size()*sizeof(T), 
+		  sizeof(typename WordType<T>::Type_t), 
+		  (void*)&s1) != QIO_SUCCESS)
+    {
+      QDPIO::cerr << "QDPFileWriter: error in write" << endl;
+      clear(QDPIO_badbit);
+    }
+
+    // Cleanup
+    QIO_string_destroy(xml_c);
+    QIO_destroy_record_info(info);
+  }
 
   /*! @} */   // end of group qio
 } // namespace QDP

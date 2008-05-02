@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.48 2007-08-16 15:44:53 edwards Exp $
+// $Id: qdp_parscalar_specific.h,v 1.49 2008-05-02 18:52:57 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -2134,6 +2134,82 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
 	       sizeof(T) / sizeof(typename WordType<T>::Type_t),
 	       coord);
 }
+
+//! Write a lattice quantity using parallel I/O (temporary solution)
+/*! This code assumes no inner grid */
+QDPUtil::n_uint32_t writeOLattice_parallel(const std::string& p, 
+		   const char* output, size_t size, size_t nmemb,
+					   int rw_ratio);
+
+
+//! Read a lattice quantity using parallel I/O (temporary solution)
+/*! This code assumes no inner grid */
+QDPUtil::n_uint32_t readOLattice_parallel(const std::string& p, 
+			    char* input, size_t size, size_t nmemb,
+					  int rw_ratio);		
+
+
+//! Binary output using parallel I/O (temporary solution)
+/*! Assumes no inner grid */
+template<class T>
+QDPUtil::n_uint32_t write_parallel(const std::string& p, const OLattice<T>& d,
+				  int rw_ratio)
+{
+  QDPUtil::n_uint32_t my_checksum;
+  my_checksum=writeOLattice_parallel(p, (const char *)&(d.elem(0)), 
+		sizeof(typename WordType<T>::Type_t), 
+		sizeof(T) / sizeof(typename WordType<T>::Type_t),
+				       rw_ratio);
+    return my_checksum;
+}
+
+//! Binary input using parallel I/O (temporary solution)
+/*! Assumes no inner grid */
+template<class T>
+QDPUtil::n_uint32_t read_parallel(const std::string& p, OLattice<T>& d,
+				  int rw_ratio)
+{
+
+  QDPUtil::n_uint32_t my_checksum;
+  my_checksum=readOLattice_parallel(p, (char *)&(d.elem(0)), 
+	       sizeof(typename WordType<T>::Type_t), 
+	       sizeof(T) / sizeof(typename WordType<T>::Type_t),
+				    rw_ratio);
+  return my_checksum;
+}
+
+// overloaded functions allow parallel routines to be called 
+// without specifying ratio of total nodes/concurrent reades or 
+// writers for parallel I/O. Default rw_ratio is 8 
+// (i.e. 1 in 8 perform I/O concurrently)
+
+//! Binary output using parallel I/O (temporary solution)
+/*! Assumes no inner grid */
+template<class T>
+QDPUtil::n_uint32_t write_parallel(const std::string& p, const OLattice<T>& d)
+{
+  QDPUtil::n_uint32_t my_checksum;
+  //default ratio of total nodes/concurrent reades or writers for parallel IO
+  int rw_ratio=8;
+  my_checksum=write_parallel(p,d,rw_ratio);
+  return my_checksum;
+}
+
+//! Binary input using parallel I/O (temporary solution)
+/*! Assumes no inner grid */
+template<class T>
+QDPUtil::n_uint32_t read_parallel(const std::string& p, OLattice<T>& d)
+{
+
+  QDPUtil::n_uint32_t my_checksum;
+  //default ratio of total nodes/concurrent reades or writers for parallel IO
+  int rw_ratio=8;
+  my_checksum=read_parallel(p,d, rw_ratio);
+  return my_checksum;
+}
+
+
+
 
 } // namespace QDP
 #endif
