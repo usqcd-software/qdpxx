@@ -1,3 +1,13 @@
+05/02/2008 -- Version 1.26.0 -- Balint Joo
+        Minor tweaks:
+          - exposed some layout functions to facilitate Level 3 related issues.
+	  - added 'cb3d' layout with time running fastest (but not vectorized on)
+	  - added Hypercubic writes to QDPFileWriter to write QIO sources
+	  - cleaned up QDPFileReader so it can read QIO sources (and not corrupt anything outside the hypercube)
+	  - Added readOLattie_parallel, writeOLattice_parallel to do parallel writing on QCDOC
+            - NB This feature is exposed in all parscalar_specific targets as it appears to have no real QCDOC
+	      specific bits - just deals with FILE*-s etc.
+
 08/30/2007 -- Balint Joo
         Removed SSE Inlines from scalarsite_sse. Replaced with calls to libintrin (made from the same NASM source but with intrinsics). 3rd party track imported libintrin. It gets checked out with the qdp++ source automatically and --enable-sse2 is needed to configure it. I disabled automatic turning on of the -msse and -msse2 flags since they can break some compilers. Set these using your own CXXFLAGS and CFLAGS. 
 
