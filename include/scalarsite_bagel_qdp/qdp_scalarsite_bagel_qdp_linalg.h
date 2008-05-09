@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_bagel_qdp_linalg.h,v 1.4 2007-06-13 21:49:33 bjoo Exp $
+// $Id: qdp_scalarsite_bagel_qdp_linalg.h,v 1.5 2008-05-09 17:45:20 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations
@@ -68,7 +68,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -122,7 +122,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -191,7 +191,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -249,7 +249,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -308,7 +308,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -366,7 +366,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -431,7 +431,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -493,7 +493,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -554,7 +554,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -612,7 +612,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -684,7 +684,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -746,7 +746,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -849,7 +849,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -949,7 +949,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        unsigned long one_site = 1;
        BAGELQDPFloat *resptr = &(d.elem(i).elem().elem(0,0).real());
@@ -1023,7 +1023,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        BAGELQDPFloat *y = &(d.elem(i).elem().elem(0,0).real());
        BAGELQDPFloat *x   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
@@ -1093,7 +1093,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        BAGELQDPFloat *y = &(d.elem(i).elem().elem(0,0).real());
        BAGELQDPFloat *x   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
@@ -1149,7 +1149,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        BAGELQDPFloat *y = &(d.elem(i).elem().elem(0,0).real());
        BAGELQDPFloat *x   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
@@ -1207,7 +1207,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
      // Do site by site
      const int* tab = s.siteTable().slice();
      unsigned int num_sites = s.numSiteTable();
-     for(int j=0; j < num_sites; j++) {
+     for(unsigned int j=0; j < num_sites; j++) {
        int i = tab[j];
        BAGELQDPFloat *y = &(d.elem(i).elem().elem(0,0).real());
        BAGELQDPFloat *x   = const_cast<BAGELQDPFloat*>(&(r.elem(i).elem().elem(0,0).real()));
