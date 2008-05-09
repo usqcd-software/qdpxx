@@ -1,3 +1,9 @@
+2008-05-09 13:45  bjoo
+
+	* include/scalarsite_bagel_qdp/qdp_scalarsite_bagel_qdp_linalg.h:
+	  Cleaned out unsigned int and int comparisons which caused lots of
+	  warnings
+
 2008-05-02 19:17  tag qdp1-26-0
 
 2008-05-02 19:17  bjoo
