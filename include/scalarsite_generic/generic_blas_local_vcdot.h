@@ -1,4 +1,4 @@
-// $Id: generic_blas_local_vcdot.h,v 1.3 2007-06-10 14:32:10 edwards Exp $
+// $Id: generic_blas_local_vcdot.h,v 1.4 2008-05-13 20:02:02 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar, CDOT  routine
@@ -14,6 +14,7 @@ namespace QDP {
 // Out = < V1, V2 > = V1^{dagger} V2
 // Out is complex: Out_re, Out_im 
 // V1 V2 are complex vectors of length 3*n_3vec
+volatile
 inline
 void local_vcdot(DOUBLE *Out_re, DOUBLE *Out_im, REAL *V1, REAL *V2, int n_3vec)
 {

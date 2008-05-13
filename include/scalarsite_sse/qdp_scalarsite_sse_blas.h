@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.17 2007-06-10 14:32:10 edwards Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.18 2008-05-13 20:02:02 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -7,9 +7,6 @@
 
 #ifndef QDP_SCALARSITE_SSE_BLAS_H
 #define QDP_SCALARSITE_SSE_BLAS_H
-
-#include "scalarsite_generic/generic_blas_local_vcdot.h"
-#include "scalarsite_generic/generic_blas_local_vcdot_real.h"
 
 namespace QDP {
 
@@ -22,6 +19,9 @@ void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec);
 void vaxpby3(REAL32* Out, REAL32* a, REAL32* x, REAL32* b, REAL32* y, int n_3vec);
 void vaxmby3(REAL32* Out, REAL32* a, REAL32* x, REAL32* b, REAL32* y, int n_3vec);
 void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec);
+ void local_vcdot(REAL64 *Out_re, REAL64 *Out_im, REAL32 *V1, REAL32 *V2, int n_3vec);
+ void local_vcdot_real(REAL64 *Out_re,  REAL32 *V1, REAL32 *V2, int n_3vec);
+
 
 typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> TVec;
 typedef PScalar<PScalar<RScalar<REAL32> > >  TScal;
@@ -889,8 +889,8 @@ void evaluate( OLattice< TVec > &d,
   
   REAL ar = a.elem().elem().elem().elem();
   if( s.hasOrderedRep() ) { 
-    REAL* xptr = &(d.elem(s.start()).elem(0).elem(0).real());
-    REAL* zptr = xptr;
+    REAL32 * xptr = &(d.elem(s.start()).elem(0).elem(0).real());
+    REAL32 * zptr = xptr;
     int n_3vec = (s.end()-s.start()+1)*24;
     vscal(zptr,&ar, xptr, n_3vec);
   }
@@ -898,10 +898,10 @@ void evaluate( OLattice< TVec > &d,
     const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
-      REAL* xptr = &(d.elem(i).elem(0).elem(0).real());
-      REAL* zptr = xptr;
+      REAL32 * xptr = &(d.elem(i).elem(0).elem(0).real());
+      REAL32 * zptr = xptr;
       
-      vscal(zptr, aptr, xptr, 24);
+      vscal(zptr, &ar, xptr, 24);
     }
   }
 }
@@ -926,8 +926,8 @@ void evaluate( OLattice< TVec > &d,
   
   REAL ar = (REAL)1/a.elem().elem().elem().elem();
   if( s.hasOrderedRep() ) {
-    REAL* xptr = &(d.elem(s.start()).elem(0).elem(0).real());
-    REAL* zptr = xptr;
+    REAL32 * xptr = &(d.elem(s.start()).elem(0).elem(0).real());
+    REAL32 * zptr = xptr;
     int n_3vec = (s.end()-s.start()+1)*24;
     vscal(zptr,&ar, xptr, n_3vec);
   }
@@ -935,8 +935,8 @@ void evaluate( OLattice< TVec > &d,
     const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
-      REAL* xptr = &(d.elem(i).elem(0).elem(0).real());
-      REAL* zptr = xptr;
+      REAL32 * xptr = &(d.elem(i).elem(0).elem(0).real());
+      REAL32 * zptr = xptr;
       
       vscal(zptr,&ar, xptr, 24);
     }
@@ -963,8 +963,8 @@ void evaluate( OLattice< TVec > &d,
 #endif
   if(s.hasOrderedRep() ) { 
     int n_3vec = (s.end() - s.start()+1)*24;
-    REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real());
-    REAL *yptr = (REAL *)(&d.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *xptr = (REAL32 *)(&x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *)(&d.elem(s.start()).elem(0).elem(0).real());
     REAL one = 1;
     vadd(yptr, yptr, xptr,n_3vec);
   }
@@ -972,8 +972,8 @@ void evaluate( OLattice< TVec > &d,
     const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
-      REAL *xptr = (REAL *)(&x.elem(i).elem(0).elem(0).real());
-      REAL *yptr = (REAL *)(&d.elem(i).elem(0).elem(0).real());
+      REAL32 *xptr = (REAL32 *)(&x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *)(&d.elem(i).elem(0).elem(0).real());
       vadd(yptr, yptr, xptr,24);
     }
   }
@@ -999,8 +999,8 @@ void evaluate( OLattice< TVec > &d,
 #endif
   if( s.hasOrderedRep() ) { 
     int n_3vec = (s.end() - s.start()+1)*24;
-    REAL *xptr = (REAL *)(&x.elem(s.start()).elem(0).elem(0).real());
-    REAL *yptr = (REAL *)(&d.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *xptr = (REAL32 *)(&x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *)(&d.elem(s.start()).elem(0).elem(0).real());
     
     vsub(yptr, yptr, xptr, n_3vec);
   }
@@ -1008,8 +1008,8 @@ void evaluate( OLattice< TVec > &d,
     const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
-      REAL *xptr = (REAL *)(&x.elem(i).elem(0).elem(0).real());
-      REAL *yptr = (REAL *)(&d.elem(i).elem(0).elem(0).real());
+      REAL32 *xptr = (REAL32 *)(&x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *)(&d.elem(i).elem(0).elem(0).real());
       
       vsub(yptr, yptr, xptr, 24);
     }
@@ -1060,12 +1060,12 @@ void evaluate( OLattice< TVec > &d,
 
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL32 *aptr = (REAL32 *)&(a.elem().elem().elem().elem());
+  REAL32 *bptr = (REAL32 *)&(b.elem().elem().elem().elem());
   if( s.hasOrderedRep() ) { 
-    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1076,9 +1076,9 @@ void evaluate( OLattice< TVec > &d,
     const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
-      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
-      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
-      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32 * zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       vaxpby3(zptr, aptr, xptr, bptr, yptr, 24);
     }
@@ -1136,12 +1136,12 @@ void evaluate( OLattice< TVec > &d,
 
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL32 *aptr = (REAL32 *)&(a.elem().elem().elem().elem());
+  REAL32 *bptr = (REAL32 *)&(b.elem().elem().elem().elem());
   if( s.hasOrderedRep() ) { 
-    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1152,9 +1152,9 @@ void evaluate( OLattice< TVec > &d,
     const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
-      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
-      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
-      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32 * zptr =  &(d.elem(i).elem(0).elem(0).real());
     
     
       vaxpby3(zptr, aptr, xptr, bptr, yptr, 24);
@@ -1218,13 +1218,13 @@ void evaluate( OLattice< TVec > &d,
 
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL32 *aptr = (REAL32 *)&(a.elem().elem().elem().elem());
+  REAL32 *bptr = (REAL32 *)&(b.elem().elem().elem().elem());
   if( s.hasOrderedRep() ) {
 
-    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1235,9 +1235,9 @@ void evaluate( OLattice< TVec > &d,
     const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
-      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
-      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
-      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32 * zptr =  &(d.elem(i).elem(0).elem(0).real());
 
 
       vaxpby3(zptr, aptr, xptr, bptr, yptr, 24);
@@ -1288,12 +1288,12 @@ void evaluate( OLattice< TVec > &d,
   const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.right());
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL32 *aptr = (REAL32 *)&(a.elem().elem().elem().elem());
+  REAL32 *bptr = (REAL32 *)&(b.elem().elem().elem().elem());
   if( s.hasOrderedRep() ) { 
-    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1304,9 +1304,9 @@ void evaluate( OLattice< TVec > &d,
     const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
-      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
-      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
-      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32 * zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       
       // Get the no of 3vecs. i and s.end() are inclusive so add +1
@@ -1358,12 +1358,12 @@ void evaluate( OLattice< TVec > &d,
 
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL32 *aptr = (REAL32 *)&(a.elem().elem().elem().elem());
+  REAL32 *bptr = (REAL32 *)&(b.elem().elem().elem().elem());
   if( s.hasOrderedRep() ) { 
-    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1374,9 +1374,9 @@ void evaluate( OLattice< TVec > &d,
     const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
-      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
-      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
-      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32 * zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1437,12 +1437,12 @@ void evaluate( OLattice< TVec > &d,
 
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL32 *aptr = (REAL32 *)&(a.elem().elem().elem().elem());
+  REAL32 *bptr = (REAL32 *)&(b.elem().elem().elem().elem());
   if( s.hasOrderedRep() ) { 
-    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1453,9 +1453,9 @@ void evaluate( OLattice< TVec > &d,
     const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
-      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
-      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
-      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32 * zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1520,12 +1520,12 @@ void evaluate( OLattice< TVec > &d,
 
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL32 *aptr = (REAL32 *)&(a.elem().elem().elem().elem());
+  REAL32 *bptr = (REAL32 *)&(b.elem().elem().elem().elem());
   if( s.hasOrderedRep() ) { 
-    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1536,9 +1536,9 @@ void evaluate( OLattice< TVec > &d,
     const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
-      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
-      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
-      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32 * zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1590,12 +1590,12 @@ void evaluate( OLattice< TVec > &d,
   const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.right());
   
   // Set pointers 
-  REAL *aptr = (REAL *)&(a.elem().elem().elem().elem());
-  REAL *bptr = (REAL *)&(b.elem().elem().elem().elem());
+  REAL32 *aptr = (REAL32 *)&(a.elem().elem().elem().elem());
+  REAL32 *bptr = (REAL32 *)&(b.elem().elem().elem().elem());
   if( s.hasOrderedRep() ) { 
-    REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
-    REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
-    REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1606,9 +1606,9 @@ void evaluate( OLattice< TVec > &d,
     const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
-      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
-      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
-      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
+      REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
+      REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
+      REAL32 *zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
@@ -1703,8 +1703,8 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
   // This BinaryReturn has Type_t
   // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
   BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
-  // Inner product is accumulated internally in DOUBLE
-  DOUBLE ip[2];
+  // Inner product is accumulated internally in REAL64
+  REAL64 ip[2];
   ip[0]=0;
   ip[1]=0;
 
@@ -1712,10 +1712,10 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
   unsigned long n_3vec = (all.end() - all.start() + 1)*Ns;
     
   // Call My CDOT
-  local_vcdot(&(ip[0]), &(ip[1]),
-	      (REAL *)&(v1.elem(all.start()).elem(0).elem(0).real()),
-	      (REAL *)&(v2.elem(all.start()).elem(0).elem(0).real()),
-	      n_3vec);
+  local_vcdot((REAL64 *)&(ip[0]), (REAL64 *)&(ip[1]),
+	      (REAL32 *)&(v1.elem(all.start()).elem(0).elem(0).real()),
+	      (REAL32 *)&(v2.elem(all.start()).elem(0).elem(0).real()),
+	      (int)n_3vec);
 
 
   // Global sum -- still on a vector of doubles
@@ -1738,6 +1738,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 
   BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
 
+  REAL64 ip[2];
   if( s.hasOrderedRep() ) {
 #ifdef DEBUG_BLAS
     QDPIO::cout << "BJ: innerProduct s" << endl;
@@ -1746,15 +1747,15 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
     // This BinaryReturn has Type_t
     // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
 
-    DOUBLE ip[2];
+   
     ip[0] = 0;
     ip[1] = 0;
 
     unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
-    local_vcdot(&(ip[0]), &(ip[1]),
-		(REAL *)&(v1.elem(s.start()).elem(0).elem(0).real()),
-		(REAL *)&(v2.elem(s.start()).elem(0).elem(0).real()),
-		n_3vec);
+    local_vcdot((REAL64 *)&(ip[0]), (REAL64 *)&(ip[1]),
+		(REAL32 *)&(v1.elem(s.start()).elem(0).elem(0).real()),
+		(REAL32 *)&(v2.elem(s.start()).elem(0).elem(0).real()),
+		(int)n_3vec);
 
     
   }
@@ -1762,18 +1763,18 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
     // This BinaryReturn has Type_t
     // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
 
-    DOUBLE ip[2],ip_tmp[2];
+    REAL64 ip_tmp[2];
     ip[0] = 0;
     ip[1] = 0;
 
-    const int* tab = s.siteTable();
+    const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
 
-      local_vcdot(&(ip_tmp[0]), &(ip_tmp[1]),
-		  (REAL *)&(v1.elem(i).elem(0).elem(0).real()),
-		  (REAL *)&(v2.elem(i).elem(0).elem(0).real()),
-		  Ns);
+      local_vcdot((REAL64 *)&(ip_tmp[0]), (REAL64 *)&(ip_tmp[1]),
+		  (REAL32 *)&(v1.elem(i).elem(0).elem(0).real()),
+		  (REAL32 *)&(v2.elem(i).elem(0).elem(0).real()),
+		  (int)Ns);
       
       ip[0] += ip_tmp[0];
       ip[1] += ip_tmp[1];
@@ -1804,17 +1805,17 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
   // This BinaryReturn has Type_t
   // OScalar<OScalar<OScalar<RScalar<PScalar<REAL> > > > >
   BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
-  // Inner product is accumulated internally in DOUBLE
-  DOUBLE ip_re=0;
+  // Inner product is accumulated internally in REAL64
+  REAL64 ip_re=0;
 
   // Length of subset 
   unsigned long n_3vec = (all.end() - all.start() + 1)*Ns;
 
   // Call My CDOT
-  local_vcdot_real(&ip_re,
-		   (REAL *)&(v1.elem(all.start()).elem(0).elem(0).real()),
-		   (REAL *)&(v2.elem(all.start()).elem(0).elem(0).real()),
-		   n_3vec);
+  local_vcdot_real((DOUBLE*)&ip_re,
+		   (REAL32 *)&(v1.elem(all.start()).elem(0).elem(0).real()),
+		   (REAL32 *)&(v2.elem(all.start()).elem(0).elem(0).real()),
+		   (int)n_3vec);
 
   // Global sum
   Internal::globalSum(ip_re);
@@ -1839,6 +1840,8 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
   
   BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
 
+  REAL64 ip_re=0;
+
   if( s.hasOrderedRep() ) {
 #ifdef DEBUG_BLAS
     QDPIO::cout << "BJ: innerProductReal s" << endl;
@@ -1846,30 +1849,26 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 
     // This BinaryReturn has Type_t
     // OScalar<OScalar<OScalar<RScalar<PScalar<REAL> > > > >
-
-    DOUBLE ip_re=0;
-
     unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
-    local_vcdot_real(&ip_re,
-		     (REAL *)&(v1.elem(s.start()).elem(0).elem(0).real()),
-		     (REAL *)&(v2.elem(s.start()).elem(0).elem(0).real()),
-		     n_3vec);
+    local_vcdot_real((REAL64 *)&ip_re,
+		     (REAL32 *)&(v1.elem(s.start()).elem(0).elem(0).real()),
+		     (REAL32 *)&(v2.elem(s.start()).elem(0).elem(0).real()),
+		     (int)n_3vec);
 
 
 
 
   }
   else {
-    DOUBLE ip_re=0;
-    DOUBLE ip_re_tmp=0;
-    const int* tab = s.siteTable();
+    REAL64 ip_re_tmp=0;
+    const int* tab = s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
 
-      local_vcdot_real(&ip_re_tmp,
-		       (REAL *)&(v1.elem(i).elem(0).elem(0).real()),
-		       (REAL *)&(v2.elem(i).elem(0).elem(0).real()),
-		       Ns);
+      local_vcdot_real((REAL64 *)&ip_re_tmp,
+		       (REAL32 *)&(v1.elem(i).elem(0).elem(0).real()),
+		       (REAL32 *)&(v2.elem(i).elem(0).elem(0).real()),
+		       (int)Ns);
 
       ip_re += ip_re_tmp;
 
@@ -1912,6 +1911,50 @@ norm2(const multi1d< OLattice< TVec > >& s1)
 
 
 template<>
+inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
+  norm2(const multi1d< OLattice< TVec > >& s1, const Subset& s)
+{
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "Using SSE multi1d sumsq all" << endl;
+#endif
+
+  REAL64 ltmp = 0;
+
+  if( s.hasOrderedRep() ) { 
+    int n_3vec = (s.end() - s.start() + 1)*24;
+
+    for(int n=0; n < s1.size(); ++n) {
+  
+      const REAL32 *s1ptr =  &(s1[n].elem(s.start()).elem(0).elem(0).real());
+    
+      // I am relying on this being a Double here 
+      REAL64 lltmp;
+      local_sumsq(&lltmp, (REAL32 *)s1ptr, n_3vec); 
+      
+      ltmp += lltmp;
+    }
+  }
+  else  {
+
+    const int* tab = s.siteTable().slice();
+    for(int n=0; n < s1.size(); ++n) { 
+      for(int j=0; j < s.numSiteTable(); j++) { 
+	int i=tab[j];
+	REAL64 lltmp=0;
+	const REAL32 *s1ptr =  &(s1[n].elem(i).elem(0).elem(0).real());
+	local_sumsq(&lltmp,(REAL32 *)s1ptr, 24);
+	ltmp += lltmp;
+      }
+    }   
+
+  }
+  UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
+  Internal::globalSum(lsum);
+  return lsum;
+}
+
+
+template<>
 inline  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t
 innerProduct(const multi1d< OLattice<TVec> > &v1,
 	     const multi1d< OLattice<TVec> > &v2)
@@ -1923,8 +1966,8 @@ innerProduct(const multi1d< OLattice<TVec> > &v1,
   // This BinaryReturn has Type_t
   // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
   BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
-  // Inner product is accumulated internally in DOUBLE
-  DOUBLE ip[2];
+  // Inner product is accumulated internally in REAL64
+  REAL64 ip[2];
   ip[0]=0;
   ip[1]=0;
 
@@ -1933,20 +1976,99 @@ innerProduct(const multi1d< OLattice<TVec> > &v1,
     
   for(int n=0; n < v1.size(); ++n)
   {
-    DOUBLE iip[2];
+    REAL64 iip[2];
     iip[0]=0;
     iip[1]=0;
 
     // Call My CDOT
-    local_vcdot(&(iip[0]), &(iip[1]),
-		(REAL *)&(v1[n].elem(all.start()).elem(0).elem(0).real()),
-		(REAL *)&(v2[n].elem(all.start()).elem(0).elem(0).real()),
-		n_3vec);
+    local_vcdot((REAL64 *)&(iip[0]), (REAL64 *)&(iip[1]),
+		(REAL32 *)&(v1[n].elem(all.start()).elem(0).elem(0).real()),
+		(REAL32 *)&(v2[n].elem(all.start()).elem(0).elem(0).real()),
+		(int)n_3vec);
     
     ip[0] += iip[0];
     ip[1] += iip[1];
   }
 
+  // Global sum -- still on a vector of doubles
+  Internal::globalSumArray(ip,2);
+
+  // Downcast (and possibly lose precision) here 
+  lprod.elem().elem().elem().real() = ip[0];
+  lprod.elem().elem().elem().imag() = ip[1];
+
+  // Return
+  return lprod;
+}
+
+template<>
+inline  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t
+innerProduct(const multi1d< OLattice<TVec> > &v1,
+	     const multi1d< OLattice<TVec> > &v2,
+	     const Subset& s)
+{
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "BJ: multi1d innerProduct subset" << endl;
+#endif
+
+  
+  // This BinaryReturn has Type_t
+  // OScalar<OScalar<OScalar<RComplex<PScalar<REAL> > > > >
+  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
+  // Inner product is accumulated internally in REAL64
+  REAL64 ip[2];
+  ip[0]=0;
+  ip[1]=0;
+
+  if( s.hasOrderedRep() ) { 
+    // Length of subset 
+    unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
+    
+    for(int n=0; n < v1.size(); ++n) {
+      
+      REAL64 iip[2];
+      iip[0]=0;
+      iip[1]=0;
+      
+      // Call My CDOT
+      local_vcdot((REAL64 *)&(iip[0]), 
+		  (REAL64 *)&(iip[1]),
+		  (REAL32 *)&(v1[n].elem(s.start()).elem(0).elem(0).real()),
+		  (REAL32 *)&(v2[n].elem(s.start()).elem(0).elem(0).real()),
+		  (int)n_3vec);
+    
+      ip[0] += iip[0];
+      ip[1] += iip[1];
+    }
+  }
+  else { 
+     // Length of an atom
+    unsigned long n_3vec = Ns;
+
+    // Site table
+    const int* tab = s.siteTable().slice();
+
+    // Loop through N5
+    for(int n=0; n < v1.size(); ++n) { 
+
+      // Loop through site table 
+      for(int j=0; j < s.numSiteTable(); j++) { 
+	int i=tab[j];    
+	REAL64 iip[2];
+	iip[0]=0;
+	iip[1]=0;
+	
+	// Call My CDOT
+	local_vcdot((REAL64 *)&(iip[0]), (REAL64 *)&(iip[1]),
+		    (REAL32 *)&(v1[n].elem(i).elem(0).elem(0).real()),
+		    (REAL32 *)&(v2[n].elem(i).elem(0).elem(0).real()),
+		    (int)n_3vec);
+	
+	ip[0] += iip[0];
+	ip[1] += iip[1];
+      }
+    }
+  }
   // Global sum -- still on a vector of doubles
   Internal::globalSumArray(ip,2);
 
@@ -1972,21 +2094,21 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
   // This BinaryReturn hasType_t
   // OScalar<OScalar<OScalar<RScalar<PScalar<REAL> > > > >
   BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
-  // Inner product is accumulated internally in DOUBLE
-  DOUBLE ip_re=0;
+  // Inner product is accumulated internally in REAL64
+  REAL64 ip_re=0;
 
   // Length of subset 
   unsigned long n_3vec = (all.end() - all.start() + 1)*Ns;
 
   for(int n=0; n < v1.size(); ++n)
   {
-    DOUBLE iip_re=0;
+    REAL64 iip_re=0;
 
     // Call My CDOT
-    local_vcdot_real(&iip_re,
-		     (REAL *)&(v1[n].elem(all.start()).elem(0).elem(0).real()),
-		     (REAL *)&(v2[n].elem(all.start()).elem(0).elem(0).real()),
-		     n_3vec);
+    local_vcdot_real((REAL64 *)&iip_re,
+		     (REAL32 *)&(v1[n].elem(all.start()).elem(0).elem(0).real()),
+		     (REAL32 *)&(v2[n].elem(all.start()).elem(0).elem(0).real()),
+		     (int)n_3vec);
 
     ip_re += iip_re;
   }
