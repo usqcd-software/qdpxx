@@ -1,3 +1,38 @@
+2008-05-13 16:01  bjoo
+
+	* lib/qdp_scalarsite_sse.cc, include/qdp_scalarsite_sse.h,
+	  include/scalarsite_generic/generic_blas_local_vcdot.h,
+	  include/scalarsite_generic/generic_blas_local_vcdot_real.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h: Damn thing!
+	  Just commit will you
+
+2008-05-13 15:59  bjoo
+
+	* AUTHORS, COPYING, INSTALL, INSTALL_EXAMPLES, Makefile.am, NEWS,
+	  README, acinclude.m4, aclocal.m4, configure, configure.ac,
+	  qdp++-config.in, lib/Makefile.am, lib/qdp.cc, lib/qdp_binx.cc,
+	  lib/qdp_byteorder.cc, lib/qdp_crc32.cc,
+	  lib/qdp_default_allocator.cc, lib/qdp_filebuf.cc, lib/qdp_io.cc,
+	  lib/qdp_iogauge.cc, lib/qdp_layout.cc, lib/qdp_map.cc,
+	  lib/qdp_parscalar_global_sum.cc, lib/qdp_parscalar_init.cc,
+	  lib/qdp_parscalar_layout.cc, lib/qdp_parscalar_specific.cc,
+	  lib/qdp_parscalarvec_init.cc, lib/qdp_parscalarvec_layout.cc,
+	  lib/qdp_parscalarvec_specific.cc, lib/qdp_profile.cc,
+	  lib/qdp_qcdoc_allocator.cc, lib/qdp_qdpio.cc,
+	  lib/qdp_qio_strings.cc, lib/qdp_qmp_extensions.cc,
+	  lib/qdp_random.cc, lib/qdp_scalar_init.cc,
+	  lib/qdp_scalar_layout.cc, lib/qdp_scalar_specific.cc,
+	  lib/qdp_scalarsite_specific.cc, lib/qdp_scalarsite_sse.cc: SSE
+	  Rest
+
+2008-05-13 15:59  bjoo
+
+	* include/qdp_config_internal.h.in, configure.ac, configure: HEADER
+
+2008-05-13 15:54  bjoo
+
+	* aclocal.m4: SSEIFICATION1
+
 2008-05-09 13:45  bjoo
 
 	* include/scalarsite_bagel_qdp/qdp_scalarsite_bagel_qdp_linalg.h:
