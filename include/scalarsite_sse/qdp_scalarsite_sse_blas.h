@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.18 2008-05-13 20:02:02 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.19 2008-05-13 22:05:49 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -2113,6 +2113,72 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
     ip_re += iip_re;
   }
 
+  // Global sum
+  Internal::globalSum(ip_re);
+
+  // Whether CDOT did anything or not ip_re and ip_im should 
+  // now be right. Assign them to the ReturnType
+  lprod.elem().elem().elem().elem() = ip_re;
+
+
+  // Return
+  return lprod;
+}
+
+// Inner Product Real
+template<>
+inline  
+BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t
+innerProductReal(const multi1d< OLattice<TVec> > &v1,
+		 const multi1d< OLattice<TVec> > &v2,
+		 const Subset& s)
+{
+#ifdef DEBUG_BLAS
+  QDPIO::cout << "BJ: innerProductReal(multi1d) all" << endl;
+#endif
+
+  // This BinaryReturn hasType_t
+  // OScalar<OScalar<OScalar<RScalar<PScalar<REAL> > > > >
+  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
+  // Inner product is accumulated internally in REAL64
+  REAL64 ip_re=0;
+
+  // Length of subset 
+  if ( s.hasOrderedRep() ) {
+    unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
+
+    for(int n=0; n < v1.size(); ++n) {
+      
+      REAL64 iip_re=0;
+      
+      // Call My CDOT
+      local_vcdot_real((REAL64 *)&iip_re,
+		       (REAL32 *)&(v1[n].elem(s.start()).elem(0).elem(0).real()),
+		       (REAL32 *)&(v2[n].elem(s.start()).elem(0).elem(0).real()),
+		       (int)n_3vec);
+      
+      ip_re += iip_re;
+    }
+  }
+  else { 
+    unsigned long n_3vec = Ns;
+    const int* tab = s.siteTable().slice();
+
+    for(int n=0; n < v1.size(); ++n) {
+      for(int j=0; j< s.numSiteTable(); j++) { 
+	const int i=tab[j];
+	 REAL64 iip_re=0;
+      
+	 // Call My CDOT
+	 local_vcdot_real((REAL64 *)&iip_re,
+		       (REAL32 *)&(v1[n].elem(i).elem(0).elem(0).real()),
+		       (REAL32 *)&(v2[n].elem(i).elem(0).elem(0).real()),
+		       (int)n_3vec);
+      
+	 ip_re += iip_re;
+      }
+    }
+  }
   // Global sum
   Internal::globalSum(ip_re);
 
