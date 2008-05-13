@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_filebuf.cc,v 1.7 2005-02-28 16:46:37 bjoo Exp $
+// $Id: qdp_filebuf.cc,v 1.8 2008-05-13 20:00:17 bjoo Exp $
 
 /*! @file
  * @brief Remote file support

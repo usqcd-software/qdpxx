@@ -1,4 +1,4 @@
-// $Id: qdp_default_allocator.cc,v 1.6 2007-07-17 16:56:10 bjoo Exp $
+// $Id: qdp_default_allocator.cc,v 1.7 2008-05-13 20:00:17 bjoo Exp $
 /*! @file
  * @brief QCDOC memory allocator
  */

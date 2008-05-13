@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_specific.cc,v 1.15 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_scalar_specific.cc,v 1.16 2008-05-13 20:00:20 bjoo Exp $
 
 /*! @file
  * @brief Scalar specific routines

@@ -1,4 +1,4 @@
-// $Id: qdp.cc,v 1.9 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp.cc,v 1.10 2008-05-13 20:00:17 bjoo Exp $
 //
 // QDP data parallel interface
 //

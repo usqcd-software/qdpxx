@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_specific.cc,v 1.16 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_scalarsite_specific.cc,v 1.17 2008-05-13 20:00:20 bjoo Exp $
 
 /*! @file
  * @brief Scalar-like architecture specific routines

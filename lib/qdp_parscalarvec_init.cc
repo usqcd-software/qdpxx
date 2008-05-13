@@ -1,4 +1,4 @@
-// $Id: qdp_parscalarvec_init.cc,v 1.10 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_parscalarvec_init.cc,v 1.11 2008-05-13 20:00:18 bjoo Exp $
 
 /*! @file
  * @brief Parscalarvec init routines

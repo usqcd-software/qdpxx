@@ -1,4 +1,4 @@
-// $Id: qdp_layout.cc,v 1.6 2008-03-04 21:56:26 bjoo Exp $
+// $Id: qdp_layout.cc,v 1.7 2008-05-13 20:00:18 bjoo Exp $
 
 /*! @file
  * @brief Layout support routines
