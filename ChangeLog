@@ -1,3 +1,9 @@
+2008-05-13 18:05  bjoo
+
+	* include/scalarsite_sse/qdp_scalarsite_sse_blas.h: Added
+	  InnerProductReal(multi1d<OLattice<...> >, multi1d<OLattice< ...>,
+	  const Subset& s)
+
 2008-05-13 16:01  bjoo
 
 	* lib/qdp_scalarsite_sse.cc, include/qdp_scalarsite_sse.h,
