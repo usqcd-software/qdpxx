@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.39 2008-05-14 18:58:35 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.40 2008-05-14 19:31:39 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -130,27 +130,27 @@ namespace QDP
 
   //! Generic type
   template<typename T>
-  char* QIOStringTraits<T>::tname = "QDP_GenericType";
+  char* QIOStringTraits<T>::tname = (char *)"QDP_GenericType";
 
   //! Lattice Type
   template<typename T> 
-  char* QIOStringTraits< OLattice<T> >::tname = "Lattice";
+  char* QIOStringTraits< OLattice<T> >::tname = (char *)"Lattice";
 
   //! Scalar Type
   template<typename T> 
-  char* QIOStringTraits< OScalar<T> >::tname = "Scalar";
+  char* QIOStringTraits< OScalar<T> >::tname = (char *)"Scalar";
 
   //! multi1d<LatticeType>
   template<typename T> 
-  char* QIOStringTraits< multi1d<OLattice<T> > >::tname = "Lattice";
+  char* QIOStringTraits< multi1d<OLattice<T> > >::tname = (char *)"Lattice";
 
   //! multi1d<ScalarType>
   template<typename T> 
-  char* QIOStringTraits< multi1d<OScalar<T> > >::tname = "Scalar";
+  char* QIOStringTraits< multi1d<OScalar<T> > >::tname = (char *)"Scalar";
 
   //! Unknown precision string
   template<typename T>
-  char*  QIOStringTraits<T>::tprec = "U"; 
+  char*  QIOStringTraits<T>::tprec = (char *)"U"; 
 
   // Full specialisations deferred to the qdp_qio_strings.cc file
   template<>
