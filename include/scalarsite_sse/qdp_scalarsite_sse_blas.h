@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.19 2008-05-13 22:05:49 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.20 2008-05-14 18:58:35 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -1928,7 +1928,7 @@ inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
       const REAL32 *s1ptr =  &(s1[n].elem(s.start()).elem(0).elem(0).real());
     
       // I am relying on this being a Double here 
-      REAL64 lltmp;
+      REAL64 lltmp=0;
       local_sumsq(&lltmp, (REAL32 *)s1ptr, n_3vec); 
       
       ltmp += lltmp;

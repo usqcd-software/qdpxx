@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.38 2008-05-02 23:17:29 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.39 2008-05-14 18:58:35 bjoo Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -11,6 +11,7 @@
 #include "qio.h"
 #include <sstream>
 #include "qdp_defs.h"
+#include <cstring>
 
 using namespace std;
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_filebuf.cc,v 1.8 2008-05-13 20:00:17 bjoo Exp $
+// $Id: qdp_filebuf.cc,v 1.9 2008-05-14 18:58:35 bjoo Exp $
 
 /*! @file
  * @brief Remote file support
@@ -18,7 +18,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <new>
-
+#include <cstring>
 #include "qdp_filebuf.h"
 
 namespace QDP { 

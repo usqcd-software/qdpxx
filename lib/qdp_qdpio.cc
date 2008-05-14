@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.29 2008-05-13 20:00:20 bjoo Exp $
+// $Id: qdp_qdpio.cc,v 1.30 2008-05-14 18:58:35 bjoo Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -511,9 +511,12 @@ namespace QDP
   void QDPFileWriter::write(XMLBufferWriter& rec_xml, BinaryBufferWriter& s1)
   {
     std::string ss = s1.str();
+    char *typestr=(char *)"char";
+    char *signtype=(char *)"U";
+
     QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, NULL, NULL, 0,
-						  "char",
-						  "U",
+						  typestr,
+						  signtype,
 						  0, 0, 
 						  sizeof(char), ss.size());
 
