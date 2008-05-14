@@ -1,3 +1,14 @@
+05/14/2008 -- Balint Joo
+        Various tweaks:  
+            - some explicit char * casting to get rid of deprecated feature warnings from newer gcc compilers
+	    - included <cstring> <cstdlib> in a few places to get at memcpy, memcmp and memset - this broke some 
+              really new gcc compilers
+	    - Got rid of complicated logic to cope with gnu/non gnu builds for SSE in scalarsite_sse. Now if you 
+	      --enable-sse or --enable-sse2 you'll get the SSE code, whether you want it or not. Pretty much all 
+              the assembler is now done with compiler intrinsics, so as long as your compiler can eat those you 
+	      should be OK. Intel is supposed to be able to eat them as is pathscale, but I haven't tested these
+	      recently.
+
 05/02/2008 -- Version 1.26.0 -- Balint Joo
         Minor tweaks:
           - exposed some layout functions to facilitate Level 3 related issues.
