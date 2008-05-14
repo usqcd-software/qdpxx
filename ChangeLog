@@ -1,3 +1,25 @@
+2008-05-14 15:35  bjoo
+
+	* NEWS: NEWS
+
+2008-05-14 15:31  bjoo
+
+	* include/qdp_qdpio.h: Another bunch of explicit casts to keep
+	  compilers at bay
+
+2008-05-14 15:00  bjoo
+
+	* aclocal.m4: Induced Changes
+
+2008-05-14 14:58  bjoo
+
+	* aclocal.m4, configure, examples/t_blas.cc, include/qdp_qdpio.h,
+	  include/qdp_scalarsite_sse.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  lib/qdp_filebuf.cc, lib/qdp_qdpio.cc, lib/qdp_qio_strings.cc,
+	  other_libs/xpath_reader/include/xml_struct_writer.h: Another
+	  little clean. Should now be ready for gcc-4.3
+
 2008-05-13 18:05  bjoo
 
 	* include/scalarsite_sse/qdp_scalarsite_sse_blas.h: Added
