@@ -1,4 +1,4 @@
-// $Id: t_gsum.cc,v 1.2 2006-07-12 02:07:55 edwards Exp $
+// $Id: t_gsum.cc,v 1.3 2008-05-15 15:31:49 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -6,9 +6,9 @@
 #include <ios>
 
 #include "qdp.h"
-
-namespace QDP {
-extern   void local_sumsq2(REAL64 *Out, REAL32 *In, int n_3vec);
+namespace QDP { 
+extern
+void local_sumsq2(REAL64 *Out, REAL32 *In, int n_3vec);
 };
 
 
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {28,28,28,64};
+  const int foo[] = {6,6,6,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -29,24 +29,9 @@ int main(int argc, char *argv[])
 
   LatticeFermion x; // Single precision LatticeFermion
   gaussian(x);      // Fill it with noise.
-  Real xr=10.5;
 
-//  QDPIO::cout << setw(15) << xr << endl;
-  QDPIO::cout << xr << endl;
 
-  LatticeFermionD x_dble = zero;  // Cast it to double
-
-  // Convert x to doubles
-  for(int i=all.start(); i <= all.end(); i++) {
-    for(int spin=0; spin < Ns; spin++) { 
-      for(int color=0; color < Nc; color++) { 
-	x_dble.elem(i).elem(spin).elem(color).real()
-	  =(REAL64) x.elem(i).elem(spin).elem(color).real();
-	x_dble.elem(i).elem(spin).elem(color).imag()
-	  =(REAL64) x.elem(i).elem(spin).elem(color).imag();
-      }
-    }
-  }
+  LatticeFermionD x_dble(x);  // Cast it to double
 
   REAL64 double_local_sum = 0;
   for(int i=all.start(); i <= all.end(); i++) {
@@ -72,7 +57,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << "(QDP DP Norm2 - Handrolled DP Norm2 ) / Handrolled DP Norm2  = " << double_norm_diff << endl;
 
   // ----------------------------------------------------------------------//
-  // Now All Double Precision sum of Single Precision vector               //
+  // Now upcast elements of single prec vector and sum in double           //
   // ----------------------------------------------------------------------//
   REAL64 local_norm2_all_in_double = 0;
   for(int i=all.start(); i <= all.end(); i++) {
@@ -127,16 +112,21 @@ int main(int argc, char *argv[])
   Double double_norm_diff4(  (local_norm2_site_global_result - double_global_sum )/ ( double_global_sum ) );
   QDPIO::cout << "( local_norm2 Single SSE on Site, DP Accross Nodes - DP Norm 2 ) / ( DP Norm 2 ) = " << double_norm_diff4 << endl;
 
+#if 0
   REAL64 local_norm2_result;
-  local_sumsq2(&local_norm2_result, &x.elem(0).elem(0).elem(0).real(), nvec);
+  local_sumsq(&local_norm2_result, &x.elem(0).elem(0).elem(0).real(), nvec);
   REAL64 local_norm2_2_global_result  = local_norm2_result;
   Internal::globalSum(local_norm2_2_global_result);
   Double double_norm_diff5(  (local_norm2_2_global_result - double_global_sum )/ ( double_global_sum ) );
   QDPIO::cout << "( local_norm2 Single on Node DP Accross Nodes - DP Norm 2 ) / ( DP Norm 2 ) = " << double_norm_diff5 << endl;
+#endif
+
+
 
   // Time to bolt
   QDP_finalize();
 
   exit(0);
 }
+  
   
