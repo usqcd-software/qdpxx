@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.37 2008-05-15 18:50:34 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.38 2008-05-15 19:47:34 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -1478,7 +1478,7 @@ void local_sumsq(REAL64 *Out, REAL32 *In, int n_4vec)
   __m128d lower_2_sq;
   __m128d upper_2_sq;
 
-  _mm_prefetch((char *)In, _MM_HINT_NTA); 
+  /* _mm_prefetch((char *)In, _MM_HINT_NTA);  */
 
   /* Loop body is n_4vec/2 - 1, and the sum over 24 numbers is unrolled */
   unsigned int loops=(unsigned int)(n_4vec/24)-1;
@@ -1493,8 +1493,8 @@ void local_sumsq(REAL64 *Out, REAL32 *In, int n_4vec)
   tmp1 = _mm_load_ps(vecptr);  vecptr+=4;
 
 
-  for(unsigned int veccount=0; veccount < loops; veccount++) { 
-    _mm_prefetch(((char *)vecptr)+64, _MM_HINT_NTA); /* Fetch 1 line ahead */
+  for(unsigned int veccount=0; veccount < loops-1; veccount++) { 
+    /* _mm_prefetch(((char *)vecptr)+64, _MM_HINT_NTA); */ /* Fetch 1 line ahead */ 
     /* ----------------------- First vector -----------------------*/
     /* Get the high 2 numbers  into the low of ttmp -------------- */
     ttmp = _mm_shuffle_ps(tmp1, tmp1, 0x0e);
@@ -1563,7 +1563,7 @@ void local_sumsq(REAL64 *Out, REAL32 *In, int n_4vec)
     /* Get the high 2 numbers  into the low of ttmp -------------- */
     ttmp = _mm_shuffle_ps(tmp4, tmp4, 0x0e);
     tmp5 = _mm_load_ps(vecptr); 
-    _mm_prefetch(((char *)vecptr)+64, _MM_HINT_NTA);
+    /* _mm_prefetch(((char *)vecptr)+64, _MM_HINT_NTA); */
     vecptr+=4; 
     
 
