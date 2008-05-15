@@ -1,3 +1,8 @@
+2008-05-15 11:31  bjoo
+
+	* lib/qdp_scalarsite_sse.cc, examples/t_gsum.cc: Added a new
+	  version of the global sum
+
 2008-05-14 15:35  bjoo
 
 	* NEWS: NEWS
