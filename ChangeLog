@@ -1,3 +1,19 @@
+2008-05-15 16:16  bjoo
+
+	* lib/qdp_scalarsite_sse.cc.kahan: Temporary
+
+2008-05-15 15:47  bjoo
+
+	* lib/qdp_scalarsite_sse.cc: Removed prefetch statements.
+
+2008-05-15 14:50  bjoo
+
+	* examples/t_blas.cc, lib/qdp_scalarsite_sse.cc: Removed an SSE3ism
+
+2008-05-15 14:37  bjoo
+
+	* lib/qdp_scalarsite_sse.cc: Rewritten the sum to not use SSE3
+
 2008-05-15 11:31  bjoo
 
 	* lib/qdp_scalarsite_sse.cc, examples/t_gsum.cc: Added a new
