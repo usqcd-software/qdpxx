@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.21 2008-05-14 18:58:35 bjoo Exp $
+// $Id: t_blas.cc,v 1.22 2008-05-15 18:50:34 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -863,14 +863,14 @@ int main(int argc, char *argv[])
     daccr += norm2(lqx[i]);
   }
   Double dreal = norm2(lqx);
-  QDPIO::cout << "Diff norm2(multi1d) all = " << Real(daccr-dreal) << endl;
+  QDPIO::cout << "Diff norm2(multi1d) all = " << daccr-dreal << endl;
 
   daccr = zero;
   for(int i=0; i < lqx.size(); ++i) {
     daccr += norm2(lqx[i],rb[1]);
   }
   dreal = norm2(lqx,rb[1]);
-  QDPIO::cout << "Diff norm2(multi1d) Subset = " << Real(daccr-dreal) << endl;
+  QDPIO::cout << "Diff norm2(multi1d) Subset = " << daccr-dreal << endl;
 
 
   accum = zero;

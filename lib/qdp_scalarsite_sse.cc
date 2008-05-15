@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.36 2008-05-15 18:37:16 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.37 2008-05-15 18:50:34 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -1456,7 +1456,6 @@ void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec)
 }
 #endif 
 
-#include <pmmintrin.h>
 void local_sumsq(REAL64 *Out, REAL32 *In, int n_4vec) 
 {
   /* each 4vec has 24 numbers to sum */
@@ -1563,7 +1562,9 @@ void local_sumsq(REAL64 *Out, REAL32 *In, int n_4vec)
     /* ----------------------- 4th vector   -----------------------*/
     /* Get the high 2 numbers  into the low of ttmp -------------- */
     ttmp = _mm_shuffle_ps(tmp4, tmp4, 0x0e);
-    tmp5 = _mm_load_ps(vecptr); vecptr+=4; 
+    tmp5 = _mm_load_ps(vecptr); 
+    _mm_prefetch(((char *)vecptr)+64, _MM_HINT_NTA);
+    vecptr+=4; 
     
 
     /* Upcast to double */
