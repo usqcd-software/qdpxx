@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.35 2008-05-15 15:31:44 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.36 2008-05-15 18:37:16 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -1462,6 +1462,7 @@ void local_sumsq(REAL64 *Out, REAL32 *In, int n_4vec)
   /* each 4vec has 24 numbers to sum */
   __m128d sum_a;
   __m128d sum_b;
+  __m128d sum_c;
 
   /* Each 4 vec has 24 numbers to sum - or six vectors of lenght 4 */
   __m128 tmp1;
@@ -1751,12 +1752,17 @@ void local_sumsq(REAL64 *Out, REAL32 *In, int n_4vec)
     sum_b = _mm_add_pd(sum_b, upper_2_sq);
   }
 
+  /* Accumulate sum_a + sum_b */
+  sum_c = _mm_add_pd(sum_a, sum_b);
+
+  /* Sum_c now has 2 sums in it              | sum1 | sum2 | */
+  /* I will shuft it into sum_b so sum_b has | sum2 | sum1 | */
+  /* Then I will accumulate into sum a which will have a copies of the sum */
+  /* in each  half */
+  sum_b = _mm_shuffle_pd(sum_c, sum_c, 0x01);
     
   /* Now sum horizontally on a and b */
-  sum_a = _mm_hadd_pd(sum_a, sum_b);
-
-  /* Now sum horizontally on the result */
-  sum_a = _mm_hadd_pd(sum_a, sum_a);
+  sum_a = _mm_add_pd(sum_c, sum_b);
 
   /* Sum a should now have 2 copies of the sum */
   /* I should store the result */
