@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.22 2008-05-15 18:50:34 bjoo Exp $
+// $Id: t_blas.cc,v 1.23 2008-05-16 14:58:18 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {6,12,12,16};
+  const int foo[] = {24,24,24,128};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -39,202 +39,28 @@ int main(int argc, char *argv[])
   // sum it by hand.-- 1 way
   REAL64 rc = (REAL64)0;
 
-  REAL32 partial_sum0=0;
-  REAL32 partial_sum1=0;
-  REAL32 partial_sum2=0;
-  REAL32 partial_sum3=0;
-
-  partial_sum0 += qx.elem(all.start()).elem(0).elem(0).real()
-    * qx.elem(all.start()).elem(0).elem(0).real();
-  partial_sum1 += qx.elem(all.start()).elem(0).elem(0).imag()
-    * qx.elem(all.start()).elem(0).elem(0).imag();
   
-  partial_sum2 += qx.elem(all.start()).elem(0).elem(1).real()
-    * qx.elem(all.start()).elem(0).elem(1).real();
-  partial_sum3 += qx.elem(all.start()).elem(0).elem(1).imag()
-    * qx.elem(all.start()).elem(0).elem(1).imag();
-  
-  partial_sum0 += qx.elem(all.start()).elem(0).elem(2).real()
-    * qx.elem(all.start()).elem(0).elem(2).real();
-  partial_sum1 += qx.elem(all.start()).elem(0).elem(2).imag()
-    * qx.elem(all.start()).elem(0).elem(2).imag();
-  
-  
-  partial_sum2 += qx.elem(all.start()).elem(1).elem(0).real()
-    * qx.elem(all.start()).elem(1).elem(0).real();
-  partial_sum3 += qx.elem(all.start()).elem(1).elem(0).imag()
-    * qx.elem(all.start()).elem(1).elem(0).imag();
+  for(int site=all.start(); site <= all.end(); site++) { 
+    for(int spin=0; spin < Ns; spin++) { 
+      for(int col=0; col < Nc; col++) { 
+	rc += (REAL64)(qx.elem(site).elem(spin).elem(col).real())
+	       *(REAL64)(qx.elem(site).elem(spin).elem(col).real());
 
-  rc += (REAL64)partial_sum0
-    + (REAL64)partial_sum1
-    + (REAL64)partial_sum2
-    + (REAL64)partial_sum3;
-  
-  for(int site=all.start(); site < all.end(); site++) { 
-    
-    partial_sum0=0;
-    partial_sum1=0;
-    partial_sum2=0;
-    partial_sum3=0;
-
-
-    partial_sum0 += qx.elem(site).elem(1).elem(1).real()
-      * qx.elem(site).elem(1).elem(1).real();
-    
-    partial_sum1 += qx.elem(site).elem(1).elem(1).imag()
-      * qx.elem(site).elem(1).elem(1).imag();
-    
-
-    partial_sum2 += qx.elem(site).elem(1).elem(2).real()
-      * qx.elem(site).elem(1).elem(2).real();
-
-    partial_sum3 += qx.elem(site).elem(1).elem(2).imag()
-      * qx.elem(site).elem(1).elem(2).imag();
-    
-    
-    partial_sum0 += qx.elem(site).elem(2).elem(0).real()
-      * qx.elem(site).elem(2).elem(0).real();
-
-    partial_sum1 += qx.elem(site).elem(2).elem(0).imag()
-      * qx.elem(site).elem(2).elem(0).imag();
-    
-    partial_sum2 += qx.elem(site).elem(2).elem(1).real()
-      * qx.elem(site).elem(2).elem(1).real();
-
-    partial_sum3 += qx.elem(site).elem(2).elem(1).imag()
-      * qx.elem(site).elem(2).elem(1).imag();
-    
-    partial_sum0 += qx.elem(site).elem(2).elem(2).real()
-      * qx.elem(site).elem(2).elem(2).real();
- 
-    partial_sum1 += qx.elem(site).elem(2).elem(2).imag()
-      * qx.elem(site).elem(2).elem(2).imag();
-    
-    partial_sum2 += qx.elem(site).elem(3).elem(0).real()
-      * qx.elem(site).elem(3).elem(0).real();
-
-    partial_sum3 += qx.elem(site).elem(3).elem(0).imag()
-      * qx.elem(site).elem(3).elem(0).imag();
-    
-    partial_sum0 += qx.elem(site).elem(3).elem(1).real()
-      * qx.elem(site).elem(3).elem(1).real();
-
-    partial_sum1 += qx.elem(site).elem(3).elem(1).imag()
-      * qx.elem(site).elem(3).elem(1).imag();
-   
-    partial_sum2 += qx.elem(site).elem(3).elem(2).real()
-      * qx.elem(site).elem(3).elem(2).real();
-
-    partial_sum3 += qx.elem(site).elem(3).elem(2).imag()
-      * qx.elem(site).elem(3).elem(2).imag();
-    
-
-    partial_sum0 += qx.elem(site+1).elem(0).elem(0).real()
-    * qx.elem(site+1).elem(0).elem(0).real();
-
-    partial_sum1 += qx.elem(site+1).elem(0).elem(0).imag()
-      * qx.elem(site+1).elem(0).elem(0).imag();
-  
-    partial_sum2 += qx.elem(site+1).elem(0).elem(1).real()
-      * qx.elem(site+1).elem(0).elem(1).real();
-
-    partial_sum3 += qx.elem(site+1).elem(0).elem(1).imag()
-      * qx.elem(site+1).elem(0).elem(1).imag();
-  
-    partial_sum0 += qx.elem(site+1).elem(0).elem(2).real()
-      * qx.elem(site+1).elem(0).elem(2).real();
-
-    partial_sum1 += qx.elem(site+1).elem(0).elem(2).imag()
-      * qx.elem(site+1).elem(0).elem(2).imag();
-    
-    partial_sum2 += qx.elem(site+1).elem(1).elem(0).real()
-      * qx.elem(site+1).elem(1).elem(0).real();
- 
-    partial_sum3 += qx.elem(site+1).elem(1).elem(0).imag()
-      * qx.elem(site+1).elem(1).elem(0).imag();
-    
-    rc += (REAL64)partial_sum0
-      + (REAL64)partial_sum1
-      + (REAL64)partial_sum2
-      + (REAL64)partial_sum3;
-      
-      
+	rc +=(REAL64)(qx.elem(site).elem(spin).elem(col).imag())
+	       *(REAL64)(qx.elem(site).elem(spin).elem(col).imag());
+      }
+    }
   }
-    
-  partial_sum0=0;
-  partial_sum1=0;
-  partial_sum2=0;
-  partial_sum3=0;
-  
 
-  partial_sum0 += qx.elem(all.end()).elem(1).elem(1).real()
-      * qx.elem(all.end()).elem(1).elem(1).real();
-    
-  partial_sum1 += qx.elem(all.end()).elem(1).elem(1).imag()
-    * qx.elem(all.end()).elem(1).elem(1).imag();
-    
-
-  partial_sum2 += qx.elem(all.end()).elem(1).elem(2).real()
-    * qx.elem(all.end()).elem(1).elem(2).real();
-
-  partial_sum3 += qx.elem(all.end()).elem(1).elem(2).imag()
-    * qx.elem(all.end()).elem(1).elem(2).imag();
-  
-    
-  partial_sum0 += qx.elem(all.end()).elem(2).elem(0).real()
-    * qx.elem(all.end()).elem(2).elem(0).real();
- 
-  partial_sum1 += qx.elem(all.end()).elem(2).elem(0).imag()
-    * qx.elem(all.end()).elem(2).elem(0).imag();
-    
-  partial_sum2 += qx.elem(all.end()).elem(2).elem(1).real()
-    * qx.elem(all.end()).elem(2).elem(1).real();
-
-  partial_sum3 += qx.elem(all.end()).elem(2).elem(1).imag()
-    * qx.elem(all.end()).elem(2).elem(1).imag();
-    
-  partial_sum0 += qx.elem(all.end()).elem(2).elem(2).real()
-    * qx.elem(all.end()).elem(2).elem(2).real();
-
-  partial_sum1 += qx.elem(all.end()).elem(2).elem(2).imag()
-    * qx.elem(all.end()).elem(2).elem(2).imag();
-  
-  partial_sum2 += qx.elem(all.end()).elem(3).elem(0).real()
-    * qx.elem(all.end()).elem(3).elem(0).real();
-  
-  partial_sum3 += qx.elem(all.end()).elem(3).elem(0).imag()
-    * qx.elem(all.end()).elem(3).elem(0).imag();
-  
-  partial_sum0 += qx.elem(all.end()).elem(3).elem(1).real()
-    * qx.elem(all.end()).elem(3).elem(1).real();
-
-  partial_sum1 += qx.elem(all.end()).elem(3).elem(1).imag()
-    * qx.elem(all.end()).elem(3).elem(1).imag();
-    
-  partial_sum2 += qx.elem(all.end()).elem(3).elem(2).real()
-    * qx.elem(all.end()).elem(3).elem(2).real();
-
-  partial_sum3 += qx.elem(all.end()).elem(3).elem(2).imag()
-    * qx.elem(all.end()).elem(3).elem(2).imag();
-    
-  rc += (REAL64)partial_sum0
-    + (REAL64)partial_sum1
-    + (REAL64)partial_sum2
-    + (REAL64)partial_sum3;
-  
- 
-  UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(rc);
-  Internal::globalSum(lsum);
-
-/*
   REAL64 rc2;
   int n_3vec = (all.end() - all.start() + 1)*24;
-  ::local_sumsq(&rc2, &(qx.elem(all.start()).elem(0).elem(0).real()), n_3vec);
+  QDP::local_sumsq(&rc2, &(qx.elem(all.start()).elem(0).elem(0).real()), n_3vec);
   QDPIO::cout << "rc -rc2 = " << rc-rc2 << endl;
  
 
-  Double bjs = norm2(qx);
-//  QDPIO::cout << "lattice volume = " << Layout::vol() << " Ns = " << Ns << " Nc = " << Nc << " Ncompx = 2.  Total Sum should be = " << Layout::vol()*Ns*Nc*2 << endl;
+  //  Double bjs = norm2(qx);
+
+  /*   DPIO::cout << "lattice volume = " << Layout::vol() << " Ns = " << Ns << " Nc = " << Nc << " Ncompx = 2.  Total Sum should be = " << Layout::vol()*Ns*Nc*2 << endl;
 
  
 */ 
@@ -863,14 +689,14 @@ int main(int argc, char *argv[])
     daccr += norm2(lqx[i]);
   }
   Double dreal = norm2(lqx);
-  QDPIO::cout << "Diff norm2(multi1d) all = " << daccr-dreal << endl;
+  QDPIO::cout << "Diff norm2(multi1d) all = " << (daccr-dreal)/dreal << endl;
 
   daccr = zero;
   for(int i=0; i < lqx.size(); ++i) {
     daccr += norm2(lqx[i],rb[1]);
   }
   dreal = norm2(lqx,rb[1]);
-  QDPIO::cout << "Diff norm2(multi1d) Subset = " << daccr-dreal << endl;
+  QDPIO::cout << "Diff norm2(multi1d) Subset = " << (daccr-dreal)/dreal << endl;
 
 
   accum = zero;

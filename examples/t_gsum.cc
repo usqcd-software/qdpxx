@@ -1,4 +1,4 @@
-// $Id: t_gsum.cc,v 1.3 2008-05-15 15:31:49 bjoo Exp $
+// $Id: t_gsum.cc,v 1.4 2008-05-16 14:58:18 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -8,7 +8,8 @@
 #include "qdp.h"
 namespace QDP { 
 extern
-void local_sumsq2(REAL64 *Out, REAL32 *In, int n_3vec);
+
+void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec);
 };
 
 
@@ -21,13 +22,15 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {6,6,6,4};
+  const int foo[] = {24,24,24,128};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
   Layout::create();
 
   LatticeFermion x; // Single precision LatticeFermion
+
+
   gaussian(x);      // Fill it with noise.
 
 

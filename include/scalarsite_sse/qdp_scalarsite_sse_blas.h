@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.20 2008-05-14 18:58:35 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.21 2008-05-16 14:58:18 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -18,7 +18,9 @@ void vsub(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec);
 void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec);
 void vaxpby3(REAL32* Out, REAL32* a, REAL32* x, REAL32* b, REAL32* y, int n_3vec);
 void vaxmby3(REAL32* Out, REAL32* a, REAL32* x, REAL32* b, REAL32* y, int n_3vec);
+
 void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec);
+
  void local_vcdot(REAL64 *Out_re, REAL64 *Out_im, REAL32 *V1, REAL32 *V2, int n_3vec);
  void local_vcdot_real(REAL64 *Out_re,  REAL32 *V1, REAL32 *V2, int n_3vec);
 
@@ -1647,23 +1649,24 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     REAL64 ltmp=0;
     local_sumsq(&ltmp, (REAL32 *)s1ptr, n_3vec); 
 
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum=ltmp;
     Internal::globalSum(lsum);
     return lsum;
   }
   else {
     REAL64 ltmp1=0;
-    REAL64 ltmp2=0;
+
 
     const int* tab=s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
+      REAL64 ltmp2=0;
       REAL32* s1ptr = (REAL32 *)&(s1.elem(i).elem(0).elem(0).real()); 
       local_sumsq(&ltmp2, s1ptr, 24);
       ltmp1 += ltmp2;
     }
 
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp1);
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum=ltmp1;
     Internal::globalSum(lsum);
     return lsum;
     
@@ -1684,7 +1687,9 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
   // I am relying on this being a Double here 
   REAL64 ltmp=0;
   local_sumsq(&ltmp, (REAL32 *)s1ptr, n_3vec); 
-  UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
+  UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
+  lsum=ltmp;
+
   Internal::globalSum(lsum);
   return lsum;
 }
@@ -1882,7 +1887,7 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
   return lprod;
 }
 
-
+#if 1
 template<>
 inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
 norm2(const multi1d< OLattice< TVec > >& s1)
@@ -1952,7 +1957,7 @@ inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
   Internal::globalSum(lsum);
   return lsum;
 }
-
+#endif
 
 template<>
 inline  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t

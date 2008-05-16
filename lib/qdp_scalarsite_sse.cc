@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.38 2008-05-15 19:47:34 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.39 2008-05-16 14:58:18 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -1458,317 +1458,116 @@ void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec)
 
 void local_sumsq(REAL64 *Out, REAL32 *In, int n_4vec) 
 {
-  /* each 4vec has 24 numbers to sum */
-  __m128d sum_a;
-  __m128d sum_b;
-  __m128d sum_c;
 
-  /* Each 4 vec has 24 numbers to sum - or six vectors of lenght 4 */
-  __m128 tmp1;
-  __m128 tmp2;
-  __m128 tmp3;
-  __m128 tmp4;
-  __m128 tmp5;
-  __m128 tmp6;
+  __m128d vsum;
+  __m128d lower_2, upper_2;
+  __m128d dat_sq, dat_sq2;
+  __m128  tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
 
-  __m128 ttmp;
+  REAL32* num=In;
+
+  vsum = _mm_xor_pd(vsum,vsum);
+
+  for(int site=0; site < n_4vec/24; site++) { 
+
+    tmp1 = _mm_load_ps(num); num+=4;                   // Load 4
+    tmp3 = _mm_load_ps(num); num+=4;                   // Load 4
+    tmp4 = _mm_load_ps(num); num+=4;                   // Load 4
+    tmp5 = _mm_load_ps(num); num+=4;                   // Load 4
+    tmp6 = _mm_load_ps(num); num+=4;                   // Load 4
+    tmp7 = _mm_load_ps(num); num+=4;                   // Load 4
+
+    // First 4 numbers
+    tmp2 = _mm_shuffle_ps(tmp1, tmp1, 0x0e);    // flip numbers into tmp2
+    lower_2 = _mm_cvtps_pd(tmp1);               // convert to double
+    upper_2 = _mm_cvtps_pd(tmp2);
+    
+    // f*f
+    dat_sq = _mm_mul_pd(lower_2, lower_2);        
+    vsum = _mm_add_pd(vsum, dat_sq);
+
+    // ff
+    dat_sq2 = _mm_mul_pd(upper_2, upper_2);
+    vsum = _mm_add_pd(vsum, dat_sq2);
+
+    // 2nd 4 numbers
+    tmp2 = _mm_shuffle_ps(tmp3, tmp3, 0x0e);    // flip numbers into tmp2
+    lower_2 = _mm_cvtps_pd(tmp3);               // convert to double
+    upper_2 = _mm_cvtps_pd(tmp2);
+    
+    // f*f
+    dat_sq = _mm_mul_pd(lower_2, lower_2);        
+    vsum = _mm_add_pd(vsum, dat_sq);
+
+    // ff
+    dat_sq2 = _mm_mul_pd(upper_2, upper_2);
+    vsum = _mm_add_pd(vsum, dat_sq2);
+
+    // 3rd 4 numbers
+    tmp2 = _mm_shuffle_ps(tmp4, tmp4, 0x0e);    // flip numbers into tmp2
+    lower_2 = _mm_cvtps_pd(tmp4);               // convert to double
+    upper_2 = _mm_cvtps_pd(tmp2);
+    
+    // f*f
+    dat_sq = _mm_mul_pd(lower_2, lower_2);        
+    vsum = _mm_add_pd(vsum, dat_sq);
+
+    // ff
+    dat_sq2 = _mm_mul_pd(upper_2, upper_2);
+    vsum = _mm_add_pd(vsum, dat_sq2);
+
+    // 4th 4 numbers
+    tmp2 = _mm_shuffle_ps(tmp5, tmp5, 0x0e);    // flip numbers into tmp2
+    lower_2 = _mm_cvtps_pd(tmp5);               // convert to double
+    upper_2 = _mm_cvtps_pd(tmp2);
+    
+    // f*f
+    dat_sq = _mm_mul_pd(lower_2, lower_2);        
+    vsum = _mm_add_pd(vsum, dat_sq);
+
+    // ff
+    dat_sq2 = _mm_mul_pd(upper_2, upper_2);
+    vsum = _mm_add_pd(vsum, dat_sq2);
+
+    // 5th 4 numbers
+    tmp2 = _mm_shuffle_ps(tmp6, tmp6, 0x0e);    // flip numbers into tmp2
+    lower_2 = _mm_cvtps_pd(tmp6);               // convert to double
+    upper_2 = _mm_cvtps_pd(tmp2);
+    
+    // f*f
+    dat_sq = _mm_mul_pd(lower_2, lower_2);        
+    vsum = _mm_add_pd(vsum, dat_sq);
+
+    // ff
+    dat_sq2 = _mm_mul_pd(upper_2, upper_2);
+    vsum = _mm_add_pd(vsum, dat_sq2);
+
+    // 6th 4 numbers
+    tmp2 = _mm_shuffle_ps(tmp7, tmp7, 0x0e);    // flip numbers into tmp2
+    lower_2 = _mm_cvtps_pd(tmp7);               // convert to double
+    upper_2 = _mm_cvtps_pd(tmp2);
+    
+    // f*f
+    dat_sq = _mm_mul_pd(lower_2, lower_2);        
+    vsum = _mm_add_pd(vsum, dat_sq);
+
+    // ff
+    dat_sq2 = _mm_mul_pd(upper_2, upper_2);
+    vsum = _mm_add_pd(vsum, dat_sq2);
+
+
+
+  }
+  lower_2 = _mm_shuffle_pd(vsum, vsum, 0x01);
   
-  __m128d lower_2;
-  __m128d upper_2;
-  __m128d lower_2_sq;
-  __m128d upper_2_sq;
-
-  /* _mm_prefetch((char *)In, _MM_HINT_NTA);  */
-
-  /* Loop body is n_4vec/2 - 1, and the sum over 24 numbers is unrolled */
-  unsigned int loops=(unsigned int)(n_4vec/24)-1;
-  float *vecptr=(float *)In;
-
-  /* Zero the sums -- XOR with yourself should set all bits to zero */
-  sum_a = _mm_xor_pd(sum_a, sum_a);
-  sum_b = _mm_xor_pd(sum_b, sum_b);
-
-  /* Each chunk deals with 1.5 cache lines */
-  /* Peel the loop */
-  tmp1 = _mm_load_ps(vecptr);  vecptr+=4;
-
-
-  for(unsigned int veccount=0; veccount < loops-1; veccount++) { 
-    /* _mm_prefetch(((char *)vecptr)+64, _MM_HINT_NTA); */ /* Fetch 1 line ahead */ 
-    /* ----------------------- First vector -----------------------*/
-    /* Get the high 2 numbers  into the low of ttmp -------------- */
-    ttmp = _mm_shuffle_ps(tmp1, tmp1, 0x0e);
-    tmp2 = _mm_load_ps(vecptr);  vecptr+=4;
-    
-    /* Upcast to double */
-    lower_2 = _mm_cvtps_pd(tmp1);
-    upper_2 = _mm_cvtps_pd(ttmp);
-    
-    /* Upper 2 squared */
-    lower_2_sq = _mm_mul_pd(lower_2, lower_2);
-    
-    /* Add to sum */
-    sum_a = _mm_add_pd(sum_a, lower_2_sq);
-    
-    upper_2_sq = _mm_mul_pd(upper_2, upper_2);
-    
-    /* Add to sum */
-    sum_b = _mm_add_pd(sum_b, upper_2_sq);
-    
-    
-    /* ----------------------- 2nd vector   -----------------------*/
-    /* Get the high 2 numbers  into the low of ttmp -------------- */
-    ttmp = _mm_shuffle_ps(tmp2, tmp2, 0x0e);
-    tmp3 = _mm_load_ps(vecptr);  vecptr+=4;
-    
-    /* Upcast to double */
-    lower_2 = _mm_cvtps_pd(tmp2);
-    upper_2 = _mm_cvtps_pd(ttmp);
-    
-    /* Upper 2 squared */
-    lower_2_sq = _mm_mul_pd(lower_2, lower_2);
-    
-    /* Add to sum */
-    sum_a = _mm_add_pd(sum_a, lower_2_sq);
-    
-    upper_2_sq = _mm_mul_pd(upper_2, upper_2);
-    
-    /* Add to sum */
-    sum_b = _mm_add_pd(sum_b, upper_2_sq);
-    
-    
-    /* ----------------------- 3rd vector   -----------------------*/
-    /* Get the high 2 numbers  into the low of ttmp -------------- */
-    ttmp = _mm_shuffle_ps(tmp3, tmp3, 0x0e);
-    tmp4 = _mm_load_ps(vecptr);  vecptr+=4; 
-    
-    /* Upcast to double */
-    lower_2 = _mm_cvtps_pd(tmp3);
-    upper_2 = _mm_cvtps_pd(ttmp);
-    
-    /* Upper 2 squared */
-    lower_2_sq = _mm_mul_pd(lower_2, lower_2);
-    
-    /* Add to sum */
-    sum_a = _mm_add_pd(sum_a, lower_2_sq);
-    
-    upper_2_sq = _mm_mul_pd(upper_2, upper_2);
-    
-    /* Add to sum */
-    sum_b = _mm_add_pd(sum_b, upper_2_sq);
-    
-    
-    
-    /* ----------------------- 4th vector   -----------------------*/
-    /* Get the high 2 numbers  into the low of ttmp -------------- */
-    ttmp = _mm_shuffle_ps(tmp4, tmp4, 0x0e);
-    tmp5 = _mm_load_ps(vecptr); 
-    /* _mm_prefetch(((char *)vecptr)+64, _MM_HINT_NTA); */
-    vecptr+=4; 
-    
-
-    /* Upcast to double */
-    lower_2 = _mm_cvtps_pd(tmp4);
-    upper_2 = _mm_cvtps_pd(ttmp);
-    
-    /* Upper 2 squared */
-    lower_2_sq = _mm_mul_pd(lower_2, lower_2);
-    
-    /* Add to sum */
-    sum_a = _mm_add_pd(sum_a, lower_2_sq);
-    
-    upper_2_sq = _mm_mul_pd(upper_2, upper_2);
-    
-    /* Add to sum */
-    sum_b = _mm_add_pd(sum_b, upper_2_sq);
-    
-    
-    
-    /* ----------------------- 5th vector   -----------------------*/
-    /* Get the high 2 numbers  into the low of ttmp -------------- */
-    ttmp = _mm_shuffle_ps(tmp5, tmp5, 0x0e);
-    tmp6 = _mm_load_ps(vecptr);  vecptr+=4;
-    
-    /* Upcast to double */
-    lower_2 = _mm_cvtps_pd(tmp5);
-    upper_2 = _mm_cvtps_pd(ttmp);
-    
-    /* Upper 2 squared */
-    lower_2_sq = _mm_mul_pd(lower_2, lower_2);
-    
-    /* Add to sum */
-    sum_a = _mm_add_pd(sum_a, lower_2_sq);
-    
-    upper_2_sq = _mm_mul_pd(upper_2, upper_2);
-    
-    /* Add to sum */
-    sum_b = _mm_add_pd(sum_b, upper_2_sq);
-    
-    /* ----------------------- 6th vector   -----------------------*/
-    /* Get the high 2 numbers  into the low of ttmp -------------- */
-    ttmp = _mm_shuffle_ps(tmp6, tmp6, 0x0e);
-    tmp1 = _mm_load_ps(vecptr);  vecptr+=4;
-    
-    /* Upcast to double */
-    lower_2 = _mm_cvtps_pd(tmp6);
-    upper_2 = _mm_cvtps_pd(ttmp);
-    
-    /* Upper 2 squared */
-    lower_2_sq = _mm_mul_pd(lower_2, lower_2);
-    
-    /* Add to sum */
-    sum_a = _mm_add_pd(sum_a, lower_2_sq);
-    
-    upper_2_sq = _mm_mul_pd(upper_2, upper_2);
-    
-    /* Add to sum */
-    sum_b = _mm_add_pd(sum_b, upper_2_sq);
-  }
-
-  /* Last loop body */
-  {
-    /* ----------------------- First vector -----------------------*/
-    /* Get the high 2 numbers  into the low of ttmp -------------- */
-    ttmp = _mm_shuffle_ps(tmp1, tmp1, 0x0e);
-    tmp2 = _mm_load_ps(vecptr);  vecptr+=4;
-    
-    /* Upcast to double */
-    lower_2 = _mm_cvtps_pd(tmp1);
-    upper_2 = _mm_cvtps_pd(ttmp);
-    
-    /* Upper 2 squared */
-    lower_2_sq = _mm_mul_pd(lower_2, lower_2);
-    
-    /* Add to sum */
-    sum_a = _mm_add_pd(sum_a, lower_2_sq);
-    
-    upper_2_sq = _mm_mul_pd(upper_2, upper_2);
-    
-    /* Add to sum */
-    sum_b = _mm_add_pd(sum_b, upper_2_sq);
-    
-    
-    /* ----------------------- 2nd vector   -----------------------*/
-    /* Get the high 2 numbers  into the low of ttmp -------------- */
-    ttmp = _mm_shuffle_ps(tmp2, tmp2, 0x0e);
-    tmp3 = _mm_load_ps(vecptr);  vecptr+=4;
-    
-    /* Upcast to double */
-    lower_2 = _mm_cvtps_pd(tmp2);
-    upper_2 = _mm_cvtps_pd(ttmp);
-    
-    /* Upper 2 squared */
-    lower_2_sq = _mm_mul_pd(lower_2, lower_2);
-    
-    /* Add to sum */
-    sum_a = _mm_add_pd(sum_a, lower_2_sq);
-    
-    upper_2_sq = _mm_mul_pd(upper_2, upper_2);
-    
-    /* Add to sum */
-    sum_b = _mm_add_pd(sum_b, upper_2_sq);
-    
-    
-    /* ----------------------- 3rd vector   -----------------------*/
-    /* Get the high 2 numbers  into the low of ttmp -------------- */
-    ttmp = _mm_shuffle_ps(tmp3, tmp3, 0x0e);
-    tmp4 = _mm_load_ps(vecptr);  vecptr+=4; 
-    
-    /* Upcast to double */
-    lower_2 = _mm_cvtps_pd(tmp3);
-    upper_2 = _mm_cvtps_pd(ttmp);
-    
-    /* Upper 2 squared */
-    lower_2_sq = _mm_mul_pd(lower_2, lower_2);
-    
-    /* Add to sum */
-    sum_a = _mm_add_pd(sum_a, lower_2_sq);
-    
-    upper_2_sq = _mm_mul_pd(upper_2, upper_2);
-    
-    /* Add to sum */
-    sum_b = _mm_add_pd(sum_b, upper_2_sq);
-    
-    
-    
-    /* ----------------------- 4th vector   -----------------------*/
-    /* Get the high 2 numbers  into the low of ttmp -------------- */
-    ttmp = _mm_shuffle_ps(tmp4, tmp4, 0x0e);
-    tmp5 = _mm_load_ps(vecptr);  vecptr+=4; 
-    
-    /* Upcast to double */
-    lower_2 = _mm_cvtps_pd(tmp4);
-    upper_2 = _mm_cvtps_pd(ttmp);
-    
-    /* Upper 2 squared */
-    lower_2_sq = _mm_mul_pd(lower_2, lower_2);
-    
-    /* Add to sum */
-    sum_a = _mm_add_pd(sum_a, lower_2_sq);
-    
-    upper_2_sq = _mm_mul_pd(upper_2, upper_2);
-    
-    /* Add to sum */
-    sum_b = _mm_add_pd(sum_b, upper_2_sq);
-    
-    
-    
-    /* ----------------------- 5th vector   -----------------------*/
-    /* Get the high 2 numbers  into the low of ttmp -------------- */
-    ttmp = _mm_shuffle_ps(tmp5, tmp5, 0x0e);
-    tmp6 = _mm_load_ps(vecptr);  vecptr+=4;
-    
-    /* Upcast to double */
-    lower_2 = _mm_cvtps_pd(tmp5);
-    upper_2 = _mm_cvtps_pd(ttmp);
-    
-    /* Upper 2 squared */
-    lower_2_sq = _mm_mul_pd(lower_2, lower_2);
-    
-    /* Add to sum */
-    sum_a = _mm_add_pd(sum_a, lower_2_sq);
-    
-    upper_2_sq = _mm_mul_pd(upper_2, upper_2);
-    
-    /* Add to sum */
-    sum_b = _mm_add_pd(sum_b, upper_2_sq);
-    
-    /* ----------------------- 6th vector   -----------------------*/
-    /* Get the high 2 numbers  into the low of ttmp -------------- */
-    ttmp = _mm_shuffle_ps(tmp6, tmp6, 0x0e);
-    
-    /* Upcast to double */
-    lower_2 = _mm_cvtps_pd(tmp6);
-    upper_2 = _mm_cvtps_pd(ttmp);
-    
-    /* Upper 2 squared */
-    lower_2_sq = _mm_mul_pd(lower_2, lower_2);
-    
-    /* Add to sum */
-    sum_a = _mm_add_pd(sum_a, lower_2_sq);
-    
-    upper_2_sq = _mm_mul_pd(upper_2, upper_2);
-    
-    /* Add to sum */
-    sum_b = _mm_add_pd(sum_b, upper_2_sq);
-  }
-
-  /* Accumulate sum_a + sum_b */
-  sum_c = _mm_add_pd(sum_a, sum_b);
-
-  /* Sum_c now has 2 sums in it              | sum1 | sum2 | */
-  /* I will shuft it into sum_b so sum_b has | sum2 | sum1 | */
-  /* Then I will accumulate into sum a which will have a copies of the sum */
-  /* in each  half */
-  sum_b = _mm_shuffle_pd(sum_c, sum_c, 0x01);
-    
   /* Now sum horizontally on a and b */
-  sum_a = _mm_add_pd(sum_c, sum_b);
-
+  vsum = _mm_add_pd(lower_2, vsum);
+  
   /* Sum a should now have 2 copies of the sum */
   /* I should store the result */
-  _mm_storel_pd((double *)Out, sum_a);
+  _mm_storel_pd((double *)Out, vsum);
 
+  //  *Out=result;
 }
 
 
