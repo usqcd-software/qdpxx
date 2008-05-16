@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.21 2008-05-16 14:58:18 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.22 2008-05-16 19:46:28 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -19,7 +19,7 @@ void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec);
 void vaxpby3(REAL32* Out, REAL32* a, REAL32* x, REAL32* b, REAL32* y, int n_3vec);
 void vaxmby3(REAL32* Out, REAL32* a, REAL32* x, REAL32* b, REAL32* y, int n_3vec);
 
-void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec);
+void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_3vec);
 
  void local_vcdot(REAL64 *Out_re, REAL64 *Out_im, REAL32 *V1, REAL32 *V2, int n_3vec);
  void local_vcdot_real(REAL64 *Out_re,  REAL32 *V1, REAL32 *V2, int n_3vec);
@@ -1642,12 +1642,12 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
 #ifdef DEBUG_BLAS
     QDPIO::cout << "BJ sumsq " << endl;
 #endif
-    int n_3vec = (s.end() - s.start() + 1)*24;
+    int n_real = (s.end() - s.start() + 1)*24;
     const REAL32 *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real());
     
     // I am relying on this being a Double here 
     REAL64 ltmp=0;
-    local_sumsq(&ltmp, (REAL32 *)s1ptr, n_3vec); 
+    local_sumsq_24_48(&ltmp, (REAL32 *)s1ptr, n_real); 
 
     UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum=ltmp;
     Internal::globalSum(lsum);
@@ -1662,7 +1662,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
       int i=tab[j];
       REAL64 ltmp2=0;
       REAL32* s1ptr = (REAL32 *)&(s1.elem(i).elem(0).elem(0).real()); 
-      local_sumsq(&ltmp2, s1ptr, 24);
+      local_sumsq_24_48(&ltmp2, s1ptr, 24);
       ltmp1 += ltmp2;
     }
 
@@ -1681,12 +1681,12 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
   QDPIO::cout << "Using SSE sumsq all" << endl;
 #endif
 
-  int n_3vec = (all.end() - all.start() + 1)*24;
+  int n_real = (all.end() - all.start() + 1)*24;
   const REAL32 *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real());
     
   // I am relying on this being a Double here 
   REAL64 ltmp=0;
-  local_sumsq(&ltmp, (REAL32 *)s1ptr, n_3vec); 
+  local_sumsq_24_48(&ltmp, (REAL32 *)s1ptr, n_real); 
   UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
   lsum=ltmp;
 
@@ -1896,7 +1896,7 @@ norm2(const multi1d< OLattice< TVec > >& s1)
   QDPIO::cout << "Using SSE multi1d sumsq all" << endl;
 #endif
 
-  int n_3vec = (all.end() - all.start() + 1)*24;
+  int n_real = (all.end() - all.start() + 1)*24;
   REAL64 ltmp = 0;
   for(int n=0; n < s1.size(); ++n)
   {
@@ -1904,7 +1904,7 @@ norm2(const multi1d< OLattice< TVec > >& s1)
     
     // I am relying on this being a Double here 
     REAL64 lltmp;
-    local_sumsq(&lltmp, (REAL32 *)s1ptr, n_3vec); 
+    local_sumsq_24_48(&lltmp, (REAL32 *)s1ptr, n_real); 
 
     ltmp += lltmp;
   }
@@ -1926,7 +1926,7 @@ inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
   REAL64 ltmp = 0;
 
   if( s.hasOrderedRep() ) { 
-    int n_3vec = (s.end() - s.start() + 1)*24;
+    int n_real = (s.end() - s.start() + 1)*24;
 
     for(int n=0; n < s1.size(); ++n) {
   
@@ -1934,7 +1934,7 @@ inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
     
       // I am relying on this being a Double here 
       REAL64 lltmp=0;
-      local_sumsq(&lltmp, (REAL32 *)s1ptr, n_3vec); 
+      local_sumsq_24_48(&lltmp, (REAL32 *)s1ptr, n_real); 
       
       ltmp += lltmp;
     }
@@ -1947,7 +1947,7 @@ inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
 	int i=tab[j];
 	REAL64 lltmp=0;
 	const REAL32 *s1ptr =  &(s1[n].elem(i).elem(0).elem(0).real());
-	local_sumsq(&lltmp,(REAL32 *)s1ptr, 24);
+	local_sumsq_24_48(&lltmp,(REAL32 *)s1ptr, 24);
 	ltmp += lltmp;
       }
     }   

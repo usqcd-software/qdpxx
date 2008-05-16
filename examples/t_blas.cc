@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.23 2008-05-16 14:58:18 bjoo Exp $
+// $Id: t_blas.cc,v 1.24 2008-05-16 19:46:28 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {24,24,24,128};
+  const int foo[] = {6,6,6,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -53,8 +53,8 @@ int main(int argc, char *argv[])
   }
 
   REAL64 rc2;
-  int n_3vec = (all.end() - all.start() + 1)*24;
-  QDP::local_sumsq(&rc2, &(qx.elem(all.start()).elem(0).elem(0).real()), n_3vec);
+  int n_real = (all.end() - all.start() + 1)*24;
+  QDP::local_sumsq_24_48(&rc2, &(qx.elem(all.start()).elem(0).elem(0).real()), n_real);
   QDPIO::cout << "rc -rc2 = " << rc-rc2 << endl;
  
 
@@ -113,6 +113,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << "norm(qy) = " << dnorm << endl;
   QDPIO::cout << "norm(qz) = " << dnorm2 << endl;
 
+#if 0
   LatticeFermion diff_q; diff_q.moveToFastMemoryHint();
   /*
     for(int site=all.start(); site <= all.end(); site++) {
@@ -728,12 +729,14 @@ int main(int argc, char *argv[])
   dreal = innerProductReal(lqx,lqy,rb[1]);
   QDPIO::cout << "Diff innerProductReal(multi1d) Subset = " << Real(daccr-dreal) << endl;
   
+#endif
   // Timings
    // Test VSCAL
   int icnt;
   double tt;
   gaussian(qx);
 
+#if 0
   for(icnt=1; ; icnt <<= 1)
   {
     QDPIO::cout << "calling V=a*V " << icnt << " times" << endl;
@@ -878,6 +881,8 @@ int main(int argc, char *argv[])
 		<< " , " << Nflops / tt << " Mflops" << endl;
   }
 
+#endif 
+
   // Test SUMSQ
   gaussian(qx);
 
@@ -898,6 +903,7 @@ int main(int argc, char *argv[])
 		<< " , " << Nflops / tt << " Mflops" << endl;
   }
 
+#if 0
    // Test INNER_PRODUCT
   gaussian(qx);
   gaussian(qy);
@@ -995,7 +1001,7 @@ int main(int argc, char *argv[])
 		<< " , " << Nflops / tt << " Mflops" << endl;
   }
 
-
+#endif
   // Time to bolt
   QDP_finalize();
 

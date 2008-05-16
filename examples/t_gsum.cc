@@ -1,4 +1,4 @@
-// $Id: t_gsum.cc,v 1.4 2008-05-16 14:58:18 bjoo Exp $
+// $Id: t_gsum.cc,v 1.5 2008-05-16 19:46:28 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -9,7 +9,7 @@
 namespace QDP { 
 extern
 
-void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec);
+void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_real);
 };
 
 
@@ -107,8 +107,8 @@ int main(int argc, char *argv[])
   QDPIO::cout << "( SinglePrec On Node DP Accross Nodes - DP Norm 2 ) /  DP Norm 2  = " << double_norm_diff3 << endl;
 
   REAL64 local_norm2_site_result;
-  int nvec = (all.end() - all.start() + 1)*24;
-  local_sumsq(&local_norm2_site_result, &x.elem(0).elem(0).elem(0).real(), nvec);
+  int n_real = (all.end() - all.start() + 1)*24;
+  local_sumsq_24_48(&local_norm2_site_result, &x.elem(0).elem(0).elem(0).real(), nvec);
   
   REAL64 local_norm2_site_global_result = local_norm2_site_result;
   Internal::globalSum(local_norm2_site_global_result);
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
 
 #if 0
   REAL64 local_norm2_result;
-  local_sumsq(&local_norm2_result, &x.elem(0).elem(0).elem(0).real(), nvec);
+  local_sumsq_24_48(&local_norm2_result, &x.elem(0).elem(0).elem(0).real(), nvec);
   REAL64 local_norm2_2_global_result  = local_norm2_result;
   Internal::globalSum(local_norm2_2_global_result);
   Double double_norm_diff5(  (local_norm2_2_global_result - double_global_sum )/ ( double_global_sum ) );
