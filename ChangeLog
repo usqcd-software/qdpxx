@@ -1,3 +1,10 @@
+2008-05-16 15:46  bjoo
+
+	* examples/t_blas.cc, examples/t_gsum.cc,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  lib/qdp_scalarsite_sse.cc: Highest performing local sum I managed
+	  on Opteron
+
 2008-05-16 10:58  bjoo
 
 	* examples/t_blas.cc, examples/t_gsum.cc,
