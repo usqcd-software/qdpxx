@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.22 2008-05-16 19:46:28 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.23 2008-05-18 19:58:00 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -1649,8 +1649,10 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     REAL64 ltmp=0;
     local_sumsq_24_48(&ltmp, (REAL32 *)s1ptr, n_real); 
 
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum=ltmp;
-    Internal::globalSum(lsum);
+    // Use specialized sum for REAL64
+    Internal::globalSum(ltmp);
+
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
     return lsum;
   }
   else {
@@ -1666,8 +1668,10 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
       ltmp1 += ltmp2;
     }
 
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum=ltmp1;
-    Internal::globalSum(lsum);
+    // Use specialized sum for REAL64
+    Internal::globalSum(ltmp1);
+    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp1);
+
     return lsum;
     
   }
@@ -1687,10 +1691,11 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
   // I am relying on this being a Double here 
   REAL64 ltmp=0;
   local_sumsq_24_48(&ltmp, (REAL32 *)s1ptr, n_real); 
-  UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum;
-  lsum=ltmp;
 
-  Internal::globalSum(lsum);
+  // Do the sum with specialized QMP_sum_double
+  Internal::globalSum(ltmp);
+
+  UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
   return lsum;
 }
 #endif
@@ -1909,8 +1914,9 @@ norm2(const multi1d< OLattice< TVec > >& s1)
     ltmp += lltmp;
   }
 
+  Internal::globalSum(ltmp);
   UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
-  Internal::globalSum(lsum);
+  
   return lsum;
 }
 
@@ -1953,8 +1959,9 @@ inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
     }   
 
   }
+  Internal::globalSum(ltmp);
   UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
-  Internal::globalSum(lsum);
+
   return lsum;
 }
 #endif

@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.40 2008-05-16 19:46:28 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.41 2008-05-18 19:58:00 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -1475,527 +1475,118 @@ void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_real)
   vsum2 = _mm_xor_pd(vsum2,vsum2);
   
 
-  if( n_real % 48 == 0 ) {
-    /* Unroll 3 cache lines worth (48 floats = */
+  loop_end = (n_real/24)-1;
+  tmp1 = _mm_load_ps(num); num+=4;
 
-    loop_end = (n_real/48)-1;
-    tmp1 = _mm_load_ps(num); 
-    num+=4; // Load 4
+  for(int site=0; site < loop_end;  site++)  {    
 
-    for(int site=loop_end; site ; site--) { 
-   
-      tmp3 = _mm_load_ps(num); num+=4;                   // Load 4
-
-      // First 4 numbers
-      tmp2 = _mm_shuffle_ps(tmp1, tmp1, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp1);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      tmp4 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      // 2nd 4 numbers
-      tmp2 = _mm_shuffle_ps(tmp3, tmp3, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp3);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      
-      // 3rd 4 numbers
-      tmp5 = _mm_load_ps(num); 
-      num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp4, tmp4, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp4);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 4th 4 numbers
-      tmp6 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp5, tmp5, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp5);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 5th 4 numbers
-      tmp7 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp6, tmp6, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp6);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 6th 4 numbers
-      tmp1 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp7, tmp7, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp7);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
- 
-   
-      tmp3 = _mm_load_ps(num); num+=4;                   // Load 4
-
-      // First 4 numbers
-      tmp2 = _mm_shuffle_ps(tmp1, tmp1, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp1);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      tmp4 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      // 2nd 4 numbers
-      tmp2 = _mm_shuffle_ps(tmp3, tmp3, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp3);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      
-      // 3rd 4 numbers
-      tmp5 = _mm_load_ps(num); 
-      num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp4, tmp4, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp4);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 4th 4 numbers
-      tmp6 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp5, tmp5, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp5);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 5th 4 numbers
-      tmp7 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp6, tmp6, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp6);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 6th 4 numbers
-      tmp1 = _mm_load_ps(num); 
-      num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp7, tmp7, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp7);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
- 
-
-
-    }
-
-      tmp3 = _mm_load_ps(num); num+=4;                   // Load 4
-
-      // First 4 numbers
-      tmp2 = _mm_shuffle_ps(tmp1, tmp1, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp1);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      tmp4 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      // 2nd 4 numbers
-      tmp2 = _mm_shuffle_ps(tmp3, tmp3, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp3);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      
-      // 3rd 4 numbers
-      tmp5 = _mm_load_ps(num); 
-      num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp4, tmp4, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp4);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 4th 4 numbers
-      tmp6 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp5, tmp5, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp5);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 5th 4 numbers
-      tmp7 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp6, tmp6, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp6);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 6th 4 numbers
-      tmp1 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp7, tmp7, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp7);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
- 
-   
-      tmp3 = _mm_load_ps(num); num+=4;                   // Load 4
-
-      // First 4 numbers
-      tmp2 = _mm_shuffle_ps(tmp1, tmp1, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp1);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      tmp4 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      // 2nd 4 numbers
-      tmp2 = _mm_shuffle_ps(tmp3, tmp3, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp3);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      
-      // 3rd 4 numbers
-      tmp5 = _mm_load_ps(num); 
-      num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp4, tmp4, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp4);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 4th 4 numbers
-      tmp6 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp5, tmp5, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp5);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 5th 4 numbers
-      tmp7 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp6, tmp6, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp6);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 6th 4 numbers
-      tmp2 = _mm_shuffle_ps(tmp7, tmp7, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp7);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-
-
-  }
-  else { 
-
-    loop_end = (n_real/24)-1;
-    tmp1 = _mm_load_ps(num); num+=4;
-    for(int site=loop_end; site ;  site--)  { 
-
-   
-      tmp3 = _mm_load_ps(num); num+=4;                   // Load 4
-
-      // First 4 numbers
-      tmp2 = _mm_shuffle_ps(tmp1, tmp1, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp1);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      tmp4 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      // 2nd 4 numbers
-      tmp2 = _mm_shuffle_ps(tmp3, tmp3, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp3);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      
-      // 3rd 4 numbers
-      tmp5 = _mm_load_ps(num); 
-      num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp4, tmp4, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp4);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 4th 4 numbers
-      tmp6 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp5, tmp5, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp5);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 5th 4 numbers
-      tmp7 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp6, tmp6, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp6);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      // 6th 4 numbers
-      tmp1 = _mm_load_ps(num); num+=4;                   // Load 4
-      
-      tmp2 = _mm_shuffle_ps(tmp7, tmp7, 0x0e);    // flip numbers into tmp2
-      lower_2 = _mm_cvtps_pd(tmp7);               // convert to double
-      upper_2 = _mm_cvtps_pd(tmp2);
-      
-      // f*f
-      dat_sq = _mm_mul_pd(lower_2, lower_2);        
-      vsum = _mm_add_pd(vsum, dat_sq);
-      
-      // ff
-      dat_sq2 = _mm_mul_pd(upper_2, upper_2);
-      vsum2 = _mm_add_pd(vsum2, dat_sq2);
-      
-      
-      
-    }
-     
     tmp3 = _mm_load_ps(num); num+=4;                   // Load 4
 
     // First 4 numbers
     tmp2 = _mm_shuffle_ps(tmp1, tmp1, 0x0e);    // flip numbers into tmp2
     lower_2 = _mm_cvtps_pd(tmp1);               // convert to double
     upper_2 = _mm_cvtps_pd(tmp2);
-    
+      
     // f*f
     dat_sq = _mm_mul_pd(lower_2, lower_2);        
     vsum = _mm_add_pd(vsum, dat_sq);
-
-    // ff
     dat_sq2 = _mm_mul_pd(upper_2, upper_2);
     vsum2 = _mm_add_pd(vsum2, dat_sq2);
-
     tmp4 = _mm_load_ps(num); num+=4;                   // Load 4
-
+      
     // 2nd 4 numbers
     tmp2 = _mm_shuffle_ps(tmp3, tmp3, 0x0e);    // flip numbers into tmp2
     lower_2 = _mm_cvtps_pd(tmp3);               // convert to double
     upper_2 = _mm_cvtps_pd(tmp2);
-    
+      
     // f*f
     dat_sq = _mm_mul_pd(lower_2, lower_2);        
     vsum = _mm_add_pd(vsum, dat_sq);
-
-    // ff
     dat_sq2 = _mm_mul_pd(upper_2, upper_2);
     vsum2 = _mm_add_pd(vsum2, dat_sq2);
-
-
-    // 3rd 4 numbers
     tmp5 = _mm_load_ps(num); num+=4;                   // Load 4
 
+
+    // 3rd 4 numbers      
+    tmp2 = _mm_shuffle_ps(tmp4, tmp4, 0x0e);    // flip numbers into tmp2
+    lower_2 = _mm_cvtps_pd(tmp4);               // convert to double
+    upper_2 = _mm_cvtps_pd(tmp2);
+      
+    // f*f
+    dat_sq = _mm_mul_pd(lower_2, lower_2);        
+    vsum = _mm_add_pd(vsum, dat_sq);
+    dat_sq2 = _mm_mul_pd(upper_2, upper_2);
+    vsum2 = _mm_add_pd(vsum2, dat_sq2);
+    tmp6 = _mm_load_ps(num); num+=4;                   // Load 4
+  
+    // 4th 4 numbers
+    tmp2 = _mm_shuffle_ps(tmp5, tmp5, 0x0e);    // flip numbers into tmp2
+    lower_2 = _mm_cvtps_pd(tmp5);               // convert to double
+    upper_2 = _mm_cvtps_pd(tmp2);
+      
+    // f*f
+    dat_sq = _mm_mul_pd(lower_2, lower_2);        
+    vsum = _mm_add_pd(vsum, dat_sq);
+    dat_sq2 = _mm_mul_pd(upper_2, upper_2);
+    vsum2 = _mm_add_pd(vsum2, dat_sq2);
+    tmp7 = _mm_load_ps(num); num+=4;                   // Load 4
+  
+    // 5th 4 numbers
+    tmp2 = _mm_shuffle_ps(tmp6, tmp6, 0x0e);    // flip numbers into tmp2
+    lower_2 = _mm_cvtps_pd(tmp6);               // convert to double
+    upper_2 = _mm_cvtps_pd(tmp2);
+      
+    // f*f
+    dat_sq = _mm_mul_pd(lower_2, lower_2);        
+    vsum = _mm_add_pd(vsum, dat_sq);
+    dat_sq2 = _mm_mul_pd(upper_2, upper_2);
+    vsum2 = _mm_add_pd(vsum2, dat_sq2);
+    tmp1 = _mm_load_ps(num); num+=4;                   // Load 4
+ 
+    // 6th 4 numbers
+    tmp2 = _mm_shuffle_ps(tmp7, tmp7, 0x0e);    // flip numbers into tmp2
+    lower_2 = _mm_cvtps_pd(tmp7);               // convert to double
+    upper_2 = _mm_cvtps_pd(tmp2);
+      
+    // f*f
+    dat_sq = _mm_mul_pd(lower_2, lower_2);        
+    vsum = _mm_add_pd(vsum, dat_sq);
+    dat_sq2 = _mm_mul_pd(upper_2, upper_2);
+    vsum2 = _mm_add_pd(vsum2, dat_sq2);
+      
+        
+  }
+  /* Last one */
+  {     
+    tmp3 = _mm_load_ps(num); num+=4;                   // Load 4
+
+    // First 4 numbers
+    tmp2 = _mm_shuffle_ps(tmp1, tmp1, 0x0e);    // flip numbers into tmp2
+    lower_2 = _mm_cvtps_pd(tmp1);               // convert to double
+    upper_2 = _mm_cvtps_pd(tmp2);
+      
+    // f*f
+    dat_sq = _mm_mul_pd(lower_2, lower_2);        
+    vsum = _mm_add_pd(vsum, dat_sq);
+    dat_sq2 = _mm_mul_pd(upper_2, upper_2);
+    vsum2 = _mm_add_pd(vsum2, dat_sq2);
+    
+    tmp4 = _mm_load_ps(num); num+=4;                   // Load 4
+      
+    // 2nd 4 numbers
+    tmp2 = _mm_shuffle_ps(tmp3, tmp3, 0x0e);    // flip numbers into tmp2
+    lower_2 = _mm_cvtps_pd(tmp3);               // convert to double
+    upper_2 = _mm_cvtps_pd(tmp2);
+      
+    // f*f
+    dat_sq = _mm_mul_pd(lower_2, lower_2);        
+    vsum = _mm_add_pd(vsum, dat_sq);
+    dat_sq2 = _mm_mul_pd(upper_2, upper_2);
+    vsum2 = _mm_add_pd(vsum2, dat_sq2);
+      
+    tmp5 = _mm_load_ps(num); num+=4;                   // Load 4
+      
+    // 3rd 4 numbers
     tmp2 = _mm_shuffle_ps(tmp4, tmp4, 0x0e);    // flip numbers into tmp2
     lower_2 = _mm_cvtps_pd(tmp4);               // convert to double
     upper_2 = _mm_cvtps_pd(tmp2);
@@ -2003,14 +1594,12 @@ void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_real)
     // f*f
     dat_sq = _mm_mul_pd(lower_2, lower_2);        
     vsum = _mm_add_pd(vsum, dat_sq);
-
-    // ff
     dat_sq2 = _mm_mul_pd(upper_2, upper_2);
     vsum2 = _mm_add_pd(vsum2, dat_sq2);
 
-    // 4th 4 numbers
     tmp6 = _mm_load_ps(num); num+=4;                   // Load 4
-
+    
+    // 4th 4 numbers
     tmp2 = _mm_shuffle_ps(tmp5, tmp5, 0x0e);    // flip numbers into tmp2
     lower_2 = _mm_cvtps_pd(tmp5);               // convert to double
     upper_2 = _mm_cvtps_pd(tmp2);
@@ -2018,14 +1607,12 @@ void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_real)
     // f*f
     dat_sq = _mm_mul_pd(lower_2, lower_2);        
     vsum = _mm_add_pd(vsum, dat_sq);
-
-    // ff
     dat_sq2 = _mm_mul_pd(upper_2, upper_2);
     vsum2 = _mm_add_pd(vsum2, dat_sq2);
 
-    // 5th 4 numbers
     tmp7 = _mm_load_ps(num); num+=4;                   // Load 4
-
+    
+    // 5th 4 numbers
     tmp2 = _mm_shuffle_ps(tmp6, tmp6, 0x0e);    // flip numbers into tmp2
     lower_2 = _mm_cvtps_pd(tmp6);               // convert to double
     upper_2 = _mm_cvtps_pd(tmp2);
@@ -2033,37 +1620,45 @@ void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_real)
     // f*f
     dat_sq = _mm_mul_pd(lower_2, lower_2);        
     vsum = _mm_add_pd(vsum, dat_sq);
-
-    // ff
     dat_sq2 = _mm_mul_pd(upper_2, upper_2);
     vsum2 = _mm_add_pd(vsum2, dat_sq2);
-
+      
     // 6th 4 numbers
     tmp2 = _mm_shuffle_ps(tmp7, tmp7, 0x0e);    // flip numbers into tmp2
     lower_2 = _mm_cvtps_pd(tmp7);               // convert to double
     upper_2 = _mm_cvtps_pd(tmp2);
-    
-    // f*f
+      
+      // f*f
     dat_sq = _mm_mul_pd(lower_2, lower_2);        
     vsum = _mm_add_pd(vsum, dat_sq);
-
-    // ff
     dat_sq2 = _mm_mul_pd(upper_2, upper_2);
     vsum2 = _mm_add_pd(vsum2, dat_sq2);
-#if 1
   }
-#endif
+
 
   vsum = _mm_add_pd(vsum, vsum2);
-
-  lower_2 = _mm_shuffle_pd(vsum, vsum, 0x01);
-  
   /* Now sum horizontally on a and b */
-  vsum = _mm_add_pd(lower_2, vsum);
+  /* Move high word of vsum to low of lower_2 */
+  /* Cross operation: SRC = vsum = | sum_1 | sum_0 |
+                      DEST= vsum = | sum 1 | sum_0 |
+
+     Bit field 0 != 0 => DEST[63-0] = DEST[127-64] = sum_1
+     Bit field 1 == 0 => DEST[127:64] ← SRC[63:0] = sum_0 ;
+     So output register: sum_0 | sum_1
+  */
+  lower_2 = _mm_shuffle_pd(vsum, vsum, 0x01);
+
+  /* Now sum up:    lower_2 = sum_0 | sum_1
+                +   vsum    = sum_1 | sum_0
+                  ========================
+                              Sum   | Sum 
+  */
+
+  upper_2 = _mm_add_pd(lower_2, vsum);
   
   /* Sum a should now have 2 copies of the sum */
   /* I should store the result */
-  _mm_storeh_pd((double *)Out, vsum);
+  _mm_storeh_pd((double *)Out, upper_2);
 
   //  *Out=result;
 }
