@@ -1,3 +1,11 @@
+2008-05-18 15:58  bjoo
+
+	* examples/t_blas.cc, include/qdp_parscalar_specific.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  lib/qdp_scalarsite_sse.cc: Rerouted the sum to be quicker - just
+	  go through QMP_sum_double rather than the array variant which
+	  involves an extra malloc, an extra free and an extra copy
+
 2008-05-16 15:46  bjoo
 
 	* examples/t_blas.cc, examples/t_gsum.cc,
