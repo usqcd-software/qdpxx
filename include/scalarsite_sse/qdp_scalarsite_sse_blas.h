@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.23 2008-05-18 19:58:00 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.24 2008-05-19 19:35:13 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -1908,7 +1908,7 @@ norm2(const multi1d< OLattice< TVec > >& s1)
     const REAL32 *s1ptr =  &(s1[n].elem(all.start()).elem(0).elem(0).real());
     
     // I am relying on this being a Double here 
-    REAL64 lltmp;
+    REAL64 lltmp=0;
     local_sumsq_24_48(&lltmp, (REAL32 *)s1ptr, n_real); 
 
     ltmp += lltmp;

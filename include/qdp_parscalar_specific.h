@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.51 2008-05-19 19:10:08 bjoo Exp $
+// $Id: qdp_parscalar_specific.h,v 1.52 2008-05-19 19:35:13 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -140,7 +140,7 @@ namespace Internal
   template<>
   inline void globalSum(double& dest)
   {
-#if 1 
+#if 0 
     QDPIO::cout << "Using simple sum_double" << endl;
 #endif
     QMP_sum_double(&dest);
