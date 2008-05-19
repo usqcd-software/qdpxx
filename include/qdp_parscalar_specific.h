@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.50 2008-05-18 19:58:00 bjoo Exp $
+// $Id: qdp_parscalar_specific.h,v 1.51 2008-05-19 19:10:08 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -137,12 +137,20 @@ namespace Internal
     globalSumArray((W *)&dest, int(sizeof(T)/sizeof(W))); // call appropriate hook
   }
 
+  template<>
   inline void globalSum(double& dest)
   {
-#if 0 
+#if 1 
     QDPIO::cout << "Using simple sum_double" << endl;
 #endif
     QMP_sum_double(&dest);
+  }
+
+
+  //! Low level hook to QMP_max_double
+  inline void globalMaxValue(float* dest)
+  {
+    QMP_max_float(dest);
   }
 
   //! Low level hook to QMP_max_double
