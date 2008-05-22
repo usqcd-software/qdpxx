@@ -1,3 +1,7 @@
+05/22/2008 -- Robert Edwards
+        Improved SSE for global sums. Fixed some ifdef guard-isms. Now have some significant
+        amount of SSE BLAS routines.
+
 05/14/2008 -- Balint Joo
         Various tweaks:  
             - some explicit char * casting to get rid of deprecated feature warnings from newer gcc compilers
