@@ -1,3 +1,21 @@
+2008-05-22 14:46  tag qdp1-27-0
+
+2008-05-22 14:46  edwards
+
+	* NEWS: Info on 1.27.0
+
+2008-05-22 14:43  edwards
+
+	* configure: Induced changes
+
+2008-05-22 14:39  edwards
+
+	* aclocal.m4: Induced changes
+
+2008-05-22 13:32  edwards
+
+	* configure.ac: Changed to 1.27.0
+
 2008-05-19 15:35  bjoo
 
 	* include/: qdp_parscalar_specific.h,
