@@ -1,3 +1,63 @@
+2008-05-26 00:26  tag qio2-3-5
+
+2008-05-26 00:26  detar
+
+	* other_libs/qio/NEWS: Add 2.3.5 news.
+
+2008-05-26 00:04  detar
+
+	* other_libs/qio/: aclocal.m4, configure, configure.ac: Bump
+	  version numbers.  Correct AC_HELP_STRING error in configure.ac.
+	  Rerun automake
+
+2008-05-26 00:02  detar
+
+	* other_libs/qio/doc/qio_2p3.tex: Add description of
+	  single-processor utilities and QIO_string_append.
+
+2008-05-26 00:01  detar
+
+	* other_libs/qio/examples/: Makefile.am, qio-convert-mesh-ppfs.c,
+	  qio-convert-mesh.c, qio-convert-nersc.c, qio-copy-mesh-ppfs.c,
+	  qio-mesh-utilities.c: Add NERSC conversion utility
+	  qio-convert-nersc.  Add copy-mesh-ppfs utility.  Add long missing
+	  qio-mesh-utilities.  Remove extraneous defs.
+
+2008-05-25 23:58  detar
+
+	* other_libs/qio/include/qio.h: Add
+	  QIO_insert_reader_hypercube_data
+
+2008-05-25 23:26  detar
+
+	* other_libs/qio/: include/qio_string.h, lib/qio/QIO_string.c: Add
+	  an append function to the QIO_string "class".
+
+2008-05-25 23:23  detar
+
+	* other_libs/qio/include/qioxml_internal.h: Increase size limit for
+	  record XML string
+
+2008-05-25 23:22  detar
+
+	* other_libs/qio/include/qioxml_usqcd_ksprop.h: Fix KS propagator
+	  record tag.
+
+2008-05-25 23:21  detar
+
+	* other_libs/qio/lib/qio/QIO_host_file_conversion.c: Fix bug that
+	  caused stray record size mismatch errors on hypercube records.
+
+2008-05-25 23:19  detar
+
+	* other_libs/qio/lib/qio/QIO_info_usqcd_prop.c: Polish Balint's fix
+	  for propagator record XML tag
+
+2008-05-25 23:17  detar
+
+	* other_libs/qio/lib/lrl/LRL_main.c: Remove extraneous print
+	  statement
+
 2008-05-22 14:46  tag qdp1-27-0
 
 2008-05-22 14:46  edwards
