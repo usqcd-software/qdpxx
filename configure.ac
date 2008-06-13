@@ -570,6 +570,7 @@ AC_CONFIG_FILES(other_libs/Makefile)
 AC_CONFIG_FILES(include/Makefile)
 #AC_CONFIG_FILES(docs/Makefile)
 AC_CONFIG_FILES(examples/Makefile)
+AC_CONFIG_FILES(tests/Makefile)
 #
 # Finish
 #
