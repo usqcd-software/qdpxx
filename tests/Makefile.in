@@ -46,7 +46,8 @@ CONFIG_HEADER = $(top_builddir)/include/qdp_config_internal.h
 CONFIG_CLEAN_FILES =
 am__objects_1 =
 am_test_vaxpy_double_OBJECTS = $(am__objects_1) \
-	testVaxpyDouble.$(OBJEXT) test_vaxpy_double.$(OBJEXT)
+	testVaxpyDouble.$(OBJEXT) testVaxmyDouble.$(OBJEXT) \
+	testVaxpbyDouble.$(OBJEXT) test_vaxpy_double.$(OBJEXT)
 test_vaxpy_double_OBJECTS = $(am_test_vaxpy_double_OBJECTS)
 test_vaxpy_double_LDADD = $(LDADD)
 am__DEPENDENCIES_1 =
@@ -210,6 +211,10 @@ test_HDRS = unittest.h \
 test_vaxpy_double_SOURCES = $(test_HDRS) \
 	testVaxpyDouble.h \
 	testVaxpyDouble.cc \
+	testVaxmyDouble.h \
+	testVaxmyDouble.cc \
+	testVaxpbyDouble.h \
+	testVaxpbyDouble.cc \
 	test_vaxpy_double.cc \
 	build_libs
 
@@ -268,6 +273,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaxmyDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaxpbyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaxpyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_vaxpy_double.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeVaxpyDouble.Po@am__quote@

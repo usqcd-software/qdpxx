@@ -50,6 +50,10 @@ test_HDRS=unittest.h \
 test_vaxpy_double_SOURCES = $(test_HDRS) \
 	testVaxpyDouble.h \
 	testVaxpyDouble.cc \
+	testVaxmyDouble.h \
+	testVaxmyDouble.cc \
+	testVaxpbyDouble.h \
+	testVaxpbyDouble.cc \
 	test_vaxpy_double.cc \
 	build_libs
 
