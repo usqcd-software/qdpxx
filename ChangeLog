@@ -1,3 +1,21 @@
+2008-06-13 10:29  bjoo
+
+	* configure.ac, configure: Induced changes
+
+2008-06-13 10:21  bjoo
+
+	* include/: Makefile.am, qdp_scalarsite_sse.h,
+	  scalarsite_sse/qdp_scalarsite_sse_blas_dble.h,
+	  scalarsite_sse/sse_blas_vaxpy4_double.h: Start of Double
+	  Precision SSE
+
+2008-06-13 10:20  bjoo
+
+	* tests/: Makefile.am, testVaxpyDouble.cc, testVaxpyDouble.h,
+	  test_vaxpy_double.cc, testvol.h, timeVaxpyDouble.cc,
+	  timeVaxpyDouble.h, time_vaxpy_double.cc, unittest.h: Tests and
+	  timing for double precision VAXPY wor Wilson Fermions
+
 2008-05-26 00:26  tag qio2-3-5
 
 2008-05-26 00:26  detar
