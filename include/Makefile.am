@@ -83,7 +83,9 @@ SSESITE_HDRS = qdp_scalarsite_sse.h \
 	$(ssesitedir)/sse_fused_spin_recon.h \
 	$(ssesitedir)/qdp_sse_spin_evaluates.h \
 	$(ssesitedir)/qdp_sse_fused_spin_proj_evaluates.h \
-	$(ssesitedir)/qdp_sse_fused_spin_recon_evaluates.h
+	$(ssesitedir)/qdp_sse_fused_spin_recon_evaluates.h \
+	$(ssesitedir)/qdp_scalarsite_sse_blas_dble.h \
+	$(ssesitedir)/sse_blas_vaxpy4_double.h
 
 # Scalarvectsite SSE extensions
 ssevecdir = scalarvecsite_sse
