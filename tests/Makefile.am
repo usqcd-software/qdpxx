@@ -1,0 +1,68 @@
+#
+# Boiler Plate stuff: Autoconf Substitutions etc
+#
+## Should only need @QMP_CFLAGS@, @QMP_LDFLAGS@ and @QMP_LIBS@
+## n.b. Only defined for some parallel architectures
+AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
+              -I@top_srcdir@/other_libs/qio/include \
+	      -I@top_builddir@/other_libs/qio/include \
+              -I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
+              -I@top_builddir@/other_libs/qio/other_libs/c-lime/include \
+              -I@top_srcdir@/other_libs/xpath_reader/include \
+              @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@
+
+if BUILD_LIBINTRIN
+AM_CXXFLAGS += -I@top_srcdir@/other_libs/@LIBINTRIN_DIR@/include
+AM_CXXFLAGS += -I@top_builddir@/other_libs/@LIBINTRIN_DIR@/include
+endif
+
+
+AM_LDFLAGS = -L@top_builddir@/lib \
+             -L@top_builddir@/other_libs/qio/lib \
+             -L@top_builddir@/other_libs/qio/other_libs/c-lime/lib \
+             -L@top_builddir@/other_libs/xpath_reader/lib \
+             @LDFLAGS@ @BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@
+
+if BUILD_LIBINTRIN
+AM_LDFLAGS += -L@top_builddir@/other_libs/libintrin/lib
+endif
+
+LDADD = -lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@
+
+if BUILD_LIBINTRIN
+LDADD += -lintrin
+endif
+
+#
+# Local Headers
+#
+
+#
+# The programs to build
+# 
+check_PROGRAMS = test_vaxpy_double time_vaxpy_double
+
+
+# The program and its dependencies
+test_HDRS=unittest.h \
+	testvol.h
+
+test_vaxpy_double_SOURCES = $(test_HDRS) \
+	testVaxpyDouble.h \
+	testVaxpyDouble.cc \
+	test_vaxpy_double.cc \
+	build_libs
+
+
+time_vaxpy_double_SOURCES = $(test_HDRS) \
+	timeVaxpyDouble.h \
+	timeVaxpyDouble.cc \
+	time_vaxpy_double.cc \
+	build_libs
+
+# build lib is a target that goes tot he build dir of the library and 
+# does a make to make sure all those dependencies are OK. In order
+# for it to be done every time, we have to make it a 'phony' target
+.PHONY: build_libs
+build_libs:
+	cd @top_builddir@/lib ; $(MAKE)
