@@ -1,3 +1,16 @@
+2008-06-13 17:20  bjoo
+
+	* Makefile.am, include/Makefile.am,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_dble.h,
+	  include/scalarsite_sse/sse_blas_vaxmbyz4_double.h,
+	  include/scalarsite_sse/sse_blas_vaxmyz4_double.h,
+	  include/scalarsite_sse/sse_blas_vaxpbyz4_double.h,
+	  include/scalarsite_sse/sse_blas_vscal4_double.h,
+	  other_libs/qio/aclocal.m4, other_libs/qio/configure,
+	  tests/Makefile.am, tests/testVaxmyDouble.cc,
+	  tests/testVaxmyDouble.h, tests/testVaxpbyDouble.cc,
+	  tests/testVaxpbyDouble.h, tests/test_vaxpy_double.cc: Makefileins
+
 2008-06-13 10:29  bjoo
 
 	* configure.ac, configure: Induced changes
