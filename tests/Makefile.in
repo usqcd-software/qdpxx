@@ -47,7 +47,10 @@ CONFIG_CLEAN_FILES =
 am__objects_1 =
 am_test_vaxpy_double_OBJECTS = $(am__objects_1) \
 	testVaxpyDouble.$(OBJEXT) testVaxmyDouble.$(OBJEXT) \
-	testVaxpbyDouble.$(OBJEXT) test_vaxpy_double.$(OBJEXT)
+	testVaxpbyDouble.$(OBJEXT) testVScalDouble.$(OBJEXT) \
+	testLocalSumSqDouble.$(OBJEXT) \
+	testLocalVcdotRealDouble.$(OBJEXT) \
+	testLocalVcdotDouble.$(OBJEXT) test_vaxpy_double.$(OBJEXT)
 test_vaxpy_double_OBJECTS = $(am_test_vaxpy_double_OBJECTS)
 test_vaxpy_double_LDADD = $(LDADD)
 am__DEPENDENCIES_1 =
@@ -215,6 +218,14 @@ test_vaxpy_double_SOURCES = $(test_HDRS) \
 	testVaxmyDouble.cc \
 	testVaxpbyDouble.h \
 	testVaxpbyDouble.cc \
+	testVScalDouble.h \
+	testVScalDouble.cc \
+	testLocalSumSqDouble.h \
+	testLocalSumSqDouble.cc \
+	testLocalVcdotRealDouble.h \
+	testLocalVcdotRealDouble.cc \
+	testLocalVcdotDouble.h \
+	testLocalVcdotDouble.cc \
 	test_vaxpy_double.cc \
 	build_libs
 
@@ -273,6 +284,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testLocalSumSqDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testLocalVcdotDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testLocalVcdotRealDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVScalDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaxmyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaxpbyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaxpyDouble.Po@am__quote@

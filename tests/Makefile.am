@@ -54,6 +54,14 @@ test_vaxpy_double_SOURCES = $(test_HDRS) \
 	testVaxmyDouble.cc \
 	testVaxpbyDouble.h \
 	testVaxpbyDouble.cc \
+	testVScalDouble.h \
+	testVScalDouble.cc \
+	testLocalSumSqDouble.h \
+	testLocalSumSqDouble.cc \
+	testLocalVcdotRealDouble.h \
+	testLocalVcdotRealDouble.cc \
+	testLocalVcdotDouble.h \
+	testLocalVcdotDouble.cc \
 	test_vaxpy_double.cc \
 	build_libs
 

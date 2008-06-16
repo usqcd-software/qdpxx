@@ -5,6 +5,10 @@
 #include "testVaxpyDouble.h"
 #include "testVaxmyDouble.h"
 #include "testVaxpbyDouble.h"
+#include "testVScalDouble.h"
+#include "testLocalSumSqDouble.h"
+#include "testLocalVcdotRealDouble.h"
+#include "testLocalVcdotDouble.h"
 
 using namespace QDP;
 
@@ -50,6 +54,22 @@ int main(int argc, char **argv)
   tests.addTest(new testVaxmbyz4_1(), "testVaxmbyz4_1" );
   tests.addTest(new testVaxmbyz4_2(), "testVaxmbyz4_2" );
   tests.addTest(new testVaxmbyz4_3(), "testVaxmbyz4_3" );
+
+  tests.addTest(new testVScal4_1(), "testVScal4_1" );
+  tests.addTest(new testVScal4_2(), "testVScal4_2" );
+  tests.addTest(new testVScal4_3(), "testVScal4_3" );
+
+  tests.addTest(new testLocalSumSq4_1(), "testLocalSumSq4_1" );
+  tests.addTest(new testLocalSumSq4_2(), "testLocalSumSq4_2" );
+  tests.addTest(new testLocalSumSq4_3(), "testLocalSumSq4_3" );
+
+  tests.addTest(new testLocalVcdotReal4_1(), "testLocalVcdotReal4_1" );
+  tests.addTest(new testLocalVcdotReal4_2(), "testLocalVcdotReal4_2" );
+  tests.addTest(new testLocalVcdotReal4_3(), "testLocalVcdotReal4_3" );
+
+  tests.addTest(new testLocalVcdot4_1(), "testLocalVcdot4_1" );
+  tests.addTest(new testLocalVcdot4_2(), "testLocalVcdot4_2" );
+  tests.addTest(new testLocalVcdot4_3(), "testLocalVcdot4_3" );
 
 
 
