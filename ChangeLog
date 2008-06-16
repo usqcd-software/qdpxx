@@ -1,3 +1,20 @@
+2008-06-16 16:09  bjoo
+
+	* include/scalarsite_sse/: qdp_scalarsite_sse_blas_dble.h,
+	  sse_blas_local_sumsq_double.h, sse_blas_local_vcdot_double.h,
+	  sse_blas_local_vcdot_real_double.h, sse_blas_vscal4_double.h:
+	  Added files for all the DP vector vector blas. Still to be speed
+	  checked  or tuned
+
+2008-06-16 16:07  bjoo
+
+	* tests/: Makefile.am, testLocalSumSqDouble.cc,
+	  testLocalSumSqDouble.h, testLocalVcdotDouble.cc,
+	  testLocalVcdotDouble.h, testLocalVcdotRealDouble.cc,
+	  testLocalVcdotRealDouble.h, testVScalDouble.cc,
+	  testVScalDouble.h, test_vaxpy_double.cc, testvol.h: All the real
+	  blas is tested a little
+
 2008-06-16 09:08  bjoo
 
 	* include/qdp_scalarsite_sse.h: Even single precision versions will
