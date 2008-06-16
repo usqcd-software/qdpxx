@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas_dble.h,v 1.2 2008-06-13 21:20:38 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas_dble.h,v 1.3 2008-06-16 13:07:33 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -14,19 +14,20 @@
 #include "scalarsite_sse/sse_blas_vaxmyz4_double.h"
 #include "scalarsite_sse/sse_blas_vaxpbyz4_double.h"
 #include "scalarsite_sse/sse_blas_vaxmbyz4_double.h"
+#if 0
 #include "scalarsite_generic/generic_blas_vscal.h"
 #include "scalarsite_generic/generic_blas_local_sumsq.h"
 #include "scalarsite_generic/generic_blas_local_vcdot.h"
 #include "scalarsite_generic/generic_blas_local_vcdot_real.h"
-
+#endif 
 namespace QDP {
 
 // Types needed for the expression templates. 
 // Bugger Staggered! For Wilson, Ns=4 is nice and cache line
 // aligned on a 64byte line (4 vectors=>12 complex=24 doubles.
 
-typedef PSpinVector<PColorVector<RComplex<REAL64>, 3>, 4> TVec;
-typedef PScalar<PScalar<RScalar<REAL64> > >  TScal;
+typedef PSpinVector<PColorVector<RComplex<REAL64>, 3>, 4> DVec;
+typedef PScalar<PScalar<RScalar<REAL64> > >  DScal;
 
 // #define DEBUG_BLAS
 // TVec is the LatticeFermion from qdp_dwdefs.h with the OLattice<> stripped
@@ -40,12 +41,12 @@ typedef PScalar<PScalar<RScalar<REAL64> > >  TScal;
 // d += Scalar*Vec
 template<>
 inline
-void evaluate(OLattice< TVec >& d, 
+void evaluate(OLattice< DVec >& d, 
 	      const OpAddAssign& op, 
 	      const QDPExpr<BinaryNode<OpMultiply, 
-	      Reference< QDPType< TScal, OScalar < TScal > > >,
-	      Reference< QDPType< TVec, OLattice< TVec > > > >,
-	      OLattice< TVec > > &rhs,
+	      Reference< QDPType< DScal, OScalar < DScal > > >,
+	      Reference< QDPType< DVec, OLattice< DVec > > > >,
+	      OLattice< DVec > > &rhs,
 	      const Subset& s)
 {
 
@@ -53,8 +54,8 @@ void evaluate(OLattice< TVec >& d,
   QDPIO::cout << "y += a*x" << endl;
 #endif
 
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().right());
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal > &> (rhs.expression().left());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec > &>(rhs.expression().right());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal > &> (rhs.expression().left());
   
   REAL64 ar = a.elem().elem().elem().elem();
   REAL64* aptr = &ar;
@@ -81,12 +82,12 @@ void evaluate(OLattice< TVec >& d,
 // d -= Scalar*Vec
 template<>
 inline
-void evaluate(OLattice< TVec >& d, 
+void evaluate(OLattice< DVec >& d, 
 	      const OpSubtractAssign& op, 
 	      const QDPExpr<BinaryNode<OpMultiply, 
-	      Reference< QDPType< TScal, OScalar < TScal > > >,
-	      Reference< QDPType< TVec, OLattice< TVec > > > >,
-	      OLattice< TVec > > &rhs,
+	      Reference< QDPType< DScal, OScalar < DScal > > >,
+	      Reference< QDPType< DVec, OLattice< DVec > > > >,
+	      OLattice< DVec > > &rhs,
 	      const Subset& s)
 {
 
@@ -94,8 +95,8 @@ void evaluate(OLattice< TVec >& d,
   QDPIO::cout << "y -= a*x" << endl;
 #endif
 
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().right());
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal > &> (rhs.expression().left());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec > &>(rhs.expression().right());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal > &> (rhs.expression().left());
 
   // - sign as y -= ax <=> y = y-ax = -ax + y = axpy with -a 
   REAL64 ar = -( a.elem().elem().elem().elem());
@@ -122,15 +123,15 @@ void evaluate(OLattice< TVec >& d,
 // z = ax + y
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpAdd,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TScal, OScalar< TScal > > >,
-	         Reference< QDPType< TVec, OLattice< TVec > > > >,
-	        Reference< QDPType< TVec, OLattice< TVec > > > >,
-	        OLattice< TVec > > &rhs,
+	         Reference< QDPType< DScal, OScalar< DScal > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > > >,
+	        Reference< QDPType< DVec, OLattice< DVec > > > >,
+	        OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 
@@ -140,19 +141,19 @@ void evaluate( OLattice< TVec > &d,
 
   // Peel the stuff out of the expression
   // y is the right side of rhs
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().right());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&> (rhs.expression().right());
 
   // ax is the left side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TScal, OScalar< TScal > > >,
-    Reference< QDPType< TVec, OLattice< TVec > > > > BN;
+    Reference< QDPType< DScal, OScalar< DScal > > >,
+    Reference< QDPType< DVec, OLattice< DVec > > > > BN;
 
   // get the binary node
   const BN &mulNode = static_cast<const BN&> (rhs.expression().left());
 
   // get a and x out of the bynary node
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.left());
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.right());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode.left());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode.right());
   // Set pointers 
   REAL64 ar =  a.elem().elem().elem().elem();
   REAL64 *aptr = (REAL64 *)&ar;
@@ -184,15 +185,15 @@ void evaluate( OLattice< TVec > &d,
 // Vec = Vec + Scal*Vec
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpAdd,
-	        Reference< QDPType< TVec, OLattice< TVec > > >,
+	        Reference< QDPType< DVec, OLattice< DVec > > >,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TScal, OScalar< TScal > > >,
-	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
-	       OLattice< TVec > > &rhs,
+	         Reference< QDPType< DScal, OScalar< DScal > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > > > >,
+	       OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
@@ -203,19 +204,19 @@ void evaluate( OLattice< TVec > &d,
   // Peel the stuff out of the expression
 
   // y is the left side of rhs
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&> (rhs.expression().left());
 
   // ax is the right side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TScal, OScalar< TScal > > >,
-    Reference< QDPType< TVec, OLattice< TVec > > > > BN;
+    Reference< QDPType< DScal, OScalar< DScal > > >,
+    Reference< QDPType< DVec, OLattice< DVec > > > > BN;
 
   // get the binary node
   const BN &mulNode = static_cast<const BN&> (rhs.expression().right());
 
   // get a and x out of the bynary node
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.left());
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.right());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode.left());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode.right());
   // Set pointers 
   REAL64 ar =  a.elem().elem().elem().elem();
   REAL64 *aptr = (REAL64 *)&ar;
@@ -244,15 +245,15 @@ void evaluate( OLattice< TVec > &d,
 // Vec = Scalar*Vec - Vec
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpSubtract,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TScal, OScalar< TScal > > >,
-	         Reference< QDPType< TVec, OLattice< TVec > > > >,
-	        Reference< QDPType< TVec, OLattice< TVec > > > >,
-	        OLattice< TVec > > &rhs,
+	         Reference< QDPType< DScal, OScalar< DScal > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > > >,
+	        Reference< QDPType< DVec, OLattice< DVec > > > >,
+	        OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
@@ -260,19 +261,19 @@ void evaluate( OLattice< TVec > &d,
 #endif
 
 
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().right());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&> (rhs.expression().right());
 
   // ax is the left side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TScal, OScalar< TScal > > >,
-    Reference< QDPType< TVec, OLattice< TVec > > > > BN;
+    Reference< QDPType< DScal, OScalar< DScal > > >,
+    Reference< QDPType< DVec, OLattice< DVec > > > > BN;
 
   // get the binary node
   const BN &mulNode = static_cast<const BN&> (rhs.expression().left());
 
   // get a and x out of the bynary node
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.left());
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.right());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode.left());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode.right());
   // Set pointers 
   REAL64 ar =  a.elem().elem().elem().elem();
   REAL64 *aptr = (REAL64 *)&ar;
@@ -301,34 +302,34 @@ void evaluate( OLattice< TVec > &d,
 
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpSubtract,
-	        Reference< QDPType< TVec, OLattice< TVec > > >,
+	        Reference< QDPType< DVec, OLattice< DVec > > >,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TScal, OScalar< TScal > > >,
-	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
-	       OLattice< TVec > > &rhs,
+	         Reference< QDPType< DScal, OScalar< DScal > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > > > >,
+	       OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "z = y - a*x" << endl;
 #endif
 
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&> (rhs.expression().left());
 
   // ax is the right side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TScal, OScalar< TScal > > >,
-    Reference< QDPType< TVec, OLattice< TVec > > > > BN;
+    Reference< QDPType< DScal, OScalar< DScal > > >,
+    Reference< QDPType< DVec, OLattice< DVec > > > > BN;
 
   // get the binary node
   const BN &mulNode = static_cast<const BN&> (rhs.expression().right());
 
   // get a and x out of the bynary node
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.left());
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.right());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode.left());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode.right());
   // Set pointers etc.
 
   // -ve sign as y - ax = -ax + y  = axpy with -a.
@@ -361,12 +362,12 @@ void evaluate( OLattice< TVec > &d,
 // Vec += Vec * Scalar (AXPY)
 template<>
 inline
-void evaluate(OLattice< TVec >& d, 
+void evaluate(OLattice< DVec >& d, 
 	      const OpAddAssign& op, 
 	      const QDPExpr<BinaryNode<OpMultiply, 
-	      Reference< QDPType< TVec, OLattice< TVec > > >,
-	      Reference< QDPType< TScal, OScalar < TScal > > > >,
-	      OLattice< TVec > > &rhs,
+	      Reference< QDPType< DVec, OLattice< DVec > > >,
+	      Reference< QDPType< DScal, OScalar < DScal > > > >,
+	      OLattice< DVec > > &rhs,
 	      const Subset& s)
 {
 
@@ -374,8 +375,8 @@ void evaluate(OLattice< TVec >& d,
   QDPIO::cout << "y += x*a" << endl;
 #endif
 
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().left());
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal > &> (rhs.expression().right());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec > &>(rhs.expression().left());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal > &> (rhs.expression().right());
   
   REAL64 ar = a.elem().elem().elem().elem();
   REAL64* aptr = &ar;
@@ -406,12 +407,12 @@ void evaluate(OLattice< TVec >& d,
 // Vec -= Vec *Scalar 
 template<>
 inline
-void evaluate(OLattice< TVec >& d, 
+void evaluate(OLattice< DVec >& d, 
 	      const OpSubtractAssign& op, 
 	      const QDPExpr<BinaryNode<OpMultiply, 
-	      Reference< QDPType< TVec, OLattice< TVec > > >,
-	      Reference< QDPType< TScal, OScalar < TScal > > > >,
-	      OLattice< TVec > > &rhs,
+	      Reference< QDPType< DVec, OLattice< DVec > > >,
+	      Reference< QDPType< DScal, OScalar < DScal > > > >,
+	      OLattice< DVec > > &rhs,
 	      const Subset& s)
 {
 
@@ -419,8 +420,8 @@ void evaluate(OLattice< TVec >& d,
   QDPIO::cout << "y -= x*a" << endl;
 #endif
 
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec > &>(rhs.expression().left());
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal > &> (rhs.expression().right());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec > &>(rhs.expression().left());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal > &> (rhs.expression().right());
 
   // - sign as y -= ax <=> y = y-ax = -ax + y = axpy with -a 
   REAL64 ar = -( a.elem().elem().elem().elem());
@@ -450,15 +451,15 @@ void evaluate(OLattice< TVec >& d,
 // Vec = Vec *Scalar  + Vec (AXPY)
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpAdd,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TVec, OLattice< TVec > > >,
-	         Reference< QDPType< TScal, OScalar< TScal > > > >,
-	        Reference< QDPType< TVec, OLattice< TVec > > > >,
-	        OLattice< TVec > > &rhs,
+	         Reference< QDPType< DVec, OLattice< DVec > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > > >,
+	        Reference< QDPType< DVec, OLattice< DVec > > > >,
+	        OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 
@@ -468,19 +469,19 @@ void evaluate( OLattice< TVec > &d,
 
   // Peel the stuff out of the expression
   // y is the right side of rhs
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().right());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&> (rhs.expression().right());
 
   // ax is the right side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TVec, OLattice< TVec > > >,    
-    Reference< QDPType< TScal, OScalar< TScal > > > > BN;
+    Reference< QDPType< DVec, OLattice< DVec > > >,    
+    Reference< QDPType< DScal, OScalar< DScal > > > > BN;
 
   // get the binary node
   const BN &mulNode = static_cast<const BN&> (rhs.expression().left());
 
   // get a and x out of the bynary node
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.right());
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.left());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode.right());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode.left());
   // Set pointers 
   REAL64 ar =  a.elem().elem().elem().elem();
   REAL64 *aptr = (REAL64 *)&ar;
@@ -513,15 +514,15 @@ void evaluate( OLattice< TVec > &d,
 // Vec = Vec + Vec * Scalar (AXPY)
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpAdd,
-	        Reference< QDPType< TVec, OLattice< TVec > > >,
+	        Reference< QDPType< DVec, OLattice< DVec > > >,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TVec, OLattice< TVec > > >,
-	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
-	       OLattice< TVec > > &rhs,
+	         Reference< QDPType< DVec, OLattice< DVec > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > > > >,
+	       OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
@@ -532,19 +533,19 @@ void evaluate( OLattice< TVec > &d,
   // Peel the stuff out of the expression
 
   // y is the left side of rhs
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&> (rhs.expression().left());
 
   // ax is the right side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TVec, OLattice< TVec > > >,    
-    Reference< QDPType< TScal, OScalar< TScal > > > > BN;
+    Reference< QDPType< DVec, OLattice< DVec > > >,    
+    Reference< QDPType< DScal, OScalar< DScal > > > > BN;
 
   // get the binary node
   const BN &mulNode = static_cast<const BN&> (rhs.expression().right());
 
   // get a and x out of the bynary node
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.right());
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.left());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode.right());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode.left());
   // Set pointers 
   REAL64 ar =  a.elem().elem().elem().elem();
   REAL64 *aptr = (REAL64 *)&ar;
@@ -576,34 +577,34 @@ void evaluate( OLattice< TVec > &d,
 // Vec = Vec*Scalar - Vec (AXMY)
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpSubtract,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TVec, OLattice< TVec > > >,
-	         Reference< QDPType< TScal, OScalar< TScal > > > >,
-	        Reference< QDPType< TVec, OLattice< TVec > > > >,
-	        OLattice< TVec > > &rhs,
+	         Reference< QDPType< DVec, OLattice< DVec > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > > >,
+	        Reference< QDPType< DVec, OLattice< DVec > > > >,
+	        OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "z = x*a - y" << endl;
 #endif
 
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().right());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&> (rhs.expression().right());
 
 
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TVec, OLattice< TVec > > >,    
-    Reference< QDPType< TScal, OScalar< TScal > > > > BN;
+    Reference< QDPType< DVec, OLattice< DVec > > >,    
+    Reference< QDPType< DScal, OScalar< DScal > > > > BN;
 
   // get the binary node
   const BN &mulNode = static_cast<const BN&> (rhs.expression().left());
 
   // get a and x out of the bynary node
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.right());
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.left());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode.right());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode.left());
   // Set pointers 
   REAL64 ar =  a.elem().elem().elem().elem();
   REAL64 *aptr = (REAL64 *)&ar;
@@ -636,33 +637,33 @@ void evaluate( OLattice< TVec > &d,
 // Vec = Vec - Vec*Scalar (AXPY with -Scalar)
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpSubtract,
-	        Reference< QDPType< TVec, OLattice< TVec > > >,
+	        Reference< QDPType< DVec, OLattice< DVec > > >,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TVec, OLattice< TVec > > >,
-	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
-	       OLattice< TVec > > &rhs,
+	         Reference< QDPType< DVec, OLattice< DVec > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > > > >,
+	       OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "z = y - x*a" << endl;
 #endif
 
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&> (rhs.expression().left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&> (rhs.expression().left());
 
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TVec, OLattice< TVec > > >,    
-    Reference< QDPType< TScal, OScalar< TScal > > > > BN;
+    Reference< QDPType< DVec, OLattice< DVec > > >,    
+    Reference< QDPType< DScal, OScalar< DScal > > > > BN;
 
   // get the binary node
   const BN &mulNode = static_cast<const BN&> (rhs.expression().right());
 
   // get a and x out of the bynary node
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode.right());
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode.left());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode.right());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode.left());
   // Set pointers etc.
 
   // -ve sign as y - ax = -ax + y  = axpy with -a.
@@ -697,21 +698,21 @@ void evaluate( OLattice< TVec > &d,
 
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpAdd,
-	       Reference< QDPType< TVec, OLattice< TVec > > >,
-	       Reference< QDPType< TVec, OLattice< TVec > > > >,
-	       OLattice< TVec > > &rhs,
+	       Reference< QDPType< DVec, OLattice< DVec > > >,
+	       Reference< QDPType< DVec, OLattice< DVec > > > >,
+	       OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   cout << "BJ: v+v " << endl;
 #endif
 
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(rhs.expression().left());
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(rhs.expression().right());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(rhs.expression().left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&>(rhs.expression().right());
 
   REAL64 one = 1;
 
@@ -742,21 +743,21 @@ void evaluate( OLattice< TVec > &d,
 
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpSubtract,
-	       Reference< QDPType< TVec, OLattice< TVec > > >,
-	       Reference< QDPType< TVec, OLattice< TVec > > > >,
-	       OLattice< TVec > > &rhs,
+	       Reference< QDPType< DVec, OLattice< DVec > > >,
+	       Reference< QDPType< DVec, OLattice< DVec > > > >,
+	       OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   cout << "BJ: v-v " << endl;
 #endif
 
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(rhs.expression().left());
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(rhs.expression().right());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(rhs.expression().left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&>(rhs.expression().right());
   REAL64 one=1;
 
   if( s.hasOrderedRep() ) { 
@@ -785,23 +786,25 @@ void evaluate( OLattice< TVec > &d,
 
 }
 
+#if 0
+
 // Vec = Scal * Vec
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpMultiply,
-	       Reference< QDPType< TScal, OScalar< TScal > > >,
-	       Reference< QDPType< TVec, OLattice< TVec > > > >,
-	       OLattice< TVec > > &rhs,
+	       Reference< QDPType< DScal, OScalar< DScal > > >,
+	       Reference< QDPType< DVec, OLattice< DVec > > > >,
+	       OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   cout << "BJ: v = a*v " << endl;
 #endif
-  const OLattice< TVec > &x = static_cast<const OLattice< TVec >&>(rhs.expression().right());
-  const OScalar< TScal > &a = static_cast<const OScalar< TScal >&>(rhs.expression().left());
+  const OLattice< DVec > &x = static_cast<const OLattice< DVec >&>(rhs.expression().right());
+  const OScalar< DScal > &a = static_cast<const OScalar< DScal >&>(rhs.expression().left());
 
   REAL64 ar =  a.elem().elem().elem().elem();
   REAL64 *aptr = &ar;  
@@ -830,21 +833,21 @@ void evaluate( OLattice< TVec > &d,
 
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpMultiply,
-	       Reference< QDPType< TVec, OLattice< TVec > > >,
-	       Reference< QDPType< TScal, OScalar< TScal > > > >,
-	       OLattice< TVec > > &rhs,
+	       Reference< QDPType< DVec, OLattice< DVec > > >,
+	       Reference< QDPType< DScal, OScalar< DScal > > > >,
+	       OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 #ifdef DEBUG_BLAS
   cout << "BJ: v = v*a " << endl;
 #endif
 
-  const OLattice< TVec > &x = static_cast<const OLattice< TVec >&>(rhs.expression().left());
-  const OScalar< TScal > &a = static_cast<const OScalar< TScal >&>(rhs.expression().right());
+  const OLattice< DVec > &x = static_cast<const OLattice< DVec >&>(rhs.expression().left());
+  const OScalar< DScal > &a = static_cast<const OScalar< DScal >&>(rhs.expression().right());
 
   REAL64 ar =  a.elem().elem().elem().elem();
   REAL64 *aptr = &ar;  
@@ -871,15 +874,15 @@ void evaluate( OLattice< TVec > &d,
 // v *= a
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpMultiplyAssign &op,
 	       const QDPExpr< 
 	       UnaryNode<OpIdentity,
-	       Reference< QDPType< TScal, OScalar< TScal > > > >,
-	       OScalar< TScal > > &rhs,
+	       Reference< QDPType< DScal, OScalar< DScal > > > >,
+	       OScalar< DScal > > &rhs,
 	       const Subset& s)
 {
-  const OScalar< TScal >& a = static_cast< const OScalar<TScal >&>(rhs.expression().child());
+  const OScalar< DScal >& a = static_cast< const OScalar<DScal >&>(rhs.expression().child());
 
 
 #ifdef DEBUG_BLAS
@@ -910,15 +913,15 @@ void evaluate( OLattice< TVec > &d,
 // v /= a
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpDivideAssign &op,
 	       const QDPExpr< 
 	       UnaryNode<OpIdentity,
-	       Reference< QDPType< TScal, OScalar< TScal > > > >,
-	       OScalar< TScal > > &rhs,
+	       Reference< QDPType< DScal, OScalar< DScal > > > >,
+	       OScalar< DScal > > &rhs,
 	       const Subset& s)
 {
-  const OScalar< TScal >& a = static_cast< const OScalar<TScal >&>(rhs.expression().child());
+  const OScalar< DScal >& a = static_cast< const OScalar<DScal >&>(rhs.expression().child());
 
 
 #ifdef DEBUG_BLAS
@@ -944,19 +947,20 @@ void evaluate( OLattice< TVec > &d,
     }
   }
 }
+#endif
 
 // v += v
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAddAssign &op,
 	       const QDPExpr< 
 	       UnaryNode<OpIdentity,
-	       Reference< QDPType< TVec, OLattice< TVec > > > >,
-	       OLattice< TVec > > &rhs,
+	       Reference< QDPType< DVec, OLattice< DVec > > > >,
+	       OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
-  const OLattice< TVec >& x = static_cast< const OLattice<TVec >&>(rhs.expression().child());
+  const OLattice< DVec >& x = static_cast< const OLattice<DVec >&>(rhs.expression().child());
 
  
 
@@ -991,15 +995,15 @@ void evaluate( OLattice< TVec > &d,
 // v -= v
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpSubtractAssign &op,
 	       const QDPExpr< 
 	       UnaryNode<OpIdentity,
-	       Reference< QDPType< TVec, OLattice< TVec > > > >,
-	       OLattice< TVec > > &rhs,
+	       Reference< QDPType< DVec, OLattice< DVec > > > >,
+	       OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
-  const OLattice< TVec >& x = static_cast< const OLattice<TVec >&>(rhs.expression().child());
+  const OLattice< DVec >& x = static_cast< const OLattice<DVec >&>(rhs.expression().child());
 
  
 
@@ -1034,17 +1038,17 @@ void evaluate( OLattice< TVec > &d,
 // z = ax + by
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpAdd,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TScal, OScalar< TScal > > >,
-	         Reference< QDPType< TVec, OLattice< TVec > > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > > >,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TScal, OScalar< TScal > > >,
-	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
-	        OLattice< TVec > > &rhs,
+	         Reference< QDPType< DScal, OScalar< DScal > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > > > >,
+	        OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 
@@ -1057,20 +1061,20 @@ void evaluate( OLattice< TVec > &d,
 
   // ax is the left side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TScal, OScalar< TScal > > >,
-    Reference< QDPType< TVec, OLattice< TVec > > > > BN;
+    Reference< QDPType< DScal, OScalar< DScal > > >,
+    Reference< QDPType< DVec, OLattice< DVec > > > > BN;
 
   // get the binary node
   const BN &mulNode1 = static_cast<const BN&> (rhs.expression().left());
   const BN &mulNode2 = static_cast<const BN&> (rhs.expression().right());
 
   // get a and x out of the binary node
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.left());
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.right());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode1.left());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode1.right());
   
   // get b and y out of the binary node
-  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.left());
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.right());
+  const OScalar< DScal >& b = static_cast<const OScalar< DScal >&>(mulNode2.left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&>(mulNode2.right());
 
   
   // Set pointers 
@@ -1106,17 +1110,17 @@ void evaluate( OLattice< TVec > &d,
 // z = xa + by
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpAdd,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TVec, OLattice< TVec > > >,
-	         Reference< QDPType< TScal, OScalar< TScal > > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > > >,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TScal, OScalar< TScal > > >,
-	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
-	        OLattice< TVec > > &rhs,
+	         Reference< QDPType< DScal, OScalar< DScal > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > > > >,
+	        OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 
@@ -1129,12 +1133,12 @@ void evaluate( OLattice< TVec > &d,
 
   // ax is the left side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TVec, OLattice< TVec > > >,
-    Reference< QDPType< TScal, OScalar< TScal > > > > BN1;
+    Reference< QDPType< DVec, OLattice< DVec > > >,
+    Reference< QDPType< DScal, OScalar< DScal > > > > BN1;
 
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TScal, OScalar< TScal > > >,
-    Reference< QDPType< TVec, OLattice< TVec > > > > BN2;
+    Reference< QDPType< DScal, OScalar< DScal > > >,
+    Reference< QDPType< DVec, OLattice< DVec > > > > BN2;
 
 
   
@@ -1143,13 +1147,13 @@ void evaluate( OLattice< TVec > &d,
   const BN2 &mulNode2 = static_cast<const BN2&> (rhs.expression().right());
 
   // get a and x out of the binary node
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.left());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode1.left());
 
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.right());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode1.right());
   
   // get b and y out of the binary node
-  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.left());
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.right());
+  const OScalar< DScal >& b = static_cast<const OScalar< DScal >&>(mulNode2.left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&>(mulNode2.right());
 
   
   // Set pointers 
@@ -1185,17 +1189,17 @@ void evaluate( OLattice< TVec > &d,
 // z = ax + yb
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpAdd,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TScal, OScalar< TScal > > >,
-	         Reference< QDPType< TVec, OLattice< TVec > > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > > >,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TVec, OLattice< TVec > > >,
-	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
-	        OLattice< TVec > > &rhs,
+	         Reference< QDPType< DVec, OLattice< DVec > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > > > >,
+	        OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 
@@ -1208,13 +1212,13 @@ void evaluate( OLattice< TVec > &d,
 
   // type of a*x
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TScal, OScalar< TScal > > >,
-    Reference< QDPType< TVec, OLattice< TVec > > > > BN1;
+    Reference< QDPType< DScal, OScalar< DScal > > >,
+    Reference< QDPType< DVec, OLattice< DVec > > > > BN1;
 
   // type of y*b
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TVec, OLattice< TVec > > >,
-    Reference< QDPType< TScal, OScalar< TScal > > > > BN2;
+    Reference< QDPType< DVec, OLattice< DVec > > >,
+    Reference< QDPType< DScal, OScalar< DScal > > > > BN2;
 
 
   
@@ -1226,15 +1230,15 @@ void evaluate( OLattice< TVec > &d,
   const BN2 &mulNode2 = static_cast<const BN2&> (rhs.expression().right());
 
   // get a and x out of the binary node
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.left());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode1.left());
 
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.right());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode1.right());
 
   
   // get b and y out of the binary node
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&>(mulNode2.left());
 
-  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.right());
+  const OScalar< DScal >& b = static_cast<const OScalar< DScal >&>(mulNode2.right());
 
   
   // Set pointers 
@@ -1270,17 +1274,17 @@ void evaluate( OLattice< TVec > &d,
 // z = xa + yb
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpAdd,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TVec, OLattice< TVec > > >,
-	         Reference< QDPType< TScal, OScalar< TScal > > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > > >,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TVec, OLattice< TVec > > >,
-	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
-	        OLattice< TVec > > &rhs,
+	         Reference< QDPType< DVec, OLattice< DVec > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > > > >,
+	        OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 
@@ -1293,21 +1297,21 @@ void evaluate( OLattice< TVec > &d,
 
   // ax is the left side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TVec, OLattice< TVec > > >,
-    Reference< QDPType< TScal, OScalar< TScal > > > > BN;
+    Reference< QDPType< DVec, OLattice< DVec > > >,
+    Reference< QDPType< DScal, OScalar< DScal > > > > BN;
 
   // get the binary node
   const BN &mulNode1 = static_cast<const BN&> (rhs.expression().left());
   const BN &mulNode2 = static_cast<const BN&> (rhs.expression().right());
 
   // get a and x out of the binary node
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.left());
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.right());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode1.left());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode1.right());
   
   // get b and y out of the binary node
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&>(mulNode2.left());
 
-  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.right());
+  const OScalar< DScal >& b = static_cast<const OScalar< DScal >&>(mulNode2.right());
   
   // Set pointers 
   REAL64 *aptr = (REAL64 *)&(a.elem().elem().elem().elem());
@@ -1342,17 +1346,17 @@ void evaluate( OLattice< TVec > &d,
 // z = ax - by
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpSubtract,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TScal, OScalar< TScal > > >,
-	         Reference< QDPType< TVec, OLattice< TVec > > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > > >,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TScal, OScalar< TScal > > >,
-	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
-	        OLattice< TVec > > &rhs,
+	         Reference< QDPType< DScal, OScalar< DScal > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > > > >,
+	        OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 
@@ -1365,20 +1369,20 @@ void evaluate( OLattice< TVec > &d,
 
   // ax is the left side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TScal, OScalar< TScal > > >,
-    Reference< QDPType< TVec, OLattice< TVec > > > > BN;
+    Reference< QDPType< DScal, OScalar< DScal > > >,
+    Reference< QDPType< DVec, OLattice< DVec > > > > BN;
 
   // get the binary node
   const BN &mulNode1 = static_cast<const BN&> (rhs.expression().left());
   const BN &mulNode2 = static_cast<const BN&> (rhs.expression().right());
 
   // get a and x out of the binary node
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.left());
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.right());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode1.left());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode1.right());
   
   // get b and y out of the binary node
-  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.left());
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.right());
+  const OScalar< DScal >& b = static_cast<const OScalar< DScal >&>(mulNode2.left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&>(mulNode2.right());
 
   
   // Set pointers 
@@ -1415,17 +1419,17 @@ void evaluate( OLattice< TVec > &d,
 // z = xa - by
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpSubtract,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TVec, OLattice< TVec > > >,
-	         Reference< QDPType< TScal, OScalar< TScal > > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > > >,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TScal, OScalar< TScal > > >,
-	         Reference< QDPType< TVec, OLattice< TVec > > > > >,
-	        OLattice< TVec > > &rhs,
+	         Reference< QDPType< DScal, OScalar< DScal > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > > > >,
+	        OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 
@@ -1438,12 +1442,12 @@ void evaluate( OLattice< TVec > &d,
 
   // ax is the left side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TVec, OLattice< TVec > > >,
-    Reference< QDPType< TScal, OScalar< TScal > > > > BN1;
+    Reference< QDPType< DVec, OLattice< DVec > > >,
+    Reference< QDPType< DScal, OScalar< DScal > > > > BN1;
 
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TScal, OScalar< TScal > > >,
-    Reference< QDPType< TVec, OLattice< TVec > > > > BN2;
+    Reference< QDPType< DScal, OScalar< DScal > > >,
+    Reference< QDPType< DVec, OLattice< DVec > > > > BN2;
 
 
   
@@ -1452,13 +1456,13 @@ void evaluate( OLattice< TVec > &d,
   const BN2 &mulNode2 = static_cast<const BN2&> (rhs.expression().right());
 
   // get a and x out of the binary node
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.left());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode1.left());
 
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.right());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode1.right());
   
   // get b and y out of the binary node
-  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.left());
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.right());
+  const OScalar< DScal >& b = static_cast<const OScalar< DScal >&>(mulNode2.left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&>(mulNode2.right());
 
   
   // Set pointers 
@@ -1494,17 +1498,17 @@ void evaluate( OLattice< TVec > &d,
 // z = ax - yb
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpSubtract,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TScal, OScalar< TScal > > >,
-	         Reference< QDPType< TVec, OLattice< TVec > > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > > >,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TVec, OLattice< TVec > > >,
-	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
-	        OLattice< TVec > > &rhs,
+	         Reference< QDPType< DVec, OLattice< DVec > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > > > >,
+	        OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 
@@ -1517,13 +1521,13 @@ void evaluate( OLattice< TVec > &d,
 
   // type of a*x
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TScal, OScalar< TScal > > >,
-    Reference< QDPType< TVec, OLattice< TVec > > > > BN1;
+    Reference< QDPType< DScal, OScalar< DScal > > >,
+    Reference< QDPType< DVec, OLattice< DVec > > > > BN1;
 
   // type of y*b
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TVec, OLattice< TVec > > >,
-    Reference< QDPType< TScal, OScalar< TScal > > > > BN2;
+    Reference< QDPType< DVec, OLattice< DVec > > >,
+    Reference< QDPType< DScal, OScalar< DScal > > > > BN2;
 
 
   
@@ -1535,15 +1539,15 @@ void evaluate( OLattice< TVec > &d,
   const BN2 &mulNode2 = static_cast<const BN2&> (rhs.expression().right());
 
   // get a and x out of the binary node
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.left());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode1.left());
 
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.right());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode1.right());
 
   
   // get b and y out of the binary node
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&>(mulNode2.left());
 
-  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.right());
+  const OScalar< DScal >& b = static_cast<const OScalar< DScal >&>(mulNode2.right());
 
   
   // Set pointers 
@@ -1579,17 +1583,17 @@ void evaluate( OLattice< TVec > &d,
 // z = xa - yb
 template<>
 inline
-void evaluate( OLattice< TVec > &d,
+void evaluate( OLattice< DVec > &d,
 	       const OpAssign &op,
 	       const QDPExpr< 
 	       BinaryNode<OpSubtract,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TVec, OLattice< TVec > > >,
-	         Reference< QDPType< TScal, OScalar< TScal > > > >,
+	         Reference< QDPType< DVec, OLattice< DVec > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > > >,
 	        BinaryNode<OpMultiply, 
-	         Reference< QDPType< TVec, OLattice< TVec > > >,
-	         Reference< QDPType< TScal, OScalar< TScal > > > > >,
-	        OLattice< TVec > > &rhs,
+	         Reference< QDPType< DVec, OLattice< DVec > > >,
+	         Reference< QDPType< DScal, OScalar< DScal > > > > >,
+	        OLattice< DVec > > &rhs,
 	       const Subset& s)
 {
 
@@ -1602,21 +1606,21 @@ void evaluate( OLattice< TVec > &d,
 
   // ax is the left side of rhs and is in a binary node
   typedef BinaryNode<OpMultiply, 
-    Reference< QDPType< TVec, OLattice< TVec > > >,
-    Reference< QDPType< TScal, OScalar< TScal > > > > BN;
+    Reference< QDPType< DVec, OLattice< DVec > > >,
+    Reference< QDPType< DScal, OScalar< DScal > > > > BN;
 
   // get the binary node
   const BN &mulNode1 = static_cast<const BN&> (rhs.expression().left());
   const BN &mulNode2 = static_cast<const BN&> (rhs.expression().right());
 
   // get a and x out of the binary node
-  const OLattice< TVec >& x = static_cast<const OLattice< TVec >&>(mulNode1.left());
-  const OScalar< TScal >& a = static_cast<const OScalar< TScal >&>(mulNode1.right());
+  const OLattice< DVec >& x = static_cast<const OLattice< DVec >&>(mulNode1.left());
+  const OScalar< DScal >& a = static_cast<const OScalar< DScal >&>(mulNode1.right());
   
   // get b and y out of the binary node
-  const OLattice< TVec >& y = static_cast<const OLattice< TVec >&>(mulNode2.left());
+  const OLattice< DVec >& y = static_cast<const OLattice< DVec >&>(mulNode2.left());
 
-  const OScalar< TScal >& b = static_cast<const OScalar< TScal >&>(mulNode2.right());
+  const OScalar< DScal >& b = static_cast<const OScalar< DScal >&>(mulNode2.right());
   
   // Set pointers 
   REAL64 *aptr = (REAL64 *)&(a.elem().elem().elem().elem());
@@ -1649,10 +1653,13 @@ void evaluate( OLattice< TVec > &d,
 }
 
 
+
+#if 0
+
 // Global norm squared of a vector...
 template<>
-inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
-norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
+inline UnaryReturn<OLattice< DVec >, FnNorm2>::Type_t
+norm2(const QDPType<DVec ,OLattice< DVec > >& s1, const Subset& s)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "Using BJ sumsq" << endl;
@@ -1671,7 +1678,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     DOUBLE lsum =(double)0;
     
     local_sumsq(&lsum,(REAL64 *)s1ptr, n_3vec); 
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  gsum(lsum);
+    UnaryReturn< OLattice< DVec >, FnNorm2>::Type_t  gsum(lsum);
     Internal::globalSum(gsum);
     return gsum;
   }
@@ -1689,7 +1696,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
       lsum +=ltmp;
     }
 
-    UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  gsum(lsum);
+    UnaryReturn< OLattice< DVec >, FnNorm2>::Type_t  gsum(lsum);
     Internal::globalSum(gsum);
     return gsum;
   }
@@ -1697,8 +1704,8 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
 
 
 template<>
-inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
-norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
+inline UnaryReturn<OLattice< DVec >, FnNorm2>::Type_t
+norm2(const QDPType<DVec ,OLattice< DVec > >& s1)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "Using BJ sumsq all" << endl;
@@ -1711,7 +1718,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
 
   DOUBLE lsum = 0;
   local_sumsq(&lsum, (REAL64 *)s1ptr, n_3vec); 
-  UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  gsum(lsum);
+  UnaryReturn< OLattice< DVec >, FnNorm2>::Type_t  gsum(lsum);
   Internal::globalSum(gsum);
   return gsum;
 }
@@ -1719,9 +1726,9 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
 
 
 template<>
-inline  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t
-innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
-	     const QDPType< TVec, OLattice<TVec> > &v2)
+inline  BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t
+innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
+	     const QDPType< DVec, OLattice<DVec> > &v2)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "BJ: innerProduct all" << endl;
@@ -1729,7 +1736,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 
   // This BinaryReturn has Type_t
   // OScalar<OScalar<OScalar<RComplex<PScalar<REAL64> > > > >
-  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
+  BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t lprod;
   // Inner product is accumulated internally in DOUBLE
   DOUBLE ip[2];
   ip[0]=0;
@@ -1757,9 +1764,9 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 }
 
 template<>
-inline  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t
-innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
-	     const QDPType< TVec, OLattice<TVec> > &v2, 
+inline  BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t
+innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
+	     const QDPType< DVec, OLattice<DVec> > &v2, 
 	     const Subset& s)
 {
   
@@ -1770,7 +1777,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 
     // This BinaryReturn has Type_t
     // OScalar<OScalar<OScalar<RComplex<PScalar<REAL64> > > > >
-    BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
+    BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t lprod;
     DOUBLE ip[2];
     ip[0] = 0;
     ip[1] = 0;
@@ -1792,7 +1799,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
   }
   else {
 
-    BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
+    BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t lprod;
     DOUBLE ip[2], ip_tmp[2];
     ip[0] = 0;
     ip[1] = 0;
@@ -1827,9 +1834,9 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 // Inner Product Real
 template<>
 inline  
-BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t
-innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
-		 const QDPType< TVec, OLattice<TVec> > &v2)
+BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProductReal>::Type_t
+innerProductReal(const QDPType< DVec, OLattice<DVec> > &v1,
+		 const QDPType< DVec, OLattice<DVec> > &v2)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "BJ: innerProductReal all" << endl;
@@ -1837,7 +1844,7 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 
   // This BinaryReturn has Type_t
   // OScalar<OScalar<OScalar<RScalar<PScalar<REAL64> > > > >
-  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
+  BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProductReal>::Type_t lprod;
   // Inner product is accumulated internally in DOUBLE
   DOUBLE ip_re=0;
 
@@ -1865,9 +1872,9 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 
 template<>
 inline  
-BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t
-innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
-		 const QDPType< TVec, OLattice<TVec> > &v2, 
+BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProductReal>::Type_t
+innerProductReal(const QDPType< DVec, OLattice<DVec> > &v1,
+		 const QDPType< DVec, OLattice<DVec> > &v2, 
 		 const Subset& s)
 {
   if( s.hasOrderedRep() ) {
@@ -1877,7 +1884,7 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 
     // This BinaryReturn has Type_t
     // OScalar<OScalar<OScalar<RScalar<PScalar<REAL64> > > > >
-    BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
+    BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProductReal>::Type_t lprod;
     DOUBLE ip_re=0;
 
     unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
@@ -1895,7 +1902,7 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
   else {
 
 
-    BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
+    BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProductReal>::Type_t lprod;
     DOUBLE ip_re=0, ip_re_tmp;
 
 
@@ -1919,8 +1926,8 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 
 
 template<>
-inline UnaryReturn<OLattice< TVec >, FnNorm2>::Type_t
-norm2(const multi1d< OLattice< TVec > >& s1)
+inline UnaryReturn<OLattice< DVec >, FnNorm2>::Type_t
+norm2(const multi1d< OLattice< DVec > >& s1)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "Using SSE multi1d sumsq all" << endl;
@@ -1939,16 +1946,16 @@ norm2(const multi1d< OLattice< TVec > >& s1)
     ltmp += lltmp;
   }
 
-  UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
+  UnaryReturn< OLattice< DVec >, FnNorm2>::Type_t  lsum(ltmp);
   Internal::globalSum(lsum);
   return lsum;
 }
 
 
 template<>
-inline  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t
-innerProduct(const multi1d< OLattice<TVec> > &v1,
-	     const multi1d< OLattice<TVec> > &v2)
+inline  BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t
+innerProduct(const multi1d< OLattice<DVec> > &v1,
+	     const multi1d< OLattice<DVec> > &v2)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "BJ: multi1d innerProduct all" << endl;
@@ -1956,7 +1963,7 @@ innerProduct(const multi1d< OLattice<TVec> > &v1,
 
   // This BinaryReturn has Type_t
   // OScalar<OScalar<OScalar<RComplex<PScalar<REAL64> > > > >
-  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProduct>::Type_t lprod;
+  BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t lprod;
   // Inner product is accumulated internally in DOUBLE
   DOUBLE ip[2];
   ip[0]=0;
@@ -1996,9 +2003,9 @@ innerProduct(const multi1d< OLattice<TVec> > &v1,
 // Inner Product Real
 template<>
 inline  
-BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t
-innerProductReal(const multi1d< OLattice<TVec> > &v1,
-		 const multi1d< OLattice<TVec> > &v2)
+BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProductReal>::Type_t
+innerProductReal(const multi1d< OLattice<DVec> > &v1,
+		 const multi1d< OLattice<DVec> > &v2)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "BJ: innerProductReal(multi1d) all" << endl;
@@ -2006,7 +2013,7 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
 
   // This BinaryReturn has Type_t
   // OScalar<OScalar<OScalar<RScalar<PScalar<REAL64> > > > >
-  BinaryReturn< OLattice<TVec>, OLattice<TVec>, FnInnerProductReal>::Type_t lprod;
+  BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProductReal>::Type_t lprod;
   // Inner product is accumulated internally in DOUBLE
   DOUBLE ip_re=0;
 
@@ -2037,6 +2044,8 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
   // Return
   return lprod;
 }
+
+#endif
 
 
 } // namespace QDP;
