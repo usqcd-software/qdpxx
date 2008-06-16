@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.29 2008-06-13 14:21:41 bjoo Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.30 2008-06-16 13:08:49 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -17,6 +17,7 @@
 #warning "Using SSE BLAS. If your compiler cant handle intrinsics your build will break"
 #include "scalarsite_sse/qdp_scalarsite_sse_linalg.h"
 #include "scalarsite_sse/qdp_scalarsite_sse_blas.h"
+#include "scalarsite_sse/qdp_scalarsite_sse_blas_dble.h"
 #include "scalarsite_generic/qdp_scalarsite_generic_cblas.h"
 #include "scalarsite_sse/sse_spin_aggregate.h"
 
