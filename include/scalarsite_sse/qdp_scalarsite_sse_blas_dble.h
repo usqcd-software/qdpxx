@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas_dble.h,v 1.3 2008-06-16 13:07:33 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas_dble.h,v 1.4 2008-06-16 20:09:06 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -14,11 +14,14 @@
 #include "scalarsite_sse/sse_blas_vaxmyz4_double.h"
 #include "scalarsite_sse/sse_blas_vaxpbyz4_double.h"
 #include "scalarsite_sse/sse_blas_vaxmbyz4_double.h"
+#include "scalarsite_sse/sse_blas_vscal4_double.h"
+#include "scalarsite_sse/sse_blas_local_sumsq_double.h"
+#include "scalarsite_sse/sse_blas_local_vcdot_real_double.h"
+#include "scalarsite_sse/sse_blas_local_vcdot_double.h"
+
 #if 0
-#include "scalarsite_generic/generic_blas_vscal.h"
-#include "scalarsite_generic/generic_blas_local_sumsq.h"
-#include "scalarsite_generic/generic_blas_local_vcdot.h"
-#include "scalarsite_generic/generic_blas_local_vcdot_real.h"
+
+
 #endif 
 namespace QDP {
 
@@ -813,9 +816,9 @@ void evaluate( OLattice< DVec > &d,
 
     REAL64 *xptr = (REAL64 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL64 *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-    int n_3vec = (s.end()-s.start()+1)*Ns;
 
-    vscal(zptr, aptr, xptr, n_3vec);
+    int n_4vec = (s.end()-s.start()+1);
+    vscal4(zptr, aptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -825,7 +828,7 @@ void evaluate( OLattice< DVec > &d,
       REAL64 *zptr =  &(d.elem(i).elem(0).elem(0).real());
 
       
-      vscal(zptr, aptr, xptr, Ns);
+      vscal4(zptr, aptr, xptr, 1);
     }
   }
 
@@ -855,9 +858,9 @@ void evaluate( OLattice< DVec > &d,
   if( s.hasOrderedRep() ) { 
     REAL64 *xptr = (REAL64 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL64 *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-    int n_3vec = (s.end()-s.start()+1)*Ns;
-    
-    vscal(zptr, aptr, xptr, n_3vec);
+
+    int n_4vec = (s.end()-s.start()+1);
+    vscal4(zptr, aptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -866,7 +869,7 @@ void evaluate( OLattice< DVec > &d,
       REAL64 *xptr = (REAL64 *) &(x.elem(i).elem(0).elem(0).real());
       REAL64 *zptr =  &(d.elem(i).elem(0).elem(0).real());
       
-      vscal(zptr, aptr, xptr, Ns);
+      vscal4(zptr, aptr, xptr, 1);
     }
   }
 }
@@ -894,8 +897,8 @@ void evaluate( OLattice< DVec > &d,
 
     REAL64* xptr = &(d.elem(s.start()).elem(0).elem(0).real());
     REAL64* zptr = xptr;
-    int n_3vec = (s.end()-s.start()+1)*Ns;
-    vscal(zptr,&ar, xptr, n_3vec);
+    int n_4vec = (s.end()-s.start()+1);
+    vscal4(zptr,&ar, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -905,7 +908,7 @@ void evaluate( OLattice< DVec > &d,
       REAL64* xptr = &(d.elem(i).elem(0).elem(0).real());
       REAL64* zptr = xptr;
       
-      vscal(zptr,&ar, xptr, Ns);
+      vscal4(zptr,&ar, xptr, 1);
     }
   }
 }
@@ -932,8 +935,8 @@ void evaluate( OLattice< DVec > &d,
   if( s.hasOrderedRep() ) { 
     REAL64* xptr = &(d.elem(s.start()).elem(0).elem(0).real());
     REAL64* zptr = xptr;
-    int n_3vec = (s.end()-s.start()+1)*Ns;
-    vscal(zptr,&ar, xptr, n_3vec);
+    int n_4vec = (s.end()-s.start()+1);
+    vscal4(zptr,&ar, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -943,7 +946,7 @@ void evaluate( OLattice< DVec > &d,
       REAL64* xptr = &(d.elem(i).elem(0).elem(0).real());
       REAL64* zptr = xptr;
       
-      vscal(zptr,&ar, xptr, Ns);
+      vscal4(zptr,&ar, xptr, 1);
     }
   }
 }
@@ -1670,14 +1673,14 @@ norm2(const QDPType<DVec ,OLattice< DVec > >& s1, const Subset& s)
 #ifdef DEBUG_BLAS
     QDPIO::cout << "BJ sumsq " << endl;
 #endif
-    int n_3vec = (s.end() - s.start() + 1)*Ns;
+
     const REAL64 *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real());
     
     // Has Type OScalar< PScalar < PScalar < RScalar < REAL64 > > > >
 
-    DOUBLE lsum =(double)0;
-    
-    local_sumsq(&lsum,(REAL64 *)s1ptr, n_3vec); 
+    REAL64 lsum; // local_sumsq4 zeros this
+    int n_4vec = (s.end() - s.start() + 1);    
+    local_sumsq4(&lsum,(REAL64 *)s1ptr, n_4vec); 
     UnaryReturn< OLattice< DVec >, FnNorm2>::Type_t  gsum(lsum);
     Internal::globalSum(gsum);
     return gsum;
@@ -1685,14 +1688,14 @@ norm2(const QDPType<DVec ,OLattice< DVec > >& s1, const Subset& s)
   else {
 
     // Has Type OScalar< PScalar < PScalar < RScalar < REAL64 > > > >
-    DOUBLE lsum =(DOUBLE)0;
-    DOUBLE ltmp =(DOUBLE)0;
+    REAL64 lsum =(REAL64)0;
+    REAL64 ltmp =(REAL64)0;
 
     const int* tab=s.siteTable().slice();
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL64* s1ptr = (REAL64 *)&(s1.elem(i).elem(0).elem(0).real());
-      local_sumsq(&ltmp,s1ptr,Ns); 
+      local_sumsq4(&ltmp,s1ptr,1); 
       lsum +=ltmp;
     }
 
@@ -1711,13 +1714,13 @@ norm2(const QDPType<DVec ,OLattice< DVec > >& s1)
   QDPIO::cout << "Using BJ sumsq all" << endl;
 #endif
 
-  int n_3vec = (all.end() - all.start() + 1)*Ns;
+  int n_4vec = (all.end() - all.start() + 1);
   const REAL64 *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real());
     
 
 
-  DOUBLE lsum = 0;
-  local_sumsq(&lsum, (REAL64 *)s1ptr, n_3vec); 
+  REAL64 lsum = (REAL64)0;
+  local_sumsq4(&lsum, (REAL64 *)s1ptr, n_4vec); 
   UnaryReturn< OLattice< DVec >, FnNorm2>::Type_t  gsum(lsum);
   Internal::globalSum(gsum);
   return gsum;
@@ -1743,13 +1746,13 @@ innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
   ip[1]=0;
 
   // Length of subset 
-  unsigned long n_3vec = (all.end() - all.start() + 1)*Ns;
+  unsigned long n_4vec = (all.end() - all.start() + 1);
     
   // Call My CDOT
-  local_vcdot(&(ip[0]), &(ip[1]),
+  local_vcdot4(&(ip[0]), &(ip[1]),
 	      (REAL64 *)&(v1.elem(all.start()).elem(0).elem(0).real()),
 	      (REAL64 *)&(v2.elem(all.start()).elem(0).elem(0).real()),
-	      n_3vec);
+	      n_4vec);
 
 
   // Global sum -- still on a vector of doubles
@@ -1782,11 +1785,11 @@ innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
     ip[0] = 0;
     ip[1] = 0;
 
-    unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
-    local_vcdot(&(ip[0]), &(ip[1]),
+    unsigned long n_4vec = (s.end() - s.start() + 1);
+    local_vcdot4(&(ip[0]), &(ip[1]),
 		(REAL64 *)&(v1.elem(s.start()).elem(0).elem(0).real()),
 		(REAL64 *)&(v2.elem(s.start()).elem(0).elem(0).real()),
-		n_3vec);
+		n_4vec);
 
 
     Internal::globalSumArray(ip,2);
@@ -1809,10 +1812,10 @@ innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
 
       int i=tab[j];
       
-      local_vcdot(&(ip_tmp[0]), &(ip_tmp[1]),
+      local_vcdot4(&(ip_tmp[0]), &(ip_tmp[1]),
 		  (REAL64 *)&(v1.elem(i).elem(0).elem(0).real()),
 		  (REAL64 *)&(v2.elem(i).elem(0).elem(0).real()),
-		  Ns);
+		  1);
       
       ip[0] += ip_tmp[0];
       ip[1] += ip_tmp[1];
@@ -1846,16 +1849,16 @@ innerProductReal(const QDPType< DVec, OLattice<DVec> > &v1,
   // OScalar<OScalar<OScalar<RScalar<PScalar<REAL64> > > > >
   BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProductReal>::Type_t lprod;
   // Inner product is accumulated internally in DOUBLE
-  DOUBLE ip_re=0;
+  REAL64 ip_re=0;
 
   // Length of subset 
-  unsigned long n_3vec = (all.end() - all.start() + 1)*Ns;
+  unsigned long n_4vec = (all.end() - all.start() + 1);
 
   // Call My CDOT
-  local_vcdot_real(&ip_re,
+  local_vcdot_real4(&ip_re,
 		   (REAL64 *)&(v1.elem(all.start()).elem(0).elem(0).real()),
 		   (REAL64 *)&(v2.elem(all.start()).elem(0).elem(0).real()),
-		   n_3vec);
+		   n_4vec);
 
   // Global sum
   Internal::globalSum(ip_re);
@@ -1885,13 +1888,13 @@ innerProductReal(const QDPType< DVec, OLattice<DVec> > &v1,
     // This BinaryReturn has Type_t
     // OScalar<OScalar<OScalar<RScalar<PScalar<REAL64> > > > >
     BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProductReal>::Type_t lprod;
-    DOUBLE ip_re=0;
+    REAL64 ip_re=0;
 
-    unsigned long n_3vec = (s.end() - s.start() + 1)*Ns;
-    local_vcdot_real(&ip_re,
+    unsigned long n_4vec = (s.end() - s.start() + 1);
+    local_vcdot_real4(&ip_re,
 		     (REAL64 *)&(v1.elem(s.start()).elem(0).elem(0).real()),
 		     (REAL64 *)&(v2.elem(s.start()).elem(0).elem(0).real()),
-		     n_3vec);
+		     n_4vec);
 
     Internal::globalSum(ip_re);
     lprod.elem().elem().elem().elem() = ip_re;
@@ -1903,7 +1906,7 @@ innerProductReal(const QDPType< DVec, OLattice<DVec> > &v1,
 
 
     BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProductReal>::Type_t lprod;
-    DOUBLE ip_re=0, ip_re_tmp;
+    REAL64 ip_re=0, ip_re_tmp;
 
 
     const int *tab = s.siteTable().slice();
@@ -1911,10 +1914,10 @@ innerProductReal(const QDPType< DVec, OLattice<DVec> > &v1,
 
       int i=tab[j];
       
-      local_vcdot_real(&ip_re_tmp,
+      local_vcdot_real4(&ip_re_tmp,
 		  (REAL64 *)&(v1.elem(i).elem(0).elem(0).real()),
 		  (REAL64 *)&(v2.elem(i).elem(0).elem(0).real()),
-		  Ns);
+		  1);
       
       ip_re += ip_re_tmp;
     }
@@ -1933,15 +1936,15 @@ norm2(const multi1d< OLattice< DVec > >& s1)
   QDPIO::cout << "Using SSE multi1d sumsq all" << endl;
 #endif
 
-  int n_3vec = (all.end() - all.start() + 1)*Ns;
+  int n_4vec = (all.end() - all.start() + 1);
   DOUBLE ltmp = 0;
   for(int n=0; n < s1.size(); ++n)
   {
     const REAL64* s1ptr =  &(s1[n].elem(all.start()).elem(0).elem(0).real());
     
     // I am relying on this being a Double here 
-    DOUBLE lltmp;
-    local_sumsq(&lltmp, (REAL64*)s1ptr, n_3vec); 
+    REAL64 lltmp;
+    local_sumsq4(&lltmp, (REAL64*)s1ptr, n_4vec); 
 
     ltmp += lltmp;
   }
@@ -1970,7 +1973,7 @@ innerProduct(const multi1d< OLattice<DVec> > &v1,
   ip[1]=0;
 
   // Length of subset 
-  unsigned long n_3vec = (all.end() - all.start() + 1)*Ns;
+  unsigned long n_4vec = (all.end() - all.start() + 1);
     
   for(int n=0; n < v1.size(); ++n)
   {
@@ -1979,10 +1982,10 @@ innerProduct(const multi1d< OLattice<DVec> > &v1,
     iip[1]=0;
 
     // Call My CDOT
-    local_vcdot(&(iip[0]), &(iip[1]),
+    local_vcdot4(&(iip[0]), &(iip[1]),
 		(REAL64 *)&(v1[n].elem(all.start()).elem(0).elem(0).real()),
 		(REAL64 *)&(v2[n].elem(all.start()).elem(0).elem(0).real()),
-		n_3vec);
+		n_4vec);
     
     ip[0] += iip[0];
     ip[1] += iip[1];
@@ -2018,17 +2021,17 @@ innerProductReal(const multi1d< OLattice<DVec> > &v1,
   DOUBLE ip_re=0;
 
   // Length of subset 
-  unsigned long n_3vec = (all.end() - all.start() + 1)*Ns;
+  unsigned long n_4vec = (all.end() - all.start() + 1);
 
   for(int n=0; n < v1.size(); ++n)
   {
     DOUBLE iip_re=0;
 
     // Call My CDOT
-    local_vcdot_real(&iip_re,
+    local_vcdot_real4(&iip_re,
 		     (REAL64 *)&(v1[n].elem(all.start()).elem(0).elem(0).real()),
 		     (REAL64 *)&(v2[n].elem(all.start()).elem(0).elem(0).real()),
-		     n_3vec);
+		     n_4vec);
 
     ip_re += iip_re;
   }
