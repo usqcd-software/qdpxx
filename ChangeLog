@@ -1,3 +1,7 @@
+2008-06-17 14:33  bjoo
+
+	* include/Makefile.am: Added dprec reductions
+
 2008-06-17 10:23  bjoo
 
 	* other_libs/xpath_reader/include/xml_array.h: Added some new std
