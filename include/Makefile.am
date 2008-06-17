@@ -88,7 +88,11 @@ SSESITE_HDRS = qdp_scalarsite_sse.h \
 	$(ssesitedir)/sse_blas_vaxpy4_double.h \
 	$(ssesitedir)/sse_blas_vaxmyz4_double.h \
 	$(ssesitedir)/sse_blas_vaxpbyz4_double.h \
-	$(ssesitedir)/sse_blas_vaxmbyz4_double.h
+	$(ssesitedir)/sse_blas_vaxmbyz4_double.h \
+	$(ssesitedir)/sse_blas_vscal4_double.h \
+	$(ssesitedir)/sse_blas_local_sumsq_double.h \
+	$(ssesitedir)/sse_blas_local_vcdot_double.h \
+	$(ssesitedir)/sse_blas_local_vcdot_real_double.h
 
 # Scalarvectsite SSE extensions
 ssevecdir = scalarvecsite_sse
