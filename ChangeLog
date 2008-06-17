@@ -1,3 +1,9 @@
+2008-06-16 22:57  edwards
+
+	* include/scalarsite_sse/sse_fused_spin_proj.h: Changed wildcard
+	  template params for adjSpinProj guys to instead start at the
+	  primitive scalar and vector level.
+
 2008-06-16 16:09  bjoo
 
 	* include/scalarsite_sse/: qdp_scalarsite_sse_blas_dble.h,
