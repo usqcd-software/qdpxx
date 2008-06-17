@@ -94,10 +94,10 @@ struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir0Plus > {
 // the operator() of the FnAdjMultSprojDir0Plus struct
 template<typename T1, typename T2>
 inline 
-typename BinaryReturn<T1, T2, FnAdjMultSprojDir0Plus >::Type_t
-adjMultSprojDir0Plus(const T1& a, const T2& b)
+typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir0Plus>::Type_t
+adjMultSprojDir0Plus(const PScalar<T1>& a, const PSpinVector<T2,4>& b)
 {
-  typename BinaryReturn<T1, T2, FnAdjMultSprojDir0Plus >::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir0Plus >::Type_t tmp;
 
   tmp = spinProjectDir0Plus(b);
   return( adj(a)*tmp );
@@ -112,7 +112,6 @@ adjMultSprojDir0Plus(const PScalar<ColMat>& a, const Spin4& b)
 {
   BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir0Plus >::Type_t ret ;
   BinaryReturn<PScalar<ColMat>, Spin4, FnAdjMultSprojDir0Plus >::Type_t d ;
-
 
   inlineSpinProjDir0Plus(&(b.elem(0).elem(0).real()),
 			 &(d.elem(0).elem(0).real()),
@@ -206,10 +205,10 @@ struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir0Minus > {
 // the operator() of the FnAdjMultSprojDir0Minus struct
 template<typename T1, typename T2>
 inline 
-typename BinaryReturn<T1, T2, FnAdjMultSprojDir0Minus >::Type_t
-adjMultSprojDir0Minus(const T1& a, const T2& b)
+typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir0Minus>::Type_t
+adjMultSprojDir0Minus(const PScalar<T1>& a, const PSpinVector<T2,4>& b)
 {
-  typename BinaryReturn<T1, T2, FnAdjMultSprojDir0Minus >::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir0Minus>::Type_t tmp;
 
   tmp = spinProjectDir0Minus(b);
   return( adj(a)*tmp );
@@ -316,10 +315,10 @@ struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir1Plus > {
 // the operator() of the FnAdjMultSprojDir1Plus struct
 template<typename T1, typename T2>
 inline 
-typename BinaryReturn<T1, T2, FnAdjMultSprojDir1Plus >::Type_t
-adjMultSprojDir1Plus(const T1& a, const T2& b)
+typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir1Plus>::Type_t
+adjMultSprojDir1Plus(const PScalar<T1>& a, const PSpinVector<T2,4>& b)
 {
-  typename BinaryReturn<T1, T2, FnAdjMultSprojDir1Plus >::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir1Plus>::Type_t tmp;
 
   tmp = spinProjectDir1Plus(b);
   return( adj(a)*tmp );
@@ -371,7 +370,6 @@ struct FnAdjMultSprojDir1Minus
   inline typename BinaryReturn<T1, T2, FnAdjMultSprojDir1Minus >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
-
     // Call the appropriate match
     return (adjMultSprojDir1Minus(a,b));
   }
@@ -428,10 +426,10 @@ struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir1Minus > {
 // the operator() of the FnAdjMultSprojDir1Minus struct
 template<typename T1, typename T2>
 inline 
-typename BinaryReturn<T1, T2, FnAdjMultSprojDir1Minus >::Type_t
-adjMultSprojDir1Minus(const T1& a, const T2& b)
+typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir1Minus>::Type_t
+adjMultSprojDir1Minus(const PScalar<T1>& a, const PSpinVector<T2,4>& b)
 {
-  typename BinaryReturn<T1, T2, FnAdjMultSprojDir1Minus >::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir1Minus>::Type_t tmp;
 
   tmp = spinProjectDir1Minus(b);
   return( adj(a)*tmp );
@@ -539,10 +537,10 @@ struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir2Plus > {
 // the operator() of the FnAdjMultSprojDir2Plus struct
 template<typename T1, typename T2>
 inline 
-typename BinaryReturn<T1, T2, FnAdjMultSprojDir2Plus >::Type_t
-adjMultSprojDir2Plus(const T1& a, const T2& b)
+typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir2Plus>::Type_t
+adjMultSprojDir2Plus(const PScalar<T1>& a, const PSpinVector<T2,4>& b)
 {
-  typename BinaryReturn<T1, T2, FnAdjMultSprojDir2Plus >::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir2Plus>::Type_t tmp;
 
   tmp = spinProjectDir2Plus(b);
   return( adj(a)*tmp );
@@ -592,7 +590,6 @@ struct FnAdjMultSprojDir2Minus
   inline typename BinaryReturn<T1, T2, FnAdjMultSprojDir2Minus >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
-
     // Call the appropriate match
     return (adjMultSprojDir2Minus(a,b));
   }
@@ -649,10 +646,10 @@ struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir2Minus > {
 // the operator() of the FnAdjMultSprojDir2Minus struct
 template<typename T1, typename T2>
 inline 
-typename BinaryReturn<T1, T2, FnAdjMultSprojDir2Minus >::Type_t
-adjMultSprojDir2Minus(const T1& a, const T2& b)
+typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir2Minus>::Type_t
+adjMultSprojDir2Minus(const PScalar<T1>& a, const PSpinVector<T2,4>& b)
 {
-  typename BinaryReturn<T1, T2, FnAdjMultSprojDir2Minus >::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir2Minus>::Type_t tmp;
 
   tmp = spinProjectDir2Minus(b);
   return( adj(a)*tmp );
@@ -757,10 +754,10 @@ struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir3Plus > {
 // the operator() of the FnAdjMultSprojDir3Plus struct
 template<typename T1, typename T2>
 inline 
-typename BinaryReturn<T1, T2, FnAdjMultSprojDir3Plus >::Type_t
-adjMultSprojDir3Plus(const T1& a, const T2& b)
+typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir3Plus>::Type_t
+adjMultSprojDir3Plus(const PScalar<T1>& a, const PSpinVector<T2,4>& b)
 {
-  typename BinaryReturn<T1, T2, FnAdjMultSprojDir3Plus >::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir3Plus>::Type_t tmp;
 
   tmp = spinProjectDir3Plus(b);
   return( adj(a)*tmp );
@@ -811,7 +808,6 @@ struct FnAdjMultSprojDir3Minus
   inline typename BinaryReturn<T1, T2, FnAdjMultSprojDir3Minus >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
-
     // Call the appropriate match
     return (adjMultSprojDir3Minus(a,b));
   }
@@ -868,10 +864,10 @@ struct BinaryReturn< PScalar< ColMat >, Spin4, FnAdjMultSprojDir3Minus > {
 // the operator() of the FnAdjMultSprojDir3Minus struct
 template<typename T1, typename T2>
 inline 
-typename BinaryReturn<T1, T2, FnAdjMultSprojDir3Minus >::Type_t
-adjMultSprojDir3Minus(const T1& a, const T2& b)
+typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir3Minus>::Type_t
+adjMultSprojDir3Minus(const PScalar<T1>& a, const PSpinVector<T2,4>& b)
 {
-  typename BinaryReturn<T1, T2, FnAdjMultSprojDir3Minus >::Type_t tmp;
+  typename BinaryReturn<PScalar<T1>, PSpinVector<T2,4>, FnAdjMultSprojDir3Minus>::Type_t tmp;
 
   tmp = spinProjectDir3Minus(b);
   return( adj(a)*tmp );
