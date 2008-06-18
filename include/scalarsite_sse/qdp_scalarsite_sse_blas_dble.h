@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas_dble.h,v 1.4 2008-06-16 20:09:06 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas_dble.h,v 1.5 2008-06-18 16:03:02 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1833,7 +1833,7 @@ innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
 }
 
 
-
+#if 0
 // Inner Product Real
 template<>
 inline  
@@ -1926,7 +1926,7 @@ innerProductReal(const QDPType< DVec, OLattice<DVec> > &v1,
     return lprod;
   }
 }
-
+#endif
 
 template<>
 inline UnaryReturn<OLattice< DVec >, FnNorm2>::Type_t
@@ -2003,6 +2003,7 @@ innerProduct(const multi1d< OLattice<DVec> > &v1,
 }
 
 
+#if 0
 // Inner Product Real
 template<>
 inline  
@@ -2047,7 +2048,7 @@ innerProductReal(const multi1d< OLattice<DVec> > &v1,
   // Return
   return lprod;
 }
-
+#endif
 #endif
 
 
