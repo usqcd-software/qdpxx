@@ -1,3 +1,8 @@
+2008-06-17 19:02  bjoo
+
+	* tests/: timeVaxpyDouble.cc, timeVaxpyDouble.h,
+	  time_vaxpy_double.cc: More tests, more timings
+
 2008-06-17 14:33  bjoo
 
 	* include/Makefile.am: Added dprec reductions
