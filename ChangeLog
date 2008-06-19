@@ -1,3 +1,27 @@
+2008-06-19 10:19  bjoo
+
+	* configure: Induced Changes
+
+2008-06-19 10:05  bjoo
+
+	* tests/: Makefile.am, testLocalVcdotRealDouble.cc,
+	  testVaxpbyDouble.cc, test_vaxpy_double.cc, testvol.h,
+	  timeVaxpyDouble.cc, timeVaxpyDouble.h, time_vaxpy_double.cc:
+	  These now seem OK
+
+2008-06-19 09:50  bjoo
+
+	* lib/: Makefile.am, qdp_default_allocator.cc: Makefile.am
+
+2008-06-19 09:50  bjoo
+
+	* lib/scalarsite_sse/: sse_blas_local_sumsq_double.cc,
+	  sse_blas_local_vcdot_real_double.cc, sse_blas_vaxmyz4_double.cc,
+	  sse_blas_vaxpbyz4_double.cc, sse_blas_vaxpy4_double.cc: OK the
+	  vcdot real now works as does the vaxpy thingie. We may still want
+	  to optimize. Performance really falls off out of cache. Still we
+	  do better than the daxpy in ACML I think
+
 2008-06-18 12:03  bjoo
 
 	* include/scalarsite_sse/: qdp_scalarsite_sse_blas_dble.h,
