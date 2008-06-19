@@ -1,4 +1,4 @@
-// $Id: qdp_default_allocator.cc,v 1.8 2008-06-19 13:50:38 bjoo Exp $
+// $Id: qdp_default_allocator.cc,v 1.9 2008-06-19 13:51:12 bjoo Exp $
 /*! @file
  * @brief QCDOC memory allocator
  */
@@ -70,7 +70,7 @@ namespace Allocator {
     size_t bytes_to_alloc;
     bytes_to_alloc = n_bytes;
     if ( n_bytes % (32*1024) == 0 ) { 
-      bytes_to_alloc += 128; // 2 lines bytes to kill cache aliasing
+      bytes_to_alloc += 0; // 2 lines bytes to kill cache aliasing
     }
     bytes_to_alloc += QDP_ALIGNMENT_SIZE;
 

@@ -46,7 +46,16 @@ POST_UNINSTALL = :
 
 
 # Optimized code using sse extensions
-@QDP_USE_SCALAR_SSE_TRUE@am__append_4 = qdp_scalarsite_sse.cc
+@QDP_USE_SCALAR_SSE_TRUE@am__append_4 = qdp_scalarsite_sse.cc \
+@QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_blas_local_sumsq_double.cc \
+@QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_blas_local_vcdot_double.cc \
+@QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_blas_local_vcdot_real_double.cc \
+@QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_blas_vaxmbyz4_double.cc \
+@QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_blas_vaxmyz4_double.cc \
+@QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_blas_vaxpbyz4_double.cc \
+@QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_blas_vaxpy4_double.cc \
+@QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_blas_vscal4_double.cc
+
 
 # Scalar with Vector extensions
 @ARCH_SCALARVEC_TRUE@am__append_5 = qdp_scalarvec_init.cc qdp_scalarvec_layout.cc \
@@ -92,7 +101,15 @@ am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	qdp_scalar_init.cc qdp_scalar_layout.cc qdp_scalar_specific.cc \
 	qdp_scalarsite_specific.cc qdp_parscalar_init.cc \
 	qdp_parscalar_layout.cc qdp_parscalar_specific.cc \
-	qdp_scalarsite_sse.cc qdp_scalarvec_init.cc \
+	qdp_scalarsite_sse.cc \
+	scalarsite_sse/sse_blas_local_sumsq_double.cc \
+	scalarsite_sse/sse_blas_local_vcdot_double.cc \
+	scalarsite_sse/sse_blas_local_vcdot_real_double.cc \
+	scalarsite_sse/sse_blas_vaxmbyz4_double.cc \
+	scalarsite_sse/sse_blas_vaxmyz4_double.cc \
+	scalarsite_sse/sse_blas_vaxpbyz4_double.cc \
+	scalarsite_sse/sse_blas_vaxpy4_double.cc \
+	scalarsite_sse/sse_blas_vscal4_double.cc qdp_scalarvec_init.cc \
 	qdp_scalarvec_layout.cc qdp_scalarvec_specific.cc \
 	qdp_scalarvecsite_specific.cc qdp_parscalarvec_init.cc \
 	qdp_parscalarvec_layout.cc qdp_parscalarvec_specific.cc \
@@ -106,7 +123,15 @@ am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 @ARCH_PARSCALAR_TRUE@	qdp_parscalar_layout.$(OBJEXT) \
 @ARCH_PARSCALAR_TRUE@	qdp_parscalar_specific.$(OBJEXT) \
 @ARCH_PARSCALAR_TRUE@	qdp_scalarsite_specific.$(OBJEXT)
-@QDP_USE_SCALAR_SSE_TRUE@am__objects_3 = qdp_scalarsite_sse.$(OBJEXT)
+@QDP_USE_SCALAR_SSE_TRUE@am__objects_3 = qdp_scalarsite_sse.$(OBJEXT) \
+@QDP_USE_SCALAR_SSE_TRUE@	sse_blas_local_sumsq_double.$(OBJEXT) \
+@QDP_USE_SCALAR_SSE_TRUE@	sse_blas_local_vcdot_double.$(OBJEXT) \
+@QDP_USE_SCALAR_SSE_TRUE@	sse_blas_local_vcdot_real_double.$(OBJEXT) \
+@QDP_USE_SCALAR_SSE_TRUE@	sse_blas_vaxmbyz4_double.$(OBJEXT) \
+@QDP_USE_SCALAR_SSE_TRUE@	sse_blas_vaxmyz4_double.$(OBJEXT) \
+@QDP_USE_SCALAR_SSE_TRUE@	sse_blas_vaxpbyz4_double.$(OBJEXT) \
+@QDP_USE_SCALAR_SSE_TRUE@	sse_blas_vaxpy4_double.$(OBJEXT) \
+@QDP_USE_SCALAR_SSE_TRUE@	sse_blas_vscal4_double.$(OBJEXT)
 @ARCH_SCALARVEC_TRUE@am__objects_4 = qdp_scalarvec_init.$(OBJEXT) \
 @ARCH_SCALARVEC_TRUE@	qdp_scalarvec_layout.$(OBJEXT) \
 @ARCH_SCALARVEC_TRUE@	qdp_scalarvec_specific.$(OBJEXT) \
@@ -381,6 +406,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_subset.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_xmlio.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_blas_local_sumsq_double.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_blas_local_vcdot_double.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_blas_local_vcdot_real_double.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_blas_vaxmbyz4_double.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_blas_vaxmyz4_double.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_blas_vaxpbyz4_double.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_blas_vaxpy4_double.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_blas_vscal4_double.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -395,6 +428,118 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+sse_blas_local_sumsq_double.o: scalarsite_sse/sse_blas_local_sumsq_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_local_sumsq_double.o -MD -MP -MF $(DEPDIR)/sse_blas_local_sumsq_double.Tpo -c -o sse_blas_local_sumsq_double.o `test -f 'scalarsite_sse/sse_blas_local_sumsq_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_local_sumsq_double.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_local_sumsq_double.Tpo $(DEPDIR)/sse_blas_local_sumsq_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_local_sumsq_double.cc' object='sse_blas_local_sumsq_double.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_local_sumsq_double.o `test -f 'scalarsite_sse/sse_blas_local_sumsq_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_local_sumsq_double.cc
+
+sse_blas_local_sumsq_double.obj: scalarsite_sse/sse_blas_local_sumsq_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_local_sumsq_double.obj -MD -MP -MF $(DEPDIR)/sse_blas_local_sumsq_double.Tpo -c -o sse_blas_local_sumsq_double.obj `if test -f 'scalarsite_sse/sse_blas_local_sumsq_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_local_sumsq_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_local_sumsq_double.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_local_sumsq_double.Tpo $(DEPDIR)/sse_blas_local_sumsq_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_local_sumsq_double.cc' object='sse_blas_local_sumsq_double.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_local_sumsq_double.obj `if test -f 'scalarsite_sse/sse_blas_local_sumsq_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_local_sumsq_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_local_sumsq_double.cc'; fi`
+
+sse_blas_local_vcdot_double.o: scalarsite_sse/sse_blas_local_vcdot_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_local_vcdot_double.o -MD -MP -MF $(DEPDIR)/sse_blas_local_vcdot_double.Tpo -c -o sse_blas_local_vcdot_double.o `test -f 'scalarsite_sse/sse_blas_local_vcdot_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_local_vcdot_double.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_local_vcdot_double.Tpo $(DEPDIR)/sse_blas_local_vcdot_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_local_vcdot_double.cc' object='sse_blas_local_vcdot_double.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_local_vcdot_double.o `test -f 'scalarsite_sse/sse_blas_local_vcdot_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_local_vcdot_double.cc
+
+sse_blas_local_vcdot_double.obj: scalarsite_sse/sse_blas_local_vcdot_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_local_vcdot_double.obj -MD -MP -MF $(DEPDIR)/sse_blas_local_vcdot_double.Tpo -c -o sse_blas_local_vcdot_double.obj `if test -f 'scalarsite_sse/sse_blas_local_vcdot_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_local_vcdot_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_local_vcdot_double.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_local_vcdot_double.Tpo $(DEPDIR)/sse_blas_local_vcdot_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_local_vcdot_double.cc' object='sse_blas_local_vcdot_double.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_local_vcdot_double.obj `if test -f 'scalarsite_sse/sse_blas_local_vcdot_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_local_vcdot_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_local_vcdot_double.cc'; fi`
+
+sse_blas_local_vcdot_real_double.o: scalarsite_sse/sse_blas_local_vcdot_real_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_local_vcdot_real_double.o -MD -MP -MF $(DEPDIR)/sse_blas_local_vcdot_real_double.Tpo -c -o sse_blas_local_vcdot_real_double.o `test -f 'scalarsite_sse/sse_blas_local_vcdot_real_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_local_vcdot_real_double.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_local_vcdot_real_double.Tpo $(DEPDIR)/sse_blas_local_vcdot_real_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_local_vcdot_real_double.cc' object='sse_blas_local_vcdot_real_double.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_local_vcdot_real_double.o `test -f 'scalarsite_sse/sse_blas_local_vcdot_real_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_local_vcdot_real_double.cc
+
+sse_blas_local_vcdot_real_double.obj: scalarsite_sse/sse_blas_local_vcdot_real_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_local_vcdot_real_double.obj -MD -MP -MF $(DEPDIR)/sse_blas_local_vcdot_real_double.Tpo -c -o sse_blas_local_vcdot_real_double.obj `if test -f 'scalarsite_sse/sse_blas_local_vcdot_real_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_local_vcdot_real_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_local_vcdot_real_double.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_local_vcdot_real_double.Tpo $(DEPDIR)/sse_blas_local_vcdot_real_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_local_vcdot_real_double.cc' object='sse_blas_local_vcdot_real_double.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_local_vcdot_real_double.obj `if test -f 'scalarsite_sse/sse_blas_local_vcdot_real_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_local_vcdot_real_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_local_vcdot_real_double.cc'; fi`
+
+sse_blas_vaxmbyz4_double.o: scalarsite_sse/sse_blas_vaxmbyz4_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_vaxmbyz4_double.o -MD -MP -MF $(DEPDIR)/sse_blas_vaxmbyz4_double.Tpo -c -o sse_blas_vaxmbyz4_double.o `test -f 'scalarsite_sse/sse_blas_vaxmbyz4_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_vaxmbyz4_double.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_vaxmbyz4_double.Tpo $(DEPDIR)/sse_blas_vaxmbyz4_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_vaxmbyz4_double.cc' object='sse_blas_vaxmbyz4_double.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_vaxmbyz4_double.o `test -f 'scalarsite_sse/sse_blas_vaxmbyz4_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_vaxmbyz4_double.cc
+
+sse_blas_vaxmbyz4_double.obj: scalarsite_sse/sse_blas_vaxmbyz4_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_vaxmbyz4_double.obj -MD -MP -MF $(DEPDIR)/sse_blas_vaxmbyz4_double.Tpo -c -o sse_blas_vaxmbyz4_double.obj `if test -f 'scalarsite_sse/sse_blas_vaxmbyz4_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_vaxmbyz4_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_vaxmbyz4_double.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_vaxmbyz4_double.Tpo $(DEPDIR)/sse_blas_vaxmbyz4_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_vaxmbyz4_double.cc' object='sse_blas_vaxmbyz4_double.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_vaxmbyz4_double.obj `if test -f 'scalarsite_sse/sse_blas_vaxmbyz4_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_vaxmbyz4_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_vaxmbyz4_double.cc'; fi`
+
+sse_blas_vaxmyz4_double.o: scalarsite_sse/sse_blas_vaxmyz4_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_vaxmyz4_double.o -MD -MP -MF $(DEPDIR)/sse_blas_vaxmyz4_double.Tpo -c -o sse_blas_vaxmyz4_double.o `test -f 'scalarsite_sse/sse_blas_vaxmyz4_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_vaxmyz4_double.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_vaxmyz4_double.Tpo $(DEPDIR)/sse_blas_vaxmyz4_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_vaxmyz4_double.cc' object='sse_blas_vaxmyz4_double.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_vaxmyz4_double.o `test -f 'scalarsite_sse/sse_blas_vaxmyz4_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_vaxmyz4_double.cc
+
+sse_blas_vaxmyz4_double.obj: scalarsite_sse/sse_blas_vaxmyz4_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_vaxmyz4_double.obj -MD -MP -MF $(DEPDIR)/sse_blas_vaxmyz4_double.Tpo -c -o sse_blas_vaxmyz4_double.obj `if test -f 'scalarsite_sse/sse_blas_vaxmyz4_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_vaxmyz4_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_vaxmyz4_double.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_vaxmyz4_double.Tpo $(DEPDIR)/sse_blas_vaxmyz4_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_vaxmyz4_double.cc' object='sse_blas_vaxmyz4_double.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_vaxmyz4_double.obj `if test -f 'scalarsite_sse/sse_blas_vaxmyz4_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_vaxmyz4_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_vaxmyz4_double.cc'; fi`
+
+sse_blas_vaxpbyz4_double.o: scalarsite_sse/sse_blas_vaxpbyz4_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_vaxpbyz4_double.o -MD -MP -MF $(DEPDIR)/sse_blas_vaxpbyz4_double.Tpo -c -o sse_blas_vaxpbyz4_double.o `test -f 'scalarsite_sse/sse_blas_vaxpbyz4_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_vaxpbyz4_double.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_vaxpbyz4_double.Tpo $(DEPDIR)/sse_blas_vaxpbyz4_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_vaxpbyz4_double.cc' object='sse_blas_vaxpbyz4_double.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_vaxpbyz4_double.o `test -f 'scalarsite_sse/sse_blas_vaxpbyz4_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_vaxpbyz4_double.cc
+
+sse_blas_vaxpbyz4_double.obj: scalarsite_sse/sse_blas_vaxpbyz4_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_vaxpbyz4_double.obj -MD -MP -MF $(DEPDIR)/sse_blas_vaxpbyz4_double.Tpo -c -o sse_blas_vaxpbyz4_double.obj `if test -f 'scalarsite_sse/sse_blas_vaxpbyz4_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_vaxpbyz4_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_vaxpbyz4_double.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_vaxpbyz4_double.Tpo $(DEPDIR)/sse_blas_vaxpbyz4_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_vaxpbyz4_double.cc' object='sse_blas_vaxpbyz4_double.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_vaxpbyz4_double.obj `if test -f 'scalarsite_sse/sse_blas_vaxpbyz4_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_vaxpbyz4_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_vaxpbyz4_double.cc'; fi`
+
+sse_blas_vaxpy4_double.o: scalarsite_sse/sse_blas_vaxpy4_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_vaxpy4_double.o -MD -MP -MF $(DEPDIR)/sse_blas_vaxpy4_double.Tpo -c -o sse_blas_vaxpy4_double.o `test -f 'scalarsite_sse/sse_blas_vaxpy4_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_vaxpy4_double.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_vaxpy4_double.Tpo $(DEPDIR)/sse_blas_vaxpy4_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_vaxpy4_double.cc' object='sse_blas_vaxpy4_double.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_vaxpy4_double.o `test -f 'scalarsite_sse/sse_blas_vaxpy4_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_vaxpy4_double.cc
+
+sse_blas_vaxpy4_double.obj: scalarsite_sse/sse_blas_vaxpy4_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_vaxpy4_double.obj -MD -MP -MF $(DEPDIR)/sse_blas_vaxpy4_double.Tpo -c -o sse_blas_vaxpy4_double.obj `if test -f 'scalarsite_sse/sse_blas_vaxpy4_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_vaxpy4_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_vaxpy4_double.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_vaxpy4_double.Tpo $(DEPDIR)/sse_blas_vaxpy4_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_vaxpy4_double.cc' object='sse_blas_vaxpy4_double.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_vaxpy4_double.obj `if test -f 'scalarsite_sse/sse_blas_vaxpy4_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_vaxpy4_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_vaxpy4_double.cc'; fi`
+
+sse_blas_vscal4_double.o: scalarsite_sse/sse_blas_vscal4_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_vscal4_double.o -MD -MP -MF $(DEPDIR)/sse_blas_vscal4_double.Tpo -c -o sse_blas_vscal4_double.o `test -f 'scalarsite_sse/sse_blas_vscal4_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_vscal4_double.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_vscal4_double.Tpo $(DEPDIR)/sse_blas_vscal4_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_vscal4_double.cc' object='sse_blas_vscal4_double.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_vscal4_double.o `test -f 'scalarsite_sse/sse_blas_vscal4_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_blas_vscal4_double.cc
+
+sse_blas_vscal4_double.obj: scalarsite_sse/sse_blas_vscal4_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_blas_vscal4_double.obj -MD -MP -MF $(DEPDIR)/sse_blas_vscal4_double.Tpo -c -o sse_blas_vscal4_double.obj `if test -f 'scalarsite_sse/sse_blas_vscal4_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_vscal4_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_vscal4_double.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_blas_vscal4_double.Tpo $(DEPDIR)/sse_blas_vscal4_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_blas_vscal4_double.cc' object='sse_blas_vscal4_double.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_blas_vscal4_double.obj `if test -f 'scalarsite_sse/sse_blas_vscal4_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_blas_vscal4_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_blas_vscal4_double.cc'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
