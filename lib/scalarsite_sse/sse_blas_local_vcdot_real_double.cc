@@ -1,15 +1,21 @@
-// $Id: sse_blas_local_vcdot_real_double.cc,v 1.1 2008-06-18 16:02:11 bjoo Exp $
+// $Id: sse_blas_local_vcdot_real_double.cc,v 1.2 2008-06-19 13:50:20 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
  *
  */
 
+#include <qdp.h>
 #include <xmmintrin.h>
 #include "scalarsite_sse/sse_blas_local_vcdot_real_double.h"
+#include <iostream>
 
 namespace QDP {
 
+  typedef union { 
+    double c[2];
+    __m128d vec;
+  } VDU;
 
   // Re < y^\dag , x > 
   // =  sum ( y.re x.re + y.im x.im )
@@ -28,22 +34,22 @@ namespace QDP {
   // 
   void local_vcdot_real4(REAL64 *sum, REAL64 *y, REAL64* x,int n_4spin)
 {
-  __m128d sum1;
+  volatile  __m128d sum1;
   __m128d tmp1;
   __m128d tmp2;
   __m128d tmp3;
 
-  __m128d sum2;
+  volatile __m128d sum2;
   __m128d tmp4;
   __m128d tmp5;
   __m128d tmp6;
 
-  __m128d sum3;
+  volatile __m128d sum3;
   __m128d tmp7;
   __m128d tmp8;
   __m128d tmp9;
 
-  __m128d sum4;
+  volatile __m128d sum4;
   __m128d tmp10;
   __m128d tmp11;
   __m128d tmp12;
@@ -51,6 +57,8 @@ namespace QDP {
   // Zero out sums
   sum1 = _mm_xor_pd(sum1,sum1); 
   sum2 = _mm_xor_pd(sum2,sum2); 
+  sum3 = _mm_xor_pd(sum3,sum3); 
+  sum4 = _mm_xor_pd(sum4,sum4); 
   
   double *x_p=x;
   double *y_p=y;
@@ -126,12 +134,18 @@ namespace QDP {
 
   }
 
+  // Accumulate into 2 vecs
   sum1 = _mm_add_pd(sum1,sum2);
   sum3 = _mm_add_pd(sum3,sum4);
+
+  // Accumulate into 1 vec
   sum1 = _mm_add_pd(sum1,sum3);
 
+  // Cross the vector and add
   tmp1 = _mm_shuffle_pd(sum1, sum1, 0x1);
   sum1 = _mm_add_pd(tmp1,sum1);
+
+  // Store either half
   _mm_storeh_pd(sum,sum1);
   
 }

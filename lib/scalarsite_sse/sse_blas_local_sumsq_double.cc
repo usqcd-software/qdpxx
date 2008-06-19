@@ -1,4 +1,4 @@
-// $Id: sse_blas_local_sumsq_double.cc,v 1.1 2008-06-18 16:02:11 bjoo Exp $
+// $Id: sse_blas_local_sumsq_double.cc,v 1.2 2008-06-19 13:50:20 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -16,10 +16,10 @@ namespace QDP {
 // #define DEBUG_VAXPY_DOUBLE
   void local_sumsq4(REAL64 *sum, REAL64 *vecptr, int n_4spin)
   {
-  __m128d sum1;
-  __m128d sum2;
-  __m128d sum3;
-  __m128d sum4;
+    volatile register __m128d sum1;
+    volatile register __m128d sum2;
+    volatile register __m128d sum3;
+    volatile register __m128d sum4;
 
   __m128d tmp1;
   __m128d tmp2;

@@ -1,4 +1,4 @@
-// $Id: sse_blas_vaxpbyz4_double.cc,v 1.1 2008-06-18 16:02:11 bjoo Exp $
+// $Id: sse_blas_vaxpbyz4_double.cc,v 1.2 2008-06-19 13:50:20 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -69,8 +69,6 @@ namespace QDP {
     
       _mm_prefetch((char *)(x_p+64), _MM_HINT_NTA);
       _mm_prefetch((char *)(y_p+64), _MM_HINT_NTA);
-
-        
 
       y1 = _mm_load_pd(y_p);
       x1 = _mm_load_pd(x_p);
