@@ -16,6 +16,11 @@ int main(int argc, char **argv)
 {
   // Initialize UnitTest jig
   TestRunner  tests(&argc, &argv, nrow_in);
+  QDPIO::cout << "Volume= { " << Layout::lattSize()[0]
+	      << " , " << Layout::lattSize()[1]
+	      << " , " << Layout::lattSize()[2]
+	      << " , " << Layout::lattSize()[3] << " } " << endl;
+
   tests.addTest(new testVaxpy4_1(), "testVaxpy4_1" );
   tests.addTest(new testVaxpy4_2(), "testVaxpy4_2" );
   tests.addTest(new testVaxpy4_3(), "testVaxpy4_3" );

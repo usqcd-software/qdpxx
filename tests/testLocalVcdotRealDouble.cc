@@ -19,14 +19,17 @@ testLocalVcdotReal4_1::run()
 {
 
   Double lsum_hand=Double(0);
+
   LatticeDiracFermionD3 x;
   LatticeDiracFermionD3 y;
+
   gaussian(x);
   gaussian(y);
 
 
   // Loop over sites
   for(int i=all.start(); i <= all.end(); i++) { 
+
     // Loop over spins
     for(int spin=0; spin < 4; spin++) {
       // Loop over colors (case 3 only) 
@@ -42,7 +45,6 @@ testLocalVcdotReal4_1::run()
     }
   }
 
-  Internal::globalSum(lsum_hand);
 
   Double lsum_opt=Double(0);
   REAL64* sumptr=&(lsum_opt.elem().elem().elem().elem());
@@ -50,7 +52,6 @@ testLocalVcdotReal4_1::run()
   REAL64* yptr = (REAL64 *)&(y.elem(all.start()).elem(0).elem(0).real());
   int n_4vec=all.end()-all.start()+1;
   local_vcdot_real4(sumptr, yptr, xptr, n_4vec);
-  Internal::globalSum(lsum_opt);
 
   Double diff = fabs(lsum_opt - lsum_hand);
   Double dof  = Double(Layout::vol()*4*3*2);

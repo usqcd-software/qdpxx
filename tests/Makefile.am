@@ -62,15 +62,16 @@ test_vaxpy_double_SOURCES = $(test_HDRS) \
 	testLocalVcdotRealDouble.cc \
 	testLocalVcdotDouble.h \
 	testLocalVcdotDouble.cc \
-	test_vaxpy_double.cc \
-	build_libs
+	test_vaxpy_double.cc
+test_vaxpy_double_DEPENDENCIES = build_libs
 
 
 time_vaxpy_double_SOURCES = $(test_HDRS) \
 	timeVaxpyDouble.h \
 	timeVaxpyDouble.cc \
-	time_vaxpy_double.cc \
-	build_libs
+	time_vaxpy_double.cc
+
+time_vaxpy_double_DEPENDENCIES = build_libs
 
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

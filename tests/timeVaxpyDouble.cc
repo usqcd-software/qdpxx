@@ -412,7 +412,7 @@ time_VAXPBY::run(void)
   swatch.start();
   
   for(int i=0; i < iters; ++i) {
-      vaxpbyz4(yptr, aptr, xptr, bptr, yptr, n_4vec);
+    vaxpbyz4(yptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   swatch.stop();
   time=swatch.getTimeInSeconds();

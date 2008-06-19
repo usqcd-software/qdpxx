@@ -183,6 +183,8 @@ testVaxpbyz4_3::run()
 }
 
 
+
+
 /* VAXMBY Variants */
 
 // Test 1. Check hand rolled against -- 'optimized'

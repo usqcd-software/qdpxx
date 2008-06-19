@@ -54,12 +54,10 @@ am_test_vaxpy_double_OBJECTS = $(am__objects_1) \
 test_vaxpy_double_OBJECTS = $(am_test_vaxpy_double_OBJECTS)
 test_vaxpy_double_LDADD = $(LDADD)
 am__DEPENDENCIES_1 =
-test_vaxpy_double_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_time_vaxpy_double_OBJECTS = $(am__objects_1) \
 	timeVaxpyDouble.$(OBJEXT) time_vaxpy_double.$(OBJEXT)
 time_vaxpy_double_OBJECTS = $(am_time_vaxpy_double_OBJECTS)
 time_vaxpy_double_LDADD = $(LDADD)
-time_vaxpy_double_DEPENDENCIES = $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)/include@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -226,15 +224,15 @@ test_vaxpy_double_SOURCES = $(test_HDRS) \
 	testLocalVcdotRealDouble.cc \
 	testLocalVcdotDouble.h \
 	testLocalVcdotDouble.cc \
-	test_vaxpy_double.cc \
-	build_libs
+	test_vaxpy_double.cc
 
+test_vaxpy_double_DEPENDENCIES = build_libs
 time_vaxpy_double_SOURCES = $(test_HDRS) \
 	timeVaxpyDouble.h \
 	timeVaxpyDouble.cc \
-	time_vaxpy_double.cc \
-	build_libs
+	time_vaxpy_double.cc
 
+time_vaxpy_double_DEPENDENCIES = build_libs
 all: all-am
 
 .SUFFIXES:
