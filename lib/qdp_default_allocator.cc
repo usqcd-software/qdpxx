@@ -1,4 +1,4 @@
-// $Id: qdp_default_allocator.cc,v 1.7 2008-05-13 20:00:17 bjoo Exp $
+// $Id: qdp_default_allocator.cc,v 1.8 2008-06-19 13:50:38 bjoo Exp $
 /*! @file
  * @brief QCDOC memory allocator
  */
@@ -67,9 +67,16 @@ namespace Allocator {
     //! The aligned pointer that we make out of the unaligned one.
     unsigned char *aligned;
 
+    size_t bytes_to_alloc;
+    bytes_to_alloc = n_bytes;
+    if ( n_bytes % (32*1024) == 0 ) { 
+      bytes_to_alloc += 128; // 2 lines bytes to kill cache aliasing
+    }
+    bytes_to_alloc += QDP_ALIGNMENT_SIZE;
+
     // Try and allocate the memory
     try { 
-      unaligned = new unsigned char[ n_bytes + QDP_ALIGNMENT_SIZE ];
+      unaligned = new unsigned char[ bytes_to_alloc ];
     }
     catch( std::bad_alloc ) { 
       QDPIO::cerr << "Unable to allocate memory in allocate()" << endl;
@@ -86,7 +93,7 @@ namespace Allocator {
 
     // Insert into the map
     InsertRetVal r = the_alignment_map.insert(
-      make_pair(aligned, MapVal(unaligned, info.func, info.line, n_bytes)));
+      make_pair(aligned, MapVal(unaligned, info.func, info.line, bytes_to_alloc)));
 #else
     // Insert into the map
     InsertRetVal r = the_alignment_map.insert(make_pair(aligned, unaligned));
