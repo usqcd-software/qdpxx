@@ -1,3 +1,8 @@
+2008-06-20 16:03  bjoo
+
+	* include/scalarsite_sse/sse_blas_vaypx4_double.h: VAYPX
+	  instruction
+
 2008-06-19 17:18  detar
 
 	* other_libs/qio/lib/qio/QIO_host_file_conversion.c: Correct
