@@ -1,3 +1,33 @@
+2008-06-23 16:29  bjoo
+
+	* tests/test_matmat_double.cc: Oops
+
+2008-06-23 16:27  bjoo
+
+	* tests/: testVaypxDouble.cc, testVaypxDouble.h: Added
+
+2008-06-23 16:25  bjoo
+
+	* include/scalarsite_sse/sse_linalg_mm_su3_double.h:
+	  sse_linalg_mm_su3_double.h Oops
+
+2008-06-23 16:22  bjoo
+
+	* tests/: Makefile.am, testMatPeqMatDouble.cc,
+	  testMatPeqMatDouble.h, testMatScalMultDouble.cc,
+	  testMatScalMultDouble.h: Added tests for M+=M and M*=scalar
+
+2008-06-23 16:20  bjoo
+
+	* include/Makefile.am: Makefile.am
+
+2008-06-23 16:19  bjoo
+
+	* lib/: Makefile.am,
+	  scalarsite_sse/sse_linalg_m_eq_scal_m_double.cc,
+	  scalarsite_sse/sse_linalg_m_peq_m_double.cc: Added mat+=mat, mat
+	  *= scalar
+
 2008-06-23 10:19  bjoo
 
 	* include/Makefile.am,
