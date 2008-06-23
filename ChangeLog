@@ -1,3 +1,22 @@
+2008-06-23 10:19  bjoo
+
+	* include/Makefile.am,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_dble.h,
+	  include/scalarsite_sse/sse_blas_vaxmbyz4_double.h,
+	  include/scalarsite_sse/sse_blas_vaxmyz4_double.h,
+	  include/scalarsite_sse/sse_blas_vaxpbyz4_double.h,
+	  lib/Makefile.am, lib/scalarsite_sse/sse_blas_vaxmbyz4_double.cc,
+	  lib/scalarsite_sse/sse_blas_vaxmyz4_double.cc,
+	  lib/scalarsite_sse/sse_blas_vaxpbyz4_double.cc,
+	  lib/scalarsite_sse/sse_blas_vaxpy4_double.cc,
+	  lib/scalarsite_sse/sse_blas_vaypx4_double.cc, tests/Makefile.am,
+	  tests/testVaxmyDouble.cc, tests/testVaxmyDouble.h,
+	  tests/testVaxpbyDouble.cc, tests/testVaxpbyDouble.h,
+	  tests/testVaxpyDouble.cc, tests/test_vaxpy_double.cc,
+	  tests/testvol.h, tests/timeVaxpyDouble.cc,
+	  tests/timeVaxpyDouble.h, tests/time_vaxpy_double.cc: OK Bring
+	  everything up to date
+
 2008-06-20 16:03  bjoo
 
 	* include/scalarsite_sse/sse_blas_vaypx4_double.h: VAYPX
