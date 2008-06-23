@@ -40,7 +40,7 @@ endif
 #
 # The programs to build
 # 
-check_PROGRAMS = test_vaxpy_double time_vaxpy_double
+check_PROGRAMS = test_vaxpy_double time_vaxpy_double test_matmat_double
 
 
 # The program and its dependencies
@@ -74,6 +74,14 @@ time_vaxpy_double_SOURCES = $(test_HDRS) \
 	time_vaxpy_double.cc
 
 time_vaxpy_double_DEPENDENCIES = build_libs
+
+test_matmat_double_SOURCES = test_matmat_double.cc \
+	testMatScalMultDouble.h \
+	testMatScalMultDouble.cc \
+	testMatPeqMatDouble.h \
+	testMatPeqMatDouble.cc
+
+test_matmat_double_DEPENDENCIES = build_libs
 
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

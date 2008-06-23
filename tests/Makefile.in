@@ -33,7 +33,8 @@ POST_UNINSTALL = :
 @BUILD_LIBINTRIN_TRUE@	-I@top_builddir@/other_libs/@LIBINTRIN_DIR@/include
 @BUILD_LIBINTRIN_TRUE@am__append_2 = -L@top_builddir@/other_libs/libintrin/lib
 @BUILD_LIBINTRIN_TRUE@am__append_3 = -lintrin
-check_PROGRAMS = test_vaxpy_double$(EXEEXT) time_vaxpy_double$(EXEEXT)
+check_PROGRAMS = test_vaxpy_double$(EXEEXT) time_vaxpy_double$(EXEEXT) \
+	test_matmat_double$(EXEEXT)
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -44,6 +45,11 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/include/qdp_config_internal.h
 CONFIG_CLEAN_FILES =
+am_test_matmat_double_OBJECTS = test_matmat_double.$(OBJEXT) \
+	testMatScalMultDouble.$(OBJEXT) testMatPeqMatDouble.$(OBJEXT)
+test_matmat_double_OBJECTS = $(am_test_matmat_double_OBJECTS)
+test_matmat_double_LDADD = $(LDADD)
+am__DEPENDENCIES_1 =
 am__objects_1 =
 am_test_vaxpy_double_OBJECTS = $(am__objects_1) \
 	testVaypxDouble.$(OBJEXT) testVaxpyDouble.$(OBJEXT) \
@@ -53,7 +59,6 @@ am_test_vaxpy_double_OBJECTS = $(am__objects_1) \
 	testLocalVcdotDouble.$(OBJEXT) test_vaxpy_double.$(OBJEXT)
 test_vaxpy_double_OBJECTS = $(am_test_vaxpy_double_OBJECTS)
 test_vaxpy_double_LDADD = $(LDADD)
-am__DEPENDENCIES_1 =
 am_time_vaxpy_double_OBJECTS = $(am__objects_1) \
 	timeVaxpyDouble.$(OBJEXT) time_vaxpy_double.$(OBJEXT)
 time_vaxpy_double_OBJECTS = $(am_time_vaxpy_double_OBJECTS)
@@ -70,9 +75,10 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(test_vaxpy_double_SOURCES) $(time_vaxpy_double_SOURCES)
-DIST_SOURCES = $(test_vaxpy_double_SOURCES) \
+SOURCES = $(test_matmat_double_SOURCES) $(test_vaxpy_double_SOURCES) \
 	$(time_vaxpy_double_SOURCES)
+DIST_SOURCES = $(test_matmat_double_SOURCES) \
+	$(test_vaxpy_double_SOURCES) $(time_vaxpy_double_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -235,6 +241,13 @@ time_vaxpy_double_SOURCES = $(test_HDRS) \
 	time_vaxpy_double.cc
 
 time_vaxpy_double_DEPENDENCIES = build_libs
+test_matmat_double_SOURCES = test_matmat_double.cc \
+	testMatScalMultDouble.h \
+	testMatScalMultDouble.cc \
+	testMatPeqMatDouble.h \
+	testMatPeqMatDouble.cc
+
+test_matmat_double_DEPENDENCIES = build_libs
 all: all-am
 
 .SUFFIXES:
@@ -271,6 +284,9 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 
 clean-checkPROGRAMS:
 	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+test_matmat_double$(EXEEXT): $(test_matmat_double_OBJECTS) $(test_matmat_double_DEPENDENCIES) 
+	@rm -f test_matmat_double$(EXEEXT)
+	$(CXXLINK) $(test_matmat_double_OBJECTS) $(test_matmat_double_LDADD) $(LIBS)
 test_vaxpy_double$(EXEEXT): $(test_vaxpy_double_OBJECTS) $(test_vaxpy_double_DEPENDENCIES) 
 	@rm -f test_vaxpy_double$(EXEEXT)
 	$(CXXLINK) $(test_vaxpy_double_OBJECTS) $(test_vaxpy_double_LDADD) $(LIBS)
@@ -287,11 +303,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testLocalSumSqDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testLocalVcdotDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testLocalVcdotRealDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testMatPeqMatDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testMatScalMultDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVScalDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaxmyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaxpbyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaxpyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaypxDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_matmat_double.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_vaxpy_double.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeVaxpyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/time_vaxpy_double.Po@am__quote@
