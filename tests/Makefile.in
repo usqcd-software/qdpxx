@@ -46,9 +46,9 @@ CONFIG_HEADER = $(top_builddir)/include/qdp_config_internal.h
 CONFIG_CLEAN_FILES =
 am__objects_1 =
 am_test_vaxpy_double_OBJECTS = $(am__objects_1) \
-	testVaxpyDouble.$(OBJEXT) testVaxmyDouble.$(OBJEXT) \
-	testVaxpbyDouble.$(OBJEXT) testVScalDouble.$(OBJEXT) \
-	testLocalSumSqDouble.$(OBJEXT) \
+	testVaypxDouble.$(OBJEXT) testVaxpyDouble.$(OBJEXT) \
+	testVaxmyDouble.$(OBJEXT) testVaxpbyDouble.$(OBJEXT) \
+	testVScalDouble.$(OBJEXT) testLocalSumSqDouble.$(OBJEXT) \
 	testLocalVcdotRealDouble.$(OBJEXT) \
 	testLocalVcdotDouble.$(OBJEXT) test_vaxpy_double.$(OBJEXT)
 test_vaxpy_double_OBJECTS = $(am_test_vaxpy_double_OBJECTS)
@@ -210,6 +210,8 @@ test_HDRS = unittest.h \
 	testvol.h
 
 test_vaxpy_double_SOURCES = $(test_HDRS) \
+	testVaypxDouble.h \
+	testVaypxDouble.cc \
 	testVaxpyDouble.h \
 	testVaxpyDouble.cc \
 	testVaxmyDouble.h \
@@ -289,6 +291,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaxmyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaxpbyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaxpyDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testVaypxDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_vaxpy_double.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeVaxpyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/time_vaxpy_double.Po@am__quote@

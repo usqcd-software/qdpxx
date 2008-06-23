@@ -1,4 +1,4 @@
-// $Id: sse_blas_vaxpy4_double.cc,v 1.2 2008-06-19 13:50:20 bjoo Exp $
+// $Id: sse_blas_vaxpy4_double.cc,v 1.3 2008-06-23 14:19:43 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -44,190 +44,90 @@ void vaxpy4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, int n_4spin)
   tmp1 = _mm_shuffle_pd(scalar, scalar, 0x1);
   scalar = _mm_add_pd(scalar, tmp1);
 
-  //QDPIO::cout << "In Balints Routine" << endl;
-
   double *in_p=InScale;
   double *out_p=Out;
 
  
   // We are dealing with n_4 spin 4spinor. 
   // 4 spinors 
-  add1 = _mm_load_pd(out_p);
-  in1  = _mm_load_pd(in_p);
-  tmp1 = _mm_mul_pd(scalar, in1);
-  out1 = _mm_add_pd(tmp1,add1);
 
-  
-  add2 = _mm_load_pd(out_p+2);
-  in2  = _mm_load_pd(in_p+2);
-  tmp2 = _mm_mul_pd(scalar, in2);
-  out2 = _mm_add_pd(tmp2,add2);
-
-
-  add3 = _mm_load_pd(out_p+4);
-  in3 = _mm_load_pd(in_p+4);
-  tmp3 = _mm_mul_pd(scalar, in3);
-  out3 = _mm_add_pd(tmp3,add3);
-
-  _mm_store_pd(out_p, out1);
-
-  add1 = _mm_load_pd(out_p+6);
-  in1  = _mm_load_pd(in_p+6);
-  tmp1 = _mm_mul_pd(scalar, in1);
-  out1 = _mm_add_pd(tmp1,add1);
-  
-  _mm_store_pd(out_p+2, out2);
-  
-  add2 = _mm_load_pd(out_p+8);
-  in2  = _mm_load_pd(in_p+8);
-  tmp2 = _mm_mul_pd(scalar, in2);
-  out2 = _mm_add_pd(tmp2,add2);
-  
-  _mm_store_pd(out_p+4, out3);
-  
-  add3 = _mm_load_pd(out_p+10);
-  in3 = _mm_load_pd(in_p+10);
-  tmp3 = _mm_mul_pd(scalar, in3);
-  out3 = _mm_add_pd(tmp3,add3);
-  
-  _mm_store_pd(out_p+6, out1);
-  
-  add1 = _mm_load_pd(out_p+12);
-  in1  = _mm_load_pd(in_p+12);
-  tmp1 = _mm_mul_pd(scalar, in1);
-  out1 = _mm_add_pd(tmp1,add1);
-
-  _mm_store_pd(out_p+8, out2);
-  
-  add2 = _mm_load_pd(out_p+14);
-  in2  = _mm_load_pd(in_p+14);
-  tmp2 = _mm_mul_pd(scalar, in2);
-  out2 = _mm_add_pd(tmp2,add2);
-  
-  _mm_store_pd(out_p+10, out3);
-  
-  add3 = _mm_load_pd(out_p+16);
-  in3 = _mm_load_pd(in_p+16);
-  tmp3 = _mm_mul_pd(scalar, in3);
-  out3 = _mm_add_pd(tmp3,add3);
-  
-  _mm_store_pd(out_p+12, out1);
-  
-  add1 = _mm_load_pd(out_p+18);
-  in1  = _mm_load_pd(in_p+18);
-  tmp1 = _mm_mul_pd(scalar, in1);
-  out1 = _mm_add_pd(tmp1,add1);
-  
-  _mm_store_pd(out_p+14, out2);
-  
-  add2 = _mm_load_pd(out_p+20);
-  in2  = _mm_load_pd(in_p+20);
-  tmp2 = _mm_mul_pd(scalar, in2);
-  out2 = _mm_add_pd(tmp2,add2);
-  
-  _mm_store_pd(out_p+16, out3);
-  
-  add3 = _mm_load_pd(out_p+22);
-  in3 = _mm_load_pd(in_p+22);
-  tmp3 = _mm_mul_pd(scalar, in3);
-  out3 = _mm_add_pd(tmp3,add3);
-  
-  out_p+=24; in_p+=24;
-
-  for(int i=0; i < n_4spin-1; i++) { 
-    _mm_store_pd(out_p-6, out1);
-
+  for(int i=0; i < n_4spin; i++) { 
     add1 = _mm_load_pd(out_p);
     in1  = _mm_load_pd(in_p);
     tmp1 = _mm_mul_pd(scalar, in1);
     out1 = _mm_add_pd(tmp1,add1);
+    _mm_store_pd(out_p, out1);
 
-    _mm_store_pd(out_p-4, out2);
 
     add2 = _mm_load_pd(out_p+2);
     in2  = _mm_load_pd(in_p+2);
     tmp2 = _mm_mul_pd(scalar, in2);
     out2 = _mm_add_pd(tmp2,add2);
-    
-    _mm_store_pd(out_p-2, out3);
+    _mm_store_pd(out_p+2, out2);
 
     add3 = _mm_load_pd(out_p+4);
     in3 = _mm_load_pd(in_p+4);
     tmp3 = _mm_mul_pd(scalar, in3);
     out3 = _mm_add_pd(tmp3,add3);
-
-    _mm_store_pd(out_p, out1);
+    _mm_store_pd(out_p+4, out3);
 
     add1 = _mm_load_pd(out_p+6);
     in1  = _mm_load_pd(in_p+6);
     tmp1 = _mm_mul_pd(scalar, in1);
     out1 = _mm_add_pd(tmp1,add1);
-
-    _mm_store_pd(out_p+2, out2);
+    _mm_store_pd(out_p+6, out1);
 
     add2 = _mm_load_pd(out_p+8);
     in2  = _mm_load_pd(in_p+8);
     tmp2 = _mm_mul_pd(scalar, in2);
     out2 = _mm_add_pd(tmp2,add2);
-
-    _mm_store_pd(out_p+4, out3);
+    _mm_store_pd(out_p+8, out2);
 
     add3 = _mm_load_pd(out_p+10);
     in3 = _mm_load_pd(in_p+10);
     tmp3 = _mm_mul_pd(scalar, in3);
     out3 = _mm_add_pd(tmp3,add3);
-
-    _mm_store_pd(out_p+6, out1);
+    _mm_store_pd(out_p+10, out3);
 
     add1 = _mm_load_pd(out_p+12);
     in1  = _mm_load_pd(in_p+12);
     tmp1 = _mm_mul_pd(scalar, in1);
     out1 = _mm_add_pd(tmp1,add1);
-
-    _mm_store_pd(out_p+8, out2);
+    _mm_store_pd(out_p+12, out1);
 
     add2 = _mm_load_pd(out_p+14);
     in2  = _mm_load_pd(in_p+14);
     tmp2 = _mm_mul_pd(scalar, in2);
     out2 = _mm_add_pd(tmp2,add2);
-
-    _mm_store_pd(out_p+10, out3);
+    _mm_store_pd(out_p+14, out2);
 
     add3 = _mm_load_pd(out_p+16);
     in3 = _mm_load_pd(in_p+16);
     tmp3 = _mm_mul_pd(scalar, in3);
     out3 = _mm_add_pd(tmp3,add3);
-
-    _mm_store_pd(out_p+12, out1);
+    _mm_store_pd(out_p+16, out3);
 
     add1 = _mm_load_pd(out_p+18);
     in1  = _mm_load_pd(in_p+18);
     tmp1 = _mm_mul_pd(scalar, in1);
     out1 = _mm_add_pd(tmp1,add1);
-
-    _mm_store_pd(out_p+14, out2);
+    _mm_store_pd(out_p+18, out1);
 
     add2 = _mm_load_pd(out_p+20);
     in2  = _mm_load_pd(in_p+20);
     tmp2 = _mm_mul_pd(scalar, in2);
     out2 = _mm_add_pd(tmp2,add2);
-
-    _mm_store_pd(out_p+16, out3);
+    _mm_store_pd(out_p+20, out2);
 
     add3 = _mm_load_pd(out_p+22);
     in3 = _mm_load_pd(in_p+22);
     tmp3 = _mm_mul_pd(scalar, in3);
     out3 = _mm_add_pd(tmp3,add3);
-
+    _mm_store_pd(out_p+22, out3);
 
     out_p+=24; in_p+=24;
 
   }
-
-  _mm_store_pd(out_p-6, out1);
-  _mm_store_pd(out_p-4, out2);
-  _mm_store_pd(out_p-2, out3);
-
 }
 
 

@@ -5,6 +5,293 @@ using namespace std;
 
 static double N_SECS=10;
 
+// Allocate 2 vectors. First vector should be cache aligned.
+// Second vector should follow the first vector immediately, unless
+// this would lead to thrashing in which case it should be displaced
+// by 1 line (64 bytes).
+void* alloc_cache_aligned_2vec(unsigned num_sites, REAL64** x, REAL64 **y)
+{
+  // Opteron L1 cache is 64Kb 
+  unsigned long cache_alignment=64*1024;
+  unsigned long bytes_per_vec=num_sites*4*3*2*sizeof(double);
+
+  // Allocate contiguously both vectors + cache aligment
+  unsigned long bytes_to_alloc=2*bytes_per_vec+cache_alignment-1;
+  unsigned long pad = 0;
+
+  // If a vector is exactly a multiple of 64Kb add in a 64 (1 line) byte pad.
+  if( bytes_per_vec % cache_alignment == 0 ) {
+    //    pad+=64;
+  }
+
+  REAL64 *ret_val = (REAL64*)malloc(bytes_to_alloc+pad);
+  if( ret_val == 0 ) { 
+    QDPIO::cout << "Failed to allocate memory" << endl;
+    QDP_abort(1);
+  }
+
+  // Now align x
+  *x = (REAL64 *)((((ptrdiff_t)(ret_val))+(cache_alignment-1))&(-cache_alignment));
+  *y = (REAL64 *)(((ptrdiff_t)(*x))+bytes_per_vec+pad);
+
+#if 0  
+  QDPIO::cout << "x is at " << (unsigned long)(*x) << endl;
+  QDPIO::cout << "x % cache_alignment = " << (unsigned long)(*x) % cache_alignment << endl;
+  QDPIO::cout << "pad is " << pad << endl;
+  QDPIO::cout << "veclen=" << bytes_per_vec << endl;
+  QDPIO::cout << "y starts at " << (unsigned long)(*y) << endl;
+#endif
+
+  return ret_val;
+
+}
+
+// Allocate 2 vectors. First vector should be cache aligned.
+// Second vector should follow the first vector immediately, unless
+// this would lead to thrashing in which case it should be displaced
+// by 1 line (64 bytes).
+void* alloc_cache_aligned_3vec(unsigned num_sites, REAL64** x, REAL64 **y, REAL64** z)
+{
+  // Opteron L1 cache is 64Kb 
+  unsigned long cache_alignment=64*1024;
+  unsigned long bytes_per_vec=num_sites*4*3*2*sizeof(double);
+
+  // Allocate contiguously both vectors + cache aligment
+  unsigned long bytes_to_alloc=3*bytes_per_vec+cache_alignment-1;
+  unsigned long pad = 0;
+
+  // If a vector is exactly a multiple of 64Kb add in a 64 (1 line) byte pad.
+  if( bytes_per_vec % cache_alignment == 0 ) {
+    //    pad+=64;
+  }
+
+  REAL64 *ret_val = (REAL64*)malloc(bytes_to_alloc+pad);
+  if( ret_val == 0 ) { 
+    QDPIO::cout << "Failed to allocate memory" << endl;
+    QDP_abort(1);
+  }
+
+  // Now align x
+  *x = (REAL64 *)((((ptrdiff_t)(ret_val))+(cache_alignment-1))&(-cache_alignment));
+  *y = (REAL64 *)(((ptrdiff_t)(*x))+bytes_per_vec+pad);
+  *z = (REAL64 *)(((ptrdiff_t)(*y))+bytes_per_vec+pad);
+  
+  QDPIO::cout << "x is at " << (unsigned long)(*x) << endl;
+  QDPIO::cout << "x % cache_alignment = " << (unsigned long)(*x) % cache_alignment << endl;
+  QDPIO::cout << "pad is " << pad << endl;
+  QDPIO::cout << "veclen=" << bytes_per_vec << endl;
+  QDPIO::cout << "y starts at " << (unsigned long)(*y) << endl;
+  QDPIO::cout << "z starts at " << (unsigned long)(*y) << endl;
+  
+  return ret_val;
+
+}
+
+// VAXPBY kernel (z aliases y): y = ax + by 
+void
+time_VAXPBY::run(void) 
+{
+
+  LatticeDiracFermionD3 x;
+  LatticeDiracFermionD3 y;
+
+  Double a = Double(2.3);
+  Double b = Double(0.5);
+
+  // REAL64* xptr = (REAL64 *)&(x.elem(all.start()).elem(0).elem(0).real());
+  // REAL64* yptr = (REAL64 *)&(y.elem(all.start()).elem(0).elem(0).real());
+  REAL64 ar = a.elem().elem().elem().elem();
+
+  REAL64* xptr;
+  REAL64* yptr;
+  REAL64* top;
+
+  int n_4vec = (all.end() - all.start() + 1);
+  top = (REAL64 *)alloc_cache_aligned_2vec(n_4vec, &xptr, &yptr);
+
+  REAL64* aptr = &ar;
+
+  REAL64 br = b.elem().elem().elem().elem();
+  REAL64* bptr = &ar;
+
+
+  gaussian(x);
+  gaussian(y);
+
+  /* Copy x into x_ptr, y into y_ptr */
+  REAL64 *f_x = xptr;
+  REAL64 *f_y = yptr;
+
+  for(int site=all.start(); site <= all.end(); site++) { 
+    for(int spin=0; spin < 4; spin++) {
+      for(int col=0; col < 3; col++) { 
+	*f_x = x.elem(site).elem(spin).elem(col).real();
+	*f_y = y.elem(site).elem(spin).elem(col).real();
+	f_x++;
+	f_y++;
+	*f_x = x.elem(site).elem(spin).elem(col).imag();
+	*f_y = y.elem(site).elem(spin).elem(col).imag();
+	f_x++;
+	f_y++;
+      }
+    }
+  }
+
+  QDPIO::cout << endl << "Timing VAXPBY4 (aliased) Kernel " <<endl;
+
+  StopWatch swatch;
+  double n_secs = N_SECS;
+  int iters=1;
+  double time=0;
+  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
+  do {
+    swatch.reset();
+    swatch.start();
+    
+    for(int i=0; i < iters; i++) { 
+      vaxpby4(yptr, aptr, xptr, bptr, n_4vec);
+    }
+    swatch.stop();
+    time=swatch.getTimeInSeconds();
+
+    // Average time over nodes
+    Internal::globalSum(time);
+    time /= (double)Layout::numNodes();
+
+    if (time < n_secs) {
+      iters *=2;
+      QDPIO::cout << "." << flush;
+    }
+  }
+  while ( time < (double)n_secs );
+      
+  QDPIO::cout << endl;
+  QDPIO::cout << "\t Timing with " << iters << " counts" << endl;
+
+  swatch.reset();
+  swatch.start();
+  
+  for(int i=0; i < iters; ++i) {
+    vaxpby4(yptr, aptr, xptr, bptr, n_4vec);
+  }
+  swatch.stop();
+  time=swatch.getTimeInSeconds();
+
+  // Average time over nodes
+  Internal::globalSum(time);
+  time /= (double)Layout::numNodes();
+  time /= (double)iters;
+
+  double flops=(double)(6*Nc*Ns*Layout::vol());
+  double perf=(flops/time)/(double)(1024*1024);
+  QDPIO::cout << "VAXPBY4 (aliased) Kernel: " << perf << " Mflops" << endl;
+
+  free(top);
+}
+
+// VAXPBY kernel (z aliases y): y = ax + by 
+void
+time_VAXMBY::run(void) 
+{
+
+  LatticeDiracFermionD3 x;
+  LatticeDiracFermionD3 y;
+
+  Double a = Double(2.3);
+  Double b = Double(0.5);
+
+  // REAL64* xptr = (REAL64 *)&(x.elem(all.start()).elem(0).elem(0).real());
+  // REAL64* yptr = (REAL64 *)&(y.elem(all.start()).elem(0).elem(0).real());
+  REAL64 ar = a.elem().elem().elem().elem();
+
+  REAL64* xptr;
+  REAL64* yptr;
+  REAL64* top;
+
+  int n_4vec = (all.end() - all.start() + 1);
+  top = (REAL64 *)alloc_cache_aligned_2vec(n_4vec, &xptr, &yptr);
+
+  REAL64* aptr = &ar;
+
+  REAL64 br = b.elem().elem().elem().elem();
+  REAL64* bptr = &ar;
+
+
+  gaussian(x);
+  gaussian(y);
+
+  /* Copy x into x_ptr, y into y_ptr */
+  REAL64 *f_x = xptr;
+  REAL64 *f_y = yptr;
+
+  for(int site=all.start(); site <= all.end(); site++) { 
+    for(int spin=0; spin < 4; spin++) {
+      for(int col=0; col < 3; col++) { 
+	*f_x = x.elem(site).elem(spin).elem(col).real();
+	*f_y = y.elem(site).elem(spin).elem(col).real();
+	f_x++;
+	f_y++;
+	*f_x = x.elem(site).elem(spin).elem(col).imag();
+	*f_y = y.elem(site).elem(spin).elem(col).imag();
+	f_x++;
+	f_y++;
+      }
+    }
+  }
+
+  QDPIO::cout << endl << "Timing VAXMBY4 (aliased) Kernel " <<endl;
+
+  StopWatch swatch;
+  double n_secs = N_SECS;
+  int iters=1;
+  double time=0;
+  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
+  do {
+    swatch.reset();
+    swatch.start();
+    
+    for(int i=0; i < iters; i++) { 
+      vaxmby4(yptr, aptr, xptr, bptr, n_4vec);
+    }
+    swatch.stop();
+    time=swatch.getTimeInSeconds();
+
+    // Average time over nodes
+    Internal::globalSum(time);
+    time /= (double)Layout::numNodes();
+
+    if (time < n_secs) {
+      iters *=2;
+      QDPIO::cout << "." << flush;
+    }
+  }
+  while ( time < (double)n_secs );
+      
+  QDPIO::cout << endl;
+  QDPIO::cout << "\t Timing with " << iters << " counts" << endl;
+
+  swatch.reset();
+  swatch.start();
+  
+  for(int i=0; i < iters; ++i) {
+    vaxpby4(yptr, aptr, xptr, bptr, n_4vec);
+  }
+  swatch.stop();
+  time=swatch.getTimeInSeconds();
+
+  // Average time over nodes
+  Internal::globalSum(time);
+  time /= (double)Layout::numNodes();
+  time /= (double)iters;
+
+  double flops=(double)(6*Nc*Ns*Layout::vol());
+  double perf=(flops/time)/(double)(1024*1024);
+  QDPIO::cout << "VAXMBY4 (aliased) Kernel: " << perf << " Mflops" << endl;
+
+  free(top);
+}
+
+
 // AXPY kernel (vaxpy4): y = ax + y (or y += ax)
 void
 time_VAXPY::run(void) 
@@ -13,13 +300,36 @@ time_VAXPY::run(void)
   LatticeDiracFermionD3 x;
   LatticeDiracFermionD3 y;
   Double a = Double(2.3);
-  REAL64* xptr = (REAL64 *)&(x.elem(all.start()).elem(0).elem(0).real());
-  REAL64* yptr = (REAL64 *)&(y.elem(all.start()).elem(0).elem(0).real());
+  REAL64* xptr;
+  REAL64* yptr;
+  REAL64* top;
+
   REAL64 ar = a.elem().elem().elem().elem();
   REAL64* aptr = &ar;
   int n_4vec = (all.end() - all.start() + 1);
+  top = (REAL64 *)alloc_cache_aligned_2vec(n_4vec, &xptr, &yptr);
+
   gaussian(x);
   gaussian(y);
+
+  /* Copy x into x_ptr, y into y_ptr */
+  REAL64 *f_x = xptr;
+  REAL64 *f_y = yptr;
+
+  for(int site=all.start(); site <= all.end(); site++) { 
+    for(int spin=0; spin < 4; spin++) {
+      for(int col=0; col < 3; col++) { 
+	*f_x = x.elem(site).elem(spin).elem(col).real();
+	*f_y = y.elem(site).elem(spin).elem(col).real();
+	f_x++;
+	f_y++;
+	*f_x = x.elem(site).elem(spin).elem(col).imag();
+	*f_y = y.elem(site).elem(spin).elem(col).imag();
+	f_x++;
+	f_y++;
+      }
+    }
+  }
 
   QDPIO::cout << endl <<  "\t Timing VAXPY4 Kernel " <<endl;
 
@@ -69,7 +379,185 @@ time_VAXPY::run(void)
   double flops=(double)(4*Nc*Ns*Layout::vol());
   double perf=(flops/time)/(double)(1024*1024);
   QDPIO::cout << "VAXPY4 Kernel: " << perf << " Mflops" << endl;
+  free(top);
+}
 
+// VAXMYZ kernel z aliases y (vaxmyz4): y = ax - y 
+void
+time_VAXMY::run(void) 
+{
+
+  LatticeDiracFermionD3 x;
+  LatticeDiracFermionD3 y;
+  Double a = Double(2.3);
+  REAL64* xptr;
+  REAL64* yptr;
+  REAL64* top;
+
+  REAL64 ar = a.elem().elem().elem().elem();
+  REAL64* aptr = &ar;
+  int n_4vec = (all.end() - all.start() + 1);
+  top = (REAL64 *)alloc_cache_aligned_2vec(n_4vec, &xptr, &yptr);
+
+  gaussian(x);
+  gaussian(y);
+  /* Copy x into x_ptr, y into y_ptr */
+  REAL64 *f_x = xptr;
+  REAL64 *f_y = yptr;
+
+  for(int site=all.start(); site <= all.end(); site++) { 
+    for(int spin=0; spin < 4; spin++) {
+      for(int col=0; col < 3; col++) { 
+	*f_x = x.elem(site).elem(spin).elem(col).real();
+	*f_y = y.elem(site).elem(spin).elem(col).real();
+	f_x++;
+	f_y++;
+	*f_x = x.elem(site).elem(spin).elem(col).imag();
+	*f_y = y.elem(site).elem(spin).elem(col).imag();
+	f_x++;
+	f_y++;
+      }
+    }
+  }
+
+  QDPIO::cout << endl << "\t Timing VAXMY4 Kernel " <<endl;
+
+  StopWatch swatch;
+  double n_secs = N_SECS;
+  int iters=1;
+  double time=0;
+  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
+  do {
+    swatch.reset();
+    swatch.start();
+    
+    for(int i=0; i < iters; i++) { 
+      vaxmy4(yptr, aptr, xptr, n_4vec);
+    }
+    swatch.stop();
+    time=swatch.getTimeInSeconds();
+
+    // Average time over nodes
+    Internal::globalSum(time);
+    time /= (double)Layout::numNodes();
+
+    if (time < n_secs) {
+      iters *=2;
+      QDPIO::cout << "." << flush;
+    }
+  }
+  while ( time < (double)n_secs );
+      
+  QDPIO::cout << endl;
+  QDPIO::cout << "\t Timing with " << iters << " counts" << endl;
+
+  swatch.reset();
+  swatch.start();
+  
+  for(int i=0; i < iters; ++i) {
+    vaxmy4(yptr, aptr, xptr, n_4vec);
+  }
+  swatch.stop();
+  time=swatch.getTimeInSeconds();
+
+  // Average time over nodes
+  Internal::globalSum(time);
+  time /= (double)Layout::numNodes();
+  time /= (double)iters;
+
+  double flops=(double)(4*Nc*Ns*Layout::vol());
+  double perf=(flops/time)/(double)(1024*1024);
+  QDPIO::cout << "VAXMY4 Kernel (aliased): " << perf << " Mflops" << endl;
+  free(top);
+}
+
+// VAYPX  (vaypx4):  y = x + ay 
+void
+time_VAYPX::run(void) 
+{
+
+  LatticeDiracFermionD3 x;
+  LatticeDiracFermionD3 y;
+  Double a = Double(2.3);
+  REAL64* xptr;
+  REAL64* yptr;
+  REAL64* top;
+
+  REAL64 ar = a.elem().elem().elem().elem();
+  REAL64* aptr = &ar;
+  int n_4vec = (all.end() - all.start() + 1);
+  top = (REAL64 *)alloc_cache_aligned_2vec(n_4vec, &xptr, &yptr);
+
+  gaussian(x);
+  gaussian(y);
+  /* Copy x into x_ptr, y into y_ptr */
+  REAL64 *f_x = xptr;
+  REAL64 *f_y = yptr;
+
+  for(int site=all.start(); site <= all.end(); site++) { 
+    for(int spin=0; spin < 4; spin++) {
+      for(int col=0; col < 3; col++) { 
+	*f_x = x.elem(site).elem(spin).elem(col).real();
+	*f_y = y.elem(site).elem(spin).elem(col).real();
+	f_x++;
+	f_y++;
+	*f_x = x.elem(site).elem(spin).elem(col).imag();
+	*f_y = y.elem(site).elem(spin).elem(col).imag();
+	f_x++;
+	f_y++;
+      }
+    }
+  }
+
+  QDPIO::cout << endl << "\t Timing VAYPX4 Kernel " <<endl;
+
+  StopWatch swatch;
+  double n_secs = N_SECS;
+  int iters=1;
+  double time=0;
+  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
+  do {
+    swatch.reset();
+    swatch.start();
+    
+    for(int i=0; i < iters; i++) { 
+      vaypx4(yptr, aptr, xptr, n_4vec);
+    }
+    swatch.stop();
+    time=swatch.getTimeInSeconds();
+
+    // Average time over nodes
+    Internal::globalSum(time);
+    time /= (double)Layout::numNodes();
+
+    if (time < n_secs) {
+      iters *=2;
+      QDPIO::cout << "." << flush;
+    }
+  }
+  while ( time < (double)n_secs );
+      
+  QDPIO::cout << endl;
+  QDPIO::cout << "\t Timing with " << iters << " counts" << endl;
+
+  swatch.reset();
+  swatch.start();
+  
+  for(int i=0; i < iters; ++i) {
+    vaypx4(yptr, aptr, xptr, n_4vec);
+  }
+  swatch.stop();
+  time=swatch.getTimeInSeconds();
+
+  // Average time over nodes
+  Internal::globalSum(time);
+  time /= (double)Layout::numNodes();
+  time /= (double)iters;
+
+  double flops=(double)(4*Nc*Ns*Layout::vol());
+  double perf=(flops/time)/(double)(1024*1024);
+  QDPIO::cout << "VAYPX4 Kernel (aliased): " << perf << " Mflops" << endl;
+  free(top);
 }
 
 // AXPYZ kernel (vaxpyz4): z = ax + y
@@ -142,72 +630,6 @@ time_VAXPYZ::run(void)
 }
 
 
-// VAXMYZ kernel z aliases y (vaxmyz4): y = ax - y 
-void
-time_VAXMY::run(void) 
-{
-
-  LatticeDiracFermionD3 x;
-  LatticeDiracFermionD3 y;
-  Double a = Double(2.3);
-  REAL64* xptr = (REAL64 *)&(x.elem(all.start()).elem(0).elem(0).real());
-  REAL64* yptr = (REAL64 *)&(y.elem(all.start()).elem(0).elem(0).real());
-  REAL64 ar = a.elem().elem().elem().elem();
-  REAL64* aptr = &ar;
-  int n_4vec = (all.end() - all.start() + 1);
-  gaussian(x);
-  gaussian(y);
-
-  QDPIO::cout << endl << "\t Timing VAXMYZ4 (aliased) Kernel " <<endl;
-
-  StopWatch swatch;
-  double n_secs = N_SECS;
-  int iters=1;
-  double time=0;
-  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
-  do {
-    swatch.reset();
-    swatch.start();
-    
-    for(int i=0; i < iters; i++) { 
-      vaxmyz4(yptr, aptr, xptr, yptr, n_4vec);
-    }
-    swatch.stop();
-    time=swatch.getTimeInSeconds();
-
-    // Average time over nodes
-    Internal::globalSum(time);
-    time /= (double)Layout::numNodes();
-
-    if (time < n_secs) {
-      iters *=2;
-      QDPIO::cout << "." << flush;
-    }
-  }
-  while ( time < (double)n_secs );
-      
-  QDPIO::cout << endl;
-  QDPIO::cout << "\t Timing with " << iters << " counts" << endl;
-
-  swatch.reset();
-  swatch.start();
-  
-  for(int i=0; i < iters; ++i) {
-    vaxmyz4(yptr, aptr, xptr, yptr, n_4vec);
-  }
-  swatch.stop();
-  time=swatch.getTimeInSeconds();
-
-  // Average time over nodes
-  Internal::globalSum(time);
-  time /= (double)Layout::numNodes();
-  time /= (double)iters;
-
-  double flops=(double)(4*Nc*Ns*Layout::vol());
-  double perf=(flops/time)/(double)(1024*1024);
-  QDPIO::cout << "VAXMYZ4 Kernel (aliased): " << perf << " Mflops" << endl;
-
-}
 
 
 // VAXMYZ kernel. (vaxmyz4): z=ax - y
@@ -354,79 +776,6 @@ time_VAXPBYZ::run(void)
 
 }
 
-// VAXPBY kernel (z aliases y): y = ax + by 
-void
-time_VAXPBY::run(void) 
-{
-
-  LatticeDiracFermionD3 x;
-  LatticeDiracFermionD3 y;
-  LatticeDiracFermionD3 z;
-  Double a = Double(2.3);
-  Double b = Double(0.5);
-
-  REAL64* xptr = (REAL64 *)&(x.elem(all.start()).elem(0).elem(0).real());
-  REAL64* yptr = (REAL64 *)&(y.elem(all.start()).elem(0).elem(0).real());
-  REAL64 ar = a.elem().elem().elem().elem();
-  REAL64* aptr = &ar;
-
-  REAL64 br = b.elem().elem().elem().elem();
-  REAL64* bptr = &ar;
-
-  int n_4vec = (all.end() - all.start() + 1);
-  gaussian(x);
-  gaussian(y);
-
-  QDPIO::cout << endl << "Timing VAXPBY4 (aliased) Kernel " <<endl;
-
-  StopWatch swatch;
-  double n_secs = N_SECS;
-  int iters=1;
-  double time=0;
-  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
-  do {
-    swatch.reset();
-    swatch.start();
-    
-    for(int i=0; i < iters; i++) { 
-      vaxpbyz4(yptr, aptr, xptr, bptr, yptr, n_4vec);
-    }
-    swatch.stop();
-    time=swatch.getTimeInSeconds();
-
-    // Average time over nodes
-    Internal::globalSum(time);
-    time /= (double)Layout::numNodes();
-
-    if (time < n_secs) {
-      iters *=2;
-      QDPIO::cout << "." << flush;
-    }
-  }
-  while ( time < (double)n_secs );
-      
-  QDPIO::cout << endl;
-  QDPIO::cout << "\t Timing with " << iters << " counts" << endl;
-
-  swatch.reset();
-  swatch.start();
-  
-  for(int i=0; i < iters; ++i) {
-    vaxpbyz4(yptr, aptr, xptr, bptr, yptr, n_4vec);
-  }
-  swatch.stop();
-  time=swatch.getTimeInSeconds();
-
-  // Average time over nodes
-  Internal::globalSum(time);
-  time /= (double)Layout::numNodes();
-  time /= (double)iters;
-
-  double flops=(double)(6*Nc*Ns*Layout::vol());
-  double perf=(flops/time)/(double)(1024*1024);
-  QDPIO::cout << "VAXPBY4 (aliased) Kernel: " << perf << " Mflops" << endl;
-
-}
 
 // VSCAL Kernel: y = a*x
 void

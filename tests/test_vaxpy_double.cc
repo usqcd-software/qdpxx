@@ -3,6 +3,7 @@
 #include "testvol.h"
 
 #include "testVaxpyDouble.h"
+#include "testVaypxDouble.h"
 #include "testVaxmyDouble.h"
 #include "testVaxpbyDouble.h"
 #include "testVScalDouble.h"
@@ -24,6 +25,10 @@ int main(int argc, char **argv)
   tests.addTest(new testVaxpy4_1(), "testVaxpy4_1" );
   tests.addTest(new testVaxpy4_2(), "testVaxpy4_2" );
   tests.addTest(new testVaxpy4_3(), "testVaxpy4_3" );
+
+  tests.addTest(new testVaypx4_1(), "testVaypx4_1" );
+  tests.addTest(new testVaypx4_2(), "testVaypx4_2" );
+  tests.addTest(new testVaypx4_3(), "testVaypx4_3" );
 
   tests.addTest(new testVaxpy4_RB0_1(), "testVaxpy4_RB0_1" );
   tests.addTest(new testVaxpy4_RB0_2(), "testVaxpy4_RB0_2" );
@@ -47,18 +52,31 @@ int main(int argc, char **argv)
 
   tests.addTest(new testVaxpy4_RB30_PEQ(), "testVaxpy4_RB30_PEQ" );
 
+
   tests.addTest(new testVaxmyz4_1(), "testVaxmyz4_1" );
   tests.addTest(new testVaxmyz4_2(), "testVaxmyz4_2" );
   tests.addTest(new testVaxmyz4_3(), "testVaxmyz4_3" );
+
+  tests.addTest(new testVaxmy4_1(), "testVaxmy4_1" );
+  tests.addTest(new testVaxmy4_2(), "testVaxmy4_2" );
+  tests.addTest(new testVaxmy4_3(), "testVaxmy4_3" );
 
   tests.addTest(new testVaxpbyz4_1(), "testVaxpbyz4_1" );
   tests.addTest(new testVaxpbyz4_2(), "testVaxpbyz4_2" );
   tests.addTest(new testVaxpbyz4_3(), "testVaxpbyz4_3" );
 
+  tests.addTest(new testVaxpby4_1(), "testVaxpby4_1" );
+  tests.addTest(new testVaxpby4_2(), "testVaxpby4_2" );
+  tests.addTest(new testVaxpby4_3(), "testVaxpby4_3" );
+
 
   tests.addTest(new testVaxmbyz4_1(), "testVaxmbyz4_1" );
   tests.addTest(new testVaxmbyz4_2(), "testVaxmbyz4_2" );
   tests.addTest(new testVaxmbyz4_3(), "testVaxmbyz4_3" );
+
+  tests.addTest(new testVaxmby4_1(), "testVaxmby4_1" );
+  tests.addTest(new testVaxmby4_2(), "testVaxmby4_2" );
+  tests.addTest(new testVaxmby4_3(), "testVaxmby4_3" );
 
   tests.addTest(new testVScal4_1(), "testVScal4_1" );
   tests.addTest(new testVScal4_2(), "testVScal4_2" );

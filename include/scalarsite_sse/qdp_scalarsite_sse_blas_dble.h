@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas_dble.h,v 1.5 2008-06-18 16:03:02 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas_dble.h,v 1.6 2008-06-23 14:19:43 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -11,6 +11,7 @@
 #define QDP_SCALARSITE_SSE_BLAS_DOUBLE_H
 
 #include "scalarsite_sse/sse_blas_vaxpy4_double.h"
+#include "scalarsite_sse/sse_blas_vaypx4_double.h"
 #include "scalarsite_sse/sse_blas_vaxmyz4_double.h"
 #include "scalarsite_sse/sse_blas_vaxpbyz4_double.h"
 #include "scalarsite_sse/sse_blas_vaxmbyz4_double.h"

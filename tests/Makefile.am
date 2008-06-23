@@ -48,6 +48,8 @@ test_HDRS=unittest.h \
 	testvol.h
 
 test_vaxpy_double_SOURCES = $(test_HDRS) \
+	testVaypxDouble.h \
+	testVaypxDouble.cc \
 	testVaxpyDouble.h \
 	testVaxpyDouble.cc \
 	testVaxmyDouble.h \

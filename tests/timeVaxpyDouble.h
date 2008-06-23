@@ -6,15 +6,21 @@
 #include "unittest.h"
 #endif
 
-class time_QDP_PEQ : public TestFixture { public: void run(void); };
-class time_QDP_AXPYZ : public TestFixture { public: void run(void); };
-class time_VAXPYZ : public TestFixture { public: void run(void); };
+class time_VAXPBY : public TestFixture { public: void run(void); };
+class time_VAXMBY : public TestFixture { public: void run(void); };
 class time_VAXPY : public TestFixture { public: void run(void); };
 class time_VAXMY : public TestFixture { public: void run(void); };
-class time_VAXMYZ : public TestFixture { public: void run(void); };
+class time_VAYPX : public TestFixture { public: void run(void); };
 
 class time_VAXPBYZ : public TestFixture { public: void run(void); };
-class time_VAXPBY : public TestFixture { public: void run(void); };
+class time_VAXMBYZ : public TestFixture { public: void run(void); };
+class time_VAXPYZ : public TestFixture { public: void run(void); };
+class time_VAXMYZ : public TestFixture { public: void run(void); };
+
+
+class time_QDP_PEQ : public TestFixture { public: void run(void); };
+class time_QDP_AXPYZ : public TestFixture { public: void run(void); };
+
 class time_VSCAL : public TestFixture { public: void run(void); };
 
 class time_LOCAL_SUMSQ : public TestFixture { public: void run(void); };
