@@ -40,7 +40,7 @@ endif
 #
 # The programs to build
 # 
-check_PROGRAMS = test_vaxpy_double time_vaxpy_double test_matmat_double
+check_PROGRAMS = test_vaxpy_double time_vaxpy_double test_matmat_double test_cmul time_matmat_double
 
 
 # The program and its dependencies
@@ -79,10 +79,21 @@ test_matmat_double_SOURCES = test_matmat_double.cc \
 	testMatScalMultDouble.h \
 	testMatScalMultDouble.cc \
 	testMatPeqMatDouble.h \
-	testMatPeqMatDouble.cc
+	testMatPeqMatDouble.cc \
+	testMatEqMatMatDouble.h \
+	testMatEqMatMatDouble.cc
+
+test_cmul_SOURCES = test_cmul.cc \
+	testCMulDouble.h \
+	testCMulDouble.cc
 
 test_matmat_double_DEPENDENCIES = build_libs
 
+time_matmat_double_SOURCES = time_matmat_double.cc \
+	timeMatEqMatMatDouble.h \
+	timeMatEqMatMatDouble.cc
+
+time_matmat_double_DEPENDENCIES = build_libs
 # build lib is a target that goes tot he build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target
