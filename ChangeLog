@@ -1,3 +1,23 @@
+2008-06-24 16:40  bjoo
+
+	* lib/Makefile.am, tests/testMatEqMatMatDouble.cc: Oopsie
+
+2008-06-24 16:39  bjoo
+
+	* tests/testMatEqMatMatDouble.h: Added testMatMat
+
+2008-06-24 16:37  bjoo
+
+	* lib/: scalarsite_sse/sse_linalg_m_eq_mm_double.cc, Makefile.am:
+	  M*M
+
+2008-06-24 16:37  bjoo
+
+	* tests/: Makefile.am, testCMulDouble.cc, testCMulDouble.h,
+	  testMatMatDouble.h, test_cmul.cc, test_matmat_double.cc,
+	  timeMatEqMatMatDouble.cc, timeMatEqMatMatDouble.h,
+	  time_matmat_double.cc: Added SU3xSU3 tests and timing
+
 2008-06-23 16:29  bjoo
 
 	* tests/test_matmat_double.cc: Oops
