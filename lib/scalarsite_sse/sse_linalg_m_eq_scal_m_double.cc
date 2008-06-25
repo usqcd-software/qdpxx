@@ -1,4 +1,4 @@
-// $Id: sse_linalg_m_eq_scal_m_double.cc,v 1.1 2008-06-23 20:19:41 bjoo Exp $
+// $Id: sse_linalg_m_eq_scal_m_double.cc,v 1.2 2008-06-25 14:53:43 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -12,7 +12,7 @@ namespace QDP {
 #include <xmmintrin.h>
 
   /* M = a*M  a is scalar */
-  void ssed_m_eq_scal_m(REAL64* m2, REAL64* a, REAL *m1, int n_mat)
+  void ssed_m_eq_scal_m(REAL64* m2, REAL64* a, REAL64 *m1, int n_mat)
   {
     __m128d scalar;
     __m128d tmp1;
