@@ -1,3 +1,20 @@
+2008-06-25 11:03  bjoo
+
+	* include/scalarsite_sse/sse_linalg_mm_su3_double.h: Oopsie
+
+2008-06-25 10:54  bjoo
+
+	* tests/: testMatEqMatMatDouble.cc, testMatEqMatMatDouble.h,
+	  test_matmat_double.cc, testvol.h, timeMatEqMatMatDouble.cc,
+	  timeMatEqMatMatDouble.h, time_matmat_double.cc: Added timings for
+	  +=aMM
+
+2008-06-25 10:53  bjoo
+
+	* lib/scalarsite_sse/: sse_linalg_m_eq_mm_double.cc,
+	  sse_linalg_m_eq_scal_m_double.cc: Fixed single prec build
+	  problem. Added M += a*M*M kernel
+
 2008-06-24 16:40  bjoo
 
 	* lib/Makefile.am, tests/testMatEqMatMatDouble.cc: Oopsie
