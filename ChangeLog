@@ -1,3 +1,35 @@
+2008-06-25 16:35  bjoo
+
+	* lib/Makefile.am: Makefile changes
+
+2008-06-25 16:34  bjoo
+
+	* lib/scalarsite_sse/: sse_linalg_m_eq_hh_double.cc,
+	  sse_linalg_m_eq_hm_double.cc: ADded shells for these. THEY DONT
+	  WORK YET
+
+2008-06-25 16:33  bjoo
+
+	* tests/: Makefile.am, testMatEqHermHermDouble.cc,
+	  testMatEqHermHermDouble.h, testMatEqHermMatDouble.cc,
+	  testMatEqHermMatDouble.h, test_matmat_double.cc: Added shells for
+	  these guys
+
+2008-06-25 15:55  bjoo
+
+	* tests/: timeMatEqMatHermDouble.cc, timeMatEqMatHermDouble.h:
+	  Added timers for M=MH, M+=aMH
+
+2008-06-25 15:44  bjoo
+
+	* tests/Makefile.am, tests/testCMulDouble.cc,
+	  tests/testCMulDouble.h, tests/testMatEqMatHermDouble.cc,
+	  tests/testMatEqMatHermDouble.h, tests/test_cmul.cc,
+	  tests/test_matmat_double.cc, tests/time_matmat_double.cc,
+	  lib/Makefile.am, lib/scalarsite_sse/sse_linalg_m_eq_mh_double.cc,
+	  lib/scalarsite_sse/sse_linalg_m_eq_mm_double.cc: Added MH Kernels
+	  tests
+
 2008-06-25 11:03  bjoo
 
 	* include/scalarsite_sse/sse_linalg_mm_su3_double.h: Oopsie
