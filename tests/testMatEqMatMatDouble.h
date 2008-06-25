@@ -12,4 +12,8 @@ class testMeqMM_1  : public TestFixture { public: void run(void); };
 class testMeqMM_2  : public TestFixture { public: void run(void); };
 class testMeqMM_3  : public TestFixture { public: void run(void); };
 
+class testMPeqaMM_1  : public TestFixture { public: void run(void); };
+class testMPeqaMM_2  : public TestFixture { public: void run(void); };
+class testMPeqaMM_3  : public TestFixture { public: void run(void); };
+
 #endif

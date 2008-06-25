@@ -11,5 +11,8 @@
 class timeMeqMM_QDP  : public TestFixture { public: void run(void); };
 class timeMeqMM      : public TestFixture { public: void run(void); };
 
+class timeMPeqaMM_QDP  : public TestFixture { public: void run(void); };
+class timeMPeqaMM      : public TestFixture { public: void run(void); };
+
 
 #endif

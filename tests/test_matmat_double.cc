@@ -46,6 +46,11 @@ int main(int argc, char **argv)
   tests.addTest(new testMeqMM_1(), "testMeqMM_1" );
   tests.addTest(new testMeqMM_2(), "testMeqMM_2" );
   tests.addTest(new testMeqMM_3(), "testMeqMM_3" );
+
+  tests.addTest(new testMPeqaMM_1(), "testMPeqaMM_1" );
+  tests.addTest(new testMPeqaMM_2(), "testMPeqaMM_2" );
+  tests.addTest(new testMPeqaMM_3(), "testMPeqaMM_3" );
+
   // Run all tests
   tests.run();
 
