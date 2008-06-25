@@ -49,7 +49,8 @@ libqdp_a_SOURCES += qdp_scalarsite_sse.cc \
 	scalarsite_sse/sse_blas_vscal4_double.cc \
 	scalarsite_sse/sse_linalg_m_eq_scal_m_double.cc \
 	scalarsite_sse/sse_linalg_m_peq_m_double.cc \
-	scalarsite_sse/sse_linalg_m_eq_mm_double.cc
+	scalarsite_sse/sse_linalg_m_eq_mm_double.cc \
+	scalarsite_sse/sse_linalg_m_eq_mh_double.cc
 endif
 
 

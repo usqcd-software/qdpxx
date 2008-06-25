@@ -81,7 +81,9 @@ test_matmat_double_SOURCES = test_matmat_double.cc \
 	testMatPeqMatDouble.h \
 	testMatPeqMatDouble.cc \
 	testMatEqMatMatDouble.h \
-	testMatEqMatMatDouble.cc
+	testMatEqMatMatDouble.cc \
+	testMatEqMatHermDouble.h \
+	testMatEqMatHermDouble.cc 
 
 test_cmul_SOURCES = test_cmul.cc \
 	testCMulDouble.h \
@@ -91,7 +93,9 @@ test_matmat_double_DEPENDENCIES = build_libs
 
 time_matmat_double_SOURCES = time_matmat_double.cc \
 	timeMatEqMatMatDouble.h \
-	timeMatEqMatMatDouble.cc
+	timeMatEqMatMatDouble.cc \
+	timeMatEqMatHermDouble.h \
+	timeMatEqMatHermDouble.cc
 
 time_matmat_double_DEPENDENCIES = build_libs
 # build lib is a target that goes tot he build dir of the library and 

@@ -1,4 +1,4 @@
-// $Id: sse_linalg_m_eq_mm_double.cc,v 1.2 2008-06-25 14:53:43 bjoo Exp $
+// $Id: sse_linalg_m_eq_mm_double.cc,v 1.3 2008-06-25 19:44:10 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -43,7 +43,8 @@ namespace QDP {
   }
 
 
-#endif
+
+#else 
 
 #include <pmmintrin.h>
 
@@ -71,6 +72,8 @@ namespace QDP {
     (z) = _mm_add_pd((z),t1);			\
   }
 
+
+#endif
 
   /* M3 = M1*M2 */
   void ssed_m_eq_mm(REAL64* m3, REAL64* m2, REAL64* m1, int n_mat)

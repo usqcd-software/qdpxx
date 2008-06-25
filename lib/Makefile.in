@@ -58,7 +58,8 @@ POST_UNINSTALL = :
 @QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_blas_vscal4_double.cc \
 @QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_linalg_m_eq_scal_m_double.cc \
 @QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_linalg_m_peq_m_double.cc \
-@QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_linalg_m_eq_mm_double.cc
+@QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_linalg_m_eq_mm_double.cc \
+@QDP_USE_SCALAR_SSE_TRUE@	scalarsite_sse/sse_linalg_m_eq_mh_double.cc
 
 
 # Scalar with Vector extensions
@@ -118,6 +119,7 @@ am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	scalarsite_sse/sse_linalg_m_eq_scal_m_double.cc \
 	scalarsite_sse/sse_linalg_m_peq_m_double.cc \
 	scalarsite_sse/sse_linalg_m_eq_mm_double.cc \
+	scalarsite_sse/sse_linalg_m_eq_mh_double.cc \
 	qdp_scalarvec_init.cc qdp_scalarvec_layout.cc \
 	qdp_scalarvec_specific.cc qdp_scalarvecsite_specific.cc \
 	qdp_parscalarvec_init.cc qdp_parscalarvec_layout.cc \
@@ -143,7 +145,8 @@ am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 @QDP_USE_SCALAR_SSE_TRUE@	sse_blas_vscal4_double.$(OBJEXT) \
 @QDP_USE_SCALAR_SSE_TRUE@	sse_linalg_m_eq_scal_m_double.$(OBJEXT) \
 @QDP_USE_SCALAR_SSE_TRUE@	sse_linalg_m_peq_m_double.$(OBJEXT) \
-@QDP_USE_SCALAR_SSE_TRUE@	sse_linalg_m_eq_mm_double.$(OBJEXT)
+@QDP_USE_SCALAR_SSE_TRUE@	sse_linalg_m_eq_mm_double.$(OBJEXT) \
+@QDP_USE_SCALAR_SSE_TRUE@	sse_linalg_m_eq_mh_double.$(OBJEXT)
 @ARCH_SCALARVEC_TRUE@am__objects_4 = qdp_scalarvec_init.$(OBJEXT) \
 @ARCH_SCALARVEC_TRUE@	qdp_scalarvec_layout.$(OBJEXT) \
 @ARCH_SCALARVEC_TRUE@	qdp_scalarvec_specific.$(OBJEXT) \
@@ -427,6 +430,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_blas_vaxpy4_double.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_blas_vaypx4_double.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_blas_vscal4_double.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_linalg_m_eq_mh_double.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_linalg_m_eq_mm_double.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_linalg_m_eq_scal_m_double.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_linalg_m_peq_m_double.Po@am__quote@
@@ -612,6 +616,20 @@ sse_linalg_m_eq_mm_double.obj: scalarsite_sse/sse_linalg_m_eq_mm_double.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_linalg_m_eq_mm_double.cc' object='sse_linalg_m_eq_mm_double.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_linalg_m_eq_mm_double.obj `if test -f 'scalarsite_sse/sse_linalg_m_eq_mm_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_linalg_m_eq_mm_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_linalg_m_eq_mm_double.cc'; fi`
+
+sse_linalg_m_eq_mh_double.o: scalarsite_sse/sse_linalg_m_eq_mh_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_linalg_m_eq_mh_double.o -MD -MP -MF $(DEPDIR)/sse_linalg_m_eq_mh_double.Tpo -c -o sse_linalg_m_eq_mh_double.o `test -f 'scalarsite_sse/sse_linalg_m_eq_mh_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_linalg_m_eq_mh_double.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_linalg_m_eq_mh_double.Tpo $(DEPDIR)/sse_linalg_m_eq_mh_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_linalg_m_eq_mh_double.cc' object='sse_linalg_m_eq_mh_double.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_linalg_m_eq_mh_double.o `test -f 'scalarsite_sse/sse_linalg_m_eq_mh_double.cc' || echo '$(srcdir)/'`scalarsite_sse/sse_linalg_m_eq_mh_double.cc
+
+sse_linalg_m_eq_mh_double.obj: scalarsite_sse/sse_linalg_m_eq_mh_double.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sse_linalg_m_eq_mh_double.obj -MD -MP -MF $(DEPDIR)/sse_linalg_m_eq_mh_double.Tpo -c -o sse_linalg_m_eq_mh_double.obj `if test -f 'scalarsite_sse/sse_linalg_m_eq_mh_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_linalg_m_eq_mh_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_linalg_m_eq_mh_double.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/sse_linalg_m_eq_mh_double.Tpo $(DEPDIR)/sse_linalg_m_eq_mh_double.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='scalarsite_sse/sse_linalg_m_eq_mh_double.cc' object='sse_linalg_m_eq_mh_double.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sse_linalg_m_eq_mh_double.obj `if test -f 'scalarsite_sse/sse_linalg_m_eq_mh_double.cc'; then $(CYGPATH_W) 'scalarsite_sse/sse_linalg_m_eq_mh_double.cc'; else $(CYGPATH_W) '$(srcdir)/scalarsite_sse/sse_linalg_m_eq_mh_double.cc'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \

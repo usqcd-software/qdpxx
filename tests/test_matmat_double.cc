@@ -6,6 +6,7 @@
 #include "testMatScalMultDouble.h"
 #include "testMatPeqMatDouble.h"
 #include "testMatEqMatMatDouble.h"
+#include "testMatEqMatHermDouble.h"
 
 using namespace QDP;
 
@@ -47,9 +48,17 @@ int main(int argc, char **argv)
   tests.addTest(new testMeqMM_2(), "testMeqMM_2" );
   tests.addTest(new testMeqMM_3(), "testMeqMM_3" );
 
+  tests.addTest(new testMeqMH_1(), "testMeqMH_1" );
+  tests.addTest(new testMeqMH_2(), "testMeqMH_2" );
+  tests.addTest(new testMeqMH_3(), "testMeqMH_3" );
+
   tests.addTest(new testMPeqaMM_1(), "testMPeqaMM_1" );
   tests.addTest(new testMPeqaMM_2(), "testMPeqaMM_2" );
   tests.addTest(new testMPeqaMM_3(), "testMPeqaMM_3" );
+
+  tests.addTest(new testMPeqaMH_1(), "testMPeqaMH_1" );
+  tests.addTest(new testMPeqaMH_2(), "testMPeqaMH_2" );
+  tests.addTest(new testMPeqaMH_3(), "testMPeqaMH_3" );
 
   // Run all tests
   tests.run();

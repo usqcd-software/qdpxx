@@ -53,7 +53,8 @@ am__DEPENDENCIES_1 =
 test_cmul_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_test_matmat_double_OBJECTS = test_matmat_double.$(OBJEXT) \
 	testMatScalMultDouble.$(OBJEXT) testMatPeqMatDouble.$(OBJEXT) \
-	testMatEqMatMatDouble.$(OBJEXT)
+	testMatEqMatMatDouble.$(OBJEXT) \
+	testMatEqMatHermDouble.$(OBJEXT)
 test_matmat_double_OBJECTS = $(am_test_matmat_double_OBJECTS)
 test_matmat_double_LDADD = $(LDADD)
 am__objects_1 =
@@ -66,7 +67,8 @@ am_test_vaxpy_double_OBJECTS = $(am__objects_1) \
 test_vaxpy_double_OBJECTS = $(am_test_vaxpy_double_OBJECTS)
 test_vaxpy_double_LDADD = $(LDADD)
 am_time_matmat_double_OBJECTS = time_matmat_double.$(OBJEXT) \
-	timeMatEqMatMatDouble.$(OBJEXT)
+	timeMatEqMatMatDouble.$(OBJEXT) \
+	timeMatEqMatHermDouble.$(OBJEXT)
 time_matmat_double_OBJECTS = $(am_time_matmat_double_OBJECTS)
 time_matmat_double_LDADD = $(LDADD)
 am_time_vaxpy_double_OBJECTS = $(am__objects_1) \
@@ -259,7 +261,9 @@ test_matmat_double_SOURCES = test_matmat_double.cc \
 	testMatPeqMatDouble.h \
 	testMatPeqMatDouble.cc \
 	testMatEqMatMatDouble.h \
-	testMatEqMatMatDouble.cc
+	testMatEqMatMatDouble.cc \
+	testMatEqMatHermDouble.h \
+	testMatEqMatHermDouble.cc 
 
 test_cmul_SOURCES = test_cmul.cc \
 	testCMulDouble.h \
@@ -268,7 +272,9 @@ test_cmul_SOURCES = test_cmul.cc \
 test_matmat_double_DEPENDENCIES = build_libs
 time_matmat_double_SOURCES = time_matmat_double.cc \
 	timeMatEqMatMatDouble.h \
-	timeMatEqMatMatDouble.cc
+	timeMatEqMatMatDouble.cc \
+	timeMatEqMatHermDouble.h \
+	timeMatEqMatHermDouble.cc
 
 time_matmat_double_DEPENDENCIES = build_libs
 all: all-am
@@ -333,6 +339,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testLocalSumSqDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testLocalVcdotDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testLocalVcdotRealDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testMatEqMatHermDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testMatEqMatMatDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testMatPeqMatDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testMatScalMultDouble.Po@am__quote@
@@ -344,6 +351,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_cmul.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_matmat_double.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_vaxpy_double.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeMatEqMatHermDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeMatEqMatMatDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeVaxpyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/time_matmat_double.Po@am__quote@

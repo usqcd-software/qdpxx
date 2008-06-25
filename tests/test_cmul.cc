@@ -20,6 +20,8 @@ int main(int argc, char **argv)
   
   tests.addTest(new testCMul(), "testCMul" );
   tests.addTest(new testCMadd(), "testCMadd" );
+  tests.addTest(new testConjMul(), "testConjMul" );
+  tests.addTest(new testConjMadd(), "testConjMadd" );
 
   // Run all tests
   tests.run();
