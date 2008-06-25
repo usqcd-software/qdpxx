@@ -83,7 +83,11 @@ test_matmat_double_SOURCES = test_matmat_double.cc \
 	testMatEqMatMatDouble.h \
 	testMatEqMatMatDouble.cc \
 	testMatEqMatHermDouble.h \
-	testMatEqMatHermDouble.cc 
+	testMatEqMatHermDouble.cc \
+	testMatEqHermMatDouble.h \
+	testMatEqHermMatDouble.cc \
+	testMatEqHermHermDouble.h \
+	testMatEqHermHermDouble.cc 
 
 test_cmul_SOURCES = test_cmul.cc \
 	testCMulDouble.h \

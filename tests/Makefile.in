@@ -54,7 +54,9 @@ test_cmul_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_test_matmat_double_OBJECTS = test_matmat_double.$(OBJEXT) \
 	testMatScalMultDouble.$(OBJEXT) testMatPeqMatDouble.$(OBJEXT) \
 	testMatEqMatMatDouble.$(OBJEXT) \
-	testMatEqMatHermDouble.$(OBJEXT)
+	testMatEqMatHermDouble.$(OBJEXT) \
+	testMatEqHermMatDouble.$(OBJEXT) \
+	testMatEqHermHermDouble.$(OBJEXT)
 test_matmat_double_OBJECTS = $(am_test_matmat_double_OBJECTS)
 test_matmat_double_LDADD = $(LDADD)
 am__objects_1 =
@@ -263,7 +265,11 @@ test_matmat_double_SOURCES = test_matmat_double.cc \
 	testMatEqMatMatDouble.h \
 	testMatEqMatMatDouble.cc \
 	testMatEqMatHermDouble.h \
-	testMatEqMatHermDouble.cc 
+	testMatEqMatHermDouble.cc \
+	testMatEqHermMatDouble.h \
+	testMatEqHermMatDouble.cc \
+	testMatEqHermHermDouble.h \
+	testMatEqHermHermDouble.cc 
 
 test_cmul_SOURCES = test_cmul.cc \
 	testCMulDouble.h \
@@ -339,6 +345,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testLocalSumSqDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testLocalVcdotDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testLocalVcdotRealDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testMatEqHermHermDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testMatEqHermMatDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testMatEqMatHermDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testMatEqMatMatDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testMatPeqMatDouble.Po@am__quote@
