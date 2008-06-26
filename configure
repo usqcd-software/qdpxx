@@ -662,6 +662,7 @@ CONFIG_SSE
 CONFIG_SSE2
 subdirs
 LIBINTRIN_DIR
+CONFIG_SSE3
 BUILD_LIBINTRIN_TRUE
 BUILD_LIBINTRIN_FALSE
 CONFIG_PRECISION
@@ -1310,6 +1311,7 @@ Optional Features:
                           Enable memory debugging code
   --enable-sse            Optimize code with Intel SSE instructions
   --enable-sse2           Optimize code with Intel SSE2 instructions
+  --enable-sse3           Optimize code with Intel SSE3 instructions
   --enable-qcdoc          Enable QCDOC Optimisations
   --enable-bgl            Enable BlueGeneL Optimizations
   --enable-precision=single|double
@@ -3347,6 +3349,17 @@ else
 fi
 
 
+# Check whether --enable-sse3 was given.
+if test "${enable_sse3+set}" = set; then
+  enableval=$enable_sse3; ac_sse=1
+   ac_sse2=1
+   ac_sse3=1
+else
+  ac_sse3=0
+
+fi
+
+
 # Check whether --enable-qcdoc was given.
 if test "${enable_qcdoc+set}" = set; then
   enableval=$enable_qcdoc; ac_qcdoc_enabled=1
@@ -3370,7 +3383,6 @@ fi
 
 
 if test ${ac_sse} -eq 1; then
-  if test "X${GXX}X" = "XyesX"; then
 
 cat >>confdefs.h <<_ACEOF
 #define QDP_USE_SSE ${ac_sse}
@@ -3380,18 +3392,9 @@ _ACEOF
 
     { echo "$as_me:$LINENO: Configuring QDP++ with SSE extentions enabled" >&5
 echo "$as_me: Configuring QDP++ with SSE extentions enabled" >&6;};
-  else
-    { echo "$as_me:$LINENO: WARNING: Non GNU Compiler. SSE Only supported for GCC-3.2.2 or greater due to feature creep. Sorry" >&5
-echo "$as_me: WARNING: Non GNU Compiler. SSE Only supported for GCC-3.2.2 or greater due to feature creep. Sorry" >&6;}
-  fi
 fi
 
-
-
 if test ${ac_sse2} -eq 1; then
-  if test "X${GXX}X" = "XyesX"; then
-                    { echo "$as_me:$LINENO: " >&5
-echo "$as_me: " >&6;}
 
 cat >>confdefs.h <<_ACEOF
 #define QDP_USE_SSE2 ${ac_sse2}
@@ -3406,10 +3409,18 @@ echo "$as_me: Configuring QDP++ with SSE2 extentions enabled" >&6;};
     LIBINTRIN_DIR=libintrin
 
     build_libintrin="yes"
-  else
-    { echo "$as_me:$LINENO: WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry" >&5
-echo "$as_me: WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry" >&6;}
-  fi
+fi
+
+if test ${ac_sse3} -eq 1; then
+
+cat >>confdefs.h <<_ACEOF
+#define QDP_USE_SSE3 ${ac_sse3}
+_ACEOF
+
+    CONFIG_SSE3=${ac_sse3}
+
+    { echo "$as_me:$LINENO: Configuring QDP++ with SSE3 extentions enabled" >&5
+echo "$as_me: Configuring QDP++ with SSE3 extentions enabled" >&6;};
 fi
 
  if  test "x${build_libintrin}x" = "xyesx" ; then
@@ -5863,6 +5874,7 @@ CONFIG_SSE!$CONFIG_SSE$ac_delim
 CONFIG_SSE2!$CONFIG_SSE2$ac_delim
 subdirs!$subdirs$ac_delim
 LIBINTRIN_DIR!$LIBINTRIN_DIR$ac_delim
+CONFIG_SSE3!$CONFIG_SSE3$ac_delim
 BUILD_LIBINTRIN_TRUE!$BUILD_LIBINTRIN_TRUE$ac_delim
 BUILD_LIBINTRIN_FALSE!$BUILD_LIBINTRIN_FALSE$ac_delim
 CONFIG_PRECISION!$CONFIG_PRECISION$ac_delim
@@ -5875,7 +5887,6 @@ QMP_LIBS!$QMP_LIBS$ac_delim
 QMP_CONFIG!$QMP_CONFIG$ac_delim
 CONFIG_PARALLEL_ARCH!$CONFIG_PARALLEL_ARCH$ac_delim
 LIBXML2_CONFIG!$LIBXML2_CONFIG$ac_delim
-LIBXML2_CXXFLAGS!$LIBXML2_CXXFLAGS$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -5917,6 +5928,7 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+LIBXML2_CXXFLAGS!$LIBXML2_CXXFLAGS$ac_delim
 LIBXML2_LIBS!$LIBXML2_LIBS$ac_delim
 BAGEL_QDP_CONFIG!$BAGEL_QDP_CONFIG$ac_delim
 BAGEL_QDP_CXXFLAGS!$BAGEL_QDP_CXXFLAGS$ac_delim
@@ -5954,7 +5966,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 35; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 36; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

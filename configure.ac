@@ -106,6 +106,16 @@ AC_ARG_ENABLE(sse2,
   [ac_sse2=0]
 )
 
+dnl --enable-sse2
+AC_ARG_ENABLE(sse3,
+  AC_HELP_STRING([--enable-sse3],
+    [Optimize code with Intel SSE3 instructions]),
+  [ac_sse=1
+   ac_sse2=1
+   ac_sse3=1],
+  [ac_sse3=0]
+)
+
 dnl --enable-qcdoc
 AC_ARG_ENABLE(qcdoc,
    AC_HELP_STRING([--enable-qcdoc], 
@@ -125,37 +135,24 @@ AC_ARG_ENABLE(bgl,
 )
 
 if test ${ac_sse} -eq 1; then
-  if test "X${GXX}X" = "XyesX"; then 
-    dnl    disabling this. Set your own CFLAGS. Some
-    dnl    compilers dont actually want it
-    dnl    AC_MSG_NOTICE([Enabling -msse flag for g++])
-    dnl    CXXFLAGS="-msse "$CXXFLAGS
     AC_DEFINE_UNQUOTED(QDP_USE_SSE, ${ac_sse}, [Enable SSE instructions])
     AC_SUBST(CONFIG_SSE,[${ac_sse}])
     AC_MSG_NOTICE([Configuring QDP++ with SSE extentions enabled]);
-  else 
-    AC_MSG_NOTICE([WARNING: Non GNU Compiler. SSE Only supported for GCC-3.2.2 or greater due to feature creep. Sorry])
-  fi
 fi
 
-
-
 if test ${ac_sse2} -eq 1; then
-  if test "X${GXX}X" = "XyesX"; then 
-    dnl    Disabling this - set your own CXXFLAGS. Some compilers don't like
-    dnl    it
-    dnl    AC_MSG_NOTICE([Enabling -msse2 flag for g++])
-    dnl    CXXFLAGS="-msse2 "$CXXFLAGS    
-    AC_MSG_NOTICE
     AC_DEFINE_UNQUOTED(QDP_USE_SSE2, ${ac_sse2}, [Enable SSE2 instructions])
     AC_SUBST(CONFIG_SSE2,[${ac_sse2}])
     AC_MSG_NOTICE([Configuring QDP++ with SSE2 extentions enabled]);
     AC_CONFIG_SUBDIRS(other_libs/libintrin)
     AC_SUBST(LIBINTRIN_DIR, [libintrin])
     build_libintrin="yes"
-  else 
-    AC_MSG_NOTICE([WARNING: Non GNU Compiler. SSE2 Only supported for GCC-3.2.2 or greater due to feature creep. Sorry])
-  fi
+fi
+
+if test ${ac_sse3} -eq 1; then
+    AC_DEFINE_UNQUOTED(QDP_USE_SSE3, ${ac_sse3}, [Enable SSE3 instructions])
+    AC_SUBST(CONFIG_SSE3,[${ac_sse3}])
+    AC_MSG_NOTICE([Configuring QDP++ with SSE3 extentions enabled]);
 fi
 
 AM_CONDITIONAL(BUILD_LIBINTRIN,

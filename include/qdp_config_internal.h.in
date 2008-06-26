@@ -90,5 +90,8 @@
 /* Enable SSE2 instructions */
 #undef QDP_USE_SSE2
 
+/* Enable SSE3 instructions */
+#undef QDP_USE_SSE3
+
 /* Version number of package */
 #undef VERSION

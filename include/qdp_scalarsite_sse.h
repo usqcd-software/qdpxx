@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.30 2008-06-16 13:08:49 bjoo Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.31 2008-06-26 23:23:28 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -18,6 +18,8 @@
 #include "scalarsite_sse/qdp_scalarsite_sse_linalg.h"
 #include "scalarsite_sse/qdp_scalarsite_sse_blas.h"
 #include "scalarsite_sse/qdp_scalarsite_sse_blas_dble.h"
+#include "scalarsite_sse/qdp_scalarsite_sse_linalg_double.h"
+
 #include "scalarsite_generic/qdp_scalarsite_generic_cblas.h"
 #include "scalarsite_sse/sse_spin_aggregate.h"
 
@@ -25,8 +27,8 @@
 
 #warning "Non 32-bit precision: Using Generics"
 #include "scalarsite_sse/qdp_scalarsite_sse_blas_dble.h"
-
-#include "scalarsite_generic/qdp_scalarsite_generic_linalg.h"
+#include "scalarsite_sse/qdp_scalarsite_sse_linalg_double.h"
+//#include "scalarsite_generic/qdp_scalarsite_generic_linalg.h"
 #include "scalarsite_generic/qdp_scalarsite_generic_cblas.h"
 #include "scalarsite_generic/generic_spin_aggregate.h"
 
