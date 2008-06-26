@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.41 2008-05-18 19:58:00 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.1 2008-06-26 23:20:56 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations

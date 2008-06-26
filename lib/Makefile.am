@@ -37,7 +37,9 @@ endif
 
 # Optimized code using sse extensions
 if QDP_USE_SCALAR_SSE
-libqdp_a_SOURCES += qdp_scalarsite_sse.cc \
+libqdp_a_SOURCES += \
+	scalarsite_sse/qdp_scalarsite_sse.cc \
+	scalarsite_sse/qdp_scalarsite_linalg_double.cc \
 	scalarsite_sse/sse_blas_local_sumsq_double.cc \
 	scalarsite_sse/sse_blas_local_vcdot_double.cc \
 	scalarsite_sse/sse_blas_local_vcdot_real_double.cc \

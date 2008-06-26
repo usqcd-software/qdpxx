@@ -1,4 +1,4 @@
-// $Id: sse_linalg_m_eq_mh_double.cc,v 1.1 2008-06-25 19:44:10 bjoo Exp $
+// $Id: sse_linalg_m_eq_mh_double.cc,v 1.2 2008-06-26 23:20:56 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -10,9 +10,9 @@
 namespace QDP {
 
 #include <xmmintrin.h>
-#include <pmmintrin.h>
+#include "qdp_config.h"
 
-#if 0
+#ifndef QDP_USE_SSE3
 
   /* SSE 2 */
 
@@ -44,7 +44,7 @@ namespace QDP {
   }
 
 #else
-
+#warning Using SSE3
   /* SSE 3 */
 #include <pmmintrin.h>
 
@@ -242,7 +242,13 @@ namespace QDP {
 
     __m128d scalar;
     
-    scalar = _mm_loaddup_pd(a);
+  
+    // cross components into tmp 
+    // Zero tmp
+    scalar = _mm_load_sd(a);
+    tmp1 = _mm_xor_pd(tmp1, tmp1);
+    tmp1 = _mm_shuffle_pd(scalar, scalar, 0x1);
+    scalar = _mm_add_pd(scalar, tmp1);
 
     REAL64* m1_p=m1;
     REAL64* m2_p=m2;

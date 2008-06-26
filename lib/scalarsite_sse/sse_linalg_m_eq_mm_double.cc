@@ -1,4 +1,4 @@
-// $Id: sse_linalg_m_eq_mm_double.cc,v 1.3 2008-06-25 19:44:10 bjoo Exp $
+// $Id: sse_linalg_m_eq_mm_double.cc,v 1.4 2008-06-26 23:20:56 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -11,8 +11,9 @@ namespace QDP {
 
 #include <xmmintrin.h>
 
+#include "qdp_config.h"
+#ifndef QDP_USE_SSE3
 
-#if 0 
   // c = x*y;
 #define CMUL(z,x,y)		\
   { \
@@ -45,10 +46,10 @@ namespace QDP {
 
 
 #else 
-
+#warning Using SSE3
 #include <pmmintrin.h>
+  // Use SSE3
 
-/* SSE 3? */
 #define CMUL(z,x,y)		\
   { \
     __m128d t1; \
@@ -71,8 +72,6 @@ namespace QDP {
     t1= _mm_shuffle_pd(t1,t2,0x2);		\
     (z) = _mm_add_pd((z),t1);			\
   }
-
-
 #endif
 
   /* M3 = M1*M2 */
@@ -219,9 +218,17 @@ namespace QDP {
     __m128d m3_22;
     __m128d m3_23;
 
+    __m128d tmp1;
     __m128d scalar;
     
-    scalar = _mm_loaddup_pd(a);
+    scalar = _mm_load_sd(a);
+  
+    // cross components into tmp 
+    // Zero tmp
+    tmp1 = _mm_xor_pd(tmp1, tmp1);
+    tmp1 = _mm_shuffle_pd(scalar, scalar, 0x1);
+    scalar = _mm_add_pd(scalar, tmp1);
+
 
     REAL64* m1_p=m1;
     REAL64* m2_p=m2;
