@@ -70,7 +70,9 @@ test_vaxpy_double_OBJECTS = $(am_test_vaxpy_double_OBJECTS)
 test_vaxpy_double_LDADD = $(LDADD)
 am_time_matmat_double_OBJECTS = time_matmat_double.$(OBJEXT) \
 	timeMatEqMatMatDouble.$(OBJEXT) \
-	timeMatEqMatHermDouble.$(OBJEXT)
+	timeMatEqMatHermDouble.$(OBJEXT) \
+	timeMatEqHermMatDouble.$(OBJEXT) \
+	timeMatEqHermHermDouble.$(OBJEXT)
 time_matmat_double_OBJECTS = $(am_time_matmat_double_OBJECTS)
 time_matmat_double_LDADD = $(LDADD)
 am_time_vaxpy_double_OBJECTS = $(am__objects_1) \
@@ -118,6 +120,7 @@ CONFIG_PARALLEL_ARCH = @CONFIG_PARALLEL_ARCH@
 CONFIG_PRECISION = @CONFIG_PRECISION@
 CONFIG_SSE = @CONFIG_SSE@
 CONFIG_SSE2 = @CONFIG_SSE2@
+CONFIG_SSE3 = @CONFIG_SSE3@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
@@ -280,7 +283,11 @@ time_matmat_double_SOURCES = time_matmat_double.cc \
 	timeMatEqMatMatDouble.h \
 	timeMatEqMatMatDouble.cc \
 	timeMatEqMatHermDouble.h \
-	timeMatEqMatHermDouble.cc
+	timeMatEqMatHermDouble.cc \
+	timeMatEqHermMatDouble.h \
+	timeMatEqHermMatDouble.cc \
+	timeMatEqHermHermDouble.h \
+	timeMatEqHermHermDouble.cc
 
 time_matmat_double_DEPENDENCIES = build_libs
 all: all-am
@@ -359,6 +366,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_cmul.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_matmat_double.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_vaxpy_double.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeMatEqHermHermDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeMatEqHermMatDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeMatEqMatHermDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeMatEqMatMatDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeVaxpyDouble.Po@am__quote@

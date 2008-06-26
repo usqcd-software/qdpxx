@@ -99,7 +99,11 @@ time_matmat_double_SOURCES = time_matmat_double.cc \
 	timeMatEqMatMatDouble.h \
 	timeMatEqMatMatDouble.cc \
 	timeMatEqMatHermDouble.h \
-	timeMatEqMatHermDouble.cc
+	timeMatEqMatHermDouble.cc \
+	timeMatEqHermMatDouble.h \
+	timeMatEqHermMatDouble.cc \
+	timeMatEqHermHermDouble.h \
+	timeMatEqHermHermDouble.cc
 
 time_matmat_double_DEPENDENCIES = build_libs
 # build lib is a target that goes tot he build dir of the library and 

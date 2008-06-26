@@ -1,5 +1,5 @@
 #include "unittest.h"
-#include "timeMatEqMatHermDouble.h"
+#include "timeMatEqHermHermDouble.h"
 
 using namespace std;
 
@@ -8,9 +8,9 @@ static double N_SECS=10;
 extern void*  alloc_cache_aligned_3mat(unsigned num_sites, REAL64** x, REAL64 **y, REAL64** z);
 
 
-// M=M*H kernel (M \in SU3)
+// M=H*H kernel (M \in SU3)
 void
-timeMeqMH_QDP::run(void) 
+timeMeqHH_QDP::run(void) 
 {
 
   LatticeColorMatrix x;
@@ -19,7 +19,7 @@ timeMeqMH_QDP::run(void)
   gaussian(x);
   gaussian(y);
 
-  QDPIO::cout << endl << "Timing  QDP++ MH Kernel " <<endl;
+  QDPIO::cout << endl << "Timing  QDP++ HH Kernel " <<endl;
 
   StopWatch swatch;
   double n_secs = N_SECS;
@@ -31,7 +31,7 @@ timeMeqMH_QDP::run(void)
     swatch.start();
     
     for(int i=0; i < iters; i++) { 
-      z = x*adj(y);
+      z = adj(x)*adj(y);
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
@@ -54,7 +54,7 @@ timeMeqMH_QDP::run(void)
   swatch.start();
   
   for(int i=0; i < iters; ++i) {
-    z=x*adj(y);
+    z=adj(x)*adj(y);
   }
   swatch.stop();
   time=swatch.getTimeInSeconds();
@@ -66,13 +66,13 @@ timeMeqMH_QDP::run(void)
 
   double flops=(double)(198*Layout::vol());
   double perf=(flops/time)/(double)(1024*1024);
-  QDPIO::cout << "QDP++ MH Kernel: " << perf << " Mflops" << endl;
+  QDPIO::cout << "QDP++ HH Kernel: " << perf << " Mflops" << endl;
 
 }
 
-// Optimized M=MH kernel (M \in SU3)
+// Optimized M=HH kernel (M \in SU3)
 void
-timeMeqMH::run(void) 
+timeMeqHH::run(void) 
 {
 
   LatticeColorMatrixD3 x;
@@ -109,7 +109,7 @@ timeMeqMH::run(void)
     }
   }
 
-  QDPIO::cout << endl << "Timing SSE D  M=MH  Kernel " <<endl;
+  QDPIO::cout << endl << "Timing SSE D  M=HH  Kernel " <<endl;
 
   StopWatch swatch;
   double n_secs = N_SECS;
@@ -121,7 +121,7 @@ timeMeqMH::run(void)
     swatch.start();
     
     for(int i=0; i < iters; i++) { 
-      ssed_m_eq_mh(zptr, xptr, yptr, n_mat);
+      ssed_m_eq_hh(zptr, xptr, yptr, n_mat);
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
@@ -144,7 +144,7 @@ timeMeqMH::run(void)
   swatch.start();
   
   for(int i=0; i < iters; ++i) {
-    ssed_m_eq_mh(zptr, xptr, yptr, n_mat);
+    ssed_m_eq_hh(zptr, xptr, yptr, n_mat);
   }
   swatch.stop();
   time=swatch.getTimeInSeconds();
@@ -156,14 +156,14 @@ timeMeqMH::run(void)
 
   double flops=(double)(198*Layout::vol());
   double perf=(flops/time)/(double)(1024*1024);
-  QDPIO::cout << "SSED MH Kernel: " << perf << " Mflops" << endl;
+  QDPIO::cout << "SSED HH Kernel: " << perf << " Mflops" << endl;
 
   free(top);
 }
 
-// M+=M*H kernel (M \in SU3)
+// M+=HH kernel (M \in SU3)
 void
-timeMPeqaMH_QDP::run(void) 
+timeMPeqaHH_QDP::run(void) 
 {
 
   LatticeColorMatrix x;
@@ -175,7 +175,7 @@ timeMPeqaMH_QDP::run(void)
   Real a(-1.0);
 
 
-  QDPIO::cout << endl << "Timing  QDP++ M+=MH Kernel " <<endl;
+  QDPIO::cout << endl << "Timing  QDP++ M+=HH Kernel " <<endl;
 
   StopWatch swatch;
   double n_secs = N_SECS;
@@ -187,7 +187,7 @@ timeMPeqaMH_QDP::run(void)
     swatch.start();
     
     for(int i=0; i < iters; i++) { 
-      z += x*adj(y);
+      z += adj(x)*adj(y);
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
@@ -210,7 +210,7 @@ timeMPeqaMH_QDP::run(void)
   swatch.start();
   
   for(int i=0; i < iters; ++i) {
-    z+=x*adj(y);
+    z+=adj(x)*adj(y);
   }
   swatch.stop();
   time=swatch.getTimeInSeconds();
@@ -222,13 +222,13 @@ timeMPeqaMH_QDP::run(void)
 
   double flops=(double)(234*Layout::vol());
   double perf=(flops/time)/(double)(1024*1024);
-  QDPIO::cout << "QDP++ M+=MH Kernel: " << perf << " Mflops" << endl;
+  QDPIO::cout << "QDP++ M+=HH Kernel: " << perf << " Mflops" << endl;
 
 }
 
-// Optimized M += aM*H kernel
+// Optimized M += aM*M kernel
 void
-timeMPeqaMH::run(void) 
+timeMPeqaHH::run(void) 
 {
 
   LatticeColorMatrixD3 x;
@@ -267,7 +267,7 @@ timeMPeqaMH::run(void)
 
   REAL64* aptr = &(a.elem().elem().elem().elem());
 
-  QDPIO::cout << endl << "Timing SSE D  M+=aMH  Kernel " <<endl;
+  QDPIO::cout << endl << "Timing SSE D  M+=aHH  Kernel " <<endl;
 
   StopWatch swatch;
   double n_secs = N_SECS;
@@ -279,7 +279,7 @@ timeMPeqaMH::run(void)
     swatch.start();
     
     for(int i=0; i < iters; i++) { 
-      ssed_m_peq_amh(zptr, aptr, xptr, yptr, n_mat);
+      ssed_m_peq_ahh(zptr, aptr, xptr, yptr, n_mat);
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
@@ -302,7 +302,7 @@ timeMPeqaMH::run(void)
   swatch.start();
   
   for(int i=0; i < iters; ++i) {
-    ssed_m_peq_amh(zptr, aptr, xptr, yptr, n_mat);
+    ssed_m_peq_ahh(zptr, aptr, xptr, yptr, n_mat);
   }
   swatch.stop();
   time=swatch.getTimeInSeconds();
@@ -314,7 +314,7 @@ timeMPeqaMH::run(void)
 
   double flops=(double)(234*Layout::vol());
   double perf=(flops/time)/(double)(1024*1024);
-  QDPIO::cout << "SSED M+=aMH Kernel: " << perf << " Mflops" << endl;
+  QDPIO::cout << "SSED M+=aHH Kernel: " << perf << " Mflops" << endl;
 
   free(top);
 }

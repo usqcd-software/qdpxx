@@ -22,6 +22,8 @@ int main(int argc, char **argv)
   tests.addTest(new testCMadd(), "testCMadd" );
   tests.addTest(new testConjMul(), "testConjMul" );
   tests.addTest(new testConjMadd(), "testConjMadd" );
+  tests.addTest(new testCCMul(), "testCCMul" );
+  tests.addTest(new testCCMadd(), "testCCMadd" );
 
   // Run all tests
   tests.run();

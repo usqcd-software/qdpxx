@@ -32,7 +32,7 @@ testMeqHM_1::run()
 	for(int k=0; k < 3; k++) { 
 	  z1.elem(site).elem().elem(i,j).real() += 
 	    x.elem(site).elem().elem(k,i).real()
-	    * y.elem(site).elem().elem(k,i).real();
+	    * y.elem(site).elem().elem(k,j).real();
 
 	  z1.elem(site).elem().elem(i,j).real() +=
 	    x.elem(site).elem().elem(k,i).imag()
@@ -46,8 +46,9 @@ testMeqHM_1::run()
 	    x.elem(site).elem().elem(k,i).imag()
 	    * y.elem(site).elem().elem(k,j).real();
 
-	}
 
+	}
+	
       }
     }
   }
@@ -56,7 +57,6 @@ testMeqHM_1::run()
   // Now the optimized one
   REAL64 *xptr = (REAL64 *)&(x.elem(0).elem().elem(0,0).real());
   REAL64 *yptr = (REAL64 *)&(y.elem(0).elem().elem(0,0).real());
-
   REAL64 *zptr = (REAL64 *)&(z2.elem(0).elem().elem(0,0).real());
 
   int n_mat=all.end() - all.start() + 1;

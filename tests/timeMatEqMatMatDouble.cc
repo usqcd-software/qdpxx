@@ -36,13 +36,15 @@ void* alloc_cache_aligned_3mat(unsigned num_sites, REAL64** x, REAL64 **y, REAL6
   *y = (REAL64 *)(((ptrdiff_t)(*x))+bytes_per_vec+pad);
   *z = (REAL64 *)(((ptrdiff_t)(*y))+bytes_per_vec+pad);
   
+#if 0
   QDPIO::cout << "x is at " << (unsigned long)(*x) << endl;
   QDPIO::cout << "x % cache_alignment = " << (unsigned long)(*x) % cache_alignment << endl;
   QDPIO::cout << "pad is " << pad << endl;
   QDPIO::cout << "veclen=" << bytes_per_vec << endl;
   QDPIO::cout << "y starts at " << (unsigned long)(*y) << endl;
   QDPIO::cout << "z starts at " << (unsigned long)(*z) << endl;
-  
+#endif
+
   return ret_val;
 
 }
@@ -200,7 +202,7 @@ timeMeqMM::run(void)
   free(top);
 }
 
-// M+=aM*M kernel (M \in SU3)
+// M+=M*M kernel (M \in SU3)
 void
 timeMPeqaMM_QDP::run(void) 
 {
@@ -214,7 +216,7 @@ timeMPeqaMM_QDP::run(void)
   Real a(-1.0);
 
 
-  QDPIO::cout << endl << "Timing  QDP++ M+=aMM Kernel " <<endl;
+  QDPIO::cout << endl << "Timing  QDP++ M+=MM Kernel " <<endl;
 
   StopWatch swatch;
   double n_secs = N_SECS;
@@ -226,7 +228,7 @@ timeMPeqaMM_QDP::run(void)
     swatch.start();
     
     for(int i=0; i < iters; i++) { 
-      z += a*(x*y);
+      z += x*y;
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
@@ -249,7 +251,7 @@ timeMPeqaMM_QDP::run(void)
   swatch.start();
   
   for(int i=0; i < iters; ++i) {
-    z=a*(x*y);
+    z+=x*y;
   }
   swatch.stop();
   time=swatch.getTimeInSeconds();
@@ -261,7 +263,7 @@ timeMPeqaMM_QDP::run(void)
 
   double flops=(double)(234*Layout::vol());
   double perf=(flops/time)/(double)(1024*1024);
-  QDPIO::cout << "QDP++ MM Kernel: " << perf << " Mflops" << endl;
+  QDPIO::cout << "QDP++ M+=MM Kernel: " << perf << " Mflops" << endl;
 
 }
 
