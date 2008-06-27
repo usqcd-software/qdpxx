@@ -1,4 +1,4 @@
-// $Id: qdp_xmlio.cc,v 1.41 2007-06-12 02:53:40 edwards Exp $
+// $Id: qdp_xmlio.cc,v 1.42 2008-06-27 13:31:23 bjoo Exp $
 //
 /*! @file
  * @brief XML IO support

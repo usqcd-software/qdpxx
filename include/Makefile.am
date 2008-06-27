@@ -95,7 +95,8 @@ SSESITE_HDRS = qdp_scalarsite_sse.h \
 	$(ssesitedir)/sse_blas_vaypx4_double.h \
 	$(ssesitedir)/sse_blas_vscal4_double.h \
 	$(ssesitedir)/sse_linalg_mm_su3_double.h \
-	$(ssesitedir)/qdp_scalarsite_sse_linalg_double.h
+	$(ssesitedir)/qdp_scalarsite_sse_linalg_double.h \
+	$(ssesitedir)/sse_dcomplex_mult_macros.h
 
 # Scalarvectsite SSE extensions
 ssevecdir = scalarvecsite_sse

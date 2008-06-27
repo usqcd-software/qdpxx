@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.30 2008-05-14 18:58:35 bjoo Exp $
+// $Id: qdp_qdpio.cc,v 1.31 2008-06-27 13:31:22 bjoo Exp $
 //
 /*! @file
  * @brief IO support via QIO

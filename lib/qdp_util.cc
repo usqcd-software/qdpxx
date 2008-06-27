@@ -1,4 +1,4 @@
-// $Id: qdp_util.cc,v 1.6 2007-06-10 14:32:12 edwards Exp $
+// $Id: qdp_util.cc,v 1.7 2008-06-27 13:31:23 bjoo Exp $
 //
 /*! 
  * @file

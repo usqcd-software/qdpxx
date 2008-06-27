@@ -1,4 +1,4 @@
-// $Id: qdp_scalarvec_specific.cc,v 1.9 2007-06-10 14:32:11 edwards Exp $
+// $Id: qdp_scalarvec_specific.cc,v 1.10 2008-06-27 13:31:23 bjoo Exp $
 
 /*! @file
  * @brief Scalarvec specific routines

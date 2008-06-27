@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas_dble.h,v 1.7 2008-06-26 23:23:28 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas_dble.h,v 1.8 2008-06-27 13:31:37 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -1815,7 +1815,7 @@ innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
   // OScalar<OScalar<OScalar<RComplex<PScalar<REAL64> > > > >
   BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t lprod;
   // Inner product is accumulated internally in DOUBLE
-  DOUBLE ip[2];
+  REAL64 ip[2];
   ip[0]=0;
   ip[1]=0;
 
@@ -1855,7 +1855,7 @@ innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
     // This BinaryReturn has Type_t
     // OScalar<OScalar<OScalar<RComplex<PScalar<REAL64> > > > >
     BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t lprod;
-    DOUBLE ip[2];
+    REAL64 ip[2];
     ip[0] = 0;
     ip[1] = 0;
 
@@ -1877,7 +1877,7 @@ innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
   else {
 
     BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t lprod;
-    DOUBLE ip[2], ip_tmp[2];
+    REAL64 ip[2], ip_tmp[2];
     ip[0] = 0;
     ip[1] = 0;
 
@@ -2041,7 +2041,7 @@ innerProduct(const multi1d< OLattice<DVec> > &v1,
   // OScalar<OScalar<OScalar<RComplex<PScalar<REAL64> > > > >
   BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t lprod;
   // Inner product is accumulated internally in DOUBLE
-  DOUBLE ip[2];
+  REAL64 ip[2];
   ip[0]=0;
   ip[1]=0;
 
@@ -2050,7 +2050,7 @@ innerProduct(const multi1d< OLattice<DVec> > &v1,
     
   for(int n=0; n < v1.size(); ++n)
   {
-    DOUBLE iip[2];
+    REAL64 iip[2];
     iip[0]=0;
     iip[1]=0;
 

@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.36 2008-05-13 20:00:18 bjoo Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.37 2008-06-27 13:31:22 bjoo Exp $
 
 /*! @file
  * @brief Parscalar specific routines

@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_init.cc,v 1.8 2008-05-13 20:00:20 bjoo Exp $
+// $Id: qdp_scalar_init.cc,v 1.9 2008-06-27 13:31:22 bjoo Exp $
 
 /*! @file
  * @brief Scalar init routines

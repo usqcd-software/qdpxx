@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.16 2008-05-13 20:00:18 bjoo Exp $
+// $Id: qdp_parscalar_init.cc,v 1.17 2008-06-27 13:31:22 bjoo Exp $
 
 /*! @file
  * @brief Parscalar init routines
