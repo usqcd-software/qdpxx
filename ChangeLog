@@ -1,3 +1,8 @@
+2008-06-27 08:56  bjoo
+
+	* lib/scalarsite_sse/sse_blas_local_vcdot_double.cc: Fixed vcdot.
+	  It turns out I needed to use an unaligned store
+
 2008-06-26 19:30  bjoo
 
 	* include/Makefile.am: Ooops
