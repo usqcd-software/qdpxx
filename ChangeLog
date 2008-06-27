@@ -1,3 +1,31 @@
+2008-06-27 09:31  bjoo
+
+	* AUTHORS, COPYING, INSTALL, INSTALL_EXAMPLES, Makefile.am, NEWS,
+	  README, acinclude.m4, aclocal.m4, configure, configure.ac,
+	  qdp++-config.in, lib/Makefile.am, lib/qdp.cc, lib/qdp_binx.cc,
+	  lib/qdp_byteorder.cc, lib/qdp_crc32.cc,
+	  lib/qdp_default_allocator.cc, lib/qdp_filebuf.cc, lib/qdp_io.cc,
+	  lib/qdp_iogauge.cc, lib/qdp_layout.cc, lib/qdp_map.cc,
+	  lib/qdp_parscalar_global_sum.cc, lib/qdp_parscalar_init.cc,
+	  lib/qdp_parscalar_layout.cc, lib/qdp_parscalar_specific.cc,
+	  lib/qdp_parscalarvec_init.cc, lib/qdp_parscalarvec_layout.cc,
+	  lib/qdp_parscalarvec_specific.cc, lib/qdp_profile.cc,
+	  lib/qdp_qcdoc_allocator.cc, lib/qdp_qdpio.cc,
+	  lib/qdp_qio_strings.cc, lib/qdp_qmp_extensions.cc,
+	  lib/qdp_random.cc, lib/qdp_scalar_init.cc,
+	  lib/qdp_scalar_layout.cc, lib/qdp_scalar_specific.cc,
+	  lib/qdp_scalarsite_specific.cc, lib/qdp_scalarsite_sse.cc.kahan,
+	  lib/qdp_scalarvec_init.cc, lib/qdp_scalarvec_layout.cc,
+	  lib/qdp_scalarvec_specific.cc, lib/qdp_scalarvecsite_specific.cc,
+	  lib/qdp_scalarvecsite_sse.cc, lib/qdp_stdio.cc,
+	  lib/qdp_stopwatch.cc, lib/qdp_strnlen.cc, lib/qdp_subset.cc,
+	  lib/qdp_util.cc, lib/qdp_xmlio.cc, include/Makefile.am,
+	  include/qdp_scalarsite_sse.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_dble.h,
+	  include/scalarsite_sse/sse_dcomplex_mult_macros.h: Fixed VCDOT.
+	  Needed to use an unaligned store. Put all the DComplex SSE macros
+	  in a header, so they exist only once
+
 2008-06-27 08:56  bjoo
 
 	* lib/scalarsite_sse/sse_blas_local_vcdot_double.cc: Fixed vcdot.
