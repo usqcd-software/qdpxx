@@ -1,4 +1,4 @@
-// $Id: sse_blas_local_vcdot_double.cc,v 1.1 2008-06-18 16:02:11 bjoo Exp $
+// $Id: sse_blas_local_vcdot_double.cc,v 1.2 2008-06-27 12:56:57 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -10,6 +10,70 @@
 
 namespace QDP {
 
+#include "qdp_config.h"
+
+#ifndef QDP_USE_SSE3
+
+  /* SSE 2 */
+
+#define CONJMUL(z,x,y)		\
+  { \
+    __m128d t1,t2,t3,t4; \
+    t1 = _mm_mul_pd(x,y); \
+    t2 = _mm_shuffle_pd(t1,t1,0x1); \
+    t3 = _mm_shuffle_pd(y,y,0x1);\
+    z = _mm_add_pd(t1,t2); \
+    t2 = _mm_mul_pd(x,t3); \
+    t3 = _mm_shuffle_pd(t2,t2,0x1); \
+    t3 = _mm_sub_pd(t2,t3);	    \
+    z= _mm_shuffle_pd(z,t3,0x2); \
+  }
+
+#define CONJMADD(z,x,y)				\
+  { \
+    __m128d t1,t2,t3,t4; \
+    t1 = _mm_mul_pd(x,y); \
+    t2 = _mm_shuffle_pd(t1,t1,0x1); \
+    t3 = _mm_shuffle_pd(y,y,0x1);\
+    t4 = _mm_add_pd(t1,t2); \
+    t2 = _mm_mul_pd(x,t3); \
+    t3 = _mm_shuffle_pd(t2,t2,0x1); \
+    t3 = _mm_sub_pd(t2,t3); \
+    t4= _mm_shuffle_pd(t4,t3,0x2); \
+    z = _mm_add_pd(z,t4); \
+  }
+
+#else
+#warning Using SSE3
+  /* SSE 3 */
+#include <pmmintrin.h>
+
+#define CONJMUL(z,x,y)		\
+  { \
+    __m128d t1; \
+    t1 = _mm_mul_pd((x),(y)); \
+    (z) = _mm_hadd_pd(t1,t1);			\
+    t1 = _mm_shuffle_pd((x),(x),0x1);\
+    t1 = _mm_mul_pd((y),t1); \
+    t1 = _mm_hsub_pd(t1,t1); \
+    (z)= _mm_shuffle_pd((z),t1,0x2);		\
+  }
+
+#define CONJMADD(z,x,y)				\
+  { \
+    __m128d t1,t2; \
+    t1 = _mm_mul_pd((x),(y)); \
+    t1 = _mm_hadd_pd(t1,t1); \
+    t2 = _mm_shuffle_pd((x),(x),0x1);\
+    t2 = _mm_mul_pd((y),t2); \
+    t2 = _mm_hsub_pd(t2,t2); \
+    t1= _mm_shuffle_pd(t1,t2,0x2);		\
+    (z) = _mm_add_pd((z),t1);			\
+  }
+
+
+
+#endif
 
 
   // Re < y^\dag , x > 
@@ -30,39 +94,28 @@ namespace QDP {
   // then srore either half.
   void local_vcdot4(REAL64 *sum, REAL64 *y, REAL64* x,int n_4spin)
 {
-  __m128d sum_real1;
-  __m128d sum_imag1;
-
-  __m128d sum_real2;
-  __m128d sum_imag2;
+  __m128d sum1;
+  __m128d sum2;
+  __m128d sum3;
+  __m128d sum4;
 
   __m128d tmp1;
   __m128d tmp2;
   __m128d tmp3;
   __m128d tmp4;
-
   __m128d tmp5;
   __m128d tmp6;
   __m128d tmp7;
   __m128d tmp8;
 
-  __m128d tmp9;
-  __m128d tmp10;
 
-  typedef union
-  {
-    double d[2];
-    __m128d xmm;
-  } vd;
-
-  vd sign  = { (double)1,(double)-1};
 
   // Zero out sums
-  sum_real1 = _mm_xor_pd(sum_real1, sum_real1); 
-  sum_imag1 = _mm_xor_pd(sum_imag1, sum_imag1); 
+  sum1 = _mm_xor_pd(sum1, sum1); 
+  sum2 = _mm_xor_pd(sum2, sum2); 
+  sum3 = _mm_xor_pd(sum3, sum3); 
+  sum4 = _mm_xor_pd(sum4, sum4); 
 
-  sum_real2 = _mm_xor_pd(sum_real2, sum_real2); 
-  sum_imag2 = _mm_xor_pd(sum_imag2, sum_imag2); 
   
   double *x_p=x;
   double *y_p=y;
@@ -72,290 +125,76 @@ namespace QDP {
       
     tmp1 = _mm_load_pd(x_p);  // tmp1 = x
     tmp2 = _mm_load_pd(y_p);  // tmp2 = y
-      
-    // tmp3 = [ y_r x_r , y_i x_i ]
-    tmp3 = _mm_mul_pd(tmp2, tmp1);
+
+    CONJMADD(sum1,tmp1,tmp2);
     
-    // Accumulate: [ sum y_r x_r, sum y_i x_i ]
-    sum_real1 = _mm_add_pd(sum_real1, tmp3);
+    tmp3 = _mm_load_pd(x_p+2);  // tmp1 = x
+    tmp4 = _mm_load_pd(y_p+2);  // tmp2 = y
     
-    // Negate y_i: tmp2 = [ y_r, -y_i ]
-    tmp2 = _mm_mul_pd(tmp2, sign.xmm);
+    CONJMADD(sum2,tmp3,tmp4);
+
+    tmp5 = _mm_load_pd(x_p+4);  // tmp1 = x
+    tmp6 = _mm_load_pd(y_p+4);  // tmp2 = y
     
-    // Cross x:    tmp3 = [ x_i,  x_r ]
-    tmp3 = _mm_shuffle_pd(tmp1, tmp1, 0x1);
+    CONJMADD(sum3,tmp5,tmp6);
     
-    // Tmp 4    [ y_r x_i, - y_i x_r ]
-    tmp4 = _mm_mul_pd(tmp2, tmp3);
+    tmp7 = _mm_load_pd(x_p+6);  // tmp1 = x
+    tmp8 = _mm_load_pd(y_p+6);  // tmp2 = y
     
-    // Accumulate: [ sum y_r x i, -sum y_i x_r ]
-    sum_imag1 = _mm_add_pd(sum_imag1, tmp4);
-    
-    
-    tmp5 = _mm_load_pd(x_p+2);  // tmp1 = x
-    tmp6 = _mm_load_pd(y_p+2);  // tmp2 = y
-    
-    // tmp3 = [ y_r x_r , y_i x_i ]
-    tmp7 = _mm_mul_pd(tmp6, tmp5);
-    
-    // Accumulate: [ sum y_r x_r, sum y_i x_i ]
-    sum_real2 = _mm_add_pd(sum_real2, tmp7);
-    
-    // Negate y_i: tmp2 = [ y_r, -y_i ]
-    tmp6 = _mm_mul_pd(tmp6, sign.xmm);
-    
-    // Cross x:    tmp3 = [ x_i,  x_r ]
-    tmp7 = _mm_shuffle_pd(tmp5, tmp5, 0x1);
-    
-    // Tmp 4    [ y_r x_i, - y_i x_r ]
-    tmp8 = _mm_mul_pd(tmp6, tmp7);
-    
-    // Accumulate: [ sum y_r x i, -sum y_i x_r ]
-    sum_imag2 = _mm_add_pd(sum_imag2, tmp8);
-    
-    tmp1 = _mm_load_pd(x_p+4);  // tmp1 = x
-    tmp2 = _mm_load_pd(y_p+4);  // tmp2 = y
-    
-    // tmp3 = [ y_r x_r , y_i x_i ]
-    tmp3 = _mm_mul_pd(tmp2, tmp1);
-    
-    // Accumulate: [ sum y_r x_r, sum y_i x_i ]
-    sum_real1 = _mm_add_pd(sum_real1, tmp3);
-    
-    // Negate y_i: tmp2 = [ y_r, -y_i ]
-    tmp2 = _mm_mul_pd(tmp2, sign.xmm);
-    
-    // Cross x:    tmp3 = [ x_i,  x_r ]
-    tmp3 = _mm_shuffle_pd(tmp1, tmp1, 0x1);
-    
-    // Tmp 4    [ y_r x_i, - y_i x_r ]
-    tmp4 = _mm_mul_pd(tmp2, tmp3);
-    
-    // Accumulate: [ sum y_r x i, -sum y_i x_r ]
-    sum_imag1 = _mm_add_pd(sum_imag1, tmp4);
-    
-    
-    tmp5 = _mm_load_pd(x_p+6);  // tmp1 = x
-    tmp6 = _mm_load_pd(y_p+6);  // tmp2 = y
-    
-    // tmp3 = [ y_r x_r , y_i x_i ]
-    tmp7 = _mm_mul_pd(tmp6, tmp5);
-    
-    // Accumulate: [ sum y_r x_r, sum y_i x_i ]
-    sum_real2 = _mm_add_pd(sum_real2, tmp7);
-    
-    // Negate y_i: tmp2 = [ y_r, -y_i ]
-    tmp6 = _mm_mul_pd(tmp6, sign.xmm);
-    
-    // Cross x:    tmp3 = [ x_i,  x_r ]
-    tmp7 = _mm_shuffle_pd(tmp5, tmp5, 0x1);
-    
-    // Tmp 4    [ y_r x_i, - y_i x_r ]
-    tmp8 = _mm_mul_pd(tmp6, tmp7);
-    
-    // Accumulate: [ sum y_r x i, -sum y_i x_r ]
-    sum_imag2 = _mm_add_pd(sum_imag2, tmp8);
-    
-    
+    CONJMADD(sum4,tmp7,tmp8);
     
     tmp1 = _mm_load_pd(x_p+8);  // tmp1 = x
     tmp2 = _mm_load_pd(y_p+8);  // tmp2 = y
     
-    // tmp3 = [ y_r x_r , y_i x_i ]
-    tmp3 = _mm_mul_pd(tmp2, tmp1);
+    CONJMADD(sum1,tmp1,tmp2);
+
+    tmp3 = _mm_load_pd(x_p+10);  // tmp1 = x
+    tmp4 = _mm_load_pd(y_p+10);  // tmp2 = y    
     
-    // Accumulate: [ sum y_r x_r, sum y_i x_i ]
-    sum_real1 = _mm_add_pd(sum_real1, tmp3);
+    CONJMADD(sum2,tmp3,tmp4);
+
+    tmp5 = _mm_load_pd(x_p+12);  // tmp1 = x
+    tmp6 = _mm_load_pd(y_p+12);  // tmp2 = y
     
-    // Negate y_i: tmp2 = [ y_r, -y_i ]
-    tmp2 = _mm_mul_pd(tmp2, sign.xmm);
+    CONJMADD(sum3,tmp5,tmp6);
+
+    tmp7 = _mm_load_pd(x_p+14);  // tmp1 = x
+    tmp8 = _mm_load_pd(y_p+14);  // tmp2 = y
     
-    // Cross x:    tmp3 = [ x_i,  x_r ]
-    tmp3 = _mm_shuffle_pd(tmp1, tmp1, 0x1);
-    
-    // Tmp 4    [ y_r x_i, - y_i x_r ]
-    tmp4 = _mm_mul_pd(tmp2, tmp3);
-    
-    // Accumulate: [ sum y_r x i, -sum y_i x_r ]
-    sum_imag1 = _mm_add_pd(sum_imag1, tmp4);
-    
-    
-    tmp5 = _mm_load_pd(x_p+10);  // tmp1 = x
-    tmp6 = _mm_load_pd(y_p+10);  // tmp2 = y
-    
-    // tmp3 = [ y_r x_r , y_i x_i ]
-    tmp7 = _mm_mul_pd(tmp6, tmp5);
-    
-    // Accumulate: [ sum y_r x_r, sum y_i x_i ]
-    sum_real2 = _mm_add_pd(sum_real2, tmp7);
-    
-    // Negate y_i: tmp2 = [ y_r, -y_i ]
-    tmp6 = _mm_mul_pd(tmp6, sign.xmm);
-    
-    // Cross x:    tmp3 = [ x_i,  x_r ]
-    tmp7 = _mm_shuffle_pd(tmp5, tmp5, 0x1);
-    
-    // Tmp 4    [ y_r x_i, - y_i x_r ]
-    tmp8 = _mm_mul_pd(tmp6, tmp7);
-    
-    // Accumulate: [ sum y_r x i, -sum y_i x_r ]
-    sum_imag2 = _mm_add_pd(sum_imag2, tmp8);
-    
-    tmp1 = _mm_load_pd(x_p+12);  // tmp1 = x
-    tmp2 = _mm_load_pd(y_p+12);  // tmp2 = y
-    
-    // tmp3 = [ y_r x_r , y_i x_i ]
-    tmp3 = _mm_mul_pd(tmp2, tmp1);
-    
-    // Accumulate: [ sum y_r x_r, sum y_i x_i ]
-    sum_real1 = _mm_add_pd(sum_real1, tmp3);
-    
-    // Negate y_i: tmp2 = [ y_r, -y_i ]
-    tmp2 = _mm_mul_pd(tmp2, sign.xmm);
-    
-    // Cross x:    tmp3 = [ x_i,  x_r ]
-    tmp3 = _mm_shuffle_pd(tmp1, tmp1, 0x1);
-    
-    // Tmp 4    [ y_r x_i, - y_i x_r ]
-    tmp4 = _mm_mul_pd(tmp2, tmp3);
-    
-    // Accumulate: [ sum y_r x i, -sum y_i x_r ]
-    sum_imag1 = _mm_add_pd(sum_imag1, tmp4);
-    
-    
-    tmp5 = _mm_load_pd(x_p+14);  // tmp1 = x
-    tmp6 = _mm_load_pd(y_p+14);  // tmp2 = y
-    
-    // tmp3 = [ y_r x_r , y_i x_i ]
-    tmp7 = _mm_mul_pd(tmp6, tmp5);
-    
-    // Accumulate: [ sum y_r x_r, sum y_i x_i ]
-    sum_real2 = _mm_add_pd(sum_real2, tmp7);
-    
-    // Negate y_i: tmp2 = [ y_r, -y_i ]
-    tmp6 = _mm_mul_pd(tmp6, sign.xmm);
-    
-    // Cross x:    tmp3 = [ x_i,  x_r ]
-    tmp7 = _mm_shuffle_pd(tmp5, tmp5, 0x1);
-    
-    // Tmp 4    [ y_r x_i, - y_i x_r ]
-    tmp8 = _mm_mul_pd(tmp6, tmp7);
-    
-    // Accumulate: [ sum y_r x i, -sum y_i x_r ]
-    sum_imag2 = _mm_add_pd(sum_imag2, tmp8);
-    
-    
-    
+    CONJMADD(sum4,tmp7,tmp8);
+
     tmp1 = _mm_load_pd(x_p+16);  // tmp1 = x
     tmp2 = _mm_load_pd(y_p+16);  // tmp2 = y
     
-    // tmp3 = [ y_r x_r , y_i x_i ]
-    tmp3 = _mm_mul_pd(tmp2, tmp1);
+    CONJMADD(sum1,tmp1,tmp2);
+
+    tmp3 = _mm_load_pd(x_p+18);  // tmp1 = x
+    tmp4 = _mm_load_pd(y_p+18);  // tmp2 = y
     
-    // Accumulate: [ sum y_r x_r, sum y_i x_i ]
-    sum_real1 = _mm_add_pd(sum_real1, tmp3);
+    CONJMADD(sum2,tmp3,tmp4);
+
+    tmp5 = _mm_load_pd(x_p+20);  // tmp1 = x
+    tmp6 = _mm_load_pd(y_p+20);  // tmp2 = y
     
-    // Negate y_i: tmp2 = [ y_r, -y_i ]
-    tmp2 = _mm_mul_pd(tmp2, sign.xmm);
+    CONJMADD(sum3,tmp5,tmp6);
+
+    tmp7 = _mm_load_pd(x_p+22);  // tmp1 = x
+    tmp8 = _mm_load_pd(y_p+22);  // tmp2 = y
     
-    // Cross x:    tmp3 = [ x_i,  x_r ]
-    tmp3 = _mm_shuffle_pd(tmp1, tmp1, 0x1);
-    
-    // Tmp 4    [ y_r x_i, - y_i x_r ]
-    tmp4 = _mm_mul_pd(tmp2, tmp3);
-    
-    // Accumulate: [ sum y_r x i, -sum y_i x_r ]
-    sum_imag1 = _mm_add_pd(sum_imag1, tmp4);
-    
-    
-    tmp5 = _mm_load_pd(x_p+18);  // tmp1 = x
-    tmp6 = _mm_load_pd(y_p+18);  // tmp2 = y
-    
-    // tmp3 = [ y_r x_r , y_i x_i ]
-    tmp7 = _mm_mul_pd(tmp6, tmp5);
-    
-    // Accumulate: [ sum y_r x_r, sum y_i x_i ]
-    sum_real2 = _mm_add_pd(sum_real2, tmp7);
-    
-    // Negate y_i: tmp2 = [ y_r, -y_i ]
-    tmp6 = _mm_mul_pd(tmp6, sign.xmm);
-    
-    // Cross x:    tmp3 = [ x_i,  x_r ]
-    tmp7 = _mm_shuffle_pd(tmp5, tmp5, 0x1);
-    
-    // Tmp 4    [ y_r x_i, - y_i x_r ]
-    tmp8 = _mm_mul_pd(tmp6, tmp7);
-    
-    // Accumulate: [ sum y_r x i, -sum y_i x_r ]
-    sum_imag2 = _mm_add_pd(sum_imag2, tmp8);
-    
-    tmp1 = _mm_load_pd(x_p+20);  // tmp1 = x
-    tmp2 = _mm_load_pd(y_p+20);  // tmp2 = y
-    
-    // tmp3 = [ y_r x_r , y_i x_i ]
-    tmp3 = _mm_mul_pd(tmp2, tmp1);
-    
-    // Accumulate: [ sum y_r x_r, sum y_i x_i ]
-    sum_real1 = _mm_add_pd(sum_real1, tmp3);
-    
-    // Negate y_i: tmp2 = [ y_r, -y_i ]
-    tmp2 = _mm_mul_pd(tmp2, sign.xmm);
-    
-    // Cross x:    tmp3 = [ x_i,  x_r ]
-    tmp3 = _mm_shuffle_pd(tmp1, tmp1, 0x1);
-    
-    // Tmp 4    [ y_r x_i, - y_i x_r ]
-    tmp4 = _mm_mul_pd(tmp2, tmp3);
-    
-    // Accumulate: [ sum y_r x i, -sum y_i x_r ]
-    sum_imag1 = _mm_add_pd(sum_imag1, tmp4);
-    
-    
-    tmp5 = _mm_load_pd(x_p+22);  // tmp1 = x
-    tmp6 = _mm_load_pd(y_p+22);  // tmp2 = y
-    
-    // tmp3 = [ y_r x_r , y_i x_i ]
-    tmp7 = _mm_mul_pd(tmp6, tmp5);
-    
-    // Accumulate: [ sum y_r x_r, sum y_i x_i ]
-    sum_real2 = _mm_add_pd(sum_real2, tmp7);
-    
-    // Negate y_i: tmp2 = [ y_r, -y_i ]
-    tmp6 = _mm_mul_pd(tmp6, sign.xmm);
-    
-    // Cross x:    tmp3 = [ x_i,  x_r ]
-    tmp7 = _mm_shuffle_pd(tmp5, tmp5, 0x1);
-    
-    // Tmp 4    [ y_r x_i, - y_i x_r ]
-    tmp8 = _mm_mul_pd(tmp6, tmp7);
-    
-    // Accumulate: [ sum y_r x i, -sum y_i x_r ]
-    sum_imag2 = _mm_add_pd(sum_imag2, tmp8);
-    
-    
+    CONJMADD(sum4,tmp7,tmp8);
 
     x_p+=24; y_p+=24;
   }
 
 
   // Collect the sums
-  sum_real1 = _mm_add_pd(sum_real1,sum_real2);
-  sum_imag1 = _mm_add_pd(sum_imag1, sum_imag2);
+  sum1 = _mm_add_pd(sum1,sum2);
+  sum3 = _mm_add_pd(sum3,sum4);
+  sum1 = _mm_add_pd(sum1,sum3);
 
-  // Cross and add the real part
-  tmp1 = _mm_shuffle_pd(sum_real1, sum_real1, 0x1);
-  sum_real1 = _mm_add_pd(sum_real1, tmp1);
-  
-
-  // Cross and add the imag part
-  tmp2 = _mm_shuffle_pd(sum_imag1, sum_imag1, 0x1);
-  sum_imag1 = _mm_add_pd(sum_imag1, tmp2);
-
-  // Take top half of sum1 and bottom half of sum2
-  sum_real1 = _mm_shuffle_pd(sum_real1, sum_imag1, 0x2);
-
-  // Single store
-  _mm_store_pd(sum,sum_real1);
+  // Single store -- has to be unaligned in case
+  // return value is not aligned. THe vectors should be aligned tho
+  _mm_storeu_pd(sum,sum1);
   
 }
 
