@@ -1,3 +1,35 @@
+2008-06-26 19:30  bjoo
+
+	* include/Makefile.am: Ooops
+
+2008-06-26 19:23  bjoo
+
+	* configure, configure.ac, include/Makefile.am,
+	  include/qdp_config_internal.h.in, include/qdp_scalarsite_sse.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_dble.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_linalg_double.h: Added
+	  --enable-sse3 options
+
+2008-06-26 19:22  bjoo
+
+	* tests/: Makefile.am, testCMulDouble.cc, testCMulDouble.h,
+	  testMatEqHermMatDouble.cc, test_cmul.cc,
+	  timeMatEqHermHermDouble.cc, timeMatEqHermHermDouble.h,
+	  timeMatEqHermMatDouble.cc, timeMatEqHermMatDouble.h,
+	  timeMatEqMatHermDouble.cc, timeMatEqMatMatDouble.cc,
+	  time_matmat_double.cc: Added Mat routines
+
+2008-06-26 19:20  bjoo
+
+	* lib/: Makefile.am, qdp_scalarsite_sse.cc,
+	  scalarsite_sse/qdp_scalarsite_linalg_double.cc,
+	  scalarsite_sse/qdp_scalarsite_sse.cc,
+	  scalarsite_sse/sse_linalg_m_eq_hh_double.cc,
+	  scalarsite_sse/sse_linalg_m_eq_hm_double.cc,
+	  scalarsite_sse/sse_linalg_m_eq_mh_double.cc,
+	  scalarsite_sse/sse_linalg_m_eq_mm_double.cc: Hooked in the new
+	  kernels to double prec evaluates
+
 2008-06-25 16:35  bjoo
 
 	* lib/Makefile.am: Makefile changes
