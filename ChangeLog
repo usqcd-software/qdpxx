@@ -1,3 +1,19 @@
+2008-06-30 12:41  bjoo
+
+	* include/scalarsite_sse/qdp_scalarsite_sse_blas_double.h: Added
+	  the aliased routines back in
+
+2008-06-30 10:44  bjoo
+
+	* aclocal.m4, configure, include/Makefile.am,
+	  include/qdp_scalarsite_sse.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_dble.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_double.h,
+	  tests/timeMatEqHermHermDouble.cc,
+	  tests/timeMatEqHermMatDouble.cc, tests/timeMatEqMatHermDouble.cc,
+	  tests/time_vaxpy_double.cc: OK. DP Blas now passes chroma
+	  regressions - but need actual tests. Dont forget
+
 2008-06-27 09:31  bjoo
 
 	* AUTHORS, COPYING, INSTALL, INSTALL_EXAMPLES, Makefile.am, NEWS,
