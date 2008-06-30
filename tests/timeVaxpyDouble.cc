@@ -12,16 +12,16 @@ static double N_SECS=10;
 void* alloc_cache_aligned_2vec(unsigned num_sites, REAL64** x, REAL64 **y)
 {
   // Opteron L1 cache is 64Kb 
-  unsigned long cache_alignment=64*1024;
+  unsigned long cache_alignment=32*1024;
   unsigned long bytes_per_vec=num_sites*4*3*2*sizeof(double);
 
   // Allocate contiguously both vectors + cache aligment
-  unsigned long bytes_to_alloc=2*bytes_per_vec+cache_alignment-1;
+  unsigned long bytes_to_alloc=2*bytes_per_vec+2*cache_alignment-1;
   unsigned long pad = 0;
 
   // If a vector is exactly a multiple of 64Kb add in a 64 (1 line) byte pad.
   if( bytes_per_vec % cache_alignment == 0 ) {
-    //    pad+=64;
+    pad+=128;
   }
 
   REAL64 *ret_val = (REAL64*)malloc(bytes_to_alloc+pad);
@@ -53,19 +53,19 @@ void* alloc_cache_aligned_2vec(unsigned num_sites, REAL64** x, REAL64 **y)
 void* alloc_cache_aligned_3vec(unsigned num_sites, REAL64** x, REAL64 **y, REAL64** z)
 {
   // Opteron L1 cache is 64Kb 
-  unsigned long cache_alignment=64*1024;
+  unsigned long cache_alignment=32*1024;
   unsigned long bytes_per_vec=num_sites*4*3*2*sizeof(double);
 
   // Allocate contiguously both vectors + cache aligment
-  unsigned long bytes_to_alloc=3*bytes_per_vec+cache_alignment-1;
+  unsigned long bytes_to_alloc=3*bytes_per_vec+2*cache_alignment-1;
   unsigned long pad = 0;
 
   // If a vector is exactly a multiple of 64Kb add in a 64 (1 line) byte pad.
   if( bytes_per_vec % cache_alignment == 0 ) {
-    //    pad+=64;
+    pad+=128;
   }
 
-  REAL64 *ret_val = (REAL64*)malloc(bytes_to_alloc+pad);
+  REAL64 *ret_val = (REAL64*)malloc(bytes_to_alloc+2*pad);
   if( ret_val == 0 ) { 
     QDPIO::cout << "Failed to allocate memory" << endl;
     QDP_abort(1);
@@ -75,14 +75,16 @@ void* alloc_cache_aligned_3vec(unsigned num_sites, REAL64** x, REAL64 **y, REAL6
   *x = (REAL64 *)((((ptrdiff_t)(ret_val))+(cache_alignment-1))&(-cache_alignment));
   *y = (REAL64 *)(((ptrdiff_t)(*x))+bytes_per_vec+pad);
   *z = (REAL64 *)(((ptrdiff_t)(*y))+bytes_per_vec+pad);
-  
+
+#if 0  
   QDPIO::cout << "x is at " << (unsigned long)(*x) << endl;
   QDPIO::cout << "x % cache_alignment = " << (unsigned long)(*x) % cache_alignment << endl;
   QDPIO::cout << "pad is " << pad << endl;
   QDPIO::cout << "veclen=" << bytes_per_vec << endl;
   QDPIO::cout << "y starts at " << (unsigned long)(*y) << endl;
   QDPIO::cout << "z starts at " << (unsigned long)(*y) << endl;
-  
+#endif
+
   return ret_val;
 
 }
@@ -103,11 +105,16 @@ time_VAXPBY::run(void)
   REAL64 ar = a.elem().elem().elem().elem();
 
   REAL64* xptr;
+  REAL64* xptr2;
   REAL64* yptr;
+  REAL64* yptr2;
   REAL64* top;
+  REAL64* top2;
 
   int n_4vec = (all.end() - all.start() + 1);
-  top = (REAL64 *)alloc_cache_aligned_2vec(n_4vec, &xptr, &yptr);
+  top = (REAL64 *)alloc_cache_aligned_2vec(n_4vec, &xptr, &yptr);  
+
+  top2 = (REAL64 *)alloc_cache_aligned_2vec(n_4vec, &xptr2, &yptr2);
 
   REAL64* aptr = &ar;
 
@@ -121,18 +128,20 @@ time_VAXPBY::run(void)
   /* Copy x into x_ptr, y into y_ptr */
   REAL64 *f_x = xptr;
   REAL64 *f_y = yptr;
+  REAL64 *g_x = xptr2;
+  REAL64 *g_y = yptr2;
 
   for(int site=all.start(); site <= all.end(); site++) { 
     for(int spin=0; spin < 4; spin++) {
       for(int col=0; col < 3; col++) { 
-	*f_x = x.elem(site).elem(spin).elem(col).real();
-	*f_y = y.elem(site).elem(spin).elem(col).real();
-	f_x++;
-	f_y++;
-	*f_x = x.elem(site).elem(spin).elem(col).imag();
-	*f_y = y.elem(site).elem(spin).elem(col).imag();
-	f_x++;
-	f_y++;
+	*g_x=*f_x = x.elem(site).elem(spin).elem(col).real();
+	*g_y=*f_y = y.elem(site).elem(spin).elem(col).real();
+	f_x++;	g_x++;
+	f_y++;	g_y++;
+	*g_x=*f_x = x.elem(site).elem(spin).elem(col).imag();
+	*g_y=*f_y = y.elem(site).elem(spin).elem(col).imag();
+	f_x++; g_x++;
+	f_y++; g_y++;
       }
     }
   }
@@ -146,12 +155,14 @@ time_VAXPBY::run(void)
   QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
   do {
     swatch.reset();
-    swatch.start();
-    
+
+    swatch.start();    
     for(int i=0; i < iters; i++) { 
       vaxpby4(yptr, aptr, xptr, bptr, n_4vec);
+      vaxpby4(yptr2, aptr, xptr2, bptr, n_4vec);
     }
     swatch.stop();
+      
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
@@ -169,10 +180,11 @@ time_VAXPBY::run(void)
   QDPIO::cout << "\t Timing with " << iters << " counts" << endl;
 
   swatch.reset();
+ 
   swatch.start();
-  
   for(int i=0; i < iters; ++i) {
     vaxpby4(yptr, aptr, xptr, bptr, n_4vec);
+    vaxpby4(yptr2, aptr, xptr2, bptr, n_4vec);
   }
   swatch.stop();
   time=swatch.getTimeInSeconds();
@@ -183,10 +195,11 @@ time_VAXPBY::run(void)
   time /= (double)iters;
 
   double flops=(double)(6*Nc*Ns*Layout::vol());
-  double perf=(flops/time)/(double)(1024*1024);
+  double perf=(2*flops/time)/(double)(1024*1024);
   QDPIO::cout << "VAXPBY4 (aliased) Kernel: " << perf << " Mflops" << endl;
 
   free(top);
+  free(top2);
 }
 
 // VAXPBY kernel (z aliases y): y = ax + by 

@@ -1,4 +1,4 @@
-// $Id: sse_blas_vaxpbyz4_double.cc,v 1.3 2008-06-23 14:19:43 bjoo Exp $
+// $Id: sse_blas_vaxpbyz4_double.cc,v 1.4 2008-06-30 19:31:19 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -10,6 +10,12 @@
 namespace QDP {
 
 #include <xmmintrin.h>
+#include "sse_prefetch.h"
+
+
+#define L2BY2 1365          /* L2 / 2 in SPINORS */
+#define L2BY3 910           /* L2 / 3 in SPINORS */
+
 
 
 void vaxpbyz4(REAL64 *z, REAL64 *a, REAL64 *x, REAL64 *b, REAL64 *y, int n_4vec)
@@ -149,6 +155,8 @@ void vaxpbyz4(REAL64 *z, REAL64 *a, REAL64 *x, REAL64 *b, REAL64 *y, int n_4vec)
   }
 }
 
+
+  // #include "mm3dnow.h"
 void vaxpby4(REAL64 *y, REAL64 *a, REAL64 *x, REAL64 *b, int n_4vec)
 {
   __m128d a_sse;
@@ -189,99 +197,203 @@ void vaxpby4(REAL64 *y, REAL64 *a, REAL64 *x, REAL64 *b, int n_4vec)
   // Do n_3vec 3vectors.
   double *x_p=x;   
   double *y_p=y;
+ 
+  if (n_4vec < L2BY2 ) { 
+
+    for(int i=0; i < n_4vec; i++) { 
+
+      y1 = _mm_load_pd(y_p);
+      x1 = _mm_load_pd(x_p);
+      z1 = _mm_mul_pd(a_sse,x1);
+      tmp1 = _mm_mul_pd(b_sse,y1);
+      z1 = _mm_add_pd(z1,tmp1);
+      _mm_store_pd(y_p, z1);
+      
+      y2 = _mm_load_pd(y_p+2);
+      x2 = _mm_load_pd(x_p+2);
+      z2 = _mm_mul_pd(a_sse,x2);
+      tmp2 = _mm_mul_pd(b_sse,y2);
+      z2 = _mm_add_pd(z2,tmp2);
+      _mm_store_pd(y_p+2, z2);
+      
+      y3 = _mm_load_pd(y_p+4);
+      x3 = _mm_load_pd(x_p+4);
+      z3 = _mm_mul_pd(a_sse,x3);
+      tmp3 = _mm_mul_pd(b_sse,y3);
+      z3 = _mm_add_pd(z3,tmp3);
+      _mm_store_pd(y_p+4, z3);
+      
+      y1 = _mm_load_pd(y_p+6);
+      x1 = _mm_load_pd(x_p+6);
+      z1 = _mm_mul_pd(a_sse,x1);
+      tmp1 = _mm_mul_pd(b_sse,y1);
+      z1 = _mm_add_pd(z1,tmp1);
+      _mm_store_pd(y_p+6, z1);
+      
+      y2 = _mm_load_pd(y_p+8);
+      x2 = _mm_load_pd(x_p+8);
+      z2 = _mm_mul_pd(a_sse,x2);
+      tmp2 = _mm_mul_pd(b_sse,y2);
+      z2 = _mm_add_pd(z2,tmp2);
+      _mm_store_pd(y_p+8, z2);
+      
+      y3 = _mm_load_pd(y_p+10);
+      x3 = _mm_load_pd(x_p+10);
+      z3 = _mm_mul_pd(a_sse,x3);
+      tmp3 = _mm_mul_pd(b_sse,y3);
+      z3 = _mm_add_pd(z3,tmp3);
+      _mm_store_pd(y_p+10, z3);
+      
+      y1 = _mm_load_pd(y_p+12);
+      x1 = _mm_load_pd(x_p+12);
+      z1 = _mm_mul_pd(a_sse,x1);
+      tmp1 = _mm_mul_pd(b_sse,y1);
+      z1 = _mm_add_pd(z1,tmp1);
+      _mm_store_pd(y_p+12, z1);
+      
+      y2 = _mm_load_pd(y_p+14);
+      x2 = _mm_load_pd(x_p+14);
+      z2 = _mm_mul_pd(a_sse,x2);
+      tmp2 = _mm_mul_pd(b_sse,y2);
+      z2 = _mm_add_pd(z2,tmp2);
+      _mm_store_pd(y_p+14, z2);
+      
+      y3 = _mm_load_pd(y_p+16);
+      x3 = _mm_load_pd(x_p+16);
+      z3 = _mm_mul_pd(a_sse,x3);
+      tmp3 = _mm_mul_pd(b_sse,y3);
+      z3 = _mm_add_pd(z3,tmp3);
+      _mm_store_pd(y_p+16, z3);
+      
+      
+      y1 = _mm_load_pd(y_p+18);
+      x1 = _mm_load_pd(x_p+18);
+      z1 = _mm_mul_pd(a_sse,x1);
+      tmp1 = _mm_mul_pd(b_sse,y1);
+      z1 = _mm_add_pd(z1,tmp1);
+      _mm_store_pd(y_p+18, z1);
+      
+      y2 = _mm_load_pd(y_p+20);
+      x2 = _mm_load_pd(x_p+20);
+      z2 = _mm_mul_pd(a_sse,x2);
+      tmp2 = _mm_mul_pd(b_sse,y2);
+      z2 = _mm_add_pd(z2,tmp2);
+      _mm_store_pd(y_p+20, z2);
+      
+      
+      y3 = _mm_load_pd(y_p+22);
+      x3 = _mm_load_pd(x_p+22);
+      z3 = _mm_mul_pd(a_sse,x3);
+      tmp3 = _mm_mul_pd(b_sse,y3);
+      z3 = _mm_add_pd(z3,tmp3);
+      _mm_store_pd(y_p+22, z3);
+      
+      
+      x_p+=24; y_p+=24; 
+    }
+  }
+  else {
+    for(int i=0; i < n_4vec; i++) { 
+
+      PREFETCH(x_p+72);       // Assume
+      PREFETCHW(y_p+72);
+
+      y1 = _mm_load_pd(y_p);
+      x1 = _mm_load_pd(x_p);
+      z1 = _mm_mul_pd(a_sse,x1);
+      tmp1 = _mm_mul_pd(b_sse,y1);
+      z1 = _mm_add_pd(z1,tmp1);
+      _mm_store_pd(y_p, z1);
+      
+      y2 = _mm_load_pd(y_p+2);
+      x2 = _mm_load_pd(x_p+2);
+      z2 = _mm_mul_pd(a_sse,x2);
+      tmp2 = _mm_mul_pd(b_sse,y2);
+      z2 = _mm_add_pd(z2,tmp2);
+      _mm_store_pd(y_p+2, z2);
+      
+      y3 = _mm_load_pd(y_p+4);
+      x3 = _mm_load_pd(x_p+4);
+      z3 = _mm_mul_pd(a_sse,x3);
+      tmp3 = _mm_mul_pd(b_sse,y3);
+      z3 = _mm_add_pd(z3,tmp3);
+      _mm_store_pd(y_p+4, z3);
+      
+      y1 = _mm_load_pd(y_p+6);
+      x1 = _mm_load_pd(x_p+6);
+      z1 = _mm_mul_pd(a_sse,x1);
+      tmp1 = _mm_mul_pd(b_sse,y1);
+      z1 = _mm_add_pd(z1,tmp1);
+      _mm_store_pd(y_p+6, z1);
     
-  for(int i=0; i < n_4vec; i++) { 
-    
-    y1 = _mm_load_pd(y_p);
-    x1 = _mm_load_pd(x_p);
-    z1 = _mm_mul_pd(a_sse,x1);
-    tmp1 = _mm_mul_pd(b_sse,y1);
-    z1 = _mm_add_pd(z1,tmp1);
-    _mm_store_pd(y_p, z1);
-    
-    y2 = _mm_load_pd(y_p+2);
-    x2 = _mm_load_pd(x_p+2);
-    z2 = _mm_mul_pd(a_sse,x2);
-    tmp2 = _mm_mul_pd(b_sse,y2);
-    z2 = _mm_add_pd(z2,tmp2);
-    _mm_store_pd(y_p+2, z2);
-    
-    y3 = _mm_load_pd(y_p+4);
-    x3 = _mm_load_pd(x_p+4);
-    z3 = _mm_mul_pd(a_sse,x3);
-    tmp3 = _mm_mul_pd(b_sse,y3);
-    z3 = _mm_add_pd(z3,tmp3);
-    _mm_store_pd(y_p+4, z3);
-    
-    
-    y1 = _mm_load_pd(y_p+6);
-    x1 = _mm_load_pd(x_p+6);
-    z1 = _mm_mul_pd(a_sse,x1);
-    tmp1 = _mm_mul_pd(b_sse,y1);
-    z1 = _mm_add_pd(z1,tmp1);
-    _mm_store_pd(y_p+6, z1);
-    
-    y2 = _mm_load_pd(y_p+8);
-    x2 = _mm_load_pd(x_p+8);
-    z2 = _mm_mul_pd(a_sse,x2);
-    tmp2 = _mm_mul_pd(b_sse,y2);
-    z2 = _mm_add_pd(z2,tmp2);
-    _mm_store_pd(y_p+8, z2);
-    
-    y3 = _mm_load_pd(y_p+10);
-    x3 = _mm_load_pd(x_p+10);
-    z3 = _mm_mul_pd(a_sse,x3);
-    tmp3 = _mm_mul_pd(b_sse,y3);
-    z3 = _mm_add_pd(z3,tmp3);
-    _mm_store_pd(y_p+10, z3);
-    
-    y1 = _mm_load_pd(y_p+12);
-    x1 = _mm_load_pd(x_p+12);
-    z1 = _mm_mul_pd(a_sse,x1);
-    tmp1 = _mm_mul_pd(b_sse,y1);
-    z1 = _mm_add_pd(z1,tmp1);
-    _mm_store_pd(y_p+12, z1);
-    
-    y2 = _mm_load_pd(y_p+14);
-    x2 = _mm_load_pd(x_p+14);
-    z2 = _mm_mul_pd(a_sse,x2);
-    tmp2 = _mm_mul_pd(b_sse,y2);
-    z2 = _mm_add_pd(z2,tmp2);
-    _mm_store_pd(y_p+14, z2);
-    
-    
-    y3 = _mm_load_pd(y_p+16);
-    x3 = _mm_load_pd(x_p+16);
-    z3 = _mm_mul_pd(a_sse,x3);
-    tmp3 = _mm_mul_pd(b_sse,y3);
-    z3 = _mm_add_pd(z3,tmp3);
-    _mm_store_pd(y_p+16, z3);
-    
-    
-    y1 = _mm_load_pd(y_p+18);
-    x1 = _mm_load_pd(x_p+18);
-    z1 = _mm_mul_pd(a_sse,x1);
-    tmp1 = _mm_mul_pd(b_sse,y1);
-    z1 = _mm_add_pd(z1,tmp1);
-    _mm_store_pd(y_p+18, z1);
-    
-    y2 = _mm_load_pd(y_p+20);
-    x2 = _mm_load_pd(x_p+20);
-    z2 = _mm_mul_pd(a_sse,x2);
-    tmp2 = _mm_mul_pd(b_sse,y2);
-    z2 = _mm_add_pd(z2,tmp2);
-    _mm_store_pd(y_p+20, z2);
-    
-    
-    y3 = _mm_load_pd(y_p+22);
-    x3 = _mm_load_pd(x_p+22);
-    z3 = _mm_mul_pd(a_sse,x3);
-    tmp3 = _mm_mul_pd(b_sse,y3);
-    z3 = _mm_add_pd(z3,tmp3);
-    _mm_store_pd(y_p+22, z3);
-    
-    
-    x_p+=24; y_p+=24; 
+      PREFETCH(x_p+80);
+      PREFETCHW(y_p+80);
+      
+      y2 = _mm_load_pd(y_p+8);
+      x2 = _mm_load_pd(x_p+8);
+      z2 = _mm_mul_pd(a_sse,x2);
+      tmp2 = _mm_mul_pd(b_sse,y2);
+      z2 = _mm_add_pd(z2,tmp2);
+      _mm_store_pd(y_p+8, z2);
+      
+      y3 = _mm_load_pd(y_p+10);
+      x3 = _mm_load_pd(x_p+10);
+      z3 = _mm_mul_pd(a_sse,x3);
+      tmp3 = _mm_mul_pd(b_sse,y3);
+      z3 = _mm_add_pd(z3,tmp3);
+      _mm_store_pd(y_p+10, z3);
+      
+      y1 = _mm_load_pd(y_p+12);
+      x1 = _mm_load_pd(x_p+12);
+      z1 = _mm_mul_pd(a_sse,x1);
+      tmp1 = _mm_mul_pd(b_sse,y1);
+      z1 = _mm_add_pd(z1,tmp1);
+      _mm_store_pd(y_p+12, z1);
+      
+      y2 = _mm_load_pd(y_p+14);
+      x2 = _mm_load_pd(x_p+14);
+      z2 = _mm_mul_pd(a_sse,x2);
+      tmp2 = _mm_mul_pd(b_sse,y2);
+      z2 = _mm_add_pd(z2,tmp2);
+      _mm_store_pd(y_p+14, z2);
+      
+      PREFETCH(x_p+88);
+      PREFETCHW(y_p+88);
+
+      y3 = _mm_load_pd(y_p+16);
+      x3 = _mm_load_pd(x_p+16);
+      z3 = _mm_mul_pd(a_sse,x3);
+      tmp3 = _mm_mul_pd(b_sse,y3);
+      z3 = _mm_add_pd(z3,tmp3);
+      _mm_store_pd(y_p+16, z3);
+      
+      
+      y1 = _mm_load_pd(y_p+18);
+      x1 = _mm_load_pd(x_p+18);
+      z1 = _mm_mul_pd(a_sse,x1);
+      tmp1 = _mm_mul_pd(b_sse,y1);
+      z1 = _mm_add_pd(z1,tmp1);
+      _mm_store_pd(y_p+18, z1);
+      
+      y2 = _mm_load_pd(y_p+20);
+      x2 = _mm_load_pd(x_p+20);
+      z2 = _mm_mul_pd(a_sse,x2);
+      tmp2 = _mm_mul_pd(b_sse,y2);
+      z2 = _mm_add_pd(z2,tmp2);
+      _mm_store_pd(y_p+20, z2);
+      
+      
+      y3 = _mm_load_pd(y_p+22);
+      x3 = _mm_load_pd(x_p+22);
+      z3 = _mm_mul_pd(a_sse,x3);
+      tmp3 = _mm_mul_pd(b_sse,y3);
+      z3 = _mm_add_pd(z3,tmp3);
+      _mm_store_pd(y_p+22, z3);
+      
+      
+      x_p+=24; y_p+=24; 
+    }
+
   }
 }
 

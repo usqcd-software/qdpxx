@@ -106,7 +106,7 @@ AC_ARG_ENABLE(sse2,
   [ac_sse2=0]
 )
 
-dnl --enable-sse2
+dnl --enable-sse3
 AC_ARG_ENABLE(sse3,
   AC_HELP_STRING([--enable-sse3],
     [Optimize code with Intel SSE3 instructions]),
@@ -114,6 +114,14 @@ AC_ARG_ENABLE(sse3,
    ac_sse2=1
    ac_sse3=1],
   [ac_sse3=0]
+)
+
+dnl --enable-sse3
+AC_ARG_ENABLE(sse3,
+  AC_HELP_STRING([--enable-sse3],
+    [Optimize code with Intel SSE3 instructions]),
+  [ac_3dnow=1],
+  [ac_3dnow=0]
 )
 
 dnl --enable-qcdoc
@@ -153,6 +161,11 @@ if test ${ac_sse3} -eq 1; then
     AC_DEFINE_UNQUOTED(QDP_USE_SSE3, ${ac_sse3}, [Enable SSE3 instructions])
     AC_SUBST(CONFIG_SSE3,[${ac_sse3}])
     AC_MSG_NOTICE([Configuring QDP++ with SSE3 extentions enabled]);
+fi
+
+if test ${ac_3dnow} -eq 1; then
+    AC_DEFINE_UNQUOTED(QDP_USE_3DNOW, ${ac_3dnow}, [Enable 3DNOW instructions])
+    AC_MSG_NOTICE([Configuring QDP++ with 3DNOW extentions enabled]);
 fi
 
 AM_CONDITIONAL(BUILD_LIBINTRIN,

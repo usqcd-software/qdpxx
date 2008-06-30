@@ -1,1 +1,1 @@
-const int nrow_in[] = {4,4,4,4};
+const int nrow_in[] = {6,6,6,4};

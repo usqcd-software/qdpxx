@@ -3360,6 +3360,15 @@ else
 fi
 
 
+# Check whether --enable-sse3 was given.
+if test "${enable_sse3+set}" = set; then
+  enableval=$enable_sse3; ac_3dnow=1
+else
+  ac_3dnow=0
+
+fi
+
+
 # Check whether --enable-qcdoc was given.
 if test "${enable_qcdoc+set}" = set; then
   enableval=$enable_qcdoc; ac_qcdoc_enabled=1
@@ -3421,6 +3430,16 @@ _ACEOF
 
     { echo "$as_me:$LINENO: Configuring QDP++ with SSE3 extentions enabled" >&5
 echo "$as_me: Configuring QDP++ with SSE3 extentions enabled" >&6;};
+fi
+
+if test ${ac_3dnow} -eq 1; then
+
+cat >>confdefs.h <<_ACEOF
+#define QDP_USE_3DNOW ${ac_3dnow}
+_ACEOF
+
+    { echo "$as_me:$LINENO: Configuring QDP++ with 3DNOW extentions enabled" >&5
+echo "$as_me: Configuring QDP++ with 3DNOW extentions enabled" >&6;};
 fi
 
  if  test "x${build_libintrin}x" = "xyesx" ; then

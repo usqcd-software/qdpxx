@@ -60,6 +60,9 @@
 /* Number of spin components */
 #undef QDP_NS
 
+/* Enable 3DNOW instructions */
+#undef QDP_USE_3DNOW
+
 /* Donot use Bagel QDP library for BLAS */
 #undef QDP_USE_BAGEL_QDP
 
