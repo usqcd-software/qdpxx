@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas_dble.h,v 1.8 2008-06-27 13:31:37 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas_double.h,v 1.1 2008-06-30 14:44:15 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -39,6 +39,7 @@ typedef PScalar<PScalar<RScalar<REAL64> > >  DScal;
 // in the template arguments
 
 // d += Scalar*Vec
+
 template<>
 inline
 void evaluate(OLattice< DVec >& d, 
@@ -118,6 +119,7 @@ void evaluate(OLattice< DVec >& d,
 	
 }
 
+
 // z = ax + y
 template<>
 inline
@@ -163,13 +165,7 @@ void evaluate( OLattice< DVec > &d,
     REAL64* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
     int n_4vec = (s.end()-s.start()+1);    
-
-    if( zptr == yptr ) { 
-      vaxpy4(yptr,aptr,xptr,n_4vec);
-    }
-    else {
-      vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
-    }
+    vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -232,12 +228,7 @@ void evaluate( OLattice< DVec > &d,
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( zptr == yptr) { 
-      vaxpy4(yptr,aptr, xptr, n_4vec);
-    }
-    else {
-      vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
-    }
+    vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -295,12 +286,7 @@ void evaluate( OLattice< DVec > &d,
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( zptr == yptr) { 
-      vaxmy4(yptr,aptr,xptr, n_4vec);
-    }
-    else {
-      vaxmyz4(zptr, aptr, xptr, yptr, n_4vec);
-    }
+    vaxmyz4(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -314,6 +300,7 @@ void evaluate( OLattice< DVec > &d,
   }
 
 }
+
 
 template<>
 inline
@@ -359,12 +346,8 @@ void evaluate( OLattice< DVec > &d,
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( yptr == zptr ) { 
-      vaxpy4(yptr,aptr,xptr,n_4vec);
-    }
-    else {
-      vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
-    }
+    vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
+   
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -514,12 +497,7 @@ void evaluate( OLattice< DVec > &d,
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( yptr == zptr ) { 
-      vaxpy4(yptr, aptr, xptr, n_4vec);
-    }
-    else { 
-      vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
-    }
+    vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
   } 
   else { 
     const int* tab = s.siteTable().slice();
@@ -582,12 +560,8 @@ void evaluate( OLattice< DVec > &d,
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if ( zptr == yptr ) { 
-      vaxpy4(yptr, aptr, xptr, n_4vec);
-    }
-    else {
-      vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
-    }
+    vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
+    
   } 
   else { 
     const int* tab = s.siteTable().slice();
@@ -647,12 +621,7 @@ void evaluate( OLattice< DVec > &d,
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( zptr == yptr ) { 
-      vaxmy4(yptr,aptr,xptr,n_4vec);
-    }
-    else {
-      vaxmyz4(zptr, aptr, xptr, yptr, n_4vec);
-    }
+    vaxmyz4(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -714,12 +683,8 @@ void evaluate( OLattice< DVec > &d,
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( zptr == yptr ) { 
-      vaxpy4(yptr, aptr, xptr, n_4vec);
-    }
-    else {
-      vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
-    }
+    vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
+
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -870,6 +835,7 @@ void evaluate( OLattice< DVec > &d,
 
 }
 
+
 template<>
 inline
 void evaluate( OLattice< DVec > &d,
@@ -909,6 +875,7 @@ void evaluate( OLattice< DVec > &d,
     }
   }
 }
+
 
 // v *= a
 template<>
@@ -1031,6 +998,7 @@ void evaluate( OLattice< DVec > &d,
 
 }
 
+
 // v -= v
 template<>
 inline
@@ -1049,7 +1017,7 @@ void evaluate( OLattice< DVec > &d,
 #ifdef DEBUG_BLAS
   QDPIO::cout << "BJ: v -= v" << endl;
 #endif
-  REAL64 one = 1;
+  REAL64 mone = (REAL64)-1;
     
   if( s.hasOrderedRep() ) { 
 
@@ -1057,7 +1025,7 @@ void evaluate( OLattice< DVec > &d,
     REAL64 *yptr = (REAL64 *)(&d.elem(s.start()).elem(0).elem(0).real());
 
     int n_4vec = (s.end() - s.start()+1);    
-    vaxmy4(yptr, &one, xptr, n_4vec);
+    vaxpy4(yptr, &mone, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -1066,7 +1034,7 @@ void evaluate( OLattice< DVec > &d,
       REAL64 *xptr = (REAL64 *)(&x.elem(i).elem(0).elem(0).real());
       REAL64 *yptr = (REAL64 *)(&d.elem(i).elem(0).elem(0).real());
     
-      vaxmy4(yptr, &one, xptr, 1);
+      vaxpy4(yptr, &mone, xptr, 1);
    
     }
   }
@@ -1127,12 +1095,8 @@ void evaluate( OLattice< DVec > &d,
 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( zptr == yptr ) { 
-      vaxpby4(zptr, aptr, xptr, bptr, n_4vec);
-    }
-    else {
-      vaxpbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
-    }
+    vaxpbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
+    
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -1212,12 +1176,8 @@ void evaluate( OLattice< DVec > &d,
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if ( zptr == yptr ) { 
-      vaxpby4(zptr, aptr, xptr, bptr, n_4vec);
-    }
-    else { 
-      vaxpbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
-    }
+    vaxpbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
+    
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -1302,12 +1262,7 @@ void evaluate( OLattice< DVec > &d,
 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( zptr == yptr ) { 
-      vaxpby4(yptr, aptr, xptr, bptr, n_4vec);
-    }
-    else {
-      vaxpbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
-    }
+    vaxpbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -1379,12 +1334,7 @@ void evaluate( OLattice< DVec > &d,
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( zptr == yptr ) { 
-      vaxpby4(yptr, aptr, xptr, bptr, n_4vec);
-    }
-    else { 
-      vaxpbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
-    }
+    vaxpbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -1401,6 +1351,7 @@ void evaluate( OLattice< DVec > &d,
     }
   }
 }
+
 
 // z = ax - by
 template<>
@@ -1456,12 +1407,7 @@ void evaluate( OLattice< DVec > &d,
 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( zptr == yptr ) { 
-      vaxmby4(zptr, aptr, xptr, bptr, n_4vec);
-    }
-    else { 
-      vaxmbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
-    }
+    vaxmbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -1541,12 +1487,7 @@ void evaluate( OLattice< DVec > &d,
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( zptr == yptr ) { 
-      vaxmby4(zptr, aptr, xptr, bptr, n_4vec);
-    }
-    else { 
-      vaxmbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
-    }
+    vaxmbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -1631,12 +1572,7 @@ void evaluate( OLattice< DVec > &d,
     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( zptr == yptr ) { 
-      vaxmby4(zptr, aptr, xptr, bptr, n_4vec);
-    }
-    else {
-      vaxmbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
-    }
+    vaxmbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -1708,12 +1644,7 @@ void evaluate( OLattice< DVec > &d,
 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     int n_4vec = (s.end()-s.start()+1);
-    if( zptr == yptr ) { 
-      vaxmby4(zptr, aptr, xptr, bptr, n_4vec);
-    }
-    else {
-      vaxmbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
-    }
+    vaxmbyz4(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
@@ -2010,13 +1941,13 @@ norm2(const multi1d< OLattice< DVec > >& s1)
 #endif
 
   int n_4vec = (all.end() - all.start() + 1);
-  DOUBLE ltmp = 0;
+  REAL64 ltmp = 0;
   for(int n=0; n < s1.size(); ++n)
   {
     const REAL64* s1ptr =  &(s1[n].elem(all.start()).elem(0).elem(0).real());
     
     // I am relying on this being a Double here 
-    REAL64 lltmp;
+    REAL64 lltmp=0;
     local_sumsq4(&lltmp, (REAL64*)s1ptr, n_4vec); 
 
     ltmp += lltmp;
@@ -2040,6 +1971,7 @@ innerProduct(const multi1d< OLattice<DVec> > &v1,
   // This BinaryReturn has Type_t
   // OScalar<OScalar<OScalar<RComplex<PScalar<REAL64> > > > >
   BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t lprod;
+
   // Inner product is accumulated internally in DOUBLE
   REAL64 ip[2];
   ip[0]=0;
@@ -2092,14 +2024,14 @@ innerProductReal(const multi1d< OLattice<DVec> > &v1,
   // OScalar<OScalar<OScalar<RScalar<PScalar<REAL64> > > > >
   BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProductReal>::Type_t lprod;
   // Inner product is accumulated internally in DOUBLE
-  DOUBLE ip_re=0;
+  REAL64 ip_re=0;
 
   // Length of subset 
   unsigned long n_4vec = (all.end() - all.start() + 1);
 
   for(int n=0; n < v1.size(); ++n)
   {
-    DOUBLE iip_re=0;
+    REAL64 iip_re=0;
 
     // Call My CDOT
     local_vcdot_real4(&iip_re,

@@ -84,7 +84,7 @@ SSESITE_HDRS = qdp_scalarsite_sse.h \
 	$(ssesitedir)/qdp_sse_spin_evaluates.h \
 	$(ssesitedir)/qdp_sse_fused_spin_proj_evaluates.h \
 	$(ssesitedir)/qdp_sse_fused_spin_recon_evaluates.h \
-	$(ssesitedir)/qdp_scalarsite_sse_blas_dble.h \
+	$(ssesitedir)/qdp_scalarsite_sse_blas_double.h \
 	$(ssesitedir)/sse_blas_local_sumsq_double.h \
 	$(ssesitedir)/sse_blas_local_vcdot_double.h \
 	$(ssesitedir)/sse_blas_local_vcdot_real_double.h \

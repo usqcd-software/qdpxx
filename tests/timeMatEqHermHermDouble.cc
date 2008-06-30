@@ -220,7 +220,7 @@ timeMPeqaHH_QDP::run(void)
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
-  double flops=(double)(234*Layout::vol());
+  double flops=(double)(216*Layout::vol());
   double perf=(flops/time)/(double)(1024*1024);
   QDPIO::cout << "QDP++ M+=HH Kernel: " << perf << " Mflops" << endl;
 
@@ -233,7 +233,7 @@ timeMPeqaHH::run(void)
 
   LatticeColorMatrixD3 x;
   LatticeColorMatrixD3 y;
-  Double a(-1.0);
+  Double a(1.0);
 
   REAL64* xptr;
   REAL64* yptr;
@@ -267,7 +267,7 @@ timeMPeqaHH::run(void)
 
   REAL64* aptr = &(a.elem().elem().elem().elem());
 
-  QDPIO::cout << endl << "Timing SSE D  M+=aHH  Kernel " <<endl;
+  QDPIO::cout << endl << "Timing SSE D  M+=HH  Kernel " <<endl;
 
   StopWatch swatch;
   double n_secs = N_SECS;
@@ -312,7 +312,7 @@ timeMPeqaHH::run(void)
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
-  double flops=(double)(234*Layout::vol());
+  double flops=(double)(216*Layout::vol());
   double perf=(flops/time)/(double)(1024*1024);
   QDPIO::cout << "SSED M+=aHH Kernel: " << perf << " Mflops" << endl;
 
