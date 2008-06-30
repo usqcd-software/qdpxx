@@ -1,3 +1,17 @@
+2008-06-30 15:31  bjoo
+
+	* configure, configure.ac, include/Makefile.am,
+	  include/qdp_config_internal.h.in,
+	  lib/scalarsite_sse/sse_blas_vaxpbyz4_double.cc, tests/testvol.h,
+	  tests/timeVaxpyDouble.cc, tests/time_vaxpy_double.cc: Added
+	  --enable-3dnow option. This can be used to enable write
+	  prefetching
+
+2008-06-30 15:30  bjoo
+
+	* include/scalarsite_sse/sse_prefetch.h: Added a set of macros for
+	  prefetching...
+
 2008-06-30 12:41  bjoo
 
 	* include/scalarsite_sse/qdp_scalarsite_sse_blas_double.h: Added
