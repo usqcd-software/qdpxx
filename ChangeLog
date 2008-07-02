@@ -1,3 +1,27 @@
+2008-07-02 11:38  bjoo
+
+	* include/scalarsite_sse/qdp_scalarsite_sse_blas_double.h,
+	  tests/testVaypxDouble.cc: Seems to build and make check on
+	  parscalar-single parscalar-single-double etc
+
+2008-07-02 11:36  bjoo
+
+	* configure.ac, aclocal.m4, include/qdp_config_internal.h.in,
+	  configure: I am getting sick of CVS doing this
+
+2008-07-02 09:04  bjoo
+
+	* lib/scalarsite_sse/sse_blas_vaxmbyz4_double.cc,
+	  lib/scalarsite_sse/sse_blas_vaxpbyz4_double.cc,
+	  lib/scalarsite_sse/sse_blas_vaxpy4_double.cc, tests/testvol.h,
+	  tests/timeVaxpyDouble.cc, tests/time_vaxpy_double.cc: OK. This
+	  seems to run quite fast.
+
+2008-07-02 09:03  bjoo
+
+	* include/scalarsite_sse/sse_prefetch.h: sse_prefetch. should be
+	  there
+
 2008-06-30 15:31  bjoo
 
 	* configure, configure.ac, include/Makefile.am,
