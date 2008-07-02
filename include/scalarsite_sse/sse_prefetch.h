@@ -4,7 +4,9 @@
 #include "qdp_config.h"
 
 /* Read Prefetch a 64 byte (8 doubles) line */
-#define PREFETCH(a) _mm_prefetch((a), _MM_HINT_NTA)
+#define PREFETCHNTA(a) _mm_prefetch((a), _MM_HINT_NTA)
+
+#define PREFETCH(a) _mm_prefetch((a), _MM_HINT_T0)
 
 /* Write prefetch a 64 byte (8 doubles line) */
 #if defined(QDP_USE_3DNOW)
