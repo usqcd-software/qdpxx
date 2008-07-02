@@ -93,7 +93,12 @@ dnl --enable-sse
 AC_ARG_ENABLE(sse,
   AC_HELP_STRING([--enable-sse],
     [Optimize code with Intel SSE instructions]),
-  [ac_sse=1],
+  [if test "x${enableval}x" = "xyesx";
+   then 
+      ac_sse=1
+   else
+      ac_sse=0
+   fi],
   [ac_sse=0]
 )
 
@@ -101,8 +106,13 @@ dnl --enable-sse2
 AC_ARG_ENABLE(sse2,
   AC_HELP_STRING([--enable-sse2],
     [Optimize code with Intel SSE2 instructions]),
-  [ac_sse=1
-   ac_sse2=1],
+  [if test "x${enableval}x" = "xyesx";
+   then
+     ac_sse=1
+     ac_sse2=1
+   else 
+     ac_sse2=0
+   fi],
   [ac_sse2=0]
 )
 
@@ -110,17 +120,22 @@ dnl --enable-sse3
 AC_ARG_ENABLE(sse3,
   AC_HELP_STRING([--enable-sse3],
     [Optimize code with Intel SSE3 instructions]),
-  [ac_sse=1
-   ac_sse2=1
-   ac_sse3=1],
+  [if test "x${enableval}x" = "xyesx";
+   then 
+      ac_sse=1
+      ac_sse2=1
+      ac_sse3=1
+   else
+      ac_sse3=0
+   fi],
   [ac_sse3=0]
 )
 
-dnl --enable-sse3
-AC_ARG_ENABLE(sse3,
-  AC_HELP_STRING([--enable-sse3],
-    [Optimize code with Intel SSE3 instructions]),
-  [ac_3dnow=1],
+dnl --enable-3dnow
+AC_ARG_ENABLE(3dnow,
+  AC_HELP_STRING([--enable-3dnow],
+    [Optimize code with AMD 3DNow instructions]),
+  [ac_3dnow=${enableval}],
   [ac_3dnow=0]
 )
 
@@ -163,7 +178,7 @@ if test ${ac_sse3} -eq 1; then
     AC_MSG_NOTICE([Configuring QDP++ with SSE3 extentions enabled]);
 fi
 
-if test ${ac_3dnow} -eq 1; then
+if test "x${ac_3dnow}x" = "xyesx"; then
     AC_DEFINE_UNQUOTED(QDP_USE_3DNOW, ${ac_3dnow}, [Enable 3DNOW instructions])
     AC_MSG_NOTICE([Configuring QDP++ with 3DNOW extentions enabled]);
 fi
