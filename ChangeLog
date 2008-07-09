@@ -1,3 +1,10 @@
+2008-07-09 08:06  edwards
+
+	* other_libs/xpath_reader/include/: xml_array.h, xml_array2d.h,
+	  xml_array3d.h: Bug fix in operator-() [the unary operator]. It
+	  was modifying the source and returning it, rather than making a
+	  new destination field that is the negation.
+
 2008-07-02 11:38  bjoo
 
 	* include/scalarsite_sse/qdp_scalarsite_sse_blas_double.h,
