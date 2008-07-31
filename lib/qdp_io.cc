@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.cc,v 1.28 2008-06-27 13:31:22 bjoo Exp $
+// $Id: qdp_io.cc,v 1.29 2008-07-31 02:59:22 edwards Exp $
 /*! @file
  * @brief IO support
  */
@@ -760,6 +760,15 @@ namespace QDP
     return s;
   }
 
+  // Clear the stream
+  void BinaryBufferReader::clear()
+  {
+    if (Layout::primaryNode()) 
+      f.clear();
+
+    checksum = 0;
+  }
+
 
 
   //--------------------------------------------------------------------------------
@@ -1088,6 +1097,15 @@ namespace QDP
       s = f.str();
     
     return s;
+  }
+
+  // Clear the stream
+  void BinaryBufferWriter::clear()
+  {
+    if (Layout::primaryNode())
+      f.clear();
+
+    checksum = 0;
   }
 
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.24 2007-08-13 05:00:09 edwards Exp $
+// $Id: qdp_io.h,v 1.25 2008-07-31 02:59:22 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -615,6 +615,9 @@ namespace QDP
     //! Return entire buffer as a string
     std::string str() const;
         
+    //! Clear the buffer
+    void clear();
+
     //! Get the current checksum
     QDPUtil::n_uint32_t getChecksum() const {return checksum;}
   
@@ -942,6 +945,9 @@ namespace QDP
         
     //! Flushes the buffer
     void flush() {}
+
+    //! Clear the buffer
+    void clear();
 
     //! Get the current checksum
     QDPUtil::n_uint32_t getChecksum() const {return checksum;}
