@@ -1,3 +1,8 @@
+2008-07-30 22:59  edwards
+
+	* include/qdp_io.h, lib/qdp_io.cc: Added a "clear()" function to
+	  BinaryBufferWriter/Reader.
+
 2008-07-09 08:06  edwards
 
 	* other_libs/xpath_reader/include/: xml_array.h, xml_array2d.h,
