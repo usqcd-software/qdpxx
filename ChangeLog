@@ -1,7 +1,79 @@
+2008-08-02 16:53  edwards
+
+	* examples/t_db.cc: Database test routine.
+
+2008-08-02 16:28  edwards
+
+	* other_libs/ffdb-lite/src/Serializable.h: Changed some comments.
+
+2008-08-02 16:27  edwards
+
+	* other_libs/ffdb-lite/src/DBCursor.h: Changed get_next_key to new
+	  semantics.
+
+2008-08-02 16:26  edwards
+
+	* other_libs/ffdb-lite/src/DBFunc.h: Fixed some comments.
+
+2008-08-02 16:26  edwards
+
+	* other_libs/ffdb-lite/src/ConfFxDSizeStoreDB.h: Added include of
+	  RecnoKey and RecnoData.h
+
+2008-08-02 16:25  edwards
+
+	* other_libs/ffdb-lite/src/ConfDataStoreDB.h: Removed unneeded
+	  include of RecnoKey and Data include files.
+
+2008-08-02 16:24  edwards
+
+	* other_libs/ffdb-lite/src/DBString.h: Removed include of inet.h
+
+2008-08-02 16:05  edwards
+
+	* other_libs/ffdb-lite/src/: ConfDataStoreDB.cpp,
+	  ConfDataStoreDB.h, ConfFxDSizeStoreDB.h, DBFunc.h, DBString.cpp,
+	  DBString.h, Serializable.h: Changed readObject and writeObject
+	  semantics to instead take input and output buffers from the
+	  caller instead of a private internal buffer within the object
+	  itself.
+
+2008-08-02 16:00  edwards
+
+	* other_libs/ffdb-lite/src/ConfVarDSizeStoreDB.h: I think this is a
+	  bug fix. Changed the return type of "get".
+
+2008-08-02 15:16  tag qdp1-28-0
+
+2008-08-02 15:16  edwards
+
+	* NEWS: Info on 1.28.0
+
+2008-08-02 15:10  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2008-08-02 15:09  edwards
+
+	* configure.ac: Changed to 1.28.0
+
+2008-07-31 20:33  tag FFDB-0-9-0
+
+2008-07-31 20:33  chen
+
+	* other_libs/ffdb-lite/: configure.ac, src/FFDB.h: port to FC9
+
 2008-07-30 22:59  edwards
 
 	* include/qdp_io.h, lib/qdp_io.cc: Added a "clear()" function to
 	  BinaryBufferWriter/Reader.
+
+2008-07-25 09:32  chen
+
+	* other_libs/ffdb-lite/src/: ConfDataStoreDB.h,
+	  ConfFxDSizeStoreDB.h, ConfVarDSizeStoreDB.h, Makefile.am: Change
+	  ConfDataStoreDB to a base class add tw subclasses: one for
+	  fixsize data the other for variable size data
 
 2008-07-09 08:06  edwards
 
@@ -9,6 +81,17 @@
 	  xml_array3d.h: Bug fix in operator-() [the unary operator]. It
 	  was modifying the source and returning it, rather than making a
 	  new destination field that is the negation.
+
+2008-07-07 13:49  chen
+
+	* other_libs/ffdb-lite/src/ConfDataStoreDB.h: remove warning about
+	  signed and unsigned
+
+2008-07-03 14:47  chen
+
+	* other_libs/ffdb-lite/src/: ConfDataStoreDB.h, DBFunc.cpp,
+	  DBFunc.h, Makefile.am, RecnoData.cpp, RecnoData.h, RecnoKey.cpp,
+	  RecnoKey.h: New implementation
 
 2008-07-02 11:38  bjoo
 
@@ -198,6 +281,11 @@
 	  timeMatEqMatMatDouble.cc, timeMatEqMatMatDouble.h,
 	  time_matmat_double.cc: Added SU3xSU3 tests and timing
 
+2008-06-24 14:43  chen
+
+	* other_libs/ffdb-lite/src/: DBFunc.cpp, DBFunc.h: removing apps
+	  directory
+
 2008-06-23 16:29  bjoo
 
 	* tests/test_matmat_double.cc: Oops
@@ -314,6 +402,11 @@
 
 	* include/Makefile.am: Added dprec reductions
 
+2008-06-17 10:50  edwards
+
+	* other_libs/ffdb-lite/config/: config.guess, config.sub, depcomp,
+	  install-sh, missing: Added config files.
+
 2008-06-17 10:23  bjoo
 
 	* other_libs/xpath_reader/include/xml_array.h: Added some new std
@@ -356,6 +449,21 @@
 	  there is no clash with the single prec version when the two are
 	  used together
 
+2008-06-16 00:19  edwards
+
+	* other_libs/ffdb-lite/src/: ConfDataStoreDB.h, DBCursor.h,
+	  DBData.h, DBFunc.h, DBKey.h, DBString.h, FFDB.h, Serializable.h:
+	  Added emacs controls to throw into C++ mode.
+
+2008-06-15 23:54  edwards
+
+	* other_libs/ffdb-lite/: aclocal.m4, configure: Induced changes
+
+2008-06-15 23:54  edwards
+
+	* other_libs/ffdb-lite/configure.ac: Changed AC_CONFIG_SRCDIR to
+	  AC_CONFIG_AUX_DIR
+
 2008-06-13 17:20  bjoo
 
 	* Makefile.am, include/Makefile.am,
@@ -386,6 +494,62 @@
 	  test_vaxpy_double.cc, testvol.h, timeVaxpyDouble.cc,
 	  timeVaxpyDouble.h, time_vaxpy_double.cc, unittest.h: Tests and
 	  timing for double precision VAXPY wor Wilson Fermions
+
+2008-06-07 17:53  edwards
+
+	* other_libs/ffdb-lite/configure: Induced changes.
+
+2008-06-07 17:52  edwards
+
+	* other_libs/ffdb-lite/ffdblite-config.in: Start of a config
+	  script.
+
+2008-06-07 17:51  edwards
+
+	* other_libs/ffdb-lite/aclocal.m4: Induced changes
+
+2008-06-07 17:50  edwards
+
+	* other_libs/ffdb-lite/: Makefile.am, configure.ac,
+	  src/Makefile.am: Getting it work again.
+
+2008-06-07 14:24  edwards
+
+	* other_libs/ffdb-lite/configure: Induced changes.
+
+2008-06-07 14:24  edwards
+
+	* other_libs/ffdb-lite/configure.ac: Added some msg notices.
+
+2008-06-03 14:23  chen
+
+	* other_libs/ffdb-lite/src/ConfDataStoreDB.cpp: Add
+	  ConfDataStoreDB.cpp
+
+2008-06-02 16:10  chen
+
+	* other_libs/ffdb-lite/src/: ConfDataStoreDB.h, DBString.cpp,
+	  DBString.h, Makefile.am: First try to put into production
+
+2008-05-29 15:31  tag FFDB
+
+2008-05-29 15:31  chen
+
+	* other_libs/ffdb-lite/: AUTHORS, COPYING, INSTALL, Makefile.am,
+	  NEWS, README, aclocal.m4, configure, configure.ac,
+	  src/ConfDataStoreDB.h, src/DBCursor.cpp, src/DBCursor.h,
+	  src/DBData.h, src/DBFunc.cpp, src/DBFunc.h, src/DBKey.h,
+	  src/DBString.cpp, src/DBString.h, src/FFDB.cpp, src/FFDB.h,
+	  src/Makefile.am, src/Serializable.h: Initial CVS import of FFDB
+
+2008-05-29 15:31  chen
+
+	* other_libs/ffdb-lite/: AUTHORS, COPYING, INSTALL, Makefile.am,
+	  NEWS, README, aclocal.m4, configure, configure.ac,
+	  src/ConfDataStoreDB.h, src/DBCursor.cpp, src/DBCursor.h,
+	  src/DBData.h, src/DBFunc.cpp, src/DBFunc.h, src/DBKey.h,
+	  src/DBString.cpp, src/DBString.h, src/FFDB.cpp, src/FFDB.h,
+	  src/Makefile.am, src/Serializable.h: Initial revision
 
 2008-05-26 00:26  tag qio2-3-5
 
