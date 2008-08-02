@@ -33,18 +33,22 @@ POST_UNINSTALL = :
 @BUILD_LIBINTRIN_TRUE@	-I@top_builddir@/other_libs/@LIBINTRIN_DIR@/include
 @BUILD_LIBINTRIN_TRUE@am__append_2 = -L@top_builddir@/other_libs/libintrin/lib
 @BUILD_LIBINTRIN_TRUE@am__append_3 = -lintrin
+@BUILD_FFDB_LITE_TRUE@am__append_4 = -I@top_srcdir@/other_libs/@FFDB_LITE_DIR@/src @FFDB_CXXFLAGS@ @FFDB_INC@
+@BUILD_FFDB_LITE_TRUE@am__append_5 = -L@top_builddir@/other_libs/@FFDB_LITE_DIR@/src
+@BUILD_FFDB_LITE_TRUE@am__append_6 = @FFDB_LIBS@
 check_PROGRAMS = t_skeleton$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
 	t_xml$(EXEEXT) t_remote$(EXEEXT) t_entry$(EXEEXT) \
 	t_nersc$(EXEEXT) t_shift$(EXEEXT) t_exotic$(EXEEXT) \
 	t_basic$(EXEEXT) t_qio$(EXEEXT) t_cugauge$(EXEEXT) \
 	t_transpose_spin$(EXEEXT) t_partfile$(EXEEXT) t_su3$(EXEEXT) \
-	$(am__EXEEXT_2) $(am__EXEEXT_3)
+	$(am__EXEEXT_2) $(am__EXEEXT_3) $(am__EXEEXT_4)
 EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_binx$(EXEEXT) \
 	t_gsum$(EXEEXT) $(am__EXEEXT_1) nersc2ildg$(EXEEXT) \
 	test_ildglat$(EXEEXT) lhpc2ildg$(EXEEXT)
-@BUILD_WILSON_EXAMPLES_TRUE@am__append_4 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
-@BUILD_WILSON_EXAMPLES_TRUE@am__append_5 = t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3 t_spinproj t_spinproj2
-@BUILD_STAGGERED_EXAMPLES_TRUE@am__append_6 = 
+@BUILD_WILSON_EXAMPLES_TRUE@am__append_7 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
+@BUILD_WILSON_EXAMPLES_TRUE@am__append_8 = t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3 t_spinproj t_spinproj2
+@BUILD_STAGGERED_EXAMPLES_TRUE@am__append_9 = 
+@BUILD_FFDB_LITE_TRUE@am__append_10 = t_db
 subdir = examples
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -67,6 +71,7 @@ CONFIG_CLEAN_FILES =
 @BUILD_WILSON_EXAMPLES_TRUE@	t_spectrum$(EXEEXT) t_qdp$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_linalg$(EXEEXT)
 am__EXEEXT_3 =
+@BUILD_FFDB_LITE_TRUE@am__EXEEXT_4 = t_db$(EXEEXT)
 am__objects_1 =
 am_lhpc2ildg_OBJECTS = lhpc2ildg.$(OBJEXT) $(am__objects_1) \
 	mesplq.$(OBJEXT)
@@ -77,84 +82,88 @@ am_nersc2ildg_OBJECTS = nersc2ildg.$(OBJEXT) $(am__objects_1) \
 	mesplq.$(OBJEXT)
 nersc2ildg_OBJECTS = $(am_nersc2ildg_OBJECTS)
 nersc2ildg_LDADD = $(LDADD)
-nersc2ildg_DEPENDENCIES = $(am__DEPENDENCIES_1)
+nersc2ildg_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_basic_OBJECTS = t_basic.$(OBJEXT)
 t_basic_OBJECTS = $(am_t_basic_OBJECTS)
 t_basic_LDADD = $(LDADD)
-t_basic_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_basic_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_binx_OBJECTS = t_binx.$(OBJEXT) $(am__objects_1)
 t_binx_OBJECTS = $(am_t_binx_OBJECTS)
 t_binx_LDADD = $(LDADD)
-t_binx_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_binx_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_blas_OBJECTS = t_blas.$(OBJEXT) blas1.$(OBJEXT)
 t_blas_OBJECTS = $(am_t_blas_OBJECTS)
 t_blas_LDADD = $(LDADD)
 am_t_blas_g5_OBJECTS = t_blas_g5.$(OBJEXT) $(am__objects_1)
 t_blas_g5_OBJECTS = $(am_t_blas_g5_OBJECTS)
 t_blas_g5_LDADD = $(LDADD)
-t_blas_g5_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_blas_g5_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_blas_g5_2_OBJECTS = t_blas_g5_2.$(OBJEXT) $(am__objects_1)
 t_blas_g5_2_OBJECTS = $(am_t_blas_g5_2_OBJECTS)
 t_blas_g5_2_LDADD = $(LDADD)
-t_blas_g5_2_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_blas_g5_2_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_blas_g5_3_OBJECTS = t_blas_g5_3.$(OBJEXT) $(am__objects_1)
 t_blas_g5_3_OBJECTS = $(am_t_blas_g5_3_OBJECTS)
 t_blas_g5_3_LDADD = $(LDADD)
-t_blas_g5_3_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_blas_g5_3_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_cblas_OBJECTS = t_cblas.$(OBJEXT) cblas1.$(OBJEXT)
 t_cblas_OBJECTS = $(am_t_cblas_OBJECTS)
 t_cblas_LDADD = $(LDADD)
-t_cblas_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_cblas_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_cugauge_OBJECTS = t_cugauge.$(OBJEXT) mesplq.$(OBJEXT) \
 	$(am__objects_1)
 t_cugauge_OBJECTS = $(am_t_cugauge_OBJECTS)
 t_cugauge_LDADD = $(LDADD)
-t_cugauge_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_cugauge_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am_t_db_OBJECTS = t_db.$(OBJEXT) $(am__objects_1)
+t_db_OBJECTS = $(am_t_db_OBJECTS)
+t_db_LDADD = $(LDADD)
+t_db_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_dslashm_OBJECTS = t_dslashm.$(OBJEXT) dslashm_w.$(OBJEXT) \
 	$(am__objects_1)
 t_dslashm_OBJECTS = $(am_t_dslashm_OBJECTS)
 t_dslashm_LDADD = $(LDADD)
-t_dslashm_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_dslashm_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_entry_OBJECTS = t_entry.$(OBJEXT) $(am__objects_1)
 t_entry_OBJECTS = $(am_t_entry_OBJECTS)
 t_entry_LDADD = $(LDADD)
-t_entry_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_entry_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_exotic_OBJECTS = t_exotic.$(OBJEXT) rgauge.$(OBJEXT) \
 	taproj.$(OBJEXT) expm12.$(OBJEXT) reunit.$(OBJEXT) \
 	$(am__objects_1)
 t_exotic_OBJECTS = $(am_t_exotic_OBJECTS)
 t_exotic_LDADD = $(LDADD)
-t_exotic_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_exotic_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_foo_OBJECTS = t_foo.$(OBJEXT) $(am__objects_1)
 t_foo_OBJECTS = $(am_t_foo_OBJECTS)
 t_foo_LDADD = $(LDADD)
-t_foo_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_foo_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_formfac_OBJECTS = t_formfac.$(OBJEXT) formfac_w.$(OBJEXT) \
 	$(am__objects_1)
 t_formfac_OBJECTS = $(am_t_formfac_OBJECTS)
 t_formfac_LDADD = $(LDADD)
-t_formfac_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_formfac_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_gsum_OBJECTS = t_gsum.$(OBJEXT)
 t_gsum_OBJECTS = $(am_t_gsum_OBJECTS)
 t_gsum_LDADD = $(LDADD)
 am_t_io_OBJECTS = t_io.$(OBJEXT) $(am__objects_1)
 t_io_OBJECTS = $(am_t_io_OBJECTS)
 t_io_LDADD = $(LDADD)
-t_io_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_io_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_linalg_OBJECTS = t_linalg.$(OBJEXT) linalg1.$(OBJEXT)
 t_linalg_OBJECTS = $(am_t_linalg_OBJECTS)
 t_linalg_LDADD = $(LDADD)
-t_linalg_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_linalg_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_mesplq_OBJECTS = t_mesplq.$(OBJEXT) mesplq.$(OBJEXT) \
 	reunit.$(OBJEXT) $(am__objects_1)
 t_mesplq_OBJECTS = $(am_t_mesplq_OBJECTS)
 t_mesplq_LDADD = $(LDADD)
-t_mesplq_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_mesplq_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_nersc_OBJECTS = t_nersc.$(OBJEXT) mesplq.$(OBJEXT) \
 	reunit.$(OBJEXT) $(am__objects_1)
 t_nersc_OBJECTS = $(am_t_nersc_OBJECTS)
 t_nersc_LDADD = $(LDADD)
-t_nersc_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_nersc_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_partfile_OBJECTS = t_partfile.$(OBJEXT) $(am__objects_1)
 t_partfile_OBJECTS = $(am_t_partfile_OBJECTS)
 t_partfile_LDADD = $(LDADD)
@@ -163,7 +172,7 @@ am_t_qdp_OBJECTS = t_qdp.$(OBJEXT) formfac_w.$(OBJEXT) \
 	mesplq.$(OBJEXT) reunit.$(OBJEXT) $(am__objects_1)
 t_qdp_OBJECTS = $(am_t_qdp_OBJECTS)
 t_qdp_LDADD = $(LDADD)
-t_qdp_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_qdp_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_qio_OBJECTS = t_qio.$(OBJEXT) $(am__objects_1)
 t_qio_OBJECTS = $(am_t_qio_OBJECTS)
 t_qio_LDADD = $(LDADD)
@@ -173,28 +182,28 @@ t_qio_factory_LDADD = $(LDADD)
 am_t_remote_OBJECTS = t_remote.$(OBJEXT) $(am__objects_1)
 t_remote_OBJECTS = $(am_t_remote_OBJECTS)
 t_remote_LDADD = $(LDADD)
-t_remote_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_remote_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_shift_OBJECTS = t_shift.$(OBJEXT) $(am__objects_1)
 t_shift_OBJECTS = $(am_t_shift_OBJECTS)
 t_shift_LDADD = $(LDADD)
-t_shift_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_shift_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_skeleton_OBJECTS = t_skeleton.$(OBJEXT)
 t_skeleton_OBJECTS = $(am_t_skeleton_OBJECTS)
 t_skeleton_LDADD = $(LDADD)
-t_skeleton_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_skeleton_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_spectrum_OBJECTS = t_spectrum.$(OBJEXT) baryon_w.$(OBJEXT) \
 	mesons_w.$(OBJEXT) mesplq.$(OBJEXT) $(am__objects_1)
 t_spectrum_OBJECTS = $(am_t_spectrum_OBJECTS)
 t_spectrum_LDADD = $(LDADD)
-t_spectrum_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_spectrum_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_spinproj_OBJECTS = t_spinproj.$(OBJEXT)
 t_spinproj_OBJECTS = $(am_t_spinproj_OBJECTS)
 t_spinproj_LDADD = $(LDADD)
-t_spinproj_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_spinproj_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_spinproj2_OBJECTS = t_spinproj2.$(OBJEXT)
 t_spinproj2_OBJECTS = $(am_t_spinproj2_OBJECTS)
 t_spinproj2_LDADD = $(LDADD)
-t_spinproj2_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_spinproj2_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_su3_OBJECTS = t_su3.$(OBJEXT)
 t_su3_OBJECTS = $(am_t_su3_OBJECTS)
 t_su3_LDADD = $(LDADD)
@@ -202,11 +211,12 @@ am_t_transpose_spin_OBJECTS = t_transpose_spin.$(OBJEXT) \
 	$(am__objects_1)
 t_transpose_spin_OBJECTS = $(am_t_transpose_spin_OBJECTS)
 t_transpose_spin_LDADD = $(LDADD)
-t_transpose_spin_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_transpose_spin_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_xml_OBJECTS = t_xml.$(OBJEXT) $(am__objects_1)
 t_xml_OBJECTS = $(am_t_xml_OBJECTS)
 t_xml_LDADD = $(LDADD)
-t_xml_DEPENDENCIES = $(am__DEPENDENCIES_1)
+t_xml_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_test_ildglat_OBJECTS = test_ildglat.$(OBJEXT) $(am__objects_1) \
 	mesplq.$(OBJEXT)
 test_ildglat_OBJECTS = $(am_test_ildglat_OBJECTS)
@@ -227,26 +237,28 @@ SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
 	$(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
 	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
 	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
-	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
-	$(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_gsum_SOURCES) \
-	$(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) \
-	$(t_nersc_SOURCES) $(t_partfile_SOURCES) $(t_qdp_SOURCES) \
-	$(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
-	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
-	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
+	$(t_db_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) \
+	$(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) \
+	$(t_gsum_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) \
+	$(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_partfile_SOURCES) \
+	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
+	$(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) \
+	$(t_spectrum_SOURCES) $(t_spinproj_SOURCES) \
+	$(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
 	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
 	$(test_ildglat_SOURCES)
 DIST_SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
 	$(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
 	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
 	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
-	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
-	$(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_gsum_SOURCES) \
-	$(t_io_SOURCES) $(t_linalg_SOURCES) $(t_mesplq_SOURCES) \
-	$(t_nersc_SOURCES) $(t_partfile_SOURCES) $(t_qdp_SOURCES) \
-	$(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
-	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
-	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
+	$(t_db_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) \
+	$(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) \
+	$(t_gsum_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) \
+	$(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_partfile_SOURCES) \
+	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
+	$(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) \
+	$(t_spectrum_SOURCES) $(t_spinproj_SOURCES) \
+	$(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
 	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
 	$(test_ildglat_SOURCES)
 ETAGS = etags
@@ -287,6 +299,11 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
+FFDB_CXXFLAGS = @FFDB_CXXFLAGS@
+FFDB_INC = @FFDB_INC@
+FFDB_LIBS = @FFDB_LIBS@
+FFDB_LITE_DIR = @FFDB_LITE_DIR@
+FFDB_LITE_ENABLED = @FFDB_LITE_ENABLED@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -374,13 +391,15 @@ AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
 	-I@top_builddir@/other_libs/qio/other_libs/c-lime/include \
 	-I@top_srcdir@/other_libs/xpath_reader/include \
 	@BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@ \
-	$(am__append_1)
+	$(am__append_1) $(am__append_4)
 AM_LDFLAGS = -L@top_builddir@/lib -L@top_builddir@/other_libs/qio/lib \
 	-L@top_builddir@/other_libs/qio/other_libs/c-lime/lib \
 	-L@top_builddir@/other_libs/xpath_reader/lib @LDFLAGS@ \
-	@BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@ $(am__append_2)
+	@BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@ $(am__append_2) \
+	$(am__append_5)
 LDADD = -lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ \
-	@LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@ $(am__append_3)
+	@LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@ $(am__append_3) \
+	$(am__append_6)
 
 #
 # Local Headers
@@ -421,6 +440,7 @@ t_blas_DEPENDENCIES = build_lib
 t_gsum_SOURCES = t_gsum.cc
 t_gsum_DEPENDENCIES = build_lib
 t_cblas_SOURCES = t_cblas.cc cblas1.cc cblas1.h 
+t_db_SOURCES = t_db.cc $(HDRS)
 t_blas_g5_SOURCES = t_blas_g5.cc $(HDRS)
 t_blas_g5_2_SOURCES = t_blas_g5_2.cc $(HDRS)
 t_blas_g5_3_SOURCES = t_blas_g5_3.cc $(HDRS)
@@ -501,6 +521,9 @@ t_cblas$(EXEEXT): $(t_cblas_OBJECTS) $(t_cblas_DEPENDENCIES)
 t_cugauge$(EXEEXT): $(t_cugauge_OBJECTS) $(t_cugauge_DEPENDENCIES) 
 	@rm -f t_cugauge$(EXEEXT)
 	$(CXXLINK) $(t_cugauge_OBJECTS) $(t_cugauge_LDADD) $(LIBS)
+t_db$(EXEEXT): $(t_db_OBJECTS) $(t_db_DEPENDENCIES) 
+	@rm -f t_db$(EXEEXT)
+	$(CXXLINK) $(t_db_OBJECTS) $(t_db_LDADD) $(LIBS)
 t_dslashm$(EXEEXT): $(t_dslashm_OBJECTS) $(t_dslashm_DEPENDENCIES) 
 	@rm -f t_dslashm$(EXEEXT)
 	$(CXXLINK) $(t_dslashm_OBJECTS) $(t_dslashm_LDADD) $(LIBS)
@@ -601,6 +624,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_blas_g5_3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_cblas.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_cugauge.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_db.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_dslashm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_entry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_exotic.Po@am__quote@

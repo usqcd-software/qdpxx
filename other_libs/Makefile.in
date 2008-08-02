@@ -89,6 +89,11 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
+FFDB_CXXFLAGS = @FFDB_CXXFLAGS@
+FFDB_INC = @FFDB_INC@
+FFDB_LIBS = @FFDB_LIBS@
+FFDB_LITE_DIR = @FFDB_LITE_DIR@
+FFDB_LITE_ENABLED = @FFDB_LITE_ENABLED@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -165,7 +170,8 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = qio xpath_reader @LIBINTRIN_DIR@
+SUBDIRS = qio xpath_reader @LIBINTRIN_DIR@ @FFDB_LITE_DIR@
+EXTRA_DIST = ffdb-lite
 all: all-recursive
 
 .SUFFIXES:

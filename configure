@@ -681,6 +681,13 @@ BAGEL_QDP_CONFIG
 BAGEL_QDP_CXXFLAGS
 BAGEL_QDP_LDFLAGS
 BAGEL_QDP_LIBS
+FFDB_LITE_DIR
+FFDB_LITE_ENABLED
+FFDB_LIBS
+FFDB_INC
+FFDB_CXXFLAGS
+BUILD_FFDB_LITE_TRUE
+BUILD_FFDB_LITE_FALSE
 ARCH_SCALAR_TRUE
 ARCH_SCALAR_FALSE
 ARCH_PARSCALAR_TRUE
@@ -722,6 +729,7 @@ LIBS
 CPPFLAGS
 CCC'
 ac_subdirs_all='other_libs/libintrin
+other_libs/ffdb-lite
 other_libs/qio
 other_libs/xpath_reader'
 
@@ -1309,6 +1317,7 @@ Optional Features:
                           Build QDP++ for parallel architecture <arch>
   --enable-memory-debugging
                           Enable memory debugging code
+  --enable-db-lite        Build routines using Berkeley DB
   --enable-sse            Optimize code with Intel SSE instructions
   --enable-sse2           Optimize code with Intel SSE2 instructions
   --enable-sse3           Optimize code with Intel SSE3 instructions
@@ -1326,6 +1335,7 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-db               use Berkeley DB location
   --with-qmp=DIR          Build QDP++ on top of QMP, where QMP is installed in
                           DIR.
   --with-libxml2=DIR      Build on top of libxml2 where libxml2 is installed
@@ -3330,6 +3340,22 @@ else
 fi
 
 
+# Check whether --enable-db-lite was given.
+if test "${enable_db_lite+set}" = set; then
+  enableval=$enable_db_lite; ffdb_enabled="yes"
+
+fi
+
+
+
+# Check whether --with-db was given.
+if test "${with_db+set}" = set; then
+  withval=$with_db; DBLOCATION=$withval
+else
+  DBLOCATION="N/A"
+
+fi
+
 
 # Check whether --enable-sse was given.
 if test "${enable_sse+set}" = set; then
@@ -4476,6 +4502,59 @@ _ACEOF
 
 fi
 
+case "$ffdb_enabled" in
+  yes)
+        { echo "$as_me:$LINENO: Configuring to use Berkeley DB routines" >&5
+echo "$as_me: Configuring to use Berkeley DB routines" >&6;}
+        subdirs="$subdirs other_libs/ffdb-lite"
+
+        { echo "$as_me:$LINENO: Finished configuring to use Berkeley DB routines" >&5
+echo "$as_me: Finished configuring to use Berkeley DB routines" >&6;}
+        FFDB_LITE_DIR=ffdb-lite
+
+
+cat >>confdefs.h <<\_ACEOF
+#define BUILD_FFDB_LITE
+_ACEOF
+
+        FFDB_LITE_ENABLED=yes
+
+
+        if test "$DBLOCATION" = N/A
+        then
+                FFDB_LIBS="-lffdblite -ldb -ldb_cxx"
+
+
+                FFDB_CXXFLAGS="-DHAVE_CXX_STDHEADERS"
+
+        else
+                FFDB_LIBS="-lffdblite $DBLOCATION/lib/libdb.a $DBLOCATION/lib/libdb_cxx.a"
+
+                FFDB_INC="-I$DBLOCATION/include"
+
+                FFDB_CXXFLAGS="-DHAVE_CXX_STDHEADERS"
+
+        fi
+        ;;
+  *)
+
+        { echo "$as_me:$LINENO: Not building ffdb-lite" >&5
+echo "$as_me: Not building ffdb-lite" >&6;}
+        FFDB_LITE_ENABLED=no
+
+        ;;
+esac
+
+ if test "x${ffdb_enabled}x" = "xyesx" ; then
+  BUILD_FFDB_LITE_TRUE=
+  BUILD_FFDB_LITE_FALSE='#'
+else
+  BUILD_FFDB_LITE_TRUE='#'
+  BUILD_FFDB_LITE_FALSE=
+fi
+
+
+
 
  if test "X${PARALLEL_ARCH}X" = "XscalarX"; then
   ARCH_SCALAR_TRUE=
@@ -5200,6 +5279,13 @@ if test -z "${BUILD_LIBINTRIN_TRUE}" && test -z "${BUILD_LIBINTRIN_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_LIBINTRIN\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"BUILD_LIBINTRIN\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${BUILD_FFDB_LITE_TRUE}" && test -z "${BUILD_FFDB_LITE_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_FFDB_LITE\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_FFDB_LITE\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -5969,6 +6055,13 @@ BAGEL_QDP_CONFIG!$BAGEL_QDP_CONFIG$ac_delim
 BAGEL_QDP_CXXFLAGS!$BAGEL_QDP_CXXFLAGS$ac_delim
 BAGEL_QDP_LDFLAGS!$BAGEL_QDP_LDFLAGS$ac_delim
 BAGEL_QDP_LIBS!$BAGEL_QDP_LIBS$ac_delim
+FFDB_LITE_DIR!$FFDB_LITE_DIR$ac_delim
+FFDB_LITE_ENABLED!$FFDB_LITE_ENABLED$ac_delim
+FFDB_LIBS!$FFDB_LIBS$ac_delim
+FFDB_INC!$FFDB_INC$ac_delim
+FFDB_CXXFLAGS!$FFDB_CXXFLAGS$ac_delim
+BUILD_FFDB_LITE_TRUE!$BUILD_FFDB_LITE_TRUE$ac_delim
+BUILD_FFDB_LITE_FALSE!$BUILD_FFDB_LITE_FALSE$ac_delim
 ARCH_SCALAR_TRUE!$ARCH_SCALAR_TRUE$ac_delim
 ARCH_SCALAR_FALSE!$ARCH_SCALAR_FALSE$ac_delim
 ARCH_PARSCALAR_TRUE!$ARCH_PARSCALAR_TRUE$ac_delim
@@ -6001,7 +6094,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 36; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 43; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
