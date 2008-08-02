@@ -33,6 +33,12 @@ if BUILD_LIBINTRIN
 LDADD += -lintrin
 endif
 
+if BUILD_FFDB_LITE
+AM_CXXFLAGS += -I@top_srcdir@/other_libs/@FFDB_LITE_DIR@/src @FFDB_CXXFLAGS@ @FFDB_INC@
+AM_LDFLAGS  += -L@top_builddir@/other_libs/@FFDB_LITE_DIR@/src
+LDADD += @FFDB_LIBS@
+endif
+
 #
 # Local Headers
 #
@@ -57,6 +63,10 @@ EXTRA_PROGRAMS += nersc2ildg test_ildglat lhpc2ildg
 
 if BUILD_STAGGERED_EXAMPLES
 check_PROGRAMS += 
+endif
+
+if BUILD_FFDB_LITE
+check_PROGRAMS += t_db
 endif
 
 
@@ -96,6 +106,8 @@ t_gsum_SOURCES = t_gsum.cc
 t_gsum_DEPENDENCIES = build_lib
 
 t_cblas_SOURCES= t_cblas.cc cblas1.cc cblas1.h 
+
+t_db_SOURCES = t_db.cc $(HDRS)
 
 t_blas_g5_SOURCES = t_blas_g5.cc $(HDRS)
 t_blas_g5_2_SOURCES = t_blas_g5_2.cc $(HDRS)

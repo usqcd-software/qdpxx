@@ -88,6 +88,20 @@ AC_ARG_ENABLE(memory-debugging,
      [ac_memdebug_enabled=0]
 )
 
+dnl database wrapper
+AC_ARG_ENABLE(db-lite,
+  AC_HELP_STRING([--enable-db-lite],
+    [Build routines using Berkeley DB]),
+  [ffdb_enabled="yes"]
+)
+
+dnl may need location of berkeley db
+AC_ARG_WITH([db],
+  [AC_HELP_STRING([--with-db],
+    [use Berkeley DB location])],
+    [DBLOCATION=$withval],
+    [DBLOCATION="N/A"]
+)
 
 dnl --enable-sse
 AC_ARG_ENABLE(sse,
@@ -507,6 +521,40 @@ else
      AC_SUBST(BAGEL_QDP_LIBS,     "")
 fi
       
+dnl ************************************************************************
+dnl **** Use ffdb-lite                                                  ****
+dnl ************************************************************************
+case "$ffdb_enabled" in
+  yes)
+        AC_MSG_NOTICE([Configuring to use Berkeley DB routines])
+        AC_CONFIG_SUBDIRS(other_libs/ffdb-lite)
+        AC_MSG_NOTICE([Finished configuring to use Berkeley DB routines])
+        AC_SUBST(FFDB_LITE_DIR, [ffdb-lite])
+        AC_DEFINE([BUILD_FFDB_LITE],[],[Build ffdb-lite])
+        AC_SUBST(FFDB_LITE_ENABLED,[yes])
+
+        if test "$DBLOCATION" = N/A
+        then
+                AC_SUBST(FFDB_LIBS,"-lffdblite -ldb -ldb_cxx")
+                AC_SUBST(FFDB_INC,[])
+                AC_SUBST(FFDB_CXXFLAGS,"-DHAVE_CXX_STDHEADERS")
+        else
+                AC_SUBST(FFDB_LIBS,"-lffdblite $DBLOCATION/lib/libdb.a $DBLOCATION/lib/libdb_cxx.a")
+                AC_SUBST(FFDB_INC,"-I$DBLOCATION/include")
+                AC_SUBST(FFDB_CXXFLAGS,"-DHAVE_CXX_STDHEADERS")
+        fi
+        ;;
+  *)
+        AC_SUBST(FFDB_LITE_DIR)
+        AC_MSG_NOTICE([Not building ffdb-lite])
+        AC_SUBST(FFDB_LITE_ENABLED,[no])
+        ;;
+esac
+
+AM_CONDITIONAL(BUILD_FFDB_LITE,
+  [test "x${ffdb_enabled}x" = "xyesx" ])
+
+
 dnl
 dnl
 dnl Now have all the options... Do some configuration 
