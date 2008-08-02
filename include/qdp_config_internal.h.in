@@ -15,6 +15,9 @@
 /* Double precision */
 #undef BASE_PRECISION
 
+/* Build ffdb-lite */
+#undef BUILD_FFDB_LITE
+
 /* Define to 1 if you have the `gethostname' function. */
 #undef HAVE_GETHOSTNAME
 
