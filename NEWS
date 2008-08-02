@@ -1,5 +1,9 @@
+08/02/2008 -- Balint Joo
+        Version 1.28.0: SSE3 and 3dnow support. Added new double prec blas and linalg routines. New
+        test jig support.
+
 05/22/2008 -- Robert Edwards
-        Improved SSE for global sums. Fixed some ifdef guard-isms. Now have some significant
+        Version 1.27.0: Improved SSE for global sums. Fixed some ifdef guard-isms. Now have some significant
         amount of SSE BLAS routines.
 
 05/14/2008 -- Balint Joo
