@@ -1,9 +1,9 @@
-// $Id: t_db.cc,v 1.1 2008-08-02 20:53:29 edwards Exp $
+// $Id: t_db.cc,v 1.2 2008-08-02 21:26:55 edwards Exp $
 /*! \file
  *  \brief Test the database routines
  */
 
-#include "chroma.h"
+#include "qdp.h"
 #include "ConfVarDSizeStoreDB.h"
 
 namespace Chroma
@@ -154,7 +154,7 @@ using namespace Chroma;
 int main(int argc, char *argv[])
 {
   // Put the machine into a known state
-  Chroma::initialize(&argc, &argv);
+  QDP_initialize(&argc, &argv);
 
   // Setup the layout
   const int foo[] = {2,2,2,4};
@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
   pop(xml);
 
   // Time to bolt
-  Chroma::finalize();
+  QDP_finalize();
 
   QDPIO::cout << "finished" << endl;
   exit(0);
