@@ -1,3 +1,33 @@
+2008-08-02 20:17  chen
+
+	* other_libs/ffdb-lite/configure.ac: Add check endian flag
+
+2008-08-02 20:16  chen
+
+	* other_libs/ffdb-lite/src/Makefile.am: Add FFDB_BYTE_ORDER
+
+2008-08-02 17:27  edwards
+
+	* configure: Induced changes
+
+2008-08-02 17:27  edwards
+
+	* include/qdp_config_internal.h.in: New support for ffdb-lite.
+
+2008-08-02 17:26  edwards
+
+	* examples/t_db.cc: Now works within qdp++.
+
+2008-08-02 17:26  edwards
+
+	* configure.ac, examples/Makefile.am, other_libs/Makefile.am: Added
+	  support for  ffdb-lite.
+
+2008-08-02 17:24  edwards
+
+	* other_libs/ffdb-lite/aclocal.m4, other_libs/ffdb-lite/configure,
+	  aclocal.m4: Induced changes
+
 2008-08-02 16:53  edwards
 
 	* examples/t_db.cc: Database test routine.
