@@ -1,3 +1,7 @@
+2008-08-02 22:00  edwards
+
+	* qdp++-config.in: Added db-enabled iption.
+
 2008-08-02 20:17  chen
 
 	* other_libs/ffdb-lite/configure.ac: Add check endian flag
