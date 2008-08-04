@@ -1,3 +1,18 @@
+2008-08-04 13:44  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2008-08-04 13:44  edwards
+
+	* configure.ac: Changed to 1.29.0
+
+2008-08-04 13:40  edwards
+
+	* include/: Makefile.am, qdp_db.h, qdp_db_fx.h, qdp_db_imp.h,
+	  qdp_db_stub.h, qdp_db_var.h: Moved classes into one header. Now,
+	  have an IMP and a STUB version of the headers under control of
+	  BUILD_FFDB_LITE.
+
 2008-08-04 12:34  chen
 
 	* other_libs/ffdb-lite/src/: FFDB.cpp, FFDB.h: Add my own byte
