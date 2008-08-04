@@ -1,3 +1,44 @@
+2008-08-04 00:08  edwards
+
+	* include/: qdp_db.h, qdp_db_fx.h, qdp_db_var.h: Reworked base
+	  class and derived class constructors and destructors.  Now, the
+	  ffdb-lite base class is abstract and only has an empty
+	  constructor. This allows the qdp classes to work in parallel.
+	  However, the "get" functions will not work correctly yet - need
+	  to fix how the primary node is handled. Namely, I have to dive
+	  more into the ffdb-lite routines and split off where the routines
+	  call get read/writeObject (which have to run in parallel), and
+	  where the DB routines are called (which have to be only on the
+	  primary node).
+
+2008-08-04 00:06  edwards
+
+	* other_libs/ffdb-lite/src/: ConfDataStoreDB.h,
+	  ConfFxDSizeStoreDB.h, ConfVarDSizeStoreDB.h: Pushed all concrete
+	  data from the base class down into the derived classes. Now, the
+	  parent is abstract, but has some default functions that act on
+	  pointers returned by the children. Added open and close functions
+	  and empty constructors. The purpose of all this is so that qdp++
+	  can call these functions only on the primary node.
+
+2008-08-03 22:06  edwards
+
+	* other_libs/ffdb-lite/: aclocal.m4, configure: Induced changes
+
+2008-08-03 22:02  edwards
+
+	* include/Makefile.am: Added qdp_{db,db_var,db_fx}.h
+
+2008-08-03 21:57  edwards
+
+	* examples/t_db.cc: Seems to work. I know this will fail for a read
+	  in parallel.
+
+2008-08-03 21:54  edwards
+
+	* include/: qdp_db.h, qdp_db_fx.h, qdp_db_var.h: New Berkeley DB
+	  routines.
+
 2008-08-02 22:00  edwards
 
 	* qdp++-config.in: Added db-enabled iption.
