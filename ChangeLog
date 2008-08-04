@@ -1,3 +1,8 @@
+2008-08-04 12:34  chen
+
+	* other_libs/ffdb-lite/src/: FFDB.cpp, FFDB.h: Add my own byte
+	  swapping code
+
 2008-08-04 00:08  edwards
 
 	* include/: qdp_db.h, qdp_db_fx.h, qdp_db_var.h: Reworked base
