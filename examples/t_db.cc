@@ -1,10 +1,10 @@
-// $Id: t_db.cc,v 1.2 2008-08-02 21:26:55 edwards Exp $
+// $Id: t_db.cc,v 1.3 2008-08-04 01:57:53 edwards Exp $
 /*! \file
  *  \brief Test the database routines
  */
 
 #include "qdp.h"
-#include "ConfVarDSizeStoreDB.h"
+#include "qdp_db_var.h"
 
 namespace Chroma
 {
@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
 //  pop(xml);
 
   // Try out some simple DB stuff
-  typedef ConfVarDSizeStoreDB< TestDBKey<TestDBKey_t>, TestDBData<TestDBData_t> > DBType_t;
+  typedef BinaryVarStoreDB< TestDBKey<TestDBKey_t>, TestDBData<TestDBData_t> > DBType_t;
 
   try
   {
