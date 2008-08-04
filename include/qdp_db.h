@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db.h,v 1.1 2008-08-04 01:54:28 edwards Exp $
+// $Id: qdp_db.h,v 1.2 2008-08-04 04:08:51 edwards Exp $
 /*! @file
  * @brief Support for ffdb-lite - a wrapper over Berkeley DB
  */
@@ -32,13 +32,9 @@ namespace QDP
   {
   public:
     /**
-     * Constructor for a DB
-     *
-     * @param DB file filename holding keys and data.
+     * Empty constructor for a DB
      */
-    BinaryStoreDB (const std::string& file,
-		   int max_cache_size = 50000000) 
-      : FFDB::ConfDataStoreDB<K,D>(file, max_cache_size) {}
+    BinaryStoreDB() {}
 
     /*!
       Destroy the object
@@ -87,16 +83,7 @@ namespace QDP
      *
      * @return database name
      */
-    const std::string
-    storageName (void) const 
-    {
-      std::string filename_;
-      if (Layout::primaryNode())
-	filename_ = FFDB::ConfDataStoreDB<K,D>::storeageName();
-      
-      // broadcast string
-      Internal::broadcast_str(filename_);
-    }
+    virtual std::string storageName (void) const = 0;
 
     
     /**
@@ -105,7 +92,7 @@ namespace QDP
      * @param user_data user supplied data
      * @return returns 0 if success, else failure
      */
-    int insertUserdata (const std::string& user_data)
+    virtual int insertUserdata (const std::string& user_data)
     {
       int ret;
       if (Layout::primaryNode())
@@ -121,7 +108,7 @@ namespace QDP
      * @param user_data user supplied buffer to store user data
      * @return returns 0 if success. Otherwise failure.
      */
-    int getUserdata (std::string& user_data)
+    virtual int getUserdata (std::string& user_data)
     {
       int ret;
       if (Layout::primaryNode())

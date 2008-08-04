@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_fx.h,v 1.1 2008-08-04 01:54:28 edwards Exp $
+// $Id: qdp_db_fx.h,v 1.2 2008-08-04 04:08:51 edwards Exp $
 /*! @file
  * @brief Support for ffdb-lite - a wrapper over Berkeley DB
  */
@@ -32,18 +32,50 @@ namespace QDP
   {
   public:
     /**
+     * Empty constructor for a DB
+     */
+    BinaryFxStoreDB () : FFDB::ConfFxDSizeStoreDB<K,D>() {}
+
+    /**
      * Constructor for a DB
      *
      * @param DB file filename holding keys and data.
      */
     BinaryFxStoreDB (const std::string& file,
 		      int max_cache_size = 50000000) 
-      : FFDB::ConfFxDSizeStoreDB<K,D>(file, max_cache_size) {}
+      : FFDB::ConfFxDSizeStoreDB<K,D>()
+    {
+      open(file, max_cache_size);
+    }
 
     /*!
       Destroy the object
     */
-    ~BinaryFxStoreDB() {}
+    ~BinaryFxStoreDB() 
+    {
+      close();
+    }
+
+    /**
+     * Open a DB
+     *
+     * @param DB file filename holding keys and data.
+     */
+    void open (const std::string& file,
+	       int max_cache_size = 50000000) 
+    {
+      if (Layout::primaryNode())
+	FFDB::ConfFxDSizeStoreDB<K,D>::open(file, max_cache_size);
+    }
+
+    /*!
+      Close the object
+    */
+    void close () 
+    {
+      if (Layout::primaryNode())
+	FFDB::ConfFxDSizeStoreDB<K,D>::close();
+    }
 
     /**
      * Insert a pair of data and key into the database
