@@ -1,4 +1,4 @@
-AC_INIT([qdp++],[1.28.0],[edwards@jlab.org])
+AC_INIT([qdp++],[1.29.0],[edwards@jlab.org])
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -528,7 +528,6 @@ case "$ffdb_enabled" in
   yes)
         AC_MSG_NOTICE([Configuring to use Berkeley DB routines])
         AC_CONFIG_SUBDIRS(other_libs/ffdb-lite)
-        AC_MSG_NOTICE([Finished configuring to use Berkeley DB routines])
         AC_SUBST(FFDB_LITE_DIR, [ffdb-lite])
         AC_DEFINE([BUILD_FFDB_LITE],[],[Build ffdb-lite])
         AC_SUBST(FFDB_LITE_ENABLED,[yes])
