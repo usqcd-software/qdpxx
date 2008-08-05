@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_stub.h,v 1.1 2008-08-04 17:40:37 edwards Exp $
+// $Id: qdp_db_stub.h,v 1.2 2008-08-05 15:25:21 edwards Exp $
 /*! @file
  * @brief Stubs of wrappers over Berkeley DB
  */
@@ -9,7 +9,10 @@
 
 namespace QDP
 {
-  using namespace FFDB;
+  namespace FFDB
+  {
+     // empty - just for making the compilers happy.
+  }
 
   /*! @defgroup io IO
    *
