@@ -1,3 +1,8 @@
+2008-08-04 23:46  edwards
+
+	* other_libs/ffdb-lite/src/Makefile.am: Added some missing include
+	  files from include_HEADERS.
+
 2008-08-04 13:44  edwards
 
 	* aclocal.m4, configure: Induced changes
