@@ -1,3 +1,7 @@
+2008-08-07 12:18  edwards
+
+	* include/qdp_db_stub.h: Added include of string and vector.
+
 2008-08-05 11:25  edwards
 
 	* include/qdp_db_stub.h: Added empty declaration of FFDB namespace.
