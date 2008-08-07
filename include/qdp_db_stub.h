@@ -1,11 +1,14 @@
 // -*- C++ -*-
-// $Id: qdp_db_stub.h,v 1.2 2008-08-05 15:25:21 edwards Exp $
+// $Id: qdp_db_stub.h,v 1.3 2008-08-07 16:18:52 edwards Exp $
 /*! @file
  * @brief Stubs of wrappers over Berkeley DB
  */
 
 #ifndef QDP_DB_STUB_H
 #define QDP_DB_STUB_H
+
+#include <vector>
+#include <string>
 
 namespace QDP
 {
@@ -116,7 +119,7 @@ namespace QDP
   private:
     void notImplemented() const
     {
-      QDPIO::cerr << "BinaryVarStoreDB: not implemented - this is a stub version. You must --enable-db-lite" << endl;
+      QDPIO::cerr << "BinaryVarStoreDB: not implemented - this is a stub version. You must --enable-db-lite in qdp++" << endl;
       QDP_abort(1);
     }
 
@@ -226,7 +229,7 @@ namespace QDP
   private:
     void notImplemented() const
     {
-      QDPIO::cerr << "BinaryVarStoreDB: not implemented - this is a stub version. You must --enable-db-lite" << endl;
+      QDPIO::cerr << "BinaryVarStoreDB: not implemented - this is a stub version. You must --enable-db-lite in qdp++" << endl;
       QDP_abort(1);
     }
 
