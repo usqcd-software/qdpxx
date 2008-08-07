@@ -10,6 +10,8 @@
 
 	* examples/t_db.cc: Removed include of qdp_db_var.h
 
+2008-08-04 23:46  tag adat1-37-0
+
 2008-08-04 23:46  edwards
 
 	* other_libs/ffdb-lite/src/Makefile.am: Added some missing include
