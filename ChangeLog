@@ -1,3 +1,11 @@
+2008-08-09 23:46  edwards
+
+	* include/qdp_db_stub.h: Added forward decls of Db and Dbt.
+
+2008-08-09 23:14  edwards
+
+	* include/qdp_db_stub.h: Added in some more dummy classes.
+
 2008-08-07 12:18  edwards
 
 	* include/qdp_db_stub.h: Added include of string and vector.
