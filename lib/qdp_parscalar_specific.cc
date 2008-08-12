@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_specific.cc,v 1.37 2008-06-27 13:31:22 bjoo Exp $
+// $Id: qdp_parscalar_specific.cc,v 1.38 2008-08-12 22:54:01 edwards Exp $
 
 /*! @file
  * @brief Parscalar specific routines
@@ -427,10 +427,6 @@ void writeOLattice(BinaryWriter& bin,
   }
 
   delete[] recv_buf;
-
-  // Keep the checksum in sync on all nodes. This only really
-  // is needed if nodes do detailed checks on the checksums
-  bin.syncChecksum();
 }
 
 
@@ -528,10 +524,6 @@ void readOLattice(BinaryReader& bin,
     }
   }
 
-  // Keep the checksum in sync on all nodes. This only really
-  // is needed if nodes do detailed checks on the checksums
-  bin.syncChecksum();
-
   delete[] recv_buf;
 }
 
@@ -572,10 +564,6 @@ void readOLattice(BinaryReader& bin,
 
   if (Layout::nodeNumber() == node)
     memcpy(input+linear*tot_size, recv_buf, tot_size);
-
-  // Keep the checksum in sync on all nodes. This only really
-  // is needed if nodes do detailed checks on the checksums
-  bin.syncChecksum();
 
   delete[] recv_buf;
 }
@@ -907,10 +895,6 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
 
     cfg_out.writeArrayPrimaryNode(recv_buf, size, mat_size*Nd);
   }
-
-  // Keep the checksum in sync on all nodes. This only really
-  // is needed if nodes do detailed checks on the checksums
-  cfg_out.syncChecksum();
 
   delete[] recv_buf;
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.25 2008-07-31 02:59:22 edwards Exp $
+// $Id: qdp_io.h,v 1.26 2008-08-12 22:54:00 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -409,11 +409,8 @@ namespace QDP
     virtual void read(bool& result);
 
     //! Get the current checksum
-    virtual QDPUtil::n_uint32_t getChecksum() const = 0;
+    virtual QDPUtil::n_uint32_t getChecksum();
   
-    //! Sync the checksum from the primary node to all nodes
-    virtual void syncChecksum();
-
   protected:
     //! The universal data-reader.
     /*!
@@ -425,7 +422,7 @@ namespace QDP
     readPrimitive(T& output);
 
     //! Get the current checksum to modify
-    virtual QDPUtil::n_uint32_t& setChecksum() = 0;
+    virtual QDPUtil::n_uint32_t& internalChecksum() = 0;
   
     //! Get the internal input stream
     virtual std::istream& getIstream() = 0;
@@ -618,12 +615,9 @@ namespace QDP
     //! Clear the buffer
     void clear();
 
-    //! Get the current checksum
-    QDPUtil::n_uint32_t getChecksum() const {return checksum;}
-  
   protected:
     //! Get the current checksum to modify
-    QDPUtil::n_uint32_t& setChecksum() {return checksum;}
+    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
   
     //! Get the internal input stream
     std::istream& getIstream() {return f;}
@@ -676,12 +670,9 @@ namespace QDP
     //! Closes the last file opened
     void close();
 
-    //! Get the current checksum
-    QDPUtil::n_uint32_t getChecksum() const {return checksum;}
-  
   protected:
     //! Get the current checksum to modify
-    QDPUtil::n_uint32_t& setChecksum() {return checksum;}
+    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
   
     //! Get the internal input stream
     std::istream& getIstream() {return f;}
@@ -768,11 +759,8 @@ namespace QDP
     virtual void write(const bool& output);
 
     //! Get the current checksum
-    virtual QDPUtil::n_uint32_t getChecksum() const = 0;
+    virtual QDPUtil::n_uint32_t getChecksum();
   
-    //! Sync the checksum from the primary node to all nodes
-    virtual void syncChecksum();
-
   protected:
 
     //! The universal data-writer.
@@ -785,7 +773,7 @@ namespace QDP
     writePrimitive(const T& output);
 
     //! Get the current checksum to modify
-    virtual QDPUtil::n_uint32_t& setChecksum() = 0;
+    virtual QDPUtil::n_uint32_t& internalChecksum() = 0;
   
     //! Get the internal output stream
     virtual std::ostream& getOstream() = 0;
@@ -949,12 +937,9 @@ namespace QDP
     //! Clear the buffer
     void clear();
 
-    //! Get the current checksum
-    QDPUtil::n_uint32_t getChecksum() const {return checksum;}
-  
   protected:
-    //! Get the current checksum
-    QDPUtil::n_uint32_t& setChecksum() {return checksum;}
+    //! Get the current checksum to modify
+    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
   
     //! Get the internal output stream
     std::ostream& getOstream() {return f;}
@@ -1011,12 +996,9 @@ namespace QDP
     //! Flushes the buffer
     void flush();
 
-    //! Get the current checksum
-    QDPUtil::n_uint32_t getChecksum() const {return checksum;}
-  
   protected:
     //! Get the current checksum to modify
-    QDPUtil::n_uint32_t& setChecksum() {return checksum;}
+    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
   
     //! Get the internal output stream
     std::ostream& getOstream() {return f;}

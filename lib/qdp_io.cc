@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.cc,v 1.29 2008-07-31 02:59:22 edwards Exp $
+// $Id: qdp_io.cc,v 1.30 2008-08-12 22:54:01 edwards Exp $
 /*! @file
  * @brief IO support
  */
@@ -490,14 +490,14 @@ namespace QDP
     return s;
   }
 
-  // Sync the checksum from the binary node to all nodes
-  void BinaryReader::syncChecksum()
+  // Get the checksum from the binary node to all nodes
+  QDPUtil::n_uint32_t BinaryReader::getChecksum()
   {
     // Keep the checksum in sync on all nodes. This only really
     // is needed if nodes do detailed checks on the checksums
-    QDPUtil::n_uint32_t chk = getChecksum();
+    QDPUtil::n_uint32_t chk = internalChecksum();
     Internal::broadcast(chk);
-    setChecksum() = chk;
+    internalChecksum() = chk;
   }
 
   void BinaryReader::read(string& input, size_t maxBytes)
@@ -513,17 +513,13 @@ namespace QDP
     {
       getIstream().getline(str, maxBytes);
       n = strlen(str);
-      setChecksum() = QDPUtil::crc32(getChecksum(), str, n);   // no string terminator
+      internalChecksum() = QDPUtil::crc32(internalChecksum(), str, n);   // no string terminator
       ++n;
-      setChecksum() = QDPUtil::crc32(getChecksum(), "\n", 1);   // account for newline written
+      internalChecksum() = QDPUtil::crc32(internalChecksum(), "\n", 1);   // account for newline written
     }
 
     Internal::broadcast(n);
     Internal::broadcast((void *)str, n);
-
-    // Keep the checksum in sync on all nodes. This only really
-    // is needed if nodes do detailed checks on the checksums
-    syncChecksum();
 
     input = str;
     delete[] str;
@@ -591,10 +587,6 @@ namespace QDP
 
     // Now broadcast back out to all nodes
     Internal::broadcast((void*)input, size*nmemb);
-
-    // Keep the checksum in sync on all nodes. This only really
-    // is needed if nodes do detailed checks on the checksums
-    syncChecksum();
   }
 
   // Read array from the primary node
@@ -605,7 +597,7 @@ namespace QDP
       // Read
       // By default, we expect all data to be in big-endian
       getIstream().read(input, size*nmemb);
-      setChecksum() = QDPUtil::crc32(getChecksum(), input, size*nmemb);
+      internalChecksum() = QDPUtil::crc32(internalChecksum(), input, size*nmemb);
 
       if (! QDPUtil::big_endian())
       {
@@ -816,7 +808,6 @@ namespace QDP
   // Shutdown
   BinaryFileReader::~BinaryFileReader() {close();}
 
-
   //--------------------------------------------------------------------------------
   // Binary writer support
   BinaryWriter::BinaryWriter() {}
@@ -910,7 +901,7 @@ namespace QDP
       {
 	/* big-endian */
 	/* Write */
-	setChecksum() = QDPUtil::crc32(getChecksum(), output, size*nmemb);
+	internalChecksum() = QDPUtil::crc32(internalChecksum(), output, size*nmemb);
 	getOstream().write(output, size*nmemb);
       }
       else
@@ -918,7 +909,7 @@ namespace QDP
 	/* little-endian */
 	/* Swap and write and swap */
 	QDPUtil::byte_swap(const_cast<char *>(output), size, nmemb);
-	setChecksum() = QDPUtil::crc32(getChecksum(), output, size*nmemb);
+	internalChecksum() = QDPUtil::crc32(internalChecksum(), output, size*nmemb);
 	getOstream().write(output, size*nmemb);
 	QDPUtil::byte_swap(const_cast<char *>(output), size, nmemb);
       }
@@ -928,20 +919,16 @@ namespace QDP
   void BinaryWriter::writeArray(const char* output, size_t size, size_t nmemb)
   {
     writeArrayPrimaryNode(output, size, nmemb);
-
-    // Keep the checksum in sync on all nodes. This only really
-    // is needed if nodes do detailed checks on the checksums
-    syncChecksum();
   }
 
-  // Sync the checksum from the binary node to all nodes
-  void BinaryWriter::syncChecksum()
+  // Get the checksum from the binary node to all nodes
+  QDPUtil::n_uint32_t BinaryWriter::getChecksum()
   {
     // Keep the checksum in sync on all nodes. This only really
     // is needed if nodes do detailed checks on the checksums
-    QDPUtil::n_uint32_t chk = getChecksum();
+    QDPUtil::n_uint32_t chk = internalChecksum();
     Internal::broadcast(chk);
-    setChecksum() = chk;
+    internalChecksum() = chk;
   }
 
 
