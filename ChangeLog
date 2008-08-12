@@ -1,3 +1,22 @@
+2008-08-12 13:37  chen
+
+	* other_libs/ffdb-lite/src/: DBString.cpp, DBString.h,
+	  RecnoData.cpp, RecnoData.h, RecnoKey.cpp, RecnoKey.h: Using new
+	  interface
+
+2008-08-12 13:37  chen
+
+	* other_libs/ffdb-lite/src/DBFunc.h: Add appendRecnoData
+
+2008-08-12 13:37  chen
+
+	* other_libs/ffdb-lite/src/DBCursor.h: Remove unnecessary code
+
+2008-08-12 13:25  chen
+
+	* other_libs/ffdb-lite/src/ConfFxDSizeStoreDB.h: Fix using new
+	  interface
+
 2008-08-09 23:46  edwards
 
 	* include/qdp_db_stub.h: Added forward decls of Db and Dbt.
