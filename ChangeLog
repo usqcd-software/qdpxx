@@ -1,3 +1,13 @@
+2008-08-12 18:54  edwards
+
+	* include/qdp_io.h, lib/qdp_io.cc, lib/qdp_parscalar_specific.cc,
+	  lib/qdp_parscalarvec_specific.cc: Changed the interface to the
+	  checksums. Now, a more sensible protected accessor is provided to
+	  the node local copy of the checksum. The public  getChecksum()
+	  now does a broadcast. So, no unnecessary copies of the checksum
+	  are broadcasted during I/O operations. Only when a user asks for
+	  the checksum is it ever broadcasted to all compute nodes.
+
 2008-08-12 13:37  chen
 
 	* other_libs/ffdb-lite/src/: DBString.cpp, DBString.h,
