@@ -8,6 +8,8 @@
 	  are broadcasted during I/O operations. Only when a user asks for
 	  the checksum is it ever broadcasted to all compute nodes.
 
+2008-08-12 13:37  tag adat1-38-0
+
 2008-08-12 13:37  chen
 
 	* other_libs/ffdb-lite/src/: DBString.cpp, DBString.h,
