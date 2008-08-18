@@ -1,3 +1,8 @@
+2008-08-18 11:52  bjoo
+
+	* other_libs/xpath_reader/lib/xml_simplewriter.cc: Removed flushing
+	  and endls in XMLSimplewriter
+
 2008-08-12 18:54  edwards
 
 	* include/qdp_io.h, lib/qdp_io.cc, lib/qdp_parscalar_specific.cc,
