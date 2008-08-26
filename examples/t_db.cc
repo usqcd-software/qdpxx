@@ -1,4 +1,4 @@
-// $Id: t_db.cc,v 1.5 2008-08-05 15:14:06 edwards Exp $
+// $Id: t_db.cc,v 1.6 2008-08-26 19:36:16 edwards Exp $
 /*! \file
  *  \brief Test the database routines
  */
@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
     
     // Open it
     QDPIO::cout << "open" << endl;
-    DBType_t db("test.db");
+    DBType_t db("test.db", 5000000, 64*1024);
 
     // Test it
     QDPIO::cout << "insert" << endl;
