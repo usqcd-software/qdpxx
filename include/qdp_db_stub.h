@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_stub.h,v 1.5 2008-08-10 03:46:07 edwards Exp $
+// $Id: qdp_db_stub.h,v 1.6 2008-08-26 18:44:50 edwards Exp $
 /*! @file
  * @brief Stubs of wrappers over Berkeley DB
  */
@@ -141,7 +141,9 @@ namespace QDP
      * @param DB file filename holding keys and data.
      */
     BinaryVarStoreDB (const std::string& file,
-		      int max_cache_size = 50000000) {notImplemented();}
+		      int max_cache_size = 50000000,
+		      int pagesize = db_pagesize)
+      {notImplemented();}
 
     /*!
       Destroy the object
@@ -154,7 +156,9 @@ namespace QDP
      * @param DB file filename holding keys and data.
      */
     void open (const std::string& file,
-	       int max_cache_size = 50000000) {notImplemented();}
+	       int max_cache_size = 50000000,
+	       int pagesize = db_pagesize)
+      {notImplemented();}
 
     /*!
       Close the object
@@ -251,7 +255,9 @@ namespace QDP
      * @param DB file filename holding keys and data.
      */
     BinaryFxStoreDB (const std::string& file,
-		     int max_cache_size = 50000000) {notImplemented();}
+		     int max_cache_size = 50000000,
+		     int pagesize = db_pagesize)
+      {notImplemented();}
 
     /*!
       Destroy the object
@@ -264,7 +270,9 @@ namespace QDP
      * @param DB file filename holding keys and data.
      */
     void open (const std::string& file,
-	       int max_cache_size = 50000000) {notImplemented();}
+	       int max_cache_size = 50000000,
+	       int pagesize = db_pagesize)
+      {notImplemented();}
 
     /*!
       Close the object
