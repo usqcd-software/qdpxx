@@ -1,3 +1,24 @@
+2008-08-26 15:36  edwards
+
+	* examples/t_db.cc: Changed to use explicit cache and page sizes.
+
+2008-08-26 14:44  edwards
+
+	* include/: qdp_db_imp.h, qdp_db_stub.h: Changed constructor and
+	  open for Var and Fx DB to use a pagesize and a cachesize.
+
+2008-08-26 14:40  edwards
+
+	* other_libs/ffdb-lite/src/: ConfFxDSizeStoreDB.h,
+	  ConfVarDSizeStoreDB.h: Swapped order of cache_size and pagesize
+	  to always be in this order.
+
+2008-08-26 13:43  chen
+
+	* other_libs/ffdb-lite/src/: ConfFxDSizeStoreDB.h,
+	  ConfVarDSizeStoreDB.h: Change Interface to allow specifying
+	  pagesize
+
 2008-08-18 11:52  bjoo
 
 	* other_libs/xpath_reader/lib/xml_simplewriter.cc: Removed flushing
