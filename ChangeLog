@@ -3,6 +3,8 @@
 	* include/qdp_db_stub.h: Replaced db_pagesize with some arbitrary
 	  value.
 
+2008-08-27 10:13  tag adat1-39-0
+
 2008-08-27 10:13  chen
 
 	* other_libs/ffdb-lite/src/ConfFxDSizeStoreDB.h: Allow different
