@@ -1,3 +1,10 @@
+2008-09-18 14:15  chen
+
+	* other_libs/ffdb-lite/src/: AllConfStoreDB.h, ConfDataStoreDB.h,
+	  ConfFxDSizeStoreDB.h, ConfVarDSizeStoreDB.h, DBFunc.cpp,
+	  DBFunc.h, FFDB.h, Makefile.am, RecnoInfoData.cpp,
+	  RecnoInfoData.h: Change DBMerge and DBUpdate using Template
+
 2008-08-27 10:54  edwards
 
 	* include/qdp_db_stub.h: Replaced db_pagesize with some arbitrary
