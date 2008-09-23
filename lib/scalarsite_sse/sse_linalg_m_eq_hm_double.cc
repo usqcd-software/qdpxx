@@ -1,4 +1,4 @@
-// $Id: sse_linalg_m_eq_hm_double.cc,v 1.2 2008-06-26 23:20:56 bjoo Exp $
+// $Id: sse_linalg_m_eq_hm_double.cc,v 1.3 2008-09-23 15:23:46 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -101,92 +101,92 @@ namespace QDP {
 
 
     for(int i=0; i < n_mat; i++) { 
-      m2_1 = _mm_load_pd(m2_p);    
-      m2_2 = _mm_load_pd(m2_p+6);  
-      m2_3 = _mm_load_pd(m2_p+12); 
+      m2_1 = _mm_loadu_pd(m2_p);    
+      m2_2 = _mm_loadu_pd(m2_p+6);  
+      m2_3 = _mm_loadu_pd(m2_p+12); 
 
-      tmp1 = _mm_load_pd(m1_p);      
-      tmp2 = _mm_load_pd(m1_p+2);
-      tmp3 = _mm_load_pd(m1_p+4);
-
-      CONJMUL(m3_11, tmp1, m2_1);   
-      tmp1 = _mm_load_pd(m1_p+6);      
-      CONJMUL(m3_12, tmp2, m2_1);  
-      tmp2 = _mm_load_pd(m1_p+8);      
-      CONJMUL(m3_13, tmp3, m2_1); 
-      tmp3 = _mm_load_pd(m1_p+10);      
-
-      CONJMADD(m3_11, tmp1, m2_2);   
-      tmp1 = _mm_load_pd(m1_p+12);      
-      CONJMADD(m3_12, tmp2, m2_2);  
-      tmp2 = _mm_load_pd(m1_p+14);      
-      CONJMADD(m3_13, tmp3, m2_2); 
-      tmp3 = _mm_load_pd(m1_p+16);      
-
-      CONJMADD(m3_11, tmp1, m2_3);  
-      _mm_store_pd(m3_p, m3_11);
-      CONJMADD(m3_12, tmp2, m2_3);  
-      _mm_store_pd(m3_p+2, m3_12);
-      CONJMADD(m3_13, tmp3, m2_3); 
-      _mm_store_pd(m3_p+4, m3_13);
-
-      m2_1 = _mm_load_pd(m2_p+2);    
-      m2_2 = _mm_load_pd(m2_p+8);  
-      m2_3 = _mm_load_pd(m2_p+14); 
-
-      tmp1 = _mm_load_pd(m1_p);      
-      tmp2 = _mm_load_pd(m1_p+2);
-      tmp3 = _mm_load_pd(m1_p+4);
+      tmp1 = _mm_loadu_pd(m1_p);      
+      tmp2 = _mm_loadu_pd(m1_p+2);
+      tmp3 = _mm_loadu_pd(m1_p+4);
 
       CONJMUL(m3_11, tmp1, m2_1);   
-      tmp1 = _mm_load_pd(m1_p+6);      
+      tmp1 = _mm_loadu_pd(m1_p+6);      
       CONJMUL(m3_12, tmp2, m2_1);  
-      tmp2 = _mm_load_pd(m1_p+8);      
+      tmp2 = _mm_loadu_pd(m1_p+8);      
       CONJMUL(m3_13, tmp3, m2_1); 
-      tmp3 = _mm_load_pd(m1_p+10);      
+      tmp3 = _mm_loadu_pd(m1_p+10);      
 
       CONJMADD(m3_11, tmp1, m2_2);   
-      tmp1 = _mm_load_pd(m1_p+12);      
+      tmp1 = _mm_loadu_pd(m1_p+12);      
       CONJMADD(m3_12, tmp2, m2_2);  
-      tmp2 = _mm_load_pd(m1_p+14);      
+      tmp2 = _mm_loadu_pd(m1_p+14);      
       CONJMADD(m3_13, tmp3, m2_2); 
-      tmp3 = _mm_load_pd(m1_p+16);      
+      tmp3 = _mm_loadu_pd(m1_p+16);      
 
       CONJMADD(m3_11, tmp1, m2_3);  
-      _mm_store_pd(m3_p+6, m3_11);
+      _mm_storeu_pd(m3_p, m3_11);
       CONJMADD(m3_12, tmp2, m2_3);  
-      _mm_store_pd(m3_p+8, m3_12);
+      _mm_storeu_pd(m3_p+2, m3_12);
       CONJMADD(m3_13, tmp3, m2_3); 
-      _mm_store_pd(m3_p+10, m3_13);
+      _mm_storeu_pd(m3_p+4, m3_13);
 
-      m2_1 = _mm_load_pd(m2_p+4);    
-      m2_2 = _mm_load_pd(m2_p+10);  
-      m2_3 = _mm_load_pd(m2_p+16); 
+      m2_1 = _mm_loadu_pd(m2_p+2);    
+      m2_2 = _mm_loadu_pd(m2_p+8);  
+      m2_3 = _mm_loadu_pd(m2_p+14); 
 
-      tmp1 = _mm_load_pd(m1_p);      
-      tmp2 = _mm_load_pd(m1_p+2);
-      tmp3 = _mm_load_pd(m1_p+4);
+      tmp1 = _mm_loadu_pd(m1_p);      
+      tmp2 = _mm_loadu_pd(m1_p+2);
+      tmp3 = _mm_loadu_pd(m1_p+4);
 
       CONJMUL(m3_11, tmp1, m2_1);   
-      tmp1 = _mm_load_pd(m1_p+6);      
+      tmp1 = _mm_loadu_pd(m1_p+6);      
       CONJMUL(m3_12, tmp2, m2_1);  
-      tmp2 = _mm_load_pd(m1_p+8);      
+      tmp2 = _mm_loadu_pd(m1_p+8);      
       CONJMUL(m3_13, tmp3, m2_1); 
-      tmp3 = _mm_load_pd(m1_p+10);      
+      tmp3 = _mm_loadu_pd(m1_p+10);      
 
       CONJMADD(m3_11, tmp1, m2_2);   
-      tmp1 = _mm_load_pd(m1_p+12);      
+      tmp1 = _mm_loadu_pd(m1_p+12);      
       CONJMADD(m3_12, tmp2, m2_2);  
-      tmp2 = _mm_load_pd(m1_p+14);      
+      tmp2 = _mm_loadu_pd(m1_p+14);      
       CONJMADD(m3_13, tmp3, m2_2); 
-      tmp3 = _mm_load_pd(m1_p+16);      
+      tmp3 = _mm_loadu_pd(m1_p+16);      
 
       CONJMADD(m3_11, tmp1, m2_3);  
-      _mm_store_pd(m3_p+12, m3_11);
+      _mm_storeu_pd(m3_p+6, m3_11);
       CONJMADD(m3_12, tmp2, m2_3);  
-      _mm_store_pd(m3_p+14, m3_12);
+      _mm_storeu_pd(m3_p+8, m3_12);
       CONJMADD(m3_13, tmp3, m2_3); 
-      _mm_store_pd(m3_p+16, m3_13);
+      _mm_storeu_pd(m3_p+10, m3_13);
+
+      m2_1 = _mm_loadu_pd(m2_p+4);    
+      m2_2 = _mm_loadu_pd(m2_p+10);  
+      m2_3 = _mm_loadu_pd(m2_p+16); 
+
+      tmp1 = _mm_loadu_pd(m1_p);      
+      tmp2 = _mm_loadu_pd(m1_p+2);
+      tmp3 = _mm_loadu_pd(m1_p+4);
+
+      CONJMUL(m3_11, tmp1, m2_1);   
+      tmp1 = _mm_loadu_pd(m1_p+6);      
+      CONJMUL(m3_12, tmp2, m2_1);  
+      tmp2 = _mm_loadu_pd(m1_p+8);      
+      CONJMUL(m3_13, tmp3, m2_1); 
+      tmp3 = _mm_loadu_pd(m1_p+10);      
+
+      CONJMADD(m3_11, tmp1, m2_2);   
+      tmp1 = _mm_loadu_pd(m1_p+12);      
+      CONJMADD(m3_12, tmp2, m2_2);  
+      tmp2 = _mm_loadu_pd(m1_p+14);      
+      CONJMADD(m3_13, tmp3, m2_2); 
+      tmp3 = _mm_loadu_pd(m1_p+16);      
+
+      CONJMADD(m3_11, tmp1, m2_3);  
+      _mm_storeu_pd(m3_p+12, m3_11);
+      CONJMADD(m3_12, tmp2, m2_3);  
+      _mm_storeu_pd(m3_p+14, m3_12);
+      CONJMADD(m3_13, tmp3, m2_3); 
+      _mm_storeu_pd(m3_p+16, m3_13);
 
       /* Next matrix */
       m1_p += 18; m2_p += 18; m3_p += 18;
@@ -226,31 +226,31 @@ namespace QDP {
     REAL64* m3_p=m3;
 
     for(int i =0; i < n_mat; i++) { 
-      res1 = _mm_load_pd(m3_p);
-      res2 = _mm_load_pd(m3_p+2);
-      res3 = _mm_load_pd(m3_p+4);
+      res1 = _mm_loadu_pd(m3_p);
+      res2 = _mm_loadu_pd(m3_p+2);
+      res3 = _mm_loadu_pd(m3_p+4);
 
-      m2_1 = _mm_load_pd(m2_p);    
-      m2_2 = _mm_load_pd(m2_p+6);  
-      m2_3 = _mm_load_pd(m2_p+12); 
+      m2_1 = _mm_loadu_pd(m2_p);    
+      m2_2 = _mm_loadu_pd(m2_p+6);  
+      m2_3 = _mm_loadu_pd(m2_p+12); 
 
-      tmp1 = _mm_load_pd(m1_p);      
-      tmp2 = _mm_load_pd(m1_p+2);
-      tmp3 = _mm_load_pd(m1_p+4);
+      tmp1 = _mm_loadu_pd(m1_p);      
+      tmp2 = _mm_loadu_pd(m1_p+2);
+      tmp3 = _mm_loadu_pd(m1_p+4);
 
       CONJMUL(m3_11, tmp1, m2_1);   
-      tmp1 = _mm_load_pd(m1_p+6);      
+      tmp1 = _mm_loadu_pd(m1_p+6);      
       CONJMUL(m3_12, tmp2, m2_1);  
-      tmp2 = _mm_load_pd(m1_p+8);      
+      tmp2 = _mm_loadu_pd(m1_p+8);      
       CONJMUL(m3_13, tmp3, m2_1); 
-      tmp3 = _mm_load_pd(m1_p+10);      
+      tmp3 = _mm_loadu_pd(m1_p+10);      
 
       CONJMADD(m3_11, tmp1, m2_2);   
-      tmp1 = _mm_load_pd(m1_p+12);      
+      tmp1 = _mm_loadu_pd(m1_p+12);      
       CONJMADD(m3_12, tmp2, m2_2);  
-      tmp2 = _mm_load_pd(m1_p+14);      
+      tmp2 = _mm_loadu_pd(m1_p+14);      
       CONJMADD(m3_13, tmp3, m2_2); 
-      tmp3 = _mm_load_pd(m1_p+16);      
+      tmp3 = _mm_loadu_pd(m1_p+16);      
 
       CONJMADD(m3_11, tmp1, m2_3);  
       CONJMADD(m3_12, tmp2, m2_3);  
@@ -265,36 +265,36 @@ namespace QDP {
       m3_13 = _mm_mul_pd(scalar, m3_13);
       m3_13 = _mm_add_pd(res3, m3_13);
 
-      _mm_store_pd(m3_p, m3_11);
-      _mm_store_pd(m3_p+2, m3_12);
-      _mm_store_pd(m3_p+4, m3_13);
+      _mm_storeu_pd(m3_p, m3_11);
+      _mm_storeu_pd(m3_p+2, m3_12);
+      _mm_storeu_pd(m3_p+4, m3_13);
 
-      res1=_mm_load_pd(m3_p+6);
-      res2=_mm_load_pd(m3_p+8);
-      res3=_mm_load_pd(m3_p+10);
+      res1=_mm_loadu_pd(m3_p+6);
+      res2=_mm_loadu_pd(m3_p+8);
+      res3=_mm_loadu_pd(m3_p+10);
 
 
-      m2_1 = _mm_load_pd(m2_p+2);    
-      m2_2 = _mm_load_pd(m2_p+8);  
-      m2_3 = _mm_load_pd(m2_p+14); 
+      m2_1 = _mm_loadu_pd(m2_p+2);    
+      m2_2 = _mm_loadu_pd(m2_p+8);  
+      m2_3 = _mm_loadu_pd(m2_p+14); 
 
-      tmp1 = _mm_load_pd(m1_p);      
-      tmp2 = _mm_load_pd(m1_p+2);
-      tmp3 = _mm_load_pd(m1_p+4);
+      tmp1 = _mm_loadu_pd(m1_p);      
+      tmp2 = _mm_loadu_pd(m1_p+2);
+      tmp3 = _mm_loadu_pd(m1_p+4);
 
       CONJMUL(m3_11, tmp1, m2_1);   
-      tmp1 = _mm_load_pd(m1_p+6);      
+      tmp1 = _mm_loadu_pd(m1_p+6);      
       CONJMUL(m3_12, tmp2, m2_1);  
-      tmp2 = _mm_load_pd(m1_p+8);      
+      tmp2 = _mm_loadu_pd(m1_p+8);      
       CONJMUL(m3_13, tmp3, m2_1); 
-      tmp3 = _mm_load_pd(m1_p+10);      
+      tmp3 = _mm_loadu_pd(m1_p+10);      
 
       CONJMADD(m3_11, tmp1, m2_2);   
-      tmp1 = _mm_load_pd(m1_p+12);      
+      tmp1 = _mm_loadu_pd(m1_p+12);      
       CONJMADD(m3_12, tmp2, m2_2);  
-      tmp2 = _mm_load_pd(m1_p+14);      
+      tmp2 = _mm_loadu_pd(m1_p+14);      
       CONJMADD(m3_13, tmp3, m2_2); 
-      tmp3 = _mm_load_pd(m1_p+16);      
+      tmp3 = _mm_loadu_pd(m1_p+16);      
 
       CONJMADD(m3_11, tmp1, m2_3);  
       CONJMADD(m3_12, tmp2, m2_3);  
@@ -309,35 +309,35 @@ namespace QDP {
       m3_13 = _mm_mul_pd(scalar, m3_13);
       m3_13 = _mm_add_pd(res3, m3_13);
 
-      _mm_store_pd(m3_p+6, m3_11);
-      _mm_store_pd(m3_p+8, m3_12);
-      _mm_store_pd(m3_p+10, m3_13);
+      _mm_storeu_pd(m3_p+6, m3_11);
+      _mm_storeu_pd(m3_p+8, m3_12);
+      _mm_storeu_pd(m3_p+10, m3_13);
 
-      res1=_mm_load_pd(m3_p+12);
-      res2=_mm_load_pd(m3_p+14);
-      res3=_mm_load_pd(m3_p+16);
+      res1=_mm_loadu_pd(m3_p+12);
+      res2=_mm_loadu_pd(m3_p+14);
+      res3=_mm_loadu_pd(m3_p+16);
 
-      m2_1 = _mm_load_pd(m2_p+4);    
-      m2_2 = _mm_load_pd(m2_p+10);  
-      m2_3 = _mm_load_pd(m2_p+16); 
+      m2_1 = _mm_loadu_pd(m2_p+4);    
+      m2_2 = _mm_loadu_pd(m2_p+10);  
+      m2_3 = _mm_loadu_pd(m2_p+16); 
 
-      tmp1 = _mm_load_pd(m1_p);      
-      tmp2 = _mm_load_pd(m1_p+2);
-      tmp3 = _mm_load_pd(m1_p+4);
+      tmp1 = _mm_loadu_pd(m1_p);      
+      tmp2 = _mm_loadu_pd(m1_p+2);
+      tmp3 = _mm_loadu_pd(m1_p+4);
 
       CONJMUL(m3_11, tmp1, m2_1);   
-      tmp1 = _mm_load_pd(m1_p+6);      
+      tmp1 = _mm_loadu_pd(m1_p+6);      
       CONJMUL(m3_12, tmp2, m2_1);  
-      tmp2 = _mm_load_pd(m1_p+8);      
+      tmp2 = _mm_loadu_pd(m1_p+8);      
       CONJMUL(m3_13, tmp3, m2_1); 
-      tmp3 = _mm_load_pd(m1_p+10);      
+      tmp3 = _mm_loadu_pd(m1_p+10);      
 
       CONJMADD(m3_11, tmp1, m2_2);   
-      tmp1 = _mm_load_pd(m1_p+12);      
+      tmp1 = _mm_loadu_pd(m1_p+12);      
       CONJMADD(m3_12, tmp2, m2_2);  
-      tmp2 = _mm_load_pd(m1_p+14);      
+      tmp2 = _mm_loadu_pd(m1_p+14);      
       CONJMADD(m3_13, tmp3, m2_2); 
-      tmp3 = _mm_load_pd(m1_p+16);      
+      tmp3 = _mm_loadu_pd(m1_p+16);      
 
       CONJMADD(m3_11, tmp1, m2_3);  
       CONJMADD(m3_12, tmp2, m2_3);  
@@ -352,9 +352,9 @@ namespace QDP {
       m3_13 = _mm_mul_pd(scalar, m3_13);
       m3_13 = _mm_add_pd(res3, m3_13);
 
-      _mm_store_pd(m3_p+12, m3_11);
-      _mm_store_pd(m3_p+14, m3_12);
-      _mm_store_pd(m3_p+16, m3_13);
+      _mm_storeu_pd(m3_p+12, m3_11);
+      _mm_storeu_pd(m3_p+14, m3_12);
+      _mm_storeu_pd(m3_p+16, m3_13);
       m1_p += 18; m2_p += 18; m3_p += 18;
     }
 

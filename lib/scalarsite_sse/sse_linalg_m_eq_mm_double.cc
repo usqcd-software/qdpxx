@@ -1,4 +1,4 @@
-// $Id: sse_linalg_m_eq_mm_double.cc,v 1.4 2008-06-26 23:20:56 bjoo Exp $
+// $Id: sse_linalg_m_eq_mm_double.cc,v 1.5 2008-09-23 15:23:46 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -104,45 +104,45 @@ namespace QDP {
 
     for(int i=0; i < n_mat; i++) { 
 
-      m2_1 = _mm_load_pd(m2_p);
-      m1_1 = _mm_load_pd(m1_p);      
-      m1_2 = _mm_load_pd(m1_p+2);
-      m1_3 = _mm_load_pd(m1_p+4);
+      m2_1 = _mm_loadu_pd(m2_p);
+      m1_1 = _mm_loadu_pd(m1_p);      
+      m1_2 = _mm_loadu_pd(m1_p+2);
+      m1_3 = _mm_loadu_pd(m1_p+4);
 
       CMUL(m3_11, m2_1, m1_1);
       CMUL(m3_12, m2_1, m1_2);
       CMUL(m3_13, m2_1, m1_3);
 
-      m2_1 = _mm_load_pd(m2_p+2);
-      m1_1 = _mm_load_pd(m1_p+6);
-      m1_2 = _mm_load_pd(m1_p+8);
-      m1_3 = _mm_load_pd(m1_p+10);
+      m2_1 = _mm_loadu_pd(m2_p+2);
+      m1_1 = _mm_loadu_pd(m1_p+6);
+      m1_2 = _mm_loadu_pd(m1_p+8);
+      m1_3 = _mm_loadu_pd(m1_p+10);
 
       CMADD(m3_11, m2_1, m1_1);
       CMADD(m3_12, m2_1, m1_2);
       CMADD(m3_13, m2_1, m1_3);
 
-      m2_1 = _mm_load_pd(m2_p+4);
-      m1_1 = _mm_load_pd(m1_p+12);
-      m1_2 = _mm_load_pd(m1_p+14);
-      m1_3 = _mm_load_pd(m1_p+16);
+      m2_1 = _mm_loadu_pd(m2_p+4);
+      m1_1 = _mm_loadu_pd(m1_p+12);
+      m1_2 = _mm_loadu_pd(m1_p+14);
+      m1_3 = _mm_loadu_pd(m1_p+16);
 
       CMADD(m3_11, m2_1, m1_1);
-      _mm_store_pd(m3_p, m3_11);
+      _mm_storeu_pd(m3_p, m3_11);
 
       CMADD(m3_12, m2_1, m1_2);
-      _mm_store_pd(m3_p+2, m3_12);
+      _mm_storeu_pd(m3_p+2, m3_12);
 
       CMADD(m3_13, m2_1, m1_3);
-      _mm_store_pd(m3_p+4, m3_13);
+      _mm_storeu_pd(m3_p+4, m3_13);
 
 
-      m2_2 = _mm_load_pd(m2_p+6);
-      m2_1 = _mm_load_pd(m2_p+12);
+      m2_2 = _mm_loadu_pd(m2_p+6);
+      m2_1 = _mm_loadu_pd(m2_p+12);
 
-      m1_1 = _mm_load_pd(m1_p);      
-      m1_2 = _mm_load_pd(m1_p+2);
-      m1_3 = _mm_load_pd(m1_p+4);
+      m1_1 = _mm_loadu_pd(m1_p);      
+      m1_2 = _mm_loadu_pd(m1_p+2);
+      m1_3 = _mm_loadu_pd(m1_p+4);
 
       CMUL(m3_21, m2_2, m1_1);
       CMUL(m3_22, m2_2, m1_2);
@@ -152,12 +152,12 @@ namespace QDP {
       CMUL(m3_12, m2_1, m1_2);
       CMUL(m3_13, m2_1, m1_3);
 
-      m2_2 = _mm_load_pd(m2_p+8);
-      m2_1 = _mm_load_pd(m2_p+14);
+      m2_2 = _mm_loadu_pd(m2_p+8);
+      m2_1 = _mm_loadu_pd(m2_p+14);
 
-      m1_1 = _mm_load_pd(m1_p+6);
-      m1_2 = _mm_load_pd(m1_p+8);
-      m1_3 = _mm_load_pd(m1_p+10);
+      m1_1 = _mm_loadu_pd(m1_p+6);
+      m1_2 = _mm_loadu_pd(m1_p+8);
+      m1_3 = _mm_loadu_pd(m1_p+10);
 
       CMADD(m3_21, m2_2, m1_1);
       CMADD(m3_22, m2_2, m1_2);
@@ -167,30 +167,30 @@ namespace QDP {
       CMADD(m3_12, m2_1, m1_2);
       CMADD(m3_13, m2_1, m1_3);
 
-      m2_2 = _mm_load_pd(m2_p+10);
-      m2_1 = _mm_load_pd(m2_p+16);
+      m2_2 = _mm_loadu_pd(m2_p+10);
+      m2_1 = _mm_loadu_pd(m2_p+16);
 
-      m1_1 = _mm_load_pd(m1_p+12);
-      m1_2 = _mm_load_pd(m1_p+14);
-      m1_3 = _mm_load_pd(m1_p+16);
+      m1_1 = _mm_loadu_pd(m1_p+12);
+      m1_2 = _mm_loadu_pd(m1_p+14);
+      m1_3 = _mm_loadu_pd(m1_p+16);
 
       CMADD(m3_21, m2_2, m1_1);
-      _mm_store_pd(m3_p+6, m3_21);
+      _mm_storeu_pd(m3_p+6, m3_21);
 
       CMADD(m3_22, m2_2, m1_2);
-      _mm_store_pd(m3_p+8, m3_22);
+      _mm_storeu_pd(m3_p+8, m3_22);
 
       CMADD(m3_23, m2_2, m1_3);
-      _mm_store_pd(m3_p+10, m3_23);
+      _mm_storeu_pd(m3_p+10, m3_23);
 
       CMADD(m3_11, m2_1, m1_1);
-      _mm_store_pd(m3_p+12, m3_11);
+      _mm_storeu_pd(m3_p+12, m3_11);
 
       CMADD(m3_12, m2_1, m1_2);
-      _mm_store_pd(m3_p+14, m3_12);
+      _mm_storeu_pd(m3_p+14, m3_12);
 
       CMADD(m3_13, m2_1, m1_3);
-      _mm_store_pd(m3_p+16, m3_13);
+      _mm_storeu_pd(m3_p+16, m3_13);
 
       /* Next matrix */
       m1_p += 18; m2_p += 18; m3_p += 18;
@@ -238,65 +238,65 @@ namespace QDP {
     // First row of M2 into all columns of M1
     for(int i=0; i < n_mat; i++) { 
 
-      m3_11 = _mm_load_pd(m3_p);
-      m3_12 = _mm_load_pd(m3_p+2);
-      m3_13 = _mm_load_pd(m3_p+4);
+      m3_11 = _mm_loadu_pd(m3_p);
+      m3_12 = _mm_loadu_pd(m3_p+2);
+      m3_13 = _mm_loadu_pd(m3_p+4);
 
-      m2_1 = _mm_load_pd(m2_p);
+      m2_1 = _mm_loadu_pd(m2_p);
       m2_1 = _mm_mul_pd(m2_1,scalar);
 
-      m1_1 = _mm_load_pd(m1_p); 
-      m1_2 = _mm_load_pd(m1_p+2);
-      m1_3 = _mm_load_pd(m1_p+4);
+      m1_1 = _mm_loadu_pd(m1_p); 
+      m1_2 = _mm_loadu_pd(m1_p+2);
+      m1_3 = _mm_loadu_pd(m1_p+4);
 
       CMADD(m3_11, m2_1, m1_1);
       CMADD(m3_12, m2_1, m1_2);
       CMADD(m3_13, m2_1, m1_3);
 
-      m2_1 = _mm_load_pd(m2_p+2);
+      m2_1 = _mm_loadu_pd(m2_p+2);
       m2_1 = _mm_mul_pd(m2_1,scalar);
 
-      m1_1 = _mm_load_pd(m1_p+6);
-      m1_2 = _mm_load_pd(m1_p+8);
-      m1_3 = _mm_load_pd(m1_p+10);
+      m1_1 = _mm_loadu_pd(m1_p+6);
+      m1_2 = _mm_loadu_pd(m1_p+8);
+      m1_3 = _mm_loadu_pd(m1_p+10);
 
       CMADD(m3_11, m2_1, m1_1);
       CMADD(m3_12, m2_1, m1_2);
       CMADD(m3_13, m2_1, m1_3);
 
-      m2_1 = _mm_load_pd(m2_p+4);
+      m2_1 = _mm_loadu_pd(m2_p+4);
       m2_1 = _mm_mul_pd(m2_1,scalar);
 
-      m1_1 = _mm_load_pd(m1_p+12);
-      m1_2 = _mm_load_pd(m1_p+14);
-      m1_3 = _mm_load_pd(m1_p+16);
+      m1_1 = _mm_loadu_pd(m1_p+12);
+      m1_2 = _mm_loadu_pd(m1_p+14);
+      m1_3 = _mm_loadu_pd(m1_p+16);
 
       CMADD(m3_11, m2_1, m1_1);
-      _mm_store_pd(m3_p, m3_11);
+      _mm_storeu_pd(m3_p, m3_11);
 
       CMADD(m3_12, m2_1, m1_2);
-      _mm_store_pd(m3_p+2, m3_12);
+      _mm_storeu_pd(m3_p+2, m3_12);
 
       CMADD(m3_13, m2_1, m1_3);
-      _mm_store_pd(m3_p+4, m3_13);
+      _mm_storeu_pd(m3_p+4, m3_13);
 
 
-      m3_21 = _mm_load_pd(m3_p+6);
-      m3_22 = _mm_load_pd(m3_p+8);
-      m3_23 = _mm_load_pd(m3_p+10);
-      m3_11 = _mm_load_pd(m3_p+12);
-      m3_12 = _mm_load_pd(m3_p+14);
-      m3_13 = _mm_load_pd(m3_p+16);
+      m3_21 = _mm_loadu_pd(m3_p+6);
+      m3_22 = _mm_loadu_pd(m3_p+8);
+      m3_23 = _mm_loadu_pd(m3_p+10);
+      m3_11 = _mm_loadu_pd(m3_p+12);
+      m3_12 = _mm_loadu_pd(m3_p+14);
+      m3_13 = _mm_loadu_pd(m3_p+16);
 
-      m2_2 = _mm_load_pd(m2_p+6);
+      m2_2 = _mm_loadu_pd(m2_p+6);
       m2_2 = _mm_mul_pd(m2_2,scalar);
 
-      m2_1 = _mm_load_pd(m2_p+12);
+      m2_1 = _mm_loadu_pd(m2_p+12);
       m2_1 = _mm_mul_pd(m2_1,scalar);
 
-      m1_1 = _mm_load_pd(m1_p);      
-      m1_2 = _mm_load_pd(m1_p+2);
-      m1_3 = _mm_load_pd(m1_p+4);
+      m1_1 = _mm_loadu_pd(m1_p);      
+      m1_2 = _mm_loadu_pd(m1_p+2);
+      m1_3 = _mm_loadu_pd(m1_p+4);
 
 
 
@@ -309,15 +309,15 @@ namespace QDP {
       CMADD(m3_12, m2_1, m1_2);
       CMADD(m3_13, m2_1, m1_3);
 
-      m2_2 = _mm_load_pd(m2_p+8);
+      m2_2 = _mm_loadu_pd(m2_p+8);
       m2_2 = _mm_mul_pd(m2_2,scalar);
 
-      m2_1 = _mm_load_pd(m2_p+14);
+      m2_1 = _mm_loadu_pd(m2_p+14);
       m2_1 = _mm_mul_pd(m2_1,scalar);
 
-      m1_1 = _mm_load_pd(m1_p+6);
-      m1_2 = _mm_load_pd(m1_p+8);
-      m1_3 = _mm_load_pd(m1_p+10);
+      m1_1 = _mm_loadu_pd(m1_p+6);
+      m1_2 = _mm_loadu_pd(m1_p+8);
+      m1_3 = _mm_loadu_pd(m1_p+10);
 
       CMADD(m3_21, m2_2, m1_1);
       CMADD(m3_22, m2_2, m1_2);
@@ -327,33 +327,33 @@ namespace QDP {
       CMADD(m3_12, m2_1, m1_2);
       CMADD(m3_13, m2_1, m1_3);
 
-      m2_2 = _mm_load_pd(m2_p+10);
+      m2_2 = _mm_loadu_pd(m2_p+10);
       m2_2 = _mm_mul_pd(m2_2,scalar);
 
-      m2_1 = _mm_load_pd(m2_p+16);
+      m2_1 = _mm_loadu_pd(m2_p+16);
       m2_1 = _mm_mul_pd(m2_1,scalar);
 
-      m1_1 = _mm_load_pd(m1_p+12);
-      m1_2 = _mm_load_pd(m1_p+14);
-      m1_3 = _mm_load_pd(m1_p+16);
+      m1_1 = _mm_loadu_pd(m1_p+12);
+      m1_2 = _mm_loadu_pd(m1_p+14);
+      m1_3 = _mm_loadu_pd(m1_p+16);
 
       CMADD(m3_21, m2_2, m1_1);
-      _mm_store_pd(m3_p+6, m3_21);
+      _mm_storeu_pd(m3_p+6, m3_21);
 
       CMADD(m3_22, m2_2, m1_2);
-      _mm_store_pd(m3_p+8, m3_22);
+      _mm_storeu_pd(m3_p+8, m3_22);
 
       CMADD(m3_23, m2_2, m1_3);
-      _mm_store_pd(m3_p+10, m3_23);
+      _mm_storeu_pd(m3_p+10, m3_23);
 
       CMADD(m3_11, m2_1, m1_1);
-      _mm_store_pd(m3_p+12, m3_11);
+      _mm_storeu_pd(m3_p+12, m3_11);
 
       CMADD(m3_12, m2_1, m1_2);
-      _mm_store_pd(m3_p+14, m3_12);
+      _mm_storeu_pd(m3_p+14, m3_12);
 
       CMADD(m3_13, m2_1, m1_3);
-      _mm_store_pd(m3_p+16, m3_13);
+      _mm_storeu_pd(m3_p+16, m3_13);
 
       /* Next matrix */
       m1_p += 18; m2_p += 18; m3_p += 18;

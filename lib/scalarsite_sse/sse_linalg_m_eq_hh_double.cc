@@ -1,4 +1,4 @@
-// $Id: sse_linalg_m_eq_hh_double.cc,v 1.2 2008-06-26 23:20:56 bjoo Exp $
+// $Id: sse_linalg_m_eq_hh_double.cc,v 1.3 2008-09-23 15:23:46 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -108,97 +108,97 @@ typedef union {
 
 
     for(int i=0; i < n_mat; i++) { 
-      m2_1 = _mm_load_pd(m2_p);
-      m2_2 = _mm_load_pd(m2_p+6);
-      m2_3 = _mm_load_pd(m2_p+12);
+      m2_1 = _mm_loadu_pd(m2_p);
+      m2_2 = _mm_loadu_pd(m2_p+6);
+      m2_3 = _mm_loadu_pd(m2_p+12);
 
-      m1_1 = _mm_load_pd(m1_p);
-      m1_2 = _mm_load_pd(m1_p+2);
-      m1_3 = _mm_load_pd(m1_p+4);
+      m1_1 = _mm_loadu_pd(m1_p);
+      m1_2 = _mm_loadu_pd(m1_p+2);
+      m1_3 = _mm_loadu_pd(m1_p+4);
 
       CCMUL(m3_11, m2_1, m1_1);
-      m1_1 = _mm_load_pd(m1_p+6);
+      m1_1 = _mm_loadu_pd(m1_p+6);
       CCMADD(m3_11, m2_2, m1_2);
-      m1_2 = _mm_load_pd(m1_p+8);
+      m1_2 = _mm_loadu_pd(m1_p+8);
       CCMADD(m3_11, m2_3, m1_3);
-      m1_3 = _mm_load_pd(m1_p+10);
+      m1_3 = _mm_loadu_pd(m1_p+10);
 
 
       CCMUL(m3_12, m2_1, m1_1);
-      m1_1 = _mm_load_pd(m1_p+12);
+      m1_1 = _mm_loadu_pd(m1_p+12);
       CCMADD(m3_12, m2_2, m1_2);
-      m1_2 = _mm_load_pd(m1_p+14);
+      m1_2 = _mm_loadu_pd(m1_p+14);
       CCMADD(m3_12, m2_3, m1_3);
-      m1_3 = _mm_load_pd(m1_p+16);
+      m1_3 = _mm_loadu_pd(m1_p+16);
 
 
       CCMUL(m3_13, m2_1, m1_1);
-      m2_1 = _mm_load_pd(m2_p+2);
+      m2_1 = _mm_loadu_pd(m2_p+2);
       CCMADD(m3_13, m2_2, m1_2)
-      m2_2 = _mm_load_pd(m2_p+8);
+      m2_2 = _mm_loadu_pd(m2_p+8);
       CCMADD(m3_13, m2_3, m1_3);
-      m2_3 = _mm_load_pd(m2_p+14);
+      m2_3 = _mm_loadu_pd(m2_p+14);
 
-      _mm_store_pd(m3_p, m3_11);
-      _mm_store_pd(m3_p+2, m3_12);
-      _mm_store_pd(m3_p+4, m3_13);
+      _mm_storeu_pd(m3_p, m3_11);
+      _mm_storeu_pd(m3_p+2, m3_12);
+      _mm_storeu_pd(m3_p+4, m3_13);
 
-      m1_1 = _mm_load_pd(m1_p);
-      m1_2 = _mm_load_pd(m1_p+2);
-      m1_3 = _mm_load_pd(m1_p+4);
+      m1_1 = _mm_loadu_pd(m1_p);
+      m1_2 = _mm_loadu_pd(m1_p+2);
+      m1_3 = _mm_loadu_pd(m1_p+4);
 
       CCMUL(m3_11, m2_1, m1_1);
-      m1_1 = _mm_load_pd(m1_p+6);
+      m1_1 = _mm_loadu_pd(m1_p+6);
       CCMADD(m3_11, m2_2, m1_2);
-      m1_2 = _mm_load_pd(m1_p+8);
+      m1_2 = _mm_loadu_pd(m1_p+8);
       CCMADD(m3_11, m2_3, m1_3);
-      m1_3 = _mm_load_pd(m1_p+10);
+      m1_3 = _mm_loadu_pd(m1_p+10);
 
 
       CCMUL(m3_12, m2_1, m1_1);
-      m1_1 = _mm_load_pd(m1_p+12);
+      m1_1 = _mm_loadu_pd(m1_p+12);
       CCMADD(m3_12, m2_2, m1_2);
-      m1_2 = _mm_load_pd(m1_p+14);
+      m1_2 = _mm_loadu_pd(m1_p+14);
       CCMADD(m3_12, m2_3, m1_3);
-      m1_3 = _mm_load_pd(m1_p+16);
+      m1_3 = _mm_loadu_pd(m1_p+16);
 
 
       CCMUL(m3_13, m2_1, m1_1);
-      m2_1 = _mm_load_pd(m2_p+4);
+      m2_1 = _mm_loadu_pd(m2_p+4);
       CCMADD(m3_13, m2_2, m1_2)
-      m2_2 = _mm_load_pd(m2_p+10);
+      m2_2 = _mm_loadu_pd(m2_p+10);
       CCMADD(m3_13, m2_3, m1_3);
-      m2_3 = _mm_load_pd(m2_p+16);
+      m2_3 = _mm_loadu_pd(m2_p+16);
 
-      _mm_store_pd(m3_p+6, m3_11);
-      _mm_store_pd(m3_p+8, m3_12);
-      _mm_store_pd(m3_p+10, m3_13);
+      _mm_storeu_pd(m3_p+6, m3_11);
+      _mm_storeu_pd(m3_p+8, m3_12);
+      _mm_storeu_pd(m3_p+10, m3_13);
 
-      m1_1 = _mm_load_pd(m1_p);
-      m1_2 = _mm_load_pd(m1_p+2);
-      m1_3 = _mm_load_pd(m1_p+4);
+      m1_1 = _mm_loadu_pd(m1_p);
+      m1_2 = _mm_loadu_pd(m1_p+2);
+      m1_3 = _mm_loadu_pd(m1_p+4);
 
       CCMUL(m3_11, m2_1, m1_1);
-      m1_1 = _mm_load_pd(m1_p+6);
+      m1_1 = _mm_loadu_pd(m1_p+6);
       CCMADD(m3_11, m2_2, m1_2);
-      m1_2 = _mm_load_pd(m1_p+8);
+      m1_2 = _mm_loadu_pd(m1_p+8);
       CCMADD(m3_11, m2_3, m1_3);
-      m1_3 = _mm_load_pd(m1_p+10);
+      m1_3 = _mm_loadu_pd(m1_p+10);
 
       CCMUL(m3_12, m2_1, m1_1);
-      m1_1 = _mm_load_pd(m1_p+12);
+      m1_1 = _mm_loadu_pd(m1_p+12);
       CCMADD(m3_12, m2_2, m1_2);
-      m1_2 = _mm_load_pd(m1_p+14);
+      m1_2 = _mm_loadu_pd(m1_p+14);
       CCMADD(m3_12, m2_3, m1_3);
-      m1_3 = _mm_load_pd(m1_p+16);
+      m1_3 = _mm_loadu_pd(m1_p+16);
 
       CCMUL(m3_13, m2_1, m1_1);
       CCMADD(m3_13, m2_2, m1_2);
       CCMADD(m3_13, m2_3, m1_3);
 	
-      _mm_store_pd(m3_p+12, m3_11);
-      _mm_store_pd(m3_p+14, m3_12);
-      _mm_store_pd(m3_p+16, m3_13);
+      _mm_storeu_pd(m3_p+12, m3_11);
+      _mm_storeu_pd(m3_p+14, m3_12);
+      _mm_storeu_pd(m3_p+16, m3_13);
 
 
       /* Next matrix */
@@ -242,35 +242,35 @@ typedef union {
     REAL64* m3_p=m3;
 
     for(int i =0; i < n_mat; i++) { 
-      m2_1 = _mm_load_pd(m2_p);
-      m2_2 = _mm_load_pd(m2_p+6);
-      m2_3 = _mm_load_pd(m2_p+12);
+      m2_1 = _mm_loadu_pd(m2_p);
+      m2_2 = _mm_loadu_pd(m2_p+6);
+      m2_3 = _mm_loadu_pd(m2_p+12);
 
-      res1 = _mm_load_pd(m3_p);
-      res2 = _mm_load_pd(m3_p+2);
-      res3 = _mm_load_pd(m3_p+4);
+      res1 = _mm_loadu_pd(m3_p);
+      res2 = _mm_loadu_pd(m3_p+2);
+      res3 = _mm_loadu_pd(m3_p+4);
 
-      m1_1 = _mm_load_pd(m1_p);
-      m1_2 = _mm_load_pd(m1_p+2);
-      m1_3 = _mm_load_pd(m1_p+4);
+      m1_1 = _mm_loadu_pd(m1_p);
+      m1_2 = _mm_loadu_pd(m1_p+2);
+      m1_3 = _mm_loadu_pd(m1_p+4);
 
       CCMUL(m3_11, m2_1, m1_1);
-      m1_1 = _mm_load_pd(m1_p+6);
+      m1_1 = _mm_loadu_pd(m1_p+6);
       CCMADD(m3_11, m2_2, m1_2);
-      m1_2 = _mm_load_pd(m1_p+8);
+      m1_2 = _mm_loadu_pd(m1_p+8);
       CCMADD(m3_11, m2_3, m1_3);
-      m1_3 = _mm_load_pd(m1_p+10);
+      m1_3 = _mm_loadu_pd(m1_p+10);
 
       m3_11 = _mm_mul_pd(scalar,m3_11);
       m3_11 = _mm_add_pd(res1, m3_11);
       
 
       CCMUL(m3_12, m2_1, m1_1);
-      m1_1 = _mm_load_pd(m1_p+12);
+      m1_1 = _mm_loadu_pd(m1_p+12);
       CCMADD(m3_12, m2_2, m1_2);
-      m1_2 = _mm_load_pd(m1_p+14);
+      m1_2 = _mm_loadu_pd(m1_p+14);
       CCMADD(m3_12, m2_3, m1_3);
-      m1_3 = _mm_load_pd(m1_p+16);
+      m1_3 = _mm_loadu_pd(m1_p+16);
 
       m3_12 = _mm_mul_pd(scalar,m3_12);
       m3_12 = _mm_add_pd(res2, m3_12);
@@ -278,11 +278,11 @@ typedef union {
 
 
       CCMUL(m3_13, m2_1, m1_1);
-      m2_1 = _mm_load_pd(m2_p+2);
+      m2_1 = _mm_loadu_pd(m2_p+2);
       CCMADD(m3_13, m2_2, m1_2)
-      m2_2 = _mm_load_pd(m2_p+8);
+      m2_2 = _mm_loadu_pd(m2_p+8);
       CCMADD(m3_13, m2_3, m1_3);
-      m2_3 = _mm_load_pd(m2_p+14);
+      m2_3 = _mm_loadu_pd(m2_p+14);
 
       m3_13 = _mm_mul_pd(scalar,m3_13);
       m3_13 = _mm_add_pd(res3, m3_13);
@@ -290,35 +290,35 @@ typedef union {
      
 
 
-      _mm_store_pd(m3_p, m3_11);
-      _mm_store_pd(m3_p+2, m3_12);
-      _mm_store_pd(m3_p+4, m3_13);
+      _mm_storeu_pd(m3_p, m3_11);
+      _mm_storeu_pd(m3_p+2, m3_12);
+      _mm_storeu_pd(m3_p+4, m3_13);
 
-      res1 = _mm_load_pd(m3_p+6);
-      res2 = _mm_load_pd(m3_p+8);
-      res3 = _mm_load_pd(m3_p+10);
+      res1 = _mm_loadu_pd(m3_p+6);
+      res2 = _mm_loadu_pd(m3_p+8);
+      res3 = _mm_loadu_pd(m3_p+10);
 
-      m1_1 = _mm_load_pd(m1_p);
-      m1_2 = _mm_load_pd(m1_p+2);
-      m1_3 = _mm_load_pd(m1_p+4);
+      m1_1 = _mm_loadu_pd(m1_p);
+      m1_2 = _mm_loadu_pd(m1_p+2);
+      m1_3 = _mm_loadu_pd(m1_p+4);
 
       CCMUL(m3_11, m2_1, m1_1);
-      m1_1 = _mm_load_pd(m1_p+6);
+      m1_1 = _mm_loadu_pd(m1_p+6);
       CCMADD(m3_11, m2_2, m1_2);
-      m1_2 = _mm_load_pd(m1_p+8);
+      m1_2 = _mm_loadu_pd(m1_p+8);
       CCMADD(m3_11, m2_3, m1_3);
-      m1_3 = _mm_load_pd(m1_p+10);      
+      m1_3 = _mm_loadu_pd(m1_p+10);      
 
       m3_11 = _mm_mul_pd(scalar,m3_11);
       m3_11 = _mm_add_pd(res1, m3_11);
 
 
       CCMUL(m3_12, m2_1, m1_1);
-      m1_1 = _mm_load_pd(m1_p+12);
+      m1_1 = _mm_loadu_pd(m1_p+12);
       CCMADD(m3_12, m2_2, m1_2);
-      m1_2 = _mm_load_pd(m1_p+14);
+      m1_2 = _mm_loadu_pd(m1_p+14);
       CCMADD(m3_12, m2_3, m1_3);
-      m1_3 = _mm_load_pd(m1_p+16);
+      m1_3 = _mm_loadu_pd(m1_p+16);
 
       m3_12 = _mm_mul_pd(scalar,m3_12);
       m3_12 = _mm_add_pd(res2, m3_12);
@@ -326,35 +326,35 @@ typedef union {
 
 
       CCMUL(m3_13, m2_1, m1_1);
-      m2_1 = _mm_load_pd(m2_p+4);
+      m2_1 = _mm_loadu_pd(m2_p+4);
       CCMADD(m3_13, m2_2, m1_2)
-      m2_2 = _mm_load_pd(m2_p+10);
+      m2_2 = _mm_loadu_pd(m2_p+10);
       CCMADD(m3_13, m2_3, m1_3);
-      m2_3 = _mm_load_pd(m2_p+16);
+      m2_3 = _mm_loadu_pd(m2_p+16);
 
       m3_13 = _mm_mul_pd(scalar,m3_13);
       m3_13 = _mm_add_pd(res3, m3_13);
 
 
 
-      _mm_store_pd(m3_p+6, m3_11);
-      _mm_store_pd(m3_p+8, m3_12);
-      _mm_store_pd(m3_p+10, m3_13);
-      res1 = _mm_load_pd(m3_p+12);
-      res2 = _mm_load_pd(m3_p+14);
-      res3 = _mm_load_pd(m3_p+16);
+      _mm_storeu_pd(m3_p+6, m3_11);
+      _mm_storeu_pd(m3_p+8, m3_12);
+      _mm_storeu_pd(m3_p+10, m3_13);
+      res1 = _mm_loadu_pd(m3_p+12);
+      res2 = _mm_loadu_pd(m3_p+14);
+      res3 = _mm_loadu_pd(m3_p+16);
 
 
-      m1_1 = _mm_load_pd(m1_p);
-      m1_2 = _mm_load_pd(m1_p+2);
-      m1_3 = _mm_load_pd(m1_p+4);
+      m1_1 = _mm_loadu_pd(m1_p);
+      m1_2 = _mm_loadu_pd(m1_p+2);
+      m1_3 = _mm_loadu_pd(m1_p+4);
 
       CCMUL(m3_11, m2_1, m1_1);
-      m1_1 = _mm_load_pd(m1_p+6);
+      m1_1 = _mm_loadu_pd(m1_p+6);
       CCMADD(m3_11, m2_2, m1_2);
-      m1_2 = _mm_load_pd(m1_p+8);
+      m1_2 = _mm_loadu_pd(m1_p+8);
       CCMADD(m3_11, m2_3, m1_3);
-      m1_3 = _mm_load_pd(m1_p+10);
+      m1_3 = _mm_loadu_pd(m1_p+10);
 
       m3_11 = _mm_mul_pd(scalar,m3_11);
       m3_11 = _mm_add_pd(res1, m3_11);
@@ -362,11 +362,11 @@ typedef union {
 
 
       CCMUL(m3_12, m2_1, m1_1);
-      m1_1 = _mm_load_pd(m1_p+12);
+      m1_1 = _mm_loadu_pd(m1_p+12);
       CCMADD(m3_12, m2_2, m1_2);
-      m1_2 = _mm_load_pd(m1_p+14);
+      m1_2 = _mm_loadu_pd(m1_p+14);
       CCMADD(m3_12, m2_3, m1_3);
-      m1_3 = _mm_load_pd(m1_p+16);
+      m1_3 = _mm_loadu_pd(m1_p+16);
 
       m3_12 = _mm_mul_pd(scalar,m3_12);
       m3_12 = _mm_add_pd(res2, m3_12);
@@ -378,9 +378,9 @@ typedef union {
       m3_13 = _mm_mul_pd(scalar,m3_13);
       m3_13 = _mm_add_pd(res3, m3_13);
 	
-      _mm_store_pd(m3_p+12, m3_11);
-      _mm_store_pd(m3_p+14, m3_12);
-      _mm_store_pd(m3_p+16, m3_13);
+      _mm_storeu_pd(m3_p+12, m3_11);
+      _mm_storeu_pd(m3_p+14, m3_12);
+      _mm_storeu_pd(m3_p+16, m3_13);
 
       m1_p += 18; m2_p += 18; m3_p += 18;
     }
