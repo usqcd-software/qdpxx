@@ -1,3 +1,15 @@
+2008-09-23 11:23  bjoo
+
+	* lib/scalarsite_sse/: sse_linalg_m_eq_hh_double.cc,
+	  sse_linalg_m_eq_hm_double.cc, sse_linalg_m_eq_mh_double.cc,
+	  sse_linalg_m_eq_mm_double.cc, sse_linalg_m_eq_scal_m_double.cc,
+	  sse_linalg_m_peq_m_double.cc: Changed loadpd to loadu_pd.
+	  Unaligned loads get rid of segfaults in tprec-double-sse
+
+2008-09-18 14:15  tag adat1-40-0
+
+2008-09-18 14:15  tag bjoo_debug_tag
+
 2008-09-18 14:15  chen
 
 	* other_libs/ffdb-lite/src/: AllConfStoreDB.h, ConfDataStoreDB.h,
