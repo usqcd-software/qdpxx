@@ -688,6 +688,10 @@ FFDB_INC
 FFDB_CXXFLAGS
 BUILD_FFDB_LITE_TRUE
 BUILD_FFDB_LITE_FALSE
+QMT_HOME
+QMT_CXXFLAGS
+QMT_LDFLAGS
+QMT_LIBS
 ARCH_SCALAR_TRUE
 ARCH_SCALAR_FALSE
 ARCH_PARSCALAR_TRUE
@@ -712,6 +716,10 @@ BUILD_WILSON_EXAMPLES_TRUE
 BUILD_WILSON_EXAMPLES_FALSE
 BUILD_DEFAULT_ALLOCATOR_TRUE
 BUILD_DEFAULT_ALLOCATOR_FALSE
+QDP_USE_QMT_THREADS_TRUE
+QDP_USE_QMT_THREADS_FALSE
+QDP_USE_OMP_THREADS_TRUE
+QDP_USE_OMP_THREADS_FALSE
 LATEX
 DVIPS
 DVIPDF
@@ -1331,6 +1339,8 @@ Optional Features:
                           Sets the layout. lexico=lexicographic, cb2=even odd
                           checkerboard, cb3d=even odd checkerboard in 3d,
                           cb32=hypercubic checkerboard. (default is cb2)
+  --enable-openmp         Enable building of OpenMP dispatcher. Pass flags
+                          necessary for OpenMP on CFLAGS
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1342,6 +1352,7 @@ Optional Packages:
                           in DIR
   --with-bagel-qdp=DIR    Build QDP++ using bagel_qdp where bagel_qdp is in
                           DIR.
+  --with-qmt=<DIR>        Enable use of QMT Threads library installed in DIR
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -4553,6 +4564,84 @@ fi
 
 
 
+# Check whether --with-qmt was given.
+if test "${with_qmt+set}" = set; then
+  withval=$with_qmt;  qmt_enabled="yes"
+     QMT_HOME=${with_qmt}
+else
+   qmt_enabled="no"
+
+fi
+
+if test "X${qmt_enabled}X" == "XyesX";
+then
+	{ echo "$as_me:$LINENO: Configuring QMT Threading" >&5
+echo "$as_me: Configuring QMT Threading" >&6;}
+	if test "X${omp_enabled}X" == "XyesX";
+	then
+	  { { echo "$as_me:$LINENO: error: Cannot have OpenMP and QMT threading defined simultaneously" >&5
+echo "$as_me: error: Cannot have OpenMP and QMT threading defined simultaneously" >&2;}
+   { (exit 1); exit 1; }; }
+	else
+
+cat >>confdefs.h <<\_ACEOF
+#define QDP_USE_QMT_THREADS 1
+_ACEOF
+
+	  QMT_HOME="${QMT_HOME}"
+
+	  { echo "$as_me:$LINENO: QMT_HOME: ${QMT_HOME}" >&5
+echo "$as_me: QMT_HOME: ${QMT_HOME}" >&6;}
+	  QMT_CXXFLAGS="-I${QMT_HOME}/include"
+
+	  { echo "$as_me:$LINENO: QMT_CXXFLAGS: ${QMT_CXXFLAGS}" >&5
+echo "$as_me: QMT_CXXFLAGS: ${QMT_CXXFLAGS}" >&6;}
+	  QMT_LDFLAGS="-L${QMT_HOME}/lib"
+
+	  { echo "$as_me:$LINENO: QMT_LDFLAGS: ${QMT_LDFLAGS}" >&5
+echo "$as_me: QMT_LDFLAGS: ${QMT_LDFLAGS}" >&6;}
+	  QMT_LIBS="-lqmt -lpthread -lm"
+
+	  { echo "$as_me:$LINENO: QMT_LIBS: ${QMT_LIBS}" >&5
+echo "$as_me: QMT_LIBS: ${QMT_LIBS}" >&6;}
+	fi
+else
+	QMT_CXXFLAGS=""
+
+	QMT_LDFLAGS=""
+
+	QMT_LIBS=""
+
+
+fi
+
+
+# Check whether --enable-openmp was given.
+if test "${enable_openmp+set}" = set; then
+  enableval=$enable_openmp;  omp_enabled="yes"
+else
+   omp_enabled="no"
+
+fi
+
+if test "X${omp_enabled}X" == "XyesX";
+then
+	{ echo "$as_me:$LINENO: Configuring OpenMP Threading" >&5
+echo "$as_me: Configuring OpenMP Threading" >&6;}
+	if test "X${qmt_enabled}X" == "XyesX";
+        then
+          { { echo "$as_me:$LINENO: error: Cannot have OpenMP and QMT threading defined simultaneously" >&5
+echo "$as_me: error: Cannot have OpenMP and QMT threading defined simultaneously" >&2;}
+   { (exit 1); exit 1; }; }
+	fi
+
+
+cat >>confdefs.h <<\_ACEOF
+#define QDP_USE_OMP_THREADS 1
+_ACEOF
+
+fi
+
 
  if test "X${PARALLEL_ARCH}X" = "XscalarX"; then
   ARCH_SCALAR_TRUE=
@@ -4658,6 +4747,30 @@ else
   BUILD_DEFAULT_ALLOCATOR_TRUE='#'
   BUILD_DEFAULT_ALLOCATOR_FALSE=
 fi
+
+
+#
+# Conditional for use qmt
+#
+ if test "x${qmt_enabled}x" = "xyesx" ; then
+  QDP_USE_QMT_THREADS_TRUE=
+  QDP_USE_QMT_THREADS_FALSE='#'
+else
+  QDP_USE_QMT_THREADS_TRUE='#'
+  QDP_USE_QMT_THREADS_FALSE=
+fi
+
+#
+# Conditional for use omp
+#
+ if test "x${omp_enabled}x" = "xyesx" ; then
+  QDP_USE_OMP_THREADS_TRUE=
+  QDP_USE_OMP_THREADS_FALSE='#'
+else
+  QDP_USE_OMP_THREADS_TRUE='#'
+  QDP_USE_OMP_THREADS_FALSE=
+fi
+
 
 
 ##################################
@@ -5371,6 +5484,20 @@ echo "$as_me: error: conditional \"BUILD_DEFAULT_ALLOCATOR\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${QDP_USE_QMT_THREADS_TRUE}" && test -z "${QDP_USE_QMT_THREADS_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"QDP_USE_QMT_THREADS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"QDP_USE_QMT_THREADS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${QDP_USE_OMP_THREADS_TRUE}" && test -z "${QDP_USE_OMP_THREADS_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"QDP_USE_OMP_THREADS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"QDP_USE_OMP_THREADS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 
 : ${CONFIG_STATUS=./config.status}
 ac_clean_files_save=$ac_clean_files
@@ -6060,6 +6187,10 @@ FFDB_INC!$FFDB_INC$ac_delim
 FFDB_CXXFLAGS!$FFDB_CXXFLAGS$ac_delim
 BUILD_FFDB_LITE_TRUE!$BUILD_FFDB_LITE_TRUE$ac_delim
 BUILD_FFDB_LITE_FALSE!$BUILD_FFDB_LITE_FALSE$ac_delim
+QMT_HOME!$QMT_HOME$ac_delim
+QMT_CXXFLAGS!$QMT_CXXFLAGS$ac_delim
+QMT_LDFLAGS!$QMT_LDFLAGS$ac_delim
+QMT_LIBS!$QMT_LIBS$ac_delim
 ARCH_SCALAR_TRUE!$ARCH_SCALAR_TRUE$ac_delim
 ARCH_SCALAR_FALSE!$ARCH_SCALAR_FALSE$ac_delim
 ARCH_PARSCALAR_TRUE!$ARCH_PARSCALAR_TRUE$ac_delim
@@ -6084,6 +6215,10 @@ BUILD_WILSON_EXAMPLES_TRUE!$BUILD_WILSON_EXAMPLES_TRUE$ac_delim
 BUILD_WILSON_EXAMPLES_FALSE!$BUILD_WILSON_EXAMPLES_FALSE$ac_delim
 BUILD_DEFAULT_ALLOCATOR_TRUE!$BUILD_DEFAULT_ALLOCATOR_TRUE$ac_delim
 BUILD_DEFAULT_ALLOCATOR_FALSE!$BUILD_DEFAULT_ALLOCATOR_FALSE$ac_delim
+QDP_USE_QMT_THREADS_TRUE!$QDP_USE_QMT_THREADS_TRUE$ac_delim
+QDP_USE_QMT_THREADS_FALSE!$QDP_USE_QMT_THREADS_FALSE$ac_delim
+QDP_USE_OMP_THREADS_TRUE!$QDP_USE_OMP_THREADS_TRUE$ac_delim
+QDP_USE_OMP_THREADS_FALSE!$QDP_USE_OMP_THREADS_FALSE$ac_delim
 LATEX!$LATEX$ac_delim
 DVIPS!$DVIPS$ac_delim
 DVIPDF!$DVIPDF$ac_delim
@@ -6092,7 +6227,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 43; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 51; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -6493,21 +6628,22 @@ echo "$as_me: $ac_file is unchanged" >&6;}
   fi
   rm -f "$tmp/out12"
 # Compute $ac_file's index in $config_headers.
+_am_arg=$ac_file
 _am_stamp_count=1
 for _am_header in $config_headers :; do
   case $_am_header in
-    $ac_file | $ac_file:* )
+    $_am_arg | $_am_arg:* )
       break ;;
     * )
       _am_stamp_count=`expr $_am_stamp_count + 1` ;;
   esac
 done
-echo "timestamp for $ac_file" >`$as_dirname -- $ac_file ||
-$as_expr X$ac_file : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
-	 X$ac_file : 'X\(//\)[^/]' \| \
-	 X$ac_file : 'X\(//\)$' \| \
-	 X$ac_file : 'X\(/\)' \| . 2>/dev/null ||
-echo X$ac_file |
+echo "timestamp for $_am_arg" >`$as_dirname -- "$_am_arg" ||
+$as_expr X"$_am_arg" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+	 X"$_am_arg" : 'X\(//\)[^/]' \| \
+	 X"$_am_arg" : 'X\(//\)$' \| \
+	 X"$_am_arg" : 'X\(/\)' \| . 2>/dev/null ||
+echo X"$_am_arg" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
@@ -6544,7 +6680,7 @@ echo "$as_me: executing $ac_file commands" >&6;}
   # each Makefile.in and add a new line on top of each file to say so.
   # Grep'ing the whole file is not good either: AIX grep has a line
   # limit of 2048, but all sed's we know have understand at least 4000.
-  if sed 10q "$mf" | grep '^#.*generated by automake' > /dev/null 2>&1; then
+  if sed -n 's,^#.*generated by automake.*,X,p' "$mf" | grep X >/dev/null 2>&1; then
     dirpart=`$as_dirname -- "$mf" ||
 $as_expr X"$mf" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
 	 X"$mf" : 'X\(//\)[^/]' \| \
