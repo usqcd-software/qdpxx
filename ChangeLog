@@ -1,3 +1,16 @@
+2008-09-30 15:52  bjoo
+
+	* include/qdp_config_internal.h.in: Induced
+
+2008-09-30 14:20  bjoo
+
+	* include/Makefile.am, include/qdp.h,
+	  include/qdp_config_internal.h.in, include/qdp_dispatch.h,
+	  include/qdp_parscalar_specific.h, include/qdp_scalar_specific.h,
+	  lib/Makefile.am, lib/qdp_parscalar_init.cc,
+	  lib/qdp_scalar_init.cc: Added Threading in evaluates from Xu.
+	  Apparently I missed it the last time
+
 2008-09-29 11:23  bjoo
 
 	* AUTHORS, COPYING, INSTALL, INSTALL_EXAMPLES, Makefile.am, NEWS,
