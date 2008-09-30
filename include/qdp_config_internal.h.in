@@ -84,11 +84,17 @@
 /* Use lexicographic layout */
 #undef QDP_USE_LEXICO_LAYOUT
 
+/* Use OpenMP Threads */
+#undef QDP_USE_OMP_THREADS
+
 /* Enable profiling */
 #undef QDP_USE_PROFILING
 
 /* Enable QCDOC opts */
 #undef QDP_USE_QCDOC
+
+/* Use QMT Threads library */
+#undef QDP_USE_QMT_THREADS
 
 /* Enable SSE instructions */
 #undef QDP_USE_SSE
@@ -101,9 +107,3 @@
 
 /* Version number of package */
 #undef VERSION
-
-/* Use OpenMP Threads */
-#undef QDP_USE_OMP_THREADS
-
-/* Use QMT Threads library */
-#undef QDP_USE_QMT_THREADS
