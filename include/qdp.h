@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.60 2007-06-10 14:32:08 edwards Exp $
+// $Id: qdp.h,v 1.61 2008-09-30 18:20:01 bjoo Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -151,6 +151,13 @@ namespace QDP {
 
 //#include "qdp_special.h"
 #include "qdp_random.h"
+
+// Include threading code here if applicable
+#if QDP_USE_OMP_THREADS ==1
+#include "qdp_dispatch.h"
+#elif QDP_USE_QMT_THREADS ==1
+#include "qdp_dispatch.h"
+#endif
 
 #if defined(ARCH_SCALAR)
 // Architectural specific code to a single node/single proc box

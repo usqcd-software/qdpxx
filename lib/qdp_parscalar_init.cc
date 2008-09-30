@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.17 2008-06-27 13:31:22 bjoo Exp $
+// $Id: qdp_parscalar_init.cc,v 1.18 2008-09-30 18:20:01 bjoo Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -11,6 +11,11 @@
 
 #include "qdp.h"
 #include "qmp.h"
+
+#if defined(QDP_USE_QMT_THREADS)
+#include <qmt.h>
+#endif
+
 
 namespace QDP {
 
@@ -198,6 +203,26 @@ void QDP_initialize(int *argc, char ***argv)
   QDPUtil::RemoteFileInit(rtinode, use_qio);
 #endif
 
+  //
+  // add qmt inilisisation
+  //
+#ifdef QDP_USE_QMT_THREADS
+    
+      // Initialize threads
+      cout << "QDP use qmt threading: Initializing threads..." ;
+      int thread_status = qmt_init();
+      if( thread_status == 0 ) { 
+	cout << "Success" << endl;
+	cout << "Created: " << qmt_num_threads() << " threads" << endl;
+	cout << "My thread ID is: " << qmt_thread_id() << endl;
+    }
+    else { 
+	cout << "Failure... qmt_init() returned " << thread_status << endl;
+	QDP_abort(1);
+    }
+  
+#endif
+
   // initialize the global streams
   QDPIO::cin.init(&std::cin);
   QDPIO::cout.init(&std::cout);
@@ -219,6 +244,15 @@ void QDP_finalize()
     QDPIO::cerr << "QDP is not inited" << std::endl;
     QDP_abort(1);
   }
+
+  //
+  // finalise qmt
+  //
+#if defined(QMT_USE_QMT_THREADS)
+    // Finalize threads
+    cout << "QDP use qmt threading: Finalizing threads" << endl;
+    qmt_finalize();
+#endif 
 
   printProfile();
 

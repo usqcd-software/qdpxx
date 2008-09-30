@@ -180,6 +180,7 @@ nobase_include_HEADERS = \
 		qdp_subset.h \
 		qdp_traits.h \
 		qdp_word.h \
+		qdp_dispatch.h \
 	        qdp_scalar_specific.h \
 	        qdp_parscalar_specific.h \
 	        qdp_scalarvec_specific.h \

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.36 2007-08-16 15:44:53 edwards Exp $
+// $Id: qdp_scalar_specific.h,v 1.37 2008-09-30 18:20:01 bjoo Exp $
 //
 // QDP data parallel interface
 //
@@ -53,6 +53,76 @@ namespace Internal
   inline void broadcast(void* dest, size_t nbytes) {}
 }
 
+/////////////////////////////////////////////////////////
+// Threading evaluate with openmp and qmt implementation
+//
+// by Xu Guo, EPCC, 16 June 2008
+/////////////////////////////////////////////////////////
+
+//! user argument for the evaluate function:
+// "OLattice Op Scalar(Expression(source)) under an Subset"
+//
+template<class T, class T1, class Op, class RHS>
+struct u_arg{
+        OLattice<T>& d;
+        const QDPExpr<RHS,OScalar<T1> >& r;
+        const Op& op;
+        const int *tab;
+   };
+
+//! user function for the evaluate function:
+// "OLattice Op Scalar(Expression(source)) under an Subset"
+//
+template<class T, class T1, class Op, class RHS>
+void ev_userfunc(int lo, int hi, int myId, u_arg<T,T1,Op,RHS> *a)
+{
+   OLattice<T>& dest = a->d;
+   const QDPExpr<RHS,OScalar<T1> >&rhs = a->r;
+   const int* tab = a->tab;
+   const Op& op= a->op;
+
+      
+   for(int j=lo; j < hi; ++j)
+   {
+     int i = tab[j];
+     op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+   }
+}
+
+
+//! user argument for the evaluate function:
+// "OLattice Op OLattice(Expression(source)) under an Subset"
+//
+template<class T, class T1, class Op, class RHS>
+struct user_arg{
+        OLattice<T>& d;
+        const QDPExpr<RHS,OLattice<T1> >& r;
+        const Op& op;
+        const int *tab;
+   };
+
+//! user function for the evaluate function:
+// "OLattice Op OLattice(Expression(source)) under an Subset"
+//
+template<class T, class T1, class Op, class RHS>
+void evaluate_userfunc(int lo, int hi, int myId, user_arg<T,T1,Op,RHS> *a)
+{
+
+   OLattice<T>& dest = a->d;
+   const QDPExpr<RHS,OLattice<T1> >&rhs = a->r;
+   const int* tab = a->tab;
+   const Op& op= a->op;
+
+      
+   for(int j=lo; j < hi; ++j)
+   {
+     int i = tab[j];
+     op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+   }
+}
+
+//! include the header file for dispatch
+#include "qdp_dispatch.h"
 
 //-----------------------------------------------------------------------------
 //! OLattice Op Scalar(Expression(source)) under an Subset
@@ -72,14 +142,23 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
   prof.time -= getClockTime();
 #endif
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
+  int numSiteTable = s.numSiteTable();
+  
+  u_arg<T,T1,Op,RHS> a = {dest, rhs, op, s.siteTable().slice()};
+
+  dispatch_to_threads(numSiteTable, a, ev_userfunc);
+ 
+  ///////////////////
+  // Original code
+  //////////////////
+  //const int *tab = s.siteTable().slice();
+  //for(int j=0; j < s.numSiteTable(); ++j) 
+  //{
+  //int i = tab[j];
 //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
 //    op(dest.elem(i), forEach(rhs, ElemLeaf(), OpCombine()));
-    op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
-  }
+  //op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+  //}
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -107,14 +186,24 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   prof.time -= getClockTime();
 #endif
 
+  int numSiteTable = s.numSiteTable();
+
+  user_arg<T,T1,Op,RHS> a = {dest, rhs, op, s.siteTable().slice()};
+
+  dispatch_to_threads(numSiteTable, a, evaluate_userfunc);
+
+  ////////////////////
+  // Original code
+  ///////////////////
+
   // General form of loop structure
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
+  //const int *tab = s.siteTable().slice();
+  //for(int j=0; j < s.numSiteTable(); ++j) 
+  //{
+  //int i = tab[j];
 //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
-    op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
-  }
+  //op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+  //}
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();

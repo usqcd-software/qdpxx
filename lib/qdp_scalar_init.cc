@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_init.cc,v 1.9 2008-06-27 13:31:22 bjoo Exp $
+// $Id: qdp_scalar_init.cc,v 1.10 2008-09-30 18:20:01 bjoo Exp $
 
 /*! @file
  * @brief Scalar init routines
@@ -8,6 +8,10 @@
 
 
 #include "qdp.h"
+
+#if defined(QDP_USE_QMT_THREADS)
+#include <qmt.h>
+#endif
 
 namespace QDP {
 
@@ -27,6 +31,27 @@ void QDP_initialize(int *argc, char ***argv)
 
   // initialize remote file service (QIO)
   QDPUtil::RemoteFileInit("qcdi01", false);
+
+  //
+  // add qmt inilisisation
+  //
+#ifdef QDP_USE_QMT_THREADS
+    
+      // Initialize threads
+      cout << "QDP use qmt threading: Initializing threads..." ;
+      int thread_status = qmt_init();
+      if( thread_status == 0 ) { 
+	cout << "Success" << endl;
+	cout << "Created: " << qmt_num_threads() << " threads" << endl;
+	cout << "My thread ID is: " << qmt_thread_id() << endl;
+    }
+    else { 
+	cout << "Failure... qmt_init() returned " << thread_status << endl;
+	QDP_abort(1);
+    }
+  
+#endif
+
 
   // initialize the global streams
   QDPIO::cin.init(&std::cin);
@@ -84,6 +109,16 @@ bool QDP_isInitialized() {return isInit;}
 //! Turn off the machine
 void QDP_finalize()
 {
+
+    //
+  // finalise qmt
+  //
+#if defined(QMT_USE_QMT_THREADS)
+    // Finalize threads
+    cout << "QDP use qmt threading: Finalizing threads" << endl;
+    qmt_finalize();
+#endif 
+
   printProfile();
 
   // shutdown remote file service (QIO)
