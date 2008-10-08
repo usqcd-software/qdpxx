@@ -1,3 +1,13 @@
+2008-10-07 23:32  edwards
+
+	* other_libs/xpath_reader/include/xml_array.h: Moved out of the
+	  class the unary  operator-(), and made it a global function.
+
+2008-10-07 23:32  edwards
+
+	* other_libs/xpath_reader/include/xml_array2d.h: Added some
+	  diagnostic output in case of allocation failures.
+
 2008-09-30 15:52  bjoo
 
 	* include/qdp_config_internal.h.in: Induced
