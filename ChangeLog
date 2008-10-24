@@ -1,3 +1,13 @@
+2008-10-24 11:21  edwards
+
+	* other_libs/ffdb-lite/src/: ConfDataDBMerger.h,
+	  ConfigInfoData.cpp, ConfigInfoData.h, ConfigInfoManager.cpp,
+	  ConfigInfoManager.h, ConfigNumKey.cpp, ConfigNumKey.h,
+	  HashFunc.cpp, HashFunc.h, Makefile.am: Added A ConfDataDBMerger.h
+	  A ConfigInfoData.cpp A ConfigInfoData.h A ConfigInfoManager.cpp A
+	  ConfigInfoManager.h A ConfigNumKey.cpp A ConfigNumKey.h A
+	  HashFunc.cpp A HashFunc.h from module "ffdb".
+
 2008-10-07 23:32  edwards
 
 	* other_libs/xpath_reader/include/xml_array.h: Moved out of the
