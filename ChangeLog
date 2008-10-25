@@ -1,3 +1,8 @@
+2008-10-25 10:45  edwards
+
+	* other_libs/ffdb-lite/src/AllConfStoreDB.h: Removed Ensem<T>
+	  functions. Not used nor needed.
+
 2008-10-24 11:21  edwards
 
 	* other_libs/ffdb-lite/src/: ConfDataDBMerger.h,
