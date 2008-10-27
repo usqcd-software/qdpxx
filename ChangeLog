@@ -1,3 +1,10 @@
+2008-10-27 00:22  edwards
+
+	* other_libs/ffdb-lite/src/: AllConfStoreDB.h,
+	  ConfFxDSizeStoreDB.h, DBFunc.h: Added checks of key before
+	  insertion in fixed record objects.  If key exists, then replace.
+	  If not, then insert.
+
 2008-10-25 10:45  edwards
 
 	* other_libs/ffdb-lite/src/AllConfStoreDB.h: Removed Ensem<T>
