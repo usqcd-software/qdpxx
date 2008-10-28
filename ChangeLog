@@ -1,3 +1,14 @@
+2008-10-27 23:45  edwards
+
+	* other_libs/ffdb-lite/src/ConfFxDSizeStoreDB.h: Replaced
+	  insert<K,D>() with an earlier version that does not go throught
+	  the insert(string,string) version. There appears to be some
+	  problem with that routine. Left the code for it in place, but put
+	  a fatal error message when the string variant is called.
+	  Otherwise, all the downstream routines with 2pt, dbmerge and
+	  dbutil in adat/main/colorvec seem to work correctly. The string
+	  variant is apparently not used.
+
 2008-10-27 00:22  edwards
 
 	* other_libs/ffdb-lite/src/: AllConfStoreDB.h,
