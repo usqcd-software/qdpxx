@@ -1,3 +1,8 @@
+2008-11-14 16:46  edwards
+
+	* other_libs/ffdb-lite/src/ConfDataDBMerger.h: Added an error check
+	  on the ffdb type.
+
 2008-11-07 15:25  detar
 
 	* other_libs/qio/NEWS: Update for version 2.3.7
