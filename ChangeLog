@@ -1,3 +1,13 @@
+2008-12-04 21:46  edwards
+
+	* include/qdp_config_internal.h.in, configure: Induced changes
+
+2008-12-04 21:40  edwards
+
+	* aclocal.m4: Induced changes
+
+2008-11-14 16:46  tag adat2-0-0
+
 2008-11-14 16:46  tag pre-adat2-0
 
 2008-11-14 16:46  edwards
