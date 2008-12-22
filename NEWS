@@ -1,3 +1,18 @@
+12-22-2008 -- Balint Joo
+	Added threading support courtesy of EPCC. Tested that threading code with threads disabled: 
+	 -- does not break cb2, cb3d, sse2/generic, single-double builds (scalar)
+	Threading code with threads enabled has causes some SEGFAULTS in QDP++ tests. However, with cb2, chroma regressions passed. Only failures were in the new all-to-all code
+
+Total Failures were:
+i)		chroma           RUN_FAIL    prec_clover.eigcg.candidate.xml
+ NOTE: Easily understood, I didn't compile BLAS etc for EigCG support...
+
+ii)  chroma           RUN_FAIL    colorvec_matelem.candidate.xml
+iii) make_meson_ops   FAIL (compile)  make_meson_ops.candidate.xml
+iv)  make_baryon_ops  FAIL (compile)  make_baryon_ops.candidate.xml
+
+These are not yet understood
+-
 08/02/2008 -- Balint Joo
         Version 1.28.0: SSE3 and 3dnow support. Added new double prec blas and linalg routines. New
         test jig support.
