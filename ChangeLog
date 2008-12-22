@@ -1,3 +1,43 @@
+2008-12-22 15:51  bjoo
+
+	* AUTHORS, COPYING, INSTALL, INSTALL_EXAMPLES, Makefile.am, NEWS,
+	  README, acinclude.m4, aclocal.m4, configure, configure.ac,
+	  qdp++-config.in: THreading added
+
+2008-12-22 12:42  bjoo
+
+	* AUTHORS, COPYING, INSTALL, INSTALL_EXAMPLES, Makefile.am, NEWS,
+	  README, acinclude.m4, aclocal.m4, configure, configure.ac,
+	  qdp++-config.in, examples/Makefile.am, include/Makefile.am,
+	  include/scalarsite_generic/generic_spin_proj_inlines.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_proj_evaluates.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_proj_evaluates_wrapper.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_recon_evaluates.h,
+	  include/scalarsite_generic/qdp_generic_fused_spin_recon_evaluates_wrapper.h,
+	  include/scalarsite_generic/qdp_generic_spin_project_evaluates.h,
+	  include/scalarsite_generic/qdp_generic_spin_project_evaluates_wrapper.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas_g5.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas_g5_wrapper.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas_wrapper.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_cblas.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_cblas_wrapper.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_linalg.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_linalg_wrapper.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_double.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_double_wrapper.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_wrapper.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_proj_evaluates.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_proj_evaluates_wrapper.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_recon_evaluates.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_recon_evaluates_wrapper.h,
+	  include/scalarsite_sse/qdp_sse_spin_evaluates.h,
+	  include/scalarsite_sse/qdp_sse_spin_evaluates_wrapper.h,
+	  tests/Makefile.am: Added Threading headers etc
+
+2008-12-04 21:46  tag qdp-pre-threads
+
 2008-12-04 21:46  edwards
 
 	* include/qdp_config_internal.h.in, configure: Induced changes
