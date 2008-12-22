@@ -10,6 +10,16 @@ namespace QDP {
 typedef PScalar< PColorMatrix< RComplex<REAL32>, 3> > SU3Mat;
 
 
+////////////////////////////////
+// Threading evaluates
+//
+// by Xu Guo, EPCC, 20 October, 2008
+////////////////////////////////
+
+// the wrappers for the functions to be threaded
+#include "qdp_sse_fused_spin_proj_evaluates_wrapper.h"
+
+
 // HalfVec = adj(u)*SpinProjectDir0Plus(Vec);
 template<>
 inline
@@ -33,6 +43,17 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
   if( s.hasOrderedRep() ) {
+
+    int totalSize = s.end() - s.start() +1;
+
+    ordered_sse_fused_spin_proj_user_arg arg = {u, a, d, s.start(), inlineSpinProjDir0Plus};
+
+    dispatch_to_threads(totalSize, arg, ordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int site = s.start() ; site <= s.end(); site++) { 
       HVec tmp ; 
       inlineSpinProjDir0Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
@@ -44,10 +65,21 @@ void evaluate(OLattice< HVec >& d,
       half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
       
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
-    }
+      }*/
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_fused_spin_proj_user_arg arg = {u, a, d, tab, inlineSpinProjDir0Plus};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       HVec tmp ; 
@@ -61,7 +93,7 @@ void evaluate(OLattice< HVec >& d,
       
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
     
-    }
+      }*/
   }
 
 }
@@ -89,6 +121,17 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
   if( s.hasOrderedRep() ) {
+
+    int totalSize = s.end() - s.start() +1;
+
+    ordered_sse_fused_spin_proj_user_arg arg = {u, a, d, s.start(), inlineSpinProjDir0Minus};
+
+    dispatch_to_threads(totalSize, arg, ordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int site = s.start() ; site <= s.end(); site++) { 
       HVec tmp ;
       inlineSpinProjDir0Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
@@ -100,10 +143,21 @@ void evaluate(OLattice< HVec >& d,
       half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
    
-    }
+      }*/
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_fused_spin_proj_user_arg arg = {u, a, d, tab, inlineSpinProjDir0Minus};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
@@ -117,7 +171,7 @@ void evaluate(OLattice< HVec >& d,
       half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
-    }
+      }*/
   }
 
 }
@@ -146,6 +200,17 @@ void evaluate(OLattice< HVec >& d,
 
   
   if( s.hasOrderedRep() ) {
+
+    int totalSize = s.end() - s.start() +1;
+
+    ordered_sse_fused_spin_proj_user_arg arg = {u, a, d, s.start(), inlineSpinProjDir1Plus};
+
+    dispatch_to_threads(totalSize, arg, ordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int site = s.start() ; site <= s.end(); site++) { 
       HVec tmp ;
       inlineSpinProjDir1Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
@@ -158,11 +223,22 @@ void evaluate(OLattice< HVec >& d,
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
       
-    }
+      }*/
   }
   else { 
     
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_fused_spin_proj_user_arg arg = {u, a, d, tab, inlineSpinProjDir1Plus};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
@@ -176,7 +252,7 @@ void evaluate(OLattice< HVec >& d,
       half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
-    }
+      }*/
   }
 }
 
@@ -203,6 +279,17 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
   if( s.hasOrderedRep() ) {
+
+    int totalSize = s.end() - s.start() +1;
+
+    ordered_sse_fused_spin_proj_user_arg arg = {u, a, d, s.start(), inlineSpinProjDir1Minus};
+
+    dispatch_to_threads(totalSize, arg, ordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int site = s.start() ; site <= s.end(); site++) { 
       HVec tmp ;
       inlineSpinProjDir1Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
@@ -214,11 +301,22 @@ void evaluate(OLattice< HVec >& d,
       half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
    
-    }
+      }*/
   }
   else { 
 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_fused_spin_proj_user_arg arg = {u, a, d, tab, inlineSpinProjDir1Minus};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
@@ -232,7 +330,7 @@ void evaluate(OLattice< HVec >& d,
       half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
-    }
+      }*/
   }
 }
 
@@ -260,6 +358,17 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
   if( s.hasOrderedRep() ) {
+
+    int totalSize = s.end() - s.start() +1;
+
+    ordered_sse_fused_spin_proj_user_arg arg = {u, a, d, s.start(), inlineSpinProjDir2Plus};
+
+    dispatch_to_threads(totalSize, arg, ordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int site = s.start() ; site <= s.end(); site++) { 
       HVec tmp ;
       inlineSpinProjDir2Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
@@ -270,10 +379,21 @@ void evaluate(OLattice< HVec >& d,
       half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
-    }
+      }*/
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_fused_spin_proj_user_arg arg = {u, a, d, tab, inlineSpinProjDir2Plus};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       HVec tmp ;
@@ -286,7 +406,7 @@ void evaluate(OLattice< HVec >& d,
       half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
-    }
+      }*/
   }
 }
 
@@ -313,6 +433,17 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
   if( s.hasOrderedRep() ) {
+
+    int totalSize = s.end() - s.start() +1;
+
+    ordered_sse_fused_spin_proj_user_arg arg = {u, a, d, s.start(), inlineSpinProjDir2Minus};
+
+    dispatch_to_threads(totalSize, arg, ordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int site = s.start() ; site <= s.end(); site++) { 
       HVec tmp ;
       inlineSpinProjDir2Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
@@ -324,11 +455,22 @@ void evaluate(OLattice< HVec >& d,
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
       
-    }
+      }*/
   }
   else { 
     
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_fused_spin_proj_user_arg arg = {u, a, d, tab, inlineSpinProjDir2Minus};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
@@ -344,7 +486,7 @@ void evaluate(OLattice< HVec >& d,
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
       
-    }
+      }*/
   }
 }
 
@@ -371,6 +513,17 @@ void evaluate(OLattice< HVec >& d,
   const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
 
   if( s.hasOrderedRep() ) {
+
+    int totalSize = s.end() - s.start() +1;
+
+    ordered_sse_fused_spin_proj_user_arg arg = {u, a, d, s.start(), inlineSpinProjDir3Plus};
+
+    dispatch_to_threads(totalSize, arg, ordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int site = s.start() ; site <= s.end(); site++) { 
       HVec tmp ;
       inlineSpinProjDir3Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
@@ -382,11 +535,22 @@ void evaluate(OLattice< HVec >& d,
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
       
-    }
+      }*/
   }
   else { 
 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_fused_spin_proj_user_arg arg = {u, a, d, tab, inlineSpinProjDir3Plus};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       HVec tmp ;
@@ -400,7 +564,7 @@ void evaluate(OLattice< HVec >& d,
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
       
-    }
+    }*/
   }
 }
 
@@ -428,6 +592,17 @@ void evaluate(OLattice< HVec >& d,
 
 
   if( s.hasOrderedRep() ) {
+
+    int totalSize = s.end() - s.start() +1;
+
+    ordered_sse_fused_spin_proj_user_arg arg = {u, a, d, s.start(), inlineSpinProjDir3Minus};
+
+    dispatch_to_threads(totalSize, arg, ordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int site = s.start() ; site <= s.end(); site++) { 
       HVec tmp ;
       inlineSpinProjDir3Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
@@ -440,11 +615,22 @@ void evaluate(OLattice< HVec >& d,
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
 
-    }
+      }*/
   }
   else { 
     
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_fused_spin_proj_user_arg arg = {u, a, d, tab, inlineSpinProjDir3Minus};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_fused_spin_proj_evaluate_function);
+
+    ///////////////////
+    // Original code
+    ////////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
@@ -458,7 +644,7 @@ void evaluate(OLattice< HVec >& d,
       half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
       intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
       
-    }
+      }*/
   }
 
 }

@@ -3,7 +3,7 @@
 
 /* File: generic_spin_proj_inlines.h
    Purpose: Supply inline functions to do spin projection
-   Author: $Id: generic_spin_proj_inlines.h,v 1.3 2007-07-17 16:56:09 bjoo Exp $
+   Author: $Id: generic_spin_proj_inlines.h,v 1.4 2008-12-22 17:42:57 bjoo Exp $
 */
 namespace QDP {
 
@@ -49,6 +49,8 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
     REAL* tmp_shadow = &(tmp_spinor[0][0][0]);    
 
     // Stream in the spinor
+    //ut << "site = "<< site << ", Nc = " << Nc <<", Ns * Nc * Ncmpx = " << Ns*Nc*Ncmpx << endl;
+
     for(int stream=0; stream < Ns*Nc*Ncmpx; stream++) {
       *(tmp_shadow++) = *(src_shadow++);
     }

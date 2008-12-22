@@ -57,8 +57,14 @@ GENERIC_HDRS = qdp_scalarsite_generic.h \
 	$(genericdir)/qdp_generic_spin_project_evaluates.h \
 	$(genericdir)/qdp_generic_fused_spin_proj_evaluates.h \
 	$(genericdir)/qdp_generic_fused_spin_recon_evaluates.h \
-	$(genericdir)/generic_spin_aggregate.h
-
+	$(genericdir)/generic_spin_aggregate.h \
+	$(genericdir)/qdp_scalarsite_generic_blas_wrapper.h \
+	$(genericdir)/qdp_scalarsite_generic_cblas_wrapper.h \
+	$(genericdir)/qdp_scalarsite_generic_blas_g5_wrapper.h \
+	$(genericdir)/qdp_generic_spin_project_evaluates_wrapper.h \
+	$(genericdir)/qdp_generic_fused_spin_proj_evaluates_wrapper.h \
+	$(genericdir)/qdp_generic_fused_spin_recon_evaluates_wrapper.h \
+	$(genericdir)/qdp_scalarsite_generic_linalg_wrapper.h
 
 # If using SSE, make sure those files are installed
 ssesitedir = scalarsite_sse
@@ -97,7 +103,12 @@ SSESITE_HDRS = qdp_scalarsite_sse.h \
 	$(ssesitedir)/sse_linalg_mm_su3_double.h \
 	$(ssesitedir)/qdp_scalarsite_sse_linalg_double.h \
 	$(ssesitedir)/sse_dcomplex_mult_macros.h \
-	$(ssesitedir)/sse_prefetch.h
+	$(ssesitedir)/sse_prefetch.h \
+	$(ssesitedir)/qdp_scalarsite_sse_blas_wrapper.h \
+	$(ssesitedir)/qdp_scalarsite_sse_blas_double_wrapper.h \
+	$(ssesitedir)/qdp_sse_spin_evaluates_wrapper.h \
+	$(ssesitedir)/qdp_sse_fused_spin_proj_evaluates_wrapper.h \
+	$(ssesitedir)/qdp_sse_fused_spin_recon_evaluates_wrapper.h
 
 # Scalarvectsite SSE extensions
 ssevecdir = scalarvecsite_sse

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_generic_linalg.h,v 1.8 2007-06-10 14:32:10 edwards Exp $
+// $Id: qdp_scalarsite_generic_linalg.h,v 1.9 2008-12-22 17:42:58 bjoo Exp $
 
 /*! @file
  * @brief Generic optimizations
@@ -454,6 +454,16 @@ operator+(const PScalar<PColorVector<RComplexFloat,3> >& l,
 
 
 #if 1
+
+////////////////////////////////
+// Threading evaluates
+//
+// by Xu Guo, EPCC, 07 August, 2008
+////////////////////////////////
+
+// the wrappers for the function to be threaded
+#include "qdp_scalarsite_generic_linalg_wrapper.h"
+
 // Specialization to optimize the case   
 //    LatticeHalfFermion = LatticeColorMatrix * LatticeHalfFermion
 // NOTE: let this be a subroutine to save space
@@ -473,41 +483,64 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
   cout << "specialized QDP_H_M_times_H" << endl;
 #endif
 
-  typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
-  typedef OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> > H;
+  ////////////////////
+  // Original code
+  ////////////////////
+  //typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
+  //typedef OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> > H;
 
   const C& l = static_cast<const C&>(rhs.expression().left());
   const H& r = static_cast<const H&>(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
+    
+    int totalSize = s.end() - s.start() + 1;
+    
+    int base = s.start();
+    
+    ordered_linalg_user_arg a = {d, l, r, base};
+    
+    dispatch_to_threads(totalSize, a, ordered_linalg_evaluate_userfunc);
 
+    ////////////////////
+    // Original code
+    ////////////////////
     // Ordered Way - loop through sites and save a table lookup
-    for(int i=s.start(); i <= s.end(); i++) { 
+    //for(int i=s.start(); i <= s.end(); i++) { 
       
-      _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
-				       r.elem(i).elem(0),
-				       d.elem(i).elem(0));
-      _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
-				       r.elem(i).elem(1),
-				       d.elem(i).elem(1));
-    }
-
+    //_inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
+    //			       r.elem(i).elem(0),
+    //			       d.elem(i).elem(0));
+    //_inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
+    //			       r.elem(i).elem(1),
+    //			       d.elem(i).elem(1));
+    //}
 
   }
   else { 
 
-    // Unordered Way - do a site table lookup
+    int totalSize = s.numSiteTable();
+
     const int *tab = s.siteTable().slice(); 
-    for(int j=0; j < s.numSiteTable(); j++) { 
-      int i = tab[j];
+
+    unordered_linalg_user_arg arg = {d, l, r, tab};
+
+    dispatch_to_threads(totalSize, arg, unordered_linalg_evaluate_userfunc);
+    
+    ////////////////////
+    // Original code
+    ////////////////////
+    // Unordered Way - do a site table lookup
+    //for(int j=0; j < s.numSiteTable(); j++) { 
+    //int i = tab[j];
       
-      _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
-				       r.elem(i).elem(0),
-				       d.elem(i).elem(0));
-      _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
-				       r.elem(i).elem(1),
-				       d.elem(i).elem(1));
-    }
+    //_inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
+    //			       r.elem(i).elem(0),
+    //			       d.elem(i).elem(0));
+    //_inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
+    //			       r.elem(i).elem(1),
+    //			       d.elem(i).elem(1));
+    //}
   }
 }
 

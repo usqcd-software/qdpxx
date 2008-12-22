@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.24 2008-05-19 19:35:13 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.25 2008-12-22 17:42:58 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -27,6 +27,17 @@ void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_3vec);
 
 typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> TVec;
 typedef PScalar<PScalar<RScalar<REAL32> > >  TScal;
+
+
+////////////////////////////////
+// Threading evaluates
+//
+// by Xu Guo, EPCC, 6 October, 2008
+////////////////////////////////
+
+// the wrappers for the functions to be threaded
+#include "qdp_scalarsite_sse_blas_wrapper.h"
+
 
 /* #define DEBUG_BLAS_VAXMBY */
 /* #define DEBUG_BLAS_VAXPBY */
@@ -70,12 +81,33 @@ void evaluate(OLattice< TVec >& d,
     REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
     // cout << "Specialised axpy a ="<< ar << endl;
-  
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
+
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vaxOpy3_user_arg arg = {yptr, aptr, xptr, yptr, vaxpy3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpy3_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
   }
   else { 
+   
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpy3_y_user_arg arg = {x, d, aptr, 24, tab, 1, vaxpy3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy3_y_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
 
@@ -83,7 +115,8 @@ void evaluate(OLattice< TVec >& d,
       REAL32* yptr = &(d.elem(i).elem(0).elem(0).real());
     
       vaxpy3(yptr, aptr, xptr, yptr, 24);
-    }
+      }
+    */
   }
 
 
@@ -115,11 +148,31 @@ void evaluate(OLattice< TVec >& d,
     REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vaxOpy3_user_arg arg = {yptr, aptr, xptr, yptr, vaxpy3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpy3_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////    
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+   
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpy3_y_user_arg arg = {x, d, aptr, 24, tab, 1, vaxpy3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy3_y_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
 
@@ -127,7 +180,7 @@ void evaluate(OLattice< TVec >& d,
       REAL32* yptr = &(d.elem(i).elem(0).elem(0).real());
       vaxpy3(yptr, aptr, xptr, yptr, 24);
    
-    }
+      }*/
   }
 	
 }
@@ -173,14 +226,33 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int total_n_3vec = (s.end()-s.start()+1)*24;
 
+    ordered_sse_vaxOpy3_user_arg arg = {zptr, aptr, xptr, yptr, vaxpy3};
 
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpy3_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////  
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpy3_z_user_arg arg = {x, y, d, aptr, 24, tab, vaxpy3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy3_z_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -190,7 +262,7 @@ void evaluate( OLattice< TVec > &d,
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       vaxpy3(zptr, aptr, xptr, yptr, 24);
    
-    }
+      }*/
   }
 
 }
@@ -237,13 +309,33 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int total_n_3vec = (s.end()-s.start()+1)*24;
 
+    ordered_sse_vaxOpy3_user_arg arg = {zptr, aptr, xptr, yptr, vaxpy3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpy3_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpy3_z_user_arg arg = {x, y, d, aptr, 24, tab, vaxpy3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy3_z_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
     REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -252,9 +344,9 @@ void evaluate( OLattice< TVec > &d,
 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     vaxpy3(zptr, aptr, xptr, yptr, 24);
-
+    
    
-    }
+    }*/
   }
 }
 
@@ -299,13 +391,32 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vaxOpy3_user_arg arg = {zptr, aptr, xptr, yptr, vaxmy3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpy3_evaluate_function);
     
+    ////////////////
+    // Original code
+    ////////////////
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxmy3(zptr, aptr, xptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxmy3(zptr, aptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpy3_z_user_arg arg = {x, y, d, aptr, 24, tab, vaxmy3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy3_z_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -316,7 +427,7 @@ void evaluate( OLattice< TVec > &d,
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       
       vaxmy3(zptr, aptr, xptr, yptr,24);
-    }
+      }*/
   }
 }
 
@@ -360,20 +471,39 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vaxOpy3_user_arg arg = {zptr, aptr, xptr, yptr, vaxpy3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpy3_evaluate_function);
     
+    ////////////////
+    // Original code
+    ////////////////
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpy3_z_user_arg arg = {x, y, d, aptr, 24, tab, vaxpy3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy3_z_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
       REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
       vaxpy3(zptr, aptr, xptr, yptr, 24);
-    }
+      }*/
   }
 }
 
@@ -402,19 +532,38 @@ void evaluate(OLattice< TVec >& d,
 
     REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int total_n_3vec = (s.end()-s.start()+1)*24;
 
-  
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
+    ordered_sse_vaxOpy3_user_arg arg = {yptr, aptr, xptr, yptr, vaxpy3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpy3_evaluate_function);
+    
+    ////////////////
+    // Original code
+    //////////////// 
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpy3_y_user_arg arg = {x, d, aptr, 24, tab, 1, vaxpy3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy3_y_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *) &(d.elem(i).elem(0).elem(0).real());
       vaxpy3(yptr, aptr, xptr, yptr,24);   
-    }
+      }*/
   }
 
 }
@@ -447,18 +596,38 @@ void evaluate(OLattice< TVec >& d,
     REAL32* xptr = (REAL32 *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL32* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vaxOpy3_user_arg arg = {yptr, aptr, xptr, yptr, vaxpy3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpy3_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////     
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpy3(yptr, aptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpy3_y_user_arg arg = {x, d, aptr, 24, tab, 1, vaxpy3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy3_y_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *) &(d.elem(i).elem(0).elem(0).real());
    
       vaxpy3(yptr, aptr, xptr, yptr, 24);
-    }
+      }*/
   }
 	
 }
@@ -506,20 +675,39 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
+    int total_n_3vec = (s.end()-s.start()+1)*24;
 
+    ordered_sse_vaxOpy3_user_arg arg = {zptr, aptr, xptr, yptr, vaxpy3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpy3_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpy3_z_user_arg arg = {x, y, d, aptr, 24, tab, vaxpy3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy3_z_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
       REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
       vaxpy3(zptr, aptr, xptr, yptr, 24);
-    }
+      }*/
   }
 }
 
@@ -566,13 +754,33 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int total_n_3vec = (s.end()-s.start()+1)*24;
 
+    ordered_sse_vaxOpy3_user_arg arg = {zptr, aptr, xptr, yptr, vaxpy3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpy3_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpy3_z_user_arg arg = {x, y, d, aptr, 24, tab, vaxpy3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy3_z_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
     REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -581,7 +789,7 @@ void evaluate( OLattice< TVec > &d,
 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     vaxpy3(zptr, aptr, xptr, yptr, 24);
-    }
+    }*/
   }
 }
 
@@ -625,13 +833,32 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vaxOpy3_user_arg arg = {zptr, aptr, xptr, yptr, vaxmy3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpy3_evaluate_function);
     
+    ////////////////
+    // Original code
+    ////////////////   
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxmy3(zptr, aptr, xptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxmy3(zptr, aptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpy3_z_user_arg arg = {x, y, d, aptr, 24, tab, vaxmy3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy3_z_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -641,7 +868,7 @@ void evaluate( OLattice< TVec > &d,
     
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       vaxmy3(zptr, aptr, xptr, yptr, 24);
-    }
+      }*/
   }
 }
 
@@ -685,13 +912,33 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int total_n_3vec = (s.end()-s.start()+1)*24;
 
+    ordered_sse_vaxOpy3_user_arg arg = {zptr, aptr, xptr, yptr, vaxpy3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpy3_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////   
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpy3(zptr, aptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpy3_z_user_arg arg = {x, y, d, aptr, 24, tab, vaxpy3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy3_z_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -700,7 +947,7 @@ void evaluate( OLattice< TVec > &d,
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       vaxpy3(zptr, aptr, xptr, yptr, 24);
-    }
+      }*/
   }
 }
 
@@ -728,13 +975,32 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vOp_user_arg arg = {zptr, xptr, yptr, vadd};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vOp_evaluate_function);
     
+    ////////////////
+    // Original code
+    ////////////////   
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vadd(zptr, xptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vadd(zptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vOp_z_user_arg arg = {x, y, d, 24, tab, vadd};
+
+    dispatch_to_threads(totalSize, arg, unordered_vOp_z_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -744,7 +1010,7 @@ void evaluate( OLattice< TVec > &d,
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       vadd(zptr, xptr, yptr, 24);
-    }
+      }*/
   }
 }
 
@@ -770,14 +1036,33 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int total_n_3vec = (s.end()-s.start()+1)*24;
 
-  
+    ordered_sse_vOp_user_arg arg = {zptr, xptr, yptr, vsub};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vOp_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////   
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vsub(zptr, xptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vsub(zptr, xptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vOp_z_user_arg arg = {x, y, d, 24, tab, vsub};
+
+    dispatch_to_threads(totalSize, arg, unordered_vOp_z_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -787,7 +1072,7 @@ void evaluate( OLattice< TVec > &d,
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       vsub(zptr, xptr, yptr, 24);
-    }
+      }*/
   }
 }
 
@@ -814,19 +1099,40 @@ void evaluate( OLattice< TVec > &d,
   if( s.hasOrderedRep() ) { 
     REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-    int n_3vec = (s.end()-s.start()+1)*24;
     
-    vscal(zptr, aptr, xptr, n_3vec);
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vscal_user_arg arg = {zptr, aptr, xptr};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vscal_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////  
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    
+    //vscal(zptr, aptr, xptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vscal_user_arg arg = {x, d, aptr, 24, tab};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vscal_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       vscal(zptr, aptr, xptr, 24);
-    }
+      }*/
   }
 }
 
@@ -853,19 +1159,40 @@ void evaluate( OLattice< TVec > &d,
   if( s.hasOrderedRep() ) {
     REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-    int n_3vec = (s.end()-s.start()+1)*24;
+    
+    int total_n_3vec = (s.end()-s.start()+1)*24;
 
-    vscal(zptr, aptr, xptr, n_3vec);
+    ordered_sse_vscal_user_arg arg = {zptr, aptr, xptr};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vscal_evaluate_function);
+    
+    ////////////////
+    // Original code
+    //////////////// 
+    //int n_3vec = (s.end()-s.start()+1)*24;
+
+    //vscal(zptr, aptr, xptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vscal_user_arg arg = {x, d, aptr, 24, tab};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vscal_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       vscal(zptr, aptr, xptr, 24);
-    }
+      }*/
   }
 }
 
@@ -893,18 +1220,39 @@ void evaluate( OLattice< TVec > &d,
   if( s.hasOrderedRep() ) { 
     REAL32 * xptr = &(d.elem(s.start()).elem(0).elem(0).real());
     REAL32 * zptr = xptr;
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vscal(zptr,&ar, xptr, n_3vec);
+    
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vscal_user_arg arg = {zptr, &ar, xptr};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vscal_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vscal(zptr,&ar, xptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vscal_user_arg arg = {d, d, &ar, 24, tab};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vscal_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 * xptr = &(d.elem(i).elem(0).elem(0).real());
       REAL32 * zptr = xptr;
       
       vscal(zptr, &ar, xptr, 24);
-    }
+      }*/
   }
 }
 
@@ -930,18 +1278,39 @@ void evaluate( OLattice< TVec > &d,
   if( s.hasOrderedRep() ) {
     REAL32 * xptr = &(d.elem(s.start()).elem(0).elem(0).real());
     REAL32 * zptr = xptr;
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vscal(zptr,&ar, xptr, n_3vec);
+    
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vscal_user_arg arg = {zptr, &ar, xptr};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vscal_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vscal(zptr,&ar, xptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vscal_user_arg arg = {d, d, &ar, 24, tab};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vscal_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 * xptr = &(d.elem(i).elem(0).elem(0).real());
       REAL32 * zptr = xptr;
       
       vscal(zptr,&ar, xptr, 24);
-    }
+      }*/
   }
 }
 
@@ -963,21 +1332,44 @@ void evaluate( OLattice< TVec > &d,
 #ifdef DEBUG_BLAS
   QDPIO::cout << "BJ: v += v" << endl;
 #endif
-  if(s.hasOrderedRep() ) { 
-    int n_3vec = (s.end() - s.start()+1)*24;
+  if(s.hasOrderedRep() ) {
+    REAL32 *xptr = (REAL32 *)(&x.elem(s.start()).elem(0).elem(0).real());
+    REAL32 *yptr = (REAL32 *)(&d.elem(s.start()).elem(0).elem(0).real());
+    
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vOp_user_arg arg = {yptr, yptr, xptr, vadd};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vOp_evaluate_function);
+    
+    ////////////////
+    // Original code
+    //////////////// 
+    /*int n_3vec = (s.end() - s.start()+1)*24;
     REAL32 *xptr = (REAL32 *)(&x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *yptr = (REAL32 *)(&d.elem(s.start()).elem(0).elem(0).real());
     REAL one = 1;
-    vadd(yptr, yptr, xptr,n_3vec);
+    vadd(yptr, yptr, xptr,n_3vec);*/
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vOp_y_user_arg arg = {x, d, 24, tab, vadd};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vOp_y_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *)(&x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *)(&d.elem(i).elem(0).elem(0).real());
       vadd(yptr, yptr, xptr,24);
-    }
+      }*/
   }
 }
 
@@ -1000,21 +1392,41 @@ void evaluate( OLattice< TVec > &d,
   QDPIO::cout << "BJ: v -= v" << endl;
 #endif
   if( s.hasOrderedRep() ) { 
-    int n_3vec = (s.end() - s.start()+1)*24;
+    //int n_3vec = (s.end() - s.start()+1)*24;
     REAL32 *xptr = (REAL32 *)(&x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *yptr = (REAL32 *)(&d.elem(s.start()).elem(0).elem(0).real());
     
-    vsub(yptr, yptr, xptr, n_3vec);
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vOp_user_arg arg = {yptr, yptr, xptr, vsub};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vOp_evaluate_function);
+    
+    ////////////////
+    // Original code
+    //////////////// 
+    //vsub(yptr, yptr, xptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vOp_y_user_arg arg = {x, d, 24, tab, vsub};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vOp_y_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *)(&x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *)(&d.elem(i).elem(0).elem(0).real());
       
       vsub(yptr, yptr, xptr, 24);
-    }
+      }*/
   }
 }
 
@@ -1068,14 +1480,33 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-    
+     
+    int total_n_3vec = (s.end()-s.start()+1)*24;
 
+    ordered_sse_vaxOpby3_user_arg arg = {zptr, aptr, xptr, bptr, yptr, vaxpby3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpby3_evaluate_function);
+    
+    ////////////////
+    // Original code
+    //////////////// 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpby3_user_arg arg = {aptr, x, bptr, y, d, 24, tab, vaxpby3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpby3_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -1083,7 +1514,7 @@ void evaluate( OLattice< TVec > &d,
       REAL32 * zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       vaxpby3(zptr, aptr, xptr, bptr, yptr, 24);
-    }
+      }*/
   }
 }
 
@@ -1145,13 +1576,32 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vaxOpby3_user_arg arg = {zptr, aptr, xptr, bptr, yptr, vaxpby3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpby3_evaluate_function);
     
+    ////////////////
+    // Original code
+    ////////////////  
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpby3_user_arg arg = {aptr, x, bptr, y, d, 24, tab, vaxpby3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpby3_evaluate_function );
+     
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -1160,7 +1610,7 @@ void evaluate( OLattice< TVec > &d,
     
     
       vaxpby3(zptr, aptr, xptr, bptr, yptr, 24);
-    }
+      }*/
   }
 }
 
@@ -1227,14 +1677,33 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int total_n_3vec = (s.end()-s.start()+1)*24;
 
+    ordered_sse_vaxOpby3_user_arg arg = {zptr, aptr, xptr, bptr, yptr, vaxpby3};
 
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpby3_evaluate_function);
+    
+    ////////////////
+    // Original code
+    //////////////// 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpby3_user_arg arg = {aptr, x, bptr, y, d, 24, tab, vaxpby3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpby3_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -1243,7 +1712,7 @@ void evaluate( OLattice< TVec > &d,
 
 
       vaxpby3(zptr, aptr, xptr, bptr, yptr, 24);
-    }
+      }*/
   }
 }
 
@@ -1297,13 +1766,32 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vaxOpby3_user_arg arg = {zptr, aptr, xptr, bptr, yptr, vaxpby3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpby3_evaluate_function);
     
+    ////////////////
+    // Original code
+    ////////////////     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxpby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpby3_user_arg arg = {aptr, x, bptr, y, d, 24, tab, vaxpby3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpby3_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -1313,7 +1801,7 @@ void evaluate( OLattice< TVec > &d,
       
       // Get the no of 3vecs. i and s.end() are inclusive so add +1
       vaxpby3(zptr, aptr, xptr, bptr, yptr, 24);
-    }
+      }*/
   }
 }
 
@@ -1367,13 +1855,32 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vaxOpby3_user_arg arg = {zptr, aptr, xptr, bptr, yptr, vaxmby3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpby3_evaluate_function);
     
+    ////////////////
+    // Original code
+    ////////////////       
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpby3_user_arg arg = {aptr, x, bptr, y, d, 24, tab, vaxmby3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpby3_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -1384,7 +1891,7 @@ void evaluate( OLattice< TVec > &d,
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       vaxmby3(zptr, aptr, xptr, bptr, yptr, 24);
 
-    }
+      }*/
   }
 }
 
@@ -1446,13 +1953,32 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vaxOpby3_user_arg arg = {zptr, aptr, xptr, bptr, yptr, vaxmby3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpby3_evaluate_function);
     
+    ////////////////
+    // Original code
+    ////////////////   
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpby3_user_arg arg = {aptr, x, bptr, y, d, 24, tab, vaxmby3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpby3_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -1462,7 +1988,7 @@ void evaluate( OLattice< TVec > &d,
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       vaxmby3(zptr, aptr, xptr, bptr, yptr, 24);
-    }
+      }*/
   }
 }
 
@@ -1529,13 +2055,32 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32 * zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
+    int total_n_3vec = (s.end()-s.start()+1)*24;
+
+    ordered_sse_vaxOpby3_user_arg arg = {zptr, aptr, xptr, bptr, yptr, vaxmby3};
+
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpby3_evaluate_function);
     
+    ////////////////
+    // Original code
+    ////////////////   
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpby3_user_arg arg = {aptr, x, bptr, y, d, 24, tab, vaxmby3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpby3_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -1545,7 +2090,7 @@ void evaluate( OLattice< TVec > &d,
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       vaxmby3(zptr, aptr, xptr, bptr, yptr, 24);
-    }
+      }*/
   }
 }
 
@@ -1598,14 +2143,33 @@ void evaluate( OLattice< TVec > &d,
     REAL32 *xptr = (REAL32 *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL32 *yptr = (REAL32 *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL32 *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
+    
+    int total_n_3vec = (s.end()-s.start()+1)*24;
 
+    ordered_sse_vaxOpby3_user_arg arg = {zptr, aptr, xptr, bptr, yptr, vaxmby3};
 
+    dispatch_to_threads(total_n_3vec, arg, ordered_sse_vaxOpby3_evaluate_function);
+    
+    ////////////////
+    // Original code
+    ////////////////   
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_3vec = (s.end()-s.start()+1)*24;
-    vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
+    //int n_3vec = (s.end()-s.start()+1)*24;
+    //vaxmby3(zptr, aptr, xptr, bptr, yptr, n_3vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+    
+    int totalSize = s.numSiteTable();
+
+    unordered_sse_vaxOpby3_user_arg arg = {aptr, x, bptr, y, d, 24, tab, vaxmby3};
+
+    dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpby3_evaluate_function );
+    
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i = tab[j];
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
@@ -1615,7 +2179,7 @@ void evaluate( OLattice< TVec > &d,
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       vaxmby3(zptr, aptr, xptr, bptr, yptr, 24);
-    }
+      }*/
   }
 }
 

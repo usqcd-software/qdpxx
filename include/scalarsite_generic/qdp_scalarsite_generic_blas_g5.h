@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas_g5.h,v 1.7 2007-06-10 14:32:10 edwards Exp $
+// $Id: qdp_scalarsite_generic_blas_g5.h,v 1.8 2008-12-22 17:42:58 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -25,6 +25,16 @@ namespace QDP {
 // TVec has outer Ns template so it ought to work for staggered as well
 typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, Ns> TVec;
 typedef PScalar<PScalar<RScalar<REAL> > >  TScal;
+
+////////////////////////////////
+// Threading evaluates
+//
+// by Xu Guo, EPCC, 26 August, 2008
+////////////////////////////////
+
+// the wrappers for the functions to be threaded
+#include "qdp_scalarsite_generic_blas_g5_wrapper.h"
+
 
 // #define DEBUG_BLAS_G6
 // TVec is the LatticeFermion from qdp_dwdefs.h with the OLattice<> stripped
@@ -63,18 +73,40 @@ void evaluate(OLattice< TVec >& d,
     REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
   
-    int n_4vec = (s.end()-s.start()+1);
-    xpayz_g5ProjPlus(yptr, aptr,yptr, xptr, n_4vec);
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaypx3_g5_user_arg a = {yptr, aptr, yptr, xptr, xpayz_g5ProjPlus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaypx3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    //int n_4vec = (s.end()-s.start()+1);
+    //xpayz_g5ProjPlus(yptr, aptr,yptr, xptr, n_4vec);
 
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaypx3_g5_y_user_arg arg = {x, d, aptr, Ns, tab, xpayz_g5ProjPlus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_y_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
       REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
       xpayz_g5ProjPlus(yptr, aptr,yptr, xptr, 1);
-    }
+      }*/
   }
 
   
@@ -108,18 +140,39 @@ void evaluate(OLattice< TVec >& d,
     REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
     
-  
-    int n_4vec = (s.end()-s.start()+1);
-    xpayz_g5ProjMinus(yptr, aptr,yptr, xptr, n_4vec);
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaypx3_g5_user_arg a = {yptr, aptr, yptr, xptr, xpayz_g5ProjMinus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaypx3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    //////////////// 
+    //int n_4vec = (s.end()-s.start()+1);
+    //xpayz_g5ProjMinus(yptr, aptr,yptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaypx3_g5_y_user_arg arg = {x, d, aptr, Ns, tab, xpayz_g5ProjMinus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_y_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
       REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
       xpayz_g5ProjMinus(yptr, aptr,yptr, xptr, 1);
-    }
+      }*/
   }
 
 }
@@ -151,18 +204,40 @@ void evaluate(OLattice< TVec >& d,
   if( s.hasOrderedRep() ) { 
     REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
-    
-    int n_4vec = (s.end()-s.start()+1);
-    xmayz_g5ProjPlus(yptr, aptr,yptr, xptr, n_4vec);
+
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaypx3_g5_user_arg a = {yptr, aptr, yptr, xptr, xmayz_g5ProjPlus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaypx3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////   
+    //int n_4vec = (s.end()-s.start()+1);
+    //xmayz_g5ProjPlus(yptr, aptr,yptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaypx3_g5_y_user_arg arg = {x, d, aptr, Ns, tab, xmayz_g5ProjPlus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_y_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
       REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
       xmayz_g5ProjPlus(yptr, aptr,yptr, xptr, 1);
-    }
+      }*/
   }
 
 }
@@ -195,18 +270,39 @@ void evaluate(OLattice< TVec >& d,
     REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
     
-    
-    int n_4vec = (s.end()-s.start()+1);
-    xmayz_g5ProjMinus(yptr, aptr,yptr, xptr, n_4vec);
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaypx3_g5_user_arg a = {yptr, aptr, yptr, xptr,  xmayz_g5ProjMinus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaypx3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////    
+    //int n_4vec = (s.end()-s.start()+1);
+    //xmayz_g5ProjMinus(yptr, aptr,yptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaypx3_g5_y_user_arg arg = {x, d, aptr, Ns, tab, xmayz_g5ProjMinus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_y_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
       REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
       xmayz_g5ProjMinus(yptr, aptr,yptr, xptr, 1);
-    }
+      }*/
   }
   
 }
@@ -234,18 +330,39 @@ void evaluate(OLattice< TVec >& d,
     REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
   
-  
-    int n_4vec = (s.end()-s.start()+1);
-    add_g5ProjPlus(yptr, yptr, xptr, n_4vec);
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vadd3_g5_user_arg a = {yptr, yptr, xptr, add_g5ProjPlus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vadd3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////   
+    //int n_4vec = (s.end()-s.start()+1);
+    //add_g5ProjPlus(yptr, yptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vadd3_g5_user_arg arg = {x, d, Ns, tab, add_g5ProjPlus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vadd3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
       REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
       add_g5ProjPlus(yptr, yptr, xptr, 1);
-    }
+      }*/
   }
   
 }
@@ -273,18 +390,39 @@ void evaluate(OLattice< TVec >& d,
     REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
   
-  
-    int n_4vec = (s.end()-s.start()+1);
-    add_g5ProjMinus(yptr, yptr, xptr, n_4vec);
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vadd3_g5_user_arg a = {yptr, yptr, xptr, add_g5ProjMinus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vadd3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////  
+    //int n_4vec = (s.end()-s.start()+1);
+    //add_g5ProjMinus(yptr, yptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vadd3_g5_user_arg arg = {x, d, Ns, tab, add_g5ProjMinus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vadd3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
       REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
       add_g5ProjMinus(yptr, yptr, xptr, 1);
-    }
+      }*/
   }
 
 }
@@ -310,18 +448,40 @@ void evaluate(OLattice< TVec >& d,
   if( s.hasOrderedRep() ) {
     REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
-    
-    int n_4vec = (s.end()-s.start()+1);
-    sub_g5ProjPlus(yptr, yptr, xptr, n_4vec);
+ 
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vadd3_g5_user_arg a = {yptr, yptr, xptr, sub_g5ProjPlus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vadd3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////   
+    //int n_4vec = (s.end()-s.start()+1);
+    //sub_g5ProjPlus(yptr, yptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vadd3_g5_user_arg arg = {x, d, Ns, tab, sub_g5ProjPlus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vadd3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
       REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
       sub_g5ProjPlus(yptr, yptr, xptr, 1);
-    }
+      }*/
   }
   
 }
@@ -348,17 +508,39 @@ void evaluate(OLattice< TVec >& d,
     REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL* yptr = (REAL *)&(d.elem(s.start()).elem(0).elem(0).real());
     
-    int n_4vec = (s.end()-s.start()+1);
-    sub_g5ProjMinus(yptr, yptr, xptr, n_4vec);
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vadd3_g5_user_arg a = {yptr, yptr, xptr, sub_g5ProjMinus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vadd3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    //////////////// 
+    //int n_4vec = (s.end()-s.start()+1);
+    //sub_g5ProjMinus(yptr, yptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vadd3_g5_user_arg arg = {x, d, Ns, tab, sub_g5ProjMinus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vadd3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
       REAL* yptr = (REAL *)&(d.elem(i).elem(0).elem(0).real());
       sub_g5ProjMinus(yptr, yptr, xptr, 1);
-    }
+      }*/
   }
   
 }
@@ -410,12 +592,34 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaypx3_g5_user_arg a = {zptr, aptr, xptr, yptr, xpayz_g5ProjPlus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaypx3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    xpayz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //xpayz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaypx3_g5_z_user_arg arg = {x, y, d, aptr, Ns, tab, xpayz_g5ProjPlus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_z_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -424,7 +628,7 @@ void evaluate( OLattice< TVec > &d,
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       xpayz_g5ProjPlus(zptr, aptr, xptr, yptr, 1);
-    }
+      }*/
   }
 
 }
@@ -475,13 +679,35 @@ void evaluate( OLattice< TVec > &d,
     REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-    
+
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaypx3_g5_user_arg a = {zptr, aptr, xptr, yptr, xpayz_g5ProjMinus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaypx3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////    
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    xpayz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //xpayz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaypx3_g5_z_user_arg arg = {x, y, d, aptr, Ns, tab, xpayz_g5ProjMinus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_z_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -490,7 +716,7 @@ void evaluate( OLattice< TVec > &d,
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       xpayz_g5ProjMinus(zptr, aptr, xptr, yptr, 1);
-    }
+      }*/
   }
 
 }
@@ -541,13 +767,35 @@ void evaluate( OLattice< TVec > &d,
     REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-    
+
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaypx3_g5_user_arg a = {zptr, aptr, xptr, yptr, xmayz_g5ProjPlus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaypx3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////      
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    xmayz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //xmayz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaypx3_g5_z_user_arg arg = {x, y, d, aptr, Ns, tab, xmayz_g5ProjPlus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_z_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -556,7 +804,7 @@ void evaluate( OLattice< TVec > &d,
       
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       xmayz_g5ProjPlus(zptr, aptr, xptr, yptr, 1);
-    }
+      }*/
   }
 
 }
@@ -608,12 +856,34 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaypx3_g5_user_arg a = {zptr, aptr, xptr, yptr, xmayz_g5ProjMinus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaypx3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////   
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    xmayz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //xmayz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaypx3_g5_z_user_arg arg = {x, y, d, aptr, Ns, tab, xmayz_g5ProjMinus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_z_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -621,7 +891,7 @@ void evaluate( OLattice< TVec > &d,
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       xmayz_g5ProjMinus(zptr, aptr, xptr, yptr, 1);
-    }
+      }*/
   }
 
 }
@@ -669,13 +939,34 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaxpy3_g5_user_arg a = {zptr, aptr, xptr, yptr, axpyz_g5ProjPlus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaxpy3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////      
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    axpyz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //axpyz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaxpy3_g5_user_arg arg = {x, y, d, aptr, Ns, tab, axpyz_g5ProjPlus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaxpy3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -683,7 +974,7 @@ void evaluate( OLattice< TVec > &d,
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       axpyz_g5ProjPlus(zptr, aptr, xptr, yptr, 1);
-    }
+      }*/
   }
 
 }
@@ -731,13 +1022,34 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaxpy3_g5_user_arg a = {zptr, aptr, xptr, yptr, axpyz_g5ProjMinus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaxpy3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////  
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    axpyz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //axpyz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaxpy3_g5_user_arg arg = {x, y, d, aptr, Ns, tab, axpyz_g5ProjMinus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaxpy3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -746,7 +1058,7 @@ void evaluate( OLattice< TVec > &d,
       
       axpyz_g5ProjMinus(zptr, aptr, xptr, yptr, 1);
 
-    }
+      }*/
   }
 
 }
@@ -796,13 +1108,34 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaxpy3_g5_user_arg a = {zptr, aptr, xptr, yptr, axmyz_g5ProjPlus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaxpy3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////      
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    axmyz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //axmyz_g5ProjPlus(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaxpy3_g5_user_arg arg = {x, y, d, aptr, Ns, tab, axmyz_g5ProjPlus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaxpy3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -811,7 +1144,7 @@ void evaluate( OLattice< TVec > &d,
       
       axmyz_g5ProjPlus(zptr, aptr, xptr, yptr, 1);
 
-    }
+      }*/
   }
 
 }
@@ -858,13 +1191,34 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaxpy3_g5_user_arg a = {zptr, aptr, xptr, yptr, axmyz_g5ProjMinus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaxpy3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////      
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    axmyz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //axmyz_g5ProjMinus(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaxpy3_g5_user_arg arg = {x, y, d, aptr, Ns, tab, axmyz_g5ProjMinus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaxpy3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -872,7 +1226,7 @@ void evaluate( OLattice< TVec > &d,
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       axmyz_g5ProjMinus(zptr, aptr, xptr, yptr, 1);
     
-    }
+      }*/
   }
 
 }
@@ -904,19 +1258,41 @@ void evaluate( OLattice< TVec > &d,
   if( s.hasOrderedRep() ) {
     REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-    int n_4vec = (s.end()-s.start()+1);
-   
-    scal_g5ProjPlus(zptr, aptr, xptr, n_4vec);
+
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vscal_g5_user_arg a = {zptr, aptr, xptr, scal_g5ProjPlus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vscal_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////  
+    //int n_4vec = (s.end()-s.start()+1);
+    //scal_g5ProjPlus(zptr, aptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vscal_g5_user_arg arg = {x, d, aptr, Ns, tab, scal_g5ProjPlus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vscal_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       scal_g5ProjPlus(zptr, aptr, xptr, 1);
-    }
+      }*/
   }
 
 }
@@ -948,19 +1324,41 @@ void evaluate( OLattice< TVec > &d,
   if( s.hasOrderedRep() ) { 
     REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-    int n_4vec = (s.end()-s.start()+1);
-    
-    scal_g5ProjMinus(zptr, aptr, xptr, n_4vec);
+
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vscal_g5_user_arg a = {zptr, aptr, xptr, scal_g5ProjMinus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vscal_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////  
+    //int n_4vec = (s.end()-s.start()+1);
+    //scal_g5ProjMinus(zptr, aptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vscal_g5_user_arg arg = {x, d, aptr, Ns, tab, scal_g5ProjMinus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vscal_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       scal_g5ProjMinus(zptr, aptr, xptr, 1);
-    }
+      }*/
   }
 }
 
@@ -1021,13 +1419,34 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaxpby3_g5_user_arg a = {zptr, aptr, xptr, bptr, yptr, axpbyz_g5ProjPlus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaxpby3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////      
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    axpbyz_g5ProjPlus(zptr, aptr, xptr, bptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //axpbyz_g5ProjPlus(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaxpby3_g5_user_arg arg = {x, y, d, aptr, bptr, Ns, tab, axpbyz_g5ProjPlus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaxpby3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -1038,7 +1457,7 @@ void evaluate( OLattice< TVec > &d,
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       axpbyz_g5ProjPlus(zptr, aptr, xptr, bptr, yptr, 1);
    
-    }
+      }*/
   }
 }
 
@@ -1099,13 +1518,34 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaxpby3_g5_user_arg a = {zptr, aptr, xptr, bptr, yptr, axpbyz_g5ProjMinus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaxpby3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////      
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    axpbyz_g5ProjMinus(zptr, aptr, xptr, bptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //axpbyz_g5ProjMinus(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaxpby3_g5_user_arg arg = {x, y, d, aptr, bptr, Ns, tab, axpbyz_g5ProjMinus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaxpby3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -1114,7 +1554,7 @@ void evaluate( OLattice< TVec > &d,
     
       axpbyz_g5ProjMinus(zptr, aptr, xptr, bptr, yptr, 1);
       
-    }
+      }*/
   }
 }
 
@@ -1175,13 +1615,34 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaxpby3_g5_user_arg a = {zptr, aptr, xptr, bptr, yptr, axmbyz_g5ProjPlus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaxpby3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////   
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    axmbyz_g5ProjPlus(zptr, aptr, xptr, bptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //axmbyz_g5ProjPlus(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaxpby3_g5_user_arg arg = {x, y, d, aptr, bptr, Ns, tab, axmbyz_g5ProjPlus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaxpby3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -1189,7 +1650,7 @@ void evaluate( OLattice< TVec > &d,
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
     
       axmbyz_g5ProjPlus(zptr, aptr, xptr, bptr, yptr, 1);
-    }
+      }*/
   }
 }
 
@@ -1249,13 +1710,34 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_vaxpby3_g5_user_arg a = {zptr, aptr, xptr, bptr, yptr, axmbyz_g5ProjMinus};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_vaxpby3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////  
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    axmbyz_g5ProjMinus(zptr, aptr, xptr, bptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //axmbyz_g5ProjMinus(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_vaxpby3_g5_user_arg arg = {x, y, d, aptr, bptr, Ns, tab, axmbyz_g5ProjMinus};
+
+    dispatch_to_threads(totalSize, arg, unordered_vaxpby3_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -1263,7 +1745,7 @@ void evaluate( OLattice< TVec > &d,
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
     
       axmbyz_g5ProjMinus(zptr, aptr, xptr, bptr, yptr, 1);
-    }
+      }*/
   }
 }
 
@@ -1308,19 +1790,42 @@ void evaluate( OLattice< TVec > &d,
   if( s.hasOrderedRep() ) { 
     REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL *zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-    int n_4vec = (s.end()-s.start()+1);
     
-    scal_g5(zptr, aptr, xptr, n_4vec);
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_scal_g5_user_arg a = {zptr, aptr, xptr};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_scal_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////  
+    //int n_4vec = (s.end()-s.start()+1);
+    
+    //scal_g5(zptr, aptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_scal_g5_user_arg arg = {x, d, aptr, Ns, tab};
+
+    dispatch_to_threads(totalSize, arg, unordered_scal_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       scal_g5(zptr, aptr, xptr, 1);
-    }
+      }*/
   } 
 }
 
@@ -1381,20 +1886,41 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_xOpayz_g5_user_arg a = {zptr, aptr, xptr, yptr, xmayz_g5};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_xOpayz_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    xmayz_g5(zptr, aptr, xptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //xmayz_g5(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_xOpayz_g5_user_arg arg = {x, y, d, aptr, Ns, tab, xmayz_g5};
+
+    dispatch_to_threads(totalSize, arg, unordered_xOpayz_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       xmayz_g5(zptr, aptr, xptr, yptr,1);
-    }
+      }*/
   }
 
 }
@@ -1468,20 +1994,41 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_axOpbyz_g5_user_arg a = {zptr, aptr, xptr, bptr, yptr, axpbyz_g5};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_axOpbyz_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    axpbyz_g5(zptr, aptr, xptr, bptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //axpbyz_g5(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_axOpbyz_g5_user_arg arg = {x, y, d, aptr, bptr,  Ns, tab, axpbyz_g5};
+
+    dispatch_to_threads(totalSize, arg, unordered_axOpbyz_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       axpbyz_g5(zptr, aptr, xptr, bptr, yptr, 1);
-    }
+      }*/
   }  
 }
 
@@ -1550,20 +2097,41 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
+    int total_n_4vec = (s.end()-s.start()+1);
 
+    ordered_axOpbyz_g5_user_arg a = {zptr, aptr, xptr, bptr, yptr, g5_axmbyz};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_axOpbyz_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    //////////////// 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    g5_axmbyz(zptr, aptr, xptr, bptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //g5_axmbyz(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_axOpbyz_g5_user_arg arg = {x, y, d, aptr, bptr,  Ns, tab, g5_axmbyz};
+
+    dispatch_to_threads(totalSize, arg, unordered_axOpbyz_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       g5_axmbyz(zptr, aptr, xptr, bptr, yptr, 1);
-    }
+      }*/
   }  
 }
 
@@ -1649,20 +2217,41 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
+    int total_n_4vec = (s.end()-s.start()+1);
 
+    ordered_axOpbyz_g5_user_arg a = {zptr, aptr, xptr, bptr, yptr, axpbyz_ig5};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_axOpbyz_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    //////////////// 
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    axpbyz_ig5(zptr, aptr, xptr, bptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //axpbyz_ig5(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_axOpbyz_g5_user_arg arg = {x, y, d, aptr, bptr,  Ns, tab, axpbyz_ig5};
+
+    dispatch_to_threads(totalSize, arg, unordered_axOpbyz_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       axpbyz_ig5(zptr, aptr, xptr, bptr, yptr, 1);
-    }
+      }*/
   }  
 }
 
@@ -1744,20 +2333,43 @@ void evaluate( OLattice< TVec > &d,
     REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
-    
+
+
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_axOpbyz_g5_user_arg a = {zptr, aptr, xptr, bptr, yptr, axmbyz_ig5};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_axOpbyz_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////   
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    axmbyz_ig5(zptr, aptr, xptr, bptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //axmbyz_ig5(zptr, aptr, xptr, bptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_axOpbyz_g5_user_arg arg = {x, y, d, aptr, bptr,  Ns, tab, axmbyz_ig5};
+
+    dispatch_to_threads(totalSize, arg, unordered_axOpbyz_g5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       axmbyz_ig5(zptr, aptr, xptr, bptr, yptr, 1);
-    }
+      }*/
   }  
 }
 
@@ -1829,20 +2441,41 @@ void evaluate( OLattice< TVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_xOpayz_ig5_user_arg a = {zptr, aptr, xptr, yptr, xpayz_ig5};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_xOpayz_ig5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    xpayz_ig5(zptr, aptr, xptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //xpayz_ig5(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_xOpayz_ig5_y_user_arg arg = {x, y, d, aptr, Ns, tab, xpayz_ig5};
+
+    dispatch_to_threads(totalSize, arg, unordered_xOpayz_ig5_y_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       xpayz_ig5(zptr, aptr, xptr, yptr, 1);
-    }
+      }*/
   }
 
 }
@@ -1916,12 +2549,34 @@ void evaluate( OLattice< TVec > &d,
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
     
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_xOpayz_ig5_user_arg a = {zptr, aptr, xptr, yptr, xmayz_ig5};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_xOpayz_ig5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////  
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    xmayz_ig5(zptr, aptr, xptr, yptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //xmayz_ig5(zptr, aptr, xptr, yptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_xOpayz_ig5_y_user_arg arg = {x, y, d, aptr, Ns, tab, xmayz_ig5};
+
+    dispatch_to_threads(totalSize, arg, unordered_xOpayz_ig5_y_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
@@ -1929,7 +2584,7 @@ void evaluate( OLattice< TVec > &d,
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       xmayz_ig5(zptr, aptr, xptr, yptr, 1);
 
-    }
+      }*/
   }
 
 }
@@ -2002,20 +2657,41 @@ void evaluate( OLattice< TVec > &d,
     REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
 
+    int total_n_4vec = (s.end()-s.start()+1);
 
+    ordered_xOpayz_ig5_user_arg a = {zptr, aptr, zptr, xptr, xpayz_ig5};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_xOpayz_ig5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    xpayz_ig5(zptr, aptr, zptr, xptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //xpayz_ig5(zptr, aptr, zptr, xptr, n_4vec);    
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_xOpayz_ig5_z_user_arg arg = {x, d, aptr, Ns, tab, xpayz_ig5};
+
+    dispatch_to_threads(totalSize, arg, unordered_xOpayz_ig5_z_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       
       xpayz_ig5(zptr, aptr, zptr, xptr, 1);
-    }
+      }*/
   }
 
 }
@@ -2088,20 +2764,41 @@ void evaluate( OLattice< TVec > &d,
     REAL *xptr = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    
+    int total_n_4vec = (s.end()-s.start()+1);
+
+    ordered_xOpayz_ig5_user_arg a = {zptr, aptr, zptr, xptr, xmayz_ig5};
+
+    dispatch_to_threads(total_n_4vec, a, ordered_xOpayz_ig5_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////     
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-    int n_4vec = (s.end()-s.start()+1);
-    xmayz_ig5(zptr, aptr, zptr, xptr, n_4vec);
+    //int n_4vec = (s.end()-s.start()+1);
+    //xmayz_ig5(zptr, aptr, zptr, xptr, n_4vec);
   }
   else { 
     const int* tab = s.siteTable().slice();
+
+    int totalSize = s.numSiteTable();
+
+    int Ns = 1;
+
+    unordered_xOpayz_ig5_z_user_arg arg = {x, d, aptr,  Ns, tab, xmayz_ig5};
+
+    dispatch_to_threads(totalSize, arg, unordered_xOpayz_ig5_z_evaluate_function);
+
+    ////////////////
+    // Original code
+    ////////////////
+    /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int i=tab[j];
       REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
       REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
       xmayz_ig5(zptr, aptr, zptr, xptr, 1);
 
-    }
+      }*/
   }
 
 }
