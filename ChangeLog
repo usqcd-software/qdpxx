@@ -1,3 +1,11 @@
+2009-01-25 15:07  edwards
+
+	* other_libs/ffdb-lite/src/DBFunc.h: Ooops, fixed that last commit.
+
+2009-01-25 15:06  edwards
+
+	* other_libs/ffdb-lite/src/DBFunc.cpp: Some indenting.
+
 2009-01-15 21:59  jbulava
 
 	* other_libs/ffdb-lite/src/: DBFunc.cpp, DBFunc.h: Added threading
