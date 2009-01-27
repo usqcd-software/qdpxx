@@ -1,3 +1,7 @@
+01/27/2009 -- Robert Edwards
+        Version 1.30.0: First DB implementations. First threading version. Not fully certified.
+        Support subset records in qio.
+
 12-22-2008 -- Balint Joo
 	Added threading support courtesy of EPCC. Tested that threading code with threads disabled: 
 	 -- does not break cb2, cb3d, sse2/generic, single-double builds (scalar)
