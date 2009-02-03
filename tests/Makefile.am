@@ -71,6 +71,7 @@ test_vaxpy_double_DEPENDENCIES = build_libs
 time_vaxpy_double_SOURCES = $(test_HDRS) \
 	timeVaxpyDouble.h \
 	timeVaxpyDouble.cc \
+	timeVaxpby.cc \
 	time_vaxpy_double.cc
 
 time_vaxpy_double_DEPENDENCIES = build_libs

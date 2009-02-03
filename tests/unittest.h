@@ -18,6 +18,7 @@ namespace Assertions {
   inline 
   void assertEquals(const T& t1, const T& t2) {
     if ( t1 != t2 ) { 
+      QDPIO::cout << "lhs=" << t1 << " != " << " rhs=" << t2 << endl;
       throw std::exception();
     }
   }
@@ -152,6 +153,7 @@ private:
     }
     catch( std::exception ) { 
       t.success = FAIL;
+      throw;
     }
     catch(...) { 
       t.success = ERROR;
@@ -168,6 +170,7 @@ private:
       }
       else { 
 	QDPIO::cout << "  FAIL" << endl;
+	
       }
     }
   }

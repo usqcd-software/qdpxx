@@ -232,7 +232,7 @@ void ordered_sse_vaxOpby4_double_evaluate_function (int lo, int hi, int myId, or
   int index = lo * 24;
 
   yptr = &yptr[index];
-  aptr = &aptr[index];
+  xptr = &xptr[index];
 
   func(yptr, aptr, xptr, bptr, n_4vec);
 }
@@ -312,7 +312,25 @@ void unordered_sse_vaxOpbyz4_double_evaluate_function (int lo, int hi, int myId,
  }
 
 
+  
 }
+
+struct ordered_norm_double_user_arg {
+  REAL64* vptr;
+  REAL64* results;
+  void (*func)(REAL64*,  REAL64*, int);
+};
+
+
+inline void ordered_norm_double_func(int lo, int hi, int myId, ordered_norm_double_user_arg* a) 
+  {
+
+    int nvec = hi - lo;
+    int index = lo*24;
+    REAL64* vptr = &(a->vptr[index]);
+    void (*func)(REAL64*, REAL64*, int) = a->func;
+    func( &(a->results[myId]), vptr, nvec);
+  }
 
 
 

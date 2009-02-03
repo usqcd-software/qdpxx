@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.61 2008-09-30 18:20:01 bjoo Exp $
+// $Id: qdp.h,v 1.62 2009-02-03 21:10:10 bjoo Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -158,6 +158,10 @@ namespace QDP {
 #elif QDP_USE_QMT_THREADS ==1
 #include "qdp_dispatch.h"
 #endif
+
+namespace ThreadReductions { 
+ 
+}
 
 #if defined(ARCH_SCALAR)
 // Architectural specific code to a single node/single proc box

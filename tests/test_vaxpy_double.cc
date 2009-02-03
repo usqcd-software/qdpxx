@@ -62,7 +62,7 @@ int main(int argc, char **argv)
   tests.addTest(new testVaxmy4_3(), "testVaxmy4_3" );
 
   tests.addTest(new testVaxpbyz4_1(), "testVaxpbyz4_1" );
-  tests.addTest(new testVaxpbyz4_2(), "testVaxpbyz4_2" );
+  //  tests.addTest(new testVaxpbyz4_2(), "testVaxpbyz4_2" );
   tests.addTest(new testVaxpbyz4_3(), "testVaxpbyz4_3" );
 
   tests.addTest(new testVaxpby4_1(), "testVaxpby4_1" );

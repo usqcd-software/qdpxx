@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas_double.h,v 1.4 2008-12-22 17:42:58 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas_double.h,v 1.5 2009-02-03 21:10:11 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -20,6 +20,10 @@
 #include "scalarsite_sse/sse_blas_local_vcdot_double.h"
 
 namespace QDP {
+
+  namespace ThreadReductions{ 
+    extern REAL64* norm2_results;
+  }
 
 // Types needed for the expression templates. 
 // Bugger Staggered! For Wilson, Ns=4 is nice and cache line
@@ -220,6 +224,7 @@ void evaluate( OLattice< DVec > &d,
     int total_n_4vec = s.end()-s.start()+1;
 
     if( zptr == yptr ) { 
+      // y = ax + y => AXPY
 
       ordered_sse_vaxOpy4_double_user_arg arg = {yptr, aptr, xptr, vaxpy4};
 
@@ -231,7 +236,7 @@ void evaluate( OLattice< DVec > &d,
       //vaxpy4(yptr,aptr,xptr, n_4vec);
     }
     else { 
-
+      // z = ax + y => AXPYZ
       ordered_sse_vaxOpyz4_double_user_arg arg = {zptr, aptr, xptr, yptr, vaxpyz4};
 
       dispatch_to_threads(total_n_4vec, arg, ordered_sse_vaxOpyz4_double_evaluate_function);
@@ -318,7 +323,7 @@ void evaluate( OLattice< DVec > &d,
     int total_n_4vec = s.end()-s.start()+1;
 
     if( zptr == yptr ) { 
-
+      // y = y + ax 
       ordered_sse_vaxOpy4_double_user_arg arg = {yptr, aptr, xptr, vaxpy4};
 
       dispatch_to_threads(total_n_4vec, arg, ordered_sse_vaxOpy4_double_evaluate_function);
@@ -328,15 +333,17 @@ void evaluate( OLattice< DVec > &d,
       ////////////////
       //vaxpy4(yptr,aptr,xptr, n_4vec);
     }
-    else { 
-      ordered_sse_vaxOpyz4_double_user_arg arg = {zptr, aptr, xptr, yptr, vaxpyz4};
+    else {
+    
 
-      dispatch_to_threads(total_n_4vec, arg, ordered_sse_vaxOpyz4_double_evaluate_function);
-      
-      ////////////////
-      // Original code
-      ////////////////
-      //vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
+	ordered_sse_vaxOpyz4_double_user_arg arg = {zptr, aptr, xptr, yptr, vaxpyz4};
+	
+	dispatch_to_threads(total_n_4vec, arg, ordered_sse_vaxOpyz4_double_evaluate_function);
+	
+	////////////////
+	// Original code
+	////////////////
+	//vaxpyz4(zptr, aptr, xptr, yptr, n_4vec);
     }
 
   }
@@ -2552,6 +2559,22 @@ norm2(const QDPType<DVec ,OLattice< DVec > >& s1, const Subset& s)
     QDPIO::cout << "BJ sumsq " << endl;
 #endif
 
+    ordered_norm_double_user_arg arg;
+    int n4vec = s.end()-s.start()+1;
+
+    arg.vptr = (REAL64*)&(s1.elem(s.start()).elem(0).elem(0).real());
+    arg.results = ThreadReductions::norm2_results;
+    arg.func = local_sumsq4;
+    dispatch_to_threads(n4vec, arg, ordered_norm_double_func);
+    REAL64 lsum=arg.results[0];
+    for(int i=1; i < qdpNumThreads(); i++) { 
+	lsum += arg.results[i];
+    }
+    UnaryReturn< OLattice< DVec >, FnNorm2>::Type_t  gsum(lsum);
+    Internal::globalSum(gsum);
+    return gsum;
+
+#if 0 
     const REAL64 *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real());
     
     // Has Type OScalar< PScalar < PScalar < RScalar < REAL64 > > > >
@@ -2562,6 +2585,7 @@ norm2(const QDPType<DVec ,OLattice< DVec > >& s1, const Subset& s)
     UnaryReturn< OLattice< DVec >, FnNorm2>::Type_t  gsum(lsum);
     Internal::globalSum(gsum);
     return gsum;
+#endif
   }
   else {
 
@@ -2591,7 +2615,24 @@ norm2(const QDPType<DVec ,OLattice< DVec > >& s1)
 #ifdef DEBUG_BLAS
   QDPIO::cout << "Using BJ sumsq all" << endl;
 #endif
+  ordered_norm_double_user_arg arg;
+  int n4vec = all.end()-all.start()+1;
 
+  arg.vptr = (REAL64*)&(s1.elem(all.start()).elem(0).elem(0).real());
+    arg.func = local_sumsq4;
+    arg.results = ThreadReductions::norm2_results;
+    dispatch_to_threads(n4vec, arg, ordered_norm_double_func);
+
+    // Sum partial results
+    REAL64 lsum=arg.results[0];
+    for(int i=1; i < qdpNumThreads(); i++) {
+      lsum += arg.results[i];
+    }
+    UnaryReturn< OLattice< DVec >, FnNorm2>::Type_t  gsum(lsum);
+    Internal::globalSum(gsum);
+    return gsum;
+
+#if 0
   int n_4vec = (all.end() - all.start() + 1);
   const REAL64 *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real());
     
@@ -2602,6 +2643,7 @@ norm2(const QDPType<DVec ,OLattice< DVec > >& s1)
   UnaryReturn< OLattice< DVec >, FnNorm2>::Type_t  gsum(lsum);
   Internal::globalSum(gsum);
   return gsum;
+#endif
 }
 
 

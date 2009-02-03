@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.25 2008-12-22 17:42:58 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.26 2009-02-03 21:10:11 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -9,6 +9,10 @@
 #define QDP_SCALARSITE_SSE_BLAS_H
 
 namespace QDP {
+
+  namespace ThreadReductions{ 
+    extern REAL64* norm2_results;
+  }
 
 // Forward declarations of BLAS routines
 void vaxpy3(REAL32 *Out, REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_3vec);
@@ -2207,15 +2211,18 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     QDPIO::cout << "BJ sumsq " << endl;
 #endif
     int n_real = (s.end() - s.start() + 1)*24;
-    const REAL32 *s1ptr =  &(s1.elem(s.start()).elem(0).elem(0).real());
+    ordered_sse_norm_single_user_arg arg;
+    arg.vptr = (REAL32*) &(s1.elem(s.start()).elem(0).elem(0).real());
+    arg.results = ThreadReductions::norm2_results;
+    arg.func = local_sumsq_24_48;
+    dispatch_to_threads(n_real, arg, ordered_norm_single_func);
     
-    // I am relying on this being a Double here 
-    REAL64 ltmp=0;
-    local_sumsq_24_48(&ltmp, (REAL32 *)s1ptr, n_real); 
-
+    REAL64 ltmp=arg.results[0];
+    for(int i=1; i < qdpNumThreads(); i++) { 
+	ltmp += arg.results[i];
+    }
     // Use specialized sum for REAL64
     Internal::globalSum(ltmp);
-
     UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
     return lsum;
   }
@@ -2250,15 +2257,20 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
 #endif
 
   int n_real = (all.end() - all.start() + 1)*24;
-  const REAL32 *s1ptr =  &(s1.elem(all.start()).elem(0).elem(0).real());
+  ordered_sse_norm_single_user_arg arg;
+  arg.vptr = (REAL32*) &(s1.elem(all.start()).elem(0).elem(0).real());
+  arg.results = ThreadReductions::norm2_results;
+  arg.func = local_sumsq_24_48;
+  dispatch_to_threads(n_real, arg, ordered_norm_single_func);
+  
     
   // I am relying on this being a Double here 
-  REAL64 ltmp=0;
-  local_sumsq_24_48(&ltmp, (REAL32 *)s1ptr, n_real); 
-
+  REAL64 ltmp=arg.results[0];
+  for(int i=1; i < qdpNumThreads(); i++) { 
+	ltmp += arg.results[i];
+  }
   // Do the sum with specialized QMP_sum_double
   Internal::globalSum(ltmp);
-
   UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
   return lsum;
 }

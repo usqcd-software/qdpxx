@@ -32,6 +32,12 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*
     }
 }
 
+inline
+int  qdpNumThreads()
+{
+  return omp_get_num_threads();
+}
+
 #else
 
 #if defined(QDP_USE_QMT_THREADS)
@@ -49,6 +55,11 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int,Arg*)
  
 }
 
+inline
+int qdpNumThreads()
+{
+  return qmt_num_threads();
+}
 
 #else
 
@@ -62,6 +73,11 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int,Arg*)
     
 }
 
+inline
+int qdpNumThreads()
+{
+  return 1;
+}
  
 #endif
 

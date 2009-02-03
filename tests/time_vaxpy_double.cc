@@ -18,36 +18,23 @@ int main(int argc, char **argv)
 
 
   // This behaves as expected
-  //  tests.addTest(new time_VAXPBYZ(), "time_AXPBYZ" );
-  // tests.addTest(new time_VAXPBY(), "time_AXPBY" );  
-  // tests.addTest(new time_VAXMBYZ(), "time_AXMBYZ" );
-  // tests.addTest(new time_VAXMBY(), "time_AXMBY" );  
-  tests.addTest(new time_VAXPYZ(), "time_AXPYZ" );
-  tests.addTest(new time_VAXPY(), "time_AXPY" );
+  tests.addTest(new time_VAXPBYZ_double(), "time_AXPBYZ_double" );
+  tests.addTest(new time_VAXPBYZ_float(), "time_AXPBYZ_float" );
 
-  // 
+ 
+  // tests.addTest(new time_VAXPYZ(), "time_AXPYZ" );
+  // tests.addTest(new time_VAXPY(), "time_AXPY" );
   // tests.addTest(new time_VAXMY(), "time_AXMY" );
-  //  tests.addTest(new time_VAYPX(), "time_AYPX" );
+
 
   //tests.addTest(new time_LOCAL_SUMSQ(), "time_LOCAL_SUMSQ");
   // tests.addTest(new time_LOCAL_VCDOT(), "time_LOCAL_VCDOT");
   // tests.addTest(new time_LOCAL_VCDOT_REAL(), "time_LOCAL_VCDOT_REAL");
-
-
-#if 0
-
-
-
-  tests.addTest(new time_VAXMYZ(), "time_AXMYZ" );
-
-  tests.addTest(new time_VSCAL(), "time_VSCAL");
-
-
-  tests.addTest(new time_SUMSQ(), "time_SUMSQ");
-  tests.addTest(new time_VCDOT(), "time_VCDOT");
-  tests.addTest(new time_VCDOT_REAL(), "time_VCDOT_REAL");
-
-#endif
+  // tests.addTest(new time_VAXMYZ(), "time_AXMYZ" );
+  // tests.addTest(new time_VSCAL(), "time_VSCAL");
+  // tests.addTest(new time_SUMSQ(), "time_SUMSQ");
+  // tests.addTest(new time_VCDOT(), "time_VCDOT");
+  // tests.addTest(new time_VCDOT_REAL(), "time_VCDOT_REAL");
   // tests.addTest(new time_QDP_PEQ(), "time_QDP_PEQ" );
   // tests.addTest(new time_QDP_AXPYZ(), "time_QDP_AXPYZ" );
 

@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.18 2008-09-30 18:20:01 bjoo Exp $
+// $Id: qdp_parscalar_init.cc,v 1.19 2009-02-03 21:10:11 bjoo Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -19,6 +19,12 @@
 
 namespace QDP {
 
+#if defined(QDP_USE_QMT_THREADS) || defined(QDP_USE_OMP_THREADS)
+  namespace ThreadReductions {
+    REAL64* norm2_results;
+  }
+
+#endif 
 //! Private flag for status
 static bool isInit = false;
 
@@ -222,7 +228,12 @@ void QDP_initialize(int *argc, char ***argv)
     }
   
 #endif
-
+      // Alloc space for reductions
+  ThreadReductions::norm2_results = new REAL64 [ qdpNumThreads() ];
+  if( ThreadReductions::norm2_results == 0x0 ) { 
+    cout << "Failure... space for norm2 results failed "  << endl;
+    QDP_abort(1);
+  }
   // initialize the global streams
   QDPIO::cin.init(&std::cin);
   QDPIO::cout.init(&std::cout);
@@ -248,13 +259,14 @@ void QDP_finalize()
   //
   // finalise qmt
   //
+  delete [] ThreadResults::norm2_results;
 #if defined(QMT_USE_QMT_THREADS)
     // Finalize threads
     cout << "QDP use qmt threading: Finalizing threads" << endl;
     qmt_finalize();
 #endif 
 
-  printProfile();
+    printProfile();
 
 #ifdef USE_REMOTE_QIO
   // shutdown remote file service (QIO)

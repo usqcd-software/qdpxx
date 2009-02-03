@@ -346,5 +346,21 @@ void unordered_sse_vaxOpby3_evaluate_function (int lo, int hi, int myId, unorder
 }
 
 
+struct ordered_sse_norm_single_user_arg{
+  REAL32* vptr;    // Single Prec vector
+  REAL64* results; // Always store sums in doubles
+  void (*func)(REAL64*, REAL32*, int);
+};
+
+inline void ordered_norm_single_func(int lo, int hi, int myId, ordered_sse_norm_single_user_arg* a) 
+  {
+
+    int nvec = hi - lo;
+    int index = lo;
+    REAL32* vptr = &(a->vptr[index]);
+    void (*func)(REAL64*, REAL32*, int) = a->func;
+    func( &(a->results[myId]), vptr, nvec);
+  }
+
 
 #endif

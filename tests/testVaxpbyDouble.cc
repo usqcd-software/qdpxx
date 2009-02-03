@@ -261,8 +261,8 @@ testVaxpby4_2::run()
   gaussian(x);
   gaussian(y);
 
-  z1 = y;
-  z1 = a*x + b*z1;
+
+  z1 = a*x + b*y;
 
   z2 = y;
 
@@ -283,12 +283,12 @@ testVaxpby4_2::run()
 
 	double realdiff = z1.elem(i).elem(spin).elem(col).real()
 	  - z2.elem(i).elem(spin).elem(col).real();
-
+	QDPIO::cout << "realdiff=" << realdiff << "  " << endl << flush;
 	assertion( fabs(realdiff) < 1.0e-14 );
 
 	double imagdiff = z1.elem(i).elem(spin).elem(col).imag()
 	  - z2.elem(i).elem(spin).elem(col).imag();
-
+	QDPIO::cout << "imagdiff=" << imagdiff << endl << flush;
 	assertion( fabs(imagdiff) < 1.0e-14 );
 
       }

@@ -24,6 +24,7 @@ testLocalSumSq4_1::run()
 
 
   // Loop over sites
+  // This is NOT THREADED but it is test code. That is OK.
   for(int i=all.start(); i <= all.end(); i++) { 
     // Loop over spins
     for(int spin=0; spin < 4; spin++) {
@@ -39,15 +40,17 @@ testLocalSumSq4_1::run()
       }
     }
   }
-
   Internal::globalSum(lsum_hand);
 
   Double lsum_opt=Double(0);
   REAL64* sumptr=&(lsum_opt.elem().elem().elem().elem());
   REAL64* xptr = (REAL64 *)&(x.elem(all.start()).elem(0).elem(0).real());
   int n_4vec=all.end()-all.start()+1;
+
+  // This may eventually be threaded
   local_sumsq4(sumptr, xptr, n_4vec);
   Internal::globalSum(lsum_opt);
+
 
   Double diff = fabs(lsum_opt - lsum_hand);
   Double dof  = Double(Layout::vol()*4*3*2);
@@ -64,14 +67,19 @@ testLocalSumSq4_1::run()
 void
 testLocalSumSq4_2::run()
 {
+  
   LatticeDiracFermionD3 x;
+
+  // These may eventually be threaded
   gaussian(x);
   Double lsum_qdp = norm2(x);
+
 
   Double lsum_opt=Double(0);
   REAL64* sumptr=&(lsum_opt.elem().elem().elem().elem());
   REAL64* xptr = (REAL64 *)&(x.elem(all.start()).elem(0).elem(0).real());
   int n_4vec=all.end()-all.start()+1;
+  // This may be threaded under the hood.
   local_sumsq4(sumptr, xptr, n_4vec);
   Internal::globalSum(lsum_opt);
 
@@ -97,6 +105,7 @@ testLocalSumSq4_3::run()
   Double lsum_hand=Double(0);
 
   // Loop over sites
+  // Not threaded but that is OK
   for(int i=all.start(); i <= all.end(); i++) { 
     // Loop over spins
     for(int spin=0; spin < 4; spin++) {
@@ -114,7 +123,10 @@ testLocalSumSq4_3::run()
   }
   Internal::globalSum(lsum_hand);
 
+  // This should be threaded...
   Double lsum_qdp = norm2(x);
+
+
   Double diff = fabs(lsum_qdp - lsum_hand);
   Double dof=Double(Layout::vol()*4*3*2);
   QDPIO::cout << endl << "\tDiff = " << diff << endl;

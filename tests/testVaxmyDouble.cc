@@ -1,6 +1,7 @@
 #include "qdp.h"
 #include "testVaxmyDouble.h"
 #include "unittest.h"
+#include <qmt.h>
 
 // #include "scalarsite_sse/sse_blas_vaxpy3_double.h"
 
@@ -89,15 +90,17 @@ testVaxmyz4_2::run()
   gaussian(y);
 
   z1 = a*x - y;
+ 
 
   int n_4vec = (all.end() - all.start() + 1);
   REAL64* xptr = (REAL64 *)&(x.elem(all.start()).elem(0).elem(0).real());
-  REAL64* yptr = &(y.elem(all.start()).elem(0).elem(0).real());
+  REAL64* yptr = (REAL64 *)&(y.elem(all.start()).elem(0).elem(0).real());
   REAL64* zptr = &(z2.elem(all.start()).elem(0).elem(0).real());
   REAL64 ar = a.elem().elem().elem().elem();
   REAL64* aptr = &ar;
 
   vaxmyz4(zptr, aptr, xptr, yptr, n_4vec);
+
 
   for(int i=all.start(); i <= all.end(); i++) { 
     // Loop over spins
@@ -108,16 +111,19 @@ testVaxmyz4_2::run()
 	double realdiff = z1.elem(i).elem(spin).elem(col).real()
 	  - z2.elem(i).elem(spin).elem(col).real();
 
-	assertion( fabs(realdiff) < 1.0e-14 );
+	//QDPIO::cout << "rediff=" << realdiff << endl;
+	assertion( fabs(realdiff) < 1.0e-13 );
+
 
 	double imagdiff = z1.elem(i).elem(spin).elem(col).imag()
 	  - z2.elem(i).elem(spin).elem(col).imag();
-
+	//QDPIO::cout << "imagdiff=" << imagdiff << endl;
 	assertion( fabs(imagdiff) < 1.0e-14 );
 
       }
     }
   }
+
 }
 
 

@@ -155,8 +155,7 @@ testVaypx4_3::run()
     }
   }
 
-  z2 = y;
-  z2 = x + a*z2;
+  y = a*y + x;
 
   for(int i=all.start(); i <= all.end(); i++) { 
     // Loop over spins
@@ -165,13 +164,14 @@ testVaypx4_3::run()
       for(int col=0; col < 3; col++) { 
 
 	double realdiff = z1.elem(i).elem(spin).elem(col).real()
-	  - z2.elem(i).elem(spin).elem(col).real();
+	  - y.elem(i).elem(spin).elem(col).real();
 
+	//	QDPIO::cout << "realdiff=" << realdiff << "  ";
 	assertion( fabs(realdiff) < 1.0e-14 );
 
 	double imagdiff = z1.elem(i).elem(spin).elem(col).imag()
-	  - z2.elem(i).elem(spin).elem(col).imag();
-
+	  - y.elem(i).elem(spin).elem(col).imag();
+	// QDPIO::cout << "imagdiff=" << imagdiff << endl;
 	assertion( fabs(imagdiff) < 1.0e-14 );
 
       }

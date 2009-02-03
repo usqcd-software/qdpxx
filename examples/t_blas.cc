@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.25 2008-05-18 19:58:00 bjoo Exp $
+// $Id: t_blas.cc,v 1.26 2009-02-03 21:10:10 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {24,24,24,128};
+  const int foo[] = {8,8,8,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);

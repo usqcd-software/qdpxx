@@ -76,7 +76,8 @@ am_time_matmat_double_OBJECTS = time_matmat_double.$(OBJEXT) \
 time_matmat_double_OBJECTS = $(am_time_matmat_double_OBJECTS)
 time_matmat_double_LDADD = $(LDADD)
 am_time_vaxpy_double_OBJECTS = $(am__objects_1) \
-	timeVaxpyDouble.$(OBJEXT) time_vaxpy_double.$(OBJEXT)
+	timeVaxpyDouble.$(OBJEXT) timeVaxpby.$(OBJEXT) \
+	time_vaxpy_double.$(OBJEXT)
 time_vaxpy_double_OBJECTS = $(am_time_vaxpy_double_OBJECTS)
 time_vaxpy_double_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)/include@am__isrc@
@@ -267,6 +268,7 @@ test_vaxpy_double_DEPENDENCIES = build_libs
 time_vaxpy_double_SOURCES = $(test_HDRS) \
 	timeVaxpyDouble.h \
 	timeVaxpyDouble.cc \
+	timeVaxpby.cc \
 	time_vaxpy_double.cc
 
 time_vaxpy_double_DEPENDENCIES = build_libs
@@ -380,6 +382,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeMatEqHermMatDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeMatEqMatHermDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeMatEqMatMatDouble.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeVaxpby.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timeVaxpyDouble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/time_matmat_double.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/time_vaxpy_double.Po@am__quote@
