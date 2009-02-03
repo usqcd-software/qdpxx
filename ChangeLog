@@ -1,3 +1,13 @@
+2009-02-03 10:07  tag FFDB-0-9-1
+
+2009-02-03 10:07  edwards
+
+	* other_libs/ffdb-lite/: aclocal.m4, configure: Induced changes
+
+2009-02-03 10:06  edwards
+
+	* other_libs/ffdb-lite/configure.ac: Changed to 0.91
+
 2009-01-27 14:45  tag qdp1-30-0
 
 2009-01-27 14:45  edwards
