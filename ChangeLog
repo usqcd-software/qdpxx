@@ -1,3 +1,46 @@
+2009-02-03 16:16  edwards
+
+	* examples/t_db.cc, include/qdp_db_imp.h, include/qdp_db_stub.h:
+	  Changed to new DB constructor interface.
+
+2009-02-03 16:10  bjoo
+
+	* examples/t_blas.cc, include/qdp.h, include/qdp_dispatch.h,
+	  include/qdp_scalarsite_sse.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_double.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_double_wrapper.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_wrapper.h,
+	  lib/qdp_parscalar_init.cc, lib/qdp_scalar_init.cc,
+	  lib/scalarsite_sse/sse_blas_vaxmyz4_double.cc,
+	  lib/scalarsite_sse/sse_blas_vaypx4_double.cc, tests/Makefile.am,
+	  tests/testLocalSumSqDouble.cc, tests/testVaxmyDouble.cc,
+	  tests/testVaxpbyDouble.cc, tests/testVaypxDouble.cc,
+	  tests/test_vaxpy_double.cc, tests/timeVaxpyDouble.cc,
+	  tests/timeVaxpyDouble.h, tests/time_vaxpy_double.cc,
+	  tests/unittest.h: Added various threading related things.
+	  Threaded 4D norm2 funcs for sse
+
+2009-02-03 15:54  tag FFDB-0-9-2
+
+2009-02-03 15:54  edwards
+
+	* other_libs/ffdb-lite/: aclocal.m4, configure: Induced changes
+
+2009-02-03 15:53  edwards
+
+	* other_libs/ffdb-lite/configure.ac: Changed to 0.92
+
+2009-02-03 15:40  edwards
+
+	* other_libs/ffdb-lite/src/: AllConfStoreDB.h, ConfDataDBMerger.h,
+	  ConfDataStoreDB.h, ConfFxDSizeStoreDB.h, ConfVarDSizeStoreDB.h,
+	  ConfigInfoManager.cpp, ConfigInfoManager.h, DBFunc.cpp, DBFunc.h:
+	  Changed interface for DB routines. Now must set the cachesize and
+	  pagesize.  Must also pass in an "open_flags" that is DB_RDONLY or
+	  DB_CREATE. Fixed memory leak from MALLOC (needed by threaded
+	  reads).
+
 2009-02-03 10:07  tag FFDB-0-9-1
 
 2009-02-03 10:07  edwards
