@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_imp.h,v 1.2 2008-08-26 18:44:50 edwards Exp $
+// $Id: qdp_db_imp.h,v 1.3 2009-02-03 21:16:53 edwards Exp $
 /*! @file
  * @brief Support for ffdb-lite - a wrapper over Berkeley DB
  */
@@ -143,11 +143,12 @@ namespace QDP
      * @param DB file filename holding keys and data.
      */
     BinaryVarStoreDB (const std::string& file,
-		      int max_cache_size = 50000000,
-		      int pagesize = db_pagesize)
+                      int open_flags,
+		      int max_cache_size,
+		      int pagesize)
       : FFDB::ConfVarDSizeStoreDB<K,D>()
     {
-      open(file, max_cache_size, pagesize);
+      open(file, open_flags, max_cache_size, pagesize);
     }
 
     /*!
@@ -164,11 +165,12 @@ namespace QDP
      * @param DB file filename holding keys and data.
      */
     void open (const std::string& file,
-	       int max_cache_size = 50000000,
-	       int pagesize = db_pagesize)
+               int open_flags,
+               int max_cache_size,
+               int pagesize)
     {
       if (Layout::primaryNode())
-	FFDB::ConfVarDSizeStoreDB<K,D>::open(file, max_cache_size, pagesize);
+	FFDB::ConfVarDSizeStoreDB<K,D>::open(file, open_flags, max_cache_size, pagesize);
     }
 
     /*!
@@ -329,11 +331,12 @@ namespace QDP
      * @param DB file filename holding keys and data.
      */
     BinaryFxStoreDB (const std::string& file,
-		     int max_cache_size = 50000000,
-		     int pagesize = db_pagesize)
+		     int open_flags,
+		     int max_cache_size,
+		     int pagesize)
       : FFDB::ConfFxDSizeStoreDB<K,D>()
     {
-      open(file, max_cache_size, pagesize);
+      open(file, open_flags, max_cache_size, pagesize);
     }
 
     /*!
@@ -350,11 +353,12 @@ namespace QDP
      * @param DB file filename holding keys and data.
      */
     void open (const std::string& file,
-	       int max_cache_size = 50000000,
-	       int pagesize = db_pagesize)
+	       int open_flags,
+	       int max_cache_size,
+	       int pagesize)
     {
       if (Layout::primaryNode())
-	FFDB::ConfFxDSizeStoreDB<K,D>::open(file, max_cache_size, pagesize);
+	FFDB::ConfFxDSizeStoreDB<K,D>::open(file, open_flags, max_cache_size, pagesize);
     }
 
     /*!

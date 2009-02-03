@@ -1,4 +1,4 @@
-// $Id: t_db.cc,v 1.6 2008-08-26 19:36:16 edwards Exp $
+// $Id: t_db.cc,v 1.7 2009-02-03 21:16:53 edwards Exp $
 /*! \file
  *  \brief Test the database routines
  */
@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
     
     // Open it
     QDPIO::cout << "open" << endl;
-    DBType_t db("test.db", 5000000, 64*1024);
+    DBType_t db("test.db", DB_CREATE, db_cachesize, db_pagesize);
 
     // Test it
     QDPIO::cout << "insert" << endl;
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
 
     // Open it
     QDPIO::cout << "open" << endl;
-    DBType_t db("test.db");
+    DBType_t db("test.db", DB_RDONLY, db_cachesize, db_pagesize);
 
     // Test it
     QDPIO::cout << "get" << endl;
@@ -277,7 +277,7 @@ int main(int argc, char *argv[])
   {
     // Open it
     QDPIO::cout << "open" << endl;
-    DBType_t db("test.db");
+    DBType_t db("test.db", DB_RDONLY, db_cachesize, db_pagesize);
 
     // Test it
     QDPIO::cout << "find keys" << endl;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_stub.h,v 1.7 2008-08-27 14:54:49 edwards Exp $
+// $Id: qdp_db_stub.h,v 1.8 2009-02-03 21:16:53 edwards Exp $
 /*! @file
  * @brief Stubs of wrappers over Berkeley DB
  */
@@ -17,6 +17,14 @@ namespace QDP
   {
      // empty - just for making the compilers happy.
   }
+
+  //! Fake cache and page sizes
+  const int db_cachesize = 0;
+  const int db_pagesize = 0;
+
+  //! Fake open flags
+  const int DB_RDONLY = 0;
+  const int DB_CREATE = 0;
 
   //! Forward empty decl
   class Db;
@@ -141,8 +149,9 @@ namespace QDP
      * @param DB file filename holding keys and data.
      */
     BinaryVarStoreDB (const std::string& file,
-		      int max_cache_size = 0,
-		      int pagesize = 0)
+		      int open_flags,
+		      int max_cache_size,
+		      int pagesize)
       {notImplemented();}
 
     /*!
@@ -156,8 +165,9 @@ namespace QDP
      * @param DB file filename holding keys and data.
      */
     void open (const std::string& file,
-	       int max_cache_size = 0,
-	       int pagesize = 0)
+	       int open_flags,
+	       int max_cache_size,
+	       int pagesize)
       {notImplemented();}
 
     /*!
@@ -255,8 +265,9 @@ namespace QDP
      * @param DB file filename holding keys and data.
      */
     BinaryFxStoreDB (const std::string& file,
-		     int max_cache_size = 0,
-		     int pagesize = 0)
+		     int open_flags,
+		     int max_cache_size,
+		     int pagesize)
       {notImplemented();}
 
     /*!
@@ -270,8 +281,9 @@ namespace QDP
      * @param DB file filename holding keys and data.
      */
     void open (const std::string& file,
-	       int max_cache_size = 0,
-	       int pagesize = 0)
+	       int open_flags,
+	       int max_cache_size,
+	       int pagesize)
       {notImplemented();}
 
     /*!
