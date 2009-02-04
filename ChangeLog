@@ -1,3 +1,7 @@
+2009-02-04 15:19  bjoo
+
+	* tests/timeVaxpby.cc: Doesnt matter anyway
+
 2009-02-04 07:09  bjoo
 
 	* lib/qdp_parscalar_init.cc, lib/qdp_scalar_init.cc,
