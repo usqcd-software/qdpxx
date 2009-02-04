@@ -1,3 +1,9 @@
+2009-02-04 07:09  bjoo
+
+	* lib/qdp_parscalar_init.cc, lib/qdp_scalar_init.cc,
+	  tests/testVaxmyDouble.cc: Fixed thread related bugs. Various non
+	  threaded targets compile again
+
 2009-02-03 16:16  edwards
 
 	* examples/t_db.cc, include/qdp_db_imp.h, include/qdp_db_stub.h:
