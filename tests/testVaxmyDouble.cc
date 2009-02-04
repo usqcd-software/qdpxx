@@ -1,7 +1,7 @@
 #include "qdp.h"
 #include "testVaxmyDouble.h"
 #include "unittest.h"
-#include <qmt.h>
+// #include <qmt.h>
 
 // #include "scalarsite_sse/sse_blas_vaxpy3_double.h"
 

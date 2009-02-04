@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_init.cc,v 1.11 2009-02-03 21:10:11 bjoo Exp $
+// $Id: qdp_scalar_init.cc,v 1.12 2009-02-04 12:09:29 bjoo Exp $
 
 /*! @file
  * @brief Scalar init routines
@@ -15,11 +15,9 @@
 
 namespace QDP {
 
-#if defined(QDP_USE_QMT_THREADS) || defined(QDP_USE_OMP_THREADS)
-  namespace ThreadReductions {
-    REAL64* norm2_results;
-  }
-#endif 
+namespace ThreadReductions {
+   REAL64* norm2_results;
+}
 
 //! Private flag for status
 static bool isInit = false;

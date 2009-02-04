@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.19 2009-02-03 21:10:11 bjoo Exp $
+// $Id: qdp_parscalar_init.cc,v 1.20 2009-02-04 12:09:29 bjoo Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -19,12 +19,10 @@
 
 namespace QDP {
 
-#if defined(QDP_USE_QMT_THREADS) || defined(QDP_USE_OMP_THREADS)
   namespace ThreadReductions {
     REAL64* norm2_results;
   }
 
-#endif 
 //! Private flag for status
 static bool isInit = false;
 
@@ -259,7 +257,7 @@ void QDP_finalize()
   //
   // finalise qmt
   //
-  delete [] ThreadResults::norm2_results;
+  delete [] ThreadReductions::norm2_results;
 #if defined(QMT_USE_QMT_THREADS)
     // Finalize threads
     cout << "QDP use qmt threading: Finalizing threads" << endl;
