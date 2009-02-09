@@ -1,3 +1,8 @@
+2009-02-09 16:04  bjoo
+
+	* lib/scalarsite_sse/qdp_scalarsite_linalg_double.cc: Added
+	  threading to ordered sets for SU3xSU3. Tested through chroma
+
 2009-02-04 15:19  bjoo
 
 	* tests/timeVaxpby.cc: Doesnt matter anyway
