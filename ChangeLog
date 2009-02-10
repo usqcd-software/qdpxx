@@ -1,3 +1,15 @@
+2009-02-10 12:06  bjoo
+
+	* include/scalarsite_sse/qdp_scalarsite_sse_linalg_double.h,
+	  include/scalarsite_sse/sse_linalg_mm_su3_double.h,
+	  lib/scalarsite_sse/qdp_scalarsite_linalg_double.cc,
+	  lib/scalarsite_sse/sse_linalg_m_eq_hh_double.cc,
+	  lib/scalarsite_sse/sse_linalg_m_eq_hm_double.cc,
+	  lib/scalarsite_sse/sse_linalg_m_eq_mh_double.cc,
+	  lib/scalarsite_sse/sse_linalg_m_eq_mm_double.cc,
+	  tests/testLocalSumSqDouble.cc, tests/testVaxpyDouble.cc: Added
+	  threading for unordered su3xsu3 and tested through chroma
+
 2009-02-09 16:04  bjoo
 
 	* lib/scalarsite_sse/qdp_scalarsite_linalg_double.cc: Added
