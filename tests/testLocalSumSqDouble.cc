@@ -58,7 +58,7 @@ testLocalSumSq4_1::run()
   QDPIO::cout << endl << "\tDiff = " << toDouble(diff) << endl;
   QDPIO::cout << "\tDiff/dof = " << toDouble(diff/dof) << endl;
   
-  assertion( toBool( diff/dof  < 1.0e-14 ) );
+  assertion( toBool( diff/dof  < 1.0e-13 ) );
 
 }
 

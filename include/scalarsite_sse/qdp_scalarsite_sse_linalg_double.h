@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg_double.h,v 1.1 2008-06-26 23:23:28 bjoo Exp $
+// $Id: qdp_scalarsite_sse_linalg_double.h,v 1.2 2009-02-10 17:06:37 bjoo Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -58,7 +58,8 @@ operator*(const PMatrix<RComplex<REAL64>,3,PColorMatrix>& l,
   REAL64* rm = (REAL64 *) &(r.elem(0,0).real());
   REAL64* dm = (REAL64 *) &(d.elem(0,0).real());
 
-  ssed_m_eq_mm(dm,lm,rm,1);
+  // Use Unaligned here
+  ssed_m_eq_mm_u(dm,lm,rm,1);
 
   return d;
 }
@@ -83,8 +84,9 @@ operator*(const PScalar<PColorMatrix<RComplex<REAL64>,3> >& l,
   REAL64* lm = (REAL64 *)&(l.elem().elem(0,0).real());
   REAL64* rm = (REAL64 *)&(r.elem().elem(0,0).real());
   REAL64* dm = (REAL64 *)&(d.elem().elem(0,0).real());
-
-  ssed_m_eq_mm(dm, lm, rm, 1);
+  
+  // Use unaligned here
+  ssed_m_eq_mm_u(dm, lm, rm, 1);
 
   return d;
 }
@@ -110,7 +112,8 @@ operator*(const PScalar<PScalar<PColorMatrix<RComplex<REAL64>,3> > >& l,
   REAL64* rm = (REAL64 *)&(r.elem().elem().elem(0,0).real());
   REAL64* dm = (REAL64 *)&(d.elem().elem().elem(0,0).real());
 
-  ssed_m_eq_mm(dm,lm, rm,1);
+  // Use unaligned here
+  ssed_m_eq_mm_u(dm,lm, rm,1);
 
   return d;
 }
@@ -134,7 +137,7 @@ adjMultiply(const PMatrix<RComplex<REAL64>,3,PColorMatrix>& l,
   REAL64* rm = (REAL64 *) &(r.elem(0,0).real());
   REAL64* dm = (REAL64 *) &(d.elem(0,0).real());
 
-  ssed_m_eq_hm(dm,lm,rm,1);
+  ssed_m_eq_hm_u(dm,lm,rm,1);
 
   return d;
 }
@@ -159,7 +162,7 @@ adjMultiply(const PScalar<PColorMatrix<RComplex<REAL64>,3> >& l,
   REAL64* rm = (REAL64 *)&(r.elem().elem(0,0).real());
   REAL64* dm = (REAL64 *)&(d.elem().elem(0,0).real());
 
-  ssed_m_eq_hm(dm, lm, rm, 1);
+  ssed_m_eq_hm_u(dm, lm, rm, 1);
 
 
   return d;
@@ -186,7 +189,7 @@ adjMultiply(const PScalar<PScalar<PColorMatrix<RComplex<REAL64>,3> > >& l,
   REAL64* rm = (REAL64 *)&(r.elem().elem().elem(0,0).real());
   REAL64* dm = (REAL64 *)&(d.elem().elem().elem(0,0).real());
 
-  ssed_m_eq_hm(dm,lm, rm,1);
+  ssed_m_eq_hm_u(dm,lm, rm,1);
 
   return d;
 }
@@ -210,7 +213,7 @@ multiplyAdj(const PMatrix<RComplex<REAL64>,3,PColorMatrix>& l,
   REAL64* rm = (REAL64 *) &(r.elem(0,0).real());
   REAL64* dm = (REAL64 *) &(d.elem(0,0).real());
 
-  ssed_m_eq_mh(dm,lm,rm,1);
+  ssed_m_eq_mh_u(dm,lm,rm,1);
 
 
   return d;
@@ -236,7 +239,7 @@ multiplyAdj(const PScalar<PColorMatrix<RComplex<REAL64>,3> >& l,
   REAL64* rm = (REAL64 *)&(r.elem().elem(0,0).real());
   REAL64* dm = (REAL64 *)&(d.elem().elem(0,0).real());
 
-  ssed_m_eq_mh(dm,lm,rm,1);
+  ssed_m_eq_mh_u(dm,lm,rm,1);
   return d;
 }
 
@@ -260,7 +263,7 @@ multiplyAdj(const PScalar<PScalar<PColorMatrix<RComplex<REAL64>,3> > >& l,
   REAL64* rm = (REAL64 *)&(r.elem().elem().elem(0,0).real());
   REAL64* dm = (REAL64 *)&(d.elem().elem().elem(0,0).real());
 
-  ssed_m_eq_mh(dm,lm,rm,1);
+  ssed_m_eq_mh_u(dm,lm,rm,1);
   return d;
 }
 
@@ -285,7 +288,7 @@ adjMultiplyAdj(const PMatrix<RComplex<REAL64>,3,PColorMatrix>& l,
   REAL64* lm = (REAL64 *) &(l.elem(0,0).real());
   REAL64* rm = (REAL64 *) &(r.elem(0,0).real());
   REAL64* dm = (REAL64 *) &(d.elem(0,0).real());
-  ssed_m_eq_hh(dm,lm,rm,1);
+  ssed_m_eq_hh_u(dm,lm,rm,1);
 
   return d;
 }

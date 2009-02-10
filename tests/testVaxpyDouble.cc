@@ -1352,7 +1352,7 @@ testVaxpy4_RB30_PEQ::run()
     REAL64 ar = a.elem().elem().elem().elem();
     REAL64* aptr = &ar;
 
-    vaxpy4(zptr, aptr, zptr, n_4vec);
+    vaxpy4(zptr, aptr, xptr, n_4vec);
   }
   else { 
     const int *tab = rb3[0].siteTable().slice();
