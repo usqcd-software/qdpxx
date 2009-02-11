@@ -1,3 +1,17 @@
+2009-02-11 15:50  bjoo
+
+	* include/qdp_scalarsite_sse.h, include/qdp_traits.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_cblas.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_cblas_wrapper.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_g5.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_linalg.h,
+	  include/scalarsite_sse/qdp_sse_fused_spin_recon_evaluates_wrapper.h,
+	  include/scalarsite_sse/sse_spin_proj_inlines.h,
+	  lib/scalarsite_sse/qdp_scalarsite_sse.cc: Arranged to have all
+	  the SSE optimizations in scope at once. Spin projections still
+	  have a clash...
+
 2009-02-10 12:06  bjoo
 
 	* include/scalarsite_sse/qdp_scalarsite_sse_linalg_double.h,
