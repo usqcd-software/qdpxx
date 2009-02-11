@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.26 2009-02-03 21:10:11 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.27 2009-02-11 20:50:45 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -1220,7 +1220,7 @@ void evaluate( OLattice< TVec > &d,
   QDPIO::cout << "BJ: v *= a, a = " << a << endl;
 #endif
   
-  REAL ar = a.elem().elem().elem().elem();
+  REAL32 ar = a.elem().elem().elem().elem();
   if( s.hasOrderedRep() ) { 
     REAL32 * xptr = &(d.elem(s.start()).elem(0).elem(0).real());
     REAL32 * zptr = xptr;
@@ -1278,7 +1278,7 @@ void evaluate( OLattice< TVec > &d,
   QDPIO::cout << "BJ: v /= a, a = " << a << endl;
 #endif
   
-  REAL ar = (REAL)1/a.elem().elem().elem().elem();
+  REAL32 ar = (REAL)1/a.elem().elem().elem().elem();
   if( s.hasOrderedRep() ) {
     REAL32 * xptr = &(d.elem(s.start()).elem(0).elem(0).real());
     REAL32 * zptr = xptr;

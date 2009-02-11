@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas_g5.h,v 1.7 2007-06-10 14:32:10 edwards Exp $
+// $Id: qdp_scalarsite_sse_blas_g5.h,v 1.8 2009-02-11 20:50:45 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -18,8 +18,8 @@ namespace QDP {
 
 // Types needed for the expression templates. 
 // TVec has outer Ns template so it ought to work for staggered as well
-typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, Ns> TVec;
-typedef PScalar<PScalar<RScalar<REAL> > >  TScal;
+typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> TVec;
+typedef PScalar<PScalar<RScalar<REAL32> > >  TScal;
 
 // #define DEBUG_BLAS_G6
 // TVec is the LatticeFermion from qdp_dwdefs.h with the OLattice<> stripped

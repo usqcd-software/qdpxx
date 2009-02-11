@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse_linalg.h,v 1.15 2007-08-31 02:50:33 bjoo Exp $
+// $Id: qdp_scalarsite_sse_linalg.h,v 1.16 2009-02-11 20:50:45 bjoo Exp $
 
 /*! @file
  * @brief Blas optimizations
@@ -28,7 +28,7 @@ namespace QDP {
  */
 
 // Use this def just to safe some typing later on in the file
-typedef RComplex<float>  RComplexFloat;
+typedef RComplex<REAL32>  RComplexFloat;
 
 // Types needed for the expression templates. 
 typedef PScalar<PColorMatrix<RComplexFloat, 3> > TCol;

@@ -13,7 +13,7 @@ struct ordered_sse_fused_spin_recon_user_arg{
   const OLattice< HVec >& a;
   OLattice< FVec >& d;
   int base;
-  void (*func)(const REAL*, REAL*, unsigned int);
+  void (*func)(const REAL32*, REAL32*, unsigned int);
 };
 
 
@@ -25,7 +25,7 @@ void ordered_sse_fused_spin_recon_evaluate_function (int lo, int hi, int myId, o
   const OLattice< HVec >& a = arg->a ;
   OLattice< FVec >& d = arg->d;
   int base = arg->base;
-  void (*func)(const REAL*, REAL*, unsigned int) = arg->func; 
+  void (*func)(const REAL32*, REAL32*, unsigned int) = arg->func; 
 
   int low = lo + base;
   int high = hi + base;
@@ -41,8 +41,8 @@ void ordered_sse_fused_spin_recon_evaluate_function (int lo, int hi, int myId, o
       intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
-      func( (REAL *)&(tmp.elem(0).elem(0).real()),
-	    (REAL *)&(d.elem(site).elem(0).elem(0).real()),
+      func( (REAL32 *)&(tmp.elem(0).elem(0).real()),
+	    (REAL32 *)&(d.elem(site).elem(0).elem(0).real()),
 	    1);
 
   }
@@ -56,7 +56,7 @@ struct unordered_sse_fused_spin_recon_user_arg{
   const OLattice< HVec >& a;
   OLattice< FVec >& d;
   const int *tab;
-  void (*func)(const REAL*, REAL*, unsigned int);
+  void (*func)(const REAL32*, REAL32*, unsigned int);
 };
 
 
@@ -68,7 +68,7 @@ void unordered_sse_fused_spin_recon_evaluate_function (int lo, int hi, int myId,
   const OLattice< HVec >& a = arg->a ;
   OLattice< FVec >& d = arg->d;
   const int *tab = arg->tab;
-  void (*func)(const REAL*, REAL*, unsigned int) = arg->func; 
+  void (*func)(const REAL32*, REAL32*, unsigned int) = arg->func; 
 
   for (int j = lo; j < hi; j++){
 
@@ -83,8 +83,8 @@ void unordered_sse_fused_spin_recon_evaluate_function (int lo, int hi, int myId,
     intrin_sse_mult_su3_mat_hwvec(um, ah, tmph);
       
       
-    func( (REAL *)&(tmp.elem(0).elem(0).real()),
-	  (REAL *)&(d.elem(site).elem(0).elem(0).real()),
+    func( (REAL32 *)&(tmp.elem(0).elem(0).real()),
+	  (REAL32 *)&(d.elem(site).elem(0).elem(0).real()),
 	  1);
   }
 

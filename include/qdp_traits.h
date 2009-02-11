@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_traits.h,v 1.11 2007-07-17 17:28:04 bjoo Exp $
+// $Id: qdp_traits.h,v 1.12 2009-02-11 20:50:45 bjoo Exp $
 
 /*! @file
  * @brief Traits classes
@@ -75,7 +75,11 @@ struct DoublePrecType<REAL64>
   typedef REAL64 Type_t;
 };
 
-
+  template<typename T> 
+  struct DoublePrecType< multi1d< T > >
+  {
+    typedef multi1d< typename DoublePrecType< T >::Type_t > Type_t;
+  };
 
 
 //-----------------------------------------------------------------------------

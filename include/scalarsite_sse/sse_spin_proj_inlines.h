@@ -5,7 +5,7 @@
 
 /* File: generic_spin_proj_inlines.h
    Purpose: Supply inline functions to do spin projection
-   Author: $Id: sse_spin_proj_inlines.h,v 1.5 2007-08-31 14:41:18 bjoo Exp $
+   Author: $Id: sse_spin_proj_inlines.h,v 1.6 2009-02-11 20:50:45 bjoo Exp $
 */
 namespace QDP {
 #include <stdio.h>
@@ -23,7 +23,7 @@ namespace QDP {
  * ordering is that spin is slowest, and complex components
  * are fastest. */
 inline  
-void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec) 
+void inlineSpinProjDir0Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec) 
 {
 
 #ifdef DEBUG_GENERIC_SPIN_PROJ_INLINES
@@ -41,8 +41,8 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
    *      ( d0r + i d0i )  =  ( {x0r - x3i} + i{x0i + x3r} )
    *      ( d1r + i d1i )     ( {x1r - x2i} + i{x1i + x2r} )
    */
-  const REAL* src_shadow = src;
-  REAL* dst_shadow = dst;
+  const REAL32* src_shadow = src;
+  REAL32* dst_shadow = dst;
 
 
   // Store in the spinor - top half
@@ -198,7 +198,7 @@ void inlineSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec)
  * ordering is that spin is slowest, and complex components
  * are fastest. */
 inline 
-void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec) 
+void inlineSpinProjDir0Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec) 
 {
 
 #ifdef DEBUG_GENERIC_SPIN_PROJ_INLINES
@@ -218,8 +218,8 @@ void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
    */
 
 
-  const REAL* src_shadow = src;
-  REAL* dst_shadow = dst;
+  const REAL32* src_shadow = src;
+  REAL32* dst_shadow = dst;
   SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
 
   v7.floats[0] = -1;
@@ -376,7 +376,7 @@ void inlineSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec)
  * ordering is that spin is slowest, and complex components
  * are fastest. */
 inline  
-void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec) 
+void inlineSpinProjDir1Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec) 
 {
 
 #ifdef DEBUG_GENERIC_SPIN_PROJ_INLINES
@@ -392,8 +392,8 @@ void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
    *      ( b1r + i b1i )     ( {a1r + a2r} + i{a1i + a2i} )
    */
 
-  const REAL* src_shadow = src;
-  REAL* dst_shadow = dst;
+  const REAL32* src_shadow = src;
+  REAL32* dst_shadow = dst;
   SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
 
   v7.floats[0] = -1;
@@ -544,7 +544,7 @@ void inlineSpinProjDir1Plus(const REAL* src, REAL *dst, unsigned int n_vec)
  * ordering is that spin is slowest, and complex components
  * are fastest. */
 inline 
-void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec) 
+void inlineSpinProjDir1Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec) 
 {
 
 #ifdef DEBUG_GENERIC_SPIN_PROJ_INLINES
@@ -559,8 +559,8 @@ void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
    *      ( b0r + i b0i )  =  ( {a0r + a3r} + i{a0i + a3i} )
    *      ( b1r + i b1i )     ( {a1r - a2r} + i{a1i - a2i} )
    */
-  const REAL* src_shadow = src;
-  REAL* dst_shadow = dst;
+  const REAL32* src_shadow = src;
+  REAL32* dst_shadow = dst;
   SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
 
   v7.floats[0] = -1;
@@ -714,7 +714,7 @@ void inlineSpinProjDir1Minus(const REAL* src, REAL *dst, unsigned int n_vec)
  * ordering is that spin is slowest, and complex components
  * are fastest. */
 inline  
-void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec) 
+void inlineSpinProjDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec) 
 {
 
 #ifdef DEBUG_GENERIC_SPIN_PROJ_INLINES
@@ -730,8 +730,8 @@ void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
    *      ( b1r + i b1i )     ( {a1r + a3i} + i{a1i - a3r} )
    */
 
-  const REAL* src_shadow = src;
-  REAL* dst_shadow = dst;
+  const REAL32* src_shadow = src;
+  REAL32* dst_shadow = dst;
   SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
 
   v7.floats[0] = -1;
@@ -892,7 +892,7 @@ void inlineSpinProjDir2Plus(const REAL* src, REAL *dst, unsigned int n_vec)
  * ordering is that spin is slowest, and complex components
  * are fastest. */
 inline 
-void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec) 
+void inlineSpinProjDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec) 
 {
 
 #ifdef DEBUG_GENERIC_SPIN_PROJ_INLINES
@@ -909,8 +909,8 @@ void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
    *      ( b1r + i b1i )     ( {a1r - a3i} + i{a1i + a3r} )
    */
 
-  const REAL* src_shadow = src;
-  REAL* dst_shadow = dst;
+  const REAL32* src_shadow = src;
+  REAL32* dst_shadow = dst;
   SSEVec v0, v1, v2, v3, v4, v5, v6, v7;
 
   v7.floats[0] = -1;
@@ -1072,7 +1072,7 @@ void inlineSpinProjDir2Minus(const REAL* src, REAL *dst, unsigned int n_vec)
  * ordering is that spin is slowest, and complex components
  * are fastest. */
 inline  
-void inlineSpinProjDir3Plus(const REAL* src, REAL *dst, unsigned int n_vec) 
+void inlineSpinProjDir3Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec) 
 {
 
 #ifdef DEBUG_GENERIC_SPIN_PROJ_INLINES
@@ -1086,8 +1086,8 @@ void inlineSpinProjDir3Plus(const REAL* src, REAL *dst, unsigned int n_vec)
    *      ( b0r + i b0i )  =  ( {a0r + a2r} + i{a0i + a2i} )
    *      ( b1r + i b1i )     ( {a1r + a3r} + i{a1i + a3i} )
    */
-  const REAL* src_shadow = src;
-  REAL* dst_shadow = dst;
+  const REAL32* src_shadow = src;
+  REAL32* dst_shadow = dst;
   SSEVec v0, v1, v2, v3, v4, v5;
 
   // Store in the spinor - top half
@@ -1146,7 +1146,7 @@ void inlineSpinProjDir3Plus(const REAL* src, REAL *dst, unsigned int n_vec)
  * ordering is that spin is slowest, and complex components
  * are fastest. */
 inline 
-void inlineSpinProjDir3Minus(const REAL* src, REAL *dst, unsigned int n_vec) 
+void inlineSpinProjDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec) 
 {
 
 #ifdef DEBUG_GENERIC_SPIN_PROJ_INLINES
@@ -1162,8 +1162,8 @@ void inlineSpinProjDir3Minus(const REAL* src, REAL *dst, unsigned int n_vec)
    *      ( b1r + i b1i )     ( {a1r - a3r} + i{a1i - a3i} )
    */
 
-  const REAL* src_shadow = src;
-  REAL* dst_shadow = dst;
+  const REAL32* src_shadow = src;
+  REAL32* dst_shadow = dst;
   SSEVec v0, v1, v2, v3, v4, v5;
 
   // Store in the spinor - top half

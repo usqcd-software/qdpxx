@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.1 2008-06-26 23:20:56 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.2 2009-02-11 20:50:45 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -15,7 +15,6 @@
 #include "qdp_sse_intrin.h"
 namespace QDP {
 
-#if BASE_PRECISION==32
 
 
 #if 1
@@ -607,8 +606,8 @@ void evaluate(OLattice< TCol >& d,
     const int start = s.start();
     const int end = s.end();
 
-    REAL* d_ptr =&(d.elem(start).elem().elem(0,0).real());
-    const REAL* r_ptr =&(l.elem(start).elem().elem(0,0).real());
+    REAL32* d_ptr =&(d.elem(start).elem().elem(0,0).real());
+    const REAL32* r_ptr =&(l.elem(start).elem().elem(0,0).real());
   
     const unsigned int total_reals = (end-start+1)*3*3*2;
     const unsigned int total_v4sf = total_reals/4;
@@ -623,8 +622,8 @@ void evaluate(OLattice< TCol >& d,
     }
   
     
-    r_ptr = (REAL *)r_ptr_v4sf;
-    d_ptr = (REAL *)d_ptr_v4sf;
+    r_ptr = (REAL32 *)r_ptr_v4sf;
+    d_ptr = (REAL32 *)d_ptr_v4sf;
     for(unsigned int i=0; i < remainder; i++, r_ptr++, d_ptr++) { 
       *d_ptr = *r_ptr;
     }
@@ -664,8 +663,8 @@ void evaluate(OLattice< TCol >& d,
     const int start = s.start();
     const int end = s.end();
 
-    REAL* d_ptr =&(d.elem(start).elem().elem(0,0).real());
-    const REAL* r_ptr =&(l.elem(start).elem().elem(0,0).real());
+    REAL32* d_ptr =&(d.elem(start).elem().elem(0,0).real());
+    const REAL32* r_ptr =&(l.elem(start).elem().elem(0,0).real());
     
     const unsigned int total_reals = (end-start+1)*3*3*2;
     const unsigned int total_v4sf = total_reals/4;
@@ -681,8 +680,8 @@ void evaluate(OLattice< TCol >& d,
     }
     
     
-    r_ptr = (REAL *)r_ptr_v4sf;
-    d_ptr = (REAL *)d_ptr_v4sf;
+    r_ptr = (REAL32 *)r_ptr_v4sf;
+    d_ptr = (REAL32 *)d_ptr_v4sf;
     for(unsigned int i=0; i < remainder; i++, r_ptr++, d_ptr++) { 
       *d_ptr += *r_ptr;
     }
@@ -721,8 +720,8 @@ void evaluate(OLattice< TCol >& d,
     const int start = s.start();
     const int end = s.end();
     
-    REAL* d_ptr =&(d.elem(start).elem().elem(0,0).real());
-    const REAL* r_ptr =&(l.elem(start).elem().elem(0,0).real());
+    REAL32* d_ptr =&(d.elem(start).elem().elem(0,0).real());
+    const REAL32* r_ptr =&(l.elem(start).elem().elem(0,0).real());
     
     const unsigned int total_reals = (end-start+1)*3*3*2;
     const unsigned int total_v4sf = total_reals/4;
@@ -738,8 +737,8 @@ void evaluate(OLattice< TCol >& d,
     }
     
     
-    r_ptr = (REAL *)r_ptr_v4sf;
-    d_ptr = (REAL *)d_ptr_v4sf;
+    r_ptr = (REAL32 *)r_ptr_v4sf;
+    d_ptr = (REAL32 *)d_ptr_v4sf;
     for(unsigned int i=0; i < remainder; i++, r_ptr++, d_ptr++) { 
       *d_ptr -= *r_ptr;
     }
@@ -1854,7 +1853,6 @@ void local_vcdot_real(REAL64 *Out, REAL32 *V1, REAL32 *V2, int n_3vec)
 
 
 
-#endif // BASE PRECISION==32
 
 } // namespace QDP;
 
