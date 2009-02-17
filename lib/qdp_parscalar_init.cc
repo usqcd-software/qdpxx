@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.21 2009-02-17 23:42:01 bjoo Exp $
+// $Id: qdp_parscalar_init.cc,v 1.22 2009-02-17 23:43:07 bjoo Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -212,18 +212,18 @@ void QDP_initialize(int *argc, char ***argv)
   //
 #ifdef QDP_USE_QMT_THREADS
     
-      // Initialize threads
-      if( Layout::primaryNode() ) { 
-        cout << "QDP use qmt threading: Initializing threads..." ;
-      } 
-      int thread_status = qmt_init();
+    // Initialize threads
+    if( Layout::primaryNode() ) { 
+      cout << "QDP use qmt threading: Initializing threads..." ;
+    } 
+    int thread_status = qmt_init();
       
-      if( thread_status == 0 ) { 
-        if (  Layout::primaryNode() ) { 
-	   cout << "Success" << endl;
-	   cout << "Created: " << qmt_num_threads() << " threads" << endl;
-	   cout << "My thread ID is: " << qmt_thread_id() << endl;
-        }
+    if( thread_status == 0 ) { 
+      if (  Layout::primaryNode() ) { 
+         cout << "Success" << endl;
+	 cout << "Created: " << qmt_num_threads() << " threads" << endl;
+	 cout << "My thread ID is: " << qmt_thread_id() << endl;
+      } 
     }
     else { 
 	cout << "Failure... qmt_init() returned " << thread_status << endl;
