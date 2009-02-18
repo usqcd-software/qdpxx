@@ -1,3 +1,8 @@
+2009-02-17 18:42  bjoo
+
+	* lib/: qdp_parscalar_init.cc: Changed so only primary node prints
+	  thread status
+
 2009-02-11 15:50  bjoo
 
 	* include/qdp_scalarsite_sse.h, include/qdp_traits.h,
