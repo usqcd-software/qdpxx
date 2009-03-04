@@ -1,3 +1,7 @@
+2009-03-04 14:08  edwards
+
+	* other_libs/ffdb-lite/src/DBCursor.h: Changed include slightly.
+
 2009-03-04 01:11  tag qio2-3-8
 
 2009-03-04 01:11  osborn
