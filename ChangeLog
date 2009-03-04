@@ -1,3 +1,14 @@
+2009-03-04 01:02  osborn
+
+	* other_libs/qio/NEWS: updated NEWS
+
+2009-03-04 00:56  osborn
+
+	* other_libs/qio/: lib/dml/DML_parscalar.c,
+	  other_libs/c-lime/aclocal.m4, other_libs/c-lime/configure: Made
+	  it so that the "clear to send" messages are still sent when
+	  HAVE_BGL is defined.
+
 2009-02-17 18:42  bjoo
 
 	* lib/: qdp_parscalar_init.cc: Changed so only primary node prints
