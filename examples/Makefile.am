@@ -9,6 +9,8 @@ AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
               -I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
               -I@top_builddir@/other_libs/qio/other_libs/c-lime/include \
               -I@top_srcdir@/other_libs/xpath_reader/include \
+              -I@top_srcdir@/other_libs/filedb/src \
+              -I@top_srcdir@/other_libs/filedb/filehash \
               @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@ @QMT_CXXFLAGS@
 
 if BUILD_LIBINTRIN
@@ -21,22 +23,19 @@ AM_LDFLAGS = -L@top_builddir@/lib \
              -L@top_builddir@/other_libs/qio/lib \
              -L@top_builddir@/other_libs/qio/other_libs/c-lime/lib \
              -L@top_builddir@/other_libs/xpath_reader/lib \
+             -L@top_builddir@/other_libs/filedb/src \
+             -L@top_builddir@/other_libs/filedb/filehash \
              @LDFLAGS@ @BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@ @QMT_LDFLAGS@
 
 if BUILD_LIBINTRIN
 AM_LDFLAGS += -L@top_builddir@/other_libs/libintrin/lib
 endif
 
-LDADD = -lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @QMT_LIBS@ @LIBS@
+LDADD = -lqdp -lXPathReader -lxmlWriter -lqio -llime -lfiledb -lfilehash \
+      @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @QMT_LIBS@ @LIBS@
 
 if BUILD_LIBINTRIN
 LDADD += -lintrin
-endif
-
-if BUILD_FFDB_LITE
-AM_CXXFLAGS += -I@top_srcdir@/other_libs/@FFDB_LITE_DIR@/src @FFDB_CXXFLAGS@ @FFDB_INC@
-AM_LDFLAGS  += -L@top_builddir@/other_libs/@FFDB_LITE_DIR@/src
-LDADD += @FFDB_LIBS@
 endif
 
 #
@@ -47,7 +46,7 @@ HDRS=examples.h
 #
 # The programs to build
 # 
-check_PROGRAMS = t_skeleton t_io t_mesplq \
+check_PROGRAMS = t_skeleton t_io t_mesplq t_db \
       t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
       t_cugauge t_transpose_spin t_partfile t_su3
 
@@ -64,11 +63,6 @@ EXTRA_PROGRAMS += nersc2ildg test_ildglat lhpc2ildg
 if BUILD_STAGGERED_EXAMPLES
 check_PROGRAMS += 
 endif
-
-if BUILD_FFDB_LITE
-check_PROGRAMS += t_db
-endif
-
 
 #
 # The program and its dependencies
