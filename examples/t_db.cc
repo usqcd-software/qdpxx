@@ -1,4 +1,4 @@
-// $Id: t_db.cc,v 1.7 2009-02-03 21:16:53 edwards Exp $
+// $Id: t_db.cc,v 1.8 2009-03-05 03:46:30 edwards Exp $
 /*! \file
  *  \brief Test the database routines
  */
@@ -8,7 +8,7 @@
 
 namespace Chroma
 {
-  using namespace FFDB;
+  using namespace FILEDB;
 
   //---------------------------------------------------------------------
   //! Some struct to use
@@ -96,15 +96,11 @@ namespace Chroma
     int hasCompareFunc (void) const {return 0;}
 
     /**
-     * Static Hash Function Implementation
+     * Empty hash and compare functions. We are using default functions.
      */
-    static unsigned int hash (Db *db, const void* bytes, unsigned int len) {return 0;}
-
-    /**
-     * Static empty compare function 
-     */
-    static int compare (Db *db, const Dbt* k1, const Dbt* k2) {return 0;}
-
+    static unsigned int hash (const void* bytes, unsigned int len) {return 0;}
+    static int compare (const FFDB_DBT* k1, const FFDB_DBT* k2) {return 0;}
+   
   private:
     K  key_;
   };
@@ -174,7 +170,7 @@ int main(int argc, char *argv[])
 //  pop(xml);
 
   // Try out some simple DB stuff
-  typedef BinaryVarStoreDB< TestDBKey<TestDBKey_t>, TestDBData<TestDBData_t> > DBType_t;
+  typedef BinaryStoreDB< TestDBKey<TestDBKey_t>, TestDBData<TestDBData_t> > DBType_t;
 
   try
   {
@@ -193,9 +189,20 @@ int main(int argc, char *argv[])
       testDBData.data().type_of_data = 2;
     }
     
-    // Open it
-    QDPIO::cout << "open" << endl;
-    DBType_t db("test.db", DB_CREATE, db_cachesize, db_pagesize);
+    // Create it
+    QDPIO::cout << "create" << endl;
+    DBType_t db;
+
+    // Create some meta data. Need to know length before the open call
+    std::string meta_data("my name is fred");
+    db.setMaxUserInfoLen(meta_data.size());
+
+    // Open the db
+    const std::string dbase("test.db");
+    db.open(dbase, O_RDWR | O_TRUNC, 0664);
+
+    // Insert meta data
+    db.insertUserdata(meta_data);
 
     // Test it
     QDPIO::cout << "insert" << endl;
@@ -205,15 +212,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "flush" << endl;
     db.flush();
 
-    // Insert some user meta data
-    std::string meta_data("my name is fred");
-    db.insertUserdata(meta_data);
-
     QDPIO::cout << "closing" << endl;
-  }
-  catch (DbException& e) {
-    QDPIO::cerr << "DBException: " << e.what() << std::endl;
-    QDP_abort(1);
   }
   catch(std::exception &e) {
     QDPIO::cerr << "Std exception: " << e.what() << std::endl;
@@ -239,7 +238,8 @@ int main(int argc, char *argv[])
 
     // Open it
     QDPIO::cout << "open" << endl;
-    DBType_t db("test.db", DB_RDONLY, db_cachesize, db_pagesize);
+    DBType_t db;
+    db.open("test.db", O_RDONLY, 0644);
 
     // Test it
     QDPIO::cout << "get" << endl;
@@ -258,10 +258,6 @@ int main(int argc, char *argv[])
 
     QDPIO::cout << "closing" << endl;
   }
-  catch (DbException& e) {
-    QDPIO::cerr << "DBException: " << e.what() << std::endl;
-    QDP_abort(1);
-  }
   catch(std::exception &e) {
     QDPIO::cerr << "Std exception: " << e.what() << std::endl;
     QDP_abort(1);
@@ -277,7 +273,8 @@ int main(int argc, char *argv[])
   {
     // Open it
     QDPIO::cout << "open" << endl;
-    DBType_t db("test.db", DB_RDONLY, db_cachesize, db_pagesize);
+    DBType_t db;
+    db.open("test.db", O_RDONLY, 0644);
 
     // Test it
     QDPIO::cout << "find keys" << endl;
@@ -294,10 +291,6 @@ int main(int argc, char *argv[])
     }
 
     QDPIO::cout << "closing" << endl;
-  }
-  catch (DbException& e) {
-    QDPIO::cerr << "DBException: " << e.what() << std::endl;
-    QDP_abort(1);
   }
   catch(std::exception &e) {
     QDPIO::cerr << "Std exception: " << e.what() << std::endl;
