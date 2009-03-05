@@ -1,3 +1,3 @@
-SUBDIRS = qio xpath_reader @LIBINTRIN_DIR@ @FFDB_LITE_DIR@
+SUBDIRS = qio xpath_reader filedb @LIBINTRIN_DIR@
 
-EXTRA_DIST = ffdb-lite
+EXTRA_DIST =
