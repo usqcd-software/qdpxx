@@ -1,6 +1,137 @@
+2009-03-04 23:19  tag adat2-9-0
+
+2009-03-04 23:19  edwards
+
+	* other_libs/xpath_reader/include/xml_array.h: Added support for
+	  more binary operations on an Array.
+
+2009-03-04 22:54  tag qdp1-31-0
+
+2009-03-04 22:54  edwards
+
+	* NEWS: Info on 1.31.0
+
+2009-03-04 22:46  edwards
+
+	* examples/t_db.cc: Changed to use filedb.
+
+2009-03-04 22:46  edwards
+
+	* include/: qdp_config_internal.h.in, qdp_db.h, qdp_db_imp.h,
+	  qdp_db_stub.h: New versions. Removed old stub and imp version of
+	  qdp_db.h . Now, all this functionality is folded into qdp_db.h
+
+2009-03-04 22:45  edwards
+
+	* qdp++-config.in: Switched from ffdb-lite to new  filedb.
+
+2009-03-04 22:44  edwards
+
+	* examples/Makefile.am: Removed support for ffdb-lite. Now use
+	  filedb.
+
+2009-03-04 22:43  edwards
+
+	* configure: Induced changes
+
+2009-03-04 22:42  edwards
+
+	* include/Makefile.am, other_libs/Makefile.am: Removed ffdb-lite
+	  and all references to it. Now have filedb.  Removed qdp_db_stub
+	  and imp.h. Now, all this functionality is in qdp_db.h
+
+2009-03-04 22:40  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2009-03-04 22:39  edwards
+
+	* configure.ac: Changed to 1.31.0
+
+2009-03-04 22:11  tag qdp1-30-1
+
+2009-03-04 22:11  edwards
+
+	* NEWS: Info on 1.30.1
+
+2009-03-04 22:07  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2009-03-04 22:06  edwards
+
+	* configure.ac: Changed to 1.30.1
+
+2009-03-04 19:41  tag adat2-8-0
+
+2009-03-04 19:41  edwards
+
+	* other_libs/filedb/aclocal.m4: Induce changes.
+
+2009-03-04 19:40  edwards
+
+	* other_libs/filedb/aclocal.m4: Induced changes.
+
+2009-03-04 19:40  edwards
+
+	* other_libs/filedb/src/: DBCursor.h, DBFunc.h, DBKey.h: Changed
+	  include path of filehash files back to no relative path.
+
+2009-03-04 14:31  chen
+
+	* other_libs/filedb/src/ConfDataStoreDB.h: Change to 16384 default
+	  pagesize
+
+2009-03-04 14:15  edwards
+
+	* other_libs/filedb/src/ConfDataStoreDB.h: Changed include guard to
+	  avoid collisions with ffdb-lite.
+
+2009-03-04 14:13  edwards
+
+	* other_libs/filedb/src/: ConfDataStoreDB.h, DBCursor.h, DBData.h,
+	  DBFunc.h, DBKey.h, VFloatData.h: Changed some include guards and
+	  paths to filehash to be relative.
+
+2009-03-04 14:12  edwards
+
+	* other_libs/filedb/filehash/: ffdb_db.h, ffdb_hash.c: Renamed
+	  DB_HASH and __db to avoid name collisions with Berkeley DB.
+
 2009-03-04 14:08  edwards
 
 	* other_libs/ffdb-lite/src/DBCursor.h: Changed include slightly.
+
+2009-03-04 13:03  chen
+
+	* other_libs/filedb/filehash/ffdb_hash.c: Add flush disk when
+	  doubling
+
+2009-03-04 12:08  edwards
+
+	* other_libs/filedb/src/AllConfStoreDB.h: Changed include of FFDB.h
+	  to FileDB.h
+
+2009-03-04 10:56  chen
+
+	* other_libs/filedb/src/: FileDB.cpp, FileDB.h: Add FileDB
+
+2009-03-04 10:55  chen
+
+	* other_libs/filedb/: configure, configure.ac,
+	  filehash/Makefile.am, src/AllConfCreateTest.cpp,
+	  src/AllConfReadTest.cpp, src/AllConfStoreDB.cpp,
+	  src/AllConfStoreDB.h, src/AllConfUpdateTest.cpp,
+	  src/ConfCreateTest.cpp, src/ConfDataDBMerger.cpp,
+	  src/ConfDataDBMerger.h, src/ConfDataStoreDB.cpp,
+	  src/ConfDataStoreDB.h, src/ConfReadTest.cpp, src/ConfigInfo.cpp,
+	  src/ConfigInfo.h, src/DBCursor.cpp, src/DBCursor.h, src/DBData.h,
+	  src/DBFunc.cpp, src/DBFunc.h, src/DBKey.h, src/DBMergeTest.cpp,
+	  src/DBString.cpp, src/DBString.h, src/FFDB.cpp, src/FFDB.h,
+	  src/HashFunc.cpp, src/HashFunc.h, src/Makefile.am,
+	  src/SConfCreateTest.cpp, src/SConfReadTest.cpp,
+	  src/Serializable.h, src/VFloatData.cpp, src/VFloatData.h: Change
+	  Namespace from FFDB to FILEDB
 
 2009-03-04 01:11  tag qio2-3-8
 
@@ -19,6 +150,125 @@
 	  other_libs/c-lime/aclocal.m4, other_libs/c-lime/configure: Made
 	  it so that the "clear to send" messages are still sent when
 	  HAVE_BGL is defined.
+
+2009-03-03 20:44  chen
+
+	* other_libs/filedb/filehash/: ffdb_pagepool.c, ffdb_pagepool.h:
+	  Combine multiple writes
+
+2009-03-02 18:58  chen
+
+	* other_libs/filedb/: filehash/ffdb_db.h, filehash/ffdb_page.c,
+	  src/DBFunc.h, src/SConfReadTest.cpp: Change implementation on
+	  keys iterator which get keys only
+
+2009-03-02 18:27  chen
+
+	* other_libs/filedb/: filehash/ffdb_hash.c, src/AllConfStoreDB.h,
+	  src/ConfDataDBMerger.cpp, src/ConfDataDBMerger.h,
+	  src/DBMergeTest.cpp, src/Makefile.am, src/SConfCreateTest.cpp,
+	  src/SConfReadTest.cpp, src/VFloatData.cpp, src/VFloatData.h: Test
+	  DBMerge Code
+
+2009-03-01 17:28  edwards
+
+	* other_libs/filedb/src/ConfDataStoreDB.h: Bug fix. Changed the
+	  "close" member function to actually return something since it is
+	  declared an int.
+
+2009-02-28 20:03  chen
+
+	* other_libs/filedb/src/AllConfCreateTest.cpp: Add missing O_CREAT
+	  flag
+
+2009-02-28 16:08  edwards
+
+	* other_libs/filedb/src/DBFunc.cpp: Removed debugging comment.
+
+2009-02-28 16:05  edwards
+
+	* other_libs/filedb/src/DBFunc.cpp: Put in a try/catch within
+	  binaryAllPairs.
+
+2009-02-28 16:03  edwards
+
+	* other_libs/filedb/src/ConfDataDBMerger.h: Rerranged some code in
+	  merge. Declare objects when they are used.
+
+2009-02-28 15:45  edwards
+
+	* other_libs/filedb/src/ConfDataStoreDB.h: Bug fix. Changed the
+	  arguments to	binaryKeysAndData to use a reference so data can be
+	  returned.
+
+2009-02-27 11:15  chen
+
+	* other_libs/filedb/src/DBFunc.cpp: Fix missing FFDB_KEY_CURSOR
+
+2009-02-26 22:37  edwards
+
+	* other_libs/filedb/src/: AllConfStoreDB.h, ConfDataStoreDB.h:
+	  Moved the "exist" function from AllConfStore to the base class
+	  ConfDataStore
+
+2009-02-26 15:22  edwards
+
+	* other_libs/filedb/src/DBFunc.cpp: Changed an error message to
+	  show the correct function name - binaryAllPairs.
+
+2009-02-25 13:16  edwards
+
+	* other_libs/filedb/src/ConfDataStoreDB.h: Add 1 to user data
+	  length to account for null terminators.
+
+2009-02-25 13:16  edwards
+
+	* other_libs/filedb/src/ConfCreateTest.cpp: Changed userdata to go
+	  through a string.
+
+2009-02-25 10:49  edwards
+
+	* other_libs/filedb/src/ConfDataStoreDB.h: Changed insertUserdata
+	  to take a const string.
+
+2009-02-24 16:43  chen
+
+	* other_libs/filedb/src/ConfCreateTest.cpp: Add O_CREAT
+
+2009-02-23 23:25  edwards
+
+	* other_libs/filedb/filehash/ffdb_pagepool.c: Check if O_LARGEFILE
+	  is defined before attempting to add it to the lflags used in the
+	  "open" call.
+
+2009-02-23 23:22  edwards
+
+	* other_libs/filedb/src/ConfigInfo.cpp: Added include of time.h
+
+2009-02-20 15:44  chen
+
+	* other_libs/filedb/: AUTHORS, COPYING, INSTALL, Makefile.am, NEWS,
+	  README, aclocal.m4, configure, configure.ac, config/config.guess,
+	  config/config.sub, config/depcomp, config/install-sh,
+	  config/missing, filehash/Makefile.am, filehash/createStrings.c,
+	  filehash/ffdb_cq.h, filehash/ffdb_db.c, filehash/ffdb_db.h,
+	  filehash/ffdb_hash.c, filehash/ffdb_hash.h,
+	  filehash/ffdb_hash_func.c, filehash/ffdb_hash_func.h,
+	  filehash/ffdb_page.c, filehash/ffdb_page.h,
+	  filehash/ffdb_pagepool.c, filehash/ffdb_pagepool.h,
+	  filehash/replaceStrings.c, filehash/tcreate.c,
+	  filehash/tkeyseq.c, filehash/todolist, filehash/tread-th.c,
+	  filehash/tread.c, filehash/treplace.c, src/AllConfCreateTest.cpp,
+	  src/AllConfReadTest.cpp, src/AllConfStoreDB.cpp,
+	  src/AllConfStoreDB.h, src/AllConfUpdateTest.cpp,
+	  src/ConfCreateTest.cpp, src/ConfDataDBMerger.cpp,
+	  src/ConfDataDBMerger.h, src/ConfDataStoreDB.cpp,
+	  src/ConfDataStoreDB.h, src/ConfReadTest.cpp, src/ConfigInfo.cpp,
+	  src/ConfigInfo.h, src/DBCursor.cpp, src/DBCursor.h, src/DBData.h,
+	  src/DBFunc.cpp, src/DBFunc.h, src/DBKey.h, src/DBString.cpp,
+	  src/DBString.h, src/FFDB.cpp, src/FFDB.h, src/HashFunc.cpp,
+	  src/HashFunc.h, src/Makefile.am, src/Serializable.h: initial
+	  import
 
 2009-02-17 18:42  bjoo
 
