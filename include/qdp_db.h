@@ -1,21 +1,409 @@
 // -*- C++ -*-
-// $Id: qdp_db.h,v 1.3 2008-08-04 17:40:37 edwards Exp $
+// $Id: qdp_db.h,v 1.4 2009-03-05 03:46:15 edwards Exp $
 /*! @file
- * @brief Support for ffdb-lite - a wrapper over Berkeley DB
+ * @brief Support for ffdb-file
  */
 
 #ifndef QDP_DB_H
 #define QDP_DB_H
 
-#ifdef BUILD_FFDB_LITE
+#include "qdp_layout.h"
+#include "ConfDataStoreDB.h"
 
-// Berkeley DB is used, so define a real set of classes
-#include "qdp_db_imp.h"
+namespace QDP
+{
+  /*! @defgroup io IO
+   *
+   * Berkeley DB support
+   *
+   * @{
+   */
 
-#else
+  /**
+   * Database cache size in bytes
+   */
+  const int db_cachesize = 50*1024*1024;
 
-// Berkeley DB is NOT used, so define stubs of classes
-#include "qdp_db_stub.h"
-#endif
+  /**
+   * Database page size in bytes
+   */
+  const int db_pagesize = 64*1024;
+
+  //--------------------------------------------------------------------------------
+  //!  DB Base class
+  /*!
+    This class is used for writing of user data (most usefully measurements)
+    into a DB file with a key/value semantics. 
+  */
+  template<typename K, typename D>
+  class BinaryStoreDB
+  {
+  public:
+    /**
+     * Empty constructor for a DB
+     */
+    BinaryStoreDB ()
+    {
+      // Initialize default values
+      if (Layout::primaryNode())
+      {
+	db.setCacheSize(db_cachesize);
+	db.enablePageMove();
+	db.setMaxNumberConfigs(1);
+      }
+    }
+
+    /*!
+      Destroy the object
+    */
+    ~BinaryStoreDB() 
+    {
+      close();
+    }
+
+    /**
+     * How much data and keys should be kept in memory in bytes
+     *
+     * This should be called before the open is called
+     * @param max_cache_size number of bytes of data and keys should be kept
+     * in memory
+     */
+    virtual void setCacheSize (const unsigned int size)
+    {
+      if (Layout::primaryNode())
+	db.setCacheSize(size);
+    }
+
+    
+    /**
+     * Page size used when a new data based is created
+     * This only effects a new database
+     *
+     * @param pagesize the pagesize used in hash database. This value
+     * should be power of 2. The minimum value is 512 and maximum value
+     * is 262144
+     *
+     */
+    virtual void setPageSize (const unsigned int size)
+    {
+      if (Layout::primaryNode()) 
+	db.setPageSize(size);
+    }
+
+
+    /**
+     * Set initial number of buckets
+     *
+     * This should be called before the open is called
+     *
+     * @param num the number of buckets should be used
+     *
+     */
+    virtual void setNumberBuckets (const unsigned int num)
+    {
+      if (Layout::primaryNode()) 
+	db.setNumberBuckets(num);
+    }
+
+
+    /**
+     * Set whether to move pages when close to save disk space
+     *
+     * This only effective on writable database
+     *
+     */
+    virtual void enablePageMove (void)
+    {
+      if (Layout::primaryNode()) 
+	db.enablePageMove();
+    }
+
+    virtual void disablePageMove (void)
+    {
+      if (Layout::primaryNode()) 
+	db.disablePageMove();
+    }
+
+    /**
+     * Set and get maximum user information length
+     */
+    virtual void setMaxUserInfoLen (unsigned int len)
+    {
+      if (Layout::primaryNode()) 
+	db.setMaxUserInfoLen(len);
+    }
+
+    virtual unsigned int getMaxUserInfoLen (void) const
+    {
+      unsigned int ret = 0;
+      if (Layout::primaryNode()) 
+	ret = db.getMaxUserInfoLen();
+
+      Internal::broadcast(ret);
+      return ret;
+    }
+
+    /**
+     * Set and get maximum number of configurations
+     */
+    virtual void setMaxNumberConfigs (unsigned int num)
+    {
+      if (Layout::primaryNode()) 
+	db.setMaxNumberConfigs(num);
+    }
+
+    virtual unsigned int getMaxNumberConfigs (void) const
+    {
+      unsigned int ret = 0;
+      if (Layout::primaryNode()) 
+	ret = db.getMaxNumberConfigs();
+
+      Internal::broadcast(ret);
+      return ret;
+    }
+
+    /**
+     * Open
+     * @param file filename holding all data and keys
+     * @param open_flags: can be regular UNIX file open flags such as: O_RDONLY,
+     * O_RDWR, O_TRUNC
+     * @param mode regular unix file mode
+     *
+     * @return 0 on success, -1 on failure with proper errno set
+     * 
+     */
+    virtual void open (const std::string& file, int open_flags, int mode)
+    {
+      int ret = 0;
+      if (Layout::primaryNode()) 
+	ret = db.open(file, open_flags, mode);
+
+      Internal::broadcast(ret);
+      if (ret != 0)
+      {
+	QDPIO::cerr << "Cannot open db file= " << file << endl;
+	QDP_abort(1);
+      }
+    }
+
+
+    virtual void close (void)
+    {
+      int ret = 0;
+      if (Layout::primaryNode()) 
+	ret = db.close();
+
+      Internal::broadcast(ret);
+      if (ret != 0)
+      {
+	QDPIO::cerr << "Error closing db file" << endl;
+	QDP_abort(1);
+      }
+    }
+
+    /**
+     * Insert a pair of data and key into the database
+     * data is not ensemble, but a vector of complex.
+     * @param key a key
+     * @param data a user provided data
+     *
+     * @return 0 on successful write, -1 on failure with proper errno set
+     */
+    void insert (K& key, D& data)
+    {
+      int ret = 0;
+      if (Layout::primaryNode()) 
+	ret = db.insert(key, data);
+
+      Internal::broadcast(ret);
+      if (ret != 0)
+      {
+	QDPIO::cerr << __func__ << ": error inserting into db" << endl;
+	QDP_abort(1);
+      }
+    }
+
+    /**
+     * Insert a pair of data and key into the database in string format
+     * @param key a key
+     * @param data a user provided data
+     *
+     * @return 0 on successful write, -1 on failure with proper errno set
+     */
+    void insertBinary (std::string& key, std::string& data)
+    {
+      int ret = 0;
+      if (Layout::primaryNode()) 
+	ret = db.insertBinary(key, data);
+
+      Internal::broadcast(ret);
+      if (ret != 0)
+      {
+	QDPIO::cerr << __func__ << ": error in db" << endl;
+	QDP_abort(1);
+      }
+    }
+
+
+    /**
+     * Get data for a given key
+     * @param key user supplied key
+     * @param data after the call data will be populated
+     * @return 0 on success, otherwise the key not found
+     */
+    int get (K& key, D& data)
+    {
+      int ret = 0;
+      if (Layout::primaryNode()) 
+	ret = db.get(key, data);
+      else
+	notImplemented();
+
+      Internal::broadcast(ret);
+      return ret;
+    }
+
+
+    /**
+     * Get data for a given key in binary form
+     *
+     * @param key user supplied key in string format
+     * @param data after the call data will be populated
+     * @return 0 on success, otherwise the key not found
+     */
+    int getBinary (std::string& key, std::string& data)
+    {
+      int ret = 0;
+      if (Layout::primaryNode()) 
+	ret = db.getBinary(key, data);
+      else
+	notImplemented();
+
+      Internal::broadcast(ret);
+      return ret;
+    }
+
+    /**
+     * Return all available keys to user
+     * @param keys user suppled an empty vector which is populated
+     * by keys after this call.
+     */
+    virtual void keys (std::vector<K>& keys_)
+    {
+      if (Layout::primaryNode()) 
+	db.keys(keys_);
+      else
+	notImplemented();
+    }
+
+    /**
+     * Return all pairs of keys and data
+     * @param keys user supplied empty vector to hold all keys
+     * @param data user supplied empty vector to hold data
+     * @return keys and data in the vectors having the same size
+     */
+    virtual void keysAndData (std::vector<K>& keys_, std::vector<D>& values_)
+    {
+      if (Layout::primaryNode()) 
+	db.keysAndData(keys_, values_);
+      else
+	notImplemented();
+    }
+
+
+    /**
+     * Return all pairs of keys and data in binary string form
+     * @param keys user supplied empty vector to hold all keys
+     * @param data user supplied empty vector to hold data
+     * @return keys and data in the vectors having the same size     
+     */
+    virtual void binaryKeysAndData (std::vector<std::string> keys_,
+				    std::vector<std::string> values_)
+    {
+      if (Layout::primaryNode()) 
+	db.binaryKeysAndData(keys_, values_);
+      else
+	notImplemented();
+    }
+
+    /**
+     * Flush database in memory to disk
+     */
+    virtual void flush (void)
+    {
+      if (Layout::primaryNode()) 
+	db.flush();
+    }
+
+    /**
+     * Name of database associated with this Data store
+     *
+     * @return database name
+     */
+    virtual std::string storageName (void) const
+    {
+      std::string ret;
+      if (Layout::primaryNode()) 
+	ret = db.storageName();
+
+      Internal::broadcast_str(ret);
+      return ret;
+    }
+
+    
+    /**
+     * Insert user data into the  metadata database
+     *
+     * @param user_data user supplied data
+     * @return returns 0 if success, else failure
+     */
+    virtual void insertUserdata (const std::string& user_data)
+    {
+      int ret = 0;
+      if (Layout::primaryNode()) 
+	ret = db.insertUserdata(user_data);
+
+      Internal::broadcast(ret);
+      if (ret != 0)
+      {
+	QDPIO::cerr << __func__ << ": error inserting user data into db" << endl;
+	QDP_abort(1);
+      }
+    }
+    
+    /**
+     * Get user user data from the metadata database
+     *
+     * @param user_data user supplied buffer to store user data
+     * @return returns 0 if success. Otherwise failure.
+     */
+    virtual void getUserdata (std::string& user_data)
+    {
+      int ret = 0;
+      if (Layout::primaryNode()) 
+	ret = db.getUserdata(user_data);
+      else
+	notImplemented();
+
+      Internal::broadcast(ret);
+      if (ret != 0)
+      {
+	QDPIO::cerr << __func__ << ": error getting user data from db" << endl;
+	QDP_abort(1);
+      }
+    }
+
+
+  private:
+    void notImplemented() const
+    {
+      QDP_error_exit("FILEDB read routines do not work (yet) in parallel - only single node");
+    }
+
+    FILEDB::ConfDataStoreDB<K,D> db;
+  };
+
+
+}  // namespace QDP
 
 #endif
