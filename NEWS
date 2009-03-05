@@ -1,3 +1,9 @@
+03/04/2009 -- Robert Edwards
+        Version 1.30.1: Balint put threading in rest of way, including norm2. Various other
+        fixes. Robert switched DB support ffdb-lite to slightly different calling interface 
+        to fix support for page sizes, etc. This is the last of ffdb-lite. Will be removed.
+        Other changes in qio for BG/P.
+
 01/27/2009 -- Robert Edwards
         Version 1.30.0: First DB implementations. First threading version. Not fully certified.
         Support subset records in qio.
@@ -5,7 +11,9 @@
 12-22-2008 -- Balint Joo
 	Added threading support courtesy of EPCC. Tested that threading code with threads disabled: 
 	 -- does not break cb2, cb3d, sse2/generic, single-double builds (scalar)
-	Threading code with threads enabled has causes some SEGFAULTS in QDP++ tests. However, with cb2, chroma regressions passed. Only failures were in the new all-to-all code
+	Threading code with threads enabled has causes some SEGFAULTS in
+	QDP++ tests. However, with cb2, chroma regressions passed. Only
+	failures were in the new all-to-all code
 
 Total Failures were:
 i)		chroma           RUN_FAIL    prec_clover.eigcg.candidate.xml
