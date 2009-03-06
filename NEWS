@@ -1,3 +1,6 @@
+03/05/2009 -- Robert Edwards
+        Version 1.31.1: Important bug fix in the DB routines  filedb.
+
 03/04/2009 -- Robert Edwards
         Version 1.31.0: Ripped out ffdb-lite. Switched to filedb. No longer any Berkeley DB
         dependencies.
