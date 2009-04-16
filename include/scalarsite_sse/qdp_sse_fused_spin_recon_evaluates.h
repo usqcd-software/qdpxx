@@ -19,20 +19,20 @@ namespace QDP {
 // Vec = SpinReconstructDir0Plus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir0PlusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
     
@@ -48,7 +48,7 @@ void evaluate(OLattice< FVec >& d,
     /* 
 
     for( int site = s.start(); site <= s.end(); site++) { 
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -78,7 +78,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -97,20 +97,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec = SpinReconstructDir0Minus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir0MinusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
 
@@ -125,7 +125,7 @@ void evaluate(OLattice< FVec >& d,
     ////////////////////
     /* 
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
       half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
@@ -153,7 +153,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -176,20 +176,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec = SpinReconstructDir1Plus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir1PlusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
 
@@ -204,7 +204,7 @@ void evaluate(OLattice< FVec >& d,
     ////////////////////
     /* 
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -234,7 +234,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -256,20 +256,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec = SpinReconstructDir1Minus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir1MinusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) {
 
@@ -284,7 +284,7 @@ void evaluate(OLattice< FVec >& d,
     ////////////////////
     /* 
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -316,7 +316,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
       half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
@@ -339,20 +339,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec = SpinReconstructDir2Plus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir2PlusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
 
@@ -367,7 +367,7 @@ void evaluate(OLattice< FVec >& d,
     ////////////////////
     /* 
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -402,7 +402,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
       half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
@@ -425,20 +425,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec = SpinReconstructDir2Minus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir2MinusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
 
@@ -454,7 +454,7 @@ void evaluate(OLattice< FVec >& d,
     /* 
 
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
       half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
@@ -486,7 +486,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -507,20 +507,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec = SpinReconstructDir3Plus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir3PlusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
 
@@ -536,7 +536,7 @@ void evaluate(OLattice< FVec >& d,
     /* 
 
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -569,7 +569,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -589,20 +589,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec = SpinReconstructDir3Minus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir3MinusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
 
@@ -618,7 +618,7 @@ void evaluate(OLattice< FVec >& d,
     /* 
 
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
       
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -650,7 +650,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -673,20 +673,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec += SpinReconstructDir0Plus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAddAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir0PlusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
     
@@ -701,7 +701,7 @@ void evaluate(OLattice< FVec >& d,
     ////////////////////
     /*
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -732,7 +732,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -756,20 +756,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec += SpinReconstructDir0Minus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAddAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir0MinusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
     
@@ -785,7 +785,7 @@ void evaluate(OLattice< FVec >& d,
      
     /*
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -815,7 +815,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -839,20 +839,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec += SpinReconstructDir1Plus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAddAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir1PlusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
 
   if( s.hasOrderedRep() ) { 
@@ -869,7 +869,7 @@ void evaluate(OLattice< FVec >& d,
     /*
     for(int site=s.start(); site <= s.end(); ++site) {
       
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -899,7 +899,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -919,20 +919,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec += SpinReconstructDir1Minus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAddAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir1MinusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
     
@@ -947,7 +947,7 @@ void evaluate(OLattice< FVec >& d,
     ////////////////////
     /* 
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -979,7 +979,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-       HVec tmp ;
+       HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -1001,20 +1001,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec += SpinReconstructDir2Plus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAddAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir2PlusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
     
@@ -1029,7 +1029,7 @@ void evaluate(OLattice< FVec >& d,
     ////////////////////
     /*
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -1061,7 +1061,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -1082,20 +1082,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec += SpinReconstructDir2Minus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAddAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir2MinusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
     
@@ -1111,7 +1111,7 @@ void evaluate(OLattice< FVec >& d,
     /*
     for(int site=s.start(); site <= s.end(); ++site) {
 
-      HVec tmp ;
+      HVec32 tmp ;
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
       half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
@@ -1141,7 +1141,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
       half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
@@ -1162,20 +1162,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec += SpinReconstructDir3Plus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAddAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir3PlusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
     
@@ -1191,7 +1191,7 @@ void evaluate(OLattice< FVec >& d,
      
     /*
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -1223,7 +1223,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
 
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
@@ -1244,20 +1244,20 @@ void evaluate(OLattice< FVec >& d,
 // Vec += SpinReconstructDir3Minus( u * psi);
 template<>
 inline
-void evaluate(OLattice< FVec >& d,
+void evaluate(OLattice< FVec32 >& d,
               const OpAddAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnSReconDir3MinusProd,
-	                Reference< QDPType< SU3Mat, OLattice< SU3Mat > > >,
-	                Reference< QDPType< HVec,   OLattice< HVec > > >
+	                Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > >,
+	                Reference< QDPType< HVec32,   OLattice< HVec32 > > >
                       >,
-	              OLattice< FVec > 
+	              OLattice< FVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left());
-  const OLattice< HVec >& a = static_cast< const OLattice< HVec >& >(rhs.expression().right());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left());
+  const OLattice< HVec32 >& a = static_cast< const OLattice< HVec32 >& >(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
     
@@ -1272,7 +1272,7 @@ void evaluate(OLattice< FVec >& d,
     ////////////////////
     /*
     for(int site=s.start(); site <= s.end(); ++site) {
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -1306,7 +1306,7 @@ void evaluate(OLattice< FVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());

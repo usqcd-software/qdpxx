@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas_double.h,v 1.5 2009-02-03 21:10:11 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas_double.h,v 1.6 2009-04-16 20:09:04 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -23,6 +23,8 @@ namespace QDP {
 
   namespace ThreadReductions{ 
     extern REAL64* norm2_results;
+    extern REAL64* innerProd_results;
+
   }
 
 // Types needed for the expression templates. 
@@ -40,6 +42,8 @@ typedef PScalar<PScalar<RScalar<REAL64> > >  DScal;
 ////////////////////////////////
 
 // the wrappers for the functions to be threaded
+
+#include "qdp_dispatch.h"
 #include "qdp_scalarsite_sse_blas_double_wrapper.h"
 
 
@@ -2619,18 +2623,20 @@ norm2(const QDPType<DVec ,OLattice< DVec > >& s1)
   int n4vec = all.end()-all.start()+1;
 
   arg.vptr = (REAL64*)&(s1.elem(all.start()).elem(0).elem(0).real());
-    arg.func = local_sumsq4;
-    arg.results = ThreadReductions::norm2_results;
-    dispatch_to_threads(n4vec, arg, ordered_norm_double_func);
+  arg.func = local_sumsq4;
+  arg.results = ThreadReductions::norm2_results;
 
-    // Sum partial results
-    REAL64 lsum=arg.results[0];
-    for(int i=1; i < qdpNumThreads(); i++) {
+
+  dispatch_to_threads(n4vec, arg, ordered_norm_double_func);
+
+  // Sum partial results
+  REAL64 lsum=arg.results[0];
+  for(int i=1; i < qdpNumThreads(); i++) {
       lsum += arg.results[i];
-    }
-    UnaryReturn< OLattice< DVec >, FnNorm2>::Type_t  gsum(lsum);
-    Internal::globalSum(gsum);
-    return gsum;
+  }
+  UnaryReturn< OLattice< DVec >, FnNorm2>::Type_t  gsum(lsum);
+  Internal::globalSum(gsum);
+  return gsum;
 
 #if 0
   int n_4vec = (all.end() - all.start() + 1);
@@ -2656,7 +2662,33 @@ innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
 #ifdef DEBUG_BLAS
   QDPIO::cout << "BJ: innerProduct all" << endl;
 #endif
+    ordered_inner_product_double_user_arg arg;
+    int n4vec = all.end()-all.start()+1;
+    arg.xptr = (REAL64*)&(v1.elem(all.start()).elem(0).elem(0).real());
+    arg.yptr = (REAL64*)&(v2.elem(all.start()).elem(0).elem(0).real());
+    arg.func = local_vcdot4;
+    arg.results = ThreadReductions::innerProd_results;
 
+    dispatch_to_threads(n4vec, arg, ordered_inner_product_double_func);
+    REAL64 ip[2] = { arg.results[0],arg.results[1] };
+
+    for( int i=1; i < qdpNumThreads(); i++) {
+      ip[0] += arg.results[2*i];
+      ip[1] += arg.results[2*i+1];
+    }
+
+    Internal::globalSumArray(ip,2);     
+
+    // This BinaryReturn has Type_t
+    // OScalar<OScalar<OScalar<RComplex<PScalar<REAL64> > > > >
+    BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t lprod;
+
+    lprod.elem().elem().elem().real() = ip[0];
+    lprod.elem().elem().elem().imag() = ip[1];
+    
+
+    return lprod;
+#if 0
   // This BinaryReturn has Type_t
   // OScalar<OScalar<OScalar<RComplex<PScalar<REAL64> > > > >
   BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t lprod;
@@ -2684,6 +2716,8 @@ innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
 
   // Return
   return lprod;
+#endif
+
 }
 
 template<>
@@ -2697,11 +2731,34 @@ innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
 #ifdef DEBUG_BLAS
     QDPIO::cout << "BJ: innerProduct s" << endl;
 #endif
+    ordered_inner_product_double_user_arg arg;
+    int n4vec = s.end()-s.start()+1;
+    arg.xptr = (REAL64*)&(v1.elem(s.start()).elem(0).elem(0).real());
+    arg.yptr = (REAL64*)&(v2.elem(s.start()).elem(0).elem(0).real());
+    arg.func = local_vcdot4;
+    arg.results = ThreadReductions::innerProd_results;
+
+    dispatch_to_threads(n4vec, arg, ordered_inner_product_double_func);
+    REAL64 ip[2] = { arg.results[0],arg.results[1] };
+
+    for( int i=1; i < qdpNumThreads(); i++) {
+      ip[0] += arg.results[2*i];
+      ip[1] += arg.results[2*i+1];
+    }
+
+    Internal::globalSumArray(ip,2);     
 
     // This BinaryReturn has Type_t
     // OScalar<OScalar<OScalar<RComplex<PScalar<REAL64> > > > >
     BinaryReturn< OLattice<DVec>, OLattice<DVec>, FnInnerProduct>::Type_t lprod;
-    REAL64 ip[2];
+
+    lprod.elem().elem().elem().real() = ip[0];
+    lprod.elem().elem().elem().imag() = ip[1];
+    
+
+    return lprod;
+
+#if 0
     ip[0] = 0;
     ip[1] = 0;
 
@@ -2712,13 +2769,9 @@ innerProduct(const QDPType< DVec, OLattice<DVec> > &v1,
 		n_4vec);
 
 
-    Internal::globalSumArray(ip,2);
+#endif
 
-    lprod.elem().elem().elem().real() = ip[0];
-    lprod.elem().elem().elem().imag() = ip[1];
-    
 
-    return lprod;
   }
   else {
 

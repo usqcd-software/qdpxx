@@ -6,31 +6,31 @@
 namespace QDP {
  
 // Convenience Types
-typedef PColorVector<RComplex<REAL32>, 3> ColVec;
-typedef PSpinVector< ColVec, 4> Spin4;
-typedef PSpinVector< ColVec, 2> Spin2;
-typedef PColorMatrix<RComplex<REAL32>, 3> ColMat;
+typedef PColorVector<RComplex<REAL32>, 3> ColVec32;
+typedef PSpinVector< ColVec32, 4> Spin4_32;
+typedef PSpinVector< ColVec32, 2> Spin2_32;
+typedef PColorMatrix<RComplex<REAL32>, 3> ColMat32;
 
 
 // Tell the compiler what the result of the multiply 
 // half spinor with gauge field operations are
 // OScalar
 template<>
-struct BinaryReturn< QDPType< PScalar<ColMat>, OScalar< PScalar<ColMat> > >,
-		     QDPType< Spin2,           OScalar< Spin2 > >,
+struct BinaryReturn< QDPType< PScalar<ColMat32>, OScalar< PScalar<ColMat32> > >,
+		     QDPType< Spin2_32,           OScalar< Spin2_32 > >,
 		     OpMultiply > 
 {
-  typedef  OScalar<Spin2> Type_t; 
+  typedef  OScalar<Spin2_32> Type_t; 
 };
 
 // Tell the compiler what the result of opreations are
 // For OLattice
 template<>
-struct BinaryReturn< QDPType< PScalar<ColMat>, OLattice< PScalar<ColMat> > >,
-		     QDPType< Spin2,           OLattice< Spin2 > >,
+struct BinaryReturn< QDPType< PScalar<ColMat32>, OLattice< PScalar<ColMat32> > >,
+		     QDPType< Spin2_32,           OLattice< Spin2_32 > >,
 		     OpMultiply >
 {
-  typedef  OLattice<Spin2> Type_t;
+  typedef  OLattice<Spin2_32> Type_t;
 };
 
 /////////////////////////////////////////////////////////////////////////
@@ -593,11 +593,11 @@ spinReconstructDir3Plus(const QDPExpr<
 
 // The actual fused op - Replace this with specialist code
 template<>
-inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t
-sreconDir0Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
+inline BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir0MinusProd>::Type_t
+sreconDir0Minus(const PScalar<ColMat32>& a, const PSpinVector<ColVec32,2>& b) 
 {
-  PSpinVector<ColVec,2> d ;
-  BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
+  PSpinVector<ColVec32,2> d ;
+  BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
   su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
   half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
@@ -615,11 +615,11 @@ sreconDir0Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
 
 // The actual fused op - Replace this with specialist code
 template<>
-inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0PlusProd>::Type_t
-sreconDir0Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
+inline BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir0PlusProd>::Type_t
+sreconDir0Plus(const PScalar<ColMat32>& a, const PSpinVector<ColVec32,2>& b) 
 {
-  PSpinVector<ColVec,2> d ;
-  BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
+  PSpinVector<ColVec32,2> d ;
+  BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
   su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
   half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
@@ -637,11 +637,11 @@ sreconDir0Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
 
 // The actual fused op - Replace this with specialist code
 template<>
-inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir1MinusProd>::Type_t
-sreconDir1Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
+inline BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir1MinusProd>::Type_t
+sreconDir1Minus(const PScalar<ColMat32>& a, const PSpinVector<ColVec32,2>& b) 
 {
-  PSpinVector<ColVec,2> d ;
-  BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
+  PSpinVector<ColVec32,2> d ;
+  BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
   su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
   half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
@@ -658,11 +658,11 @@ sreconDir1Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
 
 // The actual fused op - Replace this with specialist code
 template<>
-inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir1PlusProd>::Type_t
-sreconDir1Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
+inline BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir1PlusProd>::Type_t
+sreconDir1Plus(const PScalar<ColMat32>& a, const PSpinVector<ColVec32,2>& b) 
 {
-  PSpinVector<ColVec,2> d ;
-  BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
+  PSpinVector<ColVec32,2> d ;
+  BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
   su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
   half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
@@ -680,11 +680,11 @@ sreconDir1Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
 
 // The actual fused op - Replace this with specialist code
 template<>
-inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir2MinusProd>::Type_t
-sreconDir2Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
+inline BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir2MinusProd>::Type_t
+sreconDir2Minus(const PScalar<ColMat32>& a, const PSpinVector<ColVec32,2>& b) 
 {
-  PSpinVector<ColVec,2> d ;
-  BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
+  PSpinVector<ColVec32,2> d ;
+  BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
   su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
   half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
@@ -701,11 +701,11 @@ sreconDir2Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
 
 // The actual fused op - Replace this with specialist code
 template<>
-inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir2PlusProd>::Type_t
-sreconDir2Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
+inline BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir2PlusProd>::Type_t
+sreconDir2Plus(const PScalar<ColMat32>& a, const PSpinVector<ColVec32,2>& b) 
 {
-  PSpinVector<ColVec,2> d ;
-  BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
+  PSpinVector<ColVec32,2> d ;
+  BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
   su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
   half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
@@ -723,11 +723,11 @@ sreconDir2Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
 
 // The actual fused op - Replace this with specialist code
 template<>
-inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir3MinusProd>::Type_t
-sreconDir3Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
+inline BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir3MinusProd>::Type_t
+sreconDir3Minus(const PScalar<ColMat32>& a, const PSpinVector<ColVec32,2>& b) 
 {
-  PSpinVector<ColVec,2> d ;
-  BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0MinusProd>::Type_t  ret;
+  PSpinVector<ColVec32,2> d ;
+  BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir0MinusProd>::Type_t  ret;
 
   su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
   half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());
@@ -745,11 +745,11 @@ sreconDir3Minus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
 
 // The actual fused op - Replace this with specialist code
 template<>
-inline BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir3PlusProd>::Type_t
-sreconDir3Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b) 
+inline BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir3PlusProd>::Type_t
+sreconDir3Plus(const PScalar<ColMat32>& a, const PSpinVector<ColVec32,2>& b) 
 {
-  PSpinVector<ColVec,2> d ;
-  BinaryReturn< PScalar<ColMat>, PSpinVector<ColVec,2>, FnSReconDir0PlusProd>::Type_t  ret;
+  PSpinVector<ColVec32,2> d ;
+  BinaryReturn< PScalar<ColMat32>, PSpinVector<ColVec32,2>, FnSReconDir0PlusProd>::Type_t  ret;
 
   su3_matrixf *am = (su3_matrixf *)&( a.elem().elem(0,0).real());
   half_wilson_vectorf *bh = (half_wilson_vectorf *)&( b.elem(0).elem(0).real());

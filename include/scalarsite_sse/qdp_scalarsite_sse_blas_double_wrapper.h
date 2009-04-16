@@ -2,6 +2,7 @@
 #define QDP_SCALARSITE_GENERIC_BLAS_DOUBLE_WRAPPER_H
 
 
+
 ////////////////////////////////
 // Threading evaluates wrappers
 //
@@ -330,6 +331,28 @@ inline void ordered_norm_double_func(int lo, int hi, int myId, ordered_norm_doub
     REAL64* vptr = &(a->vptr[index]);
     void (*func)(REAL64*, REAL64*, int) = a->func;
     func( &(a->results[myId]), vptr, nvec);
+
+  }
+
+
+struct ordered_inner_product_double_user_arg {
+  REAL64* xptr;
+  REAL64* yptr;
+  REAL64* results;
+  void (*func)(REAL64*,  REAL64*, REAL64*, int);
+};
+
+
+inline void ordered_inner_product_double_func(int lo, int hi, int myId, ordered_inner_product_double_user_arg* a) 
+  {
+
+    int nvec = hi - lo;
+    int index = lo*24;
+    REAL64* xptr = &(a->xptr[index]);
+    REAL64* yptr = &(a->yptr[index]);
+
+    void (*func)(REAL64*, REAL64*, REAL64*, int) = a->func;
+    func( &(a->results[2*myId]), xptr, yptr, nvec);
   }
 
 

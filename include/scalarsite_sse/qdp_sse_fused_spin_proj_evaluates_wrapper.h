@@ -9,9 +9,9 @@
 
 // user arg for evaluate having order
 struct ordered_sse_fused_spin_proj_user_arg{
-  const OLattice< SU3Mat >& u;
-  const OLattice< FVec >& a;
-  OLattice< HVec >& d;
+  const OLattice< SU3Mat32 >& u;
+  const OLattice< FVec32 >& a;
+  OLattice< HVec32 >& d;
   int base;
   void (*func)(const REAL32*, REAL32*, unsigned int);
 };
@@ -21,9 +21,9 @@ struct ordered_sse_fused_spin_proj_user_arg{
 inline
 void ordered_sse_fused_spin_proj_evaluate_function (int lo, int hi, int myId, ordered_sse_fused_spin_proj_user_arg* arg){
 
-  const OLattice< SU3Mat >& u = arg->u;
-  const OLattice< FVec >& a = arg->a ;
-  OLattice< HVec >& d = arg->d;
+  const OLattice< SU3Mat32 >& u = arg->u;
+  const OLattice< FVec32 >& a = arg->a ;
+  OLattice< HVec32 >& d = arg->d;
   int base = arg->base;
   void (*func)(const REAL32*, REAL32*,unsigned int) = arg->func; 
 
@@ -31,7 +31,7 @@ void ordered_sse_fused_spin_proj_evaluate_function (int lo, int hi, int myId, or
   int high = hi + base;
 
   for (int site = low; site < high; site++){
-    HVec tmp ; 
+    HVec32 tmp ; 
     func( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 		     (REAL32 *)&(tmp.elem(0).elem(0).real()),
 		     1);
@@ -48,9 +48,9 @@ void ordered_sse_fused_spin_proj_evaluate_function (int lo, int hi, int myId, or
 
 // user arg for evaluate NOT having order
 struct unordered_sse_fused_spin_proj_user_arg{
-  const OLattice< SU3Mat >& u;
-  const OLattice< FVec >& a;
-  OLattice< HVec >& d;
+  const OLattice< SU3Mat32 >& u;
+  const OLattice< FVec32 >& a;
+  OLattice< HVec32 >& d;
   const int *tab;
   void (*func)(const REAL32*, REAL32*, unsigned int);
 };
@@ -60,15 +60,15 @@ struct unordered_sse_fused_spin_proj_user_arg{
 inline
 void unordered_sse_fused_spin_proj_evaluate_function (int lo, int hi, int myId, unordered_sse_fused_spin_proj_user_arg* arg){
 
-  const OLattice< SU3Mat >& u = arg->u;
-  const OLattice< FVec >& a = arg->a ;
-  OLattice< HVec >& d = arg->d;
+  const OLattice< SU3Mat32 >& u = arg->u;
+  const OLattice< FVec32 >& a = arg->a ;
+  OLattice< HVec32 >& d = arg->d;
   const int *tab = arg->tab;
   void (*func)(const REAL32*, REAL32*, unsigned int) = arg->func;
 
   for (int j = lo; j < hi; j++){
     int site=tab[j];
-    HVec tmp ; 
+    HVec32 tmp ; 
     func( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 	  (REAL32 *)&(tmp.elem(0).elem(0).real()),
 	  1);

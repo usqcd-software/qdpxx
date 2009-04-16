@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_init.cc,v 1.12 2009-02-04 12:09:29 bjoo Exp $
+// $Id: qdp_scalar_init.cc,v 1.13 2009-04-16 20:09:04 bjoo Exp $
 
 /*! @file
  * @brief Scalar init routines
@@ -16,7 +16,8 @@
 namespace QDP {
 
 namespace ThreadReductions {
-   REAL64* norm2_results;
+  REAL64* norm2_results;
+  REAL64* innerProd_results;
 }
 
 //! Private flag for status
@@ -41,25 +42,32 @@ void QDP_initialize(int *argc, char ***argv)
 #ifdef QDP_USE_QMT_THREADS
     
   // Initialize threads
-  cout << "QDP use qmt threading: Initializing threads..." ;
+  cout << "QDP uses qmt threading: Initializing threads..." ;
   int thread_status = qmt_init();
   if( thread_status == 0 ) { 
-    cout << "Success" << endl;
-    cout << "Created: " << qmt_num_threads() << " threads" << endl;
-    cout << "My thread ID is: " << qmt_thread_id() << endl;
+    cout << "Success. We have " << qdpNumThreads() " threads \n"; 
   }
   else { 
     cout << "Failure... qmt_init() returned " << thread_status << endl;
     QDP_abort(1);
   }
-  
-  
+#else 
+#ifdef QDP_USE_OMP_THREADS
+  cout << "QDP uses OpenMP threading. We have " << qdpNumThreads() << " threads \n";
 #endif
+#endif
+
 
 // Alloc space for reductions
   ThreadReductions::norm2_results = new REAL64 [ qdpNumThreads() ];
   if( ThreadReductions::norm2_results == 0x0 ) { 
     cout << "Failure... space for norm2 results failed "  << endl;
+    QDP_abort(1);
+  }
+
+  ThreadReductions::innerProd_results = new REAL64 [ 2*qdpNumThreads() ];
+  if( ThreadReductions::innerProd_results == 0x0 ) { 
+    cout << "Failure... space for innerProd results failed "  << endl;
     QDP_abort(1);
   }
 
@@ -121,6 +129,7 @@ void QDP_finalize()
 {
 
   delete [] ThreadReductions::norm2_results;
+  delete [] ThreadReductions::innerProd_results;
     //
   // finalise qmt
   //

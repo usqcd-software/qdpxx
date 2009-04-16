@@ -9,9 +9,9 @@
 
 // user arg for evaluate having order
 struct ordered_sse_fused_spin_recon_user_arg{
-  const OLattice< SU3Mat >& u;
-  const OLattice< HVec >& a;
-  OLattice< FVec >& d;
+  const OLattice< SU3Mat32 >& u;
+  const OLattice< HVec32 >& a;
+  OLattice< FVec32 >& d;
   int base;
   void (*func)(const REAL32*, REAL32*, unsigned int);
 };
@@ -21,9 +21,9 @@ struct ordered_sse_fused_spin_recon_user_arg{
 inline
 void ordered_sse_fused_spin_recon_evaluate_function (int lo, int hi, int myId, ordered_sse_fused_spin_recon_user_arg* arg){
 
-  const OLattice< SU3Mat >& u = arg->u;
-  const OLattice< HVec >& a = arg->a ;
-  OLattice< FVec >& d = arg->d;
+  const OLattice< SU3Mat32 >& u = arg->u;
+  const OLattice< HVec32 >& a = arg->a ;
+  OLattice< FVec32 >& d = arg->d;
   int base = arg->base;
   void (*func)(const REAL32*, REAL32*, unsigned int) = arg->func; 
 
@@ -32,7 +32,7 @@ void ordered_sse_fused_spin_recon_evaluate_function (int lo, int hi, int myId, o
 
   for (int site = low; site < high; site++){
 
-      HVec tmp ;
+      HVec32 tmp ;
 
       su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
       half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());
@@ -52,9 +52,9 @@ void ordered_sse_fused_spin_recon_evaluate_function (int lo, int hi, int myId, o
 
 // user arg for evaluate NOT having order
 struct unordered_sse_fused_spin_recon_user_arg{
-  const OLattice< SU3Mat >& u;
-  const OLattice< HVec >& a;
-  OLattice< FVec >& d;
+  const OLattice< SU3Mat32 >& u;
+  const OLattice< HVec32 >& a;
+  OLattice< FVec32 >& d;
   const int *tab;
   void (*func)(const REAL32*, REAL32*, unsigned int);
 };
@@ -64,9 +64,9 @@ struct unordered_sse_fused_spin_recon_user_arg{
 inline
 void unordered_sse_fused_spin_recon_evaluate_function (int lo, int hi, int myId, unordered_sse_fused_spin_recon_user_arg* arg){
 
-  const OLattice< SU3Mat >& u = arg->u;
-  const OLattice< HVec >& a = arg->a ;
-  OLattice< FVec >& d = arg->d;
+  const OLattice< SU3Mat32 >& u = arg->u;
+  const OLattice< HVec32 >& a = arg->a ;
+  OLattice< FVec32 >& d = arg->d;
   const int *tab = arg->tab;
   void (*func)(const REAL32*, REAL32*, unsigned int) = arg->func; 
 
@@ -74,7 +74,7 @@ void unordered_sse_fused_spin_recon_evaluate_function (int lo, int hi, int myId,
 
     int site=tab[j];
       
-    HVec tmp ;
+    HVec32 tmp ;
 
     su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
     half_wilson_vectorf *ah = (half_wilson_vectorf *)&( a.elem(site).elem(0).elem(0).real());

@@ -1,4 +1,4 @@
-// $Id: qdp_parscalar_init.cc,v 1.22 2009-02-17 23:43:07 bjoo Exp $
+// $Id: qdp_parscalar_init.cc,v 1.23 2009-04-16 20:09:04 bjoo Exp $
 
 /*! @file
  * @brief Parscalar init routines
@@ -21,6 +21,7 @@ namespace QDP {
 
   namespace ThreadReductions {
     REAL64* norm2_results;
+    REAL64* innerProd_results;
   }
 
 //! Private flag for status
@@ -220,23 +221,38 @@ void QDP_initialize(int *argc, char ***argv)
       
     if( thread_status == 0 ) { 
       if (  Layout::primaryNode() ) { 
-         cout << "Success" << endl;
-	 cout << "Created: " << qmt_num_threads() << " threads" << endl;
-	 cout << "My thread ID is: " << qmt_thread_id() << endl;
+	cout << "Success. We have " << qdpNumThreads() << " threads \n";
       } 
     }
     else { 
-	cout << "Failure... qmt_init() returned " << thread_status << endl;
-	QDP_abort(1);
+      cout << "Failure... qmt_init() returned " << thread_status << endl;
+      QDP_abort(1);
     }
   
+#else
+#ifdef QDP_USE_OMP_THREADS
+    
+    if( Layout::primaryNode()) {
+      cout << "QDP use OpenMP threading. We have " << qdpNumThreads() << " threads\n"; 
+    }
+
 #endif
+#endif
+
       // Alloc space for reductions
   ThreadReductions::norm2_results = new REAL64 [ qdpNumThreads() ];
   if( ThreadReductions::norm2_results == 0x0 ) { 
     cout << "Failure... space for norm2 results failed "  << endl;
     QDP_abort(1);
   }
+
+  ThreadReductions::innerProd_results = new REAL64 [ 2*qdpNumThreads() ];
+  if( ThreadReductions::innerProd_results == 0x0 ) { 
+    cout << "Failure... space for innerProd results failed "  << endl;
+    QDP_abort(1);
+  }
+
+
   // initialize the global streams
   QDPIO::cin.init(&std::cin);
   QDPIO::cout.init(&std::cout);
@@ -263,6 +279,7 @@ void QDP_finalize()
   // finalise qmt
   //
   delete [] ThreadReductions::norm2_results;
+  delete [] ThreadReductions::innerProd_results;
 #if defined(QMT_USE_QMT_THREADS)
     // Finalize threads
     cout << "QDP use qmt threading: Finalizing threads" << endl;

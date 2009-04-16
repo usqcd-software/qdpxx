@@ -1,3 +1,17 @@
+03/16/2009 -- Balint Joo
+	Version 1.31.1: Maintainance:
+	  - Fixed OpenMP Bug that plagued OpenMP threaded reductions
+          - Added OpenMP innerProduct() for LatticeFermions
+	  - Disabled spinProjection Optimizations -- these clash in a 'multi precision' build.
+	     put these on a toFix list
+	Remaining FIXMEs:
+	   - Generic BLAS etc is still in 'floating' type. Specialize to Single/Double
+	   - Threaded Complex BLAS in Single and Double Prec SSE please for BiCGStab
+	   - BlueGene development: 
+		xlC building
+	        threading BAGEL QDP wrappers
+	        generate single and double precision BAGEL libraries?
+
 03/05/2009 -- Robert Edwards
         Version 1.31.1: Important bug fix in the DB routines  filedb - fixed a 
         free of a memory page. Was causing the code to crash. 

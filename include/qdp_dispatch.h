@@ -2,12 +2,24 @@
 #define QDP_DISPATCH_H
 
 
+#include "qdp_config.h"
+
+namespace QDP {
+
+
 #if defined(QDP_USE_OMP_THREADS)
 #warning QDP using OpenMP threading
     
 /* OpenMP threading version of the dispatch.*/
 
 #include <omp.h>
+
+  inline
+  int qdpNumThreads()
+  {
+    return omp_get_max_threads();
+  }
+
 
 template<class Arg>
 void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*)){
@@ -32,11 +44,6 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*
     }
 }
 
-inline
-int  qdpNumThreads()
-{
-  return omp_get_num_threads();
-}
 
 #else
 
@@ -48,6 +55,13 @@ int  qdpNumThreads()
 
 #include <qmt.h>
 
+ inline
+   int qdpNumThreads()
+ {
+   return qmt_num_threads();
+ }
+
+
 template<class Arg>
 void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int,Arg*)){
  
@@ -55,13 +69,14 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int,Arg*)
  
 }
 
-inline
-int qdpNumThreads()
-{
-  return qmt_num_threads();
-}
 
 #else
+
+ inline
+ int qdpNumThreads()
+ {
+   return 1;
+ }
 
 template<class Arg>
 void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int,Arg*)){
@@ -72,15 +87,13 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int,Arg*)
   func(low, high, 0, &a);
     
 }
-
-inline
-int qdpNumThreads()
-{
-  return 1;
-}
  
 #endif
 
 #endif
+
+
+
+}
 
 #endif

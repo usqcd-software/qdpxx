@@ -5,8 +5,8 @@ using namespace QDP;
 namespace QDP {
 
 // Typedefs
-typedef PSpinVector< PColorVector< RComplex<REAL32>, 3>, 2 >  HVec;
-typedef PSpinVector< PColorVector< RComplex<REAL32>, 3>, 4>  FVec;
+typedef PSpinVector< PColorVector< RComplex<REAL32>, 3>, 2 >  HVec32;
+typedef PSpinVector< PColorVector< RComplex<REAL32>, 3>, 4>  FVec32;
 
 // Four spinor (Ns * Nc * Ncomplex ) Ncomplex fastest
 typedef REAL32 SpinColFull[4][3][2];
@@ -28,17 +28,17 @@ typedef REAL32 SpinColHalf[2][3][2];
 
 template<class A, class B>
 inline
-void evaluate(OLattice< HVec >& b,
+void evaluate(OLattice< HVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinProjectDir0Plus, 
-	      Reference< QDPType<FVec,OLattice< FVec > > > >,
-	      OLattice< HVec > > &rhs,
+	      Reference< QDPType<FVec32,OLattice< FVec32 > > > >,
+	      OLattice< HVec32 > > &rhs,
 	      const Subset& s) 
 {
 
   //  Get at pointer for 4 vec
-  const OLattice< FVec >& a = static_cast<const OLattice< FVec > &>(rhs.expression().child());
+  const OLattice< FVec32 >& a = static_cast<const OLattice< FVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     
@@ -86,17 +86,17 @@ void evaluate(OLattice< HVec >& b,
 // d = SpinProjectDir1Plus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< HVec >& b,
+void evaluate(OLattice< HVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinProjectDir1Plus, 
-	      Reference< QDPType<FVec,OLattice< FVec > > > >,
-	      OLattice< HVec > > &rhs,
+	      Reference< QDPType<FVec32,OLattice< FVec32 > > > >,
+	      OLattice< HVec32 > > &rhs,
 	      const Subset& s) 
 {
 
   
-  const OLattice< FVec >& a = static_cast<const OLattice< FVec > &>(rhs.expression().child());
+  const OLattice< FVec32 >& a = static_cast<const OLattice< FVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -140,16 +140,16 @@ void evaluate(OLattice< HVec >& b,
 // d = SpinProjectDir2Plus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< HVec >& b,
+void evaluate(OLattice< HVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinProjectDir2Plus, 
-	      Reference< QDPType<FVec,OLattice< FVec > > > >,
-	      OLattice< HVec > > &rhs,
+	      Reference< QDPType<FVec32,OLattice< FVec32 > > > >,
+	      OLattice< HVec32 > > &rhs,
 	      const Subset& s) 
 {
   
-  const OLattice< FVec >& a = static_cast<const OLattice< FVec > &>(rhs.expression().child());
+  const OLattice< FVec32 >& a = static_cast<const OLattice< FVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -193,15 +193,15 @@ void evaluate(OLattice< HVec >& b,
 // d = SpinProjectDir3Plus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< HVec >& b,
+void evaluate(OLattice< HVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinProjectDir3Plus, 
-	      Reference< QDPType<FVec,OLattice< FVec > > > >,
-	      OLattice< HVec > > &rhs,
+	      Reference< QDPType<FVec32,OLattice< FVec32 > > > >,
+	      OLattice< HVec32 > > &rhs,
 	      const Subset& s) 
 {
-  const OLattice< FVec >& a = static_cast<const OLattice< FVec > &>(rhs.expression().child());
+  const OLattice< FVec32 >& a = static_cast<const OLattice< FVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -244,17 +244,17 @@ void evaluate(OLattice< HVec >& b,
 // d = SpinProjectDir0Minus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< HVec >& b,
+void evaluate(OLattice< HVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinProjectDir0Minus, 
-	      Reference< QDPType<FVec,OLattice< FVec > > > >,
-	      OLattice< HVec > > &rhs,
+	      Reference< QDPType<FVec32,OLattice< FVec32 > > > >,
+	      OLattice< HVec32 > > &rhs,
 	      const Subset& s) 
 {
 
   //  Get at pointer for 4 vec
-  const OLattice< FVec >& a = static_cast<const OLattice< FVec > &>(rhs.expression().child());
+  const OLattice< FVec32 >& a = static_cast<const OLattice< FVec32 > &>(rhs.expression().child());
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
     REAL32 *bptr =(REAL32 *)&(b.elem(s.start()).elem(0).elem(0).real());
@@ -297,16 +297,16 @@ void evaluate(OLattice< HVec >& b,
 // d = SpinProjectDir1Minus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< HVec >& b,
+void evaluate(OLattice< HVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinProjectDir1Minus, 
-	      Reference< QDPType<FVec,OLattice< FVec > > > >,
-	      OLattice< HVec > > &rhs,
+	      Reference< QDPType<FVec32,OLattice< FVec32 > > > >,
+	      OLattice< HVec32 > > &rhs,
 	      const Subset& s) 
 {
 
-  const OLattice< FVec >& a = static_cast<const OLattice< FVec > &>(rhs.expression().child());
+  const OLattice< FVec32 >& a = static_cast<const OLattice< FVec32 > &>(rhs.expression().child());
 
   if(s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -349,17 +349,17 @@ void evaluate(OLattice< HVec >& b,
 // d = SpinProjectDir2Minus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< HVec >& b,
+void evaluate(OLattice< HVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinProjectDir2Minus, 
-	      Reference< QDPType<FVec,OLattice< FVec > > > >,
-	      OLattice< HVec > > &rhs,
+	      Reference< QDPType<FVec32,OLattice< FVec32 > > > >,
+	      OLattice< HVec32 > > &rhs,
 	      const Subset& s) 
 {
 
   
-  const OLattice< FVec >& a = static_cast<const OLattice< FVec > &>(rhs.expression().child());
+  const OLattice< FVec32 >& a = static_cast<const OLattice< FVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -403,15 +403,15 @@ void evaluate(OLattice< HVec >& b,
 // d = SpinProjectDir3Minus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< HVec >& b,
+void evaluate(OLattice< HVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinProjectDir3Minus, 
-	      Reference< QDPType<FVec,OLattice< FVec > > > >,
-	      OLattice< HVec > > &rhs,
+	      Reference< QDPType<FVec32,OLattice< FVec32 > > > >,
+	      OLattice< HVec32 > > &rhs,
 	      const Subset& s) 
 {
-  const OLattice< FVec >& a = static_cast<const OLattice< FVec > &>(rhs.expression().child());
+  const OLattice< FVec32 >& a = static_cast<const OLattice< FVec32 > &>(rhs.expression().child());
 
   if(s.hasOrderedRep()) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -458,16 +458,16 @@ void evaluate(OLattice< HVec >& b,
 // d = SpinReconstructDir0Plus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir0Plus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -512,16 +512,16 @@ void evaluate(OLattice< FVec >& b,
 // d = SpinReconstructDir1Plus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir1Plus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -566,17 +566,17 @@ void evaluate(OLattice< FVec >& b,
 // d = SpinReconstructDir2Plus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir2Plus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep()) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -620,16 +620,16 @@ void evaluate(OLattice< FVec >& b,
 // d = SpinReconstructDir3Plus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir3Plus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) {
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -673,16 +673,16 @@ void evaluate(OLattice< FVec >& b,
 // d = SpinReconstructDir0Minus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir0Minus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) {
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -727,16 +727,16 @@ void evaluate(OLattice< FVec >& b,
 // d = SpinReconstructDir1Minus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir1Minus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -780,17 +780,17 @@ void evaluate(OLattice< FVec >& b,
 // d = SpinReconstructDir2Minus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir2Minus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -834,16 +834,16 @@ void evaluate(OLattice< FVec >& b,
 // d = SpinReconstructDir3Minus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir3Minus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s. hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -889,17 +889,17 @@ void evaluate(OLattice< FVec >& b,
 // d += SpinReconstructDir0Plus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAddAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir0Plus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -943,16 +943,16 @@ void evaluate(OLattice< FVec >& b,
 // d += SpinReconstructDir1Plus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAddAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir1Plus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if(s.hasOrderedRep() ) {
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -996,16 +996,16 @@ void evaluate(OLattice< FVec >& b,
 // d += SpinReconstructDir2Plus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAddAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir2Plus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
   
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -1049,16 +1049,16 @@ void evaluate(OLattice< FVec >& b,
 // d += SpinReconstructDir3Plus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAddAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir3Plus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -1102,17 +1102,17 @@ void evaluate(OLattice< FVec >& b,
 // d += SpinReconstructDir0Minus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAddAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir0Minus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -1157,16 +1157,16 @@ void evaluate(OLattice< FVec >& b,
 // d += SpinReconstructDir1Minus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAddAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir1Minus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -1210,17 +1210,17 @@ void evaluate(OLattice< FVec >& b,
 // d += SpinReconstructDir2Minus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAddAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir2Minus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep()) {
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());
@@ -1264,17 +1264,17 @@ void evaluate(OLattice< FVec >& b,
 // d += SpinReconstructDir3Minus(Vec);
 template<class A, class B>
 inline
-void evaluate(OLattice< FVec >& b,
+void evaluate(OLattice< FVec32 >& b,
               const OpAddAssign& op,
               const QDPExpr<                             
 	              UnaryNode< FnSpinReconstructDir3Minus, 
-	      Reference< QDPType<HVec,OLattice< HVec > > > >,
-	      OLattice< FVec > > &rhs,
+	      Reference< QDPType<HVec32,OLattice< HVec32 > > > >,
+	      OLattice< FVec32 > > &rhs,
 	      const Subset& s) 
 {
 
 
-  const OLattice< HVec >& a = static_cast<const OLattice< HVec > &>(rhs.expression().child());
+  const OLattice< HVec32 >& a = static_cast<const OLattice< HVec32 > &>(rhs.expression().child());
 
   if( s.hasOrderedRep() ) { 
     REAL32 *aptr =(REAL32 *)&(a.elem(s.start()).elem(0).elem(0).real());

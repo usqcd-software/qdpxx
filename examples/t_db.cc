@@ -1,10 +1,12 @@
-// $Id: t_db.cc,v 1.8 2009-03-05 03:46:30 edwards Exp $
+// $Id: t_db.cc,v 1.9 2009-04-16 20:09:03 bjoo Exp $
 /*! \file
  *  \brief Test the database routines
  */
 
 #include "qdp.h"
 #include "qdp_db.h"
+
+using namespace QDP;
 
 namespace Chroma
 {

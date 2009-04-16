@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.35 2009-02-11 20:50:45 bjoo Exp $
+// $Id: qdp_scalarsite_sse.h,v 1.36 2009-04-16 20:09:04 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -18,11 +18,12 @@
 #include "scalarsite_sse/qdp_scalarsite_sse_linalg_double.h"
 #include "scalarsite_generic/qdp_scalarsite_generic_cblas.h"
 
-#if BASE_PRECISION == 32
-#include "scalarsite_sse/sse_spin_aggregate.h"
-#else
-#include "scalarsite_generic/generic_spin_aggregate.h"
-#endif
+//#if BASE_PRECISION == 32
+//#include "scalarsite_sse/sse_spin_aggregate.h"
+//#else
+//#include "scalarsite_sse/sse_spin_aggregate.h"
+//#include "scalarsite_generic/generic_spin_aggregate.h"
+//#endif
 
 #endif  // guard
 

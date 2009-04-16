@@ -7,7 +7,7 @@
 using namespace QDP;
 namespace QDP {
 
-typedef PScalar< PColorMatrix< RComplex<REAL32>, 3> > SU3Mat;
+typedef PScalar< PColorMatrix< RComplex<REAL32>, 3> > SU3Mat32;
 
 
 ////////////////////////////////
@@ -23,24 +23,24 @@ typedef PScalar< PColorMatrix< RComplex<REAL32>, 3> > SU3Mat;
 // HalfVec = adj(u)*SpinProjectDir0Plus(Vec);
 template<>
 inline
-void evaluate(OLattice< HVec >& d,
+void evaluate(OLattice< HVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnAdjMultSprojDir0Plus,
 	               
 	                UnaryNode< OpIdentity, 
-	                  Reference< QDPType< SU3Mat, OLattice< SU3Mat > > > >,
+	                  Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > > >,
 	               
 	                  UnaryNode< OpIdentity,
-                          Reference< QDPType< FVec,   OLattice< FVec > > > >
+                          Reference< QDPType< FVec32,   OLattice< FVec32 > > > >
                       >,
-	              OLattice< HVec > 
+	              OLattice< HVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
-  const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left().child());
+  const OLattice< FVec32 >& a = static_cast< const OLattice< FVec32 >& >(rhs.expression().right().child());
 
   if( s.hasOrderedRep() ) {
 
@@ -55,7 +55,7 @@ void evaluate(OLattice< HVec >& d,
     ////////////////////
     /*
     for(int site = s.start() ; site <= s.end(); site++) { 
-      HVec tmp ; 
+      HVec32 tmp ; 
       inlineSpinProjDir0Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
@@ -82,7 +82,7 @@ void evaluate(OLattice< HVec >& d,
     /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
-      HVec tmp ; 
+      HVec32 tmp ; 
       inlineSpinProjDir0Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
@@ -101,24 +101,24 @@ void evaluate(OLattice< HVec >& d,
 // HalfVec = adj(u)*SpinProjectDir0Minus(Vec);
 template<>
 inline
-void evaluate(OLattice< HVec >& d,
+void evaluate(OLattice< HVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnAdjMultSprojDir0Minus,
 	               
 	                UnaryNode< OpIdentity, 
-	                  Reference< QDPType< SU3Mat, OLattice< SU3Mat > > > >,
+	                  Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > > >,
 	               
 	                  UnaryNode< OpIdentity,
-                          Reference< QDPType< FVec,   OLattice< FVec > > > >
+                          Reference< QDPType< FVec32,   OLattice< FVec32 > > > >
                       >,
-	              OLattice< HVec > 
+	              OLattice< HVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
-  const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left().child());
+  const OLattice< FVec32 >& a = static_cast< const OLattice< FVec32 >& >(rhs.expression().right().child());
 
   if( s.hasOrderedRep() ) {
 
@@ -133,7 +133,7 @@ void evaluate(OLattice< HVec >& d,
     ////////////////////
     /*
     for(int site = s.start() ; site <= s.end(); site++) { 
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir0Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
@@ -161,7 +161,7 @@ void evaluate(OLattice< HVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir0Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
@@ -179,24 +179,24 @@ void evaluate(OLattice< HVec >& d,
 // HalfVec = adj(u)*SpinProjectDir1Plus(Vec);
 template<>
 inline
-void evaluate(OLattice< HVec >& d,
+void evaluate(OLattice< HVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnAdjMultSprojDir1Plus,
 	               
 	                UnaryNode< OpIdentity, 
-	                  Reference< QDPType< SU3Mat, OLattice< SU3Mat > > > >,
+	                  Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > > >,
 	               
 	                  UnaryNode< OpIdentity,
-                          Reference< QDPType< FVec,   OLattice< FVec > > > >
+                          Reference< QDPType< FVec32,   OLattice< FVec32 > > > >
                       >,
-	              OLattice< HVec > 
+	              OLattice< HVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
-  const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left().child());
+  const OLattice< FVec32 >& a = static_cast< const OLattice< FVec32 >& >(rhs.expression().right().child());
 
   
   if( s.hasOrderedRep() ) {
@@ -212,7 +212,7 @@ void evaluate(OLattice< HVec >& d,
     ////////////////////
     /*
     for(int site = s.start() ; site <= s.end(); site++) { 
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir1Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
@@ -242,7 +242,7 @@ void evaluate(OLattice< HVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir1Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
@@ -259,24 +259,24 @@ void evaluate(OLattice< HVec >& d,
 // HalfVec = adj(u)*SpinProjectDir1Minus(Vec);
 template<>
 inline
-void evaluate(OLattice< HVec >& d,
+void evaluate(OLattice< HVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnAdjMultSprojDir1Minus,
 	               
 	                UnaryNode< OpIdentity, 
-	                  Reference< QDPType< SU3Mat, OLattice< SU3Mat > > > >,
+	                  Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > > >,
 	               
 	                  UnaryNode< OpIdentity,
-                          Reference< QDPType< FVec,   OLattice< FVec > > > >
+                          Reference< QDPType< FVec32,   OLattice< FVec32 > > > >
                       >,
-	              OLattice< HVec > 
+	              OLattice< HVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
-  const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left().child());
+  const OLattice< FVec32 >& a = static_cast< const OLattice< FVec32 >& >(rhs.expression().right().child());
 
   if( s.hasOrderedRep() ) {
 
@@ -291,7 +291,7 @@ void evaluate(OLattice< HVec >& d,
     ////////////////////
     /*
     for(int site = s.start() ; site <= s.end(); site++) { 
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir1Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
@@ -320,7 +320,7 @@ void evaluate(OLattice< HVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir1Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
@@ -338,24 +338,24 @@ void evaluate(OLattice< HVec >& d,
 // HalfVec = adj(u)*SpinProjectDir2Plus(Vec);
 template<>
 inline
-void evaluate(OLattice< HVec >& d,
+void evaluate(OLattice< HVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnAdjMultSprojDir2Plus,
 	               
 	                UnaryNode< OpIdentity, 
-	                  Reference< QDPType< SU3Mat, OLattice< SU3Mat > > > >,
+	                  Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > > >,
 	               
 	                  UnaryNode< OpIdentity,
-                          Reference< QDPType< FVec,   OLattice< FVec > > > >
+                          Reference< QDPType< FVec32,   OLattice< FVec32 > > > >
                       >,
-	              OLattice< HVec > 
+	              OLattice< HVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
-  const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left().child());
+  const OLattice< FVec32 >& a = static_cast< const OLattice< FVec32 >& >(rhs.expression().right().child());
 
   if( s.hasOrderedRep() ) {
 
@@ -370,7 +370,7 @@ void evaluate(OLattice< HVec >& d,
     ////////////////////
     /*
     for(int site = s.start() ; site <= s.end(); site++) { 
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir2Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
@@ -396,7 +396,7 @@ void evaluate(OLattice< HVec >& d,
     /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir2Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
@@ -413,24 +413,24 @@ void evaluate(OLattice< HVec >& d,
 // HalfVec = adj(u)*SpinProjectDir2Minus(Vec);
 template<>
 inline
-void evaluate(OLattice< HVec >& d,
+void evaluate(OLattice< HVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnAdjMultSprojDir2Minus,
 	               
 	                UnaryNode< OpIdentity, 
-	                  Reference< QDPType< SU3Mat, OLattice< SU3Mat > > > >,
+	                  Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > > >,
 	               
 	                  UnaryNode< OpIdentity,
-                          Reference< QDPType< FVec,   OLattice< FVec > > > >
+                          Reference< QDPType< FVec32,   OLattice< FVec32 > > > >
                       >,
-	              OLattice< HVec > 
+	              OLattice< HVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
-  const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left().child());
+  const OLattice< FVec32 >& a = static_cast< const OLattice< FVec32 >& >(rhs.expression().right().child());
 
   if( s.hasOrderedRep() ) {
 
@@ -445,7 +445,7 @@ void evaluate(OLattice< HVec >& d,
     ////////////////////
     /*
     for(int site = s.start() ; site <= s.end(); site++) { 
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir2Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
@@ -474,7 +474,7 @@ void evaluate(OLattice< HVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir2Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
@@ -493,24 +493,24 @@ void evaluate(OLattice< HVec >& d,
 // HalfVec = adj(u)*SpinProjectDir3Plus(Vec);
 template<>
 inline
-void evaluate(OLattice< HVec >& d,
+void evaluate(OLattice< HVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnAdjMultSprojDir3Plus,
 	               
 	                UnaryNode< OpIdentity, 
-	                  Reference< QDPType< SU3Mat, OLattice< SU3Mat > > > >,
+	                  Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > > >,
 	               
 	                  UnaryNode< OpIdentity,
-                          Reference< QDPType< FVec,   OLattice< FVec > > > >
+                          Reference< QDPType< FVec32,   OLattice< FVec32 > > > >
                       >,
-	              OLattice< HVec > 
+	              OLattice< HVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
-  const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left().child());
+  const OLattice< FVec32 >& a = static_cast< const OLattice< FVec32 >& >(rhs.expression().right().child());
 
   if( s.hasOrderedRep() ) {
 
@@ -525,7 +525,7 @@ void evaluate(OLattice< HVec >& d,
     ////////////////////
     /*
     for(int site = s.start() ; site <= s.end(); site++) { 
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir3Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
@@ -553,7 +553,7 @@ void evaluate(OLattice< HVec >& d,
     /*
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir3Plus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			      (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			      1);
@@ -571,24 +571,24 @@ void evaluate(OLattice< HVec >& d,
 // HalfVec = adj(u)*SpinProjectDir3Minus(Vec);
 template<>
 inline
-void evaluate(OLattice< HVec >& d,
+void evaluate(OLattice< HVec32 >& d,
               const OpAssign& op,
               const QDPExpr<
 	              BinaryNode< 
 	                FnAdjMultSprojDir3Minus,
 	               
 	                UnaryNode< OpIdentity, 
-	                  Reference< QDPType< SU3Mat, OLattice< SU3Mat > > > >,
+	                  Reference< QDPType< SU3Mat32, OLattice< SU3Mat32 > > > >,
 	               
 	                  UnaryNode< OpIdentity,
-                          Reference< QDPType< FVec,   OLattice< FVec > > > >
+                          Reference< QDPType< FVec32,   OLattice< FVec32 > > > >
                       >,
-	              OLattice< HVec > 
+	              OLattice< HVec32 > 
                     >&rhs,
 	      const Subset& s)
 {
-  const OLattice< SU3Mat >& u = static_cast< const OLattice< SU3Mat >& >(rhs.expression().left().child());
-  const OLattice< FVec >& a = static_cast< const OLattice< FVec >& >(rhs.expression().right().child());
+  const OLattice< SU3Mat32 >& u = static_cast< const OLattice< SU3Mat32 >& >(rhs.expression().left().child());
+  const OLattice< FVec32 >& a = static_cast< const OLattice< FVec32 >& >(rhs.expression().right().child());
 
 
   if( s.hasOrderedRep() ) {
@@ -604,7 +604,7 @@ void evaluate(OLattice< HVec >& d,
     ////////////////////
     /*
     for(int site = s.start() ; site <= s.end(); site++) { 
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir3Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
@@ -634,7 +634,7 @@ void evaluate(OLattice< HVec >& d,
     for(int j=0; j < s.numSiteTable(); j++) { 
       int site=tab[j];
       
-      HVec tmp ;
+      HVec32 tmp ;
       inlineSpinProjDir3Minus( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 			       (REAL32 *)&(tmp.elem(0).elem(0).real()),
 			       1);
