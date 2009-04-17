@@ -1,3 +1,21 @@
+2009-04-17 16:14  edwards
+
+	* other_libs/filedb/: aclocal.m4, configure: Induced changes
+
+2009-04-17 15:47  tag qdp1-32-0
+
+2009-04-17 15:47  edwards
+
+	* NEWS: Info on 1.32.0
+
+2009-04-17 15:17  edwards
+
+	* include/qdp_db_stub.h: Fixed declarations.
+
+2009-04-17 15:14  edwards
+
+	* include/qdp_db_stub.h: Made the SerializeException a dummy class.
+
 2009-04-17 00:40  edwards
 
 	* include/qdp_db_stub.h: Moved FILEDB namespace outside of the QDP
