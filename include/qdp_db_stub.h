@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_stub.h,v 1.12 2009-04-17 19:14:18 edwards Exp $
+// $Id: qdp_db_stub.h,v 1.13 2009-04-17 19:17:55 edwards Exp $
 /*! @file
  * @brief Stubs of wrappers over filedb
  */
@@ -16,47 +16,13 @@
 namespace FILEDB
 {
   //! Forward empty decl
-  class FFDB_DBT {}
+  class FFDB_DBT {};
 
   //--------------------------------------------------------------------------------
   /**
    * Dummy exception class
    */
-  class SerializeException : public std::exception
-  {
-  public:
-    /**
-     * Constructor
-     * @param cls class name that produces this exception
-     * @param reason what causes this exception
-     */
-    SerializeException (const std::string& cls, 
-			const std::string& reason) {}
-
-    /**
-     * Copy constructor
-     */
-    SerializeException (const SerializeException& exp) {}
-
-    /**
-     * Assignment operator
-     */
-    SerializeException& operator = (const SerializeException& exp) {}
-
-    /**
-     * Destructor
-     */
-    virtual ~SerializeException (void) throw () {}
-
-    /**
-     * Return reason of the exception
-     */
-    virtual const char* what (void) const throw () {}
-
-  protected:
-    // hide default exception
-    SerializeException (void) {}
-  };
+  class SerializeException : public std::exception {};
 
 
   //--------------------------------------------------------------------------------
