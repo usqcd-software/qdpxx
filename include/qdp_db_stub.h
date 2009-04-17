@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_stub.h,v 1.10 2009-04-17 04:09:12 edwards Exp $
+// $Id: qdp_db_stub.h,v 1.11 2009-04-17 04:40:47 edwards Exp $
 /*! @file
  * @brief Stubs of wrappers over filedb
  */
@@ -10,14 +10,155 @@
 #include <vector>
 #include <string>
 #include <exception>
+#include <fcntl.h>
 
+//--------------------------------------------------------------------------------
+namespace FILEDB
+{
+  //! Forward empty decl
+  class FFDB_DBT;
+
+  //--------------------------------------------------------------------------------
+  /**
+   * This is an exception class notifying serialization of an object
+   */
+  class SerializeException : public std::exception
+  {
+  public:
+    /**
+     * Constructor
+     * @param cls class name that produces this exception
+     * @param reason what causes this exception
+     */
+    SerializeException (const std::string& cls, 
+			const std::string& reason);
+
+    /**
+     * Copy constructor
+     */
+    SerializeException (const SerializeException& exp);
+
+    /**
+     * Assignment operator
+     */
+    SerializeException& operator = (const SerializeException& exp);
+
+    /**
+     * Destructor
+     */
+    virtual ~SerializeException (void) throw ();
+
+    /**
+     * Return reason of the exception
+     */
+    virtual const char* what (void) const throw ();
+
+  protected:
+    std::string cls_;
+    std::string reason_;
+
+    // hide default exception
+    SerializeException (void);
+  };
+
+
+  //--------------------------------------------------------------------------------
+  //! Dummy serializable class
+  class Serializable
+  {
+  public:
+    /**
+     * Destructor
+     */
+    virtual ~Serializable (void) {;}
+
+    /**
+     * Get the serial id of this class
+     */
+    virtual const unsigned short serialID (void) const = 0;
+
+    /**
+     * Return this object into a binary form
+     */
+    virtual void writeObject (std::string& output) throw (SerializeException) = 0;
+
+
+    /**
+     * Convert input object retrieved from database or network into an object
+     */
+    virtual void readObject (const std::string& input) throw (SerializeException) = 0;
+
+
+  protected:
+    /**
+     * Constructor
+     */
+    Serializable (void) {;}
+  };
+
+
+  //--------------------------------------------------------------------------------
+  //!  Dummy DBKey Base class
+  class DBKey : public Serializable
+  {
+  public:
+    /**
+     * Destructor
+     */
+    ~DBKey (void) {;}
+
+    /**
+     * Does this key provide its own hash function
+     * If this class is going to provide the hash function, use the
+     * above hash function definition to implement a static function
+     * with name hash
+     *
+     * @return 1 this class provide hash function, 0 otherwise
+     */
+    virtual int hasHashFunc (void) const = 0;
+
+    /**
+     * Does this key provide its own btree key compare function
+     * If this class is going to provide the compare function, use the
+     * above compare function definition to implement a static function
+     * with name compare
+     *
+     * @return 1 this class provide compare function, 0 otherwise
+     */
+    virtual int hasCompareFunc (void) const = 0;
+
+  protected:
+    /**
+     * Constructor
+     */
+    DBKey (void) {;}
+  };
+
+
+  //--------------------------------------------------------------------------------
+  //!  Dummy DBKey Base class
+  class DBData : public Serializable
+  {
+  public:
+    /**
+     * Destructor
+     */
+    ~DBData (void) {;}
+
+  protected:
+    /**
+     * Constructor
+     */
+    DBData (void) {;}
+
+  };
+} // end namespace FILEDB
+
+
+
+//--------------------------------------------------------------------------------
 namespace QDP
 {
-//  namespace FFDB
-  {
-     // empty - just for making the compilers happy.
-  }
-
   //! Fake cache and page sizes
   const int db_cachesize = 0;
   const int db_pagesize = 0;
@@ -217,148 +358,11 @@ namespace QDP
 
   private:
     void notImplemented() const
-    {
-      QDPIO::cerr << "BinaryStoreDB: not implemented - this is a stub version. You must --enable-filedb in qdp++" << endl;
-      QDP_abort(1);
-    }
+      {
+	QDPIO::cerr << "BinaryStoreDB: not implemented - this is a stub version. You must --enable-filedb in qdp++" << endl;
+	QDP_abort(1);
+      }
   };
-
-
-  //--------------------------------------------------------------------------------
-  /**
-   * This is an exception class notifying serialization of an object
-   */
-  class SerializeException : public std::exception
-  {
-  public:
-    /**
-     * Constructor
-     * @param cls class name that produces this exception
-     * @param reason what causes this exception
-     */
-    SerializeException (const std::string& cls, 
-			const std::string& reason);
-
-    /**
-     * Copy constructor
-     */
-    SerializeException (const SerializeException& exp);
-
-    /**
-     * Assignment operator
-     */
-    SerializeException& operator = (const SerializeException& exp);
-
-    /**
-     * Destructor
-     */
-    virtual ~SerializeException (void) throw ();
-
-    /**
-     * Return reason of the exception
-     */
-    virtual const char* what (void) const throw ();
-
-  protected:
-    std::string cls_;
-    std::string reason_;
-
-    // hide default exception
-    SerializeException (void);
-  };
-
-
-  //--------------------------------------------------------------------------------
-  //! Dummy serializable class
-  class Serializable
-  {
-  public:
-    /**
-     * Destructor
-     */
-    virtual ~Serializable (void) {;}
-
-    /**
-     * Get the serial id of this class
-     */
-    virtual const unsigned short serialID (void) const = 0;
-
-    /**
-     * Return this object into a binary form
-     */
-    virtual void writeObject (std::string& output) throw (SerializeException) = 0;
-
-
-    /**
-     * Convert input object retrieved from database or network into an object
-     */
-    virtual void readObject (const std::string& input) throw (SerializeException) = 0;
-
-
-  protected:
-    /**
-     * Constructor
-     */
-    Serializable (void) {;}
-  };
-
-
-  //--------------------------------------------------------------------------------
-  //!  Dummy DBKey Base class
-  class DBKey : public Serializable
-  {
-  public:
-    /**
-     * Destructor
-     */
-    ~DBKey (void) {;}
-
-    /**
-     * Does this key provide its own hash function
-     * If this class is going to provide the hash function, use the
-     * above hash function definition to implement a static function
-     * with name hash
-     *
-     * @return 1 this class provide hash function, 0 otherwise
-     */
-    virtual int hasHashFunc (void) const = 0;
-
-    /**
-     * Does this key provide its own btree key compare function
-     * If this class is going to provide the compare function, use the
-     * above compare function definition to implement a static function
-     * with name compare
-     *
-     * @return 1 this class provide compare function, 0 otherwise
-     */
-    virtual int hasCompareFunc (void) const = 0;
-
-  protected:
-    /**
-     * Constructor
-     */
-    DBKey (void) {;}
-  };
-
-
-  //--------------------------------------------------------------------------------
-  //!  Dummy DBKey Base class
-  class DBData : public Serializable
-  {
-  public:
-    /**
-     * Destructor
-     */
-    ~DBData (void) {;}
-
-  protected:
-    /**
-     * Constructor
-     */
-    DBData (void) {;}
-
-  };
-
 }  // namespace QDP
 
 #endif
