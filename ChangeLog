@@ -1,3 +1,52 @@
+2009-04-17 00:40  edwards
+
+	* include/qdp_db_stub.h: Moved FILEDB namespace outside of the QDP
+	  namespace.
+
+2009-04-17 00:24  edwards
+
+	* other_libs/Makefile.am: Added libintrin to EXTRA_DIST.
+
+2009-04-17 00:23  edwards
+
+	* other_libs/Makefile.am: Removed the explicit filedb from SUBDIRS.
+
+2009-04-17 00:10  edwards
+
+	* configure: Induced changes.
+
+2009-04-17 00:09  edwards
+
+	* aclocal.m4: Induced changes
+
+2009-04-17 00:09  edwards
+
+	* configure.ac, qdp++-config.in, examples/Makefile.am,
+	  include/Makefile.am, include/qdp_config_internal.h.in,
+	  include/qdp_db.h, include/qdp_db_imp.h, include/qdp_db_stub.h,
+	  other_libs/Makefile.am: Reintroduced a stub and implementation
+	  version of filedb. It is now enabled by default, but can be
+	  disabled, in which case the stub is used.
+
+2009-04-16 20:45  tag qdp1_31_2
+
+2009-04-16 20:45  bjoo
+
+	* AUTHORS, COPYING, INSTALL, INSTALL_EXAMPLES, Makefile.am, NEWS,
+	  README, acinclude.m4, aclocal.m4, configure, configure.ac,
+	  qdp++-config.in, include/qdp.h, include/qdp_dispatch.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_double.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_wrapper.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_linalg.h,
+	  lib/qdp_scalar_init.cc, tests/testLocalSumSqDouble.cc,
+	  tests/testVaxpbyDouble.cc: Tidyups. Passes all scalar builds
+
+2009-04-16 20:42  chen
+
+	* other_libs/filedb/filehash/: ffdb_pagepool.c, ffdb_pagepool.h:
+	  add dump stack routine
+
 2009-04-16 16:12  bjoo
 
 	* aclocal.m4, configure: Induced changes
