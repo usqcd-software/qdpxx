@@ -1,3 +1,9 @@
+03/17/2009 -- Robert Edwards
+	Version 1.32.0: Added back in functionality to turn on/off the "filedb" DB support.
+        By default it is on, but a  "--disable-filedb" can turn it off. QDP++ leaves
+        a stub version of the DB routines. The main reason to disable filedb is if a
+        posix thread library is not available, as on a BG/L. 
+
 03/16/2009 -- Balint Joo
 	Version 1.31.1: Maintainance:
 	  - Fixed OpenMP Bug that plagued OpenMP threaded reductions
