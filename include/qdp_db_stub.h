@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_stub.h,v 1.11 2009-04-17 04:40:47 edwards Exp $
+// $Id: qdp_db_stub.h,v 1.12 2009-04-17 19:14:18 edwards Exp $
 /*! @file
  * @brief Stubs of wrappers over filedb
  */
@@ -16,11 +16,11 @@
 namespace FILEDB
 {
   //! Forward empty decl
-  class FFDB_DBT;
+  class FFDB_DBT {}
 
   //--------------------------------------------------------------------------------
   /**
-   * This is an exception class notifying serialization of an object
+   * Dummy exception class
    */
   class SerializeException : public std::exception
   {
@@ -31,34 +31,31 @@ namespace FILEDB
      * @param reason what causes this exception
      */
     SerializeException (const std::string& cls, 
-			const std::string& reason);
+			const std::string& reason) {}
 
     /**
      * Copy constructor
      */
-    SerializeException (const SerializeException& exp);
+    SerializeException (const SerializeException& exp) {}
 
     /**
      * Assignment operator
      */
-    SerializeException& operator = (const SerializeException& exp);
+    SerializeException& operator = (const SerializeException& exp) {}
 
     /**
      * Destructor
      */
-    virtual ~SerializeException (void) throw ();
+    virtual ~SerializeException (void) throw () {}
 
     /**
      * Return reason of the exception
      */
-    virtual const char* what (void) const throw ();
+    virtual const char* what (void) const throw () {}
 
   protected:
-    std::string cls_;
-    std::string reason_;
-
     // hide default exception
-    SerializeException (void);
+    SerializeException (void) {}
   };
 
 
