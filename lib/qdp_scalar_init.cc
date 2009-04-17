@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_init.cc,v 1.13 2009-04-16 20:09:04 bjoo Exp $
+// $Id: qdp_scalar_init.cc,v 1.14 2009-04-17 00:46:36 bjoo Exp $
 
 /*! @file
  * @brief Scalar init routines
@@ -45,7 +45,7 @@ void QDP_initialize(int *argc, char ***argv)
   cout << "QDP uses qmt threading: Initializing threads..." ;
   int thread_status = qmt_init();
   if( thread_status == 0 ) { 
-    cout << "Success. We have " << qdpNumThreads() " threads \n"; 
+    cout << "Success. We have " << qdpNumThreads() << " threads \n"; 
   }
   else { 
     cout << "Failure... qmt_init() returned " << thread_status << endl;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.62 2009-02-03 21:10:10 bjoo Exp $
+// $Id: qdp.h,v 1.63 2009-04-17 00:46:36 bjoo Exp $
 
 /*! \file
  * \brief Primary include file for QDP
@@ -153,11 +153,7 @@ namespace QDP {
 #include "qdp_random.h"
 
 // Include threading code here if applicable
-#if QDP_USE_OMP_THREADS ==1
 #include "qdp_dispatch.h"
-#elif QDP_USE_QMT_THREADS ==1
-#include "qdp_dispatch.h"
-#endif
 
 namespace ThreadReductions { 
  

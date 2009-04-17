@@ -1,5 +1,5 @@
-#ifndef QDP_SCALARSITE_GENERIC_BLAS_WRAPPER_H
-#define QDP_SCALARSITE_GENERIC_BLAS_WRAPPER_H
+#ifndef QDP_SCALARSITE_SSE_BLAS_WRAPPER_H
+#define QDP_SCALARSITE_SSE_BLAS_WRAPPER_H
 
 ////////////////////////////////
 // Threading evaluates wrappers
@@ -361,6 +361,5 @@ inline void ordered_norm_single_func(int lo, int hi, int myId, ordered_sse_norm_
     void (*func)(REAL64*, REAL32*, int) = a->func;
     func( &(a->results[myId]), vptr, nvec);
   }
-
 
 #endif

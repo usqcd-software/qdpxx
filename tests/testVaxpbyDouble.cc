@@ -283,12 +283,10 @@ testVaxpby4_2::run()
 
 	double realdiff = z1.elem(i).elem(spin).elem(col).real()
 	  - z2.elem(i).elem(spin).elem(col).real();
-	QDPIO::cout << "realdiff=" << realdiff << "  " << endl << flush;
 	assertion( fabs(realdiff) < 1.0e-14 );
 
 	double imagdiff = z1.elem(i).elem(spin).elem(col).imag()
 	  - z2.elem(i).elem(spin).elem(col).imag();
-	QDPIO::cout << "imagdiff=" << imagdiff << endl << flush;
 	assertion( fabs(imagdiff) < 1.0e-14 );
 
       }

@@ -51,9 +51,6 @@ testLocalSumSq4_1::run()
   local_sumsq4(sumptr, xptr, n_4vec);
   Internal::globalSum(lsum_opt);
 
-  QDPIO::cout << "lsum_hand=" << lsum_hand << endl;
-  QDPIO::cout << "lsum_opt=" << lsum_opt << endl;
-
   Double diff = fabs(lsum_opt - lsum_hand);
   Double dof  = Double(Layout::vol()*4*3*2);
 
@@ -75,7 +72,6 @@ testLocalSumSq4_2::run()
   // These may eventually be threaded
   gaussian(x);
   Double lsum_qdp = norm2(x);
-  QDPIO::cout << "lsum_qdp = " << lsum_qdp << endl;
 
   Double lsum_opt=Double(0);
   REAL64* sumptr=&(lsum_opt.elem().elem().elem().elem());
@@ -83,11 +79,8 @@ testLocalSumSq4_2::run()
   int n_4vec=all.end()-all.start()+1;
   // This may be threaded under the hood.
 
-  QDPIO::cout << "In test: " << n_4vec << endl;
-  QDPIO::cout << "In test: xptr is " << hex << (unsigned long)xptr << endl;
   local_sumsq4(sumptr, xptr, n_4vec);
   Internal::globalSum(lsum_opt);
-  QDPIO::cout << "lsum_opt=" << lsum_opt << endl;
 
   Double diff = fabs(lsum_opt - lsum_qdp);
   Double dof=Double(Layout::vol()*4*3*2);

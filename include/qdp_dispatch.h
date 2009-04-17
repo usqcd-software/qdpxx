@@ -4,18 +4,15 @@
 
 #include "qdp_config.h"
 
-namespace QDP {
-
-
 #if defined(QDP_USE_OMP_THREADS)
 #warning QDP using OpenMP threading
-    
+#include <omp.h>
+namespace QDP {    
 /* OpenMP threading version of the dispatch.*/
 
-#include <omp.h>
-
+  
   inline
-  int qdpNumThreads()
+    int qdpNumThreads()
   {
     return omp_get_max_threads();
   }
@@ -43,9 +40,9 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*
       func(low, high, myId, &a);
     }
 }
+}
 
-
-#else
+#else 
 
 #if defined(QDP_USE_QMT_THREADS)
 #warning QDP using QMT threading
@@ -54,6 +51,8 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*
      with userfunc, numSiteTable, and argument */
 
 #include <qmt.h>
+
+namespace QDP { 
 
  inline
    int qdpNumThreads()
@@ -68,9 +67,9 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int,Arg*)
    qmt_call((qmt_userfunc_t)func, numSiteTable, &a);
  
 }
-
-
+}
 #else
+namespace QDP {
 
  inline
  int qdpNumThreads()
@@ -86,14 +85,10 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int,Arg*)
    
   func(low, high, 0, &a);
     
-}
- 
+ }
+
+} 
 #endif
-
 #endif
-
-
-
-}
 
 #endif

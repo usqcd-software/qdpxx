@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas.h,v 1.27 2009-02-11 20:50:45 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas.h,v 1.28 2009-04-17 00:46:36 bjoo Exp $
 /*! @file
  * @brief Blas optimizations
  * 
@@ -8,44 +8,46 @@
 #ifndef QDP_SCALARSITE_SSE_BLAS_H
 #define QDP_SCALARSITE_SSE_BLAS_H
 
+#include "qdp_config.h"
+
 namespace QDP {
 
   namespace ThreadReductions{ 
     extern REAL64* norm2_results;
-  }
+  };
 
-// Forward declarations of BLAS routines
-void vaxpy3(REAL32 *Out, REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_3vec);
-void vaxmy3(REAL32 *Out, REAL32 *scalep,REAL32 *InScale, REAL32 *Sub,int n_3vec);
-void vadd(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec);
-void vsub(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec);
-void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec);
-void vaxpby3(REAL32* Out, REAL32* a, REAL32* x, REAL32* b, REAL32* y, int n_3vec);
-void vaxmby3(REAL32* Out, REAL32* a, REAL32* x, REAL32* b, REAL32* y, int n_3vec);
+  // Forward declarations of BLAS routines
+  void vaxpy3(REAL32 *Out, REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_3vec);
+  void vaxmy3(REAL32 *Out, REAL32 *scalep,REAL32 *InScale, REAL32 *Sub,int n_3vec);
+  void vadd(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec);
+  void vsub(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec);
+  void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec);
+  void vaxpby3(REAL32* Out, REAL32* a, REAL32* x, REAL32* b, REAL32* y, int n_3vec);
+  void vaxmby3(REAL32* Out, REAL32* a, REAL32* x, REAL32* b, REAL32* y, int n_3vec);
+  
+  void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_3vec);
+  
+  void local_vcdot(REAL64 *Out_re, REAL64 *Out_im, REAL32 *V1, REAL32 *V2, int n_3vec);
+  void local_vcdot_real(REAL64 *Out_re,  REAL32 *V1, REAL32 *V2, int n_3vec);
+  
 
-void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_3vec);
-
- void local_vcdot(REAL64 *Out_re, REAL64 *Out_im, REAL32 *V1, REAL32 *V2, int n_3vec);
- void local_vcdot_real(REAL64 *Out_re,  REAL32 *V1, REAL32 *V2, int n_3vec);
+  typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> TVec;
+  typedef PScalar<PScalar<RScalar<REAL32> > >  TScal;
 
 
-typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> TVec;
-typedef PScalar<PScalar<RScalar<REAL32> > >  TScal;
-
-
-////////////////////////////////
-// Threading evaluates
-//
-// by Xu Guo, EPCC, 6 October, 2008
-////////////////////////////////
-
-// the wrappers for the functions to be threaded
+  ////////////////////////////////
+  // Threading evaluates
+  //
+  // by Xu Guo, EPCC, 6 October, 2008
+  ////////////////////////////////
+  // the wrappers for the functions to be threaded
 #include "qdp_scalarsite_sse_blas_wrapper.h"
+  
 
 
-/* #define DEBUG_BLAS_VAXMBY */
-/* #define DEBUG_BLAS_VAXPBY */
-
+  /* #define DEBUG_BLAS_VAXMBY */
+  /* #define DEBUG_BLAS_VAXPBY */
+  
 #define QDP_SCALARSITE_USE_EVALUATE
 
 
@@ -124,7 +126,7 @@ void evaluate(OLattice< TVec >& d,
   }
 
 
-}
+ }
 
 // d -= Scalar*Vec
 template<>
@@ -136,7 +138,7 @@ void evaluate(OLattice< TVec >& d,
 	      Reference< QDPType< TVec, OLattice< TVec > > > >,
 	      OLattice< TVec > > &rhs,
 	      const Subset& s)
-{
+  {
 
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE: y -= a*x" << endl;
@@ -187,7 +189,7 @@ void evaluate(OLattice< TVec >& d,
       }*/
   }
 	
-}
+  }
 
 // z = ax + y
 template<>
@@ -269,7 +271,7 @@ void evaluate( OLattice< TVec > &d,
       }*/
   }
 
-}
+ }
 
 // Vec = Vec + Scal*Vec
 template<>
@@ -352,7 +354,7 @@ void evaluate( OLattice< TVec > &d,
    
     }*/
   }
-}
+ }
 
 // Vec = Scalar*Vec - Vec
 template<>
@@ -433,7 +435,7 @@ void evaluate( OLattice< TVec > &d,
       vaxmy3(zptr, aptr, xptr, yptr,24);
       }*/
   }
-}
+ }
 
 template<>
 inline
@@ -509,7 +511,7 @@ void evaluate( OLattice< TVec > &d,
       vaxpy3(zptr, aptr, xptr, yptr, 24);
       }*/
   }
-}
+ }
 
 // Vec += Vec * Scalar (AXPY)
 template<>
@@ -570,7 +572,7 @@ void evaluate(OLattice< TVec >& d,
       }*/
   }
 
-}
+ }
 
 
 // Vec -= Vec *Scalar 
@@ -634,7 +636,7 @@ void evaluate(OLattice< TVec >& d,
       }*/
   }
 	
-}
+ }
 
 
 // Vec = Vec *Scalar  + Vec (AXPY)
@@ -713,7 +715,7 @@ void evaluate( OLattice< TVec > &d,
       vaxpy3(zptr, aptr, xptr, yptr, 24);
       }*/
   }
-}
+ }
 
 
 // Vec = Vec + Vec * Scalar (AXPY)
