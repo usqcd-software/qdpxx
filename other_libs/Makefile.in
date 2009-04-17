@@ -89,6 +89,7 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
+FILEDB_DIR = @FILEDB_DIR@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -169,8 +170,8 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = qio xpath_reader filedb @LIBINTRIN_DIR@
-EXTRA_DIST = 
+SUBDIRS = qio xpath_reader filedb @LIBINTRIN_DIR@ @FILEDB_DIR@
+EXTRA_DIST = filedb
 all: all-recursive
 
 .SUFFIXES:
