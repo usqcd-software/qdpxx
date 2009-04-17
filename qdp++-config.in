@@ -26,12 +26,21 @@ qmp_home="@QMP_HOME@"
 qdp_cxx="@CXX@"
 qdp_cxxflags="@CXXFLAGS@ -I@includedir@ @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@ @QMT_CXXFLAGS@"
 qdp_ldflags="@LDFLAGS@ -L@libdir@ @BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@ @QMT_LDFLAGS@"
-qdp_libs="-lqdp -lXPathReader -lxmlWriter -lqio -llime -lfiledb -lfilehash @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@ @QMT_LIBS@"
+qdp_libs="-lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@ @QMT_LIBS@"
 
 libintrin_dir=@LIBINTRIN_DIR@
 case ${libintrin_dir} in
     libintrin)
 	qdp_libs=${qdp_libs}" -lintrin"
+	;;
+    *)
+	;;
+esac
+
+filedb_dir=@FILEDB_DIR@
+case ${filedb_dir} in
+    filedb)
+	qdp_libs=${qdp_libs}" -lfiledb -lfilehash"
 	;;
     *)
 	;;

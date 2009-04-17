@@ -1,4 +1,4 @@
-AC_INIT([qdp++],[1.31.1],[edwards@jlab.org])
+AC_INIT([qdp++],[1.32.0],[edwards@jlab.org])
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -86,6 +86,14 @@ AC_ARG_ENABLE(memory-debugging,
      [ac_memdebug_enabled=1
       AC_MSG_NOTICE([Enabling memory debugging code])],
      [ac_memdebug_enabled=0]
+)
+
+dnl database wrapper
+AC_ARG_ENABLE(filedb,
+  AC_HELP_STRING([--enable-filedb],
+    [Build routines using FileDB]),
+  [filedb_enabled="${enableval}"],
+  [filedb_enabled="yes"]
 )
 
 dnl --enable-sse
@@ -506,6 +514,21 @@ else
      AC_SUBST(BAGEL_QDP_LIBS,     "")
 fi
       
+dnl Build filedb
+if test "X${filedb_enabled}X" == "XyesX"; 
+then
+     AC_MSG_NOTICE([Configuring to use FileDB routines])
+     AC_CONFIG_SUBDIRS(other_libs/filedb)
+     AC_DEFINE([BUILD_FILEDB],[],[Build filedb])
+     AC_SUBST(FILEDB_DIR, [filedb])
+else 
+     AC_MSG_NOTICE([Not building filedb])
+     AC_SUBST(FILEDB_DIR,"")
+fi
+
+AM_CONDITIONAL(BUILD_FILEDB,
+  [test "x${filedb_enabled}x" = "xyesx" ])
+
 dnl Use Jie Chens threads library
 AC_ARG_WITH(qmt,
    AC_HELP_STRING(
@@ -645,7 +668,6 @@ esac
 #
 AC_CONFIG_SUBDIRS(other_libs/qio)
 AC_CONFIG_SUBDIRS(other_libs/xpath_reader)
-AC_CONFIG_SUBDIRS(other_libs/filedb)
 #
 # Set up the doxygen file
 # Substitute the right directories

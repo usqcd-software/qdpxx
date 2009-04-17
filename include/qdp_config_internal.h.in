@@ -15,6 +15,9 @@
 /* Double precision */
 #undef BASE_PRECISION
 
+/* Build filedb */
+#undef BUILD_FILEDB
+
 /* Define to 1 if you have the `gethostname' function. */
 #undef HAVE_GETHOSTNAME
 
