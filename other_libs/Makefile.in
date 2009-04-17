@@ -170,8 +170,8 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = qio xpath_reader filedb @LIBINTRIN_DIR@ @FILEDB_DIR@
-EXTRA_DIST = filedb
+SUBDIRS = qio xpath_reader @LIBINTRIN_DIR@ @FILEDB_DIR@
+EXTRA_DIST = libintrin filedb
 all: all-recursive
 
 .SUFFIXES:
