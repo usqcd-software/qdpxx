@@ -1,3 +1,29 @@
+2009-04-21 15:48  bjoo
+
+	* other_libs/filedb/: AUTHORS, COPYING, INSTALL, Makefile.am, NEWS,
+	  README, aclocal.m4, configure, configure.ac, src/Makefile.am,
+	  src/filedb_config.h, src/filedb_config_internal.h.in: Did the
+	  config_internal.h.in dance
+
+2009-04-21 15:38  bjoo
+
+	* other_libs/xpath_reader/: aclocal.m4, configure, configure.ac,
+	  include/Makefile.am, include/xpath_reader_config.h,
+	  include/xpath_reader_config_internal.h.in: Did the
+	  config_internal.h.in dance
+
+2009-04-21 14:52  chen
+
+	* other_libs/filedb/src/: SConfReadTest.cpp, VFloatData.cpp: Minor
+	  change
+
+2009-04-21 14:51  chen
+
+	* other_libs/filedb/filehash/: Makefile.am, ffdb_hash.c,
+	  ffdb_hash.h, ffdb_page.c, ffdb_pagepool.c, tcreate.c, twrite.c:
+	  Fix bugs related to number of pages upon moving pages in addition
+	  to clean pages on disk when the pages has been moved
+
 2009-04-21 10:00  bjoo
 
 	* include/qdp_scalarsite_bagel_qdp.h: Disabled Spin Stuff in BAGEL
