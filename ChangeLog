@@ -1,3 +1,8 @@
+2009-04-21 10:00  bjoo
+
+	* include/qdp_scalarsite_bagel_qdp.h: Disabled Spin Stuff in BAGEL
+	  QDP build
+
 2009-04-20 10:57  tag c-lime1-3-2
 
 2009-04-20 10:57  detar
