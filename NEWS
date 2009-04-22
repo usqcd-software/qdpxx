@@ -1,3 +1,9 @@
+04/22/2009 -- Balint Joo
+	Version 1.32.1 
+	  Fixed a mistake in the filedb/filehash makefile.am  that
+	stopped this from building...
+
+
 03/17/2009 -- Robert Edwards
 	Version 1.32.0: Added back in functionality to turn on/off the "filedb" DB support.
         By default it is on, but a  "--disable-filedb" can turn it off. QDP++ leaves
