@@ -1,3 +1,8 @@
+2009-04-22 15:52  bjoo
+
+	* include/qdp_scalarsite_generic.h: Disabled spin aggregates in
+	  generics
+
 2009-04-22 11:10  tag qdp1-32-1
 
 2009-04-22 11:10  bjoo
