@@ -1,4 +1,15 @@
-2009-04-21 15:48  tag qdp1-32-1
+2009-04-22 11:10  tag qdp1-32-1
+
+2009-04-22 11:10  bjoo
+
+	* AUTHORS, COPYING, INSTALL, INSTALL_EXAMPLES, Makefile.am, NEWS,
+	  README, acinclude.m4, aclocal.m4, configure, configure.ac,
+	  qdp++-config.in: Added stuff
+
+2009-04-22 10:50  bjoo
+
+	* other_libs/filedb/: aclocal.m4, configure, filehash/Makefile.am,
+	  src/filedb_config_internal.h.in: Filehash -I issue changed
 
 2009-04-21 15:48  bjoo
 
