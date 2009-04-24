@@ -1,3 +1,8 @@
+2009-04-24 16:19  dudek
+
+	* other_libs/xpath_reader/include/xml_array4d.h: Morphed a 3d array
+	  into a 4d array
+
 2009-04-22 15:52  bjoo
 
 	* include/qdp_scalarsite_generic.h: Disabled spin aggregates in
