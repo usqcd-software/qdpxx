@@ -1,3 +1,11 @@
+2009-04-25 23:48  edwards
+
+	* other_libs/xpath_reader/: aclocal.m4, configure: Induced changes
+
+2009-04-25 23:48  edwards
+
+	* other_libs/xpath_reader/include/Makefile.am: Added a 4d array.
+
 2009-04-24 16:19  tag adat2-12-4
 
 2009-04-24 16:19  dudek
