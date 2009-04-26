@@ -1,3 +1,8 @@
+2009-04-26 09:28  dudek
+
+	* other_libs/xpath_reader/include/xml_array4d.h: fixed some
+	  transcription errors
+
 2009-04-25 23:48  edwards
 
 	* other_libs/xpath_reader/: aclocal.m4, configure: Induced changes
