@@ -1,3 +1,15 @@
+2009-05-01 23:59  edwards
+
+	* other_libs/xpath_reader/include/xml_array3d.h: Added a bunch of
+	  functions on Array3d.
+
+2009-05-01 23:59  edwards
+
+	* other_libs/xpath_reader/include/xml_array.h: Made "left hand side
+	  not initialized" error message a little more descriptive.
+
+2009-04-26 09:28  tag adat2-13-0
+
 2009-04-26 09:28  dudek
 
 	* other_libs/xpath_reader/include/xml_array4d.h: fixed some
