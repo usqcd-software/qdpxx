@@ -1,3 +1,8 @@
+2009-05-05 11:29  edwards
+
+	* include/qdp_db_imp.h: Turned off the	 enablePageMove() call.
+	  This seems to be problematic in file_db.
+
 2009-05-01 23:59  tag pre-adat2-14
 
 2009-05-01 23:59  edwards
