@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_imp.h,v 1.5 2009-04-17 04:09:12 edwards Exp $
+// $Id: qdp_db_imp.h,v 1.6 2009-05-05 15:29:41 edwards Exp $
 /*! @file
  * @brief Support for filedb
  */
@@ -48,7 +48,7 @@ namespace QDP
       if (Layout::primaryNode())
       {
 	db.setCacheSize(db_cachesize);
-	db.enablePageMove();
+//	db.enablePageMove();   // Disable!
 	db.setMaxNumberConfigs(1);
       }
     }
