@@ -1,3 +1,14 @@
+2009-05-08 13:38  chen
+
+	* other_libs/filedb/filehash/tcheck.c: check whether key number is
+	  matching
+
+2009-05-08 13:37  chen
+
+	* other_libs/filedb/filehash/: ffdb_hash.c, ffdb_page.c,
+	  ffdb_pagepool.c, tread.c: Fix a major bug (not clean out moved
+	  page inside page pool cache)
+
 2009-05-05 13:55  chen
 
 	* other_libs/filedb/filehash/ffdb_hash.c: fix hdr->nkeys which over
