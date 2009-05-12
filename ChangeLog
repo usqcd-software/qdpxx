@@ -1,3 +1,13 @@
+2009-05-11 20:15  chen
+
+	* other_libs/filedb/: aclocal.m4, configure: Minor change on
+	  Makefile
+
+2009-05-11 20:14  chen
+
+	* other_libs/filedb/filehash/: Makefile.am, tcheck.c, tdualwrite.c:
+	  Add a new debug code
+
 2009-05-08 13:38  chen
 
 	* other_libs/filedb/filehash/tcheck.c: check whether key number is
