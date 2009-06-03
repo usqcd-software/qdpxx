@@ -1,3 +1,7 @@
+2009-06-02 22:26  edwards
+
+	* other_libs/filedb/filehash/ffdb_hash.c: Turn off some debugging.
+
 2009-05-11 20:15  tag adat2-14-0
 
 2009-05-11 20:15  tag adat2-15-0
