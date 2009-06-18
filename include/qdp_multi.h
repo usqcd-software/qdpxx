@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.19 2007-08-24 01:29:35 edwards Exp $
+// $Id: qdp_multi.h,v 1.20 2009-06-18 19:30:15 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays
@@ -264,7 +264,7 @@ private:
     n1=ns1;
     F = new(nothrow) T[n1];
     if ( F == 0x0 ) { 
-      QDP_error_exit("Unable to allocate memory in multi1d::resize()\n");
+      QDP_error_exit("Unable to allocate memory in multi1d::resize(%d)\n",ns1);
     }
   }
 
@@ -727,7 +727,7 @@ public:
     sz=n1*n2; 
     F = new(nothrow) T[sz];
     if( F == 0x0 ) { 
-	QDP_error_exit("Unable to new memory in multi2d::resize()\n");
+      QDP_error_exit("Unable to new memory in multi2d::resize(%d,%d)\n",ns2,ns1);
     }
   }
 
@@ -820,7 +820,7 @@ public:
 
     n1=ns1; n2=ns2; n3=ns3; sz=n1*n2*n3; F = new(nothrow) T[sz];
     if( F == 0x0 ) { 
-	QDP_error_exit("Unable to new memory in multi3d::resize() \n");
+      QDP_error_exit("Unable to new memory in multi3d::resize(%d,%d,%d)\n",ns3,ns2,ns1);
     }
   }
 
