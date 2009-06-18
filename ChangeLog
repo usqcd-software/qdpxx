@@ -1,3 +1,8 @@
+2009-06-18 15:30  edwards
+
+	* include/qdp_multi.h: Added printing of sizes in error message for
+	  multi<any>d
+
 2009-06-02 22:26  tag adat2-16-0
 
 2009-06-02 22:26  tag adat2-17-0
