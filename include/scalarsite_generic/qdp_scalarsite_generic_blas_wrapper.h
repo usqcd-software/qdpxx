@@ -40,6 +40,13 @@ void ordered_vaxpy3_evaluate_function (int lo, int hi, int myId, ordered_vaxpy3_
 
 // structure for vaxpy3 (with yptr only) of NOT having order
 struct unordered_vaxpy3_y_user_arg{
+  unordered_vaxpy3_y_user_arg(  const OLattice< TVec >& x_,
+				OLattice< TVec >& d_,
+				REAL* scalep_,
+				int Ns_,
+				const int* tab_,
+				int xy_order_) : x(x_), d(d_), scalep(scalep_), Ns(Ns_), tab(tab_), xy_order(xy_order_) {}
+
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   REAL* scalep;
@@ -81,6 +88,13 @@ void unordered_vaxpy3_y_evaluate_function (int lo, int hi, int myId, unordered_v
 
 // structure for vaxpy3 (with zptr) of NOT having order
 struct unordered_vaxpy3_z_user_arg{
+  unordered_vaxpy3_z_user_arg(  const OLattice< TVec >& x_,
+				const OLattice< TVec >& y_,
+				OLattice< TVec >& d_,
+				REAL* scalep_,
+				int Ns_,
+				const int* tab_) : x(x_), y(y_), d(d_), scalep(scalep_), Ns(Ns_), tab(tab_) {}
+
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -143,7 +157,13 @@ void ordered_vaxmy3_evaluate_function (int lo, int hi, int myId, ordered_vaxmy3_
 }
 
 // structure for vaxmy3 (with yptr only) of NOT having order
-struct unordered_vaxmy3_y_user_arg{
+struct unordered_vaxmy3_y_user_arg {
+  unordered_vaxmy3_y_user_arg(  const OLattice< TVec >& x_,
+				OLattice< TVec >& d_,
+				REAL* scalep_,
+				int Ns_,
+				const int* tab_) : x(x_), d(d_), scalep(scalep_), Ns(Ns_), tab(tab_) {}
+
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   REAL* scalep;
@@ -171,6 +191,14 @@ void unordered_vaxmy3_y_evaluate_function (int lo, int hi, int myId, unordered_v
 
 // structure for vaxmy3 (with zptr) of NOT having order
 struct unordered_vaxmy3_z_user_arg{
+  unordered_vaxmy3_z_user_arg(
+			      const OLattice< TVec >& x_,
+			      const OLattice< TVec >& y_,
+			      OLattice< TVec >& d_,
+			      REAL* scalep_,
+			      int Ns_,
+			      const int* tab_) : x(x_), y(y_), d(d_), scalep(scalep_), Ns(Ns_),tab(tab_) {}
+
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -228,7 +256,15 @@ void ordered_vscal_evaluate_function (int lo, int hi, int myId, ordered_vscal_us
 }
 
 // structure for vscal of NOT having order
-struct unordered_vscal_user_arg{
+struct unordered_vscal_user_arg {
+  unordered_vscal_user_arg(
+  
+			   const OLattice< TVec >& x_,
+			   OLattice< TVec >& d_,
+			   REAL* scalep_,
+			   int Ns_,
+			   const int* tab_
+			   ) : x(x_), d(d_), scalep(scalep_),Ns(Ns_), tab(tab_) {}
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   REAL* scalep;
@@ -290,6 +326,13 @@ void ordered_vaxpby3_evaluate_function (int lo, int hi, int myId, ordered_vaxpby
 
 // structure for vaxpby3 of NOT having order
 struct unordered_vaxpby3_user_arg{
+unordered_vaxpby3_user_arg(  const OLattice< TVec >& x_,
+			     const OLattice< TVec >& y_,
+			     OLattice< TVec >& d_,
+			     REAL* aptr_,
+			     REAL* bptr_,
+			     int Ns_,
+			     const int* tab_): x(x_), y(y_), d(d_), aptr(aptr_), bptr(bptr_), Ns(Ns_), tab(tab_) {}
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -359,6 +402,14 @@ void ordered_vaxmby3_evaluate_function (int lo, int hi, int myId, ordered_vaxmby
 
 // structure for vaxmby3 of NOT having order
 struct unordered_vaxmby3_user_arg{
+  unordered_vaxmby3_user_arg(  const OLattice< TVec >& x_,
+			       const OLattice< TVec >& y_,
+			       OLattice< TVec >& d_,
+			       REAL* aptr_,
+			       REAL* bptr_,
+			       int Ns_,
+			       const int* tab_): x(x_), y(y_), d(d_), aptr(aptr_), bptr(bptr_), Ns(Ns_), tab(tab_) {}
+
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;

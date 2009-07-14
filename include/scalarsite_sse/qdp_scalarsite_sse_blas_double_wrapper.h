@@ -43,6 +43,14 @@ void ordered_sse_vaxOpy4_double_evaluate_function (int lo, int hi, int myId, ord
 
 // structure for vaxOpy4_double of NOT having order
 struct unordered_sse_vaxOpy4_double_user_arg{
+  unordered_sse_vaxOpy4_double_user_arg(  const OLattice< DVec >& x_,
+					  OLattice< DVec >& d_,
+					  REAL64* scalep_,
+					  int Ns_,
+					  const int* tab_,
+					  void (*func_)(REAL64*, REAL64*, REAL64*, int)) : 
+  x(x_),d(d_),scalep(scalep_),Ns(Ns_),tab(tab_),func(func_) {}
+
   const OLattice< DVec >& x;
   OLattice< DVec >& d;
   REAL64* scalep;
@@ -110,6 +118,15 @@ void ordered_sse_vaxOpyz4_double_evaluate_function (int lo, int hi, int myId, or
 
 // structure for vaxOpyz4_double of NOT having order
 struct unordered_sse_vaxOpyz4_double_user_arg{
+  unordered_sse_vaxOpyz4_double_user_arg(
+					 const OLattice< DVec >& x_,
+					 const OLattice< DVec >& y_,
+					 OLattice< DVec >& d_,
+					 REAL64* scalep_,
+					 int Ns_,
+					 const int* tab_,
+					 void (*func_)(REAL64*, REAL64*, REAL64*, REAL64*, int))
+  :x(x_),y(y_),d(d_),scalep(scalep_),Ns(Ns_),tab(tab_),func(func_) {}
   const OLattice< DVec >& x;
   const OLattice< DVec >& y;
   OLattice< DVec >& d;
@@ -176,6 +193,13 @@ void ordered_sse_vscal4_double_evaluate_function (int lo, int hi, int myId, orde
 
 // structure for vscal4_double of NOT having order
 struct unordered_sse_vscal4_double_user_arg{
+  unordered_sse_vscal4_double_user_arg(
+				       const OLattice< DVec >& x_,
+				       OLattice< DVec >& d_,
+				       REAL64* aptr_,
+				       int Ns_,
+				       const int* tab_)
+  : x(x_),d(d_),aptr(aptr_),Ns(Ns_),tab(tab_) {}
   const OLattice< DVec >& x;
   OLattice< DVec >& d;
   REAL64* aptr;
@@ -279,6 +303,17 @@ void ordered_sse_vaxOpbyz4_double_evaluate_function (int lo, int hi, int myId, o
 
 // structure for vaxOpbyz4_double of NOT having order
 struct unordered_sse_vaxOpbyz4_double_user_arg{
+  unordered_sse_vaxOpbyz4_double_user_arg(  const OLattice< DVec >& x_,
+					    const OLattice< DVec >& y_,
+					    OLattice< DVec >& d_,
+					    REAL64* aptr_,
+					    REAL64* bptr_,
+					    int Ns_,
+					    const int* tab_,
+					    void (*func_)(REAL64*, REAL64*, REAL64*, REAL64*, REAL64*, int))
+  :x(x_),y(y_),d(d_),aptr(aptr_),bptr(bptr_),Ns(Ns_),tab(tab_),func(func_) {}
+
+
   const OLattice< DVec >& x;
   const OLattice< DVec >& y;
   OLattice< DVec >& d;

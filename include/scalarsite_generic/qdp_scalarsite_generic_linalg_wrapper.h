@@ -19,6 +19,12 @@ struct ordered_linalg_user_arg{
   const C& l;
   const H& r;
   int base;
+  ordered_linalg_user_arg(  
+			  OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d_,
+			  const C& l_,
+			  const H& r_,
+			  int base_) : d(d_), l(l_),r(r_), base(base_) {}
+			  
 };
 
 //! user function for the evaluate function in the ordered situation
@@ -55,6 +61,14 @@ struct unordered_linalg_user_arg{
   const C& l;
   const H& r;
   const int* tab;
+
+  unordered_linalg_user_arg(
+			    OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d_,
+			    const C& l_,
+			    const H& r_,
+			    const int* tab_) : d(d_), l(l_), r(r_), tab(tab_) {}
+
+
 };
 
 //! user function for the evaluate function in the unordered situation

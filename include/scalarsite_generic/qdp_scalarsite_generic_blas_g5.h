@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_generic_blas_g5.h,v 1.8 2008-12-22 17:42:58 bjoo Exp $
+// $Id: qdp_scalarsite_generic_blas_g5.h,v 1.9 2009-07-14 20:08:41 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -93,7 +93,7 @@ void evaluate(OLattice< TVec >& d,
 
     int Ns = 1;
 
-    unordered_vaypx3_g5_y_user_arg arg = {x, d, aptr, Ns, tab, xpayz_g5ProjPlus};
+    unordered_vaypx3_g5_y_user_arg arg(x, d, aptr, Ns, tab, xpayz_g5ProjPlus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_y_evaluate_function);
 
@@ -159,7 +159,7 @@ void evaluate(OLattice< TVec >& d,
 
     int Ns = 1;
 
-    unordered_vaypx3_g5_y_user_arg arg = {x, d, aptr, Ns, tab, xpayz_g5ProjMinus};
+    unordered_vaypx3_g5_y_user_arg arg(x, d, aptr, Ns, tab, xpayz_g5ProjMinus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_y_evaluate_function);
 
@@ -224,7 +224,7 @@ void evaluate(OLattice< TVec >& d,
 
     int Ns = 1;
 
-    unordered_vaypx3_g5_y_user_arg arg = {x, d, aptr, Ns, tab, xmayz_g5ProjPlus};
+    unordered_vaypx3_g5_y_user_arg arg(x, d, aptr, Ns, tab, xmayz_g5ProjPlus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_y_evaluate_function);
 
@@ -289,7 +289,7 @@ void evaluate(OLattice< TVec >& d,
 
     int Ns = 1;
 
-    unordered_vaypx3_g5_y_user_arg arg = {x, d, aptr, Ns, tab, xmayz_g5ProjMinus};
+    unordered_vaypx3_g5_y_user_arg arg(x, d, aptr, Ns, tab, xmayz_g5ProjMinus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_y_evaluate_function);
 
@@ -349,7 +349,7 @@ void evaluate(OLattice< TVec >& d,
 
     int Ns = 1;
 
-    unordered_vadd3_g5_user_arg arg = {x, d, Ns, tab, add_g5ProjPlus};
+    unordered_vadd3_g5_user_arg arg(x, d, Ns, tab, add_g5ProjPlus);
 
     dispatch_to_threads(totalSize, arg, unordered_vadd3_g5_evaluate_function);
 
@@ -409,7 +409,7 @@ void evaluate(OLattice< TVec >& d,
 
     int Ns = 1;
 
-    unordered_vadd3_g5_user_arg arg = {x, d, Ns, tab, add_g5ProjMinus};
+    unordered_vadd3_g5_user_arg arg(x, d, Ns, tab, add_g5ProjMinus);
 
     dispatch_to_threads(totalSize, arg, unordered_vadd3_g5_evaluate_function);
 
@@ -468,7 +468,7 @@ void evaluate(OLattice< TVec >& d,
 
     int Ns = 1;
 
-    unordered_vadd3_g5_user_arg arg = {x, d, Ns, tab, sub_g5ProjPlus};
+    unordered_vadd3_g5_user_arg arg(x, d, Ns, tab, sub_g5ProjPlus);
 
     dispatch_to_threads(totalSize, arg, unordered_vadd3_g5_evaluate_function);
 
@@ -527,7 +527,7 @@ void evaluate(OLattice< TVec >& d,
 
     int Ns = 1;
 
-    unordered_vadd3_g5_user_arg arg = {x, d, Ns, tab, sub_g5ProjMinus};
+    unordered_vadd3_g5_user_arg arg(x, d, Ns, tab, sub_g5ProjMinus);
 
     dispatch_to_threads(totalSize, arg, unordered_vadd3_g5_evaluate_function);
 
@@ -612,7 +612,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vaypx3_g5_z_user_arg arg = {x, y, d, aptr, Ns, tab, xpayz_g5ProjPlus};
+    unordered_vaypx3_g5_z_user_arg arg(x, y, d, aptr, Ns, tab, xpayz_g5ProjPlus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_z_evaluate_function);
 
@@ -700,7 +700,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vaypx3_g5_z_user_arg arg = {x, y, d, aptr, Ns, tab, xpayz_g5ProjMinus};
+    unordered_vaypx3_g5_z_user_arg arg(x, y, d, aptr, Ns, tab, xpayz_g5ProjMinus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_z_evaluate_function);
 
@@ -788,7 +788,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vaypx3_g5_z_user_arg arg = {x, y, d, aptr, Ns, tab, xmayz_g5ProjPlus};
+    unordered_vaypx3_g5_z_user_arg arg(x, y, d, aptr, Ns, tab, xmayz_g5ProjPlus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_z_evaluate_function);
 
@@ -876,7 +876,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vaypx3_g5_z_user_arg arg = {x, y, d, aptr, Ns, tab, xmayz_g5ProjMinus};
+    unordered_vaypx3_g5_z_user_arg arg(x, y, d, aptr, Ns, tab, xmayz_g5ProjMinus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaypx3_g5_z_evaluate_function);
 
@@ -959,7 +959,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vaxpy3_g5_user_arg arg = {x, y, d, aptr, Ns, tab, axpyz_g5ProjPlus};
+    unordered_vaxpy3_g5_user_arg arg(x, y, d, aptr, Ns, tab, axpyz_g5ProjPlus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaxpy3_g5_evaluate_function);
 
@@ -1042,7 +1042,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vaxpy3_g5_user_arg arg = {x, y, d, aptr, Ns, tab, axpyz_g5ProjMinus};
+    unordered_vaxpy3_g5_user_arg arg(x, y, d, aptr, Ns, tab, axpyz_g5ProjMinus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaxpy3_g5_evaluate_function);
 
@@ -1128,7 +1128,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vaxpy3_g5_user_arg arg = {x, y, d, aptr, Ns, tab, axmyz_g5ProjPlus};
+    unordered_vaxpy3_g5_user_arg arg(x, y, d, aptr, Ns, tab, axmyz_g5ProjPlus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaxpy3_g5_evaluate_function);
 
@@ -1211,7 +1211,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vaxpy3_g5_user_arg arg = {x, y, d, aptr, Ns, tab, axmyz_g5ProjMinus};
+    unordered_vaxpy3_g5_user_arg arg(x, y, d, aptr, Ns, tab, axmyz_g5ProjMinus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaxpy3_g5_evaluate_function);
 
@@ -1278,7 +1278,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vscal_g5_user_arg arg = {x, d, aptr, Ns, tab, scal_g5ProjPlus};
+    unordered_vscal_g5_user_arg arg(x, d, aptr, Ns, tab, scal_g5ProjPlus);
 
     dispatch_to_threads(totalSize, arg, unordered_vscal_g5_evaluate_function);
 
@@ -1344,7 +1344,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vscal_g5_user_arg arg = {x, d, aptr, Ns, tab, scal_g5ProjMinus};
+    unordered_vscal_g5_user_arg arg(x, d, aptr, Ns, tab, scal_g5ProjMinus);
 
     dispatch_to_threads(totalSize, arg, unordered_vscal_g5_evaluate_function);
 
@@ -1439,7 +1439,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vaxpby3_g5_user_arg arg = {x, y, d, aptr, bptr, Ns, tab, axpbyz_g5ProjPlus};
+    unordered_vaxpby3_g5_user_arg arg(x, y, d, aptr, bptr, Ns, tab, axpbyz_g5ProjPlus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaxpby3_g5_evaluate_function);
 
@@ -1538,7 +1538,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vaxpby3_g5_user_arg arg = {x, y, d, aptr, bptr, Ns, tab, axpbyz_g5ProjMinus};
+    unordered_vaxpby3_g5_user_arg arg(x, y, d, aptr, bptr, Ns, tab, axpbyz_g5ProjMinus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaxpby3_g5_evaluate_function);
 
@@ -1635,7 +1635,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vaxpby3_g5_user_arg arg = {x, y, d, aptr, bptr, Ns, tab, axmbyz_g5ProjPlus};
+    unordered_vaxpby3_g5_user_arg arg(x, y, d, aptr, bptr, Ns, tab, axmbyz_g5ProjPlus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaxpby3_g5_evaluate_function);
 
@@ -1730,7 +1730,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_vaxpby3_g5_user_arg arg = {x, y, d, aptr, bptr, Ns, tab, axmbyz_g5ProjMinus};
+    unordered_vaxpby3_g5_user_arg arg(x, y, d, aptr, bptr, Ns, tab, axmbyz_g5ProjMinus);
 
     dispatch_to_threads(totalSize, arg, unordered_vaxpby3_g5_evaluate_function);
 
@@ -1811,7 +1811,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_scal_g5_user_arg arg = {x, d, aptr, Ns, tab};
+    unordered_scal_g5_user_arg arg(x, d, aptr, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_scal_g5_evaluate_function);
 
@@ -1906,7 +1906,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_xOpayz_g5_user_arg arg = {x, y, d, aptr, Ns, tab, xmayz_g5};
+    unordered_xOpayz_g5_user_arg arg(x, y, d, aptr, Ns, tab, xmayz_g5);
 
     dispatch_to_threads(totalSize, arg, unordered_xOpayz_g5_evaluate_function);
 
@@ -2014,7 +2014,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_axOpbyz_g5_user_arg arg = {x, y, d, aptr, bptr,  Ns, tab, axpbyz_g5};
+    unordered_axOpbyz_g5_user_arg arg(x, y, d, aptr, bptr,  Ns, tab, axpbyz_g5);
 
     dispatch_to_threads(totalSize, arg, unordered_axOpbyz_g5_evaluate_function);
 
@@ -2117,7 +2117,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_axOpbyz_g5_user_arg arg = {x, y, d, aptr, bptr,  Ns, tab, g5_axmbyz};
+    unordered_axOpbyz_g5_user_arg arg(x, y, d, aptr, bptr,  Ns, tab, g5_axmbyz);
 
     dispatch_to_threads(totalSize, arg, unordered_axOpbyz_g5_evaluate_function);
 
@@ -2237,7 +2237,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_axOpbyz_g5_user_arg arg = {x, y, d, aptr, bptr,  Ns, tab, axpbyz_ig5};
+    unordered_axOpbyz_g5_user_arg arg(x, y, d, aptr, bptr,  Ns, tab, axpbyz_ig5);
 
     dispatch_to_threads(totalSize, arg, unordered_axOpbyz_g5_evaluate_function);
 
@@ -2355,7 +2355,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_axOpbyz_g5_user_arg arg = {x, y, d, aptr, bptr,  Ns, tab, axmbyz_ig5};
+    unordered_axOpbyz_g5_user_arg arg(x, y, d, aptr, bptr,  Ns, tab, axmbyz_ig5);
 
     dispatch_to_threads(totalSize, arg, unordered_axOpbyz_g5_evaluate_function);
 
@@ -2461,7 +2461,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_xOpayz_ig5_y_user_arg arg = {x, y, d, aptr, Ns, tab, xpayz_ig5};
+    unordered_xOpayz_ig5_y_user_arg arg(x, y, d, aptr, Ns, tab, xpayz_ig5);
 
     dispatch_to_threads(totalSize, arg, unordered_xOpayz_ig5_y_evaluate_function);
 
@@ -2569,7 +2569,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_xOpayz_ig5_y_user_arg arg = {x, y, d, aptr, Ns, tab, xmayz_ig5};
+    unordered_xOpayz_ig5_y_user_arg arg(x, y, d, aptr, Ns, tab, xmayz_ig5);
 
     dispatch_to_threads(totalSize, arg, unordered_xOpayz_ig5_y_evaluate_function);
 
@@ -2677,7 +2677,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_xOpayz_ig5_z_user_arg arg = {x, d, aptr, Ns, tab, xpayz_ig5};
+    unordered_xOpayz_ig5_z_user_arg arg(x, d, aptr, Ns, tab, xpayz_ig5);
 
     dispatch_to_threads(totalSize, arg, unordered_xOpayz_ig5_z_evaluate_function);
 
@@ -2784,7 +2784,7 @@ void evaluate( OLattice< TVec > &d,
 
     int Ns = 1;
 
-    unordered_xOpayz_ig5_z_user_arg arg = {x, d, aptr,  Ns, tab, xmayz_ig5};
+    unordered_xOpayz_ig5_z_user_arg arg(x, d, aptr,  Ns, tab, xmayz_ig5);
 
     dispatch_to_threads(totalSize, arg, unordered_xOpayz_ig5_z_evaluate_function);
 

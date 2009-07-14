@@ -1,4 +1,4 @@
-// $Id: qdp_scalar_init.cc,v 1.14 2009-04-17 00:46:36 bjoo Exp $
+// $Id: qdp_scalar_init.cc,v 1.15 2009-07-14 20:08:42 bjoo Exp $
 
 /*! @file
  * @brief Scalar init routines
@@ -128,9 +128,15 @@ bool QDP_isInitialized() {return isInit;}
 void QDP_finalize()
 {
 
-  delete [] ThreadReductions::norm2_results;
-  delete [] ThreadReductions::innerProd_results;
-    //
+  if ( ThreadReductions::norm2_results != 0x0 ) { 
+   delete [] ThreadReductions::norm2_results;
+  }
+
+  if ( ThreadReductions::innerProd_results != 0x0 ) { 
+   delete [] ThreadReductions::innerProd_results;
+  }
+
+   
   // finalise qmt
   //
 #if defined(QMT_USE_QMT_THREADS)

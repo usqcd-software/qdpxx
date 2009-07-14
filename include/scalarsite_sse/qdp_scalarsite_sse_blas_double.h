@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse_blas_double.h,v 1.7 2009-04-17 00:46:36 bjoo Exp $
+// $Id: qdp_scalarsite_sse_blas_double.h,v 1.8 2009-07-14 20:08:42 bjoo Exp $
 
 /*! @file
  * @brief Generic Scalarsite  optimization hooks
@@ -103,7 +103,7 @@ void evaluate(OLattice< DVec >& d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpy4_double_user_arg arg = {x, d, aptr, 1, tab, vaxpy4};
+    unordered_sse_vaxOpy4_double_user_arg arg(x, d, aptr, 1, tab, vaxpy4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy4_double_evaluate_function);
 
@@ -164,7 +164,7 @@ void evaluate(OLattice< DVec >& d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpy4_double_user_arg arg = {x, d, aptr, 1, tab, vaxpy4};
+    unordered_sse_vaxOpy4_double_user_arg arg(x, d, aptr, 1, tab, vaxpy4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy4_double_evaluate_function);
 
@@ -259,7 +259,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpyz4_double_user_arg arg = {x, y, d, aptr, 1, tab, vaxpyz4};
+    unordered_sse_vaxOpyz4_double_user_arg arg(x, y, d, aptr, 1, tab, vaxpyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpyz4_double_evaluate_function);
 
@@ -359,7 +359,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpyz4_double_user_arg arg = {x, y, d, aptr, 1, tab, vaxpyz4};
+    unordered_sse_vaxOpyz4_double_user_arg arg(x, y, d, aptr, 1, tab, vaxpyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpyz4_double_evaluate_function);
 
@@ -454,7 +454,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpyz4_double_user_arg arg = {x, y, d, aptr, 1, tab, vaxmyz4};
+    unordered_sse_vaxOpyz4_double_user_arg arg(x, y, d, aptr, 1, tab, vaxmyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpyz4_double_evaluate_function);
 
@@ -549,7 +549,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpyz4_double_user_arg arg = {x, y, d, aptr, 1, tab, vaxpyz4};
+    unordered_sse_vaxOpyz4_double_user_arg arg(x, y, d, aptr, 1, tab, vaxpyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpyz4_double_evaluate_function);
 
@@ -612,7 +612,7 @@ void evaluate(OLattice< DVec >& d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpy4_double_user_arg arg = {x, d, aptr, 1, tab, vaxpy4};
+    unordered_sse_vaxOpy4_double_user_arg arg(x, d, aptr, 1, tab, vaxpy4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy4_double_evaluate_function);
 
@@ -677,7 +677,7 @@ void evaluate(OLattice< DVec >& d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpy4_double_user_arg arg = {x, d, aptr, 1, tab, vaxpy4};
+    unordered_sse_vaxOpy4_double_user_arg arg(x, d, aptr, 1, tab, vaxpy4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy4_double_evaluate_function);
 
@@ -775,7 +775,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpyz4_double_user_arg arg = {x, y, d, aptr, 1, tab, vaxpyz4};
+    unordered_sse_vaxOpyz4_double_user_arg arg(x, y, d, aptr, 1, tab, vaxpyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpyz4_double_evaluate_function);
 
@@ -874,7 +874,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpyz4_double_user_arg arg = {x, y, d, aptr, 1, tab, vaxpyz4};
+    unordered_sse_vaxOpyz4_double_user_arg arg(x, y, d, aptr, 1, tab, vaxpyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpyz4_double_evaluate_function);
 
@@ -971,7 +971,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpyz4_double_user_arg arg = {x, y, d, aptr, 1, tab, vaxmyz4};
+    unordered_sse_vaxOpyz4_double_user_arg arg(x, y, d, aptr, 1, tab, vaxmyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpyz4_double_evaluate_function);
 
@@ -1069,7 +1069,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpyz4_double_user_arg arg = {x, y, d, aptr, 1, tab, vaxpyz4};
+    unordered_sse_vaxOpyz4_double_user_arg arg(x, y, d, aptr, 1, tab, vaxpyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpyz4_double_evaluate_function);
 
@@ -1150,7 +1150,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpyz4_double_user_arg arg = {x, y, d, &one, 1, tab, vaxpyz4};
+    unordered_sse_vaxOpyz4_double_user_arg arg(x, y, d, &one, 1, tab, vaxpyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpyz4_double_evaluate_function);
 
@@ -1230,7 +1230,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpyz4_double_user_arg arg = {x, y, d, &one, 1, tab, vaxmyz4};
+    unordered_sse_vaxOpyz4_double_user_arg arg(x, y, d, &one, 1, tab, vaxmyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpyz4_double_evaluate_function);
 
@@ -1358,7 +1358,7 @@ void evaluate( OLattice< DVec > &d,
     
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vscal4_double_user_arg arg = {x, d, aptr, 1, tab};
+    unordered_sse_vscal4_double_user_arg arg(x, d, aptr, 1, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vscal4_double_evaluate_function);
     
@@ -1417,7 +1417,7 @@ void evaluate( OLattice< DVec > &d,
     
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vscal4_double_user_arg arg = {d, d, &ar, 1, tab};
+    unordered_sse_vscal4_double_user_arg arg(d, d, &ar, 1, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vscal4_double_evaluate_function);
     
@@ -1476,7 +1476,7 @@ void evaluate( OLattice< DVec > &d,
     
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vscal4_double_user_arg arg = {d, d, &ar, 1, tab};
+    unordered_sse_vscal4_double_user_arg arg(d, d, &ar, 1, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vscal4_double_evaluate_function);
     
@@ -1539,7 +1539,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpy4_double_user_arg arg = {x, d, &one, 1, tab, vaxpy4};
+    unordered_sse_vaxOpy4_double_user_arg arg(x, d, &one, 1, tab, vaxpy4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy4_double_evaluate_function);
 
@@ -1603,7 +1603,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpy4_double_user_arg arg = {x, d, &mone, 1, tab, vaxpy4};
+    unordered_sse_vaxOpy4_double_user_arg arg(x, d, &mone, 1, tab, vaxpy4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpy4_double_evaluate_function);
 
@@ -1711,7 +1711,7 @@ void evaluate( OLattice< DVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpbyz4_double_user_arg arg = {x, y, d, aptr, bptr,  1, tab, vaxpbyz4};
+    unordered_sse_vaxOpbyz4_double_user_arg arg(x, y, d, aptr, bptr,  1, tab, vaxpbyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpbyz4_double_evaluate_function);
 
@@ -1827,7 +1827,7 @@ void evaluate( OLattice< DVec > &d,
     
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpbyz4_double_user_arg arg = {x, y, d, aptr, bptr,  1, tab, vaxpbyz4};
+    unordered_sse_vaxOpbyz4_double_user_arg arg(x, y, d, aptr, bptr,  1, tab, vaxpbyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpbyz4_double_evaluate_function);
 
@@ -1948,7 +1948,7 @@ void evaluate( OLattice< DVec > &d,
     
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpbyz4_double_user_arg arg = {x, y, d, aptr, bptr,  1, tab, vaxpbyz4};
+    unordered_sse_vaxOpbyz4_double_user_arg arg(x, y, d, aptr, bptr,  1, tab, vaxpbyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpbyz4_double_evaluate_function);
 
@@ -2059,7 +2059,7 @@ void evaluate( OLattice< DVec > &d,
     
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpbyz4_double_user_arg arg = {x, y, d, aptr, bptr,  1, tab, vaxpbyz4};
+    unordered_sse_vaxOpbyz4_double_user_arg arg(x, y, d, aptr, bptr,  1, tab, vaxpbyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpbyz4_double_evaluate_function);
 
@@ -2171,7 +2171,7 @@ void evaluate( OLattice< DVec > &d,
     
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpbyz4_double_user_arg arg = {x, y, d, aptr, bptr,  1, tab, vaxmbyz4};
+    unordered_sse_vaxOpbyz4_double_user_arg arg(x, y, d, aptr, bptr,  1, tab, vaxmbyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpbyz4_double_evaluate_function);
 
@@ -2289,7 +2289,7 @@ void evaluate( OLattice< DVec > &d,
     
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpbyz4_double_user_arg arg = {x, y, d, aptr, bptr,  1, tab, vaxmbyz4};
+    unordered_sse_vaxOpbyz4_double_user_arg arg(x, y, d, aptr, bptr,  1, tab, vaxmbyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpbyz4_double_evaluate_function);
 
@@ -2412,7 +2412,7 @@ void evaluate( OLattice< DVec > &d,
     
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpbyz4_double_user_arg arg = {x, y, d, aptr, bptr,  1, tab, vaxmbyz4};
+    unordered_sse_vaxOpbyz4_double_user_arg arg(x, y, d, aptr, bptr,  1, tab, vaxmbyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpbyz4_double_evaluate_function);
 
@@ -2524,7 +2524,7 @@ void evaluate( OLattice< DVec > &d,
     
     int totalSize = s.numSiteTable();
 
-    unordered_sse_vaxOpbyz4_double_user_arg arg = {x, y, d, aptr, bptr,  1, tab, vaxmbyz4};
+    unordered_sse_vaxOpbyz4_double_user_arg arg(x, y, d, aptr, bptr,  1, tab, vaxmbyz4);
 
     dispatch_to_threads(totalSize, arg, unordered_sse_vaxOpbyz4_double_evaluate_function);
 

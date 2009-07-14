@@ -35,6 +35,13 @@ void ordered_vcscal_evaluate_function (int lo, int hi, int myId, ordered_vcscal_
 
 // structure for vcscal of NOT having order
 struct unordered_vcscal_user_arg{
+  unordered_vcscal_user_arg(
+			    const OLattice< CTVec > &x_,
+			    OLattice< CTVec >& d_,
+			    REAL* scalep_,
+			    int Ns_,
+			    const int* tab_) : x(x_), d(d_), scalep(scalep_), Ns(Ns_), tab(tab_) {}
+
   const OLattice< CTVec > &x;
   OLattice< CTVec >& d;
   REAL* scalep;
@@ -94,6 +101,13 @@ void ordered_vcaxpy3_evaluate_function (int lo, int hi, int myId, ordered_vcaxpy
 
 // structure for vcaxpy3 of NOT having order (with y pointer only)
 struct unordered_vcaxpy3_y_user_arg{
+  unordered_vcaxpy3_y_user_arg(
+			       const OLattice< CTVec > &x_,
+			       OLattice< CTVec >& d_,
+			       REAL* scalep_,
+			       int Ns_,
+			       const int* tab_) : x(x_), d(d_), scalep(scalep_), Ns(Ns_), tab(tab_) {}
+
   const OLattice< CTVec > &x;
   OLattice< CTVec >& d;
   REAL* scalep;
@@ -124,6 +138,14 @@ void unordered_vcaxpy3_y_evaluate_function (int lo, int hi, int myId, unordered_
 
 // structure for vcaxpy3 of NOT having order (with z pointer)
 struct unordered_vcaxpy3_z_user_arg{
+  unordered_vcaxpy3_z_user_arg(
+			       const OLattice< CTVec > &x_,
+			       const OLattice< CTVec >& y_,
+			       OLattice< CTVec >& d_,
+			       REAL* scalep_,
+			       int Ns_,
+			       const int* tab_) : x(x_), y(y_), d(d_), scalep(scalep_), Ns(Ns_), tab(tab_) {}
+
   const OLattice< CTVec > &x;
   const OLattice< CTVec >& y;
   OLattice< CTVec >& d;
@@ -190,6 +212,14 @@ void ordered_vcaxmy3_evaluate_function (int lo, int hi, int myId, ordered_vcaxmy
 
 // structure for vcaxmy3 of NOT having order
 struct unordered_vcaxmy3_user_arg{
+  unordered_vcaxmy3_user_arg(
+			     const OLattice< CTVec > &x_,
+			     const OLattice< CTVec >& y_,
+			     OLattice< CTVec >& d_,
+			     REAL* scalep_,
+			     int Ns_,
+			     const int* tab_) : x(x_),y(y_),d(d_),scalep(scalep_), Ns(Ns_), tab(tab_) {}
+
   const OLattice< CTVec > &x;
   const OLattice< CTVec >& y;
   OLattice< CTVec >& d;
@@ -256,6 +286,15 @@ void ordered_vcaxpby3_evaluate_function (int lo, int hi, int myId, ordered_vcaxp
 
 // structure for vcaxpby3 of NOT having order
 struct unordered_vcaxpby3_user_arg{
+  unordered_vcaxpby3_user_arg(
+			      const OLattice< CTVec > &x_,
+			      const OLattice< CTVec >& y_,
+			      OLattice< CTVec >& d_,
+			      REAL* aptr_,
+			      REAL* bptr_,
+			      int Ns_,
+			      const int* tab_) : x(x_), y(y_),d(d_),aptr(aptr_), bptr(bptr_), Ns(Ns_), tab(tab_) {}
+
   const OLattice< CTVec > &x;
   const OLattice< CTVec >& y;
   OLattice< CTVec >& d;
@@ -324,6 +363,15 @@ void ordered_vcaxmby3_evaluate_function (int lo, int hi, int myId, ordered_vcaxm
 
 // structure for vcaxmby3 of NOT having order
 struct unordered_vcaxmby3_user_arg{
+  unordered_vcaxmby3_user_arg(
+			      const OLattice< CTVec > &x_,
+			      const OLattice< CTVec >& y_,
+			      OLattice< CTVec >& d_,
+			      REAL* aptr_,
+			      REAL* bptr_,
+			      int Ns_,
+			      const int* tab_): x(x_),y(y_),d(d_),aptr(aptr_),bptr(bptr_),Ns(Ns_),tab(tab_) {}
+
   const OLattice< CTVec > &x;
   const OLattice< CTVec >& y;
   OLattice< CTVec >& d;

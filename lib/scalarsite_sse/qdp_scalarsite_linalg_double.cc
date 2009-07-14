@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_linalg_double.cc,v 1.3 2009-02-10 17:06:37 bjoo Exp $
+// $Id: qdp_scalarsite_linalg_double.cc,v 1.4 2009-07-14 20:08:42 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -45,6 +45,13 @@ namespace QDP {
   }
 
   struct unordered_ssed_3mat_args { 
+    unordered_ssed_3mat_args(    const OLattice<DCol>& l_,
+				 const OLattice<DCol>& r_,
+				 OLattice<DCol>& d_,
+				 const int *tab_,
+				 void (*func_)(REAL64*, REAL64*, REAL64*, int) ) :
+      l(l_),r(r_),d(d_),tab(tab_),func(func_) {}
+
     const OLattice<DCol>& l;
     const OLattice<DCol>& r;
     OLattice<DCol>& d;
@@ -97,7 +104,7 @@ void evaluate(OLattice< DCol >& d,
   }
   else { 
     const int *tab = s.siteTable().slice();
-    unordered_ssed_3mat_args a = {l,r,d,tab,ssed_m_eq_mm};
+    unordered_ssed_3mat_args a(l,r,d,tab,ssed_m_eq_mm);
     dispatch_to_threads(s.numSiteTable(), a, unordered_ssed_3mat_evaluate_func);
 
     //for(int j=0; j < s.numSiteTable(); ++j) {
@@ -141,7 +148,7 @@ void evaluate(OLattice< DCol >& d,
   }
   else { 
     const int *tab = s.siteTable().slice();
-    unordered_ssed_3mat_args a = {l,r,d,tab,ssed_m_eq_hm};
+    unordered_ssed_3mat_args a(l,r,d,tab,ssed_m_eq_hm);
     dispatch_to_threads(s.numSiteTable(), a, unordered_ssed_3mat_evaluate_func);
 
     //for(int j=0; j < s.numSiteTable(); ++j) {
@@ -188,7 +195,7 @@ void evaluate(OLattice< DCol >& d,
   else { 
 
     const int *tab = s.siteTable().slice();
-    unordered_ssed_3mat_args a = {l,r,d,tab,ssed_m_eq_mh};
+    unordered_ssed_3mat_args a(l,r,d,tab,ssed_m_eq_mh);
     dispatch_to_threads(s.numSiteTable(), a, unordered_ssed_3mat_evaluate_func);
 
     // for(int j=0; j < s.numSiteTable(); ++j) {
@@ -233,7 +240,7 @@ void evaluate(OLattice< DCol >& d,
   }
   else { 
     const int *tab = s.siteTable().slice();
-    unordered_ssed_3mat_args a = {l,r,d,tab,ssed_m_eq_hh};
+    unordered_ssed_3mat_args a(l,r,d,tab,ssed_m_eq_hh);
     dispatch_to_threads(s.numSiteTable(), a, unordered_ssed_3mat_evaluate_func);
 
     // for(int j=0; j < s.numSiteTable(); ++j) {
@@ -277,6 +284,14 @@ void evaluate(OLattice< DCol >& d,
   }
 
   struct unordered_ssed_3mat_const_args { 
+    unordered_ssed_3mat_const_args(    const OLattice<DCol>& l_,
+				       const OLattice<DCol>& r_,
+				       OLattice<DCol>& d_,
+				       REAL64 *c_,
+				       const int *tab_,
+				       void (*func_)(REAL64*, REAL64*, REAL64*, REAL64*, int) ) :
+      l(l_), r(r_),d(d_),c(c_),tab(tab_),func(func_) {}
+
     const OLattice<DCol>& l;
     const OLattice<DCol>& r;
     OLattice<DCol>& d;
@@ -328,7 +343,7 @@ void evaluate(OLattice< DCol >& d,
   }
   else { 
     const int *tab = s.siteTable().slice();
-    unordered_ssed_3mat_const_args a = {l,r,d,&one,tab,ssed_m_peq_amm};
+    unordered_ssed_3mat_const_args a(l,r,d,&one,tab,ssed_m_peq_amm);
     dispatch_to_threads(s.numSiteTable(), a, unordered_ssed_3mat_const_evaluate_func);  
     // const int *tab = s.siteTable().slice();
     // for(int j=0; j < s.numSiteTable(); ++j) {
@@ -374,7 +389,7 @@ void evaluate(OLattice< DCol >& d,
   }
   else { 
     const int *tab = s.siteTable().slice();
-    unordered_ssed_3mat_const_args a = {l,r,d,&one,tab,ssed_m_peq_ahm};
+    unordered_ssed_3mat_const_args a(l,r,d,&one,tab,ssed_m_peq_ahm);
     dispatch_to_threads(s.numSiteTable(), a, unordered_ssed_3mat_const_evaluate_func);  
     //const int *tab = s.siteTable().slice();
     //for(int j=0; j < s.numSiteTable(); ++j) {
@@ -419,7 +434,7 @@ void evaluate(OLattice< DCol >& d,
   }
   else { 
     const int *tab = s.siteTable().slice();
-    unordered_ssed_3mat_const_args a = {l,r,d,&one,tab,ssed_m_peq_amh};
+    unordered_ssed_3mat_const_args a(l,r,d,&one,tab,ssed_m_peq_amh);
     dispatch_to_threads(s.numSiteTable(), a, unordered_ssed_3mat_const_evaluate_func);  
     // const int *tab = s.siteTable().slice();
     // for(int j=0; j < s.numSiteTable(); ++j) {
@@ -468,7 +483,7 @@ void evaluate(OLattice< DCol >& d,
   }
   else { 
     const int *tab = s.siteTable().slice();
-    unordered_ssed_3mat_const_args a = {l,r,d,&one,tab,ssed_m_peq_ahh};
+    unordered_ssed_3mat_const_args a(l,r,d,&one,tab,ssed_m_peq_ahh);
     dispatch_to_threads(s.numSiteTable(), a, unordered_ssed_3mat_const_evaluate_func);  
     // const int *tab = s.siteTable().slice();
     // for(int j=0; j < s.numSiteTable(); ++j) {
@@ -509,6 +524,14 @@ void evaluate(OLattice< DCol >& d,
   }
 
   struct unordered_ssed_2mat_const_args { 
+    unordered_ssed_2mat_const_args(
+				   const OLattice<DCol>& src_,
+				   OLattice<DCol>& target_,
+				   REAL64*c_,
+				   const int* tab_,
+				   void  (*func_)(REAL64*, REAL64*, REAL64*, int) ) :
+      src(src_), target(target_),c(c_),tab(tab_),func(func_) {}
+
     const OLattice<DCol>& src;
     OLattice<DCol>& target;
     REAL64*c;
@@ -560,7 +583,7 @@ void evaluate(OLattice< DCol >& d,
   else {
     // Unordered case 
     const int* tab = s.siteTable().slice();
-    unordered_ssed_2mat_const_args a = { l,d,&one,tab, ssed_m_eq_scal_m};
+    unordered_ssed_2mat_const_args a(l,d,&one,tab, ssed_m_eq_scal_m);
     dispatch_to_threads(s.numSiteTable(), a, 
 			unordered_ssed_2mat_const_evaluate_func);
 
@@ -600,6 +623,12 @@ void evaluate(OLattice< DCol >& d,
   }
 
   struct unordered_ssed_2mat_args { 
+    unordered_ssed_2mat_args(    const OLattice<DCol>& src_,
+				 OLattice<DCol>& target_,
+				 const int* tab_,
+				 void  (*func_)(REAL64*, REAL64*, int) ) :
+      src(src_), target(target_), tab(tab_),func(func_) {}
+
     const OLattice<DCol>& src;
     OLattice<DCol>& target;
     const int* tab;
@@ -646,7 +675,7 @@ void evaluate(OLattice< DCol >& d,
   else {
     // Unordered case 
     const int* tab = s.siteTable().slice();
-    unordered_ssed_2mat_args a = { l,d, tab, ssed_m_peq_m};
+    unordered_ssed_2mat_args a(l,d, tab, ssed_m_peq_m);
     dispatch_to_threads(s.numSiteTable(), a, 
 			unordered_ssed_2mat_evaluate_func);
     
@@ -686,7 +715,7 @@ void evaluate(OLattice< DCol >& d,
   else {   
     // Unordered case 
     const int* tab = s.siteTable().slice();
-    unordered_ssed_2mat_args a = { l,d, tab, ssed_m_meq_m};
+    unordered_ssed_2mat_args a(l,d, tab, ssed_m_meq_m);
     dispatch_to_threads(s.numSiteTable(), a, 
 			unordered_ssed_2mat_evaluate_func);
     
@@ -735,7 +764,7 @@ void evaluate(OLattice< DCol >& d,
   else { 
 
     const int *tab = s.siteTable().slice();
-    unordered_ssed_3mat_const_args a = {l,r,d,&mone,tab,ssed_m_peq_amm};
+    unordered_ssed_3mat_const_args a(l,r,d,&mone,tab,ssed_m_peq_amm);
     dispatch_to_threads(s.numSiteTable(), a, unordered_ssed_3mat_const_evaluate_func);  
 
     //    for(int j=0; j < s.numSiteTable(); j++) { 
@@ -783,7 +812,7 @@ void evaluate(OLattice< DCol >& d,
   else { 
 
     const int *tab = s.siteTable().slice();
-    unordered_ssed_3mat_const_args a = {l,r,d,&mone,tab,ssed_m_peq_ahm};
+    unordered_ssed_3mat_const_args a(l,r,d,&mone,tab,ssed_m_peq_ahm);
     dispatch_to_threads(s.numSiteTable(), a, unordered_ssed_3mat_const_evaluate_func);  
 
     //for(int j=0; j < s.numSiteTable(); j++) { 
@@ -829,7 +858,7 @@ void evaluate(OLattice< DCol >& d,
   }
   else { 
     const int *tab = s.siteTable().slice();
-    unordered_ssed_3mat_const_args a = {l,r,d,&mone,tab,ssed_m_peq_amh};
+    unordered_ssed_3mat_const_args a(l,r,d,&mone,tab,ssed_m_peq_amh);
     dispatch_to_threads(s.numSiteTable(), a, unordered_ssed_3mat_const_evaluate_func);  
 
     //  for(int j=0; j < s.numSiteTable(); j++) { 
@@ -876,7 +905,7 @@ void evaluate(OLattice< DCol >& d,
   }
   else { 
     const int *tab = s.siteTable().slice();
-    unordered_ssed_3mat_const_args a = {l,r,d,&mone,tab,ssed_m_peq_ahh};
+    unordered_ssed_3mat_const_args a(l,r,d,&mone,tab,ssed_m_peq_ahh);
     dispatch_to_threads(s.numSiteTable(), a, unordered_ssed_3mat_const_evaluate_func);  
 
     //  for(int j=0; j < s.numSiteTable(); j++) { 

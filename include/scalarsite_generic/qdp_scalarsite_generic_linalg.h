@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_generic_linalg.h,v 1.9 2008-12-22 17:42:58 bjoo Exp $
+// $Id: qdp_scalarsite_generic_linalg.h,v 1.10 2009-07-14 20:08:41 bjoo Exp $
 
 /*! @file
  * @brief Generic optimizations
@@ -498,7 +498,7 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
     
     int base = s.start();
     
-    ordered_linalg_user_arg a = {d, l, r, base};
+    ordered_linalg_user_arg a(d, l, r, base);
     
     dispatch_to_threads(totalSize, a, ordered_linalg_evaluate_userfunc);
 
@@ -523,7 +523,7 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
 
     const int *tab = s.siteTable().slice(); 
 
-    unordered_linalg_user_arg arg = {d, l, r, tab};
+    unordered_linalg_user_arg arg(d, l, r, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_linalg_evaluate_userfunc);
     

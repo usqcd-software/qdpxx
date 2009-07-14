@@ -1,4 +1,4 @@
-// $Id: generic_blas_local_vcdot_real.h,v 1.4 2008-05-13 20:02:02 bjoo Exp $
+// $Id: generic_blas_local_vcdot_real.h,v 1.5 2009-07-14 20:08:41 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar, CDOT  routine
@@ -14,9 +14,9 @@ namespace QDP {
 // Out = Re (< V1, V2 >) = Re(V1^{dagger} V2)
 // Out  REAL
 // V1 V2 are complex vectors of length 3*n_3vec
-volatile
+// volatile
 inline
-void local_vcdot_real(DOUBLE *Out, REAL *V1, REAL *V2, int n_3vec)
+void l_vcdot_real(DOUBLE *Out, REAL *V1, REAL *V2, int n_3vec)
 {
   register double result;
   

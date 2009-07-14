@@ -1,4 +1,4 @@
-// $Id: sse_blas_vaxmbyz4_double.cc,v 1.3 2008-07-02 13:04:04 bjoo Exp $
+// $Id: sse_blas_vaxmbyz4_double.cc,v 1.4 2009-07-14 20:08:42 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -45,11 +45,14 @@ namespace QDP {
 
   // cross components into tmp 
   // Zero tmp
-  tmp1 = _mm_xor_pd(tmp1, tmp1);
+  //  tmp1 = _mm_xor_pd(tmp1, tmp1);
+  tmp1 = _mm_set_pd((double)0,(double)0);
+
   tmp1 = _mm_shuffle_pd(a_sse, a_sse, 0x1);
   a_sse = _mm_add_pd(a_sse, tmp1);
 
-  tmp2 = _mm_xor_pd(tmp2, tmp2);
+  //  tmp2 = _mm_xor_pd(tmp2, tmp2);
+  tmp2 = _mm_set_pd((double)0,(double)0);
   tmp2 = _mm_shuffle_pd(b_sse, b_sse, 0x1);
   b_sse = _mm_add_pd(b_sse, tmp2);
 
@@ -60,8 +63,8 @@ namespace QDP {
   double *z_p=z;
 
   if( n_4vec < L2BY2 ) { 
-    PREFETCHW(z_p+8);
-    PREFETCHW(z_p+16);
+    PREFETCHW(((const char *)z_p)+8);
+    PREFETCHW(((const char *)z_p)+16);
     for(int i=0; i < 3*n_4vec; i++) { 
 
       y1 = _mm_load_pd(y_p);
@@ -103,8 +106,8 @@ namespace QDP {
 
     for(int i=0; i < 3*n_4vec; i++) { 
 
-      PREFETCHNTA(x_p+56);
-      PREFETCHNTA(y_p+56);
+      PREFETCHNTA(((const char *)x_p)+56);
+      PREFETCHNTA(((const char *)y_p)+56);
 
       y1 = _mm_load_pd(y_p);
       x1 = _mm_load_pd(x_p);
@@ -188,7 +191,7 @@ namespace QDP {
 
   if( n_4vec < L2BY2 ) { 
     for(int i=0; i < 3*n_4vec; i++) { 
-      PREFETCHW(y_p+16);
+      PREFETCHW(((const char *)y_p)+16);
 
       y1 = _mm_load_pd(y_p);
       x1 = _mm_load_pd(x_p);
@@ -227,8 +230,8 @@ namespace QDP {
   else { 
     for(int i=0; i < 3*n_4vec; i++) { 
 
-      PREFETCHNTA(y_p+56);
-      PREFETCHNTA(x_p+56);
+      PREFETCHNTA(((const char *)y_p)+56);
+      PREFETCHNTA(((const char *)x_p)+56);
 
       y1 = _mm_load_pd(y_p);
       x1 = _mm_load_pd(x_p);

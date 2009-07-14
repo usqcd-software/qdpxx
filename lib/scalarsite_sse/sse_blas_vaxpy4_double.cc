@@ -1,4 +1,4 @@
-// $Id: sse_blas_vaxpy4_double.cc,v 1.4 2008-07-02 13:04:04 bjoo Exp $
+// $Id: sse_blas_vaxpy4_double.cc,v 1.5 2009-07-14 20:08:42 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -41,7 +41,8 @@ void vaxpy4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, int n_4spin)
   
   // cross components into tmp 
   // Zero tmp
-  tmp1 = _mm_xor_pd(tmp1, tmp1);
+  //  tmp1 = _mm_xor_pd(tmp1, tmp1);
+  tmp1 = _mm_set_pd((double)0,(double)0);
   tmp1 = _mm_shuffle_pd(scalar, scalar, 0x1);
   scalar = _mm_add_pd(scalar, tmp1);
 
@@ -53,10 +54,10 @@ void vaxpy4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, int n_4spin)
     // Less than L2 size. 
     // Out p is sequential read/write: USE PREFETCHW
     // in_p is sequential read only: USE PREFETCH + HW PREFETCHER
-    PREFETCH(in_p+16);
+    PREFETCH(((const char *)in_p)+16);
 
     for(int i=0; i < 3*n_4spin; i++) { 
-      PREFETCHW(out_p+16);
+      PREFETCHW(((const char *)out_p)+16);
 
       add1 = _mm_load_pd(out_p);
       in1  = _mm_load_pd(in_p);
@@ -92,8 +93,8 @@ void vaxpy4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, int n_4spin)
     // In_p is sequential read: PREFETCHNTA
     for(int i=0; i < 3*n_4spin; i++) { 
 
-      PREFETCHNTA(out_p+56);
-      PREFETCHNTA(in_p+56);
+      PREFETCHNTA(((const char *)out_p)+56);
+      PREFETCHNTA(((const char *)in_p)+56);
       add1 = _mm_load_pd(out_p);
       in1  = _mm_load_pd(in_p);
       tmp1 = _mm_mul_pd(scalar, in1);
@@ -150,7 +151,9 @@ void vaxpyz4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, REAL64 *Add,int n_4vec)
   
   // cross components into tmp 
   // Zero tmp
-  tmp1 = _mm_xor_pd(tmp1, tmp1);
+  // tmp1 = _mm_xor_pd(tmp1, tmp1);
+  tmp1 = _mm_set_pd((double)0,(double)0);
+
   tmp1 = _mm_shuffle_pd(scalar, scalar, 0x1);
   scalar = _mm_add_pd(scalar, tmp1);
 
@@ -166,11 +169,11 @@ void vaxpyz4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, REAL64 *Add,int n_4vec)
     // in_p sequential read only   : 
     // add_p sequential read only  :
     // out_p sequential read/write :
-    PREFETCH(add_p+16);
-    PREFETCH(in_p+16);
+    PREFETCH(((const char *)add_p)+16);
+    PREFETCH(((const char *)in_p)+16);
 
     for(int i=0; i < 3*n_4vec; i++) { 
-      PREFETCHW(out_p+16);
+      PREFETCHW(((const char *)out_p)+16);
       add1 = _mm_load_pd(add_p);
       in1  = _mm_load_pd(in_p);
       tmp1 = _mm_mul_pd(scalar, in1);
@@ -203,8 +206,8 @@ void vaxpyz4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, REAL64 *Add,int n_4vec)
 
     for(int i=0; i < 3*n_4vec; i++) { 
 
-      PREFETCHNTA(add_p+56);
-      PREFETCHNTA(in_p+56);
+      PREFETCHNTA(((const char *)add_p)+56);
+      PREFETCHNTA(((const char *)in_p)+56);
 
       add1 = _mm_load_pd(add_p);
       in1  = _mm_load_pd(in_p);

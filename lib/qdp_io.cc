@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_io.cc,v 1.30 2008-08-12 22:54:01 edwards Exp $
+// $Id: qdp_io.cc,v 1.31 2009-07-14 20:08:42 bjoo Exp $
 /*! @file
  * @brief IO support
  */
@@ -498,6 +498,8 @@ namespace QDP
     QDPUtil::n_uint32_t chk = internalChecksum();
     Internal::broadcast(chk);
     internalChecksum() = chk;
+    return chk;
+    
   }
 
   void BinaryReader::read(string& input, size_t maxBytes)
@@ -929,6 +931,7 @@ namespace QDP
     QDPUtil::n_uint32_t chk = internalChecksum();
     Internal::broadcast(chk);
     internalChecksum() = chk;
+    return chk;
   }
 
 

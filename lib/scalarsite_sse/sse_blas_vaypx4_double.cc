@@ -1,4 +1,4 @@
-// $Id: sse_blas_vaypx4_double.cc,v 1.2 2009-02-03 21:10:11 bjoo Exp $
+// $Id: sse_blas_vaypx4_double.cc,v 1.3 2009-07-14 20:08:42 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -34,7 +34,8 @@ void vaypx4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, int n_4spin)
   
   // cross components into tmp 
   // Zero tmp
-  tmp1 = _mm_xor_pd(tmp1, tmp1);
+  //  tmp1 = _mm_xor_pd(tmp1, tmp1);
+  tmp1 = _mm_set_pd((double)0,(double)0);
   tmp1 = _mm_shuffle_pd(scalar, scalar, 0x1);
   scalar = _mm_add_pd(scalar, tmp1);
 

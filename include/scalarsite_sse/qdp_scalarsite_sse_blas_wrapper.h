@@ -43,6 +43,15 @@ void ordered_sse_vaxOpy3_evaluate_function (int lo, int hi, int myId, ordered_ss
 
 // structure for vaxOpy3 (with yptr only) of NOT having order
 struct unordered_sse_vaxOpy3_y_user_arg{
+  unordered_sse_vaxOpy3_y_user_arg(  const OLattice< TVec >& x_,
+				     OLattice< TVec >& d_,
+				     REAL32* scalep_,
+				     int Ns_,
+				     const int* tab_,
+				     int xy_order_,
+				     void (*func_)(REAL32*, REAL32*, REAL32*, REAL32*, int)) 
+  :x(x_),d(d_),scalep(scalep_),Ns(Ns_),tab(tab_),xy_order(xy_order_),func(func_) {}
+
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   REAL32* scalep;
@@ -86,6 +95,17 @@ void unordered_sse_vaxOpy3_y_evaluate_function (int lo, int hi, int myId, unorde
 
 // structure for vaxOpy3 (with zptr) of NOT having order
 struct unordered_sse_vaxOpy3_z_user_arg{
+  unordered_sse_vaxOpy3_z_user_arg(
+				   const OLattice< TVec >& x_,
+				   const OLattice< TVec >& y_,
+				   OLattice< TVec >& d_,
+				   REAL32* scalep_,
+				   int Ns_,
+				   const int* tab_,
+				   void (*func_)(REAL32*, REAL32*, REAL32*, REAL32*, int)) 
+  : x(x_),y(y_),d(d_),scalep(scalep_),Ns(Ns_),tab(tab_),func(func_) {}
+
+
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -153,6 +173,14 @@ void ordered_sse_vOp_evaluate_function (int lo, int hi, int myId, ordered_sse_vO
 
 // structure for vOp (with yptr only) of NOT having order
 struct unordered_sse_vOp_y_user_arg{
+  unordered_sse_vOp_y_user_arg(
+			       const OLattice< TVec >& x_,
+			       OLattice< TVec >& d_,
+			       int Ns_,
+			       const int* tab_,
+			       void (*func_)(REAL32*, REAL32*, REAL32*, int)) 
+  : x(x_),d(d_),Ns(Ns_),tab(tab_),func(func_) {}
+
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   int Ns;
@@ -182,6 +210,14 @@ void unordered_sse_vOp_y_evaluate_function (int lo, int hi, int myId, unordered_
 
 // structure for vOp (with zptr) of NOT having order
 struct unordered_sse_vOp_z_user_arg{
+  unordered_sse_vOp_z_user_arg(
+			       const OLattice< TVec >& x_,
+			       const OLattice< TVec >& y_,
+			       OLattice< TVec >& d_,
+			       int Ns_,
+			       const int* tab_,
+			       void (*func_)(REAL32*, REAL32*, REAL32*, int))
+  : x(x_),y(y_),d(d_),Ns(Ns_),tab(tab_),func(func_) {}
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -244,6 +280,12 @@ void ordered_sse_vscal_evaluate_function (int lo, int hi, int myId, ordered_sse_
 
 // structure for vscal of NOT having order
 struct unordered_sse_vscal_user_arg{
+  unordered_sse_vscal_user_arg(
+			       const OLattice< TVec >& x_,
+			       OLattice< TVec >& d_,
+			       REAL32* scalep_,
+			       int Ns_,
+			       const int* tab_) : x(x_),d(d_),scalep(scalep_),Ns(Ns_),tab(tab_) {}
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   REAL32* scalep;
@@ -309,6 +351,18 @@ void ordered_sse_vaxOpby3_evaluate_function (int lo, int hi, int myId, ordered_s
 
 // structure for vaxOpby3 of NOT having order
 struct unordered_sse_vaxOpby3_user_arg{
+  unordered_sse_vaxOpby3_user_arg(
+				  REAL32* aptr_,
+				  const OLattice< TVec >& x_,
+				  REAL32* bptr_,
+				  const OLattice< TVec >& y_,
+				  OLattice< TVec >& d_,
+				  int Ns_,
+				  const int* tab_,
+				  void (*func_)(REAL32*, REAL32*, REAL32*, REAL32*, REAL32*, int)) 
+  : aptr(aptr_),x(x_),bptr(bptr_),y(y_),d(d_),Ns(Ns_),tab(tab_),func(func_) {}
+
+
   REAL32* aptr;
   const OLattice< TVec >& x;
   REAL32* bptr;

@@ -1,4 +1,4 @@
-// $Id: sse_linalg_m_eq_hh_double.cc,v 1.4 2009-02-10 17:06:37 bjoo Exp $
+// $Id: sse_linalg_m_eq_hh_double.cc,v 1.5 2009-07-14 20:08:42 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -233,7 +233,9 @@ typedef union {
   
     // cross components into tmp 
     // Zero tmp
-    tmp1 = _mm_xor_pd(tmp1, tmp1);
+    //    tmp1 = _mm_xor_pd(tmp1, tmp1);
+    tmp1 = _mm_set_pd((double)0,(double)0);
+
     tmp1 = _mm_shuffle_pd(scalar, scalar, 0x1);
     scalar = _mm_add_pd(scalar, tmp1);
 
@@ -541,7 +543,9 @@ typedef union {
   
     // cross components into tmp 
     // Zero tmp
-    tmp1 = _mm_xor_pd(tmp1, tmp1);
+    //tmp1 = _mm_xor_pd(tmp1, tmp1);
+    tmp1 = _mm_set_pd((double)0,(double)0);
+
     tmp1 = _mm_shuffle_pd(scalar, scalar, 0x1);
     scalar = _mm_add_pd(scalar, tmp1);
 

@@ -1,4 +1,4 @@
-// $Id: sse_blas_vaxpbyz4_double.cc,v 1.5 2008-07-02 13:04:04 bjoo Exp $
+// $Id: sse_blas_vaxpbyz4_double.cc,v 1.6 2009-07-14 20:08:42 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -46,11 +46,14 @@ void vaxpbyz4(REAL64 *z, REAL64 *a, REAL64 *x, REAL64 *b, REAL64 *y, int n_4vec)
 
   // cross components into tmp 
   // Zero tmp
-  tmp1 = _mm_xor_pd(tmp1, tmp1);
+  // tmp1 = _mm_xor_pd(tmp1, tmp1);
+  tmp1 = _mm_set_pd((double)0,(double)0);
+
   tmp1 = _mm_shuffle_pd(a_sse, a_sse, 0x1);
   a_sse = _mm_add_pd(a_sse, tmp1);
 
-  tmp2 = _mm_xor_pd(tmp2, tmp2);
+  //  tmp2 = _mm_xor_pd(tmp2, tmp2);
+  tmp2 = _mm_set_pd((double)0,(double)0);
   tmp2 = _mm_shuffle_pd(b_sse, b_sse, 0x1);
   b_sse = _mm_add_pd(b_sse, tmp2);
 
@@ -63,7 +66,7 @@ void vaxpbyz4(REAL64 *z, REAL64 *a, REAL64 *x, REAL64 *b, REAL64 *y, int n_4vec)
   if( n_4vec < L2BY2) { 
 
     for(int i=0; i < 3*n_4vec; i++) { 
-      PREFETCHW(z_p+16);
+      PREFETCHW(((const char *)z_p)+16);
       
       y1 = _mm_load_pd(y_p);
       x1 = _mm_load_pd(x_p);
@@ -100,8 +103,8 @@ void vaxpbyz4(REAL64 *z, REAL64 *a, REAL64 *x, REAL64 *b, REAL64 *y, int n_4vec)
   }
   else { 
     for(int i=0; i < 3*n_4vec; i++) { 
-      PREFETCHNTA(x_p+56);
-      PREFETCHNTA(y_p+56);
+      PREFETCHNTA(((const char *)x_p)+56);
+      PREFETCHNTA(((const char *)y_p)+56);
 
       y1 = _mm_load_pd(y_p);
       x1 = _mm_load_pd(x_p);
@@ -167,11 +170,13 @@ void vaxpby4(REAL64 *y, REAL64 *a, REAL64 *x, REAL64 *b, int n_4vec)
 
   // cross components into tmp 
   // Zero tmp
-  tmp1 = _mm_xor_pd(tmp1, tmp1);
+  //tmp1 = _mm_xor_pd(tmp1, tmp1);
+  tmp1 = _mm_set_pd((double)0,(double)0);
   tmp1 = _mm_shuffle_pd(a_sse, a_sse, 0x1);
   a_sse = _mm_add_pd(a_sse, tmp1);
 
-  tmp2 = _mm_xor_pd(tmp2, tmp2);
+  //  tmp2 = _mm_xor_pd(tmp2, tmp2);
+  tmp2 = _mm_set_pd((double)0,(double)0);
   tmp2 = _mm_shuffle_pd(b_sse, b_sse, 0x1);
   b_sse = _mm_add_pd(b_sse, tmp2);
 
@@ -183,7 +188,7 @@ void vaxpby4(REAL64 *y, REAL64 *a, REAL64 *x, REAL64 *b, int n_4vec)
   if (n_4vec < L2BY2 ) { 
 
     for(int i=0; i < 3*n_4vec; i++) { 
-      PREFETCHW(y_p+16);
+      PREFETCHW(((const char *)y_p)+16);
       y1 = _mm_load_pd(y_p);
       x1 = _mm_load_pd(x_p);
       tmp1 = _mm_mul_pd(b_sse,y1);
@@ -220,8 +225,8 @@ void vaxpby4(REAL64 *y, REAL64 *a, REAL64 *x, REAL64 *b, int n_4vec)
   else {
     for(int i=0; i < 3*n_4vec; i++) { 
 
-      PREFETCHNTA(x_p+56);       // Assume
-      PREFETCHNTA(y_p+56);
+      PREFETCHNTA(((const char *)x_p)+56);       // Assume
+      PREFETCHNTA(((const char *)y_p)+56);
 
       y1 = _mm_load_pd(y_p);
       x1 = _mm_load_pd(x_p);
@@ -255,8 +260,8 @@ void vaxpby4(REAL64 *y, REAL64 *a, REAL64 *x, REAL64 *b, int n_4vec)
       y_p+=8;
 
 #if 0    
-      PREFETCHNTA(x_p+80);
-      PREFETCHNTA(y_p+80);
+      PREFETCHNTA(((const char*)x_p)+80);
+      PREFETCHNTA(((const char*)y_p)+80);
       
       y2 = _mm_load_pd(y_p+8);
       x2 = _mm_load_pd(x_p+8);
@@ -286,8 +291,8 @@ void vaxpby4(REAL64 *y, REAL64 *a, REAL64 *x, REAL64 *b, int n_4vec)
       z2 = _mm_add_pd(z2,tmp2);
       _mm_store_pd(y_p+14, z2);
       
-      PREFETCHNTA(x_p+88);
-      PREFETCHNTA(y_p+88);
+      PREFETCHNTA(((const char *)x_p)+88);
+      PREFETCHNTA(((const char *)y_p)+88);
 
       y3 = _mm_load_pd(y_p+16);
       x3 = _mm_load_pd(x_p+16);

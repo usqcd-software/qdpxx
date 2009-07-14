@@ -1,4 +1,4 @@
-// $Id: t_blas.cc,v 1.26 2009-02-03 21:10:10 bjoo Exp $
+// $Id: t_blas.cc,v 1.27 2009-07-14 20:08:41 bjoo Exp $
 
 #include <iostream>
 #include <iomanip>
@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
   // Test norm2(x)
   gaussian(qx);
 
+#if 0
   // sum it by hand.-- 1 way
   REAL64 rc = (REAL64)0;
 
@@ -56,7 +57,7 @@ int main(int argc, char *argv[])
   int n_real = (all.end() - all.start() + 1)*24;
   QDP::local_sumsq_24_48(&rc2, &(qx.elem(all.start()).elem(0).elem(0).real()), n_real);
   QDPIO::cout << "rc -rc2 = " << rc-rc2 << endl;
- 
+#endif 
 
   //  Double bjs = norm2(qx);
 

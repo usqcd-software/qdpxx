@@ -64,7 +64,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcscal_user_arg arg = {d, d, a_start, Ns, tab};
+    unordered_vcscal_user_arg arg(d, d, a_start, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcscal_evaluate_function);
 
@@ -129,7 +129,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcscal_user_arg arg = {x, d, a_start, Ns, tab};
+    unordered_vcscal_user_arg arg(x, d, a_start, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcscal_evaluate_function);
 
@@ -197,7 +197,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcscal_user_arg arg = {x, d, a_start, Ns, tab};
+    unordered_vcscal_user_arg arg(x, d, a_start, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcscal_evaluate_function);
 
@@ -263,7 +263,7 @@ void evaluate(OLattice< CTVec >& d,
 
     int Ns = 4;
 
-    unordered_vcaxpy3_y_user_arg arg = {x, d, ar, Ns, tab};
+    unordered_vcaxpy3_y_user_arg arg(x, d, ar, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_y_evaluate_function);
 
@@ -326,7 +326,7 @@ void evaluate(OLattice< CTVec >& d,
 
     int Ns = 4;
 
-    unordered_vcaxpy3_y_user_arg arg = {x, d, ar, Ns, tab};
+    unordered_vcaxpy3_y_user_arg arg(x, d, ar, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_y_evaluate_function);
 
@@ -392,7 +392,7 @@ void evaluate(OLattice< CTVec >& d,
 
     int Ns = 4;
 
-    unordered_vcaxpy3_y_user_arg arg = {x, d, ar, Ns, tab};
+    unordered_vcaxpy3_y_user_arg arg(x, d, ar, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_y_evaluate_function);
 
@@ -459,7 +459,7 @@ void evaluate(OLattice< CTVec >& d,
 
     int Ns = 4;
 
-    unordered_vcaxpy3_y_user_arg arg = {x, d, ar, Ns, tab};
+    unordered_vcaxpy3_y_user_arg arg(x, d, ar, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_y_evaluate_function);
 
@@ -541,7 +541,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxpy3_z_user_arg arg = {x, y, d, ar, Ns, tab};
+    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_z_evaluate_function);
 
@@ -626,7 +626,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxpy3_z_user_arg arg = {x, y, d, ar, Ns, tab};
+    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_z_evaluate_function);
 
@@ -710,7 +710,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxmy3_user_arg arg = {x, y, d, ar, Ns, tab};
+    unordered_vcaxmy3_user_arg arg(x, y, d, ar, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxmy3_evaluate_function);
 
@@ -795,7 +795,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxmy3_user_arg arg = {x, y, d, ar, Ns, tab};
+    unordered_vcaxmy3_user_arg arg(x, y, d, ar, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxmy3_evaluate_function);
 
@@ -881,7 +881,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxpy3_z_user_arg arg = {x, y, d, ar, Ns, tab};
+    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_z_evaluate_function);
 
@@ -969,7 +969,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxpy3_z_user_arg arg = {x, y, d, ar, Ns, tab};
+    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_z_evaluate_function);
 
@@ -1059,7 +1059,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxpy3_z_user_arg arg = {x, y, d, ar, Ns, tab};
+    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_z_evaluate_function);
 
@@ -1149,7 +1149,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxpy3_z_user_arg arg = {x, y, d, ar, Ns, tab};
+    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_z_evaluate_function);
 
@@ -1244,7 +1244,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxpby3_user_arg arg = {x, y, d, aptr, bptr, Ns, tab};
+    unordered_vcaxpby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpby3_evaluate_function);
 
@@ -1345,7 +1345,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxpby3_user_arg arg = {x, y, d, aptr, bptr, Ns, tab};
+    unordered_vcaxpby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpby3_evaluate_function);
 
@@ -1451,7 +1451,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxpby3_user_arg arg = {x, y, d, aptr, bptr, Ns, tab};
+    unordered_vcaxpby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpby3_evaluate_function);
 
@@ -1544,7 +1544,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxpby3_user_arg arg = {x, y, d, aptr, bptr, Ns, tab};
+    unordered_vcaxpby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpby3_evaluate_function);
 
@@ -1637,7 +1637,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxmby3_user_arg arg = {x, y, d, aptr, bptr, Ns, tab};
+    unordered_vcaxmby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxmby3_evaluate_function);
 
@@ -1739,7 +1739,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxmby3_user_arg arg = {x, y, d, aptr, bptr, Ns, tab};
+    unordered_vcaxmby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxmby3_evaluate_function);
 
@@ -1845,7 +1845,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxmby3_user_arg arg = {x, y, d, aptr, bptr, Ns, tab};
+    unordered_vcaxmby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxmby3_evaluate_function);
 
@@ -1938,7 +1938,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int Ns = 4;
 
-    unordered_vcaxmby3_user_arg arg = {x, y, d, aptr, bptr, Ns, tab};
+    unordered_vcaxmby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxmby3_evaluate_function);
 

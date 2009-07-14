@@ -43,6 +43,15 @@ void ordered_vaypx3_g5_evaluate_function (int lo, int hi, int myId, ordered_vayp
 
 // structure for vaypx3_g5 of NOT having order (with y only)
 struct unordered_vaypx3_g5_y_user_arg{
+  unordered_vaypx3_g5_y_user_arg(
+				 const OLattice< TVec >& x_,
+				 OLattice< TVec >& d_,
+				 REAL* aptr_,
+				 int Ns_,
+				 const int* tab_,
+				 void (*func_)(REAL*, REAL*, REAL*, REAL*, int)) : x(x_), d(d_), aptr(aptr_), Ns(Ns_), tab(tab_), func(func_) {}
+
+
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   REAL* aptr;
@@ -73,6 +82,15 @@ void unordered_vaypx3_g5_y_evaluate_function (int lo, int hi, int myId, unordere
 
 // structure for vaypx3_g5 of NOT having order (with z )
 struct unordered_vaypx3_g5_z_user_arg{
+  unordered_vaypx3_g5_z_user_arg(
+				 const OLattice< TVec >& x_,
+				 const OLattice< TVec >& y_,
+				 OLattice< TVec >& d_,
+				 REAL* aptr_,
+				 int Ns_,
+				 const int* tab_,
+				 void (*func_)(REAL*, REAL*, REAL*, REAL*, int)) : x(x_),y(y_),d(d_),aptr(aptr_), Ns(Ns_), tab(tab_),func(func_) {}
+				 
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -141,6 +159,12 @@ void ordered_vadd3_g5_evaluate_function (int lo, int hi, int myId, ordered_vadd3
 
 // structure for vadd3_g5 of NOT having order
 struct unordered_vadd3_g5_user_arg{
+  unordered_vadd3_g5_user_arg(  const OLattice< TVec >& x_,
+				OLattice< TVec >& d_,
+				int Ns_,
+				const int* tab_,
+				void (*func_)(REAL*, REAL*, REAL*, int)) : x(x_),d(d_),Ns(Ns_),tab(tab_),func(func_) {}
+
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   int Ns;
@@ -204,6 +228,15 @@ void ordered_vaxpy3_g5_evaluate_function (int lo, int hi, int myId, ordered_vaxp
 
 // structure for vaxpy3_g5 of NOT having order
 struct unordered_vaxpy3_g5_user_arg{
+  unordered_vaxpy3_g5_user_arg(
+			       const OLattice< TVec >& x_,
+			       const OLattice< TVec >& y_,
+			       OLattice< TVec >& d_,
+			       REAL* aptr_,
+			       int Ns_,
+			       const int* tab_,
+			       void (*func_)(REAL*, REAL*, REAL*, REAL*, int)) : x(x_), y(y_),d(d_),aptr(aptr_),Ns(Ns_), tab(tab_), func(func_) {}
+  
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -271,6 +304,14 @@ void ordered_vscal_g5_evaluate_function (int lo, int hi, int myId, ordered_vscal
 
 // structure for vscal_g5 of NOT having order
 struct unordered_vscal_g5_user_arg{
+  unordered_vscal_g5_user_arg(const OLattice< TVec >& x_,
+			      OLattice< TVec >& d_,
+			      REAL* aptr_,
+			      int Ns_,
+			      const int* tab_,
+			      void (*func_)(REAL*, REAL*, REAL*, int))
+  : x(x_), d(d_),aptr(aptr_),Ns(Ns_),tab(tab_),func(func_) {}
+
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   REAL* aptr;
@@ -341,6 +382,16 @@ void ordered_vaxpby3_g5_evaluate_function (int lo, int hi, int myId, ordered_vax
 
 // structure for vaxpby3_g5 of NOT having order
 struct unordered_vaxpby3_g5_user_arg{
+  unordered_vaxpby3_g5_user_arg(
+				const OLattice< TVec >& x_,
+				const OLattice< TVec >& y_,
+				OLattice< TVec >& d_,
+				REAL* aptr_,
+				REAL* bptr_,
+				int Ns_,
+				const int* tab_,
+				void (*func_)(REAL*, REAL*, REAL*, REAL*, REAL*, int)) : x(x_),y(y_),d(d_),aptr(aptr_),bptr(bptr_),Ns(Ns_),tab(tab_),func(func_) {}
+
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -409,6 +460,12 @@ void ordered_scal_g5_evaluate_function (int lo, int hi, int myId, ordered_scal_g
 
 // structure for scal_g5 of NOT having order
 struct unordered_scal_g5_user_arg{
+  unordered_scal_g5_user_arg(  const OLattice< TVec >& x_,
+			       OLattice< TVec >& d_,
+			       REAL* aptr_,
+			       int Ns_,
+			       const int* tab_):x(x_),d(d_),aptr(aptr_),Ns(Ns_),tab(tab_) {}
+
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   REAL* aptr;
@@ -475,6 +532,16 @@ void ordered_xOpayz_g5_evaluate_function (int lo, int hi, int myId, ordered_xOpa
 
 // structure for xOpayz_g5 of NOT having order
 struct unordered_xOpayz_g5_user_arg{
+  unordered_xOpayz_g5_user_arg(
+			       const OLattice< TVec >& x_,
+			       const OLattice< TVec >& y_,
+			       OLattice< TVec >& d_,
+			       REAL* aptr_,
+			       int Ns_,
+			       const int* tab_,
+			       void (*func_)(REAL*, REAL*, REAL*, REAL*, int)) :
+  x(x_),y(y_),d(d_),aptr(aptr_),Ns(Ns_),tab(tab_),func(func_) {}
+
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -547,6 +614,15 @@ void ordered_axOpbyz_g5_evaluate_function (int lo, int hi, int myId, ordered_axO
 
 // structure for axOpbyz_g5 of NOT having order
 struct unordered_axOpbyz_g5_user_arg{
+  unordered_axOpbyz_g5_user_arg(  const OLattice< TVec >& x_,
+				  const OLattice< TVec >& y_,
+				  OLattice< TVec >& d_,
+				  REAL* aptr_,
+				  REAL* bptr_,
+				  int Ns_,
+				  const int* tab_,
+				  void (*func_)(REAL*, REAL*, REAL*, REAL*, REAL*, int)) : x(x_),y(y_),d(d_),aptr(aptr_),bptr(bptr_),Ns(Ns_),tab(tab_),func(func_) {}
+
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -619,6 +695,15 @@ void ordered_xOpayz_ig5_evaluate_function (int lo, int hi, int myId, ordered_xOp
 
 // structure for xOpayz_ig5 of NOT having order (with xyz)
 struct unordered_xOpayz_ig5_y_user_arg{
+  unordered_xOpayz_ig5_y_user_arg(
+				  const OLattice< TVec >& x_,
+				  const OLattice< TVec >& y_,
+				  OLattice< TVec >& d_,
+				  REAL* aptr_,
+				  int Ns_,
+				  const int* tab_,
+				  void (*func_)(REAL*, REAL*, REAL*, REAL*, int)) : x(x_), y(y_),d(d_),aptr(aptr_),Ns(Ns_),tab(tab_),func(func_) {}
+
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -655,6 +740,13 @@ void unordered_xOpayz_ig5_y_evaluate_function (int lo, int hi, int myId, unorder
 
 // structure for xOpayz_ig5 of NOT having order (with xz)
 struct unordered_xOpayz_ig5_z_user_arg{
+  unordered_xOpayz_ig5_z_user_arg(
+				  const OLattice< TVec >& x_,
+				  OLattice< TVec >& d_,
+				  REAL* aptr_,
+				  int Ns_,
+				  const int* tab_,
+				  void (*func_)(REAL*, REAL*, REAL*, REAL*, int)) : x(x_),d(d_),aptr(aptr_),Ns(Ns_),tab(tab_),func(func_) {}
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   REAL* aptr;
