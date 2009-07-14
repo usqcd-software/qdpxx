@@ -1,3 +1,40 @@
+2009-07-14 16:08  bjoo
+
+	* examples/t_blas.cc, include/qdp_scalar_specific.h,
+	  include/scalarsite_generic/generic_blas_local_vcdot.h,
+	  include/scalarsite_generic/generic_blas_local_vcdot_real.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas_g5.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas_g5_wrapper.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas_wrapper.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_cblas.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_cblas_wrapper.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_linalg.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_linalg_wrapper.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_double.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_double_wrapper.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_wrapper.h,
+	  lib/qdp_io.cc, lib/qdp_scalar_init.cc,
+	  lib/scalarsite_sse/qdp_scalarsite_linalg_double.cc,
+	  lib/scalarsite_sse/sse_blas_vaxmbyz4_double.cc,
+	  lib/scalarsite_sse/sse_blas_vaxpbyz4_double.cc,
+	  lib/scalarsite_sse/sse_blas_vaxpy4_double.cc,
+	  lib/scalarsite_sse/sse_blas_vaypx4_double.cc,
+	  lib/scalarsite_sse/sse_linalg_m_eq_hh_double.cc: Now compiles
+	  with intel compiler again. I managed to disambuguate the issues
+	  with the user_arg thingie
+
+2009-07-14 14:30  tag qdp1-32-2
+
+2009-07-14 14:30  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2009-07-14 14:30  edwards
+
+	* configure.ac: Major fixes in some parts of FileDB.
+
 2009-06-18 15:30  edwards
 
 	* include/qdp_multi.h: Added printing of sizes in error message for
