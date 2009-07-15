@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.53 2008-09-30 18:20:01 bjoo Exp $
+// $Id: qdp_parscalar_specific.h,v 1.54 2009-07-15 17:02:07 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout
@@ -219,10 +219,17 @@ namespace Internal
 //
 template<class T, class T1, class Op, class RHS>
 struct u_arg{
-        OLattice<T>& d;
-        const QDPExpr<RHS,OScalar<T1> >& r;
-        const Op& op;
-        const int *tab;
+    u_arg(
+        OLattice<T>& d_,
+        const QDPExpr<RHS,OScalar<T1> >& r_,
+        const Op& op_,
+        const int *tab_
+    ) : d(d_), r(r_), op(op_), tab(tab_) {}
+    
+    OLattice<T>& d;
+    const QDPExpr<RHS,OScalar<T1> >& r;
+    const Op& op;
+    const int *tab;
    };
 
 //! user function for the evaluate function:
@@ -249,6 +256,12 @@ void ev_userfunc(int lo, int hi, int myId, u_arg<T,T1,Op,RHS> *a)
 //
 template<class T, class T1, class Op, class RHS>
 struct user_arg{
+    user_arg(
+        OLattice<T>& d_,
+        const QDPExpr<RHS,OLattice<T1> >& r_,
+        const Op& op_,
+        const int *tab_ ) : d(d_), r(r_), op(op_), tab(tab_) {}
+
         OLattice<T>& d;
         const QDPExpr<RHS,OLattice<T1> >& r;
         const Op& op;
@@ -300,9 +313,9 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 
   int numSiteTable = s.numSiteTable();
   
-  u_arg<T,T1,Op,RHS> a = {dest, rhs, op, s.siteTable().slice()};
+  u_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
 
-  dispatch_to_threads(numSiteTable, a, ev_userfunc);
+  dispatch_to_threads< u_arg<T,T1,Op,RHS> >(numSiteTable, a, ev_userfunc);
 
   ///////////////////
   // Original code
@@ -344,9 +357,9 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 
   int numSiteTable = s.numSiteTable();
 
-  user_arg<T,T1,Op,RHS> a = {dest, rhs, op, s.siteTable().slice()};
+  user_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
 
-  dispatch_to_threads(numSiteTable, a, evaluate_userfunc);
+  dispatch_to_threads< user_arg<T,T1,Op,RHS> >(numSiteTable, a, evaluate_userfunc);
 
   ////////////////////
   // Original code
