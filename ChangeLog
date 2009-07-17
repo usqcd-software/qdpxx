@@ -1,3 +1,8 @@
+2009-07-17 14:41  bjoo
+
+	* other_libs/xpath_reader/: aclocal.m4, configure, config/missing:
+	  Cleaned up with XLC
+
 2009-07-15 13:02  bjoo
 
 	* aclocal.m4, configure, include/qdp_parscalar_specific.h: Scalar
