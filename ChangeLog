@@ -1,3 +1,15 @@
+2009-07-18 17:02  chen
+
+	* other_libs/filedb/filehash/: createStrings.c, ffdb_page.c,
+	  tcheck.c, tcreate.c, tdualwrite.c: minor test code change
+
+2009-07-18 17:02  chen
+
+	* other_libs/filedb/filehash/: ffdb_pagepool.c, ffdb_pagepool.h:
+	  Fix a bug when cache size is not big enough by changing
+	  pgp->npages to be number of pages in the file and maxpgno to be
+	  maximum page number currently in use
+
 2009-07-17 14:41  bjoo
 
 	* other_libs/xpath_reader/: aclocal.m4, configure, config/missing:
