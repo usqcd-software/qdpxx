@@ -1,3 +1,20 @@
+2009-08-22 08:33  tag adat2-18-0
+
+2009-08-22 08:33  tag filedb1-0
+
+2009-08-22 08:33  edwards
+
+	* other_libs/filedb/: aclocal.m4, configure: Induced changes
+
+2009-08-22 08:33  edwards
+
+	* other_libs/filedb/configure.ac: Changed to version 1.
+
+2009-08-22 08:32  edwards
+
+	* other_libs/filedb/src/: ConfDataStoreMultipleDB.h, Makefile.am:
+	  Added a wrapper of multiple DBs.
+
 2009-07-18 17:02  tag adat2-17-3
 
 2009-07-18 17:02  tag adat2-17-4
