@@ -1,4 +1,4 @@
-// $Id: t_db.cc,v 1.9 2009-04-16 20:09:03 bjoo Exp $
+// $Id: t_db.cc,v 1.10 2009-08-28 16:06:51 edwards Exp $
 /*! \file
  *  \brief Test the database routines
  */
@@ -201,7 +201,17 @@ int main(int argc, char *argv[])
 
     // Open the db
     const std::string dbase("test.db");
-    db.open(dbase, O_RDWR | O_TRUNC, 0664);
+    
+    if (db.fileExists(dbase))
+    {
+      QDPIO::cout << "File " << dbase << " already exists - will truncate\n";
+    }
+    else
+    {
+      QDPIO::cout << "File " << dbase << " does not exist - will create\n";
+    }
+
+    db.open(dbase, O_RDWR | O_CREAT | O_TRUNC, 0664);
 
     // Insert meta data
     db.insertUserdata(meta_data);
