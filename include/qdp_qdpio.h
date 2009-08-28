@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.40 2008-05-14 19:31:39 bjoo Exp $
+// $Id: qdp_qdpio.h,v 1.41 2009-08-28 15:00:04 colin Exp $
 
 /*! @file
  * @brief IO support via QIO
@@ -232,6 +232,9 @@ namespace QDP
       \return true if a file is open; false otherwise.
     */
     bool is_open();
+
+    //! Reads a record header only 
+    void read(XMLReader& xml);
 
     //! Read a QDP object
     template<class T, class C>
