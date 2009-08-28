@@ -1,4 +1,4 @@
-// $Id: qdp_qdpio.cc,v 1.31 2008-06-27 13:31:22 bjoo Exp $
+// $Id: qdp_qdpio.cc,v 1.32 2009-08-28 14:59:31 colin Exp $
 //
 /*! @file
  * @brief IO support via QIO
@@ -190,6 +190,31 @@ namespace QDP
   bool is_open(QDPFileReader& qsw)
   {
     return qsw.is_open();
+  }
+
+  // Reads a record header only (state of reader left intact
+  // so subsequent read to get header and data still works)
+
+  void QDPFileReader::read(XMLReader& rec_xml)
+  {
+    QIO_RecordInfo rec_info;
+    QIO_String* xml_c = QIO_string_create();
+    int status;
+  
+    status = QIO_read_record_info(qio_in, &rec_info, xml_c);
+    if( status != QIO_SUCCESS) { 
+      QDPIO::cerr << "Failed to read the Record Info" << endl;
+      QDP_abort(1);
+    }
+  
+    istringstream ss;
+    if (Layout::primaryNode()) {
+      string foo = QIO_string_ptr(xml_c);
+      ss.str(foo);
+    }
+    rec_xml.open(ss);
+  
+    QIO_string_destroy(xml_c);
   }
 
 
