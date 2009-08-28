@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_stub.h,v 1.13 2009-04-17 19:17:55 edwards Exp $
+// $Id: qdp_db_stub.h,v 1.14 2009-08-28 16:06:25 edwards Exp $
 /*! @file
  * @brief Stubs of wrappers over filedb
  */
@@ -214,6 +214,12 @@ namespace QDP
     virtual void setMaxNumberConfigs (unsigned int num) {notImplemented();}
 
     virtual unsigned int getMaxNumberConfigs (void) const {notImplemented();}
+
+    /**
+     * Check if a DB file exists before opening.
+     */
+    virtual bool fileExists (const std::string& file) const {notImplemented();}
+
 
     /**
      * Open

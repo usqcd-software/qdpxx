@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_imp.h,v 1.6 2009-05-05 15:29:41 edwards Exp $
+// $Id: qdp_db_imp.h,v 1.7 2009-08-28 16:06:25 edwards Exp $
 /*! @file
  * @brief Support for filedb
  */
@@ -161,6 +161,21 @@ namespace QDP
       Internal::broadcast(ret);
       return ret;
     }
+
+
+    /**
+     * Check if a DB file exists before opening.
+     */
+    virtual bool fileExists (const std::string& file) const
+    {
+      bool ret = false;
+      if (Layout::primaryNode()) 
+	ret = db.fileExists(file);
+
+      Internal::broadcast(ret);
+      return ret;
+    }
+
 
     /**
      * Open
