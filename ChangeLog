@@ -1,3 +1,47 @@
+2009-08-28 12:06  edwards
+
+	* examples/t_db.cc: Changed open flags on "open" call. Added test
+	  if fileExists.
+
+2009-08-28 12:06  edwards
+
+	* include/: qdp_db_imp.h, qdp_db_stub.h: Added fileExist functions.
+
+2009-08-28 11:47  tag filedb1-1
+
+2009-08-28 11:47  edwards
+
+	* other_libs/filedb/NEWS: Info on 1.1
+
+2009-08-28 11:43  edwards
+
+	* other_libs/filedb/: aclocal.m4, configure: Induced changes
+
+2009-08-28 11:43  edwards
+
+	* other_libs/filedb/configure.ac: Added some fileExist functions to
+	  the ConfDataStore classes.
+
+2009-08-28 11:42  edwards
+
+	* other_libs/filedb/src/: ConfDataStoreDB.h, DBFunc.cpp, DBFunc.h:
+	  Added a fileExists function.
+
+2009-08-28 11:42  edwards
+
+	* other_libs/filedb/src/ConfDataStoreMultipleDB.h: Added a
+	  fileExists function. Removed unsupported code.
+
+2009-08-28 11:00  colin
+
+	* include/qdp_qdpio.h: Added member to read just record metadata
+	  (as in QIO)
+
+2009-08-28 10:59  colin
+
+	* lib/qdp_qdpio.cc: Added member to just read the record metadata
+	  (as in QIO)
+
 2009-08-25 11:41  colin
 
 	* other_libs/xpath_reader/lib/basic_xpath_reader.cc: Set context to
