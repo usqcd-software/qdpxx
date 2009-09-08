@@ -1,3 +1,7 @@
+2009-09-07 21:07  jbulava
+
+	* include/qdp_db_imp.h: Added a wrapper for the `exist' function.
+
 2009-08-28 12:06  edwards
 
 	* examples/t_db.cc: Changed open flags on "open" call. Added test
