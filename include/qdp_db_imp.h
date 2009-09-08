@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_imp.h,v 1.7 2009-08-28 16:06:25 edwards Exp $
+// $Id: qdp_db_imp.h,v 1.8 2009-09-08 01:07:40 jbulava Exp $
 /*! @file
  * @brief Support for filedb
  */
@@ -237,6 +237,19 @@ namespace QDP
 	QDP_abort(1);
       }
     }
+
+
+ bool exist(K& key)
+    {
+      bool ret = true;
+      if (Layout::primaryNode()) 
+	ret = db.exist(key);
+
+      Internal::broadcast(ret);
+    
+			return ret;
+		}
+
 
     /**
      * Insert a pair of data and key into the database in string format
