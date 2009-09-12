@@ -1,3 +1,28 @@
+2009-09-11 23:46  tag qdp1-33-0
+
+2009-09-11 23:46  edwards
+
+	* PETE/QDPOps.in, include/QDPOperators.h,
+	  include/qdp_primcolorvec.h, include/qdp_primscalar.h,
+	  include/qdp_primvector.h: Added colorCrossProduct and
+	  colorVectorContract.
+
+2009-09-11 23:45  edwards
+
+	* examples/t_exotic.cc: Added some new test functions.
+
+2009-09-11 23:45  edwards
+
+	* NEWS: Info on 1.33.0
+
+2009-09-11 23:41  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2009-09-11 23:41  edwards
+
+	* configure.ac: Info on 1.33.0
+
 2009-09-10 23:39  edwards
 
 	* other_libs/filedb/src/AllConfStoreDB.h: Removed a debugging cerr
