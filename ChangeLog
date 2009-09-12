@@ -23,6 +23,8 @@
 
 	* configure.ac: Info on 1.33.0
 
+2009-09-10 23:39  tag adat2-18-3
+
 2009-09-10 23:39  edwards
 
 	* other_libs/filedb/src/AllConfStoreDB.h: Removed a debugging cerr
