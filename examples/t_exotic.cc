@@ -1,4 +1,4 @@
-// $Id: t_exotic.cc,v 1.8 2005-03-21 05:31:07 edwards Exp $
+// $Id: t_exotic.cc,v 1.9 2009-09-12 03:45:30 edwards Exp $
 /*! \file
  *  \brief Test various exotic qdp routines
  */
@@ -64,6 +64,86 @@ int main(int argc, char *argv[])
     // Try colorcontract again
     LatticeComplex lc2 = colorContract(a,b,c);
     push(xml,"color_contract_gauge_transf");
+    write(xml,"lc2", lc2);
+    pop(xml);
+  }
+#endif
+
+#if 1
+  // Try out colorCrossProduct
+  {
+    LatticeColorVector a,b;
+    gaussian(a);
+    gaussian(b);
+
+    LatticeColorVector lc1 = colorCrossProduct(a,b);
+
+    push(xml,"color_cross_product_orig");
+    write(xml,"lc1",lc1);
+    pop(xml);
+   
+    // Do a random gauge transformation
+    LatticeColorVector tmp;
+    tmp = g * a;  a = tmp;
+    tmp = g * b;  b = tmp;
+
+    // Try colorCrossProduct again
+    LatticeColorVector lc2 = adj(g) * colorCrossProduct(a,b);
+    push(xml,"color_cross_product_gauge_transf");
+    write(xml,"lc2", lc2);
+    pop(xml);
+  }
+#endif
+
+#if 1
+  // Try out colorVectorContract
+  {
+    LatticeColorVector a,b;
+    gaussian(a);
+    gaussian(b);
+
+    LatticeComplex lc1 = colorVectorContract(a,b);
+
+    push(xml,"color_vector_contract_orig");
+    write(xml,"lc1",lc1);
+    pop(xml);
+   
+    // Do a random gauge transformation
+    LatticeColorVector tmp;
+    tmp = g * a;  a = tmp;
+    tmp = g * b;  b = tmp;
+
+    // Try colorVectorContract again
+    LatticeComplex lc2 = colorVectorContract(a,b);
+    push(xml,"color_vector_contract_gauge_transf");
+    write(xml,"lc2", lc2);
+    pop(xml);
+  }
+#endif
+
+#if 0
+  // Try out localInnerProduct
+  // Not working.
+  {
+    LatticeColorVector a;
+    LatticeFermion b;
+    LatticeSpinVector c;
+    gaussian(a);
+    gaussian(b);
+
+    LatticeSpinVector lc1 = localInnerProduct(a,b);
+
+    push(xml,"local_inner_product_orig");
+    write(xml,"lc1",lc1);
+    pop(xml);
+   
+    // Do a random gauge transformation
+    a = LatticeColorVector(g * a);
+    b = LatticeFermion(g * b);
+
+    // Try colorCrossProduct again
+    LatticeSpinVector lc2 = localInnerProduct(a,b);
+    push(xml,"local_inner_product_gauge_transf");
     write(xml,"lc2", lc2);
     pop(xml);
   }
