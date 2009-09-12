@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.25 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_primvector.h,v 1.26 2009-09-12 03:46:29 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector
@@ -837,7 +837,7 @@ template<class T1, class T2, int N, template<class,int> class C>
 inline PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>
 localInnerProduct(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
 {
-  PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  d;
+  typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerProduct>::Type_t  d;
 
   d.elem() = localInnerProduct(s1.elem(0), s2.elem(0));
   for(int i=1; i < N; ++i)
@@ -865,7 +865,7 @@ template<class T1, class T2, int N, template<class,int> class C>
 inline PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>
 localInnerProductReal(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
 {
-  PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  d;
+  typename BinaryReturn<PVector<T1,N,C>, PVector<T2,N,C>, FnLocalInnerProductReal>::Type_t  d;
 
   d.elem() = localInnerProductReal(s1.elem(0), s2.elem(0));
   for(int i=1; i < N; ++i)
@@ -873,6 +873,54 @@ localInnerProductReal(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
 
   return d;
 }
+
+
+// This PVector<T1,N,C> stuff versus PSpinVector<T1,N> is causing problems. 
+// When searching for type matching functions, the language does not allow
+// for varying template arguments to match a function. We should just move
+// away from PVector to use PSpinVector and PColorVector. However, have to
+// replicate all the functions. Uggh - another day...
+
+//
+////! PVector<T> = localInnerProduct(adj(PScalar<T1>)*PVector<T1>)
+//template<class T1, class T2, int N, template<class,int> class C>
+//struct BinaryReturn<PScalar<T1>, PVector<T2,N,C>, FnLocalInnerProduct> {
+//  typedef PVector<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t, N, C>  Type_t;
+//};
+//
+//template<class T1, class T2, int N, template<class,int> class C>
+//inline PVector<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t,N,C>
+//localInnerProduct(const PScalar<T1>& s1, const PVector<T2,N,C>& s2)
+//{
+//  typename BinaryReturn<PScalar<T1>, PVector<T2,N,C>, FnLocalInnerProduct>::Type_t  d;
+//
+//  for(int i=0; i < N; ++i)
+//    d.elem(i) = localInnerProduct(s1.elem(0), s2.elem(i));
+//
+//  return d;
+//}
+//
+//
+////! PScalar<T> = InnerProductReal(adj(PScalar<T1>)*PVector<T1>)
+///*!
+// * return  realpart of InnerProduct(adj(s1)*s2)
+// */
+//template<class T1, class T2, int N, template<class,int> class C>
+//struct BinaryReturn<PScalar<T1>, PVector<T2,N,C>, FnLocalInnerProductReal > {
+//  typedef PVector<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t, N,C>  Type_t;
+//};
+//
+//template<class T1, class T2, int N, template<class,int> class C>
+//inline PVector<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t,N,C>
+//localInnerProductReal(const PScalar<T1>& s1, const PVector<T2,N,C>& s2)
+//{
+//  typename BinaryReturn<PScalar<T1>, PVector<T2,N,C>, FnLocalInnerProductReal>::Type_t  d;
+//
+//  for(int i=0; i < N; ++i)
+//    d.elem(i) = localInnerProductReal(s1.elem(), s2.elem(i));
+//
+//  return d;
+//}
 
 
 //! PVector<T> = where(PScalar, PVector, PVector)

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.29 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_primscalar.h,v 1.30 2009-09-12 03:46:29 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
@@ -1283,8 +1283,41 @@ colorContract(const PScalar<T1>& s1, const PScalar<T2>& s2, const PScalar<T3>& s
 }
 
 
+//-----------------------------------------------------------------------------
+// Contraction of two colorvectors
+//! dest  = colorVectorContract(Qvec1,Qvec2)
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, FnColorVectorContract> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnColorVectorContract>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnColorVectorContract>::Type_t
+colorVectorContract(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  return colorVectorContract(s1.elem(), s2.elem());
+}
 
 
+
+//-----------------------------------------------------------------------------
+// Cross product for color vectors
+//! dest  = colorCrossProduct(Qvec1,Qvec2)
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, FnColorCrossProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnColorCrossProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnColorCrossProduct>::Type_t
+colorCrossProduct(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  return colorCrossProduct(s1.elem(), s2.elem());
+}
+
+
+
+//-----------------------------------------------------------------------------
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 
 inline void 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_primcolorvec.h,v 1.6 2008-05-02 23:17:29 bjoo Exp $
+// $Id: qdp_primcolorvec.h,v 1.7 2009-09-12 03:46:29 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Vector
@@ -253,6 +253,64 @@ colorContract(const PColorVector<T1,3>& s1, const PColorVector<T2,3>& s2, const 
 
   return d;
 }
+
+
+//-----------------------------------------------------------------------------
+// Contraction for color vectors
+// colorContract 
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnColorVectorContract> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnColorVectorContract>::Type_t>  Type_t;
+};
+
+//! dest  = colorVectorContract(Qvec1,Qvec2)
+/*!
+ * Performs:
+ *  \f$dest = \sum_{i} V1^{i} V2^{i}\f$
+ */
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnColorVectorContract>::Type_t
+colorVectorContract(const PColorVector<T1,N>& s1, const PColorVector<T2,N>& s2)
+{
+  typename BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnColorVectorContract>::Type_t  d;
+
+  // d = V1^{i} V2^{i}
+  d.elem() = s1.elem(0)*s2.elem(0);
+  for(int i=1; i < N; ++i)
+    d.elem() += s1.elem(i)*s2.elem(i);
+
+  return d;
+}
+
+
+//-----------------------------------------------------------------------------
+// diquark color cross product   s1 X s2
+//! Contraction for color vectors
+template<class T1, class T2>
+struct BinaryReturn<PColorVector<T1,3>, PColorVector<T2,3>, FnColorCrossProduct> {
+  typedef PColorVector<typename BinaryReturn<T1, T2, FnColorCrossProduct>::Type_t, 3>  Type_t;
+};
+
+//! dest  = colorCrossProduct(Qvec1,Qvec2)
+/*!
+ * Performs:
+ *  \f$dest^{i} = \sum_{j,k} \epsilon^{i,j,k} V1^{j} V2^{k}\f$
+ *
+ * This routine is completely unrolled for 3 colors
+ */
+template<class T1, class T2>
+inline typename BinaryReturn<PColorVector<T1,3>, PColorVector<T2,3>, FnColorCrossProduct>::Type_t
+colorCrossProduct(const PColorVector<T1,3>& s1, const PColorVector<T2,3>& s2)
+{
+  typename BinaryReturn<PColorVector<T1,3>, PColorVector<T2,3>, FnColorCrossProduct>::Type_t  d;
+  
+  d.elem(0) = s1.elem(1)*s2.elem(2) - s1.elem(2)*s2.elem(1);
+  d.elem(1) = s1.elem(2)*s2.elem(0) - s1.elem(0)*s2.elem(2);
+  d.elem(2) = s1.elem(0)*s2.elem(1) - s1.elem(1)*s2.elem(0);
+
+ return d;
+}
+
 
 
 } // namespace QDP

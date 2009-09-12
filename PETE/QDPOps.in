@@ -330,6 +330,30 @@ binaryOps
   @ingroup group1
   @relates QDPType */"
 -----
+  TAG = "FnColorVectorContract"
+  FUNCTION = "colorVectorContract"
+  EXPR = "return (colorVectorContract(a,b));"
+  COMMENTA = "//! Sum over colorvector indices"
+  COMMENTB = "/*! 
+  Contract two colorvectors with no conjugation
+  @param l  vector
+  @param r  vector
+  @return \f$\sum_i l_i * r_i\f$
+  @ingroup group1
+  @relates QDPType */"
+-----
+  TAG = "FnColorCrossProduct"
+  FUNCTION = "colorCrossProduct"
+  EXPR = "return (colorCrossProduct(a,b));"
+  COMMENTA = "//! Cross product of two Nc=3 color vectors"
+  COMMENTB = "/*! 
+  Antisymmetric combination of two Nc=3 color vectors
+  @param l  vector
+  @param r  vector
+  @return \f$target^{i} = \sum_{jk}\epsilon^{i j k}*source1^{j}*source2^{k}\f$
+  @ingroup group1
+  @relates QDPType */"
+-----
   TAG = "FnLocalInnerProduct"
   FUNCTION = "localInnerProduct"
   EXPR = "return (localInnerProduct(a,b));"
