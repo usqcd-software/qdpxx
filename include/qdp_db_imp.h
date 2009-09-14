@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_imp.h,v 1.9 2009-09-14 18:40:49 jbulava Exp $
+// $Id: qdp_db_imp.h,v 1.10 2009-09-14 20:17:06 jbulava Exp $
 /*! @file
  * @brief Support for filedb
  */
@@ -422,7 +422,7 @@ namespace QDP
 	QDP_abort(1);
       }
 			
-			Internal::broadcast(user_data);
+			Internal::broadcast_str(user_data);
     }
 
 
