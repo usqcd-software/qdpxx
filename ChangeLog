@@ -1,3 +1,14 @@
+2009-09-14 16:17  jbulava
+
+	* include/qdp_db_imp.h: changed 'broadcast' to 'broadcast_str'.
+
+2009-09-14 14:40  jbulava
+
+	* include/qdp_db_imp.h: Removed the 'notImplemented' call from
+	  getUserdata. Since this function does not use qdp reads, I don't
+	  see the problem with a broadcast of a string. Simple parallel
+	  tests of this change seem to work.
+
 2009-09-11 23:46  tag qdp1-33-0
 
 2009-09-11 23:46  edwards
