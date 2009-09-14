@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_db_imp.h,v 1.8 2009-09-08 01:07:40 jbulava Exp $
+// $Id: qdp_db_imp.h,v 1.9 2009-09-14 18:40:49 jbulava Exp $
 /*! @file
  * @brief Support for filedb
  */
@@ -410,8 +410,10 @@ namespace QDP
       int ret = 0;
       if (Layout::primaryNode()) 
 	ret = db.getUserdata(user_data);
-      else
+      /*
+			else
 	notImplemented();
+			*/
 
       Internal::broadcast(ret);
       if (ret != 0)
@@ -419,6 +421,8 @@ namespace QDP
 	QDPIO::cerr << __func__ << ": error getting user data from db" << endl;
 	QDP_abort(1);
       }
+			
+			Internal::broadcast(user_data);
     }
 
 
