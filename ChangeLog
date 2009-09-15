@@ -1,3 +1,28 @@
+2009-09-15 16:48  bjoo
+
+	* include/scalarsite_generic/generic_blas_local_sumsq.h,
+	  include/scalarsite_generic/generic_blas_local_vcdot.h,
+	  include/scalarsite_generic/generic_blas_local_vcdot_real.h,
+	  include/scalarsite_generic/generic_blas_vaxmby3.h,
+	  include/scalarsite_generic/generic_blas_vaxmy3.h,
+	  include/scalarsite_generic/generic_blas_vaxpby3.h,
+	  include/scalarsite_generic/generic_blas_vaxpy3.h,
+	  include/scalarsite_generic/generic_blas_vcaxmby3.h,
+	  include/scalarsite_generic/generic_blas_vcaxmy3.h,
+	  include/scalarsite_generic/generic_blas_vcaxpby3.h,
+	  include/scalarsite_generic/generic_blas_vcaxpy3.h,
+	  include/scalarsite_generic/generic_blas_vcscal.h,
+	  include/scalarsite_generic/generic_blas_vscal.h,
+	  include/scalarsite_generic/generic_blas_vsub.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_blas_wrapper.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_cblas.h,
+	  include/scalarsite_generic/qdp_scalarsite_generic_cblas_wrapper.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas.h,
+	  include/scalarsite_sse/qdp_scalarsite_sse_blas_wrapper.h,
+	  lib/scalarsite_sse/qdp_scalarsite_sse.cc: Can now do odd no of
+	  threads
+
 2009-09-14 16:17  jbulava
 
 	* include/qdp_db_imp.h: changed 'broadcast' to 'broadcast_str'.
