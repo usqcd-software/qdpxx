@@ -1,4 +1,4 @@
-// $Id: generic_blas_local_vcdot_real.h,v 1.5 2009-07-14 20:08:41 bjoo Exp $
+// $Id: generic_blas_local_vcdot_real.h,v 1.6 2009-09-15 20:48:41 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar, CDOT  routine
@@ -39,7 +39,8 @@ void l_vcdot_real(DOUBLE *Out, REAL *V1, REAL *V2, int n_3vec)
   register unsigned long vecptr2=0;
   result= 0;
 
-  
+  int len = 4*n_3vec;
+
   if( n_3vec > 0 ) { 
 
     // Prefetch 
@@ -61,7 +62,7 @@ void l_vcdot_real(DOUBLE *Out, REAL *V1, REAL *V2, int n_3vec)
     v1_2i = (DOUBLE)V1[vecptr1++];
     v2_2i = (DOUBLE)V2[vecptr2++];
 
-    for(counter=0; counter < n_3vec-1; counter++) {
+    for(counter=0; counter < len-1; counter++) {
       result = result + v1_0r*v2_0r;
       v1_0r = (DOUBLE)V1[vecptr1++];
       v2_0r = (DOUBLE)V2[vecptr2++];    

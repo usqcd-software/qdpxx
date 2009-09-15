@@ -34,9 +34,9 @@ void ordered_sse_vaxOpy3_evaluate_function (int lo, int hi, int myId, ordered_ss
 
   int index = lo; // Rescale to real32
 
-  InScale = &InScale[index];
-  Opt = &Opt[index];
-  Out = &Out[index];
+  InScale = &InScale[24*index];
+  Opt = &Opt[24*index];
+  Out = &Out[24*index];
 
   func(Out, scalep, InScale, Opt, n_3vec);
 }
@@ -46,16 +46,14 @@ struct unordered_sse_vaxOpy3_y_user_arg{
   unordered_sse_vaxOpy3_y_user_arg(  const OLattice< TVec >& x_,
 				     OLattice< TVec >& d_,
 				     REAL32* scalep_,
-				     int Ns_,
 				     const int* tab_,
 				     int xy_order_,
 				     void (*func_)(REAL32*, REAL32*, REAL32*, REAL32*, int)) 
-  :x(x_),d(d_),scalep(scalep_),Ns(Ns_),tab(tab_),xy_order(xy_order_),func(func_) {}
+  :x(x_),d(d_),scalep(scalep_),tab(tab_),xy_order(xy_order_),func(func_) {}
 
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   REAL32* scalep;
-  int Ns;
   const int* tab;
   int xy_order;
   void (*func)(REAL32*, REAL32*, REAL32*, REAL32*, int);
@@ -68,7 +66,6 @@ void unordered_sse_vaxOpy3_y_evaluate_function (int lo, int hi, int myId, unorde
   const OLattice< TVec >& x = a->x;
   OLattice< TVec >& d = a->d;
   REAL32* scalep = a->scalep;
-  int Ns = a->Ns;
   const int* tab = a->tab;
   int xy_order = a->xy_order;
   void (*func)(REAL32*, REAL32*, REAL32*, REAL32*, int) = a->func;
@@ -78,7 +75,7 @@ void unordered_sse_vaxOpy3_y_evaluate_function (int lo, int hi, int myId, unorde
        int i=tab[j];
        REAL32* xptr = (REAL32 *)&(x.elem(i).elem(0).elem(0).real());
        REAL32* yptr = &(d.elem(i).elem(0).elem(0).real());
-       func(yptr, scalep, xptr, yptr, Ns);
+       func(yptr, scalep, xptr, yptr, 1);
      }
   }
   else {
@@ -86,7 +83,7 @@ void unordered_sse_vaxOpy3_y_evaluate_function (int lo, int hi, int myId, unorde
      int i=tab[j];
      REAL32* xptr = (REAL32 *)&(x.elem(i).elem(0).elem(0).real());
      REAL32* yptr = &(d.elem(i).elem(0).elem(0).real());
-     func(yptr, scalep, yptr, xptr, Ns);
+     func(yptr, scalep, yptr, xptr, 1);
    }
   }
  
@@ -100,17 +97,15 @@ struct unordered_sse_vaxOpy3_z_user_arg{
 				   const OLattice< TVec >& y_,
 				   OLattice< TVec >& d_,
 				   REAL32* scalep_,
-				   int Ns_,
 				   const int* tab_,
 				   void (*func_)(REAL32*, REAL32*, REAL32*, REAL32*, int)) 
-  : x(x_),y(y_),d(d_),scalep(scalep_),Ns(Ns_),tab(tab_),func(func_) {}
+  : x(x_),y(y_),d(d_),scalep(scalep_),tab(tab_),func(func_) {}
 
 
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
   REAL32* scalep;
-  int Ns;
   const int* tab;
   void (*func)(REAL32*, REAL32*, REAL32*, REAL32*, int);
 };
@@ -123,7 +118,6 @@ void unordered_sse_vaxOpy3_z_evaluate_function (int lo, int hi, int myId, unorde
   const OLattice< TVec >& y = a->y;
   OLattice< TVec >& d = a->d;
   REAL32* scalep = a->scalep;
-  int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL32*, REAL32*, REAL32*, REAL32*, int) = a->func;
 
@@ -132,7 +126,7 @@ void unordered_sse_vaxOpy3_z_evaluate_function (int lo, int hi, int myId, unorde
      REAL32* xptr = (REAL32 *)&(x.elem(i).elem(0).elem(0).real());
      REAL32* yptr = (REAL32 *)&(y.elem(i).elem(0).elem(0).real());
      REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
-     func(zptr, scalep, xptr, yptr, Ns);
+     func(zptr, scalep, xptr, yptr, 1);
    }
 
 }
@@ -164,9 +158,9 @@ void ordered_sse_vOp_evaluate_function (int lo, int hi, int myId, ordered_sse_vO
   int n_3vec = hi - lo;
 
   int index = lo;
-  In1 = &In1[index];
-  In2 = &In2[index];
-  Out = &Out[index];
+  In1 = &In1[24*index];
+  In2 = &In2[24*index];
+  Out = &Out[24*index];
 
   func(Out, In1, In2, n_3vec);
 }
@@ -176,14 +170,12 @@ struct unordered_sse_vOp_y_user_arg{
   unordered_sse_vOp_y_user_arg(
 			       const OLattice< TVec >& x_,
 			       OLattice< TVec >& d_,
-			       int Ns_,
 			       const int* tab_,
 			       void (*func_)(REAL32*, REAL32*, REAL32*, int)) 
-  : x(x_),d(d_),Ns(Ns_),tab(tab_),func(func_) {}
+  : x(x_),d(d_),tab(tab_),func(func_) {}
 
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
-  int Ns;
   const int* tab;
   void (*func)(REAL32*, REAL32*, REAL32*, int);
 };
@@ -194,7 +186,6 @@ void unordered_sse_vOp_y_evaluate_function (int lo, int hi, int myId, unordered_
 
   const OLattice< TVec >& x = a->x;
   OLattice< TVec >& d = a->d;
-  int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL32*, REAL32*, REAL32*, int) = a->func;
 
@@ -203,7 +194,7 @@ void unordered_sse_vOp_y_evaluate_function (int lo, int hi, int myId, unordered_
       int i = tab[j];
       REAL32 *xptr = (REAL32 *)(&x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *)(&d.elem(i).elem(0).elem(0).real());
-      func(yptr, yptr, xptr,24);
+      func(yptr, yptr, xptr,1);
   }
 
 }
@@ -214,14 +205,12 @@ struct unordered_sse_vOp_z_user_arg{
 			       const OLattice< TVec >& x_,
 			       const OLattice< TVec >& y_,
 			       OLattice< TVec >& d_,
-			       int Ns_,
 			       const int* tab_,
 			       void (*func_)(REAL32*, REAL32*, REAL32*, int))
-  : x(x_),y(y_),d(d_),Ns(Ns_),tab(tab_),func(func_) {}
+  : x(x_),y(y_),d(d_),tab(tab_),func(func_) {}
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
-  int Ns;
   const int* tab;
   void (*func)(REAL32*, REAL32*, REAL32*, int);
 };
@@ -233,7 +222,6 @@ void unordered_vOp_z_evaluate_function (int lo, int hi, int myId, unordered_sse_
   const OLattice< TVec >& x = a->x;
   const OLattice< TVec >& y = a->y;
   OLattice< TVec >& d = a->d;
-  int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL32*, REAL32*, REAL32*, int) = a->func;
 
@@ -244,7 +232,7 @@ void unordered_vOp_z_evaluate_function (int lo, int hi, int myId, unordered_sse_
       REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
             
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-      func(zptr, xptr, yptr, 24);
+      func(zptr, xptr, yptr, 1);
 
    }
 
@@ -273,8 +261,8 @@ void ordered_sse_vscal_evaluate_function (int lo, int hi, int myId, ordered_sse_
 
   int n_3vec = hi - lo;
   int index = lo;
-  Out = &Out[index];
-  In = &In[index];
+  Out = &Out[24*index];
+  In = &In[24*index];
   vscal(Out, scalep, In, n_3vec);
 }
 
@@ -284,12 +272,10 @@ struct unordered_sse_vscal_user_arg{
 			       const OLattice< TVec >& x_,
 			       OLattice< TVec >& d_,
 			       REAL32* scalep_,
-			       int Ns_,
-			       const int* tab_) : x(x_),d(d_),scalep(scalep_),Ns(Ns_),tab(tab_) {}
+			       const int* tab_) : x(x_),d(d_),scalep(scalep_),tab(tab_) {}
   const OLattice< TVec >& x;
   OLattice< TVec >& d;
   REAL32* scalep;
-  int Ns;
   const int* tab;
 };
 
@@ -300,14 +286,13 @@ void unordered_sse_vscal_evaluate_function (int lo, int hi, int myId, unordered_
   const OLattice< TVec >& x = a->x;
   OLattice< TVec >& d = a->d;
   REAL32* scalep = a->scalep;
-  int Ns = a->Ns;
   const int* tab = a->tab;
 
   for(int j=lo; j < hi; j++) { 
      int i=tab[j];
      REAL32* xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
      REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real()); 
-     vscal(zptr, scalep, xptr, Ns);
+     vscal(zptr, scalep, xptr, 1);
    }
 
 }
@@ -341,7 +326,7 @@ void ordered_sse_vaxOpby3_evaluate_function (int lo, int hi, int myId, ordered_s
 
   int n_3vec = (hi - lo);
 
-  int index = lo;
+  int index = 24*lo;
   zptr = &zptr[index];
   xptr = &xptr[index];
   yptr = &yptr[index];
@@ -357,10 +342,9 @@ struct unordered_sse_vaxOpby3_user_arg{
 				  REAL32* bptr_,
 				  const OLattice< TVec >& y_,
 				  OLattice< TVec >& d_,
-				  int Ns_,
 				  const int* tab_,
 				  void (*func_)(REAL32*, REAL32*, REAL32*, REAL32*, REAL32*, int)) 
-  : aptr(aptr_),x(x_),bptr(bptr_),y(y_),d(d_),Ns(Ns_),tab(tab_),func(func_) {}
+  : aptr(aptr_),x(x_),bptr(bptr_),y(y_),d(d_),tab(tab_),func(func_) {}
 
 
   REAL32* aptr;
@@ -368,7 +352,6 @@ struct unordered_sse_vaxOpby3_user_arg{
   REAL32* bptr;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
-  int Ns;
   const int* tab;
   void (*func)(REAL32*, REAL32*, REAL32*, REAL32*, REAL32*, int);
 };
@@ -381,7 +364,6 @@ void unordered_sse_vaxOpby3_evaluate_function (int lo, int hi, int myId, unorder
   REAL32* bptr = arg->bptr;
   const OLattice< TVec >& y = arg->y;
   OLattice< TVec >& d = arg->d;
-  int Ns = arg->Ns;
   const int* tab = arg->tab;
   void (*func)(REAL32*, REAL32*, REAL32*, REAL32*, REAL32*, int) = arg->func;
 
@@ -393,7 +375,7 @@ void unordered_sse_vaxOpby3_evaluate_function (int lo, int hi, int myId, unorder
       REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
       REAL32 * zptr =  &(d.elem(i).elem(0).elem(0).real());
       
-      func(zptr, aptr, xptr, bptr, yptr, Ns);
+      func(zptr, aptr, xptr, bptr, yptr, 1);
     
   }
 
@@ -410,7 +392,7 @@ inline void ordered_norm_single_func(int lo, int hi, int myId, ordered_sse_norm_
   {
 
     int nvec = hi - lo;
-    int index = lo;
+    int index = 24*lo;
     REAL32* vptr = &(a->vptr[index]);
     void (*func)(REAL64*, REAL32*, int) = a->func;
     func( &(a->results[myId]), vptr, nvec);

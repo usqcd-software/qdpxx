@@ -45,7 +45,7 @@ void evaluate( OLattice< CTVec > &d,
   if( s.hasOrderedRep() ) { 
     REAL *d_start = &(d.elem(s.start()).elem(0).elem(0).real());
 
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcscal_user_arg a = {d_start, a_start, d_start};
 
@@ -62,9 +62,9 @@ void evaluate( OLattice< CTVec > &d,
         
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
 
-    unordered_vcscal_user_arg arg(d, d, a_start, Ns, tab);
+
+    unordered_vcscal_user_arg arg(d, d, a_start, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcscal_evaluate_function);
 
@@ -109,7 +109,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *d_start = &(d.elem(s.start()).elem(0).elem(0).real());
     REAL *x_start = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
 
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcscal_user_arg a = {d_start, a_start, x_start};
 
@@ -127,9 +127,8 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
 
-    unordered_vcscal_user_arg arg(x, d, a_start, Ns, tab);
+    unordered_vcscal_user_arg arg(x, d, a_start, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcscal_evaluate_function);
 
@@ -177,7 +176,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *d_start = &(d.elem(s.start()).elem(0).elem(0).real());
     REAL *x_start = (REAL *) &(x.elem(s.start()).elem(0).elem(0).real());
     
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcscal_user_arg a = {d_start, a_start, x_start};
 
@@ -195,9 +194,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcscal_user_arg arg(x, d, a_start, Ns, tab);
+    unordered_vcscal_user_arg arg(x, d, a_start, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcscal_evaluate_function);
 
@@ -243,7 +240,7 @@ void evaluate(OLattice< CTVec >& d,
     REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
 
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpy3_user_arg a = {yptr, ar, xptr, yptr};
 
@@ -261,9 +258,9 @@ void evaluate(OLattice< CTVec >& d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
 
-    unordered_vcaxpy3_y_user_arg arg(x, d, ar, Ns, tab);
+
+    unordered_vcaxpy3_y_user_arg arg(x, d, ar, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_y_evaluate_function);
 
@@ -307,7 +304,7 @@ void evaluate(OLattice< CTVec >& d,
     REAL* xptr = (REAL *)&(x.elem(s.start()).elem(0).elem(0).real());
     REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
  
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpy3_user_arg a = {yptr, ar, xptr, yptr};
 
@@ -324,9 +321,8 @@ void evaluate(OLattice< CTVec >& d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
 
-    unordered_vcaxpy3_y_user_arg arg(x, d, ar, Ns, tab);
+    unordered_vcaxpy3_y_user_arg arg(x, d, ar, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_y_evaluate_function);
 
@@ -373,7 +369,7 @@ void evaluate(OLattice< CTVec >& d,
     REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
     // cout << "Specialised axpy a ="<< ar << endl;
  
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpy3_user_arg a = {yptr, ar, xptr, yptr};
 
@@ -390,9 +386,8 @@ void evaluate(OLattice< CTVec >& d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
 
-    unordered_vcaxpy3_y_user_arg arg(x, d, ar, Ns, tab);
+    unordered_vcaxpy3_y_user_arg arg(x, d, ar, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_y_evaluate_function);
 
@@ -440,7 +435,7 @@ void evaluate(OLattice< CTVec >& d,
     REAL* yptr = &(d.elem(s.start()).elem(0).elem(0).real());
     // cout << "Specialised axpy a ="<< ar << endl;
 
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpy3_user_arg a = {yptr, ar, xptr, yptr};
 
@@ -457,9 +452,7 @@ void evaluate(OLattice< CTVec >& d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxpy3_y_user_arg arg(x, d, ar, Ns, tab);
+    unordered_vcaxpy3_y_user_arg arg(x, d, ar, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_y_evaluate_function);
 
@@ -521,7 +514,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL *zptr =          &(d.elem(s.start()).elem(0).elem(0).real());
 
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpy3_user_arg a = {zptr, ar, xptr, yptr};
 
@@ -539,9 +532,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, Ns, tab);
+    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_z_evaluate_function);
 
@@ -606,7 +597,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL *zptr =          &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpy3_user_arg a = {zptr, ar, xptr, yptr};
 
@@ -624,9 +615,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, Ns, tab);
+    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_z_evaluate_function);
 
@@ -690,7 +679,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL *zptr =          &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxmy3_user_arg a = {zptr, ar, xptr, yptr};
 
@@ -708,9 +697,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxmy3_user_arg arg(x, y, d, ar, Ns, tab);
+    unordered_vcaxmy3_user_arg arg(x, y, d, ar, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxmy3_evaluate_function);
 
@@ -775,7 +762,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL *zptr =          &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxmy3_user_arg a = {zptr, ar, xptr, yptr};
 
@@ -793,9 +780,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxmy3_user_arg arg(x, y, d, ar, Ns, tab);
+    unordered_vcaxmy3_user_arg arg(x, y, d, ar, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxmy3_evaluate_function);
 
@@ -861,7 +846,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL *zptr =          &(d.elem(s.start()).elem(0).elem(0).real());
  
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpy3_user_arg a = {zptr, ar, xptr, yptr};
 
@@ -879,9 +864,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, Ns, tab);
+    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_z_evaluate_function);
 
@@ -949,7 +932,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL *zptr =          &(d.elem(s.start()).elem(0).elem(0).real());
 
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpy3_user_arg a = {zptr, ar, xptr, yptr};
 
@@ -967,9 +950,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, Ns, tab);
+    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_z_evaluate_function);
 
@@ -1039,7 +1020,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL *zptr =          &(d.elem(s.start()).elem(0).elem(0).real());
  
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpy3_user_arg a = {zptr, ar, xptr, yptr};
 
@@ -1057,9 +1038,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, Ns, tab);
+    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_z_evaluate_function);
 
@@ -1129,7 +1108,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL *zptr =          &(d.elem(s.start()).elem(0).elem(0).real());
 
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpy3_user_arg a = {zptr, ar, xptr, yptr};
 
@@ -1147,9 +1126,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, Ns, tab);
+    unordered_vcaxpy3_z_user_arg arg(x, y, d, ar, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpy3_z_evaluate_function);
 
@@ -1224,7 +1201,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpby3_user_arg a = {zptr, aptr, xptr, bptr, yptr};
 
@@ -1242,9 +1219,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxpby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
+    unordered_vcaxpby3_user_arg arg(x, y, d, aptr, bptr, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpby3_evaluate_function);
 
@@ -1325,7 +1300,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpby3_user_arg a = {zptr, aptr, xptr, bptr, yptr};
 
@@ -1343,9 +1318,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxpby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
+    unordered_vcaxpby3_user_arg arg(x, y, d, aptr, bptr, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpby3_evaluate_function);
 
@@ -1431,7 +1404,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpby3_user_arg a = {zptr, aptr, xptr, bptr, yptr};
 
@@ -1449,9 +1422,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxpby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
+    unordered_vcaxpby3_user_arg arg(x, y, d, aptr, bptr, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpby3_evaluate_function);
 
@@ -1524,7 +1495,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxpby3_user_arg a = {zptr, aptr, xptr, bptr, yptr};
 
@@ -1542,9 +1513,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxpby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
+    unordered_vcaxpby3_user_arg arg(x, y, d, aptr, bptr, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxpby3_evaluate_function);
 
@@ -1617,7 +1586,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxmby3_user_arg a = {zptr, aptr, xptr, bptr, yptr};
 
@@ -1635,9 +1604,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxmby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
+    unordered_vcaxmby3_user_arg arg(x, y, d, aptr, bptr, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxmby3_evaluate_function);
 
@@ -1719,7 +1686,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxmby3_user_arg a = {zptr, aptr, xptr, bptr, yptr};
 
@@ -1737,9 +1704,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxmby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
+    unordered_vcaxmby3_user_arg arg(x, y, d, aptr, bptr, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxmby3_evaluate_function);
 
@@ -1825,7 +1790,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxmby3_user_arg a = {zptr, aptr, xptr, bptr, yptr};
 
@@ -1843,9 +1808,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxmby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
+    unordered_vcaxmby3_user_arg arg(x, y, d, aptr, bptr, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxmby3_evaluate_function);
 
@@ -1918,7 +1881,7 @@ void evaluate( OLattice< CTVec > &d,
     REAL *yptr = (REAL *) &(y.elem(s.start()).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(s.start()).elem(0).elem(0).real());
     
-    int total_n_3vec = (s.end()-s.start()+1)*Ns;
+    int total_n_3vec = (s.end()-s.start()+1);
 
     ordered_vcaxmby3_user_arg a = {zptr, aptr, xptr, bptr, yptr};
 
@@ -1936,9 +1899,7 @@ void evaluate( OLattice< CTVec > &d,
 
     int totalSize = s.numSiteTable();
 
-    int Ns = 4;
-
-    unordered_vcaxmby3_user_arg arg(x, y, d, aptr, bptr, Ns, tab);
+    unordered_vcaxmby3_user_arg arg(x, y, d, aptr, bptr, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_vcaxmby3_evaluate_function);
 

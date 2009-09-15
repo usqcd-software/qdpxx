@@ -1,4 +1,4 @@
-// $Id: generic_blas_vscal.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
+// $Id: generic_blas_vscal.h,v 1.3 2009-09-15 20:48:42 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VSCAL routine
@@ -38,7 +38,8 @@ void vscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec)
     i0r = (double)In[inptr++];
     i0i = (double)In[inptr++];
     i1r = (double)In[inptr++];
-    for(counter = 0; counter < n_3vec-1 ; counter++) {
+    int len = 4*n_3vec;
+    for(counter = 0; counter < len-1 ; counter++) {
       o0r = a*i0r;
       Out[outptr++] = (REAL)o0r;
       

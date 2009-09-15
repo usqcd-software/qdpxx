@@ -27,7 +27,7 @@ void ordered_vcscal_evaluate_function (int lo, int hi, int myId, ordered_vcscal_
   REAL* In = a->In;
 
   int n_3vec = hi - lo;
-  int index = lo * 6;
+  int index = lo * 24;
   Out = &Out[index];
   In = &In[index];
   vcscal(Out, scalep, In, n_3vec);
@@ -39,13 +39,11 @@ struct unordered_vcscal_user_arg{
 			    const OLattice< CTVec > &x_,
 			    OLattice< CTVec >& d_,
 			    REAL* scalep_,
-			    int Ns_,
-			    const int* tab_) : x(x_), d(d_), scalep(scalep_), Ns(Ns_), tab(tab_) {}
+			    const int* tab_) : x(x_), d(d_), scalep(scalep_), tab(tab_) {}
 
   const OLattice< CTVec > &x;
   OLattice< CTVec >& d;
   REAL* scalep;
-  int Ns;
   const int* tab;
 };
 
@@ -55,14 +53,13 @@ void unordered_vcscal_evaluate_function (int lo, int hi, int myId, unordered_vcs
   const OLattice< CTVec > &x = a->x;
   OLattice< CTVec >& d = a->d;
   REAL* scalep = a->scalep;
-  int Ns = a->Ns;
   const int* tab = a->tab;
 
   for(int j=lo; j < hi; j++) { 
      int i=tab[j];
      REAL *d_start = &(d.elem(i).elem(0).elem(0).real());
      REAL *x_start = (REAL *) &(x.elem(i).elem(0).elem(0).real());
-     vcscal(d_start, scalep, x_start, Ns);
+     vcscal(d_start, scalep, x_start, 1);
    }
 
 }
@@ -92,7 +89,7 @@ void ordered_vcaxpy3_evaluate_function (int lo, int hi, int myId, ordered_vcaxpy
   REAL* Add = a->Add;
 
   int n_3vec = hi - lo;
-  int index = lo * 6;
+  int index = lo * 24;
   Out = &Out[index];
   InScale = &InScale[index];
   Add = &Add[index];
@@ -105,13 +102,11 @@ struct unordered_vcaxpy3_y_user_arg{
 			       const OLattice< CTVec > &x_,
 			       OLattice< CTVec >& d_,
 			       REAL* scalep_,
-			       int Ns_,
-			       const int* tab_) : x(x_), d(d_), scalep(scalep_), Ns(Ns_), tab(tab_) {}
+			       const int* tab_) : x(x_), d(d_), scalep(scalep_), tab(tab_) {}
 
   const OLattice< CTVec > &x;
   OLattice< CTVec >& d;
   REAL* scalep;
-  int Ns;
   const int* tab;
 };
 
@@ -121,7 +116,6 @@ void unordered_vcaxpy3_y_evaluate_function (int lo, int hi, int myId, unordered_
   const OLattice< CTVec > &x = a->x;
   OLattice< CTVec >& d = a->d;
   REAL* scalep = a->scalep;
-  int Ns = a->Ns;
   const int* tab = a->tab;
 
   for(int j=lo; j < hi; j++) { 
@@ -130,7 +124,7 @@ void unordered_vcaxpy3_y_evaluate_function (int lo, int hi, int myId, unordered_
      REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
      REAL* yptr = &(d.elem(i).elem(0).elem(0).real());
 
-     vcaxpy3(yptr, scalep, xptr, yptr, Ns);
+     vcaxpy3(yptr, scalep, xptr, yptr, 1);
     
    }
 
@@ -143,14 +137,12 @@ struct unordered_vcaxpy3_z_user_arg{
 			       const OLattice< CTVec >& y_,
 			       OLattice< CTVec >& d_,
 			       REAL* scalep_,
-			       int Ns_,
-			       const int* tab_) : x(x_), y(y_), d(d_), scalep(scalep_), Ns(Ns_), tab(tab_) {}
+			       const int* tab_) : x(x_), y(y_), d(d_), scalep(scalep_),  tab(tab_) {}
 
   const OLattice< CTVec > &x;
   const OLattice< CTVec >& y;
   OLattice< CTVec >& d;
   REAL* scalep;
-  int Ns;
   const int* tab;
 };
 
@@ -161,7 +153,6 @@ void unordered_vcaxpy3_z_evaluate_function (int lo, int hi, int myId, unordered_
   const OLattice< CTVec >& y = a->y;
   OLattice< CTVec >& d = a->d;
   REAL* scalep = a->scalep;
-  int Ns = a->Ns;
   const int* tab = a->tab;
 
   for(int j=lo; j < hi; j++) { 
@@ -172,7 +163,7 @@ void unordered_vcaxpy3_z_evaluate_function (int lo, int hi, int myId, unordered_
      REAL *zptr =          &(d.elem(i).elem(0).elem(0).real());
 
      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-     vcaxpy3(zptr, scalep, xptr, yptr, Ns);
+     vcaxpy3(zptr, scalep, xptr, yptr, 1);
    }
 
 }
@@ -203,7 +194,7 @@ void ordered_vcaxmy3_evaluate_function (int lo, int hi, int myId, ordered_vcaxmy
   REAL* Sub = a->Sub;
 
   int n_3vec = hi - lo;
-  int index = lo * 6;
+  int index = lo * 24;
   Out = &Out[index];
   InScale = &InScale[index];
   Sub = &Sub[index];
@@ -217,14 +208,12 @@ struct unordered_vcaxmy3_user_arg{
 			     const OLattice< CTVec >& y_,
 			     OLattice< CTVec >& d_,
 			     REAL* scalep_,
-			     int Ns_,
-			     const int* tab_) : x(x_),y(y_),d(d_),scalep(scalep_), Ns(Ns_), tab(tab_) {}
+			     const int* tab_) : x(x_),y(y_),d(d_),scalep(scalep_),  tab(tab_) {}
 
   const OLattice< CTVec > &x;
   const OLattice< CTVec >& y;
   OLattice< CTVec >& d;
   REAL* scalep;
-  int Ns;
   const int* tab;
 };
 
@@ -235,7 +224,6 @@ void unordered_vcaxmy3_evaluate_function (int lo, int hi, int myId, unordered_vc
   const OLattice< CTVec >& y = a->y;
   OLattice< CTVec >& d = a->d;
   REAL* scalep = a->scalep;
-  int Ns = a->Ns;
   const int* tab = a->tab;
 
   for(int j=lo; j < hi; j++) { 
@@ -246,7 +234,7 @@ void unordered_vcaxmy3_evaluate_function (int lo, int hi, int myId, unordered_vc
      REAL *zptr =          &(d.elem(i).elem(0).elem(0).real());
 
      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-     vcaxmy3(zptr, scalep, xptr, yptr, Ns);
+     vcaxmy3(zptr, scalep, xptr, yptr, 1);
    }
 
 }
@@ -277,7 +265,7 @@ void ordered_vcaxpby3_evaluate_function (int lo, int hi, int myId, ordered_vcaxp
   REAL* yp = a->yp;
 
   int n_3vec = hi - lo;
-  int index = lo * 6;
+  int index = lo * 24;
   Out = &Out[index];
   xp = &xp[index];
   yp = &yp[index];
@@ -292,15 +280,13 @@ struct unordered_vcaxpby3_user_arg{
 			      OLattice< CTVec >& d_,
 			      REAL* aptr_,
 			      REAL* bptr_,
-			      int Ns_,
-			      const int* tab_) : x(x_), y(y_),d(d_),aptr(aptr_), bptr(bptr_), Ns(Ns_), tab(tab_) {}
+			      const int* tab_) : x(x_), y(y_),d(d_),aptr(aptr_), bptr(bptr_), tab(tab_) {}
 
   const OLattice< CTVec > &x;
   const OLattice< CTVec >& y;
   OLattice< CTVec >& d;
   REAL* aptr;
   REAL* bptr;
-  int Ns;
   const int* tab;
 };
 
@@ -312,7 +298,6 @@ void unordered_vcaxpby3_evaluate_function (int lo, int hi, int myId, unordered_v
   OLattice< CTVec >& d = a->d;
   REAL* aptr = a->aptr;
   REAL* bptr = a->bptr;
-  int Ns = a->Ns;
   const int* tab = a->tab;
 
   for(int j=lo; j < hi; j++) { 
@@ -323,7 +308,7 @@ void unordered_vcaxpby3_evaluate_function (int lo, int hi, int myId, unordered_v
      REAL *zptr =          &(d.elem(i).elem(0).elem(0).real());
 
      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-     vcaxpby3(zptr, aptr, xptr, bptr, yptr, Ns);  
+     vcaxpby3(zptr, aptr, xptr, bptr, yptr, 1);  
    }
 
 }
@@ -354,7 +339,7 @@ void ordered_vcaxmby3_evaluate_function (int lo, int hi, int myId, ordered_vcaxm
   REAL* yp = a->yp;
 
   int n_3vec = hi - lo;
-  int index = lo * 6;
+  int index = lo * 24;
   Out = &Out[index];
   xp = &xp[index];
   yp = &yp[index];
@@ -369,15 +354,13 @@ struct unordered_vcaxmby3_user_arg{
 			      OLattice< CTVec >& d_,
 			      REAL* aptr_,
 			      REAL* bptr_,
-			      int Ns_,
-			      const int* tab_): x(x_),y(y_),d(d_),aptr(aptr_),bptr(bptr_),Ns(Ns_),tab(tab_) {}
+			      const int* tab_): x(x_),y(y_),d(d_),aptr(aptr_),bptr(bptr_),tab(tab_) {}
 
   const OLattice< CTVec > &x;
   const OLattice< CTVec >& y;
   OLattice< CTVec >& d;
   REAL* aptr;
   REAL* bptr;
-  int Ns;
   const int* tab;
 };
 
@@ -389,7 +372,6 @@ void unordered_vcaxmby3_evaluate_function (int lo, int hi, int myId, unordered_v
   OLattice< CTVec >& d = a->d;
   REAL* aptr = a->aptr;
   REAL* bptr = a->bptr;
-  int Ns = a->Ns;
   const int* tab = a->tab;
 
   for(int j=lo; j < hi; j++) { 
@@ -400,7 +382,7 @@ void unordered_vcaxmby3_evaluate_function (int lo, int hi, int myId, unordered_v
      REAL *zptr =          &(d.elem(i).elem(0).elem(0).real());
 
      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
-     vcaxmby3(zptr, aptr, xptr, bptr, yptr, Ns);  
+     vcaxmby3(zptr, aptr, xptr, bptr, yptr, 1);  
    }
 
 }

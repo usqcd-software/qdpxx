@@ -1,4 +1,4 @@
-// $Id: generic_blas_vcaxmy3.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
+// $Id: generic_blas_vcaxmy3.h,v 1.3 2009-09-15 20:48:42 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -53,6 +53,8 @@ void vcaxmy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec)
   register int counter;
 
   if( n_3vec > 0 ) { 
+    int len = n_3vec*4;
+
     // Prefetch whole vectors
     x0r = (double)InScale[index_x++];    
     x0i = (double)InScale[index_x++];
@@ -68,7 +70,7 @@ void vcaxmy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec)
     x2i = (double)InScale[index_x++];
     y2r = (double)Add[index_y++];
 
-    for( counter = 0; counter < n_3vec-1; counter++) {
+    for( counter = 0; counter < len-1; counter++) {
       y2i = (double)Add[index_y++];
       z0r = a_r * x0r - y0r;    
       z0i = a_i * x0r - y0i;

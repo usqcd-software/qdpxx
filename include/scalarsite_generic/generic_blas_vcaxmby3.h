@@ -1,4 +1,4 @@
-// $Id: generic_blas_vcaxmby3.h,v 1.3 2007-06-10 14:32:10 edwards Exp $
+// $Id: generic_blas_vcaxmby3.h,v 1.4 2009-09-15 20:48:42 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -74,7 +74,9 @@ void vcaxmby3(REAL* Out, REAL* ap, REAL* xp, REAL* bp, REAL* yp, int n_3vec)
     y2r = (double)yp[index_y++];
     y2i = (double)yp[index_y++];
 
-    for( counter = 0; counter < n_3vec-1; counter++) {
+    int len = 4*n_3vec;
+
+    for( counter = 0; counter < len-1; counter++) {
      
       z0r = a_r * x0r;    
       z0i = a_i * x0r;

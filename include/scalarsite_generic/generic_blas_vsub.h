@@ -1,4 +1,4 @@
-// $Id: generic_blas_vsub.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
+// $Id: generic_blas_vsub.h,v 1.3 2009-09-15 20:48:42 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VSUB routine
@@ -41,11 +41,13 @@ void vsub(REAL *Out, REAL *In1, REAL *In2, int n_3vec)
   register int outptr =0;
 
   if( n_3vec > 0 ) {
+    int len=4*n_3vec;
+
     in10r = (double)In1[in1ptr++];
     in20r = (double)In2[in2ptr++];
     in10i = (double)In1[in1ptr++];
     in20i = (double)In2[in2ptr++];
-    for(counter = 0; counter < n_3vec-1; counter++) { 
+    for(counter = 0; counter < len-1; counter++) { 
       out0r = in10r - in20r;
       Out[outptr++] = (REAL)out0r;
 

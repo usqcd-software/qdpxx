@@ -1,4 +1,4 @@
-// $Id: generic_blas_vaxpby3.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
+// $Id: generic_blas_vaxpby3.h,v 1.3 2009-09-15 20:48:41 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPBY routine
@@ -52,8 +52,9 @@ void vaxpby3(REAL *Out,REAL *ap ,REAL *xp, REAL *bp,  REAL *yp ,int n_3vec)
   register int index_z = 0;
   
   register int counter;
-  
-  for( counter = 0; counter < n_3vec; counter++) {
+  int len = 4*n_3vec;
+
+  for( counter = 0; counter < len; counter++) {
     x0r = (double)xp[index_x++];
     y0r = (double)yp[index_y++];
     z0r = a*x0r;

@@ -65,8 +65,9 @@ void vcaxpby3(REAL* Out, REAL* ap, REAL* xp, REAL* bp, REAL *yp, int n_3vec)
     x2i = (double)xp[index_x++];
     y2r = (double)yp[index_y++];
     y2i = (double)yp[index_y++];
-
-    for( counter = 0; counter < n_3vec-1; counter++) {
+    
+    int len = 4*n_3vec;
+    for( counter = 0; counter < len-1; counter++) {
      
       z0r = a_r * x0r;    
       z0i = a_i * x0r;

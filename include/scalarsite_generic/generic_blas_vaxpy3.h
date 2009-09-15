@@ -1,4 +1,4 @@
-// $Id: generic_blas_vaxpy3.h,v 1.2 2007-06-10 14:32:10 edwards Exp $
+// $Id: generic_blas_vaxpy3.h,v 1.3 2009-09-15 20:48:42 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
@@ -11,7 +11,7 @@
 namespace QDP {
 // (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (Vector) Add
 inline
-void vaxpy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec)
+void vaxpy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_4vec)
 {
   register double a;
   register double x0r;
@@ -48,8 +48,12 @@ void vaxpy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec)
   register int index_z = 0;
   
   register int counter;
-  
-  for( counter = 0; counter < n_3vec; counter++) {
+
+  // OK. Each n_4vec a length 24 vector. Here we've unrolled
+  // 6 deep, so we need to do 4* this 
+  int len=4*n_4vec;
+
+  for( counter = 0; counter < len; counter++) {
     x0r = (double)InScale[index_x++];
     y0r = (double)Add[index_y++];
     z0r = a*x0r + y0r;

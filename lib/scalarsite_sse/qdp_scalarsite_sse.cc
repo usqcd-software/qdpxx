@@ -1,4 +1,4 @@
-// $Id: qdp_scalarsite_sse.cc,v 1.2 2009-02-11 20:50:45 bjoo Exp $
+// $Id: qdp_scalarsite_sse.cc,v 1.3 2009-09-15 20:49:12 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations
@@ -1165,14 +1165,14 @@ void evaluate(OLattice< TVec2 >& d,
 //#define DEBUG_BLAS
 
 // AXPY and AXMY routines
-void vaxpy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_3vec)
+void vaxpy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_4vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: vaxpy3" << endl;
 #endif
 
-//  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
-  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
+//  int n_loops = n_4vec >> 2;   // only works on multiple of length 4 vectors
+  int n_loops = n_4vec;   // only works on multiple of length 24 vectors
 
   v4sf vscalep = _mm_load_ss(scalep);
   vscalep = _mm_shuffle_ps(vscalep, vscalep, 0);
@@ -1192,14 +1192,14 @@ void vaxpy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_3vec)
 }
 
 
-void vaxmy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Sub,int n_3vec)
+void vaxmy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Sub,int n_4vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: vaxmy3" << endl;
 #endif
 
-//  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
-  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
+//  int n_loops = n_4vec >> 2;   // only works on multiple of length 4 vectors
+  int n_loops = n_4vec;   // only works on multiple of length 24 vectors
 
 //  register v4sf va = load_v4sf((float *)&a);
   v4sf vscalep = _mm_load_ss(scalep);
@@ -1219,14 +1219,14 @@ void vaxmy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Sub,int n_3vec)
 }
 
 
-void vadd(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec)
+void vadd(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_4vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: vadd" << endl;
 #endif
 
-//  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
-  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
+//  int n_loops = n_4vec >> 2;   // only works on multiple of length 4 vectors
+  int n_loops = n_4vec;   // only works on multiple of length 24 vectors
 
   for (; n_loops-- > 0; )
   {
@@ -1242,14 +1242,14 @@ void vadd(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec)
 }
 
 
-void vsub(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec)
+void vsub(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_4vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: vsub" << endl;
 #endif
 
-//  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
-  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
+//  int n_loops = n_4vec >> 2;   // only works on multiple of length 4 vectors
+  int n_loops = n_4vec;   // only works on multiple of length 24 vectors
 
   for (; n_loops-- > 0; )
   {
@@ -1264,14 +1264,14 @@ void vsub(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec)
   }
 }
 
-void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec)
+void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_4vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: vadd" << endl;
 #endif
 
-//  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
-  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
+//  int n_loops = n_4vec >> 2;   // only works on multiple of length 4 vectors
+  int n_loops = n_4vec;   // only works on multiple of length 24 vectors
 
 //  register v4sf va = load_v4sf((float *)&a);
   v4sf vscalep = _mm_load_ss(scalep);
@@ -1291,14 +1291,14 @@ void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec)
 }  
 
 
-void vaxpby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_3vec)
+void vaxpby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_4vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: vaxpby3: a*x+b*y" << endl;
 #endif
 
-//  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
-  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
+//  int n_loops = n_4vec >> 2;   // only works on multiple of length 4 vectors
+  int n_loops = n_4vec;   // only works on multiple of length 24 vectors
 
 //  register v4sf va = load_v4sf((float *)&a);
   v4sf va = _mm_load_ss(a);
@@ -1321,14 +1321,14 @@ void vaxpby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_3vec
 }
 
 
-void vaxmby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_3vec)
+void vaxmby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_4vec)
 {
 #ifdef DEBUG_BLAS
   QDPIO::cout << "SSE_TEST: vaxmby3: a*x-b*y" << endl;
 #endif
 
-//  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
-  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
+//  int n_loops = n_4vec >> 2;   // only works on multiple of length 4 vectors
+  int n_loops = n_4vec;   // only works on multiple of length 24 vectors
 
 //  register v4sf va = load_v4sf((float *)&a);
   v4sf va = _mm_load_ss(a);
@@ -1350,116 +1350,11 @@ void vaxmby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_3vec
 }
 
 
-#if 0
-void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec)
-{
-#ifdef DEBUG_BLAS
-  QDPIO::cout << "SSE_TEST: local_sumsq" << endl;
-#endif
-
-//  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
-  int n_loops = n_3vec / 24;   // only works on multiple of length 24 vectors
-
-
-  (*Out) = (REAL64)0;
-
-  register SSEVec in0;
-  register SSEVec in1;
-  register SSEVec in2;
-  register SSEVec in3;
-  register SSEVec sq;
-  register SSEVec sum;
-
-  n_loops--;  // We pull out the first 4
-
-  sum.floats[0] = sum.floats[1] = sum.floats[2] = sum.floats[3] = 0;
-
-  in0.vector = _mm_load_ps(In);
-   sq.vector = _mm_mul_ps(in0.vector,in0.vector);
-  sum.vector = _mm_add_ps(sum.vector, sq.vector);
-  
-  in1.vector = _mm_load_ps(In+4);
-  sq.vector = _mm_mul_ps(in1.vector,in1.vector);
-  sum.vector = _mm_add_ps(sum.vector, sq.vector);
-  
-  in2.vector = _mm_load_ps(In+8);
-  sq.vector = _mm_mul_ps(in2.vector,in2.vector);
-  sum.vector = _mm_add_ps(sum.vector, sq.vector);
-
-  in3.vector = _mm_load_ps(In+12);
-  sq.vector = _mm_mul_ps(in3.vector,in3.vector);
-  sum.vector = _mm_add_ps(sum.vector, sq.vector);
-
-  *Out += (double)sum.floats[0] 
-    + (double)sum.floats[1] 
-    + (double)sum.floats[2]
-    + (double)sum.floats[3];
-  
-  In += 16;
-
-  for (; n_loops-- > 0; ) {
-    
-    // Initialise the sum
-    sum.floats[0] = sum.floats[1] = sum.floats[2] = sum.floats[3] = 0;
-
-    // Do 24
-    
-    in0.vector = _mm_load_ps(In);
-    sq.vector = _mm_mul_ps(in0.vector,in0.vector);
-    sum.vector = _mm_add_ps(sum.vector, sq.vector);
-
-    in1.vector = _mm_load_ps(In+4);
-    sq.vector = _mm_mul_ps(in1.vector,in1.vector);
-    sum.vector = _mm_add_ps(sum.vector, sq.vector);
-      
-    in2.vector = _mm_load_ps(In+8);
-    sq.vector = _mm_mul_ps(in2.vector,in2.vector);
-    sum.vector = _mm_add_ps(sum.vector, sq.vector);
-    
-    in3.vector = _mm_load_ps(In+12);
-    sq.vector = _mm_mul_ps(in3.vector,in3.vector);
-    sum.vector = _mm_add_ps(sum.vector, sq.vector);
-    
-    in0.vector = _mm_load_ps(In+16);
-    sq.vector = _mm_mul_ps(in0.vector,in0.vector);
-    sum.vector = _mm_add_ps(sum.vector, sq.vector);
-    
-    in1.vector = _mm_load_ps(In+20);
-    sq.vector = _mm_mul_ps(in1.vector,in1.vector);
-    sum.vector = _mm_add_ps(sum.vector, sq.vector);
-
-  *Out += (double)sum.floats[0] 
-    + (double)sum.floats[1] 
-    + (double)sum.floats[2]
-    + (double)sum.floats[3];
-
-    In +=24;
-
-  }
-
-  sum.floats[0] = sum.floats[1] = sum.floats[2] = sum.floats[3] = 0;
-
-  in2.vector = _mm_load_ps(In);
-  sq.vector = _mm_mul_ps(in2.vector,in2.vector);
-  sum.vector = _mm_add_ps(sum.vector, sq.vector);
-
-  in3.vector = _mm_load_ps(In+4);
-  sq.vector = _mm_mul_ps(in3.vector,in3.vector);
-  sum.vector = _mm_add_ps(sum.vector, sq.vector);
-
-  *Out += (double)sum.floats[0] 
-    + (double)sum.floats[1] 
-    + (double)sum.floats[2]
-    + (double)sum.floats[3];
-
-}
-#endif 
-
 
 /*! Sum squared routine. USE THIS ONLY FOR arrays that
  * are a multiple of 24 or 48 floats */
 
-void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_real) 
+void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_4vec) 
 {
 
   register __m128d vsum,vsum2;
@@ -1474,7 +1369,7 @@ void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_real)
   vsum2 = _mm_xor_pd(vsum2,vsum2);
   
 
-  loop_end = (n_real/24)-1;
+  loop_end = n_4vec-1;
   tmp1 = _mm_load_ps(num); num+=4;
 
   for(int site=0; site < loop_end;  site++)  {    
