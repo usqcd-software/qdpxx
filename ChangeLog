@@ -1,3 +1,9 @@
+2009-10-10 21:50  edwards
+
+	* other_libs/filedb/src/ConfDataStoreMultipleDB.h: Changed the
+	  getBinary to actually call the internal getBinary. So far, this
+	  has been unused in this wrapper class.
+
 2009-10-08 14:19  edwards
 
 	* other_libs/filedb/filehash/ffdb_page.c: Fixed printf message to
