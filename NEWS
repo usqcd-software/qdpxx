@@ -1,3 +1,7 @@
+10/13/2009 -- Robert Edwards
+	Version 1.33.1: Changes to support and odd number of threads. Small changes in
+        DB wrappers.
+
 09/11/2009 -- Robert Edwards
 	Version 1.33.0: Added new qdp functions colorCrossProduct and colorVectorContract.
         Some important bug fixes in filedb. Added some new functions to those classes.
