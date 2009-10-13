@@ -1,3 +1,17 @@
+2009-10-13 10:25  tag qdp1-33-1
+
+2009-10-13 10:25  edwards
+
+	* NEWS: Info on 1.33.1.
+
+2009-10-13 10:23  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2009-10-13 10:22  edwards
+
+	* configure.ac: Changed to 1.33.1
+
 2009-10-10 21:50  edwards
 
 	* other_libs/filedb/src/ConfDataStoreMultipleDB.h: Changed the
