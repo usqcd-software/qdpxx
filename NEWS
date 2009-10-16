@@ -1,3 +1,6 @@
+10/16/2009 -- Robert Edwards
+	Version 1.34.0: Added a Dirac-Pauli gamma matrix basis.
+
 10/13/2009 -- Robert Edwards
 	Version 1.33.1: Changes to support and odd number of threads. Small changes in
         DB wrappers.
