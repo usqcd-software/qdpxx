@@ -1,3 +1,23 @@
+2009-10-16 06:25  tag qdp1-34-0
+
+2009-10-16 06:25  edwards
+
+	* NEWS: Info on 1.34.0
+
+2009-10-16 06:25  edwards
+
+	* include/: qdp_forward.h, qdp_inner.h, qdp_newops.h, qdp_outer.h,
+	  qdp_primgamma.h, qdp_primspinmat.h, qdp_primspinvec.h,
+	  qdp_reality.h: Added a Dirac-Pauli gamma matrix basis.
+
+2009-10-16 06:23  edwards
+
+	* aclocal.m4, configure: Induced changes
+
+2009-10-16 06:23  edwards
+
+	* configure.ac: Changed to 1.34.0
+
 2009-10-13 10:25  tag qdp1-33-1
 
 2009-10-13 10:25  edwards
