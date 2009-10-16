@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.53 2007-06-10 14:32:08 edwards Exp $
+// $Id: qdp_outer.h,v 1.54 2009-10-16 10:25:00 edwards Exp $
 
 #ifndef QDP_OUTER_H
 #define QDP_OUTER_H
@@ -832,6 +832,27 @@ struct BinaryReturn<OScalar<T2>, GammaType<N>, OpMultiplyGammaType> {
   typedef OScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
 };
 
+// Gamma algebra
+template<int N, int m, class T2, class OpGammaConstDPMultiply>
+struct BinaryReturn<GammaConstDP<N,m>, OScalar<T2>, OpGammaConstDPMultiply> {
+  typedef OScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, int m, class OpMultiplyGammaConstDP>
+struct BinaryReturn<OScalar<T2>, GammaConstDP<N,m>, OpMultiplyGammaConstDP> {
+  typedef OScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, class OpGammaTypeDPMultiply>
+struct BinaryReturn<GammaTypeDP<N>, OScalar<T2>, OpGammaTypeDPMultiply> {
+  typedef OScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, class OpMultiplyGammaTypeDP>
+struct BinaryReturn<OScalar<T2>, GammaTypeDP<N>, OpMultiplyGammaTypeDP> {
+  typedef OScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
 
 
 // Local operations
@@ -1036,6 +1057,28 @@ struct BinaryReturn<GammaType<N>, OLattice<T2>, OpGammaTypeMultiply> {
 
 template<class T2, int N, class OpMultiplyGammaType>
 struct BinaryReturn<OLattice<T2>, GammaType<N>, OpMultiplyGammaType> {
+  typedef OLattice<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+
+// Gamma algebra
+template<int N, int m, class T2, class OpGammaConstDPMultiply>
+struct BinaryReturn<GammaConstDP<N,m>, OLattice<T2>, OpGammaConstDPMultiply> {
+  typedef OLattice<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, int m, class OpMultiplyGammaConstDP>
+struct BinaryReturn<OLattice<T2>, GammaConstDP<N,m>, OpMultiplyGammaConstDP> {
+  typedef OLattice<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, class OpGammaTypeDPMultiply>
+struct BinaryReturn<GammaTypeDP<N>, OLattice<T2>, OpGammaTypeDPMultiply> {
+  typedef OLattice<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, class OpMultiplyGammaTypeDP>
+struct BinaryReturn<OLattice<T2>, GammaTypeDP<N>, OpMultiplyGammaTypeDP> {
   typedef OLattice<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
 };
 

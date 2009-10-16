@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.32 2007-06-10 14:32:09 edwards Exp $
+// $Id: qdp_reality.h,v 1.33 2009-10-16 10:25:00 edwards Exp $
 
 /*! \file
  * \brief Reality
@@ -699,6 +699,29 @@ struct BinaryReturn<RScalar<T2>, GammaType<N>, OpMultiplyGammaType> {
 };
 
 
+// RScalar
+// Gamma algebra
+template<int N, int m, class T2, class OpGammaConstDPMultiply>
+struct BinaryReturn<GammaConstDP<N,m>, RScalar<T2>, OpGammaConstDPMultiply> {
+  typedef RScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, int m, class OpMultiplyGammaConstDP>
+struct BinaryReturn<RScalar<T2>, GammaConstDP<N,m>, OpMultiplyGammaConstDP> {
+  typedef RScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, class OpGammaTypeDPMultiply>
+struct BinaryReturn<GammaTypeDP<N>, RScalar<T2>, OpGammaTypeDPMultiply> {
+  typedef RScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, class OpMultiplyGammaTypeDP>
+struct BinaryReturn<RScalar<T2>, GammaTypeDP<N>, OpMultiplyGammaTypeDP> {
+  typedef RScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+
 
 // RComplex
 // Gamma algebra
@@ -719,6 +742,28 @@ struct BinaryReturn<GammaType<N>, RComplex<T2>, OpGammaTypeMultiply> {
 
 template<class T2, int N, class OpMultiplyGammaType>
 struct BinaryReturn<RComplex<T2>, GammaType<N>, OpMultiplyGammaType> {
+  typedef RComplex<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+
+// Gamma algebra
+template<int N, int m, class T2, class OpGammaConstDPMultiply>
+struct BinaryReturn<GammaConstDP<N,m>, RComplex<T2>, OpGammaConstDPMultiply> {
+  typedef RComplex<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, int m, class OpMultiplyGammaConstDP>
+struct BinaryReturn<RComplex<T2>, GammaConstDP<N,m>, OpMultiplyGammaConstDP> {
+  typedef RComplex<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, class OpGammaTypeDPMultiply>
+struct BinaryReturn<GammaTypeDP<N>, RComplex<T2>, OpGammaTypeDPMultiply> {
+  typedef RComplex<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, class OpMultiplyGammaTypeDP>
+struct BinaryReturn<RComplex<T2>, GammaTypeDP<N>, OpMultiplyGammaTypeDP> {
   typedef RComplex<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
 };
 

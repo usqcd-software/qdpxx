@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_forward.h,v 1.11 2007-06-10 14:32:08 edwards Exp $
+// $Id: qdp_forward.h,v 1.12 2009-10-16 10:25:00 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -64,6 +64,8 @@ namespace QDP
   template<int N> class GammaType;
   template<int N, int m> class GammaConst;
 
+  template<int N> class GammaTypeDP;
+  template<int N, int m> class GammaConstDP;
 
   // Outer
   template<class T> class OScalar;

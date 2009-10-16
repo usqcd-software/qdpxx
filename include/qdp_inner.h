@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp_inner.h,v 1.32 2007-06-10 14:32:08 edwards Exp $
+// $Id: qdp_inner.h,v 1.33 2009-10-16 10:25:00 edwards Exp $
 
 /*! \file
  * \brief Inner grid
@@ -858,6 +858,28 @@ struct BinaryReturn<GammaType<N>, IScalar<T2>, OpGammaTypeMultiply> {
 
 template<class T2, int N, class OpMultiplyGammaType>
 struct BinaryReturn<IScalar<T2>, GammaType<N>, OpMultiplyGammaType> {
+  typedef IScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+
+// Gamma algebra
+template<int N, int m, class T2, class OpGammaConstDPMultiply>
+struct BinaryReturn<GammaConstDP<N,m>, IScalar<T2>, OpGammaConstDPMultiply> {
+  typedef IScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, int m, class OpMultiplyGammaConstDP>
+struct BinaryReturn<IScalar<T2>, GammaConstDP<N,m>, OpMultiplyGammaConstDP> {
+  typedef IScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, class OpGammaTypeDPMultiply>
+struct BinaryReturn<GammaTypeDP<N>, IScalar<T2>, OpGammaTypeDPMultiply> {
+  typedef IScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, class OpMultiplyGammaTypeDP>
+struct BinaryReturn<IScalar<T2>, GammaTypeDP<N>, OpMultiplyGammaTypeDP> {
   typedef IScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
 };
 
