@@ -32,6 +32,8 @@
 
 	* configure.ac: Changed to 1.33.1
 
+2009-10-10 21:50  tag adat2-19-1
+
 2009-10-10 21:50  edwards
 
 	* other_libs/filedb/src/ConfDataStoreMultipleDB.h: Changed the
