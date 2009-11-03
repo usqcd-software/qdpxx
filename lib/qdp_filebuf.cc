@@ -19,6 +19,8 @@
 #include <fcntl.h>
 #include <new>
 #include <cstring>
+#include <cstdio>
+
 #include "qdp_filebuf.h"
 
 namespace QDP { 
