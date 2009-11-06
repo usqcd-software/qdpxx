@@ -38,12 +38,36 @@ int main(int argc, char **argv)
   Double dd = 0.0;
   random(aa);
 
+  // Test reading
   {
     BinaryFileReader frombinary("t_io.bin");
     read(frombinary, aa);
     read(frombinary, dd);
     read(frombinary, astring, 100);
     QDPIO::cout <<  "ReadBinary: t_io.bin:checksum = " << frombinary.getChecksum() << endl;
+    frombinary.close();
+  }
+
+  // Test seeks
+  {
+    BinaryFileReader frombinary("t_io.bin");
+    BinaryFileReader::pos_type pos = frombinary.currentPosition();
+    QDPIO::cout <<  "ReadBinary: t_io.bin: position = " << pos << endl;
+    read(frombinary, aa); 
+    QDPIO::cout <<  "ReadBinary: t_io.bin: position = " << frombinary.currentPosition() << endl; 
+    pos = frombinary.currentPosition();
+    read(frombinary, dd);
+    QDPIO::cout <<  "ReadBinary: t_io.bin: position = " << frombinary.currentPosition() << endl;
+    read(frombinary, astring, 100);
+    QDPIO::cout <<  "ReadBinary: t_io.bin: position = " << frombinary.currentPosition() << endl;
+    QDPIO::cout <<  "ReadBinary: t_io.bin:checksum = " << frombinary.getChecksum() << endl;
+
+    QDPIO::cout <<  "ReadBinary: now seek: current position = " << frombinary.currentPosition() << endl;
+    frombinary.seek(pos);
+    QDPIO::cout <<  "ReadBinary: after seeking: new current position = " << frombinary.currentPosition() << endl;
+    read(frombinary, dd);
+    QDPIO::cout <<  "ReadBinary: after reading: position = " << frombinary.currentPosition() << endl;
+    pos = frombinary.currentPosition();
     frombinary.close();
   }
 

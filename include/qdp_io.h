@@ -362,6 +362,11 @@ namespace QDP
   class BinaryReader
   {
   public:
+    typedef std::istream::pos_type pos_type;  // position in buffer
+    typedef std::istream::off_type off_type;  // offset in buffer
+
+  public:
+    //! Default constructor
     BinaryReader();
 
     /*!
@@ -411,6 +416,32 @@ namespace QDP
     //! Get the current checksum
     virtual QDPUtil::n_uint32_t getChecksum();
   
+    //! Reset the current checksum
+    virtual void resetChecksum();
+  
+    //! Current position
+    virtual pos_type currentPosition();
+
+    //! Set the current position
+    /*! The checksum is reset */
+    virtual void seek(pos_type off);
+
+    //! Set the position relative from the start
+    /*! The checksum is reset */
+    virtual void seekBegin(off_type off);
+
+    //! Set the position relative to the current position
+    /*! The checksum is reset */
+    virtual void seekRelative(off_type off);
+
+    //! Set the position relative from the end
+    /*! The checksum is reset */
+    virtual void seekEnd(off_type off);
+
+    //! Rewind object to the beginning
+    /*! The checksum is reset */
+    virtual void rewind();
+
   protected:
     //! The universal data-reader.
     /*!
@@ -705,6 +736,11 @@ namespace QDP
   class BinaryWriter
   {
   public:
+    typedef std::ostream::pos_type pos_type;  // position in buffer
+    typedef std::ostream::off_type off_type;  // offset in buffer
+
+  public:
+    //! Default constructor
     BinaryWriter();
 
     /*!
@@ -715,7 +751,7 @@ namespace QDP
     //! Flushes the buffer
     virtual void flush() = 0;
 
-    //!Checks status of the previous IO operation.
+    //! Checks status of the previous IO operation.
     /*!
       \return true if some failure occurred in previous IO operation
     */
@@ -761,6 +797,32 @@ namespace QDP
     //! Get the current checksum
     virtual QDPUtil::n_uint32_t getChecksum();
   
+    //! Reset the current checksum
+    virtual void resetChecksum();
+  
+    //! Current position
+    virtual pos_type currentPosition();
+
+    //! Set the current position
+    /*! The checksum is reset */
+    virtual void seek(pos_type off);
+
+    //! Set the position relative from the start
+    /*! The checksum is reset */
+    virtual void seekBegin(off_type off);
+
+    //! Set the position relative to the current position
+    /*! The checksum is reset */
+    virtual void seekRelative(off_type off);
+
+    //! Set the position relative from the end
+    /*! The checksum is reset */
+    virtual void seekEnd(off_type off);
+
+    //! Rewind object to the beginning
+    /*! The checksum is reset */
+    virtual void rewind();
+
   protected:
 
     //! The universal data-writer.

@@ -499,9 +499,72 @@ namespace QDP
     Internal::broadcast(chk);
     internalChecksum() = chk;
     return chk;
-    
   }
 
+  //! Reset the current checksum
+  void BinaryReader::resetChecksum()
+  {
+    internalChecksum() = 0;
+  }
+  
+  //! Current position
+  std::istream::pos_type BinaryReader::currentPosition()
+  {
+    pos_type pos;
+    if (Layout::primaryNode())
+      pos = getIstream().tellg();
+
+    Internal::broadcast(pos);
+    return pos;
+  }
+
+  //! Set the current position
+  void BinaryReader::seek(pos_type pos)
+  {
+    if (Layout::primaryNode())
+      getIstream().seekg(pos);
+
+    internalChecksum() = 0;
+  }
+
+  //! Set the position relative from the start
+  void BinaryReader::seekBegin(off_type off)
+  {
+    if (Layout::primaryNode())
+      getIstream().seekg(off, std::ios_base::beg);
+
+    internalChecksum() = 0;
+  }
+
+  //! Set the position relative to the current position
+  void BinaryReader::seekRelative(off_type off)
+  {
+    if (Layout::primaryNode())
+      getIstream().seekg(off, std::ios_base::cur);
+
+    internalChecksum() = 0;
+  }
+
+  //! Set the position relative from the end
+  void BinaryReader::seekEnd(off_type off)
+  {
+    if (Layout::primaryNode())
+      getIstream().seekg(-off, std::ios_base::end);
+
+    internalChecksum() = 0;
+  }
+
+  //! Rewind 
+  void BinaryReader::rewind()
+  {
+    if (Layout::primaryNode())
+      getIstream().seekg(0, std::ios_base::beg);
+
+    internalChecksum() = 0;
+  }
+
+
+  // Readers
   void BinaryReader::read(string& input, size_t maxBytes)
   {
     char *str = new(nothrow) char[maxBytes];
@@ -810,6 +873,7 @@ namespace QDP
   // Shutdown
   BinaryFileReader::~BinaryFileReader() {close();}
 
+
   //--------------------------------------------------------------------------------
   // Binary writer support
   BinaryWriter::BinaryWriter() {}
@@ -825,6 +889,69 @@ namespace QDP
     Internal::broadcast(s);
     return s;
   }
+
+  //! Reset the current checksum
+  void BinaryWriter::resetChecksum()
+  {
+    internalChecksum() = 0;
+  }
+  
+  //! Current position
+  std::ostream::pos_type BinaryWriter::currentPosition()
+  {
+    pos_type pos;
+    if (Layout::primaryNode())
+      pos = getOstream().tellp();
+
+    Internal::broadcast(pos);
+    return pos;
+  }
+
+  //! Set the current position
+  void BinaryWriter::seek(pos_type pos)
+  {
+    if (Layout::primaryNode())
+      getOstream().seekp(pos);
+
+    internalChecksum() = 0;
+  }
+
+  //! Set the position relative from the start
+  void BinaryWriter::seekBegin(off_type off)
+  {
+    if (Layout::primaryNode())
+      getOstream().seekp(off, std::ios_base::beg);
+
+    internalChecksum() = 0;
+  }
+
+  //! Set the position relative to the current position
+  void BinaryWriter::seekRelative(off_type off)
+  {
+    if (Layout::primaryNode())
+      getOstream().seekp(off, std::ios_base::cur);
+
+    internalChecksum() = 0;
+  }
+
+  //! Set the position relative from the end
+  void BinaryWriter::seekEnd(off_type off)
+  {
+    if (Layout::primaryNode())
+      getOstream().seekp(-off, std::ios_base::end);
+
+    internalChecksum() = 0;
+  }
+
+  //! Rewind 
+  void BinaryWriter::rewind()
+  {
+    if (Layout::primaryNode())
+      getOstream().seekp(0, std::ios_base::beg);
+
+    internalChecksum() = 0;
+  }
+
 
   void BinaryWriter::write(const string& output)
   {
