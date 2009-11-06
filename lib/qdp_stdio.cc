@@ -93,6 +93,10 @@ StandardInputStream& StandardInputStream::operator>>(unsigned long int& input)
 {
   return readPrimitive<unsigned long int>(input);
 }
+StandardInputStream& StandardInputStream::operator>>(long long& input)
+{
+  return readPrimitive<long long>(input);
+}
 StandardInputStream& StandardInputStream::operator>>(float& input)
 {
   return readPrimitive<float>(input);
@@ -220,6 +224,11 @@ StandardOutputStream& StandardOutputStream::operator<<(long int output)
 StandardOutputStream& StandardOutputStream::operator<<(unsigned long int output)
 {
   return writePrimitive<unsigned long int>(output);
+}
+
+StandardOutputStream& StandardOutputStream::operator<<(long long output)
+{
+  return writePrimitive<long long>(output);
 }
 
 StandardOutputStream& StandardOutputStream::operator<<(float output)
