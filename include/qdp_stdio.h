@@ -57,7 +57,7 @@ public:
   StandardInputStream& operator>>(unsigned short int& input);
   StandardInputStream& operator>>(long int& input);
   StandardInputStream& operator>>(unsigned long int& input);
-  StandardInputStream& operator>>(long long& input);
+  StandardInputStream& operator>>(long long int& input);
   StandardInputStream& operator>>(float& input);
   StandardInputStream& operator>>(double& input);
   StandardInputStream& operator>>(long double& input);
@@ -136,7 +136,7 @@ public:
   StandardOutputStream& operator<<(unsigned short int output);
   StandardOutputStream& operator<<(long int output);
   StandardOutputStream& operator<<(unsigned long int output);
-  StandardOutputStream& operator<<(long long output);
+  StandardOutputStream& operator<<(long long int output);
   StandardOutputStream& operator<<(float output);
   StandardOutputStream& operator<<(double output);
   StandardOutputStream& operator<<(long double output);

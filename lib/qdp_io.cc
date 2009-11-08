@@ -90,6 +90,10 @@ namespace QDP
   {
     readPrimitive<unsigned long int>(input);
   }
+  void TextReader::read(long long int& input)
+  {
+    readPrimitive<long long int>(input);
+  }
   void TextReader::read(float& input)
   {
     readPrimitive<float>(input);
@@ -150,6 +154,11 @@ namespace QDP
     return txt;
   }
   TextReader& operator>>(TextReader& txt, unsigned long int& input)
+  {
+    txt.read(input);
+    return txt;
+  }
+  TextReader& operator>>(TextReader& txt, long long int& input)
   {
     txt.read(input);
     return txt;
@@ -307,6 +316,12 @@ namespace QDP
     return txt;
   }
 
+  TextWriter& operator<<(TextWriter& txt, long long int output)
+  {
+    txt.write(output);
+    return txt;
+  }
+
   TextWriter& operator<<(TextWriter& txt, float output)
   {
     txt.write(output);
@@ -369,6 +384,11 @@ namespace QDP
   void TextWriter::write(const unsigned long int& output)
   {
     writePrimitive<unsigned long int>(output);
+  }
+
+  void TextWriter::write(const long long int& output)
+  {
+    writePrimitive<long long int>(output);
   }
 
   void TextWriter::write(const float& output)
@@ -625,6 +645,11 @@ namespace QDP
     readPrimitive<unsigned long int>(input);
   }
 
+  void BinaryReader::read(long long int& input)
+  {
+    readPrimitive<long long int>(input);
+  }
+
   void BinaryReader::read(float& input)
   {
     readPrimitive<float>(input);
@@ -715,6 +740,11 @@ namespace QDP
     bin.read(input);
   }
 
+  void read(BinaryReader& bin, long long int& input)
+  {
+    bin.read(input);
+  }
+
   void read(BinaryReader& bin, float& input)
   {
     bin.read(input);
@@ -768,6 +798,12 @@ namespace QDP
   }
 
   BinaryReader& operator>>(BinaryReader& bin, unsigned long int& input)
+  {
+    read(bin, input);
+    return bin;
+  }
+
+  BinaryReader& operator>>(BinaryReader& bin, long long int& input)
   {
     read(bin, input);
     return bin;
@@ -1001,6 +1037,11 @@ namespace QDP
     writePrimitive<unsigned long int>(output);
   }
 
+  void BinaryWriter::write(const long long int& output)
+  {
+    writePrimitive<long long int>(output);
+  }
+
   void BinaryWriter::write(const float& output)
   {
     writePrimitive<float>(output);
@@ -1108,6 +1149,11 @@ namespace QDP
     bin.write(output);
   }
 
+  void write(BinaryWriter& bin, long long int output)
+  {
+    bin.write(output);
+  }
+
   void write(BinaryWriter& bin, float output)
   {
     bin.write(output);
@@ -1167,6 +1213,12 @@ namespace QDP
   }
 
   BinaryWriter& operator<<(BinaryWriter& bin, unsigned long int output)
+  {
+    write(bin, output);
+    return bin;
+  }
+
+  BinaryWriter& operator<<(BinaryWriter& bin, long long int output)
   {
     write(bin, output);
     return bin;

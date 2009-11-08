@@ -56,6 +56,7 @@ namespace QDP
     virtual void read(unsigned short int& result);
     virtual void read(long int& result);
     virtual void read(unsigned long int& result);
+    virtual void read(long long int& result);
     virtual void read(float& result);
     virtual void read(double& result);
     virtual void read(bool& result);
@@ -84,6 +85,7 @@ namespace QDP
   TextReader& operator>>(TextReader& txt, unsigned short int& input);
   TextReader& operator>>(TextReader& txt, long int& input);
   TextReader& operator>>(TextReader& txt, unsigned long int& input);
+  TextReader& operator>>(TextReader& txt, long long int& input);
   TextReader& operator>>(TextReader& txt, float& input);
   TextReader& operator>>(TextReader& txt, double& input);
   TextReader& operator>>(TextReader& txt, bool& input);
@@ -220,6 +222,7 @@ namespace QDP
     virtual void write(const unsigned short int& output);
     virtual void write(const long int& output);
     virtual void write(const unsigned long int& output);
+    virtual void write(const long long int& output);
     virtual void write(const float& output);
     virtual void write(const double& output);
     virtual void write(const bool& output);
@@ -249,6 +252,7 @@ namespace QDP
   TextWriter& operator<<(TextWriter& txt, unsigned short int output);
   TextWriter& operator<<(TextWriter& txt, long int output);
   TextWriter& operator<<(TextWriter& txt, unsigned long int output);
+  TextWriter& operator<<(TextWriter& txt, long long int output);
   TextWriter& operator<<(TextWriter& txt, float output);
   TextWriter& operator<<(TextWriter& txt, double output);
   TextWriter& operator<<(TextWriter& txt, bool output);
@@ -409,6 +413,7 @@ namespace QDP
     virtual void read(unsigned short int& result);
     virtual void read(long int& result);
     virtual void read(unsigned long int& result);
+    virtual void read(long long int& result);
     virtual void read(float& result);
     virtual void read(double& result);
     virtual void read(bool& result);
@@ -469,6 +474,7 @@ namespace QDP
   void read(BinaryReader& bin, unsigned short int& input);
   void read(BinaryReader& bin, long int& input);
   void read(BinaryReader& bin, unsigned long int& input);
+  void read(BinaryReader& bin, long long int& input);
   void read(BinaryReader& bin, float& input);
   void read(BinaryReader& bin, double& input);
   void read(BinaryReader& bin, bool& input);
@@ -481,6 +487,7 @@ namespace QDP
   BinaryReader& operator>>(BinaryReader& bin, unsigned short int& input);
   BinaryReader& operator>>(BinaryReader& bin, long int& input);
   BinaryReader& operator>>(BinaryReader& bin, unsigned long int& input);
+  BinaryReader& operator>>(BinaryReader& bin, long long int& input);
   BinaryReader& operator>>(BinaryReader& bin, float& input);
   BinaryReader& operator>>(BinaryReader& bin, double& input);
   BinaryReader& operator>>(BinaryReader& bin, bool& input);
@@ -790,6 +797,7 @@ namespace QDP
     virtual void write(const unsigned short int& output);
     virtual void write(const long int& output);
     virtual void write(const unsigned long int& output);
+    virtual void write(const long long int& output);
     virtual void write(const float& output);
     virtual void write(const double& output);
     virtual void write(const bool& output);
@@ -852,6 +860,7 @@ namespace QDP
   void write(BinaryWriter& bin, unsigned short int output);
   void write(BinaryWriter& bin, long int output);
   void write(BinaryWriter& bin, unsigned long int output);
+  void write(BinaryWriter& bin, long long int output);
   void write(BinaryWriter& bin, float output);
   void write(BinaryWriter& bin, double output);
   void write(BinaryWriter& bin, bool output);
@@ -866,6 +875,7 @@ namespace QDP
   BinaryWriter& operator<<(BinaryWriter& bin, unsigned short int output);
   BinaryWriter& operator<<(BinaryWriter& bin, long int output);
   BinaryWriter& operator<<(BinaryWriter& bin, unsigned long int output);
+  BinaryWriter& operator<<(BinaryWriter& bin, long long int output);
   BinaryWriter& operator<<(BinaryWriter& bin, float output);
   BinaryWriter& operator<<(BinaryWriter& bin, double output);
   BinaryWriter& operator<<(BinaryWriter& bin, bool output);
