@@ -33,7 +33,7 @@ namespace QDPUtil
   {
     unsigned int j;
 
-    char char_in[8];		/* characters used in byte swapping */
+    char char_in[16];		/* characters used in byte swapping */
 
     char *in_ptr;
     double *double_ptr;		/* Pointer used in the double routines */
@@ -92,6 +92,61 @@ namespace QDPUtil
 	in_ptr[5] = char_in[2];
 	in_ptr[6] = char_in[1];
 	in_ptr[7] = char_in[0];
+      }
+    }
+    break;
+
+    case 16:  /* Long Long */
+    {
+      for(j = 0, double_ptr = (double *) ptr;
+	  j < nmemb;
+	  j++, double_ptr+=2)
+      {
+
+	in_ptr = (char *) double_ptr; /* Set the character pointer to
+					 point to the start of the double */
+
+	/*
+	 *  Assign all the byte variables to a character
+	 */
+	char_in[0] = in_ptr[0];
+	char_in[1] = in_ptr[1];
+	char_in[2] = in_ptr[2];
+	char_in[3] = in_ptr[3];
+	char_in[4] = in_ptr[4];
+	char_in[5] = in_ptr[5];
+	char_in[6] = in_ptr[6];
+	char_in[7] = in_ptr[7];
+	char_in[8] = in_ptr[8];
+	char_in[9] = in_ptr[9];
+	char_in[10] = in_ptr[10];
+	char_in[11] = in_ptr[11];
+	char_in[12] = in_ptr[12];
+	char_in[13] = in_ptr[13];
+	char_in[14] = in_ptr[14];
+	char_in[15] = in_ptr[15];
+
+	/*
+	 *  Now just swap the order
+	 */
+	in_ptr[0] = char_in[15];
+	in_ptr[1] = char_in[14];
+	in_ptr[2] = char_in[13];
+	in_ptr[3] = char_in[12];
+	in_ptr[4] = char_in[11];
+	in_ptr[5] = char_in[10];
+	in_ptr[6] = char_in[9];
+	in_ptr[7] = char_in[8];
+
+	in_ptr[8] = char_in[7];
+	in_ptr[9] = char_in[6];
+	in_ptr[10] = char_in[5];
+	in_ptr[11] = char_in[4];
+	in_ptr[12] = char_in[3];
+	in_ptr[13] = char_in[2];
+	in_ptr[14] = char_in[1];
+	in_ptr[15] = char_in[0];
+
       }
     }
     break;
