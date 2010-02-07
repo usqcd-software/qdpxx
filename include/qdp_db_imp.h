@@ -217,6 +217,23 @@ namespace QDP
     }
 
     /**
+     * Does this key exist in the store
+     * @param key a key object
+     * @return true if the answer is yes
+     */
+    bool exist(const K& key)
+    {
+      bool ret = true;
+      if (Layout::primaryNode()) 
+	ret = db.exist(key);
+
+      Internal::broadcast(ret);
+    
+      return ret;
+    }
+
+
+    /**
      * Insert a pair of data and key into the database
      * data is not ensemble, but a vector of complex.
      * @param key a key
@@ -224,7 +241,7 @@ namespace QDP
      *
      * @return 0 on successful write, -1 on failure with proper errno set
      */
-    void insert (K& key, D& data)
+    void insert (const K& key, const D& data)
     {
       int ret = 0;
       if (Layout::primaryNode()) 
@@ -239,18 +256,6 @@ namespace QDP
     }
 
 
- bool exist(K& key)
-    {
-      bool ret = true;
-      if (Layout::primaryNode()) 
-	ret = db.exist(key);
-
-      Internal::broadcast(ret);
-    
-			return ret;
-		}
-
-
     /**
      * Insert a pair of data and key into the database in string format
      * @param key a key
@@ -258,7 +263,7 @@ namespace QDP
      *
      * @return 0 on successful write, -1 on failure with proper errno set
      */
-    void insertBinary (std::string& key, std::string& data)
+    void insertBinary (const std::string& key, const std::string& data)
     {
       int ret = 0;
       if (Layout::primaryNode()) 
@@ -279,7 +284,7 @@ namespace QDP
      * @param data after the call data will be populated
      * @return 0 on success, otherwise the key not found
      */
-    int get (K& key, D& data)
+    int get (const K& key, D& data)
     {
       int ret = 0;
       if (Layout::primaryNode()) 
@@ -299,7 +304,7 @@ namespace QDP
      * @param data after the call data will be populated
      * @return 0 on success, otherwise the key not found
      */
-    int getBinary (std::string& key, std::string& data)
+    int getBinary (const std::string& key, std::string& data)
     {
       int ret = 0;
       if (Layout::primaryNode()) 

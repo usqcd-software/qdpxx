@@ -236,6 +236,13 @@ namespace QDP
     virtual void close (void) {notImplemented();}
 
     /**
+     * Does this key exist in the store
+     * @param key a key object
+     * @return true if the answer is yes
+     */
+    bool exist(const K& key) {notImplemented();}
+
+    /**
      * Insert a pair of data and key into the database
      * data is not ensemble, but a vector of complex.
      * @param key a key
@@ -243,7 +250,7 @@ namespace QDP
      *
      * @return 0 on successful write, -1 on failure with proper errno set
      */
-    void insert (K& key, D& data) {notImplemented();}
+    void insert (const K& key, const D& data) {notImplemented();}
 
     /**
      * Insert a pair of data and key into the database in string format
@@ -252,7 +259,7 @@ namespace QDP
      *
      * @return 0 on successful write, -1 on failure with proper errno set
      */
-    void insertBinary (std::string& key, std::string& data) {notImplemented();}
+    void insertBinary (const std::string& key, const std::string& data) {notImplemented();}
 
     /**
      * Get data for a given key
