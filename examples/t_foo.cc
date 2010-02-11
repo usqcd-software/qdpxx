@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
   QDP_PUSH_PROFILE(QDP::getProfileLevel());
 
-#if 1
+#if 0
   {
     LatticeReal a;
     random(a);
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
   }
 #endif
 
-#if 1
+#if 0
   {
     LatticeReal rnd1;
     random(rnd1);
@@ -234,6 +234,19 @@ int main(int argc, char *argv[])
     chi = GammaConst<Ns,Ns*Ns-1>()*psi;
   }
 #endif
+
+#if 1
+  PScalar< RComplex<double > > prod;
+  //  PSpinVector<RComplex<float>,1> psvec1, psvec2;
+
+  // prod = localInnerProduct(f_vec1, f_vec2);
+
+  PColorVector<RComplex<float>,3> pcvec1, pcvec2;
+
+  prod = localInnerProduct(pcvec1, pcvec2);
+
+#endif
+ 
   
   QDP_POP_PROFILE();
 
