@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
   }
 #endif
 
-#if 1
+#if 0
   PScalar< RComplex<double > > prod;
   //  PSpinVector<RComplex<float>,1> psvec1, psvec2;
 
@@ -247,6 +247,22 @@ int main(int argc, char *argv[])
 
 #endif
  
+#if 0
+  //  PScalar<PScalar<RComplex<double> > > prod;
+  //  PSpinVector<PColorVector<RComplex<float>,3 >,1> pc1,pc2;
+
+  LatticeStaggeredFermion pc1, pc2;
+  LatticeComplexD prod;
+  prod=localInnerProduct(pc1,pc2);
+  ComplexD prod2=innerProduct(pc1,pc2);
+#endif
+
+#if 1
+  LatticeStaggeredFermion pc1,pc2;
+  LatticeRealD lprod=localInnerProductReal(pc1,pc2);
+  RealD lpreal=innerProductReal(pc1,pc2);
+
+#endif
   
   QDP_POP_PROFILE();
 
