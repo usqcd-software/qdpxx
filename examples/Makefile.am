@@ -59,7 +59,7 @@ check_PROGRAMS = t_skeleton t_io t_mesplq t_db \
       t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
       t_cugauge t_transpose_spin t_partfile t_su3
 
-EXTRA_PROGRAMS  = t_qio_factory t_binx t_gsum
+EXTRA_PROGRAMS  = t_qio_factory t_binx t_gsum t_iprod
 
 
 if BUILD_WILSON_EXAMPLES
@@ -107,6 +107,9 @@ t_blas_DEPENDENCIES = build_lib
 
 t_gsum_SOURCES = t_gsum.cc
 t_gsum_DEPENDENCIES = build_lib
+
+t_iprod_SOURCES = t_iprod.cc
+t_iprod_DEPENDENCIES = build_lib
 
 t_cblas_SOURCES= t_cblas.cc cblas1.cc cblas1.h 
 

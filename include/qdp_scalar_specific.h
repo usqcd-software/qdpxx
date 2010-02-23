@@ -570,6 +570,86 @@ sumMulti(const QDPExpr<RHS,OScalar<T> >& s1, const Set& ss)
  * slow. Otherwise, generalized sums happen so infrequently the slow
  * version is fine.
  */
+  template<class RHS, class T>
+  struct SumMultiOLatticeThreadArgs {
+    const multi1d<int>& lat_color;
+    const QDPExpr<RHS,OLattice<T> >& s;
+    multi1d<typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t>& dest;
+    SumMultiOLatticeThreadArgs(const multi1d<int>& lat_color_,
+			       const QDPExpr<RHS,OLattice<T> >& s_,
+			       multi1d<typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t>& dest_) : lat_color(lat_color_), s(s_), dest(dest_) {}
+
+  };
+
+  template<class RHS, class T>
+  void sumMultiKernel(int lo, int hi, int my_id, SumMultiOLatticeThreadArgs<RHS,T>* a)
+  {
+    const multi1d<int>& lat_color = a->lat_color;
+    const  QDPExpr<RHS,OLattice<T> >& s=a->s;
+    multi1d<typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t>& dest=a->dest;
+    for(int i=lo; i < hi; ++i) { 
+      int j = lat_color[i];
+      (dest[my_id])[j].elem() += forEach(s, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
+    }
+  }
+
+template<class RHS, class T>
+typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t
+sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
+{
+  typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(dest[0], OpAssign(), FnSum(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  multi1d< typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t > pdest(qdpNumThreads());
+
+  // Initialize result with zero
+  for(int thread=0; thread < qdpNumThreads(); ++thread) {
+    pdest[thread].resize(ss.numSubsets());
+
+    for(int k=0; k < ss.numSubsets(); ++k) {
+      zero_rep(pdest[thread][k]);
+    }
+  }
+
+  // Loop over all sites and accumulate based on the coloring 
+  const multi1d<int>& lat_color =  ss.latticeColoring();
+  SumMultiOLatticeThreadArgs<RHS,T> args(lat_color,s1,pdest);
+
+  const int vvol = Layout::vol();
+  dispatch_to_threads(vvol, args, sumMultiKernel<RHS,T>);
+
+  for(int k=0; k< ss.numSubsets(); ++k) { 
+    dest[k] = pdest[0][k];
+  }
+
+  for(int thread=1; thread < qdpNumThreads(); thread++) { 
+    for(int k=0; k< ss.numSubsets(); ++k) { 
+      dest[k] += pdest[thread][k];
+    }
+  }
+  
+#if 0
+  for(int i=0; i < vvol; ++i) 
+  {
+    int j = lat_color[i];
+    dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());   // SINGLE NODE VERSION FOR NOW
+  }
+#endif
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return dest;
+}
+#if 0
+  // Original code
 template<class RHS, class T>
 typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t
 sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
@@ -603,7 +683,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 
   return dest;
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 // Multiple global sums 

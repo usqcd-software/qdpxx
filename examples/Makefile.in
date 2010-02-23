@@ -49,8 +49,8 @@ check_PROGRAMS = t_skeleton$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
 	t_partfile$(EXEEXT) t_su3$(EXEEXT) $(am__EXEEXT_2) \
 	$(am__EXEEXT_3)
 EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_binx$(EXEEXT) \
-	t_gsum$(EXEEXT) $(am__EXEEXT_1) nersc2ildg$(EXEEXT) \
-	test_ildglat$(EXEEXT) lhpc2ildg$(EXEEXT)
+	t_gsum$(EXEEXT) t_iprod$(EXEEXT) $(am__EXEEXT_1) \
+	nersc2ildg$(EXEEXT) test_ildglat$(EXEEXT) lhpc2ildg$(EXEEXT)
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_7 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_8 = t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3 t_spinproj t_spinproj2
 @BUILD_STAGGERED_EXAMPLES_TRUE@am__append_9 = 
@@ -154,6 +154,9 @@ am_t_io_OBJECTS = t_io.$(OBJEXT) $(am__objects_1)
 t_io_OBJECTS = $(am_t_io_OBJECTS)
 t_io_LDADD = $(LDADD)
 t_io_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am_t_iprod_OBJECTS = t_iprod.$(OBJEXT)
+t_iprod_OBJECTS = $(am_t_iprod_OBJECTS)
+t_iprod_LDADD = $(LDADD)
 am_t_linalg_OBJECTS = t_linalg.$(OBJEXT) linalg1.$(OBJEXT)
 t_linalg_OBJECTS = $(am_t_linalg_OBJECTS)
 t_linalg_LDADD = $(LDADD)
@@ -243,12 +246,12 @@ SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
 	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
 	$(t_db_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) \
 	$(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) \
-	$(t_gsum_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) \
-	$(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_partfile_SOURCES) \
-	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
-	$(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) \
-	$(t_spectrum_SOURCES) $(t_spinproj_SOURCES) \
-	$(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
+	$(t_gsum_SOURCES) $(t_io_SOURCES) $(t_iprod_SOURCES) \
+	$(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) \
+	$(t_partfile_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) \
+	$(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
+	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
+	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
 	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
 	$(test_ildglat_SOURCES)
 DIST_SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
@@ -257,12 +260,12 @@ DIST_SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
 	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
 	$(t_db_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) \
 	$(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) \
-	$(t_gsum_SOURCES) $(t_io_SOURCES) $(t_linalg_SOURCES) \
-	$(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_partfile_SOURCES) \
-	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
-	$(t_remote_SOURCES) $(t_shift_SOURCES) $(t_skeleton_SOURCES) \
-	$(t_spectrum_SOURCES) $(t_spinproj_SOURCES) \
-	$(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
+	$(t_gsum_SOURCES) $(t_io_SOURCES) $(t_iprod_SOURCES) \
+	$(t_linalg_SOURCES) $(t_mesplq_SOURCES) $(t_nersc_SOURCES) \
+	$(t_partfile_SOURCES) $(t_qdp_SOURCES) $(t_qio_SOURCES) \
+	$(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
+	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
+	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
 	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
 	$(test_ildglat_SOURCES)
 ETAGS = etags
@@ -443,6 +446,8 @@ t_blas_SOURCES = t_blas.cc blas1.cc blas1.h
 t_blas_DEPENDENCIES = build_lib
 t_gsum_SOURCES = t_gsum.cc
 t_gsum_DEPENDENCIES = build_lib
+t_iprod_SOURCES = t_iprod.cc
+t_iprod_DEPENDENCIES = build_lib
 t_cblas_SOURCES = t_cblas.cc cblas1.cc cblas1.h 
 t_db_SOURCES = t_db.cc $(HDRS)
 t_blas_g5_SOURCES = t_blas_g5.cc $(HDRS)
@@ -549,6 +554,9 @@ t_gsum$(EXEEXT): $(t_gsum_OBJECTS) $(t_gsum_DEPENDENCIES)
 t_io$(EXEEXT): $(t_io_OBJECTS) $(t_io_DEPENDENCIES) 
 	@rm -f t_io$(EXEEXT)
 	$(CXXLINK) $(t_io_OBJECTS) $(t_io_LDADD) $(LIBS)
+t_iprod$(EXEEXT): $(t_iprod_OBJECTS) $(t_iprod_DEPENDENCIES) 
+	@rm -f t_iprod$(EXEEXT)
+	$(CXXLINK) $(t_iprod_OBJECTS) $(t_iprod_LDADD) $(LIBS)
 t_linalg$(EXEEXT): $(t_linalg_OBJECTS) $(t_linalg_DEPENDENCIES) 
 	@rm -f t_linalg$(EXEEXT)
 	$(CXXLINK) $(t_linalg_OBJECTS) $(t_linalg_LDADD) $(LIBS)
@@ -636,6 +644,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_formfac.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_gsum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_iprod.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_linalg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_nersc.Po@am__quote@
