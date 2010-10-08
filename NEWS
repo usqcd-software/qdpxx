@@ -1,5 +1,5 @@
-02/11/2010 -- Balint Joo
-	Version 1.36.1: Changed a template trait so that it would become palatable to the intel compiler
+10/07/2010 -- Robert Edwards
+	Version 1.36.2: Balint speeded up sumMulti with some threading. 
 
 02/07/2010 -- Robert Edwards
 	Version 1.36.0: Changed interface of DB wrappers to use new "const" version
