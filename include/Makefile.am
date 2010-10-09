@@ -204,6 +204,7 @@ nobase_include_HEADERS = \
 		qdp_db.h \
 		qdp_db_imp.h \
 		qdp_db_stub.h \
+		qdp_map_obj_memory.h \
 		qdp_map_obj_disk.h \
 		qdp_disk_map_slice.h \
                 $(PETE_HDRS) \

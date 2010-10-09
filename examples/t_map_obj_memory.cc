@@ -2,8 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 
-#include "qdp_map_obj_disk.h"
-#include "qdp_disk_map_slice.h"
+#include "qdp_map_obj_memory.h"
 
 namespace QDP
 {
@@ -50,54 +49,6 @@ namespace QDP
     write(bin, param.spin_src);
   }
 
-
-  //****************************************************************************
-  //! Prop operator
-  struct KeyPropColorVecTimeSlice_t
-  {
-    int        t_source;      /*!< Source time slice */
-    int        t_slice;       /*!< Time slice */
-    int        colorvec_src;  /*!< Source colorvector index */
-    int        spin_src;      /*!< Source spin index */
-  };
-
-  //----------------------------------------------------------------------------
-  // Support for the keys of prop color vectors
-  bool operator<(const KeyPropColorVecTimeSlice_t& a, const KeyPropColorVecTimeSlice_t& b)
-  {
-    multi1d<int> lgaa(4);
-    lgaa[0] = a.t_source;
-    lgaa[1] = a.t_slice;
-    lgaa[2] = a.colorvec_src;
-    lgaa[3] = a.spin_src;
-
-    multi1d<int> lgbb(4);
-    lgbb[0] = b.t_source;
-    lgbb[1] = b.t_slice;
-    lgbb[2] = b.colorvec_src;
-    lgbb[3] = b.spin_src;
-
-    return (lgaa < lgbb);
-  }
-
-  //----------------------------------------------------------------------------
-  // KeyPropColorVec read
-  void read(BinaryReader& bin, KeyPropColorVecTimeSlice_t& param)
-  {
-    read(bin, param.t_source);
-    read(bin, param.t_slice);
-    read(bin, param.colorvec_src);
-    read(bin, param.spin_src);
-  }
-
-  // KeyPropColorVec write
-  void write(BinaryWriter& bin, const KeyPropColorVecTimeSlice_t& param)
-  {
-    write(bin, param.t_source);
-    write(bin, param.t_slice);
-    write(bin, param.colorvec_src);
-    write(bin, param.spin_src);
-  }
 }
 
 
@@ -110,10 +61,10 @@ void fail(int line)
   exit(1);
 }
 
-void testMapObjInsertions(MapObjectDisk<char, float>& the_map)
+void testMapObjInsertions(MapObjectMemory<char, float>& the_map)
 {
  // Open the map for 'filling'
-  QDPIO::cout << "Opening MapObjectDisk<char,float> for writing..."; 
+  QDPIO::cout << "Opening MapObjectMemory<char,float> for writing..."; 
   try { 
     the_map.openWrite();
     QDPIO::cout << "OK" << endl;
@@ -138,7 +89,7 @@ void testMapObjInsertions(MapObjectDisk<char, float>& the_map)
     }
   }
   
-  QDPIO::cout << "Closing MapObjectDisk<char,float> for writing..." ;
+  QDPIO::cout << "Closing MapObjectMemory<char,float> for writing..." ;
   try {
     the_map.openRead();
     QDPIO::cout << "... OK" << endl;
@@ -149,10 +100,10 @@ void testMapObjInsertions(MapObjectDisk<char, float>& the_map)
 }
 
 
-void testMapObjLookups(MapObjectDisk<char, float>& the_map)
+void testMapObjLookups(MapObjectMemory<char, float>& the_map)
 {
   /* Now reopen - random access */
-  QDPIO::cout << "Opening MapObjectDisk<char,float> for reading..."; 
+  QDPIO::cout << "Opening MapObjectMemory<char,float> for reading..."; 
   try {  
     the_map.openRead();
     QDPIO::cout << "OK" << endl;
@@ -249,7 +200,7 @@ void testMapObjLookups(MapObjectDisk<char, float>& the_map)
 
 
 //**********************************************************************************************
-void testMapKeyPropColorVecInsertions(MapObjectDisk<KeyPropColorVec_t, LatticeFermion>& pc_map, 
+void testMapKeyPropColorVecInsertions(MapObjectMemory<KeyPropColorVec_t, LatticeFermion>& pc_map, 
 				      const multi1d<LatticeFermion>& lf_array)
 {
   // Create the key-type
@@ -289,7 +240,7 @@ void testMapKeyPropColorVecInsertions(MapObjectDisk<KeyPropColorVec_t, LatticeFe
 }
 
 
-void testMapKeyPropColorVecLookups(MapObjectDisk<KeyPropColorVec_t, LatticeFermion>& pc_map, 
+void testMapKeyPropColorVecLookups(MapObjectMemory<KeyPropColorVec_t, LatticeFermion>& pc_map, 
 				   const multi1d<LatticeFermion>& lf_array)
 {
   // Open map in read mode
@@ -364,144 +315,6 @@ void testMapKeyPropColorVecLookups(MapObjectDisk<KeyPropColorVec_t, LatticeFermi
 }
 
 
-//**********************************************************************************************
-void testMapKeyPropColorVecInsertionsTimeSlice(MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> >& pc_map, 
-					       const multi1d<LatticeFermion>& lf_array)
-
-{
-  // Create the key-type
-  KeyPropColorVecTimeSlice_t the_key = {0,0,0,0};
-
-  // OpenMap for Writing
-  QDPIO::cout << "Opening Map<KeyPropColorVec_t,TimeSlice<LF>> for writing..." << endl;
-  try { 
-    pc_map.openWrite() ;
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) {
-    fail(__LINE__);
-  }
-
-  QDPIO::cout << "Inserting array element : ";
-  for(int i=0; i < lf_array.size(); i++) { 
-    the_key.colorvec_src = i;
-
-    try { 
-      for(int time_slice=0; time_slice < Layout::lattSize()[Nd-1]; ++time_slice)
-      {
-	the_key.t_slice = time_slice;
-
-	LatticeFermion fred = lf_array[i];
-	TimeSliceIO<LatticeFermion> time_slice_lf(fred, time_slice);
-	pc_map.insert(the_key, time_slice_lf);
-	QDPIO::cout << "i= "<< i << "  time_slice= " << time_slice << endl;
-      }
-    }
-    catch(...) {
-      fail(__LINE__);
-    }
-  }
-
-  QDPIO::cout << "Closing Map<KeyPropColorVec_t,LF> for writing..." << endl;
-  try { 
-    pc_map.openRead();
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) { 
-    fail(__LINE__);
-  }
-}
-
-
-void testMapKeyPropColorVecLookupsTimeSlice(MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> >& pc_map, 
-					    const multi1d<LatticeFermion>& lf_array)
-{
-  // Open map in read mode
-  QDPIO::cout << "Opening Map<KeyPropColorVec_t,TimeSlice<LF>> for reading.." << endl;
-
-  try { 
-    pc_map.openRead();
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) { 
-    fail(__LINE__);
-  }
-
-  QDPIO::cout << "Increasing lookup test:" << endl;
-  QDPIO::cout << "Looking up with colorvec_src = ";
-  // Create the key-type
-  KeyPropColorVecTimeSlice_t the_key = {0,0,0,0};
-
-  for(int i=0; i < lf_array.size(); i++) {
-    LatticeFermion lf_tmp;
-
-    the_key.colorvec_src=i;
-    try{
-      for(int time_slice=0; time_slice < Layout::lattSize()[Nd-1]; ++time_slice)
-      {
-	the_key.t_slice = time_slice;
-
-	TimeSliceIO<LatticeFermion> time_slice_lf(lf_tmp, time_slice);
-	pc_map.lookup(the_key, time_slice_lf);
-	QDPIO::cout << "i= "<< i << "  time_slice= " << time_slice << endl;
-      }
-    }
-    catch(...) { 
-      fail(__LINE__);
-    }
-
-    // Compare with lf_array
-    LatticeFermion diff;
-    diff = lf_tmp - lf_array[i];
-    Double diff_norm = sqrt(norm2(diff))/Double(Nc*Ns*Layout::vol());
-    if(  toDouble(diff_norm) < 1.0e-6 )  { 
-      QDPIO::cout << "." ;
-    }
-    else { 
-      QDPIO::cout << "norm2(diff)= " << diff_norm << endl;
-      fail(__LINE__);
-    }
-
-  }
-  QDPIO::cout << endl << "OK" << endl;
-
-  QDPIO::cout << "Random access lookup test" << endl;
-  QDPIO::cout << "Looking up with colorvec_src = " ;
-  // Hey DJ! Spin that disk...
-  for(int j=0; j < 100; j++) {
-    int i = random() % lf_array.size();
-    LatticeFermion lf_tmp = zero;
-    the_key.colorvec_src=i;
-    try{
-      for(int time_slice=0; time_slice < Layout::lattSize()[Nd-1]; ++time_slice)
-      {	
-	the_key.t_slice = time_slice;
-
-	TimeSliceIO<LatticeFermion> time_slice_lf(lf_tmp, time_slice);
-	pc_map.lookup(the_key, time_slice_lf);
-	QDPIO::cout << "i= "<< i << "  time_slice= " << time_slice << endl;
-      }
-    }
-    catch(...) {
-      fail(__LINE__);
-    }
-
-    // Compare with lf_array
-    LatticeFermion diff;
-    diff = lf_tmp - lf_array[i];
-    Double diff_norm = sqrt(norm2(diff))/Double(Nc*Ns*Layout::vol());
-    if(  toDouble(diff_norm) < 1.0e-6 )  { 
-      QDPIO::cout << ".";
-    }
-    else { 
-      QDPIO::cout << "norm2(diff)= " << diff_norm << endl;
-      fail(__LINE__);
-    }
-  }
-  QDPIO::cout << endl << "OK" << endl;
-}
-
-
 
 //**********************************************************************************************
 int main(int argc, char *argv[])
@@ -520,26 +333,13 @@ int main(int argc, char *argv[])
   // Params to create a map object disk
   string map_obj_file("t_map_obj_disk.mod");
 
-  // Some metadata
-  string meta_data;
-  {
-    XMLBufferWriter file_xml;
-
-    push(file_xml, "DBMetaData");
-    write(file_xml, "id", string("propElemOp"));
-    write(file_xml, "lattSize", QDP::Layout::lattSize());
-    pop(file_xml);
-
-    meta_data = file_xml.str();
-  }
-
 #if 1
   //
   // Test simple scalar
   //
   try {
     // Make a disk map object -- keys are ints, data floats
-    MapObjectDisk<char,float> made_map(map_obj_file, meta_data);
+    MapObjectMemory<char,float> made_map;
 
     testMapObjInsertions(made_map);
     testMapObjLookups(made_map);
@@ -562,7 +362,7 @@ int main(int argc, char *argv[])
       gaussian(lf_array[i]);
     }
   
-    MapObjectDisk<KeyPropColorVec_t, LatticeFermion> pc_map(map_obj_file, meta_data);
+    MapObjectMemory<KeyPropColorVec_t, LatticeFermion> pc_map;
     
     testMapKeyPropColorVecInsertions(pc_map, lf_array);
     testMapKeyPropColorVecLookups(pc_map, lf_array);
@@ -603,75 +403,6 @@ int main(int argc, char *argv[])
   }
 #endif
 
-
-#if 1
-  //
-  // Test with time slices
-  //
-  try {
-    // Make an array of LF-s filled with noise
-    multi1d<LatticeFermion> lf_array(10);
-    for(int i=0; i < lf_array.size(); i++) { 
-      gaussian(lf_array[i]);
-    }
-
-    MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> > pc_map(map_obj_file, meta_data);
-    
-    int Lt = Layout::lattSize()[Nd-1];
-    testMapKeyPropColorVecInsertionsTimeSlice(pc_map, lf_array);
-    testMapKeyPropColorVecLookupsTimeSlice(pc_map, lf_array);
-    QDPIO::cout << endl << "OK" << endl;
-
-    // Test an update 
-    QDPIO::cout << "Doing update test ..." << endl;
-    pc_map.openUpdate();
-    KeyPropColorVecTimeSlice_t the_key = {0,0,0,0};
-    the_key.colorvec_src = 5;
-    LatticeFermion f; gaussian(f);
-    QDPIO::cout << "Updating..." ;
-    for(int time_slice=0; time_slice < Lt; ++time_slice)
-    {
-      the_key.t_slice = time_slice;
-      TimeSliceIO<LatticeFermion> time_slice_f(f, time_slice);
-      pc_map.update(the_key,time_slice_f);
-    }
-    QDPIO::cout << "OK" << endl;
-
-    LatticeFermion f2;
-    QDPIO::cout << "Re-Looking up...";
-    for(int time_slice=0; time_slice < Lt; ++time_slice)
-    {
-      the_key.t_slice = time_slice;
-      TimeSliceIO<LatticeFermion> time_slice_f2(f2, time_slice);
-      pc_map.lookup(the_key,time_slice_f2);
-    }
-    QDPIO::cout << "OK" << endl;
-
-    QDPIO::cout << "Comparing..." << endl;
-    f2 -= f;
-    if( toBool( sqrt(norm2(f2)) > toDouble(1.0e-6) ) ) {
-      QDPIO::cout << "sqrt(norm2(f2))=" << sqrt(norm2(f2)) << endl;
-      fail(__LINE__);
-    }
-    else { 
-      QDPIO::cout << "OK" << endl ;
-    }
-    // Reinsert previous value
-    LatticeFermion lf5 = lf_array[5];
-    for(int time_slice=0; time_slice < Lt; ++time_slice)
-    {
-      the_key.t_slice = time_slice;
-      TimeSliceIO<LatticeFermion> time_slice_lf5(lf5, time_slice);
-      pc_map.update(the_key,time_slice_lf5);
-    }
-    pc_map.openRead();
-    testMapKeyPropColorVecLookupsTimeSlice(pc_map, lf_array);
-  }
-  catch(const std::string& e) { 
-    QDPIO::cout << "Caught: " << e << endl;
-    fail(__LINE__);
-  }
-#endif
 
   QDP_finalize();
   return 0;
