@@ -51,9 +51,9 @@ ostream& operator<<(ostream& s, const multi1d<T>& s1)
 
 //-----------------------------------------------------------------------------
 //! Constructor from a function object
-void Set::make(const SetFunc& func)
+void Set::make(const SetFunc& fun)
 {
-  int nsubset_indices = func.numSubsets();
+  int nsubset_indices = fun.numSubsets();
   const int nodeSites = Layout::sitesOnNode();
   const int nodeNumber = Layout::nodeNumber();
 
@@ -77,7 +77,7 @@ void Set::make(const SetFunc& func)
 
     int node   = Layout::nodeNumber(coord);
     int lin    = Layout::linearSiteIndex(coord);
-    int icolor = func(coord);
+    int icolor = fun(coord);
 
 #if QDP_DEBUG >= 3
     cerr<<"linear="<<linear<<" coord="<<coord<<" node="<<node<<" col="<<icolor << endl;
@@ -161,7 +161,7 @@ void Set::make(const SetFunc& func)
       start = end = -1;
     }
 
-    sub[cb].make(ordRep, start, end, &(sitetables[cb]), cb);
+    sub[cb].make(ordRep, start, end, &(sitetables[cb]), cb, this);
 
 #if QDP_DEBUG >= 2
     QDP_info("Subset(%d)",cb);

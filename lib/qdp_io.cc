@@ -585,6 +585,26 @@ namespace QDP
 
 
   // Readers
+  void BinaryReader::readDesc(string& input)
+  {
+    if (Layout::primaryNode())
+    {
+      // Get the length
+      int n;
+      readArrayPrimaryNode((char*)&n, sizeof(int), 1);
+    
+      // Read
+      char* str = new char[n];
+      readArrayPrimaryNode(str, sizeof(char), n);
+
+      input.assign(str, n);
+
+      delete[] str;
+    }
+
+    Internal::broadcast_str(input);
+  }
+
   void BinaryReader::read(string& input, size_t maxBytes)
   {
     char *str = new(nothrow) char[maxBytes];
@@ -614,52 +634,42 @@ namespace QDP
   {
     readPrimitive<char>(input);
   }
-
   void BinaryReader::read(int& input) 
   {
     readPrimitive<int>(input);
   }
-
   void BinaryReader::read(unsigned int& input)
   {
     readPrimitive<unsigned int>(input);
   }
-
   void BinaryReader::read(short int& input)
   {
     readPrimitive<short int>(input);
   }
-
   void BinaryReader::read(unsigned short int& input)
   {
     readPrimitive<unsigned short int>(input);
   }
-
   void BinaryReader::read(long int& input)
   {
     readPrimitive<long int>(input);
   }
-
   void BinaryReader::read(unsigned long int& input)
   {
     readPrimitive<unsigned long int>(input);
   }
-
   void BinaryReader::read(long long int& input)
   {
     readPrimitive<long long int>(input);
   }
-
   void BinaryReader::read(float& input)
   {
     readPrimitive<float>(input);
   }
-
   void BinaryReader::read(double& input)
   {
     readPrimitive<double>(input);
   }
-
   void BinaryReader::read(bool& input)
   {
     readPrimitive<bool>(input);
@@ -700,65 +710,59 @@ namespace QDP
 
 
   // Wrappers for read functions
+  void readDesc(BinaryReader& bin, std::string& input)
+  {
+    bin.readDesc(input);
+  }
   void read(BinaryReader& bin, std::string& input, size_t maxBytes)
   {
     bin.read(input, maxBytes);
   }
-
   void read(BinaryReader& bin, char& input)
   {
     bin.read(input);
   }
-
   void read(BinaryReader& bin, int& input)
   {
     bin.read(input);
   }
-
   void read(BinaryReader& bin, unsigned int& input)
   {
     bin.read(input);
   }
-
   void read(BinaryReader& bin, short int& input)
   {
     bin.read(input);
   }
-
   void read(BinaryReader& bin, unsigned short int& input)
   {
     bin.read(input);
   }
-
   void read(BinaryReader& bin, long int& input)
   {
     bin.read(input);
   }
-
   void read(BinaryReader& bin, unsigned long int& input)
   {
     bin.read(input);
   }
-
   void read(BinaryReader& bin, long long int& input)
   {
     bin.read(input);
   }
-
   void read(BinaryReader& bin, float& input)
   {
     bin.read(input);
   }
-
   void read(BinaryReader& bin, double& input)
   {
     bin.read(input);
   }
-
   void read(BinaryReader& bin, bool& input)
   {
     bin.read(input);
   }
+
 
   // Different bindings for read functions
   BinaryReader& operator>>(BinaryReader& bin, char& input)
@@ -989,6 +993,13 @@ namespace QDP
   }
 
 
+  void BinaryWriter::writeDesc(const string& output)
+  {
+    size_t n = output.length();
+    writePrimitive<int>(n);
+    writeArray(output.c_str(), sizeof(char), n);
+  }
+
   void BinaryWriter::write(const string& output)
   {
     // WARNING: CHECK ON NEWLINE IN CHECKSUM
@@ -1001,57 +1012,46 @@ namespace QDP
   {
     write(string(output));
   }
-
   void BinaryWriter::write(const char& output) 
   {
     writePrimitive<char>(output);
   }
-
   void BinaryWriter::write(const int& output) 
   {
     writePrimitive<int>(output);
   }
-
   void BinaryWriter::write(const unsigned int& output)
   {
     writePrimitive<unsigned int>(output);
   }
-
   void BinaryWriter::write(const short int& output)
   {
     writePrimitive<short int>(output);
   }
-
   void BinaryWriter::write(const unsigned short int& output)
   {
     writePrimitive<unsigned short int>(output);
   }
-
   void BinaryWriter::write(const long int& output)
   {
     writePrimitive<long int>(output);
   }
-
   void BinaryWriter::write(const unsigned long int& output)
   {
     writePrimitive<unsigned long int>(output);
   }
-
   void BinaryWriter::write(const long long int& output)
   {
     writePrimitive<long long int>(output);
   }
-
   void BinaryWriter::write(const float& output)
   {
     writePrimitive<float>(output);
   }
-
   void BinaryWriter::write(const double& output)
   {
     writePrimitive<double>(output);
   }
-
   void BinaryWriter::write(const bool& output)
   {
     writePrimitive<bool>(output);
@@ -1104,70 +1104,63 @@ namespace QDP
 
 
   // Wrappers for write functions
+  void writeDesc(BinaryWriter& bin, const std::string& output)
+  {
+    bin.writeDesc(output);
+  }
   void write(BinaryWriter& bin, const std::string& output)
   {
     bin.write(output);
   }
-
   void write(BinaryWriter& bin, const char* output)
   {
     bin.write(std::string(output));
   }
-
   void write(BinaryWriter& bin, char output)
   {
     bin.write(output);
   }
-
   void write(BinaryWriter& bin, int output)
   {
     bin.write(output);
   }
-
   void write(BinaryWriter& bin, unsigned int output)
   {
     bin.write(output);
   }
-
   void write(BinaryWriter& bin, short int output)
   {
     bin.write(output);
   }
-
   void write(BinaryWriter& bin, unsigned short int output)
   {
     bin.write(output);
   }
-
   void write(BinaryWriter& bin, long int output)
   {
     bin.write(output);
   }
-
   void write(BinaryWriter& bin, unsigned long int output)
   {
     bin.write(output);
   }
-
   void write(BinaryWriter& bin, long long int output)
   {
     bin.write(output);
   }
-
   void write(BinaryWriter& bin, float output)
   {
     bin.write(output);
   }
-
   void write(BinaryWriter& bin, double output)
   {
     bin.write(output);
   }
-
   void write(BinaryWriter& bin, bool output)
   {
     bin.write(output);
   }
+
 
   // Different bindings for write functions
   BinaryWriter& operator<<(BinaryWriter& bin, const std::string& output)

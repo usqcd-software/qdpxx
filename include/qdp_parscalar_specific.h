@@ -385,7 +385,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 //-----------------------------------------------------------------------------
 //! dest = (mask) ? s1 : dest
 template<class T1, class T2>
-void copymask(OSubLattice<T2,Subset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
+void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
   OLattice<T2>& dest = d.field();
   const Subset& s = d.subset();
@@ -457,11 +457,11 @@ random(OLattice<T>& d, const Subset& s)
 
 
 //! dest  = random   under a subset
-template<class T, class S>
-void random(const OSubLattice<T,S>& dd)
+template<class T>
+void random(OSubLattice<T> dd)
 {
-  OLattice<T>& d = const_cast<OSubLattice<T,S>&>(dd).field();
-  const S& s = dd.subset();
+  OLattice<T>& d = dd.field();
+  const Subset& s = dd.subset();
 
   random(d,s);
 }
@@ -495,11 +495,11 @@ void gaussian(OLattice<T>& d, const Subset& s)
 
 
 //! dest  = gaussian   under a subset
-template<class T, class S>
-void gaussian(const OSubLattice<T,S>& dd)
+template<class T>
+void gaussian(OSubLattice<T> dd)
 {
-  OLattice<T>& d = const_cast<OSubLattice<T,S>&>(dd).field();
-  const S& s = dd.subset();
+  OLattice<T>& d = dd.field();
+  const Subset& s = dd.subset();
 
   gaussian(d,s);
 }
@@ -531,11 +531,11 @@ void zero_rep(OLattice<T>& dest, const Subset& s)
 
 
 //! dest  = 0 
-template<class T, class S>
-void zero_rep(OSubLattice<T,S> dd) 
+template<class T>
+void zero_rep(OSubLattice<T> dd) 
 {
   OLattice<T>& d = dd.field();
-  const S& s = dd.subset();
+  const Subset& s = dd.subset();
   
   zero_rep(d,s);
 }
@@ -2214,6 +2214,25 @@ void write(BinaryWriter& bin, const OLattice<T>& d, const multi1d<int>& coord)
 		coord);
 }
 
+//! Write a single site of a lattice quantity
+/*! This code assumes no inner grid */
+void writeOLattice(BinaryWriter& bin, 
+		   const char* output, size_t size, size_t nmemb,
+		   const Subset& sub);
+
+//! Write a single site of a lattice quantity
+/*! Assumes no inner grid */
+template<class T>
+void write(BinaryWriter& bin, OSubLattice<T> dd)
+{
+  const OLattice<T>& d = dd.field();
+
+  writeOLattice(bin, (const char *)&(d.elem(0)), 
+		sizeof(typename WordType<T>::Type_t), 
+		sizeof(T) / sizeof(typename WordType<T>::Type_t),
+		dd.subset());
+}
+
 
 //! Read a lattice quantity
 /*! This code assumes no inner grid */
@@ -2247,17 +2266,34 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
 	       coord);
 }
 
+//! Read a single site of a lattice quantity
+/*! This code assumes no inner grid */
+void readOLattice(BinaryReader& bin, 
+		  char* input, size_t size, size_t nmemb, 
+		  const Subset& sub);
+
+//! Read a single site of a lattice quantity
+/*! Assumes no inner grid */
+template<class T>
+void read(BinaryReader& bin, OSubLattice<T> d)
+{
+  readOLattice(bin, (char *)(d.field().getF()),
+	       sizeof(typename WordType<T>::Type_t), 
+	       sizeof(T) / sizeof(typename WordType<T>::Type_t),
+	       d.subset());
+}
+
 //! Write a lattice quantity using parallel I/O (temporary solution)
 /*! This code assumes no inner grid */
 QDPUtil::n_uint32_t writeOLattice_parallel(const std::string& p, 
-		   const char* output, size_t size, size_t nmemb,
+					   const char* output, size_t size, size_t nmemb,
 					   int rw_ratio);
 
 
 //! Read a lattice quantity using parallel I/O (temporary solution)
 /*! This code assumes no inner grid */
 QDPUtil::n_uint32_t readOLattice_parallel(const std::string& p, 
-			    char* input, size_t size, size_t nmemb,
+					  char* input, size_t size, size_t nmemb,
 					  int rw_ratio);		
 
 
@@ -2269,10 +2305,10 @@ QDPUtil::n_uint32_t write_parallel(const std::string& p, const OLattice<T>& d,
 {
   QDPUtil::n_uint32_t my_checksum;
   my_checksum=writeOLattice_parallel(p, (const char *)&(d.elem(0)), 
-		sizeof(typename WordType<T>::Type_t), 
-		sizeof(T) / sizeof(typename WordType<T>::Type_t),
-				       rw_ratio);
-    return my_checksum;
+				     sizeof(typename WordType<T>::Type_t), 
+				     sizeof(T) / sizeof(typename WordType<T>::Type_t),
+				     rw_ratio);
+  return my_checksum;
 }
 
 //! Binary input using parallel I/O (temporary solution)
@@ -2284,8 +2320,8 @@ QDPUtil::n_uint32_t read_parallel(const std::string& p, OLattice<T>& d,
 
   QDPUtil::n_uint32_t my_checksum;
   my_checksum=readOLattice_parallel(p, (char *)&(d.elem(0)), 
-	       sizeof(typename WordType<T>::Type_t), 
-	       sizeof(T) / sizeof(typename WordType<T>::Type_t),
+				    sizeof(typename WordType<T>::Type_t), 
+				    sizeof(T) / sizeof(typename WordType<T>::Type_t),
 				    rw_ratio);
   return my_checksum;
 }
@@ -2322,6 +2358,44 @@ QDPUtil::n_uint32_t read_parallel(const std::string& p, OLattice<T>& d)
 
 
 
+// **************************************************************
+// Special support for slices of a lattice
+namespace LatticeTimeSliceIO 
+{
+  //! Lattice time slice reader
+  void readOLatticeSlice(BinaryReader& bin, char* data, 
+			 size_t size, size_t nmemb,
+			 int start_lexico, int stop_lexico);
+
+  void writeOLatticeSlice(BinaryWriter& bin, const char* data, 
+			  size_t size, size_t nmemb,
+			  int start_lexico, int stop_lexico);
+
+
+  // Read a time slice of a lattice quantity (time must be most slowly varying)
+  template<class T>
+  void readSlice(BinaryReader& bin, OLattice<T>& data, 
+		 int start_lexico, int stop_lexico)
+  {
+    readOLatticeSlice(bin, (char *)&(data.elem(0)), 
+		      sizeof(typename WordType<T>::Type_t), 
+		      sizeof(T) / sizeof(typename WordType<T>::Type_t),
+		      start_lexico, stop_lexico);
+  }
+
+
+  // Write a time slice of a lattice quantity (time must be most slowly varying)
+  template<class T>
+  void writeSlice(BinaryWriter& bin, const OLattice<T>& data, 
+		  int start_lexico, int stop_lexico)
+  {
+    writeOLatticeSlice(bin, (const char *)&(data.elem(0)), 
+		       sizeof(typename WordType<T>::Type_t), 
+		       sizeof(T) / sizeof(typename WordType<T>::Type_t),
+		       start_lexico, stop_lexico);
+  }
+
+} // namespace LatticeTimeSliceIO
 
 } // namespace QDP
 #endif

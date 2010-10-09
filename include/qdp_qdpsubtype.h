@@ -1,6 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_qdpsubtype.h,v 1.3 2007-06-10 14:32:09 edwards Exp $
-
 /*! @file
  * @brief QDPType after a subset
  *
@@ -19,11 +17,11 @@ namespace QDP {
  * things like lvalues - left hand side of expressions, arguments
  * to calls that modify the source (like RNG), etc.
  */
-template<class T, class C, class S> 
+template<class T, class C> 
 class QDPSubType
 {
-  //! This is a type name like OSubLattice<T,S> or OSubScalar<T,S>
-  typedef typename QDPSubTypeTrait<C,S>::Type_t CC;
+  //! This is a type name like OSubLattice<T> or OSubScalar<T>
+  typedef typename QDPSubTypeTrait<C>::Type_t CC;
 
 public:
   //! Default constructor 
@@ -293,7 +291,7 @@ private:
 
 public:
   C& field() {return static_cast<CC*>(this)->field();}
-  const S& subset() const {return static_cast<const CC*>(this)->subset();}
+  const Subset& subset() const {return static_cast<const CC*>(this)->subset();}
 
 };
 

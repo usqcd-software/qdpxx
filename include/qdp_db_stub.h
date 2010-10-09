@@ -160,7 +160,7 @@ namespace QDP
 
     /**
      * How much data and keys should be kept in memory in bytes
-     *
+o     *
      * This should be called before the open is called
      * @param max_cache_size number of bytes of data and keys should be kept
      * in memory

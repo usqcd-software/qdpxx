@@ -416,9 +416,9 @@ namespace QDP
       if (Layout::primaryNode()) 
 	ret = db.getUserdata(user_data);
       /*
-			else
-	notImplemented();
-			*/
+      else
+        notImplemented();
+      */
 
       Internal::broadcast(ret);
       if (ret != 0)
@@ -427,7 +427,7 @@ namespace QDP
 	QDP_abort(1);
       }
 			
-			Internal::broadcast_str(user_data);
+      Internal::broadcast_str(user_data);
     }
 
 

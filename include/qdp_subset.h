@@ -1,6 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_subset.h,v 1.13 2007-07-17 16:56:09 bjoo Exp $
-
 /*! @file
  * @brief Sets and subsets
  */
@@ -46,7 +44,7 @@ public:
   //! Copy constructor
   Subset(const Subset& s):
     ordRep(s.ordRep), startSite(s.startSite), endSite(s.endSite), 
-    sub_index(s.sub_index), sitetable(s.sitetable)
+    sub_index(s.sub_index), sitetable(s.sitetable), set(s.set)
     {}
 
   // Simple constructor
@@ -63,7 +61,7 @@ public:
 
 protected:
   // Simple constructor
-  void make(bool rep, int start, int end, multi1d<int>* ind, int cb);
+  void make(bool rep, int start, int end, multi1d<int>* ind, int cb, Set* set);
 
 private:
   bool ordRep;
@@ -74,6 +72,9 @@ private:
   //! Site lookup table
   multi1d<int>* sitetable;
 
+  //! Original set
+  Set *set;
+
 public:
   inline bool hasOrderedRep() const {return ordRep;}
   inline int start() const {return startSite;}
@@ -81,6 +82,9 @@ public:
 
   const multi1d<int>& siteTable() const {return *sitetable;}
   inline int numSiteTable() const {return sitetable->size();}
+
+  //! The super-set of this subset
+  const Set& getSet() const { return *set; }
 
   friend class Set;
 };

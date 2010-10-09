@@ -227,7 +227,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 //! dest = (mask) ? s1 : dest
 template<class T1, class T2> 
 void 
-copymask(OSubLattice<T2,Subset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
+copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
   OLattice<T2>& dest = d.field();
   const Subset& s = d.subset();
@@ -303,11 +303,11 @@ random(OLattice<T>& d, const Subset& s)
 
 
 //! dest  = random   under a subset
-template<class T, class S>
-void random(const OSubLattice<T,S>& dd)
+template<class T>
+void random(OSubLattice<T> dd)
 {
-  OLattice<T>& d = const_cast<OSubLattice<T,S>&>(dd).field();
-  const S& s = dd.subset();
+  OLattice<T>& d = dd.field();
+  const Subset& s = dd.subset();
 
   random(d,s);
 }
@@ -341,11 +341,11 @@ void gaussian(OLattice<T>& d, const Subset& s)
 
 
 //! dest  = gaussian   under a subset
-template<class T, class S>
-void gaussian(const OSubLattice<T,S>& dd)
+template<class T>
+void gaussian(OSubLattice<T> dd)
 {
-  OLattice<T>& d = const_cast<OSubLattice<T,S>&>(dd).field();
-  const S& s = dd.subset();
+  OLattice<T>& d = dd.field();
+  const Subset& s = dd.subset();
 
   gaussian(d,s);
 }
@@ -378,10 +378,10 @@ void zero_rep(OLattice<T>& dest, const Subset& s)
 
 //! dest  = 0 
 template<class T, class S>
-void zero_rep(OSubLattice<T,S> dd) 
+void zero_rep(OSubLattice<T> dd) 
 {
   OLattice<T>& d = dd.field();
-  const S& s = dd.subset();
+  const Subset& s = dd.subset();
   
   zero_rep(d,s);
 }
@@ -1743,6 +1743,34 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
   }
 }
 
+//! Binary output
+/*! Assumes no inner grid */
+template<class T>  
+void write(BinaryWriter& bin, OSubLattice<T> dd)
+{
+  // Single node code
+  const Subset& sub = dd.subset();
+  const Set& set    = sub.getSet();
+
+  const OLattice<T>& d = dd.field();
+
+  const multi1d<int>& lat_color = set.latticeColoring();
+  const int color = sub.color();
+
+  // Choose only this color within a lexicographic loop
+  const int vvol = Layout::vol();
+  for(int site=0; site < vvol; ++site) 
+  {
+    int i = Layout::linearSiteIndex(site);
+    if (lat_color[i] == color)
+    {
+      bin.writeArray((const char*)&(d.elem(i)), 
+		     sizeof(typename WordType<T>::Type_t), 
+		     sizeof(T) / sizeof(typename WordType<T>::Type_t));
+    }
+  }
+}
+
 //! Write a single site of a lattice quantity at coord
 /*! Assumes no inner grid */
 template<class T>  
@@ -1790,6 +1818,65 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
 		sizeof(T) / sizeof(typename WordType<T>::Type_t));
 }
 
+//! Binary input
+/*! Assumes no inner grid */
+template<class T>  
+void read(BinaryReader& bin, OSubLattice<T> dd)
+{
+  // Single node code
+  const Subset& sub = dd.subset();
+  const Set& set    = sub.getSet();
+
+  OLattice<T>& d = dd.field();
+
+  const multi1d<int>& lat_color = set.latticeColoring();
+  const int color = sub.color();
+
+  // Choose only this color within a lexicographic loop
+  const int vvol = Layout::vol();
+  for(int site=0; site < vvol; ++site) 
+  {
+    int i = Layout::linearSiteIndex(site);
+    if (lat_color[i] == color)
+    {
+      bin.readArray((char*)&(d.elem(i)), 
+		    sizeof(typename WordType<T>::Type_t), 
+		    sizeof(T) / sizeof(typename WordType<T>::Type_t));
+    }
+  }
+}
+
+// **************************************************************
+// Special support for slices of a lattice
+namespace LatticeTimeSliceIO 
+{
+  template<class T>
+  void readSlice(BinaryReader& bin, OLattice<T>& data, 
+		 int start_lexico, int stop_lexico)
+  {
+    for(int site=start_lexico; site < stop_lexico; ++site)
+    {
+      int i = Layout::linearSiteIndex(site);
+      bin.readArray((char*)&(data.elem(i)), 
+		    sizeof(typename WordType<T>::Type_t), 
+		    sizeof(T) / sizeof(typename WordType<T>::Type_t));
+    }
+  }
+
+  template<class T>
+  void writeSlice(BinaryWriter& bin, OLattice<T>& data, 
+		  int start_lexico, int stop_lexico)
+  {
+    for(int site=start_lexico; site < stop_lexico; ++site)
+    {
+      int i = Layout::linearSiteIndex(site);
+      bin.writeArray((const char*)&(data.elem(i)), 
+		     sizeof(typename WordType<T>::Type_t), 
+		     sizeof(T) / sizeof(typename WordType<T>::Type_t));
+    }
+  }
+
+} // namespace LatticeTimeSliceIO
 } // namespace QDP
 
 #endif

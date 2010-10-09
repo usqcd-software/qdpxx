@@ -114,8 +114,8 @@ public:
 
   //---------------------------------------------------------
   // Subsets
-  OSubScalar<T,Subset> operator[](const Subset& s) 
-    {return OSubScalar<T,Subset>(*this,s);}
+  OSubScalar<T> operator[](const Subset& s) const
+    {return OSubScalar<T>(*this,s);}
 
   //---------------------------------------------------------
   //! Deep copy constructor
@@ -346,8 +346,8 @@ public:
 
   //---------------------------------------------------------
   // Subsets
-  OSubLattice<T,Subset> operator[](const Subset& s) 
-    {return OSubLattice<T,Subset>(*this,s);}
+  OSubLattice<T> operator[](const Subset& s) const
+    {return OSubLattice<T>(*this,s);}
 
   //---------------------------------------------------------
   //! Copy constructor
@@ -1478,13 +1478,13 @@ void random(OScalar<T>& d);
 
 
 //! dest  = gaussian
-template<class T, class S>
-void gaussian(OSubScalar<T,S>& d)
+template<class T>
+void gaussian(OSubScalar<T>& d)
 {
   OScalar<T>  r1, r2;
 
-  random(OSubScalar<T,S>(r1,d.subset()));
-  random(OSubScalar<T,S>(r2,d.subset()));
+  random(OSubScalar<T>(r1,d.subset()));
+  random(OSubScalar<T>(r2,d.subset()));
 
   fill_gaussian(d.elem(), r1.elem(), r2.elem());
 }

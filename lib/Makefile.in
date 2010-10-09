@@ -108,10 +108,10 @@ am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc qdp_filebuf.cc \
 	qdp_stdio.cc qdp_binx.cc qdp_profile.cc qdp_strnlen.cc \
 	qdp_crc32.cc qdp_stopwatch.cc qdp_qio_strings.cc \
-	qdp_scalar_init.cc qdp_scalar_layout.cc qdp_scalar_specific.cc \
-	qdp_scalarsite_specific.cc qdp_parscalar_init.cc \
-	qdp_parscalar_layout.cc qdp_parscalar_specific.cc \
-	scalarsite_sse/qdp_scalarsite_sse.cc \
+	qdp_map_obj_disk.cc qdp_scalar_init.cc qdp_scalar_layout.cc \
+	qdp_scalar_specific.cc qdp_scalarsite_specific.cc \
+	qdp_parscalar_init.cc qdp_parscalar_layout.cc \
+	qdp_parscalar_specific.cc scalarsite_sse/qdp_scalarsite_sse.cc \
 	scalarsite_sse/qdp_scalarsite_linalg_double.cc \
 	scalarsite_sse/sse_blas_local_sumsq_double.cc \
 	scalarsite_sse/sse_blas_local_vcdot_double.cc \
@@ -179,9 +179,10 @@ am_libqdp_a_OBJECTS = qdp_map.$(OBJEXT) qdp_subset.$(OBJEXT) \
 	qdp_filebuf.$(OBJEXT) qdp_stdio.$(OBJEXT) qdp_binx.$(OBJEXT) \
 	qdp_profile.$(OBJEXT) qdp_strnlen.$(OBJEXT) \
 	qdp_crc32.$(OBJEXT) qdp_stopwatch.$(OBJEXT) \
-	qdp_qio_strings.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6) $(am__objects_7) $(am__objects_8)
+	qdp_qio_strings.$(OBJEXT) qdp_map_obj_disk.$(OBJEXT) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
+	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
+	$(am__objects_7) $(am__objects_8)
 libqdp_a_OBJECTS = $(am_libqdp_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/include
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -327,9 +328,9 @@ libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc \
 	qdp_util.cc qdp_qdpio.cc qdp_xmlio.cc qdp_filebuf.cc \
 	qdp_stdio.cc qdp_binx.cc qdp_profile.cc qdp_strnlen.cc \
 	qdp_crc32.cc qdp_stopwatch.cc qdp_qio_strings.cc \
-	$(am__append_2) $(am__append_3) $(am__append_4) \
-	$(am__append_5) $(am__append_6) $(am__append_7) \
-	$(am__append_8) $(am__append_9)
+	qdp_map_obj_disk.cc $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5) $(am__append_6) \
+	$(am__append_7) $(am__append_8) $(am__append_9)
 all: all-am
 
 .SUFFIXES:
@@ -413,6 +414,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_iogauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_layout.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_map.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_map_obj_disk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_parscalar_init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_parscalar_layout.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_parscalar_specific.Po@am__quote@

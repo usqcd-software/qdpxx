@@ -16,7 +16,7 @@ namespace QDP {
 // Traits class for returning the subset-ted class name of a outer grid class
 //-----------------------------------------------------------------------------
 
-template<class T, class S>
+template<class T>
 struct QDPSubTypeTrait {};
 
 //-----------------------------------------------------------------------------

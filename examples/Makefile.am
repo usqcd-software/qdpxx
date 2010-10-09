@@ -57,7 +57,7 @@ HDRS=examples.h
 # 
 check_PROGRAMS = t_skeleton t_io t_mesplq t_db \
       t_xml t_remote t_entry t_nersc t_shift t_exotic t_basic t_qio \
-      t_cugauge t_transpose_spin t_partfile t_su3
+      t_cugauge t_transpose_spin t_partfile t_su3 t_map_obj_disk
 
 EXTRA_PROGRAMS  = t_qio_factory t_binx t_gsum t_iprod
 
@@ -114,6 +114,7 @@ t_iprod_DEPENDENCIES = build_lib
 t_cblas_SOURCES= t_cblas.cc cblas1.cc cblas1.h 
 
 t_db_SOURCES = t_db.cc $(HDRS)
+t_map_obj_disk_SOURCES = t_map_obj_disk.cc $(HDRS)
 
 t_blas_g5_SOURCES = t_blas_g5.cc $(HDRS)
 t_blas_g5_2_SOURCES = t_blas_g5_2.cc $(HDRS)
