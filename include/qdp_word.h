@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_word.h,v 1.5 2007-06-10 14:32:09 edwards Exp $
 //
 // QDP data parallel interface
 //

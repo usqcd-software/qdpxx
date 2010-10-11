@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_map.h,v 1.4 2007-07-17 16:56:09 bjoo Exp $
 
 /*! @file
  * @brief Map classes

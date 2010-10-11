@@ -1,4 +1,3 @@
-// $Id: qdp_scalarvec_init.cc,v 1.6 2008-06-27 13:31:23 bjoo Exp $
 
 /*! @file
  * @brief Scalarvec init routines

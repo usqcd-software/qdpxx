@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_primcolormat.h,v 1.14 2007-10-06 14:59:10 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Matrix

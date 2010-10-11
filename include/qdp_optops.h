@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_optops.h,v 1.11 2007-06-10 14:32:08 edwards Exp $
 
 /*! @file
  * @brief PETE optimized operations on QDPTypes

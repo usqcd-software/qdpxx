@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_sse.h,v 1.36 2009-04-16 20:09:04 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations

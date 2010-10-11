@@ -1,4 +1,3 @@
-// $Id: qdp_scalarvec_layout.cc,v 1.14 2008-06-27 13:31:23 bjoo Exp $
 
 /*! @file
  * @brief Scalarvec layout routines

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_layout.h,v 1.8 2008-03-04 21:56:25 bjoo Exp $
 
 /*! @file
  * @brief Lattice layout

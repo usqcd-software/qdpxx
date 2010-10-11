@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_primmatrix.h,v 1.33 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Primitive Matrix

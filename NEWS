@@ -1,3 +1,10 @@
+10/10/2010 -- Robert Edwards
+        Version 1.37.1: Some more MapObject variants. Added another RNG just
+        for variety.
+
+10/07/2010 -- Robert Edwards
+        Version 1.37.0: Added MapObject and MapObjectDisk.
+
 03/08/2010 -- Balint Joo
         Version 1.36.2: Merged in devel branch, with threaded sumMulti
 

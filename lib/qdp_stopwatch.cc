@@ -1,4 +1,3 @@
-// $Id: qdp_stopwatch.cc,v 1.5 2008-06-27 13:31:23 bjoo Exp $
 /*! @file
  * @brief Timer support
  *

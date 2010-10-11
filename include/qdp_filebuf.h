@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_filebuf.h,v 1.4 2005-03-18 13:56:23 zbigniew Exp $
 
 /*! @file
  * @brief Remote file support

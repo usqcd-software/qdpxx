@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp.h,v 1.63 2009-04-17 00:46:36 bjoo Exp $
 
 /*! \file
  * \brief Primary include file for QDP

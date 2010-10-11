@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_bagel_qdp.h,v 1.9 2009-04-21 14:00:57 bjoo Exp $
 
 /*! @file
  * @brief Qcdoc optimizations

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_stdio.h,v 1.7 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Parallel version of stdio

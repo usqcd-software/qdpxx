@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_primcolorvec.h,v 1.7 2009-09-12 03:46:29 edwards Exp $
 
 /*! \file
  * \brief Primitive Color Vector

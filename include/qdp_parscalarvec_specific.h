@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_parscalarvec_specific.h,v 1.27 2007-08-16 15:49:58 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a parscalarvec platform 

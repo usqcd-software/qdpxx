@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_profile.h,v 1.7 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Print profiling info

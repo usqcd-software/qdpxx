@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_db_stub.h,v 1.14 2009-08-28 16:06:25 edwards Exp $
 /*! @file
  * @brief Stubs of wrappers over filedb
  */
@@ -160,7 +159,7 @@ namespace QDP
 
     /**
      * How much data and keys should be kept in memory in bytes
-     *
+o     *
      * This should be called before the open is called
      * @param max_cache_size number of bytes of data and keys should be kept
      * in memory

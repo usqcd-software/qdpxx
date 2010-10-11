@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_default_allocator.h,v 1.7 2007-06-10 14:32:08 edwards Exp $
 
 /*! \file
  * \brief Default memory allocator for QDP

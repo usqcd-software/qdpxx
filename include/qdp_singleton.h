@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_singleton.h,v 1.2 2005-06-27 16:01:22 bjoo Exp $
 /*! @file
  * @brief Singleton support
  */

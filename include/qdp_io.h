@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.26 2008-08-12 22:54:00 edwards Exp $
 
 /*! @file
  * @brief IO support
@@ -401,6 +400,7 @@ namespace QDP
     virtual void readArray(char* output, size_t nbytes, size_t nmemb);
 
     // Overloaded reader functions
+    virtual void readDesc(std::string& result);
 
     //! Read some max number of characters - 1 upto and excluding a newline
     /*! This is the getline function for the underlying stream */
@@ -466,6 +466,7 @@ namespace QDP
 
 
   // Telephone book of basic primitives
+  void readDesc(BinaryReader& bin, std::string& input);
   void read(BinaryReader& bin, std::string& input, size_t maxBytes);
   void read(BinaryReader& bin, char& input);
   void read(BinaryReader& bin, int& input);
@@ -514,6 +515,7 @@ namespace QDP
     for(int i=0; i < d.size(); ++i)
       read(bin, d[i]);
   }
+
 
   //! Read a binary multi1d object
   /*!
@@ -606,9 +608,9 @@ namespace QDP
     int n1;
     int n2;
     int n3;
-    read(bin, n1);    // the size is always written, even if 0
-    read(bin, n2);    // the size is always written, even if 0
     read(bin, n3);    // the size is always written, even if 0
+    read(bin, n2);    // the size is always written, even if 0
+    read(bin, n1);    // the size is always written, even if 0
 
     // Destructively resize the array
     d.resize(n3,n2,n1);
@@ -621,6 +623,7 @@ namespace QDP
 	}
 
   }
+
 
 
   //--------------------------------------------------------------------------------
@@ -782,6 +785,9 @@ namespace QDP
 
     // Overloaded Writer Functions
 
+    //! Writes a fixed length of characters like an array
+    virtual void writeDesc(const std::string& output);
+
     /*!
       A newline is appended to the written string.
     */
@@ -851,6 +857,7 @@ namespace QDP
 
 
   // Telephone book of basic primitives
+  void writeDesc(BinaryWriter& bin, const std::string& output);
   void write(BinaryWriter& bin, const std::string& output);
   void write(BinaryWriter& bin, const char* output);
   void write(BinaryWriter& bin, char output);
@@ -956,8 +963,8 @@ namespace QDP
       for(int j=0; j < d.size2(); ++j)
 	for(int k=0; k < d.size3(); ++k)
 	  write(bin, d[k][j][i]);
+   }
 
-  }
 
   //! Write a fixed number of binary multi3d element - no element count written
   template<class T>

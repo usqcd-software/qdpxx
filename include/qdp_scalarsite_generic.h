@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_scalarsite_generic.h,v 1.15 2009-04-22 19:52:47 bjoo Exp $
 
 /*! @file
  * @brief Generic optimizations

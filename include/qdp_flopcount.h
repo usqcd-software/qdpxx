@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_flopcount.h,v 1.7 2007-06-10 14:32:08 edwards Exp $
 /*! @file
  * @brief Flop counters
  *

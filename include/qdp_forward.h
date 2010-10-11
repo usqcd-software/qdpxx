@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_forward.h,v 1.12 2009-10-16 10:25:00 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP
@@ -72,8 +71,8 @@ namespace QDP
   template<class T> class OLattice;
 
   // Outer types narrowed to a subset
-  template<class T, class S> class OSubScalar;
-  template<class T, class S> class OSubLattice;
+  template<class T> class OSubScalar;
+  template<class T> class OSubLattice;
 
   // Main type
   template<class T, class C> class QDPType;
@@ -82,7 +81,7 @@ namespace QDP
   template<class T, class C> class QDPExpr;
 
   // Main type narrowed to a subset
-  template<class T, class C, class S> class QDPSubType;
+  template<class T, class C> class QDPSubType;
 
   // Simple scalar trait class
   template<class T> struct SimpleScalar;

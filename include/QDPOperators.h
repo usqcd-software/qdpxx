@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: QDPOperators.h,v 1.23 2009-09-12 03:46:29 edwards Exp $
 
 /*! @file
  * @brief Bulk of QDP operators produced by PETE

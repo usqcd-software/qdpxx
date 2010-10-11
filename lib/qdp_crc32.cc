@@ -1,4 +1,3 @@
-/* $Id: qdp_crc32.cc,v 1.3 2008-06-27 13:31:22 bjoo Exp $ */
 /* Taken from the GNU CVS distribution and
    modified for SciDAC use  C. DeTar 10/11/2003 */
 

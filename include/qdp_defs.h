@@ -1,5 +1,4 @@
 // -*- C++ -*- 
-// $Id: qdp_defs.h,v 1.14 2005-11-11 21:18:54 bjoo Exp $
 /*! file 
  * \brief QDP Typedef switcharoo 
  *

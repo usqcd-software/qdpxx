@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_profile.cc,v 1.6 2008-06-27 13:31:22 bjoo Exp $
 
 /*! @file
  * @brief Profiling info

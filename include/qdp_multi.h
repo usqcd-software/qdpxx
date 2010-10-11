@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_multi.h,v 1.20 2009-06-18 19:30:15 edwards Exp $
 
 /*! @file
  * @brief Multi-dimensional arrays

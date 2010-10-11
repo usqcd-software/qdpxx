@@ -1,6 +1,5 @@
 // -*- C++ -*-
 //
-// $Id: qdp_primgamma.h,v 1.3 2009-10-16 10:25:00 edwards Exp $
 //
 // QDP data parallel interface
 //
@@ -104,6 +103,28 @@ struct BinaryReturn<GammaType<N>, PScalar<T2>, OpGammaTypeMultiply> {
 
 template<class T2, int N, class OpMultiplyGammaType>
 struct BinaryReturn<PScalar<T2>, GammaType<N>, OpMultiplyGammaType> {
+  typedef PScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+ 
+// PScalar
+template<int N, int m, class T2, class OpGammaConstDPMultiply>
+struct BinaryReturn<GammaConstDP<N,m>, PScalar<T2>, OpGammaConstDPMultiply> {
+  typedef PScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, int m, class OpMultiplyGammaConstDP>
+struct BinaryReturn<PScalar<T2>, GammaConstDP<N,m>, OpMultiplyGammaConstDP> {
+  typedef PScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, class OpGammaTypeDPMultiply>
+struct BinaryReturn<GammaTypeDP<N>, PScalar<T2>, OpGammaTypeDPMultiply> {
+  typedef PScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
+};
+
+template<class T2, int N, class OpMultiplyGammaTypeDP>
+struct BinaryReturn<PScalar<T2>, GammaTypeDP<N>, OpMultiplyGammaTypeDP> {
   typedef PScalar<typename UnaryReturn<T2, OpUnaryPlus>::Type_t>  Type_t;
 };
 

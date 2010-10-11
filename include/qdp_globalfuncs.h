@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_globalfuncs.h,v 1.3 2007-06-10 14:32:08 edwards Exp $
 
 /*! \file
  * \brief Global functions on QDPType
