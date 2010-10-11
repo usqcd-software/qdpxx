@@ -11,7 +11,7 @@
 #ifndef QDP_RANNYU_H
 #define QDP_RANNYU_H
 
-#include <vector>
+#include "qdp.h"
 
 namespace QDP
 {
@@ -21,10 +21,10 @@ namespace QDP
     double random();
 
     //! Seed has been set by default - this allows one to override it
-    void setrn(const std::vector<int>& iseed);
+    void setrn(const multi1d<int>& iseed);
 
     //! Recover the seed
-    std::vector<int> savern();
+    multi1d<int> savern();
 
   } // namespace RANNYU
 

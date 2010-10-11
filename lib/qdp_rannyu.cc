@@ -16,9 +16,6 @@
 #include "qdp_rannyu.h"
 #include "qdp.h"
 
-#include <vector>
-#include <iostream>
-
 namespace QDP
 {
   namespace RANNYU
@@ -48,7 +45,7 @@ namespace QDP
     }
 
     //! Seed has been set by default - this allows one to override it
-    void setrn(const std::vector<int>& iseed)
+    void setrn(const multi1d<int>& iseed)
     {
       if (iseed.size() != 4)
       {
@@ -61,9 +58,9 @@ namespace QDP
     }
 
     //! Recover the seed
-    std::vector<int> savern()
+    multi1d<int> savern()
     {
-      std::vector<int> iseed(4);
+      multi1d<int> iseed(4);
 
       for(int i=0; i < 4; ++i)
 	iseed[i] = l[i];
