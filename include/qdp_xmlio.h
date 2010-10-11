@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_xmlio.h,v 1.39 2007-06-12 02:53:40 edwards Exp $
 
 /*! @file
  * @brief XML IO support

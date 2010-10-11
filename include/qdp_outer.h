@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_outer.h,v 1.54 2009-10-16 10:25:00 edwards Exp $
 
 #ifndef QDP_OUTER_H
 #define QDP_OUTER_H

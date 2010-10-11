@@ -1,4 +1,3 @@
-// $Id: qdp_scalarvecsite_specific.cc,v 1.16 2008-06-27 13:31:23 bjoo Exp $
 
 /*! @file
  * @brief Scalarvec-like architecture specific routines

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_forward.h,v 1.12 2009-10-16 10:25:00 edwards Exp $
 
 /*! @file
  * @brief Forward declarations for QDP

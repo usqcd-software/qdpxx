@@ -1,4 +1,3 @@
-// $Id: qdp_parscalarvec_layout.cc,v 1.11 2008-06-27 13:31:22 bjoo Exp $
 
 /*! @file
  * @brief Parscalarvec layout routines

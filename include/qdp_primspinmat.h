@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_primspinmat.h,v 1.15 2009-10-16 10:25:00 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Matrix

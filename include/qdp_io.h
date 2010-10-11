@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_io.h,v 1.26 2008-08-12 22:54:00 edwards Exp $
 
 /*! @file
  * @brief IO support

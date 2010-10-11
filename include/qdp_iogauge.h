@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_iogauge.h,v 1.6 2007-06-10 14:32:08 edwards Exp $
 
 /*! @file
  * @brief NERSC Gauge Connection Archive gauge support

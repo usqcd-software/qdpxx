@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_allocator.h,v 1.5 2007-06-10 14:32:08 edwards Exp $
 
 /*! \file
  * \brief Catch-alls for all memory allocators

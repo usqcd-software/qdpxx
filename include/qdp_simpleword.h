@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_simpleword.h,v 1.14 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief QDP Operations on built-in types

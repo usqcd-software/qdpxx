@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_binx.h,v 1.6 2007-06-10 14:32:08 edwards Exp $
 
 /*! @file
  * @brief IO support with BinX 

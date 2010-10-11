@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_sse.h,v 1.21 2007-08-20 17:08:14 uid4709 Exp $
 
 /*! @file
  * @brief Intel SSE optimizations

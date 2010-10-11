@@ -1,4 +1,3 @@
-// $Id: qdp_parscalarvec_specific.cc,v 1.17 2008-08-12 22:54:01 edwards Exp $
 
 /*! @file
  * @brief Parscalarvec specific routines

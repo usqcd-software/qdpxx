@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_precision.h,v 1.5 2004-08-09 21:57:40 edwards Exp $
 
 /*! \file
  * \brief PRECISION ISSUES

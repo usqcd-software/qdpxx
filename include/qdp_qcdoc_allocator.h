@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_qcdoc_allocator.h,v 1.8 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief QCDOC memory allocator

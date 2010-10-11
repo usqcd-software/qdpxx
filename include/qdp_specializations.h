@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_specializations.h,v 1.11 2007-06-10 14:32:09 edwards Exp $
 //
 // QDP data parallel interface
 //

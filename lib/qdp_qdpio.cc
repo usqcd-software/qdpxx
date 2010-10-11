@@ -1,4 +1,3 @@
-// $Id: qdp_qdpio.cc,v 1.32 2009-08-28 14:59:31 colin Exp $
 //
 /*! @file
  * @brief IO support via QIO

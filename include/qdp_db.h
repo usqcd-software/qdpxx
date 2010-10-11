@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_db.h,v 1.5 2009-04-17 04:09:12 edwards Exp $
 /*! @file
  * @brief Support for filedb
  */

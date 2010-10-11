@@ -185,6 +185,7 @@ nobase_include_HEADERS = \
 		qdp_qdpsubtype.h \
 		qdp_qdptype.h \
 		qdp_random.h \
+		qdp_rannyu.h \
 		qdp_reality.h \
 		qdp_simpleword.h \
 		qdp_specializations.h \

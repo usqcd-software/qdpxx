@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_traits.h,v 1.12 2009-02-11 20:50:45 bjoo Exp $
 
 /*! @file
  * @brief Traits classes

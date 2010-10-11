@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_stream_io.h,v 1.1 2007-06-10 14:32:09 edwards Exp $
 /*! @file
  * @brief Stream IO support. Read/write QDP types to an object held in memory
  */

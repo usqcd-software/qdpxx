@@ -1,5 +1,4 @@
 //
-//  $Id: qdp_byteorder.cc,v 1.6 2008-06-27 13:31:22 bjoo Exp $
 //
 //  Determine the byte order of a platform
 //

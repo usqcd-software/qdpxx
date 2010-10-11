@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_byteorder.h,v 1.1 2005-07-25 17:07:14 edwards Exp $
 
 /*! \file
  * \brief Byte manipulation

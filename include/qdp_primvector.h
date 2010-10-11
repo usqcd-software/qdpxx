@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_primvector.h,v 1.26 2009-09-12 03:46:29 edwards Exp $
 
 /*! \file
  * \brief Primitive Vector

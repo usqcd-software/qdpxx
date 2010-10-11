@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_db_stub.h,v 1.14 2009-08-28 16:06:25 edwards Exp $
 /*! @file
  * @brief Stubs of wrappers over filedb
  */

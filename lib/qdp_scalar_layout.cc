@@ -1,4 +1,3 @@
-// $Id: qdp_scalar_layout.cc,v 1.19 2008-06-27 13:31:22 bjoo Exp $
 
 /*! @file
  * @brief Scalar layout routines

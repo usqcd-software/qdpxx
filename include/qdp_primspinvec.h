@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_primspinvec.h,v 1.10 2009-10-16 10:25:00 edwards Exp $
 
 /*! \file
  * \brief Primitive Spin Vector

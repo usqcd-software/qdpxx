@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_primseed.h,v 1.12 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Primitive Seed

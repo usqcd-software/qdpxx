@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_params.h,v 1.3 2007-06-10 14:32:09 edwards Exp $
 
 /*! @file
  * @brief Fundamental parameters

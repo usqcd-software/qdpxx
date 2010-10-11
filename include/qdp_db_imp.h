@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_db_imp.h,v 1.10 2009-09-14 20:17:06 jbulava Exp $
 /*! @file
  * @brief Support for filedb
  */

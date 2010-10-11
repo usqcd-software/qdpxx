@@ -1,6 +1,5 @@
 // -*- C++ -*-
 //
-// $Id: qdp_primgamma.h,v 1.3 2009-10-16 10:25:00 edwards Exp $
 //
 // QDP data parallel interface
 //

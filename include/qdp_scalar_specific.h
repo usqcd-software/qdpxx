@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_scalar_specific.h,v 1.38 2009-07-14 20:08:41 bjoo Exp $
 //
 // QDP data parallel interface
 //

@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvec_specific.h,v 1.25 2007-08-16 15:49:58 edwards Exp $
 
 /*! @file
  * @brief Outer/inner lattice routines specific to a scalarvec platform 

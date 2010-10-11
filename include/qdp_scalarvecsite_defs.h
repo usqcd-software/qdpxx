@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_scalarvecsite_defs.h,v 1.14 2007-06-10 14:32:09 edwards Exp $
 
 /*! \file
  * \brief Type definitions

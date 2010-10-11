@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_init.h,v 1.2 2007-06-10 14:32:08 edwards Exp $
 
 /*! \file
  * \brief Routines for top level QDP management

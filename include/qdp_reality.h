@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_reality.h,v 1.33 2009-10-16 10:25:00 edwards Exp $
 
 /*! \file
  * \brief Reality

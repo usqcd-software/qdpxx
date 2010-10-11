@@ -1,4 +1,3 @@
-// $Id: qdp_qcdoc_allocator.cc,v 1.8 2008-06-27 13:31:22 bjoo Exp $
 /*! @file
  * @brief QCDOC memory allocator
  */

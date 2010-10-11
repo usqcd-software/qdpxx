@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_parscalar_specific.h,v 1.54 2009-07-15 17:02:07 bjoo Exp $
 
 /*! @file
  * @brief Outer lattice routines specific to a parallel platform with scalar layout

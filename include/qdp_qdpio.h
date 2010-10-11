@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_qdpio.h,v 1.41 2009-08-28 15:00:04 colin Exp $
 
 /*! @file
  * @brief IO support via QIO

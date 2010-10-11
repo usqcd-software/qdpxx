@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: qdp_primscalar.h,v 1.30 2009-09-12 03:46:29 edwards Exp $
 
 /*! \file
  * \brief Primitive Scalar
