@@ -942,6 +942,102 @@ public:
       return *this;
     }
 
+  //! Return ref to an element
+  T& operator()(int i)
+    {
+      if (nz.size() != 1)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i];
+    }
+
+  //! Return const ref to an element
+  const T& operator()(int i) const
+    {
+      if (nz.size() != 1)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i];
+    }
+
+  //! Return ref to an element
+  T& operator()(int j, int i)
+    {
+      if (nz.size() != 2)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i+nz[0]*j];
+    }
+
+  //! Return const ref to an element
+  const T& operator()(int j, int i) const
+    {
+      if (nz.size() != 2)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i+nz[0]*j];
+    }
+
+  //! Return ref to an element
+  T& operator()(int k, int j, int i) 
+    {
+      if (nz.size() != 3)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i+nz[0]*(j+nz[1]*(k))];
+    }
+
+  //! Return const ref to an element
+  const T& operator()(int k, int j, int i) const
+    {
+      if (nz.size() != 3)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i+nz[0]*(j+nz[1]*(k))];
+    }
+
+  //! Return ref to an element
+  T& operator()(int l, int k, int j, int i) 
+    {
+      if (nz.size() != 4)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i+nz[0]*(j+nz[1]*(k+nz[2]*l))];
+    }
+
+  //! Return const ref to an element
+  const T& operator()(int l, int k, int j, int i) const
+    {
+      if (nz.size() != 4)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i+nz[0]*(j+nz[1]*(k+nz[2]*l))];
+    }
+
   //! Return ref to an element via indices packed in a multi1d array
   T& operator[](const multi1d<int>& ind)
     {
