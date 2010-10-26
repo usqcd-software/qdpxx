@@ -32,9 +32,6 @@ void QDP_initialize(int *argc, char ***argv)
 
   isInit = true;
 
-  // initialize remote file service (QIO)
-  QDPUtil::RemoteFileInit("qcdi01", false);
-
   //
   // add qmt inilisisation
   //
@@ -148,9 +145,6 @@ void QDP_finalize()
 #endif 
 
   printProfile();
-
-  // shutdown remote file service (QIO)
-  QDPUtil::RemoteFileShutdown();
 
   isInit = false;
 }

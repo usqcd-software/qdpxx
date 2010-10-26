@@ -24,9 +24,6 @@ void QDP_initialize(int *argc, char ***argv)
 
   isInit = true;
 
-  // initialize remote file service (QIO)
-  QDPUtil::RemoteFileInit("qcdi01", false);
-
   // initialize the global streams
   QDPIO::cin.init(&std::cin);
   QDPIO::cout.init(&std::cout);
@@ -84,9 +81,6 @@ bool QDP_isInitialized() {return isInit;}
 void QDP_finalize()
 {
   printProfile();
-
-  // shutdown remote file service (QIO)
-  QDPUtil::RemoteFileShutdown();
 
   isInit = false;
 }

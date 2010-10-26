@@ -327,7 +327,6 @@ nobase_include_HEADERS = \
 		qdp_inner.h \
 		qdp_init.h \
 		qdp_io.h \
-		qdp_binx.h \
 		qdp_stdio.h \
 		qdp_layout.h \
 		qdp_map.h \
@@ -378,7 +377,6 @@ nobase_include_HEADERS = \
 	 	qdp_defs.h \
 		qdp_scalarsite_defs.h \
 		qdp_scalarvecsite_defs.h \
-                qdp_filebuf.h \
 		qdp_strnlen.h \
 		qdp_db.h \
 		qdp_db_imp.h \

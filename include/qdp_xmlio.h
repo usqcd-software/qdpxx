@@ -129,10 +129,10 @@ namespace QDP
 
 
     //! Return the entire contents of the Reader as a stream
-    void print(ostream& is);
+    void print(std::ostream& is);
         
     //! Print the current context
-    void printCurrentContext(ostream& is);
+    void printCurrentContext(std::ostream& is);
         
     //! Count the number of occurances from the Xpath query
     int count(const std::string& xpath);
@@ -699,10 +699,10 @@ namespace QDP
 
   private:
     // The output stream...
-    ostringstream output_stream;
+    std::ostringstream output_stream;
 
     // The function that supplies the stream to the parent...
-    ostream& getOstream(void) {return output_stream;}
+    std::ostream& getOstream(void) {return output_stream;}
   };
 
 
@@ -755,12 +755,8 @@ namespace QDP
     void close();
         
   private:
-#if defined(USE_REMOTE_QIO)
-    QDPUtil::RemoteOutputFileStream output_stream;
-#else
-    ofstream output_stream;
-#endif
-    ostream& getOstream(void) {return output_stream;}
+    std::ofstream output_stream;
+    std::ostream& getOstream(void) {return output_stream;}
   };
 
 

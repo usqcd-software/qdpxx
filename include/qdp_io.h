@@ -8,6 +8,7 @@
 #define QDP_IO_H
 
 #include <string>
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include "qdp_byteorder.h"
@@ -176,11 +177,7 @@ namespace QDP
     std::istream& getIstream() {return f;}
 
   private:
-#if defined(USE_REMOTE_QIO)
-    QDPUtil::RemoteInputFileStream f;
-#else
     std::ifstream f;
-#endif
   };
 
 
@@ -344,11 +341,7 @@ namespace QDP
     std::ostream& getOstream() {return f;}
 
   private:
-#if defined(USE_REMOTE_QIO)
-    QDPUtil::RemoteOutputFileStream f;
-#else
     std::ofstream f;
-#endif
   };
 
 
@@ -369,19 +362,10 @@ namespace QDP
     typedef std::istream::off_type off_type;  // offset in buffer
 
   public:
-    //! Default constructor
-    BinaryReader();
-
     /*!
       Shutdown the object
     */
     virtual ~BinaryReader() {}
-
-    //!Checks status of the previous IO operation.
-    /*!
-      \return true if some failure occurred in the previous IO operation
-    */
-    virtual bool fail();
 
     //! Read data on the primary node only
     /*!
@@ -417,6 +401,12 @@ namespace QDP
     virtual void read(float& result);
     virtual void read(double& result);
     virtual void read(bool& result);
+
+    //!Checks status of the previous IO operation.
+    /*!
+      \return true if some failure occurred in the previous IO operation
+    */
+    virtual bool fail();
 
     //! Get the current checksum
     virtual QDPUtil::n_uint32_t getChecksum();
@@ -721,12 +711,7 @@ namespace QDP
   private:
     //! Checksum
     QDPUtil::n_uint32_t checksum;
-
-#if defined(USE_REMOTE_QIO)
-    QDPUtil::RemoteInputFileStream f;
-#else
     std::ifstream f;
-#endif
   };
 
 
@@ -760,12 +745,6 @@ namespace QDP
 
     //! Flushes the buffer
     virtual void flush() = 0;
-
-    //! Checks status of the previous IO operation.
-    /*!
-      \return true if some failure occurred in previous IO operation
-    */
-    virtual bool fail();
 
     //! Write data on the primary node only
     /*!
@@ -807,6 +786,12 @@ namespace QDP
     virtual void write(const float& output);
     virtual void write(const double& output);
     virtual void write(const bool& output);
+
+    //! Checks status of the previous IO operation.
+    /*!
+      \return true if some failure occurred in previous IO operation
+    */
+    virtual bool fail();
 
     //! Get the current checksum
     virtual QDPUtil::n_uint32_t getChecksum();
@@ -1044,7 +1029,7 @@ namespace QDP
   class BinaryFileWriter : public BinaryWriter
   {
   public:
-    BinaryFileWriter();
+    explicit BinaryFileWriter();
 
     /*!
       Closes the last file opened
@@ -1085,13 +1070,197 @@ namespace QDP
   private:
     //! Checksum
     QDPUtil::n_uint32_t checksum;
-
-#if defined(USE_REMOTE_QIO)
-    QDPUtil::RemoteOutputFileStream f;
-#else
     std::ofstream f;
-#endif
   };
+
+
+  //--------------------------------------------------------------------------------
+  //!  Binary input/output base class
+  /*!
+    This class is used to read/write data from a binary object. The data in the file
+    is assumed to be big-endian. If the host nachine is little-endian, the data
+    is byte-swapped. 
+  
+    The read methods are also wrapped by externally defined functions
+    and >> operators,   
+  */
+  class BinaryReaderWriter : public BinaryReader, public BinaryWriter
+  {
+  public:
+    typedef std::iostream::pos_type pos_type;  // position in buffer
+    typedef std::iostream::off_type off_type;  // offset in buffer
+
+  public:
+    /*!
+      Shutdown the object
+    */
+    virtual ~BinaryReaderWriter() {}
+
+    //!Checks status of the previous IO operation.
+    /*!
+      \return true if some failure occurred in the previous IO operation
+    */
+    virtual bool fail();
+
+    //! Get the current checksum
+    virtual QDPUtil::n_uint32_t getChecksum();
+  
+    //! Reset the current checksum
+    virtual void resetChecksum();
+  
+    //! Current position
+    virtual pos_type currentPosition();
+
+    //! Set the current position
+    /*! The checksum is reset */
+    virtual void seek(pos_type off);
+
+    //! Set the position relative from the start
+    /*! The checksum is reset */
+    virtual void seekBegin(off_type off);
+
+    //! Set the position relative to the current position
+    /*! The checksum is reset */
+    virtual void seekRelative(off_type off);
+
+    //! Set the position relative from the end
+    /*! The checksum is reset */
+    virtual void seekEnd(off_type off);
+
+    //! Rewind object to the beginning
+    /*! The checksum is reset */
+    virtual void rewind();
+
+
+  protected:
+    //! Get the current checksum to modify
+    virtual QDPUtil::n_uint32_t& internalChecksum() = 0;
+  
+    //! Get the internal input stream
+    virtual std::istream& getIstream() = 0;
+  
+    //! Get the internal output stream
+    virtual std::ostream& getOstream() = 0;
+  
+    //! Get the internal input/output stream
+    virtual std::iostream& getIOstream() = 0;
+  };
+
+
+  //--------------------------------------------------------------------------------
+  //!  Binary buffer input/ouput class
+  /*!
+    This class is used to read data from a binary buffer.
+  
+    The read methods are also wrapped by externally defined functions
+    and >> operators,   
+  */
+  class BinaryBufferReaderWriter : public BinaryReaderWriter
+  {
+  public:
+    BinaryBufferReaderWriter();
+
+    //! Construct from a string
+    explicit BinaryBufferReaderWriter(const std::string& s);
+
+    //! Closes the buffer
+    ~BinaryBufferReaderWriter();
+
+    //! Construct from a string
+    void open(const std::string& s);
+
+    //! Return entire buffer as a string
+    std::string str() const;
+        
+    //! Flushes the buffer
+    void flush() {}
+
+    //! Clear the buffer
+    void clear();
+
+  protected:
+    //! Get the current checksum to modify
+    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
+  
+    //! Get the internal input stream
+    std::istream& getIstream() {return f;}
+
+    //! Get the internal output stream
+    std::ostream& getOstream() {return f;}
+
+    //! Get the internal inpu/output stream
+    std::iostream& getIOstream() {return f;}
+
+  private:
+    //! Checksum
+    QDPUtil::n_uint32_t checksum;
+    std::stringstream f;
+  };
+
+
+  //--------------------------------------------------------------------------------
+  //!  Binary file input/output class
+  /*!
+    This class is used to read data from a binary file. The data in the file
+    is assumed to be big-endian. If the host machine is little-endian, the data
+    is byte-swapped. All nodes end up with the same data
+  
+    The read methods are also wrapped by externally defined functions
+    and >> operators,   
+  */
+  class BinaryFileReaderWriter : public BinaryReaderWriter
+  {
+  public:
+    BinaryFileReaderWriter();
+
+    /*!
+      Closes the last file opened
+    */
+    ~BinaryFileReaderWriter();
+
+    /*!
+      Opens a file for reading.
+      \param p The name of the file
+    */
+    explicit BinaryFileReaderWriter(const std::string& p);
+
+    //! Queries whether the file is open
+    /*!
+      \return true if the file is open; false otherwise.
+    */
+    bool is_open();
+
+    //! Opens a file for reading.
+    /*!
+      \param p The name of the file
+    */
+    void open(const std::string& p);
+
+    //! Closes the last file opened
+    void close();
+
+    //! Flushes the buffer
+    void flush();
+
+  protected:
+    //! Get the current checksum to modify
+    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
+  
+    //! Get the internal input stream
+    std::istream& getIstream() {return f;}
+
+    //! Get the internal output stream
+    std::ostream& getOstream() {return f;}
+
+    //! Get the internal inpu/output stream
+    std::iostream& getIOstream() {return f;}
+
+  private:
+    //! Checksum
+    QDPUtil::n_uint32_t checksum;
+    std::fstream f;
+  };
+
 
   /*! @} */   // end of group io
 } // namespace QDP

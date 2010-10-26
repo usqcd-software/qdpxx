@@ -495,8 +495,6 @@ namespace QDP
 
   //--------------------------------------------------------------------------------
   // Binary reader support
-  BinaryReader::BinaryReader() {}
-
   // Propagate status to all nodes
   bool BinaryReader::fail()
   {
@@ -1327,5 +1325,186 @@ namespace QDP
 
   // Close the file
   BinaryFileWriter::~BinaryFileWriter() {close();}
+
+
+  //--------------------------------------------------------------------------------
+  // Binary reader/writer support
+  // Propagate status to all nodes
+  bool BinaryReaderWriter::fail()
+  {
+    bool s;
+
+    if (Layout::primaryNode()) 
+      s = getIOstream().fail();
+
+    Internal::broadcast(s);
+    return s;
+  }
+
+  // Get the checksum from the binary node to all nodes
+  QDPUtil::n_uint32_t BinaryReaderWriter::getChecksum()
+  {
+    // Keep the checksum in sync on all nodes. This only really
+    // is needed if nodes do detailed checks on the checksums
+    QDPUtil::n_uint32_t chk = internalChecksum();
+    Internal::broadcast(chk);
+    internalChecksum() = chk;
+    return chk;
+  }
+
+  //! Reset the current checksum
+  void BinaryReaderWriter::resetChecksum()
+  {
+    internalChecksum() = 0;
+  }
+  
+  //! Current position
+  std::istream::pos_type BinaryReaderWriter::currentPosition()
+  {
+    pos_type pos;
+    if (Layout::primaryNode())
+      pos = getIOstream().tellg();
+
+    Internal::broadcast(pos);
+    return pos;
+  }
+
+  //! Set the current position
+  void BinaryReaderWriter::seek(pos_type pos)
+  {
+    if (Layout::primaryNode())
+      getIOstream().seekg(pos);
+
+    internalChecksum() = 0;
+  }
+
+  //! Set the position relative from the start
+  void BinaryReaderWriter::seekBegin(off_type off)
+  {
+    if (Layout::primaryNode())
+      getIOstream().seekg(off, std::ios_base::beg);
+
+    internalChecksum() = 0;
+  }
+
+  //! Set the position relative to the current position
+  void BinaryReaderWriter::seekRelative(off_type off)
+  {
+    if (Layout::primaryNode())
+      getIOstream().seekg(off, std::ios_base::cur);
+
+    internalChecksum() = 0;
+  }
+
+  //! Set the position relative from the end
+  void BinaryReaderWriter::seekEnd(off_type off)
+  {
+    if (Layout::primaryNode())
+      getIOstream().seekg(-off, std::ios_base::end);
+
+    internalChecksum() = 0;
+  }
+
+  //! Rewind 
+  void BinaryReaderWriter::rewind()
+  {
+    if (Layout::primaryNode())
+      getIOstream().seekg(0, std::ios_base::beg);
+
+    internalChecksum() = 0;
+  }
+
+
+  //--------------------------------------------------------------------------------
+  // Binary buffer reader/writer support
+  BinaryBufferReaderWriter::BinaryBufferReaderWriter() {checksum=0;}
+
+  // Construct from a string
+  BinaryBufferReaderWriter::BinaryBufferReaderWriter(const std::string& s) {open(s);}
+
+  BinaryBufferReaderWriter::~BinaryBufferReaderWriter() {}
+
+  void BinaryBufferReaderWriter::open(const std::string& s)
+  {
+    if (Layout::primaryNode())
+      f.str(s);
+  }
+
+  // Output the stream
+  std::string BinaryBufferReaderWriter::str() const
+  {
+    std::string s;
+    
+    if (Layout::primaryNode()) 
+      s = f.str();
+    
+    return s;
+  }
+
+  // Clear the stream
+  void BinaryBufferReaderWriter::clear()
+  {
+    if (Layout::primaryNode()) 
+      f.clear();
+
+    checksum = 0;
+  }
+
+
+
+  //--------------------------------------------------------------------------------
+  // Binary reader/writer support
+  BinaryFileReaderWriter::BinaryFileReaderWriter() {checksum=0;}
+
+  BinaryFileReaderWriter::BinaryFileReaderWriter(const std::string& p) {checksum=0;open(p);}
+
+  void BinaryFileReaderWriter::open(const std::string& p) 
+  {
+    checksum = 0;
+    if (Layout::primaryNode()) 
+      f.open(p.c_str(),std::ifstream::in | std::ifstream::binary);
+
+    if (! is_open())
+      QDP_error_exit("BinaryFileReaderWriter: error opening file %s",p.c_str());
+  }
+
+  // Close
+  void BinaryFileReaderWriter::close()
+  {
+    if (is_open())
+    {
+      if (Layout::primaryNode()) 
+	f.close();
+    }
+  }
+
+  // Propagate status to all nodes
+  bool BinaryFileReaderWriter::is_open()
+  {
+    bool s = QDP_isInitialized();
+
+    if (s)
+    {
+      if (Layout::primaryNode())
+	s = f.is_open();
+
+      Internal::broadcast(s);
+    }
+
+    return s;
+  }
+
+  void BinaryFileReaderWriter::flush()
+  {
+    if (is_open()) 
+    {
+      if (Layout::primaryNode()) 
+	f.flush();
+    }
+  }
+
+  // Shutdown
+  BinaryFileReaderWriter::~BinaryFileReaderWriter() {close();}
+
 
 } // namespace QDP
