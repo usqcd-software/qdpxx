@@ -128,7 +128,7 @@ namespace QDP
     mutable MapType_t src_map;
     
     //! The parameters
-    const std::string filename;
+    std::string filename;
     
     //! Metadata
     std::string user_data;
