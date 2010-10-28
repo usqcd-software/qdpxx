@@ -38,7 +38,7 @@ namespace QDP
  
     //! Other accessor
     virtual
-    int get(const K& key, V& val) = 0;
+    int get(const K& key, V& val) const = 0;
 
     //! Flush out state of object
     virtual
@@ -62,7 +62,7 @@ namespace QDP
     
     //! Get user user data from the metadata database
     virtual
-    int getUserdata(std::string& user_data) = 0;
+    int getUserdata(std::string& user_data) const = 0;
   };
 
 } // namespace QDP

@@ -74,7 +74,7 @@ namespace QDP
      * @param data after the call data will be populated
      * @return 0 on success, otherwise the key not found
      */
-    int get(const K& key, V& val);
+    int get(const K& key, V& val) const;
 
 
     /**
@@ -116,7 +116,7 @@ namespace QDP
      * @param user_data user supplied buffer to store user data
      * @return returns 0 if success. Otherwise failure.
      */
-    int getUserdata(std::string& user_data);
+    int getUserdata(std::string& user_data) const;
 
   private:
     //! Type for the map
@@ -448,7 +448,7 @@ namespace QDP
    */
   template<typename K, typename V>
   int
-  MapObjectDisk<K,V>::getUserdata(std::string& _user_data)
+  MapObjectDisk<K,V>::getUserdata(std::string& _user_data) const
   {
     int ret = 0;
 
@@ -461,7 +461,7 @@ namespace QDP
     case UNCHANGED:
     case MODIFIED:
     {
-      user_data = _user_data;
+      _user_data = user_data;
       break;
     }
     default:
@@ -571,7 +571,7 @@ namespace QDP
    */
   template<typename K, typename V>
   int 
-  MapObjectDisk<K,V>::get(const K& key, V& val)
+  MapObjectDisk<K,V>::get(const K& key, V& val) const
   { 
     int ret = 0;
 

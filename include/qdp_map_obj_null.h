@@ -28,7 +28,7 @@ namespace QDP
     int insert(const K& key, const V& val) {return 1;}
 
     //! Accessor
-    int get(const K& key, V& val) {return 1;}
+    int get(const K& key, V& val) const {return 1;}
     
     //! Flush out state of object
     void flush() {}
@@ -46,28 +46,7 @@ namespace QDP
     int insertUserdata(const std::string& user_data) {}
     
     //! Get user user data from the metadata database
-    int getUserdata(std::string& user_data) {}
-
-    /*! 
-     * These extend the bacis MapObject Interface. 
-     * The iterators are used to QIO the object
-     * Need to be public for now 
-     */
-
-    //! Usual begin iterator
-    //! Map type convenience
-    typedef std::map<K,V> MapType_t;
-    
-
-    //! Annoying, need these to satisfy the map
-    typename MapType_t::const_iterator begin() const {return src_map.begin();}
-    
-    //! Usual end iterator
-    typename MapType_t::const_iterator  end() const {return src_map.end();}
-
-  private:
-    //! Map of objects
-    mutable MapType_t src_map;
+    int getUserdata(std::string& user_data) const {}
   };
 
 } // namespace QDP

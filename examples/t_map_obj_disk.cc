@@ -430,7 +430,7 @@ void testMapKeyPropColorVecLookupsTimeSlice(MapObjectDisk<KeyPropColorVecTimeSli
   QDPIO::cout << "Random access lookup test" << endl;
   QDPIO::cout << "Looking up with colorvec_src = " ;
   // Hey DJ! Spin that disk...
-  for(int j=0; j < 3; j++) {
+  for(int j=0; j < 20; j++) {
     int i = random() % lf_array.size();
     LatticeFermion lf_tmp = zero;
     the_key.colorvec_src=i;

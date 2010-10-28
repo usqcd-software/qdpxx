@@ -39,7 +39,7 @@ namespace QDP
     }
 
     //! Accessor
-    int get(const K& key, V& val) { 
+    int get(const K& key, V& val) const { 
       int ret = 0;
       if ( exist(key) ) {
 	val = src_map.find(key)->second;
@@ -79,28 +79,15 @@ namespace QDP
     }
     
     //! Get user user data from the metadata database
-    int getUserdata(std::string& user_data_) {
+    int getUserdata(std::string& user_data_) const {
       user_data_ = user_data;
       return 0;
     }
 
-    /*! 
-     * These extend the bacis MapObject Interface. 
-     * The iterators are used stream through the object
-     * Need to be public for now 
-     */
-
-    //! Usual begin iterator
+  private:
     //! Map type convenience
     typedef std::map<K,V> MapType_t;
     
- 
-    typename MapType_t::const_iterator begin() const {return src_map.begin();}
-    
-    //! Usual end iterator
-    typename MapType_t::const_iterator  end() const {return src_map.end();}
-
-  private:
     //! Map of objects
     mutable MapType_t src_map;
     string user_data;
