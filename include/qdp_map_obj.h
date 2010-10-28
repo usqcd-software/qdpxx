@@ -40,6 +40,10 @@ namespace QDP
     virtual
     int get(const K& key, V& val) = 0;
 
+    //! Flush out state of object
+    virtual
+    void flush() = 0;
+
     //! Size of Map
     virtual
     unsigned int size() const = 0;
@@ -59,7 +63,6 @@ namespace QDP
     //! Get user user data from the metadata database
     virtual
     int getUserdata(std::string& user_data) = 0;
-
   };
 
 } // namespace QDP

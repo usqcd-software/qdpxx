@@ -78,6 +78,12 @@ namespace QDP
 
 
     /**
+     * Flush database in memory to disk
+     */
+    void flush();
+
+
+    /**
      * Does this key exist in the store
      * @param key a key object
      * @return true if the answer is yes
@@ -111,12 +117,6 @@ namespace QDP
      * @return returns 0 if success. Otherwise failure.
      */
     int getUserdata(std::string& user_data);
-
-    /**
-     * Flush database in memory to disk
-     */
-    void flush (void);
-
 
   private:
     //! Type for the map
@@ -375,6 +375,27 @@ namespace QDP
     }
   }
   
+
+  //! Destructor
+  template<typename K, typename V>
+  void
+  MapObjectDisk<K,V>::flush() 
+  {
+    switch(state) { 
+    case MODIFIED:
+      closeWrite();  // not optimal
+      state = UNCHANGED;
+      break;
+    case UNCHANGED:
+      break;
+    case INIT:
+      break;
+    default:
+      break;
+    }
+  }
+  
+
   //! Dump keys
   template<typename K, typename V>
   void

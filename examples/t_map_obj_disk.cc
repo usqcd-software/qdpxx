@@ -703,6 +703,11 @@ int main(int argc, char *argv[])
       }
     }
     QDPIO::cout << endl << "OK" << endl;
+
+    QDPIO::cout << endl << "Check flushing the db..." << endl;
+    pc_map.flush();
+
+    QDPIO::cout << endl << "OK" << endl;
   }
   catch(const std::string& e) { 
     QDPIO::cout << "Caught: " << e << endl;

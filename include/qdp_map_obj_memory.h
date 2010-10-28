@@ -50,7 +50,9 @@ namespace QDP
       return ret;
     }
 
-    
+    //! Flush out state of object
+    void flush() {}
+
     //! Exists?
     bool exist(const K& key) const {
       return (src_map.find(key) == src_map.end()) ? false : true;

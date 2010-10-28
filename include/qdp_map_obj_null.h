@@ -30,6 +30,9 @@ namespace QDP
     //! Accessor
     int get(const K& key, V& val) {return 1;}
     
+    //! Flush out state of object
+    void flush() {}
+
     //! Exists?
     bool exist(const K& key) const {return false;}
 			
