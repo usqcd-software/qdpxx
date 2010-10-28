@@ -119,13 +119,7 @@ void testMapObjInsertions(MapObjectDisk<char, float>& the_map)
 {
  // Open the map for 'filling'
   QDPIO::cout << "Opening MapObjectDisk<char,float> for writing..."; 
-  try { 
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) {
-    fail(__LINE__);
-  }
-  
+
   QDPIO::cout << "Inserting (key,value): " << endl;
   // store a quadratic
   for(char i=0; i < 10; i++) { 
@@ -143,12 +137,6 @@ void testMapObjInsertions(MapObjectDisk<char, float>& the_map)
   }
   
   QDPIO::cout << "Closing MapObjectDisk<char,float> for writing..." ;
-  try {
-    QDPIO::cout << "... OK" << endl;
-  }
-  catch(...) {
-    fail(__LINE__);
-  }
 }
 
 
@@ -156,12 +144,6 @@ void testMapObjLookups(MapObjectDisk<char, float>& the_map)
 {
   /* Now reopen - random access */
   QDPIO::cout << "Opening MapObjectDisk<char,float> for reading..."; 
-  try {  
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) { 
-    fail(__LINE__);
-  }
 
   QDPIO::cout << "Forward traversal test: " << endl;
   // Traverse in sequence
@@ -259,12 +241,6 @@ void testMapKeyPropColorVecInsertions(MapObjectDisk<KeyPropColorVec_t, LatticeFe
 
   // OpenMap for Writing
   QDPIO::cout << "Opening Map<KeyPropColorVec_t,LF> for writing..." << endl;
-  try { 
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) {
-    fail(__LINE__);
-  }
 
   QDPIO::cout << "Inserting array element : ";
   for(int i=0; i < lf_array.size(); i++) { 
@@ -284,12 +260,6 @@ void testMapKeyPropColorVecInsertions(MapObjectDisk<KeyPropColorVec_t, LatticeFe
   }
 
   QDPIO::cout << "Closing Map<KeyPropColorVec_t,LF> for writing..." << endl;
-  try { 
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) { 
-    fail(__LINE__);
-  }
 }
 
 
@@ -298,13 +268,6 @@ void testMapKeyPropColorVecLookups(MapObjectDisk<KeyPropColorVec_t, LatticeFermi
 {
   // Open map in read mode
   QDPIO::cout << "Opening Map<KeyPropColorVec_t,LF> for reading.." << endl;
-
-  try { 
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) { 
-    fail(__LINE__);
-  }
 
   QDPIO::cout << "Increasing lookup test:" << endl;
   QDPIO::cout << "Looking up with colorvec_src = ";
@@ -386,12 +349,6 @@ void testMapKeyPropColorVecInsertionsTimeSlice(MapObjectDisk<KeyPropColorVecTime
   // OpenMap for Writing
   QDPIO::cout << "Opening Map<KeyPropColorVecTimeSlice_t,TimeSlice<LF>> for writing..." << endl;
   QDPIO::cout << "Currently map has size = " << pc_map.size() << endl;
-  try { 
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) {
-    fail(__LINE__);
-  }
 
   QDPIO::cout << "Inserting array element : ";
   for(int i=0; i < lf_array.size(); i++) { 
@@ -418,12 +375,6 @@ void testMapKeyPropColorVecInsertionsTimeSlice(MapObjectDisk<KeyPropColorVecTime
 
   QDPIO::cout << "Before exiting map has size = " << pc_map.size() << endl;
   QDPIO::cout << "Finishing Map<KeyPropColorVecTimeSlice_t,TimeSlice<LF>> for writing..." << endl;
-  try { 
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) { 
-    fail(__LINE__);
-  }
 }
 
 
@@ -433,13 +384,6 @@ void testMapKeyPropColorVecLookupsTimeSlice(MapObjectDisk<KeyPropColorVecTimeSli
   // Open map in read mode
   QDPIO::cout << "Opening Map<KeyPropColorVecTimeSlice_t,TimeSlice<LF>> for reading.." << endl;
   QDPIO::cout << "Before starting map has size = " << pc_map.size() << endl;
-
-  try { 
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) { 
-    fail(__LINE__);
-  }
 
   QDPIO::cout << "Increasing lookup test:" << endl;
   QDPIO::cout << "Looking up with colorvec_src = ";
@@ -565,7 +509,7 @@ int main(int argc, char *argv[])
     meta_data = file_xml.str();
   }
 
-#if 0
+#if 1
   //
   // Test simple scalar
   //
@@ -592,7 +536,7 @@ int main(int argc, char *argv[])
   }
 
 
-#if 0
+#if 1
   //
   // Test lattice objects
   //
