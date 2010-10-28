@@ -84,10 +84,23 @@ namespace QDP
       return 0;
     }
 
-  private:
+    /*! 
+     * These extend the bacis MapObject Interface. 
+     * The iterators are used stream through the object
+     * Need to be public for now 
+     */
+
+    //! Usual begin iterator
     //! Map type convenience
     typedef std::map<K,V> MapType_t;
     
+ 
+    typename MapType_t::const_iterator begin() const {return src_map.begin();}
+    
+    //! Usual end iterator
+    typename MapType_t::const_iterator  end() const {return src_map.end();}
+
+  private:
     //! Map of objects
     mutable MapType_t src_map;
     string user_data;
