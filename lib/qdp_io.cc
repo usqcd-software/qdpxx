@@ -1456,13 +1456,17 @@ namespace QDP
   // Binary reader/writer support
   BinaryFileReaderWriter::BinaryFileReaderWriter() {checksum=0;}
 
-  BinaryFileReaderWriter::BinaryFileReaderWriter(const std::string& p) {checksum=0;open(p);}
+  BinaryFileReaderWriter::BinaryFileReaderWriter(const std::string& p, std::ios_base::openmode mode) 
+  {
+    checksum = 0;
+    open(p, mode);
+  }
 
-  void BinaryFileReaderWriter::open(const std::string& p) 
+  void BinaryFileReaderWriter::open(const std::string& p, std::ios_base::openmode mode) 
   {
     checksum = 0;
     if (Layout::primaryNode()) 
-      f.open(p.c_str(),std::ifstream::in | std::ifstream::binary);
+      f.open(p.c_str(), mode | std::ios_base::binary);
 
     if (! is_open())
       QDP_error_exit("BinaryFileReaderWriter: error opening file %s",p.c_str());

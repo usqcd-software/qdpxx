@@ -1222,7 +1222,7 @@ namespace QDP
       Opens a file for reading.
       \param p The name of the file
     */
-    explicit BinaryFileReaderWriter(const std::string& p);
+    explicit BinaryFileReaderWriter(const std::string& p, std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out);
 
     //! Queries whether the file is open
     /*!
@@ -1234,7 +1234,7 @@ namespace QDP
     /*!
       \param p The name of the file
     */
-    void open(const std::string& p);
+    void open(const std::string& p, std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out);
 
     //! Closes the last file opened
     void close();
