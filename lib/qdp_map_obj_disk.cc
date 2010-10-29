@@ -4,6 +4,7 @@
 
 #include "qdp_map_obj_disk.h"
 
+#include <errno.h>
 #include <sys/stat.h>
 
 namespace QDP 
