@@ -53,7 +53,7 @@ namespace QDP
 
     //! Check if a DB file exists before opening.
     bool fileExists(const std::string& file) const {
-      return MapObjDiskEnv::checkForNewFile(file, std::ios_base::in);
+      return (! MapObjDiskEnv::checkForNewFile(file, std::ios_base::in));
     }
 
     //! Finalizes object
