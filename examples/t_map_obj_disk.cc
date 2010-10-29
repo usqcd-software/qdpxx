@@ -241,6 +241,7 @@ void testMapKeyPropColorVecInsertions(MapObjectDisk<KeyPropColorVec_t, LatticeFe
 
   // OpenMap for Writing
   QDPIO::cout << "Opening Map<KeyPropColorVec_t,LF> for writing..." << endl;
+  QDPIO::cout << "Currently map has size = " << pc_map.size() << endl;
 
   QDPIO::cout << "Inserting array element : ";
   for(int i=0; i < lf_array.size(); i++) { 
@@ -259,6 +260,7 @@ void testMapKeyPropColorVecInsertions(MapObjectDisk<KeyPropColorVec_t, LatticeFe
     }
   }
 
+  QDPIO::cout << "Currently map has size = " << pc_map.size() << endl;
   QDPIO::cout << "Closing Map<KeyPropColorVec_t,LF> for writing..." << endl;
 }
 
@@ -268,6 +270,7 @@ void testMapKeyPropColorVecLookups(MapObjectDisk<KeyPropColorVec_t, LatticeFermi
 {
   // Open map in read mode
   QDPIO::cout << "Opening Map<KeyPropColorVec_t,LF> for reading.." << endl;
+  QDPIO::cout << "Currently map has size = " << pc_map.size() << endl;
 
   QDPIO::cout << "Increasing lookup test:" << endl;
   QDPIO::cout << "Looking up with colorvec_src = ";
@@ -334,6 +337,7 @@ void testMapKeyPropColorVecLookups(MapObjectDisk<KeyPropColorVec_t, LatticeFermi
       fail(__LINE__);
     }
   }
+  QDPIO::cout << "Currently map has size = " << pc_map.size() << endl;
   QDPIO::cout << endl << "OK" << endl;
 }
 
@@ -605,7 +609,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "\n\n\nTest DB with time-slices" << endl;
 
     MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> > pc_map;
-    pc_map.setDebug(0);
+    pc_map.setDebug(1);
     pc_map.insertUserdata(meta_data);
     pc_map.open(map_obj_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
     
@@ -683,7 +687,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "\n\n\nTest inserting more time-slice data into previous DB" << endl;
 
     MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> > pc_map;
-    pc_map.setDebug(0);
+    pc_map.setDebug(1);
     pc_map.open(map_obj_file, std::ios_base::in | std::ios_base::out);
     
     int Lt = Layout::lattSize()[Nd-1];
@@ -723,7 +727,7 @@ int main(int argc, char *argv[])
     QDPIO::cout << "\n\n\nTest reading previous DB with time-slices" << endl;
 
     MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> > pc_map;
-    pc_map.setDebug(0);
+    pc_map.setDebug(1);
     pc_map.open(map_obj_file, std::ios_base::in);
     
     int Lt = Layout::lattSize()[Nd-1];

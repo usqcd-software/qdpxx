@@ -9,7 +9,6 @@
 
 #include "qdp_map_obj.h"
 #include <string>
-#include <unistd.h>
 
 namespace QDP
 {
@@ -17,7 +16,14 @@ namespace QDP
   namespace MapObjDiskEnv { 
     typedef unsigned int file_version_t;
    
-    const std::string& getFileMagic();
+    //! Get the file magic
+    std::string getFileMagic();
+
+    //! Get the meta-data from a file
+    std::string getMetaData(const std::string& filename);
+
+    //! Check if this will be a new file
+    bool checkForNewFile(const std::string& filename, std::ios_base::openmode mode);
   };
 
 
@@ -47,14 +53,8 @@ namespace QDP
 
     //! Check if a DB file exists before opening.
     bool fileExists(const std::string& file) const {
-      bool ret = 0;
-      if (Layout::primaryNode()) 
-	ret = ::access(file.c_str(), F_OK);
-
-      Internal::broadcast(ret);
-      return (ret == 0) ? true : false;
+      return MapObjDiskEnv::checkForNewFile(file, std::ios_base::in);
     }
-
 
     //! Finalizes object
     ~MapObjectDisk();
@@ -198,14 +198,18 @@ namespace QDP
   void 
   MapObjectDisk<K,V>::open(const std::string& file, std::ios_base::openmode mode)
   {
-    if (fileExists(filename) || ((mode & std::ios_base::trunc) == 0))
-    {
-      openRead(file, mode);
-    }
-    else
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": entering\n";
+
+    if ( MapObjDiskEnv::checkForNewFile(file, mode) )
     {
       openWrite(file, mode);
     }
+    else
+    {
+      openRead(file, mode);
+    }
+
+    QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting\n";
   }
 
 
