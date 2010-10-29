@@ -59,9 +59,9 @@ namespace QDP
 	    errno = 0;	/* In case someone looks at errno. */
 	  new_file = true;
 	}
-
-	Internal::broadcast(new_file);
       }
+
+      Internal::broadcast(new_file);
 
       return new_file;
     }
