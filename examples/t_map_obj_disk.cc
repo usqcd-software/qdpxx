@@ -727,12 +727,37 @@ int main(int argc, char *argv[])
     QDPIO::cout << "\n\n\nTest reading previous DB with time-slices" << endl;
 
     MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> > pc_map;
+
     pc_map.setDebug(1);
     pc_map.open(map_obj_file, std::ios_base::in);
     
     int Lt = Layout::lattSize()[Nd-1];
     testMapKeyPropColorVecLookupsTimeSlice(pc_map, lf_array);
     QDPIO::cout << endl << "OK" << endl;
+  }
+  catch(const std::string& e) { 
+    QDPIO::cout << "Caught: " << e << endl;
+    fail(__LINE__);
+  }
+#endif
+
+#if 1
+  //
+  // Test stuff
+  //
+  try {
+    QDPIO::cout << "\n\n\nTest file names" << endl;
+
+    QDPIO::cout << "Check for map_obj_file(in) : status= " << MapObjDiskEnv::checkForNewFile(map_obj_file, std::ios_base::in) << "\n";
+    QDPIO::cout << "Check for map_obj_file(trunc) : status= " << MapObjDiskEnv::checkForNewFile(map_obj_file, std::ios_base::in | std::ios_base::trunc) << "\n";
+
+    QDPIO::cout << "Check for fred.foo(in) : status= " << MapObjDiskEnv::checkForNewFile("fred.foo", std::ios_base::in) << "\n";
+    QDPIO::cout << "Check for fred.foo(trunc) : status= " << MapObjDiskEnv::checkForNewFile("fred.foo", std::ios_base::in | std::ios_base::trunc) << "\n";
+
+    MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> > pc_map;
+
+    QDPIO::cout << "Check for map_obj_file(in) : exist= " << pc_map.fileExists(map_obj_file) << "\n";
+    QDPIO::cout << "Check for fred.foo(in) : exist= " << pc_map.fileExists("fred.foo") << "\n";
   }
   catch(const std::string& e) { 
     QDPIO::cout << "Caught: " << e << endl;
