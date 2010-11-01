@@ -1,3 +1,6 @@
+11/01/2010 -- Robert Edwards
+        Version 1.37.2: Added some IO support for multiNd.
+
 10/10/2010 -- Robert Edwards
         Version 1.37.1: Some more MapObject variants. Added another RNG just
         for variety.
