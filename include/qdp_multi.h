@@ -917,6 +917,10 @@ public:
   /*! Note, the last/right index is the fastest varying index */
   const multi1d<int>& size() const {return nz;}
 
+  //! Number of elements in the array
+  /*! The number of elements is the product of the sizes */
+  int numElem() const {return sz;}
+
   //! Equal operator uses underlying = of T
   multiNd<T>& operator=(const multiNd<T>& s1)
     {
@@ -1066,6 +1070,32 @@ public:
       int off = ind[0];
       for(int i=1; i < nz.size(); ++i)
 	off = off*nz[i] + ind[i];
+
+      return F[off];
+    }
+
+  //! Return ref to an element with index flattened over indices
+  /*! Right index is fastest varying */
+  T& getElem(int off)
+    {
+      if (off < 0 || off >= sz)
+      {
+	cerr << "multiNd: index out of bounds" << endl;
+	exit(1);
+      }
+
+      return F[off];
+    }
+
+  //! Return const-ref to an element with index flattened over indices
+  /*! Right index is fastest varying */
+  const T& getElem(int off) const
+    {
+      if (off < 0 || off >= sz)
+      {
+	cerr << "multiNd: index out of bounds" << endl;
+	exit(1);
+      }
 
       return F[off];
     }

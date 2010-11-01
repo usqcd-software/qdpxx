@@ -606,14 +606,31 @@ namespace QDP
     d.resize(n3,n2,n1);
 
     for(int i=0; i < d.size1(); ++i)
+    {
       for(int j=0; j < d.size2(); ++j)
+      {
 	for(int k=0; k < d.size3(); ++k)
 	{
 	  read(bin, d[k][j][i]);
 	}
-
+      }
+    }
   }
 
+
+  //! Read a binary multiNd element
+  template<class T>
+  inline
+  void read(BinaryReader& bin, multiNd<T>& d)
+  {
+    multi1d<int> siz;
+    read(bin, siz); // read the array of the sizes
+
+    d.resize(siz);
+
+    for(int i=0; i < d.numElem(); ++i)
+      read(bin, d.getElem(i));
+  }
 
 
   //--------------------------------------------------------------------------------
@@ -935,7 +952,7 @@ namespace QDP
 
 
 
-  //! Write a binary multi2d element
+  //! Write a binary multi3d element
   template<class T>
   inline
   void write(BinaryWriter& bin, const multi3d<T>& d)
@@ -962,6 +979,18 @@ namespace QDP
 	for(int i=0; i < num1; ++i)
 	  write(bin, d[i][j][k]);
 
+  }
+
+
+  //! Write a binary multiNd element
+  template<class T>
+  inline
+  void write(BinaryWriter& bin, const multiNd<T>& d)
+  {
+    write(bin, d.size()); // write the array of the sizes
+
+    for(int i=0; i < d.numElem(); ++i)
+      write(bin, d.getElem(i));
   }
 
 
