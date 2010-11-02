@@ -905,9 +905,9 @@ public:
 	sz *= nz[i];
       F = new(nothrow) T[sz];
       if ( F==0x0 ) { 
-	std::cerr << "Unable to new memory in multiNd::resize():  size= ";
-	for(int i=0; i < nz.size(); ++i) {
-	  std::cerr << " " << nz[i];
+	std::cerr << "Unable to new memory in multiNd::resize():  sz= " << sz << "  size= ";
+	for(int i=0; i < _nz.size(); ++i) {
+	  std::cerr << " " << _nz[i];
 	}
 	std::cerr << endl;
 	QDP_abort(1);
