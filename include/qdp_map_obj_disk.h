@@ -42,6 +42,9 @@ namespace QDP
     //! Empty constructor
     MapObjectDisk() : file_version(1), state(INIT), debug(false) {}
 
+    //! Finalizes object
+    ~MapObjectDisk();
+
     //! Set debugging level
     void setDebug(int level);
 
@@ -56,8 +59,8 @@ namespace QDP
       return (! MapObjDiskEnv::checkForNewFile(file, std::ios_base::in));
     }
 
-    //! Finalizes object
-    ~MapObjectDisk();
+    //! Close the file
+    void close();
 
     /**
      * Insert a pair of data and key into the database
@@ -355,9 +358,10 @@ namespace QDP
 
 
   
-  //! Destructor
+  //! Close
   template<typename K, typename V>
-  MapObjectDisk<K,V>::~MapObjectDisk() 
+  void
+  MapObjectDisk<K,V>::close() 
   {
     switch(state) { 
     case UNCHANGED:
@@ -374,9 +378,19 @@ namespace QDP
     case INIT:
       break;
     default:
-      errorState("~MapObjectDisk: destructor called from invalid state");
+      errorState("close: destructor called from invalid state");
       break;
     }
+
+    state = INIT;
+  }
+  
+
+  //! Destructor
+  template<typename K, typename V>
+  MapObjectDisk<K,V>::~MapObjectDisk() 
+  {
+    close();
   }
   
 
