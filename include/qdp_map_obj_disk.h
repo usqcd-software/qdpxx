@@ -201,8 +201,6 @@ namespace QDP
   void 
   MapObjectDisk<K,V>::open(const std::string& file, std::ios_base::openmode mode)
   {
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": entering\n";
-
     if ( MapObjDiskEnv::checkForNewFile(file, mode) )
     {
       openWrite(file, mode);
@@ -211,8 +209,6 @@ namespace QDP
     {
       openRead(file, mode);
     }
-
-    QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting\n";
   }
 
 
