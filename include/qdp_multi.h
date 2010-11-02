@@ -905,7 +905,12 @@ public:
 	sz *= nz[i];
       F = new(nothrow) T[sz];
       if ( F==0x0 ) { 
-	QDP_error_exit("Unable to new memory in multiNd::resize()\n");
+	QDPIO::cerr << "Unable to new memory in multiNd::resize():  size= ";
+	for(int i=0; i < nz.size(); ++i) {
+	  QDPIO::cerr << " " << nz[i];
+	}
+	QDPIO::cerr << endl;
+	QDP_abort(1);
       }
     }
 
