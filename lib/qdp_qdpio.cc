@@ -420,7 +420,12 @@ namespace QDP
     // QIO write
     // For now, serpar (which is an enum in QDP) is ignored here
     QIO_Oflag oflag;
-    oflag.serpar = QIO_SERIAL;
+    if( qdp_serpar == QDPIO_SERIAL ) { 
+      oflag.serpar = QIO_SERIAL;
+    }
+    else { 
+      oflag.serpar = QIO_PARALLEL;
+    }
     oflag.mode   = mode;
     oflag.ildgstyle = QIO_ILDGLAT;
     if( data_LFN.length() == 0 ) { 
