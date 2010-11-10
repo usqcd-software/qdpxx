@@ -1,4 +1,14 @@
 11/02/2010 -- Robert Edwards
+        Version 1.38.3: Added a new BinaryReaderWriter class and structure
+        that supports both reading and writing of objects. 
+        Overhauled MapObject interface to use this new structure. Removed
+        the previous locking mechanisms as they are now unneeded. This all
+        simplifies the MapObject interface. Can now close and reopen a 
+        MapObjectDisk file and continue insertions.
+        Did a bunch of house cleaning - removed some obsolete code and stuff
+        not actually used.
+
+11/02/2010 -- Robert Edwards
         Version 1.37.3: Added a close function in MapObjectDisk. Some slight
         change of diagnostic output in multiNd.
 
