@@ -24,42 +24,45 @@ namespace QDP
     virtual	
     ~MapObject() {}
 
-    //! Open write mode (inserts)
-    virtual
-    void openWrite(void) = 0;
-
-    //! Open object in read mode (lookups)
-    virtual
-    void openRead(void) = 0;
-
-    //! Open
-    virtual 
-    void openUpdate(void) = 0;
-
-    //! Exists?
+    /**
+     * Does this key exist in the store
+     * @param key a key object
+     * @return true if the answer is yes
+     */
     virtual
     bool exist(const K& key) const = 0;
 			
     //! Insert
     virtual
-    void insert(const K& key, const V& val) = 0;
+    int insert(const K& key, const V& val) = 0;
  
-    //! Update
-    virtual 
-    void update(const K& key, const V& val) = 0;
-
     //! Other accessor
     virtual
-    void lookup(const K& key, V& val) const = 0;
+    int get(const K& key, V& val) const = 0;
+
+    //! Flush out state of object
+    virtual
+    void flush() = 0;
 
     //! Size of Map
     virtual
     unsigned int size() const = 0;
 
-    //! Dump keys
+    /**
+     * Return all available keys to user
+     * @param keys user suppled an empty vector which is populated
+     * by keys after this call.
+     */
     virtual
-    std::vector<K> keys() const = 0;
+    void keys(std::vector<K>& keys_) const = 0;
 
+    //! Insert user data into the metadata database
+    virtual
+    int insertUserdata(const std::string& user_data) = 0;
+    
+    //! Get user user data from the metadata database
+    virtual
+    int getUserdata(std::string& user_data) const = 0;
   };
 
 } // namespace QDP

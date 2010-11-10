@@ -1,7 +1,4 @@
-// $Id: t_io.cc,v 1.24 2007-06-10 21:16:08 edwards Exp $
-
-#include <iostream>
-#include <cstdio>
+// t_io.cc
 
 #include "qdp.h"
 
@@ -25,6 +22,7 @@ int main(int argc, char **argv)
   string astring = "hello world";
   random(a);
 
+  // Test writing
   {
     BinaryFileWriter tobinary("t_io.bin");
     write(tobinary, a);
@@ -67,6 +65,29 @@ int main(int argc, char **argv)
     QDPIO::cout <<  "ReadBinary: after seeking: new current position = " << frombinary.currentPosition() << endl;
     read(frombinary, dd);
     QDPIO::cout <<  "ReadBinary: after reading: position = " << frombinary.currentPosition() << endl;
+    pos = frombinary.currentPosition();
+    frombinary.close();
+  }
+
+  // Test reader/writer
+  {
+    BinaryFileReaderWriter frombinary("t_io.bin");
+    BinaryFileReaderWriter::pos_type pos = frombinary.currentPosition();
+    QDPIO::cout <<  "ReadWriteBinary: t_io.bin: position = " << pos << endl;
+    read(frombinary, aa); 
+    QDPIO::cout <<  "ReadWriteBinary: t_io.bin: position = " << frombinary.currentPosition() << endl; 
+    pos = frombinary.currentPosition();
+    read(frombinary, dd);
+    QDPIO::cout <<  "ReadWriteBinary: t_io.bin: position = " << frombinary.currentPosition() << endl;
+    read(frombinary, astring, 100);
+    QDPIO::cout <<  "ReadWriteBinary: t_io.bin: position = " << frombinary.currentPosition() << endl;
+    QDPIO::cout <<  "ReadWriteBinary: t_io.bin:checksum = " << frombinary.getChecksum() << endl;
+
+    QDPIO::cout <<  "ReadWriteBinary: now seek: current position = " << frombinary.currentPosition() << endl;
+    frombinary.seek(pos);
+    QDPIO::cout <<  "ReadWriteBinary: after seeking: new current position = " << frombinary.currentPosition() << endl;
+    read(frombinary, dd);
+    QDPIO::cout <<  "ReadWriteBinary: after reading: position = " << frombinary.currentPosition() << endl;
     pos = frombinary.currentPosition();
     frombinary.close();
   }

@@ -1,6 +1,9 @@
-11/09/2010 -- Robert Edwards
-        Version 1.37.2: Moved filedb and xpath_reader to newest versions. There
-        were some fixes in filedb.
+11/02/2010 -- Robert Edwards
+        Version 1.37.3: Added a close function in MapObjectDisk. Some slight
+        change of diagnostic output in multiNd.
+
+11/01/2010 -- Robert Edwards
+        Version 1.37.2: Added some IO support for multiNd.
 
 10/10/2010 -- Robert Edwards
         Version 1.37.1: Some more MapObject variants. Added another RNG just

@@ -46,15 +46,14 @@ POST_UNINSTALL = :
 @BUILD_LIBINTRIN_TRUE@am__append_5 = -lintrin
 @BUILD_FILEDB_TRUE@am__append_6 = -lfiledb -lfilehash
 check_PROGRAMS = t_skeleton$(EXEEXT) t_io$(EXEEXT) t_mesplq$(EXEEXT) \
-	t_db$(EXEEXT) t_xml$(EXEEXT) t_remote$(EXEEXT) \
-	t_entry$(EXEEXT) t_nersc$(EXEEXT) t_shift$(EXEEXT) \
-	t_exotic$(EXEEXT) t_basic$(EXEEXT) t_qio$(EXEEXT) \
-	t_cugauge$(EXEEXT) t_transpose_spin$(EXEEXT) \
+	t_db$(EXEEXT) t_xml$(EXEEXT) t_entry$(EXEEXT) t_nersc$(EXEEXT) \
+	t_shift$(EXEEXT) t_exotic$(EXEEXT) t_basic$(EXEEXT) \
+	t_qio$(EXEEXT) t_cugauge$(EXEEXT) t_transpose_spin$(EXEEXT) \
 	t_partfile$(EXEEXT) t_su3$(EXEEXT) t_map_obj_disk$(EXEEXT) \
 	t_map_obj_memory$(EXEEXT) $(am__EXEEXT_2) $(am__EXEEXT_3)
-EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_binx$(EXEEXT) \
-	t_gsum$(EXEEXT) t_iprod$(EXEEXT) $(am__EXEEXT_1) \
-	nersc2ildg$(EXEEXT) test_ildglat$(EXEEXT) lhpc2ildg$(EXEEXT)
+EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_gsum$(EXEEXT) \
+	t_iprod$(EXEEXT) $(am__EXEEXT_1) nersc2ildg$(EXEEXT) \
+	test_ildglat$(EXEEXT) lhpc2ildg$(EXEEXT)
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_7 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_8 = t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3 t_spinproj t_spinproj2
 @BUILD_STAGGERED_EXAMPLES_TRUE@am__append_9 = 
@@ -95,10 +94,6 @@ am_t_basic_OBJECTS = t_basic.$(OBJEXT)
 t_basic_OBJECTS = $(am_t_basic_OBJECTS)
 t_basic_LDADD = $(LDADD)
 t_basic_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_t_binx_OBJECTS = t_binx.$(OBJEXT) $(am__objects_1)
-t_binx_OBJECTS = $(am_t_binx_OBJECTS)
-t_binx_LDADD = $(LDADD)
-t_binx_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_blas_OBJECTS = t_blas.$(OBJEXT) blas1.$(OBJEXT)
 t_blas_OBJECTS = $(am_t_blas_OBJECTS)
 t_blas_LDADD = $(LDADD)
@@ -201,10 +196,6 @@ t_qio_LDADD = $(LDADD)
 am_t_qio_factory_OBJECTS = t_qio_factory.$(OBJEXT) $(am__objects_1)
 t_qio_factory_OBJECTS = $(am_t_qio_factory_OBJECTS)
 t_qio_factory_LDADD = $(LDADD)
-am_t_remote_OBJECTS = t_remote.$(OBJEXT) $(am__objects_1)
-t_remote_OBJECTS = $(am_t_remote_OBJECTS)
-t_remote_LDADD = $(LDADD)
-t_remote_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_shift_OBJECTS = t_shift.$(OBJEXT) $(am__objects_1)
 t_shift_OBJECTS = $(am_t_shift_OBJECTS)
 t_shift_LDADD = $(LDADD)
@@ -256,31 +247,29 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
-	$(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
-	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
-	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
-	$(t_db_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) \
-	$(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) \
-	$(t_gsum_SOURCES) $(t_io_SOURCES) $(t_iprod_SOURCES) \
-	$(t_linalg_SOURCES) $(t_map_obj_disk_SOURCES) \
-	$(t_map_obj_memory_SOURCES) $(t_mesplq_SOURCES) \
-	$(t_nersc_SOURCES) $(t_partfile_SOURCES) $(t_qdp_SOURCES) \
-	$(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
+	$(t_basic_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) \
+	$(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) \
+	$(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_db_SOURCES) \
+	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
+	$(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_gsum_SOURCES) \
+	$(t_io_SOURCES) $(t_iprod_SOURCES) $(t_linalg_SOURCES) \
+	$(t_map_obj_disk_SOURCES) $(t_map_obj_memory_SOURCES) \
+	$(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_partfile_SOURCES) \
+	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
 	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
 	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
 	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
 	$(test_ildglat_SOURCES)
 DIST_SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
-	$(t_basic_SOURCES) $(t_binx_SOURCES) $(t_blas_SOURCES) \
-	$(t_blas_g5_SOURCES) $(t_blas_g5_2_SOURCES) \
-	$(t_blas_g5_3_SOURCES) $(t_cblas_SOURCES) $(t_cugauge_SOURCES) \
-	$(t_db_SOURCES) $(t_dslashm_SOURCES) $(t_entry_SOURCES) \
-	$(t_exotic_SOURCES) $(t_foo_SOURCES) $(t_formfac_SOURCES) \
-	$(t_gsum_SOURCES) $(t_io_SOURCES) $(t_iprod_SOURCES) \
-	$(t_linalg_SOURCES) $(t_map_obj_disk_SOURCES) \
-	$(t_map_obj_memory_SOURCES) $(t_mesplq_SOURCES) \
-	$(t_nersc_SOURCES) $(t_partfile_SOURCES) $(t_qdp_SOURCES) \
-	$(t_qio_SOURCES) $(t_qio_factory_SOURCES) $(t_remote_SOURCES) \
+	$(t_basic_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) \
+	$(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) \
+	$(t_cblas_SOURCES) $(t_cugauge_SOURCES) $(t_db_SOURCES) \
+	$(t_dslashm_SOURCES) $(t_entry_SOURCES) $(t_exotic_SOURCES) \
+	$(t_foo_SOURCES) $(t_formfac_SOURCES) $(t_gsum_SOURCES) \
+	$(t_io_SOURCES) $(t_iprod_SOURCES) $(t_linalg_SOURCES) \
+	$(t_map_obj_disk_SOURCES) $(t_map_obj_memory_SOURCES) \
+	$(t_mesplq_SOURCES) $(t_nersc_SOURCES) $(t_partfile_SOURCES) \
+	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
 	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
 	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
 	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
@@ -455,10 +444,8 @@ HDRS = examples.h
 #
 # The program and its dependencies
 t_skeleton_SOURCES = t_skeleton.cc
-t_remote_SOURCES = t_remote.cc $(HDRS)
 t_foo_SOURCES = t_foo.cc $(HDRS)
 t_xml_SOURCES = t_xml.cc $(HDRS)
-t_binx_SOURCES = t_binx.cc $(HDRS)
 t_qio_SOURCES = t_qio.cc $(HDRS)
 t_qio_DEPENDENCIES = build_lib rebuild_other_libs
 t_qio_factory_SOURCES = t_qio_factory.cc $(HDRS)
@@ -549,10 +536,7 @@ nersc2ildg$(EXEEXT): $(nersc2ildg_OBJECTS) $(nersc2ildg_DEPENDENCIES)
 	$(CXXLINK) $(nersc2ildg_LDFLAGS) $(nersc2ildg_OBJECTS) $(nersc2ildg_LDADD) $(LIBS)
 t_basic$(EXEEXT): $(t_basic_OBJECTS) $(t_basic_DEPENDENCIES) 
 	@rm -f t_basic$(EXEEXT)
-	$(CXXLINK) $(t_basic_LDFLAGS) $(t_basic_OBJECTS) $(t_basic_LDADD) $(LIBS)
-t_binx$(EXEEXT): $(t_binx_OBJECTS) $(t_binx_DEPENDENCIES) 
-	@rm -f t_binx$(EXEEXT)
-	$(CXXLINK) $(t_binx_LDFLAGS) $(t_binx_OBJECTS) $(t_binx_LDADD) $(LIBS)
+	$(CXXLINK) $(t_basic_OBJECTS) $(t_basic_LDADD) $(LIBS)
 t_blas$(EXEEXT): $(t_blas_OBJECTS) $(t_blas_DEPENDENCIES) 
 	@rm -f t_blas$(EXEEXT)
 	$(CXXLINK) $(t_blas_LDFLAGS) $(t_blas_OBJECTS) $(t_blas_LDADD) $(LIBS)
@@ -624,10 +608,7 @@ t_qio$(EXEEXT): $(t_qio_OBJECTS) $(t_qio_DEPENDENCIES)
 	$(CXXLINK) $(t_qio_LDFLAGS) $(t_qio_OBJECTS) $(t_qio_LDADD) $(LIBS)
 t_qio_factory$(EXEEXT): $(t_qio_factory_OBJECTS) $(t_qio_factory_DEPENDENCIES) 
 	@rm -f t_qio_factory$(EXEEXT)
-	$(CXXLINK) $(t_qio_factory_LDFLAGS) $(t_qio_factory_OBJECTS) $(t_qio_factory_LDADD) $(LIBS)
-t_remote$(EXEEXT): $(t_remote_OBJECTS) $(t_remote_DEPENDENCIES) 
-	@rm -f t_remote$(EXEEXT)
-	$(CXXLINK) $(t_remote_LDFLAGS) $(t_remote_OBJECTS) $(t_remote_LDADD) $(LIBS)
+	$(CXXLINK) $(t_qio_factory_OBJECTS) $(t_qio_factory_LDADD) $(LIBS)
 t_shift$(EXEEXT): $(t_shift_OBJECTS) $(t_shift_DEPENDENCIES) 
 	@rm -f t_shift$(EXEEXT)
 	$(CXXLINK) $(t_shift_LDFLAGS) $(t_shift_OBJECTS) $(t_shift_LDADD) $(LIBS)
@@ -676,7 +657,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_basic.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_binx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_blas.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_blas_g5.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_blas_g5_2.Po@am__quote@
@@ -701,7 +681,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_qdp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_qio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_qio_factory.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_remote.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_shift.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_skeleton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spectrum.Po@am__quote@

@@ -905,7 +905,12 @@ public:
 	sz *= nz[i];
       F = new(nothrow) T[sz];
       if ( F==0x0 ) { 
-	QDP_error_exit("Unable to new memory in multiNd::resize()\n");
+	std::cerr << "Unable to new memory in multiNd::resize():  sz= " << sz << "  size= ";
+	for(int i=0; i < _nz.size(); ++i) {
+	  std::cerr << " " << _nz[i];
+	}
+	std::cerr << endl;
+	QDP_abort(1);
       }
     }
 
@@ -916,6 +921,10 @@ public:
   //! Size of an array containing sizes of each index.
   /*! Note, the last/right index is the fastest varying index */
   const multi1d<int>& size() const {return nz;}
+
+  //! Number of elements in the array
+  /*! The number of elements is the product of the sizes */
+  int numElem() const {return sz;}
 
   //! Equal operator uses underlying = of T
   multiNd<T>& operator=(const multiNd<T>& s1)
@@ -940,6 +949,102 @@ public:
       for(int i=0; i < sz; ++i)
 	F[i] = s1;
       return *this;
+    }
+
+  //! Return ref to an element
+  T& operator()(int i)
+    {
+      if (nz.size() != 1)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i];
+    }
+
+  //! Return const ref to an element
+  const T& operator()(int i) const
+    {
+      if (nz.size() != 1)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i];
+    }
+
+  //! Return ref to an element
+  T& operator()(int j, int i)
+    {
+      if (nz.size() != 2)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i+nz[0]*j];
+    }
+
+  //! Return const ref to an element
+  const T& operator()(int j, int i) const
+    {
+      if (nz.size() != 2)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i+nz[0]*j];
+    }
+
+  //! Return ref to an element
+  T& operator()(int k, int j, int i) 
+    {
+      if (nz.size() != 3)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i+nz[0]*(j+nz[1]*(k))];
+    }
+
+  //! Return const ref to an element
+  const T& operator()(int k, int j, int i) const
+    {
+      if (nz.size() != 3)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i+nz[0]*(j+nz[1]*(k))];
+    }
+
+  //! Return ref to an element
+  T& operator()(int l, int k, int j, int i) 
+    {
+      if (nz.size() != 4)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i+nz[0]*(j+nz[1]*(k+nz[2]*l))];
+    }
+
+  //! Return const ref to an element
+  const T& operator()(int l, int k, int j, int i) const
+    {
+      if (nz.size() != 4)
+      {
+	cerr << "multiNd: improper rank of array indices" << endl;
+	exit(1);
+      }
+
+      return F[i+nz[0]*(j+nz[1]*(k+nz[2]*l))];
     }
 
   //! Return ref to an element via indices packed in a multi1d array
@@ -970,6 +1075,32 @@ public:
       int off = ind[0];
       for(int i=1; i < nz.size(); ++i)
 	off = off*nz[i] + ind[i];
+
+      return F[off];
+    }
+
+  //! Return ref to an element with index flattened over indices
+  /*! Right index is fastest varying */
+  T& getElem(int off)
+    {
+      if (off < 0 || off >= sz)
+      {
+	cerr << "multiNd: index out of bounds" << endl;
+	exit(1);
+      }
+
+      return F[off];
+    }
+
+  //! Return const-ref to an element with index flattened over indices
+  /*! Right index is fastest varying */
+  const T& getElem(int off) const
+    {
+      if (off < 0 || off >= sz)
+      {
+	cerr << "multiNd: index out of bounds" << endl;
+	exit(1);
+      }
 
       return F[off];
     }

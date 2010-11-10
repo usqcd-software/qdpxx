@@ -110,12 +110,10 @@ namespace QDP {
 
 #include "qdp_params.h"
 #include "qdp_layout.h"
-#include "qdp_filebuf.h"
 #include "qdp_io.h"
 #include "qdp_stdio.h"
 #include "qdp_xmlio.h"
 #include "qdp_qdpio.h"
-#include "qdp_binx.h"
 #include "qdp_subset.h"
 #include "qdp_map.h"
 #include "qdp_stopwatch.h"

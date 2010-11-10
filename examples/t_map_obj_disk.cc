@@ -5,6 +5,11 @@
 #include "qdp_map_obj_disk.h"
 #include "qdp_disk_map_slice.h"
 
+// Including these just to check compilation
+#include "qdp_map_obj_memory.h"
+#include "qdp_map_obj_null.h"
+
+
 namespace QDP
 {
   //****************************************************************************
@@ -114,14 +119,7 @@ void testMapObjInsertions(MapObjectDisk<char, float>& the_map)
 {
  // Open the map for 'filling'
   QDPIO::cout << "Opening MapObjectDisk<char,float> for writing..."; 
-  try { 
-    the_map.openWrite();
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) {
-    fail(__LINE__);
-  }
-  
+
   QDPIO::cout << "Inserting (key,value): " << endl;
   // store a quadratic
   for(char i=0; i < 10; i++) { 
@@ -139,13 +137,6 @@ void testMapObjInsertions(MapObjectDisk<char, float>& the_map)
   }
   
   QDPIO::cout << "Closing MapObjectDisk<char,float> for writing..." ;
-  try {
-    the_map.openRead();
-    QDPIO::cout << "... OK" << endl;
-  }
-  catch(...) {
-    fail(__LINE__);
-  }
 }
 
 
@@ -153,13 +144,6 @@ void testMapObjLookups(MapObjectDisk<char, float>& the_map)
 {
   /* Now reopen - random access */
   QDPIO::cout << "Opening MapObjectDisk<char,float> for reading..."; 
-  try {  
-    the_map.openRead();
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) { 
-    fail(__LINE__);
-  }
 
   QDPIO::cout << "Forward traversal test: " << endl;
   // Traverse in sequence
@@ -170,7 +154,7 @@ void testMapObjLookups(MapObjectDisk<char, float>& the_map)
     float val;
     
     try{ 
-      the_map.lookup(key, val);
+      the_map.get(key, val);
       QDPIO::cout << " " << key;
     }
     catch(...) { 
@@ -198,7 +182,7 @@ void testMapObjLookups(MapObjectDisk<char, float>& the_map)
     char key='a'+i; 
     float val;
     try {
-      the_map.lookup(key, val);
+      the_map.get(key, val);
       QDPIO::cout << " " << key;
     }
     catch(...) { 
@@ -226,7 +210,7 @@ void testMapObjLookups(MapObjectDisk<char, float>& the_map)
     float val;
 
     try { 
-      the_map.lookup(key, val);
+      the_map.get(key, val);
       QDPIO::cout << " " << key ;
     }
     catch(...) {
@@ -257,20 +241,18 @@ void testMapKeyPropColorVecInsertions(MapObjectDisk<KeyPropColorVec_t, LatticeFe
 
   // OpenMap for Writing
   QDPIO::cout << "Opening Map<KeyPropColorVec_t,LF> for writing..." << endl;
-  try { 
-    pc_map.openWrite() ;
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) {
-    fail(__LINE__);
-  }
+  QDPIO::cout << "Currently map has size = " << pc_map.size() << endl;
 
   QDPIO::cout << "Inserting array element : ";
   for(int i=0; i < lf_array.size(); i++) { 
     the_key.colorvec_src = i;
 
     try { 
-      pc_map.insert(the_key, lf_array[i]);
+      if (pc_map.insert(the_key, lf_array[i]) != 0)
+      {
+	QDPIO::cerr << __func__ << ": error writing key\n";
+	QDP_abort(1);
+      }
       QDPIO::cout << " "<< i << endl;
     }
     catch(...) {
@@ -278,14 +260,8 @@ void testMapKeyPropColorVecInsertions(MapObjectDisk<KeyPropColorVec_t, LatticeFe
     }
   }
 
+  QDPIO::cout << "Currently map has size = " << pc_map.size() << endl;
   QDPIO::cout << "Closing Map<KeyPropColorVec_t,LF> for writing..." << endl;
-  try { 
-    pc_map.openRead();
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) { 
-    fail(__LINE__);
-  }
 }
 
 
@@ -294,14 +270,7 @@ void testMapKeyPropColorVecLookups(MapObjectDisk<KeyPropColorVec_t, LatticeFermi
 {
   // Open map in read mode
   QDPIO::cout << "Opening Map<KeyPropColorVec_t,LF> for reading.." << endl;
-
-  try { 
-    pc_map.openRead();
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) { 
-    fail(__LINE__);
-  }
+  QDPIO::cout << "Currently map has size = " << pc_map.size() << endl;
 
   QDPIO::cout << "Increasing lookup test:" << endl;
   QDPIO::cout << "Looking up with colorvec_src = ";
@@ -313,7 +282,11 @@ void testMapKeyPropColorVecLookups(MapObjectDisk<KeyPropColorVec_t, LatticeFermi
 
     the_key.colorvec_src=i;
     try{
-      pc_map.lookup(the_key, lf_tmp);
+      if (pc_map.get(the_key, lf_tmp) != 0)
+      {
+	QDPIO::cerr << __func__ << ": error in get\n";
+	QDP_abort(1);
+      }
       QDPIO::cout << " " << i;
     }
     catch(...) { 
@@ -342,7 +315,11 @@ void testMapKeyPropColorVecLookups(MapObjectDisk<KeyPropColorVec_t, LatticeFermi
     LatticeFermion lf_tmp;
     the_key.colorvec_src=i;
     try{
-      pc_map.lookup(the_key, lf_tmp);
+      if (pc_map.get(the_key, lf_tmp) != 0)
+      {
+	QDPIO::cerr << __func__ << ": error in get\n";
+	QDP_abort(1);
+      }
       QDPIO::cout << " " << i;
     }
     catch(...) {
@@ -360,6 +337,7 @@ void testMapKeyPropColorVecLookups(MapObjectDisk<KeyPropColorVec_t, LatticeFermi
       fail(__LINE__);
     }
   }
+  QDPIO::cout << "Currently map has size = " << pc_map.size() << endl;
   QDPIO::cout << endl << "OK" << endl;
 }
 
@@ -373,14 +351,8 @@ void testMapKeyPropColorVecInsertionsTimeSlice(MapObjectDisk<KeyPropColorVecTime
   KeyPropColorVecTimeSlice_t the_key = {0,0,0,0};
 
   // OpenMap for Writing
-  QDPIO::cout << "Opening Map<KeyPropColorVec_t,TimeSlice<LF>> for writing..." << endl;
-  try { 
-    pc_map.openWrite() ;
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) {
-    fail(__LINE__);
-  }
+  QDPIO::cout << "Opening Map<KeyPropColorVecTimeSlice_t,TimeSlice<LF>> for writing..." << endl;
+  QDPIO::cout << "Currently map has size = " << pc_map.size() << endl;
 
   QDPIO::cout << "Inserting array element : ";
   for(int i=0; i < lf_array.size(); i++) { 
@@ -392,8 +364,11 @@ void testMapKeyPropColorVecInsertionsTimeSlice(MapObjectDisk<KeyPropColorVecTime
 	the_key.t_slice = time_slice;
 
 	LatticeFermion fred = lf_array[i];
-	TimeSliceIO<LatticeFermion> time_slice_lf(fred, time_slice);
-	pc_map.insert(the_key, time_slice_lf);
+	if (pc_map.insert(the_key, TimeSliceIO<LatticeFermion>(fred, time_slice)) != 0)
+	{
+	  QDPIO::cerr << __func__ << ": error writing key\n";
+	  QDP_abort(1);
+	}
 	QDPIO::cout << "i= "<< i << "  time_slice= " << time_slice << endl;
       }
     }
@@ -402,14 +377,8 @@ void testMapKeyPropColorVecInsertionsTimeSlice(MapObjectDisk<KeyPropColorVecTime
     }
   }
 
-  QDPIO::cout << "Closing Map<KeyPropColorVec_t,LF> for writing..." << endl;
-  try { 
-    pc_map.openRead();
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) { 
-    fail(__LINE__);
-  }
+  QDPIO::cout << "Before exiting map has size = " << pc_map.size() << endl;
+  QDPIO::cout << "Finishing Map<KeyPropColorVecTimeSlice_t,TimeSlice<LF>> for writing..." << endl;
 }
 
 
@@ -417,15 +386,8 @@ void testMapKeyPropColorVecLookupsTimeSlice(MapObjectDisk<KeyPropColorVecTimeSli
 					    const multi1d<LatticeFermion>& lf_array)
 {
   // Open map in read mode
-  QDPIO::cout << "Opening Map<KeyPropColorVec_t,TimeSlice<LF>> for reading.." << endl;
-
-  try { 
-    pc_map.openRead();
-    QDPIO::cout << "OK" << endl;
-  }
-  catch(...) { 
-    fail(__LINE__);
-  }
+  QDPIO::cout << "Opening Map<KeyPropColorVecTimeSlice_t,TimeSlice<LF>> for reading.." << endl;
+  QDPIO::cout << "Before starting map has size = " << pc_map.size() << endl;
 
   QDPIO::cout << "Increasing lookup test:" << endl;
   QDPIO::cout << "Looking up with colorvec_src = ";
@@ -442,7 +404,11 @@ void testMapKeyPropColorVecLookupsTimeSlice(MapObjectDisk<KeyPropColorVecTimeSli
 	the_key.t_slice = time_slice;
 
 	TimeSliceIO<LatticeFermion> time_slice_lf(lf_tmp, time_slice);
-	pc_map.lookup(the_key, time_slice_lf);
+	if (pc_map.get(the_key, time_slice_lf) != 0)
+	{
+	  QDPIO::cerr << __func__ << ": error in get\n";
+	  QDP_abort(1);
+	}
 	QDPIO::cout << "i= "<< i << "  time_slice= " << time_slice << endl;
       }
     }
@@ -468,7 +434,7 @@ void testMapKeyPropColorVecLookupsTimeSlice(MapObjectDisk<KeyPropColorVecTimeSli
   QDPIO::cout << "Random access lookup test" << endl;
   QDPIO::cout << "Looking up with colorvec_src = " ;
   // Hey DJ! Spin that disk...
-  for(int j=0; j < 100; j++) {
+  for(int j=0; j < 20; j++) {
     int i = random() % lf_array.size();
     LatticeFermion lf_tmp = zero;
     the_key.colorvec_src=i;
@@ -478,7 +444,11 @@ void testMapKeyPropColorVecLookupsTimeSlice(MapObjectDisk<KeyPropColorVecTimeSli
 	the_key.t_slice = time_slice;
 
 	TimeSliceIO<LatticeFermion> time_slice_lf(lf_tmp, time_slice);
-	pc_map.lookup(the_key, time_slice_lf);
+	if (pc_map.get(the_key, time_slice_lf) != 0)
+	{
+	  QDPIO::cerr << __func__ << ": error in get\n";
+	  QDP_abort(1);
+	}
 	QDPIO::cout << "i= "<< i << "  time_slice= " << time_slice << endl;
       }
     }
@@ -517,6 +487,16 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
+  // For debugging
+  {
+    MapObjectNull<char,float> dumb;
+  }
+
+  // For debugging
+  {
+    MapObjectMemory<char,float> dumb;
+  }
+
   // Params to create a map object disk
   string map_obj_file("t_map_obj_disk.mod");
 
@@ -539,7 +519,9 @@ int main(int argc, char *argv[])
   //
   try {
     // Make a disk map object -- keys are ints, data floats
-    MapObjectDisk<char,float> made_map(map_obj_file, meta_data);
+    MapObjectDisk<char,float> made_map;
+    made_map.insertUserdata(meta_data);
+    made_map.open(map_obj_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
     testMapObjInsertions(made_map);
     testMapObjLookups(made_map);
@@ -551,18 +533,23 @@ int main(int argc, char *argv[])
 #endif
 
 
+  // Make an array of LF-s filled with noise
+  multi1d<LatticeFermion> lf_array(10);
+  for(int i=0; i < lf_array.size(); i++) { 
+    gaussian(lf_array[i]);
+  }
+
+
 #if 1
   //
   // Test lattice objects
   //
   try {
-    // Make an array of LF-s filled with noise
-    multi1d<LatticeFermion> lf_array(10);
-    for(int i=0; i < lf_array.size(); i++) { 
-      gaussian(lf_array[i]);
-    }
-  
-    MapObjectDisk<KeyPropColorVec_t, LatticeFermion> pc_map(map_obj_file, meta_data);
+    QDPIO::cout << "\n\n\nTest DB over a lattice" << endl;
+
+    MapObjectDisk<KeyPropColorVec_t, LatticeFermion> pc_map;
+    pc_map.insertUserdata(meta_data);
+    pc_map.open(map_obj_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
     
     testMapKeyPropColorVecInsertions(pc_map, lf_array);
     testMapKeyPropColorVecLookups(pc_map, lf_array);
@@ -570,17 +557,24 @@ int main(int argc, char *argv[])
 
     // Test an update 
     QDPIO::cout << "Doing update test ..." << endl;
-    pc_map.openUpdate();
     KeyPropColorVec_t the_key = {0,0,0};
     the_key.colorvec_src = 5;
     LatticeFermion f; gaussian(f);
     QDPIO::cout << "Updating..." ;
-    pc_map.update(the_key,f);
+    if (pc_map.insert(the_key,f) != 0)
+    {
+      QDPIO::cerr << __func__ << ": error writing key\n";
+      QDP_abort(1);
+    }
     QDPIO::cout << "OK" << endl;
 
     LatticeFermion f2;
     QDPIO::cout << "Re-Looking up...";
-    pc_map.lookup(the_key,f2);
+    if (pc_map.get(the_key,f2) != 0)
+    {
+      QDPIO::cerr << __func__ << ": error in get\n";
+      QDP_abort(1);
+    }
     QDPIO::cout << "OK" << endl;
 
     QDPIO::cout << "Comparing..." << endl;
@@ -593,8 +587,11 @@ int main(int argc, char *argv[])
       QDPIO::cout << "OK" << endl ;
     }
     // Reinsert previous value
-    pc_map.update(the_key,lf_array[5]);
-    pc_map.openRead();
+    if (pc_map.insert(the_key,lf_array[5]) != 0)
+    {
+      QDPIO::cerr << __func__ << ": error inserting\n";
+      QDP_abort(1);
+    }
     testMapKeyPropColorVecLookups(pc_map, lf_array);
   }
   catch(const std::string& e) { 
@@ -609,13 +606,12 @@ int main(int argc, char *argv[])
   // Test with time slices
   //
   try {
-    // Make an array of LF-s filled with noise
-    multi1d<LatticeFermion> lf_array(10);
-    for(int i=0; i < lf_array.size(); i++) { 
-      gaussian(lf_array[i]);
-    }
+    QDPIO::cout << "\n\n\nTest DB with time-slices" << endl;
 
-    MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> > pc_map(map_obj_file, meta_data);
+    MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> > pc_map;
+    pc_map.setDebug(1);
+    pc_map.insertUserdata(meta_data);
+    pc_map.open(map_obj_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
     
     int Lt = Layout::lattSize()[Nd-1];
     testMapKeyPropColorVecInsertionsTimeSlice(pc_map, lf_array);
@@ -624,7 +620,6 @@ int main(int argc, char *argv[])
 
     // Test an update 
     QDPIO::cout << "Doing update test ..." << endl;
-    pc_map.openUpdate();
     KeyPropColorVecTimeSlice_t the_key = {0,0,0,0};
     the_key.colorvec_src = 5;
     LatticeFermion f; gaussian(f);
@@ -633,7 +628,11 @@ int main(int argc, char *argv[])
     {
       the_key.t_slice = time_slice;
       TimeSliceIO<LatticeFermion> time_slice_f(f, time_slice);
-      pc_map.update(the_key,time_slice_f);
+      if (pc_map.insert(the_key,time_slice_f) != 0)
+      {
+	QDPIO::cerr << __func__ << ": error inserting\n";
+	QDP_abort(1);
+      }
     }
     QDPIO::cout << "OK" << endl;
 
@@ -643,7 +642,11 @@ int main(int argc, char *argv[])
     {
       the_key.t_slice = time_slice;
       TimeSliceIO<LatticeFermion> time_slice_f2(f2, time_slice);
-      pc_map.lookup(the_key,time_slice_f2);
+      if (pc_map.get(the_key,time_slice_f2) != 0)
+      {
+	QDPIO::cerr << __func__ << ": error in get\n";
+	QDP_abort(1);
+      }
     }
     QDPIO::cout << "OK" << endl;
 
@@ -662,10 +665,99 @@ int main(int argc, char *argv[])
     {
       the_key.t_slice = time_slice;
       TimeSliceIO<LatticeFermion> time_slice_lf5(lf5, time_slice);
-      pc_map.update(the_key,time_slice_lf5);
+      if (pc_map.insert(the_key,time_slice_lf5) != 0)
+      {
+	QDPIO::cerr << __func__ << ": error inserting\n";
+	QDP_abort(1);
+      }
     }
-    pc_map.openRead();
     testMapKeyPropColorVecLookupsTimeSlice(pc_map, lf_array);
+  }
+  catch(const std::string& e) { 
+    QDPIO::cout << "Caught: " << e << endl;
+    fail(__LINE__);
+  }
+#endif
+
+#if 1
+  //
+  // Test inserting more into previous DB
+  //
+  try {
+    QDPIO::cout << "\n\n\nTest inserting more time-slice data into previous DB" << endl;
+
+    MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> > pc_map;
+    pc_map.setDebug(1);
+    pc_map.open(map_obj_file, std::ios_base::in | std::ios_base::out);
+    
+    int Lt = Layout::lattSize()[Nd-1];
+
+    KeyPropColorVecTimeSlice_t the_key = {0,0,0,0};
+    the_key.colorvec_src = 17;
+
+    LatticeFermion f; gaussian(f);
+
+    for(int time_slice=0; time_slice < Lt; ++time_slice)
+    {
+      the_key.t_slice = time_slice;
+      if (pc_map.insert(the_key, TimeSliceIO<LatticeFermion>(f, time_slice)) != 0)
+      {
+	QDPIO::cerr << __func__ << ": error inserting\n";
+	QDP_abort(1);
+      }
+    }
+    QDPIO::cout << endl << "OK" << endl;
+
+    QDPIO::cout << endl << "Check flushing the db..." << endl;
+    pc_map.flush();
+
+    QDPIO::cout << endl << "OK" << endl;
+  }
+  catch(const std::string& e) { 
+    QDPIO::cout << "Caught: " << e << endl;
+    fail(__LINE__);
+  }
+#endif
+
+#if 1
+  //
+  // Test read mode on previous DB
+  //
+  try {
+    QDPIO::cout << "\n\n\nTest reading previous DB with time-slices" << endl;
+
+    MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> > pc_map;
+
+    pc_map.setDebug(1);
+    pc_map.open(map_obj_file, std::ios_base::in);
+    
+    int Lt = Layout::lattSize()[Nd-1];
+    testMapKeyPropColorVecLookupsTimeSlice(pc_map, lf_array);
+    QDPIO::cout << endl << "OK" << endl;
+  }
+  catch(const std::string& e) { 
+    QDPIO::cout << "Caught: " << e << endl;
+    fail(__LINE__);
+  }
+#endif
+
+#if 1
+  //
+  // Test stuff
+  //
+  try {
+    QDPIO::cout << "\n\n\nTest file names" << endl;
+
+    QDPIO::cout << "Check for map_obj_file(in) : status= " << MapObjDiskEnv::checkForNewFile(map_obj_file, std::ios_base::in) << "\n";
+    QDPIO::cout << "Check for map_obj_file(trunc) : status= " << MapObjDiskEnv::checkForNewFile(map_obj_file, std::ios_base::in | std::ios_base::trunc) << "\n";
+
+    QDPIO::cout << "Check for fred.foo(in) : status= " << MapObjDiskEnv::checkForNewFile("fred.foo", std::ios_base::in) << "\n";
+    QDPIO::cout << "Check for fred.foo(trunc) : status= " << MapObjDiskEnv::checkForNewFile("fred.foo", std::ios_base::in | std::ios_base::trunc) << "\n";
+
+    MapObjectDisk<KeyPropColorVecTimeSlice_t, TimeSliceIO<LatticeFermion> > pc_map;
+
+    QDPIO::cout << "Check for map_obj_file(in) : exist= " << pc_map.fileExists(map_obj_file) << "\n";
+    QDPIO::cout << "Check for fred.foo(in) : exist= " << pc_map.fileExists("fred.foo") << "\n";
   }
   catch(const std::string& e) { 
     QDPIO::cout << "Caught: " << e << endl;

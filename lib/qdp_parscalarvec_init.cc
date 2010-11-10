@@ -188,10 +188,6 @@ void QDP_initialize(int *argc, char ***argv)
   QDP_info("Init qio");
 #endif
 
-  // initialize remote file service (QIO)
-  bool use_qio = (rtiP != 0) ? true : false;
-  QDPUtil::RemoteFileInit(rtinode, use_qio);
-
   // initialize the global streams
   QDPIO::cin.init(&std::cin);
   QDPIO::cout.init(&std::cout);
@@ -215,9 +211,6 @@ void QDP_finalize()
   }
 
   printProfile();
-
-  // shutdown remote file service (QIO)
-  QDPUtil::RemoteFileShutdown();
 
   QMP_finalize_msg_passing();
 
