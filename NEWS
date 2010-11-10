@@ -1,3 +1,7 @@
+11/09/2010 -- Robert Edwards
+        Version 1.37.2: Moved filedb and xpath_reader to newest versions. There
+        were some fixes in filedb.
+
 10/10/2010 -- Robert Edwards
         Version 1.37.1: Some more MapObject variants. Added another RNG just
         for variety.
