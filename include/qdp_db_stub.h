@@ -17,15 +17,20 @@ namespace FILEDB
   //! Forward empty decl
   class FFDB_DBT {};
 
-  //--------------------------------------------------------------------------------
+
+
+  //-------------------------------------------------------------------------
   /**
-   * Dummy exception class
+   * Dummy exception class: should emulate SerializeException 
+   * from filedb/src/Serializable.h
    */
   class SerializeException : public std::exception {};
 
 
-  //--------------------------------------------------------------------------------
-  //! Dummy serializable class
+  //-------------------------------------------------------------------------
+  /** Dummy serializable class
+   * should emulated class from filedb/src/Serializable.h
+   */
   class Serializable
   {
   public:
@@ -42,7 +47,7 @@ namespace FILEDB
     /**
      * Return this object into a binary form
      */
-    virtual void writeObject (std::string& output) throw (SerializeException) = 0;
+    virtual void writeObject (std::string& output) const throw (SerializeException) = 0;
 
 
     /**
@@ -59,8 +64,10 @@ namespace FILEDB
   };
 
 
-  //--------------------------------------------------------------------------------
-  //!  Dummy DBKey Base class
+  //---------------------------------------------------------------------------
+  /**  Dummy DBKey Base class: emulate class from filedb/src/DBKey.h
+   */
+
   class DBKey : public Serializable
   {
   public:
@@ -97,8 +104,9 @@ namespace FILEDB
   };
 
 
-  //--------------------------------------------------------------------------------
-  //!  Dummy DBKey Base class
+  //--------------------------------------------------------------------------
+  /**  Dummy DBKey Base class: emulate class from filedb/src/DBData.h 
+   */
   class DBData : public Serializable
   {
   public:
