@@ -75,6 +75,20 @@ namespace QDP
 
     
     /**
+     * How much data and keys should be kept in memory in megabytes
+     *
+     * This should be called before the open is called
+     * @param max_cache_size number of bytes of data and keys should be kept
+     * in memory
+     */
+    virtual void setCacheSizeMB (const unsigned int size)
+    {
+      if (Layout::primaryNode())
+	db.setCacheSizeMB(size);
+    }
+
+
+    /**
      * Page size used when a new data based is created
      * This only effects a new database
      *
