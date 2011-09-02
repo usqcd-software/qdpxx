@@ -216,7 +216,7 @@ TextWriter& operator<<(TextWriter& s, const RScalar<T>& d)
   return s << d.elem();
 }
 
-
+#ifndef QDP_NO_LIBXML2
 //! XML output
 template<class T>
 inline
@@ -232,7 +232,7 @@ void read(XMLReader& xml, const string& path, RScalar<T>& d)
 {
   read(xml, path, d.elem());
 }
-
+#endif
 
 /*! @} */  // end of group rscalar
 
@@ -422,7 +422,7 @@ TextWriter& operator<<(TextWriter& s, const RComplex<T>& d)
   return s << d.real() << d.imag();
 }
 
-
+#ifndef QDP_NO_LIBXML2
 //! XML output
 template<class T>
 inline
@@ -473,7 +473,7 @@ void read(XMLReader& xml, const string& xpath, RComplex<T>& d)
     throw error_message.str();
   }
 }
-
+#endif
 
 /*! @} */   // end of group rcomplex
 

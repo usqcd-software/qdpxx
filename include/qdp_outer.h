@@ -197,6 +197,7 @@ StandardOutputStream& operator<<(StandardOutputStream& s, const QDPExpr<RHS, OSc
   return s << C1(l);
 }
 
+#ifndef QDP_NO_LIBXML2
 //! XML output
 /*! Supports also having an inner grid */
 template<class T>
@@ -214,7 +215,7 @@ void read(XMLReader& xml, const string& path, OScalar<T>& d)
 {
   read(xml, path, d.elem());
 }
-
+#endif
 
 /*! @} */  // end of group oscalar
 

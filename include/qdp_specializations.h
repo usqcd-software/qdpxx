@@ -43,7 +43,7 @@ toBool(const Boolean& s)
   return toBool(s.elem());
 }
 
-
+#ifndef QDP_NO_LIBXML2
 // XML readers
 template<>
 void read(XMLReader& xml, const string& s, multi1d<Integer>& d);
@@ -64,6 +64,7 @@ void write(XMLWriter& xml, const string& s, const multi1d<Real64>& d);
 template<>
 void write(XMLWriter& xml, const string& s, const multi1d<Boolean>& d);
 
+#endif
 
 //
 // Return an equivalent QDP type given some simple machine type

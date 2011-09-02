@@ -62,6 +62,32 @@ AC_SUBST(CONFIG_NS, [${ac_Ns}] )
 dnl Tell the user about Ns
 AC_MSG_NOTICE([Configuring QDP++ for Ns = ${ac_Ns}])
 
+dnl --enable-alignment
+AC_ARG_ENABLE(alignment,
+	AC_HELP_STRING([--enable-alignment=N],
+	[Set alignment to N bytes for OLattice]),
+	[ac_alignment=${enableval}],
+	[ac_alignment=16]
+)
+
+AC_DEFINE_UNQUOTED(QDP_AC_ALIGNMENT_SIZE, ${ac_alignment}, [Alignment for OLattice])
+AC_SUBST(CONFIG_ALIGNMENT, [${ac_alignment}])
+
+dnl tell the user about alignment	
+AC_MSG_NOTICE([Configuring QDP++ Alignment size=${ac_alignment}])
+
+AC_ARG_ENABLE(generics,
+	AC_HELP_STRING([--enable-generics],
+	[Enable Generic C specializations]),
+	[ac_generics=${enableval}],
+	[ac_generics="yes"]
+)
+AC_DEFINE_UNQUOTED(QDP_USE_GENERIC_OPTS, ${ac_generics}, [Use generic C optimizations])
+AC_SUBST(CONFIG_GENERICS, [${ac_generics}])
+dnl tell the user
+AC_MSG_NOTICE([Fallback to generic C routines if needed: ${ac_generics}])
+
+
 
 dnl --enable-profiling
 AC_ARG_ENABLE(profiling,
@@ -413,46 +439,52 @@ AC_ARG_WITH(libxml2,
   ),
   [LIBXML2_HOME="$with_libxml2"]
 )
+echo Value of with_libxml2 is X${with_libxml2}X
 
-echo ${LIBXML2_HOME}
-
-if test "X${LIBXML2_HOME}X" = "XX" ; then
-  AC_PATH_PROG(LIBXML2_CONFIG, [xml2-config], [])
+if test "X${with_libxml2}X" = "XnoX" ; then
+  AC_MSG_NOTICE([Disabling Libxml])
+  AC_SUBST(LIBXML2_CXXFLAGS, "")
+  AC_SUBST(LIBXML2_LIBS,"")
+  AC_DEFINE(QDP_NO_LIBXML2, [1], [ Dont use LIBXML2 ])
 else
-  echo Freddie
-  AC_PATH_PROG(LIBXML2_CONFIG, [xml2-config], [], [${LIBXML2_HOME}/bin:${PATH}])
-fi
 
-if test "X${LIBXML2_CONFIG}X" = "XX" ; then
-  AC_MSG_ERROR([libxml2 configuration program xml2-config not found.])
-fi
+  if test "X${LIBXML2_HOME}X" = "XX" ; then
+    AC_PATH_PROG(LIBXML2_CONFIG, [xml2-config], [])
+  else
+    AC_PATH_PROG(LIBXML2_CONFIG, [xml2-config], [], [${LIBXML2_HOME}/bin:${PATH}])
+  fi  
 
-AC_MSG_NOTICE([Found libxml2 configuration program ${LIBXML2XX_CONFIG}])
-AC_SUBST(LIBXML2_CXXFLAGS, "`${LIBXML2_CONFIG} --cflags`")
-AC_MSG_NOTICE([libxml2 compile flags: ${LIBXML2_CXXFLAGS}])
-AC_SUBST(LIBXML2_LIBS,     "`${LIBXML2_CONFIG} --libs`")
-AC_MSG_NOTICE([libxml2 libraries flags: ${LIBXML2_LIBS}])
+  if test "X${LIBXML2_CONFIG}X" = "XX" ; then
+    AC_MSG_ERROR([libxml2 configuration program xml2-config not found.])
+  fi
 
-dnl This function is defined in acinclude.m4
-dnl it tries to try to compile the program 
-AC_MSG_CHECKING([if we can compile/link a simple libxml2 program])
-PAC_LIBXML2_LINK_CXX_FUNC(
-  ${LIBXML2_CXXFLAGS},
-  ${LIBXML2_LIBS},
-  ,
-  ,
-  [libxml2_link_ok=yes],
-  [libxml2_link_ok=no]
-)
+  AC_MSG_NOTICE([Found libxml2 configuration program ${LIBXML2XX_CONFIG}])
+  AC_SUBST(LIBXML2_CXXFLAGS, "`${LIBXML2_CONFIG} --cflags`")
+  AC_MSG_NOTICE([libxml2 compile flags: ${LIBXML2_CXXFLAGS}])
+  AC_SUBST(LIBXML2_LIBS,     "`${LIBXML2_CONFIG} --libs`")
+  AC_MSG_NOTICE([libxml2 libraries flags: ${LIBXML2_LIBS}])
 
-if test "X${libxml2_link_ok}X" = "XyesX" ; then 
-  AC_MSG_RESULT(yes)
-else 
-  AC_MSG_RESULT(no)
-  AC_MSG_ERROR([Cannot compile/link a program with libxml2.
+  dnl This function is defined in acinclude.m4
+  dnl it tries to try to compile the program 
+  AC_MSG_CHECKING([if we can compile/link a simple libxml2 program])
+    PAC_LIBXML2_LINK_CXX_FUNC(
+    ${LIBXML2_CXXFLAGS},
+    ${LIBXML2_LIBS},
+    ,
+    ,
+    [libxml2_link_ok=yes],
+    [libxml2_link_ok=no]
+  )
+
+  if test "X${libxml2_link_ok}X" = "XyesX" ; then 
+    AC_MSG_RESULT(yes)
+  else 
+    AC_MSG_RESULT(no)
+    AC_MSG_ERROR([Cannot compile/link a program with libxml2.
     Use --with-libxml2=<dir> to select a working version.])
-fi 
+  fi 
 
+fi
 
 AC_ARG_WITH(bagel-qdp,
   AC_HELP_STRING(
@@ -626,7 +658,15 @@ AM_CONDITIONAL(QDP_USE_QMT_THREADS, [test "x${qmt_enabled}x" = "xyesx" ])
 # Conditional for use omp
 #
 AM_CONDITIONAL(QDP_USE_OMP_THREADS, [test "x${omp_enabled}x" = "xyesx" ])
+#
+# Conditional for use of libxml
+if test "x${with_libxml2}x" != "xnox"; then
+ echo True
+else
+ echo False
+fi
 
+AM_CONDITIONAL(QDP_USE_LIBXML2, [test "x${with_libxml2}x" != "xnox" ])
 
 ##################################
 # Check for programs to build docs
@@ -666,8 +706,13 @@ esac
 #
 # Configure subdir packages
 #
-AC_CONFIG_SUBDIRS(other_libs/qio)
-AC_CONFIG_SUBDIRS(other_libs/xpath_reader)
+
+
+if test "x${with_libxml2}x" != "xnox";
+then
+  AC_CONFIG_SUBDIRS(other_libs/qio)
+  AC_CONFIG_SUBDIRS(other_libs/xpath_reader)
+fi
 #
 # Set up the doxygen file
 # Substitute the right directories

@@ -4,9 +4,9 @@
 [submodule "other_libs/libintrin"]
 	path = other_libs/libintrin
 	url = git://git.jlab.org/pub/lattice/usqcd/libintrin.git
-[submodule "other_libs/qio"]
-	path = other_libs/qio
-	url = git://git.jlab.org/pub/lattice/usqcd/qio.git
 [submodule "other_libs/xpath_reader"]
 	path = other_libs/xpath_reader
 	url = git://git.jlab.org/pub/lattice/usqcd/xpath_reader.git
+[submodule "other_libs/qio"]
+	path = other_libs/qio
+	url = git://git.jlab.org/pub/lattice/usqcd/qio.git

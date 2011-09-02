@@ -9,6 +9,7 @@
 #include "linalg.h"
 
 using namespace QDP;
+#define TIME_OPS
 
 int main(int argc, char *argv[])
 {
@@ -16,12 +17,13 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {2,3,3,3};
+  const int foo[] = {16,16,16,16};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
   Layout::create();
 
+#ifndef QDP_NO_LIBXML2
   XMLFileWriter xml("t_linalg.xml");
   push(xml, "linalgTest");
 
@@ -30,6 +32,7 @@ int main(int argc, char *argv[])
   write(xml,"Nc", Nc);
   write(xml,"nrow", nrow);
   pop(xml);
+#endif
 
   QDPIO::cout << "CLOCKS_PER_SEC = " << CLOCKS_PER_SEC << endl;
 
@@ -116,9 +119,12 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_eq_M_times_M");
   write(xml,"c", c);
   pop(xml);
+#endif
+
 #endif
   
   // Test  M=adj(M)*M
@@ -129,11 +135,13 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_eq_Ma_times_M");
   write(xml,"a",a);
   write(xml,"b",b);
   write(xml,"c",c);
   pop(xml);
+#endif
 #endif
   
   // Test  M=M*adj(M)
@@ -144,11 +152,13 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_eq_M_times_Ma");
   write(xml,"a",a);
   write(xml,"b",b);
   write(xml,"c",c);
   pop(xml);
+#endif
 #endif
 
  
@@ -160,11 +170,13 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_eq_Ma_times_Ma");
   write(xml,"a",a);
   write(xml,"b",b);
   write(xml,"c",c);
   pop(xml);
+#endif
 #endif
 
   
@@ -177,9 +189,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_peq_M_times_M");
   write(xml,"c",c);
   pop(xml);
+#endif
 #endif
 
 
@@ -191,9 +205,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_peq_Ma_times_M");
   write(xml,"c",c);
   pop(xml);
+#endif
 #endif
 
 
@@ -205,9 +221,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_peq_M_times_Ma");
   write(xml,"c",c);
   pop(xml);
+#endif
 #endif
 
 
@@ -219,9 +237,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_peq_Ma_times_Ma");
   write(xml,"c",c);
   pop(xml);
+#endif
 #endif
 
 
@@ -233,9 +253,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_meq_M_times_M");
   write(xml,"c",c);
   pop(xml);
+#endif
 #endif
 
 
@@ -247,9 +269,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_meq_Ma_times_M");
   write(xml,"c",c);
   pop(xml);
+#endif
 #endif
 
 
@@ -261,9 +285,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_meq_M_times_Ma");
   write(xml,"c",c);
-  pop(xml);
+  pop(xml)
+#endif
 #endif
 
 
@@ -275,9 +301,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_meq_Ma_times_Ma");
   write(xml,"c",c);
   pop(xml);
+#endif
 #endif
 
 
@@ -309,9 +337,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_V_eq_M_times_V");
   write(xml,"lv2",lv2);
-  pop(xml);
+  pop(xml)
+#endif
 #endif
 
 
@@ -323,9 +353,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_V_eq_Ma_times_V");
   write(xml,"lv2",lv2);
   pop(xml);
+#endif
 #endif
 
 
@@ -352,9 +384,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 6 / tt << " Mflops" << endl;   // check the flop count
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_V_eq_V_plus_V");
   write(xml,"lv3",lv3);
   pop(xml);
+#endif
 #endif
 
 
@@ -386,9 +420,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_D_eq_M_times_D");
   write(xml,"lf2",lf2);
   pop(xml);
+#endif
 #endif
 
   // Test LatticeDiracFermion = adj(LatticeColorMatrix) * LatticeDiracFermion
@@ -399,9 +435,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_D_eq_Ma_times_D");
   write(xml,"lf2",lf2);
   pop(xml);
+#endif
 #endif
 
 
@@ -432,9 +470,11 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_H_eq_M_times_H");
   write(xml,"lh2", lh2);
   pop(xml);
+#endif
 #endif
 
 
@@ -446,14 +486,19 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 #else
+#ifndef QDP_NO_LIBXML2
   push(xml,"QDP_H_eq_Ma_times_H");
   write(xml,"lh2", lh2);
   pop(xml);
 #endif
 
+#endif
+
+
+#ifndef QDP_NO_LIBXML2
   pop(xml);
   xml.close();
-
+#endif
   // Time to bolt
   QDP_finalize();
 

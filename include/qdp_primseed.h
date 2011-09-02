@@ -166,6 +166,7 @@ TextWriter& operator<<(TextWriter& txt, const PSeed<T>& d)
   return txt;
 }
 
+#ifndef QDP_NO_LIBXML2
 //! XML output
 template<class T>
 inline
@@ -202,7 +203,7 @@ void read(XMLReader& xml, const string& path, PSeed<T>& d)
   }
 }
 
-
+#endif
 /*! @} */   // end of group primseed
 
 //-----------------------------------------------------------------------------

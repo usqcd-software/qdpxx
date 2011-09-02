@@ -73,18 +73,12 @@
 // Commented this out and set QDP_ALIGNMENT_SIZE to be 16 all the time
 // This is a minimal waste of space and should allow an SSE dslash
 // to be used even if the QDP itself is not compiled with SSE.
-#if 0
-// Alignment size: SSE requires a larger alignment
-// This should probably move under more compiler specific info
-#if QDP_USE_SSE == 1
-#define QDP_ALIGNMENT_SIZE  16
-#else
-#define QDP_ALIGNMENT_SIZE  8
-#endif
-
+#ifdef QDP_AC_ALIGNMENT_SIZE
+#define QDP_ALIGNMENT_SIZE QDP_AC_ALIGNMENT_SIZE
 #else
 #define QDP_ALIGNMENT_SIZE 16
 #endif
+
 // YUKKY - Eventually get rid of these includes
 #include <cstdio>
 #include <cstdlib>
@@ -112,8 +106,15 @@ namespace QDP {
 #include "qdp_layout.h"
 #include "qdp_io.h"
 #include "qdp_stdio.h"
+
+#ifdef QDP_NO_LIBXML2
+#warning not using libxml2
+#else
 #include "qdp_xmlio.h"
 #include "qdp_qdpio.h"
+#endif
+
+
 #include "qdp_subset.h"
 #include "qdp_map.h"
 #include "qdp_stopwatch.h"
@@ -169,7 +170,12 @@ namespace ThreadReductions {
 #include "qdp_scalarsite_bagel_qdp.h"
 #else
 // Use Generics only
+#ifdef QDP_USE_GENERIC_OPTS
+#warning "Using generics"
 #include "qdp_scalarsite_generic.h"
+#else
+#warning "Not using generics"
+#endif
 #endif
 
 #elif defined(ARCH_PARSCALAR)
@@ -185,7 +191,11 @@ namespace ThreadReductions {
 #include "qdp_scalarsite_bagel_qdp.h"
 #else
 // Use generics
+#ifdef QDP_USE_GENERIC_OPTS
 #include "qdp_scalarsite_generic.h"
+#else 
+#warning "Not using generics"
+#endif
 #endif
 
 #elif defined(ARCH_SCALARVEC)

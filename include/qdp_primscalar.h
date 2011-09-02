@@ -213,6 +213,7 @@ TextWriter& operator<<(TextWriter& txt, const PScalar<T>& d)
   return txt << d.elem();
 }
 
+#ifndef QDP_NO_LIBXML2
 //! XML output
 template<class T>
 inline
@@ -228,7 +229,7 @@ void read(XMLReader& xml, const string& path, PScalar<T>& d)
 {
   read(xml, path, d.elem());
 }
-
+#endif
 
 /*! @} */  // end of group primscalar
 

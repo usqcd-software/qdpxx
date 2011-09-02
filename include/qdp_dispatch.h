@@ -22,21 +22,18 @@ template<class Arg>
 void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*)){
    
   int threads_num;
-  int chucksize;
   int myId;
   int low = 0;
   int high = numSiteTable;
    
-#pragma omp parallel shared(numSiteTable, threads_num, a) private(chucksize, myId, low, high) default(shared)
+#pragma omp parallel shared(numSiteTable, threads_num, a) private(myId, low, high) default(shared)
     {
      
       threads_num = omp_get_num_threads();
-       
-      chucksize = numSiteTable/threads_num;
       myId = omp_get_thread_num();
-      low = chucksize * myId;
-      high = chucksize * (myId+1);
-      
+      low = numSiteTable*myId/threads_num;
+      high = numSiteTable*(myId+1)/threads_num;
+ 
       func(low, high, myId, &a);
     }
 }

@@ -14,6 +14,11 @@ namespace QDP {
 inline
 void vsub(REAL *Out, REAL *In1, REAL *In2, int n_3vec)
 {
+  for(int i=0; i < 24*n_3vec; i++) { 
+    Out[i] = In1[i] - In2[i];
+  }
+
+#if 0
   register double in10r;
   register double in10i;
   register double in11r;
@@ -104,6 +109,7 @@ void vsub(REAL *Out, REAL *In1, REAL *In2, int n_3vec)
     out2i = in12i - in22i;
     Out[outptr++] = (REAL)out2i;
   }
+#endif
 }
 
 

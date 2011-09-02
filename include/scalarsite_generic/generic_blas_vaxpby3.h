@@ -14,6 +14,13 @@ namespace QDP {
 inline
 void vaxpby3(REAL *Out,REAL *ap ,REAL *xp, REAL *bp,  REAL *yp ,int n_3vec)
 {
+  REAL a = (*ap);
+  REAL b = (*bp);
+  int len = 24*n_3vec;
+  for(int i=0; i < len; i++) { 
+    Out[i] = a*xp[i] + b*yp[i];
+  }
+#if 0
   register double a;
   register double b;
 
@@ -92,6 +99,7 @@ void vaxpby3(REAL *Out,REAL *ap ,REAL *xp, REAL *bp,  REAL *yp ,int n_3vec)
     z2i = z2i + b*y2i;
     Out[index_z++] = (REAL)z2i;
   }
+#endif
 }
 
 

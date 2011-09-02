@@ -51,7 +51,6 @@ void Map::make(const MapFunc& func)
 
 
 
-
 //-----------------------------------------------------------------------
 // Compute simple NERSC-like checksum of a gauge field
 /*
@@ -62,12 +61,12 @@ void Map::make(const MapFunc& func)
  * \return checksum
  */    
 
-n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
+uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
 			   int mat_size)
 {
   size_t size = sizeof(REAL32);
   size_t su3_size = size*mat_size;
-  n_uint32_t checksum = 0;   // checksum
+  uint32_t checksum = 0;   // checksum
   const int nodeSites = Layout::sitesOnNode();
 
   multi1d<multi1d<ColorMatrix> > sa(Nd);   // extract gauge fields
@@ -127,8 +126,8 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
       }
 
       // Compute checksum
-      n_uint32_t* chk_ptr = (n_uint32_t*)chk_buf;
-      for(int i=0; i < mat_size*size/sizeof(n_uint32_t); ++i)
+      uint32_t* chk_ptr = (uint32_t*)chk_buf;
+      for(int i=0; i < mat_size*size/sizeof(uint32_t); ++i)
 	checksum += chk_ptr[i];
     }
   }
@@ -153,7 +152,7 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
  */    
 
 void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u, 
-		n_uint32_t& checksum, int mat_size, int float_size)
+		uint32_t& checksum, int mat_size, int float_size)
 {
   ColorMatrix  sitefield;
   char *su3_buffer;
@@ -182,8 +181,8 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
 
 
       // Compute checksum
-      n_uint32_t* chk_ptr = (n_uint32_t*)su3_buffer;
-      for(int i=0; i < mat_size*float_size/sizeof(n_uint32_t); ++i)
+      uint32_t* chk_ptr = (uint32_t*)su3_buffer;
+      for(int i=0; i < mat_size*float_size/sizeof(uint32_t); ++i)
 	checksum += chk_ptr[i];
 
 

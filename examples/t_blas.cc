@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {8,8,8,8};
+  const int foo[] = {16,16,16,16};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << "norm(qy) = " << dnorm << endl;
   QDPIO::cout << "norm(qz) = " << dnorm2 << endl;
 
-#if 0
+#if 1
   LatticeFermion diff_q; diff_q.moveToFastMemoryHint();
   /*
     for(int site=all.start(); site <= all.end(); site++) {
@@ -733,11 +733,11 @@ int main(int argc, char *argv[])
 #endif
   // Timings
    // Test VSCAL
-  int icnt;
+  volatile int icnt;
   double tt;
   gaussian(qx);
 
-#if 0
+#if 1
   for(icnt=1; ; icnt <<= 1)
   {
     QDPIO::cout << "calling V=a*V " << icnt << " times" << endl;
@@ -884,10 +884,11 @@ int main(int argc, char *argv[])
 
 #endif 
 
+#if 0
   // Test SUMSQ
   gaussian(qx);
 
-  for(icnt=1; ; icnt <<= 1)
+  for(icnt=100; ; icnt *= 2)
   {
     QDPIO::cout << "calling norm2(v) " << icnt << " times" << endl;
     tt = QDP_NORM2(qx, icnt);
@@ -903,13 +904,14 @@ int main(int argc, char *argv[])
 		<< " micro-secs/site/iteration" 
 		<< " , " << Nflops / tt << " Mflops" << endl;
   }
+#endif
 
 #if 0
    // Test INNER_PRODUCT
   gaussian(qx);
   gaussian(qy);
 
-  for(icnt=1; ; icnt <<= 1)
+  for(icnt=100; ; icnt *= 2)
   {
     QDPIO::cout << "calling innerProduct(v,v)) " << icnt << " times" << endl;
     tt = QDP_INNER_PROD(qx, qy, icnt);

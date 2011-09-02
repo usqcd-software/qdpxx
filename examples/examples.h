@@ -25,7 +25,10 @@ void reunit(LatticeColorMatrix& xa);
 void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad, int& numbad, enum Reunitarize ruflag);
 
 
+#ifndef QDP_NO_LIBXML2
 void junk(XMLWriter&, LatticeColorMatrix& b3, const LatticeColorMatrix& b1, const LatticeColorMatrix& b2, const Subset& s);
+#endif
+
 void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq, 
 	    Double& t_plaq, Double& link);
 void mesons(const LatticePropagator& quark_prop_1, const LatticePropagator& quark_prop_2, 
@@ -42,9 +45,11 @@ void dslash(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const Lat
 void dslash2(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const LatticeFermion& psi,
 	    int isign, int cb);
 
+#ifndef QDP_NO_LIBXML2
 void FormFac(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& quark_propagator,
 	     const LatticePropagator& seq_quark_prop, const multi1d<int>& t_source, 
 	     int t_sink, int j_decay, XMLWriter& xml);
+#endif
 
 void expm12(LatticeColorMatrix& a);
 

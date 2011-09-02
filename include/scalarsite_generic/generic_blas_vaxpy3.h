@@ -11,8 +11,19 @@
 namespace QDP {
 // (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (Vector) Add
 inline
-void vaxpy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_4vec)
+void vaxpy3(REAL *Out,REAL  *scalep,REAL *InScale, REAL *Add,int n_4vec)
 {
+
+  REAL a=*scalep;
+
+  int len=n_4vec*24;
+  for(int i=0; i < len; i++) {
+    Out[i]=a*InScale[i]+Add[i];
+  }
+
+#if 0
+  cout << "generic vaxpy3" << endl;
+
   register double a;
   register double x0r;
   register double x0i;
@@ -84,6 +95,8 @@ void vaxpy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_4vec)
     z2i = a*x2i + y2i;  
     Out[index_z++] = (REAL)z2i;
   }
+#endif
+
 }
 
 

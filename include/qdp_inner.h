@@ -213,7 +213,7 @@ TextWriter& operator<<(TextWriter& s, const IScalar<T>& d)
   return s << d.elem();
 }
 
-
+#ifndef QDP_NO_LIBXML2
 //! XML output
 template<class T>
 inline
@@ -229,7 +229,7 @@ void read(XMLReader& xml, const string& path, IScalar<T>& d)
 {
   read(xml, path, d.elem());
 }
-
+#endif
 
 /*! @} */  // end of group iscalar
 

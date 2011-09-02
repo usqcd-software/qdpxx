@@ -13,7 +13,7 @@ namespace QDP {
 
 // (Double) (*out) = || (Vector) In ||^2 (local to node)
 inline
-void local_sumsq(DOUBLE *Out, REAL *In, int n_3vec)
+void local_sumsq(DOUBLE *Out, REAL  *In, int n_3vec)
 {
   register double result;
   

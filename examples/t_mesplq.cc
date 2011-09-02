@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
+#ifndef QDP_NO_LIBXML2
   XMLFileWriter xml("t_mesplq.xml");
   push(xml,"t_mesplq");
 
@@ -30,6 +31,7 @@ int main(int argc, char *argv[])
   write(xml,"Nc",Nc);
   write(xml,"nrow",nrow);
   pop(xml);
+#endif
 
   //! Example of calling a plaquette routine
   /*! NOTE: the STL is *not* used to hold gauge fields */
@@ -51,6 +53,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << "w_plaq = " << w_plaq << endl;
   QDPIO::cout << "link = " << link << endl;
 
+#ifndef QDP_NO_LIBXML2
   // Write out the results
   push(xml,"observables");
   write(xml,"w_plaq",w_plaq);
@@ -59,6 +62,7 @@ int main(int argc, char *argv[])
 
   pop(xml);
   xml.close();
+#endif
 
   // 
   QDPIO::cout << "rb[0] has ordered rep=" << rb[0].hasOrderedRep() << endl;

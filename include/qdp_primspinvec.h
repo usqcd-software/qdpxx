@@ -166,7 +166,7 @@ TextWriter& operator<<(TextWriter& txt, const PSpinVector<T,N>& d)
   return txt;
 }
 
-
+#ifndef QDP_NO_LIBXML2
 //! XML output
 template<class T, int N>
 inline
@@ -190,7 +190,7 @@ XMLWriter& operator<<(XMLWriter& xml, const PSpinVector<T,N>& d)
   xml.closeTag();  // Vector
   return xml;
 }
-
+#endif
 
 
 

@@ -142,7 +142,7 @@ double QDP_NORM2(const LatticeFermion& s1, int cnt)
   swatch.stop();
 
   return swatch.getTimeInSeconds();
-//    return 2;
+  // return 2;
 }
 
 double QDP_INNER_PROD(const LatticeFermion& s1, const LatticeFermion& s2, 
@@ -158,7 +158,7 @@ double QDP_INNER_PROD(const LatticeFermion& s1, const LatticeFermion& s2,
   swatch.stop();
 
   return swatch.getTimeInSeconds();
-//    return 2;
+  // return 2;
 }
 
 double QDP_INNER_PROD_REAL(const LatticeFermion& s1, const LatticeFermion& s2,
@@ -178,7 +178,7 @@ double QDP_INNER_PROD_REAL(const LatticeFermion& s1, const LatticeFermion& s2,
 }
 
 
-double QDP_NORM2(const multi1d<LatticeFermion>& s1, int cnt)			
+double QDP_NORM2(const multi1d<LatticeFermion>& s1, int cnt)	 		
 {
   StopWatch swatch;
 

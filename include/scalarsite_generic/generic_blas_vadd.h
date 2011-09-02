@@ -14,6 +14,12 @@ namespace QDP {
 inline
 void vadd(REAL *Out, REAL *In1, REAL *In2, int n_3vec)
 {
+  
+  int len = n_3vec*24;
+  for(int i=0; i < len; i++) { 
+    Out[i] = In1[i]+In2[i];
+  }
+#if 0
   register double in10r;
   register double in10i;
   register double in11r;
@@ -102,6 +108,8 @@ void vadd(REAL *Out, REAL *In1, REAL *In2, int n_3vec)
     out2i = in12i + in22i;
     Out[outptr++] = (REAL)out2i;
   }
+#endif
+
 }
 
 

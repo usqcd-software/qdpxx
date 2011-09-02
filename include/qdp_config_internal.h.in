@@ -51,6 +51,9 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
+/* Alignment for OLattice */
+#undef QDP_AC_ALIGNMENT_SIZE
+
 /* Enable memory debugging */
 #undef QDP_DEBUG_MEMORY
 
@@ -59,6 +62,9 @@
 
 /* Number of dimensions */
 #undef QDP_ND
+
+/* Dont use LIBXML2 */
+#undef QDP_NO_LIBXML2
 
 /* Number of spin components */
 #undef QDP_NS
@@ -80,6 +86,9 @@
 
 /* Use 3d checkerboarded layout */
 #undef QDP_USE_CB3D_LAYOUT
+
+/* Use generic C optimizations */
+#undef QDP_USE_GENERIC_OPTS
 
 /* Use lexicographic layout */
 #undef QDP_USE_LEXICO_LAYOUT

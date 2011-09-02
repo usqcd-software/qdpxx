@@ -187,7 +187,7 @@ TextWriter& operator<<(TextWriter& txt, const PMatrix<T,N,C>& d)
   return txt;
 }
 
-
+#ifndef QDP_NO_LIBXML2
 //! XML output
 template<class T, int N, template<class,int> class C>  
 inline
@@ -214,7 +214,7 @@ XMLWriter& operator<<(XMLWriter& xml, const PMatrix<T,N,C>& d)
   xml.closeTag(); // Matrix
   return xml;
 }
-
+#endif
 /*! @} */  // end of group primmatrix
 
 //-----------------------------------------------------------------------------

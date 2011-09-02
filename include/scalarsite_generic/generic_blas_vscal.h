@@ -14,6 +14,12 @@ namespace QDP {
 inline
 void vscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec)
 {
+  REAL a = (*scalep);
+  int len = 24*n_3vec;
+  for(int i=0; i < len; i++) { 
+    Out[i] = a*In[i];
+  }
+#if 0 
   register double a = *scalep;
 
   register double i0r;
@@ -88,6 +94,8 @@ void vscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec)
     Out[outptr++] = (REAL)o2i;
     
   }
+#endif
+
 }  
 
 } // namespace QDP;

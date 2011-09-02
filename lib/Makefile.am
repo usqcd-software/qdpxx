@@ -4,8 +4,11 @@ INCFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
            -I@top_srcdir@/other_libs/qio/include \
            -I@top_builddir@/other_libs/qio/include \
            -I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
-           -I@top_builddir@/other_libs/qio/other_libs/c-lime/include \
-           -I@top_srcdir@/other_libs/xpath_reader/include
+           -I@top_builddir@/other_libs/qio/other_libs/c-lime/include
+
+if QDP_USE_LIBXML2
+INCFLAGS += -I@top_srcdir@/other_libs/xpath_reader/include
+endif
 
 if BUILD_LIBINTRIN
 INCFLAGS += -I@top_srcdir@/other_libs/@LIBINTRIN_DIR@/include -I@top_builddir@/other_libs/@LIBINTRIN_DIR@/include
@@ -17,11 +20,15 @@ lib_LIBRARIES = libqdp.a
 
 ## Base set of sources and conditionally included sources
 libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc \
-	qdp_layout.cc qdp_io.cc qdp_iogauge.cc qdp_byteorder.cc qdp_util.cc \
-	qdp_qdpio.cc qdp_xmlio.cc qdp_stdio.cc \
+	qdp_layout.cc qdp_io.cc qdp_byteorder.cc qdp_util.cc \
+	qdp_stdio.cc \
         qdp_profile.cc qdp_strnlen.cc qdp_crc32.cc \
-        qdp_stopwatch.cc qdp_qio_strings.cc qdp_map_obj_disk.cc \
+        qdp_stopwatch.cc \
         qdp_rannyu.cc
+
+if QDP_USE_LIBXML2
+libqdp_a_SOURCES += qdp_xmlio.cc qdp_iogauge.cc qdp_qdpio.cc qdp_qio_strings.cc qdp_map_obj_disk.cc
+endif
 
 # Scalar	
 if ARCH_SCALAR

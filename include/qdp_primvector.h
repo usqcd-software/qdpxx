@@ -198,7 +198,7 @@ TextWriter& operator<<(TextWriter& txt, const PVector<T,N,C>& d)
   return txt;
 }
 
-
+#ifndef QDP_NO_LIBXML2
 //! XML output
 template<class T, int N, template<class,int> class C> 
 inline
@@ -222,7 +222,7 @@ XMLWriter& operator<<(XMLWriter& xml, const PVector<T,N,C>& d)
   xml.closeTag();  // Vector
   return xml;
 }
-
+#endif
 /*! @} */  // end of group primvector
 
 
