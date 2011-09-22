@@ -2738,12 +2738,16 @@ else
 
 fi;
 
+if test "X${ac_generics}X" != "XnoX";
+then
+
 cat >>confdefs.h <<_ACEOF
-#define QDP_USE_GENERIC_OPTS ${ac_generics}
+#define QDP_USE_GENERIC_OPTS 1
 _ACEOF
 
 CONFIG_GENERICS=${ac_generics}
 
+fi
 { echo "$as_me:$LINENO: Fallback to generic C routines if needed: ${ac_generics}" >&5
 echo "$as_me: Fallback to generic C routines if needed: ${ac_generics}" >&6;}
 

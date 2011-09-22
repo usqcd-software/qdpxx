@@ -82,8 +82,12 @@ AC_ARG_ENABLE(generics,
 	[ac_generics=${enableval}],
 	[ac_generics="yes"]
 )
-AC_DEFINE_UNQUOTED(QDP_USE_GENERIC_OPTS, ${ac_generics}, [Use generic C optimizations])
+
+if test "X${ac_generics}X" != "XnoX";
+then
+AC_DEFINE_UNQUOTED(QDP_USE_GENERIC_OPTS, [1] , [Use generic C optimizations])
 AC_SUBST(CONFIG_GENERICS, [${ac_generics}])
+fi
 dnl tell the user
 AC_MSG_NOTICE([Fallback to generic C routines if needed: ${ac_generics}])
 
