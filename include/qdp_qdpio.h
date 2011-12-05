@@ -714,7 +714,6 @@ namespace QDP
   //! Reads an OScalar object
   /*!
     This implementation is only correct for scalar ILattice
-
     \param rec_xml The (user) record metadata.
     \param sl The data
   */
@@ -778,7 +777,7 @@ namespace QDP
       QDPIO::cout << "Reading I or U Precision" << endl;
       status = QIO_read_record_data(qio_in,
 				    &(QDPOScalarFactoryPut<T> ),
-				    s1.size()*sizeof(T),
+				    sizeof(T),
 				    sizeof(typename WordType<T>::Type_t),
 				    (void *)(&(s1.elem())));
       if (status != QIO_SUCCESS) { 
