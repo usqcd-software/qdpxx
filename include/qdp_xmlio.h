@@ -163,6 +163,8 @@ namespace QDP
   //! Xpath query
   void read(XMLReader& xml, const std::string& s, std::string& input);
   //! Xpath query
+  void read(XMLReader& xml, const std::string& s, char& input);
+  //! Xpath query
   void read(XMLReader& xml, const std::string& s, int& input);
   //! Xpath query
   void read(XMLReader& xml, const std::string& s, unsigned int& input);

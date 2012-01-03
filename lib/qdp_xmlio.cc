@@ -243,6 +243,13 @@ namespace QDP
   {
     xml.get(xpath, result);
   }
+  void read(XMLReader& xml, const std::string& xpath, char& result)
+  {
+    // Gruesome hack. For some inexplicable reason we don't have read of a char in xpath_reader.
+    std::string d;
+    xml.get(xpath, d);
+    result = d[0];
+  }
   void read(XMLReader& xml, const std::string& xpath, int& result)
   {
     xml.get(xpath, result);
