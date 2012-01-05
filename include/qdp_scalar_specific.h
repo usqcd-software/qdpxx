@@ -23,7 +23,7 @@ namespace Layout
 //-----------------------------------------------------------------------------
 // Internal ops designed to look like those in parscalar
 // These dummy routines exist just to make code more portable
-namespace Internal
+namespace QDPInternal
 {
   //! Dummy array sum accross all nodes
   template<class T>

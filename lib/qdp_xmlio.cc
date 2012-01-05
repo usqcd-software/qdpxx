@@ -133,7 +133,7 @@ namespace QDP
       BasicXPathReader::get(xpath, result);
 
     // broadcast string
-    Internal::broadcast_str(result);
+    QDPInternal::broadcast_str(result);
   }
 
   void XMLReader::get(const std::string& xpath, int& result)
@@ -181,7 +181,7 @@ namespace QDP
     }
 
     // Now broadcast back out to all nodes
-    Internal::broadcast(result);
+    QDPInternal::broadcast(result);
   }
 
   void XMLReader::print(ostream& os)
@@ -196,7 +196,7 @@ namespace QDP
     }
 
     // Now broadcast back out to all nodes
-    Internal::broadcast_str(s);
+    QDPInternal::broadcast_str(s);
     os << s;
   }
    
@@ -216,7 +216,7 @@ namespace QDP
     }
 
     // Now broadcast back out to all nodes
-    Internal::broadcast_str(s);
+    QDPInternal::broadcast_str(s);
     os << s;
   }
    
@@ -227,7 +227,7 @@ namespace QDP
       n = BasicXPathReader::count(xpath);
 
     // Now broadcast back out to all nodes
-    Internal::broadcast(n);
+    QDPInternal::broadcast(n);
     return n;
   }
    
@@ -874,7 +874,7 @@ namespace QDP
       if (Layout::primaryNode()) 
 	s = output_stream.is_open();
 
-      Internal::broadcast(s);
+      QDPInternal::broadcast(s);
     }
 
     return s;
@@ -901,7 +901,7 @@ namespace QDP
       if (Layout::primaryNode()) 
 	s = output_stream.fail();
 
-      Internal::broadcast(s);
+      QDPInternal::broadcast(s);
     }
 
     return s;

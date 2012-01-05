@@ -152,7 +152,7 @@ namespace QDP
       if (Layout::primaryNode()) 
 	ret = db.getMaxUserInfoLen();
 
-      Internal::broadcast(ret);
+      QDPInternal::broadcast(ret);
       return ret;
     }
 
@@ -171,7 +171,7 @@ namespace QDP
       if (Layout::primaryNode()) 
 	ret = db.getMaxNumberConfigs();
 
-      Internal::broadcast(ret);
+      QDPInternal::broadcast(ret);
       return ret;
     }
 
@@ -185,7 +185,7 @@ namespace QDP
       if (Layout::primaryNode()) 
 	ret = db.fileExists(file);
 
-      Internal::broadcast(ret);
+      QDPInternal::broadcast(ret);
       return ret;
     }
 
@@ -206,7 +206,7 @@ namespace QDP
       if (Layout::primaryNode()) 
 	ret = db.open(file, open_flags, mode);
 
-      Internal::broadcast(ret);
+      QDPInternal::broadcast(ret);
       if (ret != 0)
       {
 	QDPIO::cerr << "Cannot open db file= " << file << endl;
@@ -221,7 +221,7 @@ namespace QDP
       if (Layout::primaryNode()) 
 	ret = db.close();
 
-      Internal::broadcast(ret);
+      QDPInternal::broadcast(ret);
       if (ret != 0)
       {
 	QDPIO::cerr << "Error closing db file" << endl;
@@ -240,7 +240,7 @@ namespace QDP
       if (Layout::primaryNode()) 
 	ret = db.exist(key);
 
-      Internal::broadcast(ret);
+      QDPInternal::broadcast(ret);
     
       return ret;
     }
@@ -260,7 +260,7 @@ namespace QDP
       if (Layout::primaryNode()) 
 	ret = db.insert(key, data);
 
-      Internal::broadcast(ret);
+      QDPInternal::broadcast(ret);
       if (ret != 0)
       {
 	QDPIO::cerr << __func__ << ": error inserting into db" << endl;
@@ -282,7 +282,7 @@ namespace QDP
       if (Layout::primaryNode()) 
 	ret = db.insertBinary(key, data);
 
-      Internal::broadcast(ret);
+      QDPInternal::broadcast(ret);
       if (ret != 0)
       {
 	QDPIO::cerr << __func__ << ": error in db" << endl;
@@ -305,7 +305,7 @@ namespace QDP
       else
 	notImplemented();
 
-      Internal::broadcast(ret);
+      QDPInternal::broadcast(ret);
       return ret;
     }
 
@@ -325,7 +325,7 @@ namespace QDP
       else
 	notImplemented();
 
-      Internal::broadcast(ret);
+      QDPInternal::broadcast(ret);
       return ret;
     }
 
@@ -392,7 +392,7 @@ namespace QDP
       if (Layout::primaryNode()) 
 	ret = db.storageName();
 
-      Internal::broadcast_str(ret);
+      QDPInternal::broadcast_str(ret);
       return ret;
     }
 
@@ -409,7 +409,7 @@ namespace QDP
       if (Layout::primaryNode()) 
 	ret = db.insertUserdata(user_data);
 
-      Internal::broadcast(ret);
+      QDPInternal::broadcast(ret);
       if (ret != 0)
       {
 	QDPIO::cerr << __func__ << ": error inserting user data into db" << endl;
@@ -433,14 +433,14 @@ namespace QDP
         notImplemented();
       */
 
-      Internal::broadcast(ret);
+      QDPInternal::broadcast(ret);
       if (ret != 0)
       {
 	QDPIO::cerr << __func__ << ": error getting user data from db" << endl;
 	QDP_abort(1);
       }
 			
-      Internal::broadcast_str(user_data);
+      QDPInternal::broadcast_str(user_data);
     }
 
 

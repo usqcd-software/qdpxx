@@ -258,7 +258,7 @@ namespace QDP {
       }
 
       // First must broadcast size of string
-      Internal::broadcast(lleng);
+      QDPInternal::broadcast(lleng);
 
       // Now every node can alloc space for string
       dd_tmp = new(nothrow) char[lleng];
@@ -270,7 +270,7 @@ namespace QDP {
 	memcpy(dd_tmp, result.c_str(), lleng);
   
       // Now broadcast char array out to all nodes
-      Internal::broadcast((void *)dd_tmp, lleng);
+      QDPInternal::broadcast((void *)dd_tmp, lleng);
 
       // All nodes can now grab char array and make a string
       result = dd_tmp;
@@ -289,12 +289,12 @@ namespace QDP {
     void clearToSend(void *buffer, int count, int node)
     { 
       // On non-grid machines, use a clear-to-send like protocol
-      if (! Internal::gridArch())
+      if (! QDPInternal::gridArch())
       {
 	if(Layout::nodeNumber() == 0 && node != 0)
-	  Internal::sendToWait(buffer, node, count);
+	  QDPInternal::sendToWait(buffer, node, count);
 	if(Layout::nodeNumber() == node && node != 0)
-	  Internal::recvFromWait(buffer, 0, count);
+	  QDPInternal::recvFromWait(buffer, 0, count);
       }
     }
 
@@ -392,7 +392,7 @@ namespace QDP {
       if (node != old_node)
       {
 	// On non-grid machines, use a clear-to-send like protocol
-	Internal::clearToSend(recv_buf,sizeof(int),node);
+	QDPInternal::clearToSend(recv_buf,sizeof(int),node);
 	old_node = node;
       }
     
@@ -411,13 +411,13 @@ namespace QDP {
       {
 #if 1
 	// All nodes participate
-	Internal::route((void *)recv_buf, node, 0, tot_size);
+	QDPInternal::route((void *)recv_buf, node, 0, tot_size);
 #else
 	if (Layout::primaryNode())
-	  Internal::recvFromWait((void *)recv_buf, node, tot_size);
+	  QDPInternal::recvFromWait((void *)recv_buf, node, tot_size);
 
 	if (Layout::nodeNumber() == node)
-	  Internal::sendToWait((void *)recv_buf, 0, tot_size);
+	  QDPInternal::sendToWait((void *)recv_buf, 0, tot_size);
 #endif
       }
 
@@ -446,7 +446,7 @@ namespace QDP {
 
     // Send nodes must wait for a ready signal from the master node
     // to prevent message pileups on the master node
-    Internal::clearToSend(recv_buf,sizeof(int),node);
+    QDPInternal::clearToSend(recv_buf,sizeof(int),node);
   
     // Copy to buffer: be really careful since max(linear) could vary among nodes
     if (Layout::nodeNumber() == node)
@@ -457,13 +457,13 @@ namespace QDP {
     {
 #if 1
       // All nodes participate
-      Internal::route((void *)recv_buf, node, 0, tot_size);
+      QDPInternal::route((void *)recv_buf, node, 0, tot_size);
 #else
       if (Layout::primaryNode())
-	Internal::recvFromWait((void *)recv_buf, node, tot_size);
+	QDPInternal::recvFromWait((void *)recv_buf, node, tot_size);
 
       if (Layout::nodeNumber() == node)
-	Internal::sendToWait((void *)recv_buf, 0, tot_size);
+	QDPInternal::sendToWait((void *)recv_buf, 0, tot_size);
 #endif
     }
 
@@ -516,7 +516,7 @@ namespace QDP {
       if (node != old_node)
       {
 	// On non-grid machines, use a clear-to-send like protocol
-	Internal::clearToSend(recv_buf,sizeof(int),node);
+	QDPInternal::clearToSend(recv_buf,sizeof(int),node);
 	old_node = node;
       }
     
@@ -548,15 +548,15 @@ namespace QDP {
 	// We are using the point-to-point version
 	if (Layout::primaryNode())
 	{
-	  Internal::recvFromWait((void *)recv_buf_size, node, sizeof(int));
+	  QDPInternal::recvFromWait((void *)recv_buf_size, node, sizeof(int));
 	  memcpy((void *)&site_cnt, recv_buf_size, sizeof(int));
-	  Internal::recvFromWait((void *)recv_buf, node, site_cnt*sizemem);
+	  QDPInternal::recvFromWait((void *)recv_buf, node, site_cnt*sizemem);
 	}
 
 	if (Layout::nodeNumber() == node)
 	{
-	  Internal::sendToWait((void *)recv_buf_size, 0, sizeof(int));
-	  Internal::sendToWait((void *)recv_buf, 0, site_cnt*sizemem);
+	  QDPInternal::sendToWait((void *)recv_buf_size, 0, sizeof(int));
+	  QDPInternal::sendToWait((void *)recv_buf, 0, site_cnt*sizemem);
 	}
 #endif
       }
@@ -598,13 +598,13 @@ namespace QDP {
       {
 #if 1
 	// All nodes participate
-	Internal::route((void *)recv_buf, 0, node, tot_size);
+	QDPInternal::route((void *)recv_buf, 0, node, tot_size);
 #else
 	if (Layout::primaryNode())
-	  Internal::sendToWait((void *)recv_buf, node, tot_size);
+	  QDPInternal::sendToWait((void *)recv_buf, node, tot_size);
 
 	if (Layout::nodeNumber() == node)
-	  Internal::recvFromWait((void *)recv_buf, 0, tot_size);
+	  QDPInternal::recvFromWait((void *)recv_buf, 0, tot_size);
 #endif
       }
 
@@ -647,13 +647,13 @@ namespace QDP {
     {
 #if 1
       // All nodes participate
-      Internal::route((void *)recv_buf, 0, node, tot_size);
+      QDPInternal::route((void *)recv_buf, 0, node, tot_size);
 #else
       if (Layout::primaryNode())
-	Internal::sendToWait((void *)recv_buf, node, tot_size);
+	QDPInternal::sendToWait((void *)recv_buf, node, tot_size);
 
       if (Layout::nodeNumber() == node)
-	Internal::recvFromWait((void *)recv_buf, 0, tot_size);
+	QDPInternal::recvFromWait((void *)recv_buf, 0, tot_size);
 #endif
     }
 
@@ -721,13 +721,13 @@ namespace QDP {
 	// We are using the point-to-point version
 	if (Layout::primaryNode())
 	{
-	  Internal::recvFromWait((void *)recv_buf_size, node, sizeof(int));
+	  QDPInternal::recvFromWait((void *)recv_buf_size, node, sizeof(int));
 	  memcpy((void *)&site_cnt, recv_buf_size, sizeof(int));
 	}
 
 	if (Layout::nodeNumber() == node)
 	{
-	  Internal::sendToWait((void *)recv_buf_size, 0, sizeof(int));
+	  QDPInternal::sendToWait((void *)recv_buf_size, 0, sizeof(int));
 	}
       }
 
@@ -745,10 +745,10 @@ namespace QDP {
 #else
 	// We are using the point-to-point version
 	if (Layout::primaryNode())
-	  Internal::sendToWait((void *)recv_buf, node, site_cnt*sizemem);
+	  QDPInternal::sendToWait((void *)recv_buf, node, site_cnt*sizemem);
 
 	if (Layout::nodeNumber() == node)
-	  Internal::recvFromWait((void *)recv_buf, 0, site_cnt*sizemem);
+	  QDPInternal::recvFromWait((void *)recv_buf, 0, site_cnt*sizemem);
 #endif
       }
 
@@ -800,12 +800,12 @@ namespace QDP {
 	{
 #if 1
 	  // All nodes participate
-	  Internal::route((void *)recv_buf, 0, node, tot_size);
+	  QDPInternal::route((void *)recv_buf, 0, node, tot_size);
 #else
 	  if (Layout::primaryNode())
-	    Internal::sendToWait((void *)recv_buf, node, tot_size);
+	    QDPInternal::sendToWait((void *)recv_buf, node, tot_size);
 	  if (Layout::nodeNumber() == node)
-	    Internal::recvFromWait((void *)recv_buf, 0, tot_size);
+	    QDPInternal::recvFromWait((void *)recv_buf, 0, tot_size);
 #endif
 	}
 
@@ -847,7 +847,7 @@ namespace QDP {
 	// to prevent message pileups on the master node
 	if (node != old_node){
 	  // On non-grid machines, use a clear-to-send like protocol
-	  Internal::clearToSend(recv_buf,sizeof(int),node);
+	  QDPInternal::clearToSend(recv_buf,sizeof(int),node);
 	  old_node = node;}
     
 	// Copy to buffer: be really careful since max(linear) could vary among nodes
@@ -863,12 +863,12 @@ namespace QDP {
 	{
 #if 1
 	  // All nodes participate
-	  Internal::route((void *)recv_buf, node, 0, tot_size);
+	  QDPInternal::route((void *)recv_buf, node, 0, tot_size);
 #else
 	  if (Layout::primaryNode())
-	    Internal::recvFromWait((void *)recv_buf, node, tot_size);
+	    QDPInternal::recvFromWait((void *)recv_buf, node, tot_size);
 	  if (Layout::nodeNumber() == node)
-	    Internal::sendToWait((void *)recv_buf, 0, tot_size);
+	    QDPInternal::sendToWait((void *)recv_buf, 0, tot_size);
 #endif
 	}
 
@@ -963,7 +963,7 @@ namespace QDP {
     delete[] chk_buf;
 
     // Get all nodes to contribute
-    Internal::globalSumArray((unsigned int*)&checksum, 1);   // g++ requires me to narrow the type to unsigned int
+    QDPInternal::globalSumArray((unsigned int*)&checksum, 1);   // g++ requires me to narrow the type to unsigned int
 
     return checksum;
   }
@@ -1023,13 +1023,13 @@ namespace QDP {
       {
 #if 1
 	// All nodes participate
-	Internal::route((void *)recv_buf, 0, node, tot_size);
+	QDPInternal::route((void *)recv_buf, 0, node, tot_size);
 #else
 	if (Layout::primaryNode())
-	  Internal::sendToWait((void *)recv_buf, node, tot_size);
+	  QDPInternal::sendToWait((void *)recv_buf, node, tot_size);
 
 	if (Layout::nodeNumber() == node)
-	  Internal::recvFromWait((void *)recv_buf, 0, tot_size);
+	  QDPInternal::recvFromWait((void *)recv_buf, 0, tot_size);
 #endif
       }
 
@@ -1039,7 +1039,7 @@ namespace QDP {
 
     delete[] recv_buf;
 
-    Internal::broadcast(checksum);
+    QDPInternal::broadcast(checksum);
 
     // Reconstruct the gauge field
     ColorMatrix  sitefield;
@@ -1192,13 +1192,13 @@ namespace QDP {
       {
 #if 1
 	// All nodes participate
-	Internal::route((void *)recv_buf, node, 0, tot_size);
+	QDPInternal::route((void *)recv_buf, node, 0, tot_size);
 #else
 	if (Layout::primaryNode())
-	  Internal::recvFromWait((void *)recv_buf, node, tot_size);
+	  QDPInternal::recvFromWait((void *)recv_buf, node, tot_size);
 
 	if (Layout::nodeNumber() == node)
-	  Internal::sendToWait((void *)recv_buf, 0, tot_size);
+	  QDPInternal::sendToWait((void *)recv_buf, 0, tot_size);
 #endif
       }
 

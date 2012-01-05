@@ -257,7 +257,7 @@ namespace QDP
     
       if (debug) {
 	int user_len = user_data.length();
-	Internal::broadcast(user_len);
+	QDPInternal::broadcast(user_len);
 
 	QDPIO::cout << "Sanity Check 1" << endl; ;
 	pos_type cur_pos = streamer.currentPosition();
@@ -281,7 +281,7 @@ namespace QDP
       if (debug) {
 	QDPIO::cout << "Wrote dummy link: Current Position " << streamer.currentPosition() << endl;
 	int user_len = user_data.length();
-	Internal::broadcast(user_len);
+	QDPInternal::broadcast(user_len);
 
 	QDPIO::cout << "Sanity Check 2" << endl;
 	pos_type cur_pos = streamer.currentPosition();
@@ -690,7 +690,7 @@ namespace QDP
       if ( streamer.is_open() ) 
       { 
 	int user_len = user_data.length();
-	Internal::broadcast(user_len);
+	QDPInternal::broadcast(user_len);
 	
 	streamer.seek( MapObjDiskEnv::getFileMagic().length() + sizeof(int)
 		       + user_len + sizeof(int)

@@ -61,7 +61,7 @@ namespace QDP
 	}
       }
 
-      Internal::broadcast(new_file);
+      QDPInternal::broadcast(new_file);
 
       return new_file;
     }

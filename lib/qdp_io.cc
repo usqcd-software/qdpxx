@@ -21,7 +21,7 @@ namespace QDP
     if (Layout::primaryNode()) 
       s = getIstream().fail();
 
-    Internal::broadcast(s);
+    QDPInternal::broadcast(s);
     return s;
   }
 
@@ -39,7 +39,7 @@ namespace QDP
     }
 
     // First must broadcast size of string
-    Internal::broadcast(lleng);
+    QDPInternal::broadcast(lleng);
 
     // Now every node can alloc space for string
     dd_tmp = new(nothrow) char[lleng];
@@ -51,7 +51,7 @@ namespace QDP
       memcpy(dd_tmp, input.c_str(), lleng);
   
     // Now broadcast char array out to all nodes
-    Internal::broadcast((void *)dd_tmp, lleng);
+    QDPInternal::broadcast((void *)dd_tmp, lleng);
 
     // All nodes can now grab char array and make a string
     input = dd_tmp;
@@ -113,7 +113,7 @@ namespace QDP
       getIstream() >> input;
 
     // Now broadcast back out to all nodes
-    Internal::broadcast(input);
+    QDPInternal::broadcast(input);
   }
 
   // Different bindings for read functions
@@ -240,7 +240,7 @@ namespace QDP
       if (Layout::primaryNode())
 	s = f.is_open();
 
-      Internal::broadcast(s);
+      QDPInternal::broadcast(s);
     }
 
     return s;
@@ -262,7 +262,7 @@ namespace QDP
     if (Layout::primaryNode()) 
       s = getOstream().fail();
 
-    Internal::broadcast(s);
+    QDPInternal::broadcast(s);
     return s;
   }
 
@@ -474,7 +474,7 @@ namespace QDP
       if (Layout::primaryNode())
 	s = f.is_open();
 
-      Internal::broadcast(s);
+      QDPInternal::broadcast(s);
     }
 
     return s;
@@ -503,7 +503,7 @@ namespace QDP
     if (Layout::primaryNode()) 
       s = getIstream().fail();
 
-    Internal::broadcast(s);
+    QDPInternal::broadcast(s);
     return s;
   }
 
@@ -513,7 +513,7 @@ namespace QDP
     // Keep the checksum in sync on all nodes. This only really
     // is needed if nodes do detailed checks on the checksums
     QDPUtil::n_uint32_t chk = internalChecksum();
-    Internal::broadcast(chk);
+    QDPInternal::broadcast(chk);
     internalChecksum() = chk;
     return chk;
   }
@@ -531,7 +531,7 @@ namespace QDP
     if (Layout::primaryNode())
       pos = getIstream().tellg();
 
-    Internal::broadcast(pos);
+    QDPInternal::broadcast(pos);
     return pos;
   }
 
@@ -599,7 +599,7 @@ namespace QDP
       delete[] str;
     }
 
-    Internal::broadcast_str(input);
+    QDPInternal::broadcast_str(input);
   }
 
   void BinaryReader::read(string& input, size_t maxBytes)
@@ -620,8 +620,8 @@ namespace QDP
       internalChecksum() = QDPUtil::crc32(internalChecksum(), "\n", 1);   // account for newline written
     }
 
-    Internal::broadcast(n);
-    Internal::broadcast((void *)str, n);
+    QDPInternal::broadcast(n);
+    QDPInternal::broadcast((void *)str, n);
 
     input = str;
     delete[] str;
@@ -683,7 +683,7 @@ namespace QDP
     readArrayPrimaryNode(input, size, nmemb);
 
     // Now broadcast back out to all nodes
-    Internal::broadcast((void*)input, size*nmemb);
+    QDPInternal::broadcast((void*)input, size*nmemb);
   }
 
   // Read array from the primary node
@@ -901,7 +901,7 @@ namespace QDP
       if (Layout::primaryNode())
 	s = f.is_open();
 
-      Internal::broadcast(s);
+      QDPInternal::broadcast(s);
     }
 
     return s;
@@ -923,7 +923,7 @@ namespace QDP
     if (Layout::primaryNode()) 
       s = getOstream().fail();
 
-    Internal::broadcast(s);
+    QDPInternal::broadcast(s);
     return s;
   }
 
@@ -940,7 +940,7 @@ namespace QDP
     if (Layout::primaryNode())
       pos = getOstream().tellp();
 
-    Internal::broadcast(pos);
+    QDPInternal::broadcast(pos);
     return pos;
   }
 
@@ -1094,7 +1094,7 @@ namespace QDP
     // Keep the checksum in sync on all nodes. This only really
     // is needed if nodes do detailed checks on the checksums
     QDPUtil::n_uint32_t chk = internalChecksum();
-    Internal::broadcast(chk);
+    QDPInternal::broadcast(chk);
     internalChecksum() = chk;
     return chk;
   }
@@ -1308,7 +1308,7 @@ namespace QDP
 	s = f.is_open();
       }
 
-      Internal::broadcast(s);
+      QDPInternal::broadcast(s);
     }
 
     return s;
@@ -1337,7 +1337,7 @@ namespace QDP
     if (Layout::primaryNode()) 
       s = getIOstream().fail();
 
-    Internal::broadcast(s);
+    QDPInternal::broadcast(s);
     return s;
   }
 
@@ -1347,7 +1347,7 @@ namespace QDP
     // Keep the checksum in sync on all nodes. This only really
     // is needed if nodes do detailed checks on the checksums
     QDPUtil::n_uint32_t chk = internalChecksum();
-    Internal::broadcast(chk);
+    QDPInternal::broadcast(chk);
     internalChecksum() = chk;
     return chk;
   }
@@ -1365,7 +1365,7 @@ namespace QDP
     if (Layout::primaryNode())
       pos = getIOstream().tellg();
 
-    Internal::broadcast(pos);
+    QDPInternal::broadcast(pos);
     return pos;
   }
 
@@ -1492,7 +1492,7 @@ namespace QDP
       if (Layout::primaryNode())
 	s = f.is_open();
 
-      Internal::broadcast(s);
+      QDPInternal::broadcast(s);
     }
 
     return s;

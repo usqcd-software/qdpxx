@@ -135,7 +135,7 @@ uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
   delete[] chk_buf;
 
   // Get all nodes to contribute
-  Internal::globalSumArray((unsigned int*)&checksum, 1);   // g++ requires me to narrow the type to unsigned int
+  QDPInternal::globalSumArray((unsigned int*)&checksum, 1);   // g++ requires me to narrow the type to unsigned int
 
   return checksum;
 }
