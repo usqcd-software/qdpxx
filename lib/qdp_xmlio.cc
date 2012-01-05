@@ -401,6 +401,107 @@ namespace QDP
   }
 
 
+  //! Read a XML vector element
+  template<typename T>
+  void readVectorPrimitive(XMLReader& xml, const std::string& xpath, std::vector<T>& result)
+  {
+    std::ostringstream error_message;
+  
+    // Try reading the list as a string
+    std::string list_string;
+    read(xml, xpath, list_string);
+
+    // Count the number of elements
+    std::istringstream list_stream(list_string);
+	
+    int array_size = 0;
+    T dummy;
+    while(list_stream >> dummy)
+      ++array_size;
+
+    if ((! list_stream.eof()) && list_stream.fail())
+    {
+      error_message << "Error in reading array " << xpath << std::endl;
+      throw error_message.str();
+    }
+
+    // Now resize the array to hold the no of elements.
+    result.resize(array_size);
+
+    // Get the elements one by one
+    // I do not understand why, but use a new stringstream
+    //  list_stream.str(list_string);
+    std::istringstream list_stream2(list_string);
+
+    for(int i=0; i < result.size(); i++) 
+    {
+      // read the element.
+      list_stream2 >> result[i];
+    }
+  }
+
+
+//! Read a XML Array element
+  void read(XMLReader& xml, const std::string& xpath, std::vector<int>& result)
+  {
+    readVectorPrimitive<int>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::vector<unsigned int>& result)
+  {
+    readVectorPrimitive<unsigned int>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::vector<short int>& result)
+  {
+    readVectorPrimitive<short int>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::vector<unsigned short int>& result)
+  {
+    readVectorPrimitive<unsigned short int>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::vector<long int>& result)
+  {
+    readVectorPrimitive<long int>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::vector<unsigned long int>& result)
+  {
+    readVectorPrimitive<unsigned long int>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::vector<float>& result)
+  {
+    readVectorPrimitive<float>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::vector<double>& result)
+  {
+    readVectorPrimitive<double>(xml, xpath, result);
+  }
+//void read(XMLReader& xml, const std::string& xpath, std::vector<bool>& result)
+//{
+//  readVectorPrimitive<bool>(xml, xpath, result);
+//}
+  template<>
+  void read(XMLReader& xml, const std::string& xpath, std::vector<Integer>& result)
+  {
+    readVectorPrimitive<Integer>(xml, xpath, result);
+  }
+  template<>
+  void read(XMLReader& xml, const std::string& xpath, std::vector<Real32>& result)
+  {
+    readVectorPrimitive<Real32>(xml, xpath, result);
+  }
+  template<>
+  void read(XMLReader& xml, const std::string& xpath, std::vector<Real64>& result)
+  {
+    readVectorPrimitive<Real64>(xml, xpath, result);
+  }
+  template<>
+  void read(XMLReader& xml, const std::string& xpath, std::vector<Boolean>& result)
+  {
+    readVectorPrimitive<Boolean>(xml, xpath, result);
+  }
+
+
+
+
   //--------------------------------------------------------------------------------
   // XML writer base class
   XMLWriter::XMLWriter()
@@ -802,6 +903,136 @@ namespace QDP
   }
 
 
+  // Write a vector of basic types
+  template<typename T>
+  void writeVectorPrimitive(XMLWriter& xml, const std::string& s, const std::vector<T>& s1)
+  {
+    std::ostringstream output;
+
+    if (s1.size() > 0)
+    {
+      output << s1[0];
+      for(unsigned index=1; index < s1.size(); index++) 
+	output << " " << s1[index];
+    }
+    
+    // Write the array - do not use a normal string write
+    xml.openTag(s);
+    xml << output.str();
+    xml.closeTag();
+  }
+
+
+  void write(XMLWriter& xml, const std::string& xpath, const std::vector<int>& output)
+  {
+    writeVectorPrimitive<int>(xml, xpath, output);
+  }
+  void write(XMLWriter& xml, const std::string& xpath, const std::vector<unsigned int>& output)
+  {
+    writeVectorPrimitive<unsigned int>(xml, xpath, output);
+  }
+  void write(XMLWriter& xml, const std::string& xpath, const std::vector<short int>& output)
+  {
+    writeVectorPrimitive<short int>(xml, xpath, output);
+  }
+  void write(XMLWriter& xml, const std::string& xpath, const std::vector<unsigned short int>& output)
+  {
+    writeVectorPrimitive<unsigned short int>(xml, xpath, output);
+  }
+  void write(XMLWriter& xml, const std::string& xpath, const std::vector<long int>& output)
+  {
+    writeVectorPrimitive<long int>(xml, xpath, output);
+  }
+  void write(XMLWriter& xml, const std::string& xpath, const std::vector<unsigned long int>& output)
+  {
+    writeVectorPrimitive<unsigned long int>(xml, xpath, output);
+  }
+  template<>
+  void write(XMLWriter& xml, const std::string& s, const std::vector<float>& s1)
+  {
+    std::ostringstream output;
+    output.precision(7);
+
+    if (s1.size() > 0)
+    {
+      output << s1[0];
+      for(int index=1; index < s1.size(); index++) 
+	output << " " << s1[index];
+    }
+    
+    // Write the array - do not use a normal string write
+    xml.openTag(s);
+    xml << output.str();
+    xml.closeTag();
+  }
+  template<>
+  void write(XMLWriter& xml, const std::string& s, const std::vector<double>& s1)
+  {
+    std::ostringstream output;
+    output.precision(15);
+
+    if (s1.size() > 0)
+    {
+      output << s1[0];
+      for(int index=1; index < s1.size(); index++) 
+	output << " " << s1[index];
+    }
+    
+    // Write the array - do not use a normal string write
+    xml.openTag(s);
+    xml << output.str();
+    xml.closeTag();
+  }
+  void write(XMLWriter& xml, const std::string& xpath, const std::vector<bool>& output)
+  {
+    writeVectorPrimitive<bool>(xml, xpath, output);
+  }
+  template<>
+  void write(XMLWriter& xml, const std::string& xpath, const std::vector<Integer>& output)
+  {
+    writeVectorPrimitive<Integer>(xml, xpath, output);
+  }
+  template<>
+  void write(XMLWriter& xml, const std::string& s, const std::vector<Real32>& s1)
+  {
+    std::ostringstream output;
+    output.precision(7);
+
+    if (s1.size() > 0)
+    {
+      output << s1[0];
+      for(int index=1; index < s1.size(); index++) 
+	output << " " << s1[index];
+    }
+    
+    // Write the array - do not use a normal string write
+    xml.openTag(s);
+    xml << output.str();
+    xml.closeTag();
+  }
+  template<>
+  void write(XMLWriter& xml, const std::string& s, const std::vector<Real64>& s1)
+  {
+    std::ostringstream output;
+    output.precision(15);
+
+    if (s1.size() > 0)
+    {
+      output << s1[0];
+      for(int index=1; index < s1.size(); index++) 
+	output << " " << s1[index];
+    }
+    
+    // Write the array - do not use a normal string write
+    xml.openTag(s);
+    xml << output.str();
+    xml.closeTag();
+  }
+  template<>
+  void write(XMLWriter& xml, const std::string& xpath, const std::vector<Boolean>& output)
+  {
+    writeVectorPrimitive<Boolean>(xml, xpath, output);
+  }
 
   //--------------------------------------------------------------------------------
   // XML writer to a buffer

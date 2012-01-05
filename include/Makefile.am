@@ -153,6 +153,7 @@ nobase_include_HEADERS = \
 		qdp_layout.h \
 		qdp_map.h \
 		qdp_multi.h \
+		qdp_arrays.h \
 		qdp_newops.h \
 		qdp_optops.h \
 		qdp_outer.h \

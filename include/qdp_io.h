@@ -633,6 +633,53 @@ namespace QDP
   }
 
 
+  //! Read a binary std::vector object
+  /*!
+    This assumes that the number of elements to be read is also written in
+    the file, \e i.e. that the data was written with the corresponding write
+    code.
+    \param bin The initialised binary reader
+    \param d The data to be filled.
+
+    \pre The binary reader must have opened the file.
+    \post The std::vector can be resized.
+  */
+  template<class T>
+  inline
+  void read(BinaryReader& bin, std::vector<T>& d)
+  {
+    int n;
+    read(bin, n);    // the size is always written, even if 0
+    d.resize(n);
+
+    for(int i=0; i < d.size(); ++i)
+      read(bin, d[i]);
+  }
+
+  //! Read a binary Array1dO object
+  /*!
+    This assumes that the number of elements to be read is also written in
+    the file, \e i.e. that the data was written with the corresponding write
+    code.
+    \param bin The initialised binary reader
+    \param d The data to be filled.
+
+    \pre The binary reader must have opened the file.
+    \post The ADAT::Array1dO can be resized.
+  */
+  template<class T>
+  inline
+  void read(BinaryReader& bin, Array1dO<T>& d)
+  {
+    int n;
+    read(bin, n);    // the size is always written, even if 0
+    d.resize(n);
+
+    for(int i=1; i <= d.size(); ++i)
+      read(bin, d[i]);
+  }
+
+
   //--------------------------------------------------------------------------------
   //!  Binary buffer input class
   /*!
@@ -991,6 +1038,43 @@ namespace QDP
 
     for(int i=0; i < d.numElem(); ++i)
       write(bin, d.getElem(i));
+  }
+
+
+  //! Write all of a binary std::vector object
+  /*!
+    This also writes the number of elements to the file.
+    \param bin The initialised binary reader
+    \param d The data to be filled.
+
+    \pre The binary reader must have opened the file.
+  */
+  template<class T>
+  inline
+  void write(BinaryWriter& bin, const std::vector<T>& d)
+  {
+    int n = d.size();
+    write(bin, n);    // always write the size
+    for(int i=0; i < d.size(); ++i)
+      write(bin, d[i]);
+  }
+
+  //! Write all of a binary Array object
+  /*!
+    This also writes the number of elements to the file.
+    \param bin The initialised binary reader
+    \param d The data to be filled.
+
+    \pre The binary reader must have opened the file.
+  */
+  template<class T>
+  inline
+  void write(BinaryWriter& bin, const Array1dO<T>& d)
+  {
+    int n = d.size();
+    write(bin, n);    // always write the size
+    for(int i=1; i <= d.size(); ++i)
+      write(bin, d[i]);
   }
 
 
