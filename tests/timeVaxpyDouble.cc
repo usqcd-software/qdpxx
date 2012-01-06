@@ -85,7 +85,7 @@ time_VAXPBY::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -109,7 +109,7 @@ time_VAXPBY::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -177,7 +177,7 @@ time_VAXMBYZ::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -201,7 +201,7 @@ time_VAXMBYZ::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -262,7 +262,7 @@ time_VAXMBY::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -286,7 +286,7 @@ time_VAXMBY::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -340,7 +340,7 @@ time_VAXPYZ::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -364,7 +364,7 @@ time_VAXPYZ::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -415,7 +415,7 @@ time_VAXPY::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -439,7 +439,7 @@ time_VAXPY::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -505,7 +505,7 @@ time_VAXMY::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -528,7 +528,7 @@ time_VAXMY::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -594,7 +594,7 @@ time_VAYPX::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -617,7 +617,7 @@ time_VAYPX::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -666,7 +666,7 @@ time_VAXMYZ::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -689,7 +689,7 @@ time_VAXMYZ::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -737,7 +737,7 @@ time_VSCAL::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -760,7 +760,7 @@ time_VSCAL::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -805,7 +805,7 @@ time_LOCAL_SUMSQ::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -828,7 +828,7 @@ time_LOCAL_SUMSQ::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -865,13 +865,13 @@ time_SUMSQ::run(void)
     
     for(int i=0; i < iters; i++) { 
       local_sumsq4(res, xptr, n_4vec);
-      Internal::globalSum(lnorm);
+      QDPInternal::globalSum(lnorm);
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -889,13 +889,13 @@ time_SUMSQ::run(void)
   
   for(int i=0; i < iters; ++i) {
       local_sumsq4(res, xptr, n_4vec);
-      Internal::globalSum(lnorm);
+      QDPInternal::globalSum(lnorm);
   }
   swatch.stop();
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -943,7 +943,7 @@ time_LOCAL_VCDOT::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -966,7 +966,7 @@ time_LOCAL_VCDOT::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -1006,13 +1006,13 @@ time_VCDOT::run(void)
     
     for(int i=0; i < iters; i++) { 
       local_vcdot4(res, yptr, xptr, n_4vec);
-      Internal::globalSum(lnorm);
+      QDPInternal::globalSum(lnorm);
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -1030,13 +1030,13 @@ time_VCDOT::run(void)
   
   for(int i=0; i < iters; ++i) {
     local_vcdot4(res, yptr, xptr, n_4vec);
-    Internal::globalSum(lnorm);
+    QDPInternal::globalSum(lnorm);
   }
   swatch.stop();
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -1080,7 +1080,7 @@ time_LOCAL_VCDOT_REAL::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -1103,7 +1103,7 @@ time_LOCAL_VCDOT_REAL::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -1143,13 +1143,13 @@ time_VCDOT_REAL::run(void)
     
     for(int i=0; i < iters; i++) { 
       local_vcdot_real4(res, yptr, xptr, n_4vec);
-      Internal::globalSum(lnorm);
+      QDPInternal::globalSum(lnorm);
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -1167,13 +1167,13 @@ time_VCDOT_REAL::run(void)
   
   for(int i=0; i < iters; ++i) {
     local_vcdot_real4(res, yptr, xptr, n_4vec);
-    Internal::globalSum(lnorm);
+    QDPInternal::globalSum(lnorm);
   }
   swatch.stop();
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -1229,7 +1229,7 @@ time_QDP_PEQ::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -1252,7 +1252,7 @@ time_QDP_PEQ::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -1291,7 +1291,7 @@ void time_QDP_AXPYZ::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -1314,7 +1314,7 @@ void time_QDP_AXPYZ::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 

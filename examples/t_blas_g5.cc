@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -211,7 +211,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -256,7 +256,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -287,7 +287,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -298,7 +298,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -331,7 +331,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -343,7 +343,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -362,7 +362,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -373,7 +373,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(3*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -407,7 +407,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -419,7 +419,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -438,7 +438,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -449,7 +449,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -483,7 +483,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -495,7 +495,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -514,7 +514,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -525,7 +525,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -558,7 +558,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -570,7 +570,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -589,7 +589,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -600,7 +600,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -633,7 +633,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -645,7 +645,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -664,7 +664,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -675,7 +675,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -708,7 +708,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -720,7 +720,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -739,7 +739,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -750,7 +750,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -783,7 +783,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -795,7 +795,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -814,7 +814,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -825,7 +825,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -858,7 +858,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -870,7 +870,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -889,7 +889,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -900,7 +900,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -932,7 +932,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -944,7 +944,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -963,7 +963,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -974,7 +974,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -1007,7 +1007,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -1019,7 +1019,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -1038,7 +1038,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -1049,7 +1049,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -1082,7 +1082,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -1094,7 +1094,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -1113,7 +1113,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -1124,7 +1124,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -1165,7 +1165,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -1177,7 +1177,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(4*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -1196,7 +1196,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -1207,7 +1207,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(4*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -1245,7 +1245,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -1257,7 +1257,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(4*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -1276,7 +1276,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -1287,7 +1287,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(4*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -1325,7 +1325,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -1337,7 +1337,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(4*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -1356,7 +1356,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -1367,7 +1367,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(4*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -1405,7 +1405,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
 
     }
     
@@ -1417,7 +1417,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(4*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -1436,7 +1436,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -1447,7 +1447,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
-    Internal::broadcast(time);
+    QDPInternal::broadcast(time);
     
     double Nflops = (double)(4*Nc*Ns*Layout::sitesOnNode()*iter);
     QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;

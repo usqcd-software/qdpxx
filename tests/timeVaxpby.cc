@@ -39,7 +39,7 @@ time_VAXPBYZ_double::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -64,7 +64,7 @@ time_VAXPBYZ_double::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)t_iters;
 
@@ -110,7 +110,7 @@ time_VAXPBYZ_float::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -135,7 +135,7 @@ time_VAXPBYZ_float::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)t_iters;
 

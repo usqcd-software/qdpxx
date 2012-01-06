@@ -37,7 +37,7 @@ timeMeqHM_QDP::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -60,7 +60,7 @@ timeMeqHM_QDP::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -127,7 +127,7 @@ timeMeqHM::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -150,7 +150,7 @@ timeMeqHM::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -193,7 +193,7 @@ timeMPeqaHM_QDP::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -216,7 +216,7 @@ timeMPeqaHM_QDP::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 
@@ -285,7 +285,7 @@ timeMPeqaHM::run(void)
     time=swatch.getTimeInSeconds();
 
     // Average time over nodes
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     if (time < n_secs) {
@@ -308,7 +308,7 @@ timeMPeqaHM::run(void)
   time=swatch.getTimeInSeconds();
 
   // Average time over nodes
-  Internal::globalSum(time);
+  QDPInternal::globalSum(time);
   time /= (double)Layout::numNodes();
   time /= (double)iters;
 

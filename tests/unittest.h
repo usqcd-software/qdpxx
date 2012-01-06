@@ -184,7 +184,7 @@ private:
     else { 
       summand = 0;
     }
-    Internal::globalSum(summand);
+    QDPInternal::globalSum(summand);
     return summand;
   }
   

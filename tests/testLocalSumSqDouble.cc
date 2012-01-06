@@ -40,7 +40,7 @@ testLocalSumSq4_1::run()
       }
     }
   }
-  Internal::globalSum(lsum_hand);
+  QDPInternal::globalSum(lsum_hand);
 
   Double lsum_opt=Double(0);
   REAL64* sumptr=&(lsum_opt.elem().elem().elem().elem());
@@ -49,7 +49,7 @@ testLocalSumSq4_1::run()
 
   // This may eventually be threaded
   local_sumsq4(sumptr, xptr, n_4vec);
-  Internal::globalSum(lsum_opt);
+  QDPInternal::globalSum(lsum_opt);
 
   Double diff = fabs(lsum_opt - lsum_hand);
   Double dof  = Double(Layout::vol()*4*3*2);
@@ -80,7 +80,7 @@ testLocalSumSq4_2::run()
   // This may be threaded under the hood.
 
   local_sumsq4(sumptr, xptr, n_4vec);
-  Internal::globalSum(lsum_opt);
+  QDPInternal::globalSum(lsum_opt);
 
   Double diff = fabs(lsum_opt - lsum_qdp);
   Double dof=Double(Layout::vol()*4*3*2);
@@ -120,7 +120,7 @@ testLocalSumSq4_3::run()
       }
     }
   }
-  Internal::globalSum(lsum_hand);
+  QDPInternal::globalSum(lsum_hand);
 
   // This should be threaded...
   Double lsum_qdp = norm2(x);

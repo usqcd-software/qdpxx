@@ -50,8 +50,8 @@ testLocalVcdot4_1::run()
     }
   }
 
-  Internal::globalSum(lsum_hand_re);
-  Internal::globalSum(lsum_hand_im);
+  QDPInternal::globalSum(lsum_hand_re);
+  QDPInternal::globalSum(lsum_hand_im);
 
   DComplex lsum_opt=zero;
   REAL64* sumptr=&(lsum_opt.elem().elem().elem().real());
@@ -59,7 +59,7 @@ testLocalVcdot4_1::run()
   REAL64* yptr = (REAL64 *)&(y.elem(all.start()).elem(0).elem(0).real());
   int n_4vec=all.end()-all.start()+1;
   local_vcdot4(sumptr, yptr, xptr, n_4vec);
-  Internal::globalSum(lsum_opt);
+  QDPInternal::globalSum(lsum_opt);
 
 
 
@@ -95,7 +95,7 @@ testLocalVcdot4_2::run()
   REAL64* yptr = (REAL64 *)&(y.elem(all.start()).elem(0).elem(0).real());
   int n_4vec=all.end()-all.start()+1;
   local_vcdot4(sumptr, yptr, xptr, n_4vec);
-  Internal::globalSum(lsum_opt);
+  QDPInternal::globalSum(lsum_opt);
 
   REAL64 lsum_qdp_re = lsum_qdp.elem().elem().elem().real();
   REAL64 lsum_qdp_im = lsum_qdp.elem().elem().elem().imag();
@@ -152,8 +152,8 @@ testLocalVcdot4_3::run()
       }
     }
   }
-  Internal::globalSum(lsum_hand_re);
-  Internal::globalSum(lsum_hand_im);
+  QDPInternal::globalSum(lsum_hand_re);
+  QDPInternal::globalSum(lsum_hand_im);
 
   DComplex lsum_qdp = innerProduct(y,x);
   REAL64 lsum_qdp_re = lsum_qdp.elem().elem().elem().real();

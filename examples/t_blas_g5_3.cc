@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report("ag5x", time);
 
       //double Nflops = (double)(2*Nc*Ns*Layout::sitesOnNode()*iter);
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report("new ag5x", time);
     }
   }
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {    
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("old axpbg5y"), time);
     }
   }
@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
 
     {
@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("axpbg5y"), time);
     }
     
@@ -235,7 +235,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     
     {
@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("old xmag5y"), time);
     }
   }
@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {    
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -284,7 +284,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("new xmag5y"), time);
     }
   }
@@ -316,7 +316,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -330,7 +330,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("old g5_axmby"), time);
       //      double Nflops = (double)(6*Nc*Ns*Layout::sitesOnNode()*iter);
       //QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " Mflop/s per node" << endl;
@@ -350,7 +350,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -364,7 +364,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("new g5_axmby"), time);
 		//      double Nflops = (double)(6*Nc*Ns*Layout::sitesOnNode()*iter);
 		//QDPIO::cout << "Time taken: " << time << "(us) Perf: " << Nflops/time << " MFlops/node" << endl;
@@ -400,7 +400,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -415,7 +415,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("old axpbyz_ig5"), time);
      }
   }
@@ -433,7 +433,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -447,7 +447,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("new axpbyz_ig5"), time);
     }
   }
@@ -479,7 +479,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -494,7 +494,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("old axmbyz_ig5"), time);
      }
   }
@@ -512,7 +512,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -526,7 +526,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("new axmbyz_ig5"), time);
     }
   }
@@ -555,7 +555,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -569,7 +569,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("old xpayz_ig5"), time);
      }
   }
@@ -587,7 +587,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -601,7 +601,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("new xpayz_ig5"), time);
     }
   }
@@ -630,7 +630,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -644,7 +644,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("old xmayz_ig5"), time);
      }
   }
@@ -662,7 +662,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
     }
     {
       QDPIO::cout << "Timing with " << iter << " iters" << endl;
@@ -676,7 +676,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       time = swatch.getTimeInSeconds();
-      Internal::broadcast(time);
+      QDPInternal::broadcast(time);
       fc.report(std::string("new xmayz_ig5"), time);
     }
   }
