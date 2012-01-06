@@ -121,6 +121,37 @@ namespace QDP
       }
     }
 
+    // Extensions to the basic MapObject
+    //! Getter
+    const V& operator[](const K& key) const {
+      BinaryBufferWriter bin;
+      write(bin, key);
+
+      typename MapType_t::const_iterator iter = src_map.find(bin.str());
+      if (iter == src_map.end())
+      {
+	std::cerr << "MapObject: key not found" << std::endl;
+	exit(1);
+      }
+
+      return iter->second;
+    }
+			
+    //! Setter
+    V& operator[](const K& key) {
+      BinaryBufferWriter bin;
+      write(bin, key);
+
+      typename MapType_t::iterator iter = src_map.find(bin.str());
+      if (iter == src_map.end())
+      {
+	std::cerr << "MapObject: key not found" << std::endl;
+	exit(1);
+      }
+
+      return iter->second;
+    }
+			
   protected:  
     //! Map type convenience
     typedef std::tr1::unordered_map<std::string, V> MapType_t;
