@@ -734,6 +734,10 @@ public:
   int size1() const {return n1;}
   int size2() const {return n2;}
 
+  //! Another variant on the size of the 2d array
+  int nrows() const {return n2;}
+  int ncols() const {return n1;}
+
   //! Equal operator uses underlying = of T
   multi2d<T>& operator=(const multi2d<T>& s1)
     {
@@ -827,6 +831,11 @@ public:
   int size1() const {return n1;}
   int size2() const {return n2;}
   int size3() const {return n3;}
+
+  //! Another variant on the size of the 3d array
+  int leftSize()   const {return n3;}
+  int middleSize() const {return n2;}
+  int rightSize()  const {return n1;}
 
   //! Equal operator uses underlying = of T
   multi3d<T>& operator=(const multi3d<T>& s1)
