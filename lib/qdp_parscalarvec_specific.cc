@@ -253,7 +253,7 @@ void Map::make(const MapFunc& func)
 // Message passing convenience routines
 //------------------------------------------------------------------------
 
-namespace Internal
+namespace QDPInternal
 {
   //! Broadcast a string from primary node to all other nodes
   void broadcast_str(std::string& result)
