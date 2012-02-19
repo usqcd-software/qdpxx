@@ -547,11 +547,13 @@ namespace QDP
 	swatch.stop();
      
 	// Get diagnostics.
-	pos_type end_pos = static_cast<pos_type>(streamer.currentPosition());
-	double MiBWritten = (double)(end_pos - pos)/(double)(1024*1024);
-	double time = swatch.getTimeInSeconds();
+	if (level >= 1) {
+	  pos_type end_pos = static_cast<pos_type>(streamer.currentPosition());
+	  double MiBWritten = (double)(end_pos - pos)/(double)(1024*1024);
+	  double time = swatch.getTimeInSeconds();
 
-	QDPIO::cout << " wrote: " << MiBWritten << " MiB. Time: " << time << " sec. Write Bandwidth: " << MiBWritten/time<<endl;
+	  QDPIO::cout << " wrote: " << MiBWritten << " MiB. Time: " << time << " sec. Write Bandwidth: " << MiBWritten/time<<endl;
+        }
 
 	if (level >= 2) {
 	  QDPIO::cout << "Wrote value to disk. Current Position: " << streamer.currentPosition() << endl;
