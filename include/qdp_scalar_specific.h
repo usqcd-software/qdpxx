@@ -45,6 +45,10 @@ namespace QDPInternal
   template<class T>
   inline void broadcast(T& dest) {}
 
+  //! Dummy broadcast from primary node to all other nodes
+  template<>
+  inline void broadcast(std::string& dest) {}
+
   //! Dummy broadcast a string from primary node to all other nodes
   inline void broadcast_str(std::string& dest) {}
 

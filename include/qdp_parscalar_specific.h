@@ -192,7 +192,7 @@ namespace QDPInternal
 
   //! Broadcast from primary node to all other nodes
   template<class T>
-  void broadcast(T& dest)
+  inline void broadcast(T& dest)
   {
     QMP_broadcast((void *)&dest, sizeof(T));
   }
@@ -205,6 +205,14 @@ namespace QDPInternal
   {
     QMP_broadcast(dest, nbytes);
   }
+
+  //! Broadcast a string from primary node to all other nodes
+  template<>
+  inline void broadcast(std::string& dest)
+  {
+    broadcast_str(dest);
+  }
+
 }
 
 /////////////////////////////////////////////////////////

@@ -88,7 +88,7 @@ namespace QDPInternal
 
   //! Sum across all nodes
   template<class T>
-  void globalSum(T& dest)
+  inline void globalSum(T& dest)
   {
     // The implementation here is relying on the structure being packed
     // tightly in memory - no padding
@@ -98,12 +98,12 @@ namespace QDPInternal
 
   //! Broadcast from primary node to all other nodes
   template<class T>
-  void broadcast(T& dest)
+  inline void broadcast(T& dest)
   {
     QMP_broadcast((void *)&dest, sizeof(T));
   }
 
-  //! Dummy broadcast a string from primary node to all other nodes
+  //! Broadcast a string from primary node to all other nodes
   void broadcast_str(std::string& dest);
 
   //! Broadcast from primary node to all other nodes
@@ -111,6 +111,14 @@ namespace QDPInternal
   {
     QMP_broadcast(dest, nbytes);
   }
+
+  //! Broadcast a string from primary node to all other nodes
+  template<>
+  inline void broadcast(std::string& dest)
+  {
+    broadcast_str(dest);
+  }
+
 }
 
 #define QDP_NOT_IMPLEMENTED
