@@ -192,13 +192,25 @@ namespace QDP
   }
 
   // Output the stream
-  std::string TextBufferReader::str() const
+  std::string TextBufferReader::strPrimaryNode() const
   {
     std::string s;
     
     if (Layout::primaryNode()) 
       s = f.str();
     
+    return s;
+  }
+
+  // Output the stream
+  std::string TextBufferReader::str() const
+  {
+    std::string s;
+    
+    if (Layout::primaryNode()) 
+      s = f.str();
+   
+    QDPInternal::broadcast(s);
     return s;
   }
 
@@ -426,13 +438,25 @@ namespace QDP
   }
 
   // Output the stream
-  std::string TextBufferWriter::str() const
+  std::string TextBufferWriter::strPrimaryNode() const
   {
     std::string s;
     
     if (Layout::primaryNode()) 
       s = f.str();
     
+    return s;
+  }
+
+  // Output the stream
+  std::string TextBufferWriter::str() const
+  {
+    std::string s;
+    
+    if (Layout::primaryNode()) 
+      s = f.str();
+   
+    QDPInternal::broadcast(s);
     return s;
   }
 
@@ -599,7 +623,7 @@ namespace QDP
       delete[] str;
     }
 
-    QDPInternal::broadcast_str(input);
+    QDPInternal::broadcast(input);
   }
 
   void BinaryReader::read(string& input, size_t maxBytes)
@@ -844,13 +868,25 @@ namespace QDP
   }
 
   // Output the stream
+  std::string BinaryBufferReader::strPrimaryNode() const
+  {
+    std::string s;
+    
+    if (Layout::primaryNode()) 
+      s = f.str();
+
+    return s;
+  }
+
+  // Output the stream
   std::string BinaryBufferReader::str() const
   {
     std::string s;
     
     if (Layout::primaryNode()) 
       s = f.str();
-    
+   
+    QDPInternal::broadcast(s);
     return s;
   }
 
@@ -1248,13 +1284,25 @@ namespace QDP
   }
 
   // Output the stream
-  std::string BinaryBufferWriter::str() const
+  std::string BinaryBufferWriter::strPrimaryNode() const
   {
     std::string s;
     
     if (Layout::primaryNode()) 
       s = f.str();
     
+    return s;
+  }
+
+  // Output the stream
+  std::string BinaryBufferWriter::str() const
+  {
+    std::string s;
+    
+    if (Layout::primaryNode()) 
+      s = f.str();
+
+    QDPInternal::broadcast(s);
     return s;
   }
 
@@ -1304,9 +1352,7 @@ namespace QDP
     if (s)
     {
       if (Layout::primaryNode())
-      {
 	s = f.is_open();
-      }
 
       QDPInternal::broadcast(s);
     }
@@ -1431,13 +1477,25 @@ namespace QDP
   }
 
   // Output the stream
-  std::string BinaryBufferReaderWriter::str() const
+  std::string BinaryBufferReaderWriter::strPrimaryNode() const
   {
     std::string s;
     
     if (Layout::primaryNode()) 
       s = f.str();
     
+    return s;
+  }
+
+  // Output the stream
+  std::string BinaryBufferReaderWriter::str() const
+  {
+    std::string s;
+    
+    if (Layout::primaryNode()) 
+      s = f.str();
+   
+    QDPInternal::broadcast(s);
     return s;
   }
 

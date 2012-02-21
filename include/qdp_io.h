@@ -123,6 +123,9 @@ namespace QDP
     //! Return entire buffer as a string
     std::string str() const;
         
+    //! Return entire buffer as a string
+    std::string strPrimaryNode() const;
+        
   protected:
     //! Get the internal input stream
     std::istream& getIstream() {return f;}
@@ -284,6 +287,9 @@ namespace QDP
 
     //! Return entire buffer as a string
     std::string str() const;
+        
+    //! Return entire buffer as a string
+    std::string strPrimaryNode() const;
         
   protected:
     //! Get the internal output stream
@@ -707,6 +713,9 @@ namespace QDP
     //! Return entire buffer as a string
     std::string str() const;
         
+    //! Return entire buffer as a string
+    std::string strPrimaryNode() const;
+        
     //! Clear the buffer
     void clear();
 
@@ -1108,6 +1117,9 @@ namespace QDP
     //! Return entire buffer as a string
     std::string str() const;
         
+    //! Return entire buffer as a string
+    std::string strPrimaryNode() const;
+        
     //! Flushes the buffer
     void flush() {}
 
@@ -1284,6 +1296,9 @@ namespace QDP
 
     //! Return entire buffer as a string
     std::string str() const;
+        
+    //! Return entire buffer as a string
+    std::string strPrimaryNode() const;
         
     //! Flushes the buffer
     void flush() {}
