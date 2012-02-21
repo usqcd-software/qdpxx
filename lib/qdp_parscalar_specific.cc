@@ -780,6 +780,12 @@ namespace QDP {
     {
       const int xinc = Layout::subgridLattSize()[0];
 
+      if ((stop_lexico % xinc) != 0)
+      {
+	QDPIO::cerr << __func__ << ": erorr: stop_lexico= " << stop_lexico << "  xinc= " << xinc << std::endl;
+	QDP_abort(1);
+      }
+
       size_t sizemem = size*nmemb;
       size_t tot_size = sizemem*xinc;
       char *recv_buf = new(nothrow) char[tot_size];
@@ -829,6 +835,13 @@ namespace QDP {
 			    int start_lexico, int stop_lexico)
     {
       const int xinc = Layout::subgridLattSize()[0];
+
+      if ((stop_lexico % xinc) != 0)
+      {
+	QDPIO::cerr << __func__ << ": erorr: stop_lexico= " << stop_lexico << "  xinc= " << xinc << std::endl;
+	QDP_abort(1);
+      }
+
       size_t sizemem = size*nmemb;
       size_t tot_size = sizemem*xinc;
       char *recv_buf = new(nothrow) char[tot_size];
