@@ -51,7 +51,7 @@ namespace QDP
     //! Check if a DB file exists before opening.
     bool fileExists(const std::vector<std::string>& files) const
     {
-      int ret = false;
+      bool ret = true;
       for(int i=0; i < dbs_.size(); ++i)
       {
 	ret = dbs_[i].fileExists(files[i]);
@@ -74,18 +74,18 @@ namespace QDP
 
 
     /**
-     * Get data for a given key
+     * Get val for a given key
      * @param key user supplied key
-     * @param data after the call data will be populated
+     * @param val after the call val will be populated
      * @return 0 on success, otherwise the key not found
      */
-    int get(const K& key, V& data) const
+    int get(const K& key, V& val) const
     {
       int ret = -1;
 
       for(int i=0; i < dbs_.size(); ++i) 
       {
-	ret = dbs_[i].get(key, data);
+	ret = dbs_[i].get(key, val);
 	if (ret == 0)
 	  break;
       }
