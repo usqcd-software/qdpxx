@@ -29,11 +29,11 @@ namespace QDP
     void setDebug(int level)
     {
       for(int i=0; i < dbs_.size(); ++i)
-	dbs_[i].setDebug(level);
+	dbs_[i]->setDebug(level);
     }
 
     //! Get debugging level
-    int getDebug() const {return dbs_[0].getDebug();}
+    int getDebug() const {return dbs_[0]->getDebug();}
 
     //! Open files
     void open(const std::vector<std::string>& files)
@@ -42,8 +42,8 @@ namespace QDP
 
       for(int i=0; i < dbs_.size(); ++i)
       {
-//	dbs_[i].open(files[i], std::ios_base::in);
-	dbs_[i].open(files[i]);
+	dbs_[i] = new MapObjectDisk<K,V>();
+	dbs_[i]->open(files[i], std::ios_base::in);
       }
     }
 
@@ -54,7 +54,7 @@ namespace QDP
       bool ret = true;
       for(int i=0; i < dbs_.size(); ++i)
       {
-	ret = dbs_[i].fileExists(files[i]);
+	ret = dbs_[i]->fileExists(files[i]);
 	if (! ret)
 	  return ret;
       }
@@ -68,7 +68,8 @@ namespace QDP
     {
       for(int i=0; i < dbs_.size(); ++i)
       {
-	dbs_[i].close();
+	dbs_[i]->close();
+	delete dbs_[i];
       }
     }
 
@@ -85,7 +86,7 @@ namespace QDP
 
       for(int i=0; i < dbs_.size(); ++i) 
       {
-	ret = dbs_[i].get(key, val);
+	ret = dbs_[i]->get(key, val);
 	if (ret == 0)
 	  break;
       }
@@ -100,7 +101,7 @@ namespace QDP
     {
       for(int i=0; i < dbs_.size(); ++i)
       {
-	dbs_[i].flush();
+	dbs_[i]->flush();
       }
     }
 
@@ -116,7 +117,7 @@ namespace QDP
       
       for(int i=0; i < dbs_.size(); ++i)
       {
-	ret = dbs_[i].exist(key);
+	ret = dbs_[i]->exist(key);
 	if (ret)
 	  break;
       }
@@ -138,7 +139,7 @@ namespace QDP
 	return ret;
 
       // Grab the first db
-      ret = dbs_[0].getUserdata(user_data);
+      ret = dbs_[0]->getUserdata(user_data);
 
       return ret;
     }
@@ -152,7 +153,7 @@ namespace QDP
 
   private:
     //! Array of read-only maps
-    std::vector< MapObjectDisk<K,V> > dbs_;
+    std::vector< MapObjectDisk<K,V>* > dbs_;
   };
 
 } // namespace Chroma
