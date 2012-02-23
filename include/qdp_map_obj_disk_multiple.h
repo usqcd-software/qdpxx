@@ -42,13 +42,14 @@ namespace QDP
 
       for(int i=0; i < dbs_.size(); ++i)
       {
-	dbs_[i].open(files[i], std::ios_base::in);
+//	dbs_[i].open(files[i], std::ios_base::in);
+	dbs_[i].open(files[i]);
       }
     }
 
 
     //! Check if a DB file exists before opening.
-    bool fileExists(const std::string& file) const
+    bool fileExists(const std::vector<std::string>& files) const
     {
       int ret = false;
       for(int i=0; i < dbs_.size(); ++i)
@@ -78,7 +79,7 @@ namespace QDP
      * @param data after the call data will be populated
      * @return 0 on success, otherwise the key not found
      */
-    int get(const K& key, V& val) const
+    int get(const K& key, V& data) const
     {
       int ret = -1;
 
@@ -141,6 +142,13 @@ namespace QDP
 
       return ret;
     }
+
+  private:
+    //! Hide
+    MapObjectDiskMultiple(const MapObjectDiskMultiple&) {}
+
+    //! Hide
+    void operator=(const MapObjectDiskMultiple&) {}
 
   private:
     //! Array of read-only maps
