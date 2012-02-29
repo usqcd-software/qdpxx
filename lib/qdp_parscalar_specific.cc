@@ -254,7 +254,7 @@ namespace QDP {
       // Only primary node can grab string
       if (Layout::primaryNode()) 
       {
-	lleng = result.length() + 1;
+	lleng = result.length();
       }
 
       // First must broadcast size of string
