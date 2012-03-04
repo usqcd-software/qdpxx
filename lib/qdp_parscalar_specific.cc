@@ -254,7 +254,7 @@ namespace QDP {
       // Only primary node can grab string
       if (Layout::primaryNode()) 
       {
-	lleng = result.length() + 1;
+	lleng = result.length();
       }
 
       // First must broadcast size of string
@@ -272,8 +272,12 @@ namespace QDP {
       // Now broadcast char array out to all nodes
       Internal::broadcast((void *)dd_tmp, lleng);
 
-      // All nodes can now grab char array and make a string
-      result = dd_tmp;
+      // All nodes can now grab char array and make a string, but only
+      // need this on non-primary nodes
+      if (! Layout::primaryNode())
+      {
+	result.assign(dd_tmp, lleng);
+      }
 
       // Clean-up and boogie
       delete[] dd_tmp;
