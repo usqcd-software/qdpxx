@@ -1,3 +1,7 @@
+06/06/2012 -- Robert Edwards
+        Version 1.39.0: Added in new tr1::unordered_map class. Several fixes
+        in string broadcasts.
+
 11/02/2010 -- Robert Edwards
         Version 1.38.3: Added a new BinaryReaderWriter class and structure
         that supports both reading and writing of objects. 
