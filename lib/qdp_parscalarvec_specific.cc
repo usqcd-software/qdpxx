@@ -253,7 +253,7 @@ void Map::make(const MapFunc& func)
 // Message passing convenience routines
 //------------------------------------------------------------------------
 
-namespace Internal
+namespace QDPInternal
 {
   //! Broadcast a string from primary node to all other nodes
   void broadcast_str(std::string& result)
@@ -268,7 +268,7 @@ namespace Internal
     }
 
     // First must broadcast size of string
-    Internal::broadcast(lleng);
+    QDPInternal::broadcast(lleng);
 
     // Now every node can alloc space for string
     dd_tmp = new char[lleng];
@@ -280,7 +280,7 @@ namespace Internal
       memcpy(dd_tmp, result.c_str(), lleng);
   
     // Now broadcast char array out to all nodes
-    Internal::broadcast((void *)dd_tmp, lleng);
+    QDPInternal::broadcast((void *)dd_tmp, lleng);
 
     // All nodes can now grab char array and make a string, but only
     // need this on non-primary nodes
@@ -446,7 +446,7 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
   delete[] chk_buf;
 
   // Get all nodes to contribute
-  Internal::globalSumArray((unsigned int*)&checksum, 1);   // g++ requires me to narrow the type to unsigned int
+  QDPInternal::globalSumArray((unsigned int*)&checksum, 1);   // g++ requires me to narrow the type to unsigned int
 
   return checksum;
 }

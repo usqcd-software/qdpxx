@@ -13,19 +13,6 @@
 
 namespace QDP
 {
-  //! forward declarations 
-  namespace LatticeTimeSliceIO 
-  {
-    void readOLatticeSlice(BinaryReader& bin, char* output, 
-			   size_t size, size_t nmemb,
-			   int start_lexico, int stop_lexico);
-    void writeOLatticeSlice(BinaryWriter& bin, const char* output, 
-			    size_t size, size_t nmemb,
-			    int start_lexico, int stop_lexico);
-  }
-
-
-
   //! Time-slice wrapper
   /*! 
    * A reference object holding a lattice object. 

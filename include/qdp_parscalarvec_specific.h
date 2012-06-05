@@ -25,7 +25,7 @@ namespace Layout
 
 //-----------------------------------------------------------------------------
 // Internal ops with ties to QMP
-namespace Internal
+namespace QDPInternal
 {
   //! Route to another node (blocking)
   void route(void *send_buf, int srce_node, int dest_node, int count);
@@ -88,7 +88,7 @@ namespace Internal
 
   //! Sum across all nodes
   template<class T>
-  void globalSum(T& dest)
+  inline void globalSum(T& dest)
   {
     // The implementation here is relying on the structure being packed
     // tightly in memory - no padding
@@ -98,12 +98,12 @@ namespace Internal
 
   //! Broadcast from primary node to all other nodes
   template<class T>
-  void broadcast(T& dest)
+  inline void broadcast(T& dest)
   {
     QMP_broadcast((void *)&dest, sizeof(T));
   }
 
-  //! Dummy broadcast a string from primary node to all other nodes
+  //! Broadcast a string from primary node to all other nodes
   void broadcast_str(std::string& dest);
 
   //! Broadcast from primary node to all other nodes
@@ -111,6 +111,14 @@ namespace Internal
   {
     QMP_broadcast(dest, nbytes);
   }
+
+  //! Broadcast a string from primary node to all other nodes
+  template<>
+  inline void broadcast(std::string& dest)
+  {
+    broadcast_str(dest);
+  }
+
 }
 
 #define QDP_NOT_IMPLEMENTED
@@ -494,7 +502,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
   }
 
   // Do a global sum on the result
-  Internal::globalSum(d);
+  QDPInternal::globalSum(d);
   
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -746,7 +754,7 @@ norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
 #endif
 
   // Do a global sum on the result
-  Internal::globalSum(d);
+  QDPInternal::globalSum(d);
   
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -838,10 +846,10 @@ peekSite(const OLattice<T1>& l, const multi1d<int>& coord)
     zero_rep(dest.elem());
 
   // Send result to primary node via some mechanism
-  Internal::sendToPrimaryNode(dest, nodenum);
+  QDPInternal::sendToPrimaryNode(dest, nodenum);
 
   // Now broadcast back out to all nodes
-  Internal::broadcast(dest);
+  QDPInternal::broadcast(dest);
 
   return dest;
 }
@@ -1626,13 +1634,13 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
     {
 #if 1
       // All nodes participate
-      Internal::route((void *)&recv_buf, node, 0, sizeof(Site_t));
+      QDPInternal::route((void *)&recv_buf, node, 0, sizeof(Site_t));
 #else
       if (Layout::primaryNode())
-	Internal::recvFromWait((void *)&recv_buf, node, sizeof(Site_t));
+	QDPInternal::recvFromWait((void *)&recv_buf, node, sizeof(Site_t));
 
       if (Layout::nodeNumber() == node)
-	Internal::sendToWait((void *)&recv_buf, 0, sizeof(Site_t));
+	QDPInternal::sendToWait((void *)&recv_buf, 0, sizeof(Site_t));
 #endif
     }
 
@@ -1685,13 +1693,13 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
     {
 #if 1
       // All nodes participate
-      Internal::route((void *)&recv_buf, node, 0, sizeof(Site_t));
+      QDPInternal::route((void *)&recv_buf, node, 0, sizeof(Site_t));
 #else
       if (Layout::primaryNode())
-	Internal::recvFromWait((void *)&recv_buf, node, sizeof(Site_t));
+	QDPInternal::recvFromWait((void *)&recv_buf, node, sizeof(Site_t));
 
       if (Layout::nodeNumber() == node)
-	Internal::sendToWait((void *)&recv_buf, 0, sizeof(Site_t));
+	QDPInternal::sendToWait((void *)&recv_buf, 0, sizeof(Site_t));
 #endif
     }
 
@@ -1725,13 +1733,13 @@ void write(BinaryWriter& bin, const OLattice<T>& d, const multi1d<int>& coord)
   {
 #if 1
       // All nodes participate
-      Internal::route((void *)&recv_buf, node, 0, sizeof(Site_t));
+      QDPInternal::route((void *)&recv_buf, node, 0, sizeof(Site_t));
 #else
     if (Layout::primaryNode())
-      Internal::recvFromWait((void *)&recv_buf, node, sizeof(Site_t));
+      QDPInternal::recvFromWait((void *)&recv_buf, node, sizeof(Site_t));
 
     if (Layout::nodeNumber() == node)
-      Internal::sendToWait((void *)&recv_buf, 0, sizeof(Site_t));
+      QDPInternal::sendToWait((void *)&recv_buf, 0, sizeof(Site_t));
 #endif
   }
 
@@ -1770,13 +1778,13 @@ void read(BinaryReader& bin, OLattice<T>& d)
     {
 #if 1
       // All nodes participate
-      Internal::route((void *)&recv_buf, 0, node, sizeof(Site_t));
+      QDPInternal::route((void *)&recv_buf, 0, node, sizeof(Site_t));
 #else
       if (Layout::primaryNode())
-	Internal::sendToWait((void *)&recv_buf, node, sizeof(Site_t));
+	QDPInternal::sendToWait((void *)&recv_buf, node, sizeof(Site_t));
 
       if (Layout::nodeNumber() == node)
-	Internal::recvFromWait((void *)&recv_buf, 0, sizeof(Site_t));
+	QDPInternal::recvFromWait((void *)&recv_buf, 0, sizeof(Site_t));
 #endif
     }
 
@@ -1809,13 +1817,13 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
   {
 #if 1
       // All nodes participate
-      Internal::route((void *)&recv_buf, 0, node, sizeof(Site_t));
+      QDPInternal::route((void *)&recv_buf, 0, node, sizeof(Site_t));
 #else
     if (Layout::primaryNode())
-      Internal::sendToWait((void *)&recv_buf, node, sizeof(Site_t));
+      QDPInternal::sendToWait((void *)&recv_buf, node, sizeof(Site_t));
 
     if (Layout::nodeNumber() == node)
-      Internal::recvFromWait((void *)&recv_buf, 0, sizeof(Site_t));
+      QDPInternal::recvFromWait((void *)&recv_buf, 0, sizeof(Site_t));
 #endif
   }
   

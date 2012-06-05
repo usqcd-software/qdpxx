@@ -8,6 +8,7 @@
 
 #include "qdp_map_obj.h"
 #include <vector>
+#include <tr1/unordered_map>
 
 namespace QDP
 {
@@ -24,54 +25,6 @@ namespace QDP
     //! Destructor
     ~MapObjectMemory() {}
 
-    //! Insert
-    int insert(const K& key, const V& val) {
-      int ret = 0;
-      if( exist(key) ) {
-	src_map[key] = val; // Update
-      }
-      else
-      {
-	src_map.insert(std::make_pair(key,val));
-      }
-
-      return ret;
-    }
-
-    //! Accessor
-    int get(const K& key, V& val) const { 
-      int ret = 0;
-      if ( exist(key) ) {
-	val = src_map.find(key)->second;
-      }
-      else {
-	ret = 1;
-      }
-      return ret;
-    }
-
-    //! Flush out state of object
-    void flush() {}
-
-    //! Exists?
-    bool exist(const K& key) const {
-      return (src_map.find(key) == src_map.end()) ? false : true;
-    }
-			
-    //! The number of elements
-    unsigned int size() const {return static_cast<unsigned long>(src_map.size());}
-
-    //! Dump keys
-    void keys(std::vector<K>& keys_) const {
-      typename MapType_t::const_iterator iter;
-      for(iter  = src_map.begin();
-	  iter != src_map.end();
-	  ++iter) { 
-	keys_.push_back(iter->first);
-      }
-    }
-
-
     //! Insert user data into the metadata database
     int insertUserdata(const std::string& user_data_) {
       user_data = user_data_;
@@ -84,26 +37,128 @@ namespace QDP
       return 0;
     }
 
-    /*! 
-     * These extend the bacis MapObject Interface. 
-     * The iterators are used stream through the object
-     * Need to be public for now 
-     */
+    //! Insert
+    int insert(const K& key, const V& val) {
+      int ret = 0;
+      BinaryBufferWriter bin;
+      write(bin, key);
 
-    //! Usual begin iterator
+      const std::string bin_key(bin.str());
+      typename MapType_t::iterator iter = src_map.find(bin_key);
+      if (iter != src_map.end())
+      {
+	iter->second = val;
+      }
+      else
+      {
+	src_map.insert(std::make_pair(bin_key,val));
+      }
+      return ret;
+    }
+			
+    //! Getter
+    int get(const K& key, V& val) const {
+      int ret = 0;
+      BinaryBufferWriter bin;
+      write(bin, key);
+
+      typename MapType_t::const_iterator iter = src_map.find(bin.str());
+      if (iter == src_map.end()) {
+	ret = 1;
+      }
+      else {
+	val = iter->second;
+      }
+      return ret;
+    }
+			
+    //! Clear the object
+    void clear() {src_map.clear();}
+
+    //! Flush out state of object
+    void flush() {}
+
+    //! Exists?
+    bool exist(const K& key) const {
+      BinaryBufferWriter bin;
+      write(bin, key);
+      return (src_map.find(bin.str()) == src_map.end()) ? false : true;
+    }
+			
+    //! The number of elements
+//    size_t size() const {return src_map.size();}
+    unsigned int size() const {return static_cast<unsigned long>(src_map.size());}
+
+    //! Dump keys
+    void keys(std::vector<K>& _keys) const {
+      _keys.resize(0);
+      typename MapType_t::const_iterator iter;
+      for(iter  = src_map.begin();
+	  iter != src_map.end();
+	  ++iter)
+      {
+	BinaryBufferReader bin(iter->first);
+	K key;
+	read(bin, key);
+	_keys.push_back(key);
+      }
+    }
+
+    //! Dump keys and values
+    virtual void keysAndValues(std::vector<K>& _keys, std::vector<V>& _vals) const {
+      _keys.resize(0);
+      _vals.resize(0);
+      typename MapType_t::const_iterator iter;
+      for(iter  = src_map.begin();
+	  iter != src_map.end();
+	  ++iter)
+      {
+	BinaryBufferReader bin(iter->first);
+	K key;
+	read(bin, key);
+	_keys.push_back(key);
+	_vals.push_back(iter->second);
+      }
+    }
+
+    // Extensions to the basic MapObject
+    //! Getter
+    const V& operator[](const K& key) const {
+      BinaryBufferWriter bin;
+      write(bin, key);
+
+      typename MapType_t::const_iterator iter = src_map.find(bin.str());
+      if (iter == src_map.end())
+      {
+	std::cerr << "MapObject: key not found" << std::endl;
+	exit(1);
+      }
+
+      return iter->second;
+    }
+			
+    //! Setter
+    V& operator[](const K& key) {
+      BinaryBufferWriter bin;
+      write(bin, key);
+
+      typename MapType_t::iterator iter = src_map.find(bin.str());
+      if (iter == src_map.end())
+      {
+	std::cerr << "MapObject: key not found" << std::endl;
+	exit(1);
+      }
+
+      return iter->second;
+    }
+			
+  protected:  
     //! Map type convenience
-    typedef std::map<K,V> MapType_t;
+    typedef std::tr1::unordered_map<std::string, V> MapType_t;
     
- 
-    typename MapType_t::const_iterator begin() const {return src_map.begin();}
-    
-    //! Usual end iterator
-    typename MapType_t::const_iterator  end() const {return src_map.end();}
-
-  private:
     //! Map of objects
     mutable MapType_t src_map;
-    string user_data;
+    std::string user_data;
   };
 
 } // namespace QDP

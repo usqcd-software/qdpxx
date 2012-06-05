@@ -101,6 +101,7 @@ namespace QDP {
 #include "qdp_init.h"
 #include "qdp_forward.h"
 #include "qdp_multi.h"
+#include "qdp_arrays.h"
 
 #include "qdp_params.h"
 #include "qdp_layout.h"

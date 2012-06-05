@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
   }
 
   REAL64 double_global_sum = double_local_sum;
-  Internal::globalSum(double_global_sum);
+  QDPInternal::globalSum(double_global_sum);
 
   Double qdp_double_norm2 = norm2(x_dble);
 
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
   }
 
   REAL64 global_norm2_all_in_double = local_norm2_all_in_double;
-  Internal::globalSum(global_norm2_all_in_double);
+  QDPInternal::globalSum(global_norm2_all_in_double);
   
   Double double_norm_diff2 = (global_norm2_all_in_double - double_global_sum) / ( double_global_sum );
   QDPIO::cout << "( Norm2 All in Double - DP Norm 2 ) /  DP Norm 2  = " << double_norm_diff2 << endl;
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 
   // Upcast to double for the global sum
   REAL64 global_norm2_in_double = (REAL64)local_norm2_all_in_single;
-  Internal::globalSum(global_norm2_in_double);
+  QDPInternal::globalSum(global_norm2_in_double);
   
   Double double_norm_diff3(( global_norm2_in_double - double_global_sum )/ ( double_global_sum ));
   QDPIO::cout << "( SinglePrec On Node DP Accross Nodes - DP Norm 2 ) /  DP Norm 2  = " << double_norm_diff3 << endl;
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
   local_sumsq_24_48(&local_norm2_site_result, &x.elem(0).elem(0).elem(0).real(), nvec);
   
   REAL64 local_norm2_site_global_result = local_norm2_site_result;
-  Internal::globalSum(local_norm2_site_global_result);
+  QDPInternal::globalSum(local_norm2_site_global_result);
   Double double_norm_diff4(  (local_norm2_site_global_result - double_global_sum )/ ( double_global_sum ) );
   QDPIO::cout << "( local_norm2 Single SSE on Site, DP Accross Nodes - DP Norm 2 ) / ( DP Norm 2 ) = " << double_norm_diff4 << endl;
 
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
   REAL64 local_norm2_result;
   local_sumsq_24_48(&local_norm2_result, &x.elem(0).elem(0).elem(0).real(), nvec);
   REAL64 local_norm2_2_global_result  = local_norm2_result;
-  Internal::globalSum(local_norm2_2_global_result);
+  QDPInternal::globalSum(local_norm2_2_global_result);
   Double double_norm_diff5(  (local_norm2_2_global_result - double_global_sum )/ ( double_global_sum ) );
   QDPIO::cout << "( local_norm2 Single on Node DP Accross Nodes - DP Norm 2 ) / ( DP Norm 2 ) = " << double_norm_diff5 << endl;
 #endif

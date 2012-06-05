@@ -24,7 +24,7 @@ namespace Layout
 //-----------------------------------------------------------------------------
 // Internal ops designed to look like those in parscalar
 // These dummy routines exist just to make code more portable
-namespace Internal
+namespace QDPInternal
 {
   //! Dummy array sum accross all nodes
   template<class T>
@@ -44,7 +44,10 @@ namespace Internal
 
   //! Dummy broadcast from primary node to all other nodes
   template<class T>
-  void broadcast(T& dest) {}
+  inline void broadcast(T& dest) {}
+
+  template<>
+  inline void broadcast(std::string& dest) {}
 
   //! Dummy broadcast a string from primary node to all other nodes
   inline void broadcast_str(std::string& dest) {}

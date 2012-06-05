@@ -66,7 +66,7 @@ namespace QDP
 
       double mflops_per_cpu = (double)count/((double)(1000*1000)*time_in_seconds);
       double mflops_overall = mflops_per_cpu;
-      Internal::globalSum(mflops_overall);
+      QDPInternal::globalSum(mflops_overall);
       double gflops_overall = mflops_overall/(double)(1000);
       double tflops_overall = gflops_overall/(double)(1000);
 

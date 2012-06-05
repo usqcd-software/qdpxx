@@ -153,6 +153,7 @@ nobase_include_HEADERS = \
 		qdp_layout.h \
 		qdp_map.h \
 		qdp_multi.h \
+		qdp_arrays.h \
 		qdp_newops.h \
 		qdp_optops.h \
 		qdp_outer.h \
@@ -207,6 +208,7 @@ nobase_include_HEADERS = \
 		qdp_map_obj_null.h \
 		qdp_map_obj_memory.h \
 		qdp_map_obj_disk.h \
+		qdp_map_obj_disk_multiple.h \
 		qdp_disk_map_slice.h \
                 $(PETE_HDRS) \
                 $(GENERIC_HDRS) \

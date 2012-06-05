@@ -599,7 +599,7 @@ int main(int argc, char *argv[])
       }
     }
   }
-  Internal::globalSum(accum); 
+  QDPInternal::::globalSum(accum); 
   DComplex fred = innerProduct(qy, qx);
   
   DComplex diff = accum - fred;
@@ -625,7 +625,7 @@ int main(int argc, char *argv[])
       }
     }
   }
-  Internal::globalSum(accum); 
+  QDPInternal::::globalSum(accum); 
   fred = innerProduct(qy, qx, rb[1]);
   
   diff = accum - fred;
@@ -646,7 +646,7 @@ int main(int argc, char *argv[])
       }
     }
   }
-  Internal::globalSum(daccum); 
+  QDPInternal::::globalSum(daccum); 
   Double djim = innerProductReal(qy, qx);
 
   Double drdiff = daccum - djim;
@@ -672,7 +672,7 @@ int main(int argc, char *argv[])
       }
     }
   }
-  Internal::globalSum(daccum); 
+  QDPInternal::globalSum(daccum); 
   djim = innerProductReal(qy, qx,rb[1]);
 
   drdiff = daccum - djim;

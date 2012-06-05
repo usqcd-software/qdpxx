@@ -80,7 +80,7 @@ testLocalVcdotReal4_2::run()
   REAL64* yptr = (REAL64 *)&(y.elem(all.start()).elem(0).elem(0).real());
   int n_4vec=all.end()-all.start()+1;
   local_vcdot_real4(sumptr, yptr, xptr, n_4vec);
-  Internal::globalSum(lsum_opt);
+  QDPInternal::globalSum(lsum_opt);
 
   Double diff = fabs(lsum_opt - lsum_qdp);
   Double dof=Double(Layout::vol()*4*3*2);
@@ -122,7 +122,7 @@ testLocalVcdotReal4_3::run()
       }
     }
   }
-  Internal::globalSum(lsum_hand);
+  QDPInternal::globalSum(lsum_hand);
 
   Double lsum_qdp = innerProductReal(y,x);
   Double diff = fabs(lsum_qdp - lsum_hand);

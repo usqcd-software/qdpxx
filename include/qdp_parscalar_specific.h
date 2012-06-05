@@ -25,7 +25,7 @@ namespace Layout
 
 //-----------------------------------------------------------------------------
 // Internal ops with ties to QMP
-namespace Internal
+namespace QDPInternal
 {
   //! Route to another node (blocking)
   void route(void *send_buf, int srce_node, int dest_node, int count);
@@ -192,7 +192,7 @@ namespace Internal
 
   //! Broadcast from primary node to all other nodes
   template<class T>
-  void broadcast(T& dest)
+  inline void broadcast(T& dest)
   {
     QMP_broadcast((void *)&dest, sizeof(T));
   }
@@ -205,6 +205,14 @@ namespace Internal
   {
     QMP_broadcast(dest, nbytes);
   }
+
+  //! Broadcast a string from primary node to all other nodes
+  template<>
+  inline void broadcast(std::string& dest)
+  {
+    broadcast_str(dest);
+  }
+
 }
 
 /////////////////////////////////////////////////////////
@@ -638,7 +646,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
   }
 
   // Do a global sum on the result
-  Internal::globalSum(d);
+  QDPInternal::globalSum(d);
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -674,7 +682,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
     d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
 
   // Do a global sum on the result
-  Internal::globalSum(d);
+  QDPInternal::globalSum(d);
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -757,7 +765,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
   }
 
   // Do a global sum on the result
-  Internal::globalSumArray(dest);
+  QDPInternal::globalSumArray(dest);
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -845,7 +853,7 @@ sumMulti(const multi1d< OLattice<T> >& s1, const Set& ss)
   }
 
   // Do a global sum on the result
-  Internal::globalSumArray(dest);
+  QDPInternal::globalSumArray(dest);
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -937,7 +945,7 @@ norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
   }
 
   // Do a global sum on the result
-  Internal::globalSum(d);
+  QDPInternal::globalSum(d);
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -1050,7 +1058,7 @@ innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s
   }
 
   // Do a global sum on the result
-  Internal::globalSum(d);
+  QDPInternal::globalSum(d);
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -1163,7 +1171,7 @@ innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> 
   }
 
   // Do a global sum on the result
-  Internal::globalSum(d);
+  QDPInternal::globalSum(d);
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -1252,7 +1260,7 @@ globalMax(const QDPExpr<RHS,OLattice<T> >& s1)
   }
 
   // Do a global max on the result
-  Internal::globalMax(d); 
+  QDPInternal::globalMax(d); 
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -1320,7 +1328,7 @@ globalMin(const QDPExpr<RHS,OLattice<T> >& s1)
   }
 
   // Do a global min on the result
-  Internal::globalMin(d); 
+  QDPInternal::globalMin(d); 
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -1392,10 +1400,10 @@ peekSite(const OLattice<T1>& l, const multi1d<int>& coord)
     zero_rep(dest.elem());
 
   // Send result to primary node via some mechanism
-  Internal::sendToPrimaryNode(dest, nodenum);
+  QDPInternal::sendToPrimaryNode(dest, nodenum);
 
   // Now broadcast back out to all nodes
-  Internal::broadcast(dest);
+  QDPInternal::broadcast(dest);
 
   return dest;
 }
@@ -2138,13 +2146,13 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
     {
 #if 1
       // All nodes participate
-      Internal::route((void *)&recv_buf, node, 0, sizeof(T));
+      QDPInternal::route((void *)&recv_buf, node, 0, sizeof(T));
 #else
       if (Layout::primaryNode())
-	Internal::recvFromWait((void *)&recv_buf, node, sizeof(T));
+	QDPInternal::recvFromWait((void *)&recv_buf, node, sizeof(T));
 
       if (Layout::nodeNumber() == node)
-	Internal::sendToWait((void *)&recv_buf, 0, sizeof(T));
+	QDPInternal::sendToWait((void *)&recv_buf, 0, sizeof(T));
 #endif
     }
 

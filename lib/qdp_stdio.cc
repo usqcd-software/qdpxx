@@ -41,7 +41,7 @@ bool StandardInputStream::fail()
   if (Layout::primaryNode()) 
     s = getIstream().fail();
 
-  Internal::broadcast(s);
+  QDPInternal::broadcast(s);
   return s;
 }
 
@@ -58,7 +58,7 @@ StandardInputStream& StandardInputStream::operator>>(std::string& input)
   }
 
   // broadcast string
-  Internal::broadcast_str(input);
+  QDPInternal::broadcast_str(input);
 
   return *this;
 }
@@ -120,7 +120,7 @@ StandardInputStream& StandardInputStream::readPrimitive(T& input)
     getIstream() >> input;
 
   // Now broadcast back out to all nodes
-  Internal::broadcast(input);
+  QDPInternal::broadcast(input);
 
   return *this;
 }
@@ -153,7 +153,7 @@ bool StandardOutputStream::fail()
   if (Layout::primaryNode()) 
     s = getOstream().fail();
 
-  Internal::broadcast(s);
+  QDPInternal::broadcast(s);
   return s;
 }
 
