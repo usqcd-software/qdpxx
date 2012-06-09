@@ -1,3 +1,6 @@
+dnl
+m4_pattern_allow(QDP_AC_ALIGNMENT_SIZE)dnl
+dnl
 dnl Balint Joo, 13/12/2002
 dnl George T. Fleming, 03/03/2003
 dnl
