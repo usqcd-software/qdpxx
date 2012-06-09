@@ -1,6 +1,9 @@
 06/06/2012 -- Robert Edwards
-        Version 1.39.0: Added in new tr1::unordered_map class. Several fixes
+        Version 1.40.0: Added in new tr1::unordered_map class. Several fixes
         in string broadcasts.
+
+09/26/2011 -- Balint Joo
+        Version 1.39.0: Changed OpenMP dispatch methods.
 
 11/02/2010 -- Robert Edwards
         Version 1.38.3: Added a new BinaryReaderWriter class and structure
