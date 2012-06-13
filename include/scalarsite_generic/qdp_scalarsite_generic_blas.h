@@ -2242,7 +2242,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     
     local_sumsq(&lsum,(REAL *)s1ptr, n_3vec); 
     UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  gsum(lsum);
-    Internal::globalSum(gsum);
+    QDPInternal::globalSum(gsum);
     return gsum;
   }
   else {
@@ -2260,7 +2260,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1, const Subset& s)
     }
 
     UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  gsum(lsum);
-    Internal::globalSum(gsum);
+    QDPInternal::globalSum(gsum);
     return gsum;
   }
 }
@@ -2282,7 +2282,7 @@ norm2(const QDPType<TVec ,OLattice< TVec > >& s1)
   DOUBLE lsum = 0;
   local_sumsq(&lsum, (REAL *)s1ptr, n_3vec); 
   UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  gsum(lsum);
-  Internal::globalSum(gsum);
+  QDPInternal::globalSum(gsum);
   return gsum;
 }
 
@@ -2316,7 +2316,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 
 
   // Global sum -- still on a vector of doubles
-  Internal::globalSumArray(ip,2);
+  QDPInternal::globalSumArray(ip,2);
 
   // Downcast (and possibly lose precision) here 
   lprod.elem().elem().elem().real() = ip[0];
@@ -2352,7 +2352,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
 		n_3vec);
 
 
-    Internal::globalSumArray(ip,2);
+    QDPInternal::globalSumArray(ip,2);
 
     lprod.elem().elem().elem().real() = ip[0];
     lprod.elem().elem().elem().imag() = ip[1];
@@ -2381,7 +2381,7 @@ innerProduct(const QDPType< TVec, OLattice<TVec> > &v1,
       ip[1] += ip_tmp[1];
     }
 
-    Internal::globalSumArray(ip,2);
+    QDPInternal::globalSumArray(ip,2);
 
     lprod.elem().elem().elem().real() = ip[0];
     lprod.elem().elem().elem().imag() = ip[1];
@@ -2421,7 +2421,7 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 		   n_3vec);
 
   // Global sum
-  Internal::globalSum(ip_re);
+  QDPInternal::globalSum(ip_re);
 
   // Whether CDOT did anything or not ip_re and ip_im should 
   // now be right. Assign them to the ReturnType
@@ -2456,7 +2456,7 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
 		     (REAL *)&(v2.elem(s.start()).elem(0).elem(0).real()),
 		     n_3vec);
 
-    Internal::globalSum(ip_re);
+    QDPInternal::globalSum(ip_re);
     lprod.elem().elem().elem().elem() = ip_re;
 
 
@@ -2481,7 +2481,7 @@ innerProductReal(const QDPType< TVec, OLattice<TVec> > &v1,
       
       ip_re += ip_re_tmp;
     }
-    Internal::globalSum(ip_re);
+    QDPInternal::globalSum(ip_re);
     lprod.elem().elem().elem().elem() = ip_re;
     return lprod;
   }
@@ -2510,7 +2510,7 @@ norm2(const multi1d< OLattice< TVec > >& s1)
   }
 
   UnaryReturn< OLattice< TVec >, FnNorm2>::Type_t  lsum(ltmp);
-  Internal::globalSum(lsum);
+  QDPInternal::globalSum(lsum);
   return lsum;
 }
 
@@ -2552,7 +2552,7 @@ innerProduct(const multi1d< OLattice<TVec> > &v1,
   }
 
   // Global sum -- still on a vector of doubles
-  Internal::globalSumArray(ip,2);
+  QDPInternal::globalSumArray(ip,2);
 
   // Downcast (and possibly lose precision) here 
   lprod.elem().elem().elem().real() = ip[0];
@@ -2597,7 +2597,7 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
   }
 
   // Global sum
-  Internal::globalSum(ip_re);
+  QDPInternal::globalSum(ip_re);
 
   // Whether CDOT did anything or not ip_re and ip_im should 
   // now be right. Assign them to the ReturnType
