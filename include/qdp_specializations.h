@@ -54,6 +54,24 @@ void read(XMLReader& xml, const string& s, multi1d<Real64>& d);
 template<>
 void read(XMLReader& xml, const string& s, multi1d<Boolean>& d);
 
+template<>
+void read(XMLReader& xml, const string& s, std::vector<Integer>& d);
+template<>
+void read(XMLReader& xml, const string& s, std::vector<Real32>& d);
+template<>
+void read(XMLReader& xml, const string& s, std::vector<Real64>& d);
+template<>
+void read(XMLReader& xml, const string& s, std::vector<Boolean>& d);
+
+template<>
+void read(XMLReader& xml, const string& s, std::list<Integer>& d);
+template<>
+void read(XMLReader& xml, const string& s, std::list<Real32>& d);
+template<>
+void read(XMLReader& xml, const string& s, std::list<Real64>& d);
+template<>
+void read(XMLReader& xml, const string& s, std::list<Boolean>& d);
+
 // XML writers
 template<>
 void write(XMLWriter& xml, const string& s, const multi1d<Integer>& d);
@@ -63,6 +81,24 @@ template<>
 void write(XMLWriter& xml, const string& s, const multi1d<Real64>& d);
 template<>
 void write(XMLWriter& xml, const string& s, const multi1d<Boolean>& d);
+
+template<>
+void write(XMLWriter& xml, const string& s, const std::vector<Integer>& d);
+template<>
+void write(XMLWriter& xml, const string& s, const std::vector<Real32>& d);
+template<>
+void write(XMLWriter& xml, const string& s, const std::vector<Real64>& d);
+template<>
+void write(XMLWriter& xml, const string& s, const std::vector<Boolean>& d);
+
+template<>
+void write(XMLWriter& xml, const string& s, const std::list<Integer>& d);
+template<>
+void write(XMLWriter& xml, const string& s, const std::list<Real32>& d);
+template<>
+void write(XMLWriter& xml, const string& s, const std::list<Real64>& d);
+template<>
+void write(XMLWriter& xml, const string& s, const std::list<Boolean>& d);
 
 #endif
 

@@ -501,6 +501,87 @@ namespace QDP
 
 
 
+  //! Read a XML list element
+  template<typename T>
+  void readListPrimitive(XMLReader& xml, const std::string& xpath, std::list<T>& result)
+  {
+    result.clear();
+  
+    // Try reading the list as a string
+    std::string list_string;
+    read(xml, xpath, list_string);
+
+    // Parse the string by white-space
+    std::istringstream list_stream(list_string);
+	
+    T dummy;
+    while(list_stream >> dummy)
+    {
+      result.push_back(dummy);
+    }
+  }
+
+
+  //! Read a XML list element
+  void read(XMLReader& xml, const std::string& xpath, std::list<int>& result)
+  {
+    readListPrimitive<int>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::list<unsigned int>& result)
+  {
+    readListPrimitive<unsigned int>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::list<short int>& result)
+  {
+    readListPrimitive<short int>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::list<unsigned short int>& result)
+  {
+    readListPrimitive<unsigned short int>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::list<long int>& result)
+  {
+    readListPrimitive<long int>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::list<unsigned long int>& result)
+  {
+    readListPrimitive<unsigned long int>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::list<float>& result)
+  {
+    readListPrimitive<float>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::list<double>& result)
+  {
+    readListPrimitive<double>(xml, xpath, result);
+  }
+  void read(XMLReader& xml, const std::string& xpath, std::list<bool>& result)
+  {
+    readListPrimitive<bool>(xml, xpath, result);
+  }
+  template<>
+  void read(XMLReader& xml, const std::string& xpath, std::list<Integer>& result)
+  {
+    readListPrimitive<Integer>(xml, xpath, result);
+  }
+  template<>
+  void read(XMLReader& xml, const std::string& xpath, std::list<Real32>& result)
+  {
+    readListPrimitive<Real32>(xml, xpath, result);
+  }
+  template<>
+  void read(XMLReader& xml, const std::string& xpath, std::list<Real64>& result)
+  {
+    readListPrimitive<Real64>(xml, xpath, result);
+  }
+  template<>
+  void read(XMLReader& xml, const std::string& xpath, std::list<Boolean>& result)
+  {
+    readListPrimitive<Boolean>(xml, xpath, result);
+  }
+
+
+
 
   //--------------------------------------------------------------------------------
   // XML writer base class
@@ -1032,6 +1113,154 @@ namespace QDP
   void write(XMLWriter& xml, const std::string& xpath, const std::vector<Boolean>& output)
   {
     writeVectorPrimitive<Boolean>(xml, xpath, output);
+  }
+
+
+
+  // Write a vector of basic types
+  template<typename T>
+  void writeListPrimitive(XMLWriter& xml, const std::string& s, const std::list<T>& s1)
+  {
+    std::ostringstream output;
+
+    if (s1.size() > 0)
+    {
+      typename std::list<T>::const_iterator t = s1.begin();
+      
+      output << *t;
+      ++t;
+      for(; t != s1.end(); ++t)
+	output << " " << *t;
+    }
+    
+    // Write the array - do not use a normal string write
+    xml.openTag(s);
+    xml << output.str();
+    xml.closeTag();
+  }
+
+
+  void write(XMLWriter& xml, const std::string& xpath, const std::list<int>& output)
+  {
+    writeListPrimitive<int>(xml, xpath, output);
+  }
+  void write(XMLWriter& xml, const std::string& xpath, const std::list<unsigned int>& output)
+  {
+    writeListPrimitive<unsigned int>(xml, xpath, output);
+  }
+  void write(XMLWriter& xml, const std::string& xpath, const std::list<short int>& output)
+  {
+    writeListPrimitive<short int>(xml, xpath, output);
+  }
+  void write(XMLWriter& xml, const std::string& xpath, const std::list<unsigned short int>& output)
+  {
+    writeListPrimitive<unsigned short int>(xml, xpath, output);
+  }
+  void write(XMLWriter& xml, const std::string& xpath, const std::list<long int>& output)
+  {
+    writeListPrimitive<long int>(xml, xpath, output);
+  }
+  void write(XMLWriter& xml, const std::string& xpath, const std::list<unsigned long int>& output)
+  {
+    writeListPrimitive<unsigned long int>(xml, xpath, output);
+  }
+  template<>
+  void write(XMLWriter& xml, const std::string& s, const std::list<float>& s1)
+  {
+    std::ostringstream output;
+    output.precision(7);
+
+    if (s1.size() > 0)
+    {
+      std::list<float>::const_iterator t = s1.begin();
+      
+      output << *t;
+      ++t;
+      for(; t != s1.end(); ++t)
+	output << " " << *t;
+    }
+    
+    // Write the array - do not use a normal string write
+    xml.openTag(s);
+    xml << output.str();
+    xml.closeTag();
+  }
+  template<>
+  void write(XMLWriter& xml, const std::string& s, const std::list<double>& s1)
+  {
+    std::ostringstream output;
+    output.precision(15);
+
+    if (s1.size() > 0)
+    {
+      std::list<double>::const_iterator t = s1.begin();
+      
+      output << *t;
+      ++t;
+      for(; t != s1.end(); ++t)
+	output << " " << *t;
+    }
+    
+    // Write the array - do not use a normal string write
+    xml.openTag(s);
+    xml << output.str();
+    xml.closeTag();
+  }
+  void write(XMLWriter& xml, const std::string& xpath, const std::list<bool>& output)
+  {
+    writeListPrimitive<bool>(xml, xpath, output);
+  }
+  template<>
+  void write(XMLWriter& xml, const std::string& xpath, const std::list<Integer>& output)
+  {
+    writeListPrimitive<Integer>(xml, xpath, output);
+  }
+  template<>
+  void write(XMLWriter& xml, const std::string& s, const std::list<Real32>& s1)
+  {
+    std::ostringstream output;
+    output.precision(7);
+
+    if (s1.size() > 0)
+    {
+      std::list<Real32>::const_iterator t = s1.begin();
+      
+      output << *t;
+      ++t;
+      for(; t != s1.end(); ++t)
+	output << " " << *t;
+    }
+    
+    // Write the array - do not use a normal string write
+    xml.openTag(s);
+    xml << output.str();
+    xml.closeTag();
+  }
+  template<>
+  void write(XMLWriter& xml, const std::string& s, const std::list<Real64>& s1)
+  {
+    std::ostringstream output;
+    output.precision(15);
+
+    if (s1.size() > 0)
+    {
+      std::list<Real64>::const_iterator t = s1.begin();
+      
+      output << *t;
+      ++t;
+      for(; t != s1.end(); ++t)
+	output << " " << *t;
+    }
+    
+    // Write the array - do not use a normal string write
+    xml.openTag(s);
+    xml << output.str();
+    xml.closeTag();
+  }
+  template<>
+  void write(XMLWriter& xml, const std::string& xpath, const std::list<Boolean>& output)
+  {
+    writeListPrimitive<Boolean>(xml, xpath, output);
   }
 
   //--------------------------------------------------------------------------------
