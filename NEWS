@@ -1,3 +1,7 @@
+06/25/2012 -- Robert Edwards
+        Version 1.40.1: Added xml reads/writes of std::list as well as
+        specializatiions for std::vector.
+   
 06/06/2012 -- Robert Edwards
         Version 1.40.0: Added in new tr1::unordered_map class. Several fixes
         in string broadcasts.
