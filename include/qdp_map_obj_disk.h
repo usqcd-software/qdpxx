@@ -290,6 +290,7 @@ namespace QDP
 	  QDPIO::cout << "ERROR: Sanity Check 2 failed." << endl;
 	  QDP_abort(1);
 	}
+	QDPIO::cout << "Finished sanity Check 2" << endl;
       }
       
       // Advance state machine state
