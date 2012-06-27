@@ -111,9 +111,8 @@ namespace QDP
 
 	for(typename std::vector<K>::const_iterator k=kk.begin(); k != kk.end(); ++k)
 	{
-	  K key;
 	  BinaryBufferWriter bin;
-	  write(bin, key);
+	  write(bin, *k);
 
 	  unique_it.insert(std::make_pair(bin.str(),1));
 	}
