@@ -782,7 +782,8 @@ namespace QDP
 
   void write(XMLWriter& xml, const string& s, const char& d)
   {
-    writePrimitive<char>(xml, s, d);
+    // Gruesome hack. For some inexplicable reason we don't have a proper write of a char in xpath_reader.
+    writePrimitive<string>(xml, s, string(1,d));
   }
 
   void write(XMLWriter& xml, const string& s, const int& d)
