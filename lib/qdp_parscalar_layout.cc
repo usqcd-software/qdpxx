@@ -69,7 +69,12 @@ namespace QDP
 
       //! Total number of nodes
       int num_nodes;
-    } _layout;
+
+	  bool iogrid_defined;
+      int  num_iogrid;
+	  multi1d<int> iogrid;
+
+	} _layout;
 
 
     //-----------------------------------------------------
@@ -148,6 +153,11 @@ namespace QDP
     {
       _layout.num_nodes = QMP_get_number_of_nodes();
       _layout.node_rank = QMP_get_node_number();
+		
+	  // Default should be current behaviour (as of 7/4/12)
+	  // No iogrid is defined -> each node is its own I/O node
+	  _layout.iogrid_defined = false;  
+	  _layout.num_iogrid = _layout.num_nodes;
     }
 
 
@@ -161,6 +171,43 @@ namespace QDP
     }
 
 
+	  
+	  //! check if I/O grid is defined
+	  /*! Always defined for scalar node: it is 1x1x1x1 */
+	  bool isIOGridDefined(void) QDP_CONST 
+	  { 
+		  return _layout.iogrid_defined; 
+	  }
+	  
+	  //! number of I/O nodes
+	  int numIONodeGrid(void) QDP_CONST
+	  {
+		
+		  
+		  return _layout.num_iogrid;
+		  
+	  }
+	  
+	  //! Set the I/O Node grid -- satisfy interface
+	  void setIONodeGrid(const multi1d<int>& io_grid) 
+	  {
+		_layout.iogrid.resize(Nd);	
+		for(int mu=0; mu < Nd; mu++) {
+		  _layout.iogrid[mu] = io_grid[mu];
+		}
+		_layout.num_iogrid = io_grid[0];
+		for(int mu=1; mu < Nd; mu++) { 
+		  _layout.num_iogrid *= io_grid[mu];
+		}
+		_layout.iogrid_defined = true;
+	  }
+	  
+	  //! Get the I/O Node grid
+	  const multi1d<int>& getIONodeGrid() QDP_CONST
+	  {
+		  return _layout.iogrid;
+	  }
+	  
     //! Initializer for all the layout defaults
     void initDefaults()
     {

@@ -37,59 +37,68 @@ namespace QDP
     return Layout::sitesOnNode();
   }
 
-
-#if 0
-  // This code was to support better partfile IO on the QCDOC 
-  // However I have commented it out because it is not clear
-  // at this time in the API how to pass this information 
-  // town to the QIO. A straightforward hack is to modify 
-  // the QIO_Layout structure, but we have not actually agreed
-  // with Carleton that that is what I should do. The placement
-  // of the choice for a particular kind of partitioning scheme
-  // is not yet present -- will it be in QIO, will it be in QMP?
-  // will it be here? WIll it be configure/runtime? We just don't
-  // know.
-
-  //! A little namespace to mark I/O nodes
-  // This was originally so that we could use part file better
-  // but now is probably unused.
-  namespace SingleFileIONode { 
-    int IONode(int node) {
-      return 0;
-    }
-
-    int masterIONode(void) {
-      return 0;
-    }
+  // Setting up the QIO Filesystem
+  //! Master IO node is always IO node 0
+  int master_io_node(void)
+  {
+	return 0;
   }
+	
+	
+   //! io_node(node) returns the I/O node for node 'node'
+   /*! The plan is:
+	     a) If there is only 1 I/O node (e.g. scalar) that is the io_node for all
+	     b) otherwise if I/O geom is not defined, each node is their own I/O node.
+		 c) otherwise block layout by I/O geom to compute the I/O node
+	*/
+   int io_node(int node) 
+   {
+	    // If no io grid is defined, each node is its own I/O node
+	   if( ! Layout::isIOGridDefined() ) {
+			return node;
+		}
+		
+		// A grid is defined. A shortcut for when there is only 1 
+	   if ( Layout::numIONodeGrid() == 1 ) {
+			return master_io_node();
+		}
+		
+	    // Compute my I/O node. Block lat size into I/O grid
+		const multi1d<int>& lat_size = Layout::logicalSize();
+	    const multi1d<int>& io_geom = Layout::getIONodeGrid();
 
-  namespace MultiFileIONode {
-    int IONode(int node) { 
-      return node; 
-    }
+		multi1d<int> block_sizes(Nd);
+		for(int mu=0; mu < Nd; mu++) { 
+			block_sizes[mu] = lat_size[mu]/io_geom[mu];
+						
+			// Pick up slack if CPU dimension not divisible
+			// Last block will stretch beyond processor grid, but this is OK
+			// since no node outside the proc grid will be asked for
+			if( lat_size[mu] % io_geom[mu] != 0 ) block_sizes[mu]++;
+		}
+		
+		// My node coords -- always in the processor grid
+		multi1d<int> node_coords=Layout::getLogicalCoordFrom(node);
+		
+	    // Coords of I/O node, basically the origin of the block the 
+	    // current node is in
+		multi1d<int> io_node_coords(Nd);
+		for(int mu=0; mu < Nd; mu++) { 
+			// Integer division: will truncate to origin of block.
+			io_node_coords[mu] = node_coords[mu] / block_sizes[mu];
+		}
+			
+	    // Now just convert the io_node_coords to a node number and we're done
+	   return Layout::getNodeNumberFrom(io_node_coords);
+	}
 
-    int masterIONode(void) { 
-      return DML_master_io_node();
-    }
-  }
-
-  namespace PartFileIONode { 
-    int IONode(int node) {
-      // This code supports
-      multi1d<int> my_coords = Layout::getLogicalCoordFrom(node);
-      multi1d<int> io_node_coords(my_coords.size());
-      for(int i=0; i < my_coords.size(); i++) { 
-	io_node_coords[i] = 2*(my_coords[i]/2);
-      }
-      return Layout::getNodeNumberFrom(io_node_coords); 
-      return DML_io_node(node);
-    }
-    int masterIONode(void) { 
-      return DML_master_io_node();
-    }
-  }
-#endif
-
+	//! io_node for multifile...
+	/*! code gets confused if multifile is set, but filesystem is not 'multfile' */
+	int io_node_multifile(int node) 
+	{
+		return node;
+	}
+	
   //-----------------------------------------------------------------------------
   // QDP QIO support
   QDPFileReader::QDPFileReader() {iop=false;}
@@ -104,7 +113,7 @@ namespace QDP
 			   QDP_serialparallel_t serpar)
   {
     QIO_Layout layout;
-
+		  
     int latsize[Nd];
 
     for(int m=0; m < Nd; ++m)
@@ -121,13 +130,17 @@ namespace QDP
     layout.this_node = Layout::nodeNumber(); 
     layout.number_of_nodes = Layout::numNodes(); 
 
+	QIO_Filesystem fs;
+	fs.my_io_node = &io_node;
+	fs.master_io_node = &master_io_node;
+	  
     // Initialize string objects 
     QIO_String *xml_c  = QIO_string_create();
 
 
     // Call QIO read
     // At this moment, serpar (which is an enum in QDP++) is ignored here.
-    if ((qio_in = QIO_open_read(xml_c, path.c_str(), &layout, NULL, NULL)) == NULL)
+    if ((qio_in = QIO_open_read(xml_c, path.c_str(), &layout, &fs, NULL)) == NULL)
     {
       iostate = QDPIO_badbit;  // not helpful
 
@@ -365,28 +378,26 @@ namespace QDP
       iostate = QDPIO_goodbit;
     }
 
+	QIO_Filesystem fs;
+	fs.my_io_node = &io_node;
+	fs.master_io_node = &master_io_node;
+	  
     // Wrappers over simple ints
     int volfmt;
     switch(qdp_volfmt)
     {
     case QDPIO_SINGLEFILE:
       volfmt = QIO_SINGLEFILE;
-      //    ionodefunc = &(SingleFileIONode::IONode);
-      //    master_io_nodefunc = &(SingleFileIONode::masterIONode);
       break;
     
     case QDPIO_MULTIFILE:
       volfmt = QIO_MULTIFILE;
-      // ionodefunc = &(MultiFileIONode::IONode);
-      // master_io_nodefunc = &(MultiFileIONode::masterIONode);
-
+	  fs.my_io_node = &io_node_multifile;
       break;
 
     case QDPIO_PARTFILE:
       volfmt = QIO_PARTFILE;
-      //ionodefunc = &(PartFileIONode::IONode);
-      // master_io_nodefunc = &(PartFileIONode::masterIONode);
-    
+      
       break;
 
     default: 
@@ -436,12 +447,12 @@ namespace QDP
       QIO_string_set(oflag.ildgLFN, data_LFN.c_str());
     }
 
-#if 1
+	  
     // This is the QIO Way - older way 
     if ((qio_out = QIO_open_write(xml_c, path.c_str(), 
 				  volfmt, 
 				  &layout, 
-				  NULL, &oflag)) == NULL )
+				  &fs, &oflag)) == NULL )
     {
       iostate = QDPIO_badbit;  // not helpful
 
@@ -453,40 +464,6 @@ namespace QDP
       iostate = QDPIO_goodbit;
     }
 
-#else 
-    /*! This was an attempt to control the choking to I/O nodes
-     *  I have deactivated it because I am not sure how to choke
-     *  the readers to do the same thing
-     */
-    if ((qio_out = QIO_generic_open_write(path.c_str(), 
-					  volfmt, 
-					  &layout, 
-					  &oflag,
-					  ionodefunc,
-					  master_io_nodefunc)) == NULL)
-    {
-      iostate = QDPIO_badbit;  // not helpful
-
-      QDPIO::cerr << "QDPFileWriter: failed to open file " << path << endl;
-      QDP_abort(1);  // just bail. Not sure I want this. This is not stream semantics
-    }
-    else
-    {
-      iostate = QDPIO_goodbit;
-    }
-
-    DML_sync();
-
-    int status = QIO_write_file_header(qio_out, xml_c);
-    if( status != QIO_SUCCESS ) { 
-      iostate = QDPIO_badbit;
-      QDPIO::cerr << "QDPFileWriter: failed to write File XML " << endl;
-      QDP_abort(1);  // just bail. Not sure I want this. This is not stream semantics
-    }
-    else {
-      iostate = QDPIO_goodbit;
-    }
-#endif 
 
     // Free memory -- this is OK< as it should'of been copied
     QIO_string_destroy(oflag.ildgLFN);

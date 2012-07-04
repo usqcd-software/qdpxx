@@ -74,6 +74,7 @@ namespace Layout
 
   //! Returns the number of nodes
   int numNodes() QDP_CONST;
+	
 
   //! Virtual grid (problem grid) lattice size
   const multi1d<int>& lattSize() QDP_CONST;
@@ -109,6 +110,21 @@ namespace Layout
   //! Returns the logical node coordinates given some node number
   /*! This is not meant to be speedy */
   multi1d<int> getLogicalCoordFrom(int node);
+
+
+  //! Check if I/O grid is defined
+  bool isIOGridDefined(void) QDP_CONST;
+
+  //! set the IO node grid
+  void setIONodeGrid(const multi1d<int>& io_grid);
+
+  //! number of I/O nodes
+  int numIONodeGrid(void) QDP_CONST;
+	
+  //! Get the I/O Node grid
+  const multi1d<int>& getIONodeGrid() QDP_CONST;
+
+
 }
 
 //! Declaration of shift function object
