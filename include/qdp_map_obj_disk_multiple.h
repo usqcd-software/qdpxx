@@ -95,6 +95,39 @@ namespace QDP
 
 
     /**
+     * Return all available keys to user
+     * @param keys user suppled an empty vector which is populated
+     * by keys after this call.
+     */
+    void keys(std::vector<K>& keys_) const {
+      keys_.clear();
+
+      std::tr1::unordered_map<std::string,int> unique_it;
+
+      for(int i=0; i < dbs_.size(); ++i) 
+      {
+	std::vector<K> kk;
+	dbs_[i]->keys(kk);
+
+	for(typename std::vector<K>::const_iterator k=kk.begin(); k != kk.end(); ++k)
+	{
+	  BinaryBufferWriter bin;
+	  write(bin, *k);
+
+	  unique_it.insert(std::make_pair(bin.str(),1));
+	}
+      }
+
+      for(typename std::tr1::unordered_map<std::string,int>::const_iterator k=unique_it.begin(); k != unique_it.end(); ++k)
+      {
+	BinaryBufferReader bin(k->first);
+	K key;
+	read(bin, key);
+	keys_.push_back(key);
+      }
+    }
+    
+    /**
      * Flush database in memory to disk
      */
     void flush()

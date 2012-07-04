@@ -8,7 +8,7 @@
 #define __qdp_map_obj_disk_h__
 
 #include "qdp_map_obj.h"
-#include <string>
+#include <tr1/unordered_map>
 
 namespace QDP
 {
@@ -123,7 +123,7 @@ namespace QDP
 
   private:
     //! Type for the map
-    typedef std::map<K, pos_type> MapType_t;
+    typedef std::tr1::unordered_map<std::string, pos_type> MapType_t;
 
     //! State 
     enum State {INIT, UNCHANGED, MODIFIED};
@@ -136,12 +136,6 @@ namespace QDP
 
     //! File related stuff. Unsigned int is as close to uint32 as I can get
     MapObjDiskEnv::file_version_t file_version;
-    
-    //! Usual begin iterator
-    typename MapType_t::const_iterator begin() const {return src_map.begin();}
-    
-    //! Usual end iterator
-    typename MapType_t::const_iterator end() const {return src_map.end();}
     
     //! Map of objects
     mutable MapType_t src_map;
@@ -296,6 +290,7 @@ namespace QDP
 	  QDPIO::cout << "ERROR: Sanity Check 2 failed." << endl;
 	  QDP_abort(1);
 	}
+	QDPIO::cout << "Finished sanity Check 2" << endl;
       }
       
       // Advance state machine state
@@ -419,8 +414,12 @@ namespace QDP
       typename MapType_t::const_iterator iter;
       for(iter  = src_map.begin();
 	  iter != src_map.end();
-	  ++iter) { 
-	keys_.push_back(iter->first);
+	  ++iter) 
+      { 
+	BinaryBufferReader bin(iter->first);
+	K key;
+	read(bin, key);
+	keys_.push_back(key);
       }
     }
   }
@@ -499,9 +498,13 @@ namespace QDP
     case MODIFIED :
     case UNCHANGED : {
       //  Find key
-      if (exist(key)) { 
+      BinaryBufferWriter bin;
+      write(bin, key);
+      MapType_t::const_iterator key_ptr = src_map.find(bin.str());
+
+      if (key_ptr != src_map.end()) { 
 	// Key does exist
-	pos_type wpos = static_cast<pos_type>(src_map[key]);
+	pos_type wpos = key_ptr->second;
 	if (level >= 2) {
 	  QDPIO::cout << "Found key to update. Position is " << wpos << endl;
 	}
@@ -534,7 +537,7 @@ namespace QDP
 	pos_type pos=streamer.currentPosition();
       
 	// Insert pos into map
-	src_map.insert(std::make_pair(key,pos));
+	src_map.insert(std::make_pair(bin.str(),pos));
      
 	streamer.resetChecksum();
 
@@ -593,10 +596,14 @@ namespace QDP
     switch(state) { 
     case UNCHANGED: // Deliberate fallthrough
     case MODIFIED: {
-      if ( exist(key) ) 
+      BinaryBufferWriter bin;
+      write(bin, key);
+      MapType_t::const_iterator key_ptr = src_map.find(bin.str());
+
+      if (key_ptr != src_map.end())
       {
 	// If key exists find file offset
-	pos_type pos = src_map.find(key)->second;
+	pos_type pos = key_ptr->second;
 
 	// Do the seek and time it 
 	StopWatch swatch;
@@ -675,7 +682,9 @@ namespace QDP
   bool 
   MapObjectDisk<K,V>::exist(const K& key) const 
   {
-    return (src_map.find(key) == src_map.end()) ? false : true;
+    BinaryBufferWriter bin;
+    write(bin, key);
+    return (src_map.find(bin.str()) == src_map.end()) ? false : true;
   }
   
   
@@ -793,10 +802,9 @@ namespace QDP
 	iter != src_map.end();
 	++iter) 
     { 
-      K key = iter->first;
       pos_type pos=iter->second;
       
-      write(streamer, key); 
+      writeDesc(streamer, iter->first); 
       streamer.writeArray((char *)&pos,sizeof(pos_type),1);
       
       if (level >= 2) {
@@ -829,10 +837,11 @@ namespace QDP
       QDPIO::cout << "Read num of entries: " << num_records << " records. Current Position: " << streamer.currentPosition() << endl;
     }
     
-    for(unsigned int i=0; i < num_records; i++) { 
+    for(unsigned int i=0; i < num_records; i++) 
+    { 
       pos_type rpos;
-      K key;
-      read(streamer, key);
+      std::string key_str;
+      readDesc(streamer, key_str);
       
       streamer.readArray((char *)&rpos, sizeof(pos_type),1);
       
@@ -840,7 +849,7 @@ namespace QDP
 	QDPIO::cout << "Read Key/Position pair. Current position: " << streamer.currentPosition() << endl;
       }
       // Add position to the map
-      src_map.insert(std::make_pair(key,rpos));
+      src_map.insert(std::make_pair(key_str,rpos));
     }
     QDPUtil::n_uint32_t calc_checksum = streamer.getChecksum();
     QDPUtil::n_uint32_t read_checksum;
