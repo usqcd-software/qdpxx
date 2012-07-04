@@ -216,14 +216,14 @@ namespace QDP {
 		// OK, I need to set up the IO geometry here...
 		// I should make it part of layout...
 		if( setIOGeomP ) { 
-// #if QDP_DEBUG ==1
+#if QDP_DEBUG >=1
 			std::ostringstream outbuf;
 			for(int mu=0; mu < Nd; mu++) { 
 				outbuf << " " << logical_iogeom[mu];
 			}
 			
 			QDP_info("Setting IO Geometry: %s\n", outbuf.str().c_str());
-//#endif
+#endif
 			
 			Layout::setIONodeGrid(logical_iogeom);
 			
