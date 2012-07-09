@@ -320,7 +320,13 @@ namespace QDP
       QDPIO::cout << "  total number of nodes = " << Layout::numNodes() << endl;
       QDPIO::cout << "  total volume = " << _layout.vol << endl;
       QDPIO::cout << "  subgrid volume = " << _layout.subgrid_vol << endl;
-
+      if ( _layout.iogrid_defined ) { 
+        QDPIO::cout << "  Number of IO nodes = " << _layout.num_iogrid << endl;
+        QDPIO::cout << "  IO grid size =";
+        for(int i=0; i < Nd; i++) 
+ 	  QDPIO::cout << " " << _layout.iogrid[i];
+        QDPIO::cout << endl;
+      } 
 
       // Sanity check - check the QMP node number functions
       for(int node=0; node < Layout::numNodes(); ++node)
@@ -333,6 +339,9 @@ namespace QDP
       }
 
       // Sanity check - check the layout functions make sense
+#if QDP_DEBUG >= 2
+	// BJ: Put this into a debug loop as it can take a serious amount of time for a really
+        // large lattice
       for(int site=0; site < vol(); ++site) 
       {
 	multi1d<int> coord1 = crtesn(site, lattSize());
@@ -343,7 +352,7 @@ namespace QDP
 	multi1d<int> coord2 = siteCoords(node,linear);
 	int j = local_site(coord2, lattSize());
       
-#if QDP_DEBUG >= 2
+#if QDP_DEBUG >= 3
 	QDP_info("site= %d   coord= %d %d %d %d   linear= %d node=%d   crd=%d %d %d %d   j= %d",
 		 site,coord1[0],coord1[1],coord1[2],coord1[3],
 		 linear,node,
@@ -353,7 +362,7 @@ namespace QDP
 	if (site != j)
 	  QDP_error_exit("Layout::create - Layout problems, the layout functions do not work correctly with this lattice size");
       }
-
+#endif
       // Initialize various defaults
       initDefaults();
 

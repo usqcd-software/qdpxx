@@ -54,6 +54,7 @@ namespace QDP
    int io_node(int node) 
    {
 	    // If no io grid is defined, each node is its own I/O node
+	  
 	   if( ! Layout::isIOGridDefined() ) {
 			return node;
 		}
@@ -64,21 +65,21 @@ namespace QDP
 		}
 		
 	    // Compute my I/O node. Block lat size into I/O grid
-		const multi1d<int>& lat_size = Layout::logicalSize();
+	    const multi1d<int>& proc_size = Layout::logicalSize();
 	    const multi1d<int>& io_geom = Layout::getIONodeGrid();
 
-		multi1d<int> block_sizes(Nd);
-		for(int mu=0; mu < Nd; mu++) { 
-			block_sizes[mu] = lat_size[mu]/io_geom[mu];
+	    multi1d<int> block_sizes(Nd);
+	    for(int mu=0; mu < Nd; mu++) { 
+		block_sizes[mu] = proc_size[mu]/io_geom[mu];
 						
-			// Pick up slack if CPU dimension not divisible
-			// Last block will stretch beyond processor grid, but this is OK
-			// since no node outside the proc grid will be asked for
-			if( lat_size[mu] % io_geom[mu] != 0 ) block_sizes[mu]++;
-		}
+	        // Pick up slack if CPU dimension not divisible
+		// Last block will stretch beyond processor grid, but this is OK
+		// since no node outside the proc grid will be asked for
+		if( proc_size[mu] % io_geom[mu] != 0 ) block_sizes[mu]++;
+	    }
 		
-		// My node coords -- always in the processor grid
-		multi1d<int> node_coords=Layout::getLogicalCoordFrom(node);
+	    // My node coords -- always in the processor grid
+	    multi1d<int> node_coords=Layout::getLogicalCoordFrom(node);
 		
 	    // Coords of I/O node, basically the origin of the block the 
 	    // current node is in
@@ -86,6 +87,7 @@ namespace QDP
 		for(int mu=0; mu < Nd; mu++) { 
 			// Integer division: will truncate to origin of block.
 			io_node_coords[mu] = node_coords[mu] / block_sizes[mu];
+		        io_node_coords[mu] *= block_sizes[mu];
 		}
 			
 	    // Now just convert the io_node_coords to a node number and we're done
@@ -130,17 +132,26 @@ namespace QDP
     layout.this_node = Layout::nodeNumber(); 
     layout.number_of_nodes = Layout::numNodes(); 
 
-	QIO_Filesystem fs;
-	fs.my_io_node = &io_node;
-	fs.master_io_node = &master_io_node;
+    QIO_Filesystem fs;
+    fs.my_io_node = &io_node;
+    fs.master_io_node = &master_io_node;
 	  
     // Initialize string objects 
     QIO_String *xml_c  = QIO_string_create();
 
+    QIO_Iflag iflag;
+    if( serpar == QDPIO_PARALLEL ) {   
+      iflag.serpar = QIO_PARALLEL;
+    }
+    else { 
+      iflag.serpar = QIO_SERIAL;
+    }
+
+    iflag.volfmt = QIO_UNKNOWN;
 
     // Call QIO read
     // At this moment, serpar (which is an enum in QDP++) is ignored here.
-    if ((qio_in = QIO_open_read(xml_c, path.c_str(), &layout, &fs, NULL)) == NULL)
+    if ((qio_in = QIO_open_read(xml_c, path.c_str(), &layout, &fs, &iflag)) == NULL)
     {
       iostate = QDPIO_badbit;  // not helpful
 
