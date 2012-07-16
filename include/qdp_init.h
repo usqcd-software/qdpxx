@@ -1,5 +1,8 @@
 // -*- C++ -*-
 
+#ifndef QDP_INIT
+#define QDP_INIT
+
 /*! \file
  * \brief Routines for top level QDP management
  *
@@ -56,3 +59,4 @@ void QDP_suspend();
 
 }
 
+#endif

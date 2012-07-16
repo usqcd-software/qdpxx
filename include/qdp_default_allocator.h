@@ -9,7 +9,7 @@
 #define QDP_DEFAULT_ALLOCATOR
 
 #include "qdp_allocator.h"
-#include "qdp_stdio.h"
+//#include "qdp_stdio.h"
 #include "qdp_singleton.h"
 #include <string>
 #include <map>
