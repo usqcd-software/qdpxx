@@ -35,19 +35,22 @@ public:
   typedef C Container_t;
 
   //! Main constructor 
+  PETE_DEVICE
   QDPType(){}
 
   //! Copy constructor
+  PETE_DEVICE
   QDPType(const QDPType&) {}
 
   //! Destructor
+  PETE_DEVICE
   ~QDPType(){}
 
 
   //---------------------------------------------------------
   // Operators
 
-  inline
+  PETE_DEVICE inline
   C& assign(const typename WordType<C>::Type_t& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -56,7 +59,7 @@ public:
       return *me;
     }
 
-  inline
+  PETE_DEVICE inline
   C& assign(const Zero&)
     {
       C* me = static_cast<C*>(this);
@@ -65,7 +68,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& assign(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -74,7 +77,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& assign(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -84,14 +87,14 @@ public:
 
 
   //! Use this for default operator=
-  inline
+  PETE_DEVICE inline
   C& operator=(const QDPType& rhs)
     {
       return assign(rhs);
     }
 
 
-  inline
+  PETE_DEVICE inline
   C& operator+=(const typename WordType<C>::Type_t& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -101,7 +104,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator+=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -110,7 +113,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator+=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -119,7 +122,7 @@ public:
     }
 
 
-  inline
+  PETE_DEVICE inline
   C& operator-=(const typename WordType<C>::Type_t& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -129,7 +132,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator-=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -138,7 +141,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator-=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -146,8 +149,8 @@ public:
       return *me;
     }
 
-
-  inline
+ 
+  PETE_DEVICE inline
   C& operator*=(const typename WordType<C>::Type_t& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -157,7 +160,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator*=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -166,7 +169,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator*=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -175,7 +178,7 @@ public:
     }
 
 
-  inline
+  PETE_DEVICE inline
   C& operator/=(const typename WordType<C>::Type_t& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -185,7 +188,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator/=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -194,7 +197,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator/=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -203,7 +206,7 @@ public:
     }
 
 
-  inline
+  PETE_DEVICE inline
   C& operator%=(const typename WordType<C>::Type_t& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -213,7 +216,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator%=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -222,7 +225,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator%=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -231,7 +234,7 @@ public:
     }
 
 
-  inline
+  PETE_DEVICE inline
   C& operator|=(const typename WordType<C>::Type_t& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -241,7 +244,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator|=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -250,7 +253,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator|=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -259,7 +262,7 @@ public:
     }
 
 
-  inline
+  PETE_DEVICE inline
   C& operator&=(const typename WordType<C>::Type_t& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -269,7 +272,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator&=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -278,7 +281,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator&=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -287,7 +290,7 @@ public:
     }
 
 
-  inline
+  PETE_DEVICE inline
   C& operator^=(const typename WordType<C>::Type_t& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -297,7 +300,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator^=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -306,7 +309,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator^=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -315,7 +318,7 @@ public:
     }
 
 
-  inline
+  PETE_DEVICE inline
   C& operator<<=(const typename WordType<C>::Type_t& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -325,7 +328,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator<<=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -334,7 +337,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator<<=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -343,7 +346,7 @@ public:
     }
 
 
-  inline
+  PETE_DEVICE inline
   C& operator>>=(const typename WordType<C>::Type_t& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -353,7 +356,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator>>=(const QDPType<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -362,7 +365,7 @@ public:
     }
 
   template<class T1,class C1>
-  inline
+  PETE_DEVICE inline
   C& operator>>=(const QDPExpr<T1,C1>& rhs)
     {
       C* me = static_cast<C*>(this);
@@ -371,12 +374,20 @@ public:
     }
 
 public:
+  PETE_DEVICE
   T& elem(int i) {return static_cast<const C*>(this)->elem(i);}
+
+  PETE_DEVICE
   const T& elem(int i) const {return static_cast<const C*>(this)->elem(i);}
 
+  PETE_DEVICE
   T& elem() {return static_cast<const C*>(this)->elem();}
+
+  PETE_DEVICE
   const T& elem() const {return static_cast<const C*>(this)->elem();}
+
 };
+
 
 /*! @} */ // end of group1
 
@@ -419,6 +430,7 @@ struct CreateLeaf<QDPType<T,C> >
   typedef QDPType<T,C> Inp_t;
   typedef Reference<Inp_t> Leaf_t;
 //  typedef Inp_t Leaf_t;
+  PETE_DEVICE
   inline static
   Leaf_t make(const Inp_t &a) { return Leaf_t(a); }
 };
@@ -435,6 +447,7 @@ struct LeafFunctor<QDPType<T,C>, ElemLeaf>
 {
   typedef Reference<T> Type_t;
 //  typedef T Type_t;
+  PETE_DEVICE
   inline static Type_t apply(const QDPType<T,C> &a, const ElemLeaf &f)
     { 
       return Type_t(a.elem());
@@ -446,6 +459,7 @@ struct LeafFunctor<QDPType<T,C>, EvalLeaf1>
 {
   typedef Reference<T> Type_t;
 //  typedef T Type_t;
+  PETE_DEVICE
   inline static Type_t apply(const QDPType<T,C> &a, const EvalLeaf1 &f)
     { 
       return Type_t(a.elem(f.val1()));

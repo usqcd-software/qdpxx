@@ -8,7 +8,9 @@
 #ifndef QDP_REALITY_H
 #define QDP_REALITY_H
 
+#ifndef __CUDACC__
 #include <sstream>
+#endif
 
 namespace QDP {
 
@@ -26,19 +28,25 @@ namespace QDP {
 template<class T> class RScalar
 {
 public:
+  PETE_DEVICE
   RScalar() {}
+
+  PETE_DEVICE
   ~RScalar() {}
 
   //---------------------------------------------------------
   //! construct dest = const
+  PETE_DEVICE
   RScalar(const typename WordType<T>::Type_t& rhs) : F(rhs) {}
 
   //! construct dest = rhs
   template<class T1>
+  PETE_DEVICE
   RScalar(const RScalar<T1>& rhs) : F(rhs.elem()) {}
 
   //! construct dest = rhs
   template<class T1>
+  PETE_DEVICE
   RScalar(const T1& rhs) : F(rhs) {}
 
   //---------------------------------------------------------
@@ -56,7 +64,7 @@ public:
   //! RScalar = RScalar
   /*! Set equal to another RScalar */
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RScalar& operator=(const RScalar<T1>& rhs) 
     {
       elem() = rhs.elem();
@@ -65,7 +73,7 @@ public:
 
   //! RScalar += RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RScalar& operator+=(const RScalar<T1>& rhs) 
     {
       elem() += rhs.elem();
@@ -74,7 +82,7 @@ public:
 
   //! RScalar -= RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RScalar& operator-=(const RScalar<T1>& rhs) 
     {
       elem() -= rhs.elem();
@@ -83,7 +91,7 @@ public:
 
   //! RScalar *= RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RScalar& operator*=(const RScalar<T1>& rhs) 
     {
       elem() *= rhs.elem();
@@ -92,7 +100,7 @@ public:
 
   //! RScalar /= RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RScalar& operator/=(const RScalar<T1>& rhs) 
     {
       elem() /= rhs.elem();
@@ -101,7 +109,7 @@ public:
 
   //! RScalar %= RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RScalar& operator%=(const RScalar<T1>& rhs) 
     {
       elem() %= rhs.elem();
@@ -110,7 +118,7 @@ public:
 
   //! RScalar |= RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RScalar& operator|=(const RScalar<T1>& rhs) 
     {
       elem() |= rhs.elem();
@@ -119,7 +127,7 @@ public:
 
   //! RScalar &= RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RScalar& operator&=(const RScalar<T1>& rhs) 
     {
       elem() &= rhs.elem();
@@ -128,7 +136,7 @@ public:
 
   //! RScalar ^= RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RScalar& operator^=(const RScalar<T1>& rhs) 
     {
       elem() ^= rhs.elem();
@@ -137,7 +145,7 @@ public:
 
   //! RScalar <<= RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RScalar& operator<<=(const RScalar<T1>& rhs) 
     {
       elem() <<= rhs.elem();
@@ -146,7 +154,7 @@ public:
 
   //! RScalar >>= RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RScalar& operator>>=(const RScalar<T1>& rhs) 
     {
       elem() >>= rhs.elem();
@@ -155,17 +163,19 @@ public:
 
 
   //! Do deep copies here
-  RScalar(const RScalar& a): F(a.F) {}
+  PETE_DEVICE RScalar(const RScalar& a): F(a.F) {}
 
 public:
-  T& elem() {return F;}
-  const T& elem() const {return F;}
+  PETE_DEVICE T& elem() {return F;}
+  PETE_DEVICE const T& elem() const {return F;}
 
 private:
   T F;
 };
 
- 
+
+#ifndef __CUDACC__ 
+
 // Input
 //! Ascii input
 template<class T>
@@ -216,7 +226,7 @@ TextWriter& operator<<(TextWriter& s, const RScalar<T>& d)
   return s << d.elem();
 }
 
-#ifndef QDP_NO_LIBXML2
+
 //! XML output
 template<class T>
 inline
@@ -233,6 +243,7 @@ void read(XMLReader& xml, const string& path, RScalar<T>& d)
   read(xml, path, d.elem());
 }
 #endif
+
 
 /*! @} */  // end of group rscalar
 
@@ -251,22 +262,32 @@ void read(XMLReader& xml, const string& path, RScalar<T>& d)
 template<class T> class RComplex
 {
 public:
+  PETE_DEVICE
   RComplex() {}
+
+  PETE_DEVICE
   ~RComplex() {}
 
   //! Construct from two reality scalars
   template<class T1, class T2>
+  PETE_DEVICE
   RComplex(const RScalar<T1>& _re, const RScalar<T2>& _im): re(_re.elem()), im(_im.elem()) {}
 
   //! Construct from two scalars
   template<class T1, class T2>
+  PETE_DEVICE
   RComplex(const T1& _re, const T2& _im): re(_re), im(_im) {}
+
+  //! Construct from one scalar for real part
+  template<class T1>
+  PETE_DEVICE
+  RComplex(const T1& _re): re(_re), im() {}
 
   //---------------------------------------------------------
   //! RComplex = RScalar
   /*! Set the real part and zero the imag part */
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RComplex& operator=(const RScalar<T1>& rhs) 
     {
       real() = rhs.elem();
@@ -276,7 +297,7 @@ public:
 
   //! RComplex += RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RComplex& operator+=(const RScalar<T1>& rhs) 
     {
       real() += rhs.elem();
@@ -285,7 +306,7 @@ public:
 
   //! RComplex -= RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RComplex& operator-=(const RScalar<T1>& rhs) 
     {
       real() -= rhs.elem();
@@ -294,7 +315,7 @@ public:
 
   //! RComplex *= RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RComplex& operator*=(const RScalar<T1>& rhs) 
     {
       real() *= rhs.elem();
@@ -304,7 +325,7 @@ public:
 
   //! RComplex /= RScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RComplex& operator/=(const RScalar<T1>& rhs) 
     {
       real() /= rhs.elem();
@@ -317,7 +338,7 @@ public:
   //! RComplex = RComplex
   /*! Set equal to another RComplex */
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RComplex& operator=(const RComplex<T1>& rhs) 
     {
       real() = rhs.real();
@@ -327,7 +348,7 @@ public:
 
   //! RComplex += RComplex
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RComplex& operator+=(const RComplex<T1>& rhs) 
     {
       real() += rhs.real();
@@ -337,7 +358,7 @@ public:
 
   //! RComplex -= RComplex
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RComplex& operator-=(const RComplex<T1>& rhs) 
     {
       real() -= rhs.real();
@@ -347,7 +368,7 @@ public:
 
   //! RComplex *= RComplex
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RComplex& operator*=(const RComplex<T1>& rhs) 
     {
       RComplex<T> d;
@@ -360,7 +381,7 @@ public:
 
   //! RComplex /= RComplex
   template<class T1>
-  inline
+  PETE_DEVICE inline
   RComplex& operator/=(const RComplex<T1>& rhs) 
     {
       RComplex<T> d;
@@ -373,20 +394,22 @@ public:
 
 
   //! Deep copy constructor
-  RComplex(const RComplex& a): re(a.re), im(a.im) {}
+  PETE_DEVICE RComplex(const RComplex& a): re(a.re), im(a.im) {}
 
 public:
-  T& real() {return re;}
-  const T& real() const {return re;}
+  PETE_DEVICE T& real() {return re;}
+  PETE_DEVICE const T& real() const {return re;}
 
-  T& imag() {return im;}
-  const T& imag() const {return im;}
+  PETE_DEVICE T& imag() {return im;}
+  PETE_DEVICE const T& imag() const {return im;}
 
 private:
   T re;
   T im;
-} QDP_ALIGN8;   // possibly force alignment
+}QDP_ALIGN8;   // possibly force alignment
 
+
+#ifndef __CUDACC__
 
 //! Stream output
 template<class T>
@@ -422,7 +445,7 @@ TextWriter& operator<<(TextWriter& s, const RComplex<T>& d)
   return s << d.real() << d.imag();
 }
 
-#ifndef QDP_NO_LIBXML2
+
 //! XML output
 template<class T>
 inline
@@ -474,6 +497,7 @@ void read(XMLReader& xml, const string& xpath, RComplex<T>& d)
   }
 }
 #endif
+
 
 /*! @} */   // end of group rcomplex
 
@@ -849,7 +873,7 @@ struct UnaryReturn<RScalar<T>, OpNot > {
 };
 
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, OpNot>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, OpNot>::Type_t
 operator!(const RScalar<T1>& l)
 {
   return ! l.elem();
@@ -857,7 +881,7 @@ operator!(const RScalar<T1>& l)
 
 
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, OpUnaryPlus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, OpUnaryPlus>::Type_t
 operator+(const RScalar<T1>& l)
 {
   return +l.elem();
@@ -865,7 +889,7 @@ operator+(const RScalar<T1>& l)
 
 
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, OpUnaryMinus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, OpUnaryMinus>::Type_t
 operator-(const RScalar<T1>& l)
 {
   return -l.elem();
@@ -873,7 +897,7 @@ operator-(const RScalar<T1>& l)
 
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAdd>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAdd>::Type_t
 operator+(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem()+r.elem();
@@ -881,7 +905,7 @@ operator+(const RScalar<T1>& l, const RScalar<T2>& r)
 
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpSubtract>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpSubtract>::Type_t
 operator-(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() - r.elem();
@@ -889,7 +913,7 @@ operator-(const RScalar<T1>& l, const RScalar<T2>& r)
 
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpMultiply>::Type_t
 operator*(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() * r.elem();
@@ -897,7 +921,7 @@ operator*(const RScalar<T1>& l, const RScalar<T2>& r)
 
 // Optimized  adj(RScalar)*RScalar
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAdjMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAdjMultiply>::Type_t
 adjMultiply(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   /*! NOTE: removed transpose here !!!!!  */
@@ -908,7 +932,7 @@ adjMultiply(const RScalar<T1>& l, const RScalar<T2>& r)
 
 // Optimized  RScalar*adj(RScalar)
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpMultiplyAdj>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpMultiplyAdj>::Type_t
 multiplyAdj(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   /*! NOTE: removed transpose here !!!!!  */
@@ -919,7 +943,7 @@ multiplyAdj(const RScalar<T1>& l, const RScalar<T2>& r)
 
 // Optimized  adj(RScalar)*adj(RScalar)
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAdjMultiplyAdj>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAdjMultiplyAdj>::Type_t
 adjMultiplyAdj(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   /*! NOTE: removed transpose here !!!!!  */
@@ -930,7 +954,7 @@ adjMultiplyAdj(const RScalar<T1>& l, const RScalar<T2>& r)
 
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpDivide>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpDivide>::Type_t
 operator/(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() / r.elem();
@@ -945,7 +969,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpLeftShift > {
  
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpLeftShift>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpLeftShift>::Type_t
 operator<<(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() << r.elem();
@@ -959,7 +983,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpRightShift > {
  
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpRightShift>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpRightShift>::Type_t
 operator>>(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() >> r.elem();
@@ -967,28 +991,28 @@ operator>>(const RScalar<T1>& l, const RScalar<T2>& r)
 
 
 template<class T1, class T2 >
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpMod>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpMod>::Type_t
 operator%(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() % r.elem();
 }
 
 template<class T1, class T2 >
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpBitwiseXor>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpBitwiseXor>::Type_t
 operator^(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() ^ r.elem();
 }
 
 template<class T1, class T2 >
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpBitwiseAnd>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpBitwiseAnd>::Type_t
 operator&(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() & r.elem();
 }
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpBitwiseOr>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpBitwiseOr>::Type_t
 operator|(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() | r.elem();
@@ -1003,7 +1027,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpLT > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpLT>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpLT>::Type_t
 operator<(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() < r.elem();
@@ -1016,7 +1040,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpLE > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpLE>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpLE>::Type_t
 operator<=(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() <= r.elem();
@@ -1029,7 +1053,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpGT > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpGT>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpGT>::Type_t
 operator>(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() > r.elem();
@@ -1042,7 +1066,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpGE > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpGE>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpGE>::Type_t
 operator>=(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() >= r.elem();
@@ -1055,7 +1079,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpEQ > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpEQ>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpEQ>::Type_t
 operator==(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() == r.elem();
@@ -1068,7 +1092,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpNE > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpNE>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpNE>::Type_t
 operator!=(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() != r.elem();
@@ -1081,7 +1105,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpAnd > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAnd>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpAnd>::Type_t
 operator&&(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() && r.elem();
@@ -1094,7 +1118,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, OpOr > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpOr>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, OpOr>::Type_t
 operator||(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() || r.elem();
@@ -1107,7 +1131,7 @@ operator||(const RScalar<T1>& l, const RScalar<T2>& r)
 
 // Adjoint
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnAdjoint>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnAdjoint>::Type_t
 adj(const RScalar<T1>& s1)
 {
   /*! NOTE: removed transpose here !!!!!  */
@@ -1119,7 +1143,7 @@ adj(const RScalar<T1>& s1)
 
 // Conjugate
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnConjugate>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnConjugate>::Type_t
 conj(const RScalar<T1>& s1)
 {
   return s1.elem();  // The complex nature has been eaten here
@@ -1128,7 +1152,7 @@ conj(const RScalar<T1>& s1)
 
 // Transpose
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnTranspose>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnTranspose>::Type_t
 transpose(const RScalar<T1>& s1)
 {
   /*! NOTE: removed transpose here !!!!!  */
@@ -1147,7 +1171,7 @@ struct UnaryReturn<RScalar<T>, FnTrace > {
 };
 
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnTrace>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnTrace>::Type_t
 trace(const RScalar<T1>& s1)
 {
 //  return trace(s1.elem());
@@ -1164,7 +1188,7 @@ struct UnaryReturn<RScalar<T>, FnRealTrace > {
 };
 
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnRealTrace>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnRealTrace>::Type_t
 realTrace(const RScalar<T1>& s1)
 {
 //  return trace_real(s1.elem());
@@ -1181,7 +1205,7 @@ struct UnaryReturn<RScalar<T>, FnImagTrace > {
 };
 
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnImagTrace>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnImagTrace>::Type_t
 imagTrace(const RScalar<T1>& s1)
 {
 //  return trace_imag(s1.elem());
@@ -1192,7 +1216,7 @@ imagTrace(const RScalar<T1>& s1)
 
 //! RScalar = trace(RScalar * RScalar)
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnTraceMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnTraceMultiply>::Type_t
 traceMultiply(const RScalar<T1>& l, const RScalar<T2>& r)
 {
 //  return traceMultiply(l.elem(), r.elem());
@@ -1204,7 +1228,7 @@ traceMultiply(const RScalar<T1>& l, const RScalar<T2>& r)
 
 // RScalar = Re(RScalar)  [identity]
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnReal>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnReal>::Type_t
 real(const RScalar<T>& s1)
 {
   return s1.elem();
@@ -1213,7 +1237,7 @@ real(const RScalar<T>& s1)
 
 // RScalar = Im(RScalar) [this is zero]
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnImag>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnImag>::Type_t
 imag(const RScalar<T>& s1)
 {
   typedef typename InternalScalar<T>::Type_t  S;
@@ -1223,7 +1247,7 @@ imag(const RScalar<T>& s1)
 
 // ArcCos
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnArcCos>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnArcCos>::Type_t
 acos(const RScalar<T1>& s1)
 {
   return acos(s1.elem());
@@ -1231,7 +1255,7 @@ acos(const RScalar<T1>& s1)
 
 // ArcSin
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnArcSin>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnArcSin>::Type_t
 asin(const RScalar<T1>& s1)
 {
   return asin(s1.elem());
@@ -1239,7 +1263,7 @@ asin(const RScalar<T1>& s1)
 
 // ArcTan
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnArcTan>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnArcTan>::Type_t
 atan(const RScalar<T1>& s1)
 {
   return atan(s1.elem());
@@ -1247,7 +1271,7 @@ atan(const RScalar<T1>& s1)
 
 // Ceil(ing)
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnCeil>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnCeil>::Type_t
 ceil(const RScalar<T1>& s1)
 {
   return ceil(s1.elem());
@@ -1255,7 +1279,7 @@ ceil(const RScalar<T1>& s1)
 
 // Cos
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnCos>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnCos>::Type_t
 cos(const RScalar<T1>& s1)
 {
   return cos(s1.elem());
@@ -1263,7 +1287,7 @@ cos(const RScalar<T1>& s1)
 
 // Cosh
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnHypCos>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnHypCos>::Type_t
 cosh(const RScalar<T1>& s1)
 {
   return cosh(s1.elem());
@@ -1271,7 +1295,7 @@ cosh(const RScalar<T1>& s1)
 
 // Exp
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnExp>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnExp>::Type_t
 exp(const RScalar<T1>& s1)
 {
   return exp(s1.elem());
@@ -1279,7 +1303,7 @@ exp(const RScalar<T1>& s1)
 
 // Fabs
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnFabs>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnFabs>::Type_t
 fabs(const RScalar<T1>& s1)
 {
   return fabs(s1.elem());
@@ -1287,7 +1311,7 @@ fabs(const RScalar<T1>& s1)
 
 // Floor
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnFloor>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnFloor>::Type_t
 floor(const RScalar<T1>& s1)
 {
   return floor(s1.elem());
@@ -1295,7 +1319,7 @@ floor(const RScalar<T1>& s1)
 
 // Log
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnLog>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnLog>::Type_t
 log(const RScalar<T1>& s1)
 {
   return log(s1.elem());
@@ -1303,7 +1327,7 @@ log(const RScalar<T1>& s1)
 
 // Log10
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnLog10>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnLog10>::Type_t
 log10(const RScalar<T1>& s1)
 {
   return log10(s1.elem());
@@ -1311,7 +1335,7 @@ log10(const RScalar<T1>& s1)
 
 // Sin
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnSin>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnSin>::Type_t
 sin(const RScalar<T1>& s1)
 {
   return sin(s1.elem());
@@ -1319,7 +1343,7 @@ sin(const RScalar<T1>& s1)
 
 // Sinh
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnHypSin>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnHypSin>::Type_t
 sinh(const RScalar<T1>& s1)
 {
   return sinh(s1.elem());
@@ -1327,7 +1351,7 @@ sinh(const RScalar<T1>& s1)
 
 // Sqrt
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnSqrt>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnSqrt>::Type_t
 sqrt(const RScalar<T1>& s1)
 {
   return sqrt(s1.elem());
@@ -1335,7 +1359,7 @@ sqrt(const RScalar<T1>& s1)
 
 // Tan
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnTan>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnTan>::Type_t
 tan(const RScalar<T1>& s1)
 {
   return tan(s1.elem());
@@ -1343,7 +1367,7 @@ tan(const RScalar<T1>& s1)
 
 // Tanh
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnHypTan>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnHypTan>::Type_t
 tanh(const RScalar<T1>& s1)
 {
   return tanh(s1.elem());
@@ -1352,7 +1376,7 @@ tanh(const RScalar<T1>& s1)
 
 //! RScalar<T> = pow(RScalar<T> , RScalar<T>)
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnPow>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnPow>::Type_t
 pow(const RScalar<T1>& s1, const RScalar<T2>& s2)
 {
   return pow(s1.elem(), s2.elem());
@@ -1360,7 +1384,7 @@ pow(const RScalar<T1>& s1, const RScalar<T2>& s2)
 
 //! RScalar<T> = atan2(RScalar<T> , RScalar<T>)
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnArcTan2>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnArcTan2>::Type_t
 atan2(const RScalar<T1>& s1, const RScalar<T2>& s2)
 {
   return atan2(s1.elem(), s2.elem());
@@ -1369,7 +1393,7 @@ atan2(const RScalar<T1>& s1, const RScalar<T2>& s2)
 
 //! RScalar = outerProduct(RScalar, RScalar)
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnOuterProduct>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnOuterProduct>::Type_t
 outerProduct(const RScalar<T1>& l, const RScalar<T2>& r)
 {
   return l.elem() * r.elem();
@@ -1378,7 +1402,7 @@ outerProduct(const RScalar<T1>& l, const RScalar<T2>& r)
 
 //! dest [float type] = source [seed type]
 template<class T1>
-inline typename UnaryReturn<RScalar<T1>, FnSeedToFloat>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T1>, FnSeedToFloat>::Type_t
 seedToFloat(const RScalar<T1>& s1)
 {
   return seedToFloat(s1.elem());
@@ -1387,7 +1411,7 @@ seedToFloat(const RScalar<T1>& s1)
 //! dest [some type] = source [some type]
 /*! Portable (internal) way of returning a single site */
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnGetSite>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnGetSite>::Type_t
 getSite(const RScalar<T>& s1, int innersite)
 {
   return getSite(s1.elem(), innersite);
@@ -1396,7 +1420,7 @@ getSite(const RScalar<T>& s1, int innersite)
 //! Extract color vector components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnPeekColorVector>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnPeekColorVector>::Type_t
 peekColor(const RScalar<T>& l, int row)
 {
   return peekColor(l.elem(),row);
@@ -1405,7 +1429,7 @@ peekColor(const RScalar<T>& l, int row)
 //! Extract color matrix components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnPeekColorMatrix>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnPeekColorMatrix>::Type_t
 peekColor(const RScalar<T>& l, int row, int col)
 {
   return peekColor(l.elem(),row,col);
@@ -1414,7 +1438,7 @@ peekColor(const RScalar<T>& l, int row, int col)
 //! Extract spin vector components 
 /*! Generically, this is an identity operation. Defined differently under spin */
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnPeekSpinVector>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnPeekSpinVector>::Type_t
 peekSpin(const RScalar<T>& l, int row)
 {
   return peekSpin(l.elem(),row);
@@ -1423,7 +1447,7 @@ peekSpin(const RScalar<T>& l, int row)
 //! Extract spin matrix components 
 /*! Generically, this is an identity operation. Defined differently under spin */
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnPeekSpinMatrix>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnPeekSpinMatrix>::Type_t
 peekSpin(const RScalar<T>& l, int row, int col)
 {
   return peekSpin(l.elem(),row,col);
@@ -1432,7 +1456,7 @@ peekSpin(const RScalar<T>& l, int row, int col)
 //-----------------------------------------------------------------------------
 //! QDP Int to int primitive in conversion routine
 template<class T> 
-inline int 
+PETE_DEVICE inline int 
 toInt(const RScalar<T>& s) 
 {
   return toInt(s.elem());
@@ -1440,7 +1464,7 @@ toInt(const RScalar<T>& s)
 
 //! QDP Real to float primitive in conversion routine
 template<class T> 
-inline float
+PETE_DEVICE inline float
 toFloat(const RScalar<T>& s) 
 {
   return toFloat(s.elem());
@@ -1448,7 +1472,7 @@ toFloat(const RScalar<T>& s)
 
 //! QDP Double to double primitive in conversion routine
 template<class T> 
-inline double
+PETE_DEVICE inline double
 toDouble(const RScalar<T>& s) 
 {
   return toDouble(s.elem());
@@ -1456,7 +1480,7 @@ toDouble(const RScalar<T>& s)
 
 //! QDP Boolean to bool primitive in conversion routine
 template<class T> 
-inline bool
+PETE_DEVICE inline bool
 toBool(const RScalar<T>& s) 
 {
   return toBool(s.elem());
@@ -1464,7 +1488,7 @@ toBool(const RScalar<T>& s)
 
 //! QDP Wordtype to primitive wordtype
 template<class T> 
-inline typename WordType< RScalar<T> >::Type_t
+PETE_DEVICE inline typename WordType< RScalar<T> >::Type_t
 toWordType(const RScalar<T>& s) 
 {
   return toWordType(s.elem());
@@ -1475,7 +1499,7 @@ toWordType(const RScalar<T>& s)
 //------------------------------------------
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 
-inline
+PETE_DEVICE inline
 void copymask(RScalar<T>& d, const RScalar<T1>& mask, const RScalar<T>& s1) 
 {
   copymask(d.elem(),mask.elem(),s1.elem());
@@ -1483,7 +1507,7 @@ void copymask(RScalar<T>& d, const RScalar<T1>& mask, const RScalar<T>& s1)
 
 //! dest [float type] = source [int type]
 template<class T, class T1>
-inline
+PETE_DEVICE inline
 void cast_rep(T& d, const RScalar<T1>& s1)
 {
   cast_rep(d, s1.elem());
@@ -1492,7 +1516,7 @@ void cast_rep(T& d, const RScalar<T1>& s1)
 
 //! dest [float type] = source [int type]
 template<class T, class T1>
-inline
+PETE_DEVICE inline
 void recast_rep(RScalar<T>& d, const RScalar<T1>& s1)
 {
   cast_rep(d.elem(), s1.elem());
@@ -1501,7 +1525,7 @@ void recast_rep(RScalar<T>& d, const RScalar<T1>& s1)
 
 //! dest [some type] = source [some type]
 template<class T, class T1>
-inline void 
+PETE_DEVICE inline void 
 copy_site(RScalar<T>& d, int isite, const RScalar<T1>& s1)
 {
   copy_site(d.elem(), isite, s1.elem());
@@ -1510,7 +1534,7 @@ copy_site(RScalar<T>& d, int isite, const RScalar<T1>& s1)
 
 //! gather several inner sites together
 template<class T, class T1>
-inline void 
+PETE_DEVICE inline void 
 gather_sites(RScalar<T>& d, 
 	     const RScalar<T1>& s0, int i0, 
 	     const RScalar<T1>& s1, int i1,
@@ -1533,7 +1557,7 @@ struct UnaryReturn<RScalar<T>, FnSum > {
 };
 
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnSum>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnSum>::Type_t
 sum(const RScalar<T>& s1)
 {
   return sum(s1.elem());
@@ -1548,7 +1572,7 @@ struct UnaryReturn<RScalar<T>, FnGlobalMax> {
 };
 
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnGlobalMax>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnGlobalMax>::Type_t
 globalMax(const RScalar<T>& s1)
 {
   return globalMax(s1.elem());
@@ -1562,7 +1586,7 @@ struct UnaryReturn<RScalar<T>, FnGlobalMin> {
 };
 
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnGlobalMin>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnGlobalMin>::Type_t
 globalMin(const RScalar<T>& s1)
 {
   return globalMin(s1.elem());
@@ -1583,7 +1607,7 @@ struct UnaryReturn<RScalar<T>, FnLocalNorm2 > {
 };
 
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnLocalNorm2>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnLocalNorm2>::Type_t
 localNorm2(const RScalar<T>& s1)
 {
   return localNorm2(s1.elem());
@@ -1603,7 +1627,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProduct > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProduct>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProduct>::Type_t
 localInnerProduct(const RScalar<T1>& s1, const RScalar<T2>& s2)
 {
   return localInnerProduct(s1.elem(), s2.elem());
@@ -1623,7 +1647,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProductReal > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProductReal>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProductReal>::Type_t
 localInnerProductReal(const RScalar<T1>& s1, const RScalar<T2>& s2)
 {
   return localInnerProduct(s1.elem(), s2.elem());
@@ -1641,7 +1665,7 @@ struct TrinaryReturn<RScalar<T1>, RScalar<T2>, RScalar<T3>, FnWhere> {
 };
 
 template<class T1, class T2, class T3>
-inline typename TrinaryReturn<RScalar<T1>, RScalar<T2>, RScalar<T3>, FnWhere>::Type_t
+PETE_DEVICE inline typename TrinaryReturn<RScalar<T1>, RScalar<T2>, RScalar<T3>, FnWhere>::Type_t
 where(const RScalar<T1>& a, const RScalar<T2>& b, const RScalar<T3>& c)
 {
   return where(a.elem(), b.elem(), c.elem());
@@ -1653,7 +1677,7 @@ where(const RScalar<T1>& a, const RScalar<T2>& b, const RScalar<T3>& c)
 // Broadcast operations
 //! dest = 0
 template<class T> 
-inline
+PETE_DEVICE inline
 void zero_rep(RScalar<T>& dest) 
 {
   zero_rep(dest.elem());
@@ -1662,7 +1686,7 @@ void zero_rep(RScalar<T>& dest)
 
 //! dest [some type] = source [some type]
 template<class T, class T1>
-inline void 
+PETE_DEVICE inline void 
 copy_site(RComplex<T>& d, int isite, const RComplex<T1>& s1)
 {
   copy_site(d.real(), isite, s1.real());
@@ -1672,7 +1696,7 @@ copy_site(RComplex<T>& d, int isite, const RComplex<T1>& s1)
 #if 0
 //! dest [some type] = source [some type]
 template<class T, class T1>
-inline void 
+PETE_DEVICE inline void 
 copy_site(RComplex<T>& d, int isite, const RScalar<T1>& s1)
 {
   copy_site(d.real(), isite, s1.elem());
@@ -1683,7 +1707,7 @@ copy_site(RComplex<T>& d, int isite, const RScalar<T1>& s1)
 
 //! gather several inner sites together
 template<class T, class T1>
-inline void 
+PETE_DEVICE inline void 
 gather_sites(RComplex<T>& d, 
 	     const RComplex<T1>& s0, int i0, 
 	     const RComplex<T1>& s1, int i1,
@@ -1706,7 +1730,7 @@ gather_sites(RComplex<T>& d,
 
 //! dest  = random  
 template<class T, class T1, class T2>
-inline void
+PETE_DEVICE inline void
 fill_random(RScalar<T>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 {
   fill_random(d.elem(), seed, skewed_seed, seed_mult);
@@ -1717,7 +1741,7 @@ fill_random(RScalar<T>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 //! dest  = gaussian  
 /*! Real form of complex polar method */
 template<class T>
-inline void
+PETE_DEVICE inline void
 fill_gaussian(RScalar<T>& d, RScalar<T>& r1, RScalar<T>& r2)
 {
   typedef typename InternalScalar<T>::Type_t  S;
@@ -1752,7 +1776,7 @@ fill_gaussian(RScalar<T>& d, RScalar<T>& r1, RScalar<T>& r2)
 
 //! RComplex = +RComplex
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, OpUnaryPlus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T1>, OpUnaryPlus>::Type_t
 operator+(const RComplex<T1>& l)
 {
   typedef typename UnaryReturn<RComplex<T1>, OpUnaryPlus>::Type_t  Ret_t;
@@ -1764,7 +1788,7 @@ operator+(const RComplex<T1>& l)
 
 //! RComplex = -RComplex
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, OpUnaryMinus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T1>, OpUnaryMinus>::Type_t
 operator-(const RComplex<T1>& l)
 {
   typedef typename UnaryReturn<RComplex<T1>, OpUnaryMinus>::Type_t  Ret_t;
@@ -1776,7 +1800,7 @@ operator-(const RComplex<T1>& l)
 
 //! RComplex = RComplex + RComplex
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdd>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdd>::Type_t
 operator+(const RComplex<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdd>::Type_t  Ret_t;
@@ -1787,7 +1811,7 @@ operator+(const RComplex<T1>& l, const RComplex<T2>& r)
 
 //! RComplex = RComplex + RScalar
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpAdd>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpAdd>::Type_t
 operator+(const RComplex<T1>& l, const RScalar<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpAdd>::Type_t  Ret_t;
@@ -1798,7 +1822,7 @@ operator+(const RComplex<T1>& l, const RScalar<T2>& r)
 
 //! RComplex = RScalar + RComplex
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpAdd>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpAdd>::Type_t
 operator+(const RScalar<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpAdd>::Type_t  Ret_t;
@@ -1810,7 +1834,7 @@ operator+(const RScalar<T1>& l, const RComplex<T2>& r)
 
 //! RComplex = RComplex - RComplex
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpSubtract>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpSubtract>::Type_t
 operator-(const RComplex<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpSubtract>::Type_t  Ret_t;
@@ -1821,7 +1845,7 @@ operator-(const RComplex<T1>& l, const RComplex<T2>& r)
 
 //! RComplex = RComplex - RScalar
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpSubtract>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpSubtract>::Type_t
 operator-(const RComplex<T1>& l, const RScalar<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpSubtract>::Type_t  Ret_t;
@@ -1832,7 +1856,7 @@ operator-(const RComplex<T1>& l, const RScalar<T2>& r)
 
 //! RComplex = RScalar - RComplex
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpSubtract>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpSubtract>::Type_t
 operator-(const RScalar<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpSubtract>::Type_t  Ret_t;
@@ -1844,7 +1868,7 @@ operator-(const RScalar<T1>& l, const RComplex<T2>& r)
 
 //! RComplex = RComplex * RComplex
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t
 operator*(const RComplex<T1>& __restrict__ l, const RComplex<T2>& __restrict__ r) 
 {
   typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t  Ret_t;
@@ -1855,7 +1879,7 @@ operator*(const RComplex<T1>& __restrict__ l, const RComplex<T2>& __restrict__ r
 
 //! RComplex = RScalar * RComplex
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpMultiply>::Type_t
 operator*(const RScalar<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpMultiply>::Type_t  Ret_t;
@@ -1866,7 +1890,7 @@ operator*(const RScalar<T1>& l, const RComplex<T2>& r)
 
 //! RComplex = RComplex * RScalar
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpMultiply>::Type_t
 operator*(const RComplex<T1>& l, const RScalar<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpMultiply>::Type_t  Ret_t;
@@ -1878,7 +1902,7 @@ operator*(const RComplex<T1>& l, const RScalar<T2>& r)
 
 // Optimized  adj(RComplex)*RComplex
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiply>::Type_t
 adjMultiply(const RComplex<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiply>::Type_t  Ret_t;
@@ -1897,7 +1921,7 @@ adjMultiply(const RComplex<T1>& l, const RComplex<T2>& r)
 
 // Optimized  RComplex*adj(RComplex)
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiplyAdj>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiplyAdj>::Type_t
 multiplyAdj(const RComplex<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiplyAdj>::Type_t  Ret_t;
@@ -1915,7 +1939,7 @@ multiplyAdj(const RComplex<T1>& l, const RComplex<T2>& r)
 
 // Optimized  adj(RComplex)*adj(RComplex)
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiplyAdj>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiplyAdj>::Type_t
 adjMultiplyAdj(const RComplex<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpAdjMultiplyAdj>::Type_t  Ret_t;
@@ -1934,7 +1958,7 @@ adjMultiplyAdj(const RComplex<T1>& l, const RComplex<T2>& r)
 
 //! RComplex = RComplex / RComplex
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpDivide>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpDivide>::Type_t
 operator/(const RComplex<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpDivide>::Type_t  Ret_t;
@@ -1947,7 +1971,7 @@ operator/(const RComplex<T1>& l, const RComplex<T2>& r)
 
 //! RComplex = RComplex / RScalar
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpDivide>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpDivide>::Type_t
 operator/(const RComplex<T1>& l, const RScalar<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, OpDivide>::Type_t  Ret_t;
@@ -1960,7 +1984,7 @@ operator/(const RComplex<T1>& l, const RScalar<T2>& r)
 
 //! RComplex = RScalar / RComplex
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpDivide>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpDivide>::Type_t
 operator/(const RScalar<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, OpDivide>::Type_t  Ret_t;
@@ -1978,7 +2002,7 @@ operator/(const RScalar<T1>& l, const RComplex<T2>& r)
 
 // Adjoint
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, FnAdjoint>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T1>, FnAdjoint>::Type_t
 adj(const RComplex<T1>& l)
 {
   typedef typename UnaryReturn<RComplex<T1>, FnAdjoint>::Type_t  Ret_t;
@@ -1995,7 +2019,7 @@ adj(const RComplex<T1>& l)
 
 // Conjugate
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, FnConjugate>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T1>, FnConjugate>::Type_t
 conj(const RComplex<T1>& l)
 {
   typedef typename UnaryReturn<RComplex<T1>, FnConjugate>::Type_t  Ret_t;
@@ -2006,7 +2030,7 @@ conj(const RComplex<T1>& l)
 
 // Transpose
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, FnTranspose>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T1>, FnTranspose>::Type_t
 transpose(const RComplex<T1>& l)
 {
   typedef typename UnaryReturn<RComplex<T1>, FnTranspose>::Type_t  Ret_t;
@@ -2028,7 +2052,7 @@ struct UnaryReturn<RComplex<T>, FnTrace > {
 };
 
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, FnTrace>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T1>, FnTrace>::Type_t
 trace(const RComplex<T1>& s1)
 {
   typedef typename UnaryReturn<RComplex<T1>, FnTrace>::Type_t  Ret_t;
@@ -2046,7 +2070,7 @@ struct UnaryReturn<RComplex<T>, FnRealTrace > {
 };
 
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, FnRealTrace>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T1>, FnRealTrace>::Type_t
 realTrace(const RComplex<T1>& s1)
 {
   /*! NOTE: removed trace here !!!!!  */
@@ -2061,7 +2085,7 @@ struct UnaryReturn<RComplex<T>, FnImagTrace > {
 };
 
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, FnImagTrace>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T1>, FnImagTrace>::Type_t
 imagTrace(const RComplex<T1>& s1)
 {
   /*! NOTE: removed trace here !!!!!  */
@@ -2070,7 +2094,7 @@ imagTrace(const RComplex<T1>& s1)
 
 //! RComplex = trace(RComplex * RComplex)
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, OpMultiply>::Type_t
 traceMultiply(const RComplex<T1>& l, const RComplex<T2>& r)
 {
 //  return traceMultiply(l.elem(), r.elem());
@@ -2090,7 +2114,7 @@ struct UnaryReturn<RComplex<T>, FnReal > {
 };
 
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, FnReal>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T1>, FnReal>::Type_t
 real(const RComplex<T1>& s1)
 {
   return s1.real();
@@ -2103,7 +2127,7 @@ struct UnaryReturn<RComplex<T>, FnImag > {
 };
 
 template<class T1>
-inline typename UnaryReturn<RComplex<T1>, FnImag>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T1>, FnImag>::Type_t
 imag(const RComplex<T1>& s1)
 {
   return s1.imag();
@@ -2117,7 +2141,7 @@ struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnCmplx > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnCmplx>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnCmplx>::Type_t
 cmplx(const RScalar<T1>& s1, const RScalar<T2>& s2)
 {
   typedef typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnCmplx>::Type_t  Ret_t;
@@ -2135,7 +2159,7 @@ struct UnaryReturn<RScalar<T>, FnTimesI > {
 };
 
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnTimesI>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnTimesI>::Type_t
 timesI(const RScalar<T>& s1)
 {
   typename UnaryReturn<RScalar<T>, FnTimesI>::Type_t  d;
@@ -2147,7 +2171,7 @@ timesI(const RScalar<T>& s1)
 
 // RComplex = i * RComplex
 template<class T>
-inline typename UnaryReturn<RComplex<T>, FnTimesI>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T>, FnTimesI>::Type_t
 timesI(const RComplex<T>& s1)
 {
   typedef typename UnaryReturn<RComplex<T>, FnTimesI>::Type_t  Ret_t;
@@ -2164,7 +2188,7 @@ struct UnaryReturn<RScalar<T>, FnTimesMinusI > {
 };
 
 template<class T>
-inline typename UnaryReturn<RScalar<T>, FnTimesMinusI>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RScalar<T>, FnTimesMinusI>::Type_t
 timesMinusI(const RScalar<T>& s1)
 {
   typename UnaryReturn<RScalar<T>, FnTimesMinusI>::Type_t  d;
@@ -2177,7 +2201,7 @@ timesMinusI(const RScalar<T>& s1)
 
 // RComplex = -i * RComplex
 template<class T>
-inline typename UnaryReturn<RComplex<T>, FnTimesMinusI>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T>, FnTimesMinusI>::Type_t
 timesMinusI(const RComplex<T>& s1)
 {
   typedef typename UnaryReturn<RComplex<T>, FnTimesMinusI>::Type_t  Ret_t;
@@ -2189,7 +2213,7 @@ timesMinusI(const RComplex<T>& s1)
 
 //! RComplex = outerProduct(RComplex, RComplex)
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnOuterProduct>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnOuterProduct>::Type_t
 outerProduct(const RComplex<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnOuterProduct>::Type_t  Ret_t;
@@ -2201,7 +2225,7 @@ outerProduct(const RComplex<T1>& l, const RComplex<T2>& r)
 
 //! RComplex = outerProduct(RComplex, RScalar)
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, FnOuterProduct>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RScalar<T2>, FnOuterProduct>::Type_t
 outerProduct(const RComplex<T1>& l, const RScalar<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RScalar<T2>, FnOuterProduct>::Type_t  Ret_t;
@@ -2213,7 +2237,7 @@ outerProduct(const RComplex<T1>& l, const RScalar<T2>& r)
 
 //! RComplex = outerProduct(RScalar, RComplex)
 template<class T1, class T2>
-inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, FnOuterProduct>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RScalar<T1>, RComplex<T2>, FnOuterProduct>::Type_t
 outerProduct(const RScalar<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RScalar<T1>, RComplex<T2>, FnOuterProduct>::Type_t  Ret_t;
@@ -2227,7 +2251,7 @@ outerProduct(const RScalar<T1>& l, const RComplex<T2>& r)
 //! dest [some type] = source [some type]
 /*! Portable (internal) way of returning a single site */
 template<class T>
-inline typename UnaryReturn<RComplex<T>, FnGetSite>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T>, FnGetSite>::Type_t
 getSite(const RComplex<T>& s1, int innersite)
 {
   typedef typename UnaryReturn<RComplex<T>, FnGetSite>::Type_t  Ret_t;
@@ -2239,7 +2263,7 @@ getSite(const RComplex<T>& s1, int innersite)
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 
-inline
+PETE_DEVICE inline
 void copymask(RComplex<T>& d, const RScalar<T1>& mask, const RComplex<T>& s1) 
 {
   copymask(d.real(),mask.elem(),s1.real());
@@ -2255,7 +2279,7 @@ struct UnaryReturn<RComplex<T>, FnSum> {
 };
 
 template<class T>
-inline typename UnaryReturn<RComplex<T>, FnSum>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T>, FnSum>::Type_t
 sum(const RComplex<T>& s1)
 {
   typedef typename UnaryReturn<RComplex<T>, FnSum>::Type_t  Ret_t;
@@ -2278,7 +2302,7 @@ struct UnaryReturn<RComplex<T>, FnLocalNorm2 > {
 };
 
 template<class T>
-inline typename UnaryReturn<RComplex<T>, FnLocalNorm2>::Type_t
+PETE_DEVICE inline typename UnaryReturn<RComplex<T>, FnLocalNorm2>::Type_t
 localNorm2(const RComplex<T>& s1)
 {
   return localNorm2(s1.real()) + localNorm2(s1.imag());
@@ -2298,7 +2322,7 @@ struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProduct > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProduct>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProduct>::Type_t
 localInnerProduct(const RComplex<T1>& l, const RComplex<T2>& r)
 {
   typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProduct>::Type_t  Ret_t;
@@ -2321,7 +2345,7 @@ struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProductReal > {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProductReal>::Type_t
+PETE_DEVICE inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalInnerProductReal>::Type_t
 localInnerProductReal(const RComplex<T1>& l, const RComplex<T2>& r)
 {
   return localInnerProduct(l.real(),r.real()) + localInnerProduct(l.imag(),r.imag());
@@ -2339,7 +2363,7 @@ struct TrinaryReturn<RScalar<T1>, RComplex<T2>, RComplex<T3>, FnWhere> {
 };
 
 template<class T1, class T2, class T3>
-inline typename TrinaryReturn<RScalar<T1>, RComplex<T2>, RComplex<T3>, FnWhere>::Type_t
+PETE_DEVICE inline typename TrinaryReturn<RScalar<T1>, RComplex<T2>, RComplex<T3>, FnWhere>::Type_t
 where(const RScalar<T1>& a, const RComplex<T2>& b, const RComplex<T3>& c)
 {
   typedef typename TrinaryReturn<RScalar<T1>, RComplex<T2>, RComplex<T3>, FnWhere>::Type_t  Ret_t;
@@ -2360,7 +2384,7 @@ struct TrinaryReturn<RScalar<T1>, RComplex<T2>, RScalar<T3>, FnWhere> {
 };
 
 template<class T1, class T2, class T3>
-inline typename TrinaryReturn<RScalar<T1>, RComplex<T2>, RComplex<T3>, FnWhere>::Type_t
+PETE_DEVICE inline typename TrinaryReturn<RScalar<T1>, RComplex<T2>, RComplex<T3>, FnWhere>::Type_t
 where(const RScalar<T1>& a, const RComplex<T2>& b, const RScalar<T3>& c)
 {
   typedef typename TrinaryReturn<RScalar<T1>, RComplex<T2>, RScalar<T3>, FnWhere>::Type_t  Ret_t;
@@ -2382,7 +2406,7 @@ struct TrinaryReturn<RScalar<T1>, RScalar<T2>, RComplex<T3>, FnWhere> {
 };
 
 template<class T1, class T2, class T3>
-inline typename TrinaryReturn<RScalar<T1>, RScalar<T2>, RComplex<T3>, FnWhere>::Type_t
+PETE_DEVICE inline typename TrinaryReturn<RScalar<T1>, RScalar<T2>, RComplex<T3>, FnWhere>::Type_t
 where(const RScalar<T1>& a, const RScalar<T2>& b, const RComplex<T3>& c)
 {
   typedef typename TrinaryReturn<RScalar<T1>, RScalar<T2>, RComplex<T3>, FnWhere>::Type_t  Ret_t;
@@ -2398,7 +2422,7 @@ where(const RScalar<T1>& a, const RScalar<T2>& b, const RComplex<T3>& c)
 // Broadcast operations
 //! dest = 0
 template<class T> 
-inline
+PETE_DEVICE inline
 void zero_rep(RComplex<T>& dest) 
 {
   zero_rep(dest.real());
@@ -2408,7 +2432,7 @@ void zero_rep(RComplex<T>& dest)
 
 //! dest  = random  
 template<class T, class T1, class T2>
-inline void
+PETE_DEVICE inline void
 fill_random(RComplex<T>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 {
   fill_random(d.real(), seed, skewed_seed, seed_mult);
@@ -2419,7 +2443,7 @@ fill_random(RComplex<T>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 //! dest  = gaussian
 /*! RComplex polar method */
 template<class T>
-inline void
+PETE_DEVICE inline void
 fill_gaussian(RComplex<T>& d, RComplex<T>& r1, RComplex<T>& r2)
 {
   typedef typename InternalScalar<T>::Type_t  S;

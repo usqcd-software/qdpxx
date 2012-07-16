@@ -360,6 +360,7 @@ namespace QDP
   class SingletonHolder
   {
   public:
+    typedef T Type_t;
     static T& Instance();
         
   private:
@@ -452,7 +453,7 @@ namespace QDP
     pInstance_ = 0;
     destroyed_ = true;
   }
-} // namespace Chroma
+} // namespace QDP
 
 
 #endif

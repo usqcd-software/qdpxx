@@ -10,6 +10,12 @@
 // Info/error routines
 namespace QDP {
 
+#ifdef QDP_IS_QDPJIT
+  extern bool QDPuseGPU;
+  void QDP_setGPU();
+  void QDP_startGPU();
+#endif
+
 //! Turn on the machine
 void QDP_initialize (int *argc, char ***argv);
 
@@ -24,6 +30,17 @@ void QDP_abort (int status);
 
 //! Simple information display routine
 int  QDP_info (const char* format, ...);
+
+#ifdef QDP_IS_QDPJIT
+//! Simple information display routine
+int  QDP_info_primary (const char* format, ...);
+
+//! Simple debug display routine
+int  QDP_debug (const char* format, ...);
+
+//! Simple deep debug display routine
+int  QDP_debug_deep (const char* format, ...);
+#endif
 
 //! Simple error display routine
 int  QDP_error (const char* format, ...);

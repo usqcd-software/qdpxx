@@ -28,7 +28,7 @@ public:
   //! PColorMatrix = PScalar
   /*! Fill with primitive scalar */
   template<class T1>
-  inline
+  PETE_DEVICE inline
   PColorMatrix& operator=(const PScalar<T1>& rhs)
     {
       assign(rhs);
@@ -38,7 +38,7 @@ public:
   //! PColorMatrix = PColorMatrix
   /*! Set equal to another PMatrix */
   template<class T1>
-  inline
+  PETE_DEVICE inline
   PColorMatrix& operator=(const PColorMatrix<T1,N>& rhs) 
     {
       assign(rhs);
@@ -291,7 +291,7 @@ struct UnaryReturn<PColorMatrix<T,N>, FnTraceColor > {
 };
 
 template<class T, int N>
-inline typename UnaryReturn<PColorMatrix<T,N>, FnTraceColor>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PColorMatrix<T,N>, FnTraceColor>::Type_t
 traceColor(const PColorMatrix<T,N>& s1)
 {
   typename UnaryReturn<PColorMatrix<T,N>, FnTraceColor>::Type_t  d;
@@ -313,7 +313,7 @@ struct BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnTraceColorMultiply
 };
 
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnTraceColorMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnTraceColorMultiply>::Type_t
 traceColorMultiply(const PColorMatrix<T1,N>& l, const PColorMatrix<T2,N>& r)
 {
   typename BinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, FnTraceColorMultiply>::Type_t  d;
@@ -337,7 +337,7 @@ struct BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnTraceColorMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnTraceColorMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnTraceColorMultiply>::Type_t
 traceColorMultiply(const PColorMatrix<T1,N>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PColorMatrix<T1,N>, PScalar<T2>, FnTraceColorMultiply>::Type_t  d;
@@ -357,7 +357,7 @@ struct BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnTraceColorMultiply> {
 };
 
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnTraceColorMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnTraceColorMultiply>::Type_t
 traceColorMultiply(const PScalar<T1>& l, const PColorMatrix<T2,N>& r)
 {
   typename BinaryReturn<PScalar<T1>, PColorMatrix<T2,N>, FnTraceColorMultiply>::Type_t  d;
@@ -380,7 +380,7 @@ struct UnaryReturn<PColorMatrix<T,N>, FnTransposeColor > {
 //! PColorMatrix = transposeColor(PColorMatrix) 
 /*! t = transposeColor(source1) - ColorMatrix specialization -- where the work is actually done */
 template<class T, int N>
-inline typename UnaryReturn<PColorMatrix<T,N>, FnTransposeColor >::Type_t
+PETE_DEVICE inline typename UnaryReturn<PColorMatrix<T,N>, FnTransposeColor >::Type_t
 transposeColor(const PColorMatrix<T,N>& s1)
 {
   typename UnaryReturn<PColorMatrix<T,N>, FnTransposeColor>::Type_t d;
@@ -407,7 +407,7 @@ struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnOuterProduct> {
 };
 
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnOuterProduct>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnOuterProduct>::Type_t
 outerProduct(const PColorVector<T1,N>& l, const PColorVector<T2,N>& r)
 {
   typename BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnOuterProduct>::Type_t  d;
@@ -430,7 +430,7 @@ struct UnaryReturn<PColorMatrix<T,N>, FnPeekColorMatrix > {
 };
 
 template<class T, int N>
-inline typename UnaryReturn<PColorMatrix<T,N>, FnPeekColorMatrix>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PColorMatrix<T,N>, FnPeekColorMatrix>::Type_t
 peekColor(const PColorMatrix<T,N>& l, int row, int col)
 {
   typename UnaryReturn<PColorMatrix<T,N>, FnPeekColorMatrix>::Type_t  d;
@@ -442,7 +442,7 @@ peekColor(const PColorMatrix<T,N>& l, int row, int col)
 
 //! Insert color matrix components
 template<class T1, class T2, int N>
-inline PColorMatrix<T1,N>&
+PETE_DEVICE inline PColorMatrix<T1,N>&
 pokeColor(PColorMatrix<T1,N>& l, const PScalar<T2>& r, int row, int col)
 {
   // Note, do not need to propagate down since the function is eaten at this level
@@ -467,7 +467,7 @@ struct TrinaryReturn<PColorMatrix<T1,N>, PColorMatrix<T2,N>, PColorMatrix<T3,N>,
  * This routine is completely unrolled for 3 colors
  */
 template<class T1, class T2, class T3>
-inline typename TrinaryReturn<PColorMatrix<T1,3>, PColorMatrix<T2,3>, PColorMatrix<T3,3>, FnColorContract>::Type_t
+PETE_DEVICE inline typename TrinaryReturn<PColorMatrix<T1,3>, PColorMatrix<T2,3>, PColorMatrix<T3,3>, FnColorContract>::Type_t
 colorContract(const PColorMatrix<T1,3>& s1, const PColorMatrix<T2,3>& s2, const PColorMatrix<T3,3>& s3)
 {
   typename TrinaryReturn<PColorMatrix<T1,3>, PColorMatrix<T2,3>, PColorMatrix<T3,3>, FnColorContract>::Type_t  d;
@@ -530,15 +530,16 @@ colorContract(const PColorMatrix<T1,3>& s1, const PColorMatrix<T2,3>& s2, const 
  *  should be written for every number of colors.
  */
 template<class T1, class T2, class T3>
-inline typename TrinaryReturn<PColorMatrix<T1,1>, PColorMatrix<T2,1>, PColorMatrix<T3,1>, FnColorContract>::Type_t
+PETE_DEVICE inline typename TrinaryReturn<PColorMatrix<T1,1>, PColorMatrix<T2,1>, PColorMatrix<T3,1>, FnColorContract>::Type_t
 colorContract(const PColorMatrix<T1,1>& s1, const PColorMatrix<T2,1>& s2, const PColorMatrix<T3,1>& s3)
 {
   typename TrinaryReturn<PColorMatrix<T1,1>, PColorMatrix<T2,1>, PColorMatrix<T3,1>, FnColorContract>::Type_t  d;
 
   // not written 
+#ifndef __CUDACC__
   QDPIO::cerr << __func__ << ": not written for Nc=1" << endl;
   QDP_abort(1);
-
+#endif
   return d ; 
 }
 
@@ -554,14 +555,16 @@ colorContract(const PColorMatrix<T1,1>& s1, const PColorMatrix<T2,1>& s2, const 
  *  should be written for every number of colors.
  */
 template<class T1, class T2, class T3>
-inline typename TrinaryReturn<PColorMatrix<T1,2>, PColorMatrix<T2,2>, PColorMatrix<T3,2>, FnColorContract>::Type_t
+PETE_DEVICE inline typename TrinaryReturn<PColorMatrix<T1,2>, PColorMatrix<T2,2>, PColorMatrix<T3,2>, FnColorContract>::Type_t
 colorContract(const PColorMatrix<T1,2>& s1, const PColorMatrix<T2,2>& s2, const PColorMatrix<T3,2>& s3)
 {
   typename TrinaryReturn<PColorMatrix<T1,2>, PColorMatrix<T2,2>, PColorMatrix<T3,2>, FnColorContract>::Type_t  d;
 
+#ifndef __CUDACC__
   // not written 
   QDPIO::cerr << __func__ << ": not written for Nc=2" << endl;
   QDP_abort(1);
+#endif
 
   return d ; 
 }
@@ -578,14 +581,16 @@ colorContract(const PColorMatrix<T1,2>& s1, const PColorMatrix<T2,2>& s2, const 
  *  should be written for every number of colors.
  */
 template<class T1, class T2, class T3>
-inline typename TrinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, PColorMatrix<T3,4>, FnColorContract>::Type_t
+PETE_DEVICE inline typename TrinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, PColorMatrix<T3,4>, FnColorContract>::Type_t
 colorContract(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2, const PColorMatrix<T3,4>& s3)
 {
   typename TrinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, PColorMatrix<T3,4>, FnColorContract>::Type_t  d;
 
+#ifndef __CUDACC__
   // not written 
   QDPIO::cerr << __func__ << ": not written for Nc=4" << endl;
   QDP_abort(1);
+#endif
 
   return d ; 
 }
@@ -602,7 +607,7 @@ colorContract(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2, const 
  * This routine is completely unrolled for 3 colors
  */
 template<class T1, class T2>
-inline typename BinaryReturn<PColorMatrix<T1,3>, PColorMatrix<T2,3>, FnQuarkContractXX>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PColorMatrix<T1,3>, PColorMatrix<T2,3>, FnQuarkContractXX>::Type_t
 quarkContractXX(const PColorMatrix<T1,3>& s1, const PColorMatrix<T2,3>& s2)
 {
   typename BinaryReturn<PColorMatrix<T1,3>, PColorMatrix<T2,3>, FnQuarkContractXX>::Type_t  d;
@@ -698,14 +703,16 @@ quarkContractXX(const PColorMatrix<T1,3>& s1, const PColorMatrix<T2,3>& s2)
  *  should be written for every number of colors.
  */
 template<class T1, class T2>
-inline typename BinaryReturn<PColorMatrix<T1,1>, PColorMatrix<T2,1>, FnQuarkContractXX>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PColorMatrix<T1,1>, PColorMatrix<T2,1>, FnQuarkContractXX>::Type_t
 quarkContractXX(const PColorMatrix<T1,1>& s1, const PColorMatrix<T2,1>& s2)
 {
   typename BinaryReturn<PColorMatrix<T1,1>, PColorMatrix<T2,1>, FnQuarkContractXX>::Type_t  d;
 
+#ifndef __CUDACC__
   // not yet written 
   QDPIO::cerr << __func__ << ": not written for Nc=1" << endl;
   QDP_abort(1);
+#endif
 
   return d ; 
 }
@@ -724,14 +731,16 @@ quarkContractXX(const PColorMatrix<T1,1>& s1, const PColorMatrix<T2,1>& s2)
  *  should be written for every number of colors.
  */
 template<class T1, class T2>
-inline typename BinaryReturn<PColorMatrix<T1,2>, PColorMatrix<T2,2>, FnQuarkContractXX>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PColorMatrix<T1,2>, PColorMatrix<T2,2>, FnQuarkContractXX>::Type_t
 quarkContractXX(const PColorMatrix<T1,2>& s1, const PColorMatrix<T2,2>& s2)
 {
   typename BinaryReturn<PColorMatrix<T1,2>, PColorMatrix<T2,2>, FnQuarkContractXX>::Type_t  d;
 
+#ifndef __CUDACC__
   // not yet written 
   QDPIO::cerr << __func__ << ": not written for Nc=2" << endl;
   QDP_abort(1);
+#endif
 
   return d ; 
 }
@@ -750,14 +759,16 @@ quarkContractXX(const PColorMatrix<T1,2>& s1, const PColorMatrix<T2,2>& s2)
  *  should be written for every number of colors.
  */
 template<class T1, class T2>
-inline typename BinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, FnQuarkContractXX>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, FnQuarkContractXX>::Type_t
 quarkContractXX(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2)
 {
   typename BinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, FnQuarkContractXX>::Type_t  d;
 
+#ifndef __CUDACC__
   // not yet written 
   QDPIO::cerr << __func__ << ": not written for Nc=4" << endl;
   QDP_abort(1);
+#endif
 
   return d ; 
 }

@@ -54,12 +54,12 @@ public:
 
   // Construct from an expression.
 
-  Expression(const T& expr) : expr_m(expr)
+  PETE_DEVICE Expression(const T& expr) : expr_m(expr)
   { }
 
   // Accessor that returns the expression.
 
-  const Expression_t& expression() const
+  PETE_DEVICE const Expression_t& expression() const
   {
     return expr_m;
   }
@@ -95,7 +95,7 @@ struct CreateLeaf
 {
   typedef Scalar<T> Leaf_t;
 
-  inline static
+  PETE_DEVICE inline static
   Leaf_t make(const T &a)
   {
     return Scalar<T>(a);
@@ -113,7 +113,7 @@ struct CreateLeaf<Expression<T> >
 {
   typedef typename Expression<T>::Expression_t Leaf_t;
 
-  inline static
+  PETE_DEVICE inline static
   const Leaf_t &make(const Expression<T> &a)
   {
     return a.expression();
@@ -123,7 +123,7 @@ struct CreateLeaf<Expression<T> >
 #endif // !PETE_USER_DEFINED_EXPRESSION
 
 //-----------------------------------------------------------------------------
-// MakeReturn<T,C>
+// MakeReturn<T>
 //
 // MakeReturn is used to wrap expression objects (UnaryNode, BinaryNode etc.)
 // inside an Expression<T> object.  Usually this indirection is unnecessary,
@@ -139,18 +139,16 @@ template<class T>
 struct MakeReturn
 {
   typedef Expression<T> Expression_t;
-  inline static
+  PETE_DEVICE inline static
   Expression_t make(const T &a) { return Expression_t(a); }
 };
-
 #endif // !PETE_USER_DEFINED_EXPRESSION
-
 
 #endif // PETE_PETE_CREATELEAF_H
 
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
-// $RCSfile: CreateLeaf.h,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2002-09-12 18:22:16 $
+// $RCSfile: CreateLeaf.h,v $   $Author: sa_smith $
+// $Revision: 1.8 $   $Date: 2000/08/03 22:14:54 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

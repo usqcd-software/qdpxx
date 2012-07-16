@@ -18,6 +18,11 @@ AM_CXXFLAGS = $(INCFLAGS) @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@  
 
 lib_LIBRARIES = libqdp.a
 
+NVCC = @SUBST_CUDA_DIR@/bin/nvcc
+SUFFIXES = .cu
+.cu.$(OBJEXT):
+	$(NVCC) @GPU_DEBUG_CXX@ @GPU_DEBUGDEEP_CXX@ -arch=@GPUARCH@ -c -o $@ $< $(AM_CXXFLAGS)
+
 ## Base set of sources and conditionally included sources
 libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc \
 	qdp_layout.cc qdp_io.cc qdp_byteorder.cc qdp_util.cc \
@@ -25,6 +30,10 @@ libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc \
         qdp_profile.cc qdp_strnlen.cc qdp_crc32.cc \
         qdp_stopwatch.cc \
         qdp_rannyu.cc
+
+if QDP_IS_QDPJIT
+libqdp_a_SOURCES += qdp_tuning.cc qdp_jit.cc qdp_jitargs.cc qdp_deviceparams.cc qdp_cache.cc qdp_typeparser.cc qdp_cuda.cu 
+endif
 
 if QDP_USE_LIBXML2
 libqdp_a_SOURCES += qdp_xmlio.cc qdp_iogauge.cc qdp_qdpio.cc qdp_qio_strings.cc qdp_map_obj_disk.cc

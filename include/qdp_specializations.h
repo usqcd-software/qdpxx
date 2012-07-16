@@ -8,7 +8,7 @@
 
 namespace QDP {
 
-
+#ifndef __CUDACC__
 //
 // Conversion routines. These cannot be implicit conversion functions
 // since they foul up the PETE defs in QDPOperators.h using primitive
@@ -131,7 +131,7 @@ struct SimpleScalar<bool>
 {
   typedef Boolean   Type_t;
 };
-
+#endif
 
 //
 // Type constructors for QDP types within the type system. Namely,
@@ -236,6 +236,7 @@ struct RealScalar<double> {
 
 
 
+#ifndef __CUDACC__
 //
 // Leaf constructors for simple machine types. These are a specialization over the
 // default constructors. The point is to avoid wrapping the simple types in
@@ -311,6 +312,7 @@ struct CreateLeaf<OScalar<IntBoolean> >
   inline static
   Leaf_t make(const OScalar<IntBoolean> &a) { return Leaf_t(a); }
 };
+#endif
 
 
 } // namespace QDP

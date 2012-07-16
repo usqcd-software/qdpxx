@@ -96,6 +96,10 @@ void Set::make(const SetFunc& fun)
     lat_color[linear] = icolor;
   }
 
+#ifdef QDP_IS_QDPJIT
+  largest_subset = 0;
+  enableGPU = true;
+#endif
 
   /*
    * Loop over the lexicographic sites.
@@ -162,10 +166,82 @@ void Set::make(const SetFunc& fun)
 
     sub[cb].make(ordRep, start, end, &(sitetables[cb]), cb, this);
 
+#ifdef QDP_IS_QDPJIT
+    if (largest_subset < sitetables[cb].size()) {
+      if (largest_subset > 0) {
+	QDP_error("Warning: Set found with changing subset sizes. This will cause problems when using with CUDA! Disable device calculation for this set.");
+	enableGPU = false;
+      }
+      largest_subset = sitetables[cb].size();
+    }
+#endif
+
 #if QDP_DEBUG >= 2
     QDP_info("Subset(%d)",cb);
 #endif
   }
+
+#ifdef QDP_IS_QDPJIT
+  QDP_debug("Building strided sitetables...");
+
+  int ss_size = sitetables[0].size();
+
+  int strided=0;
+  sitetables_strided.resize( largest_subset * sitetables.size() );
+  bool first=true;
+  bool hill0=false;
+  bool valley0=false;
+  bool hill1=false;
+
+  nonEmptySubsetsOnNode = 0;
+
+  for (int n = 0 ; n < sitetables.size() ; n++) {
+
+    if ((ss_size > 0) && 
+	(sitetables[n].size() > 0) && 
+	(sitetables[n].size() != ss_size)) {
+      QDP_error("Warning: Set found with subset sizes changing accross nodes. This will cause problems with sumMulti on GPUs. Disable device calculation for this specific set.");
+      enableGPU = false;
+    }
+
+    if (sitetables[n].size() > 0) {
+      if (first) {
+	first = false;
+	stride_offset=n;
+	hill0=true;
+	QDP_debug("hill0");
+      }
+      nonEmptySubsetsOnNode++;
+      if (valley0) {
+	QDP_error("Warning: Set found with at least two separate junctions. This will cause problems when using with CUDA! Disable device calculation for this set.");
+	enableGPU = false;
+      }
+      ss_size=sitetables[0].size();
+    } else {
+      if (hill0) { valley0=true;  QDP_debug_deep("hill0 valley0"); }
+
+    }
+
+    for (int i=0 ; i < sitetables[n].size() ; i++ ) {
+      sitetables_strided[strided++]=sitetables[n][i];
+    }
+  }
+
+  unsigned dsize = sitetables_strided.size() * sizeof(int);
+
+  QDP_debug("Set::make: Strided:  Will register memory now...");
+
+  if (registered) {
+    QDP_info("Set::~Set: Strided:  Already registered, will sign off the old memory ...");
+    QDPCache::Instance().signoff( idStrided );
+  }
+
+  idStrided = QDPCache::Instance().registrateOwnHostMem( dsize , (void*)sitetables_strided.slice() );
+  registered=true;
+
+  QDP_debug("nonEmptySubsetsOnNode  = %d" , nonEmptySubsetsOnNode );  
+  QDP_debug("stride_offset = %d" , stride_offset );  
+#endif
 }
 	  
 

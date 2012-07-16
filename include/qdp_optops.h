@@ -20,7 +20,7 @@ struct OpAdjMultiply
 {
   PETE_EMPTY_CONSTRUCTORS(OpAdjMultiply)
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, OpAdjMultiply >::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, OpAdjMultiply >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
 //  cerr << "adjMultiply" << endl;
@@ -33,7 +33,7 @@ struct OpMultiplyAdj
 {
   PETE_EMPTY_CONSTRUCTORS(OpMultiplyAdj)
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, OpMultiplyAdj >::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, OpMultiplyAdj >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
 //  cerr << "multiplyAdj" << endl;
@@ -46,7 +46,7 @@ struct OpAdjMultiplyAdj
 {
   PETE_EMPTY_CONSTRUCTORS(OpAdjMultiplyAdj)
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, OpAdjMultiplyAdj >::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, OpAdjMultiplyAdj >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
 //  cerr << "adjMultiplyAdj" << endl;
@@ -57,7 +57,7 @@ struct OpAdjMultiplyAdj
 
 // adjMultiply(l,r)  <-  adj(l)*r
 template<class T1,class C1,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpAdjMultiply,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpAdjMultiply,
   typename CreateLeaf<QDPExpr<UnaryNode<OpIdentity,T1>,C1> >::Leaf_t,
   typename CreateLeaf<QDPType<T2,C2> >::Leaf_t>,
   typename BinaryReturn<C1,C2,OpAdjMultiply>::Type_t >::Expression_t
@@ -79,7 +79,7 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 
 // adjMultiply<l,Expr>  <-  adj(l)*Expr
 template<class T1,class C1,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpAdjMultiply,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpAdjMultiply,
   typename CreateLeaf<QDPExpr<UnaryNode<OpIdentity,T1>,C1> >::Leaf_t,
   typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t>,
   typename BinaryReturn<C1,C2,OpAdjMultiply>::Type_t >::Expression_t
@@ -101,7 +101,7 @@ operator*(const QDPExpr<UnaryNode<FnAdjoint,T1>,C1> & l,
 
 // multplyAdj(l,r)  <-  l*adj(r)
 template<class T1,class C1,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpMultiplyAdj,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpMultiplyAdj,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
   typename CreateLeaf<QDPExpr<UnaryNode<OpIdentity,T2>,C2> >::Leaf_t>,
   typename BinaryReturn<C1,C2,OpMultiplyAdj>::Type_t >::Expression_t
@@ -123,7 +123,7 @@ operator*(const QDPType<T1,C1> & l,
 
 // multiplyAdj(Expr,r)  <-  Expr*adj(r)
 template<class T1,class C1,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpMultiplyAdj,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpMultiplyAdj,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
   typename CreateLeaf<QDPExpr<UnaryNode<OpIdentity,T2>,C2> >::Leaf_t>,
   typename BinaryReturn<C1,C2,OpMultiplyAdj>::Type_t >::Expression_t
@@ -145,7 +145,7 @@ operator*(const QDPExpr<T1,C1> & l,
 
 // adjMultiplyAdj(l,r)  <-  adj(l)*adj(r)
 template<class T1,class C1,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpAdjMultiplyAdj,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpAdjMultiplyAdj,
   typename CreateLeaf<QDPExpr<UnaryNode<OpIdentity,T1>,C1> >::Leaf_t,
   typename CreateLeaf<QDPExpr<UnaryNode<OpIdentity,T2>,C2> >::Leaf_t>,
   typename BinaryReturn<C1,C2,OpAdjMultiplyAdj>::Type_t >::Expression_t
@@ -171,7 +171,7 @@ struct FnTraceMultiply
 {
   PETE_EMPTY_CONSTRUCTORS(FnTraceMultiply)
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, FnTraceMultiply >::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, FnTraceMultiply >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
 //    cerr << "FnTraceMultiply()" << endl;
@@ -184,7 +184,7 @@ struct FnTraceColorMultiply
 {
   PETE_EMPTY_CONSTRUCTORS(FnTraceColorMultiply)
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, FnTraceColorMultiply >::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, FnTraceColorMultiply >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
 //    cerr << "FnTraceColorMultiply()" << endl;
@@ -197,7 +197,7 @@ struct FnTraceSpinMultiply
 {
   PETE_EMPTY_CONSTRUCTORS(FnTraceSpinMultiply)
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, FnTraceSpinMultiply >::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, FnTraceSpinMultiply >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
 //    cerr << "FnTraceSpinMultiply()" << endl;
@@ -210,7 +210,7 @@ struct FnTraceSpinOuterProduct
 {
   PETE_EMPTY_CONSTRUCTORS(FnTraceSpinOuterProduct)
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, FnTraceSpinOuterProduct >::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, FnTraceSpinOuterProduct >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
 //    cerr << "FnTraceSpinOuterProduct()" << endl;
@@ -223,7 +223,7 @@ struct FnTraceSpinQuarkContract13
 {
   PETE_EMPTY_CONSTRUCTORS(FnTraceSpinQuarkContract13)
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, FnTraceSpinQuarkContract13 >::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, FnTraceSpinQuarkContract13 >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
 //    cerr << "FnTraceSpinQuarkContract13()" << endl;
@@ -237,7 +237,7 @@ struct FnTraceSpinQuarkContract13
 
 //! traceMultiply(l,r)  <-  trace(l*r)
 template<class T1,class T2,class CC>
-inline typename MakeReturn<BinaryNode<FnTraceMultiply,T1,T2>,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<FnTraceMultiply,T1,T2>,
   typename UnaryReturn<CC,FnTrace>::Type_t>::Expression_t
 trace(const QDPExpr<BinaryNode<OpMultiply,T1,T2>,CC> & ll)
 {
@@ -252,7 +252,7 @@ trace(const QDPExpr<BinaryNode<OpMultiply,T1,T2>,CC> & ll)
 
 //! traceColorMultiply(l,r)  <-  traceColor(l*r)
 template<class T1,class T2,class CC>
-inline typename MakeReturn<BinaryNode<FnTraceColorMultiply,T1,T2>,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<FnTraceColorMultiply,T1,T2>,
   typename UnaryReturn<CC,FnTrace>::Type_t>::Expression_t
 traceColor(const QDPExpr<BinaryNode<OpMultiply,T1,T2>,CC> & ll)
 {
@@ -267,7 +267,7 @@ traceColor(const QDPExpr<BinaryNode<OpMultiply,T1,T2>,CC> & ll)
 
 //! traceSpinMultiply(l,r)  <-  traceSpin(l*r)
 template<class T1,class T2,class CC>
-inline typename MakeReturn<BinaryNode<FnTraceSpinMultiply,T1,T2>,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<FnTraceSpinMultiply,T1,T2>,
   typename UnaryReturn<CC,FnTrace>::Type_t>::Expression_t
 traceSpin(const QDPExpr<BinaryNode<OpMultiply,T1,T2>,CC> & ll)
 {
@@ -282,7 +282,7 @@ traceSpin(const QDPExpr<BinaryNode<OpMultiply,T1,T2>,CC> & ll)
 
 //! traceOuterProduct(l,r)  <-  traceSpin(outerProduct(l,r))
 template<class T1,class T2,class CC>
-inline typename MakeReturn<BinaryNode<FnTraceSpinOuterProduct,T1,T2>,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<FnTraceSpinOuterProduct,T1,T2>,
   typename UnaryReturn<CC,FnTrace>::Type_t>::Expression_t
 traceSpin(const QDPExpr<BinaryNode<FnOuterProduct,T1,T2>,CC> & ll)
 {
@@ -297,7 +297,7 @@ traceSpin(const QDPExpr<BinaryNode<FnOuterProduct,T1,T2>,CC> & ll)
 
 //! localInnerProduct(l,r)  <-  trace(adj(l)*r)
 template<class T1,class T2,class CC>
-inline typename MakeReturn<BinaryNode<FnLocalInnerProduct,T1,T2>,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<FnLocalInnerProduct,T1,T2>,
   typename UnaryReturn<CC,FnTrace>::Type_t>::Expression_t
 trace(const QDPExpr<BinaryNode<OpAdjMultiply,T1,T2>,CC> & ll)
 {
@@ -313,7 +313,7 @@ trace(const QDPExpr<BinaryNode<OpAdjMultiply,T1,T2>,CC> & ll)
 
 //! traceSpinQuarkContract13(l,r)  <-  traceSpin(quarkContract13(l,r))
 template<class T1,class T2,class CC>
-inline typename MakeReturn<BinaryNode<FnTraceSpinQuarkContract13,T1,T2>,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<FnTraceSpinQuarkContract13,T1,T2>,
   typename UnaryReturn<CC,FnTrace>::Type_t>::Expression_t
 traceSpin(const QDPExpr<BinaryNode<FnQuarkContract13,T1,T2>,CC> & ll)
 {
@@ -329,7 +329,7 @@ traceSpin(const QDPExpr<BinaryNode<FnQuarkContract13,T1,T2>,CC> & ll)
 
 //! realTrace(l) <- real(trace(l))
 template<class T1,class CC>
-inline typename MakeReturn<UnaryNode<FnRealTrace,T1>,
+PETE_DEVICE inline typename MakeReturn<UnaryNode<FnRealTrace,T1>,
   typename UnaryReturn<CC,FnReal>::Type_t>::Expression_t
 real(const QDPExpr<UnaryNode<FnTrace,T1>,CC> & ll)
 {
@@ -343,7 +343,7 @@ real(const QDPExpr<UnaryNode<FnTrace,T1>,CC> & ll)
 
 //! localInnerProductReal(l,r)  <-  real(trace(adj(l)*r))
 template<class T1,class T2,class CC>
-inline typename MakeReturn<BinaryNode<FnLocalInnerProductReal,T1,T2>,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<FnLocalInnerProductReal,T1,T2>,
   typename UnaryReturn<CC,FnReal>::Type_t>::Expression_t
 real(const QDPExpr<BinaryNode<FnLocalInnerProduct,T1,T2>,CC> & ll)
 {

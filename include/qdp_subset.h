@@ -6,6 +6,7 @@
 #ifndef QDP_SUBSET_H
 #define QDP_SUBSET_H
 
+
 namespace QDP {
 
 /*! @defgroup subsets Sets and Subsets
@@ -39,19 +40,25 @@ class Subset
 {
 public:
   //! There can be an empty constructor
-  Subset() {}
+  Subset();
 
   //! Copy constructor
-  Subset(const Subset& s):
-    ordRep(s.ordRep), startSite(s.startSite), endSite(s.endSite), 
-    sub_index(s.sub_index), sitetable(s.sitetable), set(s.set)
-    {}
+  Subset(const Subset& s);
+
 
   // Simple constructor
   void make(const Subset& s);
 
   //! Destructor for a subset
-  virtual ~Subset() {}
+  ~Subset();
+
+#ifdef QDP_IS_QDPJIT
+  int getId() const {
+    if (!registered)
+      QDP_error_exit("You are trying to use a Subset which was not set up properly.");
+    return idStrided;
+  }
+#endif
 
   //! The = operator
   Subset& operator=(const Subset& s);
@@ -71,6 +78,12 @@ private:
 
   //! Site lookup table
   multi1d<int>* sitetable;
+
+#ifdef QDP_IS_QDPJIT
+  // Cache registered
+  int idStrided;
+  bool registered;
+#endif
 
   //! Original set
   Set *set;
@@ -92,14 +105,14 @@ public:
 
 //-----------------------------------------------------------------------
 //! Set - collection of subsets controlling which sites are involved in an operation
-class Set 
+  class Set 
 {
 public:
   //! There can be an empty constructor
-  Set() {}
+  Set();
 
   //! Constructor from a function object
-  Set(const SetFunc& fn) {make(fn);}
+  Set(const SetFunc& fn);
 
   //! Constructor from a function object
   void make(const SetFunc& fn);
@@ -111,10 +124,18 @@ public:
   int numSubsets() const {return sub.size();}
 
   //! Destructor for a set
-  virtual ~Set() {}
+  ~Set();
 
   //! The = operator
   Set& operator=(const Set& s);
+
+#ifdef QDP_IS_QDPJIT
+  int getIdStrided() const {
+    if (!registered)
+      QDP_error_exit("You are trying to use a Set which was not set up properly.");
+    return idStrided;
+  }
+#endif
 
 protected:
   //! A set is composed of an array of subsets
@@ -126,9 +147,25 @@ protected:
   //! Array of sitetable arrays
   multi1d<multi1d<int> > sitetables;
 
+#ifdef QDP_IS_QDPJIT
+  //! This is part of an attempt to port sumMulti to GPUs -- really not made for them
+  multi1d<int> sitetables_strided;
+
+  // Cache registered
+  int idStrided;
+  bool registered;
+#endif
+
 public:
   //! The coloring of the lattice sites
   const multi1d<int>& latticeColoring() const {return lat_color;}
+
+#ifdef QDP_IS_QDPJIT
+  int stride_offset;
+  int nonEmptySubsetsOnNode;
+  int largest_subset;
+  bool enableGPU;
+#endif
 };
 
 

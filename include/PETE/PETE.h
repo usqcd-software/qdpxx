@@ -60,6 +60,16 @@
 
 #endif
 
+#ifdef __CUDACC__
+
+#ifndef PETE_DEVICE
+#define PETE_DEVICE __device__
+#endif
+
+#else
+#define PETE_DEVICE
+#endif
+
 #include "PETE/Scalar.h"
 #include "PETE/TypeComputations.h"
 #include "PETE/TreeNodes.h"

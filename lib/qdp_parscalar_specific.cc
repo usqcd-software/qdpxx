@@ -23,6 +23,127 @@ namespace QDP {
     return s;
   }
 
+#ifdef QDP_IS_QDPJIT
+  void * Map::sndBufDevice = NULL;
+  void * Map::rcvBufDevice = NULL;
+  void * Map::sndBufHost = NULL;
+  void * Map::rcvBufHost = NULL;
+  void * Map::destDevice = NULL;
+  
+  size_t Map::sndBufSize = 0;
+  size_t Map::rcvBufSize = 0;
+
+
+  void Map::copy_sendbuf_to_host() {
+#ifdef GPU_DEBUG_DEEP
+    QDP_debug_deep("Copy send buffer from device to host");
+#endif
+    CudaMemcpy( sndBufHost , sndBufDevice , dstnum );
+  }
+
+  void Map::copy_recvbuf_to_device() {
+#ifdef GPU_DEBUG_DEEP
+    QDP_debug_deep("Copy receive buffer from host to device");
+#endif
+    CudaMemcpy( rcvBufDevice , rcvBufHost , srcnum );
+  }
+
+  void Map::send_comm_buffers() {
+    msg[0]  = QMP_declare_msgmem(rcvBufHost, srcnum);
+    if( msg[0] == (QMP_msgmem_t)NULL ) { 
+      QDP_error_exit("QMP_declare_msgmem for msg[0] failed in Map::operator()\n");
+    }
+    msg[1]  = QMP_declare_msgmem(sndBufHost, dstnum);
+    if( msg[1] == (QMP_msgmem_t)NULL ) {
+      QDP_error_exit("QMP_declare_msgmem for msg[1] failed in Map::operator()\n");
+    }
+    mh_a[0] = QMP_declare_receive_from(msg[0], srcenodes[0], 0);
+    if( mh_a[0] == (QMP_msghandle_t)NULL ) { 
+      QDP_error_exit("QMP_declare_receive_from for mh_a[0] failed in Map::operator()\n");
+    }
+    mh_a[1] = QMP_declare_send_to(msg[1], destnodes[0], 0);
+    if( mh_a[1] == (QMP_msghandle_t)NULL ) {
+      QDP_error_exit("QMP_declare_send_to for mh_a[1] failed in Map::operator()\n");
+    }
+    mh      = QMP_declare_multiple(mh_a, 2);
+    if( mh == (QMP_msghandle_t)NULL ) { 
+      QDP_error_exit("QMP_declare_multiple for mh failed in Map::operator()\n");
+    }
+#if QDP_DEBUG >= 3
+    QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
+#endif
+    QMP_status_t err;
+    if ((err = QMP_start(mh)) != QMP_SUCCESS)
+      QDP_error_exit(QMP_error_string(err));
+  }
+
+
+  void Map::wait_comm_buffers() {
+    QMP_status_t err;
+
+#if QDP_DEBUG >= 3
+    QDP_info("Map: calling wait");
+#endif
+
+    if ((err = QMP_wait(mh)) != QMP_SUCCESS)
+      QDP_error_exit(QMP_error_string(err));
+
+#if QDP_DEBUG >= 3
+    QDP_info("Map: calling free msgs");
+#endif
+
+    QMP_free_msghandle(mh);
+    QMP_free_msgmem(msg[1]);
+    QMP_free_msgmem(msg[0]);
+  }
+
+
+  void Map::free_device_buffers() {
+    if (sndBufDevice)
+      QDPCache::Instance().free_device_static( sndBufDevice );
+    if (rcvBufDevice)
+      QDPCache::Instance().free_device_static( rcvBufDevice );
+    if (destDevice)
+      QDPCache::Instance().free_device_static( destDevice );
+  }
+
+
+  void Map::allocate_buffers() {
+    if (sndBufSize < dstnum) {
+      // Already allocated?
+      if (sndBufDevice) {
+	QDPCache::Instance().free_device_static( sndBufDevice );
+      }
+      if (sndBufHost) {
+	CudaHostFree(sndBufHost);
+      }
+      if (!QDPCache::Instance().allocate_device_static( &sndBufDevice , dstnum )) 
+	QDP_error_exit("sndBufDevice");
+      CudaHostAlloc(&sndBufHost,dstnum,0);
+      sndBufSize = dstnum;
+    }
+    if (rcvBufSize < srcnum) {
+      // Already allocated?
+      if (rcvBufDevice) {
+	QDPCache::Instance().free_device_static( rcvBufDevice );
+      }
+      if (rcvBufHost) {
+	CudaHostFree(rcvBufHost);
+      }
+      if (!QDPCache::Instance().allocate_device_static( &rcvBufDevice , srcnum ))
+	QDP_error_exit("rcvBufDevice");
+      CudaHostAlloc(&rcvBufHost,srcnum,0);
+      rcvBufSize = srcnum;
+    }
+
+    if (!destDevice) {
+      if (!QDPCache::Instance().allocate_device_static( &destDevice , sizeof(void *) * Layout::sitesOnNode() )) 
+	QDP_error_exit("destDevice");
+    }
+  }
+#endif
+
+
 
 //-----------------------------------------------------------------------------
 //! Initializer for generic map constructor
@@ -114,6 +235,16 @@ namespace QDP {
 
     // If no srce/dest nodes, then we know no off-node communications
     offnodeP = (cnt_srcenodes > 0) ? true : false;
+
+
+#ifdef QDP_IS_QDPJIT
+    // CUDA 
+    QDP_debug("Allocating memory for goffsetsDev %d" , sizeof(int) * goffsets.size() );
+    if (sizeof(int) * goffsets.size() < 1)
+      QDP_error_exit("goffsetsDev: about to cudaMalloc 0 bytes. Better not!");
+    if (!CudaMalloc( (void**)&goffsetsDev , sizeof(int) * goffsets.size() )) QDP_error_exit("goffsetsDev alloc of %d bytes failed",sizeof(int) * goffsets.size());
+    CudaMemcpy( (void*)goffsetsDev , (void*)goffsets.slice() , sizeof(int) * goffsets.size() );
+#endif
   
     //
     // The rest of the routine is devoted to supporting off-node communications
@@ -236,6 +367,34 @@ namespace QDP {
 #if QDP_DEBUG >= 3
     QDP_info("exiting Map::make");
 #endif
+
+#ifdef QDP_IS_QDPJIT
+    // CUDA 
+    QDP_debug( "Allocating memory for soffsetsDev %d " , sizeof(int) * soffsets.size() );
+    if (!CudaMalloc( (void**)&soffsetsDev , sizeof(int) * soffsets.size() )) QDP_error_exit("soffsetsDev");
+    CudaMemcpy( (void*)soffsetsDev , (void*)soffsets.slice() , sizeof(int) * soffsets.size() );
+    destptr.resize( srcnode.size() );
+    for(int i=0, ri=0; i < nodeSites; ++i) 
+      {
+	if (srcnode[i] != my_node)
+	  {
+	    // if destptr >= 0 it contains the receive_buffer index
+	    destptr[i] = ri++; 
+	  }
+	else
+	  {
+	    // additional '-1' to make sure its negative,
+	    // not the best style, but higher performance
+	    // than using another buffer
+	    destptr[i] = -goffsets[i]-1;
+	  }
+      }
+    QDP_debug( "CudaMalloc destptrDev %d " , sizeof(int) * srcnode.size() );
+    if (!CudaMalloc( (void**)&destptrDev , sizeof(int) * srcnode.size() )) QDP_error_exit("destptrDev");
+    CudaMemcpy( (void*)destptrDev , (void*)destptr.slice() , sizeof(int) * srcnode.size() );
+#endif
+
+
   }
 
 

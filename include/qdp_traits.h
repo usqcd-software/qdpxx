@@ -74,12 +74,13 @@ struct DoublePrecType<REAL64>
   typedef REAL64 Type_t;
 };
 
+#ifndef __CUDACC__
   template<typename T> 
   struct DoublePrecType< multi1d< T > >
   {
     typedef multi1d< typename DoublePrecType< T >::Type_t > Type_t;
   };
-
+#endif
 
 //-----------------------------------------------------------------------------
 // Constructors for simple word types

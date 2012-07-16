@@ -33,6 +33,47 @@ dnl Tell the user about Nd
 AC_MSG_NOTICE([Configuring QDP++ for Nd = ${ac_Nd}])
 
 
+
+
+AC_ARG_ENABLE(gpuarch,
+  AC_HELP_STRING([--enable-gpuarch=arch ], [ Set GPU arch=sm_20, sm_21 (minimum: sm_20, default: sm_20)] ),
+   [ ac_gpuarch=${enableval} ],
+  [ ac_gpuarch="sm_20" ]
+)
+AC_MSG_NOTICE([Configuring QDP++ for GPU architecture = ${ac_gpuarch}])
+AC_DEFINE_UNQUOTED(QDP_GPUARCH,"${ac_gpuarch}", [GPU architecture])
+AC_SUBST(GPUARCH,"${ac_gpuarch}")
+
+AC_ARG_ENABLE(cpuarch,
+  AC_HELP_STRING([--enable-cpuarch=arch ], [ Set CPU arch: x86 or x86_64 (default: x86_64)] ),
+   [ ac_cpuarch=${enableval} ],
+  [ ac_cpuarch="x86_64" ]
+)
+AC_MSG_NOTICE([Configuring QDP++ for CPU architecture = ${ac_cpuarch}])
+AC_DEFINE_UNQUOTED(QDP_CPUARCH,"${ac_cpuarch}", [CPU architecture])
+
+AC_ARG_WITH(cuda,
+  AC_HELP_STRING([--with-cuda=CUDADIR], [ Specify CUDA installation directory (default: /usr/local/cuda)]),
+  [ cuda_home="${withval}" ],
+  [ cuda_home="/usr/local/cuda" ]
+)
+AC_MSG_NOTICE([Configuring with CUDA installed in = ${cuda_home}])
+AC_DEFINE_UNQUOTED(CUDA_DIR,"${cuda_home}",[CUDA install path])
+AC_SUBST(SUBST_CUDA_DIR,"${cuda_home}")
+
+
+dnl Specify CPU Arch
+dnl AC_ARG_ENABLE(cpuarch,
+dnl  AC_HELP_STRING([--enable-cpuarch=arch],  
+dnl [ cpu_arch=${enableval} ],
+dnl [ cpu_arch=x86_64 ]
+dnl)
+dnl AC_DEFINE_UNQUOTED([QDP_CPUARCH] , ${cpu_arch} , [CPU architecture])
+
+
+
+
+
 dnl --enable-Nc
 AC_ARG_ENABLE(Nc,
   AC_HELP_STRING([--enable-Nc=N ],
@@ -124,6 +165,30 @@ AC_ARG_ENABLE(filedb,
     [Build routines using FileDB]),
   [filedb_enabled="${enableval}"],
   [filedb_enabled="yes"]
+)
+
+dnl gpu
+AC_ARG_ENABLE(gpu,
+  AC_HELP_STRING([--enable-gpu],
+    [Build GPU enabled evaluate function]),
+  [gpu_enabled="${enableval}"],
+  [gpu_enabled="no"]
+)
+
+dnl gpu
+AC_ARG_ENABLE(gpudebug,
+  AC_HELP_STRING([--enable-gpudebug],
+    [Produce GPU debug output]),
+  [gpudebug_enabled="${enableval}"],
+  [gpudebug_enabled="no"]
+)
+
+dnl gpu
+AC_ARG_ENABLE(gpudebugdeep,
+  AC_HELP_STRING([--enable-gpudebugdeep],
+    [Produce GPU deep debug output]),
+  [gpudebugdeep_enabled="${enableval}"],
+  [gpudebugdeep_enabled="no"]
 )
 
 dnl --enable-sse
@@ -223,6 +288,10 @@ fi
 AM_CONDITIONAL(BUILD_LIBINTRIN,
 	[ test "x${build_libintrin}x" = "xyesx"] )
 
+
+if test ${ac_jit_enabled} -eq 1; then 
+   AC_DEFINE_UNQUOTED(QDP_USE_JIT, ${ac_jit_enabled}, [Enable JIT])
+fi
 
 dnl if QCDOC is enabled change some settings
 if test ${ac_qcdoc_enabled} -eq 1; then 
@@ -561,6 +630,44 @@ else
      AC_MSG_NOTICE([Not building filedb])
      AC_SUBST(FILEDB_DIR,"")
 fi
+
+
+dnl cudp
+if test "X${gpu_enabled}X" == "XyesX"; 
+then
+     ac_gcc="$CXX"     				      
+     AC_DEFINE_UNQUOTED([CUDA_GCC],"${ac_gcc}",[CUDA C/C++ Compiler])
+     AC_DEFINE_UNQUOTED(QDP_IS_QDPJIT, ${gpu_enabled}, [Enable GPU/JIT])
+     AC_SUBST(CUDA_LIBS, [-lcudart])
+     if test "X${ac_cpuarch}X" == "Xx86_64X"; 
+     then
+	AC_SUBST(CUDA_LDFLAGS, [-L${cuda_home}/lib64])
+     else
+	AC_SUBST(CUDA_LDFLAGS, [-L${cuda_home}/lib])
+     fi
+else 
+     AC_MSG_NOTICE([Not using GPUs ])
+fi
+
+
+if test "X${gpudebug_enabled}X" == "XyesX"; 
+then
+     AC_MSG_NOTICE([Configuring to produce GPU debug output])
+     AC_DEFINE([GPU_DEBUG],[1],[GPU debugging output])
+     AC_SUBST(GPU_DEBUG_CXX,"-DGPU_DEBUG")
+fi
+
+if test "X${gpudebugdeep_enabled}X" == "XyesX"; 
+then
+     AC_MSG_NOTICE([Configuring to produce GPU deep debug output])
+     AC_DEFINE([GPU_DEBUG_DEEP],[1],[GPU deep debugging output])
+     AC_SUBST(GPU_DEBUGDEEP_CXX,"-DGPU_DEBUG_DEEP")
+fi
+
+
+AM_CONDITIONAL(QDP_IS_QDPJIT,
+  [test "x${gpu_enabled}x" = "xyesx" ])
+
 
 AM_CONDITIONAL(BUILD_FILEDB,
   [test "x${filedb_enabled}x" = "xyesx" ])

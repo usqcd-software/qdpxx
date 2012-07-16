@@ -44,7 +44,7 @@ QDP_info (const char* format, ...)
 {
   va_list argp;
   char    info[128], hostname[256];
-  char    buffer[1024];
+  char    buffer[1024*5];
 
   /* get machine host name */
   gethostname (hostname, sizeof (hostname) - 1);
@@ -60,6 +60,87 @@ QDP_info (const char* format, ...)
   fprintf (stdout, "%s %s\n", info, buffer);
   return status;
 }
+
+
+#ifdef QDP_IS_QDPJIT
+int
+QDP_info_primary (const char* format, ...)
+{
+  if (!Layout::primaryNode())
+    return 0;
+
+  va_list argp;
+  char    info[128], hostname[256];
+  char    buffer[1024*5];
+
+  /* get machine host name */
+  gethostname (hostname, sizeof (hostname) - 1);
+  int rank = Layout::nodeNumber();
+  int size = Layout::numNodes();
+  sprintf (info, "QDP m%d,n%d@%s info: ", 
+	   rank, size, hostname);
+
+  va_start (argp, format);
+  int status = vsprintf (buffer, format, argp);
+  va_end (argp);
+
+  fprintf (stdout, "%s %s\n", info, buffer);
+  return status;
+}
+
+
+/**
+ * Simple debugging display routine
+ */
+int
+QDP_debug (const char* format, ...)
+{
+#ifdef GPU_DEBUG
+  va_list argp;
+  char    info[128], hostname[256];
+  char    buffer[1024*5];
+
+  /* get machine host name */
+  gethostname (hostname, sizeof (hostname) - 1);
+  int rank = Layout::nodeNumber();
+  int size = Layout::numNodes();
+  sprintf (info, "QDP m%d,n%d@%s info: ", 
+	   rank, size, hostname);
+
+  va_start (argp, format);
+  int status = vsprintf (buffer, format, argp);
+  va_end (argp);
+
+  fprintf (stdout, "%s %s\n", info, buffer);
+  return status;
+#endif
+}
+
+
+int
+QDP_debug_deep (const char* format, ...)
+{
+#ifdef GPU_DEBUG_DEEP
+  va_list argp;
+  char    info[128], hostname[256];
+  char    buffer[1024*5];
+
+  /* get machine host name */
+  gethostname (hostname, sizeof (hostname) - 1);
+  int rank = Layout::nodeNumber();
+  int size = Layout::numNodes();
+  sprintf (info, "QDP m%d,n%d@%s info: ", 
+	   rank, size, hostname);
+
+  va_start (argp, format);
+  int status = vsprintf (buffer, format, argp);
+  va_end (argp);
+
+  fprintf (stdout, "%s %s\n", info, buffer);
+  return status;
+#endif
+}
+#endif
 
 
 /**

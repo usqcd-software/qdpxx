@@ -18,6 +18,18 @@
 /* Build filedb */
 #undef BUILD_FILEDB
 
+/* CUDA install path */
+#undef CUDA_DIR
+
+/* CUDA C/C++ Compiler */
+#undef CUDA_GCC
+
+/* GPU debugging output */
+#undef GPU_DEBUG
+
+/* GPU deep debugging output */
+#undef GPU_DEBUG_DEEP
+
 /* Define to 1 if you have the `gethostname' function. */
 #undef HAVE_GETHOSTNAME
 
@@ -48,14 +60,26 @@
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
 
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
 /* Alignment for OLattice */
 #undef QDP_AC_ALIGNMENT_SIZE
 
+/* CPU architecture */
+#undef QDP_CPUARCH
+
 /* Enable memory debugging */
 #undef QDP_DEBUG_MEMORY
+
+/* GPU architecture */
+#undef QDP_GPUARCH
+
+/* Enable GPU/JIT */
+#undef QDP_IS_QDPJIT
 
 /* Number of color components */
 #undef QDP_NC
@@ -89,6 +113,9 @@
 
 /* Use generic C optimizations */
 #undef QDP_USE_GENERIC_OPTS
+
+/* Enable JIT */
+#undef QDP_USE_JIT
 
 /* Use lexicographic layout */
 #undef QDP_USE_LEXICO_LAYOUT

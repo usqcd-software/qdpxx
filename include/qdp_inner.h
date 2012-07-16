@@ -163,6 +163,7 @@ private:
 };
 
 
+#ifndef __CUDACC__
  
 // Input
 //! Ascii input
@@ -232,7 +233,7 @@ void read(XMLReader& xml, const string& path, IScalar<T>& d)
 #endif
 
 /*! @} */  // end of group iscalar
-
+#endif
 
 
 
@@ -584,6 +585,7 @@ private:
 };
 
 
+#ifndef __CUDACC__
 
 //! Stream input
 template<class T, int N>
@@ -626,6 +628,7 @@ TextWriter& operator<<(TextWriter& s, const ILattice<T,N>& d)
     s << d.elem(i) << "\n";
   return s;
 }
+#endif
 
 
 /*! @} */   // end of group ilattice

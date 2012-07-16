@@ -98,10 +98,20 @@ namespace QDP
 
   // Empty print tag
   struct PrintTag;
+  struct ParseTag;
 
   // Used for nearest neighbor shift (a map)
   class ArrayBiDirectionalMap;
 
+  namespace QDPInternal
+  {
+    void broadcast_str(std::string& dest);
+    template<class T> void broadcast(T& dest);
+  }
+
+  class XMLReader;
+  class XMLWriter;
+  class XMLFileWriter;
 
 } // namespace QDP
 

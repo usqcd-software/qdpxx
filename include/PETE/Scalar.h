@@ -53,17 +53,17 @@ public:
   //---------------------------------------------------------------------------
   // Default constructor takes no action.
 
-  inline
+  PETE_DEVICE inline
   Scalar() { }
 
   //---------------------------------------------------------------------------
   // Constructor from a single value.
 
-  inline
+  PETE_DEVICE inline
   Scalar(const T &t) : scalar_m(t) { }
 
   template<class T1>
-  inline
+  PETE_DEVICE inline
   explicit Scalar(const T1 &t) : scalar_m(t) { }
 
   //---------------------------------------------------------------------------
@@ -72,31 +72,31 @@ public:
   // arbitrary argument.
 
   template<class Arg>
-  inline
+  PETE_DEVICE inline
   Scalar(const Scalar<T> &s, const Arg &)
     : scalar_m(s.scalar_m) { }
 
   template<class Arg1, class Arg2>
-  inline
+  PETE_DEVICE inline
   Scalar(const Scalar<T> &s, const Arg1 &, const Arg2 &)
     : scalar_m(s.scalar_m) { }
 
   //---------------------------------------------------------------------------
   // Copy constructor
 
-  inline
+  PETE_DEVICE inline
   Scalar(const Scalar<T> &s) : scalar_m(s.scalar_m) { }
   
   //---------------------------------------------------------------------------
   // Return value.
 
-  inline
+  PETE_DEVICE inline
   const T &value() const { return scalar_m; }
 
   //---------------------------------------------------------------------------
   // Assignment operators.
 
-  inline
+  PETE_DEVICE inline
   Scalar<T> &operator=(const Scalar<T> &rhs)
   {
     scalar_m = rhs.scalar_m;
@@ -104,7 +104,7 @@ public:
     return *this;
   }
   
-  inline
+  PETE_DEVICE inline
   Scalar<T> &operator=(const T &rhs)
   {
     scalar_m = rhs;
@@ -125,7 +125,7 @@ private:
 
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
-// $RCSfile: Scalar.h,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2002-09-12 18:22:16 $
+// $RCSfile: Scalar.h,v $   $Author: sa_smith $
+// $Revision: 1.8 $   $Date: 2000/05/24 17:12:39 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

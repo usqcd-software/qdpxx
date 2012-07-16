@@ -134,6 +134,22 @@ namespace QDP {
 
 #include "qdp_newops.h"
 #include "qdp_optops.h"
+
+#ifdef QDP_IS_QDPJIT
+#include "qdp_deviceparams.h"
+#include "qdp_iface.h"
+#include "qdp_jitargs.h"
+#include "qdp_typeparser.h"
+#include "qdp_cachelock.h"
+#include "qdp_tuning.h"
+#include "qdp_jit.h"
+#include "qdp_cuda.h"
+#include "qdp_cuda_allocator.h"
+#include "qdp_pool_allocator.h"    // host and device pool
+#include "qdp_cache.h"
+#include "qdp_reduction_kernel.h"
+#endif
+
 #include "qdp_profile.h"
 //#include "qdp_word.h"
 #include "qdp_simpleword.h"
@@ -182,7 +198,11 @@ namespace ThreadReductions {
 #elif defined(ARCH_PARSCALAR)
 // Architectural specific code to a parallel/single proc box
 #warning "Using parallel scalar architecture"
+#ifdef QDP_IS_QDPJIT
+#include "qdp_parscalar_specific_jit.h"
+#else
 #include "qdp_parscalar_specific.h"
+#endif
 
 // Include optimized code here if applicable
 #if QDP_USE_SSE == 1

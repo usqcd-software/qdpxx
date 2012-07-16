@@ -203,3 +203,94 @@ use it) and gmake too for its VPATH support.
 
  
 ---
+
+
+GPU support
+-----------
+-----------
+
+
+Overview:
+---------
+
+NVIDIA GPUs are supported by 
+- Automatic offloading single expressions to the GPU
+- JIT compilation (NVCC on compute node) into compute kernels
+- Auto-tuning of compute kernels
+- Automation of memory management via cache
+- Parallel GPUs supported via QMP
+
+
+Software Compatibility:
+-----------------------
+
+The software was successfully tested on Linux CentOS 5.5 and
+Scientific Linux systems. NVIDIA CUDA 4.x/5.0 is known to work.
+The parallel architecture is mandatory.
+
+Hardware Compatibility:
+-----------------------
+
+NVIDIA GPUs with compute capability (sm) >= 2.0 are supported.
+
+
+
+Installation:
+-------------
+
+Required additional configure options:
+
+--enable-gpu   
+--enable-gpuarch=<SM>  // e.g. sm_20, ...
+--enable-cpuarch=<X86> // e.g. x86, x86_64
+--with-cuda=<CUDADIR>  // e.g. /usr/local/cuda
+
+
+Using the Library:
+------------------
+
+Required environment variables:
+
+QDP_INSTALL (installation path of QDP++)
+QDP_TEMP (kernel directory, writeable)
+QUDA_RESOURCE_PATH (autotuning DB directory, writeable)
+
+
+Run-time parameters
+-------------------
+
+Required:
+
+-poolsize <size>       <float>k/m/g 50m(default)
+                       GPU memory size to use
+                       The default is too small,
+                       set it something like 80% of GPU memory,
+                       thus leaves space for local memory
+
+Optional:
+
+-sm <N>                20(default)
+-jitopt <string>       pass "string" as option to JIT compiler
+                       (this option can be given multiple times)
+-sync                  Device sync after each kernel call
+                       (default not given)
+
+
+Interoperability with QUDA:
+---------------------------
+
+QUDA (git://github.com/lattice/quda.git) can use the automatic memory
+management of this software. It must therefor be built against QDP-JIT.
+
+# git clone git://github.com/lattice/quda.git
+
+Additional required configure parameter for QUDA:
+
+--enable-qdp-jit
+
+Enables the QDP-JIT memory management
+
+--with-qdp=<QDP_INSTALL>
+
+Specify the installation path of QDP++. QUDA should be built after
+the successful installation of QDP-JIT.

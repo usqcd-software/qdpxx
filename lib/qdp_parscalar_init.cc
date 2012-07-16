@@ -22,9 +22,42 @@ namespace QDP {
 		REAL64* norm2_results;
 		REAL64* innerProd_results;
 	}
-	
-	//! Private flag for status
-	static bool isInit = false;
+
+  //! Private flag for status
+  static bool isInit = false;
+
+#ifdef QDP_IS_QDPJIT	
+  //! Public flag for using the GPU or not
+  bool QDPuseGPU = false;
+
+  void QDP_startGPU()
+  {
+    QDP_info("Start using the GPU");
+    QDPuseGPU=true;
+    
+    CudaCreateStreams();
+    CUDAHostPoolAllocator::Instance().registerMemory();
+  }
+
+
+  //! Set the GPU device
+  void QDP_setGPU()
+  {
+    int deviceCount;
+    CudaGetDeviceCount(&deviceCount);
+    if (deviceCount == 0) {
+      cout << "no CUDA devices found" << endl;
+      exit(1);
+    }
+    
+    int rank_QMP = QMP_get_node_number();
+    int dev      = rank_QMP % deviceCount;
+    
+    cout << "QDP-JIT: Setting active Cuda device to " << dev << endl;
+    CudaSetDevice( dev );
+  }
+#endif
+
 	
 	//! Turn on the machine
 	void QDP_initialize(int *argc, char ***argv)
@@ -34,6 +67,10 @@ namespace QDP {
 			QDPIO::cerr << "QDP already inited" << endl;
 			QDP_abort(1);
 		}
+
+#ifdef QDP_IS_QDPJIT
+		bool paramCC = false;
+#endif
 		
 		//
 		// Process command line
@@ -112,6 +149,53 @@ namespace QDP {
 				setProgramProfileLevel(lev);
 			}
 #endif
+#ifdef QDP_IS_QDPJIT
+			else if (strcmp((*argv)[i], "-sm")==0) 
+			  {
+			    int uu;
+			    sscanf((*argv)[++i], "%d", &uu);
+			    paramCC=true;
+			    DeviceParams::Instance().setCC(uu);
+			  }
+			else if (strcmp((*argv)[i], "-sync")==0) 
+			  {
+			    DeviceParams::Instance().setSyncDevice(true);
+			  }
+			else if (strcmp((*argv)[i], "-jitopt")==0) 
+			  {
+			    char buf[1024*2];
+			    sscanf((*argv)[++i], "%s", buf);
+			    string opt(buf);
+			    QDPJit::Instance().addJitOption( opt );
+			  }
+			else if (strcmp((*argv)[i], "-poolsize")==0) 
+			  {
+			    float f;
+			    char c;
+			    sscanf((*argv)[++i],"%f%c",&f,&c);
+			    double mul;
+			    switch (tolower(c)) {
+			    case 'k': 
+			      mul=1024.; 
+			      break;
+			    case 'm': 
+			      mul=1024.*1024; 
+			      break;
+			    case 'g': 
+			      mul=1024.*1024*1024; 
+			      break;
+			    case 't':
+			      mul=1024.*1024*1024*1024;
+			      break;
+			    case '\0':
+			      break;
+			    default:
+			      QDP_error_exit("unknown multiplication factor");
+			    }
+			    size_t val = (size_t)((double)(f) * mul);
+			    CUDADevicePoolAllocator::Instance().setPoolSize(val);
+			  }
+#endif
 			else if (strcmp((*argv)[i], "-geom")==0) 
 			{
 				setGeomP = true;
@@ -168,6 +252,10 @@ namespace QDP {
 			}
 		}
 		
+#ifdef QDP_IS_QDPJIT
+		if (!paramCC)
+		  DeviceParams::Instance().setCC(20);
+#endif
 		
 		QMP_verbose (QMP_verboseP);
 		
@@ -205,6 +293,39 @@ namespace QDP {
 #if QDP_DEBUG >= 1
 		QDP_info("Some layout init");
 #endif
+
+
+#ifdef QDP_IS_QDPJIT
+		char * qdp_install = getenv("QDP_INSTALL");
+		if (qdp_install) {
+		  QDP_info("Using QDP-JIT installation in: %s", qdp_install );
+		  QDPJit::Instance().setQDPPath( string( qdp_install ) );
+		} else {
+		  QDP_error_exit("QDP_INSTALL not set");
+		}
+		char * qdp_temp = getenv("QDP_TEMP");
+		if (qdp_temp) {
+		  QDP_info("kernel directory: %s" , qdp_temp );
+		  QDPJit::Instance().setKernelPath( string( qdp_temp ) );
+		  QDPJit::Instance().loadAllShared();
+		} else {
+		  QDP_error_exit("QDP_TEMP not set");
+		}
+		char * quda_rpath = getenv("QUDA_RESOURCE_PATH");
+		if (quda_rpath) {
+		  QDP_info("QDP-JIT DB: %s" , quda_rpath );
+		  
+		  JitTuning::Instance().setResourcePath( string(quda_rpath) + "/qdp-jit.xml" );
+		  
+		  ifstream check_file( JitTuning::Instance().getResourcePath().c_str() );
+		  if (check_file.good())
+		    JitTuning::Instance().load( JitTuning::Instance().getResourcePath() );
+		  
+		} else {
+		  QDP_error_exit("QUDA_RESOURCE_PATH not set");
+		}
+#endif
+
 		
 		Layout::init();   // setup extremely basic functionality in Layout
 		
@@ -294,7 +415,14 @@ namespace QDP {
 			QDPIO::cerr << "QDP is not inited" << std::endl;
 			QDP_abort(1);
 		}
-		
+
+#ifdef QDP_IS_QDPJIT
+		if( Layout::primaryNode() )
+		  JitTuning::Instance().save( JitTuning::Instance().getResourcePath() );
+		CUDAHostPoolAllocator::Instance().unregisterMemory();
+		QDPJit::Instance().closeAllShared();
+#endif
+	
 		//
 		// finalise qmt
 		//

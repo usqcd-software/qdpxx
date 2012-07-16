@@ -5,6 +5,7 @@ PETE_HDRS =  PETE/Combiners.h \
              PETE/CreateLeaf.h \
              PETE/ForEach.h \
              PETE/ForEachInOrder.h \
+             PETE/ForEachTypeParser.h \
              PETE/OperatorTags.h \
              PETE/Scalar.h \
              PETE/TypeComputations.h
@@ -141,12 +142,37 @@ MEMORY_HDRS = qdp_allocator.h \
 	      qdp_default_allocator.h \
 	      qdp_qcdoc_allocator.h
 
+JIT_HDRS = 	qdp_reduction_kernel.h \
+		qdp_sharedmem.h \
+		qdp_cuda_allocator.h \
+		qdp_tuning.h \
+		qdp_cachelock.h \
+		qdp_forward_gpu.h \
+		qdp_iface.h \
+		qdp_quda.h \
+		qdp_device.h \
+		qdp_deviceparams.h \
+		qdp_typeparser.h \
+		qdp_parsetree_qdpops.h \
+		qdp_parsetree_peteops.h \
+		qdp_cachelock_qdpops.h \
+		qdp_cachelock_peteops.h \
+		qdp_random_gpu.h \
+		qdp_cuda.h \
+		qdp_cache.h \
+		qdp_jit.h \
+	        qdp_parscalar_specific_jit.h \
+		qdp_jitargs.h \
+		qdp_pool_allocator.h
+
+
 # All the include files - avoid flattening of dirs by using nobase
 nobase_include_HEADERS = \
 		qdp_config.h \
 		qdp_forward.h \
 		qdp_globalfuncs.h \
 		qdp_inner.h \
+		qdp_config_cuda.h \
 		qdp_init.h \
 		qdp_io.h \
 		qdp_stdio.h \
@@ -216,7 +242,8 @@ nobase_include_HEADERS = \
 		$(QCDOC_HDRS) \
 		$(SSESITE_HDRS) \
 		$(SSEVEC_HDRS) \
-	        $(BAGEL_HDRS)
+	        $(BAGEL_HDRS) \
+	        $(JIT_HDRS)
 
 nodist_include_HEADERS = qdp_config_internal.h
 

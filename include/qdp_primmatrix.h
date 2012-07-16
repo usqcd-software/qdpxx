@@ -30,7 +30,10 @@ namespace QDP {
 template <class T, int N, template<class,int> class C> class PMatrix
 {
 public:
+  PETE_DEVICE
   PMatrix() {}
+
+  PETE_DEVICE
   ~PMatrix() {}
 
   typedef C<T,N>  CC;
@@ -38,10 +41,16 @@ public:
   //! PMatrix = PScalar
   /*! Fill with primitive scalar */
   template<class T1>
-  inline
+  PETE_DEVICE inline
   CC& assign(const PScalar<T1>& rhs)
     {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
 	for(int j=0; j < N; ++j)
 	  if (i == j)
 	    elem(i,j) = rhs.elem();
@@ -54,10 +63,16 @@ public:
   //! PMatrix = PMatrix
   /*! Set equal to another PMatrix */
   template<class T1>
-  inline
+  PETE_DEVICE inline
   CC& assign(const C<T1,N>& rhs) 
     {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
 	for(int j=0; j < N; ++j)
 	  elem(i,j) = rhs.elem(i,j);
 
@@ -66,10 +81,16 @@ public:
 
   //! PMatrix += PMatrix
   template<class T1>
-  inline
+  PETE_DEVICE inline
   CC& operator+=(const C<T1,N>& rhs) 
     {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
 	for(int j=0; j < N; ++j)
 	  elem(i,j) += rhs.elem(i,j);
 
@@ -78,10 +99,16 @@ public:
 
   //! PMatrix -= PMatrix
   template<class T1>
-  inline
+  PETE_DEVICE inline
   CC& operator-=(const C<T1,N>& rhs) 
     {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
 	for(int j=0; j < N; ++j)
 	  elem(i,j) -= rhs.elem(i,j);
 
@@ -90,9 +117,12 @@ public:
 
   //! PMatrix += PScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   CC& operator+=(const PScalar<T1>& rhs) 
     {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int i=0; i < N; ++i)
 	elem(i,i) += rhs.elem();
 
@@ -101,9 +131,12 @@ public:
 
   //! PMatrix -= PScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   CC& operator-=(const PScalar<T1>& rhs) 
     {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int i=0; i < N; ++i)
 	elem(i,i) -= rhs.elem();
 
@@ -112,10 +145,16 @@ public:
 
   //! PMatrix *= PScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   CC& operator*=(const PScalar<T1>& rhs) 
     {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
 	for(int j=0; j < N; ++j)
 	  elem(i,j) *= rhs.elem();
 
@@ -124,10 +163,16 @@ public:
 
   //! PMatrix /= PScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   CC& operator/=(const PScalar<T1>& rhs) 
     {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
 	for(int j=0; j < N; ++j)
 	  elem(i,j) /= rhs.elem();
 
@@ -148,6 +193,9 @@ public:
   /*! This is a copy form - legal but not necessarily efficient */
   PMatrix(const PMatrix& a)
     {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int i=0; i < N*N; ++i)
 	F[i] = a.F[i];
     }
@@ -155,17 +203,18 @@ public:
 #endif
 
 public:
-  T& elem(int i, int j) {return F[j+N*i];}
-  const T& elem(int i, int j) const {return F[j+N*i];}
+  PETE_DEVICE T& elem(int i, int j) {return F[j+N*i];}
+  PETE_DEVICE const T& elem(int i, int j) const {return F[j+N*i];}
 
 private:
   T F[N*N];
 };
 
+#ifndef __CUDACC__
 
 //! Text input
 template<class T, int N, template<class,int> class C>  
-inline
+PETE_DEVICE inline
 TextReader& operator>>(TextReader& txt, PMatrix<T,N,C>& d)
 {
   for(int j=0; j < N; ++j)
@@ -177,7 +226,7 @@ TextReader& operator>>(TextReader& txt, PMatrix<T,N,C>& d)
 
 //! Text output
 template<class T, int N, template<class,int> class C>  
-inline
+PETE_DEVICE inline
 TextWriter& operator<<(TextWriter& txt, const PMatrix<T,N,C>& d)
 {
   for(int j=0; j < N; ++j)
@@ -187,10 +236,10 @@ TextWriter& operator<<(TextWriter& txt, const PMatrix<T,N,C>& d)
   return txt;
 }
 
-#ifndef QDP_NO_LIBXML2
+
 //! XML output
 template<class T, int N, template<class,int> class C>  
-inline
+PETE_DEVICE inline
 XMLWriter& operator<<(XMLWriter& xml, const PMatrix<T,N,C>& d)
 {
   xml.openTag("Matrix");
@@ -215,6 +264,7 @@ XMLWriter& operator<<(XMLWriter& xml, const PMatrix<T,N,C>& d)
   return xml;
 }
 #endif
+
 /*! @} */  // end of group primmatrix
 
 //-----------------------------------------------------------------------------
@@ -344,12 +394,18 @@ struct UnaryReturn<PMatrix<T,N,C>, OpUnaryPlus> {
 };
 
 template<class T1, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, OpUnaryPlus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T1,N,C>, OpUnaryPlus>::Type_t
 operator+(const PMatrix<T1,N,C>& l)
 {
   typename UnaryReturn<PMatrix<T1,N,C>, OpUnaryPlus>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = +l.elem(i,j);
 
@@ -364,12 +420,18 @@ struct UnaryReturn<PMatrix<T,N,C>, OpUnaryMinus> {
 };
 
 template<class T1, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, OpUnaryMinus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T1,N,C>, OpUnaryMinus>::Type_t
 operator-(const PMatrix<T1,N,C>& l)
 {
   typename UnaryReturn<PMatrix<T1,N,C>, OpUnaryMinus>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = -l.elem(i,j);
 
@@ -384,12 +446,18 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdd> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdd>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdd>::Type_t
 operator+(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdd>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = l.elem(i,j) + r.elem(i,j);
 
@@ -403,12 +471,18 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdd> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdd>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdd>::Type_t
 operator+(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdd>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = (i == j) ? l.elem(i,i) + r.elem() : l.elem(i,j);
 
@@ -422,12 +496,18 @@ struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdd> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdd>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdd>::Type_t
 operator+(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdd>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = (i == j) ? l.elem() + r.elem(i,i) : r.elem(i,j);
 
@@ -442,12 +522,18 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpSubtract> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpSubtract>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpSubtract>::Type_t
 operator-(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpSubtract>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = l.elem(i,j) - r.elem(i,j);
 
@@ -461,12 +547,18 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpSubtract> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpSubtract>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpSubtract>::Type_t
 operator-(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpSubtract>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = (i == j) ? l.elem(i,i) - r.elem() : l.elem(i,j);
 
@@ -480,12 +572,18 @@ struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpSubtract> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpSubtract>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpSubtract>::Type_t
 operator-(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpSubtract>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = (i == j) ? l.elem() - r.elem(i,i) : -r.elem(i,j);
 
@@ -500,12 +598,18 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpMultiply>::Type_t
 operator*(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpMultiply>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = l.elem(i,j) * r.elem();
   return d;
@@ -518,12 +622,18 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdjMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdjMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdjMultiply>::Type_t
 adjMultiply(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdjMultiply>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = adjMultiply(l.elem(j,i), r.elem());
   return d;
@@ -536,12 +646,18 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpMultiplyAdj> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpMultiplyAdj>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpMultiplyAdj>::Type_t
 multiplyAdj(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpMultiplyAdj>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = multiplyAdj(l.elem(i,j), r.elem());
   return d;
@@ -554,12 +670,18 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdjMultiplyAdj> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdjMultiplyAdj>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdjMultiplyAdj>::Type_t
 adjMultiplyAdj(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpAdjMultiplyAdj>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = adjMultiplyAdj(l.elem(j,i), r.elem());
   return d;
@@ -574,12 +696,18 @@ struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpMultiply>::Type_t
 operator*(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpMultiply>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = l.elem() * r.elem(i,j);
   return d;
@@ -592,12 +720,18 @@ struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdjMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdjMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdjMultiply>::Type_t
 adjMultiply(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdjMultiply>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = adjMultiply(l.elem(), r.elem(i,j));
   return d;
@@ -610,12 +744,18 @@ struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpMultiplyAdj> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpMultiplyAdj>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpMultiplyAdj>::Type_t
 multiplyAdj(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpMultiplyAdj>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = multiplyAdj(l.elem(), r.elem(j,i));
   return d;
@@ -628,12 +768,18 @@ struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdjMultiplyAdj> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdjMultiplyAdj>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdjMultiplyAdj>::Type_t
 adjMultiplyAdj(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, OpAdjMultiplyAdj>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = adjMultiplyAdj(l.elem(), r.elem(j,i));
   return d;
@@ -646,20 +792,25 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpMultiply> {
   typedef C<typename BinaryReturn<T1, T2, OpMultiply>::Type_t, N>  Type_t;
 };
 
+
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpMultiply>::Type_t
 operator*(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpMultiply>::Type_t  d;
-
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
     {
       d.elem(i,j) = l.elem(i,0) * r.elem(0,j);
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int k=1; k < N; ++k)
 	d.elem(i,j) += l.elem(i,k) * r.elem(k,j);
     }
-
   return d;
 }
 
@@ -670,15 +821,21 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdjMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdjMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdjMultiply>::Type_t
 adjMultiply(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdjMultiply>::Type_t  d;
 
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
     {
       d.elem(i,j) = adjMultiply(l.elem(0,i), r.elem(0,j));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int k=1; k < N; ++k)
 	d.elem(i,j) += adjMultiply(l.elem(k,i), r.elem(k,j));
     }
@@ -693,15 +850,21 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpMultiplyAdj> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpMultiplyAdj>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpMultiplyAdj>::Type_t
 multiplyAdj(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpMultiplyAdj>::Type_t  d;
 
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
     {
       d.elem(i,j) = multiplyAdj(l.elem(i,0), r.elem(j,0));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int k=1; k < N; ++k)
 	d.elem(i,j) += multiplyAdj(l.elem(i,k), r.elem(j,k));
     }
@@ -716,15 +879,21 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdjMultiplyAdj> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdjMultiplyAdj>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdjMultiplyAdj>::Type_t
 adjMultiplyAdj(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, OpAdjMultiplyAdj>::Type_t  d;
 
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
     {
       d.elem(i,j) = adjMultiplyAdj(l.elem(0,i), r.elem(j,0));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int k=1; k < N; ++k)
 	d.elem(i,j) += adjMultiplyAdj(l.elem(k,i), r.elem(j,k));
     }
@@ -740,12 +909,18 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpDivide> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpDivide>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpDivide>::Type_t
 operator/(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, OpDivide>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = l.elem(i,j) / r.elem();
   return d;
@@ -763,12 +938,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnAdjoint> {
 };
 
 template<class T1, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, FnAdjoint>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T1,N,C>, FnAdjoint>::Type_t
 adj(const PMatrix<T1,N,C>& l)
 {
   typename UnaryReturn<PMatrix<T1,N,C>, FnAdjoint>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = adj(l.elem(j,i));
 
@@ -783,12 +964,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnConjugate> {
 };
 
 template<class T1, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, FnConjugate>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T1,N,C>, FnConjugate>::Type_t
 conj(const PMatrix<T1,N,C>& l)
 {
   typename UnaryReturn<PMatrix<T1,N,C>, FnConjugate>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = conj(l.elem(i,j));
 
@@ -803,12 +990,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnTranspose> {
 };
 
 template<class T1, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, FnTranspose>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T1,N,C>, FnTranspose>::Type_t
 transpose(const PMatrix<T1,N,C>& l)
 {
   typename UnaryReturn<PMatrix<T1,N,C>, FnTranspose>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = transpose(l.elem(j,i));
 
@@ -824,12 +1017,15 @@ struct UnaryReturn<PMatrix<T,N,C>, FnTrace> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnTrace>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnTrace>::Type_t
 trace(const PMatrix<T,N,C>& s1)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnTrace>::Type_t  d;
 
   d.elem() = trace(s1.elem(0,0));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=1; i < N; ++i)
     d.elem() += trace(s1.elem(i,i));
 
@@ -844,12 +1040,15 @@ struct UnaryReturn<PMatrix<T,N,C>, FnRealTrace> {
 };
 
 template<class T1, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, FnRealTrace>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T1,N,C>, FnRealTrace>::Type_t
 realTrace(const PMatrix<T1,N,C>& s1)
 {
   typename UnaryReturn<PMatrix<T1,N,C>, FnRealTrace>::Type_t  d;
 
   d.elem() = realTrace(s1.elem(0,0));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=1; i < N; ++i)
     d.elem() += realTrace(s1.elem(i,i));
 
@@ -864,12 +1063,15 @@ struct UnaryReturn<PMatrix<T,N,C>, FnImagTrace> {
 };
 
 template<class T1, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, FnImagTrace>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T1,N,C>, FnImagTrace>::Type_t
 imagTrace(const PMatrix<T1,N,C>& s1)
 {
   typename UnaryReturn<PMatrix<T1,N,C>, FnImagTrace>::Type_t  d;
 
   d.elem() = imagTrace(s1.elem(0,0));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=1; i < N; ++i)
     d.elem() += imagTrace(s1.elem(i,i));
 
@@ -884,12 +1086,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnTraceColor> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnTraceColor>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnTraceColor>::Type_t
 traceColor(const PMatrix<T,N,C>& s1)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnTraceColor>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = traceColor(s1.elem(i,j));
 
@@ -904,12 +1112,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnTraceSpin> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnTraceSpin>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnTraceSpin>::Type_t
 traceSpin(const PMatrix<T,N,C>& s1)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnTraceSpin>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = traceSpin(s1.elem(i,j));
 
@@ -927,11 +1141,17 @@ struct UnaryReturn<PMatrix<T,N,C>, FnTransposeColor> {
 /*! define the function itself.Recurse down elements of the primmatrix
  *  and call transposeColor on each one */
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnTransposeColor>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnTransposeColor>::Type_t
 transposeColor(const PMatrix<T,N,C>& s1)
 { 
   typename UnaryReturn<PMatrix<T,N,C>, FnTransposeColor>::Type_t d;
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i) {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j) {
       d.elem(i,j) = transposeColor(s1.elem(i,j));
     }
@@ -951,11 +1171,17 @@ struct UnaryReturn<PMatrix<T,N,C>, FnTransposeSpin> {
 /*! define the function itself.Recurse down elements of the primmatrix
  *  and call transposeSpin on each one */
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnTransposeSpin>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnTransposeSpin>::Type_t
 transposeSpin(const PMatrix<T,N,C>& s1)
 { 
   typename UnaryReturn<PMatrix<T,N,C>, FnTransposeSpin>::Type_t d;
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i) {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j) {
       d.elem(i,j) = transposeSpin(s1.elem(i,j));
     }
@@ -972,16 +1198,25 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceMultiply>::Type_t
 traceMultiply(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceMultiply>::Type_t  d;
 
   d.elem() = traceMultiply(l.elem(0,0), r.elem(0,0));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int k=1; k < N; ++k)
     d.elem() += traceMultiply(l.elem(0,k), r.elem(k,0));
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int j=1; j < N; ++j)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int k=0; k < N; ++k)
       d.elem() += traceMultiply(l.elem(j,k), r.elem(k,j));
 
@@ -995,12 +1230,15 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceMultiply>::Type_t
 traceMultiply(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceMultiply>::Type_t  d;
 
   d.elem() = traceMultiply(l.elem(0,0), r.elem());
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int k=1; k < N; ++k)
     d.elem() += traceMultiply(l.elem(k,k), r.elem());
 
@@ -1014,12 +1252,15 @@ struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceMultiply>::Type_t
 traceMultiply(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceMultiply>::Type_t  d;
 
   d.elem() = traceMultiply(l.elem(), r.elem(0,0));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int k=1; k < N; ++k)
     d.elem() += traceMultiply(l.elem(), r.elem(k,k));
 
@@ -1035,15 +1276,21 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceColorMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceColorMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceColorMultiply>::Type_t
 traceColorMultiply(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceColorMultiply>::Type_t  d;
 
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
     {
       d.elem(i,j) = traceColorMultiply(l.elem(i,0), r.elem(0,j));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int k=1; k < N; ++k)
 	d.elem(i,j) += traceColorMultiply(l.elem(i,k), r.elem(k,j));
     }
@@ -1058,12 +1305,18 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceColorMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceColorMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceColorMultiply>::Type_t
 traceColorMultiply(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceColorMultiply>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = traceColorMultiply(l.elem(i,j), r.elem());
 
@@ -1077,12 +1330,18 @@ struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceColorMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceColorMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceColorMultiply>::Type_t
 traceColorMultiply(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceColorMultiply>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = traceColorMultiply(l.elem(), r.elem(i,j));
 
@@ -1097,15 +1356,21 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceSpinMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceSpinMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceSpinMultiply>::Type_t
 traceSpinMultiply(const PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnTraceSpinMultiply>::Type_t  d;
 
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
     {
       d.elem(i,j) = traceSpinMultiply(l.elem(i,0), r.elem(0,j));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
       for(int k=1; k < N; ++k)
 	d.elem(i,j) += traceSpinMultiply(l.elem(i,k), r.elem(k,j));
     }
@@ -1120,12 +1385,18 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceSpinMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceSpinMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceSpinMultiply>::Type_t
 traceSpinMultiply(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnTraceSpinMultiply>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = traceSpinMultiply(l.elem(i,j), r.elem());
 
@@ -1139,12 +1410,18 @@ struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceSpinMultiply> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceSpinMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceSpinMultiply>::Type_t
 traceSpinMultiply(const PScalar<T1>& l, const PMatrix<T2,N,C>& r)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnTraceSpinMultiply>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = traceSpinMultiply(l.elem(), r.elem(i,j));
 
@@ -1159,12 +1436,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnReal> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnReal>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnReal>::Type_t
 real(const PMatrix<T,N,C>& s1)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnReal>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = real(s1.elem(i,j));
 
@@ -1179,12 +1462,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnImag> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnImag>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnImag>::Type_t
 imag(const PMatrix<T,N,C>& s1)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnImag>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = imag(s1.elem(i,j));
 
@@ -1194,12 +1483,18 @@ imag(const PMatrix<T,N,C>& s1)
 
 //! PMatrix<T> = (PMatrix<T> , PMatrix<T>)
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnCmplx>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnCmplx>::Type_t
 cmplx(const PMatrix<T1,N,C>& s1, const PMatrix<T2,N,C>& s2)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnCmplx>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = cmplx(s1.elem(i,j), s2.elem(i,j));
 
@@ -1217,12 +1512,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnTimesI> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnTimesI>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnTimesI>::Type_t
 timesI(const PMatrix<T,N,C>& s1)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnTimesI>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = timesI(s1.elem(i,j));
 
@@ -1236,12 +1537,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnTimesMinusI> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnTimesMinusI>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnTimesMinusI>::Type_t
 timesMinusI(const PMatrix<T,N,C>& s1)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnTimesMinusI>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = timesMinusI(s1.elem(i,j));
 
@@ -1256,12 +1563,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnGetSite> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnGetSite>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnGetSite>::Type_t
 getSite(const PMatrix<T,N,C>& s1, int innersite)
 { 
   typename UnaryReturn<PMatrix<T,N,C>, FnGetSite>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = getSite(s1.elem(i,j), innersite);
 
@@ -1276,12 +1589,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnPeekColorVector> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekColorVector>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekColorVector>::Type_t
 peekColor(const PMatrix<T,N,C>& l, int row)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnPeekColorVector>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = peekColor(l.elem(i,j),row);
   return d;
@@ -1295,12 +1614,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnPeekColorMatrix> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekColorMatrix>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekColorMatrix>::Type_t
 peekColor(const PMatrix<T,N,C>& l, int row, int col)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnPeekColorMatrix>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = peekColor(l.elem(i,j),row,col);
   return d;
@@ -1314,12 +1639,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnPeekSpinVector> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekSpinVector>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekSpinVector>::Type_t
 peekSpin(const PMatrix<T,N,C>& l, int row)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnPeekSpinVector>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = peekSpin(l.elem(i,j),row);
   return d;
@@ -1333,12 +1664,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnPeekSpinMatrix> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekSpinMatrix>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnPeekSpinMatrix>::Type_t
 peekSpin(const PMatrix<T,N,C>& l, int row, int col)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnPeekSpinMatrix>::Type_t  d;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = peekSpin(l.elem(i,j),row,col);
   return d;
@@ -1352,12 +1689,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnPokeColorMatrix> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeColorMatrix>::Type_t&
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeColorMatrix>::Type_t&
 pokeColor(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
 {
   typedef typename UnaryReturn<PMatrix<T1,N,C>, FnPokeColorMatrix>::Type_t  Return_t;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       pokeColor(l.elem(i,j),r.elem(i,j),row);
   return static_cast<Return_t&>(l);
@@ -1366,12 +1709,18 @@ pokeColor(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
 //! Insert color matrix components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeColorMatrix>::Type_t&
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeColorMatrix>::Type_t&
 pokeColor(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row, int col)
 {
   typedef typename UnaryReturn<PMatrix<T1,N,C>, FnPokeColorMatrix>::Type_t  Return_t;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       pokeColor(l.elem(i,j),r.elem(i,j),row,col);
   return static_cast<Return_t&>(l);
@@ -1385,12 +1734,18 @@ struct UnaryReturn<PMatrix<T,N,C>, FnPokeSpinMatrix> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeSpinMatrix>::Type_t&
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeSpinMatrix>::Type_t&
 pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
 {
   typedef typename UnaryReturn<PMatrix<T1,N,C>, FnPokeSpinMatrix>::Type_t  Return_t;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       pokeSpin(l.elem(i,j),r.elem(i,j),row);
   return static_cast<Return_t&>(l);
@@ -1399,12 +1754,18 @@ pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row)
 //! Insert spin matrix components 
 /*! Generically, this is an identity operation. Defined differently under spin */
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeSpinMatrix>::Type_t&
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T1,N,C>, FnPokeSpinMatrix>::Type_t&
 pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row, int col)
 {
   typedef typename UnaryReturn<PMatrix<T1,N,C>, FnPokeSpinMatrix>::Type_t  Return_t;
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       pokeSpin(l.elem(i,j),r.elem(i,j),row,col);
   return static_cast<Return_t&>(l);
@@ -1414,10 +1775,16 @@ pokeSpin(PMatrix<T1,N,C>& l, const PMatrix<T2,N,C>& r, int row, int col)
 
 //! dest = 0
 template<class T, int N, template<class,int> class C> 
-inline void 
+PETE_DEVICE inline void 
 zero_rep(PMatrix<T,N,C>& dest) 
 {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       zero_rep(dest.elem(i,j));
 }
@@ -1425,10 +1792,16 @@ zero_rep(PMatrix<T,N,C>& dest)
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1, int N, template<class,int> class C> 
-inline void 
+PETE_DEVICE inline void 
 copymask(PMatrix<T,N,C>& d, const PScalar<T1>& mask, const PMatrix<T,N,C>& s1) 
 {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       copymask(d.elem(i,j),mask.elem(),s1.elem(i,j));
 }
@@ -1436,20 +1809,32 @@ copymask(PMatrix<T,N,C>& d, const PScalar<T1>& mask, const PMatrix<T,N,C>& s1)
 
 //! dest [some type] = source [some type]
 template<class T, class T1, int N, template<class,int> class C>
-inline void 
+PETE_DEVICE inline void 
 copy_site(PMatrix<T,N,C>& d, int isite, const PMatrix<T1,N,C>& s1)
 {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       copy_site(d.elem(i,j), isite, s1.elem(i,j));
 }
 
 //! dest [some type] = source [some type]
 template<class T, class T1, int N, template<class,int> class C>
-inline void 
+PETE_DEVICE inline void 
 copy_site(PMatrix<T,N,C>& d, int isite, const PScalar<T1>& s1)
 {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       copy_site(d.elem(i,j), isite, s1.elem());
 }
@@ -1457,14 +1842,20 @@ copy_site(PMatrix<T,N,C>& d, int isite, const PScalar<T1>& s1)
 
 //! gather several inner sites together
 template<class T, class T1, int N, template<class,int> class C>
-inline void 
+PETE_DEVICE inline void 
 gather_sites(PMatrix<T,N,C>& d, 
 	     const PMatrix<T1,N,C>& s0, int i0, 
 	     const PMatrix<T1,N,C>& s1, int i1,
 	     const PMatrix<T1,N,C>& s2, int i2,
 	     const PMatrix<T1,N,C>& s3, int i3)
 {
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       gather_sites(d.elem(i,j), 
 		   s0.elem(i,j), i0, 
@@ -1476,18 +1867,24 @@ gather_sites(PMatrix<T,N,C>& d,
 
 //! dest  = random  
 template<class T, int N, template<class,int> class C, class T1, class T2>
-inline void
+PETE_DEVICE inline void
 fill_random(PMatrix<T,N,C>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 {
   // The skewed_seed is the starting seed to use
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       fill_random(d.elem(i,j), seed, skewed_seed, seed_mult);
 }
 
 //! dest  = gaussian
 template<class T, int N, template<class,int> class C>
-inline void
+PETE_DEVICE inline void
 fill_gaussian(PMatrix<T,N,C>& d, PMatrix<T,N,C>& r1, PMatrix<T,N,C>& r2)
 {
   for(int i=0; i < N; ++i)
@@ -1505,7 +1902,7 @@ struct UnaryReturn<PMatrix<T,N,C>, FnSum> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnSum>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnSum>::Type_t
 sum(const PMatrix<T,N,C>& s1)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnSum>::Type_t  d;
@@ -1531,16 +1928,25 @@ struct UnaryReturn<PMatrix<T,N,C>, FnLocalNorm2> {
 };
 
 template<class T, int N, template<class,int> class C>
-inline typename UnaryReturn<PMatrix<T,N,C>, FnLocalNorm2>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PMatrix<T,N,C>, FnLocalNorm2>::Type_t
 localNorm2(const PMatrix<T,N,C>& s1)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnLocalNorm2>::Type_t  d;
 
   d.elem() = localNorm2(s1.elem(0,0));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int j=1; j < N; ++j)
     d.elem() += localNorm2(s1.elem(0,j));
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=1; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem() += localNorm2(s1.elem(i,j));
 
@@ -1561,16 +1967,25 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnLocalInnerProduct> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnLocalInnerProduct>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnLocalInnerProduct>::Type_t
 localInnerProduct(const PMatrix<T1,N,C>& s1, const PMatrix<T2,N,C>& s2)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnLocalInnerProduct>::Type_t  d;
 
   d.elem() = localInnerProduct(s1.elem(0,0), s2.elem(0,0));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int k=1; k < N; ++k)
     d.elem() += localInnerProduct(s1.elem(k,0), s2.elem(k,0));
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int j=1; j < N; ++j)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int k=0; k < N; ++k)
       d.elem() += localInnerProduct(s1.elem(k,j), s2.elem(k,j));
 
@@ -1584,12 +1999,15 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProduct> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProduct>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProduct>::Type_t
 localInnerProduct(const PMatrix<T1,N,C>& s1, const PScalar<T2>& s2)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProduct>::Type_t  d;
 
   d.elem() = localInnerProduct(s1.elem(0,0), s2.elem());
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int k=1; k < N; ++k)
     d.elem() += localInnerProduct(s1.elem(k,k), s2.elem());
 
@@ -1603,12 +2021,15 @@ struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProduct> {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProduct>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProduct>::Type_t
 localInnerProduct(const PScalar<T1>& s1, const PMatrix<T2,N,C>& s2)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProduct>::Type_t  d;
 
   d.elem() = localInnerProduct(s1.elem(), s2.elem(0,0));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int k=1; k < N; ++k)
     d.elem() += localInnerProduct(s1.elem(), s2.elem(k,k));
 
@@ -1632,16 +2053,25 @@ struct BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnLocalInnerProductReal > 
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnLocalInnerProductReal>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnLocalInnerProductReal>::Type_t
 localInnerProductReal(const PMatrix<T1,N,C>& s1, const PMatrix<T2,N,C>& s2)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PMatrix<T2,N,C>, FnLocalInnerProductReal>::Type_t  d;
 
   d.elem() = localInnerProductReal(s1.elem(0,0), s2.elem(0,0));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int k=1; k < N; ++k)
     d.elem() += localInnerProductReal(s1.elem(k,0), s2.elem(k,0));
 
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int j=1; j < N; ++j)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int k=0; k < N; ++k)
       d.elem() += localInnerProductReal(s1.elem(k,j), s2.elem(k,j));
 
@@ -1655,12 +2085,15 @@ struct BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProductReal > {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProductReal>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProductReal>::Type_t
 localInnerProductReal(const PMatrix<T1,N,C>& s1, const PScalar<T2>& s2)
 {
   typename BinaryReturn<PMatrix<T1,N,C>, PScalar<T2>, FnLocalInnerProductReal>::Type_t  d;
 
   d.elem() = localInnerProductReal(s1.elem(0,0), s2.elem());
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int k=1; k < N; ++k)
     d.elem() += localInnerProductReal(s1.elem(k,0), s2.elem(k,k));
 
@@ -1674,12 +2107,15 @@ struct BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProductReal > {
 };
 
 template<class T1, class T2, int N, template<class,int> class C>
-inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProductReal>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProductReal>::Type_t
 localInnerProductReal(const PScalar<T1>& s1, const PMatrix<T2,N,C>& s2)
 {
   typename BinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, FnLocalInnerProductReal>::Type_t  d;
 
   d.elem() = localInnerProductReal(s1.elem(), s2.elem(0,0));
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int k=1; k < N; ++k)
     d.elem() += localInnerProductReal(s1.elem(), s2.elem(k,k));
 
@@ -1698,13 +2134,19 @@ struct TrinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, PMatrix<T3,N,C>, FnWhere> {
 };
 
 template<class T1, class T2, class T3, int N, template<class,int> class C>
-inline typename TrinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, PMatrix<T3,N,C>, FnWhere>::Type_t
+PETE_DEVICE inline typename TrinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, PMatrix<T3,N,C>, FnWhere>::Type_t
 where(const PScalar<T1>& a, const PMatrix<T2,N,C>& b, const PMatrix<T3,N,C>& c)
 {
   typename TrinaryReturn<PScalar<T1>, PMatrix<T2,N,C>, PMatrix<T3,N,C>, FnWhere>::Type_t  d;
 
   // Not optimal - want to have where outside assignment
+#ifdef __CUDACC__
+#pragma unroll
+#endif
   for(int i=0; i < N; ++i)
+#ifdef __CUDACC__
+#pragma unroll
+#endif
     for(int j=0; j < N; ++j)
       d.elem(i,j) = where(a.elem(), b.elem(i,j), c.elem(i,j));
 

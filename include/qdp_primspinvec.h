@@ -32,11 +32,11 @@ namespace QDP {
 template <class T, int N> class PSpinVector
 {
 public:
-  PSpinVector() { }
-  ~PSpinVector() {} 
+  PETE_DEVICE PSpinVector() { }
+  PETE_DEVICE ~PSpinVector() {} 
 
   template<class T1>
-  inline
+  PETE_DEVICE inline
   PSpinVector& assign(const PSpinVector<T1, N>& rhs)
   {
     for(int i=0; i < N; i++) 
@@ -46,7 +46,7 @@ public:
   }
 
   template<class T1> 
-  inline 
+  PETE_DEVICE inline 
   PSpinVector& operator=(const PSpinVector<T1,N>& rhs)
   {
     return assign(rhs);
@@ -54,7 +54,7 @@ public:
 
   //! PSpinVector += PSpinVector
   template<class T1>
-  inline
+  PETE_DEVICE inline
   PSpinVector& operator+=(const PSpinVector<T1,N>& rhs) 
     {
       for(int i=0; i < N; ++i)
@@ -65,7 +65,7 @@ public:
 
 
   template<class T1>
-  inline
+  PETE_DEVICE inline
   PSpinVector& operator*=(const PScalar<T1>& rhs) 
     {
       for(int i=0; i < N; ++i)
@@ -75,7 +75,7 @@ public:
     }
 
   template<class T1>
-  inline
+  PETE_DEVICE inline
   PSpinVector& operator-=(const PSpinVector<T1,N>& rhs) 
     {
       for(int i=0; i < N; ++i)
@@ -86,7 +86,7 @@ public:
 
   //! PSpinVector /= PScalar
   template<class T1>
-  inline
+  PETE_DEVICE inline
   PSpinVector& operator/=(const PScalar<T1>& rhs) 
     {
       for(int i=0; i < N; ++i)
@@ -95,15 +95,16 @@ public:
       return *this;
     }
 
-  T& elem(int i) {return F[i];}
-  const T& elem(int i) const {return F[i];}
+  PETE_DEVICE T& elem(int i) {return F[i];}
+  PETE_DEVICE const T& elem(int i) const {return F[i];}
 private:
   T F[N] QDP_ALIGN16; 
 };
 
-//! Stream input
+
+#ifndef __CUDACC__
 template<class T, int N>  
-inline
+PETE_DEVICE inline
 istream& operator>>(istream& s, PSpinVector<T,N>& d)
 {
   for(int i=0; i < N; ++i)
@@ -113,7 +114,7 @@ istream& operator>>(istream& s, PSpinVector<T,N>& d)
 }
 
 template<class T, int N>  
-inline
+PETE_DEVICE inline
 StandardInputStream& operator>>(StandardInputStream& s, PSpinVector<T,N>& d)
 {
   for(int i=0; i < N; ++i)
@@ -123,7 +124,7 @@ StandardInputStream& operator>>(StandardInputStream& s, PSpinVector<T,N>& d)
 }
 //! Stream output
 template<class T, int N>
-inline
+PETE_DEVICE inline
 ostream& operator<<(ostream& s, const PSpinVector<T,N>& d)
 {
   for(int i=0; i < N; ++i)
@@ -134,7 +135,7 @@ ostream& operator<<(ostream& s, const PSpinVector<T,N>& d)
 
 //! Stream output
 template<class T, int N>
-inline
+PETE_DEVICE inline
 StandardOutputStream& operator<<(StandardOutputStream& s, const PSpinVector<T,N>& d)
 {
   for(int i=0; i < N; ++i)
@@ -146,7 +147,7 @@ StandardOutputStream& operator<<(StandardOutputStream& s, const PSpinVector<T,N>
 
 //! Text input
 template<class T, int N>
-inline
+PETE_DEVICE inline
 TextReader& operator>>(TextReader& txt, PSpinVector<T,N>& d)
 {
   for(int i=0; i < N; ++i)
@@ -157,7 +158,7 @@ TextReader& operator>>(TextReader& txt, PSpinVector<T,N>& d)
 
 //! Text output
 template<class T, int N>  
-inline
+PETE_DEVICE inline
 TextWriter& operator<<(TextWriter& txt, const PSpinVector<T,N>& d)
 {
   for(int i=0; i < N; ++i)
@@ -166,10 +167,10 @@ TextWriter& operator<<(TextWriter& txt, const PSpinVector<T,N>& d)
   return txt;
 }
 
-#ifndef QDP_NO_LIBXML2
+
 //! XML output
 template<class T, int N>
-inline
+PETE_DEVICE inline
 XMLWriter& operator<<(XMLWriter& xml, const PSpinVector<T,N>& d)
 {
   xml.openTag("SpinVector");
@@ -200,7 +201,7 @@ XMLWriter& operator<<(XMLWriter& xml, const PSpinVector<T,N>& d)
 // Primitive Vectors
 
 template<class T1, int N>
-inline typename UnaryReturn<PSpinVector<T1,N>, OpUnaryPlus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T1,N>, OpUnaryPlus>::Type_t
 operator+(const PSpinVector<T1,N>& l)
 {
   typename UnaryReturn<PSpinVector<T1,N>, OpUnaryPlus>::Type_t  d;
@@ -212,7 +213,7 @@ operator+(const PSpinVector<T1,N>& l)
 
 
 template<class T1, int N>
-inline typename UnaryReturn<PSpinVector<T1,N>, OpUnaryMinus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T1,N>, OpUnaryMinus>::Type_t
 operator-(const PSpinVector<T1,N>& l)
 {
   typename UnaryReturn<PSpinVector<T1,N>, OpUnaryMinus>::Type_t  d;
@@ -224,7 +225,7 @@ operator-(const PSpinVector<T1,N>& l)
 
 
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, OpAdd>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, OpAdd>::Type_t
 operator+(const PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r)
 {
   typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, OpAdd>::Type_t  d;
@@ -236,7 +237,7 @@ operator+(const PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r)
 
 
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, OpSubtract>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, OpSubtract>::Type_t
 operator-(const PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r)
 {
   typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, OpSubtract>::Type_t  d;
@@ -249,7 +250,7 @@ operator-(const PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r)
 
 // PSpinVector * PScalar
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpMultiply>::Type_t
 operator*(const PSpinVector<T1,N>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpMultiply>::Type_t  d;
@@ -261,7 +262,7 @@ operator*(const PSpinVector<T1,N>& l, const PScalar<T2>& r)
 
 // Optimized  PSpinVector * adj(PScalar)
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpMultiplyAdj>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpMultiplyAdj>::Type_t
 multiplyAdj(const PSpinVector<T1,N>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpMultiplyAdj>::Type_t  d;
@@ -274,7 +275,7 @@ multiplyAdj(const PSpinVector<T1,N>& l, const PScalar<T2>& r)
 
 // PScalar * PSpinVector
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t
 operator*(const PScalar<T1>& l, const PSpinVector<T2,N>& r)
 {
   typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpMultiply>::Type_t  d;
@@ -286,7 +287,7 @@ operator*(const PScalar<T1>& l, const PSpinVector<T2,N>& r)
 
 // Optimized  adj(PScalar) * PSpinVector
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t
 adjMultiply(const PScalar<T1>& l, const PSpinVector<T2,N>& r)
 {
   typename BinaryReturn<PScalar<T1>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t  d;
@@ -299,7 +300,7 @@ adjMultiply(const PScalar<T1>& l, const PSpinVector<T2,N>& r)
 
 // PMatrix * PSpinVector
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, OpMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, OpMultiply>::Type_t
 operator*(const PSpinMatrix<T1,N>& l, const PSpinVector<T2,N>& r)
 {
   typename BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, OpMultiply>::Type_t  d;
@@ -317,7 +318,7 @@ operator*(const PSpinMatrix<T1,N>& l, const PSpinVector<T2,N>& r)
 
 // PMatrix * PSpinVector
 template<class T1, class T2,  template<class,int> class C, int N>
-inline typename BinaryReturn<PMatrix<T1,N,C>, PSpinVector<T2,N>, OpMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C>, PSpinVector<T2,N>, OpMultiply>::Type_t
 operator*(const PSpinMatrix<T1,N>& l, const PSpinVector<T2,N>& r)
 {
   typename BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, OpMultiply>::Type_t  d;
@@ -334,7 +335,7 @@ operator*(const PSpinMatrix<T1,N>& l, const PSpinVector<T2,N>& r)
 
 // Optimized  adj(PMatrix)*PSpinVector
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t
 adjMultiply(const PSpinMatrix<T1,N>& l, const PSpinVector<T2,N>& r)
 {
   typename BinaryReturn<PSpinMatrix<T1,N>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t  d;
@@ -351,7 +352,7 @@ adjMultiply(const PSpinMatrix<T1,N>& l, const PSpinVector<T2,N>& r)
 
 // Optimized  adj(PMatrix)*PVector
 template<class T1, class T2, int N, template<class,int> class C1>
-inline typename BinaryReturn<PMatrix<T1,N,C1>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PMatrix<T1,N,C1>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t
 adjMultiply(const PMatrix<T1,N,C1>& l, const PSpinVector<T2,N>& r)
 {
   typename BinaryReturn<PMatrix<T1,N,C1>, PSpinVector<T2,N>, OpAdjMultiply>::Type_t  d;
@@ -367,7 +368,7 @@ adjMultiply(const PMatrix<T1,N,C1>& l, const PSpinVector<T2,N>& r)
 }
 
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpDivide>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpDivide>::Type_t
 operator/(const PSpinVector<T1,N>& l, const PScalar<T2>& r)
 {
   typename BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpDivide>::Type_t  d;
@@ -381,7 +382,7 @@ operator/(const PSpinVector<T1,N>& l, const PScalar<T2>& r)
 
 //! PSpinVector = Re(PSpinVector)
 template<class T, int N>
-inline typename UnaryReturn<PSpinVector<T,N>, FnReal>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,N>, FnReal>::Type_t
 real(const PSpinVector<T,N>& s1)
 {
   typename UnaryReturn<PSpinVector<T,N>, FnReal>::Type_t  d;
@@ -395,7 +396,7 @@ real(const PSpinVector<T,N>& s1)
 
 //! PSpinVector = Im(PSpinVector)
 template<class T, int N>
-inline typename UnaryReturn<PSpinVector<T,N>, FnImag>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,N>, FnImag>::Type_t
 imag(const PSpinVector<T,N>& s1)
 {
   typename UnaryReturn<PSpinVector<T,N>, FnImag>::Type_t  d;
@@ -409,7 +410,7 @@ imag(const PSpinVector<T,N>& s1)
 
 //! PSpinVector<T> = (PSpinVector<T> , PSpinVector<T>)
 template<class T1, class T2, int N>
-inline typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnCmplx>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnCmplx>::Type_t
 cmplx(const PSpinVector<T1,N>& s1, const PSpinVector<T2,N>& s2)
 {
   typename BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnCmplx>::Type_t  d;
@@ -425,7 +426,7 @@ cmplx(const PSpinVector<T1,N>& s1, const PSpinVector<T2,N>& s2)
 // Functions
 // Conjugate
 template<class T1, int N>
-inline typename UnaryReturn<PSpinVector<T1,N>, FnConjugate>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T1,N>, FnConjugate>::Type_t
 conj(const PSpinVector<T1,N>& l)
 {
   typename UnaryReturn<PSpinVector<T1,N>, FnConjugate>::Type_t  d;
@@ -438,7 +439,7 @@ conj(const PSpinVector<T1,N>& l)
 
 //! PSpinVector = i * PSpinVector
 template<class T, int N>
-inline typename UnaryReturn<PSpinVector<T,N>, FnTimesI>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,N>, FnTimesI>::Type_t
 timesI(const PSpinVector<T,N>& s1)
 {
   typename UnaryReturn<PSpinVector<T,N>, FnTimesI>::Type_t  d;
@@ -451,7 +452,7 @@ timesI(const PSpinVector<T,N>& s1)
 
 //! PSpinVector = -i * PSpinVector
 template<class T, int N>
-inline typename UnaryReturn<PSpinVector<T,N>, FnTimesMinusI>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,N>, FnTimesMinusI>::Type_t
 timesMinusI(const PSpinVector<T,N>& s1)
 {
   typename UnaryReturn<PSpinVector<T,N>, FnTimesMinusI>::Type_t  d;
@@ -466,7 +467,7 @@ timesMinusI(const PSpinVector<T,N>& s1)
 //! dest [some type] = source [some type]
 /*! Portable (internal) way of returning a single site */
 template<class T, int N>
-inline typename UnaryReturn<PSpinVector<T,N>, FnGetSite>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,N>, FnGetSite>::Type_t
 getSite(const PSpinVector<T,N>& s1, int innersite)
 { 
   typename UnaryReturn<PSpinVector<T,N>, FnGetSite>::Type_t  d;
@@ -480,7 +481,7 @@ getSite(const PSpinVector<T,N>& s1, int innersite)
 //! Extract color vector components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T, int N>
-inline typename UnaryReturn<PSpinVector<T,N>, FnPeekColorVector>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,N>, FnPeekColorVector>::Type_t
 peekColor(const PSpinVector<T,N>& l, int row)
 {
   typename UnaryReturn<PSpinVector<T,N>, FnPeekColorVector>::Type_t  d;
@@ -493,7 +494,7 @@ peekColor(const PSpinVector<T,N>& l, int row)
 //! Extract color matrix components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T, int N>
-inline typename UnaryReturn<PSpinVector<T,N>, FnPeekColorMatrix>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,N>, FnPeekColorMatrix>::Type_t
 peekColor(const PSpinVector<T,N>& l, int row, int col)
 {
   typename UnaryReturn<PSpinVector<T,N>, FnPeekColorMatrix>::Type_t  d;
@@ -507,7 +508,7 @@ peekColor(const PSpinVector<T,N>& l, int row, int col)
 //! Extract spin matrix components 
 /*! Generically, this is an identity operation. Defined differently under spin */
 template<class T, int N>
-inline typename UnaryReturn<PSpinVector<T,N>, FnPeekSpinMatrix>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,N>, FnPeekSpinMatrix>::Type_t
 peekSpin(const PSpinVector<T,N>& l, int row, int col)
 {
   typename UnaryReturn<PSpinVector<T,N>, FnPeekSpinMatrix>::Type_t  d;
@@ -520,7 +521,7 @@ peekSpin(const PSpinVector<T,N>& l, int row, int col)
 //! Insert color vector components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T1, class T2, int N>
-inline typename UnaryReturn<PSpinVector<T1,N>, FnPokeColorVector>::Type_t&
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T1,N>, FnPokeColorVector>::Type_t&
 pokeColor(PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r, int row)
 {
   typedef typename UnaryReturn<PSpinVector<T1,N>, FnPokeColorVector>::Type_t  Return_t;
@@ -533,7 +534,7 @@ pokeColor(PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r, int row)
 //! Insert color matrix components 
 /*! Generically, this is an identity operation. Defined differently under color */
 template<class T1, class T2, int N>
-inline typename UnaryReturn<PSpinVector<T1,N>, FnPokeColorVector>::Type_t&
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T1,N>, FnPokeColorVector>::Type_t&
 pokeColor(PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r, int row, int col)
 {
   typedef typename UnaryReturn<PSpinVector<T1,N>, FnPokeColorVector>::Type_t  Return_t;
@@ -546,7 +547,7 @@ pokeColor(PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r, int row, int col)
 //! Insert spin vector components 
 /*! Generically, this is an identity operation. Defined differently under spin */
 template<class T1, class T2, int N>
-inline typename UnaryReturn<PSpinVector<T1,N>, FnPokeSpinVector>::Type_t&
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T1,N>, FnPokeSpinVector>::Type_t&
 pokeSpin(PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r, int row)
 {
   typedef typename UnaryReturn<PSpinVector<T1,N>, FnPokeSpinVector>::Type_t  Return_t;
@@ -559,7 +560,7 @@ pokeSpin(PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r, int row)
 //! Insert spin matrix components 
 /*! Generically, this is an identity operation. Defined differently under spin */
 template<class T1, class T2, int N>
-inline typename UnaryReturn<PSpinVector<T1,N>, FnPokeSpinVector>::Type_t&
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T1,N>, FnPokeSpinVector>::Type_t&
 pokeSpin(PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r, int row, int col)
 {
   typedef typename UnaryReturn<PSpinVector<T1,N>, FnPokeSpinVector>::Type_t  Return_t;
@@ -572,7 +573,7 @@ pokeSpin(PSpinVector<T1,N>& l, const PSpinVector<T2,N>& r, int row, int col)
 
 //! dest = 0
 template<class T, int N> 
-inline void 
+PETE_DEVICE inline void 
 zero_rep(PSpinVector<T,N>& dest) 
 {
   for(int i=0; i < N; ++i)
@@ -581,7 +582,7 @@ zero_rep(PSpinVector<T,N>& dest)
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1, int N> 
-inline void 
+PETE_DEVICE inline void 
 copymask(PSpinVector<T,N>& d, const PScalar<T1>& mask, const PSpinVector<T,N>& s1) 
 {
   for(int i=0; i < N; ++i)
@@ -591,7 +592,7 @@ copymask(PSpinVector<T,N>& d, const PScalar<T1>& mask, const PSpinVector<T,N>& s
 
 //! dest [some type] = source [some type]
 template<class T, class T1, int N>
-inline void 
+PETE_DEVICE inline void 
 copy_site(PSpinVector<T,N>& d, int isite, const PSpinVector<T1,N>& s1)
 {
   for(int i=0; i < N; ++i)
@@ -600,7 +601,7 @@ copy_site(PSpinVector<T,N>& d, int isite, const PSpinVector<T1,N>& s1)
 
 //! dest [some type] = source [some type]
 template<class T, class T1, int N>
-inline void 
+PETE_DEVICE inline void 
 copy_site(PSpinVector<T,N>& d, int isite, const PScalar<T1>& s1)
 {
   for(int i=0; i < N; ++i)
@@ -610,7 +611,7 @@ copy_site(PSpinVector<T,N>& d, int isite, const PScalar<T1>& s1)
 
 //! gather several inner sites together
 template<class T, class T1, int N>
-inline void 
+PETE_DEVICE inline void 
 gather_sites(PSpinVector<T,N>& d, 
 	     const PSpinVector<T1,N>& s0, int i0, 
 	     const PSpinVector<T1,N>& s1, int i1,
@@ -635,7 +636,7 @@ struct UnaryReturn<PSpinVector<T,N>, FnSum > {
 };
 
 template<class T, int N>
-inline typename UnaryReturn<PSpinVector<T,N>, FnSum>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,N>, FnSum>::Type_t
 sum(const PSpinVector<T,N>& s1)
 {
   typename UnaryReturn<PSpinVector<T,N>, FnSum>::Type_t  d;
@@ -651,7 +652,7 @@ sum(const PSpinVector<T,N>& s1)
 
 
 template<class T, int N>
-inline typename UnaryReturn<PSpinVector<T,N>, FnLocalNorm2>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,N>, FnLocalNorm2>::Type_t
 localNorm2(const PSpinVector<T,N>& s1)
 {
   typename UnaryReturn<PSpinVector<T,N>, FnLocalNorm2>::Type_t  d;
@@ -677,7 +678,7 @@ struct TrinaryReturn<PScalar<T1>, PSpinVector<T2,N>, PSpinVector<T3,N>, FnWhere>
 };
 
 template<class T1, class T2, class T3, int N>
-inline typename TrinaryReturn<PScalar<T1>, PSpinVector<T2,N>, PSpinVector<T3,N>, FnWhere>::Type_t
+PETE_DEVICE inline typename TrinaryReturn<PScalar<T1>, PSpinVector<T2,N>, PSpinVector<T3,N>, FnWhere>::Type_t
 where(const PScalar<T1>& a, const PSpinVector<T2,N>& b, const PSpinVector<T3,N>& c)
 {
   typename TrinaryReturn<PScalar<T1>, PSpinVector<T2,N>, PSpinVector<T3,N>, FnWhere>::Type_t  d;
@@ -860,7 +861,7 @@ struct BinaryReturn<PSpinVector<T1,N>, PSpinVector<T2,N>, FnLocalInnerProductRea
 
 
 template<class T1, class T2, int N>
-inline PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>
+PETE_DEVICE inline PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>
 localInnerProduct(const PSpinVector<T1,N>& s1, const PSpinVector<T2,N>& s2)
 {
   PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  d;
@@ -873,7 +874,7 @@ localInnerProduct(const PSpinVector<T1,N>& s1, const PSpinVector<T2,N>& s2)
 }
 
 template<class T1, class T2, int N>
-inline PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>
+PETE_DEVICE inline PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>
 localInnerProductReal(const PSpinVector<T1,N>& s1, const PSpinVector<T2,N>& s2)
 {
   PScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  d;
@@ -1007,7 +1008,7 @@ struct UnaryReturn<PSpinVector<T,N>, FnSpinReconstructDir3Minus > {
 
 //! dest  = random  
 template<class T, int N,  class T1, class T2>
-inline void
+PETE_DEVICE inline void
 fill_random(PSpinVector<T,N>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 {
   // Loop over rows the slowest
@@ -1018,7 +1019,7 @@ fill_random(PSpinVector<T,N>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 
 //! dest  = gaussian
 template<class T, int N>
-inline void
+PETE_DEVICE inline void
 fill_gaussian(PSpinVector<T,N>& d, PSpinVector<T,N>& r1, PSpinVector<T,N>& r2)
 {
   for(int i=0; i < N; ++i)
@@ -1040,7 +1041,7 @@ struct UnaryReturn<PSpinVector<T,N>, FnPeekSpinVector > {
 };
 
 template<class T, int N>
-inline typename UnaryReturn<PSpinVector<T,N>, FnPeekSpinVector>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,N>, FnPeekSpinVector>::Type_t
 peekSpin(const PSpinVector<T,N>& l, int row)
 {
   typename UnaryReturn<PSpinVector<T,N>, FnPeekSpinVector>::Type_t  d;
@@ -1052,7 +1053,7 @@ peekSpin(const PSpinVector<T,N>& l, int row)
 
 //! Insert spin vector components
 template<class T1, class T2, int N>
-inline PSpinVector<T1,N>&
+PETE_DEVICE inline PSpinVector<T1,N>&
 pokeSpin(PSpinVector<T1,N>& l, const PScalar<T2>& r, int row)
 {
   // Note, do not need to propagate down since the function is eaten at this level
@@ -1065,7 +1066,7 @@ pokeSpin(PSpinVector<T1,N>& l, const PScalar<T2>& r, int row)
 // SpinVector<4> = Gamma<4,m> * SpinVector<4>
 // There are 16 cases here for Nd=4
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,0>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,0>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,0>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,0>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1079,7 +1080,7 @@ operator*(const GammaConst<4,0>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,1>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,1>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,1>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,1>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1093,7 +1094,7 @@ operator*(const GammaConst<4,1>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,2>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,2>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,2>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,2>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1107,7 +1108,7 @@ operator*(const GammaConst<4,2>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,3>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,3>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,3>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,3>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1121,7 +1122,7 @@ operator*(const GammaConst<4,3>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,4>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,4>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,4>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,4>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1135,7 +1136,7 @@ operator*(const GammaConst<4,4>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,5>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,5>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,5>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,5>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1149,7 +1150,7 @@ operator*(const GammaConst<4,5>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,6>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,6>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,6>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,6>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1163,7 +1164,7 @@ operator*(const GammaConst<4,6>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,7>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,7>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,7>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,7>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1177,7 +1178,7 @@ operator*(const GammaConst<4,7>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,8>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,8>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,8>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,8>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1191,7 +1192,7 @@ operator*(const GammaConst<4,8>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,9>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,9>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,9>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,9>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1205,7 +1206,7 @@ operator*(const GammaConst<4,9>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,10>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,10>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,10>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,10>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1219,7 +1220,7 @@ operator*(const GammaConst<4,10>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,11>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,11>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,11>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,11>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1233,7 +1234,7 @@ operator*(const GammaConst<4,11>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,12>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,12>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,12>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,12>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1247,7 +1248,7 @@ operator*(const GammaConst<4,12>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,13>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,13>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,13>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,13>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1261,7 +1262,7 @@ operator*(const GammaConst<4,13>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,14>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,14>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,14>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,14>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1275,7 +1276,7 @@ operator*(const GammaConst<4,14>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConst<4,15>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConst<4,15>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
 operator*(const GammaConst<4,15>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConst<4,15>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
@@ -1292,7 +1293,7 @@ operator*(const GammaConst<4,15>&, const PSpinVector<T2,4>& r)
 // SpinVector<2> = SpinProject(SpinVector<4>)
 // There are 4 cases here for Nd=4 for each forward/backward direction
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir0Minus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir0Minus>::Type_t
 spinProjectDir0Minus(const PSpinVector<T,4>& s1)
 {
   typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir0Minus>::Type_t  d;
@@ -1319,7 +1320,7 @@ spinProjectDir0Minus(const PSpinVector<T,4>& s1)
 }
 
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir1Minus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir1Minus>::Type_t
 spinProjectDir1Minus(const PSpinVector<T,4>& s1)
 {
   typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir1Minus>::Type_t  d;
@@ -1346,7 +1347,7 @@ spinProjectDir1Minus(const PSpinVector<T,4>& s1)
 }
     
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir2Minus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir2Minus>::Type_t
 spinProjectDir2Minus(const PSpinVector<T,4>& s1)
 {
   typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir2Minus>::Type_t  d;
@@ -1373,7 +1374,7 @@ spinProjectDir2Minus(const PSpinVector<T,4>& s1)
 }
     
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir3Minus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir3Minus>::Type_t
 spinProjectDir3Minus(const PSpinVector<T,4>& s1)
 {
   typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir3Minus>::Type_t  d;
@@ -1400,7 +1401,7 @@ spinProjectDir3Minus(const PSpinVector<T,4>& s1)
 }
 
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir0Plus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir0Plus>::Type_t
 spinProjectDir0Plus(const PSpinVector<T,4>& s1)
 {
   typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir0Plus>::Type_t  d;
@@ -1427,7 +1428,7 @@ spinProjectDir0Plus(const PSpinVector<T,4>& s1)
 }
 
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir1Plus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir1Plus>::Type_t
 spinProjectDir1Plus(const PSpinVector<T,4>& s1)
 {
   typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir1Plus>::Type_t  d;
@@ -1454,7 +1455,7 @@ spinProjectDir1Plus(const PSpinVector<T,4>& s1)
 }
 
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir2Plus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir2Plus>::Type_t
 spinProjectDir2Plus(const PSpinVector<T,4>& s1)
 {
   typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir2Plus>::Type_t  d;
@@ -1481,7 +1482,7 @@ spinProjectDir2Plus(const PSpinVector<T,4>& s1)
 }
 
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir3Plus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir3Plus>::Type_t
 spinProjectDir3Plus(const PSpinVector<T,4>& s1)
 {
   typename UnaryReturn<PSpinVector<T,4>, FnSpinProjectDir3Plus>::Type_t  d;
@@ -1511,7 +1512,7 @@ spinProjectDir3Plus(const PSpinVector<T,4>& s1)
 // SpinVector<4> = SpinReconstruct(SpinVector<2>)
 // There are 4 cases here for Nd=4 for each forward/backward direction
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir0Minus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir0Minus>::Type_t
 spinReconstructDir0Minus(const PSpinVector<T,2>& s1)
 {
   typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir0Minus>::Type_t  d;
@@ -1525,7 +1526,7 @@ spinReconstructDir0Minus(const PSpinVector<T,2>& s1)
 }
 
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir1Minus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir1Minus>::Type_t
 spinReconstructDir1Minus(const PSpinVector<T,2>& s1)
 {
   typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir1Minus>::Type_t  d;
@@ -1540,7 +1541,7 @@ spinReconstructDir1Minus(const PSpinVector<T,2>& s1)
 
 
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir2Minus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir2Minus>::Type_t
 spinReconstructDir2Minus(const PSpinVector<T,2>& s1)
 {
   typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir2Minus>::Type_t  d;
@@ -1554,7 +1555,7 @@ spinReconstructDir2Minus(const PSpinVector<T,2>& s1)
 }
 
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir3Minus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir3Minus>::Type_t
 spinReconstructDir3Minus(const PSpinVector<T,2>& s1)
 {
   typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir3Minus>::Type_t  d;
@@ -1568,7 +1569,7 @@ spinReconstructDir3Minus(const PSpinVector<T,2>& s1)
 }
 
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir0Plus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir0Plus>::Type_t
 spinReconstructDir0Plus(const PSpinVector<T,2>& s1)
 {
   typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir0Plus>::Type_t  d;
@@ -1582,7 +1583,7 @@ spinReconstructDir0Plus(const PSpinVector<T,2>& s1)
 }
 
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir1Plus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir1Plus>::Type_t
 spinReconstructDir1Plus(const PSpinVector<T,2>& s1)
 {
   typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir1Plus>::Type_t  d;
@@ -1596,7 +1597,7 @@ spinReconstructDir1Plus(const PSpinVector<T,2>& s1)
 }
 
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir2Plus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir2Plus>::Type_t
 spinReconstructDir2Plus(const PSpinVector<T,2>& s1)
 {
   typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir2Plus>::Type_t  d;
@@ -1610,7 +1611,7 @@ spinReconstructDir2Plus(const PSpinVector<T,2>& s1)
 }
 
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir3Plus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir3Plus>::Type_t
 spinReconstructDir3Plus(const PSpinVector<T,2>& s1)
 {
   typename UnaryReturn<PSpinVector<T,2>, FnSpinReconstructDir3Plus>::Type_t  d;
@@ -1628,7 +1629,7 @@ spinReconstructDir3Plus(const PSpinVector<T,2>& s1)
 // SpinVector<4> = GammaDP<4,m> * SpinVector<4>
 // There are 16 cases here for Nd=4
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,0>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,0>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,0>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,0>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1642,7 +1643,7 @@ operator*(const GammaConstDP<4,0>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,1>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,1>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,1>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,1>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1656,7 +1657,7 @@ operator*(const GammaConstDP<4,1>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,2>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,2>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,2>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,2>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1670,7 +1671,7 @@ operator*(const GammaConstDP<4,2>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,3>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,3>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,3>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,3>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1684,7 +1685,7 @@ operator*(const GammaConstDP<4,3>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,4>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,4>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,4>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,4>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1698,7 +1699,7 @@ operator*(const GammaConstDP<4,4>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,5>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,5>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,5>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,5>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1712,7 +1713,7 @@ operator*(const GammaConstDP<4,5>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,6>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,6>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,6>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,6>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1726,7 +1727,7 @@ operator*(const GammaConstDP<4,6>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,7>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,7>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,7>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,7>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1740,7 +1741,7 @@ operator*(const GammaConstDP<4,7>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,8>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,8>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,8>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,8>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1754,7 +1755,7 @@ operator*(const GammaConstDP<4,8>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,9>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,9>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,9>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,9>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1768,7 +1769,7 @@ operator*(const GammaConstDP<4,9>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,10>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,10>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,10>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,10>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1782,7 +1783,7 @@ operator*(const GammaConstDP<4,10>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,11>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,11>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,11>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,11>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1796,7 +1797,7 @@ operator*(const GammaConstDP<4,11>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,12>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,12>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,12>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,12>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1810,7 +1811,7 @@ operator*(const GammaConstDP<4,12>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,13>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,13>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,13>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,13>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1824,7 +1825,7 @@ operator*(const GammaConstDP<4,13>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,14>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,14>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,14>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,14>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1838,7 +1839,7 @@ operator*(const GammaConstDP<4,14>&, const PSpinVector<T2,4>& r)
 }
 
 template<class T2>
-inline typename BinaryReturn<GammaConstDP<4,15>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
+PETE_DEVICE inline typename BinaryReturn<GammaConstDP<4,15>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t
 operator*(const GammaConstDP<4,15>&, const PSpinVector<T2,4>& r)
 {
   typename BinaryReturn<GammaConstDP<4,15>, PSpinVector<T2,4>, OpGammaConstDPMultiply>::Type_t  d;
@@ -1855,7 +1856,7 @@ operator*(const GammaConstDP<4,15>&, const PSpinVector<T2,4>& r)
 //-----------------------------------------------------------------------------
 //! PSpinVector<T,4> = P_+ * PSpinVector<T,4>
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,4>, FnChiralProjectPlus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,4>, FnChiralProjectPlus>::Type_t
 chiralProjectPlus(const PSpinVector<T,4>& s1)
 {
   typename UnaryReturn<PSpinVector<T,4>, FnChiralProjectPlus>::Type_t  d;
@@ -1870,7 +1871,7 @@ chiralProjectPlus(const PSpinVector<T,4>& s1)
 
 //! PSpinVector<T,4> = P_- * PSpinVector<T,4>
 template<class T>
-inline typename UnaryReturn<PSpinVector<T,4>, FnChiralProjectMinus>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSpinVector<T,4>, FnChiralProjectMinus>::Type_t
 chiralProjectMinus(const PSpinVector<T,4>& s1)
 {
   typename UnaryReturn<PSpinVector<T,4>, FnChiralProjectMinus>::Type_t  d;

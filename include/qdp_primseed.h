@@ -33,11 +33,12 @@ namespace QDP {
 template <class T> class PSeed
 {
 public:
-  PSeed() {}
-  ~PSeed() {}
+  PETE_DEVICE PSeed() {}
+  PETE_DEVICE ~PSeed() {}
 
   //! construct dest = const
   template<class T1>
+  PETE_DEVICE
   PSeed(const PScalar<T1>& rhs) 
     {
       assign(rhs);
@@ -47,7 +48,7 @@ public:
   //! PSeed = PScalar
   /*! Set equal to input scalar (an integer) */
   template<class T1>
-  inline
+  PETE_DEVICE inline
   PSeed& assign(const PScalar<T1>& rhs) 
     {
       typedef typename InternalScalar<T1>::Type_t  S;
@@ -64,7 +65,7 @@ public:
   //! PSeed = PScalar
   /*! Set equal to input scalar (an integer) */
   template<class T1>
-  inline
+  PETE_DEVICE inline
   PSeed& operator=(const PScalar<T1>& rhs) 
     {
       return assign(rhs);
@@ -73,7 +74,7 @@ public:
   //! PSeed = PSeed
   /*! Set equal to another PSeed */
   template<class T1>
-  inline
+  PETE_DEVICE inline
   PSeed& operator=(const PSeed<T1>& rhs) 
     {
       for(int i=0; i < 4; ++i)
@@ -85,10 +86,10 @@ public:
   //! Deep copy constructor
 #if defined(QDP_USE_ARRAY_INITIALIZER)
   /*! This is an array initializer form - may not be strictly legal */
-  PSeed(const PSeed& a) : F(a.F) {}
+  PETE_DEVICE PSeed(const PSeed& a) : F(a.F) {}
 #else
   /*! This is a copy form - legal but not necessarily efficient */
-  PSeed(const PSeed& a)
+  PETE_DEVICE PSeed(const PSeed& a)
     {
       for(int i=0; i < 4; ++i)
 	F[i] = a.F[i];
@@ -96,17 +97,18 @@ public:
 #endif
 
 public:
-  T& elem(int i) {return F[i];}
-  const T& elem(int i) const {return F[i];}
+  PETE_DEVICE T& elem(int i) {return F[i];}
+  PETE_DEVICE const T& elem(int i) const {return F[i];}
 
 private:
   T F[4];
 };
 
 
+#ifndef __CUDACC__
 //! Text input
 template<class T>
-inline
+PETE_DEVICE inline
 istream& operator>>(istream& s, PSeed<T>& d)
 {
   for(int i=0; i < 4; ++i)
@@ -117,7 +119,7 @@ istream& operator>>(istream& s, PSeed<T>& d)
 
 //! Text input
 template<class T>
-inline
+PETE_DEVICE inline
 StandardInputStream& operator>>(StandardInputStream& s, PSeed<T>& d)
 {
   for(int i=0; i < 4; ++i)
@@ -128,7 +130,7 @@ StandardInputStream& operator>>(StandardInputStream& s, PSeed<T>& d)
 
 //! Text output
 template<class T>
-inline
+PETE_DEVICE inline
 ostream& operator<<(ostream& s, const PSeed<T>& d)
 {
   s << d.elem(0) << " " << d.elem(1) << " " << d.elem(2) << " " << d.elem(3) << "\n";
@@ -137,7 +139,7 @@ ostream& operator<<(ostream& s, const PSeed<T>& d)
 
 //! Text output
 template<class T>
-inline
+PETE_DEVICE inline
 StandardOutputStream& operator<<(StandardOutputStream& s, const PSeed<T>& d)
 {
   s << d.elem(0) << " " << d.elem(1) << " " << d.elem(2) << " " << d.elem(3) << "\n";
@@ -146,7 +148,7 @@ StandardOutputStream& operator<<(StandardOutputStream& s, const PSeed<T>& d)
 
 //! Text input
 template<class T>
-inline
+PETE_DEVICE inline
 TextReader& operator>>(TextReader& txt, PSeed<T>& d)
 {
   for(int i=0; i < 4; ++i)
@@ -157,7 +159,7 @@ TextReader& operator>>(TextReader& txt, PSeed<T>& d)
 
 //! Text output
 template<class T>
-inline
+PETE_DEVICE inline
 TextWriter& operator<<(TextWriter& txt, const PSeed<T>& d)
 {
   for(int i=0; i < 4; ++i)
@@ -166,10 +168,9 @@ TextWriter& operator<<(TextWriter& txt, const PSeed<T>& d)
   return txt;
 }
 
-#ifndef QDP_NO_LIBXML2
 //! XML output
 template<class T>
-inline
+PETE_DEVICE inline
 XMLWriter& operator<<(XMLWriter& xml, const PSeed<T>& d)
 {
   xml.openTag("Seed");
@@ -189,7 +190,7 @@ XMLWriter& operator<<(XMLWriter& xml, const PSeed<T>& d)
 
 //! XML input
 template<class T>
-inline
+PETE_DEVICE inline
 void read(XMLReader& xml, const string& path, PSeed<T>& d)
 {
   typedef typename PrimitiveScalar<T>::Type_t  S;
@@ -202,8 +203,9 @@ void read(XMLReader& xml, const string& path, PSeed<T>& d)
     d.elem(i) = S(ff[i]);
   }
 }
-
 #endif
+
+
 /*! @} */   // end of group primseed
 
 //-----------------------------------------------------------------------------
@@ -274,7 +276,7 @@ struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpEQ> {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpEQ>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpEQ>::Type_t
 operator==(const PSeed<T1>& l, const PSeed<T2>& r)
 {
   return 
@@ -292,7 +294,7 @@ struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpNE> {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpNE>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpNE>::Type_t
 operator!=(const PSeed<T1>& l, const PSeed<T2>& r)
 {
   return 
@@ -335,7 +337,7 @@ struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpMultiply> {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpMultiply>::Type_t
+PETE_DEVICE PETE_DEVICE inline typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpMultiply>::Type_t
 operator*(const PSeed<T1>& s1, const PSeed<T2>& s2)
 {
   typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpMultiply>::Type_t  d;
@@ -391,7 +393,7 @@ struct BinaryReturn<PSeed<T1>, PSeed<T2>, OpBitwiseOr> {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpBitwiseOr>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpBitwiseOr>::Type_t
 operator|(const PSeed<T1>& l, const PSeed<T2>& r)
 {
   typename BinaryReturn<PSeed<T1>, PSeed<T2>, OpBitwiseOr>::Type_t  d;
@@ -413,7 +415,7 @@ struct BinaryReturn<PSeed<T1>, PScalar<T2>, OpBitwiseOr> {
 };
  
 template<class T1, class T2>
-inline typename BinaryReturn<PSeed<T1>, PScalar<T2>, OpBitwiseOr>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSeed<T1>, PScalar<T2>, OpBitwiseOr>::Type_t
 operator|(const PSeed<T1>& l, const PScalar<T2>& r)
 {
   // Lazy implementation
@@ -436,7 +438,7 @@ struct BinaryReturn<PSeed<T1>, PScalar<T2>, OpLeftShift> {
 };
 
 template<class T1, class T2>
-inline typename BinaryReturn<PSeed<T1>, PScalar<T2>, OpLeftShift>::Type_t
+PETE_DEVICE inline typename BinaryReturn<PSeed<T1>, PScalar<T2>, OpLeftShift>::Type_t
 operator<<(const PSeed<T1>& s1, const PScalar<T2>& s2)
 {
   typename BinaryReturn<PSeed<T1>, PScalar<T2>, OpLeftShift>::Type_t  d;
@@ -471,7 +473,7 @@ struct UnaryReturn<PSeed<T>, FnSeedToFloat> {
 };
 
 template<class T>
-inline typename UnaryReturn<PSeed<T>, FnSeedToFloat>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSeed<T>, FnSeedToFloat>::Type_t
 seedToFloat(const PSeed<T>& s1)
 {
   typename UnaryReturn<PSeed<T>, FnSeedToFloat>::Type_t  d;
@@ -512,7 +514,7 @@ struct UnaryReturn<PSeed<T>, FnGetSite> {
 };
 
 template<class T>
-inline typename UnaryReturn<PSeed<T>, FnGetSite>::Type_t
+PETE_DEVICE inline typename UnaryReturn<PSeed<T>, FnGetSite>::Type_t
 getSite(const PSeed<T>& s1, int innersite)
 { 
   typename UnaryReturn<PSeed<T>, FnGetSite>::Type_t  d;
@@ -527,7 +529,7 @@ getSite(const PSeed<T>& s1, int innersite)
 // Functions
 //! dest = 0
 template<class T> 
-inline void 
+PETE_DEVICE inline void 
 zero_rep(PSeed<T>& dest) 
 {
   for(int i=0; i < 4; ++i)
@@ -537,7 +539,7 @@ zero_rep(PSeed<T>& dest)
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 
-inline void 
+PETE_DEVICE inline void 
 copymask(PSeed<T>& d, const PScalar<T1>& mask, const PSeed<T>& s1) 
 {
   for(int i=0; i < 4; ++i)

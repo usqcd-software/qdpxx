@@ -70,7 +70,7 @@ struct FnNorm2Multi
 
 struct FnInnerProductMulti
 {
-  PETE_EMPTY_CONSTRUCTORS(FnInnerProduct)
+  PETE_EMPTY_CONSTRUCTORS(FnInnerProductMulti)
 };
 
 struct FnInnerProductRealMulti
@@ -104,25 +104,29 @@ struct FnPeekColorMatrix
 {
   PETE_EMPTY_CONSTRUCTORS(FnPeekColorMatrix)
 
-  FnPeekColorMatrix(int _row, int _col): row(_row), col(_col) {}
+  PETE_DEVICE FnPeekColorMatrix(int _row, int _col): row(_row), col(_col) {}
   
   template<class T>
-  inline typename UnaryReturn<T, FnPeekColorMatrix>::Type_t
+  PETE_DEVICE inline typename UnaryReturn<T, FnPeekColorMatrix>::Type_t
   operator()(const T &a) const
   {
     return (peekColor(a,row,col));
   }
+
+  int getRow() const { return row; }
+  int getCol() const { return col; }
 
 private:
   int row, col;
 };
 
 
+#ifndef __CUDACC__
 //! Extract color matrix components
 /*! @ingroup group1
   @relates QDPType */
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnPeekColorMatrix,
+PETE_DEVICE inline typename MakeReturn<UnaryNode<FnPeekColorMatrix,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
   typename UnaryReturn<C1,FnPeekColorMatrix >::Type_t >::Expression_t
 peekColor(const QDPType<T1,C1> & l, int row, int col)
@@ -136,7 +140,7 @@ peekColor(const QDPType<T1,C1> & l, int row, int col)
 
 
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnPeekColorMatrix,
+PETE_DEVICE inline typename MakeReturn<UnaryNode<FnPeekColorMatrix,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
 peekColor(const QDPExpr<T1,C1> & l, int row, int col)
 {
@@ -146,32 +150,35 @@ peekColor(const QDPExpr<T1,C1> & l, int row, int col)
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekColorMatrix(row,col),
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
-
+#endif
 
 //! Structure for extracting color vector components
 struct FnPeekColorVector
 {
   PETE_EMPTY_CONSTRUCTORS(FnPeekColorVector)
 
-  FnPeekColorVector(int _row): row(_row) {}
+  PETE_DEVICE FnPeekColorVector(int _row): row(_row) {}
   
   template<class T>
-  inline typename UnaryReturn<T, FnPeekColorVector>::Type_t
+  PETE_DEVICE inline typename UnaryReturn<T, FnPeekColorVector>::Type_t
   operator()(const T &a) const
   {
     return (peekColor(a,row));
   }
+
+  int getRow() const { return row; }
 
 private:
   int row;
 };
 
 
+#ifndef __CUDACC__
 //! Extract color vector components
 /*! @ingroup group1
   @relates QDPType */
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnPeekColorVector,
+PETE_DEVICE inline typename MakeReturn<UnaryNode<FnPeekColorVector,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
   typename UnaryReturn<C1,FnPeekColorVector >::Type_t >::Expression_t
 peekColor(const QDPType<T1,C1> & l, int row)
@@ -185,7 +192,7 @@ peekColor(const QDPType<T1,C1> & l, int row)
 
 
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnPeekColorVector,
+PETE_DEVICE inline typename MakeReturn<UnaryNode<FnPeekColorVector,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
 peekColor(const QDPExpr<T1,C1> & l, int row)
 {
@@ -195,6 +202,7 @@ peekColor(const QDPExpr<T1,C1> & l, int row)
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekColorVector(row),
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
+#endif
 
 
 //! Structure for extracting spin matrix components
@@ -202,24 +210,28 @@ struct FnPeekSpinMatrix
 {
   PETE_EMPTY_CONSTRUCTORS(FnPeekSpinMatrix)
 
-  FnPeekSpinMatrix(int _row, int _col): row(_row), col(_col) {}
+  PETE_DEVICE FnPeekSpinMatrix(int _row, int _col): row(_row), col(_col) {}
   
   template<class T>
-  inline typename UnaryReturn<T, FnPeekSpinMatrix>::Type_t
+  PETE_DEVICE inline typename UnaryReturn<T, FnPeekSpinMatrix>::Type_t
   operator()(const T &a) const
   {
     return (peekSpin(a,row,col));
   }
 
+  int getRow() const { return row; }
+  int getCol() const { return col; }
+
 private:
   int row, col;
 };
 
+#ifndef __CUDACC__
 //! Extract spin matrix components
 /*! @ingroup group1
   @relates QDPType */
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnPeekSpinMatrix,
+PETE_DEVICE inline typename MakeReturn<UnaryNode<FnPeekSpinMatrix,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
   typename UnaryReturn<C1,FnPeekSpinMatrix >::Type_t >::Expression_t
 peekSpin(const QDPType<T1,C1> & l, int row, int col)
@@ -233,7 +245,7 @@ peekSpin(const QDPType<T1,C1> & l, int row, int col)
 
 
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnPeekSpinMatrix,
+PETE_DEVICE inline typename MakeReturn<UnaryNode<FnPeekSpinMatrix,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
 peekSpin(const QDPExpr<T1,C1> & l, int row, int col)
 {
@@ -243,6 +255,7 @@ peekSpin(const QDPExpr<T1,C1> & l, int row, int col)
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekSpinMatrix(row,col),
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
+#endif
 
 
 //! Structure for extracting spin vector components
@@ -250,25 +263,28 @@ struct FnPeekSpinVector
 {
   PETE_EMPTY_CONSTRUCTORS(FnPeekSpinVector)
 
-  FnPeekSpinVector(int _row): row(_row) {}
+  PETE_DEVICE FnPeekSpinVector(int _row): row(_row) {}
   
   template<class T>
-  inline typename UnaryReturn<T, FnPeekSpinVector>::Type_t
+  PETE_DEVICE inline typename UnaryReturn<T, FnPeekSpinVector>::Type_t
   operator()(const T &a) const
   {
     return (peekSpin(a,row));
   }
+
+  int getRow() const { return row; }
 
 private:
   int row;
 };
 
 
+#ifndef __CUDACC__
 //! Extract spin vector components
 /*! @ingroup group1
   @relates QDPType */
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnPeekSpinVector,
+PETE_DEVICE inline typename MakeReturn<UnaryNode<FnPeekSpinVector,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>,
   typename UnaryReturn<C1,FnPeekSpinVector >::Type_t >::Expression_t
 peekSpin(const QDPType<T1,C1> & l, int row)
@@ -282,7 +298,7 @@ peekSpin(const QDPType<T1,C1> & l, int row)
 
 
 template<class T1,class C1>
-inline typename MakeReturn<UnaryNode<FnPeekSpinVector,
+PETE_DEVICE inline typename MakeReturn<UnaryNode<FnPeekSpinVector,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
 peekSpin(const QDPExpr<T1,C1> & l, int row)
 {
@@ -292,6 +308,7 @@ peekSpin(const QDPExpr<T1,C1> & l, int row)
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(FnPeekSpinVector(row),
     CreateLeaf<QDPExpr<T1,C1> >::make(l)));
 }
+#endif
 
 
 
@@ -301,21 +318,25 @@ struct FnPokeColorMatrix
 {
   PETE_EMPTY_CONSTRUCTORS(FnPokeColorMatrix)
 
-  FnPokeColorMatrix(int _row, int _col): row(_row), col(_col) {}
+  PETE_DEVICE FnPokeColorMatrix(int _row, int _col): row(_row), col(_col) {}
   
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, FnPokeColorMatrix>::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, FnPokeColorMatrix>::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
     pokeColor(const_cast<T1&>(a),b,row,col);
     return const_cast<T1&>(a);
   }
 
+  int getRow() const { return row; }
+  int getCol() const { return col; }
+
 private:
   int row, col;
 };
 
 
+#ifndef __CUDACC__
 //! Insert color matrix components
 /*! @ingroup group1
   @param l  target to update
@@ -326,7 +347,7 @@ private:
   @ingroup group1
   @relates QDPType */
 template<class T1,class C1,class T2,class C2>
-inline C1& 
+PETE_DEVICE inline C1& 
 pokeColor(QDPType<T1,C1> & l, const QDPType<T2,C2>& r, int row, int col)
 {
   C1& ll = static_cast<C1&>(l);
@@ -336,7 +357,7 @@ pokeColor(QDPType<T1,C1> & l, const QDPType<T2,C2>& r, int row, int col)
 
 
 template<class T1,class C1,class T2,class C2>
-inline C1& 
+PETE_DEVICE inline C1& 
 pokeColor(QDPType<T1,C1> & l, const QDPExpr<T2,C2>& r, int row, int col)
 {
   C1& ll = static_cast<C1&>(l);
@@ -346,7 +367,7 @@ pokeColor(QDPType<T1,C1> & l, const QDPExpr<T2,C2>& r, int row, int col)
 
 
 template<class T1,class C1,class T2,class C2>
-inline C1
+PETE_DEVICE inline C1
 pokeColor(const QDPSubType<T1,C1>& l, const QDPType<T2,C2>& r, int row, int col)
 {
   C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
@@ -358,7 +379,7 @@ pokeColor(const QDPSubType<T1,C1>& l, const QDPType<T2,C2>& r, int row, int col)
 
 
 template<class T1,class C1,class T2,class C2>
-inline C1
+PETE_DEVICE inline C1
 pokeColor(const QDPSubType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row, int col)
 {
   C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
@@ -367,6 +388,7 @@ pokeColor(const QDPSubType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row, int col)
   evaluate(ll,FnPokeColorMatrix(row,col),r,s);
   return ll;
 }
+#endif
 
 
 //! Structure for inserting color vector components
@@ -374,22 +396,24 @@ struct FnPokeColorVector
 {
   PETE_EMPTY_CONSTRUCTORS(FnPokeColorVector)
 
-  FnPokeColorVector(int _row): row(_row) {}
+  PETE_DEVICE FnPokeColorVector(int _row): row(_row) {}
   
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, FnPokeColorVector>::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, FnPokeColorVector>::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
     pokeColor(const_cast<T1&>(a),b,row);
     return const_cast<T1&>(a);
   }
 
+  int getRow() const { return row; }
+
 private:
   int row;
 };
 
 
-
+#ifndef __CUDACC__
 //! Insert color vector components
 /*! @ingroup group1
   @param l  target to update
@@ -399,7 +423,7 @@ private:
   @ingroup group1
   @relates QDPType */
 template<class T1,class C1,class T2,class C2>
-inline C1& 
+PETE_DEVICE inline C1& 
 pokeColor(QDPType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
 {
   C1& ll = static_cast<C1&>(l);
@@ -408,7 +432,7 @@ pokeColor(QDPType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
 }
 
 template<class T1,class C1,class T2,class C2>
-inline C1& 
+PETE_DEVICE inline C1& 
 pokeColor(QDPType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
 {
   C1& ll = static_cast<C1&>(l);
@@ -418,7 +442,7 @@ pokeColor(QDPType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
 
 
 template<class T1,class C1,class T2,class C2>
-inline C1
+PETE_DEVICE inline C1
 pokeColor(const QDPSubType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
 {
   C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
@@ -430,7 +454,7 @@ pokeColor(const QDPSubType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
 
 
 template<class T1,class C1,class T2,class C2>
-inline C1
+PETE_DEVICE inline C1
 pokeColor(const QDPSubType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
 {
   C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
@@ -439,27 +463,32 @@ pokeColor(const QDPSubType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
   evaluate(ll,FnPokeColorVector(row),r,s);
   return ll;
 }
-
+#endif
 
 //! Structure for inserting spin matrix components
 struct FnPokeSpinMatrix
 {
   PETE_EMPTY_CONSTRUCTORS(FnPokeSpinMatrix)
 
-  FnPokeSpinMatrix(int _row, int _col): row(_row), col(_col) {}
+  PETE_DEVICE FnPokeSpinMatrix(int _row, int _col): row(_row), col(_col) {}
   
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, FnPokeSpinMatrix>::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, FnPokeSpinMatrix>::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
     pokeSpin(const_cast<T1&>(a),b,row,col);
     return const_cast<T1&>(a);
   }
 
+  int getRow() const { return row; }
+  int getCol() const { return col; }
+
 private:
   int row, col;
 };
 
+
+#ifndef __CUDACC__
 //! Insert spin matrix components
 /*! @ingroup group1
   @param l  target to update
@@ -470,7 +499,7 @@ private:
   @ingroup group1
   @relates QDPType */
 template<class T1,class C1,class T2,class C2>
-inline C1& 
+PETE_DEVICE inline C1& 
 pokeSpin(QDPType<T1,C1> & l, const QDPType<T2,C2>& r, int row, int col)
 {
   C1& ll = static_cast<C1&>(l);
@@ -479,7 +508,7 @@ pokeSpin(QDPType<T1,C1> & l, const QDPType<T2,C2>& r, int row, int col)
 }
 
 template<class T1,class C1,class T2,class C2>
-inline C1& 
+PETE_DEVICE inline C1& 
 pokeSpin(QDPType<T1,C1> & l, const QDPExpr<T2,C2>& r, int row, int col)
 {
   C1& ll = static_cast<C1&>(l);
@@ -489,7 +518,7 @@ pokeSpin(QDPType<T1,C1> & l, const QDPExpr<T2,C2>& r, int row, int col)
 
 
 template<class T1,class C1,class T2,class C2>
-inline C1
+PETE_DEVICE inline C1
 pokeSpin(const QDPSubType<T1,C1>& l, const QDPType<T2,C2>& r, int row, int col)
 {
   C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
@@ -501,7 +530,7 @@ pokeSpin(const QDPSubType<T1,C1>& l, const QDPType<T2,C2>& r, int row, int col)
 
 
 template<class T1,class C1,class T2,class C2>
-inline C1
+PETE_DEVICE inline C1
 pokeSpin(const QDPSubType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row, int col)
 {
   C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
@@ -510,7 +539,7 @@ pokeSpin(const QDPSubType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row, int col)
   evaluate(ll,FnPokeSpinMatrix(row,col),r,s);
   return ll;
 }
-
+#endif
 
 
 //! Structure for inserting spin vector components
@@ -518,21 +547,24 @@ struct FnPokeSpinVector
 {
   PETE_EMPTY_CONSTRUCTORS(FnPokeSpinVector)
 
-  FnPokeSpinVector(int _row): row(_row) {}
+  PETE_DEVICE FnPokeSpinVector(int _row): row(_row) {}
   
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, FnPokeSpinVector>::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, FnPokeSpinVector>::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
     pokeSpin(const_cast<T1&>(a),b,row);
     return const_cast<T1&>(a);
   }
 
+  int getRow() const { return row; }
+
 private:
   int row;
 };
 
 
+#ifndef __CUDACC__
 //! Insert spin vector components
 /*! @ingroup group1
   @param l  target to update
@@ -542,7 +574,7 @@ private:
   @ingroup group1
   @relates QDPType */
 template<class T1,class C1,class T2,class C2>
-inline C1& 
+PETE_DEVICE inline C1& 
 pokeSpin(QDPType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
 {
   C1& ll = static_cast<C1&>(l);
@@ -551,7 +583,7 @@ pokeSpin(QDPType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
 }
 
 template<class T1,class C1,class T2,class C2>
-inline C1& 
+PETE_DEVICE inline C1& 
 pokeSpin(QDPType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
 {
   C1& ll = static_cast<C1&>(l);
@@ -561,7 +593,7 @@ pokeSpin(QDPType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
 
 
 template<class T1,class C1,class T2,class C2>
-inline C1
+PETE_DEVICE inline C1
 pokeSpin(const QDPSubType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
 {
   C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
@@ -573,7 +605,7 @@ pokeSpin(const QDPSubType<T1,C1>& l, const QDPType<T2,C2>& r, int row)
 
 
 template<class T1,class C1,class T2,class C2>
-inline C1
+PETE_DEVICE inline C1
 pokeSpin(const QDPSubType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
 {
   C1& ll = const_cast<QDPSubType<T1,C1>&>(l).field();
@@ -582,7 +614,7 @@ pokeSpin(const QDPSubType<T1,C1>& l, const QDPExpr<T2,C2>& r, int row)
   evaluate(ll,FnPokeSpinVector(row),r,s);
   return ll;
 }
-
+#endif
 
 
 //-----------------------------------------------------------------------------
@@ -593,7 +625,7 @@ struct OpGammaConstMultiply
 {
   PETE_EMPTY_CONSTRUCTORS(OpGammaConstMultiply)
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, OpGammaConstMultiply >::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, OpGammaConstMultiply >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
     return (a * b);
@@ -605,7 +637,7 @@ struct OpMultiplyGammaConst
 {
   PETE_EMPTY_CONSTRUCTORS(OpMultiplyGammaConst)
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, OpMultiplyGammaConst >::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, OpMultiplyGammaConst >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
     return (a * b);
@@ -618,7 +650,7 @@ struct OpGammaTypeMultiply
 {
   PETE_EMPTY_CONSTRUCTORS(OpGammaTypeMultiply)
   template<int N, class T>
-  inline T
+  PETE_DEVICE inline T
   operator()(const GammaType<N>& a, const T &b) const;
 };
 
@@ -628,7 +660,7 @@ struct OpMultiplyGammaType
 {
   PETE_EMPTY_CONSTRUCTORS(OpMultiplyGammaType)
   template<class T, int N>
-  inline T
+  PETE_DEVICE inline T
   operator()(const T &a, const GammaType<N>& b) const;
 };
 
@@ -641,7 +673,7 @@ struct OpGammaConstDPMultiply
 {
   PETE_EMPTY_CONSTRUCTORS(OpGammaConstDPMultiply)
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, OpGammaConstDPMultiply >::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, OpGammaConstDPMultiply >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
     return (a * b);
@@ -653,7 +685,7 @@ struct OpMultiplyGammaConstDP
 {
   PETE_EMPTY_CONSTRUCTORS(OpMultiplyGammaConstDP)
   template<class T1, class T2>
-  inline typename BinaryReturn<T1, T2, OpMultiplyGammaConstDP >::Type_t
+  PETE_DEVICE inline typename BinaryReturn<T1, T2, OpMultiplyGammaConstDP >::Type_t
   operator()(const T1 &a, const T2 &b) const
   {
     return (a * b);
@@ -666,7 +698,7 @@ struct OpGammaTypeDPMultiply
 {
   PETE_EMPTY_CONSTRUCTORS(OpGammaTypeDPMultiply)
   template<int N, class T>
-  inline T
+  PETE_DEVICE inline T
   operator()(const GammaTypeDP<N>& a, const T &b) const;
 };
 
@@ -676,7 +708,7 @@ struct OpMultiplyGammaTypeDP
 {
   PETE_EMPTY_CONSTRUCTORS(OpMultiplyGammaTypeDP)
   template<class T, int N>
-  inline T
+  PETE_DEVICE inline T
   operator()(const T &a, const GammaTypeDP<N>& b) const;
 };
 
@@ -692,7 +724,7 @@ struct CreateLeaf<GammaType<N> >
   typedef Input_t Leaf_t;
 //  typedef Reference<Input_t> Leaf_t;
 
-  inline static
+  PETE_DEVICE inline static
   Leaf_t make(const Input_t& a) { return Leaf_t(a); }
 };
 
@@ -700,7 +732,7 @@ template<int N>
 struct LeafFunctor<GammaType<N>, ElemLeaf>
 {
   typedef GammaType<N> Type_t;
-  inline static Type_t apply(const GammaType<N> &a, const ElemLeaf &f)
+  PETE_DEVICE inline static Type_t apply(const GammaType<N> &a, const ElemLeaf &f)
     {return a;}
 };
 
@@ -708,7 +740,7 @@ template<int N>
 struct LeafFunctor<GammaType<N>, EvalLeaf1>
 {
   typedef GammaType<N> Type_t;
-  inline static Type_t apply(const GammaType<N> &a, const EvalLeaf1 &f)
+  PETE_DEVICE inline static Type_t apply(const GammaType<N> &a, const EvalLeaf1 &f)
     {return a;}
 };
 
@@ -719,7 +751,7 @@ struct CreateLeaf<GammaConst<N,m> >
   typedef GammaConst<N,m> Input_t;
   typedef Input_t Leaf_t;
 
-  inline static
+  PETE_DEVICE inline static
   Leaf_t make(const Input_t& a) { return Leaf_t(a); }
 };
 
@@ -727,7 +759,7 @@ template<int N, int m>
 struct LeafFunctor<GammaConst<N,m>, ElemLeaf>
 {
   typedef GammaConst<N,m> Type_t;
-  inline static Type_t apply(const GammaConst<N,m> &a, const ElemLeaf &f)
+  PETE_DEVICE inline static Type_t apply(const GammaConst<N,m> &a, const ElemLeaf &f)
     {return a;}
 };
 
@@ -735,7 +767,7 @@ template<int N, int m>
 struct LeafFunctor<GammaConst<N,m>, EvalLeaf1>
 {
   typedef GammaConst<N,m> Type_t;
-  inline static Type_t apply(const GammaConst<N,m> &a, const EvalLeaf1 &f)
+  PETE_DEVICE inline static Type_t apply(const GammaConst<N,m> &a, const EvalLeaf1 &f)
     {return a;}
 };
 
@@ -752,7 +784,7 @@ struct CreateLeaf<GammaTypeDP<N> >
   typedef Input_t Leaf_t;
 //  typedef Reference<Input_t> Leaf_t;
 
-  inline static
+  PETE_DEVICE inline static
   Leaf_t make(const Input_t& a) { return Leaf_t(a); }
 };
 
@@ -760,7 +792,7 @@ template<int N>
 struct LeafFunctor<GammaTypeDP<N>, ElemLeaf>
 {
   typedef GammaTypeDP<N> Type_t;
-  inline static Type_t apply(const GammaTypeDP<N> &a, const ElemLeaf &f)
+  PETE_DEVICE inline static Type_t apply(const GammaTypeDP<N> &a, const ElemLeaf &f)
     {return a;}
 };
 
@@ -768,7 +800,7 @@ template<int N>
 struct LeafFunctor<GammaTypeDP<N>, EvalLeaf1>
 {
   typedef GammaTypeDP<N> Type_t;
-  inline static Type_t apply(const GammaTypeDP<N> &a, const EvalLeaf1 &f)
+  PETE_DEVICE inline static Type_t apply(const GammaTypeDP<N> &a, const EvalLeaf1 &f)
     {return a;}
 };
 
@@ -779,7 +811,7 @@ struct CreateLeaf<GammaConstDP<N,m> >
   typedef GammaConstDP<N,m> Input_t;
   typedef Input_t Leaf_t;
 
-  inline static
+  PETE_DEVICE inline static
   Leaf_t make(const Input_t& a) { return Leaf_t(a); }
 };
 
@@ -787,7 +819,7 @@ template<int N, int m>
 struct LeafFunctor<GammaConstDP<N,m>, ElemLeaf>
 {
   typedef GammaConstDP<N,m> Type_t;
-  inline static Type_t apply(const GammaConstDP<N,m> &a, const ElemLeaf &f)
+  PETE_DEVICE inline static Type_t apply(const GammaConstDP<N,m> &a, const ElemLeaf &f)
     {return a;}
 };
 
@@ -795,7 +827,7 @@ template<int N, int m>
 struct LeafFunctor<GammaConstDP<N,m>, EvalLeaf1>
 {
   typedef GammaConstDP<N,m> Type_t;
-  inline static Type_t apply(const GammaConstDP<N,m> &a, const EvalLeaf1 &f)
+  PETE_DEVICE inline static Type_t apply(const GammaConstDP<N,m> &a, const EvalLeaf1 &f)
     {return a;}
 };
 
@@ -805,10 +837,11 @@ struct LeafFunctor<GammaConstDP<N,m>, EvalLeaf1>
 // Additional operators
 //-----------------------------------------------------------------------------
 
+#ifndef __CUDACC__
 //! GammaConst * QDPType
 /*! @ingroup group1 */
 template<int N,int m,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpGammaConstMultiply,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpGammaConstMultiply,
   typename CreateLeaf<GammaConst<N,m> >::Leaf_t,
   typename CreateLeaf<QDPType<T2,C2> >::Leaf_t>,
   typename BinaryReturn<GammaConst<N,m>,C2,OpGammaConstMultiply>::Type_t >::Expression_t
@@ -825,7 +858,7 @@ operator*(const GammaConst<N,m> & l,const QDPType<T2,C2> & r)
 
 //! GammaConst * QDPExpr
 template<int N,int m,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpGammaConstMultiply,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpGammaConstMultiply,
   typename CreateLeaf<GammaConst<N,m> >::Leaf_t,
   typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t>,
   typename BinaryReturn<GammaConst<N,m>,C2,OpGammaConstMultiply>::Type_t >::Expression_t
@@ -843,7 +876,7 @@ operator*(const GammaConst<N,m> & l,const QDPExpr<T2,C2> & r)
 //! QDPType * GammaConst
 /*! @ingroup group1 */
 template<class T1,class C1,int N,int m>
-inline typename MakeReturn<BinaryNode<OpMultiplyGammaConst,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpMultiplyGammaConst,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
   typename CreateLeaf<GammaConst<N,m> >::Leaf_t>,
   typename BinaryReturn<C1,GammaConst<N,m>,OpMultiplyGammaConst>::Type_t >::Expression_t
@@ -860,7 +893,7 @@ operator*(const QDPType<T1,C1> & l,const GammaConst<N,m> & r)
 
 //! QDPExpr * GammaConst
 template<class T1,class C1,int N,int m>
-inline typename MakeReturn<BinaryNode<OpMultiplyGammaConst,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpMultiplyGammaConst,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
   typename CreateLeaf<GammaConst<N,m> >::Leaf_t>,
   typename BinaryReturn<C1,GammaConst<N,m>,OpMultiplyGammaConst>::Type_t >::Expression_t
@@ -879,7 +912,7 @@ operator*(const QDPExpr<T1,C1> & l,const GammaConst<N,m> & r)
 //! GammaType * QDPType
 /*! @ingroup group1 */
 template<int N,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpGammaTypeMultiply,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpGammaTypeMultiply,
   typename CreateLeaf<GammaType<N> >::Leaf_t,
   typename CreateLeaf<QDPType<T2,C2> >::Leaf_t>,
   typename BinaryReturn<GammaType<N>,C2,OpGammaTypeMultiply>::Type_t >::Expression_t
@@ -896,7 +929,7 @@ operator*(const GammaType<N> & l,const QDPType<T2,C2> & r)
 
 //! GammaType * QDPExpr
 template<int N,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpGammaTypeMultiply,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpGammaTypeMultiply,
   typename CreateLeaf<GammaType<N> >::Leaf_t,
   typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t>,
   typename BinaryReturn<GammaType<N>,C2,OpGammaTypeMultiply>::Type_t >::Expression_t
@@ -914,7 +947,7 @@ operator*(const GammaType<N> & l,const QDPExpr<T2,C2> & r)
 //! QDPType * GammaType
 /*! @ingroup group1 */
 template<class T1,class C1,int N>
-inline typename MakeReturn<BinaryNode<OpMultiplyGammaType,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpMultiplyGammaType,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
   typename CreateLeaf<GammaType<N> >::Leaf_t>,
   typename BinaryReturn<C1,GammaType<N>,OpMultiplyGammaType>::Type_t >::Expression_t
@@ -931,7 +964,7 @@ operator*(const QDPType<T1,C1> & l,const GammaType<N> & r)
 
 //! QDPExpr * GammaType
 template<class T1,class C1,int N>
-inline typename MakeReturn<BinaryNode<OpMultiplyGammaType,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpMultiplyGammaType,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
   typename CreateLeaf<GammaType<N> >::Leaf_t>,
   typename BinaryReturn<C1,GammaType<N>,OpMultiplyGammaType>::Type_t >::Expression_t
@@ -954,7 +987,7 @@ operator*(const QDPExpr<T1,C1> & l,const GammaType<N> & r)
 //! GammaConstDP * QDPType
 /*! @ingroup group1 */
 template<int N,int m,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpGammaConstDPMultiply,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpGammaConstDPMultiply,
   typename CreateLeaf<GammaConstDP<N,m> >::Leaf_t,
   typename CreateLeaf<QDPType<T2,C2> >::Leaf_t>,
   typename BinaryReturn<GammaConstDP<N,m>,C2,OpGammaConstDPMultiply>::Type_t >::Expression_t
@@ -971,7 +1004,7 @@ operator*(const GammaConstDP<N,m> & l,const QDPType<T2,C2> & r)
 
 //! GammaConstDP * QDPExpr
 template<int N,int m,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpGammaConstDPMultiply,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpGammaConstDPMultiply,
   typename CreateLeaf<GammaConstDP<N,m> >::Leaf_t,
   typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t>,
   typename BinaryReturn<GammaConstDP<N,m>,C2,OpGammaConstDPMultiply>::Type_t >::Expression_t
@@ -989,7 +1022,7 @@ operator*(const GammaConstDP<N,m> & l,const QDPExpr<T2,C2> & r)
 //! QDPType * GammaConstDP
 /*! @ingroup group1 */
 template<class T1,class C1,int N,int m>
-inline typename MakeReturn<BinaryNode<OpMultiplyGammaConstDP,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpMultiplyGammaConstDP,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
   typename CreateLeaf<GammaConstDP<N,m> >::Leaf_t>,
   typename BinaryReturn<C1,GammaConstDP<N,m>,OpMultiplyGammaConstDP>::Type_t >::Expression_t
@@ -1006,7 +1039,7 @@ operator*(const QDPType<T1,C1> & l,const GammaConstDP<N,m> & r)
 
 //! QDPExpr * GammaConstDP
 template<class T1,class C1,int N,int m>
-inline typename MakeReturn<BinaryNode<OpMultiplyGammaConstDP,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpMultiplyGammaConstDP,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
   typename CreateLeaf<GammaConstDP<N,m> >::Leaf_t>,
   typename BinaryReturn<C1,GammaConstDP<N,m>,OpMultiplyGammaConstDP>::Type_t >::Expression_t
@@ -1025,7 +1058,7 @@ operator*(const QDPExpr<T1,C1> & l,const GammaConstDP<N,m> & r)
 //! GammaTypeDP * QDPType
 /*! @ingroup group1 */
 template<int N,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpGammaTypeDPMultiply,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpGammaTypeDPMultiply,
   typename CreateLeaf<GammaTypeDP<N> >::Leaf_t,
   typename CreateLeaf<QDPType<T2,C2> >::Leaf_t>,
   typename BinaryReturn<GammaTypeDP<N>,C2,OpGammaTypeDPMultiply>::Type_t >::Expression_t
@@ -1042,7 +1075,7 @@ operator*(const GammaTypeDP<N> & l,const QDPType<T2,C2> & r)
 
 //! GammaTypeDP * QDPExpr
 template<int N,class T2,class C2>
-inline typename MakeReturn<BinaryNode<OpGammaTypeDPMultiply,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpGammaTypeDPMultiply,
   typename CreateLeaf<GammaTypeDP<N> >::Leaf_t,
   typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t>,
   typename BinaryReturn<GammaTypeDP<N>,C2,OpGammaTypeDPMultiply>::Type_t >::Expression_t
@@ -1060,7 +1093,7 @@ operator*(const GammaTypeDP<N> & l,const QDPExpr<T2,C2> & r)
 //! QDPType * GammaTypeDP
 /*! @ingroup group1 */
 template<class T1,class C1,int N>
-inline typename MakeReturn<BinaryNode<OpMultiplyGammaTypeDP,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpMultiplyGammaTypeDP,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
   typename CreateLeaf<GammaTypeDP<N> >::Leaf_t>,
   typename BinaryReturn<C1,GammaTypeDP<N>,OpMultiplyGammaTypeDP>::Type_t >::Expression_t
@@ -1077,7 +1110,7 @@ operator*(const QDPType<T1,C1> & l,const GammaTypeDP<N> & r)
 
 //! QDPExpr * GammaTypeDP
 template<class T1,class C1,int N>
-inline typename MakeReturn<BinaryNode<OpMultiplyGammaTypeDP,
+PETE_DEVICE inline typename MakeReturn<BinaryNode<OpMultiplyGammaTypeDP,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
   typename CreateLeaf<GammaTypeDP<N> >::Leaf_t>,
   typename BinaryReturn<C1,GammaTypeDP<N>,OpMultiplyGammaTypeDP>::Type_t >::Expression_t
@@ -1099,7 +1132,7 @@ operator*(const QDPExpr<T1,C1> & l,const GammaTypeDP<N> & r)
 
 // Explicit casts
 template<class T1,class T2,class C2>
-inline typename MakeReturn<UnaryNode<OpCast<T1>,
+PETE_DEVICE inline typename MakeReturn<UnaryNode<OpCast<T1>,
   typename CreateLeaf<QDPType<T2,C2> >::Leaf_t>,
   typename UnaryReturn<C2,OpCast<T1> >::Type_t>::Expression_t
 peteCast(const T1&, const QDPType<T2,C2>& l)
@@ -1110,6 +1143,8 @@ peteCast(const T1&, const QDPType<T2,C2>& l)
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPType<T2,C2> >::make(l)));
 }
+#endif
+
 
 } // namespace QDP
 

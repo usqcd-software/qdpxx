@@ -84,7 +84,7 @@ template<class A, class Op, class Tag>
 struct Combine1
 {
   typedef A Type_t;
-  inline static
+  PETE_DEVICE inline static
   Type_t combine(const A &a, const Op &, const Tag &) { return a; }
 };
 
@@ -99,7 +99,7 @@ struct Combine3
 {
   typedef typename Combine2<A, B, Op, Tag>::Type_t Type1_t;
   typedef typename Combine2<Type1_t, C, Op, Tag>::Type_t Type_t;
-  inline static
+  PETE_DEVICE inline static
   Type_t combine(const A& a,const B& b,const C& c,const Op& op,const Tag& t)
   {
     return
@@ -126,21 +126,21 @@ struct Combine3
 //-----------------------------------------------------------------------------
 
 template<class A, class Op, class Tag>
-inline typename Combine1<A, Op, Tag>::Type_t
+PETE_DEVICE inline typename Combine1<A, Op, Tag>::Type_t
 peteCombine(const A &a, const Op &op, const Tag &t)
 {
   return Combine1<A, Op, Tag>::combine(a, op, t);
 }
 
 template<class A, class B, class Op, class Tag>
-inline typename Combine2<A, B, Op, Tag>::Type_t
+PETE_DEVICE inline typename Combine2<A, B, Op, Tag>::Type_t
 peteCombine(const A &a, const B &b, const Op &op, const Tag &t)
 {
   return Combine2<A, B, Op, Tag>::combine(a, b, op, t);
 }
 
 template<class A, class B, class C, class Op, class Tag>
-inline typename Combine3<A, B, C, Op, Tag>::Type_t
+PETE_DEVICE inline typename Combine3<A, B, C, Op, Tag>::Type_t
 peteCombine(const A &a, const B &b, const C &c, const Op &op, const Tag &t)
 {
   return Combine3<A, B, C, Op, Tag>::combine(a, b, c, op, t);
@@ -174,7 +174,7 @@ template<class A, class Op>
 struct Combine1<A, Op, TreeCombine >
 {
   typedef UnaryNode<Op, A> Type_t;
-  inline static
+  PETE_DEVICE inline static
   Type_t combine(const A &a, const Op &op, const TreeCombine &t)
   {
     return Type_t(op, a);
@@ -185,7 +185,7 @@ template<class A, class B, class Op>
 struct Combine2<A, B, Op, TreeCombine >
 {
   typedef BinaryNode<Op, A, B> Type_t;
-  inline static
+  PETE_DEVICE inline static
   Type_t combine(const A &a, const B &b, const Op &op, 
     const TreeCombine &t) 
   {
@@ -197,7 +197,7 @@ template<class A, class B, class C, class Op>
 struct Combine3<A, B, C, Op, TreeCombine >
 {
   typedef TrinaryNode<Op, A, B, C> Type_t;
-  inline static
+  PETE_DEVICE inline static
   Type_t combine(const A &a, const B &b, const C &c, const Op &op,
     const TreeCombine &t) 
   {    
@@ -225,7 +225,7 @@ template<class A,class Op>
 struct Combine1<A, Op, OpCombine>
 {
   typedef typename UnaryReturn<A, Op>::Type_t Type_t;
-  inline static
+  PETE_DEVICE inline static
   Type_t combine(A a, Op op, OpCombine) { return op(a); }
 };
 
@@ -233,7 +233,7 @@ template<class A,class B,class Op>
 struct Combine2<A, B, Op, OpCombine>
 {
   typedef typename BinaryReturn<A, B, Op>::Type_t Type_t;
-  inline static
+  PETE_DEVICE inline static
   Type_t combine(A a, B b, Op op, OpCombine)
   {
     return op(a, b);
@@ -244,7 +244,7 @@ template<class A,class B,class C,class Op>
 struct Combine3<A, B, C, Op, OpCombine>
 {
   typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
-  inline static
+  PETE_DEVICE inline static
   Type_t combine(A a, B b, C c, Op op, OpCombine)
   {
     return op(a, b, c);
@@ -271,7 +271,7 @@ template<class Op>
 struct Combine2<bool, bool, Op, AndCombine>
 {
   typedef bool Type_t;
-  inline static
+  PETE_DEVICE inline static
   Type_t combine(bool a, bool b, Op, AndCombine)
   {
     return (a && b);
@@ -298,7 +298,7 @@ template<class Op>
 struct Combine2<bool, bool, Op, OrCombine>
 {
   typedef bool Type_t;
-  inline static
+  PETE_DEVICE inline static
   Type_t combine(bool a, bool b, Op, OrCombine)
   {
     return (a || b);
@@ -326,7 +326,7 @@ template<class Op>
 struct Combine2<int, int, Op, NullCombine>
 {
   typedef int Type_t;
-  inline static
+  PETE_DEVICE inline static
   Type_t combine(int, int, Op, NullCombine)
   {
     return 0;
@@ -353,7 +353,7 @@ template<class Op>
 struct Combine2<int, int, Op, SumCombine>
 {
   typedef int Type_t;
-  inline static
+  PETE_DEVICE inline static
   Type_t combine(int a, int b, Op, SumCombine)
   {
     return a + b;
@@ -365,7 +365,7 @@ struct Combine2<int, int, Op, SumCombine>
 
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
-// $RCSfile: Combiners.h,v $   $Author: edwards $
-// $Revision: 1.1 $   $Date: 2002-09-12 18:22:16 $
+// $RCSfile: Combiners.h,v $   $Author: sa_smith $
+// $Revision: 1.8 $   $Date: 2000/08/03 00:12:18 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

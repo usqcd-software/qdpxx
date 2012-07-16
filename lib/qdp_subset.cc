@@ -30,6 +30,68 @@ namespace QDP
   //! Odd subset
   Subset odd;
 
+  Set::~Set() {
+#ifdef QDP_IS_QDPJIT
+    if (registered) {
+      QDP_debug("Set::~Set: Strided:  Will sign off now...");
+      QDPCache::Instance().signoff( idStrided );
+    }
+#endif
+  }
+
+
+#ifdef QDP_IS_QDPJIT
+  Subset::Subset():registered(false) {
+    QDPCache::Instance().sayHi();
+  }
+#else
+  Subset::Subset() {}
+#endif
+
+  //! Copy constructor
+#ifdef QDP_IS_QDPJIT
+  Subset::Subset(const Subset& s):
+    ordRep(s.ordRep), startSite(s.startSite), endSite(s.endSite), 
+    sub_index(s.sub_index), sitetable(s.sitetable), set(s.set) , registered(false) { 
+    QDPCache::Instance().sayHi();
+  }
+#else
+  Subset::Subset(const Subset& s):
+    ordRep(s.ordRep), startSite(s.startSite), endSite(s.endSite), 
+    sub_index(s.sub_index), sitetable(s.sitetable), set(s.set)  { }
+#endif
+
+
+  Subset::~Subset()
+  {
+#ifdef QDP_IS_QDPJIT
+    if (registered) {
+      QDP_debug("Subet::~Subset: Will sign off now...");
+      QDPCache::Instance().signoff( idStrided );
+    }
+#endif
+  }
+
+#ifdef QDP_IS_QDPJIT
+  Set::Set(): registered(false) {
+    QDPCache::Instance().sayHi();
+  }
+#else
+  Set::Set() {}
+#endif
+
+#ifdef QDP_IS_QDPJIT
+  //! Constructor from a function object
+  Set::Set(const SetFunc& fn): registered(false) {
+    QDPCache::Instance().sayHi();
+    make(fn);    
+  }
+#else
+  Set::Set(const SetFunc& fn) {
+    make(fn);    
+  }
+#endif
+
 
   //! Function object used for constructing the all subset
   class SetAllFunc : public SetFunc
@@ -129,23 +191,62 @@ namespace QDP
   //! Simple constructor called to produce a Subset from inside a Set
   void Subset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb, Set* _set)
   {
+#ifdef QDP_IS_QDPJIT
+    QDP_debug("Subset::make(...) Will reserve device memory now...");
+#endif
+
     ordRep    = _rep;
     startSite = _start;
     endSite   = _end;
     sub_index = cb;
     sitetable = ind;
     set       = _set;
+
+#ifdef QDP_IS_QDPJIT
+    if (ind->size() == 0) 
+      QDP_debug("At least one subset has zero size on at least one node. (rep=%d,start=%d,end=%d)",
+	       (int)ordRep,(int)startSite,(int)endSite);
+    else {
+      if (registered) {
+	QDP_info("Subset::make:  Already registered, will sign off the old memory ...");
+	QDPCache::Instance().signoff( idStrided );
+      }
+      QDP_debug("Subset::make: Will register memory now...");
+      idStrided = QDPCache::Instance().registrateOwnHostMem( ind->size() * sizeof(int) , (void*)ind->slice() );
+      registered=true;
+    }
+#endif
+
   }
 
   //! Simple constructor called to produce a Subset from inside a Set
   void Subset::make(const Subset& s)
   {
+#ifdef QDP_IS_QDPJIT
+    QDP_debug("Subset::make(Subset) Will reserve device memory now...");
+#endif
+
     ordRep    = s.ordRep;
     startSite = s.startSite;
     endSite   = s.endSite;
     sub_index = s.sub_index;
     sitetable = s.sitetable;
     set       = s.set;
+
+#ifdef QDP_IS_QDPJIT
+    if (s.sitetable->size() == 0)
+      QDP_debug("At least one subset has zero size on at least one node. (Subset,rep=%d,start=%d,end=%d)",
+	       (int)ordRep,(int)startSite,(int)endSite);
+    else {
+      if (registered) {
+	QDP_info("Subset::make:  Already registered, will sign off the old memory ...");
+	QDPCache::Instance().signoff( idStrided );
+      }
+      QDP_debug("Subset::make: Will register memory now...");
+      idStrided = QDPCache::Instance().registrateOwnHostMem( s.sitetable->size() * sizeof(int) , (void*)s.sitetable->slice() );
+      registered=true;
+    }
+#endif
   }
 
   //! Simple constructor called to produce a Subset from inside a Set
@@ -162,6 +263,10 @@ namespace QDP
     sub = s.sub;
     lat_color = s.lat_color;
     sitetables = s.sitetables;
+#ifdef QDP_IS_QDPJIT
+    QDP_error_exit("Sub::op= not yet implemented for GPU 3");
+#endif
+
     return *this;
   }
 

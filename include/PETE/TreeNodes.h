@@ -61,7 +61,7 @@ struct Reference
   //---------------------------------------------------------------------------
   // Reference can be created from a const ref.
 
-  inline
+  PETE_DEVICE inline
   Reference(const T &reference)
     : reference_m(reference)
   { }
@@ -69,7 +69,7 @@ struct Reference
   //---------------------------------------------------------------------------
   // Copy constructor
 
-  inline
+  PETE_DEVICE inline
   Reference(const Reference<T> &model)
     : reference_m(model.reference())
   { }
@@ -77,7 +77,7 @@ struct Reference
   //---------------------------------------------------------------------------
   // Reference can be converted to a const ref
 
-  inline
+  PETE_DEVICE inline
   const T &reference() const
   {
     return reference_m;
@@ -86,9 +86,8 @@ struct Reference
   //---------------------------------------------------------------------------
   // Conversion operators.
 
-  operator const T& () const { return reference_m; }
-  operator T& () const { return const_cast<T&>(reference_m); }
-//  operator T& () { return const_cast<T&>(reference_m); }
+  PETE_DEVICE operator const T& () const { return reference_m; }
+  PETE_DEVICE operator T& () const { return const_cast<T&>(reference_m); }
   
   const T &reference_m;
 };
@@ -111,7 +110,7 @@ struct DeReference
 {
   typedef const T &Return_t;
   typedef T Type_t;
-  static inline Return_t apply(const T &a) { return a; }
+  PETE_DEVICE static inline Return_t apply(const T &a) { return a; }
 };
 
 template<class T>
@@ -119,7 +118,7 @@ struct DeReference<Reference<T> >
 {
   typedef const T &Return_t;
   typedef T Type_t;
-  static inline Return_t apply(const Reference<T> &a) { return a.reference(); }
+  PETE_DEVICE static inline Return_t apply(const Reference<T> &a) { return a.reference(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -143,31 +142,31 @@ public:
   //---------------------------------------------------------------------------
   // Accessors making the operation and child available to the outside.
 
-  inline
+  PETE_DEVICE inline
   const Op &operation() const { return op_m; }
 
-  inline
+  PETE_DEVICE   inline
   typename DeReference<Child>::Return_t
   child() const { return DeReference<Child>::apply(child_m); }
 
   //---------------------------------------------------------------------------
   // Constructor using both a operation and the child.
 
-  inline
+  PETE_DEVICE inline
   UnaryNode(const Op &o, const Child &c)
     : op_m(o), child_m(c) { }
 
   //---------------------------------------------------------------------------
   // Constructor using just the child.
   
-  inline
+  PETE_DEVICE inline
   UnaryNode(const Child &c)
     : child_m(c) { }
 
   //---------------------------------------------------------------------------
   // Copy constructor.
 
-  inline
+  PETE_DEVICE inline
   UnaryNode(const UnaryNode<Op, Child> &t)
     : op_m(t.operation()), child_m(t.child()) { }
 
@@ -177,7 +176,7 @@ public:
   // from an OtherChild.
 
   template<class OtherChild>
-  inline
+  PETE_DEVICE inline
   UnaryNode(const UnaryNode<Op, OtherChild> &t)
     : op_m(t.operation()), child_m(t.child()) { }
 
@@ -189,7 +188,7 @@ public:
   // from an OtherChild and an Arg.
 
   template<class OtherChild, class Arg>
-  inline
+  PETE_DEVICE inline
   UnaryNode(const UnaryNode<Op, OtherChild> &t, const Arg &a)
     : op_m(t.operation()), child_m(t.child(), a) { }
 #endif
@@ -202,7 +201,7 @@ public:
   // from an OtherChild and an Arg1 & Arg2.
 
   template<class OtherChild, class Arg1, class Arg2>
-  inline
+  PETE_DEVICE inline
   UnaryNode(const UnaryNode<Op, OtherChild> &t, 
     const Arg1 &a1, const Arg2 &a2)
     : op_m(t.operation()), child_m(t.child(), a1, a2)
@@ -239,21 +238,21 @@ public:
   //---------------------------------------------------------------------------
   // Accessors making the operation and children available to the outside.
 
-  inline
+  PETE_DEVICE inline
   const Op &operation() const { return op_m; }
 
-  inline
+  PETE_DEVICE inline
   typename DeReference<Left>::Return_t
   left() const { return DeReference<Left>::apply(left_m); }
 
-  inline
+  PETE_DEVICE inline
   typename DeReference<Right>::Return_t
   right() const { return DeReference<Right>::apply(right_m); }
 
   //---------------------------------------------------------------------------
   // Constructor using both the operation and the two children.
   
-  inline
+  PETE_DEVICE inline
   BinaryNode(const Op &o, const Left &l, const Right &r)
     : op_m(o), left_m(l), right_m(r)
   { }
@@ -261,7 +260,7 @@ public:
   //---------------------------------------------------------------------------
   // Constructor using just the two children.
   
-  inline
+  PETE_DEVICE inline
   BinaryNode(const Left &l, const Right &r)
     : left_m(l), right_m(r)
   { }
@@ -269,7 +268,7 @@ public:
   //---------------------------------------------------------------------------
   // Copy constructor.
 
-  inline
+  PETE_DEVICE inline
   BinaryNode(const BinaryNode<Op, Left, Right> &t)
     : op_m(t.operation()), left_m(t.left()), right_m(t.right())
   { }
@@ -280,7 +279,7 @@ public:
   // from an OtherLeft/OtherRight.
 
   template<class OtherLeft, class OtherRight>
-  inline
+  PETE_DEVICE inline
   BinaryNode(const BinaryNode<Op, OtherLeft, OtherRight> &t)
     : op_m(t.operation()), left_m(t.left()), right_m(t.right())
   { }
@@ -293,7 +292,7 @@ public:
   // from an OtherLeft/OtherRight and an Arg.
 
   template<class OtherLeft, class OtherRight, class Arg>
-  inline
+  PETE_DEVICE inline
   BinaryNode(const BinaryNode<Op, OtherLeft, OtherRight> &t, 
 	     const Arg &a)
     : op_m(t.operation()), left_m(t.left(), a), right_m(t.right(), a)
@@ -308,7 +307,7 @@ public:
   // from an OtherLeft/OtherRight and an Arg1 & Arg2.
 
   template<class OtherLeft, class OtherRight, class Arg1, class Arg2>
-  inline
+  PETE_DEVICE inline
   BinaryNode(const BinaryNode<Op, OtherLeft, OtherRight> &t, 
 	     const Arg1 &a1, const Arg2 &a2)
     : op_m(t.operation()),
@@ -353,25 +352,25 @@ public:
   //---------------------------------------------------------------------------
   // Accessors making the operation and children available to the outside.
 
-  inline
+  PETE_DEVICE inline
   const Op &operation() const { return op_m; }
 
-  inline
+  PETE_DEVICE inline
   typename DeReference<Left>::Return_t
   left() const { return DeReference<Left>::apply(left_m); }
 
-  inline
+  PETE_DEVICE inline
   typename DeReference<Right>::Return_t
   right() const { return DeReference<Right>::apply(right_m); }
 
-  inline
+  PETE_DEVICE inline
   typename DeReference<Middle>::Return_t
   middle() const { return DeReference<Middle>::apply(middle_m); }
 
   //---------------------------------------------------------------------------
   // Constructor using the operation and three children.
 
-  inline
+  PETE_DEVICE inline
   TrinaryNode(const Op &o, const Left &l, const Middle &m, const Right &r)
     : op_m(o), left_m(l), middle_m(m), right_m(r)
   { }
@@ -379,7 +378,7 @@ public:
   //---------------------------------------------------------------------------
   // Constructor with just the three children.
 
-  inline
+  PETE_DEVICE inline
   TrinaryNode(const Left &l, const Middle &m, const Right &r)
     : left_m(l), middle_m(m), right_m(r)
   { }
@@ -387,7 +386,7 @@ public:
   //---------------------------------------------------------------------------
   // Copy constructor.
 
-  inline 
+  PETE_DEVICE inline 
   TrinaryNode(const TrinaryNode<Op, Left, Middle, Right> &t)
     : op_m(t.operation()), left_m(t.left()), middle_m(t.middle()),
       right_m(t.right())
@@ -399,7 +398,7 @@ public:
   // from an OtherLeft/OtherMiddle/OtherRight.
 
   template<class OtherLeft, class OtherMiddle, class OtherRight>
-  inline
+  PETE_DEVICE inline
   TrinaryNode(const TrinaryNode<Op, OtherLeft, OtherMiddle, OtherRight> & t)
     : op_m(t.operation()), left_m(t.left()), middle_m(t.middle()),
       right_m(t.right())
@@ -413,7 +412,7 @@ public:
   // from an OtherLeft/OtherMiddle/OtherRight and an Arg.
 
   template<class OtherLeft, class OtherMiddle, class OtherRight, class Arg>
-  inline
+  PETE_DEVICE inline
   TrinaryNode(const TrinaryNode<Op, OtherLeft, OtherMiddle, OtherRight> &t,
     const Arg &a)
     : op_m(t.operation()), left_m(t.left(), a), middle_m(t.middle(), a), 
@@ -430,7 +429,7 @@ public:
 
   template<class OtherLeft, class OtherMiddle, class OtherRight, 
     class Arg1, class Arg2>
-  inline
+  PETE_DEVICE inline
   TrinaryNode(const TrinaryNode<Op, OtherLeft, OtherMiddle, OtherRight> &t, 
 	      const Arg1 &a1, const Arg2 &a2)
     : op_m(t.operation()), left_m(t.left(), a1, a2), 
