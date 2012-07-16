@@ -101,7 +101,7 @@ namespace QDP {
 		strncpy(rtinode, "your_local_food_store", maxlen);
 		
 		// Usage
-		if (Layout::primaryNode()) 
+		if (Layout::primaryNode())  {
 			if (help_flag) 
 			{
 				fprintf(stderr,"Usage:    %s options\n",(*argv)[0]);
@@ -134,7 +134,8 @@ namespace QDP {
 				
 				QDP_abort(1);
 			}
-		
+		}
+
 		for (int i=1; i<*argc; i++) 
 		{
 			if (strcmp((*argv)[i], "-V")==0) 
