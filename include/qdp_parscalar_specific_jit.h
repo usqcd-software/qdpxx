@@ -2650,8 +2650,9 @@ QDP_insert(OLattice<T>& dest, const multi1d<OScalar<T> >& src, const Subset& s)
 // Map
 //
 
-// Empty map
+// Empty map, in parscalar there is no FnMap in the parse tree !!
 
+#if 0
 #if defined(QDP_USE_PROFILING)   
 template <>
 struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
@@ -2660,7 +2661,7 @@ struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
     { t.os_m << "shift"; }
 };
 #endif
-
+#endif
 
 //! General permutation map class for communications
 class Map
