@@ -39,15 +39,17 @@ namespace Allocator {
 
   // A stack to hold fun info
   std::stack<FuncInfo_t> infostack;
-#else
+#else 
   typedef map<unsigned char*, unsigned char *> MapT;
 
 #endif
 
   // Anonymous namespace
+#if 0
   namespace {
     MapT the_alignment_map;
   }
+#endif
 
   // The type returned on map insertion, allows me to check
   // the insertion was successful.

@@ -60,6 +60,11 @@ namespace QDP
 
     protected:
       void init();
+
+    private:
+      typedef map<unsigned char*, unsigned char *> MapT;
+      MapT the_alignment_map;
+
     };
 
     // Turn into a Singleton. Create with CreateUsingNew
