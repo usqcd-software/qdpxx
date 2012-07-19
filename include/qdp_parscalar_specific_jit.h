@@ -2750,20 +2750,12 @@ private:
     std::ostringstream sprg;
     const int nodeSites = Layout::sitesOnNode();
 
-    // SANITY
-    if (!d.onDevice()) {
-      QDP_error_exit("shift: lattice 'd' no longer on the device");
-    }
-
     QDPJitArgs cudaArgs;
 
     static QDPJit::SharedLibEntry sharedLibEntry;
     static MapVolumes*              mapVolumes;
     static string                   strId;
     static string                   prg;
-
-    // cudaArgs.getArgs().goffsetsDev = goffsetsDev;
-    // cudaArgs.getArgs().numSiteTable = nodeSites;
 
     int argGO = cudaArgs.addIntPtr( goffsetsDev );
     int argNum = cudaArgs.addInt( nodeSites );
@@ -2772,8 +2764,8 @@ private:
 
       string codeL,codeD;
 
-      if (!getCodeString( codeL , l , "idx2", cudaArgs )) { QDP_info("shift on node: could not cache l");  return false;   }      
-      if (!getCodeString( codeD , d , "idx", cudaArgs )) { QDP_info("shift on node: could not cache d");  return false;   }      
+      if (!getCodeString( codeL , l , "idx2", cudaArgs )) QDP_error_exit("shift on node: could not cache l");  
+      if (!getCodeString( codeD , d , "idx", cudaArgs )) QDP_error_exit("shift on node: could not cache d");  
 
       sprg << "  int idx = blockDim.x * gridDim.x * blockIdx.y + blockDim.x * blockIdx.x + threadIdx.x;\n";
       sprg << "  if (idx < " << cudaArgs.getCode(argNum) << ") {\n";
@@ -2796,8 +2788,8 @@ private:
 #endif
 
     } else {
-      if (!cacheLock(  l , cudaArgs )) { QDP_info("shift on node: could not cache l");  return false;   }      
-      if (!cacheLock(  d , cudaArgs )) { QDP_info("shift on node: could not cache d");  return false;   }      
+      if (!cacheLock(  l , cudaArgs )) QDP_error_exit("shift on node: could not cache l");
+      if (!cacheLock(  d , cudaArgs )) QDP_error_exit("shift on node: could not cache d");
     }
 
     bool ret=true;
@@ -2820,13 +2812,6 @@ private:
     cout << __PRETTY_FUNCTION__ << endl;
 #endif
 
-    // SANITY
-    if (!l.onDevice()) {
-      QDP_error_exit("kernel_exec_scatter: lattice 'l' no longer on the device  :-/");
-    }
-    // lock 'l', so it can't get spilled when caching 'd'
-    l.getFdev();
-
     std::ostringstream sprg;
 
     QDPJitArgs cudaArgs;
@@ -2836,21 +2821,15 @@ private:
     static string                   strId;
     static string                   prg;
 
-    // cudaArgs.getArgs().destPtr = destDevice;
-    // cudaArgs.getArgs().numSiteTable = nodeSites;
-
     int argDest = cudaArgs.addPtr( destDevice );
     int argNum = cudaArgs.addInt( nodeSites );
 
     if (!mapVolumes) {
 
-      string typeL,codeD;
+      string typeL,codeD,codeL;
 
-      if (!getCodeString( codeD , d , "idx", cudaArgs )) {
-	QDP_info("kernel exec scatter: could not cache d");
-	
-	return false;   
-      }      
+      if (!getCodeString( codeD , d , "idx", cudaArgs )) QDP_error_exit("kernel exec scatter: could not cache d");
+      if (!getCodeString( codeL , l , "idx", cudaArgs )) QDP_error_exit("kernel exec scatter: could not cache l");
       getTypeString( typeL , l , cudaArgs );
 
       sprg << "  int idx = blockDim.x * gridDim.x * blockIdx.y + blockDim.x * blockIdx.x + threadIdx.x;\n";
@@ -2873,10 +2852,8 @@ private:
       cout << "Cuda kernel code = " << endl << prg << endl << endl;
 #endif
     } else {
-      if (!cacheLock( d , cudaArgs )) {
-	QDP_info("kernel exec scatter: could not cache d");
-	return false;   
-      }      
+      if (!cacheLock( d , cudaArgs )) QDP_error_exit("kernel exec scatter: could not cache d");
+      if (!cacheLock( l , cudaArgs )) QDP_error_exit("kernel exec scatter: could not cache d");
     }
 
     bool ret=true;
@@ -2921,10 +2898,7 @@ private:
 
       string typeL,codeL;
 
-      if (!getCodeString( codeL , l , "idx", cudaArgs )) { 
-	QDP_info("kernel setup scatter: could not cache l");
-	return false;   
-      }      
+      if (!getCodeString( codeL , l , "idx", cudaArgs )) QDP_error_exit("kernel setup scatter: could not cache l");
       getTypeString( typeL , l , cudaArgs );
 
       sprg << "  int idx2 = blockDim.x * gridDim.x * blockIdx.y + blockDim.x * blockIdx.x + threadIdx.x;\n";
@@ -2952,11 +2926,7 @@ private:
 #endif
 
     } else {
-      if (!cacheLock( l , cudaArgs )) { 
-	QDP_info("kernel setup scatter: could not cache l");
-	
-	return false;   
-      }      
+      if (!cacheLock( l , cudaArgs )) QDP_error_exit("kernel setup scatter: could not cache l");
     }
 
     bool ret=true;
@@ -2999,10 +2969,7 @@ private:
     if (!mapVolumes) {
 
       string typeL,codeL;
-      if (!getCodeString( codeL , l , "idx", cudaArgs )) {
-	QDP_info("kernel collect sendbuf: could not cache l");
-	return false;   
-      }
+      if (!getCodeString( codeL , l , "idx", cudaArgs )) QDP_error_exit("kernel collect sendbuf: could not cache l");
       getTypeString( typeL , l , cudaArgs );
 
       sprg << "  int idx2 = blockDim.x * gridDim.x * blockIdx.y + blockDim.x * blockIdx.x + threadIdx.x;\n";
@@ -3028,10 +2995,7 @@ private:
 #endif
 
     } else {
-      if (!cacheLock( l , cudaArgs )) {
-	QDP_info("kernel collect sendbuf: could not cache l");
-	return false;   
-      }      
+      if (!cacheLock( l , cudaArgs )) QDP_error_exit("kernel collect sendbuf: could not cache l");
     }
 
     bool ret=true;
@@ -3070,18 +3034,6 @@ public:
 #endif
       goto HOST;
     }
-
-    // lock 'l' and 'd' on device
-    // (it might get spilled when allocating send/receive buffers)
-    l.getFdev();
-    d.getFdev();
-    if (!l.onDevice() || !d.onDevice() ) {
-#ifdef GPU_DEBUG_DEEP
-      QDP_debug_deep("Map::operator() 'l' or 'd' not on device goto HOST");
-#endif
-      goto HOST;
-    }
-
 
     QDP_debug_deep("Map::operator() l on device");
 

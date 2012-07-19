@@ -328,9 +328,6 @@ void evaluate(OScalar<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& r
 
     virtual ~OLattice()
     {
-#ifdef GPU_DEBUG_DEEP
-      QDP_debug_deep("~OLattice");
-#endif
       free_mem();
     }
 
@@ -428,6 +425,9 @@ void evaluate(OScalar<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& r
     }
     inline T* getFdev() const {
       return (T*)QDPCache::Instance().getDevicePtr( myId );
+    }
+    inline T* elem_devptr(int i) const {
+      return &((T*)QDPCache::Instance().getDevicePtr( myId ))[i];
     }
 #endif
 
