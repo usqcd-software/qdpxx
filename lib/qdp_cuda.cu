@@ -2,6 +2,9 @@
 
 
 #include <iostream>
+
+#include "qdp_config_internal.h" 
+
 #include "qdp_cuda.h"
 #include "qdp_init.h"
 
@@ -91,6 +94,7 @@ namespace QDP {
     cudaError_t ret;
     //int flags = cudaHostAllocWriteCombined | cudaHostRegisterPortable;
     int flags = 0;
+    QDP_info("CUDA host register ptr=%p (%u) size=%lu (%u)",ptr,(unsigned)((size_t)ptr%4096) ,(unsigned long)size,(unsigned)((size_t)size%4096));
     ret = cudaHostRegister(ptr, size, flags);
     cudp_check_error("hostRegister",ret);
     return true;

@@ -73,10 +73,14 @@
 // Commented this out and set QDP_ALIGNMENT_SIZE to be 16 all the time
 // This is a minimal waste of space and should allow an SSE dslash
 // to be used even if the QDP itself is not compiled with SSE.
+#ifdef QDP_IS_QDPJIT
+#define QDP_ALIGNMENT_SIZE 4096
+#else
 #ifdef QDP_AC_ALIGNMENT_SIZE
 #define QDP_ALIGNMENT_SIZE QDP_AC_ALIGNMENT_SIZE
 #else
 #define QDP_ALIGNMENT_SIZE 16
+#endif
 #endif
 
 // YUKKY - Eventually get rid of these includes
