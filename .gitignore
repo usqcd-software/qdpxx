@@ -10,3 +10,4 @@ docs/Makefile.in
 examples/Makefile.in
 lib/Makefile.in
 include/Makefile.in
+other_libs/Makefile.in
