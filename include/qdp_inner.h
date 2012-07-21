@@ -19,6 +19,8 @@ namespace QDP {
  * @{
  */
 
+template<typename T, int N> class ILattice;
+
 //! Scalar inner lattice
 /*! All inner lattices are of IScalar or ILattice type */
 template<class T> class IScalar
@@ -69,6 +71,17 @@ public:
       elem() += rhs.elem();
       return *this;
     }
+
+  //! IScalar += ILattice return IScalr --Jie Chen
+  template<int N>
+  IScalar& operator+=(const ILattice<T, N> rhs)
+  {
+    for (int i = 0; i < N; i++) 
+      elem() += rhs.elem(i);
+
+    return *this;
+  }
+  
 
   //! IScalar -= IScalar
   template<class T1>
@@ -439,11 +452,14 @@ public:
   inline
   ILattice& operator+=(const ILattice<T1,N>& rhs) 
     {
+#if 0
       for(int i=0; i < N; ++i)
 	elem(i) += rhs.elem(i);
-
+#endif
+      add_ilattice (*this, rhs);
       return *this;
     }
+
 
   //! ILattice -= ILattice
   template<class T1>
@@ -559,8 +575,11 @@ public:
   ILattice(const ILattice& a)
     {
       // fprintf(stderr,"copy ILattice\n");
+#if 0
       for(int i=0; i < N; ++i)
 	F[i] = a.F[i];
+#endif
+      assign_ilattice(F, a);
     }
 #endif
 
@@ -583,7 +602,30 @@ private:
 
 };
 
+template<typename T, int N>
+inline void assign_ilattice(T* l, const ILattice<T, N>& r)
+{
+  for(int i=0; i < N; ++i)
+    l[i] = r.elem(i);
+}
 
+template<typename T1, typename T2, int N>
+inline void add_ilattice(ILattice<T1, N>& dest, const ILattice<T2, N>& rhs)
+{
+  for(int i=0; i < N; ++i)
+    dest.elem(i) += rhs.elem(i);
+}
+
+#if 0
+template<typename T, int N1>
+IScalar<T>& IScalar<T>::operator+=(const ILattice<T, N1> rhs)
+{
+  for (int i = 0; i < N1; i++) 
+    elem() += rhs.elem(i);
+
+  return *this;
+}
+#endif
 
 //! Stream input
 template<class T, int N>
@@ -1879,6 +1921,7 @@ operator+(const ILattice<T1,N>& l)
 {
   typename UnaryReturn<ILattice<T1,N>, OpUnaryPlus>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = +l.elem(i);
   return d;
@@ -2003,6 +2046,7 @@ operator*(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpMultiply>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() * r.elem(i);
   return d;
@@ -2015,6 +2059,7 @@ inline typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpAdjMultiply>::Typ
 adjMultiply(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpAdjMultiply>::Type_t  d;
+
 
   // Do not pass on the transpose or the conj
   for(int i=0; i < N; ++i)
@@ -2029,6 +2074,7 @@ adjMultiply(const ILattice<T1,N>& l, const IScalar<T2>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpAdjMultiply>::Type_t  d;
 
+
   // Do not pass on the transpose or the conj
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) * r.elem();
@@ -2041,6 +2087,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpAdjMultiply>::Type_t
 adjMultiply(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpAdjMultiply>::Type_t  d;
+
 
   // Do not pass on the transpose or the conj
   for(int i=0; i < N; ++i)
@@ -2056,6 +2103,7 @@ multiplyAdj(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpMultiplyAdj>::Type_t  d;
 
+
   // Do not pass on the transpose or the conj
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) * r.elem(i);
@@ -2069,6 +2117,7 @@ multiplyAdj(const ILattice<T1,N>& l, const IScalar<T2>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpMultiplyAdj>::Type_t  d;
 
+
   // Do not pass on the transpose or the conj
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) * r.elem();
@@ -2081,6 +2130,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpMultiplyAdj>::Type_t
 multiplyAdj(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpMultiplyAdj>::Type_t  d;
+
 
   // Do not pass on the transpose or the conj
   for(int i=0; i < N; ++i)
@@ -2096,6 +2146,7 @@ adjMultiplyAdj(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpAdjMultiplyAdj>::Type_t  d;
 
+
   // Do not pass on the transpose or the conj
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) * r.elem(i);
@@ -2109,6 +2160,7 @@ adjMultiplyAdj(const ILattice<T1,N>& l, const IScalar<T2>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpAdjMultiplyAdj>::Type_t  d;
 
+
   // Do not pass on the transpose or the conj
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) * r.elem(i);
@@ -2121,6 +2173,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpAdjMultiplyAdj>::Typ
 adjMultiplyAdj(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpAdjMultiplyAdj>::Type_t  d;
+
 
   // Do not pass on the transpose or the conj
   for(int i=0; i < N; ++i)
@@ -2136,6 +2189,7 @@ operator/(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpDivide>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) / r.elem(i);
   return d;
@@ -2148,6 +2202,7 @@ operator/(const ILattice<T1,N>& l, const IScalar<T2>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpDivide>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) / r.elem();
   return d;
@@ -2159,6 +2214,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpDivide>::Type_t
 operator/(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpDivide>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() / r.elem(i);
@@ -2178,6 +2234,7 @@ operator<<(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpLeftShift>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) << r.elem(i);
   return d;
@@ -2195,6 +2252,7 @@ operator<<(const ILattice<T1,N>& l, const IScalar<T2>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpLeftShift>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) << r.elem();
   return d;
@@ -2211,6 +2269,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpLeftShift>::Type_t
 operator<<(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpLeftShift>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() << r.elem(i);
@@ -2230,6 +2289,7 @@ operator>>(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpRightShift>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) >> r.elem(i);
   return d;
@@ -2247,6 +2307,7 @@ operator>>(const ILattice<T1,N>& l, const IScalar<T2>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpRightShift>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) >> r.elem();
   return d;
@@ -2263,6 +2324,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpRightShift>::Type_t
 operator>>(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpRightShift>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() >> r.elem(i);
@@ -2282,6 +2344,7 @@ operator%(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpMod>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) % r.elem(i);
   return d;
@@ -2299,6 +2362,7 @@ operator%(const ILattice<T1,N>& l, const IScalar<T2>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpMod>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) % r.elem();
   return d;
@@ -2315,6 +2379,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpMod>::Type_t
 operator%(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpMod>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() % r.elem(i);
@@ -2334,6 +2399,7 @@ operator^(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpBitwiseXor>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) ^ r.elem(i);
   return d;
@@ -2351,6 +2417,7 @@ operator^(const ILattice<T1,N>& l, const IScalar<T2>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpBitwiseXor>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) ^ r.elem();
   return d;
@@ -2367,6 +2434,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseXor>::Type_t
 operator^(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseXor>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() ^ r.elem(i);
@@ -2386,6 +2454,7 @@ operator&(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpBitwiseAnd>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) & r.elem(i);
   return d;
@@ -2403,6 +2472,7 @@ operator&(const ILattice<T1,N>& l, const IScalar<T2>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpBitwiseAnd>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) & r.elem();
   return d;
@@ -2419,6 +2489,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseAnd>::Type_t
 operator&(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseAnd>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() & r.elem(i);
@@ -2438,6 +2509,7 @@ operator|(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpBitwiseOr>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) | r.elem(i);
   return d;
@@ -2455,6 +2527,7 @@ operator|(const ILattice<T1,N>& l, const IScalar<T2>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpBitwiseOr>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) | r.elem();
   return d;
@@ -2471,6 +2544,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseOr>::Type_t
 operator|(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpBitwiseOr>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() | r.elem(i);
@@ -2805,6 +2879,7 @@ operator&&(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpAnd>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) && r.elem(i);
   return d;
@@ -2822,6 +2897,7 @@ operator&&(const ILattice<T1,N>& l, const IScalar<T2>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpAnd>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) && r.elem();
   return d;
@@ -2838,6 +2914,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpAnd>::Type_t
 operator&&(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpAnd>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() && r.elem(i);
@@ -2857,6 +2934,7 @@ operator||(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpOr>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) || r.elem(i);
   return d;
@@ -2873,6 +2951,7 @@ inline typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpOr>::Type_t
 operator||(const ILattice<T1,N>& l, const IScalar<T2>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, OpOr>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem(i) || r.elem();
@@ -2891,6 +2970,7 @@ operator||(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpOr>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() || r.elem(i);
   return d;
@@ -2907,6 +2987,7 @@ adj(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnAdjoint>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = adj(s1.elem(i));
   return d;
@@ -2919,6 +3000,7 @@ inline typename UnaryReturn<ILattice<T1,N>, FnConjugate>::Type_t
 conj(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnConjugate>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = conj(s1.elem(i));
@@ -2933,6 +3015,7 @@ transpose(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnTranspose>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = transpose(s1.elem(i));
   return d;
@@ -2945,6 +3028,7 @@ inline typename UnaryReturn<ILattice<T1,N>, FnTrace>::Type_t
 trace(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnTrace>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = trace(s1.elem(i));
@@ -2959,6 +3043,7 @@ trace_real(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnRealTrace>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = trace_real(s1.elem(i));
   return d;
@@ -2971,6 +3056,7 @@ inline typename UnaryReturn<ILattice<T1,N>, FnImagTrace>::Type_t
 trace_imag(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnImagTrace>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = trace_imag(s1.elem(i));
@@ -2985,6 +3071,7 @@ real(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnReal>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = real(s1.elem(i));
   return d;
@@ -2997,6 +3084,7 @@ inline typename UnaryReturn<ILattice<T1,N>, FnImag>::Type_t
 imag(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnImag>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = imag(s1.elem(i));
@@ -3011,6 +3099,7 @@ acos(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnArcCos>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = acos(s1.elem(i));
   return d;
@@ -3022,6 +3111,7 @@ inline typename UnaryReturn<ILattice<T1,N>, FnArcSin>::Type_t
 asin(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnArcSin>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = asin(s1.elem(i));
@@ -3035,6 +3125,7 @@ atan(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnArcTan>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = atan(s1.elem(i));
   return d;
@@ -3046,6 +3137,7 @@ inline typename UnaryReturn<ILattice<T1,N>, FnCos>::Type_t
 cos(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnCos>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = cos(s1.elem(i));
@@ -3059,6 +3151,7 @@ exp(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnExp>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = exp(s1.elem(i));
   return d;
@@ -3070,6 +3163,7 @@ inline typename UnaryReturn<ILattice<T1,N>, FnFabs>::Type_t
 fabs(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnFabs>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = fabs(s1.elem(i));
@@ -3083,6 +3177,7 @@ log(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnLog>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = log(s1.elem(i));
   return d;
@@ -3094,6 +3189,7 @@ inline typename UnaryReturn<ILattice<T1,N>, FnSin>::Type_t
 sin(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnSin>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = sin(s1.elem(i));
@@ -3107,6 +3203,7 @@ sqrt(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnSqrt>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = sqrt(s1.elem(i));
   return d;
@@ -3118,6 +3215,7 @@ inline typename UnaryReturn<ILattice<T1,N>, FnTan>::Type_t
 tan(const ILattice<T1,N>& s1)
 {
   typename UnaryReturn<ILattice<T1,N>, FnTan>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = tan(s1.elem(i));
@@ -3132,6 +3230,7 @@ pow(const ILattice<T1,N>& s1, const ILattice<T2,N>& s2)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnPow>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = pow(s1.elem(i), s2.elem(i));
   return d;
@@ -3144,6 +3243,7 @@ pow(const ILattice<T1,N>& s1, const IScalar<T2>& s2)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnPow>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = pow(s1.elem(i), s2.elem());
   return d;
@@ -3155,6 +3255,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnPow>::Type_t
 pow(const IScalar<T1>& s1, const ILattice<T2,N>& s2)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnPow>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = pow(s1.elem(i), s2.elem(i));
@@ -3169,6 +3270,7 @@ atan2(const ILattice<T1,N>& s1, const ILattice<T2,N>& s2)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, FnArcTan2>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = atan2(s1.elem(i), s2.elem(i));
   return d;
@@ -3181,6 +3283,7 @@ atan2(const ILattice<T1,N>& s1, const IScalar<T2>& s2)
 {
   typename BinaryReturn<ILattice<T1,N>, IScalar<T2>, FnArcTan2>::Type_t  d;
 
+
   for(int i=0; i < N; ++i)
     d.elem(i) = atan2(s1.elem(i), s2.elem());
   return d;
@@ -3192,6 +3295,7 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnArcTan2>::Type_t
 atan2(const IScalar<T1>& s1, const ILattice<T2,N>& s2)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, FnArcTan2>::Type_t  d;
+
 
   for(int i=0; i < N; ++i)
     d.elem(i) = atan2(s1.elem(), s2.elem(i));
@@ -3314,6 +3418,31 @@ gather_sites(ILattice<T,4>& d,
 }
 
 
+//! gather several inner sites together
+/*! This version is built for inner length of 8 */
+template<class T, class T1>
+inline void 
+gather_sites(ILattice<T,8>& d, 
+	     const ILattice<T1,8>& s0, int i0, 
+	     const ILattice<T1,8>& s1, int i1,
+	     const ILattice<T1,8>& s2, int i2,
+	     const ILattice<T1,8>& s3, int i3,
+	     const ILattice<T1,8>& s4, int i4,
+	     const ILattice<T1,8>& s5, int i5,
+	     const ILattice<T1,8>& s6, int i6,
+	     const ILattice<T1,8>& s7, int i7)
+{
+  d.elem(0) = s0.elem(i0);
+  d.elem(1) = s1.elem(i1);
+  d.elem(2) = s2.elem(i2);
+  d.elem(3) = s3.elem(i3);
+  d.elem(4) = s4.elem(i4);
+  d.elem(5) = s5.elem(i5);
+  d.elem(6) = s6.elem(i6);
+  d.elem(7) = s7.elem(i7);
+}
+
+
 //! dest = (mask) ? s1 : dest
 template<class T, class T1, int N> 
 inline void 
@@ -3331,7 +3460,6 @@ fill_random(ILattice<T,N>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
 {
   fill_random<T1,T2,N>(d.data(), seed, skewed_seed, seed_mult);
 }
-
 
 #if 1
 // Global sum over site indices only
@@ -3364,14 +3492,14 @@ struct UnaryReturn<ILattice<T,N>, FnGlobalMax> {
 
 template<class T, int N>
 inline typename UnaryReturn<ILattice<T,N>, FnGlobalMax>::Type_t
-sum(const ILattice<T,N>& s1)
+globalMax(const ILattice<T,N>& s1)
 {
   typename UnaryReturn<ILattice<T,N>, FnGlobalMax>::Type_t  d;
 
   d.elem() = s1.elem(0);
   for(int i=1; i < N; ++i)
   {
-    if (toBool(s1.elem() > d.elem()))
+    if (toBool(s1.elem(i) > d.elem()))
       d.elem() = s1.elem(i);
   }
 
@@ -3388,14 +3516,14 @@ struct UnaryReturn<ILattice<T,N>, FnGlobalMin> {
 
 template<class T, int N>
 inline typename UnaryReturn<ILattice<T,N>, FnGlobalMin>::Type_t
-sum(const ILattice<T,N>& s1)
+globalMin(const ILattice<T,N>& s1)
 {
   typename UnaryReturn<ILattice<T,N>, FnGlobalMin>::Type_t  d;
 
   d.elem() = s1.elem(0);
   for(int i=1; i < N; ++i)
   {
-    if (toBool(s1.elem() > d.elem()))
+    if (toBool(s1.elem(i) < d.elem()))
       d.elem() = s1.elem(i);
   }
 
@@ -3656,5 +3784,16 @@ where(const IScalar<T1>& a, const IScalar<T2>& b, const ILattice<T3,N>& c)
 /*! @} */  // end of group ilattice
 
 } // namespace QDP
+
+#if !defined(__ICC)
+/* Intel compiler will do wonder with auto vectorization */
+#if defined(__AVX__)
+#include "qdp_inner_avx.h"
+#else
+#include "qdp_inner_sse.h"
+#endif
+
+#endif
+
 
 #endif

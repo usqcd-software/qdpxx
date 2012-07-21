@@ -33,7 +33,7 @@ namespace Layout
       int iinner = i & ((1 <<INNER_LOG)-1);
       copy_site(d.elem(iouter), iinner, cc.elem());
     }
-
+    
     return d;
   }
 }
@@ -163,7 +163,7 @@ void Set::make(const SetFunc& func)
       start = end = -1;
     }
 
-    sub[cb].make(ordRep, start, end, &(sitetables[cb]), cb);
+    sub[cb].make(ordRep, start, end, &(sitetables[cb]), cb, this);
 
 #if QDP_DEBUG >= 2
     QDP_info("Subset(%d): num_sitetable=%d  start=%d end=%d",cb,num_sitetable,start,end);

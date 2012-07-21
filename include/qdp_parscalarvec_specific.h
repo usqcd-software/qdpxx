@@ -17,9 +17,6 @@ namespace Layout
 {
   //! coord[mu]  <- mu  : fill with lattice coord in mu direction
   LatticeInteger latticeCoordinate(int mu);
-
-  //! Number of sites in the outer grid
-  int outerSitesOnNode() QDP_CONST;
 }
 
 

@@ -754,6 +754,32 @@ gather_sites(PVector<T,N,C>& d,
 }
 
 
+//! gather several inner sites together: for AVX
+template<class T, class T1, int N, template<class,int> class C>
+inline void 
+gather_sites(PVector<T,N,C>& d, 
+	     const PVector<T1,N,C>& s0, int i0, 
+	     const PVector<T1,N,C>& s1, int i1,
+	     const PVector<T1,N,C>& s2, int i2,
+	     const PVector<T1,N,C>& s3, int i3,
+	     const PVector<T1,N,C>& s4, int i4, 
+	     const PVector<T1,N,C>& s5, int i5,
+	     const PVector<T1,N,C>& s6, int i6,
+	     const PVector<T1,N,C>& s7, int i7)
+{
+  for(int i=0; i < N; ++i)
+    gather_sites(d.elem(i), 
+		 s0.elem(i), i0, 
+		 s1.elem(i), i1, 
+		 s2.elem(i), i2, 
+		 s3.elem(i), i3,
+		 s4.elem(i), i4, 
+		 s5.elem(i), i5, 
+		 s6.elem(i), i6, 
+		 s7.elem(i), i7);
+}
+
+
 //! dest  = random  
 template<class T, int N, template<class,int> class C, class T1, class T2>
 inline void

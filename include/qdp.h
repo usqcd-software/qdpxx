@@ -34,6 +34,8 @@
 #include <qdp_config.h>
 #include "qdp_precision.h"
 
+// #define QDP_DEBUG 5
+
 // GNU specific stuff
 #if defined(__GNUC__)
 // Under g++, enforce using V3 or greater

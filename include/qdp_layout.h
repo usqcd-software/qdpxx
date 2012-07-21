@@ -84,6 +84,10 @@ namespace Layout
   //! Number of sites on node
   int sitesOnNode() QDP_CONST;
 
+  // !Number of outer sites on node
+  // For non-vectorized architecture, it is the same as the above
+  int outerSitesOnNode() QDP_CONST;
+
   //! Returns whether this is the primary node
   bool primaryNode() QDP_CONST;
 

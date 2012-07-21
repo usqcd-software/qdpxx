@@ -98,6 +98,9 @@ namespace QDP
     //! Subgrid lattice volume
     int sitesOnNode() {return _layout.subgrid_vol;}
 
+    //! Subgrid lattice volume
+    int outerSitesOnNode() {return sitesOnNode();}
+
     //! Returns whether this is the primary node
     bool primaryNode() {return (_layout.node_rank == 0) ? true : false;}
 

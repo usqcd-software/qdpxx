@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {2,2,2,2};
+  const int foo[] = {4,4,4,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -173,8 +173,9 @@ int main(int argc, char *argv[])
   {
     int N = 5;
     multi1d<LatticeFermion> psi(N);
-    for(int n=0; n < N; ++n)
+    for(int n=0; n < N; ++n) 
       gaussian(psi[n]);
+
 
     Double dnorm1 = 0;
     for(int n=0; n < N; ++n)

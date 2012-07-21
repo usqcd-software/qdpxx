@@ -102,16 +102,28 @@ namespace QDP
   //! Initializer for sets
   void initDefaultSets()
   {
+#if QDP_DEBUG >= 3
+    fprintf (stderr, "Initialize Red/Black Checkboard\n");
+#endif
     // Initialize the red/black checkerboard
     rb.make(SetRBFunc());
 
     // Initialize the 3d red/black checkerboard.
+#if QDP_DEBUG >= 3
+    fprintf (stderr, "Initialize 3d Red/Black Checkboard\n");
+#endif
     rb3.make(SetRB3Func());
 
     // Initialize the 32-style checkerboard
+#if QDP_DEBUG >= 3
+    fprintf (stderr, "Initialize 32 style Red/Black Checkboard\n");
+#endif
     mcb.make(Set32CBFunc());
 
     // The all set
+#if QDP_DEBUG >= 3
+    fprintf (stderr, "Initialize all sets\n");
+#endif
     set_all.make(SetAllFunc());
 
     // The all subset

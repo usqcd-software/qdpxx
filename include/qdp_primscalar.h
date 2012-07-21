@@ -1538,7 +1538,7 @@ copy_site(PScalar<T>& d, int isite, const PScalar<T1>& s1)
   copy_site(d.elem(), isite, s1.elem());
 }
 
-//! gather several inner sites together
+//! gather several inner sites together for: 4
 template<class T, class T1>
 inline void 
 gather_sites(PScalar<T>& d, 
@@ -1548,6 +1548,22 @@ gather_sites(PScalar<T>& d,
 	     const PScalar<T1>& s3, int i3)
 {
   gather_sites(d.elem(), s0.elem(), i0, s1.elem(), i1, s2.elem(), i2, s3.elem(), i3);
+}
+
+//! gather several inner sites together for: 8
+template<class T, class T1>
+inline void 
+gather_sites(PScalar<T>& d, 
+	     const PScalar<T1>& s0, int i0, 
+	     const PScalar<T1>& s1, int i1,
+	     const PScalar<T1>& s2, int i2,
+	     const PScalar<T1>& s3, int i3,
+	     const PScalar<T1>& s4, int i4, 
+	     const PScalar<T1>& s5, int i5,
+	     const PScalar<T1>& s6, int i6,
+	     const PScalar<T1>& s7, int i7)
+{
+  gather_sites(d.elem(), s0.elem(), i0, s1.elem(), i1, s2.elem(), i2, s3.elem(), i3, s4.elem(), i4, s5.elem(), i5, s6.elem(), i6, s7.elem(), i7);
 }
 
 /*! @} */  // end of group primscalar

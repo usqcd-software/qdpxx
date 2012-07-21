@@ -626,6 +626,32 @@ gather_sites(PSpinVector<T,N>& d,
 }
 
 
+//! gather several inner sites together: for AVX
+template<class T, class T1, int N>
+inline void 
+gather_sites(PSpinVector<T,N>& d, 
+	     const PSpinVector<T1,N>& s0, int i0, 
+	     const PSpinVector<T1,N>& s1, int i1,
+	     const PSpinVector<T1,N>& s2, int i2,
+	     const PSpinVector<T1,N>& s3, int i3,
+	     const PSpinVector<T1,N>& s4, int i4, 
+	     const PSpinVector<T1,N>& s5, int i5,
+	     const PSpinVector<T1,N>& s6, int i6,
+	     const PSpinVector<T1,N>& s7, int i7)
+{
+  for(int i=0; i < N; ++i)
+    gather_sites(d.elem(i), 
+		 s0.elem(i), i0, 
+		 s1.elem(i), i1, 
+		 s2.elem(i), i2, 
+		 s3.elem(i), i3,
+		 s4.elem(i), i4, 
+		 s5.elem(i), i5, 
+		 s6.elem(i), i6, 
+		 s7.elem(i), i7);
+}
+
+
 
 #if 0
 // Global sum over site indices only

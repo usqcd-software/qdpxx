@@ -30,6 +30,12 @@ namespace QDP {
  * @{
  */
 
+// Empty leaf functor tag
+struct ElemLeaf
+{
+  inline ElemLeaf() { }
+};
+
 //! Outer grid Scalar class */
 /*! All outer lattices are of OScalar or OLattice type */
 template<class T>
@@ -442,9 +448,14 @@ private:
   inline void alloc_mem(const char* const p) 
     {
       // Barfs if allocator fails
+      // Use outerSitesOnNode as number of sites to accomdate vector arch
       try 
       {
-	slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+	slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::outerSitesOnNode(),QDP::Allocator::DEFAULT);
+#if 0
+	fprintf (stderr, "Allocate %lu number of bytes\n",
+		 sizeof(T)*Layout::outerSitesOnNode());
+#endif
       // slow is active 
 	F=slow;
       }
@@ -484,7 +495,7 @@ public:
   void print_info(char *name)
     {
       QDP_info("Info: %s = OLattice[%d]=0x%x, this=0x%xn",
-	       name,Layout::sitesOnNode(),(void *)F,this);
+	       name,Layout::outerSitesOnNode(),(void *)F,this);
     }
 
 
@@ -533,11 +544,13 @@ struct CreateLeaf<OLattice<T> >
 // evaluated at the point.
 //-----------------------------------------------------------------------------
 
+#if 0
 // Empty leaf functor tag
 struct ElemLeaf
 {
   inline ElemLeaf() { }
 };
+#endif
 
 template<class T>
 struct LeafFunctor<OScalar<T>, ElemLeaf>

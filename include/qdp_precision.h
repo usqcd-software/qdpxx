@@ -28,14 +28,29 @@ typedef bool      LOGICAL;
 typedef REAL32    REAL;
 typedef REAL64    DOUBLE;
 
+#if defined(__MIC__)
+#define INNER_LOG 4
+#warning "Using INNER_LOG of 4"
+#elif defined(__AVX__)
+#warning "Using INNER_LOG of 3"
+#define INNER_LOG 3
+#else
+#warning "Using INNER_LOG of 2"
 #define INNER_LOG 2
+#endif
 
 #elif BASE_PRECISION == 64
 // Use double precision for base precision
 typedef REAL64    REAL;
 typedef REAL64    DOUBLE;
 
+#if defined(__MIC__)
+#define INNER_LOG 3
+#elif defined(__AVX__)
+#define INNER_LOG 2
+#else
 #define INNER_LOG 1
+#endif
 
 #else
 #error "Unknown BASE_PRECISION"

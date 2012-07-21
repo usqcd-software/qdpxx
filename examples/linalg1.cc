@@ -22,7 +22,6 @@ double QDP_M_eq_M_times_M(LatticeColorMatrix& dest,
     dest = s1 * s2;
   swatch.stop(); 
   return swatch.getTimeInSeconds();
-//  return 2;
 }
 
 double QDP_M_eq_Ma_times_M(LatticeColorMatrix& dest, 

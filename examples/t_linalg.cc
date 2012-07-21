@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
+#if 0
 #ifndef QDP_NO_LIBXML2
   XMLFileWriter xml("t_linalg.xml");
   push(xml, "linalgTest");
@@ -32,6 +33,8 @@ int main(int argc, char *argv[])
   write(xml,"Nc", Nc);
   write(xml,"nrow", nrow);
   pop(xml);
+#endif
+
 #endif
 
   QDPIO::cout << "CLOCKS_PER_SEC = " << CLOCKS_PER_SEC << endl;
@@ -44,15 +47,25 @@ int main(int argc, char *argv[])
   int icnt;
   double tt;
 
+#if 0
+
 #define TIME_OPS 
   // Test M = M
   LatticeColorMatrix m1, m2;
   m1 = zero;
   gaussian(m2);
 
+#if defined(ARCH_SCALARVEC)
+  int istart = all.start() >> INNER_LOG;
+  int iend = all.end() >> INNER_LOG;
+  for(int i=istart; i <= iend; i++) { 
+    m1.elem(i) -= m2.elem(i);
+  }
+#else
   for(int i=all.start(); i <= all.end(); i++) { 
     m1.elem(i) -= m2.elem(i);
   }
+#endif
 
   LatticeColorMatrix m3=zero;
   m3 -= m2;
@@ -66,9 +79,17 @@ int main(int argc, char *argv[])
   while(time <= 1000000) { 
     swatch.start();
     for(int j=0; j < icnt; j++) {
+#if defined(ARCH_SCALARVEC)
+      int istart = all.start() >> INNER_LOG;
+      int iend = all.end() >> INNER_LOG;
+      for(int i=istart; i <= iend; i++) { 
+	m1.elem(i) -= m2.elem(i);
+      }
+#else
       for(int i=all.start(); i <= all.end(); i++) { 
 	m1.elem(i) -= m2.elem(i);
       }
+#endif
     }
     swatch.stop();
     time = swatch.getTimeInMicroseconds();
@@ -92,7 +113,7 @@ int main(int argc, char *argv[])
   }
   
   QDPIO::cout << "Call time (New M=M)= " << time / icnt << " us per call" << endl;
-
+#endif
 
 
   // Test M=M*M
@@ -127,6 +148,7 @@ int main(int argc, char *argv[])
 
 #endif
   
+#if 0
   // Test  M=adj(M)*M
   QDPIO::cout << "calling M=adj(M)*M " << icnt << " times" << endl;
   tt = rescale * QDP_M_eq_Ma_times_M(c, a, b, icnt);
@@ -499,6 +521,9 @@ int main(int argc, char *argv[])
   pop(xml);
   xml.close();
 #endif
+
+#endif
+
   // Time to bolt
   QDP_finalize();
 

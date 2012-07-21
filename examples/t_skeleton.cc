@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
   // lattice size at run-time
   multi1d<int> nrow(Nd);
   for(int i=0; i < Nd; ++i)
-    nrow[i] = 2;         // Set the lattice size to 2^4
+    nrow[i] = 4;         // Set the lattice size to 2^4
 
   // Insert the lattice size into the Layout
   // There can be additional calls here like setting the number of
@@ -29,7 +29,6 @@ int main(int argc, char *argv[])
   Layout::create();
 
   // Do some wonderful and amazing things - impress your friends
-
 
   // Possibly shutdown the machine
   QDP_finalize();

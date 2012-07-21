@@ -157,6 +157,10 @@ void ArrayBiDirectionalMap::make(const ArrayMapFunc& func)
   // actually allocate the space.
   bimapsa.resize(2,func.numArray());
 
+#if QDP_DEBUG >= 3
+  fprintf (stderr, "Make arraybindirectionalmap\n");
+#endif
+
   // Loop over each direction making the Map
   for(int dir=0; dir < func.numArray(); ++dir)
   {

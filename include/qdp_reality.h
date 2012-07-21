@@ -1524,6 +1524,30 @@ gather_sites(RScalar<T>& d,
 	       s3.elem(), i3);
 }
 
+//! gather several inner sites together: for AVX
+template<class T, class T1>
+inline void 
+gather_sites(RScalar<T>& d, 
+	     const RScalar<T1>& s0, int i0, 
+	     const RScalar<T1>& s1, int i1,
+	     const RScalar<T1>& s2, int i2,
+	     const RScalar<T1>& s3, int i3,
+	     const RScalar<T1>& s4, int i4, 
+	     const RScalar<T1>& s5, int i5,
+	     const RScalar<T1>& s6, int i6,
+	     const RScalar<T1>& s7, int i7)
+{
+  gather_sites(d.elem(), 
+	       s0.elem(), i0, 
+	       s1.elem(), i1, 
+	       s2.elem(), i2, 
+	       s3.elem(), i3,
+	       s4.elem(), i4, 
+	       s5.elem(), i5, 
+	       s6.elem(), i6, 
+	       s7.elem(), i7);
+}
+
 
 #if 1
 // Global sum over site indices only
@@ -1701,6 +1725,42 @@ gather_sites(RComplex<T>& d,
 	       s1.imag(), i1, 
 	       s2.imag(), i2, 
 	       s3.imag(), i3);
+}
+
+
+//! gather several inner sites together: for AVX
+template<class T, class T1>
+inline void 
+gather_sites(RComplex<T>& d, 
+	     const RComplex<T1>& s0, int i0, 
+	     const RComplex<T1>& s1, int i1,
+	     const RComplex<T1>& s2, int i2,
+	     const RComplex<T1>& s3, int i3,
+	     const RComplex<T1>& s4, int i4, 
+	     const RComplex<T1>& s5, int i5,
+	     const RComplex<T1>& s6, int i6,
+	     const RComplex<T1>& s7, int i7)
+{
+  gather_sites(d.real(), 
+	       s0.real(), i0, 
+	       s1.real(), i1, 
+	       s2.real(), i2, 
+	       s3.real(), i3,
+	       s4.real(), i4, 
+	       s5.real(), i5, 
+	       s6.real(), i6, 
+	       s7.real(), i7);
+
+
+  gather_sites(d.imag(), 
+	       s0.imag(), i0, 
+	       s1.imag(), i1, 
+	       s2.imag(), i2, 
+	       s3.imag(), i3,
+	       s4.imag(), i4, 
+	       s5.imag(), i5, 
+	       s6.imag(), i6, 
+	       s7.imag(), i7);
 }
 
 
@@ -2427,7 +2487,28 @@ fill_gaussian(RComplex<T>& d, RComplex<T>& r1, RComplex<T>& r2)
   // r1 and r2 are the input random numbers needed
 
   /* Stage 2: get the cos of the second number  */
-  T  g_r, g_i;
+  /* should be aligned */
+#ifndef __ICC
+
+#ifdef __AVX__  
+  T  __attribute__((aligned(32))) g_r;
+  T  __attribute__((aligned(32))) g_i;
+#else
+  T  __attribute__((aligned(16))) g_r;
+  T  __attribute__((aligned(16))) g_i;
+#endif
+
+#else
+
+#ifdef __AVX__  
+  __declspec(align(32)) T  g_r;
+  __declspec(align(32)) T  g_i;
+#else
+  __declspec(align(16)) T  g_r;
+  __declspec(align(16)) T  g_i;
+#endif
+
+#endif
 
   r2.real() *= S(6.283185307);
   g_r = cos(r2.real());
