@@ -52,10 +52,10 @@ namespace QDP {
   void CudaCreateStreams() {
     QDPcudastreams = new cudaStream_t[2];
     for (int i=0; i<2; i++) {
-      QDP_info("Creating CUDA stream %d",i);
+      QDP_info_primary("JIT: Creating CUDA stream %d",i);
       cudaStreamCreate(&QDPcudastreams[i]);
     }
-    QDP_info("Creating CUDA event for transfers");
+    QDP_info_primary("JIT: Creating CUDA event for transfers");
     QDPevCopied = new cudaEvent_t;
     cudaEventCreate(QDPevCopied);
 
@@ -94,7 +94,7 @@ namespace QDP {
     cudaError_t ret;
     //int flags = cudaHostAllocWriteCombined | cudaHostRegisterPortable;
     int flags = 0;
-    QDP_info("CUDA host register ptr=%p (%u) size=%lu (%u)",ptr,(unsigned)((size_t)ptr%4096) ,(unsigned long)size,(unsigned)((size_t)size%4096));
+    QDP_info_primary("CUDA host register ptr=%p (%u) size=%lu (%u)",ptr,(unsigned)((size_t)ptr%4096) ,(unsigned long)size,(unsigned)((size_t)size%4096));
     ret = cudaHostRegister(ptr, size, flags);
     cudp_check_error("hostRegister",ret);
     return true;

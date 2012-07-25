@@ -70,7 +70,7 @@ namespace QDP
   void QDPPoolAllocator<Allocator>::registerMemory() {
       if (!bufferAllocated)
 	allocateInternalBuffer();
-      QDP_info("Pool allocator: Registering memory pool with NVIDIA driver (%lu bytes)",(unsigned long)bytes_allocated);
+      QDP_info_primary("Pool allocator: Registering memory pool with NVIDIA driver (%lu bytes)",(unsigned long)bytes_allocated);
       CudaHostRegister(unaligned,bytes_allocated);
     }
 
@@ -80,7 +80,7 @@ namespace QDP
       if (!bufferAllocated) {
 	QDP_error_exit("pool unregisterMemory: not allocated");
       }
-      QDP_info("Pool allocator: Unregistering memory pool with NVIDIA driver");
+      QDP_info_primary("Pool allocator: Unregistering memory pool with NVIDIA driver");
       CudaHostUnregister(unaligned);
     }
 
@@ -112,8 +112,10 @@ namespace QDP
 
   template<class Allocator>
     QDPPoolAllocator<Allocator>::~QDPPoolAllocator() { 
-      QDP_info("Destructing pool, but I will not deallocate the internal buffer. (Stupid Nvidia runtime has already destructed itself!)");
-      //freeInternalBuffer();
+      QDP_info_primary("Destructing pool, but I will not deallocate the internal buffer. (Stupid Nvidia runtime has already destructed itself!)");
+#if 0
+      freeInternalBuffer();
+#endif
     }
 
 
@@ -137,10 +139,9 @@ namespace QDP
   template<class Allocator>
   void QDPPoolAllocator<Allocator>::freeInternalBuffer() {
     if (bufferAllocated) {
-      QDP_info("pool allocator: Deallocating internal buffer");
+      QDP_info_primary("pool allocator: Deallocating internal buffer");
       Allocator::free(unaligned);
       bufferAllocated=false;
-      QDP_debug("pool allocator: okay");
     } else {
       QDP_debug("pool allocator: no internal buffer allocated");
     }
@@ -363,7 +364,7 @@ namespace QDP
 
   template<class Allocator>
   void QDPPoolAllocator<Allocator>::setPoolSize(size_t s) {
-    QDP_info("Pool allocator: set pool size %lu bytes" , s );
+    QDP_info_primary("Pool allocator: set pool size %lu bytes" , (unsigned long)s );
     poolSize = s;
   }
 

@@ -23,7 +23,7 @@ namespace QDP {
       QDP_error_exit("DeviceParams::setCC compute capability %d not known!",sm);
     }
     if (Layout::primaryNode())
-      QDP_info("CUDA device compute capability set to sm_%d",sm);
+      QDP_info_primary("CUDA device compute capability set to sm_%d",sm);
   }
 
 }

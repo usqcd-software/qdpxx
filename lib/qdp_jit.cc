@@ -22,7 +22,7 @@ namespace QDP {
   }
     
   void QDPJit::addJitOption(string& opt) {
-    QDP_info("Adding option to JIT compiler: %s",opt.c_str());
+    QDP_info_primary("Adding option to JIT compiler: %s",opt.c_str());
     listJitOption.push_back(opt);
   }
 
@@ -85,9 +85,9 @@ namespace QDP {
       }
     }
     if (ret)
-      QDP_info("best numThreads=%d time=%f",benchresult.threadsPerBlock,bestTime);
+      QDP_info_primary("best numThreads=%d time=%f",benchresult.threadsPerBlock,bestTime);
     else
-      QDP_info("No bechmarking kernel call succeeded");
+      QDP_info_primary("No bechmarking kernel call succeeded");
 
     return ret;
   }
@@ -166,48 +166,42 @@ namespace QDP {
     }
 
     mapVolumes = &JitTuning::Instance().getMapTuning()[strId];
-    
-    //
-    // Do we have benchmark results for this kernel ?
-    //
-    if (mapVolumes->count(numSites) == 0) {
+
+    if (numSites > 0) {
       //
-      // Only primary node builds kernel
+      // Do we have benchmark results for this kernel ?
       //
-      benchresult_t benchresult;
-      if (Layout::primaryNode()) {
+      if (mapVolumes->count(numSites) == 0) {
+	//
+	// Every node does benchmarking
+	//
+	benchresult_t benchresult;
 	QDPCache::Instance().backupOnHost();
 	if (!benchmark(benchresult,sharedLibEntry,args,numSites ))
-	  QDP_error_exit("JIT: Benchmarking a particular kernel was not possible");
+	  QDP_error_exit("JIT: Benchmarking a kernel was not possible");
 	QDPCache::Instance().restoreFromHost();
+
+	QDP_info("Tuning DB: Inserting [volume=%d][threads=%d]",numSites,benchresult.threadsPerBlock);
+	(*mapVolumes)[numSites] = benchresult.threadsPerBlock;
       }
 
-      QDPInternal::broadcast( benchresult.threadsPerBlock );
-
-      if (!Layout::primaryNode()) {      
-	QDP_info("Not primary node received %d as benchmark result.",benchresult.threadsPerBlock);
-      }
-
-      QDP_info("Tuning DB: Inserting [volume=%d][threads=%d]",numSites,benchresult.threadsPerBlock);
-      (*mapVolumes)[numSites] = benchresult.threadsPerBlock;
-    }
-
-    int result;
-    kernel_geom_t kernel_geom;
+      int result;
+      kernel_geom_t kernel_geom;
 
 #ifdef GPU_DEBUG_DEEP
-    QDP_debug_deep("mapVolumes[numSites]= = %d",(*mapVolumes)[numSites]);
+      QDP_debug_deep("mapVolumes[numSites]= = %d",(*mapVolumes)[numSites]);
 #endif
 
-    kernel_geom = getGeom( numSites , (*mapVolumes)[numSites] );
-    while (result = sharedLibEntry.kernel( DeviceParams::Instance().getSyncDevice() , 
-					   args , &kernel_geom, 
-					   CudaGetKernelStream() ) ) {
+      kernel_geom = getGeom( numSites , (*mapVolumes)[numSites] );
+      while (result = sharedLibEntry.kernel( DeviceParams::Instance().getSyncDevice() , 
+					     args , &kernel_geom, 
+					     CudaGetKernelStream() ) ) {
 
-      if (result != 2)
-	QDP_error_exit("Kernel launch problem, not out-of-memory %d: Giving up!\n",result);
+	if (result != 2)
+	  QDP_error_exit("Kernel launch problem, not out-of-memory %d: Giving up!\n",result);
 
-      QDP_error_exit("kernel call: out of memory. ");
+	QDP_error_exit("kernel call: out of memory. ");
+      }
     }
 
     //
@@ -453,7 +447,7 @@ namespace QDP {
     if (!handle) {
       QDP_error_exit("dlopen error: %s\n",dlerror());
     } else {
-      QDP_info("LSB shared object loaded successfully");
+      QDP_info_primary("LSB shared object loaded successfully");
     }
 
     listHandle.push_back(handle);
@@ -506,7 +500,7 @@ namespace QDP {
   
   void QDPJit::closeAllShared()
   {
-    QDP_info("QDPJit: closing %d opened shared objects." , listHandle.size() );
+    QDP_info_primary("QDPJit: closing %d opened shared objects." , listHandle.size() );
     for(ListHandle::iterator iter = listHandle.begin() ; iter != listHandle.end() ; ++iter ) 
       {
 	dlclose(*iter);
@@ -517,7 +511,7 @@ namespace QDP {
   
   void QDPJit::rmAllBuiltShared()
   {
-    QDP_info( "QDPJit: removing %d built shared objects." , listBuiltShared.size() );
+    QDP_info_primary( "QDPJit: removing %d built shared objects." , listBuiltShared.size() );
     for(list<string>::iterator iter = listBuiltShared.begin() ; iter != listBuiltShared.end() ; ++iter ) 
       {
 	cout << "removing " << *iter << endl;
@@ -573,12 +567,12 @@ namespace QDP {
       return errno;
     }
 
-    QDP_info("kernels found:\n");
+    QDP_info_primary("JIT: Kernels found:\n");
     while ((dirp = readdir(dp)) != NULL) {
       if ((hasEnding(string(dirp->d_name),".o")) &&
 	  (!strncmp(basename(string(dirp->d_name).c_str()),"cudp_",5) )) {
 	string tmp = dir + "/" + string(dirp->d_name);
-	QDP_info("%s",tmp.c_str());
+	QDP_info_primary("%s",tmp.c_str());
 	files.push_back(dir+"/"+string(dirp->d_name));
       }
     }
@@ -594,7 +588,7 @@ namespace QDP {
     if (!getdir( kernelPath , filenames )) {
 
       for(list<std::string>::iterator iter = filenames.begin() ; iter != filenames.end() ; ++iter ) {
-	QDP_info("loading %s",(*iter).c_str());
+	QDP_info_primary("loading %s",(*iter).c_str());
 	SharedLibEntry entry = loadShared( *iter );
 	mapFunction.insert( MapFunction::value_type(string(entry.pretty),entry));
       }
@@ -632,7 +626,8 @@ namespace QDP {
     sprg << "    dim3  blocksPerGrid( kernel_geom->Nblock_x , kernel_geom->Nblock_y , 1 );"<< endl;
     sprg << "    dim3  threadsPerBlock( kernel_geom->threads_per_block , 1, 1);"<< endl;
     sprg << endl;
-    sprg << "    kernel<<< blocksPerGrid , threadsPerBlock , kernel_geom->smemSize , *((cudaStream_t*)ptr_cudaStream) >>>( kernel_args );" << endl;
+    sprg << "    if ( kernel_geom->Nblock_x != 0 && kernel_geom->Nblock_y != 0 && kernel_geom->threads_per_block !=0 )" << endl;
+    sprg << "      kernel<<< blocksPerGrid , threadsPerBlock , kernel_geom->smemSize , *((cudaStream_t*)ptr_cudaStream) >>>( kernel_args );" << endl;
     sprg << "    if (sync)" << endl;
     sprg << "      cudaDeviceSynchronize();" << endl;
     sprg << "    cudaError_t kernel_call = cudaGetLastError();" << endl;

@@ -185,8 +185,7 @@ namespace QDP
   void QDPCache::enlargeStack()
   {
     const int portion = 1024;
-    if (Layout::primaryNode())
-      QDP_info("enlarging stack by %d entries",portion);
+    QDP_info_primary("enlarging stack by %d entries",portion);
     vecEntry.resize( vecEntry.size() + portion );
     for ( int i = 0 ; i < portion ; i++ ) {
       stackFree.push( vecEntry.size()-i-1 );
@@ -303,6 +302,8 @@ namespace QDP
 #ifdef GPU_DEBUG_DEEP
     QDP_debug_deep("cache get device ptr id=%lu",(long)id );
 #endif
+
+    if (id < 0) return NULL;
 
 #ifdef SANITY_CHECKS_CACHE
     // SANITY
@@ -620,10 +621,8 @@ namespace QDP
 
 
   QDPCache::QDPCache() : currLS(0) , prevLS(-1), vecEntry(1024) {
-    if (Layout::primaryNode()) {
-      QDP_info("Constructing cache ..");
-      QDP_info("cache: pushing %u elements into stack",(unsigned)vecEntry.size());
-    }
+    QDP_info_primary("Constructing cache ..");
+    QDP_info_primary("cache: pushing %u elements into stack",(unsigned)vecEntry.size());
     for ( int i = vecEntry.size()-1 ; i >= 0 ; --i ) {
       stackFree.push(i);
     }

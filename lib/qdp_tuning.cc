@@ -5,7 +5,7 @@ namespace QDP {
 
 
   void JitTuning::setResourcePath( string path0 ) { 
-    QDP_info("Setting JIT tuning DB file to %s",path0.c_str());
+    QDP_info_primary("Setting JIT tuning DB file to %s",path0.c_str());
     path=path0; 
   } 
 
@@ -14,20 +14,77 @@ namespace QDP {
   MapTuning& JitTuning::getMapTuning() { return mapTuning; }
     
   void JitTuning::load(const string& fname) {
-    QDP_info("Reading tuning DB %s",fname.c_str());
+    ifstream check_file( fname.c_str() );
+    if (!check_file.good()) {
+      QDP_info_primary("JIT Tuning DB not found %s",fname.c_str());
+      return;
+    }
+    QDP_info_primary("Reading tuning DB %s",fname.c_str());
     TuningDB db_in;
     XMLReader xml_in(fname);
     read(xml_in,"/db",db_in);
     createMapTuning(mapTuning,db_in);
     xml_in.close();
+    QDP_info_primary("tuning BD read in %d",(int)mapTuning.size());
+  }
+
+  void JitTuning::save_all(const string& fname) {
+
+    save( fname );
+    return;
+
+    //
+    // This is dead code because the XMLWriter can
+    // only write data local to the primary node. Sigh
+    //
+    for(int i=0 ; i < Layout::numNodes() ; i++) {
+
+      QMP_barrier();
+
+      MapTuning mapTuningDisk;
+      ifstream check_file( fname.c_str() );
+      if (check_file.good()) {
+	QDP_info_primary("Reading tuning DB %s",fname.c_str());
+	TuningDB db_in;
+	XMLReader xml_in(fname);
+	read(xml_in,"/db",db_in);
+	createMapTuning(mapTuningDisk,db_in);
+	xml_in.close();
+      }
+
+      if ( i == Layout::nodeNumber() ) {
+	mergeMapTuning(mapTuning,mapTuningDisk);
+      }
+
+      save(fname);
+    }
+
   }
 
   void JitTuning::save(const string& fname) {
     TuningDB db(mapTuning);
-    QDP_info("Writing tuning DB %s",fname.c_str());
+    QDP_info_primary("Writing tuning DB %s",fname.c_str());
     XMLFileWriter xml(fname);
     write(xml,"db",db);
     xml.close();
+  }
+
+  void JitTuning::mergeMapTuning(MapTuning& dest,const MapTuning& src) {
+
+    MapTuning::const_iterator iter = src.begin();
+    while ( iter != src.end() ) {
+      MapVolumes::const_iterator iter_vol = src.at( iter->first ).begin();
+      while ( iter_vol != src.at( iter->first ).end() ) {
+	if (dest[ iter->first ][iter_vol->first] != iter_vol->second) {
+	  QDP_info("%s",iter->first.c_str());
+	  QDP_info("[%d]  old %d    new %d", iter_vol->first , dest[ iter->first ][iter_vol->first] , iter_vol->second );
+	}
+	dest[ iter->first ].insert( *iter_vol );
+	iter_vol++;
+      }
+      iter++;
+    }
+
   }
 
 

@@ -74,6 +74,7 @@ namespace QDP {
     MapTuning& getMapTuning();    
     void load(const string& fname);
     void save(const string& fname);
+    void save_all(const string& fname);
 
   private:
     JitTuning();                                 // Private constructor
@@ -81,6 +82,7 @@ namespace QDP {
     JitTuning& operator=(const JitTuning&);
 
     void createMapTuning(MapTuning& mt,const TuningDB& db);
+    void mergeMapTuning(MapTuning& dest,const MapTuning& src);
 
     string path;
     MapTuning mapTuning;

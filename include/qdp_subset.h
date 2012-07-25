@@ -54,9 +54,10 @@ public:
 
 #ifdef QDP_IS_QDPJIT
   int getId() const {
-    if (!registered)
-      QDP_error_exit("You are trying to use a Subset which was not set up properly.");
-    return idStrided;
+    if (!registered) 
+      return -1;
+    else
+      return idStrided;
   }
 #endif
 

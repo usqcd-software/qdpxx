@@ -32,7 +32,7 @@ namespace QDP {
 
   void QDP_startGPU()
   {
-    QDP_info("Start using the GPU");
+    QDP_info_primary("Start using the GPU");
     QDPuseGPU=true;
     
     CudaCreateStreams();
@@ -46,14 +46,13 @@ namespace QDP {
     int deviceCount;
     CudaGetDeviceCount(&deviceCount);
     if (deviceCount == 0) {
-      cout << "no CUDA devices found" << endl;
-      exit(1);
+      QDP_error_exit("No CUDA devices found");
     }
     
     int rank_QMP = QMP_get_node_number();
     int dev      = rank_QMP % deviceCount;
     
-    cout << "QDP-JIT: Setting active Cuda device to " << dev << endl;
+    QDP_info("JIT: Setting active CUDA device to %d",dev);
     CudaSetDevice( dev );
   }
 #endif
@@ -295,18 +294,22 @@ namespace QDP {
 		QDP_info("Some layout init");
 #endif
 
+		Layout::init();   // setup extremely basic functionality in Layout
+		
+		isInit = true;
+
 
 #ifdef QDP_IS_QDPJIT
 		char * qdp_install = getenv("QDP_INSTALL");
 		if (qdp_install) {
-		  QDP_info("Using QDP-JIT installation in: %s", qdp_install );
+		  QDP_info_primary("JIT: QDP_INSTALL = %s", qdp_install );
 		  QDPJit::Instance().setQDPPath( string( qdp_install ) );
 		} else {
 		  QDP_error_exit("QDP_INSTALL not set");
 		}
 		char * qdp_temp = getenv("QDP_TEMP");
 		if (qdp_temp) {
-		  QDP_info("kernel directory: %s" , qdp_temp );
+		  QDP_info_primary("JIT: QDP_TEMP = %s" , qdp_temp );
 		  QDPJit::Instance().setKernelPath( string( qdp_temp ) );
 		  QDPJit::Instance().loadAllShared();
 		} else {
@@ -314,13 +317,11 @@ namespace QDP {
 		}
 		char * quda_rpath = getenv("QUDA_RESOURCE_PATH");
 		if (quda_rpath) {
-		  QDP_info("QDP-JIT DB: %s" , quda_rpath );
+		  QDP_info_primary("JIT: QUDA_RESOURCE_PATH = %s" , quda_rpath );
 		  
 		  JitTuning::Instance().setResourcePath( string(quda_rpath) + "/qdp-jit.xml" );
 		  
-		  ifstream check_file( JitTuning::Instance().getResourcePath().c_str() );
-		  if (check_file.good())
-		    JitTuning::Instance().load( JitTuning::Instance().getResourcePath() );
+		  JitTuning::Instance().load( JitTuning::Instance().getResourcePath() );
 		  
 		} else {
 		  QDP_error_exit("QUDA_RESOURCE_PATH not set");
@@ -328,9 +329,6 @@ namespace QDP {
 #endif
 
 		
-		Layout::init();   // setup extremely basic functionality in Layout
-		
-		isInit = true;
 		
 #if QDP_DEBUG >= 1
 		QDP_info("Init qio");
@@ -418,8 +416,7 @@ namespace QDP {
 		}
 
 #ifdef QDP_IS_QDPJIT
-		if( Layout::primaryNode() )
-		  JitTuning::Instance().save( JitTuning::Instance().getResourcePath() );
+		JitTuning::Instance().save_all( JitTuning::Instance().getResourcePath() );
 		CUDAHostPoolAllocator::Instance().unregisterMemory();
 		QDPJit::Instance().closeAllShared();
 #endif
