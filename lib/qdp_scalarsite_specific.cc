@@ -240,7 +240,16 @@ void Set::make(const SetFunc& fun)
   registered=true;
 
   QDP_debug("nonEmptySubsetsOnNode  = %d" , nonEmptySubsetsOnNode );  
-  QDP_debug("stride_offset = %d" , stride_offset );  
+  QDP_debug("stride_offset = %d" , stride_offset );
+
+  // Now check across nodes
+  Integer yo = enableGPU ? 1 : 0;
+  QDPInternal::globalSum(yo);
+  if ( yo.elem().elem().elem().elem() < Layout::numNodes() ) {
+    QDP_info_primary("Disabling 1 particular Set for sumMulti on GPUs");
+    enableGPU=false;
+  }
+  
 #endif
 }
 	  
