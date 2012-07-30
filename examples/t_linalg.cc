@@ -17,13 +17,13 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {16,16,16,16};
+  const int foo[] = {32,32,32,32};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
   Layout::create();
 
-#if 0
+#if 1
 #ifndef QDP_NO_LIBXML2
   XMLFileWriter xml("t_linalg.xml");
   push(xml, "linalgTest");
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
   int icnt;
   double tt;
 
-#if 0
+#if 1
 
 #define TIME_OPS 
   // Test M = M
@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
 
 #endif
   
-#if 0
+#if 1
   // Test  M=adj(M)*M
   QDPIO::cout << "calling M=adj(M)*M " << icnt << " times" << endl;
   tt = rescale * QDP_M_eq_Ma_times_M(c, a, b, icnt);
