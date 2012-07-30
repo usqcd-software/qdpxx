@@ -135,10 +135,13 @@ int main(int argc, char *argv[])
 
   tt *= rescale;
   int Nflops = Nc*Nc*(4*Nc + (4*Nc-2));
+  int NBytes = sizeof(a) * 3;
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M=M*M) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" 
+              << " , " << NBytes / tt << " MBytes/s"
+	      << endl;
 #else
 #ifndef QDP_NO_LIBXML2
   push(xml,"QDP_M_eq_M_times_M");

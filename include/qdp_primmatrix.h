@@ -1500,6 +1500,48 @@ gather_sites(PMatrix<T,N,C>& d,
 		   s7.elem(i,j), i7);
 }
 
+//! gather several inner sites together for MIC 16 vector length
+template<class T, class T1, int N, template<class,int> class C>
+inline void 
+gather_sites(PMatrix<T,N,C>& d, 
+	     const PMatrix<T1,N,C>& s0, int i0, 
+	     const PMatrix<T1,N,C>& s1, int i1,
+	     const PMatrix<T1,N,C>& s2, int i2,
+	     const PMatrix<T1,N,C>& s3, int i3,
+	     const PMatrix<T1,N,C>& s4, int i4, 
+	     const PMatrix<T1,N,C>& s5, int i5,
+	     const PMatrix<T1,N,C>& s6, int i6,
+	     const PMatrix<T1,N,C>& s7, int i7,
+	     const PMatrix<T1,N,C>& s8, int i8, 
+	     const PMatrix<T1,N,C>& s9, int i9,
+	     const PMatrix<T1,N,C>& s10, int i10,
+	     const PMatrix<T1,N,C>& s11, int i11,
+	     const PMatrix<T1,N,C>& s12, int i12, 
+	     const PMatrix<T1,N,C>& s13, int i13,
+	     const PMatrix<T1,N,C>& s14, int i14,
+	     const PMatrix<T1,N,C>& s15, int i15)
+{
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      gather_sites(d.elem(i,j), 
+		   s0.elem(i,j), i0, 
+		   s1.elem(i,j), i1, 
+		   s2.elem(i,j), i2, 
+		   s3.elem(i,j), i3,
+		   s4.elem(i,j), i4, 
+		   s5.elem(i,j), i5, 
+		   s6.elem(i,j), i6, 
+		   s7.elem(i,j), i7,
+		   s8.elem(i,j), i8, 
+		   s9.elem(i,j), i9, 
+		   s10.elem(i,j), i10, 
+		   s11.elem(i,j), i11,
+		   s12.elem(i,j), i12, 
+		   s13.elem(i,j), i13, 
+		   s14.elem(i,j), i14, 
+		   s15.elem(i,j), i15);
+}
+
 
 //! dest  = random  
 template<class T, int N, template<class,int> class C, class T1, class T2>

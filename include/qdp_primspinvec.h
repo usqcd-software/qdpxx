@@ -651,6 +651,47 @@ gather_sites(PSpinVector<T,N>& d,
 		 s7.elem(i), i7);
 }
 
+//! gather several inner sites together: for MIC
+template<class T, class T1, int N>
+inline void 
+gather_sites(PSpinVector<T,N>& d, 
+	     const PSpinVector<T1,N>& s0, int i0, 
+	     const PSpinVector<T1,N>& s1, int i1,
+	     const PSpinVector<T1,N>& s2, int i2,
+	     const PSpinVector<T1,N>& s3, int i3,
+	     const PSpinVector<T1,N>& s4, int i4, 
+	     const PSpinVector<T1,N>& s5, int i5,
+	     const PSpinVector<T1,N>& s6, int i6,
+	     const PSpinVector<T1,N>& s7, int i7,
+	     const PSpinVector<T1,N>& s8, int i8, 
+	     const PSpinVector<T1,N>& s9, int i9,
+	     const PSpinVector<T1,N>& s10, int i10,
+	     const PSpinVector<T1,N>& s11, int i11,
+	     const PSpinVector<T1,N>& s12, int i12, 
+	     const PSpinVector<T1,N>& s13, int i13,
+	     const PSpinVector<T1,N>& s14, int i14,
+	     const PSpinVector<T1,N>& s15, int i15)
+{
+  for(int i=0; i < N; ++i)
+    gather_sites(d.elem(i), 
+		 s0.elem(i), i0, 
+		 s1.elem(i), i1, 
+		 s2.elem(i), i2, 
+		 s3.elem(i), i3,
+		 s4.elem(i), i4, 
+		 s5.elem(i), i5, 
+		 s6.elem(i), i6, 
+		 s7.elem(i), i7,
+		 s8.elem(i), i8, 
+		 s9.elem(i), i9, 
+		 s10.elem(i), i10, 
+		 s11.elem(i), i11,
+		 s12.elem(i), i12, 
+		 s13.elem(i), i13, 
+		 s14.elem(i), i14, 
+		 s15.elem(i), i15);
+}
+
 
 
 #if 0

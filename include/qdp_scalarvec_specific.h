@@ -77,15 +77,20 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
   if (s.hasOrderedRep()) {
     const int istart = s.start() >> INNER_LOG;
     const int iend   = s.end()   >> INNER_LOG;
+    int i = 0;
 
-    for(int i=istart; i <= iend; ++i) {
+#pragma omp for
+    for(i=istart; i <= iend; ++i) {
       //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
       op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
     }
   }
   else {
     const int *tab = s.siteTable().slice();
-    for(int j=0; j < s.numSiteTable(); ++j) {
+    int j = 0;
+
+#pragma omp for
+    for(j=0; j < s.numSiteTable(); ++j) {
       int i = tab[j];
       int outersite = i >> INNER_LOG;
       int innersite = i & ((1 << INNER_LOG)-1);
@@ -127,15 +132,20 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   if (s.hasOrderedRep()) {
     const int istart = s.start() >> INNER_LOG;
     const int iend   = s.end()   >> INNER_LOG;
+    int i = 0;
 
-    for(int i=istart; i <= iend; ++i) {
+#pragma omp for
+    for(i=istart; i <= iend; ++i) {
       //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
       op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
     }
   }
   else {
     const int *tab = s.siteTable().slice();
-    for(int j=0; j < s.numSiteTable(); ++j) {
+    int j;
+
+#pragma omp for
+    for(j=0; j < s.numSiteTable(); ++j) {
       int i = tab[j];
       int outersite = i >> INNER_LOG;
       int innersite = i & ((1 << INNER_LOG)-1);
@@ -1056,6 +1066,87 @@ public:
 		     l.elem(o7),i7);
       }
 
+#elif INNER_LOG == 4
+      // *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
+      // *** This is for MIC ***
+      // For now, use the all subset
+      const int vvol = Layout::sitesOnNode();
+      for(int i=0; i < vvol; i+= INNER_LEN) 
+      {
+	int ii = i >> INNER_LOG;
+	int o0 = goffsets[i+0] >> INNER_LOG;
+	int i0 = goffsets[i+0] & (INNER_LEN - 1);
+
+	int o1 = goffsets[i+1] >> INNER_LOG;
+	int i1 = goffsets[i+1] & (INNER_LEN - 1);
+
+	int o2 = goffsets[i+2] >> INNER_LOG;
+	int i2 = goffsets[i+2] & (INNER_LEN - 1);
+
+	int o3 = goffsets[i+3] >> INNER_LOG;
+	int i3 = goffsets[i+3] & (INNER_LEN - 1);
+
+	int o4 = goffsets[i+4] >> INNER_LOG;
+	int i4 = goffsets[i+4] & (INNER_LEN - 1);
+
+	int o5 = goffsets[i+5] >> INNER_LOG;
+	int i5 = goffsets[i+5] & (INNER_LEN - 1);
+
+	int o6 = goffsets[i+6] >> INNER_LOG;
+	int i6 = goffsets[i+6] & (INNER_LEN - 1);
+
+	int o7 = goffsets[i+7] >> INNER_LOG;
+	int i7 = goffsets[i+7] & (INNER_LEN - 1);
+
+	int o8 = goffsets[i+8] >> INNER_LOG;
+	int i8 = goffsets[i+8] & (INNER_LEN - 1);
+
+	int o9 = goffsets[i+9] >> INNER_LOG;
+	int i9 = goffsets[i+9] & (INNER_LEN - 1);
+
+	int o10 = goffsets[i+10] >> INNER_LOG;
+	int i10 = goffsets[i+10] & (INNER_LEN - 1);
+
+	int o11 = goffsets[i+11] >> INNER_LOG;
+	int i11 = goffsets[i+11] & (INNER_LEN - 1);
+
+	int o12 = goffsets[i+12] >> INNER_LOG;
+	int i12 = goffsets[i+12] & (INNER_LEN - 1);
+
+	int o13 = goffsets[i+13] >> INNER_LOG;
+	int i13 = goffsets[i+13] & (INNER_LEN - 1);
+
+	int o14 = goffsets[i+14] >> INNER_LOG;
+	int i14 = goffsets[i+14] & (INNER_LEN - 1);
+
+	int o15 = goffsets[i+15] >> INNER_LOG;
+	int i15 = goffsets[i+15] & (INNER_LEN - 1);
+
+#if QDP_DEBUG >= 3
+	QDP_info("Map(lattice[%d]=lattice([%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d])",
+		 ii,o0,i0,o1,i1,o2,i2,o3,i3,o4,i4,o5,i5,o6,i6,o7,i7,
+		 o8,i8,o9,i9,o10,i10,o11,i11,o12,i12,o13,i13,o14,i14,o15,i15);
+#endif
+
+	// Gather 16 inner-grid sites together
+	gather_sites(d.elem(ii),
+		     l.elem(o0),i0,
+		     l.elem(o1),i1,
+		     l.elem(o2),i2,
+		     l.elem(o3),i3,
+		     l.elem(o4),i4,
+		     l.elem(o5),i5,
+		     l.elem(o6),i6,
+		     l.elem(o7),i7,
+		     l.elem(o8),i8,
+		     l.elem(o9),i9,
+		     l.elem(o10),i10,
+		     l.elem(o11),i11,
+		     l.elem(o12),i12,
+		     l.elem(o13),i13,
+		     l.elem(o14),i14,
+		     l.elem(o15),i15);
+      }
 #else
 #error "Map: this inner grid length is not supported - easy to fix"
 #endif

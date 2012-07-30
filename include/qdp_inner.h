@@ -3442,6 +3442,46 @@ gather_sites(ILattice<T,8>& d,
   d.elem(7) = s7.elem(i7);
 }
 
+//! gather several inner sites together
+/*! This version is built for inner length of 16 */
+template<class T, class T1>
+inline void 
+gather_sites(ILattice<T,16>& d, 
+	     const ILattice<T1,16>& s0, int i0, 
+	     const ILattice<T1,16>& s1, int i1,
+	     const ILattice<T1,16>& s2, int i2,
+	     const ILattice<T1,16>& s3, int i3,
+	     const ILattice<T1,16>& s4, int i4,
+	     const ILattice<T1,16>& s5, int i5,
+	     const ILattice<T1,16>& s6, int i6,
+	     const ILattice<T1,16>& s7, int i7,
+	     const ILattice<T1,16>& s8, int i8, 
+	     const ILattice<T1,16>& s9, int i9,
+	     const ILattice<T1,16>& s10, int i10,
+	     const ILattice<T1,16>& s11, int i11,
+	     const ILattice<T1,16>& s12, int i12,
+	     const ILattice<T1,16>& s13, int i13,
+	     const ILattice<T1,16>& s14, int i14,
+	     const ILattice<T1,16>& s15, int i15)
+{
+  d.elem(0) = s0.elem(i0);
+  d.elem(1) = s1.elem(i1);
+  d.elem(2) = s2.elem(i2);
+  d.elem(3) = s3.elem(i3);
+  d.elem(4) = s4.elem(i4);
+  d.elem(5) = s5.elem(i5);
+  d.elem(6) = s6.elem(i6);
+  d.elem(7) = s7.elem(i7);
+  d.elem(8) = s8.elem(i8);
+  d.elem(9) = s9.elem(i9);
+  d.elem(10) = s10.elem(i10);
+  d.elem(11) = s11.elem(i11);
+  d.elem(12) = s12.elem(i12);
+  d.elem(13) = s13.elem(i13);
+  d.elem(14) = s14.elem(i14);
+  d.elem(15) = s15.elem(i15);
+}
+
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1, int N> 

@@ -1566,6 +1566,30 @@ gather_sites(PScalar<T>& d,
   gather_sites(d.elem(), s0.elem(), i0, s1.elem(), i1, s2.elem(), i2, s3.elem(), i3, s4.elem(), i4, s5.elem(), i5, s6.elem(), i6, s7.elem(), i7);
 }
 
+//! gather several inner sites together for: 16 vector length MIC
+template<class T, class T1>
+inline void 
+gather_sites(PScalar<T>& d, 
+	     const PScalar<T1>& s0, int i0, 
+	     const PScalar<T1>& s1, int i1,
+	     const PScalar<T1>& s2, int i2,
+	     const PScalar<T1>& s3, int i3,
+	     const PScalar<T1>& s4, int i4, 
+	     const PScalar<T1>& s5, int i5,
+	     const PScalar<T1>& s6, int i6,
+	     const PScalar<T1>& s7, int i7,
+	     const PScalar<T1>& s8, int i8, 
+	     const PScalar<T1>& s9, int i9,
+	     const PScalar<T1>& s10, int i10,
+	     const PScalar<T1>& s11, int i11,
+	     const PScalar<T1>& s12, int i12, 
+	     const PScalar<T1>& s13, int i13,
+	     const PScalar<T1>& s14, int i14,
+	     const PScalar<T1>& s15, int i15)
+{
+  gather_sites(d.elem(), s0.elem(), i0, s1.elem(), i1, s2.elem(), i2, s3.elem(), i3, s4.elem(), i4, s5.elem(), i5, s6.elem(), i6, s7.elem(), i7, s8.elem(), i8, s9.elem(), i9, s10.elem(), i10, s11.elem(), i11, s12.elem(), i12, s13.elem(), i13, s14.elem(), i14, s15.elem(), i15);
+}
+
 /*! @} */  // end of group primscalar
 
 } // namespace QDP
