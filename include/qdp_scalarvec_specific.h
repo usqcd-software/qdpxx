@@ -79,7 +79,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
     const int iend   = s.end()   >> INNER_LOG;
     int i = 0;
 
-#pragma omp for
+#pragma omp parallel for
     for(i=istart; i <= iend; ++i) {
       //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
       op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
@@ -89,7 +89,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
     const int *tab = s.siteTable().slice();
     int j = 0;
 
-#pragma omp for
+#pragma omp parallel for
     for(j=0; j < s.numSiteTable(); ++j) {
       int i = tab[j];
       int outersite = i >> INNER_LOG;
@@ -134,7 +134,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     const int iend   = s.end()   >> INNER_LOG;
     int i = 0;
 
-#pragma omp for
+#pragma omp parallel for
     for(i=istart; i <= iend; ++i) {
       //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
       op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
@@ -144,7 +144,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     const int *tab = s.siteTable().slice();
     int j;
 
-#pragma omp for
+#pragma omp parallel for
     for(j=0; j < s.numSiteTable(); ++j) {
       int i = tab[j];
       int outersite = i >> INNER_LOG;
