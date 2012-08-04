@@ -30,7 +30,7 @@ void StopWatch::start()
   ret_val = gettimeofday(&t_start, NULL);
   if( ret_val != 0 ) 
   {
-    QDPIO::cerr << "Gettimeofday failed in StopWatch::start()" << endl;
+    QDPIO::cerr << __func__ << ": gettimeofday failed in StopWatch::start()" << endl;
     QDP_abort(1);
   }
   startedP = true;
@@ -41,7 +41,7 @@ void StopWatch::stop()
 {
   if( !startedP ) 
   { 
-    QDPIO::cerr << "Attempting to stop a non running stopwatch in StopWatch::stop()" << endl;
+    QDPIO::cerr << __func__ << ": attempting to stop a non running stopwatch in StopWatch::stop()" << endl;
     QDP_abort(1);
   }
 
@@ -49,7 +49,7 @@ void StopWatch::stop()
   ret_val = gettimeofday(&t_end, NULL);
   if( ret_val != 0 ) 
   {
-    QDPIO::cerr << "Gettimeofday failed in StopWatch::end()" << endl;
+    QDPIO::cerr << __func__ << ": gettimeofday failed in StopWatch::end()" << endl;
     QDP_abort(1);
   }
   stoppedP = true;
@@ -62,7 +62,7 @@ double StopWatch::getTimeInMicroseconds()
   { 
     if( t_end.tv_sec < t_start.tv_sec ) 
     { 
-      QDPIO::cerr << "Critical timer rollover" << endl;
+      QDPIO::cerr << __func__ << ": critical timer rollover" << endl;
       QDP_abort(1);
     }
     else 
@@ -82,7 +82,7 @@ double StopWatch::getTimeInMicroseconds()
   }
   else 
   {
-    QDPIO::cerr << "Either stopwatch not started, or not stopped" << endl;
+    QDPIO::cerr << __func__ << ": either stopwatch not started, or not stopped" << endl;
     QDP_abort(1);
   }
 
@@ -97,7 +97,7 @@ double StopWatch::getTimeInSeconds()
   { 
     if( t_end.tv_sec < t_start.tv_sec ) 
     { 
-      QDPIO::cerr << "Critical timer rollover" << endl;
+      QDPIO::cerr << __func__ << ": critical timer rollover" << endl;
       QDP_abort(1);
     }
     else 
@@ -114,7 +114,7 @@ double StopWatch::getTimeInSeconds()
   }
   else 
   {
-    QDPIO::cerr << "Either stopwatch not started, or not stopped" << endl;
+    QDPIO::cerr << __func__ << ": either stopwatch not started, or not stopped" << endl;
     QDP_abort(1);
   }
 
