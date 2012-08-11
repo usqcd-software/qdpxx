@@ -10,6 +10,7 @@
 #include <string>
 #include <sstream>
 #include <stack>
+#include <list>
 
 #include "xml_simplewriter.h"
 #include "basic_xpath_reader.h"
@@ -321,6 +322,75 @@ namespace QDP
   void read(XMLReader& xml, const std::string& s, std::vector<float>& input);
   void read(XMLReader& xml, const std::string& s, std::vector<double>& input);
 //  void read(XMLReader& xml, const std::string& s, std::vector<bool>& input);  // does not seem to exist
+
+  //---------------------------------------------------------------
+  //---------------------------------------------------------------
+  //! Read a XML list element
+  template<class T>
+  inline
+  void read(XMLReader& xml, const std::string& s, std::list<T>& input)
+  {
+    XMLReader arraytop(xml, s);
+
+    std::ostringstream error_message;
+    std::string elemName = "elem";
+  
+    // Count the number of elements
+    std::string elem_base_query = elemName;
+	
+    int array_size;
+    try {
+      array_size = arraytop.count(elem_base_query);
+    }
+    catch( const std::string& e) { 
+      error_message << "Exception occurred while counting " << elem_base_query 
+		    << " during array read " << s << std::endl;
+      arraytop.close();
+      throw error_message.str();
+    }
+      
+    // Now resize the array to hold the no of elements.
+    input.resize(array_size);
+
+    // Get the elements one by one
+    int i = 0;
+    for(typename std::list<T>::iterator t= input.begin(); t != input.end(); ++t, ++i)
+    {
+      std::ostringstream element_xpath;
+
+      // Create the query for the element 
+      element_xpath << elem_base_query << "[" << (i+1) << "]";
+
+      // recursively try and read the element.
+      try {
+	read(arraytop, element_xpath.str(), *t);
+      } 
+      catch (const std::string& e) 
+      {
+	error_message << "Failed to match element " << i
+		      << " of array  " << s << "  with query " << element_xpath.str()
+		      << std::endl
+		      << "Query returned error: " << e;
+	arraytop.close();
+	throw error_message.str();
+      }
+    }
+
+    // Arraytop should self destruct but just to be sure.
+    arraytop.close();
+  }
+
+
+  // Specialized versions for basic types
+  void read(XMLReader& xml, const std::string& s, std::list<int>& input);
+  void read(XMLReader& xml, const std::string& s, std::list<unsigned int>& input);
+  void read(XMLReader& xml, const std::string& s, std::list<short int>& input);
+  void read(XMLReader& xml, const std::string& s, std::list<unsigned short int>& input);
+  void read(XMLReader& xml, const std::string& s, std::list<long int>& input);
+  void read(XMLReader& xml, const std::string& s, std::list<unsigned long int>& input);
+  void read(XMLReader& xml, const std::string& s, std::list<float>& input);
+  void read(XMLReader& xml, const std::string& s, std::list<double>& input);
+  void read(XMLReader& xml, const std::string& s, std::list<bool>& input);
 
 
   //---------------------------------------------------------------
@@ -779,6 +849,37 @@ namespace QDP
   void write(XMLWriter& xml, const std::string& s, const std::vector<float>& output);
   void write(XMLWriter& xml, const std::string& s, const std::vector<double>& output);
   void write(XMLWriter& xml, const std::string& s, const std::vector<bool>& output);
+
+
+  //---------------------------------------------------------------
+  //---------------------------------------------------------------
+  //! Write a XML list element
+  template<class T>
+  inline
+  void write(XMLWriter& xml, const std::string& s, const std::list<T>& s1)
+  {
+    // Write the array name
+    xml.openTag(s);
+
+    for(typename std::list<T>::const_iterator t=s1.begin(); t != s1.end(); ++t)
+    {
+      write(xml, "elem", *t);  // Possibly grab user defines here
+    }
+
+    xml.closeTag(); // Array name
+  }
+
+
+  // Writers for arrays of basic types
+  void write(XMLWriter& xml, const std::string& s, const std::list<int>& output);
+  void write(XMLWriter& xml, const std::string& s, const std::list<unsigned int>& output);
+  void write(XMLWriter& xml, const std::string& s, const std::list<short int>& output);
+  void write(XMLWriter& xml, const std::string& s, const std::list<unsigned short int>& output);
+  void write(XMLWriter& xml, const std::string& s, const std::list<long int>& output);
+  void write(XMLWriter& xml, const std::string& s, const std::list<unsigned long int>& output);
+  void write(XMLWriter& xml, const std::string& s, const std::list<float>& output);
+  void write(XMLWriter& xml, const std::string& s, const std::list<double>& output);
+  void write(XMLWriter& xml, const std::string& s, const std::list<bool>& output);
 
 
   //---------------------------------------------------------------

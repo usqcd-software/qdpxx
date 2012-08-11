@@ -69,7 +69,12 @@ namespace QDP
 
       //! Total number of nodes
       int num_nodes;
-    } _layout;
+
+	  bool iogrid_defined;
+      int  num_iogrid;
+	  multi1d<int> iogrid;
+
+	} _layout;
 
 
     //-----------------------------------------------------
@@ -151,6 +156,11 @@ namespace QDP
     {
       _layout.num_nodes = QMP_get_number_of_nodes();
       _layout.node_rank = QMP_get_node_number();
+		
+	  // Default should be current behaviour (as of 7/4/12)
+	  // No iogrid is defined -> each node is its own I/O node
+	  _layout.iogrid_defined = false;  
+	  _layout.num_iogrid = _layout.num_nodes;
     }
 
 
@@ -164,6 +174,43 @@ namespace QDP
     }
 
 
+	  
+	  //! check if I/O grid is defined
+	  /*! Always defined for scalar node: it is 1x1x1x1 */
+	  bool isIOGridDefined(void) QDP_CONST 
+	  { 
+		  return _layout.iogrid_defined; 
+	  }
+	  
+	  //! number of I/O nodes
+	  int numIONodeGrid(void) QDP_CONST
+	  {
+		
+		  
+		  return _layout.num_iogrid;
+		  
+	  }
+	  
+	  //! Set the I/O Node grid -- satisfy interface
+	  void setIONodeGrid(const multi1d<int>& io_grid) 
+	  {
+		_layout.iogrid.resize(Nd);	
+		for(int mu=0; mu < Nd; mu++) {
+		  _layout.iogrid[mu] = io_grid[mu];
+		}
+		_layout.num_iogrid = io_grid[0];
+		for(int mu=1; mu < Nd; mu++) { 
+		  _layout.num_iogrid *= io_grid[mu];
+		}
+		_layout.iogrid_defined = true;
+	  }
+	  
+	  //! Get the I/O Node grid
+	  const multi1d<int>& getIONodeGrid() QDP_CONST
+	  {
+		  return _layout.iogrid;
+	  }
+	  
     //! Initializer for all the layout defaults
     void initDefaults()
     {
@@ -276,7 +323,13 @@ namespace QDP
       QDPIO::cout << "  total number of nodes = " << Layout::numNodes() << endl;
       QDPIO::cout << "  total volume = " << _layout.vol << endl;
       QDPIO::cout << "  subgrid volume = " << _layout.subgrid_vol << endl;
-
+      if ( _layout.iogrid_defined ) { 
+        QDPIO::cout << "  Number of IO nodes = " << _layout.num_iogrid << endl;
+        QDPIO::cout << "  IO grid size =";
+        for(int i=0; i < Nd; i++) 
+ 	  QDPIO::cout << " " << _layout.iogrid[i];
+        QDPIO::cout << endl;
+      } 
 
       // Sanity check - check the QMP node number functions
       for(int node=0; node < Layout::numNodes(); ++node)
@@ -289,6 +342,9 @@ namespace QDP
       }
 
       // Sanity check - check the layout functions make sense
+#if QDP_DEBUG >= 2
+	// BJ: Put this into a debug loop as it can take a serious amount of time for a really
+        // large lattice
       for(int site=0; site < vol(); ++site) 
       {
 	multi1d<int> coord1 = crtesn(site, lattSize());
@@ -299,7 +355,7 @@ namespace QDP
 	multi1d<int> coord2 = siteCoords(node,linear);
 	int j = local_site(coord2, lattSize());
       
-#if QDP_DEBUG >= 2
+#if QDP_DEBUG >= 3
 	QDP_info("site= %d   coord= %d %d %d %d   linear= %d node=%d   crd=%d %d %d %d   j= %d",
 		 site,coord1[0],coord1[1],coord1[2],coord1[3],
 		 linear,node,
@@ -309,7 +365,7 @@ namespace QDP
 	if (site != j)
 	  QDP_error_exit("Layout::create - Layout problems, the layout functions do not work correctly with this lattice size");
       }
-
+#endif
       // Initialize various defaults
       initDefaults();
 

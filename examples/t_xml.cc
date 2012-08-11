@@ -149,6 +149,16 @@ int main(int argc, char **argv)
       arrayComplex[i] = cmplx(Real(1.0),Real(i+42));
     write(toxml,"arrayComplex",arrayComplex);
 
+    std::list<Real> listReal;
+    for(int i=0; i < 3; ++i)
+      listReal.push_back(1.0/Real(i+5));
+    write(toxml,"listReal",listReal);
+
+    std::list<Complex> listComplex;
+    for(int i=0; i < 2; ++i)
+      listComplex.push_back(cmplx(Real(3.1),Real(i+117)));
+    write(toxml,"listComplex",listComplex);
+
     ColorVector c;
     random(c);
     write(toxml,"colorVectorThingy",c);
@@ -212,6 +222,16 @@ int main(int argc, char **argv)
       QDPIO::cout << "arrayComplex[" << i << "] = ("
 		  << real(arrayComplex[i]) << "," 
 		  << imag(arrayComplex[i]) << ")" << endl;
+
+    std::list<Real> listReal;
+    read(fromxml,"listReal",listReal);
+    for(std::list<Real>::const_iterator i=listReal.begin(); i != listReal.end(); ++i)
+      QDPIO::cout << "listReal = " << *i << "  node=" << Layout::nodeNumber() << endl;
+
+    std::list<Complex> listComplex;
+    read(fromxml,"listComplex",listComplex);
+    for(std::list<Complex>::const_iterator i=listComplex.begin(); i != listComplex.end(); ++i)
+      QDPIO::cout << "listComplex = (" << real(*i) << "," << imag(*i) << ")" << endl;
 
     QDP_info("done with array snippet tests");
   }

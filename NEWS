@@ -1,3 +1,17 @@
+07/04/2012 -- Balint Joo
+        Version 1.42.0: New funtionality allowing for QIO to write from multiple
+        IO nodes.
+
+06/26/2012 -- Robert Edwards
+        Version 1.41.0: Changed implementation of MapObjectDisk to
+        use tr1::unordered_map. Now, should be no more instances of
+        std::map in qdp++ that requires the user to supply some form
+        of operator< for key comparisons.
+  
+06/25/2012 -- Robert Edwards
+        Version 1.40.1: Added xml reads/writes of std::list as well as
+        specializatiions for std::vector.
+   
 06/06/2012 -- Robert Edwards
         Version 1.40.0: Added in new tr1::unordered_map class. Several fixes
         in string broadcasts.
