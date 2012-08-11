@@ -151,9 +151,6 @@ namespace QDP {
 //#include "qdp_special.h"
 #include "qdp_random.h"
 
-// Include threading code here if applicable
-#include "qdp_dispatch.h"
-
 namespace ThreadReductions { 
  
 }

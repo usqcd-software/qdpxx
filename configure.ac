@@ -1,4 +1,4 @@
-AC_INIT([qdp++],[1.42.0],[edwards@jlab.org])
+AC_INIT([qdp++],[1.43.0],[edwards@jlab.org])
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -565,41 +565,6 @@ fi
 AM_CONDITIONAL(BUILD_FILEDB,
   [test "x${filedb_enabled}x" = "xyesx" ])
 
-dnl Use Jie Chens threads library
-AC_ARG_WITH(qmt,
-   AC_HELP_STRING(
-    [--with-qmt=<DIR>],
-    [Enable use of QMT Threads library installed in DIR]
-   ),
-   [ qmt_enabled="yes"
-     QMT_HOME=${with_qmt} ],
-   [ qmt_enabled="no" ]
-)
-dnl QMT Threads stuff
-if test "X${qmt_enabled}X" == "XyesX"; 
-then
-	AC_MSG_NOTICE([Configuring QMT Threading])
-	if test "X${omp_enabled}X" == "XyesX";
-	then 
-	  AC_MSG_ERROR([Cannot have OpenMP and QMT threading defined simultaneously])
-	else
-	  AC_DEFINE([QDP_USE_QMT_THREADS], [1], [ Use QMT Threads library ])
-	  AC_SUBST(QMT_HOME, "${QMT_HOME}")
-	  AC_MSG_NOTICE(QMT_HOME: ${QMT_HOME})
-	  AC_SUBST(QMT_CXXFLAGS, "-I${QMT_HOME}/include")
-	  AC_MSG_NOTICE(QMT_CXXFLAGS: ${QMT_CXXFLAGS})
-	  AC_SUBST(QMT_LDFLAGS, "-L${QMT_HOME}/lib")
-	  AC_MSG_NOTICE(QMT_LDFLAGS: ${QMT_LDFLAGS})
-	  AC_SUBST(QMT_LIBS, "-lqmt -lpthread -lm")
-	  AC_MSG_NOTICE(QMT_LIBS: ${QMT_LIBS})
-	fi
-else 
-	AC_SUBST(QMT_CXXFLAGS, "")
-	AC_SUBST(QMT_LDFLAGS, "")
-	AC_SUBST(QMT_LIBS, "")
-
-fi
-
 
 dnl Use OpenMP threading
 AC_ARG_ENABLE(openmp,
@@ -614,11 +579,6 @@ dnl OpenMP Threads stuff
 if test "X${omp_enabled}X" == "XyesX";
 then
 	AC_MSG_NOTICE([Configuring OpenMP Threading])
-	if test "X${qmt_enabled}X" == "XyesX";
-        then 
-          AC_MSG_ERROR([Cannot have OpenMP and QMT threading defined simultaneously])
-	fi
-	  
 	AC_DEFINE([QDP_USE_OMP_THREADS], [1], [ Use OpenMP Threads ])
 fi
 
@@ -654,10 +614,6 @@ AM_CONDITIONAL(BUILD_WILSON_EXAMPLES,
 AM_CONDITIONAL(BUILD_DEFAULT_ALLOCATOR,
   [test "X${ac_qcdoc_enabled}X" = "X0X"])
 
-#
-# Conditional for use qmt
-#
-AM_CONDITIONAL(QDP_USE_QMT_THREADS, [test "x${qmt_enabled}x" = "xyesx" ])
 #
 # Conditional for use omp
 #

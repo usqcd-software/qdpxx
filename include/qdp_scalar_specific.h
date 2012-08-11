@@ -56,85 +56,6 @@ namespace QDPInternal
   inline void broadcast(void* dest, size_t nbytes) {}
 }
 
-/////////////////////////////////////////////////////////
-// Threading evaluate with openmp and qmt implementation
-//
-// by Xu Guo, EPCC, 16 June 2008
-/////////////////////////////////////////////////////////
-
-//! user argument for the evaluate function:
-// "OLattice Op Scalar(Expression(source)) under an Subset"
-//
-template<class T, class T1, class Op, class RHS>
-struct u_arg{
-        OLattice<T>& d;
-        const QDPExpr<RHS,OScalar<T1> >& r;
-        const Op& op;
-        const int *tab;
-  u_arg( OLattice<T>& d_,
-	 const QDPExpr<RHS, OScalar<T1> >& r_,
-	 const Op& op_,
-	 const int *tab_ ) : d(d_), r(r_), op(op_), tab(tab_) {}
-   };
-
-//! user function for the evaluate function:
-// "OLattice Op Scalar(Expression(source)) under an Subset"
-//
-template<class T, class T1, class Op, class RHS>
-void ev_userfunc(int lo, int hi, int myId, u_arg<T,T1,Op,RHS> *a)
-{
-   OLattice<T>& dest = a->d;
-   const QDPExpr<RHS,OScalar<T1> >&rhs = a->r;
-   const int* tab = a->tab;
-   const Op& op= a->op;
-
-      
-   for(int j=lo; j < hi; ++j)
-   {
-     int i = tab[j];
-     op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
-   }
-}
-
-
-//! user argument for the evaluate function:
-// "OLattice Op OLattice(Expression(source)) under an Subset"
-//
-template<class T, class T1, class Op, class RHS>
-struct user_arg{
-        OLattice<T>& d;
-        const QDPExpr<RHS,OLattice<T1> >& r;
-        const Op& op;
-        const int *tab;
-  user_arg(OLattice<T>& d_,
-	   const QDPExpr<RHS,OLattice<T1> >& r_,
-	   const Op& op_,
-	   const int *tab_) : d(d_), r(r_), op(op_), tab(tab_) {}
-
-   };
-
-//! user function for the evaluate function:
-// "OLattice Op OLattice(Expression(source)) under an Subset"
-//
-template<class T, class T1, class Op, class RHS>
-void evaluate_userfunc(int lo, int hi, int myId, user_arg<T,T1,Op,RHS> *a)
-{
-
-   OLattice<T>& dest = a->d;
-   const QDPExpr<RHS,OLattice<T1> >&rhs = a->r;
-   const int* tab = a->tab;
-   const Op& op= a->op;
-
-      
-   for(int j=lo; j < hi; ++j)
-   {
-     int i = tab[j];
-     op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
-   }
-}
-
-//! include the header file for dispatch
-#include "qdp_dispatch.h"
 
 //-----------------------------------------------------------------------------
 //! OLattice Op Scalar(Expression(source)) under an Subset
@@ -154,23 +75,29 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
   prof.time -= getClockTime();
 #endif
 
-  int numSiteTable = s.numSiteTable();
-  
-  u_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
+  if (s.hasOrderedRep()) {
+    const int istart = s.start();
+    const int iend   = s.end();
+    int i;
 
-  dispatch_to_threads< u_arg<T,T1,Op,RHS> >(numSiteTable, a, ev_userfunc);
- 
-  ///////////////////
-  // Original code
-  //////////////////
-  //const int *tab = s.siteTable().slice();
-  //for(int j=0; j < s.numSiteTable(); ++j) 
-  //{
-  //int i = tab[j];
-//    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
-//    op(dest.elem(i), forEach(rhs, ElemLeaf(), OpCombine()));
-  //op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
-  //}
+#pragma omp parallel for
+    for(i=istart; i <= iend; ++i) {
+      //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+    }
+  }
+  else {
+    const int *tab = s.siteTable().slice();
+    int j;
+
+#pragma omp parallel for
+    for(int j=0; j < s.numSiteTable(); ++j) 
+    {
+      int i = tab[j];
+      //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+    }
+  }    
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -198,24 +125,31 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   prof.time -= getClockTime();
 #endif
 
-  int numSiteTable = s.numSiteTable();
-
-  user_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
-
-  dispatch_to_threads<user_arg<T,T1,Op,RHS> >(numSiteTable, a, evaluate_userfunc);
-
-  ////////////////////
-  // Original code
-  ///////////////////
-
+#ifndef QDP_NOT_IMPLEMENTED
   // General form of loop structure
-  //const int *tab = s.siteTable().slice();
-  //for(int j=0; j < s.numSiteTable(); ++j) 
-  //{
-  //int i = tab[j];
-//    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
-  //op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
-  //}
+  if (s.hasOrderedRep()) {
+    const int istart = s.start();
+    const int iend   = s.end();
+    int i;
+
+#pragma omp parallel for
+    for(i=istart; i <= iend; ++i) {
+      //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+    }
+  }
+  else {
+    const int *tab = s.siteTable().slice();
+    int j;
+
+#pragma omp parallel for
+    for(j=0; j < s.numSiteTable(); ++j) {
+      int i = tab[j];
+
+      //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+    }
+  }    
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();

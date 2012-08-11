@@ -102,9 +102,6 @@
 /* Enable QCDOC opts */
 #undef QDP_USE_QCDOC
 
-/* Use QMT Threads library */
-#undef QDP_USE_QMT_THREADS
-
 /* Enable SSE instructions */
 #undef QDP_USE_SSE
 
