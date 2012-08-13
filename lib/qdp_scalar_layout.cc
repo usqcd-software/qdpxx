@@ -1,4 +1,3 @@
-
 /*! @file
  * @brief Scalar layout routines
  * 
@@ -48,8 +47,8 @@ namespace QDP
       //! Logical system size
       multi1d<int> logical_size;
 		
-	  //! IO Grid size
-		multi1d<int> iogrid;
+      //! IO Grid size
+      multi1d<int> iogrid;
 
     } _layout;
 
@@ -118,46 +117,44 @@ namespace QDP
       return node_coord;
     }
 
-	
+    //! check if I/O grid is defined
+    /*! Always defined for scalar node: it is 1x1x1x1 */
+    bool isIOGridDefined(void) QDP_CONST 
+    { 
+      return true; 
+    }
 	  
-	//! check if I/O grid is defined
-	/*! Always defined for scalar node: it is 1x1x1x1 */
-	bool isIOGridDefined(void) QDP_CONST 
-	{ 
-	  return true; 
-	}
+    //! number of I/O nodes
+    int numIONodeGrid(void) QDP_CONST
+    {
+      return 1;
+    }
 	  
-	//! number of I/O nodes
-	int numIONodeGrid(void) QDP_CONST
-	{
-		return 1;
-	}
-	  
-	//! Default initializer
-	void setIONodeGridDefaults()
-	{	  
-		// Scalar machine: It's 1x1x1x1
- 		_layout.iogrid.resize(Nd);
-		for(int i=0; i < Nd; i++) { 
-			_layout.iogrid[i] = 1;
-		}		
-	}
+    //! Default initializer
+    void setIONodeGridDefaults()
+    {	  
+      // Scalar machine: It's 1x1x1x1
+      _layout.iogrid.resize(Nd);
+      for(int i=0; i < Nd; i++) { 
+	_layout.iogrid[i] = 1;
+      }		
+    }
 
-	//! Set the I/O Node grid -- satisfy interface
-	void setIONodeGrid(const multi1d<int>& io_grid) 
-	{
-		  // Completely	ignore user supplied grid :)
-		  // Its scalar	
-		setIONodeGridDefaults();	
-	}
+    //! Set the I/O Node grid -- satisfy interface
+    void setIONodeGrid(const multi1d<int>& io_grid) 
+    {
+      // Completely	ignore user supplied grid :)
+      // Its scalar	
+      setIONodeGridDefaults();	
+    }
 	
     //! Get the I/O Node grid
     const multi1d<int>& getIONodeGrid() QDP_CONST
     {
-		return _layout.iogrid;
-	}
+      return _layout.iogrid;
+    }
 	  
-	  //! Initializer for layout
+    //! Initializer for layout
     void init() {}
 
     //! The linearized site index for the corresponding lexicographic site
@@ -181,8 +178,8 @@ namespace QDP
       // Set default profile level
       setProfileLevel(getProgramProfileLevel());
 	
-	  // Set IO node grid defaults.
-	  setIONodeGridDefaults();	
+      // Set IO node grid defaults.
+      setIONodeGridDefaults();	
     }
 
     //! Initializer for layout
