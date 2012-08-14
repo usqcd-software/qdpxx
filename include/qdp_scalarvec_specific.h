@@ -1634,13 +1634,22 @@ namespace LatticeTimeSliceIO
 
     if (Layout::lattSize()[tDir] % INNER_LEN != 0)
       QDP_error_exit ("Size of time dimension %d is not multiple of vector len %d\n", Layout::lattSize()[tDir], INNER_LEN);
-    else {
-      for(int site=start_lexico; site < stop_lexico; ++site) {
-	int i = Layout::linearSiteIndex(site);
-	bin.readArray((char*)&(data.elem(i)), 
-		      sizeof(typename WordType<T>::Type_t), 
-		      sizeof(T) / sizeof(typename WordType<T>::Type_t));
-      }
+
+
+    for(int site=start_lexico; site < stop_lexico; ++site) 
+    {
+      int i = Layout::linearSiteIndex(site);
+      int outersite = i >> INNER_LOG;
+      int innersite = i & ((1 << INNER_LOG)-1);
+
+      typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
+      Site_t  this_site;
+
+      bin.readArray((char*)&this_site,
+		    sizeof(typename WordType<Site_t>::Type_t), 
+		    sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
+
+      copy_site(data.elem(outersite), innersite, this_site);
     }
   }
 
@@ -1652,14 +1661,20 @@ namespace LatticeTimeSliceIO
     int tDir = Nd-1;
 
     if (Layout::lattSize()[tDir] % INNER_LEN != 0)
-      QDP_error_exit ("Size of time dimension %d is not multiple of vector len %d\n", Layout::lattSize()[tDir], INNER_LEN);
-    else {
-      for(int site=start_lexico; site < stop_lexico; ++site) {
-	int i = Layout::linearSiteIndex(site);
-	bin.writeArray((const char*)&(data.elem(i)), 
-		       sizeof(typename WordType<T>::Type_t), 
-		       sizeof(T) / sizeof(typename WordType<T>::Type_t));
-      }
+      QDP_error_exit("Size of time dimension %d is not multiple of vector len %d\n", Layout::lattSize()[tDir], INNER_LEN);
+
+    for(int site=start_lexico; site < stop_lexico; ++site) 
+    {
+      int i = Layout::linearSiteIndex(site);
+      int outersite = i >> INNER_LOG;
+      int innersite = i & ((1 << INNER_LOG)-1);
+
+      typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
+      Site_t  this_site = getSite(data.elem(outersite),innersite);
+
+      bin.writeArray((const char*)&this_site,
+		     sizeof(typename WordType<Site_t>::Type_t), 
+		     sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
     }
   }
 
