@@ -311,7 +311,7 @@ template<class T, class T1, class Op, class RHS>
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
 	      const Subset& s)
 {
-// cerr << "In evaluateSubset(olattice,oscalar)\n";
+  //  cout << __PRETTY_FUNCTION__ << "\n";
 
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(dest, op, rhs);
@@ -319,9 +319,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 #endif
 
   int numSiteTable = s.numSiteTable();
-  
   u_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
-
   dispatch_to_threads< u_arg<T,T1,Op,RHS> >(numSiteTable, a, ev_userfunc);
 
   ///////////////////
@@ -412,7 +410,33 @@ struct LeafFunctor<OScalar<T>, ShiftPhase2>
     }
 };
 
+template<int N>
+struct LeafFunctor<GammaType<N>, ShiftPhase1>
+{
+  typedef int Type_t;
+  static int apply(const GammaType<N> &s, const ShiftPhase1 &f) { return 0; }
+};
 
+template<int N, int m>
+struct LeafFunctor<GammaConst<N,m>, ShiftPhase1>
+{
+  typedef int Type_t;
+  static int apply(const GammaConst<N,m> &s, const ShiftPhase1 &f) { return 0; }
+};
+
+template<int N>
+struct LeafFunctor<GammaType<N>, ShiftPhase2>
+{
+  typedef int Type_t;
+  static int apply(const GammaType<N> &s, const ShiftPhase2 &f) { return 0; }
+};
+
+template<int N, int m>
+struct LeafFunctor<GammaConst<N,m>, ShiftPhase2>
+{
+  typedef int Type_t;
+  static int apply(const GammaConst<N,m> &s, const ShiftPhase2 &f) { return 0; }
+};
 
 
 
@@ -440,27 +464,25 @@ template<class T, class T1, class Op, class RHS>
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
 	      const Subset& s)
 {
-  QDP_info("%s",__PRETTY_FUNCTION__);
+  // cout << __PRETTY_FUNCTION__ << "\n";
 
   ShiftPhase1 phase1;
   forEach(rhs, phase1 , NullCombine());
 
-#if 1
   int ss=0;
   for (int i=0;i<phase1.isFace.size();i++)
     if (phase1.isFace[i]) ss++;
-  QDP_info("face sites = %d",ss);
+  //QDP_info("face sites = %d",ss);
 
   const int *tab = s.siteTable().slice();
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
     if (phase1.isFace[i] == 0) {
-      QDP_info("calc inner site %d",i);
+      //QDP_info("calc inner site %d",i);
       op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()) );
     }
   }
-#endif
 
   ShiftPhase2 phase2;
   forEach(rhs, phase2 , NullCombine());
@@ -469,7 +491,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   {
     int i = tab[j];
     if (phase1.isFace[i] == 1) {
-      QDP_info("calc face site %d",i);
+      //QDP_info("calc face site %d",i);
       op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()) );
     }
   }
@@ -750,6 +772,56 @@ sum(const QDPExpr<RHS,OScalar<T> >& s1)
  * Allow a global sum that sums over the lattice, but returns an object
  * of the same primitive type. E.g., contract only over lattice indices
  */
+#if 1
+template<class RHS, class T>
+typename UnaryReturn<OLattice<T>, FnSum>::Type_t
+sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
+{
+  typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnSum(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  // Must initialize to zero since we do not know if the loop will be entered
+  zero_rep(d.elem());
+
+  ShiftPhase1 phase1;
+  forEach(s1, phase1 , NullCombine());
+
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); ++j) 
+  {
+    int i = tab[j];
+    if (phase1.isFace[i] == 0) {
+      d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+    }
+  }
+
+  ShiftPhase2 phase2;
+  forEach(s1, phase2 , NullCombine());
+
+  for(int j=0; j < s.numSiteTable(); ++j) 
+  {
+    int i = tab[j];
+    if (phase1.isFace[i] == 1) {
+      d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+    }
+  }
+
+  // Do a global sum on the result
+  QDPInternal::globalSum(d);
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+#else
 template<class RHS, class T>
 typename UnaryReturn<OLattice<T>, FnSum>::Type_t
 sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
@@ -782,8 +854,64 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 
   return d;
 }
+#endif
 
+//! OScalar = sum(OLattice)
+/*!
+ * Allow a global sum that sums over the lattice, but returns an object
+ * of the same primitive type. E.g., contract only over lattice indices
+ */
+#if 1  // use overlap shift version ?
+template<class RHS, class T>
+typename UnaryReturn<OLattice<T>, FnSum>::Type_t
+sum(const QDPExpr<RHS,OLattice<T> >& s1)
+{
+  typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
 
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnSum(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  // Loop always entered - could unroll
+  zero_rep(d.elem());
+  const int nodeSites = Layout::sitesOnNode();
+
+  ShiftPhase1 phase1;
+  forEach(s1, phase1 , NullCombine());
+
+  for(int i=0; i < nodeSites; ++i) {
+    if (phase1.isFace[i] == 0) {
+      d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+    }
+  }
+
+  ShiftPhase2 phase2;
+  forEach(s1, phase2 , NullCombine());
+
+  for(int i=0; i < nodeSites; ++i) {
+    if (phase1.isFace[i] == 1) {
+      d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+    }
+  }
+
+  // Original code
+  //
+  // for(int i=0; i < nodeSites; ++i) 
+  //   d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+
+  // Do a global sum on the result
+  QDPInternal::globalSum(d);
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+#else
 //! OScalar = sum(OLattice)
 /*!
  * Allow a global sum that sums over the lattice, but returns an object
@@ -818,7 +946,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
 
   return d;
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 // Multiple global sums 
@@ -865,6 +993,58 @@ sumMulti(const QDPExpr<RHS,OScalar<T> >& s1, const Set& ss)
  * slow. Otherwise, generalized sums happen so infrequently the slow
  * version is fine.
  */
+#if 1
+template<class RHS, class T>
+typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t
+sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
+{
+  typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(dest[0], OpAssign(), FnSum(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  // Initialize result with zero
+  for(int k=0; k < ss.numSubsets(); ++k)
+    zero_rep(dest[k]);
+
+  // Loop over all sites and accumulate based on the coloring 
+  const multi1d<int>& lat_color =  ss.latticeColoring();
+  const int nodeSites = Layout::sitesOnNode();
+
+  ShiftPhase1 phase1;
+  forEach(s1, phase1 , NullCombine());
+
+  for(int i=0; i < nodeSites; ++i) {
+    if (phase1.isFace[i] == 0) {
+      int j = lat_color[i];
+      dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+    }
+  }
+
+  ShiftPhase2 phase2;
+  forEach(s1, phase2 , NullCombine());
+
+  for(int i=0; i < nodeSites; ++i) {
+    if (phase1.isFace[i] == 1) {
+      int j = lat_color[i];
+      dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+    }
+  }
+
+  // Do a global sum on the result
+  QDPInternal::globalSumArray(dest);
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return dest;
+}
+#else
 template<class RHS, class T>
 typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t
 sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
@@ -901,7 +1081,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 
   return dest;
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 // Multiple global sums on an array
@@ -1372,6 +1552,12 @@ globalMax(const QDPExpr<RHS,OLattice<T> >& s1)
   prof.time -= getClockTime();
 #endif
 
+
+  ShiftPhase1 phase1;
+  forEach(s1, phase1 , NullCombine());
+  ShiftPhase2 phase2;
+  forEach(s1, phase2 , NullCombine());
+
   // Loop always entered so unroll
   d.elem() = forEach(s1, EvalLeaf1(0), OpCombine());   // SINGLE NODE VERSION FOR NOW
 
@@ -1439,6 +1625,11 @@ globalMin(const QDPExpr<RHS,OLattice<T> >& s1)
   static QDPProfile_t prof(d, OpAssign(), FnGlobalMin(), s1);
   prof.time -= getClockTime();
 #endif
+
+  ShiftPhase1 phase1;
+  forEach(s1, phase1 , NullCombine());
+  ShiftPhase2 phase2;
+  forEach(s1, phase2 , NullCombine());
 
   // Loop always entered so unroll
   d.elem() = forEach(s1, EvalLeaf1(0), OpCombine());   // SINGLE NODE VERSION FOR NOW
@@ -1969,20 +2160,21 @@ private:
 struct FnMapRsrc
 {
   FnMapRsrc(): bAlloc(false), ind_array(new int[Layout::sitesOnNode()]) {
-    QDP_info("FnMapRsrc");
+    //QDP_info("FnMapRsrc");
   }
   ~FnMapRsrc() {
-    QDP_info("~FnMapRsrc");
+    //QDP_info("~FnMapRsrc");
     delete[] ind_array;
     if (bAlloc) {
-      QDP_info("FnMapRsrc, qmp_dealloc");
-      
+      //QDP_info("FnMapRsrc, qmp_dealloc");
+      QMP_free_memory(recv_buf_mem);
+      QMP_free_memory(send_buf_mem);
     }
   }
 
 
   void qmp_wait() {
-    QDP_info("FnMapRsrc, qmp_wait...");
+    //QDP_info("FnMapRsrc, qmp_wait...");
     QMP_status_t err;
     if ((err = QMP_wait(mh)) != QMP_SUCCESS)
       QDP_error_exit(QMP_error_string(err));
@@ -2002,7 +2194,7 @@ struct FnMapRsrc
   void qmp_alloc(int srcnum_, int dstnum_) {
     srcnum=srcnum_;
     dstnum=dstnum_;
-    QDP_info("FnMapRsrc, qmp_alloc: srcnum=%d, dstnum=%d", srcnum, dstnum);
+    //QDP_info("FnMapRsrc, qmp_alloc: srcnum=%d, dstnum=%d", srcnum, dstnum);
     bAlloc=true;
     send_buf_mem = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE, (QMP_MEM_COMMS|QMP_MEM_FAST) ); // packed data to send
     if( send_buf_mem == 0x0 ) { 
@@ -2099,15 +2291,17 @@ struct FnMap
   //const Map& getMap() const { return map; }
 
   FnMap(const Map& m): map(m), pRsrc(new FnMapRsrc) {
-    QDP_info("FnMap(Map): map=0x%p size_soffsets=%d",(void*)&m,m.soffsets.size());
+    //QDP_info("FnMap(Map): map=0x%p size_soffsets=%d",(void*)&m,m.soffsets.size());
   }
 
   FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {
-    QDP_info("FnMap(copy): map=0x%p size_soffsets=%d shared=%d", (void*)&f.map , f.map.soffsets.size() , pRsrc.use_count() );
+    //QDP_info("FnMap(copy): map=0x%p size_soffsets=%d shared=%d", (void*)&f.map , f.map.soffsets.size() , pRsrc.use_count() );
   }
 
+  FnMap& operator=(const FnMap& f) = delete;
+
   ~FnMap() {
-    QDP_info("~FnMap, map=0x%p",(void*)&map);
+    //QDP_info("~FnMap, map=0x%p",(void*)&map);
   }
   
   template<class T>
@@ -2120,11 +2314,11 @@ struct FnMap
 };
 
 
-template<class A>
-void printme()
-{
-  QDP_info("%s",__PRETTY_FUNCTION__);
-}
+// template<class A>
+// void printme()
+// {
+//   QDP_info("%s",__PRETTY_FUNCTION__);
+// }
 
 
 template<class A, class CTag>
@@ -2146,7 +2340,7 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , CTag>
 
     if (map.offnodeP)
       {
-	QDP_info("Map: off-node communications required");
+	//QDP_info("Map: off-node communications required");
 
 	int dstnum = map.destnodes_num[0]*sizeof(Type_t);
 	int srcnum = map.srcenodes_num[0]*sizeof(Type_t);
@@ -2239,18 +2433,17 @@ struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
   {
     const Map& map = expr.operation().map;
     FnMap& fnmap = const_cast<FnMap&>(expr.operation());
-
     
     if (map.offnodeP) {
       // assert((*fnmap.pRsrc).ind_array[f.val1()] < 0);
       // assert(-(*fnmap.pRsrc).ind_array[f.val1()]-1 == map.goffsets[f.val1()]);
-      QDP_info("ind_array[%d]=%d %d",f.val1(),(*fnmap.pRsrc).ind_array[f.val1()],map.goffsets[f.val1()]);
+      //QDP_info("ind_array[%d]=%d %d",f.val1(),(*fnmap.pRsrc).ind_array[f.val1()],map.goffsets[f.val1()]);
       if ((*fnmap.pRsrc).ind_array[f.val1()] < 0) {
-	QDP_info("local on node");
+	//QDP_info("local on node");
 	EvalLeaf1 ff( -(*fnmap.pRsrc).ind_array[f.val1()] - 1 );
 	return Combine1<TypeA_t, FnMap, CTag>::combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),expr.operation(), c);
       } else {
-	QDP_info("in receive buffer");
+	//QDP_info("in receive buffer");
 	const Type_t *recv_buf_c = (*fnmap.pRsrc).getRecvBufPtr<Type_t>();
 	Type_t* recv_buf = const_cast<Type_t*>(recv_buf_c);
 	if ( recv_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n"); }

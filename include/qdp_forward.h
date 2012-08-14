@@ -99,6 +99,7 @@ namespace QDP
   // Empty print tag
   struct PrintTag;
   struct ShiftPhase1;
+  struct ShiftPhase2;
 
   // Used for nearest neighbor shift (a map)
   class ArrayBiDirectionalMap;
