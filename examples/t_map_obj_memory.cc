@@ -16,23 +16,6 @@ namespace QDP
   };
 
   //----------------------------------------------------------------------------
-  // Support for the keys of prop color vectors
-  bool operator<(const KeyPropColorVec_t& a, const KeyPropColorVec_t& b)
-  {
-    multi1d<int> lgaa(3);
-    lgaa[0] = a.t_source;
-    lgaa[1] = a.colorvec_src;
-    lgaa[2] = a.spin_src;
-
-    multi1d<int> lgbb(3);
-    lgbb[0] = b.t_source;
-    lgbb[1] = b.colorvec_src;
-    lgbb[2] = b.spin_src;
-
-    return (lgaa < lgbb);
-  }
-
-  //----------------------------------------------------------------------------
   // KeyPropColorVec read
   void read(BinaryReader& bin, KeyPropColorVec_t& param)
   {
