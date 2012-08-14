@@ -84,6 +84,7 @@
 #include <cstdlib>
 #include <ostream>
 #include <iostream>
+#include <memory>
 
 using namespace std;   // I do not like this - fix later
 

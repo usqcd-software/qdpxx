@@ -345,6 +345,91 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 }
 
 
+struct ShiftPhase1
+{
+  ShiftPhase1(): isFace(Layout::sitesOnNode(),0) {
+    //QDP_info("ShiftPhase1::ShiftPhase1()");
+  }
+
+  std::vector<unsigned char> isFace;
+};
+
+
+template<class T, class C>
+struct LeafFunctor<QDPType<T,C>, ShiftPhase1>
+{
+  typedef int Type_t;
+  static int apply(const QDPType<T,C> &s, const ShiftPhase1 &f)
+    {
+      return 0;
+    }
+};
+
+template<class T>
+struct LeafFunctor<OScalar<T>, ShiftPhase1>
+{
+  typedef int Type_t;
+  static int apply(const OScalar<T> &s, const ShiftPhase1 &f)
+    { 
+      return 0;
+    }
+};
+
+
+template<class A, class B, class Op>
+struct Combine2<A,B,Op,NullCombine>
+{
+  typedef int Type_t;
+  static Type_t combine(const A &a,const B &b, const Op &, const NullCombine &) { return 0; }
+};
+
+
+
+
+
+struct ShiftPhase2
+{
+};
+
+
+template<class T, class C>
+struct LeafFunctor<QDPType<T,C>, ShiftPhase2>
+{
+  typedef int Type_t;
+  static int apply(const QDPType<T,C> &s, const ShiftPhase2 &f)
+    {
+      return 0;
+    }
+};
+
+template<class T>
+struct LeafFunctor<OScalar<T>, ShiftPhase2>
+{
+  typedef int Type_t;
+  static int apply(const OScalar<T> &s, const ShiftPhase2 &f)
+    { 
+      return 0;
+    }
+};
+
+
+
+
+
+// template<class T>
+// struct LeafFunctor<T, ShiftPhase1>
+// {
+//   typedef int Type_t;
+//   template<class C>
+//   static int apply(const QDPType<T,C> &s, const ShiftPhase1 &f)
+//   { 
+//     return 0;
+//     //return LeafFunctor<C,PrintTag>::apply(static_cast<const C&>(s),f);
+//   }
+// };
+
+
+
 //! OLattice Op OLattice(Expression(source)) under an Subset
 /*! 
  * OLattice Op Expression, where Op is some kind of binary operation 
@@ -355,18 +440,59 @@ template<class T, class T1, class Op, class RHS>
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
 	      const Subset& s)
 {
-//  cerr << "In evaluateSubset(olattice,olattice)" << endl;
+  QDP_info("%s",__PRETTY_FUNCTION__);
+
+  ShiftPhase1 phase1;
+  forEach(rhs, phase1 , NullCombine());
+
+#if 1
+  int ss=0;
+  for (int i=0;i<phase1.isFace.size();i++)
+    if (phase1.isFace[i]) ss++;
+  QDP_info("face sites = %d",ss);
+
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); ++j) 
+  {
+    int i = tab[j];
+    if (phase1.isFace[i] == 0) {
+      QDP_info("calc inner site %d",i);
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()) );
+    }
+  }
+#endif
+
+  ShiftPhase2 phase2;
+  forEach(rhs, phase2 , NullCombine());
+
+  for(int j=0; j < s.numSiteTable(); ++j)
+  {
+    int i = tab[j];
+    if (phase1.isFace[i] == 1) {
+      QDP_info("calc face site %d",i);
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()) );
+    }
+  }
+
+
+  // const int *tab = s.siteTable().slice();
+  // for(int j=0; j < s.numSiteTable(); ++j) 
+  // {
+  //   int i = tab[j];
+  //   op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()) );
+  // }
+
 
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(dest, op, rhs);
   prof.time -= getClockTime();
 #endif
 
+#if 0 
   int numSiteTable = s.numSiteTable();
-
   user_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
-
   dispatch_to_threads< user_arg<T,T1,Op,RHS> >(numSiteTable, a, evaluate_userfunc);
+#endif
 
   ////////////////////
   // Original code
@@ -1490,10 +1616,8 @@ QDP_insert(OLattice<T>& dest, const multi1d<OScalar<T> >& src, const Subset& s)
 //
 
 // Empty map
-struct FnMap
-{
-  PETE_EMPTY_CONSTRUCTORS(FnMap)
-};
+struct FnMap;
+
 
 #if defined(QDP_USE_PROFILING)   
 template <>
@@ -1532,6 +1656,7 @@ public:
    *
    * Notice, this implementation does not allow an Inner grid
    */
+#if 0
   template<class T1>
   OLattice<T1>
   operator()(const OLattice<T1> & l)
@@ -1539,6 +1664,7 @@ public:
 #if QDP_DEBUG >= 3
       QDP_info("Map()");
 #endif
+      QDP_error_exit("Never should arrive here!");
 
       OLattice<T1> d;
       const int nodeSites = Layout::sitesOnNode();
@@ -1750,40 +1876,56 @@ public:
 
       return d;
     }
+#endif
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(*this),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
+    }
 
 
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(*this),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+    }
+
+
+#if 0
   template<class T1>
   OScalar<T1>
   operator()(const OScalar<T1> & l)
     {
       return l;
     }
-
   template<class RHS, class T1>
   OScalar<T1>
   operator()(const QDPExpr<RHS,OScalar<T1> > & l)
     {
-      // For now, simply evaluate the expression and then do the map
       typedef OScalar<T1> C1;
-
-//    fprintf(stderr,"map(QDPExpr<OScalar>)\n");
       OScalar<T1> d = this->operator()(C1(l));
-
       return d;
     }
-
   template<class RHS, class T1>
   OLattice<T1>
   operator()(const QDPExpr<RHS,OLattice<T1> > & l)
     {
-      // For now, simply evaluate the expression and then do the map
       typedef OLattice<T1> C1;
-
-//    fprintf(stderr,"map(QDPExpr<OLattice>)\n");
       OLattice<T1> d = this->operator()(C1(l));
-
       return d;
     }
+#endif
 
 
 public:
@@ -1799,6 +1941,9 @@ private:
   void operator=(const Map&) {}
 
 private:
+  friend class FnMap;
+  template<class E,class F,class C> friend class ForEach;
+
   //! Offset table used for communications. 
   /*! 
    * The direction is in the sense of the Map or Shift functions from QDP.
@@ -1818,6 +1963,307 @@ private:
   // Indicate off-node communications is needed;
   bool offnodeP;
 };
+
+
+
+struct FnMapRsrc
+{
+  FnMapRsrc(): bAlloc(false), ind_array(new int[Layout::sitesOnNode()]) {
+    QDP_info("FnMapRsrc");
+  }
+  ~FnMapRsrc() {
+    QDP_info("~FnMapRsrc");
+    delete[] ind_array;
+    if (bAlloc) {
+      QDP_info("FnMapRsrc, qmp_dealloc");
+      
+    }
+  }
+
+
+  void qmp_wait() {
+    QDP_info("FnMapRsrc, qmp_wait...");
+    QMP_status_t err;
+    if ((err = QMP_wait(mh)) != QMP_SUCCESS)
+      QDP_error_exit(QMP_error_string(err));
+
+#if QDP_DEBUG >= 3
+    QDP_info("Map: calling free msgs");
+#endif
+
+    //	QMP_free_msghandle(mh_a[1]);
+    //	QMP_free_msghandle(mh_a[0]);
+    QMP_free_msghandle(mh);
+    QMP_free_msgmem(msg[1]);
+    QMP_free_msgmem(msg[0]);
+  }
+
+
+  void qmp_alloc(int srcnum_, int dstnum_) {
+    srcnum=srcnum_;
+    dstnum=dstnum_;
+    QDP_info("FnMapRsrc, qmp_alloc: srcnum=%d, dstnum=%d", srcnum, dstnum);
+    bAlloc=true;
+    send_buf_mem = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE, (QMP_MEM_COMMS|QMP_MEM_FAST) ); // packed data to send
+    if( send_buf_mem == 0x0 ) { 
+      send_buf_mem = QMP_allocate_aligned_memory(dstnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
+      if( send_buf_mem == 0x0 ) { 
+	QDP_error_exit("Unable to allocate send_buf_mem\n");
+      }
+    }
+    recv_buf_mem = QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE, (QMP_MEM_COMMS|QMP_MEM_FAST)); // packed receive data
+    if( recv_buf_mem == 0x0 ) { 
+      recv_buf_mem = QMP_allocate_aligned_memory(srcnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS); 
+      if( recv_buf_mem == 0x0 ) { 
+	QDP_error_exit("Unable to allocate recv_buf_mem\n");
+      }
+    }
+    send_buf=QMP_get_memory_pointer(send_buf_mem);
+    recv_buf=QMP_get_memory_pointer(recv_buf_mem);
+  }
+
+
+  void send_receive(int srcnode,int dstnode) {
+    QMP_status_t err;
+#if QDP_DEBUG >= 3
+    QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
+    QDP_info("Map: establish send=%d recv=%d",destnodes[0],srcenodes[0]);
+    {
+      const multi1d<int>& me = Layout::nodeCoord();
+      multi1d<int> scrd = Layout::getLogicalCoordFrom(destnodes[0]);
+      multi1d<int> rcrd = Layout::getLogicalCoordFrom(srcenodes[0]);
+
+      QDP_info("Map: establish-info   my_crds=[%d,%d,%d,%d]",me[0],me[1],me[2],me[3]);
+      QDP_info("Map: establish-info send_crds=[%d,%d,%d,%d]",scrd[0],scrd[1],scrd[2],scrd[3]);
+      QDP_info("Map: establish-info recv_crds=[%d,%d,%d,%d]",rcrd[0],rcrd[1],rcrd[2],rcrd[3]);
+    }
+#endif
+
+    msg[0] = QMP_declare_msgmem(recv_buf, srcnum);
+    if( msg[0] == (QMP_msgmem_t)NULL ) { 
+      QDP_error_exit("QMP_declare_msgmem for msg[0] failed in Map::operator()\n");
+    }
+    msg[1] = QMP_declare_msgmem(send_buf, dstnum);
+    if( msg[1] == (QMP_msgmem_t)NULL ) {
+      QDP_error_exit("QMP_declare_msgmem for msg[1] failed in Map::operator()\n");
+    }
+
+    mh_a[0] = QMP_declare_receive_from(msg[0], srcnode, 0);
+    if( mh_a[0] == (QMP_msghandle_t)NULL ) { 
+      QDP_error_exit("QMP_declare_receive_from for mh_a[0] failed in Map::operator()\n");
+    }
+
+    mh_a[1] = QMP_declare_send_to(msg[1], dstnode , 0);
+    if( mh_a[1] == (QMP_msghandle_t)NULL ) {
+      QDP_error_exit("QMP_declare_send_to for mh_a[1] failed in Map::operator()\n");
+    }
+
+    mh = QMP_declare_multiple(mh_a, 2);
+    if( mh == (QMP_msghandle_t)NULL ) { 
+      QDP_error_exit("QMP_declare_multiple for mh failed in Map::operator()\n");
+    }
+
+#if QDP_DEBUG >= 3
+    QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
+#endif
+
+    // Launch the faces
+    if ((err = QMP_start(mh)) != QMP_SUCCESS)
+      QDP_error_exit(QMP_error_string(err));
+  }
+
+
+  template<typename T> const T* getSendBufPtr() const { return static_cast<T*>(send_buf); }
+  template<typename T> const T* getRecvBufPtr() const { return static_cast<T*>(recv_buf); }
+
+  bool bAlloc;
+  mutable void * send_buf;
+  mutable void * recv_buf;
+  int * ind_array;
+  int srcnum, dstnum;
+  QMP_msgmem_t msg[2];
+  QMP_msghandle_t mh_a[2], mh;
+  QMP_mem_t *send_buf_mem;
+  QMP_mem_t *recv_buf_mem;
+};
+
+
+
+struct FnMap
+{
+  //PETE_EMPTY_CONSTRUCTORS(FnMap)
+
+  const Map& map;
+  std::shared_ptr<FnMapRsrc> pRsrc;
+
+  //const Map& getMap() const { return map; }
+
+  FnMap(const Map& m): map(m), pRsrc(new FnMapRsrc) {
+    QDP_info("FnMap(Map): map=0x%p size_soffsets=%d",(void*)&m,m.soffsets.size());
+  }
+
+  FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {
+    QDP_info("FnMap(copy): map=0x%p size_soffsets=%d shared=%d", (void*)&f.map , f.map.soffsets.size() , pRsrc.use_count() );
+  }
+
+  ~FnMap() {
+    QDP_info("~FnMap, map=0x%p",(void*)&map);
+  }
+  
+  template<class T>
+  inline typename UnaryReturn<T, FnMap>::Type_t
+  operator()(const T &a) const
+  {
+    return (a);
+  }
+
+};
+
+
+template<class A>
+void printme()
+{
+  QDP_info("%s",__PRETTY_FUNCTION__);
+}
+
+
+template<class A, class CTag>
+struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , CTag>
+{
+  typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t TypeA_t;
+  typedef typename Combine1<TypeA_t, FnMap, OpCombine>::Type_t Type_t;
+  typedef QDPExpr<A,OLattice<Type_t> > Expr;
+  inline static
+  Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase1 &f, const CTag &c)
+  {
+    const Map& map = expr.operation().map;
+    FnMap& fnmap = const_cast<FnMap&>(expr.operation());
+    ShiftPhase1& fmod = const_cast<ShiftPhase1&>(f);
+
+    //printme<Type_t>();
+
+    const int nodeSites = Layout::sitesOnNode();
+
+    if (map.offnodeP)
+      {
+	QDP_info("Map: off-node communications required");
+
+	int dstnum = map.destnodes_num[0]*sizeof(Type_t);
+	int srcnum = map.srcenodes_num[0]*sizeof(Type_t);
+
+	(*fnmap.pRsrc).qmp_alloc(srcnum,dstnum);
+
+	const Type_t *send_buf_c = (*fnmap.pRsrc).getSendBufPtr<Type_t>();
+	//const Type_t *recv_buf_c = (*fnmap.pRsrc).getRecvBufPtr<Type_t>();
+
+	Type_t* send_buf = const_cast<Type_t*>(send_buf_c);
+	//Type_t* recv_buf = const_cast<Type_t*>(recv_buf_c);
+
+	if ( send_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (send_buf)\n"); }
+	//if ( recv_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n"); }
+
+	const int my_node = Layout::nodeNumber();
+
+	Expr subexpr(expr.child());
+
+	// Gather the face of data to send
+	// For now, use the all subset
+	for(int si=0; si < map.soffsets.size(); ++si)
+	{
+#if QDP_DEBUG >= 3
+	  QDP_info("Map_scatter_send(buf[%d],olattice[%d])",si,map.soffsets[si]);
+#endif
+  	  send_buf[si] = forEach( subexpr , EvalLeaf1(map.soffsets[si]) , OpCombine() );
+	}
+
+	for(int i=0, ri=0; i < nodeSites; ++i) 
+	  {
+	    if (map.srcnode[i] != my_node)
+	      {
+		// ind_array >= 0 it contains the receive_buffer index
+		(*fnmap.pRsrc).ind_array[i] = ri++;
+		fmod.isFace[i]=1;
+	      }
+	    else
+	      {
+		// additional '-1' to make sure its negative,
+		// not the best style, but higher performance
+		// than using another buffer
+		(*fnmap.pRsrc).ind_array[i] = -map.goffsets[i]-1;
+	      }
+	    //QDP_info("ind[%d]=%d",i,fnmap.ind_array[i]);
+	  }
+
+	(*fnmap.pRsrc).send_receive( map.srcenodes[0] , map.destnodes[0] );
+
+      }
+
+
+    // EvalLeaf1 ff(expr.operation().getMap().goffsets[f.val1()]);
+    // fprintf(stderr,"ForEach<Unary<FnMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
+
+    // return Combine1<TypeA_t, FnMap, CTag>::
+    //   combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),
+    //           expr.operation(), c);
+  }
+};
+
+
+
+
+template<class A, class CTag>
+struct ForEach<UnaryNode<FnMap, A>, ShiftPhase2 , CTag>
+{
+  typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t TypeA_t;
+  typedef typename Combine1<TypeA_t, FnMap, OpCombine>::Type_t Type_t;
+  typedef QDPExpr<A,OLattice<Type_t> > Expr;
+  inline static
+  Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase2 &f, const CTag &c)
+  {
+    const Map& map = expr.operation().map;
+    FnMap& fnmap = const_cast<FnMap&>(expr.operation());
+    if (map.offnodeP)
+      (*fnmap.pRsrc).qmp_wait();
+  }
+};
+
+
+
+template<class A, class CTag>
+struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
+{
+  typedef typename ForEach<A, EvalLeaf1, CTag>::Type_t TypeA_t;
+  typedef typename Combine1<TypeA_t, FnMap, CTag>::Type_t Type_t;
+  inline static
+  Type_t apply(const UnaryNode<FnMap, A> &expr, const EvalLeaf1 &f, const CTag &c)
+  {
+    const Map& map = expr.operation().map;
+    FnMap& fnmap = const_cast<FnMap&>(expr.operation());
+
+    
+    if (map.offnodeP) {
+      // assert((*fnmap.pRsrc).ind_array[f.val1()] < 0);
+      // assert(-(*fnmap.pRsrc).ind_array[f.val1()]-1 == map.goffsets[f.val1()]);
+      QDP_info("ind_array[%d]=%d %d",f.val1(),(*fnmap.pRsrc).ind_array[f.val1()],map.goffsets[f.val1()]);
+      if ((*fnmap.pRsrc).ind_array[f.val1()] < 0) {
+	QDP_info("local on node");
+	EvalLeaf1 ff( -(*fnmap.pRsrc).ind_array[f.val1()] - 1 );
+	return Combine1<TypeA_t, FnMap, CTag>::combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),expr.operation(), c);
+      } else {
+	QDP_info("in receive buffer");
+	const Type_t *recv_buf_c = (*fnmap.pRsrc).getRecvBufPtr<Type_t>();
+	Type_t* recv_buf = const_cast<Type_t*>(recv_buf_c);
+	if ( recv_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n"); }
+	return recv_buf[(*fnmap.pRsrc).ind_array[f.val1()]];
+      }
+    } else {
+      EvalLeaf1 ff( map.goffsets[f.val1()]);
+      return Combine1<TypeA_t, FnMap, CTag>::combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),expr.operation(), c);
+    }
+  }
+};
+
+
 
 
 //-----------------------------------------------------------------------------
@@ -1848,6 +2294,31 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int dir)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(mapsa[dir]),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
+    }
+
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l, int dir)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(mapsa[dir]),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+    }
+
+
+#if 0
   template<class T1>
   OLattice<T1>
   operator()(const OLattice<T1> & l, int dir)
@@ -1890,7 +2361,7 @@ public:
       // For now, simply evaluate the expression and then do the map
       return mapsa[dir](l);
     }
-
+#endif
 
 private:
   //! Hide copy constructor
@@ -1932,6 +2403,33 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int isign)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimaps[(isign+1)>>1]),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
+    }
+
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l, int isign)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimaps[(isign+1)>>1]),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+    }
+
+
+
+#if 0
   template<class T1>
   OLattice<T1>
   operator()(const OLattice<T1> & l, int isign)
@@ -1975,6 +2473,7 @@ public:
       // For now, simply evaluate the expression and then do the map
       return bimaps[(isign+1)>>1](l);
     }
+#endif
 
 
 private:
@@ -2026,6 +2525,34 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
+
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int isign, int dir)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimapsa((isign+1)>>1,dir)),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
+    }
+
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l, int isign, int dir)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimapsa((isign+1)>>1,dir)),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+    }
+
+
+
+#if 0
   template<class T1>
   OLattice<T1>
   operator()(const OLattice<T1> & l, int isign, int dir)
@@ -2068,7 +2595,7 @@ public:
       // For now, simply evaluate the expression and then do the map
       return bimapsa((isign+1)>>1,dir)(l);
     }
-
+#endif
 
 private:
   //! Hide copy constructor
