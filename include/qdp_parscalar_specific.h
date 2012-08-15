@@ -343,72 +343,163 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 }
 
 
+
+
 struct ShiftPhase1
 {
-  ShiftPhase1(): isFace(Layout::sitesOnNode(),0) {
-    //QDP_info("ShiftPhase1::ShiftPhase1()");
-  }
-
+  ShiftPhase1(): isFace(Layout::sitesOnNode(),0) {}
   std::vector<unsigned char> isFace;
 };
 
-
-template<class T, class C>
-struct LeafFunctor<QDPType<T,C>, ShiftPhase1>
+struct ShiftPhase1Found
 {
-  typedef int Type_t;
-  static int apply(const QDPType<T,C> &s, const ShiftPhase1 &f)
-    {
-      return 0;
-    }
+  ShiftPhase1Found(const ShiftPhase1& p): isFace(p.isFace) {}
+  const std::vector<unsigned char>& isFace;
 };
-
-template<class T>
-struct LeafFunctor<OScalar<T>, ShiftPhase1>
-{
-  typedef int Type_t;
-  static int apply(const OScalar<T> &s, const ShiftPhase1 &f)
-    { 
-      return 0;
-    }
-};
-
-
-template<class A, class B, class Op>
-struct Combine2<A,B,Op,NullCombine>
-{
-  typedef int Type_t;
-  static Type_t combine(const A &a,const B &b, const Op &, const NullCombine &) { return 0; }
-};
-
-
-
-
 
 struct ShiftPhase2
 {
 };
 
 
-template<class T, class C>
-struct LeafFunctor<QDPType<T,C>, ShiftPhase2>
+// template<class T, class C>
+// struct LeafFunctor<QDPType<T,C>, ShiftPhase1>
+// {
+//   typedef int Type_t;
+//   static int apply(const QDPType<T,C> &s, const ShiftPhase1 &f)
+//     {
+//       return 0;
+//     }
+// };
+
+// template<class T>
+// struct LeafFunctor<OScalar<T>, ShiftPhase1>
+// {
+//   typedef int Type_t;
+//   static int apply(const OScalar<T> &s, const ShiftPhase1 &f)
+//     { 
+//       return 0;
+//     }
+// };
+
+
+// template<class A, class B, class Op>
+// struct Combine2<A,B,Op,NullCombine>
+// {
+//   typedef int Type_t;
+//   static Type_t combine(const A &a,const B &b, const Op &, const NullCombine &) { return 0; }
+// };
+
+
+
+
+
+
+
+template<class T>
+struct LeafFunctor<OScalar<T>, ShiftPhase1>
 {
   typedef int Type_t;
-  static int apply(const QDPType<T,C> &s, const ShiftPhase2 &f)
-    {
-      return 0;
-    }
+  inline static Type_t apply(const OScalar<T> &a, const ShiftPhase1 &f) {
+    return 0;
+  }
+};
+
+template<class T>
+struct LeafFunctor<OLattice<T>, ShiftPhase1>
+{
+  typedef int Type_t;
+  inline static Type_t apply(const OLattice<T> &a, const ShiftPhase1 &f) {
+    return 0;
+  }
+};
+
+template<class T, class C>
+struct LeafFunctor<QDPType<T,C>, ShiftPhase1>
+{
+  typedef int Type_t;
+  static int apply(const QDPType<T,C> &s, const ShiftPhase1 &f) {
+    return 0;
+  }
+};
+
+
+template<class T>
+struct LeafFunctor<OScalar<T>, ShiftPhase1Found>
+{
+  typedef int Type_t;
+  inline static Type_t apply(const OScalar<T> &a, const ShiftPhase1Found &f) {
+    return 0;
+  }
+};
+
+template<class T>
+struct LeafFunctor<OLattice<T>, ShiftPhase1Found>
+{
+  typedef int Type_t;
+  inline static Type_t apply(const OLattice<T> &a, const ShiftPhase1Found &f) {
+    return 0;
+  }
+};
+
+template<class T, class C>
+struct LeafFunctor<QDPType<T,C>, ShiftPhase1Found>
+{
+  typedef int Type_t;
+  static int apply(const QDPType<T,C> &s, const ShiftPhase1Found &f) {
+    return 0;
+  }
 };
 
 template<class T>
 struct LeafFunctor<OScalar<T>, ShiftPhase2>
 {
   typedef int Type_t;
-  static int apply(const OScalar<T> &s, const ShiftPhase2 &f)
-    { 
-      return 0;
-    }
+  inline static Type_t apply(const OScalar<T> &a, const ShiftPhase2 &f) {
+    return 0;
+  }
 };
+
+template<class T>
+struct LeafFunctor<OLattice<T>, ShiftPhase2>
+{
+  typedef int Type_t;
+  inline static Type_t apply(const OLattice<T> &a, const ShiftPhase2 &f) {
+    return 0;
+  }
+};
+
+template<class T, class C>
+struct LeafFunctor<QDPType<T,C>, ShiftPhase2>
+{
+  typedef int Type_t;
+  static int apply(const QDPType<T,C> &s, const ShiftPhase2 &f) {
+    return 0;
+  }
+};
+
+
+
+
+// template<class T, class C>
+// struct LeafFunctor<QDPType<T,C>, ShiftPhase2>
+// {
+//   typedef int Type_t;
+//   static int apply(const QDPType<T,C> &s, const ShiftPhase2 &f)
+//     {
+//       return 0;
+//     }
+// };
+
+// template<class T>
+// struct LeafFunctor<OScalar<T>, ShiftPhase2>
+// {
+//   typedef int Type_t;
+//   static int apply(const OScalar<T> &s, const ShiftPhase2 &f)
+//     { 
+//       return 0;
+//     }
+// };
 
 template<int N>
 struct LeafFunctor<GammaType<N>, ShiftPhase1>
@@ -425,6 +516,20 @@ struct LeafFunctor<GammaConst<N,m>, ShiftPhase1>
 };
 
 template<int N>
+struct LeafFunctor<GammaType<N>, ShiftPhase1Found>
+{
+  typedef int Type_t;
+  static int apply(const GammaType<N> &s, const ShiftPhase1Found &f) { return 0; }
+};
+
+template<int N, int m>
+struct LeafFunctor<GammaConst<N,m>, ShiftPhase1Found>
+{
+  typedef int Type_t;
+  static int apply(const GammaConst<N,m> &s, const ShiftPhase1Found &f) { return 0; }
+};
+
+template<int N>
 struct LeafFunctor<GammaType<N>, ShiftPhase2>
 {
   typedef int Type_t;
@@ -437,6 +542,24 @@ struct LeafFunctor<GammaConst<N,m>, ShiftPhase2>
   typedef int Type_t;
   static int apply(const GammaConst<N,m> &s, const ShiftPhase2 &f) { return 0; }
 };
+
+
+template<class Op, class A, class B, class FTag>
+struct ForEach<BinaryNode<Op, A, B>, FTag, NullCombine >
+{
+  typedef int Type_t;
+  inline static
+  Type_t apply(const BinaryNode<Op, A, B> &expr, const FTag &f,
+	       const NullCombine &c)
+  {
+    ForEach<A, FTag, NullCombine>::apply(expr.left(), f, c);
+    ForEach<B, FTag, NullCombine>::apply(expr.right(), f, c);
+    return 0;
+  }
+};
+
+
+
 
 
 
@@ -2159,6 +2282,8 @@ private:
 
 struct FnMapRsrc
 {
+  FnMapRsrc(const FnMapRsrc&) = delete;
+
   FnMapRsrc(): bAlloc(false), ind_array(new int[Layout::sitesOnNode()]) {
     //QDP_info("FnMapRsrc");
   }
@@ -2314,27 +2439,29 @@ struct FnMap
 };
 
 
-// template<class A>
-// void printme()
-// {
-//   QDP_info("%s",__PRETTY_FUNCTION__);
-// }
-
-
-template<class A, class CTag>
-struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , CTag>
+template<class A>
+void printme()
 {
-  typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t TypeA_t;
-  typedef typename Combine1<TypeA_t, FnMap, OpCombine>::Type_t Type_t;
-  typedef QDPExpr<A,OLattice<Type_t> > Expr;
+  QDP_info("%s",__PRETTY_FUNCTION__);
+}
+
+
+template<class A>
+struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , NullCombine>
+{
+  typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t InnerTypeA_t;
+  typedef typename Combine1<InnerTypeA_t, FnMap, OpCombine>::Type_t InnerType_t;
+  typedef int Type_t;
+  typedef QDPExpr<A,OLattice<InnerType_t> > Expr;
   inline static
-  Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase1 &f, const CTag &c)
+  Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase1 &f, const NullCombine &c)
   {
     const Map& map = expr.operation().map;
     FnMap& fnmap = const_cast<FnMap&>(expr.operation());
     ShiftPhase1& fmod = const_cast<ShiftPhase1&>(f);
 
-    //printme<Type_t>();
+    // printme<InnerTypeA_t>();
+    // printme<InnerType_t>();
 
     const int nodeSites = Layout::sitesOnNode();
 
@@ -2342,19 +2469,16 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , CTag>
       {
 	//QDP_info("Map: off-node communications required");
 
-	int dstnum = map.destnodes_num[0]*sizeof(Type_t);
-	int srcnum = map.srcenodes_num[0]*sizeof(Type_t);
+	int dstnum = map.destnodes_num[0]*sizeof(InnerType_t);
+	int srcnum = map.srcenodes_num[0]*sizeof(InnerType_t);
 
 	(*fnmap.pRsrc).qmp_alloc(srcnum,dstnum);
 
-	const Type_t *send_buf_c = (*fnmap.pRsrc).getSendBufPtr<Type_t>();
-	//const Type_t *recv_buf_c = (*fnmap.pRsrc).getRecvBufPtr<Type_t>();
+	const InnerType_t *send_buf_c = (*fnmap.pRsrc).getSendBufPtr<InnerType_t>();
 
-	Type_t* send_buf = const_cast<Type_t*>(send_buf_c);
-	//Type_t* recv_buf = const_cast<Type_t*>(recv_buf_c);
+	InnerType_t* send_buf = const_cast<InnerType_t*>(send_buf_c);
 
 	if ( send_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (send_buf)\n"); }
-	//if ( recv_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n"); }
 
 	const int my_node = Layout::nodeNumber();
 
@@ -2387,11 +2511,13 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , CTag>
 	      }
 	    //QDP_info("ind[%d]=%d",i,fnmap.ind_array[i]);
 	  }
-
 	(*fnmap.pRsrc).send_receive( map.srcenodes[0] , map.destnodes[0] );
 
       }
+    ShiftPhase1Found ff(f);
 
+    ForEach<A, ShiftPhase1Found, NullCombine>::apply(expr.child(), ff, c);
+    return 0;
 
     // EvalLeaf1 ff(expr.operation().getMap().goffsets[f.val1()]);
     // fprintf(stderr,"ForEach<Unary<FnMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
@@ -2399,6 +2525,25 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , CTag>
     // return Combine1<TypeA_t, FnMap, CTag>::
     //   combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),
     //           expr.operation(), c);
+  }
+};
+
+
+
+
+
+template<class A>
+struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1Found , NullCombine>
+{
+  typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t InnerTypeA_t;
+  typedef typename Combine1<InnerTypeA_t, FnMap, OpCombine>::Type_t InnerType_t;
+  typedef int Type_t;
+  typedef QDPExpr<A,OLattice<InnerType_t> > Expr;
+  inline static
+  Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase1Found &f, const NullCombine &c)
+  {
+    QDP_error_exit("Recursive shifts (shifts of shifts) not supported");
+    //#error "Recursive shifts (shifts of shifts) not supported"
   }
 };
 
@@ -2446,7 +2591,7 @@ struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
 	//QDP_info("in receive buffer");
 	const Type_t *recv_buf_c = (*fnmap.pRsrc).getRecvBufPtr<Type_t>();
 	Type_t* recv_buf = const_cast<Type_t*>(recv_buf_c);
-	if ( recv_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n"); }
+	if ( recv_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf). Do you use shifts of shifts?"); }
 	return recv_buf[(*fnmap.pRsrc).ind_array[f.val1()]];
       }
     } else {

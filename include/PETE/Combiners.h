@@ -226,7 +226,7 @@ struct Combine1<A, Op, OpCombine>
 {
   typedef typename UnaryReturn<A, Op>::Type_t Type_t;
   inline static
-  Type_t combine(A a, Op op, OpCombine) { return op(a); }
+  Type_t combine(const A& a, const Op& op, OpCombine) { return op(a); }
 };
 
 template<class A,class B,class Op>
@@ -234,7 +234,7 @@ struct Combine2<A, B, Op, OpCombine>
 {
   typedef typename BinaryReturn<A, B, Op>::Type_t Type_t;
   inline static
-  Type_t combine(A a, B b, Op op, OpCombine)
+  Type_t combine(const A& a, const B& b, const Op& op, OpCombine)
   {
     return op(a, b);
   }
@@ -245,7 +245,7 @@ struct Combine3<A, B, C, Op, OpCombine>
 {
   typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
   inline static
-  Type_t combine(A a, B b, C c, Op op, OpCombine)
+  Type_t combine(const A& a, const B& b, const C& c, const Op& op, OpCombine)
   {
     return op(a, b, c);
   }
