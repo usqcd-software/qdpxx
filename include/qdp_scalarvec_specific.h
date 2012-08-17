@@ -462,6 +462,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 {
   typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
   OScalar<T> tmp;   // Note, expect to have ILattice inner grid
+  int num_threads = 1;
 
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(d, OpAssign(), FnSum(), s1);
@@ -476,24 +477,68 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
     const int istart = s.start() >> INNER_LOG;
     const int iend   = s.end()   >> INNER_LOG;
 
+    typename UnaryReturn<OLattice<T>, FnSum>::Type_t  *pd = new  typename UnaryReturn<OLattice<T>, FnSum>::Type_t[qdpNumThreads()]; 
+
+#pragma omp parallel shared(pd,istart,iend,num_threads) private(tmp) default(shared)
+    {
+      num_threads = omp_get_num_threads();
+      int myId = omp_get_thread_num();
+      int low = istart + (iend - istart + 1) * myId/num_threads;
+      int high = istart + (iend - istart + 1) * (myId + 1)/num_threads;
+      // zero the partial result
+      zero_rep(pd[myId].elem());
+
+      for (int i = low; i < high; i++) {
+	tmp.elem() = forEach(s1, EvalLeaf1(i), OpCombine()); // Evaluate to ILattice part
+	pd[myId].elem() += sum(tmp.elem());
+      }
+    }
+    
+    // Now combine all together
+    for (int j = 0; j < num_threads; j++) 
+      d.elem() += sum(pd[j].elem());
+
+    delete []pd;
+
+#if 0	
+      // old code
     for(int i=istart; i <= iend; ++i) 
     {
       tmp.elem() = forEach(s1, EvalLeaf1(i), OpCombine()); // Evaluate to ILattice part
       d.elem() += sum(tmp.elem());    // sum as well the ILattice part
     }
+#endif
   }
   else
   {
+    typename UnaryReturn<OLattice<T>, FnSum>::Type_t  *pd = new  typename UnaryReturn<OLattice<T>, FnSum>::Type_t[qdpNumThreads()]; 
     const int *tab = s.siteTable().slice();
-    for(int j=0; j < s.numSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      int outersite = i >> INNER_LOG;
-      int innersite = i & ((1 << INNER_LOG)-1);
 
-      tmp.elem() = forEach(s1, EvalLeaf1(outersite), OpCombine()); // Evaluate to ILattice part
-      d.elem() += getSite(tmp.elem(),innersite);    // wasteful - only extract a single site worth
+#pragma omp parallel shared(pd,num_threads) private(tmp) default(shared) 
+    {
+      num_threads = omp_get_num_threads();
+      int myId = omp_get_thread_num();
+      int low = s.numSiteTable() * myId/num_threads;
+      int high = s.numSiteTable() * (myId + 1)/num_threads;
+
+      // zero the partial result
+      zero_rep(pd[myId].elem());
+
+      for(int j=low; j < high; ++j) {
+	int i = tab[j];
+	int outersite = i >> INNER_LOG;
+	int innersite = i & ((1 << INNER_LOG)-1);
+
+	tmp.elem() = forEach(s1, EvalLeaf1(outersite), OpCombine()); // Evaluate to ILattice part
+	pd[myId].elem() += getSite(tmp.elem(),innersite);    // wasteful - only extract a single site worth
+      }
     }
+
+    // Now combine all together
+    for (int k = 0; k < num_threads; k++) 
+      d.elem() += sum(pd[k].elem());
+
+    delete []pd;
   }
 
 #if defined(QDP_USE_PROFILING)   

@@ -16,7 +16,8 @@ int main(int argc, char *argv[])
   QDP_PUSH_PROFILE(QDP::getProfileLevel());
 
   // Setup the layout
-  const int foo[] = {8,8,8,4};
+  //  const int foo[] = {2,2,2,1};
+  const int foo[] = {8,8,8,1};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -24,10 +25,8 @@ int main(int argc, char *argv[])
 
   XMLFileWriter xml_out("t_basic.xml");
   push(xml_out, "t_basic");
-
   push(xml_out,"lattice");
   write(xml_out,"nrow", nrow);
-  write(xml_out,"sites", Layout::sitesOnNode());
   write(xml_out, "Nd", Nd);
   write(xml_out, "Nc", Nc);
   write(xml_out,"logicalSize",Layout::logicalSize());
@@ -65,7 +64,6 @@ int main(int argc, char *argv[])
   Double dsum2;
   Double dsum3;
 
-  // RNG
   random(u);
   gaussian(lctmp1);
   push(xml_out,"LATTICE_COLORMATRIX_Site_Variables");
@@ -76,23 +74,32 @@ int main(int argc, char *argv[])
   // Colormat ops
   random(lctmp1); random(lctmp2); random(R1); random(c);
   push(xml_out,"Lattice_ColorMat_ops");
+  random(lctmp3); 
 
-  random(lctmp3); lctmp3 = lctmp1 * lctmp2;
+  fprintf (stderr, "Start\n");
+  lctmp3 = lctmp1 + lctmp2;
   write(xml_out, "C_X_C",lctmp3);
+  fprintf (stderr, "Stop\n");
 
-  random(lctmp3); lctmp3 += lctmp1 * lctmp2;
+#if 0
+
+  random(lctmp3);
+  lctmp3 += lctmp1 * lctmp2;
   write(xml_out, "C_peq_C_X_C",lctmp3);
-  random(lctmp3); lctmp3 -= lctmp1 * lctmp2;
+
+  random(lctmp3); 
+  lctmp3 -= lctmp1 * lctmp2;
   write(xml_out, "C_meq_C_X_C",lctmp3);
 
   write(xml_out, "C_eq_C_x_C_pl_C",lctmp1*lctmp2+lctmp1);
   write(xml_out, "C_eq_aC_x_C",adj(lctmp1)*lctmp2);
   write(xml_out, "C_eq_C_x_aC",lctmp1*adj(lctmp2));
+
   write(xml_out, "C_eq_aC_x_aC",adj(lctmp1)*adj(lctmp2));
+
   write(xml_out, "C_eq_r_x_C",r1*lctmp1);
-
-
   random(lctmp3); lctmp3 += r1;
+
   write(xml_out, "C_peq_r",lctmp3);
   random(lctmp3); lctmp3 -= r1;
   write(xml_out, "C_meq_r",lctmp3);
@@ -101,9 +108,9 @@ int main(int argc, char *argv[])
   random(lctmp3); lctmp3 /= r1;
   write(xml_out, "C_deq_r",lctmp3);
 
-
   random(lctmp3); lctmp3 += R1;
   write(xml_out, "C_peq_R",lctmp3);
+
   random(lctmp3); lctmp3 -= R1;
   write(xml_out, "C_meq_R",lctmp3);
   random(lctmp3); lctmp3 *= R1;
@@ -113,6 +120,7 @@ int main(int argc, char *argv[])
 
   random(lctmp3); lctmp3 += c;
   write(xml_out, "C_peq_c",lctmp3);
+
   random(lctmp3); lctmp3 -= c;
   write(xml_out, "C_meq_c",lctmp3);
   random(lctmp3); lctmp3 *= c;
@@ -126,6 +134,8 @@ int main(int argc, char *argv[])
   write(xml_out, "C_meq_C",lctmp3);
 
   write(xml_out, "C_eq_R_pl_aC_x_C",R1+adj(lctmp1)*lctmp2);
+
+
   write(xml_out, "C_eq_R_pl_C_x_aC",R1+lctmp1*adj(lctmp2));
   write(xml_out, "C_eq_R_pl_aC_x_aC",R1+adj(lctmp1)*adj(lctmp2));
 
@@ -134,8 +144,11 @@ int main(int argc, char *argv[])
   // Ferm mult
   random(lctmp1); random(lftmp1);
   push(xml_out,"Lattice_Ferm_ops");
+
   random(lftmp2); lftmp2 = lctmp1 * lftmp1;
   write(xml_out, "D_eq_C_x_D",lftmp2);
+
+
   random(lftmp2); lftmp2 += lctmp1 * lftmp1;
   write(xml_out, "D_peq_C_x_D",lftmp2);
   random(lftmp2); lftmp2 -= lctmp1 * lftmp1;
@@ -147,14 +160,15 @@ int main(int argc, char *argv[])
   random(lftmp1); random(lftmp2);
   push(xml_out,"Site_functions");
   write(xml_out, "outerProduct",outerProduct(lftmp1,lftmp2));
+
   lctmp1 = traceSpin(outerProduct(lftmp1,lftmp2));
   write(xml_out, "C_eq_traceSpin_outerProduct",lctmp1);
   pop(xml_out);
 
-#if 0
+  // #if 0
+
   mu = 0;
   nu = 1;
-
 
   // test 1
   lctmp2 = shift(u, FORWARD, mu) * lctmp1;
@@ -162,7 +176,6 @@ int main(int argc, char *argv[])
   write(xml_out, "mu", mu);
   write(xml_out, "lctmp2", lctmp2);
   pop(xml_out);
-
 
   /* test 2 */
   lctmp2 = shift(adj(u), FORWARD, mu) * lctmp1;
@@ -219,6 +232,9 @@ int main(int argc, char *argv[])
   write(xml_out, "lqtmp1", lqtmp1);
   pop(xml_out);
 
+  mu = 0;
+  nu = 1;
+
   /* test 9 */
   lqtmp2 = q * lqtmp1;
   push(xml_out,"MULTIPLY_PROP_replace");
@@ -245,12 +261,13 @@ int main(int argc, char *argv[])
   write(xml_out, "lqtmp2", lqtmp2);
   pop(xml_out);
 
-  /* test 13 */
+  /* test 13 */ 
   lqtmp2 = shift(q, FORWARD, mu) * lqtmp1;
   push(xml_out,"MULTIPLY_PROP_Forward1_Fetched");
   write(xml_out, "mu", mu);
   write(xml_out, "lqtmp2", lqtmp2);
   pop(xml_out);
+
 
   /* test 14 */
   lqtmp2 = shift(adj(q), FORWARD, mu) * adj(lqtmp1);
@@ -271,6 +288,7 @@ int main(int argc, char *argv[])
   push(xml_out,"MULTIPLY_PROP_U_front");
   write(xml_out, "lqtmp2", lqtmp2);
   pop(xml_out);
+
 
   /* test 17 */
   lqtmp2 = q * u;
@@ -312,8 +330,8 @@ int main(int argc, char *argv[])
   write(xml_out, "lqtmp1", lqtmp1);
   pop(xml_out);
 
-  int m = 1;
   /* test 22 */
+  /* OScalar Test NOGPU needed */
   s1 = 1;
   s2 = Gamma(m) * s1;
   s3 = Gamma(m) * s1;
@@ -347,13 +365,13 @@ int main(int argc, char *argv[])
   write(xml_out, "lqtmp2", lqtmp2);
   pop(xml_out);
 
-  /* test 25 */
-  s1 = 1;
   for(int m=0; m < Ns*Ns; ++m)
   {
+    fprintf (stderr, "Loop m = %d -----------------------------\n", m);
     c = trace(q);
 
     s2 = Gamma(m) * s1;
+    
     lqtmp1 = Gamma(m) * q;
     lqtmp2 = lqtmp1 * s2;
     lqtmp1 = lqtmp2;
@@ -372,7 +390,6 @@ int main(int argc, char *argv[])
   }
 
   /* test 26 */
-  s1 = 1;
   for(int m=0; m < Ns*Ns; ++m)
     for(int n=0; n < Ns*Ns; ++n)
     {
@@ -395,7 +412,6 @@ int main(int argc, char *argv[])
       write(xml_out, "dsum2", dsum2);
       pop(xml_out);
     }
-#endif
 
   /* test 27 */
   gaussian(lqtmp1);
@@ -414,6 +430,7 @@ int main(int argc, char *argv[])
   write(xml_out, "lqtmp24", quarkContract24(lqtmp1, lqtmp2));
   pop(xml_out);
 
+#endif
 
   pop(xml_out);
   xml_out.close();

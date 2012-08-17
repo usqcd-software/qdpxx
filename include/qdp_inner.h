@@ -1948,8 +1948,9 @@ operator+(const ILattice<T1,N>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpAdd>::Type_t  d;
 
-  for(int i=0; i < N; ++i)
+  for(int i=0; i < N; ++i) 
     d.elem(i) = l.elem(i) + r.elem(i);
+
   return d;
 }
 
