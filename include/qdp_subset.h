@@ -59,9 +59,13 @@ public:
   //! Access the coloring for this subset
   int color() const {return sub_index;}
 
+  multi1d<bool>& getIsElement() const       { return *membertable; }
+  bool           isElement(int index) const { return (*membertable)[index]; }
+
+
 protected:
   // Simple constructor
-  void make(bool rep, int start, int end, multi1d<int>* ind, int cb, Set* set);
+  void make(bool rep, int start, int end, multi1d<int>* ind, int cb, Set* set, multi1d<bool>* memb);
 
 private:
   bool ordRep;
@@ -74,6 +78,9 @@ private:
 
   //! Original set
   Set *set;
+
+  // Constant time to know whether linear index in this subset
+  multi1d<bool>* membertable;
 
 public:
   inline bool hasOrderedRep() const {return ordRep;}
@@ -125,6 +132,9 @@ protected:
 
   //! Array of sitetable arrays
   multi1d<multi1d<int> > sitetables;
+
+  //! Array of sitetable arrays
+  multi1d<multi1d<bool> > membertables;
 
 public:
   //! The coloring of the lattice sites

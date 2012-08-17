@@ -127,7 +127,7 @@ namespace QDP
 	  
   //-----------------------------------------------------------------------------
   //! Simple constructor called to produce a Subset from inside a Set
-  void Subset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb, Set* _set)
+  void Subset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb, Set* _set, multi1d<bool>* _memb)
   {
     ordRep    = _rep;
     startSite = _start;
@@ -135,6 +135,7 @@ namespace QDP
     sub_index = cb;
     sitetable = ind;
     set       = _set;
+    membertable = _memb;
   }
 
   //! Simple constructor called to produce a Subset from inside a Set
@@ -146,6 +147,7 @@ namespace QDP
     sub_index = s.sub_index;
     sitetable = s.sitetable;
     set       = s.set;
+    membertable = s.membertable;
   }
 
   //! Simple constructor called to produce a Subset from inside a Set
@@ -162,6 +164,7 @@ namespace QDP
     sub = s.sub;
     lat_color = s.lat_color;
     sitetables = s.sitetables;
+    membertables = s.membertables;
     return *this;
   }
 

@@ -306,6 +306,23 @@ struct Combine2<bool, bool, Op, OrCombine>
 };
 
 
+struct BitOrCombine
+{
+  PETE_EMPTY_CONSTRUCTORS(BitOrCombine)
+};
+
+template<class Op>
+struct Combine2<int, int, Op, BitOrCombine>
+{
+  typedef int Type_t;
+  inline static
+  Type_t combine(int a, int b, Op, BitOrCombine)
+  {
+    return (a | b);
+  }
+};
+
+
 //-----------------------------------------------------------------------------
 //
 // CLASS NAME

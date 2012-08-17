@@ -295,6 +295,43 @@ void evaluate_userfunc(int lo, int hi, int myId, user_arg<T,T1,Op,RHS> *a)
    }
 }
 
+
+template<class T, class T1, class Op, class RHS>
+struct user_arg_mask{
+    user_arg_mask(
+        OLattice<T>& d_,
+        const QDPExpr<RHS,OLattice<T1> >& r_,
+        const Op& op_,
+        const int *tab_ ,
+	const bool *mask_ ) : d(d_), r(r_), op(op_), tab(tab_), mask(mask_) {}
+
+        OLattice<T>& d;
+        const QDPExpr<RHS,OLattice<T1> >& r;
+        const Op& op;
+        const int *tab;
+        const bool *mask;
+   };
+
+
+template<class T, class T1, class Op, class RHS>
+void evaluate_userfunc_mask(int lo, int hi, int myId, user_arg_mask<T,T1,Op,RHS> *a)
+{
+
+   OLattice<T>& dest = a->d;
+   const QDPExpr<RHS,OLattice<T1> >&rhs = a->r;
+   const int* tab = a->tab;
+   const bool* mask = a->mask;
+   const Op& op= a->op;
+      
+   for(int j=lo; j < hi; ++j)
+   {
+     if (mask[ tab[j] ])
+       op(dest.elem(tab[j]), forEach(rhs, EvalLeaf1(tab[j]), OpCombine()));
+   }
+}
+
+
+
 //! include the header file for dispatch
 #include "qdp_dispatch.h"
 
@@ -347,14 +384,10 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 
 struct ShiftPhase1
 {
-  ShiftPhase1(): isFace(Layout::sitesOnNode(),0) {}
-  std::vector<unsigned char> isFace;
 };
 
 struct ShiftPhase1Found
 {
-  ShiftPhase1Found(const ShiftPhase1& p): isFace(p.isFace) {}
-  const std::vector<unsigned char>& isFace;
 };
 
 struct ShiftPhase2
@@ -589,55 +622,65 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 {
   // cout << __PRETTY_FUNCTION__ << "\n";
 
-  ShiftPhase1 phase1;
-  forEach(rhs, phase1 , NullCombine());
-
-  int ss=0;
-  for (int i=0;i<phase1.isFace.size();i++)
-    if (phase1.isFace[i]) ss++;
-  //QDP_info("face sites = %d",ss);
-
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
-    if (phase1.isFace[i] == 0) {
-      //QDP_info("calc inner site %d",i);
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()) );
-    }
-  }
-
-  ShiftPhase2 phase2;
-  forEach(rhs, phase2 , NullCombine());
-
-  for(int j=0; j < s.numSiteTable(); ++j)
-  {
-    int i = tab[j];
-    if (phase1.isFace[i] == 1) {
-      //QDP_info("calc face site %d",i);
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()) );
-    }
-  }
-
-
-  // const int *tab = s.siteTable().slice();
-  // for(int j=0; j < s.numSiteTable(); ++j) 
-  // {
-  //   int i = tab[j];
-  //   op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()) );
-  // }
-
-
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(dest, op, rhs);
   prof.time -= getClockTime();
 #endif
 
-#if 0 
-  int numSiteTable = s.numSiteTable();
-  user_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
-  dispatch_to_threads< user_arg<T,T1,Op,RHS> >(numSiteTable, a, evaluate_userfunc);
+
+  ShiftPhase1 phase1;
+  int maps_involved = forEach(rhs, phase1 , BitOrCombine());
+
+  //QDP_info("eval(Lat) maps_involved = %d",maps_involved);
+  
+  if (maps_involved > 0) {
+
+    const multi1d<int>& innerSites = MasterMap::Instance().getInnerSites(maps_involved);
+    const multi1d<int>& faceSites = MasterMap::Instance().getFaceSites(maps_involved);
+
+#if 1
+    user_arg_mask<T,T1,Op,RHS> a0(dest, rhs, op, innerSites.slice() , s.getIsElement().slice() );
+    dispatch_to_threads< user_arg_mask<T,T1,Op,RHS> >(innerSites.size(), a0, evaluate_userfunc_mask );
+#else
+    for (int j=0 ; j<innerSites.size() ; j++ ) {
+      if (s.isElement(innerSites[j])) {
+    	//QDP_info("inner site %d is element",innerSites[j]);
+    	op(dest.elem(innerSites[j]), forEach(rhs, EvalLeaf1(innerSites[j]), OpCombine()) );
+      } // else QDP_info("inner site %d is not element",innerSites[j]);
+    }
 #endif
+
+    ShiftPhase2 phase2;
+    forEach(rhs, phase2 , NullCombine());
+
+    //QDP_info("face sites total = %d",faceSites.size());
+
+#if 1
+    user_arg_mask<T,T1,Op,RHS> a1(dest, rhs, op, faceSites.slice() , s.getIsElement().slice() );
+    dispatch_to_threads< user_arg_mask<T,T1,Op,RHS> >(faceSites.size(), a1, evaluate_userfunc_mask );
+#else
+    for (int j=0 ; j<faceSites.size() ; j++ ) {
+      if (s.isElement(faceSites[j])) {
+    	//QDP_info("face site %d is element",faceSites[j]);
+    	op(dest.elem(faceSites[j]), forEach(rhs, EvalLeaf1(faceSites[j]), OpCombine()) );
+      } // else QDP_info("face site %d is not element",faceSites[j]);
+    }
+#endif
+
+  } else {
+
+    int numSiteTable = s.numSiteTable();
+    user_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
+    dispatch_to_threads< user_arg<T,T1,Op,RHS> >(numSiteTable, a, evaluate_userfunc);
+
+    // const int *tab = s.siteTable().slice();
+    // for(int j=0; j < s.numSiteTable(); ++j) 
+    //   {
+    // 	int i = tab[j];
+    // 	op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()) );
+    //   }
+  }
+
 
   ////////////////////
   // Original code
@@ -911,26 +954,33 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
   zero_rep(d.elem());
 
   ShiftPhase1 phase1;
-  forEach(s1, phase1 , NullCombine());
+  int maps_involved = forEach(s1, phase1 , BitOrCombine());
 
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
-    if (phase1.isFace[i] == 0) {
-      d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
-    }
-  }
+  if (maps_involved > 0) {
 
-  ShiftPhase2 phase2;
-  forEach(s1, phase2 , NullCombine());
+    const multi1d<int>& innerSites = MasterMap::Instance().getInnerSites(maps_involved);
+    const multi1d<int>& faceSites = MasterMap::Instance().getFaceSites(maps_involved);
 
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
-    if (phase1.isFace[i] == 1) {
-      d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
-    }
+    for (int j=0 ; j<innerSites.size() ; j++ )
+      if (s.isElement(innerSites[j])) 
+	d.elem() += forEach(s1, EvalLeaf1(innerSites[j]), OpCombine());
+
+    ShiftPhase2 phase2;
+    forEach(s1, phase2 , NullCombine());
+
+    for (int j=0 ; j<faceSites.size() ; j++ )
+      if (s.isElement(faceSites[j]))
+	d.elem() += forEach(s1, EvalLeaf1(faceSites[j]), OpCombine());
+
+  } else {
+
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) 
+      {
+	int i = tab[j];
+	d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+      }
+
   }
 
   // Do a global sum on the result
@@ -1001,29 +1051,30 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
   const int nodeSites = Layout::sitesOnNode();
 
   ShiftPhase1 phase1;
-  forEach(s1, phase1 , NullCombine());
+  int maps_involved = forEach(s1, phase1 , BitOrCombine());
 
-  for(int i=0; i < nodeSites; ++i) {
-    if (phase1.isFace[i] == 0) {
-      d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+  if (maps_involved > 0) {
+
+    const multi1d<int>& innerSites = MasterMap::Instance().getInnerSites(maps_involved);
+    const multi1d<int>& faceSites = MasterMap::Instance().getFaceSites(maps_involved);
+
+    for (int j=0 ; j<innerSites.size() ; j++ )
+      d.elem() += forEach(s1, EvalLeaf1(innerSites[j]), OpCombine());
+
+    ShiftPhase2 phase2;
+    forEach(s1, phase2 , NullCombine());
+
+    for (int j=0 ; j<faceSites.size() ; j++ )
+      d.elem() += forEach(s1, EvalLeaf1(faceSites[j]), OpCombine());
+
+  } else {
+
+    for(int j=0; j < nodeSites; ++j) {
+      d.elem() += forEach(s1, EvalLeaf1(j), OpCombine());
     }
+
   }
 
-  ShiftPhase2 phase2;
-  forEach(s1, phase2 , NullCombine());
-
-  for(int i=0; i < nodeSites; ++i) {
-    if (phase1.isFace[i] == 1) {
-      d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
-    }
-  }
-
-  // Original code
-  //
-  // for(int i=0; i < nodeSites; ++i) 
-  //   d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
-
-  // Do a global sum on the result
   QDPInternal::globalSum(d);
 
 #if defined(QDP_USE_PROFILING)   
@@ -1137,6 +1188,39 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
   const int nodeSites = Layout::sitesOnNode();
 
   ShiftPhase1 phase1;
+  int maps_involved = forEach(s1, phase1 , BitOrCombine());
+
+  if (maps_involved > 0) {
+
+    const multi1d<int>& innerSites = MasterMap::Instance().getInnerSites(maps_involved);
+    const multi1d<int>& faceSites = MasterMap::Instance().getFaceSites(maps_involved);
+
+    for (int j=0 ; j<innerSites.size() ; j++ ) {
+      int i = lat_color[innerSites[j]];
+      dest[i].elem() += forEach(s1, EvalLeaf1(innerSites[j]), OpCombine());
+    }
+
+    ShiftPhase2 phase2;
+    forEach(s1, phase2 , NullCombine());
+
+    for (int j=0 ; j<faceSites.size() ; j++ ) {
+      int i = lat_color[faceSites[j]];
+      dest[i].elem() += forEach(s1, EvalLeaf1(faceSites[j]), OpCombine());
+    }
+
+  } else {
+
+    for(int i=0; i < nodeSites; ++i) {
+      int j = lat_color[i];
+      dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+    }
+
+  }
+
+
+
+#if 0
+  ShiftPhase1 phase1;
   forEach(s1, phase1 , NullCombine());
 
   for(int i=0; i < nodeSites; ++i) {
@@ -1155,6 +1239,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
       dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());
     }
   }
+#endif
 
   // Do a global sum on the result
   QDPInternal::globalSumArray(dest);
@@ -1675,11 +1760,12 @@ globalMax(const QDPExpr<RHS,OLattice<T> >& s1)
   prof.time -= getClockTime();
 #endif
 
-
   ShiftPhase1 phase1;
-  forEach(s1, phase1 , NullCombine());
-  ShiftPhase2 phase2;
-  forEach(s1, phase2 , NullCombine());
+  int maps_involved = forEach(s1, phase1 , BitOrCombine());
+  if (maps_involved > 0) {
+    ShiftPhase2 phase2;
+    forEach(s1, phase2 , NullCombine());
+  }
 
   // Loop always entered so unroll
   d.elem() = forEach(s1, EvalLeaf1(0), OpCombine());   // SINGLE NODE VERSION FOR NOW
@@ -1750,9 +1836,11 @@ globalMin(const QDPExpr<RHS,OLattice<T> >& s1)
 #endif
 
   ShiftPhase1 phase1;
-  forEach(s1, phase1 , NullCombine());
-  ShiftPhase2 phase2;
-  forEach(s1, phase2 , NullCombine());
+  int maps_involved = forEach(s1, phase1 , BitOrCombine());
+  if (maps_involved > 0) {
+    ShiftPhase2 phase2;
+    forEach(s1, phase2 , NullCombine());
+  }
 
   // Loop always entered so unroll
   d.elem() = forEach(s1, EvalLeaf1(0), OpCombine());   // SINGLE NODE VERSION FOR NOW
@@ -2246,6 +2334,8 @@ public:
   //! Accessor to offsets
   const multi1d<int>& goffset() const {return goffsets;}
   const multi1d<int>& soffset() const {return soffsets;}
+  const multi1d<int>& roffset() const {return roffsets;}
+  int getId() const {return myId;}
 
 private:
   //! Hide copy constructor
@@ -2267,6 +2357,9 @@ private:
   multi1d<int> soffsets;
   multi1d<int> srcnode;
   multi1d<int> dstnode;
+
+  multi1d<int> roffsets;
+  int myId;
 
   multi1d<int> srcenodes;
   multi1d<int> destnodes;
@@ -2447,14 +2540,14 @@ void printme()
 
 
 template<class A>
-struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , NullCombine>
+struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 {
   typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t InnerTypeA_t;
   typedef typename Combine1<InnerTypeA_t, FnMap, OpCombine>::Type_t InnerType_t;
   typedef int Type_t;
   typedef QDPExpr<A,OLattice<InnerType_t> > Expr;
   inline static
-  Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase1 &f, const NullCombine &c)
+  Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase1 &f, const BitOrCombine &c)
   {
     const Map& map = expr.operation().map;
     FnMap& fnmap = const_cast<FnMap&>(expr.operation());
@@ -2464,6 +2557,7 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , NullCombine>
     // printme<InnerType_t>();
 
     const int nodeSites = Layout::sitesOnNode();
+    int returnVal=0;
 
     if (map.offnodeP)
       {
@@ -2500,7 +2594,6 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , NullCombine>
 	      {
 		// ind_array >= 0 it contains the receive_buffer index
 		(*fnmap.pRsrc).ind_array[i] = ri++;
-		fmod.isFace[i]=1;
 	      }
 	    else
 	      {
@@ -2513,11 +2606,13 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , NullCombine>
 	  }
 	(*fnmap.pRsrc).send_receive( map.srcenodes[0] , map.destnodes[0] );
 
+	returnVal = map.getId();
       }
-    ShiftPhase1Found ff(f);
 
-    ForEach<A, ShiftPhase1Found, NullCombine>::apply(expr.child(), ff, c);
-    return 0;
+    ShiftPhase1Found ff;
+
+    ForEach<A, ShiftPhase1Found, BitOrCombine>::apply(expr.child(), ff, c);
+    return returnVal;
 
     // EvalLeaf1 ff(expr.operation().getMap().goffsets[f.val1()]);
     // fprintf(stderr,"ForEach<Unary<FnMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
@@ -2533,14 +2628,14 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , NullCombine>
 
 
 template<class A>
-struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1Found , NullCombine>
+struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1Found , BitOrCombine>
 {
   typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t InnerTypeA_t;
   typedef typename Combine1<InnerTypeA_t, FnMap, OpCombine>::Type_t InnerType_t;
   typedef int Type_t;
   typedef QDPExpr<A,OLattice<InnerType_t> > Expr;
   inline static
-  Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase1Found &f, const NullCombine &c)
+  Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase1Found &f, const BitOrCombine &c)
   {
     QDP_error_exit("Recursive shifts (shifts of shifts) not supported");
     //#error "Recursive shifts (shifts of shifts) not supported"

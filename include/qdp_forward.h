@@ -101,6 +101,8 @@ namespace QDP
   struct ShiftPhase1;
   struct ShiftPhase2;
 
+  class Map;
+
   // Used for nearest neighbor shift (a map)
   class ArrayBiDirectionalMap;
 

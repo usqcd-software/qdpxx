@@ -210,10 +210,13 @@ namespace QDP {
     // If we allow multiple dest nodes, then soffsets here needs to be
     // an array of arrays
     soffsets.resize(destnodes_num[0]);
+
+    roffsets.resize(srcenodes_num[0]);
   
     // Loop through sites on my *destination* node - here I assume all nodes have
     // the same number of sites. Mimic the gather pattern needed on that node and
     // set my scatter array to scatter into the correct site order
+    int ri=0;
     for(int i=0, si=0; i < nodeSites; ++i) 
     {
       // Get the true lattice coord of this linear site index
@@ -224,7 +227,13 @@ namespace QDP {
 
       if (fnode == my_node)
 	soffsets[si++] = fline;
+
+      if (srcnode[i] != my_node)
+	roffsets[ri++] = i;
     }
+
+    if ( ri != srcenodes_num[0] )
+      QDP_error_exit("internal error: ri != srcenodes_num[0]");
 
 #if QDP_DEBUG >= 3
     // Debugging
@@ -236,6 +245,9 @@ namespace QDP {
 #if QDP_DEBUG >= 3
     QDP_info("exiting Map::make");
 #endif
+
+    myId = MasterMap::Instance().registrate(*this);
+    
   }
 
 

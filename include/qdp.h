@@ -85,6 +85,7 @@
 #include <ostream>
 #include <iostream>
 #include <memory>
+#include <vector>
 
 using namespace std;   // I do not like this - fix later
 
@@ -154,6 +155,9 @@ namespace QDP {
 
 // Include threading code here if applicable
 #include "qdp_dispatch.h"
+
+#include "qdp_mastermap.h"
+
 
 namespace ThreadReductions { 
  
