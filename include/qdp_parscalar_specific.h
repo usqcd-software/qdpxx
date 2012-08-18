@@ -2335,6 +2335,7 @@ public:
   const multi1d<int>& goffset() const {return goffsets;}
   const multi1d<int>& soffset() const {return soffsets;}
   const multi1d<int>& roffset() const {return roffsets;}
+  const multi1d<int>& get_ind_array() const {return ind_array;}
   int getId() const {return myId;}
 
 private:
@@ -2359,6 +2360,7 @@ private:
   multi1d<int> dstnode;
 
   multi1d<int> roffsets;
+  multi1d<int> ind_array;
   int myId;
 
   multi1d<int> srcenodes;
@@ -2377,12 +2379,11 @@ struct FnMapRsrc
 {
   FnMapRsrc(const FnMapRsrc&) = delete;
 
-  FnMapRsrc(): bAlloc(false), ind_array(new int[Layout::sitesOnNode()]) {
+  FnMapRsrc(): bAlloc(false) {
     //QDP_info("FnMapRsrc");
   }
   ~FnMapRsrc() {
     //QDP_info("~FnMapRsrc");
-    delete[] ind_array;
     if (bAlloc) {
       //QDP_info("FnMapRsrc, qmp_dealloc");
       QMP_free_memory(recv_buf_mem);
@@ -2489,7 +2490,6 @@ struct FnMapRsrc
   bool bAlloc;
   mutable void * send_buf;
   mutable void * recv_buf;
-  int * ind_array;
   int srcnum, dstnum;
   QMP_msgmem_t msg[2];
   QMP_msghandle_t mh_a[2], mh;
@@ -2551,7 +2551,6 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
   {
     const Map& map = expr.operation().map;
     FnMap& fnmap = const_cast<FnMap&>(expr.operation());
-    ShiftPhase1& fmod = const_cast<ShiftPhase1&>(f);
 
     // printme<InnerTypeA_t>();
     // printme<InnerType_t>();
@@ -2588,22 +2587,6 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
   	  send_buf[si] = forEach( subexpr , EvalLeaf1(map.soffsets[si]) , OpCombine() );
 	}
 
-	for(int i=0, ri=0; i < nodeSites; ++i) 
-	  {
-	    if (map.srcnode[i] != my_node)
-	      {
-		// ind_array >= 0 it contains the receive_buffer index
-		(*fnmap.pRsrc).ind_array[i] = ri++;
-	      }
-	    else
-	      {
-		// additional '-1' to make sure its negative,
-		// not the best style, but higher performance
-		// than using another buffer
-		(*fnmap.pRsrc).ind_array[i] = -map.goffsets[i]-1;
-	      }
-	    //QDP_info("ind[%d]=%d",i,fnmap.ind_array[i]);
-	  }
 	(*fnmap.pRsrc).send_receive( map.srcenodes[0] , map.destnodes[0] );
 
 	returnVal = map.getId();
@@ -2678,16 +2661,16 @@ struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
       // assert((*fnmap.pRsrc).ind_array[f.val1()] < 0);
       // assert(-(*fnmap.pRsrc).ind_array[f.val1()]-1 == map.goffsets[f.val1()]);
       //QDP_info("ind_array[%d]=%d %d",f.val1(),(*fnmap.pRsrc).ind_array[f.val1()],map.goffsets[f.val1()]);
-      if ((*fnmap.pRsrc).ind_array[f.val1()] < 0) {
+      if (map.get_ind_array()[f.val1()] < 0) {
 	//QDP_info("local on node");
-	EvalLeaf1 ff( -(*fnmap.pRsrc).ind_array[f.val1()] - 1 );
+	EvalLeaf1 ff( -map.get_ind_array()[f.val1()] - 1 );
 	return Combine1<TypeA_t, FnMap, CTag>::combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),expr.operation(), c);
       } else {
 	//QDP_info("in receive buffer");
 	const Type_t *recv_buf_c = (*fnmap.pRsrc).getRecvBufPtr<Type_t>();
 	Type_t* recv_buf = const_cast<Type_t*>(recv_buf_c);
 	if ( recv_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf). Do you use shifts of shifts?"); }
-	return recv_buf[(*fnmap.pRsrc).ind_array[f.val1()]];
+	return recv_buf[map.get_ind_array()[f.val1()]];
       }
     } else {
       EvalLeaf1 ff( map.goffsets[f.val1()]);

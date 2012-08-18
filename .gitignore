@@ -1,0 +1,13 @@
+*~
+*.h.in
+Makefile.in
+Makefile
+configure
+aclocal.m4
+autom4te.cache/
+tests/Makefile.in
+docs/Makefile.in
+examples/Makefile.in
+lib/Makefile.in
+include/Makefile.in
+other_libs/Makefile.in

@@ -235,6 +235,28 @@ namespace QDP {
     if ( ri != srcenodes_num[0] )
       QDP_error_exit("internal error: ri != srcenodes_num[0]");
 
+
+    ind_array.resize(nodeSites);
+
+    for(int i=0, ri=0; i < nodeSites; ++i) 
+      {
+	if (srcnode[i] != my_node)
+	  {
+	    // ind_array >= 0 it contains the receive_buffer index
+	    ind_array[i] = ri++;
+	  }
+	else
+	  {
+	    // additional '-1' to make sure its negative,
+	    // not the best style, but higher performance
+	    // than using another buffer
+	    ind_array[i] = -goffsets[i]-1;
+	  }
+	//QDP_info("ind[%d]=%d",i,fnmap.ind_array[i]);
+      }
+
+
+
 #if QDP_DEBUG >= 3
     // Debugging
     for(int i=0; i < soffsets.size(); ++i)
