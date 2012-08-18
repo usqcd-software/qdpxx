@@ -2577,6 +2577,15 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 
 	Expr subexpr(expr.child());
 
+	// Make sure the inner expression's map function
+	// send and receive before recursing down
+	ShiftPhase1 phase1;
+	int maps_involved = forEach(subexpr, phase1 , BitOrCombine());
+	if (maps_involved > 0) {
+	  ShiftPhase2 phase2;
+	  forEach(subexpr, phase2 , NullCombine());
+	}
+
 	// Gather the face of data to send
 	// For now, use the all subset
 	for(int si=0; si < map.soffsets.size(); ++si)
@@ -2590,11 +2599,14 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 	(*fnmap.pRsrc).send_receive( map.srcenodes[0] , map.destnodes[0] );
 
 	returnVal = map.getId();
-      }
+      } else {
 
-    ShiftPhase1Found ff;
+      //ShiftPhase1Found ff;
+      ShiftPhase1 ff;
 
-    ForEach<A, ShiftPhase1Found, BitOrCombine>::apply(expr.child(), ff, c);
+      ForEach<A, ShiftPhase1, BitOrCombine>::apply(expr.child(), ff, c);
+    }
+
     return returnVal;
 
     // EvalLeaf1 ff(expr.operation().getMap().goffsets[f.val1()]);

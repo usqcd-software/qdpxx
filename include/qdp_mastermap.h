@@ -15,7 +15,7 @@ namespace QDP {
   private:
     multi1d<int> complement(const multi1d<int>& orig) const;
     MasterMap() {
-      QDP_info("MasterMap() reserving");
+      //QDP_info("MasterMap() reserving");
       powerSet.reserve(2048);
       powerSetC.reserve(2048);
     }
