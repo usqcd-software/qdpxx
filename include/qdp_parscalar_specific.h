@@ -386,10 +386,6 @@ struct ShiftPhase1
 {
 };
 
-struct ShiftPhase1Found
-{
-};
-
 struct ShiftPhase2
 {
 };
@@ -458,33 +454,6 @@ struct LeafFunctor<QDPType<T,C>, ShiftPhase1>
 
 
 template<class T>
-struct LeafFunctor<OScalar<T>, ShiftPhase1Found>
-{
-  typedef int Type_t;
-  inline static Type_t apply(const OScalar<T> &a, const ShiftPhase1Found &f) {
-    return 0;
-  }
-};
-
-template<class T>
-struct LeafFunctor<OLattice<T>, ShiftPhase1Found>
-{
-  typedef int Type_t;
-  inline static Type_t apply(const OLattice<T> &a, const ShiftPhase1Found &f) {
-    return 0;
-  }
-};
-
-template<class T, class C>
-struct LeafFunctor<QDPType<T,C>, ShiftPhase1Found>
-{
-  typedef int Type_t;
-  static int apply(const QDPType<T,C> &s, const ShiftPhase1Found &f) {
-    return 0;
-  }
-};
-
-template<class T>
 struct LeafFunctor<OScalar<T>, ShiftPhase2>
 {
   typedef int Type_t;
@@ -546,20 +515,6 @@ struct LeafFunctor<GammaConst<N,m>, ShiftPhase1>
 {
   typedef int Type_t;
   static int apply(const GammaConst<N,m> &s, const ShiftPhase1 &f) { return 0; }
-};
-
-template<int N>
-struct LeafFunctor<GammaType<N>, ShiftPhase1Found>
-{
-  typedef int Type_t;
-  static int apply(const GammaType<N> &s, const ShiftPhase1Found &f) { return 0; }
-};
-
-template<int N, int m>
-struct LeafFunctor<GammaConst<N,m>, ShiftPhase1Found>
-{
-  typedef int Type_t;
-  static int apply(const GammaConst<N,m> &s, const ShiftPhase1Found &f) { return 0; }
 };
 
 template<int N>
@@ -2048,237 +2003,6 @@ public:
   /*! The semantics are   source_site = func(dest_site,isign) */
   void make(const MapFunc& func);
 
-  //! Function call operator for a shift
-  /*! 
-   * map(source)
-   *
-   * Implements:  dest(x) = s1(x+offsets)
-   *
-   * Shifts on a OLattice are non-trivial.
-   *
-   * Notice, this implementation does not allow an Inner grid
-   */
-#if 0
-  template<class T1>
-  OLattice<T1>
-  operator()(const OLattice<T1> & l)
-    {
-#if QDP_DEBUG >= 3
-      QDP_info("Map()");
-#endif
-      QDP_error_exit("Never should arrive here!");
-
-      OLattice<T1> d;
-      const int nodeSites = Layout::sitesOnNode();
-
-      if (offnodeP)
-      {
-	// Off-node communications required
-#if QDP_DEBUG >= 3
-	QDP_info("Map: off-node communications required");
-#endif
-
-	// Eventually these declarations should move into d - the return object
-	typedef T1 * T1ptr;
-	T1 **dest = new(nothrow) T1ptr[nodeSites];
-        if( dest == 0x0 ) { 
-	   QDP_error_exit("Unable to new T1ptr in OLattice<T1>::operator()\n");
-        }
-	QMP_msgmem_t msg[2];
-	QMP_msghandle_t mh_a[2], mh;
-
-#if 0
-// This test has been moved into Map::create.
-	// For now, will assume there is only 1 destination nod e 
-	// and receive from only 1 node
-	if (srcenodes.size() != 1)
-	  QDP_error_exit("Map: for now only allow 1 destination node");
-      
-	if (destnodes.size() != 1)
-	  QDP_error_exit("Map: for now only allow receives from 1 node");
-#endif
-
-	int dstnum = destnodes_num[0]*sizeof(T1);
-	int srcnum = srcenodes_num[0]*sizeof(T1);
-
-	// Try getting fast and communicable memory
-	QMP_mem_t *send_buf_mem = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE, 
-								(QMP_MEM_COMMS|QMP_MEM_FAST) ); // packed data to send
-	if( send_buf_mem == 0x0 ) { 
-	   send_buf_mem = QMP_allocate_aligned_memory(dstnum, QDP_ALIGNMENT_SIZE, 
-						      QMP_MEM_COMMS);
-	   if( send_buf_mem == 0x0 ) { 
-	      QDP_error_exit("Unable to allocate send_buf_mem\n");
-           }
-        }
-
-	QMP_mem_t *recv_buf_mem = QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE, 
-							      (QMP_MEM_COMMS|QMP_MEM_FAST)); // packed receive data
-	if( recv_buf_mem == 0x0 ) { 
-	    recv_buf_mem = QMP_allocate_aligned_memory(srcnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS); 
-	    if( recv_buf_mem == 0x0 ) { 
-	       QDP_error_exit("Unable to allocate recv_buf_mem\n");
-            }
-        }
-				
-	T1 *send_buf = (T1 *)QMP_get_memory_pointer(send_buf_mem);
-	T1 *recv_buf = (T1 *)QMP_get_memory_pointer(recv_buf_mem);
-
-	// Total and utter paranoia
-	if ( send_buf == 0x0 ) { 
-	   QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (send_buf)\n");
-	}
-
-	if ( recv_buf == 0x0 ) { 
-	   QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n"); 
-	}
-
-	const int my_node = Layout::nodeNumber();
-
-	// Gather the face of data to send
-	// For now, use the all subset
-	for(int si=0; si < soffsets.size(); ++si) 
-	{
-#if QDP_DEBUG >= 3
-	  QDP_info("Map_scatter_send(buf[%d],olattice[%d])",si,soffsets[si]);
-#endif
-
-	  send_buf[si] = l.elem(soffsets[si]);
-	}
-
-	// Set the dest gather pointers
-	// For now, use the all subset
-
-	for(int i=0, ri=0; i < nodeSites; ++i) 
-	{
-	  if (srcnode[i] != my_node)
-	  {
-#if QDP_DEBUG >= 3
-	    QDP_info("Map_gather_recv(olattice[%d],recv[%d])",i,ri);
-#endif
-
-	    dest[i] = &(recv_buf[ri++]);
-	  }
-	  else
-	  {
-#if QDP_DEBUG >= 3
-	    QDP_info("Map_gather_onnode(olattice[%d],olattice[%d])",i,goffsets[i]);
-#endif
-
-	    dest[i] = &(const_cast<T1&>(l.elem(goffsets[i])));
-	  }
-	}
-
-	QMP_status_t err;
-
-#if QDP_DEBUG >= 3
-	QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
-	QDP_info("Map: establish send=%d recv=%d",destnodes[0],srcenodes[0]);
-	{
-	  const multi1d<int>& me = Layout::nodeCoord();
-	  multi1d<int> scrd = Layout::getLogicalCoordFrom(destnodes[0]);
-	  multi1d<int> rcrd = Layout::getLogicalCoordFrom(srcenodes[0]);
-
-	  QDP_info("Map: establish-info   my_crds=[%d,%d,%d,%d]",me[0],me[1],me[2],me[3]);
-	  QDP_info("Map: establish-info send_crds=[%d,%d,%d,%d]",scrd[0],scrd[1],scrd[2],scrd[3]);
-	  QDP_info("Map: establish-info recv_crds=[%d,%d,%d,%d]",rcrd[0],rcrd[1],rcrd[2],rcrd[3]);
-	}
-#endif
-
-	msg[0]  = QMP_declare_msgmem(recv_buf, srcnum);
-	if( msg[0] == (QMP_msgmem_t)NULL ) { 
-	  QDP_error_exit("QMP_declare_msgmem for msg[0] failed in Map::operator()\n");
-	}
-	msg[1]  = QMP_declare_msgmem(send_buf, dstnum);
-	if( msg[1] == (QMP_msgmem_t)NULL ) {
-	  QDP_error_exit("QMP_declare_msgmem for msg[1] failed in Map::operator()\n");
-	}
-
-	mh_a[0] = QMP_declare_receive_from(msg[0], srcenodes[0], 0);
-	if( mh_a[0] == (QMP_msghandle_t)NULL ) { 
-	  QDP_error_exit("QMP_declare_receive_from for mh_a[0] failed in Map::operator()\n");
-	}
-
-	mh_a[1] = QMP_declare_send_to(msg[1], destnodes[0], 0);
-	if( mh_a[1] == (QMP_msghandle_t)NULL ) {
-	  QDP_error_exit("QMP_declare_send_to for mh_a[1] failed in Map::operator()\n");
-	}
-
-	mh      = QMP_declare_multiple(mh_a, 2);
-	if( mh == (QMP_msghandle_t)NULL ) { 
-	  QDP_error_exit("QMP_declare_multiple for mh failed in Map::operator()\n");
-	}
-
-#if QDP_DEBUG >= 3
-	QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
-#endif
-
-	// Launch the faces
-	if ((err = QMP_start(mh)) != QMP_SUCCESS)
-	  QDP_error_exit(QMP_error_string(err));
-
-#if QDP_DEBUG >= 3
-	QDP_info("Map: calling wait");
-#endif
-
-	// Wait on the faces
-	if ((err = QMP_wait(mh)) != QMP_SUCCESS)
-	  QDP_error_exit(QMP_error_string(err));
-
-#if QDP_DEBUG >= 3
-	QDP_info("Map: calling free msgs");
-#endif
-
-	//	QMP_free_msghandle(mh_a[1]);
-	//	QMP_free_msghandle(mh_a[0]);
-	QMP_free_msghandle(mh);
-	QMP_free_msgmem(msg[1]);
-	QMP_free_msgmem(msg[0]);
-
-	// Scatter the data into the destination
-	// Some of the data maybe in receive buffers
-	// For now, use the all subset
-	for(int i=0; i < nodeSites; ++i) 
-	{
-#if QDP_DEBUG >= 3
-	  QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
-#endif
-	  d.elem(i) = *(dest[i]);
-	}
-
-	// Cleanup
-	QMP_free_memory(recv_buf_mem);
-	QMP_free_memory(send_buf_mem);
-	delete[] dest;
-
-#if QDP_DEBUG >= 3
-	QDP_info("finished cleanup");
-#endif
-      }
-      else 
-      {
-	// No off-node communications - copy on node
-#if QDP_DEBUG >= 3
-	QDP_info("Map: copy on node - no communications, try this");
-#endif
-
-	// For now, use the all subset
-	for(int i=0; i < nodeSites; ++i) 
-	{
-#if QDP_DEBUG >= 3
-	  QDP_info("Map(olattice[%d],olattice[%d])",i,goffsets[i]);
-#endif
-	  d.elem(i) = l.elem(goffsets[i]);
-	}
-      }
-
-#if QDP_DEBUG >= 3
-      QDP_info("exiting Map()");
-#endif
-
-      return d;
-    }
-#endif
 
   template<class T1,class C1>
   inline typename MakeReturn<UnaryNode<FnMap,
@@ -2304,32 +2028,6 @@ public:
     }
 
 
-#if 0
-  template<class T1>
-  OScalar<T1>
-  operator()(const OScalar<T1> & l)
-    {
-      return l;
-    }
-  template<class RHS, class T1>
-  OScalar<T1>
-  operator()(const QDPExpr<RHS,OScalar<T1> > & l)
-    {
-      typedef OScalar<T1> C1;
-      OScalar<T1> d = this->operator()(C1(l));
-      return d;
-    }
-  template<class RHS, class T1>
-  OLattice<T1>
-  operator()(const QDPExpr<RHS,OLattice<T1> > & l)
-    {
-      typedef OLattice<T1> C1;
-      OLattice<T1> d = this->operator()(C1(l));
-      return d;
-    }
-#endif
-
-
 public:
   //! Accessor to offsets
   const multi1d<int>& goffset() const {return goffsets;}
@@ -2347,6 +2045,7 @@ private:
 
 private:
   friend class FnMap;
+  friend class FnMapRsrc;
   template<class E,class F,class C> friend class ForEach;
 
   //! Offset table used for communications. 
@@ -2379,13 +2078,9 @@ struct FnMapRsrc
 {
   FnMapRsrc(const FnMapRsrc&) = delete;
 
-  FnMapRsrc(): bAlloc(false) {
-    //QDP_info("FnMapRsrc");
-  }
+  FnMapRsrc(const Map& map_): map(map_), bAlloc(false) {}
   ~FnMapRsrc() {
-    //QDP_info("~FnMapRsrc");
     if (bAlloc) {
-      //QDP_info("FnMapRsrc, qmp_dealloc");
       QMP_free_memory(recv_buf_mem);
       QMP_free_memory(send_buf_mem);
     }
@@ -2393,7 +2088,6 @@ struct FnMapRsrc
 
 
   void qmp_wait() {
-    //QDP_info("FnMapRsrc, qmp_wait...");
     QMP_status_t err;
     if ((err = QMP_wait(mh)) != QMP_SUCCESS)
       QDP_error_exit(QMP_error_string(err));
@@ -2411,10 +2105,11 @@ struct FnMapRsrc
 
 
   void qmp_alloc(int srcnum_, int dstnum_) {
+
     srcnum=srcnum_;
     dstnum=dstnum_;
-    //QDP_info("FnMapRsrc, qmp_alloc: srcnum=%d, dstnum=%d", srcnum, dstnum);
     bAlloc=true;
+
     send_buf_mem = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE, (QMP_MEM_COMMS|QMP_MEM_FAST) ); // packed data to send
     if( send_buf_mem == 0x0 ) { 
       send_buf_mem = QMP_allocate_aligned_memory(dstnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
@@ -2434,7 +2129,10 @@ struct FnMapRsrc
   }
 
 
-  void send_receive(int srcnode,int dstnode) {
+  void send_receive() {
+    int srcnode = map.srcenodes[0];
+    int dstnode = map.destnodes[0];
+
     QMP_status_t err;
 #if QDP_DEBUG >= 3
     QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
@@ -2487,6 +2185,7 @@ struct FnMapRsrc
   template<typename T> const T* getSendBufPtr() const { return static_cast<T*>(send_buf); }
   template<typename T> const T* getRecvBufPtr() const { return static_cast<T*>(recv_buf); }
 
+  const Map& map;
   bool bAlloc;
   mutable void * send_buf;
   mutable void * recv_buf;
@@ -2506,22 +2205,12 @@ struct FnMap
   const Map& map;
   std::shared_ptr<FnMapRsrc> pRsrc;
 
-  //const Map& getMap() const { return map; }
+  FnMap(const Map& m): map(m), pRsrc(new FnMapRsrc(m)) {}
 
-  FnMap(const Map& m): map(m), pRsrc(new FnMapRsrc) {
-    //QDP_info("FnMap(Map): map=0x%p size_soffsets=%d",(void*)&m,m.soffsets.size());
-  }
-
-  FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {
-    //QDP_info("FnMap(copy): map=0x%p size_soffsets=%d shared=%d", (void*)&f.map , f.map.soffsets.size() , pRsrc.use_count() );
-  }
+  FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {}
 
   FnMap& operator=(const FnMap& f) = delete;
 
-  ~FnMap() {
-    //QDP_info("~FnMap, map=0x%p",(void*)&map);
-  }
-  
   template<class T>
   inline typename UnaryReturn<T, FnMap>::Type_t
   operator()(const T &a) const
@@ -2532,11 +2221,6 @@ struct FnMap
 };
 
 
-template<class A>
-void printme()
-{
-  QDP_info("%s",__PRETTY_FUNCTION__);
-}
 
 
 template<class A>
@@ -2552,15 +2236,14 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
     const Map& map = expr.operation().map;
     FnMap& fnmap = const_cast<FnMap&>(expr.operation());
 
-    // printme<InnerTypeA_t>();
-    // printme<InnerType_t>();
-
     const int nodeSites = Layout::sitesOnNode();
     int returnVal=0;
 
     if (map.offnodeP)
       {
-	//QDP_info("Map: off-node communications required");
+#if QDP_DEBUG >= 3
+	QDP_info("Map: off-node communications required");
+#endif
 
 	int dstnum = map.destnodes_num[0]*sizeof(InnerType_t);
 	int srcnum = map.srcenodes_num[0]*sizeof(InnerType_t);
@@ -2579,8 +2262,7 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 
 	// Make sure the inner expression's map function
 	// send and receive before recursing down
-	ShiftPhase1 phase1;
-	int maps_involved = forEach(subexpr, phase1 , BitOrCombine());
+	int maps_involved = forEach(subexpr, f , BitOrCombine());
 	if (maps_involved > 0) {
 	  ShiftPhase2 phase2;
 	  forEach(subexpr, phase2 , NullCombine());
@@ -2596,46 +2278,20 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
   	  send_buf[si] = forEach( subexpr , EvalLeaf1(map.soffsets[si]) , OpCombine() );
 	}
 
-	(*fnmap.pRsrc).send_receive( map.srcenodes[0] , map.destnodes[0] );
+	//(*fnmap.pRsrc).send_receive( map.srcenodes[0] , map.destnodes[0] );
+	(*fnmap.pRsrc).send_receive(  );
 
 	returnVal = map.getId();
       } else {
 
-      //ShiftPhase1Found ff;
-      ShiftPhase1 ff;
-
-      ForEach<A, ShiftPhase1, BitOrCombine>::apply(expr.child(), ff, c);
+      ForEach<A, ShiftPhase1, BitOrCombine>::apply(expr.child(), f, c);
     }
 
     return returnVal;
-
-    // EvalLeaf1 ff(expr.operation().getMap().goffsets[f.val1()]);
-    // fprintf(stderr,"ForEach<Unary<FnMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
-
-    // return Combine1<TypeA_t, FnMap, CTag>::
-    //   combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),
-    //           expr.operation(), c);
   }
 };
 
 
-
-
-
-template<class A>
-struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1Found , BitOrCombine>
-{
-  typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t InnerTypeA_t;
-  typedef typename Combine1<InnerTypeA_t, FnMap, OpCombine>::Type_t InnerType_t;
-  typedef int Type_t;
-  typedef QDPExpr<A,OLattice<InnerType_t> > Expr;
-  inline static
-  Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase1Found &f, const BitOrCombine &c)
-  {
-    QDP_error_exit("Recursive shifts (shifts of shifts) not supported");
-    //#error "Recursive shifts (shifts of shifts) not supported"
-  }
-};
 
 
 
@@ -2670,15 +2326,13 @@ struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
     FnMap& fnmap = const_cast<FnMap&>(expr.operation());
     
     if (map.offnodeP) {
-      // assert((*fnmap.pRsrc).ind_array[f.val1()] < 0);
-      // assert(-(*fnmap.pRsrc).ind_array[f.val1()]-1 == map.goffsets[f.val1()]);
-      //QDP_info("ind_array[%d]=%d %d",f.val1(),(*fnmap.pRsrc).ind_array[f.val1()],map.goffsets[f.val1()]);
+#if QDP_DEBUG >= 3
+      QDP_info("ind_array[%d]=%d %d",f.val1(),map.get_ind_array()[f.val1()],map.goffsets[f.val1()]);
+#endif
       if (map.get_ind_array()[f.val1()] < 0) {
-	//QDP_info("local on node");
 	EvalLeaf1 ff( -map.get_ind_array()[f.val1()] - 1 );
 	return Combine1<TypeA_t, FnMap, CTag>::combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),expr.operation(), c);
       } else {
-	//QDP_info("in receive buffer");
 	const Type_t *recv_buf_c = (*fnmap.pRsrc).getRecvBufPtr<Type_t>();
 	Type_t* recv_buf = const_cast<Type_t*>(recv_buf_c);
 	if ( recv_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf). Do you use shifts of shifts?"); }
