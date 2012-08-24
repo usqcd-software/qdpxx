@@ -118,7 +118,7 @@ namespace QDPInternal
 
 }
 
-#define QDP_NOT_IMPLEMENTED
+  // #define QDP_NOT_IMPLEMENTED
 
 //-----------------------------------------------------------------------------
 //! OLattice Op Scalar(Expression(source)) under an Subset
@@ -139,13 +139,30 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 #endif
 
 #if ! defined(QDP_NOT_IMPLEMENTED)
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
-//    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
-//    op(dest.elem(i), forEach(rhs, ElemLeaf(), OpCombine()));
-    op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+  if (s.hasOrderedRep()) {
+    const int istart = s.start() >> INNER_LOG;
+    const int iend   = s.end()   >> INNER_LOG;
+    int i = 0;
+
+#pragma omp parallel for
+    for(i=istart; i <= iend; ++i) {
+      //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+    }
+  }
+  else {
+    const int *tab = s.siteTable().slice();
+    int j = 0;
+
+#pragma omp parallel for
+    for(j=0; j < s.numSiteTable(); ++j) {
+      int i = tab[j];
+      int outersite = i >> INNER_LOG;
+      int innersite = i & ((1 << INNER_LOG)-1);
+
+      //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+    }
   }
 #else
   QDP_error("evaluateSubset not implemented");
@@ -178,13 +195,31 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 
 #if ! defined(QDP_NOT_IMPLEMENTED)
   // General form of loop structure
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
-//    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
-    op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+  if (s.hasOrderedRep()) {
+    const int istart = s.start() >> INNER_LOG;
+    const int iend   = s.end()   >> INNER_LOG;
+    int i = 0;
+
+#pragma omp parallel for
+    for(i=istart; i <= iend; ++i) {
+      //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+    }
   }
+ else {
+    const int *tab = s.siteTable().slice();
+    int j;
+
+#pragma omp parallel for
+    for(j=0; j < s.numSiteTable(); ++j) {
+      int i = tab[j];
+      int outersite = i >> INNER_LOG;
+      int innersite = i & ((1 << INNER_LOG)-1);
+
+      //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+    }
+  }    
 #else
   QDP_error("evaluateSubset not implemented");
 #endif
@@ -197,13 +232,11 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 }
 
 
-
-
 //-----------------------------------------------------------------------------
 //! dest = (mask) ? s1 : dest
 template<class T1, class T2> 
 void 
-copymask(OSubLattice<T2,Subset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
+copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
   OLattice<T2>& dest = d.field();
   const Subset& s = d.subset();
@@ -265,17 +298,37 @@ void
 random(OLattice<T>& d, const Subset& s)
 {
   Seed seed;
+#if 0
   Seed skewed_seed;
+#endif
+  ILatticeSeed skewed_seed;
 
 #if ! defined(QDP_NOT_IMPLEMENTED)
-#error "random(unorderedsubset) broken"
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
-    seed = RNG::ran_seed;
-    skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
-    fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
+#warning "random(unorderedsubset) broken"
+  if (s.hasOrderedRep()) {
+    const int istart = s.start() >> INNER_LOG;
+    const int iend   = s.end()   >> INNER_LOG;
+
+    for(int i=istart; i <= iend; ++i) {
+      seed = RNG::ran_seed;
+      // Jie Chen: error here. IScalar = ILattice (?)
+      skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
+      fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
+    }
+  }
+  else {
+   const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) {
+      int i = tab[j];
+      int outersite = i >> INNER_LOG;
+      int innersite = i & ((1 << INNER_LOG)-1);
+
+      seed = RNG::ran_seed;
+      // Jie Chen: error here. IScalar = ILattice (?)
+      skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(outersite);
+      fill_random(d.elem(outersite), seed, skewed_seed, RNG::ran_mult_n);
+    }
+
   }
 
   RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
@@ -287,9 +340,9 @@ random(OLattice<T>& d, const Subset& s)
 
 //! dest  = random   under a subset
 template<class T, class S>
-void random(const OSubLattice<T,S>& dd)
+void random(const OSubLattice<T>& dd)
 {
-  OLattice<T>& d = const_cast<OSubLattice<T,S>&>(dd).field();
+  OLattice<T>& d = const_cast<OSubLattice<T>&>(dd).field();
   const S& s = dd.subset();
 
   random(d,s);
@@ -314,11 +367,22 @@ void gaussian(OLattice<T>& d, const Subset& s)
   random(r2,s);
 
 #if ! defined(QDP_NOT_IMPLEMENTED)
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
-    fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
+  if (s.hasOrderedRep()) {
+    const int istart = s.start() >> INNER_LOG;
+    const int iend   = s.end()   >> INNER_LOG;
+
+    for(int i=istart; i <= iend; ++i) 
+      fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
+  }
+  else {
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) {
+      int i = tab[j];
+      int outersite = i >> INNER_LOG;
+      int innersite = i & ((1 << INNER_LOG)-1);
+
+      fill_gaussian(d.elem(outersite), r1.elem(outersite), r2.elem(outersite));
+    }
   }
 #else
   QDP_error("gaussianSubset not implemented");
@@ -329,9 +393,9 @@ void gaussian(OLattice<T>& d, const Subset& s)
 
 //! dest  = gaussian   under a subset
 template<class T, class S>
-void gaussian(const OSubLattice<T,S>& dd)
+void gaussian(const OSubLattice<T>& dd)
 {
-  OLattice<T>& d = const_cast<OSubLattice<T,S>&>(dd).field();
+  OLattice<T>& d = const_cast<OSubLattice<T>&>(dd).field();
   const S& s = dd.subset();
 
   gaussian(d,s);
@@ -354,11 +418,21 @@ template<class T>
 void zero_rep(OLattice<T>& dest, const Subset& s) 
 {
 #if ! defined(QDP_NOT_IMPLEMENTED)
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
-    zero_rep(dest.elem(i));
+  if (s.hasOrderedRep()) {
+    const int istart = s.start() >> INNER_LOG;
+    const int iend   = s.end()   >> INNER_LOG;
+
+    for(int i=istart; i <= iend; ++i)
+      zero_rep(dest.elem(i));
+  }
+  else {
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) 
+      {
+	int i = tab[j];
+	int outersite = i >> INNER_LOG;
+	zero_rep(dest.elem(outersite));
+      }
   }
 #else
   QDP_error("zero_rep_Subset not implemented");
@@ -368,8 +442,8 @@ void zero_rep(OLattice<T>& dest, const Subset& s)
 
 
 //! dest  = 0 
-template<class T, class S>
-void zero_rep(OSubLattice<T,S> dd) 
+template<class T>
+void zero_rep(OSubLattice<T> dd) 
 {
   OLattice<T>& d = dd.field();
   const S& s = dd.subset();
@@ -464,6 +538,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 {
   typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
   OScalar<T> tmp;   // Note, expect to have ILattice inner grid
+  int num_threads = 1;
 
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(d, OpAssign(), FnSum(), s1);
@@ -478,24 +553,57 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
     const int istart = s.start() >> INNER_LOG;
     const int iend   = s.end()   >> INNER_LOG;
 
-    for(int i=istart; i <= iend; ++i) 
+    typename UnaryReturn<OLattice<T>, FnSum>::Type_t  *pd = new  typename UnaryReturn<OLattice<T>, FnSum>::Type_t[qdpNumThreads()]; 
+
+#pragma omp parallel shared(pd,istart,iend,num_threads) private(tmp) default(shared)
     {
-      tmp.elem() = forEach(s1, EvalLeaf1(i), OpCombine()); // Evaluate to ILattice part
-      d.elem() += sum(tmp.elem());    // sum as well the ILattice part
+      num_threads = omp_get_num_threads();
+      int myId = omp_get_thread_num();
+      int low = istart + (iend - istart + 1) * myId/num_threads;
+      int high = istart + (iend - istart + 1) * (myId + 1)/num_threads;
+      // zero the partial result
+      zero_rep(pd[myId].elem());
+
+      for(int i=low; i < high; ++i) {
+	tmp.elem() = forEach(s1, EvalLeaf1(i), OpCombine()); // Evaluate to ILattice part
+	pd[myId].elem() += sum(tmp.elem()); // sum as well the ILattice part
+      }
     }
+    // Now combine all together
+    for (int j = 0; j < num_threads; j++) 
+      d.elem() += sum(pd[j].elem());
+
+    delete []pd;
   }
   else
   {
+    typename UnaryReturn<OLattice<T>, FnSum>::Type_t  *pd = new  typename UnaryReturn<OLattice<T>, FnSum>::Type_t[qdpNumThreads()]; 
     const int *tab = s.siteTable().slice();
-    for(int j=0; j < s.numSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      int outersite = i >> INNER_LOG;
-      int innersite = i & (INNER_LEN-1);
 
-      tmp.elem() = forEach(s1, EvalLeaf1(outersite), OpCombine()); // Evaluate to ILattice part
-      d.elem() += getSite(tmp.elem(),innersite);    // wasteful - only extract a single site worth
+#pragma omp parallel shared(pd,num_threads) private(tmp) default(shared) 
+    {
+      num_threads = omp_get_num_threads();
+      int myId = omp_get_thread_num();
+      int low = s.numSiteTable() * myId/num_threads;
+      int high = s.numSiteTable() * (myId + 1)/num_threads;
+
+      // zero the partial result
+      zero_rep(pd[myId].elem());
+
+      for(int j=low; j < high; ++j) {
+	int i = tab[j];
+	int outersite = i >> INNER_LOG;
+	int innersite = i & (INNER_LEN-1);
+
+	tmp.elem() = forEach(s1, EvalLeaf1(outersite), OpCombine()); // Evaluate to ILattice part
+	pd[myId].elem() += getSite(tmp.elem(),innersite);    // wasteful - only extract a single site worth
+      }
     }
+    // Now combine all together
+    for (int k = 0; k < num_threads; k++) 
+      d.elem() += sum(pd[k].elem());
+
+    delete []pd;
   }
 
   // Do a global sum on the result
@@ -736,15 +844,29 @@ norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
   zero_rep(d.elem());
 
 #if ! defined(QDP_NOT_IMPLEMENTED)
-  const int *tab = s.siteTable().slice();
-  for(int n=0; n < s1.size(); ++n)
-  {
-    const OLattice<T>& ss1 = s1[n];
-    for(int j=0; j < s.numSiteTable(); ++j) 
-    {
-      int i = tab[j];
-      d.elem() += localNorm2(ss1.elem(i));
+  if (s.hasOrderedRep()) {
+    const int istart = s.start() >> INNER_LOG;
+    const int iend   = s.end()   >> INNER_LOG;
+
+    for(int n=0; n < s1.size(); ++n) {
+      const OLattice<T>& ss1 = s1[n];
+
+      for (int i = istart; i <= iend; ++i) 
+	d.elem() += localNorm2(ss1.elem(i));
     }
+  }
+  else {
+    const int *tab = s.siteTable().slice();
+    for(int n=0; n < s1.size(); ++n)
+      {
+	const OLattice<T>& ss1 = s1[n];
+	for(int j=0; j < s.numSiteTable(); ++j) {
+	  int i = tab[j];
+	  int outersite = i >> INNER_LOG;
+	  int innersite = i & ((1 << INNER_LOG)-1);
+	  d.elem() += localNorm2(ss1.elem(outersite));
+	}
+      }
   }
 #else
   QDP_error_exit("norm2-Subset not implemented");
@@ -1218,7 +1340,136 @@ public:
 		       l.elem(o2),i2,
 		       l.elem(o3),i3);
 	}
+#elif INNER_LOG == 3
+	// *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
+	// *** This is for AVX ***
+	// For now, use the all subset
+	const int vvol = Layout::sitesOnNode();
+	for(int i=0; i < vvol; i+= INNER_LEN) 
+	  {
+	    int ii = i >> INNER_LOG;
+	    int o0 = goffsets[i+0] >> INNER_LOG;
+	    int i0 = goffsets[i+0] & (INNER_LEN - 1);
 
+	    int o1 = goffsets[i+1] >> INNER_LOG;
+	    int i1 = goffsets[i+1] & (INNER_LEN - 1);
+
+	    int o2 = goffsets[i+2] >> INNER_LOG;
+	    int i2 = goffsets[i+2] & (INNER_LEN - 1);
+
+	    int o3 = goffsets[i+3] >> INNER_LOG;
+	    int i3 = goffsets[i+3] & (INNER_LEN - 1);
+
+	    int o4 = goffsets[i+4] >> INNER_LOG;
+	    int i4 = goffsets[i+4] & (INNER_LEN - 1);
+
+	    int o5 = goffsets[i+5] >> INNER_LOG;
+	    int i5 = goffsets[i+5] & (INNER_LEN - 1);
+
+	    int o6 = goffsets[i+6] >> INNER_LOG;
+	    int i6 = goffsets[i+6] & (INNER_LEN - 1);
+
+	    int o7 = goffsets[i+7] >> INNER_LOG;
+	    int i7 = goffsets[i+7] & (INNER_LEN - 1);
+
+#if QDP_DEBUG >= 3
+	    QDP_info("Map(lattice[%d]=lattice([%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d])",
+		     ii,o0,i0,o1,i1,o2,i2,o3,i3,o4,i4,o5,i5,o6,i6,o7,i7);
+#endif
+
+	// Gather 8 inner-grid sites together
+	    gather_sites(d.elem(ii),
+			 l.elem(o0),i0,
+			 l.elem(o1),i1,
+			 l.elem(o2),i2,
+			 l.elem(o3),i3,
+			 l.elem(o4),i4,
+			 l.elem(o5),i5,
+			 l.elem(o6),i6,
+			 l.elem(o7),i7);
+	  }
+
+#elif INNER_LOG == 4
+	// *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
+	// *** This is for MIC ***
+	// For now, use the all subset
+	const int vvol = Layout::sitesOnNode();
+	for(int i=0; i < vvol; i+= INNER_LEN) 
+	  {
+	    int ii = i >> INNER_LOG;
+	    int o0 = goffsets[i+0] >> INNER_LOG;
+	    int i0 = goffsets[i+0] & (INNER_LEN - 1);
+
+	    int o1 = goffsets[i+1] >> INNER_LOG;
+	    int i1 = goffsets[i+1] & (INNER_LEN - 1);
+
+	    int o2 = goffsets[i+2] >> INNER_LOG;
+	    int i2 = goffsets[i+2] & (INNER_LEN - 1);
+
+	    int o3 = goffsets[i+3] >> INNER_LOG;
+	    int i3 = goffsets[i+3] & (INNER_LEN - 1);
+
+	    int o4 = goffsets[i+4] >> INNER_LOG;
+	    int i4 = goffsets[i+4] & (INNER_LEN - 1);
+
+	    int o5 = goffsets[i+5] >> INNER_LOG;
+	    int i5 = goffsets[i+5] & (INNER_LEN - 1);
+
+	    int o6 = goffsets[i+6] >> INNER_LOG;
+	    int i6 = goffsets[i+6] & (INNER_LEN - 1);
+
+	    int o7 = goffsets[i+7] >> INNER_LOG;
+	    int i7 = goffsets[i+7] & (INNER_LEN - 1);
+
+	    int o8 = goffsets[i+8] >> INNER_LOG;
+	    int i8 = goffsets[i+8] & (INNER_LEN - 1);
+
+	    int o9 = goffsets[i+9] >> INNER_LOG;
+	    int i9 = goffsets[i+9] & (INNER_LEN - 1);
+
+	    int o10 = goffsets[i+10] >> INNER_LOG;
+	    int i10 = goffsets[i+10] & (INNER_LEN - 1);
+
+	    int o11 = goffsets[i+11] >> INNER_LOG;
+	    int i11 = goffsets[i+11] & (INNER_LEN - 1);
+
+	    int o12 = goffsets[i+12] >> INNER_LOG;
+	    int i12 = goffsets[i+12] & (INNER_LEN - 1);
+
+	    int o13 = goffsets[i+13] >> INNER_LOG;
+	    int i13 = goffsets[i+13] & (INNER_LEN - 1);
+
+	    int o14 = goffsets[i+14] >> INNER_LOG;
+	    int i14 = goffsets[i+14] & (INNER_LEN - 1);
+
+	    int o15 = goffsets[i+15] >> INNER_LOG;
+	    int i15 = goffsets[i+15] & (INNER_LEN - 1);
+
+#if QDP_DEBUG >= 3
+	    QDP_info("Map(lattice[%d]=lattice([%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d])",
+		     ii,o0,i0,o1,i1,o2,i2,o3,i3,o4,i4,o5,i5,o6,i6,o7,i7,
+		     o8,i8,o9,i9,o10,i10,o11,i11,o12,i12,o13,i13,o14,i14,o15,i15);
+#endif
+
+	    // Gather 16 inner-grid sites together
+	    gather_sites(d.elem(ii),
+			 l.elem(o0),i0,
+			 l.elem(o1),i1,
+			 l.elem(o2),i2,
+			 l.elem(o3),i3,
+			 l.elem(o4),i4,
+			 l.elem(o5),i5,
+			 l.elem(o6),i6,
+			 l.elem(o7),i7,
+			 l.elem(o8),i8,
+			 l.elem(o9),i9,
+			 l.elem(o10),i10,
+			 l.elem(o11),i11,
+			 l.elem(o12),i12,
+			 l.elem(o13),i13,
+			 l.elem(o14),i14,
+			 l.elem(o15),i15);
+	  }
 #else
 #error "Map: this inner grid length is not supported - easy to fix"
 #endif
@@ -1827,6 +2078,69 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
   if (Layout::nodeNumber() == node)
     copy_site(d.elem(outersite), innersite, recv_buf);// insert into conventional scalar form
 }
+
+
+// **************************************************************
+// Special support for slices of a lattice
+// **************************************************************
+
+// --JIe Chen: need to implement
+namespace LatticeTimeSliceIO 
+{
+  template<class T>
+  void readSlice(BinaryReader& bin, OLattice<T>& data, 
+		 int start_lexico, int stop_lexico)
+  {
+    // check whether dimention t is multiple of INNER_LEN
+    int tDir = Nd-1;
+
+    if (Layout::lattSize()[tDir] % INNER_LEN != 0)
+      QDP_error_exit ("Size of time dimension %d is not multiple of vector len %d\n", Layout::lattSize()[tDir], INNER_LEN);
+
+
+    for(int site=start_lexico; site < stop_lexico; ++site) 
+    {
+      int i = Layout::linearSiteIndex(site);
+      int outersite = i >> INNER_LOG;
+      int innersite = i & ((1 << INNER_LOG)-1);
+
+      typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
+      Site_t  this_site;
+
+      bin.readArray((char*)&this_site,
+		    sizeof(typename WordType<Site_t>::Type_t), 
+		    sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
+
+      copy_site(data.elem(outersite), innersite, this_site);
+    }
+  }
+
+  template<class T>
+  void writeSlice(BinaryWriter& bin, OLattice<T>& data, 
+		  int start_lexico, int stop_lexico)
+  {
+    // check whether dimention t is multiple of INNER_LEN
+    int tDir = Nd-1;
+
+    if (Layout::lattSize()[tDir] % INNER_LEN != 0)
+      QDP_error_exit("Size of time dimension %d is not multiple of vector len %d\n", Layout::lattSize()[tDir], INNER_LEN);
+
+    for(int site=start_lexico; site < stop_lexico; ++site) 
+    {
+      int i = Layout::linearSiteIndex(site);
+      int outersite = i >> INNER_LOG;
+      int innersite = i & ((1 << INNER_LOG)-1);
+
+      typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
+      Site_t  this_site = getSite(data.elem(outersite),innersite);
+
+      bin.writeArray((const char*)&this_site,
+		     sizeof(typename WordType<Site_t>::Type_t), 
+		     sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
+    }
+  }
+
+} // namespace LatticeTimeSliceIO
 
 } // namespace QDP
 

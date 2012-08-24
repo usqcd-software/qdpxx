@@ -184,6 +184,10 @@ void QDP_initialize(int *argc, char ***argv)
 
   isInit = true;
 
+#ifdef QDP_USE_OMP_THREADS
+  cout << "QDP uses OpenMP threading. We have " << qdpNumThreads() << " threads \n";
+#endif
+
 #if QDP_DEBUG >= 1
   QDP_info("Init qio");
 #endif

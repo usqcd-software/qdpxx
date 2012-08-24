@@ -441,6 +441,8 @@ namespace QDP
       multi1d<int> dim(Nd);
       dim = 1;
 
+      // Make sure the x-direction stays together
+      dim[0] = INNER_LEN;
       return dim;
     }
   }
@@ -532,7 +534,8 @@ namespace QDP
     {
       multi1d<int> dim(Nd);
       dim = 1;
-      dim[0] = 2;       // must have multiple length 2 for cb
+      dim[0] = 2 * INNER_LEN;       // must have multiple length 2 for cb
+                                    // Jie Chen: Not sure this is correct
 
       return dim;
     }
@@ -643,7 +646,7 @@ namespace QDP
     {
       multi1d<int> dim(Nd);
 
-      dim[0] = 4;       // must have multiple length 2 for cb and hypercube
+      dim[0] = 4 * INNER_LEN;       // must have multiple length 2 for cb and hypercube
       for(int m=1; m < Nd; ++m)
 	dim[m] = 2;     //  must have multiple length 2 for hypercube
 

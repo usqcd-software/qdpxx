@@ -263,7 +263,7 @@ random(OLattice<T>& d, const Subset& s)
       seed = RNG::ran_seed;
       // Jie Chen: error here. IScalar = ILattice (?)
       skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(outersite);
-      fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
+      fill_random(d.elem(outersite), seed, skewed_seed, RNG::ran_mult_n);
     }
   }
   // The seed from any site is the same as the new global seed
@@ -352,11 +352,21 @@ template<class T>
 void zero_rep(OLattice<T>& dest, const Subset& s) 
 {
 #if ! defined(QDP_NOT_IMPLEMENTED)
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
-  {
-    int i = tab[j];
-    zero_rep(dest.elem(i));
+  if (s.hasOrderedRep()) {
+    const int istart = s.start() >> INNER_LOG;
+    const int iend   = s.end()   >> INNER_LOG;
+
+    for(int i=istart; i <= iend; ++i)
+      zero_rep(dest.elem(i));
+  }
+  else {
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) 
+      {
+	int i = tab[j];
+	int outersite = i >> INNER_LOG;
+	zero_rep(dest.elem(outersite));
+      }
   }
 #else
   QDP_error_exit("zero_rep_Subset not implemented");

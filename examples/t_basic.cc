@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
   // Setup the layout
   //  const int foo[] = {2,2,2,1};
-  const int foo[] = {8,8,8,1};
+  const int foo[] = {16,8,8,1};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -66,22 +66,21 @@ int main(int argc, char *argv[])
 
   random(u);
   gaussian(lctmp1);
+
+#if 0
   push(xml_out,"LATTICE_COLORMATRIX_Site_Variables");
   write(xml_out, "u", u);
   write(xml_out, "lctmp1", lctmp1);
   pop(xml_out);
+
 
   // Colormat ops
   random(lctmp1); random(lctmp2); random(R1); random(c);
   push(xml_out,"Lattice_ColorMat_ops");
   random(lctmp3); 
 
-  fprintf (stderr, "Start\n");
-  lctmp3 = lctmp1 + lctmp2;
+  lctmp3 = lctmp1 * lctmp2;
   write(xml_out, "C_X_C",lctmp3);
-  fprintf (stderr, "Stop\n");
-
-#if 0
 
   random(lctmp3);
   lctmp3 += lctmp1 * lctmp2;
@@ -165,6 +164,7 @@ int main(int argc, char *argv[])
   write(xml_out, "C_eq_traceSpin_outerProduct",lctmp1);
   pop(xml_out);
 
+
   // #if 0
 
   mu = 0;
@@ -222,19 +222,24 @@ int main(int argc, char *argv[])
   push(xml_out,"TRACE_MATRIX_complexpart");
   write(xml_out, "ctmp", ctmp);
   pop(xml_out);
+#endif
 
   /* Now do tests on propagators */
   gaussian(q);
   gaussian(lqtmp1);
   gaussian(lqtmp2);
+
+#if 0
   push(xml_out,"LATTICE_PROPAGATOR_Site_Variables");
   write(xml_out, "q", q);
   write(xml_out, "lqtmp1", lqtmp1);
   pop(xml_out);
+#endif
 
   mu = 0;
   nu = 1;
 
+#if 0
   /* test 9 */
   lqtmp2 = q * lqtmp1;
   push(xml_out,"MULTIPLY_PROP_replace");
@@ -295,6 +300,8 @@ int main(int argc, char *argv[])
   push(xml_out,"MULTIPLY_PROP_U_back");
   write(xml_out, "lqtmp2", lqtmp2);
   pop(xml_out);
+
+#endif
 
   /* test 18 */
   dsum1 = norm2(q);
@@ -364,6 +371,8 @@ int main(int argc, char *argv[])
   write(xml_out, "dsum2", dsum2);
   write(xml_out, "lqtmp2", lqtmp2);
   pop(xml_out);
+
+#if 0
 
   for(int m=0; m < Ns*Ns; ++m)
   {
