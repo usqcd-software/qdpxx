@@ -332,6 +332,42 @@ void evaluate_userfunc_mask(int lo, int hi, int myId, user_arg_mask<T,T1,Op,RHS>
 
 
 
+template<class T, class T1, class Op, class RHS>
+struct user_arg_face{
+    user_arg_face(
+        T*& d_,
+	const int* tab_ ,
+        const QDPExpr<RHS,OLattice<T1> >& r_,
+        const Op& op_ ) : d(d_), r(r_), op(op_), tab(tab_) {}
+
+        T*& d;
+        const QDPExpr<RHS,OLattice<T1> >& r;
+        const int *tab;
+        const Op& op;
+   };
+
+//! user function for the evaluate function:
+// "OLattice Op OLattice(Expression(source)) under an Subset"
+//
+template<class T, class T1, class Op, class RHS>
+void evaluate_userfunc_face(int lo, int hi, int myId, user_arg_face<T,T1,Op,RHS> *a)
+{
+
+   T*& dest = a->d;
+   const QDPExpr<RHS,OLattice<T1> >&rhs = a->r;
+   const Op& op= a->op;
+   const int* tab = a->tab;
+      
+   for(int j=lo; j < hi; ++j)
+   {
+     int i = tab[j];
+     op(dest[j], forEach(rhs, EvalLeaf1(i), OpCombine()));
+   }
+}
+
+
+
+
 //! include the header file for dispatch
 #include "qdp_dispatch.h"
 
@@ -600,7 +636,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     const multi1d<int>& innerSites = MasterMap::Instance().getInnerSites(maps_involved);
     const multi1d<int>& faceSites = MasterMap::Instance().getFaceSites(maps_involved);
 
-#if 0
+#if 1
     user_arg_mask<T,T1,Op,RHS> a0(dest, rhs, op, innerSites.slice() , s.getIsElement().slice() );
     dispatch_to_threads< user_arg_mask<T,T1,Op,RHS> >(innerSites.size(), a0, evaluate_userfunc_mask );
 #else
@@ -621,7 +657,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     //QDP_info("face sites total = %d",faceSites.size());
 
 #if 1
-#if 0
+#if 1
     user_arg_mask<T,T1,Op,RHS> a1(dest, rhs, op, faceSites.slice() , s.getIsElement().slice() );
     dispatch_to_threads< user_arg_mask<T,T1,Op,RHS> >(faceSites.size(), a1, evaluate_userfunc_mask );
 #else
@@ -2173,6 +2209,7 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 
 	const int my_node = Layout::nodeNumber();
 
+#if 1
 	Expr subexpr(expr.child());
 
 	// Make sure the inner expression's map function
@@ -2185,13 +2222,15 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 
 	// Gather the face of data to send
 	// For now, use the all subset
+	//printf("soffsets.size=%d",map.soffsets.size());
+#if 0
+	user_arg_face<InnerType_t,InnerType_t,OpAssign,Expr> a0(send_buf, map.soffsets.slice() , subexpr, OpAssign()  );
+	dispatch_to_threads< user_arg_face<InnerType_t,InnerType_t,OpAssign,Expr> >(map.soffsets.size(), a0, evaluate_userfunc_face );
+#else
 	for(int si=0; si < map.soffsets.size(); ++si)
-	{
-#if QDP_DEBUG >= 3
-	  QDP_info("Map_scatter_send(buf[%d],olattice[%d])",si,map.soffsets[si]);
-#endif
   	  send_buf[si] = forEach( subexpr , EvalLeaf1(map.soffsets[si]) , OpCombine() );
-	}
+#endif
+#endif
 
 	rRSrc.send_receive();
 	

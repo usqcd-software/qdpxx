@@ -25,6 +25,9 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*
   int myId;
   int low = 0;
   int high = numSiteTable;
+
+  if (numSiteTable % qdpNumThreads())
+    QDP_error_exit("dispatch_to_threads: problems laying out the threads: numSiteTable=%d, OMP threads=%d",numSiteTable,qdpNumThreads());
    
 #pragma omp parallel shared(numSiteTable, threads_num, a) private(myId, low, high) default(shared)
     {
