@@ -157,6 +157,7 @@ namespace QDP {
 #include "qdp_dispatch.h"
 
 #include "qdp_mastermap.h"
+#include "qdp_mapresource.h"
 
 
 namespace ThreadReductions { 

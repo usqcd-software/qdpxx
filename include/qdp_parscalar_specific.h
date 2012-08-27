@@ -384,6 +384,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 
 struct ShiftPhase1
 {
+  ShiftPhase1(): shift_num(0) {}
+  mutable int shift_num;
 };
 
 struct ShiftPhase2
@@ -582,20 +584,23 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   prof.time -= getClockTime();
 #endif
 
-
+#if 1
   ShiftPhase1 phase1;
   int maps_involved = forEach(rhs, phase1 , BitOrCombine());
+#endif
+  //int maps_involved = 0;
+
 
   //QDP_info("eval(Lat) maps_involved = %d",maps_involved);
   
   if (maps_involved > 0) {
 
     //QDPIO::cout << "eval maps="<<maps_involved<<__PRETTY_FUNCTION__<<"\n";
-#if 0
+#if 1
     const multi1d<int>& innerSites = MasterMap::Instance().getInnerSites(maps_involved);
     const multi1d<int>& faceSites = MasterMap::Instance().getFaceSites(maps_involved);
 
-#if 1
+#if 0
     user_arg_mask<T,T1,Op,RHS> a0(dest, rhs, op, innerSites.slice() , s.getIsElement().slice() );
     dispatch_to_threads< user_arg_mask<T,T1,Op,RHS> >(innerSites.size(), a0, evaluate_userfunc_mask );
 #else
@@ -608,13 +613,15 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 #endif
 #endif
 
+#if 1
     ShiftPhase2 phase2;
     forEach(rhs, phase2 , NullCombine());
+#endif
 
     //QDP_info("face sites total = %d",faceSites.size());
 
-#if 0
 #if 1
+#if 0
     user_arg_mask<T,T1,Op,RHS> a1(dest, rhs, op, faceSites.slice() , s.getIsElement().slice() );
     dispatch_to_threads< user_arg_mask<T,T1,Op,RHS> >(faceSites.size(), a1, evaluate_userfunc_mask );
 #else
@@ -627,14 +634,16 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 #endif
 #endif
 
+
+
   } else {
 
     // if (Layout::primaryNode())
     //   QDP_info("eval(Lat)");
 
     //QDPIO::cout << "eval maps=0 \n";
-#if 0
 #if 1
+#if 0
     int numSiteTable = s.numSiteTable();
     user_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
     dispatch_to_threads< user_arg<T,T1,Op,RHS> >(numSiteTable, a, evaluate_userfunc);
@@ -2087,131 +2096,6 @@ private:
 
 
 
-struct FnMapRsrc
-{
-  FnMapRsrc(const FnMapRsrc&) = delete;
-
-  FnMapRsrc(const Map& map_): map(map_), bAlloc(false) {}
-  ~FnMapRsrc() {
-    if (bAlloc) {
-      QMP_free_msghandle(mh);
-      // QMP_free_msghandle(mh_a[1]);
-      // QMP_free_msghandle(mh_a[0]);
-      QMP_free_msgmem(msg[1]);
-      QMP_free_msgmem(msg[0]);
-      QMP_free_memory(recv_buf_mem);
-      QMP_free_memory(send_buf_mem);
-    }
-  }
-
-
-  void qmp_wait() {
-    QMP_status_t err;
-    if ((err = QMP_wait(mh)) != QMP_SUCCESS)
-      QDP_error_exit(QMP_error_string(err));
-
-#if QDP_DEBUG >= 3
-    QDP_info("Map: calling free msgs");
-#endif
-
-  }
-
-
-  void qmp_alloc(int srcnum_, int dstnum_) {
-
-    srcnum=srcnum_;
-    dstnum=dstnum_;
-    bAlloc=true;
-
-    send_buf_mem = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE, (QMP_MEM_COMMS|QMP_MEM_FAST) ); // packed data to send
-    if( send_buf_mem == 0x0 ) { 
-      send_buf_mem = QMP_allocate_aligned_memory(dstnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
-      if( send_buf_mem == 0x0 ) { 
-	QDP_error_exit("Unable to allocate send_buf_mem\n");
-      }
-    }
-    recv_buf_mem = QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE, (QMP_MEM_COMMS|QMP_MEM_FAST)); // packed receive data
-    if( recv_buf_mem == 0x0 ) { 
-      recv_buf_mem = QMP_allocate_aligned_memory(srcnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS); 
-      if( recv_buf_mem == 0x0 ) { 
-	QDP_error_exit("Unable to allocate recv_buf_mem\n");
-      }
-    }
-    send_buf=QMP_get_memory_pointer(send_buf_mem);
-    recv_buf=QMP_get_memory_pointer(recv_buf_mem);
-
-    int srcnode = map.srcenodes[0];
-    int dstnode = map.destnodes[0];
-
-    msg[0] = QMP_declare_msgmem(recv_buf, srcnum);
-    if( msg[0] == (QMP_msgmem_t)NULL ) { 
-      QDP_error_exit("QMP_declare_msgmem for msg[0] failed in Map::operator()\n");
-    }
-    msg[1] = QMP_declare_msgmem(send_buf, dstnum);
-    if( msg[1] == (QMP_msgmem_t)NULL ) {
-      QDP_error_exit("QMP_declare_msgmem for msg[1] failed in Map::operator()\n");
-    }
-
-    mh_a[0] = QMP_declare_receive_from(msg[0], srcnode, 0);
-    if( mh_a[0] == (QMP_msghandle_t)NULL ) { 
-      QDP_error_exit("QMP_declare_receive_from for mh_a[0] failed in Map::operator()\n");
-    }
-
-    mh_a[1] = QMP_declare_send_to(msg[1], dstnode , 0);
-    if( mh_a[1] == (QMP_msghandle_t)NULL ) {
-      QDP_error_exit("QMP_declare_send_to for mh_a[1] failed in Map::operator()\n");
-    }
-
-    mh = QMP_declare_multiple(mh_a, 2);
-    if( mh == (QMP_msghandle_t)NULL ) { 
-      QDP_error_exit("QMP_declare_multiple for mh failed in Map::operator()\n");
-    }
-
-
-  }
-
-
-  void send_receive() {
-
-    QMP_status_t err;
-#if QDP_DEBUG >= 3
-    QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
-    QDP_info("Map: establish send=%d recv=%d",destnodes[0],srcenodes[0]);
-    {
-      const multi1d<int>& me = Layout::nodeCoord();
-      multi1d<int> scrd = Layout::getLogicalCoordFrom(destnodes[0]);
-      multi1d<int> rcrd = Layout::getLogicalCoordFrom(srcenodes[0]);
-
-      QDP_info("Map: establish-info   my_crds=[%d,%d,%d,%d]",me[0],me[1],me[2],me[3]);
-      QDP_info("Map: establish-info send_crds=[%d,%d,%d,%d]",scrd[0],scrd[1],scrd[2],scrd[3]);
-      QDP_info("Map: establish-info recv_crds=[%d,%d,%d,%d]",rcrd[0],rcrd[1],rcrd[2],rcrd[3]);
-    }
-#endif
-
-#if QDP_DEBUG >= 3
-    QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
-#endif
-
-    // Launch the faces
-    if ((err = QMP_start(mh)) != QMP_SUCCESS)
-      QDP_error_exit(QMP_error_string(err));
-  }
-
-
-  template<typename T> const T* getSendBufPtr() const { return static_cast<T*>(send_buf); }
-  template<typename T> const T* getRecvBufPtr() const { return static_cast<T*>(recv_buf); }
-
-  const Map& map;
-  bool bAlloc;
-  mutable void * send_buf;
-  mutable void * recv_buf;
-  int srcnum, dstnum;
-  QMP_msgmem_t msg[2];
-  QMP_msghandle_t mh_a[2], mh;
-  QMP_mem_t *send_buf_mem;
-  QMP_mem_t *recv_buf_mem;
-};
-
 
 
 struct FnMap
@@ -2219,14 +2103,29 @@ struct FnMap
   //PETE_EMPTY_CONSTRUCTORS(FnMap)
 
   const Map& map;
-  std::shared_ptr<FnMapRsrc> pRsrc;
+  //std::shared_ptr<FnMapRsrc> pRsrc;
+  const FnMapRsrc* cached;
 
-  FnMap(const Map& m): map(m), pRsrc(new FnMapRsrc(m)) {}
+  // FnMap(const Map& m): map(m), pRsrc(new FnMapRsrc(m)) {}
+  // FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {}
 
-  FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {}
+  FnMap(const Map& m): map(m),cached(NULL) {}
+  FnMap(const FnMap& f) : map(f.map),cached(f.cached) {}
 
   FnMap& operator=(const FnMap& f) = delete;
 
+  const FnMapRsrc& getResource(int srcnum_, int dstnum_, int shift_num ) {
+    if (!cached)
+      cached = & FnMapRsrcMatrix::Instance().get( map.destnodes[0], map.srcenodes[0] , dstnum_ , srcnum_ , shift_num );
+    return *cached;
+  }
+
+  const FnMapRsrc& getCached() const {
+    if (!cached)
+      QDP_error_exit("FnMapRsrc& getCached() internal error");
+    return *cached;
+  }
+  
   template<class T>
   inline typename UnaryReturn<T, FnMap>::Type_t
   operator()(const T &a) const
@@ -2264,9 +2163,9 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 	int dstnum = map.destnodes_num[0]*sizeof(InnerType_t);
 	int srcnum = map.srcenodes_num[0]*sizeof(InnerType_t);
 
-	(*fnmap.pRsrc).qmp_alloc(srcnum,dstnum);
+	const FnMapRsrc& rRSrc = fnmap.getResource(srcnum,dstnum,f.shift_num++);
 
-	const InnerType_t *send_buf_c = (*fnmap.pRsrc).getSendBufPtr<InnerType_t>();
+	const InnerType_t *send_buf_c = rRSrc.getSendBufPtr<InnerType_t>();
 
 	InnerType_t* send_buf = const_cast<InnerType_t*>(send_buf_c);
 
@@ -2286,7 +2185,6 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 
 	// Gather the face of data to send
 	// For now, use the all subset
-#if 0
 	for(int si=0; si < map.soffsets.size(); ++si)
 	{
 #if QDP_DEBUG >= 3
@@ -2294,10 +2192,9 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 #endif
   	  send_buf[si] = forEach( subexpr , EvalLeaf1(map.soffsets[si]) , OpCombine() );
 	}
-#endif
 
-	(*fnmap.pRsrc).send_receive();
-
+	rRSrc.send_receive();
+	
 	returnVal = map.getId();
       } else {
 
@@ -2324,8 +2221,14 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase2 , CTag>
   {
     const Map& map = expr.operation().map;
     FnMap& fnmap = const_cast<FnMap&>(expr.operation());
-    if (map.offnodeP)
-      (*fnmap.pRsrc).qmp_wait();
+#if 1
+    if (map.offnodeP) {
+      // can be optimized
+      const FnMapRsrc& rRSrc = fnmap.getCached();
+      rRSrc.qmp_wait();
+
+    }
+#endif
   }
 };
 
@@ -2350,7 +2253,8 @@ struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
 	EvalLeaf1 ff( -map.get_ind_array()[f.val1()] - 1 );
 	return Combine1<TypeA_t, FnMap, CTag>::combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),expr.operation(), c);
       } else {
-	const Type_t *recv_buf_c = (*fnmap.pRsrc).getRecvBufPtr<Type_t>();
+	const FnMapRsrc& rRSrc = fnmap.getCached();
+	const Type_t *recv_buf_c = rRSrc.getRecvBufPtr<Type_t>();
 	Type_t* recv_buf = const_cast<Type_t*>(recv_buf_c);
 	if ( recv_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf). Do you use shifts of shifts?"); }
 	return recv_buf[map.get_ind_array()[f.val1()]];

@@ -115,7 +115,6 @@ namespace QDP {
 #endif
 			else if (strcmp((*argv)[i], "-geom")==0) 
 			{
-			  QDPIO::cout << "QDP found -geom argument" << endl;
 				setGeomP = true;
 				for(int j=0; j < Nd; j++) 
 				{
@@ -198,8 +197,6 @@ namespace QDP {
 #endif
 		
 		if (setGeomP) {
-		  QDPIO::cout << "setGeomP true" << endl;
-
 			if (QMP_declare_logical_topology(logical_geom.slice(), Nd) != QMP_SUCCESS)
 			{
 				QDPIO::cerr << __func__ << ": QMP_declare_logical_topology failed" << endl;
@@ -300,6 +297,8 @@ namespace QDP {
 			QDP_abort(1);
 		}
 		
+		FnMapRsrcMatrix::Instance().cleanup();
+
 		//
 		// finalise qmt
 		//
