@@ -28,12 +28,11 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*
    
 #pragma omp parallel shared(numSiteTable, threads_num, a) private(myId, low, high) default(shared)
     {
-     
       threads_num = omp_get_num_threads();
       myId = omp_get_thread_num();
       low = numSiteTable*myId/threads_num;
       high = numSiteTable*(myId+1)/threads_num;
- 
+
       func(low, high, myId, &a);
     }
 }

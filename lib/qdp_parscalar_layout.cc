@@ -221,7 +221,7 @@ namespace QDP
       initDefaultMaps();
 
       // Initialize RNG
-      RNG::initDefaultRNG();
+      //RNG::initDefaultRNG();
 
       // Set default profile level
       setProfileLevel(getProgramProfileLevel());
@@ -269,8 +269,9 @@ namespace QDP
       // Now, layout the machine. Note, if the logical_machine size was set previously
       // it will be used
       multi1d<int> nrow(Nd);
-      for(int i=0; i < Nd; ++i)
+      for(int i=0; i < Nd; ++i) {
 	nrow[i] = _layout.nrow[i] / min_dim[i];
+      }
 
       int* nrow_slice=const_cast<int*>(nrow.slice());
       QMP_layout_grid(nrow_slice, Nd);

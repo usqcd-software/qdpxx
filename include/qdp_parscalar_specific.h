@@ -590,6 +590,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   
   if (maps_involved > 0) {
 
+    //QDPIO::cout << "eval maps="<<maps_involved<<__PRETTY_FUNCTION__<<"\n";
+#if 0
     const multi1d<int>& innerSites = MasterMap::Instance().getInnerSites(maps_involved);
     const multi1d<int>& faceSites = MasterMap::Instance().getFaceSites(maps_involved);
 
@@ -604,12 +606,14 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
       } // else QDP_info("inner site %d is not element",innerSites[j]);
     }
 #endif
+#endif
 
     ShiftPhase2 phase2;
     forEach(rhs, phase2 , NullCombine());
 
     //QDP_info("face sites total = %d",faceSites.size());
 
+#if 0
 #if 1
     user_arg_mask<T,T1,Op,RHS> a1(dest, rhs, op, faceSites.slice() , s.getIsElement().slice() );
     dispatch_to_threads< user_arg_mask<T,T1,Op,RHS> >(faceSites.size(), a1, evaluate_userfunc_mask );
@@ -621,19 +625,28 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
       } // else QDP_info("face site %d is not element",faceSites[j]);
     }
 #endif
+#endif
 
   } else {
 
+    // if (Layout::primaryNode())
+    //   QDP_info("eval(Lat)");
+
+    //QDPIO::cout << "eval maps=0 \n";
+#if 0
+#if 1
     int numSiteTable = s.numSiteTable();
     user_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
     dispatch_to_threads< user_arg<T,T1,Op,RHS> >(numSiteTable, a, evaluate_userfunc);
-
-    // const int *tab = s.siteTable().slice();
-    // for(int j=0; j < s.numSiteTable(); ++j) 
-    //   {
-    // 	int i = tab[j];
-    // 	op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()) );
-    //   }
+#else
+    const int *tab = s.siteTable().slice();
+    for(int j=0; j < s.numSiteTable(); ++j) 
+      {
+    	int i = tab[j];
+    	op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()) );
+      }
+#endif
+#endif
   }
 
 
@@ -2081,6 +2094,11 @@ struct FnMapRsrc
   FnMapRsrc(const Map& map_): map(map_), bAlloc(false) {}
   ~FnMapRsrc() {
     if (bAlloc) {
+      QMP_free_msghandle(mh);
+      // QMP_free_msghandle(mh_a[1]);
+      // QMP_free_msghandle(mh_a[0]);
+      QMP_free_msgmem(msg[1]);
+      QMP_free_msgmem(msg[0]);
       QMP_free_memory(recv_buf_mem);
       QMP_free_memory(send_buf_mem);
     }
@@ -2096,11 +2114,6 @@ struct FnMapRsrc
     QDP_info("Map: calling free msgs");
 #endif
 
-    //	QMP_free_msghandle(mh_a[1]);
-    //	QMP_free_msghandle(mh_a[0]);
-    QMP_free_msghandle(mh);
-    QMP_free_msgmem(msg[1]);
-    QMP_free_msgmem(msg[0]);
   }
 
 
@@ -2126,27 +2139,9 @@ struct FnMapRsrc
     }
     send_buf=QMP_get_memory_pointer(send_buf_mem);
     recv_buf=QMP_get_memory_pointer(recv_buf_mem);
-  }
 
-
-  void send_receive() {
     int srcnode = map.srcenodes[0];
     int dstnode = map.destnodes[0];
-
-    QMP_status_t err;
-#if QDP_DEBUG >= 3
-    QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
-    QDP_info("Map: establish send=%d recv=%d",destnodes[0],srcenodes[0]);
-    {
-      const multi1d<int>& me = Layout::nodeCoord();
-      multi1d<int> scrd = Layout::getLogicalCoordFrom(destnodes[0]);
-      multi1d<int> rcrd = Layout::getLogicalCoordFrom(srcenodes[0]);
-
-      QDP_info("Map: establish-info   my_crds=[%d,%d,%d,%d]",me[0],me[1],me[2],me[3]);
-      QDP_info("Map: establish-info send_crds=[%d,%d,%d,%d]",scrd[0],scrd[1],scrd[2],scrd[3]);
-      QDP_info("Map: establish-info recv_crds=[%d,%d,%d,%d]",rcrd[0],rcrd[1],rcrd[2],rcrd[3]);
-    }
-#endif
 
     msg[0] = QMP_declare_msgmem(recv_buf, srcnum);
     if( msg[0] == (QMP_msgmem_t)NULL ) { 
@@ -2171,6 +2166,27 @@ struct FnMapRsrc
     if( mh == (QMP_msghandle_t)NULL ) { 
       QDP_error_exit("QMP_declare_multiple for mh failed in Map::operator()\n");
     }
+
+
+  }
+
+
+  void send_receive() {
+
+    QMP_status_t err;
+#if QDP_DEBUG >= 3
+    QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
+    QDP_info("Map: establish send=%d recv=%d",destnodes[0],srcenodes[0]);
+    {
+      const multi1d<int>& me = Layout::nodeCoord();
+      multi1d<int> scrd = Layout::getLogicalCoordFrom(destnodes[0]);
+      multi1d<int> rcrd = Layout::getLogicalCoordFrom(srcenodes[0]);
+
+      QDP_info("Map: establish-info   my_crds=[%d,%d,%d,%d]",me[0],me[1],me[2],me[3]);
+      QDP_info("Map: establish-info send_crds=[%d,%d,%d,%d]",scrd[0],scrd[1],scrd[2],scrd[3]);
+      QDP_info("Map: establish-info recv_crds=[%d,%d,%d,%d]",rcrd[0],rcrd[1],rcrd[2],rcrd[3]);
+    }
+#endif
 
 #if QDP_DEBUG >= 3
     QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
@@ -2270,6 +2286,7 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 
 	// Gather the face of data to send
 	// For now, use the all subset
+#if 0
 	for(int si=0; si < map.soffsets.size(); ++si)
 	{
 #if QDP_DEBUG >= 3
@@ -2277,9 +2294,9 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 #endif
   	  send_buf[si] = forEach( subexpr , EvalLeaf1(map.soffsets[si]) , OpCombine() );
 	}
+#endif
 
-	//(*fnmap.pRsrc).send_receive( map.srcenodes[0] , map.destnodes[0] );
-	(*fnmap.pRsrc).send_receive(  );
+	(*fnmap.pRsrc).send_receive();
 
 	returnVal = map.getId();
       } else {

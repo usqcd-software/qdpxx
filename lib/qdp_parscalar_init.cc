@@ -115,6 +115,7 @@ namespace QDP {
 #endif
 			else if (strcmp((*argv)[i], "-geom")==0) 
 			{
+			  QDPIO::cout << "QDP found -geom argument" << endl;
 				setGeomP = true;
 				for(int j=0; j < Nd; j++) 
 				{
@@ -196,12 +197,15 @@ namespace QDP {
 		QDP_info("QMP inititalized");
 #endif
 		
-		if (setGeomP)
+		if (setGeomP) {
+		  QDPIO::cout << "setGeomP true" << endl;
+
 			if (QMP_declare_logical_topology(logical_geom.slice(), Nd) != QMP_SUCCESS)
 			{
 				QDPIO::cerr << __func__ << ": QMP_declare_logical_topology failed" << endl;
 				QDP_abort(1);
 			}
+		}
 		
 #if QDP_DEBUG >= 1
 		QDP_info("Some layout init");
