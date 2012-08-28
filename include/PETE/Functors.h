@@ -107,6 +107,13 @@ struct LeafFunctor<Scalar<T>, EvalLeaf1>
   }
 };
 
+struct EvalInnerLeaf1
+{
+  int i1_m;
+  inline EvalInnerLeaf1(int i1) : i1_m(i1) { }
+  inline int val1() const { return i1_m; }
+};
+
 // 2D
 
 struct EvalLeaf2

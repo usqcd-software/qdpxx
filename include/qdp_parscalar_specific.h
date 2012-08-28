@@ -636,14 +636,14 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     const multi1d<int>& innerSites = MasterMap::Instance().getInnerSites(maps_involved);
     const multi1d<int>& faceSites = MasterMap::Instance().getFaceSites(maps_involved);
 
-#if 1
+#if 0
     user_arg_mask<T,T1,Op,RHS> a0(dest, rhs, op, innerSites.slice() , s.getIsElement().slice() );
     dispatch_to_threads< user_arg_mask<T,T1,Op,RHS> >(innerSites.size(), a0, evaluate_userfunc_mask );
 #else
     for (int j=0 ; j<innerSites.size() ; j++ ) {
       if (s.isElement(innerSites[j])) {
     	//QDP_info("inner site %d is element",innerSites[j]);
-    	op(dest.elem(innerSites[j]), forEach(rhs, EvalLeaf1(innerSites[j]), OpCombine()) );
+    	op(dest.elem(innerSites[j]), forEach(rhs, EvalInnerLeaf1(innerSites[j]), OpCombine()) );
       } // else QDP_info("inner site %d is not element",innerSites[j]);
     }
 #endif
@@ -2302,6 +2302,22 @@ struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
       EvalLeaf1 ff( map.goffsets[f.val1()]);
       return Combine1<TypeA_t, FnMap, CTag>::combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),expr.operation(), c);
     }
+  }
+};
+
+
+template<class A, class CTag>
+struct ForEach<UnaryNode<FnMap, A>, EvalInnerLeaf1, CTag>
+{
+  typedef typename ForEach<A, EvalInnerLeaf1, CTag>::Type_t TypeA_t;
+  typedef typename Combine1<TypeA_t, FnMap, CTag>::Type_t Type_t;
+  inline static
+  Type_t apply(const UnaryNode<FnMap, A> &expr, const EvalInnerLeaf1 &f, const CTag &c)
+  {
+    const Map& map = expr.operation().map;
+    
+    EvalInnerLeaf1 ff( map.goffsets[f.val1()]);
+    return Combine1<TypeA_t, FnMap, CTag>::combine(ForEach<A, EvalInnerLeaf1, CTag>::apply(expr.child(), ff, c),expr.operation(), c);
   }
 };
 

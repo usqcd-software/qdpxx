@@ -566,6 +566,24 @@ struct LeafFunctor<OLattice<T>, EvalLeaf1>
     {return Type_t(a.elem(f.val1()));}
 };
 
+template<class T>
+struct LeafFunctor<OScalar<T>, EvalInnerLeaf1>
+{
+//  typedef T Type_t;
+  typedef Reference<T> Type_t;
+  inline static Type_t apply(const OScalar<T> &a, const EvalInnerLeaf1 &f)
+    {return Type_t(a.elem());}
+};
+
+template<class T>
+struct LeafFunctor<OLattice<T>, EvalInnerLeaf1>
+{
+//  typedef T Type_t;
+  typedef Reference<T> Type_t;
+  inline static Type_t apply(const OLattice<T> &a, const EvalInnerLeaf1 &f)
+    {return Type_t(a.elem(f.val1()));}
+};
+
 
 //-----------------------------------------------------------------------------
 // Traits classes to support operations of simple scalars (floating constants, 

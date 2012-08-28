@@ -452,6 +452,17 @@ struct LeafFunctor<QDPType<T,C>, EvalLeaf1>
     }
 };
 
+template<class T, class C>
+struct LeafFunctor<QDPType<T,C>, EvalInnerLeaf1>
+{
+  typedef Reference<T> Type_t;
+//  typedef T Type_t;
+  inline static Type_t apply(const QDPType<T,C> &a, const EvalInnerLeaf1 &f)
+    { 
+      return Type_t(a.elem(f.val1()));
+    }
+};
+
 } // namespace QDP
 
 #endif
