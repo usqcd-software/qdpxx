@@ -2139,27 +2139,27 @@ struct FnMap
   //PETE_EMPTY_CONSTRUCTORS(FnMap)
 
   const Map& map;
-  //std::shared_ptr<FnMapRsrc> pRsrc;
-  const FnMapRsrc* cached;
+  std::shared_ptr<RsrcWrapper> pRsrc;
+  //const FnMapRsrc* cached;
 
-  // FnMap(const Map& m): map(m), pRsrc(new FnMapRsrc(m)) {}
-  // FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {}
+  FnMap(const Map& m): map(m), pRsrc(new RsrcWrapper()) {}
+  FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {}
 
-  FnMap(const Map& m): map(m),cached(NULL) {}
-  FnMap(const FnMap& f) : map(f.map),cached(f.cached) {}
+  // FnMap(const Map& m): map(m),cached(NULL) {}
+  // FnMap(const FnMap& f) : map(f.map),cached(f.cached) { QDPIO::cout << "FnMap(const FnMap& f)" << cached << "\n"; }
+
+  // FnMap(const Map& m): map(m),pRsrc(NULL) {}
+  // FnMap(const FnMap& f) : map(f.map),pRsrc(f.pRsrc) { QDPIO::cout << "FnMap(const FnMap& f)" << pRsrc <; }
 
   FnMap& operator=(const FnMap& f) = delete;
 
   const FnMapRsrc& getResource(int srcnum_, int dstnum_, int shift_num ) {
-    if (!cached)
-      cached = & FnMapRsrcMatrix::Instance().get( map.destnodes[0], map.srcenodes[0] , dstnum_ , srcnum_ , shift_num );
-    return *cached;
+    (*pRsrc).set( & FnMapRsrcMatrix::Instance().get( map.destnodes[0], map.srcenodes[0] , dstnum_ , srcnum_ , shift_num ) );
+    return *(*pRsrc).get();
   }
 
   const FnMapRsrc& getCached() const {
-    if (!cached)
-      QDP_error_exit("FnMapRsrc& getCached() internal error");
-    return *cached;
+    return *(*pRsrc).get();
   }
   
   template<class T>
@@ -2234,10 +2234,10 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 
 	rRSrc.send_receive();
 	
-	returnVal = map.getId();
+	returnVal = maps_involved | map.getId();
       } else {
 
-      ForEach<A, ShiftPhase1, BitOrCombine>::apply(expr.child(), f, c);
+      returnVal = ForEach<A, ShiftPhase1, BitOrCombine>::apply(expr.child(), f, c);
     }
 
     return returnVal;

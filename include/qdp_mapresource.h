@@ -5,6 +5,14 @@
 
 namespace QDP {
 
+  // The MPI resources class for an FnMap.
+  // An instance for each (dest/src node,msg_size) combination
+  // exists so they can be reused over the whole program lifetime.
+  // Can't allocate resources in constructor, since I use ::operator new
+  // to allocate a whole array of them. This is necessary since if a 
+  // size of 2 occurs in the logical machine grid, then forward/backward
+  // points to the same MPI node.
+
 struct FnMapRsrc
 {
   FnMapRsrc(const FnMapRsrc&) = delete;
@@ -14,7 +22,9 @@ struct FnMapRsrc
   void setup(int _destNode,int _srcNode,int _sendMsgSize,int _rcvMsgSize);
   void cleanup();
 
-  //~FnMapRsrc();
+  ~FnMapRsrc() {
+    //QDPIO::cout << "~FnMapRsrc()\n";
+  }
 
   void qmp_wait() const;
   void send_receive() const;
@@ -32,6 +42,29 @@ struct FnMapRsrc
   QMP_mem_t *recv_buf_mem;
 };
 
+  // This wrapper is used, since FnMap's are copy-constructed
+  // during recursing down the expression with forEach. Thus a
+  // shared_ptr to this wrapper ensures that the original and copy
+  // point to the same resource class.
+
+class RsrcWrapper
+{
+  const FnMapRsrc* pRsrc;
+  bool rAlloc;
+public:
+  RsrcWrapper(): rAlloc(false) {}
+  const FnMapRsrc* get() const {
+    if (!rAlloc)
+      QDP_error_exit("RsrcWrapper::get() internal error");
+    return pRsrc;
+  }
+  void set(const FnMapRsrc* p) { rAlloc=true; pRsrc=p;}
+};
+
+
+  // A 2D container of resource classes.
+  // We index msg_size and dest_node and take the
+  // index as the coordinate in the 2D matrix.
 
 class FnMapRsrcMatrix {
 
