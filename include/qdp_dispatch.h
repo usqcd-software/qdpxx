@@ -26,9 +26,25 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*
   int low = 0;
   int high = numSiteTable;
 
-  if (numSiteTable % qdpNumThreads())
-    QDP_error_exit("dispatch_to_threads: problems laying out the threads: numSiteTable=%d, OMP threads=%d",numSiteTable,qdpNumThreads());
-   
+  /* if (Layout::primaryNode()) */
+  /*   printf("-------------------%d\n",numSiteTable); */
+
+  if (numSiteTable % qdpNumThreads()) {
+    //QDP_error_exit("dispatch_to_threads: problems laying out the threads: numSiteTable=%d, OMP threads=%d",numSiteTable,qdpNumThreads());
+#pragma omp parallel shared(numSiteTable, threads_num, a) private(myId, low, high) default(shared)
+    {
+      threads_num = omp_get_num_threads();
+      myId = omp_get_thread_num();
+      low = numSiteTable*myId/threads_num;
+      if (myId == threads_num-1)
+	high = numSiteTable;
+      else
+	high = numSiteTable*(myId+1)/threads_num;
+      /* if (Layout::primaryNode()) */
+      /* 	printf("myId=%d lo=%d hi=%d\n",myId,low,high); */
+      func(low, high, myId, &a);
+    }
+  } else {
 #pragma omp parallel shared(numSiteTable, threads_num, a) private(myId, low, high) default(shared)
     {
       threads_num = omp_get_num_threads();
@@ -38,6 +54,7 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*
 
       func(low, high, myId, &a);
     }
+  }
 }
 }
 

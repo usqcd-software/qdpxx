@@ -76,7 +76,9 @@ class FnMapRsrcMatrix {
     for(int i=0;i<numSendMsgSize;i++) {
       for(int q=0;q<numDestNode;q++) {
 	//QDPIO::cout << "cleanup m2d(" << i << "," << q << ")\n";
-	std::for_each( (*m2d(i,q)).second.begin() , (*m2d(i,q)).second.end() , [](FnMapRsrc* p){ delete p; } );
+	for (std::vector<FnMapRsrc*>::iterator v = (*m2d(i,q)).second.begin() ; v != (*m2d(i,q)).second.end() ; ++v )
+	  delete *v;
+	//std::for_each( (*m2d(i,q)).second.begin() , (*m2d(i,q)).second.end() , this->*del );
 	delete m2d(i,q);
       }
     }
