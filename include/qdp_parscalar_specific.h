@@ -634,7 +634,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     const multi1d<int>& innerSites = MasterMap::Instance().getInnerSites(maps_involved);
     const multi1d<int>& faceSites = MasterMap::Instance().getFaceSites(maps_involved);
 
-#if 0
+#if 1
     user_arg_mask<T,T1,Op,RHS> a0(dest, rhs, op, innerSites.slice() , s.getIsElement().slice() );
     dispatch_to_threads< user_arg_mask<T,T1,Op,RHS> >(innerSites.size(), a0, evaluate_userfunc_mask );
 #else
@@ -2290,7 +2290,11 @@ struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
 	const FnMapRsrc& rRSrc = fnmap.getCached();
 	const Type_t *recv_buf_c = rRSrc.getRecvBufPtr<Type_t>();
 	Type_t* recv_buf = const_cast<Type_t*>(recv_buf_c);
-	if ( recv_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf). Do you use shifts of shifts?"); }
+#if QDP_DEBUG >= 3
+	if ( recv_buf == 0x0 ) { 
+	  QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf). Do you use shifts of shifts?"); 
+	}
+#endif
 	return recv_buf[map.get_ind_array()[f.val1()]];
       }
     } else {

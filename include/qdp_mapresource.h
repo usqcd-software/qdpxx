@@ -124,9 +124,11 @@ class FnMapRsrcMatrix {
 
     std::pair< int , std::vector<FnMapRsrc*> >& pos = *m2d(xSendmsgsize,xDestNode);
 
+#if QDP_DEBUG >= 3
     // SANITY
     if ( pos.second.size() <  pos.first )
       QDP_error_exit(" pos.second.size()=%d  pos.first=%d",pos.second.size(), pos.first);
+#endif
 
     // Vector's size large enough ?
     if ( pos.second.size() ==  pos.first ) {
@@ -165,8 +167,10 @@ public:
     if (rAlloc) {
       pPair->first--;
       //QDPIO::cout << "wrapper destructor: counting down to " << pPair->first << "\n";
+#if QDP_DEBUG >= 3
       if (pPair->first < 0)
 	QDP_error_exit("<0");
+#endif
     }
   }
   RsrcWrapper(  const multi1d<int>& destnodes_, const multi1d<int>& srcenodes_): 
@@ -175,8 +179,10 @@ public:
   }
 
   const FnMapRsrc& getResource(int srcnum_, int dstnum_) {
+#if QDP_DEBUG >= 3
     if ( !srcenodes.size() || !destnodes.size() )
       QDP_error_exit("FnMapRsrc& getResource srcnode_size=%d destnode_size=%d", srcenodes.size() , destnodes.size() );
+#endif
     pPair = FnMapRsrcMatrix::Instance().get( destnodes[0] , srcenodes[0] , dstnum_ , srcnum_ );
     //QDPIO::cout << "wrapper: returning obj " << pPair->first << "\n";
     cached = pPair->second.at(pPair->first++);
@@ -185,8 +191,10 @@ public:
   }
 
   const FnMapRsrc& get() const {
+#if QDP_DEBUG >= 3
     if (!rAlloc)
       QDP_error_exit("RsrcWrapper::get() internal error");
+#endif
     return *cached;
   }
 
