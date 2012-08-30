@@ -420,8 +420,6 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 
 struct ShiftPhase1
 {
-  ShiftPhase1(): shift_num(0) {}
-  mutable int shift_num;
 };
 
 struct ShiftPhase2
@@ -2140,26 +2138,18 @@ struct FnMap
 
   const Map& map;
   std::shared_ptr<RsrcWrapper> pRsrc;
-  //const FnMapRsrc* cached;
 
-  FnMap(const Map& m): map(m), pRsrc(new RsrcWrapper()) {}
+  FnMap(const Map& m): map(m), pRsrc(new RsrcWrapper( m.destnodes , m.srcenodes )) {}
   FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {}
-
-  // FnMap(const Map& m): map(m),cached(NULL) {}
-  // FnMap(const FnMap& f) : map(f.map),cached(f.cached) { QDPIO::cout << "FnMap(const FnMap& f)" << cached << "\n"; }
-
-  // FnMap(const Map& m): map(m),pRsrc(NULL) {}
-  // FnMap(const FnMap& f) : map(f.map),pRsrc(f.pRsrc) { QDPIO::cout << "FnMap(const FnMap& f)" << pRsrc <; }
 
   FnMap& operator=(const FnMap& f) = delete;
 
-  const FnMapRsrc& getResource(int srcnum_, int dstnum_, int shift_num ) {
-    (*pRsrc).set( & FnMapRsrcMatrix::Instance().get( map.destnodes[0], map.srcenodes[0] , dstnum_ , srcnum_ , shift_num ) );
-    return *(*pRsrc).get();
+  const FnMapRsrc& getResource(int srcnum_, int dstnum_) {
+    return (*pRsrc).getResource( srcnum_ , dstnum_ );
   }
 
   const FnMapRsrc& getCached() const {
-    return *(*pRsrc).get();
+    return (*pRsrc).get();
   }
   
   template<class T>
@@ -2170,6 +2160,11 @@ struct FnMap
   }
 
 };
+
+
+
+
+
 
 
 
@@ -2199,7 +2194,7 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 	int dstnum = map.destnodes_num[0]*sizeof(InnerType_t);
 	int srcnum = map.srcenodes_num[0]*sizeof(InnerType_t);
 
-	const FnMapRsrc& rRSrc = fnmap.getResource(srcnum,dstnum,f.shift_num++);
+	const FnMapRsrc& rRSrc = fnmap.getResource(srcnum,dstnum);
 
 	const InnerType_t *send_buf_c = rRSrc.getSendBufPtr<InnerType_t>();
 

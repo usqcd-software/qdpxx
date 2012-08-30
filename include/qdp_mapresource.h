@@ -16,7 +16,6 @@ namespace QDP {
 struct FnMapRsrc
 {
   FnMapRsrc(const FnMapRsrc&) = delete;
-  //FnMapRsrc() = delete;
   FnMapRsrc():bSet(false) {};
 
   void setup(int _destNode,int _srcNode,int _sendMsgSize,int _rcvMsgSize);
@@ -42,25 +41,6 @@ struct FnMapRsrc
   QMP_mem_t *recv_buf_mem;
 };
 
-  // This wrapper is used, since FnMap's are copy-constructed
-  // during recursing down the expression with forEach. Thus a
-  // shared_ptr to this wrapper ensures that the original and copy
-  // point to the same resource class.
-
-class RsrcWrapper
-{
-  const FnMapRsrc* pRsrc;
-  bool rAlloc;
-public:
-  RsrcWrapper(): rAlloc(false) {}
-  const FnMapRsrc* get() const {
-    if (!rAlloc)
-      QDP_error_exit("RsrcWrapper::get() internal error");
-    return pRsrc;
-  }
-  void set(const FnMapRsrc* p) { rAlloc=true; pRsrc=p;}
-};
-
 
   // A 2D container of resource classes.
   // We index msg_size and dest_node and take the
@@ -68,15 +48,13 @@ public:
 
 class FnMapRsrcMatrix {
 
-  multi2d<FnMapRsrc*> m2d;
+  multi2d< std::pair< int , std::vector<FnMapRsrc*> >* > m2d;
   std::vector<int> sendMsgSize;
   std::vector<int> destNode;
   int numSendMsgSize;
   int numDestNode;
-  int maxDeep;
 
-  FnMapRsrcMatrix(): maxDeep(32),
-		     numSendMsgSize(32), 
+  FnMapRsrcMatrix(): numSendMsgSize(32), 
 		     numDestNode(Nd*2), 
 		     sendMsgSize(0), 
 		     destNode(0) {
@@ -84,7 +62,8 @@ class FnMapRsrcMatrix {
 
     for(int i=0;i<numSendMsgSize;i++) {
       for(int q=0;q<numDestNode;q++) {
-	m2d(i,q)=NULL;
+	m2d(i,q)=new std::pair< int , std::vector<FnMapRsrc*> >;
+	(*m2d(i,q)).first=0;
       }
     }
   }
@@ -93,25 +72,19 @@ class FnMapRsrcMatrix {
   public:
 
   void cleanup() {
-    QDPIO::cout << "FnMapRsrcMatrix cleanup\n";
-
+    //QDPIO::cout << "FnMapRsrcMatrix cleanup\n";
     for(int i=0;i<numSendMsgSize;i++) {
       for(int q=0;q<numDestNode;q++) {
-	//QDPIO::cout << "m2d" << i << " " << q << " = " << m2d(i,q) << "\n";
-	//printf("%p\n",m2d(i,q));
-	if (m2d(i,q)) {
-	  for (int e = 0 ; e < maxDeep ; e++ ) {
-	    //QDPIO::cout << "cleanup" << i << " " << q << " " << e << "\n";
-	    m2d(i,q)[e].cleanup();
-	  }
-	  delete[] m2d(i,q);
-	}
+	//QDPIO::cout << "cleanup m2d(" << i << "," << q << ")\n";
+	std::for_each( (*m2d(i,q)).second.begin() , (*m2d(i,q)).second.end() , [](FnMapRsrc* p){ delete p; } );
+	delete m2d(i,q);
       }
     }
   }
 
 
-  const FnMapRsrc& get(int _destNode,int _srcNode,int _sendMsgSize,int _rcvMsgSize, int shift_num) {
+  std::pair< int , std::vector<FnMapRsrc*> >* get(int _destNode,int _srcNode,
+						  int _sendMsgSize,int _rcvMsgSize) {
     bool found = false;
     int xDestNode=0;
     for(; xDestNode < destNode.size(); ++xDestNode)
@@ -149,20 +122,22 @@ class FnMapRsrcMatrix {
     }
     //QDPIO::cout << "using msg_size place = " << xSendmsgsize << "\n";
 
-    if (!m2d(xSendmsgsize,xDestNode)) {
-      QDPIO::cout << "setup " << maxDeep << " map resource objs:";
-      m2d(xSendmsgsize,xDestNode) = new FnMapRsrc[maxDeep];
-      for (int i = 0 ; i < maxDeep ; i++ ) {
-	QDPIO::cout << ".";
-	m2d(xSendmsgsize,xDestNode)[i].setup( _destNode, _srcNode, _sendMsgSize, _rcvMsgSize );
-      }
-      QDPIO::cout << "\n";
+    std::pair< int , std::vector<FnMapRsrc*> >& pos = *m2d(xSendmsgsize,xDestNode);
+
+    // SANITY
+    if ( pos.second.size() <  pos.first )
+      QDP_error_exit(" pos.second.size()=%d  pos.first=%d",pos.second.size(), pos.first);
+
+    // Vector's size large enough ?
+    if ( pos.second.size() ==  pos.first ) {
+      QDPIO::cout << "allocate and setup new rsrc-obj (destnode=" << _destNode << ",sndmsgsize=" << _sendMsgSize << ")\n";
+      pos.second.push_back( new FnMapRsrc() );
+      pos.second.at(pos.first)->setup( _destNode, _srcNode, _sendMsgSize, _rcvMsgSize );
     }
-    //QDPIO::cout << "returning shift_num = " << shift_num << "\n";
 
-    //printf("0,0=%p 1,0=%p 2,0=%p %dx%d\n",m2d(0,0),m2d(1,0),m2d(2,0),m2d.size1(),m2d.size2());
+    //QDPIO::cout << "returning rsrc-obj " << pos.first << "\n";
 
-    return m2d(xSendmsgsize,xDestNode)[shift_num];
+    return &pos;
   }
 
   static FnMapRsrcMatrix& Instance() {
@@ -171,6 +146,58 @@ class FnMapRsrcMatrix {
   }
 
 };
+
+
+  // This wrapper is used, since FnMap's are copy-constructed
+  // during recursing down the expression with forEach. Thus a
+  // shared_ptr to this wrapper ensures that the original and copy
+  // point to the same resource class.
+
+class RsrcWrapper
+{
+  const multi1d<int>& destnodes;
+  const multi1d<int>& srcenodes;
+  std::pair< int , std::vector<FnMapRsrc*> > * pPair;
+  const FnMapRsrc* cached;
+  bool rAlloc;
+public:
+  ~RsrcWrapper() {
+    if (rAlloc) {
+      pPair->first--;
+      //QDPIO::cout << "wrapper destructor: counting down to " << pPair->first << "\n";
+      if (pPair->first < 0)
+	QDP_error_exit("<0");
+    }
+  }
+  RsrcWrapper(  const multi1d<int>& destnodes_, const multi1d<int>& srcenodes_): 
+    destnodes(destnodes_),srcenodes(srcenodes_),rAlloc(false) {
+    //QDPIO::cout << "wrapper ctor " << srcenodes.size() << " " << destnodes.size() << "\n";
+  }
+
+  const FnMapRsrc& getResource(int srcnum_, int dstnum_) {
+    if ( !srcenodes.size() || !destnodes.size() )
+      QDP_error_exit("FnMapRsrc& getResource srcnode_size=%d destnode_size=%d", srcenodes.size() , destnodes.size() );
+    pPair = FnMapRsrcMatrix::Instance().get( destnodes[0] , srcenodes[0] , dstnum_ , srcnum_ );
+    //QDPIO::cout << "wrapper: returning obj " << pPair->first << "\n";
+    cached = pPair->second.at(pPair->first++);
+    rAlloc=true;
+    return *cached;
+  }
+
+  const FnMapRsrc& get() const {
+    if (!rAlloc)
+      QDP_error_exit("RsrcWrapper::get() internal error");
+    return *cached;
+  }
+
+};
+
+
+
+
+
+
+
 
 } // namespace QDP
 
