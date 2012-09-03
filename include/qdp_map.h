@@ -57,6 +57,140 @@ public:
     
 /** @} */ // end of group map
 
+
+//! General permutation map class for communications
+class Map
+{
+public:
+  //! Constructor - does nothing really
+  Map() {}
+
+  //! Destructor
+  ~Map() {}
+
+  //! Constructor from a function object
+  Map(const MapFunc& fn) {make(fn);}
+
+  //! Actual constructor from a function object
+  /*! The semantics are   source_site = func(dest_site,isign) */
+  void make(const MapFunc& func);
+
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(*this),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
+    }
+
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(*this),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+    }
+
+
+public:
+  //! Accessor to offsets
+  const multi1d<int>& goffset() const {return goffsets;}
+  const multi1d<int>& soffset() const {return soffsets;}
+  const multi1d<int>& roffset() const {return roffsets;}
+  int getRoffsetsId() const { return roffsetsId;}
+  int getSoffsetsId() const { return soffsetsId;}
+  int getGoffsetsId() const { return goffsetsId;}
+
+  int getId() const {return myId;}
+  bool hasOffnode() const { return offnodeP; }
+
+private:
+  //! Hide copy constructor
+  Map(const Map&) {}
+
+  //! Hide operator=
+  void operator=(const Map&) {}
+
+private:
+  friend class FnMap;
+  friend class FnMapRsrc;
+  template<class E,class F,class C> friend class ForEach;
+
+  //! Offset table used for communications. 
+  /*! 
+   * The direction is in the sense of the Map or Shift functions from QDP.
+   * goffsets(position) 
+   */ 
+  multi1d<int> goffsets;
+  multi1d<int> soffsets;
+  multi1d<int> srcnode;
+  multi1d<int> dstnode;
+
+  multi1d<int> roffsets;
+
+  int roffsetsId;
+  int soffsetsId;
+  int goffsetsId;
+  int myId; // master map id
+
+  multi1d<int> srcenodes;
+  multi1d<int> destnodes;
+
+  multi1d<int> srcenodes_num;
+  multi1d<int> destnodes_num;
+
+  // Indicate off-node communications is needed;
+  bool offnodeP;
+};
+
+
+
+
+
+struct FnMap
+{
+  //PETE_EMPTY_CONSTRUCTORS(FnMap)
+
+  const Map& map;
+  std::shared_ptr<RsrcWrapper> pRsrc;
+
+  FnMap(const Map& m): map(m), pRsrc(new RsrcWrapper( m.destnodes , m.srcenodes )) {}
+  FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {}
+
+  FnMap& operator=(const FnMap& f) = delete;
+
+  const FnMapRsrc& getResource(int srcnum_, int dstnum_) {
+    return (*pRsrc).getResource( srcnum_ , dstnum_ );
+  }
+
+  const FnMapRsrc& getCached() const {
+    return (*pRsrc).get();
+  }
+  
+  template<class T>
+  inline typename UnaryReturn<T, FnMap>::Type_t
+  operator()(const T &a) const
+  {
+    return (a);
+  }
+
+};
+
+
+
+
+
+
+
+
 } // namespace QDP
 
 #endif

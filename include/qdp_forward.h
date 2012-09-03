@@ -98,7 +98,11 @@ namespace QDP
 
   // Empty print tag
   struct PrintTag;
+  struct ShiftPhase1;
+  struct ShiftPhase2;
   struct ParseTag;
+  class Map;
+  struct FnMap;
 
   // Used for nearest neighbor shift (a map)
   class ArrayBiDirectionalMap;

@@ -414,6 +414,8 @@ namespace QDP {
 			QDPIO::cerr << "QDP is not inited" << std::endl;
 			QDP_abort(1);
 		}
+		
+		FnMapRsrcMatrix::Instance().cleanup();
 
 #ifdef QDP_IS_QDPJIT
 		JitTuning::Instance().save_all( JitTuning::Instance().getResourcePath() );

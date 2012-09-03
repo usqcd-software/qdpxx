@@ -57,7 +57,12 @@ public:
     if (!registered) 
       return -1;
     else
-      return idStrided;
+      return idSiteTable;
+  }
+  int getIdMemberTable() const {
+    if (!registered) 
+      QDP_error_exit("Subset not registered");
+    return idMemberTable;
   }
 #endif
 
@@ -67,9 +72,13 @@ public:
   //! Access the coloring for this subset
   int color() const {return sub_index;}
 
+  multi1d<bool>& getIsElement() const       { return *membertable; }
+  bool           isElement(int index) const { return (*membertable)[index]; }
+
+
 protected:
   // Simple constructor
-  void make(bool rep, int start, int end, multi1d<int>* ind, int cb, Set* set);
+  void make(bool rep, int start, int end, multi1d<int>* ind, int cb, Set* set, multi1d<bool>* memb);
 
 private:
   bool ordRep;
@@ -82,12 +91,16 @@ private:
 
 #ifdef QDP_IS_QDPJIT
   // Cache registered
-  int idStrided;
+  int idSiteTable;
+  int idMemberTable;
   bool registered;
 #endif
 
   //! Original set
   Set *set;
+
+  // Constant time to know whether linear index in this subset
+  multi1d<bool>* membertable;
 
 public:
   inline bool hasOrderedRep() const {return ordRep;}
@@ -148,6 +161,9 @@ protected:
   //! Array of sitetable arrays
   multi1d<multi1d<int> > sitetables;
 
+  //! Array of sitetable arrays
+  multi1d<multi1d<bool> > membertables;
+
 #ifdef QDP_IS_QDPJIT
   //! This is part of an attempt to port sumMulti to GPUs -- really not made for them
   multi1d<int> sitetables_strided;
@@ -156,6 +172,9 @@ protected:
   int idStrided;
   bool registered;
 #endif
+
+
+
 
 public:
   //! The coloring of the lattice sites

@@ -52,7 +52,7 @@ namespace QDP
 #ifdef QDP_IS_QDPJIT
   Subset::Subset(const Subset& s):
     ordRep(s.ordRep), startSite(s.startSite), endSite(s.endSite), 
-    sub_index(s.sub_index), sitetable(s.sitetable), set(s.set) , registered(false) { 
+    sub_index(s.sub_index), sitetable(s.sitetable), membertable(s.membertable), set(s.set) , registered(false) { 
     QDPCache::Instance().sayHi();
   }
 #else
@@ -67,7 +67,8 @@ namespace QDP
 #ifdef QDP_IS_QDPJIT
     if (registered) {
       QDP_debug("Subet::~Subset: Will sign off now...");
-      QDPCache::Instance().signoff( idStrided );
+      QDPCache::Instance().signoff( idSiteTable );
+      QDPCache::Instance().signoff( idMemberTable );
     }
 #endif
   }
@@ -189,7 +190,7 @@ namespace QDP
 	  
   //-----------------------------------------------------------------------------
   //! Simple constructor called to produce a Subset from inside a Set
-  void Subset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb, Set* _set)
+  void Subset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb, Set* _set, multi1d<bool>* _memb)
   {
 #ifdef QDP_IS_QDPJIT
     QDP_debug("Subset::make(...) Will reserve device memory now...");
@@ -201,6 +202,7 @@ namespace QDP
     sub_index = cb;
     sitetable = ind;
     set       = _set;
+    membertable = _memb;
 
 #ifdef QDP_IS_QDPJIT
     if (ind->size() == 0) 
@@ -209,10 +211,12 @@ namespace QDP
     else {
       if (registered) {
 	QDP_info("Subset::make:  Already registered, will sign off the old memory ...");
-	QDPCache::Instance().signoff( idStrided );
+	QDPCache::Instance().signoff( idSiteTable );
+	QDPCache::Instance().signoff( idMemberTable );
       }
       QDP_debug("Subset::make: Will register memory now...");
-      idStrided = QDPCache::Instance().registrateOwnHostMem( ind->size() * sizeof(int) , (void*)ind->slice() );
+      idSiteTable = QDPCache::Instance().registrateOwnHostMem( ind->size() * sizeof(int) , (void*)ind->slice() );
+      idMemberTable = QDPCache::Instance().registrateOwnHostMem( membertable->size() * sizeof(bool) , (void*)membertable->slice() );
       registered=true;
     }
 #endif
@@ -232,6 +236,7 @@ namespace QDP
     sub_index = s.sub_index;
     sitetable = s.sitetable;
     set       = s.set;
+    membertable = s.membertable;
 
 #ifdef QDP_IS_QDPJIT
     if (s.sitetable->size() == 0)
@@ -240,10 +245,12 @@ namespace QDP
     else {
       if (registered) {
 	QDP_info("Subset::make:  Already registered, will sign off the old memory ...");
-	QDPCache::Instance().signoff( idStrided );
+	QDPCache::Instance().signoff( idSiteTable );
+	QDPCache::Instance().signoff( idMemberTable );
       }
       QDP_debug("Subset::make: Will register memory now...");
-      idStrided = QDPCache::Instance().registrateOwnHostMem( s.sitetable->size() * sizeof(int) , (void*)s.sitetable->slice() );
+      idSiteTable = QDPCache::Instance().registrateOwnHostMem( s.sitetable->size() * sizeof(int) , (void*)s.sitetable->slice() );
+      idMemberTable = QDPCache::Instance().registrateOwnHostMem( s.membertable->size() * sizeof(bool) , (void*)s.membertable->slice() );
       registered=true;
     }
 #endif
@@ -263,6 +270,7 @@ namespace QDP
     sub = s.sub;
     lat_color = s.lat_color;
     sitetables = s.sitetables;
+    membertables = s.membertables;
 #ifdef QDP_IS_QDPJIT
     QDP_error_exit("Sub::op= not yet implemented for GPU 3");
 #endif

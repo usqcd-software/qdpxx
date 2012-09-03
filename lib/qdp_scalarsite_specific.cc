@@ -69,6 +69,9 @@ void Set::make(const SetFunc& fun)
   // Create the array holding the array of sitetable info
   sitetables.resize(nsubset_indices);
 
+  // Create the array holding the array of membertable info
+  membertables.resize(nsubset_indices);
+
   // Loop over linear sites determining their color
   for(int linear=0; linear < nodeSites; ++linear)
   {
@@ -110,11 +113,18 @@ void Set::make(const SetFunc& fun)
   {
     // Always construct the sitetables. 
 
+    multi1d<bool>& membertable = membertables[cb];
+    membertable.resize(nodeSites);
+
     // First loop and see how many sites are needed
     int num_sitetable = 0;
     for(int linear=0; linear < nodeSites; ++linear)
-      if (lat_color[linear] == cb)
+      if (lat_color[linear] == cb) {
 	++num_sitetable;
+	membertable[linear] = true;
+      } else {
+	membertable[linear] = false;
+      }
 
     // Now take the inverse of the lattice coloring to produce
     // the site list
@@ -164,7 +174,7 @@ void Set::make(const SetFunc& fun)
       start = end = -1;
     }
 
-    sub[cb].make(ordRep, start, end, &(sitetables[cb]), cb, this);
+    sub[cb].make(ordRep, start, end, &(sitetables[cb]), cb, this, &(membertables[cb]) );
 
 #ifdef QDP_IS_QDPJIT
     if (largest_subset < sitetables[cb].size()) {

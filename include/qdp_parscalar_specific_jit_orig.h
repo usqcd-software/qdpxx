@@ -457,113 +457,6 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
  
 
 
-struct ShiftPhase1
-{
-};
-
-struct ShiftPhase2
-{
-};
-
-
-template<class T>
-struct LeafFunctor<OScalar<T>, ShiftPhase1>
-{
-  typedef int Type_t;
-  inline static Type_t apply(const OScalar<T> &a, const ShiftPhase1 &f) {
-    return 0;
-  }
-};
-
-template<class T>
-struct LeafFunctor<OLattice<T>, ShiftPhase1>
-{
-  typedef int Type_t;
-  inline static Type_t apply(const OLattice<T> &a, const ShiftPhase1 &f) {
-    return 0;
-  }
-};
-
-template<class T, class C>
-struct LeafFunctor<QDPType<T,C>, ShiftPhase1>
-{
-  typedef int Type_t;
-  static int apply(const QDPType<T,C> &s, const ShiftPhase1 &f) {
-    return 0;
-  }
-};
-
-
-template<class T>
-struct LeafFunctor<OScalar<T>, ShiftPhase2>
-{
-  typedef int Type_t;
-  inline static Type_t apply(const OScalar<T> &a, const ShiftPhase2 &f) {
-    return 0;
-  }
-};
-
-template<class T>
-struct LeafFunctor<OLattice<T>, ShiftPhase2>
-{
-  typedef int Type_t;
-  inline static Type_t apply(const OLattice<T> &a, const ShiftPhase2 &f) {
-    return 0;
-  }
-};
-
-template<class T, class C>
-struct LeafFunctor<QDPType<T,C>, ShiftPhase2>
-{
-  typedef int Type_t;
-  static int apply(const QDPType<T,C> &s, const ShiftPhase2 &f) {
-    return 0;
-  }
-};
-
-template<int N>
-struct LeafFunctor<GammaType<N>, ShiftPhase1>
-{
-  typedef int Type_t;
-  static int apply(const GammaType<N> &s, const ShiftPhase1 &f) { return 0; }
-};
-
-template<int N, int m>
-struct LeafFunctor<GammaConst<N,m>, ShiftPhase1>
-{
-  typedef int Type_t;
-  static int apply(const GammaConst<N,m> &s, const ShiftPhase1 &f) { return 0; }
-};
-
-template<int N>
-struct LeafFunctor<GammaType<N>, ShiftPhase2>
-{
-  typedef int Type_t;
-  static int apply(const GammaType<N> &s, const ShiftPhase2 &f) { return 0; }
-};
-
-template<int N, int m>
-struct LeafFunctor<GammaConst<N,m>, ShiftPhase2>
-{
-  typedef int Type_t;
-  static int apply(const GammaConst<N,m> &s, const ShiftPhase2 &f) { return 0; }
-};
-
-
-template<class Op, class A, class B, class FTag>
-struct ForEach<BinaryNode<Op, A, B>, FTag, NullCombine >
-{
-  typedef int Type_t;
-  inline static
-  Type_t apply(const BinaryNode<Op, A, B> &expr, const FTag &f,
-	       const NullCombine &c)
-  {
-    ForEach<A, FTag, NullCombine>::apply(expr.left(), f, c);
-    ForEach<B, FTag, NullCombine>::apply(expr.right(), f, c);
-    return 0;
-  }
-};
-
 
 
 
@@ -575,177 +468,16 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   cout << __PRETTY_FUNCTION__ << endl;
 #endif
   
+  while (1) {
+
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(dest, op, rhs);
   prof.time -= getClockTime();
 #endif
 
-  ShiftPhase1 phase1;
-  int maps_involved = forEach(rhs, phase1 , BitOrCombine());
-
-  QDP_info("maps_involved=%d",maps_involved);
-
-  if (maps_involved > 0) {
-
-    int innerId = MasterMap::Instance().getIdInner(maps_involved);
-    int innerCount = MasterMap::Instance().getCountInner(maps_involved);
-    int faceId = MasterMap::Instance().getIdFace(maps_involved);
-    int faceCount = MasterMap::Instance().getCountFace(maps_involved);
-
-    QDP_info("innerId=%d count=%d  faceId=%d count=%d",innerId,innerCount,faceId,faceCount);
-
     StopWatch watchov;
     watchov.start();
 
-    {
-      static QDPJit::SharedLibEntry sharedLibEntry;
-      static MapVolumes*              mapVolumes;
-      static string                   strId;
-      static string                   prg;
-
-      QDPJitArgs cudaArgs;
-
-      int argNum = cudaArgs.addInt( innerCount );
-      int argInner = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( innerId ) );
-      int argMember = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( s.getIdMemberTable() ) );
-
-      if (!mapVolumes) {
-	string codeRHS,codeDest,codeOp;
-	if (!getCodeString( codeRHS , rhs , "idx_inner", cudaArgs )) { QDP_error_exit("eval: could not cache RHS");     }      
-	if (!getCodeString( codeDest , dest , "idx_inner", cudaArgs )) { QDP_error_exit("eval: could not cache dest");  }
-	if (!getCodeStringOp( codeOp , op , "idx_inner", cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
-
-	ostringstream osId;
-	osId << "eval(lat,lat) inner-member2 " << codeDest << codeOp << codeRHS;
-	strId = osId.str();
-	xmlready(strId);
-#ifdef GPU_DEBUG_DEEP
-	cout << "strId = " << strId << endl;
-#endif
-      
-	std::ostringstream sprg;
-	sprg << "    int idx = blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x;" << endl;
-	sprg << "    if (idx < " << cudaArgs.getCode(argNum) << ") {\n";
-	sprg << "      int idx_inner = (((int*)(" << cudaArgs.getCode(argInner) << "))[idx]);\n";
-	sprg << "      if (((bool*)(" << cudaArgs.getCode(argMember) << "))[idx_inner]) {\n";
-	sprg << "        " << codeOp << "(" << codeDest << "," << codeRHS << ");\n";
-	sprg << "      }" << endl;
-	sprg << "    }" << endl;
-
-#if 0
-	sprg << "  if (" << cudaArgs.getCode(argOrd) << ") {" << endl;
-	sprg << "    int idx = " << cudaArgs.getCode(argStart) << ";" << endl;
-	sprg << "    idx += blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x;" << endl;
-	sprg << "    if (idx < " << cudaArgs.getCode(argNum) << "+" <<  cudaArgs.getCode(argStart) << ") {\n";
-	sprg << "      " << codeOp << "(" << codeDest << "," << codeRHS << ");\n";
-	sprg << "    }" << endl;
-	sprg << "  } else {" << endl;
-	sprg << "    int idx0 = blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x; \n";
-	sprg << "    if (idx0 < " << cudaArgs.getCode(argNum) << ") {\n";
-	sprg << "      int idx  = ((int*)" << cudaArgs.getCode(argSubset) << ")[idx0];" << endl;
-	sprg << "      " << codeOp << "(" << codeDest << "," << codeRHS << ");\n";
-	sprg << "    }" << endl;
-	sprg << "  }" << endl;
-#endif
-	prg = sprg.str();
-
-#ifdef GPU_DEBUG_DEEP
-	cout << "Cuda kernel code = " << endl << prg << endl << endl;
-#endif
-      } else {
-	if (!cacheLock(  rhs ,  cudaArgs )) { QDP_error_exit("eval: could not cache RHS");     }      
-	if (!cacheLock(  dest , cudaArgs )) { QDP_error_exit("eval: could not cache dest");  }
-	if (!cacheLockOp(  op , cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
-      }
-
-
-      QDP_debug("eval(Lat,Lat) inner dev!");
-
-      StopWatch watch0;
-      watch0.start();
-
-      if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , innerCount , sharedLibEntry  , mapVolumes )) 
-	QDP_error_exit("eval(Lat,Lat) call to cuda jitter failed");
-    }
-
-    ShiftPhase2 phase2;
-    forEach(rhs, phase2 , NullCombine());
-
-    {
-      static QDPJit::SharedLibEntry sharedLibEntry;
-      static MapVolumes*              mapVolumes;
-      static string                   strId;
-      static string                   prg;
-
-      QDPJitArgs cudaArgs;
-
-      int argNum = cudaArgs.addInt( faceCount );
-      int argFace = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( faceId ) );
-      int argMember = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( s.getIdMemberTable() ) );
-
-      if (!mapVolumes) {
-	string codeRHS,codeDest,codeOp;
-	if (!getCodeString( codeRHS , rhs , "idx_face", cudaArgs )) { QDP_error_exit("eval: could not cache RHS");     }      
-	if (!getCodeString( codeDest , dest , "idx_face", cudaArgs )) { QDP_error_exit("eval: could not cache dest");  }
-	if (!getCodeStringOp( codeOp , op , "idx_face", cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
-
-	ostringstream osId;
-	osId << "eval(lat,lat) face-member " << codeDest << codeOp << codeRHS;
-	strId = osId.str();
-	xmlready(strId);
-#ifdef GPU_DEBUG_DEEP
-	cout << "strId = " << strId << endl;
-#endif
-      
-	std::ostringstream sprg;
-	sprg << "    int idx = blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x;" << endl;
-	sprg << "    if (idx < " << cudaArgs.getCode(argNum) << ") {\n";
-	sprg << "      int idx_face = (((int*)(" << cudaArgs.getCode(argFace) << "))[idx]);\n";
-	sprg << "      if (((bool*)(" << cudaArgs.getCode(argMember) << "))[idx_face]) {\n";
-	sprg << "        " << codeOp << "(" << codeDest << "," << codeRHS << ");\n";
-	sprg << "      }" << endl;
-	sprg << "    }" << endl;
-
-#if 0
-	sprg << "  if (" << cudaArgs.getCode(argOrd) << ") {" << endl;
-	sprg << "    int idx = " << cudaArgs.getCode(argStart) << ";" << endl;
-	sprg << "    idx += blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x;" << endl;
-	sprg << "    if (idx < " << cudaArgs.getCode(argNum) << "+" <<  cudaArgs.getCode(argStart) << ") {\n";
-	sprg << "      " << codeOp << "(" << codeDest << "," << codeRHS << ");\n";
-	sprg << "    }" << endl;
-	sprg << "  } else {" << endl;
-	sprg << "    int idx0 = blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x; \n";
-	sprg << "    if (idx0 < " << cudaArgs.getCode(argNum) << ") {\n";
-	sprg << "      int idx  = ((int*)" << cudaArgs.getCode(argSubset) << ")[idx0];" << endl;
-	sprg << "      " << codeOp << "(" << codeDest << "," << codeRHS << ");\n";
-	sprg << "    }" << endl;
-	sprg << "  }" << endl;
-#endif
-	prg = sprg.str();
-
-#ifdef GPU_DEBUG_DEEP
-	cout << "Cuda kernel code = " << endl << prg << endl << endl;
-#endif
-      } else {
-	if (!cacheLock(  rhs ,  cudaArgs )) { QDP_error_exit("eval: could not cache RHS");     }      
-	if (!cacheLock(  dest , cudaArgs )) { QDP_error_exit("eval: could not cache dest");  }
-	if (!cacheLockOp(  op , cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
-      }
-
-
-      QDP_debug("eval(Lat,Lat) face dev!");
-
-      StopWatch watch0;
-      watch0.start();
-
-      if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , faceCount , sharedLibEntry  , mapVolumes )) 
-	QDP_error_exit("eval(Lat,Lat) call to cuda jitter failed");
-    }
-
-
-
-
-  } else {
     static QDPJit::SharedLibEntry sharedLibEntry;
     static MapVolumes*              mapVolumes;
     static string                   strId;
@@ -759,13 +491,15 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     int argSubset = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( s.getId() ) );
 
     if (!mapVolumes) {
+
       string codeRHS,codeDest,codeOp;
-      if (!getCodeString( codeRHS , rhs , "idx", cudaArgs )) { QDP_error_exit("eval: could not cache RHS");     }      
-      if (!getCodeString( codeDest , dest , "idx", cudaArgs )) { QDP_error_exit("eval: could not cache dest");  }
-      if (!getCodeStringOp( codeOp , op , "idx", cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
+
+      if (!getCodeString( codeRHS , rhs , "idx", cudaArgs )) { QDP_info("eval: could not cache RHS");  break;   }      
+      if (!getCodeString( codeDest , dest , "idx", cudaArgs )) { QDP_info("eval: could not cache dest"); break; }
+      if (!getCodeStringOp( codeOp , op , "idx", cudaArgs )) { QDP_info("eval: could not cache op");  break;   }      
 
       ostringstream osId;
-      osId << "eval(lat,lat) " << codeDest << codeOp << codeRHS;
+      osId << "evaluateOL " << codeDest << codeOp << codeRHS;
       strId = osId.str();
       xmlready(strId);
 #ifdef GPU_DEBUG_DEEP
@@ -792,21 +526,21 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
       cout << "Cuda kernel code = " << endl << prg << endl << endl;
 #endif
     } else {
-      if (!cacheLock(  rhs ,  cudaArgs )) { QDP_error_exit("eval: could not cache RHS");     }      
-      if (!cacheLock(  dest , cudaArgs )) { QDP_error_exit("eval: could not cache dest");  }
-      if (!cacheLockOp(  op , cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
+      if (!cacheLock(  rhs ,  cudaArgs )) { QDP_info("eval: could not cache RHS");  break;   }      
+      if (!cacheLock(  dest , cudaArgs )) { QDP_info("eval: could not cache dest"); break; }
+      if (!cacheLockOp(  op , cudaArgs )) { QDP_info("eval: could not cache op");  break;   }      
     }
 
 
-    QDP_debug("eval(Lat,Lat) !");
+    QDP_debug("eval(Lat,Lat) dev!");
 
     StopWatch watch0;
     watch0.start();
 
-    if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , s.numSiteTable() , sharedLibEntry  , mapVolumes )) 
-      QDP_error_exit("eval(Lat,Lat) call to cuda jitter failed");
-  }
-
+    if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , s.numSiteTable() , sharedLibEntry  , mapVolumes )) {
+      QDP_info("eval(Lat,Lat) call to cuda jitter failed");
+      break;
+    }
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();
@@ -814,12 +548,14 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   prof.print();
 #endif
 
+    return;
+  }
   
-  // QDP_debug("eval(Lat,Lat) host!");
+  QDP_debug("eval(Lat,Lat) host!");
   
-  // int numSiteTable = s.numSiteTable();
-  // user_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
-  // dispatch_to_threads<user_arg<T,T1,Op,RHS> >(numSiteTable, a, evaluate_userfunc);
+  int numSiteTable = s.numSiteTable();
+  user_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
+  dispatch_to_threads<user_arg<T,T1,Op,RHS> >(numSiteTable, a, evaluate_userfunc);
 
 }
 
@@ -2909,14 +2645,14 @@ QDP_insert(OLattice<T>& dest, const multi1d<OScalar<T> >& src, const Subset& s)
 }
 
 
+
 //-----------------------------------------------------------------------------
 // Map
 //
 
-// Empty map
-//struct FnMap;
+// Empty map, in parscalar there is no FnMap in the parse tree !!
 
-
+#if 0
 #if defined(QDP_USE_PROFILING)   
 template <>
 struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
@@ -2925,161 +2661,570 @@ struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
     { t.os_m << "shift"; }
 };
 #endif
+#endif
 
-
-
-
-
-
-
-template<class A>
-struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
+//! General permutation map class for communications
+class Map
 {
-  typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t InnerTypeA_t;
-  typedef typename Combine1<InnerTypeA_t, FnMap, OpCombine>::Type_t InnerType_t;
-  typedef int Type_t;
-  typedef QDPExpr<A,OLattice<InnerType_t> > Expr;
-  inline static
-  Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase1 &f, const BitOrCombine &c)
-  {
-    const Map& map = expr.operation().map;
-    FnMap& fnmap = const_cast<FnMap&>(expr.operation());
+public:
+  //! Constructor - does nothing really
+  Map() {}
 
+  //! Destructor
+  ~Map() {}
+
+  //! Constructor from a function object
+  Map(const MapFunc& fn) {make(fn);}
+
+  //! Actual constructor from a function object
+  /*! The semantics are   source_site = func(dest_site,isign) */
+  void make(const MapFunc& func);
+
+  //! Function call operator for a shift
+  /*! 
+   * map(source)
+   *
+   * Implements:  dest(x) = s1(x+offsets)
+   *
+   * Shifts on a OLattice are non-trivial.
+   *
+   * Notice, this implementation does not allow an Inner grid
+   */
+
+private:
+  int dstnum;
+  int srcnum;
+  QMP_msgmem_t msg[2];
+  QMP_msghandle_t mh_a[2], mh;
+
+  static void * sndBufDevice;
+  static void * rcvBufDevice;
+  static void * destDevice;
+  static void * sndBufHost;
+  static void * rcvBufHost;
+
+  static size_t sndBufSize;
+  static size_t rcvBufSize;
+
+  int  * goffsetsDev;
+  int  * soffsetsDev;
+  int  * destptrDev;
+  void * destDev;
+  int  * srcnodeDev;
+
+  int nodeSites;
+  int my_node;
+
+  multi1d<int> goffsets;
+  multi1d<int> soffsets;
+  multi1d<int> srcnode;
+  multi1d<int> dstnode;
+
+  multi1d<int> destptr;
+
+  multi1d<int> srcenodes;
+  multi1d<int> destnodes;
+
+  multi1d<int> srcenodes_num;
+  multi1d<int> destnodes_num;
+
+  // Indicate off-node communications is needed;
+  bool offnodeP;
+
+  void copy_sendbuf_to_host();
+  void copy_recvbuf_to_device();
+  void allocate_buffers();
+  void free_device_buffers();
+  void wait_comm_buffers();
+  void send_comm_buffers();
+
+
+
+  template<class T1>
+  bool kernel_shift_on_node( const OLattice<T1> & l , OLattice<T1> & d ) {
+    // Don't pass pretty function to QDP_info, buffer length!!
+#ifdef GPU_DEBUG_DEEP
+    cout << __PRETTY_FUNCTION__ << endl;
+#endif
+
+    std::ostringstream sprg;
     const int nodeSites = Layout::sitesOnNode();
-    int returnVal=0;
 
-    if (map.offnodeP)
-      {
-#if QDP_DEBUG >= 3
-	QDP_info("Map: off-node communications required");
-#endif
+    QDPJitArgs cudaArgs;
 
-	int dstnum = map.destnodes_num[0]*sizeof(InnerType_t);
-	int srcnum = map.srcenodes_num[0]*sizeof(InnerType_t);
+    static QDPJit::SharedLibEntry sharedLibEntry;
+    static MapVolumes*              mapVolumes;
+    static string                   strId;
+    static string                   prg;
 
-	const FnMapRsrc& rRSrc = fnmap.getResource(srcnum,dstnum);
+    int argGO = cudaArgs.addIntPtr( goffsetsDev );
+    int argNum = cudaArgs.addInt( nodeSites );
 
-	// const InnerType_t *send_buf_c = 
-	// InnerType_t* send_buf = const_cast<InnerType_t*>(send_buf_c);
-	// if ( send_buf == 0x0 ) { QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (send_buf)\n")
-	//; }
+    if (!mapVolumes) {
 
-	const int my_node = Layout::nodeNumber();
+      string codeL,codeD;
 
-	Expr subexpr(expr.child());
+      if (!getCodeString( codeL , l , "idx2", cudaArgs )) QDP_error_exit("shift on node: could not cache l");  
+      if (!getCodeString( codeD , d , "idx", cudaArgs )) QDP_error_exit("shift on node: could not cache d");  
 
-	// Make sure the inner expression's map function
-	// send and receive before recursing down
-	int maps_involved = forEach(subexpr, f , BitOrCombine());
-	if (maps_involved > 0) {
-	  ShiftPhase2 phase2;
-	  forEach(subexpr, phase2 , NullCombine());
-	}
+      sprg << "  int idx = blockDim.x * gridDim.x * blockIdx.y + blockDim.x * blockIdx.x + threadIdx.x;\n";
+      sprg << "  if (idx < " << cudaArgs.getCode(argNum) << ") {\n";
+      sprg << "    int idx2 = " << cudaArgs.getCode(argGO) << "[idx];" << endl;
+      sprg << "    " << codeD << " = " << codeL << ";" << endl;
+      sprg << "  }" << endl;
 
-	// Gather the face of data to send
-	// For now, use the all subset
-	//printf("soffsets.size=%d",map.soffsets.size());
-
-
-	static QDPJit::SharedLibEntry sharedLibEntry;
-	static MapVolumes*              mapVolumes;
-	static string                   strId;
-	static string                   prg;
-
-	QDPJitArgs cudaArgs;
-
-	int argNum = cudaArgs.addInt( map.soffsets.size() );
-	int argSoffsets = cudaArgs.addIntPtr( (int*)QDPCache::Instance().getDevicePtr( map.getSoffsetsId() ) );
-	int argSendBuf = cudaArgs.addPtr( rRSrc.getSendBufDevPtr() );
-
-	if (!mapVolumes) {
-
-	  string codeSubexpr,codeInnerT;
-
-	  getTypeString( codeInnerT , InnerType_t() , cudaArgs );
-	  if (!getCodeString( codeSubexpr , subexpr , "idx2", cudaArgs )) 
-	    QDP_error_exit("eval: could not cache RHS");
-	  
-	  ostringstream osId;
-	  osId << "shift_phase1 " << codeInnerT << codeSubexpr;
-	  strId = osId.str();
-	  xmlready(strId);
-#ifdef GPU_DEBUG_DEEP
-	  cout << "strId = " << strId << endl;
-#endif
-      
-	  std::ostringstream sprg;
-	  sprg << "  int idx = blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x;" << endl;
-	  sprg << "  if (idx < " << cudaArgs.getCode(argNum) << ") {\n";
-	  sprg << "    int idx2 = ((int*)(" << cudaArgs.getCode(argSoffsets) << "))[idx];\n";
-	  sprg << "    ((" << codeInnerT << "*)(" << cudaArgs.getCode(argSendBuf) << "))[idx] = " << codeSubexpr << ";\n";
-	  sprg << "  }" << endl;
-	  prg = sprg.str();
+      ostringstream osId; 
+      osId << "kernel_shift_on_node " << codeL << codeD;
+      strId = osId.str(); 
+      xmlready(strId);
 
 #ifdef GPU_DEBUG_DEEP
-	  cout << "Cuda kernel code = " << endl << prg << endl << endl;
-#endif
-	} else {
-	  if (!cacheLock( subexpr ,  cudaArgs ))
-	    QDP_error_exit("shift_phase1: could not cache RHS");
-	}
-
-	QDP_debug("shift_phase1() dev!");
-
-	if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , map.soffsets.size() , sharedLibEntry  , mapVolumes )) {
-	  QDP_error_exit("shift_phase1 call to cuda jitter failed");
-	}
-      
-#if 0
-#if 0
-	user_arg_face<InnerType_t,InnerType_t,OpAssign,Expr> a0(send_buf, map.soffsets.slice() , subexpr, OpAssign()  );
-	dispatch_to_threads< user_arg_face<InnerType_t,InnerType_t,OpAssign,Expr> >(map.soffsets.size(), a0, evaluate_userfunc_face );
-#else
-	for(int si=0; si < map.soffsets.size(); ++si)
-  	  send_buf[si] = forEach( subexpr , EvalLeaf1(map.soffsets[si]) , OpCombine() );
-#endif
+      cout << "strId = " << strId << endl;
 #endif
 
-	rRSrc.send_receive();
-	
-	returnVal = maps_involved | map.getId();
-      } else {
+      prg = sprg.str(); 
+#ifdef GPU_DEBUG_DEEP
+      cout << "Cuda kernel code = " << endl << prg << endl << endl;
+#endif
 
-      returnVal = ForEach<A, ShiftPhase1, BitOrCombine>::apply(expr.child(), f, c);
+    } else {
+      if (!cacheLock(  l , cudaArgs )) QDP_error_exit("shift on node: could not cache l");
+      if (!cacheLock(  d , cudaArgs )) QDP_error_exit("shift on node: could not cache d");
     }
 
-    return returnVal;
+    bool ret=true;
+
+    if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , nodeSites , sharedLibEntry  , mapVolumes)) {
+      QDP_info("shift on node: call to cuda jitter failed");
+      ret=false;
+    }
+
+    return ret;
   }
-};
 
 
 
 
+  template<class T1>
+  bool kernel_exec_scatter( const OLattice<T1> & l , OLattice<T1> & d ) {
+    // Don't pass pretty function to QDP_info, buffer length!!
+#ifdef GPU_DEBUG_DEEP
+    cout << __PRETTY_FUNCTION__ << endl;
+#endif
+
+    std::ostringstream sprg;
+
+    QDPJitArgs cudaArgs;
+
+    static QDPJit::SharedLibEntry sharedLibEntry;
+    static MapVolumes*              mapVolumes;
+    static string                   strId;
+    static string                   prg;
+
+    int argDest = cudaArgs.addPtr( destDevice );
+    int argNum = cudaArgs.addInt( nodeSites );
+
+    if (!mapVolumes) {
+
+      string typeL,codeD,codeL;
+
+      if (!getCodeString( codeD , d , "idx", cudaArgs )) QDP_error_exit("kernel exec scatter: could not cache d");
+      if (!getCodeString( codeL , l , "idx", cudaArgs )) QDP_error_exit("kernel exec scatter: could not cache l");
+      getTypeString( typeL , l , cudaArgs );
+
+      sprg << "  int idx = blockDim.x * gridDim.x * blockIdx.y + blockDim.x * blockIdx.x + threadIdx.x;\n";
+      sprg << "  if (idx < " << cudaArgs.getCode(argNum) << ") {\n";
+      sprg << "    " << codeD << " = *(((" << typeL << "**)( " << cudaArgs.getCode(argDest) << " ))[idx]);\n";
+      sprg << "  }" << endl;
+
+      ostringstream osId; 
+      osId << "kernel_exec_scatter " << typeL << codeD;
+      strId = osId.str(); 
+      xmlready(strId);
 
 
-template<class A, class CTag>
-struct ForEach<UnaryNode<FnMap, A>, ShiftPhase2 , CTag>
-{
-  typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t TypeA_t;
-  typedef typename Combine1<TypeA_t, FnMap, OpCombine>::Type_t Type_t;
-  typedef QDPExpr<A,OLattice<Type_t> > Expr;
-  inline static
-  Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase2 &f, const CTag &c)
+#ifdef GPU_DEBUG_DEEP
+      cout << "strId = " << strId << endl;
+#endif
+
+      prg = sprg.str(); 
+#ifdef GPU_DEBUG_DEEP
+      cout << "Cuda kernel code = " << endl << prg << endl << endl;
+#endif
+    } else {
+      if (!cacheLock( d , cudaArgs )) QDP_error_exit("kernel exec scatter: could not cache d");
+      if (!cacheLock( l , cudaArgs )) QDP_error_exit("kernel exec scatter: could not cache d");
+    }
+
+    bool ret=true;
+
+    if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , nodeSites , sharedLibEntry  , mapVolumes)) {
+      QDP_info("exec scatter: call to cuda jitter failed");
+      ret=false;
+    }
+
+    return ret;
+  }
+
+
+
+
+  template<class T1>
+  bool kernel_setup_scatter(const OLattice<T1> & l) {
+    // Don't pass pretty function to QDP_info, buffer length!!
+#ifdef GPU_DEBUG_DEEP
+    cout << __PRETTY_FUNCTION__ << endl;
+#endif
+
+    std::ostringstream sprg;
+
+    QDPJitArgs cudaArgs;
+
+    // SANITY
+    if (!l.onDevice())
+      QDP_error_exit("kernel_setup_scatter: lattice no longer on the device");
+
+    static QDPJit::SharedLibEntry sharedLibEntry;
+    static MapVolumes*              mapVolumes;
+    static string                   strId;
+    static string                   prg;
+
+    int argRcv = cudaArgs.addPtr( rcvBufDevice );
+    int argDestDev = cudaArgs.addIntPtr( destptrDev );
+    int argDest = cudaArgs.addPtr( destDevice );
+    int argNum = cudaArgs.addInt( nodeSites );
+
+    if (!mapVolumes) {
+
+      string typeL,codeL;
+
+      if (!getCodeString( codeL , l , "idx", cudaArgs )) QDP_error_exit("kernel setup scatter: could not cache l");
+      getTypeString( typeL , l , cudaArgs );
+
+      sprg << "  int idx2 = blockDim.x * gridDim.x * blockIdx.y + blockDim.x * blockIdx.x + threadIdx.x;\n";
+      sprg << "  if (idx2 < " << cudaArgs.getCode(argNum) << ") {\n";
+      sprg << "    if (" << cudaArgs.getCode(argDestDev) << "[idx2] >= 0)" << endl;
+      sprg << "      ((" << typeL << "**)(" << cudaArgs.getCode(argDest) << "))[idx2] = &((" << typeL << "*)(" << cudaArgs.getCode(argRcv) << "))[" << cudaArgs.getCode(argDestDev) << "[idx2]];\n";
+      sprg << "    else {" << endl;
+      sprg << "      int idx = -" << cudaArgs.getCode(argDestDev) << "[idx2]-1;" << endl;
+      sprg << "      ((" << typeL << "**)(" << cudaArgs.getCode(argDest) << "))[idx2] = &" << codeL << ";" << endl;
+      sprg << "    }" << endl;
+      sprg << "  }" << endl;
+
+      ostringstream osId; 
+      osId << "kernel_setup_scatter " << codeL;
+      strId = osId.str(); 
+      xmlready(strId);
+
+#ifdef GPU_DEBUG_DEEP
+      cout << "strId = " << strId << endl;
+#endif
+
+      prg = sprg.str(); 
+#ifdef GPU_DEBUG_DEEP
+      cout << "Cuda kernel code = " << endl << prg << endl << endl;
+#endif
+
+    } else {
+      if (!cacheLock( l , cudaArgs )) QDP_error_exit("kernel setup scatter: could not cache l");
+    }
+
+    bool ret=true;
+
+    if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , nodeSites , sharedLibEntry  , mapVolumes )) {
+      QDP_info("setup scatter: call to cuda jitter failed");
+      ret=false;
+    }
+
+    return ret;
+  }
+
+
+
+
+  template<class T1>
+  bool kernel_collect_sendbuf(const OLattice<T1> & l) {
+    // Don't pass pretty function to QDP_info, buffer length!!
+#ifdef GPU_DEBUG_DEEP
+    cout << __PRETTY_FUNCTION__ << endl;
+#endif
+
+    std::ostringstream sprg;
+
+    QDPJitArgs cudaArgs;
+
+    // SANITY
+    if (!l.onDevice())
+      QDP_error_exit("kernel_collect_sendbuf: lattice no longer on the device");
+
+    static QDPJit::SharedLibEntry sharedLibEntry;
+    static MapVolumes*              mapVolumes;
+    static string                   strId;
+    static string                   prg;
+
+    int argMisc = cudaArgs.addPtr( sndBufDevice );
+    int argSOD = cudaArgs.addIntPtr( soffsetsDev );
+    int argSOSize = cudaArgs.addInt( soffsets.size() );
+
+    if (!mapVolumes) {
+
+      string typeL,codeL;
+      if (!getCodeString( codeL , l , "idx", cudaArgs )) QDP_error_exit("kernel collect sendbuf: could not cache l");
+      getTypeString( typeL , l , cudaArgs );
+
+      sprg << "  int idx2 = blockDim.x * gridDim.x * blockIdx.y + blockDim.x * blockIdx.x + threadIdx.x;\n";
+      sprg << "  if (idx2 < " << cudaArgs.getCode(argSOSize) << ") {\n";
+      sprg << "    int idx = " << cudaArgs.getCode(argSOD) << "[idx2];\n";
+      sprg << "    ((" << typeL << "*)(" << cudaArgs.getCode(argMisc) << "))[idx2] = " << codeL << ";\n";
+      sprg << "  }\n";
+
+      ostringstream osId;
+
+      osId << "kernel_collect_sendbuf " << codeL;
+      strId = osId.str(); 
+      xmlready(strId);
+
+
+#ifdef GPU_DEBUG_DEEP
+      cout << "strId = " << strId << endl;
+#endif
+
+      prg = sprg.str(); 
+#ifdef GPU_DEBUG_DEEP
+      cout << "Cuda kernel code = " << endl << prg << endl << endl;
+#endif
+
+    } else {
+      if (!cacheLock( l , cudaArgs )) QDP_error_exit("kernel collect sendbuf: could not cache l");
+    }
+
+    bool ret=true;
+
+    if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , soffsets.size() , sharedLibEntry  , mapVolumes )) {
+      QDP_info("kernel collect sendbuf: call to cuda jitter failed");
+      ret=false;
+    }
+
+    return ret;
+  }
+
+
+public:
+
+  //
+  // GPU parallel shift
+  //
+  template<class T1>
+  OLattice<T1>
+  operator()(const OLattice<T1> & l)
   {
-    const Map& map = expr.operation().map;
-    FnMap& fnmap = const_cast<FnMap&>(expr.operation());
-#if 1
-    if (map.offnodeP) {
-      // can be optimized
-      const FnMapRsrc& rRSrc = fnmap.getCached();
-      rRSrc.qmp_wait();
+    // Don't pass pretty function to QDP_info, buffer length!!
+#ifdef GPU_DEBUG_DEEP
+    cout << __PRETTY_FUNCTION__ << endl;
+#endif
+
+    nodeSites = Layout::sitesOnNode();
+    my_node = Layout::nodeNumber();
+
+    OLattice<T1> d;
+
+    if (!l.onDevice()) {
+#ifdef GPU_DEBUG_DEEP
+      QDP_debug_deep("Map::operator() 'l' not on device goto HOST");
+#endif
+      goto HOST;
+    }
+
+    QDP_debug_deep("Map::operator() l on device");
+
+    if (offnodeP) {
+
+#ifdef GPU_DEBUG_DEEP
+      QDP_debug_deep("We have offnode comms");
+      QDP_debug_deep("destnodes_num[0] %d" , destnodes_num[0] );
+      QDP_debug_deep(" srcenodes_num[0] %d" , srcenodes_num[0] );
+#endif
+
+      dstnum = destnodes_num[0]*sizeof(T1);
+      srcnum = srcenodes_num[0]*sizeof(T1);
+
+      typedef T1 * T1ptr;
+      T1 **dest;
+      bool delDest = false;
+
+
+      //
+      // Now allocate device and host buffers for sending and receiving
+      // These will not be freed here. Where, this is an ongoing issue
+      //
+      allocate_buffers();
+
+      T1 * send_buf = (T1*)sndBufHost;
+      T1 * recv_buf = (T1*)rcvBufHost;
+
+      if (!kernel_collect_sendbuf(l))
+	QDP_error_exit("Map:op() kernel_collect_sendbuf failed!");
+
+      copy_sendbuf_to_host();
+
+#ifdef GPU_DEBUG_DEEP
+      QDP_debug_deep("host sendbuffer ready");
+#endif
+
+      send_comm_buffers();
+
+      if ( ! kernel_setup_scatter( l ) ) {
+	//wait_comm_buffers();
+	QDP_error_exit("Map:op() kernel_setup_scatter failed!");
+      }
+
+      wait_comm_buffers();
+
+      copy_recvbuf_to_device();
+
+      if ( !kernel_exec_scatter(l,d) )
+	QDP_error_exit("Map:op() kernel_exec_scatter failed!");
+
+      return d;
+
+    } else {
+
+#ifdef GPU_DEBUG_DEEP
+      QDP_debug_deep("no offnode comms, should call vanilla shift on device now");
+#endif
+
+      if (!kernel_shift_on_node(l,d))
+	QDP_error_exit("Map:op() kernel_shift_on_node failed!");
+
+      return d;
 
     }
+
+  HOST:
+
+    //
+    // Shift host version (original)
+    //
+
+#ifdef GPU_DEBUG_DEEP
+    QDP_debug_deep("Map::operator() enter");
 #endif
+
+#if QDP_DEBUG >= 3
+    QDP_info("Map()");
+#endif
+
+    if (offnodeP) {
+
+      dstnum = destnodes_num[0]*sizeof(T1);
+      srcnum = srcenodes_num[0]*sizeof(T1);
+
+      typedef T1 * T1ptr;
+      T1 **dest = new(nothrow) T1ptr[nodeSites];
+      if( dest == 0x0 ) { 
+	QDP_error_exit("Unable to new T1ptr in OLattice<T1>::operator()\n");
+      }
+
+      allocate_buffers();
+
+      T1 * send_buf = (T1*)sndBufHost;
+      T1 * recv_buf = (T1*)rcvBufHost;
+
+      for(int si=0; si < soffsets.size(); ++si) 
+	{
+	  send_buf[si] = l.elem(soffsets[si]);
+	}
+
+      for(int i=0, ri=0; i < nodeSites; ++i) 
+	{
+	  if (srcnode[i] != my_node)
+	    {
+	      dest[i] = &(recv_buf[ri++]);
+	    }
+	  else
+	    {
+	      dest[i] = &(const_cast<T1&>(l.elem(goffsets[i])));
+	    }
+	}
+
+      send_comm_buffers();
+
+      wait_comm_buffers();
+
+      for(int i=0; i < nodeSites; ++i) 
+	{
+	  d.elem(i) = *(dest[i]);
+	}
+
+      delete[] dest;
+
+#if QDP_DEBUG >= 3
+      QDP_info("finished cleanup");
+#endif
+    }	else  {
+
+      for(int i=0; i < nodeSites; ++i) 
+	{
+	  d.elem(i) = l.elem(goffsets[i]);
+	}
+    }
+
+
+#ifdef GPU_DEBUG_DEEP
+    QDP_debug_deep("Map::operator() leave");
+#endif
+
+    return d;
   }
+
+
+  template<class T1>
+  OScalar<T1>
+  operator()(const OScalar<T1> & l)
+    {
+      return l;
+    }
+
+  template<class RHS, class T1>
+  OScalar<T1>
+  operator()(const QDPExpr<RHS,OScalar<T1> > & l)
+    {
+      // For now, simply evaluate the expression and then do the map
+      typedef OScalar<T1> C1;
+
+//    fprintf(stderr,"map(QDPExpr<OScalar>)\n");
+      OScalar<T1> d = this->operator()(C1(l));
+
+      return d;
+    }
+
+  template<class RHS, class T1>
+  OLattice<T1>
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l)
+  {
+      // For now, simply evaluate the expression and then do the map
+      typedef OLattice<T1> C1;
+
+//    fprintf(stderr,"map(QDPExpr<OLattice>)\n");
+      OLattice<T1> d = this->operator()(C1(l));
+
+      return d;
+    }
+
+
+public:
+  //! Accessor to offsets
+  const multi1d<int>& goffset() const {return goffsets;}
+  const multi1d<int>& soffset() const {return soffsets;}
+
+private:
+  //! Hide copy constructor
+  Map(const Map&) {}
+
+  //! Hide operator=
+  void operator=(const Map&) {}
+
 };
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -3133,6 +3278,51 @@ public:
 	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
 
+
+#if 0
+  template<class T1>
+  OLattice<T1>
+  operator()(const OLattice<T1> & l, int dir)
+    {
+#if QDP_DEBUG >= 3
+      QDP_info("ArrayMap(OLattice,%d)",dir);
+#endif
+
+      return mapsa[dir](l);
+    }
+
+  template<class T1>
+  OScalar<T1>
+  operator()(const OScalar<T1> & l, int dir)
+    {
+#if QDP_DEBUG >= 3
+      QDP_info("ArrayMap(OScalar,%d)",dir);
+#endif
+
+      return mapsa[dir](l);
+    }
+
+
+  template<class RHS, class T1>
+  OScalar<T1>
+  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int dir)
+    {
+//    fprintf(stderr,"ArrayMap(QDPExpr<OScalar>,%d)\n",dir);
+
+      // For now, simply evaluate the expression and then do the map
+      return mapsa[dir](l);
+    }
+
+  template<class RHS, class T1>
+  OLattice<T1>
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int dir)
+    {
+//    fprintf(stderr,"ArrayMap(QDPExpr<OLattice>,%d)\n",dir);
+
+      // For now, simply evaluate the expression and then do the map
+      return mapsa[dir](l);
+    }
+#endif
 
 private:
   //! Hide copy constructor
@@ -3197,6 +3387,54 @@ public:
       return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimaps[(isign+1)>>1]),
 	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
+
+
+
+#if 0
+  template<class T1>
+  OLattice<T1>
+  operator()(const OLattice<T1> & l, int isign)
+    {
+#if QDP_DEBUG >= 3
+      QDP_info("BiDirectionalMap(OLattice,%d)",isign);
+#endif
+
+      return bimaps[(isign+1)>>1](l);
+    }
+
+
+  template<class T1>
+  OScalar<T1>
+  operator()(const OScalar<T1> & l, int isign)
+    {
+#if QDP_DEBUG >= 3
+      QDP_info("BiDirectionalMap(OScalar,%d)",isign);
+#endif
+
+      return bimaps[(isign+1)>>1](l);
+    }
+
+
+  template<class RHS, class T1>
+  OScalar<T1>
+  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign)
+    {
+//    fprintf(stderr,"BiDirectionalMap(QDPExpr<OScalar>,%d)\n",isign);
+
+      // For now, simply evaluate the expression and then do the map
+      return bimaps[(isign+1)>>1](l);
+    }
+
+  template<class RHS, class T1>
+  OLattice<T1>
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign)
+    {
+//    fprintf(stderr,"BiDirectionalMap(QDPExpr<OLattice>,%d)\n",isign);
+
+      // For now, simply evaluate the expression and then do the map
+      return bimaps[(isign+1)>>1](l);
+    }
+#endif
 
 
 private:
@@ -3273,6 +3511,52 @@ public:
 	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
 
+
+
+#if 0
+  template<class T1>
+  OLattice<T1>
+  operator()(const OLattice<T1> & l, int isign, int dir)
+    {
+#if QDP_DEBUG >= 3
+      QDP_info("ArrayBiDirectionalMap(OLattice,%d,%d)",isign,dir);
+#endif
+
+      return bimapsa((isign+1)>>1,dir)(l);
+    }
+
+  template<class T1>
+  OScalar<T1>
+  operator()(const OScalar<T1> & l, int isign, int dir)
+    {
+#if QDP_DEBUG >= 3
+      QDP_info("ArrayBiDirectionalMap(OScalar,%d,%d)",isign,dir);
+#endif
+
+      return bimapsa((isign+1)>>1,dir)(l);
+    }
+
+
+  template<class RHS, class T1>
+  OScalar<T1>
+  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign, int dir)
+    {
+//    fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OScalar>,%d,%d)\n",isign,dir);
+
+      // For now, simply evaluate the expression and then do the map
+      return bimapsa((isign+1)>>1,dir)(l);
+    }
+
+  template<class RHS, class T1>
+  OLattice<T1>
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign, int dir)
+    {
+//    fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OLattice>,%d,%d)\n",isign,dir);
+
+      // For now, simply evaluate the expression and then do the map
+      return bimapsa((isign+1)>>1,dir)(l);
+    }
+#endif
 
 private:
   //! Hide copy constructor
