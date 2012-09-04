@@ -32,8 +32,8 @@
 // TagVisitor
 //-----------------------------------------------------------------------------
 
-#ifndef POOMA_PETE_FOREACHINORDER_H
-#define POOMA_PETE_FOREACHINORDER_H
+#ifndef POOMA_PETE_FOREACHIN_H
+#define POOMA_PETE_FOREACHIN_H
 
 //-----------------------------------------------------------------------------
 // Overview: 
@@ -159,15 +159,6 @@
 // the traversal moves down and back up an edge, respectively.
 //
 
-template <class Op, class VTag>
-struct TagVisitor 
-{
-  static void start(Op, VTag) { }
-  static void center(Op, VTag) { }
-  static void visit(Op, VTag) { }
-  static void finish(Op, VTag) { }
-};  
-
 
 // 
 // struct ForEachInOrder
@@ -178,14 +169,13 @@ struct TagVisitor
 // it just applies the FTag functor
 //
 
-template<class Expr, class FTag, class VTag, class CTag>
-struct ForEachInOrder
+template<class Expr, class FTag, class CTag>
+struct ForEachIn
 {
   typedef LeafFunctor<Expr,FTag> Tag_t;
   typedef typename Tag_t::Type_t Type_t;
 
-  static Type_t apply(const Expr &expr, const FTag &f, const VTag &v, 
-		      const CTag &c) 
+  static Type_t apply(const Expr &expr, const FTag &f, const CTag &c) 
   {
     return Tag_t::apply(expr,f);
   }
@@ -193,43 +183,25 @@ struct ForEachInOrder
 
 
 template<class Expr, class FTag, class CTag>
-inline typename ForEachInOrder<Expr,FTag,FTag,CTag>::Type_t
-forEachInOrder(const Expr &e, const FTag &f, const CTag &c)
+inline typename ForEachIn<Expr,FTag,CTag>::Type_t
+forEachIn(const Expr &e, const FTag &f, const CTag &c)
 {
-  return ForEachInOrder<Expr, FTag, FTag, CTag>::apply(e, f, f, c);
+  return ForEachIn<Expr, FTag, CTag>::apply(e, f, c);
 }
 
 
-//
-// The Refernce case needs to apply the functor to the wrapped object.
-//
-
-template<class T, class FTag, class VTag, class CTag>
-struct ForEachInOrder<Reference<T>,FTag,VTag,CTag>
-{
-  typedef LeafFunctor<T,FTag> Tag_t;
-  typedef typename Tag_t::Type_t Type_t;
-
-  static Type_t apply(const Reference<T> &expr, const FTag &f,
-		      const VTag &v, const CTag &c) 
-  {
-    return Tag_t::apply(expr.reference(),f);
-  }
-};
 
 //
-// struct ForEachInOrder
+// struct ForEachIn
 //
 // Specialization for a TBTree. This just performs the recursive
 // traversal described above.
 //
 
-template<class Op, class A, class FTag, class VTag, 
-  class CTag>
-struct ForEachInOrder<UnaryNode<Op, A>, FTag, VTag, CTag>
+template<class Op, class A, class FTag, class CTag>
+struct ForEachIn<UnaryNode<Op, A>, FTag, CTag>
 {
-  typedef ForEachInOrder<A, FTag, VTag, CTag> ForEachA_t;
-  typedef TagVisitor<Op, VTag>          Visitor_t;
+  typedef ForEachIn<A, FTag, CTag> ForEachA_t;
 
   typedef typename ForEachA_t::Type_t   TypeA_t;
 
@@ -238,33 +210,24 @@ struct ForEachInOrder<UnaryNode<Op, A>, FTag, VTag, CTag>
   typedef typename Combiner_t::Type_t   Type_t;
 
   static Type_t apply(const UnaryNode<Op, A> &expr, const FTag &f, 
-		      const VTag &v, const CTag &c)
+		      const CTag &c)
   {
-    Visitor_t::visit(expr.operation(),v);
-
-    Visitor_t::start(expr.operation(),v);
-
-    TypeA_t A_val  = ForEachA_t::apply(expr.child(), f, v, c);
+    TypeA_t A_val  = ForEachA_t::apply(expr.child(), f, c);
     Type_t val = Combiner_t::combine(A_val, expr.operation(), c);
-        
-    Visitor_t::finish(expr.operation(),v);
-
     return val;
   }
 };
 
 
 /*!
- * struct ForEachInOrder for BinaryNode
+ * struct ForEachIn for BinaryNode
  */
 
-template<class Op, class A, class B, class FTag, class VTag, 
-  class CTag>
-struct ForEachInOrder<BinaryNode<Op, A, B>, FTag, VTag, CTag>
+template<class Op, class A, class B, class FTag, class CTag>
+struct ForEachIn<BinaryNode<Op, A, B>, FTag, CTag>
 {
-  typedef ForEachInOrder<A, FTag, VTag, CTag> ForEachA_t;
-  typedef ForEachInOrder<B, FTag, VTag, CTag> ForEachB_t;
-  typedef TagVisitor<Op, VTag>                Visitor_t;
+  typedef ForEachIn<A, FTag, CTag> ForEachA_t;
+  typedef ForEachIn<B, FTag, CTag> ForEachB_t;
 
   typedef typename ForEachA_t::Type_t  TypeA_t;
   typedef typename ForEachB_t::Type_t  TypeB_t;
@@ -274,39 +237,26 @@ struct ForEachInOrder<BinaryNode<Op, A, B>, FTag, VTag, CTag>
   typedef typename Combiner_t::Type_t Type_t;
 
   static Type_t apply(const BinaryNode<Op, A, B> &expr, const FTag &f, 
-		      const VTag &v, const CTag &c) 
+		      const CTag &c) 
   {
-    Visitor_t::visit(expr.operation(),v);
-
-    Visitor_t::start(expr.operation(),v);
-
-    TypeA_t left_val  = ForEachA_t::apply(expr.left(), f, v, c);
-
-    Visitor_t::center(expr.operation(),v);
-
-    TypeB_t right_val = ForEachB_t::apply(expr.right(), f, v, c);
-
+    TypeA_t left_val  = ForEachA_t::apply(expr.left(), f, c);
+    TypeB_t right_val = ForEachB_t::apply(expr.right(), f, c);
     Type_t val = Combiner_t::combine(left_val, right_val, expr.operation(), c);
-        
-    Visitor_t::finish(expr.operation(),v);
-
     return val;
   }
 };
 
 
 /*!
- * struct ForEachInOrder for BinaryNode
+ * struct ForEachIn for BinaryNode
  */
 
-template<class Op, class A, class B, class C, class FTag, class VTag, 
-  class CTag>
-struct ForEachInOrder<TrinaryNode<Op, A, B, C>, FTag, VTag, CTag>
+template<class Op, class A, class B, class C, class FTag, class CTag>
+struct ForEachIn<TrinaryNode<Op, A, B, C>, FTag, CTag>
 {
-  typedef ForEachInOrder<A, FTag, VTag, CTag> ForEachA_t;
-  typedef ForEachInOrder<B, FTag, VTag, CTag> ForEachB_t;
-  typedef ForEachInOrder<C, FTag, VTag, CTag> ForEachC_t;
-  typedef TagVisitor<Op, VTag>                Visitor_t;
+  typedef ForEachIn<A, FTag, CTag> ForEachA_t;
+  typedef ForEachIn<B, FTag, CTag> ForEachB_t;
+  typedef ForEachIn<C, FTag, CTag> ForEachC_t;
 
   typedef typename ForEachA_t::Type_t  TypeA_t;
   typedef typename ForEachB_t::Type_t  TypeB_t;
@@ -317,51 +267,58 @@ struct ForEachInOrder<TrinaryNode<Op, A, B, C>, FTag, VTag, CTag>
   typedef typename Combiner_t::Type_t Type_t;
 
   static Type_t apply(const TrinaryNode<Op, A, B, C> &expr, const FTag &f, 
-		      const VTag &v, const CTag &c) 
+		      const CTag &c) 
   {
-    Visitor_t::visit(expr.operation(),v);
-
-    Visitor_t::start(expr.operation(),v);
-
-    TypeA_t left_val  = ForEachA_t::apply(expr.left(), f, v, c);
-
-    Visitor_t::center(expr.operation(),v);
-
-    TypeB_t middle_val= ForEachB_t::apply(expr.middle(), f, v, c);
-
-    Visitor_t::center(expr.operation(),v);
-
-    TypeC_t right_val = ForEachC_t::apply(expr.right(), f, v, c);
-
+    TypeA_t left_val  = ForEachA_t::apply(expr.left(), f, c);
+    TypeB_t middle_val= ForEachB_t::apply(expr.middle(), f, c);
+    TypeC_t right_val = ForEachC_t::apply(expr.right(), f, c);
     Type_t val = Combiner_t::combine(left_val, middle_val, right_val, expr.operation(), c);
-        
-    Visitor_t::finish(expr.operation(),v);
-
     return val;
   }
 };
 
 
-//
-// Specializations of Combine2 for NullTag()
-// (seems like something like this should be in ForEach.h)
-//
+#ifndef PETE_USER_DEFINED_EXPRESSION
 
-struct NullTag {};
+template<class T> class Expression;
 
-template<class A,class B,class Op>
-struct Combine2<A, B, Op, NullTag>
+template<class T, class FTag, class CTag>
+struct ForEachIn<Expression<T>, FTag, CTag>
 {
-  typedef int Type_t;
-  static Type_t combine(A, B, Op, NullTag)
-    { return 0; }
+  typedef typename ForEachIn<T, FTag, CTag>::Type_t Type_t;
+  inline static
+  Type_t apply(const Expression<T> &expr, const FTag &f, 
+	       const CTag &c) 
+  {
+    return ForEachIn<T, FTag, CTag>::apply(expr.expression(), f, c);
+  }
 };
+
+#endif // !PETE_USER_DEFINED_EXPRESSION
+
+
+template<class T> struct Reference;
+
+template<class T, class FTag, class CTag>
+struct ForEachIn<Reference<T>,FTag,CTag>
+{
+  typedef LeafFunctor<T,FTag> Tag_t;
+  typedef typename Tag_t::Type_t Type_t;
+
+  static Type_t apply(const Reference<T> &expr, const FTag &f,
+		      const CTag &c) 
+  {
+    return Tag_t::apply(expr.reference(),f);
+  }
+};
+
+
 
 #endif  // PETE_PETE_FOREACHINORDER_H
 
 // ACL:rcsinfo
 // ----------------------------------------------------------------------
-// $RCSfile: ForEachInOrder.h,v $   $Author: edwards $
+// $RCSfile: ForEachIn.h,v $   $Author: edwards $
 // $Revision: 1.2 $   $Date: 2004-07-27 05:24:35 $
 // ----------------------------------------------------------------------
 // ACL:rcsinfo

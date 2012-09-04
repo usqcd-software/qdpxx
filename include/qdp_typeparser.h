@@ -308,13 +308,11 @@ namespace QDP
       //
       int posRcvBuf;
       if (map.hasOffnode()) {
-	QDP_info_primary("offnode: yes");
 	const FnMapRsrc& rRSrc = fnmap.getCached();
 	int rcvId = rRSrc.getRcvId();
 	void * rcvBufDev = QDPCache::Instance().getDevicePtr( rcvId );
 	posRcvBuf = f.getJitArgs().addPtr( rcvBufDev );
       } else {
-	QDP_info_primary("offnode: no");
 	posRcvBuf = f.getJitArgs().addPtr( NULL );
       }
 

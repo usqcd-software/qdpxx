@@ -4,6 +4,7 @@ PETE_HDRS =  PETE/Combiners.h \
              PETE/TreeNodes.h \
              PETE/CreateLeaf.h \
              PETE/ForEach.h \
+             PETE/ForEachIn.h \
              PETE/ForEachInOrder.h \
              PETE/ForEachTypeParser.h \
              PETE/OperatorTags.h \

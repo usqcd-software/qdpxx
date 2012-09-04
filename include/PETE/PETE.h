@@ -77,6 +77,7 @@
 #include "PETE/Functors.h"
 #include "PETE/Combiners.h"
 #include "PETE/ForEach.h"
+#include "PETE/ForEachIn.h"
 #include "PETE/CreateLeaf.h"
 
 // Some useful PETE definitions.

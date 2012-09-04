@@ -584,8 +584,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   int maps_involved = forEach(rhs, phase1 , BitOrCombine());
 
 #ifdef GPU_DEBUG_DEEP
-#endif
   QDP_info("maps_involved=%d",maps_involved);
+#endif
 
   if (maps_involved > 0) {
 
@@ -595,8 +595,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     int faceCount = MasterMap::Instance().getCountFace(maps_involved);
 
 #ifdef GPU_DEBUG_DEEP
-#endif
     QDP_info("innerId=%d count=%d  faceId=%d count=%d",innerId,innerCount,faceId,faceCount);
+#endif
 
     StopWatch watchov;
     watchov.start();
@@ -635,22 +635,6 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 	sprg << "        " << codeOp << "(" << codeDest << "," << codeRHS << ");\n";
 	sprg << "      }" << endl;
 	sprg << "    }" << endl;
-
-#if 0
-	sprg << "  if (" << cudaArgs.getCode(argOrd) << ") {" << endl;
-	sprg << "    int idx = " << cudaArgs.getCode(argStart) << ";" << endl;
-	sprg << "    idx += blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x;" << endl;
-	sprg << "    if (idx < " << cudaArgs.getCode(argNum) << "+" <<  cudaArgs.getCode(argStart) << ") {\n";
-	sprg << "      " << codeOp << "(" << codeDest << "," << codeRHS << ");\n";
-	sprg << "    }" << endl;
-	sprg << "  } else {" << endl;
-	sprg << "    int idx0 = blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x; \n";
-	sprg << "    if (idx0 < " << cudaArgs.getCode(argNum) << ") {\n";
-	sprg << "      int idx  = ((int*)" << cudaArgs.getCode(argSubset) << ")[idx0];" << endl;
-	sprg << "      " << codeOp << "(" << codeDest << "," << codeRHS << ");\n";
-	sprg << "    }" << endl;
-	sprg << "  }" << endl;
-#endif
 	prg = sprg.str();
 
 #ifdef GPU_DEBUG_DEEP
@@ -2933,10 +2917,10 @@ struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
 
 
 
-template<typename T>
-void printme() {
-  QDP_info_primary("%s",__PRETTY_FUNCTION__);
-}
+// template<typename T>
+// void printme() {
+//   QDP_info_primary("%s",__PRETTY_FUNCTION__);
+// }
 
 
 
@@ -2958,16 +2942,6 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 
     Expr subexpr(expr.child());
 
-    // Make sure the inner expression's map function
-    // send and receive before recursing down
-    int maps_involved = forEach(subexpr, f , BitOrCombine());
-    QDP_info_primary("phase1: maps=%d",maps_involved);
-    printme<Expr>();
-    if (maps_involved > 0) {
-      ShiftPhase2 phase2;
-      forEach(subexpr, phase2 , NullCombine());
-    }
-
     if (map.offnodeP)
       {
 #if QDP_DEBUG >= 3
@@ -2986,10 +2960,13 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 
 	const int my_node = Layout::nodeNumber();
 
-
-	// Gather the face of data to send
-	// For now, use the all subset
-	//printf("soffsets.size=%d",map.soffsets.size());
+	// Make sure the inner expression's map function
+	// send and receive before recursing down
+	int maps_involved = forEach(subexpr, f , BitOrCombine());
+	if (maps_involved > 0) {
+	  ShiftPhase2 phase2;
+	  forEach(subexpr, phase2 , NullCombine());
+	}
 
 
 	static QDPJit::SharedLibEntry sharedLibEntry;
@@ -3071,22 +3048,20 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 template<class A, class CTag>
 struct ForEach<UnaryNode<FnMap, A>, ShiftPhase2 , CTag>
 {
-  typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t TypeA_t;
-  typedef typename Combine1<TypeA_t, FnMap, OpCombine>::Type_t Type_t;
-  typedef QDPExpr<A,OLattice<Type_t> > Expr;
+  //typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t TypeA_t;
+  //typedef typename Combine1<TypeA_t, FnMap, OpCombine>::Type_t Type_t;
+  //typedef QDPExpr<A,OLattice<Type_t> > Expr;
+  typedef int Type_t;
   inline static
   Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase2 &f, const CTag &c)
   {
     const Map& map = expr.operation().map;
     FnMap& fnmap = const_cast<FnMap&>(expr.operation());
-#if 1
     if (map.offnodeP) {
-      // can be optimized
       const FnMapRsrc& rRSrc = fnmap.getCached();
       rRSrc.qmp_wait();
-
     }
-#endif
+    ForEach<A, ShiftPhase2, CTag>::apply(expr.child(), f, c);
   }
 };
 

@@ -93,6 +93,19 @@ struct ForEach<QDPExpr<T,DTag>, FTag, CTag>
 };
 
 
+template<class T, class FTag, class CTag, class DTag>
+struct ForEachIn<QDPExpr<T,DTag>, FTag, CTag>
+{
+  typedef typename ForEachIn<T, FTag, CTag>::Type_t Type_t;
+  inline static
+  Type_t apply(const QDPExpr<T,DTag>& expr, const FTag &f, 
+	       const CTag &c) 
+  {
+    return ForEachIn<T, FTag, CTag>::apply(expr.expression(), f, c);
+  }
+};
+
+
 //-----------------------------------------------------------------------------
 // Alternative OpCombiner's that deal explicitly with references
 //-----------------------------------------------------------------------------
