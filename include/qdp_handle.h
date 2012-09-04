@@ -17,11 +17,13 @@
 #ifndef __qdp_handle_h__
 #define __qdp_handle_h__
 
-//#include <iostream>
-//using namespace QDP;
-//using namespace std;
+using namespace QDP;
 
-namespace QDP
+// Have to do this silly naming trick
+// otherwise Handle is ambiguous since 
+// QDP and Chroma namespaces are imported
+//
+namespace QDPHandle
 {
   //! Class for counted reference semantics
   /*!

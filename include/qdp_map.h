@@ -164,7 +164,7 @@ private:
 public:
   const Map& map;
   //std::shared_ptr<RsrcWrapper> pRsrc;
-  Handle<RsrcWrapper> pRsrc;
+  QDPHandle::Handle<RsrcWrapper> pRsrc;
 
   FnMap(const Map& m): map(m), pRsrc(new RsrcWrapper( m.destnodes , m.srcenodes )) {}
   FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {}

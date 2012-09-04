@@ -2662,7 +2662,7 @@ template<class RHS, class T>
 typename UnaryReturn<OLattice<T>, FnGlobalMin>::Type_t
 globalMin(const QDPExpr<RHS,OLattice<T> >& s1)
 {
-  
+  QDP_info("globalMin(Lat) not implemented for the GPU. Please report to devel.");
 
   typename UnaryReturn<OLattice<T>, FnGlobalMin>::Type_t  d;
 
@@ -2696,6 +2696,16 @@ globalMin(const QDPExpr<RHS,OLattice<T> >& s1)
   return d;
 }
 
+
+#if 0
+template<class RHS, class T>
+typename UnaryReturn<OLattice<T>, FnGlobalMin>::Type_t
+globalMin(const QDPExpr<RHS,OLattice<T> >& s1)
+{
+  OLattice<T> l(s1);
+  return globalMin(l);
+}
+#endif
 
 //-----------------------------------------------------------------------------
 // Peek and poke at individual sites. This is very architecture specific
