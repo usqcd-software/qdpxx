@@ -583,6 +583,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   ShiftPhase1 phase1;
   int maps_involved = forEach(rhs, phase1 , BitOrCombine());
 
+#ifdef GPU_DEBUG_DEEP
+#endif
   QDP_info("maps_involved=%d",maps_involved);
 
   if (maps_involved > 0) {
@@ -592,6 +594,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     int faceId = MasterMap::Instance().getIdFace(maps_involved);
     int faceCount = MasterMap::Instance().getCountFace(maps_involved);
 
+#ifdef GPU_DEBUG_DEEP
+#endif
     QDP_info("innerId=%d count=%d  faceId=%d count=%d",innerId,innerCount,faceId,faceCount);
 
     StopWatch watchov;
@@ -658,8 +662,9 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 	if (!cacheLockOp(  op , cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
       }
 
-
+#ifdef GPU_DEBUG
       QDP_debug("eval(Lat,Lat) inner dev!");
+#endif
 
       StopWatch watch0;
       watch0.start();
@@ -2928,7 +2933,10 @@ struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
 
 
 
-
+template<typename T>
+void printme() {
+  QDP_info_primary("%s",__PRETTY_FUNCTION__);
+}
 
 
 
@@ -2948,6 +2956,18 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
     const int nodeSites = Layout::sitesOnNode();
     int returnVal=0;
 
+    Expr subexpr(expr.child());
+
+    // Make sure the inner expression's map function
+    // send and receive before recursing down
+    int maps_involved = forEach(subexpr, f , BitOrCombine());
+    QDP_info_primary("phase1: maps=%d",maps_involved);
+    printme<Expr>();
+    if (maps_involved > 0) {
+      ShiftPhase2 phase2;
+      forEach(subexpr, phase2 , NullCombine());
+    }
+
     if (map.offnodeP)
       {
 #if QDP_DEBUG >= 3
@@ -2966,15 +2986,6 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 
 	const int my_node = Layout::nodeNumber();
 
-	Expr subexpr(expr.child());
-
-	// Make sure the inner expression's map function
-	// send and receive before recursing down
-	int maps_involved = forEach(subexpr, f , BitOrCombine());
-	if (maps_involved > 0) {
-	  ShiftPhase2 phase2;
-	  forEach(subexpr, phase2 , NullCombine());
-	}
 
 	// Gather the face of data to send
 	// For now, use the all subset

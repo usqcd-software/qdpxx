@@ -163,7 +163,8 @@ JIT_HDRS = 	qdp_reduction_kernel.h \
 		qdp_jit.h \
 	        qdp_parscalar_specific_jit.h \
 		qdp_jitargs.h \
-		qdp_pool_allocator.h
+		qdp_pool_allocator.h \
+		qdp_handle.h
 
 
 # All the include files - avoid flattening of dirs by using nobase

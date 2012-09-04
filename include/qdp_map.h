@@ -158,14 +158,16 @@ private:
 struct FnMap
 {
   //PETE_EMPTY_CONSTRUCTORS(FnMap)
+private:
+  FnMap& operator=(const FnMap& f);
 
+public:
   const Map& map;
-  std::shared_ptr<RsrcWrapper> pRsrc;
+  //std::shared_ptr<RsrcWrapper> pRsrc;
+  Handle<RsrcWrapper> pRsrc;
 
   FnMap(const Map& m): map(m), pRsrc(new RsrcWrapper( m.destnodes , m.srcenodes )) {}
   FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {}
-
-  FnMap& operator=(const FnMap& f) = delete;
 
   const FnMapRsrc& getResource(int srcnum_, int dstnum_) {
     return (*pRsrc).getResource( srcnum_ , dstnum_ );

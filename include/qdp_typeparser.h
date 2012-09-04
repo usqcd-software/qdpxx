@@ -308,11 +308,13 @@ namespace QDP
       //
       int posRcvBuf;
       if (map.hasOffnode()) {
+	QDP_info_primary("offnode: yes");
 	const FnMapRsrc& rRSrc = fnmap.getCached();
 	int rcvId = rRSrc.getRcvId();
 	void * rcvBufDev = QDPCache::Instance().getDevicePtr( rcvId );
 	posRcvBuf = f.getJitArgs().addPtr( rcvBufDev );
       } else {
+	QDP_info_primary("offnode: no");
 	posRcvBuf = f.getJitArgs().addPtr( NULL );
       }
 
@@ -320,125 +322,34 @@ namespace QDP
       typedef InnerTypeBB_t TTT;
       TTT ttt;
       getTypeStringT<TTT>( codeTypeA , f.getJitArgs() );
-      QDPIO::cout << "codeTypeA=" << codeTypeA << "\n";
 
-      QDP_info("goffsetsId=%d goffsetsDev=%p pos=%d",goffsetsId,goffsetsDev,posGoff);
       ostringstream newIdx;
       newIdx << "((int*)(" << f.getJitArgs().getPtrName() << "[ " << posGoff  << " ].ptr))" << "[" << f.getIndex() << "]";
-
-      QDPIO::cout << "newIdx = " << newIdx.str() << "\n";
 
       ParseTag ff( f.getJitArgs() , newIdx.str() );
       TypeA_t A_val  = ForEachA_t::apply(expr.child(), ff, ff, c);
       Type_t val = Combiner_t::combine(A_val, expr.operation(), c);
 
-      //ostringstream ossIndex;
-      //ossIndex << "((int*)(" << f.getJitArgs().getPtrName() << "[ " << posGoff  << " ].ptr))" << "[" << f.getIndex() << "]";
-      ostringstream tmp;
-      tmp << newIdx.str() << " < 0 ? " <<
+      ostringstream code;
+      code << newIdx.str() << " < 0 ? " <<
 	"(" <<
-	"((" << codeTypeA << "*)(" << f.getJitArgs().getPtrName() << "[ " << posRcvBuf  << " ].ptr))" << "[-" << newIdx.str() << "-1]" << 
+	"((" << codeTypeA << "*)(" << f.getJitArgs().getPtrName() << 
+	"[ " << posRcvBuf  << " ].ptr))" << "[-" << newIdx.str() << "-1]" << 
 	"):(" <<
 	ff.ossCode.str() <<
 	")";
-      QDPIO::cout << "\n" << tmp.str() << "\n\n";
 
-      f.ossCode << tmp.str();
-
+      f.ossCode << code.str();
 
       //ParseTag ff( f.getJitArgs() , newIdx.str() );
-
       //TypeA_t A_val  = ForEachA_t::apply(expr.child(), ff, ff, c);
       //Type_t val = Combiner_t::combine(A_val, expr.operation(), c);
-
       //f.ossCode << ff.ossCode.str();
 
       return val;
     }
   };
 
-    // {
-    //   const Map& map = expr.operation().map;
-    //   FnMap& fnmap = const_cast<FnMap&>(expr.operation());
-
-    //   int ind_arrayId = expr.operation().map.getInd_arrayId();
-    //   int goffsetsId = expr.operation().map.getGoffsetsId();
-
-    //   const FnMapRsrc& rRSrc = fnmap.getCached();
-    //   int rcvId = rRSrc.getRcvId();
-
-    //   void * goffsetsDev = QDPCache::Instance().getDevicePtr( goffsetsId );
-    //   void * ind_arrayDev = QDPCache::Instance().getDevicePtr( ind_arrayId );
-    //   void * rcvBufDev = QDPCache::Instance().getDevicePtr( rcvId );
-
-    //   int posIndArray = f.getJitArgs().addPtr( ind_arrayDev );
-    //   int posRcvBuf = f.getJitArgs().addPtr( rcvBufDev );
-
-    //   string codeTypeA;
-    //   typedef InnerTypeBB_t TTT;
-    //   TTT ttt;
-    //   getTypeStringT<TTT>( codeTypeA , f.getJitArgs() );
-    //   QDPIO::cout << "codeTypeA=" << codeTypeA << "\n";
-
-    //   int posGoff = f.getJitArgs().addPtr( goffsetsDev );
-    //   QDP_info("goffsetsId=%d goffsetsDev=%p pos=%d",goffsetsId,goffsetsDev,posGoff);
-    //   ostringstream newIdx;
-    //   newIdx << "((int*)(" << f.getJitArgs().getPtrName() << "[ " << posGoff  << " ].ptr))" 
-    // 	     << "[" << f.getIndex() << "]";
-    //   QDP_info("newIdx=%s",newIdx.str().c_str());
-    //   ParseTag ff( f.getJitArgs() , newIdx.str() );
-    //   TypeA_t A_val  = ForEachA_t::apply(expr.child(), ff, ff, c);
-    //   Type_t val = Combiner_t::combine(A_val, expr.operation(), c);
-
-    //   ostringstream ossIndex;
-    //   ossIndex << "((int*)(" << f.getJitArgs().getPtrName() << "[ " << posIndArray  << " ].ptr))" << "[" << f.getIndex() << "]";
-    //   ostringstream tmp;
-    //   tmp << ossIndex.str() << " < 0 ? " <<
-    // 	"(" << ff.ossCode.str() << ") : " <<
-    // 	"(" << 
-    // 	"((" << codeTypeA << "*)(" << f.getJitArgs().getPtrName() << "[ " << posRcvBuf  << " ].ptr))" << "[" << ossIndex.str() << "]" << 
-    // 	")";
-    //   QDPIO::cout << "\n" << tmp.str() << "\n\n";
-
-    //   f.ossCode << tmp.str();
-
-
-    //   //ParseTag ff( f.getJitArgs() , newIdx.str() );
-
-    //   //TypeA_t A_val  = ForEachA_t::apply(expr.child(), ff, ff, c);
-    //   //Type_t val = Combiner_t::combine(A_val, expr.operation(), c);
-
-    //   //f.ossCode << ff.ossCode.str();
-
-    //   return val;
-    // }
-
-
-
-/////////////////////////////////////
-
-
-    // {
-    //   int goffsetsId = expr.operation().map.getGoffsetsId();
-    //   void * goffsetsDev = QDPCache::Instance().getDevicePtr( goffsetsId );
-    //   int pos = f.getJitArgs().addPtr( goffsetsDev );
-    //   QDP_info("goffsetsId=%d goffsetsDev=%p pos=%d",goffsetsId,goffsetsDev,pos);
-
-    //   ostringstream newIdx;
-    //   newIdx << "((int*)(" << f.getJitArgs().getPtrName() << "[ " << pos  << " ].ptr))" 
-    // 	     << "[" << f.getIndex() << "]";
-
-    //   QDP_info("newIdx=%s",newIdx.str().c_str());
-
-    //   ParseTag ff( f.getJitArgs() , newIdx.str() );
-
-    //   TypeA_t A_val  = ForEachA_t::apply(expr.child(), ff, ff, c);
-    //   Type_t val = Combiner_t::combine(A_val, expr.operation(), c);
-
-    //   f.ossCode << ff.ossCode.str();
-
-    //   return val;
-    // }
 
 
 

@@ -144,6 +144,7 @@ namespace QDP {
 
 
 #ifdef QDP_IS_QDPJIT
+#include "qdp_handle.h"
 #include "qdp_deviceparams.h"
 #include "qdp_iface.h"
 #include "qdp_jitargs.h"

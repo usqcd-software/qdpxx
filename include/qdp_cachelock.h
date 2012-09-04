@@ -10,9 +10,11 @@ namespace QDP
 
   struct LockTag
   {
-    LockTag( QDPJitArgs& jitArgs): 
-      jitArgs(jitArgs) {}
+    LockTag( QDPJitArgs& jitArgs):  jitArgs(jitArgs) {}
 
+    const QDPJitArgs& getJitArgs() const {
+      return jitArgs; 
+    }
 
     template<class T>
     bool insertObject( const OScalar<T> & key ) const 
@@ -257,6 +259,57 @@ namespace QDP
     }
   };
 
+
+  template<class A, class CTag>
+  struct ForEachTypeParser<UnaryNode<FnMap, A>, LockTag,LockTag, CTag>
+  {
+
+    typedef ForEachTypeParser<A, LockTag,LockTag, CTag> ForEachA_t;
+    typedef OpVisitor<FnMap, LockTag>          Visitor_t;
+    typedef typename ForEachA_t::Type_t   TypeA_t;
+    typedef Combine1<TypeA_t, FnMap, CTag>   Combiner_t;
+    typedef typename Combiner_t::Type_t   Type_t;
+
+    typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t AInnerTypeA_t;
+    typedef typename Combine1<AInnerTypeA_t, FnMap, OpCombine>::Type_t InnerTypeBB_t;
+
+    static Type_t apply(const UnaryNode<FnMap, A> &expr, const LockTag &f, 
+			const LockTag &v, const CTag &c)
+    {
+      const Map& map = expr.operation().map;
+      FnMap& fnmap = const_cast<FnMap&>(expr.operation());
+
+      QDP_info("cachelock: unarynode fnmap");
+
+      // get goffsets[] on device
+      //
+      int goffsetsId = expr.operation().map.getGoffsetsId();
+      void * goffsetsDev = QDPCache::Instance().getDevicePtr( goffsetsId );
+      int posGoff = f.getJitArgs().addPtr( goffsetsDev );
+
+      // get receive buffer on device and NULL otherwise
+      //
+      int posRcvBuf;
+      if (map.hasOffnode()) {
+	const FnMapRsrc& rRSrc = fnmap.getCached();
+	int rcvId = rRSrc.getRcvId();
+	void * rcvBufDev = QDPCache::Instance().getDevicePtr( rcvId );
+	posRcvBuf = f.getJitArgs().addPtr( rcvBufDev );
+      } else {
+	posRcvBuf = f.getJitArgs().addPtr( NULL );
+      }
+
+      TypeA_t A_val  = ForEachA_t::apply(expr.child(), f, f, c);
+      Type_t val = Combiner_t::combine(A_val, expr.operation(), c);
+
+      //LockTag ff( f.getJitArgs() , newIdx.str() );
+      //TypeA_t A_val  = ForEachA_t::apply(expr.child(), ff, ff, c);
+      //Type_t val = Combiner_t::combine(A_val, expr.operation(), c);
+      //f.ossCode << ff.ossCode.str();
+
+      return val;
+    }
+  };
 
 
   template<class Op, class A, class B, class CTag>

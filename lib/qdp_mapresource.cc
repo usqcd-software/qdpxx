@@ -85,7 +85,9 @@ namespace QDP {
     if ((err = QMP_wait(mh)) != QMP_SUCCESS)
       QDP_error_exit(QMP_error_string(err));
     
+#ifdef GPU_DEBUG_DEEP
     QDP_info("H2D %d bytes receive buffer",srcnum);
+#endif
     CudaMemcpy( QDPCache::Instance().getDevicePtr( srcId ) , recv_buf , srcnum );
 
 #if QDP_DEBUG >= 3
@@ -115,7 +117,9 @@ namespace QDP {
     QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
 #endif
 
+#ifdef GPU_DEBUG_DEEP
     QDP_info("D2H %d bytes receive buffer",dstnum);
+#endif
     CudaMemcpy( send_buf , QDPCache::Instance().getDevicePtr( dstId ) , dstnum );
 
     // Launch the faces
