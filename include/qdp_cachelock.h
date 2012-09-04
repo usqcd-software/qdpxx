@@ -279,8 +279,6 @@ namespace QDP
       const Map& map = expr.operation().map;
       FnMap& fnmap = const_cast<FnMap&>(expr.operation());
 
-      QDP_info("cachelock: unarynode fnmap");
-
       // get goffsets[] on device
       //
       int goffsetsId = expr.operation().map.getGoffsetsId();

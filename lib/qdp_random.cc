@@ -79,6 +79,7 @@ namespace RNG
      *
      *     lexoc(k) = sum_{i = 1, ndim} x(k,i)*L^i     +   1
      */
+
     LatticeInteger lexoc;
     lexoc = Layout::latticeCoordinate(Nd-1);
 

@@ -601,12 +601,13 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     StopWatch watchov;
     watchov.start();
 
-    {
-      static QDPJit::SharedLibEntry sharedLibEntry;
-      static MapVolumes*              mapVolumes;
-      static string                   strId;
-      static string                   prg;
 
+    static QDPJit::SharedLibEntry sharedLibEntry;
+    static MapVolumes*              mapVolumes;
+    static string                   strId;
+    static string                   prg;
+
+    {
       QDPJitArgs cudaArgs;
 
       int argNum = cudaArgs.addInt( innerCount );
@@ -620,7 +621,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 	if (!getCodeStringOp( codeOp , op , "idx_inner", cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
 
 	ostringstream osId;
-	osId << "eval(lat,lat) inner-member2 " << codeDest << codeOp << codeRHS;
+	osId << "eval(lat,lat) inner-member " << codeDest << codeOp << codeRHS;
 	strId = osId.str();
 	xmlready(strId);
 #ifdef GPU_DEBUG_DEEP
@@ -650,89 +651,33 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
       QDP_debug("eval(Lat,Lat) inner dev!");
 #endif
 
-      StopWatch watch0;
-      watch0.start();
-
       if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , innerCount , sharedLibEntry  , mapVolumes )) 
-	QDP_error_exit("eval(Lat,Lat) call to cuda jitter failed");
+	QDP_error_exit("eval(Lat,Lat) inner call to cuda jitter failed");
     }
 
     ShiftPhase2 phase2;
     forEach(rhs, phase2 , NullCombine());
 
     {
-      static QDPJit::SharedLibEntry sharedLibEntry;
-      static MapVolumes*              mapVolumes;
-      static string                   strId;
-      static string                   prg;
-
       QDPJitArgs cudaArgs;
 
       int argNum = cudaArgs.addInt( faceCount );
       int argFace = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( faceId ) );
       int argMember = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( s.getIdMemberTable() ) );
 
-      if (!mapVolumes) {
-	string codeRHS,codeDest,codeOp;
-	if (!getCodeString( codeRHS , rhs , "idx_face", cudaArgs )) { QDP_error_exit("eval: could not cache RHS");     }      
-	if (!getCodeString( codeDest , dest , "idx_face", cudaArgs )) { QDP_error_exit("eval: could not cache dest");  }
-	if (!getCodeStringOp( codeOp , op , "idx_face", cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
+      if (!mapVolumes) 
+	QDP_error_exit("internal error: map volumes gone!");
 
-	ostringstream osId;
-	osId << "eval(lat,lat) face-member " << codeDest << codeOp << codeRHS;
-	strId = osId.str();
-	xmlready(strId);
-#ifdef GPU_DEBUG_DEEP
-	cout << "strId = " << strId << endl;
-#endif
-      
-	std::ostringstream sprg;
-	sprg << "    int idx = blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x;" << endl;
-	sprg << "    if (idx < " << cudaArgs.getCode(argNum) << ") {\n";
-	sprg << "      int idx_face = (((int*)(" << cudaArgs.getCode(argFace) << "))[idx]);\n";
-	sprg << "      if (((bool*)(" << cudaArgs.getCode(argMember) << "))[idx_face]) {\n";
-	sprg << "        " << codeOp << "(" << codeDest << "," << codeRHS << ");\n";
-	sprg << "      }" << endl;
-	sprg << "    }" << endl;
-
-#if 0
-	sprg << "  if (" << cudaArgs.getCode(argOrd) << ") {" << endl;
-	sprg << "    int idx = " << cudaArgs.getCode(argStart) << ";" << endl;
-	sprg << "    idx += blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x;" << endl;
-	sprg << "    if (idx < " << cudaArgs.getCode(argNum) << "+" <<  cudaArgs.getCode(argStart) << ") {\n";
-	sprg << "      " << codeOp << "(" << codeDest << "," << codeRHS << ");\n";
-	sprg << "    }" << endl;
-	sprg << "  } else {" << endl;
-	sprg << "    int idx0 = blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x; \n";
-	sprg << "    if (idx0 < " << cudaArgs.getCode(argNum) << ") {\n";
-	sprg << "      int idx  = ((int*)" << cudaArgs.getCode(argSubset) << ")[idx0];" << endl;
-	sprg << "      " << codeOp << "(" << codeDest << "," << codeRHS << ");\n";
-	sprg << "    }" << endl;
-	sprg << "  }" << endl;
-#endif
-	prg = sprg.str();
-
-#ifdef GPU_DEBUG_DEEP
-	cout << "Cuda kernel code = " << endl << prg << endl << endl;
-#endif
-      } else {
-	if (!cacheLock(  rhs ,  cudaArgs )) { QDP_error_exit("eval: could not cache RHS");     }      
-	if (!cacheLock(  dest , cudaArgs )) { QDP_error_exit("eval: could not cache dest");  }
-	if (!cacheLockOp(  op , cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
-      }
-
+      if (!cacheLock(  rhs ,  cudaArgs )) { QDP_error_exit("eval: could not cache RHS");     }      
+      if (!cacheLock(  dest , cudaArgs )) { QDP_error_exit("eval: could not cache dest");  }
+      if (!cacheLockOp(  op , cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
 
       QDP_debug("eval(Lat,Lat) face dev!");
 
-      StopWatch watch0;
-      watch0.start();
-
+      string prg;
       if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , faceCount , sharedLibEntry  , mapVolumes )) 
-	QDP_error_exit("eval(Lat,Lat) call to cuda jitter failed");
+	QDP_error_exit("eval(Lat,Lat) face call to cuda jitter failed");
     }
-
-
-
 
   } else {
     static QDPJit::SharedLibEntry sharedLibEntry;
