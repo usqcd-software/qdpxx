@@ -74,7 +74,7 @@ namespace QDP {
 
 	watch0.stop();
       
-	QDP_info("benchmark numThreads=%d result=%d time=%f" , i , result , watch0.getTimeInMicroseconds() );
+	QDP_info_primary("benchmark numThreads=%d result=%d time=%f" , i , result , watch0.getTimeInMicroseconds() );
       
 	if ((result==0) && ((watch0.getTimeInMicroseconds() < bestTime) || first)) {
 	  first=false;
@@ -181,7 +181,7 @@ namespace QDP {
 	  QDP_error_exit("JIT: Benchmarking a kernel was not possible");
 	QDPCache::Instance().restoreFromHost();
 
-	QDP_info("Tuning DB: Inserting [volume=%d][threads=%d]",numSites,benchresult.threadsPerBlock);
+	QDP_info_primary("Tuning DB: Inserting [volume=%d][threads=%d]",numSites,benchresult.threadsPerBlock);
 	(*mapVolumes)[numSites] = benchresult.threadsPerBlock;
       }
 
