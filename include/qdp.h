@@ -100,6 +100,7 @@ namespace QDP {
 #include <PETE/PETE.h>
 }
 
+
 #include "qdp_init.h"
 #include "qdp_forward.h"
 #include "qdp_multi.h"
@@ -109,6 +110,9 @@ namespace QDP {
 #include "qdp_layout.h"
 #include "qdp_io.h"
 #include "qdp_stdio.h"
+
+#include "qdp_handle.h"
+
 
 #ifdef QDP_NO_LIBXML2
 #warning not using libxml2

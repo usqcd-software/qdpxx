@@ -15,7 +15,9 @@ namespace QDP {
 
 struct FnMapRsrc
 {
-  FnMapRsrc(const FnMapRsrc&) = delete;
+private:
+  FnMapRsrc(const FnMapRsrc&);
+public:
   FnMapRsrc():bSet(false) {};
 
   void setup(int _destNode,int _srcNode,int _sendMsgSize,int _rcvMsgSize);

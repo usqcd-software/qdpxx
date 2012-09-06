@@ -42,7 +42,7 @@ namespace QDP {
     const int my_node = Layout::nodeNumber();
 
     // Loop over the sites on this node
-    for(int linear=0; linear < nodeSites; ++linear)
+    for(int linear=0, ri=0; linear < nodeSites; ++linear)
     {
       // Get the true lattice coord of this linear site index
       multi1d<int> coord = Layout::siteCoords(my_node, linear);
@@ -58,11 +58,23 @@ namespace QDP {
       int bnode = Layout::nodeNumber(bcoord);
 
       // Source linear site and node
-      goffsets[linear] = Layout::linearSiteIndex(fcoord);
       srcnode[linear]  = fnode;
-
       // Destination node
       dstnode[linear]  = bnode;
+
+      if (srcnode[linear] == my_node)
+	{
+	  goffsets[linear] = Layout::linearSiteIndex(fcoord);
+	}
+      else
+	{
+	  // if destptr < 0 it contains the receive_buffer index
+	  // additional '-1' to make sure its negative,
+	  // not the best style, but higher performance
+	  // than using another buffer
+	  goffsets[linear] = -(ri++)-1;
+	}
+
 
 #if QDP_DEBUG >= 3
       QDP_info("linear=%d  coord=%d %d %d %d   fcoord=%d %d %d %d   bcoord=%d %d %d %d   goffsets=%d", 
@@ -236,24 +248,6 @@ namespace QDP {
       QDP_error_exit("internal error: ri != srcenodes_num[0]");
 
 
-    ind_array.resize(nodeSites);
-
-    for(int i=0, ri=0; i < nodeSites; ++i) 
-      {
-	if (srcnode[i] != my_node)
-	  {
-	    // ind_array >= 0 it contains the receive_buffer index
-	    ind_array[i] = ri++;
-	  }
-	else
-	  {
-	    // additional '-1' to make sure its negative,
-	    // not the best style, but higher performance
-	    // than using another buffer
-	    ind_array[i] = -goffsets[i]-1;
-	  }
-	//QDP_info("ind[%d]=%d",i,fnmap.ind_array[i]);
-      }
 
 
 

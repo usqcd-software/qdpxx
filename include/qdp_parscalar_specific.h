@@ -2089,7 +2089,6 @@ public:
   const multi1d<int>& goffset() const {return goffsets;}
   const multi1d<int>& soffset() const {return soffsets;}
   const multi1d<int>& roffset() const {return roffsets;}
-  const multi1d<int>& get_ind_array() const {return ind_array;}
   int getId() const {return myId;}
 
 private:
@@ -2115,7 +2114,6 @@ private:
   multi1d<int> dstnode;
 
   multi1d<int> roffsets;
-  multi1d<int> ind_array;
   int myId;
 
   multi1d<int> srcenodes;
@@ -2134,15 +2132,16 @@ private:
 
 struct FnMap
 {
+private:
+  FnMap& operator=(const FnMap& f);
+public:
   //PETE_EMPTY_CONSTRUCTORS(FnMap)
 
   const Map& map;
-  std::shared_ptr<RsrcWrapper> pRsrc;
+  QDPHandle::Handle<RsrcWrapper> pRsrc;
 
   FnMap(const Map& m): map(m), pRsrc(new RsrcWrapper( m.destnodes , m.srcenodes )) {}
   FnMap(const FnMap& f) : map(f.map) , pRsrc(f.pRsrc) {}
-
-  FnMap& operator=(const FnMap& f) = delete;
 
   const FnMapRsrc& getResource(int srcnum_, int dstnum_) {
     return (*pRsrc).getResource( srcnum_ , dstnum_ );
@@ -2247,22 +2246,20 @@ struct ForEach<UnaryNode<FnMap, A>, ShiftPhase1 , BitOrCombine>
 template<class A, class CTag>
 struct ForEach<UnaryNode<FnMap, A>, ShiftPhase2 , CTag>
 {
-  typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t TypeA_t;
-  typedef typename Combine1<TypeA_t, FnMap, OpCombine>::Type_t Type_t;
-  typedef QDPExpr<A,OLattice<Type_t> > Expr;
+  // typedef typename ForEach<A, EvalLeaf1, OpCombine>::Type_t TypeA_t;
+  // typedef typename Combine1<TypeA_t, FnMap, OpCombine>::Type_t Type_t;
+  // typedef QDPExpr<A,OLattice<Type_t> > Expr;
+  typedef int Type_t;
   inline static
   Type_t apply(const UnaryNode<FnMap, A> &expr, const ShiftPhase2 &f, const CTag &c)
   {
     const Map& map = expr.operation().map;
     FnMap& fnmap = const_cast<FnMap&>(expr.operation());
-#if 1
     if (map.offnodeP) {
-      // can be optimized
       const FnMapRsrc& rRSrc = fnmap.getCached();
       rRSrc.qmp_wait();
-
     }
-#endif
+    ForEach<A, ShiftPhase2, CTag>::apply(expr.child(), f, c);
   }
 };
 
@@ -2280,13 +2277,7 @@ struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
     FnMap& fnmap = const_cast<FnMap&>(expr.operation());
     
     if (map.offnodeP) {
-#if QDP_DEBUG >= 3
-      QDP_info("ind_array[%d]=%d %d",f.val1(),map.get_ind_array()[f.val1()],map.goffsets[f.val1()]);
-#endif
-      if (map.get_ind_array()[f.val1()] < 0) {
-	EvalLeaf1 ff( -map.get_ind_array()[f.val1()] - 1 );
-	return Combine1<TypeA_t, FnMap, CTag>::combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),expr.operation(), c);
-      } else {
+      if (map.goffsets[f.val1()] < 0) {
 	const FnMapRsrc& rRSrc = fnmap.getCached();
 	const Type_t *recv_buf_c = rRSrc.getRecvBufPtr<Type_t>();
 	Type_t* recv_buf = const_cast<Type_t*>(recv_buf_c);
@@ -2295,7 +2286,10 @@ struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
 	  QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf). Do you use shifts of shifts?"); 
 	}
 #endif
-	return recv_buf[map.get_ind_array()[f.val1()]];
+	return recv_buf[-map.goffsets[f.val1()]-1];
+      } else {
+	EvalLeaf1 ff( map.goffsets[f.val1()] );
+	return Combine1<TypeA_t, FnMap, CTag>::combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),expr.operation(), c);
       }
     } else {
       EvalLeaf1 ff( map.goffsets[f.val1()]);
