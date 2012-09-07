@@ -261,11 +261,18 @@ Run-time parameters
 
 Required:
 
--poolsize <size>       <float>k/m/g 50m(default)
-                       GPU memory size to use
-                       The default is too small,
-                       set it something like 80% of GPU memory,
-                       thus leaves space for local memory
+-poolsize <size>       <float>k/m/g 
+                       k expands to 1024
+                       m expands to 1024*1024
+                       g expands to 1024*1024*1024
+                       This specifies the amount of GPU memory to be used by QDP-JIT per GPU. This value is subject 
+		       to experimentation. One could start with some 80% of the available GPU memory per card (there 
+		       might be memory reserved for ECC protection). E.g. if you are running on multiple GPU with 
+		       3 GB each, you would specify something like "2.4g". If execution aborts due to GPU memory 
+		       issues adjust the value. This value has impact on performance. The simple rule is: The higher
+		       this value the higher the performance of the program. However there is a maximum value depending 
+		       on the program that is using QDP-JIT which not only depends on the physically available GPU
+		       memory.
 
 Optional:
 

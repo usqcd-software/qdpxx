@@ -69,6 +69,7 @@ namespace QDP {
 
 #ifdef QDP_IS_QDPJIT
 		bool paramCC = false;
+		bool setPoolSize = false;
 #endif
 		
 		//
@@ -194,6 +195,7 @@ namespace QDP {
 			    }
 			    size_t val = (size_t)((double)(f) * mul);
 			    CUDADevicePoolAllocator::Instance().setPoolSize(val);
+			    setPoolSize = true;
 			  }
 #endif
 			else if (strcmp((*argv)[i], "-geom")==0) 
@@ -253,6 +255,8 @@ namespace QDP {
 		}
 		
 #ifdef QDP_IS_QDPJIT
+		if (!setPoolSize)
+		  QDP_error_exit("Run-time argument -poolsize <size> missing. Please consult README.");
 		if (!paramCC)
 		  DeviceParams::Instance().setCC(20);
 #endif
