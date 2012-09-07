@@ -19,6 +19,7 @@ namespace QDP {
     //   " sendMsgSize=" << _sendMsgSize << 
     //   " rcvMsgSize=" << _rcvMsgSize << "\n";
 
+#if 0
     send_buf_mem = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE, (QMP_MEM_COMMS|QMP_MEM_FAST) ); // packed data to send
     if( send_buf_mem == 0x0 ) { 
       send_buf_mem = QMP_allocate_aligned_memory(dstnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
@@ -35,6 +36,9 @@ namespace QDP {
     }
     send_buf=QMP_get_memory_pointer(send_buf_mem);
     recv_buf=QMP_get_memory_pointer(recv_buf_mem);
+#endif
+    CudaHostAlloc(&send_buf,dstnum,0);
+    CudaHostAlloc(&recv_buf,srcnum,0);
 
     msg[0] = QMP_declare_msgmem(recv_buf, srcnum);
     if( msg[0] == (QMP_msgmem_t)NULL ) { 
@@ -72,10 +76,14 @@ namespace QDP {
       // QMP_free_msghandle(mh_a[0]);
       QMP_free_msgmem(msg[1]);
       QMP_free_msgmem(msg[0]);
+#if 0
       QMP_free_memory(recv_buf_mem);
       QMP_free_memory(send_buf_mem);
+#endif
       QDPCache::Instance().signoff( srcId );
       QDPCache::Instance().signoff( dstId );
+      CudaHostFree(send_buf);
+      CudaHostFree(recv_buf);
     }
   }
 
