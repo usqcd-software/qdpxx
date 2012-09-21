@@ -1513,7 +1513,6 @@ imag(const IScalar<T1>& s1)
   return imag(s1.elem());
 }
 
-
 // ArcCos
 template<class T1>
 inline typename UnaryReturn<IScalar<T1>, FnArcCos>::Type_t
@@ -1521,7 +1520,6 @@ acos(const IScalar<T1>& s1)
 {
   return acos(s1.elem());
 }
-
 
 // ArcSin
 template<class T1>
@@ -1531,7 +1529,6 @@ asin(const IScalar<T1>& s1)
   return asin(s1.elem());
 }
 
-
 // ArcTan
 template<class T1>
 inline typename UnaryReturn<IScalar<T1>, FnArcTan>::Type_t
@@ -1540,6 +1537,13 @@ atan(const IScalar<T1>& s1)
   return atan(s1.elem());
 }
 
+// Ceil(ing)
+template<class T1>
+inline typename UnaryReturn<IScalar<T1>, FnCeil>::Type_t
+ceil(const IScalar<T1>& s1)
+{
+  return ceil(s1.elem());
+}
 
 // Cos
 template<class T1>
@@ -1549,6 +1553,13 @@ cos(const IScalar<T1>& s1)
   return cos(s1.elem());
 }
 
+// Cosh
+template<class T1>
+inline typename UnaryReturn<IScalar<T1>, FnHypCos>::Type_t
+cosh(const IScalar<T1>& s1)
+{
+  return cosh(s1.elem());
+}
 
 // Exp
 template<class T1>
@@ -1558,7 +1569,6 @@ exp(const IScalar<T1>& s1)
   return exp(s1.elem());
 }
 
-
 // Fabs
 template<class T1>
 inline typename UnaryReturn<IScalar<T1>, FnFabs>::Type_t
@@ -1567,6 +1577,13 @@ fabs(const IScalar<T1>& s1)
   return fabs(s1.elem());
 }
 
+// Floor
+template<class T1>
+inline typename UnaryReturn<IScalar<T1>, FnFloor>::Type_t
+floor(const IScalar<T1>& s1)
+{
+  return floor(s1.elem());
+}
 
 // Log
 template<class T1>
@@ -1576,6 +1593,13 @@ log(const IScalar<T1>& s1)
   return log(s1.elem());
 }
 
+// Log10
+template<class T1>
+inline typename UnaryReturn<IScalar<T1>, FnLog10>::Type_t
+log10(const IScalar<T1>& s1)
+{
+  return log10(s1.elem());
+}
 
 // Sin
 template<class T1>
@@ -1585,6 +1609,13 @@ sin(const IScalar<T1>& s1)
   return sin(s1.elem());
 }
 
+// Sinh
+template<class T1>
+inline typename UnaryReturn<IScalar<T1>, FnHypSin>::Type_t
+sinh(const IScalar<T1>& s1)
+{
+  return sinh(s1.elem());
+}
 
 // Sqrt
 template<class T1>
@@ -1594,7 +1625,6 @@ sqrt(const IScalar<T1>& s1)
   return sqrt(s1.elem());
 }
 
-
 // Tan
 template<class T1>
 inline typename UnaryReturn<IScalar<T1>, FnTan>::Type_t
@@ -1603,8 +1633,15 @@ tan(const IScalar<T1>& s1)
   return tan(s1.elem());
 }
 
+// Tanh
+template<class T1>
+inline typename UnaryReturn<IScalar<T1>, FnHypTan>::Type_t
+tanh(const IScalar<T1>& s1)
+{
+  return tanh(s1.elem());
+}
 
-//! IScalar = pow(IScalar, IScalar)
+//! IScalar<T> = pow(IScalar<T> , IScalar<T>)
 template<class T1, class T2>
 inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, FnPow>::Type_t
 pow(const IScalar<T1>& s1, const IScalar<T2>& s2)
@@ -1612,13 +1649,21 @@ pow(const IScalar<T1>& s1, const IScalar<T2>& s2)
   return pow(s1.elem(), s2.elem());
 }
 
-
-//! IScalar = atan2(IScalar, IScalar)
+//! IScalar<T> = atan2(IScalar<T> , IScalar<T>)
 template<class T1, class T2>
 inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, FnArcTan2>::Type_t
 atan2(const IScalar<T1>& s1, const IScalar<T2>& s2)
 {
   return atan2(s1.elem(), s2.elem());
+}
+
+
+//! IScalar = outerProduct(IScalar, IScalar)
+template<class T1, class T2>
+inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, FnOuterProduct>::Type_t
+outerProduct(const IScalar<T1>& l, const IScalar<T2>& r)
+{
+  return l.elem() * r.elem();
 }
 
 
@@ -1628,15 +1673,6 @@ inline typename UnaryReturn<IScalar<T1>, FnSeedToFloat>::Type_t
 seedToFloat(const IScalar<T1>& s1)
 {
   return seedToFloat(s1.elem());
-}
-
-
-//! IScalar = outerProduct(IScalar, IScalar)
-template<class T1, class T2>
-inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, FnOuterProduct>::Type_t
-outerProduct(const IScalar<T1>& l, const IScalar<T2>& r)
-{
-  return outerProduct(l.elem(),r.elem());
 }
 
 
@@ -1654,6 +1690,41 @@ getSite(const IScalar<T>& s1, int innersite)
   return s1.elem();
 }
 
+//! Extract color vector components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T>
+inline typename UnaryReturn<IScalar<T>, FnPeekColorVector>::Type_t
+peekColor(const IScalar<T>& l, int row)
+{
+  return peekColor(l.elem(),row);
+}
+
+//! Extract color matrix components 
+/*! Generically, this is an identity operation. Defined differently under color */
+template<class T>
+inline typename UnaryReturn<IScalar<T>, FnPeekColorMatrix>::Type_t
+peekColor(const IScalar<T>& l, int row, int col)
+{
+  return peekColor(l.elem(),row,col);
+}
+
+//! Extract spin vector components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T>
+inline typename UnaryReturn<IScalar<T>, FnPeekSpinVector>::Type_t
+peekSpin(const IScalar<T>& l, int row)
+{
+  return peekSpin(l.elem(),row);
+}
+
+//! Extract spin matrix components 
+/*! Generically, this is an identity operation. Defined differently under spin */
+template<class T>
+inline typename UnaryReturn<IScalar<T>, FnPeekSpinMatrix>::Type_t
+peekSpin(const IScalar<T>& l, int row, int col)
+{
+  return peekSpin(l.elem(),row,col);
+}
 
 //-----------------------------------------------------------------------------
 //! QDP Int to int primitive in conversion routine
