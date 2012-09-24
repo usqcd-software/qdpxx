@@ -295,7 +295,6 @@ void testMapKeyPropColorVecLookups(MapObjectDisk<KeyPropColorVec_t, LatticeFermi
 
   }
   QDPIO::cout << endl << "OK" << endl;
-
   QDPIO::cout << "Random access lookup test" << endl;
   // Hey DJ! Spin that disk...
   for(int j=0; j < 100; j++) {
@@ -413,6 +412,7 @@ void testMapKeyPropColorVecLookupsTimeSlice(MapObjectDisk<KeyPropColorVecTimeSli
     // Compare with lf_array
     LatticeFermion diff;
     diff = lf_tmp - lf_array[i];
+
     Double diff_norm = sqrt(norm2(diff))/Double(Nc*Ns*Layout::vol());
     if(  toDouble(diff_norm) < 1.0e-6 )  { 
       QDPIO::cout << "." ;
@@ -477,7 +477,8 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,8};
+  //  const int foo[] = {4,4,4,8};
+  const int foo[] = {16,2,2,16};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
 
@@ -552,7 +553,7 @@ int main(int argc, char *argv[])
     
     testMapKeyPropColorVecInsertions(pc_map, lf_array);
     testMapKeyPropColorVecLookups(pc_map, lf_array);
-    QDPIO::cout << endl << "OK" << endl;
+    QDPIO::cout << endl << "Test DB OK" << endl;
 
     // Test an update 
     QDPIO::cout << "Doing update test ..." << endl;
@@ -613,9 +614,11 @@ int main(int argc, char *argv[])
     pc_map.open(map_obj_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
     
     int Lt = Layout::lattSize()[Nd-1];
+    QDPIO::cout << "\n\n lf_array size = " << lf_array.size() << endl;
     testMapKeyPropColorVecInsertionsTimeSlice(pc_map, lf_array);
+    QDPIO::cout << "\n\n Insertion Time slice done" << endl;
     testMapKeyPropColorVecLookupsTimeSlice(pc_map, lf_array);
-    QDPIO::cout << endl << "OK" << endl;
+    QDPIO::cout << endl << "Test DN with time-slices OK" << endl;
 
     // Test an update 
     QDPIO::cout << "Doing update test ..." << endl;

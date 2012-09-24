@@ -36,6 +36,9 @@ namespace QDPInternal
   //! Receive from another node (wait)
   void recvFromWait(void *recv_buf, int srce_node, int count);
 
+  //! Send a clear-to-send
+  void clearToSend(void *buffer, int count, int node);
+
   //! Via some mechanism, get the dest to node 0
   /*! Ultimately, I do not want to use point-to-point */
   template<class T>
@@ -2087,6 +2090,8 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
 // --JIe Chen: need to implement
 namespace LatticeTimeSliceIO 
 {
+  //! Lattice time slice reader
+
   template<class T>
   void readSlice(BinaryReader& bin, OLattice<T>& data, 
 		 int start_lexico, int stop_lexico)
@@ -2097,22 +2102,69 @@ namespace LatticeTimeSliceIO
     if (Layout::lattSize()[tDir] % INNER_LEN != 0)
       QDP_error_exit ("Size of time dimension %d is not multiple of vector len %d\n", Layout::lattSize()[tDir], INNER_LEN);
 
+    const int xinc = Layout::subgridLattSize()[0];
 
-    for(int site=start_lexico; site < stop_lexico; ++site) 
-    {
-      int i = Layout::linearSiteIndex(site);
-      int outersite = i >> INNER_LOG;
-      int innersite = i & ((1 << INNER_LOG)-1);
-
-      typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
-      Site_t  this_site;
-
-      bin.readArray((char*)&this_site,
-		    sizeof(typename WordType<Site_t>::Type_t), 
-		    sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
-
-      copy_site(data.elem(outersite), innersite, this_site);
+    if ((stop_lexico % xinc) != 0) {
+      QDPIO::cerr << __func__ << ": erorr: stop_lexico= " << stop_lexico << "  xinc= " << xinc << std::endl;
+      QDP_abort(1);
     }
+
+    // memory block size of vectorized type
+    size_t nmemb = sizeof(T) / sizeof(typename WordType<T>::Type_t);
+    // Now memory block size is the same as non-vectorized type
+    nmemb = (nmemb >> INNER_LOG); 
+
+    // individual element size
+    size_t size = sizeof(typename WordType<T>::Type_t);
+
+    // one element memory size in bytes
+    size_t sizemem = size * nmemb;
+    // one time slice memory size in bytes
+    size_t tot_size = sizemem * xinc;
+    // allocate memory buffer
+    char *recv_buf = new(nothrow) char[tot_size];
+    if( recv_buf == 0x0 ) { 
+      QDP_error_exit("Unable to allocate recv_buf\n");
+    }
+    
+    // Find the location of each site and send to primary node
+    for (int site=start_lexico; site < stop_lexico; site += xinc){
+      // first site in each segment uniquely identifies the node
+      int node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
+
+      // Only on primary node read the data
+      bin.readArrayPrimaryNode(recv_buf, size, nmemb * xinc);
+
+      // Send result to destination node. Avoid sending prim-node sending to itself
+      if (node != 0) {
+#if 1
+	// All nodes participate
+	QDPInternal::route((void *)recv_buf, 0, node, tot_size);
+#else
+	if (Layout::primaryNode())
+	  QDPInternal::sendToWait((void *)recv_buf, node, tot_size);
+	if (Layout::nodeNumber() == node)
+	  QDPInternal::recvFromWait((void *)recv_buf, 0, tot_size);
+#endif
+      }
+
+      if (Layout::nodeNumber() == node) {
+	for(int i=0; i < xinc; i++) {
+	  int linear = Layout::linearSiteIndex(crtesn(site+i, Layout::lattSize()));
+	  int outersite = linear >> INNER_LOG;
+	  int innersite =  linear & ((1 << INNER_LOG)-1);
+	  
+	  // read data back in piece-by-piece and insert into data
+	  typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
+	  Site_t  this_site;
+
+	  memcpy (&this_site, recv_buf + i * sizemem, sizemem);
+
+	  copy_site (data.elem(outersite), innersite, this_site);
+	}
+      }
+    }
+    delete[] recv_buf;
   }
 
   template<class T>
@@ -2125,21 +2177,79 @@ namespace LatticeTimeSliceIO
     if (Layout::lattSize()[tDir] % INNER_LEN != 0)
       QDP_error_exit("Size of time dimension %d is not multiple of vector len %d\n", Layout::lattSize()[tDir], INNER_LEN);
 
-    for(int site=start_lexico; site < stop_lexico; ++site) 
-    {
-      int i = Layout::linearSiteIndex(site);
-      int outersite = i >> INNER_LOG;
-      int innersite = i & ((1 << INNER_LOG)-1);
+    const int xinc = Layout::subgridLattSize()[0];
 
-      typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
-      Site_t  this_site = getSite(data.elem(outersite),innersite);
-
-      bin.writeArray((const char*)&this_site,
-		     sizeof(typename WordType<Site_t>::Type_t), 
-		     sizeof(Site_t) / sizeof(typename WordType<Site_t>::Type_t));
+    if ((stop_lexico % xinc) != 0) {
+      QDPIO::cerr << __func__ << ": erorr: stop_lexico= " << stop_lexico << "  xinc= " << xinc << std::endl;
+      QDP_abort(1);
     }
-  }
 
+    // memory block size of vectorized type
+    size_t nmemb = sizeof(T) / sizeof(typename WordType<T>::Type_t);
+    // Now memory block size is the same as non-vectorized type
+    nmemb = (nmemb >> INNER_LOG); 
+
+    // individual element size
+    size_t size = sizeof(typename WordType<T>::Type_t);
+
+    // one element memory size in bytes
+    size_t sizemem = size * nmemb;
+    // one time slice memory size in bytes
+    size_t tot_size = sizemem * xinc;
+    // allocate memory buffer
+    char *recv_buf = new(nothrow) char[tot_size];
+    if( recv_buf == 0x0 ) { 
+      QDP_error_exit("Unable to allocate recv_buf\n");
+    }
+
+    // Find the location of each site and send to primary node
+    int old_node = 0;
+
+    for (int site=start_lexico; site < stop_lexico; site += xinc) {
+      // first site in each segment uniquely identifies the node
+      int node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
+
+      // Send nodes must wait for a ready signal from the master node
+      // to prevent message pileups on the master node
+      if (node != old_node){
+	// On non-grid machines, use a clear-to-send like protocol
+	QDPInternal::clearToSend(recv_buf,sizeof(int),node);
+	old_node = node;
+      }
+    
+      // Copy to buffer: be really careful since max(linear) could vary among nodes
+      if (Layout::nodeNumber() == node){
+	for(int i=0; i < xinc; i++) {
+	  int linear = Layout::linearSiteIndex(crtesn(site+i,Layout::lattSize()));
+	  int outersite = linear >> INNER_LOG;
+	  int innersite =  linear & ((1 << INNER_LOG)-1);
+
+	  // write data piece-by-piece from each innersite
+	  typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
+	  Site_t  this_site = getSite(data.elem(outersite),innersite);
+
+	  memcpy(recv_buf+ i * sizemem, &this_site, sizemem);
+	}
+      }
+
+      // Send result to primary node. Avoid sending prim-node sending to itself
+      if (node != 0) {
+#if 1
+	// All nodes participate
+	QDPInternal::route((void *)recv_buf, node, 0, tot_size);
+#else
+	if (Layout::primaryNode())
+	  QDPInternal::recvFromWait((void *)recv_buf, node, tot_size);
+	if (Layout::nodeNumber() == node)
+	  QDPInternal::sendToWait((void *)recv_buf, 0, tot_size);
+#endif
+      }
+
+      bin.writeArrayPrimaryNode(recv_buf, size, nmemb*xinc);
+    }
+    delete[] recv_buf;
+  }
+  
 } // namespace LatticeTimeSliceIO
 
 } // namespace QDP

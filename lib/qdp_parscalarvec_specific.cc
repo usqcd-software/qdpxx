@@ -293,6 +293,24 @@ namespace QDPInternal
     delete[] dd_tmp;
   }
 
+  //! Is this a grid architecture
+  bool gridArch()
+  { 
+    return (QMP_get_msg_passing_type() == QMP_GRID) ? true : false;
+  }
+
+  //! Send a clear-to-send
+  void clearToSend(void *buffer, int count, int node)
+  { 
+    // On non-grid machines, use a clear-to-send like protocol
+    if (! QDPInternal::gridArch())
+      {
+	if(Layout::nodeNumber() == 0 && node != 0)
+	  QDPInternal::sendToWait(buffer, node, count);
+	if(Layout::nodeNumber() == node && node != 0)
+	  QDPInternal::recvFromWait(buffer, 0, count);
+      }
+  }
 
   //! Route to another node (blocking)
   void route(void *buffer, int srce_node, int dest_node, int count)
@@ -357,6 +375,8 @@ namespace QDPInternal
     QDP_info("finished a recvFromWait");
 #endif
   }
+
+
 
 };
 
