@@ -26,6 +26,9 @@ namespace QDP {
 //! Gamma matrices are conveniently defined for this Ns
 typedef GammaType<Ns> Gamma;
 
+//! Gamma matrices are conveniently defined for this Ns
+typedef GammaTypeDP<Ns> GammaDP;
+
 // For now, fix this inner-grid length to 4 or 2 depending on base precision. 
 // This causes problems for doubles which I eventually must work out.
 // Here, INNER_LOG is the log_2(INNER)
