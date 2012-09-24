@@ -524,7 +524,7 @@ namespace QDP
     {
       multi1d<int> dim(Nd);
       dim = 1;
-      dim[0] = 2 * 8;       // must have multiple length 2 for cb
+      dim[0] = 2;       // must have multiple length 2 for cb
 
       return dim;
     }
