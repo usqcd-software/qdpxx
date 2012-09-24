@@ -41,9 +41,10 @@ inline cudaError_t QDP_allocate(void **dst, size_t size, char * cstrFile , int i
     return cudaSuccess;
 }
 
-inline void QDP_free(void *dst)
+inline cudaError_t QDP_free(void *dst)
 {
   QDP::QDPCache::Instance().free_device_static( dst );
+  return cudaSuccess;
 }
 
 #endif // __CUDACC__
