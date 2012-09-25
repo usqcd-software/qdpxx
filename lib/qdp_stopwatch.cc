@@ -63,7 +63,8 @@ double StopWatch::getTimeInMicroseconds()
     if( t_end.tv_sec < t_start.tv_sec ) 
     { 
       QDPIO::cerr << __func__ << ": critical timer rollover" << endl;
-      QDP_abort(1);
+//      QDP_abort(1);
+      usecs = 0.0;
     }
     else 
     { 
@@ -98,7 +99,8 @@ double StopWatch::getTimeInSeconds()
     if( t_end.tv_sec < t_start.tv_sec ) 
     { 
       QDPIO::cerr << __func__ << ": critical timer rollover" << endl;
-      QDP_abort(1);
+//      QDP_abort(1);
+      usecs = 0.0;
     }
     else 
     { 
