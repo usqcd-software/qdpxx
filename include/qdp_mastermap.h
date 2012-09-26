@@ -18,6 +18,7 @@ namespace QDP {
 
   private:
     void complement(multi1d<int>& out, const multi1d<int>& orig) const;
+    void remove_neg(multi1d<int>& out, const multi1d<int>& orig) const;
     void uniquify_list_inplace(multi1d<int>& out , const multi1d<int>& ll) const;
 
     MasterMap() {

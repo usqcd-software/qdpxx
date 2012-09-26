@@ -390,7 +390,12 @@ namespace QDP {
     QDP_info("exiting Map::make");
 #endif
 
+    StopWatch t;
+    t.start();
+    //QDP_info_primary("reg start");
     myId = MasterMap::Instance().registrate(*this);
+    t.stop();
+    QDP_info_primary("has offnode comms, reg time = %f secs", t.getTimeInSeconds() );
   }
 
 

@@ -12,43 +12,15 @@ namespace QDP {
     return singleton;
   }
 
-  // const multi1d<int>& MasterMap::getInnerSites(int bitmask) const { 
 
-  //   if ( bitmask < 0 || bitmask > powerSetC.size()-1 )
-  //     QDP_error_exit("internal error: getInnerSites");
-
-  //   return *powerSetC[bitmask]; 
-  // }
-
-  // const multi1d<int>& MasterMap::getFaceSites(int bitmask) const { 
-
-  //   if ( bitmask < 0 || bitmask > powerSet.size()-1 )
-  //     QDP_error_exit("internal error: getInnerSites");
-
-  //   return *powerSet[bitmask]; 
-  // }
-
-
-  void MasterMap::complement(multi1d<int>& out, const multi1d<int>& orig) const {
-    std::vector<int> c;
-    c.reserve(Layout::sitesOnNode());
-    for(int i=0 ; i<Layout::sitesOnNode() ; ++i) {
-
-      bool found = false;
-      for(int q=0; q < orig.size(); ++q)
-	if (orig[q] == i)
-	{
-	  found = true;
-	  break;
-	}
-      
-      if (!found)
-	c.push_back(i);
-
-    }
-
-    out.resize( c.size() );
-    for(int i=0; i < c.size(); ++i)
+  void MasterMap::remove_neg(multi1d<int>& out, const multi1d<int>& orig) const {
+    multi1d<int> c(Layout::sitesOnNode());
+    int num=0;
+    for(int i=0 ; i<Layout::sitesOnNode() ; ++i) 
+      if (orig[i] >= 0)
+	c[num++]=i;
+    out.resize( num );
+    for(int i=0; i < num; ++i)
       out[i] = c[i];
   }
 
@@ -91,8 +63,9 @@ namespace QDP {
 
     // Copy into a compact size array
     out.resize(num);
-    for(int i=0; i < num; ++i)
+    for(int i=0; i < num; ++i) {
       out[i] = d[i];
+    }
 
   }
 
@@ -112,36 +85,36 @@ namespace QDP {
     idFace.resize( id << 1 );
 
     for (int i = 0 ; i < id ; ++i ) {
-      //QDP_info("Processing set %d   id=%d",i,id);
-      //QDPIO::cout << i << " powerSet[] size = " << powerSet[i]->size() << "\n";
-      //QDPIO::cout << i << " roffset size = " << map.roffset().size() << "\n";
+
+      multi1d<int> ct(Layout::sitesOnNode());
+      for(int q=0 ; q<Layout::sitesOnNode() ; ++q) 
+	ct[q]=q;
 
       multi1d<int> join(powerSet[i]->size() + map.roffset().size());
-      for (int q = 0 ; q < powerSet[i]->size() ; ++q ) 
+      for (int q = 0 ; q < powerSet[i]->size() ; ++q ) {
 	join[q]=(*powerSet[i])[q];
-      for (int q = 0, pos = powerSet[i]->size() ; q < map.roffset().size() ; ++q ) 
+	ct[ (*powerSet[i])[q] ] = -1;
+      }
+
+      for (int q = 0, pos = powerSet[i]->size() ; q < map.roffset().size() ; ++q ) {
 	join[pos++]=map.roffset()[q];
-      //QDP_info("before uniquify: join_size = %d",join.size() );
-      //join = uniquify_list(join);
-      //QDP_info("after uniquify: join_size = %d",join.size() );
+	ct[ map.roffset()[q] ] = -1;
+      }
 
       powerSet[i|id] = new multi1d<int>;
       powerSetC[i|id]= new multi1d<int>;
+
       uniquify_list_inplace( *powerSet[i|id] , join );
-      complement( *powerSetC[i|id] , *powerSet[i|id] );
+
+      remove_neg( *powerSetC[i|id] , ct );
 
       idFace[i|id] = QDPCache::Instance().registrateOwnHostMem( powerSet[i|id]->size() * sizeof(int) , (void*)powerSet[i|id]->slice() );
       idInner[i|id] = QDPCache::Instance().registrateOwnHostMem( powerSetC[i|id]->size() * sizeof(int) , (void*)powerSetC[i|id]->slice() );
 
-      // for (int q = 0 ; q < powerSet[i|id].size() ; ++q )
-      //  	QDP_info("powerSet[%d][%d]=%d",i|id,q,powerSet[i|id][q]);
-
-      // for (int q = 0 ; q < powerSetC[i|id].size() ; ++q )
-      //  	QDP_info("powerSetC[%d][%d]=%d",i|id,q,powerSetC[i|id][q]);
     }
-
     return id;
   }
+
 
   int MasterMap::getIdInner(int bitmask) const {
     if ( bitmask < 0 || bitmask > powerSetC.size()-1 )
