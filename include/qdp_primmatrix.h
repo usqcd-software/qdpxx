@@ -175,6 +175,19 @@ TextReader& operator>>(TextReader& txt, PMatrix<T,N,C>& d)
   return txt;
 }
 
+template<class T, int N, template<class,int> class C>  
+inline
+ostream& operator<<(ostream& s, const PMatrix<T,N,C>& d)
+{
+  for(int j=0; j < N; ++j) {
+    for(int i=0; i < N; ++i)
+      s << d.elem(i,j);
+    s << "\n";
+  }
+  return s;
+}
+
+
 //! Text output
 template<class T, int N, template<class,int> class C>  
 inline

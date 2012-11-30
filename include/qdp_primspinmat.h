@@ -37,7 +37,7 @@ public:
   inline
   PSpinMatrix& operator=(const PScalar<T1>& rhs)
     {
-      assign(rhs);
+      this->assign(rhs);
       return *this;
     }
 
@@ -47,7 +47,7 @@ public:
   inline
   PSpinMatrix& operator=(const PSpinMatrix<T1,N>& rhs) 
     {
-      assign(rhs);
+      this->assign(rhs);
       return *this;
     }
 
