@@ -423,7 +423,8 @@ namespace QDP {
 
 #ifdef QDP_IS_QDPJIT
 		JitTuning::Instance().save_all( JitTuning::Instance().getResourcePath() );
-		CUDAHostPoolAllocator::Instance().unregisterMemory();
+		// Turned that off, it causes problems when using with QUDA
+		// CUDAHostPoolAllocator::Instance().unregisterMemory();
 		QDPJit::Instance().closeAllShared();
 #endif
 	
