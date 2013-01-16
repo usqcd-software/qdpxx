@@ -164,7 +164,7 @@ namespace QDPInternal
     QDPIO::cout << "sizeof(W) = " << sizeof(W) << endl;
     QDPIO::cout << "Calling global sum array with length " << sizeof(T)/sizeof(W) << endl;
 #endif
-    globalSumArray((W *)dest, int(sizeof(T)/sizeof(W))); // call appropriate hook
+    globalSumArray((W *)&dest, int(sizeof(T)/sizeof(W))); // call appropriate hook
   }
 
   template<class T>
