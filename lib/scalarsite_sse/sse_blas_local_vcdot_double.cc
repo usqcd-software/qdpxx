@@ -94,10 +94,11 @@ namespace QDP {
   // then srore either half.
   void local_vcdot4(REAL64 *sum, REAL64 *y, REAL64* x,int n_4spin)
 {
-  __m128d sum1;
-  __m128d sum2;
-  __m128d sum3;
-  __m128d sum4;
+  // Use _mm_setzero_pd() to initialize the sums rather than xors
+  register __m128d sum1 = _mm_setzero_pd();
+  register __m128d sum2 = _mm_setzero_pd();
+  register __m128d sum3 = _mm_setzero_pd();
+  register __m128d sum4 = _mm_setzero_pd();
 
   __m128d tmp1;
   __m128d tmp2;
@@ -107,14 +108,6 @@ namespace QDP {
   __m128d tmp6;
   __m128d tmp7;
   __m128d tmp8;
-
-
-
-  // Zero out sums
-  sum1 = _mm_xor_pd(sum1, sum1); 
-  sum2 = _mm_xor_pd(sum2, sum2); 
-  sum3 = _mm_xor_pd(sum3, sum3); 
-  sum4 = _mm_xor_pd(sum4, sum4); 
 
   
   double *x_p=x;
