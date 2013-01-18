@@ -16,10 +16,13 @@ namespace QDP {
 // #define DEBUG_VAXPY_DOUBLE
   void local_sumsq4(REAL64 *sum, REAL64 *vecptr, int n_4spin)
   {
-    volatile register __m128d sum1;
-    volatile register __m128d sum2;
-    volatile register __m128d sum3;
-    volatile register __m128d sum4;
+
+    // Initialize the 4 sums to zero. Use _mm_setzero_pd() rather than explicit xor
+    // Apparently we dont need volatile then.
+    register __m128d sum1 = _mm_setzero_pd();
+    register __m128d sum2 = _mm_setzero_pd();
+    register __m128d sum3 = _mm_setzero_pd();
+    register __m128d sum4 = _mm_setzero_pd();
 
   __m128d tmp1;
   __m128d tmp2;
@@ -29,12 +32,6 @@ namespace QDP {
   __m128d tmp6;
   __m128d tmp7;
   __m128d tmp8;
-
-  // Zero out sums
-  sum1 = _mm_xor_pd(sum1,sum1); 
-  sum2 = _mm_xor_pd(sum2,sum2); 
-  sum3 = _mm_xor_pd(sum3,sum3); 
-  sum4 = _mm_xor_pd(sum4,sum4); 
 
   double *in=vecptr;
 

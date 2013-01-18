@@ -34,32 +34,24 @@ namespace QDP {
   // 
   void local_vcdot_real4(REAL64 *sum, REAL64 *y, REAL64* x,int n_4spin)
 {
-  volatile  __m128d sum1;
+  register __m128d sum1 = _mm_setzero_pd();
+  register __m128d sum2 = _mm_setzero_pd();
+  register __m128d sum3 = _mm_setzero_pd();
+  register __m128d sum4 = _mm_setzero_pd();
+
   __m128d tmp1;
   __m128d tmp2;
   __m128d tmp3;
-
-  volatile __m128d sum2;
   __m128d tmp4;
   __m128d tmp5;
   __m128d tmp6;
-
-  volatile __m128d sum3;
   __m128d tmp7;
   __m128d tmp8;
   __m128d tmp9;
-
-  volatile __m128d sum4;
   __m128d tmp10;
   __m128d tmp11;
   __m128d tmp12;
 
-  // Zero out sums
-  sum1 = _mm_xor_pd(sum1,sum1); 
-  sum2 = _mm_xor_pd(sum2,sum2); 
-  sum3 = _mm_xor_pd(sum3,sum3); 
-  sum4 = _mm_xor_pd(sum4,sum4); 
-  
   double *x_p=x;
   double *y_p=y;
 

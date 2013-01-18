@@ -46,14 +46,12 @@ void vaxpbyz4(REAL64 *z, REAL64 *a, REAL64 *x, REAL64 *b, REAL64 *y, int n_4vec)
 
   // cross components into tmp 
   // Zero tmp
-  // tmp1 = _mm_xor_pd(tmp1, tmp1);
-  tmp1 = _mm_set_pd((double)0,(double)0);
+  tmp1 = _mm_setzero_pd();
 
   tmp1 = _mm_shuffle_pd(a_sse, a_sse, 0x1);
   a_sse = _mm_add_pd(a_sse, tmp1);
 
-  //  tmp2 = _mm_xor_pd(tmp2, tmp2);
-  tmp2 = _mm_set_pd((double)0,(double)0);
+  tmp2 = _mm_setzero_pd();
   tmp2 = _mm_shuffle_pd(b_sse, b_sse, 0x1);
   b_sse = _mm_add_pd(b_sse, tmp2);
 
@@ -170,13 +168,11 @@ void vaxpby4(REAL64 *y, REAL64 *a, REAL64 *x, REAL64 *b, int n_4vec)
 
   // cross components into tmp 
   // Zero tmp
-  //tmp1 = _mm_xor_pd(tmp1, tmp1);
-  tmp1 = _mm_set_pd((double)0,(double)0);
+  tmp1 = _mm_setzero_pd();
   tmp1 = _mm_shuffle_pd(a_sse, a_sse, 0x1);
   a_sse = _mm_add_pd(a_sse, tmp1);
 
-  //  tmp2 = _mm_xor_pd(tmp2, tmp2);
-  tmp2 = _mm_set_pd((double)0,(double)0);
+  tmp2 = _mm_setzero_pd();
   tmp2 = _mm_shuffle_pd(b_sse, b_sse, 0x1);
   b_sse = _mm_add_pd(b_sse, tmp2);
 
