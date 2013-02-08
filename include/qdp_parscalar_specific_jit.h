@@ -587,7 +587,10 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   QDP_info("maps_involved=%d",maps_involved);
 #endif
 
+  cout << "0\n";
+
   if (maps_involved > 0) {
+    cout << "0a\n";
 
     int innerId = MasterMap::Instance().getIdInner(maps_involved);
     int innerCount = MasterMap::Instance().getCountInner(maps_involved);
@@ -680,12 +683,23 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     }
 
   } else {
+
+    cout << "0b\n";
+
     static QDPJit::SharedLibEntry sharedLibEntry;
     static MapVolumes*              mapVolumes;
     static string                   strId;
     static string                   prg;
+    static std::vector<QDPJitArgs>  vecCudaArgs;
 
-    QDPJitArgs cudaArgs;
+    vecCudaArgs.reserve( DeviceParams::Instance().getMaxJitValueSet() );
+    cout << "0c\n";
+    assert( vecCudaArgs.capacity() > vecCudaArgs.size() );
+    cout << "0d " << vecCudaArgs.size()+1 << "\n";
+    vecCudaArgs.resize( vecCudaArgs.size()+1 );
+    cout << "0e " << "\n";
+    
+    QDPJitArgs& cudaArgs = vecCudaArgs.back();
 
     int argNum = cudaArgs.addInt( s.numSiteTable() );
     int argOrd = cudaArgs.addBool( s.hasOrderedRep() );
@@ -731,13 +745,31 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
       if (!cacheLockOp(  op , cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
     }
 
-
     QDP_debug("eval(Lat,Lat) !");
 
     StopWatch watch0;
     watch0.start();
 
-    if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , s.numSiteTable() , sharedLibEntry  , mapVolumes )) 
+    cout << "1\n";
+
+    // Probablity greater zero that we already have this value set ?
+    std::vector<QDPJitArgs>::iterator iterCudaArg = vecCudaArgs.begin();
+    cout << "2\n";
+    if (vecCudaArgs.size() > 1) {
+      cout << "3\n";
+      if ((iterCudaArg = std::find( vecCudaArgs.begin() , --vecCudaArgs.end() , vecCudaArgs.back() )) != --vecCudaArgs.end()) {
+	// We already have these runtime values of cudaArgs
+	cout << "4\n";
+	vecCudaArgs.pop_back();
+      } else {
+	cout << "5\n";
+	iterCudaArg = --vecCudaArgs.end();
+      }
+    }
+    cout << "6\n";
+    
+
+    if (!QDPJit::Instance()( strId , prg , (*iterCudaArg).getDevPtr() , s.numSiteTable() , sharedLibEntry  , mapVolumes )) 
       QDP_error_exit("eval(Lat,Lat) call to cuda jitter failed");
   }
 

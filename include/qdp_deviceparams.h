@@ -37,16 +37,22 @@ namespace QDP {
       syncDevice = sync;
     };
 
-    int& getMaxKernelArg() { return maxKernelArg; }
+    int getMaxKernelArg() const { return maxKernelArg; }
+
+    // For a given expression 'getMaxJitValueSet()' gives the
+    // maximum number of the set of different values that can
+    // be reused (and thus not copied again to the GPU)
+    int getMaxJitValueSet() const { return maxJitValueSet; }
 
   private:
-    DeviceParams(): syncDevice(false), maxKernelArg(512) {};   // Private constructor
+    DeviceParams(): syncDevice(false), maxKernelArg(512) , maxJitValueSet(128) {};   // Private constructor
     DeviceParams(const DeviceParams&);                            // Prevent copy-construction
     DeviceParams& operator=(const DeviceParams&);
 
   private:
     bool syncDevice;
     int maxKernelArg;
+    int maxJitValueSet;
 
     int smem;
     int smem_default;

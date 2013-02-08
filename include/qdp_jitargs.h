@@ -7,6 +7,8 @@ namespace QDP {
 
   class QDPJitArgs {
   public:
+    enum UnionType { Ptr=0, Int=1, Bool=2, IntPtr=3, Size_t=4 };
+
     QDPJitArgs();
     ~QDPJitArgs();
     string getPtrName() const;
@@ -18,13 +20,17 @@ namespace QDP {
     int addIntPtr( int * intPtr) const;
     int addSize_t(size_t i) const;
 
+    friend bool operator== (const QDPJitArgs& a, const QDPJitArgs& b);
+
   private:
-    mutable int  size;
-    mutable UnionDevPtr * arrayArgs;
+    mutable std::vector< UnionDevPtr > vecArgs;
     mutable std::vector< int >         vecType;
     static  std::vector< std::string > vecUnionMember;
     mutable int myId;
   };
+
+  bool operator== (const QDPJitArgs& a, const QDPJitArgs& b);
+  bool operator!= (const QDPJitArgs& a, const QDPJitArgs& b);
 
 }
 
