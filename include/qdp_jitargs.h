@@ -5,8 +5,6 @@
 
 namespace QDP {
 
-  extern const char * QDPuni[];
-
   class QDPJitArgs {
   public:
     QDPJitArgs();
@@ -23,7 +21,8 @@ namespace QDP {
   private:
     mutable int  size;
     mutable UnionDevPtr * arrayArgs;
-    mutable vector<int>   vecType;
+    mutable std::vector< int >         vecType;
+    static  std::vector< std::string > vecUnionMember;
     mutable int myId;
   };
 

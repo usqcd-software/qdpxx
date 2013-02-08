@@ -3,8 +3,6 @@
 
 namespace QDP {
 
-  const char * QDPuni[5]={".ptr",".Int",".Bool",".IntPtr",".Size_t"};
-
 
   void QDPJit::setKernelPath(const string& _path) { 
     kernelPath = _path; 

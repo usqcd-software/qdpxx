@@ -2,14 +2,25 @@
 
 namespace QDP {
 
+  std::vector< std::string > QDPJitArgs::vecUnionMember;
+
   QDPJitArgs::QDPJitArgs(): size(0) {
     QDP_debug_deep("cuda kernel args: allocating host memory");
     if (!CUDAHostPoolAllocator::Instance().allocate( (void**)&arrayArgs , 
 						     sizeof(UnionDevPtr) * 
 						     DeviceParams::Instance().getMaxKernelArg() ))
       QDP_error_exit("jit args: could not allocate host memory");
+
     vecType.reserve(DeviceParams::Instance().getMaxKernelArg());
+
+    vecUnionMember.push_back(".ptr");
+    vecUnionMember.push_back(".Int");
+    vecUnionMember.push_back(".Bool");
+    vecUnionMember.push_back(".IntPtr");
+    vecUnionMember.push_back(".Size_t");
   }
+
+
   QDPJitArgs::~QDPJitArgs() {
 #ifdef GPU_DEBUG_DEEP
     QDP_debug_deep("cuda kernel args: freeing host memory");
@@ -24,7 +35,7 @@ namespace QDP {
     if (i >= size)
       QDP_error_exit("jit args: get pointer name, out of range");
     ostringstream code;
-    code << getPtrName() << "[ " << i << " ]" << QDPuni[vecType[i]] << " ";
+    code << getPtrName() << "[ " << i << " ]" << vecUnionMember[ vecType[i] ] << " ";
     return code.str();
   }
 
