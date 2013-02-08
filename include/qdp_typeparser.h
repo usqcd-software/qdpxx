@@ -23,7 +23,8 @@ namespace QDP
 #endif
       int pos = jitArgs.addPtr( key.getFdev() );
       ostringstream code;
-      code << " *(("<< strType <<"*)("<< jitArgs.getPtrName() << "[ " << pos  << " ].ptr " << ")) ";
+      code << " *(("<< strType <<"*)("<< jitArgs.getCode(pos) << ")) ";
+
       strIdentifier = code.str();
       return true;
     }
@@ -36,7 +37,8 @@ namespace QDP
 #endif
       int pos = jitArgs.addPtr( key.getFdev() );
       ostringstream code;
-      code << " (("<< strType <<"*)("<< jitArgs.getPtrName() << "[ " << pos  << " ].ptr " << "))[" << stringIdx << "] ";
+      code << " (("<< strType <<"*)("<< jitArgs.getCode(pos) << "))[" << stringIdx << "] ";
+
       strIdentifier = code.str();
       return true;
     }
@@ -60,9 +62,8 @@ namespace QDP
 #endif
       int pos_m = jitArgs.addInt( s.elem() );
       ostringstream code;
-      code << strType << "(" 
-	   << jitArgs.getPtrName() << "[ " << pos_m  << " ].Int " 
-	   << ")";
+      code << strType << "(" << jitArgs.getCode(pos_m) << ")";
+
       strIdentifier = code.str();
       return true;
     }
@@ -322,7 +323,7 @@ namespace QDP
       getTypeStringT<TTT>( codeTypeA , f.getJitArgs() );
 
       ostringstream newIdx;
-      newIdx << "((int*)(" << f.getJitArgs().getPtrName() << "[ " << posGoff  << " ].ptr))" << "[" << f.getIndex() << "]";
+      newIdx << "((int*)(" << f.getJitArgs().getCode(posGoff) << "))" << "[" << f.getIndex() << "]";
 
       ParseTag ff( f.getJitArgs() , newIdx.str() );
       TypeA_t A_val  = ForEachA_t::apply(expr.child(), ff, ff, c);
@@ -330,12 +331,11 @@ namespace QDP
 
       ostringstream code;
       code << newIdx.str() << " < 0 ? " <<
-	"(" <<
-	"((" << codeTypeA << "*)(" << f.getJitArgs().getPtrName() << 
-	"[ " << posRcvBuf  << " ].ptr))" << "[-" << newIdx.str() << "-1]" << 
+	"( ((" << codeTypeA << "*)(" << f.getJitArgs().getCode(posRcvBuf) << "))" << "[-" << newIdx.str() << "-1]" << 
 	"):(" <<
 	ff.ossCode.str() <<
 	")";
+
 
       f.ossCode << code.str();
 

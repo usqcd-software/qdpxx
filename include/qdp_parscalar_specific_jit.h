@@ -670,7 +670,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 
       if (!cacheLock(  rhs ,  cudaArgs )) { QDP_error_exit("eval: could not cache RHS");     }      
       if (!cacheLock(  dest , cudaArgs )) { QDP_error_exit("eval: could not cache dest");  }
-      if (!cacheLockOp(  op , cudaArgs )) { QDP_error_exit("eval: could not cache op");     }      
+      if (!cacheLockOp(  op , cudaArgs )) { QDP_error_exit("eval: could not cache op");     }
 
       QDP_debug("eval(Lat,Lat) face dev!");
 
