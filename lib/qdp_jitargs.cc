@@ -24,7 +24,7 @@ namespace QDP {
     if (i >= size)
       QDP_error_exit("jit args: get pointer name, out of range");
     ostringstream code;
-    code << getPtrName() << "[" << i << "]" << QDPuni[vecType[i]];
+    code << getPtrName() << "[ " << i << " ]" << QDPuni[vecType[i]] << " ";
     return code.str();
   }
 
