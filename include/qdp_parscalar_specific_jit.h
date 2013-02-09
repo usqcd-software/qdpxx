@@ -587,11 +587,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   QDP_info("maps_involved=%d",maps_involved);
 #endif
 
-  cout << "0\n";
-
   if (maps_involved > 0) {
-    cout << "0a\n";
-
     int innerId = MasterMap::Instance().getIdInner(maps_involved);
     int innerCount = MasterMap::Instance().getCountInner(maps_involved);
     int faceId = MasterMap::Instance().getIdFace(maps_involved);
@@ -684,22 +680,19 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 
   } else {
 
-    cout << "0b\n";
+    typedef std::shared_ptr<QDPJitArgs> QDPJitArgsPtr;
 
     static QDPJit::SharedLibEntry sharedLibEntry;
     static MapVolumes*              mapVolumes;
     static string                   strId;
     static string                   prg;
-    static std::vector<QDPJitArgs>  vecCudaArgs;
+    static std::vector< QDPJitArgsPtr >  vecCudaArgs;
 
-    vecCudaArgs.reserve( DeviceParams::Instance().getMaxJitValueSet() );
-    cout << "0c\n";
-    assert( vecCudaArgs.capacity() > vecCudaArgs.size() );
-    cout << "0d " << vecCudaArgs.size()+1 << "\n";
-    vecCudaArgs.resize( vecCudaArgs.size()+1 );
-    cout << "0e " << "\n";
+    assert( vecCudaArgs.size() < DeviceParams::Instance().getMaxJitValueSet() );
+
+    vecCudaArgs.push_back( QDPJitArgsPtr( new QDPJitArgs() ) );
     
-    QDPJitArgs& cudaArgs = vecCudaArgs.back();
+    QDPJitArgs& cudaArgs = *vecCudaArgs.back();
 
     int argNum = cudaArgs.addInt( s.numSiteTable() );
     int argOrd = cudaArgs.addBool( s.hasOrderedRep() );
@@ -750,26 +743,27 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     StopWatch watch0;
     watch0.start();
 
-    cout << "1\n";
-
     // Probablity greater zero that we already have this value set ?
-    std::vector<QDPJitArgs>::iterator iterCudaArg = vecCudaArgs.begin();
-    cout << "2\n";
+    std::vector<QDPJitArgsPtr>::iterator iterCudaArg = vecCudaArgs.begin();
     if (vecCudaArgs.size() > 1) {
-      cout << "3\n";
-      if ((iterCudaArg = std::find( vecCudaArgs.begin() , --vecCudaArgs.end() , vecCudaArgs.back() )) != --vecCudaArgs.end()) {
+      cout << "searching " << vecCudaArgs.size() << " value sets..\n";
+      if ((iterCudaArg = std::find_if( vecCudaArgs.begin() , 
+				       --vecCudaArgs.end() , 
+				       [&vecCudaArgs](QDPJitArgsPtr a) { 
+					 return *a == *vecCudaArgs.back();
+				       } )
+	   ) != --vecCudaArgs.end()) {
 	// We already have these runtime values of cudaArgs
-	cout << "4\n";
+	cout << "value set found\n";
 	vecCudaArgs.pop_back();
       } else {
-	cout << "5\n";
 	iterCudaArg = --vecCudaArgs.end();
       }
     }
-    cout << "6\n";
+
     
 
-    if (!QDPJit::Instance()( strId , prg , (*iterCudaArg).getDevPtr() , s.numSiteTable() , sharedLibEntry  , mapVolumes )) 
+    if (!QDPJit::Instance()( strId , prg , (**iterCudaArg).getDevPtr() , s.numSiteTable() , sharedLibEntry  , mapVolumes )) 
       QDP_error_exit("eval(Lat,Lat) call to cuda jitter failed");
   }
 

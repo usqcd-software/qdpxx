@@ -45,7 +45,7 @@ namespace QDP {
     int getMaxJitValueSet() const { return maxJitValueSet; }
 
   private:
-    DeviceParams(): syncDevice(false), maxKernelArg(512) , maxJitValueSet(128) {};   // Private constructor
+    DeviceParams(): syncDevice(false), maxKernelArg(512) , maxJitValueSet(1024) {};   // Private constructor
     DeviceParams(const DeviceParams&);                            // Prevent copy-construction
     DeviceParams& operator=(const DeviceParams&);
 

@@ -18,7 +18,8 @@ namespace QDP {
 
 
   QDPJitArgs::~QDPJitArgs() {
-    QDPCache::Instance().signoff( myId );
+    if (myId >=0) 
+      QDPCache::Instance().signoff( myId );
   }
   
   string QDPJitArgs::getPtrName() const  { return "args"; }
