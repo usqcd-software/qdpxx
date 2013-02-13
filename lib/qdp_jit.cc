@@ -1,6 +1,7 @@
 #include "qdp.h"
 
 
+
 namespace QDP {
 
 
@@ -295,10 +296,11 @@ namespace QDP {
 
 
 
-  bool QDPJit::buildObject( const std::string& fname_dest , 
-			    const std::string& fname_src , 
-			    const std::string& path_qdp , 
-			    const std::string& jit_options )
+
+  bool QDPJit::buildObject_local( const std::string& fname_dest , 
+				  const std::string& fname_src , 
+				  const std::string& path_qdp , 
+				  const std::string& jit_options )
   {
     std::ostringstream jit_command;
 
@@ -391,6 +393,77 @@ namespace QDP {
 
     return true;
   }
+
+
+#ifdef QDP_USE_SOCKET
+  void QDPJit::sendString(Network::TcpSocket& sock, const string& str_in) {
+    std::string str;
+    if (str_in.size() == 0) 
+      str=" ";
+    else
+      str=str_in;
+    int                 iBytesTransferred;
+    QDP_info_primary("Sending string %s", str.c_str() );
+    sock << str << "\n";
+  }
+
+  void QDPJit::recvAck(Network::TcpSocket& sock) {
+    std::string str;
+    //QDP_info_primary("Receiving Ack Response...\n");
+    sock >> str;
+    //QDP_info_primary("Received %d bytes of data\n", iBytesTransferred);
+    //QDP_info_primary("Buffer : [");
+    //QDP_info_primary("]\n\n");
+  }
+#endif
+
+
+  bool QDPJit::buildObject_cs( const std::string& fname_dest , 
+			       const std::string& fname_src , 
+			       const std::string& path_qdp , 
+			       const std::string& jit_options )
+  {
+#ifdef QDP_USE_SOCKET
+    Network::TcpSocket sock;
+    try {
+      sock.connect( compileServerName , compileServerPort );
+    } catch (Network::Exception &e) {
+      std::cerr << "Trying to connect to: " << compileServerName << ":" << compileServerPort << "\n";
+      std::cerr << e;
+      exit (1);
+    }
+    sock.add_delim("\n");
+
+    QDP_info_primary("server: %s  port: %d", compileServerName.c_str() , compileServerPort );
+
+    sendString(sock,fname_dest); recvAck(sock);
+    sendString(sock,fname_src); recvAck(sock);
+    sendString(sock,path_qdp); recvAck(sock);
+    sendString(sock,jit_options); recvAck(sock);
+    sendString(sock,CUDA_DIR); recvAck(sock);
+    sendString(sock,QDP_GPUARCH); recvAck(sock);
+
+    return true;
+#else
+    QDP_error_exit("QDP-JIT not build with --enable-socket. Giving up!");
+#endif
+  }
+
+
+
+
+  bool QDPJit::buildObject( const std::string& fname_dest , 
+			    const std::string& fname_src , 
+			    const std::string& path_qdp , 
+			    const std::string& jit_options )
+  {
+    if (haveCompileServer) {
+      return buildObject_cs( fname_dest , fname_src , path_qdp , jit_options );
+    } else {
+      return buildObject_local( fname_dest , fname_src , path_qdp , jit_options );
+    }
+  }
+
 
 
   

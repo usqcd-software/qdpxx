@@ -235,8 +235,8 @@ NVIDIA GPUs with compute capability (sm) >= 2.0 are supported.
 
 
 
-Installation:
--------------
+Building:
+---------
 
 Required additional configure options:
 
@@ -244,6 +244,9 @@ Required additional configure options:
 --enable-gpuarch=<SM>  // e.g. sm_20, ...
 --enable-cpuarch=<X86> // e.g. x86, x86_64
 --with-cuda=<CUDADIR>  // e.g. /usr/local/cuda
+--enable-socket        // Build with "libsocket" library http://www.happycoders.org/software/libsocket.php
+--with-socket_include = <libsocket include dir>
+--with-socket_lib = <libsocket lib dir>
 
 
 Using the Library:
@@ -281,6 +284,9 @@ Optional:
                        (this option can be given multiple times)
 -sync                  Device sync after each kernel call
                        (default not given)
+-csn <server>          This triggers the "remote compilation" of JIT CUDA kernels.
+                       The server must run on the remote machine with matching portnumbers.
+-csp <port>            Connect to a specific port on the remote machine. Defaults to 1500
 
 
 Interoperability with QUDA:

@@ -98,6 +98,7 @@ using std::ostream;
 // END OF YUKKINESS
 
 
+
 // Basic includes
 #define PETE_USER_DEFINED_EXPRESSION
 namespace QDP {

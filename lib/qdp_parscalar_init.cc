@@ -151,6 +151,34 @@ namespace QDP {
 			}
 #endif
 #ifdef QDP_IS_QDPJIT
+			else if (strcmp((*argv)[i], "-csn")==0) 
+			  {
+#ifndef QDP_USE_SOCKET
+			    QDP_error_exit("QDP-JIT not build with --enable-socket. Giving up!");
+#endif
+			    char buf[1024*20];
+			    sscanf((*argv)[++i], "%s", buf);
+			    QDPJit::Instance().setCompilerServerName( buf );
+			  }
+			else if (strcmp((*argv)[i], "-csp")==0) 
+			  {
+#ifndef QDP_USE_SOCKET
+			    QDP_error_exit("QDP-JIT not build with --enable-socket. Giving up!");
+#endif
+			    int uu;
+			    sscanf((*argv)[++i], "%d", &uu);
+			    QDPJit::Instance().setCompilerServerPort( uu );
+			  }
+#if 0
+			else if (strcmp((*argv)[i], "-cs_af")==0) 
+			  {
+			    int uu;
+			    sscanf((*argv)[++i], "%d", &uu);
+			    if (uu !=4 && uu != 6)
+			      QDP_error_exit("Only IPv4 or IPv6 is supported, i.e. -cs_af 4/6");
+			    QDPJit::Instance().setCompilerServerIPv6( uu==6 );
+			  }
+#endif
 			else if (strcmp((*argv)[i], "-sm")==0) 
 			  {
 			    int uu;

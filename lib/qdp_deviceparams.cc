@@ -13,6 +13,7 @@ namespace QDP {
       max_blockz = 64;
       break;
     case 30:
+    case 35:
       smem = 48*1024;
       smem_default = 0;
       max_gridx  = max_gridy = max_gridz = 512 * 1024; // Its 2^31-1, but this value is large enough

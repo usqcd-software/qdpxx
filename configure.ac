@@ -461,6 +461,72 @@ case ${PARALLEL_ARCH} in
 esac
 
 
+
+
+# Get socket library and include locations
+#AC_ARG_WITH([socket_include_path],
+#  [AS_HELP_STRING([--with_socket_include_path],
+#    [location of the libsocket headers, defaults to /usr/include])],
+#  [SOCKET_CFLAGS="-I$withval"],
+#  [SOCKET_CFLAGS='-I/usr/include'])
+#AC_SUBST([SOCKET_CFLAGS])
+
+#AC_ARG_WITH([socket_lib_path],
+#  [AS_HELP_STRING([--with-socket_lib_path], [location of the socket libraries])],
+#  [SOCKET_LIBS="-L$withval -lsocket"],
+#  [SOCKET_LIBS='-lsocket'])
+#AC_SUBST([SOCKET_LIBS])
+
+AC_ARG_ENABLE(socket,
+   AC_HELP_STRING(
+    [--enable-socket],
+    [Enable building of JIT/CUDA kernels on remote compile server. Pass flags necessary for Socket on CFLAGS LDFLAGS]
+   ),
+   [ socket_enabled="yes" ],
+   [ socket_enabled="no" ]
+)
+dnl Socket Threads stuff
+if test "X${socket_enabled}X" == "XyesX";
+then
+	AC_MSG_NOTICE([Configuring Socket Building])
+	AC_DEFINE([QDP_USE_SOCKET], [1], [ Use Socket building ])
+	AC_SUBST(SOCKET_LIBS, "-lsocket")
+else
+	AC_SUBST(SOCKET_LIBS, "")
+fi
+
+
+AC_ARG_WITH(socket_include,
+  AC_HELP_STRING(
+    [--with-socket_include=DIR],
+    [Build with socket header in specified path]
+  ),[]
+)
+
+echo Value of with_socket_include is X${with_socket_include}X
+
+if test "X${with_socket_include}X" != "XX" ; then
+   echo Setting socket header path
+   AC_SUBST(SOCKET_CXXFLAGS, "-I${with_socket_include}")
+   AC_MSG_NOTICE([socket compile flags: ${SOCKET_CXXFLAGS}])
+fi
+
+
+AC_ARG_WITH(socket_lib,
+  AC_HELP_STRING(
+    [--with-socket_lib=DIR],
+    [Build with socket library in specified path]
+  ),[]
+)
+
+echo Value of with_socket_lib is X${with_socket_lib}X
+
+if test "X${with_socket_lib}X" != "XX" ; then
+   echo Setting socket lib path
+   AC_SUBST(SOCKET_LDFLAGS, "-L${with_socket_lib}")
+   AC_MSG_NOTICE([socket linker flags: ${SOCKET_LDFLAGS}])
+fi
+
 dnl
 dnl
 dnl now libxml2

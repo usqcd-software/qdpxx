@@ -24,9 +24,9 @@ parallel_arch="@CONFIG_PARALLEL_ARCH@"
 
 qmp_home="@QMP_HOME@"
 qdp_cxx="@CXX@"
-qdp_cxxflags="@CXXFLAGS@ -I@includedir@ @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@ @QMT_CXXFLAGS@"
-qdp_ldflags="@LDFLAGS@ -L@libdir@ @BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@ @QMT_LDFLAGS@ @CUDA_LDFLAGS@"
-qdp_libs="-lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@ @QMT_LIBS@ @CUDA_LIBS@"
+qdp_cxxflags="@CXXFLAGS@ -I@includedir@ @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @SOCKET_CXXFLAGS@ @QMP_CFLAGS@ @QMT_CXXFLAGS@"
+qdp_ldflags="@LDFLAGS@ -L@libdir@ @BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@ @QMT_LDFLAGS@ @CUDA_LDFLAGS@ @SOCKET_LDFLAGS@"
+qdp_libs="-lqdp -lXPathReader -lxmlWriter -lqio -llime @BAGEL_QDP_LIBS@ @LIBXML2_LIBS@ @SOCKET_LIBS@ @QMP_LIBS@ @LIBS@ @QMT_LIBS@ @CUDA_LIBS@"
 
 libintrin_dir=@LIBINTRIN_DIR@
 case ${libintrin_dir} in
