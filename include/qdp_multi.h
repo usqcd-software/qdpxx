@@ -887,6 +887,201 @@ private:
 };
 
 
+//------------------------------------------------------------------------------------------
+//! Container for a multi-dimensional 4D array
+template<class T> class multi4d
+{
+public:
+  multi4d() {F=0;n1=n2=n3=n4=sz=0;copymem=false;}
+  multi4d(T *f, int ns4, int ns3, int ns2, int ns1) {F=f; n1=ns1; n2=ns2; n3=ns3; n4=ns4; sz=n1*n2*n3*n4; copymem=true;}
+  explicit multi4d(int ns4, int ns3, int ns2, int ns1) {copymem=false;F=0;resize(ns4,ns3,ns2,ns1);}
+  ~multi4d() {if (! copymem) {delete[] F;}}
+
+  //! Copy constructor
+  multi4d(const multi4d& s): copymem(false), n1(s.n1), n2(s.n2), n3(s.n3), n4(s.n4), sz(s.sz), F(0)
+    {
+      resize(n4,n3,n2,n1);
+
+      for(int i=0; i < sz; ++i)
+	F[i] = s.F[i];
+    }
+
+  //! Allocate mem for the array 
+  void resize(int ns4, int ns3, int ns2, int ns1) 
+  {
+    if(copymem) {
+      cerr <<"multi4d: invalid resize of a copy of memory" << endl;
+      exit(1);
+    }
+
+    // Only delete if the array is not NULL. If it is NULL
+    // deleting may be bad
+    if ( F != 0x0 ) {
+      delete[] F; 
+    }
+
+    n1=ns1; n2=ns2; n3=ns3; n4=ns4; sz=n1*n2*n3*n4; F = new(nothrow) T[sz];
+    if( F == 0x0 ) { 
+      QDP_error_exit("Unable to new memory in multi4d::resize(%d,%d,%d,%d)\n",ns4,ns3,ns2,ns1);
+    }
+  }
+
+  //! Size of array
+  int size1() const {return n1;}
+  int size2() const {return n2;}
+  int size3() const {return n3;}
+  int size4() const {return n4;} 
+
+  //! Equal operator uses underlying = of T
+  multi4d<T>& operator=(const multi4d<T>& s1)
+    {
+      resize(s1.size4(),s1.size3(),s1.size2(),s1.size1());
+
+      for(int i=0; i < sz; ++i)
+	F[i] = s1.F[i];
+      return *this;
+    }
+
+  //! Equal operator uses underlying = of T
+  template<class T1>
+  multi4d<T>& operator=(const T1& s1)
+    {
+      if (F == 0)
+      {
+	cerr << "multi4d: left hand side not initialized in =" << endl;
+	exit(1);
+      }
+
+      for(int i=0; i < sz; ++i)
+	F[i] = s1;
+      return *this;
+    }
+
+  //! Return ref to a column slice
+  const T* slice(int l, int k, int j) const {return F+n1*(j+n2*(k+n3*(l)));}
+
+  //! Return ref to an element
+  T& operator()(int l, int k, int j, int i) {return F[i+n1*(j+n2*(k+n3*(l)))];}
+
+  //! Return const ref to an element
+  const T& operator()(int l, int k, int j, int i) const {return F[i+n1*(j+n2*(k+n3*(l)))];}
+
+  //! Return ref to an element
+  multi3d<T> operator[](int l) {return multi3d<T>(F+n1*n2*n3*l,n3,n2,n1);}
+
+  //! Return const ref to an element
+  const multi3d<T> operator[](int l) const {return multi3d<T>(F+n1*n2*n3*l,n3,n2,n1);}
+
+private:
+  bool copymem;
+  int n1;
+  int n2;
+  int n3;
+  int n4;
+  int sz;
+  T *F;
+};
+
+
+//------------------------------------------------------------------------------------------
+//! Container for a multi-dimensional 5D array
+template<class T> class multi5d
+{
+public:
+  multi5d() {F=0;n1=n2=n3=n4=n5=sz=0;copymem=false;}
+  multi5d(T *f, int ns5, int ns4, int ns3, int ns2, int ns1) {F=f; n1=ns1; n2=ns2; n3=ns3; n4=ns4; n5=ns5; sz=n1*n2*n3*n4*n5; copymem=true;}
+  explicit multi5d(int ns4, int ns3, int ns2, int ns1) {copymem=false;F=0;resize(ns4,ns3,ns2,ns1);}
+  ~multi5d() {if (! copymem) {delete[] F;}}
+
+  //! Copy constructor
+  multi5d(const multi5d& s): copymem(false), n1(s.n1), n2(s.n2), n3(s.n3), n4(s.n4), n5(s.n5), sz(s.sz), F(0)
+    {
+      resize(n5,n4,n3,n2,n1);
+
+      for(int i=0; i < sz; ++i)
+	F[i] = s.F[i];
+    }
+
+  //! Allocate mem for the array 
+  void resize(int ns5, int ns4, int ns3, int ns2, int ns1) 
+  {
+    if(copymem) {
+      cerr <<"multi5d: invalid resize of a copy of memory" << endl;
+      exit(1);
+    }
+
+    // Only delete if the array is not NULL. If it is NULL
+    // deleting may be bad
+    if ( F != 0x0 ) {
+      delete[] F; 
+    }
+
+    n1=ns1; n2=ns2; n3=ns3; n4=ns4; n5=ns5; sz=n1*n2*n3*n4*n5; F = new(nothrow) T[sz];
+    if( F == 0x0 ) { 
+      QDP_error_exit("Unable to new memory in multi5d::resize(%d,%d,%d,%d,%d)\n",ns5,ns4,ns3,ns2,ns1);
+    }
+  }
+
+  //! Size of array
+  int size1() const {return n1;}
+  int size2() const {return n2;}
+  int size3() const {return n3;}
+  int size4() const {return n4;} 
+  int size5() const {return n5;}
+
+  //! Equal operator uses underlying = of T
+  multi5d<T>& operator=(const multi5d<T>& s1)
+    {
+      resize(s1.size5(),s1.size4(),s1.size3(),s1.size2(),s1.size1());
+
+      for(int i=0; i < sz; ++i)
+	F[i] = s1.F[i];
+      return *this;
+    }
+
+  //! Equal operator uses underlying = of T
+  template<class T1>
+  multi5d<T>& operator=(const T1& s1)
+    {
+      if (F == 0)
+      {
+	cerr << "multi5d: left hand side not initialized in =" << endl;
+	exit(1);
+      }
+
+      for(int i=0; i < sz; ++i)
+	F[i] = s1;
+      return *this;
+    }
+
+  //! Return ref to a column slice
+  const T* slice(int m, int l, int k, int j) const{return F+n1*(j+n2*(k+n3*(l+n4*(m))));}
+
+  //! Return ref to an element
+  T& operator()(int m, int l, int k, int j, int i) {return F[i+n1*(j+n2*(k+n3*(l+n4*(m))))];}
+
+  //! Return const ref to an element
+  const T& operator()(int m, int l, int k, int j, int i) const {return F[i+n1*(j+n2*(k+n3*(l+n4*(m))))];}
+
+  //! Return ref to an element
+  multi4d<T> operator[](int m) {return multi4d<T>(F+n1*n2*n3*n4*m,n4,n3,n2,n1);}
+
+  //! Return const ref to an element
+  const multi4d<T> operator[](int m) const {return multi4d<T>(F+n1*n2*n3*n4*m,n4,n3,n2,n1);}
+
+private:
+  bool copymem;
+  int n1;
+  int n2;
+  int n3;
+  int n4;
+  int n5;
+  int sz;
+  T *F;
+};
+
+
+//------------------------------------------------------------------------------------------
 //! Container for a generic N dimensional array
 template<class T> class multiNd
 {

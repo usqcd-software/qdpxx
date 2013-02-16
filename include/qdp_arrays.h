@@ -154,6 +154,97 @@ namespace QDP
   };
 
 
+  //----------------------------------------------------------------------------------
+  //! 4d array, with 1-based indices
+  template<typename T> class Array4dO
+  {
+  public:
+    Array4dO() {}
+    explicit Array4dO(int n) {d.resize(n,n,n,n);}   // initialize
+    explicit Array4dO(int n4, int n3, int n2, int n1) {d.resize(n4,n3,n2,n1);}   // initialize
+    ~Array4dO() {}
+
+    //! Copy constructor
+    Array4dO(const Array4dO& s): d(s.d) {}
+
+    void resize(int n4, int n3, int n2, int n1) {d.resize(n4,n3,n2,n1);}
+    void resize(int n) {d.resize(n,n,n,n);}
+    int size() const {return d.size1();}
+    int size1() const {return d.size1();}
+    int size2() const {return d.size2();}
+    int size3() const {return d.size3();}
+    int size4() const {return d.size4();}
+
+    Array4dO& operator=(const Array4dO& s) {d = s.d; return *this;}
+
+    //! Equal operator uses underlying = of T
+    template<typename T1>
+    Array4dO<T>& operator=(const T1& s1) {d = s1; return *this;}
+
+    //! Return ref to an element
+    T& operator()(int i, int j, int k, int l) {return d(i-1,j-1,k-1,l-1);}
+    
+    //! Return const ref to an element
+    const T& operator()(int i, int j, int k, int l) const {return d(i-1,j-1,k-1,l-1);}
+
+    //! Return ref to underlying array
+    const multi4d<T>& ref() const {return d;}
+
+    //! Return ref to underlying array
+    multi4d<T>& ref() {return d;}
+
+
+  private:
+    multi4d<T> d;
+  };
+
+
+  //----------------------------------------------------------------------------------
+  //! 5d array, with 1-based indices
+  template<typename T> class Array5dO
+  {
+  public:
+    Array5dO() {}
+    explicit Array5dO(int n) {d.resize(n,n,n,n,n);}   // initialize
+    explicit Array5dO(int n5,int n4, int n3, int n2, int n1) {d.resize(n5,n4,n3,n2,n1);}   // initialize
+    ~Array5dO() {}
+
+    //! Copy constructor
+    Array5dO(const Array5dO& s): d(s.d) {}
+
+    void resize(int n5, int n4, int n3, int n2, int n1) {d.resize(n5,n4,n3,n2,n1);}
+    void resize(int n) {d.resize(n,n,n,n,n);}
+    int size() const {return d.size1();}
+    int size1() const {return d.size1();}
+    int size2() const {return d.size2();}
+    int size3() const {return d.size3();}
+    int size4() const {return d.size4();}
+    int size5() const {return d.size5();}
+
+    Array5dO& operator=(const Array5dO& s) {d = s.d; return *this;}
+
+    //! Equal operator uses underlying = of T
+    template<typename T1>
+    Array5dO<T>& operator=(const T1& s1) {d = s1; return *this;}
+
+    //! Return ref to an element
+    T& operator()(int i, int j, int k, int l, int m) {return d(i-1,j-1,k-1,l-1,m-1);}
+    
+    //! Return const ref to an element
+    const T& operator()(int i, int j, int k, int l, int m) const {return d(i-1,j-1,k-1,l-1,m-1);}
+
+    //! Return ref to underlying array
+    const multi5d<T>& ref() const {return d;}
+
+    //! Return ref to underlying array
+    multi5d<T>& ref() {return d;}
+
+
+  private:
+    multi5d<T> d;
+  };
+
+
   //---------------------------------------------------------------
   // Basic math support
   //
