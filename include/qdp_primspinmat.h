@@ -1282,8 +1282,8 @@ operator*(const GammaConstDP<4,10>&, const PSpinMatrix<T2,4>& r)
   {
     d.elem(0,i) =  r.elem(3,i);
     d.elem(1,i) = -r.elem(2,i);
-    d.elem(2,i) = -r.elem(1,i);
-    d.elem(3,i) =  r.elem(0,i);
+    d.elem(2,i) =  r.elem(1,i);
+    d.elem(3,i) = -r.elem(0,i);
   }
   
   return d;
@@ -1402,10 +1402,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConstDP<4,1>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) = timesMinusI(l.elem(i,3));
-    d.elem(i,1) = timesMinusI(l.elem(i,2));
-    d.elem(i,2) = timesI(l.elem(i,1));
-    d.elem(i,3) = timesI(l.elem(i,0));
+    d.elem(i,0) = timesI(l.elem(i,3));
+    d.elem(i,1) = timesI(l.elem(i,2));
+    d.elem(i,2) = timesMinusI(l.elem(i,1));
+    d.elem(i,3) = timesMinusI(l.elem(i,0));
   }
   
   return d;
@@ -1453,10 +1453,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConstDP<4,4>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) = timesMinusI(l.elem(i,2));
-    d.elem(i,1) = timesI(l.elem(i,3));
-    d.elem(i,2) = timesI(l.elem(i,0));
-    d.elem(i,3) = timesMinusI(l.elem(i,1));
+    d.elem(i,0) = timesI(l.elem(i,2));
+    d.elem(i,1) = timesMinusI(l.elem(i,3));
+    d.elem(i,2) = timesMinusI(l.elem(i,0));
+    d.elem(i,3) = timesI(l.elem(i,1));
   }
   
   return d;
@@ -1470,10 +1470,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConstDP<4,5>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) = -l.elem(i,1);
-    d.elem(i,1) =  l.elem(i,0);
-    d.elem(i,2) = -l.elem(i,3);
-    d.elem(i,3) =  l.elem(i,2);
+    d.elem(i,0) =  l.elem(i,1);
+    d.elem(i,1) = -l.elem(i,0);
+    d.elem(i,2) =  l.elem(i,3);
+    d.elem(i,3) = -l.elem(i,2);
   }
   
   return d;
@@ -1504,10 +1504,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConstDP<4,7>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) =  l.elem(i,2);
-    d.elem(i,1) =  l.elem(i,3);
-    d.elem(i,2) = -l.elem(i,0);
-    d.elem(i,3) = -l.elem(i,1);
+    d.elem(i,0) = -l.elem(i,2);
+    d.elem(i,1) = -l.elem(i,3);
+    d.elem(i,2) =  l.elem(i,0);
+    d.elem(i,3) =  l.elem(i,1);
   }
   
   return d;
@@ -1555,8 +1555,8 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConstDP<4,10>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) =  l.elem(i,3);
-    d.elem(i,1) = -l.elem(i,2);
+    d.elem(i,0) = -l.elem(i,3);
+    d.elem(i,1) =  l.elem(i,2);
     d.elem(i,2) = -l.elem(i,1);
     d.elem(i,3) =  l.elem(i,0);
   }
@@ -1606,10 +1606,10 @@ operator*(const PSpinMatrix<T2,4>& l, const GammaConstDP<4,13>&)
 
   for(int i=0; i < 4; ++i)
   {
-    d.elem(i,0) = -l.elem(i,1);
-    d.elem(i,1) =  l.elem(i,0);
-    d.elem(i,2) =  l.elem(i,3);
-    d.elem(i,3) = -l.elem(i,2);
+    d.elem(i,0) =  l.elem(i,1);
+    d.elem(i,1) = -l.elem(i,0);
+    d.elem(i,2) = -l.elem(i,3);
+    d.elem(i,3) =  l.elem(i,2);
   }
   
   return d;

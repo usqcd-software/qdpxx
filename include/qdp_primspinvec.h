@@ -1775,8 +1775,8 @@ operator*(const GammaConstDP<4,10>&, const PSpinVector<T2,4>& r)
 
   d.elem(0) =  r.elem(3);
   d.elem(1) = -r.elem(2);
-  d.elem(2) = -r.elem(1);
-  d.elem(3) =  r.elem(0);
+  d.elem(2) =  r.elem(1);
+  d.elem(3) = -r.elem(0);
   
   return d;
 }
