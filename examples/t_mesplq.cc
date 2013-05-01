@@ -16,7 +16,8 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,2,2,4};
+  // const int foo[] = {4,2,2,4};
+  const int foo[] = {32,4, 4, 4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);

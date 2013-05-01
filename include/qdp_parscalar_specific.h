@@ -357,6 +357,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 {
 //  cerr << "In evaluateSubset(olattice,olattice)" << endl;
 
+  QDP_info ("evaluate %s\n", __PRETTY_FUNCTION__);
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(dest, op, rhs);
   prof.time -= getClockTime();
@@ -2053,7 +2054,7 @@ public:
   OScalar<T1>
   operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign, int dir)
     {
-//    fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OScalar>,%d,%d)\n",isign,dir);
+      // fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OScalar>,%d,%d)\n",isign,dir);
 
       // For now, simply evaluate the expression and then do the map
       return bimapsa((isign+1)>>1,dir)(l);
@@ -2063,7 +2064,7 @@ public:
   OLattice<T1>
   operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign, int dir)
     {
-//    fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OLattice>,%d,%d)\n",isign,dir);
+      // fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OLattice>,%d,%d)\n",isign,dir);
 
       // For now, simply evaluate the expression and then do the map
       return bimapsa((isign+1)>>1,dir)(l);

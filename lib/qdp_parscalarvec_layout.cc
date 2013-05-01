@@ -253,7 +253,7 @@ namespace QDP
 
       // This implementation requires there be a multiple of INNER_LEN sites 
       if (_layout.vol % INNER_LEN != 0)
-	QDP_error_exit("Layout::create() - this scalarvec implementation requires there be a multiple of %d sites", INNER_LEN);
+	QDP_error_exit("Layout::create() - this parscalarvec implementation requires there be a multiple of %d sites", INNER_LEN);
 
 
       // Simple check - we insist here that the total volume is divisible

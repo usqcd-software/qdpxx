@@ -1476,7 +1476,7 @@ struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
     const CTag &c) 
   {
     EvalLeaf1 ff(expr.operation().goff[f.val1()]);
-//  fprintf(stderr,"ForEach<Unary<FnMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
+    //    fprintf(stderr,"ForEach<Unary<FnMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
 
     return Combine1<TypeA_t, FnMap, CTag>::
       combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),

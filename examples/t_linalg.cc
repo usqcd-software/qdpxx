@@ -16,10 +16,26 @@ int main(int argc, char *argv[])
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  // Setup the layout
-  const int foo[] = {32,32,32,32};
   multi1d<int> nrow(Nd);
-  nrow = foo;  // Use only Nd elements
+
+  if (argc >= 5) {
+    nrow[0] = atoi(argv[1]);
+    nrow[1] = atoi(argv[2]);
+    nrow[2] = atoi(argv[3]);
+    nrow[3] = atoi(argv[4]);
+    
+    QDP_info ("Lattice size %dx%dx%dx%d\n", nrow[0], nrow[1], nrow[2], nrow[3]);
+  }
+  else {
+    // Setup the layout
+#if defined(ARCH_PARSCALAR) || defined (ARCH_PARSCALARVEC)
+    // const int foo[] = {32,32,32,32};
+    const int foo[] = {32,16,16,16};
+#else
+    const int foo[] = {32,32,32,32};
+#endif
+    nrow = foo;  // Use only Nd elements
+  }
   Layout::setLattSize(nrow);
   Layout::create();
 
@@ -55,7 +71,7 @@ int main(int argc, char *argv[])
   m1 = zero;
   gaussian(m2);
 
-#if defined(ARCH_SCALARVEC)
+#if defined(ARCH_SCALARVEC) || defined(ARCH_PARSCALARVEC)
   int istart = all.start() >> INNER_LOG;
   int iend = all.end() >> INNER_LOG;
   for(int i=istart; i <= iend; i++) { 
@@ -79,7 +95,7 @@ int main(int argc, char *argv[])
   while(time <= 1000000) { 
     swatch.start();
     for(int j=0; j < icnt; j++) {
-#if defined(ARCH_SCALARVEC)
+#if defined(ARCH_SCALARVEC)|| defined(ARCH_PARSCALARVEC)
       int istart = all.start() >> INNER_LOG;
       int iend = all.end() >> INNER_LOG;
       for(int i=istart; i <= iend; i++) { 
@@ -131,7 +147,8 @@ int main(int argc, char *argv[])
 #endif
   }
 
-  double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+  //  double rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+  double rescale = 1000*1000 / double(Layout::vol()) / icnt;
 
   tt *= rescale;
   int Nflops = Nc*Nc*(4*Nc + (4*Nc-2));
@@ -354,7 +371,9 @@ int main(int argc, char *argv[])
 #endif
   }
 
-  rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+
+  //  rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+  rescale = 1000*1000 / double(Layout::vol()) / icnt;
 
   tt *= rescale;
 #if defined(TIME_OPS)
@@ -401,7 +420,8 @@ int main(int argc, char *argv[])
 #endif
   }
 
-  rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+  //  rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+  rescale = 1000*1000 / double(Layout::vol()) / icnt;
 
   tt *= rescale;
 #if defined(TIME_OPS)
@@ -437,7 +457,8 @@ int main(int argc, char *argv[])
 #endif
   }
 
-  rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+  //  rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+  rescale = 1000*1000 / double(Layout::vol()) / icnt;
 
   tt *= rescale;
 #if defined(TIME_OPS)
@@ -487,7 +508,8 @@ int main(int argc, char *argv[])
 #endif
   }
 
-  rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+  //  rescale = 1000*1000 / double(Layout::sitesOnNode()) / icnt;
+  rescale = 1000*1000 / double(Layout::vol()) / icnt;
 
   tt *= rescale;
 #if defined(TIME_OPS)

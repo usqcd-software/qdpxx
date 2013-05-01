@@ -44,7 +44,7 @@ void Map::make(const MapFunc& func)
 
 #if 0
   for(int ipos=0; ipos < Layout::vol(); ++ipos)
-    fprintf(stderr,"goffsets(%d,%d,%d) = %d\n",ipos,goffsets(ipos));
+    fprintf(stderr,"goffsets(%d) = %d\n",ipos,goffsets(ipos));
 #endif
 }
 

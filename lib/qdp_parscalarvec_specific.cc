@@ -74,15 +74,31 @@ void Map::make(const MapFunc& func)
   }
 
 #if QDP_DEBUG >= 3
- {
+  {
    for(int linear=0; linear < nodeSites; ++linear)
    {
      QDP_info("goffsets(%d) = %d",linear,goffsets(linear));
      QDP_info("srcnode(%d) = %d",linear,srcnode(linear));
      QDP_info("dstnode(%d) = %d",linear,dstnode(linear));
    }
- }
+  }
 #endif
+
+  // build a position for a surface site to receive data from src
+  // this deals with whole surface. CB could only use 1/2
+  recv_pos.resize (nodeSites);
+  int rpos = 0;
+  for(int linear=0; linear < nodeSites; ++linear) {
+    if (srcnode(linear) != my_node) { // this is receiving site
+      recv_pos[linear] = rpos++;
+#if QDP_DEBUG >= 3
+      QDP_info ("receiving position %d and outter %d = %d\n", linear, linear >> INNER_LOG, recv_pos[linear]);
+#endif
+    }
+    else {
+      recv_pos[linear] = -1;
+    }
+  }
 
   // Return a list of the unique nodes in the list
   // NOTE: my_node may be included as a unique node, so one extra
@@ -220,6 +236,9 @@ void Map::make(const MapFunc& func)
   // If we allow multiple dest nodes, then soffsets here needs to be
   // an array of arrays
   soffsets.resize(destnodes_num[0]);
+
+  // build a position for a surface site to pack data to send buffer
+  send_pos.resize (nodeSites);
   
   // Loop through sites on my *destination* node - here I assume all nodes have
   // the same number of sites. Mimic the gather pattern needed on that node and
@@ -232,16 +251,19 @@ void Map::make(const MapFunc& func)
     int fnode = Layout::nodeNumber(fcoord);
     int fline = Layout::linearSiteIndex(fcoord);
 
-    if (fnode == my_node)
+    if (fnode == my_node) {
+      send_pos[fline] = si;
       soffsets[si++] = fline;
+    }
+    else
+      send_pos[fline] = -1;
   }
 
 #if QDP_DEBUG >= 3
   // Debugging
   for(int i=0; i < soffsets.size(); ++i)
-    QDP_info("soffsets(%d) = %d",i,soffsets(i));
+    QDP_info("soffsets(%d) = %d send_pos(%d) = %d",i,soffsets(i), soffsets(i), send_pos(soffsets(i)));
 #endif
-
 
 #if QDP_DEBUG >= 3
   QDP_info("exiting Map::make");

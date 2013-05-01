@@ -135,6 +135,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 	      const Subset& s)
 {
 //  cerr << "In evaluateUnorderedSubet(olattice,oscalar)\n";
+  int num_threads = 1;
 
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(dest, op, rhs);
@@ -145,26 +146,38 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
   if (s.hasOrderedRep()) {
     const int istart = s.start() >> INNER_LOG;
     const int iend   = s.end()   >> INNER_LOG;
-    int i = 0;
 
-#pragma omp parallel for
-    for(i=istart; i <= iend; ++i) {
-      //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+#pragma omp parallel shared(istart, iend, num_threads) default(shared)
+    {
+      num_threads = omp_get_num_threads ();
+      int myId = omp_get_thread_num();
+      int low = istart + (iend - istart + 1) * myId/num_threads;
+      int high = istart + (iend - istart + 1) * (myId + 1)/num_threads;
+
+      for(int i= low; i < high; ++i) {
+	//    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
+	op(dest.elem(i), forEach(rhs, EvalLeaf3(0, low, high - 1), OpCombine()));
+      }
     }
   }
   else {
+    // this part of code has never been tested: need more study
     const int *tab = s.siteTable().slice();
-    int j = 0;
 
-#pragma omp parallel for
-    for(j=0; j < s.numSiteTable(); ++j) {
-      int i = tab[j];
-      int outersite = i >> INNER_LOG;
-      int innersite = i & ((1 << INNER_LOG)-1);
-
-      //    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+#pragma omp parallel shared(tab, num_threads) default(shared)
+    {
+      num_threads = omp_get_num_threads ();
+      int myId = omp_get_thread_num();
+      int low = s.numSiteTable() * myId/num_threads;
+      int high = s.numSiteTable() * (myId + 1)/num_threads;
+      
+      for(int j = low; j < high; ++j) {
+	int i = tab[j];
+	int outersite = i >> INNER_LOG;
+	int innersite = i & ((1 << INNER_LOG)-1);
+	//    fprintf(stderr,"eval(olattice,oscalar): site %d\n",i);
+	op(dest.elem(outersite), forEach(rhs, EvalLeaf3(0, low >> INNER_LOG, high >> INNER_LOG), OpCombine()));
+      }
     }
   }
 #else
@@ -189,40 +202,57 @@ template<class T, class T1, class Op, class RHS>
 void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
 	      const Subset& s)
 {
-//  cerr << "In evaluateSubset(olattice,olattice)" << endl;
+  int num_threads = 1;
 
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(dest, op, rhs);
   prof.time -= getClockTime();
 #endif
 
+  QDP_info ("evalaue %s\n", __PRETTY_FUNCTION__);
+
 #if ! defined(QDP_NOT_IMPLEMENTED)
   // General form of loop structure
   if (s.hasOrderedRep()) {
     const int istart = s.start() >> INNER_LOG;
     const int iend   = s.end()   >> INNER_LOG;
-    int i = 0;
 
-#pragma omp parallel for
-    for(i=istart; i <= iend; ++i) {
-      //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+#pragma omp parallel shared(istart, iend, num_threads) default(shared)
+    {
+      num_threads = omp_get_num_threads (); 
+      int myId = omp_get_thread_num();
+      int low = istart + (iend - istart + 1) * myId/num_threads;
+      int high = istart + (iend - istart + 1) * (myId + 1)/num_threads;
+
+      for(int i = low; i < high; ++i) {
+	// QDP_info("Thread %d: eval(olattice,olattice): site %d low %d high %d\n", myId, i, low, high);
+	op(dest.elem(i), forEach(rhs, EvalLeaf3(i, low, high - 1), OpCombine()));
+      }
     }
   }
- else {
+  else {
+    // this part of code need to test
     const int *tab = s.siteTable().slice();
-    int j;
 
-#pragma omp parallel for
-    for(j=0; j < s.numSiteTable(); ++j) {
-      int i = tab[j];
-      int outersite = i >> INNER_LOG;
-      int innersite = i & ((1 << INNER_LOG)-1);
+#pragma omp parallel shared(tab, num_threads) default(shared) 
+    {
+      num_threads = omp_get_num_threads ();
+      int myId = omp_get_thread_num();
+      int low = s.numSiteTable() * myId/num_threads;
+      int high = s.numSiteTable() * (myId + 1)/num_threads;
+      
+      for(int j = low; j < high; ++j) {
+	int i = tab[j];
+	int outersite = i >> INNER_LOG;
+	int innersite = i & ((1 << INNER_LOG)-1);
 
-      //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+	//    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+	op(dest.elem(outersite), forEach(rhs,
+					 EvalLeaf3(outersite, low >> INNER_LOG, high >> INNER_LOG),
+					 OpCombine()));
+      }
     }
-  }    
+  }  
 #else
   QDP_error("evaluateSubset not implemented");
 #endif
@@ -1068,21 +1098,11 @@ QDP_insert(OLattice<T>& dest,
 
 //-----------------------------------------------------------------------------
 // Map
-//
+//-----------------------------------------------------------------------------
 // Empty map
-struct FnMap
-{
-  PETE_EMPTY_CONSTRUCTORS(FnMap)
-};
 
-#if defined(QDP_USE_PROFILING)   
-template <>
-struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
-{ 
-  static void visit(FnMap op, PrintTag t) 
-    { t.os_m << "shift"; }
-};
-#endif
+// Forward Decleration of FnMap
+struct FnMap;
 
 
 //! General permutation map class for communications
@@ -1110,421 +1130,77 @@ public:
    *
    * Shifts on a OLattice are non-trivial.
    *
-   * Notice, this implementation does not allow an Inner grid
+   * Notice, this implementation supports an inner grid
    */
-  template<class T1>
-  OLattice<T1>
-  operator()(const OLattice<T1> & l)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l)
     {
-      OLattice<T1> d;
-      int nodeSites = Layout::sitesOnNode();
-
-#if QDP_DEBUG >= 3
-      QDP_info("Map()");
-#endif
-
-      typedef typename UnaryReturn<T1, FnGetSite>::Type_t  Site_t;  // strip-off inner-grid
-
-      if (offnodeP)
-      {
-	// Off-node communications required
-#if QDP_DEBUG >= 3
-	QDP_info("Map: off-node communications required");
-#endif
-
-	// Eventually these declarations should move into d - the return object
-	typedef Site_t * T1ptr;
-
-
-	Site_t **dest = new T1ptr[nodeSites];
-	if( dest == 0x0 ) { 
-	  QDP_error_exit("Unable to new memory in OLattice<T1>::operator()\n");
-        } 
-	QMP_msgmem_t msg[2];
-	QMP_msghandle_t mh_a[2], mh;
-
-	//------------
-	// yukky hack - transform all source to packed format
-	Site_t *ll = new Site_t[nodeSites]; 
-        if ( ll == 0x0 ) { 
-	   QDP_error_exit("Unable to new memory in OLattice<T1>::operator()\n");
-	}
-	for(int i=0; i < nodeSites; ++i) 
-	{
-	  int iouter = i >> INNER_LOG;
-	  int iinner = i & (INNER_LEN - 1);
-
-	  ll[i] = getSite(l.elem(iouter), iinner);
-	}
-	//-------------
-
-
-	int dstnum = destnodes_num[0]*sizeof(Site_t);
-	int srcnum = srcenodes_num[0]*sizeof(Site_t);
-	QMP_mem_t* send_buf_mem_t;
-	QMP_mem_t* recv_buf_mem_t;
-
-	send_buf_mem_t = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE,(QMP_MEM_COMMS|QMP_MEM_FAST)); // packed data to send
-	if( send_buf_mem_t == 0x0 ) { 
-	   send_buf_mem_t = QMP_allocate_aligned_memory(dstnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
-	   if( send_buf_mem_t == 0x0) { 
-	     QDP_error_exit("QMP_allocate_aligned_memory failed (send_buf_mem_t)\n");
-           }
-        }
-
-	Site_t* send_buf=(Site_t *)QMP_get_memory_pointer(send_buf_mem_t);
-	if( send_buf == 0x0 ) { 
-	   QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (send_buf)\n");
-        }	
-
-	recv_buf_mem_t = QMP_allocate_aligned_memory(srcnum,QDP_ALIGNMENT_SIZE,(QMP_MEM_COMMS|QMP_MEM_FAST)); // packed receive data
-	if( recv_buf_mem_t == 0x0 ) { 
-	   recv_buf_mem_t = QMP_allocate_aligned_memory(srcnum, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
-	   if( recv_buf_mem_t == 0x0 ) {
-	     QDP_error_exit("QMP_allocate_aligned_memory failed (recv_buf_mem_t)\n");
-	   }
-        }
-	Site_t* recv_buf=(Site_t *)QMP_get_memory_pointer(recv_buf_mem_t);
-	if (recv_buf == 0x0) { 
-	  QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n");
-        }
-
-	const int my_node = Layout::nodeNumber();
-
-	// Gather the face of data to send
-	// For now, use the all subset
-	for(int si=0; si < soffsets.size(); ++si) 
-	{
-#if QDP_DEBUG >= 3
-	  QDP_info("Map_scatter_send(buf[%d],olattice[%d])",si,soffsets[si]);
-#endif
-
-	  send_buf[si] = ll[soffsets[si]];
-	}
-
-	// Set the dest gather pointers
-	// For now, use the all subset
-	for(int i=0, ri=0; i < nodeSites; ++i) 
-	{
-	  if (srcnode[i] != my_node)
-	  {
-#if QDP_DEBUG >= 3
-	    QDP_info("Map_gather_recv(olattice[%d],recv[%d])",i,ri);
-#endif
-
-	    dest[i] = &(recv_buf[ri++]);
-	  }
-	  else
-	  {
-#if QDP_DEBUG >= 3
-	    QDP_info("Map_gather_onnode(olattice[%d],olattice[%d])",i,goffsets[i]);
-#endif
-
-	    dest[i] = &(ll[goffsets[i]]);
-	  }
-	}
-
-	QMP_status_t err;
-
-#if QDP_DEBUG >= 3
-	QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
-#endif
-
-	msg[0]  = QMP_declare_msgmem(recv_buf, srcnum);
-	if( msg[0] == (QMP_msgmem_t)NULL ) { 
-	  QDP_error_exit("QMP_declare_msgmem for msg[0] failed in Map::operator()\n");
-	}
-	msg[1]  = QMP_declare_msgmem(send_buf, dstnum);
-	if( msg[1] == (QMP_msgmem_t)NULL ) {
-	  QDP_error_exit("QMP_declare_msgmem for msg[1] failed in Map::operator()\n");
-	}
-
-	mh_a[0] = QMP_declare_receive_from(msg[0], srcenodes[0], 0);
-	if( mh_a[0] == (QMP_msghandle_t)NULL ) { 
-	  QDP_error_exit("QMP_declare_receive_from for mh_a[0] failed in Map::operator()\n");
-	}
-
-	mh_a[1] = QMP_declare_send_to(msg[1], destnodes[0], 0);
-	if( mh_a[1] == (QMP_msghandle_t)NULL ) {
-	  QDP_error_exit("QMP_declare_send_to for mh_a[1] failed in Map::operator()\n");
-	}
-
-	mh      = QMP_declare_multiple(mh_a, 2);
-	if( mh == (QMP_msghandle_t)NULL ) { 
-	  QDP_error_exit("QMP_declare_multiple for mh failed in Map::operator()\n");
-	}
-
-
-#if QDP_DEBUG >= 3
-	QDP_info("Map: calling start send=%d recv=%d",destnodes[0],srcenodes[0]);
-#endif
-
-	// Launch the faces
-	if ((err = QMP_start(mh)) != QMP_SUCCESS)
-	  QDP_error_exit(QMP_error_string(err));
-
-#if QDP_DEBUG >= 3
-	QDP_info("Map: calling wait");
-#endif
-
-	// Wait on the faces
-	if ((err = QMP_wait(mh)) != QMP_SUCCESS)
-	  QDP_error_exit(QMP_error_string(err));
-
-#if QDP_DEBUG >= 3
-	QDP_info("Map: calling free msgs");
-#endif
-
-	/* QMP_free_msghandle(mh_a[1]); */
-	/* QMP_free_msghandle(mh_a[0]); */
-	QMP_free_msghandle(mh);
-	QMP_free_msgmem(msg[1]);
-	QMP_free_msgmem(msg[0]);
-
-	// Scatter the data into the destination
-	// Some of the data maybe in receive buffers
-	// For now, use the all subset
-	for(int i=0; i < nodeSites; ++i) 
-	{
-#if QDP_DEBUG >= 3
-	  QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
-#endif
-	  int iouter = i >> INNER_LOG;
-	  int iinner = i & (INNER_LEN-1);
-
-	  copy_site(d.elem(iouter), iinner, *(dest[i]));    // slow - should use gather_sites
-	}
-
-	// Cleanup
-	QMP_free_memory(recv_buf_mem_t);
-	QMP_free_memory(send_buf_mem_t);
-	delete[] ll;
-	delete[] dest;
-
-#if QDP_DEBUG >= 3
-	QDP_info("finished cleanup");
-#endif
-      }
-      else 
-      {
-	// No off-node communications - copy on node
-#if QDP_DEBUG >= 3
-	QDP_info("Map: copy on node - no communications, try this");
-#endif
-
-	// *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
-	// For now, use the all subset
-#if INNER_LOG == 2
-
-	for(int i=0; i < nodeSites; i+= INNER_LEN) 
-	{
-	  int ii = i >> INNER_LOG;
-	  int o0 = goffsets[i+0] >> INNER_LOG;
-	  int i0 = goffsets[i+0] & (INNER_LEN - 1);
-
-	  int o1 = goffsets[i+1] >> INNER_LOG;
-	  int i1 = goffsets[i+1] & (INNER_LEN - 1);
-
-	  int o2 = goffsets[i+2] >> INNER_LOG;
-	  int i2 = goffsets[i+2] & (INNER_LEN - 1);
-
-	  int o3 = goffsets[i+3] >> INNER_LOG;
-	  int i3 = goffsets[i+3] & (INNER_LEN - 1);
-
-#if QDP_DEBUG >= 3
-	  QDP_info("Map(lattice[%d]=lattice([%d,%d],[%d,%d],[%d,%d],[%d,%d])",
-		   ii,o0,i0,o1,i1,o2,i2,o3,i3);
-#endif
-
-	  // Gather 4 inner-grid sites together
-	  gather_sites(d.elem(ii),
-		       l.elem(o0),i0,
-		       l.elem(o1),i1,
-		       l.elem(o2),i2,
-		       l.elem(o3),i3);
-	}
-#elif INNER_LOG == 3
-	// *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
-	// *** This is for AVX ***
-	// For now, use the all subset
-	const int vvol = Layout::sitesOnNode();
-	for(int i=0; i < vvol; i+= INNER_LEN) 
-	  {
-	    int ii = i >> INNER_LOG;
-	    int o0 = goffsets[i+0] >> INNER_LOG;
-	    int i0 = goffsets[i+0] & (INNER_LEN - 1);
-
-	    int o1 = goffsets[i+1] >> INNER_LOG;
-	    int i1 = goffsets[i+1] & (INNER_LEN - 1);
-
-	    int o2 = goffsets[i+2] >> INNER_LOG;
-	    int i2 = goffsets[i+2] & (INNER_LEN - 1);
-
-	    int o3 = goffsets[i+3] >> INNER_LOG;
-	    int i3 = goffsets[i+3] & (INNER_LEN - 1);
-
-	    int o4 = goffsets[i+4] >> INNER_LOG;
-	    int i4 = goffsets[i+4] & (INNER_LEN - 1);
-
-	    int o5 = goffsets[i+5] >> INNER_LOG;
-	    int i5 = goffsets[i+5] & (INNER_LEN - 1);
-
-	    int o6 = goffsets[i+6] >> INNER_LOG;
-	    int i6 = goffsets[i+6] & (INNER_LEN - 1);
-
-	    int o7 = goffsets[i+7] >> INNER_LOG;
-	    int i7 = goffsets[i+7] & (INNER_LEN - 1);
-
-#if QDP_DEBUG >= 3
-	    QDP_info("Map(lattice[%d]=lattice([%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d])",
-		     ii,o0,i0,o1,i1,o2,i2,o3,i3,o4,i4,o5,i5,o6,i6,o7,i7);
-#endif
-
-	// Gather 8 inner-grid sites together
-	    gather_sites(d.elem(ii),
-			 l.elem(o0),i0,
-			 l.elem(o1),i1,
-			 l.elem(o2),i2,
-			 l.elem(o3),i3,
-			 l.elem(o4),i4,
-			 l.elem(o5),i5,
-			 l.elem(o6),i6,
-			 l.elem(o7),i7);
-	  }
-
-#elif INNER_LOG == 4
-	// *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
-	// *** This is for MIC ***
-	// For now, use the all subset
-	const int vvol = Layout::sitesOnNode();
-	for(int i=0; i < vvol; i+= INNER_LEN) 
-	  {
-	    int ii = i >> INNER_LOG;
-	    int o0 = goffsets[i+0] >> INNER_LOG;
-	    int i0 = goffsets[i+0] & (INNER_LEN - 1);
-
-	    int o1 = goffsets[i+1] >> INNER_LOG;
-	    int i1 = goffsets[i+1] & (INNER_LEN - 1);
-
-	    int o2 = goffsets[i+2] >> INNER_LOG;
-	    int i2 = goffsets[i+2] & (INNER_LEN - 1);
-
-	    int o3 = goffsets[i+3] >> INNER_LOG;
-	    int i3 = goffsets[i+3] & (INNER_LEN - 1);
-
-	    int o4 = goffsets[i+4] >> INNER_LOG;
-	    int i4 = goffsets[i+4] & (INNER_LEN - 1);
-
-	    int o5 = goffsets[i+5] >> INNER_LOG;
-	    int i5 = goffsets[i+5] & (INNER_LEN - 1);
-
-	    int o6 = goffsets[i+6] >> INNER_LOG;
-	    int i6 = goffsets[i+6] & (INNER_LEN - 1);
-
-	    int o7 = goffsets[i+7] >> INNER_LOG;
-	    int i7 = goffsets[i+7] & (INNER_LEN - 1);
-
-	    int o8 = goffsets[i+8] >> INNER_LOG;
-	    int i8 = goffsets[i+8] & (INNER_LEN - 1);
-
-	    int o9 = goffsets[i+9] >> INNER_LOG;
-	    int i9 = goffsets[i+9] & (INNER_LEN - 1);
-
-	    int o10 = goffsets[i+10] >> INNER_LOG;
-	    int i10 = goffsets[i+10] & (INNER_LEN - 1);
-
-	    int o11 = goffsets[i+11] >> INNER_LOG;
-	    int i11 = goffsets[i+11] & (INNER_LEN - 1);
-
-	    int o12 = goffsets[i+12] >> INNER_LOG;
-	    int i12 = goffsets[i+12] & (INNER_LEN - 1);
-
-	    int o13 = goffsets[i+13] >> INNER_LOG;
-	    int i13 = goffsets[i+13] & (INNER_LEN - 1);
-
-	    int o14 = goffsets[i+14] >> INNER_LOG;
-	    int i14 = goffsets[i+14] & (INNER_LEN - 1);
-
-	    int o15 = goffsets[i+15] >> INNER_LOG;
-	    int i15 = goffsets[i+15] & (INNER_LEN - 1);
-
-#if QDP_DEBUG >= 3
-	    QDP_info("Map(lattice[%d]=lattice([%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d])",
-		     ii,o0,i0,o1,i1,o2,i2,o3,i3,o4,i4,o5,i5,o6,i6,o7,i7,
-		     o8,i8,o9,i9,o10,i10,o11,i11,o12,i12,o13,i13,o14,i14,o15,i15);
-#endif
-
-	    // Gather 16 inner-grid sites together
-	    gather_sites(d.elem(ii),
-			 l.elem(o0),i0,
-			 l.elem(o1),i1,
-			 l.elem(o2),i2,
-			 l.elem(o3),i3,
-			 l.elem(o4),i4,
-			 l.elem(o5),i5,
-			 l.elem(o6),i6,
-			 l.elem(o7),i7,
-			 l.elem(o8),i8,
-			 l.elem(o9),i9,
-			 l.elem(o10),i10,
-			 l.elem(o11),i11,
-			 l.elem(o12),i12,
-			 l.elem(o13),i13,
-			 l.elem(o14),i14,
-			 l.elem(o15),i15);
-	  }
-#else
-#error "Map: this inner grid length is not supported - easy to fix"
-#endif
-
-      }
-
-#if QDP_DEBUG >= 3
-      QDP_info("exiting Map()");
-#endif
-
-      return d;
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(this),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
     }
 
 
-  template<class T1>
-  OScalar<T1>
-  operator()(const OScalar<T1> & l)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l)
     {
-      return l;
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(this),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
-
-  template<class RHS, class T1>
-  OScalar<T1>
-  operator()(const QDPExpr<RHS,OScalar<T1> > & l)
-    {
-      // For now, simply evaluate the expression and then do the map
-      typedef OScalar<T1> C1;
-
-//    fprintf(stderr,"map(QDPExpr<OScalar>)\n");
-      OScalar<T1> d = this->operator()(C1(l));
-
-      return d;
-    }
-
-  template<class RHS, class T1>
-  OLattice<T1>
-  operator()(const QDPExpr<RHS,OLattice<T1> > & l)
-    {
-      // For now, simply evaluate the expression and then do the map
-      typedef OLattice<T1> C1;
-
-//    fprintf(stderr,"map(QDPExpr<OLattice>)\n");
-      OLattice<T1> d = this->operator()(C1(l));
-
-      return d;
-    }
-
 
 public:
   //! Accessor to offsets
   const multi1d<int>& goffset() const {return goffsets;}
   const multi1d<int>& soffset() const {return soffsets;}
+  // offnode
+  bool offnodeComm (void) const {return offnodeP;}
+  // number of destination sites
+  int numDestSites (void) const {return destnodes_num[0];}
+  // number of source sites
+  int numSrcSites (void) const {return srcenodes_num[0];}
+  // source nodes
+  int qmpsrcNode() const {return srcenodes[0];}
+  // dest nodes
+  int qmpdestNode() const {return destnodes[0];}
+
+  // check whether a site is a recieving surface site
+  int isReceivingSite (int rsite) const 
+  {
+    const int my_node = Layout::nodeNumber();
+    if (srcnode[rsite] != my_node)
+      return 1;
+
+    return 0;
+  }
+
+  // check whether a site is on a surface
+  // this site may not send anything, but we pack data anyway
+  int isSendingSite (int ssite) const 
+  {
+    if (send_pos[ssite] != -1)
+      return 1;
+
+    return 0;
+  }
+
+  // return a right receiving position for a surface site
+  int receivingPosition (int rsite) const
+  {
+    return recv_pos[rsite];
+  }
+
+  // return a right sending position inside send buffer for a surface site
+  int sendingPosition (int ssite) const
+  {
+    return send_pos[ssite];
+  }
 
 private:
   //! Hide copy constructor
@@ -1550,8 +1226,553 @@ private:
   multi1d<int> srcenodes_num;
   multi1d<int> destnodes_num;
 
+  // a surface receiving site position to receive data
+  multi1d<int> recv_pos;
+
+  // a surface sending site position inside the send buffer
+  multi1d<int> send_pos;
+
   // Indicate off-node communications is needed;
   bool offnodeP;
+};
+
+
+struct FnMap
+{
+  PETE_EMPTY_CONSTRUCTORS(FnMap)
+  
+  // Internel pointer for a real map
+  const Map *map;
+  
+  // shift direction and sign
+  int isign, dir;
+
+  // dumb constructor for fnmap: make compiler happy
+  FnMap (const Map* m)
+    :map (m), isign (1), dir (0)
+  {
+    // empty
+  }
+
+  FnMap (const Map* m, int sign, int d)
+    : map (m), isign (sign), dir (d)
+  {
+    // empty
+  }
+
+  template<class T>
+  inline typename UnaryReturn<T, FnMap>::Type_t
+  operator()(const T &a) const
+  {
+    return (a);
+  }
+};
+
+#if defined(QDP_USE_PROFILING)   
+template <>
+struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
+{ 
+  static void visit(FnMap op, PrintTag t) 
+    { t.os_m << "shift"; }
+};
+#endif
+
+
+//----------------------------------------------------------------------------
+// Leaf functor containing an array of offsets, map and send recv buffers
+// First 3 integers are inherited from EvalLeaf3
+//----------------------------------------------------------------------------
+struct EvalLeaf5Comm
+{
+  int i1_m, i2_m, i3_m, i4_m, i5_m;
+  const Map *map_;
+
+  inline EvalLeaf5Comm (int i1, int i2, int i3, 
+			int i4, int i5,
+			const Map* m)
+    : i1_m(i1), i2_m(i2), i3_m(i3), i4_m(i4), i5_m(i5),
+      map_(m) { }
+  inline int val1() const { return i1_m; }
+  inline int val2() const { return i2_m; }
+  inline int val3() const { return i3_m; }
+  inline int val4() const { return i4_m; }
+  inline int val5() const { return i5_m; }
+  inline const Map* map() const { return map_; }
+};
+
+
+//-----------------------------------------------------------------------------
+// Specialization of LeafFunctor class for applying the EvalLeaf5Comm
+// tag to a QDPType. The apply method simply returns the array
+// evaluated at the point.
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Currently, x-direction is the direction that is vectorized. Any shift
+// along the other directions can be easilly done by using nearest neighbor
+// vectorized data. For shifting along x direction, we need to reconstruct
+// a new element containing inner-data
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+//      Gather data for x direction
+//-----------------------------------------------------------------------------
+template <class T, class C>
+void gather_along_x (const QDPType<T, C>& a, int old_inner_site, 
+		     const int* offsets,
+		     T& ret)
+{
+  int i = old_inner_site;
+#if INNER_LOG == 2
+  int o0 = offsets[i+0] >> INNER_LOG;
+  int i0 = offsets[i+0] & (INNER_LEN - 1);
+
+  int o1 = offsets[i+1] >> INNER_LOG;
+  int i1 = offsets[i+1] & (INNER_LEN - 1);
+    
+  int o2 = offsets[i+2] >> INNER_LOG;
+  int i2 = offsets[i+2] & (INNER_LEN - 1);
+
+  int o3 = offsets[i+3] >> INNER_LOG;
+  int i3 = offsets[i+3] & (INNER_LEN - 1);
+
+  // Gather 4 inner-grid sites together
+  gather_sites(ret,
+	       a.elem(o0),i0,
+	       a.elem(o1),i1,
+	       a.elem(o2),i2,
+	       a.elem(o3),i3);
+
+#elif INNER_LOG == 3
+  int o0 = offsets[i+0] >> INNER_LOG;
+  int i0 = offsets[i+0] & (INNER_LEN - 1);
+  
+  int o1 = offsets[i+1] >> INNER_LOG;
+  int i1 = offsets[i+1] & (INNER_LEN - 1);
+  
+  int o2 = offsets[i+2] >> INNER_LOG;
+  int i2 = offsets[i+2] & (INNER_LEN - 1);
+  
+  int o3 = offsets[i+3] >> INNER_LOG;
+  int i3 = offsets[i+3] & (INNER_LEN - 1);
+
+  int o4 = offsets[i+4] >> INNER_LOG;
+  int i4 = offsets[i+4] & (INNER_LEN - 1);
+  
+  int o5 = offsets[i+5] >> INNER_LOG;
+  int i5 = offsets[i+5] & (INNER_LEN - 1);
+      
+  int o6 = offsets[i+6] >> INNER_LOG;
+  int i6 = offsets[i+6] & (INNER_LEN - 1);
+
+  int o7 = offsets[i+7] >> INNER_LOG;
+  int i7 = offsets[i+7] & (INNER_LEN - 1);
+  gather_sites (ret,
+		a.elem(o0),i0,
+		a.elem(o1),i1,
+		a.elem(o2),i2,
+		a.elem(o3),i3,
+		a.elem(o4),i4,
+		a.elem(o5),i5,
+		a.elem(o6),i6,
+		a.elem(o7),i7);
+
+#elif INNER_LOG == 4
+  int o0 = offsets[i+0] >> INNER_LOG;
+  int i0 = offsets[i+0] & (INNER_LEN - 1);
+
+  int o1 = offsets[i+1] >> INNER_LOG;
+  int i1 = offsets[i+1] & (INNER_LEN - 1);
+      
+  int o2 = offsets[i+2] >> INNER_LOG;
+  int i2 = offsets[i+2] & (INNER_LEN - 1);
+    
+  int o3 = offsets[i+3] >> INNER_LOG;
+  int i3 = offsets[i+3] & (INNER_LEN - 1);
+
+  int o4 = offsets[i+4] >> INNER_LOG;
+  int i4 = offsets[i+4] & (INNER_LEN - 1);
+
+  int o5 = offsets[i+5] >> INNER_LOG;
+  int i5 = offsets[i+5] & (INNER_LEN - 1);
+
+  int o6 = offsets[i+6] >> INNER_LOG;
+  int i6 = offsets[i+6] & (INNER_LEN - 1);
+
+  int o7 = offsets[i+7] >> INNER_LOG;
+  int i7 = offsets[i+7] & (INNER_LEN - 1);
+
+  int o8 = offsets[i+8] >> INNER_LOG;
+  int i8 = offsets[i+8] & (INNER_LEN - 1);
+      
+  int o9 = offsets[i+9] >> INNER_LOG;
+  int i9 = offsets[i+9] & (INNER_LEN - 1);
+
+  int o10 = offsets[i+10] >> INNER_LOG;
+  int i10 = offsets[i+10] & (INNER_LEN - 1);
+
+  int o11 = offsets[i+11] >> INNER_LOG;
+  int i11 = offsets[i+11] & (INNER_LEN - 1);
+
+  int o12 = offsets[i+12] >> INNER_LOG;
+  int i12 = offsets[i+12] & (INNER_LEN - 1);
+
+  int o13 = offsets[i+13] >> INNER_LOG;
+  int i13 = offsets[i+13] & (INNER_LEN - 1);
+
+  int o14 = offsets[i+14] >> INNER_LOG;
+  int i14 = offsets[i+14] & (INNER_LEN - 1);
+
+  int o15 = offsets[i+15] >> INNER_LOG;
+  int i15 = offsets[i+15] & (INNER_LEN - 1);
+
+  // Gather 16 inner-grid sites together
+  gather_sites(ret,
+	       a.elem(o0),i0,
+	       a.elem(o1),i1,
+	       a.elem(o2),i2,
+	       a.elem(o3),i3,
+	       a.elem(o4),i4,
+	       a.elem(o5),i5,
+	       a.elem(o6),i6,
+	       a.elem(o7),i7,
+	       a.elem(o8),i8,
+	       a.elem(o9),i9,
+	       a.elem(o10),i10,
+	       a.elem(o11),i11,
+	       a.elem(o12),i12,
+	       a.elem(o13),i13,
+	       a.elem(o14),i14,
+	       a.elem(o15),i15);
+#else
+#error "Map: shift positive this inner grid length is not supported - easy to fix"
+#endif
+}
+
+//-----------------------------------------------------------------------------
+//  Intra-node shift for olattice 
+//-----------------------------------------------------------------------------
+template<class T, class C>
+T intra_shift (const QDPType<T, C>& a, const EvalLeaf5Comm& f)
+{
+  const int *goffsets = f.map()->goffset().slice();
+
+  if (f.val5() != 0) { // not along x direction
+    // f.val1() is an old outer site, convert to new neighbor real site
+    int oldrealsite = f.val1() << INNER_LOG;
+    int newrealsite = goffsets[oldrealsite];
+    // Y, Z, T neighbors are boundled together
+    return a.elem(newrealsite >> INNER_LOG);
+  }
+  else {
+    T ret;
+    // old real site 
+    int i = f.val1() << INNER_LOG;
+
+    gather_along_x (a, i, goffsets, ret);
+
+    return ret;
+  }
+}
+
+template<class T>
+T intra_shift (const OLattice<T>& a, const EvalLeaf5Comm& f)
+{
+  return intra_shift<T, OLattice<T> > ((const QDPType<T, OLattice<T> >)a, f);
+}
+
+//-----------------------------------------------------------------------------
+//  Inter-node shift for olattice for a single site
+//-----------------------------------------------------------------------------
+template<class T, class C>
+T inter_shift (const QDPType<T, C>& a, const EvalLeaf5Comm& f)
+{
+  const Map *map = f.map();
+  const int *goffsets = map->goffset().slice();
+  const int *soffsets = map->soffset().slice();
+
+  /* figure out which part of send buffer this thread is working on */
+  int tid = omp_get_thread_num ();
+  int num_threads = omp_get_num_threads ();
+
+  // send and receiving buffer of surface
+  T *send_buf = 0;
+  T *recv_buf = 0;
+
+  QMP_msgmem_t msg[2];
+  QMP_msghandle_t mh_a[2], mh;
+  QMP_status_t err;
+
+  // send and recv buffer now is associated with olattice<T>
+  QMP_mem_t* send_buf_mem = a.sendBufMem(f.val5(), f.val4());
+  QMP_mem_t* recv_buf_mem = a.recvBufMem(f.val5(), f.val4());
+  int recv_buf_size = a.recvBufMemSize(f.val5(), f.val4());
+  int send_buf_size = a.sendBufMemSize(f.val5(), f.val4());
+
+  /**
+   * Build up send buffer by those sites that are on surface sending
+   * surface data
+   */
+  send_buf=(T *)QMP_get_memory_pointer(send_buf_mem);
+  if( send_buf == 0x0 ) { 
+    QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (send_buf)\n");
+  }	
+
+
+  recv_buf=(T *)QMP_get_memory_pointer(recv_buf_mem);
+  if (recv_buf == 0x0) { 
+    QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n");
+  }
+
+
+  if (f.val5() != 0) { 
+    // not along x direction. data are packed togethr
+    if (f.val1() == f.val2()) {
+      // since we are dealing with a thread, so we fill the send buffer
+      // in the beginning of the iteration in the thread
+      // we are working with outer sites
+      int size = map->soffset().size() >> INNER_LOG;
+      int low, high;
+      low = size * tid /num_threads;
+      high = size * (tid + 1) /num_threads;
+
+      for (int si = low; si < high; si++) {
+	// original site
+	int srcsite = soffsets[si << INNER_LOG];
+	int pos = map->sendingPosition(srcsite) >> INNER_LOG;
+	send_buf[pos] = a.elem (srcsite >> INNER_LOG);
+      }
+    }
+  }
+  else { // along x direction so we have more sites
+    if (f.val1() == f.val2()) {
+      // we are working with real sites
+      int size = map->soffset().size();
+      int low, high;
+      low = size * tid /num_threads;
+      high = size * (tid + 1)/num_threads;
+
+      for (int si = low; si < high; si++) {
+	// original site
+	int srcsite = soffsets[si];
+	int pos = map->sendingPosition(srcsite) >> INNER_LOG;
+	send_buf[pos] = a.elem (srcsite >> INNER_LOG);
+      }
+    }
+  }
+    
+  /**
+   * We have to wait for every thread to finish populate the send buffer
+   * We do this on the last iteration of this thread
+   */
+  if (f.val1() == f.val2()) {
+#pragma omp barrier
+    ;
+  }
+
+  if (tid == 0 && f.val1() == f.val2() ) { // send and receive surface
+    // do this for the first site
+    // f.val2() is starting point of the lattice site within this thread
+
+    // now start sending and receiving data
+#if QDP_DEBUG >= 3
+    QDP_info("Map: send = 0x%x  recv = 0x%x",send_buf,recv_buf);
+#endif
+
+    msg[0] = QMP_declare_msgmem(recv_buf, recv_buf_size);
+    if( msg[0] == (QMP_msgmem_t)NULL ) { 
+      QDP_error_exit("QMP_declare_msgmem for msg[0] failed in Map::operator()\n");
+    }
+    msg[1]  = QMP_declare_msgmem(send_buf, send_buf_size);
+    if( msg[1] == (QMP_msgmem_t)NULL ) {
+      QDP_error_exit("QMP_declare_msgmem for msg[1] failed in Map::operator()\n");
+    }
+
+    mh_a[0] = QMP_declare_receive_from(msg[0], map->qmpsrcNode(), 0);
+    if( mh_a[0] == (QMP_msghandle_t)NULL ) { 
+      QDP_error_exit("QMP_declare_receive_from for mh_a[0] failed in Map::operator()\n");
+    }
+
+    mh_a[1] = QMP_declare_send_to(msg[1], map->qmpdestNode(), 0);
+    if( mh_a[1] == (QMP_msghandle_t)NULL ) {
+      QDP_error_exit("QMP_declare_send_to for mh_a[1] failed in Map::operator()\n");
+    }
+
+    mh = QMP_declare_multiple(mh_a, 2);
+    if( mh == (QMP_msghandle_t)NULL ) { 
+      QDP_error_exit("QMP_declare_multiple for mh failed in Map::operator()\n");
+    }
+
+
+#if 0
+    // Launch the faces
+    QDP::StopWatch swatch;
+
+    swatch.reset();
+    swatch.start();
+#endif
+    if ((err = QMP_start(mh)) != QMP_SUCCESS)
+      QDP_error_exit(QMP_error_string(err));
+
+#if 0
+    swatch.stop();
+    QDP_info ("Thread %d qmp_start takes %lf us\n", tid, swatch.getTimeInMicroseconds());
+#endif
+  }
+
+  // get the site number we are working on 
+  // f.val1() is an old outer site
+  int oldrealsite = f.val1() << INNER_LOG;
+  T ret;
+
+  if (!(f.map()->isReceivingSite(oldrealsite))) {
+    if (f.val5() != 0) { // not along x direction
+      int newrealsite = goffsets[oldrealsite];
+      // Y, Z, T neighbors are boundled together
+      ret = a.elem(newrealsite >> INNER_LOG);
+    }
+    else {
+      // old real site 
+      gather_along_x (a, oldrealsite, goffsets, ret);
+    }
+  }
+
+  if (tid == 0 && f.val1() == f.val2()) {
+#if QDP_DEBUG >= 3
+    QDP_info("Map: calling wait");
+#endif
+
+#if 0
+    // Wait on the faces
+    QDP::StopWatch swatch;
+
+    swatch.reset();
+    swatch.start();
+#endif
+
+    if ((err = QMP_wait(mh)) != QMP_SUCCESS)
+      QDP_error_exit(QMP_error_string(err));
+
+#if 0
+    swatch.stop();
+    QDP_info ("Thread %d qmp_wait takes %lf us\n", tid, swatch.getTimeInMicroseconds());
+#endif
+
+#if QDP_DEBUG >= 3
+    QDP_info("Map: calling free msgs");
+#endif
+  
+    QMP_free_msghandle(mh);
+    QMP_free_msgmem(msg[1]);
+    QMP_free_msgmem(msg[0]);
+  }
+
+
+  if (f.val1() == f.val2() ) {
+#pragma omp barrier
+    ;
+  }
+
+  // now surface sites get data from receiving buffer
+  if ((f.map()->isReceivingSite(oldrealsite))) {
+    // data receiving buffer
+    recv_buf=(T *)QMP_get_memory_pointer(recv_buf_mem);
+    if (recv_buf == 0x0) { 
+      QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n");
+    }
+
+    if (f.val5() != 0) { // not along x direction
+      // get receiving position
+      int recv_pos = f.map()->receivingPosition (oldrealsite);
+
+      //      QDP_info ("thread %d: receiving surface site = %d recvelem = (%d)\n", 		tid, oldrealsite, recv_pos >> INNER_LOG);
+
+      // data are sorted according to receiving site
+      ret = recv_buf[recv_pos >> INNER_LOG];
+
+    }
+    else { // along x direction: unlikely
+      ret = recv_buf[oldrealsite];
+    }
+  }
+  return ret;
+}
+
+template<class T>
+T inter_shift (const OLattice<T>& a, const EvalLeaf5Comm& f)
+{
+  return inter_shift<T, OLattice<T> > ((const QDPType<T, OLattice<T> >)a, f);
+}
+
+template<class T, class C>
+struct LeafFunctor<QDPType<T,C>, EvalLeaf5Comm>
+{
+  typedef Reference<T> Type_t;
+//  typedef T Type_t;
+  inline static Type_t apply(const QDPType<T,C> &a, const EvalLeaf5Comm &f)
+  { 
+    const Map *map = f.map();
+
+    if (map->offnodeComm() ) {
+      return (Type_t)(inter_shift(a, f));
+    }
+    else 
+      return (Type_t)(intra_shift(a, f));
+  }
+};
+
+template<class T>
+struct LeafFunctor<OScalar<T>, EvalLeaf5Comm>
+{
+//  typedef T Type_t;
+  typedef Reference<T> Type_t;
+  inline static Type_t apply(const OScalar<T> &a, const EvalLeaf5Comm &f)
+    {return Type_t(a.elem());}
+};
+
+template<class T>
+struct LeafFunctor<OLattice<T>, EvalLeaf5Comm>
+{
+//  typedef T Type_t;
+  typedef Reference<T> Type_t;
+
+  inline static Type_t apply(const OLattice<T> &a, const EvalLeaf5Comm &f)
+  {
+    const Map *map = f.map();
+
+    if (map->offnodeComm() )
+      return (Type_t)(inter_shift(a, f));
+    else 
+      return (Type_t)(intra_shift(a, f));
+  }
+};
+
+// Specialization of ForEach deals with maps. 
+template<class A, class CTag>
+struct ForEach<UnaryNode<FnMap, A>, EvalLeaf3, CTag>
+{
+  typedef typename ForEach<A, EvalLeaf5Comm, CTag>::Type_t TypeA_t;
+  typedef typename Combine1<TypeA_t, FnMap, CTag>::Type_t Type_t;
+  inline static
+  Type_t apply(const UnaryNode<FnMap, A> &expr, const EvalLeaf3 &f, 
+    const CTag &c) 
+  {
+    // expr.operation() is fnmap which contains offsets, sign and direction
+    // f.val1() is pointing to outersites: check evaluate function above:
+    // --Jie Chen
+    int isign = expr.operation().isign;
+    int dir = expr.operation().dir;
+
+    // passing offsets pointer as well
+    EvalLeaf5Comm ff(f.val1(), f.val2(), f.val3(), 
+		     isign, dir, expr.operation().map);
+    
+    //    fprintf(stderr,"ForEach<Unary<FnMap>>: outersite = %d, sign = %d dir = %d\n", ff.val1(), ff.val4(), ff.val5());
+    //    fprintf(stderr, "%s\n", __PRETTY_FUNCTION__);
+    return Combine1<TypeA_t, FnMap, CTag>::
+      combine(ForEach<A, EvalLeaf5Comm, CTag>::apply(expr.child(), ff, c),
+              expr.operation(), c);
+  }
 };
 
 
@@ -1583,48 +1804,29 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
-  template<class T1>
-  OLattice<T1>
-  operator()(const OLattice<T1> & l, int dir)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int dir)
     {
-#if QDP_DEBUG >= 3
-      QDP_info("ArrayMap(OLattice,%d)",dir);
-#endif
-
-      return mapsa[dir](l);
-    }
-
-  template<class T1>
-  OScalar<T1>
-  operator()(const OScalar<T1> & l, int dir)
-    {
-#if QDP_DEBUG >= 3
-      QDP_info("ArrayMap(OScalar,%d)",dir);
-#endif
-
-      return mapsa[dir](l);
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(&(mapsa[dir])),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
     }
 
 
-  template<class RHS, class T1>
-  OScalar<T1>
-  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int dir)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l, int dir)
     {
-//    fprintf(stderr,"ArrayMap(QDPExpr<OScalar>,%d)\n",dir);
-
-      // For now, simply evaluate the expression and then do the map
-      return mapsa[dir](l);
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(&(mapsa[dir])),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
 
-  template<class RHS, class T1>
-  OLattice<T1>
-  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int dir)
-    {
-//    fprintf(stderr,"ArrayMap(QDPExpr<OLattice>,%d)\n",dir);
-
-      // For now, simply evaluate the expression and then do the map
-      return mapsa[dir](l);
-    }
 
 
 private:
@@ -1667,50 +1869,28 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
-  template<class T1>
-  OLattice<T1>
-  operator()(const OLattice<T1> & l, int isign)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int isign)
     {
-#if QDP_DEBUG >= 3
-      QDP_info("BiDirectionalMap(OLattice,%d)",isign);
-#endif
-
-      return bimaps[(isign+1)>>1](l);
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(&(bimaps[(isign+1)>>1])),
+	     CreateLeaf<QDPType<T1,C1> >::make(l)));
     }
 
 
-  template<class T1>
-  OScalar<T1>
-  operator()(const OScalar<T1> & l, int isign)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l, int isign)
     {
-#if QDP_DEBUG >= 3
-      QDP_info("BiDirectionalMap(OScalar,%d)",isign);
-#endif
-
-      return bimaps[(isign+1)>>1](l);
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(&(bimaps[(isign+1)>>1])),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
-
-
-  template<class RHS, class T1>
-  OScalar<T1>
-  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign)
-    {
-//    fprintf(stderr,"BiDirectionalMap(QDPExpr<OScalar>,%d)\n",isign);
-
-      // For now, simply evaluate the expression and then do the map
-      return bimaps[(isign+1)>>1](l);
-    }
-
-  template<class RHS, class T1>
-  OLattice<T1>
-  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign)
-    {
-//    fprintf(stderr,"BiDirectionalMap(QDPExpr<OLattice>,%d)\n",isign);
-
-      // For now, simply evaluate the expression and then do the map
-      return bimaps[(isign+1)>>1](l);
-    }
-
 
 private:
   //! Hide copy constructor
@@ -1761,48 +1941,118 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
-  template<class T1>
-  OLattice<T1>
-  operator()(const OLattice<T1> & l, int isign, int dir)
+#if 1
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int isign, int dir)
     {
-#if QDP_DEBUG >= 3
-      QDP_info("ArrayBiDirectionalMap(OLattice,%d,%d)",isign,dir);
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(&(bimapsa((isign+1)>>1,dir)), isign, dir),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
+    }
+
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l, int isign, int dir)
+    {
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(&(bimapsa((isign+1)>>1,dir)), isign, dir),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
+    }
 #endif
 
-      return bimapsa((isign+1)>>1,dir)(l);
+
+#if 0
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int isign, int dir)
+    {
+      Map *map = &(bimapsa((isign+1)>>1,dir));
+      SurfaceCommBuf* commBuf = 0;
+      
+      if (map->offnodeComm()) {
+	commBuf = new SurfaceCommBuf();
+      }
+
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(&(bimapsa((isign+1)>>1,dir)), isign, dir, commBuf),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
     }
+
 
   template<class T1>
   OScalar<T1>
   operator()(const OScalar<T1> & l, int isign, int dir)
-    {
-#if QDP_DEBUG >= 3
-      QDP_info("ArrayBiDirectionalMap(OScalar,%d,%d)",isign,dir);
+  {
+    return l;
+  }
+
+  template<class RHS,class T1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+  typename CreateLeaf<OLattice<T1> >::Leaf_t>, T1>::Expression_t
+  operator()(const QDPExpr<RHS, OScalar<T1> > & l, int isign, int dir)
+  {
+    typedef OScalar<T1> C1;
+      
+    return C1(l);
+  }
+
+  template<class RHS,class T1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+  typename CreateLeaf<OLattice<T1> >::Leaf_t>, OLattice<T1> >::Expression_t
+  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign, int dir)
+  {
+    Map *map = &(bimapsa((isign+1)>>1,dir));
+    SurfaceCommBuf* commBuf = 0;
+
+    if (map->offnodeComm()) {
+      commBuf = new SurfaceCommBuf();
+    }
+
+    typedef UnaryNode<FnMap,
+      typename CreateLeaf<OLattice<T1> >::Leaf_t> Tree_t;
+    return MakeReturn<Tree_t,OLattice<T1> >::make(Tree_t(FnMap(&(bimapsa((isign+1)>>1,dir)), isign, dir, commBuf),
+	 CreateLeaf<OLattice<T1> >::make( *tmp )));
+  }
 #endif
 
-      return bimapsa((isign+1)>>1,dir)(l);
-    }
+  /**
+   * Check whether there are communication needed for direction and sign
+   * @param dir: 0, 1, 2, 3
+   * @param isign: +1, -1
+   */
+  bool offnodeComm (int dir, int isign) const
+  {
+    return bimapsa((isign + 1) >> 1, dir).offnodeComm();
+  }
 
+  /**
+   * Return number of sending sites along a direction
+   * with either positive or negative sending or receiving
+   * @param dir: 0, 1, 2, 3
+   * @param isign: +1, -1
+   */
+  int numberSendingSites (int dir, int isign)
+  {
+    return bimapsa((isign + 1) >> 1, dir).numDestSites ();
+  }
 
-  template<class RHS, class T1>
-  OScalar<T1>
-  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign, int dir)
-    {
-//    fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OScalar>,%d,%d)\n",isign,dir);
-
-      // For now, simply evaluate the expression and then do the map
-      return bimapsa((isign+1)>>1,dir)(l);
-    }
-
-  template<class RHS, class T1>
-  OLattice<T1>
-  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign, int dir)
-    {
-//    fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OLattice>,%d,%d)\n",isign,dir);
-
-      // For now, simply evaluate the expression and then do the map
-      return bimapsa((isign+1)>>1,dir)(l);
-    }
+  /**
+   * Return number of receiving sites along a direction
+   * with either positive or negative sending or receiving
+   * @param dir: 0, 1, 2, 3
+   * @param isign: +1, -1
+   */
+  int numberRecvingSites (int dir, int isign)
+  {
+    return bimapsa((isign + 1) >> 1, dir).numSrcSites ();
+  }
 
 
 private:

@@ -19,10 +19,23 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  // Setup the layout
-  const int foo[] = {4,2,2,2};
   multi1d<int> nrow(Nd);
-  nrow = foo;  // Use only Nd elements
+
+  if (argc >= 5) {
+    nrow[0] = atoi(argv[1]);
+    nrow[1] = atoi(argv[2]);
+    nrow[2] = atoi(argv[3]);
+    nrow[3] = atoi(argv[4]);
+    
+    QDP_info ("Lattice size %dx%dx%dx%d\n", nrow[0], nrow[1], nrow[2], nrow[3]);
+  }
+  else {
+    // Setup the layout
+    // const int foo[] = {4,2,2,2};
+    // const int foo[] = {16,2,16,2};
+    const int foo[] = {32, 32, 32, 32};
+    nrow = foo;  // Use only Nd elements
+  }
   Layout::setLattSize(nrow);
   Layout::create();
 
@@ -35,48 +48,62 @@ int main(int argc, char **argv)
   random(psi);
   chi = zero;
 
-  int iter = 1000;
+  int iter = 100;
 
+  QDP::StopWatch swatch;
+
+  swatch.reset();
   {
     int isign = +1;
     int cb = 0;
     QDPIO::cout << "Applying D" << endl;
-      
-    clock_t myt1=clock();
+
+    swatch.start();
     for(int i=0; i < iter; i++)
       dslash(chi, u, psi, isign, cb);
-    clock_t myt2=clock();
-      
-    double mydt=(double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
+    swatch.stop();
+
+    double mydt=swatch.getTimeInSeconds();
+
+    double idt = 1.0e6*mydt/((double)(iter));
+
     mydt=1.0e6*mydt/((double)(iter*(Layout::vol()/2)));
+
       
     QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
+		<< " each iteration takes " << idt << " micro sec" 
 		<< " (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
+
+    // take norm2 for verification
+    QDPIO::cout << "|chi|^2 = " << norm2(chi, rb[cb]) << endl;
   }
 
   chi = zero;
 
+  swatch.reset();
   {
     int isign = +1;
     int cb = 0;
     QDPIO::cout << "Applying D" << endl;
       
-    clock_t myt1=clock();
+    swatch.start();
     for(int i=0; i < iter; i++)
       dslash2(chi, u, psi, isign, cb);
-    clock_t myt2=clock();
+    swatch.stop();
       
-    double mydt=(double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
+    double mydt=swatch.getTimeInSeconds();
     mydt=1.0e6*mydt/((double)(iter*(Layout::vol()/2)));
       
     QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
 		<< " (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
+
+    // take norm2 for verification
+    QDPIO::cout << "|chi|^2 = " << norm2(chi, rb[cb]) << endl;
   }
 
-
-#if 1
+#if 0
   XMLFileWriter xml("t_dslashm.xml");
   push(xml,"t_dslashm");
   write(xml,"Nd", Nd);

@@ -712,6 +712,15 @@ struct LeafFunctor<GammaType<N>, EvalLeaf1>
     {return a;}
 };
 
+// use EvalLeaf3 to track start and end position of lattice sites
+template<int N>
+struct LeafFunctor<GammaType<N>, EvalLeaf3>
+{
+  typedef GammaType<N> Type_t;
+  inline static Type_t apply(const GammaType<N> &a, const EvalLeaf3 &f)
+    {return a;}
+};
+
 
 template<int N, int m>
 struct CreateLeaf<GammaConst<N,m> >
@@ -736,6 +745,15 @@ struct LeafFunctor<GammaConst<N,m>, EvalLeaf1>
 {
   typedef GammaConst<N,m> Type_t;
   inline static Type_t apply(const GammaConst<N,m> &a, const EvalLeaf1 &f)
+    {return a;}
+};
+
+// again use EvalLeaf3 to track start and end positions of lattice sites
+template<int N, int m>
+struct LeafFunctor<GammaConst<N,m>, EvalLeaf3>
+{
+  typedef GammaConst<N,m> Type_t;
+  inline static Type_t apply(const GammaConst<N,m> &a, const EvalLeaf3 &f)
     {return a;}
 };
 
@@ -773,6 +791,16 @@ struct LeafFunctor<GammaTypeDP<N>, EvalLeaf1>
 };
 
 
+// use EvalLeaf3 tracking start and end positions of lattice sites
+template<int N>
+struct LeafFunctor<GammaTypeDP<N>, EvalLeaf3>
+{
+  typedef GammaTypeDP<N> Type_t;
+  inline static Type_t apply(const GammaTypeDP<N> &a, const EvalLeaf3 &f)
+    {return a;}
+};
+
+
 template<int N, int m>
 struct CreateLeaf<GammaConstDP<N,m> >
 {
@@ -796,6 +824,15 @@ struct LeafFunctor<GammaConstDP<N,m>, EvalLeaf1>
 {
   typedef GammaConstDP<N,m> Type_t;
   inline static Type_t apply(const GammaConstDP<N,m> &a, const EvalLeaf1 &f)
+    {return a;}
+};
+
+// finally use EvalLeaf3 to track the start and end positions of lattice sites
+template<int N, int m>
+struct LeafFunctor<GammaConstDP<N,m>, EvalLeaf3>
+{
+  typedef GammaConstDP<N,m> Type_t;
+  inline static Type_t apply(const GammaConstDP<N,m> &a, const EvalLeaf3 &f)
     {return a;}
 };
 

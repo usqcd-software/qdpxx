@@ -7,6 +7,10 @@
 #ifndef QDP_QDPTYPE_H
 #define QDP_QDPTYPE_H
 
+#if defined(ARCH_PARSCALARVEC)
+#include <qmp.h>
+#endif
+
 namespace QDP {
 
 
@@ -376,6 +380,29 @@ public:
 
   T& elem() {return static_cast<const C*>(this)->elem();}
   const T& elem() const {return static_cast<const C*>(this)->elem();}
+
+#if defined(ARCH_PARSCALARVEC)
+  QMP_mem_t* sendBufMem (int dir, int isign) const
+  {
+    return static_cast<const C*>(this)->sendBufMem (dir, isign);
+  }
+
+  int sendBufMemSize (int dir, int isign) const
+  {
+    return static_cast<const C*>(this)->sendBufMemSize (dir, isign);
+  }
+
+  QMP_mem_t* recvBufMem (int dir, int isign) const
+  {
+    return static_cast<const C*>(this)->recvBufMem (dir, isign);    
+  }
+
+  int recvBufMemSize (int dir, int isign) const
+  {
+    return static_cast<const C*>(this)->recvBufMemSize (dir, isign);    
+  }
+#endif
+
 };
 
 /*! @} */ // end of group1
@@ -447,6 +474,19 @@ struct LeafFunctor<QDPType<T,C>, EvalLeaf1>
   typedef Reference<T> Type_t;
 //  typedef T Type_t;
   inline static Type_t apply(const QDPType<T,C> &a, const EvalLeaf1 &f)
+    { 
+      return Type_t(a.elem(f.val1()));
+    }
+};
+
+
+// again use EvalLeaf3 to track start and end of lattice sites
+template<class T, class C>
+struct LeafFunctor<QDPType<T,C>, EvalLeaf3>
+{
+  typedef Reference<T> Type_t;
+//  typedef T Type_t;
+  inline static Type_t apply(const QDPType<T,C> &a, const EvalLeaf3 &f)
     { 
       return Type_t(a.elem(f.val1()));
     }

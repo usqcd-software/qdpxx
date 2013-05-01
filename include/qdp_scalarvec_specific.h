@@ -141,17 +141,27 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     }
   }
   else {
+    // this part of code have never been tested --Jie Chen
     const int *tab = s.siteTable().slice();
     int j;
+
+    // list keeps track of outer sites
+    multi1d<int> osites(s.numSiteTable() >> INNER_LOG);
+    // make every element to be -1
+    osites = -1;
 
 #pragma omp parallel for
     for(j=0; j < s.numSiteTable(); ++j) {
       int i = tab[j];
       int outersite = i >> INNER_LOG;
       int innersite = i & ((1 << INNER_LOG)-1);
-
       //    fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
-      op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+
+      // check whether this outer sites has been done
+      if (osites(outersite) == -1) {
+	op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+	osites(outersite) = outersite;
+      }
     }
   }    
 #else
@@ -989,19 +999,23 @@ QDP_insert(OLattice<T>& dest,
 // Map
 //
 // Empty map
-struct FnMap
-{
-  PETE_EMPTY_CONSTRUCTORS(FnMap)
-};
+struct FnMap;
 
-#if defined(QDP_USE_PROFILING)   
-template <>
-struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
-{ 
-  static void visit(FnMap op, PrintTag t) 
-    { t.os_m << "shift"; }
+
+//----------------------------------------------------------------------------
+// Leaf functor containing an array of offsets
+//----------------------------------------------------------------------------
+struct EvalLeaf3Array
+{
+  int i1_m, i2_m, i3_m;
+  const int *goffsets;
+  inline EvalLeaf3Array (int i1, int i2, int i3, const int* offsets) 
+    : i1_m(i1), i2_m(i2), i3_m(i3), goffsets(offsets) { }
+  inline int val1() const { return i1_m; }
+  inline int val2() const { return i2_m; }
+  inline int val3() const { return i3_m; }
+  inline const int* offsets() const { return goffsets; }
 };
-#endif
 
 
 //! General permutation map class for communications
@@ -1031,226 +1045,32 @@ public:
    *
    * Notice, this implementation supports an Inner grid
    */
-  template<class T1>
-  OLattice<T1>
-  operator()(const OLattice<T1> & l)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l)
     {
-      OLattice<T1> d;
-
-#if QDP_DEBUG >= 3
-      QDP_info("Map()");
-#endif
-
-      // *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
-      // For now, use the all subset
-#if INNER_LOG == 2
-      const int vvol = Layout::sitesOnNode();
-      for(int i=0; i < vvol; i+= INNER_LEN) 
-      {
-	int ii = i >> INNER_LOG;
-	int o0 = goffsets[i+0] >> INNER_LOG;
-	int i0 = goffsets[i+0] & (INNER_LEN - 1);
-
-	int o1 = goffsets[i+1] >> INNER_LOG;
-	int i1 = goffsets[i+1] & (INNER_LEN - 1);
-
-	int o2 = goffsets[i+2] >> INNER_LOG;
-	int i2 = goffsets[i+2] & (INNER_LEN - 1);
-
-	int o3 = goffsets[i+3] >> INNER_LOG;
-	int i3 = goffsets[i+3] & (INNER_LEN - 1);
-
-#if QDP_DEBUG >= 3
-	QDP_info("Map(lattice[%d]=lattice([%d,%d],[%d,%d],[%d,%d],[%d,%d])",
-		 ii,o0,i0,o1,i1,o2,i2,o3,i3);
-#endif
-
-	// Gather 4 inner-grid sites together
-	gather_sites(d.elem(ii),
-		     l.elem(o0),i0,
-		     l.elem(o1),i1,
-		     l.elem(o2),i2,
-		     l.elem(o3),i3);
-      }
-#elif INNER_LOG == 3
-      // *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
-      // *** This is for AVX ***
-      // For now, use the all subset
-      const int vvol = Layout::sitesOnNode();
-      for(int i=0; i < vvol; i+= INNER_LEN) 
-      {
-	int ii = i >> INNER_LOG;
-	int o0 = goffsets[i+0] >> INNER_LOG;
-	int i0 = goffsets[i+0] & (INNER_LEN - 1);
-
-	int o1 = goffsets[i+1] >> INNER_LOG;
-	int i1 = goffsets[i+1] & (INNER_LEN - 1);
-
-	int o2 = goffsets[i+2] >> INNER_LOG;
-	int i2 = goffsets[i+2] & (INNER_LEN - 1);
-
-	int o3 = goffsets[i+3] >> INNER_LOG;
-	int i3 = goffsets[i+3] & (INNER_LEN - 1);
-
-	int o4 = goffsets[i+4] >> INNER_LOG;
-	int i4 = goffsets[i+4] & (INNER_LEN - 1);
-
-	int o5 = goffsets[i+5] >> INNER_LOG;
-	int i5 = goffsets[i+5] & (INNER_LEN - 1);
-
-	int o6 = goffsets[i+6] >> INNER_LOG;
-	int i6 = goffsets[i+6] & (INNER_LEN - 1);
-
-	int o7 = goffsets[i+7] >> INNER_LOG;
-	int i7 = goffsets[i+7] & (INNER_LEN - 1);
-
-#if QDP_DEBUG >= 3
-	QDP_info("Map(lattice[%d]=lattice([%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d])",
-		 ii,o0,i0,o1,i1,o2,i2,o3,i3,o4,i4,o5,i5,o6,i6,o7,i7);
-#endif
-
-	// Gather 8 inner-grid sites together
-	gather_sites(d.elem(ii),
-		     l.elem(o0),i0,
-		     l.elem(o1),i1,
-		     l.elem(o2),i2,
-		     l.elem(o3),i3,
-		     l.elem(o4),i4,
-		     l.elem(o5),i5,
-		     l.elem(o6),i6,
-		     l.elem(o7),i7);
-      }
-
-#elif INNER_LOG == 4
-      // *** SHOULD IMPROVE THIS - JUST GET IT TO WORK FIRST ***
-      // *** This is for MIC ***
-      // For now, use the all subset
-      const int vvol = Layout::sitesOnNode();
-      for(int i=0; i < vvol; i+= INNER_LEN) 
-      {
-	int ii = i >> INNER_LOG;
-	int o0 = goffsets[i+0] >> INNER_LOG;
-	int i0 = goffsets[i+0] & (INNER_LEN - 1);
-
-	int o1 = goffsets[i+1] >> INNER_LOG;
-	int i1 = goffsets[i+1] & (INNER_LEN - 1);
-
-	int o2 = goffsets[i+2] >> INNER_LOG;
-	int i2 = goffsets[i+2] & (INNER_LEN - 1);
-
-	int o3 = goffsets[i+3] >> INNER_LOG;
-	int i3 = goffsets[i+3] & (INNER_LEN - 1);
-
-	int o4 = goffsets[i+4] >> INNER_LOG;
-	int i4 = goffsets[i+4] & (INNER_LEN - 1);
-
-	int o5 = goffsets[i+5] >> INNER_LOG;
-	int i5 = goffsets[i+5] & (INNER_LEN - 1);
-
-	int o6 = goffsets[i+6] >> INNER_LOG;
-	int i6 = goffsets[i+6] & (INNER_LEN - 1);
-
-	int o7 = goffsets[i+7] >> INNER_LOG;
-	int i7 = goffsets[i+7] & (INNER_LEN - 1);
-
-	int o8 = goffsets[i+8] >> INNER_LOG;
-	int i8 = goffsets[i+8] & (INNER_LEN - 1);
-
-	int o9 = goffsets[i+9] >> INNER_LOG;
-	int i9 = goffsets[i+9] & (INNER_LEN - 1);
-
-	int o10 = goffsets[i+10] >> INNER_LOG;
-	int i10 = goffsets[i+10] & (INNER_LEN - 1);
-
-	int o11 = goffsets[i+11] >> INNER_LOG;
-	int i11 = goffsets[i+11] & (INNER_LEN - 1);
-
-	int o12 = goffsets[i+12] >> INNER_LOG;
-	int i12 = goffsets[i+12] & (INNER_LEN - 1);
-
-	int o13 = goffsets[i+13] >> INNER_LOG;
-	int i13 = goffsets[i+13] & (INNER_LEN - 1);
-
-	int o14 = goffsets[i+14] >> INNER_LOG;
-	int i14 = goffsets[i+14] & (INNER_LEN - 1);
-
-	int o15 = goffsets[i+15] >> INNER_LOG;
-	int i15 = goffsets[i+15] & (INNER_LEN - 1);
-
-#if QDP_DEBUG >= 3
-	QDP_info("Map(lattice[%d]=lattice([%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d],[%d,%d])",
-		 ii,o0,i0,o1,i1,o2,i2,o3,i3,o4,i4,o5,i5,o6,i6,o7,i7,
-		 o8,i8,o9,i9,o10,i10,o11,i11,o12,i12,o13,i13,o14,i14,o15,i15);
-#endif
-
-	// Gather 16 inner-grid sites together
-	gather_sites(d.elem(ii),
-		     l.elem(o0),i0,
-		     l.elem(o1),i1,
-		     l.elem(o2),i2,
-		     l.elem(o3),i3,
-		     l.elem(o4),i4,
-		     l.elem(o5),i5,
-		     l.elem(o6),i6,
-		     l.elem(o7),i7,
-		     l.elem(o8),i8,
-		     l.elem(o9),i9,
-		     l.elem(o10),i10,
-		     l.elem(o11),i11,
-		     l.elem(o12),i12,
-		     l.elem(o13),i13,
-		     l.elem(o14),i14,
-		     l.elem(o15),i15);
-      }
-#else
-#error "Map: this inner grid length is not supported - easy to fix"
-#endif
-
-#if QDP_DEBUG >= 3
-      QDP_info("exiting Map()");
-#endif
-
-      return d;
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(goffsets.slice()),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
     }
 
 
-  template<class T1>
-  OScalar<T1>
-  operator()(const OScalar<T1> & l)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l)
     {
-      return l;
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(goffsets.slice()),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
-
-  template<class RHS, class T1>
-  OScalar<T1>
-  operator()(const QDPExpr<RHS,OScalar<T1> > & l)
-    {
-      // For now, simply evaluate the expression and then do the map
-      typedef OScalar<T1> C1;
-
-//    fprintf(stderr,"map(QDPExpr<OScalar>)\n");
-      OScalar<T1> d = this->operator()(C1(l));
-
-      return d;
-    }
-
-  template<class RHS, class T1>
-  OLattice<T1>
-  operator()(const QDPExpr<RHS,OLattice<T1> > & l)
-    {
-      // For now, simply evaluate the expression and then do the map
-      typedef OLattice<T1> C1;
-
-//    fprintf(stderr,"map(QDPExpr<OLattice>)\n");
-      OLattice<T1> d = this->operator()(C1(l));
-
-      return d;
-    }
-
 
 public:
   //! Accessor to offsets
-  const multi1d<int>& goffset() const {return goffsets;}
+  const multi1d<int>& Offsets() const {return goffsets;}
 
 private:
   //! Hide copy constructor
@@ -1265,7 +1085,392 @@ private:
    * goffsets(position) 
    */ 
   multi1d<int> goffsets;
+};//! General permutation map class for communications
+
+struct FnMap
+{
+  PETE_EMPTY_CONSTRUCTORS(FnMap)
+
+  const int *goff;
+  int isign, dir;
+
+  FnMap(const int *goffsets): goff(goffsets), isign(0), dir(0)
+  {
+    //    fprintf(stderr,"FnMap(): goff=0x%x\n",goff);
+  }
+
+  FnMap(const int *goffsets, int sign, int d): 
+    goff(goffsets), isign(sign), dir(d)
+  {
+    // fprintf(stderr,"FnMap(): goff=0x%x\n",goff);
+  }
+
+  template<class T>
+  inline typename UnaryReturn<T, FnMap>::Type_t
+  operator()(const T &a) const
+  {
+    return (a);
+  }
 };
+
+#if defined(QDP_USE_PROFILING)   
+template <>
+struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
+{ 
+  static void visit(FnMap op, PrintTag t) 
+    { t.os_m << "shift"; }
+};
+#endif
+
+
+//-----------------------------------------------------------------------------
+// Specialization of LeafFunctor class for applying the EvalLeaf3Array
+// tag to a QDPType. The apply method simply returns the array
+// evaluated at the point.
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Currently, x-direction is the direction that is vectorized. Any shift
+// along the other directions can be easilly done by using nearest neighbor
+// vectorized data. For shifting along x direction, we need to reconstruct
+// a new element containing inner-data
+//-----------------------------------------------------------------------------
+template<class T, class C>
+struct LeafFunctor<QDPType<T,C>, EvalLeaf3Array>
+{
+  typedef Reference<T> Type_t;
+//  typedef T Type_t;
+  inline static Type_t apply(const QDPType<T,C> &a, const EvalLeaf3Array &f)
+  { 
+    if (f.val3() != 0) { // not along x direction
+      // f.val1() is an old outer site, convert to new neighbor real site
+      int oldrealsite = f.val1() << INNER_LOG;
+      int newrealsite = f.offsets()[oldrealsite];
+      // Y, Z, T neighbors are boundled together
+      return Type_t(a.elem(newrealsite >> INNER_LOG));
+    }
+    else {
+      T ret;
+      const int *goffsets = f.offsets();
+      // old real site 
+      int i = f.val1() << INNER_LOG;
+      
+#if INNER_LOG == 2
+      int o0 = goffsets[i+0] >> INNER_LOG;
+      int i0 = goffsets[i+0] & (INNER_LEN - 1);
+
+      int o1 = goffsets[i+1] >> INNER_LOG;
+      int i1 = goffsets[i+1] & (INNER_LEN - 1);
+
+      int o2 = goffsets[i+2] >> INNER_LOG;
+      int i2 = goffsets[i+2] & (INNER_LEN - 1);
+
+      int o3 = goffsets[i+3] >> INNER_LOG;
+      int i3 = goffsets[i+3] & (INNER_LEN - 1);
+
+      // Gather 4 inner-grid sites together
+      gather_sites(ret,
+		   a.elem(o0),i0,
+		   a.elem(o1),i1,
+		   a.elem(o2),i2,
+		   a.elem(o3),i3);
+
+#elif INNER_LOG == 3
+      int o0 = goffsets[i+0] >> INNER_LOG;
+      int i0 = goffsets[i+0] & (INNER_LEN - 1);
+
+      int o1 = goffsets[i+1] >> INNER_LOG;
+      int i1 = goffsets[i+1] & (INNER_LEN - 1);
+
+      int o2 = goffsets[i+2] >> INNER_LOG;
+      int i2 = goffsets[i+2] & (INNER_LEN - 1);
+
+      int o3 = goffsets[i+3] >> INNER_LOG;
+      int i3 = goffsets[i+3] & (INNER_LEN - 1);
+
+      int o4 = goffsets[i+4] >> INNER_LOG;
+      int i4 = goffsets[i+4] & (INNER_LEN - 1);
+      
+      int o5 = goffsets[i+5] >> INNER_LOG;
+      int i5 = goffsets[i+5] & (INNER_LEN - 1);
+      
+      int o6 = goffsets[i+6] >> INNER_LOG;
+      int i6 = goffsets[i+6] & (INNER_LEN - 1);
+
+      int o7 = goffsets[i+7] >> INNER_LOG;
+      int i7 = goffsets[i+7] & (INNER_LEN - 1);
+      gather_sites (ret,
+		    a.elem(o0),i0,
+		    a.elem(o1),i1,
+		    a.elem(o2),i2,
+		    a.elem(o3),i3,
+		    a.elem(o4),i4,
+		    a.elem(o5),i5,
+		    a.elem(o6),i6,
+		    a.elem(o7),i7);
+
+#elif INNER_LOG == 4
+      int o0 = goffsets[i+0] >> INNER_LOG;
+      int i0 = goffsets[i+0] & (INNER_LEN - 1);
+
+      int o1 = goffsets[i+1] >> INNER_LOG;
+      int i1 = goffsets[i+1] & (INNER_LEN - 1);
+      
+      int o2 = goffsets[i+2] >> INNER_LOG;
+      int i2 = goffsets[i+2] & (INNER_LEN - 1);
+
+      int o3 = goffsets[i+3] >> INNER_LOG;
+      int i3 = goffsets[i+3] & (INNER_LEN - 1);
+
+      int o4 = goffsets[i+4] >> INNER_LOG;
+      int i4 = goffsets[i+4] & (INNER_LEN - 1);
+
+      int o5 = goffsets[i+5] >> INNER_LOG;
+      int i5 = goffsets[i+5] & (INNER_LEN - 1);
+
+      int o6 = goffsets[i+6] >> INNER_LOG;
+      int i6 = goffsets[i+6] & (INNER_LEN - 1);
+
+      int o7 = goffsets[i+7] >> INNER_LOG;
+      int i7 = goffsets[i+7] & (INNER_LEN - 1);
+
+      int o8 = goffsets[i+8] >> INNER_LOG;
+      int i8 = goffsets[i+8] & (INNER_LEN - 1);
+
+      int o9 = goffsets[i+9] >> INNER_LOG;
+      int i9 = goffsets[i+9] & (INNER_LEN - 1);
+
+      int o10 = goffsets[i+10] >> INNER_LOG;
+      int i10 = goffsets[i+10] & (INNER_LEN - 1);
+
+      int o11 = goffsets[i+11] >> INNER_LOG;
+      int i11 = goffsets[i+11] & (INNER_LEN - 1);
+
+      int o12 = goffsets[i+12] >> INNER_LOG;
+      int i12 = goffsets[i+12] & (INNER_LEN - 1);
+
+      int o13 = goffsets[i+13] >> INNER_LOG;
+      int i13 = goffsets[i+13] & (INNER_LEN - 1);
+
+      int o14 = goffsets[i+14] >> INNER_LOG;
+      int i14 = goffsets[i+14] & (INNER_LEN - 1);
+
+      int o15 = goffsets[i+15] >> INNER_LOG;
+      int i15 = goffsets[i+15] & (INNER_LEN - 1);
+
+      // Gather 16 inner-grid sites together
+      gather_sites(ret,
+		   a.elem(o0),i0,
+		   a.elem(o1),i1,
+		   a.elem(o2),i2,
+		   a.elem(o3),i3,
+		   a.elem(o4),i4,
+		   a.elem(o5),i5,
+		   a.elem(o6),i6,
+		   a.elem(o7),i7,
+		   a.elem(o8),i8,
+		   a.elem(o9),i9,
+		   a.elem(o10),i10,
+		   a.elem(o11),i11,
+		   a.elem(o12),i12,
+		   a.elem(o13),i13,
+		   a.elem(o14),i14,
+		   a.elem(o15),i15);
+#else
+#error "Map: shift positive this inner grid length is not supported - easy to fix"
+#endif
+      return Type_t(ret);	
+    }
+  }
+};
+
+
+template<class T>
+struct LeafFunctor<OScalar<T>, EvalLeaf3Array>
+{
+//  typedef T Type_t;
+  typedef Reference<T> Type_t;
+  inline static Type_t apply(const OScalar<T> &a, const EvalLeaf3Array &f)
+    {return Type_t(a.elem());}
+};
+
+template<class T>
+struct LeafFunctor<OLattice<T>, EvalLeaf3Array>
+{
+//  typedef T Type_t;
+  typedef Reference<T> Type_t;
+
+  inline static Type_t apply(const OLattice<T> &a, const EvalLeaf3Array &f)
+  {
+    if (f.val3() != 0) { // not along x direction
+      // f.val1() is an old outer site, convert to new neighbor real site
+      int oldrealsite = f.val1() << INNER_LOG;
+      int newrealsite = f.offsets()[oldrealsite];
+      // Y, Z, T neighbors are boundled together
+      return Type_t(a.elem(newrealsite >> INNER_LOG));
+    }
+    else {
+      T ret;
+      const int *goffsets = f.offsets();
+      // old real site 
+      int i = f.val1() << INNER_LOG;
+      
+#if INNER_LOG == 2
+      int o0 = goffsets[i+0] >> INNER_LOG;
+      int i0 = goffsets[i+0] & (INNER_LEN - 1);
+
+      int o1 = goffsets[i+1] >> INNER_LOG;
+      int i1 = goffsets[i+1] & (INNER_LEN - 1);
+
+      int o2 = goffsets[i+2] >> INNER_LOG;
+      int i2 = goffsets[i+2] & (INNER_LEN - 1);
+
+      int o3 = goffsets[i+3] >> INNER_LOG;
+      int i3 = goffsets[i+3] & (INNER_LEN - 1);
+
+      // Gather 4 inner-grid sites together
+      gather_sites(ret,
+		   a.elem(o0),i0,
+		   a.elem(o1),i1,
+		   a.elem(o2),i2,
+		   a.elem(o3),i3);
+
+#elif INNER_LOG == 3
+      int o0 = goffsets[i+0] >> INNER_LOG;
+      int i0 = goffsets[i+0] & (INNER_LEN - 1);
+
+      int o1 = goffsets[i+1] >> INNER_LOG;
+      int i1 = goffsets[i+1] & (INNER_LEN - 1);
+
+      int o2 = goffsets[i+2] >> INNER_LOG;
+      int i2 = goffsets[i+2] & (INNER_LEN - 1);
+
+      int o3 = goffsets[i+3] >> INNER_LOG;
+      int i3 = goffsets[i+3] & (INNER_LEN - 1);
+
+      int o4 = goffsets[i+4] >> INNER_LOG;
+      int i4 = goffsets[i+4] & (INNER_LEN - 1);
+      
+      int o5 = goffsets[i+5] >> INNER_LOG;
+      int i5 = goffsets[i+5] & (INNER_LEN - 1);
+      
+      int o6 = goffsets[i+6] >> INNER_LOG;
+      int i6 = goffsets[i+6] & (INNER_LEN - 1);
+
+      int o7 = goffsets[i+7] >> INNER_LOG;
+      int i7 = goffsets[i+7] & (INNER_LEN - 1);
+      gather_sites (ret,
+		    a.elem(o0),i0,
+		    a.elem(o1),i1,
+		    a.elem(o2),i2,
+		    a.elem(o3),i3,
+		    a.elem(o4),i4,
+		    a.elem(o5),i5,
+		    a.elem(o6),i6,
+		    a.elem(o7),i7);
+
+#elif INNER_LOG == 4
+      int o0 = goffsets[i+0] >> INNER_LOG;
+      int i0 = goffsets[i+0] & (INNER_LEN - 1);
+
+      int o1 = goffsets[i+1] >> INNER_LOG;
+      int i1 = goffsets[i+1] & (INNER_LEN - 1);
+      
+      int o2 = goffsets[i+2] >> INNER_LOG;
+      int i2 = goffsets[i+2] & (INNER_LEN - 1);
+
+      int o3 = goffsets[i+3] >> INNER_LOG;
+      int i3 = goffsets[i+3] & (INNER_LEN - 1);
+
+      int o4 = goffsets[i+4] >> INNER_LOG;
+      int i4 = goffsets[i+4] & (INNER_LEN - 1);
+
+      int o5 = goffsets[i+5] >> INNER_LOG;
+      int i5 = goffsets[i+5] & (INNER_LEN - 1);
+
+      int o6 = goffsets[i+6] >> INNER_LOG;
+      int i6 = goffsets[i+6] & (INNER_LEN - 1);
+
+      int o7 = goffsets[i+7] >> INNER_LOG;
+      int i7 = goffsets[i+7] & (INNER_LEN - 1);
+
+      int o8 = goffsets[i+8] >> INNER_LOG;
+      int i8 = goffsets[i+8] & (INNER_LEN - 1);
+
+      int o9 = goffsets[i+9] >> INNER_LOG;
+      int i9 = goffsets[i+9] & (INNER_LEN - 1);
+
+      int o10 = goffsets[i+10] >> INNER_LOG;
+      int i10 = goffsets[i+10] & (INNER_LEN - 1);
+
+      int o11 = goffsets[i+11] >> INNER_LOG;
+      int i11 = goffsets[i+11] & (INNER_LEN - 1);
+
+      int o12 = goffsets[i+12] >> INNER_LOG;
+      int i12 = goffsets[i+12] & (INNER_LEN - 1);
+
+      int o13 = goffsets[i+13] >> INNER_LOG;
+      int i13 = goffsets[i+13] & (INNER_LEN - 1);
+
+      int o14 = goffsets[i+14] >> INNER_LOG;
+      int i14 = goffsets[i+14] & (INNER_LEN - 1);
+
+      int o15 = goffsets[i+15] >> INNER_LOG;
+      int i15 = goffsets[i+15] & (INNER_LEN - 1);
+
+      // Gather 16 inner-grid sites together
+      gather_sites(ret,
+		   a.elem(o0),i0,
+		   a.elem(o1),i1,
+		   a.elem(o2),i2,
+		   a.elem(o3),i3,
+		   a.elem(o4),i4,
+		   a.elem(o5),i5,
+		   a.elem(o6),i6,
+		   a.elem(o7),i7,
+		   a.elem(o8),i8,
+		   a.elem(o9),i9,
+		   a.elem(o10),i10,
+		   a.elem(o11),i11,
+		   a.elem(o12),i12,
+		   a.elem(o13),i13,
+		   a.elem(o14),i14,
+		   a.elem(o15),i15);
+#else
+#error "Map: shift positive this inner grid length is not supported - easy to fix"
+#endif
+      return Type_t(ret);	
+    }
+  }
+};
+
+// Specialization of ForEach deals with maps. 
+template<class A, class CTag>
+struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
+{
+  typedef typename ForEach<A, EvalLeaf3Array, CTag>::Type_t TypeA_t;
+  typedef typename Combine1<TypeA_t, FnMap, CTag>::Type_t Type_t;
+  inline static
+  Type_t apply(const UnaryNode<FnMap, A> &expr, const EvalLeaf1 &f, 
+    const CTag &c) 
+  {
+    // expr.operation() is fnmap which contains offsets, sign and direction
+    // f.val1() is pointing to outersites: check evaluate function above:
+    // --Jie Chen
+    int isign = expr.operation().isign;
+    int dir = expr.operation().dir;
+
+    // passing offsets pointer as well
+    EvalLeaf3Array ff(f.val1(),isign, dir, expr.operation().goff);
+    
+    // fprintf(stderr,"ForEach<Unary<FnMap>>: outersite = %d, sign = %d dir = %d offsets = %p\n", ff.val1(), ff.val1(), ff.val2(), ff.offsets() );
+
+    return Combine1<TypeA_t, FnMap, CTag>::
+      combine(ForEach<A, EvalLeaf3Array, CTag>::apply(expr.child(), ff, c),
+              expr.operation(), c);
+  }
+};
+
 
 
 //-----------------------------------------------------------------------------
@@ -1296,49 +1501,28 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
-  template<class T1>
-  OLattice<T1>
-  operator()(const OLattice<T1> & l, int dir)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int dir)
     {
-#if QDP_DEBUG >= 3
-      QDP_info("ArrayMap(OLattice,%d)",dir);
-#endif
-
-      return mapsa[dir](l);
-    }
-
-  template<class T1>
-  OScalar<T1>
-  operator()(const OScalar<T1> & l, int dir)
-    {
-#if QDP_DEBUG >= 3
-      QDP_info("ArrayMap(OScalar,%d)",dir);
-#endif
-
-      return mapsa[dir](l);
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(mapsa[dir].Offsets().slice()),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
     }
 
 
-  template<class RHS, class T1>
-  OScalar<T1>
-  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int dir)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l, int dir)
     {
-//    fprintf(stderr,"ArrayMap(QDPExpr<OScalar>,%d)\n",dir);
-
-      // For now, simply evaluate the expression and then do the map
-      return mapsa[dir](l);
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(mapsa[dir].Offsets().slice()),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
-
-  template<class RHS, class T1>
-  OLattice<T1>
-  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int dir)
-    {
-//    fprintf(stderr,"ArrayMap(QDPExpr<OLattice>,%d)\n",dir);
-
-      // For now, simply evaluate the expression and then do the map
-      return mapsa[dir](l);
-    }
-
 
 private:
   //! Hide copy constructor
@@ -1380,50 +1564,28 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
-  template<class T1>
-  OLattice<T1>
-  operator()(const OLattice<T1> & l, int isign)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int isign)
     {
-#if QDP_DEBUG >= 3
-      QDP_info("BiDirectionalMap(OLattice,%d)",isign);
-#endif
-
-      return bimaps[(isign+1)>>1](l);
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimaps[(isign+1)>>1].Offsets().slice()),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
     }
 
 
-  template<class T1>
-  OScalar<T1>
-  operator()(const OScalar<T1> & l, int isign)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l, int isign)
     {
-#if QDP_DEBUG >= 3
-      QDP_info("BiDirectionalMap(OScalar,%d)",isign);
-#endif
-
-      return bimaps[(isign+1)>>1](l);
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimaps[(isign+1)>>1].Offsets().slice()),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
-
-
-  template<class RHS, class T1>
-  OScalar<T1>
-  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign)
-    {
-//    fprintf(stderr,"BiDirectionalMap(QDPExpr<OScalar>,%d)\n",isign);
-
-      // For now, simply evaluate the expression and then do the map
-      return bimaps[(isign+1)>>1](l);
-    }
-
-  template<class RHS, class T1>
-  OLattice<T1>
-  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign)
-    {
-//    fprintf(stderr,"BiDirectionalMap(QDPExpr<OLattice>,%d)\n",isign);
-
-      // For now, simply evaluate the expression and then do the map
-      return bimaps[(isign+1)>>1](l);
-    }
-
 
 private:
   //! Hide copy constructor
@@ -1474,47 +1636,27 @@ public:
    * Notice, there may be an ILattice underneath which requires shift args.
    * This routine is very architecture dependent.
    */
-  template<class T1>
-  OLattice<T1>
-  operator()(const OLattice<T1> & l, int isign, int dir)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPType<T1,C1> & l, int isign, int dir)
     {
-#if QDP_DEBUG >= 3
-      QDP_info("ArrayBiDirectionalMap(OLattice,%d,%d)",isign,dir);
-#endif
-
-      return bimapsa((isign+1)>>1,dir)(l);
-    }
-
-  template<class T1>
-  OScalar<T1>
-  operator()(const OScalar<T1> & l, int isign, int dir)
-    {
-#if QDP_DEBUG >= 3
-      QDP_info("ArrayBiDirectionalMap(OScalar,%d,%d)",isign,dir);
-#endif
-
-      return bimapsa((isign+1)>>1,dir)(l);
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimapsa((isign+1)>>1,dir).Offsets().slice(), isign, dir),
+	CreateLeaf<QDPType<T1,C1> >::make(l)));
     }
 
 
-  template<class RHS, class T1>
-  OScalar<T1>
-  operator()(const QDPExpr<RHS,OScalar<T1> > & l, int isign, int dir)
+  template<class T1,class C1>
+  inline typename MakeReturn<UnaryNode<FnMap,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  operator()(const QDPExpr<T1,C1> & l, int isign, int dir)
     {
-//    fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OScalar>,%d,%d)\n",isign,dir);
-
-      // For now, simply evaluate the expression and then do the map
-      return bimapsa((isign+1)>>1,dir)(l);
-    }
-
-  template<class RHS, class T1>
-  OLattice<T1>
-  operator()(const QDPExpr<RHS,OLattice<T1> > & l, int isign, int dir)
-    {
-//    fprintf(stderr,"ArrayBiDirectionalMap(QDPExpr<OLattice>,%d,%d)\n",isign,dir);
-
-      // For now, simply evaluate the expression and then do the map
-      return bimapsa((isign+1)>>1,dir)(l);
+      typedef UnaryNode<FnMap,
+	typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t> Tree_t;
+      return MakeReturn<Tree_t,C1>::make(Tree_t(FnMap(bimapsa((isign+1)>>1,dir).Offsets().slice(), isign, dir),
+	CreateLeaf<QDPExpr<T1,C1> >::make(l)));
     }
 
 
