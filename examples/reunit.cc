@@ -49,16 +49,36 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
   LatticeReal t4;
   LatticeReal sigmasq;
   multi1d<LatticeComplex> row(Nc);
+
+  XMLFileWriter xml0 ("matrix.xml");
+  push (xml0, "color matrix");
+  write (xml0, "value", xa);
+  pop (xml0);
+  xml0.close ();
   
   // The initial number of matrices violating unitarity.
   numbad = 0;
  
   Real fuzz = 1.0e-5; // some kind of small floating point number, should be prec. dep.
 
+  XMLFileWriter xml("reunit.xml");
+  push (xml, "Peek colors");
   // Extract initial components 
-  for(int i=0; i < Nc; ++i)
-    for(int j=0; j < Nc; ++j)
+  for(int i=0; i < Nc; ++i) {
+    for(int j=0; j < Nc; ++j) {
       a[i][j] = peekColor(xa, i, j);
+      push (xml, "one color");
+      write (xml, "i", i);
+      write (xml, "j", j);
+      push (xml, "value");
+      write (xml, "a", a[i][j]);
+      pop (xml);
+      
+      pop(xml);
+    }
+  }
+  pop(xml);
+  xml.close ();
 
   // Use the Nc-dependent reunitarizers
   switch (Nc)

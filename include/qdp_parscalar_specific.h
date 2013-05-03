@@ -357,7 +357,6 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 {
 //  cerr << "In evaluateSubset(olattice,olattice)" << endl;
 
-  QDP_info ("evaluate %s\n", __PRETTY_FUNCTION__);
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(dest, op, rhs);
   prof.time -= getClockTime();

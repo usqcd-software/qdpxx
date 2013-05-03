@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
   // Setup the layout
   // const int foo[] = {4,2,2,4};
-  const int foo[] = {32,4, 4, 4};
+  const int foo[] = {32, 4, 4, 4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -47,6 +47,16 @@ int main(int argc, char *argv[])
   QDPIO::cout << "Start reunit\n";
   for(int m=0; m < u.size(); ++m)
     reunit(u[m]);
+
+#if 0
+  push (xml, "all u");
+  for(int m=0; m < u.size(); ++m) {
+    push (xml, "m");
+    write (xml, "m val", u[m]);
+    pop(xml);
+  }
+  pop (xml);
+#endif
 
   // Try out the plaquette routine
   QDPIO::cout << "Start mesplq\n";

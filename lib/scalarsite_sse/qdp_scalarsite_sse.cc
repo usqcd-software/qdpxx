@@ -1357,7 +1357,8 @@ void vaxmby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_4vec
 void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_4vec) 
 {
 
-  register __m128d vsum,vsum2;
+  register __m128d vsum = _mm_setzero_pd();
+  register __m128d vsum2 = _mm_setzero_pd();
   register __m128d lower_2, upper_2;
   register __m128d dat_sq, dat_sq2;
   register __m128  tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
@@ -1365,9 +1366,7 @@ void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_4vec)
   REAL32* num=In;
   int loop_end;
 
-  vsum = _mm_xor_pd(vsum,vsum);
-  vsum2 = _mm_xor_pd(vsum2,vsum2);
-  
+
 
   loop_end = n_4vec-1;
   tmp1 = _mm_load_ps(num); num+=4;

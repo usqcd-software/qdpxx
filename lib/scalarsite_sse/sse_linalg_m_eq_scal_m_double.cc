@@ -37,7 +37,7 @@ namespace QDP {
     
     // cross components into tmp 
     // Zero tmp
-    tmp1 = _mm_xor_pd(tmp1, tmp1);
+    tmp1 = _mm_setzero_pd();
     tmp1 = _mm_shuffle_pd(scalar, scalar, 0x1);
     scalar = _mm_add_pd(scalar, tmp1);
 
@@ -112,7 +112,7 @@ namespace QDP {
     
     // cross components into tmp 
     // Zero tmp
-    tmp1 = _mm_xor_pd(tmp1, tmp1);
+    tmp1 = _mm_setzero_pd();
     tmp1 = _mm_shuffle_pd(scalar, scalar, 0x1);
     scalar = _mm_add_pd(scalar, tmp1);
 

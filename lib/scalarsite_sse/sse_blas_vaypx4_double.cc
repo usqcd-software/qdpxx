@@ -34,8 +34,7 @@ void vaypx4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, int n_4spin)
   
   // cross components into tmp 
   // Zero tmp
-  //  tmp1 = _mm_xor_pd(tmp1, tmp1);
-  tmp1 = _mm_set_pd((double)0,(double)0);
+  tmp1 = _mm_setzero_pd();
   tmp1 = _mm_shuffle_pd(scalar, scalar, 0x1);
   scalar = _mm_add_pd(scalar, tmp1);
 

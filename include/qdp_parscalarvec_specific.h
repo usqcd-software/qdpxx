@@ -209,8 +209,6 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   prof.time -= getClockTime();
 #endif
 
-  QDP_info ("evalaue %s\n", __PRETTY_FUNCTION__);
-
 #if ! defined(QDP_NOT_IMPLEMENTED)
   // General form of loop structure
   if (s.hasOrderedRep()) {
