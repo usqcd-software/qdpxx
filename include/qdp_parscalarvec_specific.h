@@ -19,6 +19,7 @@ namespace Layout
   LatticeInteger latticeCoordinate(int mu);
 }
 
+// some dummy things
 
 //-----------------------------------------------------------------------------
 // Internal ops with ties to QMP
