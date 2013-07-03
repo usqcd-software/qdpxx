@@ -173,11 +173,30 @@ namespace QDP
     readPrimitive<bool>(xpath, result);
   }
    
+  void XMLReader::getAttribute(const std::string& xpath,
+			       const std::string& attrib_name, 
+			       int& result){
+    readAttrPrimitive<int>(xpath,attrib_name,result);
+  }
+
   template<typename T>
   void XMLReader::readPrimitive(const std::string& xpath, T& result)
   {
     if (Layout::primaryNode()) {
       BasicXPathReader::get(xpath, result);
+    }
+
+    // Now broadcast back out to all nodes
+    QDPInternal::broadcast(result);
+  }
+
+  template<typename T>
+  void XMLReader::readAttrPrimitive(const std::string& xpath, 
+				    const std::string& attrib_name, 
+				    T& result)
+  {
+    if (Layout::primaryNode()) {
+      BasicXPathReader::getAttribute(xpath, attrib_name, result);
     }
 
     // Now broadcast back out to all nodes

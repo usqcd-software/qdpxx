@@ -118,6 +118,11 @@ namespace QDP
     //! Xpath query
     void get(const std::string& xpath, bool& result);
 
+    //! read integer attributes so that I can read Matrices in XML
+    void getAttribute(const std::string& xpath,
+		      const std::string& attrib_name, 
+		      int& result);
+
     //! Set a replacement of a primitive
     template<typename T>
     void set(const std::string& xpath, const T& to_set) 
@@ -153,7 +158,13 @@ namespace QDP
     template<typename T>
     void
     readPrimitive(const std::string& xpath, T& output);
-
+  
+    // The universal attribute reader
+    template<typename T>
+    void
+    readAttrPrimitive(const std::string& xpath, 
+		      const std::string& attrib_name,
+		      T& result);
   private:
     bool  iop;  //file open or closed?
     bool  derived; // is this reader derived from another reader?
