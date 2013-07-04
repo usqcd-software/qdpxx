@@ -624,6 +624,97 @@ namespace QDP
   }
 
 
+  //! Read a binary multi4d element
+  /*!
+    This assumes that the number of elements to be read is also written in
+    the file, \e i.e. that the data was written with the corresponding write
+    code.
+    \param bin The initialised binary reader
+    \param d The data to be filled.
+
+    \pre The binary reader must have opened the file.
+    \post The multi4d will be resized.
+  */
+  template<class T>
+  inline
+  void read(BinaryReader& bin, multi4d<T>& d)
+  {
+    int n1;
+    int n2;
+    int n3;
+    int n4;
+    read(bin, n4);    // the size is always written, even if 0
+    read(bin, n3);    // the size is always written, even if 0
+    read(bin, n2);    // the size is always written, even if 0
+    read(bin, n1);    // the size is always written, even if 0
+
+    // Destructively resize the array
+    d.resize(n4,n3,n2,n1);
+
+    for(int i=0; i < d.size1(); ++i)
+    {
+      for(int j=0; j < d.size2(); ++j)
+      {
+	for(int k=0; k < d.size3(); ++k)
+	{
+	  for(int l=0; l < d.size4(); ++l)
+	  {
+	    read(bin, d[l][k][j][i]);
+	  }
+	}
+      }
+    }
+  }
+
+
+  //! Read a binary multi5d element
+  /*!
+    This assumes that the number of elements to be read is also written in
+    the file, \e i.e. that the data was written with the corresponding write
+    code.
+    \param bin The initialised binary reader
+    \param d The data to be filled.
+
+    \pre The binary reader must have opened the file.
+    \post The multi5d will be resized.
+  */
+  template<class T>
+  inline
+  void read(BinaryReader& bin, multi5d<T>& d)
+  {
+    int n1;
+    int n2;
+    int n3;
+    int n4;
+    int n5;
+    read(bin, n5);    // the size is always written, even if 0
+    read(bin, n4);    // the size is always written, even if 0
+    read(bin, n3);    // the size is always written, even if 0
+    read(bin, n2);    // the size is always written, even if 0
+    read(bin, n1);    // the size is always written, even if 0
+
+    // Destructively resize the array
+    d.resize(n5,n4,n3,n2,n1);
+
+    for(int i=0; i < d.size1(); ++i)
+    {
+      for(int j=0; j < d.size2(); ++j)
+      {
+	for(int k=0; k < d.size3(); ++k)
+	{
+	  for(int l=0; l < d.size4(); ++l)
+	  {
+	    for(int m=0; m < d.size5(); ++m)
+	    {
+	      read(bin, d[m][l][k][j][i]);
+	    }
+	  }
+	}
+      }
+    }
+  }
+
+
   //! Read a binary multiNd element
   template<class T>
   inline
@@ -661,6 +752,7 @@ namespace QDP
     for(int i=0; i < d.size(); ++i)
       read(bin, d[i]);
   }
+
 
   //! Read a binary Array1dO object
   /*!
@@ -996,16 +1088,6 @@ namespace QDP
 
   }
 
-  //! Write a fixed number of binary multi2d element - no element count written
-  template<class T>
-  inline
-  void write(BinaryWriter& bin, const multi2d<T>& d, int num1, int num2)
-  {
-    for(int i=0; i < num2; ++i)
-      for(int j=0; j < num1; ++j)
-	write(bin, d[j][i]);
-  }
-
 
 
   //! Write a binary multi3d element
@@ -1024,18 +1106,42 @@ namespace QDP
    }
 
 
-  //! Write a fixed number of binary multi3d element - no element count written
+  //! Write a binary multi4d element
   template<class T>
   inline
-  void write(BinaryWriter& bin, const multi3d<T>& d, 
-	     int num1, int num2, int num3)
+  void write(BinaryWriter& bin, const multi4d<T>& d)
   {
-    for(int k=0; k < num3 ; ++k)
-      for(int j=0; j < num2; ++j)
-	for(int i=0; i < num1; ++i)
-	  write(bin, d[i][j][k]);
+    write(bin, d.size4());    // always write the size
+    write(bin, d.size3());    // always write the size
+    write(bin, d.size2());    // always write the size
+    write(bin, d.size1());    // always write the size
 
-  }
+    for(int i=0; i < d.size1(); ++i)
+      for(int j=0; j < d.size2(); ++j)
+	for(int k=0; k < d.size3(); ++k)
+	  for(int l=0; l < d.size4(); ++l)
+	    write(bin, d[l][k][j][i]);
+   }
+
+
+  //! Write a binary multi5d element
+  template<class T>
+  inline
+  void write(BinaryWriter& bin, const multi5d<T>& d)
+  {
+    write(bin, d.size5());    // always write the size
+    write(bin, d.size4());    // always write the size
+    write(bin, d.size3());    // always write the size
+    write(bin, d.size2());    // always write the size
+    write(bin, d.size1());    // always write the size
+
+    for(int i=0; i < d.size1(); ++i)
+      for(int j=0; j < d.size2(); ++j)
+	for(int k=0; k < d.size3(); ++k)
+	  for(int l=0; l < d.size4(); ++l)
+	    for(int m=0; m < d.size5(); ++m)
+	      write(bin, d[m][l][k][j][i]);
+   }
 
 
   //! Write a binary multiNd element

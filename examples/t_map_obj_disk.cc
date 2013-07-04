@@ -484,6 +484,7 @@ int main(int argc, char *argv[])
   try {
     // Make a disk map object -- keys are ints, data floats
     MapObjectDisk<char,float> made_map;
+    made_map.setDebug(10);
     made_map.insertUserdata(meta_data);
     made_map.open(map_obj_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
