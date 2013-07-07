@@ -161,6 +161,90 @@ namespace QDP
     std::string user_data;
   };
 
+
+
+  //----------------------------------------------------------------------------
+  //! Read a MapObject via xml
+  template<typename K, typename V>
+  inline
+  void read(XMLReader& xml, const std::string& s, MapObject<K,V>& input)
+  {
+    XMLReader arraytop(xml, s);
+
+    std::ostringstream error_message;
+    std::string elemName = "elem";
+  
+    int array_size;
+    try {
+      array_size = arraytop.count(elemName);
+    }
+    catch( const std::string& e) { 
+      error_message << "Exception occurred while counting " << elemName
+		    << " during array read " << s << std::endl;
+      arraytop.close();
+      throw error_message.str();
+    }
+      
+    // Get the elements one by one
+    for(int i=0; i < array_size; i++) 
+    {
+      std::ostringstream element_xpath;
+
+      // Create the query for the element 
+      element_xpath << elemName << "[" << (i+1) << "]";
+
+      // recursively try and read the element.
+      try {
+	XMLReader xml_elem(arraytop, element_xpath.str());
+
+	K key;
+	V val;
+
+	read(xml_elem, std::string("Key"), key);
+	read(xml_elem, std::string("Val"), val);
+
+	input.insert(key, val);
+      } 
+      catch (const std::string& e) 
+      {
+	error_message << "Failed to match element " << i
+		      << " of array  " << s << "  with query " << element_xpath.str()
+		      << std::endl
+		      << "Query returned error: " << e;
+	arraytop.close();
+	throw error_message.str();
+      }
+    }
+
+    // Arraytop should self destruct but just to be sure.
+    arraytop.close();
+  }
+
+
+  //----------------------------------------------------------------------------
+  //! Write a MapObject in xml
+  template<typename K, typename V>
+  inline
+  void write(XMLWriter& xml, const std::string& path, const MapObject<K,V>& param)
+  {
+    push(xml, path);
+
+    std::vector<K>  k1;
+    std::vector<V>  v1;
+    param.keysAndValues(k1,v1);
+
+    for(int i=0; i < k1.size(); ++i)
+    {
+      push(xml, "elem");
+      write(xml, "Key", k1[i]);
+      write(xml, "Val", v1[i]);
+      pop(xml);
+    }
+
+    pop(xml);
+  }
+
+
 } // namespace QDP
 
 #endif
