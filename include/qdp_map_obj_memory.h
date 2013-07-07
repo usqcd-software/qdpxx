@@ -72,6 +72,18 @@ namespace QDP
       return ret;
     }
 			
+    //! Erase a key-value
+    void erase(const K& key) {
+      BinaryBufferWriter bin;
+      write(bin, key);
+
+      typename MapType_t::const_iterator iter = src_map.find(bin.str());
+      if (iter != src_map.end())
+      {
+	src_map.erase(iter);
+      }
+    }
+			
     //! Clear the object
     void clear() {src_map.clear();}
 
@@ -167,7 +179,7 @@ namespace QDP
   //! Read a MapObject via xml
   template<typename K, typename V>
   inline
-  void read(XMLReader& xml, const std::string& s, MapObject<K,V>& input)
+  void read(XMLReader& xml, const std::string& s, MapObjectMemory<K,V>& input)
   {
     XMLReader arraytop(xml, s);
 
@@ -225,7 +237,7 @@ namespace QDP
   //! Write a MapObject in xml
   template<typename K, typename V>
   inline
-  void write(XMLWriter& xml, const std::string& path, const MapObject<K,V>& param)
+  void write(XMLWriter& xml, const std::string& path, const MapObjectMemory<K,V>& param)
   {
     push(xml, path);
 
