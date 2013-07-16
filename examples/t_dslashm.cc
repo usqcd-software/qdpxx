@@ -52,6 +52,7 @@ int main(int argc, char **argv)
 
   QDP::StopWatch swatch;
 
+#if 1
   swatch.reset();
   {
     int isign = +1;
@@ -59,8 +60,9 @@ int main(int argc, char **argv)
     QDPIO::cout << "Applying D" << endl;
 
     swatch.start();
-    for(int i=0; i < iter; i++)
+    for(int i=0; i < iter; i++) {
       dslash(chi, u, psi, isign, cb);
+    }
     swatch.stop();
 
     double mydt=swatch.getTimeInSeconds();
@@ -79,6 +81,9 @@ int main(int argc, char **argv)
     QDPIO::cout << "|chi|^2 = " << norm2(chi, rb[cb]) << endl;
   }
 
+#endif
+
+#if 1
   chi = zero;
 
   swatch.reset();
@@ -102,6 +107,7 @@ int main(int argc, char **argv)
     // take norm2 for verification
     QDPIO::cout << "|chi|^2 = " << norm2(chi, rb[cb]) << endl;
   }
+#endif
 
 #if 0
   XMLFileWriter xml("t_dslashm.xml");
@@ -116,6 +122,21 @@ int main(int argc, char **argv)
   xml.close();
 #endif
 
+#if 0
+  // check overlapped sum
+  {
+    int isign = +1;
+    int cb = 0;
+    RealD sumtest = dslash3 (u, psi, isign, cb);
+
+    QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
+
+    // take norm2 for verification
+    QDPIO::cout << "sum with shift test = " << sumtest << endl;
+  }
+#endif
+
+#if 1
   LatticeFermion chi2;
   random(psi);
   chi = zero;
@@ -130,6 +151,8 @@ int main(int argc, char **argv)
       QDPIO::cout << "isign="<<isign<<" cb=" << cb << " Diff = " << sqrt( norm2(diff,rb[cb]) / norm2(psi, rb[otherCB]))<< endl;
     }
   }
+#endif
+
 
   // Time to bolt
   QDP_finalize();

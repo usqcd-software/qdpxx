@@ -20,10 +20,21 @@ int main(int argc, char *argv[])
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  // Setup the layout
-  const int foo[] = {4,4,4,4};
   multi1d<int> nrow(Nd);
-  nrow = foo;  // Use only Nd elements
+
+  if (argc >= 5) {
+    nrow[0] = atoi(argv[1]);
+    nrow[1] = atoi(argv[2]);
+    nrow[2] = atoi(argv[3]);
+    nrow[3] = atoi(argv[4]);
+    
+    QDP_info ("Lattice size %dx%dx%dx%d\n", nrow[0], nrow[1], nrow[2], nrow[3]);
+  }
+  else {
+    // Setup the layout
+    const int foo[] = {4,4,4,4};
+    nrow = foo;
+  }
   Layout::setLattSize(nrow);
   Layout::create();
 
@@ -43,7 +54,7 @@ int main(int argc, char *argv[])
       push(xml,"newdir");
       write(xml,"mu", mu);
 
-      b = shift(a,FORWARD,mu);
+      b = shift(a,BACKWARD,mu);
       write(xml,"b", b);
       pop(xml);
     }

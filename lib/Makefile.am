@@ -75,6 +75,7 @@ endif
 # Parallel scalar with Vector extensions
 if ARCH_PARSCALARVEC
 libqdp_a_SOURCES += qdp_parscalarvec_init.cc qdp_parscalarvec_layout.cc \
+	qdp_mapresource.cc qdp_mastermap.cc \
 	qdp_parscalarvec_specific.cc qdp_scalarvecsite_specific.cc
 endif
 

@@ -16,8 +16,8 @@ int main(int argc, char *argv[])
   QDP_PUSH_PROFILE(QDP::getProfileLevel());
 
   // Setup the layout
-  //  const int foo[] = {2,2,2,1};
-  const int foo[] = {16,8,8,4};
+  const int foo[] = {32,2,2,1};
+  // const int foo[] = {16,8,8,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -67,6 +67,10 @@ int main(int argc, char *argv[])
   random(u);
   gaussian(lctmp1);
 
+  LatticeColorMatrixD lctmp1d;
+  LatticeColorMatrixD lctmp2d;
+  LatticeColorMatrixD lctmp3d;
+
   push(xml_out,"LATTICE_COLORMATRIX_Site_Variables");
   write(xml_out, "u", u);
   write(xml_out, "lctmp1", lctmp1);
@@ -78,6 +82,13 @@ int main(int argc, char *argv[])
   push(xml_out,"Lattice_ColorMat_ops");
   lctmp3 = lctmp1 * lctmp2;
   write(xml_out, "C_X_C",lctmp3);
+
+  random(lctmp1d); random(lctmp2d);
+  lctmp1d = lctmp1;
+  lctmp3d = lctmp1d * lctmp2;
+  write(xml_out, "Double C_X_C",lctmp3d);
+
+#if 0
 
   random(lctmp3);
   lctmp3 += lctmp1 * lctmp2;
@@ -431,6 +442,8 @@ int main(int argc, char *argv[])
   write(xml_out, "lqtmp23", quarkContract23(lqtmp1, lqtmp2));
   write(xml_out, "lqtmp24", quarkContract24(lqtmp1, lqtmp2));
   pop(xml_out);
+
+#endif
 
   pop(xml_out);
   xml_out.close();

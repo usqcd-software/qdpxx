@@ -6,10 +6,6 @@
 #include "qdp_config.h"
 #include "qdp_allocator.h"
 
-#if defined(ARCH_PARSCALARVEC)
-#include <qmp.h>
-#endif
-
 /*! \file
  * \brief Outer grid classes
  */
@@ -138,31 +134,6 @@ public:
   inline T& elem(int i) {return F;}  // The indexing is a nop
   inline const T& elem(int i) const {return F;}  // The indexing is a nop
 
-
-
-
-#if defined(ARCH_PARSCALARVEC)
-  QMP_mem_t* sendBufMem (int dir, int isign) const
-  {
-    return 0;
-  }
-
-  int sendBufMemSize (int dir, int isign) const
-  {
-    return 0;
-  }
-
-
-  QMP_mem_t* recvBufMem (int dir, int isign) const
-  {
-    return 0;
-  }
-
-  int recvBufMemSize (int dir, int isign) const
-  {
-    return 0;
-  }
-#endif
 
 private:
   T F;
@@ -466,133 +437,7 @@ public:
   inline T& elem(int i) {return F[i];}
   inline const T& elem(int i) const {return F[i];}
 
-#if defined(ARCH_PARSCALARVEC)
-  QMP_mem_t* sendBufMem (int dir, int isign) const
-  {
-    return send_buf_mem[dir][(isign + 1) >> 1];
-  }
-
-  int sendBufMemSize (int dir, int isign) const
-  {
-    return send_buf_mem_size[dir][(isign + 1) >> 1];
-  }
-
-  QMP_mem_t* recvBufMem (int dir, int isign) const
-  {
-    return recv_buf_mem[dir][(isign + 1) >> 1];
-  }
-
-  int recvBufMemSize (int dir, int isign) const
-  {
-    return recv_buf_mem_size[dir][(isign + 1) >> 1];
-  }
-
-#endif
-
 private:
-  /**
-   * Internal communication surface buffer allocation
-   * only used for parscalarvec
-   */
-#if defined(ARCH_PARSCALARVEC)
-
-  inline void alloc_comm_buffers (void) 
-  {
-    int ssize, rsize;
-    for (int i = 0; i < Nd; i++) {
-      send_buf_mem[i][0] = 0;
-      recv_buf_mem[i][0] = 0;
-      send_buf_mem_size[i][0] = 0;
-      recv_buf_mem_size[i][0] = 0;
-
-      send_buf_mem[i][1] = 0;
-      recv_buf_mem[i][1] = 0;
-      send_buf_mem_size[i][1] = 0;
-      recv_buf_mem_size[i][1] = 0;
-
-      // use shift to find out whether we are doing communication
-      if (shift.offnodeComm(i, -1)) {
-	if (i == 0) { // along x direction
-	  ssize = shift.numberSendingSites (i, -1) * sizeof (T);
-	  rsize = shift.numberRecvingSites (i, -1) * sizeof (T);
-	}
-	else {
-	  ssize = (shift.numberSendingSites (i, -1) >> INNER_LOG) * sizeof(T);
-	  rsize = (shift.numberRecvingSites (i, -1) >> INNER_LOG) * sizeof(T);
-	}
-	send_buf_mem[i][0] = QMP_allocate_aligned_memory(ssize,QDP_ALIGNMENT_SIZE,(QMP_MEM_COMMS|QMP_MEM_FAST)); 
-	// packed data to send
-	if( send_buf_mem[i][0] == 0x0 ) { 
-	  send_buf_mem[i][0] = QMP_allocate_aligned_memory(ssize, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
-	  if( send_buf_mem[i][0] == 0x0) 
-	    QDP_error_exit("QMP_allocate_aligned_memory failed (send_buf_mem_t)\n");
-	}
-	recv_buf_mem[i][0] = QMP_allocate_aligned_memory(rsize,QDP_ALIGNMENT_SIZE,(QMP_MEM_COMMS|QMP_MEM_FAST)); 
-	// packed data to send
-	if( recv_buf_mem[i][0] == 0x0 ) { 
-	  recv_buf_mem[i][0] = QMP_allocate_aligned_memory(rsize, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
-	  if( recv_buf_mem[i][0] == 0x0) 
-	    QDP_error_exit("QMP_allocate_aligned_memory failed (recv_buf_mem_t)\n");
-	}
-	
-	send_buf_mem_size[i][0] = ssize;
-	recv_buf_mem_size[i][0] = rsize;
-      }
-
-      if (shift.offnodeComm(i,1)) {
-	if (i == 0) {
-	  ssize = shift.numberSendingSites (i, 1) * sizeof (T);
-	  rsize = shift.numberRecvingSites (i, 1) * sizeof (T);
-	}
-	else {
-	  ssize = (shift.numberSendingSites (i, 1) >> INNER_LOG) * sizeof(T);
-	  rsize = (shift.numberRecvingSites (i, 1) >> INNER_LOG) * sizeof(T);
-	}
-	send_buf_mem[i][1] = QMP_allocate_aligned_memory(ssize,QDP_ALIGNMENT_SIZE,(QMP_MEM_COMMS|QMP_MEM_FAST)); 
-	// packed data to send
-	if( send_buf_mem[i][1] == 0x0 ) { 
-	  send_buf_mem[i][1] = QMP_allocate_aligned_memory(ssize, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
-	  if( send_buf_mem[i][1] == 0x0) 
-	    QDP_error_exit("QMP_allocate_aligned_memory failed (send_buf_mem_t)\n");
-	}
-	recv_buf_mem[i][1] = QMP_allocate_aligned_memory(rsize,QDP_ALIGNMENT_SIZE,(QMP_MEM_COMMS|QMP_MEM_FAST)); 
-	// packed data to send
-	if( recv_buf_mem[i][1] == 0x0 ) { 
-	  recv_buf_mem[i][1] = QMP_allocate_aligned_memory(rsize, QDP_ALIGNMENT_SIZE, QMP_MEM_COMMS);
-	  if( recv_buf_mem[i][1] == 0x0) 
-	    QDP_error_exit("QMP_allocate_aligned_memory failed (recv_buf_mem_t)\n");
-	}
-
-	send_buf_mem_size[i][1] = ssize;
-	recv_buf_mem_size[i][1] = rsize;
-      }
-    }
-  }
-
-  inline void free_comm_buffers (void) 
-  {
-    for (int i = 0; i < Nd; i++) {
-      if (send_buf_mem[i][0]) {
-	QMP_free_memory (send_buf_mem[i][0]);
-	send_buf_mem[i][0] = 0;
-      }
-      if (recv_buf_mem[i][0]) {
-	QMP_free_memory (recv_buf_mem[i][0]);
-	recv_buf_mem[i][0] = 0;
-      }
-
-      if (send_buf_mem[i][1]) {
-	QMP_free_memory (send_buf_mem[i][1]);
-	send_buf_mem[i][1] = 0;
-      }
-      if (recv_buf_mem[i][1]) {
-	QMP_free_memory (recv_buf_mem[i][1]);
-	recv_buf_mem[i][1] = 0;
-      }
-    }
-
-  }
-#endif
 
   //! Internal memory allocator
   /*! 
@@ -626,10 +471,6 @@ private:
       // Make sure fast is set to 0x0
       fast=0x0;
 #endif
-
-#if defined(ARCH_PARSCALARVEC)
-      alloc_comm_buffers ();
-#endif
     }
 
   //! Internal memory free
@@ -646,10 +487,6 @@ private:
       QDP::Allocator::theQDPAllocator::Instance().free(fast);      
       fast = 0x0;
     }
-#endif
-
-#if defined(ARCH_PARSCALARVEC)
-      free_comm_buffers ();
 #endif
   }
 
@@ -669,15 +506,6 @@ private:
   T *fast; // Pointer to fast memory space
 #endif
 
-#if defined(ARCH_PARSCALARVEC)
-  /**
-   * Communication Buffers for each direction and sign
-   */
-  QMP_mem_t* send_buf_mem[Nd][2];
-  int        send_buf_mem_size[Nd][2];
-  QMP_mem_t* recv_buf_mem[Nd][2];
-  int        recv_buf_mem_size[Nd][2];
-#endif
 };
 
 

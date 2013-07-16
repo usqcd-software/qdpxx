@@ -305,6 +305,33 @@ struct Combine2<bool, bool, Op, OrCombine>
   }
 };
 
+//-----------------------------------------------------------------------------
+//
+// CLASS NAME
+//   BitOrCombine
+//
+// DESCRIPTION
+//   A handy combiner for extracting integer query from expressions.
+//
+//-----------------------------------------------------------------------------
+
+
+struct BitOrCombine
+{
+  PETE_EMPTY_CONSTRUCTORS(BitOrCombine)
+};
+
+template<class Op>
+struct Combine2<int, int, Op, BitOrCombine>
+{
+  typedef int Type_t;
+  inline static
+  Type_t combine(int a, int b, Op, BitOrCombine)
+  {
+    return (a | b);
+  }
+};
+
 
 //-----------------------------------------------------------------------------
 //

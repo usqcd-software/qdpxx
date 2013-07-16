@@ -87,8 +87,8 @@ struct Reference
   // Conversion operators.
 
   operator const T& () const { return reference_m; }
-  operator T& () const { return const_cast<T&>(reference_m); }
-//  operator T& () { return const_cast<T&>(reference_m); }
+  // operator T& () const { return const_cast<T&>(reference_m); }
+  operator T& () { return const_cast<T&>(reference_m); }
   
   const T &reference_m;
 };

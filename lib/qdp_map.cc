@@ -157,6 +157,14 @@ void ArrayBiDirectionalMap::make(const ArrayMapFunc& func)
   // actually allocate the space.
   bimapsa.resize(2,func.numArray());
 
+#if defined (ARCH_PARSCALARVEC)
+  // Loop over each direction updating the map information (sign, dir)
+  for(int dir=0; dir < func.numArray(); ++dir) {
+    bimapsa(0,dir).mapInfo (-1, dir);
+    bimapsa(1,dir).mapInfo (1, dir);
+  }
+#endif
+
 #if QDP_DEBUG >= 3
   fprintf (stderr, "Make arraybindirectionalmap\n");
 #endif

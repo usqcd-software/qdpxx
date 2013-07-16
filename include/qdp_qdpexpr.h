@@ -102,7 +102,7 @@ struct Combine1<Reference<A>, Op, OpCombine>
 {
   typedef typename UnaryReturn<A, Op>::Type_t Type_t;
   inline static
-  Type_t combine(Reference<A> a, Op op, OpCombine) { return op(a.reference()); }
+  Type_t combine(Reference<A> a, const Op& op, OpCombine) { return op(a.reference()); }
 };
 
 template<class A,class B,class Op>
@@ -110,7 +110,7 @@ struct Combine2<Reference<A>, Reference<B>, Op, OpCombine>
 {
   typedef typename BinaryReturn<A, B, Op>::Type_t Type_t;
   inline static
-  Type_t combine(Reference<A> a, Reference<B> b, Op op, OpCombine)
+  Type_t combine(Reference<A> a, Reference<B> b, const Op& op, OpCombine)
   {
     return op(a.reference(), b.reference());
   }
@@ -121,7 +121,7 @@ struct Combine2<Reference<A>, B, Op, OpCombine>
 {
   typedef typename BinaryReturn<A, B, Op>::Type_t Type_t;
   inline static
-  Type_t combine(Reference<A> a, B b, Op op, OpCombine)
+  Type_t combine(Reference<A> a, const B& b, const Op& op, OpCombine)
   {
     return op(a.reference(), b);
   }
@@ -132,7 +132,7 @@ struct Combine2<A, Reference<B>, Op, OpCombine>
 {
   typedef typename BinaryReturn<A, B, Op>::Type_t Type_t;
   inline static
-  Type_t combine(A a, Reference<B> b, Op op, OpCombine)
+  Type_t combine(const A& a, Reference<B> b, const Op& op, OpCombine)
   {
     return op(a, b.reference());
   }
@@ -144,7 +144,7 @@ struct Combine3<Reference<A>, B, C, Op, OpCombine>
 {
   typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
   inline static
-  Type_t combine(Reference<A> a, B b, C c, Op op, OpCombine)
+  Type_t combine(Reference<A> a, const B& b, const C& c, const Op& op, OpCombine)
   {
     return op(a.reference(), b, c);
   }
@@ -155,7 +155,7 @@ struct Combine3<A, Reference<B>, C, Op, OpCombine>
 {
   typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
   inline static
-  Type_t combine(A a, Reference<B> b, C c, Op op, OpCombine)
+  Type_t combine(const A& a, Reference<B> b, const C& c, const Op& op, OpCombine)
   {
     return op(a, b.reference(), c);
   }
@@ -166,7 +166,7 @@ struct Combine3<A, B, Reference<C>, Op, OpCombine>
 {
   typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
   inline static
-  Type_t combine(A a, B b, Reference<C> c, Op op, OpCombine)
+  Type_t combine(const A& a, const B& b, Reference<C> c, const Op& op, OpCombine)
   {
     return op(a, b, c.reference());
   }
@@ -178,7 +178,7 @@ struct Combine3<Reference<A>, Reference<B>, C, Op, OpCombine>
 {
   typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
   inline static
-  Type_t combine(Reference<A> a, Reference<B> b, C c, Op op, OpCombine)
+  Type_t combine(Reference<A> a, Reference<B> b, const C& c, const Op& op, OpCombine)
   {
     return op(a.reference(), b.reference(), c);
   }
@@ -189,7 +189,7 @@ struct Combine3<A, Reference<B>, Reference<C>, Op, OpCombine>
 {
   typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
   inline static
-  Type_t combine(A a, Reference<B> b, Reference<C> c, Op op, OpCombine)
+  Type_t combine(const A& a, Reference<B> b, Reference<C> c, const Op& op, OpCombine)
   {
     return op(a, b.reference(), c.reference());
   }
@@ -200,7 +200,7 @@ struct Combine3<Reference<A>, B, Reference<C>, Op, OpCombine>
 {
   typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
   inline static
-  Type_t combine(Reference<A> a, B b, Reference<C> c, Op op, OpCombine)
+  Type_t combine(Reference<A> a, const B& b, Reference<C> c, const Op& op, OpCombine)
   {
     return op(a.reference(), b, c.reference());
   }
@@ -211,7 +211,7 @@ struct Combine3<Reference<A>, Reference<B>, Reference<C>, Op, OpCombine>
 {
   typedef typename TrinaryReturn<A, B, C, Op>::Type_t Type_t;
   inline static
-  Type_t combine(Reference<A> a, Reference<B> b, Reference<C> c, Op op, OpCombine)
+  Type_t combine(Reference<A> a, Reference<B> b, Reference<C> c, const Op& op, OpCombine)
   {
     return op(a.reference(), b.reference(), c.reference());
   }

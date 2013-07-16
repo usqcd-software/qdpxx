@@ -77,6 +77,7 @@ POST_UNINSTALL = :
 
 # Parallel scalar with Vector extensions
 @ARCH_PARSCALARVEC_TRUE@am__append_8 = qdp_parscalarvec_init.cc qdp_parscalarvec_layout.cc \
+@ARCH_PARSCALARVEC_TRUE@	qdp_mapresource.cc qdp_mastermap.cc \
 @ARCH_PARSCALARVEC_TRUE@	qdp_parscalarvec_specific.cc qdp_scalarvecsite_specific.cc
 
 
@@ -149,6 +150,7 @@ am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	qdp_scalarvec_init.cc qdp_scalarvec_layout.cc \
 	qdp_scalarvec_specific.cc qdp_scalarvecsite_specific.cc \
 	qdp_parscalarvec_init.cc qdp_parscalarvec_layout.cc \
+	qdp_mapresource.cc qdp_mastermap.cc \
 	qdp_parscalarvec_specific.cc qdp_scalarvecsite_sse.cc \
 	qdp_default_allocator.cc qdp_qcdoc_allocator.cc
 @QDP_USE_LIBXML2_TRUE@am__objects_1 = qdp_xmlio.$(OBJEXT) \
@@ -188,6 +190,8 @@ am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 @ARCH_PARSCALARVEC_TRUE@am__objects_6 =  \
 @ARCH_PARSCALARVEC_TRUE@	qdp_parscalarvec_init.$(OBJEXT) \
 @ARCH_PARSCALARVEC_TRUE@	qdp_parscalarvec_layout.$(OBJEXT) \
+@ARCH_PARSCALARVEC_TRUE@	qdp_mapresource.$(OBJEXT) \
+@ARCH_PARSCALARVEC_TRUE@	qdp_mastermap.$(OBJEXT) \
 @ARCH_PARSCALARVEC_TRUE@	qdp_parscalarvec_specific.$(OBJEXT) \
 @ARCH_PARSCALARVEC_TRUE@	qdp_scalarvecsite_specific.$(OBJEXT)
 @QDP_USE_SCALARVEC_SSE_TRUE@am__objects_7 =  \
@@ -279,6 +283,7 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 QMP_CFLAGS = @QMP_CFLAGS@
@@ -439,6 +444,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_layout.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_map_obj_disk.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_mapresource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_mastermap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_parscalar_init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_parscalar_layout.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_parscalar_specific.Po@am__quote@

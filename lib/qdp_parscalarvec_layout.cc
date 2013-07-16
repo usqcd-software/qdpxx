@@ -535,7 +535,6 @@ namespace QDP
       multi1d<int> dim(Nd);
       dim = 1;
       dim[0] = 2 * INNER_LEN;       // must have multiple length 2 for cb
-                                    // Jie Chen: Not sure this is correct
 
       return dim;
     }

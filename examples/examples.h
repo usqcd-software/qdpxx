@@ -45,6 +45,9 @@ void dslash(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const Lat
 void dslash2(LatticeFermion& chi, const multi1d<LatticeColorMatrix>& u, const LatticeFermion& psi,
 	    int isign, int cb);
 
+RealD dslash3(const multi1d<LatticeColorMatrix>& u, const LatticeFermion& psi,
+	      int isign, int cb);
+
 #ifndef QDP_NO_LIBXML2
 void FormFac(const multi1d<LatticeColorMatrix>& u, const LatticePropagator& quark_propagator,
 	     const LatticePropagator& seq_quark_prop, const multi1d<int>& t_source, 

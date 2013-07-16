@@ -1,4 +1,3 @@
-
 /*! @file
  * @brief Scalarvec-like architecture specific routines
  * 
@@ -57,7 +56,8 @@ void Set::make(const SetFunc& func)
 {
   int nsubset_indices = func.numSubsets();
   const int nodeSites = Layout::sitesOnNode();
-
+	const int nodeNumber = Layout::nodeNumber();
+	
 #if QDP_DEBUG >= 2
   QDP_info("Set a subset: nsubset = %d",nsubset_indices);
 #endif
@@ -70,6 +70,9 @@ void Set::make(const SetFunc& func)
 
   // Create the array holding the array of sitetable info
   sitetables.resize(nsubset_indices);
+
+ 	// Create the array holding the array of membertable info
+  membertables.resize(nsubset_indices);
 
   // Loop over linear sites determining their color
   for(int linear=0; linear < nodeSites; ++linear)
@@ -85,7 +88,7 @@ void Set::make(const SetFunc& func)
 #endif
 
     // Sanity checks
-    if (node != Layout::nodeNumber())
+    if (node != nodeNumber)
       QDP_error_exit("Set: found site with node outside current node!");
 
     if (lin != linear)
@@ -107,12 +110,20 @@ void Set::make(const SetFunc& func)
   for(int cb=0; cb < nsubset_indices; ++cb)
   {
     // Always construct the sitetables. 
+    multi1d<bool>& membertable = membertables[cb];
+    membertable.resize(nodeSites);
 
     // First loop and see how many sites are needed
     int num_sitetable = 0;
-    for(int linear=0; linear < nodeSites; ++linear)
-      if (lat_color[linear] == cb)
-	++num_sitetable;
+    for(int linear=0; linear < nodeSites; ++linear) {
+      if (lat_color[linear] == cb) {
+      	++num_sitetable;	
+	membertable[linear] = true;
+      }
+      else {
+	membertable[linear] = false;
+      }
+    }
 
     // Now take the inverse of the lattice coloring to produce
     // the site list
@@ -125,8 +136,7 @@ void Set::make(const SetFunc& func)
     int start, end;
 
     // Handle the case that there are no sites
-    if (num_sitetable > 0)
-    {
+    if (num_sitetable > 0) {
       // For later sanity, initialize this to something 
       for(int i=0; i < num_sitetable; ++i)
 	sitetable[i] = -1;
@@ -144,34 +154,32 @@ void Set::make(const SetFunc& func)
       end = sitetable[sitetable.size()-1];  // the absolute last site
 
       // Now look for a hole
-      for(int prev=sitetable[0], i=0; i < sitetable.size(); ++i)
+      for(int prev=sitetable[0], i=0; i < sitetable.size(); ++i){
 	if (sitetable[i] != prev++)
-	{
+	  {
 #if QDP_DEBUG >= 2
-	  QDP_info("Set(%d): sitetable[%d]=%d",cb,i,sitetable[i]);
+	    QDP_info("Set(%d): sitetable[%d]=%d",cb,i,sitetable[i]);
 #endif
-
-	  // Found a hole. The rep is not ordered.
-	  ordRep = false;
-	  start = end = -1;
-	  break;
-	}
+	    
+	    // Found a hole. The rep is not ordered.
+	    ordRep = false;
+	    start = end = -1;
+	    break;
+	  }
+      }
     }
-    else  // num_sitetable == 0
-    {
+    else { // num_sitetable == 0
       ordRep = false;
       start = end = -1;
     }
 
-    sub[cb].make(ordRep, start, end, &(sitetables[cb]), cb, this);
+    sub[cb].make(ordRep, start, end, &(sitetables[cb]), cb, this, &(membertables[cb]));
 
 #if QDP_DEBUG >= 2
     QDP_info("Subset(%d): num_sitetable=%d  start=%d end=%d",cb,num_sitetable,start,end);
 #endif
   }
 }
-
-
 
 
 } // namespace QDP;

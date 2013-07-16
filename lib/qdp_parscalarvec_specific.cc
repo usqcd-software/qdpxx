@@ -40,10 +40,9 @@ void Map::make(const MapFunc& func)
   dstnode.resize(nodeSites);
 
   const int my_node = Layout::nodeNumber();
-
+  
   // Loop over the sites on this node
-  for(int linear=0; linear < nodeSites; ++linear)
-  {
+  for(int linear=0, ri=0; linear < nodeSites; ++linear) {
     // Get the true lattice coord of this linear site index
     multi1d<int> coord = Layout::siteCoords(my_node, linear);
 
@@ -53,51 +52,35 @@ void Map::make(const MapFunc& func)
     // Destination neighbor receiving data from this site
     // This functions as the inverse map
     multi1d<int> bcoord = func(coord,-1);
-
+      
     int fnode = Layout::nodeNumber(fcoord);
     int bnode = Layout::nodeNumber(bcoord);
 
     // Source linear site and node
-    goffsets[linear] = Layout::linearSiteIndex(fcoord);
     srcnode[linear]  = fnode;
-
     // Destination node
     dstnode[linear]  = bnode;
 
+    if (srcnode[linear] == my_node) {
+      goffsets[linear] = Layout::linearSiteIndex(fcoord);
+    }
+    else {
+      // if destptr < 0 it contains the receive_buffer index
+      // additional '-1' to make sure its negative,
+      // not the best style, but higher performance
+      // than using another buffer
+      goffsets[linear] = -(ri++)-1;
+    }
+
+    
 #if QDP_DEBUG >= 3
-    QDP_info("linear=%d  coord=%d %d %d %d   fcoord=%d %d %d %d    goffsets=%d", 
+    QDP_info("linear=%d  coord=%d %d %d %d   fcoord=%d %d %d %d   bcoord=%d %d %d %d   goffsets=%d", 
 	     linear, 
 	     coord[0], coord[1], coord[2], coord[3],
 	     fcoord[0], fcoord[1], fcoord[2], fcoord[3],
+	     bcoord[0], bcoord[1], bcoord[2], bcoord[3],
 	     goffsets[linear]);
 #endif
-  }
-
-#if QDP_DEBUG >= 3
-  {
-   for(int linear=0; linear < nodeSites; ++linear)
-   {
-     QDP_info("goffsets(%d) = %d",linear,goffsets(linear));
-     QDP_info("srcnode(%d) = %d",linear,srcnode(linear));
-     QDP_info("dstnode(%d) = %d",linear,dstnode(linear));
-   }
-  }
-#endif
-
-  // build a position for a surface site to receive data from src
-  // this deals with whole surface. CB could only use 1/2
-  recv_pos.resize (nodeSites);
-  int rpos = 0;
-  for(int linear=0; linear < nodeSites; ++linear) {
-    if (srcnode(linear) != my_node) { // this is receiving site
-      recv_pos[linear] = rpos++;
-#if QDP_DEBUG >= 3
-      QDP_info ("receiving position %d and outter %d = %d\n", linear, linear >> INNER_LOG, recv_pos[linear]);
-#endif
-    }
-    else {
-      recv_pos[linear] = -1;
-    }
   }
 
   // Return a list of the unique nodes in the list
@@ -140,18 +123,18 @@ void Map::make(const MapFunc& func)
 
   // If no srce/dest nodes, then we know no off-node communications
   offnodeP = (cnt_srcenodes > 0) ? true : false;
-  
+
   //
   // The rest of the routine is devoted to supporting off-node communications
   // If there is not any communications, then return
   //
   if (! offnodeP)
-  {
+    {
 #if QDP_DEBUG >= 3
-    QDP_info("exiting Map::make");
+      QDP_info("no off-node communications: exiting Map::make");
 #endif
-    return;
-  }
+      return;
+    }
 
   // Finally setup the srce and dest nodes now without my_node
   srcenodes.resize(cnt_srcenodes);
@@ -182,14 +165,11 @@ void Map::make(const MapFunc& func)
   srcenodes_num = 0;
   destnodes_num = 0;
 
-  for(int linear=0; linear < nodeSites; ++linear)
-  {
+  for(int linear=0; linear < nodeSites; ++linear) {
     int this_node = srcnode[linear];
     if (this_node != my_node)
-      for(int i=0; i < srcenodes_num.size(); ++i)
-      {
-	if (srcenodes[i] == this_node)
-	{
+      for(int i=0; i < srcenodes_num.size(); ++i) {
+	if (srcenodes[i] == this_node) {
 	  srcenodes_num[i]++;
 	  break;
 	}
@@ -197,10 +177,8 @@ void Map::make(const MapFunc& func)
 
     int that_node = dstnode[linear];
     if (that_node != my_node)
-      for(int i=0; i < destnodes_num.size(); ++i)
-      {
-	if (destnodes[i] == that_node)
-	{
+      for(int i=0; i < destnodes_num.size(); ++i) {
+	if (destnodes[i] == that_node) {
 	  destnodes_num[i]++;
 	  break;
 	}
@@ -209,14 +187,12 @@ void Map::make(const MapFunc& func)
   
 
 #if QDP_DEBUG >= 3
-  for(int i=0; i < destnodes.size(); ++i)
-  {
+  for(int i=0; i < destnodes.size(); ++i) {
     QDP_info("srcenodes(%d) = %d",i,srcenodes(i));
     QDP_info("destnodes(%d) = %d",i,destnodes(i));
   }
 
-  for(int i=0; i < destnodes_num.size(); ++i)
-  {
+  for(int i=0; i < destnodes_num.size(); ++i) {
     QDP_info("srcenodes_num(%d) = %d",i,srcenodes_num(i));
     QDP_info("destnodes_num(%d) = %d",i,destnodes_num(i));
   }
@@ -237,37 +213,44 @@ void Map::make(const MapFunc& func)
   // an array of arrays
   soffsets.resize(destnodes_num[0]);
 
-  // build a position for a surface site to pack data to send buffer
-  send_pos.resize (nodeSites);
-  
+  roffsets.resize(srcenodes_num[0]);
+
   // Loop through sites on my *destination* node - here I assume all nodes have
   // the same number of sites. Mimic the gather pattern needed on that node and
   // set my scatter array to scatter into the correct site order
+  int ri=0;
   for(int i=0, si=0; i < nodeSites; ++i) 
-  {
-    // Get the true lattice coord of this linear site index
-    multi1d<int> coord = Layout::siteCoords(destnodes[0], i);
-    multi1d<int> fcoord = func(coord,+1);
-    int fnode = Layout::nodeNumber(fcoord);
-    int fline = Layout::linearSiteIndex(fcoord);
+    {
+      // Get the true lattice coord of this linear site index
+      multi1d<int> coord = Layout::siteCoords(destnodes[0], i);
+      multi1d<int> fcoord = func(coord,+1);
+      int fnode = Layout::nodeNumber(fcoord);
+      int fline = Layout::linearSiteIndex(fcoord);
 
-    if (fnode == my_node) {
-      send_pos[fline] = si;
-      soffsets[si++] = fline;
+      if (fnode == my_node) {
+	soffsets[si++] = fline;
+      }
+      
+      if (srcnode[i] != my_node) {
+	roffsets[ri++] = i;
+      }
     }
-    else
-      send_pos[fline] = -1;
-  }
 
-#if QDP_DEBUG >= 3
-  // Debugging
-  for(int i=0; i < soffsets.size(); ++i)
-    QDP_info("soffsets(%d) = %d send_pos(%d) = %d",i,soffsets(i), soffsets(i), send_pos(soffsets(i)));
-#endif
+  if ( ri != srcenodes_num[0] )
+    QDP_error_exit("internal error: ri != srcenodes_num[0]");
+
+  if (roffsets.size()==0)
+    QDP_error_exit("rsoffsets empty");
+  if (soffsets.size()==0)
+    QDP_error_exit("ssoffsets empty");
+  if (goffsets.size()==0)
+    QDP_error_exit("gsoffsets empty");
 
 #if QDP_DEBUG >= 3
   QDP_info("exiting Map::make");
 #endif
+
+  myId = MasterMap::Instance().registrate(*this);
 }
 
 

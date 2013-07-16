@@ -59,9 +59,20 @@ public:
   //! Access the coloring for this subset
   int color() const {return sub_index;}
 
+#if defined (ARCH_PARSCALARVEC)
+  multi1d<bool>& getIsElement() const       { return *membertable; }
+  bool           isElement(int index) const { return (*membertable)[index]; }
+#endif
+
+
 protected:
+
+#if defined (ARCH_PARSCALARVEC)
   // Simple constructor
+  void make(bool rep, int start, int end, multi1d<int>* ind, int cb, Set* set, multi1d<bool>* memb);
+#else
   void make(bool rep, int start, int end, multi1d<int>* ind, int cb, Set* set);
+#endif
 
 private:
   bool ordRep;
@@ -74,6 +85,11 @@ private:
 
   //! Original set
   Set *set;
+
+#if defined (ARCH_PARSCALARVEC)
+  // Constant time to know whether linear index in this subset
+  multi1d<bool>* membertable;
+#endif
 
 public:
   inline bool hasOrderedRep() const {return ordRep;}
@@ -125,6 +141,11 @@ protected:
 
   //! Array of sitetable arrays
   multi1d<multi1d<int> > sitetables;
+
+#if defined (ARCH_PARSCALARVEC)
+  //! Array of sitetable arrays
+  multi1d<multi1d<bool> > membertables;
+#endif
 
 public:
   //! The coloring of the lattice sites

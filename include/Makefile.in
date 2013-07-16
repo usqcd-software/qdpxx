@@ -132,6 +132,7 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 QMP_CFLAGS = @QMP_CFLAGS@
@@ -404,6 +405,9 @@ nobase_include_HEADERS = \
 		qdp_map_obj_disk.h \
 		qdp_map_obj_disk_multiple.h \
 		qdp_disk_map_slice.h \
+		qdp_mastermap.h \
+		qdp_mapresource.h \
+		qdp_pshift.h \
                 $(PETE_HDRS) \
                 $(GENERIC_HDRS) \
 		$(MEMORY_HDRS) \

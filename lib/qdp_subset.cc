@@ -102,28 +102,16 @@ namespace QDP
   //! Initializer for sets
   void initDefaultSets()
   {
-#if QDP_DEBUG >= 3
-    fprintf (stderr, "Initialize Red/Black Checkboard\n");
-#endif
     // Initialize the red/black checkerboard
     rb.make(SetRBFunc());
 
     // Initialize the 3d red/black checkerboard.
-#if QDP_DEBUG >= 3
-    fprintf (stderr, "Initialize 3d Red/Black Checkboard\n");
-#endif
     rb3.make(SetRB3Func());
 
     // Initialize the 32-style checkerboard
-#if QDP_DEBUG >= 3
-    fprintf (stderr, "Initialize 32 style Red/Black Checkboard\n");
-#endif
     mcb.make(Set32CBFunc());
 
     // The all set
-#if QDP_DEBUG >= 3
-    fprintf (stderr, "Initialize all sets\n");
-#endif
     set_all.make(SetAllFunc());
 
     // The all subset
@@ -136,9 +124,21 @@ namespace QDP
     odd = rb[1];
   }
 
-	  
+
+#if defined (ARCH_PARSCALARVEC)	  
   //-----------------------------------------------------------------------------
   //! Simple constructor called to produce a Subset from inside a Set
+  void Subset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb, Set* _set, multi1d<bool>* _memb)
+  {
+    ordRep    = _rep;
+    startSite = _start;
+    endSite   = _end;
+    sub_index = cb;
+    sitetable = ind;
+    set       = _set;
+    membertable = _memb;
+  }
+#else
   void Subset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb, Set* _set)
   {
     ordRep    = _rep;
@@ -148,6 +148,7 @@ namespace QDP
     sitetable = ind;
     set       = _set;
   }
+#endif
 
   //! Simple constructor called to produce a Subset from inside a Set
   void Subset::make(const Subset& s)
@@ -158,6 +159,9 @@ namespace QDP
     sub_index = s.sub_index;
     sitetable = s.sitetable;
     set       = s.set;
+#if defined (ARCH_PARSCALARVEC)	  
+    membertable = s.membertable;
+#endif
   }
 
   //! Simple constructor called to produce a Subset from inside a Set
@@ -174,6 +178,9 @@ namespace QDP
     sub = s.sub;
     lat_color = s.lat_color;
     sitetables = s.sitetables;
+#if defined (ARCH_PARSCALARVEC)	  
+    membertables = s.membertables;
+#endif
     return *this;
   }
 

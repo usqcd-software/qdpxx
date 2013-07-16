@@ -3469,7 +3469,7 @@ gather_sites(ILattice<T,2>& d,
 	     const ILattice<T1,2>& s1, int i1)
 {
   d.elem(0) = s0.elem(i0);
-  d.elem(1) = s0.elem(i1);
+  d.elem(1) = s1.elem(i1);
 }
 
 
