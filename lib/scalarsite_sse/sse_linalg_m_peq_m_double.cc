@@ -169,7 +169,7 @@ namespace QDP {
   /* M2 += adj(M1)*/
   void ssed_m_peq_h(REAL64* m2, REAL64* m1, int n_mat)
   {
-    VD mfact = { (REAL64)1, (REAL64)(-1) };
+    __m128d mfact = _mm_set_pd( (REAL64)(-1), (REAL64)(1) );
 
     __m128d m1_11;
     __m128d m1_12;
@@ -205,49 +205,49 @@ namespace QDP {
       m1_33= _mm_loadu_pd(m1_p+16);
    
       tmp1 = _mm_loadu_pd(m2_p);
-      tmp2 = _mm_mul_pd(mfact.v, m1_11);
+      tmp2 = _mm_mul_pd(mfact, m1_11);
       tmp3 = _mm_add_pd(tmp1, tmp2);
       _mm_storeu_pd(m2_p, tmp3);
 
       tmp4 = _mm_loadu_pd(m2_p+2);
-      tmp5 = _mm_mul_pd(mfact.v, m1_21);
+      tmp5 = _mm_mul_pd(mfact, m1_21);
       tmp6 = _mm_add_pd(tmp4, tmp5);
       _mm_storeu_pd(m2_p+2,tmp6);
 
       tmp1 = _mm_loadu_pd(m2_p+4);
-      tmp2 = _mm_mul_pd(mfact.v, m1_31);
+      tmp2 = _mm_mul_pd(mfact, m1_31);
       tmp3 = _mm_add_pd(tmp1, tmp2);
       _mm_storeu_pd(m2_p+4, tmp3);
 
       tmp4 = _mm_loadu_pd(m2_p+6);
-      tmp5 = _mm_mul_pd(mfact.v, m1_12);
+      tmp5 = _mm_mul_pd(mfact, m1_12);
       tmp6 = _mm_add_pd(tmp4, tmp5);
       _mm_storeu_pd(m2_p+6, tmp6);
 
 
       tmp1 = _mm_loadu_pd(m2_p+8);
-      tmp2 = _mm_mul_pd(mfact.v, m1_22);
+      tmp2 = _mm_mul_pd(mfact, m1_22);
       tmp3 = _mm_add_pd(tmp1, tmp2);
       _mm_storeu_pd(m2_p+8, tmp3);
 
       tmp4 = _mm_loadu_pd(m2_p+10);
-      tmp5 = _mm_mul_pd(mfact.v, m1_32);
+      tmp5 = _mm_mul_pd(mfact, m1_32);
       tmp6 = _mm_add_pd(tmp4, tmp5);
       _mm_storeu_pd(m2_p+10,tmp6);
 
       tmp4 = _mm_loadu_pd(m2_p+12);
-      tmp5 = _mm_mul_pd(mfact.v, m1_13);
+      tmp5 = _mm_mul_pd(mfact, m1_13);
       tmp6 = _mm_add_pd(tmp4, tmp5);
       _mm_storeu_pd(m2_p+12, tmp6);
 
 
       tmp1 = _mm_loadu_pd(m2_p+14);
-      tmp2 = _mm_mul_pd(mfact.v, m1_23);
+      tmp2 = _mm_mul_pd(mfact, m1_23);
       tmp3 = _mm_add_pd(tmp1, tmp2);
       _mm_storeu_pd(m2_p+14, tmp3);
 
       tmp4 = _mm_loadu_pd(m2_p+16);
-      tmp5 = _mm_mul_pd(mfact.v, m1_33);
+      tmp5 = _mm_mul_pd(mfact, m1_33);
       tmp6 = _mm_add_pd(tmp4, tmp5);
       _mm_storeu_pd(m2_p+16, tmp6);
 
@@ -277,7 +277,7 @@ namespace QDP {
     __m128d tmp6;
 
 
-    VD mfact = { (REAL64)1, (REAL64)(-1) };
+    __m128d  mfact = _mm_set_pd( (REAL64)(-1), (REAL64)(1)); 
 
     REAL64* m1_p=m1;
     REAL64* m2_p=m2;
@@ -295,49 +295,49 @@ namespace QDP {
       m1_33= _mm_loadu_pd(m1_p+16);
    
       tmp1 = _mm_loadu_pd(m2_p);
-      tmp2 = _mm_mul_pd(mfact.v, m1_11);
+      tmp2 = _mm_mul_pd(mfact, m1_11);
       tmp3 = _mm_sub_pd(tmp1, tmp2);
       _mm_storeu_pd(m2_p, tmp3);
 
       tmp4 = _mm_loadu_pd(m2_p+2);
-      tmp5 = _mm_mul_pd(mfact.v, m1_21);
+      tmp5 = _mm_mul_pd(mfact, m1_21);
       tmp6 = _mm_sub_pd(tmp4, tmp5);
       _mm_storeu_pd(m2_p+2,tmp6);
 
       tmp1 = _mm_loadu_pd(m2_p+4);
-      tmp2 = _mm_mul_pd(mfact.v, m1_31);
+      tmp2 = _mm_mul_pd(mfact, m1_31);
       tmp3 = _mm_sub_pd(tmp1, tmp2);
       _mm_storeu_pd(m2_p+4, tmp3);
 
       tmp4 = _mm_loadu_pd(m2_p+6);
-      tmp5 = _mm_mul_pd(mfact.v, m1_12);
+      tmp5 = _mm_mul_pd(mfact, m1_12);
       tmp6 = _mm_sub_pd(tmp4, tmp5);
       _mm_storeu_pd(m2_p+6, tmp6);
 
 
       tmp1 = _mm_loadu_pd(m2_p+8);
-      tmp2 = _mm_mul_pd(mfact.v, m1_22);
+      tmp2 = _mm_mul_pd(mfact, m1_22);
       tmp3 = _mm_sub_pd(tmp1, tmp2);
       _mm_storeu_pd(m2_p+8, tmp3);
 
       tmp4 = _mm_loadu_pd(m2_p+10);
-      tmp5 = _mm_mul_pd(mfact.v, m1_32);
+      tmp5 = _mm_mul_pd(mfact, m1_32);
       tmp6 = _mm_sub_pd(tmp4, tmp5);
       _mm_storeu_pd(m2_p+10,tmp6);
 
       tmp4 = _mm_loadu_pd(m2_p+12);
-      tmp5 = _mm_mul_pd(mfact.v, m1_13);
+      tmp5 = _mm_mul_pd(mfact, m1_13);
       tmp6 = _mm_sub_pd(tmp4, tmp5);
       _mm_storeu_pd(m2_p+12, tmp6);
 
 
       tmp1 = _mm_loadu_pd(m2_p+14);
-      tmp2 = _mm_mul_pd(mfact.v, m1_23);
+      tmp2 = _mm_mul_pd(mfact, m1_23);
       tmp3 = _mm_sub_pd(tmp1, tmp2);
       _mm_storeu_pd(m2_p+14, tmp3);
 
       tmp4 = _mm_loadu_pd(m2_p+16);
-      tmp5 = _mm_mul_pd(mfact.v, m1_33);
+      tmp5 = _mm_mul_pd(mfact, m1_33);
       tmp6 = _mm_sub_pd(tmp4, tmp5);
       _mm_storeu_pd(m2_p+16, tmp6);
 
