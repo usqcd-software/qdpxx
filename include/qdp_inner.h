@@ -1585,6 +1585,23 @@ floor(const IScalar<T1>& s1)
   return floor(s1.elem());
 }
 
+
+
+// Floor
+template<class T1, int N>
+inline typename UnaryReturn<ILattice<T1,N>, FnFloor>::Type_t
+floor(const ILattice<T1,N>& s1)
+{
+
+  typename UnaryReturn<ILattice<T1,N>, FnFloor>::Type_t ret;
+  for(int pos=0; pos < N; pos++) { 
+    ret.elem(pos) = floor(s1.elem(pos));
+  }
+  return ret;
+
+}
+
+
 // Log
 template<class T1>
 inline typename UnaryReturn<IScalar<T1>, FnLog>::Type_t
@@ -1803,9 +1820,18 @@ copy_site(IScalar<T>& d, int isite, const IScalar<T1>& s1)
 }
 
 
-#if 0
+#if 1
 // This should never be used and is probably an error if needed
-
+//! gather several inner sites together
+template<class T, class T1>
+inline void 
+gather_sites(IScalar<T>& d, 
+	     const IScalar<T1>& s0, int i0, 
+	     const IScalar<T1>& s1, int i1)
+{
+  // s0.elem() s1.elem() etc had better all be the same.
+  d.elem()=s0.elem(); 
+}
 //! gather several inner sites together
 template<class T, class T1>
 inline void 
@@ -1815,12 +1841,54 @@ gather_sites(IScalar<T>& d,
 	     const IScalar<T1>& s2, int i2,
 	     const IScalar<T1>& s3, int i3)
 {
-  gather_sites(d.elem(), 
-	       s0.elem(), i0, 
-	       s1.elem(), i1, 
-	       s2.elem(), i2, 
-	       s3.elem(), i3);
+  // s0.elem() s1.elem() etc had better all be the same.
+  d.elem() = s0.elem();
 }
+
+//! gather several inner sites together
+template<class T, class T1>
+inline void 
+gather_sites(IScalar<T>& d, 
+	     const IScalar<T1>& s0, int i0, 
+	     const IScalar<T1>& s1, int i1,
+	     const IScalar<T1>& s2, int i2,
+	     const IScalar<T1>& s3, int i3,
+	     const IScalar<T1>& s4, int i4, 
+	     const IScalar<T1>& s5, int i5,
+	     const IScalar<T1>& s6, int i6,
+	     const IScalar<T1>& s7, int i7)
+{
+  // s0.elem() s1.elem() etc had better all be the same.
+  d.elem() = s0.elem();
+
+}
+
+//! gather several inner sites together
+template<class T, class T1>
+inline void 
+gather_sites(IScalar<T>& d, 
+	     const IScalar<T1>& s0, int i0, 
+	     const IScalar<T1>& s1, int i1,
+	     const IScalar<T1>& s2, int i2,
+	     const IScalar<T1>& s3, int i3,
+	     const IScalar<T1>& s4, int i4, 
+	     const IScalar<T1>& s5, int i5,
+	     const IScalar<T1>& s6, int i6,
+	     const IScalar<T1>& s7, int i7,
+	     const IScalar<T1>& s8, int i8, 
+	     const IScalar<T1>& s9, int i9,
+	     const IScalar<T1>& s10, int i10,
+	     const IScalar<T1>& s11, int i11,
+	     const IScalar<T1>& s12, int i12, 
+	     const IScalar<T1>& s13, int i13,
+	     const IScalar<T1>& s14, int i14,
+	     const IScalar<T1>& s15, int i15)
+{
+  // s0.elem(), s1.elem() etc, had better all be the same.
+  d.elem() = s0.elem();
+}
+
+
 #endif
 
 
@@ -3897,6 +3965,8 @@ where(const IScalar<T1>& a, const IScalar<T2>& b, const ILattice<T3,N>& c)
 
 } // namespace QDP
 
+// Disable this for now, and make more general
+#if 0
 #if !defined(__ICC)
 /* Intel compiler will do wonder with auto vectorization */
 #if defined(__AVX__)
@@ -3906,6 +3976,6 @@ where(const IScalar<T1>& a, const IScalar<T2>& b, const ILattice<T3,N>& c)
 #endif
 
 #endif
-
+#endif // if 0
 
 #endif

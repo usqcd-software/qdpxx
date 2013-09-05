@@ -1513,6 +1513,19 @@ template<class T, class T1>
 inline void 
 gather_sites(RScalar<T>& d, 
 	     const RScalar<T1>& s0, int i0, 
+	     const RScalar<T1>& s1, int i1)
+{
+  gather_sites(d.elem(), 
+	       s0.elem(), i0, 
+	       s1.elem(), i1);
+}
+
+
+//! gather several inner sites together
+template<class T, class T1>
+inline void 
+gather_sites(RScalar<T>& d, 
+	     const RScalar<T1>& s0, int i0, 
 	     const RScalar<T1>& s1, int i1,
 	     const RScalar<T1>& s2, int i2,
 	     const RScalar<T1>& s3, int i3)

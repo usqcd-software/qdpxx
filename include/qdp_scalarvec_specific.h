@@ -1154,8 +1154,22 @@ struct LeafFunctor<QDPType<T,C>, EvalLeaf3Array>
       const int *goffsets = f.offsets();
       // old real site 
       int i = f.val1() << INNER_LOG;
-      
-#if INNER_LOG == 2
+
+#if INNER_LOG == 1
+
+      int o0 = goffsets[i+0] >> INNER_LOG;
+      int i0 = goffsets[i+0] & (INNER_LEN - 1);
+
+      int o1 = goffsets[i+1] >> INNER_LOG;
+      int i1 = goffsets[i+1] & (INNER_LEN - 1);
+
+      // Gather 4 inner-grid sites together
+      gather_sites(ret,
+		   a.elem(o0),i0,
+		   a.elem(o1),i1);
+
+
+#elif INNER_LOG == 2
       int o0 = goffsets[i+0] >> INNER_LOG;
       int i0 = goffsets[i+0] & (INNER_LEN - 1);
 

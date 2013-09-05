@@ -1538,6 +1538,19 @@ copy_site(PScalar<T>& d, int isite, const PScalar<T1>& s1)
   copy_site(d.elem(), isite, s1.elem());
 }
 
+
+
+//! gather several inner sites together for: 2
+template<class T, class T1>
+inline void 
+gather_sites(PScalar<T>& d, 
+	     const PScalar<T1>& s0, int i0, 
+	     const PScalar<T1>& s1, int i1)
+{
+  gather_sites(d.elem(), s0.elem(), i0, s1.elem(), i1);
+}
+
+
 //! gather several inner sites together for: 4
 template<class T, class T1>
 inline void 

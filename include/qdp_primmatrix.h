@@ -1454,6 +1454,20 @@ copy_site(PMatrix<T,N,C>& d, int isite, const PScalar<T1>& s1)
       copy_site(d.elem(i,j), isite, s1.elem());
 }
 
+//! gather several inner sites together
+template<class T, class T1, int N, template<class,int> class C>
+inline void 
+gather_sites(PMatrix<T,N,C>& d, 
+	     const PMatrix<T1,N,C>& s0, int i0, 
+	     const PMatrix<T1,N,C>& s1, int i1)
+{
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      gather_sites(d.elem(i,j), 
+		   s0.elem(i,j), i0, 
+		   s1.elem(i,j), i1);
+}
+
 
 //! gather several inner sites together
 template<class T, class T1, int N, template<class,int> class C>
@@ -1566,7 +1580,7 @@ fill_gaussian(PMatrix<T,N,C>& d, PMatrix<T,N,C>& r1, PMatrix<T,N,C>& r2)
 
 
 
-#if 0
+#if 1
 // Global sum over site indices only
 template<class T, int N, template<class,int> class C>
 struct UnaryReturn<PMatrix<T,N,C>, FnSum> {

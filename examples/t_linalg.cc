@@ -7,7 +7,7 @@
 
 #include "qdp.h"
 #include "linalg.h"
-
+#include "qdp_precision.h"
 using namespace QDP;
 #define TIME_OPS
 

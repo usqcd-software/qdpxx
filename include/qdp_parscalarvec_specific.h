@@ -145,7 +145,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
   if (s.hasOrderedRep()) {
     const int istart = s.start() >> INNER_LOG;
     const int iend   = s.end()   >> INNER_LOG;
-#pragma omp parallel shared(istart, iend, num_threads) default(shared) 
+    // #pragma omp parallel shared(istart, iend, num_threads) default(shared) 
+#pragma omp parallel shared(num_threads) default(shared) 
     {
       num_threads = omp_get_num_threads ();
       int myId = omp_get_thread_num();
@@ -252,7 +253,8 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
       const int istart = s.start() >> INNER_LOG;
       const int iend   = s.end()   >> INNER_LOG;
 
-#pragma omp parallel shared(istart, iend, num_threads) default(shared)
+      // #pragma omp parallel shared(istart, iend, num_threads) default(shared)
+#pragma omp parallel shared(num_threads) default(shared)
       {
 	num_threads = omp_get_num_threads (); 
 	int myId = omp_get_thread_num();
@@ -477,7 +479,7 @@ template<class T>
 void zero_rep(OSubLattice<T> dd) 
 {
   OLattice<T>& d = dd.field();
-  const S& s = dd.subset();
+  const Subset& s = dd.subset();
   
   zero_rep(d,s);
 }
@@ -769,7 +771,8 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 
       typename UnaryReturn<OLattice<T>, FnSum>::Type_t  *pd = new  typename UnaryReturn<OLattice<T>, FnSum>::Type_t[qdpNumThreads()]; 
 
-#pragma omp parallel shared(pd,istart,iend,num_threads) private(tmp) default(shared)
+      // #pragma omp parallel shared(pd,istart,iend,num_threads) private(tmp) default(shared)
+ #pragma omp parallel shared(pd,num_threads) private(tmp) default(shared)
       {
 	num_threads = omp_get_num_threads();
 	int myId = omp_get_thread_num();
@@ -1082,6 +1085,253 @@ norm2(const multi1d< OLattice<T> >& s1)
 }
 
 
+// ! Oscalar = innerProductReal( multi1d<OScalar<T> >, multi1d<OScalar<T> > )
+template<class T>
+inline typename BinaryReturn<OScalar<T>, OScalar<T>, FnInnerProductReal>::Type_t
+innerProductReal(const multi1d< OScalar<T> >& s1, 
+		 const multi1d< OScalar<T> >& s2 )
+{
+  typename BinaryReturn<OScalar<T>, OScalar<T>, FnInnerProductReal>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnInnerProductReal(), s1[0],s2[0]);
+  prof.time -= getClockTime();
+#endif
+
+  // Possibly loop entered
+  zero_rep(d.elem());
+
+  // Loop over the multi1d size and accumulate
+  for(int n=0; n < s1.size(); ++n)
+  {
+    OScalar<T>& ss1 = s1[n];
+    OScalar<T>& ss2 = s2[n];
+
+    d.elem() += localInnerProductReal(ss1.elem(), ss2.elem());
+  }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+//! OScalar = sum(OScalar)  under an explicit subset
+/*! Discards subset */
+template<class T>
+inline typename BinaryReturn<OScalar<T>, 
+			     OScalar<T>,
+			     FnInnerProductReal >::Type_t
+innerProductReal(const multi1d< OScalar<T> >& s1, 
+		 const multi1d< OScalar<T> >& s2,
+		 const Subset& s)
+{
+  // NB: This is on scalars. So subset doesn't matter.
+  // In fact I question the validity of providing this override.
+  // In any case, since subset doesn't matter just feed it through
+  // to the global one.
+  return innerProductReal(s1,s2);
+}
+
+
+// ! OScalar = innerProductReal( mulit1d<OLattice>, multi1d<OLattice> ) 
+template<class T>
+inline typename BinaryReturn< OLattice<T>, OLattice<T>, FnInnerProductReal>::Type_t
+innerProductReal(const multi1d< OLattice<T> >& s1, 
+		 const multi1d< OLattice<T> >& s2, 
+		 const Subset& s)
+{
+  typename BinaryReturn< OLattice<T>, OLattice<T>, FnInnerProductReal>::Type_t  d;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnInnerProductReal(), s1[0], s2[0]);
+  prof.time -= getClockTime();
+#endif
+
+  // Possibly loop entered
+  zero_rep(d.elem());
+
+  if (s.hasOrderedRep()) {
+    const int istart = s.start() >> INNER_LOG;
+    const int iend   = s.end()   >> INNER_LOG;
+
+    // Loop over the multi1d array index and accumulate locally
+    for(int n=0; n < s1.size(); ++n) {
+      const OLattice<T>& ss1 = s1[n];
+      const OLattice<T>& ss2 = s2[n];
+
+      for (int i = istart; i <= iend; ++i)  {
+	d.elem() += localInnerProductReal(ss1.elem(i), ss2.elem(i));
+      }
+    }
+  }
+  else {
+    // Unordered, so loop over sites
+    const int *tab = s.siteTable().slice();
+    for(int n=0; n < s1.size(); ++n)
+      {
+	const OLattice<T>& ss1 = s1[n];
+	const OLattice<T>& ss2 = s2[n];
+
+	for(int j=0; j < s.numSiteTable(); ++j) {
+	  int i = tab[j];
+	  int outersite = i >> INNER_LOG;
+	  int innersite = i & ((1 << INNER_LOG)-1);
+	  d.elem() += localInnerProductReal(ss1.elem(outersite),
+					    ss2.elem(outersite));
+	}
+      }
+  }
+
+  // Do a global sum on the result
+  QDPInternal::globalSum(d);
+  
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+// ! OScalar = innerProductReal( mulit1d<OLattice>, multi1d<OLattice> ) 
+template<class T>
+inline typename BinaryReturn< OLattice<T>, OLattice<T>, FnInnerProductReal>::Type_t
+innerProductReal(const multi1d< OLattice<T> >& s1, 
+		 const multi1d< OLattice<T> >& s2)
+
+{
+  return innerProductReal(s1,s2,all);
+}
+
+
+// ! Oscalar = innerProduct( multi1d<OScalar<T> >, multi1d<OScalar<T> > )
+template<class T>
+inline typename BinaryReturn<OScalar<T>, OScalar<T>, FnInnerProduct>::Type_t
+innerProduct(const multi1d< OScalar<T> >& s1, 
+	     const multi1d< OScalar<T> >& s2 )
+{
+  typename BinaryReturn<OScalar<T>, OScalar<T>, FnInnerProduct>::Type_t  d;
+  
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnInnerProduct(), s1[0],s2[0]);
+  prof.time -= getClockTime();
+#endif
+  
+  // Possibly loop entered
+  zero_rep(d.elem());
+  
+  // Loop over the multi1d size and accumulate
+  for(int n=0; n < s1.size(); ++n) {
+    OScalar<T>& ss1 = s1[n];
+    OScalar<T>& ss2 = s2[n];
+      
+    d.elem() += localInnerProduct(ss1.elem(), ss2.elem());
+  }
+  
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+  
+  return d;
+}
+
+//! OScalar = sum(OScalar)  under an explicit subset
+/*! Discards subset */
+template<class T>
+inline typename BinaryReturn<OScalar<T>, 
+			     OScalar<T>,
+			     FnInnerProduct >::Type_t
+innerProduct(const multi1d< OScalar<T> >& s1, 
+	     const multi1d< OScalar<T> >& s2,
+	     const Subset& s)
+{
+  // NB: This is on scalars. So subset doesn't matter.
+  // In fact I question the validity of providing this override.
+  // In any case, since subset doesn't matter just feed it through
+  // to the global one.
+  return innerProduct(s1,s2);
+}
+
+
+
+// ! OScalar = innerProductReal( mulit1d<OLattice>, multi1d<OLattice> ) 
+template<class T>
+inline typename BinaryReturn< OLattice<T>, OLattice<T>, FnInnerProduct>::Type_t
+innerProduct(const multi1d< OLattice<T> >& s1, 
+	     const multi1d< OLattice<T> >& s2, 
+	     const Subset& s)
+{
+  typename BinaryReturn< OLattice<T>, OLattice<T>, FnInnerProduct>::Type_t  d;
+  
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnInnerProduct(), s1[0], s2[0]);
+  prof.time -= getClockTime();
+#endif
+  
+  zero_rep(d.elem());
+  
+  if (s.hasOrderedRep()) {
+    const int istart = s.start() >> INNER_LOG;
+    const int iend   = s.end()   >> INNER_LOG;
+    
+    // Loop over the multi1d array index and accumulate locally
+    for(int n=0; n < s1.size(); ++n) {
+      const OLattice<T>& ss1 = s1[n];
+      const OLattice<T>& ss2 = s2[n];
+      
+      for (int i = istart; i <= iend; ++i)  {
+	d.elem() += localInnerProduct(ss1.elem(i), ss2.elem(i));
+      }
+    }
+  }
+  else {
+    // Unordered, so loop over sites
+    const int *tab = s.siteTable().slice();
+    for(int n=0; n < s1.size(); ++n) {
+      
+      const OLattice<T>& ss1 = s1[n];
+      const OLattice<T>& ss2 = s2[n];
+      
+      for(int j=0; j < s.numSiteTable(); ++j) {
+	int i = tab[j];
+	int outersite = i >> INNER_LOG;
+	int innersite = i & ((1 << INNER_LOG)-1);
+	d.elem() += localInnerProduct(ss1.elem(outersite),
+				      ss2.elem(outersite));
+      }
+    }
+  }
+  
+  // Do a global sum on the result
+  QDPInternal::globalSum(d);
+  
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+  
+  return d;
+}
+
+// ! OScalar = innerProductReal( mulit1d<OLattice>, multi1d<OLattice> ) 
+template<class T>
+inline typename BinaryReturn< OLattice<T>, OLattice<T>, FnInnerProduct>::Type_t
+innerProduct(const multi1d< OLattice<T> >& s1, 
+	     const multi1d< OLattice<T> >& s2)
+  
+{
+  return innerProduct(s1,s2,all);
+}
+
+
 //-----------------------------------------------------------------------------
 // Peek and poke at individual sites. This is very architecture specific
 // NOTE: these two routines assume there is no underlying inner grid
@@ -1277,10 +1527,20 @@ void gather_along_x (const QDPType<T, C>& a, int old_inner_site,
 		     T& ret)
 {
   int i = old_inner_site;
-#if INNER_LOG == 2
+
+#if INNER_LOG == 1
+  // VECLEN=2
+  int o1 = offsets[i+1] >> INNER_LOG;
+  int i1 = offsets[i+1] & (INNER_LEN - 1);
+  gather_sites(ret,
+	       a.elem(o0),i0,
+	       a.elem(o1),i1);
+
+#elif INNER_LOG == 2
+  // VECLEN = 4
   int o0 = offsets[i+0] >> INNER_LOG;
   int i0 = offsets[i+0] & (INNER_LEN - 1);
-
+  
   int o1 = offsets[i+1] >> INNER_LOG;
   int i1 = offsets[i+1] & (INNER_LEN - 1);
     
@@ -1298,6 +1558,7 @@ void gather_along_x (const QDPType<T, C>& a, int old_inner_site,
 	       a.elem(o3),i3);
 
 #elif INNER_LOG == 3
+  // VECLEN =8 
   int o0 = offsets[i+0] >> INNER_LOG;
   int i0 = offsets[i+0] & (INNER_LEN - 1);
   
@@ -1332,6 +1593,7 @@ void gather_along_x (const QDPType<T, C>& a, int old_inner_site,
 		a.elem(o7),i7);
 
 #elif INNER_LOG == 4
+  // VECLEN=16
   int o0 = offsets[i+0] >> INNER_LOG;
   int i0 = offsets[i+0] & (INNER_LEN - 1);
 
@@ -1449,6 +1711,18 @@ struct LeafFunctor<QDPType<T,C>, EvalLeaf1Map>
   inline static Type_t apply(const QDPType<T,C> &a, const EvalLeaf1Map &f)
   { 
     return (Type_t)(intra_shift(a, f));
+  }
+};
+
+template<int N> 
+struct LeafFunctor<GammaType<N>, EvalLeaf1Map>
+{
+  typedef GammaType<N> Type_t;
+
+  inline static Type_t apply(const GammaType<N> &a, const EvalLeaf1Map &f)
+  {
+    // No need to intra shift it cos it is not a lattice thingie?
+    return a;
   }
 };
 

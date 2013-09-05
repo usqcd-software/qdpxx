@@ -607,6 +607,19 @@ copy_site(PSpinVector<T,N>& d, int isite, const PScalar<T1>& s1)
     copy_site(d.elem(i), isite, s1.elem());
 }
 
+//! gather several inner sites together
+template<class T, class T1, int N>
+inline void 
+gather_sites(PSpinVector<T,N>& d, 
+	     const PSpinVector<T1,N>& s0, int i0, 
+	     const PSpinVector<T1,N>& s1, int i1)
+{
+  for(int i=0; i < N; ++i)
+    gather_sites(d.elem(i), 
+		 s0.elem(i), i0, 
+		 s1.elem(i), i1);
+}
+
 
 //! gather several inner sites together
 template<class T, class T1, int N>
@@ -694,16 +707,15 @@ gather_sites(PSpinVector<T,N>& d,
 
 
 
-#if 0
 // Global sum over site indices only
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSum > {
-  typedef PSpinVectortypename UnaryReturn<T, FnSum>::Type_t, N>  Type_t;
+  typedef PSpinVector<typename UnaryReturn<T, FnSum>::Type_t, N>  Type_t;
 };
 
 template<class T, int N>
 inline typename UnaryReturn<PSpinVector<T,N>, FnSum>::Type_t
-sum(const PSpinVector<T,N>& s1)
+sum(PSpinVector<T,N>& s1)
 {
   typename UnaryReturn<PSpinVector<T,N>, FnSum>::Type_t  d;
 
@@ -712,9 +724,6 @@ sum(const PSpinVector<T,N>& s1)
 
   return d;
 }
-#endif
-
-
 
 
 template<class T, int N>

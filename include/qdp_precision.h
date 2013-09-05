@@ -28,9 +28,10 @@ typedef bool      LOGICAL;
 typedef REAL32    REAL;
 typedef REAL64    DOUBLE;
 
+#ifndef QDP_INNER_LOG
 #if defined(__MIC__)
-#define INNER_LOG 4
 #warning "Using INNER_LOG of 4"
+#define INNER_LOG 4
 #elif defined(__AVX__)
 #warning "Using INNER_LOG of 3"
 #define INNER_LOG 3
@@ -38,18 +39,29 @@ typedef REAL64    DOUBLE;
 #warning "Using INNER_LOG of 2"
 #define INNER_LOG 2
 #endif
+#else 
+#warning user defined inner log QDP_INNER_LOG
+#define INNER_LOG (QDP_INNER_LOG)
+#endif
 
 #elif BASE_PRECISION == 64
 // Use double precision for base precision
 typedef REAL64    REAL;
 typedef REAL64    DOUBLE;
-
+#ifndef QDP_INNER_LOG
 #if defined(__MIC__)
+#warning "Using INNER_LOG of 3"
 #define INNER_LOG 3
 #elif defined(__AVX__)
+#warning "Using INNER_LOG of 2"
 #define INNER_LOG 2
 #else
+#warning "Using INNER_LOG of 1"
 #define INNER_LOG 1
+#endif
+#else 
+#warning user defined inner log QDP_INNER_LOG
+#define INNER_LOG (QDP_INNER_LOG)
 #endif
 
 #else

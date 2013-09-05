@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
   Double dsum1;
   Double dsum2;
   Double dsum3;
-
+#if 0
   random(u);
   gaussian(lctmp1);
 
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
   lctmp3d = lctmp1d * lctmp2;
   write(xml_out, "Double C_X_C",lctmp3d);
 
-#if 0
+
 
   random(lctmp3);
   lctmp3 += lctmp1 * lctmp2;
@@ -444,6 +444,59 @@ int main(int argc, char *argv[])
   pop(xml_out);
 
 #endif
+  /* test 29 */ 
+  {
+    int j_decay=Nd-1;
+    //    OScalar<PScalar<PColorMatrix< RComplex< ILattice< REAL64, INNER_LEN> >, 3> > > g_one = zero;
+    //OScalar<PScalar<PColorMatrix< RComplex< IScalar< REAL64 > >, 3> > > g_one = zero;
+    SpinMatrix g_one = zero;
+
+    LatticeFermion chi = zero;
+    LatticeFermion tmp2 = zero;
+    LatticeFermion tmp3 = g_one*tmp2;
+
+    // NB: Write a test whic does 
+    // chi2 = shift(tmp3, BACKWARD, j_decay)  and compare with CHI
+    chi = shift( g_one*tmp2 , BACKWARD, j_decay);
+  }
+
+  /* test 30 */ 
+  {
+   
+    //
+    Real N=Real(3);
+    Real twopiN = 6.28/N;
+    LatticeReal rnd, theta;
+    gaussian(rnd);
+
+    theta = twopiN * floor( N * rnd  );
+  }
+
+  /* Test 31 */
+  {
+    LatticePropagator forw_prop;
+    LatticePropagator anti_prop;
+    multi1d<LatticeColorMatrix> myu(Nd);
+    
+    int mymu=3;
+    int gamma_value = 1 << mymu;
+    // NB: Write a test which does 
+    //
+    //  LatticePropagator S2 = (forw_prop - Gamma(gamma_value)*forw_prop)
+    //  LatticePropagaror S3 = 0.5*(shift(anti_prop, FORWARD, mymu) * adj(myu[mymu])
+    // 		    * (forw_prop + Gamma(gamma_value)*forw_prop)
+    //			     - anti_prop * myu[mymu] * shift(S2, FORWARD, mymu));
+
+    LatticePropagator S = 0.5*(shift(anti_prop, FORWARD, mymu) * adj(myu[mymu])
+			    * (forw_prop + Gamma(gamma_value)*forw_prop)
+			     - anti_prop * myu[mymu] * shift((forw_prop - Gamma(gamma_value)*forw_prop), FORWARD, mymu));
+  }
+    
+
+  {
+    LatticeFermion quark_sink;
+    multi1d<DFermion> slice_prop(sumMulti(quark_sink, rb));
+  }
 
   pop(xml_out);
   xml_out.close();

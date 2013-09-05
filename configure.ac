@@ -67,11 +67,26 @@ AC_ARG_ENABLE(alignment,
 	AC_HELP_STRING([--enable-alignment=N],
 	[Set alignment to N bytes for OLattice]),
 	[ac_alignment=${enableval}],
-	[ac_alignment=16]
+	[ac_alignment=32]
 )
 
 AC_DEFINE_UNQUOTED(QDP_AC_ALIGNMENT_SIZE, ${ac_alignment}, [Alignment for OLattice])
 AC_SUBST(CONFIG_ALIGNMENT, [${ac_alignment}])
+
+AC_ARG_ENABLE(inner-log, 
+     AC_HELP_STRING([--enable-inner-log=LOG],
+                    [Set log of inner length for parscalarvec builds only]),
+		    [ac_inner_log=${enableval}],
+		    [ac_inner_log="no"]
+)
+
+AC_MSG_NOTICE([User defined INNER_LOG: ${ac_inner_log}])
+
+if test "X${ac_inner_log}X" != "XnoX" ;
+then
+echo HELLO
+AC_DEFINE_UNQUOTED(QDP_INNER_LOG, [${ac_inner_log}], [Inner Log for scalarvecsite])
+fi
 
 dnl tell the user about alignment	
 AC_MSG_NOTICE([Configuring QDP++ Alignment size=${ac_alignment}])

@@ -741,6 +741,19 @@ template<class T, class T1, int N, template<class,int> class C>
 inline void 
 gather_sites(PVector<T,N,C>& d, 
 	     const PVector<T1,N,C>& s0, int i0, 
+	     const PVector<T1,N,C>& s1, int i1)
+{
+  for(int i=0; i < N; ++i)
+    gather_sites(d.elem(i), 
+		 s0.elem(i), i0, 
+		 s1.elem(i), i1);
+}
+
+//! gather several inner sites together
+template<class T, class T1, int N, template<class,int> class C>
+inline void 
+gather_sites(PVector<T,N,C>& d, 
+	     const PVector<T1,N,C>& s0, int i0, 
 	     const PVector<T1,N,C>& s1, int i1,
 	     const PVector<T1,N,C>& s2, int i2,
 	     const PVector<T1,N,C>& s3, int i3)
@@ -842,7 +855,7 @@ fill_gaussian(PVector<T,N,C>& d, PVector<T,N,C>& r1, PVector<T,N,C>& r2)
 }
 
 
-#if 0
+#if 1
 // Global sum over site indices only
 template<class T, int N, template<class,int> class C>
 struct UnaryReturn<PVector<T,N,C>, FnSum > {
