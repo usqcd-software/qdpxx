@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
   QDP_PUSH_PROFILE(QDP::getProfileLevel());
 
   // Setup the layout
-  const int foo[] = {32,2,2,1};
+  const int foo[] = {32,4,4,8};
   // const int foo[] = {16,8,8,4};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
@@ -446,20 +446,30 @@ int main(int argc, char *argv[])
 #endif
   /* test 29 */ 
   {
-    int j_decay=Nd-1;
-    //    OScalar<PScalar<PColorMatrix< RComplex< ILattice< REAL64, INNER_LEN> >, 3> > > g_one = zero;
-    //OScalar<PScalar<PColorMatrix< RComplex< IScalar< REAL64 > >, 3> > > g_one = zero;
-    SpinMatrix g_one = zero;
+    int j_decay=1;
+#if 0
+    OLattice<PScalar<PColorMatrix< RComplex< ILattice< REAL64, INNER_LEN> >, 3> > > g_one;
+    gaussian(g_one);
+#endif
+       //OScalar<PScalar<PColorMatrix< RComplex< IScalar< REAL64 > >, 3> > > g_one = 1;
+    SpinMatrix g_one = 1;
 
     LatticeFermion chi = zero;
+    LatticeFermion chi2 = zero;
     LatticeFermion tmp2 = zero;
+    gaussian(tmp2);
     LatticeFermion tmp3 = g_one*tmp2;
 
     // NB: Write a test whic does 
     // chi2 = shift(tmp3, BACKWARD, j_decay)  and compare with CHI
-    chi = shift( g_one*tmp2 , BACKWARD, j_decay);
+
+    chi = shift(g_one*tmp2 , BACKWARD, j_decay);
+    chi2 =shift( tmp3, BACKWARD, j_decay);
+
+    QDPIO::cout << "Test 29: norm2 ( chi2 - chi )=" << norm2( chi2 -chi ) << endl;
   }
 
+#if 0
   /* test 30 */ 
   {
    
@@ -491,12 +501,18 @@ int main(int argc, char *argv[])
 			    * (forw_prop + Gamma(gamma_value)*forw_prop)
 			     - anti_prop * myu[mymu] * shift((forw_prop - Gamma(gamma_value)*forw_prop), FORWARD, mymu));
   }
-    
+#endif
 
   {
-    LatticeFermion quark_sink;
-    multi1d<DFermion> slice_prop(sumMulti(quark_sink, rb));
+    LatticeReal quark_sink=1;
+    multi1d<Real> slice_prop(sumMulti(quark_sink, rb));
+    Real volCB = toDouble(Layout::vol())/toDouble(rb.numSubsets());
+    QDPIO::cout << "VolCB()="<< volCB << endl;
+    QDPIO::cout << "slice_prop[0]-cb_volume = " << toDouble(slice_prop[0])- volCB << endl;
+    QDPIO::cout << "slice_prop[1]-cb_volume = " << toDouble(slice_prop[1]) -volCB << endl;
+
   }
+
 
   pop(xml_out);
   xml_out.close();

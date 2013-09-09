@@ -7,6 +7,7 @@
 #ifndef QDP_PARSCALARVEC_SPECIFIC_H
 #define QDP_PARSCALARVEC_SPECIFIC_H
 
+#include "qdp_config.h"
 #include "qmp.h"
 #include "qdp_mapresource.h"
 #include "qdp_pshift.h"
@@ -1522,12 +1523,13 @@ struct EvalLeaf1Map
 //      Gather data for x direction
 //-----------------------------------------------------------------------------
 template <class T, class C>
+volatile
 void gather_along_x (const QDPType<T, C>& a, int old_inner_site, 
 		     const int* offsets,
 		     T& ret)
 {
   int i = old_inner_site;
-
+  
 #if INNER_LOG == 1
   // VECLEN=2
   int o1 = offsets[i+1] >> INNER_LOG;

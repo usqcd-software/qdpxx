@@ -1829,7 +1829,6 @@ gather_sites(IScalar<T>& d,
 	     const IScalar<T1>& s0, int i0, 
 	     const IScalar<T1>& s1, int i1)
 {
-  // s0.elem() s1.elem() etc had better all be the same.
   d.elem()=s0.elem(); 
 }
 //! gather several inner sites together
@@ -1841,8 +1840,7 @@ gather_sites(IScalar<T>& d,
 	     const IScalar<T1>& s2, int i2,
 	     const IScalar<T1>& s3, int i3)
 {
-  // s0.elem() s1.elem() etc had better all be the same.
-  d.elem() = s0.elem();
+  d.elem()=s0.elem();
 }
 
 //! gather several inner sites together
@@ -1858,7 +1856,7 @@ gather_sites(IScalar<T>& d,
 	     const IScalar<T1>& s6, int i6,
 	     const IScalar<T1>& s7, int i7)
 {
-  // s0.elem() s1.elem() etc had better all be the same.
+
   d.elem() = s0.elem();
 
 }
@@ -1885,7 +1883,7 @@ gather_sites(IScalar<T>& d,
 	     const IScalar<T1>& s15, int i15)
 {
   // s0.elem(), s1.elem() etc, had better all be the same.
-  d.elem() = s0.elem();
+ d.elem() = s0.elem();
 }
 
 
@@ -2185,7 +2183,6 @@ inline typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpMultiply>::Type_t
 operator*(const IScalar<T1>& l, const ILattice<T2,N>& r)
 {
   typename BinaryReturn<IScalar<T1>, ILattice<T2,N>, OpMultiply>::Type_t  d;
-
 
   for(int i=0; i < N; ++i)
     d.elem(i) = l.elem() * r.elem(i);
