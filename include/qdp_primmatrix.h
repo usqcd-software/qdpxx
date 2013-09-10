@@ -1599,6 +1599,19 @@ sum(const PMatrix<T,N,C>& s1)
 
   return d;
 }
+
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PMatrix<T,N,C>, FnSum>::Type_t
+sum(const PMatrix<T,N,C>& s1, const bool mask[INNER_LEN])
+{
+  typename UnaryReturn<PMatrix<T,N,C>, FnSum>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d.elem(i,j) = sum(s1.elem(i,j),mask);
+
+  return d;
+}
 #endif
 
 

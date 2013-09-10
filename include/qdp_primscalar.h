@@ -1357,6 +1357,13 @@ sum(const PScalar<T>& s1)
 {
   return sum(s1.elem());
 }
+
+template<class T>
+inline typename UnaryReturn<PScalar<T>, FnSum>::Type_t
+sum(const PScalar<T>& s1, const bool mask[INNER_LEN])
+{
+  return sum(s1.elem(),mask);
+}
 #endif
 
 

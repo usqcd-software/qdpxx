@@ -687,7 +687,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
     const multi1d<int>& faceSites = MasterMap::Instance().getFaceSites(maps_involved);
 
     if (s.hasOrderedRep()) {
-      typename UnaryReturn<OLattice<T>, FnSum>::Type_t  *pd = new typename UnaryReturn<OLattice<T>, FnSum>::Type_t[qdpNumThreads()];
+      typename UnaryReturn<OLattice<T>, FnSum>::Type_t  *pd = new typename UnaryReturn<OLattice<T>, FnSum>::Type_t[omp_get_max_threads()];
 
       int segsize = 1;
 
@@ -761,8 +761,13 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 
       delete []pd;
     }
-    else
-      QDP_error_exit ("SUM has not been implemented for non-OrderedRep() operations\n");
+    else {
+
+            QDP_error_exit ("SUM has not been implemented for non-OrderedRep() operations\n");
+    }
+
+
+
   }
   else {
     // no shift is involved
@@ -770,7 +775,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
       const int istart = s.start() >> INNER_LOG;
       const int iend   = s.end()   >> INNER_LOG;
 
-      typename UnaryReturn<OLattice<T>, FnSum>::Type_t  *pd = new  typename UnaryReturn<OLattice<T>, FnSum>::Type_t[qdpNumThreads()]; 
+      typename UnaryReturn<OLattice<T>, FnSum>::Type_t  *pd = new  typename UnaryReturn<OLattice<T>, FnSum>::Type_t[ omp_get_max_threads() ]; 
 
       // #pragma omp parallel shared(pd,istart,iend,num_threads) private(tmp) default(shared)
  #pragma omp parallel shared(pd,num_threads) private(tmp) default(shared)
@@ -788,14 +793,65 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 	}
       }
       // Now combine all together
-      for (int j = 0; j < num_threads; j++) 
+      for (int j = 0; j < num_threads; j++) {
 	d.elem() += sum(pd[j].elem());
+      }
 
       delete []pd;
     }
-    else
-      QDP_error_exit ("SUM has not been implemented for non-OrderedRep() operations\n");
-  }
+    else {
+      // OK No Ordered Rep. 
+      // This is a dumb way to do it.  No vectorization. Repeated applications.
+      // I introduce the concept of sum over mask.
+      // FIXME: Come back and fix the loop.
+
+      // One partial some per thread.
+      typename UnaryReturn<OLattice<T>, FnSum>::Type_t  *pd = new  typename UnaryReturn<OLattice<T>, FnSum>::Type_t[ omp_get_max_threads()]; 
+
+      // Zero result
+      for(int j=0; j < omp_get_max_threads(); j++) {
+	zero_rep(pd[j].elem());
+      }
+      
+      // Get the site table
+      const int *tab = s.siteTable().slice();
+
+
+      // Parallel loop through the sites
+#pragma omp parallel for shared(tab,pd) private(tmp)
+      for(int site=0; site < s.numSiteTable(); site++) { 
+	int myId = omp_get_thread_num();
+	int fullsite = tab[site];
+	int osite = fullsite >> INNER_LOG;
+	int isite = fullsite & (INNER_LEN - 1);
+	
+	bool mask[INNER_LEN]; 
+	for(int maskbit=0; maskbit < INNER_LEN; maskbit++) mask[maskbit] = false;
+	mask[isite] = true; // Mask the bit we are currently working on
+	
+	// Evaluate the full inner vector
+	// Now it is entirely possible that another thread is re-doing this vector,
+	// or that this thread will stay within this vector for the next operation.
+	//
+	// Hopefully the mask will ensure no dublicates.
+	// 
+	// NB: This is really dumb way of doing it. We should have tables for outer-blocks
+	// and masks for each set and divide those between the threads. 
+	tmp.elem() = forEach(s1, EvalLeaf1(osite), OpCombine());
+	
+	// Sum the ILattice part under a mask
+	pd[myId].elem() += sum(tmp.elem(), mask);
+      }// End for
+      
+      // Now combine it all together
+      for (int j = 0; j < omp_get_max_threads(); j++) {
+	d.elem() += sum(pd[j].elem());
+      }
+      
+      delete []pd;
+
+    } // ! has Oredered rep    
+  } // ! has Shift part
 
 
   // Do a global sum on the result

@@ -725,6 +725,18 @@ sum(PSpinVector<T,N>& s1)
   return d;
 }
 
+template<class T, int N>
+inline typename UnaryReturn<PSpinVector<T,N>, FnSum>::Type_t
+sum(PSpinVector<T,N>& s1, const bool mask[INNER_LEN])
+{
+  typename UnaryReturn<PSpinVector<T,N>, FnSum>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = sum(s1.elem(i),mask);
+
+  return d;
+}
+
 
 template<class T, int N>
 inline typename UnaryReturn<PSpinVector<T,N>, FnLocalNorm2>::Type_t

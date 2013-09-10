@@ -873,6 +873,18 @@ sum(const PVector<T,N,C>& s1)
 
   return d;
 }
+
+template<class T, int N, template<class,int> class C>
+inline typename UnaryReturn<PVector<T,N,C>, FnSum>::Type_t
+sum(const PVector<T,N,C>& s1, const bool mask[INNER_LEN])
+{
+  typename UnaryReturn<PVector<T,N,C>, FnSum>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    d.elem(i) = sum(s1.elem(i),mask);
+
+  return d;
+}
 #endif
 
 

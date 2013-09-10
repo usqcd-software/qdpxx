@@ -1905,6 +1905,14 @@ sum(const IScalar<T>& s1)
   return s1.elem();
 }
 
+template<class T>
+inline typename UnaryReturn<IScalar<T>, FnSum>::Type_t
+sum(const IScalar<T>& s1, const bool mask[INNER_LEN])
+{
+//  return sum(s1.elem());
+  return s1.elem();
+}
+
 
 //------------------------------------------
 // Global max
@@ -3654,6 +3662,30 @@ sum(const ILattice<T,N>& s1)
   d.elem() = s1.elem(0);
   for(int i=1; i < N; ++i)
     d.elem() += s1.elem(i);
+
+  return d;
+}
+
+template<class T, int N>
+inline typename UnaryReturn<ILattice<T,N>, FnSum>::Type_t
+sum(const ILattice<T,N>& s1, const bool mask[N])
+{
+  typename UnaryReturn<ILattice<T,N>, FnSum>::Type_t  d;
+
+  int j=0; 
+
+  // Find first true element of mask
+  while( !mask[j] ) j++;
+
+  // Start sum
+  d.elem() = s1.elem(j);
+
+  // go through rest of elements
+  for(int i=j+1; i < N; ++i) { 
+    if( mask[i] ) {
+      d.elem() += s1.elem(i);
+    }
+  }
 
   return d;
 }

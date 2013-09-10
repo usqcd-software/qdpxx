@@ -1615,6 +1615,13 @@ sum(const RScalar<T>& s1)
 {
   return sum(s1.elem());
 }
+
+template<class T>
+inline typename UnaryReturn<RScalar<T>, FnSum>::Type_t
+sum(const RScalar<T>& s1, const bool mask[INNER_LEN])
+{
+  return sum(s1.elem(),mask);
+}
 #endif
 
 
@@ -2434,6 +2441,16 @@ sum(const RComplex<T>& s1)
 
   return Ret_t(sum(s1.real()),
 	       sum(s1.imag()));
+}
+
+template<class T>
+inline typename UnaryReturn<RComplex<T>, FnSum>::Type_t
+sum(const RComplex<T>& s1, const bool mask[INNER_LEN])
+{
+  typedef typename UnaryReturn<RComplex<T>, FnSum>::Type_t  Ret_t;
+
+  return Ret_t(sum(s1.real(),mask),
+	       sum(s1.imag(),mask));
 }
 #endif
 
