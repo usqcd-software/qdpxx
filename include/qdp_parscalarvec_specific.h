@@ -235,7 +235,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
       // now handle surface receiving data
       ShiftPhase2 phase2;
       forEach(rhs, phase2 , NullCombine());
-
+      
       // data should be received by now
 #pragma omp parallel for
       // now processing surface sites
@@ -246,14 +246,15 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
       }
     }
     else {
-      QDP_error_exit ("Not implemented for non-OrderedRep() map operations\n");
+      
+      QDP_error_exit ("evaluate: OLattice<T>, from QDPExpr with maps. Not implemented for non-OrderedRep() map operations\n");
     }
   }
   else {
     if (s.hasOrderedRep()) {
       const int istart = s.start() >> INNER_LOG;
       const int iend   = s.end()   >> INNER_LOG;
-
+      
       // #pragma omp parallel shared(istart, iend, num_threads) default(shared)
 #pragma omp parallel shared(num_threads) default(shared)
       {
@@ -269,16 +270,43 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
       }
     }
     else {
-      QDP_error_exit ("Not implemented for non-OrderedRep()\n");
-    }
-  }
+      
+      // NB: This code is yucky because of the site loop.
+      // Subsets need to get fixed. See Issue #3 on GitHub.
+      const int* tab = s.siteTable().slice();
+
+#pragma omp parallel for shared(tab,rhs,dest)       
+      for(int site = 0; site < s.numSiteTable(); site++) {
+	OScalar<T> tmp_result;
+	int fullsite = tab[site];
+	int osite = fullsite >> INNER_LOG;
+	int isite = fullsite & (INNER_LEN - 1);
+
+	// Evaluate for the entire osite vector
+	op( tmp_result.elem(), forEach(rhs, EvalLeaf1(osite), OpCombine()));
+
+	// Extract the site we care about 
+	typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
+	Site_t res_site = getSite(tmp_result.elem(),isite);
+
+	// Only 1 thread must write to dst for the moment
+	// this could result in a race otherwise
+#pragma omp critical
+	{
+	  // Insert into the destination vector at site i
+	  copy_site(dest.elem(osite), isite, res_site);
+	}
+
+      } // site loop
+    } // else orderedSubset
+  } // else maps involved
 
 #if defined(QDP_USE_PROFILING)   
-  prof.time += getClockTime();
-  prof.count++;
-  prof.print();
+    prof.time += getClockTime();
+    prof.count++;
+    prof.print();
 #endif
-}
+  }
 
 
 //-----------------------------------------------------------------------------
