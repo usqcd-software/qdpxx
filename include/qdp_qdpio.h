@@ -168,11 +168,13 @@ namespace QDP {
     //   QDPIO::cout << "size=" << count*sizeof(Site_t) << endl << flush;
     memcpy(buf,(const void*)&the_site,count*sizeof(Site_t));
  
-#if 1  
-    size_t bytes = sizeof(Site_t);
-    size_t wordsize = sizeof(typename WordType<Site_t>::Type_t);
-    size_t numnums = bytes/wordsize;
-    QDPUtil::byte_swap(buf, wordsize, numnums);
+#if 1 
+    if ( ! QDPUtil::big_endian() ) {  
+      size_t bytes = sizeof(Site_t);
+      size_t wordsize = sizeof(typename WordType<Site_t>::Type_t);
+      size_t numnums = bytes/wordsize;
+      QDPUtil::byte_swap(buf, wordsize, numnums);
+    }
 #endif
 
   }
@@ -203,7 +205,9 @@ namespace QDP {
     {
       Site_t the_site = getSite(field[i].elem(osite), isite);
       memcpy(buf,(const void*)&the_site,sizeof(Site_t));
-      QDPUtil::byte_swap(buf, wordsize, numnums);
+      if ( ! QDPUtil::big_endian() ) { 
+        QDPUtil::byte_swap(buf, wordsize, numnums);
+      }
       buf += sizeof(Site_t);
     }
 

@@ -15,14 +15,13 @@ int main(int argc, char *argv[])
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,8};
+  const int foo[] = {32,4,4,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
   Layout::create();
 
-  string filename = "t_nersc.cfg";
-//  string filename = "tmp.cfg";
+  string filename = "tmp.cfg";
 //  string filename = "u_TEST_4223.101";
 
   XMLFileWriter xml("t_nersc.xml");

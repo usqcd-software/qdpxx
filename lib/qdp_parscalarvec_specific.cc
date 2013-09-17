@@ -493,9 +493,133 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
 void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
 		n_uint32_t& checksum, int mat_size, int float_size)
 {
-  ColorMatrix  sitefield;
-  float su3[3][3][2];
 
+  size_t size = float_size;
+  size_t su3_size = size*mat_size;
+  size_t tot_size = su3_size*Nd;
+  const int nodeSites = Layout::sitesOnNode();
+
+  char  *input = new(nothrow) char[tot_size*nodeSites];  // keep another copy in input buffers
+  if( input == 0x0 ) { 
+    QDP_error_exit("Unable to allocate input\n");
+  }
+  
+  char  *recv_buf = new(nothrow) char[tot_size];
+  if( recv_buf == 0x0 ) { 
+    QDP_error_exit("Unable to allocate recv_buf\n");
+  }
+
+  checksum = 0;
+  for(int site=0; site < Layout::vol(); ++site) {
+    
+    multi1d<int> coord = crtesn(site, Layout::lattSize());
+    
+    int node   = Layout::nodeNumber(coord);
+    int linear = Layout::linearSiteIndex(coord);
+    
+    // Only on primary node read the data
+    cfg_in.readArrayPrimaryNode(recv_buf, size, mat_size*Nd);
+    
+    if (Layout::primaryNode()) {
+      // Compute checksum
+      n_uint32_t* chk_ptr = (n_uint32_t*)recv_buf;
+      for(unsigned int i=0; i < mat_size*Nd*size/sizeof(n_uint32_t); ++i) {
+	checksum += chk_ptr[i];
+      }
+    }
+    
+    // Send result to destination node. Avoid sending prim-node sending to itself
+    if (node != 0) {
+      
+#if 1
+      // All nodes participate
+      QDPInternal::route((void *)recv_buf, 0, node, tot_size);
+#else
+      if (Layout::primaryNode())
+	QDPInternal::sendToWait((void *)recv_buf, node, tot_size);
+      
+      if (Layout::nodeNumber() == node)
+	QDPInternal::recvFromWait((void *)recv_buf, 0, tot_size);
+#endif
+    }
+    
+    if (Layout::nodeNumber() == node) {
+      memcpy(input+linear*tot_size, recv_buf, tot_size);
+    }
+  }
+
+  delete[] recv_buf;
+
+  QDPInternal::broadcast(checksum);
+
+  REAL su3[3][3][2];
+  /* The data is now read * and is in the 'input' buffer in site major order */
+  for(int linear=0; linear < nodeSites; linear++) { 
+    for(int dd=0; dd<Nd; dd++)    {    /* dir */
+      
+      // Transfer the data from input into SU3
+      if (float_size == 4) {
+	REAL* su3_p = (REAL *)su3;
+	REAL32* input_p = (REAL32 *)( input+su3_size*(dd+Nd*linear) );
+	for(int cp_index=0; cp_index < mat_size; cp_index++) {
+	  su3_p[cp_index] = (REAL)(input_p[cp_index]);
+	}
+      }
+      else if (float_size == 8) {
+	// IEEE64BIT case
+	REAL *su3_p = (REAL *)su3;
+	REAL64 *input_p = (REAL64 *)( input+su3_size*(dd+Nd*linear) );
+	for(int cp_index=0; cp_index < mat_size; cp_index++) { 
+	  su3_p[cp_index] = (REAL)input_p[cp_index];
+	}
+      }
+      else { 
+	QDPIO::cerr << __func__ << ": Unknown mat size" << endl;
+	QDP_abort(1);
+      }
+
+      
+	/* Reconstruct the third column  if necessary */
+      if (mat_size == 12) {
+	
+	su3[2][0][0] = su3[0][1][0]*su3[1][2][0] - su3[0][1][1]*su3[1][2][1]
+	  - su3[0][2][0]*su3[1][1][0] + su3[0][2][1]*su3[1][1][1];
+	su3[2][0][1] = su3[0][2][0]*su3[1][1][1] + su3[0][2][1]*su3[1][1][0]
+	  - su3[0][1][0]*su3[1][2][1] - su3[0][1][1]*su3[1][2][0];
+	
+	su3[2][1][0] = su3[0][2][0]*su3[1][0][0] - su3[0][2][1]*su3[1][0][1]
+	  - su3[0][0][0]*su3[1][2][0] + su3[0][0][1]*su3[1][2][1];
+	su3[2][1][1] = su3[0][0][0]*su3[1][2][1] + su3[0][0][1]*su3[1][2][0]
+	  - su3[0][2][0]*su3[1][0][1] - su3[0][2][1]*su3[1][0][0];
+	
+	su3[2][2][0] = su3[0][0][0]*su3[1][1][0] - su3[0][0][1]*su3[1][1][1]
+	  - su3[0][1][0]*su3[1][0][0] + su3[0][1][1]*su3[1][0][1];
+	su3[2][2][1] = su3[0][1][0]*su3[1][0][1] + su3[0][1][1]*su3[1][0][0]
+	  - su3[0][0][0]*su3[1][1][1] - su3[0][0][1]*su3[1][1][0];
+      }
+
+      typedef typename UnaryReturn< LatticeColorMatrix, FnGetSite>::Type_t Site_t;
+      Site_t sitefield;
+
+      for(int col=0; col < Nc; col++) { 
+	for(int row=0; row < Nc; row++) { 
+	  Complex sitecomp = cmplx(Real(su3[row][col][0]), Real(su3[row][col][1]));
+	  pokeColor(sitefield,sitecomp,row,col);
+	}
+      }
+      
+      int osite = linear >> INNER_LOG;
+      int isite = linear & ( INNER_LEN - 1);
+      
+      copy_site( u[dd].elem(osite), isite, sitefield.elem());
+    }
+  }
+
+  delete [] input;
+}
+      
+
+#if 0
   checksum = 0;
 
   // Find the location of each site and send to primary node
@@ -562,7 +686,7 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
   }
 }
 
-
+#endif
 
 //-----------------------------------------------------------------------
 // Write a QCD archive file
