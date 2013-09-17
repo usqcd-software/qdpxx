@@ -110,13 +110,6 @@ namespace QDP {
 #include "qdp_io.h"
 #include "qdp_stdio.h"
 
-#ifdef QDP_NO_LIBXML2
-#warning not using libxml2
-#else
-#include "qdp_xmlio.h"
-#include "qdp_qdpio.h"
-#endif
-
 
 #include "qdp_subset.h"
 #include "qdp_map.h"
@@ -135,8 +128,17 @@ namespace QDP {
 #include "qdp_allocator.h"
 
 #include "qdp_newops.h"
+
+
 #include "qdp_optops.h"
 #include "qdp_profile.h"
+#ifdef QDP_NO_LIBXML2
+#warning not using libxml2
+#else
+#include "qdp_xmlio.h"
+#include "qdp_qdpio.h"
+#endif
+
 //#include "qdp_word.h"
 #include "qdp_simpleword.h"
 #include "qdp_reality.h"

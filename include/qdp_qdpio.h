@@ -7,15 +7,207 @@
 #ifndef QDP_QDPIO_H
 #define QDP_QDPIO_H
 
+#include <qdp_config.h>
 #include "qio.h"
 #include <sstream>
 #include "qdp_defs.h"
 #include <cstring>
 
 using namespace std;
+#include "qdp_byteorder.h"
 
-namespace QDP 
-{
+namespace QDP { 
+ //-------------------------------------------------
+  // QIO support
+  //
+  // Scalar support
+  
+  //! Function for moving data
+  /*!
+    Data is moved from the one buffer to another with a specified offset.
+
+
+     \param buf The source buffer
+     \param linear site index
+     \param count The number of data to move
+     \param arg The destination buffer.
+   */
+   template<class T> 
+   void QDPOScalarFactoryPut(char *buf, size_t linear, int count, void *arg) 
+   {
+
+
+     // The destination buffer is a QDP++ field. It is an OScalar<T>
+
+     // The source buffer is a number of sites. 
+     // count is the size in bytes....
+     T *field = (T *)arg;
+     if ( linear != 0 ) { 
+       QDPIO::cerr << "Called QDPOScalarFactory put with a nonzero linear_index" << linear << endl;
+       QDP_abort(1);
+     }
+
+     memcpy(field,(const void*)buf,count*sizeof(T));
+   
+
+   }
+
+   //! Function for moving data
+   /*!
+     Data is moved from the one buffer to another with a specified offset.
+     This only works if the source is OScalar<...<IScalar<>>
+
+     \param buf The destination buffer
+     \param linear The source buffer offset
+     \param count The number of data to move
+     \param arg The source buffer.
+   */
+
+   template<class T> 
+   void QDPOScalarFactoryGet(char *buf, size_t linear, int count, void *arg)
+   {
+     /* Translate arg */
+     T *field = (T *)arg;
+
+     if ( linear != 0 ) { 
+       QDPIO::cout << " QDPOScalarFactoryGet was called with nonzero linear: " << linear << endl;
+       QDP_abort(1);
+     }
+
+     void *src = (void*)field;
+     memcpy(buf,(const void*)src,count*sizeof(T));
+
+   }
+
+   //! Function for moving data
+   /*!
+     Data is moved from the QIO buffer into the QDP++ buffers. QIO keeps
+     data in a site based format. QDP++ may have an ILattice so we need to be carefule
+
+     \param buf The source QIO buffer (single site)
+     \param linear The linear index.
+     \param count The number of data to move (this should always be just 1)
+     \param arg The destination QDP++ buffer (may contain ILattice)
+   */
+   template<class T> 
+   void QDPOLatticeFactoryPut(char *buf, size_t linear, int count, void *arg)
+   {
+     typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
+     /* Translate arg */
+     T *field = (T *)arg;
+
+     // Linear is a site index. Let us decompose it:
+     //  QDPIO::cout << "QDPOLatticeFactoryPut called with linear=" << linear << " count=" << count << ",  sizeof(site(T))=" << sizeof(typename UnaryReturn<T,FnGetSite>::Type_t) << endl;
+
+    
+     int outer = linear >> INNER_LOG;
+     int inner = linear & ( INNER_LEN - 1);
+
+
+     Site_t res_site;
+     memcpy((void *)&res_site,(const void*)buf,count*sizeof(Site_t));
+     T block = field[outer];
+     copy_site(block,inner,res_site);
+     field[outer]=block;
+   }
+
+   //! Function for moving array data
+   /*!
+     Data is moved from QIO buffer to QDP++ Field
+     The data is taken to be in multi1d< OLattice<T> > form.
+     The T may contain inner sites whereas the QIO is always site based
+
+     \param buf The source QIO buffer
+     \param linear site index
+     \param count Ignored
+     \param arg QDP++ buffer
+   */
+   template<class T> 
+   void QDPOLatticeFactoryPutArray(char *buf, size_t linear, int count, void *arg)
+   {
+     /* Translate arg */
+     multi1d< OLattice<T> >& field = *(multi1d< OLattice<T> > *)arg;
+     typedef typename UnaryReturn<T,FnGetSite>::Type_t Site_t;
+     int outer = linear >> INNER_LOG;
+     int inner = linear & (INNER_LEN-1 );
+
+     for(int i=0; i < field.size(); ++i) {
+       Site_t res_site ;
+       void *dest = (void*)&res_site;
+       memcpy(dest,(const void*)buf,sizeof(Site_t));
+       buf += sizeof(Site_t);
+       copy_site(field[i].elem(outer), inner, res_site);
+    }
+
+  }
+  
+    //! Function for moving data
+  /*!
+    Data is moved from QDP++ Buffer into the QIO buffer. QDP may have an ILattice<> but QIO does not.
+    QIO Gives the offsets in terms of sites.
+
+    \param buf The destination buffer QIO buffer (single site)
+    \param linear The site index
+    \param count The number of data to move (The way we use QIO this ought to always be 1 for OLattiec Data)
+    \param arg The source buffer (QDP Field)
+  */
+
+  template<class T> void QDPOLatticeFactoryGet(char *buf, size_t linear, int count, void *arg)
+  {
+    typedef typename UnaryReturn<T,FnGetSite>::Type_t  Site_t;
+
+    /* Translate arg */
+    T* field = (T *)arg;
+
+    int osite = linear >> INNER_LOG;
+    int isite = linear & (INNER_LEN - 1);
+
+    T outer_block = field[osite];
+    
+    Site_t the_site = getSite(outer_block, isite);
+    //   QDPIO::cout << "size=" << count*sizeof(Site_t) << endl << flush;
+    memcpy(buf,(const void*)&the_site,count*sizeof(Site_t));
+ 
+#if 1  
+    size_t bytes = sizeof(Site_t);
+    size_t wordsize = sizeof(typename WordType<Site_t>::Type_t);
+    size_t numnums = bytes/wordsize;
+    QDPUtil::byte_swap(buf, wordsize, numnums);
+#endif
+
+  }
+
+  //! Function for moving array data
+  /*!
+    Data is moved from the QDP++ buffer to the QIO one, with a specified offset.
+    The data is taken to be in multi1d< OLattice<T> > form.
+
+    \param buf The source (QDP++) buffer;
+    \param linear The linear site
+    \param count Ignored (set by datum size, and array size)
+    \param arg The destination buffer QIO buffer.
+  */
+  template<class T>
+  void QDPOLatticeFactoryGetArray(char *buf, size_t linear, int count, void *arg)
+  {
+    multi1d< OLattice<T> >& field = *(multi1d< OLattice<T> > *)arg;
+    typedef typename UnaryReturn<T,FnGetSite>::Type_t Site_t;
+    int osite = linear >> INNER_LOG;
+    int isite = linear & (INNER_LEN - 1);
+    size_t bytes = sizeof(Site_t);
+    size_t wordsize = sizeof(typename WordType<Site_t>::Type_t);
+    size_t numnums = bytes/wordsize;
+
+    
+    for(int i=0; i < field.size(); ++i)
+    {
+      Site_t the_site = getSite(field[i].elem(osite), isite);
+      memcpy(buf,(const void*)&the_site,sizeof(Site_t));
+      QDPUtil::byte_swap(buf, wordsize, numnums);
+      buf += sizeof(Site_t);
+    }
+
+  }
 
   /*! @defgroup qio QIO
    *
@@ -173,6 +365,56 @@ namespace QDP
   template<>
   char* QIOStringTraits< multi1d<LatticeDiracFermionD3> >::tname;
 
+
+  // Most types have no colors
+  template<typename T>
+  struct NumColors {
+    static const int value=0;
+  };
+  
+  // Recursion base cases...
+  template<typename T, const int N>
+  struct NumColors< PColorVector<T,N> > {
+    static const int value = N;
+  };
+  
+  template<typename T, const int N>
+  struct NumColors< PColorMatrix<T,N> > {
+    static const int value = N;
+  };
+  
+  // Top level recursion
+  template<typename T, template<typename> class C>
+  struct NumColors< C< T > > {
+    static const int value = NumColors<T>::value;
+  };
+
+  // Most types have no colors
+  template<typename T>
+  struct NumSpins {
+    static const int value=0;
+  };
+  
+  // Recursion base cases...
+  template<typename T, const int N>
+  struct NumSpins< PSpinVector<T,N> > {
+    static const int value = N;
+  };
+  
+  template<typename T, const int N>
+  struct NumSpins< PSpinMatrix<T,N> > {
+    static const int value = N;
+  };
+  
+  // Top level recursion
+  template<typename T, template<typename> class C>
+  struct NumSpins< C< T > > {
+    static const int value = NumSpins<T>::value;
+  };
+  
+
+    
+    
 
   //--------------------------------------------------------------------------------
   //! QIO class
@@ -687,33 +929,11 @@ namespace QDP
 
 
 
-  //-------------------------------------------------
-  // QIO support
-  //
-  // Scalar support
-
-  //! Function for moving data
-  /*!
-    Data is moved from the one buffer to another with a specified offset.
-
-    \param buf The source buffer
-    \param linear The offset
-    \param count The number of data to move
-    \param arg The destination buffer.
-  */
-  template<class T> void QDPOScalarFactoryPut(char *buf, size_t linear, int count, void *arg) 
-  {
-    /* Translate arg */
-    T *field = (T *)arg;
-
-    void *dest = (void*)(field+linear);
-    memcpy(dest,(const void*)buf,count*sizeof(T));
-  }
 
 
   //! Reads an OScalar object
   /*!
-    This implementation is only correct for scalar ILattice
+    This implementation is only correct for IScalar
     \param rec_xml The (user) record metadata.
     \param sl The data
   */
@@ -908,24 +1128,6 @@ namespace QDP
 //  void QDPFileReader::read(XMLReader& rec_xml, BinaryBufferReader& s1);
 
 
-  //! Function for moving data
-  /*!
-    Data is moved from the one buffer to another with a specified offset.
-
-    \param buf The destination buffer
-    \param linear The source buffer offset
-    \param count The number of data to move
-    \param arg The source buffer.
-  */
-
-  template<class T> void QDPOScalarFactoryGet(char *buf, size_t linear, int count, void *arg)
-  {
-    /* Translate arg */
-    T *field = (T *)arg;
-
-    void *src = (void*)(field+linear);
-    memcpy(buf,(const void*)src,count*sizeof(T));
-  }
 
 
   //! Writes an OScalar object
@@ -941,8 +1143,8 @@ namespace QDP
     QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, NULL, NULL, 0,
 						  QIOStringTraits< OScalar<T> >::tname,
 						  QIOStringTraits< typename WordType<T>::Type_t >::tprec,
-						  Nc, Ns, 
-						  sizeof(T), 1);
+						  NumColors<T>::value, NumSpins<T>::value, 
+						  sizeof(typename UnaryReturn<T,FnGetSite>::Type_t), 1);
 
     // Copy metadata string into simple qio string container
     QIO_String* xml_c = QIO_string_create();
@@ -996,8 +1198,8 @@ namespace QDP
     QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, NULL, NULL, 0,
 						  QIOStringTraits<multi1d< OScalar<T> > >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t>::tprec, 
-						  Nc, Ns, 
-						  sizeof(T), s1.size());
+						  NumColors<T>::value, NumSpins<T>::value, 
+						  sizeof(typename UnaryReturn<T,FnGetSite>::Type_t), s1.size());
 
 
     // Copy metadata string into simple qio string container
@@ -1041,47 +1243,7 @@ namespace QDP
   // NOTE: this is exactly the same bit of code as in scalar_specific.h 
   //       need to make common only on scalarsite.h  like architectures
 
-  //! Function for moving data
-  /*!
-    Data is moved from the one buffer to another with a specified offset.
 
-    \param buf The source buffer
-    \param linear The destination buffer offset
-    \param count The number of data to move
-    \param arg The destination buffer.
-  */
-  template<class T> void QDPOLatticeFactoryPut(char *buf, size_t linear, int count, void *arg)
-  {
-    /* Translate arg */
-    T *field = (T *)arg;
-
-    void *dest = (void*)(field+linear);
-    memcpy(dest,(const void*)buf,count*sizeof(T));
-  }
-
-  //! Function for moving array data
-  /*!
-    Data is moved from the one buffer to another buffer array with a
-    specified offset. 
-    The data is taken to be in multi1d< OLattice<T> > form.
-
-    \param buf The source buffer
-    \param linear The destination buffer offset
-    \param count Ignored
-    \param arg The destination buffer.
-  */
-  template<class T> void QDPOLatticeFactoryPutArray(char *buf, size_t linear, int count, void *arg)
-  {
-    /* Translate arg */
-    multi1d< OLattice<T> >& field = *(multi1d< OLattice<T> > *)arg;
-
-    for(int i=0; i < field.size(); ++i)
-    {
-      void *dest = (void*)&(field[i].elem(linear));
-      memcpy(dest,(const void*)buf,sizeof(T));
-      buf += sizeof(T);
-    }
-  }
 
 
   //! Reads an OLattice object
@@ -1099,13 +1261,13 @@ namespace QDP
     QIO_RecordInfo rec_info;
     QIO_String* xml_c = QIO_string_create();
     int status;
-  
     status=QIO_read_record_info(qio_in, &rec_info, xml_c);
     if( status != QIO_SUCCESS) { 
       QDPIO::cerr << "Failed to read the Record Info" << endl;
       QDP_abort(1);
     }
-      
+    
+    
     switch( (QIO_get_precision(&rec_info))[0] ) { 
     case 'F' :
     {
@@ -1116,8 +1278,8 @@ namespace QDP
       
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPut<typename SinglePrecType<T>::Type_t> ),
-				    sizeof(typename SinglePrecType<T>::Type_t),
-				    sizeof(typename WordType< typename SinglePrecType<T>::Type_t >::Type_t),
+				    sizeof(typename UnaryReturn<typename SinglePrecType<T>::Type_t, FnGetSite>::Type_t ),
+				    sizeof(typename WordType<typename UnaryReturn<typename SinglePrecType<T>::Type_t, FnGetSite>::Type_t>::Type_t ),
 				    (void *)from_disk.getF());
       
       if (status != QIO_SUCCESS) { 
@@ -1138,8 +1300,8 @@ namespace QDP
       /* Disagnostics */
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPut< typename DoublePrecType<T>::Type_t>),
-				    sizeof(typename DoublePrecType<T>::Type_t),
-				    sizeof(typename WordType< typename DoublePrecType<T>::Type_t >::Type_t),
+				    sizeof(typename UnaryReturn<typename DoublePrecType<T>::Type_t, FnGetSite>::Type_t ),
+				    sizeof(typename WordType<typename UnaryReturn<typename DoublePrecType<T>::Type_t, FnGetSite>::Type_t>::Type_t ),
 				    (void *)from_disk.getF());
       
       if (status != QIO_SUCCESS) { 
@@ -1159,8 +1321,8 @@ namespace QDP
       QDPIO::cout << "Reading I or U precisions" << endl;
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPut<T>),
-				    sizeof(T),
-				    sizeof(typename WordType<T>::Type_t),
+				    sizeof(typename UnaryReturn<T,FnGetSite>::Type_t),
+				    sizeof(typename WordType<typename UnaryReturn<T,FnGetSite>::Type_t>::Type_t),
 				    (void *)s1.getF());
      
       if (status != QIO_SUCCESS) { 
@@ -1215,8 +1377,8 @@ namespace QDP
 
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPutArray<typename SinglePrecType<T>::Type_t> ),
-				    s1.size()*sizeof(typename SinglePrecType<T>::Type_t),
-				    sizeof(typename WordType< typename SinglePrecType<T>::Type_t >::Type_t),
+				    s1.size()*sizeof(typename UnaryReturn<typename SinglePrecType<T>::Type_t, FnGetSite>::Type_t ),
+				    sizeof(typename WordType<typename UnaryReturn<typename SinglePrecType<T>::Type_t, FnGetSite>::Type_t>::Type_t ),
 				    (void *)&from_disk);
       if (status != QIO_SUCCESS) { 
 	QDPIO::cerr << "Failed to read data" << endl;
@@ -1240,8 +1402,8 @@ namespace QDP
 
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPutArray< typename DoublePrecType<T>::Type_t > ),
-				    s1.size()*sizeof(typename DoublePrecType<T>::Type_t),
-				    sizeof(typename WordType< typename DoublePrecType<T>::Type_t >::Type_t),
+				    s1.size()*sizeof(typename UnaryReturn<typename DoublePrecType<T>::Type_t, FnGetSite>::Type_t ),
+				    sizeof(typename WordType<typename UnaryReturn<typename DoublePrecType<T>::Type_t, FnGetSite>::Type_t>::Type_t ),
 				    (void *)&from_disk);
       if (status != QIO_SUCCESS) { 
 	QDPIO::cerr << "Failed to read data" << endl;
@@ -1261,8 +1423,8 @@ namespace QDP
       QDPIO::cout << "Reading I or U Precision" << endl;
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPutArray<T> ),
-				    s1.size()*sizeof(T),
-				    sizeof(typename WordType<T>::Type_t),
+				    s1.size()*sizeof(typename UnaryReturn<T,FnGetSite>::Type_t),
+				    sizeof(typename WordType<typename UnaryReturn<T,FnGetSite>::Type_t>::Type_t   )  ,
 				    (void *)&s1);
       if (status != QIO_SUCCESS) { 
 	QDPIO::cerr << "Failed to read data" << endl;
@@ -1290,47 +1452,6 @@ namespace QDP
     QIO_string_destroy(xml_c);
   }
 
-  //! Function for moving data
-  /*!
-    Data is moved from the one buffer to another with a specified offset.
-
-    \param buf The destination buffer
-    \param linear The source buffer offset
-    \param count The number of data to move
-    \param arg The source buffer.
-  */
-
-  template<class T> void QDPOLatticeFactoryGet(char *buf, size_t linear, int count, void *arg)
-  {
-    /* Translate arg */
-    T *field = (T *)arg;
-
-    void *src = (void*)(field+linear);
-    memcpy(buf,(const void*)src,count*sizeof(T));
-  }
-
-  //! Function for moving array data
-  /*!
-    Data is moved from the one buffer to another with a specified offset.
-    The data is taken to be in multi1d< OLattice<T> > form.
-
-    \param buf The source buffer
-    \param linear The source buffer offset
-    \param count Ignored
-    \param arg The destination buffer.
-  */
-  template<class T> void QDPOLatticeFactoryGetArray(char *buf, size_t linear, int count, void *arg)
-  {
-    /* Translate arg */
-    multi1d< OLattice<T> >& field = *(multi1d< OLattice<T> > *)arg;
-
-    for(int i=0; i < field.size(); ++i)
-    {
-      void *src = (void*)&(field[i].elem(linear));
-      memcpy(buf,(const void*)src,sizeof(T));
-      buf += sizeof(T);
-    }
-  }
 
 
 
@@ -1344,11 +1465,19 @@ namespace QDP
   template<class T>
   void QDPFileWriter::write(XMLBufferWriter& rec_xml, const OLattice<T>& s1)
   {
+
+
+    QDPIO::cout << "Typename is " <<  QIOStringTraits< OLattice<T> >::tname <<endl;
+    QDPIO::cout << "Precision is " <<  QIOStringTraits<typename WordType<T>::Type_t >::tprec << endl;
+    QDPIO::cout << "N Colors is " << NumColors<T>::value << endl;
+    QDPIO::cout << "N Spins is " << NumSpins<T>::value << endl;
+    QDPIO::cout << "Datum is " << sizeof(typename UnaryReturn<T,FnGetSite>::Type_t ) << endl;
+
     QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, NULL, NULL,0,
 						  QIOStringTraits< OLattice<T> >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t >::tprec,
-						  Nc, Ns, 
-						  sizeof(T),1 );
+						  Nc,Ns, 
+						  sizeof(typename UnaryReturn<T,FnGetSite>::Type_t ),1 );
   
     // Copy metadata string into simple qio string container
     QIO_String* xml_c = QIO_string_create();
@@ -1364,8 +1493,8 @@ namespace QDP
     // Big call to qio
     if (QIO_write(get(), info, xml_c,
 		  &(QDPOLatticeFactoryGet<T>),
-		  sizeof(T), 
-		  sizeof(typename WordType<T>::Type_t), 
+		  sizeof(typename UnaryReturn<T,FnGetSite>::Type_t), 
+		  sizeof(typename WordType< UnaryReturn<T,FnGetSite>   >::Type_t), 
 		  (void *)s1.getF()) != QIO_SUCCESS)
     {
       QDPIO::cerr << "QDPFileWriter: error in write" << endl;
@@ -1403,8 +1532,8 @@ namespace QDP
 						  lower_left.size(),
 						  QIOStringTraits< OLattice<T> >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t >::tprec,
-						  Nc, Ns, 
-						  sizeof(T),1 );
+						  NumColors<T>::value, NumSpins<T>::value, 
+						  sizeof(typename UnaryReturn<T,FnGetSite>::Type_t),1 );
   
     // Copy metadata string into simple qio string container
     QIO_String* xml_c = QIO_string_create();
@@ -1420,8 +1549,8 @@ namespace QDP
     // Big call to qio
     if (QIO_write(get(), info, xml_c,
 		  &(QDPOLatticeFactoryGet<T>),
-		  sizeof(T), 
-		  sizeof(typename WordType<T>::Type_t), 
+		  sizeof(typename UnaryReturn<T,FnGetSite>::Type_t), 
+		  sizeof(typename WordType< UnaryReturn<T,FnGetSite>   >::Type_t), 
 		  (void *)s1.getF()) != QIO_SUCCESS)
     {
       QDPIO::cerr << "QDPFileWriter: error in write" << endl;
@@ -1444,12 +1573,20 @@ namespace QDP
   template<class T>
   void QDPFileWriter::write(XMLBufferWriter& rec_xml, const multi1d< OLattice<T> >& s1)
   {
+
+QDPIO::cout << "Typename is " <<  QIOStringTraits< OLattice<T> >::tname <<endl;
+    QDPIO::cout << "Precision is " <<  QIOStringTraits<typename WordType<T>::Type_t >::tprec << endl;
+    QDPIO::cout << "N Colors is " << NumColors<T>::value << endl;
+    QDPIO::cout << "N Spins is " << NumSpins<T>::value << endl;
+    QDPIO::cout << "Datum is " << sizeof(typename UnaryReturn<T,FnGetSite>::Type_t ) << endl;
+    QDPIO::cout << "Num Dat is " << s1.size() << endl;
+
     QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, 
 						  NULL, NULL, 0,
 						  QIOStringTraits<multi1d< OLattice<T> > >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t>::tprec,
-						  Nc, Ns, 
-						  sizeof(T), s1.size() );
+						  NumColors<T>::value, NumSpins<T>::value, 
+						  sizeof(typename UnaryReturn<T,FnGetSite>::Type_t), s1.size() );
 
     // Copy metadata string into simple qio string container
     QIO_String* xml_c = QIO_string_create();
@@ -1465,8 +1602,10 @@ namespace QDP
     // Big call to qio
     if (QIO_write(get(), info, xml_c,
 		  &(QDPOLatticeFactoryGetArray<T>),
-		  s1.size()*sizeof(T), 
-		  sizeof(typename WordType<T>::Type_t), 
+
+		  s1.size()*sizeof(typename UnaryReturn<T,FnGetSite>::Type_t), 
+		  sizeof(typename WordType< UnaryReturn<T,FnGetSite>   >::Type_t), 
+
 		  (void*)&s1) != QIO_SUCCESS)
     {
       QDPIO::cerr << "QDPFileWriter: error in write" << endl;
@@ -1506,8 +1645,8 @@ namespace QDP
 						  lower_left.size(),
 						  QIOStringTraits<multi1d< OLattice<T> > >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t>::tprec,
-						  Nc, Ns, 
-						  sizeof(T), s1.size() );
+						  NumColors<T>::value, NumSpins<T>::value, 
+						  sizeof(typename UnaryReturn<T,FnGetSite>::Type_t), s1.size() );
 
     // Copy metadata string into simple qio string container
     QIO_String* xml_c = QIO_string_create();
@@ -1523,8 +1662,8 @@ namespace QDP
     // Big call to qio
     if (QIO_write(get(), info, xml_c,
 		  &(QDPOLatticeFactoryGetArray<T>),
-		  s1.size()*sizeof(T), 
-		  sizeof(typename WordType<T>::Type_t), 
+		  s1.size()*sizeof(typename UnaryReturn<T,FnGetSite>::Type_t), 
+		  sizeof(typename WordType< UnaryReturn<T,FnGetSite>   >::Type_t), 
 		  (void*)&s1) != QIO_SUCCESS)
     {
       QDPIO::cerr << "QDPFileWriter: error in write" << endl;

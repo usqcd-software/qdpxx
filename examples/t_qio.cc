@@ -13,7 +13,7 @@ int main(int argc, char **argv)
   QDP_initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[] = {4,4,4,8};
+  const int foo[] = {32,2,2,2};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
   Layout::setLattSize(nrow);
@@ -32,6 +32,7 @@ int main(int argc, char **argv)
     XMLBufferWriter file_xml, record_xml;
     Double d = 17.123456789010234567890123456;
     int rob = -5;
+    QDPIO::cout << "About to write " << sizeof(d)+sizeof(rob)+sizeof(QDPUtil::n_uint32_t) << " bytes " << endl;
 
     {
       push(file_xml,"file_fred");
@@ -180,6 +181,8 @@ int main(int argc, char **argv)
       {
 	LatticeComplex a;
 	random(a);
+	write(xml_out, "a_is", a);
+	QDPIO::cout << "Writing lattice Complex" << endl;
 	write(to,record_xml,a);
 	write(xml_out, "second_to.bad", to.bad());
 
@@ -194,8 +197,10 @@ int main(int argc, char **argv)
 
 #if 1
       {
+
 	LatticeColorMatrix b;
 	random(b);
+	QDPIO::cout << "Writing Lattiice Color Matrix" << endl;
 	write(to,record_xml,b);
 	write(xml_out, "third_to.bad", to.bad());
 	
@@ -212,6 +217,7 @@ int main(int argc, char **argv)
       {
 	multi1d<LatticeColorMatrix> c(Nd);
         Double fsum = 0;
+	QDPIO::cout << "Writing multi1d<LAtticeCOlorMatrix>(4)" << endl;
         for(int i=0; i < c.size(); ++i)
         {
     	  random(c[i]);
@@ -295,12 +301,13 @@ int main(int argc, char **argv)
 	LatticeComplex a;
 	read(from,record_xml,a);
 	write(xml_out, "second_from.bad", from.bad());
-
+	
 	QDPIO::cout << "Here is the contents of second  record_xml" << endl;
 	std::ostringstream ost;
 	record_xml.print(ost);
 	QDPIO::cout << ost.str() << endl << flush;
 
+	write(xml_out, "read_a_is ", a);
 
 	Real atest = Real(innerProductReal(a,shift(a,FORWARD,0)));
 	QDPIO::cout << "Second record check: innerProduct(a,shift(a,0))=" 

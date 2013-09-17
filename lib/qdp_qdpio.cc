@@ -162,7 +162,7 @@ namespace QDP
     {
       iostate = QDPIO_goodbit;
     }
-
+    QDPIO::cout << "DML is big_endian() = " << DML_big_endian() << endl;
     // Use string to initialize XMLReader
     istringstream ss;
     if (Layout::primaryNode())
@@ -476,6 +476,8 @@ namespace QDP
     }
 
 
+
+    QDPIO::cout << "DML is big endian = " << DML_big_endian() << endl;
     // Free memory -- this is OK< as it should'of been copied
     QIO_string_destroy(oflag.ildgLFN);
     // Cleanup
