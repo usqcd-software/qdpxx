@@ -707,6 +707,15 @@ zero_rep(PVector<T,N,C>& dest)
     zero_rep(dest.elem(i));
 }
 
+template<class T, class MaskType, int N, template<class,int> class C> 
+inline void 
+copy_inner_mask(PVector<T,N,C>& d, const MaskType& mask, const PVector<T,N,C>& s1) 
+{
+  for(int i=0; i < N; ++i)
+    copy_inner_mask(d.elem(i),mask,s1.elem(i));
+}
+
+
 //! dest = (mask) ? s1 : dest
 template<class T, class T1, int N, template<class,int> class C> 
 inline void 
@@ -874,9 +883,9 @@ sum(const PVector<T,N,C>& s1)
   return d;
 }
 
-template<class T, int N, template<class,int> class C>
+template<class T, int N, template<class,int> class C, class MaskType>
 inline typename UnaryReturn<PVector<T,N,C>, FnSum>::Type_t
-sum(const PVector<T,N,C>& s1, const bool mask[INNER_LEN])
+sum(const PVector<T,N,C>& s1, const MaskType& mask)
 {
   typename UnaryReturn<PVector<T,N,C>, FnSum>::Type_t  d;
 

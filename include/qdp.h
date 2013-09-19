@@ -110,7 +110,7 @@ namespace QDP {
 #include "qdp_io.h"
 #include "qdp_stdio.h"
 
-
+#include "qdp_defs.h"
 #include "qdp_subset.h"
 #include "qdp_map.h"
 #include "qdp_stopwatch.h"
@@ -148,7 +148,7 @@ namespace QDP {
 #include "qdp_outersubtype.h"
 
 // Replaces previous ifdef structure. Structure moved into the header file
-#include "qdp_defs.h"
+
 #include "qdp_globalfuncs.h"
 #include "qdp_specializations.h"
 

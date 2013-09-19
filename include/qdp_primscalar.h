@@ -1317,7 +1317,15 @@ colorCrossProduct(const PScalar<T1>& s1, const PScalar<T2>& s2)
 
 
 
-//-----------------------------------------------------------------------------
+
+//! dest = (mask) ? s1 : dest but mask is strictly inner site mask
+template<class T, class MaskType> 
+void
+copy_inner_mask(PScalar<T>& d, const MaskType& mask, const PScalar<T>& s)
+{
+  copy_inner_mask(d.elem(), mask, s.elem());
+}
+
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 
 inline void 
@@ -1325,6 +1333,7 @@ copymask(PScalar<T>& d, const PScalar<T1>& mask, const PScalar<T>& s1)
 {
   copymask(d.elem(),mask.elem(),s1.elem());
 }
+
 
 //! dest  = random  
 template<class T, class T1, class T2>
@@ -1358,9 +1367,9 @@ sum(const PScalar<T>& s1)
   return sum(s1.elem());
 }
 
-template<class T>
+template<class T, class MaskType>
 inline typename UnaryReturn<PScalar<T>, FnSum>::Type_t
-sum(const PScalar<T>& s1, const bool mask[INNER_LEN])
+sum(const PScalar<T>& s1, const MaskType& mask)
 {
   return sum(s1.elem(),mask);
 }

@@ -1422,6 +1422,15 @@ zero_rep(PMatrix<T,N,C>& dest)
       zero_rep(dest.elem(i,j));
 }
 
+//! dest = (mask) ? s1 : dest but mask is strictly inner site mask
+template<class T, class MaskType, int N, template<class,int> class C> 
+void
+copy_inner_mask(PMatrix<T,N,C>& d, const MaskType& mask, const PMatrix<T,N,C>& s)
+{
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      copy_inner_mask(d.elem(i,j),mask,s.elem(i,j));
+}
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1, int N, template<class,int> class C> 
@@ -1600,9 +1609,9 @@ sum(const PMatrix<T,N,C>& s1)
   return d;
 }
 
-template<class T, int N, template<class,int> class C>
+template<class T, int N, template<class,int> class C, class MaskType>
 inline typename UnaryReturn<PMatrix<T,N,C>, FnSum>::Type_t
-sum(const PMatrix<T,N,C>& s1, const bool mask[INNER_LEN])
+sum(const PMatrix<T,N,C>& s1, const MaskType& mask)
 {
   typename UnaryReturn<PMatrix<T,N,C>, FnSum>::Type_t  d;
 

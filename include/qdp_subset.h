@@ -69,7 +69,7 @@ protected:
 
 #if defined (ARCH_PARSCALARVEC)
   // Simple constructor
-  void make(bool rep, int start, int end, multi1d<int>* ind, int cb, Set* set, multi1d<bool>* memb);
+  void make(bool rep, int start, int end, multi1d<int>* ind, int cb, Set* set, multi1d<bool>* memb, int startb, int endb, multi1d<int>* btable, multi1d< ILattice<bool, INNER_LEN> >* mtable);
 #else
   void make(bool rep, int start, int end, multi1d<int>* ind, int cb, Set* set);
 #endif
@@ -89,6 +89,10 @@ private:
 #if defined (ARCH_PARSCALARVEC)
   // Constant time to know whether linear index in this subset
   multi1d<bool>* membertable;
+  int startBlock;
+  int endBlock; 
+  multi1d<int>* blockTable;
+  multi1d<ILattice< bool, INNER_LEN> >* maskTable;
 #endif
 
 public:
@@ -101,6 +105,14 @@ public:
 
   //! The super-set of this subset
   const Set& getSet() const { return *set; }
+
+#if defined (ARCH_PARSCALARVEC) 
+  inline int getStartBlock() const { return startBlock; }
+  inline int getEndBlock() const { return endBlock; }
+  const multi1d<int>& getBlockTable() const { return *blockTable; }
+  const multi1d< ILattice<bool,INNER_LEN> >& getMaskTable() const { return *maskTable; }
+
+#endif
 
   friend class Set;
 };
@@ -145,6 +157,8 @@ protected:
 #if defined (ARCH_PARSCALARVEC)
   //! Array of sitetable arrays
   multi1d<multi1d<bool> > membertables;
+  multi1d<multi1d<int> > blocktables;
+  multi1d<multi1d<ILattice<bool,INNER_LEN> > > masktables;
 #endif
 
 public:

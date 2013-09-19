@@ -534,6 +534,16 @@ zero_rep(PSeed<T>& dest)
     zero_rep(dest.elem(i));
 }
 
+//! dest = (mask) ? s1 : dest
+template<class T, class MaskType> 
+inline void 
+copy_inner_mask(PSeed<T>& d, const MaskType& mask, const PSeed<T>& s1) 
+{
+  for(int i=0; i < 4; ++i)
+    copy_inner_mask(d.elem(i),mask,s1.elem(i));
+}
+
+
 
 //! dest = (mask) ? s1 : dest
 template<class T, class T1> 

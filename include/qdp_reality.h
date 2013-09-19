@@ -1481,6 +1481,16 @@ void copymask(RScalar<T>& d, const RScalar<T1>& mask, const RScalar<T>& s1)
   copymask(d.elem(),mask.elem(),s1.elem());
 }
 
+//------------------------------------------
+//! dest = (mask) ? s1 : dest
+template<class T, class MaskType> 
+inline
+void copy_inner_mask(RScalar<T>& d, const MaskType& mask, const RScalar<T>& s1) 
+{
+  copy_inner_mask(d.elem(),mask,s1.elem());
+}
+
+
 //! dest [float type] = source [int type]
 template<class T, class T1>
 inline
@@ -1616,9 +1626,9 @@ sum(const RScalar<T>& s1)
   return sum(s1.elem());
 }
 
-template<class T>
+template<class T, class MaskType>
 inline typename UnaryReturn<RScalar<T>, FnSum>::Type_t
-sum(const RScalar<T>& s1, const bool mask[INNER_LEN])
+sum(const RScalar<T>& s1, const MaskType& mask)
 {
   return sum(s1.elem(),mask);
 }
@@ -2425,6 +2435,15 @@ void copymask(RComplex<T>& d, const RScalar<T1>& mask, const RComplex<T>& s1)
   copymask(d.imag(),mask.elem(),s1.imag());
 }
 
+//! dest = (mask) ? s1 : dest
+template<class T, class MaskType> 
+inline
+void copy_inner_mask(RComplex<T>& d, const MaskType& mask, const RComplex<T>& s1) 
+{
+  copy_inner_mask(d.real(),mask,s1.real());
+  copy_inner_mask(d.imag(),mask,s1.imag());
+}
+
 
 #if 1
 // Global sum over site indices only
@@ -2443,9 +2462,9 @@ sum(const RComplex<T>& s1)
 	       sum(s1.imag()));
 }
 
-template<class T>
+template<class T, class MaskType >
 inline typename UnaryReturn<RComplex<T>, FnSum>::Type_t
-sum(const RComplex<T>& s1, const bool mask[INNER_LEN])
+sum(const RComplex<T>& s1, const MaskType& mask)
 {
   typedef typename UnaryReturn<RComplex<T>, FnSum>::Type_t  Ret_t;
 

@@ -15,8 +15,10 @@ namespace QDP
   //! Default all subset
   Subset all;
 
+#if 0
   //! Default rb3 subset -- Always unordered
   Set rb3;
+#endif
 
   //! Default 2-checkerboard (red/black) set
   Set rb;
@@ -56,6 +58,9 @@ namespace QDP
     int numSubsets() const {return 2;}
   };
 
+#if 0
+  // Not fussed about this for parscalarvec
+
   //! Function object used for constructing red-black (2) checkerboard in 3d
   class SetRB3Func : public SetFunc
   {
@@ -75,7 +80,7 @@ namespace QDP
 
     int numSubsets() const {return 2;}
   };
-
+#endif
   
   //! Function object used for constructing 32 checkerboard. */
   class Set32CBFunc : public SetFunc
@@ -105,8 +110,10 @@ namespace QDP
     // Initialize the red/black checkerboard
     rb.make(SetRBFunc());
 
+#if 0
     // Initialize the 3d red/black checkerboard.
     rb3.make(SetRB3Func());
+#endif
 
     // Initialize the 32-style checkerboard
     mcb.make(Set32CBFunc());
@@ -128,7 +135,8 @@ namespace QDP
 #if defined (ARCH_PARSCALARVEC)	  
   //-----------------------------------------------------------------------------
   //! Simple constructor called to produce a Subset from inside a Set
-  void Subset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb, Set* _set, multi1d<bool>* _memb)
+  void Subset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb, Set* _set, multi1d<bool>* _memb,
+		    int  _startb, int _endb, multi1d<int>* _btable, multi1d<ILattice<bool,INNER_LEN> >* _mtable)
   {
     ordRep    = _rep;
     startSite = _start;
@@ -137,6 +145,11 @@ namespace QDP
     sitetable = ind;
     set       = _set;
     membertable = _memb;
+    startBlock = _startb;
+    endBlock = _endb;
+    blockTable = _btable;
+    maskTable = _mtable;
+
   }
 #else
   void Subset::make(bool _rep, int _start, int _end, multi1d<int>* ind, int cb, Set* _set)
@@ -161,6 +174,11 @@ namespace QDP
     set       = s.set;
 #if defined (ARCH_PARSCALARVEC)	  
     membertable = s.membertable;
+    startBlock = s.startBlock;
+    endBlock = s.endBlock;
+    blockTable = s.blockTable;
+    maskTable = s.maskTable;
+
 #endif
   }
 

@@ -144,8 +144,16 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 #endif
 
   if (s.hasOrderedRep()) {
+
+#if 0
     const int istart = s.start() >> INNER_LOG;
     const int iend   = s.end()   >> INNER_LOG;
+#endif
+
+    const int istart = s.getStartBlock();
+    const int iend = s.getEndBlock();
+
+
     // #pragma omp parallel shared(istart, iend, num_threads) default(shared) 
 #pragma omp parallel shared(num_threads) default(shared) 
     {
@@ -158,24 +166,29 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 	op(dest.elem(i), forEach(rhs, EvalLeaf3(0, low, high - 1), OpCombine()));
       }
     }       
+
   }
   else {
-    // this part of code is not correct because non-contiguous memory layout
-    // need gather and scatter code for Olattice
-    const int *tab = s.siteTable().slice();
+    // Let us try the new way. 
+    int numBlocks = s.getBlockTable().size();
+    const int *otab = s.getBlockTable().slice();
+    const ILattice<bool,INNER_LEN> *mtab = s.getMaskTable().slice();
 
-#pragma omp parallel shared(tab, num_threads) default(shared)
+#pragma omp parallel shared(otab,mtab,numBlocks,num_threads)
     {
-      num_threads = omp_get_num_threads ();
+      num_threads = omp_get_num_threads();
       int myId = omp_get_thread_num();
-      int low = s.numSiteTable() * myId/num_threads;
-      int high = s.numSiteTable() * (myId + 1)/num_threads;
+      int low = numBlocks * myId/num_threads;
+      int high = numBlocks * (myId + 1)/num_threads;
       
       for(int j = low; j < high; ++j) {
-	int i = tab[j];
-	int outersite = i >> INNER_LOG;
-	int innersite = i & ((1 << INNER_LOG)-1);
-	op(dest.elem(outersite), forEach(rhs, EvalLeaf3(0, low >> INNER_LOG, high >> INNER_LOG), OpCombine()));
+	int outersite = otab[j];
+	ILattice<bool, INNER_LEN> innermask = mtab[j];
+	T tmpdest;
+	// Evaluate into a temporary vector
+	op(tmpdest, forEach(rhs, EvalLeaf3(0, low, high), OpCombine()));
+	copy_inner_mask(dest.elem(outersite),innermask,tmpdest);
+
       }
     }
   }
@@ -252,11 +265,11 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
   }
   else {
     if (s.hasOrderedRep()) {
-      const int istart = s.start() >> INNER_LOG;
-      const int iend   = s.end()   >> INNER_LOG;
+      const int istart = s.getStartBlock();
+      const int iend   = s.getEndBlock();
       
       // #pragma omp parallel shared(istart, iend, num_threads) default(shared)
-#pragma omp parallel shared(num_threads) default(shared)
+#pragma omp parallel shared(num_threads,dest,rhs,op) default(none)
       {
 	num_threads = omp_get_num_threads (); 
 	int myId = omp_get_thread_num();
@@ -273,31 +286,22 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
       
       // NB: This code is yucky because of the site loop.
       // Subsets need to get fixed. See Issue #3 on GitHub.
-      const int* tab = s.siteTable().slice();
+      const int* otab = s.getBlockTable().slice();
+      const ILattice<bool,INNER_LEN>* mtab = s.getMaskTable().slice();
+      int numBlocks = s.getBlockTable().size();
 
-#pragma omp parallel for shared(tab,rhs,dest)       
-      for(int site = 0; site < s.numSiteTable(); site++) {
+#pragma omp parallel for shared(otab,mtab,rhs,dest,numBlocks)       
+      for(int block = 0; block < numBlocks; block++) {
+	
+
 	OScalar<T> tmp_result;
-	int fullsite = tab[site];
-	int osite = fullsite >> INNER_LOG;
-	int isite = fullsite & (INNER_LEN - 1);
+	int osite = otab[block];
+	ILattice<bool,INNER_LEN> mask= mtab[block];
 
-	// Evaluate for the entire osite vector
 	op( tmp_result.elem(), forEach(rhs, EvalLeaf1(osite), OpCombine()));
+	copy_inner_mask(dest.elem(osite),mask,tmp_result.elem());
 
-	// Extract the site we care about 
-	typedef typename UnaryReturn<T, FnGetSite>::Type_t  Site_t;
-	Site_t res_site = getSite(tmp_result.elem(),isite);
-
-	// Only 1 thread must write to dst for the moment
-	// this could result in a race otherwise
-#pragma omp critical
-	{
-	  // Insert into the destination vector at site i
-	  copy_site(dest.elem(osite), isite, res_site);
-	}
-
-      } // site loop
+      } // block loop
     } // else orderedSubset
   } // else maps involved
 
@@ -594,93 +598,6 @@ sum(const QDPExpr<RHS,OScalar<T> >& s1)
  * NOTE: if this implementation does not have  hasOrderedRep() == true,
  * then the implementation can be quite slow
  */
-#if 0
-template<class RHS, class T>
-typename UnaryReturn<OLattice<T>, FnSum>::Type_t
-sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
-{
-  typename UnaryReturn<OLattice<T>, FnSum>::Type_t  d;
-  OScalar<T> tmp;   // Note, expect to have ILattice inner grid
-  int num_threads = 1;
-
-#if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(d, OpAssign(), FnSum(), s1);
-  prof.time -= getClockTime();
-#endif
-
-  // Must initialize to zero since we do not know if the loop will be entered
-  zero_rep(d.elem());
-
-  if (s.hasOrderedRep())
-  {
-    const int istart = s.start() >> INNER_LOG;
-    const int iend   = s.end()   >> INNER_LOG;
-
-    typename UnaryReturn<OLattice<T>, FnSum>::Type_t  *pd = new  typename UnaryReturn<OLattice<T>, FnSum>::Type_t[qdpNumThreads()]; 
-
-#pragma omp parallel shared(pd,istart,iend,num_threads) private(tmp) default(shared)
-    {
-      num_threads = omp_get_num_threads();
-      int myId = omp_get_thread_num();
-      int low = istart + (iend - istart + 1) * myId/num_threads;
-      int high = istart + (iend - istart + 1) * (myId + 1)/num_threads;
-      // zero the partial result
-      zero_rep(pd[myId].elem());
-
-      for(int i=low; i < high; ++i) {
-	tmp.elem() = forEach(s1, EvalLeaf1(i), OpCombine()); // Evaluate to ILattice part
-	pd[myId].elem() += sum(tmp.elem()); // sum as well the ILattice part
-      }
-    }
-    // Now combine all together
-    for (int j = 0; j < num_threads; j++) 
-      d.elem() += sum(pd[j].elem());
-
-    delete []pd;
-  }
-  else
-  {
-    typename UnaryReturn<OLattice<T>, FnSum>::Type_t  *pd = new  typename UnaryReturn<OLattice<T>, FnSum>::Type_t[qdpNumThreads()]; 
-    const int *tab = s.siteTable().slice();
-
-#pragma omp parallel shared(pd,num_threads) private(tmp) default(shared) 
-    {
-      num_threads = omp_get_num_threads();
-      int myId = omp_get_thread_num();
-      int low = s.numSiteTable() * myId/num_threads;
-      int high = s.numSiteTable() * (myId + 1)/num_threads;
-
-      // zero the partial result
-      zero_rep(pd[myId].elem());
-
-      for(int j=low; j < high; ++j) {
-	int i = tab[j];
-	int outersite = i >> INNER_LOG;
-	int innersite = i & (INNER_LEN-1);
-
-	tmp.elem() = forEach(s1, EvalLeaf1(outersite), OpCombine()); // Evaluate to ILattice part
-	pd[myId].elem() += getSite(tmp.elem(),innersite);    // wasteful - only extract a single site worth
-      }
-    }
-    // Now combine all together
-    for (int k = 0; k < num_threads; k++) 
-      d.elem() += sum(pd[k].elem());
-
-    delete []pd;
-  }
-
-  // Do a global sum on the result
-  QDPInternal::globalSum(d);
-  
-#if defined(QDP_USE_PROFILING)   
-  prof.time += getClockTime();
-  prof.count++;
-  prof.print();
-#endif
-
-  return d;
-}
-#endif
 
 #if 1
 template<class RHS, class T>
@@ -840,7 +757,8 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
       for(int j=0; j < omp_get_max_threads(); j++) {
 	zero_rep(pd[j].elem());
       }
-      
+
+#if 0      
       // Get the site table
       const int *tab = s.siteTable().slice();
 
@@ -870,7 +788,24 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 	// Sum the ILattice part under a mask
 	pd[myId].elem() += sum(tmp.elem(), mask);
       }// End for
-      
+ #else 
+ 
+      const int *otab = s.getBlockTable().slice();
+      const ILattice<bool,INNER_LEN>* mtab = s.getMaskTable().slice();
+
+      // Now threads wont overlap on blocks
+#pragma omp parallel for shared(otab,mtab,pd) private(tmp)
+      for(int block=0; block < s.getBlockTable().size(); block++){ 
+	int myId = omp_get_thread_num();
+	int osite = otab[block];
+	ILattice<bool, INNER_LEN> mask = mtab[block];
+	tmp.elem() = forEach(s1, EvalLeaf1(osite), OpCombine());
+	
+	// Sum the ILattice part under a mask
+	pd[myId].elem() += sum(tmp.elem(), mask);
+      }
+
+#endif
       // Now combine it all together
       for (int j = 0; j < omp_get_max_threads(); j++) {
 	d.elem() += sum(pd[j].elem());

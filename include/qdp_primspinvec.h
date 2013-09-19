@@ -579,6 +579,14 @@ zero_rep(PSpinVector<T,N>& dest)
     zero_rep(dest.elem(i));
 }
 
+template<class T, class MaskType, int N>
+inline void
+copy_inner_mask(PSpinVector<T,N>& d, const MaskType& mask, const PSpinVector<T,N>& s1)
+{
+ for(int i=0; i < N; ++i)
+    copy_inner_mask(d.elem(i),mask,s1.elem(i));
+}
+
 //! dest = (mask) ? s1 : dest
 template<class T, class T1, int N> 
 inline void 
@@ -725,9 +733,9 @@ sum(PSpinVector<T,N>& s1)
   return d;
 }
 
-template<class T, int N>
+  template<class T, class MaskType, int N>
 inline typename UnaryReturn<PSpinVector<T,N>, FnSum>::Type_t
-sum(PSpinVector<T,N>& s1, const bool mask[INNER_LEN])
+sum(PSpinVector<T,N>& s1, const MaskType& mask)
 {
   typename UnaryReturn<PSpinVector<T,N>, FnSum>::Type_t  d;
 

@@ -1793,6 +1793,11 @@ void copymask(IScalar<T>& d, const IScalar<T1>& mask, const IScalar<T>& s1)
   copymask(d.elem(),mask.elem(),s1.elem());
 }
 
+
+
+
+
+
 //! dest [float type] = source [int type]
 template<class T, class T1>
 inline
@@ -3637,6 +3642,27 @@ copymask(ILattice<T,N>& d, const ILattice<T1,N>& mask, const ILattice<T,N>& s1)
     copymask(d.elem(i),mask.elem(i),s1.elem(i));
 }
 
+template<class T, int N> 
+inline void
+copy_inner_mask(ILattice<T,N>& d, const ILattice<bool, N>& mask, const IScalar<T>& s1)
+{
+  for(int i=0; i < N; ++i) {
+    if( mask.elem(i) ) {
+      d.elem(i) = s1.elem();
+    }
+  }
+}
+
+template<class T, int N> 
+inline void
+copy_inner_mask(ILattice<T,N>& d, const ILattice<bool, N>& mask, const ILattice<T,N>& s1)
+{
+  for(int i=0; i < N; ++i) {
+    if( mask.elem(i) ) {
+      d.elem(i) = s1.elem(i);
+    }
+  }
+}
 
 //! dest  = random  
 template<class T, int N, class T1, class T2>
@@ -3666,23 +3692,24 @@ sum(const ILattice<T,N>& s1)
   return d;
 }
 
+// Specialization of sum under mask to mask type of ILattice<bool, INNER_LEN>
 template<class T, int N>
 inline typename UnaryReturn<ILattice<T,N>, FnSum>::Type_t
-sum(const ILattice<T,N>& s1, const bool mask[N])
+sum(const ILattice<T,N>& s1, const ILattice<bool,INNER_LEN>& mask)
 {
   typename UnaryReturn<ILattice<T,N>, FnSum>::Type_t  d;
 
   int j=0; 
 
   // Find first true element of mask
-  while( !mask[j] ) j++;
+  while( !mask.elem(j) ) j++;
 
   // Start sum
   d.elem() = s1.elem(j);
 
   // go through rest of elements
   for(int i=j+1; i < N; ++i) { 
-    if( mask[i] ) {
+    if( mask.elem(i) ) {
       d.elem() += s1.elem(i);
     }
   }
