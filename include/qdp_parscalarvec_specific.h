@@ -267,9 +267,16 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
     if (s.hasOrderedRep()) {
       const int istart = s.getStartBlock();
       const int iend   = s.getEndBlock();
-      
-      // #pragma omp parallel shared(istart, iend, num_threads) default(shared)
-#pragma omp parallel shared(num_threads,dest,rhs,op) default(none)
+
+#if 0
+#pragma omp parallel for shared(dest, rhs, op) default(shared)
+      for(int i=istart; i <= iend; i++) {
+	op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+      }
+
+#endif
+
+#pragma omp parallel shared(num_threads,dest,rhs,op)
       {
 	num_threads = omp_get_num_threads (); 
 	int myId = omp_get_thread_num();
@@ -281,6 +288,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 	  op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
 	}
       }
+
     }
     else {
       
@@ -1542,7 +1550,7 @@ struct EvalLeaf1Map
 //      Gather data for x direction
 //-----------------------------------------------------------------------------
 template <class T, class C>
-volatile
+inline
 void gather_along_x (const QDPType<T, C>& a, int old_inner_site, 
 		     const int* offsets,
 		     T& ret)

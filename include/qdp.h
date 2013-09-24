@@ -47,8 +47,10 @@
 // Under gcc, set some attributes
 #if defined(__GNUC__)
 // gcc
-#define QDP_ALIGN8   __attribute__ ((aligned (8)))
-#define QDP_ALIGN16  __attribute__ ((aligned (16)))
+// #define QDP_ALIGN8   __attribute__ ((aligned (8)))
+// #define QDP_ALIGN16  __attribute__ ((aligned (32)))
+#define QDP_ALIGN8
+#define QDP_ALIGN16
 #define QDP_INLINE   __attribute__ ((always_inline))
 // The attributes in QDP_CONST is buggering g++-3.4 
 //#define QDP_CONST    __attribute__ ((const,pure))

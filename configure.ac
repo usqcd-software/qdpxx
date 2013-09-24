@@ -191,6 +191,15 @@ AC_ARG_ENABLE(3dnow,
   [ac_3dnow=0]
 )
 
+
+AC_ARG_ENABLE(avx, 
+  AC_HELP_STRING([--enable-avx],
+   [ Enable some AVX optimizations ]),
+   [ ac_avx=${enableval}],
+   [ ac_avx="no" ]
+)
+
+
 dnl --enable-qcdoc
 AC_ARG_ENABLE(qcdoc,
    AC_HELP_STRING([--enable-qcdoc], 
@@ -208,6 +217,12 @@ AC_ARG_ENABLE(bgl,
       AC_MSG_NOTICE([Enabling BlueGene Specific Optimizations])],
       [ac_bgl_enabled=1]
 )
+
+if test "x${ac_avx}x" == "xyesx"; then
+   AC_DEFINE_UNQUOTED(QDP_USE_AVX, ${ac_avx}, [Enable AVX])
+   AC_MSG_NOTICE([Configuring QDP++ with AVX])
+fi
+
 
 if test ${ac_sse} -eq 1; then
     AC_DEFINE_UNQUOTED(QDP_USE_SSE, ${ac_sse}, [Enable SSE instructions])

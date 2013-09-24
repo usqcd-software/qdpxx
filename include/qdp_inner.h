@@ -42,16 +42,6 @@ public:
   IScalar(const T1& rhs) : F(rhs) {}
 
   //---------------------------------------------------------
-#if 0
-  //! dest = const
-  /*! Fill with an integer constant. Will be promoted to underlying word type */
-  inline
-  IScalar& operator=(const typename WordType<T>::Type_t& rhs)
-    {
-      elem() = rhs;
-      return *this;
-    }
-#endif
 
   //! IScalar = IScalar
   /*! Set equal to another IScalar */
@@ -297,19 +287,6 @@ public:
 	elem(i) = rhs;
     }
 
-  //---------------------------------------------------------
-#if 0
-  //! dest = const
-  /*! Fill with an integer constant. Will be promoted to underlying word type */
-  inline
-  ILattice& operator=(const typename WordType<T>::Type_t& rhs)
-    {
-      for(int i=0; i < N; ++i)
-	elem(i) = rhs;
-
-      return *this;
-    }
-#endif
 
   //---------------------------------------------------------
   //! ILattice = IScalar
@@ -560,12 +537,11 @@ public:
       return *this;
     }
 
-#if 0
+
   // NOTE: intentially avoid defining a copy constructor - let the compiler
   // generate one via the bit copy mechanism. This effectively achieves
   // the first form of the if below (QDP_USE_ARRAY_INITIALIZER) without having
   // to use that syntax which is not strictly legal in C++.
-#endif
 
   //! Deep copy constructor
 #if defined(QDP_USE_ARRAY_INITIALIZER)
@@ -581,7 +557,7 @@ public:
 #endif
       assign_ilattice(F, a);
     }
-#endif
+#endif // if defined(QDP_USE_ARRAY_INITIALIZER)
 
 public:
   //! The backdoor
@@ -616,16 +592,6 @@ inline void add_ilattice(ILattice<T1, N>& dest, const ILattice<T2, N>& rhs)
     dest.elem(i) += rhs.elem(i);
 }
 
-#if 0
-template<typename T, int N1>
-IScalar<T>& IScalar<T>::operator+=(const ILattice<T, N1> rhs)
-{
-  for (int i = 0; i < N1; i++) 
-    elem() += rhs.elem(i);
-
-  return *this;
-}
-#endif
 
 //! Stream input
 template<class T, int N>
@@ -928,13 +894,6 @@ struct BinaryReturn<IScalar<T2>, GammaTypeDP<N>, OpMultiplyGammaTypeDP> {
 
 // Local operations
 
-#if 0
-template<class T1, class T2>
-struct UnaryReturn<IScalar<T2>, OpCast<T1> > {
-  typedef IScalar<typename UnaryReturn<T, OpCast>::Type_t>  Type_t;
-//  typedef T1 Type_t;
-};
-#endif
  
 template<class T1, class T2>
 struct BinaryReturn<IScalar<T1>, IScalar<T2>, OpAddAssign> {
@@ -1029,13 +988,6 @@ struct UnaryReturn<ILattice<T,N>, OpNot> {
 };
 
 
-#if 0
-template<class T1, class T2, int N>
-struct UnaryReturn<ILattice<T2,N>, OpCast<T1>> {
-  typedef ILattice<typename UnaryReturn<T, OpCast>::Type_t, N>  Type_t;
-//  typedef T1 Type_t;
-};
-#endif
 
 template<class T1, class T2, int N>
 struct BinaryReturn<ILattice<T1,N>, ILattice<T2,N>, OpAddAssign> {
@@ -1825,7 +1777,6 @@ copy_site(IScalar<T>& d, int isite, const IScalar<T1>& s1)
 }
 
 
-#if 1
 // This should never be used and is probably an error if needed
 //! gather several inner sites together
 template<class T, class T1>
@@ -1892,7 +1843,6 @@ gather_sites(IScalar<T>& d,
 }
 
 
-#endif
 
 
 //------------------------------------------
@@ -3672,7 +3622,7 @@ fill_random(ILattice<T,N>& d, T1& seed, T2& skewed_seed, const T1& seed_mult)
   fill_random<T1,T2,N>(d.data(), seed, skewed_seed, seed_mult);
 }
 
-#if 1
+
 // Global sum over site indices only
 template<class T, int N>
 struct UnaryReturn<ILattice<T,N>, FnSum> {
@@ -3716,7 +3666,7 @@ sum(const ILattice<T,N>& s1, const ILattice<bool,INNER_LEN>& mask)
 
   return d;
 }
-#endif
+
 
 
 //--------------------------------------------
@@ -4022,16 +3972,12 @@ where(const IScalar<T1>& a, const IScalar<T2>& b, const ILattice<T3,N>& c)
 } // namespace QDP
 
 // Disable this for now, and make more general
-#if 0
-#if !defined(__ICC)
-/* Intel compiler will do wonder with auto vectorization */
-#if defined(__AVX__)
+#if defined(QDP_USE_AVX)
+#warning "Using AVX Inner qdp_innner_avx.h"
 #include "qdp_inner_avx.h"
-#else
+#elif defined(QDP_USE_SSE)
+#if 0
 #include "qdp_inner_sse.h"
-#endif
-
-#endif
 #endif // if 0
-
+#endif // elif defined QDP_USE_SSE/QDP_USE_AVX
 #endif

@@ -75,6 +75,9 @@
 /* Enable 3DNOW instructions */
 #undef QDP_USE_3DNOW
 
+/* Enable AVX */
+#undef QDP_USE_AVX
+
 /* Donot use Bagel QDP library for BLAS */
 #undef QDP_USE_BAGEL_QDP
 

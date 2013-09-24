@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
   LatticeColorMatrix m1, m2;
   m1 = zero;
   gaussian(m2);
-
+  QDPIO::cout << "Here 1" << endl << flush;
 #if defined(ARCH_SCALARVEC) || defined(ARCH_PARSCALARVEC)
   int istart = all.start() >> INNER_LOG;
   int iend = all.end() >> INNER_LOG;
@@ -82,12 +82,20 @@ int main(int argc, char *argv[])
     m1.elem(i) -= m2.elem(i);
   }
 #endif
-
+  QDPIO::cout << "Here 2" << endl << flush;
   LatticeColorMatrix m3=zero;
   m3 -= m2;
+
+
+  QDPIO::cout << "Here 3" << endl << flush;
+
   LatticeColorMatrix diff_m;
   diff_m = m3 - m1;
+
+  QDPIO::cout << "Here 4" << endl << flush;
   QDPIO::cout << "Diff M=M = " << norm2(diff_m) << endl;
+  QDPIO::cout << "Here 5" << endl << flush;
+
   QDP::StopWatch swatch;
   swatch.reset();
   double time = 0;
