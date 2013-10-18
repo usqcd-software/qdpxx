@@ -71,6 +71,7 @@ void Set::make(const SetFunc& fun)
   sitetables.resize(nsubset_indices);
 
   // Loop over linear sites determining their color
+#pragma omp parallel for
   for(int linear=0; linear < nodeSites; ++linear)
   {
     multi1d<int> coord = Layout::siteCoords(nodeNumber, linear);
@@ -96,13 +97,14 @@ void Set::make(const SetFunc& fun)
     // The coloring of this linear site
     lat_color[linear] = icolor;
   }
-
-
+  
+  
   /*
    * Loop over the lexicographic sites.
    * This implementation of the Set will always use a
    * sitetable.
    */
+#pragma omp parallel for
   for(int cb=0; cb < nsubset_indices; ++cb)
   {
     // Always construct the sitetables. 
