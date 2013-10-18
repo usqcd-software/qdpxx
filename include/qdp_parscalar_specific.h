@@ -654,10 +654,22 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
   zero_rep(d.elem());
 
   const int *tab = s.siteTable().slice();
+
+#pragma omp parallel
+	{
+		typename UnaryReturn<OLattice<T>, FnSum>::Type_t dthread;
+		zero_rep(dthread.elem());
+
+#pragma omp for nowait
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
-    d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+			dthread.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+		}
+#pragma omp critical
+		{
+			d.elem() += dthread.elem();
+		}
   }
 
   // Do a global sum on the result
@@ -693,8 +705,20 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
   zero_rep(d.elem());
   const int nodeSites = Layout::sitesOnNode();
 
+#pragma omp parallel
+	{
+		typename UnaryReturn<OLattice<T>, FnSum>::Type_t	dthread;
+		zero_rep(dthread.elem());
+		
+#pragma omp for nowait
   for(int i=0; i < nodeSites; ++i) 
-    d.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+			dthread.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
+			
+#pragma omp critical
+		{
+			d.elem() += dthread.elem();
+		}
+	}
 
   // Do a global sum on the result
   QDPInternal::globalSum(d);
