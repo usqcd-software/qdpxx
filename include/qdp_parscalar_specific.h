@@ -398,6 +398,7 @@ void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s
   const Subset& s = d.subset();
 
   const int *tab = s.siteTable().slice();
+#pragma omp parallel for
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
@@ -410,6 +411,8 @@ template<class T1, class T2>
 void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
   int nodeSites = Layout::sitesOnNode();
+	
+#pragma omp parallel for
   for(int i=0; i < nodeSites; ++i) 
     copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
