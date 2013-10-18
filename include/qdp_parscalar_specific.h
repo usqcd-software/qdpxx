@@ -503,6 +503,7 @@ void gaussian(OLattice<T>& d, const Subset& s)
   random(r2,s);
 
   const int *tab = s.siteTable().slice();
+#pragma omp parallel for
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
