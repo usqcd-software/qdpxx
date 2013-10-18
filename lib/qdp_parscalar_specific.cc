@@ -86,12 +86,12 @@ namespace QDP {
     int cnt_srcenodes = 0;
     for(int i=0; i < srcenodes_tmp.size(); ++i)
       if (srcenodes_tmp[i] != my_node)
-	++cnt_srcenodes;
+				++cnt_srcenodes;
 
     int cnt_destnodes = 0;
     for(int i=0; i < destnodes_tmp.size(); ++i)
       if (destnodes_tmp[i] != my_node)
-	++cnt_destnodes;
+				++cnt_destnodes;
 
 #if QDP_DEBUG >= 3
     // Debugging
@@ -133,11 +133,11 @@ namespace QDP {
   
     for(int i=0, j=0; i < srcenodes_tmp.size(); ++i)
       if (srcenodes_tmp[i] != my_node)
-	srcenodes[j++] = srcenodes_tmp[i];
+				srcenodes[j++] = srcenodes_tmp[i];
 
     for(int i=0, j=0; i < destnodes_tmp.size(); ++i)
       if (destnodes_tmp[i] != my_node)
-	destnodes[j++] = destnodes_tmp[i];
+				destnodes[j++] = destnodes_tmp[i];
 
 #if QDP_DEBUG >= 3
     // Debugging
@@ -158,27 +158,27 @@ namespace QDP {
 		// fast so no threading necessary
     for(int linear=0; linear < nodeSites; ++linear)
     {
-      int this_node = srcnode[linear];
+			int this_node = srcnode[linear];
       if (this_node != my_node)
-	for(int i=0; i < srcenodes_num.size(); ++i)
-	{
-	  if (srcenodes[i] == this_node)
-	  {
-	    srcenodes_num[i]++;
-	    break;
-	  }
-	}
+				for(int i=0; i < srcenodes_num.size(); ++i)
+				{
+					if (srcenodes[i] == this_node)
+					{
+						srcenodes_num[i]++;
+						break;
+					}
+				}
 
       int that_node = dstnode[linear];
       if (that_node != my_node)
-	for(int i=0; i < destnodes_num.size(); ++i)
-	{
-	  if (destnodes[i] == that_node)
-	  {
-	    destnodes_num[i]++;
-	    break;
-	  }
-	}
+			for(int i=0; i < destnodes_num.size(); ++i)
+			{
+				if (destnodes[i] == that_node)
+				{
+					destnodes_num[i]++;
+					break;
+				}
+			}
     }	// end for linear
   
 
@@ -223,7 +223,7 @@ namespace QDP {
       int fline = Layout::linearSiteIndex(fcoord);
 
       if (fnode == my_node)
-	soffsets[si++] = fline;
+				soffsets[si++] = fline;
     }
 
 #if QDP_DEBUG >= 3
