@@ -1496,6 +1496,7 @@ inline void
 QDP_extract(multi1d<OScalar<T> >& dest, const OLattice<T>& src, const Subset& s)
 {
   const int *tab = s.siteTable().slice();
+#pragma omp parallel for
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
@@ -1515,6 +1516,7 @@ inline void
 QDP_insert(OLattice<T>& dest, const multi1d<OScalar<T> >& src, const Subset& s)
 {
   const int *tab = s.siteTable().slice();
+#pragma omp parallel for
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
