@@ -25,6 +25,7 @@ namespace Layout
     if (mu < 0 || mu >= Nd)
       QDP_error_exit("dimension out of bounds");
 
+#pragma omp parallel for
     for(int i=0; i < nodeSites; ++i) 
     {
       Integer cc = Layout::siteCoords(nodeNumber,i)[mu];
