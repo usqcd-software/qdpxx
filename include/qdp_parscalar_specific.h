@@ -449,19 +449,27 @@ template<class T>
 void 
 random(OLattice<T>& d, const Subset& s)
 {
+	const int *tab = s.siteTable().slice();
+
+#pragma omp parallel
+	{
   Seed seed;
   Seed skewed_seed;
-
-  const int *tab = s.siteTable().slice();
+#pragma omp for // need the barrier to avoid that RNG::ran_seed is changed too early!
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
     seed = RNG::ran_seed;
+
     skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
     fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
   }
 
+#pragma omp critical (random)
+		{
   RNG::ran_seed = seed;  // The seed from any site is the same as the new global seed
+}
+	}
 }
 
 
