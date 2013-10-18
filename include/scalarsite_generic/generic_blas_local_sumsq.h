@@ -16,24 +16,18 @@ inline
 void local_sumsq(DOUBLE *Out, REAL  *In, int n_3vec)
 {
   register double result;
-  
   register double i1;
-  register double i2;
-  register double i3;
-  register double i4;
-  register double i5;
-  register double i6;
 
   int len = 24*n_3vec;
   
   // QDPIO::cout << "Len = " << len << endl;
   int counter;
-  int vecptr=0;
   result = 0;
 
   if( n_3vec > 0 ) { 
+#pragma omp parallel for reduction(+:result) private(i1)
     for(counter=0; counter < len; counter++) {
-      i1 = (double)In[vecptr++];
+      i1 = (double)In[counter];
       result += i1*i1;
     }
   }
