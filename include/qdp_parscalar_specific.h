@@ -541,6 +541,8 @@ inline
 void zero_rep(OLattice<T>& dest, const Subset& s) 
 {
   const int *tab = s.siteTable().slice();
+
+#pragma omp parallel for
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
@@ -563,9 +565,10 @@ void zero_rep(OSubLattice<T> dd)
 //! dest  = 0 
 template<class T> 
 void zero_rep(OLattice<T>& dest) 
-
 {
   const int nodeSites = Layout::sitesOnNode();
+
+#pragma omp parallel for
   for(int i=0; i < nodeSites; ++i) 
     zero_rep(dest.elem(i));
 }
