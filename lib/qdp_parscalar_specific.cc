@@ -42,6 +42,7 @@ namespace QDP {
     const int my_node = Layout::nodeNumber();
 
     // Loop over the sites on this node
+#pragma omp parallel for
     for(int linear=0; linear < nodeSites; ++linear)
     {
       // Get the true lattice coord of this linear site index
@@ -72,7 +73,7 @@ namespace QDP {
 	       bcoord[0], bcoord[1], bcoord[2], bcoord[3],
 	       goffsets[linear]);
 #endif
-    }
+    }	// end for-loop
 
     // Return a list of the unique nodes in the list
     // NOTE: my_node may be included as a unique node, so one extra
@@ -103,7 +104,6 @@ namespace QDP {
     QDP_info("cnt_srcenodes = %d", cnt_srcenodes);
     QDP_info("cnt_destnodes = %d", cnt_destnodes);
 #endif
-
 
     // A sanity check - both counts must be either 0 or non-zero
     if (cnt_srcenodes > 0 && cnt_destnodes == 0)
@@ -148,7 +148,6 @@ namespace QDP {
       QDP_info("destnodes(%d) = %d",i,destnodes(i));
 #endif
 
-
     // Run through the lists and find the number of each unique node
     srcenodes_num.resize(srcenodes.size());
     destnodes_num.resize(destnodes.size());
@@ -156,6 +155,7 @@ namespace QDP {
     srcenodes_num = 0;
     destnodes_num = 0;
 
+		// fast so no threading necessary
     for(int linear=0; linear < nodeSites; ++linear)
     {
       int this_node = srcnode[linear];
@@ -179,7 +179,7 @@ namespace QDP {
 	    break;
 	  }
 	}
-    }
+    }	// end for linear
   
 
 #if QDP_DEBUG >= 3
