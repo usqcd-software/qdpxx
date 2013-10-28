@@ -973,13 +973,26 @@ norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
 	zero_rep(d.elem());
 
 	const int *tab = s.siteTable().slice();
+
 	for(int n=0; n < s1.size(); ++n)
 	{
 		const OLattice<T>& ss1 = s1[n];
-		for(int j=0; j < s.numSiteTable(); ++j) 
+
+		#pragma omp parallel
 		{
-			int i = tab[j];
-			d.elem() += localNorm2(ss1.elem(i));
+			typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t	dthread;
+			zero_rep(dthread.elem());
+
+			#pragma omp for
+			for(int j=0; j < s.numSiteTable(); ++j)
+			{
+				int i = tab[j];
+				dthread.elem() += localNorm2(ss1.elem(i));
+			}
+			#pragma omp critical
+			{
+				d.elem() += dthread.elem();
+			}
 		}
 	}
 
@@ -1089,10 +1102,22 @@ innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s
 	{
 		const OLattice<T1>& ss1 = s1[n];
 		const OLattice<T2>& ss2 = s2[n];
-		for(int j=0; j < s.numSiteTable(); ++j) 
+		
+		#pragma omp parallel
 		{
-			int i = tab[j];
-			d.elem() += localInnerProduct(ss1.elem(i),ss2.elem(i));
+			typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct>::Type_t	 dthread;
+			zero_rep(dthread.elem());
+		
+			#pragma omp for
+			for(int j=0; j < s.numSiteTable(); ++j) 
+			{
+				int i = tab[j];
+				dthread.elem() += localInnerProduct(ss1.elem(i),ss2.elem(i));
+			}
+			#pragma omp critical
+			{
+				d.elem() += dthread.elem();
+			}
 		}
 	}
 
@@ -1202,10 +1227,22 @@ innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> 
 	{
 		const OLattice<T1>& ss1 = s1[n];
 		const OLattice<T2>& ss2 = s2[n];
-		for(int j=0; j < s.numSiteTable(); ++j) 
+		
+		#pragma omp parallel
 		{
-			int i = tab[j];
-			d.elem() += localInnerProductReal(ss1.elem(i),ss2.elem(i));
+			typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProductReal>::Type_t	 dthread;
+			zero_rep(dthread.elem());
+			
+			#pragma omp for
+			for(int j=0; j < s.numSiteTable(); ++j) 
+			{
+				int i = tab[j];
+				dthread.elem() += localInnerProductReal(ss1.elem(i),ss2.elem(i));
+			}
+			#pragma omp critical
+			{
+				d.elem() += dthread.elem();
+			}
 		}
 	}
 
