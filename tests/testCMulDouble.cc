@@ -52,7 +52,7 @@ typedef union {
 #define CCMUL(z,x,y)		\
   { \
     __m128d t1,t2,t3; \
-    VD t4 = { (double)1,(double)-1 };		\
+    __m128d t4 = _mm_set_pd((double)(-1),(double)1);	\
     t1 = _mm_mul_pd(x,y); \
     t2 = _mm_shuffle_pd(t1,t1,0x1); \
     t3 = _mm_shuffle_pd(y,y,0x1);\
@@ -61,13 +61,14 @@ typedef union {
     t3 = _mm_shuffle_pd(t2,t2,0x1); \
     t3 = _mm_add_pd(t2,t3); \
     z= _mm_shuffle_pd(z,t3,0x2); \
-    z= _mm_mul_pd(z,t4.v); \
+    z= _mm_mul_pd(z,t4); \
   }
+
 
 #define CCMADD(z,x,y)				\
   { \
     __m128d t1,t2,t3,t4; \
-    VD t5 = { (double)1,(double)-1 };		\
+    __m128d t5 = _mm_set_pd( (double)(-1),(double)1 );	\
     t1 = _mm_mul_pd(x,y); \
     t2 = _mm_shuffle_pd(t1,t1,0x1); \
     t3 = _mm_shuffle_pd(y,y,0x1);\
@@ -76,7 +77,7 @@ typedef union {
     t3 = _mm_shuffle_pd(t2,t2,0x1); \
     t3 = _mm_add_pd(t2,t3); \
     t4= _mm_shuffle_pd(t4,t3,0x2); \
-    t4= _mm_mul_pd(t5.v, t4); \
+    t4= _mm_mul_pd(t5, t4); \
     z = _mm_add_pd(z,t4); \
   }
 
@@ -126,14 +127,14 @@ typedef union {
 #define CCMUL(z,x,y)		\
   { \
     __m128d t1; \
-    VD t2 = {(double)1,(double)-1}; \
+    __m128d t2 = _mm_set_pd( (double)(-1),(double)1 ) ;	\
     t1 = _mm_mul_pd((x),(y)); \
     (z) = _mm_hsub_pd(t1,t1);			\
     t1 = _mm_shuffle_pd((y),(y),0x1);\
     t1 = _mm_mul_pd((x),t1); \
     t1 = _mm_hadd_pd(t1,t1); \
     (z)= _mm_shuffle_pd((z),t1,0x2);		\
-    (z)= _mm_mul_pd((z),t2.v); \
+    (z)= _mm_mul_pd((z),t2); \
   }
 
 #define CMADD(z,x,y)				\
@@ -151,14 +152,14 @@ typedef union {
 #define CCMADD(z,x,y)				\
   { \
     __m128d t1,t2;	      \
-    VD t3={(double)1, (double)-1}; \
+    __m128d t3= _mm_set_pd ( (double)(-1), (double)1 );	\
     t1 = _mm_mul_pd((x),(y)); \
     t1 = _mm_hsub_pd(t1,t1); \
     t2 = _mm_shuffle_pd((y),(y),0x1);\
     t2 = _mm_mul_pd((x),t2); \
     t2 = _mm_hadd_pd(t2,t2); \
     t1= _mm_shuffle_pd(t1,t2,0x2);		\
-    t1= _mm_mul_pd(t3.v,t1); \
+    t1= _mm_mul_pd(t3,t1); \
     (z) = _mm_add_pd((z),t1);			\
   }
 
@@ -348,7 +349,6 @@ testCCMul::run()
   CCMUL(z_v.v, x_v.v, y_v.v);
 
   DComplex z2=cmplx(Real(z_v.d[0]), Real(z_v.d[1]));
-
   double realdiff = fabs(toDouble( real(z2-z1) ));
   QDPIO::cout << endl << "Real diff = " << realdiff << endl;
 
