@@ -29,7 +29,7 @@ public:
   inline
   PColorVector& operator=(const PColorVector<T1,N>& rhs) 
     {
-      assign(rhs);
+      this->assign(rhs);
       return *this;
     }
 

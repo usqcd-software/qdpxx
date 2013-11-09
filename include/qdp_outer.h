@@ -533,12 +533,6 @@ struct CreateLeaf<OLattice<T> >
 // evaluated at the point.
 //-----------------------------------------------------------------------------
 
-// Empty leaf functor tag
-struct ElemLeaf
-{
-  inline ElemLeaf() { }
-};
-
 template<class T>
 struct LeafFunctor<OScalar<T>, ElemLeaf>
 {

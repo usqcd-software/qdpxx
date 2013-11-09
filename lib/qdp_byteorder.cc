@@ -7,6 +7,7 @@
 //     2  = little-endian (sun, ibm, hp, etc)
 //
 
+#include <iostream>
 #include <cstdlib>
 #include "qdp_byteorder.h"
 
@@ -166,7 +167,7 @@ namespace QDPUtil
     break;
 
     default:
-      fprintf(stderr,"%s: unsupported word size = %d\n",__func__,size);
+      std::cerr << __func__ << ": unsupported word size = " << size << "\n";
       exit(1);
     }
   }

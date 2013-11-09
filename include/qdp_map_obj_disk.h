@@ -8,7 +8,7 @@
 #define __qdp_map_obj_disk_h__
 
 #include "qdp_map_obj.h"
-#include <tr1/unordered_map>
+#include <unordered_map>
 
 namespace QDP
 {
@@ -130,7 +130,7 @@ namespace QDP
     };
 
     //! Type for the map
-    typedef std::tr1::unordered_map<std::string, priv_pos_type_t> MapType_t;
+    typedef std::unordered_map<std::string, priv_pos_type_t> MapType_t;
 
     //! State 
     enum State {INIT, UNCHANGED, MODIFIED};

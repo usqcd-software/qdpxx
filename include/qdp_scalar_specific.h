@@ -1363,9 +1363,58 @@ QDP_insert(OLattice<T>& dest, const multi1d<OScalar<T> >& src, const Subset& s)
 
 
 //-----------------------------------------------------------------------------
-// Forward declaration
-struct FnMap;
+// This is the PETE version of a map, namely return an expression
+struct FnMap
+{
+  PETE_EMPTY_CONSTRUCTORS(FnMap)
 
+  const int *goff;
+  FnMap(const int *goffsets): goff(goffsets)
+    {
+//    fprintf(stderr,"FnMap(): goff=0x%x\n",goff);
+    }
+  
+  template<class T>
+  inline typename UnaryReturn<T, FnMap>::Type_t
+  operator()(const T &a) const
+  {
+    return (a);
+  }
+};
+
+
+#if defined(QDP_USE_PROFILING)   
+template <>
+struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
+{ 
+  static void visit(FnMap op, PrintTag t) 
+    { t.os_m << "shift"; }
+};
+#endif
+
+
+// Specialization of ForEach deals with maps. 
+template<class A, class CTag>
+struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
+{
+  typedef typename ForEach<A, EvalLeaf1, CTag>::Type_t TypeA_t;
+  typedef typename Combine1<TypeA_t, FnMap, CTag>::Type_t Type_t;
+  inline static
+  Type_t apply(const UnaryNode<FnMap, A> &expr, const EvalLeaf1 &f, 
+    const CTag &c) 
+  {
+    EvalLeaf1 ff(expr.operation().goff[f.val1()]);
+//  fprintf(stderr,"ForEach<Unary<FnMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
+
+    return Combine1<TypeA_t, FnMap, CTag>::
+      combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),
+              expr.operation(), c);
+  }
+};
+
+
+
+//-----------------------------------------------------------------------------
 //! General permutation map class for communications
 class Map
 {
@@ -1431,57 +1480,6 @@ private:
 private:
   //! Offset table used for communications. 
   multi1d<int> goffsets;
-};
-
-
-
-// This is the PETE version of a map, namely return an expression
-struct FnMap
-{
-  PETE_EMPTY_CONSTRUCTORS(FnMap)
-
-  const int *goff;
-  FnMap(const int *goffsets): goff(goffsets)
-    {
-//    fprintf(stderr,"FnMap(): goff=0x%x\n",goff);
-    }
-  
-  template<class T>
-  inline typename UnaryReturn<T, FnMap>::Type_t
-  operator()(const T &a) const
-  {
-    return (a);
-  }
-};
-
-
-#if defined(QDP_USE_PROFILING)   
-template <>
-struct TagVisitor<FnMap, PrintTag> : public ParenPrinter<FnMap>
-{ 
-  static void visit(FnMap op, PrintTag t) 
-    { t.os_m << "shift"; }
-};
-#endif
-
-
-// Specialization of ForEach deals with maps. 
-template<class A, class CTag>
-struct ForEach<UnaryNode<FnMap, A>, EvalLeaf1, CTag>
-{
-  typedef typename ForEach<A, EvalLeaf1, CTag>::Type_t TypeA_t;
-  typedef typename Combine1<TypeA_t, FnMap, CTag>::Type_t Type_t;
-  inline static
-  Type_t apply(const UnaryNode<FnMap, A> &expr, const EvalLeaf1 &f, 
-    const CTag &c) 
-  {
-    EvalLeaf1 ff(expr.operation().goff[f.val1()]);
-//  fprintf(stderr,"ForEach<Unary<FnMap>>: site = %d, new = %d\n",f.val1(),ff.val1());
-
-    return Combine1<TypeA_t, FnMap, CTag>::
-      combine(ForEach<A, EvalLeaf1, CTag>::apply(expr.child(), ff, c),
-              expr.operation(), c);
-  }
 };
 
 

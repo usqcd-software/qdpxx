@@ -8,7 +8,7 @@
 
 #include "qdp_map_obj.h"
 #include <vector>
-#include <tr1/unordered_map>
+#include <unordered_map>
 
 namespace QDP
 {
@@ -166,7 +166,7 @@ namespace QDP
 			
   protected:  
     //! Map type convenience
-    typedef std::tr1::unordered_map<std::string, V> MapType_t;
+    typedef std::unordered_map<std::string, V> MapType_t;
     
     //! Map of objects
     mutable MapType_t src_map;

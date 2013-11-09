@@ -102,7 +102,7 @@ namespace QDP
     void keys(std::vector<K>& keys_) const {
       keys_.clear();
 
-      std::tr1::unordered_map<std::string,int> unique_it;
+      std::unordered_map<std::string,int> unique_it;
 
       for(int i=0; i < dbs_.size(); ++i) 
       {
@@ -118,7 +118,7 @@ namespace QDP
 	}
       }
 
-      for(typename std::tr1::unordered_map<std::string,int>::const_iterator k=unique_it.begin(); k != unique_it.end(); ++k)
+      for(typename std::nordered_map<std::string,int>::const_iterator k=unique_it.begin(); k != unique_it.end(); ++k)
       {
 	BinaryBufferReader bin(k->first);
 	K key;

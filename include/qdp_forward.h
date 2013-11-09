@@ -94,7 +94,10 @@ namespace QDP
   template<class T> struct DoublePrecType;
 
   // Empty leaf functor tag
-  struct ElemLeaf;
+  struct ElemLeaf
+  {
+    inline ElemLeaf() { }
+  };
 
   // Empty print tag
   struct PrintTag;
