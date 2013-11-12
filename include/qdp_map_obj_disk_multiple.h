@@ -118,7 +118,7 @@ namespace QDP
 	}
       }
 
-      for(typename std::nordered_map<std::string,int>::const_iterator k=unique_it.begin(); k != unique_it.end(); ++k)
+      for(typename std::unordered_map<std::string,int>::const_iterator k=unique_it.begin(); k != unique_it.end(); ++k)
       {
 	BinaryBufferReader bin(k->first);
 	K key;
