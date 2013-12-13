@@ -165,18 +165,18 @@ namespace ThreadReductions {
 
 // Include SSE code here if applicable
 #if QDP_USE_SSE == 1
-#include "qdp_scalarsite_sse.h"
+	#include "qdp_scalarsite_sse.h"
 #elif QDP_USE_BAGEL_QDP == 1
 // USE_BAGEL_QDP
-#include "qdp_scalarsite_bagel_qdp.h"
+	#include "qdp_scalarsite_bagel_qdp.h"
 #else
 // Use Generics only
-#ifdef QDP_USE_GENERIC_OPTS
-#warning "Using generics"
-#include "qdp_scalarsite_generic.h"
-#else
-#warning "Not using generics"
-#endif
+	#ifdef QDP_USE_GENERIC_OPTS
+		#warning "Using generics"
+		#include "qdp_scalarsite_generic.h"
+	#else
+		#warning "Not using generics"
+	#endif
 #endif
 
 #elif defined(ARCH_PARSCALAR)
@@ -185,18 +185,21 @@ namespace ThreadReductions {
 #include "qdp_parscalar_specific.h"
 
 // Include optimized code here if applicable
-#if QDP_USE_SSE == 1
-#include "qdp_scalarsite_sse.h"
+#ifdef __MIC
+	#warning "Using mic specifics"
+	#include "mic_specific.h"
+#elif QDP_USE_SSE == 1
+	#include "qdp_scalarsite_sse.h"
 #elif QDP_USE_BAGEL_QDP == 1
 // Use BAGEL_QDP 
-#include "qdp_scalarsite_bagel_qdp.h"
+	#include "qdp_scalarsite_bagel_qdp.h"
 #else
 // Use generics
-#ifdef QDP_USE_GENERIC_OPTS
-#include "qdp_scalarsite_generic.h"
-#else 
-#warning "Not using generics"
-#endif
+	#ifdef QDP_USE_GENERIC_OPTS
+		#include "qdp_scalarsite_generic.h"
+	#else
+		#warning "Not using generics"
+	#endif
 #endif
 
 #elif defined(ARCH_SCALARVEC)
