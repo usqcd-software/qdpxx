@@ -118,6 +118,12 @@ SSEVEC_HDRS = qdp_scalarvecsite_sse.h \
 	$(ssevecdir)/qdp_scalarvecsite_sse_linalg.h \
 	$(ssevecdir)/qdp_scalarvecsite_sse_blas.h
 
+# mic specific
+micdir = mic_specific
+
+MIC_HDRS = mic_specific.h \
+	$(micdir)/mic_MatMult.h \
+	$(micdir)/mic_LatMatMult.h
 
 # QCDOC stuff
 qcdocdir = scalarsite_qcdoc
@@ -216,7 +222,9 @@ nobase_include_HEADERS = \
 		$(QCDOC_HDRS) \
 		$(SSESITE_HDRS) \
 		$(SSEVEC_HDRS) \
-	        $(BAGEL_HDRS)
+	        $(BAGEL_HDRS) \
+	        $(MIC_HDRS)
+
 
 nodist_include_HEADERS = qdp_config_internal.h
 
