@@ -19,7 +19,7 @@ AM_CXXFLAGS = $(INCFLAGS) @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@  
 lib_LIBRARIES = libqdp.a
 
 ## Base set of sources and conditionally included sources
-libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc qdp.cc \
+libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	qdp_layout.cc qdp_io.cc qdp_byteorder.cc qdp_util.cc \
 	qdp_stdio.cc \
         qdp_profile.cc qdp_strnlen.cc qdp_crc32.cc \
