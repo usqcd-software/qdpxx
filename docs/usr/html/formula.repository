@@ -1,0 +1,29 @@
+\form#0:$\otimes$
+\form#1:\[ {\rm B}_\alpha^{i}(x) = {\rm U}^{i j}(x) * {\rm A}_\alpha^{j}(x) \]
+\form#2:$\alpha$
+\form#3:$\gamma$
+\form#4:$\pm 1$
+\form#5:$\mu$
+\form#6:$ r(x) = a(x+\hat \mu)$
+\form#7:$\gamma_\mu$
+\form#8:\[\mathrm{target}^{k' k}_{\alpha\beta} = \epsilon^{i j k}\epsilon^{i' j' k'}* \mbox{source1}^{i i'}_{\rho\alpha}* \mbox{source2}^{j j'}_{\rho\beta}\]
+\form#9:\[\mbox{target}^{k' k}_{\alpha\beta} = \epsilon^{i j k}\epsilon^{i' j' k'}*\mbox{source1}^{i i'}_{\rho\alpha}*\mbox{source2}^{j j'}_{\beta\rho}\]
+\form#10:\[\mbox{target}^{k' k}_{\alpha\beta} = \epsilon^{i j k}\epsilon^{i' j' k'}*\mbox{source1}^{i i'}_{\alpha\rho}*\mbox{source2}^{j j'}_{\rho\beta}\]
+\form#11:\[\mbox{target}^{k' k}_{\alpha\beta} = \epsilon^{i j k}\epsilon^{i' j' k'}*\mbox{source1}^{i i'}_{\rho\rho}*\mbox{source2}^{j j'}_{\alpha\beta}\]
+\form#12:\[\mbox{target}^{k' k}_{\alpha\beta} = \epsilon^{i j k}\epsilon^{i' j' k'}*\mbox{source1}^{i i'}_{\alpha\beta}*\mbox{source2}^{j j'}_{\rho\rho}\]
+\form#13:\[ \mbox{target} = \epsilon^{i j k}\epsilon^{i' j' k'}* \mbox{source1}^{i i'}* \mbox{source2}^{j j'}*\mbox{source3}^{k k'} \]
+\form#14:\[ \mbox{target} = \epsilon^{i j k}* \mbox{source1}^{i}* \mbox{source2}^{j}*\mbox{source3}^{k} \]
+\form#15:$r = (1 + p\gamma_d)a$
+\form#16:$r = \gamma_d * a$
+\form#17:$r = a * \gamma_d$
+\form#18:$r = \sum |a|^2$
+\form#19:$r = \sum a^\dagger \cdot b$
+\form#20:$r = \sum a$
+\form#21:$r = max_x a(x)$
+\form#22:$r = min_x a(x)$
+\form#23:\[ \begin{array}{lccc} \gamma_0\quad\quad& \left(\begin{array}{rrrr} 0&0&0&i\\ 0&0&i&0\\ 0&-i&0&0\\ -i&0&0&0\\ \end{array}\right)\quad & \left(\begin{array}{rr} 0&i\sigma^1\\ -i\sigma^1&0 \end{array}\right)\quad\quad & -\sigma^2\!\otimes\!\sigma^1\\ \gamma_1\quad\quad& \left(\begin{array}{rrrr} 0&0&0&-1\\ 0&0&1&0\\ 0&1&0&0\\ -1&0&0&0\\ \end{array}\right)\quad & \left(\begin{array}{rr} 0&-i\sigma^2\\ i\sigma^2&0 \end{array}\right)\quad\quad & \sigma^2\!\otimes\!\sigma^2\\ \gamma_2\quad\quad& \left(\begin{array}{rrrr} 0&0&i&0\\ 0&0&0&-i\\ -i&0&0&0\\ 0&i&0&0\\ \end{array}\right)\quad & \left(\begin{array}{rr} 0&i\sigma^3\\ -i\sigma^3&0 \end{array}\right)\quad\quad & -\sigma^2\!\otimes\!\sigma^3\\ \gamma_3\quad\quad& \left(\begin{array}{rrrr} 0&0&1&0\\ 0&0&0&1\\ 1&0&0&0\\ 0&1&0&0\\ \end{array}\right)\quad & \left(\begin{array}{rr} 0&\mathbf{1}\\ \mathbf{1}&0 \end{array}\right)\quad\quad & \sigma^1\!\otimes\!1\\ \end{array} \]
+\form#24:\[ \Gamma(n) = \gamma_0^{n_0} \gamma_1^{n_1} \gamma_2^{n_2} \gamma_3^{n_3} \]
+\form#25:$\gamma_0$
+\form#26:$\gamma_5 = \gamma_0\gamma_1\gamma_2\gamma_3$
+\form#27:$\gamma_0\gamma_1\gamma_3$
+\form#28:\[ \Gamma(1) = \gamma_0\qquad \Gamma(2) = \gamma_1\qquad \Gamma(4) = \gamma_2\qquad \Gamma(8) = \gamma_3 \]
