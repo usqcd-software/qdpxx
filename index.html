@@ -1,36 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="The QDP++ Framework for Lattice QCD" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Qdpxx by usqcd-software</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>QDP++</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
+    <div class="wrapper">
+      <header>
+        <h1>Qdpxx</h1>
+        <p>QDP++ (LQCD) The QDP++ Framework for Lattice QCD</p>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/usqcd-software/qdpxx">View on GitHub</a>
+        <p class="view"><a href="https://github.com/usqcd-software/qdpxx">View the Project on GitHub <small>usqcd-software/qdpxx</small></a></p>
 
-          <h1 id="project_title">QDP++</h1>
-          <h2 id="project_tagline">The QDP++ Framework for Lattice QCD</h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/usqcd-software/qdpxx/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/usqcd-software/qdpxx/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+        <ul>
+          <li><a href="https://github.com/usqcd-software/qdpxx/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/usqcd-software/qdpxx/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/usqcd-software/qdpxx">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
         <h1>
 <a name="qdp" class="anchor" href="#qdp"><span class="octicon octicon-link"></span></a>QDP++</h1>
 
@@ -42,41 +39,31 @@
 <p>In order to build QDP++ you will need</p>
 
 <ul>
-<li>to have the libxml2 development library installed. If you don't
-  have this, and don't have a package for your OS, you can build it
-  from this copy of the source or you can try downloading it from The
-  LibXML web page. On many unix-based systems there is a package for
-  libxml2. On RedHat systems it is called "libxml2-devel".</li>
-
-<li>if you want to work on a parallel machine, you will need to have
-  the <a href="https://github.com/usqcd-software/qmp">QMP</a> Message Passing Harness installed.</li>
-
+<li>to have the libxml2 development library installed. If you don't have this, and don't have a package for your OS, you can build it from this copy of the source or you can try downloading it from The LibXML web page On a QCDOC a hacked version is needed, the source for which is here. On Linux and Cygwin Systems there is a package for libxml2. On RedHat systems it is called "libxml2-devel".</li>
+<li>if you want to work on a parallel machine, you will need to have the QMP Message Passing Harness installed. The current version of the source for QMP is <a href="https://github.com/usqcd-software/qmp">QMP</a>
+</li>
 <li>if you want to work on the BlueGene you may want some of the optimizations from bagel_qdp  (link here). For this you will also need the BAGEL assembler generator package from Peter Boyle and agree to all his requests on his web page.</li>
 </ul><h2>
 <a name="documentation-and-user-information" class="anchor" href="#documentation-and-user-information"><span class="octicon octicon-link"></span></a>Documentation and User Information</h2>
 
-<p>Here is the <a href="./manual.pdf">pdf</a> version of the manual,
-and there is also an <a href="./quick_ref.pdf">reference</a>. You can
-also find the <a href="https://github.com/usqcd-software/qdpxx">source</a>.
-A <a href="./usr/html/index.html">user guide</a> is also available.</p>
+<p>Here is the current <a href="http://usqcd.jlab.org/usqcd-docs/qdp++/manual.pdf">pdf</a> version of the manual, and there is also an <a href="http://usqcd.jlab.org/usqcd-docs/qdp++/manual/index.html">html</a> version. There is documentation produced by doxygen. A <a href="http://usqcd.jlab.org/usqcd-docs/qdp++/usr/html/index.html">user guide</a> is also available.</p>
+
+<h2>
+<a name="references" class="anchor" href="#references"><span class="octicon octicon-link"></span></a>References</h2>
+
+<p>There is a <a href="http://inspirehep.net/record/658088">paper</a> that describes QDP++ as well as the <a href="https://github.com/JeffersonLab/chroma">Chroma</a> that uses it. Please cite (at least) this paper in publications that use the code.</p>
 
 <h2>
 <a name="developer-information" class="anchor" href="#developer-information"><span class="octicon octicon-link"></span></a>Developer Information</h2>
-<p>The motivation for this development comes from the U.S. Dept. of
-Energy SciDAC program. See the <a href="http://www.usqcd.org">USQCD</a> home pages for
-more details.</p>
-      </section>
-    </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">QDPXX maintained by <a href="http://usqcd-software.github.io">usqcd-software</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+<p>The motivation for this development comes from the U.S. Dept. of Energy SciDAC program. See the USQCD home pages for more details.<a href="https://github.com/usqcd-software">USQCD</a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/usqcd-software">usqcd-software</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
-
+    <script src="javascripts/scale.fix.js"></script>
     
-
   </body>
 </html>
