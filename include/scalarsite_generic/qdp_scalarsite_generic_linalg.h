@@ -31,8 +31,13 @@ typedef RComplex<REAL>  RComplexFloat;
 // #include "scalarsite_generic/generic_adj_mat_vec.h" -- No longer used."
 #include "scalarsite_generic/generic_addvec.h"
 
+#ifdef __MIC
+#include "mic_MatMult.h"
+#endif
 
 // #define QDP_SCALARSITE_DEBUG
+
+#ifndef __MIC		// already defined for MIC in qdp_primcolormat.h"
 
 // Optimized version of  
 //    PColorMatrix<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorMatrix<RComplexFloat,3>
@@ -186,6 +191,7 @@ adjMultiplyAdj(const PMatrix<RComplexFloat,3,PColorMatrix>& l,
 }
 #endif
 
+#endif		// end ifndef __MIC
 
 // Optimized version of  
 //    PColorVector<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorVector<RComplexFloat,3>
