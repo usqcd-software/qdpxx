@@ -280,7 +280,6 @@ void evaluate(OLattice<ScalMatSU3>& d, 		// destination
 	 }
 }
 
-
 // Specialization to optimize the case
 //    LatticeColorMatrix = LatticeColorMatrix * LatticeColorMatrix
 // d: destinationa
@@ -433,6 +432,37 @@ void evaluate(OLattice<ScalMatSU3>& d, 		// destination
 		 mic_AddMatAdjMultAdj(d.elem(i).elem(), u.elem(i).elem(), v.elem(i).elem());
 	 }
 }
+
+//===
+#ifdef MORE
+// MULTIPLY ASSIGN
+template<>
+inline
+void evaluate(OLattice<ScalMatSU3>& d, 		// destination
+	      const OpMultiplyAssign& op,
+	      const QDPExpr<UnaryNode<OpIdentity, Reference<QDPType<ScalMatSU3,
+	      OLattice<ScalMatSU3> > > > >& rhs,	// right hand side
+	      const Subset& s)
+{
+//QDPIO::cout << "specialized QDP_M+=M*M" << "  subset=" << s.end()-s.start()+1 << endl;
+
+	const int* tab = s.siteTable().slice();
+
+  typedef OLattice<ScalMatSU3>  LatSU3;
+
+//  const LatSU3& u = static_cast<const LatSU3&>(rhs.expression().left());
+  const LatSU3& v = static_cast<const LatSU3&>(rhs.expression().right());
+
+#pragma omp parallel for
+	 for(int j=0; j < s.numSiteTable(); ++j)
+	 {
+		 int i = tab[j];
+		 MatSU3 u = d.elem(i).elem();
+		 mic_MatMult(d.elem(i).elem(), u.elem(i).elem(), v.elem(i).elem());
+	 }
+}
+#endif // MORE
+//===
 
 #endif // BLABLA
 
