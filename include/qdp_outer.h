@@ -5,6 +5,7 @@
 
 #include "qdp_config.h"
 #include "qdp_allocator.h"
+#include "qdp_pool.h"
 
 /*! \file
  * \brief Outer grid classes
@@ -444,7 +445,9 @@ private:
       // Barfs if allocator fails
       try 
       {
-	slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+	//slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+	slow=(T*)QDP::Pool::allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+
       // slow is active 
 	F=slow;
       }
@@ -466,7 +469,8 @@ private:
   {
     if( slow != 0x0 ) 
     { 
-      QDP::Allocator::theQDPAllocator::Instance().free(slow);
+//      QDP::Allocator::theQDPAllocator::Instance().free(slow);
+      QDP::Pool::free(slow, sizeof(T)*Layout::sitesOnNode());
       slow = 0x0;
     }
     F = slow;
