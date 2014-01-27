@@ -91,3 +91,5 @@ endif
 if QDP_USE_QCDOC
 libqdp_a_SOURCES += qdp_qcdoc_allocator.cc
 endif
+
+libqdp_a_SOURCES += mic_specific/mic_MatMult.cc

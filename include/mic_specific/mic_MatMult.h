@@ -3,604 +3,138 @@
 #ifndef INCL_mic_MatMult
 #define INCL_mic_MatMult
 
-#include "immintrin.h"
-
 namespace QDP
 {
 
-typedef RComplex<REAL64>  RComplexD;
-typedef PColorMatrix<RComplexD, 3> MatSU3;
+	extern int debug_mic_MatMult;
 
-inline void mic_MatMult(MatSU3& w, const MatSU3& u, const MatSU3& v)
-{
-			//w=u*v;
+	typedef RComplex<REAL64>  RComplexD;
+	typedef PColorMatrix<RComplexD, 3> MatSU3;
 
-			__m512d wvec, uvec;
-			__m512d vrow1[3], vrow2[3];
+	void mic_MatMult(MatSU3& w, const MatSU3& u, const MatSU3& v);
+	void mic_MatMultAdj(MatSU3& w, const MatSU3& u, const MatSU3& v);
+	void mic_MatAdjMult(MatSU3& w, const MatSU3& u, const MatSU3& v);
+	void mic_MatAdjMultAdj(MatSU3& w, const MatSU3& u, const MatSU3& v);
+	void mic_AddMatMult(MatSU3& w, const MatSU3& u, const MatSU3& v);
+	void mic_SubMatMult(MatSU3& w, const MatSU3& u, const MatSU3& v);
+	void mic_AddMatMultAdj(MatSU3& w, const MatSU3& u, const MatSU3& v);
+	void mic_SubMatMultAdj(MatSU3& w, const MatSU3& u, const MatSU3& v);
+	void mic_AddMatAdjMult(MatSU3& w, const MatSU3& u, const MatSU3& v);
+	void mic_AddMatAdjMultAdj(MatSU3& w, const MatSU3& u, const MatSU3& v);
 
-// 			const __m512i indexv = _mm512_set_epi32(
-//            0,0,0,0,
-//            0,0,0,0,
-//            0,0,4,4,
-//            2,2,0,0);
-//
-// 			const __m512i indexu = _mm512_set_epi32(
-//            0,0,0,0,
-//            0,0,0,0,
-//            0,0,1,0,
-//            1,0,1,0);
-//
-// 			const __m512i indexw = _mm512_set_epi32(
-//            0,0,0,0,
-//            0,0,0,0,
-//            0,0,5,4,
-//            3,2,1,0);
-//
-//       const int scale=8;
-
-      const __int64 sbit=((__int64)1<<63);
-      const __m512i change_sign = _mm512_set_epi64(0,0,0,sbit,0,sbit,0,sbit);
-
-      for (int k=0; k<3; ++k)
-			{
-
-					// a triple broadcast is faster than gather which is faster than set
-					//vrow1[k] = _mm512_set_pd(0, 0, v.elem(k,2).real(), v.elem(k,2).real(), v.elem(k,1).real(), v.elem(k,1).real(), v.elem(k,0).real(), v.elem(k,0).real());
-					//vrow2[k] = _mm512_set_pd(0, 0, v.elem(k,2).imag(), -v.elem(k,2).imag(), v.elem(k,1).imag(), -v.elem(k,1).imag(), v.elem(k,0).imag(), -v.elem(k,0).imag());
-// 					vrow1[k] = _mm512_i32logather_pd(indexv, (void*)&v.elem(k,0).real(), scale);
-
-					vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x03, (void*)&v.elem(k,0).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-					vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x0C, (void*)&v.elem(k,1).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-					vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x30, (void*)&v.elem(k,2).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-
-					// fill with imaginary parts using the gather pattern and change signs with xor
-					// seems to work correctly but beware with the undocumented sign bit
-// 					vrow2[k] = _mm512_i32logather_pd(indexv, (void*)&v.elem(k,0).imag(), scale);
-					vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x03, (void*)&v.elem(k,0).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-					vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x0C, (void*)&v.elem(k,1).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-					vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x30, (void*)&v.elem(k,2).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-					vrow2[k] = _mm512_castsi512_pd(_mm512_xor_epi64(_mm512_castpd_si512(vrow2[k]),change_sign));
-
-			}
-
-			// compute w row after row
-			for(int i=0; i < 3; ++i)
-			{
-				for (int k=0; k<3; ++k)
-				{
-					// a double broadcast is faster than gather which is faster than set
-					//uvec = _mm512_set_pd(0, 0, u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real());
-					//uvec = _mm512_i32logather_pd(indexu, (void*)&u.elem(i,k).real(), scale);
-
-					// broadcast real part
-					uvec = _mm512_mask_extload_pd(uvec, 0x15, (void*)&u.elem(i,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-					// broadcast imaginary part
-					uvec = _mm512_mask_extload_pd(uvec, 0x2A, (void*)&u.elem(i,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-
-					if (!k)
-						//wvec = _mm512_mul_pd(uvec,vrow1[k]);
-						wvec = _mm512_mask_mul_pd(wvec,0x3F,uvec,vrow1[k]);
-					else
-						wvec = _mm512_fmadd_pd(uvec,vrow1[k],wvec);
-						//wvec = _mm512_mask3_fmadd_pd(uvec,vrow1[k],wvec,0x3F);
-
-//-------------------
-						// swap hgfe dcba to  ghef cdab
-//					__declspec(align(64)) double uu[8]={u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(),0,0};
-
-					uvec = __cdecl _mm512_swizzle_pd(uvec, _MM_SWIZ_REG_CDAB);
-
-					wvec = _mm512_fmadd_pd(uvec,vrow2[k],wvec);
-					//wvec = _mm512_mask3_fmadd_pd(uvec,vrow2[k],wvec,0x3F);
-
-//-------------------
-
-				}
-				_mm512_mask_packstorelo_pd((void*)&w.elem(i,0).real(), 0x3F, wvec);
-				_mm512_mask_packstorehi_pd((void*)&w.elem(i,0).real()+64, 0x3F, wvec);
-
-				//_mm512_mask_i32loscatter_pd((void*)&w.elem(i,0).real(), 0x3F, indexw, wvec, scale);
-			}
-}
-
-inline void mic_MatMultAdj(MatSU3& w, const MatSU3& u, const MatSU3& v)
-{
-//	w=u*adj(v);		// absolutely absurd: for single SU3 mult it calls adjoint and the SU3 multiplication!!!
-
-			__m512d wvec, uvec;
-			__m512d vrow1[3], vrow2[3];
-
-      const __int64 sbit=((__int64)1<<63);
-      const __m512i change_sign = _mm512_set_epi64(0,0,sbit,0,sbit,0,sbit,0);
-
-      for (int k=0; k<3; ++k)
-			{
-					// a triple broadcast is faster than gather which is faster than set
-//  					vrow1[k] = _mm512_set_pd(0, 0, v.elem(2,k).real(), v.elem(2,k).real(), v.elem(1,k).real(), v.elem(1,k).real(), v.elem(0,k).real(), v.elem(0,k).real());
-// 					vrow2[k] = _mm512_set_pd(0, 0, -v.elem(2,k).imag(), v.elem(2,k).imag(), -v.elem(1,k).imag(), v.elem(1,k).imag(), -v.elem(0,k).imag(), v.elem(0,k).imag());
-
-					vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x03, (void*)&v.elem(0,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-					vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x0C, (void*)&v.elem(1,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-					vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x30, (void*)&v.elem(2,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-
-					// fill with imaginary parts using the gather pattern and change signs with xor
-					// seems to work correctly but beware with the undocumented sign bit
-					vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x03, (void*)&v.elem(0,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-					vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x0C, (void*)&v.elem(1,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-					vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x30, (void*)&v.elem(2,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-					vrow2[k] = _mm512_castsi512_pd(_mm512_xor_epi64(_mm512_castpd_si512(vrow2[k]),change_sign));
-
-			}
-
-			// compute w row after row
-			for(int i=0; i < 3; ++i)
-			{
-				for (int k=0; k<3; ++k)
-				{
-					// a double broadcast is faster than gather which is faster than set
-					//uvec = _mm512_set_pd(0, 0, u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real());
-					//uvec = _mm512_i32logather_pd(indexu, (void*)&u.elem(i,k).real(), scale);
-
-					// broadcast real part
-					uvec = _mm512_mask_extload_pd(uvec, 0x15, (void*)&u.elem(i,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-					// broadcast imaginary part
-					uvec = _mm512_mask_extload_pd(uvec, 0x2A, (void*)&u.elem(i,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-
-					if (!k)
-						//wvec = _mm512_mul_pd(uvec,vrow1[k]);
-						wvec = _mm512_mask_mul_pd(wvec,0x3F,uvec,vrow1[k]);
-					else
-						wvec = _mm512_fmadd_pd(uvec,vrow1[k],wvec);
-						//wvec = _mm512_mask3_fmadd_pd(uvec,vrow1[k],wvec,0x3F);
-
-//-------------------
-						// swap hgfe dcba to  ghef cdab
-//					__declspec(align(64)) double uu[8]={u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(),0,0};
-
-					uvec = __cdecl _mm512_swizzle_pd(uvec, _MM_SWIZ_REG_CDAB);
-
-					wvec = _mm512_fmadd_pd(uvec,vrow2[k],wvec);
-					//wvec = _mm512_mask3_fmadd_pd(uvec,vrow2[k],wvec,0x3F);
-
-//-------------------
-
-				}
-				_mm512_mask_packstorelo_pd((void*)&w.elem(i,0).real(), 0x3F, wvec);
-				_mm512_mask_packstorehi_pd((void*)&w.elem(i,0).real()+64, 0x3F, wvec);
-			}
-}
-
-inline void mic_MatAdjMult(MatSU3& w, const MatSU3& u, const MatSU3& v)
-{
-//	w=adj(u)*v;		// absolutely absurd: for single SU3 mult it calls adjoint and the SU3 multiplication!!!
-//	return;
-
-	__m512d wvec, uvec;
-	__m512d vrow1[3], vrow2[3];
-
-	const __int64 sbit=((__int64)1<<63);
-	const __m512i change_sign = _mm512_set_epi64(0,0,0,sbit,0,sbit,0,sbit);
-	const __m512i change_signu = _mm512_set_epi64(0,0,sbit,0,sbit,0,sbit,0);
-
-	for (int k=0; k<3; ++k)
+	// u *= v
+	inline MatSU3 &operator*=(MatSU3 &u, const MatSU3 &v)
 	{
-
-			// a triple broadcast is faster than gather which is faster than set
-			//vrow1[k] = _mm512_set_pd(0, 0, v.elem(k,2).real(), v.elem(k,2).real(), v.elem(k,1).real(), v.elem(k,1).real(), v.elem(k,0).real(), v.elem(k,0).real());
-			//vrow2[k] = _mm512_set_pd(0, 0, v.elem(k,2).imag(), -v.elem(k,2).imag(), v.elem(k,1).imag(), -v.elem(k,1).imag(), v.elem(k,0).imag(), -v.elem(k,0).imag());
-// 					vrow1[k] = _mm512_i32logather_pd(indexv, (void*)&v.elem(k,0).real(), scale);
-
-			vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x03, (void*)&v.elem(k,0).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x0C, (void*)&v.elem(k,1).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x30, (void*)&v.elem(k,2).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-
-			// fill with imaginary parts using the gather pattern and change signs with xor
-			// seems to work correctly but beware with the undocumented sign bit
-// 					vrow2[k] = _mm512_i32logather_pd(indexv, (void*)&v.elem(k,0).imag(), scale);
-			vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x03, (void*)&v.elem(k,0).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x0C, (void*)&v.elem(k,1).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x30, (void*)&v.elem(k,2).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			vrow2[k] = _mm512_castsi512_pd(_mm512_xor_epi64(_mm512_castpd_si512(vrow2[k]),change_sign));
-
+		MatSU3 tmp=u;
+		//u = tmp*v;
+		mic_MatMult(u,tmp,v);
+		return u;
 	}
 
-	// compute w row after row
-	for(int i=0; i < 3; ++i)
+
+	// specializations of double precision colormatrix product for MIC
+
+#ifdef WRONGTYPE
+	// PMatrix = PMatrix * PMatrix
+	template<>
+	inline BinaryReturn<MatSU3, MatSU3, OpMultiply>::Type_t
+	operator*(const MatSU3& l, const MatSU3& r)
 	{
-		for (int k=0; k<3; ++k)
-		{
-			// a double broadcast is faster than gather which is faster than set
-			//uvec = _mm512_set_pd(0, 0, -u.elem(k,i).imag(), u.elem(k,i).real(), -u.elem(k,i).imag(), u.elem(k,i).real(), -u.elem(k,i).imag(), u.elem(k,i).real());
+		BinaryReturn<MatSU3, MatSU3, OpMultiply>::Type_t  d;
+	//QDPIO::cout << "W=U*V" << endl;
 
-			// broadcast real part
-			uvec = _mm512_mask_extload_pd(uvec, 0x15, (void*)&u.elem(k,i).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			// broadcast imaginary part
-			uvec = _mm512_mask_extload_pd(uvec, 0x2A, (void*)&u.elem(k,i).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			// change sign of imaginary parts
-			uvec = _mm512_castsi512_pd(_mm512_xor_epi64(_mm512_castpd_si512(uvec),change_signu));
+		mic_MatMult(d, l, r);
 
-			if (!k)
-				//wvec = _mm512_mul_pd(uvec,vrow1[k]);
-				wvec = _mm512_mask_mul_pd(wvec,0x3F,uvec,vrow1[k]);
-			else
-				wvec = _mm512_fmadd_pd(uvec,vrow1[k],wvec);
-				//wvec = _mm512_mask3_fmadd_pd(uvec,vrow1[k],wvec,0x3F);
-
-//-------------------
-				// swap hgfe dcba to  ghef cdab
-//					__declspec(align(64)) double uu[8]={u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(),0,0};
-
-			uvec = __cdecl _mm512_swizzle_pd(uvec, _MM_SWIZ_REG_CDAB);
-
-			wvec = _mm512_fmadd_pd(uvec,vrow2[k],wvec);
-			//wvec = _mm512_mask3_fmadd_pd(uvec,vrow2[k],wvec,0x3F);
-
-//-------------------
-
-		}
-		_mm512_mask_packstorelo_pd((void*)&w.elem(i,0).real(), 0x3F, wvec);
-		_mm512_mask_packstorehi_pd((void*)&w.elem(i,0).real()+64, 0x3F, wvec);
-
-		//_mm512_mask_i32loscatter_pd((void*)&w.elem(i,0).real(), 0x3F, indexw, wvec, scale);
+		return d;
 	}
-}
-
-inline void mic_MatAdjMultAdj(MatSU3& w, const MatSU3& u, const MatSU3& v)
-{
-//	w=adj(u)*adj(v);		// absolutely absurd: for single SU3 mult it calls adjoint and the SU3 multiplication!!!
-//	return;
-
-	__m512d wvec, uvec;
-	__m512d vrow1[3], vrow2[3];
-
-	const __int64 sbit=((__int64)1<<63);
-	const __m512i change_sign = _mm512_set_epi64(0,0,sbit,0,sbit,0,sbit,0);	// same for u and v
-
-	for (int k=0; k<3; ++k)
+	// Optimized  PMatrix = adj(PMatrix)*PMatrix
+	template<>
+	inline BinaryReturn<MatSU3, MatSU3, OpAdjMultiply>::Type_t
+	adjMultiply(const MatSU3& l, const MatSU3& r)
 	{
-		// a triple broadcast is faster than gather which is faster than set
-//  				vrow1[k] = _mm512_set_pd(0, 0, v.elem(2,k).real(), v.elem(2,k).real(), v.elem(1,k).real(), v.elem(1,k).real(), v.elem(0,k).real(), v.elem(0,k).real());
-// 					vrow2[k] = _mm512_set_pd(0, 0, -v.elem(2,k).imag(), v.elem(2,k).imag(), -v.elem(1,k).imag(), v.elem(1,k).imag(), -v.elem(0,k).imag(), v.elem(0,k).imag());
+		BinaryReturn<MatSU3, MatSU3, OpAdjMultiply>::Type_t  d;
+	//QDPIO::cout << "W=adj(U)*V" << endl;
 
-		vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x03, (void*)&v.elem(0,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x0C, (void*)&v.elem(1,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x30, (void*)&v.elem(2,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
+		mic_MatAdjMult(d, l, r);
 
-		// fill with imaginary parts using the gather pattern and change signs with xor
-		// seems to work correctly but beware with the undocumented sign bit
-		vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x03, (void*)&v.elem(0,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x0C, (void*)&v.elem(1,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x30, (void*)&v.elem(2,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow2[k] = _mm512_castsi512_pd(_mm512_xor_epi64(_mm512_castpd_si512(vrow2[k]),change_sign));
+		return d;
+	}
+	// Optimized  PMatrix = PMatrix*adj(PMatrix)
+	template<>
+	inline BinaryReturn<MatSU3, MatSU3, OpMultiplyAdj>::Type_t
+	multiplyAdj(const MatSU3& l, const MatSU3& r)
+	{
+		BinaryReturn<MatSU3, MatSU3, OpMultiplyAdj>::Type_t  d;
+	//QDPIO::cout << "W=U*adj(V)" << endl;
 
+		mic_MatMultAdj(d, l, r);
+
+		return d;
+	}
+	// Optimized  PMatrix = adj(PMatrix)*adj(PMatrix)
+	template<>
+	inline BinaryReturn<MatSU3, MatSU3, OpAdjMultiplyAdj>::Type_t
+	adjMultiplyAdj(const MatSU3& l, const MatSU3& r)
+	{
+		BinaryReturn<MatSU3, MatSU3, OpAdjMultiplyAdj>::Type_t  d;
+	//QDPIO::cout << "W=adj(U)*adj(V)" << endl;
+
+		mic_MatAdjMultAdj(d, l, r);
+
+		return d;
+	}
+#endif
+
+	typedef PScalar<MatSU3> ScalMatSU3;
+
+	template<>
+	inline BinaryReturn<ScalMatSU3, ScalMatSU3, OpMultiply>::Type_t
+	operator*(const ScalMatSU3& l, const ScalMatSU3& r)
+	{
+		BinaryReturn<ScalMatSU3, ScalMatSU3, OpMultiply>::Type_t  d;
+	//QDPIO::cout << "ScaW=ScaU*ScaV" << endl;
+
+		mic_MatMult(d.elem(), l.elem(), r.elem());
+
+		return d;
 	}
 
-	// compute w row after row
-	for(int i=0; i < 3; ++i)
+	template<>
+	inline BinaryReturn<ScalMatSU3, ScalMatSU3, OpAdjMultiply>::Type_t
+	adjMultiply(const ScalMatSU3& l, const ScalMatSU3& r)
 	{
-		for (int k=0; k<3; ++k)
-		{
-			// a double broadcast is faster than gather which is faster than set
-			//uvec = _mm512_set_pd(0, 0, -u.elem(k,i).imag(), u.elem(k,i).real(), -u.elem(k,i).imag(), u.elem(k,i).real(), -u.elem(k,i).imag(), u.elem(k,i).real());
+		BinaryReturn<ScalMatSU3, ScalMatSU3, OpAdjMultiply>::Type_t  d;
+	//QDPIO::cout << "ScaW=adj(ScaU)*ScaV" << endl;
 
-			// broadcast real part
-			uvec = _mm512_mask_extload_pd(uvec, 0x15, (void*)&u.elem(k,i).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			// broadcast imaginary part
-			uvec = _mm512_mask_extload_pd(uvec, 0x2A, (void*)&u.elem(k,i).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			// change sign of imaginary parts
-			uvec = _mm512_castsi512_pd(_mm512_xor_epi64(_mm512_castpd_si512(uvec),change_sign));
+		mic_MatAdjMult(d.elem(), l.elem(), r.elem());
 
-			if (!k)
-				//wvec = _mm512_mul_pd(uvec,vrow1[k]);
-				wvec = _mm512_mask_mul_pd(wvec,0x3F,uvec,vrow1[k]);
-			else
-				wvec = _mm512_fmadd_pd(uvec,vrow1[k],wvec);
-				//wvec = _mm512_mask3_fmadd_pd(uvec,vrow1[k],wvec,0x3F);
-
-//-------------------
-				// swap hgfe dcba to  ghef cdab
-//					__declspec(align(64)) double uu[8]={u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(),0,0};
-
-			uvec = __cdecl _mm512_swizzle_pd(uvec, _MM_SWIZ_REG_CDAB);
-
-			wvec = _mm512_fmadd_pd(uvec,vrow2[k],wvec);
-			//wvec = _mm512_mask3_fmadd_pd(uvec,vrow2[k],wvec,0x3F);
-
-//-------------------
-
-		}
-		_mm512_mask_packstorelo_pd((void*)&w.elem(i,0).real(), 0x3F, wvec);
-		_mm512_mask_packstorehi_pd((void*)&w.elem(i,0).real()+64, 0x3F, wvec);
-
-		//_mm512_mask_i32loscatter_pd((void*)&w.elem(i,0).real(), 0x3F, indexw, wvec, scale);
-	}
-}
-
-//*********************************************************************************************
-inline void mic_AddMatMult(MatSU3& w, const MatSU3& u, const MatSU3& v)
-{
-	//w=u*v;
-	//return;
-
-	__m512d wvec, uvec;
-	__m512d vrow1[3], vrow2[3];
-
-	const __int64 sbit=((__int64)1<<63);
-	const __m512i change_sign = _mm512_set_epi64(0,0,0,sbit,0,sbit,0,sbit);
-
-	for (int k=0; k<3; ++k)
-	{
-		// a triple broadcast is faster than gather which is faster than set
-		//vrow1[k] = _mm512_set_pd(0, 0, v.elem(k,2).real(), v.elem(k,2).real(), v.elem(k,1).real(), v.elem(k,1).real(), v.elem(k,0).real(), v.elem(k,0).real());
-		//vrow2[k] = _mm512_set_pd(0, 0, v.elem(k,2).imag(), -v.elem(k,2).imag(), v.elem(k,1).imag(), -v.elem(k,1).imag(), v.elem(k,0).imag(), -v.elem(k,0).imag());
-// 					vrow1[k] = _mm512_i32logather_pd(indexv, (void*)&v.elem(k,0).real(), scale);
-
-		vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x03, (void*)&v.elem(k,0).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x0C, (void*)&v.elem(k,1).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x30, (void*)&v.elem(k,2).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-
-		// fill with imaginary parts using the gather pattern and change signs with xor
-		// seems to work correctly but beware with the undocumented sign bit
-// 					vrow2[k] = _mm512_i32logather_pd(indexv, (void*)&v.elem(k,0).imag(), scale);
-		vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x03, (void*)&v.elem(k,0).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x0C, (void*)&v.elem(k,1).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x30, (void*)&v.elem(k,2).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow2[k] = _mm512_castsi512_pd(_mm512_xor_epi64(_mm512_castpd_si512(vrow2[k]),change_sign));
-
+		return d;
 	}
 
-	// compute w row after row
-	for(int i=0; i < 3; ++i)
+	template<>
+	inline BinaryReturn<ScalMatSU3, ScalMatSU3, OpMultiplyAdj>::Type_t
+	multiplyAdj(const ScalMatSU3& l, const ScalMatSU3& r)
 	{
-		// load w
-		wvec = _mm512_mask_loadunpacklo_pd(wvec, 0x3F,(void*)&w.elem(i,0).real());
-		wvec = _mm512_mask_loadunpackhi_pd(wvec, 0x3F,(void*)&w.elem(i,0).real()+64);
+		BinaryReturn<ScalMatSU3, ScalMatSU3, OpMultiplyAdj>::Type_t  d;
+	//QDPIO::cout << "ScaW=ScaU*adj(ScaV)" << endl;
 
-		for (int k=0; k<3; ++k)
-		{
-			// a double broadcast is faster than gather which is faster than set
-			//uvec = _mm512_set_pd(0, 0, u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real());
-			//uvec = _mm512_i32logather_pd(indexu, (void*)&u.elem(i,k).real(), scale);
+		mic_MatMultAdj(d.elem(), l.elem(), r.elem());
 
-			// broadcast real part
-			uvec = _mm512_mask_extload_pd(uvec, 0x15, (void*)&u.elem(i,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			// broadcast imaginary part
-			uvec = _mm512_mask_extload_pd(uvec, 0x2A, (void*)&u.elem(i,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-
-			wvec = _mm512_fmadd_pd(uvec,vrow1[k],wvec);
-			//wvec = _mm512_mask3_fmadd_pd(uvec,vrow1[k],wvec,0x3F);
-
-//-------------------
-				// swap hgfe dcba to  ghef cdab
-//					__declspec(align(64)) double uu[8]={u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(),0,0};
-
-			uvec = __cdecl _mm512_swizzle_pd(uvec, _MM_SWIZ_REG_CDAB);
-
-			wvec = _mm512_fmadd_pd(uvec,vrow2[k],wvec);
-			//wvec = _mm512_mask3_fmadd_pd(uvec,vrow2[k],wvec,0x3F);
-
-//-------------------
-
-		}
-		_mm512_mask_packstorelo_pd((void*)&w.elem(i,0).real(), 0x3F, wvec);
-		_mm512_mask_packstorehi_pd((void*)&w.elem(i,0).real()+64, 0x3F, wvec);
-
-		//_mm512_mask_i32loscatter_pd((void*)&w.elem(i,0).real(), 0x3F, indexw, wvec, scale);
-	}
-}
-
-inline void mic_AddMatMultAdj(MatSU3& w, const MatSU3& u, const MatSU3& v)
-{
-//	w=u*adj(v);		// absolutely absurd: for single SU3 mult it calls adjoint and the SU3 multiplication!!!
-
-	__m512d wvec, uvec;
-	__m512d vrow1[3], vrow2[3];
-
-	const __int64 sbit=((__int64)1<<63);
-	const __m512i change_sign = _mm512_set_epi64(0,0,sbit,0,sbit,0,sbit,0);
-
-	for (int k=0; k<3; ++k)
-	{
-		// a triple broadcast is faster than gather which is faster than set
-//  				vrow1[k] = _mm512_set_pd(0, 0, v.elem(2,k).real(), v.elem(2,k).real(), v.elem(1,k).real(), v.elem(1,k).real(), v.elem(0,k).real(), v.elem(0,k).real());
-// 					vrow2[k] = _mm512_set_pd(0, 0, -v.elem(2,k).imag(), v.elem(2,k).imag(), -v.elem(1,k).imag(), v.elem(1,k).imag(), -v.elem(0,k).imag(), v.elem(0,k).imag());
-
-		vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x03, (void*)&v.elem(0,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x0C, (void*)&v.elem(1,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x30, (void*)&v.elem(2,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-
-		// fill with imaginary parts using the gather pattern and change signs with xor
-		// seems to work correctly but beware with the undocumented sign bit
-		vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x03, (void*)&v.elem(0,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x0C, (void*)&v.elem(1,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x30, (void*)&v.elem(2,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow2[k] = _mm512_castsi512_pd(_mm512_xor_epi64(_mm512_castpd_si512(vrow2[k]),change_sign));
-
+		return d;
 	}
 
-	// compute w row after row
-	for(int i=0; i < 3; ++i)
+	template<>
+	inline BinaryReturn<ScalMatSU3, ScalMatSU3, OpAdjMultiplyAdj>::Type_t
+	adjMultiplyAdj(const ScalMatSU3& l, const ScalMatSU3& r)
 	{
-		// load w
-		wvec = _mm512_mask_loadunpacklo_pd(wvec, 0x3F,(void*)&w.elem(i,0).real());
-		wvec = _mm512_mask_loadunpackhi_pd(wvec, 0x3F,(void*)&w.elem(i,0).real()+64);
+		BinaryReturn<ScalMatSU3, ScalMatSU3, OpAdjMultiplyAdj>::Type_t  d;
+	//QDPIO::cout << "ScaW=adj(ScaU)*adj(ScaV)" << endl;
 
-		for (int k=0; k<3; ++k)
-		{
-			// a double broadcast is faster than gather which is faster than set
-			//uvec = _mm512_set_pd(0, 0, u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real());
-			//uvec = _mm512_i32logather_pd(indexu, (void*)&u.elem(i,k).real(), scale);
+		mic_MatAdjMultAdj(d.elem(), l.elem(), r.elem());
 
-			// broadcast real part
-			uvec = _mm512_mask_extload_pd(uvec, 0x15, (void*)&u.elem(i,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			// broadcast imaginary part
-			uvec = _mm512_mask_extload_pd(uvec, 0x2A, (void*)&u.elem(i,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-
-			wvec = _mm512_fmadd_pd(uvec,vrow1[k],wvec);
-			//wvec = _mm512_mask3_fmadd_pd(uvec,vrow1[k],wvec,0x3F);
-
-//-------------------
-				// swap hgfe dcba to  ghef cdab
-//					__declspec(align(64)) double uu[8]={u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(),0,0};
-
-			uvec = __cdecl _mm512_swizzle_pd(uvec, _MM_SWIZ_REG_CDAB);
-
-			wvec = _mm512_fmadd_pd(uvec,vrow2[k],wvec);
-			//wvec = _mm512_mask3_fmadd_pd(uvec,vrow2[k],wvec,0x3F);
-
-//-------------------
-
-		}
-		_mm512_mask_packstorelo_pd((void*)&w.elem(i,0).real(), 0x3F, wvec);
-		_mm512_mask_packstorehi_pd((void*)&w.elem(i,0).real()+64, 0x3F, wvec);
-	}
-}
-
-inline void mic_AddMatAdjMult(MatSU3& w, const MatSU3& u, const MatSU3& v)
-{
-//	w=adj(u)*v;		// absolutely absurd: for single SU3 mult it calls adjoint and the SU3 multiplication!!!
-//	return;
-
-	__m512d wvec, uvec;
-	__m512d vrow1[3], vrow2[3];
-
-	const __int64 sbit=((__int64)1<<63);
-	const __m512i change_sign = _mm512_set_epi64(0,0,0,sbit,0,sbit,0,sbit);
-	const __m512i change_signu = _mm512_set_epi64(0,0,sbit,0,sbit,0,sbit,0);
-
-	for (int k=0; k<3; ++k)
-	{
-
-			// a triple broadcast is faster than gather which is faster than set
-			//vrow1[k] = _mm512_set_pd(0, 0, v.elem(k,2).real(), v.elem(k,2).real(), v.elem(k,1).real(), v.elem(k,1).real(), v.elem(k,0).real(), v.elem(k,0).real());
-			//vrow2[k] = _mm512_set_pd(0, 0, v.elem(k,2).imag(), -v.elem(k,2).imag(), v.elem(k,1).imag(), -v.elem(k,1).imag(), v.elem(k,0).imag(), -v.elem(k,0).imag());
-// 					vrow1[k] = _mm512_i32logather_pd(indexv, (void*)&v.elem(k,0).real(), scale);
-
-			vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x03, (void*)&v.elem(k,0).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x0C, (void*)&v.elem(k,1).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x30, (void*)&v.elem(k,2).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-
-			// fill with imaginary parts using the gather pattern and change signs with xor
-			// seems to work correctly but beware with the undocumented sign bit
-// 					vrow2[k] = _mm512_i32logather_pd(indexv, (void*)&v.elem(k,0).imag(), scale);
-			vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x03, (void*)&v.elem(k,0).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x0C, (void*)&v.elem(k,1).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x30, (void*)&v.elem(k,2).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			vrow2[k] = _mm512_castsi512_pd(_mm512_xor_epi64(_mm512_castpd_si512(vrow2[k]),change_sign));
-
+		return d;
 	}
 
-	// compute w row after row
-	for(int i=0; i < 3; ++i)
-	{
-		// load w
-		wvec = _mm512_mask_loadunpacklo_pd(wvec, 0x3F,(void*)&w.elem(i,0).real());
-		wvec = _mm512_mask_loadunpackhi_pd(wvec, 0x3F,(void*)&w.elem(i,0).real()+64);
-
-		for (int k=0; k<3; ++k)
-		{
-			// a double broadcast is faster than gather which is faster than set
-			//uvec = _mm512_set_pd(0, 0, -u.elem(k,i).imag(), u.elem(k,i).real(), -u.elem(k,i).imag(), u.elem(k,i).real(), -u.elem(k,i).imag(), u.elem(k,i).real());
-
-			// broadcast real part
-			uvec = _mm512_mask_extload_pd(uvec, 0x15, (void*)&u.elem(k,i).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			// broadcast imaginary part
-			uvec = _mm512_mask_extload_pd(uvec, 0x2A, (void*)&u.elem(k,i).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			// change sign of imaginary parts
-			uvec = _mm512_castsi512_pd(_mm512_xor_epi64(_mm512_castpd_si512(uvec),change_signu));
-
-			wvec = _mm512_fmadd_pd(uvec,vrow1[k],wvec);
-			//wvec = _mm512_mask3_fmadd_pd(uvec,vrow1[k],wvec,0x3F);
-
-//-------------------
-				// swap hgfe dcba to  ghef cdab
-//					__declspec(align(64)) double uu[8]={u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(),0,0};
-
-			uvec = __cdecl _mm512_swizzle_pd(uvec, _MM_SWIZ_REG_CDAB);
-
-			wvec = _mm512_fmadd_pd(uvec,vrow2[k],wvec);
-			//wvec = _mm512_mask3_fmadd_pd(uvec,vrow2[k],wvec,0x3F);
-
-//-------------------
-
-		}
-		_mm512_mask_packstorelo_pd((void*)&w.elem(i,0).real(), 0x3F, wvec);
-		_mm512_mask_packstorehi_pd((void*)&w.elem(i,0).real()+64, 0x3F, wvec);
-
-		//_mm512_mask_i32loscatter_pd((void*)&w.elem(i,0).real(), 0x3F, indexw, wvec, scale);
-	}
-}
-
-inline void mic_AddMatAdjMultAdj(MatSU3& w, const MatSU3& u, const MatSU3& v)
-{
-//	w=adj(u)*adj(v);		// absolutely absurd: for single SU3 mult it calls adjoint and the SU3 multiplication!!!
-//	return;
-
-	__m512d wvec, uvec;
-	__m512d vrow1[3], vrow2[3];
-
-	const __int64 sbit=((__int64)1<<63);
-	const __m512i change_sign = _mm512_set_epi64(0,0,sbit,0,sbit,0,sbit,0);	// same for u and v
-
-	for (int k=0; k<3; ++k)
-	{
-		// a triple broadcast is faster than gather which is faster than set
-//  				vrow1[k] = _mm512_set_pd(0, 0, v.elem(2,k).real(), v.elem(2,k).real(), v.elem(1,k).real(), v.elem(1,k).real(), v.elem(0,k).real(), v.elem(0,k).real());
-// 					vrow2[k] = _mm512_set_pd(0, 0, -v.elem(2,k).imag(), v.elem(2,k).imag(), -v.elem(1,k).imag(), v.elem(1,k).imag(), -v.elem(0,k).imag(), v.elem(0,k).imag());
-
-		vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x03, (void*)&v.elem(0,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x0C, (void*)&v.elem(1,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow1[k] = _mm512_mask_extload_pd(vrow1[k], 0x30, (void*)&v.elem(2,k).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-
-		// fill with imaginary parts using the gather pattern and change signs with xor
-		// seems to work correctly but beware with the undocumented sign bit
-		vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x03, (void*)&v.elem(0,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x0C, (void*)&v.elem(1,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow2[k] = _mm512_mask_extload_pd(vrow2[k], 0x30, (void*)&v.elem(2,k).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-		vrow2[k] = _mm512_castsi512_pd(_mm512_xor_epi64(_mm512_castpd_si512(vrow2[k]),change_sign));
-
-	}
-
-	// compute w row after row
-	for(int i=0; i < 3; ++i)
-	{
-		// load w
-		wvec = _mm512_mask_loadunpacklo_pd(wvec, 0x3F,(void*)&w.elem(i,0).real());
-		wvec = _mm512_mask_loadunpackhi_pd(wvec, 0x3F,(void*)&w.elem(i,0).real()+64);
-
-		for (int k=0; k<3; ++k)
-		{
-			// a double broadcast is faster than gather which is faster than set
-			//uvec = _mm512_set_pd(0, 0, -u.elem(k,i).imag(), u.elem(k,i).real(), -u.elem(k,i).imag(), u.elem(k,i).real(), -u.elem(k,i).imag(), u.elem(k,i).real());
-
-			// broadcast real part
-			uvec = _mm512_mask_extload_pd(uvec, 0x15, (void*)&u.elem(k,i).real(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			// broadcast imaginary part
-			uvec = _mm512_mask_extload_pd(uvec, 0x2A, (void*)&u.elem(k,i).imag(), _MM_UPCONV_PD_NONE, _MM_BROADCAST_1X8, _MM_HINT_NONE);
-			// change sign of imaginary parts
-			uvec = _mm512_castsi512_pd(_mm512_xor_epi64(_mm512_castpd_si512(uvec),change_sign));
-
-			wvec = _mm512_fmadd_pd(uvec,vrow1[k],wvec);
-			//wvec = _mm512_mask3_fmadd_pd(uvec,vrow1[k],wvec,0x3F);
-
-//-------------------
-				// swap hgfe dcba to  ghef cdab
-//					__declspec(align(64)) double uu[8]={u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(), u.elem(i,k).imag(), u.elem(i,k).real(),0,0};
-
-			uvec = __cdecl _mm512_swizzle_pd(uvec, _MM_SWIZ_REG_CDAB);
-
-			wvec = _mm512_fmadd_pd(uvec,vrow2[k],wvec);
-			//wvec = _mm512_mask3_fmadd_pd(uvec,vrow2[k],wvec,0x3F);
-
-//-------------------
-
-		}
-		_mm512_mask_packstorelo_pd((void*)&w.elem(i,0).real(), 0x3F, wvec);
-		_mm512_mask_packstorehi_pd((void*)&w.elem(i,0).real()+64, 0x3F, wvec);
-
-		//_mm512_mask_i32loscatter_pd((void*)&w.elem(i,0).real(), 0x3F, indexw, wvec, scale);
-	}
-}
 
 }	// namespace QDP
 
