@@ -7,6 +7,10 @@
 #include "qdp_allocator.h"
 #include "qdp_pool.h"
 
+#ifdef __MIC
+	#define USE_POOL
+#endif
+
 /*! \file
  * \brief Outer grid classes
  */
@@ -445,8 +449,11 @@ private:
       // Barfs if allocator fails
       try 
       {
-	//slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
-	slow=(T*)QDP::Pool::allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+      #ifdef USE_POOL
+	slow=(T*)QDP::Pool::allocate<T>(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+			#else
+slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+			#endif
 
       // slow is active 
 	F=slow;
@@ -469,8 +476,11 @@ private:
   {
     if( slow != 0x0 ) 
     { 
-//      QDP::Allocator::theQDPAllocator::Instance().free(slow);
-      QDP::Pool::free(slow, sizeof(T)*Layout::sitesOnNode());
+    #ifdef USE_POOL
+      QDP::Pool::free<T>(slow);
+    #else
+      QDP::Allocator::theQDPAllocator::Instance().free(slow);
+    #endif
       slow = 0x0;
     }
     F = slow;
