@@ -48,9 +48,6 @@
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
 
-/* Define to the home page for this package. */
-#undef PACKAGE_URL
-
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
@@ -92,6 +89,9 @@
 
 /* Use generic C optimizations */
 #undef QDP_USE_GENERIC_OPTS
+
+/* Use I/O Thread to write OLattice Objects */
+#undef QDP_USE_IO_THREAD
 
 /* Use lexicographic layout */
 #undef QDP_USE_LEXICO_LAYOUT

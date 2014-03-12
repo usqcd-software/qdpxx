@@ -90,3 +90,7 @@ endif
 if QDP_USE_QCDOC
 libqdp_a_SOURCES += qdp_qcdoc_allocator.cc
 endif
+
+if QDP_USE_IO_THREAD
+libqdp_a_SOURCES += qdp_io_thread.cc qdp_io_writer.cc qdp_io_reader.cc
+endif

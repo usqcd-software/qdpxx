@@ -900,6 +900,7 @@ namespace QDP
     if (level >= 2) {
       QDPIO::cout << "Read Map checksum: " << read_checksum << "  Current Position: " << streamer.currentPosition();
     }
+
     if( read_checksum != calc_checksum ) { 
       QDPIO::cout << "Mismatched Checksums: Expected: " << calc_checksum << " but read " << read_checksum << endl;
       QDP_abort(1);

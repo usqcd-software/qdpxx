@@ -622,6 +622,23 @@ then
 	AC_DEFINE([QDP_USE_OMP_THREADS], [1], [ Use OpenMP Threads ])
 fi
 
+dnl --enable-io-thread
+AC_ARG_ENABLE(io-thread,
+   AC_HELP_STRING([--enable-io-thread],
+     [Enable Seperate I/O Thread to write Large OLattice Objects]
+     ),
+     [ iothread_enabled="yes" ],
+     [ iothread_enabled="no" ]
+)
+
+dnl -- setup definition for io-thread
+if test "X${iothread_enabled}X" == "XyesX";
+then
+	AC_MSG_NOTICE([Configuring OLattice I/O Threading])
+	AC_DEFINE([QDP_USE_IO_THREAD], [1], [ Use I/O Thread to write OLattice Objects ])
+fi
+
+
 dnl
 dnl
 dnl Now have all the options... Do some configuration 
@@ -671,6 +688,11 @@ else
 fi
 
 AM_CONDITIONAL(QDP_USE_LIBXML2, [test "x${with_libxml2}x" != "xnox" ])
+
+#
+# Conditional for use io thread
+#
+AM_CONDITIONAL(QDP_USE_IO_THREAD, [test "x${iothread_enabled}x" = "xyesx" ])
 
 ##################################
 # Check for programs to build docs

@@ -25,7 +25,7 @@ namespace QDP {
 	
 	//! Private flag for status
 	static bool isInit = false;
-	
+
 	//! Turn on the machine
 	void QDP_initialize(int *argc, char ***argv)
 	{
@@ -280,7 +280,7 @@ namespace QDP {
 		QDPIO::cerr.init(&std::cerr);
 		
 		initProfile(__FILE__, __func__, __LINE__);
-		
+
 		QDPIO::cout << "Initialize done" << std::endl;
 	}
 	

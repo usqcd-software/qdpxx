@@ -61,6 +61,9 @@ namespace QDP
     virtual void read(double& result);
     virtual void read(bool& result);
 
+    //! Get the internal input stream
+    virtual std::istream& getIstream() = 0;
+
   protected:
     //! The universal data-reader.
     /*!
@@ -71,8 +74,7 @@ namespace QDP
     void
     readPrimitive(T& output);
 
-    //! Get the internal input stream
-    virtual std::istream& getIstream() = 0;
+
   };
 
 
@@ -125,10 +127,12 @@ namespace QDP
         
     //! Return entire buffer as a string
     std::string strPrimaryNode() const;
-        
-  protected:
+
     //! Get the internal input stream
     std::istream& getIstream() {return f;}
+        
+  protected:
+
 
   private:
     std::istringstream f;
@@ -175,9 +179,11 @@ namespace QDP
     */
     bool is_open();
 
-  protected:
     //! Get the internal input stream
     std::istream& getIstream() {return f;}
+
+  protected:
+
 
   private:
     std::ifstream f;
@@ -226,6 +232,10 @@ namespace QDP
     virtual void write(const double& output);
     virtual void write(const bool& output);
 
+    //! Get the internal output stream
+    virtual std::ostream& getOstream() = 0;
+
+
   protected:
     //! The universal data-writer.
     /*!
@@ -236,8 +246,6 @@ namespace QDP
     void
     writePrimitive(const T& output);
 
-    //! Get the internal output stream
-    virtual std::ostream& getOstream() = 0;
   };
 
 
@@ -290,10 +298,12 @@ namespace QDP
         
     //! Return entire buffer as a string
     std::string strPrimaryNode() const;
-        
-  protected:
+
     //! Get the internal output stream
     std::ostream& getOstream() {return f;}
+        
+  protected:
+
 
   private:
     std::ostringstream f;
@@ -342,9 +352,11 @@ namespace QDP
     //! Flushes the buffer
     void flush();
 
-  protected:
     //! Get the internal output stream
     std::ostream& getOstream() {return f;}
+
+  protected:
+
 
   private:
     std::ofstream f;
@@ -443,6 +455,11 @@ namespace QDP
     /*! The checksum is reset */
     virtual void rewind();
 
+    virtual QDPUtil::n_uint32_t& internalChecksum() = 0;
+
+    //! Get the internal input stream
+    virtual std::istream& getIstream() = 0;
+
   protected:
     //! The universal data-reader.
     /*!
@@ -453,11 +470,7 @@ namespace QDP
     void
     readPrimitive(T& output);
 
-    //! Get the current checksum to modify
-    virtual QDPUtil::n_uint32_t& internalChecksum() = 0;
-  
-    //! Get the internal input stream
-    virtual std::istream& getIstream() = 0;
+
   };
 
 
@@ -811,12 +824,14 @@ namespace QDP
     //! Clear the buffer
     void clear();
 
-  protected:
     //! Get the current checksum to modify
     QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
-  
+
     //! Get the internal input stream
     std::istream& getIstream() {return f;}
+
+  protected:
+  
 
   private:
     //! Checksum
@@ -866,12 +881,14 @@ namespace QDP
     //! Closes the last file opened
     void close();
 
-  protected:
     //! Get the current checksum to modify
     QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
-  
+
     //! Get the internal input stream
     std::istream& getIstream() {return f;}
+
+  protected:
+
 
   private:
     //! Checksum
@@ -987,6 +1004,12 @@ namespace QDP
     /*! The checksum is reset */
     virtual void rewind();
 
+    //! Get the internal output stream
+    virtual std::ostream& getOstream() = 0;
+
+    //! Get the current checksum to modify
+    virtual QDPUtil::n_uint32_t& internalChecksum() = 0;
+  
   protected:
 
     //! The universal data-writer.
@@ -998,11 +1021,6 @@ namespace QDP
     void
     writePrimitive(const T& output);
 
-    //! Get the current checksum to modify
-    virtual QDPUtil::n_uint32_t& internalChecksum() = 0;
-  
-    //! Get the internal output stream
-    virtual std::ostream& getOstream() = 0;
   };
 
 
@@ -1232,13 +1250,14 @@ namespace QDP
     //! Clear the buffer
     void clear();
 
-  protected:
-    //! Get the current checksum to modify
-    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
-  
     //! Get the internal output stream
     std::ostream& getOstream() {return f;}
 
+    //! Get the current checksum to modify
+    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
+
+  protected:
+  
   private:
     //! Checksum
     QDPUtil::n_uint32_t checksum;
@@ -1291,13 +1310,15 @@ namespace QDP
     //! Flushes the buffer
     void flush();
 
-  protected:
-    //! Get the current checksum to modify
-    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
-  
     //! Get the internal output stream
     std::ostream& getOstream() {return f;}
 
+    //! Get the current checksum to modify
+    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
+
+  protected:
+
+  
   private:
     //! Checksum
     QDPUtil::n_uint32_t checksum;
@@ -1362,19 +1383,20 @@ namespace QDP
     /*! The checksum is reset */
     virtual void rewind();
 
-
-  protected:
-    //! Get the current checksum to modify
-    virtual QDPUtil::n_uint32_t& internalChecksum() = 0;
-  
-    //! Get the internal input stream
-    virtual std::istream& getIstream() = 0;
-  
     //! Get the internal output stream
     virtual std::ostream& getOstream() = 0;
   
+    //! Get the current checksum to modify
+    virtual QDPUtil::n_uint32_t& internalChecksum() = 0;
+
+    //! Get the internal input stream
+    virtual std::istream& getIstream() = 0;
+  
     //! Get the internal input/output stream
     virtual std::iostream& getIOstream() = 0;
+
+  protected:
+
   };
 
 
@@ -1412,18 +1434,20 @@ namespace QDP
     //! Clear the buffer
     void clear();
 
-  protected:
-    //! Get the current checksum to modify
-    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
-  
-    //! Get the internal input stream
-    std::istream& getIstream() {return f;}
-
     //! Get the internal output stream
     std::ostream& getOstream() {return f;}
 
+    //! Get the current checksum to modify
+    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
+
+    //! Get the internal input stream
+    std::istream& getIstream() {return f;}
+
     //! Get the internal inpu/output stream
     std::iostream& getIOstream() {return f;}
+
+  protected:
+
 
   private:
     //! Checksum
@@ -1476,18 +1500,20 @@ namespace QDP
     //! Flushes the buffer
     void flush();
 
-  protected:
-    //! Get the current checksum to modify
-    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
-  
-    //! Get the internal input stream
-    std::istream& getIstream() {return f;}
-
     //! Get the internal output stream
     std::ostream& getOstream() {return f;}
 
+    //! Get the current checksum to modify
+    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
+
+    //! Get the internal input stream
+    std::istream& getIstream() {return f;}
+
     //! Get the internal inpu/output stream
     std::iostream& getIOstream() {return f;}
+
+  protected:
+  
 
   private:
     //! Checksum

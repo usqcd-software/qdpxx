@@ -11,7 +11,6 @@
 
 namespace QDP {
 
-
 // Use separate defs here. This will cause subroutine calls under g++
 
 //-----------------------------------------------------------------------------

@@ -27,6 +27,11 @@ namespace QDPUtil
   //! crc32
   n_uint32_t crc32(n_uint32_t crc, const char *buf, size_t len);
 
+  n_uint32_t crc32_4bytes_little_endian (const void* data, size_t length, n_uint32_t previousCrc32);
+  n_uint32_t crc32_4bytes_big_endian (const void* data, size_t length, n_uint32_t previousCrc32);
+  n_uint32_t crc32_8bytes_little_endian (const void* data, size_t length, n_uint32_t previousCrc32);
+  n_uint32_t crc32_8bytes_big_endian (const void* data, size_t length, n_uint32_t previousCrc32);
+
   //! Is the native byte order big endian?
   bool big_endian();
 

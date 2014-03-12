@@ -31,4 +31,9 @@ typedef uint32_t uLong;            /* At least 32 bits */
 
 uLong crc32(uLong crc, char const * buf, size_t len);
 
+uLong crc32_4bytes_little_endian (const void* data, size_t length, uint32_t previousCrc32);
+uLong crc32_4bytes_big_endian (const void* data, size_t length, uint32_t previousCrc32);
+uLong crc32_8bytes_little_endian (const void* data, size_t length, uint32_t previousCrc32);
+uLong crc32_8bytes_big_endian (const void* data, size_t length, uint32_t previousCrc32);
+
 #endif

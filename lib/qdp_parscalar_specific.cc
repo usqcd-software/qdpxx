@@ -9,6 +9,16 @@
 #include "qdp_util.h"
 #include "qmp.h"
 
+#include <vector>
+
+#ifdef QDP_USE_IO_THREAD
+#include "qdp_io_writer.h"
+#include "qdp_io_reader.h"
+
+using namespace QDPIOThread;
+#endif
+
+
 
 namespace QDP {
 
@@ -378,7 +388,107 @@ namespace QDP {
 
     size_t sizemem = size*nmemb;
     size_t tot_size = sizemem*xinc;
+
+#ifdef QDP_USE_IO_THREAD
+
+    // maximum mpi buffer size (16 MB)                                          
+    size_t max_buf_size = 1024*1024*16;
+
+    // figure out how much space needed to send data to each node
+    std::vector<RdBlkInfo> wrinfo;
+
+    int prevnode, node, starting_site;
+    size_t wsize = 0;
+    RdBlkInfo info;
+
+    // first site in each segment uniquely identifies the node
+    prevnode = node = Layout::nodeNumber(crtesn(0, Layout::lattSize()));
+    // starting site index for a node block
+    starting_site = 0;
+    wsize += tot_size;
+
+    for(int site = xinc; site < Layout::vol(); site += xinc) {
+      node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
+      if (node == prevnode)
+	wsize += tot_size;
+      else {
+	info.SetupInfo (prevnode, wsize, starting_site, tot_size, xinc, max_buf_size);
+	wrinfo.push_back(info);
+	wsize = tot_size;
+	// starting site for next node block
+	starting_site = site;
+      }
+      prevnode = node;
+    }
+    info.SetupInfo (prevnode, wsize, starting_site, tot_size, xinc, max_buf_size);
+    wrinfo.push_back(info);
+
+    FileBufferWriter *iothread = 0;
+    if (Layout::primaryNode())
+      iothread = new FileBufferWriter(bin.getOstream(), 2048*2048, 16);
+
+    // every node has the same number of receiving blocks
+    unsigned int numblocks = wrinfo.size();
+    char *large_recv_buf = new(nothrow) char[wrinfo[0].SubBlockSize(0)];
+
+    int old_node = 0;
+                                                                                
+    for (unsigned int k = 0; k < numblocks; k++) {                              
+      for (unsigned int m = 0; m < wrinfo[k].NumberSubBlocks(); m++) { 
+	node = wrinfo[k].NodeNumber ();
+	// Send nodes must wait for a ready signal from the master node
+	// to prevent message pileups on the master node
+	if (node != old_node) {
+	  // On non-grid machines, use a clear-to-send like protocol
+	  QDPInternal::clearToSend(large_recv_buf, sizeof(int), node);
+	  old_node = node;
+	}
+
+	// Copy to buffer: be really careful since max(linear) could vary among nodes
+	if (Layout::nodeNumber() == node) {
+	  for(int i = 0; i < wrinfo[k].SubBlockXIncrements(m) * xinc; ++i) {
+	    int linear = Layout::linearSiteIndex(crtesn(wrinfo[k].SubBlockStartingSite(m) + i, 
+							Layout::lattSize()));
+	    memcpy(large_recv_buf+i*sizemem, output+linear*sizemem, sizemem);
+	  }
+	}
+
+	// Send result to primary node. Avoid sending prim-node sending to itself
+	if (node != 0) {
+#if 1
+	  // All nodes participate
+	  QDPInternal::route((void *)large_recv_buf, node, 0, wrinfo[k].SubBlockSize(m));
+#else
+	  if (Layout::primaryNode())
+	    QDPInternal::recvFromWait((void *)large_recv_buf, node, wrinfo[k].SubBlockSize(m));
+
+	  if (Layout::nodeNumber() == node)
+	    QDPInternal::sendToWait((void *)large_recv_buf, 0, wrinfo[k].SubBlockSize(m));
+#endif
+	}
+	// primary node write to a file
+	if (Layout::primaryNode()) {
+	  if (QDPUtil::big_endian()) 
+	    iothread->write (large_recv_buf, size, 
+			     nmemb * xinc * wrinfo[k].SubBlockXIncrements(m), 0);
+	  else 
+	    iothread->write (large_recv_buf, size, 
+			     nmemb * xinc * wrinfo[k].SubBlockXIncrements(m), 1);
+	
+	  // checksum on native values
+	  bin.internalChecksum() = QDPUtil::crc32(bin.internalChecksum(), large_recv_buf, 
+						  wrinfo[k].SubBlockSize(m));
+	}
+      }
+    }
+    if (Layout::primaryNode()) {
+      iothread->close ();
+      delete iothread;
+    }
+    delete []large_recv_buf;
+#else // not using IO_THREAD
     char *recv_buf = new(nothrow) char[tot_size];
+
     if( recv_buf == 0x0 ) { 
       QDP_error_exit("Unable to allocate recv_buf\n");
     }
@@ -390,6 +500,7 @@ namespace QDP {
     {
       // first site in each segment uniquely identifies the node
       int node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
+
 
       // Send nodes must wait for a ready signal from the master node
       // to prevent message pileups on the master node
@@ -424,11 +535,10 @@ namespace QDP {
 	  QDPInternal::sendToWait((void *)recv_buf, 0, tot_size);
 #endif
       }
-
       bin.writeArrayPrimaryNode(recv_buf, size, nmemb*xinc);
     }
-
     delete[] recv_buf;
+#endif
   }
 
 
@@ -492,6 +602,125 @@ namespace QDP {
 
     size_t sizemem = size*nmemb;
     size_t max_tot_size = sizemem*xinc;
+
+#ifdef QDP_USE_IO_THREAD
+    // maximum mpi buffer size (16 MB)                                          
+    size_t max_buf_size = 1024*1024*16;
+
+    // figure out how much space needed to send data to each node
+    std::vector<RdBlkInfo> wrinfo;
+
+    int prevnode, node, starting_site;
+    size_t wsize = 0;
+    RdBlkInfo info;
+
+    // first site in each segment uniquely identifies the node
+    prevnode = node = Layout::nodeNumber(crtesn(0, Layout::lattSize()));
+    // starting site index for a node block
+    starting_site = 0;
+    wsize += max_tot_size;
+
+    for(int site = xinc; site < Layout::vol(); site += xinc) {
+      node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
+      if (node == prevnode)
+	wsize += max_tot_size;
+      else {
+	info.SetupInfo (prevnode, wsize, starting_site, max_tot_size, xinc, max_buf_size);
+	wrinfo.push_back(info);
+	wsize = max_tot_size;
+	// starting site for next node block
+	starting_site = site;
+      }
+      prevnode = node;
+    }
+    info.SetupInfo (prevnode, wsize, starting_site, max_tot_size, xinc, max_buf_size);
+    wrinfo.push_back(info);
+
+    FileBufferWriter *iothread = 0;
+    if (Layout::primaryNode())
+      iothread = new FileBufferWriter(bin.getOstream(), 2048*2048, 16);
+
+    // number of sites to send/receive
+    char *recv_buf_size = new(nothrow) char[sizeof(int)];
+    if( recv_buf_size == 0x0 ) { 
+      QDP_error_exit("Unable to allocate recv_buf_size\n");
+    }
+    // every node has the same number of receiving blocks
+    unsigned int numblocks = wrinfo.size();
+    char *large_recv_buf = new(nothrow) char[wrinfo[0].SubBlockSize(0)];
+    if (large_recv_buf == 0x0) {
+      QDP_error_exit("Unable to allocate large_recv_buf\n");
+    }
+
+
+    int old_node = 0;
+                                                                                
+    for (unsigned int k = 0; k < numblocks; k++) {                              
+      for (unsigned int m = 0; m < wrinfo[k].NumberSubBlocks(); m++) { 
+	node = wrinfo[k].NodeNumber ();
+    
+	// Send nodes must wait for a ready signal from the master node
+	// to prevent message pileups on the master node
+	if (node != old_node) {
+	  // On non-grid machines, use a clear-to-send like protocol
+	  QDPInternal::clearToSend(large_recv_buf, sizeof(int), node);
+	  old_node = node;
+	}
+
+	// Copy to buffer: be really careful since max(linear) could vary among nodes
+	int site_cnt = 0;
+	if (Layout::nodeNumber() == node) {
+	  for(int i = 0; i < wrinfo[k].SubBlockXIncrements(m) * xinc; ++i) {
+	    int linear = Layout::linearSiteIndex(crtesn(wrinfo[k].SubBlockStartingSite(m) + i, 
+							Layout::lattSize()));
+	    if (lat_color[linear] == color) {
+	      memcpy(large_recv_buf+site_cnt*sizemem, output+linear*sizemem, sizemem);
+	      site_cnt++;
+	    }
+	  }
+	  memcpy(recv_buf_size, (void *)&site_cnt, sizeof(int));
+	}
+	// Send result to primary node. Avoid sending prim-node sending to itself
+	if (node != 0) {
+#if 0
+	  // All nodes participate
+	  // First send the byte size for this 
+	  QDP_error_exit("Do not support route in writeOLattice(sub)");
+
+#else
+	  // We are using the point-to-point version
+	  if (Layout::primaryNode()) {
+	    QDPInternal::recvFromWait((void *)recv_buf_size, node, sizeof(int));
+	    memcpy((void *)&site_cnt, recv_buf_size, sizeof(int));
+	    QDPInternal::recvFromWait((void *)large_recv_buf, node, site_cnt*sizemem);
+	  }
+
+	  if (Layout::nodeNumber() == node) {
+	    QDPInternal::sendToWait((void *)recv_buf_size, 0, sizeof(int));
+	    QDPInternal::sendToWait((void *)large_recv_buf, 0, site_cnt*sizemem);
+	  }
+#endif
+	}
+	// primary node write to a file
+	if (Layout::primaryNode()) {
+	  if (QDPUtil::big_endian()) 
+	    iothread->write (large_recv_buf, size, nmemb * site_cnt, 0);
+	  else 
+	    iothread->write (large_recv_buf, size, nmemb * site_cnt, 1);
+	
+	  // checksum on native values
+	  bin.internalChecksum() = QDPUtil::crc32(bin.internalChecksum(), large_recv_buf, 
+						  nmemb * site_cnt * size);
+	}
+      }
+    }
+    if (Layout::primaryNode()) {
+      iothread->close ();
+      delete iothread;
+    }
+    delete []recv_buf_size;
+    delete []large_recv_buf;
+#else
     char *recv_buf = new(nothrow) char[max_tot_size];
     if( recv_buf == 0x0 ) { 
       QDP_error_exit("Unable to allocate recv_buf\n");
@@ -570,8 +799,8 @@ namespace QDP {
 
     delete[] recv_buf_size;
     delete[] recv_buf;
+#endif
   }
-
 
 
 //! Read a lattice quantity
@@ -583,14 +812,116 @@ namespace QDP {
 
     size_t sizemem = size*nmemb;
     size_t tot_size = sizemem*xinc;
+
+#ifdef QDP_USE_IO_THREAD
+    // maximum mpi buffer size (1 GB)
+    size_t max_buf_size = 1024*1024*1024;
+
+    // figure out how much space needed to send data to each node
+    std::vector<RdBlkInfo> recvinfo;
+
+    int prevnode, node, starting_site;
+    size_t rsize = 0;
+    RdBlkInfo info;
+
+    // first site in each segment uniquely identifies the node
+    prevnode = node = Layout::nodeNumber(crtesn(0, Layout::lattSize()));
+    // starting site index for a node block
+    starting_site = 0;
+    rsize += tot_size;
+    for(int site = xinc; site < Layout::vol(); site += xinc)
+    {
+      node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
+      if (node == prevnode)
+	rsize += tot_size;
+      else {
+	info.SetupInfo (prevnode, rsize, starting_site, tot_size, xinc, max_buf_size);
+	recvinfo.push_back(info);
+	rsize = tot_size;
+	// starting site for next node block
+	starting_site = site;
+      }
+      prevnode = node;
+    }
+    info.SetupInfo (prevnode, rsize, starting_site, tot_size, xinc, max_buf_size);
+    recvinfo.push_back(info); 
+    
+#if _DEBUG
+    if (Layout::primaryNode()) {
+      fprintf (stderr, "xinc = %d size = %d nmemb = %d total = %d\n",
+	       xinc, size, nmemb, tot_size);
+      for (int i = 0; i < recvinfo.size(); i++) {
+	std::cerr << recvinfo[i] << std::endl;
+      }    
+    }
+#endif
+
+    unsigned long t_rdsize = size * nmemb * Layout::vol();
+    FileBufferReader *iothread = 0;
+    if (Layout::primaryNode()) 
+      iothread = new FileBufferReader (bin.getIstream(), 4096*4096, 16,
+				       t_rdsize, size);
+
+    // every node has the same number of receiving blocks
+    unsigned int numblocks = recvinfo.size();
+    char *large_recv_buf = new(nothrow) char[recvinfo[0].SubBlockSize(0)];
+
+    for (unsigned int k = 0; k < numblocks; k++) {
+      for (unsigned int m = 0; m < recvinfo[k].NumberSubBlocks(); m++) {
+	if (Layout::primaryNode()) {
+	  // Only on primary node read the data
+	  if (QDPUtil::big_endian()) 
+	    iothread->read (large_recv_buf, size, nmemb * xinc * recvinfo[k].SubBlockXIncrements(m), 0);
+	  else
+	    iothread->read (large_recv_buf, size, nmemb * xinc * recvinfo[k].SubBlockXIncrements(m), 1);
+	
+	  // checksum is done after the value is swapped
+	  bin.internalChecksum() = QDPUtil::crc32(bin.internalChecksum(), 
+						  large_recv_buf, 
+						  size*nmemb*xinc*recvinfo[k].SubBlockXIncrements(m));
+
+	}
+
+	node = Layout::nodeNumber(crtesn(recvinfo[k].SubBlockStartingSite(m), Layout::lattSize()));
+
+	// Send result to destination node. Avoid sending prim-node sending to itself
+	if (node != 0) {
+#if 1
+	  // All nodes participate
+	  QDPInternal::route((void *)large_recv_buf, 0, node, recvinfo[k].SubBlockSize(m));
+#else
+	  if (Layout::primaryNode())
+	    QDPInternal::sendToWait((void *)large_recv_buf, node, recvinfo[k].SubBlockSize(m));
+
+	  if (Layout::nodeNumber() == node)
+	    QDPInternal::recvFromWait((void *)large_recv_buf, 0, recvinfo[k].SubBlockSize(m));
+#endif
+	}
+	  
+	if (Layout::nodeNumber() == node) {
+	  for(int n = 0; n < recvinfo[k].SubBlockXIncrements(m) * xinc; ++n) {
+	    int linear = Layout::linearSiteIndex(crtesn(recvinfo[k].SubBlockStartingSite(m) + n, 
+							Layout::lattSize()));
+	    memcpy(input+linear*sizemem, large_recv_buf + n*sizemem, sizemem);
+	  }
+	}
+      }
+    }
+    
+    if (Layout::primaryNode()) {
+      iothread->close ();
+      delete iothread;
+    }
+
+    delete[] large_recv_buf;
+#else
     char *recv_buf = new(nothrow) char[tot_size];
     if( recv_buf == 0x0 ) { 
       QDP_error_exit("Unable to allocate recvbuf\n");
     }
 
     // Find the location of each site and send to primary node
-    for(int site=0; site < Layout::vol(); site += xinc)
-    {
+    for(int site=0; site < Layout::vol(); site += xinc) {
       // first site in each segment uniquely identifies the node
       int node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
 
@@ -617,13 +948,12 @@ namespace QDP {
 	for(int i=0; i < xinc; ++i)
 	{
 	  int linear = Layout::linearSiteIndex(crtesn(site+i, Layout::lattSize()));
-
 	  memcpy(input+linear*sizemem, recv_buf+i*sizemem, sizemem);
 	}
       }
     }
-
     delete[] recv_buf;
+#endif
   }
 
 //! Read a single site worth of a lattice quantity
@@ -682,6 +1012,176 @@ namespace QDP {
 
     size_t sizemem = size*nmemb;
     size_t max_tot_size = sizemem*xinc;
+
+#ifdef QDP_USE_IO_THREAD
+    // maximum mpi buffer size (1 GB)
+    size_t max_buf_size = 1024*1024*1024;
+
+    // figure out how much space needed to send data to each node
+    std::vector<RdBlkInfo> recvinfo;
+
+    int prevnode, node, starting_site, site_cnt;
+    size_t rsize = 0;
+    RdBlkInfo info;
+
+    // keep track total number of sites
+    site_cnt = 0;
+    // going through first x increment
+    for (int site = 0; site < xinc; site++) {
+      int linear = Layout::linearSiteIndex(crtesn(site, Layout::lattSize()));
+      if (lat_color[linear] == color)
+	site_cnt++;
+    }
+
+    // first site in each segment uniquely identifies the node
+    prevnode = node = Layout::nodeNumber(crtesn(0, Layout::lattSize()));
+    // starting site index for a node block
+    starting_site = 0;
+    rsize += max_tot_size;
+    for(int site = xinc; site < Layout::vol(); site += xinc)
+    {
+      // figure out matching color sites
+      for (int i = 0; i < xinc; ++i) {
+	int linear = Layout::linearSiteIndex(crtesn(site+i, Layout::lattSize()));
+	if (lat_color[linear] == color) 
+	    site_cnt++;
+      }
+      node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
+      if (node == prevnode)
+	rsize += max_tot_size;
+      else {
+	info.SetupInfo (prevnode, rsize, starting_site, max_tot_size, xinc, max_buf_size);
+	recvinfo.push_back(info);
+	rsize = max_tot_size;
+	// starting site for next node block
+	starting_site = site;
+      }
+      prevnode = node;
+    }
+    info.SetupInfo (prevnode, rsize, starting_site, max_tot_size, xinc, max_buf_size);
+    recvinfo.push_back(info); 
+    
+#if _DEBUG
+    if (Layout::primaryNode()) {
+      fprintf (stderr, "xinc = %d size = %d nmemb = %d total = %d\n",
+	       xinc, size, nmemb, max_tot_size);
+      for (int i = 0; i < recvinfo.size(); i++) {
+	std::cerr << recvinfo[i] << std::endl;
+      }    
+    }
+#endif
+    // total read bytes
+    unsigned long t_rdsize = size * nmemb * site_cnt;
+
+    FileBufferReader *iothread = 0;
+    if (Layout::primaryNode()) 
+      iothread = new FileBufferReader (bin.getIstream(), 4096*4096, 16,
+				       t_rdsize, size);
+
+    // every node has the same number of receiving blocks
+    unsigned int numblocks = recvinfo.size();
+    char *large_recv_buf = new(nothrow) char[recvinfo[0].SubBlockSize(0)];
+    if (large_recv_buf == 0x0) {
+      QDP_error_exit("Unable to allocate large_recv_buf\n");
+    }
+    
+    // send / recv buffer size
+    char *recv_buf_size = new(nothrow) char[sizeof(int)];
+    if( recv_buf_size == 0x0 ) { 
+      QDP_error_exit("Unable to allocate recv_buf_size\n");
+    }
+
+
+    // walk through every block and find out how much data we
+    // need to send
+    for (unsigned int k = 0; k < numblocks; k++) {
+      for (unsigned int m = 0; m < recvinfo[k].NumberSubBlocks(); m++) {
+	// This algorithm is cumbersome. We do not keep the coordinate function for the subset.
+	// So, we have to ask the sending node how many sites are to be transferred,
+	// and rely on each node to send whatever number of sites live in the desired
+	// subgridLattSize strip.
+
+	// first site in each segment uniquely identifies the node  
+	node = Layout::nodeNumber(crtesn(recvinfo[k].SubBlockStartingSite(m), 
+					 Layout::lattSize()));  
+	// Find the amount of data to read. Unfortunately, have to ask the remote node
+	// Place the result in a send buffe
+	site_cnt = 0;
+	if (Layout::nodeNumber() == node) {
+	  for(int n = 0; n < recvinfo[k].SubBlockXIncrements(m) * xinc; ++n) {
+	    int linear = Layout::linearSiteIndex(crtesn(recvinfo[k].SubBlockStartingSite(m) + n, 
+							Layout::lattSize()));
+	    if (lat_color[linear] == color)
+	      site_cnt++;
+	  }
+	  memcpy (recv_buf_size, (void *)&site_cnt, sizeof(int));
+	}
+
+	if (node != 0) {
+	  // Send the data size to the primary node.
+	  // We are using the point-to-point version
+	  if (Layout::primaryNode()) {
+	    QDPInternal::recvFromWait((void *)recv_buf_size, node, sizeof(int));
+	    memcpy((void *)&site_cnt, recv_buf_size, sizeof(int));
+	  }
+
+	  if (Layout::nodeNumber() == node) {
+	    QDPInternal::sendToWait((void *)recv_buf_size, 0, sizeof(int));
+	  }
+	}
+
+	// only the primary node read the data
+	if (Layout::primaryNode()) {
+	  // Only on primary node read the data
+	  if (QDPUtil::big_endian()) 
+	    iothread->read (large_recv_buf, size, nmemb * site_cnt, 0);
+	  else
+	    iothread->read (large_recv_buf, size, nmemb * site_cnt, 1);
+	
+	  // checksum is done after the value is swapped
+	  bin.internalChecksum() = QDPUtil::crc32(bin.internalChecksum(), 
+						  large_recv_buf, 
+						  size*nmemb*site_cnt);
+
+	}
+	// send result to destination node
+
+	// Send result to destination node. Avoid sending prim-node sending to itself
+	if (node != 0) {
+#if 0
+	  // All nodes participate
+	  // First send the byte size for this 
+	  QDP_error_exit("Do not support route in readOLattice(sub)");
+#else
+	  // We are using the point-to-point version
+	  if (Layout::primaryNode())
+	    QDPInternal::sendToWait((void *)large_recv_buf, node, site_cnt*sizemem);
+	
+	  if (Layout::nodeNumber() == node)
+	    QDPInternal::recvFromWait((void *)large_recv_buf, 0, site_cnt*sizemem);
+	}
+#endif
+
+	if (Layout::nodeNumber() == node) {
+	  for(int n = 0,j = 0; n < recvinfo[k].SubBlockXIncrements(m) * xinc; ++n){
+	    int linear = Layout::linearSiteIndex(crtesn(recvinfo[k].SubBlockStartingSite(m) + n, 
+							Layout::lattSize()));
+	    if (lat_color[linear] == color) {
+	      memcpy(input+linear*sizemem, large_recv_buf+j*sizemem, sizemem);
+	      j++;
+	    }
+	  }
+	}
+      }
+    }
+    if (Layout::primaryNode()) {
+      iothread->close ();
+      delete iothread;
+    }
+
+    delete[] recv_buf_size;
+    delete[] large_recv_buf;
+#else
     char *recv_buf = new(nothrow) char[max_tot_size];
     if( recv_buf == 0x0 ) { 
       QDP_error_exit("Unable to allocate recv_buf\n");
@@ -772,6 +1272,7 @@ namespace QDP {
 
     delete[] recv_buf_size;
     delete[] recv_buf;
+#endif
   }
 
 
@@ -792,6 +1293,108 @@ namespace QDP {
 
       size_t sizemem = size*nmemb;
       size_t tot_size = sizemem*xinc;
+
+#ifdef QDP_USE_IO_THREAD
+      // maximum mpi buffer size (1 GB)
+      size_t max_buf_size = 1024*1024*1024;
+
+      // figure out how much space needed to send data to each node
+      std::vector<RdBlkInfo> recvinfo;
+
+      int prevnode, node, starting_site;
+      size_t rsize = 0;
+      RdBlkInfo info;
+
+      // first site in each segment uniquely identifies the node
+      prevnode = node = Layout::nodeNumber(crtesn(start_lexico, Layout::lattSize()));
+      // starting site index for a node block
+      // starting site index for a node block
+      starting_site = start_lexico;
+      rsize += tot_size;
+      for(int site = start_lexico + xinc; site < stop_lexico; site += xinc)
+	{
+	  node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
+	  if (node == prevnode)
+	    rsize += tot_size;
+	  else {
+	    info.SetupInfo (prevnode, rsize, starting_site, tot_size, xinc, max_buf_size);
+	    recvinfo.push_back(info);
+	    rsize = tot_size;
+	    // starting site for next node block
+	    starting_site = site;
+	  }
+	  prevnode = node;
+	}
+      info.SetupInfo (prevnode, rsize, starting_site, tot_size, xinc, max_buf_size);
+      recvinfo.push_back(info); 
+    
+#ifdef _DEBUG
+      if (Layout::primaryNode()) {
+	fprintf (stderr, "xinc = %d size = %d nmemb = %d total = %d\n",
+		 xinc, size, nmemb, tot_size);
+	for (int i = 0; i < recvinfo.size(); i++) {
+	  std::cerr << recvinfo[i] << std::endl;
+	}    
+      }
+#endif
+      unsigned long t_rdsize = size * nmemb * (stop_lexico - start_lexico);
+      FileBufferReader *iothread = 0;
+      if (Layout::primaryNode()) 
+	iothread = new FileBufferReader (bin.getIstream(), 4096*4096, 16,
+					 t_rdsize, size);
+
+      // every node has the same number of receiving blocks
+      unsigned int numblocks = recvinfo.size();
+      char *large_recv_buf = new(nothrow) char[recvinfo[0].SubBlockSize(0)];
+
+      for (unsigned int k = 0; k < numblocks; k++) {
+	for (unsigned int m = 0; m < recvinfo[k].NumberSubBlocks(); m++) {
+	  if (Layout::primaryNode()) {
+	    // Only on primary node read the data
+	    if (QDPUtil::big_endian()) 
+	      iothread->read (large_recv_buf, size, nmemb * xinc * recvinfo[k].SubBlockXIncrements(m), 0);
+	    else
+	      iothread->read (large_recv_buf, size, nmemb * xinc * recvinfo[k].SubBlockXIncrements(m), 1);
+
+	    // checksum is done after the value is swapped
+	    bin.internalChecksum() = QDPUtil::crc32(bin.internalChecksum(), 
+						    large_recv_buf, 
+						    size*nmemb*xinc*recvinfo[k].SubBlockXIncrements(m));
+	  }
+
+	  node = Layout::nodeNumber(crtesn(recvinfo[k].SubBlockStartingSite(m), Layout::lattSize()));
+
+	  // Send result to destination node. Avoid sending prim-node sending to itself
+	  if (node != 0) {
+#if 1
+	    // All nodes participate
+	    QDPInternal::route((void *)large_recv_buf, 0, node, recvinfo[k].SubBlockSize(m));
+#else
+	    if (Layout::primaryNode())
+	      QDPInternal::sendToWait((void *)large_recv_buf, node, recvinfo[k].SubBlockSize(m));
+
+	    if (Layout::nodeNumber() == node)
+	      QDPInternal::recvFromWait((void *)large_recv_buf, 0, recvinfo[k].SubBlockSize(m));
+#endif
+	  }
+	  
+	  if (Layout::nodeNumber() == node) {
+	    for(int n = 0; n < recvinfo[k].SubBlockXIncrements(m) * xinc; ++n) {
+	      int linear = Layout::linearSiteIndex(crtesn(recvinfo[k].SubBlockStartingSite(m) + n, 
+							  Layout::lattSize()));
+	      memcpy(input+linear*sizemem, large_recv_buf + n*sizemem, sizemem);
+	    }
+	  }
+	}
+      }
+    
+      if (Layout::primaryNode()) {
+	iothread->close ();
+	delete iothread;
+      }
+
+      delete[] large_recv_buf;    
+#else
       char *recv_buf = new(nothrow) char[tot_size];
       if( recv_buf == 0x0 ) { 
 	QDP_error_exit("Unable to allocate recvbuf\n");}
@@ -830,6 +1433,7 @@ namespace QDP {
       }
 
       delete[] recv_buf;
+#endif
     }
 
  
@@ -848,6 +1452,113 @@ namespace QDP {
 
       size_t sizemem = size*nmemb;
       size_t tot_size = sizemem*xinc;
+
+#ifdef QDP_USE_IO_THREAD
+      // maximum mpi buffer size (16 MB)                                          
+      size_t max_buf_size = 1024*1024*16;
+
+      // figure out how much space needed to send data to each node
+      std::vector<RdBlkInfo> wrinfo;
+
+      int prevnode, node, starting_site;
+      size_t wsize = 0;
+      RdBlkInfo info;
+
+      // first site in each segment uniquely identifies the node
+      prevnode = node = Layout::nodeNumber(crtesn(start_lexico, Layout::lattSize()));
+      // starting site index for a node block
+      starting_site = start_lexico; 
+      wsize += tot_size;
+      
+      for(int site = start_lexico + xinc; site < stop_lexico; site += xinc) {
+	node = Layout::nodeNumber(crtesn(site, Layout::lattSize()));
+	if (node == prevnode)
+	  wsize += tot_size;
+	else {
+	  info.SetupInfo (prevnode, wsize, starting_site, tot_size, xinc, max_buf_size);
+	  wrinfo.push_back(info);
+	  wsize = tot_size;
+	  // starting site for next node block
+	  starting_site = site;
+	}
+	prevnode = node;
+      }
+      info.SetupInfo (prevnode, wsize, starting_site, tot_size, xinc, max_buf_size);
+      wrinfo.push_back(info);
+
+#ifdef _DEBUG
+      if (Layout::primaryNode()) {
+	fprintf (stderr, "Writer xinc = %d size = %d nmemb = %d total = %d\n",
+		 xinc, size, nmemb, tot_size);
+	for (int i = 0; i < wrinfo.size(); i++) {
+	  std::cerr << wrinfo[i] << std::endl;
+	}    
+      }
+#endif
+
+      FileBufferWriter *iothread = 0;
+      if (Layout::primaryNode())
+	iothread = new FileBufferWriter(bin.getOstream(), 2048*2048, 16);
+
+      // every node has the same number of receiving blocks
+      unsigned int numblocks = wrinfo.size();
+      char *large_recv_buf = new(nothrow) char[wrinfo[0].SubBlockSize(0)];
+
+      int old_node = 0;
+      for (unsigned int k = 0; k < numblocks; k++) {                              
+	for (unsigned int m = 0; m < wrinfo[k].NumberSubBlocks(); m++) { 
+	  node = wrinfo[k].NodeNumber ();
+	  // Send nodes must wait for a ready signal from the master node
+	  // to prevent message pileups on the master node
+	  if (node != old_node) {
+	    // On non-grid machines, use a clear-to-send like protocol
+	    QDPInternal::clearToSend(large_recv_buf, sizeof(int), node);
+	    old_node = node;
+	  }
+
+	  // Copy to buffer: be really careful since max(linear) could vary among nodes
+	  if (Layout::nodeNumber() == node) {
+	    for(int i = 0; i < wrinfo[k].SubBlockXIncrements(m) * xinc; ++i) {
+	      int linear = Layout::linearSiteIndex(crtesn(wrinfo[k].SubBlockStartingSite(m) + i, 
+							  Layout::lattSize()));
+	      memcpy(large_recv_buf+i*sizemem, output+linear*sizemem, sizemem);
+	    }
+	  }
+
+	  // Send result to primary node. Avoid sending prim-node sending to itself
+	  if (node != 0) {
+#if 1
+	    // All nodes participate
+	    QDPInternal::route((void *)large_recv_buf, node, 0, wrinfo[k].SubBlockSize(m));
+#else
+	    if (Layout::primaryNode())
+	      QDPInternal::recvFromWait((void *)large_recv_buf, node, wrinfo[k].SubBlockSize(m));
+
+	    if (Layout::nodeNumber() == node)
+	      QDPInternal::sendToWait((void *)large_recv_buf, 0, wrinfo[k].SubBlockSize(m));
+#endif
+	  }
+
+	  // primary node write to a file
+	  if (Layout::primaryNode()) {
+	    if (QDPUtil::big_endian()) 
+	      iothread->write (large_recv_buf, size, 
+			       nmemb * xinc * wrinfo[k].SubBlockXIncrements(m), 0);
+	    else 
+	      iothread->write (large_recv_buf, size, 
+			       nmemb * xinc * wrinfo[k].SubBlockXIncrements(m), 1);
+	    // checksum on native values
+	    bin.internalChecksum() = QDPUtil::crc32(bin.internalChecksum(), large_recv_buf, 
+						    wrinfo[k].SubBlockSize(m));
+	  }
+	}
+      }
+      if (Layout::primaryNode()) {
+	iothread->close ();
+	delete iothread;
+      }
+      delete []large_recv_buf;
+#else
       char *recv_buf = new(nothrow) char[tot_size];
       if( recv_buf == 0x0 ) { 
 	QDP_error_exit("Unable to allocate recv_buf\n");}
@@ -892,8 +1603,10 @@ namespace QDP {
 	bin.writeArrayPrimaryNode(recv_buf, size, nmemb*xinc);
       }
       delete[] recv_buf;
+#endif
     }
   }
+
 
 
 //-----------------------------------------------------------------------
