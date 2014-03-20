@@ -20,31 +20,31 @@ void vadd(REAL *Out, REAL *In1, REAL *In2, int n_3vec)
     Out[i] = In1[i]+In2[i];
   }
 #if 0
-  register double in10r;
-  register double in10i;
-  register double in11r;
-  register double in11i;
-  register double in12r;
-  register double in12i;
+   double in10r;
+   double in10i;
+   double in11r;
+   double in11i;
+   double in12r;
+   double in12i;
 
-  register double in20r;
-  register double in20i;
-  register double in21r;
-  register double in21i;
-  register double in22r;
-  register double in22i;
+   double in20r;
+   double in20i;
+   double in21r;
+   double in21i;
+   double in22r;
+   double in22i;
 
-  register double out0r;
-  register double out0i;
-  register double out1r;
-  register double out1i;
-  register double out2r;
-  register double out2i;
+   double out0r;
+   double out0i;
+   double out1r;
+   double out1i;
+   double out2r;
+   double out2i;
 
-  register int counter =0;
-  register int in1ptr =0;
-  register int in2ptr =0;
-  register int outptr =0;
+   int counter =0;
+   int in1ptr =0;
+   int in2ptr =0;
+   int outptr =0;
 
   if( n_3vec > 0 ) {
     in10r = (double)In1[in1ptr++];

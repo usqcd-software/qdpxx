@@ -1,37 +1,37 @@
 #define _inline_qcdoc_mult_su3_an(aa,bb,cc) \
 { \
-  register REAL B0R;  \
-  register REAL B0I;  \
-  register REAL B1R;  \
-  register REAL B1I;  \
-  register REAL B2R;  \
-  register REAL B2I;  \
-  register REAL A00R; \
-  register REAL A00I; \
-  register REAL A01R; \
-  register REAL A01I; \
-  register REAL A02R; \
-  register REAL A02I; \
-  register REAL A10R; \
-  register REAL A10I; \
-  register REAL A11R; \
-  register REAL A11I; \
-  register REAL A12R; \
-  register REAL A12I; \
-  register REAL A20R; \
-  register REAL A20I; \
-  register REAL A21R; \
-  register REAL A21I; \
-  register REAL A22R; \
-  register REAL A22I; \
-  register REAL C0R;  \
-  register REAL C0I;  \
-  register REAL C1R;  \
-  register REAL C1I;  \
-  register REAL C2R;  \
-  register REAL C2I;  \
-  register REAL t1;   \
-  register REAL t2;   \
+   REAL B0R;  \
+   REAL B0I;  \
+   REAL B1R;  \
+   REAL B1I;  \
+   REAL B2R;  \
+   REAL B2I;  \
+   REAL A00R; \
+   REAL A00I; \
+   REAL A01R; \
+   REAL A01I; \
+   REAL A02R; \
+   REAL A02I; \
+   REAL A10R; \
+   REAL A10I; \
+   REAL A11R; \
+   REAL A11I; \
+   REAL A12R; \
+   REAL A12I; \
+   REAL A20R; \
+   REAL A20I; \
+   REAL A21R; \
+   REAL A21I; \
+   REAL A22R; \
+   REAL A22I; \
+   REAL C0R;  \
+   REAL C0I;  \
+   REAL C1R;  \
+   REAL C1I;  \
+   REAL C2R;  \
+   REAL C2I;  \
+   REAL t1;   \
+   REAL t2;   \
   \
   A00R = aa.elem(0,0).real()  ; \
   A00I = aa.elem(0,0).imag()  ; \

@@ -14,41 +14,41 @@ namespace QDP {
 inline
 void xpayz_g5ProjPlus(REAL *Out,REAL *scalep,REAL *Add, REAL *InScale,int n_4vec)
 {
-  register double a;
-  register double x0r;
-  register double x0i;
+   double a;
+   double x0r;
+   double x0i;
   
-  register double x1r;
-  register double x1i;
+   double x1r;
+   double x1i;
   
-  register double x2r;
-  register double x2i;
+   double x2r;
+   double x2i;
   
-  register double y0r;
-  register double y0i;
+   double y0r;
+   double y0i;
   
-  register double y1r;
-  register double y1i;
+   double y1r;
+   double y1i;
   
-  register double y2r;
-  register double y2i;
+   double y2r;
+   double y2i;
   
-  register double z0r;
-  register double z0i;
+   double z0r;
+   double z0i;
   
-  register double z1r;
-  register double z1i;
+   double z1r;
+   double z1i;
   
-  register double z2r;
-  register double z2i;
+   double z2r;
+   double z2i;
   
   a = *scalep;
   
-  register int index_x = 0;
-  register int index_y = 0;
-  register int index_z = 0;
+   int index_x = 0;
+   int index_y = 0;
+   int index_z = 0;
   
-  register int counter;
+   int counter;
   
   for( counter = 0; counter < n_4vec; counter++) {
     // Spin Component 0 (AYPX)
@@ -153,41 +153,41 @@ void xpayz_g5ProjPlus(REAL *Out,REAL *scalep,REAL *Add, REAL *InScale,int n_4vec
 inline
 void xpayz_g5ProjMinus(REAL *Out,REAL *scalep,REAL *Add, REAL *InScale,int n_4vec)
 {
-  register double a;
-  register double x0r;
-  register double x0i;
+   double a;
+   double x0r;
+   double x0i;
   
-  register double x1r;
-  register double x1i;
+   double x1r;
+   double x1i;
   
-  register double x2r;
-  register double x2i;
+   double x2r;
+   double x2i;
   
-  register double y0r;
-  register double y0i;
+   double y0r;
+   double y0i;
   
-  register double y1r;
-  register double y1i;
+   double y1r;
+   double y1i;
   
-  register double y2r;
-  register double y2i;
+   double y2r;
+   double y2i;
   
-  register double z0r;
-  register double z0i;
+   double z0r;
+   double z0i;
   
-  register double z1r;
-  register double z1i;
+   double z1r;
+   double z1i;
   
-  register double z2r;
-  register double z2i;
+   double z2r;
+   double z2i;
   
   a = *scalep;
   
-  register int index_x = 0;
-  register int index_y = 0;
-  register int index_z = 0;
+   int index_x = 0;
+   int index_y = 0;
+   int index_z = 0;
   
-  register int counter;
+   int counter;
   
   for( counter = 0; counter < n_4vec; counter++) {
     index_y += 12;
@@ -291,41 +291,41 @@ void xpayz_g5ProjMinus(REAL *Out,REAL *scalep,REAL *Add, REAL *InScale,int n_4ve
 inline
 void xmayz_g5ProjPlus(REAL *Out,REAL *scalep,REAL *Add, REAL *InScale,int n_4vec)
 {
-  register double a;
-  register double x0r;
-  register double x0i;
+   double a;
+   double x0r;
+   double x0i;
   
-  register double x1r;
-  register double x1i;
+   double x1r;
+   double x1i;
   
-  register double x2r;
-  register double x2i;
+   double x2r;
+   double x2i;
   
-  register double y0r;
-  register double y0i;
+   double y0r;
+   double y0i;
   
-  register double y1r;
-  register double y1i;
+   double y1r;
+   double y1i;
   
-  register double y2r;
-  register double y2i;
+   double y2r;
+   double y2i;
   
-  register double z0r;
-  register double z0i;
+   double z0r;
+   double z0i;
   
-  register double z1r;
-  register double z1i;
+   double z1r;
+   double z1i;
   
-  register double z2r;
-  register double z2i;
+   double z2r;
+   double z2i;
   
   a = *scalep;
   
-  register int index_x = 0;
-  register int index_y = 0;
-  register int index_z = 0;
+   int index_x = 0;
+   int index_y = 0;
+   int index_z = 0;
   
-  register int counter;
+   int counter;
   
   for( counter = 0; counter < n_4vec; counter++) {
     // Spin Component 0 (AYPX)
@@ -430,41 +430,41 @@ void xmayz_g5ProjPlus(REAL *Out,REAL *scalep,REAL *Add, REAL *InScale,int n_4vec
 inline
 void xmayz_g5ProjMinus(REAL *Out,REAL *scalep,REAL *Add, REAL *InScale,int n_4vec)
 {
-  register double a;
-  register double x0r;
-  register double x0i;
+   double a;
+   double x0r;
+   double x0i;
   
-  register double x1r;
-  register double x1i;
+   double x1r;
+   double x1i;
   
-  register double x2r;
-  register double x2i;
+   double x2r;
+   double x2i;
   
-  register double y0r;
-  register double y0i;
+   double y0r;
+   double y0i;
   
-  register double y1r;
-  register double y1i;
+   double y1r;
+   double y1i;
   
-  register double y2r;
-  register double y2i;
+   double y2r;
+   double y2i;
   
-  register double z0r;
-  register double z0i;
+   double z0r;
+   double z0i;
   
-  register double z1r;
-  register double z1i;
+   double z1r;
+   double z1i;
   
-  register double z2r;
-  register double z2i;
+   double z2r;
+   double z2i;
   
   a = *scalep;
   
-  register int index_x = 0;
-  register int index_y = 0;
-  register int index_z = 0;
+   int index_x = 0;
+   int index_y = 0;
+   int index_z = 0;
   
-  register int counter;
+   int counter;
   
   for( counter = 0; counter < n_4vec; counter++) {
     index_y += 12;
