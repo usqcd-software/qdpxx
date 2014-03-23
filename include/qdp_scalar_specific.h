@@ -41,6 +41,12 @@ namespace QDPInternal
   template<class T>
   inline void globalSum(T& dest) {}
 
+  //! Dummy global And
+  inline void globalAnd(bool& in) {}
+
+  //! Dummy global Or
+  inline void globalOr(bool& in) {}
+
   //! Dummy broadcast from primary node to all other nodes
   template<class T>
   inline void broadcast(T& dest) {}
@@ -1224,6 +1230,189 @@ globalMin(const QDPExpr<RHS,OLattice<T> >& s1)
     if (toBool(dd < d.elem()))
       d.elem() = dd;
   }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+
+//-----------------------------------------------
+// Test badness/goodness of floating point numbers.
+// These functions always return bool
+//! bool = isnan(OScalar)
+/*!
+ * Return true if there is a NaN anywhere in the source
+ */
+template<class T>
+inline bool
+isnan(const QDPType<T,OScalar<T> >& s1)
+{
+  return isnan(s1.elem());
+}
+
+
+//! bool = isnan(OLattice)
+/*!
+ * Return true if there is a NaN anywhere in the source
+ */
+template<class T>
+inline bool
+isnan(const OLattice<T>& s1)
+{
+  bool d = false;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnIsNan(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  const int vvol = Layout::vol();
+  for(int i=0; i < vvol; ++i) 
+  {
+    d |= isnan(s1.elem(i));
+  }
+
+  QDPInternal::globalOr(d);
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+
+//! bool = isinf(OScalar)
+/*!
+ * Return true if there is a NaN anywhere in the source
+ */
+template<class T>
+inline bool
+isinf(const QDPType<T,OScalar<T> >& s1)
+{
+  return isinf(s1.elem());
+}
+
+
+//! bool = isinf(OLattice)
+/*!
+ * Return true if there is an Inf anywhere in the source
+ */
+template<class T>
+inline bool
+isinf(const OLattice<T>& s1)
+{
+  bool d = false;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnIsInf(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  const int vvol = Layout::vol();
+  for(int i=0; i < vvol; ++i) 
+  {
+    d |= isinf(s1.elem(i));
+  }
+
+  QDPInternal::globalOr(d);
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+
+//! bool = isfinite(OScalar)
+/*!
+ * Return true if all the values in source are finite floating point numbers
+ */
+template<class T>
+inline bool
+isfinite(const QDPType<T,OScalar<T> >& s1)
+{
+  return isfinite(s1.elem());
+}
+
+
+//! bool = isfinite(OLattice)
+/*!
+ * Return true if all the values in source are finite floating point numbers
+ */
+template<class T>
+inline bool
+isfinite(const OLattice<T>& s1)
+{
+  bool d = true;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnIsFinite(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  const int vvol = Layout::vol();
+  for(int i=0; i < vvol; ++i) 
+  {
+    d &= isfinite(s1.elem(i));
+  }
+
+  QDPInternal::globalAnd(d);
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+
+//! bool = isnormal(OScalar)
+/*!
+ * Return true if all the values in source are normal floating point numbers
+ */
+template<class T>
+inline bool
+isnormal(const QDPType<T,OScalar<T> >& s1)
+{
+  return isnormal(s1.elem());
+}
+
+
+//! bool = isnormal(OLattice)
+/*!
+ * Return true if all the values in source are normal floating point numbers
+ */
+template<class T>
+inline bool
+isnormal(const OLattice<T>& s1)
+{
+  bool d = true;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnIsNormal(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  const int vvol = Layout::vol();
+  for(int i=0; i < vvol; ++i) 
+  {
+    d &= isnormal(s1.elem(i));
+  }
+
+  QDPInternal::globalAnd(d);
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();

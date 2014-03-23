@@ -905,7 +905,62 @@ tanh(const PScalar<T1>& s1)
 }
 
 
+//-----------------------------------------------------------------------------
+// These functions always return bool
+//! isnan
+template<class T1>
+struct UnaryReturn<PScalar<T1>, FnIsNan> {
+  bool Type_t;
+};
 
+template<class T1>
+inline bool
+isnan(const PScalar<T1>& s1)
+{
+  return isnan(s1.elem());
+}
+
+//! isinf
+template<class T1>
+struct UnaryReturn<PScalar<T1>, FnIsInf> {
+  bool Type_t;
+};
+
+template<class T1>
+inline bool
+isinf(const PScalar<T1>& s1)
+{
+  return isinf(s1.elem());
+}
+
+//! isnormal
+template<class T1>
+struct UnaryReturn<PScalar<T1>, FnIsNormal> {
+  bool Type_t;
+};
+
+template<class T1>
+inline bool
+isnormal(const PScalar<T1>& s1)
+{
+  return isnormal(s1.elem());
+}
+
+//! isfinite
+template<class T1>
+struct UnaryReturn<PScalar<T1>, FnIsFinite> {
+  bool Type_t;
+};
+
+template<class T1>
+inline bool
+isfinite(const PScalar<T1>& s1)
+{
+  return isfinite(s1.elem());
+}
+
+
+//-----------------------------------------------------------------------------
 //! PScalar<T> = pow(PScalar<T> , PScalar<T>)
 template<class T1, class T2>
 inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnPow>::Type_t

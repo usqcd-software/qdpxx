@@ -1,3 +1,6 @@
+03/13/2014 -- Robert Edwards
+        Version 1.43.0: Added new global functions. 
+
 07/04/2012 -- Balint Joo
         Version 1.42.0: New funtionality allowing for QIO to write from multiple
         IO nodes.

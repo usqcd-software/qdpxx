@@ -43,6 +43,26 @@ struct FnGlobalMin
   PETE_EMPTY_CONSTRUCTORS(FnGlobalMin)
 };
 
+struct FnIsNan
+{
+  PETE_EMPTY_CONSTRUCTORS(FnIsNan)
+};
+
+struct FnIsInf
+{
+  PETE_EMPTY_CONSTRUCTORS(FnIsInf)
+};
+
+struct FnIsFinite
+{
+  PETE_EMPTY_CONSTRUCTORS(FnIsFinite)
+};
+
+struct FnIsNormal
+{
+  PETE_EMPTY_CONSTRUCTORS(FnIsNormal)
+};
+
 struct FnNorm2
 {
   PETE_EMPTY_CONSTRUCTORS(FnNorm2)
