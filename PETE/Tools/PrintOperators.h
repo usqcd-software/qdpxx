@@ -67,6 +67,8 @@ using std::endl;
 
 using std::string;
 
+#include "Tools/Join.h"
+
 //-----------------------------------------------------------------------------
 // Forward Declarations:
 //-----------------------------------------------------------------------------
@@ -157,7 +159,7 @@ public:
 
     // Print UnaryReturn specialization:
     
-    string args = joinWithComma("class T", opdef.argDef());
+    string args = joinWithComma(std::string("class T"), opdef.argDef());
     
     ostr << endl << "template<" << args << " >" << endl
 	 << "struct UnaryReturn<T, " << opdef.tag() << " > {"
