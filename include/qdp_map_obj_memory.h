@@ -235,10 +235,10 @@ namespace QDP
     }
 
     //! Begin loop over keys
-    virtual const_iterator begin() const noexcept {return MapObjectMemoryIterator<K,V>(src_map.begin());}
+    virtual const_iterator begin() const {return MapObjectMemoryIterator<K,V>(src_map.begin());}
 
     //! End loop over keys
-    virtual const_iterator end() const noexcept {return MapObjectMemoryIterator<K,V>(src_map.end());}
+    virtual const_iterator end() const {return MapObjectMemoryIterator<K,V>(src_map.end());}
 
 
   protected:  
