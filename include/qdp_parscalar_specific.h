@@ -1399,8 +1399,8 @@ isnan(const OLattice<T>& s1)
   prof.time -= getClockTime();
 #endif
 
-  const int vvol = Layout::vol();
-  for(int i=0; i < vvol; ++i) 
+  const int nodeSites = Layout::sitesOnNode();
+  for(int i=0; i < nodeSites; ++i) 
   {
     d |= isnan(s1.elem(i));
   }
@@ -1444,8 +1444,8 @@ isinf(const OLattice<T>& s1)
   prof.time -= getClockTime();
 #endif
 
-  const int vvol = Layout::vol();
-  for(int i=0; i < vvol; ++i) 
+  const int nodeSites = Layout::sitesOnNode();
+  for(int i=0; i < nodeSites; ++i) 
   {
     d |= isinf(s1.elem(i));
   }
@@ -1489,8 +1489,8 @@ isfinite(const OLattice<T>& s1)
   prof.time -= getClockTime();
 #endif
 
-  const int vvol = Layout::vol();
-  for(int i=0; i < vvol; ++i) 
+  const int nodeSites = Layout::sitesOnNode();
+  for(int i=0; i < nodeSites; ++i) 
   {
     d &= isfinite(s1.elem(i));
   }
@@ -1534,8 +1534,8 @@ isnormal(const OLattice<T>& s1)
   prof.time -= getClockTime();
 #endif
 
-  const int vvol = Layout::vol();
-  for(int i=0; i < vvol; ++i) 
+  const int nodeSites = Layout::sitesOnNode();
+  for(int i=0; i < nodeSites; ++i) 
   {
     d &= isnormal(s1.elem(i));
   }
