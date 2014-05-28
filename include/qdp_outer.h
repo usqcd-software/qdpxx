@@ -113,7 +113,7 @@ public:
 
   //---------------------------------------------------------
   // Subsets
-  OSubScalar<T> operator[](const Subset& s) const
+  OSubScalar<T> operator[](const Subset& s)
     {return OSubScalar<T>(*this,s);}
 
   //---------------------------------------------------------
@@ -346,7 +346,7 @@ public:
 
   //---------------------------------------------------------
   // Subsets
-  OSubLattice<T> operator[](const Subset& s) const
+  OSubLattice<T> operator[](const Subset& s)
     {return OSubLattice<T>(*this,s);}
 
   //---------------------------------------------------------

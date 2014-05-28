@@ -19,7 +19,7 @@ class OSubScalar: public QDPSubType<T, OScalar<T> >
   typedef OScalar<T> C;
 
 public:
-  OSubScalar(const OScalar<T>& a, const Subset& ss): F(a), s(ss) {}
+  OSubScalar(OScalar<T>& a, const Subset& ss): F(a), s(ss) {}
   OSubScalar(const OSubScalar& a): F(a.F), s(a.s) {}
   ~OSubScalar() {}
 
@@ -67,11 +67,11 @@ private:
   OSubScalar() {}
 
 public:
-  C& field() {return const_cast<C&>(F);}
+  C& field() {return F;}
   const Subset& subset() const {return s;}
 
 private:
-  const C&      F;
+  C&      F;
   const Subset& s;
 };
 
@@ -88,7 +88,7 @@ class OSubLattice: public QDPSubType<T, OLattice<T> >
   typedef OLattice<T> C;
 
 public:
-  OSubLattice(const OLattice<T>& a, const Subset& ss): F(a), s(ss) {}
+  OSubLattice(OLattice<T>& a, const Subset& ss): F(a), s(ss) {}
   OSubLattice(const OSubLattice& a): F(a.F), s(a.s) {}
   ~OSubLattice() {}
 
@@ -136,11 +136,11 @@ private:
   OSubLattice() {}
 
 public:
-  C& field() {return const_cast<C&>(F);}
+  C& field() {return F;}
   const Subset& subset() const {return s;}
 
 private:
-  const C&      F;
+  C&      F;
   const Subset& s;
 };
 
