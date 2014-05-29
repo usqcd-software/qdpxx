@@ -19,13 +19,14 @@ namespace QDP
   {
     return sum(localInnerProduct(s1,s2));
   }
+#if 0
   template<class T1, class C1, class T2, class C2>
   inline typename BinaryReturn<C1, C2, FnInnerProduct>::Type_t
   innerProduct(const QDPSubType<T1,C1>& s1, const QDPSubType<T2,C2>& s2)
   {
     return sum(localInnerProduct(s1,s2));
   }
-
+#endif
 
   template<class T1,class C1,class T2,class C2>
   typename QDPSubTypeTrait< typename BinaryReturn<C1,C2,FnLocalInnerProduct>::Type_t >::Type_t
@@ -36,6 +37,8 @@ namespace QDP
 
     typename QDPSubTypeTrait< typename BinaryReturn<C1,C2,FnLocalInnerProduct>::Type_t >::Type_t ret;
     ret.setSubset( l.subset() );
+
+    //QDP_info("localInnerProduct %d sites",l.subset().numSiteTable());
 
     const int *tab = l.subset().siteTable().slice();
     for(int j=0; j < l.subset().numSiteTable(); ++j)
@@ -69,6 +72,8 @@ namespace QDP
     return ret;
   }
 
+
+#if 0
   template<class T1,class C1,class T2,class C2>
   typename QDPSubTypeTrait< typename BinaryReturn<C1,C2,FnLocalInnerProduct>::Type_t >::Type_t
   localInnerProduct(const QDPSubType<T1,C1> & l,const QDPSubType<T2,C2> & r)
@@ -91,7 +96,7 @@ namespace QDP
 
     return ret;
   }
-
+#endif
 
 
 

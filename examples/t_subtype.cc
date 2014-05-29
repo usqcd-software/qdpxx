@@ -48,31 +48,28 @@ void test_tslice()
   // Default create a set of Nt SLCV. The default constructor does not allocate memory
   multi1d<SubLatticeColorVector> vec(Nt);
 
-  // Now allocate memory for each of the SLCV.
+  // Now attach a subset to each of the SLCV.
   // Then copy the according timeslice of 'a' into each SLCV
   for (int i=0 ; i < Nt ; ++i ) {
     vec[i].setSubset( tslice[i] );
-    zero_rep(vec[i]);        // not necessary, just for testing
-    vec[i] = a[tslice[i]];
+    zero_rep(vec[i]);   // does something only on nodes where the subset is non-empty 
+    vec[i] = a;         // dito
   }
 
   // Now, do some contractions.
-  multi1d<Complex> contr( Nt * Nt );
+  multi1d<Complex> contr( Nt );
   for (int i=0 ; i < Nt ; ++i ) {
-    for (int w=0 ; w < Nt ; ++w ) {
-      contr[i*Nt+w] = innerProduct( vec[i] , vec[w] );
-    }
+    contr[i] = innerProduct( a , vec[i] );
   }
 
   // Another way to construct SLCV:
-  SubLatticeColorVector tmp( tslice[Nt-1] , a );  // This allocates memory in 'tmp' and copies the acc. TS from 'a'.
+  SubLatticeColorVector tmp( tslice[Nt-1] , a );  // This attaches the subset to 'tmp' and copies the according TS from 'a'.
   zero_rep(a);
-  a[ tslice[0] ] = tmp; // This writes into tslice[0] of 'a', thus not paying attention to what 'tmp' was created with.
-
+  a = tmp; // This writes into the subset that was attached to tmp
 
   // The OSubLattice is *not* fleshed into PETE. Thus only those operations that are explicitly implemented work, i.e. like innerProduct
   // This does not work:
-  // vec[0] = vec[1] * vec[2];
+  // vec[0] = vec[1] + vec[2];
 
   if (0)
   {
@@ -153,7 +150,7 @@ int main(int argc, char *argv[])
 {
   QDP_initialize(&argc, &argv);
 
-  const int foo[] = {4,4,4,4};
+  const int foo[] = {4,4,4,8};
   multi1d<int> nrow(Nd);
   nrow = foo;  // Use only Nd elements
 

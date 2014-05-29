@@ -83,7 +83,9 @@ public:
 	QDP_error_exit("assignment with incompatible subset sizes");
       for(int j=0; j < subset().numSiteTable(); ++j)
 	getF()[j] = rhs.getF()[j];
-    }
+    } else
+
+#if 0
     if (!getOwnsMemory() && rhs.getOwnsMemory()) {
       //std::cout << "view = own\n";
       if (subset().numSiteTable() != rhs.subset().numSiteTable())
@@ -104,7 +106,8 @@ public:
 	getF()[j] = rhs.getF()[i];
       }
     }
-    if (!getOwnsMemory() && !rhs.getOwnsMemory()) 
+    if (!getOwnsMemory() && !rhs.getOwnsMemory())
+#endif
       QDP_error_exit("assignment of two view subtypes is not supported");
   }
 

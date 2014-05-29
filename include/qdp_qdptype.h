@@ -370,8 +370,28 @@ public:
       return *me;
     }
 
+
+  template<class T1,class C1>
+  inline
+  void assign(const QDPSubType<T1,C1>& rhs)
+  {
+    if (!rhs.getOwnsMemory()) 
+      QDP_error_exit("Assigning subtype(view) to qdptype is not supported");
+
+    //QDP_info("qdptype = subtype(own) %d",rhs.subset().numSiteTable());
+
+    const int *tab = rhs.subset().siteTable().slice();
+    for(int j=0; j < rhs.subset().numSiteTable(); ++j) {
+      int i = tab[j];
+      elem(i) = rhs.getF()[j];
+    }
+  }
+
+
+
+
 public:
-  T& elem(int i) {return static_cast<const C*>(this)->elem(i);}
+  T& elem(int i) {return static_cast<C*>(this)->elem(i);}
   const T& elem(int i) const {return static_cast<const C*>(this)->elem(i);}
 
   T& elem() {return static_cast<const C*>(this)->elem();}

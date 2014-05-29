@@ -358,6 +358,13 @@ public:
       return this->assign(rhs);
     }
 
+  template<class T1>
+  inline
+  void operator=(const OSubLattice<T1>& rhs)
+    {
+      this->assign(rhs);
+    }
+
 
   //---------------------------------------------------------
   // Subsets

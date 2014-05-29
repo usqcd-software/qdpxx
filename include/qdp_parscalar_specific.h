@@ -425,7 +425,7 @@ template<class T, class T1, class Op, class RHS>
 void evaluate_F(T* dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
 	      const Subset& s)
 {
-  cerr << "In evaluate_F(olattice,olattice)" << endl;
+  //cerr << "In evaluate_F(olattice,olattice)" << endl;
 
 #if defined(QDP_USE_PROFILING)   
   static QDPProfile_t prof(dest, op, rhs);
@@ -439,6 +439,8 @@ void evaluate_F(T* dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
   ////////////////////
   // Original code
   ///////////////////
+
+  //QDP_info("eval_F %d sites",s.numSiteTable());
 
   // General form of loop structure
   const int *tab = s.siteTable().slice();
