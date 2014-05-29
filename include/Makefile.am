@@ -146,6 +146,7 @@ nobase_include_HEADERS = \
 		qdp_config.h \
 		qdp_forward.h \
 		qdp_globalfuncs.h \
+		qdp_globalfuncs_subtype.h \
 		qdp_inner.h \
 		qdp_init.h \
 		qdp_io.h \

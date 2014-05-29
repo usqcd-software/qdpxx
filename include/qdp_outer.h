@@ -39,6 +39,8 @@ public:
   OScalar() {}
   ~OScalar() {}
 
+  OScalar( T* F_ , float f ): F(*F_) {}
+
   //---------------------------------------------------------
   //! construct dest = const
   OScalar(const typename WordType<T>::Type_t& rhs)
@@ -114,12 +116,13 @@ public:
   //---------------------------------------------------------
   // Subsets
   OSubScalar<T> operator[](const Subset& s)
-    {return OSubScalar<T>(*this,s);}
+  {return OSubScalar<T>(*this,const_cast<Subset&>(s));}
 
   //---------------------------------------------------------
   //! Deep copy constructor
   OScalar(const OScalar& a): F(a.F) {/*fprintf(stderr,"copy OScalar\n");*/}
 
+  T* getF() { return &F; }
 
 public:
   inline T& elem() {return F;}
@@ -234,6 +237,15 @@ void evaluate(OScalar<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& r
   op(dest.elem(), forEach(rhs, ElemLeaf(), OpCombine()));
 }
 
+template<class T, class T1, class Op, class RHS>
+inline
+void evaluate_F(T* dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
+	      const Subset& s)
+{
+  // Subset is not used at this level. It may be needed, though, within an inner operation
+  op(*dest, forEach(rhs, ElemLeaf(), OpCombine()));
+}
+
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup olattice Lattice outer grid 
@@ -259,6 +271,9 @@ public:
     {
       free_mem();
     }
+
+
+  OLattice( T* F , float f ): F(F) {}
 
 
   //---------------------------------------------------------
@@ -347,7 +362,7 @@ public:
   //---------------------------------------------------------
   // Subsets
   OSubLattice<T> operator[](const Subset& s)
-    {return OSubLattice<T>(*this,s);}
+  {return OSubLattice<T>(*this,const_cast<Subset&>(s));}
 
   //---------------------------------------------------------
   //! Copy constructor
@@ -441,6 +456,7 @@ private:
    */
   inline void alloc_mem(const char* const p) 
     {
+      mem=true;
       // Barfs if allocator fails
       try 
       {
@@ -464,6 +480,7 @@ private:
   //! Internal memory free
   inline void free_mem() 
   {
+    if (!mem) return;
     if( slow != 0x0 ) 
     { 
       QDP::Allocator::theQDPAllocator::Instance().free(slow);
@@ -489,6 +506,7 @@ public:
 
 
 private:
+  bool mem=false;
   T *F; // Alias to current memory space
   T *slow; // Pointer to default slow memory space
 #ifdef QDP_USE_QCDOC
