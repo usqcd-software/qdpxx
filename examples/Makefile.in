@@ -102,7 +102,7 @@ EXTRA_PROGRAMS = t_qio_factory$(EXEEXT) t_gsum$(EXEEXT) \
 	t_iprod$(EXEEXT) $(am__EXEEXT_1) nersc2ildg$(EXEEXT) \
 	test_ildglat$(EXEEXT) lhpc2ildg$(EXEEXT)
 @BUILD_WILSON_EXAMPLES_TRUE@am__append_9 = t_dslashm t_formfac t_spectrum t_qdp t_linalg 
-@BUILD_WILSON_EXAMPLES_TRUE@am__append_10 = t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3 t_spinproj t_spinproj2
+@BUILD_WILSON_EXAMPLES_TRUE@am__append_10 = t_subtype t_foo t_blas t_cblas t_blas_g5 t_blas_g5_2 t_blas_g5_3 t_spinproj t_spinproj2
 @BUILD_STAGGERED_EXAMPLES_TRUE@am__append_11 = 
 subdir = examples
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
@@ -117,8 +117,9 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/include/qdp_config_internal.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-@BUILD_WILSON_EXAMPLES_TRUE@am__EXEEXT_1 = t_foo$(EXEEXT) \
-@BUILD_WILSON_EXAMPLES_TRUE@	t_blas$(EXEEXT) t_cblas$(EXEEXT) \
+@BUILD_WILSON_EXAMPLES_TRUE@am__EXEEXT_1 = t_subtype$(EXEEXT) \
+@BUILD_WILSON_EXAMPLES_TRUE@	t_foo$(EXEEXT) t_blas$(EXEEXT) \
+@BUILD_WILSON_EXAMPLES_TRUE@	t_cblas$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_blas_g5$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_blas_g5_2$(EXEEXT) \
 @BUILD_WILSON_EXAMPLES_TRUE@	t_blas_g5_3$(EXEEXT) \
@@ -293,6 +294,11 @@ t_spinproj2_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 am_t_su3_OBJECTS = t_su3.$(OBJEXT)
 t_su3_OBJECTS = $(am_t_su3_OBJECTS)
 t_su3_LDADD = $(LDADD)
+am_t_subtype_OBJECTS = t_subtype.$(OBJEXT) $(am__objects_1)
+t_subtype_OBJECTS = $(am_t_subtype_OBJECTS)
+t_subtype_LDADD = $(LDADD)
+t_subtype_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_transpose_spin_OBJECTS = t_transpose_spin.$(OBJEXT) \
 	$(am__objects_1)
 t_transpose_spin_OBJECTS = $(am_t_transpose_spin_OBJECTS)
@@ -361,8 +367,8 @@ SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
 	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
 	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
 	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
-	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
-	$(test_ildglat_SOURCES)
+	$(t_subtype_SOURCES) $(t_transpose_spin_SOURCES) \
+	$(t_xml_SOURCES) $(test_ildglat_SOURCES)
 DIST_SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
 	$(t_basic_SOURCES) $(t_blas_SOURCES) $(t_blas_g5_SOURCES) \
 	$(t_blas_g5_2_SOURCES) $(t_blas_g5_3_SOURCES) \
@@ -375,8 +381,8 @@ DIST_SOURCES = $(lhpc2ildg_SOURCES) $(nersc2ildg_SOURCES) \
 	$(t_qdp_SOURCES) $(t_qio_SOURCES) $(t_qio_factory_SOURCES) \
 	$(t_shift_SOURCES) $(t_skeleton_SOURCES) $(t_spectrum_SOURCES) \
 	$(t_spinproj_SOURCES) $(t_spinproj2_SOURCES) $(t_su3_SOURCES) \
-	$(t_transpose_spin_SOURCES) $(t_xml_SOURCES) \
-	$(test_ildglat_SOURCES)
+	$(t_subtype_SOURCES) $(t_transpose_spin_SOURCES) \
+	$(t_xml_SOURCES) $(test_ildglat_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -550,6 +556,7 @@ HDRS = examples.h
 # The program and its dependencies
 t_skeleton_SOURCES = t_skeleton.cc
 t_foo_SOURCES = t_foo.cc $(HDRS)
+t_subtype_SOURCES = t_subtype.cc $(HDRS)
 t_xml_SOURCES = t_xml.cc $(HDRS)
 t_qio_SOURCES = t_qio.cc $(HDRS)
 t_qio_DEPENDENCIES = build_lib rebuild_other_libs
@@ -767,6 +774,10 @@ t_su3$(EXEEXT): $(t_su3_OBJECTS) $(t_su3_DEPENDENCIES) $(EXTRA_t_su3_DEPENDENCIE
 	@rm -f t_su3$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(t_su3_OBJECTS) $(t_su3_LDADD) $(LIBS)
 
+t_subtype$(EXEEXT): $(t_subtype_OBJECTS) $(t_subtype_DEPENDENCIES) $(EXTRA_t_subtype_DEPENDENCIES) 
+	@rm -f t_subtype$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(t_subtype_OBJECTS) $(t_subtype_LDADD) $(LIBS)
+
 t_transpose_spin$(EXEEXT): $(t_transpose_spin_OBJECTS) $(t_transpose_spin_DEPENDENCIES) $(EXTRA_t_transpose_spin_DEPENDENCIES) 
 	@rm -f t_transpose_spin$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(t_transpose_spin_OBJECTS) $(t_transpose_spin_LDADD) $(LIBS)
@@ -829,6 +840,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spinproj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_spinproj2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_su3.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_subtype.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_transpose_spin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_xml.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
