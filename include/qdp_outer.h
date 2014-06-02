@@ -273,7 +273,7 @@ public:
     }
 
 
-  OLattice( T* F , float f ): F(F) {}
+  OLattice( T* F , float f ): mem(false), F(F) {}
 
 
   //---------------------------------------------------------
@@ -465,7 +465,7 @@ private:
     {
       mem=true;
       // Barfs if allocator fails
-      try 
+      try
       {
 	slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
       // slow is active 
@@ -513,7 +513,7 @@ public:
 
 
 private:
-  bool mem=false;
+  bool mem;
   T *F; // Alias to current memory space
   T *slow; // Pointer to default slow memory space
 #ifdef QDP_USE_QCDOC
