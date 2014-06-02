@@ -413,7 +413,7 @@ private:
     {
       mem=true;
       // Barfs if allocator fails
-      try 
+      try
       {
 	F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
       }
