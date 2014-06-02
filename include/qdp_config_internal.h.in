@@ -102,9 +102,6 @@
 /* Enable profiling */
 #undef QDP_USE_PROFILING
 
-/* Enable QCDOC opts */
-#undef QDP_USE_QCDOC
-
 /* Use QMT Threads library */
 #undef QDP_USE_QMT_THREADS
 

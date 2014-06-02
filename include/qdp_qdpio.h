@@ -55,33 +55,6 @@ namespace QDP
     QDPIO_badbit   = 0x0100,
   };
 
-#if 0
-  // This code was to support better partfile IO on the QCDOC 
-  // However I have commented it out because it is not clear
-  // at this time in the API how to pass this information 
-  // town to the QIO. A straightforward hack is to modify 
-  // the QIO_Layout structure, but we have not actually agreed
-  // with Carleton that that is what I should do. The placement
-  // of the choice for a particular kind of partitioning scheme
-  // is not yet present -- will it be in QIO, will it be in QMP?
-  // will it be here? WIll it be configure/runtime? We just don't
-  // know.
-  namespace SingleFileIONode { 
-    int IONode(int node);
-    int masterIONode(void);
-  };
-
-  namespace MultiFileIONode {
-    int IONode(int node);
-    int masterIONode(void);
-  };
-
-  namespace PartFileIONode { 
-    int IONode(int node);
-    int masterIONode(void);
-  };
-#endif
-
   //! QIO Type and precision strings. 
   //  Using the magic of C++ I can define the right type and precision
   //  strings i Need to pass to QIO using templates. To do this I need

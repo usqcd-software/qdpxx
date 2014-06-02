@@ -127,7 +127,6 @@ POST_UNINSTALL = :
 # Optimized code using sse extensions
 @QDP_USE_SCALARVEC_SSE_TRUE@am__append_9 = qdp_scalarvecsite_sse.cc
 @BUILD_DEFAULT_ALLOCATOR_TRUE@am__append_10 = qdp_default_allocator.cc
-@QDP_USE_QCDOC_TRUE@am__append_11 = qdp_qcdoc_allocator.cc
 subdir = lib
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/config/mkinstalldirs \
@@ -206,7 +205,7 @@ am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	qdp_scalarvec_specific.cc qdp_scalarvecsite_specific.cc \
 	qdp_parscalarvec_init.cc qdp_parscalarvec_layout.cc \
 	qdp_parscalarvec_specific.cc qdp_scalarvecsite_sse.cc \
-	qdp_default_allocator.cc qdp_qcdoc_allocator.cc
+	qdp_default_allocator.cc
 @QDP_USE_LIBXML2_TRUE@am__objects_1 = qdp_xmlio.$(OBJEXT) \
 @QDP_USE_LIBXML2_TRUE@	qdp_iogauge.$(OBJEXT) \
 @QDP_USE_LIBXML2_TRUE@	qdp_qdpio.$(OBJEXT) \
@@ -250,7 +249,6 @@ am__libqdp_a_SOURCES_DIST = qdp_map.cc qdp_subset.cc qdp_random.cc \
 @QDP_USE_SCALARVEC_SSE_TRUE@	qdp_scalarvecsite_sse.$(OBJEXT)
 @BUILD_DEFAULT_ALLOCATOR_TRUE@am__objects_8 =  \
 @BUILD_DEFAULT_ALLOCATOR_TRUE@	qdp_default_allocator.$(OBJEXT)
-@QDP_USE_QCDOC_TRUE@am__objects_9 = qdp_qcdoc_allocator.$(OBJEXT)
 am_libqdp_a_OBJECTS = qdp_map.$(OBJEXT) qdp_subset.$(OBJEXT) \
 	qdp_random.$(OBJEXT) qdp_layout.$(OBJEXT) qdp_io.$(OBJEXT) \
 	qdp_byteorder.$(OBJEXT) qdp_util.$(OBJEXT) qdp_stdio.$(OBJEXT) \
@@ -258,8 +256,7 @@ am_libqdp_a_OBJECTS = qdp_map.$(OBJEXT) qdp_subset.$(OBJEXT) \
 	qdp_crc32.$(OBJEXT) qdp_stopwatch.$(OBJEXT) \
 	qdp_rannyu.$(OBJEXT) $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
-	$(am__objects_6) $(am__objects_7) $(am__objects_8) \
-	$(am__objects_9)
+	$(am__objects_6) $(am__objects_7) $(am__objects_8)
 libqdp_a_OBJECTS = $(am_libqdp_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -455,8 +452,7 @@ libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	qdp_stdio.cc qdp_profile.cc qdp_strnlen.cc qdp_crc32.cc \
 	qdp_stopwatch.cc qdp_rannyu.cc $(am__append_3) $(am__append_4) \
 	$(am__append_5) $(am__append_6) $(am__append_7) \
-	$(am__append_8) $(am__append_9) $(am__append_10) \
-	$(am__append_11)
+	$(am__append_8) $(am__append_9) $(am__append_10)
 all: all-am
 
 .SUFFIXES:
@@ -549,7 +545,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_parscalarvec_layout.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_parscalarvec_specific.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_profile.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_qcdoc_allocator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_qdpio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_qio_strings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_random.Po@am__quote@
