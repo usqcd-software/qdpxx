@@ -425,6 +425,18 @@ double localNorm2(double s1)
 }
 
 inline
+double localInnerProduct(float s1, double s2)
+{
+  return double(s1)*s2;
+}
+
+inline
+double localInnerProduct(double s1, float s2)
+{
+  return s1*double(s2);
+}
+
+inline
 double localInnerProduct(double s1, double s2)
 {
   return s1*s2;
