@@ -39,6 +39,8 @@ public:
   OScalar() {}
   ~OScalar() {}
 
+  OScalar( T* F_ , float f ) : F(*F_) {}
+
   //---------------------------------------------------------
   //! construct dest = const
   OScalar(const typename WordType<T>::Type_t& rhs)
@@ -113,13 +115,14 @@ public:
 
   //---------------------------------------------------------
   // Subsets
-  OSubScalar<T> operator[](const Subset& s) const
-    {return OSubScalar<T>(*this,s);}
+  OSubScalar<T> operator[](const Subset& s)
+  {return OSubScalar<T>(*this,const_cast<Subset&>(s));}
 
   //---------------------------------------------------------
   //! Deep copy constructor
   OScalar(const OScalar& a): F(a.F) {/*fprintf(stderr,"copy OScalar\n");*/}
 
+  T* getF() { return &F; }
 
 public:
   inline T& elem() {return F;}
@@ -234,6 +237,15 @@ void evaluate(OScalar<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& r
   op(dest.elem(), forEach(rhs, ElemLeaf(), OpCombine()));
 }
 
+template<class T, class T1, class Op, class RHS>
+inline
+void evaluate_F(T* dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& rhs,
+	      const Subset& s)
+{
+  // Subset is not used at this level. It may be needed, though, within an inner operation
+  op(*dest, forEach(rhs, ElemLeaf(), OpCombine()));
+}
+
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup olattice Lattice outer grid 
@@ -259,6 +271,9 @@ public:
     {
       free_mem();
     }
+
+
+  OLattice( T* F , float f ): mem(false), F(F) {}
 
 
   //---------------------------------------------------------
@@ -343,11 +358,18 @@ public:
       return this->assign(rhs);
     }
 
+  template<class T1>
+  inline
+  void operator=(const OSubLattice<T1>& rhs)
+    {
+      this->assign(rhs);
+    }
+
 
   //---------------------------------------------------------
   // Subsets
-  OSubLattice<T> operator[](const Subset& s) const
-    {return OSubLattice<T>(*this,s);}
+  OSubLattice<T> operator[](const Subset& s)
+  {return OSubLattice<T>(*this,const_cast<Subset&>(s));}
 
   //---------------------------------------------------------
   //! Copy constructor
@@ -367,63 +389,11 @@ public:
    */
   inline T* getF() const {return F;}
 
-#ifndef QDP_USE_QCDOC
   // Nop if not on QCDOC
   inline void moveToFastMemoryHint(bool copy=false) {}
-#else
-  // Special for QCDOC
-  inline
-  void moveToFastMemoryHint(bool copy=false) {
 
-    if( fast == 0x0 ) {
-      try { 
-	int nodeSites = Layout::sitesOnNode();
-	fast = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*nodeSites,QDP::Allocator::FAST);
-	if( copy ) { 
-	  for(int i=0; i < sizeof(T)*nodeSites; i++) {
-	    *(( unsigned char *)fast + i) = *((unsigned char *)slow + i);
-	  }
-	}
-	F=fast;
-      }
-      catch(std::bad_alloc) {
-	// Failed to get Fast Memory
-	fast = 0x0;
-	F=slow;
-      }
-    }
-  }
-#endif
-
-#ifndef QDP_USE_QCDOC
   // Nop if not on QCDOC
   inline void revertFromFastMemoryHint(bool copy=false) {}
-#else
-  // Special for QCDOC
-  inline
-  void revertFromFastMemoryHint(bool copy=false) {
-
-    // If the memory is fast
-    if ( fast != 0x0 ) { 
-
-      // Copy if necessary
-      if(copy) { 
-	nodeSites = Layout::sitesOnNode();
-	for(int i=0; i < sizeof(T)*nodeSites; i++) { 
-	  *(( unsigned char *)slow + i) = *((unsigned char *)fast + i);
-	}
-      }
-      // Free the fast memory
-      QDP::Allocator::theQDPAllocator::Instance().free(fast);
-
-      // Set the fast memory pointer to 0
-      fast = 0x0;
-
-      // Make slow memory active
-      F = slow;
-    }
-  }
-#endif 
   
   
 public:
@@ -441,12 +411,11 @@ private:
    */
   inline void alloc_mem(const char* const p) 
     {
+      mem=true;
       // Barfs if allocator fails
-      try 
+      try
       {
-	slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
-      // slow is active 
-	F=slow;
+	F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
       }
       catch(std::bad_alloc) 
       {
@@ -454,28 +423,18 @@ private:
 	QDP::Allocator::theQDPAllocator::Instance().dump();
 	QDP_abort(1);
       }
-
-#ifdef QDP_USE_QCDOC
-      // Make sure fast is set to 0x0
-      fast=0x0;
-#endif
     }
 
   //! Internal memory free
   inline void free_mem() 
   {
-    if( slow != 0x0 ) 
+    if (!mem) return;
+    if( F != 0x0 ) 
     { 
-      QDP::Allocator::theQDPAllocator::Instance().free(slow);
-      slow = 0x0;
+      QDP::Allocator::theQDPAllocator::Instance().free(F);
     }
-    F = slow;
-#ifdef QDP_USE_QCDOC 
-    if( fast != 0x0 ) { 
-      QDP::Allocator::theQDPAllocator::Instance().free(fast);      
-      fast = 0x0;
-    }
-#endif
+    mem = false;
+    F = 0x0;
   }
 
 
@@ -489,12 +448,8 @@ public:
 
 
 private:
+  bool mem;
   T *F; // Alias to current memory space
-  T *slow; // Pointer to default slow memory space
-#ifdef QDP_USE_QCDOC
-  T *fast; // Pointer to fast memory space
-#endif
-
 };
 
 

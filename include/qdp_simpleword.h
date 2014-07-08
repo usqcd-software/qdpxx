@@ -36,6 +36,11 @@ using std::sqrt;
 using std::tan;
 using std::tanh;
 
+using std::isnan;
+using std::isinf;
+using std::isfinite;
+using std::isnormal;
+
 
 /*! \addtogroup simpleword Builtin word operations
  * \ingroup fiber
@@ -417,6 +422,18 @@ inline
 double localNorm2(double s1)
 {
   return s1*s1;
+}
+
+inline
+double localInnerProduct(float s1, double s2)
+{
+  return double(s1)*s2;
+}
+
+inline
+double localInnerProduct(double s1, float s2)
+{
+  return s1*double(s2);
 }
 
 inline

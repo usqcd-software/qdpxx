@@ -43,10 +43,10 @@ namespace QDP
     void keys(std::vector<K>& _keys) const {}
 
     //! Insert user data into the metadata database
-    int insertUserdata(const std::string& user_data) {}
+    int insertUserdata(const std::string& user_data) {return 0;}
     
     //! Get user user data from the metadata database
-    int getUserdata(std::string& user_data) const {}
+    int getUserdata(std::string& user_data) const {return 0;}
   };
 
 } // namespace QDP

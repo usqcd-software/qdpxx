@@ -15,14 +15,14 @@ namespace QDP {
 inline
 void local_sumsq(DOUBLE *Out, REAL  *In, int n_3vec)
 {
-  register double result;
+   double result;
   
-  register double i1;
-  register double i2;
-  register double i3;
-  register double i4;
-  register double i5;
-  register double i6;
+   double i1;
+   double i2;
+   double i3;
+   double i4;
+   double i5;
+   double i6;
 
   int len = 24*n_3vec;
   

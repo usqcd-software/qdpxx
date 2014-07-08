@@ -280,6 +280,53 @@ namespace QDP
   }
 
 
+  //-----------------------------------------------------------------------------
+  // These functions always return bool
+  //! bool = isnan(source)
+  /*!
+   * Return true if there is a NaN anywhere in the source
+   */
+  template<class T, class C>
+  inline bool
+  isnan(const QDPExpr<T,C>& s1)
+  {
+    return isnan(C(s1));
+  }
+
+  //! bool = isinf(source)
+  /*!
+   * Return true if there is an Inf anywhere in the source
+   */
+  template<class T, class C>
+  inline bool
+  isinf(const QDPExpr<T,C>& s1)
+  {
+    return isinf(C(s1));
+  }
+
+  //! bool = isnormal(source)
+  /*!
+   * Return true if all the values in source are normal floating point numbers
+   */
+  template<class T, class C>
+  inline bool
+  isnormal(const QDPExpr<T,C>& s1)
+  {
+    return isnormal(C(s1));
+  }
+
+  //! bool = isfinite(source)
+  /*!
+   * Return true if all the values in source are finite floating point numbers
+   */
+  template<class T, class C>
+  inline bool
+  isfinite(const QDPExpr<T,C>& s1)
+  {
+    return isfinite(C(s1));
+  }
+
+
   /** @} */ // end of group3
 
 

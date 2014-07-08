@@ -1201,7 +1201,7 @@ void vaxmy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Sub,int n_4vec)
 //  int n_loops = n_4vec >> 2;   // only works on multiple of length 4 vectors
   int n_loops = n_4vec;   // only works on multiple of length 24 vectors
 
-//  register v4sf va = load_v4sf((float *)&a);
+//  v4sf va = load_v4sf((float *)&a);
   v4sf vscalep = _mm_load_ss(scalep);
   vscalep = _mm_shuffle_ps( vscalep, vscalep, 0);
 
@@ -1273,7 +1273,7 @@ void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_4vec)
 //  int n_loops = n_4vec >> 2;   // only works on multiple of length 4 vectors
   int n_loops = n_4vec;   // only works on multiple of length 24 vectors
 
-//  register v4sf va = load_v4sf((float *)&a);
+//  v4sf va = load_v4sf((float *)&a);
   v4sf vscalep = _mm_load_ss(scalep);
   vscalep = _mm_shuffle_ps(vscalep, vscalep, 0);
 
@@ -1300,7 +1300,7 @@ void vaxpby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_4vec
 //  int n_loops = n_4vec >> 2;   // only works on multiple of length 4 vectors
   int n_loops = n_4vec;   // only works on multiple of length 24 vectors
 
-//  register v4sf va = load_v4sf((float *)&a);
+//  v4sf va = load_v4sf((float *)&a);
   v4sf va = _mm_load_ss(a);
   v4sf vb = _mm_load_ss(b);
   va = _mm_shuffle_ps(va, va, 0);
@@ -1330,7 +1330,7 @@ void vaxmby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_4vec
 //  int n_loops = n_4vec >> 2;   // only works on multiple of length 4 vectors
   int n_loops = n_4vec;   // only works on multiple of length 24 vectors
 
-//  register v4sf va = load_v4sf((float *)&a);
+//  v4sf va = load_v4sf((float *)&a);
   v4sf va = _mm_load_ss(a);
   v4sf vb = _mm_load_ss(b);
   va = _mm_shuffle_ps( va, va, 0);
@@ -1357,11 +1357,11 @@ void vaxmby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_4vec
 void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_4vec) 
 {
 
-  register __m128d vsum = _mm_setzero_pd();
-  register __m128d vsum2 = _mm_setzero_pd();
-  register __m128d lower_2, upper_2;
-  register __m128d dat_sq, dat_sq2;
-  register __m128  tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
+  __m128d vsum = _mm_setzero_pd();
+  __m128d vsum2 = _mm_setzero_pd();
+  __m128d lower_2, upper_2;
+  __m128d dat_sq, dat_sq2;
+  __m128  tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
   
   REAL32* num=In;
   int loop_end;
@@ -1559,27 +1559,27 @@ void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_4vec)
 
 void local_vcdot(REAL64 *Out_re, REAL64 *Out_im, REAL32 *V1, REAL32 *V2, int n_3vec)
 {
-  register double result_re;
-  register double result_im;
+  double result_re;
+  double result_im;
 
   
-  register double v1_0r;
-  register double v1_0i;
-  register double v1_1r;
-  register double v1_1i;
-  register double v1_2r;
-  register double v1_2i;
+  double v1_0r;
+  double v1_0i;
+  double v1_1r;
+  double v1_1i;
+  double v1_2r;
+  double v1_2i;
 
-  register double v2_0r;
-  register double v2_0i;
-  register double v2_1r;
-  register double v2_1i;
-  register double v2_2r;
-  register double v2_2i;
+  double v2_0r;
+  double v2_0i;
+  double v2_1r;
+  double v2_1i;
+  double v2_2r;
+  double v2_2i;
 
-  register int counter=0;
-  register unsigned long vecptr1=0;
-  register unsigned long vecptr2=0;
+  int counter=0;
+  unsigned long vecptr1=0;
+  unsigned long vecptr2=0;
   result_re= 0;
   result_im= 0;
 
@@ -1661,25 +1661,25 @@ void local_vcdot(REAL64 *Out_re, REAL64 *Out_im, REAL32 *V1, REAL32 *V2, int n_3
 
 void local_vcdot_real(REAL64 *Out, REAL32 *V1, REAL32 *V2, int n_3vec)
 {
-  register REAL64 result;
+  REAL64 result;
   
-  register REAL64 v1_0r;
-  register REAL64 v1_0i;
-  register REAL64 v1_1r;
-  register REAL64 v1_1i;
-  register REAL64 v1_2r;
-  register REAL64 v1_2i;
+  REAL64 v1_0r;
+  REAL64 v1_0i;
+  REAL64 v1_1r;
+  REAL64 v1_1i;
+  REAL64 v1_2r;
+  REAL64 v1_2i;
 
-  register REAL64 v2_0r;
-  register REAL64 v2_0i;
-  register REAL64 v2_1r;
-  register REAL64 v2_1i;
-  register REAL64 v2_2r;
-  register REAL64 v2_2i;
+  REAL64 v2_0r;
+  REAL64 v2_0i;
+  REAL64 v2_1r;
+  REAL64 v2_1i;
+  REAL64 v2_2r;
+  REAL64 v2_2i;
 
-  register int counter=0;
-  register unsigned long vecptr1=0;
-  register unsigned long vecptr2=0;
+  int counter=0;
+  unsigned long vecptr1=0;
+  unsigned long vecptr2=0;
   result= 0;
 
   

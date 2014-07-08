@@ -318,7 +318,7 @@ operator*(const PScalar<float>& l, const PDWVectorFloat4& r)
   cout << "P * DWV" << endl;
 #endif
 
-  register v4sf x = _mm_load_ss((float*)&(l.elem()));
+   v4sf x = _mm_load_ss((float*)&(l.elem()));
   x = _mm_shuffle_ps(x,x,0);
 
   return _mm_mul_ps(x, r.elem_v());
@@ -333,7 +333,7 @@ operator*(const PDWVectorFloat4& l, const PScalar<float>& r)
   cout << "DWV * P" << endl;
 #endif
 
-  register v4sf x = _mm_load_ss((float*)&(r.elem()));
+   v4sf x = _mm_load_ss((float*)&(r.elem()));
 
   x = _mm_shuffle_ps(x,x,0);
   return _mm_mul_ps(l.elem_v(), x);

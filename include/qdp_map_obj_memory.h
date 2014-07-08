@@ -13,12 +13,68 @@
 namespace QDP
 {
 
+
+  //----------------------------------------------------------------------------
+  //! Iterator for a MapObject
+  template<typename K, typename V>
+  class MapObjectMemoryIterator : public std::iterator<std::input_iterator_tag, 
+						 std::unordered_map<std::string, std::pair<K,V> > >
+  {
+  public:
+    //! Map type convenience
+    typedef std::unordered_map<std::string, std::pair<K,V> > MapType_t;
+
+    //! Take an input iterator coming from MapObject
+    MapObjectMemoryIterator(const typename MapType_t::const_iterator& iter_) : src_iter(iter_) {}
+
+    //! Copy constructor
+    MapObjectMemoryIterator(const MapObjectMemoryIterator& p) : src_iter(p.src_iter) {}
+
+    //! Prefix increment
+    MapObjectMemoryIterator& operator++() {++src_iter; return *this;}
+ 
+    //! Postfix increment
+    MapObjectMemoryIterator operator++(int) 
+    {
+      MapObjectMemoryIterator<K,V> tmp(*this); 
+      operator++(); 
+      return tmp;
+    }
+
+    //! Equality
+    bool operator==(const MapObjectMemoryIterator& rhs) const {return src_iter == rhs.src_iter;}
+
+    //! Rather obvious
+    bool operator!=(const MapObjectMemoryIterator& rhs) const {return src_iter != rhs.src_iter;}
+
+    // Coercion
+    const std::pair<K,V>& operator*() const {return src_iter->second;}
+    
+    // Coercion
+    const std::pair<K,V>* operator->() const {return &(src_iter->second);}
+    
+  private:
+    //! Hold the iterator
+    typename MapType_t::const_iterator src_iter;
+    
+  };
+
+
   //----------------------------------------------------------------------------
   //! A wrapper over maps
   template<typename K, typename V>
   class MapObjectMemory : public MapObject<K,V>
   {
   public:
+    //! Re-export these
+    typedef K key_type;
+    typedef V mapped_type;
+    typedef std::pair<K,V> value_type;
+    typedef MapObjectMemoryIterator<K,V> const_iterator;
+
+    //! Map type convenience
+    typedef std::unordered_map<std::string, value_type> MapType_t;
+    
     //! Default constructor
     MapObjectMemory() {}
 
@@ -26,38 +82,58 @@ namespace QDP
     ~MapObjectMemory() {}
 
     //! Insert user data into the metadata database
-    int insertUserdata(const std::string& user_data_) {
+    int insertUserdata(const std::string& user_data_) 
+    {
       user_data = user_data_;
       return 0;
     }
     
     //! Get user user data from the metadata database
-    int getUserdata(std::string& user_data_) const {
+    int getUserdata(std::string& user_data_) const 
+    {
       user_data_ = user_data;
       return 0;
     }
 
     //! Insert
-    int insert(const K& key, const V& val) {
+    int insert(const K& key, const V& val) 
+    {
+      return this->insert(std::make_pair(key,val));
+    }
+			
+    //! Insert from iterators
+    template<typename InputIterator>
+    int insert(InputIterator first, InputIterator last)
+    {
+      int ret = 0;
+      for(InputIterator iter = first; iter != last; ++iter)
+	this->insert(*iter);
+      return ret;
+    }
+			
+    //! Insert
+    int insert(const value_type& vv) 
+    { 
       int ret = 0;
       BinaryBufferWriter bin;
-      write(bin, key);
+      write(bin, vv.first);
 
       const std::string bin_key(bin.str());
       typename MapType_t::iterator iter = src_map.find(bin_key);
       if (iter != src_map.end())
       {
-	iter->second = val;
+	iter->second = vv;
       }
       else
       {
-	src_map.insert(std::make_pair(bin_key,val));
+	src_map.insert(std::make_pair(bin_key,vv));
       }
       return ret;
     }
 			
     //! Getter
-    int get(const K& key, V& val) const {
+    int get(const K& key, V& val) const
+    {
       int ret = 0;
       BinaryBufferWriter bin;
       write(bin, key);
@@ -67,13 +143,14 @@ namespace QDP
 	ret = 1;
       }
       else {
-	val = iter->second;
+	val = iter->second.second;
       }
       return ret;
     }
 			
     //! Erase a key-value
-    void erase(const K& key) {
+    void erase(const K& key) 
+    {
       BinaryBufferWriter bin;
       write(bin, key);
 
@@ -91,7 +168,8 @@ namespace QDP
     void flush() {}
 
     //! Exists?
-    bool exist(const K& key) const {
+    bool exist(const K& key) const
+    {
       BinaryBufferWriter bin;
       write(bin, key);
       return (src_map.find(bin.str()) == src_map.end()) ? false : true;
@@ -102,40 +180,31 @@ namespace QDP
     unsigned int size() const {return static_cast<unsigned long>(src_map.size());}
 
     //! Dump keys
-    void keys(std::vector<K>& _keys) const {
+    void keys(std::vector<K>& _keys) const
+    {
       _keys.resize(0);
-      typename MapType_t::const_iterator iter;
-      for(iter  = src_map.begin();
-	  iter != src_map.end();
-	  ++iter)
+      for(typename MapType_t::const_iterator iter  = src_map.begin(); iter != src_map.end(); ++iter)
       {
-	BinaryBufferReader bin(iter->first);
-	K key;
-	read(bin, key);
-	_keys.push_back(key);
+	_keys.push_back(iter->second.first);
       }
     }
 
     //! Dump keys and values
-    virtual void keysAndValues(std::vector<K>& _keys, std::vector<V>& _vals) const {
+    virtual void keysAndValues(std::vector<K>& _keys, std::vector<V>& _vals) const 
+    {
       _keys.resize(0);
       _vals.resize(0);
-      typename MapType_t::const_iterator iter;
-      for(iter  = src_map.begin();
-	  iter != src_map.end();
-	  ++iter)
+      for(typename MapType_t::const_iterator iter  = src_map.begin(); iter != src_map.end(); ++iter)
       {
-	BinaryBufferReader bin(iter->first);
-	K key;
-	read(bin, key);
-	_keys.push_back(key);
-	_vals.push_back(iter->second);
+	_keys.push_back(iter->second.first);
+	_vals.push_back(iter->second.second);
       }
     }
 
     // Extensions to the basic MapObject
     //! Getter
-    const V& operator[](const K& key) const {
+    const V& operator[](const K& key) const 
+    {
       BinaryBufferWriter bin;
       write(bin, key);
 
@@ -146,11 +215,12 @@ namespace QDP
 	exit(1);
       }
 
-      return iter->second;
+      return iter->second.second;
     }
 			
     //! Setter
-    V& operator[](const K& key) {
+    V& operator[](const K& key) 
+    {
       BinaryBufferWriter bin;
       write(bin, key);
 
@@ -161,15 +231,21 @@ namespace QDP
 	exit(1);
       }
 
-      return iter->second;
+      return iter->second.second;
     }
-			
+
+    //! Begin loop over keys
+    virtual const_iterator begin() const {return MapObjectMemoryIterator<K,V>(src_map.begin());}
+
+    //! End loop over keys
+    virtual const_iterator end() const {return MapObjectMemoryIterator<K,V>(src_map.end());}
+
+
   protected:  
-    //! Map type convenience
-    typedef std::unordered_map<std::string, V> MapType_t;
-    
     //! Map of objects
     mutable MapType_t src_map;
+
+    //! Metadata
     std::string user_data;
   };
 
@@ -241,21 +317,16 @@ namespace QDP
   {
     push(xml, path);
 
-    std::vector<K>  k1;
-    std::vector<V>  v1;
-    param.keysAndValues(k1,v1);
-
-    for(int i=0; i < k1.size(); ++i)
+    for(typename MapObjectMemory<K,V>::const_iterator iter = param.begin(); iter != param.end(); ++iter)
     {
       push(xml, "elem");
-      write(xml, "Key", k1[i]);
-      write(xml, "Val", v1[i]);
+      write(xml, "Key", iter->first);
+      write(xml, "Val", iter->second);
       pop(xml);
     }
 
     pop(xml);
   }
-
 
 } // namespace QDP
 

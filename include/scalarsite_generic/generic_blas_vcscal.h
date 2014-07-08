@@ -13,26 +13,26 @@ namespace QDP {
 inline
 void vcscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec)
 {
-  register double a_r =(REAL)*scalep;
-  register double a_i =(REAL)*(scalep+1);
+   double a_r =(REAL)*scalep;
+   double a_i =(REAL)*(scalep+1);
 
-  register double i0r;
-  register double i0i;
-  register double i1r;
-  register double i1i;
-  register double i2r;
-  register double i2i;
+   double i0r;
+   double i0i;
+   double i1r;
+   double i1i;
+   double i2r;
+   double i2i;
 
-  register double o0r;
-  register double o0i;
-  register double o1r;
-  register double o1i;
-  register double o2r;
-  register double o2i;
+   double o0r;
+   double o0i;
+   double o1r;
+   double o1i;
+   double o2r;
+   double o2i;
 
-  register int counter=0;
-  register int inptr=0;
-  register int outptr=0;
+   int counter=0;
+   int inptr=0;
+   int outptr=0;
 
   if( n_3vec > 0 ) {
     // Prefetch whole 3 vec

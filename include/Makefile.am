@@ -119,15 +119,6 @@ SSEVEC_HDRS = qdp_scalarvecsite_sse.h \
 	$(ssevecdir)/qdp_scalarvecsite_sse_blas.h
 
 
-# QCDOC stuff
-qcdocdir = scalarsite_qcdoc
-
-QCDOC_HDRS = $(qcdocdir)/qdp_scalarsite_qcdoc_linalg.h \
-	$(qcdocdir)/qcdoc_mult_nn.h \
-	$(qcdocdir)/qcdoc_mult_an.h \
-	$(qcdocdir)/save_fp_regs.h
-
-
 # QCDOC NONSPECIFIC BAGEL stuff
 bageldir = scalarsite_bagel_qdp
 BAGEL_HDRS = qdp_scalarsite_bagel_qdp.h \
@@ -138,14 +129,14 @@ BAGEL_HDRS = qdp_scalarsite_bagel_qdp.h \
 # HEADERS for the memory allocator
 MEMORY_HDRS = qdp_allocator.h \
 	      qdp_singleton.h \
-	      qdp_default_allocator.h \
-	      qdp_qcdoc_allocator.h
+	      qdp_default_allocator.h
 
 # All the include files - avoid flattening of dirs by using nobase
 nobase_include_HEADERS = \
 		qdp_config.h \
 		qdp_forward.h \
 		qdp_globalfuncs.h \
+		qdp_globalfuncs_subtype.h \
 		qdp_inner.h \
 		qdp_init.h \
 		qdp_io.h \
@@ -214,7 +205,6 @@ nobase_include_HEADERS = \
                 $(PETE_HDRS) \
                 $(GENERIC_HDRS) \
 		$(MEMORY_HDRS) \
-		$(QCDOC_HDRS) \
 		$(SSESITE_HDRS) \
 		$(SSEVEC_HDRS) \
 	        $(BAGEL_HDRS)

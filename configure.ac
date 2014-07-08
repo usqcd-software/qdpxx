@@ -1,4 +1,4 @@
-AC_INIT([qdp++],[1.42.0],[edwards@jlab.org])
+AC_INIT([qdp++],[1.44.0],[edwards@jlab.org])
 
 AC_CONFIG_AUX_DIR(config)
 
@@ -176,15 +176,6 @@ AC_ARG_ENABLE(3dnow,
   [ac_3dnow=0]
 )
 
-dnl --enable-qcdoc
-AC_ARG_ENABLE(qcdoc,
-   AC_HELP_STRING([--enable-qcdoc], 
-     [Enable QCDOC Optimisations]),
-     [ac_qcdoc_enabled=1
-      AC_MSG_NOTICE([Enabling QCDOC Specific Optimisations])],
-     [ac_qcdoc_enabled=0]
-)
-
 dnl --enable-bgl
 AC_ARG_ENABLE(bgl,
    AC_HELP_STRING([--enable-bgl],
@@ -224,12 +215,7 @@ AM_CONDITIONAL(BUILD_LIBINTRIN,
 	[ test "x${build_libintrin}x" = "xyesx"] )
 
 
-dnl if QCDOC is enabled change some settings
-if test ${ac_qcdoc_enabled} -eq 1; then 
-   AC_DEFINE_UNQUOTED(QDP_USE_QCDOC, ${ac_qcdoc_enabled}, [Enable QCDOC opts])
-fi
-
-dnl if QCDOC is enabled change some settings
+dnl if BGL is enabled change some settings
 if test ${ac_bgl_enabled} -eq 1; then 
    AC_DEFINE_UNQUOTED(QDP_USE_BLUEGENEL, ${ac_bgl_enabled}, [Enable BGL opts])
 fi
@@ -707,9 +693,6 @@ AM_CONDITIONAL(ARCH_PARSCALARVEC, [test "X${PARALLEL_ARCH}X" = "XparscalarvecX"]
 AM_CONDITIONAL(QDP_USE_SCALAR_SSE, [test "X${ac_sse}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarsiteX"])
 AM_CONDITIONAL(QDP_USE_SCALAR_SSE2, [test "X${ac_sse2}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarsiteX"])
 
-dnl conditional for using Peters assembler
-AM_CONDITIONAL(QDP_USE_QCDOC, [test "X${ac_qcdoc_enabled}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarsiteX"])
-
 AM_CONDITIONAL(QDP_USE_SCALARVEC_SSE, [test "X${ac_sse}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarvecsiteX"])
 AM_CONDITIONAL(QDP_USE_SCALARVEC_SSE2, [test "X${ac_sse2}X" = "X1X" -a "X${ARCH_SITE}X" = "XscalarvecsiteX"])
 
@@ -723,7 +706,7 @@ AM_CONDITIONAL(BUILD_WILSON_EXAMPLES,
   [test "X${ac_Ns}X" != "X1X"])
 
 AM_CONDITIONAL(BUILD_DEFAULT_ALLOCATOR,
-  [test "X${ac_qcdoc_enabled}X" = "X0X"])
+  [test "X0X" = "X0X"])
 
 #
 # Conditional for use qmt

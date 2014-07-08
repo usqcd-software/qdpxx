@@ -14,31 +14,31 @@ namespace QDP {
 inline
 void scal_g5ProjPlus(REAL *Out, REAL *scalep, REAL *In, int n_4vec)
 {
-  register double a;
-  register double x0r;
-  register double x0i;
+   double a;
+   double x0r;
+   double x0i;
   
-  register double x1r;
-  register double x1i;
+   double x1r;
+   double x1i;
   
-  register double x2r;
-  register double x2i;
+   double x2r;
+   double x2i;
   
-  register double z0r;
-  register double z0i;
+   double z0r;
+   double z0i;
   
-  register double z1r;
-  register double z1i;
+   double z1r;
+   double z1i;
   
-  register double z2r;
-  register double z2i;
+   double z2r;
+   double z2i;
   
   a = *scalep;
   
-  register int index_x = 0;
-  register int index_z = 0;
+   int index_x = 0;
+   int index_z = 0;
   
-  register int counter;
+   int counter;
   
   for( counter = 0; counter < n_4vec; counter++) {
     // Spin Component 0
@@ -114,31 +114,31 @@ void scal_g5ProjPlus(REAL *Out, REAL *scalep, REAL *In, int n_4vec)
 inline
 void scal_g5ProjMinus(REAL *Out, REAL *scalep, REAL *In, int n_4vec)
 {
-  register double a;
-  register double x0r;
-  register double x0i;
+   double a;
+   double x0r;
+   double x0i;
   
-  register double x1r;
-  register double x1i;
+   double x1r;
+   double x1i;
   
-  register double x2r;
-  register double x2i;
+   double x2r;
+   double x2i;
   
-  register double z0r;
-  register double z0i;
+   double z0r;
+   double z0i;
   
-  register double z1r;
-  register double z1i;
+   double z1r;
+   double z1i;
   
-  register double z2r;
-  register double z2i;
+   double z2r;
+   double z2i;
   
   a = *scalep;
   
-  register int index_x = 0;
-  register int index_z = 0;
+   int index_x = 0;
+   int index_z = 0;
   
-  register int counter;
+   int counter;
   
   for( counter = 0; counter < n_4vec; counter++) {
     index_x+=12;

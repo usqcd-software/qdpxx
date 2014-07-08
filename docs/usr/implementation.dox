@@ -266,6 +266,18 @@ i.e. via \c operator=
   - minimum over lattice indices (simple quantities)
 
 
+\subsection secglobalchecks Global checks
+
+- QDP::isnan
+  - true if any value in source is NaN
+- QDP::isinf
+  - true if any value in source is an Inf
+- QDP::isfinite
+  - true if all values in source are finite
+- QDP::isnormal
+  - true if all values in source are normal
+
+
 \subsection secpeek Accessors
 
 Peeking and poking (accessors) into various component indices of objects.

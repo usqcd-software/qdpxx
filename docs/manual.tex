@@ -1,4 +1,4 @@
-% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.23.0
+% -*-LaTeX-*- document QDP API (C++ Language Binding) version 1.43.0
 %
 \documentclass[12pt,letterpaper]{article}
 
@@ -111,12 +111,12 @@
 
 \begin{document}
 \title{
-   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.24.1}
+   QDP++ Data Parallel Interface for QCD  \\{\large Version 1.43.0}
 }
 \author{Robert G. Edwards\\
 SciDAC Software Coordinating Committee}
 
-\date{June 15, 2007}
+\date{March 23, 2014}
 
 \maketitle
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2700,6 +2700,20 @@ ldexp, pow, fmod, atan2
 \begin{tabular}{lcp{4.0in}}
 \verb|globalMax(arg1)|        &:& maximum across the lattice (simple scalars)\\
 \verb|globalMin(arg1)|        &:& minimum across the lattice (simple scalars)\\
+\end{tabular}
+\end{flushleft}
+
+\medskip
+
+\subsection{Global checks}
+\label{sec:checks}
+
+\begin{flushleft}
+\begin{tabular}{lcp{4.0in}}
+\verb|isnan(arg1)|        &:& true if any value in source is NaN\\
+\verb|isinf(arg1)|        &:& true if any value in source is an Inf\\
+\verb|isfinite(arg1)|   &:& true if all values in source are finite\\
+\verb|isnormal(arg1)|    &:& true if all values in source are normal \\
 \end{tabular}
 \end{flushleft}
 

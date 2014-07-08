@@ -764,7 +764,7 @@ void inlineSpinProjDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
     //  v3[2] <- v3[3]  [5:4]=3 = x11 <- tmp[2][col=1][im]
     //  v3[3] <- v3[2]  [7:6]=2 = x10 <- tmp[2][col=1][re]
     //
-    // Note I don't need an extra register here. Shuf from v3 to 
+    // Note I don't need an extra  here. Shuf from v3 to 
     // v3 directly.
     //
     //  So Immediate for shufps is: 0x1011 0001 = xB1
@@ -830,7 +830,7 @@ void inlineSpinProjDir2Plus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   //  v3[2] <- v3[3]  [5:4]=3 = x11 <- tmp[2][col=1][im]
   //  v3[3] <- v3[2]  [7:6]=2 = x10 <- tmp[2][col=1][re]
   //
-  // Note I don't need an extra register here. Shuf from v3 to 
+  // Note I don't need an extra  here. Shuf from v3 to 
   // v3 directly.
   //
   //  So Immediate for shufps is: 0x1011 0001 = xB1
@@ -943,7 +943,7 @@ void inlineSpinProjDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
     //  v3[2] <- v3[3]  [5:4]=3 = x11 <- tmp[2][col=1][im]
     //  v3[3] <- v3[2]  [7:6]=2 = x10 <- tmp[2][col=1][re]
     //
-    // Note I don't need an extra register here. Shuf from v3 to 
+    // Note I don't need an extra  here. Shuf from v3 to 
     // v3 directly.
     //
     //  So Immediate for shufps is: 0x1011 0001 = xB1
@@ -1009,7 +1009,7 @@ void inlineSpinProjDir2Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   //  v3[2] <- v3[3]  [5:4]=3 = x11 <- tmp[2][col=1][im]
   //  v3[3] <- v3[2]  [7:6]=2 = x10 <- tmp[2][col=1][re]
   //
-  // Note I don't need an extra register here. Shuf from v3 to 
+  // Note I don't need an extra  here. Shuf from v3 to 
   // v3 directly.
   //
   //  So Immediate for shufps is: 0x1011 0001 = xB1
