@@ -212,6 +212,10 @@ void QDP_finalize()
 
   printProfile();
 
+#if defined(QDP_USE_HDF5)
+  H5close();
+#endif
+
   QMP_finalize_msg_passing();
 
   isInit = false;

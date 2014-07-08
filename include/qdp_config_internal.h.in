@@ -48,6 +48,9 @@
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
 
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
@@ -62,6 +65,9 @@
 
 /* Number of dimensions */
 #undef QDP_ND
+
+/* Dont use HDF5 */
+#undef QDP_NO_HDF5
 
 /* Dont use LIBXML2 */
 #undef QDP_NO_LIBXML2
@@ -89,6 +95,9 @@
 
 /* Use generic C optimizations */
 #undef QDP_USE_GENERIC_OPTS
+
+/* Enable HDF5 support */
+#undef QDP_USE_HDF5
 
 /* Use lexicographic layout */
 #undef QDP_USE_LEXICO_LAYOUT

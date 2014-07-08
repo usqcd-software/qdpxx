@@ -490,6 +490,77 @@ else
 
 fi
 
+dnl Abhinav Sarje, 10/09/2013
+dnl Andre Walker-Loud, 10/09/2013
+dnl
+dnl adding hdf5
+dnl
+dnl
+AC_ARG_WITH(hdf5,
+  AC_HELP_STRING(
+    [--with-hdf5=DIR],
+    [Enable support of HDF5 library installed in DIR]
+  ),
+  [HDF5_HOME="$with_hdf5"]
+)
+echo Value of with_hdf5 is ${with_hdf5}
+
+if test "X${with_hdf5}X" = "XnoX" ; then
+
+  AC_MSG_NOTICE([Disabling HDF5])
+  AC_SUBST(HDF5_CFLAGS, "")
+  AC_SUBST(HDF5_CXXFLAGS, "")
+  AC_SUBST(HDF5_LIBS,"")
+  AC_DEFINE(QDP_NO_HDF5, [1], [ Dont use HDF5 ])
+
+else
+
+  if test "X${HDF5_HOME}X" = "XX" ; then
+    AC_PATH_PROG(HDF5_BIN, [h5pcc], [])
+  else
+    AC_PATH_PROG(HDF5_BIN, [h5pcc], [], [${HDF5_HOME}/bin:${PATH}])
+  fi  
+
+  if test "X${HDF5_BIN}X" = "XX" ; then
+    AC_MSG_ERROR([hdf5 compiler program h5pcc not found.])
+  fi
+
+  AC_MSG_NOTICE([Found hdf5 compiler program ${HDF5_BIN}])
+  AC_SUBST(HDF5_CFLAGS, "-I${HDF5_HOME}/include")
+  AC_SUBST(HDF5_CXXFLAGS, "-I${HDF5_HOME}/include")
+  AC_MSG_NOTICE([hdf5 compile flags: ${HDF5_CFLAGS}])
+  AC_MSG_NOTICE([hdf5 compile flags: ${HDF5_CXXFLAGS}])
+  AC_SUBST(HDF5_LIBS,     "-L${HDF5_HOME}/lib -lhdf5 -lz -lm")
+  AC_MSG_NOTICE([hdf5 libraries flags: ${HDF5_LIBS}])
+
+  AC_DEFINE_UNQUOTED(QDP_USE_HDF5, [1], [Enable HDF5 support])
+  AC_SUBST(CONFIG_HDF5,[1])
+  AC_MSG_NOTICE([Configuring QDP++ with HDF5 enabled]);
+
+  dnl This function is defined in acinclude.m4
+  dnl it tries to try to compile the program 
+  AC_MSG_CHECKING([if we can compile/link a simple hdf5 program])
+    PAC_HDF5_LINK_C_FUNC(
+        ${HDF5_BIN},
+    ${HDF5_CFLAGS},
+    ${HDF5_CXXFLAGS},
+    ${HDF5_LIBS},
+    ,
+    ,
+    [hdf5_link_ok=yes],
+    [hdf5_link_ok=no]
+  )
+
+  if test "X${hdf5_link_ok}X" = "XyesX" ; then 
+    AC_MSG_RESULT(yes)
+  else 
+    AC_MSG_RESULT(no)
+    AC_MSG_ERROR([Cannot compile/link a program with hdf5.
+    Use --with-hdf5=<dir> to select a working version.])
+  fi 
+
+fi
+
 AC_ARG_WITH(bagel-qdp,
   AC_HELP_STRING(
     [--with-bagel-qdp=DIR],
@@ -671,6 +742,8 @@ else
 fi
 
 AM_CONDITIONAL(QDP_USE_LIBXML2, [test "x${with_libxml2}x" != "xnox" ])
+
+AM_CONDITIONAL(QDP_USE_HDF5, [test "x${with_hdf5}x" != "xnox" ])
 
 ##################################
 # Check for programs to build docs

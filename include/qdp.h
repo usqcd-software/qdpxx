@@ -115,6 +115,11 @@ namespace QDP {
 #include "qdp_qdpio.h"
 #endif
 
+#ifdef QDP_NO_HDF5
+#warning not using hdf5
+#else
+#include "qdp_hdf5.h"
+#endif
 
 #include "qdp_subset.h"
 #include "qdp_map.h"

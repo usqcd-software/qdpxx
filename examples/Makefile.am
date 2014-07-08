@@ -41,6 +41,10 @@ endif
 
 LDADD = -lqdp
 
+if QDP_USE_HDF5
+LDADD += -lhdf5
+endif
+
 if QDP_USE_LIBXML2
 LDADD += -lXPathReader -lxmlWriter -lqio -llime
 endif

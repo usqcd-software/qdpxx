@@ -30,6 +30,10 @@ if QDP_USE_LIBXML2
 libqdp_a_SOURCES += qdp_xmlio.cc qdp_iogauge.cc qdp_qdpio.cc qdp_qio_strings.cc qdp_map_obj_disk.cc
 endif
 
+if QDP_USE_HDF5
+libqdp_a_SOURCES += qdp_hdf5.cc
+endif
+
 # Scalar	
 if ARCH_SCALAR
 libqdp_a_SOURCES += qdp_scalar_init.cc qdp_scalar_layout.cc \

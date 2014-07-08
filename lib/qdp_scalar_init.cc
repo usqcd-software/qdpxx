@@ -124,6 +124,10 @@ bool QDP_isInitialized() {return isInit;}
 void QDP_finalize()
 {
 
+#if defined(QDP_USE_HDF5)
+  H5close();
+#endif
+
   if ( ThreadReductions::norm2_results != 0x0 ) { 
    delete [] ThreadReductions::norm2_results;
   }

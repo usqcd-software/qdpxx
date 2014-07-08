@@ -44,9 +44,11 @@ typedef OLattice< PScalar< PColorVector< RComplex< ILattice<REAL,INNER_LEN> >, N
 typedef OLattice< PSpinVector< PScalar< RComplex< ILattice<REAL,INNER_LEN> > >, Ns> > LatticeSpinVector;
 typedef OLattice< PScalar< PColorMatrix< RComplex< ILattice<REAL,INNER_LEN> >, Nc> > > LatticeColorMatrix;
 typedef OLattice< PSpinMatrix< PScalar< RComplex< ILattice<REAL,INNER_LEN> > >, Ns> > LatticeSpinMatrix;
+typedef OLattice< PSpinMatrix< PScalar< RComplex< ILattice<REAL,INNER_LEN> > >, (Ns>>1) > > LatticeHalfSpinMatrix;
 typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, Ns> > LatticeFermion;
 typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, Ns>>1 > > LatticeHalfFermion;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, Ns> > LatticePropagator;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, (Ns>>1) > > LatticeHalfPropagator;
 typedef OLattice< PScalar< PScalar< RComplex< ILattice<REAL,INNER_LEN> > > > > LatticeComplex;
 
 typedef OLattice< PScalar< PSeed < RScalar< ILattice<INTEGER32,INNER_LEN> > > > > LatticeSeed;
@@ -59,10 +61,12 @@ typedef OScalar< PScalar< PColorVector< RComplex< IScalar<REAL> >, Nc> > > Color
 typedef OScalar< PScalar< PColorMatrix< RComplex< IScalar<REAL> >, Nc> > > ColorMatrix;
 typedef OScalar< PSpinVector< PScalar< RComplex< IScalar<REAL> > >, Ns> > SpinVector;
 typedef OScalar< PSpinMatrix< PScalar< RComplex< IScalar<REAL> > >, Ns> > SpinMatrix;
+typedef OScalar< PSpinMatrix< PScalar< RComplex< IScalar<REAL> > >, (Ns>>1) > > HalfSpinMatrix;
 typedef OScalar< PSpinVector< PColorVector< RComplex< IScalar<REAL> >, Nc>, 1> > StaggeredFermion;
 typedef OScalar< PSpinVector< PColorVector< RComplex< IScalar<REAL> >, Nc>, Ns> > Fermion;
 typedef OScalar< PSpinVector< PColorVector< RComplex< IScalar<REAL> >, Nc>, Ns>>1 > > HalfFermion;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL> >, Nc>, Ns> > Propagator;
+typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL> >, Nc>, (Ns>>1) > > HalfPropagator;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL> >, Nc>, 1> > StaggeredPropagator;
 typedef OScalar< PScalar< PScalar< RComplex< IScalar<REAL> > > > > Complex;
 
@@ -76,12 +80,26 @@ typedef OScalar< PScalar< PColorVector< RComplex< IScalar<DOUBLE> >, Nc> > > DCo
 typedef OScalar< PScalar< PColorMatrix< RComplex< IScalar<DOUBLE> >, Nc> > > DColorMatrix;
 typedef OScalar< PSpinVector< PScalar< RComplex< IScalar<DOUBLE> > >, Ns> > DSpinVector;
 typedef OScalar< PSpinMatrix< PScalar< RComplex< IScalar<DOUBLE> > >, Ns> > DSpinMatrix;
+typedef OScalar< PSpinMatrix< PScalar< RComplex< IScalar<DOUBLE> > >, (Ns>>1) > > DHalfSpinMatrix;
 typedef OScalar< PSpinVector< PColorVector< RComplex< IScalar<DOUBLE> >, Nc>, 1> > DStaggeredFermion;
 typedef OScalar< PSpinVector< PColorVector< RComplex< IScalar<DOUBLE> >, Nc>, Ns> > DFermion;
 typedef OScalar< PSpinVector< PColorVector< RComplex< IScalar<DOUBLE> >, Nc>, Ns>>1 > > DHalfFermion;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<DOUBLE> >, Nc>, Ns> > DPropagator;
+typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<DOUBLE> >, Nc>, (Ns>>1) > > DHalfPropagator;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<DOUBLE> >, Nc>, 1> > DStaggeredPropagator;
 typedef OScalar< PScalar< PScalar< RComplex< IScalar<DOUBLE> > > > > DComplex;
+
+//baryonblocks
+typedef OScalar< PSpinMatrix < PColorVector< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL> >, Nc>, Ns>, Nc>, Ns> > Baryonblock;
+typedef OScalar< PSpinMatrix < PColorVector< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL> >, Nc>, (Ns>>1) >, Nc>, (Ns>>1) > > HalfBaryonblock;
+typedef OLattice< PSpinMatrix < PColorVector< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, Ns>, Nc>, Ns> > LatticeBaryonblock;
+typedef OLattice< PSpinMatrix < PColorVector< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, (Ns>>1) >, Nc>, (Ns>>1) > > LatticeHalfBaryonblock;
+
+//fourquark tensors
+typedef OScalar< PSpinMatrix < PColorMatrix< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, Ns>, Nc>, Ns> > Fourquark;
+typedef OLattice< PSpinMatrix < PColorMatrix< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, Ns>, Nc>, Ns> > LatticeFourquark;
+typedef OScalar< PSpinMatrix < PColorMatrix< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, (Ns>>1) >, Nc>, (Ns>>1) > > HalfFourquark;
+typedef OLattice< PSpinMatrix < PColorMatrix< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL,INNER_LEN> >, Nc>, (Ns>>1) >, Nc>, (Ns>>1) > > LatticeHalfFourquark;
 
 // Other useful names
 typedef OScalar< PSpinVector< PColorVector< RComplex< IScalar<REAL> >, Nc>, Ns> > ColorVectorSpinVector;
@@ -179,11 +197,13 @@ typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL32,INNER_LEN
 typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL32,INNER_LEN> >, 1>, Ns>>1 > > LatticeHalfFermionF1;
 
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc>, Ns> > LatticePropagatorF;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc>, (Ns>>1) > > LatticeHalfPropagatorF;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, 3>, Ns> > LatticePropagatorF3;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, 2>, Ns> > LatticePropagatorF2;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, 1>, Ns> > LatticePropagatorF1;
 
 typedef OLattice< PSpinMatrix< PScalar< RComplex< ILattice<REAL32,INNER_LEN> > >, Ns> > LatticeSpinMatrixF;
+typedef OLattice< PSpinMatrix< PScalar< RComplex< ILattice<REAL32,INNER_LEN> > >, (Ns>>1) > > LatticeHalfSpinMatrixF;
 typedef OLattice< PSpinVector< PScalar< RComplex< ILattice<REAL32,INNER_LEN> > >, Ns> > LatticeSpinVectorF;
 
 typedef OLattice< PScalar< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc> > > LatticeColorMatrixF;
@@ -230,11 +250,13 @@ typedef OScalar< PSpinVector< PColorVector< RComplex< IScalar<REAL32> >, 2>, Ns>
 typedef OScalar< PSpinVector< PColorVector< RComplex< IScalar<REAL32> >, 1>, Ns>>1 > > HalfFermionF1;
 
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL32> >, Nc>, Ns> > PropagatorF;
+typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL32> >, Nc>, (Ns>>1) > > HalfPropagatorF;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL32> >, 3>, Ns> > PropagatorF3;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL32> >, 2>, Ns> > PropagatorF2;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL32> >, 1>, Ns> > PropagatorF1;
 
 typedef OScalar< PSpinMatrix< PScalar< RComplex< IScalar<REAL32> > >, Ns> > SpinMatrixF;
+typedef OScalar< PSpinMatrix< PScalar< RComplex< IScalar<REAL32> > >, (Ns>>1) > > HalfSpinMatrixF;
 typedef OScalar< PSpinVector< PScalar< RComplex< IScalar<REAL32> > >, Ns> > SpinVectorF;
 
 typedef OScalar< PScalar< PColorMatrix< RComplex< IScalar<REAL32> >, Nc> > > ColorMatrixF;
@@ -249,6 +271,18 @@ typedef OScalar< PScalar< PColorVector< RComplex< IScalar<REAL32> >, 1> > > Colo
 
 typedef OScalar< PScalar< PScalar< RComplex< IScalar<REAL32> > > > > ComplexF;
 typedef OScalar< PScalar< PScalar< RScalar< IScalar<REAL32> > > > > RealF;
+
+//baryonblocks 
+typedef OScalar< PSpinMatrix < PColorVector< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL32> >, Nc>, Ns>, Nc>, Ns> > BaryonblockF;
+typedef OScalar< PSpinMatrix < PColorVector< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL32> >, Nc>, (Ns>>1) >, Nc>, (Ns>>1) > > HalfBaryonblockF;
+typedef OLattice< PSpinMatrix < PColorVector< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc>, Ns >, Nc>, Ns > > LatticeBaryonblockF;
+typedef OLattice< PSpinMatrix < PColorVector< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc>, (Ns>>1) >, Nc>, (Ns>>1) > > LatticeHalfBaryonblockF;
+
+//fourquark objects
+typedef OScalar< PSpinMatrix < PColorMatrix< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc>, Ns>, Nc>, Ns> > FourquarkF;
+typedef OLattice< PSpinMatrix < PColorMatrix< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc>, Ns>, Nc>, Ns> > LatticeFourquarkF;
+typedef OScalar< PSpinMatrix < PColorMatrix< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc>, (Ns>>1) >, Nc>, (Ns>>1) > > HalfFourquarkF;
+typedef OLattice< PSpinMatrix < PColorMatrix< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL32,INNER_LEN> >, Nc>, (Ns>>1) >, Nc>, (Ns>>1) > > LatticeHalfFourquarkF;
 
 // REAL64 types
 typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL64,INNER_LEN> >, Nc>, 4> > LatticeDiracFermionD;
@@ -282,11 +316,13 @@ typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL64,INNER_LEN
 typedef OLattice< PSpinVector< PColorVector< RComplex< ILattice<REAL64,INNER_LEN> >, 1>, Ns>>1 > > LatticeHalfFermionD1;
 
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL64,INNER_LEN> >, Nc>, Ns> > LatticePropagatorD;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL64,INNER_LEN> >, Nc>, (Ns>>1) > > LatticePropagatorD;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL64,INNER_LEN> >, 3>, Ns> > LatticePropagatorD3;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL64,INNER_LEN> >, 2>, Ns> > LatticePropagatorD2;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL64,INNER_LEN> >, 1>, Ns> > LatticePropagatorD1;
 
 typedef OLattice< PSpinMatrix< PScalar< RComplex< ILattice<REAL64,INNER_LEN> > >, Ns> > LatticeSpinMatrixD;
+typedef OLattice< PSpinMatrix< PScalar< RComplex< ILattice<REAL64,INNER_LEN> > >, (Ns>>1) > > LatticeHalfSpinMatrixD;
 typedef OLattice< PSpinVector< PScalar< RComplex< ILattice<REAL64,INNER_LEN> > >, Ns> > LatticeSpinVectorD;
 
 typedef OLattice< PScalar< PColorMatrix< RComplex< ILattice<REAL64,INNER_LEN> >, Nc> > > LatticeColorMatrixD;
@@ -333,11 +369,13 @@ typedef OScalar< PSpinVector< PColorVector< RComplex< IScalar<REAL64> >, 2>, Ns>
 typedef OScalar< PSpinVector< PColorVector< RComplex< IScalar<REAL64> >, 1>, Ns>>1 > > HalfFermionD1;
 
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL64> >, Nc>, Ns> > PropagatorD;
+typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL64> >, Nc>, (Ns>>1) > > HalfPropagatorD;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL64> >, 3>, Ns> > PropagatorD3;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL64> >, 2>, Ns> > PropagatorD2;
 typedef OScalar< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL64> >, 1>, Ns> > PropagatorD1;
 
 typedef OScalar< PSpinMatrix< PScalar< RComplex< IScalar<REAL64> > >, Ns> > SpinMatrixD;
+typedef OScalar< PSpinMatrix< PScalar< RComplex< IScalar<REAL64> > >, (Ns>>1) > > HalfSpinMatrixD;
 typedef OScalar< PSpinVector< PScalar< RComplex< IScalar<REAL64> > >, Ns> > SpinVectorD;
 
 typedef OScalar< PScalar< PColorMatrix< RComplex< IScalar<REAL64> >, Nc> > > ColorMatrixD;
@@ -352,6 +390,19 @@ typedef OScalar< PScalar< PColorVector< RComplex< IScalar<REAL64> >, 1> > > Colo
 
 typedef OScalar< PScalar< PScalar< RComplex< IScalar<REAL64> > > > > ComplexD;
 typedef OScalar< PScalar< PScalar< RScalar< IScalar<REAL64> > > > > RealD;
+
+//baryonblocks
+typedef OScalar< PSpinMatrix < PColorVector< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL64> >, Nc>, Ns>, Nc>, Ns> > BaryonblockD;
+typedef OScalar< PSpinMatrix < PColorVector< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL64> >, Nc>, (Ns>>1) >, Nc>, (Ns>>1) > > HalfBaryonblockD;
+typedef OLattice< PSpinMatrix < PColorVector< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL64,INNER_LEN> >, Nc>, Ns>, Nc>, Ns> > LatticeBaryonblockD;
+typedef OLattice< PSpinMatrix < PColorVector< PSpinMatrix< PColorMatrix< RComplex< ILattice<REAL64,INNER_LEN> >, Nc>, (Ns>>1) >, Nc>, (Ns>>1) > > LatticeHalfBaryonblockD;
+
+//fourquark objects
+//fourquark operators
+typedef OScalar< PSpinMatrix < PColorMatrix< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL64> >, Nc>, Ns>, Nc>, Ns> > FourquarkD;
+typedef OLattice< PSpinMatrix < PColorMatrix< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL64> >, Nc>, Ns>, Nc>, Ns> > LatticeFourquarkD;
+typedef OScalar< PSpinMatrix < PColorMatrix< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL64> >, Nc>, (Ns>>1) >, Nc>, (Ns>>1) > > HalfFourquarkD;
+typedef OLattice< PSpinMatrix < PColorMatrix< PSpinMatrix< PColorMatrix< RComplex< IScalar<REAL64> >, Nc>, (Ns>>1) >, Nc>, (Ns>>1) > > LatticeHalfFourquarkD;
 
 // Equivalent names
 typedef Integer  Int;
