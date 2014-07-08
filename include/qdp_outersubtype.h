@@ -13,13 +13,15 @@ namespace QDP {
 /*! 
  * Only used for lvalues
  */
+
 template<class T>
 class OSubScalar: public QDPSubType<T, OScalar<T> >
 {
   typedef OScalar<T> C;
 
 public:
-  OSubScalar(const OScalar<T>& a, const Subset& ss): F(a), s(ss) {}
+  //OSubScalar(OScalar<T>& a, const Subset& ss): F(a.getF()), s(ss) {}
+  OSubScalar(OScalar<T>& a, const Subset& ss): F(a.getF()), s(&(const_cast<Subset&>(ss))) {}
   OSubScalar(const OSubScalar& a): F(a.F), s(a.s) {}
   ~OSubScalar() {}
 
@@ -67,12 +69,18 @@ private:
   OSubScalar() {}
 
 public:
-  C& field() {return const_cast<C&>(F);}
-  const Subset& subset() const {return s;}
+  T* getF() {return F;}
+  T* getF() const {return F;}
+  const Subset& subset() const {return *s;}
+  bool getOwnsMemory() const { return ownsMemory; }
+  bool getOwnsMemory() { return ownsMemory; }
 
 private:
-  const C&      F;
-  const Subset& s;
+  T* F;
+  bool ownsMemory;
+  Subset* s;
+
+  //const Subset& s;
 };
 
 
@@ -88,9 +96,75 @@ class OSubLattice: public QDPSubType<T, OLattice<T> >
   typedef OLattice<T> C;
 
 public:
-  OSubLattice(const OLattice<T>& a, const Subset& ss): F(a), s(ss) {}
-  OSubLattice(const OSubLattice& a): F(a.F), s(a.s) {}
-  ~OSubLattice() {}
+  //OSubLattice(OLattice<T>& a, const Subset& ss): F(a.getF()), s(ss), ownsMemory(false) {}
+  OSubLattice(OLattice<T>& a, const Subset& ss): F(a.getF()), s(&(const_cast<Subset&>(ss))), ownsMemory(false) {}
+  OSubLattice(const OSubLattice& a) {
+    ownsMemory = a.ownsMemory; 
+    s = a.s;
+    if (a.ownsMemory) {
+      //std::cout << "OSubLattice copy ctor, must copy\n";
+      alloc_mem();
+      for( int i = 0 ; i < s->numSiteTable() ; ++i )
+	F[i] = a.F[i];
+    } else {
+      F = a.F;
+    }
+  }
+
+
+#if 1
+  OSubLattice(): s(NULL), F(NULL), ownsMemory(false) {}
+
+
+  void setSubset( const Subset& ss ) {
+    if (F && !ownsMemory)
+      QDP_error_exit("You try to set the subset on an OSubLattice that is a view of an OLattice!");
+    if (F) {
+      free_mem();
+    }
+    s = &(const_cast<Subset&>(ss));
+    alloc_mem();
+    ownsMemory = true;
+  }
+
+
+  OSubLattice(const Subset& ss , OLattice<T>& a): s(&(const_cast<Subset&>(ss))), ownsMemory(true) {
+    alloc_mem();
+    const int *tab = s->siteTable().slice();
+    for( int j = 0 ; j < s->numSiteTable() ; ++j ) {
+      int i = tab[j];
+      F[j] = a.elem(i);
+    }
+  }
+
+
+  void alloc_mem() {
+    //QDP_info("OSubLattice alloc for %d sites",s->numSiteTable());
+    try 
+      {
+	F = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*s->numSiteTable(),QDP::Allocator::DEFAULT);
+      }
+      catch(std::bad_alloc) 
+      {
+	QDPIO::cerr << "Allocation failed in OSubLattice" << endl;
+	QDP::Allocator::theQDPAllocator::Instance().dump();
+	QDP_abort(1);
+      }
+  }
+
+  ~OSubLattice() {
+    if (ownsMemory) {
+      free_mem();
+    }
+  }
+
+  void free_mem() {
+    QDP::Allocator::theQDPAllocator::Instance().free(F);
+  }
+#endif
+
+
+
 
   //---------------------------------------------------------
   // Operators
@@ -133,15 +207,23 @@ public:
 
 private:
   // Hide default constructor
-  OSubLattice() {}
+  //OSubLattice() {}
 
 public:
-  C& field() {return const_cast<C&>(F);}
-  const Subset& subset() const {return s;}
+  bool getOwnsMemory() const { return ownsMemory; }
+  bool getOwnsMemory() { return ownsMemory; }
+  T* getF() {return F;}
+  T* getF() const {return F;}
+  //const Subset& subset() const {return s;}
+  const Subset& subset() const {return *s;}
 
 private:
-  const C&      F;
-  const Subset& s;
+  T* F;
+  bool ownsMemory;
+  Subset* s;
+
+  //C&      F;
+  //const Subset& s;
 };
 
 

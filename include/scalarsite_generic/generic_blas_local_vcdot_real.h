@@ -18,25 +18,25 @@ namespace QDP {
 inline
 void l_vcdot_real(DOUBLE *Out, REAL *V1, REAL *V2, int n_3vec)
 {
-  register double result;
+   double result;
   
-  register double v1_0r;
-  register double v1_0i;
-  register double v1_1r;
-  register double v1_1i;
-  register double v1_2r;
-  register double v1_2i;
+   double v1_0r;
+   double v1_0i;
+   double v1_1r;
+   double v1_1i;
+   double v1_2r;
+   double v1_2i;
 
-  register double v2_0r;
-  register double v2_0i;
-  register double v2_1r;
-  register double v2_1i;
-  register double v2_2r;
-  register double v2_2i;
+   double v2_0r;
+   double v2_0i;
+   double v2_1r;
+   double v2_1i;
+   double v2_2r;
+   double v2_2i;
 
-  register int counter=0;
-  register unsigned long vecptr1=0;
-  register unsigned long vecptr2=0;
+   int counter=0;
+   unsigned long vecptr1=0;
+   unsigned long vecptr2=0;
   result= 0;
 
   int len = 4*n_3vec;

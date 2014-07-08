@@ -538,6 +538,81 @@ cmplx(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
 
 
 //-----------------------------------------------------------------------------
+// These functions always return bool
+//! isnan
+template<class T1, int N, template<class,int> class C>
+struct UnaryReturn<PVector<T1,N,C>, FnIsNan> {
+  bool Type_t;
+};
+
+template<class T1, int N, template<class,int> class C>
+inline bool
+isnan(const PVector<T1,N,C>& l)
+{
+  bool d = false;
+
+  for(int i=0; i < N; ++i)
+    d |= isnan(l.elem(i));
+
+  return d;
+}
+
+//! isinf
+template<class T1, int N, template<class,int> class C>
+struct UnaryReturn<PVector<T1,N,C>, FnIsInf> {
+  bool Type_t;
+};
+
+template<class T1, int N, template<class,int> class C>
+inline bool
+isinf(const PVector<T1,N,C>& l)
+{
+  bool d = false;
+
+  for(int i=0; i < N; ++i)
+    d |= isinf(l.elem(i));
+
+  return d;
+}
+
+//! isnormal
+template<class T1, int N, template<class,int> class C>
+struct UnaryReturn<PVector<T1,N,C>, FnIsNormal> {
+  bool Type_t;
+};
+
+template<class T1, int N, template<class,int> class C>
+inline bool
+isnormal(const PVector<T1,N,C>& l)
+{
+  bool d = true;
+
+  for(int i=0; i < N; ++i)
+    d &= isnormal(l.elem(i));
+
+  return d;
+}
+
+//! isfinite
+template<class T1, int N, template<class,int> class C>
+struct UnaryReturn<PVector<T1,N,C>, FnIsFinite> {
+  bool Type_t;
+};
+
+template<class T1, int N, template<class,int> class C>
+inline bool
+isfinite(const PVector<T1,N,C>& l)
+{
+  bool d = true;
+
+  for(int i=0; i < N; ++i)
+    d &= isfinite(l.elem(i));
+
+  return d;
+}
+
+
+//-----------------------------------------------------------------------------
 // Functions
 // Conjugate
 template<class T1, int N, template<class,int> class C>

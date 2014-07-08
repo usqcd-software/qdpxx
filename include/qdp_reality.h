@@ -1350,6 +1350,42 @@ tanh(const RScalar<T1>& s1)
 }
 
 
+//-----------------------------------------------------------------------------
+// These functions always return bool
+//! isnan
+template<class T1>
+inline bool
+isnan(const RScalar<T1>& s1)
+{
+  return isnan(s1.elem());
+}
+
+//! isinf
+template<class T1>
+inline bool
+isinf(const RScalar<T1>& s1)
+{
+  return isinf(s1.elem());
+}
+
+//! isnormal
+template<class T1>
+inline bool
+isnormal(const RScalar<T1>& s1)
+{
+  return isnormal(s1.elem());
+}
+
+//! isfinite
+template<class T1>
+inline bool
+isfinite(const RScalar<T1>& s1)
+{
+  return isfinite(s1.elem());
+}
+
+
+//-----------------------------------------------------------------------------
 //! RScalar<T> = pow(RScalar<T> , RScalar<T>)
 template<class T1, class T2>
 inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnPow>::Type_t
@@ -1971,6 +2007,41 @@ operator/(const RScalar<T1>& l, const RComplex<T2>& r)
 	       -l.elem() * r.imag() * tmp);
 }
 
+
+
+//-----------------------------------------------------------------------------
+// These functions always return bool
+//! isnan
+template<class T1>
+inline bool
+isnan(const RComplex<T1>& s1)
+{
+  return isnan(s1.real()) | isnan(s1.imag());
+}
+
+//! isinf
+template<class T1>
+inline bool
+isinf(const RComplex<T1>& s1)
+{
+  return isinf(s1.real()) | isinf(s1.imag());
+}
+
+//! isnormal
+template<class T1>
+inline bool
+isnormal(const RComplex<T1>& s1)
+{
+  return isnormal(s1.real()) & isnormal(s1.imag());
+}
+
+//! isfinite
+template<class T1>
+inline bool
+isfinite(const RComplex<T1>& s1)
+{
+  return isfinite(s1.real()) & isfinite(s1.imag());
+}
 
 
 //-----------------------------------------------------------------------------

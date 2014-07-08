@@ -422,6 +422,81 @@ cmplx(const PSpinVector<T1,N>& s1, const PSpinVector<T2,N>& s2)
 
 
 //-----------------------------------------------------------------------------
+// These functions always return bool
+//! isnan
+template<class T1, int N>
+struct UnaryReturn<PSpinVector<T1,N>, FnIsNan> {
+  bool Type_t;
+};
+
+template<class T1, int N>
+inline bool
+isnan(const PSpinVector<T1,N>& l)
+{
+  bool d = false;
+
+  for(int i=0; i < N; ++i)
+    d |= isnan(l.elem(i));
+
+  return d;
+}
+
+//! isinf
+template<class T1, int N>
+struct UnaryReturn<PSpinVector<T1,N>, FnIsInf> {
+  bool Type_t;
+};
+
+template<class T1, int N>
+inline bool
+isinf(const PSpinVector<T1,N>& l)
+{
+  bool d = false;
+
+  for(int i=0; i < N; ++i)
+    d |= isinf(l.elem(i));
+
+  return d;
+}
+
+//! isnormal
+template<class T1, int N>
+struct UnaryReturn<PSpinVector<T1,N>, FnIsNormal> {
+  bool Type_t;
+};
+
+template<class T1, int N>
+inline bool
+isnormal(const PSpinVector<T1,N>& l)
+{
+  bool d = true;
+
+  for(int i=0; i < N; ++i)
+    d &= isnormal(l.elem(i));
+
+  return d;
+}
+
+//! isfinite
+template<class T1, int N>
+struct UnaryReturn<PSpinVector<T1,N>, FnIsFinite> {
+  bool Type_t;
+};
+
+template<class T1, int N>
+inline bool
+isfinite(const PSpinVector<T1,N>& l)
+{
+  bool d = true;
+
+  for(int i=0; i < N; ++i)
+    d &= isfinite(l.elem(i));
+
+  return d;
+}
+
+
+//-----------------------------------------------------------------------------
 // Functions
 // Conjugate
 template<class T1, int N>

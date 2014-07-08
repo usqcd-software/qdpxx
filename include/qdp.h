@@ -85,6 +85,7 @@
 #include <ostream>
 #include <iostream>
 
+
 using namespace std;   // I do not like this - fix later
 
 using std::iostream;
@@ -231,5 +232,6 @@ namespace ThreadReductions {
 #endif
 
 #include "qdp_flopcount.h"
+#include "qdp_globalfuncs_subtype.h"
 
 #endif  // QDP_INCLUDE

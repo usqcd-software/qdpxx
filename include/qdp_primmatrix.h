@@ -754,6 +754,85 @@ operator/(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 
 
 //-----------------------------------------------------------------------------
+// These functions always return bool
+//! isnan
+template<class T1, int N, template<class,int> class C>
+struct UnaryReturn<PMatrix<T1,N,C>, FnIsNan> {
+  bool Type_t;
+};
+
+template<class T1, int N, template<class,int> class C>
+inline bool
+isnan(const PMatrix<T1,N,C>& l)
+{
+  bool d = false;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d |= isnan(l.elem(i,j));
+
+  return d;
+}
+
+//! isinf
+template<class T1, int N, template<class,int> class C>
+struct UnaryReturn<PMatrix<T1,N,C>, FnIsInf> {
+  bool Type_t;
+};
+
+template<class T1, int N, template<class,int> class C>
+inline bool
+isinf(const PMatrix<T1,N,C>& l)
+{
+  bool d = false;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d |= isinf(l.elem(i,j));
+
+  return d;
+}
+
+//! isnormal
+template<class T1, int N, template<class,int> class C>
+struct UnaryReturn<PMatrix<T1,N,C>, FnIsNormal> {
+  bool Type_t;
+};
+
+template<class T1, int N, template<class,int> class C>
+inline bool
+isnormal(const PMatrix<T1,N,C>& l)
+{
+  bool d = true;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d &= isinf(l.elem(i,j));
+
+  return d;
+}
+
+//! isfinite
+template<class T1, int N, template<class,int> class C>
+struct UnaryReturn<PMatrix<T1,N,C>, FnIsFinite> {
+  bool Type_t;
+};
+
+template<class T1, int N, template<class,int> class C>
+inline bool
+isfinite(const PMatrix<T1,N,C>& l)
+{
+  bool d = true;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+      d &= isfinite(l.elem(i,j));
+
+  return d;
+}
+
+
+//-----------------------------------------------------------------------------
 // Functions
 
 // Adjoint

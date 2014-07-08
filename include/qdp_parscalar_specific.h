@@ -190,6 +190,35 @@ namespace QDPInternal
   }
 
 
+  //! Global And
+  inline void globalCheckAnd(void* inout, void* in)
+  {
+    *(unsigned int*)inout = *(unsigned int*)inout & *(unsigned int*)in;
+  }
+
+  //! Wrapper to get a functional global And
+  inline void globalAnd(bool& dest)
+  {
+    QMP_binary_reduction(&dest, sizeof(bool), globalCheckAnd);
+  }
+
+
+
+  //! Global Or
+  inline void globalCheckOr(void* inout, void* in)
+  {
+    *(unsigned int*)inout = *(unsigned int*)inout | *(unsigned int*)in;
+  }
+
+  //! Wrapper to get a functional global Or
+  inline void globalOr(bool& dest)
+  {
+    QMP_binary_reduction(&dest, sizeof(bool), globalCheckOr);
+  }
+
+
+
+
   //! Broadcast from primary node to all other nodes
   template<class T>
   inline void broadcast(T& dest)
@@ -389,6 +418,47 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 }
 
 
+
+
+template<class T, class T1, class Op, class RHS>
+//inline
+void evaluate_F(T* dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
+	      const Subset& s)
+{
+  //cerr << "In evaluate_F(olattice,olattice)" << endl;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(dest, op, rhs);
+  prof.time -= getClockTime();
+#endif
+
+  // int numSiteTable = s.numSiteTable();
+  // user_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
+  // dispatch_to_threads< user_arg<T,T1,Op,RHS> >(numSiteTable, a, evaluate_userfunc);
+
+  ////////////////////
+  // Original code
+  ///////////////////
+
+  //QDP_info("eval_F %d sites",s.numSiteTable());
+
+  // General form of loop structure
+  const int *tab = s.siteTable().slice();
+  for(int j=0; j < s.numSiteTable(); ++j) 
+  {
+    int i = tab[j];
+    //fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
+    op( dest[j], forEach(rhs, EvalLeaf1(i), OpCombine()));
+  }
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+}
+
+
 //-----------------------------------------------------------------------------
 //! dest = (mask) ? s1 : dest
 template<class T1, class T2>
@@ -537,15 +607,6 @@ void zero_rep(OLattice<T>& dest, const Subset& s)
 }
 
 
-//! dest  = 0 
-template<class T>
-void zero_rep(OSubLattice<T> dd) 
-{
-  OLattice<T>& d = dd.field();
-  const Subset& s = dd.subset();
-  
-  zero_rep(d,s);
-}
 
 
 //! dest  = 0 
@@ -1329,6 +1390,189 @@ globalMin(const QDPExpr<RHS,OLattice<T> >& s1)
 
   // Do a global min on the result
   QDPInternal::globalMin(d); 
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+
+//-----------------------------------------------
+// Test badness/goodness of floating point numbers.
+// These functions always return bool
+//! bool = isnan(OScalar)
+/*!
+ * Return true if there is a NaN anywhere in the source
+ */
+template<class T>
+inline bool
+isnan(const QDPType<T,OScalar<T> >& s1)
+{
+  return isnan(s1.elem());
+}
+
+
+//! bool = isnan(OLattice)
+/*!
+ * Return true if there is a NaN anywhere in the source
+ */
+template<class T>
+inline bool
+isnan(const OLattice<T>& s1)
+{
+  bool d = false;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnIsNan(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  const int nodeSites = Layout::sitesOnNode();
+  for(int i=0; i < nodeSites; ++i) 
+  {
+    d |= isnan(s1.elem(i));
+  }
+
+  QDPInternal::globalOr(d);
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+
+//! bool = isinf(OScalar)
+/*!
+ * Return true if there is a NaN anywhere in the source
+ */
+template<class T>
+inline bool
+isinf(const QDPType<T,OScalar<T> >& s1)
+{
+  return isinf(s1.elem());
+}
+
+
+//! bool = isinf(OLattice)
+/*!
+ * Return true if there is an Inf anywhere in the source
+ */
+template<class T>
+inline bool
+isinf(const OLattice<T>& s1)
+{
+  bool d = false;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnIsInf(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  const int nodeSites = Layout::sitesOnNode();
+  for(int i=0; i < nodeSites; ++i) 
+  {
+    d |= isinf(s1.elem(i));
+  }
+
+  QDPInternal::globalOr(d);
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+
+//! bool = isfinite(OScalar)
+/*!
+ * Return true if all the values in source are finite floating point numbers
+ */
+template<class T>
+inline bool
+isfinite(const QDPType<T,OScalar<T> >& s1)
+{
+  return isfinite(s1.elem());
+}
+
+
+//! bool = isfinite(OLattice)
+/*!
+ * Return true if all the values in source are finite floating point numbers
+ */
+template<class T>
+inline bool
+isfinite(const OLattice<T>& s1)
+{
+  bool d = true;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnIsFinite(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  const int nodeSites = Layout::sitesOnNode();
+  for(int i=0; i < nodeSites; ++i) 
+  {
+    d &= isfinite(s1.elem(i));
+  }
+
+  QDPInternal::globalAnd(d);
+
+#if defined(QDP_USE_PROFILING)   
+  prof.time += getClockTime();
+  prof.count++;
+  prof.print();
+#endif
+
+  return d;
+}
+
+
+//! bool = isnormal(OScalar)
+/*!
+ * Return true if all the values in source are normal floating point numbers
+ */
+template<class T>
+inline bool
+isnormal(const QDPType<T,OScalar<T> >& s1)
+{
+  return isnormal(s1.elem());
+}
+
+
+//! bool = isnormal(OLattice)
+/*!
+ * Return true if all the values in source are normal floating point numbers
+ */
+template<class T>
+inline bool
+isnormal(const OLattice<T>& s1)
+{
+  bool d = true;
+
+#if defined(QDP_USE_PROFILING)   
+  static QDPProfile_t prof(d, OpAssign(), FnIsNormal(), s1);
+  prof.time -= getClockTime();
+#endif
+
+  const int nodeSites = Layout::sitesOnNode();
+  for(int i=0; i < nodeSites; ++i) 
+  {
+    d &= isnormal(s1.elem(i));
+  }
+
+  QDPInternal::globalAnd(d);
 
 #if defined(QDP_USE_PROFILING)   
   prof.time += getClockTime();

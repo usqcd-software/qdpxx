@@ -1,4 +1,3 @@
-// $Id: t_exotic.cc,v 1.9 2009-09-12 03:45:30 edwards Exp $
 /*! \file
  *  \brief Test various exotic qdp routines
  */
@@ -169,6 +168,7 @@ int main(int argc, char *argv[])
   }
 #endif
 
+#if 1
   // Try out norm2 on arrays
   {
     int N = 5;
@@ -185,6 +185,32 @@ int main(int argc, char *argv[])
     QDPIO::cout << "|dnorm1|^2 = " << dnorm1 << endl
 		<< "|dnorm2|^2 = " << dnorm2 << endl;
   }
+#endif
+
+#if 1
+  // Try out some other funky ops
+  {
+    LatticeFermion psi;
+    gaussian(psi);
+
+    // Should be okay
+    bool bad1 = isnan(psi);
+    QDPIO::cout << "Test isnan(LF) [should be false] = " << bad1 << std::endl;
+
+    LatticeColorMatrix u;
+    gaussian(u);
+
+    // Should be okay
+    bool bad2 = isnan(u + u);
+    QDPIO::cout << "Test isnan(LCM) [should be false] = " << bad2 << std::endl;
+
+    // Intentionally do bad things
+    u = sqrt(Real(-1));
+    bool bad3 = isnan(u);
+
+    QDPIO::cout << "Test isnan(LCM) [should be true] = " << bad3 << std::endl;
+  }
+#endif
 
   pop(xml);
   xml.close();

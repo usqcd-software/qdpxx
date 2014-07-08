@@ -8,7 +8,7 @@
 #include<xmmintrin.h>
 
 /* A useful union type allows me to set values into the 
-   vector register from code */
+   vector  from code */
 
 #ifndef QDP_USE_SSE3
 

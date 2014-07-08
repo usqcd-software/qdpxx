@@ -19,10 +19,10 @@ namespace QDP {
 
     // Initialize the 4 sums to zero. Use _mm_setzero_pd() rather than explicit xor
     // Apparently we dont need volatile then.
-    register __m128d sum1 = _mm_setzero_pd();
-    register __m128d sum2 = _mm_setzero_pd();
-    register __m128d sum3 = _mm_setzero_pd();
-    register __m128d sum4 = _mm_setzero_pd();
+    __m128d sum1 = _mm_setzero_pd();
+    __m128d sum2 = _mm_setzero_pd();
+    __m128d sum3 = _mm_setzero_pd();
+    __m128d sum4 = _mm_setzero_pd();
 
   __m128d tmp1;
   __m128d tmp2;

@@ -66,13 +66,8 @@ namespace QDP
 
 } // namespace QDP
 
-#ifdef QDP_USE_QCDOC
-// Include the QCDOC specialisation
-#include "qdp_qcdoc_allocator.h"
-#else
 // Include the default specialisation
 #include "qdp_default_allocator.h"
-#endif
 
 
 #endif
