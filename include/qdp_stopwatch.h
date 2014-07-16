@@ -50,6 +50,8 @@ private:
 
   struct timeval t_start;
   struct timeval t_end;
+  
+  void calcDuration(long&,long&);
 };
 
 } // namespace QDP  
