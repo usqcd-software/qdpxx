@@ -34,8 +34,7 @@ dnl   so input variables can be CFLAGS, LDFLAGS or LIBS
     pac_QMP_CFLAGS="$1"
     pac_QMP_LDFLAGS="$2"
     pac_QMP_LIBS="$3"
-    AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
+	AC_LANG_PUSH([C++])
 dnl - save the original environment
     pac_saved_CXXFLAGS="$CXXFLAGS"
     pac_saved_LDFLAGS="$LDFLAGS"
@@ -60,7 +59,7 @@ dnl - set the parallel compiler environment
     CXXFLAGS="$pac_saved_CXXFLAGS"
     LDFLAGS="$pac_saved_LDFLAGS"
     LIBS="$pac_saved_LIBS"
-    AC_LANG_RESTORE
+    AC_LANG_POP([C++])
     if test "X${pac_qmp_working}X" = "XyesX" ; then
        ifelse([$6],,:,[$6])
     else
@@ -95,8 +94,7 @@ dnl - set local parallel compiler environments
 dnl - so input variables can be CXXFLAGS, LDFLAGS or LIBS
     pac_LIBXML2_CXXFLAGS="$1"
     pac_LIBXML2_LIBS="$2"
-    AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
+    AC_LANG_PUSH([C++])
 dnl - save the original environment
     pac_saved_CXXFLAGS="$CXXFLAGS"
     pac_saved_LDFLAGS="$LDFLAGS"
@@ -123,7 +121,7 @@ dnl - set the parallel compiler environment
     CXXFLAGS="$pac_saved_CXXFLAGS"
     LDFLAGS="$pac_saved_LDFLAGS"
     LIBS="$pac_saved_LIBS"
-    AC_LANG_RESTORE
+    AC_LANG_POP([C++])
     if test "X${pac_libxml2_working}X" = "XyesX" ; then
        ifelse([$5],,:,[$5])
     else
@@ -165,8 +163,7 @@ dnl   so input variables can be CFLAGS, LDFLAGS or LIBS
     pac_BAGEL_QDP_CFLAGS="$1"
     pac_BAGEL_QDP_LDFLAGS="$2"
     pac_BAGEL_QDP_LIBS="$3"
-    AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
+    AC_LANG_PUSH([C++])
 dnl - save the original environment
     pac_saved_CXXFLAGS="$CXXFLAGS"
     pac_saved_LDFLAGS="$LDFLAGS"
@@ -194,7 +191,7 @@ dnl - set the parallel compiler environment
     CXXFLAGS="$pac_saved_CXXFLAGS"
     LDFLAGS="$pac_saved_LDFLAGS"
     LIBS="$pac_saved_LIBS"
-    AC_LANG_RESTORE
+    AC_LANG_POP([C++])
     if test "X${pac_bagel_qdp_working}X" = "XyesX" ; then
        ifelse([$6],,:,[$6])
     else
@@ -232,8 +229,7 @@ dnl - so input variables can be CFLAGS, LDFLAGS or LIBS
     pac_HDF5_CFLAGS="$1"
     pac_HDF5_CXXFLAGS="$2"
     pac_HDF5_LIBS="$3"
-    AC_LANG_SAVE
-    AC_LANG_C
+    AC_LANG_PUSH([C])
 dnl - save the original environment
     pac_saved_CFLAGS="$CFLAGS"
     pac_saved_CXXFLAGS="$CXXFLAGS"
@@ -262,7 +258,7 @@ dnl - set the parallel compiler environment
     CXXFLAGS="$pac_saved_CXXFLAGS"
     LDFLAGS="$pac_saved_LDFLAGS"
     LIBS="$pac_saved_LIBS"
-    AC_LANG_RESTORE
+    AC_LANG_POP([C])
     if test "X${pac_hdf5_working}X" = "XyesX" ; then
        ifelse([$6],,:,[$6])
     else

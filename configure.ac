@@ -498,9 +498,11 @@ if test "X${ac_build_hdf5}X" = "XnoX"; then
   AC_MSG_NOTICE([Disabling HDF5])
   AC_SUBST(HDF5_CFLAGS, "")
   AC_SUBST(HDF5_CXXFLAGS, "")
+  AC_SUBST(HDF5_LDFLAGS,"")
   AC_SUBST(HDF5_LIBS,"")
    
 else
+  AC_DEFINE_UNQUOTED(QDP_USE_HDF5, [1], [Enable HDF5 support])
   if test "X${HDF5_HOME}X" = "XX" ; then
     AC_PATH_PROG(HDF5_BIN, [h5dump], [])
   else
@@ -512,32 +514,33 @@ else
   AC_MSG_NOTICE([Found hdf5 utility ${HDF5_BIN}])
   AC_SUBST(HDF5_CFLAGS, "-I${HDF5_HOME}/include")
   AC_SUBST(HDF5_CXXFLAGS, "-I${HDF5_HOME}/include")
-  AC_MSG_NOTICE([hdf5 compile flags: ${HDF5_CFLAGS}])
-  AC_MSG_NOTICE([hdf5 compile flags: ${HDF5_CXXFLAGS}])
-  AC_SUBST(HDF5_LIBS,     "-L${HDF5_HOME}/lib -lhdf5 -lz -lm")
-  AC_MSG_NOTICE([hdf5 libraries flags: ${HDF5_LIBS}])
-  AC_DEFINE_UNQUOTED(QDP_USE_HDF5, [1], [Enable HDF5 support])
+  AC_MSG_NOTICE([hdf5 c-compile flags: ${HDF5_CFLAGS}])
+  AC_MSG_NOTICE([hdf5 c++-compile flags: ${HDF5_CXXFLAGS}])
+  AC_SUBST(HDF5_LDFLAGS,     "-L${HDF5_HOME}/lib")
+  AC_MSG_NOTICE([hdf5 ldflags: ${HDF5_LDFLAGS}])
+  AC_SUBST(HDF5_LIBS,     "-lhdf5 -lz -lm")
+  AC_MSG_NOTICE([hdf5 libraries: ${HDF5_LIBS}])
   AC_SUBST(CONFIG_HDF5,[1])
   AC_MSG_NOTICE([Configuring QDP++ with HDF5 enabled]);
   dnl This function is defined in acinclude.m4
   dnl it tries to try to compile the program 
-  AC_MSG_CHECKING([if we can compile/link a simple hdf5 program])
-  PAC_HDF5_LINK_C_FUNC(
-  ${HDF5_CFLAGS},
-  ${HDF5_CXXFLAGS},
-  ${HDF5_LIBS},
-  ,
-  ,
-  [hdf5_link_ok=yes],
-  [hdf5_link_ok=no]
-  )
-  if test "X${hdf5_link_ok}X" = "XyesX" ; then 
-    AC_MSG_RESULT(yes)
-  else 
-    AC_MSG_RESULT(no)
-    AC_MSG_ERROR([Cannot compile/link a program with hdf5.
-    Use --with-hdf5=<dir> to select a working version.])
-  fi 
+  dnl AC_MSG_CHECKING([if we can compile/link a simple hdf5 program])
+  dnl   PAC_HDF5_LINK_C_FUNC(
+  dnl   ${HDF5_CFLAGS},
+  dnl   ${HDF5_CXXFLAGS},
+  dnl   ${HDF5_LIBS},
+  dnl   ,
+  dnl   ,
+  dnl   [hdf5_link_ok=yes],
+  dnl   [hdf5_link_ok=no]
+  dnl  )
+  dnl  if test "X${hdf5_link_ok}X" = "XyesX" ; then 
+  dnl     AC_MSG_RESULT(yes)
+  dnl  else 
+  dnl     AC_MSG_RESULT(no)
+  dnl     AC_MSG_ERROR([Cannot compile/link a program with hdf5.
+  dnl     Use --with-hdf5=<dir> to select a working version.])
+  dnl  fi 
 fi
 
 dnl bagel support
