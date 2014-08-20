@@ -435,7 +435,7 @@ if test "X${with_libxml2}X" = "XnoX" ; then
   AC_MSG_NOTICE([Disabling Libxml])
   AC_SUBST(LIBXML2_CXXFLAGS, "")
   AC_SUBST(LIBXML2_LIBS,"")
-  AC_DEFINE(QDP_NO_LIBXML2, [1], [ Dont use LIBXML2 ])
+  
 else
 
   if test "X${LIBXML2_HOME}X" = "XX" ; then
@@ -453,6 +453,7 @@ else
   AC_MSG_NOTICE([libxml2 compile flags: ${LIBXML2_CXXFLAGS}])
   AC_SUBST(LIBXML2_LIBS,     "`${LIBXML2_CONFIG} --libs`")
   AC_MSG_NOTICE([libxml2 libraries flags: ${LIBXML2_LIBS}])
+  AC_DEFINE_UNQUOTED(QDP_USE_LIBXML2, [1], [Enable LIBXML2 support])
 
   dnl This function is defined in acinclude.m4
   dnl it tries to try to compile the program 
@@ -498,7 +499,6 @@ if test "X${ac_build_hdf5}X" = "XnoX"; then
   AC_SUBST(HDF5_CFLAGS, "")
   AC_SUBST(HDF5_CXXFLAGS, "")
   AC_SUBST(HDF5_LIBS,"")
-  AC_DEFINE(QDP_NO_HDF5, [1], [ Dont use HDF5 ])
    
 else
   if test "X${HDF5_HOME}X" = "XX" ; then

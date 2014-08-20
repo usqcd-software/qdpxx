@@ -1913,7 +1913,7 @@ private:
 //! Decompose a lexicographic site into coordinates
 multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
 
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
 //! XML output
 template<class T>  
 XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)

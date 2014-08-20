@@ -258,10 +258,10 @@ dnl - set the parallel compiler environment
       [pac_hdf5_working=yes],
       [pac_hdf5_working=no]
     )
-dnl    CFLAGS="$pac_saved_CFLAGS"
-dnl    CXXFLAGS="$pac_saved_CXXFLAGS"
-dnl    LDFLAGS="$pac_saved_LDFLAGS"
-dnl    LIBS="$pac_saved_LIBS"
+    CFLAGS="$pac_saved_CFLAGS"
+    CXXFLAGS="$pac_saved_CXXFLAGS"
+    LDFLAGS="$pac_saved_LDFLAGS"
+    LIBS="$pac_saved_LIBS"
     AC_LANG_RESTORE
     if test "X${pac_hdf5_working}X" = "XyesX" ; then
        ifelse([$6],,:,[$6])

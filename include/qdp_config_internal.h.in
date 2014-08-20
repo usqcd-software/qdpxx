@@ -67,10 +67,10 @@
 #undef QDP_ND
 
 /* Dont use HDF5 */
-#undef QDP_NO_HDF5
+#undef QDP_USE_HDF5
 
 /* Dont use LIBXML2 */
-#undef QDP_NO_LIBXML2
+#undef QDP_USE_LIBXML2
 
 /* Number of spin components */
 #undef QDP_NS
