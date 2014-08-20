@@ -207,7 +207,6 @@ dnl Abhinav Sarje, 10/09/2013
 dnl Andre Walker-Loud, 10/09/2013
 dnl
 dnl PAC_HDF5_LINK_C_FUNC(
-dnl   HDF5_BIN,
 dnl   HDF5_CFLAGS,
 dnl   HDF5_LIBS,
 dnl   HDF5_VARS,
@@ -216,7 +215,6 @@ dnl   [action if working],
 dnl   [action if not working]
 dnl )
 dnl
-dnl  HDF5_BIN    for the hdf5 compiler
 dnl  HDF5_CFLAGS for the necessary includes paths (-I)
 dnl  HDF5_LIBS     for the libraries (-l<lib> etc)
 dnl  HDF5_VARS     for the declaration of variables needed
@@ -231,10 +229,9 @@ AC_DEFUN(
   [
 dnl - set local parallel compiler environments
 dnl - so input variables can be CFLAGS, LDFLAGS or LIBS
-        pac_HDF5_BIN="$1"
-    pac_HDF5_CFLAGS="$2"
-    pac_HDF5_CXXFLAGS="$3"
-    pac_HDF5_LIBS="$4"
+    pac_HDF5_CFLAGS="$1"
+    pac_HDF5_CXXFLAGS="$2"
+    pac_HDF5_LIBS="$3"
     AC_LANG_SAVE
     AC_LANG_C
 dnl - save the original environment
@@ -267,9 +264,9 @@ dnl    LDFLAGS="$pac_saved_LDFLAGS"
 dnl    LIBS="$pac_saved_LIBS"
     AC_LANG_RESTORE
     if test "X${pac_hdf5_working}X" = "XyesX" ; then
-       ifelse([$7],,:,[$7])
+       ifelse([$6],,:,[$6])
     else
-       ifelse([$8],,:,[$8])
+       ifelse([$7],,:,[$7])
     fi
   ]
 )

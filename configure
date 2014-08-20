@@ -1449,7 +1449,7 @@ Optional Packages:
                           DIR.
   --with-libxml2=DIR      Build on top of libxml2 where libxml2 is installed
                           in DIR
-  --with-hdf5=DIR         Enable support of HDF5 library installed in DIR
+  --with-hdf5=DIR         Build on top of hdf5 where hdf5 is installed in DIR
   --with-bagel-qdp=DIR    Build QDP++ using bagel_qdp where bagel_qdp is in
                           DIR.
   --with-qmt=<DIR>        Enable use of QMT Threads library installed in DIR
@@ -4585,14 +4585,15 @@ fi
 
 # Check whether --with-hdf5 was given.
 if test "${with_hdf5+set}" = set; then :
-  withval=$with_hdf5; HDF5_HOME="$with_hdf5"
+  withval=$with_hdf5; ac_build_hdf5="yes";
+  HDF5_HOME="$with_hdf5"
+else
+  ac_build_hdf5="no"
 
 fi
 
-echo Value of with_hdf5 is ${with_hdf5}
 
-if test "X${with_hdf5}X" = "XnoX" ; then
-
+if test "X${ac_build_hdf5}X" = "XnoX"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: Disabling HDF5" >&5
 $as_echo "$as_me: Disabling HDF5" >&6;}
   HDF5_CFLAGS=""
@@ -4606,10 +4607,9 @@ $as_echo "#define QDP_NO_HDF5 1" >>confdefs.h
 
 
 else
-
   if test "X${HDF5_HOME}X" = "XX" ; then
-    # Extract the first word of "h5pcc", so it can be a program name with args.
-set dummy h5pcc; ac_word=$2
+    # Extract the first word of "h5dump", so it can be a program name with args.
+set dummy h5dump; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
 if ${ac_cv_path_HDF5_BIN+:} false; then :
@@ -4649,8 +4649,8 @@ fi
 
 
   else
-    # Extract the first word of "h5pcc", so it can be a program name with args.
-set dummy h5pcc; ac_word=$2
+    # Extract the first word of "h5dump", so it can be a program name with args.
+set dummy h5dump; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
 $as_echo_n "checking for $ac_word... " >&6; }
 if ${ac_cv_path_HDF5_BIN+:} false; then :
@@ -4691,13 +4691,11 @@ fi
 
 
   fi
-
   if test "X${HDF5_BIN}X" = "XX" ; then
-    as_fn_error $? "hdf5 compiler program h5pcc not found." "$LINENO" 5
+    as_fn_error $? "hdf5 utility h5dump not found." "$LINENO" 5
   fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: Found hdf5 compiler program ${HDF5_BIN}" >&5
-$as_echo "$as_me: Found hdf5 compiler program ${HDF5_BIN}" >&6;}
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Found hdf5 utility ${HDF5_BIN}" >&5
+$as_echo "$as_me: Found hdf5 utility ${HDF5_BIN}" >&6;}
   HDF5_CFLAGS="-I${HDF5_HOME}/include"
 
   HDF5_CXXFLAGS="-I${HDF5_HOME}/include"
@@ -4711,7 +4709,6 @@ $as_echo "$as_me: hdf5 compile flags: ${HDF5_CXXFLAGS}" >&6;}
   { $as_echo "$as_me:${as_lineno-$LINENO}: hdf5 libraries flags: ${HDF5_LIBS}" >&5
 $as_echo "$as_me: hdf5 libraries flags: ${HDF5_LIBS}" >&6;}
 
-
 cat >>confdefs.h <<_ACEOF
 #define QDP_USE_HDF5 1
 _ACEOF
@@ -4720,10 +4717,9 @@ _ACEOF
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: Configuring QDP++ with HDF5 enabled" >&5
 $as_echo "$as_me: Configuring QDP++ with HDF5 enabled" >&6;};
-
       { $as_echo "$as_me:${as_lineno-$LINENO}: checking if we can compile/link a simple hdf5 program" >&5
 $as_echo_n "checking if we can compile/link a simple hdf5 program... " >&6; }
-    ac_ext=c
+  ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
@@ -5451,7 +5447,6 @@ fi
 
 
 
-        pac_HDF5_BIN="${HDF5_BIN}"
     pac_HDF5_CFLAGS="${HDF5_CFLAGS}"
     pac_HDF5_CXXFLAGS="${HDF5_CXXFLAGS}"
     pac_HDF5_LIBS="${HDF5_LIBS}"
@@ -5512,7 +5507,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
     fi
 
 
-
   if test "X${hdf5_link_ok}X" = "XyesX" ; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
@@ -5522,7 +5516,6 @@ $as_echo "no" >&6; }
     as_fn_error $? "Cannot compile/link a program with hdf5.
     Use --with-hdf5=<dir> to select a working version." "$LINENO" 5
   fi
-
 fi
 
 
@@ -5972,7 +5965,14 @@ else
 fi
 
 
- if test "x${with_hdf5}x" != "xnox" ; then
+# Conditional for use of HDF5
+if test "x${ac_build_hdf5}x" = "xyesx"; then
+ echo True
+else
+ echo False
+fi
+
+ if test "x${ac_build_hdf5}x" = "xyesx" ; then
   QDP_USE_HDF5_TRUE=
   QDP_USE_HDF5_FALSE='#'
 else
