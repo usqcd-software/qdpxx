@@ -198,7 +198,7 @@ TextWriter& operator<<(TextWriter& txt, const PVector<T,N,C>& d)
   return txt;
 }
 
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
 //! XML output
 template<class T, int N, template<class,int> class C> 
 inline

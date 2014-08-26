@@ -14,7 +14,7 @@ if BUILD_LIBINTRIN
 INCFLAGS += -I@top_srcdir@/other_libs/@LIBINTRIN_DIR@/include -I@top_builddir@/other_libs/@LIBINTRIN_DIR@/include
 endif
 
-AM_CXXFLAGS = $(INCFLAGS) @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@  @QMT_CXXFLAGS@
+AM_CXXFLAGS = $(INCFLAGS) @BAGEL_QDP_CXXFLAGS@ @HDF5_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@  @QMT_CXXFLAGS@
 
 lib_LIBRARIES = libqdp.a
 
@@ -28,6 +28,10 @@ libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc \
 
 if QDP_USE_LIBXML2
 libqdp_a_SOURCES += qdp_xmlio.cc qdp_iogauge.cc qdp_qdpio.cc qdp_qio_strings.cc qdp_map_obj_disk.cc
+endif
+
+if QDP_USE_HDF5
+libqdp_a_SOURCES += qdp_hdf5.cc
 endif
 
 # Scalar	

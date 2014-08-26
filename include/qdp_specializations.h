@@ -43,7 +43,7 @@ toBool(const Boolean& s)
   return toBool(s.elem());
 }
 
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
 // XML readers
 template<>
 void read(XMLReader& xml, const string& s, multi1d<Integer>& d);

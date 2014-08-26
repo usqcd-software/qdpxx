@@ -1,8 +1,8 @@
 /*! @file
- * @brief Timer support
- *
- * A stopwatch like timer.
- */
+* @brief Timer support
+*
+* A stopwatch like timer.
+*/
 
 
 #include "qdp.h"
@@ -10,118 +10,103 @@
 
 namespace QDP {
 
-StopWatch::StopWatch() 
-{
-  stoppedP=false;
-  startedP=false;
-}
+	StopWatch::StopWatch() 
+	{
+		stoppedP=false;
+		startedP=false;
+		sec=0;
+		usec=0;
+	}
 
-StopWatch::~StopWatch() {}
+	StopWatch::~StopWatch() {}
+	
+	void StopWatch::calcDuration(long& secs, long& usecs){
+		secs=0;
+		usecs=0;
+		if( startedP && stoppedP ) 
+		{ 
+			if( t_end.tv_sec < t_start.tv_sec ) 
+			{ 
+				QDPIO::cerr << __func__ << ": critical timer rollover" << endl;
+				usecs = 0;
+			}
+			else 
+			{ 
+				secs = t_end.tv_sec - t_start.tv_sec;
 
-void StopWatch::reset() 
-{
-  startedP = false;
-  stoppedP = false;
-}
+				if( t_end.tv_usec < t_start.tv_usec ) 
+				{
+					secs -= 1;
+					usecs = 1000000;
+				}
+				usecs += t_end.tv_usec - t_start.tv_usec;
+			}
+		}
+		else 
+		{
+			QDPIO::cerr << __func__ << ": either stopwatch not started, or not stopped. I will return 0 instead!" << endl;
+			secs=0;
+			usecs=0;
+		}
+	}
 
-void StopWatch::start() 
-{
-  int ret_val;
-  ret_val = gettimeofday(&t_start, NULL);
-  if( ret_val != 0 ) 
-  {
-    QDPIO::cerr << __func__ << ": gettimeofday failed in StopWatch::start()" << endl;
-    QDP_abort(1);
-  }
-  startedP = true;
-  stoppedP = false;
-}
+	void StopWatch::reset() 
+	{
+		startedP = false;
+		stoppedP = false;
+		sec=0;
+		usec=0;
+	}
 
-void StopWatch::stop() 
-{
-  if( !startedP ) 
-  { 
-    QDPIO::cerr << __func__ << ": attempting to stop a non running stopwatch in StopWatch::stop()" << endl;
-    QDP_abort(1);
-  }
+	void StopWatch::start() 
+	{
+		int ret_val;
+		ret_val = gettimeofday(&t_start, NULL);
+		if( ret_val != 0 ) 
+		{
+			QDPIO::cerr << __func__ << ": gettimeofday failed in StopWatch::start()" << endl;
+			QDP_abort(1);
+		}
+		startedP = true;
+		stoppedP = false;
+	}
 
-  int ret_val;
-  ret_val = gettimeofday(&t_end, NULL);
-  if( ret_val != 0 ) 
-  {
-    QDPIO::cerr << __func__ << ": gettimeofday failed in StopWatch::end()" << endl;
-    QDP_abort(1);
-  }
-  stoppedP = true;
-}
+	void StopWatch::stop() 
+	{
+		if( !startedP ) 
+		{ 
+			QDPIO::cerr << __func__ << ": attempting to stop a non running stopwatch in StopWatch::stop()" << endl;
+		}
+		else{
+			int ret_val;
+			ret_val = gettimeofday(&t_end, NULL);
+			if( ret_val != 0 ) 
+			{
+				QDPIO::cerr << __func__ << ": gettimeofday failed in StopWatch::end()" << endl;
+				QDP_abort(1);
+			}
+			stoppedP = true;
+		
+			long usecs, secs;
+			calcDuration(secs,usecs);
+			
+			usec+=usecs;
+			sec+=secs;
+		
+			startedP=false;
+			stoppedP=false;
+		}
+	}
 
-double StopWatch::getTimeInMicroseconds() 
-{
-  long usecs=0;
-  if( startedP && stoppedP ) 
-  { 
-    if( t_end.tv_sec < t_start.tv_sec ) 
-    { 
-      QDPIO::cerr << __func__ << ": critical timer rollover" << endl;
-//      QDP_abort(1);
-      usecs = 0.0;
-    }
-    else 
-    { 
-      usecs = (t_end.tv_sec - t_start.tv_sec)*1000000;
-
-      if( t_end.tv_usec < t_start.tv_usec ) 
-      {
-	usecs -= 1000000;
-	usecs += 1000000+t_end.tv_usec - t_start.tv_usec;
-      }
-      else 
-      {
-	usecs += t_end.tv_usec - t_start.tv_usec;
-      }
-    }
-  }
-  else 
-  {
-    QDPIO::cerr << __func__ << ": either stopwatch not started, or not stopped" << endl;
-    QDP_abort(1);
-  }
-
-  return (double)usecs;
-}
+	double StopWatch::getTimeInMicroseconds() 
+	{
+		return static_cast<double>(usec)+static_cast<double>(sec*1.e6);
+	}
     
-double StopWatch::getTimeInSeconds()  
-{
-  long secs=0;
-  long usecs=0;
-  if( startedP && stoppedP ) 
-  { 
-    if( t_end.tv_sec < t_start.tv_sec ) 
-    { 
-      QDPIO::cerr << __func__ << ": critical timer rollover" << endl;
-//      QDP_abort(1);
-      usecs = 0.0;
-    }
-    else 
-    { 
-      secs = t_end.tv_sec - t_start.tv_sec;
-
-      if( t_end.tv_usec < t_start.tv_usec ) 
-      {
-	secs -= 1;
-	usecs = 1000000;
-      }
-      usecs += t_end.tv_usec - t_start.tv_usec;
-    }
-  }
-  else 
-  {
-    QDPIO::cerr << __func__ << ": either stopwatch not started, or not stopped" << endl;
-    QDP_abort(1);
-  }
-
-  return (double)secs + ((double)usecs / 1e6);
-}
+	double StopWatch::getTimeInSeconds()  
+	{
+		return static_cast<double>(sec)+static_cast<double>(usec)/1.e6;
+	}
 
 
 } // namespace QDP;

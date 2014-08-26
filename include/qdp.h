@@ -109,13 +109,18 @@ namespace QDP {
 #include "qdp_io.h"
 #include "qdp_stdio.h"
 
-#ifdef QDP_NO_LIBXML2
+#ifndef QDP_USE_LIBXML2
 #warning not using libxml2
 #else
 #include "qdp_xmlio.h"
 #include "qdp_qdpio.h"
 #endif
 
+#ifndef QDP_USE_HDF5
+#warning not using hdf5
+#else
+#include "qdp_hdf5.h"
+#endif
 
 #include "qdp_subset.h"
 #include "qdp_map.h"

@@ -213,7 +213,7 @@ TextWriter& operator<<(TextWriter& s, const IScalar<T>& d)
   return s << d.elem();
 }
 
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
 //! XML output
 template<class T>
 inline

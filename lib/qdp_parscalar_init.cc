@@ -296,6 +296,10 @@ namespace QDP {
 			QDP_abort(1);
 		}
 		
+#if defined(QDP_USE_HDF5)
+                H5close();
+#endif
+		
 		//
 		// finalise qmt
 		//

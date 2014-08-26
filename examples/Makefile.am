@@ -9,7 +9,7 @@ AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
               -I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
               -I@top_builddir@/other_libs/qio/other_libs/c-lime/include \
               -I@top_srcdir@/other_libs/xpath_reader/include \
-              @BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@ @QMT_CXXFLAGS@
+              @BAGEL_QDP_CXXFLAGS@ @HDF5_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@ @QMT_CXXFLAGS@
 
 if BUILD_LIBINTRIN
 AM_CXXFLAGS += -I@top_srcdir@/other_libs/@LIBINTRIN_DIR@/include \
@@ -28,7 +28,7 @@ AM_LDFLAGS += -L@top_builddir@/other_libs/qio/lib \
              -L@top_builddir@/other_libs/qio/other_libs/c-lime/lib \
              -L@top_builddir@/other_libs/xpath_reader/lib
 endif
-AM_LDFLAGS += @LDFLAGS@ @BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@ @QMT_LDFLAGS@
+AM_LDFLAGS += @LDFLAGS@ @BAGEL_QDP_LDFLAGS@ @HDF5_LDFLAGS@ @QMP_LDFLAGS@ @QMT_LDFLAGS@
 
 if BUILD_LIBINTRIN
 AM_LDFLAGS += -L@top_builddir@/other_libs/libintrin/lib
@@ -40,6 +40,10 @@ AM_LDFLAGS += -L@top_builddir@/other_libs/filedb/src \
 endif
 
 LDADD = -lqdp
+
+if QDP_USE_HDF5
+LDADD += @HDF5_LIBS@
+endif
 
 if QDP_USE_LIBXML2
 LDADD += -lXPathReader -lxmlWriter -lqio -llime

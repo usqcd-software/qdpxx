@@ -216,7 +216,7 @@ TextWriter& operator<<(TextWriter& s, const RScalar<T>& d)
   return s << d.elem();
 }
 
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
 //! XML output
 template<class T>
 inline
@@ -422,7 +422,7 @@ TextWriter& operator<<(TextWriter& s, const RComplex<T>& d)
   return s << d.real() << d.imag();
 }
 
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
 //! XML output
 template<class T>
 inline
