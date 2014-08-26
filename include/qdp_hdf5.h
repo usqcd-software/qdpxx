@@ -1010,7 +1010,7 @@ namespace QDP {
 		//***********************************************************************************************************************************
 		//helper routines for Lattice field I/O:
 		void writePrepare(const std::string& name, const bool& overwrite);
-		void writeLattice(const std::string& name, const hid_t& datatype, const ullong& obj_size, REAL* buf);
+		void writeLattice(const std::string& name, const hid_t& datatype, const ullong& obj_size, char* buf);
 
 	public:
 		//! Empty constructors
@@ -1177,7 +1177,7 @@ namespace QDP {
 
 			//write out the stuff:
 			if(profile) swatch_write.start();
-			writeLattice(name,type_id,obj_size,buf);
+			writeLattice(name,type_id,obj_size,reinterpret_cast<char*>(buf));
       
 			//clean up
 			H5Tclose(type_id);
@@ -1241,7 +1241,7 @@ namespace QDP {
 
 			//write out the stuff:
 			if(profile) swatch_write.start();
-			writeLattice(name,type_id,obj_size*arr_size,buf);
+			writeLattice(name,type_id,obj_size*arr_size,reinterpret_cast<char*>(buf));
 
 			//clean up
 			H5Tclose(type_id);
