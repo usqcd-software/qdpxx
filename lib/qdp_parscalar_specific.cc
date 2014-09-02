@@ -42,6 +42,11 @@ namespace QDP {
     const int my_node = Layout::nodeNumber();
 
     // Loop over the sites on this node
+    /* This for loop added by Jacques. Should be OK.
+       Loop works out forward and backward neighbours and writes
+       one value per value of linear. So no write conflicts */
+
+#pragma omp parallel for
     for(int linear=0; linear < nodeSites; ++linear)
     {
       // Get the true lattice coord of this linear site index
@@ -72,7 +77,7 @@ namespace QDP {
 	       bcoord[0], bcoord[1], bcoord[2], bcoord[3],
 	       goffsets[linear]);
 #endif
-    }
+    }	// end for-loop
 
     // Return a list of the unique nodes in the list
     // NOTE: my_node may be included as a unique node, so one extra
@@ -85,12 +90,12 @@ namespace QDP {
     int cnt_srcenodes = 0;
     for(int i=0; i < srcenodes_tmp.size(); ++i)
       if (srcenodes_tmp[i] != my_node)
-	++cnt_srcenodes;
+				++cnt_srcenodes;
 
     int cnt_destnodes = 0;
     for(int i=0; i < destnodes_tmp.size(); ++i)
       if (destnodes_tmp[i] != my_node)
-	++cnt_destnodes;
+				++cnt_destnodes;
 
 #if QDP_DEBUG >= 3
     // Debugging
@@ -103,7 +108,6 @@ namespace QDP {
     QDP_info("cnt_srcenodes = %d", cnt_srcenodes);
     QDP_info("cnt_destnodes = %d", cnt_destnodes);
 #endif
-
 
     // A sanity check - both counts must be either 0 or non-zero
     if (cnt_srcenodes > 0 && cnt_destnodes == 0)
@@ -133,11 +137,11 @@ namespace QDP {
   
     for(int i=0, j=0; i < srcenodes_tmp.size(); ++i)
       if (srcenodes_tmp[i] != my_node)
-	srcenodes[j++] = srcenodes_tmp[i];
+				srcenodes[j++] = srcenodes_tmp[i];
 
     for(int i=0, j=0; i < destnodes_tmp.size(); ++i)
       if (destnodes_tmp[i] != my_node)
-	destnodes[j++] = destnodes_tmp[i];
+				destnodes[j++] = destnodes_tmp[i];
 
 #if QDP_DEBUG >= 3
     // Debugging
@@ -148,7 +152,6 @@ namespace QDP {
       QDP_info("destnodes(%d) = %d",i,destnodes(i));
 #endif
 
-
     // Run through the lists and find the number of each unique node
     srcenodes_num.resize(srcenodes.size());
     destnodes_num.resize(destnodes.size());
@@ -156,30 +159,31 @@ namespace QDP {
     srcenodes_num = 0;
     destnodes_num = 0;
 
+		// fast so no threading necessary
     for(int linear=0; linear < nodeSites; ++linear)
     {
-      int this_node = srcnode[linear];
+			int this_node = srcnode[linear];
       if (this_node != my_node)
-	for(int i=0; i < srcenodes_num.size(); ++i)
-	{
-	  if (srcenodes[i] == this_node)
-	  {
-	    srcenodes_num[i]++;
-	    break;
-	  }
-	}
+				for(int i=0; i < srcenodes_num.size(); ++i)
+				{
+					if (srcenodes[i] == this_node)
+					{
+						srcenodes_num[i]++;
+						break;
+					}
+				}
 
       int that_node = dstnode[linear];
       if (that_node != my_node)
-	for(int i=0; i < destnodes_num.size(); ++i)
-	{
-	  if (destnodes[i] == that_node)
-	  {
-	    destnodes_num[i]++;
-	    break;
-	  }
-	}
-    }
+			for(int i=0; i < destnodes_num.size(); ++i)
+			{
+				if (destnodes[i] == that_node)
+				{
+					destnodes_num[i]++;
+					break;
+				}
+			}
+    }	// end for linear
   
 
 #if QDP_DEBUG >= 3
@@ -223,7 +227,7 @@ namespace QDP {
       int fline = Layout::linearSiteIndex(fcoord);
 
       if (fnode == my_node)
-	soffsets[si++] = fline;
+				soffsets[si++] = fline;
     }
 
 #if QDP_DEBUG >= 3

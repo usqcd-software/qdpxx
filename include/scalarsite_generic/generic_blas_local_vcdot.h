@@ -15,106 +15,39 @@ namespace QDP {
 // Out is complex: Out_re, Out_im 
 // V1 V2 are complex vectors of length 3*n_3vec
 //volatile
+
 inline
 void l_vcdot(DOUBLE *Out_re, DOUBLE *Out_im, REAL *V1, REAL *V2, int n_3vec)
 {
-   double result_re;
-   double result_im;
 
-  
-   double v1_0r;
-   double v1_0i;
-   double v1_1r;
-   double v1_1i;
-   double v1_2r;
-   double v1_2i;
+  register double result_re=0;
+  register double result_im=0;
 
-   double v2_0r;
-   double v2_0i;
-   double v2_1r;
-   double v2_1i;
-   double v2_2r;
-   double v2_2i;
+  register double v1_r;
+  register double v1_i;
+  register double v2_r;
+  register double v2_i;
 
-   int counter=0;
-   unsigned long vecptr1=0;
-   unsigned long vecptr2=0;
-  result_re= 0;
-  result_im= 0;
+  register int counter;
 
-  
-  if( n_3vec > 0 ) { 
+  if( n_3vec > 0 )  {
 
-    // Prefetch 
-    v1_0r = (DOUBLE)V1[vecptr1++];
-    v2_0r = (DOUBLE)V2[vecptr2++];
-
-    v1_0i = (DOUBLE)V1[vecptr1++];
-    v2_0i = (DOUBLE)V2[vecptr2++];
-
-    v1_1r = (DOUBLE)V1[vecptr1++];
-    v2_1r = (DOUBLE)V2[vecptr2++];
-    int len = 4*n_3vec;
-
-    for(counter=0; counter < len-1; counter++) {
-      result_re = result_re + v1_0r*v2_0r;
-      v1_1i =(DOUBLE)V1[vecptr1++];
-      result_im = result_im - v1_0i*v2_0r;
-      v2_1i = (DOUBLE)V2[vecptr2++];
-      result_im = result_im + v1_0r*v2_0i;
-      v1_2r = (DOUBLE)V1[vecptr1++];
-      result_re = result_re + v1_0i*v2_0i;
-      v2_2r = (DOUBLE)V2[vecptr2++];
-      
-      result_re = result_re + v1_1r*v2_1r;
-      v1_2i = (DOUBLE)V1[vecptr1++];
-      result_im = result_im - v1_1i*v2_1r;
-      v2_2i = (DOUBLE)V2[vecptr2++];
-      result_im = result_im + v1_1r*v2_1i;
-      v1_0r = (DOUBLE)V1[vecptr1++];
-      result_re = result_re + v1_1i*v2_1i;
-      v2_0r = (DOUBLE)V2[vecptr2++];
-
-      result_re = result_re + v1_2r*v2_2r;
-      v1_0i = (DOUBLE)V1[vecptr1++];
-      result_im = result_im - v1_2i*v2_2r;
-      v2_0i = (DOUBLE)V2[vecptr2++];
-      result_im = result_im + v1_2r*v2_2i;
-      v1_1r = (DOUBLE)V1[vecptr1++];
-      result_re = result_re + v1_2i*v2_2i;
-      v2_1r = (DOUBLE)V2[vecptr2++];
-
-    }
-
-    // Last one plus drain...
-    result_re = result_re + v1_0r*v2_0r;
-    v1_1i =(DOUBLE)V1[vecptr1++];
-    result_im = result_im - v1_0i*v2_0r;
-    v2_1i = (DOUBLE)V2[vecptr2++];
-    result_im = result_im + v1_0r*v2_0i;
-    v1_2r = (DOUBLE)V1[vecptr1++];
-    result_re = result_re + v1_0i*v2_0i;
-    v2_2r = (DOUBLE)V2[vecptr2++];
-      
-    result_re = result_re + v1_1r*v2_1r;
-    v1_2i = (DOUBLE)V1[vecptr1++];
-    result_im = result_im - v1_1i*v2_1r;
-    v2_2i = (DOUBLE)V2[vecptr2++];
-    result_im = result_im + v1_1r*v2_1i;
-    result_re = result_re + v1_1i*v2_1i;
+    int len = 24*n_3vec;	// 12*(re,im)
     
-
-    result_re = result_re + v1_2r*v2_2r;
-    result_im = result_im - v1_2i*v2_2r;
-    result_im = result_im + v1_2r*v2_2i;
-    result_re = result_re + v1_2i*v2_2i;    
-
+#pragma omp parallel for reduction(+:result_re,result_im) private(v1_r,v1_i,v2_r,v2_i)
+    for(counter=0; counter < len; counter+=2)  {
+      v1_r = (DOUBLE)V1[counter];
+      v1_i = (DOUBLE)V1[counter+1];
+      v2_r = (DOUBLE)V2[counter];
+      v2_i = (DOUBLE)V2[counter+1];
+      result_re += v1_r*v2_r + v1_i*v2_i;
+      result_im += v1_r*v2_i - v1_i*v2_r;
+    }
   }
   
   *Out_re=(DOUBLE)result_re;
   *Out_im=(DOUBLE)result_im;
 }
-
 
 } // namespace QDP;
 
