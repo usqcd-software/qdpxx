@@ -20,14 +20,14 @@ void l_vcdot_real(DOUBLE *Out, REAL *V1, REAL *V2, int n_3vec)
 {
 
   // routine cleaned up and threaded by Jacques
-  register double result=0;
+  double result=0;
   
-  register double v1_r;
-  register double v1_i;
-  register double v2_r;
-  register double v2_i;
+  double v1_r;
+  double v1_i;
+  double v2_r;
+  double v2_i;
 
-  register int counter;
+  int counter;
 
   if( n_3vec > 0 )
   { 

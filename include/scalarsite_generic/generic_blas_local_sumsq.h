@@ -16,8 +16,8 @@ inline
 void local_sumsq(DOUBLE *Out, REAL  *In, int n_3vec)
 {
 
-  register double result;
-  register double i1;
+  double result;
+  double i1;
 
   int len = 24*n_3vec;
   

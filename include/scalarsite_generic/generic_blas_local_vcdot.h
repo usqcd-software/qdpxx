@@ -20,15 +20,15 @@ inline
 void l_vcdot(DOUBLE *Out_re, DOUBLE *Out_im, REAL *V1, REAL *V2, int n_3vec)
 {
 
-  register double result_re=0;
-  register double result_im=0;
+  double result_re=0;
+  double result_im=0;
 
-  register double v1_r;
-  register double v1_i;
-  register double v2_r;
-  register double v2_i;
+  double v1_r;
+  double v1_i;
+  double v2_r;
+  double v2_i;
 
-  register int counter;
+  int counter;
 
   if( n_3vec > 0 )  {
 
