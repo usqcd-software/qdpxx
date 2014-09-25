@@ -1625,7 +1625,7 @@ void HDF5Writer::writePrepare(const std::string& name, const bool& overwrite){
 			QDPIO::cout << "HDF5Writer::write: error, the object you try to write does already exist and is of different type!" << std::endl;
 			return;
 		}
-		//delete attributes (if present) and unlink storage:                                                                                                                                                                                                                                                                                                                
+		//delete attributes (if present) and unlink storage:
 		deleteAllAttributes(name);
 		errhandle=H5Ldelete(current_group,name.c_str(),H5P_DEFAULT);
 	}
