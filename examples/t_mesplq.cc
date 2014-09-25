@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   XMLFileWriter xml("t_mesplq.xml");
   push(xml,"t_mesplq");
 
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
   QDPIO::cout << "w_plaq = " << w_plaq << endl;
   QDPIO::cout << "link = " << link << endl;
 
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   // Write out the results
   push(xml,"observables");
   write(xml,"w_plaq",w_plaq);

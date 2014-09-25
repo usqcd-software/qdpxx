@@ -200,7 +200,7 @@ StandardOutputStream& operator<<(StandardOutputStream& s, const QDPExpr<RHS, OSc
   return s << C1(l);
 }
 
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
 //! XML output
 /*! Supports also having an inner grid */
 template<class T>

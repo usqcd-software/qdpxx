@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   XMLFileWriter xml("t_linalg.xml");
   push(xml, "linalgTest");
 
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_eq_M_times_M");
   write(xml,"c", c);
   pop(xml);
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_eq_Ma_times_M");
   write(xml,"a",a);
   write(xml,"b",b);
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_eq_M_times_Ma");
   write(xml,"a",a);
   write(xml,"b",b);
@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_eq_Ma_times_Ma");
   write(xml,"a",a);
   write(xml,"b",b);
@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_peq_M_times_M");
   write(xml,"c",c);
   pop(xml);
@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_peq_Ma_times_M");
   write(xml,"c",c);
   pop(xml);
@@ -221,7 +221,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_peq_M_times_Ma");
   write(xml,"c",c);
   pop(xml);
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_peq_Ma_times_Ma");
   write(xml,"c",c);
   pop(xml);
@@ -253,7 +253,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_meq_M_times_M");
   write(xml,"c",c);
   pop(xml);
@@ -269,7 +269,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_meq_Ma_times_M");
   write(xml,"c",c);
   pop(xml);
@@ -285,7 +285,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_meq_M_times_Ma");
   write(xml,"c",c);
   pop(xml)
@@ -301,7 +301,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << Nflops / tt << " Mflops" << endl;
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_meq_Ma_times_Ma");
   write(xml,"c",c);
   pop(xml);
@@ -337,7 +337,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_V_eq_M_times_V");
   write(xml,"lv2",lv2);
   pop(xml)
@@ -353,7 +353,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_V_eq_Ma_times_V");
   write(xml,"lv2",lv2);
   pop(xml);
@@ -384,7 +384,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 6 / tt << " Mflops" << endl;   // check the flop count
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_V_eq_V_plus_V");
   write(xml,"lv3",lv3);
   pop(xml);
@@ -420,7 +420,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_D_eq_M_times_D");
   write(xml,"lf2",lf2);
   pop(xml);
@@ -435,7 +435,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_D_eq_Ma_times_D");
   write(xml,"lf2",lf2);
   pop(xml);
@@ -470,7 +470,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_H_eq_M_times_H");
   write(xml,"lh2", lh2);
   pop(xml);
@@ -486,7 +486,7 @@ int main(int argc, char *argv[])
 	      << " micro-secs/site/iteration" 
 	      << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
 #else
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   push(xml,"QDP_H_eq_Ma_times_H");
   write(xml,"lh2", lh2);
   pop(xml);
@@ -495,7 +495,7 @@ int main(int argc, char *argv[])
 #endif
 
 
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
   pop(xml);
   xml.close();
 #endif

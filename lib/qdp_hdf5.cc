@@ -8,6 +8,7 @@
 #include "qdp.h"
 
 #ifdef QDP_USE_HDF5
+
 // optional hdf5 code goes here
 namespace QDP {
 	using std::string;
@@ -1631,7 +1632,7 @@ void HDF5Writer::writePrepare(const std::string& name, const bool& overwrite){
 	}
 }
 
-void HDF5Writer::writeLattice(const std::string& name, const hid_t& datatype, const ullong& obj_size, REAL* buf){
+void HDF5Writer::writeLattice(const std::string& name, const hid_t& datatype, const ullong& obj_size, char* buf){
 	//writing out reordered data array:
 	//determine the dimension of the array: this is useful since not for all classes a write routine will be implemented. In that case,
 	//it falls back to a floating point array. In other cases, more sophisticated datatypes will be written and stored
@@ -1679,7 +1680,7 @@ void HDF5Writer::writeLattice(const std::string& name, const hid_t& datatype, co
 	hid_t plist_id = H5Pcreate(H5P_DATASET_XFER);
 	H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
 
-	size_t typesize=H5Tget_size(datatype)/sizeof(REAL);
+	size_t typesize=H5Tget_size(datatype);
 	size_t total_size = typesize * obj_size * Layout::sitesOnNode();
 	size_t two_gb = (size_t) 2 * 1024 * 1024 * 1024;
 
@@ -1760,7 +1761,7 @@ void HDF5Writer::write(const std::string& name, const LatticeColorMatrixF3& fiel
 	//copy buffer into data
 	size_t float_size=sizeof(REAL32);
 	size_t obj_size=sizeof(ColorMatrixF3)/float_size;
-	REAL64* buf=new REAL64[nodeSites*obj_size];
+	REAL32* buf=new REAL32[nodeSites*obj_size];
 	int run=0;
 	for(int site=0; site < Layout::vol(); ++site){
 		multi1d<int> coord = crtesn(site, Layout::lattSize());
@@ -1776,7 +1777,7 @@ void HDF5Writer::write(const std::string& name, const LatticeColorMatrixF3& fiel
 
 	//write out the stuff:
 	if(profile) swatch_write.start();
-	writeLattice(name,colmat_id,1,buf);
+	writeLattice(name,colmat_id,1,reinterpret_cast<char*>(buf));
 
 	//clean up
 	H5Tclose(colmat_id);
@@ -1856,7 +1857,7 @@ void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const st
 	
 	//write out the stuff:
 	if(profile) swatch_write.start();
-	writeLattice(name,colmat_id,1,buf);
+	writeLattice(name,colmat_id,1,reinterpret_cast<char*>(buf));
 
 	//clean up
 	H5Tclose(colmat_id);
@@ -1939,7 +1940,7 @@ void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const st
     
 	//write out the stuff:
 	if(profile) swatch_write.start();
-	writeLattice(name,colmat_id,field.size(),buf);
+	writeLattice(name,colmat_id,field.size(),reinterpret_cast<char*>(buf));
 
 	//clean up
 	H5Tclose(colmat_id);

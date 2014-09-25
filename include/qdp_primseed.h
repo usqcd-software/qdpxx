@@ -166,7 +166,7 @@ TextWriter& operator<<(TextWriter& txt, const PSeed<T>& d)
   return txt;
 }
 
-#ifndef QDP_NO_LIBXML2
+#ifdef QDP_USE_LIBXML2
 //! XML output
 template<class T>
 inline

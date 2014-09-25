@@ -89,7 +89,7 @@ POST_UNINSTALL = :
 @BUILD_FILEDB_TRUE@am__append_5 = -L@top_builddir@/other_libs/filedb/src \
 @BUILD_FILEDB_TRUE@              -L@top_builddir@/other_libs/filedb/filehash
 
-@QDP_USE_HDF5_TRUE@am__append_6 = -lhdf5
+@QDP_USE_HDF5_TRUE@am__append_6 = @HDF5_LIBS@
 @QDP_USE_LIBXML2_TRUE@am__append_7 = -lXPathReader -lxmlWriter -lqio -llime
 @BUILD_LIBINTRIN_TRUE@am__append_8 = -lintrin
 @BUILD_FILEDB_TRUE@am__append_9 = -lfiledb -lfilehash
@@ -432,9 +432,6 @@ BAGEL_QDP_CONFIG = @BAGEL_QDP_CONFIG@
 BAGEL_QDP_CXXFLAGS = @BAGEL_QDP_CXXFLAGS@
 BAGEL_QDP_LDFLAGS = @BAGEL_QDP_LDFLAGS@
 BAGEL_QDP_LIBS = @BAGEL_QDP_LIBS@
-CC = @CC@
-CCDEPMODE = @CCDEPMODE@
-CFLAGS = @CFLAGS@
 CONFIG_ALIGNMENT = @CONFIG_ALIGNMENT@
 CONFIG_GENERICS = @CONFIG_GENERICS@
 CONFIG_HDF5 = @CONFIG_HDF5@
@@ -465,6 +462,7 @@ FILEDB_DIR = @FILEDB_DIR@
 HDF5_BIN = @HDF5_BIN@
 HDF5_CFLAGS = @HDF5_CFLAGS@
 HDF5_CXXFLAGS = @HDF5_CXXFLAGS@
+HDF5_LDFLAGS = @HDF5_LDFLAGS@
 HDF5_LIBS = @HDF5_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -509,7 +507,6 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
-ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -559,10 +556,10 @@ AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include \
 	-I@top_srcdir@/other_libs/qio/other_libs/c-lime/include \
 	-I@top_builddir@/other_libs/qio/other_libs/c-lime/include \
 	-I@top_srcdir@/other_libs/xpath_reader/include \
-	@BAGEL_QDP_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@ \
-	@QMT_CXXFLAGS@ $(am__append_1) $(am__append_2)
+	@BAGEL_QDP_CXXFLAGS@ @HDF5_CXXFLAGS@ @LIBXML2_CXXFLAGS@ \
+	@QMP_CFLAGS@ @QMT_CXXFLAGS@ $(am__append_1) $(am__append_2)
 AM_LDFLAGS = -L@top_builddir@/lib $(am__append_3) @LDFLAGS@ \
-	@BAGEL_QDP_LDFLAGS@ @QMP_LDFLAGS@ @QMT_LDFLAGS@ \
+	@BAGEL_QDP_LDFLAGS@ @HDF5_LDFLAGS@ @QMP_LDFLAGS@ @QMT_LDFLAGS@ \
 	$(am__append_4) $(am__append_5)
 LDADD = -lqdp $(am__append_6) $(am__append_7) @BAGEL_QDP_LIBS@ \
 	@LIBXML2_LIBS@ @QMP_LIBS@ @QMT_LIBS@ @LIBS@ $(am__append_8) \
