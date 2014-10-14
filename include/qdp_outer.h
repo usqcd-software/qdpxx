@@ -5,6 +5,11 @@
 
 #include "qdp_config.h"
 #include "qdp_allocator.h"
+#include "qdp_pool.h"
+
+#ifdef __MIC
+	#define USE_POOL
+#endif
 
 /*! \file
  * \brief Outer grid classes
@@ -415,7 +420,14 @@ private:
       // Barfs if allocator fails
       try
       {
-	F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+#ifdef USE_POOL
+	slow=(T*)QDP::Pool::allocate<T>(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+#else
+	slow=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+#endif
+
+	// slow is active 
+	F=slow;
       }
       catch(std::bad_alloc) 
       {
@@ -431,8 +443,22 @@ private:
     if (!mem) return;
     if( F != 0x0 ) 
     { 
-      QDP::Allocator::theQDPAllocator::Instance().free(F);
+#ifdef USE_POOL
+      QDP::Pool::free<T>(slow);
+#else
+      QDP::Allocator::theQDPAllocator::Instance().free(slow);
+#endif
+      slow = 0x0;
     }
+
+    F = slow;
+
+#ifdef QDP_USE_QCDOC 
+    if( fast != 0x0 ) { 
+      QDP::Allocator::theQDPAllocator::Instance().free(fast);      
+      fast = 0x0;
+    }
+#endif
     mem = false;
     F = 0x0;
   }
@@ -450,6 +476,8 @@ public:
 private:
   bool mem;
   T *F; // Alias to current memory space
+  T *slow; // Slow space
+  T *fast; // For QCDOC Backqward compatibility. Strip this out later?
 };
 
 

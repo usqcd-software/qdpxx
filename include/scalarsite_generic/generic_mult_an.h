@@ -1,3 +1,13 @@
+#ifdef __MIC
+#warning "using _inline_generic_mult_su3_an for MIC"
+
+#define _inline_generic_mult_su3_an(aa,bb,cc) \
+{\
+	mic_MatAdjMult(cc,aa,bb);	\
+}
+
+#else
+
 #define _inline_generic_mult_su3_an(aa,bb,cc) \
 { \
   cc.elem(0,0) = adjMultiply(aa.elem(0,0),bb.elem(0,0))  \
@@ -30,3 +40,5 @@
                + adjMultiply(aa.elem(1,2),bb.elem(1,2))  \
                + adjMultiply(aa.elem(2,2),bb.elem(2,2)); \
 }
+
+#endif

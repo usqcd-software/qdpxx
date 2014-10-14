@@ -1,3 +1,12 @@
+#ifdef __MIC
+#warning "using _inline_generic_mult_su3_nn for MIC"
+
+#define _inline_generic_mult_su3_nn(aa,bb,cc) \
+{\
+	mic_MatMult(cc,aa,bb);	\
+}
+
+#else
 #define _inline_generic_mult_su3_nn(aa,bb,cc) \
 { \
   cc.elem(0,0).real()  = aa.elem(0,0).real()*bb.elem(0,0).real(); \
@@ -111,3 +120,5 @@
   cc.elem(2,2).imag() += aa.elem(2,2).real()*bb.elem(2,2).imag(); \
   cc.elem(2,2).imag() += aa.elem(2,2).imag()*bb.elem(2,2).real(); \
 }
+
+#endif

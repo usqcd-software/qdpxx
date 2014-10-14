@@ -24,7 +24,8 @@ libqdp_a_SOURCES = qdp_map.cc qdp_subset.cc qdp_random.cc \
 	qdp_stdio.cc \
         qdp_profile.cc qdp_strnlen.cc qdp_crc32.cc \
         qdp_stopwatch.cc \
-        qdp_rannyu.cc
+        qdp_rannyu.cc	\
+        qdp_pool.cc
 
 if QDP_USE_LIBXML2
 libqdp_a_SOURCES += qdp_xmlio.cc qdp_iogauge.cc qdp_qdpio.cc qdp_qio_strings.cc qdp_map_obj_disk.cc
@@ -90,4 +91,12 @@ endif
 if BUILD_DEFAULT_ALLOCATOR
 libqdp_a_SOURCES += qdp_default_allocator.cc
 endif 
+
+if QDP_USE_QCDOC
+libqdp_a_SOURCES += qdp_qcdoc_allocator.cc
+endif
+
+if QDP_USE_MIC
+libqdp_a_SOURCES += mic_specific/mic_MatMult.cc
+endif
 

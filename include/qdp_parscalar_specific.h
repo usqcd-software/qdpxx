@@ -346,12 +346,24 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 	prof.time -= getClockTime();
 #endif
 
+#if defined(QDP_USE_OMP_THREADS)
+	const int* tab = s.siteTable().slice();
+
+	#pragma omp parallel for
+		for (int j=0; j<s.numSiteTable(); ++j)
+		{
+			int i = tab[j];
+			op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+		}
+
+#else
 	int numSiteTable = s.numSiteTable();
 	
 	u_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
 
 	dispatch_to_threads< u_arg<T,T1,Op,RHS> >(numSiteTable, a, ev_userfunc);
 
+#endif
 	///////////////////
 	// Original code
 	//////////////////
@@ -390,12 +402,24 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 	prof.time -= getClockTime();
 #endif
 
+#if defined(QDP_USE_OMP_THREADS)
+	const int* tab = s.siteTable().slice();
+
+	#pragma omp parallel for
+		for (int j=0; j<s.numSiteTable(); ++j)
+		{
+			int i = tab[j];
+			op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
+		}
+
+#else
 	int numSiteTable = s.numSiteTable();
 
 	user_arg<T,T1,Op,RHS> a(dest, rhs, op, s.siteTable().slice());
 
 	dispatch_to_threads< user_arg<T,T1,Op,RHS> >(numSiteTable, a, evaluate_userfunc);
 
+#endif
 	////////////////////
 	// Original code
 	///////////////////
