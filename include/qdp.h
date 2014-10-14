@@ -191,7 +191,7 @@ namespace ThreadReductions {
 #include "qdp_parscalar_specific.h"
 
 // Include optimized code here if applicable
-#ifdef __MIC
+#ifdef QDP_USE_MIC
 	#warning "Using mic specifics"
 	#include "mic_specific.h"
 #elif QDP_USE_SSE == 1

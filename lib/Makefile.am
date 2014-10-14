@@ -92,10 +92,6 @@ if BUILD_DEFAULT_ALLOCATOR
 libqdp_a_SOURCES += qdp_default_allocator.cc
 endif 
 
-if QDP_USE_QCDOC
-libqdp_a_SOURCES += qdp_qcdoc_allocator.cc
-endif
-
 if QDP_USE_MIC
 libqdp_a_SOURCES += mic_specific/mic_MatMult.cc
 endif

@@ -48,9 +48,6 @@
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
 
-/* Define to the home page for this package. */
-#undef PACKAGE_URL
-
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
@@ -99,8 +96,14 @@
 /* Enable LIBXML2 support */
 #undef QDP_USE_LIBXML2
 
+/* Use MIC specializations */
+#undef QDP_USE_MIC
+
 /* Use OpenMP Threads */
 #undef QDP_USE_OMP_THREADS
+
+/* Use MIC specializations */
+#undef QDP_USE_POOL
 
 /* Enable profiling */
 #undef QDP_USE_PROFILING

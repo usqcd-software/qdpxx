@@ -126,6 +126,21 @@ AC_ARG_ENABLE(filedb,
   [filedb_enabled="yes"]
 )
 
+AC_ARG_ENABLE(mic,
+	AC_HELP_STRING([--enable-mic],
+	 [ Enable MIC optimizations ]),
+	 [ ac_mic_enabled=${enableval} ],
+	 [ ac_mic_enabled="no" ]
+)
+
+AC_ARG_ENABLE(pool, 
+        AC_ARG_ENABLE([--enable-pool], 
+	[ Enable Pool allocator ]),
+	[ ac_pool_enabled=${enableval} ],
+	[ ac_pool_enabled="no" ]
+)
+
+
 dnl --enable-sse
 AC_ARG_ENABLE(sse,
   AC_HELP_STRING([--enable-sse],
@@ -732,6 +747,32 @@ fi
 
 AM_CONDITIONAL(QDP_USE_HDF5, [test "x${ac_build_hdf5}x" = "xyesx" ])
 
+case ${ac_mic_enabled} in
+yes|YES) 
+	 AC_DEFINE([QDP_USE_MIC], [1], [ Use MIC specializations ])
+	 AC_MSG_NOTICE([ Using MIC specializations ])
+	 ;;
+*)
+	;;
+esac	
+
+case ${ac_pool_enabled} in
+yes|YES) 
+	 AC_DEFINE([QDP_USE_POOL], [1], [ Use MIC specializations ])
+	 AC_MSG_NOTICE([ Using Pool ])
+	 ;;
+*)
+	if test "x${ac_mic_enabled}x" == "xyesx";
+	then
+		AC_DEFINE([QDP_USE_POOL], [1], [ Use MIC specializations ])
+	 	AC_MSG_NOTICE([ Using Pool because of MIC  ])
+	fi
+	;;
+esac	
+
+
+AM_CONDITIONAL(QDP_USE_MIC, [test "x${ac_mic_enabled}x" = "xyesx" ])
+
 ##################################
 # Check for programs to build docs
 ##################################
@@ -763,6 +804,8 @@ parscalar|parscalarvec)
 	;;
 esac
 
+
+
 #######################
 # Produce output
 #######################
@@ -777,6 +820,9 @@ then
   AC_CONFIG_SUBDIRS(other_libs/qio)
   AC_CONFIG_SUBDIRS(other_libs/xpath_reader)
 fi
+
+
+
 #
 # Set up the doxygen file
 # Substitute the right directories
