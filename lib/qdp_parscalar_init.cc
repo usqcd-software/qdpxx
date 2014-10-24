@@ -7,6 +7,8 @@
 
 #include <stdlib.h>
 #include <unistd.h>
+#include <fstream>
+#include <iostream>
 
 #include "qdp.h"
 #include "qmp.h"
@@ -34,7 +36,7 @@ namespace QDP {
 			QDPIO::cerr << "QDP already inited" << endl;
 			QDP_abort(1);
 		}
-		
+
 		//
 		// Process command line
 		//
@@ -46,6 +48,7 @@ namespace QDP {
 			if (strcmp((*argv)[i], "-h")==0)
 				help_flag = true;
 		}
+
 		
 		bool setGeomP = false;
 		multi1d<int> logical_geom(Nd);   // apriori logical geometry of the machine
@@ -195,6 +198,59 @@ namespace QDP {
 #if QDP_DEBUG >= 1
 		QDP_info("QMP inititalized");
 #endif
+
+
+
+		// Set up suffix for input/output files if we have mutiple mpi colours
+		int ncolors = QMP_comm_get_number_of_colors (QMP_comm_get_job());
+		int color = QMP_comm_get_color(QMP_comm_get_job());
+		string color_suffix="";
+		if (ncolors >1)
+		  {
+		    stringstream ss;
+		    ss << ".j" << color;
+		    color_suffix=ss.str();
+		  }
+		// End mpi color stuff
+		for (int i=0;i< *argc; i++)
+		  {
+		    if( (*argv)[i] == string("-qdp-cout")  )
+		      {
+			if( i + 1 < *argc )
+			  {
+			    std::string coutname=(std::string( (*argv)[i+1] ).append(color_suffix));
+			    static std::ofstream fout(coutname.c_str());
+			    std::cout.rdbuf(fout.rdbuf()); //redirect std::cout to coutname
+			    // Skip over next
+			    i++;
+			  }
+			else
+			  {
+			    // i + 1 is too big
+			    cerr << "Error: dangling -cout specified. " << endl;
+			    QDP_abort(1);
+			  }
+		      }
+		    if( (*argv)[i] == string("-qdp-cerr")  )
+		      {
+			if( i + 1 < *argc )
+			  {
+			    std::string cerrname=(std::string( (*argv)[i+1] ).append(color_suffix));
+			    static std::ofstream ferr(cerrname.c_str());
+			    std::cerr.rdbuf(ferr.rdbuf()); //redirect std::cerr to cerrname
+			    // Skip over next
+			    i++;
+			  }
+			else
+			  {
+			    // i + 1 is too big
+			    cerr << "Error: dangling -cerr specified. " << endl;
+			    QDP_abort(1);
+			  }
+		      }
+		  }
+
+
 		
 		if (setGeomP)
 			if (QMP_declare_logical_topology(logical_geom.slice(), Nd) != QMP_SUCCESS)
