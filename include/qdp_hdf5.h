@@ -56,7 +56,10 @@ namespace QDP {
 		std::vector<std::string> splitPathname(const std::string& name);
 
 		//check if an object exists, by iterating through the tree:
+		bool objectExists(const std::string& name);
 		bool objectExists(hid_t loc_id, const std::string& name);
+		std::string objectType(const ::std::string& name);
+		std::string objectType(hid_t loc_id, const ::std::string& name);
 
 		//error handler
 		static hid_t errorHandler(hid_t errstack, void* unused);
@@ -984,7 +987,7 @@ namespace QDP {
 			//twist in how HDF5 handles data description
 			spacesize[1]=datum.size1();
 			spacesize[0]=datum.size2();
-			spaceid = H5Screate_simple(rank, const_cast<const hsize_t*>(spacesize), NULL);
+			spaceid = H5Screate_simple(static_cast<int>(rank), const_cast<const hsize_t*>(spacesize), NULL);
 			hid_t dcpl_id = H5Pcreate(H5P_DATASET_CREATE);
 	   		dataid=H5Dcreate(current_group,dname.c_str(),hdftype,spaceid,H5P_DEFAULT,dcpl_id,H5P_DEFAULT);
 			H5Pclose(dcpl_id);
@@ -1031,9 +1034,10 @@ namespace QDP {
 		void open(const std::string& filename, const bool& overwrite);
 
 		/*!
-		Creates a new group and steps down into it. Creates new groups on the way down the tree:
-		*/
-		void push(const std::string& name);
+         Creates a new group and steps down into it (push) or not (mkdir). If it already exists, simply step into it. Creates new groups on the way down the tree:
+         */
+        void push(const std::string& name);
+        void mkdir(const ::std::string& name);
 
 		//delete all attributes attached to a dataset with name "obj_name"
 		void deleteAllAttributes(const std::string& obj_name);

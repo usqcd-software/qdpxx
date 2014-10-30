@@ -1,9 +1,9 @@
 //
 // QDP data parallel interface
 /*!
- * @file
- * @brief  HDF5 reading/writing of gauges and propagators
- */
+* @file
+* @brief  HDF5 reading/writing of gauges and propagators
+*/
 
 #include "qdp.h"
 
@@ -116,6 +116,10 @@ namespace QDP {
 	}
 
 	//check if object exists:
+	bool HDF5::objectExists(const ::std::string& name){
+		return objectExists(file_id,name);
+	}
+	
 	bool HDF5::objectExists(hid_t loc_id, const std::string& name){
 		std::vector<std::string> dirlist=splitPathname(name);
 
@@ -141,6 +145,46 @@ namespace QDP {
 		return true;
 	}
 
+	::std::string HDF5IO::objectType(const ::std::string& name){
+		return objectType(file_id, name);
+	}
+    
+	::std::string HDF5IO::objectType(hid_t loc_id, const ::std::string& name){
+		std::string result="Null";
+		if(objectExists(loc_id, name)){
+			H5O_info_t objinfo;
+			herr_t errhandle=H5Oget_info_by_name(loc_id,name.c_str(),&objinfo,H5P_DEFAULT);
+			if(errhandle<0){
+				::std::cerr << "HDF5::objectType: error, something went wrong with looking up " << name << "!" << std::endl;
+			}
+			else{
+				switch(objinfo.type){
+					case H5O_TYPE_GROUP:
+					result="Group";
+					break;
+                        
+					case H5O_TYPE_DATASET:
+					result="Dataset";
+					break;
+                        
+					case H5O_TYPE_NAMED_DATATYPE:
+					result="NamedDatatype";
+					break;
+                        
+					case H5O_TYPE_NTYPES:
+					result="VariousTypes";
+					break;
+                        
+					default:
+					result="Unknown";
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	
+
 	//navigation routines:
 	void HDF5::pop(){
 		//only do something if not at root-level:
@@ -162,7 +206,7 @@ namespace QDP {
 	void HDF5::cd(const std::string& dirname){
 		std::string tmpdirname(dirname);
 		if(tmpdirname.compare("..")==0) pop();
-		else{
+		else if(tmpdirname.compare(pwd())!=0){
 			hid_t tmp_group;
       
 			//open HDF5 group relative to current_group:
@@ -1157,6 +1201,13 @@ namespace QDP {
 		}
 
 		current_group=file_id;
+	}
+
+	//create a new group inside current one w/o steping into it:
+	void HDF5Writer::mkdir(const ::std::string& name){
+		std::string cwd=pwd();
+		push(name);
+		cd(cwd);
 	}
 
 	//create a new group inside current one and step into it:
