@@ -12,6 +12,10 @@
 #include <fstream>
 #include <sstream>
 #include "qdp_byteorder.h"
+#include <vector>
+#include <map>
+#include <list>
+#include <complex>
 
 namespace QDP
 {
@@ -489,6 +493,11 @@ namespace QDP
   BinaryReader& operator>>(BinaryReader& bin, double& input);
   BinaryReader& operator>>(BinaryReader& bin, bool& input);
 
+  //! Complex reader
+  void read(BinaryReader& bin, std::complex<float>& param);
+  void read(BinaryReader& bin, std::complex<double>& param);
+
+
   //! Read a binary multi1d object
   /*!
     This assumes that the number of elements to be read is also written in
@@ -754,6 +763,36 @@ namespace QDP
   }
 
 
+  //! Read a binary std::list object
+  /*!
+    This assumes that the number of elements to be read is also written in
+    the file, \e i.e. that the data was written with the corresponding write
+    code.
+    \param bin The initialised binary reader
+    \param d The data to be filled.
+
+    \pre The binary reader must have opened the file.
+    \post The std::list can be resized.
+  */
+  template<class T>
+  inline
+  void read(BinaryReader& bin, std::list<T>& d)
+  {
+    d.clear();
+
+    int n;
+    read(bin, n);    // the size is always written, even if 0
+
+    for(int i=0; i < n; ++i)
+    {
+      T thingy;
+      read(bin, thingy);
+
+      d.push_back(thingy);
+    }
+  }
+
+
   //! Read a binary Array1dO object
   /*!
     This assumes that the number of elements to be read is also written in
@@ -775,6 +814,64 @@ namespace QDP
 
     for(int i=1; i <= d.size(); ++i)
       read(bin, d[i]);
+  }
+
+
+  //! Read a binary std::map object
+  /*!
+    This assumes that the number of elements to be read is also written in
+    the file, \e i.e. that the data was written with the corresponding write
+    code.
+    \param bin The initialised binary reader
+    \param d The data to be filled.
+
+    \pre The binary reader must have opened the file.
+    \post The std::vector can be resized.
+  */
+  template<typename K, typename V>
+  inline
+  void read(BinaryReader& bin, std::map<K,V>& d)
+  {
+    d.clear();
+
+    int n;
+    read(bin, n);    // the size is always written, even if 0
+
+    for(int i=0; i < n; ++i)
+    {
+      K key;
+      read(bin, key);
+
+      V val;
+      read(bin, val);
+
+      d.insert(std::make_pair(key,val));
+    }
+  }
+
+
+  //! Read a binary std::pair object
+  /*!
+    This assumes that the number of elements to be read is also written in
+    the file, \e i.e. that the data was written with the corresponding write
+    code.
+    \param bin The initialised binary reader
+    \param d The data to be filled.
+
+    \pre The binary reader must have opened the file.
+    \post The std::vector can be resized.
+  */
+  template<typename T1, typename T2>
+  inline
+  void read(BinaryReader& bin, std::pair<T1,T2>& d)
+  {
+    T1 f;
+    read(bin, f);
+
+    T2 s;
+    read(bin, s);
+
+    d = std::make_pair(f,s);
   }
 
 
@@ -1037,6 +1134,10 @@ namespace QDP
   BinaryWriter& operator<<(BinaryWriter& bin, double output);
   BinaryWriter& operator<<(BinaryWriter& bin, bool output);
 
+  //! Complex writer
+  void write(BinaryWriter& bin, const std::complex<float>& param);
+  void write(BinaryWriter& bin, const std::complex<double>& param);
+
   //! Write all of a binary multi1d object
   /*!
     This also writes the number of elements to the file.
@@ -1174,6 +1275,26 @@ namespace QDP
       write(bin, d[i]);
   }
 
+
+  //! Write all of a binary std::list object
+  /*!
+    This also writes the number of elements to the file.
+    \param bin The initialised binary reader
+    \param d The data to be filled.
+
+    \pre The binary reader must have opened the file.
+  */
+  template<class T>
+  inline
+  void write(BinaryWriter& bin, const std::list<T>& d)
+  {
+    int n = d.size();
+    write(bin, n);    // always write the size
+    for(typename std::list<T>::const_iterator p = d.begin(); p != d.end(); ++p)
+      write(bin, *p);
+  }
+
+
   //! Write all of a binary Array object
   /*!
     This also writes the number of elements to the file.
@@ -1192,6 +1313,47 @@ namespace QDP
       write(bin, d[i]);
   }
 
+
+  //! Write all of a binary std::map object
+  /*!
+    This also writes the number of elements to the file.
+    \param bin The initialised binary reader
+    \param d The data to be filled.
+
+    \pre The binary reader must have opened the file.
+  */
+  template<typename K, typename V>
+  inline
+  void write(BinaryWriter& bin, const std::map<K,V>& d)
+  {
+    int n = d.size();
+    write(bin, n);    // always write the size
+
+    for(typename std::map<K,V>::const_iterator v = d.begin();
+	v != d.end();
+	++v)
+    {
+      write(bin, v->first);
+      write(bin, v->second);
+    }
+  }
+
+
+  //! Write all of a binary std::pair object
+  /*!
+    This also writes the number of elements to the file.
+    \param bin The initialised binary reader
+    \param d The data to be filled.
+
+    \pre The binary reader must have opened the file.
+  */
+  template<typename T1, typename T2>
+  inline
+  void write(BinaryWriter& bin, const std::pair<T1,T2>& d)
+  {
+    write(bin, d.first);
+    write(bin, d.second);
+  }
 
 
   //--------------------------------------------------------------------------------

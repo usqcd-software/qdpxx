@@ -11,6 +11,8 @@
 #include <sstream>
 #include <stack>
 #include <list>
+#include <vector>
+#include <map>
 
 #include "xml_simplewriter.h"
 #include "basic_xpath_reader.h"
@@ -334,9 +336,10 @@ namespace QDP
   void read(XMLReader& xml, const std::string& s, std::vector<double>& input);
 //  void read(XMLReader& xml, const std::string& s, std::vector<bool>& input);  // does not seem to exist
 
+
+
   //---------------------------------------------------------------
-  //---------------------------------------------------------------
-  //! Read a XML list element
+  //! Read a XML Array element
   template<class T>
   inline
   void read(XMLReader& xml, const std::string& s, std::list<T>& input)
@@ -360,12 +363,11 @@ namespace QDP
       throw error_message.str();
     }
       
-    // Now resize the array to hold the no of elements.
-    input.resize(array_size);
+    // Clear out the original list
+    input.clear();
 
     // Get the elements one by one
-    int i = 0;
-    for(typename std::list<T>::iterator t= input.begin(); t != input.end(); ++t, ++i)
+    for(int i=0; i < input.size(); i++) 
     {
       std::ostringstream element_xpath;
 
@@ -374,7 +376,10 @@ namespace QDP
 
       // recursively try and read the element.
       try {
-	read(arraytop, element_xpath.str(), *t);
+	T thingy;
+	read(arraytop, element_xpath.str(), thingy);
+
+	input.push_back(thingy);
       } 
       catch (const std::string& e) 
       {
@@ -401,10 +406,9 @@ namespace QDP
   void read(XMLReader& xml, const std::string& s, std::list<unsigned long int>& input);
   void read(XMLReader& xml, const std::string& s, std::list<float>& input);
   void read(XMLReader& xml, const std::string& s, std::list<double>& input);
-  void read(XMLReader& xml, const std::string& s, std::list<bool>& input);
 
 
-  //---------------------------------------------------------------
+
   //---------------------------------------------------------------
   //! Read a XML Array1dO element
   template<class T>
@@ -413,6 +417,79 @@ namespace QDP
   {
     read(xml, s, input.ref());
   }
+
+
+  //---------------------------------------------------------------
+  //! Read a XML Array element
+  template<typename K, typename V>
+  inline
+  void read(XMLReader& xml, const std::string& s, std::map<K,V>& input)
+  {
+    XMLReader arraytop(xml, s);
+
+    std::ostringstream error_message;
+    std::string elemName = "elem";
+  
+    int array_size;
+    try {
+      array_size = arraytop.count(elemName);
+    }
+    catch( const std::string& e) { 
+      error_message << "Exception occurred while counting " << elemName
+		    << " during array read " << s << std::endl;
+      arraytop.close();
+      throw error_message.str();
+    }
+      
+    // Get the elements one by one
+    for(int i=0; i < array_size; i++) 
+    {
+      std::ostringstream element_xpath;
+
+      // Create the query for the element 
+      element_xpath << elemName << "[" << (i+1) << "]";
+
+      // recursively try and read the element.
+      try {
+	XMLReader xml_elem(arraytop, element_xpath.str());
+
+	K key;
+	V val;
+
+	read(xml_elem, "Key", key);
+	read(xml_elem, "Val", val);
+
+	input.insert(std::make_pair(key, val));
+      } 
+      catch (const std::string& e) 
+      {
+	error_message << "Failed to match element " << i
+		      << " of array  " << s << "  with query " << element_xpath.str()
+		      << std::endl
+		      << "Query returned error: " << e;
+	arraytop.close();
+	throw error_message.str();
+      }
+    }
+
+    // Arraytop should self destruct but just to be sure.
+    arraytop.close();
+  }
+
+
+
+  //---------------------------------------------------------------
+  //! Read a XML Array element
+  template<typename T1, typename T2>
+  inline
+  void read(XMLReader& xml, const std::string& s, std::pair<T1,T2>& input)
+  {
+    XMLReader paramtop(xml, s);
+
+    read(paramtop, "First", input.first);
+    read(paramtop, "Second", input.second);
+  }
+
 
 
   //--------------------------------------------------------------------------------
@@ -903,6 +980,42 @@ namespace QDP
     write(xml, s, s1.ref());
   }
 
+
+  //---------------------------------------------------------------
+  //---------------------------------------------------------------
+  //! Write a map
+  template<typename K, typename V>
+  inline
+  void write(XMLWriter& xml, const std::string& path, const std::map<K,V>& param)
+  {
+    push(xml, path);
+
+    for(typename std::map<K,V>::const_iterator pp = param.begin(); 
+	pp != param.end(); 
+	++pp)
+    {
+      push(xml, "elem");
+      write(xml, "Key", pp->first);
+      write(xml, "Val", pp->second);
+      pop(xml);
+    }
+
+    pop(xml);
+  }
+
+
+  //! Write a pair
+  template<typename T1, typename T2>
+  inline
+  void write(XMLWriter& xml, const std::string& path, const std::pair<T1,T2>& param)
+  {
+    push(xml, path);
+
+    write(xml, "First", param.first);
+    write(xml, "Second", param.second);
+
+    pop(xml);
+  }
 
 
   //--------------------------------------------------------------------------------
