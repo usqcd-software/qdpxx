@@ -784,6 +784,26 @@ namespace QDP
     bin.read(input);
   }
 
+  //! Complex reader
+  void read(BinaryReader& bin, std::complex<float>& param)
+  {
+    // NOTE: the C++-11 standard says a "real()" function returns a r-value - not an "l-value", so
+    // cannot simply read into a param.real()
+    float re, im;
+    read(bin, re);
+    read(bin, im);
+    param = std::complex<float>(re,im);
+  }
+
+  //! Complex reader
+  void read(BinaryReader& bin, std::complex<double>& param)
+  {
+    double re, im;
+    read(bin, re);
+    read(bin, im);
+    param = std::complex<double>(re,im);
+  }
+
 
   // Different bindings for read functions
   BinaryReader& operator>>(BinaryReader& bin, char& input)
@@ -1192,6 +1212,20 @@ namespace QDP
   void write(BinaryWriter& bin, bool output)
   {
     bin.write(output);
+  }
+
+  //! Complex writer
+  void write(BinaryWriter& bin, const std::complex<float>& param)
+  {
+    write(bin, param.real());
+    write(bin, param.imag());
+  }
+
+  //! Complex writer
+  void write(BinaryWriter& bin, const std::complex<double>& param)
+  {
+    write(bin, param.real());
+    write(bin, param.imag());
   }
 
 
