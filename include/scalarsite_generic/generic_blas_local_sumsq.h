@@ -15,25 +15,20 @@ namespace QDP {
 inline
 void local_sumsq(DOUBLE *Out, REAL  *In, int n_3vec)
 {
-   double result;
-  
-   double i1;
-   double i2;
-   double i3;
-   double i4;
-   double i5;
-   double i6;
+
+  double result;
+  double i1;
 
   int len = 24*n_3vec;
   
   // QDPIO::cout << "Len = " << len << endl;
   int counter;
-  int vecptr=0;
   result = 0;
 
   if( n_3vec > 0 ) { 
+#pragma omp parallel for reduction(+:result) private(i1)
     for(counter=0; counter < len; counter++) {
-      i1 = (double)In[vecptr++];
+      i1 = (double)In[counter];
       result += i1*i1;
     }
   }

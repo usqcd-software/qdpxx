@@ -208,7 +208,36 @@ namespace QDP
       fprintf(stderr,"vol=%d\n",_layout.vol);
 #endif
 
+      // Diagnostics
+      QDPIO::cout << "Lattice initialized:\n";
+      QDPIO::cout << "  problem size =";
+      for(int i=0; i < Nd; ++i)
+	QDPIO::cout << " " << _layout.nrow[i];
+      QDPIO::cout << endl;
+
+      // Same as the problem size... we are scalar
+      QDPIO::cout << "  layout size =";
+      for(int i=0; i < Nd; ++i)
+	QDPIO::cout << " " << _layout.nrow[i];
+      QDPIO::cout << endl;
+
+      QDPIO::cout << "  logical machine size =";
+      for(int i=0; i < Nd; ++i)
+	QDPIO::cout << " " << (int)1;
+      QDPIO::cout << endl;
+
+      QDPIO::cout << "  subgrid size =";
+      for(int i=0; i < Nd; ++i)
+	QDPIO::cout << " " << _layout.nrow[i];
+      QDPIO::cout << endl;
+
+      QDPIO::cout << "  total number of nodes = " << 1 << endl;
+      QDPIO::cout << "  total volume = " << _layout.vol << endl;
+      QDPIO::cout << "  subgrid volume = " << _layout.vol << endl;
+
+
       // Sanity check - check the layout functions make sense
+#pragma omp parallel for
       for(int i=0; i < _layout.vol; ++i) 
       {
 	int j = Layout::linearSiteIndex(Layout::siteCoords(Layout::nodeNumber(),i));

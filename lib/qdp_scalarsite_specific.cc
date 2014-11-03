@@ -25,6 +25,9 @@ namespace Layout
     if (mu < 0 || mu >= Nd)
       QDP_error_exit("dimension out of bounds");
 
+    /* This pragma is from Jacques... Should be OK, since each i is independent
+     * no danger of concurrent writes */
+#pragma omp parallel for
     for(int i=0; i < nodeSites; ++i) 
     {
       Integer cc = Layout::siteCoords(nodeNumber,i)[mu];
@@ -70,6 +73,9 @@ void Set::make(const SetFunc& fun)
   sitetables.resize(nsubset_indices);
 
   // Loop over linear sites determining their color
+  /* This OMP pragma added by Jacques. Should be OK since in the end 
+     each value of linear is independent */
+#pragma omp parallel for
   for(int linear=0; linear < nodeSites; ++linear)
   {
     multi1d<int> coord = Layout::siteCoords(nodeNumber, linear);
@@ -95,23 +101,33 @@ void Set::make(const SetFunc& fun)
     // The coloring of this linear site
     lat_color[linear] = icolor;
   }
-
-
+  
+  
   /*
    * Loop over the lexicographic sites.
    * This implementation of the Set will always use a
    * sitetable.
    */
+
+  /* NB: This OMP parallel added by Jacques.
+   * Should be OK because each subset is independent, 
+   * tho the number of subsets may be small... so scope for improvement
+   * from threading may be limited */
+
+#pragma omp parallel for
   for(int cb=0; cb < nsubset_indices; ++cb)
   {
     // Always construct the sitetables. 
 
     // First loop and see how many sites are needed
     int num_sitetable = 0;
-    for(int linear=0; linear < nodeSites; ++linear)
-      if (lat_color[linear] == cb)
-	++num_sitetable;
 
+    /* FIXME: This is a 'histogram' -- not yet threaded */
+    for(int linear=0; linear < nodeSites; ++linear) {
+      if (lat_color[linear] == cb) {
+	++num_sitetable;
+      }
+    }
     // Now take the inverse of the lattice coloring to produce
     // the site list
     multi1d<int>& sitetable = sitetables[cb];
