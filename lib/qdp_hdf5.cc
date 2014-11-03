@@ -145,11 +145,11 @@ namespace QDP {
 		return true;
 	}
 
-	::std::string HDF5IO::objectType(const ::std::string& name){
+	::std::string HDF5::objectType(const ::std::string& name){
 		return objectType(file_id, name);
 	}
     
-	::std::string HDF5IO::objectType(hid_t loc_id, const ::std::string& name){
+	::std::string HDF5::objectType(hid_t loc_id, const ::std::string& name){
 		std::string result="Null";
 		if(objectExists(loc_id, name)){
 			H5O_info_t objinfo;
