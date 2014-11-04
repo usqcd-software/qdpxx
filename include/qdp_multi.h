@@ -78,7 +78,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in =" << endl;
+	std::cerr << "multi1d: left hand side not initialized in =" << std::endl;
 	exit(1);
       }
 
@@ -92,7 +92,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in =" << endl;
+	std::cerr << "multi1d: left hand side not initialized in =" << std::endl;
 	exit(1);
       }
 
@@ -107,7 +107,7 @@ public:
     {
       if (size() != s1.size())
       {
-	cerr << "multi1d: Sizes incompatible in +=" << endl;
+	std::cerr << "multi1d: Sizes incompatible in +=" << std::endl;
 	exit(1);
       }
 
@@ -122,7 +122,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in +=" << endl;
+	std::cerr << "multi1d: left hand side not initialized in +=" << std::endl;
 	exit(1);
       }
 
@@ -137,7 +137,7 @@ public:
     {
       if (size() != s1.size())
       {
-	cerr << "multi1d: Sizes incompatible in -=" << endl;
+	std::cerr << "multi1d: Sizes incompatible in -=" << std::endl;
 	exit(1);
       }
 
@@ -152,7 +152,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in -=" << endl;
+	std::cerr << "multi1d: left hand side not initialized in -=" << std::endl;
 	exit(1);
       }
 
@@ -167,7 +167,7 @@ public:
     {
       if (size() != s1.size())
       {
-	cerr << "multi1d: Sizes incompatible in *=" << endl;
+	std::cerr << "multi1d: Sizes incompatible in *=" << std::endl;
 	exit(1);
       }
 
@@ -182,7 +182,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in *=" << endl;
+	std::cerr << "multi1d: left hand side not initialized in *=" << std::endl;
 	exit(1);
       }
 
@@ -197,7 +197,7 @@ public:
     {
       if (size() != s1.size())
       {
-	cerr << "multi1d: Sizes incompatible in /=" << endl;
+	std::cerr << "multi1d: Sizes incompatible in /=" << std::endl;
 	exit(1);
       }
 
@@ -212,7 +212,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi1d: left hand side not initialized in /=" << endl;
+	std::cerr << "multi1d: left hand side not initialized in /=" << std::endl;
 	exit(1);
       }
 
@@ -256,12 +256,12 @@ private:
   void resize(multi1d<I>& disambiguator, int ns1)
   {
     if(copymem) {
-      cerr <<"multi1d: invalid resize of a copy of memory" << endl;
+      std::cerr <<"multi1d: invalid resize of a copy of memory" << std::endl;
       exit(1);
     }
     delete [] F;
     n1=ns1;
-    F = new(nothrow) T[n1];
+    F = new(std::nothrow) T[n1];
     if ( F == 0x0 ) { 
       QDP_error_exit("Unable to allocate memory in multi1d::resize(%d)\n",ns1);
     }
@@ -658,14 +658,14 @@ public:
   //! Allocate mem for the array
   void resize(int ns2, int ns1) {
     if(copymem) {
-      cerr <<"multi2d: invalid resize of a copy of memory" << endl;
+      std::cerr <<"multi2d: invalid resize of a copy of memory" << std::endl;
       exit(1);
     }  
     delete[] F; 
     n1=ns1; 
     n2=ns2;  
     sz=n1*n2; 
-    F = new(nothrow) T[sz];
+    F = new(std::nothrow) T[sz];
     if( F == 0x0 ) { 
       QDP_error_exit("Unable to new memory in multi2d::resize(%d,%d)\n",ns2,ns1);
     }
@@ -695,7 +695,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi2d: left hand side not initialized in =" << endl;
+	std::cerr << "multi2d: left hand side not initialized in =" << std::endl;
 	exit(1);
       }
 
@@ -752,7 +752,7 @@ public:
   void resize(int ns3, int ns2, int ns1) 
   {
     if(copymem) {
-      cerr <<"multi3d: invalid resize of a copy of memory" << endl;
+      std::cerr <<"multi3d: invalid resize of a copy of memory" << std::endl;
       exit(1);
     }
 
@@ -762,7 +762,7 @@ public:
       delete[] F; 
     }
 
-    n1=ns1; n2=ns2; n3=ns3; sz=n1*n2*n3; F = new(nothrow) T[sz];
+    n1=ns1; n2=ns2; n3=ns3; sz=n1*n2*n3; F = new(std::nothrow) T[sz];
     if( F == 0x0 ) { 
       QDP_error_exit("Unable to new memory in multi3d::resize(%d,%d,%d)\n",ns3,ns2,ns1);
     }
@@ -794,7 +794,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi3d: left hand side not initialized in =" << endl;
+	std::cerr << "multi3d: left hand side not initialized in =" << std::endl;
 	exit(1);
       }
 
@@ -851,7 +851,7 @@ public:
   void resize(int ns4, int ns3, int ns2, int ns1) 
   {
     if(copymem) {
-      cerr <<"multi4d: invalid resize of a copy of memory" << endl;
+      std::cerr <<"multi4d: invalid resize of a copy of memory" << std::endl;
       exit(1);
     }
 
@@ -861,7 +861,7 @@ public:
       delete[] F; 
     }
 
-    n1=ns1; n2=ns2; n3=ns3; n4=ns4; sz=n1*n2*n3*n4; F = new(nothrow) T[sz];
+    n1=ns1; n2=ns2; n3=ns3; n4=ns4; sz=n1*n2*n3*n4; F = new(std::nothrow) T[sz];
     if( F == 0x0 ) { 
       QDP_error_exit("Unable to new memory in multi4d::resize(%d,%d,%d,%d)\n",ns4,ns3,ns2,ns1);
     }
@@ -889,7 +889,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi4d: left hand side not initialized in =" << endl;
+	std::cerr << "multi4d: left hand side not initialized in =" << std::endl;
 	exit(1);
       }
 
@@ -947,7 +947,7 @@ public:
   void resize(int ns5, int ns4, int ns3, int ns2, int ns1) 
   {
     if(copymem) {
-      cerr <<"multi5d: invalid resize of a copy of memory" << endl;
+      std::cerr <<"multi5d: invalid resize of a copy of memory" << std::endl;
       exit(1);
     }
 
@@ -957,7 +957,7 @@ public:
       delete[] F; 
     }
 
-    n1=ns1; n2=ns2; n3=ns3; n4=ns4; n5=ns5; sz=n1*n2*n3*n4*n5; F = new(nothrow) T[sz];
+    n1=ns1; n2=ns2; n3=ns3; n4=ns4; n5=ns5; sz=n1*n2*n3*n4*n5; F = new(std::nothrow) T[sz];
     if( F == 0x0 ) { 
       QDP_error_exit("Unable to new memory in multi5d::resize(%d,%d,%d,%d,%d)\n",ns5,ns4,ns3,ns2,ns1);
     }
@@ -986,7 +986,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multi5d: left hand side not initialized in =" << endl;
+	std::cerr << "multi5d: left hand side not initialized in =" << std::endl;
 	exit(1);
       }
 
@@ -1048,13 +1048,13 @@ public:
       sz = nz[0];
       for(int i=1; i < nz.size(); ++i)
 	sz *= nz[i];
-      F = new(nothrow) T[sz];
+      F = new(std::nothrow) T[sz];
       if ( F==0x0 ) { 
 	std::cerr << "Unable to new memory in multiNd::resize():  sz= " << sz << "  size= ";
 	for(int i=0; i < _nz.size(); ++i) {
 	  std::cerr << " " << _nz[i];
 	}
-	std::cerr << endl;
+	std::cerr << std::endl;
 	QDP_abort(1);
       }
     }
@@ -1087,7 +1087,7 @@ public:
     {
       if (F == 0)
       {
-	cerr << "multiNd: left hand side not initialized in =" << endl;
+	std::cerr << "multiNd: left hand side not initialized in =" << std::endl;
 	exit(1);
       }
 
@@ -1101,7 +1101,7 @@ public:
     {
       if (nz.size() != 1)
       {
-	cerr << "multiNd: improper rank of array indices" << endl;
+	std::cerr << "multiNd: improper rank of array indices" << std::endl;
 	exit(1);
       }
 
@@ -1113,7 +1113,7 @@ public:
     {
       if (nz.size() != 1)
       {
-	cerr << "multiNd: improper rank of array indices" << endl;
+	std::cerr << "multiNd: improper rank of array indices" << std::endl;
 	exit(1);
       }
 
@@ -1125,7 +1125,7 @@ public:
     {
       if (nz.size() != 2)
       {
-	cerr << "multiNd: improper rank of array indices" << endl;
+	std::cerr << "multiNd: improper rank of array indices" << std::endl;
 	exit(1);
       }
 
@@ -1137,7 +1137,7 @@ public:
     {
       if (nz.size() != 2)
       {
-	cerr << "multiNd: improper rank of array indices" << endl;
+	std::cerr << "multiNd: improper rank of array indices" << std::endl;
 	exit(1);
       }
 
@@ -1149,7 +1149,7 @@ public:
     {
       if (nz.size() != 3)
       {
-	cerr << "multiNd: improper rank of array indices" << endl;
+	std::cerr << "multiNd: improper rank of array indices" << std::endl;
 	exit(1);
       }
 
@@ -1161,7 +1161,7 @@ public:
     {
       if (nz.size() != 3)
       {
-	cerr << "multiNd: improper rank of array indices" << endl;
+	std::cerr << "multiNd: improper rank of array indices" << std::endl;
 	exit(1);
       }
 
@@ -1173,7 +1173,7 @@ public:
     {
       if (nz.size() != 4)
       {
-	cerr << "multiNd: improper rank of array indices" << endl;
+	std::cerr << "multiNd: improper rank of array indices" << std::endl;
 	exit(1);
       }
 
@@ -1185,7 +1185,7 @@ public:
     {
       if (nz.size() != 4)
       {
-	cerr << "multiNd: improper rank of array indices" << endl;
+	std::cerr << "multiNd: improper rank of array indices" << std::endl;
 	exit(1);
       }
 
@@ -1197,7 +1197,7 @@ public:
     {
       if (ind.size() != nz.size())
       {
-	cerr << "multiNd: improper rank of array indices" << endl;
+	std::cerr << "multiNd: improper rank of array indices" << std::endl;
 	exit(1);
       }
 
@@ -1213,7 +1213,7 @@ public:
     {
       if (ind.size() != nz.size())
       {
-	cerr << "multiNd: improper rank of array indices" << endl;
+	std::cerr << "multiNd: improper rank of array indices" << std::endl;
 	exit(1);
       }
 
@@ -1230,7 +1230,7 @@ public:
     {
       if (off < 0 || off >= sz)
       {
-	cerr << "multiNd: index out of bounds" << endl;
+	std::cerr << "multiNd: index out of bounds" << std::endl;
 	exit(1);
       }
 
@@ -1243,7 +1243,7 @@ public:
     {
       if (off < 0 || off >= sz)
       {
-	cerr << "multiNd: index out of bounds" << endl;
+	std::cerr << "multiNd: index out of bounds" << std::endl;
 	exit(1);
       }
 

@@ -10,8 +10,6 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-//using namespace std;
-
 using namespace QDP;
 
 

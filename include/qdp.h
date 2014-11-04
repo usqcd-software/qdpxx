@@ -86,10 +86,10 @@
 #include <iostream>
 
 
-using namespace std;   // I do not like this - fix later
+//using namespace std;   // I do not like this - fix later
 
-using std::iostream;
-using std::ostream;
+//using std::iostream;
+//using std::ostream;
 // END OF YUKKINESS
 
 
