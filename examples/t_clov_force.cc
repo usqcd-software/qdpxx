@@ -455,7 +455,7 @@ int main(int argc, char *argv[])
 
   int iter = 100;
 
-  QDPIO::cout << "Calling Derivative : " << iter << " times " << endl;
+  QDPIO::cout << "Calling Derivative : " << iter << " times " << std::endl;
   StopWatch swatch;
 
   swatch.reset();
@@ -464,7 +464,7 @@ int main(int argc, char *argv[])
     deriv(u,ds_u, X, Y,0);
   }
   swatch.stop();
-  QDPIO::cout << "Done in " << swatch.getTimeInSeconds() << " sec" << endl;
+  QDPIO::cout << "Done in " << swatch.getTimeInSeconds() << " sec" << std::endl;
 
   // Possibly shutdown the machine
   QDP_finalize();

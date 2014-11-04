@@ -42,7 +42,7 @@ namespace Layout
 //-----------------------------------------------------------------------------
 // IO routine solely for debugging. Only defined here
 template<class T>
-ostream& operator<<(ostream& s, const multi1d<T>& s1)
+std::ostream& operator<<(std::ostream& s, const multi1d<T>& s1)
 {
   for(int i=0; i < s1.size(); ++i)
     s << " " << s1[i];

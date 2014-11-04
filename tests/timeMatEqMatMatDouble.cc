@@ -1,8 +1,6 @@
 #include "unittest.h"
 #include "timeMatEqMatMatDouble.h"
 
-using namespace std;
-
 static double N_SECS=10;
 
 
@@ -27,7 +25,7 @@ void* alloc_cache_aligned_3mat(unsigned num_sites, REAL64** x, REAL64 **y, REAL6
 
   REAL64 *ret_val = (REAL64*)malloc(bytes_to_alloc+pad);
   if( ret_val == 0 ) { 
-    QDPIO::cout << "Failed to allocate memory" << endl;
+    QDPIO::cout << "Failed to allocate memory" << std::endl;
     QDP_abort(1);
   }
 
@@ -37,12 +35,12 @@ void* alloc_cache_aligned_3mat(unsigned num_sites, REAL64** x, REAL64 **y, REAL6
   *z = (REAL64 *)(((ptrdiff_t)(*y))+bytes_per_vec+pad);
   
 #if 0
-  QDPIO::cout << "x is at " << (unsigned long)(*x) << endl;
-  QDPIO::cout << "x % cache_alignment = " << (unsigned long)(*x) % cache_alignment << endl;
-  QDPIO::cout << "pad is " << pad << endl;
-  QDPIO::cout << "veclen=" << bytes_per_vec << endl;
-  QDPIO::cout << "y starts at " << (unsigned long)(*y) << endl;
-  QDPIO::cout << "z starts at " << (unsigned long)(*z) << endl;
+  QDPIO::cout << "x is at " << (unsigned long)(*x) << std::endl;
+  QDPIO::cout << "x % cache_alignment = " << (unsigned long)(*x) % cache_alignment << std::endl;
+  QDPIO::cout << "pad is " << pad << std::endl;
+  QDPIO::cout << "veclen=" << bytes_per_vec << std::endl;
+  QDPIO::cout << "y starts at " << (unsigned long)(*y) << std::endl;
+  QDPIO::cout << "z starts at " << (unsigned long)(*z) << std::endl;
 #endif
 
   return ret_val;
@@ -60,13 +58,13 @@ timeMeqMM_QDP::run(void)
   gaussian(x);
   gaussian(y);
 
-  QDPIO::cout << endl << "Timing  QDP++ MM Kernel " <<endl;
+  QDPIO::cout << std::endl << "Timing  QDP++ MM Kernel " <<std::endl;
 
   StopWatch swatch;
   double n_secs = N_SECS;
   int iters=1;
   double time=0;
-  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
+  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << std::endl;
   do {
     swatch.reset();
     swatch.start();
@@ -83,13 +81,13 @@ timeMeqMM_QDP::run(void)
 
     if (time < n_secs) {
       iters *=2;
-      QDPIO::cout << "." << flush;
+      QDPIO::cout << "." << std::flush;
     }
   }
   while ( time < (double)n_secs );
       
-  QDPIO::cout << endl;
-  QDPIO::cout << "\t Timing with " << iters << " counts" << endl;
+  QDPIO::cout << std::endl;
+  QDPIO::cout << "\t Timing with " << iters << " counts" << std::endl;
 
   swatch.reset();
   swatch.start();
@@ -107,7 +105,7 @@ timeMeqMM_QDP::run(void)
 
   double flops=(double)(198*Layout::vol());
   double perf=(flops/time)/(double)(1024*1024);
-  QDPIO::cout << "QDP++ MM Kernel: " << perf << " Mflops" << endl;
+  QDPIO::cout << "QDP++ MM Kernel: " << perf << " Mflops" << std::endl;
 
 }
 
@@ -150,13 +148,13 @@ timeMeqMM::run(void)
     }
   }
 
-  QDPIO::cout << endl << "Timing SSE D  M=MM  Kernel " <<endl;
+  QDPIO::cout << std::endl << "Timing SSE D  M=MM  Kernel " <<std::endl;
 
   StopWatch swatch;
   double n_secs = N_SECS;
   int iters=1;
   double time=0;
-  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
+  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << std::endl;
   do {
     swatch.reset();
     swatch.start();
@@ -173,13 +171,13 @@ timeMeqMM::run(void)
 
     if (time < n_secs) {
       iters *=2;
-      QDPIO::cout << "." << flush;
+      QDPIO::cout << "." << std::flush;
     }
   }
   while ( time < (double)n_secs );
       
-  QDPIO::cout << endl;
-  QDPIO::cout << "\t Timing with " << iters << " counts" << endl;
+  QDPIO::cout << std::endl;
+  QDPIO::cout << "\t Timing with " << iters << " counts" << std::endl;
 
   swatch.reset();
   swatch.start();
@@ -197,7 +195,7 @@ timeMeqMM::run(void)
 
   double flops=(double)(198*Layout::vol());
   double perf=(flops/time)/(double)(1024*1024);
-  QDPIO::cout << "SSED MM Kernel: " << perf << " Mflops" << endl;
+  QDPIO::cout << "SSED MM Kernel: " << perf << " Mflops" << std::endl;
 
   free(top);
 }
@@ -216,13 +214,13 @@ timeMPeqaMM_QDP::run(void)
   Real a(-1.0);
 
 
-  QDPIO::cout << endl << "Timing  QDP++ M+=MM Kernel " <<endl;
+  QDPIO::cout << std::endl << "Timing  QDP++ M+=MM Kernel " <<std::endl;
 
   StopWatch swatch;
   double n_secs = N_SECS;
   int iters=1;
   double time=0;
-  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
+  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << std::endl;
   do {
     swatch.reset();
     swatch.start();
@@ -239,13 +237,13 @@ timeMPeqaMM_QDP::run(void)
 
     if (time < n_secs) {
       iters *=2;
-      QDPIO::cout << "." << flush;
+      QDPIO::cout << "." << std::flush;
     }
   }
   while ( time < (double)n_secs );
       
-  QDPIO::cout << endl;
-  QDPIO::cout << "\t Timing with " << iters << " counts" << endl;
+  QDPIO::cout << std::endl;
+  QDPIO::cout << "\t Timing with " << iters << " counts" << std::endl;
 
   swatch.reset();
   swatch.start();
@@ -263,7 +261,7 @@ timeMPeqaMM_QDP::run(void)
 
   double flops=(double)(234*Layout::vol());
   double perf=(flops/time)/(double)(1024*1024);
-  QDPIO::cout << "QDP++ M+=MM Kernel: " << perf << " Mflops" << endl;
+  QDPIO::cout << "QDP++ M+=MM Kernel: " << perf << " Mflops" << std::endl;
 
 }
 
@@ -308,13 +306,13 @@ timeMPeqaMM::run(void)
 
   REAL64* aptr = &(a.elem().elem().elem().elem());
 
-  QDPIO::cout << endl << "Timing SSE D  M+=aMM  Kernel " <<endl;
+  QDPIO::cout << std::endl << "Timing SSE D  M+=aMM  Kernel " <<std::endl;
 
   StopWatch swatch;
   double n_secs = N_SECS;
   int iters=1;
   double time=0;
-  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
+  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << std::endl;
   do {
     swatch.reset();
     swatch.start();
@@ -331,13 +329,13 @@ timeMPeqaMM::run(void)
 
     if (time < n_secs) {
       iters *=2;
-      QDPIO::cout << "." << flush;
+      QDPIO::cout << "." << std::flush;
     }
   }
   while ( time < (double)n_secs );
       
-  QDPIO::cout << endl;
-  QDPIO::cout << "\t Timing with " << iters << " counts" << endl;
+  QDPIO::cout << std::endl;
+  QDPIO::cout << "\t Timing with " << iters << " counts" << std::endl;
 
   swatch.reset();
   swatch.start();
@@ -355,7 +353,7 @@ timeMPeqaMM::run(void)
 
   double flops=(double)(234*Layout::vol());
   double perf=(flops/time)/(double)(1024*1024);
-  QDPIO::cout << "SSED MM Kernel: " << perf << " Mflops" << endl;
+  QDPIO::cout << "SSED MM Kernel: " << perf << " Mflops" << std::endl;
 
   free(top);
 }

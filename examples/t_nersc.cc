@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  string filename = "t_nersc.cfg";
+  std::string filename = "t_nersc.cfg";
 //  string filename = "tmp.cfg";
 //  string filename = "u_TEST_4223.101";
 
@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
 
     QDPIO::cout << "Start mesplq\n";
     MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-    QDPIO::cout << "w_plaq = " << w_plaq << endl;
-    QDPIO::cout << "link = " << link << endl;
+    QDPIO::cout << "w_plaq = " << w_plaq << std::endl;
+    QDPIO::cout << "link = " << link << std::endl;
 
     // Write out the results
     push(xml,"Initial_observables");
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     pop(xml);
 
     // Now write the gauge field in NERSC format
-    QDPIO::cout << "Trying to write NERSC Archive  " << filename << endl;
+    QDPIO::cout << "Trying to write NERSC Archive  " << filename << std::endl;
     writeArchiv(u, filename);
   }
 #endif
@@ -69,12 +69,12 @@ int main(int argc, char *argv[])
     multi1d<LatticeColorMatrix> u(Nd);
     Double w_plaq, s_plaq, t_plaq, link;
 
-    QDPIO::cout << "Trying to read back config" << endl;
+    QDPIO::cout << "Trying to read back config" << std::endl;
 
     XMLReader gauge_xml;
     readArchiv(gauge_xml, u, filename);
  
-    QDPIO::cout << "Dump the gauge xml" << endl;
+    QDPIO::cout << "Dump the gauge xml" << std::endl;
     push(xml, "Gauge_xml");
     xml << gauge_xml;
     pop(xml);
@@ -82,8 +82,8 @@ int main(int argc, char *argv[])
     // Try out the plaquette routine
     QDPIO::cout << "Start mesplq\n";
     MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-    QDPIO::cout << "w_plaq = " << w_plaq << endl;
-    QDPIO::cout << "link = " << link << endl;
+    QDPIO::cout << "w_plaq = " << w_plaq << std::endl;
+    QDPIO::cout << "link = " << link << std::endl;
 
     // Write out the results
     push(xml,"Final_observables");

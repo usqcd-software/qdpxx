@@ -40,7 +40,7 @@ int main(int argc, char **argv)
   {
     int isign = +1;
     int cb = 0;
-    QDPIO::cout << "Applying D" << endl;
+    QDPIO::cout << "Applying D" << std::endl;
       
     clock_t myt1=clock();
     for(int i=0; i < iter; i++)
@@ -50,9 +50,9 @@ int main(int argc, char **argv)
     double mydt=(double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
     mydt=1.0e6*mydt/((double)(iter*(Layout::vol()/2)));
       
-    QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
+    QDPIO::cout << "cb = " << cb << " isign = " << isign << std::endl;
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
-		<< " (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
+		<< " (" <<  (double)(1392.0f/mydt) << ") Mflops " << std::endl;
   }
 
   chi = zero;
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
   {
     int isign = +1;
     int cb = 0;
-    QDPIO::cout << "Applying D" << endl;
+    QDPIO::cout << "Applying D" << std::endl;
       
     clock_t myt1=clock();
     for(int i=0; i < iter; i++)
@@ -70,9 +70,9 @@ int main(int argc, char **argv)
     double mydt=(double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
     mydt=1.0e6*mydt/((double)(iter*(Layout::vol()/2)));
       
-    QDPIO::cout << "cb = " << cb << " isign = " << isign << endl;
+    QDPIO::cout << "cb = " << cb << " isign = " << isign << std::endl;
     QDPIO::cout << "The time per lattice point is "<< mydt << " micro sec" 
-		<< " (" <<  (double)(1392.0f/mydt) << ") Mflops " << endl;
+		<< " (" <<  (double)(1392.0f/mydt) << ") Mflops " << std::endl;
   }
 
 
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
       dslash2(chi2, u, psi, isign, cb);
       LatticeFermion diff;
       diff[rb[cb]]= chi2 - chi;
-      QDPIO::cout << "isign="<<isign<<" cb=" << cb << " Diff = " << sqrt( norm2(diff,rb[cb]) / norm2(psi, rb[otherCB]))<< endl;
+      QDPIO::cout << "isign="<<isign<<" cb=" << cb << " Diff = " << sqrt( norm2(diff,rb[cb]) / norm2(psi, rb[otherCB]))<< std::endl;
     }
   }
 

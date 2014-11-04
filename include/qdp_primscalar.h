@@ -167,7 +167,7 @@ private:
 //! Ascii input
 template<class T>
 inline
-istream& operator>>(istream& s, PScalar<T>& d)
+std::istream& operator>>(std::istream& s, PScalar<T>& d)
 {
   return s >> d.elem();
 }
@@ -184,7 +184,7 @@ StandardInputStream& operator>>(StandardInputStream& s, PScalar<T>& d)
 //! Ascii output
 template<class T>
 inline
-ostream& operator<<(ostream& s, const PScalar<T>& d)
+std::ostream& operator<<(std::ostream& s, const PScalar<T>& d)
 {
   return s << d.elem();
 }
@@ -225,7 +225,7 @@ XMLWriter& operator<<(XMLWriter& xml, const PScalar<T>& d)
 //! XML input
 template<class T>
 inline
-void read(XMLReader& xml, const string& path, PScalar<T>& d)
+void read(XMLReader& xml, const std::string& path, PScalar<T>& d)
 {
   read(xml, path, d.elem());
 }

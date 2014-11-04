@@ -146,7 +146,7 @@ public:
       }
       catch(std::bad_alloc) 
       {
-	QDPIO::cerr << "Allocation failed in OSubLattice" << endl;
+	QDPIO::cerr << "Allocation failed in OSubLattice" << std::endl;
 	QDP::Allocator::theQDPAllocator::Instance().dump();
 	QDP_abort(1);
       }

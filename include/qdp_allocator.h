@@ -15,8 +15,6 @@
  *  whereas on other targets (QCDOC) this should be the default
  *  alignment
  */
-using namespace std;
-
 namespace QDP 
 {
   namespace Allocator 

@@ -5,7 +5,6 @@
 // #include "scalarsite_sse/sse_blas_vaxpy3_double.h"
 
 using namespace QDP;
-using namespace std;
 using namespace Assertions;
 
 // Trinity of tests: Check SSE against Handrolled
@@ -54,8 +53,8 @@ testLocalSumSq4_1::run()
   Double diff = fabs(lsum_opt - lsum_hand);
   Double dof  = Double(Layout::vol()*4*3*2);
 
-  QDPIO::cout << endl << "\tDiff = " << toDouble(diff) << endl;
-  QDPIO::cout << "\tDiff/dof = " << toDouble(diff/dof) << endl;
+  QDPIO::cout << std::endl << "\tDiff = " << toDouble(diff) << std::endl;
+  QDPIO::cout << "\tDiff/dof = " << toDouble(diff/dof) << std::endl;
   
   assertion( toBool( diff/dof  < 1.0e-13 ) );
 
@@ -85,8 +84,8 @@ testLocalSumSq4_2::run()
   Double diff = fabs(lsum_opt - lsum_qdp);
   Double dof=Double(Layout::vol()*4*3*2);
   
-  QDPIO::cout << endl <<  "\tDiff = " << diff << endl;
-  QDPIO::cout <<  "\tDiff/d.o.f = " << diff/dof << endl;
+  QDPIO::cout << std::endl <<  "\tDiff = " << diff << std::endl;
+  QDPIO::cout <<  "\tDiff/d.o.f = " << diff/dof << std::endl;
 
 
   assertion( toBool(diff/dof < 1.0e-14) );
@@ -128,8 +127,8 @@ testLocalSumSq4_3::run()
 
   Double diff = fabs(lsum_qdp - lsum_hand);
   Double dof=Double(Layout::vol()*4*3*2);
-  QDPIO::cout << endl << "\tDiff = " << diff << endl;
-  QDPIO::cout << "\tDiff/d.o.f=" << diff/dof << endl;
+  QDPIO::cout << std::endl << "\tDiff = " << diff << std::endl;
+  QDPIO::cout << "\tDiff/d.o.f=" << diff/dof << std::endl;
 
 
   assertion( toBool(diff/dof < 1.0e-14) );

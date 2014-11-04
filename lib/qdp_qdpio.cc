@@ -155,7 +155,7 @@ namespace QDP
     {
       iostate = QDPIO_badbit;  // not helpful
 
-      QDPIO::cerr << "QDPFileReader: failed to open file " << path << endl;
+      QDPIO::cerr << "QDPFileReader: failed to open file " << path << std::endl;
       QDP_abort(1);  // just bail, otherwise xml stuff below fails.
     }
     else
@@ -164,10 +164,10 @@ namespace QDP
     }
 
     // Use string to initialize XMLReader
-    istringstream ss;
+    std::istringstream ss;
     if (Layout::primaryNode())
     {
-      string foo = QIO_string_ptr(xml_c);
+      std::string foo = QIO_string_ptr(xml_c);
       ss.str(foo);
     }
     file_xml.open(ss);
@@ -226,13 +226,13 @@ namespace QDP
   
     status = QIO_read_record_info(qio_in, &rec_info, xml_c);
     if( status != QIO_SUCCESS) { 
-      QDPIO::cerr << "Failed to read the Record Info" << endl;
+      QDPIO::cerr << "Failed to read the Record Info" << std::endl;
       QDP_abort(1);
     }
   
-    istringstream ss;
+    std::istringstream ss;
     if (Layout::primaryNode()) {
-      string foo = QIO_string_ptr(xml_c);
+      std::string foo = QIO_string_ptr(xml_c);
       ss.str(foo);
     }
     rec_xml.open(ss);
@@ -254,11 +254,11 @@ namespace QDP
   
     status = QIO_read_record_info(qio_in, &rec_info, xml_c);
     if( status != QIO_SUCCESS) { 
-      QDPIO::cerr << "Failed to read the Record Info" << endl;
+      QDPIO::cerr << "Failed to read the Record Info" << std::endl;
       QDP_abort(1);
     }
   
-    QDPIO::cout << "BinaryBufferRead" << endl;
+    QDPIO::cout << "BinaryBufferRead" << std::endl;
     std::string from_disk;
     from_disk.resize(QIO_get_datacount(&rec_info));
     status = QIO_read_record_data(qio_in,
@@ -267,20 +267,20 @@ namespace QDP
 				  sizeof(char),
 				  (void *)&(from_disk[0]));
     if (status != QIO_SUCCESS) { 
-      QDPIO::cerr << "Failed to read data" << endl;
+      QDPIO::cerr << "Failed to read data" << std::endl;
       clear(QDPIO_badbit);
       QDP_abort(1);
     }
-    QDPIO::cout << "QIO_read_finished" << endl;
+    QDPIO::cout << "QIO_read_finished" << std::endl;
       
     // Cast appropriately
 //    for(int i=0; i < from_disk.size(); i++) { 
     s1.open(from_disk);
 //    }
   
-    istringstream ss;
+    std::istringstream ss;
     if (Layout::primaryNode()) {
-      string foo = QIO_string_ptr(xml_c);
+      std::string foo = QIO_string_ptr(xml_c);
       ss.str(foo);
     }
     rec_xml.open(ss);
@@ -381,7 +381,7 @@ namespace QDP
 
     if (xml_c == NULL)
     {
-      QDPIO::cerr << "QDPFileWriter - error in creating QIO string" << endl;
+      QDPIO::cerr << "QDPFileWriter - error in creating QIO string" << std::endl;
       iostate = QDPIO_badbit;
     }
     else
@@ -412,7 +412,7 @@ namespace QDP
       break;
 
     default: 
-      QDPIO::cerr << "Unknown value for qdp_volfmt " << qdp_volfmt << endl;
+      QDPIO::cerr << "Unknown value for qdp_volfmt " << qdp_volfmt << std::endl;
       QDP_abort(1);
       return;
     }
@@ -434,7 +434,7 @@ namespace QDP
       break;
 
     default: 
-      QDPIO::cerr << "Unknown value for qdp_mode " << qdp_mode << endl;
+      QDPIO::cerr << "Unknown value for qdp_mode " << qdp_mode << std::endl;
       QDP_abort(1);
       return;
     }
@@ -467,7 +467,7 @@ namespace QDP
     {
       iostate = QDPIO_badbit;  // not helpful
 
-      QDPIO::cerr << "QDPFileWriter: failed to open file " << path << endl;
+      QDPIO::cerr << "QDPFileWriter: failed to open file " << path << std::endl;
       QDP_abort(1);  // just bail. Not sure I want this. This is not stream semantics
     }
     else
@@ -542,7 +542,7 @@ namespace QDP
     QIO_String* xml_c = QIO_string_create();
     if (xml_c == NULL)
     {
-      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << endl;
+      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << std::endl;
       QDP_abort(1);
     }
 
@@ -556,7 +556,7 @@ namespace QDP
 		  sizeof(char), 
 		  (void *)ss.c_str()) != QIO_SUCCESS)
     {
-      QDPIO::cerr << "QDPFileWriter: error in write" << endl;
+      QDPIO::cerr << "QDPFileWriter: error in write" << std::endl;
       clear(QDPIO_badbit);
       QDP_abort(1);
     }

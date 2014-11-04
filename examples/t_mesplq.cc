@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
   // Try out the plaquette routine
   QDPIO::cout << "Start mesplq\n";
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq = " << w_plaq << endl;
-  QDPIO::cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << std::endl;
+  QDPIO::cout << "link = " << link << std::endl;
 
 #ifdef QDP_USE_LIBXML2
   // Write out the results
@@ -65,11 +65,11 @@ int main(int argc, char *argv[])
 #endif
 
   // 
-  QDPIO::cout << "rb[0] has ordered rep=" << rb[0].hasOrderedRep() << endl;
-  QDPIO::cout << "rb[1] has ordered rep=" << rb[1].hasOrderedRep() << endl;
+  QDPIO::cout << "rb[0] has ordered rep=" << rb[0].hasOrderedRep() << std::endl;
+  QDPIO::cout << "rb[1] has ordered rep=" << rb[1].hasOrderedRep() << std::endl;
 
-  QDPIO::cout << "rb3[0] has ordered rep=" << rb3[0].hasOrderedRep() << endl;
-  QDPIO::cout << "rb3[1] has ordered rep=" << rb3[1].hasOrderedRep() << endl;
+  QDPIO::cout << "rb3[0] has ordered rep=" << rb3[0].hasOrderedRep() << std::endl;
+  QDPIO::cout << "rb3[1] has ordered rep=" << rb3[1].hasOrderedRep() << std::endl;
   // Time to bolt
   QDP_finalize();
 

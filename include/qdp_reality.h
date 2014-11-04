@@ -170,7 +170,7 @@ private:
 //! Ascii input
 template<class T>
 inline
-istream& operator>>(istream& s, RScalar<T>& d)
+std::istream& operator>>(std::istream& s, RScalar<T>& d)
 {
   return s >> d.elem();
 }
@@ -186,7 +186,7 @@ StandardInputStream& operator>>(StandardInputStream& s, RScalar<T>& d)
 //! Ascii output
 template<class T> 
 inline  
-ostream& operator<<(ostream& s, const RScalar<T>& d)
+std::ostream& operator<<(std::ostream& s, const RScalar<T>& d)
 {
   return s << d.elem();
 }
@@ -228,7 +228,7 @@ XMLWriter& operator<<(XMLWriter& xml, const RScalar<T>& d)
 //! XML input
 template<class T>
 inline
-void read(XMLReader& xml, const string& path, RScalar<T>& d)
+void read(XMLReader& xml, const std::string& path, RScalar<T>& d)
 {
   read(xml, path, d.elem());
 }
@@ -391,7 +391,7 @@ private:
 //! Stream output
 template<class T>
 inline
-ostream& operator<<(ostream& s, const RComplex<T>& d)
+std::ostream& operator<<(std::ostream& s, const RComplex<T>& d)
 {
   s << "( " << d.real() << " , " << d.imag() << " )";
   return s;
@@ -441,21 +441,21 @@ XMLWriter& operator<<(XMLWriter& xml, const RComplex<T>& d)
 //! XML input
 template<class T>
 inline
-void read(XMLReader& xml, const string& xpath, RComplex<T>& d)
+void read(XMLReader& xml, const std::string& xpath, RComplex<T>& d)
 {
   std::ostringstream error_message;
   
   // XPath for the real part 
-  string path_real = xpath + "/re";
+  std::string path_real = xpath + "/re";
 	
   // XPath for the imaginary part.
-  string path_imag = xpath + "/im";
+  std::string path_imag = xpath + "/im";
 	
   // Try and recursively get the real part
   try { 
     read(xml, path_real, d.real());
   }
-  catch(const string &e) {
+  catch(const std::string &e) {
     error_message << "XPath Query: " << xpath << " Error: "
 		  << "Failed to match real part of RComplex Object with self constructed path: " << path_real;
     
@@ -466,7 +466,7 @@ void read(XMLReader& xml, const string& xpath, RComplex<T>& d)
   try {
     read(xml, path_imag, d.imag());
   }
-  catch(const string &e) {
+  catch(const std::string &e) {
     error_message << "XPath Query: " << xpath <<" Error:"
 		  <<"Failed to match imaginary part of RComplex Object with self constructed path: " << path_imag;
     
