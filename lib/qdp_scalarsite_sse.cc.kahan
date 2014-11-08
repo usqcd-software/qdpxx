@@ -31,7 +31,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_eq_M_times_M" << endl;
+//  cout << "call single site QDP_M_eq_M_times_M" << std::endl;
 
   typedef OLattice< TCol >    C;
 
@@ -75,7 +75,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_eq_aM_times_M" << endl;
+//  cout << "call single site QDP_M_eq_aM_times_M" << std::endl;
 
   typedef OLattice< TCol >    C;
 
@@ -120,7 +120,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_eq_M_times_aM" << endl;
+//  cout << "call single site QDP_M_eq_M_times_aM" << std::endl;
 
   typedef OLattice< TCol >    C;
 
@@ -164,7 +164,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_eq_Ma_times_Ma" << endl;
+//  cout << "call single site QDP_M_eq_Ma_times_Ma" << std::endl;
 
   typedef OLattice< TCol >    C;
 
@@ -252,7 +252,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_peq_M_times_M" << endl;
+//  cout << "call single site QDP_M_peq_M_times_M" << std::endl;
 
   typedef OLattice< TCol >    C;
 
@@ -337,7 +337,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_peq_aM_times_M" << endl;
+//  cout << "call single site QDP_M_peq_aM_times_M" << std::endl;
 
   typedef OLattice< TCol >    C;
 
@@ -422,7 +422,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_peq_M_times_aM" << endl;
+//  cout << "call single site QDP_M_peq_M_times_aM" << std::endl;
 
   typedef OLattice< TCol >    C;
 
@@ -509,7 +509,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_peq_Ma_times_Ma" << endl;
+//  cout << "call single site QDP_M_peq_Ma_times_Ma" << std::endl;
 
   typedef OLattice< TCol >    C;
 
@@ -772,7 +772,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_meq_M_times_M" << endl;
+//  cout << "call single site QDP_M_meq_M_times_M" << std::endl;
 
   typedef OLattice< TCol >    C;
 
@@ -859,7 +859,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_meq_aM_times_M" << endl;
+//  cout << "call single site QDP_M_meq_aM_times_M" << std::endl;
 
   typedef OLattice< TCol >    C;
 
@@ -945,7 +945,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_meq_M_times_aM" << endl;
+//  cout << "call single site QDP_M_meq_M_times_aM" << std::endl;
 
   typedef OLattice< TCol >    C;
 
@@ -1030,7 +1030,7 @@ void evaluate(OLattice< TCol >& d,
 	                    OLattice< TCol > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_meq_Ma_times_Ma" << endl;
+//  cout << "call single site QDP_M_meq_Ma_times_Ma" << std::endl;
 
   typedef OLattice< TCol >    C;
 
@@ -1122,7 +1122,7 @@ void evaluate(OLattice< TVec2 >& d,
 	      const Subset& s)
 {
 #if defined(QDP_SCALARSITE_DEBUG)
-  cout << "specialized QDP_H_M_times_H" << endl;
+  cout << "specialized QDP_H_M_times_H" << std::endl;
 #endif
 
   typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >       C;
@@ -1169,7 +1169,7 @@ void evaluate(OLattice< TVec2 >& d,
 void vaxpy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_3vec)
 {
 #ifdef DEBUG_BLAS
-  QDPIO::cout << "SSE_TEST: vaxpy3" << endl;
+  QDPIO::cout << "SSE_TEST: vaxpy3" << std::endl;
 #endif
 
 //  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
@@ -1196,7 +1196,7 @@ void vaxpy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Add,int n_3vec)
 void vaxmy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Sub,int n_3vec)
 {
 #ifdef DEBUG_BLAS
-  QDPIO::cout << "SSE_TEST: vaxmy3" << endl;
+  QDPIO::cout << "SSE_TEST: vaxmy3" << std::endl;
 #endif
 
 //  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
@@ -1223,7 +1223,7 @@ void vaxmy3(REAL32 *Out,REAL32 *scalep,REAL32 *InScale, REAL32 *Sub,int n_3vec)
 void vadd(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec)
 {
 #ifdef DEBUG_BLAS
-  QDPIO::cout << "SSE_TEST: vadd" << endl;
+  QDPIO::cout << "SSE_TEST: vadd" << std::endl;
 #endif
 
 //  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
@@ -1246,7 +1246,7 @@ void vadd(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec)
 void vsub(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec)
 {
 #ifdef DEBUG_BLAS
-  QDPIO::cout << "SSE_TEST: vsub" << endl;
+  QDPIO::cout << "SSE_TEST: vsub" << std::endl;
 #endif
 
 //  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
@@ -1268,7 +1268,7 @@ void vsub(REAL32 *Out, REAL32 *In1, REAL32 *In2, int n_3vec)
 void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec)
 {
 #ifdef DEBUG_BLAS
-  QDPIO::cout << "SSE_TEST: vadd" << endl;
+  QDPIO::cout << "SSE_TEST: vadd" << std::endl;
 #endif
 
 //  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
@@ -1295,7 +1295,7 @@ void vscal(REAL32 *Out, REAL32 *scalep, REAL32 *In, int n_3vec)
 void vaxpby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_3vec)
 {
 #ifdef DEBUG_BLAS
-  QDPIO::cout << "SSE_TEST: vaxpby3: a*x+b*y" << endl;
+  QDPIO::cout << "SSE_TEST: vaxpby3: a*x+b*y" << std::endl;
 #endif
 
 //  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
@@ -1325,7 +1325,7 @@ void vaxpby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_3vec
 void vaxmby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_3vec)
 {
 #ifdef DEBUG_BLAS
-  QDPIO::cout << "SSE_TEST: vaxmby3: a*x-b*y" << endl;
+  QDPIO::cout << "SSE_TEST: vaxmby3: a*x-b*y" << std::endl;
 #endif
 
 //  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors
@@ -1355,7 +1355,7 @@ void vaxmby3(REAL32 *Out, REAL32 *a, REAL32 *x, REAL32 *b, REAL32 *y, int n_3vec
 void local_sumsq(REAL64 *Out, REAL32 *In, int n_3vec)
 {
 #ifdef DEBUG_BLAS
-  QDPIO::cout << "SSE_TEST: local_sumsq" << endl;
+  QDPIO::cout << "SSE_TEST: local_sumsq" << std::endl;
 #endif
 
 //  int n_loops = n_3vec >> 2;   // only works on multiple of length 4 vectors

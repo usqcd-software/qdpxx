@@ -31,7 +31,7 @@ namespace QDP {
 	{
 		if (isInit)
 		{
-			QDPIO::cerr << "QDP already inited" << endl;
+			QDPIO::cerr << "QDP already inited" << std::endl;
 			QDP_abort(1);
 		}
 		
@@ -148,7 +148,7 @@ namespace QDP {
 				int n = strlen((*argv)[++i]);
 				if (n >= maxlen)
 				{
-					QDPIO::cerr << __func__ << ": rtinode name too long" << endl;
+					QDPIO::cerr << __func__ << ": rtinode name too long" << std::endl;
 					QDP_abort(1);
 				}
 				sscanf((*argv)[i], "%s", rtinode);
@@ -157,14 +157,14 @@ namespace QDP {
 #if 0
 			else 
 			{
-				QDPIO::cerr << __func__ << ": Unknown argument = " << (*argv)[i] << endl;
+				QDPIO::cerr << __func__ << ": Unknown argument = " << (*argv)[i] << std::endl;
 				QDP_abort(1);
 			}
 #endif
 			
 			if (i >= *argc) 
 			{
-				QDPIO::cerr << __func__ << ": missing argument at the end" << endl;
+				QDPIO::cerr << __func__ << ": missing argument at the end" << std::endl;
 				QDP_abort(1);
 			}
 		}
@@ -187,7 +187,7 @@ namespace QDP {
 			QMP_thread_level_t prv;
 			if (QMP_init_msg_passing(argc, argv, QMP_THREAD_SINGLE, &prv) != QMP_SUCCESS)
 			{
-				QDPIO::cerr << __func__ << ": QMP_init_msg_passing failed" << endl;
+				QDPIO::cerr << __func__ << ": QMP_init_msg_passing failed" << std::endl;
 				QDP_abort(1);
 			}
 		}
@@ -199,7 +199,7 @@ namespace QDP {
 		if (setGeomP)
 			if (QMP_declare_logical_topology(logical_geom.slice(), Nd) != QMP_SUCCESS)
 			{
-				QDPIO::cerr << __func__ << ": QMP_declare_logical_topology failed" << endl;
+				QDPIO::cerr << __func__ << ": QMP_declare_logical_topology failed" << std::endl;
 				QDP_abort(1);
 			}
 		
@@ -236,17 +236,17 @@ namespace QDP {
 		
 		// Initialize threads
 		if( Layout::primaryNode() ) { 
-			cout << "QDP use qmt threading: Initializing threads..." ;
+			std::cout << "QDP use qmt threading: Initializing threads..." ;
 		} 
 		int thread_status = qmt_init();
 		
 		if( thread_status == 0 ) { 
 			if (  Layout::primaryNode() ) { 
-				cout << "Success. We have " << qdpNumThreads() << " threads \n";
+				std::cout << "Success. We have " << qdpNumThreads() << " threads \n";
 			} 
 		}
 		else { 
-			cout << "Failure... qmt_init() returned " << thread_status << endl;
+			std::cout << "Failure... qmt_init() returned " << thread_status << std::endl;
 			QDP_abort(1);
 		}
 		
@@ -254,7 +254,7 @@ namespace QDP {
 #ifdef QDP_USE_OMP_THREADS
 		
 		if( Layout::primaryNode()) {
-			cout << "QDP use OpenMP threading. We have " << qdpNumThreads() << " threads\n"; 
+			std::cout << "QDP use OpenMP threading. We have " << qdpNumThreads() << " threads\n"; 
 		}
 		
 #endif
@@ -263,13 +263,13 @@ namespace QDP {
 		// Alloc space for reductions
 		ThreadReductions::norm2_results = new REAL64 [ qdpNumThreads() ];
 		if( ThreadReductions::norm2_results == 0x0 ) { 
-			cout << "Failure... space for norm2 results failed "  << endl;
+			std::cout << "Failure... space for norm2 results failed "  << std::endl;
 			QDP_abort(1);
 		}
 		
 		ThreadReductions::innerProd_results = new REAL64 [ 2*qdpNumThreads() ];
 		if( ThreadReductions::innerProd_results == 0x0 ) { 
-			cout << "Failure... space for innerProd results failed "  << endl;
+			std::cout << "Failure... space for innerProd results failed "  << std::endl;
 			QDP_abort(1);
 		}
 		
@@ -307,7 +307,7 @@ namespace QDP {
 		delete [] ThreadReductions::innerProd_results;
 #if defined(QMT_USE_QMT_THREADS)
 		// Finalize threads
-		cout << "QDP use qmt threading: Finalizing threads" << endl;
+		std::cout << "QDP use qmt threading: Finalizing threads" << std::endl;
 		qmt_finalize();
 #endif 
 		

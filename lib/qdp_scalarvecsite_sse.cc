@@ -26,7 +26,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 	      OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > > >& rhs,
 	      const Subset& s)
 {
-//  cout << "call single site QDP_M_eq_M_times_M" << endl;
+//  cout << "call single site QDP_M_eq_M_times_M" << std::endl;
 
   typedef OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >  C;
 
