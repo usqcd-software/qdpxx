@@ -85,7 +85,7 @@ void Set::make(const SetFunc& fun)
     int icolor = fun(coord);
 
 #if QDP_DEBUG >= 3
-    cerr<<"linear="<<linear<<" coord="<<coord<<" node="<<node<<" col="<<icolor << std::endl;
+    std::cerr<<"linear="<<linear<<" coord="<<coord<<" node="<<node<<" col="<<icolor << std::endl;
 #endif
 
     // Sanity checks
