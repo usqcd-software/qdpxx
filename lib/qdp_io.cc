@@ -5,6 +5,7 @@
 
 #include "qdp.h"
 #include "qdp_byteorder.h"
+#include <complex>
 
 namespace QDP
 {
