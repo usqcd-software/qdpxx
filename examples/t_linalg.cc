@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
   pop(xml);
 #endif
 
-  QDPIO::cout << "CLOCKS_PER_SEC = " << CLOCKS_PER_SEC << endl;
+  QDPIO::cout << "CLOCKS_PER_SEC = " << CLOCKS_PER_SEC << std::endl;
 
   LatticeColorMatrix a, b, c;
   gaussian(a);
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
   m3 -= m2;
   LatticeColorMatrix diff_m;
   diff_m = m3 - m1;
-  QDPIO::cout << "Diff M=M = " << norm2(diff_m) << endl;
+  QDPIO::cout << "Diff M=M = " << norm2(diff_m) << std::endl;
   QDP::StopWatch swatch;
   swatch.reset();
   double time = 0;
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     swatch.reset();
     icnt*=2;
   }
-  QDPIO::cout << "Call time (old M=M) = " << time / icnt << " us per call" << endl;
+  QDPIO::cout << "Call time (old M=M) = " << time / icnt << " us per call" << std::endl;
   
   swatch.reset();
   time = 0;
@@ -91,21 +91,21 @@ int main(int argc, char *argv[])
     icnt*=2;
   }
   
-  QDPIO::cout << "Call time (New M=M)= " << time / icnt << " us per call" << endl;
+  QDPIO::cout << "Call time (New M=M)= " << time / icnt << " us per call" << std::endl;
 
 
 
   // Test M=M*M
   for(icnt=1; ; icnt <<= 1)
   {
-    QDPIO::cout << "calling M=M*M " << icnt << " times" << endl;
+    QDPIO::cout << "calling M=M*M " << icnt << " times" << std::endl;
     tt = QDP_M_eq_M_times_M(c, a, b, icnt);
 #if defined(TIME_OPS)
     if (tt > 1)
       break;
 #else
     // turn off timings for some testing
-    QDPIO::cout << "***WARNING*** : debug mode - timings are bogus" << endl;
+    QDPIO::cout << "***WARNING*** : debug mode - timings are bogus" << std::endl;
     break;
 #endif
   }
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M=M*M) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << std::endl;
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_eq_M_times_M");
@@ -128,12 +128,12 @@ int main(int argc, char *argv[])
 #endif
   
   // Test  M=adj(M)*M
-  QDPIO::cout << "calling M=adj(M)*M " << icnt << " times" << endl;
+  QDPIO::cout << "calling M=adj(M)*M " << icnt << " times" << std::endl;
   tt = rescale * QDP_M_eq_Ma_times_M(c, a, b, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M=adj(M)*M) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << std::endl;
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_eq_Ma_times_M");
@@ -145,12 +145,12 @@ int main(int argc, char *argv[])
 #endif
   
   // Test  M=M*adj(M)
-  QDPIO::cout << "calling M=M*adj(M) " << icnt << " times" << endl;
+  QDPIO::cout << "calling M=M*adj(M) " << icnt << " times" << std::endl;
   tt = rescale * QDP_M_eq_M_times_Ma(c, a, b, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M=M*adj(M)) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << std::endl;
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_eq_M_times_Ma");
@@ -163,12 +163,12 @@ int main(int argc, char *argv[])
 
  
   // Test  M=adj(M)*adj(M)
-  QDPIO::cout << "calling M=adj(M)*adj(M) " << icnt << " times" << endl;
+  QDPIO::cout << "calling M=adj(M)*adj(M) " << icnt << " times" << std::endl;
   tt = rescale * QDP_M_eq_Ma_times_Ma(c, a, b, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M=adj(M)*adj(M)) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << std::endl;
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_eq_Ma_times_Ma");
@@ -181,13 +181,13 @@ int main(int argc, char *argv[])
 
   
   // Test  M+= M*M
-  QDPIO::cout << "calling M+=M*M " << icnt << " times" << endl;
+  QDPIO::cout << "calling M+=M*M " << icnt << " times" << std::endl;
   tt = rescale * QDP_M_peq_M_times_M(c, a, b, icnt);
   Nflops += Nc*Nc * 2;
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M+=M*M) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << std::endl;
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_peq_M_times_M");
@@ -198,12 +198,12 @@ int main(int argc, char *argv[])
 
 
   // Test  M+= adj(M)*M
-  QDPIO::cout << "calling M+=adj(M)*M " << icnt << " times" << endl;
+  QDPIO::cout << "calling M+=adj(M)*M " << icnt << " times" << std::endl;
   tt = rescale * QDP_M_peq_Ma_times_M(c, a, b, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M+=adj(M)*M) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << std::endl;
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_peq_Ma_times_M");
@@ -214,12 +214,12 @@ int main(int argc, char *argv[])
 
 
   // Test  M+= M*adj(M)
-  QDPIO::cout << "calling M+=M*adj(M) " << icnt << " times" << endl;
+  QDPIO::cout << "calling M+=M*adj(M) " << icnt << " times" << std::endl;
   tt = rescale * QDP_M_peq_M_times_Ma(c, a, b, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M+=M*adj(M)) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << std::endl;
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_peq_M_times_Ma");
@@ -230,12 +230,12 @@ int main(int argc, char *argv[])
 
 
   // Test  M+= adj(M)*adj(M)
-  QDPIO::cout << "calling M+=adj(M)*adj(M) " << icnt << " times" << endl;
+  QDPIO::cout << "calling M+=adj(M)*adj(M) " << icnt << " times" << std::endl;
   tt = rescale * QDP_M_peq_Ma_times_Ma(c, a, b, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M+=adj(M)*adj(M)) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << std::endl;
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_peq_Ma_times_Ma");
@@ -246,12 +246,12 @@ int main(int argc, char *argv[])
 
 
   // Test  M-= M*M
-  QDPIO::cout << "calling M-=M*M " << icnt << " times" << endl;
+  QDPIO::cout << "calling M-=M*M " << icnt << " times" << std::endl;
   tt = rescale * QDP_M_meq_M_times_M(c, a, b, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M-=M*M) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << std::endl;
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_meq_M_times_M");
@@ -262,12 +262,12 @@ int main(int argc, char *argv[])
 
 
   // Test  M-= adj(M)*M
-  QDPIO::cout << "calling M-=adj(M)*M " << icnt << " times" << endl;
+  QDPIO::cout << "calling M-=adj(M)*M " << icnt << " times" << std::endl;
   tt = rescale * QDP_M_meq_Ma_times_M(c, a, b, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M-=adj(M)*M) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << std::endl;
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_meq_Ma_times_M");
@@ -278,12 +278,12 @@ int main(int argc, char *argv[])
 
 
   // Test  M-= M*adj(M)
-  QDPIO::cout << "calling M-=M*adj(M) " << icnt << " times" << endl;
+  QDPIO::cout << "calling M-=M*adj(M) " << icnt << " times" << std::endl;
   tt = rescale * QDP_M_meq_M_times_Ma(c, a, b, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M-=M*adj(M)) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << std::endl;
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_meq_M_times_Ma");
@@ -294,12 +294,12 @@ int main(int argc, char *argv[])
 
 
   // Test  M-= adj(M)*adj(M)
-  QDPIO::cout << "calling M-=adj(M)*adj(M) " << icnt << " times" << endl;
+  QDPIO::cout << "calling M-=adj(M)*adj(M) " << icnt << " times" << std::endl;
   tt = rescale * QDP_M_meq_Ma_times_Ma(c, a, b, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(M-=adj(M)*adj(M)) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << Nflops / tt << " Mflops" << endl;
+	      << " , " << Nflops / tt << " Mflops" << std::endl;
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_M_meq_Ma_times_Ma");
@@ -318,7 +318,7 @@ int main(int argc, char *argv[])
   // Test LatticeColorVector = LatticeColorMatrix * LatticeColorVector
   for(icnt=1; ; icnt <<= 1)
   {
-    QDPIO::cout << "calling V=M*V " << icnt << " times" << endl;
+    QDPIO::cout << "calling V=M*V " << icnt << " times" << std::endl;
     tt = QDP_V_eq_M_times_V(lv2, a, lv1, icnt);
 #if defined(TIME_OPS)
     if (tt > 1)
@@ -335,7 +335,7 @@ int main(int argc, char *argv[])
 #if defined(TIME_OPS)
   QDPIO::cout << "time(V=M*V) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
+	      << " , " << 66 / tt << " Mflops" << std::endl;   // check the flop count
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_V_eq_M_times_V");
@@ -346,12 +346,12 @@ int main(int argc, char *argv[])
 
 
   // Test LatticeColorVector = LatticeColorMatrix * LatticeColorVector
-  QDPIO::cout << "calling V=adj(M)*V " << icnt << " times" << endl;
+  QDPIO::cout << "calling V=adj(M)*V " << icnt << " times" << std::endl;
   tt = rescale * QDP_V_eq_Ma_times_V(lv2, a, lv1, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(V=adj(M)*V) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << 66 / tt << " Mflops" << endl;   // check the flop count
+	      << " , " << 66 / tt << " Mflops" << std::endl;   // check the flop count
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_V_eq_Ma_times_V");
@@ -365,7 +365,7 @@ int main(int argc, char *argv[])
   // Test LatticeColorVector = LatticeColorVector + LatticeColorVector
   for(icnt=1; ; icnt <<= 1)
   {
-    QDPIO::cout << "calling V=V+V " << icnt << " times" << endl;
+    QDPIO::cout << "calling V=V+V " << icnt << " times" << std::endl;
     tt = QDP_V_eq_V_plus_V(lv3, lv1, lv2, icnt);
 #if defined(TIME_OPS)
     if (tt > 1)
@@ -382,7 +382,7 @@ int main(int argc, char *argv[])
 #if defined(TIME_OPS)
   QDPIO::cout << "time(V=V+V) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << 6 / tt << " Mflops" << endl;   // check the flop count
+	      << " , " << 6 / tt << " Mflops" << std::endl;   // check the flop count
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_V_eq_V_plus_V");
@@ -401,7 +401,7 @@ int main(int argc, char *argv[])
   // Test LatticeDiracFermion = LatticeColorMatrix * LatticeDiracFermion
   for(icnt=1; ; icnt <<= 1)
   {
-    QDPIO::cout << "calling D=M*D " << icnt << " times" << endl;
+    QDPIO::cout << "calling D=M*D " << icnt << " times" << std::endl;
     tt = QDP_D_eq_M_times_D(lf2, a, lf1, icnt);
 #if defined(TIME_OPS)
     if (tt > 1)
@@ -418,7 +418,7 @@ int main(int argc, char *argv[])
 #if defined(TIME_OPS)
   QDPIO::cout << "time(D=M*D) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
+	      << " , " << 264 / tt << " Mflops" << std::endl;   // check the flop count
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_D_eq_M_times_D");
@@ -428,12 +428,12 @@ int main(int argc, char *argv[])
 #endif
 
   // Test LatticeDiracFermion = adj(LatticeColorMatrix) * LatticeDiracFermion
-  QDPIO::cout << "calling D=adj(M)*D " << icnt << " times" << endl;
+  QDPIO::cout << "calling D=adj(M)*D " << icnt << " times" << std::endl;
   tt = rescale * QDP_D_eq_Ma_times_D(lf2, a, lf1, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(D=adj(M)*D) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << 264 / tt << " Mflops" << endl;   // check the flop count
+	      << " , " << 264 / tt << " Mflops" << std::endl;   // check the flop count
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_D_eq_Ma_times_D");
@@ -451,7 +451,7 @@ int main(int argc, char *argv[])
   // Test LatticeHalfFermion = LatticeColorMatrix * LatticeHalfFermion
   for(icnt=1; ; icnt <<= 1)
   {
-    QDPIO::cout << "calling H=M*H " << icnt << " times" << endl;
+    QDPIO::cout << "calling H=M*H " << icnt << " times" << std::endl;
     tt = QDP_H_eq_M_times_H(lh2, a, lh1, icnt);
 #if defined(TIME_OPS)
     if (tt > 1)
@@ -468,7 +468,7 @@ int main(int argc, char *argv[])
 #if defined(TIME_OPS)
   QDPIO::cout << "time(H=M*H) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
+	      << " , " << 132 / tt << " Mflops" << std::endl;   // check the flop count
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_H_eq_M_times_H");
@@ -479,12 +479,12 @@ int main(int argc, char *argv[])
 
 
   // Test LatticeHalfFermion = adj(LatticeColorMatrix) * LatticeHalfFermion
-  QDPIO::cout << "calling H=adj(M)*H " << icnt << " times" << endl;
+  QDPIO::cout << "calling H=adj(M)*H " << icnt << " times" << std::endl;
   tt = rescale * QDP_H_eq_Ma_times_H(lh2, a, lh1, icnt);
 #if defined(TIME_OPS)
   QDPIO::cout << "time(H=adj(M)*H) = " << tt
 	      << " micro-secs/site/iteration" 
-	      << " , " << 132 / tt << " Mflops" << endl;   // check the flop count
+	      << " , " << 132 / tt << " Mflops" << std::endl;   // check the flop count
 #else
 #ifdef QDP_USE_LIBXML2
   push(xml,"QDP_H_eq_Ma_times_H");

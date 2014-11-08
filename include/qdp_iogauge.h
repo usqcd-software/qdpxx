@@ -94,7 +94,7 @@ struct ArchivGauge_t
   \param path The Xpath to the tag containing the NERSC tags
   \param header The header to which the NERSC header information is written.
 */
-void read(XMLReader& xml, const string& path, ArchivGauge_t& header);
+void read(XMLReader& xml, const std::string& path, ArchivGauge_t& header);
 
 //! Writes a Gauge Connection header from a header container into XML
 /*!
@@ -117,7 +117,7 @@ void read(XMLReader& xml, const string& path, ArchivGauge_t& header);
      <archive_date>...    </archive_date>
   \endverbatim
 */
-void write(XMLWriter& xml, const string& path, const ArchivGauge_t& header);
+void write(XMLWriter& xml, const std::string& path, const ArchivGauge_t& header);
 
 
 //! Compute simple NERSC-like checksum of a gauge field
@@ -149,7 +149,7 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u, int mat_size);
  The plaquette, link and checksum values are ignored.
   
  */    
-void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& file);
+void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const std::string& file);
 
 //! Reads a NERSC Gauge Connection Archive gauge configuration file
 /*!
@@ -169,7 +169,7 @@ void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const str
  The plaquette, link and checksum values are ignored.
 
 */    
-void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file);
 
 
 //! Reads a NERSC Gauge Connection Archive gauge configuration file
@@ -188,7 +188,7 @@ void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cf
  The plaquette, link and checksum values are ignored.
 */
 
-void readArchiv(multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+void readArchiv(multi1d<LatticeColorMatrix>& u, const std::string& cfg_file);
 
 
 //! Writes a NERSC Gauge Connection Archive gauge configuration file
@@ -205,7 +205,7 @@ void readArchiv(multi1d<LatticeColorMatrix>& u, const string& cfg_file);
  
  \note The value 0 is written as checksum.
  */    
-void writeArchiv(ArchivGauge_t& header, const multi1d<LatticeColorMatrix>& u, const string& file);
+void writeArchiv(ArchivGauge_t& header, const multi1d<LatticeColorMatrix>& u, const std::string& file);
 
 
 //! Writes a NERSC Gauge Connection Archive gauge configuration file
@@ -224,7 +224,7 @@ void writeArchiv(ArchivGauge_t& header, const multi1d<LatticeColorMatrix>& u, co
  \note The token \c FLOATING_POINT is always given the value \c IEEE32BIG
  */    
 void writeArchiv(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u, 
-		 const string& cfg_file);
+		 const std::string& cfg_file);
 
 //! Writes a NERSC Gauge Connection Archive gauge configuration file
 /*!
@@ -240,7 +240,7 @@ void writeArchiv(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u,
 */    
 
 void writeArchiv(const multi1d<LatticeColorMatrix>& u, 
-		 const string& cfg_file);
+		 const std::string& cfg_file);
 
 
 } // namespace QDP

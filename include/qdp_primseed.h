@@ -107,7 +107,7 @@ private:
 //! Text input
 template<class T>
 inline
-istream& operator>>(istream& s, PSeed<T>& d)
+std::istream& operator>>(std::istream& s, PSeed<T>& d)
 {
   for(int i=0; i < 4; ++i)
     s >> d.elem(i);
@@ -129,7 +129,7 @@ StandardInputStream& operator>>(StandardInputStream& s, PSeed<T>& d)
 //! Text output
 template<class T>
 inline
-ostream& operator<<(ostream& s, const PSeed<T>& d)
+std::ostream& operator<<(std::ostream& s, const PSeed<T>& d)
 {
   s << d.elem(0) << " " << d.elem(1) << " " << d.elem(2) << " " << d.elem(3) << "\n";
   return s;
@@ -190,7 +190,7 @@ XMLWriter& operator<<(XMLWriter& xml, const PSeed<T>& d)
 //! XML input
 template<class T>
 inline
-void read(XMLReader& xml, const string& path, PSeed<T>& d)
+void read(XMLReader& xml, const std::string& path, PSeed<T>& d)
 {
   typedef typename PrimitiveScalar<T>::Type_t  S;
   multi1d<S> ff(4);

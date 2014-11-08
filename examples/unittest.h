@@ -119,15 +119,15 @@ private:
 
     bool test_success = trueEverywhere( t.success == SUCCESS );
     if( test_success == true ) { 
-      QDPIO::cout << "  OK" << endl;
+      QDPIO::cout << "  OK" << std::endl;
     }
     else { 
        
       if( trueOnNodes( t.success == ERROR )  > 0 ) { 
-	QDPIO::cout << "  ERROR" << endl;
+	QDPIO::cout << "  ERROR" << std::endl;
       }
       else { 
-	QDPIO::cout << "  FAIL" << endl;
+	QDPIO::cout << "  FAIL" << std::endl;
       }
     }
   }
@@ -150,7 +150,7 @@ private:
   }
 
   void summary() { 
-    QDPIO::cout << "Summary: " << num_tried <<   " Tests Tried" << endl;
+    QDPIO::cout << "Summary: " << num_tried <<   " Tests Tried" << std::endl;
     int success = 0;
     int failure = 0;
     int odd = 0;
@@ -165,9 +165,9 @@ private:
 	}
       }
     }
-    QDPIO::cout << "         " << success << " Tests Succeeded " << endl;
-    QDPIO::cout << "         " << failure  << " Tests Failed on some nodes" <<  endl;
-    QDPIO::cout << "of which " << odd << " Tests Failed in Unexpected Ways on some nodes" << endl;
+    QDPIO::cout << "         " << success << " Tests Succeeded " << std::endl;
+    QDPIO::cout << "         " << failure  << " Tests Failed on some nodes" <<  std::endl;
+    QDPIO::cout << "of which " << odd << " Tests Failed in Unexpected Ways on some nodes" << std::endl;
   }
 
 

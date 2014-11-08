@@ -2,8 +2,6 @@
 #include <cmath>
 #include "timeVaxpyDouble.h"
 
-using namespace std;
-
 static double N_SECS=10;
 static double T_SECS=30;
 
@@ -21,13 +19,13 @@ time_VAXPBYZ_double::run(void)
   gaussian(x); 
   gaussian(y); 
 
-  QDPIO::cout << endl << "Timing VAXPBYZ4 Double Prec Kernel " <<endl;
+  QDPIO::cout << std::endl << "Timing VAXPBYZ4 Double Prec Kernel " <<std::endl;
 
   StopWatch swatch;
   double n_secs = N_SECS;
   int iters=1;
   double time=0;
-  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
+  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << std::endl;
   do {
     swatch.reset();
     swatch.start();
@@ -44,15 +42,15 @@ time_VAXPBYZ_double::run(void)
 
     if (time < n_secs) {
       iters *=2;
-      QDPIO::cout << "." << flush;
+      QDPIO::cout << "." << std::flush;
     }
   }
   while ( time < (double)n_secs );
       
-  QDPIO::cout << endl;
+  QDPIO::cout << std::endl;
   int t_iters = (int)floor((T_SECS/N_SECS)*iters);
 
-  QDPIO::cout << "\t Timing with " << t_iters << " counts" << endl;
+  QDPIO::cout << "\t Timing with " << t_iters << " counts" << std::endl;
 
   swatch.reset();
   swatch.start();
@@ -70,7 +68,7 @@ time_VAXPBYZ_double::run(void)
 
   double flops=(double)(6*Nc*Ns*Layout::vol());
   double perf=(2*flops/time)/(double)(1024*1024);
-  QDPIO::cout << "VAXPBYZ4 Double Kernel: " << perf << " Mflops" << endl;
+  QDPIO::cout << "VAXPBYZ4 Double Kernel: " << perf << " Mflops" << std::endl;
 
 
 }
@@ -92,13 +90,13 @@ time_VAXPBYZ_float::run(void)
   gaussian(x); 
   gaussian(y); 
 
-  QDPIO::cout << endl << "Timing VAXPBYZ4 Single Kernel " <<endl;
+  QDPIO::cout << std::endl << "Timing VAXPBYZ4 Single Kernel " <<std::endl;
 
   StopWatch swatch;
   double n_secs = N_SECS;
   int iters=1;
   double time=0;
-  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << endl;
+  QDPIO::cout << "\t Calibrating for " << n_secs << " seconds " << std::endl;
   do {
     swatch.reset();
     swatch.start();
@@ -115,15 +113,15 @@ time_VAXPBYZ_float::run(void)
 
     if (time < n_secs) {
       iters *=2;
-      QDPIO::cout << "." << flush;
+      QDPIO::cout << "." << std::flush;
     }
   }
   while ( time < (double)n_secs );
       
-  QDPIO::cout << endl;
+  QDPIO::cout << std::endl;
   int t_iters = (int)floor((T_SECS/N_SECS)*iters);
 
-  QDPIO::cout << "\t Timing with " << t_iters << " counts" << endl;
+  QDPIO::cout << "\t Timing with " << t_iters << " counts" << std::endl;
 
   swatch.reset();
   swatch.start();
@@ -141,7 +139,7 @@ time_VAXPBYZ_float::run(void)
 
   double flops=(double)(6*Nc*Ns*Layout::vol());
   double perf=(2*flops/time)/(double)(1024*1024);
-  QDPIO::cout << "VAXPBYZ4 Kernel (Floating): " << perf << " Mflops" << endl;
+  QDPIO::cout << "VAXPBYZ4 Kernel (Floating): " << perf << " Mflops" << std::endl;
 
 
 }

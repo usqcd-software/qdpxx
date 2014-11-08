@@ -35,17 +35,17 @@ int main(int argc, char **argv)
   Seed seed;
   seed = 11;
   RNG::setrn(seed);
-  QDPIO::cout << "After setrn" << endl;
+  QDPIO::cout << "After setrn" << std::endl;
 
   // Time to play...
   Real r1;
   r1 = 17.0;
-  QDPIO::cout << "r1 after fill\n" << r1 << endl;
+  QDPIO::cout << "r1 after fill\n" << r1 << std::endl;
 
   for(int i=0; i < 10; ++i)
   {
     random(r1);
-    QDPIO::cout << "r1 after random\n" << r1 << endl;
+    QDPIO::cout << "r1 after random\n" << r1 << std::endl;
   }
 
   // Check the multi-dim arrays
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
   QDPIO::cout << "Fill boo with 0\n";
   for(int j=0; j < 2; ++j)
     for(int i=0; i < 3; ++i)
-      QDPIO::cout << boo(j,i) << endl;
+      QDPIO::cout << boo(j,i) << std::endl;
 
   QDPIO::cout << "Fill boo with random\n";
   for(int j=0; j < 2; ++j)
@@ -64,12 +64,12 @@ int main(int argc, char **argv)
   QDPIO::cout << "Check boo filled with random\n";
   for(int j=0; j < 2; ++j)
     for(int i=0; i < 3; ++i)
-      QDPIO::cout << boo(j,i) << endl;
+      QDPIO::cout << boo(j,i) << std::endl;
 
   QDPIO::cout << "Test indexing of boo\n";
   for(int j=0; j < 2; ++j)
     for(int i=0; i < 3; ++i)
-      QDPIO::cout << boo[j][i] << endl;
+      QDPIO::cout << boo[j][i] << std::endl;
 
   // Check the multi-dim arrays
   multi3d<Real> goo(2,3,2);
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
   for(int k=0; k < 2; ++k)
     for(int j=0; j < 3; ++j)
       for(int i=0; i < 2; ++i)
-	QDPIO::cout << goo(k,j,i) << endl;
+	QDPIO::cout << goo(k,j,i) << std::endl;
 
   QDPIO::cout << "Fill goo with random\n";
   for(int k=0; k < 2; ++k)
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
       for(int i=0; i < 2; ++i)
       {
 	random(goo(k,j,i));
-	QDPIO::cout << goo(k,j,i) << endl;
+	QDPIO::cout << goo(k,j,i) << std::endl;
       }
 
 
@@ -96,24 +96,24 @@ int main(int argc, char **argv)
       for(int i=0; i < 2; ++i)
       {
 	goo[k][j][i] = goo(k,j,i);
-	QDPIO::cout << goo(k,j,i) << endl; 
+	QDPIO::cout << goo(k,j,i) << std::endl; 
       }
   
   QDPIO::cout << "Test indexing of goo\n";
   for(int k=0; k < 2; ++k)
     for(int j=0; j < 3; ++j)
       for(int i=0; i < 2; ++i)
-	QDPIO::cout << goo[k][j][i] << endl;
+	QDPIO::cout << goo[k][j][i] << std::endl;
 
   // Test out lattice fields
   LatticeColorMatrix b1,b2,b3;
 
   b1 = 1.0;
-  QDPIO::cout << "b1 after fill\n" << endl;
+  QDPIO::cout << "b1 after fill\n" << std::endl;
   write(xml,"b1", b1);
 
   random(b1);
-  QDPIO::cout << "b1 after random\n" << endl;
+  QDPIO::cout << "b1 after random\n" << std::endl;
   write(xml,"b1", b1);
 
   random(b2);
@@ -127,7 +127,7 @@ int main(int argc, char **argv)
 #if 0
   Double dsum;
   dsum = norm2(b1);
-  QDPIO::cout << "dsum = " << dsum << endl;
+  QDPIO::cout << "dsum = " << dsum << std::endl;
   xml << "dsum = ";
   write(xml,"dsum", dsum);
 
@@ -156,8 +156,8 @@ int main(int argc, char **argv)
     gaussian(u[m]);
 
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq = " << w_plaq << endl;
-  QDPIO::cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << std::endl;
+  QDPIO::cout << "link = " << link << std::endl;
 
 #if 1
   // Play with gamma matrices - they should be implemented...

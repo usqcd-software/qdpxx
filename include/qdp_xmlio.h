@@ -216,7 +216,7 @@ namespace QDP
     }
     catch( const std::string& e) { 
       error_message << "Exception occurred while counting " << elem_base_query 
-		    << " during array read " << endl;
+		    << " during array read " << std::endl;
     }
       
     // Now resize the array to hold the no of elements.
@@ -239,7 +239,7 @@ namespace QDP
       {
 	error_message << "Failed to match element " << i
 		      << " of array with query " << element_xpath.str()
-		      << endl
+		      << std::endl
 		      << "Query returned error: " << e;
 	throw error_message.str();
       }
@@ -1171,7 +1171,7 @@ namespace QDP
     enum ElementType {SIMPLE, STRUCT};
     std::stack<ElementType> contextStack;
 
-    ostream& getOstream(void) {return output_xml.getOstream();}
+    std::ostream& getOstream(void) {return output_xml.getOstream();}
   };
 
   //! Push a group name

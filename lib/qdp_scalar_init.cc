@@ -38,18 +38,18 @@ void QDP_initialize(int *argc, char ***argv)
 #ifdef QDP_USE_QMT_THREADS
     
   // Initialize threads
-  cout << "QDP uses qmt threading: Initializing threads..." ;
+  std::cout << "QDP uses qmt threading: Initializing threads..." ;
   int thread_status = qmt_init();
   if( thread_status == 0 ) { 
-    cout << "Success. We have " << qdpNumThreads() << " threads \n"; 
+    std::cout << "Success. We have " << qdpNumThreads() << " threads \n"; 
   }
   else { 
-    cout << "Failure... qmt_init() returned " << thread_status << endl;
+    std::cout << "Failure... qmt_init() returned " << thread_status << std::endl;
     QDP_abort(1);
   }
 #else 
 #ifdef QDP_USE_OMP_THREADS
-  cout << "QDP uses OpenMP threading. We have " << qdpNumThreads() << " threads \n";
+  std::cout << "QDP uses OpenMP threading. We have " << qdpNumThreads() << " threads \n";
 #endif
 #endif
 
@@ -57,13 +57,13 @@ void QDP_initialize(int *argc, char ***argv)
 // Alloc space for reductions
   ThreadReductions::norm2_results = new REAL64 [ qdpNumThreads() ];
   if( ThreadReductions::norm2_results == 0x0 ) { 
-    cout << "Failure... space for norm2 results failed "  << endl;
+    std::cout << "Failure... space for norm2 results failed "  << std::endl;
     QDP_abort(1);
   }
 
   ThreadReductions::innerProd_results = new REAL64 [ 2*qdpNumThreads() ];
   if( ThreadReductions::innerProd_results == 0x0 ) { 
-    cout << "Failure... space for innerProd results failed "  << endl;
+    std::cout << "Failure... space for innerProd results failed "  << std::endl;
     QDP_abort(1);
   }
 
@@ -144,7 +144,7 @@ void QDP_finalize()
  
 
     // Finalize threads
-    cout << "QDP use qmt threading: Finalizing threads" << endl;
+    std::cout << "QDP use qmt threading: Finalizing threads" << std::endl;
     qmt_finalize();
 #endif 
 

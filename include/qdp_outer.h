@@ -140,7 +140,7 @@ private:
 /*! Treat all istreams here like all nodes can read. To use specialized ones
  *  that can broadcast, use TextReader */
 template<class T>
-istream& operator>>(istream& s, OScalar<T>& d)
+std::istream& operator>>(std::istream& s, OScalar<T>& d)
 {
   return s >> d.elem();
 }
@@ -150,14 +150,14 @@ istream& operator>>(istream& s, OScalar<T>& d)
  *  that can broadcast, use TextReader */
 template<class T>
 inline
-ostream& operator<<(ostream& s, const OScalar<T>& d)
+std::ostream& operator<<(std::ostream& s, const OScalar<T>& d)
 {
   return s << d.elem();
 }
 
 //! Text output
 template<class RHS, class T1>
-ostream& operator<<(ostream& s, const QDPExpr<RHS, OScalar<T1> >& l)
+std::ostream& operator<<(std::ostream& s, const QDPExpr<RHS, OScalar<T1> >& l)
 {
   typedef OScalar<T1> C1;
   return s << C1(l);
@@ -214,7 +214,7 @@ XMLWriter& operator<<(XMLWriter& xml, const OScalar<T>& d)
 /*! Supports also having an inner grid */
 template<class T>
 inline
-void read(XMLReader& xml, const string& path, OScalar<T>& d)
+void read(XMLReader& xml, const std::string& path, OScalar<T>& d)
 {
   read(xml, path, d.elem());
 }
@@ -419,7 +419,7 @@ private:
       }
       catch(std::bad_alloc) 
       {
-	QDPIO::cerr << "Allocation failed in OLattice alloc_mem" << endl;
+	QDPIO::cerr << "Allocation failed in OLattice alloc_mem" << std::endl;
 	QDP::Allocator::theQDPAllocator::Instance().dump();
 	QDP_abort(1);
       }

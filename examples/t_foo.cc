@@ -10,8 +10,6 @@
 #include "qdp.h"
 #include "qdp_iogauge.h"
 
-//using namespace std;
-
 using namespace QDP;
 
 

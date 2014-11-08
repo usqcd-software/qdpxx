@@ -4,7 +4,6 @@
 #include <cmath>
 
 using namespace QDP;
-using namespace std;
 using namespace Assertions;
 
 
@@ -211,10 +210,10 @@ testCMul::run()
   DComplex z2=cmplx(Real(z_v.d[0]), Real(z_v.d[1]));
 
   double realdiff = fabs(toDouble( real(z2-z1) ));
-  QDPIO::cout << endl << "Real diff = " << realdiff << endl;
+  QDPIO::cout << std::endl << "Real diff = " << realdiff << std::endl;
 
   double imagdiff = fabs(toDouble( imag(z2-z1) ));
-  QDPIO::cout << "Imag diff = " << imagdiff << endl;
+  QDPIO::cout << "Imag diff = " << imagdiff << std::endl;
 
   assertion( realdiff < 1.0e-14) ;
   assertion( imagdiff < 1.0e-14) ;
@@ -249,10 +248,10 @@ testCMadd::run()
   DComplex z2=cmplx(Real(z_v.d[0]), Real(z_v.d[1]));
 
   double realdiff = fabs(toDouble( real(z2-z1) ));
-  QDPIO::cout << endl << "Real diff = " << realdiff << endl;
+  QDPIO::cout << std::endl << "Real diff = " << realdiff << std::endl;
 
   double imagdiff = fabs(toDouble( imag(z2-z1) ));
-  QDPIO::cout << "Imag diff = " << imagdiff << endl;
+  QDPIO::cout << "Imag diff = " << imagdiff << std::endl;
 
   assertion( realdiff < 1.0e-14) ;
   assertion( imagdiff < 1.0e-14) ;
@@ -281,10 +280,10 @@ testConjMul::run()
   DComplex z2=cmplx(Real(z_v.d[0]), Real(z_v.d[1]));
 
   double realdiff = fabs(toDouble( real(z2-z1) ));
-  QDPIO::cout << endl << "Real diff = " << realdiff << endl;
+  QDPIO::cout << std::endl << "Real diff = " << realdiff << std::endl;
 
   double imagdiff = fabs(toDouble( imag(z2-z1) ));
-  QDPIO::cout << "Imag diff = " << imagdiff << endl;
+  QDPIO::cout << "Imag diff = " << imagdiff << std::endl;
 
   assertion( realdiff < 1.0e-14) ;
   assertion( imagdiff < 1.0e-14) ;
@@ -319,10 +318,10 @@ testConjMadd::run()
   DComplex z2=cmplx(Real(z_v.d[0]), Real(z_v.d[1]));
 
   double realdiff = fabs(toDouble( real(z2-z1) ));
-  QDPIO::cout << endl << "Real diff = " << realdiff << endl;
+  QDPIO::cout << std::endl << "Real diff = " << realdiff << std::endl;
 
   double imagdiff = fabs(toDouble( imag(z2-z1) ));
-  QDPIO::cout << "Imag diff = " << imagdiff << endl;
+  QDPIO::cout << "Imag diff = " << imagdiff << std::endl;
 
   assertion( realdiff < 1.0e-14) ;
   assertion( imagdiff < 1.0e-14) ;
@@ -350,10 +349,10 @@ testCCMul::run()
 
   DComplex z2=cmplx(Real(z_v.d[0]), Real(z_v.d[1]));
   double realdiff = fabs(toDouble( real(z2-z1) ));
-  QDPIO::cout << endl << "Real diff = " << realdiff << endl;
+  QDPIO::cout << std::endl << "Real diff = " << realdiff << std::endl;
 
   double imagdiff = fabs(toDouble( imag(z2-z1) ));
-  QDPIO::cout << "Imag diff = " << imagdiff << endl;
+  QDPIO::cout << "Imag diff = " << imagdiff << std::endl;
 
   assertion( realdiff < 1.0e-14) ;
   assertion( imagdiff < 1.0e-14) ;
@@ -388,10 +387,10 @@ testCCMadd::run()
   DComplex z2=cmplx(Real(z_v.d[0]), Real(z_v.d[1]));
 
   double realdiff = fabs(toDouble( real(z2-z1) ));
-  QDPIO::cout << endl << "Real diff = " << realdiff << endl;
+  QDPIO::cout << std::endl << "Real diff = " << realdiff << std::endl;
 
   double imagdiff = fabs(toDouble( imag(z2-z1) ));
-  QDPIO::cout << "Imag diff = " << imagdiff << endl;
+  QDPIO::cout << "Imag diff = " << imagdiff << std::endl;
 
   assertion( realdiff < 1.0e-14) ;
   assertion( imagdiff < 1.0e-14) ;

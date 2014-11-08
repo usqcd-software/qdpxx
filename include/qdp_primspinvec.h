@@ -104,7 +104,7 @@ private:
 //! Stream input
 template<class T, int N>  
 inline
-istream& operator>>(istream& s, PSpinVector<T,N>& d)
+std::istream& operator>>(std::istream& s, PSpinVector<T,N>& d)
 {
   for(int i=0; i < N; ++i)
     s >> d.elem(i);
@@ -124,7 +124,7 @@ StandardInputStream& operator>>(StandardInputStream& s, PSpinVector<T,N>& d)
 //! Stream output
 template<class T, int N>
 inline
-ostream& operator<<(ostream& s, const PSpinVector<T,N>& d)
+std::ostream& operator<<(std::ostream& s, const PSpinVector<T,N>& d)
 {
   for(int i=0; i < N; ++i)
     s << d.elem(i);

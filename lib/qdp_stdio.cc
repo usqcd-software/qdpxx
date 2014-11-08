@@ -174,7 +174,7 @@ StandardOutputStream& StandardOutputStream::operator<<(std::ostream& (*op)(std::
 }
 
 
-StandardOutputStream& StandardOutputStream::operator<<(const string& output)
+StandardOutputStream& StandardOutputStream::operator<<(const std::string& output)
 {
   if (Layout::primaryNode())
     getOstream() << output;
@@ -234,7 +234,7 @@ StandardOutputStream& StandardOutputStream::operator<<(float output)
 {
   if (Layout::primaryNode())
   {
-    streamsize initPrec = getOstream().precision();
+    std::streamsize initPrec = getOstream().precision();
     getOstream().precision(7);
     getOstream() << output;
     getOstream().precision(initPrec);
@@ -247,7 +247,7 @@ StandardOutputStream& StandardOutputStream::operator<<(double output)
 {
   if (Layout::primaryNode())
   {
-    streamsize initPrec = getOstream().precision();
+    std::streamsize initPrec = getOstream().precision();
     getOstream().precision(15);
     getOstream() << output;
     getOstream().precision(initPrec);

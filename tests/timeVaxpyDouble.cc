@@ -2,8 +2,6 @@
 #include <cmath>
 #include "timeVaxpyDouble.h"
 
-using namespace std;
-
 static double N_SECS=10;
 static double T_SECS=30;
 

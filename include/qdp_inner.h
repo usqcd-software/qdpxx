@@ -168,7 +168,7 @@ private:
 //! Ascii input
 template<class T>
 inline
-istream& operator>>(istream& s, IScalar<T>& d)
+std::istream& operator>>(std::istream& s, IScalar<T>& d)
 {
   s >> d.elem();
   return s;
@@ -184,7 +184,7 @@ StandardInputStream& operator>>(StandardInputStream& is, IScalar<T>& d)
 //! Ascii output
 template<class T> 
 inline  
-ostream& operator<<(ostream& s, const IScalar<T>& d)
+std::ostream& operator<<(std::ostream& s, const IScalar<T>& d)
 {
   return s << d.elem();
 }
@@ -225,7 +225,7 @@ XMLWriter& operator<<(XMLWriter& xml, const IScalar<T>& d)
 //! XML input
 template<class T>
 inline
-void read(XMLReader& xml, const string& path, IScalar<T>& d)
+void read(XMLReader& xml, const std::string& path, IScalar<T>& d)
 {
   read(xml, path, d.elem());
 }
@@ -588,7 +588,7 @@ private:
 //! Stream input
 template<class T, int N>
 inline
-istream& operator>>(istream& s, ILattice<T,N>& d)
+std::istream& operator>>(std::istream& s, ILattice<T,N>& d)
 {
   for(int i=0; i < N; ++i)
     s >> d.elem(i);
@@ -599,7 +599,7 @@ istream& operator>>(istream& s, ILattice<T,N>& d)
 //! Stream output
 template<class T, int N>
 inline
-ostream& operator<<(ostream& s, const ILattice<T,N>& d)
+std::ostream& operator<<(std::ostream& s, const ILattice<T,N>& d)
 {
   for(int i=0; i < N; ++i)
     s << d.elem(i) << "\n";

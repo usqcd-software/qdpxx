@@ -85,11 +85,12 @@
 #include <ostream>
 #include <iostream>
 
-
-using namespace std;   // I do not like this - fix later
-
+#if 1
+// NOTE: (master) chroma will compile with this turned off, but holding back.
+using namespace std;
 using std::iostream;
 using std::ostream;
+#endif
 // END OF YUKKINESS
 
 

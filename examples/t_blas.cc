@@ -9,7 +9,6 @@
 #include "qdp.h"
 #include <blas1.h>
 
-using namespace std;
 using namespace QDP;
 
 int main(int argc, char *argv[])

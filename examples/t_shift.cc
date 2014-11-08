@@ -10,8 +10,6 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-//using namespace std;
-
 using namespace QDP;
 
 
@@ -27,7 +25,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  QDPIO::cout << "DONE STARTUP" << endl << flush;
+  QDPIO::cout << "DONE STARTUP" << std::endl;
 #if 1
   {
     XMLFileWriter xml("t_shift.xml");

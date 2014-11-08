@@ -632,7 +632,7 @@ namespace QDP {
 			const int mynode=Layout::nodeNumber();
 			const int nodeSites = Layout::sitesOnNode();
 			size_t tot_size = obj_size*nodeSites;
-			REAL* buf = new(nothrow) REAL[tot_size];
+			REAL* buf = new(std::nothrow) REAL[tot_size];
 			if( buf == 0x0 ) {
 				HDF5_error_exit("Unable to allocate buf\n");
 			}
@@ -716,7 +716,7 @@ namespace QDP {
 			const int mynode=Layout::nodeNumber();
 			const int nodeSites = Layout::sitesOnNode();
 			size_t tot_size = obj_size*arr_size*nodeSites;
-			REAL* buf = new(nothrow) REAL[tot_size];
+			REAL* buf = new(std::nothrow) REAL[tot_size];
 			if( buf == 0x0 ) {
 				HDF5_error_exit("Unable to allocate buf!");
 			}

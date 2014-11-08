@@ -15,7 +15,7 @@ int main(int argc, char **argv)
   QDPIO::cout << "Volume= { " << Layout::lattSize()[0]
 	      << " , " << Layout::lattSize()[1]
 	      << " , " << Layout::lattSize()[2]
-	      << " , " << Layout::lattSize()[3] << " } " << endl;
+	      << " , " << Layout::lattSize()[3] << " } " << std::endl;
 
   
   tests.addTest(new testCMul(), "testCMul" );

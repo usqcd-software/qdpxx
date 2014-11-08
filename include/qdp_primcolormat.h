@@ -536,7 +536,7 @@ colorContract(const PColorMatrix<T1,1>& s1, const PColorMatrix<T2,1>& s2, const 
   typename TrinaryReturn<PColorMatrix<T1,1>, PColorMatrix<T2,1>, PColorMatrix<T3,1>, FnColorContract>::Type_t  d;
 
   // not written 
-  QDPIO::cerr << __func__ << ": not written for Nc=1" << endl;
+  QDPIO::cerr << __func__ << ": not written for Nc=1" << std::endl;
   QDP_abort(1);
 
   return d ; 
@@ -560,7 +560,7 @@ colorContract(const PColorMatrix<T1,2>& s1, const PColorMatrix<T2,2>& s2, const 
   typename TrinaryReturn<PColorMatrix<T1,2>, PColorMatrix<T2,2>, PColorMatrix<T3,2>, FnColorContract>::Type_t  d;
 
   // not written 
-  QDPIO::cerr << __func__ << ": not written for Nc=2" << endl;
+  QDPIO::cerr << __func__ << ": not written for Nc=2" << std::endl;
   QDP_abort(1);
 
   return d ; 
@@ -584,7 +584,7 @@ colorContract(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2, const 
   typename TrinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, PColorMatrix<T3,4>, FnColorContract>::Type_t  d;
 
   // not written 
-  QDPIO::cerr << __func__ << ": not written for Nc=4" << endl;
+  QDPIO::cerr << __func__ << ": not written for Nc=4" << std::endl;
   QDP_abort(1);
 
   return d ; 
@@ -704,7 +704,7 @@ quarkContractXX(const PColorMatrix<T1,1>& s1, const PColorMatrix<T2,1>& s2)
   typename BinaryReturn<PColorMatrix<T1,1>, PColorMatrix<T2,1>, FnQuarkContractXX>::Type_t  d;
 
   // not yet written 
-  QDPIO::cerr << __func__ << ": not written for Nc=1" << endl;
+  QDPIO::cerr << __func__ << ": not written for Nc=1" << std::endl;
   QDP_abort(1);
 
   return d ; 
@@ -730,7 +730,7 @@ quarkContractXX(const PColorMatrix<T1,2>& s1, const PColorMatrix<T2,2>& s2)
   typename BinaryReturn<PColorMatrix<T1,2>, PColorMatrix<T2,2>, FnQuarkContractXX>::Type_t  d;
 
   // not yet written 
-  QDPIO::cerr << __func__ << ": not written for Nc=2" << endl;
+  QDPIO::cerr << __func__ << ": not written for Nc=2" << std::endl;
   QDP_abort(1);
 
   return d ; 
@@ -756,7 +756,7 @@ quarkContractXX(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2)
   typename BinaryReturn<PColorMatrix<T1,4>, PColorMatrix<T2,4>, FnQuarkContractXX>::Type_t  d;
 
   // not yet written 
-  QDPIO::cerr << __func__ << ": not written for Nc=4" << endl;
+  QDPIO::cerr << __func__ << ": not written for Nc=4" << std::endl;
   QDP_abort(1);
 
   return d ; 

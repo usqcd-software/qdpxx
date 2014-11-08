@@ -70,8 +70,8 @@ namespace QDP
       double gflops_overall = mflops_overall/(double)(1000);
       double tflops_overall = gflops_overall/(double)(1000);
 
-      QDPIO::cout <<"QDP:FlopCount:" << name << " Performance/CPU: t=" << time_in_seconds << "(s) Flops=" << (double)count << " => " << mflops_per_cpu << " Mflops/cpu." << endl;
-      QDPIO::cout << "QDP:FlopCount:"  << name <<" Total performance:  " << mflops_overall << " Mflops = " << gflops_overall << " Gflops = " << tflops_overall << " Tflops" << endl;
+      QDPIO::cout <<"QDP:FlopCount:" << name << " Performance/CPU: t=" << time_in_seconds << "(s) Flops=" << (double)count << " => " << mflops_per_cpu << " Mflops/cpu." << std::endl;
+      QDPIO::cout << "QDP:FlopCount:"  << name <<" Total performance:  " << mflops_overall << " Mflops = " << gflops_overall << " Gflops = " << tflops_overall << " Tflops" << std::endl;
     }
 
   private:

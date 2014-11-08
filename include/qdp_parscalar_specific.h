@@ -1886,7 +1886,7 @@ public:
 
 	// Eventually these declarations should move into d - the return object
 			typedef T1 * T1ptr;
-			T1 **dest = new(nothrow) T1ptr[nodeSites];
+			T1 **dest = new(std::nothrow) T1ptr[nodeSites];
 			if( dest == 0x0 ) { 
 				QDP_error_exit("Unable to new T1ptr in OLattice<T1>::operator()\n");
 			}

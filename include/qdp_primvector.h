@@ -135,7 +135,7 @@ private:
 //! Stream input
 template<class T, int N, template<class,int> class C>  
 inline
-istream& operator>>(istream& s, PVector<T,N,C>& d)
+std::istream& operator>>(std::istream& s, PVector<T,N,C>& d)
 {
   for(int i=0; i < N; ++i)
     s >> d.elem(i);
@@ -156,7 +156,7 @@ StandardInputStream& operator>>(StandardInputStream& s, PVector<T,N,C>& d)
 //! Stream output
 template<class T, int N, template<class,int> class C>  
 inline
-ostream& operator<<(ostream& s, const PVector<T,N,C>& d)
+std::ostream& operator<<(std::ostream& s, const PVector<T,N,C>& d)
 {
   for(int i=0; i < N; ++i)
     s << d.elem(i);

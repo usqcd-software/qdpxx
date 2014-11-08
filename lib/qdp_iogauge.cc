@@ -68,7 +68,7 @@ namespace
 
 //! Write a multi1d array
 template<class T>
-ostream& operator<<(ostream& s, const multi1d<T>& d)
+std::ostream& operator<<(std::ostream& s, const multi1d<T>& d)
 {
   s << d[0];
   for(int i=1; i < d.size(); ++i)
@@ -101,7 +101,7 @@ ArchivGauge_t::ArchivGauge_t()
   {
     char *tmp = ctime(&now);
     int date_size = strlen(tmp);
-    char *datetime = new(nothrow) char[date_size+1];
+    char *datetime = new(std::nothrow) char[date_size+1];
     if( datetime == 0x0 ) { 
       QDP_error_exit("Unable to allocate datetime in qdp_iogauge.cc\n");
     }
@@ -122,7 +122,7 @@ ArchivGauge_t::ArchivGauge_t()
   archive_date  = creation_date;
 
   {
-    ostringstream s;
+    std::ostringstream s;
     s << "X" << now;
     ensemble_id = s.str();
   }
@@ -133,7 +133,7 @@ ArchivGauge_t::ArchivGauge_t()
 
 
 //! Source header read
-void read(XMLReader& xml, const string& path, ArchivGauge_t& header)
+void read(XMLReader& xml, const std::string& path, ArchivGauge_t& header)
 {
   XMLReader paramtop(xml, path);
 
@@ -153,16 +153,16 @@ void read(XMLReader& xml, const string& path, ArchivGauge_t& header)
 
   // read a hex as a string and then convert
   {
-    string chk;
+    std::string chk;
     read(paramtop, "checksum", chk);
-    istringstream s(chk);
+    std::istringstream s(chk);
     s >> header.checksum;
   }
 }
 
 
 //! Source header writer
-void write(XMLWriter& xml, const string& path, const ArchivGauge_t& header)
+void write(XMLWriter& xml, const std::string& path, const ArchivGauge_t& header)
 {
   push(xml, path);
 
@@ -182,7 +182,7 @@ void write(XMLWriter& xml, const string& path, const ArchivGauge_t& header)
 
   // write as a hex 
   {
-    ostringstream s;
+    std::ostringstream s;
     s.setf(std::ios_base::hex, std::ios_base::basefield);
     s << header.checksum;
     write(xml, "checksum", s.str());
@@ -213,7 +213,7 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
 {
   if (Nd != 4)
   {
-    QDPIO::cerr << "Expecting Nd == 4" << endl;
+    QDPIO::cerr << "Expecting Nd == 4" << std::endl;
     QDP_abort(1);
   }
 
@@ -223,16 +223,16 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
   header.nrow.resize(Nd);
 
   /* For now, read and throw away the header */
-  string line;
+  std::string line;
 
-  QDPIO::cout << "Start of header" << endl;
+  QDPIO::cout << "Start of header" << std::endl;
 
   cfg_in.read(line, max_line_length);
-  QDPIO::cout << line << endl;
+  QDPIO::cout << line << std::endl;
   
-  if (line != string("BEGIN_HEADER"))
+  if (line != std::string("BEGIN_HEADER"))
   {
-    QDPIO::cerr << "Missing BEGIN_HEADER" << endl;
+    QDPIO::cerr << "Missing BEGIN_HEADER" << std::endl;
     QDP_abort(1);
   }
 
@@ -246,81 +246,81 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
   while (1)
   {
     cfg_in.read(line, max_line_length);
-    QDPIO::cout << line << endl;
+    QDPIO::cout << line << std::endl;
 
-    if (line == string("END_HEADER")) break;
+    if (line == std::string("END_HEADER")) break;
 
     int itmp, dd;
-    string::size_type off;
+    std::string::size_type off;
 
     // Snarf the first token
     char tokenn[max_line_length];
     if ( sscanf(line.c_str(), "%s", tokenn) != 1 ) 
     {
       QDPIO::cerr << __func__ 
-		  << ": incorrectly parsed header line=XX" << line << "XX" << endl;
+		  << ": incorrectly parsed header line=XX" << line << "XX" << std::endl;
       QDP_abort(1);
     }
-    string token = tokenn;
+    std::string token = tokenn;
 
     // Scan for first non-space char after "="
     off = line.find('=');
-    if ( off == string::npos )
+    if ( off == std::string::npos )
     {
       QDPIO::cerr << __func__ 
-		  << ": incorrectly parsed header line=XX" << line << "XX" << endl;
+		  << ": incorrectly parsed header line=XX" << line << "XX" << std::endl;
       QDP_abort(1);
     }
     off = line.find_first_not_of(' ', off+1);
-    string value;
-    if ( off == string::npos )
+    std::string value;
+    if ( off == std::string::npos )
     {
 //      QDPIO::cerr << __func__ 
-//		  << ": incorrectly parsed header line=XX" << line << "XX" << endl;
+//		  << ": incorrectly parsed header line=XX" << line << "XX" << std::endl;
 //      QDP_abort(1);
       value = "";
     }
     else
     {
       value = line.substr(off, line.length()-off+1);
-//    QDPIO::cout << "value = XX" << value << "XX" << endl;
+//    QDPIO::cout << "value = XX" << value << "XX" << std::endl;
     }
 
 
     // Scan for the datatype then scan for it
-    if ( token == string("DATATYPE") )
+    if ( token == std::string("DATATYPE") )
     {
       /* Check if it is uncompressed */
-      if ( value == string("4D_SU3_GAUGE_3x3") )
+      if ( value == std::string("4D_SU3_GAUGE_3x3") )
       {
 	header.mat_size=18;   /* Uncompressed matrix */
 	if (Nc != 3)
 	{
-	  QDPIO::cerr << __func__ << ": expecting Nc == 3" << endl;
+	  QDPIO::cerr << __func__ << ": expecting Nc == 3" << std::endl;
 	  QDP_abort(1);
 	}
       }
-      else if ( value == string("4D_SU3_GAUGE") )
+      else if ( value == std::string("4D_SU3_GAUGE") )
       {
 	header.mat_size=12;   /* Compressed matrix */
 	if (Nc != 3)
 	{
-	  QDPIO::cerr << __func__ << ": expecting Nc == 3" << endl;
+	  QDPIO::cerr << __func__ << ": expecting Nc == 3" << std::endl;
 	  QDP_abort(1);
 	}
       }
-      else if ( value == string("4D_SU4_GAUGE") )
+      else if ( value == std::string("4D_SU4_GAUGE") )
       {
 	if (Nc != 4)
 	{
-	  QDPIO::cerr << __func__ << ": expecting Nc == 4" << endl;
+	  QDPIO::cerr << __func__ << ": expecting Nc == 4" << std::endl;
 	  QDP_abort(1);
 	}
       }
       else
       {
 	QDPIO::cerr << __func__ 
-		    << ": unknown gauge type = XX" << value << "XX" << endl;
+		    << ": unknown gauge type = XX" << value << "XX" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -353,43 +353,43 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
     }
 
     // Scan for the ensemble label
-    if ( token == string("ENSEMBLE_LABEL") )
+    if ( token == std::string("ENSEMBLE_LABEL") )
     {
       header.ensemble_label = value;
     }
 
     // Scan for the ensemble id
-    if ( token == string("ENSEMBLE_ID") )
+    if ( token == std::string("ENSEMBLE_ID") )
     {
       header.ensemble_id = value;
     }
 
     // Scan for the creator
-    if ( token == string("CREATOR") )
+    if ( token == std::string("CREATOR") )
     {
       header.creator = value;
     }
 
     // Scan for the creator machine
-    if ( token == string("CREATOR_MACHINE") )
+    if ( token == std::string("CREATOR_MACHINE") )
     {
       header.creator_hardware = value;
     }
 
     // Scan for the creator hardware
-    if ( token == string("CREATOR_HARDWARE") )
+    if ( token == std::string("CREATOR_HARDWARE") )
     {
       header.creator_hardware = value;
     }
 
     // Scan for the creation date
-    if ( token == string("CREATION_DATE") )
+    if ( token == std::string("CREATION_DATE") )
     {
       header.creation_date = value;
     }
 
     // Scan for the archive date
-    if ( token == string("ARCHIVE_DATE") )
+    if ( token == std::string("ARCHIVE_DATE") )
     {
       header.archive_date = value;
     }
@@ -400,7 +400,7 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
       /* Found a lat size */
       if (dd < 1 || dd > Nd)
       {
-	QDPIO::cerr << __func__ << ": dimension number out of bounds" << endl;
+	QDPIO::cerr << __func__ << ": dimension number out of bounds" << std::endl;
 	QDP_abort(1);
       }
 
@@ -414,45 +414,45 @@ static void readArchivHeader(BinaryReader& cfg_in, ArchivGauge_t& header)
       /* Found a lat size */
       if (dd < 1 || dd > Nd)
       {
-	QDPIO::cerr << __func__ << ": dimension number out of bounds" << endl;
+	QDPIO::cerr << __func__ << ": dimension number out of bounds" << std::endl;
 	QDP_abort(1);
       }
       
       header.boundary[dd-1] = itmp;
     }
 
-    if( token == string("FLOATING_POINT") )
+    if( token == std::string("FLOATING_POINT") )
     {
-      if( value == string("IEEE32BIG") || value == string("IEEE32") ) 
+      if( value == std::string("IEEE32BIG") || value == std::string("IEEE32") ) 
       {
 	header.float_size=4;
       }
-      else if( value == string("IEEE64BIG") )
+      else if( value == std::string("IEEE64BIG") )
       {
 	header.float_size=8;
       }
       else 
       {
 	QDPIO::cerr << __func__ 
-		    << ": unknown floating point type = XX" << value << "XX" << endl;
+		    << ": unknown floating point type = XX" << value << "XX" << std::endl;
 	QDP_abort(1);
       }
     }
   }
 
-  QDPIO::cout << "End of header" << endl;
+  QDPIO::cout << "End of header" << std::endl;
 
   // Sanity check
   if (lat_size_cnt != Nd)
   {
-    QDPIO::cerr << __func__ << ": did not find all the lattice sizes" << endl;
+    QDPIO::cerr << __func__ << ": did not find all the lattice sizes" << std::endl;
     QDP_abort(1);
   }
 
   for(int dd=0; dd < Nd; ++dd)
     if (header.nrow[dd] != Layout::lattSize()[dd])
     {
-      QDPIO::cerr << __func__ << ": archive lattice size does not agree with current size" << endl;
+      QDPIO::cerr << __func__ << ": archive lattice size does not agree with current size" << std::endl;
       QDP_abort(1);
     }
 }
@@ -494,7 +494,7 @@ void readArchiv(BinaryReader& cfg_in, multi1d<LatticeColorMatrix>& u,
  * \param u          gauge configuration ( Modify )
  * \param file       path ( Read )
  */    
-void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& file)
+void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const std::string& file)
 {
   BinaryFileReader cfg_in(file);
 
@@ -506,7 +506,7 @@ void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const str
   if (checksum != header.checksum)
   {
     QDPIO::cerr << __func__ << ": checksum mismatch: new=" << checksum 
-		<< "  header value= " << header.checksum << endl;
+		<< "  header value= " << header.checksum << std::endl;
     QDP_abort(1);
   }
 
@@ -515,14 +515,14 @@ void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const str
   if (toBool(fabs(header.w_plaq - w_plaq) > tol))
   {
     QDPIO::cerr << __func__ << ": plaquette out of bounds: new=" << w_plaq 
-		<< "  header value= " << header.w_plaq << endl;
+		<< "  header value= " << header.w_plaq << std::endl;
     QDP_abort(1);
   }
 
   if (toBool(fabs(header.link - link) > tol))
   {
     QDPIO::cerr << __func__ << ": link out of bounds: new=" << link 
-		<< "  header value= " << header.link << endl;
+		<< "  header value= " << header.link << std::endl;
     QDP_abort(1);
   }
 
@@ -540,7 +540,7 @@ void readArchiv(ArchivGauge_t& header, multi1d<LatticeColorMatrix>& u, const str
  * \param cfg_file   path ( Read )
  */    
 
-void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 {
   ArchivGauge_t header;
 
@@ -556,9 +556,9 @@ void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cf
   {
     xml.open(xml_buf);
   }
-  catch(const string& e)
+  catch(const std::string& e)
   { 
-    QDPIO:: cerr << "Error in readArchiv: " << e << endl;
+    QDPIO:: cerr << "Error in readArchiv: " << e << std::endl;
     QDP_abort(1);
   }
 }
@@ -573,7 +573,7 @@ void readArchiv(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cf
  * \param u          gauge configuration ( Modify )
  * \param cfg_file   path ( Read )
  */    
-void readArchiv(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void readArchiv(multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 {
   ArchivGauge_t header;
   readArchiv(header, u, cfg_file); // throw away the header
@@ -600,23 +600,23 @@ static void writeArchivHeader(BinaryWriter& cfg_out, const ArchivGauge_t& header
 {
   if (Nd != 4)
   {
-    QDPIO::cerr << "Expecting Nd == 4" << endl;
+    QDPIO::cerr << "Expecting Nd == 4" << std::endl;
     QDP_abort(1);
   }
 
   if (Nc != 3)
   {
-    QDPIO::cerr << "Expecting Nc == 3" << endl;
+    QDPIO::cerr << "Expecting Nc == 3" << std::endl;
     QDP_abort(1);
   }
 
-  ostringstream head;
+  std::ostringstream head;
 
   head << "BEGIN_HEADER\n";
 
   head << "CHECKSUM = ";
   head.setf(std::ios_base::hex, std::ios_base::basefield);
-  head << header.checksum << endl;
+  head << header.checksum << std::endl;
   head.setf(std::ios_base::dec, std::ios_base::basefield);
   head << "LINK_TRACE = " << header.link << "\n"
        << "PLAQUETTE = " << header.w_plaq << "\n";
@@ -688,7 +688,7 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
  * \param u          gauge configuration ( Modify )
  * \param file       path ( Read )
  */    
-void writeArchiv(ArchivGauge_t& header, const multi1d<LatticeColorMatrix>& u, const string& file)
+void writeArchiv(ArchivGauge_t& header, const multi1d<LatticeColorMatrix>& u, const std::string& file)
 {
   Double w_plaq, link;
   mesplq(w_plaq, link, u);
@@ -715,7 +715,7 @@ void writeArchiv(ArchivGauge_t& header, const multi1d<LatticeColorMatrix>& u, co
  */    
 
 void writeArchiv(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u, 
-		 const string& cfg_file)
+		 const std::string& cfg_file)
 {
   ArchivGauge_t header;
   Double w_plaq, link;
@@ -740,7 +740,7 @@ void writeArchiv(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u,
  */    
 
 void writeArchiv(const multi1d<LatticeColorMatrix>& u, 
-		 const string& cfg_file)
+		 const std::string& cfg_file)
 {
   ArchivGauge_t header;
   writeArchiv(header, u, cfg_file);

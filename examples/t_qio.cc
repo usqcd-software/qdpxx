@@ -23,7 +23,7 @@ int main(int argc, char **argv)
   push(xml_out, "t_qio");
 
   QDP_serialparallel_t serpar = QDPIO_SERIAL;
-  string test_file;
+  std::string test_file;
 
   // First test binary buffer writer in SINGLEFILE
   {
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
       QDPFileWriter to_file(file_xml,test_file,QDPIO_SINGLEFILE,serpar,QDPIO_OPEN);
       write(to_file, record_xml, record_bin);
 
-      QDPIO::cout << "BufferWriter test: d= " << d << "  rob=" << rob << "  checkSum= " << check << endl;
+      QDPIO::cout << "BufferWriter test: d= " << d << "  rob=" << rob << "  checkSum= " << check << std::endl;
         }
   }
 
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
     record_bin >> rob;
     QDPUtil::n_uint32_t check;
     record_bin >> check;
-    QDPIO::cout << "BufferReader test: d= " << d << "  rob=" << rob << "  checkSum= " << check << endl;
+    QDPIO::cout << "BufferReader test: d= " << d << "  rob=" << rob << "  checkSum= " << check << std::endl;
   }
 
 
@@ -98,30 +98,30 @@ int main(int argc, char **argv)
     case 0:
       volfmt = QDPIO_SINGLEFILE;
       test_file = "t_qio_single.lime";
-      QDPIO::cout << "\n\n\n\n***************SINGLEFILE tests*************\n" << endl;
+      QDPIO::cout << "\n\n\n\n***************SINGLEFILE tests*************\n" << std::endl;
       push(xml_out, "Singlefile");
       break;
 
     case 1:
       volfmt = QDPIO_MULTIFILE; 
       test_file = "t_qio_multi.lime";
-      QDPIO::cout << "\n\n***************MULTIFILE tests*************\n" << endl;
+      QDPIO::cout << "\n\n***************MULTIFILE tests*************\n" << std::endl;
       push(xml_out, "Multifile");
       break;
 
     case 2:
       volfmt = QDPIO_PARTFILE; 
       test_file = "t_qio_part.lime";
-      QDPIO::cout << "\n\n***************PARTFILE tests*************\n" << endl;
+      QDPIO::cout << "\n\n***************PARTFILE tests*************\n" << std::endl;
       push(xml_out, "Partfile");
       break;
 
     default:
-      QDPIO::cerr << "something wrong here" << endl;
+      QDPIO::cerr << "something wrong here" << std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "\n\n***************TEST WRITING*************\n" << endl;
+    QDPIO::cout << "\n\n***************TEST WRITING*************\n" << std::endl;
 
     {
       push(xml_out, "Writing");
@@ -168,7 +168,7 @@ int main(int argc, char **argv)
         write(to,record_xml,ff);
 	write(xml_out, "first_to.bad", to.bad());
 
-        QDPIO::cout << "First record test: fsum=" << fsum << endl;
+        QDPIO::cout << "First record test: fsum=" << fsum << std::endl;
         push(xml_out, "Record1");
         write(xml_out, "record_xml", record_xml);
         write(xml_out, "fsum", fsum);
@@ -185,7 +185,7 @@ int main(int argc, char **argv)
 
 	Real atest = Real(innerProductReal(a,shift(a,FORWARD,0)));
 	QDPIO::cout << "Second record test: innerProduct(a,shift(a,0))=" 
-		    << atest << endl;
+		    << atest << std::endl;
 	push(xml_out, "Record2");
 	write(xml_out, "record_xml", record_xml);
 	write(xml_out, "atest", atest);
@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 	
 	Real btest = Real(innerProductReal(b,shift(b,FORWARD,0)));
 	QDPIO::cout << "Third record test: innerProduct(b,shift(b,0))=" 
-		    << btest << endl;
+		    << btest << std::endl;
 	push(xml_out, "Record3");
 	write(xml_out, "record_xml", record_xml);
 	write(xml_out, "btest", btest);
@@ -218,7 +218,7 @@ int main(int argc, char **argv)
 	  fsum += innerProductReal(c[i],shift(c[i],FORWARD,0));
         }
 
-	QDPIO::cout << "Fourth record test is a lattice Color Matrix" << endl;
+	QDPIO::cout << "Fourth record test is a lattice Color Matrix" << std::endl;
 	StopWatch swatch;
 	swatch.reset();
 	swatch.start();
@@ -227,13 +227,13 @@ int main(int argc, char **argv)
 	double secs = swatch.getTimeInSeconds();
 	double bytes = Layout::vol()*Nd*Nc*Nc*2*sizeof(REAL);
 	double Mbytes = bytes/(double)(1024*1024);
-	QDPIO::cout << "Wrote " << Mbytes << " Mbytes in " << secs << " seconds " << endl;
-	QDPIO::cout << "Transfer Rate: " << Mbytes/secs << " Mbytes/s" << endl;
-	QDPIO::cout << flush;
+	QDPIO::cout << "Wrote " << Mbytes << " Mbytes in " << secs << " seconds " << std::endl;
+	QDPIO::cout << "Transfer Rate: " << Mbytes/secs << " Mbytes/s" << std::endl;
+	QDPIO::cout << std::flush;
 
 	write(xml_out, "fourth_to.bad", to.bad());
 
-        QDPIO::cout << "Fourth record test: fsum=" << fsum << endl;
+        QDPIO::cout << "Fourth record test: fsum=" << fsum << std::endl;
         push(xml_out, "Record4");
         write(xml_out, "record_xml", record_xml);
         write(xml_out, "fsum", fsum);
@@ -247,7 +247,7 @@ int main(int argc, char **argv)
       pop(xml_out);   // writing
     }
 
-    QDPIO::cout << "\n\n***************TEST READING*******************\n" << endl;
+    QDPIO::cout << "\n\n***************TEST READING*******************\n" << std::endl;
 
     {
       push(xml_out, "Reading");
@@ -257,10 +257,10 @@ int main(int argc, char **argv)
       from_ptr = new QDPFileReader(file_xml,test_file,serpar);
       QDPFileReader& from = *from_ptr;
 
-      QDPIO::cout << "Here is the contents of  file_xml" << endl;
+      QDPIO::cout << "Here is the contents of  file_xml" << std::endl;
       std::ostringstream outbuf;
       file_xml.print(outbuf);
-      QDPIO::cout << outbuf.str() << endl << flush;
+      QDPIO::cout << outbuf.str() << std::endl;
       
 
       write(xml_out, "file_xml", file_xml);
@@ -273,16 +273,16 @@ int main(int argc, char **argv)
         read(from,record_xml,ff);
 	write(xml_out, "first_from.bad", from.bad());
 
-        QDPIO::cout << "Here is the contents of first  record_xml" << endl;
+        QDPIO::cout << "Here is the contents of first  record_xml" << std::endl;
 	//        record_xml.print(cout);
 	std::ostringstream ost;
 	record_xml.print(ost);
-	QDPIO::cout << ost.str() << endl << flush;
+	QDPIO::cout << ost.str() << std::endl;
 
         Double fsum = 0;
         for(int i=0; i < ff.size(); ++i)
   	  fsum += norm2(ff[i]);
-        QDPIO::cout << "First record test: fsum=" << fsum << endl;
+        QDPIO::cout << "First record test: fsum=" << fsum << std::endl;
         push(xml_out, "Record1");
         write(xml_out, "record_xml", record_xml);
         write(xml_out, "fsum", fsum);
@@ -296,15 +296,15 @@ int main(int argc, char **argv)
 	read(from,record_xml,a);
 	write(xml_out, "second_from.bad", from.bad());
 
-	QDPIO::cout << "Here is the contents of second  record_xml" << endl;
+	QDPIO::cout << "Here is the contents of second  record_xml" << std::endl;
 	std::ostringstream ost;
 	record_xml.print(ost);
-	QDPIO::cout << ost.str() << endl << flush;
+	QDPIO::cout << ost.str() << std::endl;
 
 
 	Real atest = Real(innerProductReal(a,shift(a,FORWARD,0)));
 	QDPIO::cout << "Second record check: innerProduct(a,shift(a,0))=" 
-		    << atest << endl;
+		    << atest << std::endl;
 	push(xml_out, "Record2");
 	write(xml_out, "record_xml", record_xml);
 	write(xml_out, "atest", atest);
@@ -314,21 +314,21 @@ int main(int argc, char **argv)
 #if 1
       {
 	LatticeColorMatrix b;
-	QDPIO::cout << "LatticeColorMatrix created " << endl << flush;
-	QDPIO::cout << "About to read from it " << endl << flush;
+	QDPIO::cout << "LatticeColorMatrix created " << std::endl;
+	QDPIO::cout << "About to read from it " << std::endl;
 
 	read(from,record_xml,b);
 	write(xml_out, "third_from.bad", from.bad());
 
-	QDPIO::cout << "Here is the contents of third  record_xml" << endl;
+	QDPIO::cout << "Here is the contents of third  record_xml" << std::endl;
 	std::ostringstream ost;
 	record_xml.print(ost);
-	QDPIO::cout << ost.str() << endl << flush;
+	QDPIO::cout << ost.str() << std::endl;
 
 
 	Real btest = Real(innerProductReal(b,shift(b,FORWARD,0)));
 	QDPIO::cout << "Third record check: innerProduct(b,shift(b,0))=" 
-		    << btest << endl;
+		    << btest << std::endl;
 	push(xml_out, "Record3");
 	write(xml_out, "record_xml", record_xml);
 	write(xml_out, "btest", btest);
@@ -339,8 +339,8 @@ int main(int argc, char **argv)
       {
 	multi1d<LatticeColorMatrix> c(Nd);   // array size should be free
 
-	QDPIO::cout << "Multi1d LatticeColorMatrix created " << endl << flush;
-	QDPIO::cout << "About to try treading into it" << endl << flush;
+	QDPIO::cout << "Multi1d LatticeColorMatrix created " << std::endl;
+	QDPIO::cout << "About to try treading into it" << std::endl;
 	StopWatch swatch;
 	swatch.reset();
 	swatch.start();
@@ -350,8 +350,8 @@ int main(int argc, char **argv)
 	double secs = swatch.getTimeInSeconds();
 	double bytes = Layout::vol()*Nd*Nc*Nc*2*sizeof(REAL);
 	double Mbytes = bytes/(double)(1024*1024);
-	QDPIO::cout << "Read " << Mbytes << " Mbytes in " << secs << " seconds " << endl;
-	QDPIO::cout << "Transfer Rate: " << Mbytes/secs << " Mbytes/s" << endl;
+	QDPIO::cout << "Read " << Mbytes << " Mbytes in " << secs << " seconds " << std::endl;
+	QDPIO::cout << "Transfer Rate: " << Mbytes/secs << " Mbytes/s" << std::endl;
 	
 	write(xml_out, "fourth_from.bad", from.bad());
 
@@ -359,7 +359,7 @@ int main(int argc, char **argv)
         for(int i=0; i < c.size(); ++i)
 	  fsum += innerProductReal(c[i],shift(c[i],FORWARD,0));
 
-        QDPIO::cout << "Fourth record test: fsum=" << fsum << endl;
+        QDPIO::cout << "Fourth record test: fsum=" << fsum << std::endl;
         push(xml_out, "Record4");
         write(xml_out, "record_xml", record_xml);
         write(xml_out, "fsum", fsum);

@@ -123,7 +123,7 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
       break;
 
       default:
-	QDPIO::cerr << __func__ << ": unexpected size" << endl;
+	QDPIO::cerr << __func__ << ": unexpected size" << std::endl;
 	exit(1);
       }
 

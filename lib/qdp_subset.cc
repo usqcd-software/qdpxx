@@ -63,7 +63,7 @@ namespace QDP
     int operator() (const multi1d<int>& coordinate) const
       {
 	if (coordinate.size() < 3) { 
-	  QDPIO::cerr << "Need at least 3d for 3d checkerboarding" << endl;
+	  QDPIO::cerr << "Need at least 3d for 3d checkerboarding" << std::endl;
 	  QDP_abort(1);
 	}
 	int sum = 0;

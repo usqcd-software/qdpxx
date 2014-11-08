@@ -5,7 +5,6 @@
 // #include "scalarsite_sse/sse_blas_vaxpy3_double.h"
 
 using namespace QDP;
-using namespace std;
 using namespace Assertions;
 
 // Trinity of tests: Check SSE against Handrolled
@@ -67,13 +66,13 @@ testLocalVcdot4_1::run()
   REAL64 lsum_opt_im = lsum_opt.elem().elem().elem().imag();
   REAL64 diff = fabs(lsum_opt_re - lsum_hand_re);
   REAL64 dof  = (REAL64)(Layout::vol()*4*3*2);
-  QDPIO::cout << endl << "\tDiff = " << diff << endl;
-  QDPIO::cout << "\tDiff/dof = " << diff/dof << endl;
+  QDPIO::cout << std::endl << "\tDiff = " << diff << std::endl;
+  QDPIO::cout << "\tDiff/dof = " << diff/dof << std::endl;
   assertion( diff/dof  < 1.0e-14 );
 
   diff = fabs(lsum_opt_im - lsum_hand_im);
-  QDPIO::cout << endl << "\tDiff = " << diff << endl;
-  QDPIO::cout << "\tDiff/dof = " << diff/dof << endl;
+  QDPIO::cout << std::endl << "\tDiff = " << diff << std::endl;
+  QDPIO::cout << "\tDiff/dof = " << diff/dof << std::endl;
   assertion( diff/dof  < 1.0e-14 );
 
 }
@@ -105,13 +104,13 @@ testLocalVcdot4_2::run()
 
   REAL64 diff = fabs(lsum_opt_re - lsum_qdp_re);
   REAL64 dof  = (REAL64)(Layout::vol()*4*3*2);
-  QDPIO::cout << endl << "\tDiff = " << diff << endl;
-  QDPIO::cout << "\tDiff/dof = " << diff/dof << endl;
+  QDPIO::cout << std::endl << "\tDiff = " << diff << std::endl;
+  QDPIO::cout << "\tDiff/dof = " << diff/dof << std::endl;
   assertion( diff/dof  < 1.0e-14 );
 
   diff = fabs(lsum_opt_im - lsum_qdp_im);
-  QDPIO::cout << endl << "\tDiff = " << diff << endl;
-  QDPIO::cout << "\tDiff/dof = " << diff/dof << endl;
+  QDPIO::cout << std::endl << "\tDiff = " << diff << std::endl;
+  QDPIO::cout << "\tDiff/dof = " << diff/dof << std::endl;
   assertion( diff/dof  < 1.0e-14  );
 
 }
@@ -161,13 +160,13 @@ testLocalVcdot4_3::run()
 
   REAL64 diff = fabs(lsum_hand_re - lsum_qdp_re);
   REAL64 dof  = (REAL64)(Layout::vol()*4*3*2);
-  QDPIO::cout << endl << "\tDiff = " << toDouble(diff) << endl;
-  QDPIO::cout << "\tDiff/dof = " << toDouble(diff/dof) << endl;
+  QDPIO::cout << std::endl << "\tDiff = " << toDouble(diff) << std::endl;
+  QDPIO::cout << "\tDiff/dof = " << toDouble(diff/dof) << std::endl;
   assertion( toBool( diff/dof  < 1.0e-14 ) );
 
   diff = fabs(lsum_hand_im - lsum_qdp_im);
-  QDPIO::cout << endl << "\tDiff = " << toDouble(diff) << endl;
-  QDPIO::cout << "\tDiff/dof = " << toDouble(diff/dof) << endl;
+  QDPIO::cout << std::endl << "\tDiff = " << toDouble(diff) << std::endl;
+  QDPIO::cout << "\tDiff/dof = " << toDouble(diff/dof) << std::endl;
   assertion( toBool( diff/dof  < 1.0e-14 ) );
 
 
