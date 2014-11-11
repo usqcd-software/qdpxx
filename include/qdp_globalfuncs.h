@@ -365,7 +365,7 @@ namespace QDP
 	d = spinProjectDir3Minus(s1);
 	break;
       default:
-	cerr << "Spin project: illegal direction\n";
+	std::cerr << "Spin project: illegal direction\n";
 	exit(1);
       }
       break;
@@ -386,13 +386,13 @@ namespace QDP
 	d = spinProjectDir3Plus(s1);
 	break;
       default:
-	cerr << "Spin project: illegal direction\n";
+	std::cerr << "Spin project: illegal direction\n";
 	exit(1);
       }
       break;
 
     default:
-      cerr << "Spin project: isign must be pos or neg.\n";
+      std::cerr << "Spin project: isign must be pos or neg.\n";
       exit(1);
     }
 
@@ -425,7 +425,7 @@ namespace QDP
       case 3:
 	return spinReconstructDir3Minus(s1);
       default:
-	cerr << "Spin reconstruct: illegal direction\n";
+	std::cerr << "Spin reconstruct: illegal direction\n";
 	exit(1);
       }
       break;
@@ -442,13 +442,13 @@ namespace QDP
       case 3:
 	return spinReconstructDir3Plus(s1);
       default:
-	cerr << "Spin reconstruct: illegal direction\n";
+	std::cerr << "Spin reconstruct: illegal direction\n";
 	exit(1);
       }
       break;
 
     default:
-      cerr << "Spin reconstruct: isign must be pos or neg.\n";
+      std::cerr << "Spin reconstruct: isign must be pos or neg.\n";
       exit(1);
     }
 

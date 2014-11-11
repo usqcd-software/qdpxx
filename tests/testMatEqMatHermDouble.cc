@@ -5,7 +5,6 @@
 // #include "scalarsite_sse/sse_blas_vaxpy3_double.h"
 
 using namespace QDP;
-using namespace std;
 using namespace Assertions;
 
 // Trinity of tests: Check SSE against Handrolled

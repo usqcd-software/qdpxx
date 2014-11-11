@@ -5,6 +5,7 @@
 
 #include "qdp.h"
 #include "qdp_byteorder.h"
+#include <complex>
 
 namespace QDP
 {
@@ -42,7 +43,7 @@ namespace QDP
     QDPInternal::broadcast(lleng);
 
     // Now every node can alloc space for string
-    dd_tmp = new(nothrow) char[lleng];
+    dd_tmp = new(std::nothrow) char[lleng];
     if( dd_tmp == 0x0 ) { 
       QDP_error_exit("Unable to allocate dd_tmp in qdp_io.cc\n");
     }
@@ -352,14 +353,14 @@ namespace QDP
   }
 
 
-  void TextWriter::write(const string& output)
+  void TextWriter::write(const std::string& output)
   {
-    writePrimitive<string>(output);
+    writePrimitive<std::string>(output);
   }
 
   void TextWriter::write(const char* output)
   {
-    write(string(output));
+    write(std::string(output));
   }
 
   void TextWriter::write(const char& output) 
@@ -606,7 +607,7 @@ namespace QDP
 
 
   // Readers
-  void BinaryReader::readDesc(string& input)
+  void BinaryReader::readDesc(std::string& input)
   {
     if (Layout::primaryNode())
     {
@@ -626,9 +627,9 @@ namespace QDP
     QDPInternal::broadcast(input);
   }
 
-  void BinaryReader::read(string& input, size_t maxBytes)
+  void BinaryReader::read(std::string& input, size_t maxBytes)
   {
-    char *str = new(nothrow) char[maxBytes];
+    char *str = new(std::nothrow) char[maxBytes];
     if( str == 0x0 ) { 
       QDP_error_exit("Couldnt new str in qdp_io.cc\n");
     }
@@ -1046,14 +1047,14 @@ namespace QDP
   }
 
 
-  void BinaryWriter::writeDesc(const string& output)
+  void BinaryWriter::writeDesc(const std::string& output)
   {
     size_t n = output.length();
     writePrimitive<int>(n);
     writeArray(output.c_str(), sizeof(char), n);
   }
 
-  void BinaryWriter::write(const string& output)
+  void BinaryWriter::write(const std::string& output)
   {
     // WARNING: CHECK ON NEWLINE IN CHECKSUM
     size_t n = output.length();
@@ -1063,7 +1064,7 @@ namespace QDP
 
   void BinaryWriter::write(const char* output)
   {
-    write(string(output));
+    write(std::string(output));
   }
   void BinaryWriter::write(const char& output) 
   {

@@ -15,7 +15,7 @@ namespace QDP {
 //-----------------------------------------------------------------------------
 // IO routine solely for debugging. Only defined here
   template<class T>
-  ostream& operator<<(ostream& s, const multi1d<T>& s1)
+  std::ostream& operator<<(std::ostream& s, const multi1d<T>& s1)
   {
     for(int i=0; i < s1.size(); ++i)
       s << " " << s1[i];
@@ -265,7 +265,7 @@ namespace QDP {
       QDPInternal::broadcast(lleng);
 
       // Now every node can alloc space for string
-      dd_tmp = new(nothrow) char[lleng];
+      dd_tmp = new(std::nothrow) char[lleng];
       if( dd_tmp == 0x0 ) { 
 	QDP_error_exit("Unable to allocate dd_tmp\n");
       }
@@ -382,7 +382,7 @@ namespace QDP {
 
     size_t sizemem = size*nmemb;
     size_t tot_size = sizemem*xinc;
-    char *recv_buf = new(nothrow) char[tot_size];
+    char *recv_buf = new(std::nothrow) char[tot_size];
     if( recv_buf == 0x0 ) { 
       QDP_error_exit("Unable to allocate recv_buf\n");
     }
@@ -442,7 +442,7 @@ namespace QDP {
 		     const multi1d<int>& coord)
   {
     size_t tot_size = size*nmemb;
-    char *recv_buf = new(nothrow) char[tot_size];
+    char *recv_buf = new(std::nothrow) char[tot_size];
     if( recv_buf == 0x0 ) { 
       QDP_error_exit("Unable to allocate recvbuf\n");
     }
@@ -496,12 +496,12 @@ namespace QDP {
 
     size_t sizemem = size*nmemb;
     size_t max_tot_size = sizemem*xinc;
-    char *recv_buf = new(nothrow) char[max_tot_size];
+    char *recv_buf = new(std::nothrow) char[max_tot_size];
     if( recv_buf == 0x0 ) { 
       QDP_error_exit("Unable to allocate recv_buf\n");
     }
 
-    char *recv_buf_size = new(nothrow) char[sizeof(int)];
+    char *recv_buf_size = new(std::nothrow) char[sizeof(int)];
     if( recv_buf_size == 0x0 ) { 
       QDP_error_exit("Unable to allocate recv_buf_size\n");
     }
@@ -587,7 +587,7 @@ namespace QDP {
 
     size_t sizemem = size*nmemb;
     size_t tot_size = sizemem*xinc;
-    char *recv_buf = new(nothrow) char[tot_size];
+    char *recv_buf = new(std::nothrow) char[tot_size];
     if( recv_buf == 0x0 ) { 
       QDP_error_exit("Unable to allocate recvbuf\n");
     }
@@ -637,7 +637,7 @@ namespace QDP {
 		    const multi1d<int>& coord)
   {
     size_t tot_size = size*nmemb;
-    char *recv_buf = new(nothrow) char[tot_size];
+    char *recv_buf = new(std::nothrow) char[tot_size];
     if( recv_buf == 0x0 ) {
       QDP_error_exit("Unable to allocate recv_buf\n");
     }
@@ -686,12 +686,12 @@ namespace QDP {
 
     size_t sizemem = size*nmemb;
     size_t max_tot_size = sizemem*xinc;
-    char *recv_buf = new(nothrow) char[max_tot_size];
+    char *recv_buf = new(std::nothrow) char[max_tot_size];
     if( recv_buf == 0x0 ) { 
       QDP_error_exit("Unable to allocate recv_buf\n");
     }
 
-    char *recv_buf_size = new(nothrow) char[sizeof(int)];
+    char *recv_buf_size = new(std::nothrow) char[sizeof(int)];
     if( recv_buf_size == 0x0 ) { 
       QDP_error_exit("Unable to allocate recv_buf_size\n");
     }
@@ -796,7 +796,7 @@ namespace QDP {
 
       size_t sizemem = size*nmemb;
       size_t tot_size = sizemem*xinc;
-      char *recv_buf = new(nothrow) char[tot_size];
+      char *recv_buf = new(std::nothrow) char[tot_size];
       if( recv_buf == 0x0 ) { 
 	QDP_error_exit("Unable to allocate recvbuf\n");}
 
@@ -852,7 +852,7 @@ namespace QDP {
 
       size_t sizemem = size*nmemb;
       size_t tot_size = sizemem*xinc;
-      char *recv_buf = new(nothrow) char[tot_size];
+      char *recv_buf = new(std::nothrow) char[tot_size];
       if( recv_buf == 0x0 ) { 
 	QDP_error_exit("Unable to allocate recv_buf\n");}
 
@@ -926,7 +926,7 @@ namespace QDP {
       QDP_extract(sa[dd], u[dd], all);
     }
 
-    char  *chk_buf = new(nothrow) char[su3_size];
+    char  *chk_buf = new(std::nothrow) char[su3_size];
     if( chk_buf == 0x0 ) { 
       QDP_error_exit("Unable to allocate chk_buf\n");
     }
@@ -970,7 +970,7 @@ namespace QDP {
 	break;
 
 	default:
-	  QDPIO::cerr << __func__ << ": unexpected size" << endl;
+	  QDPIO::cerr << __func__ << ": unexpected size" << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -1008,12 +1008,12 @@ namespace QDP {
     size_t tot_size = su3_size*Nd;
     const int nodeSites = Layout::sitesOnNode();
 
-    char  *input = new(nothrow) char[tot_size*nodeSites];  // keep another copy in input buffers
+    char  *input = new(std::nothrow) char[tot_size*nodeSites];  // keep another copy in input buffers
     if( input == 0x0 ) { 
       QDP_error_exit("Unable to allocate input\n");
     }
 
-    char  *recv_buf = new(nothrow) char[tot_size];
+    char  *recv_buf = new(std::nothrow) char[tot_size];
     if( recv_buf == 0x0 ) { 
       QDP_error_exit("Unable to allocate recv_buf\n");
     }
@@ -1089,7 +1089,7 @@ namespace QDP {
 	  }
 	}
 	else { 
-	  QDPIO::cerr << __func__ << ": Unknown mat size" << endl;
+	  QDPIO::cerr << __func__ << ": Unknown mat size" << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -1145,7 +1145,7 @@ namespace QDP {
     size_t size = sizeof(REAL32);
     size_t su3_size = size*mat_size;
     size_t tot_size = su3_size*Nd;
-    char *recv_buf = new(nothrow) char[tot_size];
+    char *recv_buf = new(std::nothrow) char[tot_size];
     if( recv_buf == 0x0 ) { 
       QDP_error_exit("Unable to allocate recv_buf\n");
     }
@@ -1230,7 +1230,7 @@ namespace QDP {
 
     if (cfg_out.fail())
     {
-      QDPIO::cerr << __func__ << ": error writing configuration" << endl;
+      QDPIO::cerr << __func__ << ": error writing configuration" << std::endl;
       QDP_abort(1);
     }
   }

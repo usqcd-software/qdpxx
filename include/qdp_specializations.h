@@ -46,59 +46,59 @@ toBool(const Boolean& s)
 #ifdef QDP_USE_LIBXML2
 // XML readers
 template<>
-void read(XMLReader& xml, const string& s, multi1d<Integer>& d);
+void read(XMLReader& xml, const std::string& s, multi1d<Integer>& d);
 template<>
-void read(XMLReader& xml, const string& s, multi1d<Real32>& d);
+void read(XMLReader& xml, const std::string& s, multi1d<Real32>& d);
 template<>
-void read(XMLReader& xml, const string& s, multi1d<Real64>& d);
+void read(XMLReader& xml, const std::string& s, multi1d<Real64>& d);
 template<>
-void read(XMLReader& xml, const string& s, multi1d<Boolean>& d);
+void read(XMLReader& xml, const std::string& s, multi1d<Boolean>& d);
 
 template<>
-void read(XMLReader& xml, const string& s, std::vector<Integer>& d);
+void read(XMLReader& xml, const std::string& s, std::vector<Integer>& d);
 template<>
-void read(XMLReader& xml, const string& s, std::vector<Real32>& d);
+void read(XMLReader& xml, const std::string& s, std::vector<Real32>& d);
 template<>
-void read(XMLReader& xml, const string& s, std::vector<Real64>& d);
+void read(XMLReader& xml, const std::string& s, std::vector<Real64>& d);
 template<>
-void read(XMLReader& xml, const string& s, std::vector<Boolean>& d);
+void read(XMLReader& xml, const std::string& s, std::vector<Boolean>& d);
 
 template<>
-void read(XMLReader& xml, const string& s, std::list<Integer>& d);
+void read(XMLReader& xml, const std::string& s, std::list<Integer>& d);
 template<>
-void read(XMLReader& xml, const string& s, std::list<Real32>& d);
+void read(XMLReader& xml, const std::string& s, std::list<Real32>& d);
 template<>
-void read(XMLReader& xml, const string& s, std::list<Real64>& d);
+void read(XMLReader& xml, const std::string& s, std::list<Real64>& d);
 template<>
-void read(XMLReader& xml, const string& s, std::list<Boolean>& d);
+void read(XMLReader& xml, const std::string& s, std::list<Boolean>& d);
 
 // XML writers
 template<>
-void write(XMLWriter& xml, const string& s, const multi1d<Integer>& d);
+void write(XMLWriter& xml, const std::string& s, const multi1d<Integer>& d);
 template<>
-void write(XMLWriter& xml, const string& s, const multi1d<Real32>& d);
+void write(XMLWriter& xml, const std::string& s, const multi1d<Real32>& d);
 template<>
-void write(XMLWriter& xml, const string& s, const multi1d<Real64>& d);
+void write(XMLWriter& xml, const std::string& s, const multi1d<Real64>& d);
 template<>
-void write(XMLWriter& xml, const string& s, const multi1d<Boolean>& d);
+void write(XMLWriter& xml, const std::string& s, const multi1d<Boolean>& d);
 
 template<>
-void write(XMLWriter& xml, const string& s, const std::vector<Integer>& d);
+void write(XMLWriter& xml, const std::string& s, const std::vector<Integer>& d);
 template<>
-void write(XMLWriter& xml, const string& s, const std::vector<Real32>& d);
+void write(XMLWriter& xml, const std::string& s, const std::vector<Real32>& d);
 template<>
-void write(XMLWriter& xml, const string& s, const std::vector<Real64>& d);
+void write(XMLWriter& xml, const std::string& s, const std::vector<Real64>& d);
 template<>
-void write(XMLWriter& xml, const string& s, const std::vector<Boolean>& d);
+void write(XMLWriter& xml, const std::string& s, const std::vector<Boolean>& d);
 
 template<>
-void write(XMLWriter& xml, const string& s, const std::list<Integer>& d);
+void write(XMLWriter& xml, const std::string& s, const std::list<Integer>& d);
 template<>
-void write(XMLWriter& xml, const string& s, const std::list<Real32>& d);
+void write(XMLWriter& xml, const std::string& s, const std::list<Real32>& d);
 template<>
-void write(XMLWriter& xml, const string& s, const std::list<Real64>& d);
+void write(XMLWriter& xml, const std::string& s, const std::list<Real64>& d);
 template<>
-void write(XMLWriter& xml, const string& s, const std::list<Boolean>& d);
+void write(XMLWriter& xml, const std::string& s, const std::list<Boolean>& d);
 
 #endif
 

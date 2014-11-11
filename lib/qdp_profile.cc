@@ -86,7 +86,7 @@ QDPProfile_t::print()
   if ((getProfileLevel() & 2) > 0)
   {
     QDPIO::cout << expr
-		<< "\t[" << time << "]" << endl;
+		<< "\t[" << time << "]" << std::endl;
   }
 }
 
@@ -123,17 +123,17 @@ printProfile()
     {
       QDPProfile_t *qp = head.start;
 
-      QDPIO::cout << endl
+      QDPIO::cout << std::endl
 		  << "func = " << head.info.caller 
 		  << "   line = " << head.info.line 
 		  << "   file = " << head.info.file
-		  << endl;
+		  << std::endl;
 
       while(qp)
       {
 	if (qp->count > 0)
 	{
-//	  QDPIO::cout << "   " << qp->count << "  [" << qp->time << "]  " << qp->expr << endl;
+//	  QDPIO::cout << "   " << qp->count << "  [" << qp->time << "]  " << qp->expr << std::endl;
 
 	  // Gag, I still have not really grokked the fricken SL iostream field
 	  // width manipulators. Drop down to low tech just to get out
@@ -142,7 +142,7 @@ printProfile()
 	  // are not there. Sigh.
 	  char lin[80];  // more than adequate
 	  sprintf(lin, "  %7d   [%8d]  ", qp->count, qp->time);
-	  QDPIO::cout << lin << qp->expr << endl;
+	  QDPIO::cout << lin << qp->expr << std::endl;
 	}
 
 	qp = qp->next;
@@ -181,11 +181,11 @@ void pushProfileInfo(int level, const std::string& file, const std::string& call
 
   if ((level & 2) > 0)
   {
-    QDPIO::cout << endl
+    QDPIO::cout << std::endl
 		<< "func = " << head.info.caller 
 		<< "   line = " << head.info.line 
 		<< "   file = " << head.info.file
-		<< endl;
+		<< std::endl;
   }
 }
 
@@ -193,7 +193,7 @@ void popProfileInfo()
 {
   if (infostack.empty())
   {
-    QDPIO::cerr << "popProfileInfo: invalid pop" << endl;
+    QDPIO::cerr << "popProfileInfo: invalid pop" << std::endl;
     QDP_abort(1);
   }
 
@@ -208,7 +208,7 @@ registerProfile(QDPProfile_t* qp)
 {
   if (profqueue.empty())
   {
-    QDPIO::cerr << "registerProfile: profile queue empty" << endl;
+    QDPIO::cerr << "registerProfile: profile queue empty" << std::endl;
     QDP_abort(1);
   }
 

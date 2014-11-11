@@ -21,7 +21,7 @@ void QDP_initialize(int *argc, char ***argv)
 {
   if (isInit)
   {
-    QDPIO::cerr << "QDP already inited" << endl;
+    QDPIO::cerr << "QDP already inited" << std::endl;
     QDP_abort(1);
   }
 
@@ -121,7 +121,7 @@ void QDP_initialize(int *argc, char ***argv)
       int n = strlen((*argv)[++i]);
       if (n >= maxlen)
       {
-	QDPIO::cerr << "rtinode name too long" << endl;
+	QDPIO::cerr << "rtinode name too long" << std::endl;
 	QDP_abort(1);
       }
       sscanf((*argv)[i], "%s", rtinode);
@@ -130,14 +130,14 @@ void QDP_initialize(int *argc, char ***argv)
 #if 0
     else 
     {
-      QDPIO::cerr << __func__ << ": Unknown argument = " << (*argv)[i] << endl;
+      QDPIO::cerr << __func__ << ": Unknown argument = " << (*argv)[i] << std::endl;
       QDP_abort(1);
     }
 #endif
  
     if (i >= *argc) 
     {
-      QDPIO::cerr << __func__ << ": missing argument at the end" << endl;
+      QDPIO::cerr << __func__ << ": missing argument at the end" << std::endl;
       QDP_abort(1);
     }
   }
@@ -160,7 +160,7 @@ void QDP_initialize(int *argc, char ***argv)
     QMP_thread_level_t prv;
     if (QMP_init_msg_passing(argc, argv, QMP_THREAD_SINGLE, &prv) != QMP_SUCCESS)
     {
-      QDPIO::cerr << "QMP_init_msg_passing failed" << endl;
+      QDPIO::cerr << "QMP_init_msg_passing failed" << std::endl;
       QDP_abort(1);
     }
   }
@@ -172,7 +172,7 @@ void QDP_initialize(int *argc, char ***argv)
   if (setGeomP)
     if (QMP_declare_logical_topology(logical_geom.slice(), Nd) != QMP_SUCCESS)
     {
-      QDPIO::cerr << "QMP_declare_logical_topology failed" << endl;
+      QDPIO::cerr << "QMP_declare_logical_topology failed" << std::endl;
       QDP_abort(1);
     }
 

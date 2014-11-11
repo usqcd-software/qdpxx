@@ -182,8 +182,8 @@ int main(int argc, char *argv[])
 
     Double dnorm2 = norm2(psi,odd);
 
-    QDPIO::cout << "|dnorm1|^2 = " << dnorm1 << endl
-		<< "|dnorm2|^2 = " << dnorm2 << endl;
+    QDPIO::cout << "|dnorm1|^2 = " << dnorm1 << std::endl
+		<< "|dnorm2|^2 = " << dnorm2 << std::endl;
   }
 #endif
 

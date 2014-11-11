@@ -213,7 +213,7 @@ namespace QDP {
 			tmp_group=H5Gopen(current_group,tmpdirname.c_str(),H5P_DEFAULT);
       
 			if(tmp_group<0){
-				QDPIO::cerr << "HDF5::cd: error, the group " << tmpdirname << " does not exist!" << endl;
+				QDPIO::cerr << "HDF5::cd: error, the group " << tmpdirname << " does not exist!" << std::endl;
 				return;
 			}
 			//only close current_group if tmp_group is not further below in the tree or completely outside:

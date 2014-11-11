@@ -209,7 +209,7 @@ namespace QDP
       QDPInternal::broadcast(ret);
       if (ret != 0)
       {
-	QDPIO::cerr << "Cannot open db file= " << file << endl;
+	QDPIO::cerr << "Cannot open db file= " << file << std::endl;
 	QDP_abort(1);
       }
     }
@@ -224,7 +224,7 @@ namespace QDP
       QDPInternal::broadcast(ret);
       if (ret != 0)
       {
-	QDPIO::cerr << "Error closing db file" << endl;
+	QDPIO::cerr << "Error closing db file" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -263,7 +263,7 @@ namespace QDP
       QDPInternal::broadcast(ret);
       if (ret != 0)
       {
-	QDPIO::cerr << __func__ << ": error inserting into db" << endl;
+	QDPIO::cerr << __func__ << ": error inserting into db" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -285,7 +285,7 @@ namespace QDP
       QDPInternal::broadcast(ret);
       if (ret != 0)
       {
-	QDPIO::cerr << __func__ << ": error in db" << endl;
+	QDPIO::cerr << __func__ << ": error in db" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -412,7 +412,7 @@ namespace QDP
       QDPInternal::broadcast(ret);
       if (ret != 0)
       {
-	QDPIO::cerr << __func__ << ": error inserting user data into db" << endl;
+	QDPIO::cerr << __func__ << ": error inserting user data into db" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -436,7 +436,7 @@ namespace QDP
       QDPInternal::broadcast(ret);
       if (ret != 0)
       {
-	QDPIO::cerr << __func__ << ": error getting user data from db" << endl;
+	QDPIO::cerr << __func__ << ": error getting user data from db" << std::endl;
 	QDP_abort(1);
       }
 			

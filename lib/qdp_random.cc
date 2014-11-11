@@ -155,7 +155,7 @@ namespace RNG
     }
 
     *lattice_ran_mult = lattice_ran_mult_tmp;
-    QDPIO::cout << "Finished init of RNG" << endl; 
+    QDPIO::cout << "Finished init of RNG" << std::endl; 
 
     setProfileLevel(old_profile_level);
   }

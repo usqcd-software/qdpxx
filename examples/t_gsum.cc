@@ -13,7 +13,6 @@ void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_real);
 };
 
 
-using namespace std;
 using namespace QDP;
 
 int main(int argc, char *argv[])

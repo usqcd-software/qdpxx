@@ -18,7 +18,7 @@ namespace Assertions {
   inline 
   void assertEquals(const T& t1, const T& t2) {
     if ( t1 != t2 ) { 
-      QDPIO::cout << "lhs=" << t1 << " != " << " rhs=" << t2 << endl;
+      QDPIO::cout << "lhs=" << t1 << " != " << " rhs=" << t2 << std::endl;
       throw std::exception();
     }
   }
@@ -108,12 +108,12 @@ private:
     // Initialize threads
     int thread_status = qmt_init();
     if( thread_status == 0 ) { 
-      QDPIO::cout << "Success" << endl;
-      QDPIO::cout << "Created: " << qmt_num_threads() << " threads" << endl;
-      QDPIO::cout << "My tread ID is: " << qmt_thread_id() << endl;
+      QDPIO::cout << "Success" << std::endl;
+      QDPIO::cout << "Created: " << qmt_num_threads() << " threads" << std::endl;
+      QDPIO::cout << "My tread ID is: " << qmt_thread_id() << std::endl;
     }
     else { 
-      QDPIO::cout << "Failure... qmt_init() returned " << thread_status << endl;
+      QDPIO::cout << "Failure... qmt_init() returned " << thread_status << std::endl;
       
       QDP_abort(1);
     }
@@ -161,15 +161,15 @@ private:
 
     bool test_success = trueEverywhere( t.success == SUCCESS );
     if( test_success == true ) { 
-      QDPIO::cout << "  OK" << endl;
+      QDPIO::cout << "  OK" << std::endl;
     }
     else { 
        
       if( trueOnNodes( t.success == ERROR )  > 0 ) { 
-	QDPIO::cout << "  ERROR" << endl;
+	QDPIO::cout << "  ERROR" << std::endl;
       }
       else { 
-	QDPIO::cout << "  FAIL" << endl;
+	QDPIO::cout << "  FAIL" << std::endl;
 	
       }
     }
@@ -193,7 +193,7 @@ private:
   }
 
   void summary() { 
-    QDPIO::cout << "Summary: " << num_tried <<   " Tests Tried" << endl;
+    QDPIO::cout << "Summary: " << num_tried <<   " Tests Tried" << std::endl;
     int success = 0;
     int failure = 0;
     int odd = 0;
@@ -208,9 +208,9 @@ private:
 	}
       }
     }
-    QDPIO::cout << "         " << success << " Tests Succeeded " << endl;
-    QDPIO::cout << "         " << failure  << " Tests Failed on some nodes" <<  endl;
-    QDPIO::cout << "of which " << odd << " Tests Failed in Unexpected Ways on some nodes" << endl;
+    QDPIO::cout << "         " << success << " Tests Succeeded " << std::endl;
+    QDPIO::cout << "         " << failure  << " Tests Failed on some nodes" <<  std::endl;
+    QDPIO::cout << "of which " << odd << " Tests Failed in Unexpected Ways on some nodes" << std::endl;
     if ( failure > 0 ) {  
       exit(1);
     }

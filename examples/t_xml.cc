@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     write(toxml,"dog", dog);
     pop(toxml);
 
-    QDPIO::cout << "buffer = XXX" << toxml.str() << "XXX" << endl;
+    QDPIO::cout << "buffer = XXX" << toxml.str() << "XXX" << std::endl;
 
 //    std::istringstream list_stream(toxml.str()+"\n");
 //    XMLReader fromxml(list_stream);
@@ -41,9 +41,9 @@ int main(int argc, char **argv)
     XMLReader fromxml(toxml);
     int rob;
     read(fromxml,"/godzilla/dog",rob);
-    QDPIO::cout << "found dog = " << rob << endl;
+    QDPIO::cout << "found dog = " << rob << std::endl;
   }
-  catch(const string& e)
+  catch(const std::string& e)
   {
     QDP_error_exit("Error XMLBufferWriter into a XMLReader test: %s",e.c_str());
   }
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
     pop(toxml);
     toxml.close();
   }
-  catch(const string& e)
+  catch(const std::string& e)
   {
     QDP_error_exit("Error with basic xml write tests: %s",e.c_str());
   }
@@ -75,14 +75,14 @@ int main(int argc, char **argv)
     XMLReader fromxml;
     fromxml.open("t_xml.input1");
 
-    QDPIO::cout << "Here is the contents of  t_xml.input1" << endl;
-    fromxml.print(cout);
+    QDPIO::cout << "Here is the contents of  t_xml.input1" << std::endl;
+    fromxml.print(std::cout);
 
     int rob;
     read(fromxml,"/fred/my_life/rob",rob);
-    QDPIO::cout << "found rob = " << rob << endl;
+    QDPIO::cout << "found rob = " << rob << std::endl;
   }
-  catch(const string& e)
+  catch(const std::string& e)
   {
     QDP_error_exit("Error reading some xml snippets: %s",e.c_str());
   }
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
     XMLFileWriter toxml_4("t_xml.output2");
     write(toxml_4,"imbed_some_more",toxml_2);
   }
-  catch(const string& e)
+  catch(const std::string& e)
   {
     QDP_error_exit("Error reading some xml snippets: %s",e.c_str());
   }
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 
     write(toxml,"charStarThingy","whether tis nobler to suffer the slings and arrows");
 
-    string stringThingy = "Sat Jun 16 00:35:57 2001";
+    std::string stringThingy = "Sat Jun 16 00:35:57 2001";
     write(toxml, "stringThingy", stringThingy);
 
     Real a = 0.2;
@@ -183,7 +183,7 @@ int main(int argc, char **argv)
     XMLFileWriter filexml("t_xml.input2");
     filexml << toxml;
   }
-  catch(const string& e)
+  catch(const std::string& e)
   {
     QDP_error_exit("Test writing some more complex snippets",e.c_str());
   }
@@ -198,44 +198,44 @@ int main(int argc, char **argv)
     XMLReader fromxml(fromxml_orig, "/complex_xml");
 
     XMLReader fromxml_tmp(fromxml, "seedThingy");
-    ostringstream os;
+    std::ostringstream os;
     fromxml_tmp.printCurrentContext(os);
-    QDPIO::cout << "Current context = XX" << os.str() << "XX" << endl;
+    QDPIO::cout << "Current context = XX" << os.str() << "XX" << std::endl;
 
     QDP::Seed seed;
     read(fromxml,"seedThingy",seed);
-    QDPIO::cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << endl;
+    QDPIO::cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << std::endl;
 
     multi1d<int> arrayInt;
     read(fromxml,"arrayInt",arrayInt);
     for(int i=0; i < arrayInt.size(); ++i)
-      QDPIO::cout << "arrayInt[" << i << "] = " << arrayInt[i]  << "  node=" << Layout::nodeNumber() << endl;
+      QDPIO::cout << "arrayInt[" << i << "] = " << arrayInt[i]  << "  node=" << Layout::nodeNumber() << std::endl;
 
     multi1d<Real> arrayReal;
     read(fromxml,"arrayReal",arrayReal);
     for(int i=0; i < arrayReal.size(); ++i)
-      QDPIO::cout << "arrayReal[" << i << "] = " << arrayReal[i] << "  node=" << Layout::nodeNumber() << endl;
+      QDPIO::cout << "arrayReal[" << i << "] = " << arrayReal[i] << "  node=" << Layout::nodeNumber() << std::endl;
 
     multi1d<Complex> arrayComplex;
     read(fromxml,"arrayComplex",arrayComplex);
     for(int i=0; i < arrayComplex.size(); ++i)
       QDPIO::cout << "arrayComplex[" << i << "] = ("
 		  << real(arrayComplex[i]) << "," 
-		  << imag(arrayComplex[i]) << ")" << endl;
+		  << imag(arrayComplex[i]) << ")" << std::endl;
 
     std::list<Real> listReal;
     read(fromxml,"listReal",listReal);
     for(std::list<Real>::const_iterator i=listReal.begin(); i != listReal.end(); ++i)
-      QDPIO::cout << "listReal = " << *i << "  node=" << Layout::nodeNumber() << endl;
+      QDPIO::cout << "listReal = " << *i << "  node=" << Layout::nodeNumber() << std::endl;
 
     std::list<Complex> listComplex;
     read(fromxml,"listComplex",listComplex);
     for(std::list<Complex>::const_iterator i=listComplex.begin(); i != listComplex.end(); ++i)
-      QDPIO::cout << "listComplex = (" << real(*i) << "," << imag(*i) << ")" << endl;
+      QDPIO::cout << "listComplex = (" << real(*i) << "," << imag(*i) << ")" << std::endl;
 
     QDP_info("done with array snippet tests");
   }
-  catch(const string& e)
+  catch(const std::string& e)
   {
     QDP_error_exit("Error reading array snippets: %s",e.c_str());
   }
@@ -267,7 +267,7 @@ int main(int argc, char **argv)
 
     QDP_info("done with XMLArrayWrtiter tests");
   }
-  catch (const string& e)
+  catch (const std::string& e)
   {
     QDP_error_exit("Error in array writing: %s",e.c_str());
   }
@@ -283,28 +283,28 @@ int main(int argc, char **argv)
 
     QDP::Seed seed;
     read(fromxml,"seedThingy",seed);
-    QDPIO::cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << endl;
+    QDPIO::cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << std::endl;
 
     multi1d<int> arrayInt;
     read(fromxml,"arrayInt",arrayInt);
     for(int i=0; i < arrayInt.size(); ++i)
-      QDPIO::cout << "arrayInt[" << i << "] = " << arrayInt[i]  << "  node=" << Layout::nodeNumber() << endl;
+      QDPIO::cout << "arrayInt[" << i << "] = " << arrayInt[i]  << "  node=" << Layout::nodeNumber() << std::endl;
 
     multi1d<Real> arrayReal;
     read(fromxml,"arrayReal",arrayReal);
     for(int i=0; i < arrayReal.size(); ++i)
-      QDPIO::cout << "arrayReal[" << i << "] = " << arrayReal[i] << "  node=" << Layout::nodeNumber() << endl;
+      QDPIO::cout << "arrayReal[" << i << "] = " << arrayReal[i] << "  node=" << Layout::nodeNumber() << std::endl;
 
     multi1d<Complex> arrayComplex;
     read(fromxml,"arrayComplex",arrayComplex);
     for(int i=0; i < arrayComplex.size(); ++i)
       QDPIO::cout << "arrayComplex[" << i << "] = ("
 		  << real(arrayComplex[i]) << "," 
-		  << imag(arrayComplex[i]) << ")" << endl;
+		  << imag(arrayComplex[i]) << ")" << std::endl;
 
     QDP_info("done with array snippet tests");
   }
-  catch(const string& e)
+  catch(const std::string& e)
   {
     QDP_error_exit("Error reading array snippets: %s",e.c_str());
   }
@@ -326,7 +326,7 @@ int main(int argc, char **argv)
 
     fromxml.set<QDP::Real>("/root_for_input3/Mass", Real(0.5));
 
-    // turn back into a string
+    // turn back into a std::string
     XMLBufferWriter new_writer;
     new_writer << fromxml;
 
@@ -338,7 +338,7 @@ int main(int argc, char **argv)
     pop(toxml_again);
     toxml_again.close();
   }
-  catch(const string& e)
+  catch(const std::string& e)
   {
     QDP_error_exit("Error modifying a reader: %s",e.c_str());
   }

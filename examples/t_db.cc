@@ -18,7 +18,7 @@ namespace Chroma
   {
     multi1d<int>  mom;
     int           gamma;
-    string        mass_label;
+    std::string   mass_label;
   };
 
   //! Reader
@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
     }
     
     // Create it
-    QDPIO::cout << "create" << endl;
+    QDPIO::cout << "create" << std::endl;
     DBType_t db;
 
     // Create some meta data. Need to know length before the open call
@@ -217,21 +217,21 @@ int main(int argc, char *argv[])
     db.insertUserdata(meta_data);
 
     // Test it
-    QDPIO::cout << "insert" << endl;
+    QDPIO::cout << "insert" << std::endl;
     db.insert(testDBKey, testDBData);
 
     // Flush it
-    QDPIO::cout << "flush" << endl;
+    QDPIO::cout << "flush" << std::endl;
     db.flush();
 
-    QDPIO::cout << "closing" << endl;
+    QDPIO::cout << "closing" << std::endl;
   }
   catch(std::exception &e) {
     QDPIO::cerr << "Std exception: " << e.what() << std::endl;
     QDP_abort(1);
   }
   catch (...) {
-    QDPIO::cout << "Generic error in db routines" << endl;
+    QDPIO::cout << "Generic error in db routines" << std::endl;
     QDP_abort(1);
   }
 
@@ -249,33 +249,33 @@ int main(int argc, char *argv[])
     TestDBData<TestDBData_t> testDBData;
 
     // Open it
-    QDPIO::cout << "open" << endl;
+    QDPIO::cout << "open" << std::endl;
     DBType_t db;
     db.open("test.db", O_RDONLY, 0644);
 
     // Test it
-    QDPIO::cout << "get" << endl;
+    QDPIO::cout << "get" << std::endl;
     if (db.get(testDBKey, testDBData) != 0)
     {
-      QDPIO::cout << "Error: attempting a get, the key was not found" << endl;
+      QDPIO::cout << "Error: attempting a get, the key was not found" << std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "type_of_data= " << testDBData.data().type_of_data << endl;
+    QDPIO::cout << "type_of_data= " << testDBData.data().type_of_data << std::endl;
 
     // Grab the user meta data
     std::string meta_data;
     db.getUserdata(meta_data);
-    QDPIO::cout << "User meta_data = XX" << meta_data << "XX" << endl;
+    QDPIO::cout << "User meta_data = XX" << meta_data << "XX" << std::endl;
 
-    QDPIO::cout << "closing" << endl;
+    QDPIO::cout << "closing" << std::endl;
   }
   catch(std::exception &e) {
     QDPIO::cerr << "Std exception: " << e.what() << std::endl;
     QDP_abort(1);
   }
   catch (...) {
-    QDPIO::cout << "Generic error in db routines" << endl;
+    QDPIO::cout << "Generic error in db routines" << std::endl;
     QDP_abort(1);
   }
 
@@ -284,32 +284,32 @@ int main(int argc, char *argv[])
   try
   {
     // Open it
-    QDPIO::cout << "open" << endl;
+    QDPIO::cout << "open" << std::endl;
     DBType_t db;
     db.open("test.db", O_RDONLY, 0644);
 
     // Test it
-    QDPIO::cout << "find keys" << endl;
+    QDPIO::cout << "find keys" << std::endl;
     std::vector< TestDBKey<TestDBKey_t> > keys;
     db.keys(keys);
 
     // Flush it
-    QDPIO::cout << "printing" << endl;
+    QDPIO::cout << "printing" << std::endl;
     for(int i=0; i < keys.size(); ++i)
     {
       QDPIO::cout << "found a key: i= " << i 
 		  << "  gamma= " << keys[i].key().gamma
-		  << endl;
+		  << std::endl;
     }
 
-    QDPIO::cout << "closing" << endl;
+    QDPIO::cout << "closing" << std::endl;
   }
   catch(std::exception &e) {
     QDPIO::cerr << "Std exception: " << e.what() << std::endl;
     QDP_abort(1);
   }
   catch (...) {
-    QDPIO::cout << "Generic error in db routines" << endl;
+    QDPIO::cout << "Generic error in db routines" << std::endl;
     QDP_abort(1);
   }
 
@@ -319,7 +319,7 @@ int main(int argc, char *argv[])
   // Time to bolt
   QDP_finalize();
 
-  QDPIO::cout << "finished" << endl;
+  QDPIO::cout << "finished" << std::endl;
   exit(0);
 }
 

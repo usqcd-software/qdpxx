@@ -16,7 +16,7 @@ private:
 
 public:
   TestOpenPartFile(void) :
-    file_name(string("t_pf_open.lime")),
+    file_name(std::string("t_pf_open.lime")),
     serpar(QDPIO_SERIAL),
     volfmt(QDPIO_PARTFILE)
   {

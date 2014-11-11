@@ -15,7 +15,10 @@
 #include <vector>
 #include <map>
 #include <list>
+
+#if 0
 #include <complex>
+#endif
 
 namespace QDP
 {
@@ -493,9 +496,11 @@ namespace QDP
   BinaryReader& operator>>(BinaryReader& bin, double& input);
   BinaryReader& operator>>(BinaryReader& bin, bool& input);
 
+#if 0
   //! Complex reader
   void read(BinaryReader& bin, std::complex<float>& param);
   void read(BinaryReader& bin, std::complex<double>& param);
+#endif
 
 
   //! Read a binary multi1d object
@@ -1134,9 +1139,11 @@ namespace QDP
   BinaryWriter& operator<<(BinaryWriter& bin, double output);
   BinaryWriter& operator<<(BinaryWriter& bin, bool output);
 
+#if 0
   //! Complex writer
   void write(BinaryWriter& bin, const std::complex<float>& param);
   void write(BinaryWriter& bin, const std::complex<double>& param);
+#endif
 
   //! Write all of a binary multi1d object
   /*!

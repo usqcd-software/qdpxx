@@ -30,7 +30,7 @@ namespace QDP
     
       // Check magic
       if (read_magic != MapObjDiskEnv::file_magic) { 
-	QDPIO::cerr << "Magic String Wrong: Expected: " << MapObjDiskEnv::file_magic << " but read: " << read_magic << endl;
+	QDPIO::cerr << "Magic String Wrong: Expected: " << MapObjDiskEnv::file_magic << " but read: " << read_magic << std::endl;
 	QDP_abort(1);
       }
 

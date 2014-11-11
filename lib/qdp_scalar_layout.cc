@@ -213,27 +213,27 @@ namespace QDP
       QDPIO::cout << "  problem size =";
       for(int i=0; i < Nd; ++i)
 	QDPIO::cout << " " << _layout.nrow[i];
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
 
       // Same as the problem size... we are scalar
       QDPIO::cout << "  layout size =";
       for(int i=0; i < Nd; ++i)
 	QDPIO::cout << " " << _layout.nrow[i];
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
 
       QDPIO::cout << "  logical machine size =";
       for(int i=0; i < Nd; ++i)
 	QDPIO::cout << " " << (int)1;
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
 
       QDPIO::cout << "  subgrid size =";
       for(int i=0; i < Nd; ++i)
 	QDPIO::cout << " " << _layout.nrow[i];
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
 
-      QDPIO::cout << "  total number of nodes = " << 1 << endl;
-      QDPIO::cout << "  total volume = " << _layout.vol << endl;
-      QDPIO::cout << "  subgrid volume = " << _layout.vol << endl;
+      QDPIO::cout << "  total number of nodes = " << 1 << std::endl;
+      QDPIO::cout << "  total volume = " << _layout.vol << std::endl;
+      QDPIO::cout << "  subgrid volume = " << _layout.vol << std::endl;
 
 
       // Sanity check - check the layout functions make sense
@@ -263,7 +263,7 @@ namespace QDP
       // Initialize various defaults
       initDefaults();
 
-      QDPIO::cout << "Finished lattice layout" << endl;
+      QDPIO::cout << "Finished lattice layout" << std::endl;
     }
   }
 

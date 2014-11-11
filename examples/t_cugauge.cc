@@ -36,18 +36,18 @@ int main(int argc, char *argv[])
   // Do some wonderful and amazing things - impress your friends
   multi1d<LatticeColorMatrix> u(Nd);
   Double w_plaq, s_plaq, t_plaq, link;
-  QDPIO::cout << "Trying to read config" << endl;
+  QDPIO::cout << "Trying to read config" << std::endl;
   XMLReader gauge_xml;
   readArchiv(gauge_xml, u, "test_lattice");
 
-  QDPIO::cout << "Dump the gauge xml" << endl;
+  QDPIO::cout << "Dump the gauge xml" << std::endl;
   xml << gauge_xml;
                                                                                 
   // Try out the plaquette routine
   QDPIO::cout << "Start mesplq\n";
   MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-  QDPIO::cout << "w_plaq = " << w_plaq << endl;
-  QDPIO::cout << "link = " << link << endl;
+  QDPIO::cout << "w_plaq = " << w_plaq << std::endl;
+  QDPIO::cout << "link = " << link << std::endl;
 
   // Possibly shutdown the machine
   QDP_finalize();

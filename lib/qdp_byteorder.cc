@@ -13,9 +13,6 @@
 
 namespace QDPUtil
 {
-
-  using namespace std;
-
   //! Is the native byte order big endian?
   bool big_endian()
   {

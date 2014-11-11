@@ -96,8 +96,8 @@ int main(int argc, char **argv)
    MesPlq(u, w_plaq, s_plaq, t_plaq, link);
    QDPIO::cout << "...done\n";
 
-   QDPIO::cout << "w_plaq = " << w_plaq << endl;
-   QDPIO::cout << "link = " << link << endl;
+   QDPIO::cout << "w_plaq = " << w_plaq << std::endl;
+   QDPIO::cout << "link = " << link << std::endl;
  }
 
 
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
   multi1d<int> t_source(Nd);	// Source coordinate of propagators
   t_source = 0;
 
-  QDPIO::cout << "Computing simple meson spectroscopy..." << endl;
+  QDPIO::cout << "Computing simple meson spectroscopy..." << std::endl;
 
   {
     multi1d< multi1d<Real> > meson_prop;
@@ -140,9 +140,9 @@ int main(int argc, char **argv)
     pop(xml);
   }
 
-  QDPIO::cout << "...done" << endl;
+  QDPIO::cout << "...done" << std::endl;
 
-  QDPIO::cout << "Computing simple baryon spectroscopy..." << endl;
+  QDPIO::cout << "Computing simple baryon spectroscopy..." << std::endl;
 
   {
     multi1d< multi1d<Complex> > baryon_prop;
@@ -161,7 +161,7 @@ int main(int argc, char **argv)
 
   pop(xml);
   xml.close();
-  QDPIO::cout << "...done" << endl;
+  QDPIO::cout << "...done" << std::endl;
 
   // Time to bolt
   QDP_finalize();

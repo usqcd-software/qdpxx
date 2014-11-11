@@ -25,7 +25,7 @@ namespace QDP
 //-----------------------------------------------------------------------------
 // IO routine solely for debugging. Only defined here
   template<class T>
-  ostream& operator<<(ostream& s, const multi1d<T>& s1)
+  std::ostream& operator<<(std::ostream& s, const multi1d<T>& s1)
   {
     for(int i=0; i < s1.size(); ++i)
       s << " " << s1[i];
@@ -300,32 +300,32 @@ namespace QDP
       QDPIO::cout << "  problem size =";
       for(int i=0; i < Nd; ++i)
 	QDPIO::cout << " " << _layout.nrow[i];
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
 
       QDPIO::cout << "  layout size =";
       for(int i=0; i < Nd; ++i)
 	QDPIO::cout << " " << nrow[i];
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
 
       QDPIO::cout << "  logical machine size =";
       for(int i=0; i < Nd; ++i)
 	QDPIO::cout << " " << _layout.logical_size[i];
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
 
       QDPIO::cout << "  subgrid size =";
       for(int i=0; i < Nd; ++i)
 	QDPIO::cout << " " << _layout.subgrid_nrow[i];
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
 
-      QDPIO::cout << "  total number of nodes = " << Layout::numNodes() << endl;
-      QDPIO::cout << "  total volume = " << _layout.vol << endl;
-      QDPIO::cout << "  subgrid volume = " << _layout.subgrid_vol << endl;
+      QDPIO::cout << "  total number of nodes = " << Layout::numNodes() << std::endl;
+      QDPIO::cout << "  total volume = " << _layout.vol << std::endl;
+      QDPIO::cout << "  subgrid volume = " << _layout.subgrid_vol << std::endl;
       if ( _layout.iogrid_defined ) { 
-        QDPIO::cout << "  Number of IO nodes = " << _layout.num_iogrid << endl;
+        QDPIO::cout << "  Number of IO nodes = " << _layout.num_iogrid << std::endl;
         QDPIO::cout << "  IO grid size =";
         for(int i=0; i < Nd; i++) 
  	  QDPIO::cout << " " << _layout.iogrid[i];
-        QDPIO::cout << endl;
+        QDPIO::cout << std::endl;
       } 
 
       // Sanity check - check the QMP node number functions
@@ -366,7 +366,7 @@ namespace QDP
       // Initialize various defaults
       initDefaults();
 
-      QDPIO::cout << "Finished lattice layout" << endl;
+      QDPIO::cout << "Finished lattice layout" << std::endl;
 
 #if QDP_DEBUG >= 2
       QDP_info("Layout successfully initialized");

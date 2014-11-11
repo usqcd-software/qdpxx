@@ -12,8 +12,6 @@
 #include "qdp_defs.h"
 #include <cstring>
 
-using namespace std;
-
 namespace QDP 
 {
 
@@ -703,14 +701,14 @@ namespace QDP
   
     status=QIO_read_record_info(qio_in, &rec_info, xml_c);
     if( status != QIO_SUCCESS) { 
-      QDPIO::cerr << "Failed to read the Record Info" << endl;
+      QDPIO::cerr << "Failed to read the Record Info" << std::endl;
       QDP_abort(1);
     }
   
     switch( (QIO_get_precision(&rec_info))[0] ) { 
     case 'F' :
     {
-      QDPIO::cout << "Single Precision Read" << endl;
+      QDPIO::cout << "Single Precision Read" << std::endl;
       OScalar< typename SinglePrecType<T>::Type_t > from_disk;
       status = QIO_read_record_data(qio_in,
 				    &(QDPOScalarFactoryPut<typename SinglePrecType<T>::Type_t> ),
@@ -718,17 +716,17 @@ namespace QDP
 				    sizeof(typename WordType< typename SinglePrecType<T>::Type_t >::Type_t),
 				    (void *)(&(from_disk.elem())));
       if (status != QIO_SUCCESS) { 
-	QDPIO::cerr << "Failed to read data" << endl;
+	QDPIO::cerr << "Failed to read data" << std::endl;
 	clear(QDPIO_badbit);
 	QDP_abort(1);
       }
-      QDPIO::cout << "QIO_read_finished" << endl;
+      QDPIO::cout << "QIO_read_finished" << std::endl;
       s1 = from_disk;
     }
     break;
     case 'D' :
     {
-      QDPIO::cout << "Reading Double Precision" << endl;
+      QDPIO::cout << "Reading Double Precision" << std::endl;
       OScalar< typename DoublePrecType<T>::Type_t > from_disk;
       status = QIO_read_record_data(qio_in,
 				    &(QDPOScalarFactoryPut< typename DoublePrecType<T>::Type_t > ),
@@ -736,36 +734,36 @@ namespace QDP
 				    sizeof(typename WordType< typename DoublePrecType<T>::Type_t >::Type_t),
 				    (void *)(&(from_disk.elem())));
       if (status != QIO_SUCCESS) { 
-	QDPIO::cerr << "Failed to read data" << endl;
+	QDPIO::cerr << "Failed to read data" << std::endl;
 	clear(QDPIO_badbit);
 	QDP_abort(1);
       }
-      QDPIO::cout << "QIO_read_finished" << endl;
+      QDPIO::cout << "QIO_read_finished" << std::endl;
       
       s1 = from_disk;
     }
     break;
     default:
     {
-      QDPIO::cout << "Reading I or U Precision" << endl;
+      QDPIO::cout << "Reading I or U Precision" << std::endl;
       status = QIO_read_record_data(qio_in,
 				    &(QDPOScalarFactoryPut<T> ),
 				    sizeof(T),
 				    sizeof(typename WordType<T>::Type_t),
 				    (void *)(&(s1.elem())));
       if (status != QIO_SUCCESS) { 
-	QDPIO::cerr << "Failed to read data" << endl;
+	QDPIO::cerr << "Failed to read data" << std::endl;
 	clear(QDPIO_badbit);
 	QDP_abort(1);
       }
-      QDPIO::cout << "QIO_read_finished" << endl;
+      QDPIO::cout << "QIO_read_finished" << std::endl;
     }
     break;
     }
   
-    istringstream ss;
+    std::istringstream ss;
     if (Layout::primaryNode()) {
-      string foo = QIO_string_ptr(xml_c);
+      std::string foo = QIO_string_ptr(xml_c);
       ss.str(foo);
     }
     rec_xml.open(ss);
@@ -794,14 +792,14 @@ namespace QDP
   
     status=QIO_read_record_info(qio_in, &rec_info, xml_c);
     if( status != QIO_SUCCESS) { 
-      QDPIO::cerr << "Failed to read the Record Info" << endl;
+      QDPIO::cerr << "Failed to read the Record Info" << std::endl;
       QDP_abort(1);
     }
   
     switch( (QIO_get_precision(&rec_info))[0] ) { 
     case 'F' :
     {
-      QDPIO::cout << "Single Precision Read" << endl;
+      QDPIO::cout << "Single Precision Read" << std::endl;
       multi1d< OScalar< typename SinglePrecType<T>::Type_t > > from_disk(s1.size());
       status = QIO_read_record_data(qio_in,
 				    &(QDPOScalarFactoryPut<typename SinglePrecType<T>::Type_t> ),
@@ -809,11 +807,11 @@ namespace QDP
 				    sizeof(typename WordType< typename SinglePrecType<T>::Type_t >::Type_t),
 				    (void *)from_disk.slice());
       if (status != QIO_SUCCESS) { 
-	QDPIO::cerr << "Failed to read data" << endl;
+	QDPIO::cerr << "Failed to read data" << std::endl;
 	clear(QDPIO_badbit);
 	QDP_abort(1);
       }
-      QDPIO::cout << "QIO_read_finished" << endl;
+      QDPIO::cout << "QIO_read_finished" << std::endl;
       
       // Cast appropriately
       for(int i=0; i < from_disk.size(); i++) { 
@@ -824,7 +822,7 @@ namespace QDP
     break;
     case 'D' :
     {
-      QDPIO::cout << "Reading Double Precision" << endl;
+      QDPIO::cout << "Reading Double Precision" << std::endl;
       multi1d< typename DoublePrecType< OScalar<T> >::Type_t > from_disk(s1.size());
       status = QIO_read_record_data(qio_in,
 				    &(QDPOScalarFactoryPut< typename DoublePrecType<T>::Type_t > ),
@@ -832,11 +830,11 @@ namespace QDP
 				    sizeof(typename WordType< typename DoublePrecType<T>::Type_t >::Type_t),
 				    (void *)from_disk.slice());
       if (status != QIO_SUCCESS) { 
-	QDPIO::cerr << "Failed to read data" << endl;
+	QDPIO::cerr << "Failed to read data" << std::endl;
 	clear(QDPIO_badbit);
 	QDP_abort(1);
       }
-      QDPIO::cout << "QIO_read_finished" << endl;
+      QDPIO::cout << "QIO_read_finished" << std::endl;
       
       // Cast appropriately
       for(int i=0; i < from_disk.size(); i++) { 
@@ -846,25 +844,25 @@ namespace QDP
     break;
     default:
     {
-      QDPIO::cout << "Reading I or U Precision" << endl;
+      QDPIO::cout << "Reading I or U Precision" << std::endl;
       status = QIO_read_record_data(qio_in,
 				    &(QDPOScalarFactoryPut<T> ),
 				    s1.size()*sizeof(T),
 				    sizeof(typename WordType<T>::Type_t),
 				    (void *)s1.slice());
       if (status != QIO_SUCCESS) { 
-	QDPIO::cerr << "Failed to read data" << endl;
+	QDPIO::cerr << "Failed to read data" << std::endl;
 	clear(QDPIO_badbit);
 	QDP_abort(1);
       }
-      QDPIO::cout << "QIO_read_finished" << endl;
+      QDPIO::cout << "QIO_read_finished" << std::endl;
     }
     break;
     }
   
-    istringstream ss;
+    std::istringstream ss;
     if (Layout::primaryNode()) {
-      string foo = QIO_string_ptr(xml_c);
+      std::string foo = QIO_string_ptr(xml_c);
       ss.str(foo);
     }
     rec_xml.open(ss);
@@ -925,7 +923,7 @@ namespace QDP
 
     if (xml_c == NULL)
     {
-      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << endl;
+      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << std::endl;
       QDP_abort(1);
     }
 
@@ -937,7 +935,7 @@ namespace QDP
 		  sizeof(typename WordType<T>::Type_t), 
 		  (void *)(&(s1.elem()))) != QIO_SUCCESS)
     {
-      QDPIO::cerr << "QDPFileWriter: error in write" << endl;
+      QDPIO::cerr << "QDPFileWriter: error in write" << std::endl;
       clear(QDPIO_badbit);
     }
 
@@ -980,7 +978,7 @@ namespace QDP
 
     if (xml_c == NULL)
     {
-      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << endl;
+      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << std::endl;
       QDP_abort(1);
     }
 
@@ -991,7 +989,7 @@ namespace QDP
 		  sizeof(typename WordType<T>::Type_t), 
 		  (void *)s1.slice()) != QIO_SUCCESS)
     {
-      QDPIO::cerr << "QDPFileWriter: error in write" << endl;
+      QDPIO::cerr << "QDPFileWriter: error in write" << std::endl;
       clear(QDPIO_badbit);
     }
 
@@ -1075,14 +1073,14 @@ namespace QDP
   
     status=QIO_read_record_info(qio_in, &rec_info, xml_c);
     if( status != QIO_SUCCESS) { 
-      QDPIO::cerr << "Failed to read the Record Info" << endl;
+      QDPIO::cerr << "Failed to read the Record Info" << std::endl;
       QDP_abort(1);
     }
       
     switch( (QIO_get_precision(&rec_info))[0] ) { 
     case 'F' :
     {
-      QDPIO::cout << "Single Precision Read" << endl;
+      QDPIO::cout << "Single Precision Read" << std::endl;
       OLattice< typename SinglePrecType<T>::Type_t > from_disk;
       zero_rep(from_disk);
 
@@ -1094,17 +1092,17 @@ namespace QDP
 				    (void *)from_disk.getF());
       
       if (status != QIO_SUCCESS) { 
-	QDPIO::cerr << "Failed to read data" << endl;
+	QDPIO::cerr << "Failed to read data" << std::endl;
 	clear(QDPIO_badbit);
 	QDP_abort(1);
       }
-      QDPIO::cout << "QIO_read_finished" << endl;
+      QDPIO::cout << "QIO_read_finished" << std::endl;
       s1 = from_disk; // Cast
     }
     break;
     case 'D' :
     {
-      QDPIO::cout << "Reading Double Precision" << endl;
+      QDPIO::cout << "Reading Double Precision" << std::endl;
       OLattice< typename DoublePrecType<T>::Type_t > from_disk;
       zero_rep(from_disk);
 
@@ -1116,11 +1114,11 @@ namespace QDP
 				    (void *)from_disk.getF());
       
       if (status != QIO_SUCCESS) { 
-	QDPIO::cerr << "Failed to read data" << endl;
+	QDPIO::cerr << "Failed to read data" << std::endl;
 	clear(QDPIO_badbit);
 	QDP_abort(1);
       }
-      QDPIO::cout << "QIO_read_finished" << endl;
+      QDPIO::cout << "QIO_read_finished" << std::endl;
       
       // Cast appropriately
       s1= from_disk;
@@ -1129,7 +1127,7 @@ namespace QDP
     break;
     default:
     {
-      QDPIO::cout << "Reading I or U precisions" << endl;
+      QDPIO::cout << "Reading I or U precisions" << std::endl;
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPut<T>),
 				    sizeof(T),
@@ -1137,18 +1135,18 @@ namespace QDP
 				    (void *)s1.getF());
      
       if (status != QIO_SUCCESS) { 
-	QDPIO::cerr << "Failed to read data" << endl;
+	QDPIO::cerr << "Failed to read data" << std::endl;
 	clear(QDPIO_badbit);
 	QDP_abort(1);
       }
-      QDPIO::cout << "QIO_read_finished" << endl;
+      QDPIO::cout << "QIO_read_finished" << std::endl;
     }
     break;
     };
         
-    istringstream ss;
+    std::istringstream ss;
     if (Layout::primaryNode()) {
-      string foo = QIO_string_ptr(xml_c);
+      std::string foo = QIO_string_ptr(xml_c);
       ss.str(foo);
     }
     rec_xml.open(ss);
@@ -1175,14 +1173,14 @@ namespace QDP
   
     status=QIO_read_record_info(qio_in, &rec_info, xml_c);
     if( status != QIO_SUCCESS) { 
-      QDPIO::cerr << "Failed to read the Record Info" << endl;
+      QDPIO::cerr << "Failed to read the Record Info" << std::endl;
       QDP_abort(1);
     }
   
     switch( (QIO_get_precision(&rec_info))[0] ) { 
     case 'F' :
     {
-      QDPIO::cout << "Single Precision Read" << endl;
+      QDPIO::cout << "Single Precision Read" << std::endl;
       multi1d< OLattice< typename SinglePrecType<T>::Type_t > > from_disk(s1.size());
       for(int i=0; i < s1.size(); i++) { zero_rep(from_disk[i]); }
 
@@ -1192,11 +1190,11 @@ namespace QDP
 				    sizeof(typename WordType< typename SinglePrecType<T>::Type_t >::Type_t),
 				    (void *)&from_disk);
       if (status != QIO_SUCCESS) { 
-	QDPIO::cerr << "Failed to read data" << endl;
+	QDPIO::cerr << "Failed to read data" << std::endl;
 	clear(QDPIO_badbit);
 	QDP_abort(1);
       }
-      QDPIO::cout << "QIO_read_finished" << endl;
+      QDPIO::cout << "QIO_read_finished" << std::endl;
       
       // Cast appropriately
       for(int i=0; i < from_disk.size(); i++) { 
@@ -1207,7 +1205,7 @@ namespace QDP
     break;
     case 'D' :
     {
-      QDPIO::cout << "Reading Double Precision" << endl;
+      QDPIO::cout << "Reading Double Precision" << std::endl;
       multi1d< typename DoublePrecType< OLattice<T> >::Type_t > from_disk(s1.size());
       for(int i=0; i < s1.size(); i++) { zero_rep(from_disk[i]); }
 
@@ -1217,11 +1215,11 @@ namespace QDP
 				    sizeof(typename WordType< typename DoublePrecType<T>::Type_t >::Type_t),
 				    (void *)&from_disk);
       if (status != QIO_SUCCESS) { 
-	QDPIO::cerr << "Failed to read data" << endl;
+	QDPIO::cerr << "Failed to read data" << std::endl;
 	clear(QDPIO_badbit);
 	QDP_abort(1);
       }
-      QDPIO::cout << "QIO_read_finished" << endl;
+      QDPIO::cout << "QIO_read_finished" << std::endl;
       
       // Cast appropriately
       for(int i=0; i < from_disk.size(); i++) { 
@@ -1231,25 +1229,25 @@ namespace QDP
     break;
     default:
     {
-      QDPIO::cout << "Reading I or U Precision" << endl;
+      QDPIO::cout << "Reading I or U Precision" << std::endl;
       status = QIO_read_record_data(qio_in,
 				    &(QDPOLatticeFactoryPutArray<T> ),
 				    s1.size()*sizeof(T),
 				    sizeof(typename WordType<T>::Type_t),
 				    (void *)&s1);
       if (status != QIO_SUCCESS) { 
-	QDPIO::cerr << "Failed to read data" << endl;
+	QDPIO::cerr << "Failed to read data" << std::endl;
 	clear(QDPIO_badbit);
 	QDP_abort(1);
       }
-      QDPIO::cout << "QIO_read_finished" << endl;
+      QDPIO::cout << "QIO_read_finished" << std::endl;
     }
     break;
     }
   
-    istringstream ss;
+    std::istringstream ss;
     if (Layout::primaryNode()) {
-      string foo = QIO_string_ptr(xml_c);
+      std::string foo = QIO_string_ptr(xml_c);
       ss.str(foo);
     }
 
@@ -1257,7 +1255,7 @@ namespace QDP
       rec_xml.open(ss);
     }
     catch(const std::string& e) { 
-      QDPIO::cout << "Handling exception" << endl;
+      QDPIO::cout << "Handling exception" << std::endl;
     }
   
     QIO_string_destroy(xml_c);
@@ -1330,7 +1328,7 @@ namespace QDP
 
     if (xml_c == NULL)
     {
-      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << endl;
+      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << std::endl;
       QDP_abort(1);
     }
 
@@ -1341,7 +1339,7 @@ namespace QDP
 		  sizeof(typename WordType<T>::Type_t), 
 		  (void *)s1.getF()) != QIO_SUCCESS)
     {
-      QDPIO::cerr << "QDPFileWriter: error in write" << endl;
+      QDPIO::cerr << "QDPFileWriter: error in write" << std::endl;
       clear(QDPIO_badbit);
     }
 
@@ -1366,7 +1364,7 @@ namespace QDP
 
     // Sanity check...
     if( lower_left.size() != upper_right.size()) {
-	QDPIO::cerr << "QDPFileWriter: Error! Lower left and upper right corner of hypercube to write have different dimensions" << endl;
+	QDPIO::cerr << "QDPFileWriter: Error! Lower left and upper right corner of hypercube to write have different dimensions" << std::endl;
 	QDP_abort(1);
     }
 
@@ -1386,7 +1384,7 @@ namespace QDP
 
     if (xml_c == NULL)
     {
-      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << endl;
+      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << std::endl;
       QDP_abort(1);
     }
 
@@ -1397,7 +1395,7 @@ namespace QDP
 		  sizeof(typename WordType<T>::Type_t), 
 		  (void *)s1.getF()) != QIO_SUCCESS)
     {
-      QDPIO::cerr << "QDPFileWriter: error in write" << endl;
+      QDPIO::cerr << "QDPFileWriter: error in write" << std::endl;
       clear(QDPIO_badbit);
     }
 
@@ -1431,7 +1429,7 @@ namespace QDP
 
     if (xml_c == NULL)
     {
-      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << endl;
+      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << std::endl;
       QDP_abort(1);
     }
 
@@ -1442,7 +1440,7 @@ namespace QDP
 		  sizeof(typename WordType<T>::Type_t), 
 		  (void*)&s1) != QIO_SUCCESS)
     {
-      QDPIO::cerr << "QDPFileWriter: error in write" << endl;
+      QDPIO::cerr << "QDPFileWriter: error in write" << std::endl;
       clear(QDPIO_badbit);
     }
 
@@ -1469,7 +1467,7 @@ namespace QDP
 
     // Sanity check...
     if( lower_left.size() != upper_right.size()) {
-	QDPIO::cerr << "QDPFileWriter: Error! Lower left and upper right corner of hypercube to write have different dimensions" << endl;
+	QDPIO::cerr << "QDPFileWriter: Error! Lower left and upper right corner of hypercube to write have different dimensions" << std::endl;
 	QDP_abort(1);
     }
 
@@ -1489,7 +1487,7 @@ namespace QDP
 
     if (xml_c == NULL)
     {
-      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << endl;
+      QDPIO::cerr << "QDPFileWriter::write - error in creating XML string" << std::endl;
       QDP_abort(1);
     }
 
@@ -1500,7 +1498,7 @@ namespace QDP
 		  sizeof(typename WordType<T>::Type_t), 
 		  (void*)&s1) != QIO_SUCCESS)
     {
-      QDPIO::cerr << "QDPFileWriter: error in write" << endl;
+      QDPIO::cerr << "QDPFileWriter: error in write" << std::endl;
       clear(QDPIO_badbit);
     }
 

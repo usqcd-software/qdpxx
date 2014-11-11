@@ -56,7 +56,7 @@ using namespace QDP;
 
 void fail(int line)
 {
-  QDPIO::cout << "FAIL: line= " << line << endl;
+  QDPIO::cout << "FAIL: line= " << line << std::endl;
   QDP_finalize();
   exit(1);
 }
@@ -66,13 +66,13 @@ void testMapObjInsertions(MapObjectMemory<char, float>& the_map)
  // Open the map for 'filling'
   QDPIO::cout << "Opening MapObjectMemory<char,float> for writing..."; 
   try { 
-    QDPIO::cout << "OK" << endl;
+    QDPIO::cout << "OK" << std::endl;
   }
   catch(...) {
     fail(__LINE__);
   }
   
-  QDPIO::cout << "Inserting (key,value): " << endl;
+  QDPIO::cout << "Inserting (key,value): " << std::endl;
   // store a quadratic
   for(char i=0; i < 10; i++) { 
     float val = (float)i;
@@ -81,7 +81,7 @@ void testMapObjInsertions(MapObjectMemory<char, float>& the_map)
 
     try { 
       the_map.insert(key, val);
-      QDPIO::cout << "  ( " << key <<", "<< val <<" )" << endl;
+      QDPIO::cout << "  ( " << key <<", "<< val <<" )" << std::endl;
     }
     catch(...) { 
       fail(__LINE__);
@@ -90,7 +90,7 @@ void testMapObjInsertions(MapObjectMemory<char, float>& the_map)
   
   QDPIO::cout << "Closing MapObjectMemory<char,float> for writing..." ;
   try {
-    QDPIO::cout << "... OK" << endl;
+    QDPIO::cout << "... OK" << std::endl;
   }
   catch(...) {
     fail(__LINE__);
@@ -103,13 +103,13 @@ void testMapObjLookups(MapObjectMemory<char, float>& the_map)
   /* Now reopen - random access */
   QDPIO::cout << "Opening MapObjectMemory<char,float> for reading..."; 
   try {  
-    QDPIO::cout << "OK" << endl;
+    QDPIO::cout << "OK" << std::endl;
   }
   catch(...) { 
     fail(__LINE__);
   }
 
-  QDPIO::cout << "Forward traversal test: " << endl;
+  QDPIO::cout << "Forward traversal test: " << std::endl;
   // Traverse in sequence
   
   QDPIO::cout << "Looking up key: " ;
@@ -135,10 +135,10 @@ void testMapObjLookups(MapObjectMemory<char, float>& the_map)
     }
   }
 
-  QDPIO::cout << endl << "OK" << endl;
+  QDPIO::cout << std::endl << "OK" << std::endl;
 
 
-  QDPIO::cout << "Reverse traversal check" << endl;
+  QDPIO::cout << "Reverse traversal check" << std::endl;
   QDPIO::cout << "Looking up key: " ;
   // Traverse in reverse
 
@@ -159,15 +159,15 @@ void testMapObjLookups(MapObjectMemory<char, float>& the_map)
       fail(__LINE__);
     }
     else { 
-      QDPIO::cout << "." << endl;
+      QDPIO::cout << "." << std::endl;
     }
 
   }
-  QDPIO::cout << endl << "OK" << endl;
+  QDPIO::cout << std::endl << "OK" << std::endl;
 
 
   // 20 'random' reads
-  QDPIO::cout << "Random access... 20 reads" << endl;
+  QDPIO::cout << "Random access... 20 reads" << std::endl;
   QDPIO::cout << "Looking up key: " ;
   for(int j=0; j < 20; j++){ 
     char key = 'a'+std::rand() % 10; // Pick randomly in 0..10
@@ -191,7 +191,7 @@ void testMapObjLookups(MapObjectMemory<char, float>& the_map)
       QDPIO::cout <<".";
     }
   }
-  QDPIO::cout << endl << "OK" << endl;
+  QDPIO::cout << std::endl << "OK" << std::endl;
 }
 
 
@@ -204,9 +204,9 @@ void testMapKeyPropColorVecInsertions(MapObjectMemory<KeyPropColorVec_t, Lattice
   KeyPropColorVec_t the_key = {0,0,0};
 
   // OpenMap for Writing
-  QDPIO::cout << "Opening Map<KeyPropColorVec_t,LF> for writing..." << endl;
+  QDPIO::cout << "Opening Map<KeyPropColorVec_t,LF> for writing..." << std::endl;
   try { 
-    QDPIO::cout << "OK" << endl;
+    QDPIO::cout << "OK" << std::endl;
   }
   catch(...) {
     fail(__LINE__);
@@ -218,16 +218,16 @@ void testMapKeyPropColorVecInsertions(MapObjectMemory<KeyPropColorVec_t, Lattice
 
     try { 
       pc_map.insert(the_key, lf_array[i]);
-      QDPIO::cout << " "<< i << endl;
+      QDPIO::cout << " "<< i << std::endl;
     }
     catch(...) {
       fail(__LINE__);
     }
   }
 
-  QDPIO::cout << "Closing Map<KeyPropColorVec_t,LF> for writing..." << endl;
+  QDPIO::cout << "Closing Map<KeyPropColorVec_t,LF> for writing..." << std::endl;
   try { 
-    QDPIO::cout << "OK" << endl;
+    QDPIO::cout << "OK" << std::endl;
   }
   catch(...) { 
     fail(__LINE__);
@@ -239,16 +239,16 @@ void testMapKeyPropColorVecLookups(MapObjectMemory<KeyPropColorVec_t, LatticeFer
 				   const multi1d<LatticeFermion>& lf_array)
 {
   // Open map in read mode
-  QDPIO::cout << "Opening Map<KeyPropColorVec_t,LF> for reading.." << endl;
+  QDPIO::cout << "Opening Map<KeyPropColorVec_t,LF> for reading.." << std::endl;
 
   try { 
-    QDPIO::cout << "OK" << endl;
+    QDPIO::cout << "OK" << std::endl;
   }
   catch(...) { 
     fail(__LINE__);
   }
 
-  QDPIO::cout << "Increasing lookup test:" << endl;
+  QDPIO::cout << "Increasing lookup test:" << std::endl;
   QDPIO::cout << "Looking up with colorvec_src = ";
   // Create the key-type
   KeyPropColorVec_t the_key = {0,0,0};
@@ -277,9 +277,9 @@ void testMapKeyPropColorVecLookups(MapObjectMemory<KeyPropColorVec_t, LatticeFer
     }
 
   }
-  QDPIO::cout << endl << "OK" << endl;
+  QDPIO::cout << std::endl << "OK" << std::endl;
 
-  QDPIO::cout << "Random access lookup test" << endl;
+  QDPIO::cout << "Random access lookup test" << std::endl;
   QDPIO::cout << "Looking up with colorvec_src = " ;
   // Hey DJ! Spin that disk...
   for(int j=0; j < 100; j++) {
@@ -305,7 +305,7 @@ void testMapKeyPropColorVecLookups(MapObjectMemory<KeyPropColorVec_t, LatticeFer
       fail(__LINE__);
     }
   }
-  QDPIO::cout << endl << "OK" << endl;
+  QDPIO::cout << std::endl << "OK" << std::endl;
 }
 
 
@@ -325,7 +325,7 @@ int main(int argc, char *argv[])
   Layout::create();
 
   // Params to create a map object disk
-  string map_obj_file("t_map_obj_disk.mod");
+  std::string map_obj_file("t_map_obj_disk.mod");
 
 #if 1
   //
@@ -339,7 +339,7 @@ int main(int argc, char *argv[])
     testMapObjLookups(made_map);
   }
   catch(const std::string& e) { 
-    QDPIO::cout << "Caught: " << e << endl;
+    QDPIO::cout << "Caught: " << e << std::endl;
     fail(__LINE__);
   }
 #endif
@@ -360,37 +360,37 @@ int main(int argc, char *argv[])
     
     testMapKeyPropColorVecInsertions(pc_map, lf_array);
     testMapKeyPropColorVecLookups(pc_map, lf_array);
-    QDPIO::cout << endl << "OK" << endl;
+    QDPIO::cout << std::endl << "OK" << std::endl;
 
     // Test an update 
-    QDPIO::cout << "Doing update test ..." << endl;
+    QDPIO::cout << "Doing update test ..." << std::endl;
     KeyPropColorVec_t the_key = {0,0,0};
     the_key.colorvec_src = 5;
     LatticeFermion f; gaussian(f);
     QDPIO::cout << "Updating..." ;
     pc_map.insert(the_key,f);
-    QDPIO::cout << "OK" << endl;
+    QDPIO::cout << "OK" << std::endl;
 
     LatticeFermion f2;
     QDPIO::cout << "Re-Looking up...";
     pc_map.get(the_key,f2);
-    QDPIO::cout << "OK" << endl;
+    QDPIO::cout << "OK" << std::endl;
 
-    QDPIO::cout << "Comparing..." << endl;
+    QDPIO::cout << "Comparing..." << std::endl;
     f2 -= f;
     if( toBool( sqrt(norm2(f2)) > toDouble(1.0e-6) ) ) {
-      QDPIO::cout << "sqrt(norm2(f2))=" << sqrt(norm2(f2)) << endl;
+      QDPIO::cout << "sqrt(norm2(f2))=" << sqrt(norm2(f2)) << std::endl;
       fail(__LINE__);
     }
     else { 
-      QDPIO::cout << "OK" << endl ;
+      QDPIO::cout << "OK" << std::endl ;
     }
     // Reinsert previous value
     pc_map.insert(the_key,lf_array[5]);
     testMapKeyPropColorVecLookups(pc_map, lf_array);
   }
   catch(const std::string& e) { 
-    QDPIO::cout << "Caught: " << e << endl;
+    QDPIO::cout << "Caught: " << e << std::endl;
     fail(__LINE__);
   }
 #endif

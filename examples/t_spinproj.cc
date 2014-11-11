@@ -8,7 +8,6 @@
 
 #include "qdp.h"
 
-using namespace std;
 using namespace QDP;
 
 void checkSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec);
