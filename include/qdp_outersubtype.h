@@ -305,14 +305,14 @@ struct DoublePrecType<OSubLattice<T> >
 template<class T> 
 void zero_rep(OScalar<T>& dest, const Subset& s) 
 {
-  zero_rep(dest.field().elem());
+  zero_rep(dest.elem());
 }
 
 //! dest = 0
 template<class T>
 void zero_rep(OSubScalar<T> dest) 
 {
-  zero_rep(dest.field().elem());
+  zero_rep(*dest.getF());
 }
 
 //! dest = (mask) ? s1 : dest
@@ -320,7 +320,7 @@ template<class T1, class T2>
 void copymask(OSubScalar<T2> dest, const OScalar<T1>& mask, 
 	      const OScalar<T2>& s1) 
 {
-  copymask(dest.field().elem(), mask.elem(), s1.elem());
+  copymask(*dest.getF(), mask.elem(), s1.elem());
 }
 
 
@@ -335,7 +335,7 @@ void random(OSubScalar<T> d);
 template<class T>
 void gaussian(OSubScalar<T> dd)
 {
-  OLattice<T>& d = dd.field();
+  T& d = *(dd.getF());
   const Subset& s = dd.subset();
 
   OScalar<T>  r1, r2;
@@ -343,7 +343,7 @@ void gaussian(OSubScalar<T> dd)
   random(r1(s));
   random(r2(s));
 
-  fill_gaussian(d.elem(), r1.elem(), r2.elem());
+  fill_gaussian(d, r1.elem(), r2.elem());
 }
 
 } // namespace QDP

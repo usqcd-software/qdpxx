@@ -463,7 +463,6 @@ void evaluate_F(T* dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
 template<class T1, class T2>
 void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
-	OLattice<T2>& dest = d.field();
 	const Subset& s = d.subset();
 
 	const int *tab = s.siteTable().slice();
@@ -471,7 +470,7 @@ void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s
 	for(int j=0; j < s.numSiteTable(); ++j) 
 	{
 		int i = tab[j];
-		copymask(dest.elem(i), mask.elem(i), s1.elem(i));
+		copymask(d.getF()[i], mask.elem(i), s1.elem(i));
 	}
 }
 
@@ -547,10 +546,7 @@ random(OLattice<T>& d, const Subset& s)
 template<class T>
 void random(OSubLattice<T> dd)
 {
-	OLattice<T>& d = dd.field();
-	const Subset& s = dd.subset();
-
-	random(d,s);
+	random_F(dd.getF(),dd.subset());
 }
 
 
@@ -586,10 +582,7 @@ void gaussian(OLattice<T>& d, const Subset& s)
 template<class T>
 void gaussian(OSubLattice<T> dd)
 {
-	OLattice<T>& d = dd.field();
-	const Subset& s = dd.subset();
-
-	gaussian(d,s);
+	gaussian_F(dd.getF(),dd.subset());
 }
 
 
@@ -2558,9 +2551,9 @@ void writeOLattice(BinaryWriter& bin,
 template<class T>
 void write(BinaryWriter& bin, OSubLattice<T> dd)
 {
-	const OLattice<T>& d = dd.field();
+	T* d = dd.getF();
 
-	writeOLattice(bin, (const char *)&(d.elem(0)), 
+	writeOLattice(bin, (const char *)d,
 		sizeof(typename WordType<T>::Type_t), 
 		sizeof(T) / sizeof(typename WordType<T>::Type_t),
 		dd.subset());
@@ -2610,7 +2603,7 @@ void readOLattice(BinaryReader& bin,
 template<class T>
 void read(BinaryReader& bin, OSubLattice<T> d)
 {
-	readOLattice(bin, (char *)(d.field().getF()),
+	readOLattice(bin, (char *)(d.getF()),
 				 sizeof(typename WordType<T>::Type_t), 
 				 sizeof(T) / sizeof(typename WordType<T>::Type_t),
 				 d.subset());

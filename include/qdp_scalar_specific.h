@@ -280,7 +280,6 @@ template<class T1, class T2>
 void 
 copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
-  OLattice<T2>& dest = d.field();
   const Subset& s = d.subset();
 
   const int *tab = s.siteTable().slice();
@@ -288,7 +287,7 @@ copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1)
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
-    copymask(dest.elem(i), mask.elem(i), s1.elem(i));
+    copymask(dd.getF()[i], mask.elem(i), s1.elem(i));
   }
 }
 
@@ -367,10 +366,7 @@ random(OLattice<T>& d, const Subset& s)
 template<class T>
 void random(OSubLattice<T> dd)
 {
-  OLattice<T>& d = dd.field();
-  const Subset& s = dd.subset();
-
-  random(d,s);
+  random_F(dd.getF(),dd.subset());
 }
 
 
@@ -407,10 +403,7 @@ void gaussian(OLattice<T>& d, const Subset& s)
 template<class T>
 void gaussian(OSubLattice<T> dd)
 {
-  OLattice<T>& d = dd.field();
-  const Subset& s = dd.subset();
-
-  gaussian(d,s);
+  gaussian_F(dd.getF(),dd.subset());
 }
 
 
@@ -2120,7 +2113,7 @@ void write(BinaryWriter& bin, OSubLattice<T> dd)
   const Subset& sub = dd.subset();
   const Set& set    = sub.getSet();
 
-  const OLattice<T>& d = dd.field();
+  const T* d = dd.getF();
 
   const multi1d<int>& lat_color = set.latticeColoring();
   const int color = sub.color();
@@ -2132,7 +2125,7 @@ void write(BinaryWriter& bin, OSubLattice<T> dd)
     int i = Layout::linearSiteIndex(site);
     if (lat_color[i] == color)
     {
-      bin.writeArray((const char*)&(d.elem(i)), 
+      bin.writeArray((const char*)&(d[i]),
 		     sizeof(typename WordType<T>::Type_t), 
 		     sizeof(T) / sizeof(typename WordType<T>::Type_t));
     }
@@ -2195,7 +2188,7 @@ void read(BinaryReader& bin, OSubLattice<T> dd)
   const Subset& sub = dd.subset();
   const Set& set    = sub.getSet();
 
-  OLattice<T>& d = dd.field();
+  T* d = dd.getF();
 
   const multi1d<int>& lat_color = set.latticeColoring();
   const int color = sub.color();
@@ -2207,7 +2200,7 @@ void read(BinaryReader& bin, OSubLattice<T> dd)
     int i = Layout::linearSiteIndex(site);
     if (lat_color[i] == color)
     {
-      bin.readArray((char*)&(d.elem(i)), 
+      bin.readArray((char*)&(d[i]),
 		    sizeof(typename WordType<T>::Type_t), 
 		    sizeof(T) / sizeof(typename WordType<T>::Type_t));
     }
