@@ -500,14 +500,8 @@ namespace QDP {
 			readPrepare(name,type_id,sizes);
 
 			//sanity check:
-			ullong float_size=0;
-			if(H5Tequal(type_id,H5T_NATIVE_FLOAT)>0){
-				float_size=4;
-			}
-			else if(H5Tequal(type_id,H5T_NATIVE_DOUBLE)>0){
-				float_size=8;
-			}
-			else{
+			ullong float_size=H5Tget_size(type_id);
+			if( float_size!=4 && float_size!=8 ){
 				HDF5_error_exit("HDF5Reader::read: error, datatype mismatch!\n");
 			}
 			H5Tclose(type_id);
@@ -545,14 +539,8 @@ namespace QDP {
 			readPrepare(name,type_id,sizes);
 
 			//sanity check:
-			ullong float_size=0;
-			if(H5Tequal(type_id,H5T_NATIVE_FLOAT)>0){
-				float_size=4;
-			}
-			else if(H5Tequal(type_id,H5T_NATIVE_DOUBLE)>0){
-				float_size=8;
-			}
-			else{
+			ullong float_size=H5Tget_size(type_id);
+			if( float_size!=4 && float_size!=8 ){
 				HDF5_error_exit("HDF5Reader::read: error, datatype mismatch!\n");
 			}
 			H5Tclose(type_id);
@@ -606,15 +594,9 @@ namespace QDP {
 
 			//sanity check:
 			if(profile) swatch_datatypes.start();
-			ullong float_size=0;
-			if(H5Tequal(type_id,H5T_NATIVE_FLOAT)>0){
-				float_size=4;
-			}
-			else if(H5Tequal(type_id,H5T_NATIVE_DOUBLE)>0){
-				float_size=8;
-			}
-			else{
-				HDF5_error_exit("HDF5Reader::read: error, datatype mismatch!");
+			ullong float_size=H5Tget_size(type_id);
+			if( float_size!=4 && float_size!=8 ){
+				HDF5_error_exit("HDF5Reader::read: error, datatype mismatch!\n");
 			}
 			if(sizes.size()!=(Nd+1)){
 				HDF5_error_exit("HDF5Reader::read: error, wrong dimensionality!");
@@ -687,17 +669,10 @@ namespace QDP {
 
 			//check sanity
 			if(profile) swatch_datatypes.start();
-			ullong float_size=0;
-			if(H5Tequal(type_id,H5T_NATIVE_FLOAT)>0){
-				float_size=4;
+			ullong float_size=H5Tget_size(type_id);
+			if( float_size!=4 && float_size!=8 ){
+				HDF5_error_exit("HDF5Reader::read: error, datatype mismatch!\n");
 			}
-			else if(H5Tequal(type_id,H5T_NATIVE_DOUBLE)>0){
-				float_size=8;
-			}
-			else{
-				HDF5_error_exit("HDF5Reader::read: error, datatype mismatch!");
-			}
-
 			if(sizes.size()!=(Nd+1)){
 				HDF5_error_exit("HDF5Reader::read: error, wrong dimensionality!");
 			}
