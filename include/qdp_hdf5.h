@@ -248,9 +248,11 @@ namespace QDP {
 			//read
 			hid_t plist_id = H5Pcreate(H5P_DATASET_XFER);
 			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
-			H5Dread(dset_id,type_id,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(&datum));
+			hid_t nat_type_id=H5Tget_native_type(type_id,H5T_DIR_ASCEND);
+			H5Dread(dset_id,nat_type_id,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(&datum));
 			H5Pclose(plist_id);
 			H5Dclose(dset_id);
+			H5Tclose(nat_type_id);
 			H5Tclose(type_id);
 		}
 
@@ -311,9 +313,11 @@ namespace QDP {
 			ctype* token=new ctype[space_size];
 			hid_t plist_id = H5Pcreate(H5P_DATASET_XFER);
 			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
-			H5Dread(dset_id,type_id,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(token));
+			hid_t nat_type_id=H5Tget_native_type(type_id,H5T_DIR_ASCEND);
+			H5Dread(dset_id,nat_type_id,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(token));
 			H5Pclose(plist_id);
 			H5Dclose(dset_id);
+			H5Tclose(nat_type_id);
 			H5Tclose(type_id);
 			datum.resize(space_size);
 			for(hsize_t i=0; i<space_size; i++) datum[i]=token[i];
@@ -378,9 +382,11 @@ namespace QDP {
 			ctype* token=new ctype[space_size];
 			hid_t plist_id = H5Pcreate(H5P_DATASET_XFER);
 			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
-			H5Dread(dset_id,type_id,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(token));
+			hid_t nat_type_id=H5Tget_native_type(type_id,H5T_DIR_ASCEND);
+			H5Dread(dset_id,nat_type_id,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(token));
 			H5Pclose(plist_id);
 			H5Dclose(dset_id);
+			H5Tclose(nat_type_id);
 			H5Tclose(type_id);
 			datum.resize(dims[0],dims[1]);
 			for(hsize_t i=0; i<dims[0]; i++){
