@@ -55,13 +55,15 @@ namespace QDP {
 				exists=true;
 			}
 			input.close();
+			
+			if(exists){
+				htri_t ex=H5Fis_hdf5(filename.c_str());
+				if(ex<=0) exists=false;
+			}
 		}
 		QDPInternal::broadcast(exists);
-		if(!exists) return false;
-
-		htri_t ex=H5Fis_hdf5(filename.c_str());
-		if(ex<=0) return false;
-		else return true;
+		
+		return exists;
 	}
 
 	//error handler:
