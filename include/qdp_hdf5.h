@@ -135,8 +135,10 @@ namespace QDP {
 			}
 
 			//read
-			hid_t errhandle=H5Aread(attr_id,type_id,reinterpret_cast<void*>(&datum));
+			hid_t nat_type_id=H5Tget_native_type(type_id,H5T_DIR_ASCEND);
+			hid_t errhandle=H5Aread(attr_id,nat_type_id,reinterpret_cast<void*>(&datum));
 			errhandle=H5Aclose(attr_id);
+			errhandle=H5Tclose(nat_type_id);
 			errhandle=H5Tclose(type_id);
 		}
 
@@ -190,8 +192,10 @@ namespace QDP {
 			hsize_t space_size=H5Sget_simple_extent_npoints(space_id);
 			H5Sclose(space_id);
 			ctype* token=new ctype[space_size];
-			herr_t errhandle=H5Aread(attr_id,type_id,reinterpret_cast<void*>(token));
+			hid_t nat_type_id=H5Tget_native_type(type_id,H5T_DIR_ASCEND);
+			herr_t errhandle=H5Aread(attr_id,nat_type_id,reinterpret_cast<void*>(token));
 			H5Aclose(attr_id);
+			H5Tclose(nat_type_id);
 			H5Tclose(type_id);
 			datum.resize(space_size);
 			for(hsize_t i=0; i<space_size; i++) datum[i]=token[i];
