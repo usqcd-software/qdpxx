@@ -837,7 +837,8 @@ namespace QDP {
 			ctype datumcpy=datum;
 			hid_t attr_space_id=H5Screate(H5S_SCALAR);
 			hid_t attr_id=H5Acreate_by_name(current_group,oname.c_str(),aname.c_str(),hdftype,attr_space_id,H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
-			herr_t errhandle=H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datumcpy));
+			//H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datumcpy));
+			if(Layout::nodeNumber()==0) H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datumcpy));
 			H5Aclose(attr_id);
 			H5Sclose(attr_space_id);
 		}
@@ -866,7 +867,8 @@ namespace QDP {
 			for(unsigned int i=0; i<dimcount; i++) tmpdim[i]=datum[i];
 			hid_t attr_space_id=H5Screate_simple(1,const_cast<const hsize_t*>(&dimcount),const_cast<const hsize_t*>(&dimcount));
 			hid_t attr_id=H5Acreate_by_name(current_group,oname.c_str(),aname.c_str(),hdftype,attr_space_id,H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
-			hid_t errhandle=H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(tmpdim));
+			//H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(tmpdim));
+			if(Layout::nodeNumber()==0) H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(tmpdim));
 			delete [] tmpdim;
 			H5Aclose(attr_id);
 			H5Sclose(attr_space_id);
@@ -903,8 +905,10 @@ namespace QDP {
 
 			ctype datumcpy=datum;
 			hid_t plist_id = H5Pcreate (H5P_DATASET_XFER);
-			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
-			H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,reinterpret_cast<void*>(&datumcpy));
+			//H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
+			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT);
+			//H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,reinterpret_cast<void*>(&datumcpy));
+			if(Layout::nodeNumber()==0) H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,reinterpret_cast<void*>(&datumcpy));
 			H5Pclose(plist_id);
 			H5Dclose(dataid);
 		}
@@ -939,8 +943,10 @@ namespace QDP {
 			ctype* datumcpy=new ctype[datum.size()];
 			for(ullong i=0; i<datum.size(); i++) datumcpy[i]=datum[i];
 			hid_t plist_id = H5Pcreate (H5P_DATASET_XFER);
-			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
-			H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
+			//H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
+			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT);
+			//H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
+			if(Layout::nodeNumber()==0) H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
 			H5Pclose(plist_id);
 			H5Dclose(dataid);
 			delete [] datumcpy;
@@ -985,8 +991,11 @@ namespace QDP {
 				}
 			}
 			hid_t plist_id = H5Pcreate (H5P_DATASET_XFER);
-			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
-			H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
+			
+			//H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
+			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT);
+			//H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
+			if(Layout::nodeNumber()==0) H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
 			H5Pclose(plist_id);
 			H5Dclose(dataid);
 			delete [] datumcpy;
