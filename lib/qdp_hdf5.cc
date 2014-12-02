@@ -1333,7 +1333,8 @@ namespace QDP {
 		H5Sclose(attr_space_id);
 
 		//write:
-		herr_t errhandle=H5Awrite(attr_id,typid,reinterpret_cast<void*>(const_cast<char*>(datum.c_str())));
+		//H5Awrite(attr_id,typid,reinterpret_cast<void*>(const_cast<char*>(datum.c_str())));
+		if(Layout::nodeNumber()==0) H5Awrite(attr_id,typid,reinterpret_cast<void*>(const_cast<char*>(datum.c_str())));
 		H5Aclose(attr_id);
 		H5Tclose(typid);
 	}
