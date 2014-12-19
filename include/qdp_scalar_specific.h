@@ -287,7 +287,7 @@ copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1)
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
-    copymask(dd.getF()[i], mask.elem(i), s1.elem(i));
+    copymask(d.getF()[i], mask.elem(i), s1.elem(i));
   }
 }
 
