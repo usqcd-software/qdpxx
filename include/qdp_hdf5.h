@@ -646,7 +646,8 @@ namespace QDP {
 			//put lattice into u-field and reconstruct as well as reorder them on the fly:
 			// Reconstruct the gauge field
 			if(profile) swatch_reorder.start();
-			for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
+#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
+			for(unsigned int run=0; run<nodeSites; run++){
 				memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf+run*obj_size),float_size*obj_size);
 			}
 			delete [] buf;
@@ -715,7 +716,8 @@ namespace QDP {
 			// Reconstruct the gauge field
 			if(profile) swatch_reorder.start();
 			fieldarray.resize(arr_size);
-			for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
+#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,fieldarray)
+			for(unsigned int run=0; run<nodeSites; run++){
 				for(unsigned int dd=0; dd<arr_size; dd++){
 					memcpy(&(fieldarray[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),float_size*obj_size);
 				}
@@ -1128,8 +1130,9 @@ namespace QDP {
 			size_t float_size=sizeof(REAL);
 			size_t obj_size=sizeof(T)/float_size;
 			REAL* buf=new REAL[nodeSites*obj_size];
-			for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
-				memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),sizeof(T));
+#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
+			for(unsigned int run=0; run<nodeSites; run++){
+				memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),float_size*obj_size);
 			}
 			if(profile) swatch_reorder.stop();
 
@@ -1183,9 +1186,10 @@ namespace QDP {
 			size_t obj_size=sizeof(T)/float_size;
 			size_t arr_size=fieldarray.size();
 			REAL* buf=new REAL[nodeSites*obj_size*arr_size];
-			for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
+#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,fieldarray)
+			for(unsigned int run=0; run<nodeSites; run++){
 				for(unsigned int dd=0; dd<arr_size; dd++){
-					memcpy(reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),&(fieldarray[dd].elem(reordermap[run])),sizeof(T));
+					memcpy(reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),&(fieldarray[dd].elem(reordermap[run])),float_size*obj_size);
 				}
 			}
 

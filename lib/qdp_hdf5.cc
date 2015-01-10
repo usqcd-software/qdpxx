@@ -286,6 +286,7 @@ namespace QDP {
 				run++;
 			}
 		}
+		return EXIT_SUCCESS;
 	}
 
 	//***********************************************************************************************************************************
@@ -909,7 +910,8 @@ namespace QDP {
 		//put lattice into u-field and reconstruct as well as reorder them on the fly:
 		// Reconstruct the gauge field
 		if(profile) swatch_reorder.start();
-		for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
+#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
+		for(unsigned int run=0; run<nodeSites; run++){
 			memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf+run*obj_size),float_size*obj_size);
 		}
 		delete [] buf;
@@ -976,9 +978,11 @@ namespace QDP {
 		//put lattice into u-field and reconstruct as well as reorder them on the fly:
 		// Reconstruct the gauge field
 		if(profile) swatch_reorder.start();
-		for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
-			for(unsigned int dd=0; dd<sizes[Nd]; dd++){
-				memcpy(&(field[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf+(dd+sizes[Nd]*run)*obj_size),float_size*obj_size);
+		unsigned int arr_size=sizes[Nd];
+#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,field)
+		for(unsigned int run=0; run<nodeSites; run++){
+			for(unsigned int dd=0; dd<arr_size; dd++){
+				memcpy(&(field[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),float_size*obj_size);
 			}
 		}
 		delete [] buf;
@@ -1811,8 +1815,9 @@ void HDF5Writer::write(const std::string& name, const LatticeColorMatrixF3& fiel
 	size_t float_size=sizeof(REAL32);
 	size_t obj_size=sizeof(ColorMatrixF3)/float_size;
 	REAL32* buf=new REAL32[nodeSites*obj_size];
-	for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
-		memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),sizeof(ColorMatrixF3));
+#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
+	for(unsigned int run=0; run<nodeSites; run++){
+		memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),float_size*obj_size);
 	}
 	if(profile) swatch_reorder.stop();
 
@@ -1883,8 +1888,9 @@ void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const st
 	size_t float_size=sizeof(REAL64);
 	size_t obj_size=sizeof(ColorMatrixD3)/float_size;
 	REAL64* buf=new REAL64[nodeSites*obj_size];
-	for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
-		memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),sizeof(ColorMatrixD3));
+#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
+	for(unsigned int run=0; run<nodeSites; run++){
+		memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),float_size*obj_size);
 	}
 	if(profile) swatch_reorder.stop();
 	
@@ -1957,9 +1963,10 @@ void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const st
 	size_t tot_size = nodeSites*field.size()*obj_size;
 	REAL64* buf=new REAL64[tot_size];
 	unsigned int fsize=field.size();
-	for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
+#pragma omp parallel for firstprivate(nodeSites,fsize,obj_size,float_size) shared(buf,field)
+	for(unsigned int run=0; run<nodeSites; run++){
 		for(unsigned int dd=0; dd<fsize; dd++){
-			memcpy(reinterpret_cast<char*>(buf+(dd+fsize*run)*obj_size),&(field[dd].elem(reordermap[run])),sizeof(ColorMatrixD3));
+			memcpy(reinterpret_cast<char*>(buf+(dd+fsize*run)*obj_size),&(field[dd].elem(reordermap[run])),float_size*obj_size);
 		}
 	}
 	if(profile) swatch_reorder.stop();
