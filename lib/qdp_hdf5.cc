@@ -34,11 +34,14 @@ namespace QDP {
     
 		//get old error handler
 		H5Eget_auto(error_stack, &oldfunc, &client_data);
-    
+		
+		//prefetch coordinates for faster I/O:
+		prefetchCoordinates();
+	
 		//get new error handler
 		//H5Eset_auto(error_stack,errorHandler,NULL);
 		//H5Eset_auto(error_stack,NULL,NULL);
-	};
+	}
 	
 	HDF5::HDF5(const long int& stripesizee, const long int& maxalignn) : HDF5(){
 		stripesize=stripesizee;
@@ -266,6 +269,25 @@ namespace QDP {
 		return EXIT_SUCCESS;
 	}
 
+	//prefetch mapping for CB->lexicographical:
+	int HDF5::prefetchCoordinates(){
+		const int mynode = Layout::nodeNumber();
+		
+		//measure
+		reordermap.resize(Layout::sitesOnNode());
+		
+		unsigned int run=0;
+		for(int site=0; site < Layout::vol(); ++site){
+			multi1d<int> coord = crtesn(site, Layout::lattSize());
+			int node = Layout::nodeNumber(coord);
+
+			if(node==mynode){
+				reordermap[run]=Layout::linearSiteIndex(coord);
+				run++;
+			}
+		}
+	}
+
 	//***********************************************************************************************************************************
 	//***********************************************************************************************************************************
 	//DATATYPE HELPERS                                                                                                                   
@@ -286,7 +308,7 @@ namespace QDP {
 		return complex_id;
 	}
 
-	//check complex:                                                                                                                                                                                                                                                                                                                                                        
+	//check complex:
 	bool HDF5::checkComplexType(const hid_t& type_id, hid_t& base_type_id){
 		//check if type_id is complex class:
 		if(H5Tget_class(type_id)!=H5T_COMPOUND){
@@ -836,6 +858,7 @@ namespace QDP {
 		H5Dclose(dset_id);
 	} // readLattice()  
 
+
 	//read LatticeColorMatrix
 	template<>
 	void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, LatticeColorMatrixD3& field){
@@ -886,17 +909,8 @@ namespace QDP {
 		//put lattice into u-field and reconstruct as well as reorder them on the fly:
 		// Reconstruct the gauge field
 		if(profile) swatch_reorder.start();
-		int run=0;
-		for(int site=0; site < Layout::vol(); ++site){
-			multi1d<int> coord = crtesn(site, Layout::lattSize());
-
-			int node   = Layout::nodeNumber(coord);
-			int linear = Layout::linearSiteIndex(coord);
-
-			if (mynode == node){
-				memcpy(&(field.elem(linear)),reinterpret_cast<char*>(buf+run*obj_size),float_size*obj_size);
-				run++;
-			}
+		for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
+			memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf+run*obj_size),float_size*obj_size);
 		}
 		delete [] buf;
 		if(profile) swatch_reorder.stop();
@@ -962,18 +976,9 @@ namespace QDP {
 		//put lattice into u-field and reconstruct as well as reorder them on the fly:
 		// Reconstruct the gauge field
 		if(profile) swatch_reorder.start();
-		int run=0;
-		for(int site=0; site < Layout::vol(); ++site){
-			multi1d<int> coord = crtesn(site, Layout::lattSize());
-
-			int node   = Layout::nodeNumber(coord);
-			int linear = Layout::linearSiteIndex(coord);
-
-			if (mynode == node){
-				for(unsigned int dd=0; dd<sizes[Nd]; dd++){
-					memcpy(&(field[dd].elem(linear)),reinterpret_cast<char*>(buf+run*obj_size),float_size*obj_size);
-					run++;
-				}
+		for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
+			for(unsigned int dd=0; dd<sizes[Nd]; dd++){
+				memcpy(&(field[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf+(dd+sizes[Nd]*run)*obj_size),float_size*obj_size);
 			}
 		}
 		delete [] buf;
@@ -1108,9 +1113,9 @@ namespace QDP {
   
 	HDF5Writer::HDF5Writer(const long int& stripesizee, const long int& maxalignn) : HDF5(stripesizee,maxalignn) {};
 
-	HDF5Writer::HDF5Writer(const std::string& filename, const bool& overwrite) : HDF5()
+	HDF5Writer::HDF5Writer(const std::string& filename, const HDF5Base::writemode& mode) : HDF5()
 	{
-		open(filename,overwrite);
+		open(filename,mode);
 	};
 
 	//destructors
@@ -1119,7 +1124,7 @@ namespace QDP {
 	};
   
 	//member functions
-	void HDF5Writer::open(const std::string& filename, const bool& overwrite)
+	void HDF5Writer::open(const std::string& filename, const HDF5Base::writemode& mode)
 	{
 		//close actual file if open:
 		close();
@@ -1162,7 +1167,7 @@ namespace QDP {
 			htri_t ex=H5Fis_hdf5(filename.c_str());
 			if(ex>0){
 				//file is existing HDF5 file:
-				if(overwrite){
+				if(mode&HDF5Base::trunc){
 					//it exists and should be overwritten, so truncate it:
 					file_id=H5Fcreate(filename.c_str(),H5F_ACC_TRUNC,fcpl_id,fapl_id);
 				}
@@ -1173,7 +1178,7 @@ namespace QDP {
 			}
 			else{
 				//file exists but is not HDF5 file:
-				if(overwrite){
+				if(mode&HDF5Base::trunc){
 					//it should be overwritten, so truncate it:
 					remove(filename.c_str());
 					file_id=H5Fcreate(filename.c_str(),H5F_ACC_EXCL,fcpl_id,fapl_id);
@@ -1280,35 +1285,35 @@ namespace QDP {
 	//***********************************************************************************************************************************
 	//***********************************************************************************************************************************
 	//single datum
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const short& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_SHORT,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const short& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_SHORT,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const unsigned short& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_USHORT,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const unsigned short& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_USHORT,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const int& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_INT,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const int& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_INT,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const unsigned int& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_UINT,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const unsigned int& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_UINT,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const unsigned long long& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_ULLONG,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const unsigned long long& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_ULLONG,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const float& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_FLOAT,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const float& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_FLOAT,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const double& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_DOUBLE,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const double& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_DOUBLE,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const std::string& datum, const bool& overwrite){
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const std::string& datum, const HDF5Base::writemode& mode){
 		std::string oname(obj_name), aname(attr_name);
 
 		bool exists=objectExists(current_group,oname);
@@ -1318,7 +1323,7 @@ namespace QDP {
 
 		hid_t ex=H5Aexists_by_name(current_group,oname.c_str(),aname.c_str(),H5P_DEFAULT);
 		if(ex==1){
-			if(!overwrite){
+			if(!(mode&HDF5Base::trunc)){
 				HDF5_error_exit("HDF5Writer::writeAttribute: error, attribute "+aname+" already exists!");
 			}
 			herr_t errhandle=H5Adelete_by_name(current_group,oname.c_str(),aname.c_str(),H5P_DEFAULT);
@@ -1340,32 +1345,32 @@ namespace QDP {
 	}
   
 	//array.
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<short>& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_SHORT,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<short>& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_SHORT,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<unsigned short>& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_USHORT,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<unsigned short>& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_USHORT,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<int>& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_INT,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<int>& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_INT,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<unsigned int>& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_UINT,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<unsigned int>& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_UINT,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<unsigned long long>& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_ULLONG,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<unsigned long long>& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_ULLONG,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<float>& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_FLOAT,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<float>& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_FLOAT,mode);
 	}
 
-	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<double>& datum, const bool& overwrite){
-		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_DOUBLE,overwrite);
+	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const multi1d<double>& datum, const HDF5Base::writemode& mode){
+		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_DOUBLE,mode);
 	}
 
 	//***********************************************************************************************************************************
@@ -1374,40 +1379,40 @@ namespace QDP {
 	//***********************************************************************************************************************************
 	//***********************************************************************************************************************************
 	//single datum
-	void HDF5Writer::write(const std::string& obj_name, const short& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_SHORT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const short& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_SHORT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const unsigned short& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_USHORT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const unsigned short& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_USHORT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const int& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_INT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const int& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_INT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const unsigned int& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_UINT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const unsigned int& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_UINT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const unsigned long long& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_ULLONG,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const unsigned long long& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_ULLONG,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const float& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_FLOAT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const float& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_FLOAT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const double& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_DOUBLE,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const double& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_DOUBLE,mode);
 	}
 
-	void HDF5Writer::write(const std::string& dataname, const std::string& datum, const bool& overwrite){
+	void HDF5Writer::write(const std::string& dataname, const std::string& datum, const HDF5Base::writemode& mode){
 		std::string dname(dataname);
 
 		bool exists=objectExists(current_group,dname);
 		if(exists){
-			if(!overwrite){
+			if(!(mode&HDF5Base::trunc)){
 				QDPIO::cout << "HDF5Writer::write: error, object named " << dname << " already exists!" << std::endl;
 				return;
 			}
@@ -1438,60 +1443,60 @@ namespace QDP {
 
 	//array:
 	//1D
-	void HDF5Writer::write(const std::string& obj_name, const multi1d<short>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_SHORT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi1d<short>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_SHORT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const multi1d<unsigned short>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_USHORT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi1d<unsigned short>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_USHORT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const multi1d<int>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_INT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi1d<int>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_INT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const multi1d<unsigned int>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_UINT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi1d<unsigned int>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_UINT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const multi1d<unsigned long long>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_ULLONG,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi1d<unsigned long long>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_ULLONG,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const multi1d<float>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_FLOAT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi1d<float>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_FLOAT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const multi1d<double>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_DOUBLE,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi1d<double>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_DOUBLE,mode);
 	}
 	//2D
-	void HDF5Writer::write(const std::string& obj_name, const multi2d<short>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_SHORT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi2d<short>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_SHORT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const multi2d<unsigned short>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_USHORT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi2d<unsigned short>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_USHORT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const multi2d<int>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_INT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi2d<int>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_INT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const multi2d<unsigned int>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_UINT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi2d<unsigned int>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_UINT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const multi2d<unsigned long long>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_ULLONG,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi2d<unsigned long long>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_ULLONG,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const multi2d<float>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_FLOAT,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi2d<float>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_FLOAT,mode);
 	}
 
-	void HDF5Writer::write(const std::string& obj_name, const multi2d<double>& datum, const bool& overwrite){
-		wt(obj_name,datum,H5T_NATIVE_DOUBLE,overwrite);
+	void HDF5Writer::write(const std::string& obj_name, const multi2d<double>& datum, const HDF5Base::writemode& mode){
+		wt(obj_name,datum,H5T_NATIVE_DOUBLE,mode);
 	}
 
 	//***********************************************************************************************************************************
@@ -1501,7 +1506,7 @@ namespace QDP {
 	//***********************************************************************************************************************************
 	//complex types:
 	//Single element:
-	template<>void HDF5Writer::write< PScalar< PScalar< RComplex<float> > > >(const std::string& dataname, const ComplexF& datum, const bool& overwrite){
+	template<>void HDF5Writer::write< PScalar< PScalar< RComplex<float> > > >(const std::string& dataname, const ComplexF& datum, const HDF5Base::writemode& mode){
 	hid_t type_id;
 	bool exists=objectExists(file_id,".ComplexFloat");
 	if(!exists){
@@ -1516,12 +1521,12 @@ namespace QDP {
 	}
 
 	//perform the actual write:
-	wt(dataname,datum,type_id,overwrite);
+	wt(dataname,datum,type_id,mode);
 	H5Tclose(type_id);
 }
 
 template<>
-void HDF5Writer::write< PScalar< PScalar< RComplex<double> > > >(const std::string& dataname, const ComplexD& datum, const bool& overwrite){
+void HDF5Writer::write< PScalar< PScalar< RComplex<double> > > >(const std::string& dataname, const ComplexD& datum, const HDF5Base::writemode& mode){
 	hid_t type_id;
 	bool exists=objectExists(file_id,".ComplexDouble");
 	if(!exists){
@@ -1536,13 +1541,13 @@ void HDF5Writer::write< PScalar< PScalar< RComplex<double> > > >(const std::stri
 	}
 
 	//perform the actual write:
-	wt(dataname,datum,type_id,overwrite);
+	wt(dataname,datum,type_id,mode);
 	H5Tclose(type_id);
 }
 
 //array types
 template<>
-void HDF5Writer::write< PScalar< PScalar< RComplex<float> > > >(const std::string& dataname, const multi1d<ComplexF>& datum, const bool& overwrite){
+void HDF5Writer::write< PScalar< PScalar< RComplex<float> > > >(const std::string& dataname, const multi1d<ComplexF>& datum, const HDF5Base::writemode& mode){
 	hid_t type_id;
 	bool exists=objectExists(file_id,".ComplexFloat");
 	if(!exists){
@@ -1557,12 +1562,12 @@ void HDF5Writer::write< PScalar< PScalar< RComplex<float> > > >(const std::strin
 	}
 
 	//perform the actual write:
-	wt(dataname,datum,type_id,overwrite);
+	wt(dataname,datum,type_id,mode);
 	H5Tclose(type_id);
 }
 
 template<>
-void HDF5Writer::write< PScalar< PScalar< RComplex<double> > > >(const std::string& dataname, const multi1d<ComplexD>& datum, const bool& overwrite){
+void HDF5Writer::write< PScalar< PScalar< RComplex<double> > > >(const std::string& dataname, const multi1d<ComplexD>& datum, const HDF5Base::writemode& mode){
 	hid_t type_id;
 	bool exists=objectExists(file_id,".ComplexDouble");
 	if(!exists){
@@ -1577,13 +1582,13 @@ void HDF5Writer::write< PScalar< PScalar< RComplex<double> > > >(const std::stri
 	}
 
 	//perform the actual write:                                                                                                                                                                           
-	wt(dataname,datum,type_id,overwrite);
+	wt(dataname,datum,type_id,mode);
 	H5Tclose(type_id);
 }
 
 //ColorMatrix:
 template<>
-void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL32>, 3> > >(const std::string& dataname, const ColorMatrixF3& datum, const bool& overwrite){
+void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL32>, 3> > >(const std::string& dataname, const ColorMatrixF3& datum, const HDF5Base::writemode& mode){
 	//first get complex type:
 	hid_t complex_id, colmat_id;
 	bool exists=objectExists(file_id,".ComplexFloat");
@@ -1611,13 +1616,13 @@ void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL32>, 3> > >(const st
 		}
 	}
 
-	wt(dataname,datum,colmat_id,overwrite);
+	wt(dataname,datum,colmat_id,mode);
 	H5Tclose(complex_id);
 	H5Tclose(colmat_id);
 }
 
 template<>
-void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& dataname, const ColorMatrixD3& datum, const bool& overwrite){
+void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& dataname, const ColorMatrixD3& datum, const HDF5Base::writemode& mode){
 	//first get complex type:
 	hid_t complex_id, colmat_id;
 	bool exists=objectExists(file_id,".ComplexDouble");
@@ -1645,7 +1650,7 @@ void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const st
 		}
 	}
 
-	wt(dataname,datum,colmat_id,overwrite);
+	wt(dataname,datum,colmat_id,mode);
 	H5Tclose(complex_id);
 	H5Tclose(colmat_id);
 }
@@ -1656,21 +1661,19 @@ void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const st
 //***********************************************************************************************************************************
 //***********************************************************************************************************************************
 //helper routines for Lattice field I/O:
-void HDF5Writer::writePrepare(const std::string& name, const bool& overwrite){
+void HDF5Writer::writePrepare(const std::string& name, const HDF5Base::writemode& mode){
 	//before writing is performed, check if dataset exists:                                                                                                                                                                                                                                                                                                               
 	herr_t errhandle;
 
 	bool exists=objectExists(current_group,name);
 	if(exists){
-		if(!overwrite){
-			QDPIO::cout << "HDF5Writer::write: error, dataset already exists!" << std::endl;
-			return;
+		if(!(mode&HDF5Base::trunc)){
+			HDF5_error_exit("HDF5Writer::write: error, dataset already exists and you specified not to overwrite!");
 		}
 		H5O_info_t objinfo;
 		errhandle=H5Oget_info_by_name(current_group,name.c_str(),&objinfo,H5P_DEFAULT);
 		if(objinfo.type!=H5O_TYPE_DATASET){
-			QDPIO::cout << "HDF5Writer::write: error, the object you try to write does already exist and is of different type!" << std::endl;
-			return;
+			HDF5_error_exit("HDF5Writer::write: error, the object you try to write does already exist and is of different type!");
 		}
 		//delete attributes (if present) and unlink storage:
 		deleteAllAttributes(name);
@@ -1764,12 +1767,12 @@ void HDF5Writer::writeLattice(const std::string& name, const hid_t& datatype, co
 
 //float lattice color matrix:
 template<>
-void HDF5Writer::write(const std::string& name, const LatticeColorMatrixF3& field, const bool& overwrite){
+void HDF5Writer::write(const std::string& name, const LatticeColorMatrixF3& field, const HDF5Base::writemode& mode){
 	StopWatch swatch_prepare, swatch_reorder, swatch_write, swatch_datatypes;
 	  
 	//before writing is performed, check if dataset exists:
 	if(profile) swatch_prepare.start();
-	writePrepare(name,overwrite);
+	writePrepare(name,mode);
 	if(profile) swatch_prepare.stop();
 
 	//color matrix datatype:
@@ -1808,16 +1811,8 @@ void HDF5Writer::write(const std::string& name, const LatticeColorMatrixF3& fiel
 	size_t float_size=sizeof(REAL32);
 	size_t obj_size=sizeof(ColorMatrixF3)/float_size;
 	REAL32* buf=new REAL32[nodeSites*obj_size];
-	int run=0;
-	for(int site=0; site < Layout::vol(); ++site){
-		multi1d<int> coord = crtesn(site, Layout::lattSize());
-		int node   = Layout::nodeNumber(coord);
-
-		if(node==mynode){
-			int linear = Layout::linearSiteIndex(coord);
-			memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(linear)),sizeof(ColorMatrixF3));
-			run++;
-		}
+	for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
+		memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),sizeof(ColorMatrixF3));
 	}
 	if(profile) swatch_reorder.stop();
 
@@ -1843,13 +1838,13 @@ void HDF5Writer::write(const std::string& name, const LatticeColorMatrixF3& fiel
 
 //double lattice color matrix:
 template<>
-void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, const LatticeColorMatrixD3& field, const bool& overwrite)
+void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, const LatticeColorMatrixD3& field, const HDF5Base::writemode& mode)
 {
 	StopWatch swatch_prepare, swatch_reorder, swatch_write, swatch_datatypes;
 	  
 	//before writing is performed, check if dataset exists:
 	if(profile) swatch_prepare.start();
-	writePrepare(name,overwrite);
+	writePrepare(name,mode);
 	if(profile) swatch_prepare.stop();
 
 	//color matrix datatype:
@@ -1888,16 +1883,8 @@ void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const st
 	size_t float_size=sizeof(REAL64);
 	size_t obj_size=sizeof(ColorMatrixD3)/float_size;
 	REAL64* buf=new REAL64[nodeSites*obj_size];
-	int run=0;
-	for(int site=0; site < Layout::vol(); ++site){
-		multi1d<int> coord = crtesn(site, Layout::lattSize());
-		int node   = Layout::nodeNumber(coord);
-
-		if(node==mynode){
-			int linear = Layout::linearSiteIndex(coord);
-			memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(linear)),sizeof(ColorMatrixD3));
-			run++;
-		}
+	for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
+		memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),sizeof(ColorMatrixD3));
 	}
 	if(profile) swatch_reorder.stop();
 	
@@ -1923,13 +1910,13 @@ void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const st
 
 //write chroma configuration:
 template<>
-void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, const multi1d<LatticeColorMatrixD3>& field, const bool& overwrite)
+void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, const multi1d<LatticeColorMatrixD3>& field, const HDF5Base::writemode& mode)
 {
 	StopWatch swatch_prepare, swatch_reorder, swatch_write, swatch_datatypes;
 	  
 	//before writing is performed, check if dataset exists:
 	if(profile) swatch_prepare.start();
-	writePrepare(name,overwrite);
+	writePrepare(name,mode);
 	if(profile) swatch_prepare.stop();
 
 	//color matrix datatype:
@@ -1969,17 +1956,10 @@ void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const st
 	size_t obj_size=sizeof(ColorMatrixD3)/float_size;
 	size_t tot_size = nodeSites*field.size()*obj_size;
 	REAL64* buf=new REAL64[tot_size];
-	int run=0;
-	for(int site=0; site < Layout::vol(); ++site){
-		multi1d<int> coord = crtesn(site, Layout::lattSize());
-		int node   = Layout::nodeNumber(coord);
-
-		if(node==mynode){
-			int linear = Layout::linearSiteIndex(coord);
-			for(unsigned int dd=0; dd<field.size(); dd++){
-				memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field[dd].elem(linear)),sizeof(ColorMatrixD3));
-				run++;
-			}
+	unsigned int fsize=field.size();
+	for(unsigned int run=0; run<Layout::sitesOnNode(); run++){
+		for(unsigned int dd=0; dd<fsize; dd++){
+			memcpy(reinterpret_cast<char*>(buf+(dd+fsize*run)*obj_size),&(field[dd].elem(reordermap[run])),sizeof(ColorMatrixD3));
 		}
 	}
 	if(profile) swatch_reorder.stop();
@@ -2005,14 +1985,14 @@ void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const st
 }
 
 //write FUEL configuration
-void HDF5Writer::writeFUEL(const std::string& name, const multi1d<LatticeColorMatrixD3>& field, const bool& overwrite){
+void HDF5Writer::writeFUEL(const std::string& name, const multi1d<LatticeColorMatrixD3>& field, const HDF5Base::writemode& mode){
 	StopWatch swatch_complete;
 	  
 	QDPIO::cout<< "Writing FUEL config..." << std::flush;
 	if(profile) swatch_complete.start();
 	if(field.size()!=Nd) HDF5_error_exit("HDF5Writer::writeFUEL: passed vector is not a gauge field!");
 	if(objectExists(current_group,name)){
-		if(!overwrite){
+		if(!(mode&HDF5Base::trunc)){
 			HDF5_error_exit("HDF5Writer::writeFUEL: error, object "+name+" does already exist!");
 		}
 		else{
@@ -2041,7 +2021,7 @@ void HDF5Writer::writeFUEL(const std::string& name, const multi1d<LatticeColorMa
 		std::stringstream stream;
 		stream << i;
 		std::string dname(stream.str());
-		write(dname,field[i],false);
+		write(dname,field[i],HDF5Base::ate);
 		writeAttribute(dname,".kind","LatticeColorMatrix");
 	}
 	pop();
