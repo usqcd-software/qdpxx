@@ -1376,6 +1376,14 @@ namespace QDP {
 			herr_t errhandle=H5Adelete_by_name(current_group,oname.c_str(),aname.c_str(),H5P_DEFAULT);
 		}
 
+                if (datum_0.length()+1>64*1024) {
+                    QDPIO::cerr << "HDF5Writer::writeAttribute() error: " << obj_name
+                        << ".attrib(" << attr_name
+                        << ") exceeds the maximum hdf5 attrib size (64kB)." << std::endl;
+
+                    HDF5_error_exit("bad string attrib write");
+                }
+
 		//create string datatytpe and set encoding to UTF-8:
 		hid_t typid=H5Tcreate(H5T_STRING,datum_0.length()+1);
 		H5Tset_cset(typid,H5T_CSET_UTF8);

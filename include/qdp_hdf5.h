@@ -906,6 +906,14 @@ namespace QDP {
 			}
 
 			hsize_t dimcount=datum_0.size();
+                        if (dimcount*H5Tget_size(hdftype)>64*1024) {
+                            QDPIO::cerr << "HDF5Writer::writeAttribute() error: " << obj_name
+                                << ".attrib(" << attr_name
+                                << ") exceeds the maximum hdf5 attrib size (64kB)." << std::endl;
+
+                            HDF5_error_exit("bad multi1d attrib write");
+                        }
+
 			ctype* tmpdim=new ctype[dimcount];
 			for(unsigned int i=0; i<dimcount; i++) tmpdim[i]=datum_0[i];
 			hid_t attr_space_id=H5Screate_simple(1,const_cast<const hsize_t*>(&dimcount),const_cast<const hsize_t*>(&dimcount));
