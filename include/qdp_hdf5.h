@@ -748,6 +748,36 @@ namespace QDP {
     
 	};
 
+        template<typename ctype>
+        bool get_global(ctype& global, const ctype& local);
+
+        template<typename ctype>
+        bool get_global(multi1d<ctype>& global, const multi1d<ctype>& local);
+
+        template<typename ctype>
+        inline bool is_global(const ctype l)
+        {
+            ctype g;
+            return get_global(g,l);
+        }
+
+        template <typename ctype>
+        inline void assert_global_size(const multi1d<ctype>& datum)
+        {
+            if (not is_global(datum.size()))
+		QDP_error_exit("qdp_hdf5.h  assert_global_size: multi1d.size not global!");
+        }
+
+        template <typename ctype>
+        inline void assert_global_size(const multi2d<ctype>& datum)
+        {
+            if (not is_global(datum.size2()))
+		QDP_error_exit("qdp_hdf5.h  assert_global_size: multi2d.size2 not global!");
+
+            if (not is_global(datum.size1()))
+		QDP_error_exit("qdp_hdf5.h  assert_global_size: multi2d.size1 not global!");
+        }
+
 	//template specializations:
 	//complex types
 	//single datum
@@ -819,6 +849,13 @@ namespace QDP {
 		void wtAtt(const std::string& obj_name, const std::string& attr_name, const ctype& datum, const hid_t& hdftype, const bool& overwrite){
 			std::string oname(obj_name), aname(attr_name);
 
+                        ctype datum_0;
+                        if (not get_global(datum_0, datum)) {
+                            QDPIO::cerr << "HDF5Writer::writeAttribute() warning: " << obj_name
+                                << ".attrib(" << attr_name
+                                << ") was NOT global. Using node=0 value now." << std::endl;
+                        }
+
 			bool exists=objectExists(current_group,oname);
 			if(!exists){
 				QDPIO::cout << "HDF5Writer::writeAttribute: error, object " << oname << " you try to write attribute to does not exists!" << std::endl;
@@ -834,11 +871,10 @@ namespace QDP {
 				herr_t errhandle=H5Adelete_by_name(current_group,oname.c_str(),aname.c_str(),H5P_DEFAULT);
 			}
 
-			ctype datumcpy=datum;
 			hid_t attr_space_id=H5Screate(H5S_SCALAR);
 			hid_t attr_id=H5Acreate_by_name(current_group,oname.c_str(),aname.c_str(),hdftype,attr_space_id,H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
-			//H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datumcpy));
-			if(Layout::nodeNumber()==0) H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datumcpy));
+			//H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datum_0));
+			if(Layout::nodeNumber()==0) H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datum_0));
 			H5Aclose(attr_id);
 			H5Sclose(attr_space_id);
 		}
@@ -847,6 +883,13 @@ namespace QDP {
 		void wtAtt(const std::string& obj_name, const std::string& attr_name, const multi1d<ctype>& datum, const hid_t& hdftype, const bool& overwrite){
 			std::string oname(obj_name), aname(attr_name);
 
+                        multi1d<ctype> datum_0;
+                        if (not get_global(datum_0, datum)) {
+                            QDPIO::cerr << "HDF5Writer::writeAttribute() warning: " << obj_name
+                                << ".attrib(" << attr_name
+                                << ") was NOT global. Using node=0 value now." << std::endl;
+                        }
+
 			bool exists=objectExists(current_group,oname);
 			if(!exists){
 				QDPIO::cout << "HDF5Writer::writeAttribute: error, object " << oname << " you try to write attribute to does not exists!" << std::endl;
@@ -862,9 +905,9 @@ namespace QDP {
 				herr_t errhandle=H5Adelete_by_name(current_group,oname.c_str(),aname.c_str(),H5P_DEFAULT);
 			}
 
-			hsize_t dimcount=datum.size();
+			hsize_t dimcount=datum_0.size();
 			ctype* tmpdim=new ctype[dimcount];
-			for(unsigned int i=0; i<dimcount; i++) tmpdim[i]=datum[i];
+			for(unsigned int i=0; i<dimcount; i++) tmpdim[i]=datum_0[i];
 			hid_t attr_space_id=H5Screate_simple(1,const_cast<const hsize_t*>(&dimcount),const_cast<const hsize_t*>(&dimcount));
 			hid_t attr_id=H5Acreate_by_name(current_group,oname.c_str(),aname.c_str(),hdftype,attr_space_id,H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
 			//H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(tmpdim));
@@ -917,6 +960,7 @@ namespace QDP {
 		void wt(const std::string& dataname, const multi1d<ctype>& datum, const hid_t& hdftype, const bool& overwrite){
 			std::string dname(dataname);
 			hid_t dataid, spaceid;
+                        assert_global_size(datum);
 
 			bool exists=objectExists(current_group,dname);
 			if(exists){
@@ -956,6 +1000,7 @@ namespace QDP {
 		void wt(const std::string& dataname, const multi2d<ctype>& datum, const hid_t& hdftype, const bool& overwrite){
 			std::string dname(dataname);
 			hid_t dataid, spaceid;
+                        assert_global_size(datum);
 
 			bool exists=objectExists(current_group,dname);
 			if(exists){
