@@ -20,8 +20,13 @@ namespace QDP {
 	//-------------------------------------------------------------------------------- 
 	//-------------------------------------------------------------------------------- 
 	//constructor, never called by user:
-	HDF5::HDF5() : error_stack(H5E_DEFAULT), par_init(false), file_comm(H5P_DEFAULT), file_id(-1), current_group(-1), stripesize(-1), maxalign(0){
 
+	HDF5::HDF5(const long int stripesizee, const long int maxalignn) :
+		error_stack(H5E_DEFAULT), par_init(false), file_comm(H5P_DEFAULT),
+		file_id(-1), current_group(-1),
+		stripesize(stripesizee),
+		maxalign(maxalignn)
+	{
 		//no profiling
 		profile=false;
 
@@ -38,11 +43,6 @@ namespace QDP {
 		//get new error handler
 		//H5Eset_auto(error_stack,errorHandler,NULL);
 		//H5Eset_auto(error_stack,NULL,NULL);
-	};
-	
-	HDF5::HDF5(const long int& stripesizee, const long int& maxalignn) : HDF5(){
-		stripesize=stripesizee;
-		maxalign=maxalignn;
 	}
 
 	//checks whether an HDF5 file already exists:
@@ -69,6 +69,7 @@ namespace QDP {
 	//error handler:
 	hid_t HDF5::errorHandler(hid_t errstack, void* unused){
 		QDPIO::cout << "Some error occured, but we do not care at the moment!" << std::endl;
+		return errstack;
 	}
 
 	//lookup routines:

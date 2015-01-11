@@ -46,8 +46,7 @@ namespace QDP {
 		MPI_Comm* mpicomm;
 
 		//constructors:
-		HDF5();
-		HDF5(const long int&, const long int& maxalign=0);
+		explicit HDF5(const long int=-1, const long int maxalign=0);
 
 		//stack with all open groups:                                                                                                                    
 		std::string getNameById(hid_t id)const;
@@ -1018,7 +1017,7 @@ namespace QDP {
 			status = H5Pclose(plist_id);
 			status = H5Dclose(dataid);
 		}
-		
+
 		template<typename ctype>
 		void wt(const std::string& dataname, const multi2d<ctype>& datum, const hid_t& hdftype, const bool& overwrite){
 			std::string dname(dataname);
