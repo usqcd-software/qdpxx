@@ -990,16 +990,33 @@ namespace QDP {
 			dataid=H5Dcreate(current_group,dname.c_str(),hdftype,spaceid,H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
 			H5Sclose(spaceid);
 
-			ctype* datumcpy=new ctype[datum.size()];
-			for(ullong i=0; i<datum.size(); i++) datumcpy[i]=datum[i];
 			hid_t plist_id = H5Pcreate (H5P_DATASET_XFER);
-			//H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
-			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT);
-			//H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
-			if(Layout::nodeNumber()==0) H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
-			H5Pclose(plist_id);
-			H5Dclose(dataid);
-			delete [] datumcpy;
+			herr_t status = H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT);
+
+			if (Layout::nodeNumber()==0) { // CAREFULL THIS IS ONLY ON NODE=0!!!,
+                                                       // do nothing collective, throw or exit here
+                            ctype* datumcpy=new(std::nothrow) ctype[datum.size()];
+
+			    if ( datumcpy != 0x0 ) {
+                                for(ullong i=0; i<datum.size(); i++)
+                                    datumcpy[i]=datum[i];
+
+                                status = H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
+                                delete [] datumcpy;
+                            }
+                            else {
+                                QDPIO::cerr << "HDF5Writer::wt - buffer alloc failed" << endl;
+                                status = -1; // I cannot throw in here
+                            }
+                        }
+
+                        int g_stat = 0;
+                        get_global(g_stat, (int)status);    // get node 0 value
+                        if (g_stat < 0)
+                            HDF5_error_exit("write from node ZERO failed");
+
+			status = H5Pclose(plist_id);
+			status = H5Dclose(dataid);
 		}
 		
 		template<typename ctype>
@@ -1035,21 +1052,36 @@ namespace QDP {
 			H5Pclose(dcpl_id);
 			H5Sclose(spaceid);
 
-			ctype* datumcpy=new ctype[spacesize[0]*spacesize[1]];
-			for(ullong i=0; i<spacesize[0]; i++){
-				for(ullong j=0; j<spacesize[1]; j++){
-					datumcpy[j+spacesize[1]*i]=datum(i,j);	//row-major
-				}
-			}
 			hid_t plist_id = H5Pcreate (H5P_DATASET_XFER);
+			herr_t status = H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT);
+
+                        if (Layout::nodeNumber()==0) { // CAREFULL THIS IS ONLY ON NODE=0!!!,
+                                                       // do nothing collective, throw or exit here
+                            ctype* datumcpy = new(std::nothrow) ctype[spacesize[0]*spacesize[1]];
+
+			    if ( datumcpy != 0x0 ) {
+			        for (ullong i=0; i<spacesize[0]; i++) {
+			        for (ullong j=0; j<spacesize[1]; j++) {
+                                    datumcpy[j+spacesize[1]*i]=datum(i,j);	//row-major
+			        }
+                                }
 			
-			//H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
-			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT);
-			//H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
-			if(Layout::nodeNumber()==0) H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
-			H5Pclose(plist_id);
-			H5Dclose(dataid);
-			delete [] datumcpy;
+                                status = H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
+                                delete [] datumcpy;
+                            }
+                            else {
+                                QDPIO::cerr << "HDF5Writer::wt - buffer alloc failed" << endl;
+                                status = -1; // I cannot throw in here
+                            }
+			}
+
+                        int g_stat = 0;
+                        get_global(g_stat, (int)status);    // get node 0 value
+                        if (g_stat < 0)
+                            HDF5_error_exit("write from node ZERO failed");
+
+			status = H5Pclose(plist_id);
+			status = H5Dclose(dataid);
 		}
 		//***********************************************************************************************************************************
 		//***********************************************************************************************************************************
