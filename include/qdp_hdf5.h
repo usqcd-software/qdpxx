@@ -873,8 +873,7 @@ namespace QDP {
 
 			hid_t attr_space_id=H5Screate(H5S_SCALAR);
 			hid_t attr_id=H5Acreate_by_name(current_group,oname.c_str(),aname.c_str(),hdftype,attr_space_id,H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
-			//H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datum_0));
-			if(Layout::nodeNumber()==0) H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datum_0));
+			H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datum_0));
 			H5Aclose(attr_id);
 			H5Sclose(attr_space_id);
 		}
@@ -918,8 +917,7 @@ namespace QDP {
 			for(unsigned int i=0; i<dimcount; i++) tmpdim[i]=datum_0[i];
 			hid_t attr_space_id=H5Screate_simple(1,const_cast<const hsize_t*>(&dimcount),const_cast<const hsize_t*>(&dimcount));
 			hid_t attr_id=H5Acreate_by_name(current_group,oname.c_str(),aname.c_str(),hdftype,attr_space_id,H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
-			//H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(tmpdim));
-			if(Layout::nodeNumber()==0) H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(tmpdim));
+			H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(tmpdim));
 			delete [] tmpdim;
 			H5Aclose(attr_id);
 			H5Sclose(attr_space_id);
