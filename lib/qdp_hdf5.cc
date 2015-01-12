@@ -24,6 +24,7 @@ namespace QDP {
 
 		//no profiling
 		profile=false;
+		isprefetched=false;
 
 		//do not do cleanup after finishing:
 		herr_t err=H5dont_atexit();
@@ -35,9 +36,6 @@ namespace QDP {
 		//get old error handler
 		H5Eget_auto(error_stack, &oldfunc, &client_data);
 		
-		//prefetch coordinates for faster I/O:
-		prefetchCoordinates();
-	
 		//get new error handler
 		//H5Eset_auto(error_stack,errorHandler,NULL);
 		//H5Eset_auto(error_stack,NULL,NULL);
@@ -1656,7 +1654,7 @@ namespace QDP {
 	//***********************************************************************************************************************************
 	//helper routines for Lattice field I/O:
 	void HDF5Writer::writePrepare(const std::string& name, const HDF5Base::writemode& mode){
-		//before writing is performed, check if dataset exists:                                                                                                                                                                                                                                                                                                               
+		//before writing is performed, check if dataset exists:
 		herr_t errhandle;
 
 		bool exists=objectExists(current_group,name);
@@ -1673,6 +1671,9 @@ namespace QDP {
 			deleteAllAttributes(name);
 			errhandle=H5Ldelete(current_group,name.c_str(),H5P_DEFAULT);
 		}
+		
+		//prefetch for faster I/O:
+		if(!isprefetched) prefetchCoordinates();
 	}
 
 	void HDF5Writer::writeLattice(const std::string& name, const hid_t& datatype, const ullong& obj_size, char* buf){

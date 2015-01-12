@@ -41,6 +41,7 @@ namespace QDP {
 	protected:
 		hid_t error_stack, file_id, file_comm, current_group;
 		multi1d<int> reordermap;
+		bool isprefetched;
 		
 		//Lustre optimizations
 		long int stripesize, maxalign;
