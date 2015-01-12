@@ -418,7 +418,7 @@ namespace QDP {
 		//***********************************************************************************************************************************
 		//helper routines for reading and writing objects:
 		void readPrepare(const std::string& name, hid_t& type_id);
-		void readPrepare(const std::string& name, hid_t& type_id, multi1d<ullong>& sizes);
+		void readPrepareLattice(const std::string& name, hid_t& type_id, multi1d<ullong>& sizes);
 
 		void readLattice(const std::string& name, const hid_t& type_id, const hid_t& base_type_id,
 		const ullong& obj_size, const ullong& tot_size, REAL* buf);
@@ -517,7 +517,7 @@ namespace QDP {
 			multi1d<ullong> sizes;
 			ullong obj_size=0;
 			hid_t type_id;
-			readPrepare(name,type_id,sizes);
+			readPrepareLattice(name,type_id,sizes);
 
 			//sanity check:
 			ullong float_size=H5Tget_size(type_id);
@@ -556,7 +556,7 @@ namespace QDP {
 			multi1d<ullong> sizes;
 			ullong obj_size=0;
 			hid_t type_id;
-			readPrepare(name,type_id,sizes);
+			readPrepareLattice(name,type_id,sizes);
 
 			//sanity check:
 			ullong float_size=H5Tget_size(type_id);
@@ -608,7 +608,7 @@ namespace QDP {
 			multi1d<ullong> sizes;
 			ullong obj_size=0;
 			hid_t type_id;
-			readPrepare(name,type_id,sizes);
+			readPrepareLattice(name,type_id,sizes);
 			if(profile) swatch_prepare.stop();
 
 			//sanity check:
@@ -675,7 +675,7 @@ namespace QDP {
 			multi1d<ullong> sizes;
 			ullong obj_size=0;
 			hid_t type_id;
-			readPrepare(name,type_id,sizes);
+			readPrepareLattice(name,type_id,sizes);
 			swatch_prepare.stop();
 
 			//check sanity

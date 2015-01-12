@@ -721,7 +721,7 @@ namespace QDP {
 	//READING Lattice Types:                                                                                                            
 	//***********************************************************************************************************************************
 	//*********************************************************************************************************************************** 
-	void HDF5::readPrepare(const std::string& name, hid_t& type_id, multi1d<ullong>& sizes){
+	void HDF5::readPrepareLattice(const std::string& name, hid_t& type_id, multi1d<ullong>& sizes){
 		//determine whether there is a lattice with the specified name:
 		bool exists=objectExists(current_group,name);
 		if(!exists){
@@ -756,7 +756,7 @@ namespace QDP {
 		H5Dclose(dset_id);
 		
 		//prefetch for faster I/O:
-		if(!isprefetched) prefetchLatticeCoordinates();
+		if(!isprefetched && sizes.size()>1) prefetchLatticeCoordinates();
 	}
 
 	void HDF5::readLattice(const std::string& name, const hid_t& type_id, const hid_t& base_type_id, const ullong& obj_size, const ullong& tot_size, REAL* buf) {
@@ -866,7 +866,7 @@ namespace QDP {
 		if(profile) swatch_prepare.start();                                                                        
 		multi1d<ullong> sizes;
 		hid_t type_id;
-		readPrepare(name,type_id,sizes);
+		readPrepareLattice(name,type_id,sizes);
 		if(profile) swatch_prepare.stop();
 
 		//do some datatype sanity checks and get the basis precision:
@@ -932,7 +932,7 @@ namespace QDP {
 		if(profile) swatch_prepare.start();                                                                                                                                                               
 		multi1d<ullong> sizes;
 		hid_t type_id;
-		readPrepare(name,type_id,sizes);
+		readPrepareLattice(name,type_id,sizes);
 		if(profile) swatch_prepare.stop();  
 
 		//do some datatype sanity checks and get the basis precision:
