@@ -284,6 +284,8 @@ namespace QDP {
 				run++;
 			}
 		}
+		isprefetched=true;
+		
 		return EXIT_SUCCESS;
 	}
 
