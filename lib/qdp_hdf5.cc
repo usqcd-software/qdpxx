@@ -268,7 +268,7 @@ namespace QDP {
 	}
 
 	//prefetch mapping for CB->lexicographical:
-	int HDF5::prefetchCoordinates(){
+	int HDF5::prefetchLatticeCoordinates(){
 		const int mynode = Layout::nodeNumber();
 		
 		//measure
@@ -622,7 +622,7 @@ namespace QDP {
 			HDF5_error_exit("HDF5::read: error, cannot open dataset!");
 		}
 		type_id=H5Dget_type(dset_id);
-		H5Dclose(dset_id);
+		H5Dclose(dset_id);		
 	}
 
 	//complex types:
@@ -722,7 +722,7 @@ namespace QDP {
 	//***********************************************************************************************************************************
 	//*********************************************************************************************************************************** 
 	void HDF5::readPrepare(const std::string& name, hid_t& type_id, multi1d<ullong>& sizes){
-		//determine whether there is a lattice with the specified name:                                                                                                                                                                                                                                                                                                       
+		//determine whether there is a lattice with the specified name:
 		bool exists=objectExists(current_group,name);
 		if(!exists){
 			HDF5_error_exit("HDF5::read: error, dataset does not exists!");
@@ -754,6 +754,9 @@ namespace QDP {
 
 		H5Sclose(filespace);
 		H5Dclose(dset_id);
+		
+		//prefetch for faster I/O:
+		if(!isprefetched) prefetchLatticeCoordinates();
 	}
 
 	void HDF5::readLattice(const std::string& name, const hid_t& type_id, const hid_t& base_type_id, const ullong& obj_size, const ullong& tot_size, REAL* buf) {
@@ -1675,7 +1678,7 @@ namespace QDP {
 		}
 		
 		//prefetch for faster I/O:
-		if(!isprefetched) prefetchCoordinates();
+		if(!isprefetched) prefetchLatticeCoordinates();
 	}
 
 	void HDF5Writer::writeLattice(const std::string& name, const hid_t& datatype, const ullong& obj_size, char* buf){
