@@ -962,7 +962,7 @@ namespace QDP {
 			spacesize[0]=datum.size2();
 			spaceid = H5Screate_simple(static_cast<int>(rank), const_cast<const hsize_t*>(spacesize), NULL);
 			hid_t dcpl_id = H5Pcreate(H5P_DATASET_CREATE);
-	   		dataid=H5Dcreate(current_group,dname.c_str(),hdftype,spaceid,H5P_DEFAULT,dcpl_id,H5P_DEFAULT);
+			dataid=H5Dcreate(current_group,dname.c_str(),hdftype,spaceid,H5P_DEFAULT,dcpl_id,H5P_DEFAULT);
 			H5Pclose(dcpl_id);
 			H5Sclose(spaceid);
 
@@ -1010,10 +1010,10 @@ namespace QDP {
 		void open(const std::string& filename, const HDF5Base::writemode& mode);
 
 		/*!
-         Creates a new group and steps down into it (push) or not (mkdir). If it already exists, simply step into it. Creates new groups on the way down the tree:
-         */
-        void push(const std::string& name);
-        void mkdir(const ::std::string& name);
+		Creates a new group and steps down into it (push) or not (mkdir). If it already exists, simply step into it. Creates new groups on the way down the tree:
+		*/
+		void push(const std::string& name);
+		void mkdir(const ::std::string& name);
 
 		//delete all attributes attached to a dataset with name "obj_name"
 		void deleteAllAttributes(const std::string& obj_name);
@@ -1232,23 +1232,32 @@ namespace QDP {
 	//template specializations for OScalar<T> datatypes:
 	//complex types
 	//single datum
-	template<>void HDF5Writer::write< PScalar< PScalar< RComplex<float> > > >(const std::string& dataname, const ComplexF& datum, const HDF5Base::writemode& mode);
-	template<>void HDF5Writer::write< PScalar< PScalar< RComplex<double> > > >(const std::string& dataname, const ComplexD& datum, const HDF5Base::writemode& mode);
+	template<>
+	void HDF5Writer::write< PScalar< PScalar< RComplex<float> > > >(const std::string& dataname, const ComplexF& datum, const HDF5Base::writemode& mode);
+	template<>
+	void HDF5Writer::write< PScalar< PScalar< RComplex<double> > > >(const std::string& dataname, const ComplexD& datum, const HDF5Base::writemode& mode);
 
 	//array:
-	template<>void HDF5Writer::write< PScalar< PScalar< RComplex<float> > > >(const std::string& dataname, const multi1d<ComplexF>& datum, const HDF5Base::writemode& mode);
-	template<>void HDF5Writer::write< PScalar< PScalar< RComplex<double> > > >(const std::string& dataname, const multi1d<ComplexD>& datum, const HDF5Base::writemode& mode);
+	template<>
+	void HDF5Writer::write< PScalar< PScalar< RComplex<float> > > >(const std::string& dataname, const multi1d<ComplexF>& datum, const HDF5Base::writemode& mode);
+	template<>
+	void HDF5Writer::write< PScalar< PScalar< RComplex<double> > > >(const std::string& dataname, const multi1d<ComplexD>& datum, const HDF5Base::writemode& mode);
 
 	//ColorMatrix
 	//single datum
-	template<>void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL32>, 3> > >(const std::string& dataname, const ColorMatrixF3& datum, const HDF5Base::writemode& mode);
-	template<>void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& dataname, const ColorMatrixD3& datum, const HDF5Base::writemode& mode);
+	template<>
+	void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL32>, 3> > >(const std::string& dataname, const ColorMatrixF3& datum, const HDF5Base::writemode& mode);
+	template<>
+	void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& dataname, const ColorMatrixD3& datum, const HDF5Base::writemode& mode);
 
 	//LatticeColorMatrix
-	template<>void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL32>, 3> > >(const std::string& name, const LatticeColorMatrixF3& field, const HDF5Base::writemode& mode);
-	template<>void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, const LatticeColorMatrixD3& field, const HDF5Base::writemode& mode);
+	template<>
+	void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL32>, 3> > >(const std::string& name, const LatticeColorMatrixF3& field, const HDF5Base::writemode& mode);
+	template<>
+	void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, const LatticeColorMatrixD3& field, const HDF5Base::writemode& mode);
 
 	//multi1d<OLattice> specializations
-	template<>void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, const multi1d<LatticeColorMatrixD3>& field, const HDF5Base::writemode& mode);
+	template<>
+	void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, const multi1d<LatticeColorMatrixD3>& field, const HDF5Base::writemode& mode);
 }
 #endif
