@@ -85,8 +85,8 @@
 #include <ostream>
 #include <iostream>
 
-#if 1
-// NOTE: (master) chroma will compile with this turned off, but holding back.
+#if 0
+// NOTE: having this off will probably break a bunch of old code.
 using namespace std;
 using std::iostream;
 using std::ostream;
