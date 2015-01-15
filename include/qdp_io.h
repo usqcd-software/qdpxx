@@ -16,7 +16,7 @@
 #include <map>
 #include <list>
 
-#if 0
+#if 1
 #include <complex>
 #endif
 
@@ -496,7 +496,7 @@ namespace QDP
   BinaryReader& operator>>(BinaryReader& bin, double& input);
   BinaryReader& operator>>(BinaryReader& bin, bool& input);
 
-#if 0
+#if 1
   //! Complex reader
   void read(BinaryReader& bin, std::complex<float>& param);
   void read(BinaryReader& bin, std::complex<double>& param);
@@ -1139,7 +1139,7 @@ namespace QDP
   BinaryWriter& operator<<(BinaryWriter& bin, double output);
   BinaryWriter& operator<<(BinaryWriter& bin, bool output);
 
-#if 0
+#if 1
   //! Complex writer
   void write(BinaryWriter& bin, const std::complex<float>& param);
   void write(BinaryWriter& bin, const std::complex<double>& param);

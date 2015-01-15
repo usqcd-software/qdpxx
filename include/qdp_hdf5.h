@@ -76,8 +76,51 @@ namespace QDP {
 			QDP_error_exit(message.c_str());
 		}
 
+		//***********************************************************************************************************************************
+		//***********************************************************************************************************************************
+		//LAYOUT HELPERS
+		//***********************************************************************************************************************************
+		//***********************************************************************************************************************************
 		//prefetch mapping for CB->lexicographical:
 		int prefetchLatticeCoordinates();
+
+		//conversion: LAYOUT<-HOST
+		template<class T>
+		inline void CvtToLayout(OLattice<T>& field, void* buf, const unsigned int& nodeSites, const unsigned int& elemSize){
+#pragma omp parallel for shared(nodeSites,elemSize,buf,field)
+			for(unsigned int run=0; run<nodeSites; run++){
+				memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf)+run*elemSize,elemSize);
+			}
+		}
+		
+		template<class T>
+		inline void CvtToLayout(multi1d< OLattice<T> >& fieldarray, void* buf, const unsigned int& nodeSites, const unsigned int& arraySize, const unsigned int& elemSize){
+#pragma omp parallel for shared(nodeSites,arraySize,elemSize,buf,fieldarray)
+			for(unsigned int run=0; run<nodeSites; run++){
+				for(unsigned int dd=0; dd<arraySize; dd++){
+					memcpy(&(fieldarray[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf)+(dd+arraySize*run)*elemSize,elemSize);
+				}
+			}
+		}
+		
+		//conversion: HOST<-LAYOUT
+		template<class T>
+		inline void CvtToHost(void* buf, const OLattice<T>& field, const unsigned int& nodeSites, const unsigned int& elemSize){
+#pragma omp parallel for shared(nodeSites,elemSize,buf,field)
+			for(unsigned int run=0; run<nodeSites; run++){
+				memcpy(reinterpret_cast<char*>(buf)+run*elemSize,&(field.elem(reordermap[run])),elemSize);
+			}
+		}
+
+		template<class T>
+		inline void CvtToHost(void* buf, const multi1d< OLattice<T> >& fieldarray, const unsigned int& nodeSites, const unsigned int& arraySize, const unsigned int& elemSize){
+#pragma omp parallel for shared(nodeSites,arraySize,elemSize,buf,fieldarray)
+			for(unsigned int run=0; run<nodeSites; run++){
+				for(unsigned int dd=0; dd<arraySize; dd++){
+					memcpy(reinterpret_cast<char*>(buf)+(dd+arraySize*run)*elemSize,&(fieldarray[dd].elem(reordermap[run])),elemSize);
+				}
+			}
+		}
 
 		//***********************************************************************************************************************************
 		//***********************************************************************************************************************************
@@ -647,10 +690,11 @@ namespace QDP {
 			//put lattice into u-field and reconstruct as well as reorder them on the fly:
 			// Reconstruct the gauge field
 			if(profile) swatch_reorder.start();
-#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
+			/*#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
 			for(unsigned int run=0; run<nodeSites; run++){
 				memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf+run*obj_size),float_size*obj_size);
-			}
+			}*/
+			CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,float_size*obj_size);
 			delete [] buf;
 			if(profile) swatch_reorder.stop();
 			
@@ -717,12 +761,13 @@ namespace QDP {
 			// Reconstruct the gauge field
 			if(profile) swatch_reorder.start();
 			fieldarray.resize(arr_size);
-#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,fieldarray)
+			/*#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,fieldarray)
 			for(unsigned int run=0; run<nodeSites; run++){
 				for(unsigned int dd=0; dd<arr_size; dd++){
 					memcpy(&(fieldarray[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),float_size*obj_size);
 				}
-			}
+			}*/
+			CvtToLayout(fieldarray,reinterpret_cast<void*>(buf),nodeSites,arr_size,float_size*obj_size);
 			delete [] buf;
 			if(profile) swatch_reorder.stop();
 			
@@ -1131,10 +1176,11 @@ namespace QDP {
 			size_t float_size=sizeof(REAL);
 			size_t obj_size=sizeof(T)/float_size;
 			REAL* buf=new REAL[nodeSites*obj_size];
-#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
+			/*#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
 			for(unsigned int run=0; run<nodeSites; run++){
 				memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),float_size*obj_size);
-			}
+			}*/
+			CvtToHost(reinterpret_cast<void*>(buf),field,nodeSites,float_size*obj_size);
 			if(profile) swatch_reorder.stop();
 
 			//determine datatype:
@@ -1187,12 +1233,13 @@ namespace QDP {
 			size_t obj_size=sizeof(T)/float_size;
 			size_t arr_size=fieldarray.size();
 			REAL* buf=new REAL[nodeSites*obj_size*arr_size];
-#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,fieldarray)
+			/*#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,fieldarray)
 			for(unsigned int run=0; run<nodeSites; run++){
 				for(unsigned int dd=0; dd<arr_size; dd++){
 					memcpy(reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),&(fieldarray[dd].elem(reordermap[run])),float_size*obj_size);
 				}
-			}
+			}*/
+			CvtToHost(reinterpret_cast<void*>(buf),fieldarray,nodeSites,arr_size,float_size*obj_size);
 
 			hid_t type_id;
 			if(float_size==4){
