@@ -87,7 +87,7 @@ namespace QDP {
 		//conversion: LAYOUT<-HOST
 		template<class T>
 		inline void CvtToLayout(OLattice<T>& field, void* buf, const unsigned int& nodeSites, const unsigned int& elemSize){
-#pragma omp parallel for shared(nodeSites,elemSize,buf,field)
+#pragma omp parallel for shared(nodeSites,elemSize,buf,field) default(shared)
 			for(unsigned int run=0; run<nodeSites; run++){
 				memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf)+run*elemSize,elemSize);
 			}
@@ -95,7 +95,7 @@ namespace QDP {
 		
 		template<class T>
 		inline void CvtToLayout(multi1d< OLattice<T> >& fieldarray, void* buf, const unsigned int& nodeSites, const unsigned int& arraySize, const unsigned int& elemSize){
-#pragma omp parallel for shared(nodeSites,arraySize,elemSize,buf,fieldarray)
+#pragma omp parallel for shared(nodeSites,arraySize,elemSize,buf,fieldarray) default(shared)
 			for(unsigned int run=0; run<nodeSites; run++){
 				for(unsigned int dd=0; dd<arraySize; dd++){
 					memcpy(&(fieldarray[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf)+(dd+arraySize*run)*elemSize,elemSize);
@@ -106,7 +106,7 @@ namespace QDP {
 		//conversion: HOST<-LAYOUT
 		template<class T>
 		inline void CvtToHost(void* buf, const OLattice<T>& field, const unsigned int& nodeSites, const unsigned int& elemSize){
-#pragma omp parallel for shared(nodeSites,elemSize,buf,field)
+#pragma omp parallel for shared(nodeSites,elemSize,buf,field) default(shared)
 			for(unsigned int run=0; run<nodeSites; run++){
 				memcpy(reinterpret_cast<char*>(buf)+run*elemSize,&(field.elem(reordermap[run])),elemSize);
 			}
@@ -114,7 +114,7 @@ namespace QDP {
 
 		template<class T>
 		inline void CvtToHost(void* buf, const multi1d< OLattice<T> >& fieldarray, const unsigned int& nodeSites, const unsigned int& arraySize, const unsigned int& elemSize){
-#pragma omp parallel for shared(nodeSites,arraySize,elemSize,buf,fieldarray)
+#pragma omp parallel for shared(nodeSites,arraySize,elemSize,buf,fieldarray) default(shared)
 			for(unsigned int run=0; run<nodeSites; run++){
 				for(unsigned int dd=0; dd<arraySize; dd++){
 					memcpy(reinterpret_cast<char*>(buf)+(dd+arraySize*run)*elemSize,&(fieldarray[dd].elem(reordermap[run])),elemSize);
