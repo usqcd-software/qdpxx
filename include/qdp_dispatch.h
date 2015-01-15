@@ -33,6 +33,7 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*
       myId = omp_get_thread_num();
       low = numSiteTable*myId/threads_num;
       high = numSiteTable*(myId+1)/threads_num;
+	  high=(high > numSiteTable ? numSiteTable : high);
  
       func(low, high, myId, &a);
     }
