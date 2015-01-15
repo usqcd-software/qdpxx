@@ -813,12 +813,12 @@ namespace QDP {
 		} // while  
 
 		if(float_size == 4) {
-			buf32 = new (nothrow) REAL32[total_size];
+			buf32 = new (std::nothrow) REAL32[total_size];
 			if(buf32 == 0x0) {
 				HDF5_error_exit("Unable to allocate buf\n");
 			} // if                                                                                                                                                                                                                                                                                                                                                             
 		} else {
-			buf64 = new (nothrow) REAL64[total_size];
+			buf64 = new (std::nothrow) REAL64[total_size];
 			if(buf64 == 0x0) {
 				HDF5_error_exit("Unable to allocate buf\n");
 			} // if                                                                                                                                                                                                                                                                                                                                                             
@@ -894,7 +894,7 @@ namespace QDP {
 		const int nodeSites = Layout::sitesOnNode();
 		size_t obj_size=sizeof(ColorMatrixD3)/float_size;
 		size_t tot_size = nodeSites*obj_size;
-		REAL* buf = new(nothrow) REAL[tot_size];
+		REAL* buf = new(std::nothrow) REAL[tot_size];
 		if( buf == 0x0 ) {
 			HDF5_error_exit("Unable to allocate buf\n");
 		}
@@ -962,7 +962,7 @@ namespace QDP {
 		const int nodeSites = Layout::sitesOnNode();
 		size_t obj_size=sizeof(ColorMatrixD3)/float_size;
 		size_t tot_size = nodeSites*sizes[Nd]*obj_size;
-		REAL* buf = new(nothrow) REAL[tot_size];
+		REAL* buf = new(std::nothrow) REAL[tot_size];
 		if( buf == 0x0 ) {
 			HDF5_error_exit("Unable to allocate buf\n");
 		}
