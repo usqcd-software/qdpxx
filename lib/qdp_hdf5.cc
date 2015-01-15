@@ -907,10 +907,11 @@ namespace QDP {
 		//put lattice into u-field and reconstruct as well as reorder them on the fly:
 		// Reconstruct the gauge field
 		if(profile) swatch_reorder.start();
-#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
+		/*#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
 		for(unsigned int run=0; run<nodeSites; run++){
 			memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf+run*obj_size),float_size*obj_size);
-		}
+		}*/
+		CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,float_size*obj_size);
 		delete [] buf;
 		if(profile) swatch_reorder.stop();
 		
@@ -975,12 +976,13 @@ namespace QDP {
 		// Reconstruct the gauge field
 		if(profile) swatch_reorder.start();
 		unsigned int arr_size=sizes[Nd];
-#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,field)
+		/*#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,field)
 		for(unsigned int run=0; run<nodeSites; run++){
 			for(unsigned int dd=0; dd<arr_size; dd++){
 				memcpy(&(field[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),float_size*obj_size);
 			}
-		}
+		}*/
+		CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,arr_size,float_size*obj_size);
 		delete [] buf;
 		if(profile) swatch_reorder.stop();
 		
@@ -1811,10 +1813,11 @@ namespace QDP {
 		size_t float_size=sizeof(REAL32);
 		size_t obj_size=sizeof(ColorMatrixF3)/float_size;
 		REAL32* buf=new REAL32[nodeSites*obj_size];
-#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
+		/*#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
 		for(unsigned int run=0; run<nodeSites; run++){
 			memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),float_size*obj_size);
-		}
+		}*/
+		CvtToHost(reinterpret_cast<void*>(buf),field,nodeSites,float_size*obj_size);
 		if(profile) swatch_reorder.stop();
 
 		//write out the stuff:
@@ -1884,10 +1887,11 @@ namespace QDP {
 		size_t float_size=sizeof(REAL64);
 		size_t obj_size=sizeof(ColorMatrixD3)/float_size;
 		REAL64* buf=new REAL64[nodeSites*obj_size];
-#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
+		/*#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
 		for(unsigned int run=0; run<nodeSites; run++){
 			memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),float_size*obj_size);
-		}
+		}*/
+		CvtToHost(reinterpret_cast<void*>(buf),field,nodeSites,float_size*obj_size);
 		if(profile) swatch_reorder.stop();
 	
 		//write out the stuff:
@@ -1959,12 +1963,13 @@ namespace QDP {
 		size_t tot_size = nodeSites*field.size()*obj_size;
 		REAL64* buf=new REAL64[tot_size];
 		unsigned int fsize=field.size();
-#pragma omp parallel for firstprivate(nodeSites,fsize,obj_size,float_size) shared(buf,field)
+		/*#pragma omp parallel for firstprivate(nodeSites,fsize,obj_size,float_size) shared(buf,field)
 		for(unsigned int run=0; run<nodeSites; run++){
 			for(unsigned int dd=0; dd<fsize; dd++){
 				memcpy(reinterpret_cast<char*>(buf+(dd+fsize*run)*obj_size),&(field[dd].elem(reordermap[run])),float_size*obj_size);
 			}
-		}
+		}*/
+		CvtToHost(reinterpret_cast<void*>(buf),field,nodeSites,fsize,float_size*obj_size);
 		if(profile) swatch_reorder.stop();
     
 		//write out the stuff:
