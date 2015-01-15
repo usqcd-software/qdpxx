@@ -81,9 +81,9 @@ DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \
 	$(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(top_srcdir)/config/mkinstalldirs $(srcdir)/qdp++-config.in \
-	COPYING config/compile config/depcomp config/install-sh \
-	config/missing config/mkinstalldirs \
-	$(top_srcdir)/config/install-sh $(top_srcdir)/config/missing
+	COPYING config/depcomp config/install-sh config/missing \
+	config/mkinstalldirs $(top_srcdir)/config/install-sh \
+	$(top_srcdir)/config/missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
