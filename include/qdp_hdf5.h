@@ -53,9 +53,8 @@ namespace QDP {
 		MPI_Comm* mpicomm;
 
 		//constructors:
-		HDF5();
-		HDF5(const long int&, const long int& maxalign=0);
-				
+		explicit HDF5(const long int& stripesizee=-1, const long int& maxalign=0);
+
 		//stack with all open groups:                                                                                                                    
 		std::string getNameById(hid_t id)const;
 
@@ -786,6 +785,36 @@ namespace QDP {
     
 	};
 
+        template<typename ctype>
+        bool get_global(ctype& global, const ctype& local);
+
+        template<typename ctype>
+        bool get_global(multi1d<ctype>& global, const multi1d<ctype>& local);
+
+        template<typename ctype>
+        inline bool is_global(const ctype l)
+        {
+            ctype g;
+            return get_global(g,l);
+        }
+
+        template <typename ctype>
+        inline void assert_global_size(const multi1d<ctype>& datum)
+        {
+            if (not is_global(datum.size()))
+		QDP_error_exit("qdp_hdf5.h  assert_global_size: multi1d.size not global!");
+        }
+
+        template <typename ctype>
+        inline void assert_global_size(const multi2d<ctype>& datum)
+        {
+            if (not is_global(datum.size2()))
+		QDP_error_exit("qdp_hdf5.h  assert_global_size: multi2d.size2 not global!");
+
+            if (not is_global(datum.size1()))
+		QDP_error_exit("qdp_hdf5.h  assert_global_size: multi2d.size1 not global!");
+        }
+
 	//template specializations:
 	//complex types
 	//single datum
@@ -857,6 +886,13 @@ namespace QDP {
 		void wtAtt(const std::string& obj_name, const std::string& attr_name, const ctype& datum, const hid_t& hdftype, const  HDF5Base::writemode& mode){
 			std::string oname(obj_name), aname(attr_name);
 
+			ctype datum_0;
+			if (not get_global(datum_0, datum)) {
+				QDPIO::cerr << "HDF5Writer::writeAttribute() warning: " << obj_name
+					<< ".attrib(" << attr_name
+						<< ") was NOT global. Using node=0 value now." << std::endl;
+			}
+
 			bool exists=objectExists(current_group,oname);
 			if(!exists){
 				HDF5_error_exit("HDF5Writer::writeAttribute: error, object "+oname+" you try to write attribute to does not exists!");
@@ -870,11 +906,9 @@ namespace QDP {
 				herr_t errhandle=H5Adelete_by_name(current_group,oname.c_str(),aname.c_str(),H5P_DEFAULT);
 			}
 
-			ctype datumcpy=datum;
 			hid_t attr_space_id=H5Screate(H5S_SCALAR);
 			hid_t attr_id=H5Acreate_by_name(current_group,oname.c_str(),aname.c_str(),hdftype,attr_space_id,H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
-			//H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datumcpy));
-			if(Layout::nodeNumber()==0) H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datumcpy));
+			H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(&datum_0));
 			H5Aclose(attr_id);
 			H5Sclose(attr_space_id);
 		}
@@ -883,6 +917,13 @@ namespace QDP {
 		void wtAtt(const std::string& obj_name, const std::string& attr_name, const multi1d<ctype>& datum, const hid_t& hdftype, const HDF5Base::writemode& mode){
 			std::string oname(obj_name), aname(attr_name);
 
+			multi1d<ctype> datum_0;
+			if (not get_global(datum_0, datum)) {
+				QDPIO::cerr << "HDF5Writer::writeAttribute() warning: " << obj_name
+					<< ".attrib(" << attr_name
+						<< ") was NOT global. Using node=0 value now." << std::endl;
+			}
+
 			bool exists=objectExists(current_group,oname);
 			if(!exists){
 				HDF5_error_exit("HDF5Writer::writeAttribute: error, object "+oname+" you try to write attribute to does not exists!");
@@ -896,13 +937,20 @@ namespace QDP {
 				herr_t errhandle=H5Adelete_by_name(current_group,oname.c_str(),aname.c_str(),H5P_DEFAULT);
 			}
 
-			hsize_t dimcount=datum.size();
+			hsize_t dimcount=datum_0.size();
+                        if (dimcount*H5Tget_size(hdftype)>64*1024) {
+                            QDPIO::cerr << "HDF5Writer::writeAttribute() error: " << obj_name
+                                << ".attrib(" << attr_name
+                                << ") exceeds the maximum hdf5 attrib size (64kB)." << std::endl;
+
+                            HDF5_error_exit("bad multi1d attrib write");
+                        }
+
 			ctype* tmpdim=new ctype[dimcount];
-			for(unsigned int i=0; i<dimcount; i++) tmpdim[i]=datum[i];
+			for(unsigned int i=0; i<dimcount; i++) tmpdim[i]=datum_0[i];
 			hid_t attr_space_id=H5Screate_simple(1,const_cast<const hsize_t*>(&dimcount),const_cast<const hsize_t*>(&dimcount));
 			hid_t attr_id=H5Acreate_by_name(current_group,oname.c_str(),aname.c_str(),hdftype,attr_space_id,H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
-			//H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(tmpdim));
-			if(Layout::nodeNumber()==0) H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(tmpdim));
+			H5Awrite(attr_id,hdftype,reinterpret_cast<void*>(tmpdim));
 			delete [] tmpdim;
 			H5Aclose(attr_id);
 			H5Sclose(attr_space_id);
@@ -949,6 +997,7 @@ namespace QDP {
 		void wt(const std::string& dataname, const multi1d<ctype>& datum, const hid_t& hdftype, const HDF5Base::writemode& mode){
 			std::string dname(dataname);
 			hid_t dataid, spaceid;
+			assert_global_size(datum);
 
 			bool exists=objectExists(current_group,dname);
 			if(exists){
@@ -970,22 +1019,40 @@ namespace QDP {
 			dataid=H5Dcreate(current_group,dname.c_str(),hdftype,spaceid,H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
 			H5Sclose(spaceid);
 
-			ctype* datumcpy=new ctype[datum.size()];
-			for(ullong i=0; i<datum.size(); i++) datumcpy[i]=datum[i];
 			hid_t plist_id = H5Pcreate (H5P_DATASET_XFER);
-			//H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
-			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT);
-			//H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
-			if(Layout::nodeNumber()==0) H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
-			H5Pclose(plist_id);
-			H5Dclose(dataid);
-			delete [] datumcpy;
+			herr_t status = H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT);
+
+			if (Layout::nodeNumber()==0) { // CAREFULL THIS IS ONLY ON NODE=0!!!,
+				// do nothing collective, throw or exit here
+				ctype* datumcpy=new(std::nothrow) ctype[datum.size()];
+
+				if ( datumcpy != 0x0 ) {
+					for(ullong i=0; i<datum.size(); i++)
+						datumcpy[i]=datum[i];
+
+					status = H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
+					delete [] datumcpy;
+				}
+				else {
+					QDPIO::cerr << "HDF5Writer::wt - buffer alloc failed" << std::endl;
+					status = -1; // I cannot throw in here
+				}
+			}
+
+			int g_stat = 0;
+			get_global(g_stat, (int)status);    // get node 0 value
+			if (g_stat < 0)
+				HDF5_error_exit("write from node ZERO failed");
+
+			status = H5Pclose(plist_id);
+			status = H5Dclose(dataid);
 		}
-		
+
 		template<typename ctype>
 		void wt(const std::string& dataname, const multi2d<ctype>& datum, const hid_t& hdftype, const HDF5Base::writemode& mode){
 			std::string dname(dataname);
 			hid_t dataid, spaceid;
+                        assert_global_size(datum);
 
 			bool exists=objectExists(current_group,dname);
 			if(exists){
@@ -1012,21 +1079,36 @@ namespace QDP {
 			H5Pclose(dcpl_id);
 			H5Sclose(spaceid);
 
-			ctype* datumcpy=new ctype[spacesize[0]*spacesize[1]];
-			for(ullong i=0; i<spacesize[0]; i++){
-				for(ullong j=0; j<spacesize[1]; j++){
-					datumcpy[j+spacesize[1]*i]=datum(i,j);	//row-major
+			hid_t plist_id = H5Pcreate (H5P_DATASET_XFER);
+			herr_t status = H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT);
+
+			if (Layout::nodeNumber()==0) { // CAREFULL THIS IS ONLY ON NODE=0!!!,
+				// do nothing collective, throw or exit here
+				ctype* datumcpy = new(std::nothrow) ctype[spacesize[0]*spacesize[1]];
+
+				if ( datumcpy != 0x0 ) {
+					for (ullong i=0; i<spacesize[0]; i++) {
+						for (ullong j=0; j<spacesize[1]; j++) {
+							datumcpy[j+spacesize[1]*i]=datum(i,j);	//row-major
+						}
+					}
+			
+					status = H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
+					delete [] datumcpy;
+				}
+				else {
+					QDPIO::cerr << "HDF5Writer::wt - buffer alloc failed" << std::endl;
+					status = -1; // I cannot throw in here
 				}
 			}
-			hid_t plist_id = H5Pcreate (H5P_DATASET_XFER);
-			
-			//H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
-			H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_INDEPENDENT);
-			//H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
-			if(Layout::nodeNumber()==0) H5Dwrite(dataid,hdftype,H5S_ALL,H5S_ALL,plist_id,static_cast<void*>(datumcpy));
-			H5Pclose(plist_id);
-			H5Dclose(dataid);
-			delete [] datumcpy;
+
+			int g_stat = 0;
+			get_global(g_stat, (int)status);    // get node 0 value
+			if (g_stat < 0)
+				HDF5_error_exit("write from node ZERO failed");
+
+			status = H5Pclose(plist_id);
+			status = H5Dclose(dataid);
 		}
 		//***********************************************************************************************************************************
 		//***********************************************************************************************************************************

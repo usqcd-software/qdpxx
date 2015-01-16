@@ -20,8 +20,13 @@ namespace QDP {
 	//-------------------------------------------------------------------------------- 
 	//-------------------------------------------------------------------------------- 
 	//constructor, never called by user:
-	HDF5::HDF5() : error_stack(H5E_DEFAULT), par_init(false), file_comm(H5P_DEFAULT), file_id(-1), current_group(-1), stripesize(-1), maxalign(0){
 
+	HDF5::HDF5(const long int& stripesizee, const long int& maxalignn) :
+		error_stack(H5E_DEFAULT), par_init(false), file_comm(H5P_DEFAULT),
+		file_id(-1), current_group(-1),
+		stripesize(stripesizee),
+		maxalign(maxalignn)
+	{
 		//no profiling
 		profile=false;
 		isprefetched=false;
@@ -39,11 +44,6 @@ namespace QDP {
 		//get new error handler
 		//H5Eset_auto(error_stack,errorHandler,NULL);
 		//H5Eset_auto(error_stack,NULL,NULL);
-	}
-	
-	HDF5::HDF5(const long int& stripesizee, const long int& maxalignn) : HDF5(){
-		stripesize=stripesizee;
-		maxalign=maxalignn;
 	}
 
 	//checks whether an HDF5 file already exists:
@@ -70,6 +70,7 @@ namespace QDP {
 	//error handler:
 	hid_t HDF5::errorHandler(hid_t errstack, void* unused){
 		QDPIO::cout << "Some error occured, but we do not care at the moment!" << std::endl;
+		return errstack;
 	}
 
 	//lookup routines:
@@ -1282,6 +1283,52 @@ namespace QDP {
 	//WRITING ATTRIBUTES
 	//***********************************************************************************************************************************
 	//***********************************************************************************************************************************
+
+	template<typename ctype>
+	bool get_global(ctype& global, const ctype& local)
+	{
+		global = local;
+		QDPInternal::broadcast(global);
+
+		int chcksum = global != local ? 1 : 0;
+		QDPInternal::globalSum(chcksum);
+
+		return chcksum==0;
+	}
+
+	template<typename ctype>
+	bool get_global(multi1d<ctype>& global, const multi1d<ctype>& local)
+	{
+		int s0;
+		int chcksum = not get_global(s0, local.size());
+
+		if (Layout::nodeNumber()==0)
+			global = local;
+		else
+			global.resize(s0);
+
+		QDPInternal::broadcast(&(global[0]), sizeof(ctype)*s0);
+
+		if (chcksum!=0) // this is and MUST be global, otherwise a possible deadlock
+			return false;
+           
+		for (int j=0; j<s0; ++j)
+			chcksum += global[j] != local[j] ? 1 : 0;
+
+		QDPInternal::globalSum(chcksum);
+
+		return chcksum==0;
+	}
+
+	template bool get_global<short>(                multi1d<short>& global,              const multi1d<short>& local);
+	template bool get_global<int>(                  multi1d<int>& global,                const multi1d<int>& local);
+	template bool get_global<unsigned short>(       multi1d<unsigned short>& global,     const multi1d<unsigned short>& local);
+	template bool get_global<unsigned int>(         multi1d<unsigned int>& global,       const multi1d<unsigned int>& local);
+	template bool get_global<unsigned long>(        multi1d<unsigned long>& global,      const multi1d<unsigned long>& local);
+	template bool get_global<unsigned long long>(   multi1d<unsigned long long>& global, const multi1d<unsigned long long>& local);
+	template bool get_global<float>(                multi1d<float>& global,              const multi1d<float>& local);
+	template bool get_global<double>(               multi1d<double>& global,             const multi1d<double>& local);
+
 	//single datum
 	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const short& datum, const HDF5Base::writemode& mode){
 		wtAtt(obj_name,attr_name,datum,H5T_NATIVE_SHORT,mode);
@@ -1314,6 +1361,12 @@ namespace QDP {
 	void HDF5Writer::writeAttribute(const std::string& obj_name, const std::string& attr_name, const std::string& datum, const HDF5Base::writemode& mode){
 		std::string oname(obj_name), aname(attr_name);
 
+                std::string datum_0;
+                if (not get_global(datum_0,datum)) {
+                    QDPIO::cerr << "HDF5Writer::writeAttribute() warning: " << obj_name
+                        << ".attrib(" << attr_name << ") was NOT global. Using node=0 value now." << std::endl; 
+                }
+
 		bool exists=objectExists(current_group,oname);
 		if(!exists){
 			HDF5_error_exit("HDF5Writer::writeAttribute: error, object "+oname+" you try to write attribute to does not exists!");
@@ -1327,8 +1380,16 @@ namespace QDP {
 			herr_t errhandle=H5Adelete_by_name(current_group,oname.c_str(),aname.c_str(),H5P_DEFAULT);
 		}
 
+                if (datum_0.length()+1>64*1024) {
+                    QDPIO::cerr << "HDF5Writer::writeAttribute() error: " << obj_name
+                        << ".attrib(" << attr_name
+                        << ") exceeds the maximum hdf5 attrib size (64kB)." << std::endl;
+
+                    HDF5_error_exit("bad string attrib write");
+                }
+
 		//create string datatytpe and set encoding to UTF-8:
-		hid_t typid=H5Tcreate(H5T_STRING,datum.length()+1);
+		hid_t typid=H5Tcreate(H5T_STRING,datum_0.length()+1);
 		H5Tset_cset(typid,H5T_CSET_UTF8);
 		//create space:
 		hid_t attr_space_id=H5Screate(H5S_SCALAR);
@@ -1336,8 +1397,7 @@ namespace QDP {
 		H5Sclose(attr_space_id);
 
 		//write:
-		//H5Awrite(attr_id,typid,reinterpret_cast<void*>(const_cast<char*>(datum.c_str())));
-		if(Layout::nodeNumber()==0) H5Awrite(attr_id,typid,reinterpret_cast<void*>(const_cast<char*>(datum.c_str())));
+		H5Awrite(attr_id,typid,reinterpret_cast<void*>(const_cast<char*>(datum_0.c_str())));
 		H5Aclose(attr_id);
 		H5Tclose(typid);
 	}
@@ -1407,6 +1467,11 @@ namespace QDP {
 
 	void HDF5Writer::write(const std::string& dataname, const std::string& datum, const HDF5Base::writemode& mode){
 		std::string dname(dataname);
+                std::string datum_0;
+                if (not get_global(datum_0,datum)) {
+                    QDPIO::cerr << "HDF5Writer::write() warning: " << dataname
+                        << " was NOT global. Using node=0 value now." << std::endl; 
+                }
 
 		bool exists=objectExists(current_group,dname);
 		if(exists){
@@ -1424,7 +1489,7 @@ namespace QDP {
 		}
 
 		//create string datatytpe and set encoding to UTF-8:                                                                                                                                                  
-		hid_t dataid, spaceid, typid=H5Tcreate(H5T_STRING,datum.length()+1);
+		hid_t dataid, spaceid, typid=H5Tcreate(H5T_STRING,datum_0.length()+1);
 		H5Tset_cset(typid,H5T_CSET_UTF8);
 		//create space:                                                                                                                                                                                       
 		spaceid=H5Screate(H5S_SCALAR);
@@ -1433,7 +1498,7 @@ namespace QDP {
 
 		hid_t plist_id = H5Pcreate (H5P_DATASET_XFER);
 		H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
-		H5Dwrite(dataid,typid,H5S_ALL,H5S_ALL,plist_id,reinterpret_cast<void*>(const_cast<char*>(datum.c_str())));
+		H5Dwrite(dataid,typid,H5S_ALL,H5S_ALL,plist_id,reinterpret_cast<void*>(const_cast<char*>(datum_0.c_str())));
 		H5Pclose(plist_id);
 		H5Tclose(typid);
 		H5Dclose(dataid);
