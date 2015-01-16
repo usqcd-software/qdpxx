@@ -31,9 +31,14 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*
      
       threads_num = omp_get_num_threads();
       myId = omp_get_thread_num();
-      low = numSiteTable*myId/threads_num;
-      int hi = numSiteTable*(myId+1)/threads_num;
-      high = ( hi > numSiteTable ) ? numSiteTable : hi;
+      low = (numSiteTable*myId)/threads_num;
+
+      // NB: high can never be too high since for the last thread
+      // myId + 1 = (threads_num - 1) + 1 = threads_num.
+      // So numSiteTable*(myId+1) will always be a strict multiple of threads_num
+      // and so truncation issues will not bite.
+      // I am addig in the parentheses tho to force the precedence
+      high =(numSiteTable*(myId+1))/threads_num;
  
       func(low, high, myId, &a);
     }
