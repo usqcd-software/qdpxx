@@ -105,9 +105,6 @@
 /* Use QMT Threads library */
 #undef QDP_USE_QMT_THREADS
 
-/* Enable SSE instructions */
-#undef QDP_USE_SSE
-
 /* Enable SSE2 instructions */
 #undef QDP_USE_SSE2
 

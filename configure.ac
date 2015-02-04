@@ -185,11 +185,22 @@ AC_ARG_ENABLE(bgl,
       [ac_bgl_enabled=1]
 )
 
-if test ${ac_sse} -eq 1; then
-    AC_DEFINE_UNQUOTED(QDP_USE_SSE, ${ac_sse}, [Enable SSE instructions])
-    AC_SUBST(CONFIG_SSE,[${ac_sse}])
-    AC_MSG_NOTICE([Configuring QDP++ with SSE extentions enabled]);
+AC_ARG_ENABLE(bgq-thread-binding,
+    AC_HELP_STRING([--enable-bgq-thread-binding],
+     [ Enable BlueGeneQ Thread Binding ]),
+     [ ac_bgq_bind_enabled=${enableval}],
+     [ ac_bgq_bind_enabled="no"]
+)
+
+
+if test "X${ac_bgq_bind_enabled}X" = "XyesX";
+then
+  AC_MSG_NOTICE([Enabling BGQ Thread Binding])
+else
+  AC_MSG_NOTICE([Not Enabling BGQ Thread Binding])
 fi
+
+AM_CONDITIONAL(BUILD_BGQ_THREADBIND, [ test "x${ac_bgq_bind_enabled}x" = "xyesx" ])
 
 if test ${ac_sse2} -eq 1; then
     AC_DEFINE_UNQUOTED(QDP_USE_SSE2, ${ac_sse2}, [Enable SSE2 instructions])

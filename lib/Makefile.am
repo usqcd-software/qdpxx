@@ -91,3 +91,8 @@ if BUILD_DEFAULT_ALLOCATOR
 libqdp_a_SOURCES += qdp_default_allocator.cc
 endif 
 
+if BUILD_BGQ_THREADBIND
+libqdp_a_SOURCES += qdp_bgq_threadbind.cc
+else
+libqdp_a_SOURCES += qdp_generic_threadbind.cc
+endif

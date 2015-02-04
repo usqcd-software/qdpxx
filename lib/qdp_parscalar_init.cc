@@ -15,6 +15,9 @@
 #include <qmt.h>
 #endif
 
+#if defined(QDP_USE_OMP_THREADS)
+#include "qdp_threadbind.h"
+#endif
 
 namespace QDP {
 	
@@ -25,7 +28,12 @@ namespace QDP {
 	
 	//! Private flag for status
 	static bool isInit = false;
-	
+
+
+  static bool threadbind = false;
+  static int n_cores = -1;
+  static int n_threads_per_core = -1;
+
 	//! Turn on the machine
 	void QDP_initialize(int *argc, char ***argv)
 	{
@@ -94,6 +102,9 @@ namespace QDP {
 				fprintf(stderr,"    -rtinode  %%s [%s] run-time interface fileserver node\n", 
 						rtinode);
 #endif
+
+				fprintf(stderr, "   -bind c:s   Bind Threads -- BlueGene Q only, c  cores per node and s SMT threads to run per core \n");
+
 				
 				QDP_abort(1);
 			}
@@ -132,6 +143,11 @@ namespace QDP {
 					sscanf((*argv)[++i], "%d", &uu);
 					logical_iogeom[j] = uu;
 				}
+			}
+			else if (strcmp((*argv)[i], "-bind")==0) 
+			{
+				threadbind = true;
+				sscanf((*argv)[++i], "%d:%d", &n_cores, &n_threads_per_core);
 			}
 #ifdef USE_REMOTE_QIO
 			else if (strcmp((*argv)[i], "-cd")==0) 
@@ -256,6 +272,7 @@ namespace QDP {
 		if( Layout::primaryNode()) {
 			std::cout << "QDP use OpenMP threading. We have " << qdpNumThreads() << " threads\n"; 
 		}
+
 		
 #endif
 #endif
@@ -278,7 +295,14 @@ namespace QDP {
 		QDPIO::cin.init(&std::cin);
 		QDPIO::cout.init(&std::cout);
 		QDPIO::cerr.init(&std::cerr);
-		
+
+#ifdef QDP_USE_OMP_THREADS
+  		if ( threadbind ) {
+		  QDPIO::cout  << "Attempting to bind threads: " << n_cores << " cores with " << n_threads_per_core << " threads per core" << std::endl;
+		  setThreadAffinity(n_cores, n_threads_per_core);
+		}
+		reportAffinity();
+#endif
 		initProfile(__FILE__, __func__, __LINE__);
 		
 		QDPIO::cout << "Initialize done" << std::endl;
