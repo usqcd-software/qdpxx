@@ -202,6 +202,12 @@ fi
 
 AM_CONDITIONAL(BUILD_BGQ_THREADBIND, [ test "x${ac_bgq_bind_enabled}x" = "xyesx" ])
 
+if test ${ac_sse} -eq 1; then
+      AC_DEFINE_UNQUOTED(QDP_USE_SSE, ${ac_sse}, [Enable SSE instructions])
+      AC_SUBST(CONFIG_SSE,[${ac_sse}])
+      AC_MSG_NOTICE([Configuring QDP++ with SSE extentions enabled])
+fi
+
 if test ${ac_sse2} -eq 1; then
     AC_DEFINE_UNQUOTED(QDP_USE_SSE2, ${ac_sse2}, [Enable SSE2 instructions])
     AC_SUBST(CONFIG_SSE2,[${ac_sse2}])
