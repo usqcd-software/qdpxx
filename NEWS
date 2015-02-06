@@ -1,3 +1,8 @@
+02/06/2015 -- Balint Joo 
+	Updated submodules, pulled in HDF5 fixes (Thorsten Kurth)
+        Added  Blue Gene Thread binding (orig. developed in QPhiX by Diptorup Deb)
+
+
 06/02/2014 -- Frank Winter and Robert Edwards
         Version 1.44.0: Added new OSubLattice  type that can be declared. This allows objects
 	to be allocated according to a subset.
