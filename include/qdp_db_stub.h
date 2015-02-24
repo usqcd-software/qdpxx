@@ -351,7 +351,7 @@ o     *
   private:
     void notImplemented() const
       {
-	QDPIO::cerr << "BinaryStoreDB: not implemented - this is a stub version. You must --enable-filedb in qdp++" << endl;
+	QDPIO::cerr << "BinaryStoreDB: not implemented - this is a stub version. You must --enable-filedb in qdp++" << std::endl;
 	QDP_abort(1);
       }
   };
