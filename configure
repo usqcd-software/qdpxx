@@ -659,6 +659,8 @@ LIBINTRIN_DIR
 subdirs
 CONFIG_SSE2
 CONFIG_SSE
+BUILD_BGQ_THREADBIND_FALSE
+BUILD_BGQ_THREADBIND_TRUE
 CONFIG_GENERICS
 CONFIG_ALIGNMENT
 CONFIG_NS
@@ -767,6 +769,7 @@ enable_sse2
 enable_sse3
 enable_3dnow
 enable_bgl
+enable_bgq_thread_binding
 enable_precision
 enable_layout
 with_qmp
@@ -1425,6 +1428,8 @@ Optional Features:
   --enable-sse3           Optimize code with Intel SSE3 instructions
   --enable-3dnow          Optimize code with AMD 3DNow instructions
   --enable-bgl            Enable BlueGeneL Optimizations
+  --enable-bgq-thread-binding
+                          Enable BlueGeneQ Thread Binding
   --enable-precision=single|double
                           Sets the base precision to be single or double
                           precision (default is single)
@@ -3747,16 +3752,44 @@ else
 fi
 
 
+# Check whether --enable-bgq-thread-binding was given.
+if test "${enable_bgq_thread_binding+set}" = set; then :
+  enableval=$enable_bgq_thread_binding;  ac_bgq_bind_enabled=${enableval}
+else
+   ac_bgq_bind_enabled="no"
+
+fi
+
+
+
+if test "X${ac_bgq_bind_enabled}X" = "XyesX";
+then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Enabling BGQ Thread Binding" >&5
+$as_echo "$as_me: Enabling BGQ Thread Binding" >&6;}
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: Not Enabling BGQ Thread Binding" >&5
+$as_echo "$as_me: Not Enabling BGQ Thread Binding" >&6;}
+fi
+
+ if  test "x${ac_bgq_bind_enabled}x" = "xyesx" ; then
+  BUILD_BGQ_THREADBIND_TRUE=
+  BUILD_BGQ_THREADBIND_FALSE='#'
+else
+  BUILD_BGQ_THREADBIND_TRUE='#'
+  BUILD_BGQ_THREADBIND_FALSE=
+fi
+
+
 if test ${ac_sse} -eq 1; then
 
 cat >>confdefs.h <<_ACEOF
 #define QDP_USE_SSE ${ac_sse}
 _ACEOF
 
-    CONFIG_SSE=${ac_sse}
+      CONFIG_SSE=${ac_sse}
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: Configuring QDP++ with SSE extentions enabled" >&5
-$as_echo "$as_me: Configuring QDP++ with SSE extentions enabled" >&6;};
+      { $as_echo "$as_me:${as_lineno-$LINENO}: Configuring QDP++ with SSE extentions enabled" >&5
+$as_echo "$as_me: Configuring QDP++ with SSE extentions enabled" >&6;}
 fi
 
 if test ${ac_sse2} -eq 1; then
@@ -5483,6 +5516,10 @@ else
   am__EXEEXT_FALSE=
 fi
 
+if test -z "${BUILD_BGQ_THREADBIND_TRUE}" && test -z "${BUILD_BGQ_THREADBIND_FALSE}"; then
+  as_fn_error $? "conditional \"BUILD_BGQ_THREADBIND\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${BUILD_LIBINTRIN_TRUE}" && test -z "${BUILD_LIBINTRIN_FALSE}"; then
   as_fn_error $? "conditional \"BUILD_LIBINTRIN\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5

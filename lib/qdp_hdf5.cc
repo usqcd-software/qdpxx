@@ -94,29 +94,34 @@ namespace QDP {
 		return name;
 	}
 
+	void HDF5::tokenize(const ::std::string& str, ::std::vector< ::std::string >& tokens, const ::std::string& delimiters){
+		// Skip delimiters at beginning.
+		::std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+		// Find first "non-delimiter".
+		::std::string::size_type pos = str.find_first_of(delimiters, lastPos);
+    
+		while (::std::string::npos != pos || ::std::string::npos != lastPos){
+			// Found a token, add it to the vector.
+			tokens.push_back(str.substr(lastPos, pos - lastPos));
+			// Skip delimiters.  Note the "not_of"
+			lastPos = str.find_first_not_of(delimiters, pos);
+			// Find next "non-delimiter"
+			pos = str.find_first_of(delimiters, lastPos);
+		}
+	}
+
 	std::vector<std::string> HDF5::splitPathname(const std::string& name){
 		//first split the string according to the file separators, such that the linking is correct:
-		std::vector<std::string> dirlist;
-		std::string nm=name;
+        ::std::vector<std::string> dirlist;
+        tokenize(name, dirlist, "/");
 
-		//get rid of possible leading file separator:
-		if(nm.find_first_of("/")==0) nm=nm.substr(1);
-
-		//no file separator left:
-		if(nm.find_first_of("/")==std::string::npos){
-			dirlist.push_back(name);
-		}
-		else{
-			size_t pos=0;
-			while((pos=nm.find_first_of("/"))!=std::string::npos){
-				std::string tmpstr(nm.substr(0,pos));
-				dirlist.push_back(tmpstr);
-				nm=nm.substr(pos+1);
-			}
-			if(nm.compare("")!=0) dirlist.push_back(nm);
-		}
-
-		return dirlist;
+        //remove zero strings, they can occur when name contained expressions such as //:
+        ::std::vector<std::string>::iterator it;
+        for(it=dirlist.begin(); it!=dirlist.end(); it++){
+            if(*it=="") dirlist.erase(it);
+        }
+        
+        return dirlist;
 	}
 
 	//check if object exists:
@@ -1203,9 +1208,11 @@ namespace QDP {
 
 	//create a new group inside current one w/o steping into it:
 	void HDF5Writer::mkdir(const ::std::string& name){
-		std::string cwd=pwd();
-		push(name);
-		cd(cwd);
+		if(name!="" && name!="/"){
+			std::string cwd=pwd();
+			push(name);
+			cd(cwd);
+		}
 	}
 
 	//create a new group inside current one and step into it:

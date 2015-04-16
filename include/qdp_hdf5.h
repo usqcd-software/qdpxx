@@ -59,6 +59,7 @@ namespace QDP {
 		std::string getNameById(hid_t id)const;
 
 		//helper for splitting directory names
+		void tokenize(const ::std::string& str, ::std::vector< ::std::string >& tokens, const ::std::string& delimiters);
 		std::vector<std::string> splitPathname(const std::string& name);
 
 		//check if an object exists, by iterating through the tree:
@@ -471,7 +472,7 @@ namespace QDP {
 		int close();
 
 		//find out if file exists:
-		bool check_exists(const std::string& filename)const;
+		static bool check_exists(const std::string& filename)const;
 
 		//setting the stripesize:
 		void set_stripesize(const int& stripesizee){stripesize=stripesizee;};
@@ -691,7 +692,7 @@ namespace QDP {
 			if(profile) swatch_reorder.start();
 			/*#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
 			for(unsigned int run=0; run<nodeSites; run++){
-				memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf+run*obj_size),float_size*obj_size);
+			memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf+run*obj_size),float_size*obj_size);
 			}*/
 			CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,float_size*obj_size);
 			delete [] buf;
@@ -762,9 +763,9 @@ namespace QDP {
 			fieldarray.resize(arr_size);
 			/*#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,fieldarray)
 			for(unsigned int run=0; run<nodeSites; run++){
-				for(unsigned int dd=0; dd<arr_size; dd++){
-					memcpy(&(fieldarray[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),float_size*obj_size);
-				}
+			for(unsigned int dd=0; dd<arr_size; dd++){
+			memcpy(&(fieldarray[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),float_size*obj_size);
+			}
 			}*/
 			CvtToLayout(fieldarray,reinterpret_cast<void*>(buf),nodeSites,arr_size,float_size*obj_size);
 			delete [] buf;
@@ -785,35 +786,35 @@ namespace QDP {
     
 	};
 
-        template<typename ctype>
-        bool get_global(ctype& global, const ctype& local);
+	template<typename ctype>
+	bool get_global(ctype& global, const ctype& local);
 
-        template<typename ctype>
-        bool get_global(multi1d<ctype>& global, const multi1d<ctype>& local);
+	template<typename ctype>
+	bool get_global(multi1d<ctype>& global, const multi1d<ctype>& local);
 
-        template<typename ctype>
-        inline bool is_global(const ctype l)
-        {
-            ctype g;
-            return get_global(g,l);
-        }
+	template<typename ctype>
+	inline bool is_global(const ctype l)
+	{
+		ctype g;
+		return get_global(g,l);
+	}
 
-        template <typename ctype>
-        inline void assert_global_size(const multi1d<ctype>& datum)
-        {
-            if (not is_global(datum.size()))
-		QDP_error_exit("qdp_hdf5.h  assert_global_size: multi1d.size not global!");
-        }
+	template <typename ctype>
+	inline void assert_global_size(const multi1d<ctype>& datum)
+	{
+		if (not is_global(datum.size()))
+			QDP_error_exit("qdp_hdf5.h  assert_global_size: multi1d.size not global!");
+	}
 
-        template <typename ctype>
-        inline void assert_global_size(const multi2d<ctype>& datum)
-        {
-            if (not is_global(datum.size2()))
-		QDP_error_exit("qdp_hdf5.h  assert_global_size: multi2d.size2 not global!");
+	template <typename ctype>
+	inline void assert_global_size(const multi2d<ctype>& datum)
+	{
+		if (not is_global(datum.size2()))
+			QDP_error_exit("qdp_hdf5.h  assert_global_size: multi2d.size2 not global!");
 
-            if (not is_global(datum.size1()))
-		QDP_error_exit("qdp_hdf5.h  assert_global_size: multi2d.size1 not global!");
-        }
+		if (not is_global(datum.size1()))
+			QDP_error_exit("qdp_hdf5.h  assert_global_size: multi2d.size1 not global!");
+	}
 
 	//template specializations:
 	//complex types
@@ -938,13 +939,13 @@ namespace QDP {
 			}
 
 			hsize_t dimcount=datum_0.size();
-                        if (dimcount*H5Tget_size(hdftype)>64*1024) {
-                            QDPIO::cerr << "HDF5Writer::writeAttribute() error: " << obj_name
-                                << ".attrib(" << attr_name
-                                << ") exceeds the maximum hdf5 attrib size (64kB)." << std::endl;
+			if (dimcount*H5Tget_size(hdftype)>64*1024) {
+				QDPIO::cerr << "HDF5Writer::writeAttribute() error: " << obj_name
+					<< ".attrib(" << attr_name
+						<< ") exceeds the maximum hdf5 attrib size (64kB)." << std::endl;
 
-                            HDF5_error_exit("bad multi1d attrib write");
-                        }
+				HDF5_error_exit("bad multi1d attrib write");
+			}
 
 			ctype* tmpdim=new ctype[dimcount];
 			for(unsigned int i=0; i<dimcount; i++) tmpdim[i]=datum_0[i];
@@ -1052,7 +1053,7 @@ namespace QDP {
 		void wt(const std::string& dataname, const multi2d<ctype>& datum, const hid_t& hdftype, const HDF5Base::writemode& mode){
 			std::string dname(dataname);
 			hid_t dataid, spaceid;
-                        assert_global_size(datum);
+			assert_global_size(datum);
 
 			bool exists=objectExists(current_group,dname);
 			if(exists){
@@ -1260,7 +1261,7 @@ namespace QDP {
 			REAL* buf=new REAL[nodeSites*obj_size];
 			/*#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
 			for(unsigned int run=0; run<nodeSites; run++){
-				memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),float_size*obj_size);
+			memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),float_size*obj_size);
 			}*/
 			CvtToHost(reinterpret_cast<void*>(buf),field,nodeSites,float_size*obj_size);
 			if(profile) swatch_reorder.stop();
@@ -1317,9 +1318,9 @@ namespace QDP {
 			REAL* buf=new REAL[nodeSites*obj_size*arr_size];
 			/*#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,fieldarray)
 			for(unsigned int run=0; run<nodeSites; run++){
-				for(unsigned int dd=0; dd<arr_size; dd++){
-					memcpy(reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),&(fieldarray[dd].elem(reordermap[run])),float_size*obj_size);
-				}
+			for(unsigned int dd=0; dd<arr_size; dd++){
+			memcpy(reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),&(fieldarray[dd].elem(reordermap[run])),float_size*obj_size);
+			}
 			}*/
 			CvtToHost(reinterpret_cast<void*>(buf),fieldarray,nodeSites,arr_size,float_size*obj_size);
 
