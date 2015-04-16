@@ -472,7 +472,7 @@ namespace QDP {
 		int close();
 
 		//find out if file exists:
-		static bool check_exists(const std::string& filename)const;
+		static bool check_exists(const std::string& filename);
 
 		//setting the stripesize:
 		void set_stripesize(const int& stripesizee){stripesize=stripesizee;};

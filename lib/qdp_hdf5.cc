@@ -47,7 +47,7 @@ namespace QDP {
 	}
 
 	//checks whether an HDF5 file already exists:
-	bool HDF5::check_exists(const std::string& filename)const{
+	bool HDF5::check_exists(const std::string& filename){
 		//on node 0, test if file exists:
 		bool exists=false;
 		if(Layout::nodeNumber()==0){
@@ -197,24 +197,26 @@ namespace QDP {
 	//navigation routines:
 	void HDF5::pop(){
 		//only do something if not at root-level:
-		if(current_group!=file_id){
-			hid_t tmp_group;
-
-			//lookup what current and parent directory is:
-			std::string cdir=pwd();
-			std::string pdir=parentDir();
-      
-			//close group to prevent data loss and then go to new group:
-			H5Gclose(current_group);
-			tmp_group=H5Gopen(file_id,pdir.c_str(),H5P_DEFAULT);
-      
-			current_group=tmp_group;
-		}
+        if(pwd().compare("/")!=0){
+            hid_t tmp_group;
+            
+            //lookup what current and parent directory is:
+            ::std::string cdir=pwd();
+            ::std::string pdir=parentDir();
+            
+            //close group to prevent data loss and then go to new group:
+            H5Gclose(current_group);
+            tmp_group=H5Gopen(file_id,pdir.c_str(),H5P_DEFAULT);
+            
+            current_group=tmp_group;
+        }
 	}
   
 	void HDF5::cd(const std::string& dirname){
 		std::string tmpdirname(dirname);
-		if(tmpdirname.compare("..")==0) pop();
+		if(tmpdirname.compare("..")==0){
+			pop();
+		}
 		else if(tmpdirname.compare(pwd())!=0){
 			hid_t tmp_group;
       
@@ -231,17 +233,17 @@ namespace QDP {
 			std::string cdir=pwd();
       
 			//perform different tests:
-			if(cdir.find(ndir)==0){
+			if(ndir.find(cdir)==::std::string::npos || ndir.compare("/")==0){
+				//ndir is not inside cdir tree or ndir is root directory, so close cdir tree:
+			    while(pwd().compare("/")!=0){
+			    	pop();
+			    }
+			}
+			else if(cdir.find(ndir)==0){
 				//ndir is parent of cdir: iterate up from cdir and close all dirs on the way:
 				while(current_group!=tmp_group){
 					pop();
 				}
-			}
-			else if(ndir.find(cdir)==string::npos){
-				//ndir is not inside cdir tree, so close cdir tree:
-				while(current_group!=file_id){
-					pop();
-				}       
 			}
 			current_group=tmp_group;
 		}
@@ -1249,6 +1251,11 @@ namespace QDP {
 					//check if object is a group: if yes, step into it, if no, cast an error:
 					H5O_info_t objinfo;
 					herr_t errhandle=H5Oget_info_by_name(last_group,dirlist[i].c_str(),&objinfo,H5P_DEFAULT);
+					if(errhandle<0){
+					 	QDPIO::cout << "HDF5Writer::push: error, cannot get properties of " << name << "!" << std::endl;
+					    current_group=last_group;
+						break;
+					}
 					if(objinfo.type!=H5O_TYPE_GROUP){
 						QDPIO::cout << "HDF5Writer::push: error, the object " << dirlist[i] << " in " << getNameById(last_group) << " already exists and is not a group!"  << std::endl;
 						current_group=last_group;
