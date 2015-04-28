@@ -40,9 +40,6 @@ public:
   //! Copy constructor
   QDPType(const QDPType&) {}
 
-  //! Destructor
-  ~QDPType(){}
-
 
   //---------------------------------------------------------
   // Operators
