@@ -1,4 +1,3 @@
-// $Id: sse_linalg_m_peq_m_double.cc,v 1.2 2008-09-23 15:23:46 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine

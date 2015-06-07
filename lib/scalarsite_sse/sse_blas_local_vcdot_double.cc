@@ -1,4 +1,3 @@
-// $Id: sse_blas_local_vcdot_double.cc,v 1.2 2008-06-27 12:56:57 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
