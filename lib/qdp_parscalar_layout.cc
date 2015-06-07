@@ -22,8 +22,8 @@
 namespace QDP 
 {
 
-//-----------------------------------------------------------------------------
-// IO routine solely for debugging. Only defined here
+  //-----------------------------------------------------------------------------
+  // IO routine solely for debugging. Only defined here
   template<class T>
   std::ostream& operator<<(std::ostream& s, const multi1d<T>& s1)
   {
@@ -34,7 +34,7 @@ namespace QDP
   }
 
 
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
   namespace Layout
   {
     //-----------------------------------------------------
@@ -70,18 +70,18 @@ namespace QDP
       //! Total number of nodes
       int num_nodes;
 
-	  bool iogrid_defined;
+      bool iogrid_defined;
       int  num_iogrid;
-	  multi1d<int> iogrid;
+      multi1d<int> iogrid;
 
-	} _layout;
+    } _layout;
 
 
     //-----------------------------------------------------
     // Functions
 
     //! Main destruction routine
-    void destroy() {}
+    void destroy() {RNG::finalizeRNG();}
 
     //! Set virtual grid (problem grid) lattice size
     void setLattSize(const multi1d<int>& nrows) {_layout.nrow = nrows;}
@@ -154,10 +154,10 @@ namespace QDP
       _layout.num_nodes = QMP_get_number_of_nodes();
       _layout.node_rank = QMP_get_node_number();
 		
-	  // Default should be current behaviour (as of 7/4/12)
-	  // No iogrid is defined -> each node is its own I/O node
-	  _layout.iogrid_defined = false;  
-	  _layout.num_iogrid = _layout.num_nodes;
+      // Default should be current behaviour (as of 7/4/12)
+      // No iogrid is defined -> each node is its own I/O node
+      _layout.iogrid_defined = false;  
+      _layout.num_iogrid = _layout.num_nodes;
     }
 
 
@@ -172,41 +172,41 @@ namespace QDP
 
 
 	  
-	  //! check if I/O grid is defined
-	  /*! Always defined for scalar node: it is 1x1x1x1 */
-	  bool isIOGridDefined(void) QDP_CONST 
-	  { 
-		  return _layout.iogrid_defined; 
-	  }
+    //! check if I/O grid is defined
+    /*! Always defined for scalar node: it is 1x1x1x1 */
+    bool isIOGridDefined(void) QDP_CONST 
+    { 
+      return _layout.iogrid_defined; 
+    }
 	  
-	  //! number of I/O nodes
-	  int numIONodeGrid(void) QDP_CONST
-	  {
+    //! number of I/O nodes
+    int numIONodeGrid(void) QDP_CONST
+    {
 		
 		  
-		  return _layout.num_iogrid;
+      return _layout.num_iogrid;
 		  
-	  }
+    }
 	  
-	  //! Set the I/O Node grid -- satisfy interface
-	  void setIONodeGrid(const multi1d<int>& io_grid) 
-	  {
-		_layout.iogrid.resize(Nd);	
-		for(int mu=0; mu < Nd; mu++) {
-		  _layout.iogrid[mu] = io_grid[mu];
-		}
-		_layout.num_iogrid = io_grid[0];
-		for(int mu=1; mu < Nd; mu++) { 
-		  _layout.num_iogrid *= io_grid[mu];
-		}
-		_layout.iogrid_defined = true;
-	  }
+    //! Set the I/O Node grid -- satisfy interface
+    void setIONodeGrid(const multi1d<int>& io_grid) 
+    {
+      _layout.iogrid.resize(Nd);	
+      for(int mu=0; mu < Nd; mu++) {
+	_layout.iogrid[mu] = io_grid[mu];
+      }
+      _layout.num_iogrid = io_grid[0];
+      for(int mu=1; mu < Nd; mu++) { 
+	_layout.num_iogrid *= io_grid[mu];
+      }
+      _layout.iogrid_defined = true;
+    }
 	  
-	  //! Get the I/O Node grid
-	  const multi1d<int>& getIONodeGrid() QDP_CONST
-	  {
-		  return _layout.iogrid;
-	  }
+    //! Get the I/O Node grid
+    const multi1d<int>& getIONodeGrid() QDP_CONST
+    {
+      return _layout.iogrid;
+    }
 	  
     //! Initializer for all the layout defaults
     void initDefaults()
@@ -340,8 +340,8 @@ namespace QDP
 
       // Sanity check - check the layout functions make sense
 #if QDP_DEBUG >= 2
-	// BJ: Put this into a debug loop as it can take a serious amount of time for a really
-        // large lattice
+      // BJ: Put this into a debug loop as it can take a serious amount of time for a really
+      // large lattice
       for(int site=0; site < vol(); ++site) 
       {
 	multi1d<int> coord1 = crtesn(site, lattSize());
@@ -375,7 +375,7 @@ namespace QDP
   }
 
 
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
 #if QDP_USE_LEXICO_LAYOUT == 1
 
 #warning "Using a lexicographic layout"
@@ -436,7 +436,7 @@ namespace QDP
     }
   }
 
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
 
 #elif QDP_USE_CB2_LAYOUT == 1
 
@@ -529,7 +529,7 @@ namespace QDP
     }
   }
 
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
 
 #elif QDP_USE_CB3D_LAYOUT == 1
 
@@ -632,7 +632,7 @@ namespace QDP
   }
 
 
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
 
 #elif QDP_USE_CB32_LAYOUT == 1
 
@@ -750,7 +750,7 @@ namespace QDP
 
 #endif
 
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
 
 
 } // namespace QDP;

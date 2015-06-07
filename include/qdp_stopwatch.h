@@ -47,6 +47,7 @@ private:
   long usec;
   bool startedP;
   bool stoppedP;
+  bool state;
 
   struct timeval t_start;
   struct timeval t_end;

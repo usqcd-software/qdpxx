@@ -16,11 +16,15 @@ namespace QDP {
     startedP=false;
     sec=0;
     usec=0;
+    state=true;
   }
 
   StopWatch::~StopWatch() {}
 	
   void StopWatch::calcDuration(long& secs, long& usecs){
+     if (!state){
+        QDPIO::cerr << "Timer in error state"<<std::endl;
+        return;}
     secs=0;
     usecs=0;
     if( startedP && stoppedP ) 
@@ -28,6 +32,7 @@ namespace QDP {
       if( t_end.tv_sec < t_start.tv_sec ) 
       { 
 	QDPIO::cerr << __func__ << ": critical timer rollover" << std::endl;
+        state=false;
 	usecs = 0;
       }
       else 
@@ -56,6 +61,7 @@ namespace QDP {
     stoppedP = false;
     sec=0;
     usec=0;
+    state=true;
   }
 
   void StopWatch::start() 
@@ -65,8 +71,11 @@ namespace QDP {
     if( ret_val != 0 ) 
     {
       QDPIO::cerr << __func__ << ": gettimeofday failed in StopWatch::start()" << std::endl;
-      QDP_abort(1);
+      state=false;
+    //  QDP_abort(1);
     }
+    else 
+        state=true;
     startedP = true;
     stoppedP = false;
   }
@@ -83,7 +92,8 @@ namespace QDP {
       if( ret_val != 0 ) 
       {
 	QDPIO::cerr << __func__ << ": gettimeofday failed in StopWatch::end()" << std::endl;
-	QDP_abort(1);
+        state=false;
+	//QDP_abort(1);
       }
       stoppedP = true;
 		
