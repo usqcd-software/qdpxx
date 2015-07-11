@@ -39,6 +39,7 @@ namespace RNG
    */
   void savern(Seed& lseed);
 
+  void finalizeRNG();
 
   //! Internal seed multiplier
   float sranf(Seed& seed, Seed&, const Seed&);

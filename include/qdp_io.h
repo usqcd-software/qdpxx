@@ -396,6 +396,17 @@ namespace QDP
     */
     virtual void readArray(char* output, size_t nbytes, size_t nmemb);
 
+    //! Read data on the primary node and broadcast to all nodes.
+    //! Assumes data is **little endian** and no checksums are done.
+    /*!
+      \param output The location to which data is read
+      \param nbytes The size in bytes of each datum
+      \param The number of data.
+    */
+    virtual void readArrayLittleEndian(char* output, size_t nbytes, size_t nmemb);
+
+    virtual void readArrayPrimaryNodeLittleEndian(char* output, size_t nbytes, size_t nmemb);
+
     // Overloaded reader functions
     virtual void readDesc(std::string& result);
 

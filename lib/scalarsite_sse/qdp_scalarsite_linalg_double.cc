@@ -1,4 +1,3 @@
-// $Id: qdp_scalarsite_linalg_double.cc,v 1.4 2009-07-14 20:08:42 bjoo Exp $
 
 /*! @file
  * @brief Intel SSE optimizations

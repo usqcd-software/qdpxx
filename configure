@@ -4661,7 +4661,7 @@ $as_echo "$as_me: hdf5 libraries: ${HDF5_LIBS}" >&6;}
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: Configuring QDP++ with HDF5 enabled" >&5
 $as_echo "$as_me: Configuring QDP++ with HDF5 enabled" >&6;};
-                                      fi
+fi
 
 
 # Check whether --with-bagel-qdp was given.

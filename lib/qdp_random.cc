@@ -53,6 +53,7 @@ namespace RNG
   //! Initialize the internals of the random number generator
   void initRNG()
   {
+
     int old_profile_level = setProfileLevel(0);
 
     /* Multiplier used. Use big integer arithmetic */
@@ -103,6 +104,7 @@ namespace RNG
      *   In other words, the very first site is multiplied by a.
      */
     LatticeSeed lattice_ran_mult_tmp;
+
     lattice_ran_mult_tmp = 1;
 
     LatticeSeed laamult;
@@ -155,9 +157,19 @@ namespace RNG
     }
 
     *lattice_ran_mult = lattice_ran_mult_tmp;
+
     QDPIO::cout << "Finished init of RNG" << std::endl; 
 
     setProfileLevel(old_profile_level);
+
+
+  }
+
+
+  void finalizeRNG()
+  {
+    if (lattice_ran_mult)
+       delete lattice_ran_mult;
   }
 
 

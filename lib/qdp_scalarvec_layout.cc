@@ -1,4 +1,3 @@
-
 /*! @file
  * @brief Scalarvec layout routines
  * 
@@ -19,8 +18,8 @@
 namespace QDP 
 {
 
-//-----------------------------------------------------------------------------
-// Layout stuff specific to a scalarvec architecture
+  //-----------------------------------------------------------------------------
+  // Layout stuff specific to a scalarvec architecture
   namespace Layout
   {
     //-----------------------------------------------------
@@ -57,7 +56,7 @@ namespace QDP
     // Functions
 
     //! Main destruction routine
-    void destroy() {}
+    void destroy() {RNG::finalizeRNG();}
 
     //! Set virtual grid (problem grid) lattice size
     void setLattSize(const multi1d<int>& nrows) {_layout.nrow = nrows;}
@@ -188,7 +187,7 @@ namespace QDP
   }
 
 
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
 #if QDP_USE_LEXICO_LAYOUT == 1
 
 #warning "Using a lexicographic layout"
@@ -214,7 +213,7 @@ namespace QDP
   }
 
 
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
 
 #elif QDP_USE_CB2_LAYOUT == 1
 
@@ -267,7 +266,7 @@ namespace QDP
     }
   }
 
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
 
 #elif QDP_USE_CB32_LAYOUT == 1
 
@@ -345,7 +344,7 @@ namespace QDP
 
 #endif
 
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
 
 
 } // namespace QDP;

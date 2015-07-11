@@ -339,8 +339,9 @@ namespace QDP
   template <class T>
   struct NoDestroy
   {
-    static void ScheduleDestruction(T*, void (*)())
-      {}
+    static void ScheduleDestruction(T*, void (*pFun)())
+  /*    {}   removed memory leak here */       
+      { std::atexit(pFun); }   
         
     static void OnDeadReference()
       {}
@@ -361,15 +362,17 @@ namespace QDP
   {
   public:
     static T& Instance();
-        
+
   private:
     // Helpers
     static void MakeInstance();
     static void DestroySingleton();
         
     // Protection
-    SingletonHolder();
-        
+    SingletonHolder() {}
+    SingletonHolder(const SingletonHolder&) {}
+    SingletonHolder& operator= (const SingletonHolder&) {}
+
     // Data
     typedef typename ThreadingModel<T*>::VolatileType PtrInstanceType;
     static PtrInstanceType pInstance_;
@@ -385,7 +388,7 @@ namespace QDP
             template <class> class L,
             template <class> class M>
   typename SingletonHolder<T, C, L, M>::PtrInstanceType
-  SingletonHolder<T, C, L, M>::pInstance_;
+  SingletonHolder<T, C, L, M>::pInstance_=0;
 
   template
   <
@@ -394,7 +397,7 @@ namespace QDP
     template <class> class L,
     template <class> class M
   >
-  bool SingletonHolder<T, C, L, M>::destroyed_;
+  bool SingletonHolder<T, C, L, M>::destroyed_=false;
 
 ////////////////////////////////////////////////////////////////////////////////
 // SingletonHolder::Instance

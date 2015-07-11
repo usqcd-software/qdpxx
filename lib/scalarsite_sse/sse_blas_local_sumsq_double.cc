@@ -1,4 +1,3 @@
-// $Id: sse_blas_local_sumsq_double.cc,v 1.2 2008-06-19 13:50:20 bjoo Exp $
 
 /*! @file
  *  @brief Generic Scalar VAXPY routine
