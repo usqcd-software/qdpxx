@@ -1225,6 +1225,10 @@ namespace QDP {
 		if(name.find_first_of("/")==0){
 			cd("/");
 		}
+		
+		//plist identifier
+		hid_t plist_id = H5Pcreate (H5P_DATASET_XFER);
+		H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
 
 		//create groups iteratively:
 		hid_t last_group;
@@ -1235,7 +1239,7 @@ namespace QDP {
 			htri_t ex=H5Lexists(last_group,dirlist[i].c_str(),H5P_DEFAULT);
 			if(ex==0){
 				//does not exists, create a link:
-				current_group=H5Gcreate(last_group,dirlist[i].c_str(),H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
+				current_group=H5Gcreate(last_group,dirlist[i].c_str(),H5P_DEFAULT,plist_id,H5P_DEFAULT);
 			}
 			else{
 				//the link exists, check if the group exists as well:
@@ -1245,7 +1249,7 @@ namespace QDP {
 					//delete old link:
 					H5Ldelete(last_group,dirlist[i].c_str(),H5P_DEFAULT);
 					//create new group:
-					current_group=H5Gcreate(last_group,dirlist[i].c_str(),H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
+					current_group=H5Gcreate(last_group,dirlist[i].c_str(),H5P_DEFAULT,plist_id,H5P_DEFAULT);
 				}
 				else{
 					//check if object is a group: if yes, step into it, if no, cast an error:
@@ -1271,6 +1275,9 @@ namespace QDP {
 				HDF5_error_exit("HDF5Writer::push: something went wrong, aborting!");
 			}
 		}
+		
+		//close plist-identifier
+		H5Pclose(plist_id);
 	}
   
 	//attribute handling:
@@ -1481,11 +1488,10 @@ namespace QDP {
 
 	void HDF5Writer::write(const std::string& dataname, const std::string& datum, const HDF5Base::writemode& mode){
 		std::string dname(dataname);
-                std::string datum_0;
-                if (not get_global(datum_0,datum)) {
-                    QDPIO::cerr << "HDF5Writer::write() warning: " << dataname
-                        << " was NOT global. Using node=0 value now." << std::endl; 
-                }
+		std::string datum_0;
+		if (not get_global(datum_0,datum)) {
+			QDPIO::cerr << "HDF5Writer::write() warning: " << dataname << " was NOT global. Using node=0 value now." << std::endl; 
+		}
 
 		bool exists=objectExists(current_group,dname);
 		if(exists){
