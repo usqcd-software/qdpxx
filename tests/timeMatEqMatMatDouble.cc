@@ -1,5 +1,6 @@
 #include "unittest.h"
 #include "timeMatEqMatMatDouble.h"
+#include <cstddef>
 
 static double N_SECS=10;
 
@@ -30,9 +31,9 @@ void* alloc_cache_aligned_3mat(unsigned num_sites, REAL64** x, REAL64 **y, REAL6
   }
 
   // Now align x
-  *x = (REAL64 *)((((ptrdiff_t)(ret_val))+(cache_alignment-1))&(-cache_alignment));
-  *y = (REAL64 *)(((ptrdiff_t)(*x))+bytes_per_vec+pad);
-  *z = (REAL64 *)(((ptrdiff_t)(*y))+bytes_per_vec+pad);
+  *x = (REAL64 *)((((std::ptrdiff_t)(ret_val))+(cache_alignment-1))&(-cache_alignment));
+  *y = (REAL64 *)(((std::ptrdiff_t)(*x))+bytes_per_vec+pad);
+  *z = (REAL64 *)(((std::ptrdiff_t)(*y))+bytes_per_vec+pad);
   
 #if 0
   QDPIO::cout << "x is at " << (unsigned long)(*x) << std::endl;
