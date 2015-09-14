@@ -1143,9 +1143,6 @@ namespace QDP {
 		if(stripesize>0){ 
 			//memory alignment:
 			H5Pset_alignment(fapl_id,maxalign,stripesize);
-			//binary-tree optimization:
-			int btree_ik = ceil((stripesize - 4096) / 96);
-			H5Pset_istore_k(fcpl_id,btree_ik);
 		}
 
 		//activate parallel IO:
