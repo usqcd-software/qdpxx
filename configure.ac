@@ -539,25 +539,6 @@ else
   AC_MSG_NOTICE([hdf5 libraries: ${HDF5_LIBS}])
   AC_SUBST(CONFIG_HDF5,[1])
   AC_MSG_NOTICE([Configuring QDP++ with HDF5 enabled]);
-  dnl This function is defined in acinclude.m4
-  dnl it tries to try to compile the program 
-  dnl AC_MSG_CHECKING([if we can compile/link a simple hdf5 program])
-  dnl   PAC_HDF5_LINK_C_FUNC(
-  dnl   ${HDF5_CFLAGS},
-  dnl   ${HDF5_CXXFLAGS},
-  dnl   ${HDF5_LIBS},
-  dnl   ,
-  dnl   ,
-  dnl   [hdf5_link_ok=yes],
-  dnl   [hdf5_link_ok=no]
-  dnl  )
-  dnl  if test "X${hdf5_link_ok}X" = "XyesX" ; then 
-  dnl     AC_MSG_RESULT(yes)
-  dnl  else 
-  dnl     AC_MSG_RESULT(no)
-  dnl     AC_MSG_ERROR([Cannot compile/link a program with hdf5.
-  dnl     Use --with-hdf5=<dir> to select a working version.])
-  dnl  fi 
 fi
 
 dnl bagel support

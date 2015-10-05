@@ -47,7 +47,7 @@ namespace QDP {
 	}
 
 	//checks whether an HDF5 file already exists:
-	bool HDF5::check_exists(const std::string& filename)const{
+	bool HDF5::check_exists(const std::string& filename){
 		//on node 0, test if file exists:
 		bool exists=false;
 		if(Layout::nodeNumber()==0){
@@ -94,29 +94,34 @@ namespace QDP {
 		return name;
 	}
 
+	void HDF5::tokenize(const ::std::string& str, ::std::vector< ::std::string >& tokens, const ::std::string& delimiters){
+		// Skip delimiters at beginning.
+		::std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+		// Find first "non-delimiter".
+		::std::string::size_type pos = str.find_first_of(delimiters, lastPos);
+    
+		while (::std::string::npos != pos || ::std::string::npos != lastPos){
+			// Found a token, add it to the vector.
+			tokens.push_back(str.substr(lastPos, pos - lastPos));
+			// Skip delimiters.  Note the "not_of"
+			lastPos = str.find_first_not_of(delimiters, pos);
+			// Find next "non-delimiter"
+			pos = str.find_first_of(delimiters, lastPos);
+		}
+	}
+
 	std::vector<std::string> HDF5::splitPathname(const std::string& name){
 		//first split the string according to the file separators, such that the linking is correct:
-		std::vector<std::string> dirlist;
-		std::string nm=name;
+        ::std::vector<std::string> dirlist;
+        tokenize(name, dirlist, "/");
 
-		//get rid of possible leading file separator:
-		if(nm.find_first_of("/")==0) nm=nm.substr(1);
-
-		//no file separator left:
-		if(nm.find_first_of("/")==std::string::npos){
-			dirlist.push_back(name);
-		}
-		else{
-			size_t pos=0;
-			while((pos=nm.find_first_of("/"))!=std::string::npos){
-				std::string tmpstr(nm.substr(0,pos));
-				dirlist.push_back(tmpstr);
-				nm=nm.substr(pos+1);
-			}
-			if(nm.compare("")!=0) dirlist.push_back(nm);
-		}
-
-		return dirlist;
+        //remove zero strings, they can occur when name contained expressions such as //:
+        ::std::vector<std::string>::iterator it;
+        for(it=dirlist.begin(); it!=dirlist.end(); it++){
+            if(*it=="") dirlist.erase(it);
+        }
+        
+        return dirlist;
 	}
 
 	//check if object exists:
@@ -192,24 +197,26 @@ namespace QDP {
 	//navigation routines:
 	void HDF5::pop(){
 		//only do something if not at root-level:
-		if(current_group!=file_id){
-			hid_t tmp_group;
-
-			//lookup what current and parent directory is:
-			std::string cdir=pwd();
-			std::string pdir=parentDir();
-      
-			//close group to prevent data loss and then go to new group:
-			H5Gclose(current_group);
-			tmp_group=H5Gopen(file_id,pdir.c_str(),H5P_DEFAULT);
-      
-			current_group=tmp_group;
-		}
+        if(pwd().compare("/")!=0){
+            hid_t tmp_group;
+            
+            //lookup what current and parent directory is:
+            ::std::string cdir=pwd();
+            ::std::string pdir=parentDir();
+            
+            //close group to prevent data loss and then go to new group:
+            H5Gclose(current_group);
+            tmp_group=H5Gopen(file_id,pdir.c_str(),H5P_DEFAULT);
+            
+            current_group=tmp_group;
+        }
 	}
   
 	void HDF5::cd(const std::string& dirname){
 		std::string tmpdirname(dirname);
-		if(tmpdirname.compare("..")==0) pop();
+		if(tmpdirname.compare("..")==0){
+			pop();
+		}
 		else if(tmpdirname.compare(pwd())!=0){
 			hid_t tmp_group;
       
@@ -226,17 +233,17 @@ namespace QDP {
 			std::string cdir=pwd();
       
 			//perform different tests:
-			if(cdir.find(ndir)==0){
+			if(ndir.find(cdir)==::std::string::npos || ndir.compare("/")==0){
+				//ndir is not inside cdir tree or ndir is root directory, so close cdir tree:
+			    while(pwd().compare("/")!=0){
+			    	pop();
+			    }
+			}
+			else if(cdir.find(ndir)==0){
 				//ndir is parent of cdir: iterate up from cdir and close all dirs on the way:
 				while(current_group!=tmp_group){
 					pop();
 				}
-			}
-			else if(ndir.find(cdir)==string::npos){
-				//ndir is not inside cdir tree, so close cdir tree:
-				while(current_group!=file_id){
-					pop();
-				}       
 			}
 			current_group=tmp_group;
 		}
@@ -1136,9 +1143,6 @@ namespace QDP {
 		if(stripesize>0){ 
 			//memory alignment:
 			H5Pset_alignment(fapl_id,maxalign,stripesize);
-			//binary-tree optimization:
-			int btree_ik = ceil((stripesize - 4096) / 96);
-			H5Pset_istore_k(fcpl_id,btree_ik);
 		}
 
 		//activate parallel IO:
@@ -1203,9 +1207,11 @@ namespace QDP {
 
 	//create a new group inside current one w/o steping into it:
 	void HDF5Writer::mkdir(const ::std::string& name){
-		std::string cwd=pwd();
-		push(name);
-		cd(cwd);
+		if(name!="" && name!="/"){
+			std::string cwd=pwd();
+			push(name);
+			cd(cwd);
+		}
 	}
 
 	//create a new group inside current one and step into it:
@@ -1216,6 +1222,9 @@ namespace QDP {
 		if(name.find_first_of("/")==0){
 			cd("/");
 		}
+		
+		//plist identifier
+		hid_t plist_id = H5Pcreate (H5P_GROUP_CREATE);
 
 		//create groups iteratively:
 		hid_t last_group;
@@ -1226,7 +1235,7 @@ namespace QDP {
 			htri_t ex=H5Lexists(last_group,dirlist[i].c_str(),H5P_DEFAULT);
 			if(ex==0){
 				//does not exists, create a link:
-				current_group=H5Gcreate(last_group,dirlist[i].c_str(),H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
+				current_group=H5Gcreate(last_group,dirlist[i].c_str(),H5P_DEFAULT,plist_id,H5P_DEFAULT);
 			}
 			else{
 				//the link exists, check if the group exists as well:
@@ -1236,12 +1245,17 @@ namespace QDP {
 					//delete old link:
 					H5Ldelete(last_group,dirlist[i].c_str(),H5P_DEFAULT);
 					//create new group:
-					current_group=H5Gcreate(last_group,dirlist[i].c_str(),H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
+					current_group=H5Gcreate(last_group,dirlist[i].c_str(),H5P_DEFAULT,plist_id,H5P_DEFAULT);
 				}
 				else{
 					//check if object is a group: if yes, step into it, if no, cast an error:
 					H5O_info_t objinfo;
 					herr_t errhandle=H5Oget_info_by_name(last_group,dirlist[i].c_str(),&objinfo,H5P_DEFAULT);
+					if(errhandle<0){
+					 	QDPIO::cout << "HDF5Writer::push: error, cannot get properties of " << name << "!" << std::endl;
+					    current_group=last_group;
+						break;
+					}
 					if(objinfo.type!=H5O_TYPE_GROUP){
 						QDPIO::cout << "HDF5Writer::push: error, the object " << dirlist[i] << " in " << getNameById(last_group) << " already exists and is not a group!"  << std::endl;
 						current_group=last_group;
@@ -1257,6 +1271,9 @@ namespace QDP {
 				HDF5_error_exit("HDF5Writer::push: something went wrong, aborting!");
 			}
 		}
+		
+		//close plist-identifier
+		H5Pclose(plist_id);
 	}
   
 	//attribute handling:
@@ -1467,11 +1484,10 @@ namespace QDP {
 
 	void HDF5Writer::write(const std::string& dataname, const std::string& datum, const HDF5Base::writemode& mode){
 		std::string dname(dataname);
-                std::string datum_0;
-                if (not get_global(datum_0,datum)) {
-                    QDPIO::cerr << "HDF5Writer::write() warning: " << dataname
-                        << " was NOT global. Using node=0 value now." << std::endl; 
-                }
+		std::string datum_0;
+		if (not get_global(datum_0,datum)) {
+			QDPIO::cerr << "HDF5Writer::write() warning: " << dataname << " was NOT global. Using node=0 value now." << std::endl; 
+		}
 
 		bool exists=objectExists(current_group,dname);
 		if(exists){

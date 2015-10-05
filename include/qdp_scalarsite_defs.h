@@ -51,6 +51,7 @@ typedef OLattice< PSpinMatrix< PScalar< RComplex<REAL> >, (Ns>>1) > > LatticeHal
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL>, Nc>, Ns> > LatticeFermion;
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL>, Nc>, (Ns>>1) > > LatticeHalfFermion;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, Ns> > LatticePropagator;
+typedef OLattice< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, (Ns>>1) > > LatticeHalfPropagator;
 typedef OLattice< PScalar< PScalar< RComplex<REAL> > > > LatticeComplex;
 
 typedef OLattice< PScalar< PSeed < RScalar<INTEGER32> > > > LatticeSeed;
