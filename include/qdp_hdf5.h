@@ -87,7 +87,7 @@ namespace QDP {
 		//conversion: LAYOUT<-HOST
 		template<class T>
 		inline void CvtToLayout(OLattice<T>& field, void* buf, const unsigned int& nodeSites, const unsigned int& elemSize){
-#pragma omp parallel for shared(nodeSites,elemSize,buf,field) default(shared)
+			//#pragma omp parallel for shared(nodeSites,elemSize,buf,field) default(shared)
 			for(unsigned int run=0; run<nodeSites; run++){
 				memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf)+run*elemSize,elemSize);
 			}
@@ -95,7 +95,7 @@ namespace QDP {
 		
 		template<class T>
 		inline void CvtToLayout(multi1d< OLattice<T> >& fieldarray, void* buf, const unsigned int& nodeSites, const unsigned int& arraySize, const unsigned int& elemSize){
-#pragma omp parallel for shared(nodeSites,arraySize,elemSize,buf,fieldarray) default(shared)
+			//#pragma omp parallel for shared(nodeSites,arraySize,elemSize,buf,fieldarray) default(shared)
 			for(unsigned int run=0; run<nodeSites; run++){
 				for(unsigned int dd=0; dd<arraySize; dd++){
 					memcpy(&(fieldarray[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf)+(dd+arraySize*run)*elemSize,elemSize);
@@ -106,7 +106,7 @@ namespace QDP {
 		//conversion: HOST<-LAYOUT
 		template<class T>
 		inline void CvtToHost(void* buf, const OLattice<T>& field, const unsigned int& nodeSites, const unsigned int& elemSize){
-#pragma omp parallel for shared(nodeSites,elemSize,buf,field) default(shared)
+			//#pragma omp parallel for shared(nodeSites,elemSize,buf,field) default(shared)
 			for(unsigned int run=0; run<nodeSites; run++){
 				memcpy(reinterpret_cast<char*>(buf)+run*elemSize,&(field.elem(reordermap[run])),elemSize);
 			}
@@ -114,7 +114,7 @@ namespace QDP {
 
 		template<class T>
 		inline void CvtToHost(void* buf, const multi1d< OLattice<T> >& fieldarray, const unsigned int& nodeSites, const unsigned int& arraySize, const unsigned int& elemSize){
-#pragma omp parallel for shared(nodeSites,arraySize,elemSize,buf,fieldarray) default(shared)
+			//#pragma omp parallel for shared(nodeSites,arraySize,elemSize,buf,fieldarray) default(shared)
 			for(unsigned int run=0; run<nodeSites; run++){
 				for(unsigned int dd=0; dd<arraySize; dd++){
 					memcpy(reinterpret_cast<char*>(buf)+(dd+arraySize*run)*elemSize,&(fieldarray[dd].elem(reordermap[run])),elemSize);
@@ -138,7 +138,10 @@ namespace QDP {
 
 		//check colormat:
 		bool checkColorMatrixType(const hid_t& type_id, const unsigned int& rank, hid_t& base_type_id);
-
+		
+		//check propagator
+		bool checkDiracPropagatorType(const hid_t& type_id, const unsigned int& spinrank, const unsigned int& colorrank, hid_t& base_type_id);
+				
 		//***********************************************************************************************************************************
 		//***********************************************************************************************************************************
 		//READING ATTRIBUTES HELPERS                                                                                                         
@@ -781,8 +784,10 @@ namespace QDP {
 			}
 		}
 
-		//special gauge file formats
-		void readFUEL(const std::string& name, multi1d<LatticeColorMatrixD3>& field);
+		//special file formats
+		//Qlua
+		void readQlua(const std::string& name, multi1d<LatticeColorMatrixD3>& field);
+		void readQlua(const std::string& name, LatticeDiracPropagatorD3& prop);
     
 	};
 
@@ -828,7 +833,8 @@ namespace QDP {
 
 	//specializations for Lattice objects
 	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, LatticeColorMatrixD3& field);
-
+	template<>void HDF5::read< PSpinMatrix< PColorMatrix< RComplex<REAL64>, 3>, 4> >(const std::string& name, LatticeDiracPropagatorD3& field);
+	
 	//specializations for multi1d<OLattice> objects
 	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, multi1d<LatticeColorMatrixD3>& field);
 	//--------------------------------------------------------------------------------
@@ -1355,8 +1361,8 @@ namespace QDP {
 		}
 
 		//special gauge archive IO:
-		//FUEL:
-		void writeFUEL(const std::string& name, const multi1d<LatticeColorMatrixD3>& field, const HDF5Base::writemode& mode=HDF5Base::ate);
+		//Qlua:
+		void writeQlua(const std::string& name, const multi1d<LatticeColorMatrixD3>& field, const HDF5Base::writemode& mode=HDF5Base::ate);
 
 	};
 
