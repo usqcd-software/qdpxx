@@ -794,7 +794,9 @@ namespace QDP {
 		if(!isprefetched && sizes.size()>1) prefetchLatticeCoordinates();
 	}
 
-	void HDF5::readLattice(const std::string& name, const hid_t& type_id, const hid_t& base_type_id, const ullong& obj_size, const ullong& tot_size, REAL* buf) {
+	void HDF5::readLattice(const std::string& name, const hid_t& type_id, 
+							const hid_t& base_type_id, const ullong& obj_size, 
+							const ullong& tot_size, REAL* buf, bool invert_order) {
 		// determine local sizes
 		const int mynode = Layout::nodeNumber();
 		const int nodeSites = Layout::sitesOnNode();
@@ -808,11 +810,21 @@ namespace QDP {
 		hsize_t* total_count = new hsize_t[dimensions];
 		hsize_t* dim_size = new hsize_t[dimensions];
 
-		// reorder such that x is fastest:
-		for(unsigned int i = 0; i < Nd; i ++) {
-			dim_size[i] = total_count[i] = Layout::subgridLattSize()[(Nd - 1) - i];
-			offset[i] = node_offset[i] = Layout::nodeCoord()[(Nd - 1) - i] * total_count[i];
-		} // for                                                                                                                                                                                                                                                                                                                                                              
+		//set up the chunks every node has to read. If the ordering is row-major or column-major
+		if(invert_order){
+			// reorder such that x is fastest: necessary for chroma HDF5-file formats
+			for(unsigned int i = 0; i < Nd; i ++) {
+				dim_size[i] = total_count[i] = Layout::subgridLattSize()[(Nd - 1) - i];
+				offset[i] = node_offset[i] = Layout::nodeCoord()[(Nd - 1) - i] * total_count[i];
+			} // for
+		}
+		else{
+			//do not reorder, read as-is. necessary for other formats, such as QLUA
+			for(unsigned int i = 0; i < Nd; i ++) {
+				dim_size[i] = total_count[i] = Layout::subgridLattSize()[i];
+				offset[i] = node_offset[i] = Layout::nodeCoord()[i] * total_count[i];
+			} // for
+		}
 		if(obj_size>1){
 			dim_size[Nd] = total_count[Nd] = obj_size;
 			offset[Nd] = node_offset[Nd] = 0;
@@ -847,17 +859,18 @@ namespace QDP {
 			blocks = blocks << 1;
 		} // while  
 
+		//allocate buffers and do some error handling
 		if(float_size == 4) {
 			buf32 = new (std::nothrow) REAL32[total_size];
 			if(buf32 == 0x0) {
 				HDF5_error_exit("Unable to allocate buf\n");
-			} // if                                                                                                                                                                                                                                                                                                                                                             
+			} // if
 		} else {
 			buf64 = new (std::nothrow) REAL64[total_size];
 			if(buf64 == 0x0) {
 				HDF5_error_exit("Unable to allocate buf\n");
-			} // if                                                                                                                                                                                                                                                                                                                                                             
-		} // if-else                                                                                                                                                                                                                                                                                                                                                          
+			} // if
+		} // if-else
 
 		hsize_t rank = static_cast<hsize_t>(dimensions);
 		hid_t memspace = H5Screate_simple(rank, dim_size, NULL);
@@ -876,9 +889,33 @@ namespace QDP {
 				err = H5Dread(dset_id, nat_type_id, memspace, filespace, plist_id, static_cast<void*>(buf64));
 				for(ullong j = 0; j < total_size; j ++)
 					(buf + i * total_size)[j] = static_cast<REAL>(buf64[j]);
-			} // if-else                                                                                                                                                                                                                                                                                                                                                        
-		} // for                                                                                                                                                                                                                                                                                                                                                              
-
+			} // if-else
+		} // for
+		
+		//do local transposition if necessary:
+		if(!invert_order){
+			//get subgrid sizes
+			multi1d<int> locsizes=Layout::subgridLattSize();
+			int dstruct_size=tot_size/nodeSites;
+			
+			//create temporary buffer
+			REAL* tmpbuf=new REAL[nodeSites*dstruct_size];
+			for(unsigned int x=0; x<locsizes[0]; x++){
+				for(unsigned int y=0; y<locsizes[1]; y++){
+					for(unsigned int z=0; z<locsizes[2]; z++){
+						for(unsigned int t=0; t<locsizes[3]; t++){
+							//transpose from reversed input order to chroma input order
+							memcpy(&tmpbuf[dstruct_size*(x+locsizes[0]*(y+locsizes[1]*(z+locsizes[2]*t)))],
+									&buf[dstruct_size*(t+locsizes[3]*(z+locsizes[2]*(y+locsizes[1]*x)))],
+									dstruct_size*sizeof(REAL));
+						}
+					}
+				}
+			}
+			memcpy(buf,tmpbuf,nodeSites*dstruct_size*sizeof(REAL));
+			delete [] tmpbuf;
+		}
+		
 		if(buf32 != NULL) delete [] buf32;
 		if(buf64 != NULL) delete [] buf64;
 		delete [] dim_size;
@@ -894,8 +931,20 @@ namespace QDP {
 
 
 	//read LatticeColorMatrix
-	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, LatticeColorMatrixD3& field){
+	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, 
+																				LatticeColorMatrixD3& field, 
+																				const HDF5Base::accessmode& accmode){
 		StopWatch swatch_prepare, swatch_datatypes, swatch_reorder, swatch_read;
+		
+		bool invert_order;
+		switch(accmode){
+			case HDF5Base::transpose_order:
+				invert_order=true;
+				break;
+			case HDF5Base::maintain_order:
+				invert_order=false;
+				break;
+		}
 		
 		//read dataset extents:
 		if(profile) swatch_prepare.start();                                                                        
@@ -934,7 +983,7 @@ namespace QDP {
 			HDF5_error_exit("Unable to allocate buf\n");
 		}
 
-		readLattice(name,type_id,base_type_id,1,tot_size,buf);
+		readLattice(name,type_id,base_type_id,1,tot_size,buf,invert_order);
 		H5Tclose(type_id);
 		H5Tclose(base_type_id);
 		if(profile) swatch_read.stop();
@@ -961,9 +1010,21 @@ namespace QDP {
 	}
 	
 	//read LatticeColorPropagatorD3
-	template<>void HDF5::read< PSpinMatrix< PColorMatrix< RComplex<REAL64>, 3>, 4> >(const std::string& name, LatticeDiracPropagatorD3& field){
+	template<>void HDF5::read< PSpinMatrix< PColorMatrix< RComplex<REAL64>, 3>, 4> >(const std::string& name, 
+																					LatticeDiracPropagatorD3& field, 
+																					const HDF5Base::accessmode& accmode){
 		StopWatch swatch_prepare, swatch_datatypes, swatch_reorder, swatch_read;
-	
+		
+		bool invert_order;
+		switch(accmode){
+			case HDF5Base::transpose_order:
+				invert_order=true;
+				break;
+			case HDF5Base::maintain_order:
+				invert_order=false;
+				break;
+		}
+		
 		//read dataset extents:
 		if(profile) swatch_prepare.start();                                                                        
 		multi1d<ullong> sizes;
@@ -1001,7 +1062,7 @@ namespace QDP {
 			HDF5_error_exit("Unable to allocate buf\n");
 		}
 
-		readLattice(name,type_id,base_type_id,1,tot_size,buf);
+		readLattice(name,type_id,base_type_id,1,tot_size,buf,invert_order);
 		H5Tclose(type_id);
 		H5Tclose(base_type_id);
 		if(profile) swatch_read.stop();
@@ -1024,8 +1085,20 @@ namespace QDP {
 	}
 
 	//QDP Lattice IO:
-	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, multi1d<LatticeColorMatrixD3>& field){
+	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, 
+																				multi1d<LatticeColorMatrixD3>& field, 
+																				const HDF5Base::accessmode& accmode){
 		StopWatch swatch_prepare, swatch_datatypes, swatch_reorder, swatch_read;
+		
+		bool invert_order;
+		switch(accmode){
+			case HDF5Base::transpose_order:
+				invert_order=true;
+				break;
+			case HDF5Base::maintain_order:
+				invert_order=false;
+				break;
+		}
 		
 		//read dataset extents: 
 		if(profile) swatch_prepare.start();                                                                                                                                                               
@@ -1065,7 +1138,7 @@ namespace QDP {
 			HDF5_error_exit("Unable to allocate buf\n");
 		}
 
-		readLattice(name,type_id,base_type_id,sizes[Nd],tot_size,buf);
+		readLattice(name,type_id,base_type_id,sizes[Nd],tot_size,buf,invert_order);
 		H5Tclose(type_id);
 		H5Tclose(base_type_id);
 		if(profile) swatch_read.stop();
@@ -1133,13 +1206,13 @@ namespace QDP {
 			HDF5_error_exit("HDF5::readQlua: error, "+name+" exists but it is not a Qlua config!");
 		}
 
-		//read LatticeColorMatrices:
+		//read LatticeColorMatrices: set invert_ordering to false, as Qlua stores the fields with x fastest
 		field.resize(Nd);
 		for(unsigned int dd=0; dd<Nd; dd++){
 			std::stringstream stream;
 			stream << name << "/" << dd;
 			std::string dname=stream.str();
-			read(dname,field[dd]);
+			read(dname,field[dd],HDF5Base::maintain_order);
 		}
 		if(profile) swatch_complete.stop();
 		QDPIO::cout << "done!" << std::endl;
@@ -1192,8 +1265,8 @@ namespace QDP {
 		H5Tclose(base_type_id);
 		*/
 
-		//read LatticePropagator:
-		read(name,prop);
+		//read LatticePropagator: do not invert the order
+		read(name,prop,HDF5Base::maintain_order);
 		if(profile) swatch_complete.stop();
 		QDPIO::cout << "done!" << std::endl;
 		

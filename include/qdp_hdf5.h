@@ -29,6 +29,8 @@ namespace QDP {
 	namespace HDF5Base{
 		//write-modes
 		enum writemode{ ate=(1 << 0), trunc=(1 << 1) };
+		//access modes
+		enum accessmode{ transpose_order=(1 << 0), maintain_order=(1 << 1) };
 	}
     
 	//--------------------------------------------------------------------------------                                                                 
@@ -46,7 +48,7 @@ namespace QDP {
 		//Lustre optimizations
 		long int stripesize, maxalign;
 			
-		//oother stuff:
+		//other stuff:
 		bool par_init;
 		bool profile;
 		//copy of qmp mpi-communicator
@@ -467,7 +469,7 @@ namespace QDP {
 		void readPrepareLattice(const std::string& name, hid_t& type_id, multi1d<ullong>& sizes);
 
 		void readLattice(const std::string& name, const hid_t& type_id, const hid_t& base_type_id,
-		const ullong& obj_size, const ullong& tot_size, REAL* buf);
+		const ullong& obj_size, const ullong& tot_size, REAL* buf, bool invert_order=true);
 
 	public:		
 		//open and close files. Open is virtual since the openmode differs for reader and writer:                                                        
@@ -645,9 +647,19 @@ namespace QDP {
 		//***********************************************************************************************************************************
 		//read OLattice object:
 		template<class T>
-		void read(const std::string& name, OLattice<T>& field)
+		void read(const std::string& name, OLattice<T>& field, const HDF5Base::accessmode& accmode=HDF5Base::transpose_order)
 		{
 			StopWatch swatch_datatypes, swatch_prepare, swatch_reorder, swatch_read;
+			
+			bool invert_order;
+			switch(accmode){
+				case HDF5Base::transpose_order:
+					invert_order=true;
+					break;
+				case HDF5Base::maintain_order:
+					invert_order=false;
+					break;
+			}
 			
 			//read dataset extents:
 			if(profile) swatch_prepare.start();
@@ -686,7 +698,7 @@ namespace QDP {
 			if( buf == 0x0 ) {
 				HDF5_error_exit("Unable to allocate buf\n");
 			}
-			readLattice(name,type_id,type_id,obj_size,tot_size,buf);
+			readLattice(name,type_id,type_id,obj_size,tot_size,buf,invert_order);
 			H5Tclose(type_id);
 			if(profile) swatch_read.stop();
 
@@ -713,9 +725,19 @@ namespace QDP {
 
 		//read multi1d<OLattice> object: 
 		template<class T>
-		void read(const std::string& name, multi1d< OLattice<T> >& fieldarray)
+		void read(const std::string& name, multi1d< OLattice<T> >& fieldarray, const HDF5Base::accessmode& accmode=HDF5Base::transpose_order)
 		{
 			StopWatch swatch_datatypes, swatch_prepare, swatch_reorder, swatch_read;
+			
+			bool invert_order;
+			switch(accmode){
+				case HDF5Base::transpose_order:
+					invert_order=true;
+					break;
+				case HDF5Base::maintain_order:
+					invert_order=false;
+					break;
+			}
 			
 			//read dataset extents:
 			if(profile) swatch_prepare.start();
@@ -756,7 +778,7 @@ namespace QDP {
 			if( buf == 0x0 ) {
 				HDF5_error_exit("Unable to allocate buf!");
 			}
-			readLattice(name,type_id,type_id,obj_size*arr_size,tot_size,buf);
+			readLattice(name,type_id,type_id,obj_size*arr_size,tot_size,buf,invert_order);
 			H5Tclose(type_id);
 			if(profile) swatch_read.stop();
 
@@ -832,11 +854,18 @@ namespace QDP {
 	template<>void HDF5::read< PScalar< PScalar< RComplex<double> > > >(const std::string& dataname, multi1d<ComplexD>& datum);
 
 	//specializations for Lattice objects
-	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, LatticeColorMatrixD3& field);
-	template<>void HDF5::read< PSpinMatrix< PColorMatrix< RComplex<REAL64>, 3>, 4> >(const std::string& name, LatticeDiracPropagatorD3& field);
+	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, 
+																				LatticeColorMatrixD3& field, 
+																				const HDF5Base::accessmode& accmode);
+																				
+	template<>void HDF5::read< PSpinMatrix< PColorMatrix< RComplex<REAL64>, 3>, 4> >(const std::string& name, 
+																					LatticeDiracPropagatorD3& field, 
+																					const HDF5Base::accessmode& accmode);
 	
 	//specializations for multi1d<OLattice> objects
-	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, multi1d<LatticeColorMatrixD3>& field);
+	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, 
+																				multi1d<LatticeColorMatrixD3>& field, 
+																				const HDF5Base::accessmode& accmode);
 	//--------------------------------------------------------------------------------
 	//! HDF5 reader class
 	/*!
