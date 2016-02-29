@@ -965,9 +965,18 @@ namespace QDP {
 			HDF5_error_exit("HDF5::read: error, wrong dimensionality!");
 			return;
 		}
-		for(unsigned int dd=0; dd<Nd; dd++){
-			if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
-				HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+		if(invert_order){
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
+			}
+		}
+		else{
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[dd]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
 			}
 		}
 		if(profile) swatch_datatypes.stop();
@@ -1044,9 +1053,18 @@ namespace QDP {
 			HDF5_error_exit("HDF5::read: error, wrong dimensionality!");
 			return;
 		}
-		for(unsigned int dd=0; dd<Nd; dd++){
-			if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
-				HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+		if(invert_order){
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
+			}
+		}
+		else{
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[dd]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
 			}
 		}
 		if(profile) swatch_datatypes.stop();
@@ -1119,9 +1137,18 @@ namespace QDP {
 			HDF5_error_exit("HDF5::read: error, wrong dimensionality!");
 			return;
 		}
-		for(unsigned int dd=0; dd<Nd; dd++){
-			if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
-				HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+		if(invert_order){
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
+			}
+		}
+		else{
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[dd]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
 			}
 		}
 		field.resize(sizes[Nd]);
