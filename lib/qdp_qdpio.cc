@@ -9,7 +9,7 @@ namespace QDP
 {
 
   //-----------------------------------------
-  static int get_node_number(const int coord[])
+  static int get_node_number(const int coord[], void* arg)
   {
     multi1d<int> crd(Nd);
     crd = coord;   // an array copy
@@ -17,7 +17,7 @@ namespace QDP
     return node;
   }
 
-  static int get_node_index(const int coord[])
+  static int get_node_index(const int coord[], void* arg)
   {
     multi1d<int> crd(Nd);
     crd = coord;   // an array copy
@@ -25,21 +25,21 @@ namespace QDP
     return linear;
   }
 
-  static void get_coords(int coord[], int node, int linear)
+  static void get_coords(int coord[], int node, int linear, void* arg)
   {
     multi1d<int> crd = Layout::siteCoords(node, linear);
     for(int i=0; i < Nd; ++i)
       coord[i] = crd[i];
   }
 
-  static int get_sites_on_node(int node) 
+  static int get_sites_on_node(int node, void* arg) 
   {
     return Layout::sitesOnNode();
   }
 
   // Setting up the QIO Filesystem
   //! Master IO node is always IO node 0
-  int master_io_node(void)
+  int master_io_node(void* arg)
   {
 	return 0;
   }
@@ -51,7 +51,7 @@ namespace QDP
 	     b) otherwise if I/O geom is not defined, each node is their own I/O node.
 		 c) otherwise block layout by I/O geom to compute the I/O node
 	*/
-   int io_node(int node) 
+  int io_node(int node, void* arg) 
    {
 	    // If no io grid is defined, each node is its own I/O node
 	  
@@ -61,7 +61,7 @@ namespace QDP
 		
 		// A grid is defined. A shortcut for when there is only 1 
 	   if ( Layout::numIONodeGrid() == 1 ) {
-			return master_io_node();
+			return master_io_node(arg);
 		}
 		
 	    // Compute my I/O node. Block lat size into I/O grid
@@ -96,7 +96,7 @@ namespace QDP
 
 	//! io_node for multifile...
 	/*! code gets confused if multifile is set, but filesystem is not 'multfile' */
-	int io_node_multifile(int node) 
+  int io_node_multifile(int node, void* arg) 
 	{
 		return node;
 	}
@@ -121,10 +121,10 @@ namespace QDP
     for(int m=0; m < Nd; ++m)
       latsize[m] = Layout::lattSize()[m];
 
-    layout.node_number = &get_node_number;
-    layout.node_index  = &get_node_index;
-    layout.get_coords  = &get_coords;
-    layout.num_sites = &get_sites_on_node;
+    layout.node_number_a = &get_node_number;
+    layout.node_index_a  = &get_node_index;
+    layout.get_coords_a  = &get_coords;
+    layout.num_sites_a = &get_sites_on_node;
     layout.latsize = latsize;
     layout.latdim = Nd; 
     layout.volume = Layout::vol(); 
@@ -133,8 +133,8 @@ namespace QDP
     layout.number_of_nodes = Layout::numNodes(); 
 
     QIO_Filesystem fs;
-    fs.my_io_node = &io_node;
-    fs.master_io_node = &master_io_node;
+    fs.my_io_node_a = &io_node;
+    fs.master_io_node_a = &master_io_node;
 	  
     // Initialize string objects 
     QIO_String *xml_c  = QIO_string_create();
@@ -364,10 +364,10 @@ namespace QDP
     for(int m=0; m < Nd; ++m)
       latsize[m] = Layout::lattSize()[m];
 
-    layout.node_number = &get_node_number;
-    layout.node_index  = &get_node_index;
-    layout.get_coords  = &get_coords;
-    layout.num_sites = &get_sites_on_node;
+    layout.node_number_a = &get_node_number;
+    layout.node_index_a  = &get_node_index;
+    layout.get_coords_a  = &get_coords;
+    layout.num_sites_a = &get_sites_on_node;
     layout.latsize = latsize;
     layout.latdim = Nd; 
     layout.volume = Layout::vol(); 
@@ -390,8 +390,8 @@ namespace QDP
     }
 
 	QIO_Filesystem fs;
-	fs.my_io_node = &io_node;
-	fs.master_io_node = &master_io_node;
+	fs.my_io_node_a = &io_node;
+	fs.master_io_node_a = &master_io_node;
 	  
     // Wrappers over simple ints
     int volfmt;
@@ -403,7 +403,7 @@ namespace QDP
     
     case QDPIO_MULTIFILE:
       volfmt = QIO_MULTIFILE;
-	  fs.my_io_node = &io_node_multifile;
+	  fs.my_io_node_a = &io_node_multifile;
       break;
 
     case QDPIO_PARTFILE:
