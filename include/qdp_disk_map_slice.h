@@ -32,7 +32,7 @@ namespace QDP
     ~TimeSliceIO() {}
 
     void setTimeSlice(int time_slice);
-    void getTimeSlice() const {return current_time;}
+    int getTimeSlice() const {return current_time;}
     T&   getObject() const {return data;}
 
     void binaryRead(BinaryReader& bin);
