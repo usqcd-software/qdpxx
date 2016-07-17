@@ -899,7 +899,7 @@ namespace QDP {
 			int dstruct_size=tot_size/nodeSites;
 			
 			//create temporary buffer
-			REAL* tmpbuf=new REAL[nodeSites*dstruct_size];
+			char* tmpbuf=new char[nodeSites*dstruct_size*float_size];
 			for(unsigned int x=0; x<locsizes[0]; x++){
 				for(unsigned int y=0; y<locsizes[1]; y++){
 					for(unsigned int z=0; z<locsizes[2]; z++){
@@ -907,12 +907,12 @@ namespace QDP {
 							//transpose from reversed input order to chroma input order
 							memcpy(&tmpbuf[dstruct_size*(x+locsizes[0]*(y+locsizes[1]*(z+locsizes[2]*t)))],
 									&buf[dstruct_size*(t+locsizes[3]*(z+locsizes[2]*(y+locsizes[1]*x)))],
-									dstruct_size*sizeof(REAL));
+									dstruct_size*float_size);
 						}
 					}
 				}
 			}
-			memcpy(buf,tmpbuf,nodeSites*dstruct_size*sizeof(REAL));
+			memcpy(buf,tmpbuf,nodeSites*dstruct_size*float_size);
 			delete [] tmpbuf;
 		}
 		
