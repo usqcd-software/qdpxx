@@ -651,6 +651,9 @@ namespace QDP {
 		{
 			StopWatch swatch_datatypes, swatch_prepare, swatch_reorder, swatch_read;
 			
+			//define a new type
+			typedef typename WordType<T>::Type_t wtd;
+			
 			bool invert_order;
 			switch(accmode){
 				case HDF5Base::transpose_order:
@@ -672,7 +675,7 @@ namespace QDP {
 			//sanity checks for datatypes:
 			if(profile) swatch_datatypes.start();
 			ullong hdf5_float_size=H5Tget_size(type_id);
-			ullong field_float_size=sizeof(WordType<T>::Type_t);
+			ullong field_float_size=sizeof(wtd);
 			
 			//checks
 			if( hdf5_float_size!=4 && hdf5_float_size!=8 ){
@@ -727,8 +730,8 @@ namespace QDP {
 			}
 			else{
 				//convert precision first
-				WordType<T>::Type_t* tmpbuf=new WordType<T>::Type_t[tot_size];
-				for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< WordType<T>::Type_t >(buf[i]);
+				wtd* tmpbuf=new wdt[tot_size];
+				for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< wtd >(buf[i*hdf5_float_size]);
 				CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(T));
 				delete [] tmpbuf;
 			}
@@ -741,7 +744,7 @@ namespace QDP {
 				QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << std::endl;
 				QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << std::endl;
 				QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << std::endl;
-				QDPIO::cout << "\t MB read: " << Layout::vol()*obj_size*hdf5_float_size/1024/1024 << std::endl;
+				QDPIO::cout << "\t MB read: " << static_cast<int>(Layout::vol()*obj_size*hdf5_float_size)/1024/1024 << std::endl;
 			}
 		}
 
@@ -750,6 +753,9 @@ namespace QDP {
 		void read(const std::string& name, multi1d< OLattice<T> >& fieldarray, const HDF5Base::accessmode& accmode=HDF5Base::transpose_order)
 		{
 			StopWatch swatch_datatypes, swatch_prepare, swatch_reorder, swatch_read;
+			
+			//define a new type
+			typedef typename WordType<T>::Type_t wtd;
 			
 			bool invert_order;
 			switch(accmode){
@@ -772,7 +778,7 @@ namespace QDP {
 			//check sanity
 			if(profile) swatch_datatypes.start();
 			ullong hdf5_float_size=H5Tget_size(type_id);
-			ullong field_float_size=sizeof(WordType<T>::Type_t);
+			ullong field_float_size=sizeof(wtd);
 			
 			//checks
 			if( hdf5_float_size!=4 && hdf5_float_size!=8 ){
@@ -833,8 +839,8 @@ namespace QDP {
 			}
 			else{
 				//convert precision first
-				WordType<T>::Type_t* tmpbuf=new WordType<T>::Type_t[tot_size];
-				for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< WordType<T>::Type_t >(buf[i]);
+				wtd* tmpbuf=new wtd[tot_size];
+				for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< wtd >(buf[i*hdf5_float_size]);
 				CvtToLayout(fieldarray,reinterpret_cast<void*>(tmpbuf),nodeSites,arr_size,sizeof(T));
 				delete [] tmpbuf;
 			}
@@ -847,7 +853,7 @@ namespace QDP {
 				QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
 				QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
 				QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << " s." << std::endl;
-				QDPIO::cout << "\t MB read: " << Layout::vol()*fieldarray.size()*obj_size*hdf5_float_size/1024/1024 << std::endl;
+				QDPIO::cout << "\t MB read: " << static_cast<int>(Layout::vol()*fieldarray.size()*obj_size*hdf5_float_size)/1024/1024 << std::endl;
 			}
 		}
 
