@@ -469,7 +469,7 @@ namespace QDP {
 		void readPrepareLattice(const std::string& name, hid_t& type_id, multi1d<ullong>& sizes);
 
 		void readLattice(const std::string& name, const hid_t& type_id, const hid_t& base_type_id,
-		const ullong& obj_size, const ullong& tot_size, REAL* buf, bool invert_order=true);
+		const ullong& obj_size, const ullong& tot_size, char* buf, bool invert_order=true);
 
 	public:		
 		//open and close files. Open is virtual since the openmode differs for reader and writer:                                                        

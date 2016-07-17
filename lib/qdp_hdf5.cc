@@ -1009,7 +1009,7 @@ namespace QDP {
 			QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << " s." << std::endl;
-			QDPIO::cout << "\t MB read: " << Layout::vol()*obj_size*hdf5_float_size/1024/1024 << std::endl;
+			QDPIO::cout << "\t MB read: " << Layout::vol()*obj_size*static_cast<int>(hdf5_float_size)/1024/1024 << std::endl;
 		}
 	}
 	
@@ -1207,7 +1207,7 @@ namespace QDP {
 			QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << " s." << std::endl;
-			QDPIO::cout << "\t MB read: " << Layout::vol()*fieldarray.size()*obj_size*hdf5_field_size/1024/1024 << std::endl;
+			QDPIO::cout << "\t MB read: " << Layout::vol()*fieldarray.size()*obj_size*static_cast<int>(hdf5_float_size)/1024/1024 << std::endl;
 		}
 	}
 
