@@ -669,11 +669,14 @@ namespace QDP {
 			readPrepareLattice(name,type_id,sizes);
 			if(profile) swatch_prepare.stop();
 
-			//sanity check:
+			//sanity checks for datatypes:
 			if(profile) swatch_datatypes.start();
-			ullong float_size=H5Tget_size(type_id);
-			if( float_size!=4 && float_size!=8 ){
-				HDF5_error_exit("HDF5Reader::read: error, datatype mismatch!\n");
+			ullong hdf5_float_size=H5Tget_size(type_id);
+			ullong field_float_size=sizeof(WordType<T>::Type_t);
+			
+			//checks
+			if( hdf5_float_size!=4 && hdf5_float_size!=8 ){
+				HDF5_error_exit("HDF5Reader::read: error, datatype mismatch. The datatype should be either 32 or 64 bit!\n");
 			}
 			if(sizes.size()!=(Nd+1)){
 				HDF5_error_exit("HDF5Reader::read: error, wrong dimensionality!");
@@ -693,9 +696,9 @@ namespace QDP {
 				}
 			}
 			obj_size=sizes[Nd];
-			if( (obj_size*float_size) != sizeof(T) ){
-				HDF5_error_exit("HDF5Reader::read: error size of input vectors differ from those in record!");
-			}
+			//if( (obj_size*hdf5_float_size) != sizeof(T) ){
+			//	HDF5_error_exit("HDF5Reader::read: error size of input vectors differ from those in record!");
+			//}
 			if(profile) swatch_datatypes.stop();
 
 			//determine local sizes, allocate memory and read
@@ -703,7 +706,7 @@ namespace QDP {
 			const int mynode=Layout::nodeNumber();
 			const int nodeSites = Layout::sitesOnNode();
 			size_t tot_size = obj_size*nodeSites;
-			REAL* buf = new(std::nothrow) REAL[tot_size];
+			char* buf = new(std::nothrow) char[tot_size*hdf5_float_type];
 			if( buf == 0x0 ) {
 				HDF5_error_exit("Unable to allocate buf\n");
 			}
@@ -718,7 +721,17 @@ namespace QDP {
 			for(unsigned int run=0; run<nodeSites; run++){
 			memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf+run*obj_size),float_size*obj_size);
 			}*/
-			CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,float_size*obj_size);
+			if(hdf5_float_size==field_float_size){
+				//convert layout directly
+				CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,sizeof(T));
+			}
+			else{
+				//convert precision first
+				WordType<T>::Type_t* tmpbuf=new WordType<T>::Type_t[tot_size];
+				for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< WordType<T>::Type_t >(buf[i]);
+				CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(T));
+				delete [] tmpbuf;
+			}
 			delete [] buf;
 			if(profile) swatch_reorder.stop();
 			
@@ -728,7 +741,7 @@ namespace QDP {
 				QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << std::endl;
 				QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << std::endl;
 				QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << std::endl;
-				QDPIO::cout << "\t MB read: " << Layout::vol()*sizeof(T)/1024/1024 << std::endl;
+				QDPIO::cout << "\t MB read: " << Layout::vol()*obj_size*hdf5_float_size/1024/1024 << std::endl;
 			}
 		}
 
@@ -758,9 +771,12 @@ namespace QDP {
 
 			//check sanity
 			if(profile) swatch_datatypes.start();
-			ullong float_size=H5Tget_size(type_id);
-			if( float_size!=4 && float_size!=8 ){
-				HDF5_error_exit("HDF5Reader::read: error, datatype mismatch!\n");
+			ullong hdf5_float_size=H5Tget_size(type_id);
+			ullong field_float_size=sizeof(WordType<T>::Type_t);
+			
+			//checks
+			if( hdf5_float_size!=4 && hdf5_float_size!=8 ){
+				HDF5_error_exit("HDF5Reader::read: error, datatype mismatch. The datatype should be either 32 or 64 bit!\n");
 			}
 			if(sizes.size()!=(Nd+1)){
 				HDF5_error_exit("HDF5Reader::read: error, wrong dimensionality!");
@@ -780,10 +796,11 @@ namespace QDP {
 				}
 			}
 			obj_size=sizes[Nd];
-			if( (obj_size*float_size)%sizeof(T) != 0 ){
-				HDF5_error_exit("HDF5Reader::read: error size of input vectors differ from those in record!");
-			}
-			ullong arr_size=(obj_size*float_size)/sizeof(T);
+			//if( (obj_size*hdf5_float_size)%sizeof(T) != 0 ){
+			//	HDF5_error_exit("HDF5Reader::read: error size of input vectors differ from those in record!");
+			//}
+			//this calculation is build on top of field float size since it involves type T, which is based on the same base prec.
+			ullong arr_size=(obj_size*field_float_size)/sizeof(T);
 			obj_size/=arr_size;
 			if(profile) swatch_datatypes.stop();
 
@@ -792,7 +809,7 @@ namespace QDP {
 			const int mynode=Layout::nodeNumber();
 			const int nodeSites = Layout::sitesOnNode();
 			size_t tot_size = obj_size*arr_size*nodeSites;
-			REAL* buf = new(std::nothrow) REAL[tot_size];
+			char* buf = new(std::nothrow) REAL[tot_size*hdf5_float_size];
 			if( buf == 0x0 ) {
 				HDF5_error_exit("Unable to allocate buf!");
 			}
@@ -810,7 +827,17 @@ namespace QDP {
 			memcpy(&(fieldarray[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),float_size*obj_size);
 			}
 			}*/
-			CvtToLayout(fieldarray,reinterpret_cast<void*>(buf),nodeSites,arr_size,float_size*obj_size);
+			if(hdf5_float_size==field_float_size){
+				//convert layout directly
+				CvtToLayout(fieldarray,reinterpret_cast<void*>(buf),nodeSites,arr_size,sizeof(T));
+			}
+			else{
+				//convert precision first
+				WordType<T>::Type_t* tmpbuf=new WordType<T>::Type_t[tot_size];
+				for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< WordType<T>::Type_t >(buf[i]);
+				CvtToLayout(fieldarray,reinterpret_cast<void*>(tmpbuf),nodeSites,arr_size,sizeof(T));
+				delete [] tmpbuf;
+			}
 			delete [] buf;
 			if(profile) swatch_reorder.stop();
 			
@@ -820,7 +847,7 @@ namespace QDP {
 				QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
 				QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
 				QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << " s." << std::endl;
-				QDPIO::cout << "\t MB read: " << Layout::vol()*fieldarray.size()*sizeof(T)/1024/1024 << std::endl;
+				QDPIO::cout << "\t MB read: " << Layout::vol()*fieldarray.size()*obj_size*hdf5_float_size/1024/1024 << std::endl;
 			}
 		}
 
