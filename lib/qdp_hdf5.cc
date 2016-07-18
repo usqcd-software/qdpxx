@@ -1030,7 +1030,7 @@ namespace QDP {
 		}
 		
 		//read dataset extents:
-		if(profile) swatch_prepare.start();                                                                        
+		if(profile) swatch_prepare.start();
 		multi1d<ullong> sizes;
 		hid_t type_id;
 		readPrepareLattice(name,type_id,sizes);
@@ -1091,7 +1091,7 @@ namespace QDP {
 		else{
 			//convert precision first
 			REAL32* tmpbuf=new REAL32[tot_size];
-			for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< REAL32 >(buf[i*hdf5_float_size]);
+			for(ullong i=0; i<tot_size; i++) tmpbuf[i]=static_cast< REAL32 >(buf[i*hdf5_float_size]);
 			CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(DiracPropagatorF3));
 			delete [] tmpbuf;
 		}
@@ -1125,7 +1125,7 @@ namespace QDP {
 		}
 		
 		//read dataset extents:
-		if(profile) swatch_prepare.start();                                                                        
+		if(profile) swatch_prepare.start();
 		multi1d<ullong> sizes;
 		hid_t type_id;
 		readPrepareLattice(name,type_id,sizes);
@@ -1186,7 +1186,7 @@ namespace QDP {
 		else{
 			//convert precision first
 			REAL64* tmpbuf=new REAL64[tot_size];
-			for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< REAL64 >(buf[i*hdf5_float_size]);
+			for(ullong i=0; i<tot_size; i++) tmpbuf[i]=static_cast< REAL64 >(buf[i*hdf5_float_size]);
 			CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(DiracPropagatorD3));
 			delete [] tmpbuf;
 		}
@@ -1289,7 +1289,7 @@ namespace QDP {
 		else{
 			//convert precision first
 			REAL64* tmpbuf=new REAL64[tot_size];
-			for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< REAL64 >(buf[i*hdf5_float_size]);
+			for(ullong i=0; i<tot_size; i++) tmpbuf[i]=static_cast< REAL64 >(buf[i*hdf5_float_size]);
 			CvtToLayout(fieldarray,reinterpret_cast<void*>(tmpbuf),nodeSites,arr_size,sizeof(ColorMatrixD3));
 			delete [] tmpbuf;
 		}
