@@ -891,8 +891,8 @@ namespace QDP {
 					for(unsigned int z=0; z<locsizes[2]; z++){
 						for(unsigned int t=0; t<locsizes[3]; t++){
 							//transpose from reversed input order to chroma input order
-							memcpy(&tmpbuf[dstruct_size*(x+locsizes[0]*(y+locsizes[1]*(z+locsizes[2]*t)))],
-									&buf[dstruct_size*(t+locsizes[3]*(z+locsizes[2]*(y+locsizes[1]*x)))],
+							memcpy(&tmpbuf[dstruct_size*hdf5_float_size*(x+locsizes[0]*(y+locsizes[1]*(z+locsizes[2]*t)))],
+									&buf[dstruct_size*hdf5_float_size*(t+locsizes[3]*(z+locsizes[2]*(y+locsizes[1]*x)))],
 									dstruct_size*hdf5_float_size);
 						}
 					}
