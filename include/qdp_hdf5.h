@@ -731,7 +731,18 @@ namespace QDP {
 			else{
 				//convert precision first
 				wtd* tmpbuf=new wtd[tot_size];
-				for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< wtd >(buf[i*hdf5_float_size]);
+				for(unsigned int i=0; i<tot_size; i++){
+					if(hdf5_float_size==4){
+						REAL32 tmpfloat;
+						memcpy(&tmpfloat,&buf[i*hdf5_float_size],hdf5_float_size);
+						tmpbuf[i]=static_cast< wtd >(tmpfloat);
+					}
+					else{
+						REAL64 tmpfloat;
+						memcpy(&tmpfloat,&buf[i*hdf5_float_size],hdf5_float_size);
+						tmpbuf[i]=static_cast< wtd >(tmpfloat);
+					}
+				}
 				CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(T));
 				delete [] tmpbuf;
 			}
@@ -840,7 +851,16 @@ namespace QDP {
 			else{
 				//convert precision first
 				wtd* tmpbuf=new wtd[tot_size];
-				for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< wtd >(buf[i*hdf5_float_size]);
+				if(hdf5_float_size==4){
+					REAL32 tmpfloat;
+					memcpy(&tmpfloat,&buf[i*hdf5_float_size],hdf5_float_size);
+					tmpbuf[i]=static_cast< wtd >(tmpfloat);
+				}
+				else{
+					REAL64 tmpfloat;
+					memcpy(&tmpfloat,&buf[i*hdf5_float_size],hdf5_float_size);
+					tmpbuf[i]=static_cast< wtd >(tmpfloat);
+				}
 				CvtToLayout(fieldarray,reinterpret_cast<void*>(tmpbuf),nodeSites,arr_size,sizeof(T));
 				delete [] tmpbuf;
 			}

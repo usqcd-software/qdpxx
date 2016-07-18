@@ -996,7 +996,11 @@ namespace QDP {
 		}
 		else{
 			REAL64* tmpbuf=new REAL64[tot_size];
-			for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< REAL64 >(buf[i*hdf5_float_size]);
+			REAL32 tmpfloat;
+			for(unsigned int i=0; i<tot_size; i++){
+				memcpy(&tmpfloat,&buf[i*hdf5_float_size],sizeof(REAL32));
+				tmpbuf[i]=static_cast< REAL64 >(tmpfloat);
+			}
 			CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(ColorMatrixD3));
 			delete [] tmpbuf;
 		}
@@ -1091,7 +1095,11 @@ namespace QDP {
 		else{
 			//convert precision first
 			REAL32* tmpbuf=new REAL32[tot_size];
-			for(ullong i=0; i<tot_size; i++) tmpbuf[i]=static_cast< REAL32 >(buf[i*hdf5_float_size]);
+			REAL64 tmpfloat;
+			for(unsigned int i=0; i<tot_size; i++){
+				memcpy(&tmpfloat,&buf[i*hdf5_float_size],sizeof(REAL64));
+				tmpbuf[i]=static_cast< REAL32 >(tmpfloat);
+			}
 			CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(DiracPropagatorF3));
 			delete [] tmpbuf;
 		}
@@ -1186,7 +1194,11 @@ namespace QDP {
 		else{
 			//convert precision first
 			REAL64* tmpbuf=new REAL64[tot_size];
-			for(ullong i=0; i<tot_size; i++) tmpbuf[i]=static_cast< REAL64 >(buf[i*hdf5_float_size]);
+			REAL32 tmpfloat;
+			for(unsigned int i=0; i<tot_size; i++){
+				memcpy(&tmpfloat,&buf[i*hdf5_float_size],sizeof(REAL32));
+				tmpbuf[i]=static_cast< REAL64 >(tmpfloat);
+			}
 			CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(DiracPropagatorD3));
 			delete [] tmpbuf;
 		}
@@ -1289,7 +1301,11 @@ namespace QDP {
 		else{
 			//convert precision first
 			REAL64* tmpbuf=new REAL64[tot_size];
-			for(ullong i=0; i<tot_size; i++) tmpbuf[i]=static_cast< REAL64 >(buf[i*hdf5_float_size]);
+			REAL32 tmpfloat;
+			for(unsigned int i=0; i<tot_size; i++){
+				memcpy(&tmpfloat,&buf[i*hdf5_float_size],sizeof(REAL32));
+				tmpbuf[i]=static_cast< REAL64 >(tmpfloat);
+			}
 			CvtToLayout(fieldarray,reinterpret_cast<void*>(tmpbuf),nodeSites,arr_size,sizeof(ColorMatrixD3));
 			delete [] tmpbuf;
 		}
