@@ -908,6 +908,10 @@ namespace QDP {
 	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, 
 																				LatticeColorMatrixD3& field, 
 																				const HDF5Base::accessmode& accmode);
+	
+	template<>void HDF5::read< PSpinMatrix< PColorMatrix< RComplex<REAL32>, 3>, 4> >(const std::string& name, 
+																				LatticeDiracPropagatorF3& field, 
+																				const HDF5Base::accessmode& accmode);
 																				
 	template<>void HDF5::read< PSpinMatrix< PColorMatrix< RComplex<REAL64>, 3>, 4> >(const std::string& name, 
 																					LatticeDiracPropagatorD3& field, 
