@@ -730,7 +730,7 @@ namespace QDP {
 			}
 			else{
 				//convert precision first
-				wtd* tmpbuf=new wdt[tot_size];
+				wtd* tmpbuf=new wtd[tot_size];
 				for(unsigned int i=0; i<tot_size; i++) tmpbuf[i]=static_cast< wtd >(buf[i*hdf5_float_size]);
 				CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(T));
 				delete [] tmpbuf;
