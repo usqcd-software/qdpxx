@@ -851,7 +851,7 @@ namespace QDP {
 		size_t two_gb = (size_t) 2 * 1024 * 1024 * 1024;
 		size_t total_size = tot_size;
 		unsigned int blocks = 1;
-		while(total_size * hdf5_float_size > two_gb) {
+		while( (total_size * hdf5_float_size) > two_gb) {
 			dim_size[0] = dim_size[0] >> 1;
 			total_size = total_size >> 1;
 			blocks = blocks << 1;
@@ -874,7 +874,7 @@ namespace QDP {
 			NULL, const_cast<const hsize_t*>(dim_size), NULL);
 			err = H5Dread(dset_id, nat_type_id, memspace, filespace, plist_id, static_cast<void*>(buf_small));
 			for(ullong j = 0; j < (total_size*hdf5_float_size); j++){
-				(buf + i * total_size)[j] = buf_small[j];
+				(buf + i * (total_size*hdf5_float_size) )[j] = buf_small[j];
 			}
 		} // for
 		
