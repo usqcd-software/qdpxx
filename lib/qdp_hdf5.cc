@@ -796,7 +796,7 @@ namespace QDP {
 
 	void HDF5::readLattice(const std::string& name, const hid_t& type_id, 
 							const hid_t& base_type_id, const ullong& obj_size, 
-							const ullong& tot_size, REAL* buf, bool invert_order) {
+							const ullong& tot_size, char* buf, bool invert_order) {
 		// determine local sizes
 		const int mynode = Layout::nodeNumber();
 		const int nodeSites = Layout::sitesOnNode();
@@ -838,39 +838,30 @@ namespace QDP {
 		hid_t dset_id = H5Dopen(current_group, name.c_str(), H5P_DEFAULT);
 		hid_t filespace = H5Dget_space(dset_id);
 
-		unsigned int float_size=H5Tget_size(base_type_id);
-		if( (float_size!=4) && (float_size!=8) ){
+		unsigned int hdf5_float_size=H5Tget_size(base_type_id);
+		if( (hdf5_float_size!=4) && (hdf5_float_size!=8) ){
 			HDF5_error_exit("HDF5Reader::read: error, invalid base datatype while trying to read lattice!");
 		}
 		if(H5Tget_class(base_type_id)!=H5T_FLOAT){
 			HDF5_error_exit("HDF5Reader::read: error, invalid base datatype while trying to read lattice!");
 		}
 
+		//32 GB MPIO pointer protection
 		hid_t err;
-		REAL32* buf32 = NULL;
-		REAL64* buf64 = NULL;
-
 		size_t two_gb = (size_t) 2 * 1024 * 1024 * 1024;
 		size_t total_size = tot_size;
 		unsigned int blocks = 1;
-		while(total_size * float_size > two_gb) {
+		while( (total_size * hdf5_float_size) > two_gb) {
 			dim_size[0] = dim_size[0] >> 1;
 			total_size = total_size >> 1;
 			blocks = blocks << 1;
 		} // while  
 
 		//allocate buffers and do some error handling
-		if(float_size == 4) {
-			buf32 = new (std::nothrow) REAL32[total_size];
-			if(buf32 == 0x0) {
-				HDF5_error_exit("Unable to allocate buf\n");
-			} // if
-		} else {
-			buf64 = new (std::nothrow) REAL64[total_size];
-			if(buf64 == 0x0) {
-				HDF5_error_exit("Unable to allocate buf\n");
-			} // if
-		} // if-else
+		char* buf_small = new (std::nothrow) char[total_size*hdf5_float_size];
+		if(buf_small == 0x0) {
+			HDF5_error_exit("Unable to allocate buf\n");
+		} // if
 
 		hsize_t rank = static_cast<hsize_t>(dimensions);
 		hid_t memspace = H5Screate_simple(rank, dim_size, NULL);
@@ -881,15 +872,10 @@ namespace QDP {
 			offset[0] = node_offset[0] + i * dim_size[0];
 			H5Sselect_hyperslab(filespace, H5S_SELECT_SET, const_cast<const hsize_t*>(offset),
 			NULL, const_cast<const hsize_t*>(dim_size), NULL);
-			if(float_size == 4) {
-				err = H5Dread(dset_id, nat_type_id, memspace, filespace, plist_id, static_cast<void*>(buf32));
-				for(ullong j = 0; j < total_size; j ++)
-					(buf + i * total_size)[j] = static_cast<REAL>(buf32[j]);
-			} else {
-				err = H5Dread(dset_id, nat_type_id, memspace, filespace, plist_id, static_cast<void*>(buf64));
-				for(ullong j = 0; j < total_size; j ++)
-					(buf + i * total_size)[j] = static_cast<REAL>(buf64[j]);
-			} // if-else
+			err = H5Dread(dset_id, nat_type_id, memspace, filespace, plist_id, static_cast<void*>(buf_small));
+			for(ullong j = 0; j < (total_size*hdf5_float_size); j++){
+				(buf + i * (total_size*hdf5_float_size) )[j] = buf_small[j];
+			}
 		} // for
 		
 		//do local transposition if necessary:
@@ -899,25 +885,24 @@ namespace QDP {
 			int dstruct_size=tot_size/nodeSites;
 			
 			//create temporary buffer
-			char* tmpbuf=new char[nodeSites*dstruct_size*float_size];
+			char* tmpbuf=new char[nodeSites*dstruct_size*hdf5_float_size];
 			for(unsigned int x=0; x<locsizes[0]; x++){
 				for(unsigned int y=0; y<locsizes[1]; y++){
 					for(unsigned int z=0; z<locsizes[2]; z++){
 						for(unsigned int t=0; t<locsizes[3]; t++){
 							//transpose from reversed input order to chroma input order
-							memcpy(&tmpbuf[dstruct_size*(x+locsizes[0]*(y+locsizes[1]*(z+locsizes[2]*t)))],
-									&buf[dstruct_size*(t+locsizes[3]*(z+locsizes[2]*(y+locsizes[1]*x)))],
-									dstruct_size*float_size);
+							memcpy(&tmpbuf[dstruct_size*hdf5_float_size*(x+locsizes[0]*(y+locsizes[1]*(z+locsizes[2]*t)))],
+									&buf[dstruct_size*hdf5_float_size*(t+locsizes[3]*(z+locsizes[2]*(y+locsizes[1]*x)))],
+									dstruct_size*hdf5_float_size);
 						}
 					}
 				}
 			}
-			memcpy(buf,tmpbuf,nodeSites*dstruct_size*float_size);
+			memcpy(buf,tmpbuf,nodeSites*dstruct_size*hdf5_float_size);
 			delete [] tmpbuf;
 		}
 		
-		if(buf32 != NULL) delete [] buf32;
-		if(buf64 != NULL) delete [] buf64;
+		delete [] buf_small;
 		delete [] dim_size;
 		delete [] total_count;
 		delete [] offset;
@@ -960,7 +945,9 @@ namespace QDP {
 			HDF5_error_exit("HDF5::read: object is not a color matrix!");
 		}
 
-		unsigned int float_size=H5Tget_size(base_type_id);
+		ullong hdf5_float_size=H5Tget_size(base_type_id);
+		ullong field_float_size=sizeof(REAL64);
+		
 		if(sizes.size()!=Nd){
 			HDF5_error_exit("HDF5::read: error, wrong dimensionality!");
 			return;
@@ -985,9 +972,9 @@ namespace QDP {
 		if(profile) swatch_read.start();
 		const int mynode=Layout::nodeNumber();
 		const int nodeSites = Layout::sitesOnNode();
-		size_t obj_size=sizeof(ColorMatrixD3)/float_size;
+		size_t obj_size=sizeof(ColorMatrixD3)/field_float_size;
 		size_t tot_size = nodeSites*obj_size;
-		REAL* buf = new(std::nothrow) REAL[tot_size];
+		char* buf = new(std::nothrow) char[tot_size*hdf5_float_size];
 		if( buf == 0x0 ) {
 			HDF5_error_exit("Unable to allocate buf\n");
 		}
@@ -1004,7 +991,19 @@ namespace QDP {
 		for(unsigned int run=0; run<nodeSites; run++){
 			memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf+run*obj_size),float_size*obj_size);
 		}*/
-		CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,float_size*obj_size);
+		if(hdf5_float_size==field_float_size){
+			CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,sizeof(ColorMatrixD3));
+		}
+		else{
+			REAL64* tmpbuf=new REAL64[tot_size];
+			REAL32 tmpfloat;
+			for(unsigned int i=0; i<tot_size; i++){
+				memcpy(&tmpfloat,&buf[i*hdf5_float_size],sizeof(REAL32));
+				tmpbuf[i]=static_cast< REAL64 >(tmpfloat);
+			}
+			CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(ColorMatrixD3));
+			delete [] tmpbuf;
+		}
 		delete [] buf;
 		if(profile) swatch_reorder.stop();
 		
@@ -1014,11 +1013,110 @@ namespace QDP {
 			QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << " s." << std::endl;
-			QDPIO::cout << "\t MB read: " << Layout::vol()*sizeof(ColorMatrixD3)/1024/1024 << std::endl;
+			QDPIO::cout << "\t MB read: " << Layout::vol()*obj_size*static_cast<int>(hdf5_float_size)/1024/1024 << std::endl;
 		}
 	}
 	
-	//read LatticeColorPropagatorD3
+	//read LatticeDiracPropagatorF3
+	template<>void HDF5::read< PSpinMatrix< PColorMatrix< RComplex<REAL32>, 3>, 4> >(const std::string& name, 
+																					LatticeDiracPropagatorF3& field, 
+																					const HDF5Base::accessmode& accmode){
+		StopWatch swatch_prepare, swatch_datatypes, swatch_reorder, swatch_read;
+		
+		bool invert_order;
+		switch(accmode){
+			case HDF5Base::transpose_order:
+				invert_order=true;
+				break;
+			case HDF5Base::maintain_order:
+				invert_order=false;
+				break;
+		}
+		
+		//read dataset extents:
+		if(profile) swatch_prepare.start();
+		multi1d<ullong> sizes;
+		hid_t type_id;
+		readPrepareLattice(name,type_id,sizes);
+		if(profile) swatch_prepare.stop();
+	
+		//do some datatype sanity checks and get the basis precision:
+		if(profile) swatch_datatypes.start();
+		hid_t base_type_id;
+		if( !checkDiracPropagatorType(type_id,Ns,Nc,base_type_id) ){
+			HDF5_error_exit("HDF5::read: object is not a dirac propagator!");
+		}
+	
+		ullong hdf5_float_size=H5Tget_size(base_type_id);
+		ullong field_float_size=sizeof(REAL32);
+		if(sizes.size()!=Nd){
+			HDF5_error_exit("HDF5::read: error, wrong dimensionality!");
+			return;
+		}
+		if(invert_order){
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
+			}
+		}
+		else{
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[dd]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
+			}
+		}
+		if(profile) swatch_datatypes.stop();
+	
+		//determine local sizes, allocate memory and read
+		if(profile) swatch_read.start();
+		const int mynode=Layout::nodeNumber();
+		const int nodeSites = Layout::sitesOnNode();
+		size_t obj_size=sizeof(DiracPropagatorF3)/field_float_size;
+		size_t tot_size = nodeSites*obj_size;
+		char* buf = new(std::nothrow) char[tot_size*hdf5_float_size];
+		if( buf == 0x0 ) {
+			HDF5_error_exit("Unable to allocate buf\n");
+		}
+	
+		readLattice(name,type_id,base_type_id,1,tot_size,buf,invert_order);
+		H5Tclose(type_id);
+		H5Tclose(base_type_id);
+		if(profile) swatch_read.stop();
+	
+		//put lattice into u-field and reconstruct as well as reorder them on the fly:
+		// Reconstruct the gauge field
+		if(profile) swatch_reorder.start();
+		if(hdf5_float_size==field_float_size){
+			//convert layout directly
+			CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,sizeof(DiracPropagatorF3));
+		}
+		else{
+			//convert precision first
+			REAL32* tmpbuf=new REAL32[tot_size];
+			REAL64 tmpfloat;
+			for(unsigned int i=0; i<tot_size; i++){
+				memcpy(&tmpfloat,&buf[i*hdf5_float_size],sizeof(REAL64));
+				tmpbuf[i]=static_cast< REAL32 >(tmpfloat);
+			}
+			CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(DiracPropagatorF3));
+			delete [] tmpbuf;
+		}
+		delete [] buf;
+		if(profile) swatch_reorder.stop();
+	
+		if(profile){
+			QDPIO::cout << "HDF5-I/O statistics. Read:" << std::endl;
+			QDPIO::cout << "\t preparing: " << swatch_prepare.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t MB read: " << Layout::vol()*sizeof(DiracPropagatorF3)/1024/1024 << std::endl;
+		}
+	}
+	
+	//read LatticeDiracPropagatorD3
 	template<>void HDF5::read< PSpinMatrix< PColorMatrix< RComplex<REAL64>, 3>, 4> >(const std::string& name, 
 																					LatticeDiracPropagatorD3& field, 
 																					const HDF5Base::accessmode& accmode){
@@ -1035,7 +1133,7 @@ namespace QDP {
 		}
 		
 		//read dataset extents:
-		if(profile) swatch_prepare.start();                                                                        
+		if(profile) swatch_prepare.start();
 		multi1d<ullong> sizes;
 		hid_t type_id;
 		readPrepareLattice(name,type_id,sizes);
@@ -1048,7 +1146,8 @@ namespace QDP {
 			HDF5_error_exit("HDF5::read: object is not a dirac propagator!");
 		}
 
-		unsigned int float_size=H5Tget_size(base_type_id);
+		ullong hdf5_float_size=H5Tget_size(base_type_id);
+		ullong field_float_size=sizeof(REAL64);
 		if(sizes.size()!=Nd){
 			HDF5_error_exit("HDF5::read: error, wrong dimensionality!");
 			return;
@@ -1073,9 +1172,9 @@ namespace QDP {
 		if(profile) swatch_read.start();
 		const int mynode=Layout::nodeNumber();
 		const int nodeSites = Layout::sitesOnNode();
-		size_t obj_size=sizeof(DiracPropagatorD3)/float_size;
+		size_t obj_size=sizeof(DiracPropagatorD3)/field_float_size;
 		size_t tot_size = nodeSites*obj_size;
-		REAL* buf = new(std::nothrow) REAL[tot_size];
+		char* buf = new(std::nothrow) char[tot_size*hdf5_float_size];
 		if( buf == 0x0 ) {
 			HDF5_error_exit("Unable to allocate buf\n");
 		}
@@ -1088,7 +1187,21 @@ namespace QDP {
 		//put lattice into u-field and reconstruct as well as reorder them on the fly:
 		// Reconstruct the gauge field
 		if(profile) swatch_reorder.start();
-		CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,float_size*obj_size);
+		if(hdf5_float_size==field_float_size){
+			//convert layout directly
+			CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,sizeof(DiracPropagatorD3));
+		}
+		else{
+			//convert precision first
+			REAL64* tmpbuf=new REAL64[tot_size];
+			REAL32 tmpfloat;
+			for(unsigned int i=0; i<tot_size; i++){
+				memcpy(&tmpfloat,&buf[i*hdf5_float_size],sizeof(REAL32));
+				tmpbuf[i]=static_cast< REAL64 >(tmpfloat);
+			}
+			CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(DiracPropagatorD3));
+			delete [] tmpbuf;
+		}
 		delete [] buf;
 		if(profile) swatch_reorder.stop();
 	
@@ -1098,13 +1211,13 @@ namespace QDP {
 			QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << " s." << std::endl;
-			QDPIO::cout << "\t MB read: " << Layout::vol()*sizeof(ColorMatrixD3)/1024/1024 << std::endl;
+			QDPIO::cout << "\t MB read: " << Layout::vol()*sizeof(DiracPropagatorD3)/1024/1024 << std::endl;
 		}
 	}
 
 	//QDP Lattice IO:
 	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, 
-																				multi1d<LatticeColorMatrixD3>& field, 
+																				multi1d<LatticeColorMatrixD3>& fieldarray, 
 																				const HDF5Base::accessmode& accmode){
 		StopWatch swatch_prepare, swatch_datatypes, swatch_reorder, swatch_read;
 		
@@ -1123,6 +1236,7 @@ namespace QDP {
 		multi1d<ullong> sizes;
 		hid_t type_id;
 		readPrepareLattice(name,type_id,sizes);
+		unsigned int arr_size=sizes[Nd];
 		if(profile) swatch_prepare.stop();  
 
 		//do some datatype sanity checks and get the basis precision:
@@ -1132,7 +1246,8 @@ namespace QDP {
 			HDF5_error_exit("HDF5::read: object is not a color matrix!");
 		}
 
-		unsigned int float_size=H5Tget_size(base_type_id);
+		ullong hdf5_float_size=H5Tget_size(base_type_id);
+		ullong field_float_size=sizeof(REAL64);
 		if(sizes.size()!=(Nd+1)){
 			HDF5_error_exit("HDF5::read: error, wrong dimensionality!");
 			return;
@@ -1151,16 +1266,16 @@ namespace QDP {
 				}
 			}
 		}
-		field.resize(sizes[Nd]);
+		fieldarray.resize(sizes[Nd]);
 		if(profile) swatch_datatypes.stop();
 
 		//determine local sizes, allocate memory and read
 		if(profile) swatch_read.start();
 		const int mynode=Layout::nodeNumber();
 		const int nodeSites = Layout::sitesOnNode();
-		size_t obj_size=sizeof(ColorMatrixD3)/float_size;
-		size_t tot_size = nodeSites*sizes[Nd]*obj_size;
-		REAL* buf = new(std::nothrow) REAL[tot_size];
+		size_t obj_size=sizeof(ColorMatrixD3)/field_float_size;
+		size_t tot_size = nodeSites*arr_size*obj_size;
+		char* buf = new(std::nothrow) char[tot_size*hdf5_float_size];
 		if( buf == 0x0 ) {
 			HDF5_error_exit("Unable to allocate buf\n");
 		}
@@ -1173,14 +1288,27 @@ namespace QDP {
 		//put lattice into u-field and reconstruct as well as reorder them on the fly:
 		// Reconstruct the gauge field
 		if(profile) swatch_reorder.start();
-		unsigned int arr_size=sizes[Nd];
 		/*#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,field)
 		for(unsigned int run=0; run<nodeSites; run++){
 			for(unsigned int dd=0; dd<arr_size; dd++){
 				memcpy(&(field[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),float_size*obj_size);
 			}
 		}*/
-		CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,arr_size,float_size*obj_size);
+		if(hdf5_float_size==field_float_size){
+			//convert layout directly
+			CvtToLayout(fieldarray,reinterpret_cast<void*>(buf),nodeSites,arr_size,sizeof(ColorMatrixD3));
+		}
+		else{
+			//convert precision first
+			REAL64* tmpbuf=new REAL64[tot_size];
+			REAL32 tmpfloat;
+			for(unsigned int i=0; i<tot_size; i++){
+				memcpy(&tmpfloat,&buf[i*hdf5_float_size],sizeof(REAL32));
+				tmpbuf[i]=static_cast< REAL64 >(tmpfloat);
+			}
+			CvtToLayout(fieldarray,reinterpret_cast<void*>(tmpbuf),nodeSites,arr_size,sizeof(ColorMatrixD3));
+			delete [] tmpbuf;
+		}
 		delete [] buf;
 		if(profile) swatch_reorder.stop();
 		
@@ -1190,7 +1318,7 @@ namespace QDP {
 			QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << " s." << std::endl;
-			QDPIO::cout << "\t MB read: " << Layout::vol()*field.size()*sizeof(ColorMatrixD3)/1024/1024 << std::endl;
+			QDPIO::cout << "\t MB read: " << Layout::vol()*fieldarray.size()*obj_size*static_cast<int>(hdf5_float_size)/1024/1024 << std::endl;
 		}
 	}
 
