@@ -361,7 +361,7 @@ namespace QDP {
 
 	//check colormat:                                                                             
 	bool HDF5::checkColorMatrixType(const hid_t& type_id, const unsigned int& rank, hid_t& base_type_id){
-		///datatype should be array and have dimension 2:                                                                                                                                                                                                                                                                                                                     
+		///datatype should be array and have dimension 2:
 		if( (H5Tget_class(type_id)!=H5T_ARRAY) || (H5Tget_array_ndims(type_id)!=2) ){
 			return false;
 		}
@@ -382,6 +382,33 @@ namespace QDP {
 
 		return true;
 	}
+	
+	//propagator datatype
+	bool HDF5::checkDiracPropagatorType(const hid_t& type_id, const unsigned int& spinrank, const unsigned int& colorrank, hid_t& base_type_id){
+		//datatype specification is: [4,4][3,3] {re,im}
+		
+		///datatype should be array and have dimension 2:
+		if( (H5Tget_class(type_id)!=H5T_ARRAY) || (H5Tget_array_ndims(type_id)!=2) ){
+			return false;
+		}
+
+		//each dimension should have rank Ns:
+		hsize_t dims[2];
+		H5Tget_array_dims(type_id,dims);
+		if( (dims[0]!=dims[1]) || (dims[0]!=spinrank) ){
+			return false;
+		}
+
+		//check inner type
+		hid_t member_type=H5Tget_super(type_id);
+		if(!checkColorMatrixType(member_type,colorrank,base_type_id)){
+			return false;
+		}
+		H5Tclose(member_type);
+
+		return true;
+	}
+	
 
 	//***********************************************************************************************************************************
 	//***********************************************************************************************************************************
@@ -767,7 +794,9 @@ namespace QDP {
 		if(!isprefetched && sizes.size()>1) prefetchLatticeCoordinates();
 	}
 
-	void HDF5::readLattice(const std::string& name, const hid_t& type_id, const hid_t& base_type_id, const ullong& obj_size, const ullong& tot_size, REAL* buf) {
+	void HDF5::readLattice(const std::string& name, const hid_t& type_id, 
+							const hid_t& base_type_id, const ullong& obj_size, 
+							const ullong& tot_size, char* buf, bool invert_order) {
 		// determine local sizes
 		const int mynode = Layout::nodeNumber();
 		const int nodeSites = Layout::sitesOnNode();
@@ -781,11 +810,21 @@ namespace QDP {
 		hsize_t* total_count = new hsize_t[dimensions];
 		hsize_t* dim_size = new hsize_t[dimensions];
 
-		// reorder such that x is fastest:
-		for(unsigned int i = 0; i < Nd; i ++) {
-			dim_size[i] = total_count[i] = Layout::subgridLattSize()[(Nd - 1) - i];
-			offset[i] = node_offset[i] = Layout::nodeCoord()[(Nd - 1) - i] * total_count[i];
-		} // for                                                                                                                                                                                                                                                                                                                                                              
+		//set up the chunks every node has to read. If the ordering is row-major or column-major
+		if(invert_order){
+			// reorder such that x is fastest: necessary for chroma HDF5-file formats
+			for(unsigned int i = 0; i < Nd; i ++) {
+				dim_size[i] = total_count[i] = Layout::subgridLattSize()[(Nd - 1) - i];
+				offset[i] = node_offset[i] = Layout::nodeCoord()[(Nd - 1) - i] * total_count[i];
+			} // for
+		}
+		else{
+			//do not reorder, read as-is. necessary for other formats, such as QLUA
+			for(unsigned int i = 0; i < Nd; i ++) {
+				dim_size[i] = total_count[i] = Layout::subgridLattSize()[i];
+				offset[i] = node_offset[i] = Layout::nodeCoord()[i] * total_count[i];
+			} // for
+		}
 		if(obj_size>1){
 			dim_size[Nd] = total_count[Nd] = obj_size;
 			offset[Nd] = node_offset[Nd] = 0;
@@ -799,38 +838,30 @@ namespace QDP {
 		hid_t dset_id = H5Dopen(current_group, name.c_str(), H5P_DEFAULT);
 		hid_t filespace = H5Dget_space(dset_id);
 
-		unsigned int float_size=H5Tget_size(base_type_id);
-		if( (float_size!=4) && (float_size!=8) ){
+		unsigned int hdf5_float_size=H5Tget_size(base_type_id);
+		if( (hdf5_float_size!=4) && (hdf5_float_size!=8) ){
 			HDF5_error_exit("HDF5Reader::read: error, invalid base datatype while trying to read lattice!");
 		}
 		if(H5Tget_class(base_type_id)!=H5T_FLOAT){
 			HDF5_error_exit("HDF5Reader::read: error, invalid base datatype while trying to read lattice!");
 		}
 
+		//32 GB MPIO pointer protection
 		hid_t err;
-		REAL32* buf32 = NULL;
-		REAL64* buf64 = NULL;
-
 		size_t two_gb = (size_t) 2 * 1024 * 1024 * 1024;
 		size_t total_size = tot_size;
 		unsigned int blocks = 1;
-		while(total_size * float_size > two_gb) {
+		while( (total_size * hdf5_float_size) > two_gb) {
 			dim_size[0] = dim_size[0] >> 1;
 			total_size = total_size >> 1;
 			blocks = blocks << 1;
 		} // while  
 
-		if(float_size == 4) {
-			buf32 = new (std::nothrow) REAL32[total_size];
-			if(buf32 == 0x0) {
-				HDF5_error_exit("Unable to allocate buf\n");
-			} // if                                                                                                                                                                                                                                                                                                                                                             
-		} else {
-			buf64 = new (std::nothrow) REAL64[total_size];
-			if(buf64 == 0x0) {
-				HDF5_error_exit("Unable to allocate buf\n");
-			} // if                                                                                                                                                                                                                                                                                                                                                             
-		} // if-else                                                                                                                                                                                                                                                                                                                                                          
+		//allocate buffers and do some error handling
+		char* buf_small = new (std::nothrow) char[total_size*hdf5_float_size];
+		if(buf_small == 0x0) {
+			HDF5_error_exit("Unable to allocate buf\n");
+		} // if
 
 		hsize_t rank = static_cast<hsize_t>(dimensions);
 		hid_t memspace = H5Screate_simple(rank, dim_size, NULL);
@@ -841,19 +872,37 @@ namespace QDP {
 			offset[0] = node_offset[0] + i * dim_size[0];
 			H5Sselect_hyperslab(filespace, H5S_SELECT_SET, const_cast<const hsize_t*>(offset),
 			NULL, const_cast<const hsize_t*>(dim_size), NULL);
-			if(float_size == 4) {
-				err = H5Dread(dset_id, nat_type_id, memspace, filespace, plist_id, static_cast<void*>(buf32));
-				for(ullong j = 0; j < total_size; j ++)
-					(buf + i * total_size)[j] = static_cast<REAL>(buf32[j]);
-			} else {
-				err = H5Dread(dset_id, nat_type_id, memspace, filespace, plist_id, static_cast<void*>(buf64));
-				for(ullong j = 0; j < total_size; j ++)
-					(buf + i * total_size)[j] = static_cast<REAL>(buf64[j]);
-			} // if-else                                                                                                                                                                                                                                                                                                                                                        
-		} // for                                                                                                                                                                                                                                                                                                                                                              
-
-		if(buf32 != NULL) delete [] buf32;
-		if(buf64 != NULL) delete [] buf64;
+			err = H5Dread(dset_id, nat_type_id, memspace, filespace, plist_id, static_cast<void*>(buf_small));
+			for(ullong j = 0; j < (total_size*hdf5_float_size); j++){
+				(buf + i * (total_size*hdf5_float_size) )[j] = buf_small[j];
+			}
+		} // for
+		
+		//do local transposition if necessary:
+		if(!invert_order){
+			//get subgrid sizes
+			multi1d<int> locsizes=Layout::subgridLattSize();
+			int dstruct_size=tot_size/nodeSites;
+			
+			//create temporary buffer
+			char* tmpbuf=new char[nodeSites*dstruct_size*hdf5_float_size];
+			for(unsigned int x=0; x<locsizes[0]; x++){
+				for(unsigned int y=0; y<locsizes[1]; y++){
+					for(unsigned int z=0; z<locsizes[2]; z++){
+						for(unsigned int t=0; t<locsizes[3]; t++){
+							//transpose from reversed input order to chroma input order
+							memcpy(&tmpbuf[dstruct_size*hdf5_float_size*(x+locsizes[0]*(y+locsizes[1]*(z+locsizes[2]*t)))],
+									&buf[dstruct_size*hdf5_float_size*(t+locsizes[3]*(z+locsizes[2]*(y+locsizes[1]*x)))],
+									dstruct_size*hdf5_float_size);
+						}
+					}
+				}
+			}
+			memcpy(buf,tmpbuf,nodeSites*dstruct_size*hdf5_float_size);
+			delete [] tmpbuf;
+		}
+		
+		delete [] buf_small;
 		delete [] dim_size;
 		delete [] total_count;
 		delete [] offset;
@@ -867,8 +916,20 @@ namespace QDP {
 
 
 	//read LatticeColorMatrix
-	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, LatticeColorMatrixD3& field){
+	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, 
+																				LatticeColorMatrixD3& field, 
+																				const HDF5Base::accessmode& accmode){
 		StopWatch swatch_prepare, swatch_datatypes, swatch_reorder, swatch_read;
+		
+		bool invert_order;
+		switch(accmode){
+			case HDF5Base::transpose_order:
+				invert_order=true;
+				break;
+			case HDF5Base::maintain_order:
+				invert_order=false;
+				break;
+		}
 		
 		//read dataset extents:
 		if(profile) swatch_prepare.start();                                                                        
@@ -884,14 +945,25 @@ namespace QDP {
 			HDF5_error_exit("HDF5::read: object is not a color matrix!");
 		}
 
-		unsigned int float_size=H5Tget_size(base_type_id);
+		ullong hdf5_float_size=H5Tget_size(base_type_id);
+		ullong field_float_size=sizeof(REAL64);
+		
 		if(sizes.size()!=Nd){
 			HDF5_error_exit("HDF5::read: error, wrong dimensionality!");
 			return;
 		}
-		for(unsigned int dd=0; dd<Nd; dd++){
-			if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
-				HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+		if(invert_order){
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
+			}
+		}
+		else{
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[dd]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
 			}
 		}
 		if(profile) swatch_datatypes.stop();
@@ -900,14 +972,14 @@ namespace QDP {
 		if(profile) swatch_read.start();
 		const int mynode=Layout::nodeNumber();
 		const int nodeSites = Layout::sitesOnNode();
-		size_t obj_size=sizeof(ColorMatrixD3)/float_size;
+		size_t obj_size=sizeof(ColorMatrixD3)/field_float_size;
 		size_t tot_size = nodeSites*obj_size;
-		REAL* buf = new(std::nothrow) REAL[tot_size];
+		char* buf = new(std::nothrow) char[tot_size*hdf5_float_size];
 		if( buf == 0x0 ) {
 			HDF5_error_exit("Unable to allocate buf\n");
 		}
 
-		readLattice(name,type_id,base_type_id,1,tot_size,buf);
+		readLattice(name,type_id,base_type_id,1,tot_size,buf,invert_order);
 		H5Tclose(type_id);
 		H5Tclose(base_type_id);
 		if(profile) swatch_read.stop();
@@ -919,7 +991,19 @@ namespace QDP {
 		for(unsigned int run=0; run<nodeSites; run++){
 			memcpy(&(field.elem(reordermap[run])),reinterpret_cast<char*>(buf+run*obj_size),float_size*obj_size);
 		}*/
-		CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,float_size*obj_size);
+		if(hdf5_float_size==field_float_size){
+			CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,sizeof(ColorMatrixD3));
+		}
+		else{
+			REAL64* tmpbuf=new REAL64[tot_size];
+			REAL32 tmpfloat;
+			for(unsigned int i=0; i<tot_size; i++){
+				memcpy(&tmpfloat,&buf[i*hdf5_float_size],sizeof(REAL32));
+				tmpbuf[i]=static_cast< REAL64 >(tmpfloat);
+			}
+			CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(ColorMatrixD3));
+			delete [] tmpbuf;
+		}
 		delete [] buf;
 		if(profile) swatch_reorder.stop();
 		
@@ -929,19 +1013,230 @@ namespace QDP {
 			QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << " s." << std::endl;
-			QDPIO::cout << "\t MB read: " << Layout::vol()*sizeof(ColorMatrixD3)/1024/1024 << std::endl;
+			QDPIO::cout << "\t MB read: " << Layout::vol()*obj_size*static_cast<int>(hdf5_float_size)/1024/1024 << std::endl;
+		}
+	}
+	
+	//read LatticeDiracPropagatorF3
+	template<>void HDF5::read< PSpinMatrix< PColorMatrix< RComplex<REAL32>, 3>, 4> >(const std::string& name, 
+																					LatticeDiracPropagatorF3& field, 
+																					const HDF5Base::accessmode& accmode){
+		StopWatch swatch_prepare, swatch_datatypes, swatch_reorder, swatch_read;
+		
+		bool invert_order;
+		switch(accmode){
+			case HDF5Base::transpose_order:
+				invert_order=true;
+				break;
+			case HDF5Base::maintain_order:
+				invert_order=false;
+				break;
+		}
+		
+		//read dataset extents:
+		if(profile) swatch_prepare.start();
+		multi1d<ullong> sizes;
+		hid_t type_id;
+		readPrepareLattice(name,type_id,sizes);
+		if(profile) swatch_prepare.stop();
+	
+		//do some datatype sanity checks and get the basis precision:
+		if(profile) swatch_datatypes.start();
+		hid_t base_type_id;
+		if( !checkDiracPropagatorType(type_id,Ns,Nc,base_type_id) ){
+			HDF5_error_exit("HDF5::read: object is not a dirac propagator!");
+		}
+	
+		ullong hdf5_float_size=H5Tget_size(base_type_id);
+		ullong field_float_size=sizeof(REAL32);
+		if(sizes.size()!=Nd){
+			HDF5_error_exit("HDF5::read: error, wrong dimensionality!");
+			return;
+		}
+		if(invert_order){
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
+			}
+		}
+		else{
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[dd]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
+			}
+		}
+		if(profile) swatch_datatypes.stop();
+	
+		//determine local sizes, allocate memory and read
+		if(profile) swatch_read.start();
+		const int mynode=Layout::nodeNumber();
+		const int nodeSites = Layout::sitesOnNode();
+		size_t obj_size=sizeof(DiracPropagatorF3)/field_float_size;
+		size_t tot_size = nodeSites*obj_size;
+		char* buf = new(std::nothrow) char[tot_size*hdf5_float_size];
+		if( buf == 0x0 ) {
+			HDF5_error_exit("Unable to allocate buf\n");
+		}
+	
+		readLattice(name,type_id,base_type_id,1,tot_size,buf,invert_order);
+		H5Tclose(type_id);
+		H5Tclose(base_type_id);
+		if(profile) swatch_read.stop();
+	
+		//put lattice into u-field and reconstruct as well as reorder them on the fly:
+		// Reconstruct the gauge field
+		if(profile) swatch_reorder.start();
+		if(hdf5_float_size==field_float_size){
+			//convert layout directly
+			CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,sizeof(DiracPropagatorF3));
+		}
+		else{
+			//convert precision first
+			REAL32* tmpbuf=new REAL32[tot_size];
+			REAL64 tmpfloat;
+			for(unsigned int i=0; i<tot_size; i++){
+				memcpy(&tmpfloat,&buf[i*hdf5_float_size],sizeof(REAL64));
+				tmpbuf[i]=static_cast< REAL32 >(tmpfloat);
+			}
+			CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(DiracPropagatorF3));
+			delete [] tmpbuf;
+		}
+		delete [] buf;
+		if(profile) swatch_reorder.stop();
+	
+		if(profile){
+			QDPIO::cout << "HDF5-I/O statistics. Read:" << std::endl;
+			QDPIO::cout << "\t preparing: " << swatch_prepare.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t MB read: " << Layout::vol()*sizeof(DiracPropagatorF3)/1024/1024 << std::endl;
+		}
+	}
+	
+	//read LatticeDiracPropagatorD3
+	template<>void HDF5::read< PSpinMatrix< PColorMatrix< RComplex<REAL64>, 3>, 4> >(const std::string& name, 
+																					LatticeDiracPropagatorD3& field, 
+																					const HDF5Base::accessmode& accmode){
+		StopWatch swatch_prepare, swatch_datatypes, swatch_reorder, swatch_read;
+		
+		bool invert_order;
+		switch(accmode){
+			case HDF5Base::transpose_order:
+				invert_order=true;
+				break;
+			case HDF5Base::maintain_order:
+				invert_order=false;
+				break;
+		}
+		
+		//read dataset extents:
+		if(profile) swatch_prepare.start();
+		multi1d<ullong> sizes;
+		hid_t type_id;
+		readPrepareLattice(name,type_id,sizes);
+		if(profile) swatch_prepare.stop();
+
+		//do some datatype sanity checks and get the basis precision:
+		if(profile) swatch_datatypes.start();
+		hid_t base_type_id;
+		if( !checkDiracPropagatorType(type_id,Ns,Nc,base_type_id) ){
+			HDF5_error_exit("HDF5::read: object is not a dirac propagator!");
+		}
+
+		ullong hdf5_float_size=H5Tget_size(base_type_id);
+		ullong field_float_size=sizeof(REAL64);
+		if(sizes.size()!=Nd){
+			HDF5_error_exit("HDF5::read: error, wrong dimensionality!");
+			return;
+		}
+		if(invert_order){
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
+			}
+		}
+		else{
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[dd]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
+			}
+		}
+		if(profile) swatch_datatypes.stop();
+
+		//determine local sizes, allocate memory and read
+		if(profile) swatch_read.start();
+		const int mynode=Layout::nodeNumber();
+		const int nodeSites = Layout::sitesOnNode();
+		size_t obj_size=sizeof(DiracPropagatorD3)/field_float_size;
+		size_t tot_size = nodeSites*obj_size;
+		char* buf = new(std::nothrow) char[tot_size*hdf5_float_size];
+		if( buf == 0x0 ) {
+			HDF5_error_exit("Unable to allocate buf\n");
+		}
+
+		readLattice(name,type_id,base_type_id,1,tot_size,buf,invert_order);
+		H5Tclose(type_id);
+		H5Tclose(base_type_id);
+		if(profile) swatch_read.stop();
+
+		//put lattice into u-field and reconstruct as well as reorder them on the fly:
+		// Reconstruct the gauge field
+		if(profile) swatch_reorder.start();
+		if(hdf5_float_size==field_float_size){
+			//convert layout directly
+			CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,sizeof(DiracPropagatorD3));
+		}
+		else{
+			//convert precision first
+			REAL64* tmpbuf=new REAL64[tot_size];
+			REAL32 tmpfloat;
+			for(unsigned int i=0; i<tot_size; i++){
+				memcpy(&tmpfloat,&buf[i*hdf5_float_size],sizeof(REAL32));
+				tmpbuf[i]=static_cast< REAL64 >(tmpfloat);
+			}
+			CvtToLayout(field,reinterpret_cast<void*>(tmpbuf),nodeSites,sizeof(DiracPropagatorD3));
+			delete [] tmpbuf;
+		}
+		delete [] buf;
+		if(profile) swatch_reorder.stop();
+	
+		if(profile){
+			QDPIO::cout << "HDF5-I/O statistics. Read:" << std::endl;
+			QDPIO::cout << "\t preparing: " << swatch_prepare.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t MB read: " << Layout::vol()*sizeof(DiracPropagatorD3)/1024/1024 << std::endl;
 		}
 	}
 
 	//QDP Lattice IO:
-	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, multi1d<LatticeColorMatrixD3>& field){
+	template<>void HDF5::read< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, 
+																				multi1d<LatticeColorMatrixD3>& fieldarray, 
+																				const HDF5Base::accessmode& accmode){
 		StopWatch swatch_prepare, swatch_datatypes, swatch_reorder, swatch_read;
+		
+		bool invert_order;
+		switch(accmode){
+			case HDF5Base::transpose_order:
+				invert_order=true;
+				break;
+			case HDF5Base::maintain_order:
+				invert_order=false;
+				break;
+		}
 		
 		//read dataset extents: 
 		if(profile) swatch_prepare.start();                                                                                                                                                               
 		multi1d<ullong> sizes;
 		hid_t type_id;
 		readPrepareLattice(name,type_id,sizes);
+		unsigned int arr_size=sizes[Nd];
 		if(profile) swatch_prepare.stop();  
 
 		//do some datatype sanity checks and get the basis precision:
@@ -951,31 +1246,41 @@ namespace QDP {
 			HDF5_error_exit("HDF5::read: object is not a color matrix!");
 		}
 
-		unsigned int float_size=H5Tget_size(base_type_id);
+		ullong hdf5_float_size=H5Tget_size(base_type_id);
+		ullong field_float_size=sizeof(REAL64);
 		if(sizes.size()!=(Nd+1)){
 			HDF5_error_exit("HDF5::read: error, wrong dimensionality!");
 			return;
 		}
-		for(unsigned int dd=0; dd<Nd; dd++){
-			if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
-				HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+		if(invert_order){
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[Nd-dd-1]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
 			}
 		}
-		field.resize(sizes[Nd]);
+		else{
+			for(unsigned int dd=0; dd<Nd; dd++){
+				if(sizes[dd]!=Layout::lattSize()[dd]){
+					HDF5_error_exit("HDF5::read: mismatching lattice extents.");
+				}
+			}
+		}
+		fieldarray.resize(sizes[Nd]);
 		if(profile) swatch_datatypes.stop();
 
 		//determine local sizes, allocate memory and read
 		if(profile) swatch_read.start();
 		const int mynode=Layout::nodeNumber();
 		const int nodeSites = Layout::sitesOnNode();
-		size_t obj_size=sizeof(ColorMatrixD3)/float_size;
-		size_t tot_size = nodeSites*sizes[Nd]*obj_size;
-		REAL* buf = new(std::nothrow) REAL[tot_size];
+		size_t obj_size=sizeof(ColorMatrixD3)/field_float_size;
+		size_t tot_size = nodeSites*arr_size*obj_size;
+		char* buf = new(std::nothrow) char[tot_size*hdf5_float_size];
 		if( buf == 0x0 ) {
 			HDF5_error_exit("Unable to allocate buf\n");
 		}
 
-		readLattice(name,type_id,base_type_id,sizes[Nd],tot_size,buf);
+		readLattice(name,type_id,base_type_id,sizes[Nd],tot_size,buf,invert_order);
 		H5Tclose(type_id);
 		H5Tclose(base_type_id);
 		if(profile) swatch_read.stop();
@@ -983,14 +1288,27 @@ namespace QDP {
 		//put lattice into u-field and reconstruct as well as reorder them on the fly:
 		// Reconstruct the gauge field
 		if(profile) swatch_reorder.start();
-		unsigned int arr_size=sizes[Nd];
 		/*#pragma omp parallel for firstprivate(nodeSites,arr_size,obj_size,float_size) shared(buf,field)
 		for(unsigned int run=0; run<nodeSites; run++){
 			for(unsigned int dd=0; dd<arr_size; dd++){
 				memcpy(&(field[dd].elem(reordermap[run])),reinterpret_cast<char*>(buf+(dd+arr_size*run)*obj_size),float_size*obj_size);
 			}
 		}*/
-		CvtToLayout(field,reinterpret_cast<void*>(buf),nodeSites,arr_size,float_size*obj_size);
+		if(hdf5_float_size==field_float_size){
+			//convert layout directly
+			CvtToLayout(fieldarray,reinterpret_cast<void*>(buf),nodeSites,arr_size,sizeof(ColorMatrixD3));
+		}
+		else{
+			//convert precision first
+			REAL64* tmpbuf=new REAL64[tot_size];
+			REAL32 tmpfloat;
+			for(unsigned int i=0; i<tot_size; i++){
+				memcpy(&tmpfloat,&buf[i*hdf5_float_size],sizeof(REAL32));
+				tmpbuf[i]=static_cast< REAL64 >(tmpfloat);
+			}
+			CvtToLayout(fieldarray,reinterpret_cast<void*>(tmpbuf),nodeSites,arr_size,sizeof(ColorMatrixD3));
+			delete [] tmpbuf;
+		}
 		delete [] buf;
 		if(profile) swatch_reorder.stop();
 		
@@ -1000,26 +1318,31 @@ namespace QDP {
 			QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t read: " << swatch_read.getTimeInSeconds() << " s." << std::endl;
-			QDPIO::cout << "\t MB read: " << Layout::vol()*field.size()*sizeof(ColorMatrixD3)/1024/1024 << std::endl;
+			QDPIO::cout << "\t MB read: " << Layout::vol()*fieldarray.size()*obj_size*static_cast<int>(hdf5_float_size)/1024/1024 << std::endl;
 		}
 	}
 
-	//special lattice IO:
-	void HDF5::readFUEL(const std::string& name, multi1d<LatticeColorMatrixD3>& field){
+	//***********************************************************************************************************************************
+	//***********************************************************************************************************************************
+	//READING Qlua Lattice Types:                                                                                                            
+	//***********************************************************************************************************************************
+	//*********************************************************************************************************************************** 
+	//LatticeColorMatrixD3
+	void HDF5::readQlua(const std::string& name, multi1d<LatticeColorMatrixD3>& field){
 		StopWatch swatch_complete;
 		
-		QDPIO::cout << "Reading FUEL config ..." << std::flush;
+		QDPIO::cout << "Reading Qlua config ..." << std::flush;
 
 		//do some checks
 		if(profile) swatch_complete.start();
 		if(!objectExists(current_group,name)){
-			HDF5_error_exit("HDF5::readFUEL: error, configuration "+name+"does not exist!");
+			HDF5_error_exit("HDF5::readQlua: error, configuration "+name+"does not exist!");
 		}
 		//check if the object is a group and if it contains the datasets 0 to Nd-1 but not more:
 		H5O_info_t objinfo;
 		herr_t errhandle=H5Oget_info_by_name(current_group,name.c_str(),&objinfo,H5P_DEFAULT);
 		if(objinfo.type!=H5O_TYPE_GROUP){
-			HDF5_error_exit("HDF5::readFUEL: error, "+name+" exists but it is not a FUEL config!");
+			HDF5_error_exit("HDF5::readQlua: error, "+name+" exists but it is not a Qlua config!");
 		}
 		//check if datasets from 0 to Nd-1 exist:
 		for(unsigned int dd=0; dd<Nd; dd++){
@@ -1027,7 +1350,7 @@ namespace QDP {
 			stream << name << "/" << dd;
 			std::string dname=stream.str();
 			if(!objectExists(current_group,dname)){
-				HDF5_error_exit("HDF5::readFUEL: error, "+name+" exists but it is not a FUEL config! Dataset "+dname+" was not found!");
+				HDF5_error_exit("HDF5::readQlua: error, "+name+" exists but it is not a Qlua config! Dataset "+dname+" was not found!");
 			}
 		}
 		//now, check if there is another entry and whether all these entries are LatticeColorMatrices:
@@ -1035,24 +1358,77 @@ namespace QDP {
 		stream << name << "/" << Nd;
 		std::string dname=stream.str();
 		if(objectExists(current_group,dname)){
-			HDF5_error_exit("HDF5::readFUEL: error, "+name+" exists but it is not a FUEL config!");
+			HDF5_error_exit("HDF5::readQlua: error, "+name+" exists but it is not a Qlua config!");
 		}
 
-		//read LatticeColorMatrices:
+		//read LatticeColorMatrices: set invert_ordering to false, as Qlua stores the fields with x fastest
 		field.resize(Nd);
 		for(unsigned int dd=0; dd<Nd; dd++){
 			std::stringstream stream;
 			stream << name << "/" << dd;
 			std::string dname=stream.str();
-			read(dname,field[dd]);
+			read(dname,field[dd],HDF5Base::maintain_order);
 		}
 		if(profile) swatch_complete.stop();
 		QDPIO::cout << "done!" << std::endl;
 		
 		if(profile){
-			QDPIO::cout << "HDF5-I/O statistics for FUEL-read: " << std::endl;
+			QDPIO::cout << "HDF5-I/O statistics for Qlua-read: " << std::endl;
 			QDPIO::cout << "\t total: " << swatch_complete.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t MB read: " << Layout::vol()*field.size()*sizeof(ColorMatrixD3)/1024/1024 << std::endl;
+		}
+	}
+	
+	//LatticePropagatorD3
+	void HDF5::readQlua(const std::string& name, LatticeDiracPropagatorD3& prop){
+		StopWatch swatch_complete;
+		
+		QDPIO::cout << "Reading Qlua propagator ..." << std::flush;
+
+		//do some checks
+		if(profile) swatch_complete.start();
+		if(!objectExists(current_group,name)){
+			HDF5_error_exit("HDF5::readQlua: error, dataset "+name+"does not exist!");
+		}
+		//check if the object is a group:
+		H5O_info_t objinfo;
+		herr_t errhandle=H5Oget_info_by_name(current_group,name.c_str(),&objinfo,H5P_DEFAULT);
+		if(!objectExists(current_group,name)){
+			HDF5_error_exit("HDF5::readQlua: error, "+name+" exists but it is not a Qlua propagator!");
+		}
+		
+		/*
+		//check if the Datatype named .DiracPropagatorDouble3 exists and open it:
+		if(!objectExists(file_id,".DiracPropagatorDouble3")){
+			HDF5_error_exit("HDF5::readQlua: error, the required committed type .DiracPropagatorDouble3 does not exist!");
+		}
+		errhandle=H5Oget_info_by_name(file_id,".DiracPropagatorDouble3",&objinfo,H5P_DEFAULT);
+		if(objinfo.type!=H5O_TYPE_NAMED_DATATYPE){
+			HDF5_error_exit("HDF5::readQlua: error, object .DiracPropagatorDouble3 exists but it is not a committed datatype!");
+		}
+		hid_t type_id=H5Topen(file_id,".DiracPropagatorDouble3",H5P_DEFAULT);
+		hid_t base_type_id;
+		if(!checkDiracPropagatorType(type_id, 4, 3, base_type_id)){
+			HDF5_error_exit("HDF5::readQlua: error, the type .DiracPropagatorDouble3 is not formatted as expected!");
+		}
+		H5Tclose(type_id);
+		//finally, check the base type id:
+		unsigned int float_size=H5Tget_size(base_type_id);		
+		if(float_size!=8){
+			HDF5_error_exit("HDF5:readQlua: error, datatype size mismatch!");
+		}
+		H5Tclose(base_type_id);
+		*/
+
+		//read LatticePropagator: do not invert the order
+		read(name,prop,HDF5Base::maintain_order);
+		if(profile) swatch_complete.stop();
+		QDPIO::cout << "done!" << std::endl;
+		
+		if(profile){
+			QDPIO::cout << "HDF5-I/O statistics for Qlua-read: " << std::endl;
+			QDPIO::cout << "\t total: " << swatch_complete.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t MB read: " << Layout::vol()*sizeof(DiracPropagatorD3)/1024/1024 << std::endl;
 		}
 	}
 
@@ -2074,22 +2450,22 @@ namespace QDP {
 	}
 
 	//write FUEL configuration
-	void HDF5Writer::writeFUEL(const std::string& name, const multi1d<LatticeColorMatrixD3>& field, const HDF5Base::writemode& mode){
+	void HDF5Writer::writeQlua(const std::string& name, const multi1d<LatticeColorMatrixD3>& field, const HDF5Base::writemode& mode){
 		StopWatch swatch_complete;
 	  
-		QDPIO::cout<< "Writing FUEL config..." << std::flush;
+		QDPIO::cout<< "Writing Qlua config..." << std::flush;
 		if(profile) swatch_complete.start();
-		if(field.size()!=Nd) HDF5_error_exit("HDF5Writer::writeFUEL: passed vector is not a gauge field!");
+		if(field.size()!=Nd) HDF5_error_exit("HDF5Writer::writeQlua: passed vector is not a gauge field!");
 		if(objectExists(current_group,name)){
 			if(!(mode&HDF5Base::trunc)){
-				HDF5_error_exit("HDF5Writer::writeFUEL: error, object "+name+" does already exist!");
+				HDF5_error_exit("HDF5Writer::writeQlua: error, object "+name+" does already exist!");
 			}
 			else{
 				//check if the object is a group and if it contains the datasets 0 to Nd-1:
 				H5O_info_t objinfo;
 				herr_t errhandle=H5Oget_info_by_name(current_group,name.c_str(),&objinfo,H5P_DEFAULT);
 				if(objinfo.type!=H5O_TYPE_GROUP){
-					HDF5_error_exit("HDF5Writer::writeFUEL: error, "+name+" exists but it is not a FUEL config!");
+					HDF5_error_exit("HDF5Writer::writeQlua: error, "+name+" exists but it is not a Qlua config!");
 				}
 				//check if datasets from 0 to Nd-1 exist:
 				for(unsigned int i=0; i<Nd; i++){
@@ -2097,7 +2473,7 @@ namespace QDP {
 					stream << name << "/" << i;
 					std::string dname=stream.str();
 					if(!objectExists(current_group,dname)){
-						HDF5_error_exit("HDF5Writer::writeFUEL: error, "+name+" exists but it is not a FUEL config! Dataset "+dname+" was not found!");
+						HDF5_error_exit("HDF5Writer::writeQlua: error, "+name+" exists but it is not a Qlua config! Dataset "+dname+" was not found!");
 					}
 				}
 				deleteAllAttributes(name);
@@ -2118,7 +2494,7 @@ namespace QDP {
 		QDPIO::cout<< "done!" << std::endl;
 	  
 		if(profile){
-			QDPIO::cout << "HDF5-I/O statistics for FUEL-write: " << std::endl;
+			QDPIO::cout << "HDF5-I/O statistics for Qlua-write: " << std::endl;
 			QDPIO::cout << "\t total: " << swatch_complete.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t MB written: " << Layout::vol()*field.size()*sizeof(ColorMatrixD3)/1024/1024 << std::endl;
 		}
