@@ -141,6 +141,9 @@ namespace QDP {
 		//check colormat:
 		bool checkColorMatrixType(const hid_t& type_id, const unsigned int& rank, hid_t& base_type_id);
 		
+		//create propagator
+		hid_t createPropagatorType(const hid_t& colmat_id, const unsigned int& spinrank);
+		
 		//check propagator
 		bool checkDiracPropagatorType(const hid_t& type_id, const unsigned int& spinrank, const unsigned int& colorrank, hid_t& base_type_id);
 				
