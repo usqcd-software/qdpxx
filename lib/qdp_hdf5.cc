@@ -2449,7 +2449,7 @@ namespace QDP {
 
 		//write out the stuff:
 		if(profile) swatch_write.start();
-		writeLattice(name,colmat_id,1,reinterpret_cast<char*>(buf));
+		writeLattice(name,prop_id,1,reinterpret_cast<char*>(buf));
 
 		//clean up
 		H5Tclose(colmat_id);
@@ -2534,7 +2534,7 @@ namespace QDP {
 	
 		//write out the stuff:
 		if(profile) swatch_write.start();
-		writeLattice(name,colmat_id,1,reinterpret_cast<char*>(buf));
+		writeLattice(name,prop_id,1,reinterpret_cast<char*>(buf));
 
 		//clean up
 		H5Tclose(colmat_id);
