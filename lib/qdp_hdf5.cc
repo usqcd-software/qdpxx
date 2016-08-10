@@ -359,7 +359,7 @@ namespace QDP {
 		return colmat_id;
 	}
 
-	//check colormat:                                                                             
+	//check colormat:
 	bool HDF5::checkColorMatrixType(const hid_t& type_id, const unsigned int& rank, hid_t& base_type_id){
 		///datatype should be array and have dimension 2:
 		if( (H5Tget_class(type_id)!=H5T_ARRAY) || (H5Tget_array_ndims(type_id)!=2) ){
@@ -383,7 +383,18 @@ namespace QDP {
 		return true;
 	}
 	
-	//propagator datatype
+	//create propagator:
+	hid_t HDF5::createPropagatorType(const hid_t& colmat_id, const unsigned int& spinrank){
+		if(spinrank>Ns || spinrank==0){
+			HDF5_error_exit("HDF::createPropagatorType: error, the spinrank should be between 1 and Ns");
+		}
+		hsize_t dims[]={spinrank,spinrank};
+		hid_t prop_id = H5Tarray_create(colmat_id,2,dims);
+
+		return prop_id;
+	}
+	
+	//check propagator:
 	bool HDF5::checkDiracPropagatorType(const hid_t& type_id, const unsigned int& spinrank, const unsigned int& colorrank, hid_t& base_type_id){
 		//datatype specification is: [4,4][3,3] {re,im}
 		
@@ -932,7 +943,7 @@ namespace QDP {
 		}
 		
 		//read dataset extents:
-		if(profile) swatch_prepare.start();                                                                        
+		if(profile) swatch_prepare.start();
 		multi1d<ullong> sizes;
 		hid_t type_id;
 		readPrepareLattice(name,type_id,sizes);
@@ -1232,7 +1243,8 @@ namespace QDP {
 		}
 		
 		//read dataset extents: 
-		if(profile) swatch_prepare.start();                                                                                                                                                               
+		if(profile) swatch_prepare.start();
+		
 		multi1d<ullong> sizes;
 		hid_t type_id;
 		readPrepareLattice(name,type_id,sizes);
@@ -1880,10 +1892,10 @@ namespace QDP {
 			errhandle=H5Ldelete(current_group,dname.c_str(),H5P_DEFAULT);
 		}
 
-		//create string datatytpe and set encoding to UTF-8:                                                                                                                                                  
+		//create string datatytpe and set encoding to UTF-8:
 		hid_t dataid, spaceid, typid=H5Tcreate(H5T_STRING,datum_0.length()+1);
 		H5Tset_cset(typid,H5T_CSET_UTF8);
-		//create space:                                                                                                                                                                                       
+		//create space:
 		spaceid=H5Screate(H5S_SCALAR);
 		dataid=H5Dcreate(current_group,dname.c_str(),typid,spaceid,H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
 		H5Sclose(spaceid);
@@ -2037,7 +2049,7 @@ namespace QDP {
 			}
 		}
 
-		//perform the actual write:                                                                                                                                                                           
+		//perform the actual write:
 		wt(dataname,datum,type_id,mode);
 		H5Tclose(type_id);
 	}
@@ -2154,7 +2166,7 @@ namespace QDP {
 		//reorder such that x is fastest: 
 		for(unsigned int i = 0; i < Nd; i ++) {
 			spacesize[i] = Layout::lattSize()[(Nd - 1) - i];
-		} // for                                                                                                                                                                                                                                                                                                                                                              
+		} // for
 		if(obj_size>1) spacesize[Nd] = obj_size;
 		hid_t filespace = H5Screate_simple(rank, const_cast<const hsize_t*>(spacesize), NULL);
 		hid_t dcpl_id = H5Pcreate(H5P_DATASET_CREATE);
@@ -2164,11 +2176,11 @@ namespace QDP {
 		hsize_t* offset = new hsize_t[dimension];
 		hsize_t* total_count = new hsize_t[dimension];
 		hsize_t* dim_size = new hsize_t[dimension];
-		//reorder such that x is fastest:                                                                                                                                                                                                                                                                                                                                     
+		//reorder such that x is fastest:
 		for(unsigned int i = 0; i < Nd; ++ i){
 			dim_size[i] = total_count[i] = Layout::subgridLattSize()[(Nd - 1) - i];
 			offset[i] = node_offset[i] = Layout::nodeCoord()[(Nd - 1) - i] * total_count[i];
-		} // for                                                                                                                                                                                                                                                                                                                                                              
+		} // for
 		if(obj_size>1){
 			dim_size[Nd] = total_count[Nd] = obj_size;
 			offset[Nd] = node_offset[Nd] = 0;
@@ -2368,6 +2380,175 @@ namespace QDP {
 			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t write: " << swatch_write.getTimeInSeconds() << " s." << std::endl;
 			QDPIO::cout << "\t MB written: " << Layout::vol()*sizeof(ColorMatrixD3)/1024/1024 << std::endl;
+		}
+	}
+	
+	//float lattice propagator:
+	template<>
+	void HDF5Writer::write(const std::string& name, const LatticePropagatorF3& field, const HDF5Base::writemode& mode){
+		StopWatch swatch_prepare, swatch_reorder, swatch_write, swatch_datatypes;
+	  
+		//before writing is performed, check if dataset exists:
+		if(profile) swatch_prepare.start();
+		writePrepare(name,mode);
+		if(profile) swatch_prepare.stop();
+
+		//color matrix datatype:
+		if(profile) swatch_datatypes.start();
+		hid_t complex_id, colmat_id, prop_id;
+		bool exists=objectExists(file_id,".ComplexFloat");
+		if(!exists){
+			complex_id=createComplexType(sizeof(REAL32));
+			commitType(".ComplexFloat",complex_id);
+		}
+		else{
+			complex_id=H5Topen(file_id,".ComplexFloat",H5P_DEFAULT);
+			if(complex_id<0){
+				HDF5_error_exit("HDF5Writer::write: error, cannot open committed Datatype!");
+			}
+		}
+		exists=objectExists(file_id,".ColorMatrixFloat3");
+		if(!exists){
+			colmat_id=createColorMatrixType(complex_id,Nc);
+			commitType(".ColorMatrixFloat3",colmat_id);
+		}
+		else{
+			colmat_id=H5Topen(file_id,".ColorMatrixFloat3",H5P_DEFAULT);
+			if(colmat_id<0){
+				HDF5_error_exit("HDF5Writer::write: error, cannot open committed Datatype!");
+			}
+		}
+		exists=objectExists(file_id,".PropagatorFloat3");
+		if(!exists){
+			prop_id=createPropagatorType(colmat_id,Nc);
+			commitType(".PropagatorFloat3",prop_id);
+		}
+		else{
+			prop_id=H5Topen(file_id,".PropagatorFloat3",H5P_DEFAULT);
+			if(prop_id<0){
+				HDF5_error_exit("HDF5Writer::write: error, cannot open committed Datatype!");
+			}
+		}
+		if(profile) swatch_datatypes.stop();
+
+		//get node information:
+		if(profile) swatch_reorder.start();
+		const int mynode=Layout::nodeNumber();
+		const int nodeSites = Layout::sitesOnNode();
+
+		//copy buffer into data
+		size_t float_size=sizeof(REAL32);
+		size_t obj_size=sizeof(PropagatorF3)/float_size;
+		REAL32* buf=new REAL32[nodeSites*obj_size];
+		/*#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
+		for(unsigned int run=0; run<nodeSites; run++){
+			memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),float_size*obj_size);
+		}*/
+		CvtToHost(reinterpret_cast<void*>(buf),field,nodeSites,float_size*obj_size);
+		if(profile) swatch_reorder.stop();
+
+		//write out the stuff:
+		if(profile) swatch_write.start();
+		writeLattice(name,prop_id,1,reinterpret_cast<char*>(buf));
+
+		//clean up
+		H5Tclose(colmat_id);
+		H5Tclose(complex_id);
+		delete [] buf;
+		if(profile) swatch_write.stop();
+	  
+		if(profile){
+			QDPIO::cout << "HDF5-I/O statistics. Write:" << std::endl;
+			QDPIO::cout << "\t preparing: " << swatch_prepare.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t write: " << swatch_write.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t MB written: " << Layout::vol()*sizeof(PropagatorF3)/1024/1024 << std::endl;
+		}
+	}
+	
+	//double lattice propagator:
+	template<>
+	void HDF5Writer::write(const std::string& name, const LatticePropagatorD3& field, const HDF5Base::writemode& mode)
+	{
+		StopWatch swatch_prepare, swatch_reorder, swatch_write, swatch_datatypes;
+	  
+		//before writing is performed, check if dataset exists:
+		if(profile) swatch_prepare.start();
+		writePrepare(name,mode);
+		if(profile) swatch_prepare.stop();
+
+		//color matrix datatype:
+		if(profile) swatch_datatypes.start();
+		hid_t complex_id, colmat_id, prop_id;
+		bool exists=objectExists(file_id,".ComplexDouble");
+		if(!exists){
+			complex_id=createComplexType(sizeof(REAL64));
+			commitType(".ComplexDouble",complex_id);
+		}
+		else{
+			complex_id=H5Topen(file_id,".ComplexDouble",H5P_DEFAULT);
+			if(complex_id<0){
+				HDF5_error_exit("HDF5Writer::write: error, cannot open committed Datatype!");
+			}
+		}
+		exists=objectExists(file_id,".ColorMatrixDouble3");
+		if(!exists){
+			colmat_id=createColorMatrixType(complex_id,Nc);
+			commitType(".ColorMatrixDouble3",colmat_id);
+		}
+		else{
+			colmat_id=H5Topen(file_id,".ColorMatrixDouble3",H5P_DEFAULT);
+			if(colmat_id<0){
+				HDF5_error_exit("HDF5Writer::write: error, cannot open committed Datatype!");
+			}
+		}
+		exists=objectExists(file_id,".PropagatorDouble3");
+		if(!exists){
+			prop_id=createPropagatorType(colmat_id,Ns);
+			commitType(".PropagatorDouble3",prop_id);
+		}
+		else{
+			prop_id=H5Topen(file_id,".PropagatorDouble3",H5P_DEFAULT);
+			if(prop_id<0){
+				HDF5_error_exit("HDF5Writer::write: error, cannot open committed Datatype!");
+			}
+		}
+		if(profile) swatch_datatypes.stop();
+
+		//get node information:
+		if(profile) swatch_reorder.start();
+		const int mynode=Layout::nodeNumber();
+		const int nodeSites = Layout::sitesOnNode();
+
+		//copy buffer into data
+		size_t float_size=sizeof(REAL64);
+		size_t obj_size=sizeof(PropagatorD3)/float_size;
+		REAL64* buf=new REAL64[nodeSites*obj_size];
+		/*#pragma omp parallel for firstprivate(nodeSites,obj_size,float_size) shared(buf,field)
+		for(unsigned int run=0; run<nodeSites; run++){
+			memcpy(reinterpret_cast<char*>(buf+run*obj_size),&(field.elem(reordermap[run])),float_size*obj_size);
+		}*/
+		CvtToHost(reinterpret_cast<void*>(buf),field,nodeSites,float_size*obj_size);
+		if(profile) swatch_reorder.stop();
+	
+		//write out the stuff:
+		if(profile) swatch_write.start();
+		writeLattice(name,prop_id,1,reinterpret_cast<char*>(buf));
+
+		//clean up
+		H5Tclose(colmat_id);
+		H5Tclose(complex_id);
+		delete [] buf;
+		if(profile) swatch_write.stop();
+	  
+		if(profile){
+			QDPIO::cout << "HDF5-I/O statistics. Write:" << std::endl;
+			QDPIO::cout << "\t preparing: " << swatch_prepare.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t datatype-handling: " << swatch_datatypes.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t reordering: " << swatch_reorder.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t write: " << swatch_write.getTimeInSeconds() << " s." << std::endl;
+			QDPIO::cout << "\t MB written: " << Layout::vol()*sizeof(PropagatorD3)/1024/1024 << std::endl;
 		}
 	}
 

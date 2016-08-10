@@ -141,6 +141,9 @@ namespace QDP {
 		//check colormat:
 		bool checkColorMatrixType(const hid_t& type_id, const unsigned int& rank, hid_t& base_type_id);
 		
+		//create propagator
+		hid_t createPropagatorType(const hid_t& colmat_id, const unsigned int& spinrank);
+		
 		//check propagator
 		bool checkDiracPropagatorType(const hid_t& type_id, const unsigned int& spinrank, const unsigned int& colorrank, hid_t& base_type_id);
 				
@@ -851,15 +854,17 @@ namespace QDP {
 			else{
 				//convert precision first
 				wtd* tmpbuf=new wtd[tot_size];
-				if(hdf5_float_size==4){
-					REAL32 tmpfloat;
-					memcpy(&tmpfloat,&buf[i*hdf5_float_size],hdf5_float_size);
-					tmpbuf[i]=static_cast< wtd >(tmpfloat);
-				}
-				else{
-					REAL64 tmpfloat;
-					memcpy(&tmpfloat,&buf[i*hdf5_float_size],hdf5_float_size);
-					tmpbuf[i]=static_cast< wtd >(tmpfloat);
+				for(unsigned int i=0; i<tot_size; i++){
+					if(hdf5_float_size==4){
+						REAL32 tmpfloat;
+						memcpy(&tmpfloat,&buf[i*hdf5_float_size],hdf5_float_size);
+						tmpbuf[i]=static_cast< wtd >(tmpfloat);
+					}
+					else{
+						REAL64 tmpfloat;
+						memcpy(&tmpfloat,&buf[i*hdf5_float_size],hdf5_float_size);
+						tmpbuf[i]=static_cast< wtd >(tmpfloat);
+					}
 				}
 				CvtToLayout(fieldarray,reinterpret_cast<void*>(tmpbuf),nodeSites,arr_size,sizeof(T));
 				delete [] tmpbuf;
