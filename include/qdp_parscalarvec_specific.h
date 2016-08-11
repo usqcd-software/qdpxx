@@ -208,7 +208,6 @@ template<class T1, class T2>
 void 
 copymask(OSubLattice<T2,Subset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
-  OLattice<T2>& dest = d.field();
   const Subset& s = d.subset();
 
 #if ! defined(QDP_NOT_IMPLEMENTED)
@@ -216,7 +215,7 @@ copymask(OSubLattice<T2,Subset> d, const OLattice<T1>& mask, const OLattice<T2>&
   for(int j=0; j < s.numSiteTable(); ++j) 
   {
     int i = tab[j];
-    copymask(dest.elem(i), mask.elem(i), s1.elem(i));
+    copymask(d.getF()[i], mask.elem(i), s1.elem(i));
   }
 #else
   QDP_error("copymask_Subset not implemented");
@@ -292,10 +291,7 @@ random(OLattice<T>& d, const Subset& s)
 template<class T, class S>
 void random(const OSubLattice<T,S>& dd)
 {
-  OLattice<T>& d = const_cast<OSubLattice<T,S>&>(dd).field();
-  const S& s = dd.subset();
-
-  random(d,s);
+  random_F(const_cast<OSubLattice<T,S>&>(dd).getF(),dd.subset());
 }
 
 
@@ -334,10 +330,7 @@ void gaussian(OLattice<T>& d, const Subset& s)
 template<class T, class S>
 void gaussian(const OSubLattice<T,S>& dd)
 {
-  OLattice<T>& d = const_cast<OSubLattice<T,S>&>(dd).field();
-  const S& s = dd.subset();
-
-  gaussian(d,s);
+  gaussian_F(const_cast<OSubLattice<T,S>&>(dd).getF(),dd.subset());
 }
 
 
@@ -374,10 +367,7 @@ void zero_rep(OLattice<T>& dest, const Subset& s)
 template<class T, class S>
 void zero_rep(OSubLattice<T,S> dd) 
 {
-  OLattice<T>& d = dd.field();
-  const S& s = dd.subset();
-  
-  zero_rep(d,s);
+  zero_rep_F(dd.getF(),dd.subset());
 }
 
 

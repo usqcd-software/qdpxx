@@ -131,6 +131,27 @@ sum( const OSubLattice<T>& s1 )
       }
   }
 
+  template<class T>
+  inline
+  void random_F( T* dest, const Subset& s)
+  {
+    // omp - or is this in conflict with RNG functionality?
+    for(int j=0; j < s.numSiteTable(); ++j)
+      {
+	random( dest[j] );
+      }
+  }
+
+  template<class T>
+  inline
+  void gaussian_F( T* dest, const Subset& s)
+  {
+    // omp - see above?
+    for(int j=0; j < s.numSiteTable(); ++j)
+      {
+	gaussian( dest[j] );
+      }
+  }
 
   //! dest  = 0 
   template<class T>
