@@ -10,9 +10,9 @@
 
 #include "qdp_precision.h"
 
-namespace QDP {
-
 #include <xmmintrin.h>
+
+namespace QDP {
 
   void local_sumsq4(REAL64 *sum, REAL64 *vecptr, int n_4spin);
 

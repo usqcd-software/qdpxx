@@ -4,8 +4,9 @@
  *
  */
 
-#include <xmmintrin.h>
 #include "scalarsite_sse/sse_blas_local_vcdot_double.h"
+
+#include <xmmintrin.h>
 
 namespace QDP {
 

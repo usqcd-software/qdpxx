@@ -6,9 +6,10 @@
 
 #include "scalarsite_sse/sse_linalg_mm_su3_double.h"
 
+#include <xmmintrin.h>
+
 namespace QDP {
 
-#include <xmmintrin.h>
 #include "qdp_config.h"
 
 #ifndef QDP_USE_SSE3

@@ -4,10 +4,11 @@
  *
  */
 
+#include "scalarsite_sse/sse_blas_local_vcdot_real_double.h"
+
+#include <iostream>
 #include <qdp.h>
 #include <xmmintrin.h>
-#include "scalarsite_sse/sse_blas_local_vcdot_real_double.h"
-#include <iostream>
 
 namespace QDP {
 

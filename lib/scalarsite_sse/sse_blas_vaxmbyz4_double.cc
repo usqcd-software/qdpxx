@@ -6,9 +6,10 @@
 
 #include "scalarsite_sse/sse_blas_vaxmbyz4_double.h"
 
+#include <xmmintrin.h>
+
 namespace QDP {
 
-#include <xmmintrin.h>
 #include "scalarsite_sse/sse_prefetch.h"
 
 #ifndef L2BY2
