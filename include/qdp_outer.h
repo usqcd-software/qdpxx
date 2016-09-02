@@ -5,7 +5,7 @@
 
 #include "qdp_config.h"
 #include "qdp_allocator.h"
-
+#include "qdp_pool_allocator.h"
 /*! \file
  * \brief Outer grid classes
  */
@@ -413,28 +413,41 @@ private:
     {
       mem=true;
       // Barfs if allocator fails
+      size_t NSites = static_cast<size_t>(Layout::sitesOnNode());
       try
       {
-	F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+	//F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+    	  F=(T*)QDP::Allocator::theQDPPoolAllocator::Instance().alloc(sizeof(T)*NSites);
       }
       catch(std::bad_alloc) 
       {
 	QDPIO::cerr << "Allocation failed in OLattice alloc_mem" << std::endl;
-	QDP::Allocator::theQDPAllocator::Instance().dump();
+//	QDP::Allocator::theQDPAllocator::Instance().dump();
+
 	QDP_abort(1);
       }
+
+#if 0
+      // Nuke touch for now
+#pragma omp parallel for
+        for(int j=0; j < NSites; ++j) {
+             *((char *)&F[j])=0;
+        }
+#endif
+
     }
 
   //! Internal memory free
   inline void free_mem() 
   {
     if (!mem) return;
-    if( F != 0x0 ) 
+    if( F != nullptr )
     { 
-      QDP::Allocator::theQDPAllocator::Instance().free(F);
+   //   QDP::Allocator::theQDPAllocator::Instance().free(F);
+    	QDP::Allocator::theQDPPoolAllocator::Instance().free(F);
     }
     mem = false;
-    F = 0x0;
+    F = nullptr;
   }
 
 

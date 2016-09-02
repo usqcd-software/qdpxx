@@ -88,7 +88,7 @@ libqdp_a_SOURCES += qdp_scalarvecsite_sse.cc
 endif
  
 if BUILD_DEFAULT_ALLOCATOR
-libqdp_a_SOURCES += qdp_default_allocator.cc
+libqdp_a_SOURCES += qdp_default_allocator.cc qdp_pool_allocator.cc
 endif 
 
 if BUILD_BGQ_THREADBIND
