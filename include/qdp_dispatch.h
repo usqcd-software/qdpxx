@@ -21,26 +21,27 @@ namespace QDP {
 template<class Arg>
 void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*)){
    
-  int threads_num;
-  int myId;
-  int low = 0;
-  int high = numSiteTable;
-   
-#pragma omp parallel shared(numSiteTable, threads_num, a) private(myId, low, high) default(shared)
+
+#pragma omp parallel shared(numSiteTable, a)
     {
      
-      threads_num = omp_get_num_threads();
-      myId = omp_get_thread_num();
-      low = (numSiteTable*myId)/threads_num;
+      int threads_num = omp_get_num_threads();
+      int myId = omp_get_thread_num();
 
-      // NB: high can never be too high since for the last thread
-      // myId + 1 = (threads_num - 1) + 1 = threads_num.
-      // So numSiteTable*(myId+1) will always be a strict multiple of threads_num
-      // and so truncation issues will not bite.
-      // I am addig in the parentheses tho to force the precedence
-      high =(numSiteTable*(myId+1))/threads_num;
+      int active_threads_num = threads_num > numSiteTable ? numSiteTable : threads_num;
+
+      if( myId < numSiteTable ) {
+    	  int low = (numSiteTable*myId)/active_threads_num;
+
+      	  // NB: high can never be too high since for the last thread
+      	  // myId + 1 = (threads_num - 1) + 1 = threads_num.
+      	  // So numSiteTable*(myId+1) will always be a strict multiple of threads_num
+      	  // and so truncation issues will not bite.
+      	  // I am addig in the parentheses tho to force the precedence
+      	  int high =(numSiteTable*(myId+1))/active_threads_num;
  
-      func(low, high, myId, &a);
+      	  func(low, high, myId, &a);
+      }
     }
 }
 }
