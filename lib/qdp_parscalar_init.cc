@@ -107,6 +107,7 @@ namespace QDP {
 						rtinode);
 #endif
 
+				fprintf(stderr, "   -poolsize <X>  Create a fixed pool of X GB for Pool Alloc\n");
 				fprintf(stderr, "   -bind c:s   Bind Threads -- BlueGene Q only, c  cores per node and s SMT threads to run per core \n");
 
 				

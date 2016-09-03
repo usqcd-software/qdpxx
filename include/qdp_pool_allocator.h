@@ -40,10 +40,9 @@ namespace QDP
 
 
  	 private:
-
-// 		 size_t _PoolSize;
- //		 unsigned char* _MyMem;
- 		 tbb::memory_pool< std::allocator<char> > _LargePool;
+ 		 size_t _PoolSize;
+ 		 unsigned char* _MyMem;
+ 		 tbb::fixed_pool* _LargePool;
 
  	 };
 

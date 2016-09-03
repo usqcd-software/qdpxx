@@ -8,6 +8,7 @@
 #include "qdp_pool_allocator.h"
 #include <vector>
 #include <map>
+#include <new>
 #include <cstdio>
 
 
@@ -24,14 +25,11 @@ namespace Allocator {
 
 	std::map<void *, MemInfo > theAllocMap;
 
-#if 0
+
 	QDPPoolAllocator::QDPPoolAllocator() : _PoolSize(0),
 			_MyMem(nullptr), _LargePool(nullptr){}
-#else
-	QDPPoolAllocator::QDPPoolAllocator() {}
-#endif
 
-#if 0
+
 	QDPPoolAllocator::~QDPPoolAllocator() {
 		if ( _LargePool ) delete _LargePool;
 		if ( _MyMem ) {
@@ -39,31 +37,38 @@ namespace Allocator {
 		}
 		_LargePool = nullptr;
 		_MyMem = nullptr;
-		_PoolSize= 0;
+		_PoolSize = 0;
 	}
-#else
-	QDPPoolAllocator::~QDPPoolAllocator() {}
-#endif
-	// Use extensible memory pool -- with large pages
+
 	void
 	QDPPoolAllocator::init(size_t PoolSizeInGB)
 	{
-#if 0
-		//QDPIO::cout << "Initializing TBB Pool Allocator" << std::endl;
+
+		QDPIO::cout << "Initializing TBB Pool Allocator" << std::endl;
 		if( _MyMem != nullptr ) {
-			//QDPIO::cout << "Allocator Already Inited. Aborting" << std::endl;
+			QDPIO::cout << "Allocator Already Inited. Aborting" << std::endl;
 			QDP_abort(1);
 		}
 		theAllocMap.clear();
-		///QDPIO::cout << std::flush;
+
+		QDPIO::cout << std::flush;
 		_PoolSize = PoolSizeInGB*1024*1024*1024;
 
-		//QDPIO::cout << "Allocating " << PoolSizeInGB << " GB"  << std::endl;
-		_MyMem = new unsigned char [ _PoolSize ];
-		_LargePool = new tbb::fixed_pool((void *)_MyMem,
-						_PoolSize);
-#endif
+		QDPIO::cout << "Allocating " << PoolSizeInGB << " GB"  << std::endl;
 
+		_MyMem = new (std::nothrow) unsigned char [ _PoolSize ];
+		if ( _MyMem == nullptr) {
+			QDPIO::cout << "Unable to allocate " << _PoolSize <<" bytes" << std::endl;
+			QDPIO::cout << "Aborting" <<std::endl;
+			QDP_abort(1);
+		}
+
+		_LargePool = new (std::nothrow ) tbb::fixed_pool((void *)_MyMem, _PoolSize);
+		if ( _LargePool == nullptr) {
+				QDPIO::cout << "Unable to allocate fixed pool" << std::endl;
+				QDPIO::cout << "Aborting" <<std::endl;
+				QDP_abort(1);
+		}
 	}
 
 	void*
@@ -74,7 +79,7 @@ namespace Allocator {
 	    BytesToAlloc += QDP_ALIGNMENT_SIZE;
 
 
-	    unsigned char* Unaligned = (unsigned char *)(_LargePool.malloc(BytesToAlloc));
+	    unsigned char* Unaligned = (unsigned char *)(_LargePool->malloc(BytesToAlloc));
 
 	    unsigned char* Aligned = (unsigned char *)
 	    				( ( (unsigned long)Unaligned + (QDP_ALIGNMENT_SIZE-1) ) & ~(QDP_ALIGNMENT_SIZE - 1));
@@ -106,7 +111,7 @@ namespace Allocator {
 						<< "  Unaligned =" << std::hex <<(unsigned long)d.Unaligned << std::endl;
 #endif
 
-							_LargePool.free(d.Unaligned);
+			_LargePool->free(d.Unaligned);
 
 #ifdef DEBUG_POOL_ALLOCATOR
 			QDPIO::cout << "PoolAlloc::free: Erasing Addr from theAllocMap... ";
