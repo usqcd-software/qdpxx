@@ -578,7 +578,7 @@ void gaussian(OLattice<T>& d, const Subset& s)
 	const int *tab = s.siteTable().slice();
 	const int nodeSites = s.numSiteTable();
 
-// #pragma omp parallel for
+#pragma omp parallel for
 	for(int j=0; j < nodeSites; ++j)
 	{
 		int i = tab[j];
