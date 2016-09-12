@@ -129,8 +129,11 @@ BAGEL_HDRS = qdp_scalarsite_bagel_qdp.h \
 # HEADERS for the memory allocator
 MEMORY_HDRS = qdp_allocator.h \
 	      qdp_singleton.h \
-	      qdp_default_allocator.h \
-	      qdp_pool_allocator.h
+	      qdp_default_allocator.h
+	      
+if BUILD_QDPXX_TBB_ALLOCATOR
+MEMORY_HDRS += qdp_pool_allocator.h
+endif
 
 # All the include files - avoid flattening of dirs by using nobase
 nobase_include_HEADERS = \

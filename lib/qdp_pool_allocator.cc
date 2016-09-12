@@ -23,7 +23,9 @@ namespace Allocator {
 		unsigned char* Unaligned;
 	};
 
-	std::map<void *, MemInfo > theAllocMap;
+	using MapT = std::map<void *,MemInfo>;
+
+	MapT theAllocMap;
 
 
 	QDPPoolAllocator::QDPPoolAllocator() : _PoolSize(0),
@@ -41,7 +43,7 @@ namespace Allocator {
 	}
 
 	void
-	QDPPoolAllocator::init(size_t PoolSizeInGB)
+	QDPPoolAllocator::init(size_t PoolSizeInMB)
 	{
 
 		QDPIO::cout << "Initializing TBB Pool Allocator" << std::endl;
@@ -52,9 +54,9 @@ namespace Allocator {
 		theAllocMap.clear();
 
 		QDPIO::cout << std::flush;
-		_PoolSize = PoolSizeInGB*1024*1024*1024;
+		_PoolSize = PoolSizeInMB*1024*1024;
 
-		QDPIO::cout << "Allocating " << PoolSizeInGB << " GB"  << std::endl;
+		QDPIO::cout << "Intializing TBB Fixed Pool Allocator: Allocating " << PoolSizeInMB << " MB"  << std::endl;
 
 		_MyMem = new (std::nothrow) unsigned char [ _PoolSize ];
 		if ( _MyMem == nullptr) {
@@ -72,10 +74,11 @@ namespace Allocator {
 	}
 
 	void*
-	QDPPoolAllocator::alloc(size_t Size)
+	QDPPoolAllocator::allocate(size_t n_bytes,
+				const MemoryPoolHint& mem_pool_hint=DEFAULT)
 	{
 	    size_t BytesToAlloc;
-	    BytesToAlloc = Size;
+	    BytesToAlloc = n_bytes;
 	    BytesToAlloc += QDP_ALIGNMENT_SIZE;
 
 
@@ -127,6 +130,23 @@ namespace Allocator {
 		catch(...) {
 			//QDPIO::cout << "QDPPoolAllocate::free threw exception" << std::endl;
 			QDP_abort(1);
+		}
+	}
+
+	void QDPPoolAllocator::pushFunc(const char * func,int line) {}
+	void QDPPoolAllocator::popFunc(void) {}
+	void QDPPoolAllocator::dump(void)
+	{
+		if ( Layout::primaryNode() ) {
+
+			QDPIO::cout << "Dumping memory map" << std::endl;
+			for( auto j = theAllocMap.begin(); j != theAllocMap.end(); j++) {
+				const unsigned long unaligned = (unsigned long)((*j).first);
+				const MemInfo& mem = (*j).second;
+
+				printf("mem= 0x%lx  unaligned= 0x%lx size=%d\n", (unsigned long)unaligned,
+						(unsigned long)mem.Unaligned, mem.Size);
+			}
 		}
 	}
 } // namespace Allocator

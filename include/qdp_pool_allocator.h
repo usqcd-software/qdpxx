@@ -28,15 +28,31 @@ namespace QDP
 
  	 // Quick and Dirty Pool ALlocator
  	 class QDPPoolAllocator {
- 	 public:
+ 	 private:
+ 		 // Disallow Copies
+ 		 QDPPoolAllocator(const QDPPoolAllocator& c) {}
+
+ 		 // Disallow assignments (copies by another name)
+ 		 void operator=(const QDPPoolAllocator& c) {}
+
+ 		 // Disallow creation / destruction by anyone except
+ 		 // 	the singleton CreateUsingNew policy which is a "friend"
+ 		 // I don't like friends but this follows Alexandrescu's advice
+ 		 // on p154 of Modern C++ Design (A. Alexandrescu)
  		 QDPPoolAllocator(void);
-
  		 ~QDPPoolAllocator();
+ 		 friend class QDP::CreateUsingNew<QDP::Allocator::QDPPoolAllocator>;
+ 	 public:
+ 		 // Init -- has to
+ 		 void  init(size_t PoolSizeInMB);
 
- 		 void  init(size_t PoolSizeInGB);
-
- 		 void* alloc(size_t size);
+ 		 void* allocate(size_t n_bytes, const MemoryPoolHint& mem_pool_hint);
  		 void  free(void *mem);
+
+ 		 // Memory debugging Interface
+ 		 void pushFunc(const char *func, int line);
+ 		 void popFunc(void);
+ 		 void dump();
 
 
  	 private:
@@ -48,18 +64,6 @@ namespace QDP
 
 
 
-    // Turn into a Singleton. Create with CreateUsingNew
-    // Has NoDestroy lifetime, as it may be needed for 
-    // the destruction policy is No Destroy, so the 
-    // Singleton is not cleaned up on exit. This is so 
-    // that static objects can refer to it with confidence
-    // in their own destruction, not having to worry that
-    // atexit() may have destroyed the allocator before
-    // the static objects need to feed memory. 
-    typedef SingletonHolder<QDP::Allocator::QDPPoolAllocator,
-			    QDP::CreateUsingNew,
-			    QDP::NoDestroy,
-			    QDP::SingleThreaded> theQDPPoolAllocator;
 
   } // namespace Allocator
 } // namespace QDP

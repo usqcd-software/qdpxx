@@ -15,15 +15,14 @@
 
 #include "qdp.h"
 #include "qdp_util.h"
-#include "qdp_pool_allocator.h"
+#include "qdp_allocator.h"
 #include "qmp.h"
 
 
 namespace QDP 
 {
 
-  //-----------------------------------------------------------------------------
-  // IO routine solely for debugging. Only defined here
+  //----------------------------------Only defined here
   template<class T>
   std::ostream& operator<<(std::ostream& s, const multi1d<T>& s1)
   {
@@ -33,7 +32,8 @@ namespace QDP
     return s;
   }
 
-  size_t pool_size_in_gb = 8;
+  // Only relevant in case of pool allocator.
+  float pool_size_in_gb = 8.0;
 
 
   //-----------------------------------------------------------------------------
@@ -367,7 +367,10 @@ namespace QDP
       }
 #endif
 
-      Allocator::theQDPPoolAllocator::Instance().init(pool_size_in_gb);
+
+      size_t pool_size_in_MB = static_cast<size_t>(floor(pool_size_in_gb*1024.0));
+
+      Allocator::theQDPAllocator::Instance().init(pool_size_in_MB);
 
       // Initialize various defaults
       initDefaults();

@@ -34,7 +34,7 @@ namespace QDP {
   static int n_cores = -1;
   static int n_threads_per_core = -1;
 
-  extern size_t pool_size_in_gb;
+  extern float pool_size_in_gb;
 
 	//! Turn on the machine
 	void QDP_initialize(int *argc, char ***argv)
@@ -131,7 +131,7 @@ namespace QDP {
 #endif
 			else if ( strcmp((*argv)[i],"-poolsize")==0)
 			{
-				sscanf((*argv)[++i], "%d", &pool_size_in_gb);
+				sscanf((*argv)[++i], "%f", &pool_size_in_gb);
 
 			}
 			else if (strcmp((*argv)[i], "-geom")==0) 

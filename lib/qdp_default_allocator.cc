@@ -8,6 +8,7 @@
 #include <stack>
 #endif
 
+#include "qdp_default_allocator.h"
 
 namespace QDP {
 namespace Allocator {
@@ -219,7 +220,10 @@ namespace Allocator {
 
   // Init
   void
-  QDPDefaultAllocator::init() {}
+  QDPDefaultAllocator::init(size_t PoolSizeInMB ) {
+	  QDPIO::cout << "Initializing QDPDefaultAllocator." << std::endl;
+
+  }
 
 #endif
 

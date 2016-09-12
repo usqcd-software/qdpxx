@@ -5,7 +5,7 @@
 
 #include "qdp_config.h"
 #include "qdp_allocator.h"
-#include "qdp_pool_allocator.h"
+
 /*! \file
  * \brief Outer grid classes
  */
@@ -416,13 +416,11 @@ private:
       size_t NSites = static_cast<size_t>(Layout::sitesOnNode());
       try
       {
-	//F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
-    	  F=(T*)QDP::Allocator::theQDPPoolAllocator::Instance().alloc(sizeof(T)*NSites);
+    	  F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*NSites,QDP::Allocator::DEFAULT);
       }
-      catch(std::bad_alloc) 
-      {
-	QDPIO::cerr << "Allocation failed in OLattice alloc_mem" << std::endl;
-//	QDP::Allocator::theQDPAllocator::Instance().dump();
+      catch(std::bad_alloc) {
+    	  QDPIO::cerr << "Allocation failed in OLattice alloc_mem" << std::endl;
+    	  QDP::Allocator::theQDPAllocator::Instance().dump();
 
 	QDP_abort(1);
       }
@@ -443,8 +441,8 @@ private:
     if (!mem) return;
     if( F != nullptr )
     { 
-   //   QDP::Allocator::theQDPAllocator::Instance().free(F);
-    	QDP::Allocator::theQDPPoolAllocator::Instance().free(F);
+    	QDP::Allocator::theQDPAllocator::Instance().free(F);
+
     }
     mem = false;
     F = nullptr;

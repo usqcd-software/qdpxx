@@ -88,8 +88,12 @@ libqdp_a_SOURCES += qdp_scalarvecsite_sse.cc
 endif
  
 if BUILD_DEFAULT_ALLOCATOR
-libqdp_a_SOURCES += qdp_default_allocator.cc qdp_pool_allocator.cc
-endif 
+libqdp_a_SOURCES += qdp_default_allocator.cc
+endif
+ 
+if BUILD_QDPXX_TBB_ALLOCATOR
+libqdp_a_SOURCES += qdp_pool_allocator.h
+endif
 
 if BUILD_BGQ_THREADBIND
 libqdp_a_SOURCES += qdp_bgq_threadbind.cc

@@ -10,7 +10,7 @@
 
 #include "qdp_allocator.h"
 #include "qdp_stdio.h"
-#include "qdp_singleton.h"
+
 #include <string>
 #include <map>
 
@@ -32,11 +32,13 @@ namespace QDP
       // the singleton CreateUsingNew policy which is a "friend"
       // I don't like friends but this follows Alexandrescu's advice
       // on p154 of Modern C++ Design (A. Alexandrescu)
-      QDPDefaultAllocator() {init();}
+      QDPDefaultAllocator() {}
       ~QDPDefaultAllocator() {}
 
       friend class QDP::CreateUsingNew<QDP::Allocator::QDPDefaultAllocator>;
     public:
+
+      void init(size_t PoolSizeinMB);
 
       // Pusher
       void pushFunc(const char* func, int line);
@@ -58,22 +60,10 @@ namespace QDP
       void
       dump();
 
-    protected:
-      void init();
+
+
     };
 
-    // Turn into a Singleton. Create with CreateUsingNew
-    // Has NoDestroy lifetime, as it may be needed for 
-    // the destruction policy is No Destroy, so the 
-    // Singleton is not cleaned up on exit. This is so 
-    // that static objects can refer to it with confidence
-    // in their own destruction, not having to worry that
-    // atexit() may have destroyed the allocator before
-    // the static objects need to feed memory. 
-    typedef SingletonHolder<QDP::Allocator::QDPDefaultAllocator,
-			    QDP::CreateUsingNew,
-			    QDP::NoDestroy,
-			    QDP::SingleThreaded> theQDPAllocator;
 
   } // namespace Allocator
 } // namespace QDP
