@@ -92,7 +92,7 @@ libqdp_a_SOURCES += qdp_default_allocator.cc
 endif
  
 if BUILD_QDPXX_TBB_ALLOCATOR
-libqdp_a_SOURCES += qdp_pool_allocator.h
+libqdp_a_SOURCES += qdp_pool_allocator.cc
 endif
 
 if BUILD_BGQ_THREADBIND
