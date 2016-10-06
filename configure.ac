@@ -458,7 +458,7 @@ else
   if test "X${LIBXML2_HOME}X" = "XX" ; then
     AC_PATH_PROG(LIBXML2_CONFIG, [xml2-config], [])
   else
-    AC_MSG_NOTICE([found libxml2 config program])
+    AC_SUBST(LIBXML2_CONFIG, [${LIBXML2_HOME}])
   fi  
 
   if test "X${LIBXML2_CONFIG}X" = "XX" ; then
