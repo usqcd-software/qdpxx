@@ -42,7 +42,7 @@ namespace Layout
 //-----------------------------------------------------------------------------
 // IO routine solely for debugging. Only defined here
 template<class T>
-ostream& operator<<(ostream& s, const multi1d<T>& s1)
+std::ostream& operator<<(std::ostream& s, const multi1d<T>& s1)
 {
   for(int i=0; i < s1.size(); ++i)
     s << " " << s1[i];
@@ -163,7 +163,7 @@ void Set::make(const SetFunc& func)
       start = end = -1;
     }
 
-    sub[cb].make(ordRep, start, end, &(sitetables[cb]), cb);
+    sub[cb].make(ordRep, start, end, &(sitetables[cb]), cb, this);
 
 #if QDP_DEBUG >= 2
     QDP_info("Subset(%d): num_sitetable=%d  start=%d end=%d",cb,num_sitetable,start,end);
