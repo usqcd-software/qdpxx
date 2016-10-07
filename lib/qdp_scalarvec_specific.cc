@@ -79,7 +79,7 @@ n_uint32_t computeChecksum(const multi1d<LatticeColorMatrix>& u,
     QDP_extract(sa[dd], u[dd], all);
   }
 
-  char  *chk_buf = new(nothrow) char[su3_size];
+  char  *chk_buf = new(std::nothrow) char[su3_size];
   if( chk_buf == 0x0 ) { 
     QDP_error_exit("Unable to allocate chk_buf\n");
   }
