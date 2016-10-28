@@ -3364,7 +3364,7 @@ struct UnaryReturn<ILattice<T,N>, FnGlobalMax> {
 
 template<class T, int N>
 inline typename UnaryReturn<ILattice<T,N>, FnGlobalMax>::Type_t
-sum(const ILattice<T,N>& s1)
+globalMax(const ILattice<T,N>& s1)
 {
   typename UnaryReturn<ILattice<T,N>, FnGlobalMax>::Type_t  d;
 
@@ -3388,7 +3388,7 @@ struct UnaryReturn<ILattice<T,N>, FnGlobalMin> {
 
 template<class T, int N>
 inline typename UnaryReturn<ILattice<T,N>, FnGlobalMin>::Type_t
-sum(const ILattice<T,N>& s1)
+globalMin(const ILattice<T,N>& s1)
 {
   typename UnaryReturn<ILattice<T,N>, FnGlobalMin>::Type_t  d;
 
