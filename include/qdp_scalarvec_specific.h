@@ -140,7 +140,7 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 //! dest = (mask) ? s1 : dest
 template<class T1, class T2> 
 void 
-copymask(OSubLattice<T2,Subset> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
+copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
   OLattice<T2>& dest = d.field();
   const Subset& s = d.subset();
@@ -156,6 +156,7 @@ copymask(OSubLattice<T2,Subset> d, const OLattice<T1>& mask, const OLattice<T2>&
   QDP_error_exit("copymask_Subset not implemented");
 #endif
 }
+
 
 
 //! dest = (mask) ? s1 : dest
@@ -225,11 +226,11 @@ random(OLattice<T>& d, const Subset& s)
 
 
 //! dest  = random   under a subset
-template<class T, class S>
-void random(const OSubLattice<T,S>& dd)
+template<class T>
+void random(const OSubLattice<T>& dd)
 {
-  OLattice<T>& d = const_cast<OSubLattice<T,S>&>(dd).field();
-  const S& s = dd.subset();
+  OLattice<T>& d = const_cast<OSubLattice<T>&>(dd).field();
+  const Subset& s = dd.subset();
 
   random(d,s);
 }
@@ -266,11 +267,11 @@ void gaussian(OLattice<T>& d, const Subset& s)
 
 
 //! dest  = gaussian   under a subset
-template<class T, class S>
-void gaussian(const OSubLattice<T,S>& dd)
+template<class T>
+void gaussian(const OSubLattice<T>& dd)
 {
-  OLattice<T>& d = const_cast<OSubLattice<T,S>&>(dd).field();
-  const S& s = dd.subset();
+  OLattice<T>& d = const_cast<OSubLattice<T>&>(dd).field();
+  const Subset& s = dd.subset();
 
   gaussian(d,s);
 }
@@ -306,11 +307,11 @@ void zero_rep(OLattice<T>& dest, const Subset& s)
 
 
 //! dest  = 0 
-template<class T, class S>
-void zero_rep(OSubLattice<T,S> dd) 
+template<class T>
+void zero_rep(OSubLattice<T> dd) 
 {
   OLattice<T>& d = dd.field();
-  const S& s = dd.subset();
+  const Subset& s = dd.subset();
   
   zero_rep(d,s);
 }

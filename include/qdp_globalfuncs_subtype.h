@@ -132,6 +132,7 @@ sum( const OSubLattice<T>& s1 )
   }
 
 
+#if 0
   //! dest  = 0 
   template<class T>
   void zero_rep(OSubLattice<T> dd) 
@@ -143,6 +144,7 @@ sum( const OSubLattice<T>& s1 )
       zero_rep(tmp,dd.subset());
     }
   }
+#endif
 
 
 } // namespace
