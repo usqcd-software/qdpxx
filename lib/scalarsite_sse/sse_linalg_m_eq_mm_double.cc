@@ -6,8 +6,6 @@
 
 #include "scalarsite_sse/sse_linalg_mm_su3_double.h"
 
-namespace QDP {
-
 #include <xmmintrin.h>
 
 #include "qdp_config.h"
@@ -72,6 +70,8 @@ namespace QDP {
     (z) = _mm_add_pd((z),t1);			\
   }
 #endif
+
+namespace QDP {
 
   /* M3 = M1*M2 */
   /* ALIGNED LOADS/STORES. Should be OK on evaluates over OLattices

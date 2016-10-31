@@ -6,8 +6,6 @@
 
 #include "scalarsite_sse/sse_blas_vaxpbyz4_double.h"
 
-namespace QDP {
-
 #include <xmmintrin.h>
 #include "scalarsite_sse/sse_prefetch.h"
 
@@ -15,6 +13,8 @@ namespace QDP {
 #ifndef L2BY2
 #define L2BY2 1365          /* L2 / 2 in SPINORS */
 #endif
+
+namespace QDP {
 
 
 void vaxpbyz4(REAL64 *z, REAL64 *a, REAL64 *x, REAL64 *b, REAL64 *y, int n_4vec)
