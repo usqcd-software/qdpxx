@@ -4,12 +4,12 @@
  *
  */
 
+
 #include <xmmintrin.h>
+#include "qdp_config.h"
 #include "scalarsite_sse/sse_blas_local_vcdot_double.h"
 
 namespace QDP {
-
-#include "qdp_config.h"
 
 #ifndef QDP_USE_SSE3
 

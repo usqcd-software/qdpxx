@@ -5,10 +5,10 @@
  */
 
 #include "scalarsite_sse/sse_linalg_mm_su3_double.h"
+#include <xmmintrin.h>
 
 namespace QDP {
 
-#include <xmmintrin.h>
 
 typedef union {
   __m128d v;

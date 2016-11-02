@@ -10,6 +10,7 @@
 #include "qio.h"
 #include <sstream>
 #include "qdp_defs.h"
+#include "qdp_traits.h"
 #include <cstring>
 
 namespace QDP 
@@ -144,8 +145,166 @@ namespace QDP
   template<>
   char* QIOStringTraits< multi1d<LatticeDiracFermionD3> >::tname;
 
+  template<>
+  char* QIOStringTraits< LatticeStaggeredFermionF3 >::tname;
 
-  //--------------------------------------------------------------------------------
+  template<>
+  char *QIOStringTraits< LatticeStaggeredFermionD3 >::tname;
+
+
+  // Generic version of the template
+  // Declares a static value
+  template<class T>
+  struct NumSpins {
+	  static int value;
+  };
+
+  // Not definint the static value
+
+  // RScalar and RComplex are my 'base cases'
+  // Assuming they are nested within the Spin in terms of templates
+  template<class T>
+  struct NumSpins< RScalar<T> > {
+	  static int value;
+  };
+
+  template<class T>
+  int NumSpins<RScalar<T> >::value = 1;
+
+
+  template<class T>
+  struct NumSpins< RComplex<T> > {
+	  static int value;
+  };
+
+  template<class T>
+  int NumSpins<RComplex<T> >::value = 1;
+
+
+  // Things with spin structure cause early termination of the
+  // recursion
+  template<class T, int N>
+  struct NumSpins< PSpinVector<T,N> > {
+	  static int value;
+  };
+
+  template<class T, int N>
+  int NumSpins< PSpinVector<T,N> >::value = N;
+
+  template<class T, int N>
+  struct NumSpins< PSpinMatrix<T,N> > {
+	  static int value;
+  };
+
+  template<class T, int N>
+  int NumSpins< PSpinMatrix<T,N> >::value = N;
+
+  // PColor has the same template signature as PSpin
+  // So I have to specialize them too or we barf later on.
+  // with undefined symbols
+  template<class T, int N>
+  struct NumSpins< PColorVector<T,N> > {
+	  static int value;
+  };
+
+  template<class T, int N>
+  int NumSpins< PColorVector<T,N> >::value = NumSpins<T>::value;
+
+  template<class T, int N>
+  struct NumSpins< PColorMatrix<T,N> > {
+	  static int value;
+  };
+
+  template<class T, int N>
+  int NumSpins< PColorMatrix<T,N> >::value = NumSpins<T>::value;
+
+  // Generic recursion
+  template<template <class> class T1, class T2>
+  struct NumSpins< T1< T2 > > {
+	  static int value;
+  };
+
+  template<template <class> class T1, class T2>
+  int NumSpins<T1 <T2> >::value = NumSpins<T2>::value;
+
+  // Now for NumColors
+
+  // Generic version of the template
+    // Declares a static value
+    template<class T>
+    struct NumColors {
+  	  static int value;
+    };
+
+    // Not definint the static value
+
+    // RScalar and RComplex are my 'base cases'
+    // Assuming they are nested within the Spin in terms of templates
+    template<class T>
+    struct NumColors< RScalar<T> > {
+  	  static int value;
+    };
+
+    template<class T>
+    int NumColors<RScalar<T> >::value = 1;
+
+
+    template<class T>
+    struct NumColors< RComplex<T> > {
+  	  static int value;
+    };
+
+    template<class T>
+    int NumColors<RComplex<T> >::value = 1;
+
+
+    // Things with spin structure cause early termination of the
+    // recursion
+    template<class T, int N>
+    struct NumColors< PSpinVector<T,N> > {
+  	  static int value;
+    };
+
+    template<class T, int N>
+    int NumColors< PSpinVector<T,N> >::value = NumColors<T>::value;
+
+    template<class T, int N>
+    struct NumColors< PSpinMatrix<T,N> > {
+  	  static int value;
+    };
+
+    template<class T, int N>
+    int NumColors< PSpinMatrix<T,N> >::value = NumColors<T>::value;
+
+    // PColor has the same template signature as PSpin
+    // So I have to specialize them too or we barf later on.
+    // with undefined symbols
+    template<class T, int N>
+    struct NumColors< PColorVector<T,N> > {
+  	  static int value;
+    };
+
+    template<class T, int N>
+    int NumColors< PColorVector<T,N> >::value = N;
+
+    template<class T, int N>
+    struct NumColors< PColorMatrix<T,N> > {
+  	  static int value;
+    };
+
+    template<class T, int N>
+    int NumColors< PColorMatrix<T,N> >::value = N;
+
+    // Generic recursion
+    template<template <class> class T1, class T2>
+    struct NumColors< T1< T2 > > {
+  	  static int value;
+    };
+
+    template<template <class> class T1, class T2>
+    int NumColors<T1 <T2> >::value = NumColors<T2>::value;
+
+   //--------------------------------------------------------------------------------
   //! QIO class
   /*!
     This is a QDP object wrapper around the QIO library.
@@ -912,7 +1071,7 @@ namespace QDP
     QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, NULL, NULL, 0,
 						  QIOStringTraits< OScalar<T> >::tname,
 						  QIOStringTraits< typename WordType<T>::Type_t >::tprec,
-						  Nc, Ns, 
+						  NumColors<T>::value, NumSpins<T>::value,
 						  sizeof(T), 1);
 
     // Copy metadata string into simple qio string container
@@ -967,7 +1126,7 @@ namespace QDP
     QIO_RecordInfo* info = QIO_create_record_info(QIO_GLOBAL, NULL, NULL, 0,
 						  QIOStringTraits<multi1d< OScalar<T> > >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t>::tprec, 
-						  Nc, Ns, 
+						  NumColors<T>::value, NumSpins<T>::value,
 						  sizeof(T), s1.size());
 
 
@@ -1318,7 +1477,7 @@ namespace QDP
     QIO_RecordInfo* info = QIO_create_record_info(QIO_FIELD, NULL, NULL,0,
 						  QIOStringTraits< OLattice<T> >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t >::tprec,
-						  Nc, Ns, 
+						  NumColors<T>::value, NumSpins<T>::value,
 						  sizeof(T),1 );
   
     // Copy metadata string into simple qio string container
@@ -1374,7 +1533,7 @@ namespace QDP
 						  lower_left.size(),
 						  QIOStringTraits< OLattice<T> >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t >::tprec,
-						  Nc, Ns, 
+						  NumColors<T>::value, NumSpins<T>::value,
 						  sizeof(T),1 );
   
     // Copy metadata string into simple qio string container
@@ -1419,7 +1578,7 @@ namespace QDP
 						  NULL, NULL, 0,
 						  QIOStringTraits<multi1d< OLattice<T> > >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t>::tprec,
-						  Nc, Ns, 
+						  NumColors<T>::value, NumSpins<T>::value,
 						  sizeof(T), s1.size() );
 
     // Copy metadata string into simple qio string container
@@ -1477,7 +1636,7 @@ namespace QDP
 						  lower_left.size(),
 						  QIOStringTraits<multi1d< OLattice<T> > >::tname,
 						  QIOStringTraits<typename WordType<T>::Type_t>::tprec,
-						  Nc, Ns, 
+						  NumColors<T>::value, NumSpins<T>::value,
 						  sizeof(T), s1.size() );
 
     // Copy metadata string into simple qio string container
