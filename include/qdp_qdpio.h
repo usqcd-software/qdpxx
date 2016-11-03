@@ -146,10 +146,10 @@ namespace QDP
   char* QIOStringTraits< multi1d<LatticeDiracFermionD3> >::tname;
 
   template<>
-  char* QIOStringTraits< LatticeStaggeredFermionF3 >::tname;
+  char* QIOStringTraits< LatticeColorVectorF3 >::tname;
 
   template<>
-  char *QIOStringTraits< LatticeStaggeredFermionD3 >::tname;
+  char *QIOStringTraits< LatticeColorVectorD3 >::tname;
 
 
   // Generic version of the template

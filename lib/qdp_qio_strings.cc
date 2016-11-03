@@ -19,10 +19,10 @@ namespace QDP {
 
   // Staggered things
   template<>
-  char* QIOStringTraits< LatticeStaggeredFermionF3 >::tname = (char *)"USQCD_F3_ColorVector";
+  char* QIOStringTraits< LatticeColorVectorF3 >::tname = (char *)"USQCD_F3_ColorVector";
 
   template<>
-  char* QIOStringTraits< LatticeStaggeredFermionD3 >::tname = (char *)"USQCD_D3_ColorVector";
+  char* QIOStringTraits< LatticeColorVectorD3 >::tname = (char *)"USQCD_D3_ColorVector";
 
   // This is for the QIO precision strings
   template<>
