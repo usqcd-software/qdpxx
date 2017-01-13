@@ -1496,6 +1496,7 @@ globalMin(const QDPExpr<RHS,OLattice<T> >& s1)
 /*!
  * Return true if there is a NaN anywhere in the source
  */
+#if 0
 template<class T>
 inline bool
 isnan(const QDPType<T,OScalar<T> >& s1)
@@ -1670,7 +1671,7 @@ isnormal(const OLattice<T>& s1)
 
   return d;
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 // Peek and poke at individual sites. This is very architecture specific

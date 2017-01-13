@@ -1353,6 +1353,7 @@ tanh(const RScalar<T1>& s1)
 //-----------------------------------------------------------------------------
 // These functions always return bool
 //! isnan
+#if 0
 template<class T1>
 inline bool
 isnan(const RScalar<T1>& s1)
@@ -1383,7 +1384,7 @@ isfinite(const RScalar<T1>& s1)
 {
   return isfinite(s1.elem());
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 //! RScalar<T> = pow(RScalar<T> , RScalar<T>)
@@ -2012,6 +2013,7 @@ operator/(const RScalar<T1>& l, const RComplex<T2>& r)
 //-----------------------------------------------------------------------------
 // These functions always return bool
 //! isnan
+#if 0
 template<class T1>
 inline bool
 isnan(const RComplex<T1>& s1)
@@ -2042,7 +2044,7 @@ isfinite(const RComplex<T1>& s1)
 {
   return isfinite(s1.real()) & isfinite(s1.imag());
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 // Functions

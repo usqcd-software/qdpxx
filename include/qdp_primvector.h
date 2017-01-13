@@ -540,6 +540,7 @@ cmplx(const PVector<T1,N,C>& s1, const PVector<T2,N,C>& s2)
 //-----------------------------------------------------------------------------
 // These functions always return bool
 //! isnan
+#if 0
 template<class T1, int N, template<class,int> class C>
 struct UnaryReturn<PVector<T1,N,C>, FnIsNan> {
   bool Type_t;
@@ -610,7 +611,7 @@ isfinite(const PVector<T1,N,C>& l)
 
   return d;
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 // Functions

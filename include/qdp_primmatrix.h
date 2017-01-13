@@ -756,6 +756,7 @@ operator/(const PMatrix<T1,N,C>& l, const PScalar<T2>& r)
 //-----------------------------------------------------------------------------
 // These functions always return bool
 //! isnan
+#if 0
 template<class T1, int N, template<class,int> class C>
 struct UnaryReturn<PMatrix<T1,N,C>, FnIsNan> {
   bool Type_t;
@@ -830,7 +831,7 @@ isfinite(const PMatrix<T1,N,C>& l)
 
   return d;
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 // Functions

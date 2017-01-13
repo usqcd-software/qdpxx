@@ -286,6 +286,7 @@ namespace QDP
   /*!
    * Return true if there is a NaN anywhere in the source
    */
+#if 0
   template<class T, class C>
   inline bool
   isnan(const QDPExpr<T,C>& s1)
@@ -325,7 +326,7 @@ namespace QDP
   {
     return isfinite(C(s1));
   }
-
+#endif
 
   /** @} */ // end of group3
 

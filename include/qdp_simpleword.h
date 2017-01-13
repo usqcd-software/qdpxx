@@ -36,10 +36,12 @@ using std::sqrt;
 using std::tan;
 using std::tanh;
 
+#if 0
 using std::isnan;
 using std::isinf;
 using std::isfinite;
 using std::isnormal;
+#endif
 
 
 /*! \addtogroup simpleword Builtin word operations

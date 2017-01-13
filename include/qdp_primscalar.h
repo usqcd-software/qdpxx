@@ -908,6 +908,7 @@ tanh(const PScalar<T1>& s1)
 //-----------------------------------------------------------------------------
 // These functions always return bool
 //! isnan
+#if 0
 template<class T1>
 struct UnaryReturn<PScalar<T1>, FnIsNan> {
   bool Type_t;
@@ -958,7 +959,7 @@ isfinite(const PScalar<T1>& s1)
 {
   return isfinite(s1.elem());
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 //! PScalar<T> = pow(PScalar<T> , PScalar<T>)

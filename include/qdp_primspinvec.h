@@ -424,6 +424,7 @@ cmplx(const PSpinVector<T1,N>& s1, const PSpinVector<T2,N>& s2)
 //-----------------------------------------------------------------------------
 // These functions always return bool
 //! isnan
+#if 0
 template<class T1, int N>
 struct UnaryReturn<PSpinVector<T1,N>, FnIsNan> {
   bool Type_t;
@@ -494,6 +495,7 @@ isfinite(const PSpinVector<T1,N>& l)
 
   return d;
 }
+#endif
 
 
 //-----------------------------------------------------------------------------
