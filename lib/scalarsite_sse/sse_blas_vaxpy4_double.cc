@@ -6,8 +6,6 @@
 
 #include "scalarsite_sse/sse_blas_vaxpy4_double.h"
 
-namespace QDP {
-
 
 #include <xmmintrin.h>
 #include "scalarsite_sse/sse_prefetch.h"
@@ -16,6 +14,8 @@ namespace QDP {
 #define L2BY2 1365          /* L2 / 2 in SPINORS */
 #endif
 
+
+namespace QDP {
 
 void vaxpy4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, int n_4spin)
 {

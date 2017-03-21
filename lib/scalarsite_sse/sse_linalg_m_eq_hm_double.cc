@@ -6,8 +6,6 @@
 
 #include "scalarsite_sse/sse_linalg_mm_su3_double.h"
 
-namespace QDP {
-
 #include <xmmintrin.h>
 #include "qdp_config.h"
 
@@ -74,6 +72,8 @@ namespace QDP {
 
 #endif
 
+
+namespace QDP {
 
 
 

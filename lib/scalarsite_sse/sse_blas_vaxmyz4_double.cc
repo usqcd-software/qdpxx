@@ -6,9 +6,9 @@
 
 #include "scalarsite_sse/sse_blas_vaxmyz4_double.h"
 
-namespace QDP {
-
 #include <xmmintrin.h>
+
+namespace QDP {
 
 
 void vaxmyz4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, REAL64 *Add,int n_4vec)
