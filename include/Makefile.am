@@ -138,6 +138,7 @@ endif
 # All the include files - avoid flattening of dirs by using nobase
 nobase_include_HEADERS = \
 		qdp_config.h \
+		qdp_diagnostics.h \
 		qdp_forward.h \
 		qdp_globalfuncs.h \
 		qdp_globalfuncs_subtype.h \
