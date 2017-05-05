@@ -199,6 +199,20 @@ AC_ARG_ENABLE(tbb-pool-allocator,
 	[ ac_enable_tbbpool="no" ]
 )
 
+AC_ARG_ENABLE(extramessages,
+   AC_HELP_STRING(
+    [--enable-extra-messages],
+    [Emit extra messages during the compilation that indicate which preprocessor branches are used]
+   ),
+   [ extra_messages_enabled="yes" ],
+   [ extra_messages_enabled="no" ]
+)
+
+if test "${extra_messages_enabled}" = "yes"; then
+	AC_MSG_NOTICE([Will emit pragma message ])
+	AC_DEFINE(QPHIX_EMIT_MESSAGES, [1], [ Emit compilation messages ])
+fi
+
 if test "X${ac_bgq_bind_enabled}X" = "XyesX";
 then
   AC_MSG_NOTICE([Enabling BGQ Thread Binding])
