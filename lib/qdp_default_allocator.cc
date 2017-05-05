@@ -28,7 +28,7 @@ namespace Allocator {
   // Convenience typedefs to save typing
 
   // The type of the map to hold the aligned unaligned values
-  typedef map<unsigned char*, MapVal> MapT;
+  typedef std::map<unsigned char*, MapVal> MapT;
 
   // Func info
   struct FuncInfo_t {
@@ -186,7 +186,7 @@ namespace Allocator {
 
   // Init
   void
-  QDPDefaultAllocator::init()
+  QDPDefaultAllocator::init(size_t PoolSizeInMB)
   {
     infostack.push(FuncInfo_t(nowhere,0));
   }
