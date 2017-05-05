@@ -93,7 +93,7 @@ namespace Allocator {
 
     // Insert into the map
     InsertRetVal r = the_alignment_map.insert(
-      make_pair(aligned, MapVal(unaligned, info.func, info.line, bytes_to_alloc)));
+      std::make_pair(aligned, MapVal(unaligned, info.func, info.line, bytes_to_alloc)));
 #else
     // Insert into the map
     InsertRetVal r = the_alignment_map.insert(std::make_pair(aligned, unaligned));
