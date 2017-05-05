@@ -12,6 +12,8 @@
  *    32-style checkerboard (even/odd-checkerboarding of hypercubes)
  */
 
+#include "qdp_diagnostics.h"
+
 #include "qdp.h"
 #include "qdp_util.h"
 
@@ -270,7 +272,7 @@ namespace QDP
   //-----------------------------------------------------------------------------
 #if QDP_USE_LEXICO_LAYOUT == 1
 
-#warning "Using a lexicographic layout"
+QDPXX_MESSAGE("Using a lexicographic layout")
 
   namespace Layout
   {
@@ -297,7 +299,7 @@ namespace QDP
 
 #elif QDP_USE_CB2_LAYOUT == 1
 
-#warning "Using a 2 checkerboard (red/black) layout"
+QDPXX_MESSAGE("Using a 2 checkerboard (red/black) layout")
 
   namespace Layout
   {
@@ -352,7 +354,7 @@ namespace QDP
 
 #elif QDP_USE_CB3D_LAYOUT == 1
 
-#warning "Using a 2 checkerboard (red/black) layout but in 3D. Time running fastest"
+QDPXX_MESSAGE("Using a 2 checkerboard (red/black) layout but in 3D. Time running fastest")
 
   namespace Layout
   {
@@ -416,7 +418,7 @@ namespace QDP
 
 #elif QDP_USE_CB32_LAYOUT == 1
 
-#warning "Using a 32 checkerboard layout"
+QDPXX_MESSAGE("Using a 32 checkerboard layout")
 
   namespace Layout
   {

@@ -9,8 +9,9 @@
 #ifndef QDP_SCALARSITE_SSE_H
 #define QDP_SCALARSITE_SSE_H
 
+#include "qdp_diagnostics.h"
 
-#warning "Using SSE BLAS. If your compiler cant handle intrinsics your build will break"
+QDPXX_MESSAGE("Using SSE BLAS. If your compiler cant handle intrinsics your build will break")
 #include "scalarsite_sse/qdp_scalarsite_sse_linalg.h"
 #include "scalarsite_sse/qdp_scalarsite_sse_blas.h"
 #include "scalarsite_sse/qdp_scalarsite_sse_blas_double.h"

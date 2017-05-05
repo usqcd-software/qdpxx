@@ -1,11 +1,12 @@
 #ifndef QDP_DISPATCH_H
 #define QDP_DISPATCH_H
 
+#include "qdp_diagnostics.h"
 
 #include "qdp_config.h"
 
 #if defined(QDP_USE_OMP_THREADS)
-#warning QDP using OpenMP threading
+QDPXX_MESSAGE("QDP using OpenMP threading")
 #include <omp.h>
 namespace QDP {    
 /* OpenMP threading version of the dispatch.*/
@@ -49,7 +50,7 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*
 #else 
 
 #if defined(QDP_USE_QMT_THREADS)
-#warning QDP using QMT threading
+QDPXX_MESSAGE("QDP using QMT threading")
 
  /* QMT threading version of the dispatch. Call the qmt_call routine
      with userfunc, numSiteTable, and argument */

@@ -30,6 +30,9 @@
 #ifndef QDP_INCLUDE
 #define QDP_INCLUDE
 
+
+#include "qdp_diagnostics.h"
+
 /* Get local configuration options (ARCH_SCALAR/PARSCALAR, Nd, Nc, Ns) */
 #include <qdp_config.h>
 #include "qdp_precision.h"
@@ -111,14 +114,14 @@ namespace QDP {
 #include "qdp_stdio.h"
 
 #ifndef QDP_USE_LIBXML2
-#warning not using libxml2
+QDPXX_MESSAGE("not using libxml2")
 #else
 #include "qdp_xmlio.h"
 #include "qdp_qdpio.h"
 #endif
 
 #ifndef QDP_USE_HDF5
-#warning not using hdf5
+QDPXX_MESSAGE("not using hdf5")
 #else
 #include "qdp_hdf5.h"
 #endif
@@ -167,7 +170,7 @@ namespace ThreadReductions {
 
 #if defined(ARCH_SCALAR)
 // Architectural specific code to a single node/single proc box
-#warning "Using scalar architecture"
+QDPXX_MESSAGE("Using scalar architecture")
 #include "qdp_scalar_specific.h"
 
 // Include SSE code here if applicable
@@ -179,16 +182,16 @@ namespace ThreadReductions {
 #else
 // Use Generics only
 #ifdef QDP_USE_GENERIC_OPTS
-#warning "Using generics"
+QDPXX_MESSAGE("Using generics")
 #include "qdp_scalarsite_generic.h"
 #else
-#warning "Not using generics"
+QDPXX_MESSAGE("Not using generics")
 #endif
 #endif
 
 #elif defined(ARCH_PARSCALAR)
 // Architectural specific code to a parallel/single proc box
-#warning "Using parallel scalar architecture"
+QDPXX_MESSAGE("Using parallel scalar architecture")
 #include "qdp_parscalar_specific.h"
 
 // Include optimized code here if applicable
@@ -202,14 +205,14 @@ namespace ThreadReductions {
 #ifdef QDP_USE_GENERIC_OPTS
 #include "qdp_scalarsite_generic.h"
 #else 
-#warning "Not using generics"
+QDPXX_MESSAGE("Not using generics")
 #endif
 #endif
 
 #elif defined(ARCH_SCALARVEC)
 // Architectural specific code to a single node/single proc box 
 // with vector extension
-#warning "Using scalar architecture with vector extensions"
+QDPXX_MESSAGE("Using scalar architecture with vector extensions")
 #include "qdp_scalarvec_specific.h"
 
 // Include optimized code here if applicable
@@ -220,7 +223,7 @@ namespace ThreadReductions {
 #elif defined(ARCH_PARSCALARVEC)
 // Architectural specific code to a parallel/single proc box
 // with vector extension
-#warning "Using parallel scalar architecture with vector extensions"
+QDPXX_MESSAGE("Using parallel scalar architecture with vector extensions")
 #include "qdp_parscalarvec_specific.h"
 
 // Include optimized code here if applicable
