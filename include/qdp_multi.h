@@ -328,7 +328,6 @@ inline bool operator!=(const multi1d<T>& n1, const multi1d<T>& n2)
 template<typename T>
 inline bool operator<(const multi1d<T>& a, const multi1d<T>& b)
 {
-  bool ret = false;
   int  len = (a.size() < b.size()) ? a.size() : b.size();
 
   for(int i=0; i < len; ++i)
@@ -345,7 +344,6 @@ inline bool operator<(const multi1d<T>& a, const multi1d<T>& b)
 template<typename T>
 inline bool operator>(const multi1d<T>& a, const multi1d<T>& b)
 {
-  bool ret = false;
   int  len = (a.size() < b.size()) ? a.size() : b.size();
 
   for(int i=0; i < len; ++i)
