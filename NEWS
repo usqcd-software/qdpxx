@@ -1,3 +1,11 @@
+05/10/2017 -- Balint Joo
+	Updated Memory allocators -- These are allocated using Singleton CreateStatic, 
+	and not destroyed (NoDestroy policy) -- Chroma staggered regressions now pass.
+       Some  Chroma regression tests currently fail with ICC-17 update 2 (parallel studio 2017.2.050)
+	Tests passed with icc-16 update 3 and gcc versions 5.3.0 and 6.2.0 - so treating this as a compiler bug for now.
+	BEWARE !!!!!
+	
+
 02/06/2015 -- Balint Joo 
 	Updated submodules, pulled in HDF5 fixes (Thorsten Kurth)
         Added  Blue Gene Thread binding (orig. developed in QPhiX by Diptorup Deb)
