@@ -8,6 +8,12 @@
 #ifndef QDP_DEFAULT_ALLOCATOR
 #define QDP_DEFAULT_ALLOCATOR
 
+#include "qdp_config.h"
+
+#if defined(QDP_DEBUG_MEMORY)
+#include <stack>
+#endif
+
 #include "qdp_allocator.h"
 #include "qdp_stdio.h"
 
@@ -19,9 +25,45 @@ namespace QDP
   namespace Allocator
   {
 
+#if defined(QDP_DEBUG_MEMORY)
+    // Struct to hold in map
+    struct MapVal {
+      MapVal(unsigned char* u, const std::string& f, int l, size_t b) :
+	unaligned(u), func(f), line(l), bytes(b) {}
+
+      unsigned char* unaligned;
+      std::string    func;
+      int            line;
+      size_t         bytes;
+    };
+
+    // Convenience typedefs to save typing
+
+    // The type of the map to hold the aligned unaligned values
+    typedef std::map<unsigned char*, MapVal> MapT;
+
+    // Func info
+    struct FuncInfo_t {
+      FuncInfo_t(const char* f, int l) : func(f), line(l) {}
+
+      std::string  func;
+      int          line;
+    };
+#else
+    typedef std::map<unsigned char*, unsigned char *> MapT;
+#endif
+
+
     // Specialise allocator to the default case
     class QDPDefaultAllocator {
     private:
+
+#if defined(QDP_DEBUG_MEMORY)
+      std::stack<FuncInfo_t> infostack;
+#endif
+
+      MapT the_alignment_map;
+
       // Disallow Copies
       QDPDefaultAllocator(const QDPDefaultAllocator& c) {}
 
@@ -36,6 +78,7 @@ namespace QDP
       ~QDPDefaultAllocator() {}
 
       friend class QDP::CreateUsingNew<QDP::Allocator::QDPDefaultAllocator>;
+      friend class QDP::CreateStatic<QDP::Allocator::QDPDefaultAllocator>;
     public:
 
       void init(size_t PoolSizeinMB);

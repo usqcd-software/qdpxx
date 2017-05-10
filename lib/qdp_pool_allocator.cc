@@ -17,19 +17,8 @@
 namespace QDP {
 namespace Allocator {
 
-	struct MemInfo
-	{
-		size_t Size;
-		unsigned char* Unaligned;
-	};
-
-	using MapT = std::map<void *,MemInfo>;
-
-	MapT theAllocMap;
-
-
 	QDPPoolAllocator::QDPPoolAllocator() : _PoolSize(0),
-			_MyMem(nullptr), _LargePool(nullptr){}
+					       _MyMem(nullptr), _LargePool(nullptr) {}
 
 
 	QDPPoolAllocator::~QDPPoolAllocator() {
@@ -92,7 +81,7 @@ namespace Allocator {
 	    			<< " Aligned=" << (unsigned long) Aligned << std::endl;
 #endif
 	    // Insert into the map
-	    auto r = theAllocMap.insert(std::make_pair(Aligned, MemInfo{BytesToAlloc,Unaligned}));
+	    auto r = theAllocMap.insert(std::make_pair(Aligned, PoolMemInfo{BytesToAlloc,Unaligned}));
 
 	    // Check success of insertion.
 	    if( ! r.second ) {
@@ -142,7 +131,7 @@ namespace Allocator {
 			QDPIO::cout << "Dumping memory map" << std::endl;
 			for( auto j = theAllocMap.begin(); j != theAllocMap.end(); j++) {
 				const unsigned long unaligned = (unsigned long)((*j).first);
-				const MemInfo& mem = (*j).second;
+				const PoolMemInfo& mem = (*j).second;
 
 				printf("mem= 0x%lx  unaligned= 0x%lx size=%d\n", (unsigned long)unaligned,
 						(unsigned long)mem.Unaligned, mem.Size);

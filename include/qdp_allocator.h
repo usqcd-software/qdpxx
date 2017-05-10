@@ -73,7 +73,7 @@ namespace QDP
 namespace QDP {
  namespace Allocator {
  using theQDPAllocator = SingletonHolder<QDP::Allocator::QDPPoolAllocator,
-			    QDP::CreateUsingNew,
+			    QDP::CreateStatic,
 			    QDP::NoDestroy,
 			    QDP::SingleThreaded>;
  }
@@ -84,7 +84,7 @@ namespace QDP {
 namespace QDP {
  namespace Allocator {
  using theQDPAllocator =  SingletonHolder<QDP::Allocator::QDPDefaultAllocator,
-			    QDP::CreateUsingNew,
+			    QDP::CreateStatic,
 			    QDP::NoDestroy,
 			    QDP::SingleThreaded>;
  }

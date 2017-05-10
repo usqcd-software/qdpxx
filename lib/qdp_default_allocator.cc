@@ -2,54 +2,13 @@
  * @brief QCDOC memory allocator
  */
 
+
 #include "qdp.h"
-
-#if defined(QDP_DEBUG_MEMORY)
-#include <stack>
-#endif
-
 #include "qdp_default_allocator.h"
 
 namespace QDP {
 namespace Allocator {
  
-#if defined(QDP_DEBUG_MEMORY)
-  // Struct to hold in map
-  struct MapVal {
-    MapVal(unsigned char* u, const std::string& f, int l, size_t b) : 
-      unaligned(u), func(f), line(l), bytes(b) {}
-
-    unsigned char* unaligned;
-    std::string    func;
-    int            line;
-    size_t         bytes;
-  };
-
-  // Convenience typedefs to save typing
-
-  // The type of the map to hold the aligned unaligned values
-  typedef std::map<unsigned char*, MapVal> MapT;
-
-  // Func info
-  struct FuncInfo_t {
-    FuncInfo_t(const char* f, int l) : func(f), line(l) {}
-
-    std::string  func;
-    int          line;
-  };
-
-  // A stack to hold fun info
-  std::stack<FuncInfo_t> infostack;
-#else
-  typedef std::map<unsigned char*, unsigned char *> MapT;
-
-#endif
-
-  // Anonymous namespace
-  namespace {
-    MapT the_alignment_map;
-  }
-
   // The type returned on map insertion, allows me to check
   // the insertion was successful.
   typedef std::pair<MapT::iterator, bool> InsertRetVal;
