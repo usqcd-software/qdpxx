@@ -9,6 +9,7 @@
 #define QDP_REALITY_H
 
 #include <sstream>
+#include <cmath>
 
 namespace QDP {
 
@@ -1353,6 +1354,8 @@ tanh(const RScalar<T1>& s1)
 //-----------------------------------------------------------------------------
 // These functions always return bool
 //! isnan
+//
+
 template<class T1>
 inline bool
 isnan(const RScalar<T1>& s1)
@@ -1361,6 +1364,9 @@ isnan(const RScalar<T1>& s1)
 }
 
 //! isinf
+//
+//
+
 template<class T1>
 inline bool
 isinf(const RScalar<T1>& s1)
@@ -1368,7 +1374,7 @@ isinf(const RScalar<T1>& s1)
   return isinf(s1.elem());
 }
 
-//! isnormal
+
 template<class T1>
 inline bool
 isnormal(const RScalar<T1>& s1)
@@ -1377,6 +1383,7 @@ isnormal(const RScalar<T1>& s1)
 }
 
 //! isfinite
+
 template<class T1>
 inline bool
 isfinite(const RScalar<T1>& s1)
