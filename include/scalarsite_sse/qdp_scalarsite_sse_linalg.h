@@ -13,6 +13,16 @@
 // These SSE asm instructions are only supported under GCC/G++
 #if defined(__GNUC__)
 
+#include "sse_mult_su3_nn.h"
+#include "sse_mult_su3_an.h"
+
+#include "sse_mult_su3_na.h"
+#include "sse_mult_su3_mat_vec.h"
+#include "sse_mult_adj_su3_mat_vec.h"
+#include "sse_add_su3_vector.h"
+#include "sse_mult_su3_mat_hwvec.h"
+#include "sse_mult_adj_su3_mat_hwvec.h"
+
 namespace QDP {
 
 
@@ -35,18 +45,6 @@ typedef RComplex<REAL32>  RComplexFloat;
 typedef PScalar<PColorMatrix<RComplexFloat, 3> > TCol;
 typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 2> TVec2;
 typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> TVec4;
-
-
-
-#include "sse_mult_su3_nn.h"
-#include "sse_mult_su3_an.h"
-
-#include "sse_mult_su3_na.h"
-#include "sse_mult_su3_mat_vec.h"
-#include "sse_mult_adj_su3_mat_vec.h"
-#include "sse_add_su3_vector.h"
-#include "sse_mult_su3_mat_hwvec.h"
-#include "sse_mult_adj_su3_mat_hwvec.h"
 
 
 // Optimized version of  
