@@ -2473,6 +2473,8 @@ namespace QDP {
 	{
 		StopWatch swatch_prepare, swatch_reorder, swatch_write, swatch_datatypes;
 	  
+    std::cout << "I AM WRITING A PROPAGATOR D3" << std::endl;
+    
 		//before writing is performed, check if dataset exists:
 		if(profile) swatch_prepare.start();
 		writePrepare(name,mode);
