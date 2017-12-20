@@ -1501,6 +1501,12 @@ namespace QDP {
 	void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL32>, 3> > >(const std::string& name, const LatticeColorMatrixF3& field, const HDF5Base::writemode& mode);
 	template<>
 	void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, const LatticeColorMatrixD3& field, const HDF5Base::writemode& mode);
+  
+  //LatticePropagator
+  template<>
+  void HDF5Writer::write< PSpinMatrix< PColorMatrix< RComplex<REAL32>, 3>, 4> >(const std::string& name, const LatticePropagatorF3& field, const HDF5Base::writemode& mode)
+	template<>
+	void HDF5Writer::write< PSpinMatrix< PColorMatrix< RComplex<REAL64>, 3>, 4> >(const std::string& name, const LatticePropagatorD3& field, const HDF5Base::writemode& mode);
 
 	//multi1d<OLattice> specializations
 	template<>
