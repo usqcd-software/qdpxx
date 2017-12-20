@@ -158,7 +158,7 @@ void QDP_initialize(int *argc, char ***argv)
   if (QMP_is_initialized() == QMP_FALSE)
   {
     QMP_thread_level_t prv;
-    if (QMP_init_msg_passing(argc, argv, QMP_THREAD_SINGLE, &prv) != QMP_SUCCESS)
+    if (QMP_init_msg_passing(argc, argv, QMP_THREAD_MULTIPLE, &prv) != QMP_SUCCESS)
     {
       QDPIO::cerr << "QMP_init_msg_passing failed" << std::endl;
       QDP_abort(1);
