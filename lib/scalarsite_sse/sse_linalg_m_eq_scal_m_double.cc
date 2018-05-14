@@ -4,11 +4,11 @@
  *
  */
 
+#include <xmmintrin.h>
 #include "scalarsite_sse/sse_linalg_mm_su3_double.h"
 
 namespace QDP {
 
-#include <xmmintrin.h>
 
   /* M = a*M  a is scalar */
   void ssed_m_eq_scal_m(REAL64* m2, REAL64* a, REAL64 *m1, int n_mat)

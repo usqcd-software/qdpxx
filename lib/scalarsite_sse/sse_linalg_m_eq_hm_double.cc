@@ -4,12 +4,16 @@
  *
  */
 
+#include <xmmintrin.h>
 #include "scalarsite_sse/sse_linalg_mm_su3_double.h"
+#include "qdp_config.h"
+
+#ifdef QDP_USE_SSE3
+#include <pmmintrin.h>
+#endif
 
 namespace QDP {
 
-#include <xmmintrin.h>
-#include "qdp_config.h"
 
 #ifndef QDP_USE_SSE3
 
@@ -45,7 +49,6 @@ namespace QDP {
 #else
 #warning Using SSE3
   /* SSE 3 */
-#include <pmmintrin.h>
 
 #define CONJMUL(z,x,y)		\
   { \

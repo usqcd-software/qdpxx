@@ -4,12 +4,10 @@
  *
  */
 
+#include <xmmintrin.h>
 #include "scalarsite_sse/sse_blas_local_sumsq_double.h"
 
 namespace QDP {
-
-#include <xmmintrin.h>
-
 
 // (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (Vector) Add
 // #define DEBUG_VAXPY_DOUBLE
