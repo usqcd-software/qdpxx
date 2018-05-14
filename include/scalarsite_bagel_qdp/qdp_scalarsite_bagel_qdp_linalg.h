@@ -10,6 +10,8 @@
 #ifndef QDP_SCALARSITE_BAGEL_QDP_LINALG_H
 #define QDP_SCALARSITE_BAGEL_QDP_LINALG_H
 
+#include "bagel_qdp.h"
+
 namespace QDP {
 
 /*! @defgroup optimizations  Optimizations
@@ -20,10 +22,6 @@ namespace QDP {
  */
 
 // Use this def just to safe some typing later on in the file
-
-
-
-#include "bagel_qdp.h"
 
 #if 1
 typedef RComplex<BAGELQDPFloat>  RComplexFloat;
