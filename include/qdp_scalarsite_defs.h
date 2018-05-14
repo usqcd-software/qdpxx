@@ -7,6 +7,9 @@
 #ifndef QDP_SCALARSITE_DEFS_H
 #define QDP_SCALARSITE_DEFS_H
 
+#include <qdp_config.h>
+#include "qdp_precision.h"
+
 namespace QDP {
 
 /*! \addtogroup defs Type definitions
@@ -17,9 +20,6 @@ namespace QDP {
  *
  * @{
  */
-
-#include <qdp_config.h>
-#include "qdp_precision.h"
 
 //----------------------------------------------------------------------
 //! Gamma matrices are conveniently defined for this Ns

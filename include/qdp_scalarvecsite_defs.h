@@ -7,6 +7,9 @@
 #ifndef QDP_SCALARVECSITE_DEFS_H
 #define QDP_SCALARVECSITE_DEFS_H
 
+#include <qdp_config.h>
+#include "qdp_precision.h"
+
 namespace QDP {
 
 
@@ -18,9 +21,6 @@ namespace QDP {
  *
  * @{
  */
-
-#include <qdp_config.h>
-#include "qdp_precision.h"
 
 //----------------------------------------------------------------------
 //! Gamma matrices are conveniently defined for this Ns
