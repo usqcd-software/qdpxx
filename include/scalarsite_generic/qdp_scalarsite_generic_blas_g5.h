@@ -17,8 +17,6 @@
 #include "scalarsite_generic/generic_blas_vaxpby3_g5.h"
 #include "scalarsite_generic/generic_blas_g5.h"
 
-using namespace QDP;
-
 namespace QDP {
 
 // Types needed for the expression templates. 
@@ -26,14 +24,18 @@ namespace QDP {
 typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, Ns> TVec;
 typedef PScalar<PScalar<RScalar<REAL> > >  TScal;
 
+} // namespace QDP 
+
+// the wrappers for the functions to be threaded
+#include "qdp_scalarsite_generic_blas_g5_wrapper.h"
+
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates
 //
 // by Xu Guo, EPCC, 26 August, 2008
 ////////////////////////////////
-
-// the wrappers for the functions to be threaded
-#include "qdp_scalarsite_generic_blas_g5_wrapper.h"
 
 
 // #define DEBUG_BLAS_G6

@@ -1,24 +1,21 @@
 #ifndef QDP_GENERIC_FUSED_SPIN_PROJ_EVALUATES_H
 #define QDP_GENERIC_FUSED_SPIN_PROJ_EVALUATES_H
 
+namespace QDP {
+typedef PScalar< PColorMatrix< RComplex<REAL>, 3> > SU3Mat;
+} // namespace QDP;
+
+// ther wrappers for the functions to be threaded
+#include "qdp_generic_fused_spin_proj_evaluates_wrapper.h"
 
 /* Evaluates for things like adj(u)*spinProjectDir0Plus(y) */
-using namespace QDP;
 namespace QDP {
-
-typedef PScalar< PColorMatrix< RComplex<REAL>, 3> > SU3Mat;
-
-
 
 ////////////////////////////////
 // Threading evaluates
 //
 // by Xu Guo, EPCC, 28 August, 2008
 ////////////////////////////////
-
-// ther wrappers for the functions to be threaded
-#include "qdp_generic_fused_spin_proj_evaluates_wrapper.h"
-
 
 // HalfVec = adj(u)*SpinProjectDir0Plus(Vec);
 template<>

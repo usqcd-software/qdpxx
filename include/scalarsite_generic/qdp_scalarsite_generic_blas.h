@@ -28,14 +28,18 @@ namespace QDP {
 typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 4> TVec;
 typedef PScalar<PScalar<RScalar<REAL> > >  TScal;
 
+} // namespace QDP;
+
+// the wrappers for the functions to be threaded
+#include "qdp_scalarsite_generic_blas_wrapper.h"
+
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates
 //
 // by Xu Guo, EPCC, 12 August, 2008
 ////////////////////////////////
-
-// the wrappers for the functions to be threaded
-#include "qdp_scalarsite_generic_blas_wrapper.h"
 
 
 // #define DEBUG_BLAS

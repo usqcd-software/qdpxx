@@ -1,6 +1,8 @@
 #ifndef QDP_SCALARSITE_GENERIC_BLAS_WRAPPER_H
 #define QDP_SCALARSITE_GENERIC_BLAS_WRAPPER_H
 
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates wrappers
 //
@@ -79,7 +81,7 @@ void unordered_vaxpy3_y_evaluate_function (int lo, int hi, int myId, unordered_v
      vaxpy3(yptr, scalep, yptr, xptr, 1);
    }
   }
- 
+
 
 }
 
@@ -246,7 +248,7 @@ void ordered_vscal_evaluate_function (int lo, int hi, int myId, ordered_vscal_us
 // structure for vscal of NOT having order
 struct unordered_vscal_user_arg {
   unordered_vscal_user_arg(
-  
+
 			   const OLattice< TVec >& x_,
 			   OLattice< TVec >& d_,
 			   REAL* scalep_,
@@ -341,10 +343,10 @@ void unordered_vaxpby3_evaluate_function (int lo, int hi, int myId, unordered_va
      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
      vaxpby3(zptr, aptr, xptr, bptr, yptr, 1);
-  
+
    }
 
 }
@@ -415,18 +417,14 @@ void unordered_vaxmby3_evaluate_function (int lo, int hi, int myId, unordered_va
      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
      REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
      // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
      vaxmby3(zptr, aptr, xptr, bptr, yptr,1);
-  
+
    }
 
 }
 
-
-
-
-
-
+} // namespace QDP 
 
 #endif

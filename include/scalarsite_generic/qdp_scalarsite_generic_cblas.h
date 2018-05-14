@@ -14,14 +14,18 @@ namespace QDP {
 typedef PScalar<PScalar<RComplex<REAL> > >  CScal;
 typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 4> CTVec;
 
+} // namespace QDP;
+
+// the wrappers for the functions to be threaded
+#include "qdp_scalarsite_generic_cblas_wrapper.h"
+
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates
 //
 // by Xu Guo, EPCC, 26 August, 2008
 ////////////////////////////////
-
-// the wrappers for the functions to be threaded
-#include "qdp_scalarsite_generic_cblas_wrapper.h"
 
 // vector z *= complex a
 template<>

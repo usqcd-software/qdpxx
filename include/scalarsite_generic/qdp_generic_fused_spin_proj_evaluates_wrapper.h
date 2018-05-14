@@ -1,6 +1,8 @@
 #ifndef QDP_GENERIC_FUSED_SPIN_PROJ_EVALUATES_WRAPPER_H
 #define QDP_GENERIC_FUSED_SPIN_PROJ_EVALUATES_WRAPPER_H
 
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates wrappers
 //
@@ -33,7 +35,7 @@ void ordered_fused_spin_proj_evaluate_function (int lo, int hi, int myId, ordere
   for (int site = low; site < high; site++){
      HVec tmp;
      func( (REAL *)&(a.elem(site).elem(0).elem(0).real()),(REAL *)&(tmp.elem(0).elem(0).real()), 1);
-      
+
      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
      _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
   }
@@ -63,18 +65,17 @@ void unordered_fused_spin_proj_evaluate_function (int lo, int hi, int myId, unor
 
   for (int j = lo; j < hi; j++){
     int site = tab[j];
-      
+
     HVec tmp;
     func( (REAL *)&(a.elem(site).elem(0).elem(0).real()), (REAL *)&(tmp.elem(0).elem(0).real()), 1);
-      
-      
+
+
     _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(0), d.elem(site).elem(0));
     _inline_mult_adj_su3_mat_vec(u.elem(site).elem(), tmp.elem(1), d.elem(site).elem(1));   
   }
 
 }
 
-
-
+} // namespace QDP;
 
 #endif
