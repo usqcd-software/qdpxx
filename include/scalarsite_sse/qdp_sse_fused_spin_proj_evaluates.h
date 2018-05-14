@@ -3,11 +3,15 @@
 
 #include "sse_mult_adj_su3_mat_hwvec.h"
 
-/* Evaluates for things like adj(u)*spinProjectDir0Plus(y) */
-using namespace QDP;
 namespace QDP {
-
 typedef PScalar< PColorMatrix< RComplex<REAL32>, 3> > SU3Mat32;
+} // namespace QDP 
+
+// the wrappers for the functions to be threaded
+#include "qdp_sse_fused_spin_proj_evaluates_wrapper.h"
+
+/* Evaluates for things like adj(u)*spinProjectDir0Plus(y) */
+namespace QDP {
 
 
 ////////////////////////////////
@@ -15,9 +19,6 @@ typedef PScalar< PColorMatrix< RComplex<REAL32>, 3> > SU3Mat32;
 //
 // by Xu Guo, EPCC, 20 October, 2008
 ////////////////////////////////
-
-// the wrappers for the functions to be threaded
-#include "qdp_sse_fused_spin_proj_evaluates_wrapper.h"
 
 
 // HalfVec = adj(u)*SpinProjectDir0Plus(Vec);

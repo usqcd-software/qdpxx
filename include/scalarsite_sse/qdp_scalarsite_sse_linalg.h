@@ -13,20 +13,10 @@
 // These SSE asm instructions are only supported under GCC/G++
 #if defined(__GNUC__)
 
-namespace QDP {
-
-
 // #define QDP_SCALARSITE_DEBUG
-
 #define QDP_SCALARSITE_USE_EVALUATE
 
-
-/*! @defgroup optimizations  Optimizations
- *
- * Optimizations for basic QDP operations
- *
- * @{
- */
+namespace QDP {
 
 // Use this def just to safe some typing later on in the file
 typedef RComplex<REAL32>  RComplexFloat;
@@ -36,7 +26,7 @@ typedef PScalar<PColorMatrix<RComplexFloat, 3> > TCol;
 typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 2> TVec2;
 typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> TVec4;
 
-
+} // namespace QDP 
 
 #include "sse_mult_su3_nn.h"
 #include "sse_mult_su3_an.h"
@@ -48,6 +38,14 @@ typedef PSpinVector<PColorVector<RComplex<REAL32>, 3>, 4> TVec4;
 #include "sse_mult_su3_mat_hwvec.h"
 #include "sse_mult_adj_su3_mat_hwvec.h"
 
+namespace QDP {
+
+/*! @defgroup optimizations  Optimizations
+ *
+ * Optimizations for basic QDP operations
+ *
+ * @{
+ */
 
 // Optimized version of  
 //    PColorMatrix<RComplexFloat,3> <- PColorMatrix<RComplexFloat,3> * PColorMatrix<RComplexFloat,3>

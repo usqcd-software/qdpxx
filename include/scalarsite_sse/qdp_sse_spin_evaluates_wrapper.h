@@ -1,6 +1,8 @@
 #ifndef QDP_SSE_SPIN_EVALUATES_WRAPPER_H
 #define QDP_SSE_SPIN_EVALUATES_WRAPPER_H
 
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates wrappers
 //
@@ -65,7 +67,6 @@ void unordered_sse_spin_project_evaluate_function (int lo, int hi, int myId, uno
 
 }
 
-
-
+} // namespace QDP 
 
 #endif

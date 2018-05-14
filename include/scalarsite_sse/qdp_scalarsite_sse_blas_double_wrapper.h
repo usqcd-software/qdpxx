@@ -1,7 +1,7 @@
 #ifndef QDP_SCALARSITE_GENERIC_BLAS_DOUBLE_WRAPPER_H
 #define QDP_SCALARSITE_GENERIC_BLAS_DOUBLE_WRAPPER_H
 
-
+namespace QDP {
 
 ////////////////////////////////
 // Threading evaluates wrappers
@@ -33,7 +33,7 @@ void ordered_sse_vaxOpy4_double_evaluate_function (int lo, int hi, int myId, ord
   int n_4vec = hi - lo;
 
   int index = lo * 24;
-  
+
   InScale = &InScale[index];
   Out = &Out[index];
 
@@ -221,7 +221,7 @@ void unordered_sse_vscal4_double_evaluate_function (int lo, int hi, int myId, un
      int i=tab[j];
      REAL64 *xptr = (REAL64 *) &(x.elem(i).elem(0).elem(0).real());
      REAL64 *zptr =  &(d.elem(i).elem(0).elem(0).real());
- 
+
      vscal4(zptr, aptr, xptr, Ns);
   }
 
@@ -288,7 +288,7 @@ void ordered_sse_vaxOpbyz4_double_evaluate_function (int lo, int hi, int myId, o
   REAL64* bptr = a->bptr;
   REAL64* yptr = a->yptr;
   void (*func)(REAL64*, REAL64*, REAL64*, REAL64*, REAL64*, int) = a->func;
-  
+
   int n_4vec = hi - lo;
 
   int index = lo * 24;
@@ -339,16 +339,16 @@ void unordered_sse_vaxOpbyz4_double_evaluate_function (int lo, int hi, int myId,
 
   for(int j=lo; j < hi; j++) { 
       int i=tab[j];
-   
+
       REAL64 *xptr = (REAL64 *) &(x.elem(i).elem(0).elem(0).real());
       REAL64 *yptr = (REAL64 *) &(y.elem(i).elem(0).elem(0).real());
       REAL64* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
       func(zptr, aptr, xptr, bptr, yptr, Ns);
  }
 
 
-  
+
 }
 
 struct ordered_norm_double_user_arg {
@@ -390,6 +390,7 @@ inline void ordered_inner_product_double_func(int lo, int hi, int myId, ordered_
     func( &(a->results[2*myId]), xptr, yptr, nvec);
   }
 
+} // namespace QDP;
 
 
 #endif

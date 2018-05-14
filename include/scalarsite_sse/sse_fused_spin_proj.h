@@ -5,7 +5,6 @@
 #include "sse_mult_adj_su3_mat_hwvec.h"
 
 #include <iostream>
-using namespace std;
 
 namespace QDP {
 

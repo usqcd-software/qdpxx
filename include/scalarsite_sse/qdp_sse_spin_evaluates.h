@@ -1,7 +1,6 @@
 #ifndef QDP_SSE_SPIN_EVALUATES_H
 #define QDP_SSE_SPIN_EVALUATES_H
 
-using namespace QDP;
 namespace QDP {
 
 // Typedefs
@@ -15,15 +14,18 @@ typedef REAL32 SpinColFull[4][3][2];
 typedef REAL32 SpinColHalf[2][3][2];
 // d = SpinProjectDir0Plus(Vec);
 
+} // namespace QDP;
+
+// the wrappers for the functions to be threaded
+#include "qdp_sse_spin_evaluates_wrapper.h"
+
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates
 //
 // by Xu Guo, EPCC, 13 October, 2008
 ////////////////////////////////
-
-// the wrappers for the functions to be threaded
-#include "qdp_sse_spin_evaluates_wrapper.h"
-
 
 
 template<class A, class B>

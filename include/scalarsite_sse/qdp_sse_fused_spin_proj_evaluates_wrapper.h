@@ -1,6 +1,8 @@
 #ifndef QDP_SSE_FUSED_SPIN_PROJ_EVALUATES_WRAPPER_H
 #define QDP_SSE_FUSED_SPIN_PROJ_EVALUATES_WRAPPER_H
 
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates wrappers
 //
@@ -35,11 +37,11 @@ void ordered_sse_fused_spin_proj_evaluate_function (int lo, int hi, int myId, or
     func( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 		     (REAL32 *)&(tmp.elem(0).elem(0).real()),
 		     1);
-      
+
     su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
     half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
     half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
-      
+
     intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
   }
 
@@ -72,16 +74,16 @@ void unordered_sse_fused_spin_proj_evaluate_function (int lo, int hi, int myId, 
     func( (REAL32 *)&(a.elem(site).elem(0).elem(0).real()),
 	  (REAL32 *)&(tmp.elem(0).elem(0).real()),
 	  1);
-      
+
     su3_matrixf* um = (su3_matrixf *)&(u.elem(site).elem().elem(0,0).real());
     half_wilson_vectorf *tmph = (half_wilson_vectorf *)&( tmp.elem(0).elem(0).real());
     half_wilson_vectorf *dh = (half_wilson_vectorf *)&( d.elem(site).elem(0).elem(0).real());
-      
+
     intrin_sse_mult_adj_su3_mat_hwvec(um, tmph, dh);
   }
 
 }
 
-
+} // namespace QDP 
 
 #endif
