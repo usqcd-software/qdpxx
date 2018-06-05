@@ -11,6 +11,15 @@
 
 #warning "Using PABASM Scalarsite"
 
+#include "scalarsite_generic/generic_mult_nn.h"
+#include "scalarsite_generic/generic_mult_na.h"
+#include "scalarsite_generic/generic_mult_an.h"
+#include "scalarsite_generic/generic_mult_aa.h"
+#include "scalarsite_generic/generic_mat_vec.h"
+#include "scalarsite_generic/generic_adj_mat_vec.h"
+#include "scalarsite_generic/generic_addvec.h"
+
+
 namespace QDP {
 
 /*! @defgroup optimizations  Optimizations
@@ -22,16 +31,6 @@ namespace QDP {
 
 // Use this def just to safe some typing later on in the file
 #define RComplexFloat  RComplex<float>
-
-
-#include "scalarsite_generic/generic_mult_nn.h"
-#include "scalarsite_generic/generic_mult_na.h"
-#include "scalarsite_generic/generic_mult_an.h"
-#include "scalarsite_generic/generic_mult_aa.h"
-#include "scalarsite_generic/generic_mat_vec.h"
-#include "scalarsite_generic/generic_adj_mat_vec.h"
-#include "scalarsite_generic/generic_addvec.h"
-
 
 // #define QDP_SCALARSITE_DEBUG
 

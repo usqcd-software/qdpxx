@@ -1,7 +1,6 @@
 #ifndef QDP_GENERIC_SPIN_PROJECT_EVALUTATES_H
 #define QDP_GENERIC_SPIN_PROJECT_EVALUTATES_H
 
-using namespace QDP;
 namespace QDP {
 
 // Typedefs
@@ -15,14 +14,18 @@ typedef REAL SpinColFull[4][3][2];
 typedef REAL SpinColHalf[2][3][2];
 // d = SpinProjectDir0Plus(Vec);
 
+} // namespace QDP;
+
+// the wrappers for the functions to be threaded
+#include "qdp_generic_spin_project_evaluates_wrapper.h"
+
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates
 //
 // by Xu Guo, EPCC, 28 August, 2008
 ////////////////////////////////
-
-// the wrappers for the functions to be threaded
-#include "qdp_generic_spin_project_evaluates_wrapper.h"
 
 
 template<class A, class B>

@@ -7,6 +7,10 @@
 /* SSE 2 Headers */
 #include<xmmintrin.h>
 
+#ifdef QDP_USE_SSE3
+#include <pmmintrin.h>
+#endif
+
 /* A useful union type allows me to set values into the 
    vector  from code */
 
@@ -122,7 +126,6 @@
 #else
 #warning "Using SSE3"
 /* SSE 3 */
-#include <pmmintrin.h>
 
 /* z = x*y    z, x, y are SSE registers containing complex numbers
               ordered with the real part in the low half, imag part 

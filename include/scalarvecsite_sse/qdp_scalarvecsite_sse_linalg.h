@@ -15,11 +15,13 @@
 
 #include "qdp_sse_intrin.h"
 
+#define QDP_SCALARVECSITE_USE_EVALUATE
+#include "scalarvecsite_sse/ssevec_mult_nn.h"
+
 namespace QDP {
 
 // #define QDP_SCALARVECSITE_DEBUG
 
-#define QDP_SCALARVECSITE_USE_EVALUATE
 
 
 
@@ -34,8 +36,6 @@ namespace QDP {
 typedef IScalar<REAL32>                IScalarFloat;
 typedef ILattice<REAL32,4>             ILatticeFloat;
 typedef RComplex<ILattice<REAL32,4> >  RComplexFloat; 
-
-#include "scalarvecsite_sse/ssevec_mult_nn.h"
 
 //--------------------------------------------------------------------------------------
 // Optimized version of  

@@ -1,6 +1,7 @@
 #ifndef QDP_GENERIC_SPIN_PROJECT_EVALUATES_WRAPPER_H
 #define QDP_GENERIC_SPIN_PROJECT_EVALUATES_WRAPPER_H
 
+namespace QDP {
 
 ////////////////////////////////
 // Threading evaluates wrappers
@@ -64,9 +65,6 @@ void unordered_spin_project_evaluate_function (int lo, int hi, int myId, unorder
 
 }
 
-
-
-
-
+} // namespace QDP 
 
 #endif

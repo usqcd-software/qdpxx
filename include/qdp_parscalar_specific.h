@@ -323,10 +323,12 @@ void evaluate_userfunc(int lo, int hi, int myId, user_arg<T,T1,Op,RHS> *a)
 	 }
 }
 
+} // namespace QDP
+
 //! include the header file for dispatch
 #include "qdp_dispatch.h"
 
-
+namespace QDP {
 
 //-----------------------------------------------------------------------------
 //! OLattice Op Scalar(Expression(source)) under an Subset

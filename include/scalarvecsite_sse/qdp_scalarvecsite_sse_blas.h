@@ -9,12 +9,12 @@
 #ifndef QDP_SCALARVECSITE_SSE_BLAS_H
 #define QDP_SCALARVECSITE_SSE_BLAS_H
 
+#define QDP_SCALARVECSITE_USE_EVALUATE
+#include "qdp_sse_intrin.h"
+
 namespace QDP {
 
 // #define QDP_SCALARVECSITE_BLAS_DEBUG
-
-#define QDP_SCALARVECSITE_USE_EVALUATE
-#include "qdp_sse_intrin.h"
 
 typedef PScalar<PColorMatrix<RComplex<ILattice<REAL32,4> >, 3> >       TCMat;
 typedef PScalar<PColorVector<RComplex<ILattice<REAL32,4> >, 3> >       TCVec;

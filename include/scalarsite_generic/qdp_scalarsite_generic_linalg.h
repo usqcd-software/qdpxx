@@ -10,6 +10,14 @@
 #ifndef QDP_SCALARSITE_GENERIC_LINALG_H
 #define QDP_SCALARSITE_GENERIC_LINALG_H
 
+#include "scalarsite_generic/generic_mult_nn.h"
+#include "scalarsite_generic/generic_mult_na.h"
+#include "scalarsite_generic/generic_mult_an.h"
+#include "scalarsite_generic/generic_mult_aa.h"
+#include "scalarsite_generic/generic_mat_vec.h"
+// #include "scalarsite_generic/generic_adj_mat_vec.h" -- No longer used."
+#include "scalarsite_generic/generic_addvec.h"
+
 namespace QDP {
 
 /*! @defgroup optimizations  Optimizations
@@ -21,16 +29,6 @@ namespace QDP {
 
 // Use this def just to safe some typing later on in the file
 typedef RComplex<REAL>  RComplexFloat;
-
-
-#include "scalarsite_generic/generic_mult_nn.h"
-#include "scalarsite_generic/generic_mult_na.h"
-#include "scalarsite_generic/generic_mult_an.h"
-#include "scalarsite_generic/generic_mult_aa.h"
-#include "scalarsite_generic/generic_mat_vec.h"
-// #include "scalarsite_generic/generic_adj_mat_vec.h" -- No longer used."
-#include "scalarsite_generic/generic_addvec.h"
-
 
 // #define QDP_SCALARSITE_DEBUG
 
@@ -452,6 +450,7 @@ operator+(const PScalar<PColorVector<RComplexFloat,3> >& l,
   return d;
 }
 
+} // namespace QDP;
 
 #if 1
 
@@ -463,6 +462,8 @@ operator+(const PScalar<PColorVector<RComplexFloat,3> >& l,
 
 // the wrappers for the function to be threaded
 #include "qdp_scalarsite_generic_linalg_wrapper.h"
+
+namespace QDP {
 
 // Specialization to optimize the case   
 //    LatticeHalfFermion = LatticeColorMatrix * LatticeHalfFermion
@@ -493,13 +494,13 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
   const H& r = static_cast<const H&>(rhs.expression().right());
 
   if( s.hasOrderedRep() ) { 
-    
+
     int totalSize = s.end() - s.start() + 1;
-    
+
     int base = s.start();
-    
+
     ordered_linalg_user_arg a(d, l, r, base);
-    
+
     dispatch_to_threads(totalSize, a, ordered_linalg_evaluate_userfunc);
 
     ////////////////////
@@ -507,7 +508,7 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
     ////////////////////
     // Ordered Way - loop through sites and save a table lookup
     //for(int i=s.start(); i <= s.end(); i++) { 
-      
+
     //_inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
     //			       r.elem(i).elem(0),
     //			       d.elem(i).elem(0));
@@ -526,14 +527,14 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
     unordered_linalg_user_arg arg(d, l, r, tab);
 
     dispatch_to_threads(totalSize, arg, unordered_linalg_evaluate_userfunc);
-    
+
     ////////////////////
     // Original code
     ////////////////////
     // Unordered Way - do a site table lookup
     //for(int j=0; j < s.numSiteTable(); j++) { 
     //int i = tab[j];
-      
+
     //_inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
     //			       r.elem(i).elem(0),
     //			       d.elem(i).elem(0));
@@ -544,6 +545,8 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
   }
 }
 
+} // namespace QDP;
+
 #endif
 
 /*! @} */   // end of group optimizations
@@ -551,7 +554,5 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
 #if defined(QDP_SCALARSITE_DEBUG)
 #undef QDP_SCALARSITE_DEBUG
 #endif
-
-} // namespace QDP;
 
 #endif

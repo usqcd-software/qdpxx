@@ -4,11 +4,11 @@
  *
  */
 
+#include <xmmintrin.h>
 #include "scalarsite_sse/sse_linalg_mm_su3_double.h"
 
 namespace QDP {
 
-#include <xmmintrin.h>
 
   typedef union { 
     double c[2];

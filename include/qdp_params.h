@@ -7,8 +7,9 @@
 #ifndef QDP_PARAMS_H
 #define QDP_PARAMS_H
 
-namespace QDP {
+#include <qdp_config.h>
 
+namespace QDP {
 
 /*! @defgroup params Fundamental parameters for QDP
  *
@@ -18,8 +19,6 @@ namespace QDP {
  *
  * @{
  */
-
-#include <qdp_config.h>
 
 const int Nd = QDP_ND;
 const int Nc = QDP_NC;

@@ -12,8 +12,6 @@
 
 #include "scalarsite_sse/qdp_scalarsite_sse_blas_g5_includes.h"
 
-using namespace QDP;
-
 namespace QDP {
 
 // Types needed for the expression templates. 

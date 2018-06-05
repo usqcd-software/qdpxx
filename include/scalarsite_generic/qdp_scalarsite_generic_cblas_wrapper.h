@@ -1,6 +1,8 @@
 #ifndef QDP_SCALARSITE_GENERIC_CBLAS_WRAPPER_H
 #define QDP_SCALARSITE_GENERIC_CBLAS_WRAPPER_H
 
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates wrappers
 //
@@ -120,12 +122,12 @@ void unordered_vcaxpy3_y_evaluate_function (int lo, int hi, int myId, unordered_
 
   for(int j=lo; j < hi; j++) { 
      int i=tab[j];
-   
+
      REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
      REAL* yptr = &(d.elem(i).elem(0).elem(0).real());
 
      vcaxpy3(yptr, scalep, xptr, yptr, 1);
-    
+
    }
 
 }
@@ -157,7 +159,7 @@ void unordered_vcaxpy3_z_evaluate_function (int lo, int hi, int myId, unordered_
 
   for(int j=lo; j < hi; j++) { 
      int i=tab[j];
-   
+
      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
      REAL *zptr =          &(d.elem(i).elem(0).elem(0).real());
@@ -228,7 +230,7 @@ void unordered_vcaxmy3_evaluate_function (int lo, int hi, int myId, unordered_vc
 
   for(int j=lo; j < hi; j++) { 
      int i=tab[j];
-   
+
      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
      REAL *zptr =          &(d.elem(i).elem(0).elem(0).real());
@@ -302,7 +304,7 @@ void unordered_vcaxpby3_evaluate_function (int lo, int hi, int myId, unordered_v
 
   for(int j=lo; j < hi; j++) { 
      int i=tab[j];
-   
+
      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
      REAL *zptr =          &(d.elem(i).elem(0).elem(0).real());
@@ -376,7 +378,7 @@ void unordered_vcaxmby3_evaluate_function (int lo, int hi, int myId, unordered_v
 
   for(int j=lo; j < hi; j++) { 
      int i=tab[j];
-   
+
      REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
      REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
      REAL *zptr =          &(d.elem(i).elem(0).elem(0).real());
@@ -387,6 +389,7 @@ void unordered_vcaxmby3_evaluate_function (int lo, int hi, int myId, unordered_v
 
 }
 
+} // namespace QDP 
 
 
 #endif

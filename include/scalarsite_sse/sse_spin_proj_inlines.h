@@ -2,13 +2,13 @@
 #define SSE_SPIN_PROJ_INLINES_H
 
 #include "qdp_sse_intrin.h"
+#include <stdio.h>
 
 /* File: generic_spin_proj_inlines.h
    Purpose: Supply inline functions to do spin projection
    Author: $Id: sse_spin_proj_inlines.h,v 1.6 2009-02-11 20:50:45 bjoo Exp $
 */
 namespace QDP {
-#include <stdio.h>
 
 /** \brief Spin Project (1/2)(1+\gamma_0)
  *

@@ -1,6 +1,8 @@
 #ifndef QDP_SCALARSITE_GENERIC_BLAS_G5_WRAPPER_H
 #define QDP_SCALARSITE_GENERIC_BLAS_G5_WRAPPER_H
 
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates wrappers
 //
@@ -70,7 +72,7 @@ void unordered_vaypx3_g5_y_evaluate_function (int lo, int hi, int myId, unordere
   int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL*, REAL*, REAL*, REAL*, int) = a->func;
-  
+
   for(int j=lo; j < hi; j++) { 
     int i=tab[j];
     REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
@@ -78,7 +80,7 @@ void unordered_vaypx3_g5_y_evaluate_function (int lo, int hi, int myId, unordere
     func(yptr, aptr, yptr, xptr, Ns);
   }
 }
- 
+
 
 // structure for vaypx3_g5 of NOT having order (with z )
 struct unordered_vaypx3_g5_z_user_arg{
@@ -90,7 +92,7 @@ struct unordered_vaypx3_g5_z_user_arg{
 				 int Ns_,
 				 const int* tab_,
 				 void (*func_)(REAL*, REAL*, REAL*, REAL*, int)) : x(x_),y(y_),d(d_),aptr(aptr_), Ns(Ns_), tab(tab_),func(func_) {}
-				 
+
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -111,14 +113,14 @@ void unordered_vaypx3_g5_z_evaluate_function (int lo, int hi, int myId, unordere
   int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL*, REAL*, REAL*, REAL*, int) = a->func;
-  
+
   for(int j=lo; j < hi; j++) { 
     int i=tab[j];
 
     REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
     REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
     // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
     func(zptr, aptr, xptr, yptr, Ns);
   }
@@ -181,7 +183,7 @@ void unordered_vadd3_g5_evaluate_function (int lo, int hi, int myId, unordered_v
   int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL*, REAL*, REAL*, int) = a->func;
-  
+
   for(int j=lo; j < hi; j++) { 
     int i=tab[j];
     REAL* xptr = (REAL *)&(x.elem(i).elem(0).elem(0).real());
@@ -236,7 +238,7 @@ struct unordered_vaxpy3_g5_user_arg{
 			       int Ns_,
 			       const int* tab_,
 			       void (*func_)(REAL*, REAL*, REAL*, REAL*, int)) : x(x_), y(y_),d(d_),aptr(aptr_),Ns(Ns_), tab(tab_), func(func_) {}
-  
+
   const OLattice< TVec >& x;
   const OLattice< TVec >& y;
   OLattice< TVec >& d;
@@ -257,13 +259,13 @@ void unordered_vaxpy3_g5_evaluate_function (int lo, int hi, int myId, unordered_
   int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL*, REAL*, REAL*, REAL*, int) = a->func;
-  
+
   for(int j=lo; j < hi; j++) { 
     int i=tab[j];
     REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
     REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
     func(zptr, aptr, xptr, yptr, Ns);
   }
 }
@@ -297,7 +299,7 @@ void ordered_vscal_g5_evaluate_function (int lo, int hi, int myId, ordered_vscal
   int index = lo * 24;
   Out = &Out[index];
   In = &In[index];
- 
+
   func(Out, scalep, In, n_4vec);
 
 }
@@ -330,12 +332,12 @@ void unordered_vscal_g5_evaluate_function (int lo, int hi, int myId, unordered_v
   int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL*, REAL*, REAL*, int) = a->func;
-  
+
   for(int j=lo; j < hi; j++) { 
     int i=tab[j];
     REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
     func(zptr, aptr, xptr, Ns);
   }
 }
@@ -414,13 +416,13 @@ void unordered_vaxpby3_g5_evaluate_function (int lo, int hi, int myId, unordered
   int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL*, REAL*, REAL*, REAL*, REAL*, int) = a->func;
-  
+
   for(int j=lo; j < hi; j++) { 
     int i=tab[j];
     REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
     REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
     func(zptr, aptr, xptr, bptr, yptr, Ns);
   }
 }
@@ -453,7 +455,7 @@ void ordered_scal_g5_evaluate_function (int lo, int hi, int myId, ordered_scal_g
   int index = lo * 24;
   Out = &Out[index];
   In = &In[index];
- 
+
   scal_g5(Out, scalep, In, n_4vec);
 
 }
@@ -482,12 +484,12 @@ void unordered_scal_g5_evaluate_function (int lo, int hi, int myId, unordered_sc
   REAL* aptr = a->aptr;
   int Ns = a->Ns;
   const int* tab = a->tab;
- 
+
   for(int j=lo; j < hi; j++) { 
     int i=tab[j];
     REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
     scal_g5(zptr, aptr, xptr, Ns);
   }
 }
@@ -562,13 +564,13 @@ void unordered_xOpayz_g5_evaluate_function (int lo, int hi, int myId, unordered_
   int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL*, REAL*, REAL*, REAL*, int) = a->func;
-  
+
   for(int j=lo; j < hi; j++) { 
     int i=tab[j];
     REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
     REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
     func(zptr, aptr, xptr, yptr, Ns);
   }
 }
@@ -645,13 +647,13 @@ void unordered_axOpbyz_g5_evaluate_function (int lo, int hi, int myId, unordered
   int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL*, REAL*, REAL*, REAL*, REAL*, int) = a->func;
-  
+
   for(int j=lo; j < hi; j++) { 
     int i=tab[j];
     REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
     REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
     func(zptr, aptr, xptr, bptr, yptr, Ns);
   }
 }
@@ -724,13 +726,13 @@ void unordered_xOpayz_ig5_y_evaluate_function (int lo, int hi, int myId, unorder
   int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL*, REAL*, REAL*, REAL*, int) = a->func;
-  
+
   for(int j=lo; j < hi; j++) { 
     int i=tab[j];
     REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
     REAL *yptr = (REAL *) &(y.elem(i).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
     func(zptr, aptr, xptr, yptr, Ns);
   }
 }
@@ -765,19 +767,16 @@ void unordered_xOpayz_ig5_z_evaluate_function (int lo, int hi, int myId, unorder
   int Ns = a->Ns;
   const int* tab = a->tab;
   void (*func)(REAL*, REAL*, REAL*, REAL*, int) = a->func;
-  
+
   for(int j=lo; j < hi; j++) { 
     int i=tab[j];
     REAL *xptr = (REAL *) &(x.elem(i).elem(0).elem(0).real());
     REAL* zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
     func(zptr, aptr, zptr, xptr, Ns);
   }
 }
 
-
-
-
-
+} // namespace QDP;
 
 #endif

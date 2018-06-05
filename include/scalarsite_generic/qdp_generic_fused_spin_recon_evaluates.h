@@ -1,17 +1,16 @@
 #ifndef QDP_GENERIC_FUSED_SPIN_RECON_EVALUATES_H
 #define QDP_GENERIC_FUSED_SPIN_RECON_EVALUATES_H
 
-namespace QDP {
+// the wrappers for the functions to be threaded
+#include "qdp_generic_fused_spin_recon_evaluates_wrapper.h"
 
+namespace QDP {
 
 ////////////////////////////////
 // Threading evaluates
 //
 // by Xu Guo, EPCC, 28 August, 2008
 ////////////////////////////////
-
-// the wrappers for the functions to be threaded
-#include "qdp_generic_fused_spin_recon_evaluates_wrapper.h"
 
 
 // Vec = SpinReconstructDir0Plus( u * psi);
@@ -1209,9 +1208,5 @@ void evaluate(OLattice< FVec >& d,
 
 
 } // namespace QDP;
-
-
-
-
 
 #endif

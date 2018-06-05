@@ -1,6 +1,8 @@
 #ifndef QDP_SCALARSITE_GENERIC_LINALG_WRAPPER_H
 #define QDP_SCALARSITE_GENERIC_LINALG_WRAPPER_H
 
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates wrappers
 //
@@ -24,7 +26,7 @@ struct ordered_linalg_user_arg{
 			  const C& l_,
 			  const H& r_,
 			  int base_) : d(d_), l(l_),r(r_), base(base_) {}
-			  
+
 };
 
 //! user function for the evaluate function in the ordered situation
@@ -43,7 +45,7 @@ void ordered_linalg_evaluate_userfunc(int lo, int hi, int myId, ordered_linalg_u
 
    // Ordered Way - loop through sites and save a table lookup
    for(int i=low; i < high; i++) { 
-      
+
      _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
 				      r.elem(i).elem(0),
 				      d.elem(i).elem(0));
@@ -51,7 +53,7 @@ void ordered_linalg_evaluate_userfunc(int lo, int hi, int myId, ordered_linalg_u
 				      r.elem(i).elem(1),
 				      d.elem(i).elem(1));
    }
-  
+
 }
 
 //! user argument for the evaluate function in the unordered situation
@@ -86,7 +88,7 @@ void unordered_linalg_evaluate_userfunc(int lo, int hi, int myId,  unordered_lin
    // Unordered Way - do a site table lookup
    for(int j=lo; j < hi; j++) { 
      int i = tab[j];
-      
+
      _inline_generic_mult_su3_mat_vec(l.elem(i).elem(),
 				      r.elem(i).elem(0),
 				      d.elem(i).elem(0));
@@ -95,6 +97,8 @@ void unordered_linalg_evaluate_userfunc(int lo, int hi, int myId,  unordered_lin
 				      d.elem(i).elem(1));
    } 
 }
+
+} // namespace QDP;
 
 
 #endif

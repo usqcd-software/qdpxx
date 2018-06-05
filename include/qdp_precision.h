@@ -11,6 +11,8 @@
 // Fix Definitions
 #include <qdp_config.h>
 
+namespace QDP {
+
 // Fix default precision
 #if ! defined(BASE_PRECISION)
 #define BASE_PRECISION 32
@@ -34,6 +36,8 @@ typedef REAL64    DOUBLE;
 // Use double precision for base precision
 typedef REAL64    REAL;
 typedef REAL64    DOUBLE;
+
+} // namespace QDP 
 
 #define INNER_LOG 1
 

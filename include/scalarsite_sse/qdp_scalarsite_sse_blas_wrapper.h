@@ -1,6 +1,8 @@
 #ifndef QDP_SCALARSITE_SSE_BLAS_WRAPPER_H
 #define QDP_SCALARSITE_SSE_BLAS_WRAPPER_H
 
+namespace QDP {
+
 ////////////////////////////////
 // Threading evaluates wrappers
 //
@@ -86,7 +88,7 @@ void unordered_sse_vaxOpy3_y_evaluate_function (int lo, int hi, int myId, unorde
      func(yptr, scalep, yptr, xptr, 1);
    }
   }
- 
+
 
 }
 
@@ -230,7 +232,7 @@ void unordered_vOp_z_evaluate_function (int lo, int hi, int myId, unordered_sse_
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
       REAL32* zptr =  &(d.elem(i).elem(0).elem(0).real());
-            
+
       // Get the no of 3vecs. s.start() and s.end() are inclusive so add +1
       func(zptr, xptr, yptr, 1);
 
@@ -374,9 +376,9 @@ void unordered_sse_vaxOpby3_evaluate_function (int lo, int hi, int myId, unorder
       REAL32 *xptr = (REAL32 *) &(x.elem(i).elem(0).elem(0).real());
       REAL32 *yptr = (REAL32 *) &(y.elem(i).elem(0).elem(0).real());
       REAL32 * zptr =  &(d.elem(i).elem(0).elem(0).real());
-      
+
       func(zptr, aptr, xptr, bptr, yptr, 1);
-    
+
   }
 
 }
@@ -397,5 +399,7 @@ inline void ordered_norm_single_func(int lo, int hi, int myId, ordered_sse_norm_
     void (*func)(REAL64*, REAL32*, int) = a->func;
     func( &(a->results[myId]), vptr, nvec);
   }
+
+} // namespace QDP;
 
 #endif
