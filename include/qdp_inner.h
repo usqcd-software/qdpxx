@@ -833,11 +833,6 @@ struct UnaryReturn<IScalar<T>, FnPeekSite> {
   typedef IScalar<typename UnaryReturn<T, FnPeekSite>::Type_t>  Type_t;
 };
 
-template<class T>
-struct UnaryReturn<IScalar<T>, FnSumMulti> {
-  typedef IScalar<typename UnaryReturn<T, FnSumMulti>::Type_t>  Type_t;
-};
-
 
 // Gamma algebra
 template<int N, int m, class T2, class OpGammaConstMultiply>
@@ -1759,6 +1754,12 @@ globalMin(const IScalar<T>& s1)
 }
 
 
+// sumMulti
+template<class T>
+struct UnaryReturn<IScalar<T>, FnSumMulti> {
+  typedef IScalar<typename UnaryReturn<T, FnSumMulti>::Type_t>  Type_t;
+};
+
 // InnerProduct (norm-seq) global sum = sum(tr(adj(s1)*s1))
 template<class T>
 struct UnaryReturn<IScalar<T>, FnNorm2> {
@@ -1796,6 +1797,21 @@ localInnerProduct(const IScalar<T1>& s1, const IScalar<T2>& s2)
 {
   return localInnerProduct(s1.elem(), s2.elem());
 }
+
+
+//! IScalar = localColorInnerProduct(adj(IScalar)*IScalar)
+template<class T1, class T2>
+struct BinaryReturn<IScalar<T1>, IScalar<T2>, FnLocalColorInnerProduct> {
+  typedef IScalar<typename BinaryReturn<T1, T2, FnLocalColorInnerProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<IScalar<T1>, IScalar<T2>, FnLocalColorInnerProduct>::Type_t
+localColorInnerProduct(const IScalar<T1>& s1, const IScalar<T2>& s2)
+{
+  return localColorInnerProduct(s1.elem(), s2.elem());
+}
+
 
 
 //! IScalar = where(IScalar, IScalar, IScalar)

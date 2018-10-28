@@ -1614,6 +1614,11 @@ globalMin(const RScalar<T>& s1)
 
 
 //------------------------------------------
+template<class T>
+struct UnaryReturn<RScalar<T>, FnSumMulti > {
+  typedef RScalar<typename UnaryReturn<T, FnSumMulti>::Type_t>  Type_t;
+};
+
 // InnerProduct (norm-seq) global sum = sum(tr(adj(s1)*s1))
 template<class T>
 struct UnaryReturn<RScalar<T>, FnNorm2 > {
@@ -1670,6 +1675,20 @@ inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalInnerProductReal>:
 localInnerProductReal(const RScalar<T1>& s1, const RScalar<T2>& s2)
 {
   return localInnerProduct(s1.elem(), s2.elem());
+}
+
+
+//! RScalar<T> = localInnerProduct(adj(RScalar<T1>)*RScalar<T2>)
+template<class T1, class T2>
+struct BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalColorInnerProduct > {
+  typedef RScalar<typename BinaryReturn<T1, T2, FnLocalColorInnerProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<RScalar<T1>, RScalar<T2>, FnLocalColorInnerProduct>::Type_t
+localColorInnerProduct(const RScalar<T1>& s1, const RScalar<T2>& s2)
+{
+  return localColorInnerProduct(s1.elem(), s2.elem());
 }
 
 
@@ -2344,6 +2363,12 @@ sum(const RComplex<T>& s1)
 #endif
 
 
+// Sum
+template<class T>
+struct UnaryReturn<RComplex<T>, FnSumMulti > {
+  typedef RComplex<typename UnaryReturn<T, FnSumMulti>::Type_t>  Type_t;
+};
+
 // InnerProduct (norm-seq) global sum = sum(tr(adj(s1)*s1))
 template<class T>
 struct UnaryReturn<RComplex<T>, FnNorm2 > {
@@ -2404,6 +2429,24 @@ localInnerProductReal(const RComplex<T1>& l, const RComplex<T2>& r)
 {
   return localInnerProduct(l.real(),r.real()) + localInnerProduct(l.imag(),r.imag());
 }
+
+
+//! RComplex<T> = localColorInnerProduct(adj(RComplex<T1>)*RComplex<T2>)
+template<class T1, class T2>
+struct BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalColorInnerProduct > {
+  typedef RComplex<typename BinaryReturn<T1, T2, FnLocalColorInnerProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalColorInnerProduct>::Type_t
+localColorInnerProduct(const RComplex<T1>& l, const RComplex<T2>& r)
+{
+  typedef typename BinaryReturn<RComplex<T1>, RComplex<T2>, FnLocalColorInnerProduct>::Type_t  Ret_t;
+
+  return Ret_t(localColorInnerProduct(l.real(),r.real()) + localColorInnerProduct(l.imag(),r.imag()),
+	       localColorInnerProduct(l.real(),r.imag()) - localColorInnerProduct(l.imag(),r.real()));
+}
+
 
 
 //! RComplex<T> = where(RScalar, RComplex, RComplex)

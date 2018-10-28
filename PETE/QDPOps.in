@@ -374,6 +374,16 @@ binaryOps
   @ingroup group1
   @relates QDPType */"
 -----
+  TAG = "FnLocalColorInnerProduct"
+  FUNCTION = "localColorInnerProduct"
+  EXPR = "return (localColorInnerProduct(a,b));"
+  COMMENTA = "//! InnerProduct on only color fiber indices"
+  COMMENTB = "/*! L2 norm only color fiber indices
+  @sa adj(), trace()
+  @return (traceColor(adj(l)*r)
+  @ingroup group1
+  @relates QDPType */"
+-----
   TAG = "FnQuarkContract13"
   FUNCTION = "quarkContract13"
   EXPR = "return (quarkContract13(a,b));"
