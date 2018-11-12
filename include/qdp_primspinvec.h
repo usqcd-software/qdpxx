@@ -198,7 +198,6 @@ XMLWriter& operator<<(XMLWriter& xml, const PSpinVector<T,N>& d)
 
 
 // Primitive Vectors
-
 template<class T1, int N>
 inline typename UnaryReturn<PSpinVector<T1,N>, OpUnaryPlus>::Type_t
 operator+(const PSpinVector<T1,N>& l)
@@ -903,6 +902,11 @@ struct BinaryReturn<PSpinVector<T1,N>, PScalar<T2>, OpDivideAssign > {
 
 
 // SpinVector
+template<class T, int N>
+struct UnaryReturn<PSpinVector<T,N>, FnSumMulti > {
+  typedef PSpinVector<typename UnaryReturn<T, FnSumMulti>::Type_t, N>  Type_t;
+};
+
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnNorm2 > {
   typedef PScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;

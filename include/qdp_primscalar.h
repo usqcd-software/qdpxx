@@ -1415,6 +1415,12 @@ sum(const PScalar<T>& s1)
 #endif
 
 
+// ! PScalar
+template<class T>
+struct UnaryReturn<PScalar<T>, FnSumMulti > {
+  typedef PScalar<typename UnaryReturn<T, FnSumMulti>::Type_t>  Type_t;
+};
+
 // InnerProduct (norm-seq) global sum = sum(tr(adj(s1)*s1))
 template<class T>
 struct UnaryReturn<PScalar<T>, FnNorm2 > {
@@ -1496,6 +1502,20 @@ inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnLocalInnerProductReal>:
 localInnerProductReal(const PScalar<T1>& s1, const PScalar<T2>& s2)
 {
   return localInnerProductReal(s1.elem(), s2.elem());
+}
+
+
+//! PScalar<T> = localColorInnerProduct(adj(PScalar<T1>)*PScalar<T2>)
+template<class T1, class T2>
+struct BinaryReturn<PScalar<T1>, PScalar<T2>, FnLocalColorInnerProduct > {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalColorInnerProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+inline typename BinaryReturn<PScalar<T1>, PScalar<T2>, FnLocalColorInnerProduct>::Type_t
+localColorInnerProduct(const PScalar<T1>& s1, const PScalar<T2>& s2)
+{
+  return localColorInnerProduct(s1.elem(), s2.elem());
 }
 
 

@@ -188,6 +188,11 @@ struct UnaryReturn<PColorMatrix<T,N>, FnImagTrace > {
 };
 
 template<class T, int N>
+struct UnaryReturn<PColorMatrix<T,N>, FnSumMulti > {
+  typedef PColorMatrix<typename UnaryReturn<T, FnSumMulti>::Type_t, N>  Type_t;
+};
+
+template<class T, int N>
 struct UnaryReturn<PColorMatrix<T,N>, FnNorm2 > {
   typedef PScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
 };

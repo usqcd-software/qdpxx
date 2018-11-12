@@ -1,4 +1,5 @@
 // -*- C++ -*-
+// $Id: Header.h,v 1.3 2002-10-14 02:06:56 edwards Exp $
 
 /*! @file
  * @brief Bulk of QDP operators produced by PETE
@@ -458,6 +459,17 @@ struct FnLocalInnerProductReal
   operator()(const T1 &a, const T2 &b) const
   {
     return (localInnerProductReal(a,b));
+  }
+};
+
+struct FnLocalColorInnerProduct
+{
+  PETE_EMPTY_CONSTRUCTORS(FnLocalColorInnerProduct)
+  template<class T1, class T2>
+  inline typename BinaryReturn<T1, T2, FnLocalColorInnerProduct >::Type_t
+  operator()(const T1 &a, const T2 &b) const
+  {
+    return (localColorInnerProduct(a,b));
   }
 };
 
@@ -1635,6 +1647,28 @@ localInnerProductReal(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
     CreateLeaf<QDPType<T2,C2> >::make(r)));
 }
 
+//! InnerProduct on only color fiber indices
+/*! L2 norm only color fiber indices
+  @sa adj(), trace()
+  @return (traceColor(adj(l)*r)
+  @ingroup group1
+  @relates QDPType */
+template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<BinaryNode<FnLocalColorInnerProduct,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t>,
+  typename BinaryReturn<C1,C2,FnLocalColorInnerProduct>::Type_t >::Expression_t
+localColorInnerProduct(const QDPType<T1,C1> & l,const QDPType<T2,C2> & r)
+{
+  typedef BinaryNode<FnLocalColorInnerProduct,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t> Tree_t;
+  typedef typename BinaryReturn<C1,C2,FnLocalColorInnerProduct>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(l),
+    CreateLeaf<QDPType<T2,C2> >::make(r)));
+}
+
 //! Contraction for quark propagators
 /*! 
    epsilon contract 2 quark propagators and return a quark propagator.
@@ -2402,6 +2436,22 @@ localInnerProductReal(const QDPType<T1,C1> & l,const QDPExpr<T2,C2> & r)
 }
 
 template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<BinaryNode<FnLocalColorInnerProduct,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t>,
+  typename BinaryReturn<C1,C2,FnLocalColorInnerProduct>::Type_t >::Expression_t
+localColorInnerProduct(const QDPType<T1,C1> & l,const QDPExpr<T2,C2> & r)
+{
+  typedef BinaryNode<FnLocalColorInnerProduct,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t> Tree_t;
+  typedef typename BinaryReturn<C1,C2,FnLocalColorInnerProduct>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(l),
+    CreateLeaf<QDPExpr<T2,C2> >::make(r)));
+}
+
+template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<FnQuarkContract13,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
   typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t>,
@@ -2940,6 +2990,22 @@ localInnerProductReal(const QDPExpr<T1,C1> & l,const QDPType<T2,C2> & r)
     typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
     typename CreateLeaf<QDPType<T2,C2> >::Leaf_t> Tree_t;
   typedef typename BinaryReturn<C1,C2,FnLocalInnerProductReal>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(l),
+    CreateLeaf<QDPType<T2,C2> >::make(r)));
+}
+
+template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<BinaryNode<FnLocalColorInnerProduct,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t>,
+  typename BinaryReturn<C1,C2,FnLocalColorInnerProduct>::Type_t >::Expression_t
+localColorInnerProduct(const QDPExpr<T1,C1> & l,const QDPType<T2,C2> & r)
+{
+  typedef BinaryNode<FnLocalColorInnerProduct,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t> Tree_t;
+  typedef typename BinaryReturn<C1,C2,FnLocalColorInnerProduct>::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<QDPExpr<T1,C1> >::make(l),
     CreateLeaf<QDPType<T2,C2> >::make(r)));
@@ -3490,6 +3556,22 @@ localInnerProductReal(const QDPType<T1,C1> & l,const typename WordType<C1>::Type
 }
 
 template<class T1,class C1>
+inline typename MakeReturn<BinaryNode<FnLocalColorInnerProduct,
+  typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
+  typename BinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnLocalColorInnerProduct>::Type_t >::Expression_t
+localColorInnerProduct(const QDPType<T1,C1> & l,const typename WordType<C1>::Type_t & r)
+{
+  typedef BinaryNode<FnLocalColorInnerProduct,
+    typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename BinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnLocalColorInnerProduct>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPType<T1,C1> >::make(l),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(r))));
+}
+
+template<class T1,class C1>
 inline typename MakeReturn<BinaryNode<FnQuarkContract13,
   typename CreateLeaf<QDPType<T1,C1> >::Leaf_t,
   typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
@@ -4028,6 +4110,22 @@ localInnerProductReal(const typename WordType<C2>::Type_t & l,const QDPType<T2,C
     typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
     typename CreateLeaf<QDPType<T2,C2> >::Leaf_t> Tree_t;
   typedef typename BinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,FnLocalInnerProductReal>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(l)),
+    CreateLeaf<QDPType<T2,C2> >::make(r)));
+}
+
+template<class T2,class C2>
+inline typename MakeReturn<BinaryNode<FnLocalColorInnerProduct,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPType<T2,C2> >::Leaf_t>,
+  typename BinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,FnLocalColorInnerProduct>::Type_t >::Expression_t
+localColorInnerProduct(const typename WordType<C2>::Type_t & l,const QDPType<T2,C2> & r)
+{
+  typedef BinaryNode<FnLocalColorInnerProduct,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPType<T2,C2> >::Leaf_t> Tree_t;
+  typedef typename BinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,FnLocalColorInnerProduct>::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(l)),
     CreateLeaf<QDPType<T2,C2> >::make(r)));
@@ -5548,6 +5646,22 @@ localInnerProductReal(const QDPExpr<T1,C1> & l,const QDPExpr<T2,C2> & r)
 }
 
 template<class T1,class C1,class T2,class C2>
+inline typename MakeReturn<BinaryNode<FnLocalColorInnerProduct,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t>,
+  typename BinaryReturn<C1,C2,FnLocalColorInnerProduct>::Type_t >::Expression_t
+localColorInnerProduct(const QDPExpr<T1,C1> & l,const QDPExpr<T2,C2> & r)
+{
+  typedef BinaryNode<FnLocalColorInnerProduct,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t> Tree_t;
+  typedef typename BinaryReturn<C1,C2,FnLocalColorInnerProduct>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(l),
+    CreateLeaf<QDPExpr<T2,C2> >::make(r)));
+}
+
+template<class T1,class C1,class T2,class C2>
 inline typename MakeReturn<BinaryNode<FnQuarkContract13,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
   typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t>,
@@ -6130,6 +6244,22 @@ localInnerProductReal(const QDPExpr<T1,C1> & l,const typename WordType<C1>::Type
 }
 
 template<class T1,class C1>
+inline typename MakeReturn<BinaryNode<FnLocalColorInnerProduct,
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
+  typename BinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnLocalColorInnerProduct>::Type_t >::Expression_t
+localColorInnerProduct(const QDPExpr<T1,C1> & l,const typename WordType<C1>::Type_t & r)
+{
+  typedef BinaryNode<FnLocalColorInnerProduct,
+    typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t> Tree_t;
+  typedef typename BinaryReturn<C1,typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t,FnLocalColorInnerProduct>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<QDPExpr<T1,C1> >::make(l),
+    CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t(r))));
+}
+
+template<class T1,class C1>
 inline typename MakeReturn<BinaryNode<FnQuarkContract13,
   typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t,
   typename CreateLeaf<typename SimpleScalar<typename WordType<C1>::Type_t>::Type_t >::Leaf_t>,
@@ -6668,6 +6798,22 @@ localInnerProductReal(const typename WordType<C2>::Type_t & l,const QDPExpr<T2,C
     typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
     typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t> Tree_t;
   typedef typename BinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,FnLocalInnerProductReal>::Type_t Container_t;
+  return MakeReturn<Tree_t,Container_t>::make(Tree_t(
+    CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(l)),
+    CreateLeaf<QDPExpr<T2,C2> >::make(r)));
+}
+
+template<class T2,class C2>
+inline typename MakeReturn<BinaryNode<FnLocalColorInnerProduct,
+  typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+  typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t>,
+  typename BinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,FnLocalColorInnerProduct>::Type_t >::Expression_t
+localColorInnerProduct(const typename WordType<C2>::Type_t & l,const QDPExpr<T2,C2> & r)
+{
+  typedef BinaryNode<FnLocalColorInnerProduct,
+    typename CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::Leaf_t,
+    typename CreateLeaf<QDPExpr<T2,C2> >::Leaf_t> Tree_t;
+  typedef typename BinaryReturn<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t,C2,FnLocalColorInnerProduct>::Type_t Container_t;
   return MakeReturn<Tree_t,Container_t>::make(Tree_t(
     CreateLeaf<typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t >::make(typename SimpleScalar<typename WordType<C2>::Type_t>::Type_t(l)),
     CreateLeaf<QDPExpr<T2,C2> >::make(r)));
