@@ -1,0 +1,59 @@
+set( QDPXX_INSTALL_DIR "@prefix@" )
+set( QDPXX_PARALLEL_ARCH "@CONFIG_PARALLEL_ARCH@" )
+set( QDPXX_INCLUDE_DIR "@prefix@/include" )
+set( QDPXX_LIBDIR "@prefix@/lib")
+
+# Find the library we built and add it as an imported target
+# with appropriate include dir and location
+function(add_qdpxx_lib LIBNAME)
+ message(STATUS "Libname: ${LIBNAME}")
+
+ find_library(LIB_${LIBNAME} NAMES ${LIBNAME} PATHS "${QDPXX_LIBDIR}")
+ add_library(${LIBNAME} UNKNOWN IMPORTED)
+ set_target_properties(${LIBNAME} PROPERTIES IMPORTED_LOCATION ${LIB_${LIBNAME}})
+ set_target_properties(${LIBNAME} PROPERTIES INTERFACE_INCLUDE_DIR ${QDPXX_INCLUDE_DIR})
+endfunction()
+
+# Toplevel QDP++ library
+add_qdpxx_lib(qdp)
+
+# XML Reader and writer
+add_qdpxx_lib(XPathReader)
+add_qdpxx_lib(xmlWriter)
+target_link_libraries(qdp INTERFACE XPathReader xmlWriter)
+
+# QIO and LIME
+add_qdpxx_lib(lime)
+add_qdpxx_lib(qio)
+target_link_libraries(qio INTERFACE lime)
+target_link_libraries(qdp INTERFACE qio)
+
+# Check if using LibIntrin 
+string(STRIP "@LIBINTRIN_DIR@" QDPXX_LIBINTRIN)
+if( QDPXX_LIBINTRIN )
+  add_qdpxx_lib(intrin)
+  target_link_libraries(qdp INTERFACE intrin)
+endif()
+
+# Check if using FILEDB
+string(STRIP "@FILEDB_DIR" QDPXX_FILEDB)
+if( QDPXX_FILEDB ) 
+   add_qdpxx_lib(filehash)
+   add_qdpxx_lib(filedb)
+   target_link_libraries(filedb INTERFACE filehash)
+   target_link_libraries(qdp INTERFACE filedb)
+endif()
+
+# Add other LFlags and libs which we didn't build
+string(STRIP "@LDFLAGS@ @HDF5_LDFLAGS@ @QMP_LDFLAGS@ @QMT_LDFLAGS@" QDPXX_LDFLAGS)
+string(STRIP "@HDF5_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@ @QMT_LIBS@" QDPXX_LIBS)
+
+if( QDPXX_LDFLAGS ) 
+  separate_argumnets(${QDPXX_LDFLAGS})
+  target_link_options(qdp INTERFACE ${QDPXX_LDFLAGS})
+endif()
+
+if( QDPXX_LIBS )
+  separate_arguments(${QDPXX_LIBS})
+  target_link_libraries(qdp INTERFACE ${QDPXX_LIBS})
+endif()

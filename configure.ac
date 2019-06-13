@@ -817,6 +817,7 @@ fi
 #
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(qdp++-config)
+AC_CONFIG_FILES(FindQDPXX.cmake)
 AC_CONFIG_FILES(lib/Makefile)
 AC_CONFIG_FILES(other_libs/Makefile)
 AC_CONFIG_FILES(include/Makefile)
