@@ -3,19 +3,44 @@ set( QDPXX_PARALLEL_ARCH "@CONFIG_PARALLEL_ARCH@" )
 set( QDPXX_INCLUDE_DIR "@prefix@/include" )
 set( QDPXX_LIBDIR "@prefix@/lib")
 
+# Get the Include directories out of the CFLAGS Line if they start with -I
+string(STRIP "@HDF5_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@ @QMT_CXXFLAGS@" BASE_EXTRA_CXXFLAGS)
+
+# Match all strings which start with -I and keep matching anything until we reach another '-'
+# [^-] means match everything other than - and the + means do this one or more times.
+#
+string(REGEX MATCHALL  "\\-\\I[^-]+" BASE_EXTRA_INCLUDES ${BASE_EXTRA_CXXFLAGS})
+
+# Replace "-I" (ie \-\I ) with nothing
+string(REGEX REPLACE "\\-\\I" "" EXTRA_INCLUDE_DIRS ${BASE_EXTRA_INCLUDES})
+separate_arguments(${EXTRA_INCLUDE_DIRS})
+
 # Find the library we built and add it as an imported target
 # with appropriate include dir and location
 function(add_qdpxx_lib LIBNAME)
  message(STATUS "Libname: ${LIBNAME}")
 
+ # This will find the file, whether a .so or a .a appropriately
  find_library(LIB_${LIBNAME} NAMES ${LIBNAME} PATHS "${QDPXX_LIBDIR}")
- add_library(${LIBNAME} UNKNOWN IMPORTED)
+
+ # Set up the library as an imported target
+ add_library(${LIBNAME} UNKNOWN IMPORTED )
+
+ # Explain where it is
  set_target_properties(${LIBNAME} PROPERTIES IMPORTED_LOCATION ${LIB_${LIBNAME}})
- set_target_properties(${LIBNAME} PROPERTIES INTERFACE_INCLUDE_DIR ${QDPXX_INCLUDE_DIR})
+ # Set the include dir
+ set_target_properties(${LIBNAME} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${QDPXX_INCLUDE_DIR}")
 endfunction()
 
 # Toplevel QDP++ library
 add_qdpxx_lib(qdp)
+# Add on Extra includes
+foreach( INCDIR ${EXTRA_INCLUDE_DIRS})
+ message(STATUS "Adding ${INCDIR}")
+ set_target_properties(qdp PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${INCDIR})       
+endforeach()
+
+
 
 # XML Reader and writer
 add_qdpxx_lib(XPathReader)
