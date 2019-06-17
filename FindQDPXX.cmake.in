@@ -82,3 +82,6 @@ if( QDPXX_LIBS )
   separate_arguments(${QDPXX_LIBS})
   target_link_libraries(qdp INTERFACE ${QDPXX_LIBS})
 endif()
+
+set( QDPXX_FOUND TRUE)
+
