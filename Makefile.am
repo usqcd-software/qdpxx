@@ -10,7 +10,9 @@ SUBDIRS = lib examples include other_libs tests
 # 
 bin_SCRIPTS=qdp++-config
 
+dist_data_DATA = FindQDPXX.cmake
 #
 # Some things that we want in the distribution tarball 
 #
-EXTRA_DIST = PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools docs  install_scripts
+EXTRA_DIST = PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools docs  install_scripts FindQDPXX.cmake.in
+

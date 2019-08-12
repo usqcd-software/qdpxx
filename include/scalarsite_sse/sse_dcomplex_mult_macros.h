@@ -1,6 +1,8 @@
 #ifndef SSE_DCOMPLEX_MULT_MACROS
 #define SSE_DCOMPLEX_MULT_MACROS
 
+#include "qdp_diagnostics.h"
+
 /* This selects the configuration */
 #include "qdp_config.h"
 
@@ -120,7 +122,7 @@
 
 
 #else
-#warning "Using SSE3"
+QDPXX_MESSAGE("Using SSE3")
 /* SSE 3 */
 #include <pmmintrin.h>
 

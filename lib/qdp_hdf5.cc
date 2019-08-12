@@ -2238,7 +2238,7 @@ namespace QDP {
 
 	//float lattice color matrix:
 	template<>
-	void HDF5Writer::write(const std::string& name, const LatticeColorMatrixF3& field, const HDF5Base::writemode& mode){
+	void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL32>, 3> > >(const std::string& name, const LatticeColorMatrixF3& field, const HDF5Base::writemode& mode){
 		StopWatch swatch_prepare, swatch_reorder, swatch_write, swatch_datatypes;
 	  
 		//before writing is performed, check if dataset exists:
@@ -2385,9 +2385,9 @@ namespace QDP {
 	
 	//float lattice propagator:
 	template<>
-	void HDF5Writer::write(const std::string& name, const LatticePropagatorF3& field, const HDF5Base::writemode& mode){
+	void HDF5Writer::write< PSpinMatrix< PColorMatrix< RComplex<REAL32>, 3>, 4> >(const std::string& name, const LatticePropagatorF3& field, const HDF5Base::writemode& mode){
 		StopWatch swatch_prepare, swatch_reorder, swatch_write, swatch_datatypes;
-	  
+        QDPIO::cout << "\t USING LatticePropagatorF3 writer" << std::endl;
 		//before writing is performed, check if dataset exists:
 		if(profile) swatch_prepare.start();
 		writePrepare(name,mode);
@@ -2420,7 +2420,7 @@ namespace QDP {
 		}
 		exists=objectExists(file_id,".PropagatorFloat3");
 		if(!exists){
-			prop_id=createPropagatorType(colmat_id,Nc);
+			prop_id=createPropagatorType(colmat_id,Ns);
 			commitType(".PropagatorFloat3",prop_id);
 		}
 		else{
@@ -2469,7 +2469,7 @@ namespace QDP {
 	
 	//double lattice propagator:
 	template<>
-	void HDF5Writer::write(const std::string& name, const LatticePropagatorD3& field, const HDF5Base::writemode& mode)
+	void HDF5Writer::write< PSpinMatrix< PColorMatrix< RComplex<REAL64>, 3>, 4> >(const std::string& name, const LatticePropagatorD3& field, const HDF5Base::writemode& mode)
 	{
 		StopWatch swatch_prepare, swatch_reorder, swatch_write, swatch_datatypes;
 	  

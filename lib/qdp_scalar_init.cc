@@ -22,6 +22,8 @@ namespace ThreadReductions {
 //! Private flag for status
 static bool isInit = false;
 
+  extern float pool_size_in_gb;
+
 //! Turn on the machine
 void QDP_initialize(int *argc, char ***argv) 
 {
@@ -75,6 +77,7 @@ void QDP_initialize(int *argc, char ***argv)
   //
   // Process command line
   //
+  pool_size_in_gb = 8;
 
   // Look for help
   bool help_flag = false;
@@ -93,7 +96,7 @@ void QDP_initialize(int *argc, char ***argv)
     fprintf(stderr,"    -p        %%d [%d] profile level\n", 
 	    getProfileLevel());
 #endif
-
+    fprintf(stderr, " -poolsize <X>  Create a fixed pool of X GB for Pool Alloc\n");
     exit(1);
   }
 
@@ -107,6 +110,11 @@ void QDP_initialize(int *argc, char ***argv)
       setProgramProfileLevel(lev);
     }
 #endif
+    if ( strcmp((*argv)[i],"-poolsize")==0)
+      {
+	sscanf((*argv)[++i], "%f", &pool_size_in_gb);
+	
+      }
 
     if (i >= *argc) 
     {

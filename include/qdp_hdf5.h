@@ -829,7 +829,7 @@ namespace QDP {
 			const int mynode=Layout::nodeNumber();
 			const int nodeSites = Layout::sitesOnNode();
 			size_t tot_size = obj_size*arr_size*nodeSites;
-			char* buf = new(std::nothrow) REAL[tot_size*hdf5_float_size];
+			char* buf = new(std::nothrow) char[tot_size*hdf5_float_size];
 			if( buf == 0x0 ) {
 				HDF5_error_exit("Unable to allocate buf!");
 			}
@@ -1496,13 +1496,21 @@ namespace QDP {
 	template<>
 	void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& dataname, const ColorMatrixD3& datum, const HDF5Base::writemode& mode);
 
+  //template specializations for OLattice<T> datatypes:
 	//LatticeColorMatrix
 	template<>
 	void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL32>, 3> > >(const std::string& name, const LatticeColorMatrixF3& field, const HDF5Base::writemode& mode);
 	template<>
 	void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, const LatticeColorMatrixD3& field, const HDF5Base::writemode& mode);
+  
+  //LatticePropagator
+  template<>
+  void HDF5Writer::write< PSpinMatrix< PColorMatrix< RComplex<REAL32>, 3>, 4> >(const std::string& name, const LatticePropagatorF3& field, const HDF5Base::writemode& mode);
+	template<>
+	void HDF5Writer::write< PSpinMatrix< PColorMatrix< RComplex<REAL64>, 3>, 4> >(const std::string& name, const LatticePropagatorD3& field, const HDF5Base::writemode& mode);
 
-	//multi1d<OLattice> specializations
+  //template specializations for multi1d<OLattice<T> > datatypes:
+  //multi1d<LatticeColorMatrix>
 	template<>
 	void HDF5Writer::write< PScalar< PColorMatrix< RComplex<REAL64>, 3> > >(const std::string& name, const multi1d<LatticeColorMatrixD3>& field, const HDF5Base::writemode& mode);
 }

@@ -192,6 +192,26 @@ AC_ARG_ENABLE(bgq-thread-binding,
      [ ac_bgq_bind_enabled="no"]
 )
 
+AC_ARG_ENABLE(tbb-pool-allocator,
+	AC_HELP_STRING([--enable-tbb-pool-allocator],
+		[ Enable Threaded Building Blocks Fixed Pool Allocator]),
+	[ ac_enable_tbbpool=${enableval} ],
+	[ ac_enable_tbbpool="no" ]
+)
+
+AC_ARG_ENABLE(extramessages,
+   AC_HELP_STRING(
+    [--enable-extra-messages],
+    [Emit extra messages during the compilation that indicate which preprocessor branches are used]
+   ),
+   [ extra_messages_enabled="yes" ],
+   [ extra_messages_enabled="no" ]
+)
+
+if test "${extra_messages_enabled}" = "yes"; then
+	AC_MSG_NOTICE([Will emit pragma message ])
+	AC_DEFINE(QPHIX_EMIT_MESSAGES, [1], [ Emit compilation messages ])
+fi
 
 if test "X${ac_bgq_bind_enabled}X" = "XyesX";
 then
@@ -674,6 +694,14 @@ then
 	AC_DEFINE([QDP_USE_OMP_THREADS], [1], [ Use OpenMP Threads ])
 fi
 
+dnl Threaded Building Blocks Pool Allocator
+if test "X${ac_enable_tbbpool}X" == "XyesX";
+then 
+	AC_MSG_NOTICE([Configuring to use TBB Fixed Pool. Please ensure CXXFLAGS and LDFLAGS are correctly set])
+	AC_DEFINE([QDP_USE_TBBPOOL_ALLOCATOR],[1], [ Use TBB Fixed Pool Allocator ])
+fi
+
+
 dnl
 dnl
 dnl Now have all the options... Do some configuration 
@@ -703,6 +731,9 @@ AM_CONDITIONAL(BUILD_WILSON_EXAMPLES,
 AM_CONDITIONAL(BUILD_DEFAULT_ALLOCATOR,
   [test "X0X" = "X0X"])
 
+AM_CONDITIONAL(BUILD_QDPXX_TBB_ALLOCATOR,
+  [ test "X${ac_enable_tbbpool}X" == "XyesX" ])
+  
 #
 # Conditional for use qmt
 #
@@ -786,6 +817,7 @@ fi
 #
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(qdp++-config)
+AC_CONFIG_FILES(FindQDPXX.cmake)
 AC_CONFIG_FILES(lib/Makefile)
 AC_CONFIG_FILES(other_libs/Makefile)
 AC_CONFIG_FILES(include/Makefile)

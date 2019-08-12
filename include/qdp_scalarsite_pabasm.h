@@ -9,7 +9,10 @@
 #ifndef QDP_SCALARSITE_GENERIC_H
 #define QDP_SCALARSITE_GENERIC_H
 
-#warning "Using PABASM Scalarsite"
+
+#include "qdp_diagnostics.h"
+
+QDPXX_MESSAGE("Using PABASM Scalarsite")
 
 namespace QDP {
 

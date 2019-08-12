@@ -36,6 +36,7 @@ typedef OLattice< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 4> > LatticeDi
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 1> > LatticeStaggeredFermion;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, 4> > LatticeDiracPropagator;
 typedef OLattice< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, 1> > LatticeStaggeredPropagator;
+typedef OLattice< PSpinMatrix< PColorVector< RComplex<REAL>, Nc>, 4> > LatticeColorVectorSpinMatrix;
 
 typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 4> > DiracFermion;
 typedef OScalar< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 1> > StaggeredFermion;
@@ -196,6 +197,8 @@ typedef OLattice< PSpinVector< PColorVector< RComplex<REAL32>, 3>, 4> > LatticeD
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL32>, 2>, 4> > LatticeDiracFermionF2;
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL32>, 1>, 4> > LatticeDiracFermionF1;
 
+typedef OLattice< PSpinMatrix< PColorVector< RComplex<REAL32>, Nc>, 4> > LatticeColorVectorSpinMatrixF;
+
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL32>, Nc>, 1> > LatticeStaggeredFermionF;
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL32>, 3>, 1> > LatticeStaggeredFermionF3;
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL32>, 2>, 1> > LatticeStaggeredFermionF2;
@@ -314,6 +317,8 @@ typedef OLattice< PSpinVector< PColorVector< RComplex<REAL64>, Nc>, 4> > Lattice
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL64>, 3>, 4> > LatticeDiracFermionD3;
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL64>, 2>, 4> > LatticeDiracFermionD2;
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL64>, 1>, 4> > LatticeDiracFermionD1;
+
+typedef OLattice< PSpinMatrix< PColorVector< RComplex<REAL64>, Nc>, 4> > LatticeColorVectorSpinMatrixD;
 
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL64>, Nc>, 1> > LatticeStaggeredFermionD;
 typedef OLattice< PSpinVector< PColorVector< RComplex<REAL64>, 3>, 1> > LatticeStaggeredFermionD3;
@@ -445,6 +450,7 @@ typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 4> > SubLat
 typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL>, Nc>, 1> > SubLatticeStaggeredFermion;
 typedef OSubLattice< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, 4> > SubLatticeDiracPropagator;
 typedef OSubLattice< PSpinMatrix< PColorMatrix< RComplex<REAL>, Nc>, 1> > SubLatticeStaggeredPropagator;
+typedef OSubLattice< PSpinMatrix< PColorVector< RComplex<REAL>, Nc>, 4> > SubLatticeColorVectorSpinMatrix;
 
 // Floating aliases
 typedef OSubLattice< PScalar< PColorVector< RComplex<REAL>, Nc> > > SubLatticeColorVector;
@@ -469,6 +475,7 @@ typedef OSubLattice< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, 4> > SubL
 typedef OSubLattice< PSpinVector< PColorVector< RComplex<DOUBLE>, Nc>, 1> > SubLatticeDStaggeredFermion;
 typedef OSubLattice< PSpinMatrix< PColorMatrix< RComplex<DOUBLE>, Nc>, 4> > SubLatticeDDiracPropagator;
 typedef OSubLattice< PSpinMatrix< PColorMatrix< RComplex<DOUBLE>, Nc>, 1> > SubLatticeDStaggeredPropagator;
+typedef OSubLattice< PSpinMatrix< PColorVector< RComplex<DOUBLE>, Nc>, 4> > SubLatticeDColorVectorSpinMatrix;
 
 // Floating aliases
 typedef OSubLattice< PScalar< PColorVector< RComplex<DOUBLE>, Nc> > > SubLatticeDColorVector;
@@ -526,6 +533,8 @@ typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL32>, 3>, 4> > SubLa
 typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL32>, 2>, 4> > SubLatticeDiracFermionF2;
 typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL32>, 1>, 4> > SubLatticeDiracFermionF1;
 
+typedef OSubLattice< PSpinMatrix< PColorVector< RComplex<REAL32>, Nc>, 4> > SubLatticeColorVectorSpinMatrixF;
+
 typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL32>, Nc>, 1> > SubLatticeStaggeredFermionF;
 typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL32>, 3>, 1> > SubLatticeStaggeredFermionF3;
 typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL32>, 2>, 1> > SubLatticeStaggeredFermionF2;
@@ -577,6 +586,8 @@ typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL64>, Nc>, 4> > SubL
 typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL64>, 3>, 4> > SubLatticeDiracFermionD3;
 typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL64>, 2>, 4> > SubLatticeDiracFermionD2;
 typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL64>, 1>, 4> > SubLatticeDiracFermionD1;
+
+typedef OSubLattice< PSpinMatrix< PColorVector< RComplex<REAL64>, Nc>, 4> > SubLatticeColorVectorSpinMatrixD;
 
 typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL64>, Nc>, 1> > SubLatticeStaggeredFermionD;
 typedef OSubLattice< PSpinVector< PColorVector< RComplex<REAL64>, 3>, 1> > SubLatticeStaggeredFermionD3;

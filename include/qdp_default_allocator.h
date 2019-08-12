@@ -8,9 +8,15 @@
 #ifndef QDP_DEFAULT_ALLOCATOR
 #define QDP_DEFAULT_ALLOCATOR
 
+#include "qdp_config.h"
+
+#if defined(QDP_DEBUG_MEMORY)
+#include <stack>
+#endif
+
 #include "qdp_allocator.h"
 #include "qdp_stdio.h"
-#include "qdp_singleton.h"
+
 #include <string>
 #include <map>
 
@@ -19,9 +25,45 @@ namespace QDP
   namespace Allocator
   {
 
+#if defined(QDP_DEBUG_MEMORY)
+    // Struct to hold in map
+    struct MapVal {
+      MapVal(unsigned char* u, const std::string& f, int l, size_t b) :
+	unaligned(u), func(f), line(l), bytes(b) {}
+
+      unsigned char* unaligned;
+      std::string    func;
+      int            line;
+      size_t         bytes;
+    };
+
+    // Convenience typedefs to save typing
+
+    // The type of the map to hold the aligned unaligned values
+    typedef std::map<unsigned char*, MapVal> MapT;
+
+    // Func info
+    struct FuncInfo_t {
+      FuncInfo_t(const char* f, int l) : func(f), line(l) {}
+
+      std::string  func;
+      int          line;
+    };
+#else
+    typedef std::map<unsigned char*, unsigned char *> MapT;
+#endif
+
+
     // Specialise allocator to the default case
     class QDPDefaultAllocator {
     private:
+
+#if defined(QDP_DEBUG_MEMORY)
+      std::stack<FuncInfo_t> infostack;
+#endif
+
+      MapT the_alignment_map;
+
       // Disallow Copies
       QDPDefaultAllocator(const QDPDefaultAllocator& c) {}
 
@@ -32,11 +74,14 @@ namespace QDP
       // the singleton CreateUsingNew policy which is a "friend"
       // I don't like friends but this follows Alexandrescu's advice
       // on p154 of Modern C++ Design (A. Alexandrescu)
-      QDPDefaultAllocator() {init();}
+      QDPDefaultAllocator() {}
       ~QDPDefaultAllocator() {}
 
       friend class QDP::CreateUsingNew<QDP::Allocator::QDPDefaultAllocator>;
+      friend class QDP::CreateStatic<QDP::Allocator::QDPDefaultAllocator>;
     public:
+
+      void init(size_t PoolSizeinMB);
 
       // Pusher
       void pushFunc(const char* func, int line);
@@ -58,22 +103,10 @@ namespace QDP
       void
       dump();
 
-    protected:
-      void init();
+
+
     };
 
-    // Turn into a Singleton. Create with CreateUsingNew
-    // Has NoDestroy lifetime, as it may be needed for 
-    // the destruction policy is No Destroy, so the 
-    // Singleton is not cleaned up on exit. This is so 
-    // that static objects can refer to it with confidence
-    // in their own destruction, not having to worry that
-    // atexit() may have destroyed the allocator before
-    // the static objects need to feed memory. 
-    typedef SingletonHolder<QDP::Allocator::QDPDefaultAllocator,
-			    QDP::CreateUsingNew,
-			    QDP::NoDestroy,
-			    QDP::SingleThreaded> theQDPAllocator;
 
   } // namespace Allocator
 } // namespace QDP

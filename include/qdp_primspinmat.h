@@ -213,6 +213,11 @@ struct UnaryReturn<PSpinMatrix<T,N>, FnImagTrace > {
 };
 
 template<class T, int N>
+struct UnaryReturn<PSpinMatrix<T,N>, FnSumMulti > {
+  typedef PSpinMatrix<typename UnaryReturn<T, FnSumMulti>::Type_t, N>  Type_t;
+};
+
+template<class T, int N>
 struct UnaryReturn<PSpinMatrix<T,N>, FnNorm2 > {
   typedef PScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
 };
@@ -461,6 +466,31 @@ transposeSpin(const PSpinMatrix<T,N>& s1)
       d.elem(i,j) = s1.elem(j,i);
     }
   }
+  return d;
+}
+
+
+//-----------------------------------------------
+//! PScalar = localColorInnerProduct(PSpinMatrix,PSpinMatrix)
+template<class T1, class T2, int N>
+struct BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnLocalColorInnerProduct> {
+  typedef PSpinMatrix<typename BinaryReturn<T1, T2, FnLocalColorInnerProduct>::Type_t, N>  Type_t;
+};
+
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnLocalColorInnerProduct>::Type_t
+localColorInnerProduct(const PSpinMatrix<T1,N>& l, const PSpinMatrix<T2,N>& r)
+{
+  typename BinaryReturn<PSpinMatrix<T1,N>, PSpinMatrix<T2,N>, FnLocalColorInnerProduct>::Type_t  d;
+
+  for(int i=0; i < N; ++i)
+    for(int j=0; j < N; ++j)
+    {
+      d.elem(i,j) = localColorInnerProduct(l.elem(0,i), r.elem(0,j));
+      for(int k=1; k < N; ++k)
+	d.elem(i,j) += localColorInnerProduct(l.elem(k,i), r.elem(k,j));
+    }
+
   return d;
 }
 

@@ -46,6 +46,8 @@ int main(int argc, char *argv[])
   LatticeFermion    lftmp1;
   LatticeFermion    lftmp2;
   LatticeFermion    lftmp3;
+  LatticeColorVectorSpinMatrix lcvsp1;
+  LatticeColorVectorSpinMatrix lcvsp2;
   LatticeReal R1;
   LatticeReal Rtmp;
   LatticeComplex c;
@@ -147,7 +149,7 @@ int main(int argc, char *argv[])
   pop(xml_out);
 
 
-#if 0
+#if 1
 
   mu = 0;
   nu = 1;
@@ -181,7 +183,7 @@ int main(int argc, char *argv[])
   pop(xml_out);
 
   /* test 5 */
-  rtmp = real(trace(lctmp1 * u));
+  LatticeReal rtmp = real(trace(lctmp1 * u));
   push(xml_out,"TRACE_MULTIPLY_MATRIX_realpart");
   write(xml_out, "rtmp", rtmp);
   pop(xml_out);
@@ -391,7 +393,7 @@ int main(int argc, char *argv[])
 
   /* test 27 */
   gaussian(lqtmp1);
-  r = real(trace(adj(q) * lqtmp1));
+  LatticeReal r = real(trace(adj(q) * lqtmp1));
   push(xml_out,"TRACE_MULT_PROP");
   write(xml_out, "r", r);
   pop(xml_out);
@@ -405,6 +407,33 @@ int main(int argc, char *argv[])
   write(xml_out, "lqtmp23", quarkContract23(lqtmp1, lqtmp2));
   write(xml_out, "lqtmp24", quarkContract24(lqtmp1, lqtmp2));
   pop(xml_out);
+
+#if 1
+  /* test 29 */
+  gaussian(lcvsp1);
+  gaussian(lcvsp2);
+  //LatticeSpinMatrix spm = localColorInnerProduct(lcvsp1, lcvsp2);
+  auto spm = localColorInnerProduct(lcvsp1, lcvsp2);
+  push(xml_out,"LOCAL_COLOR_INNER_PRODUCT");
+  write(xml_out, "spm", spm);
+  pop(xml_out);
+
+  /* test 30 */
+  gaussian(lcvsp1);
+  gaussian(lcvsp2);
+  multi1d<SpinMatrixD> fred1 = sumMulti(spm, QDP::rb);
+  push(xml_out,"SUMMULTI_LOCAL_COLOR_INNER_PRODUCT1");
+  write(xml_out, "fred1", fred1);
+  pop(xml_out);
+
+  /* test 31 */
+  gaussian(lcvsp1);
+  gaussian(lcvsp2);
+  multi1d<SpinMatrixD> fred2 = sumMulti(localColorInnerProduct(lcvsp1, lcvsp2), QDP::rb);
+  push(xml_out,"SUMMULTI_LOCAL_COLOR_INNER_PRODUCT2");
+  write(xml_out, "fred2", fred2);
+  pop(xml_out);
+#endif
 
 #endif
 

@@ -5,11 +5,11 @@
  */
 
 #include "scalarsite_sse/sse_blas_vaxmbyz4_double.h"
+#include <xmmintrin.h>
+#include "scalarsite_sse/sse_prefetch.h"
 
 namespace QDP {
 
-#include <xmmintrin.h>
-#include "scalarsite_sse/sse_prefetch.h"
 
 #ifndef L2BY2
 #define L2BY2 1365          /* L2 / 2 in SPINORS */

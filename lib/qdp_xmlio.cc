@@ -349,7 +349,8 @@ namespace QDP
     for(int i=0; i < result.size(); i++) 
     {
       // read the element.
-      list_stream2 >> result[i];
+      list_stream2 >> dummy;
+      result[i]=dummy;
     }
   }
 

@@ -340,8 +340,8 @@ namespace QDP
   struct NoDestroy
   {
     static void ScheduleDestruction(T*, void (*pFun)())
-  /*    {}   removed memory leak here */       
-      { std::atexit(pFun); }   
+    {}   /* Put this back removed memory leak here */       
+  /*    { std::atexit(pFun); }  */
         
     static void OnDeadReference()
       {}

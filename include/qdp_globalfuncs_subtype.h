@@ -99,6 +99,51 @@ namespace QDP
 #endif
 
 
+  template<class T1,class C1,class T2,class C2>
+  typename QDPSubTypeTrait< typename BinaryReturn<C1,C2,FnLocalColorInnerProduct>::Type_t >::Type_t
+  localColorInnerProduct(const QDPSubType<T1,C1> & l,const QDPType<T2,C2> & r)
+  {
+    if (!l.getOwnsMemory())
+      QDP_error_exit("localColorInnerProduct with subtype view called");
+
+    typename QDPSubTypeTrait< typename BinaryReturn<C1,C2,FnLocalColorInnerProduct>::Type_t >::Type_t ret;
+    ret.setSubset( l.subset() );
+
+    //QDP_info("localColorInnerProduct %d sites",l.subset().numSiteTable());
+
+    const int *tab = l.subset().siteTable().slice();
+    for(int j=0; j < l.subset().numSiteTable(); ++j)
+      {
+	int i = tab[j];
+	FnLocalColorInnerProduct op;
+	ret.getF()[j] = op( l.getF()[j] , r.elem(i) );
+      }
+
+    return ret;
+  }
+
+  template<class T1,class C1,class T2,class C2>
+  typename QDPSubTypeTrait< typename BinaryReturn<C1,C2,FnLocalColorInnerProduct>::Type_t >::Type_t
+  localColorInnerProduct(const QDPType<T1,C1> & l,const QDPSubType<T2,C2> & r)
+  {
+    if (!r.getOwnsMemory())
+      QDP_error_exit("localColorInnerProduct with subtype view called");
+
+    typename QDPSubTypeTrait< typename BinaryReturn<C1,C2,FnLocalColorInnerProduct>::Type_t >::Type_t ret;
+    ret.setSubset( r.subset() );
+
+    const int *tab = r.subset().siteTable().slice();
+    for(int j=0; j < r.subset().numSiteTable(); ++j)
+      {
+	int i = tab[j];
+	FnLocalColorInnerProduct op;
+	ret.getF()[j] = op( l.elem(i) , r.getF()[j] );
+      }
+
+    return ret;
+  }
+
+
 
 template<class T>
 typename UnaryReturn<OLattice<T>, FnSum>::Type_t

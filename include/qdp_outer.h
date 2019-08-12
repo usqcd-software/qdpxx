@@ -413,28 +413,39 @@ private:
     {
       mem=true;
       // Barfs if allocator fails
+      size_t NSites = static_cast<size_t>(Layout::sitesOnNode());
       try
       {
-	F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*Layout::sitesOnNode(),QDP::Allocator::DEFAULT);
+    	  F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*NSites,QDP::Allocator::DEFAULT);
       }
-      catch(std::bad_alloc) 
-      {
-	QDPIO::cerr << "Allocation failed in OLattice alloc_mem" << std::endl;
-	QDP::Allocator::theQDPAllocator::Instance().dump();
+      catch(std::bad_alloc) {
+    	  QDPIO::cerr << "Allocation failed in OLattice alloc_mem" << std::endl;
+    	  QDP::Allocator::theQDPAllocator::Instance().dump();
+
 	QDP_abort(1);
       }
+
+#if 0
+      // Nuke touch for now
+#pragma omp parallel for
+        for(int j=0; j < NSites; ++j) {
+             *((char *)&F[j])=0;
+        }
+#endif
+
     }
 
   //! Internal memory free
   inline void free_mem() 
   {
     if (!mem) return;
-    if( F != 0x0 ) 
+    if( F != nullptr )
     { 
-      QDP::Allocator::theQDPAllocator::Instance().free(F);
+    	QDP::Allocator::theQDPAllocator::Instance().free(F);
+
     }
     mem = false;
-    F = 0x0;
+    F = nullptr;
   }
 
 
@@ -759,6 +770,11 @@ struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnLocalInnerProductReal > {
   typedef OScalar<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
+template<class T1, class T2>
+struct BinaryReturn<OScalar<T1>, OScalar<T2>, FnLocalColorInnerProduct > {
+  typedef OScalar<typename BinaryReturn<T1, T2, FnLocalColorInnerProduct>::Type_t>  Type_t;
+};
+
 
 // Gamma algebra
 template<int N, int m, class T2, class OpGammaConstMultiply>
@@ -987,6 +1003,11 @@ struct BinaryReturn<OLattice<T1>, OLattice<T2>, FnLocalInnerProductReal > {
   typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
 };
 
+template<class T1, class T2>
+struct BinaryReturn<OLattice<T1>, OLattice<T2>, FnLocalColorInnerProduct > {
+  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalColorInnerProduct>::Type_t>  Type_t;
+};
+
 
 // Gamma algebra
 template<int N, int m, class T2, class OpGammaConstMultiply>
@@ -1189,6 +1210,11 @@ struct BinaryReturn<OLattice<T1>, OScalar<T2>, FnLocalInnerProductReal > {
 };
 
 template<class T1, class T2>
+struct BinaryReturn<OLattice<T1>, OScalar<T2>, FnLocalColorInnerProduct > {
+  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalColorInnerProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
 struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnLocalInnerProduct > {
   typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProduct>::Type_t>  Type_t;
 };
@@ -1196,6 +1222,11 @@ struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnLocalInnerProduct > {
 template<class T1, class T2>
 struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnLocalInnerProductReal > {
   typedef OLattice<typename BinaryReturn<T1, T2, FnLocalInnerProductReal>::Type_t>  Type_t;
+};
+
+template<class T1, class T2>
+struct BinaryReturn<OScalar<T1>, OLattice<T2>, FnLocalColorInnerProduct > {
+  typedef OLattice<typename BinaryReturn<T1, T2, FnLocalColorInnerProduct>::Type_t>  Type_t;
 };
 
 
