@@ -678,7 +678,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
  * slices
  */
 template<class RHS, class T>
-typename UnaryReturn<OScalar<T>, FnSum>::Type_t
+typename UnaryReturn<OScalar<T>, FnSumMulti>::Type_t
 sumMulti(const QDPExpr<RHS,OScalar<T> >& s1, const Set& ss)
 {
   typename UnaryReturn<OScalar<T>, FnSumMulti>::Type_t  dest(ss.numSubsets());
@@ -838,7 +838,7 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
  * slices
  */
 template<class T>
-multi2d<typename UnaryReturn<OScalar<T>, FnSum>::Type_t>
+multi2d<typename UnaryReturn<OScalar<T>, FnSumMulti>::Type_t>
 sumMulti(const multi1d< OScalar<T> >& s1, const Set& ss)
 {
   multi2d<typename UnaryReturn<OScalar<T>, FnSum>::Type_t>  dest(s1.size(),ss.numSubsets());
@@ -873,7 +873,7 @@ sumMulti(const multi1d< OScalar<T> >& s1, const Set& ss)
  * version is fine.
  */
 template<class T>
-multi2d<typename UnaryReturn<OLattice<T>, FnSum>::Type_t>
+multi2d<typename UnaryReturn<OLattice<T>, FnSumMulti>::Type_t>
 sumMulti(const multi1d< OLattice<T> >& s1, const Set& ss)
 {
   multi2d<typename UnaryReturn<OLattice<T>, FnSum>::Type_t>  dest(s1.size(),ss.numSubsets());

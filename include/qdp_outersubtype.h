@@ -7,6 +7,7 @@
 #ifndef QDP_OUTERSUBTYPE_H
 #define QDP_OUTERSUBTYPE_H
 
+#include "qdp_allocator.h"
 namespace QDP {
 
 //! OScalar class narrowed to a subset
@@ -142,13 +143,13 @@ public:
     //QDP_info("OSubLattice alloc for %d sites",s->numSiteTable());
     try 
       {
-	F = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*s->numSiteTable(),QDP::Allocator::DEFAULT);
+    	F = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*s->numSiteTable(),QDP::Allocator::DEFAULT);
       }
       catch(std::bad_alloc) 
       {
-	QDPIO::cerr << "Allocation failed in OSubLattice" << std::endl;
-	QDP::Allocator::theQDPAllocator::Instance().dump();
-	QDP_abort(1);
+    	  QDPIO::cerr << "Allocation failed in OSubLattice" << std::endl;
+    	  QDP::Allocator::theQDPAllocator::Instance().dump();
+    	  QDP_abort(1);
       }
   }
 
@@ -159,7 +160,7 @@ public:
   }
 
   void free_mem() {
-    QDP::Allocator::theQDPAllocator::Instance().free(F);
+	  QDP::Allocator::theQDPAllocator::Instance().free(F);
   }
 #endif
 

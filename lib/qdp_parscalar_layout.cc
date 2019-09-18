@@ -13,17 +13,18 @@
  *    32-style checkerboard (even/odd-checkerboarding of hypercubes)
  */
 
+#include "qdp_diagnostics.h"
+
 #include "qdp.h"
 #include "qdp_util.h"
-
+#include "qdp_allocator.h"
 #include "qmp.h"
 
 
 namespace QDP 
 {
 
-  //-----------------------------------------------------------------------------
-  // IO routine solely for debugging. Only defined here
+  //----------------------------------Only defined here
   template<class T>
   std::ostream& operator<<(std::ostream& s, const multi1d<T>& s1)
   {
@@ -33,10 +34,14 @@ namespace QDP
     return s;
   }
 
+  // Only relevant in case of pool allocator.
+  float pool_size_in_gb = 8.0;
+
 
   //-----------------------------------------------------------------------------
   namespace Layout
   {
+
     //-----------------------------------------------------
     //! Local data specific to all architectures
     /*! 
@@ -363,8 +368,15 @@ namespace QDP
 	  QDP_error_exit("Layout::create - Layout problems, the layout functions do not work correctly with this lattice size");
       }
 #endif
+
+
+      size_t pool_size_in_MB = static_cast<size_t>(floor(pool_size_in_gb*1024.0));
+
+      Allocator::theQDPAllocator::Instance().init(pool_size_in_MB);
+
       // Initialize various defaults
       initDefaults();
+
 
       QDPIO::cout << "Finished lattice layout" << std::endl;
 
@@ -378,7 +390,7 @@ namespace QDP
   //-----------------------------------------------------------------------------
 #if QDP_USE_LEXICO_LAYOUT == 1
 
-#warning "Using a lexicographic layout"
+QDPXX_MESSAGE("Using a lexicographic layout")
 
   namespace Layout
   {
@@ -440,7 +452,7 @@ namespace QDP
 
 #elif QDP_USE_CB2_LAYOUT == 1
 
-#warning "Using a 2 checkerboard (red/black) layout"
+QDPXX_MESSAGE("Using a 2 checkerboard (red/black) layout")
 
   namespace Layout
   {
@@ -533,7 +545,7 @@ namespace QDP
 
 #elif QDP_USE_CB3D_LAYOUT == 1
 
-#warning "Using a 3D checkerboard (red/black) layout"
+QDPXX_MESSAGE("Using a 3D checkerboard (red/black) layout")
 
   namespace Layout
   {
@@ -636,7 +648,7 @@ namespace QDP
 
 #elif QDP_USE_CB32_LAYOUT == 1
 
-#warning "Using a 32 checkerboard layout"
+QDPXX_MESSAGE("Using a 32 checkerboard layout")
 
 #error "THIS BIT STILL UNDER CONSTRUCTION"
 

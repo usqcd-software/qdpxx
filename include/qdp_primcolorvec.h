@@ -154,6 +154,11 @@ struct BinaryReturn<PColorVector<T1,N>, PScalar<T2>, OpDivideAssign > {
 
 // ColorVector
 template<class T, int N>
+struct UnaryReturn<PColorVector<T,N>, FnSumMulti > {
+  typedef PColorVector<typename UnaryReturn<T, FnSumMulti>::Type_t, N>  Type_t;
+};
+
+template<class T, int N>
 struct UnaryReturn<PColorVector<T,N>, FnNorm2 > {
   typedef PScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
 };
@@ -190,6 +195,28 @@ struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnLocalInnerProductR
 // Operators
 //-----------------------------------------------------------------------------
 
+//! PScalar = localColorInnerProduct(PColorVector,PColorVector)
+template<class T1, class T2, int N>
+struct BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnLocalColorInnerProduct> {
+  typedef PScalar<typename BinaryReturn<T1, T2, FnLocalColorInnerProduct>::Type_t>  Type_t;
+};
+
+template<class T1, class T2, int N>
+inline typename BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnLocalColorInnerProduct>::Type_t
+localColorInnerProduct(const PColorVector<T1,N>& l, const PColorVector<T2,N>& r)
+{
+  typename BinaryReturn<PColorVector<T1,N>, PColorVector<T2,N>, FnLocalColorInnerProduct>::Type_t  d;
+
+  // The traceColor is eaten here
+  d.elem() = adj(l.elem(0)) * r.elem(0);
+  for(int k=1; k < N; ++k)
+    d.elem() += adj(l.elem(k)) * r.elem(k);
+
+  return d;
+}
+
+
+//-----------------------------------------------
 // Peeking and poking
 //! Extract color vector components 
 template<class T, int N>

@@ -4,12 +4,13 @@
  *
  */
 
+#include "qdp_diagnostics.h"
+
 #include <xmmintrin.h>
+#include "qdp_config.h"
 #include "scalarsite_sse/sse_blas_local_vcdot_double.h"
 
 namespace QDP {
-
-#include "qdp_config.h"
 
 #ifndef QDP_USE_SSE3
 
@@ -43,7 +44,7 @@ namespace QDP {
   }
 
 #else
-#warning Using SSE3
+QDPXX_MESSAGE("Using SSE3")
   /* SSE 3 */
 #include <pmmintrin.h>
 

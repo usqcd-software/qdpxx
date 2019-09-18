@@ -5,10 +5,10 @@
  */
 
 #include "scalarsite_sse/sse_blas_vaypx4_double.h"
+#include <xmmintrin.h>
 
 namespace QDP {
 
-#include <xmmintrin.h>
 
 void vaypx4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, int n_4spin)
 {

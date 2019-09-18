@@ -34,6 +34,8 @@ namespace QDP {
   static int n_cores = -1;
   static int n_threads_per_core = -1;
 
+  extern float pool_size_in_gb;
+
 	//! Turn on the machine
 	void QDP_initialize(int *argc, char ***argv)
 	{
@@ -46,6 +48,8 @@ namespace QDP {
 		//
 		// Process command line
 		//
+		// Default pool size
+		pool_size_in_gb = 8;
 		
 		// Look for help
 		bool help_flag = false;
@@ -57,10 +61,10 @@ namespace QDP {
 		
 		bool setGeomP = false;
 		multi1d<int> logical_geom(Nd);   // apriori logical geometry of the machine
+
 		logical_geom = 0;
-		
 		bool setIOGeomP = false;
-		multi1d<int> logical_iogeom(Nd); // apriori logical 	
+		multi1d<int> logical_iogeom(Nd); // apriori logical
 		logical_iogeom = 0;
 		
 #ifdef USE_REMOTE_QIO
@@ -103,6 +107,7 @@ namespace QDP {
 						rtinode);
 #endif
 
+				fprintf(stderr, "   -poolsize <X>  Create a fixed pool of X GB for Pool Alloc\n");
 				fprintf(stderr, "   -bind c:s   Bind Threads -- BlueGene Q only, c  cores per node and s SMT threads to run per core \n");
 
 				
@@ -124,6 +129,11 @@ namespace QDP {
 				setProgramProfileLevel(lev);
 			}
 #endif
+			else if ( strcmp((*argv)[i],"-poolsize")==0)
+			{
+				sscanf((*argv)[++i], "%f", &pool_size_in_gb);
+
+			}
 			else if (strcmp((*argv)[i], "-geom")==0) 
 			{
 				setGeomP = true;
@@ -198,10 +208,12 @@ namespace QDP {
 		QDP_info("Now initialize QMP");
 #endif
 		
+
+
 		if (QMP_is_initialized() == QMP_FALSE)
 		{
 			QMP_thread_level_t prv;
-			if (QMP_init_msg_passing(argc, argv, QMP_THREAD_SINGLE, &prv) != QMP_SUCCESS)
+			if (QMP_init_msg_passing(argc, argv, QMP_THREAD_MULTIPLE, &prv) != QMP_SUCCESS)
 			{
 				QDPIO::cerr << __func__ << ": QMP_init_msg_passing failed" << std::endl;
 				QDP_abort(1);
@@ -223,6 +235,7 @@ namespace QDP {
 		QDP_info("Some layout init");
 #endif
 		
+
 		Layout::init();   // setup extremely basic functionality in Layout
 		
 		isInit = true;

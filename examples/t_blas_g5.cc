@@ -1,5 +1,7 @@
 // $Id: t_blas_g5.cc,v 1.3 2005-03-18 11:55:29 bjoo Exp $
 
+#include "qdp_diagnostics.h"
+
 #include <iostream>
 #include <cstdio>
 
@@ -9,7 +11,7 @@
 #include "qdp.h"
 
 #ifndef QDP_USE_SSE
-#warning "Non sse target. Using Generics"
+QDPXX_MESSAGE("Non sse target. Using Generics")
 #include "scalarsite_generic/generic_blas_vaxpy3_g5.h"
 #include "scalarsite_generic/generic_blas_vaypx3_g5.h"
 #include "scalarsite_generic/generic_blas_vadd3_g5.h"
@@ -20,14 +22,14 @@
 #if BASE_PRECISION == 32
 
 #if defined (__GNUC__)
-#warning "SSE 32bit target with GCC. Using Some SSE assembler"
+QDPXX_MESSAGE("SSE 32bit target with GCC. Using Some SSE assembler")
 #include "scalarsite_sse/sse_blas_vaxpy3_g5.h"
 #include "scalarsite_sse/sse_blas_vaypx3_g5.h"
 #include "scalarsite_sse/sse_blas_vadd3_g5.h"
 #include "scalarsite_sse/sse_blas_vscal3_g5.h"
 #include "scalarsite_sse/sse_blas_vaxpby3_g5.h"
 #else
-#warning "SSE 32bit target but not GCC. Using Generics"
+QDPXX_MESSAGE("SSE 32bit target but not GCC. Using Generics")
 #include "scalarsite_generic/generic_blas_vaxpy3_g5.h"
 #include "scalarsite_generic/generic_blas_vaypx3_g5.h"
 #include "scalarsite_generic/generic_blas_vadd3_g5.h"
@@ -36,7 +38,7 @@
 #endif // GNUC
 
 #else
-#warning "SSE 64 BIT target. Using Generics"
+QDPXX_MESSAGE("SSE 64 BIT target. Using Generics")
 #include "scalarsite_generic/generic_blas_vaxpy3_g5.h"
 #include "scalarsite_generic/generic_blas_vaypx3_g5.h"
 #include "scalarsite_generic/generic_blas_vadd3_g5.h"

@@ -1,3 +1,4 @@
+#include "qdp_diagnostics.h"
 #include "qdp.h"
 #include "testCMulDouble.h"
 #include "unittest.h"
@@ -108,7 +109,7 @@ typedef union {
   }
 
 #else 
-#warning Using SSE3
+QDPXX_MESSAGE("Using SSE3")
 #include <pmmintrin.h>
 
 /* SSE 3? */
