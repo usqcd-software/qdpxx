@@ -1,3 +1,7 @@
+09/17/2019 -- Robert Edwards
+        Added support for new types of operations that return LatticeColorVectorSpinMatrix.
+        Lots of niggly things to support more modern C++ compilers.
+
 05/10/2017 -- Balint Joo
 	Updated Memory allocators -- These are allocated using Singleton CreateStatic, 
 	and not destroyed (NoDestroy policy) -- Chroma staggered regressions now pass.
