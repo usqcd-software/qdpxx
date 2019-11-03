@@ -535,7 +535,7 @@ random(OLattice<T>& d, const Subset& s)
 			fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
 		}
 
-		int myId = omp_get_thread_num();
+		int myId = qdpThreadNum();
 		if( myId < nodeSites ) {
 #pragma omp critical (random)
 		{
@@ -748,7 +748,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 			dthread.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
 		}
 
-		int myId = omp_get_thread_num();
+		int myId = qdpThreadNum();
 		if( myId < nodeSites ) {
 #pragma omp critical
 		{
@@ -800,7 +800,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
 			dthread.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
 			
 
-		int myId = omp_get_thread_num();
+		int myId = qdpThreadNum();
 		if( myId < nodeSites ) {
 #pragma omp critical
 		{
@@ -1080,7 +1080,7 @@ norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
 				dthread.elem() += localNorm2(ss1.elem(i));
 			}
 
-			int myId = omp_get_thread_num();
+			int myId = qdpThreadNum();
 			if ( myId < nodeSites ) {
 			#pragma omp critical
 			{
@@ -1210,7 +1210,7 @@ innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s
 				dthread.elem() += localInnerProduct(ss1.elem(i),ss2.elem(i));
 			}
 
-			int myId = omp_get_thread_num();
+			int myId = qdpThreadNum();
 			if( myId < nodeSites ) {
 			#pragma omp critical
 			{
@@ -1341,7 +1341,7 @@ innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> 
 				dthread.elem() += localInnerProductReal(ss1.elem(i),ss2.elem(i));
 			}
 
-			int myId = omp_get_thread_num();
+			int myId = qdpThreadNum();
 			if( myId < nodeSites )  {
 			#pragma omp critical
 			{
