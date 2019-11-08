@@ -653,6 +653,12 @@ public:
 	F[i] = s.F[i];
     }
 
+  void late_constructor(T *f, int ns2, int ns1)
+  {
+    if (! copymem) {delete[] F;}
+    F=f; n1=ns1; n2=ns2; sz=n1*n2; copymem=true;
+  }
+
   //! Allocate mem for the array
   void resize(int ns2, int ns1) {
     if(copymem) {
