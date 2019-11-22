@@ -842,12 +842,6 @@ public:
   explicit multi4d(int ns4, int ns3, int ns2, int ns1) {copymem=false;F=0;resize(ns4,ns3,ns2,ns1);}
   ~multi4d() {if (! copymem) {delete[] F;}}
 
-  void late_constructor(T *f, int ns4, int ns3, int ns2, int ns1)
-  {
-    if (! copymem) {delete[] F;}
-    F=f; n1=ns1; n2=ns2; n3=ns3; n4=ns4; sz=n1*n2*n3*n4; copymem=true;
-  }
-
   //! Copy constructor
   multi4d(const multi4d& s): copymem(false), n1(s.n1), n2(s.n2), n3(s.n3), n4(s.n4), sz(s.sz), F(0)
     {
