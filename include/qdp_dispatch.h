@@ -19,6 +19,13 @@ namespace QDP {
   }
 
 
+  inline
+    int qdpThreadNum()
+  {
+    return omp_get_thread_num();
+  }
+
+
 template<class Arg>
 void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*)){
    
@@ -65,6 +72,12 @@ namespace QDP {
    return qmt_num_threads();
  }
 
+ inline
+   int qdpThreadNum()
+ {
+   return qmt_thread_num();
+ }
+
 
 template<class Arg>
 void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int,Arg*)){
@@ -80,6 +93,12 @@ namespace QDP {
  int qdpNumThreads()
  {
    return 1;
+ }
+
+ inline
+ int qdpThreadNum()
+ {
+   return 0;
  }
 
 template<class Arg>
