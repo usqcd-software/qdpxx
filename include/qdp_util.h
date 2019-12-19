@@ -11,13 +11,13 @@
 namespace QDP {
 
 //! Decompose a lexicographic site into coordinates
-multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
+multi1d<index_t> crtesn(index_t ipos, const multi1d<index_t>& latt_size);
 
 //! Calculates the lexicographic site index from the coordinate of a site
-int local_site(const multi1d<int>& coord, const multi1d<int>& latt_size);
+index_t local_site(const multi1d<index_t>& coord, const multi1d<index_t>& latt_size);
 
 //! Unique-ify a list
-multi1d<int> uniquify_list(const multi1d<int>& ll);
+multi1d<index_t> uniquify_list(const multi1d<index_t>& ll);
 
 //! Initializer for subsets
 void initDefaultSets();

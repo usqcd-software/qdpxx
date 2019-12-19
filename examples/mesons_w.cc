@@ -13,8 +13,8 @@ class TimeSliceFunc : public SetFunc
 public:
   TimeSliceFunc(int dir): dir_decay(dir) {}
 
-  int operator() (const multi1d<int>& coordinate) const {return coordinate[dir_decay];}
-  int numSubsets() const {return Layout::lattSize()[dir_decay];}
+  index_t operator() (const multi1d<index_t>& coordinate) const {return coordinate[dir_decay];}
+  index_t numSubsets() const {return Layout::lattSize()[dir_decay];}
 
   int dir_decay;
 

@@ -23,8 +23,8 @@ namespace QDP
   {
     T& data;
     int current_time;
-    int start_lexico;
-    int stop_lexico;
+    index_t start_lexico;
+    index_t stop_lexico;
 
   public:
 
@@ -58,7 +58,7 @@ namespace QDP
       throw(std::string("Invalid time in Lattice TimeSliceIO"));
     }
 
-    multi1d<int> coord(Nd);
+    multi1d<index_t> coord(Nd);
     coord = 0;
     coord[tDir] = current_time;
     start_lexico = QDP::local_site(coord,Layout::lattSize());

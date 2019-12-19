@@ -60,11 +60,11 @@ namespace QDP {
 		}
 		
 		bool setGeomP = false;
-		multi1d<int> logical_geom(Nd);   // apriori logical geometry of the machine
+		multi1d<index_t> logical_geom(Nd);   // apriori logical geometry of the machine
 
 		logical_geom = 0;
 		bool setIOGeomP = false;
-		multi1d<int> logical_iogeom(Nd); // apriori logical
+		multi1d<index_t> logical_iogeom(Nd); // apriori logical
 		logical_iogeom = 0;
 		
 #ifdef USE_REMOTE_QIO
@@ -224,13 +224,15 @@ namespace QDP {
 		QDP_info("QMP inititalized");
 #endif
 		
-		if (setGeomP)
-			if (QMP_declare_logical_topology(logical_geom.slice(), Nd) != QMP_SUCCESS)
+		if (setGeomP) {
+		        multi1d<int> lgeom(Nd);
+			for(auto i=0; i < Nd; ++i) lgeom[i] = static_cast<int>(logical_geom.slice()[i]);
+			if (QMP_declare_logical_topology(lgeom.slice(), Nd) != QMP_SUCCESS)
 			{
 				QDPIO::cerr << __func__ << ": QMP_declare_logical_topology failed" << std::endl;
 				QDP_abort(1);
 			}
-		
+		}
 #if QDP_DEBUG >= 1
 		QDP_info("Some layout init");
 #endif

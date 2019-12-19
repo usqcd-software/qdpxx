@@ -105,7 +105,7 @@ public:
     if (a.ownsMemory) {
       //std::cout << "OSubLattice copy ctor, must copy\n";
       alloc_mem();
-      for( int i = 0 ; i < s->numSiteTable() ; ++i )
+      for( auto i = 0 ; i < s->numSiteTable() ; ++i )
 	F[i] = a.F[i];
     } else {
       F = a.F;
@@ -131,9 +131,9 @@ public:
 
   OSubLattice(const Subset& ss , OLattice<T>& a): s(&(const_cast<Subset&>(ss))), ownsMemory(true) {
     alloc_mem();
-    const int *tab = s->siteTable().slice();
-    for( int j = 0 ; j < s->numSiteTable() ; ++j ) {
-      int i = tab[j];
+    const auto tab = s->siteTable().slice();
+    for( auto  j = 0 ; j < s->numSiteTable() ; ++j ) {
+      auto i = tab[j];
       F[j] = a.elem(i);
     }
   }

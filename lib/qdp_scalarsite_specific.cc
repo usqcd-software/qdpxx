@@ -18,8 +18,8 @@ namespace Layout
   /* Assumes no inner grid */
   LatticeInteger latticeCoordinate(int mu)
   {
-    const int nodeSites = Layout::sitesOnNode();
-    const int nodeNumber = Layout::nodeNumber();
+    const auto nodeSites = Layout::sitesOnNode();
+    const auto nodeNumber = Layout::nodeNumber();
     LatticeInteger d;
 
     if (mu < 0 || mu >= Nd)
@@ -44,7 +44,7 @@ namespace Layout
 template<class T>
 std::ostream& operator<<(std::ostream& s, const multi1d<T>& s1)
 {
-  for(int i=0; i < s1.size(); ++i)
+  for(auto i=0; i < s1.size(); ++i)
     s << " " << s1[i];
 
   return s;
@@ -55,9 +55,9 @@ std::ostream& operator<<(std::ostream& s, const multi1d<T>& s1)
 //! Constructor from a function object
 void Set::make(const SetFunc& fun)
 {
-  int nsubset_indices = fun.numSubsets();
-  const int nodeSites = Layout::sitesOnNode();
-  const int nodeNumber = Layout::nodeNumber();
+  auto  nsubset_indices = fun.numSubsets();
+  const auto nodeSites = Layout::sitesOnNode();
+  const auto  nodeNumber = Layout::nodeNumber();
 
 #if QDP_DEBUG >= 2
   QDP_info("Set a subset: nsubset = %d",nsubset_indices);
@@ -78,11 +78,11 @@ void Set::make(const SetFunc& fun)
 #pragma omp parallel for
   for(int linear=0; linear < nodeSites; ++linear)
   {
-    multi1d<int> coord = Layout::siteCoords(nodeNumber, linear);
+    multi1d<index_t> coord = Layout::siteCoords(nodeNumber, linear);
 
-    int node   = Layout::nodeNumber(coord);
-    int lin    = Layout::linearSiteIndex(coord);
-    int icolor = fun(coord);
+    auto node   = Layout::nodeNumber(coord);
+    auto lin    = Layout::linearSiteIndex(coord);
+    auto icolor = fun(coord);
 
 #if QDP_DEBUG >= 3
     std::cerr<<"linear="<<linear<<" coord="<<coord<<" node="<<node<<" col="<<icolor << std::endl;
@@ -115,37 +115,37 @@ void Set::make(const SetFunc& fun)
    * from threading may be limited */
 
 #pragma omp parallel for
-  for(int cb=0; cb < nsubset_indices; ++cb)
+  for(auto cb=0; cb < nsubset_indices; ++cb)
   {
     // Always construct the sitetables. 
 
     // First loop and see how many sites are needed
-    int num_sitetable = 0;
+    index_t num_sitetable = 0;
 
     /* FIXME: This is a 'histogram' -- not yet threaded */
-    for(int linear=0; linear < nodeSites; ++linear) {
+    for(auto linear=0; linear < nodeSites; ++linear) {
       if (lat_color[linear] == cb) {
 	++num_sitetable;
       }
     }
     // Now take the inverse of the lattice coloring to produce
     // the site list
-    multi1d<int>& sitetable = sitetables[cb];
+    auto& sitetable = sitetables[cb];
     sitetable.resize(num_sitetable);
 
 
     // Site ordering stuff for later
     bool ordRep;
-    int start, end;
+    index_t start, end;
 
     // Handle the case that there are no sites
     if (num_sitetable > 0)
     {
       // For later sanity, initialize this to something 
-      for(int i=0; i < num_sitetable; ++i)
+      for(auto i=0; i < num_sitetable; ++i)
 	sitetable[i] = -1;
 
-      for(int linear=0, j=0; linear < nodeSites; ++linear)
+      for(auto linear=0, j=0; linear < nodeSites; ++linear)
 	if (lat_color[linear] == cb)
 	  sitetable[j++] = linear;
 
@@ -157,7 +157,8 @@ void Set::make(const SetFunc& fun)
       end = sitetable[sitetable.size()-1];  // the absolute last site
       
       // Now look for a hole
-      for(int prev=sitetable[0], i=0; i < sitetable.size(); ++i)
+      auto prev=sitetable[0];
+      for(auto i=0; i < sitetable.size(); ++i)
 	if (sitetable[i] != prev++)
 	{
 #if QDP_DEBUG >= 2

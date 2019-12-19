@@ -32,12 +32,17 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
     for(int nu=0; nu < mu; ++nu)
     {
 #if 1
+      QDPIO::cout << " 1 " << std::endl << std::flush;
+
       /* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
       LatticeColorMatrix tmp_0 = shift(u[nu],FORWARD,mu) * adj(shift(u[mu],FORWARD,nu));
 
+
+      QDPIO::cout << " 2 " << std::endl << std::flush ;
       /* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
       LatticeColorMatrix tmp_1 = tmp_0 * adj(u[nu]);
 
+      QDPIO::cout << " 3" << std::endl << std::flush ;
       /* tmp = sum(tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu))) */
       Double tmp = sum(real(trace(u[mu]*tmp_1)));
 
@@ -57,7 +62,8 @@ void MesPlq(const multi1d<LatticeColorMatrix>& u, Double& w_plaq, Double& s_plaq
 	s_plaq += tmp;
     }
   }
-  
+ 
+  QDPIO::cout << " 4 " << std::endl; 
   // Normalize
   w_plaq *= 2.0 / double(Layout::vol()*Nd*(Nd-1)*Nc);
   

@@ -11,30 +11,30 @@ namespace QDP
   //-----------------------------------------
   static int get_node_number(const int coord[])
   {
-    multi1d<int> crd(Nd);
-    crd = coord;   // an array copy
-    int node = Layout::nodeNumber(crd);
+    multi1d<index_t> crd(Nd);
+    for(auto i=0; i < Nd; ++i)  crd[i] = static_cast<index_t>(coord[i]);   // an array copy
+    int node = static_cast<int>( Layout::nodeNumber(crd) );
     return node;
   }
 
   static int get_node_index(const int coord[])
   {
-    multi1d<int> crd(Nd);
-    crd = coord;   // an array copy
-    int linear = Layout::linearSiteIndex(crd);
+    multi1d<index_t> crd(Nd);
+    for(auto i=0;i < Nd; ++i) crd[i] = static_cast<index_t>(coord[i]);   // an array copy
+    int linear = static_cast<int>(Layout::linearSiteIndex(crd));
     return linear;
   }
 
   static void get_coords(int coord[], int node, int linear)
   {
-    multi1d<int> crd = Layout::siteCoords(node, linear);
-    for(int i=0; i < Nd; ++i)
-      coord[i] = crd[i];
+    auto crd( Layout::siteCoords(static_cast<index_t>(node), static_cast<index_t>(linear) ) );
+    for(auto i=0; i < crd.size();  ++i)
+      coord[i] =static_cast<int>(crd[i]);
   }
 
   static int get_sites_on_node(int node) 
   {
-    return Layout::sitesOnNode();
+    return static_cast<int>(Layout::sitesOnNode());
   }
 
   // Setting up the QIO Filesystem
@@ -65,11 +65,11 @@ namespace QDP
 		}
 		
 	    // Compute my I/O node. Block lat size into I/O grid
-	    const multi1d<int>& proc_size = Layout::logicalSize();
-	    const multi1d<int>& io_geom = Layout::getIONodeGrid();
+	    const auto& proc_size = Layout::logicalSize();
+	    const auto& io_geom = Layout::getIONodeGrid();
 
-	    multi1d<int> block_sizes(Nd);
-	    for(int mu=0; mu < Nd; mu++) { 
+	    multi1d<index_t> block_sizes(Nd);
+	    for(auto mu=0; mu < Nd; mu++) { 
 		block_sizes[mu] = proc_size[mu]/io_geom[mu];
 						
 	        // Pick up slack if CPU dimension not divisible
@@ -79,19 +79,19 @@ namespace QDP
 	    }
 		
 	    // My node coords -- always in the processor grid
-	    multi1d<int> node_coords=Layout::getLogicalCoordFrom(node);
+	    multi1d<index_t> node_coords=Layout::getLogicalCoordFrom(node);
 		
 	    // Coords of I/O node, basically the origin of the block the 
 	    // current node is in
-		multi1d<int> io_node_coords(Nd);
-		for(int mu=0; mu < Nd; mu++) { 
+		multi1d<index_t> io_node_coords(Nd);
+		for(auto mu=0; mu < Nd; mu++) { 
 			// Integer division: will truncate to origin of block.
 			io_node_coords[mu] = node_coords[mu] / block_sizes[mu];
 		        io_node_coords[mu] *= block_sizes[mu];
 		}
 			
 	    // Now just convert the io_node_coords to a node number and we're done
-	   return Layout::getNodeNumberFrom(io_node_coords);
+	   return static_cast<int>(Layout::getNodeNumberFrom(io_node_coords));
 	}
 
 	//! io_node for multifile...
@@ -118,8 +118,8 @@ namespace QDP
 		  
     int latsize[Nd];
 
-    for(int m=0; m < Nd; ++m)
-      latsize[m] = Layout::lattSize()[m];
+    for(auto m=0; m < Nd; ++m)
+      latsize[m] = static_cast<int>(Layout::lattSize()[m]);
 
     layout.node_number = &get_node_number;
     layout.node_index  = &get_node_index;

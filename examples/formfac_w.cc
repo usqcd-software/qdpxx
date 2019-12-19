@@ -16,8 +16,8 @@ class TimeSliceFunc : public SetFunc
 public:
   TimeSliceFunc(int dir): dir_decay(dir) {}
 
-  int operator() (const multi1d<int>& coordinate) const {return coordinate[dir_decay];}
-  int numSubsets() const {return Layout::lattSize()[dir_decay];}
+  index_t operator() (const multi1d<index_t>& coordinate) const {return coordinate[dir_decay];}
+  index_t numSubsets() const {return Layout::lattSize()[dir_decay];}
 
   int dir_decay;
 
@@ -112,7 +112,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
      *
      * NOTE: spatial anisotropy is no allowed here
      */
-    multi1d<int> mom_size(Nd-1);
+    multi1d<index_t> mom_size(Nd-1);
     int Ndm1 = Nd-1;
     int L = 5;
     int mom_vol = 1;
@@ -125,7 +125,7 @@ void FormFac(const multi1d<LatticeColorMatrix>& u,
 
     for(int n = 0; n < mom_vol; ++n)
     {
-      multi1d<int> inser_mom = crtesn(n, mom_size);
+      auto inser_mom = crtesn(n, mom_size);
 
       int q_sq = 0;
       for(int nu = 0; nu < Ndm1; ++nu)

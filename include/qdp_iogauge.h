@@ -45,7 +45,7 @@ struct ArchivGauge_t
    */    
   ArchivGauge_t();
 
-  multi1d<int> nrow;            /*!< Lattice size */
+  multi1d<index_t> nrow;            /*!< Lattice size */
   multi1d<int> boundary;        /*!< Boundary conditions */
 
   Real  w_plaq;                 /*!< Mean normalised plaquette */

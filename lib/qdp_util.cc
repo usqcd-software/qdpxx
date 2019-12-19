@@ -124,28 +124,28 @@ QDP_verbose (bool verbose)
 //-----------------------------------------------------------------------------
 //! Unique-ify a list
 /*! Given a list of ints, collapse it to a list of the unique ints */
-multi1d<int>
-uniquify_list(const multi1d<int>& ll)
+multi1d<index_t>
+uniquify_list(const multi1d<index_t>& ll)
 {
-  multi1d<int> d(ll.size());
+  multi1d<index_t> d(ll.size());
 
   // Enter the first element as unique to prime the search
-  int ipos = 0;
-  int num = 0;
-  int prev_node;
+  index_t ipos = 0;
+  index_t num = 0;
+  index_t prev_node;
   
   d[num++] = prev_node = ll[ipos++];
 
   // Find the unique source nodes
   while (ipos < ll.size())
   {
-    int this_node = ll[ipos++];
+    auto this_node = ll[ipos++];
 
     if (this_node != prev_node)
     {
       // Has this node occured before?
       bool found = false;
-      for(int i=0; i < num; ++i)
+      for(auto i=0; i < num; ++i)
 	if (d[i] == this_node)
 	{
 	  found = true;
@@ -161,8 +161,8 @@ uniquify_list(const multi1d<int>& ll)
   }
 
   // Copy into a compact size array
-  multi1d<int> dd(num);
-  for(int i=0; i < num; ++i)
+  multi1d<index_t> dd(num);
+  for(auto i=0; i < num; ++i)
     dd[i] = d[i];
 
   return dd;

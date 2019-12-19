@@ -35,7 +35,7 @@ public:
   virtual ~MapFunc() {}
   //! Maps a lattice coordinate under a map to a new lattice coordinate
   /*! sign > 0 for map, sign < 0 for the inverse map */
-  virtual multi1d<int> operator() (const multi1d<int>& coordinate, int sign) const = 0;
+  virtual multi1d<index_t> operator() (const multi1d<index_t>& coordinate, int sign) const = 0;
 };
     
 
@@ -49,10 +49,10 @@ public:
 
   //! Maps a lattice coordinate under a map to a new lattice coordinate
   /*! sign > 0 for map, sign < 0 for the inverse map */
-  virtual multi1d<int> operator() (const multi1d<int>& coordinate, int sign, int dir) const = 0;
+  virtual multi1d<index_t> operator() (const multi1d<index_t>& coordinate, int sign, int dir) const = 0;
 
   //! Returns the array size - the number of directions which are to be used
-  virtual int numArray() const = 0;
+  virtual index_t numArray() const = 0;
 };
     
 /** @} */ // end of group map

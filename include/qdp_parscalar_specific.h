@@ -28,22 +28,22 @@ namespace Layout
 namespace QDPInternal
 {
 	//! Route to another node (blocking)
-	void route(void *send_buf, int srce_node, int dest_node, int count);
+	void route(void *send_buf, index_t srce_node, index_t dest_node, index_t count);
 
 	//! Wait on send-receive
-	void wait(int dir);
+	void wait(index_t dir);
 
 	//! Send to another node (wait)
 	/*! All nodes participate */
-	void sendToWait(void *send_buf, int dest_node, int count);
+	void sendToWait(void *send_buf, index_t dest_node, index_t count);
 
 	//! Receive from another node (wait)
-	void recvFromWait(void *recv_buf, int srce_node, int count);
+	void recvFromWait(void *recv_buf, index_t srce_node, index_t count);
 
 	//! Via some mechanism, get the dest to node 0
 	/*! Ultimately, I do not want to use point-to-point */
 	template<class T>
-	void sendToPrimaryNode(T& dest, int srcnode)
+	void sendToPrimaryNode(T& dest, index_t srcnode)
 	{
 		if (srcnode != 0)
 		{
@@ -62,27 +62,27 @@ namespace QDPInternal
 	}
 
 	//! Wrapper to get a functional unsigned global sum
-	inline void globalSumArray(unsigned int *dest, int len)
+	inline void globalSumArray(unsigned int *dest, index_t len)
 	{
-		for(int i=0; i < len; i++, dest++)
+		for(index_t i=0; i < len; i++, dest++)
 			QMP_binary_reduction(dest, sizeof(unsigned int), sumAnUnsigned);
 	}
 
 	//! Low level hook to QMP_global_sum
-	inline void globalSumArray(int *dest, int len)
+	inline void globalSumArray(int *dest, index_t len)
 	{
-		for(int i=0; i < len; i++, dest++)
+		for(index_t i=0; i < len; i++, dest++)
 			QMP_sum_int(dest);
 	}
 
 	//! Low level hook to QMP_global_sum
-	inline void globalSumArray(float *dest, int len)
+	inline void globalSumArray(float *dest, index_t len)
 	{
 		QMP_sum_float_array(dest, len);
 	}
 
 	//! Low level hook to QMP_global_sum
-	inline void globalSumArray(double *dest, int len)
+	inline void globalSumArray(double *dest, index_t len)
 	{
 		QMP_sum_double_array(dest, len);
 	}
@@ -133,7 +133,7 @@ namespace QDPInternal
 		QDPIO::cout << "sizeof(W) = " << sizeof(W) << endl;
 		QDPIO::cout << "Calling global sum array with length " << sizeof(T)/sizeof(W) << endl;
 #endif
-		globalSumArray((W *)&dest, int(sizeof(T)/sizeof(W))); // call appropriate hook
+		globalSumArray((W *)&dest, static_cast<index_t>(sizeof(T)/sizeof(W))); // call appropriate hook
 	}
 
   template<>
@@ -258,30 +258,30 @@ struct u_arg{
 				OLattice<T>& d_,
 				const QDPExpr<RHS,OScalar<T1> >& r_,
 				const Op& op_,
-				const int *tab_
+				const index_t *tab_
 		) : d(d_), r(r_), op(op_), tab(tab_) {}
 		
 		OLattice<T>& d;
 		const QDPExpr<RHS,OScalar<T1> >& r;
 		const Op& op;
-		const int *tab;
+		const index_t *tab;
 	 };
 
 //! user function for the evaluate function:
 // "OLattice Op Scalar(Expression(source)) under an Subset"
 //
 template<class T, class T1, class Op, class RHS>
-void ev_userfunc(int lo, int hi, int myId, u_arg<T,T1,Op,RHS> *a)
+void ev_userfunc(index_t lo, index_t hi, index_t myId, u_arg<T,T1,Op,RHS> *a)
 {
-	 OLattice<T>& dest = a->d;
-	 const QDPExpr<RHS,OScalar<T1> >&rhs = a->r;
-	 const int* tab = a->tab;
-	 const Op& op= a->op;
+	 auto& dest = a->d;
+	 auto& rhs = a->r;
+	 auto tab = a->tab;
+	 auto& op= a->op;
 
       
-	 for(int j=lo; j < hi; ++j)
+	 for(index_t j=lo; j < hi; ++j)
 	 {
-		 int i = tab[j];
+		 index_t i = tab[j];
 		 op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
 	 }
 }
@@ -295,12 +295,12 @@ struct user_arg{
 				OLattice<T>& d_,
 				const QDPExpr<RHS,OLattice<T1> >& r_,
 				const Op& op_,
-				const int *tab_ ) : d(d_), r(r_), op(op_), tab(tab_) {}
+				const index_t *tab_ ) : d(d_), r(r_), op(op_), tab(tab_) {}
 
 				OLattice<T>& d;
 				const QDPExpr<RHS,OLattice<T1> >& r;
 				const Op& op;
-				const int *tab;
+				const index_t *tab;
 	 };
 
 //! user function for the evaluate function:
@@ -310,15 +310,15 @@ template<class T, class T1, class Op, class RHS>
 void evaluate_userfunc(int lo, int hi, int myId, user_arg<T,T1,Op,RHS> *a)
 {
 
-	 OLattice<T>& dest = a->d;
-	 const QDPExpr<RHS,OLattice<T1> >&rhs = a->r;
-	 const int* tab = a->tab;
-	 const Op& op= a->op;
+	 auto& dest = a->d;
+	 const auto& rhs = a->r;
+	 const auto tab = a->tab;
+	 const auto op= a->op;
 
       
-	 for(int j=lo; j < hi; ++j)
+	 for(index_t j=lo; j < hi; ++j)
 	 {
-		 int i = tab[j];
+		 index_t i = tab[j];
 		 op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
 	 }
 }
@@ -356,12 +356,12 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 	///////////////////
 	// Original code
 	//////////////////
-	const int* tab = s.siteTable().slice();
-	int numSiteTable = s.numSiteTable();
+	const auto tab = s.siteTable().slice();
+	auto numSiteTable = s.numSiteTable();
 #pragma omp parallel for
-	 for(int j=0; j < numSiteTable; ++j)
+	 for(auto j=0; j < numSiteTable; ++j)
 	 {
-		 int i = tab[j];
+		 auto i = tab[j];
 		 op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
 	 }
 #endif
@@ -398,12 +398,12 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 
 	dispatch_to_threads< user_arg<T,T1,Op,RHS> >(numSiteTable, a, evaluate_userfunc);
 #else
-	const int *tab = s.siteTable().slice();
-	const int numSiteTable = s.numSiteTable();
+	const auto tab = s.siteTable().slice();
+	const auto numSiteTable = s.numSiteTable();
 #pragma omp parallel for
-	for(int j=0; j < numSiteTable; ++j)
+	for(auto j=0; j < numSiteTable; ++j)
 	{
-		int i = tab[j];
+		auto i = tab[j];
 		op(dest.elem(i), forEach(rhs, EvalLeaf1(i), OpCombine()));
 	}
 #endif
@@ -440,10 +440,10 @@ void evaluate_F(T* dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
   //QDP_info("eval_F %d sites",s.numSiteTable());
 
   // General form of loop structure
-  const int *tab = s.siteTable().slice();
-  for(int j=0; j < s.numSiteTable(); ++j) 
+  const auto tab = s.siteTable().slice();
+  for(auto j=0; j < s.numSiteTable(); ++j) 
   {
-    int i = tab[j];
+    auto i = tab[j];
     //fprintf(stderr,"eval(olattice,olattice): site %d\n",i);
     op( dest[j], forEach(rhs, EvalLeaf1(i), OpCombine()));
   }
@@ -461,15 +461,15 @@ void evaluate_F(T* dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >& rhs,
 template<class T1, class T2>
 void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
-	OLattice<T2>& dest = d.field();
-	const Subset& s = d.subset();
+	auto& dest = d.field();
+	const auto& s = d.subset();
 
-	const int *tab = s.siteTable().slice();
-	const int nodeSites = s.numSiteTable();
+	const auto tab = s.siteTable().slice();
+	const auto nodeSites = s.numSiteTable();
 #pragma omp parallel for
-	for(int j=0; j < nodeSites; ++j)
+	for(auto j=0; j < nodeSites; ++j)
 	{
-		int i = tab[j];
+		auto i = tab[j];
 		copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 	}
 }
@@ -478,10 +478,10 @@ void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s
 template<class T1, class T2> 
 void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
-	int nodeSites = Layout::sitesOnNode();
+	auto nodeSites = Layout::sitesOnNode();
 	
 #pragma omp parallel for
-	for(int i=0; i < nodeSites; ++i) 
+	for(auto i=0; i < nodeSites; ++i) 
 		copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
 
@@ -517,8 +517,8 @@ template<class T>
 void 
 random(OLattice<T>& d, const Subset& s)
 {
-	const int *tab = s.siteTable().slice();
-	const int nodeSites = s.numSiteTable();
+	const auto tab = s.siteTable().slice();
+	const auto nodeSites = s.numSiteTable();
 
 #pragma omp parallel
 	{
@@ -526,16 +526,16 @@ random(OLattice<T>& d, const Subset& s)
 		Seed skewed_seed;
 
 #pragma omp for // need the barrier to avoid that RNG::ran_seed is changed too early!
-		for(int j=0; j < nodeSites; ++j)
+		for(auto j=0; j < nodeSites; ++j)
 		{
-			int i = tab[j];
+			auto i = tab[j];
 			seed = RNG::ran_seed;
 
 			skewed_seed.elem() = RNG::ran_seed.elem() * RNG::lattice_ran_mult->elem(i);
 			fill_random(d.elem(i), seed, skewed_seed, RNG::ran_mult_n);
 		}
 
-		int myId = qdpThreadNum();
+		auto myId = qdpThreadNum();
 		if( myId < nodeSites ) {
 #pragma omp critical (random)
 		{
@@ -551,8 +551,8 @@ random(OLattice<T>& d, const Subset& s)
 template<class T>
 void random(OSubLattice<T> dd)
 {
-	OLattice<T>& d = dd.field();
-	const Subset& s = dd.subset();
+	auto& d = dd.field();
+	const auto& s = dd.subset();
 
 	random(d,s);
 }
@@ -575,13 +575,13 @@ void gaussian(OLattice<T>& d, const Subset& s)
 	random(r1,s);
 	random(r2,s);
 
-	const int *tab = s.siteTable().slice();
-	const int nodeSites = s.numSiteTable();
+	const auto tab = s.siteTable().slice();
+	const auto nodeSites = s.numSiteTable();
 
 #pragma omp parallel for
-	for(int j=0; j < nodeSites; ++j)
+	for(auto j=0; j < nodeSites; ++j)
 	{
-		int i = tab[j];
+		auto i = tab[j];
 		fill_gaussian(d.elem(i), r1.elem(i), r2.elem(i));
 	}
 }
@@ -592,8 +592,8 @@ void gaussian(OLattice<T>& d, const Subset& s)
 template<class T>
 void gaussian(OSubLattice<T> dd)
 {
-	OLattice<T>& d = dd.field();
-	const Subset& s = dd.subset();
+	auto& d = dd.field();
+	const auto& s = dd.subset();
 
 	gaussian(d,s);
 }
@@ -615,13 +615,13 @@ template<class T>
 inline
 void zero_rep(OLattice<T>& dest, const Subset& s) 
 {
-	const int *tab = s.siteTable().slice();
-	const int nodeSites = s.numSiteTable();
+	const auto tab = s.siteTable().slice();
+	const auto nodeSites = s.numSiteTable();
 
 #pragma omp parallel for
-	for(int j=0; j < nodeSites; ++j)
+	for(auto j=0; j < nodeSites; ++j)
 	{
-		int i = tab[j];
+		auto i = tab[j];
 		zero_rep(dest.elem(i));
 	}
 }
@@ -646,10 +646,10 @@ void zero_rep(OSubLattice<T> dd)
 template<class T> 
 void zero_rep(OLattice<T>& dest) 
 {
-	const int nodeSites = Layout::sitesOnNode();
+	const auto nodeSites = Layout::sitesOnNode();
 
 #pragma omp parallel for
-	for(int i=0; i < nodeSites; ++i) 
+	for(auto i=0; i < nodeSites; ++i) 
 		zero_rep(dest.elem(i));
 }
 
@@ -733,8 +733,8 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 	// Must initialize to zero since we do not know if the loop will be entered
 	zero_rep(d.elem());
 
-	const int *tab = s.siteTable().slice();
-	const int nodeSites = s.numSiteTable();
+	const auto tab = s.siteTable().slice();
+	const auto nodeSites = s.numSiteTable();
 
 #pragma omp parallel
 	{
@@ -742,13 +742,13 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 		zero_rep(dthread.elem());
 
 #pragma omp for
-		for(int j=0; j < nodeSites; ++j)
+		for(auto j=0; j < nodeSites; ++j)
 		{
-			int i = tab[j];
+			auto i = tab[j];
 			dthread.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
 		}
 
-		int myId = qdpThreadNum();
+		const auto myId = qdpThreadNum();
 		if( myId < nodeSites ) {
 #pragma omp critical
 		{
@@ -788,7 +788,7 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
 
 	// Loop always entered - could unroll
 	zero_rep(d.elem());
-	const int nodeSites = Layout::sitesOnNode();
+	const auto nodeSites = Layout::sitesOnNode();
 
 #pragma omp parallel
 	{
@@ -796,11 +796,11 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
 		zero_rep(dthread.elem());
 		
 #pragma omp for nowait
-		for(int i=0; i < nodeSites; ++i) 
+		for(auto i=0; i < nodeSites; ++i) 
 			dthread.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
 			
 
-		int myId = qdpThreadNum();
+		const auto  myId = qdpThreadNum();
 		if( myId < nodeSites ) {
 #pragma omp critical
 		{
@@ -844,7 +844,7 @@ sumMulti(const QDPExpr<RHS,OScalar<T> >& s1, const Set& ss)
 #endif
 
 	// lazy - evaluate repeatedly
-	for(int i=0; i < ss.numSubsets(); ++i)
+	for(auto i=0; i < ss.numSubsets(); ++i)
 		evaluate(dest[i],OpAssign(),s1,all);
 
 
@@ -879,16 +879,16 @@ sumMulti(const QDPExpr<RHS,OLattice<T> >& s1, const Set& ss)
 #endif
 
 	// Initialize result with zero
-	for(int k=0; k < ss.numSubsets(); ++k)
+	for(auto k=0; k < ss.numSubsets(); ++k)
 		zero_rep(dest[k]);
 
 	// Loop over all sites and accumulate based on the coloring 
-	const multi1d<int>& lat_color =	 ss.latticeColoring();
-	const int nodeSites = Layout::sitesOnNode();
+	const multi1d<index_t>& lat_color =	 ss.latticeColoring();
+	const auto nodeSites = Layout::sitesOnNode();
 
-	for(int i=0; i < nodeSites; ++i) 
+	for(auto i=0; i < nodeSites; ++i) 
 	{
-		int j = lat_color[i];
+		auto j = lat_color[i];
 		dest[j].elem() += forEach(s1, EvalLeaf1(i), OpCombine());
 	}
 
@@ -927,8 +927,8 @@ sumMulti(const multi1d< OScalar<T> >& s1, const Set& ss)
 #endif
 
 	// lazy - evaluate repeatedly
-	for(int i=0; i < dest.size1(); ++i)
-		for(int j=0; j < dest.size2(); ++j)
+	for(auto i=0; i < dest.size1(); ++i)
+		for(auto j=0; j < dest.size2(); ++j)
 			dest(j,i) = s1[j];
 
 #if defined(QDP_USE_PROFILING)	 
@@ -962,25 +962,23 @@ sumMulti(const multi1d< OLattice<T> >& s1, const Set& ss)
 #endif
 
 	// Initialize result with zero
-	for(int i=0; i < dest.size1(); ++i)
-		for(int j=0; j < dest.size2(); ++j)
+	for(auto i=0; i < dest.size1(); ++i)
+		for(auto j=0; j < dest.size2(); ++j)
 			zero_rep(dest(j,i));
 
 	// Loop over all sites and accumulate based on the coloring 
-	const multi1d<int>& lat_color =	 ss.latticeColoring();
+	const auto& lat_color =	 ss.latticeColoring();
 
-	for(int k=0; k < s1.size(); ++k)
+	for(auto k=0; k < s1.size(); ++k)
 	{
-		const OLattice<T>& ss1 = s1[k];
-		const int nodeSites = Layout::sitesOnNode();
-		for(int i=0; i < nodeSites; ++i) 
+		const auto& ss1 = s1[k];
+		const auto nodeSites = Layout::sitesOnNode();
+		for(auto i=0; i < nodeSites; ++i) 
 		{
-			int j = lat_color[i];
+			auto j = lat_color[i];
 			dest(k,j).elem() += ss1.elem(i);
 		}
 	}
-
-	// Do a global sum on the result
 	QDPInternal::globalSumArray(dest);
 
 #if defined(QDP_USE_PROFILING)	 
@@ -1015,9 +1013,9 @@ norm2(const multi1d< OScalar<T> >& s1)
 	// Possibly loop entered
 	zero_rep(d.elem());
 
-	for(int n=0; n < s1.size(); ++n)
+	for(auto n=0; n < s1.size(); ++n)
 	{
-		OScalar<T>& ss1 = s1[n];
+		auto& ss1 = s1[n];
 		d.elem() += localNorm2(ss1.elem());
 	}
 
@@ -1061,12 +1059,13 @@ norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
 	// Possibly loop entered
 	zero_rep(d.elem());
 
-	const int *tab = s.siteTable().slice();
-	const int nodeSites = s.numSiteTable();
+	const auto tab = s.siteTable().slice();
+	const auto nodeSites = s.numSiteTable();
 
-	for(int n=0; n < s1.size(); ++n)
+
+	for(auto n=0; n < s1.size(); ++n)
 	{
-		const OLattice<T>& ss1 = s1[n];
+		const auto& ss1 = s1[n];
 
 		#pragma omp parallel
 		{
@@ -1074,13 +1073,13 @@ norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
 			zero_rep(dthread.elem());
 
 			#pragma omp for
-			for(int j=0; j < nodeSites; ++j)
+			for(auto j=0; j < nodeSites; ++j)
 			{
-				int i = tab[j];
+				auto i = tab[j];
 				dthread.elem() += localNorm2(ss1.elem(i));
 			}
 
-			int myId = qdpThreadNum();
+			auto myId = qdpThreadNum();
 			if ( myId < nodeSites ) {
 			#pragma omp critical
 			{
@@ -1141,10 +1140,10 @@ innerProduct(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >& s2)
 	// Possibly loop entered
 	zero_rep(d.elem());
 
-	for(int n=0; n < s1.size(); ++n)
+	for(auto n=0; n < s1.size(); ++n)
 	{
-		OScalar<T1>& ss1 = s1[n];
-		OScalar<T2>& ss2 = s2[n];
+		auto& ss1 = s1[n];
+		auto& ss2 = s2[n];
 		d.elem() += localInnerProduct(ss1.elem(),ss2.elem());
 	}
 
@@ -1191,9 +1190,9 @@ innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s
 	// Possibly loop entered
 	zero_rep(d.elem());
 
-	const int *tab = s.siteTable().slice();
-	const int nodeSites = s.numSiteTable();
-	for(int n=0; n < s1.size(); ++n)
+	const auto tab = s.siteTable().slice();
+	const auto nodeSites = s.numSiteTable();
+	for(auto n=0; n < s1.size(); ++n)
 	{
 		const OLattice<T1>& ss1 = s1[n];
 		const OLattice<T2>& ss2 = s2[n];
@@ -1204,13 +1203,13 @@ innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s
 			zero_rep(dthread.elem());
 		
 			#pragma omp for
-			for(int j=0; j < nodeSites; ++j)
+			for(auto j=0; j < nodeSites; ++j)
 			{
-				int i = tab[j];
+				auto i = tab[j];
 				dthread.elem() += localInnerProduct(ss1.elem(i),ss2.elem(i));
 			}
 
-			int myId = qdpThreadNum();
+			auto myId = qdpThreadNum();
 			if( myId < nodeSites ) {
 			#pragma omp critical
 			{
@@ -1271,7 +1270,7 @@ innerProductReal(const multi1d< OScalar<T1> >& s1, const multi1d< OScalar<T2> >&
 	// Possibly loop entered
 	zero_rep(d.elem());
 
-	for(int n=0; n < s1.size(); ++n)
+	for(auto n=0; n < s1.size(); ++n)
 	{
 		OScalar<T1>& ss1 = s1[n];
 		OScalar<T2>& ss2 = s2[n];
@@ -1321,10 +1320,10 @@ innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> 
 	// Possibly loop entered
 	zero_rep(d.elem());
 
-	const int *tab = s.siteTable().slice();
-	const int nodeSites = s.numSiteTable();
+	const auto tab = s.siteTable().slice();
+	const auto nodeSites = s.numSiteTable();
 
-	for(int n=0; n < s1.size(); ++n)
+	for(auto n=0; n < s1.size(); ++n)
 	{
 		const OLattice<T1>& ss1 = s1[n];
 		const OLattice<T2>& ss2 = s2[n];
@@ -1335,13 +1334,13 @@ innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> 
 			zero_rep(dthread.elem());
 			
 			#pragma omp for
-			for(int j=0; j < nodeSites; ++j)
+			for(auto j=0; j < nodeSites; ++j)
 			{
-				int i = tab[j];
+				auto i = tab[j];
 				dthread.elem() += localInnerProductReal(ss1.elem(i),ss2.elem(i));
 			}
 
-			int myId = qdpThreadNum();
+			auto myId = qdpThreadNum();
 			if( myId < nodeSites )  {
 			#pragma omp critical
 			{
@@ -1430,8 +1429,8 @@ globalMax(const QDPExpr<RHS,OLattice<T> >& s1)
 	// Loop always entered so unroll
 	d.elem() = forEach(s1, EvalLeaf1(0), OpCombine());	 // SINGLE NODE VERSION FOR NOW
 
-	const int vvol = Layout::sitesOnNode();
-	for(int i=1; i < vvol; ++i) 
+	const auto vvol = Layout::sitesOnNode();
+	for(auto i=1; i < vvol; ++i) 
 	{
 		typename UnaryReturn<T, FnGlobalMax>::Type_t	dd = 
 			forEach(s1, EvalLeaf1(i), OpCombine());		// SINGLE NODE VERSION FOR NOW
@@ -1498,8 +1497,8 @@ globalMin(const QDPExpr<RHS,OLattice<T> >& s1)
 	// Loop always entered so unroll
 	d.elem() = forEach(s1, EvalLeaf1(0), OpCombine());	 // SINGLE NODE VERSION FOR NOW
 
-	const int vvol = Layout::sitesOnNode();
-	for(int i=1; i < vvol; ++i) 
+	const auto vvol = Layout::sitesOnNode();
+	for(auto i=1; i < vvol; ++i) 
 	{
 		typename UnaryReturn<T, FnGlobalMin>::Type_t	dd = 
 			forEach(s1, EvalLeaf1(i), OpCombine());		// SINGLE NODE VERSION FOR NOW
@@ -1551,8 +1550,8 @@ isnan(const OLattice<T>& s1)
   prof.time -= getClockTime();
 #endif
 
-  const int nodeSites = Layout::sitesOnNode();
-  for(int i=0; i < nodeSites; ++i) 
+  const auto nodeSites = Layout::sitesOnNode();
+  for(auto i=0; i < nodeSites; ++i) 
   {
     d |= isnan(s1.elem(i));
   }
@@ -1596,8 +1595,8 @@ isinf(const OLattice<T>& s1)
   prof.time -= getClockTime();
 #endif
 
-  const int nodeSites = Layout::sitesOnNode();
-  for(int i=0; i < nodeSites; ++i) 
+  const auto nodeSites = Layout::sitesOnNode();
+  for(auto i=0; i < nodeSites; ++i) 
   {
     d |= isinf(s1.elem(i));
   }
@@ -1641,8 +1640,8 @@ isfinite(const OLattice<T>& s1)
   prof.time -= getClockTime();
 #endif
 
-  const int nodeSites = Layout::sitesOnNode();
-  for(int i=0; i < nodeSites; ++i) 
+  const auto nodeSites = Layout::sitesOnNode();
+  for(auto i=0; i < nodeSites; ++i) 
   {
     d &= isfinite(s1.elem(i));
   }
@@ -1686,8 +1685,8 @@ isnormal(const OLattice<T>& s1)
   prof.time -= getClockTime();
 #endif
 
-  const int nodeSites = Layout::sitesOnNode();
-  for(int i=0; i < nodeSites; ++i) 
+  const auto nodeSites = Layout::sitesOnNode();
+  for(auto i=0; i < nodeSites; ++i) 
   {
     d &= isnormal(s1.elem(i));
   }
@@ -1717,7 +1716,7 @@ isnormal(const OLattice<T>& s1)
 	@relates QDPType */
 template<class T1>
 inline OScalar<T1>
-peekSite(const OScalar<T1>& l, const multi1d<int>& coord)
+peekSite(const OScalar<T1>& l, const multi1d<index_t>& coord)
 {
 	return l;
 }
@@ -1731,7 +1730,7 @@ peekSite(const OScalar<T1>& l, const multi1d<int>& coord)
 	@relates QDPType */
 template<class RHS, class T1>
 inline OScalar<T1>
-peekSite(const QDPExpr<RHS,OScalar<T1> > & l, const multi1d<int>& coord)
+peekSite(const QDPExpr<RHS,OScalar<T1> > & l, const multi1d<index_t>& coord)
 {
 	// For now, simply evaluate the expression and then call the function
 	typedef OScalar<T1> C1;
@@ -1750,10 +1749,10 @@ peekSite(const QDPExpr<RHS,OScalar<T1> > & l, const multi1d<int>& coord)
 	@relates QDPType */
 template<class T1>
 inline OScalar<T1>
-peekSite(const OLattice<T1>& l, const multi1d<int>& coord)
+peekSite(const OLattice<T1>& l, const multi1d<index_t>& coord)
 {
 	OScalar<T1> dest;
-	int nodenum = Layout::nodeNumber(coord);
+	auto nodenum = Layout::nodeNumber(coord);
 
 	// Find the result somewhere within the machine.
 	// Then we must get it to node zero so we can broadcast it
@@ -1781,7 +1780,7 @@ peekSite(const OLattice<T1>& l, const multi1d<int>& coord)
 	@relates QDPType */
 template<class RHS, class T1>
 inline OScalar<T1>
-peekSite(const QDPExpr<RHS,OLattice<T1> > & l, const multi1d<int>& coord)
+peekSite(const QDPExpr<RHS,OLattice<T1> > & l, const multi1d<index_t>& coord)
 {
 	// For now, simply evaluate the expression and then call the function
 	typedef OLattice<T1> C1;
@@ -1800,7 +1799,7 @@ peekSite(const QDPExpr<RHS,OLattice<T1> > & l, const multi1d<int>& coord)
 	@relates QDPType */
 template<class T1>
 inline OLattice<T1>&
-pokeSite(OLattice<T1>& l, const OScalar<T1>& r, const multi1d<int>& coord)
+pokeSite(OLattice<T1>& l, const OScalar<T1>& r, const multi1d<index_t>& coord)
 {
 	if (Layout::nodeNumber() == Layout::nodeNumber(coord))
 		l.elem(Layout::linearSiteIndex(coord)) = r.elem();
@@ -1820,13 +1819,13 @@ template<class T>
 inline void 
 QDP_extract(multi1d<OScalar<T> >& dest, const OLattice<T>& src, const Subset& s)
 {
-	const int *tab = s.siteTable().slice();
-	const int nodeSites = s.numSiteTable();
+	const auto tab = s.siteTable().slice();
+	const auto nodeSites = s.numSiteTable();
 
 #pragma omp parallel for
-	for(int j=0; j < nodeSites; ++j)
+	for(auto j=0; j < nodeSites; ++j)
 	{
-		int i = tab[j];
+		auto i = tab[j];
 		dest[i].elem() = src.elem(i);
 	}
 }
@@ -1842,13 +1841,13 @@ template<class T>
 inline void 
 QDP_insert(OLattice<T>& dest, const multi1d<OScalar<T> >& src, const Subset& s)
 {
-	const int *tab = s.siteTable().slice();
-	const int nodeSites = s.numSiteTable();
+	const auto tab = s.siteTable().slice();
+	const auto nodeSites = s.numSiteTable();
 
 #pragma omp parallel for
-	for(int j=0; j < nodeSites; ++j)
+	for(auto j=0; j < nodeSites; ++j)
 	{
-		int i = tab[j];
+		auto i = tab[j];
 		dest.elem(i) = src[i].elem();
 	}
 }
@@ -1911,7 +1910,7 @@ public:
 #endif
 
 		OLattice<T1> d;
-		const int nodeSites = Layout::sitesOnNode();
+		const auto nodeSites = Layout::sitesOnNode();
 
 		if (offnodeP)
 		{
@@ -1940,8 +1939,8 @@ public:
 				QDP_error_exit("Map: for now only allow receives from 1 node");
 #endif
 
-			int dstnum = destnodes_num[0]*sizeof(T1);
-			int srcnum = srcenodes_num[0]*sizeof(T1);
+			auto dstnum = destnodes_num[0]*sizeof(T1);
+			auto srcnum = srcenodes_num[0]*sizeof(T1);
 
 	// Try getting fast and communicable memory
 			QMP_mem_t *send_buf_mem = QMP_allocate_aligned_memory(dstnum,QDP_ALIGNMENT_SIZE, 
@@ -1972,14 +1971,14 @@ public:
 			}
 
 			if ( recv_buf == 0x0 ) { 
-				QDP_error_exit("QMP_get_memory_pointer returned NULL pointer from non NULL QMP_mem_t (recv_buf)\n"); 
+				QDP_error_exit("QMP_get_memory_pointer returned NULL ponter from non NULL QMP_mem_t (recv_buf)\n"); 
 			}
 
-			const int my_node = Layout::nodeNumber();
+			const auto my_node = Layout::nodeNumber();
 
 			// Gather the face of data to send
 			// For now, use the all subset
-			for(int si=0; si < soffsets.size(); ++si) 
+			for(auto si=0; si < soffsets.size(); ++si) 
 			{
 #if QDP_DEBUG >= 3
 				QDP_info("Map_scatter_send(buf[%d],olattice[%d])",si,soffsets[si]);
@@ -1992,7 +1991,7 @@ public:
 			// For now, use the all subset
 
 		// no threading to avoid confusion with order of recv_buf (and fast anyways)
-			for(int i=0, ri=0; i < nodeSites; ++i) 
+			for(auto i=0, ri=0; i < nodeSites; ++i) 
 			{
 				if (srcnode[i] != my_node)
 				{
@@ -2018,9 +2017,9 @@ public:
 			QDP_info("Map: send = 0x%x	recv = 0x%x",send_buf,recv_buf);
 			QDP_info("Map: establish send=%d recv=%d",destnodes[0],srcenodes[0]);
 			{
-				const multi1d<int>& me = Layout::nodeCoord();
-				multi1d<int> scrd = Layout::getLogicalCoordFrom(destnodes[0]);
-				multi1d<int> rcrd = Layout::getLogicalCoordFrom(srcenodes[0]);
+				const multi1d<index_t>& me = Layout::nodeCoord();
+				multi1d<index_t> scrd = Layout::getLogicalCoordFrom(destnodes[0]);
+				multi1d<index_t> rcrd = Layout::getLogicalCoordFrom(srcenodes[0]);
 
 				QDP_info("Map: establish-info		my_crds=[%d,%d,%d,%d]",me[0],me[1],me[2],me[3]);
 				QDP_info("Map: establish-info send_crds=[%d,%d,%d,%d]",scrd[0],scrd[1],scrd[2],scrd[3]);
@@ -2082,7 +2081,7 @@ public:
 			// Some of the data maybe in receive buffers
 			// For now, use the all subset
 #pragma omp parallel for
-			for(int i=0; i < nodeSites; ++i) 
+			for(index_t i=0; i < nodeSites; ++i) 
 			{
 #if QDP_DEBUG >= 3
 				QDP_info("Map_scatter(olattice[%d],olattice[0x%x])",i,dest[i]);
@@ -2108,7 +2107,7 @@ public:
 
 			// For now, use the all subset
 #pragma omp parallel for
-			for(int i=0; i < nodeSites; ++i) 
+			for(index_t i=0; i < nodeSites; ++i) 
 			{
 #if QDP_DEBUG >= 3
 				QDP_info("Map(olattice[%d],olattice[%d])",i,goffsets[i]);
@@ -2161,8 +2160,8 @@ public:
 
 public:
 	//! Accessor to offsets
-	const multi1d<int>& goffset() const {return goffsets;}
-	const multi1d<int>& soffset() const {return soffsets;}
+	const multi1d<index_t>& goffset() const {return goffsets;}
+	const multi1d<index_t>& soffset() const {return soffsets;}
 
 private:
 	//! Hide copy constructor
@@ -2177,16 +2176,16 @@ private:
 	 * The direction is in the sense of the Map or Shift functions from QDP.
 	 * goffsets(position) 
 	 */ 
-	multi1d<int> goffsets;
-	multi1d<int> soffsets;
-	multi1d<int> srcnode;
-	multi1d<int> dstnode;
+	multi1d<index_t> goffsets;
+	multi1d<index_t> soffsets;
+	multi1d<index_t> srcnode;
+	multi1d<index_t> dstnode;
 
-	multi1d<int> srcenodes;
-	multi1d<int> destnodes;
+	multi1d<index_t> srcenodes;
+	multi1d<index_t> destnodes;
 
-	multi1d<int> srcenodes_num;
-	multi1d<int> destnodes_num;
+	multi1d<index_t> srcenodes_num;
+	multi1d<index_t> destnodes_num;
 
 	// Indicate off-node communications is needed;
 	bool offnodeP;
@@ -2491,7 +2490,7 @@ void read(BinaryReader& bin, OScalar<T>& d)
 // For now, use the direct send method
 
 //! Decompose a lexicographic site into coordinates
-multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
+multi1d<index_t> crtesn(index_t ipos, const multi1d<index_t>& latt_size);
 
 //! XML output
 template<class T>	 
@@ -2503,12 +2502,12 @@ XMLWriter& operator<<(XMLWriter& xml, const OLattice<T>& d)
 	XMLWriterAPI::AttributeList alist;
 
 	// Find the location of each site and send to primary node
-	for(int site=0; site < Layout::vol(); ++site)
+	for(auto site=0; site < Layout::vol(); ++site)
 	{
-		multi1d<int> coord = crtesn(site, Layout::lattSize());
+		multi1d<index_t> coord = crtesn(site, Layout::lattSize());
 
-		int node	 = Layout::nodeNumber(coord);
-		int linear = Layout::linearSiteIndex(coord);
+		auto node	 = Layout::nodeNumber(coord);
+		auto linear = Layout::linearSiteIndex(coord);
 
 		// Copy to buffer: be really careful since max(linear) could vary among nodes
 		if (Layout::nodeNumber() == node)
@@ -2570,12 +2569,12 @@ void write(BinaryWriter& bin, const OLattice<T>& d)
 /*! This code assumes no inner grid */
 void writeOLattice(BinaryWriter& bin, 
 			 const char* output, size_t size, size_t nmemb,
-			 const multi1d<int>& coord);
+			 const multi1d<index_t>& coord);
 
 //! Write a single site of a lattice quantity
 /*! Assumes no inner grid */
 template<class T>
-void write(BinaryWriter& bin, const OLattice<T>& d, const multi1d<int>& coord)
+void write(BinaryWriter& bin, const OLattice<T>& d, const multi1d<index_t>& coord)
 {
 	writeOLattice(bin, (const char *)&(d.elem(0)), 
 		sizeof(typename WordType<T>::Type_t), 
@@ -2622,12 +2621,12 @@ void read(BinaryReader& bin, OLattice<T>& d)
 /*! This code assumes no inner grid */
 void readOLattice(BinaryReader& bin, 
 			char* input, size_t size, size_t nmemb, 
-			const multi1d<int>& coord);
+			const multi1d<index_t>& coord);
 
 //! Read a single site of a lattice quantity
 /*! Assumes no inner grid */
 template<class T>
-void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
+void read(BinaryReader& bin, OLattice<T>& d, const multi1d<index_t>& coord)
 {
 	readOLattice(bin, (char *)&(d.elem(0)), 
 				 sizeof(typename WordType<T>::Type_t), 
@@ -2661,17 +2660,17 @@ namespace LatticeTimeSliceIO
 	//! Lattice time slice reader
 	void readOLatticeSlice(BinaryReader& bin, char* data, 
 			 size_t size, size_t nmemb,
-			 int start_lexico, int stop_lexico);
+			 index_t start_lexico, index_t stop_lexico);
 
 	void writeOLatticeSlice(BinaryWriter& bin, const char* data, 
 				size_t size, size_t nmemb,
-				int start_lexico, int stop_lexico);
+				index_t start_lexico, index_t stop_lexico);
 
 
 	// Read a time slice of a lattice quantity (time must be most slowly varying)
 	template<class T>
 	void readSlice(BinaryReader& bin, OLattice<T>& data, 
-		 int start_lexico, int stop_lexico)
+		 index_t start_lexico, index_t stop_lexico)
 	{
 		readOLatticeSlice(bin, (char *)&(data.elem(0)), 
 					sizeof(typename WordType<T>::Type_t), 
@@ -2683,7 +2682,7 @@ namespace LatticeTimeSliceIO
 	// Write a time slice of a lattice quantity (time must be most slowly varying)
 	template<class T>
 	void writeSlice(BinaryWriter& bin, const OLattice<T>& data, 
-			int start_lexico, int stop_lexico)
+			index_t start_lexico, index_t stop_lexico)
 	{
 		writeOLatticeSlice(bin, (const char *)&(data.elem(0)), 
 					 sizeof(typename WordType<T>::Type_t), 

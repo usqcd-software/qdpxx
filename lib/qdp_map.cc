@@ -21,17 +21,17 @@ struct NearestNeighborMapFunc : public ArrayMapFunc
   // Virtual destructor - no cleanup needed
   virtual ~NearestNeighborMapFunc() {} 
 
-  virtual multi1d<int> operator() (const multi1d<int>& coord, int sign, int dir) const
+  virtual multi1d<index_t> operator() (const multi1d<index_t>& coord, int sign, int dir) const
     {
-      multi1d<int> lc = coord;
+      multi1d<index_t> lc = coord;
 
-      const multi1d<int>& nrow = Layout::lattSize();
+      const auto& nrow = Layout::lattSize();
       lc[dir] = (coord[dir] + sgnum(sign) + 4*nrow[dir]) % nrow[dir];
 
       return lc;
     }
 
-  virtual int numArray() const {return Nd;}
+  virtual index_t numArray() const {return static_cast<index_t>(Nd);}
 
 private:
   int sgnum(int x) const {return (x > 0) ? 1 : -1;}
@@ -59,7 +59,7 @@ struct PackageArrayMapFunc : public MapFunc
 
   // Virtual Destructor - no cleanup needed
   virtual ~PackageArrayMapFunc() {}
-  virtual multi1d<int> operator() (const multi1d<int>& coord, int isign) const
+  virtual multi1d<index_t> operator() (const multi1d<index_t>& coord, int isign) const
     {
       return pmap(coord, isign, dir);
     }
@@ -79,7 +79,7 @@ void ArrayMap::make(const ArrayMapFunc& func)
   mapsa.resize(func.numArray());
 
   // Loop over each direction making the Map
-  for(int dir=0; dir < func.numArray(); ++dir)
+  for(auto dir=0; dir < func.numArray(); ++dir)
   {
     PackageArrayMapFunc  my_local_map(func,dir);
 
@@ -99,7 +99,7 @@ struct PackageBiDirectionalMapFunc : public MapFunc
 
   // Virtual destructor -- no real cleanup needed
   virtual ~PackageBiDirectionalMapFunc() {}
-  virtual multi1d<int> operator() (const multi1d<int>& coord, int isign) const
+  virtual multi1d<index_t> operator() (const multi1d<index_t>& coord, int isign) const
     {
       return pmap(coord, mult*isign);
     }
@@ -137,7 +137,7 @@ struct PackageArrayBiDirectionalMapFunc : public MapFunc
   PackageArrayBiDirectionalMapFunc(const ArrayMapFunc& mm, int mmult, int dd) : 
     pmap(mm), mult(mmult), dir(dd) {}
 
-  virtual multi1d<int> operator() (const multi1d<int>& coord, int isign) const
+  virtual multi1d<index_t> operator() (const multi1d<index_t>& coord, int isign) const
     {
       return pmap(coord, mult*isign, dir);
     }
@@ -158,7 +158,7 @@ void ArrayBiDirectionalMap::make(const ArrayMapFunc& func)
   bimapsa.resize(2,func.numArray());
 
   // Loop over each direction making the Map
-  for(int dir=0; dir < func.numArray(); ++dir)
+  for(auto dir=0; dir < func.numArray(); ++dir)
   {
     // Construct maps for each sign
     PackageArrayBiDirectionalMapFunc  my_neg_map(func,-1,dir);

@@ -25,8 +25,8 @@ class SetFunc
 public:
   // Virtual destructor to stop compiler warnings - no cleanup needed
   virtual ~SetFunc() {}
-  virtual int operator() (const multi1d<int>& coordinate) const = 0;
-  virtual int numSubsets() const = 0;
+  virtual index_t operator() (const multi1d<index_t>& coordinate) const = 0;
+  virtual index_t numSubsets() const = 0;
 };
 
 //-----------------------------------------------------------------------
@@ -57,31 +57,31 @@ public:
   Subset& operator=(const Subset& s);
 
   //! Access the coloring for this subset
-  int color() const {return sub_index;}
+  index_t color() const {return sub_index;}
 
 protected:
   // Simple constructor
-  void make(bool rep, int start, int end, multi1d<int>* ind, int cb, Set* set);
+  void make(bool rep, index_t start, index_t end, multi1d<index_t>* ind, int cb, Set* set);
 
 private:
   bool ordRep;
-  int startSite;
-  int endSite;
-  int sub_index;
+  index_t startSite;
+  index_t endSite;
+  index_t sub_index;
 
   //! Site lookup table
-  multi1d<int>* sitetable;
+  multi1d<index_t>* sitetable;
 
   //! Original set
   Set *set;
 
 public:
   inline bool hasOrderedRep() const {return ordRep;}
-  inline int start() const {return startSite;}
-  inline int end() const {return endSite;}
+  inline index_t start() const {return startSite;}
+  inline index_t end() const {return endSite;}
 
-  const multi1d<int>& siteTable() const {return *sitetable;}
-  inline int numSiteTable() const {return sitetable->size();}
+  const multi1d<index_t>& siteTable() const {return *sitetable;}
+  inline index_t numSiteTable() const {return sitetable->size();}
 
   //! The super-set of this subset
   const Set& getSet() const { return *set; }
@@ -105,10 +105,10 @@ public:
   void make(const SetFunc& fn);
 
   //! Index operator selects a subset from a set
-  const Subset& operator[](int subset_index) const {return sub[subset_index];}
+  const Subset& operator[](index_t subset_index) const {return sub[subset_index];}
 
   //! Return number of subsets
-  int numSubsets() const {return sub.size();}
+  index_t numSubsets() const {return sub.size();}
 
   //! Destructor for a set
   virtual ~Set() {}
@@ -121,14 +121,14 @@ protected:
   multi1d<Subset> sub;
 
   //! Index or color array of lattice
-  multi1d<int> lat_color;
+  multi1d<index_t> lat_color;
 
   //! Array of sitetable arrays
-  multi1d<multi1d<int> > sitetables;
+  multi1d<multi1d<index_t> > sitetables;
 
 public:
   //! The coloring of the lattice sites
-  const multi1d<int>& latticeColoring() const {return lat_color;}
+  const multi1d<index_t>& latticeColoring() const {return lat_color;}
 };
 
 
