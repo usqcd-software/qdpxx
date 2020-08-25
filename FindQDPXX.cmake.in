@@ -6,10 +6,10 @@ set( QDPXX_LIBDIR "@prefix@/lib")
 # Get the Include directories out of the CFLAGS Line if they start with -I
 string(STRIP "@HDF5_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@ @QMT_CXXFLAGS@" BASE_EXTRA_CXXFLAGS)
 
-# Match all strings which start with -I and keep matching anything until we reach another '-'
-# [^-] means match everything other than - and the + means do this one or more times.
+# Match all strings which start with -I and keep matching anything until we reach a whitespace
+# [^\s] means match everything other than whitespaces and the + means do this one or more times.
 #
-string(REGEX MATCHALL  "\\-\\I[^-]+" BASE_EXTRA_INCLUDES ${BASE_EXTRA_CXXFLAGS})
+string(REGEX MATCHALL  "\\-\\I[^\ ]+" BASE_EXTRA_INCLUDES ${BASE_EXTRA_CXXFLAGS})
 
 # Replace "-I" (ie \-\I ) with nothing
 string(REGEX REPLACE "\\-\\I" "" EXTRA_INCLUDE_DIRS ${BASE_EXTRA_INCLUDES})
