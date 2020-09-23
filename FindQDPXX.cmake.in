@@ -12,7 +12,6 @@ foreach( ARG ${BASE_EXTRA_LIST})
 		list(APPEND EXTRA_INCLUDE_DIRS ${STRIPPED_ARG})
         endif()
 endforeach()
-
 # Find the library we built and add it as an imported target
 # with appropriate include dir and location
 function(add_qdpxx_lib LIBNAME)
