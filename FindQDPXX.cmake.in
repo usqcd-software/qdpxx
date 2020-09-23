@@ -5,15 +5,13 @@ set( QDPXX_LIBDIR "@prefix@/lib")
 
 # Get the Include directories out of the CFLAGS Line if they start with -I
 string(STRIP "@HDF5_CXXFLAGS@ @LIBXML2_CXXFLAGS@ @QMP_CFLAGS@ @QMT_CXXFLAGS@" BASE_EXTRA_CXXFLAGS)
-
-# Match all strings which start with -I and keep matching anything until we reach another '-'
-# [^-] means match everything other than - and the + means do this one or more times.
-#
-string(REGEX MATCHALL  "\\-\\I[^-]+" BASE_EXTRA_INCLUDES ${BASE_EXTRA_CXXFLAGS})
-
-# Replace "-I" (ie \-\I ) with nothing
-string(REGEX REPLACE "\\-\\I" "" EXTRA_INCLUDE_DIRS ${BASE_EXTRA_INCLUDES})
-separate_arguments(${EXTRA_INCLUDE_DIRS})
+string(REPLACE " " ";" BASE_EXTRA_LIST ${BASE_EXTRA_CXXFLAGS})
+foreach( ARG ${BASE_EXTRA_LIST})
+        if( ${ARG} MATCHES "^-I")
+		string(REPLACE "-I" "" STRIPPED_ARG ${ARG})
+		list(APPEND EXTRA_INCLUDE_DIRS ${STRIPPED_ARG})
+        endif()
+endforeach()
 
 # Find the library we built and add it as an imported target
 # with appropriate include dir and location
