@@ -10,7 +10,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 	namespace Layout
 	{
@@ -37,6 +37,7 @@ namespace QDP {
 			return physcoord;
 		}
 
+#if !defined(QDP_CUSTOM_NAMESPACE)
 		extern "C" { 
 
 			/* Export this to "C" */
@@ -63,6 +64,7 @@ namespace QDP {
 				return nodeNumber(wrapped_coords);
 			}
 		}
+#endif
 	}
 
 
@@ -166,4 +168,4 @@ namespace QDP {
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;

@@ -16,7 +16,7 @@
 #include "qdp_rannyu.h"
 #include "qdp.h"
 
-namespace QDP
+namespace __QDP__
 {
   namespace RANNYU
   {
@@ -107,5 +107,5 @@ namespace QDP
 
   } // namespace RANNYU
 
-} // namespace QDP
+} // namespace __QDP__
 

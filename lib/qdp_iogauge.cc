@@ -20,7 +20,7 @@ using std::string;
 extern int gethostname(char *, size_t);
 #endif
 
-namespace QDP {
+namespace __QDP__ {
 
 
 // Anonymous namespace
@@ -747,4 +747,4 @@ void writeArchiv(const multi1d<LatticeColorMatrix>& u,
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;

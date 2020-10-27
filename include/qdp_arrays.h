@@ -8,7 +8,7 @@
 
 #include <vector>
 
-namespace QDP 
+namespace __QDP__ 
 {
 
   //----------------------------------------------------------------------------------
@@ -316,6 +316,6 @@ namespace QDP
 #endif
 
 
-}  // end namespace QDP
+}  // end namespace __QDP__
 
 #endif

@@ -7,7 +7,7 @@
 #ifndef QDP_GLOBALFUNCS_H
 #define QDP_GLOBALFUNCS_H
 
-namespace QDP
+namespace __QDP__
 {
 
   /** \defgroup group3 QDP global reductions
@@ -458,6 +458,6 @@ namespace QDP
 
   /** @} */ // end of group5
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

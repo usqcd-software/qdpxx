@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VAXPBY3_G5
 #define QDP_GENERIC_BLAS_VAXPBY3_G5
 
-namespace QDP {
+namespace __QDP__ {
 // (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (Vector) P{+} Add
 inline
 void axpbyz_g5ProjPlus(REAL *Out,REAL *scalep,REAL *InScale, REAL *scalep2, REAL *Add,int n_4vec)
@@ -684,6 +684,6 @@ void axmbyz_g5ProjMinus(REAL *Out,REAL *scalep,REAL *InScale, REAL* scalep2, REA
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

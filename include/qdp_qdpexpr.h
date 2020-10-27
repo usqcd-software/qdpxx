@@ -7,7 +7,7 @@
 #ifndef QDP_QDPEXPR_H
 #define QDP_QDPEXPR_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 //! Expression class for QDP
@@ -217,6 +217,6 @@ struct Combine3<Reference<A>, Reference<B>, Reference<C>, Op, OpCombine>
   }
 };
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

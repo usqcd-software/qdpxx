@@ -6,7 +6,7 @@
 #ifndef QDP_SPECIALIZATIONS_H
 #define QDP_SPECIALIZATIONS_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 //
@@ -313,6 +313,6 @@ struct CreateLeaf<OScalar<IntBoolean> >
 };
 
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

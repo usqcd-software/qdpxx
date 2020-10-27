@@ -14,7 +14,7 @@
 
 QDPXX_MESSAGE("Using PABASM Scalarsite")
 
-namespace QDP {
+namespace __QDP__ {
 
 /*! @defgroup optimizations  Optimizations
  *
@@ -506,6 +506,6 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
 #undef QDP_SCALARSITE_DEBUG
 #endif
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

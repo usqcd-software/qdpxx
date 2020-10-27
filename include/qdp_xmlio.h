@@ -17,7 +17,7 @@
 #include "xml_simplewriter.h"
 #include "basic_xpath_reader.h"
 
-namespace QDP 
+namespace __QDP__ 
 {
 
   // Forward declarations
@@ -1183,6 +1183,6 @@ namespace QDP
 
   /*! @} */   // end of group io
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

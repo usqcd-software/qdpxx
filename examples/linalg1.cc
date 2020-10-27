@@ -7,7 +7,7 @@
 #include "linalg.h"
 
 
-using namespace QDP;
+using namespace __QDP__;
 
 
 double QDP_M_eq_M_times_M(LatticeColorMatrix& dest, 

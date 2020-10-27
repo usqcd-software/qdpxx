@@ -21,7 +21,7 @@
 #include "qmp.h"
 
 
-namespace QDP 
+namespace __QDP__ 
 {
 
   //----------------------------------Only defined here
@@ -765,4 +765,4 @@ QDPXX_MESSAGE("Using a 32 checkerboard layout")
   //-----------------------------------------------------------------------------
 
 
-} // namespace QDP;
+} // namespace __QDP__;

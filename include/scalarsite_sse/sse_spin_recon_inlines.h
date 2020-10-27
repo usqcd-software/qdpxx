@@ -7,7 +7,7 @@
    Purpose: Supply inline functions to do spin reconstruction
    Author: $Id: sse_spin_recon_inlines.h,v 1.6 2007-08-31 14:41:18 bjoo Exp $
 */
-namespace QDP {
+namespace __QDP__ {
 
 /** \brief Spin recon (1/2)(1+\gamma_0)
  *
@@ -2930,6 +2930,6 @@ void inlineAddSpinReconDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_
 }
 
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif 

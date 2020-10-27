@@ -10,7 +10,7 @@
 
 #include "qdp.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 //-----------------------------------------
 // Make global (parallel) versions of stdin, stdout, stderr
@@ -276,4 +276,4 @@ StandardOutputStream& StandardOutputStream::writePrimitive(T output)
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;

@@ -2,7 +2,7 @@
 
 #include "tests.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 void junk(XMLWriter& nml, 
 	  LatticeColorMatrix& b3, const LatticeColorMatrix& b1, const LatticeColorMatrix& b2, 

@@ -6,7 +6,7 @@
 #include "qdp.h"
 #include "examples.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 //! 12-th order exponentiation of a lattice color matrix
 /*!

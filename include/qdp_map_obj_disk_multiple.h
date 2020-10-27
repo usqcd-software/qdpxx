@@ -10,7 +10,7 @@
 #include "qdp_map_obj_disk.h"
 #include <vector>
 
-namespace QDP
+namespace __QDP__
 {
 
   //----------------------------------------------------------------------------

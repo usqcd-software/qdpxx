@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VSCAL
 #define QDP_GENERIC_BLAS_VSCAL
 
-namespace QDP {
+namespace __QDP__ {
 
 // (Vector) out = (Scalar) (*scalep) * (Vector) In
 inline
@@ -98,6 +98,6 @@ void vscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec)
 
 }  
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

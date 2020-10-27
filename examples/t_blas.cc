@@ -9,7 +9,7 @@
 #include "qdp.h"
 #include <blas1.h>
 
-using namespace QDP;
+using namespace __QDP__;
 
 int main(int argc, char *argv[])
 {
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
   REAL64 rc2;
   int n_real = (all.end() - all.start() + 1)*24;
-  QDP::local_sumsq_24_48(&rc2, &(qx.elem(all.start()).elem(0).elem(0).real()), n_real);
+  __QDP__::local_sumsq_24_48(&rc2, &(qx.elem(all.start()).elem(0).elem(0).real()), n_real);
   QDPIO::cout << "rc -rc2 = " << rc-rc2 << endl;
 #endif 
 

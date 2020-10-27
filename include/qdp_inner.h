@@ -7,7 +7,7 @@
 #ifndef QDP_INNER_H
 #define QDP_INNER_H
 
-namespace QDP {
+namespace __QDP__ {
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup iscalar Inner grid scalar
@@ -3671,6 +3671,6 @@ where(const IScalar<T1>& a, const IScalar<T2>& b, const ILattice<T3,N>& c)
 
 /*! @} */  // end of group ilattice
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

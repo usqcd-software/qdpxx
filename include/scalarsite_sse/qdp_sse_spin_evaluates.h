@@ -1,8 +1,8 @@
 #ifndef QDP_SSE_SPIN_EVALUATES_H
 #define QDP_SSE_SPIN_EVALUATES_H
 
-using namespace QDP;
-namespace QDP {
+using namespace __QDP__;
+namespace __QDP__ {
 
 // Typedefs
 typedef PSpinVector< PColorVector< RComplex<REAL32>, 3>, 2 >  HVec32;
@@ -1315,6 +1315,6 @@ void evaluate(OLattice< FVec32 >& b,
 
 }
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif

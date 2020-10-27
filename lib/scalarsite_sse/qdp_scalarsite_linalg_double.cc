@@ -12,7 +12,7 @@
 // These SSE asm instructions are only supported under GCC/G++
 #include "scalarsite_sse/qdp_scalarsite_sse_linalg_double.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 
 
@@ -921,4 +921,4 @@ void evaluate(OLattice< DCol >& d,
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;

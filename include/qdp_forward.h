@@ -4,7 +4,7 @@
  * @brief Forward declarations for QDP
  */
 
-namespace QDP
+namespace __QDP__
 {
 
   // IO
@@ -106,6 +106,6 @@ namespace QDP
   class ArrayBiDirectionalMap;
 
 
-} // namespace QDP
+} // namespace __QDP__
 
   

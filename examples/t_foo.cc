@@ -10,7 +10,7 @@
 #include "qdp.h"
 #include "qdp_iogauge.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 
 
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
   write(xml,"nrow", nrow);
   write(xml,"logicalSize",Layout::logicalSize());
 
-  QDP_PUSH_PROFILE(QDP::getProfileLevel());
+  QDP_PUSH_PROFILE(__QDP__::getProfileLevel());
 
 #if 0
   {
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 
   QDP_POP_PROFILE();
 
-  QDP_PUSH_PROFILE(QDP::getProfileLevel());
+  QDP_PUSH_PROFILE(__QDP__::getProfileLevel());
 
 #if 0
   {
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
 //    printExprTree(cout, c, OpAssign(), a*b); QDPIO::cout << endl;
     
     QDPIO::cout << "Try global sums" << endl;
-    QDP_PUSH_PROFILE(QDP::getProfileLevel());
+    QDP_PUSH_PROFILE(__QDP__::getProfileLevel());
     c = sum(a);
     c = sum(a*a);
     c = norm2(a*a);
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 
   QDP_POP_PROFILE();
 
-  QDP_PUSH_PROFILE(QDP::getProfileLevel());
+  QDP_PUSH_PROFILE(__QDP__::getProfileLevel());
 
 #if 0
   {
@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
 
   QDP_POP_PROFILE();
 
-  QDP_PUSH_PROFILE(QDP::getProfileLevel());
+  QDP_PUSH_PROFILE(__QDP__::getProfileLevel());
 
 #if 0
   {

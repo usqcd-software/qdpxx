@@ -10,7 +10,7 @@
 #include "testMatEqHermMatDouble.h"
 #include "testMatEqHermHermDouble.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 int main(int argc, char **argv)
 {

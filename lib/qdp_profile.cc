@@ -15,7 +15,7 @@
 #endif
 
 
-namespace QDP {
+namespace __QDP__ {
 
 static int prof_level = 0;
 static int prog_prof_level = 0;
@@ -226,4 +226,4 @@ registerProfile(QDPProfile_t* qp)
 
 #endif  // ! defined(QDP_USE_PROFILING)
 
-} // namespace QDP;
+} // namespace __QDP__;

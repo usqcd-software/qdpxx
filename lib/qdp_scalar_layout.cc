@@ -18,7 +18,7 @@
 #include "qdp_util.h"
 #include "qdp_allocator.h"
 
-namespace QDP 
+namespace __QDP__ 
 {
   float pool_size_in_gb = 8.0;
 
@@ -498,4 +498,4 @@ QDPXX_MESSAGE("Using a 32 checkerboard layout")
   //-----------------------------------------------------------------------------
 
 
-} // namespace QDP;
+} // namespace __QDP__;

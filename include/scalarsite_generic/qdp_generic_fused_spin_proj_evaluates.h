@@ -3,8 +3,8 @@
 
 
 /* Evaluates for things like adj(u)*spinProjectDir0Plus(y) */
-using namespace QDP;
-namespace QDP {
+using namespace __QDP__;
+namespace __QDP__ {
 
 typedef PScalar< PColorMatrix< RComplex<REAL>, 3> > SU3Mat;
 
@@ -636,6 +636,6 @@ void evaluate(OLattice< HVec >& d,
   }
 }
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif

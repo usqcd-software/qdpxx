@@ -10,7 +10,7 @@
 
 #include<sys/time.h>
 
-namespace QDP {
+namespace __QDP__ {
 
 /*! @defgroup timer Timer
  *
@@ -55,6 +55,6 @@ private:
   void calcDuration(long&,long&);
 };
 
-} // namespace QDP  
+} // namespace __QDP__  
 
 #endif

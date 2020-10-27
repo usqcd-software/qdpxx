@@ -5,7 +5,7 @@
 
 #include "qdp.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 
 int main(int argc, char **argv)
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
     Complex b = cmplx(a,-1.2);
     write(toxml,"complexThingy",b);
 
-    QDP::Seed seed = 1;
+    __QDP__::Seed seed = 1;
     write(toxml,"seedThingy",seed);
 
     multi1d<int> arrayInt(3);
@@ -202,7 +202,7 @@ int main(int argc, char **argv)
     fromxml_tmp.printCurrentContext(os);
     QDPIO::cout << "Current context = XX" << os.str() << "XX" << std::endl;
 
-    QDP::Seed seed;
+    __QDP__::Seed seed;
     read(fromxml,"seedThingy",seed);
     QDPIO::cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << std::endl;
 
@@ -281,7 +281,7 @@ int main(int argc, char **argv)
 
     XMLReader fromxml(fromxml_orig, "/complex_xml");
 
-    QDP::Seed seed;
+    __QDP__::Seed seed;
     read(fromxml,"seedThingy",seed);
     QDPIO::cout << "seed = " << seed <<  "  node=" << Layout::nodeNumber() << std::endl;
 
@@ -324,7 +324,7 @@ int main(int argc, char **argv)
     XMLReader fromxml;
     fromxml.open("t_xml.input3");
 
-    fromxml.set<QDP::Real>("/root_for_input3/Mass", Real(0.5));
+    fromxml.set<__QDP__::Real>("/root_for_input3/Mass", Real(0.5));
 
     // turn back into a std::string
     XMLBufferWriter new_writer;

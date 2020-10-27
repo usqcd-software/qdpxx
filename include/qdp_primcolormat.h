@@ -8,7 +8,7 @@
 #ifndef QDP_PRIMCOLORMAT_H
 #define QDP_PRIMCOLORMAT_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 //-------------------------------------------------------------------------------------
@@ -770,6 +770,6 @@ quarkContractXX(const PColorMatrix<T1,4>& s1, const PColorMatrix<T2,4>& s2)
 
 /*! @} */   // end of group primcolormatrix
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

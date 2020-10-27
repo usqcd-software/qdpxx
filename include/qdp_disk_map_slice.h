@@ -11,7 +11,7 @@
 #include "qdp_util.h"
 
 
-namespace QDP
+namespace __QDP__
 {
   //! Time-slice wrapper
   /*! 
@@ -61,13 +61,13 @@ namespace QDP
     multi1d<int> coord(Nd);
     coord = 0;
     coord[tDir] = current_time;
-    start_lexico = QDP::local_site(coord,Layout::lattSize());
+    start_lexico = __QDP__::local_site(coord,Layout::lattSize());
     if (current_time == Layout::lattSize()[tDir]-1) 
       stop_lexico = Layout::vol();
     else
     {
       coord[tDir]++; 
-      stop_lexico = QDP::local_site(coord,Layout::lattSize());
+      stop_lexico = __QDP__::local_site(coord,Layout::lattSize());
     }
   }
 

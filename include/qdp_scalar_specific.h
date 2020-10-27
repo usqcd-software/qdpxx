@@ -7,7 +7,7 @@
 #ifndef QDP_SCALAR_SPECIFIC_H
 #define QDP_SCALAR_SPECIFIC_H
 
-namespace QDP {
+namespace __QDP__ {
 
 // Use separate defs here. This will cause subroutine calls under g++
 
@@ -2245,6 +2245,6 @@ namespace LatticeTimeSliceIO
   }
 
 } // namespace LatticeTimeSliceIO
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

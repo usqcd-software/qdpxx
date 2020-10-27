@@ -10,12 +10,12 @@
 
 #include "qdp_precision.h"
 
-namespace QDP {
+namespace __QDP__ {
 
   void vaxpbyz4(REAL64 *z, REAL64 *a, REAL64 *x, REAL64 *b, REAL64 *y, int n_4vec);
 
   void vaxpby4(REAL64 *y, REAL64 *a, REAL64 *x, REAL64 *b, int n_4vec);
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

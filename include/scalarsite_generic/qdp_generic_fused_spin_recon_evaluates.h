@@ -1,7 +1,7 @@
 #ifndef QDP_GENERIC_FUSED_SPIN_RECON_EVALUATES_H
 #define QDP_GENERIC_FUSED_SPIN_RECON_EVALUATES_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 ////////////////////////////////
@@ -1208,7 +1208,7 @@ void evaluate(OLattice< FVec >& d,
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 
 

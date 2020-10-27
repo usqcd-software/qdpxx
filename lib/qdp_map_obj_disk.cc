@@ -7,7 +7,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 
-namespace QDP 
+namespace __QDP__ 
 { 
   namespace MapObjDiskEnv 
   {

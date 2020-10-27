@@ -19,7 +19,7 @@
 
 #include "qdp_sse_intrin.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 /*! @defgroup optimizations  Optimizations
  *
@@ -487,7 +487,7 @@ adjMultiplyAdj(const RComplexFloat4& l, const RComplexFloat4& r)
 #undef QDP_SCALARSITE_DEBUG
 #endif
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif  // defined(__GNUC__)
 

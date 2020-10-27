@@ -62,6 +62,31 @@ AC_SUBST(CONFIG_NS, [${ac_Ns}] )
 dnl Tell the user about Ns
 AC_MSG_NOTICE([Configuring QDP++ for Ns = ${ac_Ns}])
 
+
+
+
+dnl --enable-namespace
+AC_ARG_ENABLE(namespace,
+  AC_HELP_STRING([--enable-namespace=NAME ],
+    [Set QDP's namespace to NAME, default is QDP ]),
+  [ ac_Name=${enableval} ],
+  [ ac_Name=QDP ]
+)
+    
+AC_DEFINE_UNQUOTED(QDP_NAMESPACE, ${ac_Name}, [Namespace name])
+AC_SUBST(CONFIG_NAMESPACE, [${ac_Name}] )  dnl qdp++_config
+
+dnl Tell the user about the namespace
+AC_MSG_NOTICE([Configuring QDP++ with namespace = ${ac_Name}])
+
+if test ${ac_Name} != "QDP"; then 
+   AC_DEFINE_UNQUOTED(QDP_CUSTOM_NAMESPACE, ${ac_Name}, [Enable profiling])
+   AC_MSG_NOTICE([Enable custom namespace!!])
+fi
+
+
+
+
 dnl --enable-alignment
 AC_ARG_ENABLE(alignment,
 	AC_HELP_STRING([--enable-alignment=N],

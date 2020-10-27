@@ -8,7 +8,7 @@
 
 #include "qdp.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 void checkSpinProjDir0Plus(const REAL* src, REAL *dst, unsigned int n_vec);
 void checkSpinProjDir0Minus(const REAL* src, REAL *dst, unsigned int n_vec);

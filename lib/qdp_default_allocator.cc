@@ -6,7 +6,7 @@
 #include "qdp.h"
 #include "qdp_default_allocator.h"
 
-namespace QDP {
+namespace __QDP__ {
 namespace Allocator {
  
   // The type returned on map insertion, allows me to check
@@ -187,4 +187,4 @@ namespace Allocator {
 #endif
 
 } // namespace Allocator
-} // namespace QDP
+} // namespace __QDP__

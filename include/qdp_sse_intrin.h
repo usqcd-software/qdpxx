@@ -3,7 +3,7 @@
 
 // Include the file with the SSE intrinsics  in it
 #include <xmmintrin.h>
-namespace QDP {
+namespace __QDP__ {
 
 typedef union { 
   __m128 vector;

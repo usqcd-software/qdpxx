@@ -9,7 +9,7 @@
 #include "scalarsite_sse/sse_blas_local_vcdot_real_double.h"
 #include <iostream>
 
-namespace QDP {
+namespace __QDP__ {
 
   typedef union { 
     double c[2];
@@ -143,5 +143,5 @@ namespace QDP {
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 

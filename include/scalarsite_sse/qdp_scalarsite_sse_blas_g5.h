@@ -12,9 +12,9 @@
 
 #include "scalarsite_sse/qdp_scalarsite_sse_blas_g5_includes.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
-namespace QDP {
+namespace __QDP__ {
 
 // Types needed for the expression templates. 
 // TVec has outer Ns template so it ought to work for staggered as well
@@ -2160,7 +2160,7 @@ void evaluate( OLattice< TVec > &d,
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif  // guard
  

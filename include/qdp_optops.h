@@ -10,7 +10,7 @@
 #ifndef QDP_OPTOPS_H
 #define QDP_OPTOPS_H
 
-namespace QDP {
+namespace __QDP__ {
 
 //-----------------------------------------------------------------------------
 // Optimization hooks
@@ -359,6 +359,6 @@ real(const QDPExpr<BinaryNode<FnLocalInnerProduct,T1,T2>,CC> & ll)
 #endif
 
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

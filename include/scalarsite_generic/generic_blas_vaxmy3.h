@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VAXMY3
 #define QDP_GENERIC_BLAS_VAXMY3
 
-namespace QDP {
+namespace __QDP__ {
 
 // (Vector) Out = (Scalar) (*scalep) * (Vector) InScale - (Vector) Add
 inline
@@ -95,6 +95,6 @@ void vaxmy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Sub,int n_3vec)
 
 }
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

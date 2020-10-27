@@ -9,7 +9,7 @@
 #include "qdp_layout.h"
 #include "ConfDataStoreDB.h"
 
-namespace QDP
+namespace __QDP__
 {
   /*! @defgroup io IO
    *
@@ -454,6 +454,6 @@ namespace QDP
   };
 
 
-}  // namespace QDP
+}  // namespace __QDP__
 
 #endif

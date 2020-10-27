@@ -9,7 +9,7 @@
 #define QDP_GENERIC_BLAS_LOCAL_VCDOT
 
 
-namespace QDP {
+namespace __QDP__ {
 
 // Out = < V1, V2 > = V1^{dagger} V2
 // Out is complex: Out_re, Out_im 
@@ -49,6 +49,6 @@ void l_vcdot(DOUBLE *Out_re, DOUBLE *Out_im, REAL *V1, REAL *V2, int n_3vec)
   *Out_im=(DOUBLE)result_im;
 }
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

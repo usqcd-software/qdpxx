@@ -5,7 +5,7 @@
 //
 #include "examples.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 // Primitive way to indicate the time direction
 static int tDir() {return Nd-1;}

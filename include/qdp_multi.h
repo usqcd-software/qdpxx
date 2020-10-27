@@ -10,7 +10,7 @@
 #define MULTI_INCLUDE
 
 #include "qdp_config.h"
-namespace QDP {
+namespace __QDP__ {
 
 /*! @defgroup multi  Multi-dimensional arrays
  *

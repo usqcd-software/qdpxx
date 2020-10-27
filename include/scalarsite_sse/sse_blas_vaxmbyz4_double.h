@@ -9,13 +9,13 @@
 #define QDP_SSE_BLAS_VAXMBYZ4_DOUBLE
 
 #include "qdp_precision.h"
-namespace QDP {
+namespace __QDP__ {
 
   void vaxmbyz4(REAL64 *z,REAL64 *a,REAL64 *x, REAL64 *b, REAL64 *y, int n_4vec);
 
   void vaxmby4(REAL64 *z,REAL64 *a,REAL64 *x, REAL64 *b, int n_4vec);
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

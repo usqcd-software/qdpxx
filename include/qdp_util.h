@@ -8,7 +8,7 @@
 #ifndef QDP_UTIL_INCLUDE
 #define QDP_UTIL_INCLUDE
 
-namespace QDP {
+namespace __QDP__ {
 
 //! Decompose a lexicographic site into coordinates
 multi1d<int> crtesn(int ipos, const multi1d<int>& latt_size);
@@ -25,6 +25,6 @@ void initDefaultSets();
 //! Initializer for maps
 void initDefaultMaps();
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

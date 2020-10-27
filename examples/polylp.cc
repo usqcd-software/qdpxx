@@ -6,7 +6,7 @@
 #include "qdp.h"
 #include "examples.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 //! Return the value of the average plaquette normalized to 1
 /*!

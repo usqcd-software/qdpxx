@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VADD
 #define QDP_GENERIC_BLAS_VADD
 
-namespace QDP {
+namespace __QDP__ {
 
 // (Vector) Out = (Vector) In1 + (Vector) In2
 inline
@@ -113,6 +113,6 @@ void vadd(REAL *Out, REAL *In1, REAL *In2, int n_3vec)
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

@@ -7,7 +7,7 @@
 #ifndef QDP_PARAMS_H
 #define QDP_PARAMS_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 /*! @defgroup params Fundamental parameters for QDP
@@ -27,7 +27,7 @@ const int Ns = QDP_NS;
 
 /*! @} */  // end of group params
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif
 

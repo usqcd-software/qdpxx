@@ -8,7 +8,7 @@
 #ifndef QDP_PRIMSEED_H
 #define QDP_PRIMSEED_H
 
-namespace QDP {
+namespace __QDP__ {
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup primseed Seed primitive
@@ -546,6 +546,6 @@ copymask(PSeed<T>& d, const PScalar<T1>& mask, const PSeed<T>& s1)
 
 /*! @} */
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

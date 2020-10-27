@@ -8,7 +8,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 //-----------------------------------------------------------------------------
 //! Initializer for generic map constructor
@@ -303,4 +303,4 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;

@@ -6,7 +6,7 @@
 #include "qdp.h"
 #include "qdp_db.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 namespace Chroma
 {
@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
 
     TestDBData<TestDBData_t> testDBData;
     {
-      testDBData.data().op.resize(QDP::Layout::lattSize()[3]);
+      testDBData.data().op.resize(__QDP__::Layout::lattSize()[3]);
       testDBData.data().op = zero;
       testDBData.data().type_of_data = 2;
     }

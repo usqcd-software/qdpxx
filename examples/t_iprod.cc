@@ -2,7 +2,7 @@
 #include <xmmintrin.h>
 #define TESTING 1
 
-namespace QDP {
+namespace __QDP__ {
 
 #if 0
   // specialization 
@@ -76,9 +76,9 @@ namespace QDP {
     REAL32* s2ptr=(REAL32*)&(s2.elem(0).elem().elem(0).real());
 
     const int* lat_color=ss.latticeColoring().slice();
-    REAL64* ip_flat = (REAL64*)QDP::Allocator::theQDPAllocator::Instance().allocate(2*n_color*n_threads*sizeof(REAL64),QDP::Allocator::DEFAULT);
+    REAL64* ip_flat = (REAL64*)__QDP__::Allocator::theQDPAllocator::Instance().allocate(2*n_color*n_threads*sizeof(REAL64),__QDP__::Allocator::DEFAULT);
     
-    REAL64* part_results = (REAL64*)QDP::Allocator::theQDPAllocator::Instance().allocate(2*n_color*sizeof(REAL64),QDP::Allocator::DEFAULT);
+    REAL64* part_results = (REAL64*)__QDP__::Allocator::theQDPAllocator::Instance().allocate(2*n_color*sizeof(REAL64),__QDP__::Allocator::DEFAULT);
 
 
     InnerProdMultiArgs args={s1ptr,s2ptr,n_color, lat_color, ip_flat};
@@ -100,8 +100,8 @@ namespace QDP {
       d[i] = cmplx(Real64(part_results[2*i]),Real64(part_results[2*i+1]));
     }
 
-    QDP::Allocator::theQDPAllocator::Instance().free(part_results);
-    QDP::Allocator::theQDPAllocator::Instance().free(ip_flat);
+    __QDP__::Allocator::theQDPAllocator::Instance().free(part_results);
+    __QDP__::Allocator::theQDPAllocator::Instance().free(ip_flat);
 
     return d;
 
@@ -115,7 +115,7 @@ namespace QDP {
 
 
 
-using namespace QDP;
+using namespace __QDP__;
 
   namespace
   {

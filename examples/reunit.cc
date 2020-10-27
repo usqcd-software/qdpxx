@@ -6,7 +6,7 @@
 
 #include "examples.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 //! Reunitarize in place a color matrix to SU(N)
 /*!
@@ -381,7 +381,7 @@ void reunit(LatticeColorMatrix& xa, LatticeBoolean& bad,
 	t2 *= b[c][c];
 
       /* The phase of the determinant */
-      t4 = atan2(QDP::imag(t2), real(t1));
+      t4 = atan2(__QDP__::imag(t2), real(t1));
       t2 = cmplx(cos(t4), -sin(t4));
       for(int c = 0; c < Nc; ++c)
 	a[c][Nc-1] *= t2;

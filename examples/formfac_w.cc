@@ -8,7 +8,7 @@
 #include "examples.h"
 #include "qdp_util.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 //! Function object used for constructing the time-slice set
 class TimeSliceFunc : public SetFunc

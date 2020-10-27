@@ -10,7 +10,7 @@
 #include "qdp_map_obj_null.h"
 
 
-namespace QDP
+namespace __QDP__
 {
   //****************************************************************************
   //! Prop operator
@@ -70,7 +70,7 @@ namespace QDP
 }
 
 
-using namespace QDP;
+using namespace __QDP__;
 
 void fail(int line)
 {
@@ -471,7 +471,7 @@ int main(int argc, char *argv[])
 
     push(file_xml, "DBMetaData");
     write(file_xml, "id", std::string("propElemOp"));
-    write(file_xml, "lattSize", QDP::Layout::lattSize());
+    write(file_xml, "lattSize", __QDP__::Layout::lattSize());
     pop(file_xml);
 
     meta_data = file_xml.str();

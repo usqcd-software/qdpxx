@@ -1,7 +1,7 @@
 #ifndef QDP_GENERIC_BLAS_G5
 #define QDP_GENERIC_BLAS_G5
 
-namespace QDP {
+namespace __QDP__ {
 
 // (Vector) out = (Scalar) (*scalep) * (Vector) In
 inline
@@ -1436,6 +1436,6 @@ void xmayz_ig5(REAL *Out,REAL *scalep, REAL *InScale, REAL *Add,int n_4vec)
   }
 }
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

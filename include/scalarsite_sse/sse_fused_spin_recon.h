@@ -3,7 +3,7 @@
 
 #include "sse_mult_su3_mat_hwvec.h"
 
-namespace QDP {
+namespace __QDP__ {
  
 // Convenience Types
 typedef PColorVector<RComplex<REAL32>, 3> ColVec32;
@@ -765,6 +765,6 @@ sreconDir3Plus(const PScalar<ColMat32>& a, const PSpinVector<ColVec32,2>& b)
 }
 
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

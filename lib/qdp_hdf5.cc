@@ -10,7 +10,7 @@
 #ifdef QDP_USE_HDF5
 
 // optional hdf5 code goes here
-namespace QDP {
+namespace __QDP__ {
 	using std::string;
 
 	// HDF5 classes

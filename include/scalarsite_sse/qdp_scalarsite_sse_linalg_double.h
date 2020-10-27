@@ -13,7 +13,7 @@
 #include "sse_linalg_mm_su3_double.h"
 
 
-namespace QDP {
+namespace __QDP__ {
 
 // #define QDP_SCALARSITE_DEBUG
 
@@ -821,7 +821,7 @@ void evaluate(OLattice< DVec2 >& d,
 
 #endif
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 
 #endif

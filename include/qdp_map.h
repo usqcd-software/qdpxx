@@ -9,7 +9,7 @@
 #ifndef QDP_MAP_H
 #define QDP_MAP_H
 
-namespace QDP {
+namespace __QDP__ {
 
 // Helpful for communications
 #define FORWARD 1
@@ -57,6 +57,6 @@ public:
     
 /** @} */ // end of group map
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

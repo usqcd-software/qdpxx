@@ -10,7 +10,7 @@
 #include "qdp_map_obj.h"
 #include <unordered_map>
 
-namespace QDP
+namespace __QDP__
 {
 
   namespace MapObjDiskEnv { 
@@ -800,7 +800,7 @@ namespace QDP
       // Check version
       QDPIO::cout << "MapObjectDisk: file has version: " << read_version << std::endl;
       
-      QDP::readDesc(streamer, user_data);
+      __QDP__::readDesc(streamer, user_data);
       if (level >= 2) {
 	QDPIO::cout << "User data. String=" << user_data << ". Current Position: " << streamer.currentPosition() << std::endl;
       }

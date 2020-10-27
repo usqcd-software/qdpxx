@@ -5,14 +5,14 @@
 
 #include "qdp.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 #if defined(QDP_DEBUG_MEMORY)
-#define START_CODE() QDP::Allocator::theQDPAllocator::Instance().pushFunc(__func__, __LINE__)
-#define END_CODE()   QDP::Allocator::theQDPAllocator::Instance().popFunc()
+#define START_CODE() __QDP__::Allocator::theQDPAllocator::Instance().pushFunc(__func__, __LINE__)
+#define END_CODE()   __QDP__::Allocator::theQDPAllocator::Instance().popFunc()
 
 #else
-#define START_CODE() QDP_PUSH_PROFILE(QDP::getProfileLevel())
+#define START_CODE() QDP_PUSH_PROFILE(__QDP__::getProfileLevel())
 #define END_CODE()   QDP_POP_PROFILE()
 
 #endif

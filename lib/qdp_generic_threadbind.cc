@@ -1,7 +1,7 @@
 #include "qdp.h"
 #include "qdp_threadbind.h"
 
-namespace QDP {
+namespace __QDP__ {
 
   // Default: User should use runtime
   void setThreadAffinity(int nCores, int threadsPerCore) 

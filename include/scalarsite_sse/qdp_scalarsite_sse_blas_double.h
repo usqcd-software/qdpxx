@@ -22,7 +22,7 @@
 #include "scalarsite_sse/sse_blas_local_vcdot_real_double.h"
 #include "scalarsite_sse/sse_blas_local_vcdot_double.h"
 
-namespace QDP {
+namespace __QDP__ {
 
   namespace ThreadReductions{ 
     extern REAL64* norm2_results;
@@ -3026,7 +3026,7 @@ innerProductReal(const multi1d< OLattice<DVec> > &v1,
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 
 #endif  // guard

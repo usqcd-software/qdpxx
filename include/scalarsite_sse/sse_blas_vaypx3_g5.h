@@ -13,7 +13,7 @@
 #include "qdp_config.h"
 #include "qdp_sse_intrin.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 #if BASE_PRECISION==32
 
@@ -177,7 +177,7 @@ void xmayz_g5ProjMinus(REAL32 *Out,REAL32 *scalep,REAL32 *Add, REAL32 *InScale,i
 
 #endif
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 
 #endif // GNUC

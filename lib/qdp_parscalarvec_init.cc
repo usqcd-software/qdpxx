@@ -11,7 +11,7 @@
 #include "qdp.h"
 #include "qmp.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 //! Private flag for status
 static bool isInit = false;
@@ -234,4 +234,4 @@ void QDP_resume() {}
 void QDP_suspend() {}
 
 
-} // namespace QDP;
+} // namespace __QDP__;

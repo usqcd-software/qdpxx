@@ -7,7 +7,7 @@
    Purpose: Supply inline functions to do spin projection
    Author: $Id: sse_spin_proj_inlines.h,v 1.6 2009-02-11 20:50:45 bjoo Exp $
 */
-namespace QDP {
+namespace __QDP__ {
 #include <stdio.h>
 
 /** \brief Spin Project (1/2)(1+\gamma_0)
@@ -1209,6 +1209,6 @@ void inlineSpinProjDir3Minus(const REAL32* src, REAL32 *dst, unsigned int n_vec)
   
 }
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif 

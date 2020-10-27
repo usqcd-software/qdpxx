@@ -8,7 +8,7 @@
 #ifndef QDP_PRIMSPINVEC_H
 #define QDP_PRIMSPINVEC_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 //-------------------------------------------------------------------------------------
@@ -1965,6 +1965,6 @@ chiralProjectMinus(const PSpinVector<T,4>& s1)
 
 /*! @} */   // end of group primspinvector
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

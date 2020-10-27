@@ -11,7 +11,7 @@
 #ifdef DSLASH_USE_QMT_THREADS
 #include <qmt.h>
 #endif
-using namespace QDP; 
+using namespace __QDP__; 
 
 namespace Assertions { 
   template<typename T>

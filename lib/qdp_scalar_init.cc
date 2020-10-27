@@ -12,7 +12,7 @@
 #include <qmt.h>
 #endif
 
-namespace QDP {
+namespace __QDP__ {
 
 namespace ThreadReductions {
   REAL64* norm2_results;
@@ -175,4 +175,4 @@ void QDP_resume() {}
 void QDP_suspend() {}
 
 
-} // namespace QDP;
+} // namespace __QDP__;

@@ -10,7 +10,7 @@
 #ifndef QDP_SCALARSITE_GENERIC_LINALG_H
 #define QDP_SCALARSITE_GENERIC_LINALG_H
 
-namespace QDP {
+namespace __QDP__ {
 
 /*! @defgroup optimizations  Optimizations
  *
@@ -552,6 +552,6 @@ void evaluate(OLattice<PSpinVector<PColorVector<RComplexFloat, 3>, 2> >& d,
 #undef QDP_SCALARSITE_DEBUG
 #endif
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif

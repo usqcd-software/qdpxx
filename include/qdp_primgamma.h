@@ -7,7 +7,7 @@
 #ifndef QDP_PRIMGAMMA_H
 #define QDP_PRIMGAMMA_H
 
-namespace QDP {
+namespace __QDP__ {
 
 //-------------------------------------------------------------------------------------
 //! Gamma matrices
@@ -323,6 +323,6 @@ inline T OpMultiplyGammaTypeDP::operator()(const T &a, const GammaTypeDP<N>& b) 
   return s[b.elem()](a);
 }
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

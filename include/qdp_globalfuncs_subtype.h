@@ -3,7 +3,7 @@
 #ifndef QDP_GLOBALFUNCS_SUBTYPE_H
 #define QDP_GLOBALFUNCS_SUBTYPE_H
 
-namespace QDP
+namespace __QDP__
 {
 
 

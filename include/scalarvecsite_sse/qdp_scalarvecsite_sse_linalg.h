@@ -15,7 +15,7 @@
 
 #include "qdp_sse_intrin.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 // #define QDP_SCALARVECSITE_DEBUG
 
@@ -327,7 +327,7 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #endif
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif  // defined(__GNUC__)
 

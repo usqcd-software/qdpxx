@@ -8,7 +8,7 @@
 
 #include <xmmintrin.h>
 
-namespace QDP {
+namespace __QDP__ {
 
 
 void vaxmyz4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, REAL64 *Add,int n_4vec)
@@ -170,5 +170,5 @@ void vaxmy4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, int n_4spin)
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 

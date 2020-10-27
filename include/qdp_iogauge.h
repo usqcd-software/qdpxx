@@ -13,7 +13,7 @@
 #define QDP_IOGAUGE_H
 
 
-namespace QDP {
+namespace __QDP__ {
 
 //! NERSC Archive gauge field header
 /*!
@@ -243,6 +243,6 @@ void writeArchiv(const multi1d<LatticeColorMatrix>& u,
 		 const std::string& cfg_file);
 
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

@@ -7,7 +7,7 @@
 #ifndef QDP_PRIMSCALAR_H
 #define QDP_PRIMSCALAR_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 //-------------------------------------------------------------------------------------
@@ -1627,6 +1627,6 @@ gather_sites(PScalar<T>& d,
 
 /*! @} */  // end of group primscalar
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

@@ -9,7 +9,7 @@
 #ifndef QDP_SCALARVECSITE_SSE_BLAS_H
 #define QDP_SCALARVECSITE_SSE_BLAS_H
 
-namespace QDP {
+namespace __QDP__ {
 
 // #define QDP_SCALARVECSITE_BLAS_DEBUG
 
@@ -67,7 +67,7 @@ operator*(const TScal& l, const TCMat& r)
 #endif
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif  // guard
  

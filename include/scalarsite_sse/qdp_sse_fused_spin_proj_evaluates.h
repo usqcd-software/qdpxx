@@ -4,8 +4,8 @@
 #include "sse_mult_adj_su3_mat_hwvec.h"
 
 /* Evaluates for things like adj(u)*spinProjectDir0Plus(y) */
-using namespace QDP;
-namespace QDP {
+using namespace __QDP__;
+namespace __QDP__ {
 
 typedef PScalar< PColorMatrix< RComplex<REAL32>, 3> > SU3Mat32;
 
@@ -649,6 +649,6 @@ void evaluate(OLattice< HVec32 >& d,
 
 }
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif

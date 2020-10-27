@@ -9,7 +9,7 @@
 #define QDP_GENERIC_BLAS_LOCAL_VCDOT_REAL
 
 
-namespace QDP {
+namespace __QDP__ {
 
 // Out = Re (< V1, V2 >) = Re(V1^{dagger} V2)
 // Out  REAL
@@ -49,6 +49,6 @@ void l_vcdot_real(DOUBLE *Out, REAL *V1, REAL *V2, int n_3vec)
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

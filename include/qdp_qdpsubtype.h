@@ -8,7 +8,7 @@
 #ifndef QDP_QDPSUBTYPE_H
 #define QDP_QDPSUBTYPE_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 //! QDPSubType - type representing a field living on a subset
@@ -501,7 +501,7 @@ public:
 };
 
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif
 

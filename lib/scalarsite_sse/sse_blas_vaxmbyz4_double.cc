@@ -8,7 +8,7 @@
 #include <xmmintrin.h>
 #include "scalarsite_sse/sse_prefetch.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 
 #ifndef L2BY2

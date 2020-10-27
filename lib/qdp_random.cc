@@ -4,7 +4,7 @@
 
 #include "qdp.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 // Random number generator namespace
 /* 
@@ -285,4 +285,4 @@ namespace RNG
 
 };
 
-} // namespace QDP;
+} // namespace __QDP__;

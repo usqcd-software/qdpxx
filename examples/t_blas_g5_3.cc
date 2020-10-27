@@ -9,7 +9,7 @@
 
 #include "scalarsite_generic/generic_blas_g5.h"
  
-using namespace QDP;
+using namespace __QDP__;
 
 int main(int argc, char *argv[])
 {

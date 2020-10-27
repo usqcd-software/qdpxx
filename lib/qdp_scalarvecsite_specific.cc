@@ -10,7 +10,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 //-----------------------------------------------------------------------------
 namespace Layout
@@ -174,4 +174,4 @@ void Set::make(const SetFunc& func)
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;

@@ -7,7 +7,7 @@
 #ifndef QDP_NEWOPS_H
 #define QDP_NEWOPS_H
 
-namespace QDP {
+namespace __QDP__ {
 
 //-----------------------------------------------------------------------------
 // Operator tags that are only used for type resolution
@@ -1145,6 +1145,6 @@ peteCast(const T1&, const QDPType<T2,C2>& l)
     CreateLeaf<QDPType<T2,C2> >::make(l)));
 }
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

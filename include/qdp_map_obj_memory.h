@@ -10,7 +10,7 @@
 #include <vector>
 #include <unordered_map>
 
-namespace QDP
+namespace __QDP__
 {
 
 
@@ -328,6 +328,6 @@ namespace QDP
     pop(xml);
   }
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

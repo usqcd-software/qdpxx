@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VCSCAL
 #define QDP_GENERIC_BLAS_VCSCAL
 
-namespace QDP {
+namespace __QDP__ {
 
 inline
 void vcscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec)
@@ -96,6 +96,6 @@ void vcscal(REAL *Out, REAL *scalep, REAL *In, int n_3vec)
   }
 }  
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

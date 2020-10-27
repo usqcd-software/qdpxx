@@ -7,7 +7,7 @@
 #include "qdp_byteorder.h"
 #include <complex>
 
-namespace QDP
+namespace __QDP__
 {
 
   //--------------------------------------------------------------------------------
@@ -1643,4 +1643,4 @@ namespace QDP
   BinaryFileReaderWriter::~BinaryFileReaderWriter() {close();}
 
 
-} // namespace QDP
+} // namespace __QDP__

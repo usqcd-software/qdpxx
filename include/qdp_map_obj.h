@@ -11,7 +11,7 @@
 
 #include "qdp.h"
 
-namespace QDP
+namespace __QDP__
 {
 
   //----------------------------------------------------------------------------
@@ -65,6 +65,6 @@ namespace QDP
     int getUserdata(std::string& user_data) const = 0;
   };
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

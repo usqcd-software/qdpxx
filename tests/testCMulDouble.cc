@@ -4,7 +4,7 @@
 #include "unittest.h"
 #include <cmath>
 
-using namespace QDP;
+using namespace __QDP__;
 using namespace Assertions;
 
 

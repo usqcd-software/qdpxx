@@ -34,7 +34,7 @@ int gethostname(char *hostname, size_t size)
 } 
 #endif
 
-namespace QDP {
+namespace __QDP__ {
 
 /**
  * Simple information display routine
@@ -169,4 +169,4 @@ uniquify_list(const multi1d<int>& ll)
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;

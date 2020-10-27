@@ -7,7 +7,7 @@
 #ifndef QDP_RANDOM_H
 #define QDP_RANDOM_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 //! Random number generator namespace
@@ -85,6 +85,6 @@ fill_random(double* d, T1& seed, T2& skewed_seed, const T1& seed_mult)
     d[i] = float(dd[i]);
 }
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

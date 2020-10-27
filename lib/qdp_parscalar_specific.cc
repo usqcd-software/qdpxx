@@ -10,7 +10,7 @@
 #include "qmp.h"
 
 
-namespace QDP {
+namespace __QDP__ {
 
 //-----------------------------------------------------------------------------
 // IO routine solely for debugging. Only defined here
@@ -1235,4 +1235,4 @@ namespace QDP {
     }
   }
 
-} // namespace QDP;
+} // namespace __QDP__;

@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VAXPY3
 #define QDP_GENERIC_BLAS_VAXPY3
 
-namespace QDP {
+namespace __QDP__ {
 // (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (Vector) Add
 inline
 void vaxpy3(REAL *Out,REAL  *scalep,REAL *InScale, REAL *Add,int n_4vec)
@@ -100,6 +100,6 @@ void vaxpy3(REAL *Out,REAL  *scalep,REAL *InScale, REAL *Add,int n_4vec)
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

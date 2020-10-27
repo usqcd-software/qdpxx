@@ -23,7 +23,7 @@
 
 typedef unsigned long long ullong;
 
-namespace QDP {
+namespace __QDP__ {
 
 
 	namespace HDF5Base{

@@ -6,7 +6,7 @@
 #include "qdp.h"
 #include "examples.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 //! Do a random gauge transformation on the u fields
 /*!

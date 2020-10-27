@@ -7,7 +7,7 @@
 #ifndef QDP_SCALARSITE_DEFS_H
 #define QDP_SCALARSITE_DEFS_H
 
-namespace QDP {
+namespace __QDP__ {
 
 /*! \addtogroup defs Type definitions
  *
@@ -640,6 +640,6 @@ typedef OSubLattice< PScalar< PScalar< RScalar<REAL64> > > > SubLatticeRealD;
 
 /*! @} */   // end of group defs
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

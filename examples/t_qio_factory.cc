@@ -5,7 +5,7 @@
 
 #include "qdp.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 typedef PSpinMatrix< PColorMatrix < RComplex<REAL>, Nc>, Ns > MyProp;
 

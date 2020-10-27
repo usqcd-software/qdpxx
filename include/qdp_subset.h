@@ -6,7 +6,7 @@
 #ifndef QDP_SUBSET_H
 #define QDP_SUBSET_H
 
-namespace QDP {
+namespace __QDP__ {
 
 /*! @defgroup subsets Sets and Subsets
  *
@@ -156,6 +156,6 @@ extern Subset odd;
 
 /** @} */ // end of group subsetss
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

@@ -19,7 +19,7 @@
 #include "qdp_threadbind.h"
 #endif
 
-namespace QDP {
+namespace __QDP__ {
 	
 	namespace ThreadReductions {
 		REAL64* norm2_results;
@@ -368,4 +368,4 @@ namespace QDP {
 	void QDP_suspend() {}
 	
 	
-} // namespace QDP;
+} // namespace __QDP__;

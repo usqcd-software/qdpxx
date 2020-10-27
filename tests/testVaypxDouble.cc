@@ -3,7 +3,7 @@
 #include "unittest.h"
 
 
-using namespace QDP;
+using namespace __QDP__;
 using namespace Assertions;
 
 // Trinity of tests: Check SSE against Handrolled

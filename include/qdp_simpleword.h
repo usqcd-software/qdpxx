@@ -9,7 +9,7 @@
 
 #include <cmath>
 
-namespace QDP {
+namespace __QDP__ {
 
 using std::abs;
 using std::div;
@@ -824,6 +824,6 @@ struct TrinaryReturn<float, float, float, FnColorContract> {
   typedef float Type_t;
 };
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

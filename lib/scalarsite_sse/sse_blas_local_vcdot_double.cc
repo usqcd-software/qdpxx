@@ -10,7 +10,7 @@
 #include "qdp_config.h"
 #include "scalarsite_sse/sse_blas_local_vcdot_double.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 #ifndef QDP_USE_SSE3
 
@@ -193,4 +193,4 @@ QDPXX_MESSAGE("Using SSE3")
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;

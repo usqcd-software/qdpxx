@@ -17,7 +17,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-namespace QDP 
+namespace __QDP__ 
 {
 
   //-----------------------------------------------------------------------------
@@ -349,4 +349,4 @@ QDPXX_MESSAGE("Using a 32 checkerboard layout")
   //-----------------------------------------------------------------------------
 
 
-} // namespace QDP;
+} // namespace __QDP__;

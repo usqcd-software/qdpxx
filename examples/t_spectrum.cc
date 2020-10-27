@@ -13,7 +13,7 @@
 #include "examples.h"
 #include "qdp_util.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 
 

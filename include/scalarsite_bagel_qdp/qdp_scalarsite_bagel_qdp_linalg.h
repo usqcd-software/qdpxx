@@ -10,7 +10,7 @@
 #ifndef QDP_SCALARSITE_BAGEL_QDP_LINALG_H
 #define QDP_SCALARSITE_BAGEL_QDP_LINALG_H
 
-namespace QDP {
+namespace __QDP__ {
 
 /*! @defgroup optimizations  Optimizations
  *
@@ -1227,6 +1227,6 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 #undef DEBUG_BAGELQDP_LINALG
 #endif
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif

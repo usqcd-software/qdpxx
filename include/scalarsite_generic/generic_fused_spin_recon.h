@@ -1,7 +1,7 @@
 #ifndef GENERIC_FUSED_SPIN_RECON_H
 #define GENERIC_FUSED_SPIN_RECON_H
 
-namespace QDP {
+namespace __QDP__ {
  
 // Convenience Types
 typedef PColorVector<RComplex<REAL>, 3> ColVec;
@@ -778,6 +778,6 @@ sreconDir3Plus(const PScalar<ColMat>& a, const PSpinVector<ColVec,2>& b)
 }
 
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

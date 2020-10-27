@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VCAXPY3
 #define QDP_GENERIC_BLAS_VCAXPY3
 
-namespace QDP {
+namespace __QDP__ {
 // (Vector) out = (Complex) (*scalep) * (Vector) InScale + (Vector) Add
 inline
 void vcaxpy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec)
@@ -135,6 +135,6 @@ void vcaxpy3(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec)
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

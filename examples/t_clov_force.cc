@@ -7,7 +7,7 @@
 
 #include "examples.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 void deriv_loops(const multi1d<LatticeColorMatrix>& u,
 		 const int mu, const int nu, const int cb,

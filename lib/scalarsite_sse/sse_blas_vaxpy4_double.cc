@@ -8,7 +8,7 @@
 #include <xmmintrin.h>
 #include "scalarsite_sse/sse_prefetch.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 
 
@@ -239,5 +239,5 @@ void vaxpyz4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, REAL64 *Add,int n_4vec)
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 

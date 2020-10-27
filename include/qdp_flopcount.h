@@ -8,7 +8,7 @@
 #ifndef QDP_FLOPCOUNT_H
 #define QDP_FLOPCOUNT_H
 
-namespace QDP
+namespace __QDP__
 {
 
   //---------------------------------------------------------------------
@@ -81,6 +81,6 @@ namespace QDP
 
   /*! @} */  // end of group 
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

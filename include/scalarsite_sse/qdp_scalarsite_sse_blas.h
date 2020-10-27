@@ -10,7 +10,7 @@
 
 #include "qdp_config.h"
 
-namespace QDP {
+namespace __QDP__ {
 
   namespace ThreadReductions{ 
     extern REAL64* norm2_results;
@@ -2793,7 +2793,7 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
 #endif
 
   
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif  // guard
  

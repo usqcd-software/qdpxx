@@ -7,7 +7,7 @@
 #ifndef QDP_PRIMMATRIX_H
 #define QDP_PRIMMATRIX_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 //-------------------------------------------------------------------------------------
@@ -1792,6 +1792,6 @@ where(const PScalar<T1>& a, const PMatrix<T2,N,C>& b, const PMatrix<T3,N,C>& c)
 
 /*! @} */  // end of group primmatrix
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

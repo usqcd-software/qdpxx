@@ -21,7 +21,7 @@
 #include "scalarsite_generic/generic_blas_local_vcdot.h"
 #include "scalarsite_generic/generic_blas_local_vcdot_real.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 // Types needed for the expression templates. 
 // TVec has outer Ns template so it ought to work for staggered as well
@@ -2609,7 +2609,7 @@ innerProductReal(const multi1d< OLattice<TVec> > &v1,
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif  // guard
  

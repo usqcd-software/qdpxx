@@ -4,7 +4,7 @@
 #include "qdp.h"
 #include <vector>
 
-using namespace QDP; 
+using namespace __QDP__; 
 
 namespace Assertions { 
   template<typename T>

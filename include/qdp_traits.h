@@ -9,7 +9,7 @@
 #ifndef QDP_TRAITS_H
 #define QDP_TRAITS_H
 
-namespace QDP {
+namespace __QDP__ {
 
 //-----------------------------------------------------------------------------
 // Traits class for returning the subset-ted class name of a outer grid class
@@ -126,7 +126,7 @@ namespace {
  Zero zero;
 }
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif
 

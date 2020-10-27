@@ -4,7 +4,7 @@
 
 #include "qdp_map_obj_memory.h"
 
-namespace QDP
+namespace __QDP__
 {
   //****************************************************************************
   //! Prop operator
@@ -52,7 +52,7 @@ namespace QDP
 }
 
 
-using namespace QDP;
+using namespace __QDP__;
 
 void fail(int line)
 {

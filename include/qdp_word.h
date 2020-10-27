@@ -10,7 +10,7 @@
 
 #include <cmath>
 
-namespace QDP {
+namespace __QDP__ {
 
 //-------------------------------------------------------------------------------------
 //! Word class - builtin machine word type
@@ -259,6 +259,6 @@ operator*(const Real32 & l, const Real32 & r)
   return d;
 }
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

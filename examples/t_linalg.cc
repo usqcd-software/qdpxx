@@ -8,7 +8,7 @@
 #include "qdp.h"
 #include "linalg.h"
 
-using namespace QDP;
+using namespace __QDP__;
 #define TIME_OPS
 
 int main(int argc, char *argv[])
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
   LatticeColorMatrix diff_m;
   diff_m = m3 - m1;
   QDPIO::cout << "Diff M=M = " << norm2(diff_m) << std::endl;
-  QDP::StopWatch swatch;
+  __QDP__::StopWatch swatch;
   swatch.reset();
   double time = 0;
   icnt = 1;

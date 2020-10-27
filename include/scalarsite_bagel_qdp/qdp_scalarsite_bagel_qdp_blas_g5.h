@@ -13,7 +13,7 @@
 #include "bagel_qdp.h"
 
 
-namespace QDP {
+namespace __QDP__ {
 
 // Types needed for the expression templates. 
 // TVec has outer Ns template so it ought to work for staggered as well
@@ -2160,7 +2160,7 @@ void evaluate( OLattice< TVec > &d,
 
 }
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif  // guard
  

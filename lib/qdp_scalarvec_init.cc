@@ -8,7 +8,7 @@
 
 #include "qdp.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 
 //! Private flag for status
@@ -99,4 +99,4 @@ void QDP_resume() {}
 void QDP_suspend() {}
 
 
-} // namespace QDP;
+} // namespace __QDP__;

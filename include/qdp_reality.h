@@ -11,7 +11,7 @@
 #include <sstream>
 #include <cmath>
 
-namespace QDP {
+namespace __QDP__ {
 
 
 //-------------------------------------------------------------------------------------
@@ -2565,6 +2565,6 @@ fill_gaussian(RComplex<T>& d, RComplex<T>& r1, RComplex<T>& r2)
 
 /*! @} */  // end of group rcomplex
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

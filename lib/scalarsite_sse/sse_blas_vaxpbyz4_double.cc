@@ -8,7 +8,7 @@
 #include <xmmintrin.h>
 #include "scalarsite_sse/sse_prefetch.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 
 
@@ -329,4 +329,4 @@ void vaxpby4(REAL64 *y, REAL64 *a, REAL64 *x, REAL64 *b, int n_4vec)
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;

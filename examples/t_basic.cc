@@ -5,7 +5,7 @@
 
 #include "qdp.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 
 int main(int argc, char *argv[])
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
   // Put the machine into a known state
   QDP_initialize(&argc, &argv);
 
-  QDP_PUSH_PROFILE(QDP::getProfileLevel());
+  QDP_PUSH_PROFILE(__QDP__::getProfileLevel());
 
   // Setup the layout
   const int foo[] = {2,2,2,1};
@@ -421,7 +421,7 @@ int main(int argc, char *argv[])
   /* test 30 */
   gaussian(lcvsp1);
   gaussian(lcvsp2);
-  multi1d<SpinMatrixD> fred1 = sumMulti(spm, QDP::rb);
+  multi1d<SpinMatrixD> fred1 = sumMulti(spm, __QDP__::rb);
   push(xml_out,"SUMMULTI_LOCAL_COLOR_INNER_PRODUCT1");
   write(xml_out, "fred1", fred1);
   pop(xml_out);
@@ -429,7 +429,7 @@ int main(int argc, char *argv[])
   /* test 31 */
   gaussian(lcvsp1);
   gaussian(lcvsp2);
-  multi1d<SpinMatrixD> fred2 = sumMulti(localColorInnerProduct(lcvsp1, lcvsp2), QDP::rb);
+  multi1d<SpinMatrixD> fred2 = sumMulti(localColorInnerProduct(lcvsp1, lcvsp2), __QDP__::rb);
   push(xml_out,"SUMMULTI_LOCAL_COLOR_INNER_PRODUCT2");
   write(xml_out, "fred2", fred2);
   pop(xml_out);

@@ -10,7 +10,7 @@
 #include "examples.h"
 
 
-using namespace QDP;
+using namespace __QDP__;
 
 typedef struct { 
   std::string ILDG_file_name;

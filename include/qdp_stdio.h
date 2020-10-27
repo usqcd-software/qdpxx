@@ -15,7 +15,7 @@
 //#include <streambuf>
 #include <string>
 
-namespace QDP {
+namespace __QDP__ {
 
 
 /*! @defgroup stdio STD IO
@@ -183,6 +183,6 @@ namespace QDPIO
 
 /*! @} */   // end of group stdio
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

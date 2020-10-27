@@ -8,7 +8,7 @@
 
 #include "qdp.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 
 double QDP_CSCALE(LatticeFermion& dest, 

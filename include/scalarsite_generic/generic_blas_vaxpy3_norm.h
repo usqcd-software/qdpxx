@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VAXPY3_NORM
 #define QDP_GENERIC_BLAS_VAXPY3_NORM
 
-namespace QDP {
+namespace __QDP__ {
 
 inline
 void vaxpy3_norm(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec, REAL *norm)
@@ -92,6 +92,6 @@ void vaxpy3_norm(REAL *Out,REAL *scalep,REAL *InScale, REAL *Add,int n_3vec, REA
   *norm=(REAL)norm_out;
 }
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

@@ -7,7 +7,7 @@
 #include <iostream>
 using namespace std;
 
-namespace QDP {
+namespace __QDP__ {
 
 // Convenience Types
 typedef PColorVector<RComplex<REAL32>, 3> ColVec32;
@@ -902,6 +902,6 @@ adjMultSprojDir3Minus(const PScalar<ColMat32>& a, const Spin4_32& b)
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif

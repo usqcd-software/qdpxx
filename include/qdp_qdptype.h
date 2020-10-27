@@ -7,7 +7,7 @@
 #ifndef QDP_QDPTYPE_H
 #define QDP_QDPTYPE_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 /*! \addtogroup group1 QDP main operations
@@ -472,7 +472,7 @@ struct LeafFunctor<QDPType<T,C>, EvalLeaf1>
     }
 };
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif
 

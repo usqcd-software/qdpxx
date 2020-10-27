@@ -20,7 +20,7 @@
 #include <string>
 #include <map>
 
-namespace QDP
+namespace __QDP__
 {
   namespace Allocator
   {
@@ -77,8 +77,8 @@ namespace QDP
       QDPDefaultAllocator() {}
       ~QDPDefaultAllocator() {}
 
-      friend class QDP::CreateUsingNew<QDP::Allocator::QDPDefaultAllocator>;
-      friend class QDP::CreateStatic<QDP::Allocator::QDPDefaultAllocator>;
+      friend class __QDP__::CreateUsingNew<__QDP__::Allocator::QDPDefaultAllocator>;
+      friend class __QDP__::CreateStatic<__QDP__::Allocator::QDPDefaultAllocator>;
     public:
 
       void init(size_t PoolSizeinMB);
@@ -109,6 +109,6 @@ namespace QDP
 
 
   } // namespace Allocator
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

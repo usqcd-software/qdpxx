@@ -8,7 +8,7 @@
 #include <xmmintrin.h>
 
 
-namespace QDP {
+namespace __QDP__ {
 
   /* M = a*M  a is scalar */
   void ssed_m_eq_scal_m(REAL64* m2, REAL64* a, REAL64 *m1, int n_mat)
@@ -160,5 +160,5 @@ namespace QDP {
   }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 

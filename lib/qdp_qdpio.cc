@@ -5,7 +5,7 @@
 
 #include "qdp.h"
 
-namespace QDP 
+namespace __QDP__ 
 {
 
   //-----------------------------------------
@@ -567,4 +567,4 @@ namespace QDP
   }
 
 
-} // namespace QDP;
+} // namespace __QDP__;

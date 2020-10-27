@@ -13,7 +13,7 @@
 // the wrappers for the functions to be threaded
 #include "qdp_sse_fused_spin_recon_evaluates_wrapper.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 
 // Vec = SpinReconstructDir0Plus( u * psi);
@@ -1324,7 +1324,7 @@ void evaluate(OLattice< FVec32 >& d,
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 
 

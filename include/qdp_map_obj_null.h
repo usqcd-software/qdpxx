@@ -9,7 +9,7 @@
 #include "qdp_map_obj.h"
 #include <vector>
 
-namespace QDP
+namespace __QDP__
 {
 
   //----------------------------------------------------------------------------
@@ -49,6 +49,6 @@ namespace QDP
     int getUserdata(std::string& user_data) const {return 0;}
   };
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

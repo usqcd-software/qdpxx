@@ -1,6 +1,6 @@
 #include "qdp.h"
 
-namespace QDP {
+namespace __QDP__ {
 
   // Fully specialised strings -- can live in the .cc file - defined only once
   

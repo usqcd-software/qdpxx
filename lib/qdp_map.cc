@@ -8,7 +8,7 @@
 #include "qdp.h"
 #include "qdp_util.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 //! Definition of shift function object
 ArrayBiDirectionalMap  shift;
@@ -173,4 +173,4 @@ void ArrayBiDirectionalMap::make(const ArrayMapFunc& func)
 //-----------------------------------------------------------------------------
 
 
-} // namespace QDP;
+} // namespace __QDP__;

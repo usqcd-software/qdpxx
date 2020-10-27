@@ -10,7 +10,7 @@
 #include <xmmintrin.h>
 #include "qdp_config.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 
 #ifndef QDP_USE_SSE3
@@ -742,5 +742,5 @@ QDPXX_MESSAGE("Using SSE3")
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 

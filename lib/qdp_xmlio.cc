@@ -6,7 +6,7 @@
 #include "qdp.h"
 #include <list>
 
-namespace QDP 
+namespace __QDP__ 
 {
 
   using std::string;
@@ -1521,4 +1521,4 @@ namespace QDP
   void pop(XMLArrayWriter& xml) {xml.closeStruct();}
 
 
-} // namespace QDP;
+} // namespace __QDP__;

@@ -7,7 +7,7 @@
 #include "scalarsite_sse/sse_blas_vscal4_double.h"
 #include <xmmintrin.h>
 
-namespace QDP {
+namespace __QDP__ {
 
 
 
@@ -110,5 +110,5 @@ void vscal4(REAL64 *z,REAL64 *a,REAL64 *x, int n_4spin)
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 

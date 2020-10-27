@@ -6,7 +6,7 @@
 
 #include "scalarsite_sse/sse_blas_local_sumsq_double.h"
 #include <xmmintrin.h>
-namespace QDP {
+namespace __QDP__ {
 
 
 // (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (Vector) Add
@@ -98,6 +98,6 @@ namespace QDP {
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 

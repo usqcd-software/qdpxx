@@ -6,14 +6,14 @@
 #include <ios>
 
 #include "qdp.h"
-namespace QDP { 
+namespace __QDP__ { 
 extern
 
 void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_real);
 };
 
 
-using namespace QDP;
+using namespace __QDP__;
 
 int main(int argc, char *argv[])
 {

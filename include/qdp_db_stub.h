@@ -127,7 +127,7 @@ namespace FILEDB
 
 
 //--------------------------------------------------------------------------------
-namespace QDP
+namespace __QDP__
 {
   //! Fake cache and page sizes
   const int db_cachesize = 0;
@@ -355,6 +355,6 @@ o     *
 	QDP_abort(1);
       }
   };
-}  // namespace QDP
+}  // namespace __QDP__
 
 #endif

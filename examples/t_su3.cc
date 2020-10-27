@@ -11,7 +11,7 @@
 // #include "scalarsite_bagel_qdp/qdp_scalarsite_bagel_qdp_linalg.h"
 
 
-using namespace QDP;
+using namespace __QDP__;
 
 int main(int argc, char *argv[])
 {
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
   
   QDPIO::cout << "MM: || diff || = " << sqrt(norm2(diff)) << endl;
   
-  QDP::StopWatch swatch;
+  __QDP__::StopWatch swatch;
   swatch.reset();
   swatch.start();
   for(int i=0; i < 5000; i++) { 

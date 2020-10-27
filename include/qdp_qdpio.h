@@ -13,7 +13,7 @@
 #include "qdp_traits.h"
 #include <cstring>
 
-namespace QDP 
+namespace __QDP__ 
 {
 
   /*! @defgroup qio QIO
@@ -1667,6 +1667,6 @@ namespace QDP
   }
 
   /*! @} */   // end of group qio
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

@@ -8,7 +8,7 @@
 #ifndef QDP_PRIMVECTOR_H
 #define QDP_PRIMVECTOR_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 //-------------------------------------------------------------------------------------
@@ -1022,6 +1022,6 @@ where(const PScalar<T1>& a, const PVector<T2,N,C>& b, const PVector<T3,N,C>& c)
 
 /*! @} */  // end of group primvector
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

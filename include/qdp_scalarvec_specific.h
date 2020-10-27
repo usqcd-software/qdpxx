@@ -7,7 +7,7 @@
 #ifndef QDP_SCALARVEC_SPECIFIC_H
 #define QDP_SCALARVEC_SPECIFIC_H
 
-namespace QDP {
+namespace __QDP__ {
 
 //-----------------------------------------------------------------------------
 // Layout stuff specific to a scalarvec architecture
@@ -1416,6 +1416,6 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
   copy_site(d.elem(outersite), innersite, this_site);
 }
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

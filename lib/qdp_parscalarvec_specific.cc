@@ -10,7 +10,7 @@
 #include "qdp_util.h"
 #include "qmp.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 //-----------------------------------------------------------------------------
 // IO routine solely for debugging. Only defined here
@@ -593,4 +593,4 @@ void writeArchiv(BinaryWriter& cfg_out, const multi1d<LatticeColorMatrix>& u,
     QDP_error_exit("Error writing configuration");
 }
 
-} // namespace QDP;
+} // namespace __QDP__;

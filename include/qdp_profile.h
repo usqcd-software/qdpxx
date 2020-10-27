@@ -9,7 +9,7 @@
 #ifndef QDP_PROFILE_INCLUDE
 #define QDP_PROFILE_INCLUDE
 
-namespace QDP {
+namespace __QDP__ {
 
 typedef unsigned long  QDPTime_t;
 
@@ -1413,6 +1413,6 @@ struct TagVisitor<FnTraceSpinQuarkContract13, PrintTag> : public ParenPrinter<Fn
 
 #endif  // ! defined(QDP_USE_PROFILING)
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif  // QDP_PROFILE_INCLUDE

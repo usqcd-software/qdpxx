@@ -9,7 +9,7 @@
 
 #include "qmp.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 
 // Use separate defs here. This will cause subroutine calls under g++
@@ -2693,5 +2693,5 @@ namespace LatticeTimeSliceIO
 
 } // namespace LatticeTimeSliceIO
 
-} // namespace QDP
+} // namespace __QDP__
 #endif

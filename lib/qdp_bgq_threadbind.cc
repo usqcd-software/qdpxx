@@ -12,7 +12,7 @@
 #include <omp.h>
 #endif
 
-namespace QDP 
+namespace __QDP__ 
 {
 
 #ifdef QDP_USE_OMP_THREADS

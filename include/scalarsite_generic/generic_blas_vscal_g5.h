@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VSCAL_G5
 #define QDP_GENERIC_BLAS_VSCAL_G5
 
-namespace QDP {
+namespace __QDP__ {
 
 // (Vector) out = (Scalar) (*scalep) * P+ (Vector) In
 inline
@@ -214,6 +214,6 @@ void scal_g5ProjMinus(REAL *Out, REAL *scalep, REAL *In, int n_4vec)
   }
 }  
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

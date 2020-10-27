@@ -7,7 +7,7 @@
 #include "scalarsite_sse/sse_linalg_mm_su3_double.h"
 #include <xmmintrin.h>
 
-namespace QDP {
+namespace __QDP__ {
 
 
   typedef union { 
@@ -346,5 +346,5 @@ namespace QDP {
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 

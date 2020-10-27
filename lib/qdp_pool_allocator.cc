@@ -14,7 +14,7 @@
 
 #undef DEBUG_POOL_ALLOCATOR
 
-namespace QDP {
+namespace __QDP__ {
 namespace Allocator {
 
 	QDPPoolAllocator::QDPPoolAllocator() : _PoolSize(0),
@@ -139,4 +139,4 @@ namespace Allocator {
 		}
 	}
 } // namespace Allocator
-} // namespace QDP
+} // namespace __QDP__

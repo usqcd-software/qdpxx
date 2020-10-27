@@ -7,7 +7,7 @@
 #include "blas1.h"
 
 
-using namespace QDP;
+using namespace __QDP__;
 
 
 double QDP_SCALE(LatticeFermion& dest, 

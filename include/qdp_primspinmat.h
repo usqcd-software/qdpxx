@@ -7,7 +7,7 @@
 #ifndef QDP_PRIMSPINMAT_H
 #define QDP_PRIMSPINMAT_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 //-------------------------------------------------------------------------------------
@@ -1848,6 +1848,6 @@ quarkContract34(const PSpinMatrix<T1,4>& s1, const PSpinMatrix<T2,4>& s2)
 
 /*! @} */   // end of group primspinmatrix
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

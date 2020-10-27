@@ -10,7 +10,7 @@
  * \brief Outer grid classes
  */
 
-namespace QDP {
+namespace __QDP__ {
 
 /*! \defgroup fiberbundle Fiberbundle types and operations
  *
@@ -416,11 +416,11 @@ private:
       size_t NSites = static_cast<size_t>(Layout::sitesOnNode());
       try
       {
-    	  F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*NSites,QDP::Allocator::DEFAULT);
+    	  F=(T*)__QDP__::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*NSites,__QDP__::Allocator::DEFAULT);
       }
       catch(std::bad_alloc) {
     	  QDPIO::cerr << "Allocation failed in OLattice alloc_mem" << std::endl;
-    	  QDP::Allocator::theQDPAllocator::Instance().dump();
+    	  __QDP__::Allocator::theQDPAllocator::Instance().dump();
 
 	QDP_abort(1);
       }
@@ -441,7 +441,7 @@ private:
     if (!mem) return;
     if( F != nullptr )
     { 
-    	QDP::Allocator::theQDPAllocator::Instance().free(F);
+    	__QDP__::Allocator::theQDPAllocator::Instance().free(F);
 
     }
     mem = false;
@@ -1473,6 +1473,6 @@ void gaussian(OSubScalar<T>& d)
 
 /*! @} */  // end of group oscalar
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

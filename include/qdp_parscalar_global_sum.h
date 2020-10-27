@@ -3,7 +3,7 @@
  
 #include <qmp.h>
  
-namespace QDPGlobalSums {
+namespace __QDP__GlobalSums {
   QMP_status_t QDP_sum_int(int *i);
   QMP_status_t QDP_sum_float_array(float *x, int length);
   QMP_status_t QDP_sum_double_array(double *x, int length);

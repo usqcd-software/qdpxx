@@ -8,7 +8,7 @@
 #ifndef QDP_PRIMCOLORVEC_H
 #define QDP_PRIMCOLORVEC_H
 
-namespace QDP {
+namespace __QDP__ {
 
 //-------------------------------------------------------------------------------------
 /*! \addtogroup primcolorvector Color vector primitive
@@ -339,7 +339,7 @@ colorCrossProduct(const PColorVector<T1,3>& s1, const PColorVector<T2,3>& s2)
 
 
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif
 

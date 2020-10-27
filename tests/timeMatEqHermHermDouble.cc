@@ -8,7 +8,7 @@ extern void*  alloc_cache_aligned_3mat(unsigned num_sites, REAL64** x, REAL64 **
 
 // M=H*H kernel (M \in SU3)
 void
-timeMeqHH_QDP::run(void) 
+timeMeqHH___QDP__::run(void) 
 {
 
   LatticeColorMatrix x;
@@ -161,7 +161,7 @@ timeMeqHH::run(void)
 
 // M+=HH kernel (M \in SU3)
 void
-timeMPeqaHH_QDP::run(void) 
+timeMPeqaHH___QDP__::run(void) 
 {
 
   LatticeColorMatrix x;

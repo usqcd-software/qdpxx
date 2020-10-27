@@ -23,7 +23,7 @@
  * provided.
  */
 
-/*! \namespace QDP
+/*! \namespace __QDP__
  * \brief Primary namespace holding all QDP types, operations and objects
  */
 
@@ -99,7 +99,7 @@ using std::ostream;
 
 // Basic includes
 #define PETE_USER_DEFINED_EXPRESSION
-namespace QDP {
+namespace __QDP__ {
 #include <PETE/PETE.h>
 }
 
@@ -135,7 +135,7 @@ QDPXX_MESSAGE("not using hdf5")
 #include "qdp_qdptype.h"
 #include "qdp_qdpsubtype.h"
 
-namespace QDP {
+namespace __QDP__ {
 #include "QDPOperators.h"
 }
 

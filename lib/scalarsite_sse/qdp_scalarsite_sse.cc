@@ -12,7 +12,7 @@
 // These SSE asm instructions are only supported under GCC/G++
 #if defined(__GNUC__)
 #include "qdp_sse_intrin.h"
-namespace QDP {
+namespace __QDP__ {
 
 
 
@@ -1747,6 +1747,6 @@ void local_vcdot_real(REAL64 *Out, REAL32 *V1, REAL32 *V2, int n_3vec)
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif  // defined(__GNUC__)

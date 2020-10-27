@@ -8,7 +8,7 @@
 #define QDP_OUTERSUBTYPE_H
 
 #include "qdp_allocator.h"
-namespace QDP {
+namespace __QDP__ {
 
 //! OScalar class narrowed to a subset
 /*! 
@@ -143,12 +143,12 @@ public:
     //QDP_info("OSubLattice alloc for %d sites",s->numSiteTable());
     try 
       {
-    	F = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*s->numSiteTable(),QDP::Allocator::DEFAULT);
+    	F = (T*)__QDP__::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*s->numSiteTable(),__QDP__::Allocator::DEFAULT);
       }
       catch(std::bad_alloc) 
       {
     	  QDPIO::cerr << "Allocation failed in OSubLattice" << std::endl;
-    	  QDP::Allocator::theQDPAllocator::Instance().dump();
+    	  __QDP__::Allocator::theQDPAllocator::Instance().dump();
     	  QDP_abort(1);
       }
   }
@@ -160,7 +160,7 @@ public:
   }
 
   void free_mem() {
-	  QDP::Allocator::theQDPAllocator::Instance().free(F);
+	  __QDP__::Allocator::theQDPAllocator::Instance().free(F);
   }
 #endif
 
@@ -347,6 +347,6 @@ void gaussian(OSubScalar<T> dd)
   fill_gaussian(d.elem(), r1.elem(), r2.elem());
 }
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

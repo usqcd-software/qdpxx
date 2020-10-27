@@ -9,12 +9,12 @@
 #define QDP_SSE_BLAS_VAXPY4_DOUBLE
 
 #include "qdp_precision.h"
-namespace QDP {
+namespace __QDP__ {
 
   void vaxpy4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, int n_4spin);
   void vaxpyz4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, REAL64 *Add,int n_4vec);
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

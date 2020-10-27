@@ -8,7 +8,7 @@
 #include "qdp.h"
 #include "examples.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 //! Take the traceless antihermitian projection of a color matrix
 /*!

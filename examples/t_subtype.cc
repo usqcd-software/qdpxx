@@ -9,7 +9,7 @@
 
 #include "qdp.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 typedef OSubLattice< PScalar< PColorVector< RComplex<REAL>, Nc> > > SubLatticeColorVector;
 

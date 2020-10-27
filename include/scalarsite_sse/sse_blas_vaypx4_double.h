@@ -9,10 +9,10 @@
 #define QDP_SSE_BLAS_VAYPX4_DOUBLE
 
 #include "qdp_precision.h"
-namespace QDP {
+namespace __QDP__ {
 
   void vaypx4(REAL64 *Out,REAL64 *scalep,REAL64 *InScale, int n_4spin);
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

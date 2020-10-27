@@ -1,7 +1,7 @@
 #include "qdp.h"
 #include <string.h>
 
-namespace QDPGlobalSums {
+namespace __QDP__GlobalSums {
 
   // Given an array x of length elements
   // This routine will compute:

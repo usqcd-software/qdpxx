@@ -10,11 +10,11 @@
 
 #include "qdp_precision.h"
 
-namespace QDP {
+namespace __QDP__ {
 
   void local_sumsq4(REAL64 *sum, REAL64 *vecptr, int n_4spin);
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

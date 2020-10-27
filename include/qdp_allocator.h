@@ -17,7 +17,7 @@
  *  whereas on other targets (QCDOC) this should be the default
  *  alignment
  */
-namespace QDP 
+namespace __QDP__ 
 {
   namespace Allocator 
   {
@@ -64,29 +64,29 @@ namespace QDP
 
   } // namespace Hints
 
-} // namespace QDP
+} // namespace __QDP__
 
 
 // Now include the allocator.h-s and turn into singleton as approprite.
 #ifdef QDP_USE_TBBPOOL_ALLOCATOR
 #include "qdp_pool_allocator.h"
-namespace QDP {
+namespace __QDP__ {
  namespace Allocator {
- using theQDPAllocator = SingletonHolder<QDP::Allocator::QDPPoolAllocator,
-			    QDP::CreateStatic,
-			    QDP::NoDestroy,
-			    QDP::SingleThreaded>;
+ using theQDPAllocator = SingletonHolder<__QDP__::Allocator::QDPPoolAllocator,
+			    __QDP__::CreateStatic,
+			    __QDP__::NoDestroy,
+			    __QDP__::SingleThreaded>;
  }
 }
 #else
 // Include the default specialisation
 #include "qdp_default_allocator.h"
-namespace QDP {
+namespace __QDP__ {
  namespace Allocator {
- using theQDPAllocator =  SingletonHolder<QDP::Allocator::QDPDefaultAllocator,
-			    QDP::CreateStatic,
-			    QDP::NoDestroy,
-			    QDP::SingleThreaded>;
+ using theQDPAllocator =  SingletonHolder<__QDP__::Allocator::QDPDefaultAllocator,
+			    __QDP__::CreateStatic,
+			    __QDP__::NoDestroy,
+			    __QDP__::SingleThreaded>;
  }
  }
 #endif

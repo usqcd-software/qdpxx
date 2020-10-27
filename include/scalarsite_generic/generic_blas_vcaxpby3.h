@@ -1,7 +1,7 @@
 #ifndef QDP_GENERIC_BLAS_VCAXPBY3
 #define QDP_GENERIC_BLAS_VCAXPBY3
 
-namespace QDP {
+namespace __QDP__ {
 inline
 void vcaxpby3(REAL* Out, REAL* ap, REAL* xp, REAL* bp, REAL *yp, int n_3vec)
 {
@@ -157,6 +157,6 @@ void vcaxpby3(REAL* Out, REAL* ap, REAL* xp, REAL* bp, REAL *yp, int n_3vec)
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

@@ -11,7 +11,7 @@
 // These SSE asm instructions are only supported under GCC/G++
 #if defined(__GNUC__) && __GNUC_MINOR__ >= 2  &&  QDP_USE_SSE == 1
 
-namespace QDP {
+namespace __QDP__ {
 
 // Specialization to optimize the case   
 //    LatticeColorMatrix[Subset] = LatticeColorMatrix * LatticeColorMatrix
@@ -59,6 +59,6 @@ void evaluate(OLattice<PScalar<PColorMatrix<RComplexFloat, 3> > >& d,
 
 }
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif  // defined(__GNUC__)

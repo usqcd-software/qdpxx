@@ -20,7 +20,7 @@
 #include <complex>
 #endif
 
-namespace QDP
+namespace __QDP__
 {
   /*! @defgroup io IO
    *
@@ -1677,6 +1677,6 @@ namespace QDP
 
 
   /*! @} */   // end of group io
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

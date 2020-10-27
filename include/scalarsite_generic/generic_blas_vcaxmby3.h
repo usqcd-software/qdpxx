@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VCAXMBY3
 #define QDP_GENERIC_BLAS_VCAXMBY3
 
-namespace QDP {
+namespace __QDP__ {
 // (Vector) out = (Complex) (*scalep) * (Vector) InScale - (Vector) Add
 inline
 void vcaxmby3(REAL* Out, REAL* ap, REAL* xp, REAL* bp, REAL* yp, int n_3vec)
@@ -166,6 +166,6 @@ void vcaxmby3(REAL* Out, REAL* ap, REAL* xp, REAL* bp, REAL* yp, int n_3vec)
 }
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

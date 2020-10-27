@@ -24,6 +24,8 @@ static const char* const QDP_PACKAGE_VERSION(PACKAGE_VERSION);
 static const char* const QDP_VERSION(VERSION);
 
 
+#define __QDP__ QDP_NAMESPACE
+
 /* Undef the unwanted */
 #undef PACKAGE
 #undef PACKAGE_BUGREPORT

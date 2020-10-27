@@ -7,7 +7,7 @@
 #ifndef QDP_SCALARVECSITE_DEFS_H
 #define QDP_SCALARVECSITE_DEFS_H
 
-namespace QDP {
+namespace __QDP__ {
 
 
 /*! \addtogroup defs Type definitions
@@ -417,6 +417,6 @@ typedef LatticeInteger  LatticeInt;
 
 /*! @} */   // end of group defs
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

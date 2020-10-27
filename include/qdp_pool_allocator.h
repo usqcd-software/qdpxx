@@ -13,7 +13,7 @@
 #include "tbb/memory_pool.h"
 
 #include "qdp_singleton.h"
-namespace QDP
+namespace __QDP__
 {
  	 namespace Allocator {
 
@@ -47,8 +47,8 @@ namespace QDP
 	   // on p154 of Modern C++ Design (A. Alexandrescu)
 	   QDPPoolAllocator(void);
 	   ~QDPPoolAllocator();
-	   friend class QDP::CreateUsingNew<QDP::Allocator::QDPPoolAllocator>;
-	   friend class QDP::CreateStatic<QDP::Allocator::QDPPoolAllocator>;
+	   friend class __QDP__::CreateUsingNew<__QDP__::Allocator::QDPPoolAllocator>;
+	   friend class __QDP__::CreateStatic<__QDP__::Allocator::QDPPoolAllocator>;
  	 public:
 	   // Init -- has to
 	   void  init(size_t PoolSizeInMB);
@@ -74,6 +74,6 @@ namespace QDP
 
 
   } // namespace Allocator
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

@@ -5,7 +5,7 @@
 
 #include "examples.h"
 
-using namespace QDP;
+using namespace __QDP__;
 
 //! General Wilson-Dirac dslash
 /*!

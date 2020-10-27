@@ -10,7 +10,7 @@
 #include "examples.h"
 
 
-using namespace QDP;
+using namespace __QDP__;
 
 typedef struct { 
   std::string NERSC_file_name;

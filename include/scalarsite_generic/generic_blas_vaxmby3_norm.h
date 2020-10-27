@@ -8,7 +8,7 @@
 #ifndef QDP_GENERIC_BLAS_VAXMBY3_NORM
 #define QDP_GENERIC_BLAS_VAXMBY3_NORM
 
-namespace QDP {
+namespace __QDP__ {
 
 // (Vector) Out = Scalar(*ap) * (Vector) xp - (Scalar)(*bp) * (Vector)yp
 // *norm = local sumsq(Out);
@@ -101,6 +101,6 @@ void vaxmby3_norm(REAL *Out,REAL *ap,REAL *xp, REAL *bp, REAL *yp,
   *norm=(REAL)norm_out;
 }
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

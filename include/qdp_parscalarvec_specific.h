@@ -9,7 +9,7 @@
 
 #include "qmp.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 //-----------------------------------------------------------------------------
 // Layout stuff specific to a parscalarvec architecture
@@ -1831,6 +1831,6 @@ void read(BinaryReader& bin, OLattice<T>& d, const multi1d<int>& coord)
     copy_site(d.elem(outersite), innersite, recv_buf);// insert into conventional scalar form
 }
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

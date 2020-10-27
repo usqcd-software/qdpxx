@@ -10,12 +10,12 @@
 
 #include "qdp_precision.h"
 
-namespace QDP {
+namespace __QDP__ {
 
   void local_vcdot_real4(REAL64 *sum, REAL64 *y, REAL64* x,int n_4spin);
 
 
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif // guard

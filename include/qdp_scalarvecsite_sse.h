@@ -14,7 +14,7 @@
 // Only supported on gcc >= 3.2
 #if defined(__GNUC__) && __GNUC_MINOR__ >= 2
 
-namespace QDP {
+namespace __QDP__ {
 
 typedef REAL32 vReal32 __attribute__ ((aligned (16),mode(V4SF)));
 
@@ -202,7 +202,7 @@ private:
 } QDP_ALIGN16;
 
 
-} // namespace QDP
+} // namespace __QDP__
 
 // Use SSE specific Linalg stuff (inline assembler etc)
 #include "scalarvecsite_sse/qdp_scalarvecsite_sse_linalg.h"

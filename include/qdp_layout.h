@@ -9,7 +9,7 @@
 #ifndef QDP_LAYOUT_H
 #define QDP_LAYOUT_H
 
-namespace QDP {
+namespace __QDP__ {
 
 	/*! @defgroup layout  Layout 
 	*
@@ -136,6 +136,6 @@ namespace QDP {
 
 	/*! @} */   // end of group layout
 
-} // namespace QDP
+} // namespace __QDP__
 
 #endif

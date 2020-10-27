@@ -8,7 +8,7 @@
 #include "qdp.h"
 #include<sys/time.h>
 
-namespace QDP {
+namespace __QDP__ {
 
   StopWatch::StopWatch() 
   {
@@ -119,4 +119,4 @@ namespace QDP {
   }
 
 
-} // namespace QDP;
+} // namespace __QDP__;

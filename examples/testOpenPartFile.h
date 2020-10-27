@@ -5,7 +5,7 @@
 #include "unittest.h"
 
 // Forward declarations
-using namespace QDP;
+using namespace __QDP__;
 
 class TestOpenPartFile : public TestCase {
 private:

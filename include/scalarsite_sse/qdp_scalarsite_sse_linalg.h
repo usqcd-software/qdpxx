@@ -23,7 +23,7 @@
 #include "sse_mult_su3_mat_hwvec.h"
 #include "sse_mult_adj_su3_mat_hwvec.h"
 
-namespace QDP {
+namespace __QDP__ {
 
 
 // #define QDP_SCALARSITE_DEBUG
@@ -845,7 +845,7 @@ void evaluate(OLattice< TVec2 >& d,
 #undef QDP_SCALARSITE_USE_EVALUATE
 #endif
 
-} // namespace QDP;
+} // namespace __QDP__;
 
 #endif  // defined(__GNUC__)
 

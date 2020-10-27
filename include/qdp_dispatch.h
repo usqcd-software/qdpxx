@@ -8,7 +8,7 @@
 #if defined(QDP_USE_OMP_THREADS)
 QDPXX_MESSAGE("QDP using OpenMP threading")
 #include <omp.h>
-namespace QDP {    
+namespace __QDP__ {    
 /* OpenMP threading version of the dispatch.*/
 
   
@@ -64,7 +64,7 @@ QDPXX_MESSAGE("QDP using QMT threading")
 
 #include <qmt.h>
 
-namespace QDP { 
+namespace __QDP__ { 
 
  inline
    int qdpNumThreads()
@@ -87,7 +87,7 @@ void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int,Arg*)
 }
 }
 #else
-namespace QDP {
+namespace __QDP__ {
 
  inline
  int qdpNumThreads()
