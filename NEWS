@@ -1,3 +1,6 @@
+11/07/2020 -- Robert Edwards
+        Lots of small things from devel.
+
 09/17/2019 -- Robert Edwards
         Added support for new types of operations that return LatticeColorVectorSpinMatrix.
         Lots of niggly things to support more modern C++ compilers.
