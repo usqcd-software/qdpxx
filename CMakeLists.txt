@@ -196,6 +196,7 @@ configure_file(include/qdp_config_internal.h.cmake.in include/qdp_config_interna
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/qdp_config_internal.h DESTINATION include)
 add_subdirectory(include)
 
+add_subdirectory(lib)
 
 if (QDP_USE_LIBXML2 ) 
   add_subdirectory(other_libs/xpath_reader)
@@ -205,7 +206,18 @@ if (QDP_USE_FILEDB )
   add_subdirectory(other_libs/filedb)
 endif()
 
-if( QDP_USE_SSE2 ) 
+# SSE3 => SSE2 (and SSE )
+if( QDP_USE_SSE3 ) 
+  set(QDP_USE_SSE2 ON)
+endif()
+
+# SSE2 => SSE
+if( QDP_USE_SSE2 )
+  set(QDP_USE_SSE ON)
+endif()
+
+# If SSE2 is on we can use libintrin
+if( QDP_USE_SSE2 )
   add_subdirectory(other_libs/libintrin)
 endif()
 

@@ -23,10 +23,10 @@
 #cmakedefine QDP_NC                 @QDP_NC@
 #cmakedefine QDP_NS                 @QDP_NS@
 
-#cmakedefine QDP_USE_CB2_LAYOUT     @QDP_USE_CB2_LAYOUT@
-#cmakedefine QDP_USE_CB32_LAYOUT    @QDP_USE_CB32_LAYOUT@
-#cmakedefine QDP_USE_CB3D_LAYOUT    @QDP_USE_CB3D_LAYOUT@
-#cmakedefine QDP_USE_LEXICO_LAYOUT  @QDP_USE_LEXICO_LAYOUT@
+#cmakedefine QDP_USE_CB2_LAYOUT     1
+#cmakedefine QDP_USE_CB32_LAYOUT    1
+#cmakedefine QDP_USE_CB3D_LAYOUT    1
+#cmakedefine QDP_USE_LEXICO_LAYOUT  1
 
 
 #cmakedefine QDP_USE_HDF5           @QDP_USE_HDF@
