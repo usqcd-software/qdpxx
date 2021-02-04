@@ -144,4 +144,4 @@ if( QDP_USE_TBBPOOL_ALLOCATOR )
 endif()
 target_link_libraries( qdp PUBLIC OpenMP::OpenMP_CXX )
 
-
+install(TARGETS qdp)

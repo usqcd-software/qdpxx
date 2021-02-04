@@ -53,3 +53,4 @@ foreach(TEST ${TESTS})
  target_link_libraries(${TEST} examples)
 endforeach()
 
+install(TARGETS nersc2ildg test_ildglat lhpc2ildg)
