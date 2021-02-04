@@ -8,7 +8,8 @@
 
 
 #include "scalarsite_generic/generic_blas_g5.h"
- 
+
+using namespace std;
 using namespace QDP;
 
 int main(int argc, char *argv[])

@@ -99,7 +99,7 @@ if( QDP_USE_HDF5 )
    set( QDPXX_SRCS ${QDPXX_SRCS} qdp_hdf5.cc )
 endif()
 
-if( BUILD_QDPXX_TBB_ALLOCATOR )
+if( QDP_USE_TBBPOOL_ALLOCATOR )
 	set( QDPXX_SRCS ${QDPXX_SRCS} qdp_pool_allocator.cc )
 else()
  	set( QDPXX_SRCS ${QDPXX_SRCS} qdp_default_allocator.cc )
@@ -138,4 +138,10 @@ endif()
 if( QDP_USE_FILEDB ) 
 	target_link_libraries( qdp PUBLIC filedb ) 
 endif()
+
+if( QDP_USE_TBBPOOL_ALLOCATOR )
+	target_link_libraries (qdp PUBLIC TBB::tbbmalloc )
+endif()
+target_link_libraries( qdp PUBLIC OpenMP::OpenMP_CXX )
+
 

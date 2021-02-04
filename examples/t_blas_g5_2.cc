@@ -4,7 +4,9 @@
 #include <cstdio>
 
 #include "qdp.h"
- 
+
+using namespace std;
+
 using namespace QDP;
 
 int main(int argc, char *argv[])

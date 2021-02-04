@@ -19,7 +19,6 @@ option(QDP_LAYOUT_LEXICO "Enable Lexicographic Layout (default OFF)" OFF)
 option(QDP_LAYOUT_CB2 "Enable CB2 (4D checkerboarded) layout (default ON)" ON)
 option(QDP_LAYOUT_CB32 "Enable CB32 (32-colored) layout (default OFF)" OFF)
 option(QDP_LAYOUT_CB3D "Enable CB3D (3D checkerboarded) layout (default OFF)" OFF)
-option(QDP_USE_OPENMP  "Enable use of OpenMP" ON)
 option(QDP_PRECISION_FLOAT "Use single/float as base precision (otherwise double)" OFF)
 set(QDP_ALIGNMENT_SIZE "64" CACHE STRING "OLattice memory alignment size in bytes (default 512)")
 option(QDP_USE_GENERIC_OPTS "Enable Generic C specializations" OFF)
@@ -170,7 +169,9 @@ endif()
 # Autoconf variable name backard compatibility 
 set(QDP_AC_ALIGNMENT_SIZE ${QDP_ALIGNMENT_SIZE})
   
-
+# OpenMP Support hardwired now
+find_package(OpenMP REQUIRED)
+set(QDP_USE_OMP_THREADS "1")
 
 if ( QDP_ARCH_PARSCALAR OR QDP_ARCH_PARSCALARVEC )
   find_package(QMP REQUIRED)
@@ -192,19 +193,6 @@ endif()
 if( QDP_USE_TBBPOOL_ALLOCATOR ) 
    find_package(TBB REQUIRED )
 endif()
-configure_file(include/qdp_config_internal.h.cmake.in include/qdp_config_internal.h)
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/qdp_config_internal.h DESTINATION include)
-add_subdirectory(include)
-
-add_subdirectory(lib)
-
-if (QDP_USE_LIBXML2 ) 
-  add_subdirectory(other_libs/xpath_reader)
-endif()
-
-if (QDP_USE_FILEDB )
-  add_subdirectory(other_libs/filedb)
-endif()
 
 # SSE3 => SSE2 (and SSE )
 if( QDP_USE_SSE3 ) 
@@ -216,9 +204,37 @@ if( QDP_USE_SSE2 )
   set(QDP_USE_SSE ON)
 endif()
 
+# Write config file with currently set values
+configure_file(include/qdp_config_internal.h.cmake.in include/qdp_config_internal.h)
+# Install generated file (when make install is called)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/qdp_config_internal.h DESTINATION include)
+
+# Configure subdire
+add_subdirectory(include)
+add_subdirectory(lib)
+
+# In practice this is always
+if (QDP_USE_LIBXML2 ) 
+  add_subdirectory(other_libs/xpath_reader)
+endif()
+
+# Nearly always
+if (QDP_USE_FILEDB )
+  add_subdirectory(other_libs/filedb)
+endif()
+
 # If SSE2 is on we can use libintrin
 if( QDP_USE_SSE2 )
   add_subdirectory(other_libs/libintrin)
 endif()
 
+# Forever QIO
 add_subdirectory(other_libs/qio)
+
+# The examples and nersc2ildg etc
+add_subdirectory(examples)
+
+# The tests
+if( QDP_USE_SSE )
+	add_subdirectory(tests)
+endif()

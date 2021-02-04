@@ -6,12 +6,14 @@
 #include <ios>
 
 #include "qdp.h"
+
 namespace QDP { 
 extern
 
 void local_sumsq_24_48(REAL64 *Out, REAL32 *In, int n_real);
 };
 
+using namespace std;
 
 using namespace QDP;
 
@@ -27,7 +29,7 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  LatticeFermion x; // Single precision LatticeFermion
+  LatticeFermionF x; // Single precision LatticeFermion
 
 
   gaussian(x);      // Fill it with noise.
@@ -107,6 +109,7 @@ int main(int argc, char *argv[])
 
   REAL64 local_norm2_site_result;
   int n_real = (all.end() - all.start() + 1)*24;
+  int nvec=n_real/4;
   local_sumsq_24_48(&local_norm2_site_result, &x.elem(0).elem(0).elem(0).real(), nvec);
   
   REAL64 local_norm2_site_global_result = local_norm2_site_result;

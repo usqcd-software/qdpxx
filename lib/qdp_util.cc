@@ -18,7 +18,7 @@
 
 int gethostname(char *hostname, size_t size)
 {
-   char *my_host_name="node";
+   const char my_host_name[]{"node"};
 
    // My Host Size returns either the length of my_host_name
    // or the size of the supplied array - 1 char

@@ -34,12 +34,12 @@
 
 #cmakedefine QDP_USE_OMP_THREADS    @QDP_USE_OMP_THREADS@
 
-#cmakedefine QDP_USE_SSE            @QDP_USE_SSE@
-#cmakedefine QDP_USE_SSE2           @QDP_USE_SSE2@
-#cmakedefine QDP_USE_SSE3           @QDP_USE_SSE3@
-#cmakedefine QDP_USE_TBBPOOL_ALLOCATOR  @QDP_USE_TBBPOOL_ALLOCATOR@
+#cmakedefine QDP_USE_SSE            1
+#cmakedefine QDP_USE_SSE2           1
+#cmakedefine QDP_USE_SSE3           1
+#cmakedefine QDP_USE_TBBPOOL_ALLOCATOR 1
 
-#cmakedefine QPHIX_EMIT_MESSAGES    @QPHIX_EMIT_MESSAGES@
+#cmakedefine QPHIX_EMIT_MESSAGES    1
 
 /* Deprecated optionns */
 #cmakedefine QDP_USE_BLUEGENEL
