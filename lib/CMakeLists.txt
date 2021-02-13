@@ -1,6 +1,6 @@
 
 
-set( QDPXX_SRCS qdp_map.cc 
+add_library(qdp qdp_map.cc 
 	qdp_subset.cc 
 	qdp_random.cc
 	qdp_layout.cc 
@@ -19,7 +19,7 @@ set( QDPXX_SRCS qdp_map.cc
 
 # Scalar	
 if( QDP_ARCH_SCALAR )
-   set( QDPXX_SRCS ${QDPXX_SRCS}
+   target_sources(qdp PRIVATE
    		qdp_scalar_init.cc 
    		qdp_scalar_layout.cc
 		qdp_scalar_specific.cc
@@ -28,7 +28,7 @@ if( QDP_ARCH_SCALAR )
 endif()
 
 if( QDP_ARCH_PARSCALAR ) 
-	set( QDPXX_SRCS ${QDPXX_SRCS}
+	target_sources(qdp PRIVATE 
 		qdp_parscalar_init.cc 
 		qdp_parscalar_layout.cc
 		qdp_parscalar_specific.cc
@@ -39,7 +39,7 @@ endif()
 # Optimized code using sse extensions
 if( QDP_ARCH_SCALAR OR QDP_ARCH_PARSCALAR )
 	if( QDP_USE_SSE )
-		set(QDPXX_SRCS ${QDPXX_SRCS} 
+		target_sources(qdp PRIVATE 
 			scalarsite_sse/qdp_scalarsite_sse.cc 
 			scalarsite_sse/qdp_scalarsite_linalg_double.cc 
 			scalarsite_sse/sse_blas_local_sumsq_double.cc 
@@ -62,7 +62,7 @@ if( QDP_ARCH_SCALAR OR QDP_ARCH_PARSCALAR )
 endif()
 
 if( QDP_ARCH_SCALARVEC )
-	set( QDPXX_SRCS ${QDPXX_SRCS} 		
+	target_sources(qdp PRIVATE	
 		qdp_scalarvec_init.cc 
 		qdp_scalarvec_layout.cc
 		qdp_scalarvec_specific.cc
@@ -71,7 +71,7 @@ if( QDP_ARCH_SCALARVEC )
 endif()
 
 if( QDP_ARCH_PARSCALARVEC )
-	set( QDPXX_SRCS ${QDPXX_SRCS}
+	target_sources(qdp PRIVATE
 		qdp_parscalarvec_init.cc 
 		qdp_parscalarvec_layout.cc
 		qdp_parscalarvec_specific.cc 
@@ -81,12 +81,12 @@ endif()
 
 if( QDP_ARCH_SCALARVEC OR QDP_ARCH_PARSCALARVEC )
   if( QDP_USE_SSE ) 
-  	set( QDPXX_SRCS ${QDPXX_SRCS} qdp_scalarvecsite_sse.cc )
+  	target_sources(qdp PRIVATE qdp_scalarvecsite_sse.cc )
   endif()
 endif()
 
 if( QDP_USE_LIBXML2 )
-   set( QDPXX_SRCS ${QDPXX_SRCS}
+   target_sources(qdp PRIVATE 
    	     qdp_xmlio.cc 
    	     qdp_iogauge.cc
 		 qdp_qdpio.cc
@@ -96,22 +96,14 @@ if( QDP_USE_LIBXML2 )
 endif()
 
 if( QDP_USE_HDF5 )
-   set( QDPXX_SRCS ${QDPXX_SRCS} qdp_hdf5.cc )
+   target_sources(qdp PRIVATE  qdp_hdf5.cc )
 endif()
 
 if( QDP_USE_TBBPOOL_ALLOCATOR )
-	set( QDPXX_SRCS ${QDPXX_SRCS} qdp_pool_allocator.cc )
+	target_sources(qdp PRIVATE qdp_pool_allocator.cc )
 else()
- 	set( QDPXX_SRCS ${QDPXX_SRCS} qdp_default_allocator.cc )
+ 	target_sources(qdp PRIVATE qdp_default_allocator.cc )
 endif()
-
-# Create the library
-add_library(qdp ${QDPXX_SRCS})
-
-# Set includepaths
-# These variables just save my fingers
-set( OLSRCDIR ${CMAKE_CURRENT_SOURCE_DIR}/../other_libs )
-set( OLBINDIR ${CMAKE_CURRENT_BINARY_DIR}/../other_libs )
 
 # Add the current source and build direcories, but in the
 # Install interface it all comes from include
@@ -122,26 +114,46 @@ target_include_directories( qdp PUBLIC
 )
 
 # Link QIO from subtree
-target_link_libraries( qdp PUBLIC qio )
+target_link_libraries( qdp PUBLIC QIO::qio )
 
 # If using libxml link the XPathReader and xmlWriter libraries
 if( QDP_USE_LIBXML2 ) 
-	target_link_libraries( qdp PUBLIC XPathReader xmlWriter )
+	target_link_libraries( qdp PUBLIC XPathReader::XPathReader XPathReader::xmlWriter )
 endif()
 
 # If we have QDP_USE_SSE2 enabled we can use libintrin
 if( QDP_USE_SSE2 )
-	target_link_libraries( qdp PUBLIC libintrin )
+	target_link_libraries( qdp PUBLIC LibIntrin::libintrin )
 endif()
 
 # If we want filedb (always?) link that
 if( QDP_USE_FILEDB ) 
-	target_link_libraries( qdp PUBLIC filedb ) 
+	target_link_libraries( qdp PUBLIC FileDB::filedb ) 
 endif()
 
 if( QDP_USE_TBBPOOL_ALLOCATOR )
 	target_link_libraries (qdp PUBLIC TBB::tbbmalloc )
 endif()
+
+if( QDP_USE_HDF5 )
+    # FIXME Check this
+	target_link_libraries( qdp PUBLIC hdf5::hdf5 )
+endif()
+
 target_link_libraries( qdp PUBLIC OpenMP::OpenMP_CXX )
 
-install(TARGETS qdp)
+
+install(TARGETS qdp EXPORT QDPXXTargets
+  ARCHIVE DESTINATION lib
+  LIBRARY  DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
+
+#install the export description of the targets
+install(EXPORT QDPXXTargets
+        FILE QDPXXTargets.cmake
+        NAMESPACE QDPXX::
+        DESTINATION lib/cmake/QDPXX)
+
+add_library(QDPXX::qdp ALIAS qdp)

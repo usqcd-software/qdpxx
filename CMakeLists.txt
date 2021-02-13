@@ -199,6 +199,7 @@ message( STATUS "QDP++: Setting alignment size to ${QDP_ALIGNMENT_SIZE}")
  
 # OpenMP Support hardwired now
 find_package(OpenMP REQUIRED)
+find_package(Threads REQUIRED)
 set(QDP_USE_OMP_THREADS "1")
 
 # If we are parallel we need QMP
@@ -215,12 +216,6 @@ endif()
 # If we want filedb mark it on 
 if ( QDP_USE_FILEDB ) 
    set(BUILD_FILEDB ON)
-endif()
-
-# If we are using OpenMP mark appropriately in the configured header
-if ( QDP_USE_OPENMP )
-   set(QDP_USE_OMP_THREADS ON)
-   find_package(OpenMP REQUIRED)
 endif()
 
 # If we use Threaded building blocks Find TBB
@@ -261,8 +256,7 @@ INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/qdp_config_internal.h
 # Include just does installing
 add_subdirectory(include)
 
-# Compile files in lib
-add_subdirectory(lib)
+
 
 # In practice this is always taken, but
 # in principle we can make QDP++ not depend on LibXML
@@ -284,6 +278,8 @@ endif()
 # We always build QIO
 add_subdirectory(other_libs/qio)
 
+add_subdirectory(lib)
+
 # The examples and nersc2ildg etc
 add_subdirectory(examples)
 
@@ -292,3 +288,19 @@ add_subdirectory(examples)
 if( QDP_USE_SSE )
 	add_subdirectory(tests)
 endif()
+
+
+#Install config files.
+# Make the config file
+include(CMakePackageConfigHelpers)
+configure_package_config_file(QDPXXConfig.cmake.in QDPXXConfig.cmake INSTALL_DESTINATION lib/cmake/QDPXX)
+
+# Make the version file
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    QDPXXVersion.cmake
+    VERSION ${PACKAGE_VERSION}
+    COMPATIBILITY AnyNewerVersion
+    )
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/QDPXXVersion.cmake ${CMAKE_CURRENT_BINARY_DIR}/QDPXXConfig.cmake DESTINATION lib/cmake/QDPXX)
