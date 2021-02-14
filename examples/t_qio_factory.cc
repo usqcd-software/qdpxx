@@ -5,9 +5,10 @@
 
 #include "qdp.h"
 
+using namespace std;
 using namespace QDP;
 
-typedef PSpinMatrix< PColorMatrix < RComplex<REAL>, Nc>, Ns > MyProp;
+using MyProp =  PSpinMatrix< PColorMatrix < RComplex<REAL>, Nc>, Ns >;
 
 
 int main(int argc, char **argv)
@@ -45,14 +46,14 @@ int main(int argc, char **argv)
   }
 
   // Now try to get the last 128 sites with the Factory Get function 
-  int coords[4] = {0, 0, 0, 0};
+  multi1d<int> coords(4);
   int j;
 
   int x, y, z, t;
   for(x = 0; x < dims[0]/2; x++) { 
     coords[0] = 2*x;
     
-    QDPFactoryGet<LatticePropagator>(buf, coords, &quark_propagator);
+    QDPOLatticeFactoryGet<LatticePropagator>(buf, Layout::linearSiteIndex(coords),1, &quark_propagator);
     for(i = 0, j = 0; i < site_size; i++) { 
       cout << (int)buf[i] << " ";
       j++;

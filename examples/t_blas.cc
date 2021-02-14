@@ -7,8 +7,9 @@
 #include <time.h>
 
 #include "qdp.h"
-#include <blas1.h>
+#include "blas1.h"
 
+using namespace std;
 using namespace QDP;
 
 int main(int argc, char *argv[])
@@ -598,7 +599,7 @@ int main(int argc, char *argv[])
       }
     }
   }
-  QDPInternal::::globalSum(accum); 
+  QDPInternal::globalSum(accum);
   DComplex fred = innerProduct(qy, qx);
   
   DComplex diff = accum - fred;
@@ -624,7 +625,7 @@ int main(int argc, char *argv[])
       }
     }
   }
-  QDPInternal::::globalSum(accum); 
+  QDPInternal::globalSum(accum);
   fred = innerProduct(qy, qx, rb[1]);
   
   diff = accum - fred;
@@ -645,7 +646,7 @@ int main(int argc, char *argv[])
       }
     }
   }
-  QDPInternal::::globalSum(daccum); 
+  QDPInternal::globalSum(daccum);
   Double djim = innerProductReal(qy, qx);
 
   Double drdiff = daccum - djim;

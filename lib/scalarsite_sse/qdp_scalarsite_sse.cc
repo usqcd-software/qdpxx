@@ -10,16 +10,38 @@
 
 
 // These SSE asm instructions are only supported under GCC/G++
-#if defined(__GNUC__)
+
 #include "qdp_sse_intrin.h"
+#include "inline_sse.h"
+
+
+#include "libintrin_config.h"
+#include "sse_add_su3_vector.h"
+#include "sse_mult_adj_su3_mat_4vec.h"
+#include "sse_mult_adj_su3_mat_hwvec.h"
+#include "sse_mult_adj_su3_mat_vec.h"
+#include "sse_mult_adj_su3_mat_vec_4dir.h"
+#include "sse_mult_su3_an.h"
+#include "sse_mult_su3_mat_hwvec.h"
+#include "sse_mult_su3_mat_vec.h"
+#include "sse_mult_su3_mat_vec_sum_4dir.h"
+#include "sse_mult_su3_na.h"
+#include "sse_mult_su3_nn.h"
+#include "sse_scalar_mult_add_su3_matrix.h"
+#include "sse_scalar_mult_add_su3_vector.h"
+#include "sse_su3_projector.h"
+#include "sse_sub_four_su3_vecs.h"
+
 namespace QDP {
 
 
-
+using RComplexFloat = RComplex<REAL32>;
 #if 1
 //-------------------------------------------------------------------
 // Specialization to optimize the case   
 //    LatticeColorMatrix[ Subset] = LatticeColorMatrix * LatticeColorMatrix
+
+using TCol = PScalar< PColorMatrix< RComplex< REAL32>, 3> >;
 template<>
 void evaluate(OLattice< TCol >& d, 
 	      const OpAssign& op, 
@@ -1110,6 +1132,8 @@ void evaluate(OLattice< TCol >& d,
 // Specialization to optimize the case   
 //    LatticeHalfFermion = LatticeColorMatrix * LatticeHalfFermion
 // NOTE: let this be a subroutine to save space
+using TVec2 = PSpinVector< PColorVector< RComplex<REAL32>, 3>, 2>;
+
 template<>
 void evaluate(OLattice< TVec2 >& d, 
 	      const OpAssign& op, 
@@ -1749,4 +1773,4 @@ void local_vcdot_real(REAL64 *Out, REAL32 *V1, REAL32 *V2, int n_3vec)
 
 } // namespace QDP;
 
-#endif  // defined(__GNUC__)
+

@@ -8,6 +8,7 @@
 
 #include "qdp.h"
 
+using namespace std;
 
 using namespace QDP;
 

@@ -8,7 +8,9 @@
 #include "qdp.h"
 
 #include "cblas1.h"
- 
+
+using namespace std;
+
 using namespace QDP;
 
 int main(int argc, char *argv[])

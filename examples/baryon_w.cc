@@ -211,22 +211,23 @@ void baryon(const LatticePropagator& quark_propagator,
   }
 
 
-  /* Project on zero momentum: Do a slice-wise sum. */
-  multi2d<DComplex> hsum_a = sumMulti(b_prop_a, timeslice);
 
 
   /* Loop over baryons */
   for(int baryons = 0; baryons < b_prop_a.size(); ++baryons)
   {
-    /* forward */
+	/* Project on zero momentum: Do a slice-wise sum. */
+	multi1d<DComplex> hsum_a = sumMulti(b_prop_a[baryons], timeslice);
+
+	/* forward */
     for(int t = 0; t < length; ++t)
     {
       int t_eff = (t - t0 + length) % length;
 	
       if ( bc_spec < 0 && (t_eff+t0) >= length)
-	barprop[baryons][t_eff] = -0.5 * Complex(hsum_a(baryons,t));
+	barprop[baryons][t_eff] = -0.5 * Complex(hsum_a(t));
       else
-	barprop[baryons][t_eff] =  0.5 * Complex(hsum_a(baryons,t));
+	barprop[baryons][t_eff] =  0.5 * Complex(hsum_a(t));
     }
   }
 }

@@ -1,0 +1,74 @@
+@PACKAGE_INIT@
+include(CMakeFindDependencyMacro)
+
+set(QDP_ARCH_PARSCALAR @QDP_ARCH_PARSCALAR@)
+set(QDP_ARCH_PARSCALARVEC @QDP_ARCH_PARSCALARVEC@)
+
+# Check if we need QMP
+if( "@QDP_ARCH_PARSCALAR@" STREQUAL "ON" OR "@QDP_ARCH_PARSCALAR@" STREQUAL "TRUE" )
+  find_dependency(QMP REQUIRED)
+endif()
+
+if( "@QDP_ARCH_PARSCALARVEC@" STREQUAL "ON" OR "@QDP_ARCH_PARSCALARVEC@" STREQUAL "TRUE"  )
+  find_dependency(QMP REQUIRED)
+endif()
+
+
+
+# This is just in case we want to rebuild the examples as 
+# an external
+set(QDP_USE_SSE @QDP_USE_SSE@)
+ 
+# Find submodules.
+# I am working on the premise that in a regular build currently
+# These will be installed in parallel with QDP++
+# 
+# However, the user is permitted to specify them by pointing 
+# XPathReader_DIR, FileDB_DIR, LibIntrin_DIR and QIO_DIR to 
+# directories conttaining the PackageXXXConfig.cmake files
+#
+if("@XPathReader_DIR@" STREQUAL "")
+  list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_LIST_DIR}/../XPathReader)
+endif()
+ 
+if("@FileDB_DIR@" STREQUAL "")
+  list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_LIST_DIR}/../FileDB)
+endif()
+
+if("@QIO_DIR@" STREQUAL "")
+  list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_LIST_DIR}/../QIO)
+endif()
+
+# Now find the dependencies 
+find_dependency(XPathReader REQUIRED)
+find_dependency(FileDB REQUIRED)
+find_dependency(QIO REQUIRED)
+
+
+# Libintrin -- and only if QDP_USE_SSE2 is enabled
+if( @QDP_USE_SSE2@ )
+if("@LibIntrin_DIR@" STREQUAL "")
+  list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_LIST_DIR}/../LibIntrin)
+endif()
+find_dependency(LibIntrin REQUIRED)
+endif()
+
+# Optional dependencies
+# TBB 
+if(@QDP_USE_TBBPOOL_ALLOCATOR@) 
+  find_dependency(TBB REQUIRED)
+endif()
+
+# HDF5
+if(@QDP_USE_HDF5@)
+  find_dependency(HDF5 REQUIRED)
+endif()
+
+# OpenMP is always a dependency now
+find_dependency(OpenMP REQUIRED)
+
+# Dont know why this isn't found for OpenMP
+# When it is found otherwise
+find_dependency(Threads REQUIRED)
+
+include(${CMAKE_CURRENT_LIST_DIR}/QDPXXTargets.cmake)

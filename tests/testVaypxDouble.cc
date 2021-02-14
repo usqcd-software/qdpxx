@@ -2,6 +2,7 @@
 #include "testVaypxDouble.h"
 #include "unittest.h"
 
+#include "qdp_scalarsite_sse.h"
 
 using namespace QDP;
 using namespace Assertions;

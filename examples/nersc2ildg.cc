@@ -10,6 +10,7 @@
 #include "examples.h"
 
 
+using namespace std;
 using namespace QDP;
 
 typedef struct { 

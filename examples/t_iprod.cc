@@ -2,6 +2,8 @@
 #include <xmmintrin.h>
 #define TESTING 1
 
+using namespace std;
+
 namespace QDP {
 
 #if 0

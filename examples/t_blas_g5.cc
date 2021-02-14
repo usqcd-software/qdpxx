@@ -48,6 +48,7 @@ QDPXX_MESSAGE("SSE 64 BIT target. Using Generics")
 
 #endif // QDP_USE_SSE
  
+using namespace std;
 using namespace QDP;
 
 int main(int argc, char *argv[])

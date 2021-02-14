@@ -208,6 +208,7 @@ AC_ARG_ENABLE(extramessages,
    [ extra_messages_enabled="no" ]
 )
 
+
 if test "${extra_messages_enabled}" = "yes"; then
 	AC_MSG_NOTICE([Will emit pragma message ])
 	AC_DEFINE(QPHIX_EMIT_MESSAGES, [1], [ Emit compilation messages ])
