@@ -14,7 +14,7 @@ include(CheckTypeSize)
 # Config parameters: ARCHs - one can turn them on/off
 option(QDP_ARCH_PARSCALARVEC "Enable Parscalarvec Arch" OFF)
 option(QDP_ARCH_PARSCALAR    "Enable Parscalar Arch default OFF" OFF)
-option(QDP_ARCH_SCALAR       "Enable Scalar Arch default ON" ON)
+option(QDP_ARCH_SCALAR       "Enable Scalar Arch default ON" OFF)
 option(QDP_ARCH_SCALARVEC	 "Enable Scalarvec Arch default OFF" OFF)
 
 # NC, ND, NS
