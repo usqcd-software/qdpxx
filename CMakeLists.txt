@@ -12,24 +12,24 @@ include(CheckSymbolExists)
 include(CheckTypeSize)
 
 # Config parameters: ARCHs - one can turn them on/off
-option(QDP_ARCH_PARSCALARVEC "Enable Parscalarvec Arch" OFF)
-option(QDP_ARCH_PARSCALAR    "Enable Parscalar Arch default OFF" OFF)
-option(QDP_ARCH_SCALAR       "Enable Scalar Arch default ON" OFF)
-option(QDP_ARCH_SCALARVEC	 "Enable Scalarvec Arch default OFF" OFF)
+set(QDP_PARALLEL_ARCH "parscalar" CACHE STRING "The Parallel ARCH. One of scalar, parscalar, scalarvec, parscalarvec")
+set_property(CACHE QDP_PARALLEL_ARCH PROPERTY
+		STRINGS scalar scalarvec parscalar parscalarvec
+) # FOR GUIs
+
+set(QDP_PRECISION "double" CACHE STRING "THe Base Precision: single or double (default is double)")
+set_property(CACHE QDP_PRECISION PROPERTY
+		   STRINGS single double) # For GUIs
+
+set(QDP_LAYOUT "cb2" CACHE STRING "The QDP layout: lexico, cb2, cb32, cb3d (default is cb2)")
+set_property(CACHE QDP_LAYOUT PROPERTY 
+		  STRINGS  lexico cb2 cb32 cb3d) # For GUIs
 
 # NC, ND, NS
 set(QDP_ND 4 CACHE STRING "Number of Spacetime Dimension (default 4)")
 set(QDP_NC 3 CACHE STRING "Number of colors (default 3)")
 set(QDP_NS 4 CACHE STRING "Number of spins (default 4)")
 
-# Layouts
-option(QDP_LAYOUT_LEXICO "Enable Lexicographic Layout (default OFF)" OFF)
-option(QDP_LAYOUT_CB2 "Enable CB2 (4D checkerboarded) layout (default ON)" ON)
-option(QDP_LAYOUT_CB32 "Enable CB32 (32-colored) layout (default OFF)" OFF)
-option(QDP_LAYOUT_CB3D "Enable CB3D (3D checkerboarded) layout (default OFF)" OFF)
-
-# Precision: Set this to true for pure single prec builds
-option(QDP_PRECISION_FLOAT "Use single/float as base precision (otherwise double)" OFF)
 
 # Alignment for OLattice stuff (64=512 bits e.g. KNL, Xeon)
 set(QDP_ALIGNMENT_SIZE "64" CACHE STRING "OLattice memory alignment size in bytes (default 512)")
@@ -68,6 +68,10 @@ option(QDP_EXTRA_MESSAGES "Enable Extra diagnostic messages during compile time"
 # These options will only apperar in ccmake if you toggle advanced features
 mark_as_advanced(QDP_NC, QDP_ND, QDP_NS, QDP_ALIGNMENT_SIZE, QDP_USE_PROFILING, QDP_DEBUG_MEMORY, QDP_USE_HDF5)
 
+string(TOLOWER ${QDP_PARALLEL_ARCH} qdpParArch)
+string(TOLOWER ${QDP_PRECISION} qdpPrecision)
+string(TOLOWER ${QDP_LAYOUT} qdpLayout)
+
 # Some status
 message(STATUS "QDP++:  Configuring System")
 message(STATUS "QDP++:  Nc=${QDP_NC}")
@@ -75,123 +79,82 @@ message(STATUS "QDP++:  Nd=${QDP_ND}")
 message(STATUS "QDP++:  Ns=${QDP_NS}")
 
 
-if ( QDP_ARCH_PARSCALAR ) 
+if ( ${qdpParArch} STREQUAL "parscalar" )
 	message(STATUS "QDP++: Configuring for Parscalar build" )
-	
-	#Check other arches not switched on
-	if( QDP_ARCH_PARSCALARVEC OR QDP_ARCH_SCARLARVEC OR QDP_ARCH_SCALAR )
-	   message(ERROR "QDP++: Only one QDP_ARCH_XXX Option should be on at any one time.")
-	endif()
 	
 	# Turn on Parallel QIO
 	set(QIO_ENABLE_PARALLEL_BUILD ON CACHE BOOL "Parscalar build: force QIO Parallel build" 
 		FORCE)
 		
-	# Set variable in qdp_config_internal.h -- Autoconf backward compatibility
-	set(ARCH_PARSCALAR ON)
-elseif( QDP_ARCH_PARSCALARVEC )
+	set(QDP_ARCH_PARSCALAR ON)  # Build System
+	set(ARCH_PARSCALAR 1)      # Configured header file (should rationalize these)
+
+elseif( ${qdpParArch} STREQUAL "parscalarvec" )
 	message(STATUS "QDP++: Configuring for Parscalarvec build" ) 
 	
-	#Check other arches not switched on
-	if( QDP_ARCH_PARSCALAR OR QDP_ARCH_SCARLARVEC OR QDP_ARCH_SCALAR )
-	   message(ERROR "QDP++: Only one QDP_ARCH_XXX Option should be on at any one time.")
-	endif()
-	
-	# Set QIO Build 
+        # Set QIO Build 
 	set(QIO_ENABLE_PARALLEL_BUILD ON CACHE BOOL "Parscalarvec build: force QIO Parallel build"
 		FORCE)
 		
-	# set option in qdp_config_internal.h
-	set(ARCH_PARSCALARVEC ON)
+	set(QDP_ARCH_PARSCALARVEC ON) # Build system
+	set(ARCH_PARSCALARVEC 1)      # Configured header file (should rationalize these)
 	
-elseif( QDP_ARCH_SCALARVEC )
-    message(STATUS "QDP++: Configuring for ScalarVec build" ) 
+elseif( ${qdpParArch} STREQUAL "scalarvec" )
+    	message(STATUS "QDP++: Configuring for ScalarVec build" ) 
     
-    # Check other archs
-    if( QDP_ARCH_PARSCALARVEC OR QDP_ARCH_SCARLAR OR QDP_ARCH_PARSCALAR )
-	   message(ERROR "QDP++: Only one QDP_ARCH_XXX Option should be on at any one time.")
-	endif()
-    
-    # Set QIO Parallel build to false
+        # Set QIO Parallel build to false
 	set(QIO_ENABLE_PARALLEL_BUILD OFF CACHE BOOL "Scalarvec buld: Force QIO Scalar build"
         FORCE )
         
-    # Set ARCH_SCALAR for qdp_config_internal.h     
-    set(ARCH_SCALARVEC ON)
+	set(QDP_ARCH_SCALARVEC ON)    # Build System
+        set(ARCH_SCALARVEC 1)         # Configured header file
     	
-elseif( QDP_ARCH_SCALAR )
-    message(STATUS "QDP++: Configuring for Scalar build" ) 
-    
-    # Check other archs
-    if( QDP_ARCH_PARSCALARVEC OR QDP_ARCH_SCARLARVEC OR QDP_ARCH_PARSCALAR )
-	   message(ERROR "QDP++: Only one QDP_ARCH_XXX Option should be on at any one time.")
-	endif()
-    
-    # Set QIO Parallel build to false
+elseif( ${qdpParArch} STREQUAL "scalar" )
+        message(STATUS "QDP++: Configuring for Scalar build" ) 
+     
+        # Set QIO Parallel build to false
 	set(QIO_ENABLE_PARALLEL_BUILD OFF CACHE BOOL "Scalar buld: Force QIO Scalar build"
         FORCE )
         
-    # Set ARCH_SCALAR for qdp_config_internal.h     
-    set(ARCH_SCALAR ON)   
+        swt(QDP_ARCH_SCALAR ON)		# Build system 
+	set(ARCH_SCALAR 1)   		# Configured header file (should rationalize this
 else()
-    message(ERROR "QDP++: Unknown architecture. Please set QDPXX_ENABLE_PARSCALAR_ARCH, QDPXX_ENABLE_PARSCALARVEC_ARCH, or QDPXX_ENABLE_SCALAR_ARCH")
+    message(ERROR "QDP++: Unknown architecture. Please set QDP_PARALLEL_ARCH to either scalar, parscalar, scalarvec or parscalarvec")
 endif()
 
 
-if( QDP_LAYOUT_LEXICO )
+if( ${qdpLayout} STREQUAL "lexico") 
   message( STATUS "QDP++: Enabling Lexicographic Layout" )
-  
-  # Check other layouts
-  if( QDP_LAYOUT_CB2 OR QDP_LAYOUT_CB32 OR QDP_LAYOUT_CB3D ) 
-     message( ERROR "QDP++: Can only enable one QDP_LAYOUT_XXX at a time" )
-  endif()
-  
   set(QDP_USE_LEXICO_LAYOUT ON)
   
-elseif( QDP_LAYOUT_CB2 )
+elseif( ${qdpLayout} STREQUAL "cb2")
   message( STATUS "QDP++: Enabling CB2 (4D Checkerboard) Layout" )
-  
-  # Check other layouts
-  if( QDP_LAYOUT_LEXICO OR QDP_LAYOUT_CB32 OR QDP_LAYOUT_CB3D ) 
-     message( ERROR "QDP++: Can only enable one QDP_LAYOUT_XXX at a time" )
-  endif()
-  
   set(QDP_USE_CB2_LAYOUT ON)
   
-elseif( QDP_LAYOUT_CB32 )
+elseif( ${qdpLayout} STREQUAL "cb32") 
   message( STATUS "QDP++: Enabling CB32 (32 colored ) Layout" )
-  
-  # Check other layouts
-  if( QDP_LAYOUT_LEXICO OR QDP_LAYOUT_CB2 OR QDP_LAYOUT_CB3D ) 
-     message( ERROR "QDP++: Can only enable one QDP_LAYOUT_XXX at a time" )
-  endif()
-  
   set(QDP_USE_CB32_LAYOUT ON)
 
-elseif( QDP_LAYOUT_CB3D )
+elseif( ${qdpLayout} STREQUAL "cb3d")
   message( STATUS "QDP++: Enabling CB3D (3D checkerboarded ) Layout" )
-  
-  # Check other layouts
-  if( QDP_LAYOUT_LEXICO OR QDP_LAYOUT_CB2 OR QDP_LAYOUT_CB32 ) 
-     message( ERROR "QDP++: Can only enable one QDP_LAYOUT_XXX at a time" )
-  endif()
-  
   set(QDP_USE_CB3D_LAYOUT ON)
+
 else()
   message( ERROR "QDP++: Unknown layout. Please set either QDP_LAYOUT_LEXICO, QDP_LAYOUT_CB2, QDP_LAYOUT_CB3D or QDP_LAYOUT_CB32")
 endif()
+
+if( ${qdpPrecision} STREQUAL "single")
+  set(BASE_PRECISION 32)
+else()
+  set(BASE_PRECISION 64)
+endif()
+
+message( STATUS "QDP++: Setting Base Precision to ${BASE_PRECISION}")
 
 if( QDP_ENABLE_EXTRA_MESSAGES )
   set(QPHIX_EMIT_MESSAGES ON) # FIXME: Refactor this later to use QDP
   message( STATUS "QDP++: Enabling pragma messages" )
 endif()	
-
-if( QDP_PRECISION_FLOAT )
-  set(BASE_PRECISION 32)
-else()
-  set(BASE_PRECISION 64)
-endif()
-message( STATUS "QDP++: Setting Base Precision to ${BASE_PRECISION}")
 
 # Autoconf variable name backard compatibility 
 set(QDP_AC_ALIGNMENT_SIZE ${QDP_ALIGNMENT_SIZE})
@@ -203,7 +166,7 @@ find_package(Threads REQUIRED)
 set(QDP_USE_OMP_THREADS "1")
 
 # If we are parallel we need QMP
-if ( QDP_ARCH_PARSCALAR OR QDP_ARCH_PARSCALARVEC )
+if ( QDP_ARCH_PARSCALAR  OR  QDP_ARCH_PARSCALARVEC )
   find_package(QMP REQUIRED)
 endif()
 

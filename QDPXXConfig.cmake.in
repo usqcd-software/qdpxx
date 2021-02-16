@@ -1,23 +1,31 @@
 @PACKAGE_INIT@
 include(CMakeFindDependencyMacro)
 
-set(QDP_ARCH_PARSCALAR @QDP_ARCH_PARSCALAR@)
-set(QDP_ARCH_PARSCALARVEC @QDP_ARCH_PARSCALARVEC@)
+set(QDP_PARALLEL_ARCH @qdpParArch@)
+if( QDP_PARALLEL_ARCH STREQUAL "scalar")
+  set(QDP_ARCH_SCALAR ON)
+elseif( QDP_PARALLEL_ARCH STREQUAL "parscalar" )
+  set(QDP_ARCH_PARSCALAR ON)
+elseif( QDP_PARALLEL_ARCH STREQUAL "scalarvec" )
+  set(QDP_ARCH_SCALARVEC ON)
+elseif( QDP_PARALLEL_ARCH STREQUAL "parscalarvec" )
+  set(QDP_ARCH_PARSCALARVEC ON)
+endif()
 
 # Check if we need QMP
-if( "@QDP_ARCH_PARSCALAR@" STREQUAL "ON" OR "@QDP_ARCH_PARSCALAR@" STREQUAL "TRUE" )
+if( QDP_ARCH_PARSCALAR OR QDP_ARCH_PARSCALARVEC )
   find_dependency(QMP REQUIRED)
 endif()
-
-if( "@QDP_ARCH_PARSCALARVEC@" STREQUAL "ON" OR "@QDP_ARCH_PARSCALARVEC@" STREQUAL "TRUE"  )
-  find_dependency(QMP REQUIRED)
-endif()
-
-
 
 # This is just in case we want to rebuild the examples as 
 # an external
 set(QDP_USE_SSE @QDP_USE_SSE@)
+set(QDP_USE_SSE2 @QDP_USE_SSE2@)
+set(QDP_USE_SSE3 @QDP_USE_SSE3@)
+
+set(QDP_PRECISION @qdpPrecision@)
+set(QDP_LAYOUT    @qdpLayout@)
+set(QDP_USE_OMP_THREADS @QDP_USE_OMP_THREADS@)
  
 # Find submodules.
 # I am working on the premise that in a regular build currently
