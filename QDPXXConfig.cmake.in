@@ -73,10 +73,12 @@ if(@QDP_USE_HDF5@)
 endif()
 
 # OpenMP is always a dependency now
-find_dependency(OpenMP REQUIRED)
+if( NOT OpenMP_FOUND )
+  find_dependency(OpenMP REQUIRED)
+endif()
 
-# Dont know why this isn't found for OpenMP
-# When it is found otherwise
-find_dependency(Threads REQUIRED)
+if(NOT Threads_FOUND )
+  find_dependency(Threads REQUIRED)
+endif()
 
 include(${CMAKE_CURRENT_LIST_DIR}/QDPXXTargets.cmake)
