@@ -46,5 +46,5 @@
 #cmakedefine QDP_USE_BAGEL_QDP
 #cmakedefine QDP_USE_3DNOW
 
-
-
+#define PACKAGE_STRING  "@PROJECT_NAME@"
+#define PACKAGE_VERSION "@QDPXX_VERSION@"
