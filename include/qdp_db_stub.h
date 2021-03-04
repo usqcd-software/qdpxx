@@ -355,6 +355,28 @@ o     *
 	QDP_abort(1);
       }
   };
-}  // namespace QDP
+
+  //--------------------------------------------------------------------------------
+  //!  Local DB Base class
+  /*!
+    This class is used for writing of user data (most usefully measurements)
+    into a DB file with a key/value semantics.
+    NOTE: NOT COLLECTIVE, all operations done on the scope of the current process.
+          Use BinaryStoreDB for a collective behaviour.
+  */
+  template <typename K, typename D>
+  class LocalBinaryStoreDB : public BinaryStoreDB<K, D>
+  {
+    /**
+     * Constructor
+     *
+     * @param do_init: whether to set cache
+     */
+    LocalBinaryStoreDB(bool = false)
+    {
+    }
+  };
+
+} // namespace QDP
 
 #endif
