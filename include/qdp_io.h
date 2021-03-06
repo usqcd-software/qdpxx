@@ -992,7 +992,6 @@ namespace QDP
     std::ifstream f;
   };
 
-
   //--------------------------------------------------------------------------------
   //!  Binary writer base class
   /*!
@@ -1100,6 +1099,12 @@ namespace QDP
     /*! The checksum is reset */
     virtual void rewind();
 
+    //! Return whether is non-collective
+    virtual bool isLocal() const
+    {
+      return false;
+    }
+
   protected:
 
     //! The universal data-writer.
@@ -1117,6 +1122,111 @@ namespace QDP
     //! Get the internal output stream
     virtual std::ostream& getOstream() = 0;
   };
+
+  //--------------------------------------------------------------------------------
+  //!  Non-collective binary writer base class
+  /*!
+    This class is used to write data to a binary object. The data in the object
+    is big-endian. If the host machine is little-endian, the data
+    is byte-swapped.   Output is done from the primary node only.
+
+    Writer object need to be opened before any of the write methods are used.
+    In the case of files, the files need to be opened first
+  
+    The write methods are also wrapped by externally defined functions
+    and << operators,   
+  */
+  class LocalBinaryWriter : public BinaryWriter
+  {
+  public:
+    typedef std::ostream::pos_type pos_type;  // position in buffer
+    typedef std::ostream::off_type off_type;  // offset in buffer
+
+  public:
+    //! Default constructor
+    LocalBinaryWriter();
+
+    /*!
+      Closes the last file opened
+    */
+    virtual ~LocalBinaryWriter() {}
+
+    //! Write data on the primary node only
+    /*!
+      \param output The location to which data is read
+      \param nbytes The size in bytes of each datum
+      \param The number of data.
+    */
+    virtual void writeArrayPrimaryNode(const char* output, size_t nbytes, size_t nmemb) override;
+
+    //! Write data from the primary node.
+    /*!
+      \param output The data to write
+      \param nbytes The size in bytes of each datum
+      \param The number of data.
+    */
+    virtual void writeArray(const char* output, size_t nbytes, size_t nmemb) override;
+
+
+    //! Checks status of the previous IO operation.
+    /*!
+      \return true if some failure occurred in previous IO operation
+    */
+    virtual bool fail() override;
+
+    //! Get the current checksum
+    virtual QDPUtil::n_uint32_t getChecksum() override;
+  
+    //! Reset the current checksum
+    virtual void resetChecksum() override;
+  
+    //! Current position
+    virtual pos_type currentPosition() override;
+
+    //! Set the current position
+    /*! The checksum is reset */
+    virtual void seek(pos_type off) override;
+
+    //! Set the position relative from the start
+    /*! The checksum is reset */
+    virtual void seekBegin(off_type off) override;
+
+    //! Set the position relative to the current position
+    /*! The checksum is reset */
+    virtual void seekRelative(off_type off) override;
+
+    //! Set the position relative from the end
+    /*! The checksum is reset */
+    virtual void seekEnd(off_type off) override;
+
+    //! Rewind object to the beginning
+    /*! The checksum is reset */
+    virtual void rewind() override;
+
+    //! Return whether is non-collective
+    virtual bool isLocal() const override
+    {
+      return true;
+    }
+
+  protected:
+
+    //! The universal data-writer.
+    /*!
+      All the write functions call this.
+      \param output The location of the datum to be written.
+    */
+    template< typename T>
+    void
+    writePrimitive(const T& output);
+
+    //! Get the current checksum to modify
+    virtual QDPUtil::n_uint32_t& internalChecksum() = 0;
+  
+    //! Get the internal output stream
+    virtual std::ostream& getOstream() = 0;
+  };
+
 
 
   // Telephone book of basic primitives
@@ -1396,6 +1506,57 @@ namespace QDP
 
     //! Closes the buffer
     ~BinaryBufferWriter();
+
+    //! Construct from a string
+    void open(const std::string& s);
+
+    //! Return entire buffer as a string
+    std::string str() const;
+        
+    //! Return entire buffer as a string
+    std::string strPrimaryNode() const;
+        
+    //! Flushes the buffer
+    void flush() {}
+
+    //! Clear the buffer
+    void clear();
+
+  protected:
+    //! Get the current checksum to modify
+    QDPUtil::n_uint32_t& internalChecksum() {return checksum;}
+  
+    //! Get the internal output stream
+    std::ostream& getOstream() {return f;}
+
+  private:
+    //! Checksum
+    QDPUtil::n_uint32_t checksum;
+    std::ostringstream f;
+  };
+
+  //--------------------------------------------------------------------------------
+  //!  Non-collective binary buffer output class
+  /*!
+    This class is used to write data to a binary buffer. The data in the buffer
+    is big-endian. If the host nachine is little-endian, the data
+    is byte-swapped.   Output is done from the primary node only.
+
+    Buffers need to be opened before any of the write methods are used  
+  
+    The write methods are also wrapped by externally defined functions
+    and << operators,   
+  */
+  class LocalBinaryBufferWriter : public LocalBinaryWriter
+  {
+  public:
+    LocalBinaryBufferWriter();
+
+    //! Construct from a string
+    explicit LocalBinaryBufferWriter(const std::string& s);
+
+    //! Closes the buffer
+    ~LocalBinaryBufferWriter();
 
     //! Construct from a string
     void open(const std::string& s);

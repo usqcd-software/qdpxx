@@ -1195,6 +1195,103 @@ namespace QDP
     return chk;
   }
 
+  //--------------------------------------------------------------------------------
+  // Local binary writer support
+  LocalBinaryWriter::LocalBinaryWriter() {}
+
+  // Propagate status to all nodes
+  bool LocalBinaryWriter::fail()
+  {
+    return getOstream().fail();
+  }
+
+  //! Reset the current checksum
+  void LocalBinaryWriter::resetChecksum()
+  {
+    internalChecksum() = 0;
+  }
+  
+  //! Current position
+  std::ostream::pos_type LocalBinaryWriter::currentPosition()
+  {
+    return getOstream().tellp();
+  }
+
+  //! Set the current position
+  void LocalBinaryWriter::seek(pos_type pos)
+  {
+    getOstream().seekp(pos);
+
+    internalChecksum() = 0;
+  }
+
+  //! Set the position relative from the start
+  void LocalBinaryWriter::seekBegin(off_type off)
+  {
+    getOstream().seekp(off, std::ios_base::beg);
+
+    internalChecksum() = 0;
+  }
+
+  //! Set the position relative to the current position
+  void LocalBinaryWriter::seekRelative(off_type off)
+  {
+    getOstream().seekp(off, std::ios_base::cur);
+
+    internalChecksum() = 0;
+  }
+
+  //! Set the position relative from the end
+  void LocalBinaryWriter::seekEnd(off_type off)
+  {
+    getOstream().seekp(-off, std::ios_base::end);
+
+    internalChecksum() = 0;
+  }
+
+  //! Rewind 
+  void LocalBinaryWriter::rewind()
+  {
+    getOstream().seekp(0, std::ios_base::beg);
+
+    internalChecksum() = 0;
+  }
+
+  void LocalBinaryWriter::writeArrayPrimaryNode(const char* output, size_t size, size_t nmemb)
+  {
+    if (QDPUtil::big_endian())
+    {
+      /* big-endian */
+      /* Write */
+      internalChecksum() = QDPUtil::crc32(internalChecksum(), output, size * nmemb);
+      getOstream().write(output, size * nmemb);
+    }
+    else
+    {
+      /* little-endian */
+      /* Swap and write and swap */
+      QDPUtil::byte_swap(const_cast<char*>(output), size, nmemb);
+      internalChecksum() = QDPUtil::crc32(internalChecksum(), output, size * nmemb);
+      getOstream().write(output, size * nmemb);
+      QDPUtil::byte_swap(const_cast<char*>(output), size, nmemb);
+    }
+  }
+
+  void LocalBinaryWriter::writeArray(const char* output, size_t size, size_t nmemb)
+  {
+    writeArrayPrimaryNode(output, size, nmemb);
+  }
+
+  // Get the checksum from the binary node to all nodes
+  QDPUtil::n_uint32_t LocalBinaryWriter::getChecksum()
+  {
+    // Keep the checksum in sync on all nodes. This only really
+    // is needed if nodes do detailed checks on the checksums
+    QDPUtil::n_uint32_t chk = internalChecksum();
+    internalChecksum() = chk;
+    return chk;
+  }
+
 
   // Wrappers for write functions
   void writeDesc(BinaryWriter& bin, const std::string& output)
@@ -1388,6 +1485,41 @@ namespace QDP
 
     checksum = 0;
   }
+
+  //--------------------------------------------------------------------------------
+  // Local binary writer support
+  LocalBinaryBufferWriter::LocalBinaryBufferWriter() {checksum=0;}
+
+  // Construct from a string
+  LocalBinaryBufferWriter::LocalBinaryBufferWriter(const std::string& s) {open(s);}
+
+  LocalBinaryBufferWriter::~LocalBinaryBufferWriter() {}
+
+  void LocalBinaryBufferWriter::open(const std::string& s)
+  {
+    f.str(s);
+  }
+
+  // Output the stream
+  std::string LocalBinaryBufferWriter::strPrimaryNode() const
+  {
+    return f.str();
+  }
+
+  // Output the stream
+  std::string LocalBinaryBufferWriter::str() const
+  {
+    return f.str();
+  }
+
+  // Clear the stream
+  void LocalBinaryBufferWriter::clear()
+  {
+    f.clear();
+
+    checksum = 0;
+  }
+
 
 
   //--------------------------------------------------------------------------------
