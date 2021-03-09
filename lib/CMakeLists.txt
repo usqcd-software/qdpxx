@@ -142,6 +142,10 @@ endif()
 
 target_link_libraries( qdp PUBLIC OpenMP::OpenMP_CXX )
 
+if( QDP_SANITIZER_OPTS )
+  target_compile_options(qdp PUBLIC ${QDP_SANITIZER_OPTS})
+  target_link_options(qdp PUBLIC ${QDP_SANITIZER_OPTS})
+endif()
 
 install(TARGETS qdp EXPORT QDPXXTargets
   ARCHIVE DESTINATION lib

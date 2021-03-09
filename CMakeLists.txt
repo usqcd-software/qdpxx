@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.17)
 project(QDPXX VERSION 1.46.1 LANGUAGES CXX;C)
 
 include(GNUInstallDirs)
@@ -64,6 +64,9 @@ option(QDP_USE_TBBPOOL_ALLOCATOR "Enable TBB based Pool Allocator" OFF)
 
 # From our friends in Bonn - terse compilation
 option(QDP_EXTRA_MESSAGES "Enable Extra diagnostic messages during compile time" OFF)
+
+
+option(QDP_ENABLE_SANITIZERS "Enable Address and Undefined Behaviour Sanitizers" OFF)
 
 # These options will only apperar in ccmake if you toggle advanced features
 mark_as_advanced(QDP_NC, QDP_ND, QDP_NS, QDP_ALIGNMENT_SIZE, QDP_USE_PROFILING, QDP_DEBUG_MEMORY, QDP_USE_HDF5)
@@ -215,10 +218,27 @@ configure_file(include/qdp_config_internal.h.cmake.in include/qdp_config_interna
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/qdp_config_internal.h 
 		DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
+# Deal with Sanitizer
+if( QDP_ENABLE_SANITIZERS )
+  if( ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 3.1)
+     OR ( CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 4.8) )
+      message(STATUS "QDPXX: Setting Sanitizer options")
+      set(QDP_SANITIZER_OPTS "-fsanitize=address,undefined")
+      
+      # Turn on sanitizers for module below me
+      set(XPathReader_ENABLE_SANITIZERS ON)
+      set(LibIntrin_ENABLE_SANITIZERS ON)
+      set(QIO_ENABLE_SANITIZERS ON)
+      set(FileDB_ENABLE_SANITIZERS ON)
+  else()
+    message(STATUS "Don't know how to enable sanitizers for ${CMAKE_CXX_COMPILER_ID}... Ignoring")
+  endif()
+endif()  
 # Configure subdirectories
 # Include just does installing
 add_subdirectory(include)
 
+  
 
 
 # In practice this is always taken, but
