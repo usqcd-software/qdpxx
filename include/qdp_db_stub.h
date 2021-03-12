@@ -47,13 +47,13 @@ namespace FILEDB
     /**
      * Return this object into a binary form
      */
-    virtual void writeObject (std::string& output) const throw (SerializeException) = 0;
+    virtual void writeObject (std::string& output) const = 0;
 
 
     /**
      * Convert input object retrieved from database or network into an object
      */
-    virtual void readObject (const std::string& input) throw (SerializeException) = 0;
+    virtual void readObject (const std::string& input) = 0;
 
 
   protected:
