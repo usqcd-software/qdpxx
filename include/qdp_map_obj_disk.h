@@ -8,6 +8,7 @@
 #define __qdp_map_obj_disk_h__
 
 #include "qdp_map_obj.h"
+#include <limits>
 #include <unordered_map>
 
 namespace QDP
@@ -123,11 +124,13 @@ namespace QDP
 
   private:
     //! Sometime ago, chose 16 bytes for stream positions. Yup, really big.
-    union priv_pos_type_t
-    {
-      unsigned char     c[16];
-      uint64_t          p;
-    };
+    /**
+     * NOTE: the intention was to simulate an uint128_t with a pair of uint64_t
+     * where the most significant bytes were set to zero always. But the code
+     * was not correctly ported to little endian machines and the positions have
+     * been stored on the most significant uint64_t.
+     */
+    typedef std::array<uint64_t, 2> priv_pos_type_t;
 
     //! Type for the map
     typedef std::unordered_map<std::string, priv_pos_type_t> MapType_t;
@@ -155,7 +158,7 @@ namespace QDP
 
     //! Reader and writer interfaces
     mutable BinaryFileReaderWriter streamer;
-    
+
     //! Convert to known size
     priv_pos_type_t convertToPrivate(const pos_type& input) const;
 
@@ -207,9 +210,11 @@ namespace QDP
   typename MapObjectDisk<K,V>::priv_pos_type_t
   MapObjectDisk<K,V>::convertToPrivate(const pos_type& input) const
   {
-    priv_pos_type_t f;
-    f.p = static_cast<uint64_t>(input);
-    return f;
+    const pos_type max_uint64 = pos_type(std::numeric_limits<uint64_t>::max()) + pos_type(1u);
+    uint64_t less = uint64_t(input % max_uint64);
+    uint64_t more = input / max_uint64;
+    // NOTE comment on priv_pos_type_t
+    return (QDPUtil::big_endian() ? priv_pos_type_t{more, less} : priv_pos_type_t{less, more});
   }
 
   //! Convert from known size
@@ -217,7 +222,12 @@ namespace QDP
   typename MapObjectDisk<K,V>::pos_type 
   MapObjectDisk<K,V>::convertFromPrivate(const priv_pos_type_t& input) const
   {
-    return static_cast<pos_type>(input.p);
+    const pos_type max_uint64 = pos_type(std::numeric_limits<uint64_t>::max()) + pos_type(1u);
+    // NOTE comment on priv_pos_type_t
+    if (!QDPUtil::big_endian())
+      return pos_type(input[0]) + pos_type(input[1]) * max_uint64;
+    else
+      return pos_type(input[1]) + pos_type(input[0]) * max_uint64;
   }
 
 
@@ -293,8 +303,8 @@ namespace QDP
 	QDPInternal::broadcast(user_len);
 
 	QDPIO::cout << "Sanity Check 1" << std::endl; ;
-	uint64_t cur_pos = convertToPrivate(streamer.currentPosition()).p;
-	uint64_t exp_pos = 
+	pos_type cur_pos = streamer.currentPosition();
+	pos_type exp_pos = 
 	  MapObjDiskEnv::getFileMagic().length()+sizeof(int)
 	  +user_len+sizeof(int)
 	  +sizeof(MapObjDiskEnv::file_version_t);
@@ -317,8 +327,8 @@ namespace QDP
 	QDPInternal::broadcast(user_len);
 
 	QDPIO::cout << "Sanity Check 2" << std::endl;
-	uint64_t cur_pos = convertToPrivate(streamer.currentPosition()).p;
-	uint64_t exp_pos = 
+	pos_type cur_pos = streamer.currentPosition();
+	pos_type exp_pos = 
 	  MapObjDiskEnv::getFileMagic().length()+sizeof(int)
 	  +user_len+sizeof(int)
 	  +sizeof(MapObjDiskEnv::file_version_t)
@@ -574,11 +584,11 @@ namespace QDP
 	// Key does not exist
 
 	// Make note of current writer position
-	priv_pos_type_t pos = convertToPrivate(streamer.currentPosition());
+	pos_type pos = streamer.currentPosition();
       
 	// Insert pos into map
-	src_map.insert(std::make_pair(bin.str(),pos));
-     
+	src_map.insert(std::make_pair(bin.str(), convertToPrivate(pos)));
+
 	streamer.resetChecksum();
 
 	// Add position to the map
@@ -591,8 +601,8 @@ namespace QDP
      
 	// Get diagnostics.
 	if (level >= 1) {
-	  priv_pos_type_t end_pos = convertToPrivate(streamer.currentPosition());
-	  double MiBWritten = (double)(end_pos.p - pos.p)/(double)(1024*1024);
+	  pos_type end_pos = streamer.currentPosition();
+	  double MiBWritten = (double)(end_pos - pos)/(double)(1024*1024);
 	  double time = swatch.getTimeInSeconds();
 
 	  QDPIO::cout << " wrote: " << MiBWritten << " MiB. Time: " << time << " sec. Write Bandwidth: " << MiBWritten/time<<std::endl;
@@ -643,14 +653,14 @@ namespace QDP
       if (key_ptr != src_map.end())
       {
 	// If key exists find file offset
-	priv_pos_type_t pos = key_ptr->second;
+	pos_type pos = convertFromPrivate(key_ptr->second);
 
 	// Do the seek and time it 
 	StopWatch swatch;
 
 	swatch.reset();
 	swatch.start();
-	streamer.seek(convertFromPrivate(pos));
+	streamer.seek(pos);
 	swatch.stop();
 	double seek_time = swatch.getTimeInSeconds();
 
@@ -658,7 +668,7 @@ namespace QDP
 	streamer.resetChecksum();
 
 	// Grab start pos: We've just seeked it
-	priv_pos_type_t start_pos = pos;
+	pos_type start_pos = pos;
 
 	// Time the read
 	swatch.reset();
@@ -667,11 +677,11 @@ namespace QDP
 	swatch.stop();
 
 	double read_time = swatch.getTimeInSeconds();
-	priv_pos_type_t end_pos = convertToPrivate(streamer.currentPosition());
+	pos_type end_pos = streamer.currentPosition();
 
 	// Print data
 	if (level >= 1) { 
-	  double MiBRead = (double)(end_pos.p - start_pos.p)/(double)(1024*1024);
+	  double MiBRead = (double)(end_pos - start_pos)/(double)(1024*1024);
 	  QDPIO::cout << " seek time: " << seek_time 
 	  	      << " sec. read time: " << read_time 
 		      << "  " << MiBRead <<" MiB, " << MiBRead/read_time << " MiB/sec" << std::endl;
@@ -765,8 +775,7 @@ namespace QDP
   typename MapObjectDisk<K,V>::priv_pos_type_t
   MapObjectDisk<K,V>::readCheckHeader(void) 
   {
-    priv_pos_type_t md_position;
-    bzero(&md_position.c, sizeof(priv_pos_type_t));
+    priv_pos_type_t md_position{0, 0};
 
     if( streamer.is_open() ) 
     {
