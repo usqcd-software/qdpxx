@@ -80,7 +80,7 @@ namespace Chroma
     const K& key() const {return key_;}
 
     // Part of Serializable
-    const unsigned short serialID (void) const {return 456;}
+    virtual unsigned short serialID (void) const {return 456;}
 
     void writeObject (std::string& output) const  {
       BinaryBufferWriter bin;
@@ -127,7 +127,7 @@ namespace Chroma
     const D& data() const {return data_;}
 
     // Part of Serializable
-    const unsigned short serialID (void) const {return 123;}
+    virtual unsigned short serialID (void) const {return 123;}
 
     void writeObject (std::string& output) const  {
       BinaryBufferWriter bin;
