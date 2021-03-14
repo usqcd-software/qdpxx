@@ -216,6 +216,9 @@ void QDP_finalize()
   H5close();
 #endif
 
+  // Finalize pool allocator
+  Allocator::theQDPAllocator::DestroySingleton();
+
   QMP_finalize_msg_passing();
 
   isInit = false;

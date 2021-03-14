@@ -136,6 +136,9 @@ void QDP_finalize()
   H5close();
 #endif
 
+  // Finalize pool allocator
+  Allocator::theQDPAllocator::DestroySingleton();
+
   if ( ThreadReductions::norm2_results != 0x0 ) { 
    delete [] ThreadReductions::norm2_results;
   }

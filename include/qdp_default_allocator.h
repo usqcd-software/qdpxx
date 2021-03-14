@@ -9,6 +9,7 @@
 #define QDP_DEFAULT_ALLOCATOR
 
 #include "qdp_config.h"
+#include "qdp_singleton.h"
 
 #if defined(QDP_DEBUG_MEMORY)
 #include <stack>
@@ -70,15 +71,11 @@ namespace QDP
       // Disallow assignments (copies by another name)
       void operator=(const QDPDefaultAllocator& c) {}
 
-      // Disallow creation / destruction by anyone except 
-      // the singleton CreateUsingNew policy which is a "friend"
-      // I don't like friends but this follows Alexandrescu's advice
-      // on p154 of Modern C++ Design (A. Alexandrescu)
+      // Disallow creation / destruction by anyone except SingletonHolder
+      friend class QDP::SingletonHolder<QDP::Allocator::QDPDefaultAllocator>;
       QDPDefaultAllocator() {}
       ~QDPDefaultAllocator() {}
 
-      friend class QDP::CreateUsingNew<QDP::Allocator::QDPDefaultAllocator>;
-      friend class QDP::CreateStatic<QDP::Allocator::QDPDefaultAllocator>;
     public:
 
       void init(size_t PoolSizeinMB);

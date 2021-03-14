@@ -69,27 +69,24 @@ namespace QDP
 
 // Now include the allocator.h-s and turn into singleton as approprite.
 #ifdef QDP_USE_TBBPOOL_ALLOCATOR
-#include "qdp_pool_allocator.h"
-namespace QDP {
- namespace Allocator {
- using theQDPAllocator = SingletonHolder<QDP::Allocator::QDPPoolAllocator,
-			    QDP::CreateStatic,
-			    QDP::NoDestroy,
-			    QDP::SingleThreaded>;
- }
+#  include "qdp_pool_allocator.h"
+namespace QDP
+{
+  namespace Allocator
+  {
+    using theQDPAllocator = SingletonHolder<QDP::Allocator::QDPPoolAllocator>;
+  }
 }
 #else
 // Include the default specialisation
-#include "qdp_default_allocator.h"
-namespace QDP {
- namespace Allocator {
- using theQDPAllocator =  SingletonHolder<QDP::Allocator::QDPDefaultAllocator,
-			    QDP::CreateStatic,
-			    QDP::NoDestroy,
-			    QDP::SingleThreaded>;
- }
- }
+#  include "qdp_default_allocator.h"
+namespace QDP
+{
+  namespace Allocator
+  {
+    using theQDPAllocator = SingletonHolder<QDP::Allocator::QDPDefaultAllocator>;
+  }
+}
 #endif
-
 
 #endif

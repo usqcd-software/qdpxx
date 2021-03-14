@@ -337,6 +337,9 @@ namespace QDP {
                 H5close();
 #endif
 		
+		// Finalize pool allocator
+		Allocator::theQDPAllocator::DestroySingleton();
+
 		//
 		// finalise qmt
 		//
