@@ -80,6 +80,9 @@ bool QDP_isInitialized() {return isInit;}
 //! Turn off the machine
 void QDP_finalize()
 {
+  // Finalize pool allocator
+  Allocator::theQDPAllocator::DestroySingleton();
+
   printProfile();
 
   isInit = false;

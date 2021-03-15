@@ -42,7 +42,7 @@ namespace FILEDB
     /**
      * Get the serial id of this class
      */
-    virtual const unsigned short serialID (void) const = 0;
+    virtual unsigned short serialID (void) const = 0;
 
     /**
      * Return this object into a binary form
