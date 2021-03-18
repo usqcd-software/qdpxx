@@ -210,9 +210,16 @@ namespace QDP
   typename MapObjectDisk<K,V>::priv_pos_type_t
   MapObjectDisk<K,V>::convertToPrivate(const pos_type& input) const
   {
-    const pos_type max_uint64 = pos_type(std::numeric_limits<uint64_t>::max()) + pos_type(1u);
-    uint64_t less = uint64_t(input % max_uint64);
-    uint64_t more = input / max_uint64;
+    // NOTE: pos_type is an opaque type, so it is not easy to know the maximum
+    // number that can hold. pos_type_bigger tries to guess whether pos_type
+    // can hold larger numbers than uint64_t, assuming that pos_type can hold
+    // at least any uint64_t number
+    const pos_type zero = pos_type(0u), one = pos_type(1u),
+		   max_uint64 = pos_type(std::numeric_limits<uint64_t>::max()),
+		   max_uint64_p1 = max_uint64 + one;
+    bool pos_type_bigger = (max_uint64 != pos_type(-1) && max_uint64 < max_uint64_p1);
+    uint64_t less = (pos_type_bigger ? uint64_t(input % max_uint64_p1) : uint64_t(input));
+    uint64_t more = (pos_type_bigger ? uint64_t(input / max_uint64_p1) : uint64_t(0u));
     // NOTE comment on priv_pos_type_t
     return (QDPUtil::big_endian() ? priv_pos_type_t{more, less} : priv_pos_type_t{less, more});
   }
@@ -222,12 +229,24 @@ namespace QDP
   typename MapObjectDisk<K,V>::pos_type 
   MapObjectDisk<K,V>::convertFromPrivate(const priv_pos_type_t& input) const
   {
-    const pos_type max_uint64 = pos_type(std::numeric_limits<uint64_t>::max()) + pos_type(1u);
+    // NOTE: pos_type is an opaque type, so it is not easy to know the maximum
+    // number that can hold. pos_type_bigger tries to guess whether pos_type
+    // can hold larger numbers than uint64_t, assuming that pos_type can hold
+    // at least any uint64_t number
+    const pos_type zero = pos_type(0u), one = pos_type(1u),
+		   max_uint64 = pos_type(std::numeric_limits<uint64_t>::max()),
+		   max_uint64_p1 = max_uint64 + one;
+    bool pos_type_bigger = (max_uint64 != pos_type(-1) && max_uint64 < max_uint64_p1);
+    pos_type modulo = pos_type_bigger ? max_uint64_p1 : zero;
     // NOTE comment on priv_pos_type_t
+    pos_type out;
     if (!QDPUtil::big_endian())
-      return pos_type(input[0]) + pos_type(input[1]) * max_uint64;
+      out = pos_type(input[0]) + pos_type(input[1]) * modulo;
     else
-      return pos_type(input[1]) + pos_type(input[0]) * max_uint64;
+      out = pos_type(input[1]) + pos_type(input[0]) * modulo;
+    if (out == pos_type(-1))
+      QDP_error_exit("File position does not fit in pos_type");
+    return out;
   }
 
 
