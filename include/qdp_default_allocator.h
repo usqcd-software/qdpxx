@@ -18,36 +18,61 @@
 #include "qdp_allocator.h"
 #include "qdp_stdio.h"
 
-#include <string>
 #include <map>
+#include <stdlib.h> // aligned_alloc is in cstdlib since c++17 and in stdlib.h since C11
+#include <string>
 
 namespace QDP
 {
   namespace Allocator
   {
 
-    inline std::map<void*,std::size_t>& getAllocs() {
-	static std::map<void*,std::size_t> allocs;
+    namespace detail
+    {
+      inline std::map<void*, std::size_t>& getAllocs()
+      {
+	static std::map<void*, std::size_t> allocs;
 	return allocs;
-    }
-    
-    template<typename T> T* new_aligned(std::size_t n) {
-        if (n == 0) return nullptr;
-	T* p = (T*)aligned_alloc(std::max((std::size_t)QDP_ALIGNMENT_SIZE, alignof(T)), sizeof(T) * n);
-	new (p) T[n];
-	getAllocs()[(void*)p] = n;
-        return p;
+      }
+
+      inline std::size_t& getCurrentlyAllocated()
+      {
+	static std::size_t s = 0;
+	return s;
+      }
     }
 
-    template<typename T> void delete_aligned(T* p) {
-        if (p == nullptr) return;
-	std::size_t n = getAllocs()[(void*)p];
-	if (getAllocs().erase((void*)p) != 1)
-	  QDP_error_exit("Pointer not found");
-	while (n--) p[n].~T();
-	std::free(p);
+    //! Allocate and initialize n instances of T, at least with alignment QDP_ALIGNMENT_SIZE
+    template <typename T>
+    T* new_aligned(std::size_t n)
+    {
+      if (n == 0)
+	return nullptr;
+      T* p =
+	(T*)aligned_alloc(std::max((std::size_t)QDP_ALIGNMENT_SIZE, alignof(T)), sizeof(T) * n);
+      if (p == nullptr)
+	QDP_error_exit("Bad allocation! Currently there are %g MiB allocated",
+		       (double)detail::getCurrentlyAllocated() / 1024 / 1024);
+      detail::getCurrentlyAllocated() += sizeof(T) * n;
+      new (p) T[n];
+      detail::getAllocs()[(void*)p] = n;
+      return p;
     }
 
+    //! Destroy the instances allocated with new_aligned
+    template <typename T>
+    void delete_aligned(T* p)
+    {
+      if (p == nullptr)
+	return;
+      std::size_t n = detail::getAllocs()[(void*)p];
+      if (detail::getAllocs().erase((void*)p) != 1)
+	QDP_error_exit("Pointer not previously allocated with new_aligned");
+      while (n--)
+	p[n].~T();
+      std::free(p);
+      detail::getCurrentlyAllocated() -= sizeof(T) * n;
+    }
 
 #if defined(QDP_DEBUG_MEMORY)
     // Struct to hold in map
