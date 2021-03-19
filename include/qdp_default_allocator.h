@@ -26,6 +26,29 @@ namespace QDP
   namespace Allocator
   {
 
+    inline std::map<void*,std::size_t>& getAllocs() {
+	static std::map<void*,std::size_t> allocs;
+	return allocs;
+    }
+    
+    template<typename T> T* new_aligned(std::size_t n) {
+        if (n == 0) return nullptr;
+	T* p = (T*)aligned_alloc(std::max((std::size_t)QDP_ALIGNMENT_SIZE, alignof(T)), sizeof(T) * n);
+	new (p) T[n];
+	getAllocs()[(void*)p] = n;
+        return p;
+    }
+
+    template<typename T> void delete_aligned(T* p) {
+        if (p == nullptr) return;
+	std::size_t n = getAllocs()[(void*)p];
+	if (getAllocs().erase((void*)p) != 1)
+	  QDP_error_exit("Pointer not found");
+	while (n--) p[n].~T();
+	std::free(p);
+    }
+
+
 #if defined(QDP_DEBUG_MEMORY)
     // Struct to hold in map
     struct MapVal {
@@ -74,7 +97,11 @@ namespace QDP
       // Disallow creation / destruction by anyone except SingletonHolder
       friend class QDP::SingletonHolder<QDP::Allocator::QDPDefaultAllocator>;
       QDPDefaultAllocator() {}
-      ~QDPDefaultAllocator() {}
+      ~QDPDefaultAllocator()
+      {
+	if (the_alignment_map.size() > 0)
+	  QDPIO::cerr << "warning: QDPDefaultAllocator still has allocations" << std::endl;
+      }
 
     public:
 

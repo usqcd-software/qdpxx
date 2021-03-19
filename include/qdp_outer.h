@@ -5,6 +5,7 @@
 
 #include "qdp_config.h"
 #include "qdp_allocator.h"
+#include "qdp_default_allocator.h"
 
 /*! \file
  * \brief Outer grid classes
@@ -416,7 +417,8 @@ private:
       size_t NSites = static_cast<size_t>(Layout::sitesOnNode());
       try
       {
-    	  F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*NSites,QDP::Allocator::DEFAULT);
+    	  //F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*NSites,QDP::Allocator::DEFAULT);
+    	  F= QDP::Allocator::new_aligned<T>(NSites);
       }
       catch(std::bad_alloc) {
     	  QDPIO::cerr << "Allocation failed in OLattice alloc_mem" << std::endl;
@@ -441,7 +443,8 @@ private:
     if (!mem) return;
     if( F != nullptr )
     { 
-    	QDP::Allocator::theQDPAllocator::Instance().free(F);
+    	//QDP::Allocator::theQDPAllocator::Instance().free(F);
+    	QDP::Allocator::delete_aligned<T>(F);
 
     }
     mem = false;

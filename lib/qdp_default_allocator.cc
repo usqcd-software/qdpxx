@@ -19,7 +19,7 @@ namespace Allocator {
   //! So we simply ignore the memory pool hint.
   void*
   QDPDefaultAllocator::allocate(size_t n_bytes,const MemoryPoolHint& mem_pool_hint) {
-    
+    if (n_bytes == 0) return nullptr; 
     //! The raw unaligned pointer returned by the allocator
     unsigned char *unaligned;
 
@@ -72,6 +72,8 @@ namespace Allocator {
   //! Free an aligned pointer, which was allocated by us.
   void 
   QDPDefaultAllocator::free(void *mem) { 
+    if (mem == nullptr) return;
+
     unsigned char* unaligned; 
 
     // Look up the original unaligned pointer in the memory. 
@@ -93,7 +95,7 @@ namespace Allocator {
       delete [] unaligned;
     }
     else { 
-      QDPIO::cerr << "Pointer not found in map" << std::endl;
+      std::cerr << "Pointer not found in map " << mem << std::endl;
       QDP_abort(1);
     }
   }

@@ -143,7 +143,8 @@ public:
     //QDP_info("OSubLattice alloc for %d sites",s->numSiteTable());
     try 
       {
-    	F = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*s->numSiteTable(),QDP::Allocator::DEFAULT);
+    	//F = (T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*s->numSiteTable(),QDP::Allocator::DEFAULT);
+    	F= QDP::Allocator::new_aligned<T>(s->numSiteTable());
       }
       catch(std::bad_alloc) 
       {
@@ -160,7 +161,8 @@ public:
   }
 
   void free_mem() {
-	  QDP::Allocator::theQDPAllocator::Instance().free(F);
+	  //QDP::Allocator::theQDPAllocator::Instance().free(F);
+    	QDP::Allocator::delete_aligned<T>(F);
   }
 #endif
 
