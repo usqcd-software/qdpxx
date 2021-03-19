@@ -4,7 +4,7 @@
 #define QDP_OUTER_H
 
 #include "qdp_config.h"
-#include "qdp_allocator.h"
+#include "qdp_default_allocator.h"
 
 /*! \file
  * \brief Outer grid classes
@@ -414,16 +414,7 @@ private:
       mem=true;
       // Barfs if allocator fails
       size_t NSites = static_cast<size_t>(Layout::sitesOnNode());
-      try
-      {
-    	  F=(T*)QDP::Allocator::theQDPAllocator::Instance().allocate(sizeof(T)*NSites,QDP::Allocator::DEFAULT);
-      }
-      catch(std::bad_alloc) {
-    	  QDPIO::cerr << "Allocation failed in OLattice alloc_mem" << std::endl;
-    	  QDP::Allocator::theQDPAllocator::Instance().dump();
-
-	QDP_abort(1);
-      }
+      F = QDP::Allocator::new_aligned<T>(NSites);
 
 #if 0
       // Nuke touch for now
@@ -439,11 +430,7 @@ private:
   inline void free_mem() 
   {
     if (!mem) return;
-    if( F != nullptr )
-    { 
-    	QDP::Allocator::theQDPAllocator::Instance().free(F);
-
-    }
+    QDP::Allocator::delete_aligned<T>(F);
     mem = false;
     F = nullptr;
   }
