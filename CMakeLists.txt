@@ -119,7 +119,7 @@ elseif( ${qdpParArch} STREQUAL "scalar" )
 	set(QIO_ENABLE_PARALLEL_BUILD OFF CACHE BOOL "Scalar buld: Force QIO Scalar build"
         FORCE )
         
-        swt(QDP_ARCH_SCALAR ON)		# Build system 
+        set(QDP_ARCH_SCALAR ON)		# Build system 
 	set(ARCH_SCALAR 1)   		# Configured header file (should rationalize this
 else()
     message(ERROR "QDP++: Unknown architecture. Please set QDP_PARALLEL_ARCH to either scalar, parscalar, scalarvec or parscalarvec")
