@@ -70,7 +70,6 @@ std::stack<QDPProfileInfo_t> infostack;
 std::queue<QDPProfileHead_t> profqueue;
 
 
-
 void
 QDPProfile_t::init()
 {

@@ -67,8 +67,48 @@ struct QDPProfile_t
   void print();
 
   void init();
-  QDPProfile_t() {init();}
+  QDPProfile_t()
+  {
+    init();
+  }
 
+
+  template<class T, class Op, class OpOuter, class T1, class C1>
+  QDPProfile_t(T* dest, const Op& op, const OpOuter& opOuter, const QDPType<T1,C1>& rhs)
+    {
+      init();
+
+      if (getProfileLevel() > 0)
+      {
+	typedef UnaryNode<OpOuter, typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
+	typedef typename UnaryReturn<C1,OpOuter>::Type_t Container_t;
+
+	std::ostringstream os;
+	printExprTree(os, dest, op, 
+		      MakeReturn<Tree_t,Container_t>::make(Tree_t(
+			CreateLeaf<QDPType<T1,C1> >::make(rhs))));
+	expr = os.str();
+	registerProfile(this);
+      }
+    }
+
+  
+  //! Profile rhs for subtypes
+  template<class T, class Op, class RHS, class C1>
+  QDPProfile_t(T* dest, const Op& op, const QDPExpr<RHS,C1>& rhs)
+    {
+      init();
+
+      if (getProfileLevel() > 0)
+      {
+	std::ostringstream os;
+	printExprTree(os, dest, op, rhs);
+	expr = os.str();
+	registerProfile(this);
+      }
+    }
+
+  
   //! Profile rhs
   template<class T, class C, class Op, class RHS, class C1>
   QDPProfile_t(const QDPType<T,C>& dest, const Op& op, const QDPExpr<RHS,C1>& rhs)
@@ -77,7 +117,7 @@ struct QDPProfile_t
 
       if (getProfileLevel() > 0)
       {
-	ostringstream os;
+	std::ostringstream os;
 	printExprTree(os, dest, op, rhs);
 	expr = os.str();
 	registerProfile(this);
@@ -95,7 +135,7 @@ struct QDPProfile_t
 	typedef UnaryNode<OpOuter, typename CreateLeaf<QDPExpr<RHS,C1> >::Leaf_t> Tree_t;
 	typedef typename UnaryReturn<C1,OpOuter>::Type_t Container_t;
 
-	ostringstream os;
+	std::ostringstream os;
 	printExprTree(os, dest, op, 
 		      MakeReturn<Tree_t,Container_t>::make(Tree_t(
 			CreateLeaf<QDPExpr<RHS,C1> >::make(rhs))));
@@ -115,7 +155,7 @@ struct QDPProfile_t
 	typedef UnaryNode<OpOuter, typename CreateLeaf<QDPType<T1,C1> >::Leaf_t> Tree_t;
 	typedef typename UnaryReturn<C1,OpOuter>::Type_t Container_t;
 
-	ostringstream os;
+	std::ostringstream os;
 	printExprTree(os, dest, op, 
 		      MakeReturn<Tree_t,Container_t>::make(Tree_t(
 			CreateLeaf<QDPType<T1,C1> >::make(rhs))));
@@ -163,7 +203,7 @@ struct QDPProfileHead_t
  */
 template<class T, class C, class Op, class RHS, class C1>
 //inline
-void printExprTree(ostream& os, 
+void printExprTree(std::ostream& os, 
 		   const QDPType<T,C>& dest, const Op& op, const QDPExpr<RHS,C1>& rhs)
 {
   typedef EvalLeaf1    FTag_t;
@@ -193,6 +233,41 @@ void printExprTree(ostream& os,
   os << ";";
 }
 
+
+template<class T, class Op, class RHS, class C1>
+//inline
+void printExprTree(std::ostream& os, 
+		   T* dest, const Op& op, const QDPExpr<RHS,C1>& rhs)
+{
+  typedef EvalLeaf1    FTag_t;
+  typedef OpCombine    CTag_t;
+  typedef NullCombine  VTag_t;
+  typedef QDPExpr<RHS,C1>  Expr;
+    
+  typedef typename CreateLeaf<Expr>::Leaf_t Expr_t;
+  const Expr_t &e = CreateLeaf<Expr>::make(rhs);
+
+#if 0
+  // Compact version
+  typedef BinaryNode<Op, QDPType<T,C>, Expr_t> Assign_t;
+  typedef ForEachInOrder<Assign_t, PrintTag, PrintTag, NullTag> Print_t;
+  Assign_t t(op, dest, e);
+  Print_t::apply(t, PrintTag(os), PrintTag(os), NullTag());
+#else
+  // Makes assignment part special
+  typedef ForEachInOrder<RHS, PrintTag, PrintTag, NullTag> Print_t;
+  LeafFunctor<T,PrintTag>::apply(*dest,PrintTag(os));
+  os << " ";
+  TagVisitor<Op,PrintTag>::visit(op, PrintTag(os));
+  os << " ";
+  Print_t::apply(e, PrintTag(os), PrintTag(os), NullTag());
+#endif
+
+  os << ";";
+}
+
+
+  
 //
 // struct PrintTag
 //
@@ -201,8 +276,8 @@ void printExprTree(ostream& os,
 
 struct PrintTag
 {
-  mutable ostream &os_m;
-  PrintTag(ostream &os) : os_m(os) {}
+  std::ostream &os_m;
+  PrintTag(std::ostream &os) : os_m(os) {}
 };
 
 
@@ -644,6 +719,17 @@ struct TagVisitor<FnHypTan, PrintTag> : public ParenPrinter<FnHypTan>
   static void visit(FnHypTan op, PrintTag t) 
     { t.os_m << "tanh"; }
 };
+
+
+// FnIsFinite
+template <>
+struct TagVisitor<FnIsFinite, PrintTag> : public ParenPrinter<FnIsFinite>
+{ 
+  static void visit(FnIsFinite op, PrintTag t) 
+    { t.os_m << "isfinite"; }
+};
+
+
 
 // OpUnaryMinus
 template <>

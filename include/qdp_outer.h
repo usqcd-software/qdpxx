@@ -965,6 +965,12 @@ struct UnaryReturn<OLattice<T>, FnNorm2 > {
   typedef OScalar<typename UnaryReturn<T, FnNorm2>::Type_t>  Type_t;
 };
 
+template<class T>
+struct UnaryReturn<OLattice<T>, FnIsFinite > {
+  typedef bool Type_t;
+};
+
+
 template<class T1, class T2>
 struct BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct > {
   typedef OScalar<typename BinaryReturn<T1, T2, FnInnerProduct>::Type_t>  Type_t;

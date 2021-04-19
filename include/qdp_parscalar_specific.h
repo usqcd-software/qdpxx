@@ -358,11 +358,12 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 	//////////////////
 	const int* tab = s.siteTable().slice();
 	int numSiteTable = s.numSiteTable();
+
 #pragma omp parallel for
 	 for(int j=0; j < numSiteTable; ++j)
 	 {
-		 int i = tab[j];
-		 op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
+	   int i = tab[j];
+	   op(dest.elem(i), forEach(rhs, EvalLeaf1(0), OpCombine()));
 	 }
 #endif
 
@@ -1637,7 +1638,7 @@ isfinite(const OLattice<T>& s1)
   bool d = true;
 
 #if defined(QDP_USE_PROFILING)   
-  static QDPProfile_t prof(d, OpAssign(), FnIsFinite(), s1);
+  static QDPProfile_t prof(&d, OpAssign(), FnIsFinite(), s1);
   prof.time -= getClockTime();
 #endif
 
