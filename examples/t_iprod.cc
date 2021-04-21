@@ -1,5 +1,8 @@
 #include <qdp.h>
+#if 0
 #include <xmmintrin.h>
+#endif
+
 #define TESTING 1
 
 using namespace std;
