@@ -31,7 +31,9 @@ void Map::make(const MapFunc& func)
   // const multi1d<int>& nrow = Layout::lattSize();
 
   // Loop over the sites on this node
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
   for(int linear=0; linear < Layout::vol(); ++linear)
   {
     // Get the true lattice coord of this linear site index

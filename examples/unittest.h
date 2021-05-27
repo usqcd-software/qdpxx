@@ -32,6 +32,7 @@ class TestCase {
 private:
 public:
   virtual void run(void) = 0;
+  virtual ~TestCase() = default;
 };
 
 // A test fixture - that does extra set up before and after the test

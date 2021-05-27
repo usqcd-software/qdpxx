@@ -46,7 +46,9 @@ namespace QDP {
        Loop works out forward and backward neighbours and writes
        one value per value of linear. So no write conflicts */
 
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
     for(int linear=0; linear < nodeSites; ++linear)
     {
       // Get the true lattice coord of this linear site index

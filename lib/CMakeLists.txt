@@ -140,7 +140,9 @@ if( QDP_USE_HDF5 )
 	target_link_libraries( qdp PUBLIC hdf5::hdf5 )
 endif()
 
-target_link_libraries( qdp PUBLIC OpenMP::OpenMP_CXX )
+if( QDP_USE_OPENMP )
+  target_link_libraries( qdp PUBLIC OpenMP::OpenMP_CXX )
+endif()
 
 if( QDP_SANITIZER_OPTS )
   target_compile_options(qdp PUBLIC ${QDP_SANITIZER_OPTS})

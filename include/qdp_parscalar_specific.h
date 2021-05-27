@@ -359,7 +359,9 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OScalar<T1> >& 
 	const int* tab = s.siteTable().slice();
 	int numSiteTable = s.numSiteTable();
 
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	 for(int j=0; j < numSiteTable; ++j)
 	 {
 	   int i = tab[j];
@@ -401,7 +403,9 @@ void evaluate(OLattice<T>& dest, const Op& op, const QDPExpr<RHS,OLattice<T1> >&
 #else
 	const int *tab = s.siteTable().slice();
 	const int numSiteTable = s.numSiteTable();
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for(int j=0; j < numSiteTable; ++j)
 	{
 		int i = tab[j];
@@ -467,7 +471,9 @@ void copymask(OSubLattice<T2> d, const OLattice<T1>& mask, const OLattice<T2>& s
 
 	const int *tab = s.siteTable().slice();
 	const int nodeSites = s.numSiteTable();
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for(int j=0; j < nodeSites; ++j)
 	{
 		int i = tab[j];
@@ -480,8 +486,10 @@ template<class T1, class T2>
 void copymask(OLattice<T2>& dest, const OLattice<T1>& mask, const OLattice<T2>& s1) 
 {
 	int nodeSites = Layout::sitesOnNode();
-	
+
+#ifdef _OPENMP	
 #pragma omp parallel for
+#endif
 	for(int i=0; i < nodeSites; ++i) 
 		copymask(dest.elem(i), mask.elem(i), s1.elem(i));
 }
@@ -521,12 +529,15 @@ random(OLattice<T>& d, const Subset& s)
 	const int *tab = s.siteTable().slice();
 	const int nodeSites = s.numSiteTable();
 
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 	{
 		Seed seed;
 		Seed skewed_seed;
-
+#ifdef _OPENMP
 #pragma omp for // need the barrier to avoid that RNG::ran_seed is changed too early!
+#endif
 		for(int j=0; j < nodeSites; ++j)
 		{
 			int i = tab[j];
@@ -538,7 +549,9 @@ random(OLattice<T>& d, const Subset& s)
 
 		int myId = qdpThreadNum();
 		if( myId < nodeSites ) {
+#ifdef _OPENMP
 #pragma omp critical (random)
+#endif
 		{
 			RNG::ran_seed = seed;	 // The seed from any site is the same as the new global seed
 		}
@@ -578,8 +591,9 @@ void gaussian(OLattice<T>& d, const Subset& s)
 
 	const int *tab = s.siteTable().slice();
 	const int nodeSites = s.numSiteTable();
-
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for(int j=0; j < nodeSites; ++j)
 	{
 		int i = tab[j];
@@ -619,7 +633,9 @@ void zero_rep(OLattice<T>& dest, const Subset& s)
 	const int *tab = s.siteTable().slice();
 	const int nodeSites = s.numSiteTable();
 
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for(int j=0; j < nodeSites; ++j)
 	{
 		int i = tab[j];
@@ -648,8 +664,9 @@ template<class T>
 void zero_rep(OLattice<T>& dest) 
 {
 	const int nodeSites = Layout::sitesOnNode();
-
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for(int i=0; i < nodeSites; ++i) 
 		zero_rep(dest.elem(i));
 }
@@ -736,13 +753,15 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 
 	const int *tab = s.siteTable().slice();
 	const int nodeSites = s.numSiteTable();
-
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 	{
 		typename UnaryReturn<OLattice<T>, FnSum>::Type_t dthread;
 		zero_rep(dthread.elem());
-
+#ifdef _OPENMP
 #pragma omp for
+#endif
 		for(int j=0; j < nodeSites; ++j)
 		{
 			int i = tab[j];
@@ -751,7 +770,9 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1, const Subset& s)
 
 		int myId = qdpThreadNum();
 		if( myId < nodeSites ) {
+#ifdef _OPENMP
 #pragma omp critical
+#endif
 		{
 			d.elem() += dthread.elem();
 		}
@@ -791,19 +812,24 @@ sum(const QDPExpr<RHS,OLattice<T> >& s1)
 	zero_rep(d.elem());
 	const int nodeSites = Layout::sitesOnNode();
 
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
 	{
 		typename UnaryReturn<OLattice<T>, FnSum>::Type_t	dthread;
 		zero_rep(dthread.elem());
-		
+#ifdef _OPENMP		
 #pragma omp for nowait
+#endif
 		for(int i=0; i < nodeSites; ++i) 
 			dthread.elem() += forEach(s1, EvalLeaf1(i), OpCombine());
 			
 
 		int myId = qdpThreadNum();
 		if( myId < nodeSites ) {
+#ifdef _OPENMP
 #pragma omp critical
+#endif
 		{
 			d.elem() += dthread.elem();
 		}
@@ -1068,13 +1094,15 @@ norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
 	for(int n=0; n < s1.size(); ++n)
 	{
 		const OLattice<T>& ss1 = s1[n];
-
+#ifdef _OPENMP
 		#pragma omp parallel
+#endif
 		{
 			typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t	dthread;
 			zero_rep(dthread.elem());
-
+#ifedef _OPENMP
 			#pragma omp for
+#endif
 			for(int j=0; j < nodeSites; ++j)
 			{
 				int i = tab[j];
@@ -1083,7 +1111,9 @@ norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
 
 			int myId = qdpThreadNum();
 			if ( myId < nodeSites ) {
+#ifdef _OPENMP
 			#pragma omp critical
+#endif
 			{
 				d.elem() += dthread.elem();
 			}
@@ -1198,13 +1228,17 @@ innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s
 	{
 		const OLattice<T1>& ss1 = s1[n];
 		const OLattice<T2>& ss2 = s2[n];
-		
+
+#ifdef _OPENMP	
 		#pragma omp parallel
+#endif
 		{
 			typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProduct>::Type_t	 dthread;
 			zero_rep(dthread.elem());
-		
+	
+#ifdef _OPENMP	
 			#pragma omp for
+#endif
 			for(int j=0; j < nodeSites; ++j)
 			{
 				int i = tab[j];
@@ -1213,7 +1247,9 @@ innerProduct(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> >& s
 
 			int myId = qdpThreadNum();
 			if( myId < nodeSites ) {
+#ifdef _OPENMP
 			#pragma omp critical
+#endif
 			{
 				d.elem() += dthread.elem();
 			}
@@ -1329,13 +1365,17 @@ innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> 
 	{
 		const OLattice<T1>& ss1 = s1[n];
 		const OLattice<T2>& ss2 = s2[n];
-		
+
+#ifdef _OPENMP
 		#pragma omp parallel
+#endif
 		{
 			typename BinaryReturn<OLattice<T1>, OLattice<T2>, FnInnerProductReal>::Type_t	 dthread;
 			zero_rep(dthread.elem());
-			
+		
+#ifdef _OPENMP	
 			#pragma omp for
+#endif
 			for(int j=0; j < nodeSites; ++j)
 			{
 				int i = tab[j];
@@ -1344,7 +1384,9 @@ innerProductReal(const multi1d< OLattice<T1> >& s1, const multi1d< OLattice<T2> 
 
 			int myId = qdpThreadNum();
 			if( myId < nodeSites )  {
+#ifdef _OPENMP
 			#pragma omp critical
+#endif
 			{
 				d.elem() += dthread.elem();
 			}
@@ -1824,7 +1866,9 @@ QDP_extract(multi1d<OScalar<T> >& dest, const OLattice<T>& src, const Subset& s)
 	const int *tab = s.siteTable().slice();
 	const int nodeSites = s.numSiteTable();
 
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for(int j=0; j < nodeSites; ++j)
 	{
 		int i = tab[j];
@@ -1846,7 +1890,9 @@ QDP_insert(OLattice<T>& dest, const multi1d<OScalar<T> >& src, const Subset& s)
 	const int *tab = s.siteTable().slice();
 	const int nodeSites = s.numSiteTable();
 
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for(int j=0; j < nodeSites; ++j)
 	{
 		int i = tab[j];
@@ -2082,7 +2128,9 @@ public:
 			// Scatter the data into the destination
 			// Some of the data maybe in receive buffers
 			// For now, use the all subset
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 			for(int i=0; i < nodeSites; ++i) 
 			{
 #if QDP_DEBUG >= 3
@@ -2108,7 +2156,9 @@ public:
 #endif
 
 			// For now, use the all subset
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 			for(int i=0; i < nodeSites; ++i) 
 			{
 #if QDP_DEBUG >= 3

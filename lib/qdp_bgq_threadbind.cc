@@ -18,7 +18,9 @@ namespace QDP
 #ifdef QDP_USE_OMP_THREADS
   void setThreadAffinity(int nCores, int threadsPerCore)
   {
-    #pragma omp parallel 
+#ifdef _OPENMP
+    #pragma omp parallel
+#endif
     {
 
       // Get the OpenMP thread number
@@ -57,7 +59,9 @@ namespace QDP
 
     uint32_t cids[64], htids[64];
 
+#ifdef _OPENMP
 #pragma omp parallel
+#endif
     {
       htids[omp_get_thread_num()] = Kernel_ProcessorThreadID();
       cids[omp_get_thread_num()] = Kernel_ProcessorCoreID();

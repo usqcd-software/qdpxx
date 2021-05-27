@@ -55,6 +55,8 @@ option(QDP_USE_SSE3 "Enable SSE3 Code" OFF)
 # HDF5 from Thorsten
 option(QDP_USE_HDF5 "Enable HDF5 Code" OFF)
 
+# OpenMP
+option(QDP_USE_OPENMP "Use OpenMP" OFF)
 # Deprecate 3DNow option
 # Deprecate BG/L option
 # Deprecate BG/Q Thread binding option
@@ -164,9 +166,10 @@ set(QDP_AC_ALIGNMENT_SIZE ${QDP_ALIGNMENT_SIZE})
 message( STATUS "QDP++: Setting alignment size to ${QDP_ALIGNMENT_SIZE}")
  
 # OpenMP Support hardwired now
-find_package(OpenMP REQUIRED)
-find_package(Threads REQUIRED)
-set(QDP_USE_OMP_THREADS "1")
+if( QDP_USE_OPENMP )
+  find_package(OpenMP REQUIRED)
+  find_package(Threads REQUIRED)
+endif()
 
 # If we are parallel we need QMP
 if ( QDP_ARCH_PARSCALAR  OR  QDP_ARCH_PARSCALARVEC )

@@ -10,6 +10,7 @@
 #include "qdp_map_obj.h"
 #include <limits>
 #include <unordered_map>
+#include <array>
 
 namespace QDP
 {
