@@ -1100,7 +1100,7 @@ norm2(const multi1d< OLattice<T> >& s1, const Subset& s)
 		{
 			typename UnaryReturn<OLattice<T>, FnNorm2>::Type_t	dthread;
 			zero_rep(dthread.elem());
-#ifedef _OPENMP
+#ifdef _OPENMP
 			#pragma omp for
 #endif
 			for(int j=0; j < nodeSites; ++j)
