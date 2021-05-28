@@ -29,8 +29,9 @@ namespace QDP {
 template<class Arg>
 void dispatch_to_threads(int numSiteTable, Arg a, void (*func)(int,int,int, Arg*)){
    
-
+#ifdef _OPENMP
 #pragma omp parallel shared(numSiteTable, a)
+#endif
     {
      
       int threads_num = omp_get_num_threads();

@@ -239,7 +239,9 @@ namespace QDP
 
 
       // Sanity check - check the layout functions make sense
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
       for(int i=0; i < _layout.vol; ++i) 
       {
 	int j = Layout::linearSiteIndex(Layout::siteCoords(Layout::nodeNumber(),i));

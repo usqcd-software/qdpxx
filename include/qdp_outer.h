@@ -418,7 +418,9 @@ private:
 
 #if 0
       // Nuke touch for now
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
         for(int j=0; j < NSites; ++j) {
              *((char *)&F[j])=0;
         }

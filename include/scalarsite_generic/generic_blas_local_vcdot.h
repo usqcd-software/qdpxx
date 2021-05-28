@@ -33,8 +33,9 @@ void l_vcdot(DOUBLE *Out_re, DOUBLE *Out_im, REAL *V1, REAL *V2, int n_3vec)
   if( n_3vec > 0 )  {
 
     int len = 24*n_3vec;	// 12*(re,im)
-    
+#ifdef _OPENMP   
 #pragma omp parallel for reduction(+:result_re,result_im) private(v1_r,v1_i,v2_r,v2_i)
+#endif
     for(counter=0; counter < len; counter+=2)  {
       v1_r = (DOUBLE)V1[counter];
       v1_i = (DOUBLE)V1[counter+1];

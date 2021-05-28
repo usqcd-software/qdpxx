@@ -26,7 +26,9 @@ void local_sumsq(DOUBLE *Out, REAL  *In, int n_3vec)
   result = 0;
 
   if( n_3vec > 0 ) { 
+#ifdef _OPENMP
 #pragma omp parallel for reduction(+:result) private(i1)
+#endif
     for(counter=0; counter < len; counter++) {
       i1 = (double)In[counter];
       result += i1*i1;

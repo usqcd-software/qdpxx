@@ -27,7 +27,9 @@ namespace Layout
 
     /* This pragma is from Jacques... Should be OK, since each i is independent
      * no danger of concurrent writes */
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
     for(int i=0; i < nodeSites; ++i) 
     {
       Integer cc = Layout::siteCoords(nodeNumber,i)[mu];
@@ -75,7 +77,9 @@ void Set::make(const SetFunc& fun)
   // Loop over linear sites determining their color
   /* This OMP pragma added by Jacques. Should be OK since in the end 
      each value of linear is independent */
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
   for(int linear=0; linear < nodeSites; ++linear)
   {
     multi1d<int> coord = Layout::siteCoords(nodeNumber, linear);
@@ -113,8 +117,9 @@ void Set::make(const SetFunc& fun)
    * Should be OK because each subset is independent, 
    * tho the number of subsets may be small... so scope for improvement
    * from threading may be limited */
-
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
   for(int cb=0; cb < nsubset_indices; ++cb)
   {
     // Always construct the sitetables. 
