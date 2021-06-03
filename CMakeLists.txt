@@ -8,7 +8,7 @@ include(FindOpenMP)          # Gives us find_package() for OpenMP
 # I have not actually used these -- I dont know if they are needed
 #
 include(CheckIncludeFile)
-include(CheckSymbolExists)
+include(CheckFunctionExists)
 include(CheckTypeSize)
 
 # Config parameters: ARCHs - one can turn them on/off
@@ -164,7 +164,9 @@ endif()
 # Autoconf variable name backard compatibility 
 set(QDP_AC_ALIGNMENT_SIZE ${QDP_ALIGNMENT_SIZE})
 message( STATUS "QDP++: Setting alignment size to ${QDP_ALIGNMENT_SIZE}")
- 
+
+check_function_exists(strnlen HAVE_STRNLEN)
+
 # OpenMP Support hardwired now
 if( QDP_USE_OPENMP )
   find_package(OpenMP REQUIRED)
@@ -197,7 +199,6 @@ endif()
 if( QDP_USE_SSE3 ) 
   message(STATUS "QDP++: SSE3 optimizations enabled")
   set(QDP_USE_SSE2 ON)
-
 endif()
 
 # SSE2 => SSE

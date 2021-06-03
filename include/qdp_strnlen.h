@@ -5,8 +5,10 @@
 
 #include <stdlib.h>
 #include <sys/types.h>
-#include <string.h>
 
+#ifdef HAVE_STRNLEN
+#include <string.h>
+#else
 // Declare this. If it is already declared in string.h it should
 // still be ok.
 // On qcdoc it appears to have linkage but no prototype in which 
@@ -17,5 +19,6 @@
 extern "C" { 
   size_t strnlen(const char *s, size_t maxlen);
 };
+#endif
 
 #endif
