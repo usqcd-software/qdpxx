@@ -182,10 +182,10 @@ set( QDP_HDRS qdp_config.h
 		qdp_traits.h
 		qdp_word.h
 		qdp_dispatch.h
-	    qdp_scalar_specific.h
-	    qdp_parscalar_specific.h
-	    qdp_scalarvec_specific.h
-	    qdp_parscalarvec_specific.h
+	        qdp_scalar_specific.h
+	        qdp_parscalar_specific.h
+	        qdp_scalarvec_specific.h
+	        qdp_parscalarvec_specific.h
 	 	qdp_defs.h
 		qdp_scalarsite_defs.h
 		qdp_scalarvecsite_defs.h
