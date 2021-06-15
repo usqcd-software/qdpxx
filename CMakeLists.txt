@@ -285,9 +285,9 @@ configure_package_config_file(QDPXXConfig.cmake.in QDPXXConfig.cmake INSTALL_DES
 # Make the version file
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-    QDPXXVersion.cmake
+    QDPXXConfigVersion.cmake
     VERSION ${PACKAGE_VERSION}
     COMPATIBILITY AnyNewerVersion
     )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/QDPXXVersion.cmake ${CMAKE_CURRENT_BINARY_DIR}/QDPXXConfig.cmake DESTINATION lib/cmake/QDPXX)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/QDPXXConfigVersion.cmake ${CMAKE_CURRENT_BINARY_DIR}/QDPXXConfig.cmake DESTINATION lib/cmake/QDPXX)
