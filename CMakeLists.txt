@@ -166,6 +166,7 @@ set(QDP_AC_ALIGNMENT_SIZE ${QDP_ALIGNMENT_SIZE})
 message( STATUS "QDP++: Setting alignment size to ${QDP_ALIGNMENT_SIZE}")
 
 check_function_exists(strnlen HAVE_STRNLEN)
+check_function_exists(gethostname HAVE_GETHOSTNAME)
 
 # OpenMP Support hardwired now
 if( QDP_USE_OPENMP )

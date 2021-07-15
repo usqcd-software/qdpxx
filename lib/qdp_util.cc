@@ -8,14 +8,12 @@
 #include <unistd.h>
 
 #include "qdp.h"
-
+#include "qdp_config.h"
 
 // QCDOC Hack. QCDOC doesn't have gethostname(char *hostname, size_t size)
 // Must provide a suitable stub
 #ifndef HAVE_GETHOSTNAME
-
 #include "qdp_strnlen.h"
-
 int gethostname(char *hostname, size_t size)
 {
    const char my_host_name[]{"node"};
