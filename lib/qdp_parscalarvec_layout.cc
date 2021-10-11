@@ -47,7 +47,7 @@ namespace QDP
     struct LocalLayout_t
     {
       //! Total lattice volume
-      int vol;
+      size_t vol;
 
       //! Lattice size
       multi1d<int> nrow;
@@ -96,7 +96,7 @@ namespace QDP
     const multi1d<int>& lattSize() {return _layout.nrow;}
 
     //! Total lattice volume
-    int vol() {return _layout.vol;}
+    size_t vol() {return _layout.vol;}
 
     //! Subgrid lattice volume
     int sitesOnNode() {return _layout.subgrid_vol;}
