@@ -37,13 +37,13 @@ int main(int argc, char *argv[])
   // Scalar versions 
 
   // ColorMatrix 
-  OScalar<PScalar<PColorMatrix< RComplex<REAL>, 3 > > > u, u2, u3;
+  OScalar<PScalar<PColorMatrix< RComplex<REAL>, Nc > > > u, u2, u3;
 
   // Fermion
-  OScalar<PSpinVector<PColorVector< RComplex<REAL>, 3>, 4> >  v,v2,v3,diff_v;
+  OScalar<PSpinVector<PColorVector< RComplex<REAL>, Nc>, Ns> >  v,v2,v3,diff_v;
 
   // HalfFermion
-  OScalar<PSpinVector<PColorVector< RComplex<REAL>, 3>, 2> > hv,hv2,hv3,diff_hv QDP_ALIGN16;
+  OScalar<PSpinVector<PColorVector< RComplex<REAL>, Nc>, Ns/2> > hv,hv2,hv3,diff_hv QDP_ALIGN16;
 
   u.elem() = u_lat.elem(0);
   u2.elem() = u_lat.elem(1);
