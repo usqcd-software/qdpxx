@@ -384,17 +384,12 @@ int main(int argc, char *argv[])
       printList(*ofl,BinaryFunction(),binaryLeftOps,userClasses,scalars1);
       printList(*ofl,BinaryFunction(),binaryOps,scalars2,userClasses);
 
-      printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
-		userClasses,scalars1);
-      printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
-		scalars1,userClasses);
-      printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
-		scalars1,scalars1);
+      //printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,userClasses,scalars1);
+      //printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,scalars1,userClasses);
+      //printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,scalars1,scalars1);
 
-      printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,
-		userClasses,scalars2);
-      printList(*ofl,TrinaryFunction(),trinaryOps,scalars3,
-		scalars3,userClasses);
+      //printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,userClasses,scalars2);
+      //printList(*ofl,TrinaryFunction(),trinaryOps,scalars3,scalars3,userClasses);
     }
     else
     {
@@ -503,29 +498,19 @@ int main(int argc, char *argv[])
 		    expressionClass, scalars1);
 	  printList(*ofl,BinaryFunction(),binaryOps,scalars2,expressionClass);
 
-	  printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,
-		    userClasses,scalars1);
-	  printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,
-		    scalars1,userClasses);
-	  printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,
-		    scalars1,scalars1);
+	  // printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,userClasses,scalars1);
+	  // printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,scalars1,userClasses);
+	  // printList(*ofl,TrinaryFunction(),trinaryOps,expressionClass,scalars1,scalars1);
 
-	  printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
-		    expressionClass,scalars1);
-	  printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,
-		    scalars1,expressionClass);
+	  // printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,expressionClass,scalars1);
+	  // printList(*ofl,TrinaryFunction(),trinaryOps,userClasses,scalars1,expressionClass);
 
-	  printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,
-		    expressionClass,userClasses);
-	  printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,
-		    userClasses,expressionClass);
-	  printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,
-		    expressionClass,expressionClass);
+	  // printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,expressionClass,userClasses);
+	  // printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,userClasses,expressionClass);
+	  // printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,expressionClass,expressionClass);
 
-	  printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,
-		    expressionClass,scalars2);
-	  printList(*ofl,TrinaryFunction(),trinaryOps,scalars3,
-		    scalars3,expressionClass);
+	  // printList(*ofl,TrinaryFunction(),trinaryOps,scalars2,expressionClass,scalars2);
+	  // printList(*ofl,TrinaryFunction(),trinaryOps,scalars3,scalars3,expressionClass);
 	}
 #endif
 	
