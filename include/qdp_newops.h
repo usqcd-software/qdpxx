@@ -254,7 +254,8 @@ peekSpin(const QDPType<T1,C1> & l, int row, int col)
 
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnPeekSpinMatrix,
-  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnPeekSpinMatrix>::Type_t>::Expression_t
 peekSpin(const QDPExpr<T1,C1> & l, int row, int col)
 {
   typedef UnaryNode<FnPeekSpinMatrix,
@@ -303,7 +304,8 @@ peekSpin(const QDPType<T1,C1> & l, int row)
 
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnPeekSpinVector,
-  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnPeekSpinVector>::Type_t >::Expression_t
 peekSpin(const QDPExpr<T1,C1> & l, int row)
 {
   typedef UnaryNode<FnPeekSpinVector,
