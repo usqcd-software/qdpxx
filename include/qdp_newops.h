@@ -157,7 +157,8 @@ peekColor(const QDPType<T1,C1> & l, int row, int col)
 
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnPeekColorMatrix,
-  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnPeekColorMatrix >::Type_t>::Expression_t
 peekColor(const QDPExpr<T1,C1> & l, int row, int col)
 {
   typedef UnaryNode<FnPeekColorMatrix,
@@ -206,7 +207,8 @@ peekColor(const QDPType<T1,C1> & l, int row)
 
 template<class T1,class C1>
 inline typename MakeReturn<UnaryNode<FnPeekColorVector,
-  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>, C1>::Expression_t
+  typename CreateLeaf<QDPExpr<T1,C1> >::Leaf_t>,
+  typename UnaryReturn<C1,FnPeekColorVector >::Type_t >::Expression_t
 peekColor(const QDPExpr<T1,C1> & l, int row)
 {
   typedef UnaryNode<FnPeekColorVector,
