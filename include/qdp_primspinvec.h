@@ -986,6 +986,9 @@ struct BinaryReturn<GammaTypeDP<N>, PSpinVector<T2,N>, OpGammaTypeDPMultiply> {
   typedef PSpinVector<typename UnaryReturn<T2, OpUnaryPlus>::Type_t, N>  Type_t;
 };
 
+
+
+
 // Generic Spin projection
 template<class T, int N>
 struct UnaryReturn<PSpinVector<T,N>, FnSpinProject > {
@@ -1137,6 +1140,17 @@ pokeSpin(PSpinVector<T1,N>& l, const PScalar<T2>& r, int row)
   // Note, do not need to propagate down since the function is eaten at this level
   l.elem(row) = r.elem();
   return l;
+}
+
+
+
+template<class T2>
+inline typename BinaryReturn<GammaConst<4,0>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t
+operator*(const GammaType<4>& g, const PSpinVector<T2,4>& r)
+{
+  typename BinaryReturn<GammaConst<4,0>, PSpinVector<T2,4>, OpGammaConstMultiply>::Type_t  d;
+
+  return OpGammaTypeMultiply()( g , r );
 }
 
 

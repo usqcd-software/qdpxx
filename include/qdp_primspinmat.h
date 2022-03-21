@@ -578,6 +578,48 @@ pokeSpin(PSpinMatrix<T1,N>& l, const PScalar<T2>& r, int row, int col)
 
 //-----------------------------------------------
 
+
+template<class T2>
+inline typename BinaryReturn<GammaConst<4,0>, PSpinMatrix<T2,4>, OpGammaConstMultiply>::Type_t
+operator*(const GammaType<4>& g, const PSpinMatrix<T2,4>& r)
+{
+  typename BinaryReturn<GammaConst<4,0>, PSpinMatrix<T2,4>, OpGammaConstMultiply>::Type_t  d;
+
+  return OpGammaTypeMultiply()( g , r );
+}
+
+
+template<class T2>
+inline typename BinaryReturn<GammaConst<4,0>, PSpinMatrix<T2,4>, OpGammaConstMultiply>::Type_t
+operator*(const PSpinMatrix<T2,4>& r, const GammaType<4>& g)
+{
+  typename BinaryReturn<GammaConst<4,0>, PSpinMatrix<T2,4>, OpGammaConstMultiply>::Type_t  d;
+
+  return OpMultiplyGammaType()( r , g );
+}
+
+
+template<class T2>
+inline typename BinaryReturn<GammaConst<4,0>, PSpinMatrix<T2,4>, OpGammaConstMultiply>::Type_t
+operator*(const GammaTypeDP<4>& g, const PSpinMatrix<T2,4>& r)
+{
+  typename BinaryReturn<GammaConst<4,0>, PSpinMatrix<T2,4>, OpGammaConstMultiply>::Type_t  d;
+
+  return OpGammaTypeDPMultiply()( g , r );
+}
+
+
+template<class T2>
+inline typename BinaryReturn<GammaConst<4,0>, PSpinMatrix<T2,4>, OpGammaConstMultiply>::Type_t
+operator*(const PSpinMatrix<T2,4>& r, const GammaTypeDP<4>& g)
+{
+  typename BinaryReturn<GammaConst<4,0>, PSpinMatrix<T2,4>, OpGammaConstMultiply>::Type_t  d;
+
+  return OpMultiplyGammaTypeDP()( r , g );
+}
+
+
+
 // SpinMatrix<4> = Gamma<4,m> * SpinMatrix<4>
 // There are 16 cases here for Nd=4
 template<class T2>
