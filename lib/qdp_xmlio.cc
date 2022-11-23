@@ -306,6 +306,33 @@ namespace QDP
     xml.get(xpath, result);
   }
    
+  //! Complex reader
+  void read(XMLReader& xml, const std::string& xpath, std::complex<float>& param)
+  {
+    // NOTE: the C++-11 standard says a "real()" function returns a r-value - not an "l-value", so
+    // cannot simply read into a param.real()
+    XMLReader paramtop(xml, xpath);
+    
+    float re, im;
+    read(paramtop, "re", re);
+    read(paramtop, "im", im);
+    param = std::complex<float>(re,im);
+  }
+
+  
+  void read(XMLReader& xml, const std::string& xpath, std::complex<double>& param)
+  {
+    // NOTE: the C++-11 standard says a "real()" function returns a r-value - not an "l-value", so
+    // cannot simply read into a param.real()
+    XMLReader paramtop(xml, xpath);
+    
+    double re, im;
+    read(paramtop, "re", re);
+    read(paramtop, "im", im);
+    param = std::complex<double>(re,im);
+  }
+
+
 
   //! Read a XML multi1d element
   template<typename T>
@@ -884,6 +911,26 @@ namespace QDP
     xml << output.str();
     xml.closeTag();
   }
+
+
+  //! Complex writer
+  void write(XMLWriter& xml, const std::string& xpath, const std::complex<float>& param)
+  {
+    push(xml, xpath);
+    write(xml, "re", param.real());
+    write(xml, "im", param.imag());
+    pop(xml);
+  }
+
+  
+  void write(XMLWriter& xml, const std::string& xpath, const std::complex<double>& param)
+  {
+    push(xml, xpath);
+    write(xml, "re", param.real());
+    write(xml, "im", param.imag());
+    pop(xml);
+  }
+
 
 
   template<>

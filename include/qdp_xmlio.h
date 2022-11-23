@@ -13,6 +13,7 @@
 #include <list>
 #include <vector>
 #include <map>
+#include <complex>
 
 #include "xml_simplewriter.h"
 #include "basic_xpath_reader.h"
