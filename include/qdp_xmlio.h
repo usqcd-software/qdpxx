@@ -177,26 +177,20 @@ namespace QDP
   // Time to build a telephone book of basic primitives
   //! Xpath query
   void read(XMLReader& xml, const std::string& s, std::string& input);
-  //! Xpath query
   void read(XMLReader& xml, const std::string& s, char& input);
-  //! Xpath query
   void read(XMLReader& xml, const std::string& s, int& input);
-  //! Xpath query
   void read(XMLReader& xml, const std::string& s, unsigned int& input);
-  //! Xpath query
   void read(XMLReader& xml, const std::string& s, short int& input);
-  //! Xpath query
   void read(XMLReader& xml, const std::string& s, unsigned short int& input);
-  //! Xpath query
   void read(XMLReader& xml, const std::string& s, long int& input);
-  //! Xpath query
   void read(XMLReader& xml, const std::string& s, unsigned long int& input);
-  //! Xpath query
   void read(XMLReader& xml, const std::string& s, float& input);
-  //! Xpath query
   void read(XMLReader& xml, const std::string& s, double& input);
-  //! Xpath query
   void read(XMLReader& xml, const std::string& s, bool& input);
+
+  //! Complex reader
+  void read(XMLReader& xml, const std::string& s, std::complex<float>& param);
+  void read(XMLReader& xml, const std::string& s, std::complex<double>& param);
 
 
   //! Read a XML multi1d element
@@ -724,6 +718,11 @@ namespace QDP
     \param output The  contents
   */
   void write(XMLWriter& xml, const std::string& s, const bool& output);
+
+  //! Complex writer
+  void write(XMLWriter& xml, const std::string& s, const std::complex<float>& param);
+  void write(XMLWriter& xml, const std::string& s, const std::complex<double>& param);
+  
 
   // Versions that do not print a name
   XMLWriter& operator<<(XMLWriter& xml, const std::string& output);
