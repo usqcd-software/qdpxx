@@ -4,6 +4,7 @@
 
 #include "qdp.h"
 #include "qdp_util.h"
+#include <algorithm>
 
 namespace QDP 
 {
@@ -62,13 +63,11 @@ namespace QDP
   public:
     int operator() (const multi1d<int>& coordinate) const
       {
-	if (coordinate.size() < 3) { 
-	  QDPIO::cerr << "Need at least 3d for 3d checkerboarding" << std::endl;
-	  QDP_abort(1);
-	}
+        int N = std::min(3,coordinate.size());
+
 	int sum = 0;
-	for(int m=0; m < 3; ++m)
-	  sum += coordinate[m];
+	for(int m=0; m < N; ++m)
+	    sum += coordinate[m];
 
 	return sum & 1;
       }
