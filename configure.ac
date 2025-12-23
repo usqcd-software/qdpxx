@@ -680,7 +680,7 @@ AC_ARG_ENABLE(openmp,
     [--enable-openmp],
     [Enable building of OpenMP dispatcher. Pass flags necessary for OpenMP on CFLAGS]
    ),
-   [ omp_enabled="yes" ],
+   [ omp_enabled="${enableval}" ],
    [ omp_enabled="no" ]
 )
 dnl OpenMP Threads stuff
