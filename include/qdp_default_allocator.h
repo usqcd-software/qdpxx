@@ -47,11 +47,14 @@ namespace QDP
     T* new_aligned(std::size_t n)
     {
       if (n == 0)
-	return nullptr;
-      T* p =
-	(T*)aligned_alloc(std::max((std::size_t)QDP_ALIGNMENT_SIZE, alignof(T)), sizeof(T) * n);
+        return nullptr;
+      std::size_t alignment =
+          std::max((std::size_t)QDP_ALIGNMENT_SIZE, alignof(T));
+      std::size_t size =
+          (sizeof(T) * n + alignment - 1ul) / alignment * alignment;
+      T *p = (T *)aligned_alloc(alignment, size);
       if (p == nullptr)
-	QDP_error_exit("Bad allocation! Currently there are %g MiB allocated",
+        QDP_error_exit("Bad allocation! Currently there are %g MiB allocated",
 		       (double)detail::getCurrentlyAllocated() / 1024 / 1024);
       detail::getCurrentlyAllocated() += sizeof(T) * n;
       new (p) T[n];
