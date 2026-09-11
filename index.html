@@ -1,66 +1,40 @@
 <!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>QDP++ by usqcd-software</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>QDP++</h1>
-        <p>The QDP++ Framework for Lattice QCD</p>
-
-        <p class="view"><a href="https://github.com/usqcd-software/qdpxx">View the Project on GitHub <small>usqcd-software/qdpxx</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/usqcd-software/qdpxx/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/usqcd-software/qdpxx/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/usqcd-software/qdpxx">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <p>The QDP++ interface provides a data-parallel programming environment suitable for Lattice QCD where operations in operator/infix form can be applied on lattice wide objects. The interface provides a level of abstraction such that high-level user code written above the interface can be run unchanged on a single processor workstation or a collection of multiprocessor nodes with parallel communications. Architectural dependencies are hidden below the interface. A variety of types for the site elements are provided. To achieve good performance, overlapping communication and computation primitives are provided.</p>
-
-<h2>
-<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h2>
-
-<p>In order to build QDP++ you will need</p>
-
-<ul>
-<li>to have the libxml2 development library installed. If you don't have this, and don't have a package for your OS, you can build it from this copy of the source or you can try downloading it from The LibXML web page On a QCDOC a hacked version is needed, the source for which is here. On Linux and Cygwin Systems there is a package for libxml2. On RedHat systems it is called "libxml2-devel".</li>
-<li>if you want to work on a parallel machine, you will need to have the QMP Message Passing Harness installed. The current version of the source for QMP is <a href="https://github.com/usqcd-software/qmp">QMP</a>
-</li>
-<li>if you want to work on the BlueGene you may want some of the optimizations from bagel_qdp  (link here). For this you will also need the BAGEL assembler generator package from Peter Boyle and agree to all his requests on his web page.</li>
-</ul><h2>
-<a name="documentation-and-user-information" class="anchor" href="#documentation-and-user-information"><span class="octicon octicon-link"></span></a>Documentation and User Information</h2>
-
-<p>Here is the current <a href="https://github.com/usqcd-software/qdpxx/blob/gh-pages/manual.pdf">pdf</a> version of the manual, and there is also an <a href="https://github.com/usqcd-software/qdpxx/blob/gh-pages/index.html">html</a> version. There is documentation produced by doxygen. A <a href="https://github.com/usqcd-software/qdpxx/tree/gh-pages/usr/html/index.html">user guide</a> is also available.</p>
-
-<h2>
-<a name="references" class="anchor" href="#references"><span class="octicon octicon-link"></span></a>References</h2>
-
-<p>The reference is R. G. Edwards, B. Joó, "The Chroma Soft ware System for Lattice QCD", <a href="http://inspirehep.net/record/658088">arXiv:hep-lat/0409003</a>, Proceedings of the 22nd International Symposium for Lattice Field Theory (Lattice2004), Nucl. Phys B1 40 (Proc. Suppl) p832, 2005. This paper describes QDP++ as well as the <a href="http://jeffersonlab.github.io/chroma">Chroma</a> code that uses it. Please cite (at least) this paper in publications that use the code.</p>
-
-<h2>
-<a name="developer-information" class="anchor" href="#developer-information"><span class="octicon octicon-link"></span></a>Developer Information</h2>
-
-<p>The motivation for this development comes from the U.S. Dept. of Energy <a href="http://www.scidac.gov">SciDAC</a> program. See the <a href="http://www.usqcd.org">USQCD</a> home pages for more details.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="http://usqcd-software.github.io">usqcd-software</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QDP++ — Lattice QCD framework</title>
+<meta name="description" content="QDP++ is a data-parallel C++ framework for lattice QCD. Read the reference manual, browse the user guide, and get the source code.">
+<link rel="stylesheet" href="stylesheets/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrapper">
+<header class="masthead"><a class="brand" href="./" aria-label="QDP++ home">QDP<span>++</span></a><a href="https://github.com/usqcd-software/qdpxx">Source on GitHub ↗</a></header>
+<main id="main">
+<div class="intro"><p class="eyebrow">USQCD SOFTWARE</p><h1>The QDP++ framework<br>for lattice QCD.</h1><p class="lead">Data-parallel computing in C++, from a single workstation to parallel systems.</p>
+<nav aria-label="Project resources"><a href="#documentation-and-user-information">Read the documentation</a><a href="https://github.com/usqcd-software/qdpxx/zipball/master">Download ZIP</a><a href="https://github.com/usqcd-software/qdpxx/tarball/master">Download tarball</a></nav></div>
+<section id="documentation-and-user-information" aria-labelledby="docs-title">
+<h2 id="docs-title">Documentation</h2>
+<div class="documents">
+<a class="document" href="manual.html"><span class="format">HTML</span><strong>Reference manual</strong><span>Read the QDP++ interface and operations reference.</span></a>
+<a class="document" href="manual.pdf"><span class="format">PDF</span><strong>Manual PDF</strong><span>Open the manual for reading, printing, or saving.</span></a>
+<a class="document" href="usr/html/index.html"><span class="format">GUIDE</span><strong>User guide</strong><span>Browse the Doxygen guide to building and using QDP++.</span></a>
+</div>
+</section>
+<section id="overview"><h2>A data-parallel interface for lattice QCD</h2>
+<p>QDP++ provides a C++ programming environment for lattice QCD. Express operations on lattice-wide objects with familiar operators, while the framework handles the underlying architecture.</p>
+<p>High-level code can run unchanged on a single-processor workstation or across multiprocessor nodes with parallel communications. The interface supplies a variety of site-element types and primitives for overlapping communication and computation.</p></section>
+<section id="dependencies"><h2>Dependencies</h2>
+<ul><li><strong>libxml2 development library.</strong> Install the development package provided by your operating system.</li>
+<li><strong>QMP for parallel execution.</strong> Install the <a href="https://github.com/usqcd-software/qmp">QMP message-passing library</a> when building for a parallel machine.</li></ul>
+<p>See the <a href="usr/html/buildpage.html">build instructions</a> in the user guide for configuration details.</p></section>
+<section id="references"><h2>Citing QDP++</h2>
+<p>Please cite R. G. Edwards and B. Joó, <cite>“The Chroma Software System for Lattice QCD”</cite>, <a href="https://arxiv.org/abs/hep-lat/0409003">arXiv:hep-lat/0409003</a>, in publications that use this code. The paper describes QDP++ and the <a href="https://jeffersonlab.github.io/chroma/">Chroma</a> software system.</p></section>
+<section id="developer-information"><h2>About the project</h2>
+<p>QDP++ development grew out of the U.S. Department of Energy’s <a href="https://www.scidac.gov/">SciDAC</a> program. Visit <a href="https://www.usqcd.org/">USQCD</a> for more about the collaboration and its software.</p></section>
+</main>
+<footer>Maintained by <a href="https://github.com/usqcd-software">usqcd-software</a><span>Hosted on GitHub Pages</span></footer>
+</div>
+</body>
 </html>
