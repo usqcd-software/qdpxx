@@ -1,0 +1,231 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.6.7)  22 JAN 2026 13:56
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**quick_ref
+(./quick_ref.tex
+LaTeX2e <2021-11-15> patch level 1
+L3 programming layer <2022-02-24>
+(/usr/local/texlive/2022/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
+(/usr/local/texlive/2022/texmf-dist/tex/latex/base/size12.clo
+File: size12.clo 2021/10/04 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count185
+\c@section=\count186
+\c@subsection=\count187
+\c@subsubsection=\count188
+\c@paragraph=\count189
+\c@subparagraph=\count190
+\c@figure=\count191
+\c@table=\count192
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen138
+)
+(/usr/local/texlive/2022/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2022-02-07 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count193
+\l__pdf_internal_box=\box50
+)
+(./quick_ref.aux)
+\openout1 = `quick_ref.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+
+Overfull \hbox (29.50523pt too wide) in paragraph at lines 64--64
+[]\OT1/cmtt/m/n/12 Set::Make(int func(),int num) : Set construction of ordinali
+ty num subsets.[] 
+ []
+
+
+Overfull \hbox (48.03024pt too wide) in paragraph at lines 64--64
+[]                                \OT1/cmtt/m/n/12 func maps coordinates to a c
+oloring in [0,num)[] 
+ []
+
+[1
+
+{/usr/local/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Overfull \hbox (23.33023pt too wide) in paragraph at lines 119--119
+[]\OT1/cmtt/m/n/12 where(bool,arg1,arg2) : the C trinary "?" operator -> (bool)
+ ? arg1 : arg2[] 
+ []
+
+[2]
+Overfull \hbox (4.80522pt too wide) in paragraph at lines 197--197
+[]\OT1/cmtt/m/n/12 sumMulti(arg1,Set)      : sum over each subset of Set return
+ing #subset[] 
+ []
+
+
+Overfull \hbox (60.38025pt too wide) in paragraph at lines 218--218
+[]\OT1/cmtt/m/n/12 peekSite(arg1,multi1d<int> coords): return site object of pr
+imitive type of arg1[] 
+ []
+
+
+Overfull \hbox (85.08026pt too wide) in paragraph at lines 218--218
+[]\OT1/cmtt/m/n/12 peekColor(arg1,int row,int col)   : return object from color
+ matrix elem row and col[] 
+ []
+
+
+Overfull \hbox (35.68024pt too wide) in paragraph at lines 218--218
+[]\OT1/cmtt/m/n/12 peekColor(arg1,int row)           : return object from color
+ vector elem row[] 
+ []
+
+
+Overfull \hbox (78.90526pt too wide) in paragraph at lines 218--218
+[]\OT1/cmtt/m/n/12 peekSpin(arg1,int row,int col )   : return object from spin 
+matrix elem row and col[] 
+ []
+
+
+Overfull \hbox (29.50523pt too wide) in paragraph at lines 218--218
+[]\OT1/cmtt/m/n/12 peekSpin(arg1,int row)            : return object from spin 
+vector elem row[] 
+ []
+
+
+Overfull \hbox (23.33023pt too wide) in paragraph at lines 218--218
+[]\OT1/cmtt/m/n/12 pokeSite(dest,src,multi1d<int> coords): insert src at site g
+iven by coords[] 
+ []
+
+
+Overfull \hbox (91.25526pt too wide) in paragraph at lines 218--218
+[]\OT1/cmtt/m/n/12 pokeColor(dest,src,int row,int col)   : insert src into colo
+r matrix elem row and col[] 
+ []
+
+
+Overfull \hbox (41.85524pt too wide) in paragraph at lines 218--218
+[]\OT1/cmtt/m/n/12 pokeColor(dest,src,int row)           : insert src into colo
+r vector elem row[] 
+ []
+
+[3]
+Overfull \hbox (85.08026pt too wide) in paragraph at lines 218--218
+[]\OT1/cmtt/m/n/12 pokeSpin(dest,src,int row,int col )   : insert src into spin
+ matrix elem row and col[] 
+ []
+
+
+Overfull \hbox (35.68024pt too wide) in paragraph at lines 218--218
+[]\OT1/cmtt/m/n/12 pokeSpin(dest,src,int row)            : insert src into spin
+ vector elem row[] 
+ []
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 231.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 231.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 231.
+[4] [5]
+Overfull \hbox (17.15523pt too wide) in paragraph at lines 376--376
+[]\OT1/cmtt/m/n/12 typedef OLattice<PScalar<ColorMatrix<Complex<float>, Nc> > >
+ LatticeGauge[] 
+ []
+
+
+Overfull \hbox (66.55525pt too wide) in paragraph at lines 376--376
+[]\OT1/cmtt/m/n/12 typedef OLattice<SpinVector<ColorVector<Complex<float>, Nc>,
+ Ns> > LatticeFermion[] 
+ []
+
+[6]
+Overfull \hbox (13.53522pt too wide) in paragraph at lines 408--420
+\OT1/cmr/m/it/12 Binary\OT1/cmr/m/n/12 : \OT1/cmtt/m/n/12 -(PMatrix,PMatrix)\OT
+1/cmr/m/n/12 , \OT1/cmtt/m/n/12 +(PMatrix,PMatrix)\OT1/cmr/m/n/12 , \OT1/cmtt/m
+/n/12 *(PMatrix,PScalar)\OT1/cmr/m/n/12 ,
+ []
+
+
+Overfull \hbox (45.4799pt too wide) in paragraph at lines 408--420
+\OT1/cmr/m/it/12 Assignments\OT1/cmr/m/n/12 : \OT1/cmtt/m/n/12 =(PMatrix)\OT1/c
+mr/m/n/12 , \OT1/cmtt/m/n/12 =(PScalar)\OT1/cmr/m/n/12 , \OT1/cmtt/m/n/12 -=(PM
+atrix)\OT1/cmr/m/n/12 , \OT1/cmtt/m/n/12 +=(PMatrix)\OT1/cmr/m/n/12 , \OT1/cmtt
+/m/n/12 *=(PScalar) 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 408--420
+
+ []
+
+
+Overfull \hbox (13.53522pt too wide) in paragraph at lines 422--435
+\OT1/cmr/m/it/12 Binary\OT1/cmr/m/n/12 : \OT1/cmtt/m/n/12 -(PVector,PVector)\OT
+1/cmr/m/n/12 , \OT1/cmtt/m/n/12 +(PVector,PVector)\OT1/cmr/m/n/12 , \OT1/cmtt/m
+/n/12 *(PVector,PScalar)\OT1/cmr/m/n/12 ,
+ []
+
+
+Overfull \hbox (2.43126pt too wide) in paragraph at lines 422--435
+\OT1/cmr/m/it/12 QDP funcs\OT1/cmr/m/n/12 : \OT1/cmtt/m/n/12 real\OT1/cmr/m/n/1
+2 , \OT1/cmtt/m/n/12 imag\OT1/cmr/m/n/12 , \OT1/cmtt/m/n/12 multiplyI\OT1/cmr/m
+/n/12 , \OT1/cmtt/m/n/12 multiplyMinusI\OT1/cmr/m/n/12 , \OT1/cmtt/m/n/12 local
+Norm2\OT1/cmr/m/n/12 , \OT1/cmtt/m/n/12 cmplx\OT1/cmr/m/n/12 ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 422--435
+
+ []
+
+[7]
+Overfull \hbox (35.68024pt too wide) in paragraph at lines 484--484
+[]\OT1/cmtt/m/n/12 LatticeFermion foo = 1.0;     // illegal, operator=(PVector,
+PScalar) missing[] 
+ []
+
+
+Overfull \hbox (35.68024pt too wide) in paragraph at lines 500--500
+[]\OT1/cmtt/m/n/12 LatticeColorMatrix, LatticeColorVector, LatticeSpinMatrix, L
+atticeSpinVector[] 
+ []
+
+[8] [9] (./quick_ref.aux) ) 
+Here is how much of TeX's memory you used:
+ 444 strings out of 478268
+ 7976 string characters out of 5846348
+ 309041 words of memory out of 5000000
+ 18721 multiletter control sequences out of 15000+600000
+ 474725 words of font info for 46 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 33i,6n,38p,164b,259s stack positions out of 10000i,1000n,20000p,200000b,200000s
+{/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/
+cm-super/cm-super-ts1.enc}</usr/local/texlive/2022/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmbxti10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmr12.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmsy10.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmsy6.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmti12.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmtt12.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/public/cm-super
+/sfrm1200.pfb>
+Output written on quick_ref.pdf (9 pages, 139315 bytes).
+PDF statistics:
+ 85 PDF objects out of 1000 (max. 8388607)
+ 53 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
