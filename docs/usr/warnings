@@ -1,0 +1,22 @@
+/Users/admin/Downloads/qdpxx.master/docs/usr/implementation.dox:162: warning: multiple use of section label 'Unary' while adding section, (first occurrence: /Users/admin/Downloads/qdpxx.master/docs/usr/implementation.dox, line 81)
+/Users/admin/Downloads/qdpxx.master/docs/usr/implementation.dox:181: warning: multiple use of section label 'Binary' while adding section, (first occurrence: /Users/admin/Downloads/qdpxx.master/docs/usr/implementation.dox, line 94)
+/Users/admin/Downloads/qdpxx.master/docs/usr/implementation.dox:191: warning: multiple use of section label 'Unary' while adding section, (first occurrence: /Users/admin/Downloads/qdpxx.master/docs/usr/implementation.dox, line 81)
+/Users/admin/Downloads/qdpxx.master/docs/usr/implementation.dox:218: warning: multiple use of section label 'Binary' while adding section, (first occurrence: /Users/admin/Downloads/qdpxx.master/docs/usr/implementation.dox, line 94)
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:69: warning: explicit link request to 'get_node_number' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:69: warning: explicit link request to 'get_node_index' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:69: warning: explicit link request to 'get_coords' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:71: warning: explicit link request to 'get_node_number' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:72: warning: explicit link request to 'get_node_index' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:73: warning: explicit link request to 'get_coords' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:114: warning: unable to resolve reference to 'sitelist' for \ref command
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:154: warning: explicit link request to 'QDPOLatticeFactoryGet<T>' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:154: warning: explicit link request to 'QDPOLatticeFactoryGetArray<T>' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:221: warning: explicit link request to 'DML_write_buf_next' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:221: warning: explicit link request to 'DML_seek_write_buf' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:256: warning: explicit link request to 'DML_layout::master_io_node' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:275: warning: unable to resolve reference to 'multifilenamesec' for \ref command
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:303: warning: explicit link request to 'QDPOLatticeFactoryPut' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:304: warning: explicit link request to 'QDPOLatticeFactoryGet' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:320: warning: explicit link request to 'QIO_get_global_data' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:348: warning: explicit link request to 'LRL_read_buf_next' could not be resolved
+/Users/admin/Downloads/qdpxx.master/docs/usr/qiodetail.dox:348: warning: explicit link request to 'LRL_seek_read_buf' could not be resolved

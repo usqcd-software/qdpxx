@@ -1,0 +1,96 @@
+\_form#0=9x10:$\otimes$
+\_form#1=129x16:\[{\rm B}_\alpha^{i}(x) = {\rm U}^{i j}(x) * {\rm A}_\alpha^{j}(x)
+\]
+\_form#2=8x6:$\alpha$
+\_form#3=9x9:$\gamma$
+\_form#4=15x9:$\pm 1$
+\_form#5=9x9:$\mu$
+\_form#6=86x14:$ r(x) = a(x+\hat \mu)$
+\_form#7=14x10:$\gamma_\mu$
+\_form#8=243x20:\[\mathrm{target}^{k' k}_{\alpha\beta} =
+ \epsilon^{i j k}\epsilon^{i' j' k'}* \mbox{source1}^{i i'}_{\rho\alpha}* \mbox{source2}^{j j'}_{\rho\beta}\]
+\_form#9=243x20:\[\mbox{target}^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*\mbox{source1}^{i i'}_{\rho\alpha}*\mbox{source2}^{j j'}_{\beta\rho}\]
+\_form#10=243x20:\[\mbox{target}^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*\mbox{source1}^{i
+    i'}_{\alpha\rho}*\mbox{source2}^{j j'}_{\rho\beta}\]
+\_form#11=241x20:\[\mbox{target}^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*\mbox{source1}^{i
+    i'}_{\rho\rho}*\mbox{source2}^{j j'}_{\alpha\beta}\]
+\_form#12=243x19:\[\mbox{target}^{k' k}_{\alpha\beta} =
+    \epsilon^{i j k}\epsilon^{i' j' k'}*\mbox{source1}^{i i'}_{\alpha\beta}*\mbox{source2}^{j j'}_{\rho\rho}\]
+\_form#13=293x16:\[\mbox{target} =
+  \epsilon^{i j k}\epsilon^{i' j' k'}* \mbox{source1}^{i i'}* \mbox{source2}^{j j'}*\mbox{source3}^{k k'}
+\]
+\_form#14=240x15:\[\mbox{target} =
+ \epsilon^{i j k}* \mbox{source1}^{i}* \mbox{source2}^{j}*\mbox{source3}^{k}
+\]
+\_form#15=80x14:$r = (1 + p\gamma_d)a$
+\_form#16=54x9:$r = \gamma_d * a$
+\_form#17=54x9:$r = a * \gamma_d$
+\_form#18=58x15:$r = \sum |a|^2$
+\_form#19=65x15:$r = \sum a^\dagger \cdot b$
+\_form#20=45x14:$r = \sum a$
+\_form#21=78x14:$r = max_x a(x)$
+\_form#22=75x14:$r = min_x a(x)$
+\_form#23=363x240:\[\begin{array}{lccc}
+\gamma_0\quad\quad&
+ \left(\begin{array}{rrrr}
+   0&0&0&i\\
+   0&0&i&0\\
+   0&-i&0&0\\
+   -i&0&0&0\\
+ \end{array}\right)\quad &
+ \left(\begin{array}{rr}
+   0&i\sigma^1\\
+   -i\sigma^1&0
+ \end{array}\right)\quad\quad &
+ -\sigma^2\!\otimes\!\sigma^1\\
+\gamma_1\quad\quad&
+ \left(\begin{array}{rrrr}
+   0&0&0&-1\\
+   0&0&1&0\\
+   0&1&0&0\\
+   -1&0&0&0\\
+ \end{array}\right)\quad &
+ \left(\begin{array}{rr}
+   0&-i\sigma^2\\
+   i\sigma^2&0
+ \end{array}\right)\quad\quad &
+ \sigma^2\!\otimes\!\sigma^2\\
+\gamma_2\quad\quad&
+ \left(\begin{array}{rrrr}
+   0&0&i&0\\
+   0&0&0&-i\\
+   -i&0&0&0\\
+   0&i&0&0\\
+ \end{array}\right)\quad &
+ \left(\begin{array}{rr}
+   0&i\sigma^3\\
+   -i\sigma^3&0
+ \end{array}\right)\quad\quad &
+ -\sigma^2\!\otimes\!\sigma^3\\
+\gamma_3\quad\quad&
+ \left(\begin{array}{rrrr}
+   0&0&1&0\\
+   0&0&0&1\\
+   1&0&0&0\\
+   0&1&0&0\\
+ \end{array}\right)\quad &
+ \left(\begin{array}{rr}
+   0&\mathbf{1}\\
+   \mathbf{1}&0
+ \end{array}\right)\quad\quad &
+ \sigma^1\!\otimes\!1\\
+\end{array}
+\]
+\_form#24=115x14:\[\Gamma(n) = \gamma_0^{n_0} \gamma_1^{n_1} \gamma_2^{n_2} \gamma_3^{n_3}
+\]
+\_form#25=13x9:$\gamma_0$
+\_form#26=78x9:$\gamma_5 = \gamma_0\gamma_1\gamma_2\gamma_3$
+\_form#27=36x9:$\gamma_0\gamma_1\gamma_3$
+\_form#28=284x14:\[\Gamma(1) = \gamma_0\qquad
+\Gamma(2) = \gamma_1\qquad
+\Gamma(4) = \gamma_2\qquad
+\Gamma(8) = \gamma_3
+\]
