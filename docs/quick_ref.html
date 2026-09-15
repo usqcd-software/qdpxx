@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>QDP++ Quick Reference</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="../stylesheets/manual.css" />
+</head>
+<body>
+<nav class="manual-nav" aria-label="Documentation navigation"><a href="../">QDP++ home</a> · <a href="quick_ref.pdf">Quick reference PDF</a> · <a href="manual.html">Reference manual</a> · <a href="usr/html/index.html">User guide</a> · <a href="ref/html/index.html">API reference</a></nav>
+<header id="title-block-header">
+<h1 class="title">QDP++ Quick Reference</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#description" id="toc-description">1 Description</a></li>
+<li><a href="#supported-operations" id="toc-supported-operations">2
+Supported operations</a>
+<ul>
+<li><a href="#subsets" id="toc-subsets">2.1 Subsets</a></li>
+<li><a href="#infix-operators" id="toc-infix-operators">2.2 Infix
+operators</a></li>
+<li><a href="#functions-standard-c-math-lib"
+id="toc-functions-standard-c-math-lib">2.3 Functions (standard C math
+lib)</a></li>
+<li><a href="#additional-functions-specific-to-qdp"
+id="toc-additional-functions-specific-to-qdp">2.4 Additional functions
+(specific to QDP)</a></li>
+<li><a href="#in-place-functions" id="toc-in-place-functions">2.5 In
+place functions</a></li>
+<li><a href="#global-reductions" id="toc-global-reductions">2.6 Global
+reductions</a></li>
+<li><a href="#accessors" id="toc-accessors">2.7 Accessors</a></li>
+<li><a href="#more-exotic-functions" id="toc-more-exotic-functions">2.8
+More exotic functions:</a></li>
+</ul></li>
+<li><a href="#types" id="toc-types">3 Types</a>
+<ul>
+<li><a href="#operations-on-subtypes"
+id="toc-operations-on-subtypes">3.1 Operations on subtypes</a></li>
+<li><a href="#some-known-types" id="toc-some-known-types">3.2 Some known
+types</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="description">1 Description</h1>
+<p>QDP++ is a C++ data-parallel interface for Lattice field theory
+applications. Many of the issues have been discussed in the
+corresponding C interface description which can be found at
+http://www.jlab.org/~edwards/qcdapi/Level2API_latest.pdf. The motivation
+for this development comes from the U.S. Dept. of Energy SciDAC
+program.</p>
+<p>The QDP interface provides an environment somewhat similar to Fortran
+90 - namely data-parallel operations (operator/infix form) which can be
+applied on lattice wide objects. The interface provides a level of
+abstraction such that high-level user code written using the API can be
+run unchanged on a single processor workstation or a collection of
+multiprocessor nodes with parallel communications. Architectural
+dependencies are hidden below the interface. A variety of types for the
+site elements are provided. To achieve good performance, overlapping
+communication and computation primitives are provided.</p>
+<h1 id="supported-operations">2 Supported operations</h1>
+<p>All QDP objects are of type</p>
+<pre class="text"><code>QDPType. Supported operations are listed below. Con-
+vention: protoyypes are basically of the form:
+
+QDPType    unary_function(const QDPType&amp;)
+QDPType    binary_function(const QDPType&amp;, const QDPType&amp;)</code></pre>
+<h2 id="subsets">2.1 Subsets</h2>
+<pre class="text"><code>Set::Make(int func(),int num) : Set construction of ordinality num subsets.
+                                func maps coordinates to a coloring in [0,num)</code></pre>
+<h2 id="infix-operators">2.2 Infix operators</h2>
+<p>Unary infix (e.g., ”operator-”):</p>
+<pre class="text"><code>- : negation
++ : unaryplus
+~ : bitwise not
+! : boolean not</code></pre>
+<p>Binary infix (e.g., ”operator+”):</p>
+<pre class="text"><code>+ : addition
+- : subtraction
+* : multiplication
+/ : division
+% : mod
+&amp; : bitwise and
+| : bitwise or
+^ : bitwise exclusive or
+&lt;&lt; : left-shift
+&gt;&gt; : right-shift</code></pre>
+<p>Comparisons (returning booleans, e.g., ”operator&lt;”):</p>
+<pre class="text"><code>&lt;, &lt;=, &gt;, &gt;=, ==, !=
+&amp;&amp; : and of 2 booleans
+|| : or of 2 boolean</code></pre>
+<p>Assignments (e.g., ”operator+=”):</p>
+<pre class="text"><code>=, +=, -=, *=, /=, %=, |=, &amp;=, ^=, &lt;&lt;=, &gt;&gt;=</code></pre>
+<p>Trinary:</p>
+<pre class="text"><code>where(bool,arg1,arg2) : the C trinary &quot;?&quot; operator -&gt; (bool) ? arg1 : arg2</code></pre>
+<h2 id="functions-standard-c-math-lib">2.3 Functions (standard C math
+lib)</h2>
+<p>Unary:</p>
+<pre class="text"><code>cos, sin, tan, acos, asin, atan, cosh, sinh, tanh,
+exp, log, log10, sqrt,
+ceil, floor, fabs</code></pre>
+<p>Binary:</p>
+<pre class="text"><code>ldexp, pow, fmod, atan2</code></pre>
+<h2 id="additional-functions-specific-to-qdp">2.4 Additional functions
+(specific to QDP)</h2>
+<p>Unary:</p>
+<pre class="text"><code>conj                 : hermitian conjugate (adjoint)
+trace                : matrix trace
+real                 : real part
+imag                 : imaginary part
+colorTrace           : trace over color indices
+spinTrace            : trace over spin indices
+multiplyI            : multiplies argument by imag &quot;i&quot;
+multiplyMinusI       : multiplies argument by imag &quot;-i&quot;
+localNorm2           : on fibers computes trace(conj(source)*source)</code></pre>
+<p>Binary:</p>
+<pre class="text"><code>cmplx                 : returns complex object   arg1 + i*arg2
+localInnerproduct     : at each site computes trace(conj(arg1)*arg2)</code></pre>
+<h2 id="in-place-functions">2.5 In place functions</h2>
+<pre class="text"><code>random(dest)            : uniform random numbers - all components
+gaussian(dest)          : uniform random numbers - all components
+zero(dest)              : zero out all elements
+copymask(dest,mask,src) : copy src to dest under boolean mask</code></pre>
+<h2 id="global-reductions">2.6 Global reductions</h2>
+<pre class="text"><code>sum(arg1)               : sum over lattice indices returning
+                          object of same fiber type
+norm2(arg1)             : sum(localNorm2(arg1))
+innerproduct(arg1,arg2) : sum(localInnerproduct(arg1,arg2))
+sumMulti(arg1,Set)      : sum over each subset of Set returning #subset
+                          objects of same fiber type</code></pre>
+<h2 id="accessors">2.7 Accessors</h2>
+<p>Peeking and poking (accessors) into various component indices of
+objects.</p>
+<pre class="text"><code>peekSite(arg1,multi1d&lt;int&gt; coords): return site object of primitive type of arg1
+peekColor(arg1,int row,int col)   : return object from color matrix elem row and col
+peekColor(arg1,int row)           : return object from color vector elem row
+peekSpin(arg1,int row,int col )   : return object from spin matrix elem row and col
+peekSpin(arg1,int row)            : return object from spin vector elem row</code></pre>
+<pre class="text"><code>pokeSite(dest,src,multi1d&lt;int&gt; coords): insert src at site given by coords
+pokeColor(dest,src,int row,int col)   : insert src into color matrix elem row and col
+pokeColor(dest,src,int row)           : insert src into color vector elem row
+pokeSpin(dest,src,int row,int col )   : insert src into spin matrix elem row and col
+pokeSpin(dest,src,int row)            : insert src into spin vector elem row</code></pre>
+<h2 id="more-exotic-functions">2.8 More exotic functions:</h2>
+<p>Gauge and spin related functions.</p>
+<h3
+id="spinprojectqdptype-psi-int-dir-int-isign"><code>spinProject(QDPType psi, int dir, int isign)</code></h3>
+<p>Applies spin projection of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">n</mi></mrow><msub><mi>γ</mi><mi>μ</mi></msub><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi></mrow></mrow><annotation encoding="application/x-tex">(1 + \mathrm{isign} \gamma_\mu)\,\mathrm{psi}</annotation></semantics></math>,
+returning a half spin vector or matrix.</p>
+<h3
+id="spinreconstructqdptype-psi-int-dir-int-isign"><code>spinReconstruct(QDPType psi, int dir, int isign)</code></h3>
+<p>Applies spin reconstruction of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>+</mo><mrow><mi mathvariant="normal">i</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">n</mi></mrow><msub><mi>γ</mi><mi>μ</mi></msub><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">i</mi></mrow></mrow><annotation encoding="application/x-tex">(1 + \mathrm{isign} \gamma_\mu)\,\mathrm{psi}</annotation></semantics></math>,
+returning a full spin vector or matrix.</p>
+<h3 id="quarkcontract13ab"><code>quarkContract13(a,b)</code></h3>
+<p>Epsilon contract two quark propagators and return a quark
+propagator.</p>
+<p>This is used for diquark constructions. Eventually, it could handle
+larger
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mi>c</mi></msub><annotation encoding="application/x-tex">N_c</annotation></semantics></math>.
+The numbers represent which spin index to sum over. The sources and
+targets must all be propagators but not necessarily of the same lattice
+type. Effectively, one can use this to construct an anti-quark from a
+di-quark contraction. In explicit index form:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow><mrow><mi>α</mi><mi>β</mi></mrow><mrow><msup><mi>k</mi><mo>′</mo></msup><mi>k</mi></mrow></msubsup><mo>=</mo><msup><mi>ϵ</mi><mrow><mi>i</mi><mi>j</mi><mi>k</mi></mrow></msup><msup><mi>ϵ</mi><mrow><msup><mi>i</mi><mo>′</mo></msup><msup><mi>j</mi><mo>′</mo></msup><msup><mi>k</mi><mo>′</mo></msup></mrow></msup><mo>*</mo><msubsup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">1</mn></mrow><mrow><mi>ρ</mi><mi>α</mi></mrow><mrow><mi>i</mi><msup><mi>i</mi><mo>′</mo></msup></mrow></msubsup><mo>*</mo><msubsup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">2</mn></mrow><mrow><mi>ρ</mi><mi>β</mi></mrow><mrow><mi>j</mi><msup><mi>j</mi><mo>′</mo></msup></mrow></msubsup></mrow><annotation encoding="application/x-tex">\mathrm{target}^{k&#39;k}_{\alpha\beta} = \epsilon^{ijk}\epsilon^{i&#39;j&#39;k&#39;} * \mathrm{source1}^{ii&#39;}_{\rho\alpha} * \mathrm{source2}^{jj&#39;}_{\rho\beta}</annotation></semantics></math></p>
+<p>Currently only appropriate for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>c</mi></msub><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">N_c=3</annotation></semantics></math>
+(or SU(3)).</p>
+<h3 id="quarkcontract14ab"><code>quarkContract14(a,b)</code></h3>
+<p>Epsilon contract two quark propagators and return a quark
+propagator.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow><mrow><mi>α</mi><mi>β</mi></mrow><mrow><msup><mi>k</mi><mo>′</mo></msup><mi>k</mi></mrow></msubsup><mo>=</mo><msup><mi>ϵ</mi><mrow><mi>i</mi><mi>j</mi><mi>k</mi></mrow></msup><msup><mi>ϵ</mi><mrow><msup><mi>i</mi><mo>′</mo></msup><msup><mi>j</mi><mo>′</mo></msup><msup><mi>k</mi><mo>′</mo></msup></mrow></msup><mo>*</mo><msubsup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">1</mn></mrow><mrow><mi>ρ</mi><mi>α</mi></mrow><mrow><mi>i</mi><msup><mi>i</mi><mo>′</mo></msup></mrow></msubsup><mo>*</mo><msubsup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">2</mn></mrow><mrow><mi>β</mi><mi>ρ</mi></mrow><mrow><mi>j</mi><msup><mi>j</mi><mo>′</mo></msup></mrow></msubsup></mrow><annotation encoding="application/x-tex">\mathrm{target}^{k&#39;k}_{\alpha\beta} = \epsilon^{ijk}\epsilon^{i&#39;j&#39;k&#39;} * \mathrm{source1}^{ii&#39;}_{\rho\alpha} * \mathrm{source2}^{jj&#39;}_{\beta\rho}</annotation></semantics></math></p>
+<h3 id="quarkcontract23ab"><code>quarkContract23(a,b)</code></h3>
+<p>Epsilon contract two quark propagators and return a quark
+propagator.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow><mrow><mi>α</mi><mi>β</mi></mrow><mrow><msup><mi>k</mi><mo>′</mo></msup><mi>k</mi></mrow></msubsup><mo>=</mo><msup><mi>ϵ</mi><mrow><mi>i</mi><mi>j</mi><mi>k</mi></mrow></msup><msup><mi>ϵ</mi><mrow><msup><mi>i</mi><mo>′</mo></msup><msup><mi>j</mi><mo>′</mo></msup><msup><mi>k</mi><mo>′</mo></msup></mrow></msup><mo>*</mo><msubsup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">1</mn></mrow><mrow><mi>α</mi><mi>ρ</mi></mrow><mrow><mi>i</mi><msup><mi>i</mi><mo>′</mo></msup></mrow></msubsup><mo>*</mo><msubsup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">2</mn></mrow><mrow><mi>ρ</mi><mi>β</mi></mrow><mrow><mi>j</mi><msup><mi>j</mi><mo>′</mo></msup></mrow></msubsup></mrow><annotation encoding="application/x-tex">\mathrm{target}^{k&#39;k}_{\alpha\beta} = \epsilon^{ijk}\epsilon^{i&#39;j&#39;k&#39;} * \mathrm{source1}^{ii&#39;}_{\alpha\rho} * \mathrm{source2}^{jj&#39;}_{\rho\beta}</annotation></semantics></math></p>
+<h3 id="quarkcontract24ab"><code>quarkContract24(a,b)</code></h3>
+<p>Epsilon contract two quark propagators and return a quark
+propagator.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow><mrow><mi>α</mi><mi>β</mi></mrow><mrow><msup><mi>k</mi><mo>′</mo></msup><mi>k</mi></mrow></msubsup><mo>=</mo><msup><mi>ϵ</mi><mrow><mi>i</mi><mi>j</mi><mi>k</mi></mrow></msup><msup><mi>ϵ</mi><mrow><msup><mi>i</mi><mo>′</mo></msup><msup><mi>j</mi><mo>′</mo></msup><msup><mi>k</mi><mo>′</mo></msup></mrow></msup><mo>*</mo><msubsup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">1</mn></mrow><mrow><mi>ρ</mi><mi>α</mi></mrow><mrow><mi>i</mi><msup><mi>i</mi><mo>′</mo></msup></mrow></msubsup><mo>*</mo><msubsup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">2</mn></mrow><mrow><mi>β</mi><mi>ρ</mi></mrow><mrow><mi>j</mi><msup><mi>j</mi><mo>′</mo></msup></mrow></msubsup></mrow><annotation encoding="application/x-tex">\mathrm{target}^{k&#39;k}_{\alpha\beta} = \epsilon^{ijk}\epsilon^{i&#39;j&#39;k&#39;} * \mathrm{source1}^{ii&#39;}_{\rho\alpha} * \mathrm{source2}^{jj&#39;}_{\beta\rho}</annotation></semantics></math></p>
+<h3 id="quarkcontract12ab"><code>quarkContract12(a,b)</code></h3>
+<p>Epsilon contract two quark propagators and return a quark
+propagator.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow><mrow><mi>α</mi><mi>β</mi></mrow><mrow><msup><mi>k</mi><mo>′</mo></msup><mi>k</mi></mrow></msubsup><mo>=</mo><msup><mi>ϵ</mi><mrow><mi>i</mi><mi>j</mi><mi>k</mi></mrow></msup><msup><mi>ϵ</mi><mrow><msup><mi>i</mi><mo>′</mo></msup><msup><mi>j</mi><mo>′</mo></msup><msup><mi>k</mi><mo>′</mo></msup></mrow></msup><mo>*</mo><msubsup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">1</mn></mrow><mrow><mi>ρ</mi><mi>ρ</mi></mrow><mrow><mi>i</mi><msup><mi>i</mi><mo>′</mo></msup></mrow></msubsup><mo>*</mo><msubsup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">2</mn></mrow><mrow><mi>α</mi><mi>β</mi></mrow><mrow><mi>j</mi><msup><mi>j</mi><mo>′</mo></msup></mrow></msubsup></mrow><annotation encoding="application/x-tex">\mathrm{target}^{k&#39;k}_{\alpha\beta} = \epsilon^{ijk}\epsilon^{i&#39;j&#39;k&#39;} * \mathrm{source1}^{ii&#39;}_{\rho\rho} * \mathrm{source2}^{jj&#39;}_{\alpha\beta}</annotation></semantics></math></p>
+<h3 id="quarkcontract34ab"><code>quarkContract34(a,b)</code></h3>
+<p>Epsilon contract two quark propagators and return a quark
+propagator.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow><mrow><mi>α</mi><mi>β</mi></mrow><mrow><msup><mi>k</mi><mo>′</mo></msup><mi>k</mi></mrow></msubsup><mo>=</mo><msup><mi>ϵ</mi><mrow><mi>i</mi><mi>j</mi><mi>k</mi></mrow></msup><msup><mi>ϵ</mi><mrow><msup><mi>i</mi><mo>′</mo></msup><msup><mi>j</mi><mo>′</mo></msup><msup><mi>k</mi><mo>′</mo></msup></mrow></msup><mo>*</mo><msubsup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">1</mn></mrow><mrow><mi>α</mi><mi>β</mi></mrow><mrow><mi>i</mi><msup><mi>i</mi><mo>′</mo></msup></mrow></msubsup><mo>*</mo><msubsup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">2</mn></mrow><mrow><mi>ρ</mi><mi>ρ</mi></mrow><mrow><mi>j</mi><msup><mi>j</mi><mo>′</mo></msup></mrow></msubsup></mrow><annotation encoding="application/x-tex">\mathrm{target}^{k&#39;k}_{\alpha\beta} = \epsilon^{ijk}\epsilon^{i&#39;j&#39;k&#39;} * \mathrm{source1}^{ii&#39;}_{\alpha\beta} * \mathrm{source2}^{jj&#39;}_{\rho\rho}</annotation></semantics></math></p>
+<h3 id="colorcontractabc"><code>colorContract(a,b,c)</code></h3>
+<p>Epsilon contract three color primitives and return a primitive
+scalar. The sources and targets must all be of the same primitive type
+(a matrix or vector) but not necessarily of the same lattice type. In
+explicit index form:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow><mo>=</mo><msup><mi>ϵ</mi><mrow><mi>i</mi><mi>j</mi><mi>k</mi></mrow></msup><msup><mi>ϵ</mi><mrow><msup><mi>i</mi><mo>′</mo></msup><msup><mi>j</mi><mo>′</mo></msup><msup><mi>k</mi><mo>′</mo></msup></mrow></msup><mo>*</mo><msup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">1</mn></mrow><mrow><mi>i</mi><msup><mi>i</mi><mo>′</mo></msup></mrow></msup><mo>*</mo><msup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">2</mn></mrow><mrow><mi>j</mi><msup><mi>j</mi><mo>′</mo></msup></mrow></msup><mo>*</mo><msup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">3</mn></mrow><mrow><mi>k</mi><msup><mi>k</mi><mo>′</mo></msup></mrow></msup></mrow><annotation encoding="application/x-tex">\mathrm{target} = \epsilon^{ijk}\epsilon^{i&#39;j&#39;k&#39;} * \mathrm{source1}^{ii&#39;} * \mathrm{source2}^{jj&#39;} * \mathrm{source3}^{kk&#39;}</annotation></semantics></math></p>
+<p>or</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">g</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow><mo>=</mo><msup><mi>ϵ</mi><mrow><mi>i</mi><mi>j</mi><mi>k</mi></mrow></msup><mo>*</mo><msup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">1</mn></mrow><mi>i</mi></msup><mo>*</mo><msup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">2</mn></mrow><mi>j</mi></msup><mo>*</mo><msup><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mn mathvariant="normal">3</mn></mrow><mi>k</mi></msup></mrow><annotation encoding="application/x-tex">\mathrm{target} = \epsilon^{ijk} * \mathrm{source1}^{i} * \mathrm{source2}^{j} * \mathrm{source3}^{k}</annotation></semantics></math></p>
+<p>Currently only appropriate for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>c</mi></msub><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">N_c=3</annotation></semantics></math>
+(or SU(3)).</p>
+<h1 id="types">3 Types</h1>
+<p>Mathematically, QDP types are the product of a Nd dimensional lattice
+type and a type at each site (the fiber). The fiber type describes data
+primitives on each site. Lattice fields are defined and always allocated
+over the entire lattice; however, the operations can be narrowed to only
+a subset of sites. The primitive types at each site are represented as
+the (tensor) product space of, for example, a vector space over color
+components with a vector space over spin components and complex valued
+elements.</p>
+<p>Generically objects transform under different spaces with a tensor
+product structure like</p>
+<pre class="text"><code>                    Color      Spin      Complexity
+Gauge fields:       Product(Matrix(Nc),Scalar,    Complex)
+Fermions:           Product(Vector(Nc),Vector(Ns),Complex)
+Scalars:            Product(Scalar,    Scalar,    Scalar)
+Propagators:        Product(Matrix(Nc),Matrix(Ns),Complex)
+Gamma:              Product(Scalar,    Matrix(Ns),Complex)</code></pre>
+<p>N d is the number of space-time dimensions N c is the dimension of
+the color vector space N s is the dimension of the spin vector space
+NOTE: these parameters are compile time defined in qdp++/params.h</p>
+<p>Gauge fields can left-multiply fermions via color matrix times color
+vector but is diagonal in spin space (spin scalar times spin vector). A
+gamma matrix can right-multiply a propagator (spin matrix times spin
+matrix) but is diagonal in color space (color matrix times color
+scalar).</p>
+<p>Types in the QDP interface are parameterized by a variety of types
+including:</p>
+<ul>
+<li><p>Word type: int, float, double, bool. Basic machine
+types.</p></li>
+<li><p>Reality type: complex or scalar. This is where the idea of a
+complex number lives.</p></li>
+<li><p>Primitive type: scalar, vector, matrix, etc. This is where the
+concept of a gauge or spin field lives. There can be many more types
+here.</p></li>
+<li><p>Inner grid type: scalar or lattice. Supports vector style
+architectures.</p></li>
+<li><p>Outer grid type: scalar or lattice. Supports super-scalar style
+architectures. In combination with Inner grid can support a mixed mode
+like a super-scalar architecture with short length vector
+instructions.</p></li>
+</ul>
+<p>There are template classes for each of the type variants listed
+above. The interface relies heavily on templates for composition - there
+is very little inheritance. The basic objects are constructed (at the
+users choice) by compositions like the following:</p>
+<pre class="text"><code>typedef OLattice&lt;PScalar&lt;ColorMatrix&lt;Complex&lt;float&gt;, Nc&gt; &gt; &gt; LatticeGauge
+typedef OLattice&lt;SpinVector&lt;ColorVector&lt;Complex&lt;float&gt;, Nc&gt;, Ns&gt; &gt; LatticeFermion</code></pre>
+<p>The ordering of types here is suitable for a microprocessor
+architecture. The classes PScalar, SpinVector, ColorMatrix, ColorVector
+are all subtypes of a primitive type. The relative ordering of the
+classes is important. It is simply a user convention that spin is used
+as the second index (second level of type composition) and color is the
+third. The ordering of types can be changes. From looking at the types
+one can immediately decide what operations among objects makes sense.
+NOTE: these typdefs are defined in qdp++/defs.h</p>
+<p>Operations on each level are listed below. The meaning (and validity)
+of an operation on the complete type (a LatticeFermion) is deduced from
+the intersection of these operations among each type.</p>
+<h2 id="operations-on-subtypes">3.1 Operations on subtypes</h2>
+<p>Supported operations for each type level</p>
+<h3
+id="grid-type-oscalar-olattice-iscalar-ilattice"><code>Grid type: OScalar, OLattice, IScalar, ILattice</code></h3>
+<pre class="text"><code>All operations listed in Sections 2.2–2.8</code></pre>
+<h3 id="primitive-type">Primitive type</h3>
+<h3 id="pscalar"><code>PScalar</code></h3>
+<pre class="text"><code>All operations listed in Sections 2.2–2.8</code></pre>
+<h3 id="pmatrixn"><code>PMatrix&lt;N&gt;</code></h3>
+<pre class="text"><code>Unary: -(PMatrix), +(PMatrix)
+          Binary: -(PMatrix,PMatrix), +(PMatrix,PMatrix), *(PMatrix,PScalar),
+          *(PScalar,PMatrix), *(PMatrix,PMatrix)
+          Comparisons: none
+          Assignments: =(PMatrix), =(PScalar), -=(PMatrix), +=(PMatrix), *=(PScalar)
+          Trinary: where
+          C-lib funcs: none
+          QDP funcs: all
+          In place funcs: all
+          Reductions: all</code></pre>
+<h3 id="pvectorn"><code>PVector&lt;N&gt;</code></h3>
+<pre class="text"><code>Unary: -(PVector), +(PVector)
+          Binary: -(PVector,PVector), +(PVector,PVector), *(PVector,PScalar),
+          *(PScalar,PVector), *(PMatrix,PVector)
+          Comparisons: none
+          Assignments: =(PVector), -=(PVector), +=(PVector), *=(PScalar)
+          Trinary: where
+          C-lib funcs: none
+          QDP funcs: real, imag, multiplyI, multiplyMinusI, localNorm2, cmplx,
+          localInnerproduct
+          In place funcs: all
+
+          Reductions: all</code></pre>
+<h3 id="pspinmatrixn"><code>PSpinMatrix&lt;N&gt;</code></h3>
+<pre class="text"><code>Inherits same operations as PMatrix
+          Unary: spinTrace
+          Binary: *(PSpinMatrix,Gamma), *(Gamma,PSpinMatrix)
+          Exotic: peekSpin, pokeSpin, spinProjection, spinReconstruction</code></pre>
+<h3 id="pspinvectorn"><code>PSpinVector&lt;N&gt;</code></h3>
+<pre class="text"><code>Inherits same operations as PVector
+          Binary: *(Gamma,PSpinVector)
+          Exotic: peekSpin, pokeSpin, spinProjection, spinReconstruction</code></pre>
+<h3 id="pcolormatrixn"><code>PColorMatrix&lt;N&gt;</code></h3>
+<pre class="text"><code>Inherits same operations as PMatrix
+          Unary: colorTrace
+          Binary: *(PColorMatrix,Gamma), *(Gamma,PColorMatrix)
+          Exotic: peekColor, pokeColor,</code></pre>
+<h3 id="pcolorvectorn"><code>PColorVector&lt;N&gt;</code></h3>
+<pre class="text"><code>Inherits same operations as PVector
+          Binary: *(Gamma,PColorVector)
+          Exotic: peekColor, pokeColor,</code></pre>
+<h3
+id="reality-rscalar-rcomplex"><code>Reality: RScalar, RComplex</code></h3>
+<pre class="text"><code>All operations listed in Sections 2.2–2.8</code></pre>
+<h3
+id="word-int-float-double-bool"><code>Word: int, float, double, bool</code></h3>
+<pre class="text"><code>All operations listed in Sections 2.2–2.8. Only boolean ops allowed on bool.</code></pre>
+<p>Note, some operationsare conspicuously absent:</p>
+<pre class="text"><code>LatticeFermion foo = 1.0;           // illegal, operator=(PVector,PScalar) missing
+trace(foo);                         // trace on a vector is not allowed
+conj(foo);                          // illegal, there is no row vector type</code></pre>
+<h2 id="some-known-types">3.2 Some known types</h2>
+<p>Some defined known types are listed below. More can easily be added
+or the names changed in the file qdp++/defs.h . These names should
+reflect those in the C interface.</p>
+<pre class="text"><code>Real, Integer, Double, Boolean
+Complex, DComplex,
+LatticeReal, LatticeInteger, LatticeComplex
+LatticeFermion, LatticeColorMatrix, LatticeGauge,
+LatticePropagator
+
+ColorMatrix, ColorVector, SpinMatrix, SpinVector
+LatticeColorMatrix, LatticeColorVector, LatticeSpinMatrix, LatticeSpinVector</code></pre>
+</body>
+</html>
