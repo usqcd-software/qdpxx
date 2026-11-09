@@ -16,3 +16,5 @@ dist_data_DATA = FindQDPXX.cmake
 #
 EXTRA_DIST = PETE/QDPClasses.in PETE/QDPOps.in  PETE/Tools docs  install_scripts FindQDPXX.cmake.in
 
+
+EXTRA_DIST += docs/filedb-reorg.md
