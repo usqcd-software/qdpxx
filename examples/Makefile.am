@@ -16,10 +16,6 @@ AM_CXXFLAGS += -I@top_srcdir@/other_libs/@LIBINTRIN_DIR@/include \
                -I@top_builddir@/other_libs/@LIBINTRIN_DIR@/include
 endif
 
-if BUILD_FILEDB
-AM_CXXFLAGS += -I@top_srcdir@/other_libs/filedb/src \
-               -I@top_srcdir@/other_libs/filedb/filehash
-endif
 
 AM_LDFLAGS = -L@top_builddir@/lib
 
@@ -34,10 +30,6 @@ if BUILD_LIBINTRIN
 AM_LDFLAGS += -L@top_builddir@/other_libs/libintrin/lib
 endif
 
-if BUILD_FILEDB
-AM_LDFLAGS += -L@top_builddir@/other_libs/filedb/src \
-              -L@top_builddir@/other_libs/filedb/filehash
-endif
 
 LDADD = -lqdp
 
@@ -54,9 +46,6 @@ if BUILD_LIBINTRIN
 LDADD += -lintrin
 endif
 
-if BUILD_FILEDB
-LDADD += -lfiledb -lfilehash
-endif
 
 #
 # Local Headers
@@ -66,7 +55,7 @@ HDRS=examples.h
 #
 # The programs to build
 # 
-check_PROGRAMS = t_skeleton t_io t_mesplq t_db \
+check_PROGRAMS = t_skeleton t_io t_mesplq  \
       t_xml t_entry t_nersc t_shift t_exotic t_basic t_qio \
       t_cugauge t_transpose_spin t_partfile t_su3 \
       t_map_obj_disk t_map_obj_memory t_clov_force
@@ -127,7 +116,7 @@ t_cblas_SOURCES= t_cblas.cc cblas1.cc cblas1.h
 t_clov_force_SOURCES=t_clov_force.cc reunit.cc $(HDRS)
 t_clov_force_DEPENDENCIES= build_lib
 
-t_db_SOURCES = t_db.cc $(HDRS)
+t_db_SOURCES = .cc $(HDRS)
 t_map_obj_disk_SOURCES = t_map_obj_disk.cc $(HDRS)
 t_map_obj_memory_SOURCES = t_map_obj_memory.cc $(HDRS)
 

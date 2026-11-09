@@ -45,7 +45,6 @@ option(QDP_DEBUG_MEMORY "Enable Memory Debugging" OFF)
 option(QDP_USE_LIBXML2 "Use Libxml2 library" ON)
 
 # FileDB on by default
-option(QDP_USE_FILEDB  "Enable FileDB Usage" ON)
 
 # SSE Levels
 option(QDP_USE_SSE  "Enable SSE Code" OFF)
@@ -186,9 +185,7 @@ if ( QDP_USE_HDF5 )
 endif()
 
 # If we want filedb mark it on 
-if ( QDP_USE_FILEDB ) 
-   set(BUILD_FILEDB ON)
-endif()
+
 
 # If we use Threaded building blocks Find TBB
 if( QDP_USE_TBBPOOL_ALLOCATOR ) 
@@ -249,9 +246,7 @@ if (QDP_USE_LIBXML2 )
 endif()
 
 # FileDB nearly always gets built
-if (QDP_USE_FILEDB )
-  add_subdirectory(other_libs/filedb)
-endif()
+
 
 # If SSE2 is on we can use libintrin
 if( QDP_USE_SSE2 )

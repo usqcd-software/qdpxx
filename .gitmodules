@@ -7,6 +7,3 @@
 [submodule "other_libs/qio"]
 	path = other_libs/qio
 	url = ../qio.git
-[submodule "other_libs/filedb"]
-	path = other_libs/filedb
-	url = ../filedb.git

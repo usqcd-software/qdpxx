@@ -5,7 +5,6 @@
 #cmakedefine BASE_PRECISION     @BASE_PRECISION@
 
 
-#cmakedefine BUILD_FILEDB		@BUILD_FILEDB@
 
 
 #cmakedefine HAVE_GETHOSTNAME

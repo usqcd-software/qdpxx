@@ -197,9 +197,6 @@ nobase_include_HEADERS = \
 		qdp_scalarsite_defs.h \
 		qdp_scalarvecsite_defs.h \
 		qdp_strnlen.h \
-		qdp_db.h \
-		qdp_db_imp.h \
-		qdp_db_stub.h \
 		qdp_map_obj.h \
 		qdp_map_obj_null.h \
 		qdp_map_obj_memory.h \

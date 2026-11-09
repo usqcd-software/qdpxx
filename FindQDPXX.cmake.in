@@ -57,15 +57,6 @@ if( QDPXX_LIBINTRIN )
   target_link_libraries(qdp INTERFACE intrin)
 endif()
 
-# Check if using FILEDB
-string(STRIP "@FILEDB_DIR" QDPXX_FILEDB)
-if( QDPXX_FILEDB ) 
-   add_qdpxx_lib(filehash)
-   add_qdpxx_lib(filedb)
-   target_link_libraries(filedb INTERFACE filehash)
-   target_link_libraries(qdp INTERFACE filedb)
-endif()
-
 # Add other LFlags and libs which we didn't build
 string(STRIP "@LDFLAGS@ @HDF5_LDFLAGS@ @QMP_LDFLAGS@ @QMT_LDFLAGS@" QDPXX_LDFLAGS)
 string(STRIP "@HDF5_LIBS@ @LIBXML2_LIBS@ @QMP_LIBS@ @LIBS@ @QMT_LIBS@" QDPXX_LIBS)

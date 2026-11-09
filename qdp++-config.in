@@ -37,15 +37,6 @@ case ${libintrin_dir} in
 	;;
 esac
 
-filedb_dir=@FILEDB_DIR@
-case ${filedb_dir} in
-    filedb)
-	qdp_libs=${qdp_libs}" -lfiledb -lfilehash"
-	;;
-    *)
-	;;
-esac
-
 precision="@CONFIG_PRECISION@"
 layout="@CONFIG_LAYOUT@"
 

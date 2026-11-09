@@ -118,14 +118,6 @@ AC_ARG_ENABLE(memory-debugging,
      [ac_memdebug_enabled=0]
 )
 
-dnl database wrapper
-AC_ARG_ENABLE(filedb,
-  AC_HELP_STRING([--enable-filedb],
-    [Build routines using FileDB]),
-  [filedb_enabled="${enableval}"],
-  [filedb_enabled="yes"]
-)
-
 dnl --enable-sse
 AC_ARG_ENABLE(sse,
   AC_HELP_STRING([--enable-sse],
@@ -623,21 +615,6 @@ else
      AC_SUBST(BAGEL_QDP_LIBS,     "")
 fi
       
-dnl Build filedb
-if test "X${filedb_enabled}X" == "XyesX"; 
-then
-     AC_MSG_NOTICE([Configuring to use FileDB routines])
-     AC_CONFIG_SUBDIRS(other_libs/filedb)
-     AC_DEFINE([BUILD_FILEDB],[],[Build filedb])
-     AC_SUBST(FILEDB_DIR, [filedb])
-else 
-     AC_MSG_NOTICE([Not building filedb])
-     AC_SUBST(FILEDB_DIR,"")
-fi
-
-AM_CONDITIONAL(BUILD_FILEDB,
-  [test "x${filedb_enabled}x" = "xyesx" ])
-
 dnl Use Jie Chens threads library
 AC_ARG_WITH(qmt,
    AC_HELP_STRING(

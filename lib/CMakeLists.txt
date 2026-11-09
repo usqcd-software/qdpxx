@@ -127,9 +127,7 @@ if( QDP_USE_SSE2 )
 endif()
 
 # If we want filedb (always?) link that
-if( QDP_USE_FILEDB ) 
-	target_link_libraries( qdp PUBLIC FileDB::filedb ) 
-endif()
+
 
 if( QDP_USE_TBBPOOL_ALLOCATOR )
 	target_link_libraries (qdp PUBLIC TBB::tbbmalloc )
